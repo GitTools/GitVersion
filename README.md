@@ -1,3 +1,5 @@
+
+
 ## The Problem
 
 Our builds are getting more complex and as we're moving towards scm structure with a lot of fine grained repos we need to take a convention based approach for our assembly versioning.
@@ -15,14 +17,14 @@ Given that we use the git flow branching strategy, GitHub and team city I sugges
 
 ### Suggested conventions
 
-#### develop: 
+#### develop
 
 * major:  latest(master.tag).Major with an option to override from build property (for major bumps)
 * minor: latest(master.tag).Minor +1 (0 if the override above is used)
 * patch: 0
-* Prerelease: unstable{n} where n = number of commits on the develop branch? TC buildnr?
+* pre-release: unstable{n} where n = number of commits on the develop branch? TC builder?
 
-#### master:
+#### master
 
 * major = latest(merge(release|tag)) If release: use version.major from branch name, if tag use version.major from tag
 * minor = latest(merge(release|tag)) If release: use version.minor from branch name, if tag use version.minor from tag
@@ -47,3 +49,17 @@ Given that we use the git flow branching strategy, GitHub and team city I sugges
 
 So this project assumes you have https://github.com/Particular/GitFlow checked out to the same directory for running unit tests
 
+## For reference
+
+### [Semantic Versioning](http://semver.org/)
+
+Given a version number MAJOR.MINOR.PATCH, increment the:
+
+MAJOR version when you make incompatible API changes,
+MINOR version when you add functionality in a backwards-compatible manner, and
+PATCH version when you make backwards-compatible bug fixes.
+Additional labels for pre-release and build metadata are available as extensions to the MAJOR.MINOR.PATCH format.
+ 
+###[GitFlow: A successful Git branching model](http://nvie.com/git-model/)
+ 
+![](http://nvie.com/img/2009/12/Screen-shot-2009-12-24-at-11.32.03.png)
