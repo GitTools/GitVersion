@@ -13,7 +13,7 @@ namespace GitFlowVersion
         {
             var versionTag = Repository.Tags
                                        .Where(tag =>
-                                           SemanticVersion.IsMajorMinorPatch(tag.Name) &&
+                                           SemanticVersion.IsVersion(tag.Name) &&
                                            tag.IsOnBranch(MasterBranch) &&
                                            tag.IsBefore(Commit))
                                        .OrderByDescending(x => x.CommitTimeStamp())

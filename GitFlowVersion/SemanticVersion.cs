@@ -11,30 +11,37 @@ namespace GitFlowVersion
         public static SemanticVersion FromMajorMinorPatch(string versionString)
         {
             var strings = versionString.Split('.');
-            return new SemanticVersion
-                   {
-                       Major = int.Parse(strings[0]),
-                       Minor = int.Parse(strings[1]),
-                       Patch = int.Parse(strings[2]),
-                   };
+            var fromMajorMinorPatch = new SemanticVersion
+                                      {
+                                          Major = int.Parse(strings[0]),
+                                      };
+            if (strings.Length > 1)
+            {
+                fromMajorMinorPatch.Minor = int.Parse(strings[1]);
+            }
+            if (strings.Length > 2)
+            {
+                fromMajorMinorPatch.Patch = int.Parse(strings[2]);
+            }
+            return fromMajorMinorPatch;
         }
-        public static bool IsMajorMinorPatch(string versionString)
+        public static bool IsVersion(string versionString)
         {
             var strings = versionString.Split('.');
-            if (strings.Length != 3)
+            if (strings.Length > 3)
             {
                 return false;
             }
             int fake;
-            if (!int.TryParse(strings[0], out fake))
+            if (strings.Length > 0 && !int.TryParse(strings[0], out fake))
             {
                 return false;
             }
-            if (!int.TryParse(strings[1], out fake))
+            if (strings.Length > 1 && !int.TryParse(strings[1], out fake))
             {
                 return false;
             }
-            if (!int.TryParse(strings[2], out fake))
+            if (strings.Length > 2 && !int.TryParse(strings[2], out fake))
             {
                 return false;
             }
