@@ -22,7 +22,7 @@ Given that we use the git flow branching strategy, GitHub and team city I sugges
 * major:  latest(master.tag).Major with an option to override from build property (for major bumps)
 * minor: latest(master.tag).Minor +1 (0 if the override above is used)
 * patch: 0
-* pre-release: unstable{n} where n = number of commits on the develop branch? TC builder?
+* pre-release: unstable{n} where n = take the date of the develop commit. find the master commit that us earlier than that. take the date of the master commit and find how many commits the develop commit is in front of that date.
 
 #### master
 
