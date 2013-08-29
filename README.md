@@ -51,6 +51,10 @@ Commits on master will always be a merge commit. Either from a `hotfix` or a `re
 
 So this project assumes you have https://github.com/Particular/GitFlow checked out to the same directory for running unit tests
 
+## Release Candidates
+
+How do we do release candidates?? Perhaps  tag a release branch and then count forward from the tag to get RC1, RC2 etc??
+
 ## For reference
 
 ### [Semantic Versioning](http://semver.org/)
