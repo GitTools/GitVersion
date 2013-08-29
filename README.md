@@ -26,9 +26,11 @@ Given that we use the git flow branching strategy, GitHub and team city I sugges
 
 #### master
 
-* major = latest(merge(release|tag)) If release: use version.major from branch name, if tag use version.major from tag
-* minor = latest(merge(release|tag)) If release: use version.minor from branch name, if tag use version.minor from tag
-* patch = latest(merge(release|tag)) If release: use 0, if tag use version.patch + 1 from tag
+Commits on master will always be a merge commit. Either from a `hotfix` or a `release` branch. As such we can simply take the commit message.
+
+* major = take first part of version from commit message
+* minor = take second part of version from commit message
+* patch = take third part of version from commit message
 
 #### hotfix branches
 
