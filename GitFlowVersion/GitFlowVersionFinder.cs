@@ -1,4 +1,4 @@
-using System;
+using System.Linq;
 using LibGit2Sharp;
 
 namespace GitFlowVersion
@@ -9,7 +9,7 @@ namespace GitFlowVersion
         public Repository Repository;
         public Branch Branch;
 
-        public Version FindVersion()
+        public SemanticVersion FindVersion()
         {
             if (Branch.Name == "master")
             {
@@ -18,6 +18,17 @@ namespace GitFlowVersion
                                               Commit = Commit,
                                               Repository = Repository,
                                               MasterBranch = Branch
+                                          };
+                return masterVersionFinder.FindVersion();
+            }
+            if (Branch.Name.StartsWith("hotfix-"))
+            {
+                var masterVersionFinder = new HotfixVersionFinder
+                                          {
+                                              Commit = Commit,
+                                              Repository = Repository,
+                                              HotfixBranch = Branch,
+                                              MasterBranch = Repository.Branches.First(x => x.Name == "master")
                                           };
                 return masterVersionFinder.FindVersion();
             }

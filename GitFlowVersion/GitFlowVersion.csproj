@@ -51,10 +51,13 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BranchFinders\HotfixVersionFinder.cs" />
     <Compile Include="LibGitExtensions.cs" />
     <Compile Include="GitFlowVersionFinder.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs" />
-    <Compile Include="MasterVersionFinder.cs" />
+    <Compile Include="BranchFinders\MasterVersionFinder.cs" />
+    <Compile Include="SemanticVersion.cs" />
+    <Compile Include="Stage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

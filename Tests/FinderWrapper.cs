@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Linq;
 using GitFlowVersion;
@@ -7,7 +6,7 @@ using NCrunch.Framework;
 
 public class FinderWrapper
 {
-    public static Version FindVersionForCommit(string sha, string branchName)
+    public static SemanticVersion FindVersionForCommit(string sha, string branchName)
     {
         var repository = GetRepository();
         var branch = repository.Branches.First(x => x.Name == branchName);

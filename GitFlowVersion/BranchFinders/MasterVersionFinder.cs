@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using LibGit2Sharp;
 
@@ -10,26 +9,26 @@ namespace GitFlowVersion
         public Repository Repository { get; set; }
         public Branch MasterBranch { get; set; }
 
-        public Version FindVersion()
+        public SemanticVersion FindVersion()
         {
             var versionTag = Repository.Tags
                                        .Where(tag =>
-                                           tag.IsVersionable() &&
+                                           SemanticVersion.IsMajorMinorPatch(tag.Name) &&
                                            tag.IsOnBranch(MasterBranch) &&
                                            tag.IsBefore(Commit))
                                        .OrderByDescending(x => x.CommitTimeStamp())
                                        .FirstOrDefault();
 
-            Version versionFromTag;
             if (versionTag != null)
             {
-                versionFromTag = versionTag.ToVersion();
+                var version = SemanticVersion.FromMajorMinorPatch(versionTag.Name);
+                version.Stage = Stage.Final;
+                return version;
             }
-            else
-            {
-                versionFromTag = new Version(0,0);
-            }
-            return versionFromTag;
+            return new SemanticVersion
+                   {
+                       Stage = Stage.Final
+                   };
         }
     }
 }

@@ -65,16 +65,6 @@ namespace GitFlowVersion
             }
             return tagCommit.Committer.When <=  commit.Committer.When;
         }
-        public static Version ToVersion( this Tag tag)
-        {
-            return Version.Parse(tag.Name);
-        }
-
-        public static bool IsVersionable(this Tag tag)
-        {
-            Version version;
-            return Version.TryParse(tag.Name, out version);
-        }
 
 
     }
