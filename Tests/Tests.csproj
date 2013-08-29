@@ -71,10 +71,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyLocation.cs" />
+    <Compile Include="DevelopTests.cs" />
     <Compile Include="HotfixTests.cs" />
     <Compile Include="FinderWrapper.cs" />
     <Compile Include="MasterTests.cs" />
     <Compile Include="ModuleInitializer.cs" />
+    <Compile Include="ReleaseTests.cs" />
     <Compile Include="VersionConverter.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -47,5 +47,7 @@ namespace GitFlowVersion
             }
             return true;
         }
+
+   
     }
 }

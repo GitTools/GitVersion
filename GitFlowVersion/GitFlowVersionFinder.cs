@@ -32,6 +32,27 @@ namespace GitFlowVersion
                                           };
                 return masterVersionFinder.FindVersion();
             }
+
+            if (Branch.Name.StartsWith("release-"))
+            {
+                var masterVersionFinder = new ReleaseVersionFinder
+                {
+                    Commit = Commit,
+                    Repository = Repository,
+                    ReleaseBranch = Branch,
+                };
+                return masterVersionFinder.FindVersion();
+            }
+
+            if (Branch.Name == "develop")
+            {
+                var masterVersionFinder = new DevelopVersionFinder
+                {
+                    Commit = Commit,
+                    Repository = Repository
+                };
+                return masterVersionFinder.FindVersion();
+            }
             return null;
         }
 

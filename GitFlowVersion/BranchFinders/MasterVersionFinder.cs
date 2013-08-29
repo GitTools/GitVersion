@@ -3,6 +3,8 @@ using LibGit2Sharp;
 
 namespace GitFlowVersion
 {
+    using System;
+
     public class MasterVersionFinder
     {
         public Commit Commit { get; set; }
@@ -11,24 +13,36 @@ namespace GitFlowVersion
 
         public SemanticVersion FindVersion()
         {
-            var versionTag = Repository.Tags
-                                       .Where(tag =>
-                                           SemanticVersion.IsVersion(tag.Name) &&
-                                           tag.IsOnBranch(MasterBranch) &&
-                                           tag.IsBefore(Commit))
-                                       .OrderByDescending(x => x.CommitTimeStamp())
-                                       .FirstOrDefault();
+            var message = Commit.Message;
 
-            if (versionTag != null)
+            if (!message.StartsWith("merge "))
             {
-                var version = SemanticVersion.FromMajorMinorPatch(versionTag.Name);
-                version.Stage = Stage.Final;
-                return version;
+                throw new Exception("The head of master should always be a merge commit if you follow gitflow. Please create one!");
             }
-            return new SemanticVersion
-                   {
-                       Stage = Stage.Final
-                   };
+
+            string versionString;
+
+            versionString = GetVersionFromMergeCommit(message);
+            
+            var version = SemanticVersion.FromMajorMinorPatch(versionString);
+
+            version.Stage = Stage.Final;
+
+            return version;
+        }
+
+        public static string GetVersionFromMergeCommit(string message)
+        {
+            string versionString;
+            if (message.Contains("hotfix-"))
+            {
+                versionString = message.Substring(message.IndexOf("hotfix-") + "hotfix-".Length, 5);
+            }
+            else
+            {
+                versionString = message.Substring(message.IndexOf("release-") + "release-".Length, 5);
+            }
+            return versionString;
         }
     }
 }
