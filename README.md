@@ -60,16 +60,20 @@ If we try to build from a commit that is not a merge we should throw an `Excepti
 * patch: 0
 * pre-release: beta{number of commits on branch}
 
-#### feature/pull-request  branches
-
-`targetCommitDate` => the date of the `targetCommit`
-`masterMergeCommit` => the first merge commit on `master` that is older than the `targetCommitDate`
-`masterMergeVersion` => the SemVer extracted from `masterMergeCommit.Message`  
+#### feature  branches
 
 * major: `masterMergeVersion.Major`
 * minor: `masterMergeVersion.Minor + 1` (0 if the override above is used)
 * patch: 0
-* pre-release: beta{number of commits on branch}
+* pre-release: Feature{First 8 characters of the commit SHA of the first commit}
+
+#### pull-request  branches
+
+
+* major: `masterMergeVersion.Major`
+* minor: `masterMergeVersion.Minor + 1` (0 if the override above is used)
+* patch: 0
+* pre-release: Pull{pull request no}
 
 
 ## Repository to test
