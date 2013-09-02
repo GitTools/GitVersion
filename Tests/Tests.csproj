@@ -76,6 +76,8 @@
     <Compile Include="FinderWrapper.cs" />
     <Compile Include="MasterTests.cs" />
     <Compile Include="ModuleInitializer.cs" />
+    <Compile Include="FeatureBranchTests.cs" />
+    <Compile Include="PullBranchTests.cs" />
     <Compile Include="ReleaseTests.cs" />
     <Compile Include="VersionConverter.cs" />
   </ItemGroup>

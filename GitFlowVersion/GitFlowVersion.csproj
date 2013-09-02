@@ -51,8 +51,10 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BranchFinders\FeatureVersionFinder.cs" />
     <Compile Include="BranchFinders\DevelopVersionFinder.cs" />
     <Compile Include="BranchFinders\HotfixVersionFinder.cs" />
+    <Compile Include="BranchFinders\PullVersionFinder.cs" />
     <Compile Include="BranchFinders\ReleaseVersionFinder.cs" />
     <Compile Include="LibGitExtensions.cs" />
     <Compile Include="GitFlowVersionFinder.cs" />

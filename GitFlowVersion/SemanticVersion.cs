@@ -8,6 +8,8 @@ namespace GitFlowVersion
         public int PreRelease;
         public Stage Stage;
 
+        public string Suffix { get; set; }
+
         public static SemanticVersion FromMajorMinorPatch(string versionString)
         {
             var strings = versionString.Split('.');

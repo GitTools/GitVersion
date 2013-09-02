@@ -2,10 +2,13 @@ namespace GitFlowVersion
 {
     public enum Stage
     {
-        Alpha = 0,
-        Beta = 1,
-        ReleaseCandidate = 2,
-        Final = 3,
-        Unstable = -1
+        Pull = 0,
+        Feature = 1,
+        Unstable = 2,
+        Alpha = 3,
+        Beta = 4,
+        ReleaseCandidate = 5,
+        Final = 6,
+
     }
 }

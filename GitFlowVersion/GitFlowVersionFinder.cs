@@ -13,47 +13,59 @@ namespace GitFlowVersion
         {
             if (Branch.Name == "master")
             {
-                var masterVersionFinder = new MasterVersionFinder
+                return new MasterVersionFinder
                                           {
                                               Commit = Commit,
                                               Repository = Repository,
                                               MasterBranch = Branch
-                                          };
-                return masterVersionFinder.FindVersion();
+                                          }.FindVersion();
             }
+
             if (Branch.Name.StartsWith("hotfix-"))
             {
-                var masterVersionFinder = new HotfixVersionFinder
+                return new HotfixVersionFinder
                                           {
                                               Commit = Commit,
                                               Repository = Repository,
                                               HotfixBranch = Branch,
                                               MasterBranch = Repository.Branches.First(x => x.Name == "master")
-                                          };
-                return masterVersionFinder.FindVersion();
+                                          }.FindVersion();
             }
 
             if (Branch.Name.StartsWith("release-"))
             {
-                var masterVersionFinder = new ReleaseVersionFinder
+                return new ReleaseVersionFinder
                 {
                     Commit = Commit,
                     Repository = Repository,
                     ReleaseBranch = Branch,
-                };
-                return masterVersionFinder.FindVersion();
+                }.FindVersion();
             }
 
             if (Branch.Name == "develop")
             {
-                var masterVersionFinder = new DevelopVersionFinder
+                return new DevelopVersionFinder
                 {
                     Commit = Commit,
                     Repository = Repository
-                };
-                return masterVersionFinder.FindVersion();
+                }.FindVersion();
             }
-            return null;
+
+            if (Branch.CanonicalName.Contains("/pull/"))
+            {
+                return new PullVersionFinder
+                {
+                    Commit = Commit,
+                    Repository = Repository,
+                    PullBranch = Branch
+                }.FindVersion();
+            }
+            return new FeatureVersionFinder
+            {
+                Commit = Commit,
+                Repository = Repository,
+                FeatureBranch = Branch
+            }.FindVersion();
         }
 
     }
