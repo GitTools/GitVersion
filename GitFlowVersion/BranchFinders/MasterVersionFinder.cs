@@ -13,9 +13,10 @@ namespace GitFlowVersion
         {
             var message = Commit.Message;
 
+            //TODO: also check for tags here
             if (!message.StartsWith("merge "))
             {
-                throw new Exception("The head of master should always be a merge commit if you follow gitflow. Please create one!");
+                throw new Exception("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
             }
 
             var versionString = GetVersionFromMergeCommit(message);

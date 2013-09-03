@@ -13,7 +13,10 @@ namespace GitFlowVersion
             var masterBranch = Repository.Branches.First(b => b.Name == "master");
             var developBranch = Repository.Branches.First(b => b.Name == "develop");
 
-            var firstCommitOnMasterOlderThanDevelopCommitThatIsAMergeCommit = masterBranch.Commits.SkipWhile(c => c.Committer.When > Commit.Committer.When).First(c => c.Message.StartsWith("merge"));
+            //TODO: also check for tags here
+            var firstCommitOnMasterOlderThanDevelopCommitThatIsAMergeCommit = masterBranch.Commits
+                .SkipWhile(c => c.Committer.When > Commit.Committer.When)
+                .First(c => c.Message.StartsWith("merge"));
 
 
             var versionString = MasterVersionFinder.GetVersionFromMergeCommit(

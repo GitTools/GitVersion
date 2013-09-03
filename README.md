@@ -21,17 +21,17 @@ Given that we use the git flow branching strategy, GitHub and team city I sugges
 #### develop
 
 `targetCommitDate` => the date of the `targetCommit`
-`masterMergeCommit` => the first merge commit on `master` that is older than the `targetCommitDate`
-`masterMergeVersion` => the SemVer extracted from `masterMergeCommit.Message`  
+`masterVersionCommit` => the first version (merge commit or SemVer tag) on `master` that is older than the `targetCommitDate`
+`masterMergeVersion` => the SemVer extracted from `masterVersionCommit.Message`  
 
 * major: `masterMergeVersion.Major`
 * minor: `masterMergeVersion.Minor + 1` (0 if the override above is used)
 * patch: 0
-* pre-release: unstable{n} where n = how many commits `develop` is in front of `masterMergeCommit.Date`
+* pre-release: unstable{n} where n = how many commits `develop` is in front of `masterVersionCommit.Date`
 
 #### master
 
-Commits on master will always be a merge commit. Either from a `hotfix` or a `release` branch. As such we can simply take the commit message.
+Commits on master will always be a merge commit (Either from a `hotfix` or a `release` branch) or a tag. As such we can simply take the commit message or tag message.
 
 If we try to build from a commit that is not a merge we should throw an `Exception`
 
@@ -62,6 +62,8 @@ If we try to build from a commit that is not a merge we should throw an `Excepti
 
 #### feature  branches
 
+TODO: feature branches cannot start with a semver. to stop people from create branches named like "4.0.3"
+
 * major: `masterMergeVersion.Major`
 * minor: `masterMergeVersion.Minor + 1` (0 if the override above is used)
 * patch: 0
@@ -83,6 +85,8 @@ So this project assumes you have https://github.com/Particular/GitFlow checked o
 ## Release Candidates
 
 How do we do release candidates?? Perhaps  tag a release branch and then count forward from the tag to get RC1, RC2 etc??
+
+
 
 ## For reference
 
