@@ -8,18 +8,20 @@ public class FinderWrapper
 {
     public static SemanticVersion FindVersionForCommit(string sha, string branchName)
     {
-        var repository = GetRepository();
-        var branch = repository.Branches.First(x => x.Name == branchName);
-        var commit = branch.Commits.First(x => x.Sha == sha);
+        using (var repository = GetRepository())
+        {
+            var branch = repository.Branches.First(x => x.Name == branchName);
+            var commit = branch.Commits.First(x => x.Sha == sha);
 
-        var finder = new GitFlowVersionFinder
-                     {
-                         Commit = commit,
-                         Repository = repository,
-                         Branch = branch
-                     };
+            var finder = new GitFlowVersionFinder
+                         {
+                             Commit = commit,
+                             Repository = repository,
+                             Branch = branch
+                         };
+            return finder.FindVersion();
+        }
 
-        return finder.FindVersion();
     }
 
     static Repository GetRepository()

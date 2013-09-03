@@ -5,15 +5,15 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5A86453B-96FB-4B6E-A283-225BB9F753D3}</ProjectGuid>
+    <ProjectGuid>{A9FCD24C-9BE0-46D3-B7E9-6F4552C04A33}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tests</RootNamespace>
-    <AssemblyName>Tests</AssemblyName>
+    <RootNamespace>GitFlowVersion.Fody</RootNamespace>
+    <AssemblyName>GitFlowVersion.Fody</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <FodyPath>..\packages\Fody.1.15.0.0</FodyPath>
+    <FodyPath>..\packages\Fody.1.16.0.0</FodyPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,6 +23,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,14 +34,17 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="LibGit2Sharp, Version=0.13.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\LibGit2Sharp.0.13.0.0\lib\net35\LibGit2Sharp.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Build.Framework" />
-    <Reference Include="Microsoft.Build.Utilities.v4.0" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.Cecil, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\Cecil\Mono.Cecil.dll</HintPath>
@@ -56,47 +61,38 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\Cecil\Mono.Cecil.Rocks.dll</HintPath>
     </Reference>
-    <Reference Include="NCrunch.Framework, Version=1.46.0.9, Culture=neutral, PublicKeyToken=01d101bf6f3e0aea, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NCrunch.Framework.1.46.0.9\lib\net35\NCrunch.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyLocation.cs" />
-    <Compile Include="DevelopTests.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="HotfixTests.cs" />
-    <Compile Include="FinderWrapper.cs" />
-    <Compile Include="MasterTests.cs" />
-    <Compile Include="ModuleInitializer.cs" />
-    <Compile Include="FeatureBranchTests.cs" />
-    <Compile Include="PullBranchTests.cs" />
-    <Compile Include="ReleaseTests.cs" />
-    <Compile Include="VersionConverter.cs" />
+    <Compile Include="EnumerableEx.cs" />
+    <Compile Include="FormatStringTokenResolver.cs" />
+    <Compile Include="GitDirFinder.cs" />
+    <Compile Include="LibGitEx.cs" />
+    <Compile Include="ModuleWeaver.cs" />
+    <Compile Include="..\CommonAssemblyInfo.cs" />
+    <Compile Include="WeavingException.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="Fody.targets" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assemblies\AssemblyWithInfoVer.dll" />
-    <Content Include="Assemblies\AssemblyWithNoInfoVer.dll" />
+    <Content Include="$(SolutionDir)Tools\Verpatch\verpatch-ReadMe.txt">
+      <Link>verpatch-ReadMe.txt</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(SolutionDir)Tools\Verpatch\verpatch.exe">
+      <Link>verpatch.exe</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GitFlowVersion\GitFlowVersion.csproj">
-      <Project>{C3578A7B-09A6-4444-9383-0DEAFA4958BD}</Project>
+      <Project>{c3578a7b-09a6-4444-9383-0deafa4958bd}</Project>
       <Name>GitFlowVersion</Name>
     </ProjectReference>
   </ItemGroup>
@@ -107,7 +103,8 @@ if not exist "$(TargetDir)NativeBinaries" md "$(TargetDir)NativeBinaries"
 if not exist "$(TargetDir)NativeBinaries\x86" md "$(TargetDir)NativeBinaries\x86"
 xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.13.0.0\NativeBinaries\x86\*.*" "$(TargetDir)NativeBinaries\x86"
 if not exist "$(TargetDir)NativeBinaries\amd64" md "$(TargetDir)NativeBinaries\amd64"
-xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.13.0.0\NativeBinaries\amd64\*.*" "$(TargetDir)NativeBinaries\amd64"</PostBuildEvent>
+xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.13.0.0\NativeBinaries\amd64\*.*" "$(TargetDir)NativeBinaries\amd64"
+    </PostBuildEvent>
   </PropertyGroup>
   <Import Project="Fody.targets" />
 </Project>

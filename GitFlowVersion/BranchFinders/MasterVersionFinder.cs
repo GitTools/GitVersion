@@ -1,11 +1,9 @@
-using System.Linq;
-using LibGit2Sharp;
-
 namespace GitFlowVersion
 {
     using System;
+    using LibGit2Sharp;
 
-    public class MasterVersionFinder
+    class MasterVersionFinder
     {
         public Commit Commit { get; set; }
         public Repository Repository { get; set; }
@@ -20,9 +18,7 @@ namespace GitFlowVersion
                 throw new Exception("The head of master should always be a merge commit if you follow gitflow. Please create one!");
             }
 
-            string versionString;
-
-            versionString = GetVersionFromMergeCommit(message);
+            var versionString = GetVersionFromMergeCommit(message);
             
             var version = SemanticVersion.FromMajorMinorPatch(versionString);
 

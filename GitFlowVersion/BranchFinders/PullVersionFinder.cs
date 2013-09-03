@@ -3,7 +3,7 @@ namespace GitFlowVersion
     using System.Linq;
     using LibGit2Sharp;
 
-    public class PullVersionFinder
+    class PullVersionFinder
     {
         public Commit Commit { get; set; }
         public Repository Repository { get; set; }

@@ -1,9 +1,9 @@
-using System.Linq;
-using LibGit2Sharp;
-
 namespace GitFlowVersion
 {
-    public class HotfixVersionFinder
+    using System.Linq;
+    using LibGit2Sharp;
+
+    class HotfixVersionFinder
     {
         public Commit Commit { get; set; }
         public Repository Repository { get; set; }

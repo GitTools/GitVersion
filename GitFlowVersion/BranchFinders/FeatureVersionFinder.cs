@@ -1,10 +1,9 @@
 namespace GitFlowVersion
 {
-    using System;
     using System.Linq;
     using LibGit2Sharp;
 
-    public class FeatureVersionFinder
+    class FeatureVersionFinder
     {
         public Commit Commit { get; set; }
         public Repository Repository { get; set; }

@@ -1,12 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using LibGit2Sharp;
-
 namespace GitFlowVersion
 {
-    public static class LibGitExtensions
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using LibGit2Sharp;
+
+    static class LibGitExtensions
     {
         static FieldInfo repoField;
 

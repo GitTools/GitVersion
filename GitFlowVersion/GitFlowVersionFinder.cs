@@ -1,8 +1,8 @@
-using System.Linq;
-using LibGit2Sharp;
-
 namespace GitFlowVersion
 {
+    using System.Linq;
+    using LibGit2Sharp;
+
     public class GitFlowVersionFinder
     {
         public Commit Commit;

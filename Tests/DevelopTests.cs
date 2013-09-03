@@ -1,4 +1,3 @@
-using System;
 using GitFlowVersion;
 using NUnit.Framework;
 

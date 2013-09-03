@@ -98,3 +98,6 @@ Additional labels for pre-release and build metadata are available as extensions
 ###[GitFlow: A successful Git branching model](http://nvie.com/git-model/)
  
 ![](http://nvie.com/img/2009/12/Screen-shot-2009-12-24-at-11.32.03.png)
+
+
+<a href="http://thenounproject.com/noun/tree/#icon-No13389" target="_blank">Tree</a> designed by <a href="http://thenounproject.com/david.chapman" target="_blank">David Chapman</a> from The Noun Project
