@@ -4,16 +4,16 @@
 
 Our builds are getting more complex and as we're moving towards scm structure with a lot of fine grained repos we need to take a convention based approach for our assembly versioning.
 
-Given that we use the git flow branching strategy, GitHub and team city I suggest the following:
+This also have the added benefit of forcing us to follow our branching stragegy on all repos since the build breaks if we don't.
 
 ### Assumptions:
 
 * We use the git flow branching strategy which means that we always have a master and a develop branch.
-* When feature branches is uses they are prefixed with feature-
-* Planned releases (bumps in major or minor) are done on release branches prefixed with release-. Eg: release-4.1
+* Planned releases (bumps in major or minor) are done on release branches prefixed with release-. Eg: release-4.1 (or release-4.1.0)
 * Hotfixes are prefixed with hotfix- Eg. hotfix-4.0.4
 * Tags are used on the master branch and reflects the SemVer of each stable release eg 3.3.8 , 4.0.0, etc
-* We use teamcity 8 for our builds
+* Tags can also be used to override versions while we transition repos over to GitFlowVersion
+* We build using TeamCity 8 and is using one build per repo with multi-branch building enabled
 
 ### Suggested conventions
 
@@ -44,6 +44,9 @@ If we try to build from a commit that is not a merge we should throw an `Excepti
 * patch: `mergeVersion.Patch`
 * pre-release: 0 (perhaps count ahead commits later)
 
+Optional Tags (only when transitioning existing repos): 
+* TagOnHeadCommit.Name={semver} => overrides the version to be {semver} 
+
 #### hotfix branches
 
 `branchVersion` => the SemVer extracted from `targetBranch.Name`  
@@ -62,6 +65,10 @@ If we try to build from a commit that is not a merge we should throw an `Excepti
 * patch: 0
 * pre-release: beta{number of commits on branch}
 
+Optional Tags (only when changing prerelease status):
+
+* TagOnHeadCommit.Name={semver} => overrides the prerelease part. Eg 1.0.0-RC1 (stable part should match)
+ 
 #### feature  branches
 
 TODO: feature branches cannot start with a SemVer. to stop people from create branches named like "4.0.3"
