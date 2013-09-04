@@ -67,6 +67,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CecilExtensions.cs" />
     <Compile Include="EnumerableEx.cs" />
     <Compile Include="FormatStringTokenResolver.cs" />
     <Compile Include="GitDirFinder.cs" />

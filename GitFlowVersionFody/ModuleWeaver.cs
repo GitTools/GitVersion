@@ -52,18 +52,9 @@ public class ModuleWeaver
             }
             var semanticVersion = VersionForRepositoryFinder.GetVersion(repo);
             
-            var assemblyNameDefinition = ModuleDefinition.Assembly.Name;
-            if (assemblyNameDefinition.PublicKey == null)
-            {
-                assemblyVersion = new Version(semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, 0);
-            }
-            else
-            {
-                assemblyVersion = new Version(semanticVersion.Major, semanticVersion.Minor,0,0);
-            }
+            SetAssemblyVersion(semanticVersion);
 
-            assemblyNameDefinition.Version = assemblyVersion;
-
+            ModuleDefinition.Assembly.Name.Version = assemblyVersion;
 
             var customAttribute = customAttributes.FirstOrDefault(x => x.AttributeType.Name == "AssemblyInformationalVersionAttribute");
             if (customAttribute != null)
@@ -90,6 +81,20 @@ public class ModuleWeaver
                 customAttribute.ConstructorArguments.Add(new CustomAttributeArgument(ModuleDefinition.TypeSystem.String, assemblyInfoVersion));
                 customAttributes.Add(customAttribute);
             }
+        }
+    }
+
+    void SetAssemblyVersion(SemanticVersion semanticVersion)
+    {
+        if (ModuleDefinition.IsStrongNamed())
+        {
+            // for strong named we don't want to include the patch to avoid binding redirect issues
+            assemblyVersion = new Version(semanticVersion.Major, semanticVersion.Minor, 0, 0);
+        }
+        else
+        {
+            // for non strong named we want to include the patch
+            assemblyVersion = new Version(semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, 0);
         }
     }
 
