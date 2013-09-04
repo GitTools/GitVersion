@@ -12,7 +12,7 @@ Given that we use the git flow branching strategy, GitHub and team city I sugges
 * When feature branches is uses they are prefixed with feature-
 * Planned releases (bumps in major or minor) are done on release branches prefixed with release-. Eg: release-4.1
 * Hotfixes are prefixed with hotfix- Eg. hotfix-4.0.4
-* Tags are used on the master branch and reflects the semver of each stable release eg 3.3.8 , 4.0.0, etc
+* Tags are used on the master branch and reflects the SemVer of each stable release eg 3.3.8 , 4.0.0, etc
 * We use teamcity 8 for our builds
 
 ### Suggested conventions
@@ -64,7 +64,7 @@ If we try to build from a commit that is not a merge we should throw an `Excepti
 
 #### feature  branches
 
-TODO: feature branches cannot start with a semver. to stop people from create branches named like "4.0.3"
+TODO: feature branches cannot start with a SemVer. to stop people from create branches named like "4.0.3"
 
 * major: `masterMergeVersion.Major`
 * minor: `masterMergeVersion.Minor + 1` (0 if the override above is used)
@@ -86,8 +86,7 @@ So this project assumes you have https://github.com/Particular/GitFlow checked o
 
 ## Release Candidates
 
-How do we do release candidates?? Perhaps  tag a release branch and then count forward from the tag to get RC1, RC2 etc??
-
+How do we do release candidates?? Perhaps  tag a release branch and then count commits forward from the tag to get RC1, RC2 etc??
 
 
 ## For reference
@@ -103,7 +102,7 @@ Additional labels for pre-release and build metadata are available as extensions
  
 ###[GitFlow: A successful Git branching model](http://nvie.com/git-model/)
  
-![](http://nvie.com/img/2009/12/Screen-shot-2009-12-24-at-11.32.03.png)
+![GitFlow](http://nvie.com/img/2009/12/Screen-shot-2009-12-24-at-11.32.03.png)
 
 ## Icon
 
