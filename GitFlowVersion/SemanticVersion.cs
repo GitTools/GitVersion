@@ -1,6 +1,8 @@
 namespace GitFlowVersion
 {
-    public class SemanticVersion
+    using System;
+
+    public class SemanticVersion : IComparable<SemanticVersion>
     {
         public int Major;
         public int Minor;
@@ -27,6 +29,7 @@ namespace GitFlowVersion
             }
             return fromMajorMinorPatch;
         }
+
         public static bool IsVersion(string versionString)
         {
             var strings = versionString.Split('.');
@@ -50,6 +53,41 @@ namespace GitFlowVersion
             return true;
         }
 
-   
+        //TODO: add order by unit tests
+        public int CompareTo(SemanticVersion value)
+        {
+            if (value == null)
+            {
+                return 1;
+            }
+            if (Major != value.Major)
+            {
+                if (Major > value.Major)
+                {
+                    return 1;
+                }
+                return -1;
+            }
+            if (Minor != value.Minor)
+            {
+                if (Minor > value.Minor)
+                {
+                    return 1;
+                }
+                return -1;
+            }
+            if (Patch != value.Patch)
+            {
+                if (Patch > value.Patch)
+                {
+                    return 1;
+                }
+                return -1;
+            }
+            return -1;
+        }
+
+
+
     }
 }

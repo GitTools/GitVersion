@@ -44,6 +44,7 @@
     <Compile Include="BranchFinders\FeatureVersionFinder.cs" />
     <Compile Include="BranchFinders\DevelopVersionFinder.cs" />
     <Compile Include="BranchFinders\HotfixVersionFinder.cs" />
+    <Compile Include="MergeMessageParser.cs" />
     <Compile Include="BranchFinders\PullVersionFinder.cs" />
     <Compile Include="BranchFinders\ReleaseVersionFinder.cs" />
     <Compile Include="LibGitExtensions.cs" />

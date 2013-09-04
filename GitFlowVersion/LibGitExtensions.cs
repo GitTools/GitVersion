@@ -8,19 +8,38 @@ namespace GitFlowVersion
 
     static class LibGitExtensions
     {
-        static FieldInfo repoField;
+        static FieldInfo commitRepoField;
+        static FieldInfo branchRepoField;
 
         static LibGitExtensions()
         {
-            repoField = typeof (Branch).GetField("repo", BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.NonPublic);
+            branchRepoField = typeof (Branch).GetField("repo", BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.NonPublic);
+            commitRepoField = typeof (Commit).GetField("repo", BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.NonPublic);
         }
+
         public static Repository Repository(this Branch branch)
         {
-            return (Repository)repoField.GetValue(branch);
+            return (Repository)branchRepoField.GetValue(branch);
+        }
+        public static Repository Repository(this Commit commit)
+        {
+            return (Repository)commitRepoField.GetValue(commit);
+        }
+        public static DateTimeOffset When(this Commit commit)
+        {
+            return commit.Committer.When;
         }
         public static IEnumerable<Tag> CommitTags(this Repository repository)
         {
             return repository.Tags.Where(tag => tag.Target is Commit);
+        }
+        public static IEnumerable<Tag> Tags(this Commit commit)
+        {
+            return commit.Repository().Tags.Where(tag => tag.Target == commit);
+        }
+        public static IEnumerable<Tag> SemVerTags(this Commit commit)
+        {
+            return commit.Tags().Where(tag => SemanticVersion.IsVersion(tag.Name));
         }
         public static IEnumerable<Reference> LocalBranchRefs(this Repository repository)
         {
@@ -54,7 +73,7 @@ namespace GitFlowVersion
             {
                 throw new InvalidOperationException();
             }
-            return commit.Committer.When;
+            return commit.When();
         }
         public static bool IsBefore( this Tag tag, Commit commit)
         {
@@ -63,7 +82,7 @@ namespace GitFlowVersion
             {
                 throw new InvalidOperationException();
             }
-            return tagCommit.Committer.When <=  commit.Committer.When;
+            return tagCommit.When() <= commit.When();
         }
 
 

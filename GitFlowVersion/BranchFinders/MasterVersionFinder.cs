@@ -1,6 +1,7 @@
 namespace GitFlowVersion
 {
     using System;
+    using System.Linq;
     using LibGit2Sharp;
 
     class MasterVersionFinder
@@ -11,16 +12,8 @@ namespace GitFlowVersion
 
         public SemanticVersion FindVersion()
         {
-            var message = Commit.Message;
+            var versionString = GetVersionString();
 
-            //TODO: also check for tags here
-            if (!message.StartsWith("merge "))
-            {
-                throw new Exception("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
-            }
-
-            var versionString = GetVersionFromMergeCommit(message);
-            
             var version = SemanticVersion.FromMajorMinorPatch(versionString);
 
             version.Stage = Stage.Final;
@@ -28,18 +21,22 @@ namespace GitFlowVersion
             return version;
         }
 
-        public static string GetVersionFromMergeCommit(string message)
+        string GetVersionString()
         {
-            string versionString;
-            if (message.Contains("hotfix-"))
+            //TODO: should we take the newest or the highest? perhaps it doesnt matter?
+            var versionTag = Commit.SemVerTags()
+                                   .FirstOrDefault();
+            if (versionTag != null)
             {
-                versionString = message.Substring(message.IndexOf("hotfix-") + "hotfix-".Length, 5);
+                return versionTag.Name;
             }
-            else
+
+            if (!Commit.Message.StartsWith("merge "))
             {
-                versionString = message.Substring(message.IndexOf("release-") + "release-".Length, 5);
+                throw new Exception("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
             }
-            return versionString;
+
+            return MergeMessageParser.GetVersionFromMergeCommit(Commit.Message);
         }
     }
 }

@@ -9,6 +9,30 @@ public class IntegrationTests
 {
 
     [Test,Explicit]
+    public void NServiceBusMaster()
+    {
+        using (var repository = new Repository(@"C:\Code\Particular\NServiceBus"))
+        {
+            var branch = repository.Branches.First(x => x.Name == "master");
+            var commit = branch.Commits.First();
+
+            var finder = new GitFlowVersionFinder
+                         {
+                             Commit = commit,
+                             Repository = repository,
+                             Branch = branch
+                         };
+            var version = finder.FindVersion();
+            Debug.WriteLine(version.Major);
+            Debug.WriteLine(version.Minor);
+            Debug.WriteLine(version.Patch);
+            Debug.WriteLine(version.PreRelease);
+            Debug.WriteLine(version.Stage);
+            Debug.WriteLine(version.Suffix);
+        }
+    }
+
+    [Test,Explicit]
     public void NServiceBusDevelop()
     {
         using (var repository = new Repository(@"C:\Code\Particular\NServiceBus"))

@@ -79,6 +79,7 @@
     <Compile Include="FinderWrapper.cs" />
     <Compile Include="IntegrationTests.cs" />
     <Compile Include="MasterTests.cs" />
+    <Compile Include="MergeMessageParserTests.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="FeatureBranchTests.cs" />
     <Compile Include="PullBranchTests.cs" />
