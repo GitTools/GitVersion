@@ -1,6 +1,8 @@
 namespace GitFlowVersion
 {
     using System;
+    using System.Linq;
+    using Semver;
 
     public class SemanticVersion : IComparable<SemanticVersion>
     {
@@ -14,42 +16,85 @@ namespace GitFlowVersion
 
         public static SemanticVersion FromMajorMinorPatch(string versionString)
         {
-            var strings = versionString.Split('.');
-            var fromMajorMinorPatch = new SemanticVersion
+            var parts = versionString.Split('-');
+
+            var stableParts = parts.First().Split('.');
+
+            var parsedVersion = new SemanticVersion
                                       {
-                                          Major = int.Parse(strings[0]),
+                                          Major = int.Parse(stableParts[0]),
                                       };
-            if (strings.Length > 1)
+            if (stableParts.Length > 1)
             {
-                fromMajorMinorPatch.Minor = int.Parse(strings[1]);
+                parsedVersion.Minor = int.Parse(stableParts[1]);
             }
-            if (strings.Length > 2)
+            
+            if (stableParts.Length > 2)
             {
-                fromMajorMinorPatch.Patch = int.Parse(strings[2]);
+                parsedVersion.Patch = int.Parse(stableParts[2]);
             }
-            return fromMajorMinorPatch;
+
+            if (parts.Length > 1)
+            {
+                var prereleaseString = parts[1];
+
+                var buildIndex = prereleaseString.IndexOfAny("0123456789".ToCharArray());
+                var stageString = prereleaseString.Substring(0, buildIndex);
+
+                if (stageString == "RC")
+                    stageString = "ReleaseCandidate";
+
+
+                parsedVersion.Stage = (Stage) Enum.Parse(typeof (Stage), stageString,ignoreCase:true);
+                parsedVersion.PreRelease = int.Parse(prereleaseString.Substring(buildIndex));
+
+            }
+            else
+            {
+                parsedVersion.Stage = Stage.Final;
+                parsedVersion.PreRelease = 0;
+            }
+
+            return parsedVersion;
+
+            //var s = SemVersion.Parse(versionString);
+            //return new SemanticVersion
+            //    {
+            //        Major = s.Major,
+            //        Minor = s.Minor,
+            //        Patch = s.Patch,
+            //        Stage = (Stage)Enum.Parse(typeof(Stage),s.Prerelease),
+            //        PreRelease = int.Parse(s.Build)
+            //    };
         }
 
         public static bool IsVersion(string versionString)
         {
-            var strings = versionString.Split('.');
-            if (strings.Length > 3)
+            var parts = versionString.Split('-');
+            var stableVersion = parts.First();
+            var stableParts = stableVersion.Split('.');
+            
+            if (stableParts.Length > 3)
             {
                 return false;
             }
+            
             int fake;
-            if (strings.Length > 0 && !int.TryParse(strings[0], out fake))
+            if (stableParts.Length > 0 && !int.TryParse(stableParts[0], out fake))
             {
                 return false;
             }
-            if (strings.Length > 1 && !int.TryParse(strings[1], out fake))
+            
+            if (stableParts.Length > 1 && !int.TryParse(stableParts[1], out fake))
             {
                 return false;
             }
-            if (strings.Length > 2 && !int.TryParse(strings[2], out fake))
+            
+            if (stableParts.Length > 2 && !int.TryParse(stableParts[2], out fake))
             {
                 return false;
             }
+
             return true;
         }
 

@@ -55,8 +55,6 @@ namespace GitFlowVersion
                 var version = SemanticVersion.FromMajorMinorPatch(versionString);
                 version.PreRelease = developBranch.Commits
                                                   .SkipWhile(x => x != Commit)
-                                                  //TODO: why is a skip one needed here but not above?
-                                                  .Skip(1)
                                                   .TakeWhile(x => x.When() >= firstCommitOnMasterOlderThanDevelopCommitThatIsATagCommit.When())
                                                   .Count();
                 return version;

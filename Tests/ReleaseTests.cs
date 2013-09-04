@@ -19,9 +19,9 @@ public class ReleaseTests
     [Test]
     public void First_commit()
     {
-        var version = FinderWrapper.FindVersionForCommit("d2f82c724005bc7c5c50106f0577606ea4f89e80", "release-0.4.0");
+        var version = FinderWrapper.FindVersionForCommit("a95500b14bdd750951b0087f508cb8a05a73b04f", "release-0.5.0");
         Assert.AreEqual(0, version.Major);
-        Assert.AreEqual(4, version.Minor);
+        Assert.AreEqual(5, version.Minor);
         Assert.AreEqual(0, version.Patch);
         Assert.AreEqual(Stage.Beta, version.Stage);
         Assert.AreEqual(1, version.PreRelease, "Prerelease should be set to 1 since there is a commit on the branch");
@@ -36,6 +36,19 @@ public class ReleaseTests
         Assert.AreEqual(0, version.Patch);
         Assert.AreEqual(Stage.Beta, version.Stage);
         Assert.AreEqual(2, version.PreRelease, "Prerelease should be set to 2 since there is 2 commits on the branch");
+    }
+
+
+    [Test]
+    public void Override_stage_using_tag()
+    {
+        //tag: 0.4.0-RC1 => 
+        var version = FinderWrapper.FindVersionForCommit("d2f82c724005bc7c5c50106f0577606ea4f89e80", "release-0.4.0");
+        Assert.AreEqual(0, version.Major);
+        Assert.AreEqual(4, version.Minor);
+        Assert.AreEqual(0, version.Patch);
+        Assert.AreEqual(Stage.ReleaseCandidate, version.Stage);
+        Assert.AreEqual(1, version.PreRelease);
     }
 
     [Test, Ignore("Not really going to happen in real life se we skip this for now")]

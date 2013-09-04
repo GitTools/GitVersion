@@ -16,7 +16,6 @@ namespace GitFlowVersion
 
             var version = SemanticVersion.FromMajorMinorPatch(versionString);
 
-            version.Stage = Stage.Final;
 
             return version;
         }
