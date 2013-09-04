@@ -53,7 +53,6 @@
     <Compile Include="BranchFinders\MasterVersionFinder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="SemanticVersion.cs" />
-    <Compile Include="Semver.cs" />
     <Compile Include="Stage.cs" />
     <Compile Include="VersionForDirectoryFinder.cs" />
   </ItemGroup>

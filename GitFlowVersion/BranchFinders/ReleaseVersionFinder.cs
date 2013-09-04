@@ -1,5 +1,6 @@
 namespace GitFlowVersion
 {
+    using System;
     using System.Linq;
     using LibGit2Sharp;
 
@@ -24,6 +25,14 @@ namespace GitFlowVersion
 
             if (overrideTag != null)
             {
+                var overrideVersion = SemanticVersion.FromMajorMinorPatch(overrideTag.Name);
+
+                if (version.Major != overrideVersion.Major || version.Minor != overrideVersion.Minor ||
+                    version.Patch != overrideVersion.Patch)
+                {
+                    throw new Exception(string.Format("Version on override tag: {0} did not match release branch version: {1}", overrideVersion, version));
+                }
+
                 version.Stage = SemanticVersion.FromMajorMinorPatch(overrideTag.Name).Stage;
             }
             

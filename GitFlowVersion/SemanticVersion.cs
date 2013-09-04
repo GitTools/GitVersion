@@ -2,7 +2,6 @@ namespace GitFlowVersion
 {
     using System;
     using System.Linq;
-    using Semver;
 
     public class SemanticVersion : IComparable<SemanticVersion>
     {
@@ -56,16 +55,6 @@ namespace GitFlowVersion
             }
 
             return parsedVersion;
-
-            //var s = SemVersion.Parse(versionString);
-            //return new SemanticVersion
-            //    {
-            //        Major = s.Major,
-            //        Minor = s.Minor,
-            //        Patch = s.Patch,
-            //        Stage = (Stage)Enum.Parse(typeof(Stage),s.Prerelease),
-            //        PreRelease = int.Parse(s.Build)
-            //    };
         }
 
         public static bool IsVersion(string versionString)
@@ -96,6 +85,11 @@ namespace GitFlowVersion
             }
 
             return true;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}.{1}.{2}-{3}{4}", Major, Minor, Patch, Stage, PreRelease);
         }
 
         //TODO: add order by unit tests

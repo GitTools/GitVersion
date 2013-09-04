@@ -51,6 +51,13 @@ public class ReleaseTests
         Assert.AreEqual(1, version.PreRelease);
     }
 
+    [Test]
+    [ExpectedException]
+    public void Override_stage_using_tag_should_throw_on_version_missmatch()
+    {
+        var version = FinderWrapper.FindVersionForCommit("34dbc768fcbdd57d6089fe28f9d37472b9e97e35", "release-0.5.0");
+    }
+
     [Test, Ignore("Not really going to happen in real life se we skip this for now")]
     public void After_merge_to_master()
     {
