@@ -55,11 +55,11 @@ public class ModuleWeaver
             var assemblyNameDefinition = ModuleDefinition.Assembly.Name;
             if (assemblyNameDefinition.PublicKey == null)
             {
-                assemblyVersion = new Version(semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch);
+                assemblyVersion = new Version(semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, 0);
             }
             else
             {
-                assemblyVersion = new Version(semanticVersion.Major, semanticVersion.Minor);
+                assemblyVersion = new Version(semanticVersion.Major, semanticVersion.Minor,0,0);
             }
 
             assemblyNameDefinition.Version = assemblyVersion;
