@@ -51,8 +51,19 @@ public class ModuleWeaver
                 return;
             }
             var semanticVersion = VersionForRepositoryFinder.GetVersion(repo);
-            //TODO: is not signed also add patch
-            assemblyVersion = new Version(semanticVersion.Major, semanticVersion.Minor);
+            
+            var assemblyNameDefinition = ModuleDefinition.Assembly.Name;
+            if (assemblyNameDefinition.PublicKey == null)
+            {
+                assemblyVersion = new Version(semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch);
+            }
+            else
+            {
+                assemblyVersion = new Version(semanticVersion.Major, semanticVersion.Minor);
+            }
+
+            assemblyNameDefinition.Version = assemblyVersion;
+
 
             var customAttribute = customAttributes.FirstOrDefault(x => x.AttributeType.Name == "AssemblyInformationalVersionAttribute");
             if (customAttribute != null)

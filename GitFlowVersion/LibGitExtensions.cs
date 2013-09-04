@@ -6,7 +6,7 @@ namespace GitFlowVersion
     using System.Reflection;
     using LibGit2Sharp;
 
-    static class LibGitExtensions
+   public static class LibGitExtensions
     {
         static FieldInfo commitRepoField;
         static FieldInfo branchRepoField;
@@ -21,6 +21,27 @@ namespace GitFlowVersion
         {
             return (Repository)branchRepoField.GetValue(branch);
         }
+
+        public static IEnumerable<Commit> SpecificCommits(this Branch branch)
+        {
+            var firstCommitOnBranch = branch.Repository()
+                .Refs
+                .Log(branch.CanonicalName)
+                .Last();
+            foreach (var commit in branch.Commits)
+            {
+                if (commit.Id == firstCommitOnBranch.To)
+                {
+                    yield return commit;
+                    break;
+                }
+                yield return commit;
+            }
+        }
+
+
+
+
         public static Repository Repository(this Commit commit)
         {
             return (Repository)commitRepoField.GetValue(commit);
