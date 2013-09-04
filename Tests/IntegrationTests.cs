@@ -31,6 +31,29 @@ public class IntegrationTests
             Debug.WriteLine(version.Suffix);
         }
     }
+    [Test,Explicit]
+    public void NServiceBusHotfix()
+    {
+        using (var repository = new Repository(@"C:\Code\Particular\NServiceBus"))
+        {
+            var branch = repository.Branches.First(x => x.Name == "hotfix-4.0.4");
+            var commit = branch.Commits.First();
+
+            var finder = new GitFlowVersionFinder
+                         {
+                             Commit = commit,
+                             Repository = repository,
+                             Branch = branch
+                         };
+            var version = finder.FindVersion();
+            Debug.WriteLine(version.Major);
+            Debug.WriteLine(version.Minor);
+            Debug.WriteLine(version.Patch);
+            Debug.WriteLine(version.PreRelease);
+            Debug.WriteLine(version.Stage);
+            Debug.WriteLine(version.Suffix);
+        }
+    }
 
     [Test,Explicit]
     public void NServiceBusDevelop()

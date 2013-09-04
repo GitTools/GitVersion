@@ -5,9 +5,9 @@ namespace GitFlowVersion
 
     class PullVersionFinder
     {
-        public Commit Commit { get; set; }
-        public Repository Repository { get; set; }
-        public Branch PullBranch { get; set; }
+        public Commit Commit;
+        public Repository Repository;
+        public Branch PullBranch;
 
         public SemanticVersion FindVersion()
         {

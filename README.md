@@ -1,3 +1,5 @@
+![Icon](https://raw.github.com/Particular/GitFlowVersion/master/Icon/package_icon.png)
+
 ## The Problem
 
 Our builds are getting more complex and as we're moving towards scm structure with a lot of fine grained repos we need to take a convention based approach for our assembly versioning.
@@ -103,5 +105,6 @@ Additional labels for pre-release and build metadata are available as extensions
  
 ![](http://nvie.com/img/2009/12/Screen-shot-2009-12-24-at-11.32.03.png)
 
+## Icon
 
 <a href="http://thenounproject.com/noun/tree/#icon-No13389" target="_blank">Tree</a> designed by <a href="http://thenounproject.com/david.chapman" target="_blank">David Chapman</a> from The Noun Project

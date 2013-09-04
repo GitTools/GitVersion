@@ -5,10 +5,10 @@ namespace GitFlowVersion
 
     class HotfixVersionFinder
     {
-        public Commit Commit { get; set; }
-        public Repository Repository { get; set; }
-        public Branch HotfixBranch { get; set; }
-        public Branch MasterBranch { get; set; }
+        public Commit Commit;
+        public Repository Repository;
+        public Branch HotfixBranch;
+        public Branch MasterBranch;
 
         public SemanticVersion FindVersion()
         {

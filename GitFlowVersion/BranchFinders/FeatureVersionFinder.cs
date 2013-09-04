@@ -5,9 +5,9 @@ namespace GitFlowVersion
 
     class FeatureVersionFinder
     {
-        public Commit Commit { get; set; }
-        public Repository Repository { get; set; }
-        public Branch FeatureBranch { get; set; }
+        public Commit Commit;
+        public Repository Repository;
+        public Branch FeatureBranch;
 
         public SemanticVersion FindVersion()
         {

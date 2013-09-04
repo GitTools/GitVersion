@@ -5,9 +5,9 @@ namespace GitFlowVersion
 
     class ReleaseVersionFinder
     {
-        public Commit Commit { get; set; }
-        public Repository Repository { get; set; }
-        public Branch ReleaseBranch { get; set; }
+        public Commit Commit;
+        public Repository Repository;
+        public Branch ReleaseBranch;
 
         public SemanticVersion FindVersion()
         {

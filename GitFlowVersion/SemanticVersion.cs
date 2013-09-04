@@ -10,7 +10,7 @@ namespace GitFlowVersion
         public int PreRelease;
         public Stage Stage;
 
-        public string Suffix { get; set; }
+        public string Suffix;
 
         public static SemanticVersion FromMajorMinorPatch(string versionString)
         {

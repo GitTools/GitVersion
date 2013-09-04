@@ -6,9 +6,9 @@ namespace GitFlowVersion
 
     class MasterVersionFinder
     {
-        public Commit Commit { get; set; }
-        public Repository Repository { get; set; }
-        public Branch MasterBranch { get; set; }
+        public Commit Commit;
+        public Repository Repository;
+        public Branch MasterBranch;
 
         public SemanticVersion FindVersion()
         {

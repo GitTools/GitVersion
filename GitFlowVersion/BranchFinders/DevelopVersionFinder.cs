@@ -6,8 +6,8 @@ namespace GitFlowVersion
 
     class DevelopVersionFinder
     {
-        public Commit Commit { get; set; }
-        public Repository Repository { get; set; }
+        public Commit Commit;
+        public Repository Repository;
         
         public SemanticVersion FindVersion()
         {
