@@ -112,7 +112,7 @@ namespace GitFlowVersion
 
             if (branch == null)
             {
-                throw new Exception(string.Format("Could not find branch {0} in the repository, please create one. Existing branches:{1}", string.Join(";", repository.Branches)));
+                throw new Exception(string.Format("Could not find branch {0} in the repository, please create one. Existing branches:{1}", name, string.Join(";", repository.Branches)));
             }
 
             return branch;
