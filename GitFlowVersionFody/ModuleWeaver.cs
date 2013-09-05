@@ -6,7 +6,7 @@ using GitFlowVersion;
 using LibGit2Sharp;
 using Mono.Cecil;
 
-public class ModuleWeaver
+public class ModuleWeaver : IDisposable
 {
     public Action<string> LogInfo;
     public Action<string> LogWarning;
@@ -29,6 +29,7 @@ public class ModuleWeaver
 
     public void Execute()
     {
+        Logger.Write = LogInfo;
         SetSearchPath();
         var customAttributes = ModuleDefinition.Assembly.CustomAttributes;
 
@@ -48,20 +49,21 @@ public class ModuleWeaver
                 LogWarning("No Tip found. Has repo been initialize?");
                 return;
             }
-            var semanticVersion = GetSemanticVersion(repo);
+            SemanticVersion semanticVersion;
+            try
+            {
+                semanticVersion = GetSemanticVersion(repo);
+            }
+            catch (MissingBranchException missingBranchException)
+            {
+                throw new WeavingException(missingBranchException.Message);
+            }
             SetAssemblyVersion(semanticVersion);
 
             ModuleDefinition.Assembly.Name.Version = assemblyVersion;
 
             var customAttribute = customAttributes.FirstOrDefault(x => x.AttributeType.Name == "AssemblyInformationalVersionAttribute");
-            if (customAttribute != null)
-            {
-                assemblyInfoVersion = (string) customAttribute.ConstructorArguments[0].Value;
-                var replaceTokens = formatStringTokenResolver.ReplaceTokens(assemblyInfoVersion, repo, semanticVersion);
-                assemblyInfoVersion = string.Format("{0}.{1}.{2} {3}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, replaceTokens);
-                customAttribute.ConstructorArguments[0] = new CustomAttributeArgument(ModuleDefinition.TypeSystem.String, assemblyInfoVersion);
-            }
-            else
+            if (customAttribute == null)
             {
                 var versionAttribute = GetVersionAttribute();
                 var constructor = ModuleDefinition.Import(versionAttribute.Methods.First(x => x.IsConstructor));
@@ -87,35 +89,16 @@ public class ModuleWeaver
                 customAttribute.ConstructorArguments.Add(new CustomAttributeArgument(ModuleDefinition.TypeSystem.String, assemblyInfoVersion));
                 customAttributes.Add(customAttribute);
             }
-
-            OutputVersionToBuildServer(semanticVersion);
-        }
-    }
-
-    void OutputVersionToBuildServer(SemanticVersion semanticVersion)
-    {
-        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TEAMCITY_VERSION")))
-        {
-            return;
-        }
-
-        var prereleaseString = "";
-
-        if (semanticVersion.Stage != Stage.Final)
-        {
-            prereleaseString = "-" + semanticVersion.Stage;
-
-            if (!string.IsNullOrEmpty(semanticVersion.Suffix))
-            {
-                prereleaseString += semanticVersion.Suffix;
-            }
             else
             {
-                prereleaseString += semanticVersion.PreRelease;
+                assemblyInfoVersion = (string) customAttribute.ConstructorArguments[0].Value;
+                var replaceTokens = formatStringTokenResolver.ReplaceTokens(assemblyInfoVersion, repo, semanticVersion);
+                assemblyInfoVersion = string.Format("{0}.{1}.{2} {3}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, replaceTokens);
+                customAttribute.ConstructorArguments[0] = new CustomAttributeArgument(ModuleDefinition.TypeSystem.String, assemblyInfoVersion);
             }
-        }
 
-        Console.Out.WriteLine("##teamcity[buildNumber '{0}.{1}.{2}{3}']", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, prereleaseString);
+            TeamCityBuildNumberWriter.OutputVersionToBuildServer(semanticVersion);
+        }
     }
 
     public virtual SemanticVersion GetSemanticVersion(Repository repo)
@@ -224,5 +207,10 @@ public class ModuleWeaver
             var message = string.Format("Failed to apply product version to Win32 resources.\r\nOutput: {0}\r\nError: {1}", output, error);
             throw new WeavingException(message);
         }
+    }
+
+    public void Dispose()
+    {
+        Logger.Reset();
     }
 }

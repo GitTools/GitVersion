@@ -65,6 +65,7 @@
     <Compile Include="LibGitEx.cs" />
     <Compile Include="ModuleWeaver.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs" />
+    <Compile Include="TeamCityBuildNumberWriter.cs" />
     <Compile Include="WeavingException.cs" />
   </ItemGroup>
   <ItemGroup>

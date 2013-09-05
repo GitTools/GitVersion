@@ -44,6 +44,7 @@
     <Compile Include="BranchFinders\FeatureVersionFinder.cs" />
     <Compile Include="BranchFinders\DevelopVersionFinder.cs" />
     <Compile Include="BranchFinders\HotfixVersionFinder.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="MergeMessageParser.cs" />
     <Compile Include="BranchFinders\PullVersionFinder.cs" />
     <Compile Include="BranchFinders\ReleaseVersionFinder.cs" />
@@ -51,6 +52,7 @@
     <Compile Include="GitFlowVersionFinder.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs" />
     <Compile Include="BranchFinders\MasterVersionFinder.cs" />
+    <Compile Include="MissingBranchException.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="SemanticVersion.cs" />
     <Compile Include="Stage.cs" />
