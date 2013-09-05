@@ -14,6 +14,10 @@ public class FormatStringTokenResolver
         template = template.Replace("%githash%", branch.Tip.Sha);
         
         template = template.Replace("%branch%", repo.Head.Name);
+
+        template = template.Replace("%semVerStage%", StageToString(semanticVersion.Stage));
+        template = template.Replace("%semVerSuffix%", semanticVersion.Suffix);
+        template = template.Replace("%semVerPreRelease%", semanticVersion.PreRelease.ToString());
         
         template = template.Replace("%haschanges%", repo.IsClean() ? "" : "HasChanges");
 
@@ -23,6 +27,15 @@ public class FormatStringTokenResolver
         template = reEnvironmentToken.Replace(template, FormatEnvironmentVariable);
 
         return template.Trim();
+    }
+
+    static string StageToString(Stage stage)
+    {
+        if (stage == Stage.ReleaseCandidate)
+        {
+            return "RC";
+        }
+        return stage.ToString();
     }
 
     string FormatUserName()

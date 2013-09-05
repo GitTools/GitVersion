@@ -53,7 +53,7 @@ public class ReleaseTests
 
     [Test]
     [ExpectedException]
-    public void Override_stage_using_tag_should_throw_on_version_missmatch()
+    public void Override_stage_using_tag_should_throw_on_version_mismatch()
     {
         var version = FinderWrapper.FindVersionForCommit("34dbc768fcbdd57d6089fe28f9d37472b9e97e35", "release-0.5.0");
     }

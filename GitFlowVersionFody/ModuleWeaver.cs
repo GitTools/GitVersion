@@ -15,18 +15,16 @@ public class ModuleWeaver
     public string AddinDirectoryPath;
     public string AssemblyFilePath;
     static bool isPathSet;
-    readonly FormatStringTokenResolver formatStringTokenResolver;
+    FormatStringTokenResolver formatStringTokenResolver;
     string assemblyInfoVersion;
     Version assemblyVersion;
     bool dotGitDirExists;
-    public VersionForRepositoryFinder VersionForRepositoryFinder;
 
     public ModuleWeaver()
     {
         LogInfo = s => { };
         LogWarning = s => { };
         formatStringTokenResolver = new FormatStringTokenResolver();
-        VersionForRepositoryFinder = new VersionForRepositoryFinder();
     }
 
     public void Execute()
@@ -50,8 +48,7 @@ public class ModuleWeaver
                 LogWarning("No Tip found. Has repo been initialize?");
                 return;
             }
-            var semanticVersion = VersionForRepositoryFinder.GetVersion(repo);
-            
+            var semanticVersion = GetSemanticVersion(repo);
             SetAssemblyVersion(semanticVersion);
 
             ModuleDefinition.Assembly.Name.Version = assemblyVersion;
@@ -82,6 +79,12 @@ public class ModuleWeaver
                 customAttributes.Add(customAttribute);
             }
         }
+    }
+
+    public virtual SemanticVersion GetSemanticVersion(Repository repo)
+    {
+        var versionForRepositoryFinder = new VersionForRepositoryFinder();
+        return versionForRepositoryFinder.GetVersion(repo);
     }
 
     void SetAssemblyVersion(SemanticVersion semanticVersion)

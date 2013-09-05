@@ -12,14 +12,6 @@
     <ConfigurationName>Release</ConfigurationName>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="GitFlowVersionFody.nuspec">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="install.ps1" />
-    <None Include="uninstall.ps1" />
-    <Content Include="Fody_ToBeDeleted.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\GitFlowVersionFody\GitFlowVersionFody.csproj">
       <Project>{a9fcd24c-9be0-46d3-b7e9-6f4552c04a33}</Project>
       <Name>GitFlowVersionFody</Name>

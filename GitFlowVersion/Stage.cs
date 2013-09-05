@@ -9,6 +9,5 @@ namespace GitFlowVersion
         Beta = 4,
         ReleaseCandidate = 5,
         Final = 6,
-
     }
 }

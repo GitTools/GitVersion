@@ -12,7 +12,6 @@
     <AssemblyName>GitFlowVersion.Fody</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
     <FodyPath>..\packages\Fody.1.16.2.0</FodyPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -23,8 +22,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,12 +30,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LibGit2Sharp, Version=0.13.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -78,7 +69,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Fody.targets" />
+    <None Include="NugetAssets\GitFlowVersionFody.nuspec">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NugetAssets\install.ps1" />
     <None Include="packages.config" />
+    <None Include="NugetAssets\uninstall.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(SolutionDir)Tools\Verpatch\verpatch-ReadMe.txt">
@@ -90,6 +86,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="FodyWeavers.xml" />
+    <Content Include="NugetAssets\Fody_ToBeDeleted.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GitFlowVersion\GitFlowVersion.csproj">
@@ -108,4 +105,29 @@ xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.13.0.0\NativeBinaries\amd64\*
     </PostBuildEvent>
   </PropertyGroup>
   <Import Project="Fody.targets" />
+  <Target Name="Clean">
+    <ItemGroup>
+      <FilesToDelete Include="$(SolutionDir)NuGetBuild\**\*.*" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
+  </Target>
+  <UsingTask TaskName="PepitaPackage.CreatePackageTask" AssemblyFile="$(SolutionDir)Tools\Pepita\PepitaPackage.dll" />
+  <Target Name="AfterBuild" DependsOnTargets="Clean">
+    <MakeDir Directories="$(SolutionDir)NuGetBuild" />
+    <Exec Command="&quot;$(SolutionDir)Tools\ilmerge.exe&quot; /out:&quot;$(SolutionDir)NuGetBuild\GitFlowVersion.Fody.dll&quot; &quot;$(OutputPath)\GitFlowVersion.Fody.dll&quot; &quot;$(OutputPath)\LibGit2Sharp.dll&quot;  &quot;$(OutputPath)\GitFlowVersion.exe&quot;  /target:library /targetplatform:v4" />
+    <CreateItem Include="$(SolutionDir)GitFlowVersionFody\bin\$(ConfigurationName)\NativeBinaries\amd64\*.dll">
+      <Output TaskParameter="Include" ItemName="amd64" />
+    </CreateItem>
+    <Copy SourceFiles="@(amd64)" DestinationFolder="$(SolutionDir)NuGetBuild\NativeBinaries\amd64" />
+    <Copy SourceFiles="$(SolutionDir)Tools\Verpatch\verpatch.exe" DestinationFolder="$(SolutionDir)NuGetBuild\" />
+    <CreateItem Include="$(SolutionDir)GitFlowVersionFody\bin\$(ConfigurationName)\NativeBinaries\x86\*.dll">
+      <Output TaskParameter="Include" ItemName="x86" />
+    </CreateItem>
+    <Copy SourceFiles="@(x86)" DestinationFolder="$(SolutionDir)NuGetBuild\NativeBinaries\x86" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\Fody_ToBeDeleted.txt" DestinationFolder="$(SolutionDir)NuGetBuild\Content" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\install.ps1" DestinationFolder="$(SolutionDir)NuGetBuild\Tools" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\uninstall.ps1" DestinationFolder="$(SolutionDir)NuGetBuild\Tools" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitFlowVersionFody.nuspec" DestinationFolder="$(SolutionDir)NuGetBuild" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetBuild" MetadataAssembly="$(OutputPath)GitFlowVersion.Fody.dll" />
+  </Target>
 </Project>
