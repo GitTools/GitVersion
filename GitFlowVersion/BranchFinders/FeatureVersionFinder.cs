@@ -23,8 +23,8 @@ namespace GitFlowVersion
                        }
                     .FindVersion();
             }
-            
-            var masterBranch = Repository.Branches.First(b => b.Name == "master");
+
+            var masterBranch = Repository.GetMasterBranch();
 
             var firstCommitOnMasterOlderThanDevelopCommitThatIsAMergeCommit = masterBranch.Commits
                 .SkipWhile(c => c.When() > Commit.When())
