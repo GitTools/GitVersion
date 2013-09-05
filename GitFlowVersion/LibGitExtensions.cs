@@ -112,6 +112,26 @@ namespace GitFlowVersion
 
             if (branch == null)
             {
+               
+                if (!repository.Network.Remotes.Any())
+                {
+                    Console.Out.WriteLine("No remotes found");
+     
+                }
+                else
+                {
+                    var remote = repository.Network.Remotes.First();
+
+                    Console.Out.WriteLine("No local branch with name {0} found, going to try on the remote {1}({2})",name,remote.Name,remote.Url);
+                    
+                    repository.Network.Fetch(remote);
+
+                    branch = repository.Branches.FirstOrDefault(b => b.Name.EndsWith("/" + name));
+                }
+            }
+
+            if (branch == null)
+            {
                 throw new Exception(string.Format("Could not find branch {0} in the repository, please create one. Existing branches:{1}", name, string.Join(";", repository.Branches)));
             }
 

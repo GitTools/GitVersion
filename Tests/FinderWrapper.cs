@@ -28,7 +28,7 @@ public class FinderWrapper
     {
         var solutionDirectory = GetSolutionDirectory();
 
-        var gitFlowRepoPath = Path.Combine(solutionDirectory, @"..\GitFlow");
+        var gitFlowRepoPath = Path.Combine(solutionDirectory, @"..\GitFlowVersionTestRepo");
         return new Repository(gitFlowRepoPath);
     }
 
