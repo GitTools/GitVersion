@@ -14,7 +14,7 @@
     <language>en-AU</language>
     <tags>Git, Versioning, ILWeaving, Fody, GitFlowVersion, GitFlow, SemVer, Cecil</tags>
     <dependencies>
-      <dependency id="Fody"/>
+      <dependency id="Fody" version="1.16.2.0" />
     </dependencies>
   </metadata>
 </package>
