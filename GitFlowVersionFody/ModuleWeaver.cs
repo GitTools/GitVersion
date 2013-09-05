@@ -67,7 +67,7 @@ public class ModuleWeaver
                 var constructor = ModuleDefinition.Import(versionAttribute.Methods.First(x => x.IsConstructor));
                 customAttribute = new CustomAttribute(constructor);
 
-                string prereleaseString = "";
+                var prereleaseString = "";
 
                 if (semanticVersion.Stage != Stage.Final)
                 {
@@ -78,11 +78,11 @@ public class ModuleWeaver
 
                 if (repo.IsClean())
                 {
-                    assemblyInfoVersion = string.Format("{0} Head:'{1}' Sha:{2}", versionPrefix, repo.Head.Name, branch.Tip.Sha);
+                    assemblyInfoVersion = string.Format("{0} Branch:'{1}' Sha:{2}", versionPrefix, repo.Head.Name, branch.Tip.Sha);
                 }
                 else
                 {
-                    assemblyInfoVersion = string.Format("{0} Head:'{1}' Sha:{2} HasPendingChanges", versionPrefix, repo.Head.Name, branch.Tip.Sha);
+                    assemblyInfoVersion = string.Format("{0} Branch:'{1}' Sha:{2} HasPendingChanges", versionPrefix, repo.Head.Name, branch.Tip.Sha);
                 }
                 customAttribute.ConstructorArguments.Add(new CustomAttributeArgument(ModuleDefinition.TypeSystem.String, assemblyInfoVersion));
                 customAttributes.Add(customAttribute);
@@ -99,7 +99,7 @@ public class ModuleWeaver
             return;
         }
 
-        string prereleaseString = "";
+        var prereleaseString = "";
 
         if (semanticVersion.Stage != Stage.Final)
         {
