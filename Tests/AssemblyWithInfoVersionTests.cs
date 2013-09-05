@@ -12,7 +12,7 @@ public class AssemblyWithInfoVersionTests
 
     public AssemblyWithInfoVersionTests()
     {
-        beforeAssemblyPath = Path.GetFullPath(@"Assemblies\AssemblyWithNoInfoVer.dll");
+        beforeAssemblyPath = Path.GetFullPath(@"Assemblies\AssemblyWithInfoVer.dll");
         afterAssemblyPath = beforeAssemblyPath.Replace(".dll", "2.dll");
         File.Copy(beforeAssemblyPath, afterAssemblyPath, true);
         WeavingHelper.WeaveAssembly(afterAssemblyPath);
@@ -24,7 +24,7 @@ public class AssemblyWithInfoVersionTests
         var moduleDefinition = ModuleDefinition.ReadModule(afterAssemblyPath);
         Assert.AreEqual(new Version(1, 2, 3, 0), moduleDefinition.Assembly.Name.Version);
         var infoVersion = moduleDefinition.InfoVersion();
-        Assert.IsTrue(infoVersion.StartsWith("1.2.3 Head:'master' Sha:"));
+        Assert.IsTrue(infoVersion.StartsWith("1.2.3 master."));
     }
 
     [Test]

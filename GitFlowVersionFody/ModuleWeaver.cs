@@ -66,7 +66,16 @@ public class ModuleWeaver
                 var versionAttribute = GetVersionAttribute();
                 var constructor = ModuleDefinition.Import(versionAttribute.Methods.First(x => x.IsConstructor));
                 customAttribute = new CustomAttribute(constructor);
-                var versionPrefix = string.Format("{0}.{1}.{2}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch);
+
+                string prereleaseString = "";
+
+                if (semanticVersion.Stage != Stage.Final)
+                {
+                    prereleaseString = "-" + semanticVersion.Stage + semanticVersion.PreRelease;
+                }
+
+                var versionPrefix = string.Format("{0}.{1}.{2}{3}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, prereleaseString);
+
                 if (repo.IsClean())
                 {
                     assemblyInfoVersion = string.Format("{0} Head:'{1}' Sha:{2}", versionPrefix, repo.Head.Name, branch.Tip.Sha);
@@ -78,7 +87,35 @@ public class ModuleWeaver
                 customAttribute.ConstructorArguments.Add(new CustomAttributeArgument(ModuleDefinition.TypeSystem.String, assemblyInfoVersion));
                 customAttributes.Add(customAttribute);
             }
+
+            OutputVersionToBuildServer(semanticVersion);
         }
+    }
+
+    void OutputVersionToBuildServer(SemanticVersion semanticVersion)
+    {
+        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TEAMCITY_VERSION")))
+        {
+            return;
+        }
+
+        string prereleaseString = "";
+
+        if (semanticVersion.Stage != Stage.Final)
+        {
+            prereleaseString = "-" + semanticVersion.Stage;
+
+            if (!string.IsNullOrEmpty(semanticVersion.Suffix))
+            {
+                prereleaseString += semanticVersion.Suffix;
+            }
+            else
+            {
+                prereleaseString += semanticVersion.PreRelease;
+            }
+        }
+
+        Console.Out.WriteLine("##teamcity[buildNumber '{0}.{1}.{2}{3}']", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, prereleaseString);
     }
 
     public virtual SemanticVersion GetSemanticVersion(Repository repo)

@@ -11,8 +11,8 @@ public class PartialStubModuleWeaver : ModuleWeaver
                    Minor = 2,
                    Patch = 3,
                    PreRelease = 4,
-                   Stage = Stage.Final,
-                   Suffix = "suffix"
+                   Stage = Stage.Beta,
+                   Suffix = "1234" //eg: pull request no
                };
     }
 }
