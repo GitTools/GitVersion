@@ -41,6 +41,10 @@ public class ModuleWeaver : IDisposable
             if (string.IsNullOrEmpty(gitDir))
             {
                 LogWarning(string.Format("No .git directory found (SolutionPath: {0})", SolutionDirectoryPath));
+
+                if(TeamCity.IsRunningInBuildAgent()) //fail the build if we're on a TC build agent
+                    throw new Exception("Failed to find .git directory on agent. Please make sure agent checkout mode is enabled for you VCS roots - http://confluence.jetbrains.com/display/TCD8/VCS+Checkout+Mode");
+
                 return;
             }
         }
@@ -107,7 +111,7 @@ public class ModuleWeaver : IDisposable
                 customAttribute.ConstructorArguments[0] = new CustomAttributeArgument(ModuleDefinition.TypeSystem.String, assemblyInfoVersion);
             }
 
-            TeamCityBuildNumberWriter.OutputVersionToBuildServer(semanticVersion);
+            TeamCity.OutputVersionToBuildServer(semanticVersion);
         }
     }
 

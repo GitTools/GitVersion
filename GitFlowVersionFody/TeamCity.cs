@@ -1,14 +1,11 @@
 ﻿using System;
 using GitFlowVersion;
 
-public class TeamCityBuildNumberWriter
+public class TeamCity
 {
     public static void OutputVersionToBuildServer(SemanticVersion semanticVersion)
     {
-        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TEAMCITY_VERSION")))
-        {
-            return;
-        }
+        if (IsRunningInBuildAgent()) return;
 
         var prereleaseString = "";
 
@@ -28,4 +25,10 @@ public class TeamCityBuildNumberWriter
 
         Console.Out.WriteLine("##teamcity[buildNumber '{0}.{1}.{2}{3}']", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, prereleaseString);
     }
+
+    public static bool IsRunningInBuildAgent()
+    {
+        return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TEAMCITY_VERSION"));
+    }
+
 }
