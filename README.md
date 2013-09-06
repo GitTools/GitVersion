@@ -1,4 +1,4 @@
-![Icon](https://raw.github.com/Particular/GitFlowVersion/master/Icon/package_icon.png)
+![Icon](https://raw.github.com/Particular/GitFlowVersion/master/Icons/package_icon.png)
 
 ## The Problem
 
