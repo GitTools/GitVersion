@@ -33,6 +33,14 @@ public class ModuleWeaver : IDisposable
         SetSearchPath();
         var customAttributes = ModuleDefinition.Assembly.CustomAttributes;
 
+        var isRunningInBuildAgent = TeamCity.IsRunningInBuildAgent();
+
+        if (isRunningInBuildAgent)
+        {
+            LogInfo("Executing inside a TeamCity build agent");
+        }
+
+
         string gitDir;
 
         try
@@ -111,7 +119,12 @@ public class ModuleWeaver : IDisposable
                 customAttribute.ConstructorArguments[0] = new CustomAttributeArgument(ModuleDefinition.TypeSystem.String, assemblyInfoVersion);
             }
 
-            TeamCity.OutputVersionToBuildServer(semanticVersion);
+            if (isRunningInBuildAgent)
+            {
+                //@simoncropp is there a better way to make sure this ends up in the build log?
+                LogWarning(TeamCity.GenerateBuildVersion(semanticVersion));
+            }
+            
         }
     }
 

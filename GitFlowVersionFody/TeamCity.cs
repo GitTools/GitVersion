@@ -3,10 +3,8 @@ using GitFlowVersion;
 
 public class TeamCity
 {
-    public static void OutputVersionToBuildServer(SemanticVersion semanticVersion)
+    public static string GenerateBuildVersion(SemanticVersion semanticVersion)
     {
-        if (IsRunningInBuildAgent()) return;
-
         var prereleaseString = "";
 
         if (semanticVersion.Stage != Stage.Final)
@@ -23,7 +21,7 @@ public class TeamCity
             }
         }
 
-        Console.Out.WriteLine("##teamcity[buildNumber '{0}.{1}.{2}{3}']", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, prereleaseString);
+        return string.Format("##teamcity[buildNumber '{0}.{1}.{2}{3}']", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, prereleaseString);
     }
 
     public static bool IsRunningInBuildAgent()
