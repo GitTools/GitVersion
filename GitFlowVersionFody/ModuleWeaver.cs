@@ -33,9 +33,8 @@ public class ModuleWeaver : IDisposable
         SetSearchPath();
         var customAttributes = ModuleDefinition.Assembly.CustomAttributes;
 
-        var isRunningInBuildAgent = TeamCity.IsRunningInBuildAgent();
 
-        if (isRunningInBuildAgent)
+        if (TeamCity.IsRunningInBuildAgent())
         {
             LogInfo("Executing inside a TeamCity build agent");
         }
@@ -47,7 +46,9 @@ public class ModuleWeaver : IDisposable
             LogWarning(string.Format("No .git directory found (SolutionPath: {0})", SolutionDirectoryPath));
 
             if (TeamCity.IsRunningInBuildAgent()) //fail the build if we're on a TC build agent
-                throw new Exception("Failed to find .git directory on agent. Please make sure agent checkout mode is enabled for you VCS roots - http://confluence.jetbrains.com/display/TCD8/VCS+Checkout+Mode");
+            {
+                throw new WeavingException("Failed to find .git directory on agent. Please make sure agent checkout mode is enabled for you VCS roots - http://confluence.jetbrains.com/display/TCD8/VCS+Checkout+Mode");
+            }
 
             return;
         }
@@ -110,9 +111,8 @@ public class ModuleWeaver : IDisposable
                 customAttribute.ConstructorArguments[0] = new CustomAttributeArgument(ModuleDefinition.TypeSystem.String, assemblyInfoVersion);
             }
 
-            if (isRunningInBuildAgent)
+            if (TeamCity.IsRunningInBuildAgent())
             {
-                //@simoncropp is there a better way to make sure this ends up in the build log?
                 LogWarning(TeamCity.GenerateBuildVersion(semanticVersion));
             }
 
