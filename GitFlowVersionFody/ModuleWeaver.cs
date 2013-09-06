@@ -33,10 +33,20 @@ public class ModuleWeaver : IDisposable
         SetSearchPath();
         var customAttributes = ModuleDefinition.Assembly.CustomAttributes;
 
-        var gitDir = GitDirFinder.TreeWalkForGitDir(SolutionDirectoryPath);
-        if (gitDir == null)
+        string gitDir;
+
+        try
         {
-            LogWarning("No .git directory found.");
+            gitDir = GitDirFinder.TreeWalkForGitDir(SolutionDirectoryPath);
+            if (string.IsNullOrEmpty(gitDir))
+            {
+                LogWarning(string.Format("No .git directory found (SolutionPath: {0})", SolutionDirectoryPath));
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            LogWarning(string.Format("Exception when identifying .git dir for {0}. Ex: {1}", SolutionDirectoryPath,ex));
             return;
         }
         dotGitDirExists = true;

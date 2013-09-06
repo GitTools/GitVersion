@@ -12,20 +12,12 @@ public class GitDirFinder
             {
                 return gitDir;
             }
-            try
+            var parent = Directory.GetParent(currentDirectory);
+            if (parent == null)
             {
-                var parent = Directory.GetParent(currentDirectory);
-                if (parent == null)
-                {
-                    break;
-                }
-                currentDirectory = parent.FullName;
+                break;
             }
-            catch
-            {
-                // trouble with tree walk.
-                return null;
-            }
+            currentDirectory = parent.FullName;
         }
         return null;
     }
