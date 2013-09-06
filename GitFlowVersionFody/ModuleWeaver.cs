@@ -40,27 +40,18 @@ public class ModuleWeaver : IDisposable
             LogInfo("Executing inside a TeamCity build agent");
         }
 
-
-        string gitDir;
-
-        try
+        var gitDir = GitDirFinder.TreeWalkForGitDir(SolutionDirectoryPath);
+        
+        if (string.IsNullOrEmpty(gitDir))
         {
-            gitDir = GitDirFinder.TreeWalkForGitDir(SolutionDirectoryPath);
-            if (string.IsNullOrEmpty(gitDir))
-            {
-                LogWarning(string.Format("No .git directory found (SolutionPath: {0})", SolutionDirectoryPath));
+            LogWarning(string.Format("No .git directory found (SolutionPath: {0})", SolutionDirectoryPath));
 
-                if(TeamCity.IsRunningInBuildAgent()) //fail the build if we're on a TC build agent
-                    throw new Exception("Failed to find .git directory on agent. Please make sure agent checkout mode is enabled for you VCS roots - http://confluence.jetbrains.com/display/TCD8/VCS+Checkout+Mode");
+            if (TeamCity.IsRunningInBuildAgent()) //fail the build if we're on a TC build agent
+                throw new Exception("Failed to find .git directory on agent. Please make sure agent checkout mode is enabled for you VCS roots - http://confluence.jetbrains.com/display/TCD8/VCS+Checkout+Mode");
 
-                return;
-            }
-        }
-        catch (Exception ex)
-        {
-            LogWarning(string.Format("Exception when identifying .git dir for {0}. Ex: {1}", SolutionDirectoryPath,ex));
             return;
         }
+
         dotGitDirExists = true;
 
         using (var repo = GetRepo(gitDir))
@@ -113,7 +104,7 @@ public class ModuleWeaver : IDisposable
             }
             else
             {
-                assemblyInfoVersion = (string) customAttribute.ConstructorArguments[0].Value;
+                assemblyInfoVersion = (string)customAttribute.ConstructorArguments[0].Value;
                 var replaceTokens = formatStringTokenResolver.ReplaceTokens(assemblyInfoVersion, repo, semanticVersion);
                 assemblyInfoVersion = string.Format("{0}.{1}.{2} {3}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, replaceTokens);
                 customAttribute.ConstructorArguments[0] = new CustomAttributeArgument(ModuleDefinition.TypeSystem.String, assemblyInfoVersion);
@@ -124,7 +115,7 @@ public class ModuleWeaver : IDisposable
                 //@simoncropp is there a better way to make sure this ends up in the build log?
                 LogWarning(TeamCity.GenerateBuildVersion(semanticVersion));
             }
-            
+
         }
     }
 
