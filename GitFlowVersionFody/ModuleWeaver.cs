@@ -43,12 +43,12 @@ public class ModuleWeaver : IDisposable
         
         if (string.IsNullOrEmpty(gitDir))
         {
-            LogWarning(string.Format("No .git directory found (SolutionPath: {0})", SolutionDirectoryPath));
-
             if (TeamCity.IsRunningInBuildAgent()) //fail the build if we're on a TC build agent
             {
                 throw new WeavingException("Failed to find .git directory on agent. Please make sure agent checkout mode is enabled for you VCS roots - http://confluence.jetbrains.com/display/TCD8/VCS+Checkout+Mode");
             }
+
+            LogWarning(string.Format("No .git directory found in solution path '{0}'. This means the assembly may not be versioned correctly. To fix this warning either clone the repository using git or remove the `GitFlowVersion.Fody` nuget package. To temporarily work around this issue add a AssemblyInfo.cs with an appropriate `AssemblyVersionAttribute`.", SolutionDirectoryPath));
 
             return;
         }

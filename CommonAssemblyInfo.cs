@@ -2,5 +2,5 @@
 
 [assembly: AssemblyTitle("GitFlowVersion")]
 [assembly: AssemblyProduct("GitFlowVersion")]
-[assembly: AssemblyVersion("0.1.13")]
-[assembly: AssemblyFileVersion("0.1.13")]
+[assembly: AssemblyVersion("0.1.14")]
+[assembly: AssemblyFileVersion("0.1.14")]
