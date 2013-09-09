@@ -196,7 +196,7 @@ public class ModuleWeaver : IDisposable
             return;
         }
         var verPatchPath = Path.Combine(AddinDirectoryPath, "verpatch.exe");
-        var arguments = string.Format("{0} /pv \"{1}\" /high /va {2}", AssemblyFilePath, assemblyInfoVersion, assemblyVersion);
+        var arguments = string.Format("\"{0}\" /pv \"{1}\" /high /va {2}", AssemblyFilePath, assemblyInfoVersion, assemblyVersion);
         LogInfo(string.Format("Patching version using: {0} {1}", verPatchPath, arguments));
         var startInfo = new ProcessStartInfo
                         {
