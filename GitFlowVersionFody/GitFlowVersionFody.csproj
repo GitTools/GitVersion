@@ -58,11 +58,12 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CachedVersion.cs" />
     <Compile Include="CecilExtensions.cs" />
+    <Compile Include="DirectoryDateFinder.cs" />
     <Compile Include="EnumerableEx.cs" />
     <Compile Include="FormatStringTokenResolver.cs" />
     <Compile Include="GitDirFinder.cs" />
-    <Compile Include="LibGitEx.cs" />
     <Compile Include="ModuleWeaver.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs" />
     <Compile Include="TeamCity.cs" />

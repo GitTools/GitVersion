@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,8 @@ using Mono.Cecil;
 
 public class ModuleWeaver : IDisposable
 {
+
+    static Dictionary<string, CachedVersion> versionCacheVersions = new Dictionary<string, CachedVersion>();
     public Action<string> LogInfo;
     public Action<string> LogWarning;
     public ModuleDefinition ModuleDefinition;
@@ -63,15 +66,35 @@ public class ModuleWeaver : IDisposable
                 LogWarning("No Tip found. Has repo been initialize?");
                 return;
             }
+            
             SemanticVersion semanticVersion;
-            try
+            var ticks = DirectoryDateFinder.GetLastDirectoryWrite(gitDir).Ticks;
+            var key = string.Format("{0}:{1}:{2}", repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
+            CachedVersion cachedVersion;
+            if (versionCacheVersions.TryGetValue(key, out cachedVersion))
             {
+                LogInfo("Version read from cache.");
+                if (cachedVersion.Timestamp == ticks)
+                {
+                    semanticVersion = cachedVersion.SemanticVersion;
+                }
+                else
+                {
+                    LogInfo("Change detected. flushing cache.");
+                    semanticVersion = cachedVersion.SemanticVersion = GetSemanticVersion(repo);
+                }
+            }
+            else
+            {
+                LogInfo("Version not in cache. Calculating version.");
                 semanticVersion = GetSemanticVersion(repo);
+                versionCacheVersions[key] = new CachedVersion
+                                            {
+                                                SemanticVersion = semanticVersion,
+                                                Timestamp = ticks
+                                            };
             }
-            catch (MissingBranchException missingBranchException)
-            {
-                throw new WeavingException(missingBranchException.Message);
-            }
+
             SetAssemblyVersion(semanticVersion);
 
             ModuleDefinition.Assembly.Name.Version = assemblyVersion;
@@ -92,14 +115,7 @@ public class ModuleWeaver : IDisposable
 
                 var versionPrefix = string.Format("{0}.{1}.{2}{3}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, prereleaseString);
 
-                if (repo.IsClean())
-                {
                     assemblyInfoVersion = string.Format("{0} Branch:'{1}' Sha:{2}", versionPrefix, repo.Head.Name, branch.Tip.Sha);
-                }
-                else
-                {
-                    assemblyInfoVersion = string.Format("{0} Branch:'{1}' Sha:{2} HasPendingChanges", versionPrefix, repo.Head.Name, branch.Tip.Sha);
-                }
                 customAttribute.ConstructorArguments.Add(new CustomAttributeArgument(ModuleDefinition.TypeSystem.String, assemblyInfoVersion));
                 customAttributes.Add(customAttribute);
             }
@@ -121,8 +137,15 @@ public class ModuleWeaver : IDisposable
 
     public virtual SemanticVersion GetSemanticVersion(Repository repo)
     {
-        var versionForRepositoryFinder = new VersionForRepositoryFinder();
-        return versionForRepositoryFinder.GetVersion(repo);
+        try
+        {
+            var versionForRepositoryFinder = new VersionForRepositoryFinder();
+            return versionForRepositoryFinder.GetVersion(repo);
+        }
+        catch (MissingBranchException missingBranchException)
+        {
+            throw new WeavingException(missingBranchException.Message);
+        }
     }
 
     void SetAssemblyVersion(SemanticVersion semanticVersion)

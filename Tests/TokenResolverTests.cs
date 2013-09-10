@@ -93,25 +93,6 @@ public class TokenResolverTests
             });
     }
 
-    [Test]
-    public void Replace_hasChanges()
-    {
-        DoWithCurrentRepo(repo =>
-            {
-                var resolver = new FormatStringTokenResolver();
-                var semanticVersion = new SemanticVersion();
-                var result = resolver.ReplaceTokens("%haschanges%", repo, semanticVersion);
-
-                if (repo.IsClean())
-                {
-                    Assert.AreEqual(string.Empty, result);
-                }
-                else
-                {
-                    Assert.AreEqual("HasChanges", result);
-                }
-            });
-    }
 
     [Test]
     public void Replace_user()

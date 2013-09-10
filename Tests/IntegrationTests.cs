@@ -8,12 +8,14 @@ using NUnit.Framework;
 public class IntegrationTests
 {
 
-    [Test,Explicit]
+
+    [Test, Explicit]
     public void NServiceBusMaster()
     {
+        var startNew = Stopwatch.StartNew();
         using (var repository = new Repository(@"C:\Code\Particular\NServiceBus"))
         {
-            var branch = repository.Branches.First(x => x.Name == "master");
+            var branch = repository.Branches.First(x => x.Name == "develop");
             var commit = branch.Commits.First();
 
             var finder = new GitFlowVersionFinder
@@ -23,14 +25,36 @@ public class IntegrationTests
                              Branch = branch
                          };
             var version = finder.FindVersion();
-            Debug.WriteLine(version.Major);
-            Debug.WriteLine(version.Minor);
-            Debug.WriteLine(version.Patch);
-            Debug.WriteLine(version.PreRelease);
-            Debug.WriteLine(version.Stage);
-            Debug.WriteLine(version.Suffix);
         }
+        Debug.WriteLine(startNew.ElapsedMilliseconds);
+        startNew = Stopwatch.StartNew();
+        using (var repository = new Repository(@"C:\Code\Particular\NServiceBus"))
+        {
+            var branch = repository.Branches.First(x => x.Name == "develop");
+            var commit = branch.Commits.First();
+
+            var finder = new GitFlowVersionFinder
+                         {
+                             Commit = commit,
+                             Repository = repository,
+                             Branch = branch
+                         };
+            var version = finder.FindVersion();
+        }
+        Debug.WriteLine(startNew.ElapsedMilliseconds);
     }
+    
+    [Test,Explicit]
+    public void DirectoryDateFinderTest()
+    {
+        var stopwatch = Stopwatch.StartNew();
+        DirectoryDateFinder.GetLastDirectoryWrite(@"C:\Code\Particular\NServiceBus\.git");
+        Debug.WriteLine(stopwatch.ElapsedMilliseconds);
+        stopwatch = Stopwatch.StartNew();
+        DirectoryDateFinder.GetLastDirectoryWrite(@"C:\Code\Particular\NServiceBus\.git");
+        Debug.WriteLine(stopwatch.ElapsedMilliseconds);
+    }
+
     [Test,Explicit]
     public void NServiceBusMaster2()
     {

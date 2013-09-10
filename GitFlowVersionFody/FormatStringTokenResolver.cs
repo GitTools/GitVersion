@@ -18,9 +18,6 @@ public class FormatStringTokenResolver
         template = template.Replace("%semVerStage%", StageToString(semanticVersion.Stage));
         template = template.Replace("%semVerSuffix%", semanticVersion.Suffix);
         template = template.Replace("%semVerPreRelease%", semanticVersion.PreRelease.ToString());
-        
-        template = template.Replace("%haschanges%", repo.IsClean() ? "" : "HasChanges");
-
         template = template.Replace("%user%", FormatUserName());
         template = template.Replace("%machine%", Environment.MachineName);
 
