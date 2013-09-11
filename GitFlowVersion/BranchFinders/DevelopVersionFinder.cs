@@ -27,11 +27,6 @@ namespace GitFlowVersion
 
             var masterBranch = Repository.GetMasterBranch();
 
-            if (masterBranch == null)
-            {
-                throw new Exception(string.Format("Could not find a master branch in the repository, please create one. Existing branches:{0}",string.Join(";",Repository.Branches)));
-            }
-
             var firstCommitOnMasterOlderThanDevelopCommitThatIsAMergeCommit = masterBranch.Commits
                                                                                           .SkipWhile(c => c.When() > Commit.When())
                                                                                           .FirstOrDefault(c => c.Message.StartsWith("merge"));
