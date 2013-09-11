@@ -83,11 +83,9 @@
     <Compile Include="MergeMessageParserTests.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="FeatureBranchTests.cs" />
-    <Compile Include="AssemblyWithInfoVersionTests.cs" />
     <Compile Include="PartialStubModuleWeaver.cs" />
     <Compile Include="PullBranchTests.cs" />
     <Compile Include="ReleaseTests.cs" />
-    <Compile Include="TokenResolverTests.cs" />
     <Compile Include="Verifier.cs" />
     <Compile Include="VersionConverter.cs" />
     <Compile Include="WeavingHelper.cs" />
@@ -98,9 +96,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assemblies\AssemblyWithInfoVer.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Assemblies\AssemblyWithNoInfoVer.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

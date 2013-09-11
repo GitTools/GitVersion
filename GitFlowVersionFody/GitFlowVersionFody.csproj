@@ -62,7 +62,6 @@
     <Compile Include="CecilExtensions.cs" />
     <Compile Include="DirectoryDateFinder.cs" />
     <Compile Include="EnumerableEx.cs" />
-    <Compile Include="FormatStringTokenResolver.cs" />
     <Compile Include="GitDirFinder.cs" />
     <Compile Include="ModuleWeaver.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs" />

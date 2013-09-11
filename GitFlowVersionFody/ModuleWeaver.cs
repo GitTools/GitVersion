@@ -18,7 +18,6 @@ public class ModuleWeaver : IDisposable
     public string AddinDirectoryPath;
     public string AssemblyFilePath;
     static bool isPathSet;
-    FormatStringTokenResolver formatStringTokenResolver;
     string assemblyInfoVersion;
     Version assemblyVersion;
     bool dotGitDirExists;
@@ -27,7 +26,6 @@ public class ModuleWeaver : IDisposable
     {
         LogInfo = s => { };
         LogWarning = s => { };
-        formatStringTokenResolver = new FormatStringTokenResolver();
     }
 
     public void Execute()
@@ -66,7 +64,7 @@ public class ModuleWeaver : IDisposable
                 LogWarning("No Tip found. Has repo been initialize?");
                 return;
             }
-            
+
             SemanticVersion semanticVersion;
             var ticks = DirectoryDateFinder.GetLastDirectoryWrite(gitDir).Ticks;
             var key = string.Format("{0}:{1}:{2}", repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
@@ -99,6 +97,16 @@ public class ModuleWeaver : IDisposable
 
             ModuleDefinition.Assembly.Name.Version = assemblyVersion;
 
+            var prereleaseString = "";
+
+            if (semanticVersion.Stage != Stage.Final)
+            {
+                prereleaseString = "-" + semanticVersion.Stage + semanticVersion.PreRelease;
+            }
+
+            var versionPrefix = string.Format("{0}.{1}.{2}{3}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, prereleaseString);
+
+            assemblyInfoVersion = string.Format("{0} Branch:'{1}' Sha:{2}", versionPrefix, repo.Head.Name, branch.Tip.Sha);
             var customAttribute = customAttributes.FirstOrDefault(x => x.AttributeType.Name == "AssemblyInformationalVersionAttribute");
             if (customAttribute == null)
             {
@@ -106,24 +114,11 @@ public class ModuleWeaver : IDisposable
                 var constructor = ModuleDefinition.Import(versionAttribute.Methods.First(x => x.IsConstructor));
                 customAttribute = new CustomAttribute(constructor);
 
-                var prereleaseString = "";
-
-                if (semanticVersion.Stage != Stage.Final)
-                {
-                    prereleaseString = "-" + semanticVersion.Stage + semanticVersion.PreRelease;
-                }
-
-                var versionPrefix = string.Format("{0}.{1}.{2}{3}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, prereleaseString);
-
-                    assemblyInfoVersion = string.Format("{0} Branch:'{1}' Sha:{2}", versionPrefix, repo.Head.Name, branch.Tip.Sha);
                 customAttribute.ConstructorArguments.Add(new CustomAttributeArgument(ModuleDefinition.TypeSystem.String, assemblyInfoVersion));
                 customAttributes.Add(customAttribute);
             }
             else
             {
-                assemblyInfoVersion = (string)customAttribute.ConstructorArguments[0].Value;
-                var replaceTokens = formatStringTokenResolver.ReplaceTokens(assemblyInfoVersion, repo, semanticVersion);
-                assemblyInfoVersion = string.Format("{0}.{1}.{2} {3}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, replaceTokens);
                 customAttribute.ConstructorArguments[0] = new CustomAttributeArgument(ModuleDefinition.TypeSystem.String, assemblyInfoVersion);
             }
 
@@ -131,7 +126,6 @@ public class ModuleWeaver : IDisposable
             {
                 LogWarning(TeamCity.GenerateBuildVersion(semanticVersion));
             }
-
         }
     }
 
