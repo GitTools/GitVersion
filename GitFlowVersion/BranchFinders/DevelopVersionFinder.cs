@@ -1,6 +1,5 @@
 namespace GitFlowVersion
 {
-    using System;
     using System.Linq;
     using LibGit2Sharp;
 
@@ -8,7 +7,7 @@ namespace GitFlowVersion
     {
         public Commit Commit;
         public Repository Repository;
-        
+
         public SemanticVersion FindVersion()
         {
             var version = GetSemanticVersion();
@@ -23,45 +22,20 @@ namespace GitFlowVersion
 
         SemanticVersion GetSemanticVersion()
         {
-            var developBranch = Repository.GetDevelopBranch();
+            var masterBranch = Repository.MasterBranch();
 
-            var masterBranch = Repository.GetMasterBranch();
+            var versionFromMaster = masterBranch.GetVersionPriorTo(Commit.When());
+           
+            var version = SemanticVersion.FromMajorMinorPatch(versionFromMaster.Version);
 
-            var firstCommitOnMasterOlderThanDevelopCommitThatIsAMergeCommit = masterBranch.Commits
-                                                                                          .SkipWhile(c => c.When() > Commit.When())
-                                                                                          .FirstOrDefault(c => c.Message.StartsWith("merge"));
-
-            if (firstCommitOnMasterOlderThanDevelopCommitThatIsAMergeCommit != null)
-            {
-                var versionString = MergeMessageParser.GetVersionFromMergeCommit(
-                    firstCommitOnMasterOlderThanDevelopCommitThatIsAMergeCommit.Message);
-                var version = SemanticVersion.FromMajorMinorPatch(versionString);
-
-                version.PreRelease = developBranch.Commits
-                                                  .SkipWhile(x => x != Commit)
-                                                  .TakeWhile(x => x.When() >= firstCommitOnMasterOlderThanDevelopCommitThatIsAMergeCommit.When())
-                                                  .Count();
-                return version;
-            }
-            var firstCommitOnMasterOlderThanDevelopCommitThatIsATagCommit = masterBranch.Commits
-                                                                                          .SkipWhile(c => c.When() > Commit.When())
-                                                                                          .FirstOrDefault(x => x.SemVerTags().Any());
-
-            if (firstCommitOnMasterOlderThanDevelopCommitThatIsATagCommit != null)
-            {
-                var versionString = firstCommitOnMasterOlderThanDevelopCommitThatIsATagCommit
-                    .SemVerTags()
-                    .First()
-                    .Name;
-                var version = SemanticVersion.FromMajorMinorPatch(versionString);
-                version.PreRelease = developBranch.Commits
-                                                  .SkipWhile(x => x != Commit)
-                                                  .TakeWhile(x => x.When() >= firstCommitOnMasterOlderThanDevelopCommitThatIsATagCommit.When())
-                                                  .Count();
-                return version;
-            }
-
-            throw new Exception("Could not find a merge or tag commit on master that is older than the target commit on develop. ");
+            var developBranch = Repository.DevelopBranch();
+            version.PreRelease = developBranch.Commits
+                                              .SkipWhile(x => x != Commit)
+                                              .TakeWhile(x => x.When() >= versionFromMaster.Timestamp)
+                                              .Count();
+            return version;
         }
+
+
     }
 }

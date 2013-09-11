@@ -12,7 +12,7 @@ namespace GitFlowVersion
 
         public SemanticVersion FindVersion()
         {
-            var developBranch = Repository.GetDevelopBranch();
+            var developBranch = Repository.DevelopBranch();
 
             var version = SemanticVersion.FromMajorMinorPatch(ReleaseBranch.Name.Replace("release-", ""));
 

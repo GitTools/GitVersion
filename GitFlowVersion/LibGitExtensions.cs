@@ -78,6 +78,36 @@ namespace GitFlowVersion
         {
             return branch.Repository().Refs.ReachableFrom(new[] { branch.ToReference() }, new[] { commit }).Any();
         }
+        public static VersionPoint GetVersionPriorTo(this Branch branch, DateTimeOffset olderThan)
+        {
+            foreach (var source in branch.Commits.SkipWhile(c => c.When() > olderThan))
+            {
+                if (source.Message.StartsWith("merge"))
+                {
+                    return new VersionPoint
+                           {
+                               Version = MergeMessageParser.GetVersionFromMergeCommit(source.Message),
+                               Timestamp = source.When()
+                           };
+                }
+                var semVerTag = source.SemVerTags().FirstOrDefault();
+                if (semVerTag != null)
+                {
+                    return new VersionPoint
+                    {
+                        Version = MergeMessageParser.GetVersionFromMergeCommit(semVerTag.Name),
+                        Timestamp = source.When()
+                    };
+                }
+            }
+            return new VersionPoint
+                   {
+                       Version = "0.1.0",
+                       Timestamp = DateTimeOffset.MinValue
+                   };
+        }
+
+
         public static bool IsOnBranch(this Tag tag, Branch branch)
         {
             var commit = tag.Target as Commit;
@@ -150,14 +180,20 @@ namespace GitFlowVersion
             return branch;
         }
 
-        public static Branch GetDevelopBranch(this Repository repository)
+        public static Branch DevelopBranch(this Repository repository)
         {
             return repository.GetBranch("develop");
         }
 
-        public static Branch GetMasterBranch(this Repository repository)
+        public static Branch MasterBranch(this Repository repository)
         {
             return repository.GetBranch("master");
         }
+    }
+
+    public class VersionPoint
+    {
+        public string Version;
+        public DateTimeOffset Timestamp;
     }
 }

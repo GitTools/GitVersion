@@ -35,7 +35,7 @@ This also have the added benefit of forcing us to follow our branching stragegy 
 
 Commits on master will always be a merge commit (Either from a `hotfix` or a `release` branch) or a tag. As such we can simply take the commit message or tag message.
 
-If we try to build from a commit that is not a merge we should throw an `Exception`
+If we try to build from a commit that is no merge and no tag then assume `0.1.0`
 
 `mergeVersion` => the SemVer extracted from `targetCommit.Message`  
  
@@ -65,9 +65,9 @@ Optional Tags (only when transitioning existing repos):
 * patch: 0
 * pre-release: beta{number of commits on branch}
 
-Optional Tags (only when changing prerelease status):
+Optional Tags (only when changing pre-release status):
 
-* TagOnHeadCommit.Name={semver} => overrides the prerelease part. Eg 1.0.0-RC1 (stable part should match)
+* TagOnHeadCommit.Name={semver} => overrides the pre-release part. Eg 1.0.0-RC1 (stable part should match)
  
 #### feature  branches
 
@@ -79,7 +79,6 @@ TODO: feature branches cannot start with a SemVer. to stop people from create br
 * pre-release: Feature{First 8 characters of the commit SHA of the first commit}
 
 #### pull-request  branches
-
 
 * major: `masterMergeVersion.Major`
 * minor: `masterMergeVersion.Minor + 1` (0 if the override above is used)

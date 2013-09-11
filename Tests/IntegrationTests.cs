@@ -125,4 +125,27 @@ public class IntegrationTests
             Debug.WriteLine(version.Suffix);
         }
     }
+    [Test,Explicit]
+    public void Foo()
+    {
+        using (var repository = new Repository(@"C:\Code\Particular\ServicePulse"))
+        {
+            var branch = repository.Branches.First(x => x.Name == "feature-newUI");
+            var commit = branch.Commits.First();
+
+            var finder = new GitFlowVersionFinder
+                         {
+                             Commit = commit,
+                             Repository = repository,
+                             Branch = branch
+                         };
+            var version = finder.FindVersion();
+            Debug.WriteLine(version.Major);
+            Debug.WriteLine(version.Minor);
+            Debug.WriteLine(version.Patch);
+            Debug.WriteLine(version.PreRelease);
+            Debug.WriteLine(version.Stage);
+            Debug.WriteLine(version.Suffix);
+        }
+    }
 }
