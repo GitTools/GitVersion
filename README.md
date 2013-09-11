@@ -89,7 +89,7 @@ TODO: feature branches cannot start with a SemVer. to stop people from create br
 
 ## Repository to test
 
-So this project assumes you have https://github.com/Particular/GitFlow checked out to the same directory for running unit tests
+So this project assumes you have https://github.com/Particular/GitFlowVersionTestRepo checked out to the same directory for running unit tests
 
 ## Release Candidates
 
