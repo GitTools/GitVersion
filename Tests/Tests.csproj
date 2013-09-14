@@ -74,18 +74,19 @@
   <ItemGroup>
     <Compile Include="AssemblyLocation.cs" />
     <Compile Include="AssemblyWithNoInfoVersionTests.cs" />
-    <Compile Include="DevelopTests.cs" />
+    <Compile Include="BranchFinders\DevelopTests.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="HotfixTests.cs" />
+    <Compile Include="BranchFinders\HotfixTests.cs" />
     <Compile Include="FinderWrapper.cs" />
+    <Compile Include="InformationalVersionBuilderTests.cs" />
     <Compile Include="IntegrationTests.cs" />
-    <Compile Include="MasterTests.cs" />
+    <Compile Include="BranchFinders\MasterTests.cs" />
     <Compile Include="MergeMessageParserTests.cs" />
     <Compile Include="ModuleInitializer.cs" />
-    <Compile Include="FeatureBranchTests.cs" />
+    <Compile Include="BranchFinders\FeatureBranchTests.cs" />
     <Compile Include="PartialStubModuleWeaver.cs" />
-    <Compile Include="PullBranchTests.cs" />
-    <Compile Include="ReleaseTests.cs" />
+    <Compile Include="BranchFinders\PullBranchTests.cs" />
+    <Compile Include="BranchFinders\ReleaseTests.cs" />
     <Compile Include="Verifier.cs" />
     <Compile Include="VersionConverter.cs" />
     <Compile Include="WeavingHelper.cs" />

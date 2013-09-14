@@ -73,8 +73,9 @@ public class IntegrationTests
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
-            Debug.WriteLine(version.PreRelease);
-            Debug.WriteLine(version.Stage);
+            Debug.WriteLine(version.PreReleaseNumber);
+            Debug.WriteLine(version.Stability);
+            Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Suffix);
         }
     }
@@ -96,8 +97,9 @@ public class IntegrationTests
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
-            Debug.WriteLine(version.PreRelease);
-            Debug.WriteLine(version.Stage);
+            Debug.WriteLine(version.PreReleaseNumber);
+            Debug.WriteLine(version.Stability);
+            Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Suffix);
         }
     }
@@ -120,8 +122,9 @@ public class IntegrationTests
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
-            Debug.WriteLine(version.PreRelease);
-            Debug.WriteLine(version.Stage);
+            Debug.WriteLine(version.PreReleaseNumber);
+            Debug.WriteLine(version.Stability);
+            Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Suffix);
         }
     }
@@ -143,8 +146,9 @@ public class IntegrationTests
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
-            Debug.WriteLine(version.PreRelease);
-            Debug.WriteLine(version.Stage);
+            Debug.WriteLine(version.PreReleaseNumber);
+            Debug.WriteLine(version.Stability);
+            Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Suffix);
         }
     }

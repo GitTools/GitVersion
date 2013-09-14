@@ -13,9 +13,10 @@ public class FeatureBranchTests
         Assert.AreEqual(0, version.Major);
         Assert.AreEqual(3, version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Patch);
-        Assert.AreEqual(Stage.Unstable, version.Stage);
+        Assert.AreEqual(Stability.Unstable, version.Stability);
+        Assert.AreEqual(BranchType.Feature, version.BranchType);
         Assert.AreEqual(null, version.Suffix);
-        Assert.AreEqual(2, version.PreRelease, "Should be the number of commits ahead of master");
+        Assert.AreEqual(2, version.PreReleaseNumber, "Should be the number of commits ahead of master");
     }
     [Test]
     public void Feature_branch_with_1_commit()
@@ -24,9 +25,10 @@ public class FeatureBranchTests
         Assert.AreEqual(0, version.Major);
         Assert.AreEqual(3, version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Patch);
-        Assert.AreEqual(Stage.Feature, version.Stage);
+        Assert.AreEqual(Stability.Unstable, version.Stability);
+        Assert.AreEqual(BranchType.Feature, version.BranchType);
         Assert.AreEqual("c50179a2", version.Suffix, "Suffix should be the develop commit it was branched from");
-        Assert.AreEqual(0, version.PreRelease, "Prerelease is always 0 for feature branches");
+        Assert.AreEqual(0, version.PreReleaseNumber, "Prerelease is always 0 for feature branches");
     }
 
     [Test]
@@ -36,9 +38,10 @@ public class FeatureBranchTests
         Assert.AreEqual(0, version.Major);
         Assert.AreEqual(3, version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Patch);
-        Assert.AreEqual(Stage.Feature, version.Stage);
+        Assert.AreEqual(Stability.Unstable, version.Stability);
+        Assert.AreEqual(BranchType.Feature, version.BranchType);
         Assert.AreEqual("c50179a2", version.Suffix, "Suffix should be the develop commit it was branched from");
-        Assert.AreEqual(0, version.PreRelease, "Prerelease is always 0 for feature branches");
+        Assert.AreEqual(0, version.PreReleaseNumber, "Prerelease is always 0 for feature branches");
     }
     [Test]
     public void Feature_branch_with_2_commits_but_building_an_commit()
@@ -47,8 +50,9 @@ public class FeatureBranchTests
         Assert.AreEqual(0, version.Major);
         Assert.AreEqual(3, version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Patch);
-        Assert.AreEqual(Stage.Feature, version.Stage);
+        Assert.AreEqual(Stability.Unstable, version.Stability);
+        Assert.AreEqual(BranchType.Feature, version.BranchType);
         Assert.AreEqual("c50179a2", version.Suffix, "Suffix should be the develop commit it was branched from");
-        Assert.AreEqual(0, version.PreRelease, "Prerelease is always 0 for feature branches");
+        Assert.AreEqual(0, version.PreReleaseNumber, "Prerelease is always 0 for feature branches");
     }
 }

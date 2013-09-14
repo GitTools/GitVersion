@@ -4,7 +4,7 @@
 
 Our builds are getting more complex and as we're moving towards scm structure with a lot of fine grained repos we need to take a convention based approach for our assembly versioning.
 
-This also have the added benefit of forcing us to follow our branching stragegy on all repos since the build breaks if we don't.
+This also have the added benefit of forcing us to follow our branching strategy on all repositories since the build breaks if we don't.
 
 ### Assumptions:
 
@@ -13,25 +13,14 @@ This also have the added benefit of forcing us to follow our branching stragegy 
 * Hotfixes are prefixed with hotfix- Eg. hotfix-4.0.4
 * Tags are used on the master branch and reflects the SemVer of each stable release eg 3.3.8 , 4.0.0, etc
 * Tags can also be used to override versions while we transition repos over to GitFlowVersion
-* We build using TeamCity 8 and is using one build per repo with multi-branch building enabled
+* Using a build server with multi-branch building enabled eg TeamCity 8
 
 ### Suggested conventions
 
 `targetBranch` => the branch we are targeting
 `targetCommit` => the commit we are targeting on `targetbranch`
 
-#### develop
-
-`targetCommitDate` => the date of the `targetCommit`
-`masterVersionCommit` => the first version (merge commit or SemVer tag) on `master` that is older than the `targetCommitDate`
-`masterMergeVersion` => the SemVer extracted from `masterVersionCommit.Message`  
-
-* major: `masterMergeVersion.Major`
-* minor: `masterMergeVersion.Minor + 1` (0 if the override above is used)
-* patch: 0
-* pre-release: unstable{n} where n = how many commits `develop` is in front of `masterVersionCommit.Date`
-
-#### master
+#### Master branch
 
 Commits on master will always be a merge commit (Either from a `hotfix` or a `release` branch) or a tag. As such we can simply take the commit message or tag message.
 
@@ -43,48 +32,104 @@ If we try to build from a commit that is no merge and no tag then assume `0.1.0`
 * minor: `mergeVersion.Minor`
 * patch: `mergeVersion.Patch`
 * pre-release: 0 (perhaps count ahead commits later)
+* stability: final
 
 Optional Tags (only when transitioning existing repos): 
 * TagOnHeadCommit.Name={semver} => overrides the version to be {semver} 
 
-#### hotfix branches
+Long version:  
+
+    {major}.{minor}.{patch} Sha:'{sha}'
+    1.2.3 Sha:'a682956dccae752aa24597a0f5cd939f93614509'
+
+#### Develop branch
+
+`targetCommitDate` => the date of the `targetCommit`
+`masterVersionCommit` => the first version (merge commit or SemVer tag) on `master` that is older than the `targetCommitDate`
+`masterMergeVersion` => the SemVer extracted from `masterVersionCommit.Message`  
+
+* major: `masterMergeVersion.Major`
+* minor: `masterMergeVersion.Minor + 1` (0 if the override above is used)
+* patch: 0
+* pre-release: `unstable{n}` where n = how many commits `develop` is in front of `masterVersionCommit.Date` ('0' padded to 4 characters)
+
+Long version:  
+
+    {major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
+    1.2.3-unstable645 Branch:'develop' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
+
+#### Hotfix branches
+
+Named: `hotfix-{versionNumber}` eg `hotfix-1.2`
 
 `branchVersion` => the SemVer extracted from `targetBranch.Name`  
 
 * major: `mergeVersion.Major`
 * minor: `mergeVersion.Minor`
 * patch: `mergeVersion.Patch`
-* pre-release: beta{number of commits on branch}
+* pre-release: `beta{n}` where n = number of commits on branch  ('0' padded to 4 characters)
 
-#### release branches
+Long version:  
+
+    {major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
+    1.2.3-beta645 Branch:'hotfix-foo' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
+
+#### Release branches
+
+May branch off from: develop
+Must merge back into: develop and master
+Branch naming convention: `release-{n}`  eg `release-1.2`
 
 `releaseVersion` => the SemVer extracted from `targetBranch.Name`  
 
 * major: `mergeVersion.Major`
 * minor: `mergeVersion.Minor`
 * patch: 0
-* pre-release: beta{number of commits on branch}
+* pre-release: `beta{n}` where n = number of commits on branch or  `rc{n}` where n is derived from a tag.
 
 Optional Tags (only when changing pre-release status):
 
-* TagOnHeadCommit.Name={semver} => overrides the pre-release part. Eg 1.0.0-RC1 (stable part should match)
+* `TagOnHeadCommit.Name={semver}` => overrides the pre-release part. Eg 1.0.0-RC1 (stable part should match)
  
-#### feature  branches
+Long version:  
+
+    {major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
+    1.2.3-beta2 Branch:'release-1.2' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
+    1.2.3-rc2 Branch:'release-1.2' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
+
+#### Feature  branches
+
+May branch off from: `develop`
+Must merge back into: `develop`
+Branch naming convention: anything except `master`, `develop`, `release-{n}`, or `hotfix-{n}`.
 
 TODO: feature branches cannot start with a SemVer. to stop people from create branches named like "4.0.3"
 
 * major: `masterMergeVersion.Major`
 * minor: `masterMergeVersion.Minor + 1` (0 if the override above is used)
 * patch: 0
-* pre-release: Feature{First 8 characters of the commit SHA of the first commit}
+* pre-release: `unstable.feature-{n}` where n = First 8 characters of the commit SHA of the first commit
 
-#### pull-request  branches
+
+Long version:  
+
+    {major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
+    1.2.3-unstable.feature-a682956d Branch:'feature1' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
+
+#### Pull-request  branches
+
+May branch off from: `develop`
+Must merge back into: `develop`
+Branch naming convention: anything except `master`, `develop`, `release-{n}`, or `hotfix-{n}`. Canonical branch name contains `/pull/`.
 
 * major: `masterMergeVersion.Major`
 * minor: `masterMergeVersion.Minor + 1` (0 if the override above is used)
 * patch: 0
-* pre-release: Pull{pull request no}
+* pre-release: `unstable.pull{n}` where n = the pull request number  ('0' padded to 4 characters)
 
+### Nightly Builds
+
+**develop**, **feature** and **pull-request** builds are considered nightly builds and as such are not in strict adherence to SemVer. 
 
 ## Repository to test
 

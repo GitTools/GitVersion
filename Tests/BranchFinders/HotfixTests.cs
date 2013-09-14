@@ -12,8 +12,9 @@ public class HotfixTests
         Assert.AreEqual(0, version.Major);
         Assert.AreEqual(1, version.Minor);
         Assert.AreEqual(4, version.Patch);
-        Assert.AreEqual(Stage.Beta, version.Stage);
-        Assert.AreEqual(0, version.PreRelease, "Prerelease should be set to 0 since there is no commits");
+        Assert.AreEqual(Stability.Beta, version.Stability);
+        Assert.AreEqual(BranchType.Hotfix, version.BranchType);
+        Assert.AreEqual(0, version.PreReleaseNumber, "Prerelease should be set to 0 since there is no commits");
     }
 
     [Test]
@@ -23,8 +24,9 @@ public class HotfixTests
         Assert.AreEqual(0, version.Major);
         Assert.AreEqual(1, version.Minor);
         Assert.AreEqual(3, version.Patch);
-        Assert.AreEqual(Stage.Beta, version.Stage);
-        Assert.AreEqual(1, version.PreRelease, "Prerelease should be set to 1 since there is a commit on the branch");
+        Assert.AreEqual(Stability.Beta, version.Stability);
+        Assert.AreEqual(BranchType.Hotfix, version.BranchType);
+        Assert.AreEqual(1, version.PreReleaseNumber, "Prerelease should be set to 1 since there is a commit on the branch");
     }
 
     [Test]
@@ -34,8 +36,9 @@ public class HotfixTests
         Assert.AreEqual(0, version.Major);
         Assert.AreEqual(1, version.Minor);
         Assert.AreEqual(3, version.Patch);
-        Assert.AreEqual(Stage.Beta, version.Stage);
-        Assert.AreEqual(2, version.PreRelease, "Prerelease should be set to 2 since there is 2 commits on the branch");
+        Assert.AreEqual(Stability.Beta, version.Stability);
+        Assert.AreEqual(BranchType.Hotfix, version.BranchType);
+        Assert.AreEqual(2, version.PreReleaseNumber, "Prerelease should be set to 2 since there is 2 commits on the branch");
     }
 
     [Test, Ignore("Not really going to happen in real life")]

@@ -25,8 +25,9 @@ public class MasterTests
         Assert.AreEqual(0, version.Major);
         Assert.AreEqual(1, version.Minor);
         Assert.AreEqual(5, version.Patch,"Should set the patch version to the patch of the latest hotfix merge commit");
-        Assert.AreEqual(Stage.Final, version.Stage);
-        Assert.AreEqual(0, version.PreRelease);
+        Assert.AreEqual(Stability.Final, version.Stability);
+        Assert.AreEqual(BranchType.Master, version.BranchType);
+        Assert.AreEqual(0, version.PreReleaseNumber);
     }
 
     [Test]
@@ -35,9 +36,10 @@ public class MasterTests
         var version = FinderWrapper.FindVersionForCommit("4d5ebb00087dec174c50770076ce00f34a303e2c", "master");
         Assert.AreEqual(0, version.Major);
         Assert.AreEqual(2, version.Minor);
-        Assert.AreEqual(0, version.Patch,"Should set the patch version to the patch of the latest hotfix merge commit");
-        Assert.AreEqual(Stage.Final, version.Stage);
-        Assert.AreEqual(0, version.PreRelease);
+        Assert.AreEqual(0, version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
+        Assert.AreEqual(Stability.Final, version.Stability);
+        Assert.AreEqual(BranchType.Master, version.BranchType);
+        Assert.AreEqual(0, version.PreReleaseNumber);
     }
 
     [Test]
@@ -47,8 +49,9 @@ public class MasterTests
         Assert.AreEqual(0, version.Major);
         Assert.AreEqual(1, version.Minor);
         Assert.AreEqual(0, version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
-        Assert.AreEqual(Stage.Beta, version.Stage);
-        Assert.AreEqual(1, version.PreRelease);
+        Assert.AreEqual(Stability.Beta, version.Stability);
+        Assert.AreEqual(BranchType.Master, version.BranchType);
+        Assert.AreEqual(1, version.PreReleaseNumber);
     }
 
 
@@ -66,8 +69,9 @@ public class MasterTests
         Assert.AreEqual(0, version.Major);
         Assert.AreEqual(2, version.Minor);
         Assert.AreEqual(0, version.Patch, "Should set the patch version to 0");
-        Assert.AreEqual(Stage.Final, version.Stage);
-        Assert.AreEqual(0, version.PreRelease);
+        Assert.AreEqual(Stability.Final, version.Stability);
+        Assert.AreEqual(BranchType.Master, version.BranchType);
+        Assert.AreEqual(0, version.PreReleaseNumber);
     }
 
 }

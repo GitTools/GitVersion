@@ -17,9 +17,10 @@ public class PullBranchTests
         Assert.AreEqual(0, version.Major);
         Assert.AreEqual(3, version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Patch);
-        Assert.AreEqual(Stage.Pull, version.Stage);
+        Assert.AreEqual(Stability.Unstable, version.Stability);
+        Assert.AreEqual(BranchType.PullRequest, version.BranchType);
         Assert.AreEqual("2", version.Suffix);
-        Assert.AreEqual(0, version.PreRelease, "Prerelease is always 0 for pull requests");
+        Assert.AreEqual(0, version.PreReleaseNumber, "Prerelease is always 0 for pull requests");
     }
 
     [Test]
@@ -29,8 +30,9 @@ public class PullBranchTests
         Assert.AreEqual(0, version.Major);
         Assert.AreEqual(3, version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Patch);
-        Assert.AreEqual(Stage.Pull, version.Stage);
+        Assert.AreEqual(Stability.Unstable, version.Stability);
+        Assert.AreEqual(BranchType.PullRequest, version.BranchType);
         Assert.AreEqual("2", version.Suffix);
-        Assert.AreEqual(0, version.PreRelease, "Prerelease is always 0 for pull requests");
+        Assert.AreEqual(0, version.PreReleaseNumber, "Prerelease is always 0 for pull requests");
     }
 }

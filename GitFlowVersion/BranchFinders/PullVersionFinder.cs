@@ -8,7 +8,7 @@ namespace GitFlowVersion
         public Repository Repository;
         public Branch PullBranch;
 
-        public SemanticVersion FindVersion()
+        public VersionInformation FindVersion()
         {
             var versionFromMaster = Repository
                 .MasterBranch()
@@ -16,14 +16,16 @@ namespace GitFlowVersion
 
             var versionString = MergeMessageParser.GetVersionFromMergeCommit(versionFromMaster.Version);
 
-            var version = SemanticVersion.FromMajorMinorPatch(versionString);
+            var version = VersionInformation.FromMajorMinorPatch(versionString);
             version.Minor++;
             version.Patch = 0;
-            version.Stage = Stage.Pull;
+            version.Stability = Stability.Unstable;
+            version.BranchType = BranchType.PullRequest;
             version.Suffix = PullBranch.CanonicalName
                 .Substring(PullBranch.CanonicalName.IndexOf("/pull/") + 6);
-            version.PreRelease = 0;
-
+            version.PreReleaseNumber = 0;
+            version.BranchName = PullBranch.Name;
+            version.Sha = Commit.Sha;
 
             return version;
         }

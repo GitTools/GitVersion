@@ -17,9 +17,11 @@ public class DevelopTests
         Assert.AreEqual(0, version.Major);
         Assert.AreEqual(2, version.Minor,"Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Patch);
-        Assert.AreEqual(Stage.Unstable, version.Stage);
-        Assert.AreEqual(1, version.PreRelease, "Prerelease should to the number of commits ahead of master(by date)");
+        Assert.AreEqual(Stability.Unstable, version.Stability);
+        Assert.AreEqual(BranchType.Develop, version.BranchType);
+        Assert.AreEqual(1, version.PreReleaseNumber, "Prerelease should to the number of commits ahead of master(by date)");
     }
+
     [Test]
     public void Commit_on_develop_and_previous_commit_on_master_tag()
     {
@@ -27,7 +29,8 @@ public class DevelopTests
         Assert.AreEqual(0, version.Major);
         Assert.AreEqual(2, version.Minor,"Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Patch);
-        Assert.AreEqual(Stage.Unstable, version.Stage);
-        Assert.AreEqual(1, version.PreRelease, "Prerelease should to the number of commits ahead of master(by date)");
+        Assert.AreEqual(Stability.Unstable, version.Stability);
+        Assert.AreEqual(BranchType.Develop, version.BranchType);
+        Assert.AreEqual(1, version.PreReleaseNumber, "Prerelease should to the number of commits ahead of master(by date)");
     }
 }

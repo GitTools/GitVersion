@@ -7,16 +7,16 @@ namespace GitFlowVersion
     class MasterVersionFinder
     {
         public Commit Commit;
-        public Repository Repository;
-        public Branch MasterBranch;
 
-        public SemanticVersion FindVersion()
+        public VersionInformation FindVersion()
         {
             var versionString = GetVersionString();
 
-            var version = SemanticVersion.FromMajorMinorPatch(versionString);
+            var version = VersionInformation.FromMajorMinorPatch(versionString);
 
-
+            version.BranchType = BranchType.Master;
+            version.BranchName = "master";
+            version.Sha = Commit.Sha;
             return version;
         }
 

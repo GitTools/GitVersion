@@ -3,26 +3,27 @@ using GitFlowVersion;
 
 public class TeamCity
 {
-    public static string GenerateBuildVersion(SemanticVersion semanticVersion)
+    public static string GenerateBuildVersion(VersionInformation versionInformation)
     {
         var prereleaseString = "";
 
-        if (semanticVersion.Stage != Stage.Final)
+        if (versionInformation.Stability != Stability.Final)
         {
-            prereleaseString = "-" + semanticVersion.Stage;
+            prereleaseString = "-" + versionInformation.Stability;
 
-            if (!string.IsNullOrEmpty(semanticVersion.Suffix))
+            if (!string.IsNullOrEmpty(versionInformation.Suffix))
             {
-                prereleaseString += semanticVersion.Suffix;
+                prereleaseString += versionInformation.Suffix;
             }
             else
             {
-                prereleaseString += semanticVersion.PreRelease;
+                prereleaseString += versionInformation.PreReleaseNumber;
             }
         }
 
-        return string.Format("##teamcity[buildNumber '{0}.{1}.{2}{3}']", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, prereleaseString);
+        return string.Format("##teamcity[buildNumber '{0}.{1}.{2}{3}']", versionInformation.Major, versionInformation.Minor, versionInformation.Patch, prereleaseString);
     }
+
 
     public static bool IsRunningInBuildAgent()
     {

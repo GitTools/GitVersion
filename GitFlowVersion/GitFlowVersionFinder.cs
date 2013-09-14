@@ -9,15 +9,13 @@ namespace GitFlowVersion
         public Repository Repository;
         public Branch Branch;
 
-        public SemanticVersion FindVersion()
+        public VersionInformation FindVersion()
         {
             if (Branch.Name == "master")
             {
                 return new MasterVersionFinder
                                           {
                                               Commit = Commit,
-                                              Repository = Repository,
-                                              MasterBranch = Branch
                                           }.FindVersion();
             }
 
@@ -26,7 +24,6 @@ namespace GitFlowVersion
                 return new HotfixVersionFinder
                                           {
                                               Commit = Commit,
-                                              Repository = Repository,
                                               HotfixBranch = Branch,
                                               MasterBranch = Repository.Branches.First(x => x.Name == "master")
                                           }.FindVersion();

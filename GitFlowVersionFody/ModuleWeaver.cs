@@ -17,7 +17,6 @@ public class ModuleWeaver : IDisposable
     public string SolutionDirectoryPath;
     public string AddinDirectoryPath;
     public string AssemblyFilePath;
-    static bool isPathSet;
     string assemblyInfoVersion;
     Version assemblyVersion;
     bool dotGitDirExists;
@@ -31,7 +30,7 @@ public class ModuleWeaver : IDisposable
     public void Execute()
     {
         Logger.Write = LogInfo;
-        SetSearchPath();
+        SearchPath.SetSearchPath(AddinDirectoryPath);
         var customAttributes = ModuleDefinition.Assembly.CustomAttributes;
 
 
@@ -41,7 +40,7 @@ public class ModuleWeaver : IDisposable
         }
 
         var gitDir = GitDirFinder.TreeWalkForGitDir(SolutionDirectoryPath);
-        
+
         if (string.IsNullOrEmpty(gitDir))
         {
             if (TeamCity.IsRunningInBuildAgent()) //fail the build if we're on a TC build agent
@@ -56,7 +55,7 @@ public class ModuleWeaver : IDisposable
 
         dotGitDirExists = true;
 
-        using (var repo = GetRepo(gitDir))
+        using (var repo = RepositoryLoader.GetRepo(gitDir))
         {
             var branch = repo.Head;
             if (branch.Tip == null)
@@ -65,7 +64,7 @@ public class ModuleWeaver : IDisposable
                 return;
             }
 
-            SemanticVersion semanticVersion;
+            VersionInformation versionInformation;
             var ticks = DirectoryDateFinder.GetLastDirectoryWrite(gitDir).Ticks;
             var key = string.Format("{0}:{1}:{2}", repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
             CachedVersion cachedVersion;
@@ -74,39 +73,33 @@ public class ModuleWeaver : IDisposable
                 LogInfo("Version read from cache.");
                 if (cachedVersion.Timestamp == ticks)
                 {
-                    semanticVersion = cachedVersion.SemanticVersion;
+                    versionInformation = cachedVersion.VersionInformation;
                 }
                 else
                 {
                     LogInfo("Change detected. flushing cache.");
-                    semanticVersion = cachedVersion.SemanticVersion = GetSemanticVersion(repo);
+                    versionInformation = cachedVersion.VersionInformation = GetSemanticVersion(repo);
                 }
             }
             else
             {
                 LogInfo("Version not in cache. Calculating version.");
-                semanticVersion = GetSemanticVersion(repo);
+                versionInformation = GetSemanticVersion(repo);
                 versionCacheVersions[key] = new CachedVersion
                                             {
-                                                SemanticVersion = semanticVersion,
+                                                VersionInformation = versionInformation,
                                                 Timestamp = ticks
                                             };
             }
 
-            SetAssemblyVersion(semanticVersion);
+            SetAssemblyVersion(versionInformation);
 
             ModuleDefinition.Assembly.Name.Version = assemblyVersion;
 
-            var prereleaseString = "";
 
-            if (semanticVersion.Stage != Stage.Final)
-            {
-                prereleaseString = "-" + semanticVersion.Stage + semanticVersion.PreRelease;
-            }
+            assemblyInfoVersion = versionInformation.ToLongString();
 
-            var versionPrefix = string.Format("{0}.{1}.{2}{3}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, prereleaseString);
 
-            assemblyInfoVersion = string.Format("{0} Branch:'{1}' Sha:{2}", versionPrefix, repo.Head.Name, branch.Tip.Sha);
             var customAttribute = customAttributes.FirstOrDefault(x => x.AttributeType.Name == "AssemblyInformationalVersionAttribute");
             if (customAttribute == null)
             {
@@ -124,12 +117,12 @@ public class ModuleWeaver : IDisposable
 
             if (TeamCity.IsRunningInBuildAgent())
             {
-                LogWarning(TeamCity.GenerateBuildVersion(semanticVersion));
+                LogWarning(TeamCity.GenerateBuildVersion(versionInformation));
             }
         }
     }
 
-    public virtual SemanticVersion GetSemanticVersion(Repository repo)
+    public virtual VersionInformation GetSemanticVersion(Repository repo)
     {
         try
         {
@@ -142,57 +135,20 @@ public class ModuleWeaver : IDisposable
         }
     }
 
-    void SetAssemblyVersion(SemanticVersion semanticVersion)
+    void SetAssemblyVersion(VersionInformation versionInformation)
     {
         if (ModuleDefinition.IsStrongNamed())
         {
             // for strong named we don't want to include the patch to avoid binding redirect issues
-            assemblyVersion = new Version(semanticVersion.Major, semanticVersion.Minor, 0, 0);
+            assemblyVersion = new Version(versionInformation.Major, versionInformation.Minor, 0, 0);
         }
         else
         {
             // for non strong named we want to include the patch
-            assemblyVersion = new Version(semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, 0);
+            assemblyVersion = new Version(versionInformation.Major, versionInformation.Minor, versionInformation.Patch, 0);
         }
     }
 
-    static Repository GetRepo(string gitDir)
-    {
-        try
-        {
-            return new Repository(gitDir);
-        }
-        catch (Exception exception)
-        {
-            if (exception.Message.Contains("LibGit2Sharp.Core.NativeMethods") || exception.Message.Contains("FilePathMarshaler"))
-            {
-                throw new WeavingException("Restart of Visual Studio required due to update of 'GitFlowVersion.Fody'.");
-            }
-            throw;
-        }
-    }
-
-    void SetSearchPath()
-    {
-        if (isPathSet)
-        {
-            return;
-        }
-        isPathSet = true;
-        var nativeBinaries = Path.Combine(AddinDirectoryPath, "NativeBinaries", GetProcessorArchitecture());
-        var existingPath = Environment.GetEnvironmentVariable("PATH");
-        var newPath = string.Concat(nativeBinaries, Path.PathSeparator, existingPath);
-        Environment.SetEnvironmentVariable("PATH", newPath);
-    }
-
-    static string GetProcessorArchitecture()
-    {
-        if (Environment.Is64BitProcess)
-        {
-            return "amd64";
-        }
-        return "x86";
-    }
 
     TypeDefinition GetVersionAttribute()
     {
@@ -248,4 +204,5 @@ public class ModuleWeaver : IDisposable
     {
         Logger.Reset();
     }
+
 }

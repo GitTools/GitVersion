@@ -9,18 +9,21 @@ namespace GitFlowVersion
         public Repository Repository;
         public Branch FeatureBranch;
 
-        public SemanticVersion FindVersion()
+        public VersionInformation FindVersion()
         {
             var firstCommitOnBranch = Repository.Refs.Log(FeatureBranch.CanonicalName).Last();
 
             if (firstCommitOnBranch.To == Commit.Id) //no commits on branch. use develop approach
             {
-                return new DevelopVersionFinder
-                       {
-                           Commit = Commit, 
-                           Repository = Repository
-                       }
+                var versionFromDevelopFinder = new DevelopVersionFinder
+                                                  {
+                                                      Commit = Commit, 
+                                                      Repository = Repository
+                                                  }
                     .FindVersion();
+                versionFromDevelopFinder.BranchType = BranchType.Feature;
+                versionFromDevelopFinder.BranchName = FeatureBranch.Name;
+                return versionFromDevelopFinder;
             }
 
 
@@ -29,12 +32,15 @@ namespace GitFlowVersion
             var versionFromMaster = masterBranch.GetVersionPriorTo(Commit.When());
 
             var versionString = MergeMessageParser.GetVersionFromMergeCommit(versionFromMaster.Version);
-            var version = SemanticVersion.FromMajorMinorPatch(versionString);
+            var version = VersionInformation.FromMajorMinorPatch(versionString);
             version.Minor++;
             version.Patch = 0;
-            version.Stage = Stage.Feature;
+            version.Stability = Stability.Unstable;
+            version.BranchType = BranchType.Feature;
             version.Suffix = firstCommitOnBranch.To.Sha.Substring(0,8);
-            version.PreRelease = 0;
+            version.PreReleaseNumber = 0;
+            version.BranchName = FeatureBranch.Name;
+            version.Sha = Commit.Sha;
             
             return version;
         }

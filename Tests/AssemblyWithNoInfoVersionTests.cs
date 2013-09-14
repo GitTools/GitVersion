@@ -24,7 +24,7 @@ public class AssemblyWithNoInfoVersionTests
         var moduleDefinition = ModuleDefinition.ReadModule(afterAssemblyPath);
         Assert.AreEqual(new Version(1, 2, 3, 0), moduleDefinition.Assembly.Name.Version);
         var infoVersion = moduleDefinition.InfoVersion();
-        Assert.IsTrue(infoVersion.StartsWith("1.2.3-Beta4 Branch:'master' Sha:"));
+        Assert.IsTrue(infoVersion.StartsWith("1.2.3-unstable4 Branch:'master' Sha:'"));
     }
 
     [Test]

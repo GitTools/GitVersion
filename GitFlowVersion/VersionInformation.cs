@@ -3,23 +3,25 @@ namespace GitFlowVersion
     using System;
     using System.Linq;
 
-    public class SemanticVersion : IComparable<SemanticVersion>
+    public class VersionInformation 
     {
         public int Major;
         public int Minor;
         public int Patch;
-        public int PreRelease;
-        public Stage Stage;
-
+        public int? PreReleaseNumber;
+        public Stability Stability;
+        public BranchType? BranchType;
         public string Suffix;
+        public string BranchName;
+        public string Sha;
 
-        public static SemanticVersion FromMajorMinorPatch(string versionString)
+        public static VersionInformation FromMajorMinorPatch(string versionString)
         {
             var parts = versionString.Split('-');
 
             var stableParts = parts.First().Split('.');
 
-            var parsedVersion = new SemanticVersion
+            var parsedVersion = new VersionInformation
                                       {
                                           Major = int.Parse(stableParts[0]),
                                       };
@@ -44,14 +46,14 @@ namespace GitFlowVersion
                     stageString = "ReleaseCandidate";
 
 
-                parsedVersion.Stage = (Stage) Enum.Parse(typeof (Stage), stageString,ignoreCase:true);
-                parsedVersion.PreRelease = int.Parse(prereleaseString.Substring(buildIndex));
+                parsedVersion.Stability = (Stability)Enum.Parse(typeof(Stability), stageString, ignoreCase: true);
+                parsedVersion.PreReleaseNumber = int.Parse(prereleaseString.Substring(buildIndex));
 
             }
             else
             {
-                parsedVersion.Stage = Stage.Final;
-                parsedVersion.PreRelease = 0;
+                parsedVersion.Stability = Stability.Final;
+                parsedVersion.PreReleaseNumber = 0;
             }
 
             return parsedVersion;
@@ -86,47 +88,6 @@ namespace GitFlowVersion
 
             return true;
         }
-
-        public override string ToString()
-        {
-            return string.Format("{0}.{1}.{2}-{3}{4}", Major, Minor, Patch, Stage, PreRelease);
-        }
-
-        //TODO: add order by unit tests
-        public int CompareTo(SemanticVersion value)
-        {
-            if (value == null)
-            {
-                return 1;
-            }
-            if (Major != value.Major)
-            {
-                if (Major > value.Major)
-                {
-                    return 1;
-                }
-                return -1;
-            }
-            if (Minor != value.Minor)
-            {
-                if (Minor > value.Minor)
-                {
-                    return 1;
-                }
-                return -1;
-            }
-            if (Patch != value.Patch)
-            {
-                if (Patch > value.Patch)
-                {
-                    return 1;
-                }
-                return -1;
-            }
-            return -1;
-        }
-
-
 
     }
 }
