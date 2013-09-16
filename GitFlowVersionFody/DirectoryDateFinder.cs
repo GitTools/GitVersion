@@ -3,7 +3,7 @@ using System.IO;
 
 public static class DirectoryDateFinder
 {
-    public static DateTime GetLastDirectoryWrite(string path)
+    public static long GetLastDirectoryWrite(string path)
     {
         var lastHigh = DateTime.MinValue;
         foreach (var file in Directory.EnumerateDirectories(path, "*.*", SearchOption.AllDirectories))
@@ -14,6 +14,6 @@ public static class DirectoryDateFinder
                 lastHigh = lastWriteTime;
             }
         }
-        return lastHigh;
+        return lastHigh.Ticks;
     }
 }

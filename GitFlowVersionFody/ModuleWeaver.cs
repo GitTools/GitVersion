@@ -19,7 +19,7 @@ public class ModuleWeaver : IDisposable
     public string AssemblyFilePath;
     string assemblyInfoVersion;
     Version assemblyVersion;
-    bool dotGitDirExists;
+    bool gitDirectoryExists;
 
     public ModuleWeaver()
     {
@@ -39,9 +39,9 @@ public class ModuleWeaver : IDisposable
             LogInfo("Executing inside a TeamCity build agent");
         }
 
-        var gitDir = GitDirFinder.TreeWalkForGitDir(SolutionDirectoryPath);
+        var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectoryPath);
 
-        if (string.IsNullOrEmpty(gitDir))
+        if (string.IsNullOrEmpty(gitDirectory))
         {
             if (TeamCity.IsRunningInBuildAgent()) //fail the build if we're on a TC build agent
             {
@@ -53,9 +53,9 @@ public class ModuleWeaver : IDisposable
             return;
         }
 
-        dotGitDirExists = true;
+        gitDirectoryExists = true;
 
-        using (var repo = RepositoryLoader.GetRepo(gitDir))
+        using (var repo = RepositoryLoader.GetRepo(gitDirectory))
         {
             var branch = repo.Head;
             if (branch.Tip == null)
@@ -65,7 +65,7 @@ public class ModuleWeaver : IDisposable
             }
 
             VersionInformation versionInformation;
-            var ticks = DirectoryDateFinder.GetLastDirectoryWrite(gitDir).Ticks;
+            var ticks = DirectoryDateFinder.GetLastDirectoryWrite(gitDirectory);
             var key = string.Format("{0}:{1}:{2}", repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
             CachedVersion cachedVersion;
             if (versionCacheVersions.TryGetValue(key, out cachedVersion))
@@ -103,7 +103,7 @@ public class ModuleWeaver : IDisposable
             var customAttribute = customAttributes.FirstOrDefault(x => x.AttributeType.Name == "AssemblyInformationalVersionAttribute");
             if (customAttribute == null)
             {
-                var versionAttribute = GetVersionAttribute();
+                var versionAttribute = ModuleDefinition.GetAssemblyInformationalVersionType();
                 var constructor = ModuleDefinition.Import(versionAttribute.Methods.First(x => x.IsConstructor));
                 customAttribute = new CustomAttribute(constructor);
 
@@ -112,6 +112,7 @@ public class ModuleWeaver : IDisposable
             }
             else
             {
+                //TODO: log warning that assemblyInfoVersion is being overwritten
                 customAttribute.ConstructorArguments[0] = new CustomAttributeArgument(ModuleDefinition.TypeSystem.String, assemblyInfoVersion);
             }
 
@@ -150,21 +151,9 @@ public class ModuleWeaver : IDisposable
     }
 
 
-    TypeDefinition GetVersionAttribute()
-    {
-        var msCoreLib = ModuleDefinition.AssemblyResolver.Resolve("mscorlib");
-        var msCoreAttribute = msCoreLib.MainModule.Types.FirstOrDefault(x => x.Name == "AssemblyInformationalVersionAttribute");
-        if (msCoreAttribute != null)
-        {
-            return msCoreAttribute;
-        }
-        var systemRuntime = ModuleDefinition.AssemblyResolver.Resolve("System.Runtime");
-        return systemRuntime.MainModule.Types.First(x => x.Name == "AssemblyInformationalVersionAttribute");
-    }
-
     public void AfterWeaving()
     {
-        if (!dotGitDirExists)
+        if (!gitDirectoryExists)
         {
             return;
         }
@@ -183,9 +172,9 @@ public class ModuleWeaver : IDisposable
                         };
         using (var process = Process.Start(startInfo))
         {
-            if (!process.WaitForExit(1000))
+            if (!process.WaitForExit(4000))
             {
-                var timeoutMessage = string.Format("Failed to apply product version to Win32 resources in 1 second.\r\nFailed command: {0} {1}", verPatchPath, arguments);
+                var timeoutMessage = string.Format("Failed to apply product version to Win32 resources in 4 seconds.\r\nFailed command: {0} {1}", verPatchPath, arguments);
                 throw new WeavingException(timeoutMessage);
             }
 
@@ -200,9 +189,9 @@ public class ModuleWeaver : IDisposable
         }
     }
 
+
     public void Dispose()
     {
         Logger.Reset();
     }
-
 }
