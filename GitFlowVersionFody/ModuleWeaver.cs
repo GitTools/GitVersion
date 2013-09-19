@@ -37,6 +37,11 @@ public class ModuleWeaver : IDisposable
         if (TeamCity.IsRunningInBuildAgent())
         {
             LogInfo("Executing inside a TeamCity build agent");
+
+            if (TeamCity.IsBuildingAPullRequest())
+            {
+                LogInfo("This is a pull request build for pull: " + TeamCity.CurrentPullRequestNo());
+            }
         }
 
         var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectoryPath);

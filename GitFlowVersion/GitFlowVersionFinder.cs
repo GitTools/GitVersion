@@ -48,7 +48,7 @@ namespace GitFlowVersion
                 }.FindVersion();
             }
 
-            if (Branch.CanonicalName.Contains("/pull/"))
+            if (IsPullRequest())
             {
                 return new PullVersionFinder
                 {
@@ -65,5 +65,9 @@ namespace GitFlowVersion
             }.FindVersion();
         }
 
+        bool IsPullRequest()
+        {
+            return Branch.CanonicalName.Contains("/pull/") || TeamCity.IsBuildingAPullRequest();
+        }
     }
 }

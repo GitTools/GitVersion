@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using GitFlowVersion;
 
 public class TeamCity
@@ -30,4 +31,25 @@ public class TeamCity
         return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TEAMCITY_VERSION"));
     }
 
+    public static bool IsBuildingAPullRequest()
+    {
+        return !string.IsNullOrEmpty(GetBranchEnvironmentVariable());
+    }
+
+
+    static string GetBranchEnvironmentVariable()
+    {
+        foreach (DictionaryEntry de in Environment.GetEnvironmentVariables())
+        {
+            if (((string)de.Key).StartsWith("teamcity.build.vcs.branch."))
+                return (string)de.Value;
+        }
+
+        return null;
+    }
+
+    public static int CurrentPullRequestNo()
+    {
+        return int.Parse(GetBranchEnvironmentVariable().Split('/')[2]);
+    }
 }

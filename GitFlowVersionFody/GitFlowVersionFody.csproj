@@ -68,7 +68,6 @@
     <Compile Include="..\CommonAssemblyInfo.cs" />
     <Compile Include="RepositoryLoader.cs" />
     <Compile Include="SearchPath.cs" />
-    <Compile Include="TeamCity.cs" />
     <Compile Include="WeavingException.cs" />
   </ItemGroup>
   <ItemGroup>

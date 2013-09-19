@@ -21,8 +21,18 @@ namespace GitFlowVersion
             version.Patch = 0;
             version.Stability = Stability.Unstable;
             version.BranchType = BranchType.PullRequest;
-            version.Suffix = PullBranch.CanonicalName
-                .Substring(PullBranch.CanonicalName.IndexOf("/pull/") + 6);
+
+
+            if (TeamCity.IsBuildingAPullRequest())
+            {
+                version.Suffix = TeamCity.CurrentPullRequestNo().ToString();
+            }
+            else
+            {
+                version.Suffix = PullBranch.CanonicalName
+                    .Substring(PullBranch.CanonicalName.IndexOf("/pull/") + 6);                
+            }
+
             version.PreReleaseNumber = 0;
             version.BranchName = PullBranch.Name;
             version.Sha = Commit.Sha;
