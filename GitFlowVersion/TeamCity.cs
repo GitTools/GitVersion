@@ -44,7 +44,9 @@ public class TeamCity
 
     public static bool IsBuildingAPullRequest()
     {
-        return !string.IsNullOrEmpty(GetBranchEnvironmentVariable());
+        var branchInfo = GetBranchEnvironmentVariable();
+
+        return !string.IsNullOrEmpty(branchInfo) && branchInfo.Contains("/Pull/");
     }
 
 
