@@ -87,6 +87,7 @@
     <Compile Include="PartialStubModuleWeaver.cs" />
     <Compile Include="BranchFinders\PullBranchTests.cs" />
     <Compile Include="BranchFinders\ReleaseTests.cs" />
+    <Compile Include="TeamcityVersionNumberTests.cs" />
     <Compile Include="Verifier.cs" />
     <Compile Include="VersionConverter.cs" />
     <Compile Include="WeavingHelper.cs" />

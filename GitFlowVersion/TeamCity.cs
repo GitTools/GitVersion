@@ -10,16 +10,27 @@ public class TeamCity
 
         if (versionInformation.Stability != Stability.Final)
         {
-            prereleaseString = "-" + versionInformation.Stability;
+            switch (versionInformation.BranchType )
+            {
+             case BranchType.Develop:
+                    prereleaseString = "-" + versionInformation.Stability + versionInformation.PreReleaseNumber;
+                    break;
 
-            if (!string.IsNullOrEmpty(versionInformation.Suffix))
-            {
-                prereleaseString += versionInformation.Suffix;
+             case BranchType.Release:
+                    prereleaseString = "-" + versionInformation.Stability + versionInformation.PreReleaseNumber;
+                    break;
+
+             case BranchType.Hotfix:
+                    prereleaseString = "-" + versionInformation.Stability + versionInformation.PreReleaseNumber;
+                    break;
+             case BranchType.PullRequest:
+                    prereleaseString = "-PullRequest-" + versionInformation.Suffix;
+                    break;
+             case BranchType.Feature:
+                    prereleaseString = "-Feature-" + versionInformation.BranchName + "-" + versionInformation.Sha;
+                    break;
             }
-            else
-            {
-                prereleaseString += versionInformation.PreReleaseNumber;
-            }
+
         }
 
         return string.Format("##teamcity[buildNumber '{0}.{1}.{2}{3}']", versionInformation.Major, versionInformation.Minor, versionInformation.Patch, prereleaseString);
