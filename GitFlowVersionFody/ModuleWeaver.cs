@@ -123,7 +123,11 @@ public class ModuleWeaver : IDisposable
 
             if (TeamCity.IsRunningInBuildAgent())
             {
-                LogWarning(TeamCity.GenerateBuildVersion(versionInformation));
+                foreach (var buildParameters in TeamCity.GenerateBuildLogOutput(versionInformation))
+                {
+                    LogWarning(buildParameters);    
+                }
+                
             }
         }
     }

@@ -1,5 +1,9 @@
 ![Icon](https://raw.github.com/Particular/GitFlowVersion/master/Icons/package_icon.png)
 
+## Usage:
+
+Install-Package GitFlowVersion.Fody
+
 ## The Problem
 
 Our builds are getting more complex and as we're moving towards scm structure with a lot of fine grained repos we need to take a convention based approach for our assembly versioning.
@@ -142,6 +146,13 @@ for remote in `git branch -r `; do git branch --track $remote; done
 ## Release Candidates
 
 How do we do release candidates?? Perhaps  tag a release branch and then count commits forward from the tag to get RC1, RC2 etc??
+
+## Running inside TeamCity
+
+* Make sure to use agent checkouts
+* For the moment you need to promote the %teamcity.build.vcs.branch.{configurationid}% build parameter to an environment variable with the same name for pull requests to be handled correctly
+* We update the TC buildnumber to the GFV number automatically
+* We output the individual values of the GFV version as the build parameter: GitFlowVersion.* (Eg: GitFlowVersion.Major) if you need access to them in your build script 
 
 
 ## For reference

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using GitFlowVersion;
 
 public class TeamCity
@@ -64,5 +65,21 @@ public class TeamCity
     public static int CurrentPullRequestNo()
     {
         return int.Parse(GetBranchEnvironmentVariable().Split('/')[2]);
+    }
+
+    public static IEnumerable<string> GenerateBuildLogOutput(VersionInformation versionInformation)
+    {
+        yield return GenerateBuildVersion(versionInformation);
+        yield return GenerateBuildParameter("Major", versionInformation.Major.ToString());
+        yield return GenerateBuildParameter("Minor", versionInformation.Minor.ToString());
+        yield return GenerateBuildParameter("Patch", versionInformation.Patch.ToString());
+        yield return GenerateBuildParameter("Stability", versionInformation.Stability.ToString());
+        yield return GenerateBuildParameter("PreReleaseNumber", versionInformation.PreReleaseNumber.ToString());
+
+    }
+
+    static string GenerateBuildParameter(string name, string value)
+    {
+        return string.Format("#teamcity[setParameter name='GitFlowVersion.{0}' value='{1}']",name,value);
     }
 }
