@@ -13,6 +13,7 @@ public class PartialStubModuleWeaver : ModuleWeaver
                    PreReleaseNumber = 4,
                    Stability = Stability.Beta,
                    BranchType = BranchType.Develop,
+                   BranchName = "develop",
                    Suffix = "1234" //eg: pull request no
                };
     }

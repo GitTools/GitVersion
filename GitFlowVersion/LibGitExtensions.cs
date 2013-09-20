@@ -190,10 +190,4 @@ namespace GitFlowVersion
             return repository.GetBranch("master");
         }
     }
-
-    public class VersionPoint
-    {
-        public string Version;
-        public DateTimeOffset Timestamp;
-    }
 }

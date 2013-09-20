@@ -60,6 +60,7 @@
     <Compile Include="VersionInformation.cs" />
     <Compile Include="Stability.cs" />
     <Compile Include="VersionForDirectoryFinder.cs" />
+    <Compile Include="VersionPoint.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
