@@ -25,9 +25,8 @@ namespace GitFlowVersion
 
         VersionInformation GetSemanticVersion()
         {
-            var masterBranch = Repository.MasterBranch();
 
-            var versionFromMaster = masterBranch.GetVersionPriorTo(Commit.When());
+            var versionFromMaster = Repository.MasterVersionPriorTo(Commit.When());
            
             var version = VersionInformation.FromMajorMinorPatch(versionFromMaster.Version);
 

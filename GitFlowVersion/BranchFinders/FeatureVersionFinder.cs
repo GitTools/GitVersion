@@ -26,13 +26,10 @@ namespace GitFlowVersion
                 return versionFromDevelopFinder;
             }
 
+            
+            var versionFromMaster = Repository.MasterVersionPriorTo(Commit.When());
 
-            var masterBranch = Repository.MasterBranch();
-
-            var versionFromMaster = masterBranch.GetVersionPriorTo(Commit.When());
-
-            var versionString = MergeMessageParser.GetVersionFromMergeCommit(versionFromMaster.Version);
-            var version = VersionInformation.FromMajorMinorPatch(versionString);
+            var version = VersionInformation.FromMajorMinorPatch(versionFromMaster.Version);
             version.Minor++;
             version.Patch = 0;
             version.Stability = Stability.Unstable;

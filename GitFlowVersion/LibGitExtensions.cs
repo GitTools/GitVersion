@@ -78,26 +78,25 @@ namespace GitFlowVersion
         {
             return branch.Repository().Refs.ReachableFrom(new[] { branch.ToReference() }, new[] { commit }).Any();
         }
-        public static VersionPoint GetVersionPriorTo(this Branch branch, DateTimeOffset olderThan)
+        public static IEnumerable<Commit> CommitsPriorToThan(this Branch branch, DateTimeOffset olderThan)
         {
-            foreach (var source in branch.Commits.SkipWhile(c => c.When() > olderThan))
+            return branch.Commits.SkipWhile(c => c.When() > olderThan);
+        }
+
+        public static VersionPoint MasterVersionPriorTo(this Repository repository, DateTimeOffset olderThan)
+        {
+            var masterBranch = repository
+                .MasterBranch();
+            foreach (var commit in masterBranch.CommitsPriorToThan(olderThan))
             {
-                if (source.Message.StartsWith("merge"))
+                var message = GetMergeOrTagMessage(commit);
+                if (message != null)
                 {
                     return new VersionPoint
                            {
-                               Version = MergeMessageParser.GetVersionFromMergeCommit(source.Message),
-                               Timestamp = source.When()
+                               Version = MergeMessageParser.GetVersionFromMergeCommit(message),
+                               Timestamp = commit.When()
                            };
-                }
-                var semVerTag = source.SemVerTags().FirstOrDefault();
-                if (semVerTag != null)
-                {
-                    return new VersionPoint
-                    {
-                        Version = MergeMessageParser.GetVersionFromMergeCommit(semVerTag.Name),
-                        Timestamp = source.When()
-                    };
                 }
             }
             return new VersionPoint
@@ -105,6 +104,22 @@ namespace GitFlowVersion
                        Version = "0.1.0",
                        Timestamp = DateTimeOffset.MinValue
                    };
+        }
+     
+
+        static string GetMergeOrTagMessage(Commit commit)
+        {
+            if (commit.Message.StartsWith("merge"))
+            {
+                return commit.Message;
+            }
+
+            var semVerTag = commit.SemVerTags().FirstOrDefault();
+            if (semVerTag != null)
+            {
+                return semVerTag.Name;
+            }
+            return null;
         }
 
 
