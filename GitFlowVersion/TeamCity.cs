@@ -5,27 +5,27 @@ using GitFlowVersion;
 
 public class TeamCity
 {
-    public static string GenerateBuildVersion(VersionInformation versionInformation)
+    public static string GenerateBuildVersion(VersionAndBranch versionInformation)
     {
         var prereleaseString = "";
 
-        if (versionInformation.Stability != Stability.Final)
+        if (versionInformation.Version.Stability != Stability.Final)
         {
             switch (versionInformation.BranchType )
             {
              case BranchType.Develop:
-                    prereleaseString = "-" + versionInformation.Stability + versionInformation.PreReleaseNumber;
+                    prereleaseString = "-" + versionInformation.Version.Stability + versionInformation.Version.PreReleaseNumber;
                     break;
 
              case BranchType.Release:
-                    prereleaseString = "-" + versionInformation.Stability + versionInformation.PreReleaseNumber;
+                    prereleaseString = "-" + versionInformation.Version.Stability + versionInformation.Version.PreReleaseNumber;
                     break;
 
              case BranchType.Hotfix:
-                    prereleaseString = "-" + versionInformation.Stability + versionInformation.PreReleaseNumber;
+                    prereleaseString = "-" + versionInformation.Version.Stability + versionInformation.Version.PreReleaseNumber;
                     break;
              case BranchType.PullRequest:
-                    prereleaseString = "-PullRequest-" + versionInformation.Suffix;
+                    prereleaseString = "-PullRequest-" + versionInformation.Version.Suffix;
                     break;
              case BranchType.Feature:
                     prereleaseString = "-Feature-" + versionInformation.BranchName + "-" + versionInformation.Sha;
@@ -34,7 +34,7 @@ public class TeamCity
 
         }
 
-        return string.Format("##teamcity[buildNumber '{0}.{1}.{2}{3}']", versionInformation.Major, versionInformation.Minor, versionInformation.Patch, prereleaseString);
+        return string.Format("##teamcity[buildNumber '{0}.{1}.{2}{3}']", versionInformation.Version.Major, versionInformation.Version.Minor, versionInformation.Version.Patch, prereleaseString);
     }
 
 

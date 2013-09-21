@@ -2,6 +2,6 @@
 
 public class CachedVersion
 {
-    public VersionInformation VersionInformation;
+    public VersionAndBranch VersionInformation;
     public long Timestamp;
 }

@@ -60,7 +60,7 @@ namespace GitFlowVersion
         }
         public static IEnumerable<Tag> SemVerTags(this Commit commit)
         {
-            return commit.Tags().Where(tag => VersionInformation.IsVersion(tag.Name));
+            return commit.Tags().Where(tag => SemanticVersion.IsVersion(tag.Name));
         }
         public static IEnumerable<Reference> LocalBranchRefs(this Repository repository)
         {

@@ -9,10 +9,13 @@ public class TeamcityVersionNumberTests
     public void Develop_branch()
     {
         VerifyOutput("0.0.0-Unstable4",
-            new VersionInformation
+            new VersionAndBranch
             {
                 BranchType = BranchType.Develop,
-                PreReleaseNumber = 4
+                Version = new SemanticVersion
+                                     {
+                                         PreReleaseNumber = 4
+                                     }
             });
 
     }
@@ -22,11 +25,14 @@ public class TeamcityVersionNumberTests
     public void Release_branch()
     {
         VerifyOutput("0.0.0-Beta4",
-            new VersionInformation
+            new VersionAndBranch
             {
-                Stability = Stability.Beta,
                 BranchType = BranchType.Release,
-                PreReleaseNumber = 4
+                Version = new SemanticVersion
+                                     {
+                                         PreReleaseNumber = 4,
+                                         Stability = Stability.Beta,
+                                     }
             });
 
     }
@@ -35,11 +41,14 @@ public class TeamcityVersionNumberTests
     public void Hotfix_branch()
     {
         VerifyOutput("0.0.0-Beta4",
-            new VersionInformation
+            new VersionAndBranch
             {
-                Stability = Stability.Beta,
                 BranchType = BranchType.Hotfix,
-                PreReleaseNumber = 4
+                Version = new SemanticVersion
+                                     {
+                                         Stability = Stability.Beta,
+                                         PreReleaseNumber = 4
+                                     }
             });
 
     }
@@ -49,11 +58,14 @@ public class TeamcityVersionNumberTests
     public void Pull_branch()
     {
         VerifyOutput("0.0.0-PullRequest-1571",
-            new VersionInformation
+            new VersionAndBranch
             {
                 BranchType = BranchType.PullRequest,
-                Suffix = "1571",
-                PreReleaseNumber = 131231232 //ignored
+                Version = new SemanticVersion
+                                     {
+                                         Suffix = "1571",
+                                         PreReleaseNumber = 131231232 //ignored
+                                     }
 
             });
 
@@ -63,13 +75,15 @@ public class TeamcityVersionNumberTests
     public void Feature_branch()
     {
         VerifyOutput("0.0.0-Feature-AFeature-THESHA",
-            new VersionInformation
+            new VersionAndBranch
             {
                 BranchType = BranchType.Feature,
                 Sha = "THESHA",
                 BranchName = "AFeature",
-                PreReleaseNumber = 4 //ignored
-
+                Version = new SemanticVersion
+                                     {
+                                         PreReleaseNumber = 4 //ignored
+                                     }
             });
 
     }
@@ -79,23 +93,24 @@ public class TeamcityVersionNumberTests
     public void Master_branch()
     {
         VerifyOutput("0.0.0",
-            new VersionInformation
+            new VersionAndBranch
             {
-                Stability = Stability.Final,
-                Suffix = "1571", //ignored
-                PreReleaseNumber = 131231232 //ignored
-
+                Version = new SemanticVersion
+                                     {
+                                         Stability = Stability.Final,
+                                         Suffix = "1571", //ignored
+                                         PreReleaseNumber = 131231232 //ignored
+                                     }
             });
 
     }
 
 
-    void VerifyOutput(string versionString, VersionInformation version)
+    void VerifyOutput(string versionString, VersionAndBranch version)
     {
         var tcVersion = TeamCity.GenerateBuildVersion(version);
 
         Assert.True(TeamCity.GenerateBuildVersion(version).Contains(versionString), string.Format("TeamCity string {0} did not match expected string {1}", tcVersion, versionString));
     }
-
 
 }

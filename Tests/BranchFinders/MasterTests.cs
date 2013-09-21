@@ -22,36 +22,36 @@ public class MasterTests
     public void Hotfix_merge()
     {
         var version = FinderWrapper.FindVersionForCommit("290f97a0abd7000a22436b04d9535334f8e8f7ba", "master");
-        Assert.AreEqual(0, version.Major);
-        Assert.AreEqual(1, version.Minor);
-        Assert.AreEqual(5, version.Patch,"Should set the patch version to the patch of the latest hotfix merge commit");
-        Assert.AreEqual(Stability.Final, version.Stability);
+        Assert.AreEqual(0, version.Version.Major);
+        Assert.AreEqual(1, version.Version.Minor);
+        Assert.AreEqual(5, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
+        Assert.AreEqual(Stability.Final, version.Version.Stability);
         Assert.AreEqual(BranchType.Master, version.BranchType);
-        Assert.AreEqual(0, version.PreReleaseNumber);
+        Assert.AreEqual(0, version.Version.PreReleaseNumber);
     }
 
     [Test]
     public void Override_using_tag_with_a_stable_release()
     {
         var version = FinderWrapper.FindVersionForCommit("4d5ebb00087dec174c50770076ce00f34a303e2c", "master");
-        Assert.AreEqual(0, version.Major);
-        Assert.AreEqual(2, version.Minor);
-        Assert.AreEqual(0, version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
-        Assert.AreEqual(Stability.Final, version.Stability);
+        Assert.AreEqual(0, version.Version.Major);
+        Assert.AreEqual(2, version.Version.Minor);
+        Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
+        Assert.AreEqual(Stability.Final, version.Version.Stability);
         Assert.AreEqual(BranchType.Master, version.BranchType);
-        Assert.AreEqual(0, version.PreReleaseNumber);
+        Assert.AreEqual(0, version.Version.PreReleaseNumber);
     }
 
     [Test]
     public void Override_using_tag_with_a_prerelease()
     {
         var version = FinderWrapper.FindVersionForCommit("8530d6a72140355b5004a878630cdf596ff551e1", "master");
-        Assert.AreEqual(0, version.Major);
-        Assert.AreEqual(1, version.Minor);
-        Assert.AreEqual(0, version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
-        Assert.AreEqual(Stability.Beta, version.Stability);
+        Assert.AreEqual(0, version.Version.Major);
+        Assert.AreEqual(1, version.Version.Minor);
+        Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
+        Assert.AreEqual(Stability.Beta, version.Version.Stability);
         Assert.AreEqual(BranchType.Master, version.BranchType);
-        Assert.AreEqual(1, version.PreReleaseNumber);
+        Assert.AreEqual(1, version.Version.PreReleaseNumber);
     }
 
 
@@ -66,12 +66,12 @@ public class MasterTests
     public void Release_merge()
     {
         var version = FinderWrapper.FindVersionForCommit("716440a5409721b50c519cd73660a8a220c54d5f", "master");
-        Assert.AreEqual(0, version.Major);
-        Assert.AreEqual(2, version.Minor);
-        Assert.AreEqual(0, version.Patch, "Should set the patch version to 0");
-        Assert.AreEqual(Stability.Final, version.Stability);
+        Assert.AreEqual(0, version.Version.Major);
+        Assert.AreEqual(2, version.Version.Minor);
+        Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to 0");
+        Assert.AreEqual(Stability.Final, version.Version.Stability);
         Assert.AreEqual(BranchType.Master, version.BranchType);
-        Assert.AreEqual(0, version.PreReleaseNumber);
+        Assert.AreEqual(0, version.Version.PreReleaseNumber);
     }
 
 }

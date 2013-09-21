@@ -9,7 +9,7 @@ namespace GitFlowVersion
         public Repository Repository;
         public Branch FeatureBranch;
 
-        public VersionInformation FindVersion()
+        public VersionAndBranch FindVersion()
         {
             var firstCommitOnBranch = Repository.Refs.Log(FeatureBranch.CanonicalName).Last();
 
@@ -28,18 +28,21 @@ namespace GitFlowVersion
 
             
             var versionFromMaster = Repository.MasterVersionPriorTo(Commit.When());
-
-            var version = VersionInformation.FromMajorMinorPatch(versionFromMaster.Version);
+            var version = SemanticVersion.FromMajorMinorPatch(versionFromMaster.Version);
             version.Minor++;
             version.Patch = 0;
             version.Stability = Stability.Unstable;
-            version.BranchType = BranchType.Feature;
-            version.Suffix = firstCommitOnBranch.To.Sha.Substring(0,8);
             version.PreReleaseNumber = 0;
-            version.BranchName = FeatureBranch.Name;
-            version.Sha = Commit.Sha;
-            
-            return version;
+            version.Suffix = firstCommitOnBranch.To.Sha.Substring(0, 8);
+
+            return new VersionAndBranch
+            {
+                BranchType = BranchType.Feature,
+                BranchName = FeatureBranch.Name,
+                Sha = Commit.Sha,
+                Version = version
+
+            };
         }
     }
 }

@@ -3,25 +3,31 @@ namespace GitFlowVersion
     using System;
     using System.Linq;
 
-    public class VersionInformation 
+    public class VersionAndBranch
     {
+        public SemanticVersion Version;
+        public BranchType? BranchType;
+        public string BranchName;
+        public string Sha;
+    }
+
+    public class SemanticVersion 
+    {
+        public string Suffix;
         public int Major;
         public int Minor;
         public int Patch;
         public int? PreReleaseNumber;
         public Stability Stability;
-        public BranchType? BranchType;
-        public string Suffix;
-        public string BranchName;
-        public string Sha;
 
-        public static VersionInformation FromMajorMinorPatch(string versionString)
+
+        public static SemanticVersion FromMajorMinorPatch(string versionString)
         {
             var parts = versionString.Split('-');
 
             var stableParts = parts.First().Split('.');
 
-            var parsedVersion = new VersionInformation
+            var parsedVersion = new SemanticVersion
                                       {
                                           Major = int.Parse(stableParts[0]),
                                       };

@@ -8,17 +8,15 @@ namespace GitFlowVersion
         public Repository Repository;
         public Branch PullBranch;
 
-        public VersionInformation FindVersion()
+        public VersionAndBranch FindVersion()
         {
             var versionFromMaster = Repository
                 .MasterVersionPriorTo(Commit.When());
 
-            var version = VersionInformation.FromMajorMinorPatch(versionFromMaster.Version);
+            var version = SemanticVersion.FromMajorMinorPatch(versionFromMaster.Version);
             version.Minor++;
             version.Patch = 0;
             version.Stability = Stability.Unstable;
-            version.BranchType = BranchType.PullRequest;
-
 
             if (TeamCity.IsBuildingAPullRequest())
             {
@@ -29,12 +27,15 @@ namespace GitFlowVersion
                 version.Suffix = PullBranch.CanonicalName
                     .Substring(PullBranch.CanonicalName.IndexOf("/pull/") + 6);                
             }
-
             version.PreReleaseNumber = 0;
-            version.BranchName = PullBranch.Name;
-            version.Sha = Commit.Sha;
 
-            return version;
+            return new VersionAndBranch
+            {
+                BranchType = BranchType.PullRequest,
+                BranchName = PullBranch.Name,
+                Sha = Commit.Sha,
+                Version = version
+            };
         }
     }
 }

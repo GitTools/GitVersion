@@ -10,25 +10,21 @@ namespace GitFlowVersion
         public Repository Repository;
         public Branch ReleaseBranch;
 
-        public VersionInformation FindVersion()
+        public VersionAndBranch FindVersion()
         {
             var developBranch = Repository.DevelopBranch();
 
-            var version = VersionInformation.FromMajorMinorPatch(ReleaseBranch.Name.Replace("release-", ""));
+            var version = SemanticVersion.FromMajorMinorPatch(ReleaseBranch.Name.Replace("release-", ""));
 
             version.Stability = Stability.Beta;
-            version.BranchType = BranchType.Release;
-            version.BranchName = ReleaseBranch.Name;
-            version.Sha = Commit.Sha;
 
             var overrideTag =
                 Commit.SemVerTags()
-                      .FirstOrDefault(t => VersionInformation.FromMajorMinorPatch(t.Name).Stability != Stability.Final);
-
+                      .FirstOrDefault(t => SemanticVersion.FromMajorMinorPatch(t.Name).Stability != Stability.Final);
 
             if (overrideTag != null)
             {
-                var overrideVersion = VersionInformation.FromMajorMinorPatch(overrideTag.Name);
+                var overrideVersion = SemanticVersion.FromMajorMinorPatch(overrideTag.Name);
 
                 if (version.Major != overrideVersion.Major || version.Minor != overrideVersion.Minor ||
                     version.Patch != overrideVersion.Patch)
@@ -45,7 +41,14 @@ namespace GitFlowVersion
                 .SkipWhile(x => x != Commit)
                 .TakeWhile(x => !x.IsOnBranch(developBranch))
                 .Count();
-            return version;
+
+            return new VersionAndBranch
+            {
+                BranchType = BranchType.Release,
+                BranchName = ReleaseBranch.Name,
+                Sha = Commit.Sha,
+                Version = version
+            };
         }
     }
 }

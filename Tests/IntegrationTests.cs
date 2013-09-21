@@ -70,13 +70,13 @@ public class IntegrationTests
                              Branch = branch
                          };
             var version = finder.FindVersion();
-            Debug.WriteLine(version.Major);
-            Debug.WriteLine(version.Minor);
-            Debug.WriteLine(version.Patch);
-            Debug.WriteLine(version.PreReleaseNumber);
-            Debug.WriteLine(version.Stability);
+            Debug.WriteLine(version.Version.Major);
+            Debug.WriteLine(version.Version.Minor);
+            Debug.WriteLine(version.Version.Patch);
+            Debug.WriteLine(version.Version.PreReleaseNumber);
+            Debug.WriteLine(version.Version.Stability);
             Debug.WriteLine(version.BranchType);
-            Debug.WriteLine(version.Suffix);
+            Debug.WriteLine(version.Version.Suffix);
         }
     }
     [Test,Explicit]
@@ -94,13 +94,13 @@ public class IntegrationTests
                              Branch = branch
                          };
             var version = finder.FindVersion();
-            Debug.WriteLine(version.Major);
-            Debug.WriteLine(version.Minor);
-            Debug.WriteLine(version.Patch);
-            Debug.WriteLine(version.PreReleaseNumber);
-            Debug.WriteLine(version.Stability);
+            Debug.WriteLine(version.Version.Major);
+            Debug.WriteLine(version.Version.Minor);
+            Debug.WriteLine(version.Version.Patch);
+            Debug.WriteLine(version.Version.PreReleaseNumber);
+            Debug.WriteLine(version.Version.Stability);
             Debug.WriteLine(version.BranchType);
-            Debug.WriteLine(version.Suffix);
+            Debug.WriteLine(version.Version.Suffix);
         }
     }
 
@@ -119,13 +119,13 @@ public class IntegrationTests
                              Branch = branch
                          };
             var version = finder.FindVersion();
-            Debug.WriteLine(version.Major);
-            Debug.WriteLine(version.Minor);
-            Debug.WriteLine(version.Patch);
-            Debug.WriteLine(version.PreReleaseNumber);
-            Debug.WriteLine(version.Stability);
+            Debug.WriteLine(version.Version.Major);
+            Debug.WriteLine(version.Version.Minor);
+            Debug.WriteLine(version.Version.Patch);
+            Debug.WriteLine(version.Version.PreReleaseNumber);
+            Debug.WriteLine(version.Version.Stability);
             Debug.WriteLine(version.BranchType);
-            Debug.WriteLine(version.Suffix);
+            Debug.WriteLine(version.Version.Suffix);
         }
     }
     [Test,Explicit]
@@ -143,13 +143,13 @@ public class IntegrationTests
                              Branch = branch
                          };
             var version = finder.FindVersion();
-            Debug.WriteLine(version.Major);
-            Debug.WriteLine(version.Minor);
-            Debug.WriteLine(version.Patch);
-            Debug.WriteLine(version.PreReleaseNumber);
-            Debug.WriteLine(version.Stability);
+            Debug.WriteLine(version.Version.Major);
+            Debug.WriteLine(version.Version.Minor);
+            Debug.WriteLine(version.Version.Patch);
+            Debug.WriteLine(version.Version.PreReleaseNumber);
+            Debug.WriteLine(version.Version.Stability);
             Debug.WriteLine(version.BranchType);
-            Debug.WriteLine(version.Suffix);
+            Debug.WriteLine(version.Version.Suffix);
         }
     }
 }

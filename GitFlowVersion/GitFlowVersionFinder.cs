@@ -9,7 +9,7 @@ namespace GitFlowVersion
         public Repository Repository;
         public Branch Branch;
 
-        public VersionInformation FindVersion()
+        public VersionAndBranch FindVersion()
         {
             if (Branch.Name == "master")
             {

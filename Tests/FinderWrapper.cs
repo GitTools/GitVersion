@@ -6,7 +6,7 @@ using NCrunch.Framework;
 
 public class FinderWrapper
 {
-    public static VersionInformation FindVersionForCommit(string sha, string branchName)
+    public static VersionAndBranch FindVersionForCommit(string sha, string branchName)
     {
         using (var repository = GetRepository())
         {

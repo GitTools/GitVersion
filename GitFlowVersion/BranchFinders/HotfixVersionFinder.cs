@@ -9,20 +9,24 @@ namespace GitFlowVersion
         public Branch HotfixBranch;
         public Branch MasterBranch;
 
-        public VersionInformation FindVersion()
+        public VersionAndBranch FindVersion()
         {
-            var version = VersionInformation.FromMajorMinorPatch(HotfixBranch.Name.Replace("hotfix-", ""));
+            var version = SemanticVersion.FromMajorMinorPatch(HotfixBranch.Name.Replace("hotfix-", ""));
             version.Stability = Stability.Beta;
-            version.BranchType = BranchType.Hotfix;
-            version.BranchName = HotfixBranch.Name;
-            version.Sha = Commit.Sha;
 
             version.PreReleaseNumber = HotfixBranch
                 .Commits
                 .SkipWhile(x => x != Commit)
                 .TakeWhile(x => !x.IsOnBranch(MasterBranch))
                 .Count();
-            return version;
+
+            return new VersionAndBranch
+            {
+                BranchType = BranchType.Hotfix,
+                BranchName = HotfixBranch.Name,
+                Sha = Commit.Sha,
+                Version = version
+            };
         }
     }
 }

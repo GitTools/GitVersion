@@ -20,13 +20,13 @@ public class PullBranchTests
         FakeTeamcityPullrequest(2);
 
         var version = FinderWrapper.FindVersionForCommit("fa7924aabc3a0c462d2e65dd62bd35a66b88bdb4", "pull_no_2");
-        Assert.AreEqual(0, version.Major);
-        Assert.AreEqual(3, version.Minor, "Minor should be master.Minor+1");
-        Assert.AreEqual(0, version.Patch);
-        Assert.AreEqual(Stability.Unstable, version.Stability);
+        Assert.AreEqual(0, version.Version.Major);
+        Assert.AreEqual(3, version.Version.Minor, "Minor should be master.Minor+1");
+        Assert.AreEqual(0, version.Version.Patch);
+        Assert.AreEqual(Stability.Unstable, version.Version.Stability);
         Assert.AreEqual(BranchType.PullRequest, version.BranchType);
-        Assert.AreEqual("2", version.Suffix); //in TC the branch name will be the pull request no eg 1154
-        Assert.AreEqual(0, version.PreReleaseNumber, "Prerelease is always 0 for pull requests");
+        Assert.AreEqual("2", version.Version.Suffix); //in TC the branch name will be the pull request no eg 1154
+        Assert.AreEqual(0, version.Version.PreReleaseNumber, "Prerelease is always 0 for pull requests");
     }
 
 
@@ -37,13 +37,13 @@ public class PullBranchTests
         FakeTeamcityPullrequest(2);
         
         var version = FinderWrapper.FindVersionForCommit("fa7924aabc3a0c462d2e65dd62bd35a66b88bdb4", "pull_no_2");
-        Assert.AreEqual(0, version.Major);
-        Assert.AreEqual(3, version.Minor, "Minor should be master.Minor+1");
-        Assert.AreEqual(0, version.Patch);
-        Assert.AreEqual(Stability.Unstable, version.Stability);
+        Assert.AreEqual(0, version.Version.Major);
+        Assert.AreEqual(3, version.Version.Minor, "Minor should be master.Minor+1");
+        Assert.AreEqual(0, version.Version.Patch);
+        Assert.AreEqual(Stability.Unstable, version.Version.Stability);
         Assert.AreEqual(BranchType.PullRequest, version.BranchType);
-        Assert.AreEqual("2", version.Suffix); //in TC the branch name will be the pull request no eg 1154
-        Assert.AreEqual(0, version.PreReleaseNumber, "Prerelease is always 0 for pull requests");
+        Assert.AreEqual("2", version.Version.Suffix); //in TC the branch name will be the pull request no eg 1154
+        Assert.AreEqual(0, version.Version.PreReleaseNumber, "Prerelease is always 0 for pull requests");
     }
 
     [TearDown]

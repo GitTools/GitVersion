@@ -69,7 +69,7 @@ public class ModuleWeaver : IDisposable
                 return;
             }
 
-            VersionInformation versionInformation;
+            VersionAndBranch versionInformation;
             var ticks = DirectoryDateFinder.GetLastDirectoryWrite(gitDirectory);
             var key = string.Format("{0}:{1}:{2}", repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
             CachedVersion cachedVersion;
@@ -97,7 +97,7 @@ public class ModuleWeaver : IDisposable
                                             };
             }
 
-            SetAssemblyVersion(versionInformation);
+            SetAssemblyVersion(versionInformation.Version);
 
             ModuleDefinition.Assembly.Name.Version = assemblyVersion;
 
@@ -132,7 +132,7 @@ public class ModuleWeaver : IDisposable
         }
     }
 
-    public virtual VersionInformation GetSemanticVersion(Repository repo)
+    public virtual VersionAndBranch GetSemanticVersion(Repository repo)
     {
         try
         {
@@ -145,7 +145,7 @@ public class ModuleWeaver : IDisposable
         }
     }
 
-    void SetAssemblyVersion(VersionInformation versionInformation)
+    void SetAssemblyVersion(SemanticVersion versionInformation)
     {
         if (ModuleDefinition.IsStrongNamed())
         {

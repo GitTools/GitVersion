@@ -57,7 +57,7 @@
     <Compile Include="MissingBranchException.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="TeamCity.cs" />
-    <Compile Include="VersionInformation.cs" />
+    <Compile Include="SemanticVersion.cs" />
     <Compile Include="Stability.cs" />
     <Compile Include="VersionForDirectoryFinder.cs" />
     <Compile Include="VersionPoint.cs" />

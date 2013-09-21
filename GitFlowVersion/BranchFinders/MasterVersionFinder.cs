@@ -8,16 +8,19 @@ namespace GitFlowVersion
     {
         public Commit Commit;
 
-        public VersionInformation FindVersion()
+        public VersionAndBranch FindVersion()
         {
             var versionString = GetVersionString();
 
-            var version = VersionInformation.FromMajorMinorPatch(versionString);
+            var version = SemanticVersion.FromMajorMinorPatch(versionString);
 
-            version.BranchType = BranchType.Master;
-            version.BranchName = "master";
-            version.Sha = Commit.Sha;
-            return version;
+            return new VersionAndBranch
+            {
+                BranchType = BranchType.Master,
+                BranchName = "master",
+                Sha = Commit.Sha,
+                Version = version
+            };
         }
 
         string GetVersionString()
