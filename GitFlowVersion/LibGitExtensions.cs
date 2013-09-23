@@ -32,10 +32,15 @@ namespace GitFlowVersion
             return commit.Committer.When;
         }
         
-        public static IEnumerable<Tag> SemVerTags(this IRepository repository, Commit commit)
+        public static Tag SemVerTags(this IRepository repository, Commit commit)
         {
-            return repository.Tags.Where(tag => tag.Target == commit)
-                             .Where(tag => SemanticVersion.IsVersion(tag.Name));
+            var semVerTags = repository.Tags.Where(tag => tag.Target == commit)
+                                               .Where(tag => SemanticVersion.IsVersion(tag.Name)).ToList();
+            if (semVerTags.Count > 1)
+            {
+                throw new Exception(string.Format("Error processing commit `{0}`. Only one version version tag per commit is allowed", commit.Sha));
+            }
+            return semVerTags.FirstOrDefault();
         }
 
         public static Reference ToReference(this Branch branch)

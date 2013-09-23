@@ -28,8 +28,8 @@ namespace GitFlowVersion
 
             var overrideTag =
                 Repository
-                    .SemVerTags(Commit)
-                    .FirstOrDefault(t => SemanticVersion.FromMajorMinorPatch(t.Name).Stability != Stability.Final);
+                    .SemVerTags(Commit);
+                    //.FirstOrDefault(t => SemanticVersion.FromMajorMinorPatch(t.Name).Stability != Stability.Final);
 
             if (overrideTag != null)
             {

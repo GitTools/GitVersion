@@ -1,7 +1,6 @@
 namespace GitFlowVersion
 {
     using System;
-    using System.Linq;
     using LibGit2Sharp;
 
     class MasterVersionFinder
@@ -28,8 +27,7 @@ namespace GitFlowVersion
         {
             //TODO: should we take the newest or the highest? perhaps it doesnt matter?
             var versionTag = Repository
-                .SemVerTags(Commit)
-                .FirstOrDefault();
+                .SemVerTags(Commit);
 
             if (versionTag != null)
             {

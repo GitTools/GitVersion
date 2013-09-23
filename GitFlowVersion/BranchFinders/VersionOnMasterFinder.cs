@@ -1,7 +1,6 @@
 namespace GitFlowVersion
 {
     using System;
-    using System.Linq;
     using LibGit2Sharp;
 
     class VersionOnMasterFinder
@@ -40,17 +39,17 @@ namespace GitFlowVersion
 
         string GetMergeOrTagMessage(Commit commit)
         {
+            var semVerTag = Repository.SemVerTags(commit);
+            if (semVerTag != null)
+            {
+                return semVerTag.Name;
+            }
+
             if (commit.Message.StartsWith("merge"))
             {
                 return commit.Message;
             }
 
-            var semVerTags = Repository.SemVerTags(commit);
-            var semVerTag = semVerTags.FirstOrDefault();
-            if (semVerTag != null)
-            {
-                return semVerTag.Name;
-            }
             return null;
         }
 
