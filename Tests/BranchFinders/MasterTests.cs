@@ -1,4 +1,6 @@
 using System;
+using FluentDate;
+using FluentDateTimeOffset;
 using GitFlowVersion;
 using NUnit.Framework;
 
@@ -9,7 +11,28 @@ public class MasterTests
     [Test]
     public void Should_throw_if_head_isnt_a_merge_commit_and_no_override_tag_is_found()
     {
-        Assert.Throws<Exception>(() => FinderWrapper.FindVersionForCommit("a682956dccae752aa24597a0f5cd939f93614509", "master"));
+        var commit = new MockCommit
+                     {
+                         MessageEx = "Not a merge commit",
+                         CommitterEx = 2.Seconds().Ago().ToSignature()
+                     };
+        var finder = new MasterVersionFinder
+                     {
+                         Repository = new MockRepository
+                                      {
+                                          Branches = new MockBranchCollection
+                                                     {
+                                                         new MockBranch("master")
+                                                         {
+                                                             commit
+                                                         },
+                                                     }
+                                      },
+                         Commit = commit
+                     };
+
+        var exception = Assert.Throws<Exception>(() => finder.FindVersion());
+        Assert.AreEqual("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.", exception.Message);
     }
 
     [Test]
@@ -21,7 +44,26 @@ public class MasterTests
     [Test]
     public void Hotfix_merge()
     {
-        var version = FinderWrapper.FindVersionForCommit("290f97a0abd7000a22436b04d9535334f8e8f7ba", "master");
+        var hotfixMergeCommit = new MockCommit
+                         {
+                             MessageEx = "Merge branch hotfix-0.1.5",
+                             CommitterEx = 2.Seconds().Ago().ToSignature()
+                         };
+        var finder = new MasterVersionFinder
+        {
+            Repository = new MockRepository
+            {
+                Branches =  new MockBranchCollection
+                       {
+                           new MockBranch("master")
+                           {
+                               hotfixMergeCommit
+                           },
+                       }
+            },
+            Commit = hotfixMergeCommit
+        };
+        var version = finder.FindVersion();
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(1, version.Version.Minor);
         Assert.AreEqual(5, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
@@ -33,7 +75,33 @@ public class MasterTests
     [Test]
     public void Override_using_tag_with_a_stable_release()
     {
-        var version = FinderWrapper.FindVersionForCommit("4d5ebb00087dec174c50770076ce00f34a303e2c", "master");
+        var commit = new MockCommit
+        {
+            CommitterEx = 2.Seconds().Ago().ToSignature()
+        };
+        var finder = new MasterVersionFinder
+        {
+            Repository = new MockRepository
+            {
+                Branches = new MockBranchCollection
+                       {
+                           new MockBranch("master")
+                           {
+                               commit
+                           },
+                       },
+                       Tags = new MockTagCollection
+                              {
+                                  new MockTag
+                                  {
+                                      NameEx = "0.2.0",
+                                      TargetEx = commit
+                                  }
+                              }
+            },
+            Commit = commit
+        };
+        var version = finder.FindVersion();
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
@@ -45,7 +113,33 @@ public class MasterTests
     [Test]
     public void Override_using_tag_with_a_prerelease()
     {
-        var version = FinderWrapper.FindVersionForCommit("8530d6a72140355b5004a878630cdf596ff551e1", "master");
+        var commit = new MockCommit
+        {
+            CommitterEx = 2.Seconds().Ago().ToSignature()
+        };
+        var finder = new MasterVersionFinder
+        {
+            Repository = new MockRepository
+            {
+                Branches = new MockBranchCollection
+                       {
+                           new MockBranch("master")
+                           {
+                               commit
+                           },
+                       },
+                Tags = new MockTagCollection
+                              {
+                                  new MockTag
+                                  {
+                                      NameEx = "0.1.0-beta1",
+                                      TargetEx = commit
+                                  }
+                              }
+            },
+            Commit = commit
+        };
+        var version = finder.FindVersion();
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(1, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
@@ -56,16 +150,28 @@ public class MasterTests
 
 
     [Test]
-    public void Commit_that_is_not_a_tag_or_a_merge_should_throw()
-    {
-        var exception = Assert.Throws<Exception>(() => FinderWrapper.FindVersionForCommit("24873579bb6d689fdbed13e8b9a9a1e6ddcd38c8", "master"));
-        Assert.AreEqual("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.", exception.Message);
-    }
-    
-    [Test]
     public void Release_merge()
     {
-        var version = FinderWrapper.FindVersionForCommit("716440a5409721b50c519cd73660a8a220c54d5f", "master");
+        var commit = new MockCommit
+        {
+            CommitterEx = 2.Seconds().Ago().ToSignature(),
+            MessageEx = "Merge branch 'release-0.2.0'"
+        };
+        var finder = new MasterVersionFinder
+        {
+            Repository = new MockRepository
+            {
+                Branches = new MockBranchCollection
+                       {
+                           new MockBranch("master")
+                           {
+                               commit
+                           },
+                       },
+            },
+            Commit = commit
+        };
+        var version = finder.FindVersion();
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to 0");

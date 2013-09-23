@@ -69,7 +69,7 @@ public class ModuleWeaver : IDisposable
                 return;
             }
 
-            VersionAndBranch versionInformation;
+            VersionAndBranch versionAndBranch;
             var ticks = DirectoryDateFinder.GetLastDirectoryWrite(gitDirectory);
             var key = string.Format("{0}:{1}:{2}", repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
             CachedVersion cachedVersion;
@@ -78,31 +78,31 @@ public class ModuleWeaver : IDisposable
                 LogInfo("Version read from cache.");
                 if (cachedVersion.Timestamp == ticks)
                 {
-                    versionInformation = cachedVersion.VersionInformation;
+                    versionAndBranch = cachedVersion.VersionAndBranch;
                 }
                 else
                 {
                     LogInfo("Change detected. flushing cache.");
-                    versionInformation = cachedVersion.VersionInformation = GetSemanticVersion(repo);
+                    versionAndBranch = cachedVersion.VersionAndBranch = GetSemanticVersion(repo);
                 }
             }
             else
             {
                 LogInfo("Version not in cache. Calculating version.");
-                versionInformation = GetSemanticVersion(repo);
+                versionAndBranch = GetSemanticVersion(repo);
                 versionCacheVersions[key] = new CachedVersion
                                             {
-                                                VersionInformation = versionInformation,
+                                                VersionAndBranch = versionAndBranch,
                                                 Timestamp = ticks
                                             };
             }
 
-            SetAssemblyVersion(versionInformation.Version);
+            SetAssemblyVersion(versionAndBranch.Version);
 
             ModuleDefinition.Assembly.Name.Version = assemblyVersion;
 
 
-            assemblyInfoVersion = versionInformation.ToLongString();
+            assemblyInfoVersion = versionAndBranch.ToLongString();
 
 
             var customAttribute = customAttributes.FirstOrDefault(x => x.AttributeType.Name == "AssemblyInformationalVersionAttribute");
@@ -123,7 +123,7 @@ public class ModuleWeaver : IDisposable
 
             if (TeamCity.IsRunningInBuildAgent())
             {
-                foreach (var buildParameters in TeamCity.GenerateBuildLogOutput(versionInformation))
+                foreach (var buildParameters in TeamCity.GenerateBuildLogOutput(versionAndBranch))
                 {
                     LogWarning(buildParameters);    
                 }
@@ -145,17 +145,17 @@ public class ModuleWeaver : IDisposable
         }
     }
 
-    void SetAssemblyVersion(SemanticVersion versionInformation)
+    void SetAssemblyVersion(SemanticVersion semanticVersion)
     {
         if (ModuleDefinition.IsStrongNamed())
         {
             // for strong named we don't want to include the patch to avoid binding redirect issues
-            assemblyVersion = new Version(versionInformation.Major, versionInformation.Minor, 0, 0);
+            assemblyVersion = new Version(semanticVersion.Major, semanticVersion.Minor, 0, 0);
         }
         else
         {
             // for non strong named we want to include the patch
-            assemblyVersion = new Version(versionInformation.Major, versionInformation.Minor, versionInformation.Patch, 0);
+            assemblyVersion = new Version(semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch, 0);
         }
     }
 

@@ -5,15 +5,19 @@ namespace GitFlowVersion
     class PullVersionFinder
     {
         public Commit Commit;
-        public Repository Repository;
+        public IRepository Repository;
         public Branch PullBranch;
 
         public VersionAndBranch FindVersion()
         {
-            var versionFromMaster = Repository
-                .MasterVersionPriorTo(Commit.When());
+            var versionOnMasterFinder = new VersionOnMasterFinder
+                                        {
+                                            Repository = Repository
+                                        };
+            var versionFromMaster = versionOnMasterFinder
+                .Execute(Commit.When());
 
-            var version = SemanticVersion.FromMajorMinorPatch(versionFromMaster.Version);
+            var version = versionFromMaster.Version;
             version.Minor++;
             version.Patch = 0;
             version.Stability = Stability.Unstable;
@@ -25,17 +29,17 @@ namespace GitFlowVersion
             else
             {
                 version.Suffix = PullBranch.CanonicalName
-                    .Substring(PullBranch.CanonicalName.IndexOf("/pull/") + 6);                
+                                           .Substring(PullBranch.CanonicalName.IndexOf("/pull/") + 6);
             }
             version.PreReleaseNumber = 0;
 
             return new VersionAndBranch
-            {
-                BranchType = BranchType.PullRequest,
-                BranchName = PullBranch.Name,
-                Sha = Commit.Sha,
-                Version = version
-            };
+                   {
+                       BranchType = BranchType.PullRequest,
+                       BranchName = PullBranch.Name,
+                       Sha = Commit.Sha,
+                       Version = version
+                   };
         }
     }
 }

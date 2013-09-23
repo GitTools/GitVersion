@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FluentDateTime">
+      <HintPath>..\packages\FluentDateTime.1.9.0.0\Lib\NET35\FluentDateTime.dll</HintPath>
+    </Reference>
     <Reference Include="LibGit2Sharp, Version=0.14.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\LibGit2Sharp.0.14.0.0\lib\net35\LibGit2Sharp.dll</HintPath>
@@ -75,6 +78,13 @@
     <Compile Include="AssemblyLocation.cs" />
     <Compile Include="AssemblyWithNoInfoVersionTests.cs" />
     <Compile Include="BranchFinders\DevelopTests.cs" />
+    <Compile Include="Mocks\SignatureBuilder.cs" />
+    <Compile Include="Mocks\MockCommitLog.cs" />
+    <Compile Include="Mocks\MockBranch.cs" />
+    <Compile Include="Mocks\MockBranchCollection.cs" />
+    <Compile Include="Mocks\MockCommit.cs" />
+    <Compile Include="Mocks\MockReferenceCollection.cs" />
+    <Compile Include="Mocks\MockRepository.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="BranchFinders\HotfixTests.cs" />
     <Compile Include="FinderWrapper.cs" />
@@ -82,6 +92,8 @@
     <Compile Include="IntegrationTests.cs" />
     <Compile Include="BranchFinders\MasterTests.cs" />
     <Compile Include="MergeMessageParserTests.cs" />
+    <Compile Include="Mocks\MockTag.cs" />
+    <Compile Include="Mocks\MockTagCollection.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="BranchFinders\FeatureBranchTests.cs" />
     <Compile Include="PartialStubModuleWeaver.cs" />
@@ -116,11 +128,6 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
-if not exist "$(TargetDir)NativeBinaries" md "$(TargetDir)NativeBinaries"
-if not exist "$(TargetDir)NativeBinaries\x86" md "$(TargetDir)NativeBinaries\x86"
-xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.13.0.0\NativeBinaries\x86\*.*" "$(TargetDir)NativeBinaries\x86"
-if not exist "$(TargetDir)NativeBinaries\amd64" md "$(TargetDir)NativeBinaries\amd64"
-xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.13.0.0\NativeBinaries\amd64\*.*" "$(TargetDir)NativeBinaries\amd64"
 if not exist "$(TargetDir)NativeBinaries" md "$(TargetDir)NativeBinaries"
 if not exist "$(TargetDir)NativeBinaries\x86" md "$(TargetDir)NativeBinaries\x86"
 xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.14.0.0\NativeBinaries\x86\*.*" "$(TargetDir)NativeBinaries\x86"

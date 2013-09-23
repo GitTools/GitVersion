@@ -7,6 +7,7 @@ namespace GitFlowVersion
     class MasterVersionFinder
     {
         public Commit Commit;
+        public IRepository Repository;
 
         public VersionAndBranch FindVersion()
         {
@@ -26,8 +27,10 @@ namespace GitFlowVersion
         string GetVersionString()
         {
             //TODO: should we take the newest or the highest? perhaps it doesnt matter?
-            var versionTag = Commit.SemVerTags()
-                                   .FirstOrDefault();
+            var versionTag = Repository
+                .SemVerTags(Commit)
+                .FirstOrDefault();
+
             if (versionTag != null)
             {
                 return versionTag.Name;

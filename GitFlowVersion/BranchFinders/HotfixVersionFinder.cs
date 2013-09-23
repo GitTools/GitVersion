@@ -1,5 +1,6 @@
 namespace GitFlowVersion
 {
+    using System;
     using System.Linq;
     using LibGit2Sharp;
 
@@ -7,7 +8,17 @@ namespace GitFlowVersion
     {
         public Commit Commit;
         public Branch HotfixBranch;
-        public Branch MasterBranch;
+        public IRepository Repository;
+        public Func<Commit, bool> IsOnMasterBranchFunc;
+
+        public HotfixVersionFinder()
+        {
+            IsOnMasterBranchFunc = x =>
+                {
+                    var masterBranch = Repository.MasterBranch();
+                    return Repository.IsOnBranch(masterBranch, x);
+                }; 
+        }
 
         public VersionAndBranch FindVersion()
         {
@@ -17,7 +28,7 @@ namespace GitFlowVersion
             version.PreReleaseNumber = HotfixBranch
                 .Commits
                 .SkipWhile(x => x != Commit)
-                .TakeWhile(x => !x.IsOnBranch(MasterBranch))
+                .TakeWhile(x => !IsOnMasterBranchFunc(x))
                 .Count();
 
             return new VersionAndBranch

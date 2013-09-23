@@ -6,7 +6,7 @@ namespace GitFlowVersion
     class DevelopVersionFinder
     {
         public Commit Commit;
-        public Repository Repository;
+        public IRepository Repository;
 
         public VersionAndBranch FindVersion()
         {
@@ -18,21 +18,22 @@ namespace GitFlowVersion
             version.Stability = Stability.Unstable;
 
             return new VersionAndBranch
-                                              {
-                                                  BranchType = BranchType.Develop,
-                                                  BranchName = "develop",
-                                                  Sha = Commit.Sha,
-                                                  Version = version
-                                              };
+                   {
+                       BranchType = BranchType.Develop,
+                       BranchName = "develop",
+                       Sha = Commit.Sha,
+                       Version = version
+                   };
         }
 
         SemanticVersion GetSemanticVersion()
         {
-
-            var versionFromMaster = Repository.MasterVersionPriorTo(Commit.When());
-           
-            var version = SemanticVersion.FromMajorMinorPatch(versionFromMaster.Version);
-
+            var versionOnMasterFinder = new VersionOnMasterFinder
+                                        {
+                                            Repository = Repository,
+                                        };
+            var versionFromMaster = versionOnMasterFinder.Execute(Commit.When());
+            var version = versionFromMaster.Version;
             var developBranch = Repository.DevelopBranch();
             version.PreReleaseNumber = developBranch.Commits
                                               .SkipWhile(x => x != Commit)

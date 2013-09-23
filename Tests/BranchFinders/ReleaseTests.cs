@@ -8,7 +8,32 @@ public class ReleaseTests
     [Test]
     public void No_commits()
     {
-        var version = FinderWrapper.FindVersionForCommit("c50179a2c77843245ace262b51b08af7b3b7f8fe", "release-0.3.0");
+        var branchingCommit = new MockCommit
+        {
+            MessageEx = "branching commit",
+        };
+        var releaseBranch = new MockBranch("release-0.3.0")
+                            {
+                                branchingCommit,
+                            };
+        var finder = new ReleaseVersionFinder
+        {
+            ReleaseBranch = releaseBranch,
+            Commit = branchingCommit,
+            Repository = new MockRepository
+            {
+                Branches = new MockBranchCollection
+                                                     {
+                                                         new MockBranch("develop")
+                                                         {
+                                                             branchingCommit
+                                                         },
+                                                         releaseBranch
+                                                     }
+            },
+            IsOnDevelopBranchFunc = x => ReferenceEquals(x, branchingCommit)
+        };
+        var version = finder.FindVersion();
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(3, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch);
@@ -20,7 +45,37 @@ public class ReleaseTests
     [Test]
     public void First_commit()
     {
-        var version = FinderWrapper.FindVersionForCommit("a95500b14bdd750951b0087f508cb8a05a73b04f", "release-0.5.0");
+        var branchingCommit = new MockCommit
+                              {
+                                  MessageEx = "branching commit",
+                              };
+        var firstCommit = new MockCommit
+                          {
+                              MessageEx = "first commit on release",
+                          };
+        var releaseBranch = new MockBranch("release-0.5.0")
+                            {
+                                firstCommit,
+                                branchingCommit,
+                            };
+        var finder = new ReleaseVersionFinder
+                     {
+                         ReleaseBranch = releaseBranch,
+                         Commit = firstCommit,
+                         Repository = new MockRepository
+                                      {
+                                          Branches = new MockBranchCollection
+                                                     {
+                                                         new MockBranch("develop")
+                                                         {
+                                                             branchingCommit
+                                                         },
+                                                         releaseBranch
+                                                     }
+                                      },
+                                      IsOnDevelopBranchFunc =x=> ReferenceEquals(x,branchingCommit)
+                     };
+        var version = finder.FindVersion();
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(5, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch);
@@ -32,7 +87,41 @@ public class ReleaseTests
     [Test]
     public void Second_commit()
     {
-        var version = FinderWrapper.FindVersionForCommit("d27a07a5522980d53b08ae0141b281ab31570533", "release-0.4.0");
+        var branchingCommit = new MockCommit
+                              {
+                                  MessageEx = "branching commit",
+                              };
+        var secondCommit = new MockCommit
+                           {
+                               MessageEx = "second commit on release",
+                           };
+        var releaseBranch = new MockBranch("release-0.4.0")
+                            {
+                                secondCommit,
+                                new MockCommit
+                                {
+                                    MessageEx = "first commit on release",
+                                },
+                                branchingCommit,
+                            };
+        var finder = new ReleaseVersionFinder
+                     {
+                         ReleaseBranch = releaseBranch,
+                         Commit = secondCommit,
+                         Repository = new MockRepository
+                                      {
+                                          Branches = new MockBranchCollection
+                                                     {
+                                                         new MockBranch("develop")
+                                                         {
+                                                             branchingCommit
+                                                         },
+                                                         releaseBranch
+                                                     }
+                                      },
+                         IsOnDevelopBranchFunc = x => ReferenceEquals(x, branchingCommit)
+                     };
+        var version = finder.FindVersion();
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(4, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch);
@@ -45,8 +134,47 @@ public class ReleaseTests
     [Test]
     public void Override_stage_using_tag()
     {
+
+        var branchingCommit = new MockCommit
+                              {
+                                  MessageEx = "branching commit",
+                              };
+        var firstCommit = new MockCommit
+                          {
+                              MessageEx = "first commit on release",
+                          };
+        var releaseBranch = new MockBranch("release-0.4.0")
+                            {
+                                firstCommit,
+                                branchingCommit,
+                            };
+        var finder = new ReleaseVersionFinder
+                     {
+                         ReleaseBranch = releaseBranch,
+                         Commit = firstCommit,
+                         Repository = new MockRepository
+                                      {
+                                          Branches = new MockBranchCollection
+                                                     {
+                                                         new MockBranch("develop")
+                                                         {
+                                                             branchingCommit
+                                                         },
+                                                         releaseBranch
+                                                     },
+                                          Tags = new MockTagCollection
+                                                 {
+                                                     new MockTag
+                                                     {
+                                                         TargetEx = firstCommit,
+                                                         NameEx = "0.4.0-RC1"
+                                                     }
+                                                 }
+                                      },
+                         IsOnDevelopBranchFunc = x => ReferenceEquals(x, branchingCommit)
+                     };
+        var version = finder.FindVersion();
         //tag: 0.4.0-RC1 => 
-        var version = FinderWrapper.FindVersionForCommit("d2f82c724005bc7c5c50106f0577606ea4f89e80", "release-0.4.0");
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(4, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch);

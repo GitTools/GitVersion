@@ -10,7 +10,6 @@ namespace GitFlowVersion
         public string BranchName;
         public string Sha;
     }
-
     public class SemanticVersion 
     {
         public string Suffix;
@@ -49,7 +48,9 @@ namespace GitFlowVersion
                 var stageString = prereleaseString.Substring(0, buildIndex);
 
                 if (stageString == "RC")
+                {
                     stageString = "ReleaseCandidate";
+                }
 
 
                 parsedVersion.Stability = (Stability)Enum.Parse(typeof(Stability), stageString, ignoreCase: true);

@@ -5,36 +5,36 @@ using GitFlowVersion;
 
 public class TeamCity
 {
-    public static string GenerateBuildVersion(VersionAndBranch versionInformation)
+    public static string GenerateBuildVersion(VersionAndBranch versionAndBranch)
     {
         var prereleaseString = "";
 
-        if (versionInformation.Version.Stability != Stability.Final)
+        if (versionAndBranch.Version.Stability != Stability.Final)
         {
-            switch (versionInformation.BranchType )
+            switch (versionAndBranch.BranchType )
             {
              case BranchType.Develop:
-                    prereleaseString = "-" + versionInformation.Version.Stability + versionInformation.Version.PreReleaseNumber;
+                    prereleaseString = "-" + versionAndBranch.Version.Stability + versionAndBranch.Version.PreReleaseNumber;
                     break;
 
              case BranchType.Release:
-                    prereleaseString = "-" + versionInformation.Version.Stability + versionInformation.Version.PreReleaseNumber;
+                    prereleaseString = "-" + versionAndBranch.Version.Stability + versionAndBranch.Version.PreReleaseNumber;
                     break;
 
              case BranchType.Hotfix:
-                    prereleaseString = "-" + versionInformation.Version.Stability + versionInformation.Version.PreReleaseNumber;
+                    prereleaseString = "-" + versionAndBranch.Version.Stability + versionAndBranch.Version.PreReleaseNumber;
                     break;
              case BranchType.PullRequest:
-                    prereleaseString = "-PullRequest-" + versionInformation.Version.Suffix;
+                    prereleaseString = "-PullRequest-" + versionAndBranch.Version.Suffix;
                     break;
              case BranchType.Feature:
-                    prereleaseString = "-Feature-" + versionInformation.BranchName + "-" + versionInformation.Sha;
+                    prereleaseString = "-Feature-" + versionAndBranch.BranchName + "-" + versionAndBranch.Sha;
                     break;
             }
 
         }
 
-        return string.Format("##teamcity[buildNumber '{0}.{1}.{2}{3}']", versionInformation.Version.Major, versionInformation.Version.Minor, versionInformation.Version.Patch, prereleaseString);
+        return string.Format("##teamcity[buildNumber '{0}.{1}.{2}{3}']", versionAndBranch.Version.Major, versionAndBranch.Version.Minor, versionAndBranch.Version.Patch, prereleaseString);
     }
 
 
@@ -55,8 +55,10 @@ public class TeamCity
     {
         foreach (DictionaryEntry de in Environment.GetEnvironmentVariables())
         {
-            if (((string)de.Key).StartsWith("teamcity.build.vcs.branch."))
+            if (((string) de.Key).StartsWith("teamcity.build.vcs.branch."))
+            {
                 return (string)de.Value;
+            }
         }
 
         return null;
@@ -67,14 +69,15 @@ public class TeamCity
         return int.Parse(GetBranchEnvironmentVariable().Split('/')[2]);
     }
 
-    public static IEnumerable<string> GenerateBuildLogOutput(VersionInformation versionInformation)
+    public static IEnumerable<string> GenerateBuildLogOutput(VersionAndBranch versionAndBranch)
     {
-        yield return GenerateBuildVersion(versionInformation);
-        yield return GenerateBuildParameter("Major", versionInformation.Major.ToString());
-        yield return GenerateBuildParameter("Minor", versionInformation.Minor.ToString());
-        yield return GenerateBuildParameter("Patch", versionInformation.Patch.ToString());
-        yield return GenerateBuildParameter("Stability", versionInformation.Stability.ToString());
-        yield return GenerateBuildParameter("PreReleaseNumber", versionInformation.PreReleaseNumber.ToString());
+        yield return GenerateBuildVersion(versionAndBranch);
+        var semanticVersion = versionAndBranch.Version;
+        yield return GenerateBuildParameter("Major", semanticVersion.Major.ToString());
+        yield return GenerateBuildParameter("Minor", semanticVersion.Minor.ToString());
+        yield return GenerateBuildParameter("Patch", semanticVersion.Patch.ToString());
+        yield return GenerateBuildParameter("Stability", semanticVersion.Stability.ToString());
+        yield return GenerateBuildParameter("PreReleaseNumber", semanticVersion.PreReleaseNumber.ToString());
 
     }
 

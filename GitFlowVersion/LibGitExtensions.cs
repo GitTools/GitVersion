@@ -22,106 +22,57 @@ namespace GitFlowVersion
             return (Repository)branchRepoField.GetValue(branch);
         }
 
-        public static IEnumerable<Commit> SpecificCommits(this Branch branch)
-        {
-            var firstCommitOnBranch = branch.Repository()
-                .Refs
-                .Log(branch.CanonicalName)
-                .Last();
-            foreach (var commit in branch.Commits)
-            {
-                if (commit.Id == firstCommitOnBranch.To)
-                {
-                    yield return commit;
-                    break;
-                }
-                yield return commit;
-            }
-        }
-
-
-
-
         public static Repository Repository(this Commit commit)
         {
             return (Repository)commitRepoField.GetValue(commit);
         }
+
         public static DateTimeOffset When(this Commit commit)
         {
             return commit.Committer.When;
         }
-        public static IEnumerable<Tag> CommitTags(this Repository repository)
+        
+        public static IEnumerable<Tag> SemVerTags(this IRepository repository, Commit commit)
         {
-            return repository.Tags.Where(tag => tag.Target is Commit);
+            return repository.Tags.Where(tag => tag.Target == commit)
+                             .Where(tag => SemanticVersion.IsVersion(tag.Name));
         }
-        public static IEnumerable<Tag> Tags(this Commit commit)
-        {
-            return commit.Repository().Tags.Where(tag => tag.Target == commit);
-        }
-        public static IEnumerable<Tag> SemVerTags(this Commit commit)
-        {
-            return commit.Tags().Where(tag => SemanticVersion.IsVersion(tag.Name));
-        }
-        public static IEnumerable<Reference> LocalBranchRefs(this Repository repository)
-        {
-            return repository.Refs.Where(r => r.IsLocalBranch());
-        }
-        public static IEnumerable<Reference> TagRefs(this Repository repository)
-        {
-            return repository.Refs.Where(r => r.IsTag());
-        }
+
         public static Reference ToReference(this Branch branch)
         {
             return branch.Repository().Refs.First(x => x.CanonicalName == branch.CanonicalName);
         }
+
         public static bool IsOnBranch(this Commit commit, Branch branch)
         {
             return branch.Repository().Refs.ReachableFrom(new[] { branch.ToReference() }, new[] { commit }).Any();
         }
+
+        public static bool IsOnBranch(this IRepository repository, Branch branch, Commit commit)
+        {
+            return repository.Refs.ReachableFrom(new[] { branch.ToReference() }, new[] { commit }).Any();
+        }
+
         public static IEnumerable<Commit> CommitsPriorToThan(this Branch branch, DateTimeOffset olderThan)
         {
             return branch.Commits.SkipWhile(c => c.When() > olderThan);
         }
 
-        public static VersionPoint MasterVersionPriorTo(this Repository repository, DateTimeOffset olderThan)
+        public static bool IsMinorLargerThan(this SemanticVersion version, SemanticVersion o)
         {
-            var masterBranch = repository
-                .MasterBranch();
-            foreach (var commit in masterBranch.CommitsPriorToThan(olderThan))
+            if (version.Major > o.Major)
             {
-                var message = GetMergeOrTagMessage(commit);
-                if (message != null)
-                {
-                    return new VersionPoint
-                           {
-                               Version = MergeMessageParser.GetVersionFromMergeCommit(message),
-                               Timestamp = commit.When()
-                           };
-                }
+                return true;
             }
-            return new VersionPoint
-                   {
-                       Version = "0.1.0",
-                       Timestamp = DateTimeOffset.MinValue
-                   };
+            if ((version.Major == o.Major) && (version.Major > o.Major))
+            {
+                return true;
+            }
+            return false;
         }
+
+       
      
-
-        static string GetMergeOrTagMessage(Commit commit)
-        {
-            if (commit.Message.StartsWith("merge"))
-            {
-                return commit.Message;
-            }
-
-            var semVerTag = commit.SemVerTags().FirstOrDefault();
-            if (semVerTag != null)
-            {
-                return semVerTag.Name;
-            }
-            return null;
-        }
-
 
         public static bool IsOnBranch(this Tag tag, Branch branch)
         {
@@ -132,6 +83,7 @@ namespace GitFlowVersion
             }
             return commit.IsOnBranch(branch);
         }
+
         public static DateTimeOffset CommitTimeStamp(this Tag tag)
         {
             var commit = tag.Target as Commit;
@@ -141,6 +93,7 @@ namespace GitFlowVersion
             }
             return commit.When();
         }
+
         public static bool IsBefore(this Tag tag, Commit commit)
         {
             var tagCommit = tag.Target as Commit;
@@ -151,7 +104,7 @@ namespace GitFlowVersion
             return tagCommit.When() <= commit.When();
         }
 
-        public static Branch GetBranch(this Repository repository, string name)
+        public static Branch GetBranch(this IRepository repository, string name)
         {
             var branch = repository.Branches.FirstOrDefault(b => b.Name == name);
 
@@ -195,12 +148,12 @@ namespace GitFlowVersion
             return branch;
         }
 
-        public static Branch DevelopBranch(this Repository repository)
+        public static Branch DevelopBranch(this IRepository repository)
         {
             return repository.GetBranch("develop");
         }
 
-        public static Branch MasterBranch(this Repository repository)
+        public static Branch MasterBranch(this IRepository repository)
         {
             return repository.GetBranch("master");
         }

@@ -1,5 +1,8 @@
 using System;
+using FluentDate;
+using FluentDateTimeOffset;
 using GitFlowVersion;
+using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
@@ -8,7 +11,29 @@ public class HotfixTests
     [Test]
     public void No_commits()
     {
-        var version = FinderWrapper.FindVersionForCommit("42c23e25d3bf31a3d7a54a0fdd3678209af468a2", "hotfix-0.1.4");
+        var branchingCommit = new MockCommit
+                              {
+                                  CommitterEx = 1.Seconds().Ago().ToSignature(),
+                                  IdEx = new ObjectId("c50179a2c77843245ace262b51b08af7b3b7f8fe")
+                              };
+        var hotfixBranch = new MockBranch("hotfix-0.1.4");
+
+        var finder = new HotfixVersionFinder
+                     {
+                         HotfixBranch = hotfixBranch,
+                         Commit = branchingCommit,
+                         Repository = new MockRepository
+                                      {
+                                          Branches = new MockBranchCollection
+                                                     {
+                                                         new MockBranch("master"){branchingCommit},
+                                                         hotfixBranch
+                                                     }
+                                      },
+                         IsOnMasterBranchFunc = x => ReferenceEquals(x, branchingCommit)
+                     };
+        var version = finder.FindVersion();
+
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(1, version.Version.Minor);
         Assert.AreEqual(4, version.Version.Patch);
@@ -20,7 +45,37 @@ public class HotfixTests
     [Test]
     public void First_commit()
     {
-        var version = FinderWrapper.FindVersionForCommit("e6d69d0511400087cf09f2f6a4e97588b3b669d2", "hotfix-0.1.3");
+        var branchingCommit = new MockCommit
+                              {
+                                  MessageEx = "branching commit",
+                              };
+        var firstCommit = new MockCommit
+                         {
+                             MessageEx = "first commit on hotfix",
+                         };
+        var hotfixBranch = new MockBranch("hotfix-0.1.3")
+                           {
+                               firstCommit,
+                               branchingCommit,
+                           };
+        var finder = new HotfixVersionFinder
+                     {
+                         HotfixBranch = hotfixBranch,
+                         Commit = firstCommit,
+                         Repository = new MockRepository
+                                      {
+                                          Branches = new MockBranchCollection
+                                                     {
+                                                         new MockBranch("master")
+                                                         {
+                                                            branchingCommit
+                                                         },
+                                                         hotfixBranch
+                                                     }
+                                      },
+                         IsOnMasterBranchFunc = x => ReferenceEquals(x, branchingCommit)
+                     };
+        var version = finder.FindVersion();
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(1, version.Version.Minor);
         Assert.AreEqual(3, version.Version.Patch);
@@ -32,7 +87,41 @@ public class HotfixTests
     [Test]
     public void Second_commit()
     {
-        var version = FinderWrapper.FindVersionForCommit("3b09cebcbb4a6eadf534b2b5b7ee4b778a4e49c1", "hotfix-0.1.3");
+        var branchingCommit = new MockCommit
+                              {
+                                  MessageEx = "branchingCommit"
+                              };
+        var secondCommit = new MockCommit
+                         {
+                             MessageEx = "secondCommit"
+                         };
+        var hotfixBranch = new MockBranch("hotfix-0.1.3")
+                           {
+                               secondCommit,
+                               new MockCommit
+                               {
+                                  MessageEx = "firstCommit"
+                               },
+                               branchingCommit,
+                           };
+        var finder = new HotfixVersionFinder
+                     {
+                         HotfixBranch = hotfixBranch,
+                         Commit = secondCommit,
+                         Repository = new MockRepository
+                                      {
+                                          Branches = new MockBranchCollection
+                                                     {
+                                                         new MockBranch("master")
+                                                         {
+                                                             branchingCommit
+                                                         },
+                                                         hotfixBranch
+                                                     }
+                                      },
+                         IsOnMasterBranchFunc = x => ReferenceEquals(x, branchingCommit)
+                     };
+        var version = finder.FindVersion();
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(1, version.Version.Minor);
         Assert.AreEqual(3, version.Version.Patch);

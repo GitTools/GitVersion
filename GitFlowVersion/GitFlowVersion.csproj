@@ -44,6 +44,7 @@
     <Compile Include="BranchFinders\FeatureVersionFinder.cs" />
     <Compile Include="BranchFinders\DevelopVersionFinder.cs" />
     <Compile Include="BranchFinders\HotfixVersionFinder.cs" />
+    <Compile Include="BranchFinders\VersionOnMasterFinder.cs" />
     <Compile Include="BranchType.cs" />
     <Compile Include="InformationalVersionBuilder.cs" />
     <Compile Include="Logger.cs" />
@@ -75,11 +76,6 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
-if not exist "$(TargetDir)NativeBinaries" md "$(TargetDir)NativeBinaries"
-if not exist "$(TargetDir)NativeBinaries\x86" md "$(TargetDir)NativeBinaries\x86"
-xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.13.0.0\NativeBinaries\x86\*.*" "$(TargetDir)NativeBinaries\x86"
-if not exist "$(TargetDir)NativeBinaries\amd64" md "$(TargetDir)NativeBinaries\amd64"
-xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.13.0.0\NativeBinaries\amd64\*.*" "$(TargetDir)NativeBinaries\amd64"
 if not exist "$(TargetDir)NativeBinaries" md "$(TargetDir)NativeBinaries"
 if not exist "$(TargetDir)NativeBinaries\x86" md "$(TargetDir)NativeBinaries\x86"
 xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.14.0.0\NativeBinaries\x86\*.*" "$(TargetDir)NativeBinaries\x86"

@@ -1,3 +1,5 @@
+using FluentDate;
+using FluentDateTimeOffset;
 using GitFlowVersion;
 using NUnit.Framework;
 
@@ -13,7 +15,33 @@ public class DevelopTests
     [Test]
     public void Commit_on_develop_and_previous_commit_on_master_is_a_hotfix()
     {
-        var version = FinderWrapper.FindVersionForCommit("42c23e25d3bf31a3d7a54a0fdd3678209af468a2", "develop");
+        var commitOnDevelop = new MockCommit
+                            {
+                                CommitterEx = 1.Seconds().Ago().ToSignature()
+                            };
+        var finder = new DevelopVersionFinder
+                     {
+                         Repository = new MockRepository
+                                      {
+                                          Branches =  new MockBranchCollection
+                       {
+                           new MockBranch("master")
+                           {
+                               new MockCommit
+                               {
+                                   MessageEx = "hotfix-0.1.1",
+                                   CommitterEx = 2.Seconds().Ago().ToSignature()
+                               }
+                           },
+                           new MockBranch("develop")
+                           {
+                               commitOnDevelop
+                           }
+                       }
+                                      },
+                         Commit = commitOnDevelop
+                     };
+        var version = finder.FindVersion();
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Version.Patch);
@@ -25,7 +53,42 @@ public class DevelopTests
     [Test]
     public void Commit_on_develop_and_previous_commit_on_master_tag()
     {
-        var version = FinderWrapper.FindVersionForCommit("6b503e747408bbbcac7ec20a6c81cf10e53b6dcd", "develop");
+        var commitOnDevelop = new MockCommit
+        {
+            CommitterEx = 1.Seconds().Ago().ToSignature()
+        };
+        var commitOnMaster = new MockCommit
+                         {
+                             MessageEx = "foo",
+                             CommitterEx = 2.Seconds().Ago().ToSignature()
+                         };
+        var finder = new DevelopVersionFinder
+        {
+            Repository = new MockRepository
+            {
+                Branches = new MockBranchCollection
+                       {
+                           new MockBranch("master")
+                           {
+                               commitOnMaster
+                           },
+                           new MockBranch("develop")
+                           {
+                               commitOnDevelop
+                           }
+                       }, 
+                Tags = new MockTagCollection
+                       {
+                           new MockTag
+                          {
+                              TargetEx = commitOnMaster, NameEx = "0.1"
+                          }
+                       }
+            },
+            Commit = commitOnDevelop
+        };
+
+        var version = finder.FindVersion();
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Version.Patch);

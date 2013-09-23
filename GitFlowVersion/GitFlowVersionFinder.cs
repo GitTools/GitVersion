@@ -1,12 +1,11 @@
 namespace GitFlowVersion
 {
-    using System.Linq;
     using LibGit2Sharp;
 
     public class GitFlowVersionFinder
     {
         public Commit Commit;
-        public Repository Repository;
+        public IRepository Repository;
         public Branch Branch;
 
         public VersionAndBranch FindVersion()
@@ -16,6 +15,7 @@ namespace GitFlowVersion
                 return new MasterVersionFinder
                                           {
                                               Commit = Commit,
+                                              Repository = Repository
                                           }.FindVersion();
             }
 
@@ -25,7 +25,7 @@ namespace GitFlowVersion
                                           {
                                               Commit = Commit,
                                               HotfixBranch = Branch,
-                                              MasterBranch = Repository.Branches.First(x => x.Name == "master")
+                                              Repository = Repository
                                           }.FindVersion();
             }
 
