@@ -1,25 +1,25 @@
 namespace GitFlowVersion
 {
     using System;
+    using System.Collections.Generic;
     using LibGit2Sharp;
 
     class VersionOnMasterFinder
     {
         public IRepository Repository;
-
-        public VersionPoint Execute(DateTimeOffset olderThan)
+        public DateTimeOffset OlderThan;
+        public VersionPoint ExecuteOld()
         {
             var masterBranch = Repository
                 .MasterBranch();
-            foreach (var commit in masterBranch.CommitsPriorToThan(olderThan))
+            foreach (var commit in masterBranch.CommitsPriorToThan(OlderThan))
             {
-                var message = GetMergeOrTagMessage(commit);
-                if (message != null)
+                var versionFromCommit = GetMergeOrTagMessage(commit);
+                if (versionFromCommit != null)
                 {
-                    var versionFromMergeCommit = MergeMessageParser.GetVersionFromMergeCommit(message);
                     return new VersionPoint
                            {
-                               Version = SemanticVersion.FromMajorMinorPatch(versionFromMergeCommit),
+                               Version = versionFromCommit,
                                Timestamp = commit.When()
                            };
                 }
@@ -37,50 +37,69 @@ namespace GitFlowVersion
         }
 
 
-        string GetMergeOrTagMessage(Commit commit)
+        SemanticVersion GetMergeOrTagMessage(Commit commit)
         {
             var semVerTag = Repository.SemVerTags(commit);
             if (semVerTag != null)
             {
-                return semVerTag.Name;
+                return semVerTag;
             }
 
-            if (commit.Message.StartsWith("merge"))
+            SemanticVersion version;
+            if (MergeMessageParser.TryParse(commit.Message, out version))
             {
-                return commit.Message;
+                return version;
             }
 
             return null;
         }
 
-        //public static VersionPoint MasterVersionPriorToNew(this IRepository repository, DateTimeOffset olderThan)
-        //{
-        //    VersionPoint previous = null;
-        //    foreach (var current in repository.VersionsOnMaster(olderThan))
-        //    {
-        //        if (previous != null)
-        //        {
-        //            if (previous.Version.IsMinorLargerThan(previous.Version))
-        //            {
-        //                return previous;
-        //            }
-        //        }
-        //        previous = current;
-        //    }
-        //    if (previous != null)
-        //    {
-        //        return previous;
-        //    }
-        //    return new VersionPoint
-        //    {
-        //        Version = new SemanticVersion
-        //        {
-        //            Major = 0,
-        //            Minor = 1,
-        //            Patch = 0
-        //        },
-        //        Timestamp = DateTimeOffset.MinValue
-        //    };
-        //}
+        public VersionPoint Execute()
+        {
+            VersionPoint previous = null;
+            foreach (var current in VersionsOnMaster())
+            {
+                if (previous != null)
+                {
+                    if (previous.Version.IsMinorLargerThan(current.Version))
+                    {
+                        return previous;
+                    }
+                }
+                previous = current;
+            }
+            if (previous != null)
+            {
+                return previous;
+            }
+            return new VersionPoint
+                   {
+                       Version = new SemanticVersion
+                                 {
+                                     Major = 0,
+                                     Minor = 1,
+                                     Patch = 0
+                                 },
+                       Timestamp = DateTimeOffset.MinValue
+                   };
+        }
+
+        public IEnumerable<VersionPoint> VersionsOnMaster()
+        {
+            var masterBranch = Repository
+                .MasterBranch();
+            foreach (var commit in masterBranch.CommitsPriorToThan(OlderThan))
+            {
+                var versionFromMergeCommit = GetMergeOrTagMessage(commit);
+                if (versionFromMergeCommit != null)
+                {
+                    yield return new VersionPoint
+                                 {
+                                     Version = versionFromMergeCommit,
+                                     Timestamp = commit.When()
+                                 };
+                }
+            }
+        }
     }
 }

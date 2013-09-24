@@ -35,9 +35,10 @@ namespace GitFlowVersion
 
             var versionOnMasterFinder = new VersionOnMasterFinder
                                         {
-                                            Repository = Repository
+                                            Repository = Repository,
+                                            OlderThan = Commit.When()
                                         };
-            var versionFromMaster = versionOnMasterFinder.Execute(Commit.When());
+            var versionFromMaster = versionOnMasterFinder.Execute();
             var version = versionFromMaster.Version;
             version.Minor++;
             version.Patch = 0;

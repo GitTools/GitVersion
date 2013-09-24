@@ -10,9 +10,7 @@ namespace GitFlowVersion
 
         public VersionAndBranch FindVersion()
         {
-            var versionString = GetVersionString();
-
-            var version = SemanticVersion.FromMajorMinorPatch(versionString);
+            var version = GetVersionString();
 
             return new VersionAndBranch
             {
@@ -23,7 +21,7 @@ namespace GitFlowVersion
             };
         }
 
-        string GetVersionString()
+        SemanticVersion GetVersionString()
         {
             //TODO: should we take the newest or the highest? perhaps it doesnt matter?
             var versionTag = Repository
@@ -31,15 +29,15 @@ namespace GitFlowVersion
 
             if (versionTag != null)
             {
-                return versionTag.Name;
+                return versionTag;
             }
 
-            if (!Commit.Message.StartsWith("merge "))
+            SemanticVersion version;
+            if (MergeMessageParser.TryParse(Commit.Message, out version))
             {
-                throw new Exception("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
+                return version;
             }
-
-            return MergeMessageParser.GetVersionFromMergeCommit(Commit.Message);
+            throw new Exception("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
         }
     }
 }

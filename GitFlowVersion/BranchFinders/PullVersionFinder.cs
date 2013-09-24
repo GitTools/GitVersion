@@ -12,10 +12,11 @@ namespace GitFlowVersion
         {
             var versionOnMasterFinder = new VersionOnMasterFinder
                                         {
-                                            Repository = Repository
+                                            Repository = Repository,
+                                          OlderThan  = Commit.When(),
                                         };
             var versionFromMaster = versionOnMasterFinder
-                .Execute(Commit.When());
+                .Execute();
 
             var version = versionFromMaster.Version;
             version.Minor++;

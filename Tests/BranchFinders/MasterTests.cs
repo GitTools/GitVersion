@@ -46,7 +46,7 @@ public class MasterTests
     {
         var hotfixMergeCommit = new MockCommit
                          {
-                             MessageEx = "Merge branch hotfix-0.1.5",
+                             MessageEx = "Merge branch 'hotfix-0.1.5'",
                              CommitterEx = 2.Seconds().Ago().ToSignature()
                          };
         var finder = new MasterVersionFinder

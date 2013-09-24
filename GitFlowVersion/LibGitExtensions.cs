@@ -32,7 +32,7 @@ namespace GitFlowVersion
             return commit.Committer.When;
         }
         
-        public static Tag SemVerTags(this IRepository repository, Commit commit)
+        public static SemanticVersion SemVerTags(this IRepository repository, Commit commit)
         {
             var semVerTags = repository.Tags.Where(tag => tag.Target == commit)
                                                .Where(tag => SemanticVersion.IsVersion(tag.Name)).ToList();
@@ -40,7 +40,12 @@ namespace GitFlowVersion
             {
                 throw new Exception(string.Format("Error processing commit `{0}`. Only one version version tag per commit is allowed", commit.Sha));
             }
-            return semVerTags.FirstOrDefault();
+            var first = semVerTags.FirstOrDefault();
+            if (first != null)
+            {
+                return SemanticVersion.FromMajorMinorPatch(first.Name);
+            }
+            return null;
         }
 
         public static Reference ToReference(this Branch branch)
@@ -69,7 +74,7 @@ namespace GitFlowVersion
             {
                 return true;
             }
-            if ((version.Major == o.Major) && (version.Major > o.Major))
+            if ((version.Major == o.Major) && (version.Minor > o.Minor))
             {
                 return true;
             }

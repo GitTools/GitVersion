@@ -33,7 +33,7 @@ namespace GitFlowVersion
 
             if (overrideTag != null)
             {
-                var overrideVersion = SemanticVersion.FromMajorMinorPatch(overrideTag.Name);
+                var overrideVersion = overrideTag;
 
                 if (version.Major != overrideVersion.Major ||
                     version.Minor != overrideVersion.Minor ||
