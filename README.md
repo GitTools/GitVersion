@@ -135,14 +135,6 @@ Branch naming convention: anything except `master`, `develop`, `release-{n}`, or
 
 **develop**, **feature** and **pull-request** builds are considered nightly builds and as such are not in strict adherence to SemVer. 
 
-## Repository to test
-
-So this project assumes you have https://github.com/Particular/GitFlowVersionTestRepo checked out to the same directory for running unit tests
-
-Make sure to get all remote branched using:
-
-for remote in `git branch -r `; do git branch --track $remote; done   
-
 ## Release Candidates
 
 How do we do release candidates?? Perhaps  tag a release branch and then count commits forward from the tag to get RC1, RC2 etc??
