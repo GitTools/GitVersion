@@ -7,34 +7,46 @@ public class TeamCity
 {
     public static string GenerateBuildVersion(VersionAndBranch versionAndBranch)
     {
+        var versionString = CreateVersionString(versionAndBranch);
+
+        return string.Format("##teamcity[buildNumber '{0}']", versionString);
+    }
+
+    static string CreateVersionString(VersionAndBranch versionAndBranch,bool padPreReleaseNumber = false)
+    {
         var prereleaseString = "";
 
         if (versionAndBranch.Version.Stability != Stability.Final)
         {
-            switch (versionAndBranch.BranchType )
+            var preReleaseNumber = versionAndBranch.Version.PreReleaseNumber.ToString();
+
+            if (padPreReleaseNumber)
             {
-             case BranchType.Develop:
-                    prereleaseString = "-" + versionAndBranch.Version.Stability + versionAndBranch.Version.PreReleaseNumber;
+                preReleaseNumber = versionAndBranch.Version.PreReleaseNumber.Value.ToString("D4");
+            }
+
+            switch (versionAndBranch.BranchType)
+            {
+                case BranchType.Develop:
+                    prereleaseString = "-" + versionAndBranch.Version.Stability + preReleaseNumber;
                     break;
 
-             case BranchType.Release:
-                    prereleaseString = "-" + versionAndBranch.Version.Stability + versionAndBranch.Version.PreReleaseNumber;
+                case BranchType.Release:
+                    prereleaseString = "-" + versionAndBranch.Version.Stability + preReleaseNumber;
                     break;
 
-             case BranchType.Hotfix:
-                    prereleaseString = "-" + versionAndBranch.Version.Stability + versionAndBranch.Version.PreReleaseNumber;
+                case BranchType.Hotfix:
+                    prereleaseString = "-" + versionAndBranch.Version.Stability + preReleaseNumber;
                     break;
-             case BranchType.PullRequest:
+                case BranchType.PullRequest:
                     prereleaseString = "-PullRequest-" + versionAndBranch.Version.Suffix;
                     break;
-             case BranchType.Feature:
+                case BranchType.Feature:
                     prereleaseString = "-Feature-" + versionAndBranch.BranchName + "-" + versionAndBranch.Sha;
                     break;
             }
-
         }
-
-        return string.Format("##teamcity[buildNumber '{0}.{1}.{2}{3}']", versionAndBranch.Version.Major, versionAndBranch.Version.Minor, versionAndBranch.Version.Patch, prereleaseString);
+        return string.Format("{0}.{1}.{2}{3}",versionAndBranch.Version.Major, versionAndBranch.Version.Minor, versionAndBranch.Version.Patch, prereleaseString);
     }
 
 
@@ -71,14 +83,21 @@ public class TeamCity
 
     public static IEnumerable<string> GenerateBuildLogOutput(VersionAndBranch versionAndBranch)
     {
-        yield return GenerateBuildVersion(versionAndBranch);
         var semanticVersion = versionAndBranch.Version;
+        
+        yield return GenerateBuildVersion(versionAndBranch);
         yield return GenerateBuildParameter("Major", semanticVersion.Major.ToString());
         yield return GenerateBuildParameter("Minor", semanticVersion.Minor.ToString());
         yield return GenerateBuildParameter("Patch", semanticVersion.Patch.ToString());
         yield return GenerateBuildParameter("Stability", semanticVersion.Stability.ToString());
         yield return GenerateBuildParameter("PreReleaseNumber", semanticVersion.PreReleaseNumber.ToString());
+        yield return GenerateBuildParameter("Version", CreateVersionString(versionAndBranch)); 
+        yield return GenerateBuildParameter("NugetVersion", GenerateNugetVersion(versionAndBranch));
+    }
 
+    public static string GenerateNugetVersion(VersionAndBranch versionAndBranch)
+    {
+        return CreateVersionString(versionAndBranch, true);
     }
 
     static string GenerateBuildParameter(string name, string value)

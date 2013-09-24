@@ -106,6 +106,49 @@ public class TeamcityVersionNumberTests
     }
 
 
+    [Test]
+    public void NuGet_version_should_be_padded_to_workaround_stupid_nuget_issue_with_sorting()
+    {
+        Assert.True(TeamCity.GenerateNugetVersion(new VersionAndBranch
+                {
+                    BranchType = BranchType.Develop,
+                    Version = new SemanticVersion
+                    {
+                        PreReleaseNumber = 4
+                    }
+                }).Contains("0.0.0-Unstable0004"));
+
+
+        Assert.True(TeamCity.GenerateNugetVersion(new VersionAndBranch
+        {
+            BranchType = BranchType.Develop,
+            Version = new SemanticVersion
+            {
+                PreReleaseNumber = 40
+            }
+        }).Contains("0.0.0-Unstable0040"));
+
+        Assert.True(TeamCity.GenerateNugetVersion(new VersionAndBranch
+        {
+            BranchType = BranchType.Develop,
+            Version = new SemanticVersion
+            {
+                PreReleaseNumber = 400
+            }
+        }).Contains("0.0.0-Unstable0400"));
+
+        Assert.True(TeamCity.GenerateNugetVersion(new VersionAndBranch
+        {
+            BranchType = BranchType.Develop,
+            Version = new SemanticVersion
+            {
+                PreReleaseNumber = 4000
+            }
+        }).Contains("0.0.0-Unstable4000"));
+
+    }
+
+
     void VerifyOutput(string versionString, VersionAndBranch version)
     {
         var tcVersion = TeamCity.GenerateBuildVersion(version);
