@@ -110,28 +110,28 @@ xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.14.0.0\NativeBinaries\amd64\*
   </PropertyGroup>
   <Target Name="Clean">
     <ItemGroup>
-      <FilesToDelete Include="$(SolutionDir)NuGetBuild\**\*.*" />
+      <FilesToDelete Include="$(SolutionDir)GitFlowVersionFodyNuGetBuild\**\*.*" />
     </ItemGroup>
     <Delete Files="@(FilesToDelete)" />
   </Target>
   <UsingTask TaskName="PepitaPackage.CreatePackageTask" AssemblyFile="$(SolutionDir)Tools\Pepita\PepitaPackage.dll" />
   <Target Name="AfterBuild" DependsOnTargets="Clean">
-    <MakeDir Directories="$(SolutionDir)NuGetBuild" />
-    <Exec Command="&quot;$(SolutionDir)Tools\ilmerge.exe&quot; /out:&quot;$(SolutionDir)NuGetBuild\GitFlowVersion.Fody.dll&quot; &quot;$(OutputPath)\GitFlowVersion.Fody.dll&quot; &quot;$(OutputPath)\LibGit2Sharp.dll&quot;  &quot;$(OutputPath)\GitFlowVersion.exe&quot;  /target:library /targetplatform:v4" />
+    <MakeDir Directories="$(SolutionDir)GitFlowVersionFodyNuGetBuild" />
+    <Exec Command="&quot;$(SolutionDir)Tools\ilmerge.exe&quot; /out:&quot;$(SolutionDir)GitFlowVersionFodyNuGetBuild\GitFlowVersion.Fody.dll&quot; &quot;$(OutputPath)\GitFlowVersion.Fody.dll&quot; &quot;$(OutputPath)\LibGit2Sharp.dll&quot;  &quot;$(OutputPath)\GitFlowVersion.exe&quot;  /target:library /targetplatform:v4" />
     <CreateItem Include="$(SolutionDir)GitFlowVersionFody\bin\$(ConfigurationName)\NativeBinaries\amd64\*.dll">
       <Output TaskParameter="Include" ItemName="amd64" />
     </CreateItem>
-    <Copy SourceFiles="@(amd64)" DestinationFolder="$(SolutionDir)NuGetBuild\NativeBinaries\amd64" />
-    <Copy SourceFiles="$(SolutionDir)Tools\Verpatch\verpatch.exe" DestinationFolder="$(SolutionDir)NuGetBuild\" />
+    <Copy SourceFiles="@(amd64)" DestinationFolder="$(SolutionDir)GitFlowVersionFodyNuGetBuild\NativeBinaries\amd64" />
+    <Copy SourceFiles="$(SolutionDir)Tools\Verpatch\verpatch.exe" DestinationFolder="$(SolutionDir)GitFlowVersionFodyNuGetBuild\" />
     <CreateItem Include="$(SolutionDir)GitFlowVersionFody\bin\$(ConfigurationName)\NativeBinaries\x86\*.dll">
       <Output TaskParameter="Include" ItemName="x86" />
     </CreateItem>
-    <Copy SourceFiles="@(x86)" DestinationFolder="$(SolutionDir)NuGetBuild\NativeBinaries\x86" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\Fody_ToBeDeleted.txt" DestinationFolder="$(SolutionDir)NuGetBuild\Content" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\install.ps1" DestinationFolder="$(SolutionDir)NuGetBuild\Tools" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\uninstall.ps1" DestinationFolder="$(SolutionDir)NuGetBuild\Tools" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitFlowVersionFody.nuspec" DestinationFolder="$(SolutionDir)NuGetBuild" />
-    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetBuild" MetadataAssembly="$(OutputPath)GitFlowVersion.Fody.dll" />
+    <Copy SourceFiles="@(x86)" DestinationFolder="$(SolutionDir)GitFlowVersionFodyNuGetBuild\NativeBinaries\x86" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\Fody_ToBeDeleted.txt" DestinationFolder="$(SolutionDir)GitFlowVersionFodyNuGetBuild\Content" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\install.ps1" DestinationFolder="$(SolutionDir)GitFlowVersionFodyNuGetBuild\Tools" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\uninstall.ps1" DestinationFolder="$(SolutionDir)GitFlowVersionFodyNuGetBuild\Tools" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitFlowVersionFody.nuspec" DestinationFolder="$(SolutionDir)GitFlowVersionFodyNuGetBuild" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)GitFlowVersionFodyNuGetBuild" MetadataAssembly="$(OutputPath)GitFlowVersion.Fody.dll" />
   </Target>
   <Import Project="Fody.targets" />
 </Project>

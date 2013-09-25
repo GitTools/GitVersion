@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>GitFlowVersionTask</id>
+    <version>$version$</version>
+    <title>GitFlowVersionTask</title>
+    <authors>NServiceBus Ltd</authors>
+    <owners>nservicebus, simoncropp</owners>
+    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <projectUrl>http://github.com/Particular/GitFlowVersion</projectUrl>
+    <iconUrl>https://raw.github.com/Particular/GitFlowVersion/master/Icons/package_icon.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Stamps an assembly with git information based on SemVer.</description>
+    <language>en-AU</language>
+    <tags>Git, Versioning, ILWeaving, GitFlowVersion, GitFlow, SemVer, Cecil</tags>
+  </metadata>
+</package>
