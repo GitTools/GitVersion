@@ -59,15 +59,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInformationalVersionTypeFinder.cs" />
-    <Compile Include="CachedVersion.cs" />
     <Compile Include="CecilExtensions.cs" />
-    <Compile Include="DirectoryDateFinder.cs" />
     <Compile Include="EnumerableEx.cs" />
-    <Compile Include="GitDirFinder.cs" />
     <Compile Include="ModuleWeaver.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs" />
     <Compile Include="RepositoryLoader.cs" />
-    <Compile Include="SearchPath.cs" />
     <Compile Include="WeavingException.cs" />
   </ItemGroup>
   <ItemGroup>

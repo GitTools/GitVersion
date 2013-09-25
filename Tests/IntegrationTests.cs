@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics;
 using System.Linq;
 using GitFlowVersion;
@@ -108,6 +107,7 @@ public class IntegrationTests
     [Test,Explicit]
     public void NServiceBusDevelop()
     {
+        var stopwatch = Stopwatch.StartNew();
         using (var repository = new Repository(@"C:\Code\Particular\NServiceBus"))
         {
             var branch = repository.Branches.First(x => x.Name == "develop");
@@ -128,6 +128,28 @@ public class IntegrationTests
             Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Version.Suffix);
         }
+        Debug.WriteLine(stopwatch.ElapsedMilliseconds); stopwatch = Stopwatch.StartNew();
+        using (var repository = new Repository(@"C:\Code\Particular\NServiceBus"))
+        {
+            var branch = repository.Branches.First(x => x.Name == "develop");
+            var commit = branch.Commits.First();
+
+            var finder = new GitFlowVersionFinder
+            {
+                Commit = commit,
+                Repository = repository,
+                Branch = branch
+            };
+            var version = finder.FindVersion();
+            Debug.WriteLine(version.Version.Major);
+            Debug.WriteLine(version.Version.Minor);
+            Debug.WriteLine(version.Version.Patch);
+            Debug.WriteLine(version.Version.PreReleaseNumber);
+            Debug.WriteLine(version.Version.Stability);
+            Debug.WriteLine(version.BranchType);
+            Debug.WriteLine(version.Version.Suffix);
+        }
+        Debug.WriteLine(stopwatch.ElapsedMilliseconds);
     }
     [Test,Explicit]
     public void Foo()

@@ -1,7 +1,8 @@
 ﻿using System.Linq;
 using Mono.Cecil;
 
-public static class AssemblyInformationalVersionTypeFinder{
+public static class AssemblyInformationalVersionTypeFinder
+{
 
     public static TypeDefinition GetAssemblyInformationalVersionType(this ModuleDefinition moduleDefinition)
     {

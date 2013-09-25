@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using GitFlowVersion;
-using LibGit2Sharp;
 using Mono.Cecil;
 
 public class ModuleWeaver : IDisposable
 {
 
-    static Dictionary<string, CachedVersion> versionCacheVersions = new Dictionary<string, CachedVersion>();
     public Action<string> LogInfo;
     public Action<string> LogWarning;
     public ModuleDefinition ModuleDefinition;
@@ -33,17 +30,6 @@ public class ModuleWeaver : IDisposable
         SearchPath.SetSearchPath(AddinDirectoryPath);
         var customAttributes = ModuleDefinition.Assembly.CustomAttributes;
 
-
-        if (TeamCity.IsRunningInBuildAgent())
-        {
-            LogInfo("Executing inside a TeamCity build agent");
-
-            if (TeamCity.IsBuildingAPullRequest())
-            {
-                LogInfo("This is a pull request build for pull: " + TeamCity.CurrentPullRequestNo());
-            }
-        }
-
         var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectoryPath);
 
         if (string.IsNullOrEmpty(gitDirectory))
@@ -60,88 +46,47 @@ public class ModuleWeaver : IDisposable
 
         gitDirectoryExists = true;
 
-        using (var repo = RepositoryLoader.GetRepo(gitDirectory))
+
+        var versionAndBranch = GetVersionAndBranch(gitDirectory);
+        SetAssemblyVersion(versionAndBranch.Version);
+
+        ModuleDefinition.Assembly.Name.Version = assemblyVersion;
+
+
+        assemblyInfoVersion = versionAndBranch.ToLongString();
+
+
+        var customAttribute = customAttributes.FirstOrDefault(x => x.AttributeType.Name == "AssemblyInformationalVersionAttribute");
+        if (customAttribute == null)
         {
-            var branch = repo.Head;
-            if (branch.Tip == null)
-            {
-                LogWarning("No Tip found. Has repo been initialize?");
-                return;
-            }
+            var versionAttribute = ModuleDefinition.GetAssemblyInformationalVersionType();
+            var constructor = ModuleDefinition.Import(versionAttribute.Methods.First(x => x.IsConstructor));
+            customAttribute = new CustomAttribute(constructor);
 
-            VersionAndBranch versionAndBranch;
-            var ticks = DirectoryDateFinder.GetLastDirectoryWrite(gitDirectory);
-            var key = string.Format("{0}:{1}:{2}", repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
-            CachedVersion cachedVersion;
-            if (versionCacheVersions.TryGetValue(key, out cachedVersion))
-            {
-                LogInfo("Version read from cache.");
-                if (cachedVersion.Timestamp == ticks)
-                {
-                    versionAndBranch = cachedVersion.VersionAndBranch;
-                }
-                else
-                {
-                    LogInfo("Change detected. flushing cache.");
-                    versionAndBranch = cachedVersion.VersionAndBranch = GetSemanticVersion(repo);
-                }
-            }
-            else
-            {
-                LogInfo("Version not in cache. Calculating version.");
-                versionAndBranch = GetSemanticVersion(repo);
-                versionCacheVersions[key] = new CachedVersion
-                                            {
-                                                VersionAndBranch = versionAndBranch,
-                                                Timestamp = ticks
-                                            };
-            }
+            customAttribute.ConstructorArguments.Add(new CustomAttributeArgument(ModuleDefinition.TypeSystem.String, assemblyInfoVersion));
+            customAttributes.Add(customAttribute);
+        }
+        else
+        {
+            //TODO: log warning that assemblyInfoVersion is being overwritten
+            customAttribute.ConstructorArguments[0] = new CustomAttributeArgument(ModuleDefinition.TypeSystem.String, assemblyInfoVersion);
+        }
 
-            SetAssemblyVersion(versionAndBranch.Version);
-
-            ModuleDefinition.Assembly.Name.Version = assemblyVersion;
-
-
-            assemblyInfoVersion = versionAndBranch.ToLongString();
-
-
-            var customAttribute = customAttributes.FirstOrDefault(x => x.AttributeType.Name == "AssemblyInformationalVersionAttribute");
-            if (customAttribute == null)
-            {
-                var versionAttribute = ModuleDefinition.GetAssemblyInformationalVersionType();
-                var constructor = ModuleDefinition.Import(versionAttribute.Methods.First(x => x.IsConstructor));
-                customAttribute = new CustomAttribute(constructor);
-
-                customAttribute.ConstructorArguments.Add(new CustomAttributeArgument(ModuleDefinition.TypeSystem.String, assemblyInfoVersion));
-                customAttributes.Add(customAttribute);
-            }
-            else
-            {
-                //TODO: log warning that assemblyInfoVersion is being overwritten
-                customAttribute.ConstructorArguments[0] = new CustomAttributeArgument(ModuleDefinition.TypeSystem.String, assemblyInfoVersion);
-            }
-
-            if (TeamCity.IsRunningInBuildAgent())
-            {
-                foreach (var buildParameters in TeamCity.GenerateBuildLogOutput(versionAndBranch))
-                {
-                    LogWarning(buildParameters);    
-                }
-                
-            }
+        foreach (var buildParameters in TeamCity.GenerateBuildLogOutput(versionAndBranch))
+        {
+            LogWarning(buildParameters);
         }
     }
 
-    public virtual VersionAndBranch GetSemanticVersion(Repository repo)
+    public virtual VersionAndBranch GetVersionAndBranch(string gitDirectory)
     {
         try
         {
-            var versionForRepositoryFinder = new VersionForRepositoryFinder();
-            return versionForRepositoryFinder.GetVersion(repo);
+            return VersionCache.GetVersion(gitDirectory);
         }
-        catch (MissingBranchException missingBranchException)
+        catch (ErrorException errorException)
         {
-            throw new WeavingException(missingBranchException.Message);
+            throw new WeavingException(errorException.Message);
         }
     }
 

@@ -1,17 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{C3578A7B-09A6-4444-9383-0DEAFA4958BD}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>GitFlowVersion</RootNamespace>
-    <AssemblyName>GitFlowVersion</AssemblyName>
+    <ProjectGuid>{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GitFlowVersionTask</RootNamespace>
+    <AssemblyName>GitFlowVersionTask</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <FodyPath>..\packages\Fody.1.17.4.0</FodyPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,51 +34,32 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\LibGit2Sharp.0.14.0.0\lib\net35\LibGit2Sharp.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Build" />
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Tasks.v4.0" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BranchFinders\FeatureVersionFinder.cs" />
-    <Compile Include="BranchFinders\DevelopVersionFinder.cs" />
-    <Compile Include="BranchFinders\HotfixVersionFinder.cs" />
-    <Compile Include="BranchFinders\VersionOnMasterFinder.cs" />
-    <Compile Include="BranchType.cs" />
-    <Compile Include="CachedVersion.cs" />
-    <Compile Include="DirectoryDateFinder.cs" />
-    <Compile Include="GitDirFinder.cs" />
-    <Compile Include="InformationalVersionBuilder.cs" />
-    <Compile Include="Logger.cs" />
-    <Compile Include="MergeMessageParser.cs" />
-    <Compile Include="BranchFinders\PullVersionFinder.cs" />
-    <Compile Include="BranchFinders\ReleaseVersionFinder.cs" />
-    <Compile Include="LibGitExtensions.cs" />
-    <Compile Include="GitFlowVersionFinder.cs" />
-    <Compile Include="..\CommonAssemblyInfo.cs" />
-    <Compile Include="BranchFinders\MasterVersionFinder.cs" />
-    <Compile Include="MissingBranchException.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="RepositoryLoader.cs" />
-    <Compile Include="SearchPath.cs" />
-    <Compile Include="TeamCity.cs" />
-    <Compile Include="SemanticVersion.cs" />
-    <Compile Include="Stability.cs" />
-    <Compile Include="VersionAndBranch.cs" />
-    <Compile Include="VersionCache.cs" />
-    <Compile Include="VersionForDirectoryFinder.cs" />
-    <Compile Include="VersionPoint.cs" />
-    <Compile Include="ErrorException.cs" />
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="UpdateAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <ProjectReference Include="..\GitFlowVersion\GitFlowVersion.csproj">
+      <Project>{c3578a7b-09a6-4444-9383-0deafa4958bd}</Project>
+      <Name>GitFlowVersion</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="FodyWeavers.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -90,5 +70,4 @@ xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.14.0.0\NativeBinaries\x86\*.*
 if not exist "$(TargetDir)NativeBinaries\amd64" md "$(TargetDir)NativeBinaries\amd64"
 xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.14.0.0\NativeBinaries\amd64\*.*" "$(TargetDir)NativeBinaries\amd64"</PostBuildEvent>
   </PropertyGroup>
-  <Import Project="Fody.targets" />
 </Project>

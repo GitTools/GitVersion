@@ -3,13 +3,6 @@ namespace GitFlowVersion
     using System;
     using System.Linq;
 
-    public class VersionAndBranch
-    {
-        public SemanticVersion Version;
-        public BranchType? BranchType;
-        public string BranchName;
-        public string Sha;
-    }
     public class SemanticVersion 
     {
         public string Suffix;
@@ -18,7 +11,6 @@ namespace GitFlowVersion
         public int Patch;
         public int? PreReleaseNumber;
         public Stability Stability;
-
 
         public static SemanticVersion FromMajorMinorPatch(string versionString)
         {
