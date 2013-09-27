@@ -11,6 +11,7 @@
     <AssemblyName>GitFlowVersionTask</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <FodyPath>..\packages\Fody.1.17.4.0</FodyPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,6 +51,8 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="BuildLogger.cs" />
+    <Compile Include="TempFileTracker.cs" />
     <Compile Include="UpdateAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -59,11 +62,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Fody.targets" />
     <None Include="NugetAssets\GitFlowVersionTask.targets" />
     <None Include="NugetAssets\GitFlowVersionTask.nuspec">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="FodyWeavers.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -87,14 +94,11 @@ xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.14.0.0\NativeBinaries\amd64\*
       <Output TaskParameter="Include" ItemName="amd64" />
     </CreateItem>
     <Copy SourceFiles="@(amd64)" DestinationFolder="$(SolutionDir)GitFlowVersionTaskNuGetBuild\NativeBinaries\amd64" />
-
-
     <Copy SourceFiles="$(OutputPath)\GitFlowVersionTask.dll" DestinationFolder="$(SolutionDir)GitFlowVersionTaskNuGetBuild" />
     <Copy SourceFiles="$(OutputPath)\GitFlowVersionTask.pdb" DestinationFolder="$(SolutionDir)GitFlowVersionTaskNuGetBuild" />
     <Copy SourceFiles="$(OutputPath)\GitFlowVersion.exe" DestinationFolder="$(SolutionDir)GitFlowVersionTaskNuGetBuild" />
     <Copy SourceFiles="$(OutputPath)\GitFlowVersion.pdb" DestinationFolder="$(SolutionDir)GitFlowVersionTaskNuGetBuild" />
     <Copy SourceFiles="$(OutputPath)\LibGit2Sharp.dll" DestinationFolder="$(SolutionDir)GitFlowVersionTaskNuGetBuild" />
-
     <CreateItem Include="$(SolutionDir)GitFlowVersionTask\bin\$(ConfigurationName)\NativeBinaries\x86\*.dll">
       <Output TaskParameter="Include" ItemName="x86" />
     </CreateItem>
@@ -103,4 +107,5 @@ xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.14.0.0\NativeBinaries\amd64\*
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitFlowVersionTask.nuspec" DestinationFolder="$(SolutionDir)GitFlowVersionTaskNuGetBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)GitFlowVersionTaskNuGetBuild" MetadataAssembly="$(OutputPath)GitFlowVersionTask.dll" />
   </Target>
+  <Import Project="Fody.targets" />
 </Project>

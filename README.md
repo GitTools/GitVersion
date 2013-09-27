@@ -2,7 +2,7 @@
 
 ## Usage:
 
-Install-Package GitFlowVersion.Fody
+    Install-Package GitFlowVersionTask
 
 ## The Problem
 
