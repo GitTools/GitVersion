@@ -83,29 +83,29 @@ xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.14.0.0\NativeBinaries\amd64\*
   </PropertyGroup>
   <Target Name="Clean">
     <ItemGroup>
-      <FilesToDelete Include="$(SolutionDir)GitFlowVersionTaskNuGetBuild\**\*.*" />
+      <FilesToDelete Include="$(SolutionDir)NuGetBuild\**\*.*" />
     </ItemGroup>
     <Delete Files="@(FilesToDelete)" />
   </Target>
   <UsingTask TaskName="PepitaPackage.CreatePackageTask" AssemblyFile="$(SolutionDir)Tools\Pepita\PepitaPackage.dll" />
   <Target Name="AfterBuild" DependsOnTargets="Clean">
-    <MakeDir Directories="$(SolutionDir)GitFlowVersionTaskNuGetBuild" />
+    <MakeDir Directories="$(SolutionDir)NuGetBuild" />
     <CreateItem Include="$(SolutionDir)GitFlowVersionTask\bin\$(ConfigurationName)\NativeBinaries\amd64\*.dll">
       <Output TaskParameter="Include" ItemName="amd64" />
     </CreateItem>
-    <Copy SourceFiles="@(amd64)" DestinationFolder="$(SolutionDir)GitFlowVersionTaskNuGetBuild\NativeBinaries\amd64" />
-    <Copy SourceFiles="$(OutputPath)\GitFlowVersionTask.dll" DestinationFolder="$(SolutionDir)GitFlowVersionTaskNuGetBuild" />
-    <Copy SourceFiles="$(OutputPath)\GitFlowVersionTask.pdb" DestinationFolder="$(SolutionDir)GitFlowVersionTaskNuGetBuild" />
-    <Copy SourceFiles="$(OutputPath)\GitFlowVersion.exe" DestinationFolder="$(SolutionDir)GitFlowVersionTaskNuGetBuild" />
-    <Copy SourceFiles="$(OutputPath)\GitFlowVersion.pdb" DestinationFolder="$(SolutionDir)GitFlowVersionTaskNuGetBuild" />
-    <Copy SourceFiles="$(OutputPath)\LibGit2Sharp.dll" DestinationFolder="$(SolutionDir)GitFlowVersionTaskNuGetBuild" />
+    <Copy SourceFiles="@(amd64)" DestinationFolder="$(SolutionDir)NuGetBuild\NativeBinaries\amd64" />
+    <Copy SourceFiles="$(OutputPath)\GitFlowVersionTask.dll" DestinationFolder="$(SolutionDir)NuGetBuild" />
+    <Copy SourceFiles="$(OutputPath)\GitFlowVersionTask.pdb" DestinationFolder="$(SolutionDir)NuGetBuild" />
+    <Copy SourceFiles="$(OutputPath)\GitFlowVersion.exe" DestinationFolder="$(SolutionDir)NuGetBuild" />
+    <Copy SourceFiles="$(OutputPath)\GitFlowVersion.pdb" DestinationFolder="$(SolutionDir)NuGetBuild" />
+    <Copy SourceFiles="$(OutputPath)\LibGit2Sharp.dll" DestinationFolder="$(SolutionDir)NuGetBuild" />
     <CreateItem Include="$(SolutionDir)GitFlowVersionTask\bin\$(ConfigurationName)\NativeBinaries\x86\*.dll">
       <Output TaskParameter="Include" ItemName="x86" />
     </CreateItem>
-    <Copy SourceFiles="@(x86)" DestinationFolder="$(SolutionDir)GitFlowVersionTaskNuGetBuild\NativeBinaries\x86" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitFlowVersionTask.targets" DestinationFolder="$(SolutionDir)GitFlowVersionTaskNuGetBuild\Build" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitFlowVersionTask.nuspec" DestinationFolder="$(SolutionDir)GitFlowVersionTaskNuGetBuild" />
-    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)GitFlowVersionTaskNuGetBuild" MetadataAssembly="$(OutputPath)GitFlowVersionTask.dll" />
+    <Copy SourceFiles="@(x86)" DestinationFolder="$(SolutionDir)NuGetBuild\NativeBinaries\x86" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitFlowVersionTask.targets" DestinationFolder="$(SolutionDir)NuGetBuild\Build" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitFlowVersionTask.nuspec" DestinationFolder="$(SolutionDir)NuGetBuild" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetBuild" MetadataAssembly="$(OutputPath)GitFlowVersionTask.dll" />
   </Target>
   <Import Project="Fody.targets" />
 </Project>
