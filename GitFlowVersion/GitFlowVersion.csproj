@@ -62,6 +62,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="RepositoryLoader.cs" />
     <Compile Include="SearchPath.cs" />
+    <Compile Include="SemanticVersionParser.cs" />
     <Compile Include="TeamCity.cs" />
     <Compile Include="SemanticVersion.cs" />
     <Compile Include="Stability.cs" />

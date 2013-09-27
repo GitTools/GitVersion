@@ -35,9 +35,9 @@ namespace GitFlowVersion
                 return false;
             }
             var versionPart = GetVersionFromMergeCommit(trimmed);
-            if (SemanticVersion.IsVersion(versionPart))
+            if (SemanticVersionParser.IsVersion(versionPart))
             {
-                semanticVersion = SemanticVersion.FromMajorMinorPatch(versionPart);
+                semanticVersion = SemanticVersionParser.FromMajorMinorPatch(versionPart);
                 return true;
             }
             semanticVersion = null;

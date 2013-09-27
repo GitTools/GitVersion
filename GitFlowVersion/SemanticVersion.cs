@@ -1,92 +1,121 @@
 namespace GitFlowVersion
 {
     using System;
-    using System.Linq;
 
-    public class SemanticVersion 
+    public class SemanticVersion
     {
         public string Suffix;
         public int Major;
         public int Minor;
         public int Patch;
-        public int? PreReleaseNumber;
+        public int PreReleaseNumber;
         public Stability Stability;
 
-        public static SemanticVersion FromMajorMinorPatch(string versionString)
+
+        public bool Equals(SemanticVersion obj)
         {
-            var parts = versionString.Split('-');
-
-            var stableParts = parts.First().Split('.');
-
-            var parsedVersion = new SemanticVersion
-                                      {
-                                          Major = int.Parse(stableParts[0]),
-                                      };
-            if (stableParts.Length > 1)
+            if (obj == null)
             {
-                parsedVersion.Minor = int.Parse(stableParts[1]);
+                return false;
             }
-            
-            if (stableParts.Length > 2)
+            return Major == obj.Major &&
+                   Minor == obj.Minor &&
+                   Patch == obj.Patch &&
+                   PreReleaseNumber == obj.PreReleaseNumber &&
+                   Stability == obj.Stability &&
+                   Suffix == obj.Suffix;
+        }
+        public static bool operator ==(SemanticVersion v1, SemanticVersion v2)
+        {
+            if (ReferenceEquals(v1, null))
             {
-                parsedVersion.Patch = int.Parse(stableParts[2]);
+                return ReferenceEquals(v2, null);
             }
+            return v1.Equals(v2);
+        }
+        
+        public static bool operator !=(SemanticVersion v1, SemanticVersion v2)
+        {
+            return !(v1 == v2);
+        }
+        
+        public static bool operator >(SemanticVersion v1, SemanticVersion v2)
+        {
+            return (v2 < v1);
+        }
 
-            if (parts.Length > 1)
+        public static bool operator >=(SemanticVersion v1, SemanticVersion v2)
+        {
+            return (v2 <= v1);
+        }
+
+        public static bool operator <=(SemanticVersion v1, SemanticVersion v2)
+        {
+            if (v1 == null)
             {
-                var prereleaseString = parts[1];
+                throw new ArgumentNullException("v1");
+            }
+            return (v1.CompareTo(v2) <= 0);
+        }
 
-                var buildIndex = prereleaseString.IndexOfAny("0123456789".ToCharArray());
-                var stageString = prereleaseString.Substring(0, buildIndex);
+        public static bool operator <(SemanticVersion v1, SemanticVersion v2)
+        {
+            if (v1 == null)
+            {
+                throw new ArgumentNullException("v1");
+            }
+            return (v1.CompareTo(v2) < 0);
+        }
 
-                if (stageString == "RC")
+        public int CompareTo(SemanticVersion value)
+        {
+            if (value == null)
+            {
+                return 1;
+            }
+            if (Major != value.Major)
+            {
+                if (Major > value.Major)
                 {
-                    stageString = "ReleaseCandidate";
+                    return 1;
                 }
-
-
-                parsedVersion.Stability = (Stability)Enum.Parse(typeof(Stability), stageString, ignoreCase: true);
-                parsedVersion.PreReleaseNumber = int.Parse(prereleaseString.Substring(buildIndex));
-
+                return -1;
             }
-            else
+            if (Minor != value.Minor)
             {
-                parsedVersion.Stability = Stability.Final;
-                parsedVersion.PreReleaseNumber = 0;
+                if (Minor > value.Minor)
+                {
+                    return 1;
+                }
+                return -1;
             }
-
-            return parsedVersion;
+            if (Patch != value.Patch)
+            {
+                if (Patch > value.Patch)
+                {
+                    return 1;
+                }
+                return -1;
+            }
+            if (Stability != value.Stability)
+            {
+                if (Stability > value.Stability)
+                {
+                    return 1;
+                }
+                return -1;
+            }
+            if (PreReleaseNumber != value.PreReleaseNumber)
+            {
+                if (PreReleaseNumber > value.PreReleaseNumber)
+                {
+                    return 1;
+                }
+                return -1;
+            }
+            return -1;
         }
 
-        public static bool IsVersion(string versionString)
-        {
-            var parts = versionString.Split('-');
-            var stableVersion = parts.First();
-            var stableParts = stableVersion.Split('.');
-            
-            if (stableParts.Length > 3)
-            {
-                return false;
-            }
-            
-            int fake;
-            if (stableParts.Length > 0 && !int.TryParse(stableParts[0], out fake))
-            {
-                return false;
-            }
-            
-            if (stableParts.Length > 1 && !int.TryParse(stableParts[1], out fake))
-            {
-                return false;
-            }
-            
-            if (stableParts.Length > 2 && !int.TryParse(stableParts[2], out fake))
-            {
-                return false;
-            }
-
-            return true;
-        }
 
     }
 }

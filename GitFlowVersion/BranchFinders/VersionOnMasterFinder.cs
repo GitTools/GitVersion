@@ -8,34 +8,6 @@ namespace GitFlowVersion
     {
         public IRepository Repository;
         public DateTimeOffset OlderThan;
-        public VersionPoint ExecuteOld()
-        {
-            var masterBranch = Repository
-                .MasterBranch();
-            foreach (var commit in masterBranch.CommitsPriorToThan(OlderThan))
-            {
-                var versionFromCommit = GetMergeOrTagMessage(commit);
-                if (versionFromCommit != null)
-                {
-                    return new VersionPoint
-                           {
-                               Version = versionFromCommit,
-                               Timestamp = commit.When()
-                           };
-                }
-            }
-            return new VersionPoint
-                   {
-                       Version = new SemanticVersion
-                                 {
-                                     Major = 0,
-                                     Minor = 1,
-                                     Patch = 0
-                                 },
-                       Timestamp = DateTimeOffset.MinValue
-                   };
-        }
-
 
         SemanticVersion GetMergeOrTagMessage(Commit commit)
         {
@@ -61,6 +33,11 @@ namespace GitFlowVersion
             {
                 if (previous != null)
                 {
+                    // older one is bigger
+                    if (previous.Version < current.Version)
+                    {
+                        continue;
+                    }
                     if (previous.Version.IsMinorLargerThan(current.Version))
                     {
                         return previous;

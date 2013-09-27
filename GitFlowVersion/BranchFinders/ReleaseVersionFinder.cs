@@ -22,7 +22,7 @@ namespace GitFlowVersion
 
         public VersionAndBranch FindVersion()
         {
-            var version = SemanticVersion.FromMajorMinorPatch(ReleaseBranch.Name.Replace("release-", ""));
+            var version = SemanticVersionParser.FromMajorMinorPatch(ReleaseBranch.Name.Replace("release-", ""));
 
             version.Stability = Stability.Beta;
 

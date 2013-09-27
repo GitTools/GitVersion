@@ -78,6 +78,7 @@
     <Compile Include="AssemblyLocation.cs" />
     <Compile Include="AssemblyWithNoInfoVersionTests.cs" />
     <Compile Include="BranchFinders\DevelopTests.cs" />
+    <Compile Include="VersionOnMasterFinderTests.cs" />
     <Compile Include="Mocks\SignatureBuilder.cs" />
     <Compile Include="Mocks\MockCommitLog.cs" />
     <Compile Include="Mocks\MockBranch.cs" />

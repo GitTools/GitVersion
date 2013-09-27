@@ -23,7 +23,7 @@
 
                 if (padPreReleaseNumber)
                 {
-                    preReleaseNumber = versionAndBranch.Version.PreReleaseNumber.Value.ToString("D4");
+                    preReleaseNumber = versionAndBranch.Version.PreReleaseNumber.ToString("D4");
                 }
 
                 switch (versionAndBranch.BranchType)

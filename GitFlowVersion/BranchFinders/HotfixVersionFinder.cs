@@ -22,7 +22,7 @@ namespace GitFlowVersion
 
         public VersionAndBranch FindVersion()
         {
-            var version = SemanticVersion.FromMajorMinorPatch(HotfixBranch.Name.Replace("hotfix-", ""));
+            var version = SemanticVersionParser.FromMajorMinorPatch(HotfixBranch.Name.Replace("hotfix-", ""));
             version.Stability = Stability.Beta;
 
             version.PreReleaseNumber = HotfixBranch

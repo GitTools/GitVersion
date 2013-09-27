@@ -35,7 +35,7 @@ namespace GitFlowVersion
         public static SemanticVersion SemVerTags(this IRepository repository, Commit commit)
         {
             var semVerTags = repository.Tags.Where(tag => tag.Target == commit)
-                                               .Where(tag => SemanticVersion.IsVersion(tag.Name)).ToList();
+                                               .Where(tag => SemanticVersionParser.IsVersion(tag.Name)).ToList();
             if (semVerTags.Count > 1)
             {
                 throw new Exception(string.Format("Error processing commit `{0}`. Only one version version tag per commit is allowed", commit.Sha));
@@ -43,7 +43,7 @@ namespace GitFlowVersion
             var first = semVerTags.FirstOrDefault();
             if (first != null)
             {
-                return SemanticVersion.FromMajorMinorPatch(first.Name);
+                return SemanticVersionParser.FromMajorMinorPatch(first.Name);
             }
             return null;
         }
