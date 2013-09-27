@@ -1,17 +1,11 @@
 using FluentDate;
 using FluentDateTimeOffset;
 using GitFlowVersion;
-using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
 public class VersionOnMasterFinderTests
 {
-    [Test, Ignore("Not relevant for now")]
-    public void No_commits()
-    {
-
-    }
 
     [Test]
     public void Should_find_previous_commit_that_was_at_least_a_minor_bump()

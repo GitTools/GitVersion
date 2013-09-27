@@ -4,11 +4,15 @@ namespace GitFlowVersion
 
     public static class Logger
     {
-        public static Action<string> Write = x => Console.Out.WriteLine(x);
+        public static Action<string> WriteInfo;
 
+        static Logger()
+        {
+            Reset();
+        }
         public static void Reset()
         {
-            Write = x => Console.Out.WriteLine(x);
+            WriteInfo = x => Console.Out.WriteLine(x);
         }
     }
 }

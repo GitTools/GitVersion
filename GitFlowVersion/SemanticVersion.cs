@@ -8,8 +8,8 @@ namespace GitFlowVersion
         public int Major;
         public int Minor;
         public int Patch;
-        public int PreReleaseNumber;
-        public Stability Stability;
+        public int? PreReleaseNumber;
+        public Stability? Stability;
 
 
         public bool Equals(SemanticVersion obj)
@@ -25,6 +25,7 @@ namespace GitFlowVersion
                    Stability == obj.Stability &&
                    Suffix == obj.Suffix;
         }
+
         public static bool operator ==(SemanticVersion v1, SemanticVersion v2)
         {
             if (ReferenceEquals(v1, null))

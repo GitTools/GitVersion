@@ -17,27 +17,32 @@
         {
             var prereleaseString = "";
 
-            if (versionAndBranch.Version.Stability != Stability.Final)
+            var stability = versionAndBranch.Version.Stability;
+            if (stability == null)
+            {
+                throw new Exception("Stability cannot be null");
+            }
+            if (stability != Stability.Final)
             {
                 var preReleaseNumber = versionAndBranch.Version.PreReleaseNumber.ToString();
 
                 if (padPreReleaseNumber)
                 {
-                    preReleaseNumber = versionAndBranch.Version.PreReleaseNumber.ToString("D4");
+                    preReleaseNumber = versionAndBranch.Version.PreReleaseNumber.Value.ToString("D4");
                 }
 
                 switch (versionAndBranch.BranchType)
                 {
                     case BranchType.Develop:
-                        prereleaseString = "-" + versionAndBranch.Version.Stability + preReleaseNumber;
+                        prereleaseString = "-" + stability + preReleaseNumber;
                         break;
 
                     case BranchType.Release:
-                        prereleaseString = "-" + versionAndBranch.Version.Stability + preReleaseNumber;
+                        prereleaseString = "-" + stability + preReleaseNumber;
                         break;
 
                     case BranchType.Hotfix:
-                        prereleaseString = "-" + versionAndBranch.Version.Stability + preReleaseNumber;
+                        prereleaseString = "-" + stability + preReleaseNumber;
                         break;
                     case BranchType.PullRequest:
                         prereleaseString = "-PullRequest-" + versionAndBranch.Version.Suffix;
@@ -56,7 +61,7 @@
             var isRunningInBuildAgent = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TEAMCITY_VERSION"));
             if (isRunningInBuildAgent)
             {
-                Logger.Write("Executing inside a TeamCity build agent");
+                Logger.WriteInfo("Executing inside a TeamCity build agent");
             }
             return isRunningInBuildAgent;
         }
@@ -67,7 +72,7 @@
             var isBuildingAPullRequest = !string.IsNullOrEmpty(branchInfo) && branchInfo.Contains("/Pull/");
             if (isBuildingAPullRequest)
             {
-                Logger.Write("This is a pull request build for pull: " + CurrentPullRequestNo());
+                Logger.WriteInfo("This is a pull request build for pull: " + CurrentPullRequestNo());
             }
             return isBuildingAPullRequest;
         }

@@ -13,7 +13,8 @@
         <GitFlowVersionTask.UpdateAssemblyInfo 
           SolutionDirectory="$(SolutionDir)" 
           ProjectFile="$(ProjectPath)" 
-          SignAssembly="$(SignAssembly)">
+          SignAssembly="$(SignAssembly)"
+          CompileFiles ="@(Compile)">
           <Output 
             TaskParameter="AssemblyInfoTempFilePath" 
             PropertyName="AssemblyInfoTempFilePath" />

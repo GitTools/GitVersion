@@ -1,4 +1,3 @@
-using System;
 using FluentDate;
 using FluentDateTimeOffset;
 using GitFlowVersion;
@@ -26,7 +25,10 @@ public class HotfixTests
                                       {
                                           Branches = new MockBranchCollection
                                                      {
-                                                         new MockBranch("master"){branchingCommit},
+                                                         new MockBranch("master")
+                                                         {
+                                                             branchingCommit
+                                                         },
                                                          hotfixBranch
                                                      }
                                       },
@@ -130,10 +132,5 @@ public class HotfixTests
         Assert.AreEqual(2, version.Version.PreReleaseNumber, "Prerelease should be set to 2 since there is 2 commits on the branch");
     }
 
-    [Test, Ignore("Not really going to happen in real life")]
-    public void After_merge_to_master()
-    {
-        Assert.Throws<Exception>(() => FinderWrapper.FindVersionForCommit("8530d6a72140355b5004a878630cdf596ff551e1", "hotfix-0.1.1"));
-    }
 
 }

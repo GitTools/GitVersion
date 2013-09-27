@@ -44,7 +44,7 @@
     <Compile Include="BranchFinders\FeatureVersionFinder.cs" />
     <Compile Include="BranchFinders\DevelopVersionFinder.cs" />
     <Compile Include="BranchFinders\HotfixVersionFinder.cs" />
-    <Compile Include="BranchFinders\VersionOnMasterFinder.cs" />
+    <Compile Include="VersionOnMasterFinder.cs" />
     <Compile Include="BranchType.cs" />
     <Compile Include="CachedVersion.cs" />
     <Compile Include="DirectoryDateFinder.cs" />

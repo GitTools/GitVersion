@@ -22,14 +22,17 @@ namespace GitFlowVersion
 
         public VersionAndBranch FindVersion()
         {
-            var version = SemanticVersionParser.FromMajorMinorPatch(ReleaseBranch.Name.Replace("release-", ""));
+            var versionString = ReleaseBranch.Name.Replace("release-", "");
+            SemanticVersion version;
+            if (!SemanticVersionParser.TryParse(versionString, out version))
+            {
+                var message = string.Format("Could not parse '{0}' into a version", ReleaseBranch.Name);
+                throw new ErrorException(message);
+            }
 
             version.Stability = Stability.Beta;
 
-            var overrideTag =
-                Repository
-                    .SemVerTags(Commit);
-                    //.FirstOrDefault(t => SemanticVersion.FromMajorMinorPatch(t.Name).Stability != Stability.Final);
+            var overrideTag = Repository.SemVerTag(Commit);
 
             if (overrideTag != null)
             {

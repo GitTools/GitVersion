@@ -32,20 +32,25 @@ namespace GitFlowVersion
             return commit.Committer.When;
         }
         
-        public static SemanticVersion SemVerTags(this IRepository repository, Commit commit)
+        public static SemanticVersion SemVerTag(this IRepository repository, Commit commit)
         {
-            var semVerTags = repository.Tags.Where(tag => tag.Target == commit)
-                                               .Where(tag => SemanticVersionParser.IsVersion(tag.Name)).ToList();
+            var semVerTags = repository.SemVerTags(commit).ToList();
             if (semVerTags.Count > 1)
             {
                 throw new Exception(string.Format("Error processing commit `{0}`. Only one version version tag per commit is allowed", commit.Sha));
             }
-            var first = semVerTags.FirstOrDefault();
-            if (first != null)
+            return semVerTags.FirstOrDefault();
+        }
+        public static IEnumerable<SemanticVersion> SemVerTags(this IRepository repository, Commit commit)
+        {
+            foreach (var tag in repository.Tags.Where(tag => tag.Target == commit))
             {
-                return SemanticVersionParser.FromMajorMinorPatch(first.Name);
+                SemanticVersion version;
+                if (SemanticVersionParser.TryParse(tag.Name, out version))
+                {
+                    yield return version;
+                }
             }
-            return null;
         }
 
         public static Reference ToReference(this Branch branch)
@@ -123,13 +128,13 @@ namespace GitFlowVersion
                
                 if (!repository.Network.Remotes.Any())
                 {
-                    Logger.Write("No remotes found");
+                    Logger.WriteInfo("No remotes found");
                 }
                 else
                 {
                     var remote = repository.Network.Remotes.First();
 
-                    Logger.Write(string.Format("No local branch with name {0} found, going to try on the remote {1}({2})", name, remote.Name, remote.Url));
+                    Logger.WriteInfo(string.Format("No local branch with name {0} found, going to try on the remote {1}({2})", name, remote.Name, remote.Url));
                     try
                     {
                         repository.Network.Fetch(remote);

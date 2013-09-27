@@ -22,20 +22,20 @@
                 VersionAndBranch versionAndBranch;
                 if (versionCacheVersions.TryGetValue(key, out cachedVersion))
                 {
-                    Logger.Write("Version read from cache.");
+                    Logger.WriteInfo("Version read from cache.");
                     if (cachedVersion.Timestamp == ticks)
                     {
                         versionAndBranch = cachedVersion.VersionAndBranch;
                     }
                     else
                     {
-                        Logger.Write("Change detected. flushing cache.");
+                        Logger.WriteInfo("Change detected. flushing cache.");
                         versionAndBranch = cachedVersion.VersionAndBranch = GetSemanticVersion(repo);
                     }
                 }
                 else
                 {
-                    Logger.Write("Version not in cache. Calculating version.");
+                    Logger.WriteInfo("Version not in cache. Calculating version.");
                     versionAndBranch = GetSemanticVersion(repo);
 
                     versionCacheVersions[key] = new CachedVersion

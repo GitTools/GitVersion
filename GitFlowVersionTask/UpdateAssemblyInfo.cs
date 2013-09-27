@@ -19,6 +19,8 @@
 
         [Required]
         public string ProjectFile { get; set; }
+        [Required]
+        public ITaskItem[] CompileFiles { get; set; }
 
         static UpdateAssemblyInfo()
         {
@@ -34,41 +36,61 @@
             DeleteTempFiles();
             try
             {
-                Logger.Write = message => Log.LogMessageFromText(message, MessageImportance.Normal);
+
+                Logger.WriteInfo = message => Log.LogMessageFromText(message, MessageImportance.Normal);
                 var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
-                VersionAndBranch versionAndBranch;
-                try
+                if (string.IsNullOrEmpty(gitDirectory))
                 {
-                    versionAndBranch = VersionCache.GetVersion(gitDirectory);
-                }
-                catch (ErrorException errorException)
-                {
-                    Log.LogError(errorException.Message);
-                    return false;
+                    if (TeamCity.IsRunningInBuildAgent()) //fail the build if we're on a TC build agent
+                    {
+                        Log.LogError("Failed to find .git directory on agent. Please make sure agent checkout mode is enabled for you VCS roots - http://confluence.jetbrains.com/display/TCD8/VCS+Checkout+Mode");
+                        return false;
+                    }
+
+                    Log.LogWarning("No .git directory found in solution path '{0}'. This means the assembly may not be versioned correctly. To fix this warning either clone the repository using git or remove the `GitFlowVersion.Fody` nuget package. To temporarily work around this issue add a AssemblyInfo.cs with an appropriate `AssemblyVersionAttribute`.",SolutionDirectory);
+
+                    return true;
                 }
 
-                var assemblyVersion = GetAssemblyVersion(versionAndBranch);
-                var assemblyInfo = string.Format(@"
+                var versionAndBranch = VersionCache.GetVersion(gitDirectory);
+
+                foreach (var buildParameters in TeamCity.GenerateBuildLogOutput(versionAndBranch))
+                {
+                    Log.LogWarning(buildParameters,new object[]{});
+                }
+                CreateTempAssemblyInfo(versionAndBranch);
+
+                return true;
+            }
+            catch (ErrorException errorException)
+            {
+                Log.LogError(errorException.Message);
+                return false;
+            }
+            catch (Exception exception)
+            {
+                Log.LogErrorFromException(exception, true, true, "ProjectFile");
+                return false;
+            }
+            finally
+            {
+                Logger.Reset();
+            }
+        }
+
+        void CreateTempAssemblyInfo(VersionAndBranch versionAndBranch)
+        {
+            var assemblyVersion = GetAssemblyVersion(versionAndBranch);
+            var assemblyInfo = string.Format(@"
 using System.Reflection;
 [assembly: AssemblyVersion(""{0}"")]
 [assembly: AssemblyFileVersion(""{0}"")]
 [assembly: AssemblyInformationalVersion(""{1}"")]
 ", assemblyVersion, versionAndBranch.ToLongString());
 
-                var tempFileName = "AssemblyInfo_" + Path.GetFileNameWithoutExtension(ProjectFile) + "_" + Path.GetRandomFileName();
-                AssemblyInfoTempFilePath = Path.Combine(tempPath, tempFileName);
-                File.WriteAllText(AssemblyInfoTempFilePath, assemblyInfo);
-                return true;
-            }
-            catch (Exception exception)
-            {
-                Log.LogErrorFromException(exception, true, true, "ProjectFile");
-                throw;
-            }
-            finally
-            {
-                Logger.Reset();
-            }
+            var tempFileName = "AssemblyInfo_" + Path.GetFileNameWithoutExtension(ProjectFile) + "_" + Path.GetRandomFileName();
+            AssemblyInfoTempFilePath = Path.Combine(tempPath, tempFileName);
+            File.WriteAllText(AssemblyInfoTempFilePath, assemblyInfo);
         }
 
         Version GetAssemblyVersion(VersionAndBranch versionAndBranch)

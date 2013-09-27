@@ -26,7 +26,7 @@ public class ModuleWeaver : IDisposable
 
     public void Execute()
     {
-        Logger.Write = LogInfo;
+        Logger.WriteInfo = LogInfo;
         SearchPath.SetSearchPath(AddinDirectoryPath);
         var customAttributes = ModuleDefinition.Assembly.CustomAttributes;
 

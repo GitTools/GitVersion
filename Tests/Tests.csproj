@@ -78,6 +78,7 @@
     <Compile Include="AssemblyLocation.cs" />
     <Compile Include="AssemblyWithNoInfoVersionTests.cs" />
     <Compile Include="BranchFinders\DevelopTests.cs" />
+    <Compile Include="SemanticVersionParserTests.cs" />
     <Compile Include="VersionOnMasterFinderTests.cs" />
     <Compile Include="Mocks\SignatureBuilder.cs" />
     <Compile Include="Mocks\MockCommitLog.cs" />
@@ -88,7 +89,6 @@
     <Compile Include="Mocks\MockRepository.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="BranchFinders\HotfixTests.cs" />
-    <Compile Include="FinderWrapper.cs" />
     <Compile Include="InformationalVersionBuilderTests.cs" />
     <Compile Include="IntegrationTests.cs" />
     <Compile Include="BranchFinders\MasterTests.cs" />

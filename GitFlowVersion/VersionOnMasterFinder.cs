@@ -11,14 +11,19 @@ namespace GitFlowVersion
 
         SemanticVersion GetMergeOrTagMessage(Commit commit)
         {
-            var semVerTag = Repository.SemVerTags(commit);
+            var semVerTag = Repository.SemVerTag(commit);
             if (semVerTag != null)
             {
                 return semVerTag;
             }
 
+            string versionString;
+            if (!MergeMessageParser.TryParse(commit.Message, out versionString))
+            {
+                return null;
+            }
             SemanticVersion version;
-            if (MergeMessageParser.TryParse(commit.Message, out version))
+            if (SemanticVersionParser.TryParse(versionString, out version))
             {
                 return version;
             }
