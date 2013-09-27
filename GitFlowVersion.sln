@@ -5,8 +5,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitFlowVersion", "GitFlowVe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{5A86453B-96FB-4B6E-A283-225BB9F753D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitFlowVersionFody", "GitFlowVersionFody\GitFlowVersionFody.csproj", "{A9FCD24C-9BE0-46D3-B7E9-6F4552C04A33}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitFlowVersionTask", "GitFlowVersionTask\GitFlowVersionTask.csproj", "{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}"
 EndProject
 Global
@@ -29,12 +27,6 @@ Global
 		{5A86453B-96FB-4B6E-A283-225BB9F753D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A86453B-96FB-4B6E-A283-225BB9F753D3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5A86453B-96FB-4B6E-A283-225BB9F753D3}.Release|x86.ActiveCfg = Release|Any CPU
-		{A9FCD24C-9BE0-46D3-B7E9-6F4552C04A33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A9FCD24C-9BE0-46D3-B7E9-6F4552C04A33}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A9FCD24C-9BE0-46D3-B7E9-6F4552C04A33}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{A9FCD24C-9BE0-46D3-B7E9-6F4552C04A33}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A9FCD24C-9BE0-46D3-B7E9-6F4552C04A33}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A9FCD24C-9BE0-46D3-B7E9-6F4552C04A33}.Release|x86.ActiveCfg = Release|Any CPU
 		{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}.Debug|x86.ActiveCfg = Debug|Any CPU

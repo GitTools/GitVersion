@@ -76,7 +76,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyLocation.cs" />
-    <Compile Include="AssemblyWithNoInfoVersionTests.cs" />
     <Compile Include="BranchFinders\DevelopTests.cs" />
     <Compile Include="SemanticVersionParserTests.cs" />
     <Compile Include="VersionOnMasterFinderTests.cs" />
@@ -97,13 +96,11 @@
     <Compile Include="Mocks\MockTagCollection.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="BranchFinders\FeatureBranchTests.cs" />
-    <Compile Include="PartialStubModuleWeaver.cs" />
     <Compile Include="BranchFinders\PullBranchTests.cs" />
     <Compile Include="BranchFinders\ReleaseTests.cs" />
     <Compile Include="TeamcityVersionNumberTests.cs" />
     <Compile Include="Verifier.cs" />
     <Compile Include="VersionConverter.cs" />
-    <Compile Include="WeavingHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
@@ -111,16 +108,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assemblies\AssemblyWithNoInfoVer.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GitFlowVersionFody\GitFlowVersionFody.csproj">
-      <Project>{A9FCD24C-9BE0-46D3-B7E9-6F4552C04A33}</Project>
-      <Name>GitFlowVersionFody</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GitFlowVersion\GitFlowVersion.csproj">
       <Project>{C3578A7B-09A6-4444-9383-0DEAFA4958BD}</Project>
       <Name>GitFlowVersion</Name>
