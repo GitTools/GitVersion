@@ -8,13 +8,14 @@ Available on nuget under [GitFlowVersionTask](https://www.nuget.org/packages/Git
 
 ## The Problem
 
-Our builds are getting more complex and as we're moving towards scm structure with a lot of fine grained repos we need to take a convention based approach for our assembly versioning.
+Builds are getting more complex and as we're moving towards scm structure with a lot of fine grained repos we need to take a convention based approach for our product versioning.
 
 This also have the added benefit of forcing us to follow our branching strategy on all repositories since the build breaks if we don't.
 
 ### Assumptions:
 
-* We use the git flow branching strategy which means that we always have a master and a develop branch.
+* Using the [GitFlow branching model](http://nvie.com/git-model/) which means that we always have a master and a develop branch.
+* Following [Semantic Versioning](http://semver.org/)
 * Planned releases (bumps in major or minor) are done on release branches prefixed with release-. Eg: release-4.1 (or release-4.1.0)
 * Hotfixes are prefixed with hotfix- Eg. hotfix-4.0.4
 * Tags are used on the master branch and reflects the SemVer of each stable release eg 3.3.8 , 4.0.0, etc
