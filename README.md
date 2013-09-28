@@ -2,6 +2,8 @@
 
 ## Usage:
 
+Available on nuget under [GitFlowVersionTask](https://www.nuget.org/packages/GitFlowVersionTask/)
+
     Install-Package GitFlowVersionTask
 
 ## The Problem
