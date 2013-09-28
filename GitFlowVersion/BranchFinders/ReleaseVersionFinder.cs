@@ -42,7 +42,7 @@ namespace GitFlowVersion
                     version.Minor != overrideVersion.Minor ||
                     version.Patch != overrideVersion.Patch)
                 {
-                    throw new Exception(string.Format("Version on override tag: {0} did not match release branch version: {1}", overrideVersion, version));
+                    throw new ErrorException(string.Format("Version on override tag: {0} did not match release branch version: {1}", overrideVersion, version));
                 }
 
                 version.Stability = overrideVersion.Stability;

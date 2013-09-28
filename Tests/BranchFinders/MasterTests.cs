@@ -1,4 +1,3 @@
-using System;
 using FluentDate;
 using FluentDateTimeOffset;
 using GitFlowVersion;
@@ -31,7 +30,7 @@ public class MasterTests
                          Commit = commit
                      };
 
-        var exception = Assert.Throws<Exception>(() => finder.FindVersion());
+        var exception = Assert.Throws<ErrorException>(() => finder.FindVersion());
         Assert.AreEqual("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.", exception.Message);
     }
 

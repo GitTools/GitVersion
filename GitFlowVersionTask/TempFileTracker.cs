@@ -5,18 +5,19 @@
 
     public static class TempFileTracker
     {
-        public static string tempPath;
+        public static string TempPath;
+
         static TempFileTracker()
         {
-            tempPath = Path.Combine(Path.GetTempPath(), "GitFlowVersionTask");
-            Directory.CreateDirectory(tempPath);
+            TempPath = Path.Combine(Path.GetTempPath(), "GitFlowVersionTask");
+            Directory.CreateDirectory(TempPath);
         }
 
         public static void DeleteTempFiles()
         {
-            foreach (var file in Directory.GetFiles(tempPath))
+            foreach (var file in Directory.GetFiles(TempPath))
             {
-                if (File.GetLastWriteTime(file) < DateTime.Now.AddHours(-1))
+                if (File.GetLastWriteTime(file) < DateTime.Now.AddMinutes(-10))
                 {
                     File.Delete(file);
                 }

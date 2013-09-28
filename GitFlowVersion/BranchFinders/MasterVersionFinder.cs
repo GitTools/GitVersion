@@ -1,6 +1,5 @@
 namespace GitFlowVersion
 {
-    using System;
     using LibGit2Sharp;
 
     class MasterVersionFinder
@@ -44,7 +43,7 @@ namespace GitFlowVersion
                     return version;
                 }
             }
-            throw new Exception("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
+            throw new ErrorException("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
         }
     }
 }

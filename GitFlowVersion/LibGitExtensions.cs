@@ -37,7 +37,7 @@ namespace GitFlowVersion
             var semVerTags = repository.SemVerTags(commit).ToList();
             if (semVerTags.Count > 1)
             {
-                throw new Exception(string.Format("Error processing commit `{0}`. Only one version version tag per commit is allowed", commit.Sha));
+                throw new ErrorException(string.Format("Error processing commit `{0}`. Only one version version tag per commit is allowed.", commit.Sha));
             }
             return semVerTags.FirstOrDefault();
         }
@@ -97,26 +97,6 @@ namespace GitFlowVersion
                 return false;
             }
             return commit.IsOnBranch(branch);
-        }
-
-        public static DateTimeOffset CommitTimeStamp(this Tag tag)
-        {
-            var commit = tag.Target as Commit;
-            if (commit == null)
-            {
-                throw new InvalidOperationException();
-            }
-            return commit.When();
-        }
-
-        public static bool IsBefore(this Tag tag, Commit commit)
-        {
-            var tagCommit = tag.Target as Commit;
-            if (tagCommit == null)
-            {
-                throw new InvalidOperationException();
-            }
-            return tagCommit.When() <= commit.When();
         }
 
         public static Branch GetBranch(this IRepository repository, string name)

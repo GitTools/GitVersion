@@ -20,18 +20,19 @@
 
         [Required]
         public string ProjectFile { get; set; }
+
         [Required]
         public ITaskItem[] CompileFiles { get; set; }
 
         [Output]
         public string AssemblyInfoTempFilePath { get; set; }
 
-     
+
         public override bool Execute()
         {
-            TempFileTracker.DeleteTempFiles();
             try
             {
+                TempFileTracker.DeleteTempFiles();
 
                 Logger.WriteInfo = this.LogInfo;
                 var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
@@ -43,7 +44,7 @@
                         return false;
                     }
 
-                    var message = string.Format("No .git directory found in solution path '{0}'. This means the assembly may not be versioned correctly. To fix this warning either clone the repository using git or remove the `GitFlowVersion.Fody` nuget package. To temporarily work around this issue add a AssemblyInfo.cs with an appropriate `AssemblyVersionAttribute`.",SolutionDirectory);
+                    var message = string.Format("No .git directory found in solution path '{0}'. This means the assembly may not be versioned correctly. To fix this warning either clone the repository using git or remove the `GitFlowVersion.Fody` nuget package. To temporarily work around this issue add a AssemblyInfo.cs with an appropriate `AssemblyVersionAttribute`.", SolutionDirectory);
                     this.LogWarning(message);
 
                     return true;
@@ -95,44 +96,25 @@
 
         void CreateTempAssemblyInfo(VersionAndBranch versionAndBranch)
         {
-            var assemblyVersion = GetAssemblyVersion(versionAndBranch);
-            var assemblyFileVersion = GetAssemblyFileVersion(versionAndBranch);
-            var assemblyInfo = string.Format(@"
-using System.Reflection;
-[assembly: AssemblyVersion(""{0}"")]
-[assembly: AssemblyFileVersion(""{1}"")]
-[assembly: AssemblyInformationalVersion(""{2}"")]
-", assemblyVersion, assemblyFileVersion, versionAndBranch.ToLongString());
+            var assemblyInfoBuilder = new AssemblyInfoBuilder
+                                      {
+                                          VersionAndBranch = versionAndBranch,
+                                          SignAssembly = SignAssembly
+                                      };
+            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText();
 
-            var tempFileName = "AssemblyInfo_" + Path.GetFileNameWithoutExtension(ProjectFile) + "_" + Path.GetRandomFileName();
-            AssemblyInfoTempFilePath = Path.Combine(TempFileTracker.tempPath, tempFileName);
+            var tempFileName = string.Format("AssemblyInfo_{0}_{1}.cs", Path.GetFileNameWithoutExtension(ProjectFile), Path.GetRandomFileName());
+            AssemblyInfoTempFilePath = Path.Combine(TempFileTracker.TempPath, tempFileName);
             File.WriteAllText(AssemblyInfoTempFilePath, assemblyInfo);
         }
 
-        string GetAssemblyVersion(VersionAndBranch versionAndBranch)
-        {
-            var semanticVersion = versionAndBranch.Version;
-            if (SignAssembly)
-            {
-                // for strong named we don't want to include the patch to avoid binding redirect issues
-                return string.Format("{0}.{1}.0", semanticVersion.Major, semanticVersion.Minor);
-            }
-            // for non strong named we want to include the patch
-            return string.Format("{0}.{1}.{2}", semanticVersion.Major, semanticVersion.Minor,semanticVersion.Patch);
-        }
-
-        string GetAssemblyFileVersion(VersionAndBranch versionAndBranch)
-        {
-            var semanticVersion = versionAndBranch.Version;
-         
-            return string.Format("{0}.{1}.{2}", semanticVersion.Major, semanticVersion.Minor,semanticVersion.Patch);
-        }
 
         IEnumerable<string> GetInvalidFiles()
         {
             return CompileFiles.Select(x => x.ItemSpec)
-                .Where(compileFile => compileFile.Contains("AssemblyInfo"))
-                .Where(FileContainsVersionAttribute);
+                               .Where(compileFile => compileFile.Contains("AssemblyInfo"))
+                               .Where(FileContainsVersionAttribute);
         }
+
     }
 }

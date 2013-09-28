@@ -1,6 +1,5 @@
 ﻿namespace GitFlowVersion
 {
-    using System;
 
     public static class VersionInformationalConverter
     {
@@ -44,7 +43,7 @@
                 return string.Format("{0} Sha:'{1}'", versionPrefix, versionAndBranch.Sha);
             }
 
-            throw new Exception(string.Format("Invalid branch type '{0}'.", versionAndBranch.BranchType));
+            throw new ErrorException(string.Format("Invalid branch type '{0}'.", versionAndBranch.BranchType));
         }
 
         public static string ToShortString(this VersionAndBranch versionAndBranch)
@@ -87,7 +86,7 @@
                 return versionPrefix;
             }
 
-            throw new Exception(string.Format("Invalid branch type '{0}'.", versionAndBranch.BranchType));
+            throw new ErrorException(string.Format("Invalid branch type '{0}'.", versionAndBranch.BranchType));
         }
     }
 }
