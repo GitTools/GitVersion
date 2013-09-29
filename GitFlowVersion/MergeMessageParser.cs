@@ -4,12 +4,13 @@ namespace GitFlowVersion
 
     public class MergeMessageParser
     {
-        public static bool TryParse(string message, out string semanticVersion)
+        public static bool TryParse(string message, out string versionPart)
         {
+            versionPart = null;
             string trimmed;
             if (message.StartsWith("Merge branch 'hotfix-"))
             {
-                 trimmed = message.Replace("Merge branch 'hotfix-", "");
+                trimmed = message.Replace("Merge branch 'hotfix-", "");
             }
             else if (message.StartsWith("Merge branch 'release-"))
             {
@@ -18,15 +19,23 @@ namespace GitFlowVersion
             else if (message.StartsWith("Merge branch '"))
             {
                 trimmed = message.Replace("Merge branch '", "");
+                if (!char.IsNumber(trimmed.First()))
+                {
+                    return false;
+                }
             }
             else
             {
-                semanticVersion = null;
                 return false;
             }
-            var versionPart = trimmed.Split('\'').First();
-            semanticVersion = versionPart;
+            trimmed = trimmed.TrimNewLines();
+            if (!trimmed.EndsWith("'"))
+            {
+                return false;
+            }
+            versionPart = trimmed.TrimEnd('\'');
             return true;
         }
+
     }
 }

@@ -10,7 +10,31 @@ public class IntegrationTests
 
 
     [Test, Explicit]
-    public void NServiceBusMaster()
+    public void ProcessAllTheCommits()
+    {
+        using (var repository = new Repository(@"C:\Code\Particular\NServiceBus"))
+        {
+            foreach (var branch in repository.Branches)
+            {
+
+                foreach (var commit in branch.Commits)
+                {
+                    string versionPart;
+                    if (MergeMessageParser.TryParse(commit.Message, out versionPart))
+                    {
+                        Debug.WriteLine(versionPart);
+                        SemanticVersion version;
+                        if (SemanticVersionParser.TryParse(versionPart, out version))
+                        {
+                            Debug.WriteLine("{0}.{1}.{2}.{3}.{4}.{5}", version.Major, version.Minor, version.Patch, version.Stability, version.PreReleaseNumber, version.Suffix);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    [Test, Explicit]
+    public void TimingOnNSB()
     {
         var startNew = Stopwatch.StartNew();
         using (var repository = new Repository(@"C:\Code\Particular\NServiceBus"))

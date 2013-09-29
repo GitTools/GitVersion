@@ -8,14 +8,26 @@ public class MockBranch : Branch, ICollection<Commit>
     {
         this.name = name;
     }
+    public MockBranch(string name, string canonicalName)
+    {
+        this.name = name;
+        this.canonicalName = canonicalName;
+    }
+
     public MockBranch()
     {
         
     }
     MockCommitLog commits = new MockCommitLog();
     string name;
+    string canonicalName;
     public override string Name { get { return name; } }
     public override ICommitLog Commits { get { return commits; } }
+
+    public override string CanonicalName
+    {
+        get { return canonicalName; }
+    }
 
     public IEnumerator<Commit> GetEnumerator()
     {
