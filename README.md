@@ -22,10 +22,12 @@ This also have the added benefit of forcing us to follow our branching strategy 
 * Tags can also be used to override versions while we transition repos over to GitFlowVersion
 * Using a build server with multi-branch building enabled eg TeamCity 8
 
-### Suggested conventions
+### How Branches are handled
 
-`targetBranch` => the branch we are targeting
-`targetCommit` => the commit we are targeting on `targetbranch`
+The descriptions of how commits and branches are versioned can be considered a type of pseudopod. With that in mind there are a few common "variables" that we will refer to:
+
+* `targetBranch` => the branch we are targeting
+* `targetCommit` => the commit we are targeting on `targetbranch`
 
 #### Master branch
 
@@ -92,7 +94,7 @@ Branch naming convention: `release-{n}`  eg `release-1.2`
 * major: `mergeVersion.Major`
 * minor: `mergeVersion.Minor`
 * patch: 0
-* pre-release: `beta{n}` where n = number of commits on branch or  `rc{n}` where n is derived from a tag.
+* pre-release: `beta{n}` where n = number of commits on branch or tagged (see Optional Tags below).
 
 Optional Tags (only when changing pre-release status):
 
