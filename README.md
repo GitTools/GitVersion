@@ -94,7 +94,9 @@ Branch naming convention: `release-{n}`  eg `release-1.2`
 * major: `mergeVersion.Major`
 * minor: `mergeVersion.Minor`
 * patch: 0
-* pre-release: `beta{n}` where n = number of commits on branch or tagged (see Optional Tags below).
+* pre-release: either:
+  * `beta{n}` where n = number of commits on branch 
+  * tagged (see Optional Tags below).
 
 Optional Tags (only when changing pre-release status):
 
