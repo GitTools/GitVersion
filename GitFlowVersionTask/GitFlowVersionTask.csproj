@@ -64,7 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Fody.targets" />
-    <None Include="NugetAssets\GitFlowVersionTask.targets" />
+    <None Include="NugetAssets\GitFlowVersionTask.targets">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="NugetAssets\GitFlowVersionTask.nuspec">
       <SubType>Designer</SubType>
     </None>

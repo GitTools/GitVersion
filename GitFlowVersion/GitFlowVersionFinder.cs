@@ -10,64 +10,68 @@ namespace GitFlowVersion
 
         public VersionAndBranch FindVersion()
         {
-            if (Branch.Name == "master")
+            if (Branch.IsMaster())
             {
                 return new MasterVersionFinder
-                                          {
-                                              Commit = Commit,
-                                              Repository = Repository
-                                          }.FindVersion();
+                       {
+                           Commit = Commit,
+                           Repository = Repository
+                       }.FindVersion();
             }
 
-            if (Branch.Name.StartsWith("hotfix-"))
+            if (Branch.IsHotfix())
             {
                 return new HotfixVersionFinder
-                                          {
-                                              Commit = Commit,
-                                              HotfixBranch = Branch,
-                                              Repository = Repository
-                                          }.FindVersion();
+                       {
+                           Commit = Commit,
+                           HotfixBranch = Branch,
+                           Repository = Repository
+                       }.FindVersion();
             }
 
-            if (Branch.Name.StartsWith("release-"))
+            if (Branch.IsRelease())
             {
                 return new ReleaseVersionFinder
-                {
-                    Commit = Commit,
-                    Repository = Repository,
-                    ReleaseBranch = Branch,
-                }.FindVersion();
+                       {
+                           Commit = Commit,
+                           Repository = Repository,
+                           ReleaseBranch = Branch,
+                       }.FindVersion();
             }
 
-            if (Branch.Name == "develop")
+            if (Branch.IsDevelop())
             {
                 return new DevelopVersionFinder
-                {
-                    Commit = Commit,
-                    Repository = Repository
-                }.FindVersion();
+                       {
+                           Commit = Commit,
+                           Repository = Repository
+                       }.FindVersion();
             }
 
-            if (IsPullRequest())
+            if (Branch.IsPullRequest())
             {
                 return new PullVersionFinder
-                {
-                    Commit = Commit,
-                    Repository = Repository,
-                    PullBranch = Branch
-                }.FindVersion();
+                       {
+                           Commit = Commit,
+                           Repository = Repository,
+                           PullBranch = Branch
+                       }.FindVersion();
+            }
+            if (Branch.IsFeature())
+            {
+                return new FeatureVersionFinder
+                       {
+                           Commit = Commit,
+                           Repository = Repository,
+                           FeatureBranch = Branch
+                       }.FindVersion();
             }
             return new FeatureVersionFinder
-            {
-                Commit = Commit,
-                Repository = Repository,
-                FeatureBranch = Branch
-            }.FindVersion();
-        }
-
-        bool IsPullRequest()
-        {
-            return Branch.CanonicalName.Contains("/pull/") || TeamCity.IsBuildingAPullRequest();
+                   {
+                       Commit = Commit,
+                       Repository = Repository,
+                       FeatureBranch = Branch
+                   }.FindVersion();
         }
     }
 }
