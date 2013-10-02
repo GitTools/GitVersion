@@ -57,6 +57,7 @@
                 var versionAndBranch = VersionCache.GetVersion(gitDirectory);
 
                 WriteTeamCityParameters(versionAndBranch);
+                WriteEnvironmentalVariables(versionAndBranch);
                 CreateTempAssemblyInfo(versionAndBranch);
 
                 return true;
@@ -75,6 +76,24 @@
             {
                 Logger.Reset();
             }
+        }
+
+        private void WriteEnvironmentalVariables(VersionAndBranch versionAndBranch)
+        {
+            var semanticVersion = versionAndBranch.Version;
+
+            WriteEnvVariable("GitFlowVersionMajor", semanticVersion.Major.ToString());
+            WriteEnvVariable("GitFlowVersionMinor", semanticVersion.Minor.ToString());
+            WriteEnvVariable("GitFlowVersionPatch", semanticVersion.Patch.ToString());
+            WriteEnvVariable("GitFlowVersionStability", semanticVersion.Stability.ToString());
+            WriteEnvVariable("GitFlowVersionPreReleaseNumber", semanticVersion.PreReleaseNumber.ToString());
+            WriteEnvVariable("GitFlowVersionVersion", TeamCity.GenerateBuildVersion(versionAndBranch));
+            WriteEnvVariable("GitFlowVersionNugetVersion", TeamCity.GenerateNugetVersion(versionAndBranch));
+        }
+
+        private void WriteEnvVariable(string variableName, string value)
+        {
+            Environment.SetEnvironmentVariable(variableName, value, EnvironmentVariableTarget.Process);
         }
 
         void WriteTeamCityParameters(VersionAndBranch versionAndBranch)
