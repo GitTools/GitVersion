@@ -12,9 +12,17 @@ namespace GitFlowVersion
             {
                 trimmed = message.Replace("Merge branch 'hotfix-", "");
             }
+            else if (message.StartsWith("Merge branch 'hotfix/"))
+            {
+                trimmed = message.Replace("Merge branch 'hotfix/", "");
+            }
             else if (message.StartsWith("Merge branch 'release-"))
             {
                 trimmed = message.Replace("Merge branch 'release-", "");
+            }
+            else if (message.StartsWith("Merge branch 'release/"))
+            {
+                trimmed = message.Replace("Merge branch 'release/", "");
             }
             else if (message.StartsWith("Merge branch '"))
             {

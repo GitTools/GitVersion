@@ -6,5 +6,14 @@ namespace GitFlowVersion
         {
             return s.TrimEnd('\r', '\n');
         }
+        public static string TrimStart(this string value, string toTrim)
+        {
+            if (!value.StartsWith(toTrim))
+            {
+                return value;
+            }
+            var startIndex = toTrim.Length;
+            return value.Substring(startIndex);
+        }
     }
 }

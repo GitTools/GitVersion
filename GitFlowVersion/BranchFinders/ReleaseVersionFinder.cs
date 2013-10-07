@@ -22,7 +22,7 @@ namespace GitFlowVersion
 
         public VersionAndBranch FindVersion()
         {
-            var versionString = ReleaseBranch.Name.Replace("release-", "");
+            var versionString = ReleaseBranch.GetReleaseSuffix();
             SemanticVersion version;
             if (!SemanticVersionParser.TryParse(versionString, out version))
             {
@@ -44,16 +44,20 @@ namespace GitFlowVersion
                 {
                     throw new ErrorException(string.Format("Version on override tag: {0} did not match release branch version: {1}", overrideVersion, version));
                 }
-
-                version.Stability = overrideVersion.Stability;
+                return new VersionAndBranch
+                {
+                    BranchType = BranchType.Release,
+                    BranchName = ReleaseBranch.Name,
+                    Sha = Commit.Sha,
+                    Version = overrideVersion
+                };
             }
-
 
             version.PreReleaseNumber = ReleaseBranch
                 .Commits
                 .SkipWhile(x => x != Commit)
                 .TakeWhile(x => !IsOnDevelopBranchFunc(x))
-                .Count();
+                .Count() + 1;
 
             return new VersionAndBranch
                    {

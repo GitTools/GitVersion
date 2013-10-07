@@ -38,7 +38,7 @@ public class ReleaseTests
         Assert.AreEqual(0, version.Version.Patch);
         Assert.AreEqual(Stability.Beta, version.Version.Stability);
         Assert.AreEqual(BranchType.Release, version.BranchType);
-        Assert.AreEqual(0, version.Version.PreReleaseNumber, "Prerelease should be set to 0 since there is no commits");
+        Assert.AreEqual(1, version.Version.PreReleaseNumber, "Prerelease should be set to 1 since there is no commits");
     }
 
     [Test]
@@ -80,7 +80,7 @@ public class ReleaseTests
         Assert.AreEqual(0, version.Version.Patch);
         Assert.AreEqual(Stability.Beta, version.Version.Stability);
         Assert.AreEqual(BranchType.Release, version.BranchType);
-        Assert.AreEqual(1, version.Version.PreReleaseNumber, "Prerelease should be set to 1 since there is a commit on the branch");
+        Assert.AreEqual(2, version.Version.PreReleaseNumber, "Prerelease should be set to 2 since there is a commit on the branch");
     }
 
     [Test]
@@ -126,7 +126,7 @@ public class ReleaseTests
         Assert.AreEqual(0, version.Version.Patch);
         Assert.AreEqual(Stability.Beta, version.Version.Stability);
         Assert.AreEqual(BranchType.Release, version.BranchType);
-        Assert.AreEqual(2, version.Version.PreReleaseNumber, "Prerelease should be set to 2 since there is 2 commits on the branch");
+        Assert.AreEqual(3, version.Version.PreReleaseNumber, "Prerelease should be set to 3 since there is 2 commits on the branch");
     }
 
 
@@ -166,7 +166,7 @@ public class ReleaseTests
                                                      new MockTag
                                                      {
                                                          TargetEx = firstCommit,
-                                                         NameEx = "0.4.0-RC1"
+                                                         NameEx = "0.4.0-RC4"
                                                      }
                                                  }
                                       },
@@ -179,7 +179,7 @@ public class ReleaseTests
         Assert.AreEqual(0, version.Version.Patch);
         Assert.AreEqual(Stability.ReleaseCandidate, version.Version.Stability);
         Assert.AreEqual(BranchType.Release, version.BranchType);
-        Assert.AreEqual(1, version.Version.PreReleaseNumber);
+        Assert.AreEqual(4, version.Version.PreReleaseNumber);
     }
 
         //TODO:

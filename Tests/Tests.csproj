@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyLocation.cs" />
+    <Compile Include="BranchClassifierTests.cs" />
     <Compile Include="BranchFinders\DevelopTests.cs" />
     <Compile Include="SemanticVersionParserTests.cs" />
     <Compile Include="VersionOnMasterFinderTests.cs" />
