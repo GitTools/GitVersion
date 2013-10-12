@@ -1,7 +1,6 @@
 using FluentDate;
 using FluentDateTimeOffset;
 using GitFlowVersion;
-using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
@@ -14,7 +13,6 @@ public class FeatureBranchTests
         var branchingCommit = new MockCommit
                               {
                                   CommitterEx = 1.Seconds().Ago().ToSignature(),
-                                  IdEx = new ObjectId("c50179a2c77843245ace262b51b08af7b3b7f8fe")
                               };
         var featureBranch = new MockBranch("featureWithNoCommits")
                             {
@@ -57,7 +55,7 @@ public class FeatureBranchTests
         Assert.AreEqual(Stability.Unstable, version.Version.Stability);
         Assert.AreEqual(BranchType.Feature, version.BranchType);
         Assert.AreEqual(null, version.Version.Suffix);
-        Assert.AreEqual(2, version.Version.PreReleaseNumber, "Should be the number of commits ahead of master");
+        Assert.AreEqual(2, version.Version.PreReleasePartOne, "Should be the number of commits ahead of master");
     }
 
     [Test]
@@ -66,7 +64,6 @@ public class FeatureBranchTests
         var branchingCommit = new MockCommit
                               {
                                   CommitterEx = 1.Seconds().Ago().ToSignature(),
-                                  IdEx = new ObjectId("c50179a2c77843245ace262b51b08af7b3b7f8fe")
                               };
         var commitOneOnFeature = new MockCommit
                                  {
@@ -113,8 +110,8 @@ public class FeatureBranchTests
         Assert.AreEqual(0, version.Version.Patch);
         Assert.AreEqual(Stability.Unstable, version.Version.Stability);
         Assert.AreEqual(BranchType.Feature, version.BranchType);
-        Assert.AreEqual("c50179a2", version.Version.Suffix, "Suffix should be the develop commit it was branched from");
-        Assert.AreEqual(0, version.Version.PreReleaseNumber, "Prerelease is always 0 for feature branches");
+        Assert.AreEqual(branchingCommit.Prefix(), version.Version.Suffix, "Suffix should be the develop commit it was branched from");
+        Assert.AreEqual(0, version.Version.PreReleasePartOne, "Prerelease is always 0 for feature branches");
     }
 
     [Test]
@@ -124,7 +121,6 @@ public class FeatureBranchTests
         var branchingCommit = new MockCommit
                               {
                                   CommitterEx = 3.Seconds().Ago().ToSignature(),
-                                  IdEx = new ObjectId("c50179a2c77843245ace262b51b08af7b3b7f8fe")
                               };
         var commitOneOnFeature = new MockCommit
                                  {
@@ -175,8 +171,8 @@ public class FeatureBranchTests
         Assert.AreEqual(0, version.Version.Patch);
         Assert.AreEqual(Stability.Unstable, version.Version.Stability);
         Assert.AreEqual(BranchType.Feature, version.BranchType);
-        Assert.AreEqual("c50179a2", version.Version.Suffix, "Suffix should be the develop commit it was branched from");
-        Assert.AreEqual(0, version.Version.PreReleaseNumber, "Prerelease is always 0 for feature branches");
+        Assert.AreEqual(branchingCommit.Prefix(), version.Version.Suffix, "Suffix should be the develop commit it was branched from");
+        Assert.AreEqual(0, version.Version.PreReleasePartOne, "Prerelease is always 0 for feature branches");
     }
 
     [Test]
@@ -186,7 +182,6 @@ public class FeatureBranchTests
         var branchingCommit = new MockCommit
                               {
                                   CommitterEx = 3.Seconds().Ago().ToSignature(),
-                                  IdEx = new ObjectId("c50179a2c77843245ace262b51b08af7b3b7f8fe")
                               };
         var commitOneOnFeature = new MockCommit
                                  {
@@ -237,7 +232,7 @@ public class FeatureBranchTests
         Assert.AreEqual(0, version.Version.Patch);
         Assert.AreEqual(Stability.Unstable, version.Version.Stability);
         Assert.AreEqual(BranchType.Feature, version.BranchType);
-        Assert.AreEqual("c50179a2", version.Version.Suffix, "Suffix should be the develop commit it was branched from");
-        Assert.AreEqual(0, version.Version.PreReleaseNumber, "Prerelease is always 0 for feature branches");
+        Assert.AreEqual(branchingCommit.Prefix(), version.Version.Suffix, "Suffix should be the develop commit it was branched from");
+        Assert.AreEqual(0, version.Version.PreReleasePartOne, "Prerelease is always 0 for feature branches");
     }
 }

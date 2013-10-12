@@ -30,7 +30,7 @@ namespace GitFlowVersion
                 throw new ErrorException(message);
             }
 
-            if (version.PreReleaseNumber != null)
+            if (version.PreReleasePartOne != null)
             {
                 var message = string.Format("Hotfix branch name is invalid '{0}'. PreReleaseNumber not allowed as part of hotfix branch name", HotfixBranch.Name);
                 throw new ErrorException(message);
@@ -42,7 +42,7 @@ namespace GitFlowVersion
             }
             version.Stability = Stability.Beta;
 
-            version.PreReleaseNumber = HotfixBranch
+            version.PreReleasePartOne = HotfixBranch
                 .Commits
                 .SkipWhile(x => x != Commit)
                 .TakeWhile(x => !IsOnMasterBranchFunc(x))

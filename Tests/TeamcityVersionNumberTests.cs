@@ -13,7 +13,7 @@ public class TeamcityVersionNumberTests
                                    BranchType = BranchType.Develop,
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleaseNumber = 4,
+                                                 PreReleasePartOne = 4,
                                                  Stability = Stability.Unstable
                                              }
                                };
@@ -29,7 +29,7 @@ public class TeamcityVersionNumberTests
                                    BranchType = BranchType.Release,
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleaseNumber = 4,
+                                                 PreReleasePartOne = 4,
                                                  Stability = Stability.Beta,
                                              }
                                };
@@ -45,7 +45,7 @@ public class TeamcityVersionNumberTests
                                    Version = new SemanticVersion
                                              {
                                                  Stability = Stability.Beta,
-                                                 PreReleaseNumber = 4
+                                                 PreReleasePartOne = 4
                                              }
                                };
         VerifyOutput("0.0.0-Beta4", versionAndBranch);
@@ -61,7 +61,7 @@ public class TeamcityVersionNumberTests
                                    Version = new SemanticVersion
                                              {
                                                  Suffix = "1571",
-                                                 PreReleaseNumber = 131231232, //ignored
+                                                 PreReleasePartOne = 131231232, //ignored
                                                  Stability = Stability.Unstable
                                              }
 
@@ -79,7 +79,7 @@ public class TeamcityVersionNumberTests
                                    BranchName = "AFeature",
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleaseNumber = 4, //ignored
+                                                 PreReleasePartOne = 4, //ignored
                                                  Stability = Stability.Unstable
                                              }
                                };
@@ -96,7 +96,7 @@ public class TeamcityVersionNumberTests
                                              {
                                                  Stability = Stability.Final,
                                                  Suffix = "1571", //ignored
-                                                 PreReleaseNumber = 131231232 //ignored
+                                                 PreReleasePartOne = 131231232 //ignored
                                              }
                                };
         VerifyOutput("0.0.0", versionAndBranch);
@@ -111,7 +111,7 @@ public class TeamcityVersionNumberTests
                                    BranchType = BranchType.Develop,
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleaseNumber = 4,
+                                                 PreReleasePartOne = 4,
                                                  Stability = Stability.Unstable
                                              }
                                };
@@ -126,7 +126,7 @@ public class TeamcityVersionNumberTests
                                    BranchType = BranchType.Develop,
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleaseNumber = 40,
+                                                 PreReleasePartOne = 40,
                                                  Stability = Stability.Unstable
                                              }
                                };
@@ -141,7 +141,7 @@ public class TeamcityVersionNumberTests
                                    BranchType = BranchType.Develop,
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleaseNumber = 400,
+                                                 PreReleasePartOne = 400,
                                                  Stability = Stability.Unstable
                                              }
                                };
@@ -156,7 +156,7 @@ public class TeamcityVersionNumberTests
                                    BranchType = BranchType.Develop,
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleaseNumber = 4000,
+                                                 PreReleasePartOne = 4000,
                                                  Stability = Stability.Unstable
                                              }
                                };

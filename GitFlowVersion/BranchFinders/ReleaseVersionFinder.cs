@@ -9,63 +9,74 @@ namespace GitFlowVersion
         public Commit Commit;
         public IRepository Repository;
         public Branch ReleaseBranch;
-        public Func<Commit, bool> IsOnDevelopBranchFunc;
-
-        public ReleaseVersionFinder()
-        {
-            IsOnDevelopBranchFunc = x =>
-                {
-                    var developBranch = Repository.DevelopBranch();
-                    return Repository.IsOnBranch(developBranch, x);
-                };
-        }
 
         public VersionAndBranch FindVersion()
         {
             var versionString = ReleaseBranch.GetReleaseSuffix();
-            SemanticVersion version;
-            if (!SemanticVersionParser.TryParse(versionString, out version))
+            SemanticVersion versionFromBranchName;
+            if (!SemanticVersionParser.TryParse(versionString, out versionFromBranchName))
             {
                 var message = string.Format("Could not parse '{0}' into a version", ReleaseBranch.Name);
                 throw new ErrorException(message);
             }
 
-            version.Stability = Stability.Beta;
-
-            var overrideTag = Repository.SemVerTag(Commit);
-
-            if (overrideTag != null)
+            if (versionFromBranchName.PreReleasePartOne != null)
             {
-                var overrideVersion = overrideTag;
-
-                if (version.Major != overrideVersion.Major ||
-                    version.Minor != overrideVersion.Minor ||
-                    version.Patch != overrideVersion.Patch)
-                {
-                    throw new ErrorException(string.Format("Version on override tag: {0} did not match release branch version: {1}", overrideVersion, version));
-                }
-                return new VersionAndBranch
-                {
-                    BranchType = BranchType.Release,
-                    BranchName = ReleaseBranch.Name,
-                    Sha = Commit.Sha,
-                    Version = overrideVersion
-                };
+                throw new ErrorException("Release branches cannot contain a pre-release number");
+            }
+            if (versionFromBranchName.Stability != null)
+            {
+                throw new ErrorException("Release branches cannot contain a stability");
             }
 
-            version.PreReleaseNumber = ReleaseBranch
-                .Commits
-                .SkipWhile(x => x != Commit)
-                .TakeWhile(x => !IsOnDevelopBranchFunc(x))
-                .Count() + 1;
-
+            var versionFromFirstTag = GetVersionFromFirstTag(versionFromBranchName);
             return new VersionAndBranch
-                   {
-                       BranchType = BranchType.Release,
-                       BranchName = ReleaseBranch.Name,
-                       Sha = Commit.Sha,
-                       Version = version
-                   };
+                        {
+                            BranchType = BranchType.Release,
+                            BranchName = ReleaseBranch.Name,
+                            Sha = Commit.Sha,
+                            Version = versionFromFirstTag,
+                        };
+        }
+
+        SemanticVersion GetVersionFromFirstTag(SemanticVersion versionFromBranchName)
+        {
+            var count = 0;
+            foreach (var c in ReleaseBranch
+                .Commits
+                .SkipWhile(x => x != Commit))
+            {
+                var versionFromTag = Repository.SemVerTag(c);
+                if (versionFromTag == null)
+                {
+                    count++;
+                    continue;
+                }
+                if (versionFromBranchName.Major == versionFromTag.Major &&
+                    versionFromBranchName.Minor == versionFromTag.Minor &&
+                    versionFromBranchName.Patch == versionFromTag.Patch)
+                {
+                    if (versionFromTag.Stability != null)
+                    {
+                        if (versionFromTag.PreReleasePartOne == null)
+                        {
+                            throw new Exception("If a stability is defined on a release branch the pre-release number must also be defined.");
+                        }
+                        if (versionFromTag.PreReleasePartTwo != null)
+                        {
+                            throw new Exception("pre release part two is reserved for commit increments.");
+                        }
+                        if (count != 0)
+                        {
+                            versionFromTag.PreReleasePartTwo = count;
+                        }
+                    }
+                    return versionFromTag;
+                }
+                count++;
+            }
+            throw new Exception(string.Format("There must be a tag on a release branch with a version the same as the version from the branch name i.e. {0}.{1}.{2}", versionFromBranchName.Major, versionFromBranchName.Minor, versionFromBranchName.Patch));
+   
         }
     }
 }

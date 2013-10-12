@@ -32,7 +32,7 @@ namespace GitFlowVersion
                 version.Suffix = PullBranch.CanonicalName
                                            .Substring(PullBranch.CanonicalName.IndexOf("/pull/") + 6);
             }
-            version.PreReleaseNumber = 0;
+            version.PreReleasePartOne = 0;
 
             return new VersionAndBranch
                    {

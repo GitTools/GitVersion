@@ -24,11 +24,11 @@
             }
             if (stability != Stability.Final)
             {
-                var preReleaseNumber = versionAndBranch.Version.PreReleaseNumber.ToString();
+                var preReleaseNumber = versionAndBranch.Version.PreReleasePartOne.ToString();
 
                 if (padPreReleaseNumber)
                 {
-                    preReleaseNumber = versionAndBranch.Version.PreReleaseNumber.Value.ToString("D4");
+                    preReleaseNumber = versionAndBranch.Version.PreReleasePartOne.Value.ToString("D4");
                 }
 
                 switch (versionAndBranch.BranchType)
@@ -109,7 +109,7 @@
             yield return GenerateBuildParameter("Minor", semanticVersion.Minor.ToString());
             yield return GenerateBuildParameter("Patch", semanticVersion.Patch.ToString());
             yield return GenerateBuildParameter("Stability", semanticVersion.Stability.ToString());
-            yield return GenerateBuildParameter("PreReleaseNumber", semanticVersion.PreReleaseNumber.ToString());
+            yield return GenerateBuildParameter("PreReleaseNumber", semanticVersion.PreReleasePartOne.ToString());
             yield return GenerateBuildParameter("Version", CreateVersionString(versionAndBranch));
             yield return GenerateBuildParameter("NugetVersion", GenerateNugetVersion(versionAndBranch));
         }

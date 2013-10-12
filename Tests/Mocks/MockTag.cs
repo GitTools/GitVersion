@@ -6,13 +6,13 @@ public class MockTag:Tag
     {
     }
 
-    public string NameEx { get; set; }
+    public string NameEx;
     public override string Name
     {
         get { return NameEx; }
     }
 
-    public GitObject TargetEx { get; set; }
+    public GitObject TargetEx;
     public override GitObject Target
     {
         get { return TargetEx; }

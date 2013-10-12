@@ -8,37 +8,45 @@ public class ReleaseTests
     public void No_commits()
     {
         var branchingCommit = new MockCommit
-        {
-            MessageEx = "branching commit",
-        };
+                              {
+                                  MessageEx = "branching commit",
+                              };
         var releaseBranch = new MockBranch("release-0.3.0")
                             {
                                 branchingCommit,
                             };
         var finder = new ReleaseVersionFinder
-        {
-            ReleaseBranch = releaseBranch,
-            Commit = branchingCommit,
-            Repository = new MockRepository
-            {
-                Branches = new MockBranchCollection
+                     {
+                         ReleaseBranch = releaseBranch,
+                         Commit = branchingCommit,
+                         Repository = new MockRepository
+                                      {
+                                          Branches = new MockBranchCollection
                                                      {
                                                          new MockBranch("develop")
                                                          {
                                                              branchingCommit
                                                          },
                                                          releaseBranch
+                                                     },
+                                          Tags = new MockTagCollection
+                                                 {
+                                                     new MockTag
+                                                     {
+                                                         TargetEx = branchingCommit,
+                                                         NameEx = "0.3.0-alpha1"
                                                      }
-            },
-            IsOnDevelopBranchFunc = x => ReferenceEquals(x, branchingCommit)
-        };
+                                                 }
+                                      },
+                     };
         var version = finder.FindVersion();
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(3, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch);
-        Assert.AreEqual(Stability.Beta, version.Version.Stability);
+        Assert.AreEqual(Stability.Alpha, version.Version.Stability);
         Assert.AreEqual(BranchType.Release, version.BranchType);
-        Assert.AreEqual(1, version.Version.PreReleaseNumber, "Prerelease should be set to 1 since there is no commits");
+        Assert.AreEqual(1, version.Version.PreReleasePartOne, "PreReleasePartOne should be set to 1 from the tag");
+        Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since there is no commits");
     }
 
     [Test]
@@ -70,17 +78,25 @@ public class ReleaseTests
                                                              branchingCommit
                                                          },
                                                          releaseBranch
+                                                     },
+                                          Tags = new MockTagCollection
+                                                 {
+                                                     new MockTag
+                                                     {
+                                                         TargetEx = branchingCommit,
+                                                         NameEx = "0.5.0-alpha1"
                                                      }
+                                                 }
                                       },
-                                      IsOnDevelopBranchFunc =x=> ReferenceEquals(x,branchingCommit)
                      };
         var version = finder.FindVersion();
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(5, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch);
-        Assert.AreEqual(Stability.Beta, version.Version.Stability);
+        Assert.AreEqual(Stability.Alpha, version.Version.Stability);
         Assert.AreEqual(BranchType.Release, version.BranchType);
-        Assert.AreEqual(2, version.Version.PreReleaseNumber, "Prerelease should be set to 2 since there is a commit on the branch");
+        Assert.AreEqual(1, version.Version.PreReleasePartOne);
+        Assert.AreEqual(1, version.Version.PreReleasePartTwo);
     }
 
     [Test]
@@ -94,13 +110,14 @@ public class ReleaseTests
                            {
                                MessageEx = "second commit on release",
                            };
+        var firstCommit = new MockCommit
+                         {
+                             MessageEx = "first commit on release",
+                         };
         var releaseBranch = new MockBranch("release-0.4.0")
                             {
                                 secondCommit,
-                                new MockCommit
-                                {
-                                    MessageEx = "first commit on release",
-                                },
+                                firstCommit,
                                 branchingCommit,
                             };
         var finder = new ReleaseVersionFinder
@@ -116,17 +133,25 @@ public class ReleaseTests
                                                              branchingCommit
                                                          },
                                                          releaseBranch
+                                                     },
+                                          Tags = new MockTagCollection
+                                                 {
+                                                     new MockTag
+                                                     {
+                                                         TargetEx = branchingCommit,
+                                                         NameEx = "0.4.0-alpha2"
                                                      }
+                                                 }
                                       },
-                         IsOnDevelopBranchFunc = x => ReferenceEquals(x, branchingCommit)
                      };
         var version = finder.FindVersion();
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(4, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch);
-        Assert.AreEqual(Stability.Beta, version.Version.Stability);
+        Assert.AreEqual(Stability.Alpha, version.Version.Stability);
         Assert.AreEqual(BranchType.Release, version.BranchType);
-        Assert.AreEqual(3, version.Version.PreReleaseNumber, "Prerelease should be set to 3 since there is 2 commits on the branch");
+        Assert.AreEqual(2, version.Version.PreReleasePartOne, "PreReleasePartOne should be set to 2 from");
+        Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 3 since there is 2 commits on the branch");
     }
 
 
@@ -165,12 +190,11 @@ public class ReleaseTests
                                                  {
                                                      new MockTag
                                                      {
-                                                         TargetEx = firstCommit,
+                                                         TargetEx = branchingCommit,
                                                          NameEx = "0.4.0-RC4"
                                                      }
                                                  }
                                       },
-                         IsOnDevelopBranchFunc = x => ReferenceEquals(x, branchingCommit)
                      };
         var version = finder.FindVersion();
         //tag: 0.4.0-RC1 => 
@@ -179,7 +203,7 @@ public class ReleaseTests
         Assert.AreEqual(0, version.Version.Patch);
         Assert.AreEqual(Stability.ReleaseCandidate, version.Version.Stability);
         Assert.AreEqual(BranchType.Release, version.BranchType);
-        Assert.AreEqual(4, version.Version.PreReleaseNumber);
+        Assert.AreEqual(4, version.Version.PreReleasePartOne);
     }
 
         //TODO:

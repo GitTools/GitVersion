@@ -87,23 +87,22 @@ Long version:
 
 May branch off from: develop
 Must merge back into: develop and master
-Branch naming convention: `release-{n}`  eg `release-1.2`
+Branch naming convention: `release-{n}` eg `release-1.2`
 
-`releaseVersion` => the SemVer extracted from `targetBranch.Name`  
+`releaseVersion` => the SemVer extracted from `targetBranch.Name`
+`releaseTag` => the first version tag placed on the branch. Note that at least one version tag is required on the branch. The recommended initial tag is `{releaseVersion}.0-alpha1`. So for a branch named `release-1.2` the recommended tag would be `1.2.0-alpha1`
 
 * major: `mergeVersion.Major`
 * minor: `mergeVersion.Minor`
 * patch: 0
-* pre-release: `beta{n}` where n = 1 + the number of commits on branch. The +1 is so that when the branch is initially created (with 0 commits) the pre-release string will be `beta1`
+* pre-release: `{releaseTag.preRelease}.{n}` where n = 1 + the number of commits since `releaseTag`. 
 
-Optional Tags (only when changing pre-release status):
-
-* `TagOnHeadCommit.Name={semver}` => overrides the pre-release part. Eg 1.0.0-RC1 (stable part should match)
+So on a branch named `release-1.2` with a tag `1.2.0-alpha1` and 4 commits after that tag the version would be `1.2.0-alpha1.4`
  
 Long version:  
 
     {major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
-    1.2.3-beta2 Branch:'release-1.2' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
+    1.2.3-alpha2.4 Branch:'release-1.2' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
     1.2.3-rc2 Branch:'release-1.2' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
 
 #### Feature  branches

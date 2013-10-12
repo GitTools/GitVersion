@@ -36,7 +36,7 @@ namespace GitFlowVersion
             var versionFromMaster = versionOnMasterFinder.Execute();
             var version = versionFromMaster.Version;
             var developBranch = Repository.DevelopBranch();
-            version.PreReleaseNumber = developBranch.Commits
+            version.PreReleasePartOne = developBranch.Commits
                                               .SkipWhile(x => x != Commit)
                                               .TakeWhile(x => x.When() >= versionFromMaster.Timestamp)
                                               .Count();

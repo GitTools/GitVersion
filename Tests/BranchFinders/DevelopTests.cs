@@ -1,7 +1,6 @@
 using FluentDate;
 using FluentDateTimeOffset;
 using GitFlowVersion;
-using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
@@ -48,7 +47,7 @@ public class DevelopTests
         Assert.AreEqual(0, version.Version.Patch);
         Assert.AreEqual(Stability.Unstable, version.Version.Stability);
         Assert.AreEqual(BranchType.Develop, version.BranchType);
-        Assert.AreEqual(1, version.Version.PreReleaseNumber, "Prerelease should to the number of commits ahead of master(by date)");
+        Assert.AreEqual(1, version.Version.PreReleasePartOne, "Prerelease should to the number of commits ahead of master(by date)");
     }
 
     [Test]
@@ -95,7 +94,7 @@ public class DevelopTests
         Assert.AreEqual(0, version.Version.Patch);
         Assert.AreEqual(Stability.Unstable, version.Version.Stability);
         Assert.AreEqual(BranchType.Develop, version.BranchType);
-        Assert.AreEqual(1, version.Version.PreReleaseNumber, "Prerelease should to the number of commits ahead of master(by date)");
+        Assert.AreEqual(1, version.Version.PreReleasePartOne, "Prerelease should to the number of commits ahead of master(by date)");
     }
     [Test]
     public void Multiple_minor_versions_on_master()
@@ -111,18 +110,14 @@ public class DevelopTests
         var commitOneOnMaster = new MockCommit
                              {
                                  CommitterEx = 4.Seconds().Ago().ToSignature(),
-                                 IdEx = new ObjectId("669c6af7137e582e795baa34c7a8b9fac16dde21")
                              };
         var commitTwoOnMaster = new MockCommit
                              {
                                  CommitterEx = 3.Seconds().Ago().ToSignature(),
-                                 IdEx = new ObjectId("669c6af7137e582e795baa34c7a8b9fac16dde22")
-
                              };
         var commitThreeOnMaster = new MockCommit
                              {
                                  CommitterEx = 2.Seconds().Ago().ToSignature(),
-                                 IdEx = new ObjectId("669c6af7137e582e795baa34c7a8b9fac16dde23")
                              };
         var finder = new DevelopVersionFinder
                      {
@@ -170,6 +165,6 @@ public class DevelopTests
         Assert.AreEqual(0, version.Version.Patch);
         Assert.AreEqual(Stability.Unstable, version.Version.Stability);
         Assert.AreEqual(BranchType.Develop, version.BranchType);
-        Assert.AreEqual(2, version.Version.PreReleaseNumber, "Prerelease should to the number of commits ahead of master(by date)");
+        Assert.AreEqual(2, version.Version.PreReleasePartOne, "Prerelease should to the number of commits ahead of master(by date)");
     }
 }

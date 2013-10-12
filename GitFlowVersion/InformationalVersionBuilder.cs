@@ -1,5 +1,6 @@
 ﻿namespace GitFlowVersion
 {
+    using System;
 
     public static class VersionInformationalConverter
     {
@@ -16,26 +17,26 @@
 
             if (versionAndBranch.BranchType == BranchType.PullRequest)
             {
-                return string.Format("{0}-unstable.pull-request-{1} Branch:'{2}' Sha:'{3}'", versionPrefix, version.PreReleaseNumber, versionAndBranch.BranchName, versionAndBranch.Sha);
+                return string.Format("{0}-unstable.pull-request-{1} Branch:'{2}' Sha:'{3}'", versionPrefix, GetPreRelease(version), versionAndBranch.BranchName, versionAndBranch.Sha);
             }
 
             if (versionAndBranch.BranchType == BranchType.Develop)
             {
-                return string.Format("{0}-unstable{1} Branch:'{2}' Sha:'{3}'", versionPrefix, version.PreReleaseNumber, versionAndBranch.BranchName, versionAndBranch.Sha);
+                return string.Format("{0}-unstable{1} Branch:'{2}' Sha:'{3}'", versionPrefix, GetPreRelease(version), versionAndBranch.BranchName, versionAndBranch.Sha);
             }
 
             if (versionAndBranch.BranchType == BranchType.Release)
             {
                 if (version.Stability == Stability.ReleaseCandidate)
                 {
-                    return string.Format("{0}-rc{1} Branch:'{2}' Sha:'{3}'", versionPrefix, version.PreReleaseNumber, versionAndBranch.BranchName, versionAndBranch.Sha);
+                    return string.Format("{0}-rc{1} Branch:'{2}' Sha:'{3}'", versionPrefix, GetPreRelease(version), versionAndBranch.BranchName, versionAndBranch.Sha);
                 }
-                return string.Format("{0}-beta{1} Branch:'{2}' Sha:'{3}'", versionPrefix, version.PreReleaseNumber, versionAndBranch.BranchName, versionAndBranch.Sha);
+                return string.Format("{0}-beta{1} Branch:'{2}' Sha:'{3}'", versionPrefix, GetPreRelease(version), versionAndBranch.BranchName, versionAndBranch.Sha);
             }
 
             if (versionAndBranch.BranchType == BranchType.Hotfix)
             {
-                return string.Format("{0}-beta{1} Branch:'{2}' Sha:'{3}'", versionPrefix, version.PreReleaseNumber, versionAndBranch.BranchName, versionAndBranch.Sha);
+                return string.Format("{0}-beta{1} Branch:'{2}' Sha:'{3}'", versionPrefix, GetPreRelease(version), versionAndBranch.BranchName, versionAndBranch.Sha);
             }
 
             if (versionAndBranch.BranchType == BranchType.Master)
@@ -44,6 +45,20 @@
             }
 
             throw new ErrorException(string.Format("Invalid branch type '{0}'.", versionAndBranch.BranchType));
+        }
+
+        static string GetPreRelease(SemanticVersion version)
+        {
+            if (version.PreReleasePartOne == null)
+            {
+                throw new Exception("pre-release number is required");
+            }
+            if (version.PreReleasePartTwo == null)
+            {
+                return version.PreReleasePartOne.ToString();
+            }
+
+            return string.Format("{0}.{1}", version.PreReleasePartOne, version.PreReleasePartTwo);
         }
 
         public static string ToShortString(this VersionAndBranch versionAndBranch)
@@ -59,26 +74,26 @@
 
             if (versionAndBranch.BranchType == BranchType.PullRequest)
             {
-                return string.Format("{0}-unstable.pull-request-{1}", versionPrefix, version.PreReleaseNumber);
+                return string.Format("{0}-unstable.pull-request-{1}", versionPrefix, GetPreRelease(version));
             }
 
             if (versionAndBranch.BranchType == BranchType.Develop)
             {
-                return string.Format("{0}-unstable{1}", versionPrefix, version.PreReleaseNumber);
+                return string.Format("{0}-unstable{1}", versionPrefix, GetPreRelease(version));
             }
 
             if (versionAndBranch.BranchType == BranchType.Release)
             {
                 if (version.Stability == Stability.ReleaseCandidate)
                 {
-                    return string.Format("{0}-rc{1}", versionPrefix, version.PreReleaseNumber);
+                    return string.Format("{0}-rc{1}", versionPrefix, GetPreRelease(version));
                 }
-                return string.Format("{0}-beta{1}", versionPrefix, version.PreReleaseNumber);
+                return string.Format("{0}-beta{1}", versionPrefix, GetPreRelease(version));
             }
 
             if (versionAndBranch.BranchType == BranchType.Hotfix)
             {
-                return string.Format("{0}-beta{1}", versionPrefix, version.PreReleaseNumber);
+                return string.Format("{0}-beta{1}", versionPrefix, GetPreRelease(version));
             }
 
             if (versionAndBranch.BranchType == BranchType.Master)

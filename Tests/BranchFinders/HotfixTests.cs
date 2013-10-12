@@ -1,7 +1,6 @@
 using FluentDate;
 using FluentDateTimeOffset;
 using GitFlowVersion;
-using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
@@ -13,7 +12,6 @@ public class HotfixTests
         var branchingCommit = new MockCommit
                               {
                                   CommitterEx = 1.Seconds().Ago().ToSignature(),
-                                  IdEx = new ObjectId("c50179a2c77843245ace262b51b08af7b3b7f8fe")
                               };
         var hotfixBranch = new MockBranch("hotfix-0.1.4");
 
@@ -41,7 +39,7 @@ public class HotfixTests
         Assert.AreEqual(4, version.Version.Patch);
         Assert.AreEqual(Stability.Beta, version.Version.Stability);
         Assert.AreEqual(BranchType.Hotfix, version.BranchType);
-        Assert.AreEqual(0, version.Version.PreReleaseNumber, "Prerelease should be set to 0 since there is no commits");
+        Assert.AreEqual(0, version.Version.PreReleasePartOne, "Prerelease should be set to 0 since there is no commits");
     }
 
     [Test]
@@ -83,7 +81,7 @@ public class HotfixTests
         Assert.AreEqual(3, version.Version.Patch);
         Assert.AreEqual(Stability.Beta, version.Version.Stability);
         Assert.AreEqual(BranchType.Hotfix, version.BranchType);
-        Assert.AreEqual(1, version.Version.PreReleaseNumber, "Prerelease should be set to 1 since there is a commit on the branch");
+        Assert.AreEqual(1, version.Version.PreReleasePartOne, "Prerelease should be set to 1 since there is a commit on the branch");
     }
 
     [Test]
@@ -129,7 +127,7 @@ public class HotfixTests
         Assert.AreEqual(3, version.Version.Patch);
         Assert.AreEqual(Stability.Beta, version.Version.Stability);
         Assert.AreEqual(BranchType.Hotfix, version.BranchType);
-        Assert.AreEqual(2, version.Version.PreReleaseNumber, "Prerelease should be set to 2 since there is 2 commits on the branch");
+        Assert.AreEqual(2, version.Version.PreReleasePartOne, "Prerelease should be set to 2 since there is 2 commits on the branch");
     }
 
 

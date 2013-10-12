@@ -68,7 +68,7 @@ public class MasterTests
         Assert.AreEqual(5, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
         Assert.AreEqual(Stability.Final, version.Version.Stability);
         Assert.AreEqual(BranchType.Master, version.BranchType);
-        Assert.IsNull(version.Version.PreReleaseNumber);
+        Assert.IsNull(version.Version.PreReleasePartOne);
     }
 
     [Test]
@@ -106,7 +106,7 @@ public class MasterTests
         Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
         Assert.AreEqual(Stability.Final, version.Version.Stability);
         Assert.AreEqual(BranchType.Master, version.BranchType);
-        Assert.IsNull(version.Version.PreReleaseNumber);
+        Assert.IsNull(version.Version.PreReleasePartOne);
     }
 
     [Test]
@@ -144,7 +144,7 @@ public class MasterTests
         Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
         Assert.AreEqual(Stability.Beta, version.Version.Stability);
         Assert.AreEqual(BranchType.Master, version.BranchType);
-        Assert.AreEqual(1, version.Version.PreReleaseNumber);
+        Assert.AreEqual(1, version.Version.PreReleasePartOne);
     }
 
 
@@ -176,7 +176,7 @@ public class MasterTests
         Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to 0");
         Assert.AreEqual(Stability.Final, version.Version.Stability);
         Assert.AreEqual(BranchType.Master, version.BranchType);
-        Assert.IsNull(version.Version.PreReleaseNumber);
+        Assert.IsNull(version.Version.PreReleasePartOne);
     }
 
 }

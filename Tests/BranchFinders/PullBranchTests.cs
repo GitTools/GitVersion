@@ -2,7 +2,6 @@ using System;
 using FluentDate;
 using FluentDateTimeOffset;
 using GitFlowVersion;
-using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
@@ -22,7 +21,6 @@ public class PullBranchTests
                               {
                                   MessageEx = "Merge branch 'release-0.2.0'",
                                   CommitterEx = 2.Seconds().Ago().ToSignature(),
-                                  IdEx = new ObjectId("c50179a2c77843245ace262b51b08af7b3b7f8fe")
                               };
         var commitOneOnFeature = new MockCommit
                                  {
@@ -57,7 +55,7 @@ public class PullBranchTests
         Assert.AreEqual(Stability.Unstable, version.Version.Stability);
         Assert.AreEqual(BranchType.PullRequest, version.BranchType);
         Assert.AreEqual("2", version.Version.Suffix); //in TC the branch name will be the pull request no eg 1154
-        Assert.AreEqual(0, version.Version.PreReleaseNumber, "Prerelease is always 0 for pull requests");
+        Assert.AreEqual(0, version.Version.PreReleasePartOne, "Prerelease is always 0 for pull requests");
     }
 
     [Test]
@@ -68,7 +66,6 @@ public class PullBranchTests
                               {
                                   MessageEx = "Merge branch 'release-0.2.0'",
                                   CommitterEx = 2.Seconds().Ago().ToSignature(),
-                                  IdEx = new ObjectId("c50179a2c77843245ace262b51b08af7b3b7f8fe")
                               };
         var commitOneOnFeature = new MockCommit
                                  {
@@ -103,7 +100,7 @@ public class PullBranchTests
         Assert.AreEqual(Stability.Unstable, version.Version.Stability);
         Assert.AreEqual(BranchType.PullRequest, version.BranchType);
         Assert.AreEqual("2", version.Version.Suffix); //in TC the branch name will be the pull request no eg 1154
-        Assert.AreEqual(0, version.Version.PreReleaseNumber, "Prerelease is always 0 for pull requests");
+        Assert.AreEqual(0, version.Version.PreReleasePartOne, "Prerelease is always 0 for pull requests");
     }
 
     [Test]
@@ -113,7 +110,6 @@ public class PullBranchTests
         {
             MessageEx = "Merge branch 'release-0.2.0'",
             CommitterEx = 2.Seconds().Ago().ToSignature(),
-            IdEx = new ObjectId("c50179a2c77843245ace262b51b08af7b3b7f8fe")
         };
         var commitTwoOnFeature = new MockCommit
         {
@@ -149,7 +145,7 @@ public class PullBranchTests
         Assert.AreEqual(Stability.Unstable, version.Version.Stability);
         Assert.AreEqual(BranchType.PullRequest, version.BranchType);
         Assert.AreEqual("2", version.Version.Suffix); //in TC the branch name will be the pull request no eg 1154
-        Assert.AreEqual(0, version.Version.PreReleaseNumber, "Prerelease is always 0 for pull requests");
+        Assert.AreEqual(0, version.Version.PreReleasePartOne, "Prerelease is always 0 for pull requests");
     }
 
     [Test]
@@ -161,7 +157,6 @@ public class PullBranchTests
                               {
                                   MessageEx = "Merge branch 'release-0.2.0'",
                                   CommitterEx = 2.Seconds().Ago().ToSignature(),
-                                  IdEx = new ObjectId("c50179a2c77843245ace262b51b08af7b3b7f8fe")
                               };
         var commitTwoOnFeature = new MockCommit
                                  {
@@ -197,7 +192,7 @@ public class PullBranchTests
         Assert.AreEqual(Stability.Unstable, version.Version.Stability);
         Assert.AreEqual(BranchType.PullRequest, version.BranchType);
         Assert.AreEqual("2", version.Version.Suffix); //in TC the branch name will be the pull request no eg 1154
-        Assert.AreEqual(0, version.Version.PreReleaseNumber, "Prerelease is always 0 for pull requests");
+        Assert.AreEqual(0, version.Version.PreReleasePartOne, "Prerelease is always 0 for pull requests");
     }
 
     [TearDown]

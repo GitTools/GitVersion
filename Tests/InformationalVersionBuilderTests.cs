@@ -39,7 +39,7 @@ public class InformationalVersionBuilderTests
                                                            Major = 1,
                                                            Minor = 2,
                                                            Patch = 3,
-                                                           PreReleaseNumber = 645,
+                                                           PreReleasePartOne = 645,
                                                            Stability = Stability.Unstable,
                                                        }
                               };
@@ -61,7 +61,7 @@ public class InformationalVersionBuilderTests
                                                            Major = 1,
                                                            Minor = 2,
                                                            Patch = 3,
-                                                           PreReleaseNumber = 645,
+                                                           PreReleasePartOne = 645,
                                                            Stability = Stability.Beta,
                                                        }
 
@@ -105,7 +105,7 @@ public class InformationalVersionBuilderTests
                                                            Major = 1,
                                                            Minor = 2,
                                                            Patch = 3,
-                                                           PreReleaseNumber = 3,
+                                                           PreReleasePartOne = 3,
                                                            Stability = Stability.Unstable,
                                                        }
                               };
@@ -127,7 +127,7 @@ public class InformationalVersionBuilderTests
                                                            Major = 1,
                                                            Minor = 2,
                                                            Patch = 0,
-                                                           PreReleaseNumber = 2,
+                                                           PreReleasePartOne = 2,
                                                            Stability = Stability.Beta,
                                                        }
                               };

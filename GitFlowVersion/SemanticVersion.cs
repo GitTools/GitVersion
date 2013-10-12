@@ -8,7 +8,8 @@ namespace GitFlowVersion
         public int Major;
         public int Minor;
         public int Patch;
-        public int? PreReleaseNumber;
+        public int? PreReleasePartOne;
+        public int? PreReleasePartTwo;
         public Stability? Stability;
 
 
@@ -21,7 +22,8 @@ namespace GitFlowVersion
             return Major == obj.Major &&
                    Minor == obj.Minor &&
                    Patch == obj.Patch &&
-                   PreReleaseNumber == obj.PreReleaseNumber &&
+                   PreReleasePartOne == obj.PreReleasePartOne &&
+                   PreReleasePartOne == obj.PreReleasePartTwo &&
                    Stability == obj.Stability &&
                    Suffix == obj.Suffix;
         }
@@ -106,9 +108,17 @@ namespace GitFlowVersion
                 }
                 return -1;
             }
-            if (PreReleaseNumber != value.PreReleaseNumber)
+            if (PreReleasePartOne != value.PreReleasePartOne)
             {
-                if (PreReleaseNumber > value.PreReleaseNumber)
+                if (PreReleasePartOne > value.PreReleasePartOne)
+                {
+                    return 1;
+                }
+                return -1;
+            }
+            if (PreReleasePartTwo != value.PreReleasePartTwo)
+            {
+                if (PreReleasePartTwo > value.PreReleasePartTwo)
                 {
                     return 1;
                 }

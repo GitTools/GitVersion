@@ -26,7 +26,7 @@ public class IntegrationTests
                         SemanticVersion version;
                         if (SemanticVersionParser.TryParse(versionPart, out version))
                         {
-                            Debug.WriteLine("{0}.{1}.{2}.{3}.{4}.{5}", version.Major, version.Minor, version.Patch, version.Stability, version.PreReleaseNumber, version.Suffix);
+                            Debug.WriteLine("{0}.{1}.{2}.{3}.{4}.{5}", version.Major, version.Minor, version.Patch, version.Stability, version.PreReleasePartOne, version.Suffix);
                         }
                     }
                 }
@@ -80,11 +80,11 @@ public class IntegrationTests
     }
 
     [Test,Explicit]
-    public void NServiceBusMaster2()
+    public void NServiceBusRelease()
     {
-        using (var repository = new Repository(@"C:\Code\Particular\foo\NServiceBus"))
+        using (var repository = new Repository(@"C:\Code\NServiceBus"))
         {
-            var branch = repository.Branches.First(x => x.Name == "develop");
+            var branch = repository.Branches.First(x => x.Name == "release-4.1.0");
             var commit = branch.Commits.First();
 
             var finder = new GitFlowVersionFinder
@@ -97,7 +97,33 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.PreReleaseNumber);
+            Debug.WriteLine(version.Version.PreReleasePartOne);
+            Debug.WriteLine(version.Version.PreReleasePartTwo);
+            Debug.WriteLine(version.Version.Stability);
+            Debug.WriteLine(version.BranchType);
+            Debug.WriteLine(version.Version.Suffix);
+        }
+    }
+    [Test,Explicit]
+    public void NServiceBusReleaseSpecificCommit()
+    {
+        using (var repository = new Repository(@"C:\Code\NServiceBus"))
+        {
+            var branch = repository.Branches.First(x => x.Name == "release-4.1.0");
+            var commit = branch.Commits.First(x => x.Id.Sha == "c0e0a5e13775552cd3e08e039f453e4cf1fd4235");
+
+            var finder = new GitFlowVersionFinder
+                         {
+                             Commit = commit,
+                             Repository = repository,
+                             Branch = branch
+                         };
+            var version = finder.FindVersion();
+            Debug.WriteLine(version.Version.Major);
+            Debug.WriteLine(version.Version.Minor);
+            Debug.WriteLine(version.Version.Patch);
+            Debug.WriteLine(version.Version.PreReleasePartOne);
+            Debug.WriteLine(version.Version.PreReleasePartTwo);
             Debug.WriteLine(version.Version.Stability);
             Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Version.Suffix);
@@ -121,7 +147,7 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.PreReleaseNumber);
+            Debug.WriteLine(version.Version.PreReleasePartOne);
             Debug.WriteLine(version.Version.Stability);
             Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Version.Suffix);
@@ -131,8 +157,7 @@ public class IntegrationTests
     [Test,Explicit]
     public void NServiceBusDevelop()
     {
-        var stopwatch = Stopwatch.StartNew();
-        using (var repository = new Repository(@"C:\Code\Particular\NServiceBus"))
+        using (var repository = new Repository(@"C:\Code\NServiceBus"))
         {
             var branch = repository.Branches.First(x => x.Name == "develop");
             var commit = branch.Commits.First();
@@ -147,34 +172,37 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.PreReleaseNumber);
+            Debug.WriteLine(version.Version.PreReleasePartOne);
             Debug.WriteLine(version.Version.Stability);
             Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Version.Suffix);
         }
-        Debug.WriteLine(stopwatch.ElapsedMilliseconds); stopwatch = Stopwatch.StartNew();
-        using (var repository = new Repository(@"C:\Code\Particular\NServiceBus"))
+    }
+    [Test,Explicit]
+    public void NServiceBusDevelopOlderCommit()
+    {
+        using (var repository = new Repository(@"C:\Code\NServiceBus"))
         {
             var branch = repository.Branches.First(x => x.Name == "develop");
-            var commit = branch.Commits.First();
+            var commit = branch.Commits.First(x => x.Id.Sha == "c0e0a5e13775552cd3e08e039f453e4cf1fd4235");
 
             var finder = new GitFlowVersionFinder
-            {
-                Commit = commit,
-                Repository = repository,
-                Branch = branch
-            };
+                         {
+                             Commit = commit,
+                             Repository = repository,
+                             Branch = branch
+                         };
             var version = finder.FindVersion();
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.PreReleaseNumber);
+            Debug.WriteLine(version.Version.PreReleasePartOne);
             Debug.WriteLine(version.Version.Stability);
             Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Version.Suffix);
         }
-        Debug.WriteLine(stopwatch.ElapsedMilliseconds);
     }
+    
     [Test,Explicit]
     public void Foo()
     {
@@ -193,7 +221,7 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.PreReleaseNumber);
+            Debug.WriteLine(version.Version.PreReleasePartOne);
             Debug.WriteLine(version.Version.Stability);
             Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Version.Suffix);

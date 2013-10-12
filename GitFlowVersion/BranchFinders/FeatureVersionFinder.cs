@@ -43,8 +43,8 @@ namespace GitFlowVersion
             version.Minor++;
             version.Patch = 0;
             version.Stability = Stability.Unstable;
-            version.PreReleaseNumber = 0;
-            version.Suffix = firstCommitOnBranch.Sha.Substring(0, 8);
+            version.PreReleasePartOne = 0;
+            version.Suffix = firstCommitOnBranch.Prefix();
 
             return new VersionAndBranch
                    {
@@ -54,6 +54,8 @@ namespace GitFlowVersion
                        Version = version
                    };
         }
+
+
         public ObjectId FindFirstCommitOnBranch()
         {
             return Repository.Refs.Log(FeatureBranch.CanonicalName).Last().To;

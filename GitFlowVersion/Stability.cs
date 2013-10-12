@@ -3,8 +3,9 @@ namespace GitFlowVersion
     public enum Stability
     {
         Unstable = 0,
-        Beta = 1,
-        ReleaseCandidate =2,
-        Final = 3,
+        Alpha = 1,
+        Beta = 2,
+        ReleaseCandidate =3,
+        Final = 5,
     }
 }

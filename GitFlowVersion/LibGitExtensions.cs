@@ -41,6 +41,15 @@ namespace GitFlowVersion
             }
             return semVerTags.FirstOrDefault();
         }
+       public static string Prefix(this ObjectId objectId)
+        {
+            return objectId.Sha.Substring(0, 8);
+        }
+       public static string Prefix(this Commit commit)
+        {
+            return commit.Sha.Substring(0, 8);
+        }
+
         public static IEnumerable<SemanticVersion> SemVerTags(this IRepository repository, Commit commit)
         {
             foreach (var tag in repository.Tags.Where(tag => tag.Target == commit))
@@ -85,10 +94,7 @@ namespace GitFlowVersion
             }
             return false;
         }
-
-       
-     
-
+        
         public static bool IsOnBranch(this Tag tag, Branch branch)
         {
             var commit = tag.Target as Commit;

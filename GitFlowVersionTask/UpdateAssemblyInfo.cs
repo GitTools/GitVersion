@@ -86,7 +86,7 @@
             WriteEnvVariable("GitFlowVersionMinor", semanticVersion.Minor.ToString());
             WriteEnvVariable("GitFlowVersionPatch", semanticVersion.Patch.ToString());
             WriteEnvVariable("GitFlowVersionStability", semanticVersion.Stability.ToString());
-            WriteEnvVariable("GitFlowVersionPreReleaseNumber", semanticVersion.PreReleaseNumber.ToString());
+            WriteEnvVariable("GitFlowVersionPreReleaseNumber", semanticVersion.PreReleasePartOne.ToString());
             WriteEnvVariable("GitFlowVersionVersion", TeamCity.GenerateBuildVersion(versionAndBranch));
             WriteEnvVariable("GitFlowVersionNugetVersion", TeamCity.GenerateNugetVersion(versionAndBranch));
         }

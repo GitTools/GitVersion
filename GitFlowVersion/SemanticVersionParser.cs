@@ -81,14 +81,33 @@ namespace GitFlowVersion
                     parsedVersion.Stability = stability;    
                 }
 
-                int preReleaseNumber;
-                if (!int.TryParse(prereleaseString.Substring(buildIndex), out preReleaseNumber))
+                int preReleasePartOne;
+                var preReleaseString = prereleaseString.Substring(buildIndex);
+                var preReleaseParts = preReleaseString.Split('.');
+                if (preReleaseParts.Length > 2)
+                {
+
+                    semanticVersion = null;
+                    return false;
+                }
+                if (!int.TryParse(preReleaseParts[0], out preReleasePartOne))
                 {
                     semanticVersion = null;
                     return false;
                 }
-                parsedVersion.PreReleaseNumber = preReleaseNumber;
+                parsedVersion.PreReleasePartOne = preReleasePartOne;
 
+                if ((preReleaseParts.Length > 1))
+                {
+                    int preReleasePartTwo;
+                    if ((!int.TryParse(preReleaseParts[1], out preReleasePartTwo)))
+                    {
+                        semanticVersion = null;
+                        return false;
+                    }
+
+                    parsedVersion.PreReleasePartTwo = preReleasePartTwo;
+                }
             }
             semanticVersion = parsedVersion;
             return true;
