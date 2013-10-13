@@ -13,7 +13,7 @@
             return string.Format("##teamcity[buildNumber '{0}']", versionString);
         }
 
-        static string CreateVersionString(VersionAndBranch versionAndBranch, bool padPreReleaseNumber = false)
+       internal static string CreateVersionString(VersionAndBranch versionAndBranch, bool padPreReleaseNumber = false)
         {
             var prereleaseString = "";
 
@@ -24,25 +24,37 @@
             }
             if (stability != Stability.Final)
             {
-                var preReleaseNumber = versionAndBranch.Version.PreReleasePartOne.ToString();
+                string preReleasePart;
 
                 if (padPreReleaseNumber)
                 {
-                    preReleaseNumber = versionAndBranch.Version.PreReleasePartOne.Value.ToString("D4");
+                    preReleasePart = versionAndBranch.Version.PreReleasePartOne.Value.ToString("D4");
+                    if (versionAndBranch.Version.PreReleasePartTwo != null)
+                    {
+                        preReleasePart += "." + versionAndBranch.Version.PreReleasePartTwo.Value.ToString("D4");
+                    }
+                }
+                else
+                {
+                    preReleasePart = versionAndBranch.Version.PreReleasePartOne.ToString();
+                    if (versionAndBranch.Version.PreReleasePartTwo != null)
+                    {
+                        preReleasePart += "." + versionAndBranch.Version.PreReleasePartTwo.ToString();
+                    }
                 }
 
                 switch (versionAndBranch.BranchType)
                 {
                     case BranchType.Develop:
-                        prereleaseString = "-" + stability + preReleaseNumber;
+                        prereleaseString = "-" + stability + preReleasePart;
                         break;
 
                     case BranchType.Release:
-                        prereleaseString = "-" + stability + preReleaseNumber;
+                        prereleaseString = "-" + stability + preReleasePart;
                         break;
 
                     case BranchType.Hotfix:
-                        prereleaseString = "-" + stability + preReleaseNumber;
+                        prereleaseString = "-" + stability + preReleasePart;
                         break;
                     case BranchType.PullRequest:
                         prereleaseString = "-PullRequest-" + versionAndBranch.Version.Suffix;
