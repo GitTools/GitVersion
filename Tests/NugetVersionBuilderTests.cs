@@ -2,7 +2,7 @@ using GitFlowVersion;
 using NUnit.Framework;
 
 [TestFixture]
-public class TeamCityVersionNumberTests
+public class NugetVersionBuilderTests
 {
 
     [Test]
@@ -17,8 +17,12 @@ public class TeamCityVersionNumberTests
                                                  Stability = Stability.Unstable
                                              }
                                };
-        VerifyOutput("0.0.0-Unstable4",versionAndBranch);
+        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        NuGet.SemanticVersion.Parse(nugetVersion);
+        Assert.AreEqual("0.0.0-Unstable0004", nugetVersion);
+
     }
+
     [Test]
     public void Develop_branch_with_preReleaseTwo()
     {
@@ -32,9 +36,11 @@ public class TeamCityVersionNumberTests
                                                  Stability = Stability.Unstable
                                              }
                                };
-        VerifyOutput("0.0.0-Unstable4.6",versionAndBranch);
-    }
 
+        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        NuGet.SemanticVersion.Parse(nugetVersion);
+        Assert.AreEqual("0.0.0-Unstable0004-0006", nugetVersion);
+    }
 
     [Test]
     public void Release_branch()
@@ -48,8 +54,12 @@ public class TeamCityVersionNumberTests
                                                  Stability = Stability.Beta,
                                              }
                                };
-        VerifyOutput("0.0.0-Beta4",versionAndBranch);
+
+        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        NuGet.SemanticVersion.Parse(nugetVersion);
+        Assert.AreEqual("0.0.0-Beta0004", nugetVersion);
     }
+
     [Test]
     public void Release_branch_with_preReleaseTwo()
     {
@@ -63,7 +73,10 @@ public class TeamCityVersionNumberTests
                                                  Stability = Stability.Beta,
                                              }
                                };
-        VerifyOutput("0.0.0-Beta4.8",versionAndBranch);
+
+        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        NuGet.SemanticVersion.Parse(nugetVersion);
+        Assert.AreEqual("0.0.0-Beta0004-0008", nugetVersion);
     }
 
     [Test]
@@ -78,8 +91,12 @@ public class TeamCityVersionNumberTests
                                                  PreReleasePartOne = 4
                                              }
                                };
-        VerifyOutput("0.0.0-Beta4", versionAndBranch);
+
+        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        NuGet.SemanticVersion.Parse(nugetVersion);
+        Assert.AreEqual("0.0.0-Beta0004", nugetVersion);
     }
+
     [Test]
     public void Hotfix_branch_with_preReleaseTwo()
     {
@@ -93,9 +110,11 @@ public class TeamCityVersionNumberTests
                                                  PreReleasePartTwo = 7,
                                              }
                                };
-        VerifyOutput("0.0.0-Beta4.7", versionAndBranch);
-    }
 
+        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        NuGet.SemanticVersion.Parse(nugetVersion);
+        Assert.AreEqual("0.0.0-Beta0004-0007", nugetVersion);
+    }
 
     [Test]
     public void Pull_branch()
@@ -110,11 +129,12 @@ public class TeamCityVersionNumberTests
                                                  PreReleasePartTwo = 131231232, //ignored
                                                  Stability = Stability.Unstable
                                              }
-
                                };
-        VerifyOutput("0.0.0-PullRequest-1571", versionAndBranch);
-    }
 
+        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        NuGet.SemanticVersion.Parse(nugetVersion);
+        Assert.AreEqual("0.0.0-PullRequest-1571", nugetVersion);
+    }
 
     [Test]
     public void Feature_branch()
@@ -131,9 +151,11 @@ public class TeamCityVersionNumberTests
                                                  Stability = Stability.Unstable
                                              }
                                };
-        VerifyOutput("0.0.0-Feature-AFeature-TheSha", versionAndBranch);
-    }
 
+        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        NuGet.SemanticVersion.Parse(nugetVersion);
+        Assert.AreEqual("0.0.0-Feature-AFeature-TheSha", nugetVersion);
+    }
 
     [Test]
     public void Master_branch()
@@ -148,9 +170,11 @@ public class TeamCityVersionNumberTests
                                                  PreReleasePartTwo = 131231232 //ignored
                                              }
                                };
-        VerifyOutput("0.0.0", versionAndBranch);
-    }
 
+        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        NuGet.SemanticVersion.Parse(nugetVersion);
+        Assert.AreEqual("0.0.0", nugetVersion);
+    }
 
     [Test]
     public void NuGet_version_should_be_padded_to_workaround_stupid_nuget_issue_with_sorting_one_digit()
@@ -164,9 +188,11 @@ public class TeamCityVersionNumberTests
                                                  Stability = Stability.Unstable
                                              }
                                };
-        Assert.True(TeamCity.GenerateNugetVersion(versionAndBranch).Contains("0.0.0-Unstable0004"));
-
+        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        NuGet.SemanticVersion.Parse(nugetVersion);
+        Assert.AreEqual("0.0.0-Unstable0004", nugetVersion);
     }
+
     [Test]
     public void NuGet_version_should_be_padded_to_workaround_stupid_nuget_issue_with_sorting_one_digit_with_preReleaseTwo()
     {
@@ -180,9 +206,11 @@ public class TeamCityVersionNumberTests
                                                  Stability = Stability.Unstable
                                              }
                                };
-        Assert.True(TeamCity.GenerateNugetVersion(versionAndBranch).Contains("0.0.0-Unstable0004.0005"));
-
+        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        NuGet.SemanticVersion.Parse(nugetVersion);
+        Assert.AreEqual("0.0.0-Unstable0004-0005", nugetVersion);
     }
+
     [Test]
     public void NuGet_version_should_be_padded_to_workaround_stupid_nuget_issue_with_sorting_two_digits()
     {
@@ -195,8 +223,11 @@ public class TeamCityVersionNumberTests
                                                  Stability = Stability.Unstable
                                              }
                                };
-        Assert.True(TeamCity.GenerateNugetVersion(versionAndBranch).Contains("0.0.0-Unstable0040"));
+        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        NuGet.SemanticVersion.Parse(nugetVersion);
+        Assert.AreEqual("0.0.0-Unstable0040", nugetVersion);
     }
+
     [Test]
     public void NuGet_version_should_be_padded_to_workaround_stupid_nuget_issue_with_sorting_two_digits_with_preReleaseTwo()
     {
@@ -210,7 +241,9 @@ public class TeamCityVersionNumberTests
                                                  Stability = Stability.Unstable
                                              }
                                };
-        Assert.True(TeamCity.GenerateNugetVersion(versionAndBranch).Contains("0.0.0-Unstable0040.0050"));
+        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        NuGet.SemanticVersion.Parse(nugetVersion);
+        Assert.AreEqual("0.0.0-Unstable0040-0050", nugetVersion);
     }
 
     [Test]
@@ -225,8 +258,11 @@ public class TeamCityVersionNumberTests
                                                  Stability = Stability.Unstable
                                              }
                                };
-        Assert.True(TeamCity.GenerateNugetVersion(versionAndBranch).Contains("0.0.0-Unstable0400"));
+        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        NuGet.SemanticVersion.Parse(nugetVersion);
+        Assert.AreEqual("0.0.0-Unstable0400", nugetVersion);
     }
+
     [Test]
     public void NuGet_version_should_be_padded_to_workaround_stupid_nuget_issue_with_sorting_three_digits_with_preReleaseTwo()
     {
@@ -240,7 +276,9 @@ public class TeamCityVersionNumberTests
                                                  Stability = Stability.Unstable
                                              }
                                };
-        Assert.True(TeamCity.GenerateNugetVersion(versionAndBranch).Contains("0.0.0-Unstable0400.0500"));
+        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        NuGet.SemanticVersion.Parse(nugetVersion);
+        Assert.AreEqual("0.0.0-Unstable0400-0500", nugetVersion);
     }
 
     [Test]
@@ -255,7 +293,9 @@ public class TeamCityVersionNumberTests
                                                  Stability = Stability.Unstable
                                              }
                                };
-        Assert.True(TeamCity.GenerateNugetVersion(versionAndBranch).Contains("0.0.0-Unstable4000"));
+        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        NuGet.SemanticVersion.Parse(nugetVersion);
+        Assert.AreEqual("0.0.0-Unstable4000", nugetVersion);
     }
 
     [Test]
@@ -267,18 +307,12 @@ public class TeamCityVersionNumberTests
                                    Version = new SemanticVersion
                                              {
                                                  PreReleasePartOne = 4000,
+                                                 PreReleasePartTwo = 4000,
                                                  Stability = Stability.Unstable
                                              }
                                };
-        Assert.True(TeamCity.GenerateNugetVersion(versionAndBranch).Contains("0.0.0-Unstable4000"));
+        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        NuGet.SemanticVersion.Parse(nugetVersion);
+        Assert.AreEqual("0.0.0-Unstable4000-4000", nugetVersion);
     }
-
-
-    void VerifyOutput(string versionString, VersionAndBranch version)
-    {
-        var tcVersion = TeamCity.GenerateBuildVersion(version);
-
-        Assert.True(TeamCity.GenerateBuildVersion(version).Contains(versionString), string.Format("TeamCity string {0} did not match expected string {1}", tcVersion, versionString));
-    }
-
 }

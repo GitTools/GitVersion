@@ -3,77 +3,16 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    
-    public class TeamCity
+
+    public static class TeamCity
     {
-        public static string GenerateBuildVersion(VersionAndBranch versionAndBranch)
-        {
-            var versionString = CreateVersionString(versionAndBranch);
-
-            return string.Format("##teamcity[buildNumber '{0}']", versionString);
-        }
-
-       internal static string CreateVersionString(VersionAndBranch versionAndBranch, bool padPreReleaseNumber = false)
-        {
-            var prereleaseString = "";
-
-            var stability = versionAndBranch.Version.Stability;
-            if (stability == null)
-            {
-                throw new Exception("Stability cannot be null");
-            }
-            if (stability != Stability.Final)
-            {
-                string preReleasePart;
-
-                if (padPreReleaseNumber)
-                {
-                    preReleasePart = versionAndBranch.Version.PreReleasePartOne.Value.ToString("D4");
-                    if (versionAndBranch.Version.PreReleasePartTwo != null)
-                    {
-                        preReleasePart += "." + versionAndBranch.Version.PreReleasePartTwo.Value.ToString("D4");
-                    }
-                }
-                else
-                {
-                    preReleasePart = versionAndBranch.Version.PreReleasePartOne.ToString();
-                    if (versionAndBranch.Version.PreReleasePartTwo != null)
-                    {
-                        preReleasePart += "." + versionAndBranch.Version.PreReleasePartTwo.ToString();
-                    }
-                }
-
-                switch (versionAndBranch.BranchType)
-                {
-                    case BranchType.Develop:
-                        prereleaseString = "-" + stability + preReleasePart;
-                        break;
-
-                    case BranchType.Release:
-                        prereleaseString = "-" + stability + preReleasePart;
-                        break;
-
-                    case BranchType.Hotfix:
-                        prereleaseString = "-" + stability + preReleasePart;
-                        break;
-                    case BranchType.PullRequest:
-                        prereleaseString = "-PullRequest-" + versionAndBranch.Version.Suffix;
-                        break;
-                    case BranchType.Feature:
-                        prereleaseString = "-Feature-" + versionAndBranch.BranchName + "-" + versionAndBranch.Sha;
-                        break;
-                }
-            }
-            return string.Format("{0}.{1}.{2}{3}", versionAndBranch.Version.Major, versionAndBranch.Version.Minor, versionAndBranch.Version.Patch, prereleaseString);
-        }
-
 
         public static bool IsRunningInBuildAgent()
         {
             var isRunningInBuildAgent = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TEAMCITY_VERSION"));
             if (isRunningInBuildAgent)
             {
-                Logger.WriteInfo("Executing inside a TeamCity build agent");
+                Logger.WriteInfo("Executing inside a TeamCityVersionBuilder build agent");
             }
             return isRunningInBuildAgent;
         }
@@ -94,9 +33,9 @@
         {
             foreach (DictionaryEntry de in Environment.GetEnvironmentVariables())
             {
-                if (((string) de.Key).StartsWith("teamcity.build.vcs.branch."))
+                if (((string)de.Key).StartsWith("teamcity.build.vcs.branch."))
                 {
-                    return (string) de.Value;
+                    return (string)de.Value;
                 }
             }
 
@@ -116,25 +55,19 @@
             }
             var semanticVersion = versionAndBranch.Version;
 
-            yield return GenerateBuildVersion(versionAndBranch);
+            yield return TeamCityVersionBuilder.GenerateBuildVersion(versionAndBranch);
             yield return GenerateBuildParameter("Major", semanticVersion.Major.ToString());
             yield return GenerateBuildParameter("Minor", semanticVersion.Minor.ToString());
             yield return GenerateBuildParameter("Patch", semanticVersion.Patch.ToString());
             yield return GenerateBuildParameter("Stability", semanticVersion.Stability.ToString());
             yield return GenerateBuildParameter("PreReleaseNumber", semanticVersion.PreReleasePartOne.ToString());
-            yield return GenerateBuildParameter("Version", CreateVersionString(versionAndBranch));
-            yield return GenerateBuildParameter("NugetVersion", GenerateNugetVersion(versionAndBranch));
+            yield return GenerateBuildParameter("Version", TeamCityVersionBuilder.CreateVersionString(versionAndBranch));
+            yield return GenerateBuildParameter("NugetVersion", NugetVersionBuilder.GenerateNugetVersion(versionAndBranch));
         }
 
-        public static string GenerateNugetVersion(VersionAndBranch versionAndBranch)
-        {
-            return CreateVersionString(versionAndBranch, true);
-        }
-
-        static string GenerateBuildParameter(string name, string value)
+        private static string GenerateBuildParameter(string name, string value)
         {
             return string.Format("##teamcity[setParameter name='GitFlowVersion.{0}' value='{1}']", name, value);
         }
     }
-
 }

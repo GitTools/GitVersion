@@ -33,16 +33,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FluentDateTime">
-      <HintPath>..\packages\FluentDateTime.1.9.0.0\Lib\NET35\FluentDateTime.dll</HintPath>
-    </Reference>
-    <Reference Include="LibGit2Sharp, Version=0.14.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="FluentDateTime, Version=1.10.0.0, Culture=neutral, PublicKeyToken=6ccbc613702e6c71, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\LibGit2Sharp.0.14.0.0\lib\net35\LibGit2Sharp.dll</HintPath>
+      <HintPath>..\packages\FluentDateTime.1.10.0.0\Lib\NET35\FluentDateTime.dll</HintPath>
+    </Reference>
+    <Reference Include="LibGit2Sharp, Version=0.14.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\LibGit2Sharp.0.14.1.0\lib\net35\LibGit2Sharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.XmlTransform">
+      <HintPath>..\packages\Microsoft.Web.Xdt.1.0.0\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Cecil, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Tools\Cecil\Mono.Cecil.dll</HintPath>
@@ -63,9 +67,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NCrunch.Framework.1.46.0.9\lib\net35\NCrunch.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+    <Reference Include="NuGet.Core, Version=2.7.40911.225, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
+      <HintPath>..\packages\NuGet.Core.2.7.1\lib\net40-Client\NuGet.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -78,6 +86,7 @@
     <Compile Include="AssemblyLocation.cs" />
     <Compile Include="BranchClassifierTests.cs" />
     <Compile Include="BranchFinders\DevelopTests.cs" />
+    <Compile Include="NugetVersionBuilderTests.cs" />
     <Compile Include="SemanticVersionParserTests.cs" />
     <Compile Include="VersionOnMasterFinderTests.cs" />
     <Compile Include="Mocks\SignatureBuilder.cs" />
@@ -99,7 +108,7 @@
     <Compile Include="BranchFinders\FeatureBranchTests.cs" />
     <Compile Include="BranchFinders\PullBranchTests.cs" />
     <Compile Include="BranchFinders\ReleaseTests.cs" />
-    <Compile Include="TeamcityVersionNumberTests.cs" />
+    <Compile Include="TeamCityVersionBuilderTests.cs" />
     <Compile Include="Verifier.cs" />
     <Compile Include="VersionConverter.cs" />
   </ItemGroup>
@@ -118,13 +127,13 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="Fody.targets" />
   <PropertyGroup>
     <PostBuildEvent>
 if not exist "$(TargetDir)NativeBinaries" md "$(TargetDir)NativeBinaries"
 if not exist "$(TargetDir)NativeBinaries\x86" md "$(TargetDir)NativeBinaries\x86"
-xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.14.0.0\NativeBinaries\x86\*.*" "$(TargetDir)NativeBinaries\x86"
+xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.14.1.0\lib\net35\NativeBinaries\x86\*.*" "$(TargetDir)NativeBinaries\x86"
 if not exist "$(TargetDir)NativeBinaries\amd64" md "$(TargetDir)NativeBinaries\amd64"
-xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.14.0.0\NativeBinaries\amd64\*.*" "$(TargetDir)NativeBinaries\amd64"</PostBuildEvent>
+xcopy /s /y "$(SolutionDir)packages\LibGit2Sharp.0.14.1.0\lib\net35\NativeBinaries\amd64\*.*" "$(TargetDir)NativeBinaries\amd64"</PostBuildEvent>
   </PropertyGroup>
-  <Import Project="Fody.targets" />
 </Project>
