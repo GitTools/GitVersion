@@ -27,7 +27,28 @@ public class InformationalVersionBuilderTests
     }
 
     [Test]
-    public void Develop()
+    public void DevelopAlpha()
+    {
+        var semanticVersion = new VersionAndBranch
+                              {
+                                  BranchType = BranchType.Develop,
+                                  BranchName = "develop",
+                                  Sha = "a682956dccae752aa24597a0f5cd939f93614509",
+                                  Version = new SemanticVersion
+                                                       {
+                                                           Major = 1,
+                                                           Minor = 2,
+                                                           Patch = 3,
+                                                           PreReleasePartOne = 645,
+                                                           Stability = Stability.Alpha,
+                                                       }
+                              };
+        var informationalVersion = semanticVersion.ToLongString();
+
+        Assert.AreEqual("1.2.3-alpha645 Branch:'develop' Sha:'a682956dccae752aa24597a0f5cd939f93614509'", informationalVersion);
+    }
+    [Test]
+    public void DevelopUnstable()
     {
         var semanticVersion = new VersionAndBranch
                               {
@@ -47,9 +68,52 @@ public class InformationalVersionBuilderTests
 
         Assert.AreEqual("1.2.3-unstable645 Branch:'develop' Sha:'a682956dccae752aa24597a0f5cd939f93614509'", informationalVersion);
     }
+    [Test]
+    public void DevelopBeta()
+    {
+        var semanticVersion = new VersionAndBranch
+                              {
+                                  BranchType = BranchType.Develop,
+                                  BranchName = "develop",
+                                  Sha = "a682956dccae752aa24597a0f5cd939f93614509",
+                                  Version = new SemanticVersion
+                                                       {
+                                                           Major = 1,
+                                                           Minor = 2,
+                                                           Patch = 3,
+                                                           PreReleasePartOne = 645,
+                                                           Stability = Stability.Beta,
+                                                       }
+                              };
+        var informationalVersion = semanticVersion.ToLongString();
+
+        Assert.AreEqual("1.2.3-beta645 Branch:'develop' Sha:'a682956dccae752aa24597a0f5cd939f93614509'", informationalVersion);
+    }
 
     [Test]
-    public void Hotfix()
+    public void HotfixAlpha()
+    {
+        var semanticVersion = new VersionAndBranch
+                              {
+                                  BranchType = BranchType.Hotfix,
+                                  BranchName = "hotfix-foo",
+                                  Sha = "a682956dccae752aa24597a0f5cd939f93614509",
+                                  Version = new SemanticVersion
+                                                       {
+                                                           Major = 1,
+                                                           Minor = 2,
+                                                           Patch = 3,
+                                                           PreReleasePartOne = 645,
+                                                           Stability = Stability.Alpha,
+                                                       }
+
+                              };
+        var informationalVersion = semanticVersion.ToLongString();
+
+        Assert.AreEqual("1.2.3-alpha645 Branch:'hotfix-foo' Sha:'a682956dccae752aa24597a0f5cd939f93614509'", informationalVersion);
+    }
+    [Test]
+    public void HotfixBeta()
     {
         var semanticVersion = new VersionAndBranch
                               {
@@ -115,7 +179,7 @@ public class InformationalVersionBuilderTests
     }
 
     [Test]
-    public void Release()
+    public void ReleaseBeta()
     {
         var semanticVersion = new VersionAndBranch
                               {
@@ -134,5 +198,26 @@ public class InformationalVersionBuilderTests
         var informationalVersion = semanticVersion.ToLongString();
 
         Assert.AreEqual("1.2.0-beta2 Branch:'release-1.2' Sha:'a682956dccae752aa24597a0f5cd939f93614509'", informationalVersion);
+    }
+    [Test]
+    public void ReleaseAlpha()
+    {
+        var semanticVersion = new VersionAndBranch
+                              {
+                                  BranchType = BranchType.Release,
+                                  BranchName = "release-1.2",
+                                  Sha = "a682956dccae752aa24597a0f5cd939f93614509",
+                                  Version = new SemanticVersion
+                                                       {
+                                                           Major = 1,
+                                                           Minor = 2,
+                                                           Patch = 0,
+                                                           PreReleasePartOne = 2,
+                                                           Stability = Stability.Alpha,
+                                                       }
+                              };
+        var informationalVersion = semanticVersion.ToLongString();
+
+        Assert.AreEqual("1.2.0-alpha2 Branch:'release-1.2' Sha:'a682956dccae752aa24597a0f5cd939f93614509'", informationalVersion);
     }
 }

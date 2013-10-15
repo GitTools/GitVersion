@@ -20,31 +20,19 @@
                 return string.Format("{0}-unstable.pull-request-{1} Branch:'{2}' Sha:'{3}'", versionPrefix, GetPreRelease(version), versionAndBranch.BranchName, versionAndBranch.Sha);
             }
 
-            if (versionAndBranch.BranchType == BranchType.Develop)
-            {
-                return string.Format("{0}-unstable{1} Branch:'{2}' Sha:'{3}'", versionPrefix, GetPreRelease(version), versionAndBranch.BranchName, versionAndBranch.Sha);
-            }
-
-            if (versionAndBranch.BranchType == BranchType.Release)
-            {
-                if (version.Stability == Stability.ReleaseCandidate)
-                {
-                    return string.Format("{0}-rc{1} Branch:'{2}' Sha:'{3}'", versionPrefix, GetPreRelease(version), versionAndBranch.BranchName, versionAndBranch.Sha);
-                }
-                return string.Format("{0}-beta{1} Branch:'{2}' Sha:'{3}'", versionPrefix, GetPreRelease(version), versionAndBranch.BranchName, versionAndBranch.Sha);
-            }
-
-            if (versionAndBranch.BranchType == BranchType.Hotfix)
-            {
-                return string.Format("{0}-beta{1} Branch:'{2}' Sha:'{3}'", versionPrefix, GetPreRelease(version), versionAndBranch.BranchName, versionAndBranch.Sha);
-            }
 
             if (versionAndBranch.BranchType == BranchType.Master)
             {
                 return string.Format("{0} Sha:'{1}'", versionPrefix, versionAndBranch.Sha);
             }
 
-            throw new ErrorException(string.Format("Invalid branch type '{0}'.", versionAndBranch.BranchType));
+
+            //else Hotfix, Develop or Release
+            if (version.Stability == Stability.ReleaseCandidate)
+            {
+                return string.Format("{0}-rc{1} Branch:'{2}' Sha:'{3}'", versionPrefix, GetPreRelease(version), versionAndBranch.BranchName, versionAndBranch.Sha);
+            }
+            return string.Format("{0}-{1}{2} Branch:'{3}' Sha:'{4}'", versionPrefix,version.Stability.ToString().ToLowerInvariant(), GetPreRelease(version), versionAndBranch.BranchName, versionAndBranch.Sha);
         }
 
         static string GetPreRelease(SemanticVersion version)
