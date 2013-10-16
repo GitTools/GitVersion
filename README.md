@@ -154,7 +154,7 @@ How do we do release candidates?? Perhaps  tag a release branch and then count c
 * Add dummy [parameter](http://confluence.jetbrains.com/display/TCD8/Configuring+Build+Parameters) to 
 the project called `GitFlowVersion.NugetVersion`. If many of your projects uses git-flow and SemVer you
 can add the parameter to the "root-project" (TeamCity 8.x+)
-* When you setup you nuget pack build set the "version" to `%GitFlowVersion.NugetVersion%`
+* Then setup you nuget pack build set the "version" to `%GitFlowVersion.NugetVersion%`
 
 
 ## For reference
