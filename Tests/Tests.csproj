@@ -88,6 +88,7 @@
     <Compile Include="BranchFinders\DevelopTests.cs" />
     <Compile Include="NugetVersionBuilderTests.cs" />
     <Compile Include="SemanticVersionParserTests.cs" />
+    <Compile Include="ShortVersionParserTests.cs" />
     <Compile Include="VersionOnMasterFinderTests.cs" />
     <Compile Include="Mocks\SignatureBuilder.cs" />
     <Compile Include="Mocks\MockCommitLog.cs" />

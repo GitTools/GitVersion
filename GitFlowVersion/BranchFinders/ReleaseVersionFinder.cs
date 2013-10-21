@@ -13,48 +13,26 @@ namespace GitFlowVersion
         public VersionAndBranch FindVersion()
         {
             var versionString = ReleaseBranch.GetReleaseSuffix();
-            SemanticVersion versionFromBranchName;
-            if (!SemanticVersionParser.TryParse(versionString, out versionFromBranchName))
-            {
-                var message = string.Format("Could not parse '{0}' into a version", ReleaseBranch.Name);
-                throw new ErrorException(message);
-            }
 
-            if (versionFromBranchName.PreReleasePartOne != null)
-            {
-                throw new ErrorException("Release branches cannot contain a pre-release number");
-            }
-            if (versionFromBranchName.Stability != null)
-            {
-                throw new ErrorException("Release branches cannot contain a stability");
-            }
+            int patch;
+            int minor;
+            int major;
+            ShortVersionParser.Parse(versionString, out major, out minor, out patch);
 
-            var versionFromFirstTag = GetVersionFromFirstTag(versionFromBranchName);
-            return new VersionAndBranch
-                        {
-                            BranchType = BranchType.Release,
-                            BranchName = ReleaseBranch.Name,
-                            Sha = Commit.Sha,
-                            Version = versionFromFirstTag,
-                        };
-        }
-
-        SemanticVersion GetVersionFromFirstTag(SemanticVersion versionFromBranchName)
-        {
             var count = 0;
             foreach (var c in ReleaseBranch
                 .Commits
                 .SkipWhile(x => x != Commit))
             {
-                var versionFromTag = Repository.SemVerTag(c);
+                var versionFromTag = Repository.NewestSemVerTag();
                 if (versionFromTag == null)
                 {
                     count++;
                     continue;
                 }
-                if (versionFromBranchName.Major == versionFromTag.Major &&
-                    versionFromBranchName.Minor == versionFromTag.Minor &&
-                    versionFromBranchName.Patch == versionFromTag.Patch)
+                if (major == versionFromTag.Major &&
+                    minor == versionFromTag.Minor &&
+                    patch == versionFromTag.Patch)
                 {
                     if (versionFromTag.Stability != null)
                     {
@@ -71,12 +49,19 @@ namespace GitFlowVersion
                             versionFromTag.PreReleasePartTwo = count;
                         }
                     }
-                    return versionFromTag;
+                    return new VersionAndBranch
+                    {
+                        BranchType = BranchType.Release,
+                        BranchName = ReleaseBranch.Name,
+                        Sha = Commit.Sha,
+                        Version = versionFromTag,
+                    };
                 }
                 count++;
             }
-            throw new Exception(string.Format("There must be a tag on a release branch with a version the same as the version from the branch name i.e. {0}.{1}.{2}", versionFromBranchName.Major, versionFromBranchName.Minor, versionFromBranchName.Patch));
-   
+            var message = string.Format("There must be a tag on a release branch with a version the same as the version from the branch name i.e. {0}.{1}.{2}", major, minor, patch);
+            throw new Exception(message);
+
         }
     }
 }

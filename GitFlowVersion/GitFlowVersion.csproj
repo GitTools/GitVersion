@@ -47,6 +47,7 @@
     <Compile Include="BranchFinders\HotfixVersionFinder.cs" />
     <Compile Include="NugetVersionBuilder.cs" />
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="ShortVersionParser.cs" />
     <Compile Include="TeamCity.cs" />
     <Compile Include="VersionOnMasterFinder.cs" />
     <Compile Include="BranchType.cs" />

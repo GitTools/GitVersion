@@ -109,6 +109,10 @@ namespace GitFlowVersion
                     parsedVersion.PreReleasePartTwo = preReleasePartTwo;
                 }
             }
+            else
+            {
+                parsedVersion.Stability = Stability.Final;
+            }
             semanticVersion = parsedVersion;
             return true;
         }
@@ -116,3 +120,4 @@ namespace GitFlowVersion
 
     }
 }
+

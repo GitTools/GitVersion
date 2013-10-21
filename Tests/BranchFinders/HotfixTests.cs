@@ -13,7 +13,10 @@ public class HotfixTests
                               {
                                   CommitterEx = 1.Seconds().Ago().ToSignature(),
                               };
-        var hotfixBranch = new MockBranch("hotfix-0.1.4");
+        var hotfixBranch = new MockBranch("hotfix-0.1.4")
+                            {
+                                branchingCommit,
+                            };
 
         var finder = new HotfixVersionFinder
                      {
@@ -28,18 +31,26 @@ public class HotfixTests
                                                              branchingCommit
                                                          },
                                                          hotfixBranch
+                                                     },
+                                          Tags = new MockTagCollection
+                                                 {
+                                                     new MockTag
+                                                     {
+                                                         TargetEx = branchingCommit,
+                                                         NameEx = "0.1.4-alpha5"
                                                      }
+                                                 }
                                       },
-                         IsOnMasterBranchFunc = x => ReferenceEquals(x, branchingCommit)
                      };
         var version = finder.FindVersion();
 
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(1, version.Version.Minor);
         Assert.AreEqual(4, version.Version.Patch);
-        Assert.AreEqual(Stability.Beta, version.Version.Stability);
+        Assert.AreEqual(Stability.Alpha, version.Version.Stability);
         Assert.AreEqual(BranchType.Hotfix, version.BranchType);
-        Assert.AreEqual(0, version.Version.PreReleasePartOne, "Prerelease should be set to 0 since there is no commits");
+        Assert.AreEqual(5, version.Version.PreReleasePartOne, "PreReleasePartOne should be set to 5 from the tag");
+        Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since there is no commits");
     }
 
     [Test]
@@ -71,9 +82,16 @@ public class HotfixTests
                                                             branchingCommit
                                                          },
                                                          hotfixBranch
+                                                     },
+                                          Tags = new MockTagCollection
+                                                 {
+                                                     new MockTag
+                                                     {
+                                                         TargetEx = branchingCommit,
+                                                         NameEx = "0.1.3-beta4"
                                                      }
+                                                 }
                                       },
-                         IsOnMasterBranchFunc = x => ReferenceEquals(x, branchingCommit)
                      };
         var version = finder.FindVersion();
         Assert.AreEqual(0, version.Version.Major);
@@ -81,7 +99,8 @@ public class HotfixTests
         Assert.AreEqual(3, version.Version.Patch);
         Assert.AreEqual(Stability.Beta, version.Version.Stability);
         Assert.AreEqual(BranchType.Hotfix, version.BranchType);
-        Assert.AreEqual(1, version.Version.PreReleasePartOne, "Prerelease should be set to 1 since there is a commit on the branch");
+        Assert.AreEqual(4, version.Version.PreReleasePartOne, "PreReleasePartOne should be set to 4 from the tag");
+        Assert.AreEqual(1, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 1 since there is a commit on the branch");
     }
 
     [Test]
@@ -117,17 +136,25 @@ public class HotfixTests
                                                              branchingCommit
                                                          },
                                                          hotfixBranch
+                                                     },
+                                          Tags = new MockTagCollection
+                                                 {
+                                                     new MockTag
+                                                     {
+                                                         TargetEx = branchingCommit,
+                                                         NameEx = "0.1.3-alpha5"
                                                      }
+                                                 }
                                       },
-                         IsOnMasterBranchFunc = x => ReferenceEquals(x, branchingCommit)
                      };
         var version = finder.FindVersion();
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(1, version.Version.Minor);
         Assert.AreEqual(3, version.Version.Patch);
-        Assert.AreEqual(Stability.Beta, version.Version.Stability);
+        Assert.AreEqual(Stability.Alpha, version.Version.Stability);
         Assert.AreEqual(BranchType.Hotfix, version.BranchType);
-        Assert.AreEqual(2, version.Version.PreReleasePartOne, "Prerelease should be set to 2 since there is 2 commits on the branch");
+        Assert.AreEqual(5, version.Version.PreReleasePartOne, "PreReleasePartOne should be 5 from the tag");
+        Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is 2 commits on the branch");
     }
 
 

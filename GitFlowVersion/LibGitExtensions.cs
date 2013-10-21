@@ -3,44 +3,16 @@ namespace GitFlowVersion
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
     using LibGit2Sharp;
 
     public static class LibGitExtensions
     {
-        static FieldInfo commitRepoField;
-        static FieldInfo branchRepoField;
-
-        static LibGitExtensions()
-        {
-            branchRepoField = typeof(Branch).GetField("repo", BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.NonPublic);
-            commitRepoField = typeof(Commit).GetField("repo", BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.NonPublic);
-        }
-
-        public static Repository Repository(this Branch branch)
-        {
-            return (Repository)branchRepoField.GetValue(branch);
-        }
-
-        public static Repository Repository(this Commit commit)
-        {
-            return (Repository)commitRepoField.GetValue(commit);
-        }
 
         public static DateTimeOffset When(this Commit commit)
         {
             return commit.Committer.When;
         }
         
-        public static SemanticVersion SemVerTag(this IRepository repository, Commit commit)
-        {
-            var semVerTags = repository.SemVerTags(commit).ToList();
-            if (semVerTags.Count > 1)
-            {
-                throw new ErrorException(string.Format("Error processing commit `{0}`. Only one version version tag per commit is allowed.", commit.Sha));
-            }
-            return semVerTags.FirstOrDefault();
-        }
        public static string Prefix(this ObjectId objectId)
         {
             return objectId.Sha.Substring(0, 8);
@@ -50,59 +22,22 @@ namespace GitFlowVersion
             return commit.Sha.Substring(0, 8);
         }
 
-        public static IEnumerable<SemanticVersion> SemVerTags(this IRepository repository, Commit commit)
-        {
-            foreach (var tag in repository.Tags.Where(tag => tag.Target == commit))
+       public static SemanticVersion NewestSemVerTag(this IRepository repository, Commit commit)
+       {
+           foreach (var tag in repository.Tags.Reverse().Where(tag => tag.Target == commit))
             {
                 SemanticVersion version;
                 if (SemanticVersionParser.TryParse(tag.Name, out version))
                 {
-                    yield return version;
+                    return version;
                 }
             }
-        }
-
-        public static Reference ToReference(this Branch branch)
-        {
-            return branch.Repository().Refs.First(x => x.CanonicalName == branch.CanonicalName);
-        }
-
-        public static bool IsOnBranch(this Commit commit, Branch branch)
-        {
-            return branch.Repository().Refs.ReachableFrom(new[] { branch.ToReference() }, new[] { commit }).Any();
-        }
-
-        public static bool IsOnBranch(this IRepository repository, Branch branch, Commit commit)
-        {
-            return repository.Refs.ReachableFrom(new[] { branch.ToReference() }, new[] { commit }).Any();
-        }
+           return null;
+       }
 
         public static IEnumerable<Commit> CommitsPriorToThan(this Branch branch, DateTimeOffset olderThan)
         {
             return branch.Commits.SkipWhile(c => c.When() > olderThan);
-        }
-
-        public static bool IsMinorLargerThan(this SemanticVersion version, SemanticVersion o)
-        {
-            if (version.Major > o.Major)
-            {
-                return true;
-            }
-            if ((version.Major == o.Major) && (version.Minor > o.Minor))
-            {
-                return true;
-            }
-            return false;
-        }
-        
-        public static bool IsOnBranch(this Tag tag, Branch branch)
-        {
-            var commit = tag.Target as Commit;
-            if (commit == null)
-            {
-                return false;
-            }
-            return commit.IsOnBranch(branch);
         }
 
         public static Branch GetBranch(this IRepository repository, string name)
@@ -149,14 +84,6 @@ namespace GitFlowVersion
             return branch;
         }
 
-        public static Branch DevelopBranch(this IRepository repository)
-        {
-            return repository.GetBranch("develop");
-        }
-
-        public static Branch MasterBranch(this IRepository repository)
-        {
-            return repository.GetBranch("master");
-        }
+   
     }
 }

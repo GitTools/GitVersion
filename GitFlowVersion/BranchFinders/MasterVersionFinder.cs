@@ -1,5 +1,6 @@
 namespace GitFlowVersion
 {
+    using System.Linq;
     using LibGit2Sharp;
 
     class MasterVersionFinder
@@ -9,41 +10,44 @@ namespace GitFlowVersion
 
         public VersionAndBranch FindVersion()
         {
-            var version = GetVersion();
-            if (version.Stability == null)
+            int major;
+            int minor;
+            int patch;
+            foreach (var tag in Repository.Tags.Where(tag => tag.Target == Commit).Reverse())
             {
-                version.Stability = Stability.Final;
-            }
-            return new VersionAndBranch
-            {
-                BranchType = BranchType.Master,
-                BranchName = "master",
-                Sha = Commit.Sha,
-                Version = version
-            };
-        }
-
-        SemanticVersion GetVersion()
-        {
-            //TODO: should we take the newest or the highest? perhaps it doesnt matter?
-            var versionTag = Repository
-                .SemVerTag(Commit);
-
-            if (versionTag != null)
-            {
-                return versionTag;
+                if (ShortVersionParser.TryParse(tag.Name, out major, out minor, out patch))
+                {
+                    return BuildVersion(major, minor, patch);
+                }
             }
 
             string versionString;
             if (MergeMessageParser.TryParse(Commit.Message, out versionString))
             {
-                SemanticVersion version;
-                if (SemanticVersionParser.TryParse(versionString, out version))
+                if (ShortVersionParser.TryParse(versionString, out major, out minor, out patch))
                 {
-                    return version;
+                    return BuildVersion(major, minor, patch);
                 }
             }
+
             throw new ErrorException("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
+        }
+
+        VersionAndBranch BuildVersion(int major, int minor, int patch)
+        {
+            return new VersionAndBranch
+            {
+                BranchType = BranchType.Master,
+                BranchName = "master",
+                Sha = Commit.Sha,
+                Version = new SemanticVersion
+                {
+                    Major = major,
+                    Minor = minor,
+                    Patch = patch,
+                    Stability = Stability.Final
+                }
+            };
         }
     }
 }

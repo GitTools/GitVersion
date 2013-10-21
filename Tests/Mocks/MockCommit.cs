@@ -8,6 +8,7 @@ public class MockCommit:Commit
     public MockCommit()
     {
         idEx = new ObjectId(Guid.NewGuid().ToString().Replace("-", "")+ "00000000");
+        MessageEx = "";
     }
 
     public string MessageEx;

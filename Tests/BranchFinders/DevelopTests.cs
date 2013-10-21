@@ -81,7 +81,7 @@ public class DevelopTests
                                                      new MockTag
                                                      {
                                                          TargetEx = commitOnMaster,
-                                                         NameEx = "0.1"
+                                                         NameEx = "0.1.0"
                                                      }
                                                  }
                                       },
@@ -147,7 +147,7 @@ public class DevelopTests
                                                      new MockTag
                                                      {
                                                          TargetEx = commitTwoOnMaster,
-                                                         NameEx = "0.3.1"
+                                                         NameEx = "0.3.0"
                                                      },
                                                      new MockTag
                                                      {

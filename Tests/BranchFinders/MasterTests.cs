@@ -110,6 +110,7 @@ public class MasterTests
     }
 
     [Test]
+    [Ignore("should we support overriding with a beta?")]
     public void Override_using_tag_with_a_prerelease()
     {
         var commit = new MockCommit

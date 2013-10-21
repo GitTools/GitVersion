@@ -33,6 +33,7 @@ public class IntegrationTests
             }
         }
     }
+
     [Test, Explicit]
     public void TimingOnNSB()
     {
@@ -104,6 +105,7 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Suffix);
         }
     }
+
     [Test,Explicit]
     public void NServiceBusReleaseSpecificCommit()
     {
@@ -129,12 +131,40 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Suffix);
         }
     }
+
     [Test,Explicit]
     public void NServiceBusHotfix()
     {
-        using (var repository = new Repository(@"C:\Code\Particular\NServiceBus"))
+        using (var repository = new Repository(@"C:\Code\NServiceBus"))
         {
-            var branch = repository.Branches.First(x => x.Name == "hotfix-4.0.4");
+            var branch = repository.Branches.First(x => x.Name == "hotfix-4.1.1");
+            var commit = branch.Commits.First();
+
+            var finder = new GitFlowVersionFinder
+                         {
+                             Commit = commit,
+                             Repository = repository,
+                             Branch = branch
+                         };
+            var version = finder.FindVersion();
+            Debug.WriteLine(version.Version.Major);
+            Debug.WriteLine(version.Version.Minor);
+            Debug.WriteLine(version.Version.Patch);
+            Debug.WriteLine(version.Version.PreReleasePartOne);
+            Debug.WriteLine(version.Version.Stability);
+            Debug.WriteLine(version.BranchType);
+            Debug.WriteLine(version.Version.Suffix);
+            Debug.WriteLine(TeamCityVersionBuilder.GenerateBuildVersion(version));
+            
+        }
+    }
+
+    [Test,Explicit]
+    public void NServiceBusMaster()
+    {
+        using (var repository = new Repository(@"C:\Code\NServiceBus"))
+        {
+            var branch = repository.Branches.First(x => x.Name == "master");
             var commit = branch.Commits.First();
 
             var finder = new GitFlowVersionFinder
@@ -160,6 +190,31 @@ public class IntegrationTests
         using (var repository = new Repository(@"C:\Code\NServiceBus"))
         {
             var branch = repository.Branches.First(x => x.Name == "develop");
+            var commit = branch.Commits.First();
+
+            var finder = new GitFlowVersionFinder
+                         {
+                             Commit = commit,
+                             Repository = repository,
+                             Branch = branch
+                         };
+            var version = finder.FindVersion();
+            Debug.WriteLine(version.Version.Major);
+            Debug.WriteLine(version.Version.Minor);
+            Debug.WriteLine(version.Version.Patch);
+            Debug.WriteLine(version.Version.PreReleasePartOne);
+            Debug.WriteLine(version.Version.Stability);
+            Debug.WriteLine(version.BranchType);
+            Debug.WriteLine(version.Version.Suffix);
+        }
+    }
+
+    [Test,Explicit]
+    public void NServiceBusHead()
+    {
+        using (var repository = new Repository(@"C:\Code\NServiceBus"))
+        {
+            var branch = repository.Head;
             var commit = branch.Commits.First();
 
             var finder = new GitFlowVersionFinder

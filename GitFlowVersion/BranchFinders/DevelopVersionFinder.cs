@@ -34,13 +34,18 @@ namespace GitFlowVersion
                                             OlderThan = Commit.When()
                                         };
             var versionFromMaster = versionOnMasterFinder.Execute();
-            var version = versionFromMaster.Version;
-            var developBranch = Repository.DevelopBranch();
-            version.PreReleasePartOne = developBranch.Commits
-                                              .SkipWhile(x => x != Commit)
-                                              .TakeWhile(x => x.When() >= versionFromMaster.Timestamp)
-                                              .Count();
-            return version;
+
+            var developBranch = Repository.GetBranch("develop");
+            var preReleasePartOne = developBranch.Commits
+                .SkipWhile(x => x != Commit)
+                .TakeWhile(x => x.When() >= versionFromMaster.Timestamp)
+                .Count();
+            return new SemanticVersion
+            {
+                Major = versionFromMaster.Major,
+                Minor = versionFromMaster.Minor,
+                PreReleasePartOne = preReleasePartOne
+            };
         }
 
 

@@ -23,10 +23,10 @@ namespace GitFlowVersion
             if (firstCommitOnBranch == Commit.Id) //no commits on branch. use develop approach
             {
                 var developVersionFinder = new DevelopVersionFinder
-                                           {
-                                               Commit = Commit,
-                                               Repository = Repository
-                                           };
+                {
+                    Commit = Commit,
+                    Repository = Repository
+                };
                 var versionFromDevelopFinder = developVersionFinder.FindVersion();
                 versionFromDevelopFinder.BranchType = BranchType.Feature;
                 versionFromDevelopFinder.BranchName = FeatureBranch.Name;
@@ -34,25 +34,27 @@ namespace GitFlowVersion
             }
 
             var versionOnMasterFinder = new VersionOnMasterFinder
-                                        {
-                                            Repository = Repository,
-                                            OlderThan = Commit.When()
-                                        };
+            {
+                Repository = Repository,
+                OlderThan = Commit.When()
+            };
             var versionFromMaster = versionOnMasterFinder.Execute();
-            var version = versionFromMaster.Version;
-            version.Minor++;
-            version.Patch = 0;
-            version.Stability = Stability.Unstable;
-            version.PreReleasePartOne = 0;
-            version.Suffix = firstCommitOnBranch.Prefix();
 
             return new VersionAndBranch
-                   {
-                       BranchType = BranchType.Feature,
-                       BranchName = FeatureBranch.Name,
-                       Sha = Commit.Sha,
-                       Version = version
-                   };
+            {
+                BranchType = BranchType.Feature,
+                BranchName = FeatureBranch.Name,
+                Sha = Commit.Sha,
+                Version = new SemanticVersion
+                {
+                    Major = versionFromMaster.Major,
+                    Minor = versionFromMaster.Minor + 1,
+                    Patch = 0,
+                    Stability = Stability.Unstable,
+                    PreReleasePartOne = 0,
+                    Suffix = firstCommitOnBranch.Prefix()
+                }
+            };
         }
 
 

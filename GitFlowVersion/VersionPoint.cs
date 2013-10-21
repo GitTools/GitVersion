@@ -4,7 +4,8 @@ namespace GitFlowVersion
 
     public class VersionPoint
     {
-        public SemanticVersion Version;
+        public int Major;
+        public int Minor;
         public DateTimeOffset Timestamp;
     }
 }

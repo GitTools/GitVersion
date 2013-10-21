@@ -12,7 +12,8 @@ public class SemanticVersionParserTests
         SemanticVersionParser.TryParse("1.2.3", out version);
         Assert.AreEqual(1,version.Major);
         Assert.AreEqual(2,version.Minor);
-        Assert.AreEqual(3,version.Patch);
+        Assert.AreEqual(3, version.Patch);
+        Assert.AreEqual(Stability.Final, version.Stability);
     }
     [Test]
     public void Major_minor()
@@ -22,6 +23,7 @@ public class SemanticVersionParserTests
         Assert.AreEqual(1,version.Major);
         Assert.AreEqual(2,version.Minor);
         Assert.AreEqual(0,version.Patch);
+        Assert.AreEqual(Stability.Final,version.Stability);
     }
     [Test]
     public void Major()
@@ -30,7 +32,8 @@ public class SemanticVersionParserTests
         SemanticVersionParser.TryParse("1", out version);
         Assert.AreEqual(1,version.Major);
         Assert.AreEqual(0,version.Minor);
-        Assert.AreEqual(0,version.Patch);
+        Assert.AreEqual(0, version.Patch);
+        Assert.AreEqual(Stability.Final, version.Stability);
     }
 
     [Test]

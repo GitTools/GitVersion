@@ -34,7 +34,7 @@ public class ReleaseTests
                                                      new MockTag
                                                      {
                                                          TargetEx = branchingCommit,
-                                                         NameEx = "0.3.0-alpha1"
+                                                         NameEx = "0.3.0-alpha5"
                                                      }
                                                  }
                                       },
@@ -45,7 +45,7 @@ public class ReleaseTests
         Assert.AreEqual(0, version.Version.Patch);
         Assert.AreEqual(Stability.Alpha, version.Version.Stability);
         Assert.AreEqual(BranchType.Release, version.BranchType);
-        Assert.AreEqual(1, version.Version.PreReleasePartOne, "PreReleasePartOne should be set to 1 from the tag");
+        Assert.AreEqual(5, version.Version.PreReleasePartOne, "PreReleasePartOne should be set to 5 from the tag");
         Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since there is no commits");
     }
 
@@ -84,7 +84,7 @@ public class ReleaseTests
                                                      new MockTag
                                                      {
                                                          TargetEx = branchingCommit,
-                                                         NameEx = "0.5.0-alpha1"
+                                                         NameEx = "0.5.0-alpha5"
                                                      }
                                                  }
                                       },
@@ -95,8 +95,8 @@ public class ReleaseTests
         Assert.AreEqual(0, version.Version.Patch);
         Assert.AreEqual(Stability.Alpha, version.Version.Stability);
         Assert.AreEqual(BranchType.Release, version.BranchType);
-        Assert.AreEqual(1, version.Version.PreReleasePartOne);
-        Assert.AreEqual(1, version.Version.PreReleasePartTwo);
+        Assert.AreEqual(5, version.Version.PreReleasePartOne, "PreReleasePartOne should be set to 5 from the tag");
+        Assert.AreEqual(1, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 1 since there is 1 commit");
     }
 
     [Test]
@@ -139,7 +139,7 @@ public class ReleaseTests
                                                      new MockTag
                                                      {
                                                          TargetEx = branchingCommit,
-                                                         NameEx = "0.4.0-alpha2"
+                                                         NameEx = "0.4.0-alpha5"
                                                      }
                                                  }
                                       },
@@ -150,7 +150,7 @@ public class ReleaseTests
         Assert.AreEqual(0, version.Version.Patch);
         Assert.AreEqual(Stability.Alpha, version.Version.Stability);
         Assert.AreEqual(BranchType.Release, version.BranchType);
-        Assert.AreEqual(2, version.Version.PreReleasePartOne, "PreReleasePartOne should be set to 2 from");
+        Assert.AreEqual(5, version.Version.PreReleasePartOne, "PreReleasePartOne should be set to 5 from the tag");
         Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 3 since there is 2 commits on the branch");
     }
 

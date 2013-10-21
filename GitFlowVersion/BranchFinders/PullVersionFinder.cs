@@ -11,36 +11,39 @@ namespace GitFlowVersion
         public VersionAndBranch FindVersion()
         {
             var versionOnMasterFinder = new VersionOnMasterFinder
-                                        {
-                                            Repository = Repository,
-                                          OlderThan  = Commit.When(),
-                                        };
+            {
+                Repository = Repository,
+                OlderThan = Commit.When(),
+            };
             var versionFromMaster = versionOnMasterFinder
                 .Execute();
 
-            var version = versionFromMaster.Version;
-            version.Minor++;
-            version.Patch = 0;
-            version.Stability = Stability.Unstable;
-
+            string suffix;
             if (TeamCity.IsBuildingAPullRequest())
             {
-                version.Suffix = TeamCity.CurrentPullRequestNo().ToString();
+                suffix = TeamCity.CurrentPullRequestNo().ToString();
             }
             else
             {
-                version.Suffix = PullBranch.CanonicalName
-                                           .Substring(PullBranch.CanonicalName.IndexOf("/pull/") + 6);
+                suffix = PullBranch.CanonicalName.Substring(PullBranch.CanonicalName.IndexOf("/pull/") + 6);
             }
-            version.PreReleasePartOne = 0;
+
 
             return new VersionAndBranch
-                   {
-                       BranchType = BranchType.PullRequest,
-                       BranchName = PullBranch.Name,
-                       Sha = Commit.Sha,
-                       Version = version
-                   };
+            {
+                BranchType = BranchType.PullRequest,
+                BranchName = PullBranch.Name,
+                Sha = Commit.Sha,
+                Version = new SemanticVersion
+                {
+                    Major = versionFromMaster.Major,
+                    Minor = versionFromMaster.Minor + 1,
+                    Patch = 0,
+                    Stability = Stability.Unstable,
+                    PreReleasePartOne = 0,
+                    Suffix = suffix
+                }
+            };
         }
     }
 }
