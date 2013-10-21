@@ -24,7 +24,7 @@ namespace GitFlowVersion
                 .Commits
                 .SkipWhile(x => x != Commit))
             {
-                var versionFromTag = Repository.NewestSemVerTag();
+                var versionFromTag = Repository.NewestSemVerTag(c);
                 if (versionFromTag == null)
                 {
                     count++;
