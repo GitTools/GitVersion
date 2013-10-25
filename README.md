@@ -18,6 +18,7 @@ This also have the added benefit of forcing us to follow our branching strategy 
 * Following [Semantic Versioning](http://semver.org/)
 * Planned releases (bumps in major or minor) are done on release branches prefixed with release-. Eg: release-4.1 (or release-4.1.0)
 * Hotfixes are prefixed with hotfix- Eg. hotfix-4.0.4
+* The original Gitflow model (http://nvie.com/posts/a-successful-git-branching-model/) specifies branches with a "-" separator while the git flow extensions (https://github.com/nvie/gitflow) default to a "/" separator.  Either work with GitFlowVersion.
 * Tags are used on the master branch and reflects the SemVer of each stable release eg 3.3.8 , 4.0.0, etc
 * Tags can also be used to override versions while we transition repos over to GitFlowVersion
 * Using a build server with multi-branch building enabled eg TeamCity 8
