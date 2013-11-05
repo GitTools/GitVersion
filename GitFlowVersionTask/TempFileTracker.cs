@@ -17,7 +17,7 @@
         {
             foreach (var file in Directory.GetFiles(TempPath))
             {
-                if (File.GetLastWriteTime(file) < DateTime.Now.AddMinutes(-10))
+                if (File.GetLastWriteTime(file) < DateTime.Now.AddDays(-1))
                 {
                     File.Delete(file);
                 }
