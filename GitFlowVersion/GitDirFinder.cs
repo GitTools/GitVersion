@@ -4,7 +4,6 @@
 
     public class GitDirFinder
     {
-
         public static string TreeWalkForGitDir(string currentDirectory)
         {
             while (true)

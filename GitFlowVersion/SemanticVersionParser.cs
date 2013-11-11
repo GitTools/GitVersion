@@ -5,7 +5,6 @@ namespace GitFlowVersion
 
     public class SemanticVersionParser
     {
-
         public static bool TryParse(string versionString, out SemanticVersion semanticVersion)
         {
             var parts = versionString.Split('-');

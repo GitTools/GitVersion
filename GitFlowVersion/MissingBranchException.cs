@@ -8,6 +8,5 @@ namespace GitFlowVersion
         public MissingBranchException(string message, LibGit2SharpException exception):base(message,exception)
         {
         }
-
     }
 }
