@@ -5,7 +5,6 @@
 
     public class GitDirFinder
     {
-
         public static string TreeWalkForGitDir(string currentDirectory)
         {
             string gitDir = Repository.Discover(currentDirectory);
