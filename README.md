@@ -86,9 +86,9 @@ Long version:
 
 #### Release branches
 
-May branch off from: develop
-Must merge back into: develop and master
-Branch naming convention: `release-{n}` eg `release-1.2`
+ * May branch off from: develop
+ * Must merge back into: develop and master
+ * Branch naming convention: `release-{n}` eg `release-1.2`
 
 `releaseVersion` => the SemVer extracted from `targetBranch.Name`
 `releaseTag` => the first version tag placed on the branch. Note that at least one version tag is required on the branch. The recommended initial tag is `{releaseVersion}.0-alpha1`. So for a branch named `release-1.2` the recommended tag would be `1.2.0-alpha1`
