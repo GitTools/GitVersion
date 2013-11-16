@@ -65,7 +65,7 @@
             yield return GenerateBuildParameter("NugetVersion", NugetVersionBuilder.GenerateNugetVersion(versionAndBranch));
         }
 
-        private static string GenerateBuildParameter(string name, string value)
+        static string GenerateBuildParameter(string name, string value)
         {
             return string.Format("##teamcity[setParameter name='GitFlowVersion.{0}' value='{1}']", name, value);
         }

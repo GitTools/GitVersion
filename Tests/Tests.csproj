@@ -33,6 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ApprovalTests">
+      <HintPath>..\packages\ApprovalTests.3.0.5\lib\net40\ApprovalTests.dll</HintPath>
+    </Reference>
+    <Reference Include="ApprovalUtilities">
+      <HintPath>..\packages\ApprovalUtilities.3.0.5\lib\net35\ApprovalUtilities.dll</HintPath>
+    </Reference>
     <Reference Include="FluentDateTime, Version=1.10.0.0, Culture=neutral, PublicKeyToken=6ccbc613702e6c71, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\FluentDateTime.1.10.0.0\Lib\NET35\FluentDateTime.dll</HintPath>
@@ -83,9 +89,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApprovaleTestsConfig.cs" />
     <Compile Include="AssemblyLocation.cs" />
     <Compile Include="BranchClassifierTests.cs" />
     <Compile Include="BranchFinders\DevelopTests.cs" />
+    <Compile Include="JsonVersionBuilderTests.cs" />
     <Compile Include="GitDirFinderTests.cs" />
     <Compile Include="NugetVersionBuilderTests.cs" />
     <Compile Include="SemanticVersionParserTests.cs" />
@@ -121,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
+    <Content Include="JsonVersionBuilderTests.Json.approved.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GitFlowVersion\GitFlowVersion.csproj">

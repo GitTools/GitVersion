@@ -1,14 +1,11 @@
 ﻿namespace GitFlowVersion
 {
     using System;
-    using System.Collections;
 
-    public class NugetVersionBuilder
+    public static class NugetVersionBuilder
     {
 
-
-
-        public static string GenerateNugetVersion(VersionAndBranch versionAndBranch)
+        public static string GenerateNugetVersion(this VersionAndBranch versionAndBranch)
         {
             var prereleaseString = "";
 
@@ -30,11 +27,9 @@
                     case BranchType.Develop:
                         prereleaseString = "-" + stability + preReleaseVersion;
                         break;
-
                     case BranchType.Release:
                         prereleaseString = "-" + stability + preReleaseVersion;
                         break;
-
                     case BranchType.Hotfix:
                         prereleaseString = "-" + stability + preReleaseVersion;
                         break;

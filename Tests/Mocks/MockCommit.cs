@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using LibGit2Sharp;
 
-[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DebuggerDisplay("{DebuggerDisplay}")]
 public class MockCommit:Commit
 {
     public MockCommit()
@@ -21,6 +21,8 @@ public class MockCommit:Commit
     public override ObjectId Id{get { return idEx; }}
 
     public override string Sha { get { return idEx.Sha; } }
+
+    // ReSharper disable once UnusedMember.Local
     string DebuggerDisplay
     {
         get

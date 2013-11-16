@@ -40,6 +40,7 @@
                 {
                     if (TeamCity.IsRunningInBuildAgent()) //fail the build if we're on a TC build agent
                     {
+                        // ReSharper disable once StringLiteralTypo
                         this.LogError("Failed to find .git directory on agent. Please make sure agent checkout mode is enabled for you VCS roots - http://confluence.jetbrains.com/display/TCD8/VCS+Checkout+Mode");
                         return false;
                     }

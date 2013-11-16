@@ -7,11 +7,11 @@
     {
         public static string TreeWalkForGitDir(string currentDirectory)
         {
-            string gitDir = Repository.Discover(currentDirectory);
+            var gitDirectory = Repository.Discover(currentDirectory);
 
-            if (gitDir != null)
+            if (gitDirectory != null)
             {
-                return gitDir.TrimEnd(new []{ Path.DirectorySeparatorChar });
+                return gitDirectory.TrimEnd(new []{ Path.DirectorySeparatorChar });
             }
 
             return null;

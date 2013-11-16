@@ -2,7 +2,7 @@
 {
     using System;
 
-    public static class VersionInformationalConverter
+    public static class VersionInformationalBuilder
     {
         public static string ToLongString(this VersionAndBranch versionAndBranch)
         {
@@ -91,5 +91,6 @@
 
             throw new ErrorException(string.Format("Invalid branch type '{0}'.", versionAndBranch.BranchType));
         }
+
     }
 }

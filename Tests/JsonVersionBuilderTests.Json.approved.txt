@@ -1,0 +1,13 @@
+﻿{
+  "Major":1,
+  "Minor":2,
+  "Patch":3,
+  "Stability":"Unstable",
+  "Suffix":"a682956d",
+  "LongVersion":"1.2.3-unstable.feature-a682956d Branch:'feature1' Sha:'a682956dc1a2752aa24597a0f5cd939f93614509'",
+  "NugetVersion":"1.2.3-Feature-feature1-a682956dc1a2752aa24597a0f5cd939f93614509",
+  "ShortVersion":"1.2.3-unstable.feature-a682956d",
+  "BranchName":"feature1",
+  "BranchType":"Feature",
+  "Sha":"a682956dc1a2752aa24597a0f5cd939f93614509"
+}

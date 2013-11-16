@@ -11,7 +11,7 @@ public class InformationalVersionBuilderTests
                               {
                                   BranchType = BranchType.Feature,
                                   BranchName = "feature1",
-                                  Sha = "a682956dccae752aa24597a0f5cd939f93614509",
+                                  Sha = "a682956dc1a2752aa24597a0f5cd939f93614509",
                                   Version = new SemanticVersion
                                                        {
                                                            Major = 1,
@@ -23,7 +23,7 @@ public class InformationalVersionBuilderTests
                               };
         var informationalVersion = semanticVersion.ToLongString();
 
-        Assert.AreEqual("1.2.3-unstable.feature-a682956d Branch:'feature1' Sha:'a682956dccae752aa24597a0f5cd939f93614509'", informationalVersion);
+        Assert.AreEqual("1.2.3-unstable.feature-a682956d Branch:'feature1' Sha:'a682956dc1a2752aa24597a0f5cd939f93614509'", informationalVersion);
     }
 
     [Test]
@@ -33,7 +33,7 @@ public class InformationalVersionBuilderTests
                               {
                                   BranchType = BranchType.Develop,
                                   BranchName = "develop",
-                                  Sha = "a682956dccae752aa24597a0f5cd939f93614509",
+                                  Sha = "a682956dc1a2752aa24597a0f5cd939f93614509",
                                   Version = new SemanticVersion
                                                        {
                                                            Major = 1,
@@ -45,7 +45,7 @@ public class InformationalVersionBuilderTests
                               };
         var informationalVersion = semanticVersion.ToLongString();
 
-        Assert.AreEqual("1.2.3-alpha645 Branch:'develop' Sha:'a682956dccae752aa24597a0f5cd939f93614509'", informationalVersion);
+        Assert.AreEqual("1.2.3-alpha645 Branch:'develop' Sha:'a682956dc1a2752aa24597a0f5cd939f93614509'", informationalVersion);
     }
     [Test]
     public void DevelopUnstable()
@@ -54,7 +54,7 @@ public class InformationalVersionBuilderTests
                               {
                                   BranchType = BranchType.Develop,
                                   BranchName = "develop",
-                                  Sha = "a682956dccae752aa24597a0f5cd939f93614509",
+                                  Sha = "a682956dc1a2752aa24597a0f5cd939f93614509",
                                   Version = new SemanticVersion
                                                        {
                                                            Major = 1,
@@ -66,7 +66,7 @@ public class InformationalVersionBuilderTests
                               };
         var informationalVersion = semanticVersion.ToLongString();
 
-        Assert.AreEqual("1.2.3-unstable645 Branch:'develop' Sha:'a682956dccae752aa24597a0f5cd939f93614509'", informationalVersion);
+        Assert.AreEqual("1.2.3-unstable645 Branch:'develop' Sha:'a682956dc1a2752aa24597a0f5cd939f93614509'", informationalVersion);
     }
     [Test]
     public void DevelopBeta()
@@ -75,7 +75,7 @@ public class InformationalVersionBuilderTests
                               {
                                   BranchType = BranchType.Develop,
                                   BranchName = "develop",
-                                  Sha = "a682956dccae752aa24597a0f5cd939f93614509",
+                                  Sha = "a682956dc1a2752aa24597a0f5cd939f93614509",
                                   Version = new SemanticVersion
                                                        {
                                                            Major = 1,
@@ -87,7 +87,7 @@ public class InformationalVersionBuilderTests
                               };
         var informationalVersion = semanticVersion.ToLongString();
 
-        Assert.AreEqual("1.2.3-beta645 Branch:'develop' Sha:'a682956dccae752aa24597a0f5cd939f93614509'", informationalVersion);
+        Assert.AreEqual("1.2.3-beta645 Branch:'develop' Sha:'a682956dc1a2752aa24597a0f5cd939f93614509'", informationalVersion);
     }
 
     [Test]
@@ -97,7 +97,7 @@ public class InformationalVersionBuilderTests
                               {
                                   BranchType = BranchType.Hotfix,
                                   BranchName = "hotfix-foo",
-                                  Sha = "a682956dccae752aa24597a0f5cd939f93614509",
+                                  Sha = "a682956dc1a2752aa24597a0f5cd939f93614509",
                                   Version = new SemanticVersion
                                                        {
                                                            Major = 1,
@@ -110,7 +110,7 @@ public class InformationalVersionBuilderTests
                               };
         var informationalVersion = semanticVersion.ToLongString();
 
-        Assert.AreEqual("1.2.3-alpha645 Branch:'hotfix-foo' Sha:'a682956dccae752aa24597a0f5cd939f93614509'", informationalVersion);
+        Assert.AreEqual("1.2.3-alpha645 Branch:'hotfix-foo' Sha:'a682956dc1a2752aa24597a0f5cd939f93614509'", informationalVersion);
     }
     [Test]
     public void HotfixBeta()
@@ -119,7 +119,7 @@ public class InformationalVersionBuilderTests
                               {
                                   BranchType = BranchType.Hotfix,
                                   BranchName = "hotfix-foo",
-                                  Sha = "a682956dccae752aa24597a0f5cd939f93614509",
+                                  Sha = "a682956dc1a2752aa24597a0f5cd939f93614509",
                                   Version = new SemanticVersion
                                                        {
                                                            Major = 1,
@@ -132,7 +132,7 @@ public class InformationalVersionBuilderTests
                               };
         var informationalVersion = semanticVersion.ToLongString();
 
-        Assert.AreEqual("1.2.3-beta645 Branch:'hotfix-foo' Sha:'a682956dccae752aa24597a0f5cd939f93614509'", informationalVersion);
+        Assert.AreEqual("1.2.3-beta645 Branch:'hotfix-foo' Sha:'a682956dc1a2752aa24597a0f5cd939f93614509'", informationalVersion);
     }
 
     [Test]
@@ -142,7 +142,7 @@ public class InformationalVersionBuilderTests
                               {
                                   BranchType = BranchType.Master,
                                   BranchName = "master",
-                                  Sha = "a682956dccae752aa24597a0f5cd939f93614509",
+                                  Sha = "a682956dc1a2752aa24597a0f5cd939f93614509",
                                   Version = new SemanticVersion
                                                        {
                                                            Major = 1,
@@ -153,7 +153,7 @@ public class InformationalVersionBuilderTests
                               };
         var informationalVersion = semanticVersion.ToLongString();
 
-        Assert.AreEqual("1.2.3 Sha:'a682956dccae752aa24597a0f5cd939f93614509'", informationalVersion);
+        Assert.AreEqual("1.2.3 Sha:'a682956dc1a2752aa24597a0f5cd939f93614509'", informationalVersion);
     }
 
     [Test]
@@ -163,7 +163,7 @@ public class InformationalVersionBuilderTests
                               {
                                   BranchType = BranchType.PullRequest,
                                   BranchName = "myPullRequest",
-                                  Sha = "a682956dccae752aa24597a0f5cd939f93614509",
+                                  Sha = "a682956dc1a2752aa24597a0f5cd939f93614509",
                                   Version = new SemanticVersion
                                                        {
                                                            Major = 1,
@@ -175,7 +175,7 @@ public class InformationalVersionBuilderTests
                               };
         var informationalVersion = semanticVersion.ToLongString();
 
-        Assert.AreEqual("1.2.3-unstable.pull-request-3 Branch:'myPullRequest' Sha:'a682956dccae752aa24597a0f5cd939f93614509'", informationalVersion);
+        Assert.AreEqual("1.2.3-unstable.pull-request-3 Branch:'myPullRequest' Sha:'a682956dc1a2752aa24597a0f5cd939f93614509'", informationalVersion);
     }
 
     [Test]
@@ -185,7 +185,7 @@ public class InformationalVersionBuilderTests
                               {
                                   BranchType = BranchType.Release,
                                   BranchName = "release-1.2",
-                                  Sha = "a682956dccae752aa24597a0f5cd939f93614509",
+                                  Sha = "a682956dc1a2752aa24597a0f5cd939f93614509",
                                   Version = new SemanticVersion
                                                        {
                                                            Major = 1,
@@ -197,8 +197,9 @@ public class InformationalVersionBuilderTests
                               };
         var informationalVersion = semanticVersion.ToLongString();
 
-        Assert.AreEqual("1.2.0-beta2 Branch:'release-1.2' Sha:'a682956dccae752aa24597a0f5cd939f93614509'", informationalVersion);
+        Assert.AreEqual("1.2.0-beta2 Branch:'release-1.2' Sha:'a682956dc1a2752aa24597a0f5cd939f93614509'", informationalVersion);
     }
+
     [Test]
     public void ReleaseAlpha()
     {
@@ -206,7 +207,7 @@ public class InformationalVersionBuilderTests
                               {
                                   BranchType = BranchType.Release,
                                   BranchName = "release-1.2",
-                                  Sha = "a682956dccae752aa24597a0f5cd939f93614509",
+                                  Sha = "a682956dc1a2752aa24597a0f5cd939f93614509",
                                   Version = new SemanticVersion
                                                        {
                                                            Major = 1,
@@ -218,6 +219,6 @@ public class InformationalVersionBuilderTests
                               };
         var informationalVersion = semanticVersion.ToLongString();
 
-        Assert.AreEqual("1.2.0-alpha2 Branch:'release-1.2' Sha:'a682956dccae752aa24597a0f5cd939f93614509'", informationalVersion);
+        Assert.AreEqual("1.2.0-alpha2 Branch:'release-1.2' Sha:'a682956dc1a2752aa24597a0f5cd939f93614509'", informationalVersion);
     }
 }

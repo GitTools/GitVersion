@@ -4,26 +4,30 @@ namespace GitFlowVersion
 
     public class Program
     {
-        private static void Main(string[] args)
+        static void Main(string[] args)
         {
-            // TODO: What about SignAssembly?
-            if (args.Length != 1)
+            string solutionDirectory;
+            if (args.Length == 1)
             {
-                Console.WriteLine("Please provide the solution directory as input argument.");
+                solutionDirectory = args[0];
+            }
+            else
+            {
+                solutionDirectory = Environment.CurrentDirectory;
             }
 
-            string solutionDirectory = args[0];
 
             var gitDirectory = GitDirFinder.TreeWalkForGitDir(solutionDirectory);
 
             if (string.IsNullOrEmpty(gitDirectory))
             {
-                // TODO: What do we do here? 
+                Console.Error.WriteLine("Could not find .git directory");
+                Environment.Exit(1);
             }
 
-            VersionAndBranch versionAndBranch = VersionCache.GetVersion(gitDirectory);
-            var format = string.Format(@"{{ ""Version"": ""{0}"", ""BranchType"": ""{1}"", ""BranchName"": ""{2}"", ""Sha"": ""{3}"" }}", versionAndBranch.ToShortString(), versionAndBranch.BranchType, versionAndBranch.BranchName, versionAndBranch.Sha);
-            Console.WriteLine(format);
+            var json = VersionCache.GetVersion(gitDirectory).ToJson();
+
+            Console.WriteLine(json);
         }
     }
 }
