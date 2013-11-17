@@ -2,6 +2,7 @@ namespace GitFlowVersion
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
 
@@ -17,7 +18,7 @@ namespace GitFlowVersion
                 {
                     HelpWriter.Write();
                 }
-                Logger.WriteInfo = s => File.WriteAllText(arguments.LogFilePath,arguments.LogFilePath);
+                ConfigureLogging(arguments);
                 var gitDirectory = GitDirFinder.TreeWalkForGitDir(arguments.TargetDirectory);
 
                 if (string.IsNullOrEmpty(gitDirectory))
@@ -40,6 +41,36 @@ namespace GitFlowVersion
                 Console.Error.Write("An unexpected error occurred:\r\n{0}", exception);
                 Environment.Exit(1);
             }
+#if DEBUG
+            if (Debugger.IsAttached)
+            {
+                Console.ReadLine();
+            }
+#endif
+        }
+
+        static void ConfigureLogging(Arguments arguments)
+        {
+            if (arguments.LogFilePath == null)
+            {
+                Logger.WriteInfo = s =>{};
+            }
+            else
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(arguments.LogFilePath));
+                if (File.Exists(arguments.LogFilePath))
+                {
+                    using (File.CreateText(arguments.LogFilePath)) { }   
+                }
+
+                Logger.WriteInfo = s => WriteLogEntry(arguments, s);
+            }
+        }
+
+        static void WriteLogEntry(Arguments arguments, string s)
+        {
+            var contents = string.Format("{0}\t\t{1}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), s);
+            File.WriteAllText(arguments.LogFilePath, contents);
         }
 
         static List<string> GetArgumentsWithoutExeName()

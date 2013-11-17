@@ -1,2 +1,2 @@
-Generate-BinFile "gfv" "%ChocolateyInstall%\lib\GitFlowVersion\GitFlowVersion.exe"
+Generate-BinFile "gfv" "$packageFolder\Tools\GitFlowVersion.exe"
 Write-ChocolateySuccess "GitFlowVersion"
