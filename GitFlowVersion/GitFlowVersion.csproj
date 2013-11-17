@@ -22,6 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <DocumentationFile>bin\Debug\GitFlowVersion.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,6 +32,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <DocumentationFile>bin\Release\GitFlowVersion.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JetBrains.Annotations">
@@ -88,13 +90,16 @@
     <Compile Include="ErrorException.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="NugetAssets\chocolateyInstall.ps1">
+    <None Include="NugetRefAssets\GitFlowVersion.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <None Include="NugetAssets\chocolateyUninstall.ps1">
+    <None Include="NugetExeAssets\chocolateyInstall.ps1">
       <SubType>Designer</SubType>
     </None>
-    <None Include="NugetAssets\GitFlowVersion.nuspec">
+    <None Include="NugetExeAssets\chocolateyUninstall.ps1">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NugetExeAssets\GitFlowVersion.nuspec">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config">
@@ -110,9 +115,13 @@
   <Import Project="Fody.targets" />
   <Target Name="Clean">
     <ItemGroup>
-      <FilesToDelete Include="$(SolutionDir)NuGetExeBuild\**\*.*" />
+      <ExeFilesToDelete Include="$(SolutionDir)NuGetExeBuild\**\*.*" />
     </ItemGroup>
-    <Delete Files="@(FilesToDelete)" />
+    <Delete Files="@(ExeFilesToDelete)" />
+    <ItemGroup>
+      <RefFilesToDelete Include="$(SolutionDir)NuGetRefBuild\**\*.*" />
+    </ItemGroup>
+    <Delete Files="@(RefFilesToDelete)" />
   </Target>
   <UsingTask TaskName="PepitaPackage.CreatePackageTask" AssemblyFile="$(SolutionDir)Tools\Pepita\PepitaPackage.dll" />
   <Target Name="AfterBuild" DependsOnTargets="Clean">
@@ -128,10 +137,16 @@
     <Copy SourceFiles="$(OutputPath)\GitFlowVersion.exe" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
     <Copy SourceFiles="$(OutputPath)\GitFlowVersion.pdb" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
     <Copy SourceFiles="$(OutputPath)\LibGit2Sharp.dll" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyInstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyUninstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitFlowVersion.nuspec" DestinationFolder="$(SolutionDir)NuGetExeBuild" />
+    <Copy SourceFiles="$(ProjectDir)NugetExeAssets\chocolateyInstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
+    <Copy SourceFiles="$(ProjectDir)NugetExeAssets\chocolateyUninstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
+    <Copy SourceFiles="$(ProjectDir)NugetExeAssets\GitFlowVersion.nuspec" DestinationFolder="$(SolutionDir)NuGetExeBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetExeBuild" MetadataAssembly="$(OutputPath)GitFlowVersion.exe" />
+    <MakeDir Directories="$(SolutionDir)NuGetRefBuild" />
+    <Copy SourceFiles="$(OutputPath)\GitFlowVersion.exe" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
+    <Copy SourceFiles="$(OutputPath)\GitFlowVersion.pdb" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
+    <Copy SourceFiles="$(OutputPath)\GitFlowVersion.xml" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
+    <Copy SourceFiles="$(ProjectDir)NugetRefAssets\GitFlowVersion.nuspec" DestinationFolder="$(SolutionDir)NuGetRefBuild" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetRefBuild" MetadataAssembly="$(OutputPath)GitFlowVersion.exe" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent>
