@@ -24,7 +24,7 @@ public class JsonVersionBuilderTests
                                                            Suffix = "a682956d",
                                                        }
                               };
-        var json = semanticVersion.ToJson().Replace("\r\n", Environment.NewLine);
+        var json = semanticVersion.ToJson().Replace("\r\n", "\n");
         Approvals.Verify(json);
     }
 
