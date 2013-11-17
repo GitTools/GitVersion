@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JetBrains.Annotations">
@@ -45,10 +47,13 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArgumentParser.cs" />
+    <Compile Include="Arguments.cs" />
     <Compile Include="BranchClassifier.cs" />
     <Compile Include="BranchFinders\FeatureVersionFinder.cs" />
     <Compile Include="BranchFinders\DevelopVersionFinder.cs" />
     <Compile Include="BranchFinders\HotfixVersionFinder.cs" />
+    <Compile Include="HelpWriter.cs" />
     <Compile Include="JsonVersionBuilder.cs" />
     <Compile Include="NugetVersionBuilder.cs" />
     <Compile Include="ExtensionMethods.cs" />
@@ -83,6 +88,15 @@
     <Compile Include="ErrorException.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="NugetAssets\chocolateyInstall.ps1">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NugetAssets\chocolateyUninstall.ps1">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NugetAssets\GitFlowVersion.nuspec">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -94,6 +108,31 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="Fody.targets" />
+  <Target Name="Clean">
+    <ItemGroup>
+      <FilesToDelete Include="$(SolutionDir)NuGetExeBuild\**\*.*" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
+  </Target>
+  <UsingTask TaskName="PepitaPackage.CreatePackageTask" AssemblyFile="$(SolutionDir)Tools\Pepita\PepitaPackage.dll" />
+  <Target Name="AfterBuild" DependsOnTargets="Clean">
+    <MakeDir Directories="$(SolutionDir)NuGetExeBuild" />
+    <CreateItem Include="$(SolutionDir)GitFlowVersion\bin\$(ConfigurationName)\NativeBinaries\amd64\*.dll">
+      <Output TaskParameter="Include" ItemName="amd64" />
+    </CreateItem>
+    <Copy SourceFiles="@(amd64)" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools\NativeBinaries\amd64" />
+    <CreateItem Include="$(SolutionDir)GitFlowVersion\bin\$(ConfigurationName)\NativeBinaries\x86\*.dll">
+      <Output TaskParameter="Include" ItemName="x86" />
+    </CreateItem>
+    <Copy SourceFiles="@(x86)" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools\NativeBinaries\x86" />
+    <Copy SourceFiles="$(OutputPath)\GitFlowVersion.exe" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
+    <Copy SourceFiles="$(OutputPath)\GitFlowVersion.pdb" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
+    <Copy SourceFiles="$(OutputPath)\LibGit2Sharp.dll" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyInstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyUninstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitFlowVersion.nuspec" DestinationFolder="$(SolutionDir)NuGetExeBuild" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetExeBuild" MetadataAssembly="$(OutputPath)GitFlowVersion.exe" />
+  </Target>
   <PropertyGroup>
     <PostBuildEvent>
 if not exist "$(TargetDir)NativeBinaries" md "$(TargetDir)NativeBinaries"

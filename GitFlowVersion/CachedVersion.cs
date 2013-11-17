@@ -1,7 +1,8 @@
-﻿using GitFlowVersion;
-
-public class CachedVersion
+﻿namespace GitFlowVersion
 {
-    public VersionAndBranch VersionAndBranch;
-    public long Timestamp;
+    public class CachedVersion
+    {
+        public VersionAndBranch VersionAndBranch;
+        public long Timestamp;
+    }
 }

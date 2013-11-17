@@ -90,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApprovaleTestsConfig.cs" />
+    <Compile Include="ArgumentParserTests.cs" />
     <Compile Include="AssemblyLocation.cs" />
     <Compile Include="BranchClassifierTests.cs" />
     <Compile Include="BranchFinders\DevelopTests.cs" />

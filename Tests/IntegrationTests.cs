@@ -49,7 +49,7 @@ public class IntegrationTests
                              Repository = repository,
                              Branch = branch
                          };
-            var version = finder.FindVersion();
+            finder.FindVersion();
         }
         Debug.WriteLine(startNew.ElapsedMilliseconds);
         startNew = Stopwatch.StartNew();
@@ -64,7 +64,7 @@ public class IntegrationTests
                              Repository = repository,
                              Branch = branch
                          };
-            var version = finder.FindVersion();
+            finder.FindVersion();
         }
         Debug.WriteLine(startNew.ElapsedMilliseconds);
     }

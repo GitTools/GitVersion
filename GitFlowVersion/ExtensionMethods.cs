@@ -24,16 +24,25 @@ namespace GitFlowVersion
             var startIndex = toTrim.Length;
             return value.Substring(startIndex);
         }
+
+        public static bool IsOdd(this int number)
+        {
+            return number % 2 != 0;
+        }
         public static string JsonEncode(this string value)
         {
-            return value
-                .Replace("\"", "\\\"")
-                .Replace("\\", "\\\\")
-                .Replace("\b", "\\b")
-                .Replace("\f", "\\f")
-                .Replace("\n", "\\n")
-                .Replace("\t", "\\t")
-                .Replace("\r", "\\r");
+            if (value != null)
+            {
+                return value
+                    .Replace("\"", "\\\"")
+                    .Replace("\\", "\\\\")
+                    .Replace("\b", "\\b")
+                    .Replace("\f", "\\f")
+                    .Replace("\n", "\\n")
+                    .Replace("\t", "\\t")
+                    .Replace("\r", "\\r");
+            }
+            return null;
         }
     }
 }

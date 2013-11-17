@@ -4,7 +4,7 @@ namespace GitFlowVersion
 
     public static class Logger
     {
-        public static Action<string> WriteInfo;
+        [ThreadStatic] public static Action<string> WriteInfo;
 
         static Logger()
         {
@@ -12,7 +12,7 @@ namespace GitFlowVersion
         }
         public static void Reset()
         {
-            WriteInfo = x => Console.Out.WriteLine(x);
+            WriteInfo = s => { throw new Exception("Logger not defined."); };
         }
     }
 }
