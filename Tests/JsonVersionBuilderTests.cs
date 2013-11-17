@@ -1,4 +1,3 @@
-using System;
 using ApprovalTests;
 using GitFlowVersion;
 using NUnit.Framework;
@@ -24,7 +23,7 @@ public class JsonVersionBuilderTests
                                                            Suffix = "a682956d",
                                                        }
                               };
-        var json = semanticVersion.ToJson().Replace("\r\n", "\n");
+        var json = semanticVersion.ToJson();
         Approvals.Verify(json);
     }
 
