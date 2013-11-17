@@ -10,7 +10,7 @@ public class ArgumentParserTests
     public void Empty_means_use_current_directory()
     {
         var arguments = ArgumentParser.ParseArguments("");
-        Assert.AreEqual(Environment.CurrentDirectory,arguments.TargetDirectory);
+        Assert.AreEqual(Environment.CurrentDirectory,arguments.TargetPath);
         Assert.IsNull(arguments.LogFilePath);
         Assert.IsFalse(arguments.IsHelp);
     }
@@ -19,7 +19,7 @@ public class ArgumentParserTests
     public void Single_means_use_as_target_directory()
     {
         var arguments = ArgumentParser.ParseArguments("path");
-        Assert.AreEqual("path",arguments.TargetDirectory);
+        Assert.AreEqual("path",arguments.TargetPath);
         Assert.IsNull(arguments.LogFilePath);
         Assert.IsFalse(arguments.IsHelp);
     }
@@ -28,7 +28,7 @@ public class ArgumentParserTests
     public void No_path_and_logfile_should_use_current_directory_TargetDirectory()
     {
         var arguments = ArgumentParser.ParseArguments("-l logFilePath");
-        Assert.AreEqual(Environment.CurrentDirectory,arguments.TargetDirectory);
+        Assert.AreEqual(Environment.CurrentDirectory,arguments.TargetPath);
         Assert.AreEqual("logFilePath",arguments.LogFilePath);
         Assert.IsFalse(arguments.IsHelp);
     }
@@ -37,7 +37,7 @@ public class ArgumentParserTests
     public void h_means_IsHelp()
     {
         var arguments = ArgumentParser.ParseArguments("-h");
-        Assert.IsNull(arguments.TargetDirectory);
+        Assert.IsNull(arguments.TargetPath);
         Assert.IsNull(arguments.LogFilePath);
         Assert.IsTrue(arguments.IsHelp);
     }
@@ -46,7 +46,7 @@ public class ArgumentParserTests
     public void TargetDirectory_and_LogFilePath_can_be_parsed()
     {
         var arguments = ArgumentParser.ParseArguments("targetDirectoryPath -l logFilePath");
-        Assert.AreEqual("targetDirectoryPath", arguments.TargetDirectory);
+        Assert.AreEqual("targetDirectoryPath", arguments.TargetPath);
         Assert.AreEqual("logFilePath",arguments.LogFilePath);
         Assert.IsFalse(arguments.IsHelp);
     }

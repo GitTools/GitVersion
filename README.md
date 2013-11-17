@@ -1,17 +1,18 @@
 ![Icon](https://raw.github.com/Particular/GitFlowVersion/master/Icons/package_icon.png)
 
+Use convention to derive a SemVer product version from a GitFlow based repository
+
 ## Usage:
 
-GitFlowVerion can be used in several ways
+GitFlowVersion can be used in several ways
 
-### 1. An MSBuildTask
+### 1. An MSBuild Task
 
-This will wire GitFlowVersion into the MSbuild pipeline of a project and automatically stamp that assembly with the appropriate SemVer information
+This will wire GitFlowVersion into the MSBuild pipeline of a project and automatically stamp that assembly with the appropriate SemVer information
 
 Available on [Nuget](https://www.nuget.org) under [GitFlowVersionTask](https://www.nuget.org/packages/GitFlowVersionTask/)
 
     Install-Package GitFlowVersionTask
-
 
 ### 2. A nuget reference package
 
@@ -21,18 +22,43 @@ Available on [Nuget](https://www.nuget.org) under [GitFlowVersion](https://www.n
 
     Install-Package GitFlowVersion
 
+### 3. A command line tool
 
-### 3. A Chocolatey package
-
-If you want a command line version installed on your machine then you can use [Chocolatey](http://chocolatey.org) to insatall GitFlowVersion
+If you want a command line version installed on your machine then you can use [Chocolatey](http://chocolatey.org) to install GitFlowVersion
 
 Available on [Chocolatey](http://chocolatey.org) under [GitFlowVersionTask](http://chocolatey.org/packages/GitFlowVersion)
 
     cinst GitFlowVersion
 
+#### Calling convention
+
+```    
+GitFlowVersion [path] [/l logFilePath]
+        path    The directory containing .git. If not defined current directory is used.
+        /l      Path to logfile.
+```
+
+#### Output
+
+```
+{
+  "Major":4,
+  "Minor":3,
+  "Patch":0,
+  "Stability":"Unstable",
+  "Suffix":"",
+  "LongVersion":"4.3.0-unstable103 Branch:'develop' Sha:'0de44745e2a18a9ed1ed6215dc19c95ff46ec0f5'",
+  "NugetVersion":"4.3.0-Unstable0103",
+  "ShortVersion":"4.3.0-unstable103",
+  "BranchName":"develop",
+  "BranchType":"Develop",
+  "Sha":"0de44745e2a18a9ed1ed6215dc19c95ff46ec0f5"
+}
+```
+
 ## The Problem
 
-Builds are getting more complex and as we're moving towards scm structure with a lot of fine grained repos we need to take a convention based approach for our product versioning.
+Builds are getting more complex and as we're moving towards scm structure with a lot of fine grained repositories we need to take a convention based approach for our product versioning.
 
 This also have the added benefit of forcing us to follow our branching strategy on all repositories since the build breaks if we don't.
 
@@ -42,9 +68,9 @@ This also have the added benefit of forcing us to follow our branching strategy 
 * Following [Semantic Versioning](http://semver.org/)
 * Planned releases (bumps in major or minor) are done on release branches prefixed with release-. Eg: release-4.1 (or release-4.1.0)
 * Hotfixes are prefixed with hotfix- Eg. hotfix-4.0.4
-* The original Gitflow model (http://nvie.com/posts/a-successful-git-branching-model/) specifies branches with a "-" separator while the git flow extensions (https://github.com/nvie/gitflow) default to a "/" separator.  Either work with GitFlowVersion.
+* The original GitFlow model (http://nvie.com/posts/a-successful-git-branching-model/) specifies branches with a "-" separator while the git flow extensions (https://github.com/nvie/gitflow) default to a "/" separator.  Either work with GitFlowVersion.
 * Tags are used on the master branch and reflects the SemVer of each stable release eg 3.3.8 , 4.0.0, etc
-* Tags can also be used to override versions while we transition repos over to GitFlowVersion
+* Tags can also be used to override versions while we transition repositories over to GitFlowVersion
 * Using a build server with multi-branch building enabled eg TeamCity 8
 
 ### How Branches are handled
@@ -68,7 +94,7 @@ If we try to build from a commit that is no merge and no tag then assume `0.1.0`
 * pre-release: 0 (perhaps count ahead commits later)
 * stability: final
 
-Optional Tags (only when transitioning existing repos): 
+Optional Tags (only when transitioning existing repository): 
 * TagOnHeadCommit.Name={semver} => overrides the version to be {semver} 
 
 Long version:  
@@ -171,9 +197,9 @@ How do we do release candidates?? Perhaps  tag a release branch and then count c
 ## Running inside TeamCity
 
 * Make sure to use agent checkouts
-* For the moment you need to promote the %teamcity.build.vcs.branch.{configurationid}% build parameter to an environment variable with the same name for pull requests to be handled correctly
-* We update the TC buildnumber to the GFV number automatically
-* We output the individual values of the GFV version as the build parameter: GitFlowVersion.* (Eg: GitFlowVersion.Major) if you need access to them in your build script 
+* For the moment you need to promote the `%teamcity.build.vcs.branch.{configurationid}%` build parameter to an environment variable with the same name for pull requests to be handled correctly
+* We update the TC build number to the GFV number automatically
+* We output the individual values of the GFV version as the build parameter: `GitFlowVersion.*` (Eg: `GitFlowVersion.Major`) if you need access to them in your build script 
 
 ### NuGet in TeamCity
 * Add dummy [parameter](http://confluence.jetbrains.com/display/TCD8/Configuring+Build+Parameters) to 
@@ -188,9 +214,10 @@ can add the parameter to the "root-project" (TeamCity 8.x+)
 
 Given a version number MAJOR.MINOR.PATCH, increment the:
 
-MAJOR version when you make incompatible API changes,
-MINOR version when you add functionality in a backwards-compatible manner, and
-PATCH version when you make backwards-compatible bug fixes.
+ * MAJOR version when you make incompatible API changes,
+ * MINOR version when you add functionality in a backwards-compatible manner, and
+ * PATCH version when you make backwards-compatible bug fixes.
+
 Additional labels for pre-release and build metadata are available as extensions to the MAJOR.MINOR.PATCH format.
  
 ###[GitFlow: A successful Git branching model](http://nvie.com/git-model/)

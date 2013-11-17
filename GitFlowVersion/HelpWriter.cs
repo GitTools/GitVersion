@@ -6,11 +6,14 @@ namespace GitFlowVersion
     {
         public static void Write()
         {
-            var message = 
-                @"Use convention to derive a SemVer product version from a GitFlow based repository.
-GitFlowVersion [targetDirectory] [/l logFilePath]
+            var message =
+@"Use convention to derive a SemVer product version from a GitFlow based repository.
 
- /l\tPath to logfile";
+GitFlowVersion [path] [/l logFilePath]
+
+	path	The directory containing .git. If not defined current directory is used.
+	/l	Path to logfile.
+";
             Console.Write(message);
         }
     }

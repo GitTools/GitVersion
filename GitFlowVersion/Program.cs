@@ -17,9 +17,10 @@ namespace GitFlowVersion
                 if (arguments.IsHelp)
                 {
                     HelpWriter.Write();
+                    return;
                 }
                 ConfigureLogging(arguments);
-                var gitDirectory = GitDirFinder.TreeWalkForGitDir(arguments.TargetDirectory);
+                var gitDirectory = GitDirFinder.TreeWalkForGitDir(arguments.TargetPath);
 
                 if (string.IsNullOrEmpty(gitDirectory))
                 {

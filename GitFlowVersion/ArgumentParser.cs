@@ -17,7 +17,7 @@ namespace GitFlowVersion
             {
                 return new Arguments
                     {
-                        TargetDirectory = Environment.CurrentDirectory
+                        TargetPath = Environment.CurrentDirectory
                     };
             }
 
@@ -34,7 +34,7 @@ namespace GitFlowVersion
             {
                 return new Arguments
                     {
-                        TargetDirectory = firstArgument
+                        TargetPath = firstArgument
                     };
             }
 
@@ -42,12 +42,12 @@ namespace GitFlowVersion
             var arguments = new Arguments();
             if (firstArgument.StartsWith("-") || firstArgument.StartsWith("/"))
             {
-                arguments.TargetDirectory = Environment.CurrentDirectory;
+                arguments.TargetPath = Environment.CurrentDirectory;
                 namedArguments = commandLineArguments;
             }
             else
             {
-                arguments.TargetDirectory = firstArgument;
+                arguments.TargetPath = firstArgument;
                 namedArguments = commandLineArguments.Skip(1).ToList();
             }
 

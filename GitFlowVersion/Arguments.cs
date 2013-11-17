@@ -2,7 +2,7 @@ namespace GitFlowVersion
 {
     class Arguments
     {
-        public string TargetDirectory;
+        public string TargetPath;
         public bool IsHelp;
         public string LogFilePath;
     }
