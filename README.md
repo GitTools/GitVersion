@@ -2,9 +2,33 @@
 
 ## Usage:
 
-Available on nuget under [GitFlowVersionTask](https://www.nuget.org/packages/GitFlowVersionTask/)
+GitFlowVerion can be used in several ways
+
+### 1. An MSBuildTask
+
+This will wire GitFlowVersion into the MSbuild pipeline of a project and automatically stamp that assembly with the appropriate SemVer information
+
+Available on [Nuget](https://www.nuget.org) under [GitFlowVersionTask](https://www.nuget.org/packages/GitFlowVersionTask/)
 
     Install-Package GitFlowVersionTask
+
+
+### 2. A nuget reference package
+
+This can be used if you want to reference GitFlowVersion and reuse is from .net.
+
+Available on [Nuget](https://www.nuget.org) under [GitFlowVersion](https://www.nuget.org/packages/GitFlowVersion/)
+
+    Install-Package GitFlowVersion
+
+
+### 3. A Chocolatey package
+
+If you want a command line version installed on your machine then you can use [Chocolatey](http://chocolatey.org) to insatall GitFlowVersion
+
+Available on [Chocolatey](http://chocolatey.org) under [GitFlowVersionTask](http://chocolatey.org/packages/GitFlowVersion)
+
+    cinst GitFlowVersion
 
 ## The Problem
 
