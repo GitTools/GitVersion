@@ -1,0 +1,11 @@
+0000000000000000000000000000000000000000 86925f3dbe9612b1761f4b81c7cca537042d1ba5 nulltoken <emeric.fermas@gmail.com> 1384689191 +0100	branch: Created from 86925f3dbe9612b1761f4b81c7cca537042d1ba5
+86925f3dbe9612b1761f4b81c7cca537042d1ba5 40028d4ac34223056cb975dce5fb92055efcf00a nulltoken <emeric.fermas@gmail.com> 1384689444 +0100	commit: develop
+40028d4ac34223056cb975dce5fb92055efcf00a 2fcdc8a05d7ed0a77d80a6857c5622fab10e103a nulltoken <emeric.fermas@gmail.com> 1384689470 +0100	commit: develop
+2fcdc8a05d7ed0a77d80a6857c5622fab10e103a 83099d424b1618a2019b22d234d9ebc8d0254fc1 nulltoken <emeric.fermas@gmail.com> 1384689488 +0100	commit: develop
+83099d424b1618a2019b22d234d9ebc8d0254fc1 f698199306b8e736cf63c393bbc1016da580ca57 nulltoken <emeric.fermas@gmail.com> 1384690225 +0100	commit: develop
+f698199306b8e736cf63c393bbc1016da580ca57 8db58aea340c97a28a918d030a1214f2c841fa99 nulltoken <emeric.fermas@gmail.com> 1384691071 +0100	commit (merge): Merge branch 'hotfix/0.2.0' into develop
+8db58aea340c97a28a918d030a1214f2c841fa99 76f96a5d150ff68bb90508203b7ccb480e4ca7f5 nulltoken <emeric.fermas@gmail.com> 1384691189 +0100	merge feature/two: Merge made by the 'recursive' strategy.
+76f96a5d150ff68bb90508203b7ccb480e4ca7f5 4e1dcbb0c75a0295c7bd83cb72995966eb31ae36 nulltoken <emeric.fermas@gmail.com> 1384691643 +0100	merge release/1.0.0: Merge made by the 'recursive' strategy.
+4e1dcbb0c75a0295c7bd83cb72995966eb31ae36 e8844b2adba55ca169e97a2ed2ec7f14d0a84152 nulltoken <emeric.fermas@gmail.com> 1384692635 +0100	merge release/1.0.0: Merge made by the 'recursive' strategy.
+e8844b2adba55ca169e97a2ed2ec7f14d0a84152 f44e5fa97149732d9dba9b6cb7f3ed9ddffeb38d nulltoken <emeric.fermas@gmail.com> 1384692937 +0100	merge feature/one feature/two: Merge made by the 'octopus' strategy.
+f44e5fa97149732d9dba9b6cb7f3ed9ddffeb38d 469f85198036004654a83045a70e9893797180b1 nulltoken <emeric.fermas@gmail.com> 1384693179 +0100	merge release/1.0.1: Merge made by the 'recursive' strategy.
