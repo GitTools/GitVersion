@@ -12,19 +12,19 @@ namespace GitFlowVersion
         {
             return commit.Committer.When;
         }
-        
-       public static string Prefix(this ObjectId objectId)
+
+        public static string Prefix(this ObjectId objectId)
         {
             return objectId.Sha.Substring(0, 8);
         }
-       public static string Prefix(this Commit commit)
+        public static string Prefix(this Commit commit)
         {
             return commit.Sha.Substring(0, 8);
         }
 
-       public static SemanticVersion NewestSemVerTag(this IRepository repository, Commit commit)
-       {
-           foreach (var tag in repository.Tags.Reverse().Where(tag => tag.Target == commit))
+        public static SemanticVersion NewestSemVerTag(this IRepository repository, Commit commit)
+        {
+            foreach (var tag in repository.Tags.Reverse().Where(tag => tag.Target == commit))
             {
                 SemanticVersion version;
                 if (SemanticVersionParser.TryParse(tag.Name, out version))
@@ -32,8 +32,8 @@ namespace GitFlowVersion
                     return version;
                 }
             }
-           return null;
-       }
+            return null;
+        }
 
         public static IEnumerable<Commit> CommitsPriorToThan(this Branch branch, DateTimeOffset olderThan)
         {
@@ -46,7 +46,7 @@ namespace GitFlowVersion
 
             if (branch == null)
             {
-               
+
                 if (!repository.Network.Remotes.Any())
                 {
                     Logger.WriteInfo("No remotes found");
@@ -84,6 +84,6 @@ namespace GitFlowVersion
             return branch;
         }
 
-   
+
     }
 }
