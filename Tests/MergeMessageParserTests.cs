@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using GitFlowVersion;
+using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
@@ -48,8 +50,26 @@ public class MergeMessageParserTests
         AssertMergeMessage(null, "Merge branch 'develop' of github.com:Particular/NServiceBus into develop\n");
     }
 
+    [Test]
+    public void NotAMergeCommit()
+    {
+        var c = new MockCommit
+        {
+            MessageEx = "Merge branch 'hotfix-0.1.5'\n",
+        };
+
+        string versionPart;
+        Assert.IsFalse(MergeMessageParser.TryParse(c, out versionPart));
+    }
+
     private void AssertMergeMessage(string expectedVersion, string message)
     {
+        var c = new MockCommit
+                {
+                    MessageEx = message,
+                    ParentsEx = new List<Commit> {null, null}
+                };
+
         string versionPart;
         var parsed = MergeMessageParser.TryParse(c, out versionPart);
 

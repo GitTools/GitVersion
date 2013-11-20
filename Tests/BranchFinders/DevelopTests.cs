@@ -27,7 +27,7 @@ public class DevelopTests
                                                      {
                                                          new MockBranch("master")
                                                          {
-                                                             new MockCommit
+                                                             new MockMergeCommit
                                                              {
                                                                  MessageEx = "hotfix-0.1.1",
                                                                  CommitterEx = 2.Seconds().Ago().ToSignature()
@@ -107,15 +107,15 @@ public class DevelopTests
                               {
                                   CommitterEx = 1.Seconds().Ago().ToSignature()
                               };
-        var commitOneOnMaster = new MockCommit
+        var commitOneOnMaster = new MockMergeCommit
                              {
                                  CommitterEx = 4.Seconds().Ago().ToSignature(),
                              };
-        var commitTwoOnMaster = new MockCommit
+        var commitTwoOnMaster = new MockMergeCommit
                              {
                                  CommitterEx = 3.Seconds().Ago().ToSignature(),
                              };
-        var commitThreeOnMaster = new MockCommit
+        var commitThreeOnMaster = new MockMergeCommit
                              {
                                  CommitterEx = 2.Seconds().Ago().ToSignature(),
                              };

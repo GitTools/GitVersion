@@ -30,7 +30,7 @@ namespace GitFlowVersion
                     }
                 }
                 string versionString;
-                if (MergeMessageParser.TryParse(commit.Message, out versionString))
+                if (MergeMessageParser.TryParse(commit, out versionString))
                 {
                     int major;
                     int minor;

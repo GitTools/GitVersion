@@ -97,6 +97,7 @@
     <Compile Include="JsonVersionBuilderTests.cs" />
     <Compile Include="GitDirFinderTests.cs" />
     <Compile Include="LibGitExtensionsTests.cs" />
+    <Compile Include="Mocks\MockMergeCommit.cs" />
     <Compile Include="NugetVersionBuilderTests.cs" />
     <Compile Include="SemanticVersionParserTests.cs" />
     <Compile Include="ShortVersionParserTests.cs" />

@@ -17,7 +17,7 @@ public class PullBranchTests
     [Test]
     public void Pull_branch_with_1_commit()
     {
-        var branchingCommit = new MockCommit
+        var branchingCommit = new MockMergeCommit
                               {
                                   MessageEx = "Merge branch 'release-0.2.0'",
                                   CommitterEx = 2.Seconds().Ago().ToSignature(),
@@ -62,7 +62,7 @@ public class PullBranchTests
     public void Pull_branch_with_1_commit_TeamCity()
     {
         FakeTeamCityPullrequest(2);
-        var branchingCommit = new MockCommit
+        var branchingCommit = new MockMergeCommit
                               {
                                   MessageEx = "Merge branch 'release-0.2.0'",
                                   CommitterEx = 2.Seconds().Ago().ToSignature(),
@@ -106,7 +106,7 @@ public class PullBranchTests
     [Test]
     public void Pull_branch_with_2_commits()
     {
-        var branchingCommit = new MockCommit
+        var branchingCommit = new MockMergeCommit
         {
             MessageEx = "Merge branch 'release-0.2.0'",
             CommitterEx = 2.Seconds().Ago().ToSignature(),
@@ -153,7 +153,7 @@ public class PullBranchTests
     {
         FakeTeamCityPullrequest(2);
 
-        var branchingCommit = new MockCommit
+        var branchingCommit = new MockMergeCommit
                               {
                                   MessageEx = "Merge branch 'release-0.2.0'",
                                   CommitterEx = 2.Seconds().Ago().ToSignature(),

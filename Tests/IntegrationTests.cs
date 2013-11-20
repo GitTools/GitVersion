@@ -20,7 +20,7 @@ public class IntegrationTests
                 foreach (var commit in branch.Commits)
                 {
                     string versionPart;
-                    if (MergeMessageParser.TryParse(commit.Message, out versionPart))
+                    if (MergeMessageParser.TryParse(commit, out versionPart))
                     {
                         Debug.WriteLine(versionPart);
                         SemanticVersion version;
