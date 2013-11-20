@@ -8,7 +8,7 @@ public class LibGitExtensionsTests
     [Test]
     public void NewestSemVerTag_RetrieveTheHighestSemanticVersionPointingAtTheSpecifiedCommit()
     {
-        var tagNames = new[]{"a", "9.0.0", "z", "0.1.0", "11.1.0"};
+        var tagNames = new[]{"a", "9.0.0", "z", "0.1.0", "11.1.0", "0.2.0"};
         var mockCommit = new MockCommit();
 
         var col = new MockTagCollection();

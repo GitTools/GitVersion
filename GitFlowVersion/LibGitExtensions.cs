@@ -24,15 +24,21 @@ namespace GitFlowVersion
 
         public static SemanticVersion NewestSemVerTag(this IRepository repository, Commit commit)
         {
-            foreach (var tag in repository.Tags.Reverse().Where(tag => tag.Target == commit))
+            SemanticVersion highest = null;
+            foreach (var tag in repository.Tags.Where(tag => tag.Target == commit))
             {
                 SemanticVersion version;
-                if (SemanticVersionParser.TryParse(tag.Name, out version))
+                if (!SemanticVersionParser.TryParse(tag.Name, out version))
                 {
-                    return version;
+                    continue;
+                }
+
+                if (version.CompareTo(highest) > 0)
+                {
+                    highest = version;
                 }
             }
-            return null;
+            return highest;
         }
 
         public static IEnumerable<Commit> CommitsPriorToThan(this Branch branch, DateTimeOffset olderThan)
