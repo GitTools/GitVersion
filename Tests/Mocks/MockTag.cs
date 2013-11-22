@@ -35,4 +35,10 @@ public class MockTagAnnotation:TagAnnotation
     {
         get { return TaggerEx; }
     }
+
+    public GitObject TargetEx;
+    public override GitObject Target
+    {
+        get { return TargetEx; }
+    }
 }
