@@ -2,7 +2,7 @@ namespace GitFlowVersion
 {
     using System;
 
-    public class VersionPoint
+    class VersionPoint
     {
         public int Major;
         public int Minor;

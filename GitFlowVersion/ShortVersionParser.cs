@@ -2,7 +2,7 @@ namespace GitFlowVersion
 {
     using System;
 
-    public class ShortVersionParser
+    class ShortVersionParser
     {
 
         public static void Parse(string versionString, out int major, out int minor, out int patch)
@@ -31,14 +31,45 @@ namespace GitFlowVersion
 
         public static bool TryParseMajorMinor(string versionString, out int major, out int minor)
         {
-            int patch;
-
-            if (!TryParse(versionString, out major, out minor, out patch))
+            major = 0;
+            minor = 0;
+            var strings = versionString.Split('.');
+            if (strings.Length == 2)
             {
-                return false;
+                if (!int.TryParse(strings[0], out major))
+                {
+                    return false;
+                }
+
+                if (!int.TryParse(strings[1], out minor))
+                {
+                    return false;
+                }
+                return true;
             }
 
-            return patch == 0;
+
+            if (strings.Length == 3)
+            {
+                if (!int.TryParse(strings[0], out major))
+                {
+                    return false;
+                }
+
+                if (!int.TryParse(strings[1], out minor))
+                {
+                    return false;
+                }
+                int patch;
+                if (!int.TryParse(strings[2], out patch))
+                {
+                    return false;
+                }
+                return patch == 0;
+            }
+
+
+            return false;
         }
 
         public static bool TryParse(string versionString, out int major, out int minor, out int patch)
@@ -74,4 +105,5 @@ namespace GitFlowVersion
             throw new Exception(string.Format("Could not parse version from '{0}' expected 'major.minor.patch'", versionString));
         }
     }
+
 }

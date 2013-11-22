@@ -1,3 +1,5 @@
+using FluentDate;
+using FluentDateTimeOffset;
 using GitFlowVersion;
 using NUnit.Framework;
 
@@ -10,6 +12,7 @@ public class ReleaseTests
         var branchingCommit = new MockCommit
                               {
                                   MessageEx = "branching commit",
+                              CommitterEx = 1.Seconds().Ago().ToSignature()
                               };
         var releaseBranch = new MockBranch("release-0.3.0")
                             {
@@ -55,10 +58,12 @@ public class ReleaseTests
         var branchingCommit = new MockCommit
                               {
                                   MessageEx = "branching commit",
+                                  CommitterEx = 2.Seconds().Ago().ToSignature()
                               };
         var firstCommit = new MockCommit
                           {
                               MessageEx = "first commit on release",
+                              CommitterEx = 1.Seconds().Ago().ToSignature()
                           };
         var releaseBranch = new MockBranch("release-0.5.0")
                             {
@@ -105,14 +110,17 @@ public class ReleaseTests
         var branchingCommit = new MockCommit
                               {
                                   MessageEx = "branching commit",
+                              CommitterEx = 3.Seconds().Ago().ToSignature()
                               };
         var secondCommit = new MockCommit
                            {
                                MessageEx = "second commit on release",
+                              CommitterEx = 1.Seconds().Ago().ToSignature()
                            };
         var firstCommit = new MockCommit
                          {
                              MessageEx = "first commit on release",
+                              CommitterEx = 2.Seconds().Ago().ToSignature()
                          };
         var releaseBranch = new MockBranch("release-0.4.0")
                             {
@@ -162,10 +170,12 @@ public class ReleaseTests
         var branchingCommit = new MockCommit
                               {
                                   MessageEx = "branching commit",
+                              CommitterEx = 2.Seconds().Ago().ToSignature()
                               };
         var firstCommit = new MockCommit
                           {
                               MessageEx = "first commit on release",
+                              CommitterEx = 1.Seconds().Ago().ToSignature()
                           };
         var releaseBranch = new MockBranch("release-0.4.0")
                             {

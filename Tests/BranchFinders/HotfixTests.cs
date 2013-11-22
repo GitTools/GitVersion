@@ -59,10 +59,12 @@ public class HotfixTests
         var branchingCommit = new MockCommit
                               {
                                   MessageEx = "branching commit",
+                                  CommitterEx = 1.Seconds().Ago().ToSignature()
                               };
         var firstCommit = new MockCommit
                          {
                              MessageEx = "first commit on hotfix",
+                             CommitterEx = 2.Seconds().Ago().ToSignature()
                          };
         var hotfixBranch = new MockBranch("hotfix-0.1.3")
                            {
@@ -108,18 +110,21 @@ public class HotfixTests
     {
         var branchingCommit = new MockCommit
                               {
-                                  MessageEx = "branchingCommit"
+                                  MessageEx = "branchingCommit",
+                                  CommitterEx = 3.Seconds().Ago().ToSignature()
                               };
         var secondCommit = new MockCommit
                          {
-                             MessageEx = "secondCommit"
+                             MessageEx = "secondCommit",
+                                  CommitterEx = 1.Seconds().Ago().ToSignature()
                          };
         var hotfixBranch = new MockBranch("hotfix-0.1.3")
                            {
                                secondCommit,
                                new MockCommit
                                {
-                                  MessageEx = "firstCommit"
+                                  MessageEx = "firstCommit",
+                                  CommitterEx = 2.Seconds().Ago().ToSignature()
                                },
                                branchingCommit,
                            };

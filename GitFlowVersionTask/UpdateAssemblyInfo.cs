@@ -38,6 +38,7 @@
                 var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
                 if (string.IsNullOrEmpty(gitDirectory))
                 {
+                    //TODO: TeamCity.IsRunningInBuildAgent is leaking implementation details should abstract it
                     if (TeamCity.IsRunningInBuildAgent()) //fail the build if we're on a TC build agent
                     {
                         // ReSharper disable once StringLiteralTypo

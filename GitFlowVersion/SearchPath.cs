@@ -3,7 +3,7 @@
     using System;
     using System.IO;
 
-    public class SearchPath
+    class SearchPath
     {
         static bool isPathSet;
 

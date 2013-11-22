@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class TeamCityVersionBuilder
+    class TeamCityVersionBuilder
     {
         public static string GenerateBuildVersion(VersionAndBranch versionAndBranch)
         {

@@ -1,6 +1,5 @@
 namespace GitFlowVersion
 {
-    using System.Linq;
     using LibGit2Sharp;
 
     class MasterVersionFinder
@@ -13,7 +12,7 @@ namespace GitFlowVersion
             int major;
             int minor;
             int patch;
-            foreach (var tag in Repository.Tags.Where(tag => tag.Target == Commit).Reverse())
+            foreach (var tag in Repository.TagsByDate(Commit))
             {
                 if (ShortVersionParser.TryParse(tag.Name, out major, out minor, out patch))
                 {

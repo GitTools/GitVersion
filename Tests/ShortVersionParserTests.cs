@@ -39,7 +39,7 @@ public class ShortVersionParserTests
         Assert.IsFalse(result);
 
         result = ShortVersionParser.TryParseMajorMinor("1.2", out major, out minor);
-        Assert.IsFalse(result);
+        Assert.IsTrue(result);
 
         result = ShortVersionParser.TryParseMajorMinor("1.2.0", out major, out minor);
         Assert.IsTrue(result);

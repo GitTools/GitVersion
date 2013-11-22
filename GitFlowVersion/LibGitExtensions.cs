@@ -5,7 +5,7 @@ namespace GitFlowVersion
     using System.Linq;
     using LibGit2Sharp;
 
-    public static class LibGitExtensions
+    static class LibGitExtensions
     {
 
         public static DateTimeOffset When(this Commit commit)
@@ -24,22 +24,32 @@ namespace GitFlowVersion
 
         public static SemanticVersion NewestSemVerTag(this IRepository repository, Commit commit)
         {
-            SemanticVersion highest = null;
-            foreach (var tag in repository.Tags.Where(tag => tag.Target == commit))
+            foreach (var tag in repository.TagsByDate(commit))
             {
                 SemanticVersion version;
-                if (!SemanticVersionParser.TryParse(tag.Name, out version))
+                if (SemanticVersionParser.TryParse(tag.Name, out version))
                 {
-                    continue;
-                }
-
-                if (version.CompareTo(highest) > 0)
-                {
-                    highest = version;
+                    return version;
                 }
             }
-            return highest;
+            return null;
         }
+
+        public static IEnumerable<Tag> TagsByDate(this IRepository repository, Commit commit)
+        {
+            return repository.Tags
+                .Where(tag => tag.Target == commit)
+                .OrderByDescending(tag =>
+                {
+                    if (tag.Annotation != null)
+                    {
+                        return tag.Annotation.Tagger.When;
+                    }
+                    //lightweight tags will not have an Annotation
+                    return commit.Committer.When;
+                });
+        }
+
 
         public static IEnumerable<Commit> CommitsPriorToThan(this Branch branch, DateTimeOffset olderThan)
         {

@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using FluentDate;
+using FluentDateTimeOffset;
 using GitFlowVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -8,26 +11,58 @@ public class LibGitExtensionsTests
     [Test]
     public void NewestSemVerTag_RetrieveTheHighestSemanticVersionPointingAtTheSpecifiedCommit()
     {
-        var tagNames = new[]{"a", "9.0.0", "z", "0.1.0", "11.1.0", "0.2.0"};
         var mockCommit = new MockCommit();
-
-        var col = new MockTagCollection();
-        foreach (var tagName in tagNames)
-        {
-            col.Add(new MockTag
+        var repo = new MockRepository
+            {
+                Tags = new MockTagCollection
                     {
-                        NameEx = tagName,
-                        TargetEx = mockCommit
-                    });
-        }
+                        Tags = new List<Tag>
+                            {
+                                new MockTag
+                                    {
+                                        NameEx = "a",
+                                        TargetEx = mockCommit,
+                                        AnnotationEx = new MockTagAnnotation
+                                            {
+                                                TaggerEx = new Signature("a", "", 7.Seconds().Ago())
+                                            }
+                                    },
+                                new MockTag
+                                    {
+                                        NameEx = "9.0.0a",
+                                        TargetEx = mockCommit,
+                                        AnnotationEx = new MockTagAnnotation
+                                            {
+                                                TaggerEx = new Signature("a", "", 5.Seconds().Ago())
+                                            }
+                                    },
+                                new MockTag
+                                    {
+                                        NameEx = "0.1.0",
+                                        TargetEx = mockCommit,
+                                        AnnotationEx = new MockTagAnnotation
+                                            {
+                                                TaggerEx = new Signature("a", "", 1.Seconds().Ago())
+                                            }
+                                    },
+                                new MockTag
+                                    {
+                                        NameEx = "0.2.0",
+                                        TargetEx = mockCommit,
+                                        AnnotationEx = new MockTagAnnotation
+                                            {
+                                                TaggerEx = new Signature("a", "", 5.Seconds().Ago())
+                                            }
+                                    },
+                            }
+                    }
+            };
 
-        IRepository repo = new MockRepository { Tags = col };
+        var version = repo.NewestSemVerTag(mockCommit);
 
-        var sv = repo.NewestSemVerTag(mockCommit);
-
-        Assert.AreEqual(11, sv.Major);
-        Assert.AreEqual(1, sv.Minor);
-        Assert.AreEqual(0, sv.Patch);
+        Assert.AreEqual(0, version.Major);
+        Assert.AreEqual(1, version.Minor);
+        Assert.AreEqual(0, version.Patch);
     }
 
     [Test]
@@ -41,14 +76,18 @@ public class LibGitExtensionsTests
             col.Add(new MockTag
             {
                 NameEx = tagName,
-                TargetEx = null
+                TargetEx = null,
+                AnnotationEx = new MockTagAnnotation
+                {
+                    TaggerEx = new Signature("a", "", 5.Seconds().Ago())
+                }
             });
         }
 
-        IRepository repo = new MockRepository { Tags = col };
+        var repo = new MockRepository { Tags = col };
 
-        var sv = repo.NewestSemVerTag(new MockCommit());
+        var version = repo.NewestSemVerTag(new MockCommit());
 
-        Assert.IsNull(sv);
+        Assert.IsNull(version);
     }
 }

@@ -234,6 +234,18 @@ public class IntegrationTests
         }
     }
     [Test,Explicit]
+    public void GitTests()
+    {
+        using (var repository = new Repository(@"C:\Code\Experiments"))
+        {
+
+            foreach (var tag in repository.Tags)
+            {
+                Debug.WriteLine(tag.Annotation.Tagger.When);
+            }
+        }
+    }
+    [Test,Explicit]
     public void NServiceBusDevelopOlderCommit()
     {
         using (var repository = new Repository(@"C:\Code\NServiceBus"))
