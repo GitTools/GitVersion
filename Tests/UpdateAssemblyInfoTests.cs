@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.Linq;
 using GitFlowVersionTask;
 using LibGit2Sharp;
 using Microsoft.Build.Framework;
@@ -22,6 +23,35 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     public void TeamCityExecutionMode_RequiresAValidGitDirectoryToOperate()
     {
         var task = BuildTask(Path.GetTempPath());
+
+        using (new FakeTeamCityContext())
+        {
+            Assert.False(task.Execute());
+        }
+    }
+
+    [Test]
+    public void StandardExecutionMode_DoesNotRequireARemoteToOperate()
+    {
+        using (var repo = new Repository(ASBMTestRepoWorkingDirPath))
+        {
+            Assert.AreEqual(0, repo.Network.Remotes.Count());
+        }
+
+        var task = BuildTask(ASBMTestRepoWorkingDirPath);
+
+        Assert.True(task.Execute());
+    }
+
+    [Test]
+    public void TeamCityExecutionMode_RequiresARemoteToOperate()
+    {
+        using (var repo = new Repository(ASBMTestRepoWorkingDirPath))
+        {
+            Assert.AreEqual(0, repo.Network.Remotes.Count());
+        }
+
+        var task = BuildTask(ASBMTestRepoWorkingDirPath);
 
         using (new FakeTeamCityContext())
         {

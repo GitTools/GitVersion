@@ -3,6 +3,8 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
+    using LibGit2Sharp;
 
     public static class TeamCity
     {
@@ -68,6 +70,29 @@
         static string GenerateBuildParameter(string name, string value)
         {
             return string.Format("##teamcity[setParameter name='GitFlowVersion.{0}' value='{1}']", name, value);
+        }
+
+        public static void NormalizeGitDirectory(string gitDirectory)
+        {
+            using (var repo = new Repository(gitDirectory))
+            {
+                EnsureOnlyOneRemoteIsDefined(repo);
+            }
+        }
+
+        private static void EnsureOnlyOneRemoteIsDefined(IRepository repo)
+        {
+            var howMany = repo.Network.Remotes.Count();
+
+            if (howMany == 1)
+            {
+                return;
+            }
+
+            throw new ErrorException(string.Format(
+                "{0} remote(s) have been detected. "
+                + "When being run on a TeamCity agent, the Git repository is "
+                + "expected to bear one (and no more than one) remote.", howMany));
         }
     }
 }
