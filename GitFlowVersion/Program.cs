@@ -6,7 +6,7 @@ namespace GitFlowVersion
     using System.IO;
     using System.Linq;
 
-    public class Program
+    class Program
     {
         static void Main()
         {

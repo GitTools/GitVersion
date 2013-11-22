@@ -1,7 +1,6 @@
 namespace GitFlowVersion
 {
     using System;
-    using System.Linq;
     using LibGit2Sharp;
 
     class VersionOnMasterFinder
@@ -15,7 +14,7 @@ namespace GitFlowVersion
                 .GetBranch("master");
             foreach (var commit in masterBranch.CommitsPriorToThan(OlderThan))
             {
-                foreach (var tag in Repository.Tags.Where(tag => tag.Target == commit).Reverse())
+                foreach (var tag in Repository.TagsByDate(commit))
                 {
                     int major;
                     int minor;
@@ -30,7 +29,7 @@ namespace GitFlowVersion
                     }
                 }
                 string versionString;
-                if (MergeMessageParser.TryParse(commit.Message, out versionString))
+                if (MergeMessageParser.TryParse(commit, out versionString))
                 {
                     int major;
                     int minor;

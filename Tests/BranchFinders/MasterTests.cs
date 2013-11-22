@@ -43,7 +43,7 @@ public class MasterTests
     [Test]
     public void Hotfix_merge()
     {
-        var hotfixMergeCommit = new MockCommit
+        var hotfixMergeCommit = new MockMergeCommit
                          {
                              MessageEx = "Merge branch 'hotfix-0.1.5'",
                              CommitterEx = 2.Seconds().Ago().ToSignature()
@@ -152,7 +152,7 @@ public class MasterTests
     [Test]
     public void Release_merge()
     {
-        var commit = new MockCommit
+        var commit = new MockMergeCommit
         {
             CommitterEx = 2.Seconds().Ago().ToSignature(),
             MessageEx = "Merge branch 'release-0.2.0'"

@@ -3,7 +3,7 @@
     using System;
     using System.IO;
 
-    public static class DirectoryDateFinder
+    static class DirectoryDateFinder
     {
         public static long GetLastDirectoryWrite(string path)
         {

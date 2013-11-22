@@ -3,7 +3,7 @@ namespace GitFlowVersion
     using GitFlowVersion.Integration;
     using LibGit2Sharp;
 
-    public static class BranchClassifier
+    static class BranchClassifier
     {
         public static bool IsHotfix(this Branch branch)
         {

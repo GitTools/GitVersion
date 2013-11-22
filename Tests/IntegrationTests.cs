@@ -20,7 +20,7 @@ public class IntegrationTests
                 foreach (var commit in branch.Commits)
                 {
                     string versionPart;
-                    if (MergeMessageParser.TryParse(commit.Message, out versionPart))
+                    if (MergeMessageParser.TryParse(commit, out versionPart))
                     {
                         Debug.WriteLine(versionPart);
                         SemanticVersion version;
@@ -231,6 +231,18 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Stability);
             Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Version.Suffix);
+        }
+    }
+    [Test,Explicit]
+    public void GitTests()
+    {
+        using (var repository = new Repository(@"C:\Code\Experiments"))
+        {
+
+            foreach (var tag in repository.Tags)
+            {
+                Debug.WriteLine(tag.Annotation.Tagger.When);
+            }
         }
     }
     [Test,Explicit]

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using LibGit2Sharp;
 
@@ -9,6 +10,7 @@ public class MockCommit:Commit
     {
         idEx = new ObjectId(Guid.NewGuid().ToString().Replace("-", "")+ "00000000");
         MessageEx = "";
+        ParentsEx = new List<Commit> { null };
     }
 
     public string MessageEx;
@@ -21,6 +23,12 @@ public class MockCommit:Commit
     public override ObjectId Id{get { return idEx; }}
 
     public override string Sha { get { return idEx.Sha; } }
+
+    public IList<Commit> ParentsEx;
+    public override IEnumerable<Commit> Parents
+    {
+        get { return ParentsEx; }
+    }
 
     // ReSharper disable once UnusedMember.Local
     string DebuggerDisplay

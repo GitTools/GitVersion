@@ -17,5 +17,22 @@ public class MockTag:Tag
     {
         get { return TargetEx; }
     }
+    public TagAnnotation AnnotationEx;
+    public override TagAnnotation Annotation
+    {
+        get { return AnnotationEx; }
+    }
 
+}
+public class MockTagAnnotation:TagAnnotation
+{
+    public MockTagAnnotation()
+    {
+    }
+
+    public Signature TaggerEx;
+    public override Signature Tagger
+    {
+        get { return TaggerEx; }
+    }
 }
