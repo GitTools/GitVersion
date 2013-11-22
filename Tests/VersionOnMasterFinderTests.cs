@@ -18,17 +18,17 @@ public class VersionOnMasterFinderTests
                                                      {
                                                          new MockBranch("master")
                                                          {
-                                                             new MockCommit
+                                                             new MockMergeCommit
                                                              {
                                                                  MessageEx = "Merge branch 'hotfix-0.3.0'",
                                                                  CommitterEx = 2.Seconds().Ago().ToSignature()
                                                              },
-                                                             new MockCommit
+                                                             new MockMergeCommit
                                                              {
                                                                  MessageEx = "Merge branch 'hotfix-0.3.1'",
                                                                  CommitterEx = 2.Seconds().Ago().ToSignature(),
                                                              },
-                                                             new MockCommit
+                                                             new MockMergeCommit
                                                              {
                                                                  MessageEx = "Merge branch 'hotfix-0.2.0'",
                                                                  CommitterEx = 2.Seconds().Ago().ToSignature()

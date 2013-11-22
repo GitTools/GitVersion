@@ -26,7 +26,7 @@ public class FeatureBranchTests
                                                      {
                                                          new MockBranch("master")
                                                          {
-                                                             new MockCommit
+                                                             new MockMergeCommit
                                                              {
                                                                  MessageEx = "Merge branch 'release-0.2.0'",
                                                                  CommitterEx = 3.Seconds().Ago().ToSignature()
@@ -83,7 +83,7 @@ public class FeatureBranchTests
                                                      {
                                                          new MockBranch("master")
                                                          {
-                                                             new MockCommit
+                                                             new MockMergeCommit
                                                              {
                                                                  MessageEx = "Merge branch 'release-0.2.0'",
                                                                  CommitterEx = 3.Seconds().Ago().ToSignature()
@@ -144,7 +144,7 @@ public class FeatureBranchTests
                                                      {
                                                          new MockBranch("master")
                                                          {
-                                                             new MockCommit
+                                                             new MockMergeCommit
                                                              {
                                                                  MessageEx = "Merge branch 'release-0.2.0'",
                                                                  CommitterEx = 4.Seconds().Ago().ToSignature()
@@ -205,7 +205,7 @@ public class FeatureBranchTests
                                                      {
                                                          new MockBranch("master")
                                                          {
-                                                             new MockCommit
+                                                             new MockMergeCommit
                                                              {
                                                                  MessageEx = "Merge branch 'release-0.2.0'",
                                                                  CommitterEx = 4.Seconds().Ago().ToSignature()

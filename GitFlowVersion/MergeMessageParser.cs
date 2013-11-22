@@ -1,12 +1,21 @@
 namespace GitFlowVersion
 {
     using System.Linq;
+    using LibGit2Sharp;
 
     public class MergeMessageParser
     {
-        public static bool TryParse(string message, out string versionPart)
+        public static bool TryParse(Commit mergeCommit, out string versionPart)
         {
             versionPart = null;
+
+            if (mergeCommit.Parents.Count() < 2)
+            {
+                return false;
+            }
+
+            string message = mergeCommit.Message;
+
             string trimmed;
             if (message.StartsWith("Merge branch 'hotfix-"))
             {
