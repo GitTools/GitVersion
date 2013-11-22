@@ -57,13 +57,21 @@ namespace GitFlowVersion
             {
                 var name = namedArguments[index];
                 var value = namedArguments[index + 1];
-                if (name == "-l" || name == "/l")
+                if (IsSwitch("l", name))
                 {
                     arguments.LogFilePath = value;
                     continue;
                 }
+
+                if (IsSwitch("c", name))
+                {
+                    arguments.ContinuaCIVariablePrefix = value;
+                    continue;
+                }
+
                 throw new ErrorException(string.Format("Could not parse command line parameter '{0}'.", name));
             }
+
             return arguments;
         }
 
@@ -74,6 +82,21 @@ namespace GitFlowVersion
                 var message = string.Format("Could not parse arguments: '{0}'.", string.Join(" ", commandLineArguments));
                 throw new ErrorException(message);
             }
+        }
+
+        static bool IsSwitch(string switchName, string value)
+        {
+            if (value.StartsWith("-"))
+            {
+                value = value.Remove(0, 1);
+            }
+
+            if (value.StartsWith("/"))
+            {
+                value = value.Remove(0, 1);
+            }
+
+            return (string.Equals(switchName, value));
         }
 
         static bool IsHelp(string singleArgument)

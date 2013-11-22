@@ -1,10 +1,10 @@
 namespace GitFlowVersion
 {
+    using GitFlowVersion.Integration;
     using LibGit2Sharp;
 
     public static class BranchClassifier
     {
-
         public static bool IsHotfix(this Branch branch)
         {
             return branch.Name.StartsWith("hotfix-") || branch.Name.StartsWith("hotfix/");
@@ -42,7 +42,21 @@ namespace GitFlowVersion
 
         public static bool IsPullRequest(this Branch branch)
         {
-            return branch.CanonicalName.Contains("/pull/") || TeamCity.IsBuildingAPullRequest();
+            if (branch.CanonicalName.Contains("/pull/"))
+            {
+                return true;
+            }
+
+            var integrationManager = IntegrationManager.Default();
+            foreach (var integration in integrationManager.Integrations)
+            {
+                if (integration.IsBuildingPullRequest())
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

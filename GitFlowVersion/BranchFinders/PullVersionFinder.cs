@@ -1,5 +1,6 @@
 namespace GitFlowVersion
 {
+    using GitFlowVersion.Integration;
     using LibGit2Sharp;
 
     class PullVersionFinder
@@ -15,19 +16,23 @@ namespace GitFlowVersion
                 Repository = Repository,
                 OlderThan = Commit.When(),
             };
-            var versionFromMaster = versionOnMasterFinder
-                .Execute();
+            var versionFromMaster = versionOnMasterFinder.Execute();
 
-            string suffix;
-            if (TeamCity.IsBuildingAPullRequest())
+            string suffix = null;
+
+            var integrationManager = IntegrationManager.Default();
+            foreach (var integration in integrationManager.Integrations)
             {
-                suffix = TeamCity.CurrentPullRequestNo().ToString();
+                if (integration.IsBuildingPullRequest())
+                {
+                    suffix = integration.CurrentPullRequestNo().ToString();
+                }
             }
-            else
+
+            if (string.IsNullOrWhiteSpace(suffix))
             {
                 suffix = PullBranch.CanonicalName.Substring(PullBranch.CanonicalName.IndexOf("/pull/") + 6);
             }
-
 
             return new VersionAndBranch
             {
