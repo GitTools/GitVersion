@@ -5,6 +5,7 @@
     using System.IO;
     using System.Linq;
     using GitFlowVersion;
+    using GitFlowVersion.Integration;
     using Microsoft.Build.Framework;
     using Microsoft.Build.Utilities;
     using Logger = GitFlowVersion.Logger;
@@ -38,8 +39,7 @@
                 var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
                 if (string.IsNullOrEmpty(gitDirectory))
                 {
-                    //TODO: TeamCity.IsRunningInBuildAgent is leaking implementation details should abstract it
-                    if (TeamCity.IsRunningInBuildAgent()) //fail the build if we're on a TC build agent
+                    if (IntegrationManager.Default().IsRunningInBuildAgent()) //fail the build if we're on a build agent
                     {
                         // ReSharper disable once StringLiteralTypo
                         this.LogError("Failed to find .git directory on agent. Please make sure agent checkout mode is enabled for you VCS roots - http://confluence.jetbrains.com/display/TCD8/VCS+Checkout+Mode");
@@ -58,7 +58,7 @@
                 }
                 var versionAndBranch = VersionCache.GetVersion(gitDirectory);
 
-                WriteTeamCityParameters(versionAndBranch);
+                WriteIntegrationParameters(versionAndBranch);
                 CreateTempAssemblyInfo(versionAndBranch);
 
                 return true;
@@ -79,11 +79,15 @@
             }
         }
 
-        void WriteTeamCityParameters(VersionAndBranch versionAndBranch)
+        void WriteIntegrationParameters(VersionAndBranch versionAndBranch)
         {
-            foreach (var buildParameters in TeamCity.GenerateBuildLogOutput(versionAndBranch))
+            var integrationManager = IntegrationManager.Default();
+            foreach (var integration in integrationManager.Integrations)
             {
-                this.LogWarning(buildParameters);
+                foreach (var buildParameters in integration.GenerateBuildLogOutput(versionAndBranch))
+                {
+                    this.LogWarning(buildParameters);
+                }
             }
         }
 

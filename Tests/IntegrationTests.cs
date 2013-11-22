@@ -154,7 +154,7 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Stability);
             Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Version.Suffix);
-            Debug.WriteLine(TeamCityVersionBuilder.GenerateBuildVersion(version));
+            Debug.WriteLine(new TeamCityVersionBuilder().GenerateBuildVersion(version));
             
         }
     }

@@ -1,17 +1,12 @@
-﻿namespace GitFlowVersion
+﻿namespace GitFlowVersion.VersionBuilders
 {
     using System;
 
-    class TeamCityVersionBuilder
+    public abstract class VersionBuilderBase : IVersionBuilder
     {
-        public static string GenerateBuildVersion(VersionAndBranch versionAndBranch)
-        {
-            var versionString = CreateVersionString(versionAndBranch);
+        public abstract string GenerateBuildVersion(VersionAndBranch versionAndBranch);
 
-            return string.Format("##teamcity[buildNumber '{0}']", versionString);
-        }
-
-        public static string CreateVersionString(VersionAndBranch versionAndBranch)
+        public virtual string CreateVersionString(VersionAndBranch versionAndBranch)
         {
             var prereleaseString = "";
 
@@ -52,8 +47,5 @@
             return string.Format("{0}.{1}.{2}{3}", versionAndBranch.Version.Major, versionAndBranch.Version.Minor,
                 versionAndBranch.Version.Patch, prereleaseString);
         }
-
-
     }
-
 }

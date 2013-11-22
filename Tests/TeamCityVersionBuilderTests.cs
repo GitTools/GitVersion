@@ -17,7 +17,9 @@ public class TeamCityVersionBuilderTests
                                                  Stability = Stability.Unstable
                                              }
                                };
-        var tcVersion = TeamCityVersionBuilder.GenerateBuildVersion(versionAndBranch);
+
+        var versionBuilder = new TeamCityVersionBuilder();
+        var tcVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
         Assert.AreEqual("##teamcity[buildNumber '0.0.0-Unstable4']", tcVersion);
     }
 
@@ -34,7 +36,9 @@ public class TeamCityVersionBuilderTests
                                                  Stability = Stability.Unstable
                                              }
                                };
-        var tcVersion = TeamCityVersionBuilder.GenerateBuildVersion(versionAndBranch);
+
+        var versionBuilder = new TeamCityVersionBuilder();
+        var tcVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
         Assert.AreEqual("##teamcity[buildNumber '0.0.0-Unstable4.6']", tcVersion);
     }
 
@@ -50,7 +54,9 @@ public class TeamCityVersionBuilderTests
                                                  Stability = Stability.Beta,
                                              }
                                };
-        var tcVersion = TeamCityVersionBuilder.GenerateBuildVersion(versionAndBranch);
+
+        var versionBuilder = new TeamCityVersionBuilder();
+        var tcVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
         Assert.AreEqual("##teamcity[buildNumber '0.0.0-Beta4']", tcVersion);
     }
 
@@ -67,7 +73,9 @@ public class TeamCityVersionBuilderTests
                                                  Stability = Stability.Beta,
                                              }
                                };
-        var tcVersion = TeamCityVersionBuilder.GenerateBuildVersion(versionAndBranch);
+
+        var versionBuilder = new TeamCityVersionBuilder();
+        var tcVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
         Assert.AreEqual("##teamcity[buildNumber '0.0.0-Beta4.8']", tcVersion);
     }
 
@@ -83,7 +91,9 @@ public class TeamCityVersionBuilderTests
                                                  PreReleasePartOne = 4
                                              }
                                };
-        var tcVersion = TeamCityVersionBuilder.GenerateBuildVersion(versionAndBranch);
+
+        var versionBuilder = new TeamCityVersionBuilder();
+        var tcVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
         Assert.AreEqual("##teamcity[buildNumber '0.0.0-Beta4']", tcVersion);
     }
 
@@ -100,7 +110,9 @@ public class TeamCityVersionBuilderTests
                                                  PreReleasePartTwo = 7,
                                              }
                                };
-        var tcVersion = TeamCityVersionBuilder.GenerateBuildVersion(versionAndBranch);
+
+        var versionBuilder = new TeamCityVersionBuilder();
+        var tcVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
         Assert.AreEqual("##teamcity[buildNumber '0.0.0-Beta4.7']", tcVersion);
     }
 
@@ -118,7 +130,9 @@ public class TeamCityVersionBuilderTests
                                                  Stability = Stability.Unstable
                                              }
                                };
-        var tcVersion = TeamCityVersionBuilder.GenerateBuildVersion(versionAndBranch);
+
+        var versionBuilder = new TeamCityVersionBuilder();
+        var tcVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
         Assert.AreEqual("##teamcity[buildNumber '0.0.0-PullRequest-1571']", tcVersion);
     }
 
@@ -137,7 +151,9 @@ public class TeamCityVersionBuilderTests
                                                  Stability = Stability.Unstable
                                              }
                                };
-        var tcVersion = TeamCityVersionBuilder.GenerateBuildVersion(versionAndBranch);
+
+        var versionBuilder = new TeamCityVersionBuilder();
+        var tcVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
         Assert.AreEqual("##teamcity[buildNumber '0.0.0-Feature-AFeature-TheSha']", tcVersion);
     }
 
@@ -154,10 +170,9 @@ public class TeamCityVersionBuilderTests
                                                  PreReleasePartTwo = 131231232 //ignored
                                              }
                                };
-        var tcVersion = TeamCityVersionBuilder.GenerateBuildVersion(versionAndBranch);
+
+        var versionBuilder = new TeamCityVersionBuilder();
+        var tcVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
         Assert.AreEqual("##teamcity[buildNumber '0.0.0']", tcVersion);
     }
-
-
-
 }

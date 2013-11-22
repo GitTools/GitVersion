@@ -2,74 +2,24 @@ namespace GitFlowVersion
 {
     using System;
 
-    class ShortVersionParser
+    public class ShortVersionParser
     {
-
         public static void Parse(string versionString, out int major, out int minor, out int patch)
         {
-            var strings = versionString.Split('.');
-            if (strings.Length != 3)
+            if (!TryParse(versionString, out major, out minor, out patch))
             {
                 Throw(versionString);
             }
-            if (!int.TryParse(strings[0], out major))
-            {
-                Throw(versionString);
-            }
-
-            if (!int.TryParse(strings[1], out minor))
-            {
-                Throw(versionString);
-            }
-
-            if (!int.TryParse(strings[2], out patch))
-            {
-                Throw(versionString);
-            }
-
         }
 
         public static bool TryParseMajorMinor(string versionString, out int major, out int minor)
         {
-            major = 0;
-            minor = 0;
-            var strings = versionString.Split('.');
-            if (strings.Length == 2)
-            {
-                if (!int.TryParse(strings[0], out major))
-                {
-                    return false;
-                }
+            int patch = 0;
 
-                if (!int.TryParse(strings[1], out minor))
-                {
-                    return false;
-                }
-                return true;
-            }
+            TryParse(versionString, out major, out minor, out patch);
 
-
-            if (strings.Length == 3)
-            {
-                if (!int.TryParse(strings[0], out major))
-                {
-                    return false;
-                }
-
-                if (!int.TryParse(strings[1], out minor))
-                {
-                    return false;
-                }
-                int patch;
-                if (!int.TryParse(strings[2], out patch))
-                {
-                    return false;
-                }
-                return patch == 0;
-            }
-
-
-            return false;
+            // Note: during scanning of master we only want the last major / minor, not the patch, so patch must be zero
+            return patch == 0;
         }
 
         public static bool TryParse(string versionString, out int major, out int minor, out int patch)
@@ -78,7 +28,7 @@ namespace GitFlowVersion
             minor = 0;
             patch = 0;
             var strings = versionString.Split('.');
-            if (strings.Length != 3)
+            if (strings.Length < 2)
             {
                 return false;
             }
@@ -92,9 +42,12 @@ namespace GitFlowVersion
                 return false;
             }
 
-            if (!int.TryParse(strings[2], out patch))
+            if (strings.Length >= 3)
             {
-                return false;
+                if (!int.TryParse(strings[2], out patch))
+                {
+                    return false;
+                }
             }
 
             return true;
@@ -105,5 +58,4 @@ namespace GitFlowVersion
             throw new Exception(string.Format("Could not parse version from '{0}' expected 'major.minor.patch'", versionString));
         }
     }
-
 }
