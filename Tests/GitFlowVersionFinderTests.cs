@@ -191,4 +191,46 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             Assert.AreEqual(1, version.PreReleasePartOne);
         }
     }
+
+    [Test]
+    public void RequiresALocalMasterBranch()
+    {
+        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        using (var repo = new Repository(repoPath))
+        {
+            repo.Branches["feature/one"].Checkout();
+
+            repo.Branches.Remove("master");
+
+            var gfvf = new GitFlowVersionFinder
+            {
+                Repository = repo,
+                Branch = repo.Head,
+                Commit = repo.Head.Tip
+            };
+
+            Assert.Throws<ErrorException>(() => gfvf.FindVersion());
+        }
+    }
+
+    [Test]
+    public void RequiresALocalDevelopBranch()
+    {
+        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        using (var repo = new Repository(repoPath))
+        {
+            repo.Branches["feature/one"].Checkout();
+
+            repo.Branches.Remove("develop");
+
+            var gfvf = new GitFlowVersionFinder
+            {
+                Repository = repo,
+                Branch = repo.Head,
+                Commit = repo.Head.Tip
+            };
+
+            Assert.Throws<ErrorException>(() => gfvf.FindVersion());
+        }
+    }
 }

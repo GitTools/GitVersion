@@ -10,6 +10,8 @@ namespace GitFlowVersion
 
         public VersionAndBranch FindVersion()
         {
+            EnsureMainTopologyConstraints();
+
             if (Branch.IsMaster())
             {
                 return new MasterVersionFinder
@@ -72,6 +74,22 @@ namespace GitFlowVersion
                        Repository = Repository,
                        FeatureBranch = Branch
                    }.FindVersion();
+        }
+
+        private void EnsureMainTopologyConstraints()
+        {
+            EnsureLocalBranchExists("master");
+            EnsureLocalBranchExists("develop");
+        }
+
+        private void EnsureLocalBranchExists(string branchName)
+        {
+            if (Repository.Branches[branchName] != null)
+            {
+                return;
+            }
+
+            throw new ErrorException(string.Format("This repository doesn't contain a branch named '{0}'. Please create one.", branchName));
         }
     }
 }

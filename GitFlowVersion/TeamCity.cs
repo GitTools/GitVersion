@@ -77,6 +77,20 @@
             using (var repo = new Repository(gitDirectory))
             {
                 EnsureOnlyOneRemoteIsDefined(repo);
+                CreateMissingLocalBranchesFromRemoteTrackingOnes(repo);
+            }
+        }
+
+        private static void CreateMissingLocalBranchesFromRemoteTrackingOnes(Repository repo)
+        {
+            var remoteName = repo.Network.Remotes.Single().Name;
+            var prefix = string.Format("refs/remotes/{0}/", remoteName);
+
+            foreach (var remoteTrackingReference in repo.Refs.FromGlob(prefix + "*"))
+            {
+                string localCanonicalName = "refs/heads/" + remoteTrackingReference.CanonicalName.Substring(prefix.Length);
+
+                repo.Refs.Add(localCanonicalName, new ObjectId(remoteTrackingReference.TargetIdentifier), true);
             }
         }
 
