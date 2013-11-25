@@ -264,4 +264,35 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             Assert.Throws<ErrorException>(() => gfvf.FindVersion());
         }
     }
+
+    [Test]
+    public void AHotfixBranchIsRequiredToBranchOffOfMasterBranch()
+    {
+        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        using (var repo = new Repository(repoPath))
+        {
+            const string branchName = "hotfix/1.0.2";
+
+            // Create a new unborn hotfix branch sharing no history with "master"
+            repo.Refs.UpdateTarget(repo.Refs.Head.CanonicalName, "refs/heads/" + branchName);
+
+            string path = Path.Combine(repo.Info.WorkingDirectory, "README");
+            File.AppendAllText(path, "Hotfix\n");
+
+            repo.Index.Stage(path);
+            Signature sign = Constants.SignatureNow();
+            repo.Commit("hotfix unborn", sign, sign);
+
+            var feature = repo.Branches[branchName];
+
+            var gfvf = new GitFlowVersionFinder
+            {
+                Repository = repo,
+                Branch = feature,
+                Commit = feature.Tip
+            };
+
+            Assert.Throws<ErrorException>(() => gfvf.FindVersion());
+        }
+    }
 }

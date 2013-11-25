@@ -99,6 +99,12 @@ namespace Tests.Lg2sHelper
         {
             directories.Add(directoryPath);
         }
+
+        protected static void AddOneCommitToHead(Repository repo, string type)
+        {
+            var sign = Constants.SignatureNow();
+            repo.Commit(type + " commit", sign, sign);
+        }
     }
 
     public interface IPostTestDirectoryRemover

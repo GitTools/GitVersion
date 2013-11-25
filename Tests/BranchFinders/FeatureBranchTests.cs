@@ -49,7 +49,7 @@ public class FeatureBranchTests : Lg2sHelperBase
             repo.Branches.Add("featureWithOneCommit", "develop~").Checkout();
             var branchingCommit = repo.Head.Tip;
 
-            AddOneCommitToHead(repo);
+            AddOneCommitToHead(repo, "feature");
 
             var featureBranch = repo.Branches["featureWithOneCommit"];
 
@@ -84,8 +84,8 @@ public class FeatureBranchTests : Lg2sHelperBase
             repo.Branches.Add("featureWithOneCommit", "develop~").Checkout();
             var branchingCommit = repo.Head.Tip;
 
-            AddOneCommitToHead(repo);
-            AddOneCommitToHead(repo);
+            AddOneCommitToHead(repo, "feature");
+            AddOneCommitToHead(repo, "feature");
 
             var featureBranch = repo.Branches["featureWithOneCommit"];
 
@@ -120,8 +120,8 @@ public class FeatureBranchTests : Lg2sHelperBase
             repo.Branches.Add("featureWithOneCommit", "develop~").Checkout();
             var branchingCommit = repo.Head.Tip;
 
-            AddOneCommitToHead(repo);
-            AddOneCommitToHead(repo);
+            AddOneCommitToHead(repo, "feature");
+            AddOneCommitToHead(repo, "feature");
 
             var featureBranch = repo.Branches["featureWithOneCommit"];
 
@@ -144,12 +144,6 @@ public class FeatureBranchTests : Lg2sHelperBase
             Assert.AreEqual(branchingCommit.Prefix(), version.Version.Suffix, "Suffix should be the develop commit it was branched from");
             Assert.AreEqual(0, version.Version.PreReleasePartOne, "Prerelease is always 0 for feature branches");
         }
-    }
-
-    private static void AddOneCommitToHead(Repository repo)
-    {
-        var sign = Constants.SignatureNow();
-        repo.Commit("feature commit", sign, sign);
     }
 
     private static VersionAndBranch RetrieveMasterVersion(Repository repo)
