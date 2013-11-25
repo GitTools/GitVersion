@@ -83,7 +83,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         AssertVersionFromLocal("refs/heads/develop");
     }
 
-    [Ignore("FeatureVersionFinder.cs relies on the ref log to find the first commit of a feature branch")]
+    [Test]
     public void TeamCityExecutionMode_CanDetermineTheVersionFromAFetchedFeature()
     {
         AssertVersionFromFetchedRemote("refs/heads/feature/one");
