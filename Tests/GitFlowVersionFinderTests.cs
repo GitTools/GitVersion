@@ -2,7 +2,7 @@
 using LibGit2Sharp;
 using NUnit.Framework;
 using System.IO;
-using Tests.Lg2sHelper;
+using Tests.Helpers;
 
 [TestFixture]
 public class GitFlowVersionFinderTests : Lg2sHelperBase

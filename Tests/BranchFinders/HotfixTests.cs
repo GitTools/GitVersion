@@ -1,7 +1,7 @@
 using GitFlowVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
-using Tests.Lg2sHelper;
+using Tests.Helpers;
 
 [TestFixture]
 public class HotfixTests : Lg2sHelperBase

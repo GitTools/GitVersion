@@ -6,7 +6,7 @@ using GitFlowVersionTask;
 using LibGit2Sharp;
 using Microsoft.Build.Framework;
 using NUnit.Framework;
-using Tests.Lg2sHelper;
+using Tests.Helpers;
 
 [TestFixture]
 public class UpdateAssemblyInfoTests : Lg2sHelperBase
@@ -111,6 +111,42 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         Assert.False(task.Execute());
     }
 
+    [Test]
+    public void TeamCityExecutionMode_CanDetermineTheVersionFromAPullRequest()
+    {
+        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        CreateFakePullRequest(repoPath, "1735");
+
+        AssertVersionFromFetchedRemote(repoPath, "refs/pull/1735/merge");
+    }
+
+    private static void CreateFakePullRequest(string repoPath, string issueNumber)
+    {
+        // Fake an upstream repository as it would appear on GitHub
+        // will pull requests stored under the refs/pull/ namespace
+        using (var repo = new Repository(repoPath))
+        {
+            var branch = repo.CreateBranch("temp", repo.Branches["develop"].Tip);
+            branch.Checkout();
+
+            AddOneCommitToHead(repo, "code");
+            AddOneCommitToHead(repo, "code");
+
+            var c = repo.Head.Tip;
+            repo.Refs.Add(string.Format("refs/pull/{0}/head", issueNumber), c.Id);
+
+            Signature sign = Constants.SignatureNow();
+            var m = repo.ObjectDatabase.CreateCommit(
+                string.Format("Merge pull request #{0} from nulltoken/ntk/fix/{0}", issueNumber)
+                , sign, sign, c.Tree, new[] {repo.Branches["develop"].Tip, c});
+
+            repo.Refs.Add(string.Format("refs/pull/{0}/merge", issueNumber), m.Id);
+
+            repo.Checkout("develop");
+            repo.Branches.Remove("temp");
+        }
+    }
+
     private void AssertVersionFromFetchedRemote(string repositoryPath, string monitoredReference)
     {
         string wd = FakeTeamCityFetchAndCheckout(repositoryPath, monitoredReference);
@@ -159,7 +195,20 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
 
         using (var repo = new Repository(repoPath))
         {
-            Remote remote = repo.Network.Remotes.Add("origin", upstreamRepository, "+refs/heads/*:refs/remotes/origin/*");
+            Remote remote;
+
+            if (monitoredReference.StartsWith("refs/pull/"))
+            {
+                remote = repo.Network.Remotes.Add("origin", upstreamRepository,
+                    string.Format("+{0}:{0}", monitoredReference));
+
+                repo.Network.Fetch(remote);
+
+                repo.Config.Unset("remote.origin.url");
+                repo.Config.Unset("remote.origin.fetch");
+            }
+
+            remote = repo.Network.Remotes.Add("origin", upstreamRepository, "+refs/heads/*:refs/remotes/origin/*");
 
             repo.Network.Fetch(remote);
 
@@ -180,6 +229,11 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
             }
 
             repo.Checkout(src);
+
+            if (monitoredReference.StartsWith("refs/pull/"))
+            {
+                repo.Refs.Remove(monitoredReference);
+            }
         }
 
         return repoPath;

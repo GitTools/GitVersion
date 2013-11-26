@@ -1,6 +1,6 @@
 ﻿// From https://github.com/libgit2/libgit2sharp/blob/f43d558/LibGit2Sharp.Tests/TestHelpers/BaseFixture.cs
 
-namespace Tests.Lg2sHelper
+namespace Tests.Helpers
 {
     using System;
     using System.Collections.Generic;

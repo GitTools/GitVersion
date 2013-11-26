@@ -2,10 +2,12 @@ using System;
 using FluentDate;
 using FluentDateTimeOffset;
 using GitFlowVersion;
+using LibGit2Sharp;
 using NUnit.Framework;
+using Tests.Helpers;
 
 [TestFixture]
-public class PullBranchTests
+public class PullBranchTests : Lg2sHelperBase
 {
 
     [Test, Ignore("Not valid since Github wont allow empty pulls")]
@@ -14,197 +16,108 @@ public class PullBranchTests
 
     }
 
+
     [Test]
-    public void Pull_branch_with_1_commit()
+    public void Invalid_pull_branch_name()
     {
-        var branchingCommit = new MockMergeCommit
-                              {
-                                  MessageEx = "Merge branch 'release-0.2.0'",
-                                  CommitterEx = 2.Seconds().Ago().ToSignature(),
-                              };
-        var commitOneOnFeature = new MockCommit
-                                 {
-                                     CommitterEx = 1.Seconds().Ago().ToSignature(),
-                                 };
-        var pullBranch = new MockBranch("2","/pull/2")
+        AssertInvalidPullBranchName("pull");
+        AssertInvalidPullBranchName("pull/1735");
+        AssertInvalidPullBranchName("pull/merge");
+        AssertInvalidPullBranchName("pull//merge");
+        AssertInvalidPullBranchName("pull///merge");
+        AssertInvalidPullBranchName("pull/1735/a/merge");
+        AssertInvalidPullBranchName("pull/1735-a/merge");
+        AssertInvalidPullBranchName("pull/-1735/merge");
+        AssertInvalidPullBranchName("pull/1735.1/merge");
+        AssertInvalidPullBranchName("pull/merge/1735");
+        AssertInvalidPullBranchName("merge/1735/pull");
+    }
+
+    private void AssertInvalidPullBranchName(string invalidfakePullBranchName)
+    {
+        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        using (var repo = new Repository(repoPath))
+        {
+            var branchingCommit = repo.Branches["develop"].Tip;
+            var pullBranch = repo.Branches.Add(invalidfakePullBranchName, branchingCommit);
+
+            var finder = new PullVersionFinder()
                          {
-                             branchingCommit,
-                             commitOneOnFeature,
+                             Repository = repo,
+                             Commit = branchingCommit,
+                             PullBranch = pullBranch,
                          };
 
-        var finder = new PullVersionFinder
-                     {
-                         Repository = new MockRepository
-                                      {
-                                          Branches = new MockBranchCollection
-                                                     {
-                                                         pullBranch,
-                                                         new MockBranch("master")
-                                                         {
-                                                             branchingCommit,
-                                                         }
-                                                     }
-                                      },
-                         Commit = commitOneOnFeature,
-                         PullBranch = pullBranch,
-                     };
-        var version = finder.FindVersion();
-        Assert.AreEqual(0, version.Version.Major);
-        Assert.AreEqual(3, version.Version.Minor, "Minor should be master.Minor+1");
-        Assert.AreEqual(0, version.Version.Patch);
-        Assert.AreEqual(Stability.Unstable, version.Version.Stability);
-        Assert.AreEqual(BranchType.PullRequest, version.BranchType);
-        Assert.AreEqual("2", version.Version.Suffix); //in TC the branch name will be the pull request no eg 1154
-        Assert.AreEqual(0, version.Version.PreReleasePartOne, "Prerelease is always 0 for pull requests");
+            Assert.Throws<ErrorException>(() => finder.FindVersion());
+        }
     }
 
     [Test]
-    public void Pull_branch_with_1_commit_TeamCity()
+    public void Pull_branch_with_1_commit()
     {
-        FakeTeamCityPullrequest(2);
-        var branchingCommit = new MockMergeCommit
-                              {
-                                  MessageEx = "Merge branch 'release-0.2.0'",
-                                  CommitterEx = 2.Seconds().Ago().ToSignature(),
-                              };
-        var commitOneOnFeature = new MockCommit
-                                 {
-                                     CommitterEx = 1.Seconds().Ago().ToSignature(),
-                                 };
-        var pullBranch = new MockBranch("pull_no_2")
+        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        using (var repo = new Repository(repoPath))
+        {
+            // Create a pull request branch from the parent of current develop tip
+            repo.Branches.Add("pull/1735/merge", "develop~").Checkout();
+
+            AddOneCommitToHead(repo, "code");
+
+            var pullBranch = repo.Head;
+
+            var finder = new PullVersionFinder
                          {
-                             branchingCommit,
-                             commitOneOnFeature
+                             Repository = repo,
+                             Commit = pullBranch.Tip,
+                             PullBranch = pullBranch,
                          };
 
-        var finder = new PullVersionFinder
-                     {
-                         Repository = new MockRepository
-                                      {
-                                          Branches = new MockBranchCollection
-                                                     {
-                                                         pullBranch,
-                                                         new MockBranch("master")
-                                                         {
-                                                             branchingCommit,
-                                                         }
-                                                     }
-                                      },
-                         Commit = commitOneOnFeature,
-                         PullBranch = pullBranch,
-                     };
-        var version = finder.FindVersion();
-        Assert.AreEqual(0, version.Version.Major);
-        Assert.AreEqual(3, version.Version.Minor, "Minor should be master.Minor+1");
-        Assert.AreEqual(0, version.Version.Patch);
-        Assert.AreEqual(Stability.Unstable, version.Version.Stability);
-        Assert.AreEqual(BranchType.PullRequest, version.BranchType);
-        Assert.AreEqual("2", version.Version.Suffix); //in TC the branch name will be the pull request no eg 1154
-        Assert.AreEqual(0, version.Version.PreReleasePartOne, "Prerelease is always 0 for pull requests");
+            var version = finder.FindVersion();
+
+            var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
+
+            Assert.AreEqual(masterVersion.Version.Major, version.Version.Major);
+            Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
+            Assert.AreEqual(0, version.Version.Patch);
+            Assert.AreEqual(Stability.Unstable, version.Version.Stability);
+            Assert.AreEqual(BranchType.PullRequest, version.BranchType);
+            Assert.AreEqual("1735", version.Version.Suffix, "Suffix should be the develop commit it was branched from");
+            Assert.AreEqual(0, version.Version.PreReleasePartOne, "Prerelease is always 0 for pull requests");
+        }
     }
 
     [Test]
     public void Pull_branch_with_2_commits()
     {
-        var branchingCommit = new MockMergeCommit
+        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        using (var repo = new Repository(repoPath))
         {
-            MessageEx = "Merge branch 'release-0.2.0'",
-            CommitterEx = 2.Seconds().Ago().ToSignature(),
-        };
-        var commitTwoOnFeature = new MockCommit
-        {
-            CommitterEx = 1.Seconds().Ago().ToSignature(),
-        };
-        var pullBranch = new MockBranch("2", "/pull/2")
-                         {
-                             branchingCommit,
-                             new MockCommit(),
-                             commitTwoOnFeature
-                         };
+            // Create a pull request branch from the parent of current develop tip
+            repo.Branches.Add("pull/1735/merge", "develop~").Checkout();
 
-        var finder = new PullVersionFinder
-        {
-            Repository = new MockRepository
+            AddOneCommitToHead(repo, "code");
+            AddOneCommitToHead(repo, "more code");
+
+            var pullBranch = repo.Head;
+
+            var finder = new PullVersionFinder
             {
-                Branches = new MockBranchCollection
-                                                     {
-                                                         pullBranch,
-                                                         new MockBranch("master")
-                                                         {
-                                                             branchingCommit,
-                                                         }
-                                                     }
-            },
-            Commit = commitTwoOnFeature,
-            PullBranch = pullBranch,
-        };
-        var version = finder.FindVersion();
-        Assert.AreEqual(0, version.Version.Major);
-        Assert.AreEqual(3, version.Version.Minor, "Minor should be master.Minor+1");
-        Assert.AreEqual(0, version.Version.Patch);
-        Assert.AreEqual(Stability.Unstable, version.Version.Stability);
-        Assert.AreEqual(BranchType.PullRequest, version.BranchType);
-        Assert.AreEqual("2", version.Version.Suffix); //in TC the branch name will be the pull request no eg 1154
-        Assert.AreEqual(0, version.Version.PreReleasePartOne, "Prerelease is always 0 for pull requests");
-    }
+                Repository = repo,
+                Commit = pullBranch.Tip,
+                PullBranch = pullBranch,
+            };
 
-    [Test]
-    public void Pull_branch_with_2_commits_TeamCity()
-    {
-        FakeTeamCityPullrequest(2);
+            var version = finder.FindVersion();
 
-        var branchingCommit = new MockMergeCommit
-                              {
-                                  MessageEx = "Merge branch 'release-0.2.0'",
-                                  CommitterEx = 2.Seconds().Ago().ToSignature(),
-                              };
-        var commitTwoOnFeature = new MockCommit
-                                 {
-                                     CommitterEx = 1.Seconds().Ago().ToSignature(),
-                                 };
-        var pullBranch = new MockBranch("pull_no_2")
-                         {
-                             branchingCommit,
-                             new MockCommit(),
-                             commitTwoOnFeature
-                         };
+            var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
-        var finder = new PullVersionFinder
-                     {
-                         Repository = new MockRepository
-                                      {
-                                          Branches = new MockBranchCollection
-                                                     {
-                                                         pullBranch,
-                                                         new MockBranch("master")
-                                                         {
-                                                             branchingCommit,
-                                                         }
-                                                     }
-                                      },
-                         Commit = commitTwoOnFeature,
-                         PullBranch = pullBranch,
-                     };
-        var version = finder.FindVersion();
-        Assert.AreEqual(0, version.Version.Major);
-        Assert.AreEqual(3, version.Version.Minor, "Minor should be master.Minor+1");
-        Assert.AreEqual(0, version.Version.Patch);
-        Assert.AreEqual(Stability.Unstable, version.Version.Stability);
-        Assert.AreEqual(BranchType.PullRequest, version.BranchType);
-        Assert.AreEqual("2", version.Version.Suffix); //in TC the branch name will be the pull request no eg 1154
-        Assert.AreEqual(0, version.Version.PreReleasePartOne, "Prerelease is always 0 for pull requests");
-    }
-
-    [TearDown]
-    public void ClearTeamCityPullrequest()
-    {
-        Environment.SetEnvironmentVariable("teamcity.build.vcs.branch.NServiceBusCore_GitHubNServiceBus", "", EnvironmentVariableTarget.Process);
-    }
-
-
-    void FakeTeamCityPullrequest(int pullNumber)
-    {
-        Environment.SetEnvironmentVariable("teamcity.build.vcs.branch.NServiceBusCore_GitHubNServiceBus",
-            string.Format("refs/pull/{0}/merge", pullNumber), EnvironmentVariableTarget.Process);
+            Assert.AreEqual(masterVersion.Version.Major, version.Version.Major);
+            Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
+            Assert.AreEqual(0, version.Version.Patch);
+            Assert.AreEqual(Stability.Unstable, version.Version.Stability);
+            Assert.AreEqual(BranchType.PullRequest, version.BranchType);
+            Assert.AreEqual("1735", version.Version.Suffix, "Suffix should be the develop commit it was branched from");
+            Assert.AreEqual(0, version.Version.PreReleasePartOne, "Prerelease is always 0 for pull requests");
+        }
     }
 }

@@ -2,7 +2,7 @@ using System.Linq;
 using GitFlowVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
-using Tests.Lg2sHelper;
+using Tests.Helpers;
 
 [TestFixture]
 public class FeatureBranchTests : Lg2sHelperBase
@@ -27,7 +27,7 @@ public class FeatureBranchTests : Lg2sHelperBase
 
             var version = finder.FindVersion();
 
-            var masterVersion = RetrieveMasterVersion(repo);
+            var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
             Assert.AreEqual(masterVersion.Version.Major, version.Version.Major);
             Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
@@ -62,7 +62,7 @@ public class FeatureBranchTests : Lg2sHelperBase
 
             var version = finder.FindVersion();
 
-            var masterVersion = RetrieveMasterVersion(repo);
+            var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
             Assert.AreEqual(masterVersion.Version.Major, version.Version.Major);
             Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
@@ -98,7 +98,7 @@ public class FeatureBranchTests : Lg2sHelperBase
 
             var version = finder.FindVersion();
 
-            var masterVersion = RetrieveMasterVersion(repo);
+            var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
             Assert.AreEqual(masterVersion.Version.Major, version.Version.Major);
             Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
@@ -134,7 +134,7 @@ public class FeatureBranchTests : Lg2sHelperBase
 
             var version = finder.FindVersion();
 
-            var masterVersion = RetrieveMasterVersion(repo);
+            var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
             Assert.AreEqual(masterVersion.Version.Major, version.Version.Major);
             Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
@@ -144,16 +144,5 @@ public class FeatureBranchTests : Lg2sHelperBase
             Assert.AreEqual(branchingCommit.Prefix(), version.Version.Suffix, "Suffix should be the develop commit it was branched from");
             Assert.AreEqual(0, version.Version.PreReleasePartOne, "Prerelease is always 0 for feature branches");
         }
-    }
-
-    private static VersionAndBranch RetrieveMasterVersion(Repository repo)
-    {
-        var masterFinder = new MasterVersionFinder
-                           {
-                               Repository = repo,
-                               Commit = repo.Branches["master"].Tip
-                           };
-        var masterVersion = masterFinder.FindVersion();
-        return masterVersion;
     }
 }
