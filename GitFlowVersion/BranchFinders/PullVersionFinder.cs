@@ -10,6 +10,8 @@ namespace GitFlowVersion
 
         public VersionAndBranch FindVersion()
         {
+            EnsurePullBranchShareACommonAncestorWithDevelop();
+
             var versionOnMasterFinder = new VersionOnMasterFinder
             {
                 Repository = Repository,
@@ -75,6 +77,23 @@ namespace GitFlowVersion
             }
 
             return true;
+        }
+
+        private void EnsurePullBranchShareACommonAncestorWithDevelop()
+        {
+            var ancestor = Repository.Commits.FindCommonAncestor(
+                Repository.Branches["develop"].Tip,
+                PullBranch.Tip);
+
+            if (ancestor != null)
+            {
+                return;
+            }
+
+            throw new ErrorException(
+                "A pull request branch is expected to branch off of 'develop'. "
+                + string.Format("However, branch 'develop' and '{0}' do not share a common ancestor."
+                , PullBranch.Name));
         }
     }
 }

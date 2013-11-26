@@ -245,12 +245,7 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             // Create a new unborn feature branch sharing no history with "develop"
             repo.Refs.UpdateTarget(repo.Refs.Head.CanonicalName, "refs/heads/" + branchName);
 
-            string path = Path.Combine(repo.Info.WorkingDirectory, "README");
-            File.AppendAllText(path, "Feature\n");
-
-            repo.Index.Stage(path);
-            Signature sign = Constants.SignatureNow();
-            repo.Commit("feature unborn", sign, sign);
+            AddOneCommitToHead(repo, "feature");
 
             var feature = repo.Branches[branchName];
 
@@ -276,12 +271,7 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             // Create a new unborn hotfix branch sharing no history with "master"
             repo.Refs.UpdateTarget(repo.Refs.Head.CanonicalName, "refs/heads/" + branchName);
 
-            string path = Path.Combine(repo.Info.WorkingDirectory, "README");
-            File.AppendAllText(path, "Hotfix\n");
-
-            repo.Index.Stage(path);
-            Signature sign = Constants.SignatureNow();
-            repo.Commit("hotfix unborn", sign, sign);
+            AddOneCommitToHead(repo, "hotfix");
 
             var feature = repo.Branches[branchName];
 
@@ -290,6 +280,32 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
                 Repository = repo,
                 Branch = feature,
                 Commit = feature.Tip
+            };
+
+            Assert.Throws<ErrorException>(() => gfvf.FindVersion());
+        }
+    }
+
+    [Test]
+    public void APullRequestBranchIsRequiredToBranchOffOfDevelopBranch()
+    {
+        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        using (var repo = new Repository(repoPath))
+        {
+            const string branchName = "pull/1735/merge";
+
+            // Create a new unborn pull request branch sharing no history with "develop"
+            repo.Refs.UpdateTarget(repo.Refs.Head.CanonicalName, "refs/heads/" + branchName);
+
+            AddOneCommitToHead(repo, "code");
+
+            var pull = repo.Branches[branchName];
+
+            var gfvf = new GitFlowVersionFinder
+            {
+                Repository = repo,
+                Branch = pull,
+                Commit = pull.Tip
             };
 
             Assert.Throws<ErrorException>(() => gfvf.FindVersion());
