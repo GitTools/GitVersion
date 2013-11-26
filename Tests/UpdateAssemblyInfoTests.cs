@@ -95,6 +95,22 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         AssertVersionFromLocal("refs/heads/feature/one");
     }
 
+    [Test]
+    public void StandardExecutionMode_CannotDetermineTheVersionFromADetachedHead()
+    {
+        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+
+        using (var repo = new Repository(repoPath))
+        {
+            repo.Checkout(repo.Head.Tip);
+            Assert.IsTrue(repo.Info.IsHeadDetached);
+        }
+
+        var task = BuildTask(repoPath);
+
+        Assert.False(task.Execute());
+    }
+
     private void AssertVersionFromFetchedRemote(string repositoryPath, string monitoredReference)
     {
         string wd = FakeTeamCityFetchAndCheckout(repositoryPath, monitoredReference);
