@@ -96,6 +96,7 @@
     <Compile Include="BranchFinders\DevelopTests.cs" />
     <Compile Include="Helpers\FindersHelper.cs" />
     <Compile Include="GitFlowVersionFinderTests.cs" />
+    <Compile Include="Helpers\LibGit2SharpExtensions.cs" />
     <Compile Include="JsonVersionBuilderTests.cs" />
     <Compile Include="GitDirFinderTests.cs" />
     <Compile Include="Helpers\Lg2sHelperBase.cs" />

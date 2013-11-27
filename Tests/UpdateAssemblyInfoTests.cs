@@ -184,7 +184,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
 
         using (var repo = new Repository(repoPath))
         {
-            repo.Checkout(repo.Branches[monitoredReference]);
+            repo.Branches[monitoredReference].ForceCheckout();
         }
         return repoPath;
     }
