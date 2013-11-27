@@ -5,8 +5,8 @@
     public interface IIntegration
     {
         bool IsRunningInBuildAgent();
-        bool IsBuildingPullRequest();
-        int CurrentPullRequestNo();
+        //bool IsBuildingPullRequest();
+        //int CurrentPullRequestNo();
         IEnumerable<string> GenerateBuildLogOutput(VersionAndBranch versionAndBranch);
     }
 }

@@ -31,20 +31,19 @@
         public UpdateAssemblyInfo() : this(false)
         { }
 
-        private readonly Func<bool> teamCityContextDetector = TeamCity.IsRunningInBuildAgent;
+        private readonly Func<bool> integrationContextDetector = IntegrationManager.Default().IsRunningInBuildAgent;
 
-        public UpdateAssemblyInfo(bool honorFakedTeamCityContext)
+        public UpdateAssemblyInfo(bool honorFakedIntegrationContext)
         {
-            if (honorFakedTeamCityContext)
+            if (honorFakedIntegrationContext)
             {
-                teamCityContextDetector = IsRunningInFakeBuildAgent;
-                return;
+                integrationContextDetector = IsRunningInFakeBuildAgent;
             }
         }
 
         private bool IsRunningInFakeBuildAgent()
         {
-            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GitFlowVersion.Fake.TEAMCITY_VERSION"));
+            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GitFlowVersion.Fake.INTEGRATION_VERSION"));
         }
 
         public override bool Execute()
@@ -56,12 +55,12 @@
                 Logger.WriteInfo = this.LogInfo;
 
                 //TODO: TeamCity.IsRunningInBuildAgent is leaking implementation details should abstract it
-                bool isRunningOnATeamCityBuildAgent = teamCityContextDetector();
+                bool isRunningOnBuildAgent = integrationContextDetector();
 
                 var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
                 if (string.IsNullOrEmpty(gitDirectory))
                 {
-                    if (isRunningOnATeamCityBuildAgent) //fail the build if we're on a TC build agent
+                    if (isRunningOnBuildAgent) //fail the build if we're on a TC build agent
                     {
                         // ReSharper disable once StringLiteralTypo
                         this.LogError("Failed to find .git directory on agent. Please make sure agent checkout mode is enabled for you VCS roots - http://confluence.jetbrains.com/display/TCD8/VCS+Checkout+Mode");
@@ -79,9 +78,9 @@
                     return false;
                 }
 
-                if (isRunningOnATeamCityBuildAgent)
+                if (isRunningOnBuildAgent)
                 {
-                    TeamCity.NormalizeGitDirectory(gitDirectory);
+                    GitHelper.NormalizeGitDirectory(gitDirectory);
                 }
 
                 var versionAndBranch = VersionCache.GetVersion(gitDirectory);

@@ -8,7 +8,7 @@
         {
             var versionString = CreateVersionString(versionAndBranch);
 
-            return string.Format("##continuaci[buildNumber '{0}']", versionString);
+            return string.Format("@@continua[setBuildVersion value='{0}']", versionString);
         }
     }
 }

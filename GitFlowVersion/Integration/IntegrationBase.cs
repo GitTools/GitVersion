@@ -6,9 +6,9 @@
     {
         public abstract bool IsRunningInBuildAgent();
 
-        public abstract bool IsBuildingPullRequest();
+        //public abstract bool IsBuildingPullRequest();
 
-        public abstract int CurrentPullRequestNo();
+        //public abstract int CurrentPullRequestNo();
 
         public virtual IEnumerable<string> GenerateBuildLogOutput(VersionAndBranch versionAndBranch)
         {
