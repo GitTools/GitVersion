@@ -1,5 +1,6 @@
 namespace GitFlowVersion
 {
+    using System;
     using LibGit2Sharp;
 
     public class GitFlowVersionFinder
@@ -10,6 +11,8 @@ namespace GitFlowVersion
 
         public VersionAndBranch FindVersion()
         {
+            EnsureMainTopologyConstraints();
+
             if (Branch.IsMaster())
             {
                 return new MasterVersionFinder
@@ -72,6 +75,36 @@ namespace GitFlowVersion
                        Repository = Repository,
                        FeatureBranch = Branch
                    }.FindVersion();
+        }
+
+        private void EnsureMainTopologyConstraints()
+        {
+            EnsureLocalBranchExists("master");
+            EnsureLocalBranchExists("develop");
+            EnsureHeadIsNotDetached();
+        }
+
+        private void EnsureHeadIsNotDetached()
+        {
+            if (!Branch.CanonicalName.Equals("(no branch)", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            throw new ErrorException(
+                string.Format("It looks like the branch being examined is a detached Head pointing to commit '{0}'. "
+                + "Without a proper branch name GITFlowVersion cannot determine the build version."
+                , Branch.Tip.Id.ToString(7)));
+        }
+
+        private void EnsureLocalBranchExists(string branchName)
+        {
+            if (Repository.Branches[branchName] != null)
+            {
+                return;
+            }
+
+            throw new ErrorException(string.Format("This repository doesn't contain a branch named '{0}'. Please create one.", branchName));
         }
     }
 }

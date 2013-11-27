@@ -1,0 +1,6 @@
+0000000000000000000000000000000000000000 83099d424b1618a2019b22d234d9ebc8d0254fc1 nulltoken <emeric.fermas@gmail.com> 1384690054 +0100	branch: Created from 83099d424b1618a2019b22d234d9ebc8d0254fc1
+83099d424b1618a2019b22d234d9ebc8d0254fc1 147f85a5617bcb5794a51b51c3891f34c9fd004d nulltoken <emeric.fermas@gmail.com> 1384690156 +0100	commit: feature one
+147f85a5617bcb5794a51b51c3891f34c9fd004d e0dbe2b9e664f1dcbccffae5b54be943f23aa5d0 nulltoken <emeric.fermas@gmail.com> 1384690393 +0100	commit: feature one
+e0dbe2b9e664f1dcbccffae5b54be943f23aa5d0 147f85a5617bcb5794a51b51c3891f34c9fd004d nulltoken <emeric.fermas@gmail.com> 1384690500 +0100	reset: moving to 147f85a5617bcb5794a51b51c3891f34c9fd004d
+147f85a5617bcb5794a51b51c3891f34c9fd004d 6e6ea6acb480aa7eb7c437e4178840503dd26c13 nulltoken <emeric.fermas@gmail.com> 1384690934 +0100	commit: feature one
+6e6ea6acb480aa7eb7c437e4178840503dd26c13 368b815d3ae7bf6d301ff760a8d674bb736d6905 nulltoken <emeric.fermas@gmail.com> 1384691912 +0100	commit: feature one

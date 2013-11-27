@@ -42,21 +42,7 @@ namespace GitFlowVersion
 
         public static bool IsPullRequest(this Branch branch)
         {
-            if (branch.CanonicalName.Contains("/pull/"))
-            {
-                return true;
-            }
-
-            var integrationManager = IntegrationManager.Default();
-            foreach (var integration in integrationManager.Integrations)
-            {
-                if (integration.IsBuildingPullRequest())
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return branch.CanonicalName.Contains("/pull/");
         }
     }
 }

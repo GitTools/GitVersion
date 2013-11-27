@@ -12,6 +12,8 @@ namespace GitFlowVersion
 
         public VersionAndBranch FindVersion()
         {
+            EnsureHotfixBranchShareACommonAncestorWithMaster();
+
             var versionString = HotfixBranch.GetHotfixSuffix();
 
             int patch;
@@ -62,6 +64,23 @@ namespace GitFlowVersion
             var message = string.Format("There must be a tag on a hotfix branch with a version the same as the version from the branch name i.e. {0}.{1}.{2}", major, minor, patch);
             throw new Exception(message);
 
+        }
+
+        private void EnsureHotfixBranchShareACommonAncestorWithMaster()
+        {
+            var ancestor = Repository.Commits.FindCommonAncestor(
+                Repository.Branches["master"].Tip,
+                HotfixBranch.Tip);
+
+            if (ancestor != null)
+            {
+                return;
+            }
+
+            throw new ErrorException(
+                "A hotfix branch is expected to branch off of 'master'. "
+                + string.Format("However, branch 'master' and '{0}' do not share a common ancestor."
+                , HotfixBranch.Name));
         }
     }
 }

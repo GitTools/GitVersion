@@ -11,7 +11,7 @@ namespace GitFlowVersion
         public VersionPoint Execute()
         {
             var masterBranch = Repository
-                .GetBranch("master");
+                .Branches["master"];
             foreach (var commit in masterBranch.CommitsPriorToThan(OlderThan))
             {
                 foreach (var tag in Repository.TagsByDate(commit))

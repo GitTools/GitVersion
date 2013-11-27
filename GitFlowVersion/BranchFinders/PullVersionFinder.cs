@@ -11,28 +11,17 @@ namespace GitFlowVersion
 
         public VersionAndBranch FindVersion()
         {
+            EnsurePullBranchShareACommonAncestorWithDevelop();
+
             var versionOnMasterFinder = new VersionOnMasterFinder
             {
                 Repository = Repository,
                 OlderThan = Commit.When(),
             };
-            var versionFromMaster = versionOnMasterFinder.Execute();
+            var versionFromMaster = versionOnMasterFinder
+                .Execute();
 
-            string suffix = null;
-
-            var integrationManager = IntegrationManager.Default();
-            foreach (var integration in integrationManager.Integrations)
-            {
-                if (integration.IsBuildingPullRequest())
-                {
-                    suffix = integration.CurrentPullRequestNo().ToString();
-                }
-            }
-
-            if (string.IsNullOrWhiteSpace(suffix))
-            {
-                suffix = PullBranch.CanonicalName.Substring(PullBranch.CanonicalName.IndexOf("/pull/") + 6);
-            }
+            var suffix = ExtractIssueNumber();
 
             return new VersionAndBranch
             {
@@ -49,6 +38,63 @@ namespace GitFlowVersion
                     Suffix = suffix
                 }
             };
+        }
+
+        private string ExtractIssueNumber()
+        {
+            const string prefix = "/pull/";
+            int start = PullBranch.CanonicalName.IndexOf(prefix, System.StringComparison.Ordinal);
+            int end = PullBranch.CanonicalName.LastIndexOf("/merge", PullBranch.CanonicalName.Length - 1,
+                System.StringComparison.Ordinal);
+
+            string issueNumber = null;
+
+            if (start != -1 && end != -1 && start + prefix.Length <= end)
+            {
+                start += prefix.Length;
+                issueNumber = PullBranch.CanonicalName.Substring(start, end - start);
+            }
+
+            if (!LooksLikeAValidPullRequestNumber(issueNumber))
+            {
+                throw new ErrorException(string.Format("Unable to extract pull request number from '{0}'.",
+                    PullBranch.CanonicalName));
+            }
+
+            return issueNumber;
+        }
+
+        private bool LooksLikeAValidPullRequestNumber(string issueNumber)
+        {
+            if (string.IsNullOrEmpty(issueNumber))
+            {
+                return false;
+            }
+
+            uint res;
+            if (!uint.TryParse(issueNumber, out res))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private void EnsurePullBranchShareACommonAncestorWithDevelop()
+        {
+            var ancestor = Repository.Commits.FindCommonAncestor(
+                Repository.Branches["develop"].Tip,
+                PullBranch.Tip);
+
+            if (ancestor != null)
+            {
+                return;
+            }
+
+            throw new ErrorException(
+                "A pull request branch is expected to branch off of 'develop'. "
+                + string.Format("However, branch 'develop' and '{0}' do not share a common ancestor."
+                , PullBranch.Name));
         }
     }
 }
