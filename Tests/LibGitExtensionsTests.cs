@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using FluentDate;
 using FluentDateTimeOffset;
 using GitFlowVersion;
@@ -89,5 +90,44 @@ public class LibGitExtensionsTests
         var version = repo.NewestSemVerTag(new MockCommit());
 
         Assert.IsNull(version);
+    }
+
+    [Test]
+    public void TagsByDate_HonorChainedAnnotatedTags()
+    {
+        var c = new MockCommit();
+        
+        var col = new MockTagCollection();
+
+        var first = new MockTag
+                      {
+                          NameEx = "first",
+                          TargetEx = c,
+                          AnnotationEx = new MockTagAnnotation
+                                         {
+                                             TaggerEx = new Signature("a", "", 5.Seconds().Ago()),
+                                             TargetEx = c,
+                                         }
+                      };
+
+        col.Add(first);
+
+        col.Add(new MockTag
+                {
+                    NameEx = "second",
+                    TargetEx = first.Annotation,
+                    AnnotationEx = new MockTagAnnotation
+                    {
+                        TaggerEx = new Signature("a", "", 2.Seconds().Ago()),
+                        TargetEx = c,
+                    }
+
+                });
+
+        var repo = new MockRepository { Tags = col };
+
+        var tags = repo.TagsByDate(c);
+
+        Assert.AreEqual("second", tags.First().Name);
     }
 }

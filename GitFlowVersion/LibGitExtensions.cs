@@ -38,7 +38,7 @@ namespace GitFlowVersion
         public static IEnumerable<Tag> TagsByDate(this IRepository repository, Commit commit)
         {
             return repository.Tags
-                .Where(tag => tag.Target == commit)
+                .Where(tag => tag.PeeledTarget() == commit)
                 .OrderByDescending(tag =>
                 {
                     if (tag.Annotation != null)
@@ -50,6 +50,17 @@ namespace GitFlowVersion
                 });
         }
 
+        public static GitObject PeeledTarget(this Tag tag)
+        {
+            GitObject target = tag.Target;
+
+            while (target is TagAnnotation)
+            {
+                target = ((TagAnnotation) (target)).Target;
+            }
+
+            return target;
+        }
 
         public static IEnumerable<Commit> CommitsPriorToThan(this Branch branch, DateTimeOffset olderThan)
         {
