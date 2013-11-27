@@ -18,9 +18,11 @@ namespace GitFlowVersion
 
         public VersionAndBranch FindVersion()
         {
+            var ancestor = FindCommonAncestorWithDevelop();
+
             var firstCommitOnBranch = FindFirstCommitOnBranchFunc();
 
-            if (firstCommitOnBranch == Commit.Id) //no commits on branch. use develop approach
+            if (firstCommitOnBranch == null) //no commits on branch. use develop approach
             {
                 var developVersionFinder = new DevelopVersionFinder
                 {
@@ -52,15 +54,45 @@ namespace GitFlowVersion
                     Patch = 0,
                     Stability = Stability.Unstable,
                     PreReleasePartOne = 0,
-                    Suffix = firstCommitOnBranch.Prefix()
+                    Suffix = ancestor.Prefix()
                 }
             };
+        }
+
+        private Commit FindCommonAncestorWithDevelop()
+        {
+            var ancestor = Repository.Commits.FindCommonAncestor(
+                Repository.Branches["develop"].Tip,
+                FeatureBranch.Tip);
+
+            if (ancestor != null)
+            {
+                return ancestor;
+            }
+
+            throw new ErrorException(
+                "A feature branch is expected to branch off of 'develop'. " 
+                + string.Format("However, branch 'develop' and '{0}' do not share a common ancestor."
+                , FeatureBranch.Name));
         }
 
 
         public ObjectId FindFirstCommitOnBranch()
         {
-            return Repository.Refs.Log(FeatureBranch.CanonicalName).Last().To;
+            var filter = new CommitFilter
+                         {
+                             Since = FeatureBranch,
+                             Until = Repository.Branches["develop"]
+                         };
+
+            var commits = Repository.Commits.QueryBy(filter).ToList();
+
+            if (commits.Count == 0)
+            {
+                return null;
+            }
+
+            return commits.Last().Id;
         }
     }
 

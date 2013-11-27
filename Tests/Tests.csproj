@@ -94,13 +94,17 @@
     <Compile Include="AssemblyLocation.cs" />
     <Compile Include="BranchClassifierTests.cs" />
     <Compile Include="BranchFinders\DevelopTests.cs" />
+    <Compile Include="Helpers\FindersHelper.cs" />
+    <Compile Include="GitFlowVersionFinderTests.cs" />
     <Compile Include="JsonVersionBuilderTests.cs" />
     <Compile Include="GitDirFinderTests.cs" />
+    <Compile Include="Helpers\Lg2sHelperBase.cs" />
     <Compile Include="LibGitExtensionsTests.cs" />
     <Compile Include="Mocks\MockMergeCommit.cs" />
     <Compile Include="NugetVersionBuilderTests.cs" />
     <Compile Include="SemanticVersionParserTests.cs" />
     <Compile Include="ShortVersionParserTests.cs" />
+    <Compile Include="UpdateAssemblyInfoTests.cs" />
     <Compile Include="VersionOnMasterFinderTests.cs" />
     <Compile Include="Mocks\SignatureBuilder.cs" />
     <Compile Include="Mocks\MockCommitLog.cs" />
@@ -135,6 +139,10 @@
     <Content Include="JsonVersionBuilderTests.Json.approved.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GitFlowVersionTask\GitFlowVersionTask.csproj">
+      <Project>{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}</Project>
+      <Name>GitFlowVersionTask</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GitFlowVersion\GitFlowVersion.csproj">
       <Project>{C3578A7B-09A6-4444-9383-0DEAFA4958BD}</Project>
       <Name>GitFlowVersion</Name>

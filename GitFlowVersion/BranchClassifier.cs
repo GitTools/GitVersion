@@ -42,7 +42,7 @@ namespace GitFlowVersion
 
         public static bool IsPullRequest(this Branch branch)
         {
-            return branch.CanonicalName.Contains("/pull/") || TeamCity.IsBuildingAPullRequest();
+            return branch.CanonicalName.Contains("/pull/");
         }
     }
 }
