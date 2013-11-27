@@ -27,6 +27,24 @@
         [Output]
         public string AssemblyInfoTempFilePath { get; set; }
 
+        public UpdateAssemblyInfo() : this(false)
+        { }
+
+        private readonly Func<bool> teamCityContextDetector = TeamCity.IsRunningInBuildAgent;
+
+        public UpdateAssemblyInfo(bool honorFakedTeamCityContext)
+        {
+            if (honorFakedTeamCityContext)
+            {
+                teamCityContextDetector = IsRunningInFakeBuildAgent;
+                return;
+            }
+        }
+
+        private bool IsRunningInFakeBuildAgent()
+        {
+            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GitFlowVersion.Fake.TEAMCITY_VERSION"));
+        }
 
         public override bool Execute()
         {
@@ -37,7 +55,7 @@
                 Logger.WriteInfo = this.LogInfo;
 
                 //TODO: TeamCity.IsRunningInBuildAgent is leaking implementation details should abstract it
-                bool isRunningOnATeamCityBuildAgent = TeamCity.IsRunningInBuildAgent();
+                bool isRunningOnATeamCityBuildAgent = teamCityContextDetector();
 
                 var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
                 if (string.IsNullOrEmpty(gitDirectory))

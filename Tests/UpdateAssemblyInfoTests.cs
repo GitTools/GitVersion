@@ -241,7 +241,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
 
     private static UpdateAssemblyInfo BuildTask(string workingDirectory)
     {
-        var task = new UpdateAssemblyInfo
+        var task = new UpdateAssemblyInfo(true)
         {
             BuildEngine = new MockBuildEngine(),
             SolutionDirectory = workingDirectory,
@@ -252,7 +252,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
 
     private class FakeTeamCityContext : IDisposable
     {
-        const string VariableName = "TEAMCITY_VERSION";
+        const string VariableName = "GitFlowVersion.Fake.TEAMCITY_VERSION";
 
         public FakeTeamCityContext()
         {
