@@ -198,7 +198,7 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
         string repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
-            repo.Branches["feature/one"].Checkout();
+            repo.Branches["feature/one"].ForceCheckout();
 
             repo.Branches.Remove("master");
 
@@ -219,7 +219,7 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
         string repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
-            repo.Branches["feature/one"].Checkout();
+            repo.Branches["feature/one"].ForceCheckout();
 
             repo.Branches.Remove("develop");
 
