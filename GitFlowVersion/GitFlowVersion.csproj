@@ -62,7 +62,10 @@
     <Compile Include="Helpers\IntegrationHelper.cs" />
     <Compile Include="Integration\IntegrationBase.cs" />
     <Compile Include="Integration\IntegrationManager.cs" />
+    <Compile Include="Integration\Interfaces\AnalysisResult.cs" />
     <Compile Include="Integration\Interfaces\IIntegration.cs" />
+    <Compile Include="Integration\Interfaces\ILogger.cs" />
+    <Compile Include="Integration\LocalIntegration.cs" />
     <Compile Include="VersionBuilders\Interfaces\IVersionBuilder.cs" />
     <Compile Include="JsonVersionBuilder.cs" />
     <Compile Include="NugetVersionBuilder.cs" />
