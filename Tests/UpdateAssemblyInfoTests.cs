@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Linq;
+using GitFlowVersion;
+using GitFlowVersion.Integration;
 using GitFlowVersionTask;
 using LibGit2Sharp;
 using Microsoft.Build.Framework;
@@ -14,7 +16,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     [Test]
     public void StandardExecutionMode_LackOfAValidGitDirectoryDoesNotPreventExecution()
     {
-        var task = BuildTask(Path.GetTempPath());
+        var task = BuildTaskInLocalContext(Path.GetTempPath());
 
         Assert.True(task.Execute());
     }
@@ -22,7 +24,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     [Test]
     public void TeamCityExecutionMode_RequiresAValidGitDirectoryToOperate()
     {
-        var task = BuildTask(Path.GetTempPath());
+        var task = BuildTaskInTeamCityContext(Path.GetTempPath());
 
         using (new FakeTeamCityContext())
         {
@@ -38,7 +40,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
             Assert.AreEqual(0, repo.Network.Remotes.Count());
         }
 
-        var task = BuildTask(ASBMTestRepoWorkingDirPath);
+        var task = BuildTaskInLocalContext(ASBMTestRepoWorkingDirPath);
 
         Assert.True(task.Execute());
     }
@@ -51,7 +53,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
             Assert.AreEqual(0, repo.Network.Remotes.Count());
         }
 
-        var task = BuildTask(ASBMTestRepoWorkingDirPath);
+        var task = BuildTaskInTeamCityContext(ASBMTestRepoWorkingDirPath);
 
         using (new FakeTeamCityContext())
         {
@@ -106,7 +108,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
             Assert.IsTrue(repo.Info.IsHeadDetached);
         }
 
-        var task = BuildTask(repoPath);
+        var task = BuildTaskInLocalContext(repoPath);
 
         Assert.False(task.Execute());
     }
@@ -151,7 +153,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     {
         string wd = FakeTeamCityFetchAndCheckout(repositoryPath, monitoredReference);
 
-        var task = BuildTask(wd);
+        var task = BuildTaskInTeamCityContext(wd);
 
         using (new FakeTeamCityContext())
         {
@@ -168,7 +170,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     {
         var repoPath = CheckoutLocal(repositoryPath, monitoredReference);
 
-        var task = BuildTask(repoPath);
+        var task = BuildTaskInLocalContext(repoPath);
 
         Assert.True(task.Execute());
     }
@@ -239,15 +241,33 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         return repoPath;
     }
 
-    private static UpdateAssemblyInfo BuildTask(string workingDirectory)
+    private static UpdateAssemblyInfo BuildTaskInLocalContext(string workingDirectory)
     {
-        var task = new UpdateAssemblyInfo(true)
+        return BuildTask(new LocalIntegration(), workingDirectory);
+    }
+
+    private static UpdateAssemblyInfo BuildTaskInTeamCityContext(string workingDirectory)
+    {
+        return BuildTask(new FakeTeamCityIntegration(), workingDirectory);
+    }
+
+    private static UpdateAssemblyInfo BuildTask(IIntegration integration, string workingDirectory)
+    {
+        var task = new UpdateAssemblyInfo(integration)
         {
             BuildEngine = new MockBuildEngine(),
             SolutionDirectory = workingDirectory,
             CompileFiles = new ITaskItem[] { },
         };
         return task;
+    }
+
+    private class FakeTeamCityIntegration : TeamCity
+    {
+        public override bool CanApplyToCurrentContext()
+        {
+            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GitFlowVersion.Fake.TEAMCITY_VERSION"));
+        }
     }
 
     private class FakeTeamCityContext : IDisposable

@@ -1,6 +1,6 @@
 ﻿namespace GitFlowVersion.ContinuaCi
 {
-    using GitFlowVersion.VersionBuilders;
+    using VersionBuilders;
 
     class ContinuaCiVersionBuilder : VersionBuilderBase
     {

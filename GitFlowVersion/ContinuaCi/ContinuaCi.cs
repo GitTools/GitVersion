@@ -1,10 +1,17 @@
 ﻿namespace GitFlowVersion.Integration.ContinuaCI
 {
+    using Interfaces;
+
     public class ContinuaCi : IntegrationBase
     {
-        public override bool IsRunningInBuildAgent()
+        public override bool CanApplyToCurrentContext()
         {
             return false;
+        }
+
+        public override AnalysisResult PerformPreProcessingSteps(ILogger logger, string gitDirectory)
+        {
+            throw new System.NotImplementedException();
         }
 
         protected override string GenerateBuildParameter(string name, string value)

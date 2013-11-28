@@ -4,11 +4,12 @@
 
     public abstract class IntegrationBase : IIntegration
     {
-        public abstract bool IsRunningInBuildAgent();
+        public abstract bool CanApplyToCurrentContext();
+        public abstract AnalysisResult PerformPreProcessingSteps(Interfaces.ILogger logger, string gitDirectory);
 
         public virtual IEnumerable<string> GenerateBuildLogOutput(VersionAndBranch versionAndBranch)
         {
-            if (!IsRunningInBuildAgent())
+            if (!CanApplyToCurrentContext())
             {
                 return new string[] { };
             }
