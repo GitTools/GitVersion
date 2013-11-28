@@ -24,7 +24,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     {
         var task = BuildTask(Path.GetTempPath());
 
-        using (new FakeIntegrationContext())
+        using (new FakeTeamCityContext())
         {
             Assert.False(task.Execute());
         }
@@ -53,7 +53,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
 
         var task = BuildTask(ASBMTestRepoWorkingDirPath);
 
-        using (new FakeIntegrationContext())
+        using (new FakeTeamCityContext())
         {
             Assert.False(task.Execute());
         }
@@ -153,7 +153,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
 
         var task = BuildTask(wd);
 
-        using (new FakeIntegrationContext())
+        using (new FakeTeamCityContext())
         {
             Assert.True(task.Execute());
         }
@@ -250,11 +250,11 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         return task;
     }
 
-    private class FakeIntegrationContext : IDisposable
+    private class FakeTeamCityContext : IDisposable
     {
-        const string VariableName = "GitFlowVersion.Fake.INTEGRATION_VERSION";
+        const string VariableName = "GitFlowVersion.Fake.TEAMCITY_VERSION";
 
-        public FakeIntegrationContext()
+        public FakeTeamCityContext()
         {
             Assert.False(IsEnvironmentVariableSet());
             Environment.SetEnvironmentVariable(VariableName, "FAKE");

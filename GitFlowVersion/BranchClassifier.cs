@@ -1,6 +1,5 @@
 namespace GitFlowVersion
 {
-    using GitFlowVersion.Integration;
     using LibGit2Sharp;
 
     static class BranchClassifier

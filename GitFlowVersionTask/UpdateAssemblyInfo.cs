@@ -43,7 +43,7 @@
 
         private bool IsRunningInFakeBuildAgent()
         {
-            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GitFlowVersion.Fake.INTEGRATION_VERSION"));
+            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GitFlowVersion.Fake.TEAMCITY_VERSION"));
         }
 
         public override bool Execute()
