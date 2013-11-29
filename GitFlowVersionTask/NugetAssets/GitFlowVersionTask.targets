@@ -32,6 +32,8 @@
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)..\GitFlowVersionTask.dll" />
     <None Include="$(MSBuildThisFileDirectory)..\GitFlowVersionTask.pdb" />
+    <None Include="$(MSBuildThisFileDirectory)..\GitFlowVersion.exe" />
+    <None Include="$(MSBuildThisFileDirectory)..\GitFlowVersion.pdb" />
   </ItemGroup>
 
 
