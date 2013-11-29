@@ -3,6 +3,6 @@ using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle("GitFlowVersion")]
 [assembly: AssemblyProduct("GitFlowVersion")]
-[assembly: AssemblyVersion("0.10.3")]
-[assembly: AssemblyFileVersion("0.10.3")]
+[assembly: AssemblyVersion("0.11.0")]
+[assembly: AssemblyFileVersion("0.11.0")]
 [assembly: InternalsVisibleTo("Tests")]
