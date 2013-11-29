@@ -2,7 +2,7 @@ using GitFlowVersion;
 using NUnit.Framework;
 
 [TestFixture]
-public class TeamCityVersionBuilderTests
+public class ContinuaCiVersionBuilderTests
 {
 
     [Test]
@@ -18,9 +18,9 @@ public class TeamCityVersionBuilderTests
                                              }
                                };
 
-        var versionBuilder = new TeamCityVersionBuilder();
-        var tcVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
-        Assert.AreEqual("##teamcity[buildNumber '0.0.0-Unstable4']", tcVersion);
+        var versionBuilder = new ContinuaCiVersionBuilder();
+        var continuaCiVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
+        Assert.AreEqual("@@continua[setBuildVersion value='0.0.0-Unstable4']", continuaCiVersion);
     }
 
     [Test]
@@ -37,9 +37,9 @@ public class TeamCityVersionBuilderTests
                                              }
                                };
 
-        var versionBuilder = new TeamCityVersionBuilder();
-        var tcVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
-        Assert.AreEqual("##teamcity[buildNumber '0.0.0-Unstable4.6']", tcVersion);
+        var versionBuilder = new ContinuaCiVersionBuilder();
+        var continuaCiVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
+        Assert.AreEqual("@@continua[setBuildVersion value='0.0.0-Unstable4.6']", continuaCiVersion);
     }
 
     [Test]
@@ -55,9 +55,9 @@ public class TeamCityVersionBuilderTests
                                              }
                                };
 
-        var versionBuilder = new TeamCityVersionBuilder();
-        var tcVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
-        Assert.AreEqual("##teamcity[buildNumber '0.0.0-Beta4']", tcVersion);
+        var versionBuilder = new ContinuaCiVersionBuilder();
+        var continuaCiVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
+        Assert.AreEqual("@@continua[setBuildVersion value='0.0.0-Beta4']", continuaCiVersion);
     }
 
     [Test]
@@ -74,9 +74,9 @@ public class TeamCityVersionBuilderTests
                                              }
                                };
 
-        var versionBuilder = new TeamCityVersionBuilder();
-        var tcVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
-        Assert.AreEqual("##teamcity[buildNumber '0.0.0-Beta4.8']", tcVersion);
+        var versionBuilder = new ContinuaCiVersionBuilder();
+        var continuaCiVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
+        Assert.AreEqual("@@continua[setBuildVersion value='0.0.0-Beta4.8']", continuaCiVersion);
     }
 
     [Test]
@@ -92,9 +92,9 @@ public class TeamCityVersionBuilderTests
                                              }
                                };
 
-        var versionBuilder = new TeamCityVersionBuilder();
-        var tcVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
-        Assert.AreEqual("##teamcity[buildNumber '0.0.0-Beta4']", tcVersion);
+        var versionBuilder = new ContinuaCiVersionBuilder();
+        var continuaCiVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
+        Assert.AreEqual("@@continua[setBuildVersion value='0.0.0-Beta4']", continuaCiVersion);
     }
 
     [Test]
@@ -111,9 +111,9 @@ public class TeamCityVersionBuilderTests
                                              }
                                };
 
-        var versionBuilder = new TeamCityVersionBuilder();
-        var tcVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
-        Assert.AreEqual("##teamcity[buildNumber '0.0.0-Beta4.7']", tcVersion);
+        var versionBuilder = new ContinuaCiVersionBuilder();
+        var continuaCiVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
+        Assert.AreEqual("@@continua[setBuildVersion value='0.0.0-Beta4.7']", continuaCiVersion);
     }
 
     [Test]
@@ -131,9 +131,9 @@ public class TeamCityVersionBuilderTests
                                              }
                                };
 
-        var versionBuilder = new TeamCityVersionBuilder();
-        var tcVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
-        Assert.AreEqual("##teamcity[buildNumber '0.0.0-PullRequest-1571']", tcVersion);
+        var versionBuilder = new ContinuaCiVersionBuilder();
+        var continuaCiVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
+        Assert.AreEqual("@@continua[setBuildVersion value='0.0.0-PullRequest-1571']", continuaCiVersion);
     }
 
     [Test]
@@ -152,9 +152,9 @@ public class TeamCityVersionBuilderTests
                                              }
                                };
 
-        var versionBuilder = new TeamCityVersionBuilder();
-        var tcVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
-        Assert.AreEqual("##teamcity[buildNumber '0.0.0-Feature-AFeature-TheSha']", tcVersion);
+        var versionBuilder = new ContinuaCiVersionBuilder();
+        var continuaCiVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
+        Assert.AreEqual("@@continua[setBuildVersion value='0.0.0-Feature-AFeature-TheSha']", continuaCiVersion);
     }
 
     [Test]
@@ -171,8 +171,8 @@ public class TeamCityVersionBuilderTests
                                              }
                                };
 
-        var versionBuilder = new TeamCityVersionBuilder();
-        var tcVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
-        Assert.AreEqual("##teamcity[buildNumber '0.0.0']", tcVersion);
+        var versionBuilder = new ContinuaCiVersionBuilder();
+        var continuaCiVersion = versionBuilder.GenerateBuildVersion(versionAndBranch);
+        Assert.AreEqual("@@continua[setBuildVersion value='0.0.0']", continuaCiVersion);
     }
 }

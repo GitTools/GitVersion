@@ -94,6 +94,7 @@
     <Compile Include="AssemblyLocation.cs" />
     <Compile Include="BranchClassifierTests.cs" />
     <Compile Include="BranchFinders\DevelopTests.cs" />
+    <Compile Include="ContinuaCi\ContinuaCiVersionBuilderTests.cs" />
     <Compile Include="Helpers\FindersHelper.cs" />
     <Compile Include="GitFlowVersionFinderTests.cs" />
     <Compile Include="Helpers\LibGit2SharpExtensions.cs" />
@@ -126,7 +127,7 @@
     <Compile Include="BranchFinders\FeatureBranchTests.cs" />
     <Compile Include="BranchFinders\PullBranchTests.cs" />
     <Compile Include="BranchFinders\ReleaseTests.cs" />
-    <Compile Include="TeamCityVersionBuilderTests.cs" />
+    <Compile Include="TeamCity\TeamCityVersionBuilderTests.cs" />
     <Compile Include="Verifier.cs" />
     <Compile Include="VersionConverter.cs" />
   </ItemGroup>

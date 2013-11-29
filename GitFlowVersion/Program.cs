@@ -14,6 +14,8 @@ namespace GitFlowVersion
             {
                 var arguments = ArgumentParser.ParseArguments(GetArgumentsWithoutExeName());
 
+                GitFlowVersionEnvironment.Initialize(arguments);
+
                 if (arguments.IsHelp)
                 {
                     HelpWriter.Write();

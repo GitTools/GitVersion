@@ -27,8 +27,17 @@
 
         protected override string GenerateBuildParameter(string name, string value)
         {
-            // TODO: Read prefix from command line
-            return string.Format("@@continua[setVariable name='GitFlowVersion.{0}' value='{1}']", name, value);
+            string prefix = GitFlowVersionEnvironment.ContinuaCiVariablePrefix;
+            if (!string.IsNullOrWhiteSpace(prefix))
+            {
+                prefix += ".";
+            }
+            else
+            {
+                prefix = string.Empty;
+            }
+
+            return string.Format("@@continua[setVariable name='GitFlowVersion.{0}{1}' value='{2}']", prefix, name, value);
         }
     }
 }

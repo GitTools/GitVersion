@@ -8,7 +8,7 @@
 
         public virtual string CreateVersionString(VersionAndBranch versionAndBranch)
         {
-            var prereleaseString = "";
+            var prereleaseString = string.Empty;
 
             var stability = versionAndBranch.Version.Stability;
             if (stability == null)
