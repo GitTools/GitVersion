@@ -1,4 +1,4 @@
-﻿namespace GitFlowVersion.Integration.Interfaces
+﻿namespace GitFlowVersion.Integration
 {
     public interface ILogger
     {

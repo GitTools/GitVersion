@@ -14,7 +14,7 @@
     public class UpdateAssemblyInfo : Task
     {
         private readonly IIntegration _integration;
-        private readonly GitFlowVersion.Integration.Interfaces.ILogger _logger;
+        private readonly GitFlowVersion.Integration.ILogger _logger;
 
         public bool SignAssembly { get; set; }
 

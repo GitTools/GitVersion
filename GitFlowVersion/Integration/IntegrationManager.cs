@@ -2,8 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-    using ContinuaCI;
-
+    
     public class IntegrationManager
     {
         private static readonly IntegrationManager _default = new IntegrationManager();

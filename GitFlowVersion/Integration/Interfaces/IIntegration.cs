@@ -1,7 +1,6 @@
 ﻿namespace GitFlowVersion.Integration
 {
     using System.Collections.Generic;
-    using Interfaces;
 
     public interface IIntegration
     {

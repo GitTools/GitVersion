@@ -2,7 +2,6 @@
 {
     using System;
     using Integration;
-    using Integration.Interfaces;
 
     public class TeamCity : IntegrationBase
     {

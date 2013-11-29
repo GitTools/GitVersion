@@ -5,7 +5,7 @@
     public abstract class IntegrationBase : IIntegration
     {
         public abstract bool CanApplyToCurrentContext();
-        public abstract AnalysisResult PerformPreProcessingSteps(Interfaces.ILogger logger, string gitDirectory);
+        public abstract AnalysisResult PerformPreProcessingSteps(ILogger logger, string gitDirectory);
 
         public virtual IEnumerable<string> GenerateBuildLogOutput(VersionAndBranch versionAndBranch)
         {

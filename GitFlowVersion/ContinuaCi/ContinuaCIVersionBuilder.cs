@@ -1,4 +1,4 @@
-﻿namespace GitFlowVersion.ContinuaCi
+﻿namespace GitFlowVersion
 {
     using VersionBuilders;
 
