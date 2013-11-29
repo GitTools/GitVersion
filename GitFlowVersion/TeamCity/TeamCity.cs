@@ -2,12 +2,14 @@
 {
     using System;
     using Integration;
+    using Microsoft.Win32;
 
     public class TeamCity : IntegrationBase
     {
         public override bool CanApplyToCurrentContext()
         {
-            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TEAMCITY_VERSION"));
+            var registryKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\VSoft Technologies\\Continua CI Agent");
+            return registryKey != null;
         }
 
         public override AnalysisResult PerformPreProcessingSteps(ILogger logger, string gitDirectory)
