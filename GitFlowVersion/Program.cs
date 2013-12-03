@@ -28,9 +28,33 @@ namespace GitFlowVersion
                     Environment.Exit(1);
                 }
 
-                var json = VersionCache.GetVersion(gitDirectory).ToJson();
+                var versionAndBranch = VersionCache.GetVersion(gitDirectory);
 
-                Console.WriteLine(json);
+                switch (arguments.VersionPart)
+                {
+                    case null: 
+                        Console.WriteLine(versionAndBranch.ToJson()); 
+                        break;
+                    case "nuget":
+                        Console.WriteLine(versionAndBranch.GenerateNugetVersion()); 
+                        break;
+                    case "major":
+                        Console.WriteLine(versionAndBranch.Version.Major);
+                        break;
+                    case "minor":
+                        Console.WriteLine(versionAndBranch.Version.Minor);
+                        break;
+                    case "patch":
+                        Console.WriteLine(versionAndBranch.Version.Patch);
+                        break;
+                    case "long":
+                        Console.WriteLine(versionAndBranch.ToLongString());
+                        break;
+                    case "short":
+                        Console.WriteLine(versionAndBranch.ToShortString());
+                        break;
+                }
+                    
             }
             catch (ErrorException exception)
             {

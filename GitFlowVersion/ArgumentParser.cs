@@ -62,6 +62,12 @@ namespace GitFlowVersion
                     arguments.LogFilePath = value;
                     continue;
                 }
+                if ((name == "-v" || name == "/v") && VersionParts.Contains(value.ToLower()))
+                {
+                    arguments.VersionPart = value.ToLower();
+                    continue;
+                }
+
                 throw new ErrorException(string.Format("Could not parse command line parameter '{0}'.", name));
             }
             return arguments;
@@ -86,5 +92,7 @@ namespace GitFlowVersion
                    (singleArgument == "-help") ||
                    (singleArgument == "-?");
         }
+
+        private static readonly string[] VersionParts = {"major", "minor", "patch", "long", "short", "nuget"};
     }
 }
