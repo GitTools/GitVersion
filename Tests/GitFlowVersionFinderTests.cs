@@ -311,4 +311,23 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             Assert.Throws<ErrorException>(() => gfvf.FindVersion());
         }
     }
+
+    [Test]
+    public void CannotBuildAVersionFromAnBranchWithAnInvalidPrefix()
+    {
+        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        using (var repo = new Repository(repoPath))
+        {
+            repo.Branches.Add("members-only", repo.Head.Tip).ForceCheckout();
+
+            var gfvf = new GitFlowVersionFinder
+            {
+                Repository = repo,
+                Branch = repo.Head,
+                Commit = repo.Head.Tip
+            };
+
+            Assert.Throws<ErrorException>(() => gfvf.FindVersion());
+        }
+    }
 }

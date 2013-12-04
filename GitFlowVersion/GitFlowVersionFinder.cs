@@ -69,12 +69,8 @@ namespace GitFlowVersion
                            FeatureBranch = Branch
                        }.FindVersion();
             }
-            return new FeatureVersionFinder
-                   {
-                       Commit = Commit,
-                       Repository = Repository,
-                       FeatureBranch = Branch
-                   }.FindVersion();
+
+            throw new ErrorException("Branch '{0}' doesn't respect the GitFlowVersion naming convention.");
         }
 
         private void EnsureMainTopologyConstraints()
