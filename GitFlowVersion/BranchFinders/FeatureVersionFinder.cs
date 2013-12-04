@@ -61,10 +61,9 @@ namespace GitFlowVersion
 
         private Commit FindCommonAncestorWithDevelop()
         {
-            var ancestor = Repository.Commits.FindCommonAncestor(
-                Repository.Branches["develop"].Tip,
-                FeatureBranch.Tip);
+            var developBranch = Repository.FindBranch("develop");
 
+            var ancestor = Repository.Commits.FindCommonAncestor(developBranch.Tip, FeatureBranch.Tip);
             if (ancestor != null)
             {
                 return ancestor;
@@ -82,7 +81,7 @@ namespace GitFlowVersion
             var filter = new CommitFilter
                          {
                              Since = FeatureBranch,
-                             Until = Repository.Branches["develop"]
+                             Until = Repository.FindBranch("develop")
                          };
 
             var commits = Repository.Commits.QueryBy(filter).ToList();

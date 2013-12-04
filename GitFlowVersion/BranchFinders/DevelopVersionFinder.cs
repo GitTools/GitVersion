@@ -35,7 +35,7 @@ namespace GitFlowVersion
                                         };
             var versionFromMaster = versionOnMasterFinder.Execute();
 
-            var developBranch = Repository.Branches["develop"];
+            var developBranch = Repository.FindBranch("develop");
             var preReleasePartOne = developBranch.Commits
                 .SkipWhile(x => x != Commit)
                 .TakeWhile(x => x.When() >= versionFromMaster.Timestamp)
@@ -47,7 +47,5 @@ namespace GitFlowVersion
                 PreReleasePartOne = preReleasePartOne
             };
         }
-
-
     }
 }

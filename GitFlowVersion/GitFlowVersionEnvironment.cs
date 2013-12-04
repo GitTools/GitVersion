@@ -12,12 +12,10 @@ namespace GitFlowVersion
         {
             TargetPath = arguments.TargetPath;
             LogFilePath = arguments.LogFilePath;
-            ContinuaCiVariablePrefix = arguments.ContinuaCIVariablePrefix;
         }
 
         public static string TargetPath { get; private set; }
+        public static string TargetBranch { get; private set; }
         public static string LogFilePath { get; private set; }
-
-        public static string ContinuaCiVariablePrefix { get; private set; }
     }
 }

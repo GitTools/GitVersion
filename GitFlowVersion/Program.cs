@@ -21,18 +21,25 @@ namespace GitFlowVersion
                     HelpWriter.Write();
                     return;
                 }
-                ConfigureLogging(arguments);
-                var gitDirectory = GitDirFinder.TreeWalkForGitDir(arguments.TargetPath);
 
-                if (string.IsNullOrEmpty(gitDirectory))
+                ConfigureLogging(arguments);
+
+                var gitPreparer = new GitPreparer(arguments.TargetPath, arguments.TargetUrl, arguments.TargetBranch);
+                var gitDirectory = gitPreparer.Prepare();
+                if (string.IsNullOrWhiteSpace(gitDirectory))
                 {
-                    Console.Error.WriteLine("Could not find .git directory");
+                    Console.Error.WriteLine("Failed to prepare or find the .git directory in path '{0}'", arguments.TargetPath);
                     Environment.Exit(1);
                 }
 
                 var json = VersionCache.GetVersion(gitDirectory).ToJson();
 
                 Console.WriteLine(json);
+
+                if (gitPreparer.IsDynamicGitRepository)
+                {
+                    DeleteHelper.DeleteGitRepository(gitPreparer.DynamicGitRepositoryPath);
+                }
             }
             catch (ErrorException exception)
             {

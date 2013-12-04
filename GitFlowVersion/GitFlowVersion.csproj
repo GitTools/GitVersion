@@ -57,6 +57,8 @@
     <Compile Include="BranchFinders\HotfixVersionFinder.cs" />
     <Compile Include="ContinuaCi\ContinuaCiVersionBuilder.cs" />
     <Compile Include="GitFlowVersionEnvironment.cs" />
+    <Compile Include="GitPreparer.cs" />
+    <Compile Include="Helpers\DeleteHelper.cs" />
     <Compile Include="Helpers\GitHelper.cs" />
     <Compile Include="HelpWriter.cs" />
     <Compile Include="ContinuaCi\ContinuaCi.cs" />

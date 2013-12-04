@@ -57,15 +57,22 @@ namespace GitFlowVersion
             {
                 var name = namedArguments[index];
                 var value = namedArguments[index + 1];
+
                 if (IsSwitch("l", name))
                 {
                     arguments.LogFilePath = value;
                     continue;
                 }
 
-                if (IsSwitch("c", name))
+                if (IsSwitch("u", name))
                 {
-                    arguments.ContinuaCIVariablePrefix = value;
+                    arguments.TargetUrl = value;
+                    continue;
+                }
+
+                if (IsSwitch("b", name))
+                {
+                    arguments.TargetBranch = value;
                     continue;
                 }
 

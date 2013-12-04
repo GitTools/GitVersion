@@ -26,12 +26,12 @@ namespace GitFlowVersion
 
         public static bool IsDevelop(this Branch branch)
         {
-            return branch.Name == "develop";
+            return branch.Name.EndsWith("develop");
         }
 
         public static bool IsMaster(this Branch branch)
         {
-            return branch.Name == "master";
+            return branch.Name.EndsWith("master");
         }
 
         public static bool IsFeature(this Branch branch)

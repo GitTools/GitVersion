@@ -7,6 +7,12 @@ namespace GitFlowVersion
 
     static class LibGitExtensions
     {
+        public static Branch FindBranch(this IRepository repository, string branchName)
+        {
+            return (from x in repository.Branches
+                    where x.Name.EndsWith(branchName, StringComparison.InvariantCultureIgnoreCase)
+                    select x).FirstOrDefault();
+        }
 
         public static DateTimeOffset When(this Commit commit)
         {
@@ -56,7 +62,7 @@ namespace GitFlowVersion
 
             while (target is TagAnnotation)
             {
-                target = ((TagAnnotation) (target)).Target;
+                target = ((TagAnnotation)(target)).Target;
             }
 
             return target;

@@ -1,6 +1,7 @@
 ﻿namespace GitFlowVersion
 {
     using System.Collections.Generic;
+    using System.Linq;
     using LibGit2Sharp;
 
     public static class VersionCache
@@ -11,13 +12,14 @@
         {
             using (var repo = RepositoryLoader.GetRepo(gitDirectory))
             {
-                var branch = repo.Head;
-                if (branch.Tip == null)
+                var head = repo.FindBranch(repo.Head.Name);
+                if (head.Tip == null)
                 {
-                    throw new ErrorException("No Tip found. Has repo been initialize?");
+                    throw new ErrorException("No Tip found. Has repo been initialized?");
                 }
+
                 var ticks = DirectoryDateFinder.GetLastDirectoryWrite(gitDirectory);
-                var key = string.Format("{0}:{1}:{2}", repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
+                var key = string.Format("{0}:{1}:{2}", head.CanonicalName, head.Tip.Sha, ticks);
                 CachedVersion cachedVersion;
                 VersionAndBranch versionAndBranch;
                 if (versionCacheVersions.TryGetValue(key, out cachedVersion))
@@ -30,13 +32,13 @@
                     else
                     {
                         Logger.WriteInfo("Change detected. flushing cache.");
-                        versionAndBranch = cachedVersion.VersionAndBranch = GetSemanticVersion(repo);
+                        versionAndBranch = cachedVersion.VersionAndBranch = GetSemanticVersion(repo, head);
                     }
                 }
                 else
                 {
                     Logger.WriteInfo("Version not in cache. Calculating version.");
-                    versionAndBranch = GetSemanticVersion(repo);
+                    versionAndBranch = GetSemanticVersion(repo, head);
 
                     versionCacheVersions[key] = new CachedVersion
                                                 {
@@ -48,10 +50,10 @@
             }
         }
 
-        static VersionAndBranch GetSemanticVersion(Repository repository)
+        static VersionAndBranch GetSemanticVersion(Repository repository, Branch branch)
         {
             var versionForRepositoryFinder = new VersionForRepositoryFinder();
-            return versionForRepositoryFinder.GetVersion(repository);
+            return versionForRepositoryFinder.GetVersion(repository, branch);
         }
     }
 }
