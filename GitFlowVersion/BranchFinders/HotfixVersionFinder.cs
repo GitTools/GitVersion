@@ -69,7 +69,7 @@ namespace GitFlowVersion
         private void EnsureHotfixBranchShareACommonAncestorWithMaster()
         {
             var ancestor = Repository.Commits.FindCommonAncestor(
-                Repository.Branches["master"].Tip,
+                Repository.FindBranch("master").Tip,
                 HotfixBranch.Tip);
 
             if (ancestor != null)

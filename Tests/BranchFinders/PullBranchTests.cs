@@ -1,6 +1,3 @@
-using System;
-using FluentDate;
-using FluentDateTimeOffset;
 using GitFlowVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -35,14 +32,14 @@ public class PullBranchTests : Lg2sHelperBase
 
     private void AssertInvalidPullBranchName(string invalidfakePullBranchName)
     {
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
             var branchingCommit = repo.Branches["develop"].Tip;
             var pullBranch = repo.Branches.Add(invalidfakePullBranchName, branchingCommit);
 
-            var finder = new PullVersionFinder()
-                         {
+            var finder = new PullVersionFinder
+                {
                              Repository = repo,
                              Commit = branchingCommit,
                              PullBranch = pullBranch,
@@ -55,7 +52,7 @@ public class PullBranchTests : Lg2sHelperBase
     [Test]
     public void Pull_branch_with_1_commit()
     {
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
             // Create a pull request branch from the parent of current develop tip
@@ -89,7 +86,7 @@ public class PullBranchTests : Lg2sHelperBase
     [Test]
     public void Pull_branch_with_2_commits()
     {
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
             // Create a pull request branch from the parent of current develop tip

@@ -42,8 +42,8 @@ namespace GitFlowVersion
         private string ExtractIssueNumber()
         {
             const string prefix = "/pull/";
-            int start = PullBranch.CanonicalName.IndexOf(prefix, System.StringComparison.Ordinal);
-            int end = PullBranch.CanonicalName.LastIndexOf("/merge", PullBranch.CanonicalName.Length - 1,
+            var start = PullBranch.CanonicalName.IndexOf(prefix, System.StringComparison.Ordinal);
+            var end = PullBranch.CanonicalName.LastIndexOf("/merge", PullBranch.CanonicalName.Length - 1,
                 System.StringComparison.Ordinal);
 
             string issueNumber = null;
@@ -82,7 +82,7 @@ namespace GitFlowVersion
         private void EnsurePullBranchShareACommonAncestorWithDevelop()
         {
             var ancestor = Repository.Commits.FindCommonAncestor(
-                Repository.Branches["develop"].Tip,
+                Repository.FindBranch("develop").Tip,
                 PullBranch.Tip);
 
             if (ancestor != null)

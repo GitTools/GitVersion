@@ -22,6 +22,17 @@ namespace GitFlowVersion
             return commit.Sha.Substring(0, 8);
         }
 
+        public static Branch FindBranch(this IRepository repository, string branchName)
+        {
+            var exact = repository.Branches.FirstOrDefault(x => x.Name == branchName);
+            if (exact != null)
+            {
+                return exact;
+            }
+
+            return repository.Branches.FirstOrDefault(x => x.Name == "origin/"+branchName);
+         }
+
         public static SemanticVersion NewestSemVerTag(this IRepository repository, Commit commit)
         {
             foreach (var tag in repository.TagsByDate(commit))
@@ -52,7 +63,7 @@ namespace GitFlowVersion
 
         public static GitObject PeeledTarget(this Tag tag)
         {
-            GitObject target = tag.Target;
+            var target = tag.Target;
 
             while (target is TagAnnotation)
             {

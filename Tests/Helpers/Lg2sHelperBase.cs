@@ -22,7 +22,7 @@ namespace Tests.Helpers
         [TestFixtureTearDown]
         public virtual void Teardown()
         {
-            foreach (string directory in directories)
+            foreach (var directory in directories)
             {
                 DirectoryHelper.DeleteDirectory(directory);
             }
@@ -90,7 +90,7 @@ namespace Tests.Helpers
 
         protected string InitNewRepository(bool isBare = false)
         {
-            SelfCleaningDirectory scd = BuildSelfCleaningDirectory();
+            var scd = BuildSelfCleaningDirectory();
 
             return Repository.Init(scd.DirectoryPath, isBare);
         }
@@ -164,11 +164,11 @@ namespace Tests.Helpers
         {
             // From http://stackoverflow.com/questions/58744/best-way-to-copy-the-entire-contents-of-a-directory-in-c/58779#58779
 
-            foreach (DirectoryInfo dir in source.GetDirectories())
+            foreach (var dir in source.GetDirectories())
             {
                 CopyFilesRecursively(dir, target.CreateSubdirectory(Rename(dir.Name)));
             }
-            foreach (FileInfo file in source.GetFiles())
+            foreach (var file in source.GetFiles())
             {
                 file.CopyTo(Path.Combine(target.FullName, Rename(file.Name)));
             }
@@ -181,8 +181,8 @@ namespace Tests.Helpers
 
         public static void DeleteSubdirectories(string parentPath)
         {
-            string[] dirs = Directory.GetDirectories(parentPath);
-            foreach (string dir in dirs)
+            var dirs = Directory.GetDirectories(parentPath);
+            foreach (var dir in dirs)
             {
                 DeleteDirectory(dir);
             }
@@ -201,16 +201,16 @@ namespace Tests.Helpers
                 return;
             }
 
-            string[] files = Directory.GetFiles(directoryPath);
-            string[] dirs = Directory.GetDirectories(directoryPath);
+            var files = Directory.GetFiles(directoryPath);
+            var dirs = Directory.GetDirectories(directoryPath);
 
-            foreach (string file in files)
+            foreach (var file in files)
             {
                 File.SetAttributes(file, FileAttributes.Normal);
                 File.Delete(file);
             }
 
-            foreach (string dir in dirs)
+            foreach (var dir in dirs)
             {
                 DeleteDirectory(dir);
             }

@@ -1,31 +1,25 @@
-﻿namespace GitFlowVersion
+﻿namespace GitFlowVersion.VersionBuilders
 {
     using System;
 
-    class TeamCityVersionBuilder
+    public static class SemVerVersionBuilder
     {
-        public static string GenerateBuildVersion(VersionAndBranch versionAndBranch)
+        public static string GenerateSemVer(this VersionAndBranch versionAndBranch)
         {
-            var versionString = CreateVersionString(versionAndBranch);
+            var prereleaseString = string.Empty;
 
-            return string.Format("##teamcity[buildNumber '{0}']", versionString);
-        }
-
-        public static string CreateVersionString(VersionAndBranch versionAndBranch)
-        {
-            var prereleaseString = "";
-
-            var stability = versionAndBranch.Version.Stability;
+            var semVer = versionAndBranch.Version;
+            var stability = semVer.Stability;
             if (stability == null)
             {
                 throw new Exception("Stability cannot be null");
             }
             if (stability != Stability.Final)
             {
-                var preReleaseVersion = versionAndBranch.Version.PreReleasePartOne.ToString();
-                if (versionAndBranch.Version.PreReleasePartTwo != null)
+                var preReleaseVersion = semVer.PreReleasePartOne.ToString();
+                if (semVer.PreReleasePartTwo != null)
                 {
-                    preReleaseVersion += "." + versionAndBranch.Version.PreReleasePartTwo;
+                    preReleaseVersion += "." + semVer.PreReleasePartTwo;
                 }
 
                 switch (versionAndBranch.BranchType)
@@ -42,18 +36,14 @@
                         prereleaseString = "-" + stability + preReleaseVersion;
                         break;
                     case BranchType.PullRequest:
-                        prereleaseString = "-PullRequest-" + versionAndBranch.Version.Suffix;
+                        prereleaseString = "-PullRequest-" + semVer.Suffix;
                         break;
                     case BranchType.Feature:
                         prereleaseString = "-Feature-" + versionAndBranch.BranchName + "-" + versionAndBranch.Sha;
                         break;
                 }
             }
-            return string.Format("{0}.{1}.{2}{3}", versionAndBranch.Version.Major, versionAndBranch.Version.Minor,
-                versionAndBranch.Version.Patch, prereleaseString);
+            return string.Format("{0}.{1}.{2}{3}", semVer.Major, semVer.Minor, semVer.Patch, prereleaseString);
         }
-
-
     }
-
 }

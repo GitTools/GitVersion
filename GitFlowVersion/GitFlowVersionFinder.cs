@@ -95,7 +95,7 @@ namespace GitFlowVersion
 
         private void EnsureLocalBranchExists(string branchName)
         {
-            if (Repository.Branches[branchName] != null)
+            if (Repository.FindBranch(branchName) != null)
             {
                 return;
             }

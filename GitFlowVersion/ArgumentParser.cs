@@ -57,12 +57,14 @@ namespace GitFlowVersion
             {
                 var name = namedArguments[index];
                 var value = namedArguments[index + 1];
-                if (name == "-l" || name == "/l")
+
+                if (IsSwitch("l", name))
                 {
                     arguments.LogFilePath = value;
                     continue;
                 }
-                if ((name == "-v" || name == "/v") && VersionParts.Contains(value.ToLower()))
+
+                if ((IsSwitch("v", name)) && VersionParts.Contains(value.ToLower()))
                 {
                     arguments.VersionPart = value.ToLower();
                     continue;
@@ -71,6 +73,21 @@ namespace GitFlowVersion
                 throw new ErrorException(string.Format("Could not parse command line parameter '{0}'.", name));
             }
             return arguments;
+        }
+
+        static bool IsSwitch(string switchName, string value)
+        {
+            if (value.StartsWith("-"))
+            {
+                value = value.Remove(0, 1);
+            }
+
+            if (value.StartsWith("/"))
+            {
+                value = value.Remove(0, 1);
+            }
+
+            return (string.Equals(switchName, value));
         }
 
         static void EnsureArgumentsEvenCount(List<string> commandLineArguments, List<string> namedArguments)
@@ -93,6 +110,6 @@ namespace GitFlowVersion
                    (singleArgument == "-?");
         }
 
-        private static readonly string[] VersionParts = {"major", "minor", "patch", "long", "short", "nuget"};
+        static readonly string[] VersionParts = {"major", "minor", "patch", "long", "short", "nuget"};
     }
 }
