@@ -110,6 +110,6 @@ namespace GitFlowVersion
                    (singleArgument == "-?");
         }
 
-        static readonly string[] VersionParts = {"major", "minor", "patch", "long", "short", "nuget"};
+        static string[] VersionParts = {"major", "minor", "patch", "long", "short", "nuget"};
     }
 }

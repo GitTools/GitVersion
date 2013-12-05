@@ -21,17 +21,6 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     }
 
     [Test]
-    public void TeamCityExecutionMode_RequiresAValidGitDirectoryToOperate()
-    {
-        var task = BuildTask(Path.GetTempPath());
-
-        using (new FakeTeamCityContext())
-        {
-            Assert.False(task.Execute());
-        }
-    }
-
-    [Test]
     public void StandardExecutionMode_DoesNotRequireARemoteToOperate()
     {
         using (var repo = new Repository(ASBMTestRepoWorkingDirPath))
@@ -105,7 +94,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         AssertVersionFromFetchedRemote(repoPath, "refs/pull/1735/merge");
     }
 
-    private static void CreateFakePullRequest(string repoPath, string issueNumber)
+    static void CreateFakePullRequest(string repoPath, string issueNumber)
     {
         // Fake an upstream repository as it would appear on GitHub
         // will pull requests stored under the refs/pull/ namespace
@@ -132,7 +121,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         }
     }
 
-    private void AssertVersionFromFetchedRemote(string repositoryPath, string monitoredReference)
+    void AssertVersionFromFetchedRemote(string repositoryPath, string monitoredReference)
     {
         var wd = FakeTeamCityFetchAndCheckout(repositoryPath, monitoredReference);
 
@@ -144,12 +133,12 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         }
     }
 
-    private void AssertVersionFromFetchedRemote(string monitoredReference)
+    void AssertVersionFromFetchedRemote(string monitoredReference)
     {
         AssertVersionFromFetchedRemote(ASBMTestRepoWorkingDirPath, monitoredReference);
     }
 
-    private void AssertVersionFromLocal(string repositoryPath, string monitoredReference)
+    void AssertVersionFromLocal(string repositoryPath, string monitoredReference)
     {
         var repoPath = CheckoutLocal(repositoryPath, monitoredReference);
 
@@ -158,12 +147,12 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         Assert.True(task.Execute());
     }
 
-    private void AssertVersionFromLocal(string monitoredReference)
+    void AssertVersionFromLocal(string monitoredReference)
     {
         AssertVersionFromLocal(ASBMTestRepoWorkingDirPath, monitoredReference);
     }
 
-    private string CheckoutLocal(string repositoryPath, string monitoredReference)
+    string CheckoutLocal(string repositoryPath, string monitoredReference)
     {
         var repoPath = Clone(repositoryPath);
 
@@ -174,7 +163,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         return repoPath;
     }
 
-    private string FakeTeamCityFetchAndCheckout(string upstreamRepository, string monitoredReference)
+    string FakeTeamCityFetchAndCheckout(string upstreamRepository, string monitoredReference)
     {
         var repoPath = InitNewRepository();
 
@@ -235,7 +224,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
             };
     }
 
-    private class FakeTeamCityContext : IDisposable
+    class FakeTeamCityContext : IDisposable
     {
         const string VariableName = "GitFlowVersion.Fake.TEAMCITY_VERSION";
 
@@ -251,13 +240,13 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
             Environment.SetEnvironmentVariable(VariableName, "");
         }
 
-        private static bool IsEnvironmentVariableSet()
+        static bool IsEnvironmentVariableSet()
         {
             return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(VariableName));
         }
     }
 
-    private class MockBuildEngine : IBuildEngine
+    class MockBuildEngine : IBuildEngine
     {
         public void LogErrorEvent(BuildErrorEventArgs e)
         { }

@@ -39,7 +39,7 @@ namespace GitFlowVersion
             };
         }
 
-        private string ExtractIssueNumber()
+        string ExtractIssueNumber()
         {
             const string prefix = "/pull/";
             var start = PullBranch.CanonicalName.IndexOf(prefix, System.StringComparison.Ordinal);
@@ -63,7 +63,7 @@ namespace GitFlowVersion
             return issueNumber;
         }
 
-        private bool LooksLikeAValidPullRequestNumber(string issueNumber)
+        bool LooksLikeAValidPullRequestNumber(string issueNumber)
         {
             if (string.IsNullOrEmpty(issueNumber))
             {
@@ -79,7 +79,7 @@ namespace GitFlowVersion
             return true;
         }
 
-        private void EnsurePullBranchShareACommonAncestorWithDevelop()
+        void EnsurePullBranchShareACommonAncestorWithDevelop()
         {
             var ancestor = Repository.Commits.FindCommonAncestor(
                 Repository.FindBranch("develop").Tip,

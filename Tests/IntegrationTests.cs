@@ -8,7 +8,6 @@ using NUnit.Framework;
 public class IntegrationTests
 {
 
-
     [Test, Explicit]
     public void ProcessAllTheCommits()
     {
@@ -16,7 +15,6 @@ public class IntegrationTests
         {
             foreach (var branch in repository.Branches)
             {
-
                 foreach (var commit in branch.Commits)
                 {
                     string versionPart;

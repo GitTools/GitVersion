@@ -21,8 +21,6 @@ public class MockTagCollection : TagCollection,ICollection<Tag>
         return GetEnumerator();
     }
 
-    
-
     public void Add(Tag item)
     {
         Tags.Add(item);

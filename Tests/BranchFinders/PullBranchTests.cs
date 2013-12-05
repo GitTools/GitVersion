@@ -30,13 +30,13 @@ public class PullBranchTests : Lg2sHelperBase
         AssertInvalidPullBranchName("merge/1735/pull");
     }
 
-    private void AssertInvalidPullBranchName(string invalidfakePullBranchName)
+    void AssertInvalidPullBranchName(string invalidFakePullBranchName)
     {
         var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
             var branchingCommit = repo.Branches["develop"].Tip;
-            var pullBranch = repo.Branches.Add(invalidfakePullBranchName, branchingCommit);
+            var pullBranch = repo.Branches.Add(invalidFakePullBranchName, branchingCommit);
 
             var finder = new PullVersionFinder
                 {
