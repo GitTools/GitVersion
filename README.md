@@ -207,6 +207,32 @@ the project called `GitFlowVersion.NugetVersion`. If many of your projects uses 
 can add the parameter to the "root-project" (TeamCity 8.x+)
 * Then setup you nuget pack build set the "version" to `%GitFlowVersion.NugetVersion%`
 
+### When TeamCity -> GitHub can't use https
+GitFlowVersion requires the presence of master branch in order to determine the version number.  If TeamCity uses https to clone git repos then GitFlowVersion will pull down master branch for you during the build.
+
+If however your TeamCity uses SSH to clone git repos and https is unavailable then GitFlowVersion will error with a message like
+> [GitFlowVersionTask.UpdateAssemblyInfo] Error occurred: GitFlowVersion.MissingBranchException: Could not fetch from 'git@github.dev.xero.com:Xero/Bus.git' since LibGit2 does not support the transport. You have most likely cloned using SSH. If there is a remote branch named 'master' then fetch it manually, otherwise please create a local branch named 'master'. ---> LibGit2Sharp.LibGit2SharpException: An error was raised by libgit2. Category = Net (Error).
+This transport isn't implemented. Sorry
+
+You need to create a TeamCity build step before your compile step which manually creates a local master branch which tracks remote master.  Like so (in powershell):
+
+```Powershell   
+$branchBeingBuilt = . git symbolic-ref --short -q HEAD  
+. git pull 2>&1 | write-host
+foreach ($remoteBranch in . git branch -r) {   
+  . git checkout $remoteBranch.Trim().Replace("origin/", "") 2>&1 | write-host     
+  . git pull 2>&1 | write-host  
+}  
+. git checkout $branchBeingBuilt 2>&1 | write-host  
+```
+
+you should get build output like
+[Step 1/1]: Ensure all branches are available for GitFlowVersion (Powershell) (5s)
+[Step 1/1] From file:///C:/BuildAgent2/system/git/git-12345678
+[Step 1/1]  * [new branch]      master     -> origin/master
+[Step 1/1] Switched to a new branch 'master'
+[Step 1/1] Branch master set up to track remote branch master from origin.
+[Step 1/1] Switched to branch 'develop'
 
 ## For reference
 
