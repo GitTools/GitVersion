@@ -99,10 +99,10 @@ namespace Tests.Helpers
             directories.Add(directoryPath);
         }
 
-        protected static void AddOneCommitToHead(Repository repo, string type)
+        protected static Commit AddOneCommitToHead(Repository repo, string type)
         {
             var sign = Constants.SignatureNow();
-            repo.Commit(type + " commit", sign, sign);
+            return repo.Commit(type + " commit", sign, sign);
         }
     }
 }

@@ -1,5 +1,6 @@
 namespace GitFlowVersion
 {
+    using System;
     using LibGit2Sharp;
 
     static class BranchClassifier
@@ -23,6 +24,21 @@ namespace GitFlowVersion
         public static string GetReleaseSuffix(this Branch branch)
         {
             return branch.Name.TrimStart("release-").TrimStart("release/");
+        }
+
+        public static string GetSuffix(this Branch branch, BranchType branchType)
+        {
+            switch (branchType)
+            {
+                case BranchType.Hotfix:
+                    return branch.GetHotfixSuffix();
+
+                case BranchType.Release:
+                    return branch.GetReleaseSuffix();
+
+                default:
+                    throw new NotSupportedException(string.Format("Unexpected branch type {0}.", branchType));
+            }
         }
 
         public static bool IsDevelop(this Branch branch)

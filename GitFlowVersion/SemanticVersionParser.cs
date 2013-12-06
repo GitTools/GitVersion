@@ -116,7 +116,15 @@ namespace GitFlowVersion
             return true;
         }
 
+        public static SemanticVersion Parse(string versionString)
+        {
+            SemanticVersion parsedVersion;
+            if (TryParse(versionString, out parsedVersion))
+            {
+                return parsedVersion;
+            }
 
+            throw new ErrorException(string.Format("Could not parse version from '{0}' expected 'Major.Minor.Patch[-StabilityPreRealeasePartOne[.PreRealeasePartTwo]]'", versionString));
+        }
     }
 }
-
