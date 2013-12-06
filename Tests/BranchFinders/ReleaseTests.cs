@@ -109,7 +109,7 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.AreEqual(Stability.Alpha, version.Version.Stability);
             Assert.AreEqual(BranchType.Release, version.BranchType);
             Assert.AreEqual(5, version.Version.PreReleasePartOne, "PreReleasePartOne should be set to 5 from the tag");
-            Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 3 since there is 2 commits on the branch");
+            Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is 2 commits on the branch");
         }
     }
 
