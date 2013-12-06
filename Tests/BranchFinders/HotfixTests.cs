@@ -189,4 +189,26 @@ public class HotfixTests : Lg2sHelperBase
             Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is a commit on the branch");
         }
     }
+
+    [Test]
+    public void EnsureAHotfixBranchNameExposesAPatchSegment()
+    {
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        using (var repo = new Repository(repoPath))
+        {
+            const string branchName = "hotfix-0.3.0";
+
+            var branchingCommit = repo.Branches["master"].Tip;
+            var hotfixBranch = repo.Branches.Add(branchName, branchingCommit);
+
+            var finder = new HotfixVersionFinder
+            {
+                Repository = repo,
+                Commit = branchingCommit,
+                HotfixBranch = hotfixBranch,
+            };
+
+            Assert.Throws<ErrorException>(() => finder.FindVersion());
+        }
+    }
 }

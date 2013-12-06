@@ -185,6 +185,28 @@ public class ReleaseTests : Lg2sHelperBase
         }
     }
 
+    [Test]
+    public void EnsureAReleaseBranchNameDoesNotExposeAPatchSegment()
+    {
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        using (var repo = new Repository(repoPath))
+        {
+            const string branchName = "release-0.3.1";
+
+            var branchingCommit = repo.Branches["develop"].Tip;
+            var releaseBranch = repo.Branches.Add(branchName, branchingCommit);
+
+            var finder = new ReleaseVersionFinder
+            {
+                Repository = repo,
+                Commit = branchingCommit,
+                ReleaseBranch = releaseBranch,
+            };
+
+            Assert.Throws<ErrorException>(() => finder.FindVersion());
+        }
+    }
+
         //TODO:
     //[Test]
     //[ExpectedException]

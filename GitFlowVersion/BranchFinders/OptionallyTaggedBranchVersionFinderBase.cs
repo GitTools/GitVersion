@@ -1,5 +1,6 @@
 namespace GitFlowVersion
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using LibGit2Sharp;
@@ -83,6 +84,28 @@ namespace GitFlowVersion
             {
                 throw new ErrorException(msg +
                                          "Supported format is 'Major.Minor.Patch[-StabilityPreRealeasePartOne]'.");
+            }
+
+            switch (branchType)
+            {
+                case BranchType.Hotfix:
+                    if (version.Patch == 0)
+                    {
+                        throw new ErrorException(msg + "A patch segment different than zero is required.");
+                    }
+
+                    break;
+
+                case BranchType.Release:
+                    if (version.Patch != 0)
+                    {
+                        throw new ErrorException(msg + "A patch segment equals to zero is required.");
+                    }
+
+                    break;
+
+                default:
+                    throw new NotSupportedException(string.Format("Unexpected branch type {0}.", branchType));
             }
 
             if (version.Stability == Stability.Final)
