@@ -34,6 +34,8 @@
     <None Include="$(MSBuildThisFileDirectory)..\GitFlowVersionTask.pdb" />
     <None Include="$(MSBuildThisFileDirectory)..\GitFlowVersion.exe" />
     <None Include="$(MSBuildThisFileDirectory)..\GitFlowVersion.pdb" />
+    <None Include="$(MSBuildThisFileDirectory)..\LibGit2Sharp.dll" />
+    <None Include="$(MSBuildThisFileDirectory)..\NativeBinaries\**\*" />
   </ItemGroup>
 
 
