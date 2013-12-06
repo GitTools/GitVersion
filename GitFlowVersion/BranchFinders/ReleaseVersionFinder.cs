@@ -12,6 +12,8 @@ namespace GitFlowVersion
 
         public VersionAndBranch FindVersion()
         {
+            EnsureReleaseBranchShareACommonAncestorWithDevelop();
+
             var versionString = ReleaseBranch.GetReleaseSuffix();
 
             int patch;
@@ -62,6 +64,23 @@ namespace GitFlowVersion
             var message = string.Format("There must be a tag on a release branch with a version the same as the version from the branch name i.e. {0}.{1}.{2}", major, minor, patch);
             throw new Exception(message);
 
+        }
+
+        private void EnsureReleaseBranchShareACommonAncestorWithDevelop()
+        {
+            var ancestor = Repository.Commits.FindCommonAncestor(
+                Repository.Branches["develop"].Tip,
+                ReleaseBranch.Tip);
+
+            if (ancestor != null)
+            {
+                return;
+            }
+
+            throw new ErrorException(
+                "A release branch is expected to branch off of 'develop'. "
+                + string.Format("However, branch 'develop' and '{0}' do not share a common ancestor."
+                , ReleaseBranch.Name));
         }
     }
 }
