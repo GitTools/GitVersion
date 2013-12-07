@@ -52,6 +52,5 @@ namespace GitFlowVersion
                 Timestamp = DateTimeOffset.MinValue
             };
         }
-
     }
 }

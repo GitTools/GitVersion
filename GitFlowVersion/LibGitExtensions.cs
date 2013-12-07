@@ -7,7 +7,6 @@ namespace GitFlowVersion
 
     static class LibGitExtensions
     {
-
         public static DateTimeOffset When(this Commit commit)
         {
             return commit.Committer.When;
@@ -67,7 +66,7 @@ namespace GitFlowVersion
 
             while (target is TagAnnotation)
             {
-                target = ((TagAnnotation) (target)).Target;
+                target = ((TagAnnotation)(target)).Target;
             }
 
             return target;

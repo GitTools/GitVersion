@@ -96,15 +96,15 @@
                 }
             }
         }
-  
+
 
         void CreateTempAssemblyInfo(VersionAndBranch versionAndBranch)
         {
             var assemblyInfoBuilder = new AssemblyInfoBuilder
-                                      {
-                                          VersionAndBranch = versionAndBranch,
-                                          SignAssembly = SignAssembly
-                                      };
+            {
+                VersionAndBranch = versionAndBranch,
+                SignAssembly = SignAssembly
+            };
             var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText();
 
             var tempFileName = string.Format("AssemblyInfo_{0}_{1}.cs", Path.GetFileNameWithoutExtension(ProjectFile), Path.GetRandomFileName());

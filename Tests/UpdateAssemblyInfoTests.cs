@@ -112,7 +112,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
             var sign = Constants.SignatureNow();
             var m = repo.ObjectDatabase.CreateCommit(
                 string.Format("Merge pull request #{0} from nulltoken/ntk/fix/{0}", issueNumber)
-                , sign, sign, c.Tree, new[] {repo.Branches["develop"].Tip, c});
+                , sign, sign, c.Tree, new[] { repo.Branches["develop"].Tip, c });
 
             repo.Refs.Add(string.Format("refs/pull/{0}/merge", issueNumber), m.Id);
 
@@ -217,11 +217,11 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     static UpdateAssemblyInfo BuildTask(string workingDirectory)
     {
         return new UpdateAssemblyInfo
-            {
-                BuildEngine = new MockBuildEngine(),
-                SolutionDirectory = workingDirectory,
-                CompileFiles = new ITaskItem[] {},
-            };
+        {
+            BuildEngine = new MockBuildEngine(),
+            SolutionDirectory = workingDirectory,
+            CompileFiles = new ITaskItem[] { },
+        };
     }
 
     class FakeTeamCityContext : IDisposable

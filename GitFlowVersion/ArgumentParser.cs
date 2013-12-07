@@ -70,6 +70,18 @@ namespace GitFlowVersion
                     continue;
                 }
 
+                if (IsSwitch("u", name))
+                {
+                    arguments.TargetUrl = value;
+                    continue;
+                }
+
+                if (IsSwitch("b", name))
+                {
+                    arguments.TargetBranch = value;
+                    continue;
+                }
+
                 throw new ErrorException(string.Format("Could not parse command line parameter '{0}'.", name));
             }
             return arguments;

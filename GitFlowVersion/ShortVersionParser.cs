@@ -14,7 +14,7 @@ namespace GitFlowVersion
 
         public static bool TryParseMajorMinor(string versionString, out int major, out int minor)
         {
-            int patch;
+            int patch = 0;
 
             TryParse(versionString, out major, out minor, out patch);
 

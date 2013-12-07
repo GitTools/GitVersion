@@ -59,9 +59,9 @@ namespace GitFlowVersion
                 }
                 count++;
             }
+
             var message = string.Format("There must be a tag on a release branch with a version the same as the version from the branch name i.e. {0}.{1}.{2}", major, minor, patch);
             throw new Exception(message);
-
         }
     }
 }

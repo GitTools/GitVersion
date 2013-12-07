@@ -52,6 +52,16 @@ public class ArgumentParserTests
     }
 
     [Test]
+    public void Url_and_BranchName_can_be_parsed()
+    {
+        var arguments = ArgumentParser.ParseArguments("targetDirectoryPath -u http://github.com/Particular/GitFlowVersion.git -b somebranch");
+        Assert.AreEqual("targetDirectoryPath", arguments.TargetPath);
+        Assert.AreEqual("http://github.com/Particular/GitFlowVersion.git", arguments.TargetUrl);
+        Assert.AreEqual("somebranch", arguments.TargetBranch);
+        Assert.IsFalse(arguments.IsHelp);
+    }
+
+    [Test]
     public void Wrong_number_of_arguments_should_throw()
     {
         var exception = Assert.Throws<ErrorException>(()=> ArgumentParser.ParseArguments("targetDirectoryPath -l logFilePath extraArg"));

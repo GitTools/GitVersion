@@ -55,17 +55,25 @@
     <Compile Include="BranchFinders\FeatureVersionFinder.cs" />
     <Compile Include="BranchFinders\DevelopVersionFinder.cs" />
     <Compile Include="BranchFinders\HotfixVersionFinder.cs" />
+    <Compile Include="ContinuaCi\ContinuaCiVersionBuilder.cs" />
+    <Compile Include="GitFlowVersionEnvironment.cs" />
+    <Compile Include="GitPreparer.cs" />
+    <Compile Include="Helpers\DeleteHelper.cs" />
+    <Compile Include="Helpers\GitHelper.cs" />
+    <Compile Include="HelpWriter.cs" />
+    <Compile Include="Helpers\IntegrationHelper.cs" />
+    <Compile Include="VersionBuilders\Interfaces\IVersionBuilder.cs" />
+    <Compile Include="ShortVersionParser.cs" />
+    <Compile Include="VersionBuilders\VersionBuilderBase.cs" />
     <Compile Include="BuildServers\BuildOutputGenerator.cs" />
     <Compile Include="BuildServers\BuildServerList.cs" />
     <Compile Include="BuildServers\ContinuaCi.cs" />
     <Compile Include="BuildServers\GitHelper.cs" />
     <Compile Include="BuildServers\IBuildServer.cs" />
     <Compile Include="BuildServers\TeamCity.cs" />
-    <Compile Include="HelpWriter.cs" />
     <Compile Include="VersionBuilders\JsonVersionBuilder.cs" />
     <Compile Include="VersionBuilders\NugetVersionBuilder.cs" />
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="ShortVersionParser.cs" />
     <Compile Include="VersionOnMasterFinder.cs" />
     <Compile Include="BranchType.cs" />
     <Compile Include="CachedVersion.cs" />
@@ -85,6 +93,7 @@
     <Compile Include="RepositoryLoader.cs" />
     <Compile Include="SearchPath.cs" />
     <Compile Include="SemanticVersionParser.cs" />
+    <Compile Include="TeamCity\TeamCityVersionBuilder.cs" />
     <Compile Include="VersionBuilders\SemVerVersionBuilder.cs" />
     <Compile Include="SemanticVersion.cs" />
     <Compile Include="Stability.cs" />
@@ -116,6 +125,7 @@
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="Fody.targets" />
   <Target Name="Clean">

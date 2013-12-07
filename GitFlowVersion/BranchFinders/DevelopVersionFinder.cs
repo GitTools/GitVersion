@@ -47,7 +47,5 @@ namespace GitFlowVersion
                 PreReleasePartOne = preReleasePartOne
             };
         }
-
-
     }
 }

@@ -6,12 +6,12 @@ namespace GitFlowVersion
     {
         public SemanticVersion SemanticVersion;
 
-        public VersionAndBranch GetVersion(Repository repository)
+        public VersionAndBranch GetVersion(Repository repository, Branch branch)
         {
             var gitFlowVersionFinder = new GitFlowVersionFinder
                                        {
-                                           Branch = repository.Head,
-                                           Commit = repository.Head.Tip,
+                                           Branch = branch,
+                                           Commit = branch.Tip,
                                            Repository = repository
                                        };
             return gitFlowVersionFinder.FindVersion();
