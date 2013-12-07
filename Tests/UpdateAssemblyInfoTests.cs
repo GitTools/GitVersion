@@ -2,8 +2,7 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Linq;
-using GitFlowVersion;
-using GitFlowVersion.Integration;
+using GitFlowVersion.GitFlowVersion;
 using GitFlowVersionTask;
 using LibGit2Sharp;
 using Microsoft.Build.Framework;
@@ -16,20 +15,9 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     [Test]
     public void StandardExecutionMode_LackOfAValidGitDirectoryDoesNotPreventExecution()
     {
-        var task = BuildTaskInLocalContext(Path.GetTempPath());
+        var task = BuildTask(Path.GetTempPath());
 
         Assert.True(task.Execute());
-    }
-
-    [Test]
-    public void TeamCityExecutionMode_RequiresAValidGitDirectoryToOperate()
-    {
-        var task = BuildTaskInTeamCityContext(Path.GetTempPath());
-
-        using (new FakeTeamCityContext())
-        {
-            Assert.False(task.Execute());
-        }
     }
 
     [Test]
@@ -40,25 +28,9 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
             Assert.AreEqual(0, repo.Network.Remotes.Count());
         }
 
-        var task = BuildTaskInLocalContext(ASBMTestRepoWorkingDirPath);
+        var task = BuildTask(ASBMTestRepoWorkingDirPath);
 
         Assert.True(task.Execute());
-    }
-
-    [Test]
-    public void TeamCityExecutionMode_RequiresARemoteToOperate()
-    {
-        using (var repo = new Repository(ASBMTestRepoWorkingDirPath))
-        {
-            Assert.AreEqual(0, repo.Network.Remotes.Count());
-        }
-
-        var task = BuildTaskInTeamCityContext(ASBMTestRepoWorkingDirPath);
-
-        using (new FakeTeamCityContext())
-        {
-            Assert.False(task.Execute());
-        }
     }
 
     [Test]
@@ -100,7 +72,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     [Test]
     public void StandardExecutionMode_CannotDetermineTheVersionFromADetachedHead()
     {
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
 
         using (var repo = new Repository(repoPath))
         {
@@ -108,7 +80,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
             Assert.IsTrue(repo.Info.IsHeadDetached);
         }
 
-        var task = BuildTaskInLocalContext(repoPath);
+        var task = BuildTask(repoPath);
 
         Assert.False(task.Execute());
     }
@@ -116,13 +88,13 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     [Test]
     public void TeamCityExecutionMode_CanDetermineTheVersionFromAPullRequest()
     {
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         CreateFakePullRequest(repoPath, "1735");
 
         AssertVersionFromFetchedRemote(repoPath, "refs/pull/1735/merge");
     }
 
-    private static void CreateFakePullRequest(string repoPath, string issueNumber)
+    static void CreateFakePullRequest(string repoPath, string issueNumber)
     {
         // Fake an upstream repository as it would appear on GitHub
         // will pull requests stored under the refs/pull/ namespace
@@ -137,10 +109,10 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
             var c = repo.Head.Tip;
             repo.Refs.Add(string.Format("refs/pull/{0}/head", issueNumber), c.Id);
 
-            Signature sign = Constants.SignatureNow();
+            var sign = Constants.SignatureNow();
             var m = repo.ObjectDatabase.CreateCommit(
                 string.Format("Merge pull request #{0} from nulltoken/ntk/fix/{0}", issueNumber)
-                , sign, sign, c.Tree, new[] {repo.Branches["develop"].Tip, c});
+                , sign, sign, c.Tree, new[] { repo.Branches["develop"].Tip, c });
 
             repo.Refs.Add(string.Format("refs/pull/{0}/merge", issueNumber), m.Id);
 
@@ -149,11 +121,11 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         }
     }
 
-    private void AssertVersionFromFetchedRemote(string repositoryPath, string monitoredReference)
+    void AssertVersionFromFetchedRemote(string repositoryPath, string monitoredReference)
     {
-        string wd = FakeTeamCityFetchAndCheckout(repositoryPath, monitoredReference);
+        var wd = FakeTeamCityFetchAndCheckout(repositoryPath, monitoredReference);
 
-        var task = BuildTaskInTeamCityContext(wd);
+        var task = BuildTask(wd);
 
         using (new FakeTeamCityContext())
         {
@@ -161,28 +133,28 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         }
     }
 
-    private void AssertVersionFromFetchedRemote(string monitoredReference)
+    void AssertVersionFromFetchedRemote(string monitoredReference)
     {
         AssertVersionFromFetchedRemote(ASBMTestRepoWorkingDirPath, monitoredReference);
     }
 
-    private void AssertVersionFromLocal(string repositoryPath, string monitoredReference)
+    void AssertVersionFromLocal(string repositoryPath, string monitoredReference)
     {
         var repoPath = CheckoutLocal(repositoryPath, monitoredReference);
 
-        var task = BuildTaskInLocalContext(repoPath);
+        var task = BuildTask(repoPath);
 
         Assert.True(task.Execute());
     }
 
-    private void AssertVersionFromLocal(string monitoredReference)
+    void AssertVersionFromLocal(string monitoredReference)
     {
         AssertVersionFromLocal(ASBMTestRepoWorkingDirPath, monitoredReference);
     }
 
-    private string CheckoutLocal(string repositoryPath, string monitoredReference)
+    string CheckoutLocal(string repositoryPath, string monitoredReference)
     {
-        string repoPath = Clone(repositoryPath);
+        var repoPath = Clone(repositoryPath);
 
         using (var repo = new Repository(repoPath))
         {
@@ -191,9 +163,9 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         return repoPath;
     }
 
-    private string FakeTeamCityFetchAndCheckout(string upstreamRepository, string monitoredReference)
+    string FakeTeamCityFetchAndCheckout(string upstreamRepository, string monitoredReference)
     {
-        string repoPath = InitNewRepository();
+        var repoPath = InitNewRepository();
 
         using (var repo = new Repository(repoPath))
         {
@@ -237,40 +209,22 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
                 repo.Refs.Remove(monitoredReference);
             }
         }
+        GitHelper.NormalizeGitDirectory(repoPath);
 
         return repoPath;
     }
 
-    private static UpdateAssemblyInfo BuildTaskInLocalContext(string workingDirectory)
+    static UpdateAssemblyInfo BuildTask(string workingDirectory)
     {
-        return BuildTask(new LocalIntegration(), workingDirectory);
-    }
-
-    private static UpdateAssemblyInfo BuildTaskInTeamCityContext(string workingDirectory)
-    {
-        return BuildTask(new FakeTeamCityIntegration(), workingDirectory);
-    }
-
-    private static UpdateAssemblyInfo BuildTask(IIntegration integration, string workingDirectory)
-    {
-        var task = new UpdateAssemblyInfo(integration)
+        return new UpdateAssemblyInfo
         {
             BuildEngine = new MockBuildEngine(),
             SolutionDirectory = workingDirectory,
             CompileFiles = new ITaskItem[] { },
         };
-        return task;
     }
 
-    private class FakeTeamCityIntegration : TeamCity
-    {
-        public override bool CanApplyToCurrentContext()
-        {
-            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GitFlowVersion.Fake.TEAMCITY_VERSION"));
-        }
-    }
-
-    private class FakeTeamCityContext : IDisposable
+    class FakeTeamCityContext : IDisposable
     {
         const string VariableName = "GitFlowVersion.Fake.TEAMCITY_VERSION";
 
@@ -286,13 +240,13 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
             Environment.SetEnvironmentVariable(VariableName, "");
         }
 
-        private static bool IsEnvironmentVariableSet()
+        static bool IsEnvironmentVariableSet()
         {
             return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(VariableName));
         }
     }
 
-    private class MockBuildEngine : IBuildEngine
+    class MockBuildEngine : IBuildEngine
     {
         public void LogErrorEvent(BuildErrorEventArgs e)
         { }
@@ -305,33 +259,33 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
 
         public void LogCustomEvent(CustomBuildEventArgs e)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public bool BuildProjectFile(string projectFileName, string[] targetNames, IDictionary globalProperties,
             IDictionary targetOutputs)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public bool ContinueOnError
         {
-            get { throw new System.NotImplementedException(); }
+            get { throw new NotImplementedException(); }
         }
 
         public int LineNumberOfTaskNode
         {
-            get { throw new System.NotImplementedException(); }
+            get { throw new NotImplementedException(); }
         }
 
         public int ColumnNumberOfTaskNode
         {
-            get { throw new System.NotImplementedException(); }
+            get { throw new NotImplementedException(); }
         }
 
         public string ProjectFileOfTaskNode
         {
-            get { throw new System.NotImplementedException(); }
+            get { throw new NotImplementedException(); }
         }
     }
 }

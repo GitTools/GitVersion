@@ -7,13 +7,6 @@ namespace GitFlowVersion
 
     static class LibGitExtensions
     {
-        public static Branch FindBranch(this IRepository repository, string branchName)
-        {
-            return (from x in repository.Branches
-                    where x.Name.EndsWith(branchName, StringComparison.InvariantCultureIgnoreCase)
-                    select x).FirstOrDefault();
-        }
-
         public static DateTimeOffset When(this Commit commit)
         {
             return commit.Committer.When;
@@ -27,6 +20,17 @@ namespace GitFlowVersion
         {
             return commit.Sha.Substring(0, 8);
         }
+
+        public static Branch FindBranch(this IRepository repository, string branchName)
+        {
+            var exact = repository.Branches.FirstOrDefault(x => x.Name == branchName);
+            if (exact != null)
+            {
+                return exact;
+            }
+
+            return repository.Branches.FirstOrDefault(x => x.Name == "origin/"+branchName);
+         }
 
         public static SemanticVersion NewestSemVerTag(this IRepository repository, Commit commit)
         {
@@ -58,7 +62,7 @@ namespace GitFlowVersion
 
         public static GitObject PeeledTarget(this Tag tag)
         {
-            GitObject target = tag.Target;
+            var target = tag.Target;
 
             while (target is TagAnnotation)
             {

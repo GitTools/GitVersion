@@ -1,6 +1,5 @@
 namespace GitFlowVersion
 {
-    using System;
     using System.Linq;
     using LibGit2Sharp;
 
@@ -9,18 +8,12 @@ namespace GitFlowVersion
         public Commit Commit;
         public IRepository Repository;
         public Branch FeatureBranch;
-        internal Func<ObjectId> FindFirstCommitOnBranchFunc;
-
-        public FeatureVersionFinder()
-        {
-            FindFirstCommitOnBranchFunc = FindFirstCommitOnBranch;
-        }
 
         public VersionAndBranch FindVersion()
         {
             var ancestor = FindCommonAncestorWithDevelop();
 
-            var firstCommitOnBranch = FindFirstCommitOnBranchFunc();
+            var firstCommitOnBranch = FindFirstCommitOnBranch();
 
             if (firstCommitOnBranch == null) //no commits on branch. use develop approach
             {
@@ -59,11 +52,12 @@ namespace GitFlowVersion
             };
         }
 
-        private Commit FindCommonAncestorWithDevelop()
+        Commit FindCommonAncestorWithDevelop()
         {
-            var developBranch = Repository.FindBranch("develop");
+            var ancestor = Repository.Commits.FindCommonAncestor(
+                Repository.FindBranch("develop").Tip,
+                FeatureBranch.Tip);
 
-            var ancestor = Repository.Commits.FindCommonAncestor(developBranch.Tip, FeatureBranch.Tip);
             if (ancestor != null)
             {
                 return ancestor;

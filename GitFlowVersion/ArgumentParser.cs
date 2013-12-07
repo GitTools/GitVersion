@@ -64,6 +64,12 @@ namespace GitFlowVersion
                     continue;
                 }
 
+                if ((IsSwitch("v", name)) && VersionParts.Contains(value.ToLower()))
+                {
+                    arguments.VersionPart = value.ToLower();
+                    continue;
+                }
+
                 if (IsSwitch("u", name))
                 {
                     arguments.TargetUrl = value;
@@ -78,17 +84,7 @@ namespace GitFlowVersion
 
                 throw new ErrorException(string.Format("Could not parse command line parameter '{0}'.", name));
             }
-
             return arguments;
-        }
-
-        static void EnsureArgumentsEvenCount(List<string> commandLineArguments, List<string> namedArguments)
-        {
-            if (namedArguments.Count.IsOdd())
-            {
-                var message = string.Format("Could not parse arguments: '{0}'.", string.Join(" ", commandLineArguments));
-                throw new ErrorException(message);
-            }
         }
 
         static bool IsSwitch(string switchName, string value)
@@ -106,6 +102,15 @@ namespace GitFlowVersion
             return (string.Equals(switchName, value));
         }
 
+        static void EnsureArgumentsEvenCount(List<string> commandLineArguments, List<string> namedArguments)
+        {
+            if (namedArguments.Count.IsOdd())
+            {
+                var message = string.Format("Could not parse arguments: '{0}'.", string.Join(" ", commandLineArguments));
+                throw new ErrorException(message);
+            }
+        }
+
         static bool IsHelp(string singleArgument)
         {
             return (singleArgument == "?") ||
@@ -116,5 +121,7 @@ namespace GitFlowVersion
                    (singleArgument == "-help") ||
                    (singleArgument == "-?");
         }
+
+        static string[] VersionParts = {"major", "minor", "patch", "long", "short", "nuget"};
     }
 }

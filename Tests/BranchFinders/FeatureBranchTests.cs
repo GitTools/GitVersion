@@ -12,7 +12,7 @@ public class FeatureBranchTests : Lg2sHelperBase
     {
         //this scenario should redirect to the develop finder since there is no diff btw this branch and the develop branch
 
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
             var branchingCommit = repo.Branches["develop"].Tip;
@@ -42,7 +42,7 @@ public class FeatureBranchTests : Lg2sHelperBase
     [Test]
     public void Feature_branch_with_1_commit()
     {
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
             // Create a feature branch from the parent of current develop tip
@@ -77,7 +77,7 @@ public class FeatureBranchTests : Lg2sHelperBase
     [Test]
     public void Feature_branch_with_2_commits()
     {
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
             // Create a feature branch from the parent of current develop tip
@@ -113,7 +113,7 @@ public class FeatureBranchTests : Lg2sHelperBase
     [Test]
     public void Feature_branch_with_2_commits_but_building_an_commit()
     {
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
             // Create a feature branch from the parent of current develop tip

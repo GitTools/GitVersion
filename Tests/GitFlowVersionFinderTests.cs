@@ -13,22 +13,22 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
         using (var repo = new Repository(ASBMTestRepoWorkingDirPath))
         {
             const string branchName = "master";
-            Branch master = repo.Branches[branchName];
+            var master = repo.Branches[branchName];
 
-            var gfvf = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder
             {
                 Repository = repo,
                 Branch = master,
                 Commit = master.Tip
             };
 
-            VersionAndBranch vab = gfvf.FindVersion();
+            var versionAndBranch = finder.FindVersion();
 
-            Assert.AreEqual(branchName, vab.BranchName);
-            Assert.AreEqual(BranchType.Master, vab.BranchType);
-            Assert.AreEqual(master.Tip.Sha, vab.Sha);
+            Assert.AreEqual(branchName, versionAndBranch.BranchName);
+            Assert.AreEqual(BranchType.Master, versionAndBranch.BranchType);
+            Assert.AreEqual(master.Tip.Sha, versionAndBranch.Sha);
 
-            SemanticVersion version = vab.Version;
+            var version = versionAndBranch.Version;
             Assert.AreEqual(1, version.Major);
             Assert.AreEqual(0, version.Minor);
             Assert.AreEqual(1, version.Patch);
@@ -42,22 +42,22 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
         using (var repo = new Repository(ASBMTestRepoWorkingDirPath))
         {
             const string branchName = "develop";
-            Branch develop = repo.Branches[branchName];
+            var develop = repo.Branches[branchName];
 
-            var gfvf = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder
             {
                 Repository = repo,
                 Branch = develop,
                 Commit = develop.Tip
             };
 
-            VersionAndBranch vab = gfvf.FindVersion();
+            var versionAndBranch = finder.FindVersion();
 
-            Assert.AreEqual(branchName, vab.BranchName);
-            Assert.AreEqual(BranchType.Develop, vab.BranchType);
-            Assert.AreEqual(develop.Tip.Sha, vab.Sha);
+            Assert.AreEqual(branchName, versionAndBranch.BranchName);
+            Assert.AreEqual(BranchType.Develop, versionAndBranch.BranchType);
+            Assert.AreEqual(develop.Tip.Sha, versionAndBranch.Sha);
 
-            SemanticVersion version = vab.Version;
+            var version = versionAndBranch.Version;
             Assert.AreEqual(1, version.Major);
             Assert.AreEqual(1, version.Minor);
             Assert.AreEqual(0, version.Patch);
@@ -68,35 +68,35 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
     [Test]
     public void FromNewFeature()
     {
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
             const string branchName = "feature/new";
             repo.CreateBranch(branchName, repo.Branches["develop"].Tip).Checkout();
 
-            string path = Path.Combine(repo.Info.WorkingDirectory, "README");
+            var path = Path.Combine(repo.Info.WorkingDirectory, "README");
             File.AppendAllText(path, "Feature\n");
 
             repo.Index.Stage(path);
-            Signature sign = Constants.SignatureNow();
+            var sign = Constants.SignatureNow();
             repo.Commit("feature new", sign, sign);
 
             var feature = repo.Branches[branchName];
 
-            var gfvf = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder
             {
                 Repository = repo,
                 Branch = feature,
                 Commit = feature.Tip
             };
 
-            VersionAndBranch vab = gfvf.FindVersion();
+            var versionAndBranch = finder.FindVersion();
 
-            Assert.AreEqual(branchName, vab.BranchName);
-            Assert.AreEqual(BranchType.Feature, vab.BranchType);
-            Assert.AreEqual(feature.Tip.Sha, vab.Sha);
+            Assert.AreEqual(branchName, versionAndBranch.BranchName);
+            Assert.AreEqual(BranchType.Feature, versionAndBranch.BranchType);
+            Assert.AreEqual(feature.Tip.Sha, versionAndBranch.Sha);
 
-            SemanticVersion version = vab.Version;
+            var version = versionAndBranch.Version;
             Assert.AreEqual(1, version.Major);
             Assert.AreEqual(1, version.Minor);
             Assert.AreEqual(0, version.Patch);
@@ -107,39 +107,39 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
     [Test]
     public void FromNewHotFix()
     {
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
-            Branch master = repo.Branches["master"];
+            var master = repo.Branches["master"];
 
             const string branchName = "hotfix/1.0.2";
             repo.CreateBranch(branchName, master.Tip).Checkout();
 
-            string path = Path.Combine(repo.Info.WorkingDirectory, "README");
+            var path = Path.Combine(repo.Info.WorkingDirectory, "README");
             File.AppendAllText(path, "Hotfix\n");
 
             repo.Index.Stage(path);
-            Signature sign = Constants.SignatureNow();
+            var sign = Constants.SignatureNow();
             repo.Commit("hotfix", sign, sign);
 
             var hotfix = repo.Branches[branchName];
 
             repo.Tags.Add("1.0.2-Beta1", hotfix.Tip, Constants.SignatureNow(), " ");
 
-            var gfvf = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder
             {
                 Repository = repo,
                 Branch = hotfix,
                 Commit = hotfix.Tip
             };
 
-            VersionAndBranch vab = gfvf.FindVersion();
+            var versionAndBranch = finder.FindVersion();
 
-            Assert.AreEqual(branchName, vab.BranchName);
-            Assert.AreEqual(BranchType.Hotfix, vab.BranchType);
-            Assert.AreEqual(hotfix.Tip.Sha, vab.Sha);
+            Assert.AreEqual(branchName, versionAndBranch.BranchName);
+            Assert.AreEqual(BranchType.Hotfix, versionAndBranch.BranchType);
+            Assert.AreEqual(hotfix.Tip.Sha, versionAndBranch.Sha);
 
-            SemanticVersion version = vab.Version;
+            var version = versionAndBranch.Version;
             Assert.AreEqual(1, version.Major);
             Assert.AreEqual(0, version.Minor);
             Assert.AreEqual(2, version.Patch);
@@ -151,39 +151,39 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
     [Test]
     public void FromNewRelease()
     {
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
-            Branch master = repo.Branches["develop"];
+            var master = repo.Branches["develop"];
 
             const string branchName = "release/2.0.0";
             repo.CreateBranch(branchName, master.Tip).Checkout();
 
-            string path = Path.Combine(repo.Info.WorkingDirectory, "README");
+            var path = Path.Combine(repo.Info.WorkingDirectory, "README");
             File.AppendAllText(path, "Release\n");
 
             repo.Index.Stage(path);
-            Signature sign = Constants.SignatureNow();
+            var sign = Constants.SignatureNow();
             repo.Commit("release", sign, sign);
 
             var release = repo.Branches[branchName];
 
             repo.Tags.Add("2.0.0-Beta1", release.Tip, Constants.SignatureNow(), " ");
 
-            var gfvf = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder
             {
                 Repository = repo,
                 Branch = release,
                 Commit = release.Tip
             };
 
-            VersionAndBranch vab = gfvf.FindVersion();
+            var versionAndBranch = finder.FindVersion();
 
-            Assert.AreEqual(branchName, vab.BranchName);
-            Assert.AreEqual(BranchType.Release, vab.BranchType);
-            Assert.AreEqual(release.Tip.Sha, vab.Sha);
+            Assert.AreEqual(branchName, versionAndBranch.BranchName);
+            Assert.AreEqual(BranchType.Release, versionAndBranch.BranchType);
+            Assert.AreEqual(release.Tip.Sha, versionAndBranch.Sha);
 
-            SemanticVersion version = vab.Version;
+            var version = versionAndBranch.Version;
             Assert.AreEqual(2, version.Major);
             Assert.AreEqual(0, version.Minor);
             Assert.AreEqual(0, version.Patch);
@@ -195,49 +195,49 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
     [Test]
     public void RequiresALocalMasterBranch()
     {
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
             repo.Branches["feature/one"].ForceCheckout();
 
             repo.Branches.Remove("master");
 
-            var gfvf = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder
             {
                 Repository = repo,
                 Branch = repo.Head,
                 Commit = repo.Head.Tip
             };
 
-            Assert.Throws<ErrorException>(() => gfvf.FindVersion());
+            Assert.Throws<ErrorException>(() => finder.FindVersion());
         }
     }
 
     [Test]
     public void RequiresALocalDevelopBranch()
     {
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
             repo.Branches["feature/one"].ForceCheckout();
 
             repo.Branches.Remove("develop");
 
-            var gfvf = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder
             {
                 Repository = repo,
                 Branch = repo.Head,
                 Commit = repo.Head.Tip
             };
 
-            Assert.Throws<ErrorException>(() => gfvf.FindVersion());
+            Assert.Throws<ErrorException>(() => finder.FindVersion());
         }
     }
 
     [Test]
     public void AFeatureBranchIsRequiredToBranchOffOfDevelopBranch()
     {
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
             const string branchName = "feature/unborn";
@@ -249,21 +249,21 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             var feature = repo.Branches[branchName];
 
-            var gfvf = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder
             {
                 Repository = repo,
                 Branch = feature,
                 Commit = feature.Tip
             };
 
-            Assert.Throws<ErrorException>(() => gfvf.FindVersion());
+            Assert.Throws<ErrorException>(() => finder.FindVersion());
         }
     }
 
     [Test]
     public void AHotfixBranchIsRequiredToBranchOffOfMasterBranch()
     {
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
             const string branchName = "hotfix/1.0.2";
@@ -275,21 +275,21 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             var feature = repo.Branches[branchName];
 
-            var gfvf = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder
             {
                 Repository = repo,
                 Branch = feature,
                 Commit = feature.Tip
             };
 
-            Assert.Throws<ErrorException>(() => gfvf.FindVersion());
+            Assert.Throws<ErrorException>(() => finder.FindVersion());
         }
     }
 
     [Test]
     public void APullRequestBranchIsRequiredToBranchOffOfDevelopBranch()
     {
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
             const string branchName = "pull/1735/merge";
@@ -301,14 +301,33 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             var pull = repo.Branches[branchName];
 
-            var gfvf = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder
             {
                 Repository = repo,
                 Branch = pull,
                 Commit = pull.Tip
             };
 
-            Assert.Throws<ErrorException>(() => gfvf.FindVersion());
+            Assert.Throws<ErrorException>(() => finder.FindVersion());
+        }
+    }
+
+    [Test]
+    public void CannotBuildAVersionFromAnBranchWithAnInvalidPrefix()
+    {
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        using (var repo = new Repository(repoPath))
+        {
+            repo.Branches.Add("members-only", repo.Head.Tip).ForceCheckout();
+
+            var finder = new GitFlowVersionFinder
+            {
+                Repository = repo,
+                Branch = repo.Head,
+                Commit = repo.Head.Tip
+            };
+
+            Assert.Throws<ErrorException>(() => finder.FindVersion());
         }
     }
 }

@@ -9,7 +9,7 @@ public class HotfixTests : Lg2sHelperBase
     [Test]
     public void No_commits()
     {
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
             var branchingCommit = repo.Branches["master"].Tip;
@@ -40,7 +40,7 @@ public class HotfixTests : Lg2sHelperBase
     [Test]
     public void First_commit()
     {
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
             var branchingCommit = repo.Branches["master"].Tip;
@@ -76,7 +76,7 @@ public class HotfixTests : Lg2sHelperBase
     [Test]
     public void Second_commit()
     {
-        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
             var branchingCommit = repo.Branches["master"].Tip;

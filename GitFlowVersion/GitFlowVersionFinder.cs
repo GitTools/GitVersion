@@ -69,22 +69,18 @@ namespace GitFlowVersion
                            FeatureBranch = Branch
                        }.FindVersion();
             }
-            return new FeatureVersionFinder
-                   {
-                       Commit = Commit,
-                       Repository = Repository,
-                       FeatureBranch = Branch
-                   }.FindVersion();
+
+            throw new ErrorException("Branch '{0}' doesn't respect the GitFlowVersion naming convention.");
         }
 
-        private void EnsureMainTopologyConstraints()
+        void EnsureMainTopologyConstraints()
         {
             EnsureLocalBranchExists("master");
             EnsureLocalBranchExists("develop");
             EnsureHeadIsNotDetached();
         }
 
-        private void EnsureHeadIsNotDetached()
+        void EnsureHeadIsNotDetached()
         {
             if (!Branch.CanonicalName.Equals("(no branch)", StringComparison.OrdinalIgnoreCase))
             {
@@ -97,7 +93,7 @@ namespace GitFlowVersion
                 , Branch.Tip.Id.ToString(7)));
         }
 
-        private void EnsureLocalBranchExists(string branchName)
+        void EnsureLocalBranchExists(string branchName)
         {
             if (Repository.FindBranch(branchName) != null)
             {

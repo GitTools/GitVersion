@@ -2,17 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using LibGit2Sharp;
 
-public class MockReferenceCollection : ReferenceCollection, ICollection<Commit>
+public class MockReflogCollection : ReflogCollection, ICollection<Commit>
 {
-
-    public override ReflogCollection Log(string canonicalName)
-    {
-        return new MockReflogCollection
-               {
-                   Commits = Commits
-               };
-    }
-
     public List<Commit> Commits = new List<Commit>();
 
     public IEnumerator<Commit> GetEnumerator()

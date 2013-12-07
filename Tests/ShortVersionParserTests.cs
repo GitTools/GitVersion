@@ -43,8 +43,8 @@ public class ShortVersionParserTests
         Assert.AreEqual(2, minor);
         Assert.AreEqual(0, patch);
     }
-	
-	[Test]
+
+    [Test]
     public void Major_minorTry()
     {
         int minor;

@@ -8,7 +8,6 @@ using NUnit.Framework;
 public class IntegrationTests
 {
 
-
     [Test, Explicit]
     public void ProcessAllTheCommits()
     {
@@ -16,7 +15,6 @@ public class IntegrationTests
         {
             foreach (var branch in repository.Branches)
             {
-
                 foreach (var commit in branch.Commits)
                 {
                     string versionPart;
@@ -154,8 +152,6 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Stability);
             Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Version.Suffix);
-            Debug.WriteLine(new TeamCityVersionBuilder().GenerateBuildVersion(version));
-            
         }
     }
 
@@ -284,6 +280,30 @@ public class IntegrationTests
                              Repository = repository,
                              Branch = branch
                          };
+            var version = finder.FindVersion();
+            Debug.WriteLine(version.Version.Major);
+            Debug.WriteLine(version.Version.Minor);
+            Debug.WriteLine(version.Version.Patch);
+            Debug.WriteLine(version.Version.PreReleasePartOne);
+            Debug.WriteLine(version.Version.Stability);
+            Debug.WriteLine(version.BranchType);
+            Debug.WriteLine(version.Version.Suffix);
+        }
+    }
+    [Test, Explicit]
+    public void NServiceBusNhibernate()
+    {
+        using (var repository = new Repository(@"C:\Code\NServiceBus.Nhibernate"))
+        {
+            var branch = repository.FindBranch("develop");
+            var commit = branch.Commits.First();
+
+            var finder = new GitFlowVersionFinder
+            {
+                Commit = commit,
+                Repository = repository,
+                Branch = branch
+            };
             var version = finder.FindVersion();
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);

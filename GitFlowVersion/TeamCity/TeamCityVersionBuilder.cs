@@ -1,6 +1,6 @@
 ﻿namespace GitFlowVersion
 {
-    using GitFlowVersion.VersionBuilders;
+    using global::GitFlowVersion.VersionBuilders;
 
     public class TeamCityVersionBuilder : VersionBuilderBase
     {

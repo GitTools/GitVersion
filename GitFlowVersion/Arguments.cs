@@ -7,5 +7,6 @@ namespace GitFlowVersion
         public string TargetBranch;
         public bool IsHelp;
         public string LogFilePath;
+        public string VersionPart;
     }
 }

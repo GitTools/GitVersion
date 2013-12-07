@@ -62,7 +62,7 @@ public class MergeMessageParserTests
         Assert.IsFalse(MergeMessageParser.TryParse(c, out versionPart));
     }
 
-    private void AssertMergeMessage(string expectedVersion, string message)
+    void AssertMergeMessage(string expectedVersion, string message)
     {
         var c = new MockCommit
                 {

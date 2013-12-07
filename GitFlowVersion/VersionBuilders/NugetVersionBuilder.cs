@@ -1,7 +1,7 @@
 ﻿namespace GitFlowVersion
 {
     using System;
-
+ 
     public static class NugetVersionBuilder
     {
 

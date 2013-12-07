@@ -50,6 +50,8 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AssemblyInfoBuilder.cs" />
+    <Compile Include="BuildLogger.cs" />
+    <Compile Include="InvalidFileChecker.cs" />
     <Compile Include="TaskLogger.cs" />
     <Compile Include="TempFileTracker.cs" />
     <Compile Include="UpdateAssemblyInfo.cs" />
@@ -85,17 +87,14 @@
   <UsingTask TaskName="PepitaPackage.CreatePackageTask" AssemblyFile="$(SolutionDir)Tools\Pepita\PepitaPackage.dll" />
   <Target Name="AfterBuild" DependsOnTargets="Clean">
     <MakeDir Directories="$(SolutionDir)NuGetTaskBuild" />
-    
     <CreateItem Include="$(SolutionDir)GitFlowVersionTask\bin\$(ConfigurationName)\NativeBinaries\amd64\*.dll">
       <Output TaskParameter="Include" ItemName="amd64" />
     </CreateItem>
     <Copy SourceFiles="@(amd64)" DestinationFolder="$(SolutionDir)NuGetTaskBuild\NativeBinaries\amd64" />
-    
     <CreateItem Include="$(SolutionDir)GitFlowVersionTask\bin\$(ConfigurationName)\NativeBinaries\x86\*.dll">
       <Output TaskParameter="Include" ItemName="x86" />
     </CreateItem>
     <Copy SourceFiles="@(x86)" DestinationFolder="$(SolutionDir)NuGetTaskBuild\NativeBinaries\x86" />
-
     <Copy SourceFiles="$(OutputPath)\GitFlowVersionTask.dll" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
     <Copy SourceFiles="$(OutputPath)\GitFlowVersionTask.pdb" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
     <Copy SourceFiles="$(OutputPath)\GitFlowVersion.exe" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />

@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using GitFlowVersion.VersionBuilders;
+    using global::GitFlowVersion.VersionBuilders;
 
     static class IntegrationHelper
     {
