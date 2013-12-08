@@ -31,13 +31,13 @@
         {
             CompileFiles = new ITaskItem[] {};
             logger = new TaskLogger(this);
-            Logger.WriteInfo = logger.LogInfo;
         }
 
         public override bool Execute()
         {
             try
             {
+                Logger.WriteInfo = logger.LogInfo;
                 return InnerExecute();
             }
             catch (ErrorException errorException)
@@ -59,8 +59,6 @@
         public bool InnerExecute()
         {
             TempFileTracker.DeleteTempFiles();
-
-            Logger.WriteInfo = this.LogInfo;
 
             InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
 

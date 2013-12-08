@@ -14,7 +14,6 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     {
         var task = new UpdateAssemblyInfo
             {
-                BuildEngine = new MockBuildEngine(),
                 SolutionDirectory = Path.GetTempPath(),
             };
 
@@ -31,7 +30,6 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
 
         var task = new UpdateAssemblyInfo
             {
-                BuildEngine = new MockBuildEngine(),
                 SolutionDirectory = ASBMTestRepoWorkingDirPath,
             };
 
@@ -45,7 +43,6 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
 
         var task = new UpdateAssemblyInfo
             {
-                BuildEngine = new MockBuildEngine(),
                 SolutionDirectory = repoPath,
             };
 
@@ -59,7 +56,6 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
 
         var task = new UpdateAssemblyInfo
             {
-                BuildEngine = new MockBuildEngine(),
                 SolutionDirectory = repoPath,
             };
 
@@ -74,7 +70,6 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
 
         var task = new UpdateAssemblyInfo
             {
-                BuildEngine = new MockBuildEngine(),
                 SolutionDirectory = repoPath,
             };
 
@@ -94,7 +89,6 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
 
         var task = new UpdateAssemblyInfo
             {
-                BuildEngine = new MockBuildEngine(),
                 SolutionDirectory = repoPath,
             };
 
