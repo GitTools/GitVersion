@@ -27,40 +27,18 @@
 
         TaskLogger logger;
 
+        public UpdateAssemblyInfo()
+        {
+            CompileFiles = new ITaskItem[] {};
+            logger = new TaskLogger(this);
+            Logger.WriteInfo = logger.LogInfo;
+        }
+
         public override bool Execute()
         {
             try
             {
-                logger = new TaskLogger(this);
-                Logger.WriteInfo = logger.LogInfo;
-                TempFileTracker.DeleteTempFiles();
-
-                Logger.WriteInfo = this.LogInfo;
-
-
-                InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
-
-
-                var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
-
-
-                if (string.IsNullOrEmpty(gitDirectory))
-                {
-                    var message =
-                        "No .git directory found in provided solution path. This means the assembly may not be versioned correctly. " +
-                        "To fix this warning either clone the repository using git or remove the `GitFlowVersion.Fody` nuget package. " +
-                        "To temporarily work around this issue add a AssemblyInfo.cs with an appropriate `AssemblyVersionAttribute`." +
-                        "If it is detected that this build is occurring on a CI server an error may be thrown.";
-                    logger.LogWarning(message);
-                    return true;
-                }
-
-                var versionAndBranch = VersionCache.GetVersion(gitDirectory);
-
-                WriteIntegrationParameters(versionAndBranch, gitDirectory);
-                CreateTempAssemblyInfo(versionAndBranch);
-
-                return true;
+                return InnerExecute();
             }
             catch (ErrorException errorException)
             {
@@ -77,6 +55,36 @@
                 Logger.Reset();
             }
         }
+
+        public bool InnerExecute()
+        {
+            TempFileTracker.DeleteTempFiles();
+
+            Logger.WriteInfo = this.LogInfo;
+
+            InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
+
+            var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
+
+            if (string.IsNullOrEmpty(gitDirectory))
+            {
+                var message =
+                    "No .git directory found in provided solution path. This means the assembly may not be versioned correctly. " +
+                    "To fix this warning either clone the repository using git or remove the `GitFlowVersion.Fody` nuget package. " +
+                    "To temporarily work around this issue add a AssemblyInfo.cs with an appropriate `AssemblyVersionAttribute`." +
+                    "If it is detected that this build is occurring on a CI server an error may be thrown.";
+                logger.LogWarning(message);
+                return true;
+            }
+
+            var versionAndBranch = VersionCache.GetVersion(gitDirectory);
+
+            WriteIntegrationParameters(versionAndBranch, gitDirectory);
+            CreateTempAssemblyInfo(versionAndBranch);
+
+            return true;
+        }
+
         void WriteIntegrationParameters(VersionAndBranch versionAndBranch, string gitDirectory)
         {
             foreach (var buildServer in BuildServerList.BuildServers)
