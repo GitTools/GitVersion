@@ -3,7 +3,7 @@
     using System;
     using GitFlowVersion;
 
-    public partial class TeamCity : IBuildServer
+    public class TeamCity : IBuildServer
     {
         public bool CanApplyToCurrentContext()
         {

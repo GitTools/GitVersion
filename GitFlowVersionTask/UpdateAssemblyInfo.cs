@@ -1,7 +1,9 @@
 ﻿namespace GitFlowVersionTask
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using GitFlowVersion;
     using GitFlowVersion.VersionBuilders;
     using Microsoft.Build.Framework;
@@ -75,30 +77,43 @@
                 return true;
             }
 
+            var applicableBuildServers = GetApplicableBuildServers(gitDirectory).ToList();
+
+            foreach (var buildServer in applicableBuildServers)
+            {
+                logger.LogInfo(string.Format("Executing PerformPreProcessingSteps for '{0}'.", buildServer.GetType().Name));
+                buildServer.PerformPreProcessingSteps(gitDirectory);
+            }
             var versionAndBranch = VersionCache.GetVersion(gitDirectory);
 
-            WriteIntegrationParameters(versionAndBranch, gitDirectory);
+            WriteIntegrationParameters(versionAndBranch, gitDirectory, applicableBuildServers);
+
             CreateTempAssemblyInfo(versionAndBranch);
 
             return true;
         }
 
-        public virtual void WriteIntegrationParameters(VersionAndBranch versionAndBranch, string gitDirectory)
+        public void WriteIntegrationParameters(VersionAndBranch versionAndBranch, string gitDirectory, List<IBuildServer> applicableBuildServers)
+        {
+            foreach (var buildServer in applicableBuildServers)
+            {
+                logger.LogInfo(string.Format("Executing GenerateSetVersionMessage for '{0}'.", buildServer.GetType().Name));
+                logger.LogWarning(buildServer.GenerateSetVersionMessage(versionAndBranch.GenerateSemVer()));
+                logger.LogInfo(string.Format("Executing GenerateBuildLogOutput for '{0}'.", buildServer.GetType().Name));
+                foreach (var buildParameter in BuildOutputGenerator.GenerateBuildLogOutput(versionAndBranch, buildServer))
+                {
+                    logger.LogInfo(buildParameter);
+                }
+            }
+        }
+        public virtual IEnumerable<IBuildServer> GetApplicableBuildServers(string gitDirectory)
         {
             foreach (var buildServer in BuildServerList.BuildServers)
             {
-                if (!buildServer.CanApplyToCurrentContext())
+                if (buildServer.CanApplyToCurrentContext())
                 {
-                    continue;
-                }
-                logger.LogInfo(string.Format("Executing inside a {0} build agent.", buildServer.GetType().Name));
-
-                logger.LogWarning(buildServer.GenerateSetVersionMessage(versionAndBranch.GenerateSemVer()));
-
-                buildServer.PerformPreProcessingSteps(gitDirectory);
-                foreach (var buildParameter in BuildOutputGenerator.GenerateBuildLogOutput(versionAndBranch, buildServer))
-                {
-                    logger.LogWarning(buildParameter);
+                    logger.LogInfo(string.Format("Applicable build agent found: '{0}'.", buildServer.GetType().Name));
+                    yield return buildServer;
                 }
             }
         }

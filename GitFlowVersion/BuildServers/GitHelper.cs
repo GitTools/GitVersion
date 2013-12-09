@@ -61,13 +61,18 @@ namespace GitFlowVersion.GitFlowVersion
             var remoteName = repo.Network.Remotes.Single().Name;
             var prefix = string.Format("refs/remotes/{0}/", remoteName);
 
+            
+
+            
             foreach (var remoteTrackingReference in repo.Refs.FromGlob(prefix + "*"))
             {
                 var localCanonicalName = "refs/heads/" + remoteTrackingReference.CanonicalName.Substring(prefix.Length);
                 if (repo.Refs.Any(x => x.CanonicalName == localCanonicalName))
                 {
+                    Logger.WriteInfo(string.Format("Skipping local branch creation since it already exists '{0}'.", remoteTrackingReference.CanonicalName));
                     continue;
                 }
+                Logger.WriteInfo(string.Format("Creating local branch from remote tracking '{0}'.", remoteTrackingReference.CanonicalName));
 
                 var symbolicReference = remoteTrackingReference as SymbolicReference;
                 if (symbolicReference == null)
@@ -76,7 +81,7 @@ namespace GitFlowVersion.GitFlowVersion
                 }
                 else
                 {
-                    repo.Refs.Add(localCanonicalName, new ObjectId(symbolicReference.Target.TargetIdentifier), true);
+                    repo.Refs.Add(localCanonicalName, new ObjectId(symbolicReference.ResolveToDirectReference().TargetIdentifier), true);
                 }
             }
         }

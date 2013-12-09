@@ -11,7 +11,7 @@ public class IntegrationTests
     [Test, Explicit]
     public void ProcessAllTheCommits()
     {
-        using (var repository = new Repository(@"C:\Code\Particular\NServiceBus"))
+        using (var repository = new Repository(@"C:\Code\NServiceBus"))
         {
             foreach (var branch in repository.Branches)
             {
@@ -32,11 +32,12 @@ public class IntegrationTests
         }
     }
 
+
     [Test, Explicit]
     public void TimingOnNSB()
     {
         var startNew = Stopwatch.StartNew();
-        using (var repository = new Repository(@"C:\Code\Particular\NServiceBus"))
+        using (var repository = new Repository(@"C:\Code\NServiceBus"))
         {
             var branch = repository.Branches.First(x => x.Name == "develop");
             var commit = branch.Commits.First();
@@ -51,7 +52,7 @@ public class IntegrationTests
         }
         Debug.WriteLine(startNew.ElapsedMilliseconds);
         startNew = Stopwatch.StartNew();
-        using (var repository = new Repository(@"C:\Code\Particular\NServiceBus"))
+        using (var repository = new Repository(@"C:\Code\NServiceBus"))
         {
             var branch = repository.Branches.First(x => x.Name == "develop");
             var commit = branch.Commits.First();
@@ -71,10 +72,10 @@ public class IntegrationTests
     public void DirectoryDateFinderTest()
     {
         var stopwatch = Stopwatch.StartNew();
-        DirectoryDateFinder.GetLastDirectoryWrite(@"C:\Code\Particular\NServiceBus\.git");
+        DirectoryDateFinder.GetLastDirectoryWrite(@"C:\Code\NServiceBus\.git");
         Debug.WriteLine(stopwatch.ElapsedMilliseconds);
         stopwatch = Stopwatch.StartNew();
-        DirectoryDateFinder.GetLastDirectoryWrite(@"C:\Code\Particular\NServiceBus\.git");
+        DirectoryDateFinder.GetLastDirectoryWrite(@"C:\Code\NServiceBus\.git");
         Debug.WriteLine(stopwatch.ElapsedMilliseconds);
     }
 

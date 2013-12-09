@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using GitFlowVersion;
@@ -116,8 +117,9 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
 
     public class LocalUpdateAssemblyInfo : UpdateAssemblyInfo
     {
-        public override void WriteIntegrationParameters(VersionAndBranch versionAndBranch, string gitDirectory)
+        public override IEnumerable<IBuildServer> GetApplicableBuildServers(string gitDirectory)
         {
+            yield break;
         }
     }
 }
