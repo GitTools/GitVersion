@@ -1,6 +1,7 @@
 namespace GitFlowVersion
 {
     using System;
+    using System.Linq;
     using LibGit2Sharp;
 
     public class GitFlowVersionFinder
@@ -100,7 +101,8 @@ namespace GitFlowVersion
                 return;
             }
 
-            throw new ErrorException(string.Format("This repository doesn't contain a branch named '{0}'. Please create one.", branchName));
+            var existingBranches = string.Format("'{0}'", string.Join("', '", Repository.Branches.Select(x=>x.CanonicalName)));
+            throw new ErrorException(string.Format("This repository doesn't contain a branch named '{0}'. Please create one. Existing branches: {1}", branchName, existingBranches));
         }
     }
 }
