@@ -17,7 +17,7 @@ namespace GitFlowVersion
             int nbHotfixCommits = NumberOfCommitsInBranchNotKnownFromBaseBranch(repo, branch, branchType, baseBranchName);
 
             string versionString = branch.GetSuffix(branchType);
-            var version = SemanticVersionParser.Parse(versionString);
+            var version = SemanticVersionParser.Parse(versionString, false);
 
             EnsureVersionIsValid(version, branch, branchType);
 
@@ -33,7 +33,7 @@ namespace GitFlowVersion
                                                      Major = version.Major,
                                                      Minor = version.Minor,
                                                      Patch = version.Patch,
-                                                     Stability = version.Stability,
+                                                     Stability = version.Stability ?? Stability.Final,
                                                      PreReleasePartOne = version.PreReleasePartOne,
                                                      PreReleasePartTwo = (nbHotfixCommits == 0) ? default(int?) : nbHotfixCommits
                                                  },
@@ -80,10 +80,12 @@ namespace GitFlowVersion
             var msg = string.Format("Branch '{0}' doesn't respect the {1} branch naming convention. ",
                 branch.Name, branchType);
 
-            if (version.PreReleasePartTwo != null)
+            if (version.Stability != null ||
+                version.PreReleasePartOne != null ||
+                version.PreReleasePartTwo != null)
             {
                 throw new ErrorException(msg +
-                                         "Supported format is 'Major.Minor.Patch[-StabilityPreRealeasePartOne]'.");
+                                         string.Format("Supported format is '{0}-Major.Minor.Patch'.", branchType.ToString().ToLowerInvariant()));
             }
 
             switch (branchType)
@@ -108,7 +110,7 @@ namespace GitFlowVersion
                     throw new NotSupportedException(string.Format("Unexpected branch type {0}.", branchType));
             }
 
-            if (version.Stability == Stability.Final)
+            if (version.Stability == Stability.Final || version.Stability == null)
             {
                 return;
             }

@@ -211,4 +211,26 @@ public class HotfixTests : Lg2sHelperBase
             Assert.Throws<ErrorException>(() => finder.FindVersion());
         }
     }
+
+    [Test]
+    public void EnsureAHotfixBranchNameExposesAStability()
+    {
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        using (var repo = new Repository(repoPath))
+        {
+            const string branchName = "hotfix-0.3.1-alpha5";
+
+            var branchingCommit = repo.Branches["master"].Tip;
+            var hotfixBranch = repo.Branches.Add(branchName, branchingCommit);
+
+            var finder = new HotfixVersionFinder
+            {
+                Repository = repo,
+                Commit = branchingCommit,
+                HotfixBranch = hotfixBranch,
+            };
+
+            Assert.Throws<ErrorException>(() => finder.FindVersion());
+        }
+    }
 }

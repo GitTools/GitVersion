@@ -7,6 +7,11 @@ namespace GitFlowVersion
     {
         public static bool TryParse(string versionString, out SemanticVersion semanticVersion)
         {
+            return TryParse(versionString, out semanticVersion, true);
+        }
+
+        public static bool TryParse(string versionString, out SemanticVersion semanticVersion, bool normalize)
+        {
             var parts = versionString.Split('-');
             if (parts.Length > 2)
             {
@@ -110,16 +115,19 @@ namespace GitFlowVersion
             }
             else
             {
-                parsedVersion.Stability = Stability.Final;
+                if (normalize)
+                {
+                    parsedVersion.Stability = Stability.Final;
+                }
             }
             semanticVersion = parsedVersion;
             return true;
         }
 
-        public static SemanticVersion Parse(string versionString)
+        public static SemanticVersion Parse(string versionString, bool normalize)
         {
             SemanticVersion parsedVersion;
-            if (TryParse(versionString, out parsedVersion))
+            if (TryParse(versionString, out parsedVersion, normalize))
             {
                 return parsedVersion;
             }
