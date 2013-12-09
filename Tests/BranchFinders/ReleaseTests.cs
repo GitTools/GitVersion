@@ -113,6 +113,40 @@ public class ReleaseTests : Lg2sHelperBase
         }
     }
 
+    [Test]
+    public void Second_commit_with_no_tag()
+    {
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        using (var repo = new Repository(repoPath))
+        {
+            const string branchName = "release-0.4.0";
+
+            var branchingCommit = repo.Branches["develop"].Tip;
+            repo.Branches.Add(branchName, branchingCommit).Checkout();
+
+            AddOneCommitToHead(repo, "first commit on release");
+            AddOneCommitToHead(repo, "second commit on release");
+
+            var releaseBranch = repo.Branches[branchName];
+            var secondCommit = releaseBranch.Tip;
+
+            var finder = new ReleaseVersionFinder
+            {
+                Repository = repo,
+                Commit = secondCommit,
+                ReleaseBranch = releaseBranch,
+            };
+
+            var version = finder.FindVersion();
+            Assert.AreEqual(0, version.Version.Major);
+            Assert.AreEqual(4, version.Version.Minor);
+            Assert.AreEqual(0, version.Version.Patch);
+            Assert.AreEqual(Stability.Final, version.Version.Stability);
+            Assert.AreEqual(BranchType.Release, version.BranchType);
+            Assert.IsNull(version.Version.PreReleasePartOne);
+            Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is 2 commits on the branch");
+        }
+    }
 
     [Test]
     public void Override_stage_using_tag()
