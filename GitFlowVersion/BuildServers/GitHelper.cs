@@ -10,6 +10,7 @@ namespace GitFlowVersion.GitFlowVersion
             using (var repo = new Repository(gitDirectory))
             {
                 EnsureOnlyOneRemoteIsDefined(repo);
+                repo.Network.Fetch(repo.Network.Remotes.First());
                 CreateMissingLocalBranchesFromRemoteTrackingOnes(repo);
 
                 if (!repo.Info.IsHeadDetached)
