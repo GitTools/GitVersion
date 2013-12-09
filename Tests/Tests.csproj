@@ -108,6 +108,7 @@
     <Compile Include="GitDirFinderTests.cs" />
     <Compile Include="Helpers\Lg2sHelperBase.cs" />
     <Compile Include="LibGitExtensionsTests.cs" />
+    <Compile Include="Mocks\MockBuildEngine.cs" />
     <Compile Include="Mocks\MockMergeCommit.cs" />
     <Compile Include="Mocks\MockReflogCollection.cs" />
     <Compile Include="NugetVersionBuilderTests.cs" />

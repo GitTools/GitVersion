@@ -12,8 +12,9 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     [Test]
     public void StandardExecutionMode_LackOfAValidGitDirectoryDoesNotPreventExecution()
     {
-        var task = new UpdateAssemblyInfo
-            {
+        var task = new LocalUpdateAssemblyInfo
+            {            
+                BuildEngine = new MockBuildEngine(),
                 SolutionDirectory = Path.GetTempPath(),
             };
 
@@ -28,8 +29,9 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
             Assert.AreEqual(0, repo.Network.Remotes.Count());
         }
 
-        var task = new UpdateAssemblyInfo
-            {
+        var task = new LocalUpdateAssemblyInfo
+        {
+            BuildEngine = new MockBuildEngine(),
                 SolutionDirectory = ASBMTestRepoWorkingDirPath,
             };
 
@@ -41,8 +43,9 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     {
         var repoPath = CheckoutLocal(ASBMTestRepoWorkingDirPath, "refs/heads/master");
 
-        var task = new UpdateAssemblyInfo
-            {
+        var task = new LocalUpdateAssemblyInfo
+        {
+            BuildEngine = new MockBuildEngine(),
                 SolutionDirectory = repoPath,
             };
 
@@ -54,8 +57,9 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     {
         var repoPath = CheckoutLocal(ASBMTestRepoWorkingDirPath, "refs/heads/develop");
 
-        var task = new UpdateAssemblyInfo
-            {
+        var task = new LocalUpdateAssemblyInfo
+        {
+            BuildEngine = new MockBuildEngine(),
                 SolutionDirectory = repoPath,
             };
 
@@ -68,8 +72,9 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     {
         var repoPath = CheckoutLocal(ASBMTestRepoWorkingDirPath, "refs/heads/feature/one");
 
-        var task = new UpdateAssemblyInfo
-            {
+        var task = new LocalUpdateAssemblyInfo
+        {
+            BuildEngine = new MockBuildEngine(),
                 SolutionDirectory = repoPath,
             };
 
@@ -87,8 +92,9 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
             Assert.IsTrue(repo.Info.IsHeadDetached);
         }
 
-        var task = new UpdateAssemblyInfo
-            {
+        var task = new LocalUpdateAssemblyInfo
+        {
+            BuildEngine = new MockBuildEngine(),
                 SolutionDirectory = repoPath,
             };
 
@@ -107,4 +113,11 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         return repoPath;
     }
 
+
+    public class LocalUpdateAssemblyInfo : UpdateAssemblyInfo
+    {
+        public override void WriteIntegrationParameters(VersionAndBranch versionAndBranch, string gitDirectory)
+        {
+        }
+    }
 }

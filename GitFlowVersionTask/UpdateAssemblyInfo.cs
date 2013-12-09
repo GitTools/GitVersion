@@ -31,13 +31,13 @@
         {
             CompileFiles = new ITaskItem[] {};
             logger = new TaskLogger(this);
+            Logger.WriteInfo = this.LogInfo;
         }
 
         public override bool Execute()
         {
             try
             {
-                Logger.WriteInfo = logger.LogInfo;
                 return InnerExecute();
             }
             catch (ErrorException errorException)
@@ -83,7 +83,7 @@
             return true;
         }
 
-        void WriteIntegrationParameters(VersionAndBranch versionAndBranch, string gitDirectory)
+        public virtual void WriteIntegrationParameters(VersionAndBranch versionAndBranch, string gitDirectory)
         {
             foreach (var buildServer in BuildServerList.BuildServers)
             {
@@ -117,7 +117,6 @@
             AssemblyInfoTempFilePath = Path.Combine(TempFileTracker.TempPath, tempFileName);
             File.WriteAllText(AssemblyInfoTempFilePath, assemblyInfo);
         }
-
 
 
     }
