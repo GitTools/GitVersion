@@ -100,7 +100,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
             };
 
         var exception = Assert.Throws<ErrorException>(() => task.InnerExecute());
-        Assert.AreEqual("It looks like the branch being examined is a detached Head pointing to commit '469f851'. Without a proper branch name GITFlowVersion cannot determine the build version.",exception.Message);
+        Assert.AreEqual("It looks like the branch being examined is a detached Head pointing to commit '469f851'. Without a proper branch name GitFlowVersion cannot determine the build version.",exception.Message);
     }
 
     string CheckoutLocal(string repositoryPath, string monitoredReference)

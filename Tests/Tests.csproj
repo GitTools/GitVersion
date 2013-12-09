@@ -94,7 +94,7 @@
     <Compile Include="AssemblyLocation.cs" />
     <Compile Include="BranchClassifierTests.cs" />
     <Compile Include="BranchFinders\DevelopTests.cs" />
-    <Compile Include="BuildServers\Class1.cs" />
+    <Compile Include="BuildServers\TeamCityTests.cs" />
     <Compile Include="BuildServers\ContinuaCiTests.cs" />
     <Compile Include="GitHelperTests.cs" />
     <Compile Include="Helpers\Constants.cs" />
