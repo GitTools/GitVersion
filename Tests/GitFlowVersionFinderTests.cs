@@ -330,4 +330,35 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             Assert.Throws<ErrorException>(() => finder.FindVersion());
         }
     }
+
+    [Test]
+    public void AReleaseBranchIsRequiredToBranchOffOfDevelopBranch()
+    {
+        string repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        using (var repo = new Repository(repoPath))
+        {
+            const string branchName = "release/1.2.0";
+
+            // Create a new unborn release branch sharing no history with "develop"
+            repo.Refs.UpdateTarget(repo.Refs.Head.CanonicalName, "refs/heads/" + branchName);
+
+            string path = Path.Combine(repo.Info.WorkingDirectory, "README");
+            File.AppendAllText(path, "Release\n");
+
+            repo.Index.Stage(path);
+            Signature sign = Constants.SignatureNow();
+            repo.Commit("release unborn", sign, sign);
+
+            var feature = repo.Branches[branchName];
+
+            var gfvf = new GitFlowVersionFinder
+            {
+                Repository = repo,
+                Branch = feature,
+                Commit = feature.Tip
+            };
+
+            Assert.Throws<ErrorException>(() => gfvf.FindVersion());
+        }
+    }
 }
