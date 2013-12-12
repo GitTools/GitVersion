@@ -61,17 +61,13 @@ namespace GitFlowVersion
                            PullBranch = Branch
                        }.FindVersion();
             }
-            if (Branch.IsFeature())
-            {
-                return new FeatureVersionFinder
-                       {
-                           Commit = Commit,
-                           Repository = Repository,
-                           FeatureBranch = Branch
-                       }.FindVersion();
-            }
 
-            throw new ErrorException("Branch '{0}' doesn't respect the GitFlowVersion naming convention.");
+            return new FeatureVersionFinder
+                    {
+                        Commit = Commit,
+                        Repository = Repository,
+                        FeatureBranch = Branch
+                    }.FindVersion();
         }
 
         void EnsureMainTopologyConstraints()

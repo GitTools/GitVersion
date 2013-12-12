@@ -38,15 +38,6 @@ public class BranchClassifierTests
         Assert.IsFalse(new MockBranch("hotfix1").IsMaster());
     }
     [Test]
-    public void IsFeature()
-    {
-        Assert.IsTrue(new MockBranch("feature-1").IsFeature());
-        Assert.IsTrue(new MockBranch("feature/1").IsFeature());
-        Assert.IsTrue(new MockBranch("Feature-1").IsFeature());
-        Assert.IsTrue(new MockBranch("Feature/1").IsFeature());
-        Assert.IsFalse(new MockBranch("hotfix1").IsFeature());
-    }
-    [Test]
     public void IsPullRequest()
     {
         Assert.IsTrue(new MockBranch("fix for issue xxx","/pull/4").IsPullRequest());
