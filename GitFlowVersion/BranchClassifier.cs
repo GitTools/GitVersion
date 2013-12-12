@@ -51,11 +51,6 @@ namespace GitFlowVersion
             return branch.Name == "master";
         }
 
-        public static bool IsFeature(this Branch branch)
-        {
-            return branch.Name.StartsWith("feature-") || branch.Name.StartsWith("feature/");
-        }
-
         public static bool IsPullRequest(this Branch branch)
         {
             return branch.CanonicalName.Contains("/pull/");

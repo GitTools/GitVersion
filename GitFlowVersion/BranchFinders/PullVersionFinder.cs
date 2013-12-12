@@ -2,7 +2,7 @@ namespace GitFlowVersion
 {
     using LibGit2Sharp;
 
-    class PullVersionFinder
+    class PullVersionFinder : DevelopBasedVersionFinderBase
     {
         public Commit Commit;
         public IRepository Repository;
@@ -10,33 +10,12 @@ namespace GitFlowVersion
 
         public VersionAndBranch FindVersion()
         {
-            EnsurePullBranchShareACommonAncestorWithDevelop();
-
-            var versionOnMasterFinder = new VersionOnMasterFinder
-            {
-                Repository = Repository,
-                OlderThan = Commit.When(),
-            };
-            var versionFromMaster = versionOnMasterFinder
-                .Execute();
-
             var suffix = ExtractIssueNumber();
 
-            return new VersionAndBranch
-            {
-                BranchType = BranchType.PullRequest,
-                BranchName = PullBranch.Name,
-                Sha = Commit.Sha,
-                Version = new SemanticVersion
-                {
-                    Major = versionFromMaster.Major,
-                    Minor = versionFromMaster.Minor + 1,
-                    Patch = 0,
-                    Stability = Stability.Unstable,
-                    PreReleasePartOne = 0,
-                    Suffix = suffix
-                }
-            };
+            var version = FindVersion(Repository, PullBranch, Commit, BranchType.PullRequest);
+            version.Version.Suffix = suffix;
+
+            return version;
         }
 
         string ExtractIssueNumber()
@@ -77,23 +56,6 @@ namespace GitFlowVersion
             }
 
             return true;
-        }
-
-        void EnsurePullBranchShareACommonAncestorWithDevelop()
-        {
-            var ancestor = Repository.Commits.FindCommonAncestor(
-                Repository.FindBranch("develop").Tip,
-                PullBranch.Tip);
-
-            if (ancestor != null)
-            {
-                return;
-            }
-
-            throw new ErrorException(
-                "A pull request branch is expected to branch off of 'develop'. "
-                + string.Format("However, branch 'develop' and '{0}' do not share a common ancestor."
-                , PullBranch.Name));
         }
     }
 }

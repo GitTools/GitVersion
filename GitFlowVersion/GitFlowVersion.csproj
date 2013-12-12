@@ -52,6 +52,7 @@
     <Compile Include="ArgumentParser.cs" />
     <Compile Include="Arguments.cs" />
     <Compile Include="BranchClassifier.cs" />
+    <Compile Include="BranchFinders\DevelopBasedVersionFinderBase.cs" />
     <Compile Include="BranchFinders\OptionallyTaggedBranchVersionFinderBase.cs" />
     <Compile Include="BranchFinders\FeatureVersionFinder.cs" />
     <Compile Include="BranchFinders\DevelopVersionFinder.cs" />

@@ -313,12 +313,17 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
     }
 
     [Test]
-    public void CannotBuildAVersionFromAnBranchWithAnInvalidPrefix()
+    public void AFeatureBranchDoesNotRequireASpecificPrefix()
     {
         var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
-            repo.Branches.Add("members-only", repo.Head.Tip).ForceCheckout();
+            repo.Branches["develop"].ForceCheckout();
+
+            const string branchName = "every-feature-is-welcome";
+            repo.Branches.Add(branchName, repo.Head.Tip).ForceCheckout();
+
+            AddOneCommitToHead(repo, "code");
 
             var finder = new GitFlowVersionFinder
             {
@@ -327,7 +332,19 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
                 Commit = repo.Head.Tip
             };
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion());
+            var versionAndBranch = finder.FindVersion();
+
+            Assert.AreEqual(branchName, versionAndBranch.BranchName);
+            Assert.AreEqual(BranchType.Feature, versionAndBranch.BranchType);
+            Assert.AreEqual(repo.Head.Tip.Sha, versionAndBranch.Sha);
+
+            var version = versionAndBranch.Version;
+            Assert.AreEqual(1, version.Major);
+            Assert.AreEqual(1, version.Minor);
+            Assert.AreEqual(0, version.Patch);
+            Assert.AreEqual(Stability.Unstable, version.Stability);
+            Assert.AreEqual(0, version.PreReleasePartOne);
+            Assert.AreEqual(repo.Branches["develop"].Tip.Prefix(), version.Suffix);
         }
     }
 
