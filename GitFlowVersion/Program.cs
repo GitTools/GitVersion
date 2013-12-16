@@ -65,12 +65,6 @@ namespace GitFlowVersion
                 Console.Error.Write("An unexpected error occurred:\r\n{0}", exception);
                 Environment.Exit(1);
             }
-#if DEBUG
-            if (Debugger.IsAttached)
-            {
-                Console.ReadLine();
-            }
-#endif
         }
 
         static void ConfigureLogging(Arguments arguments)
