@@ -5,7 +5,6 @@ using LibGit2Sharp;
 public class MockBranchCollection : BranchCollection, ICollection<Branch>
 {
     public List<Branch> Branches = new List<Branch>();
-    public MockBranchCollection(){}
 
     public override IEnumerator<Branch> GetEnumerator()
     {

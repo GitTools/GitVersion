@@ -2,9 +2,6 @@ using LibGit2Sharp;
 
 public class MockTag:Tag
 {
-    public MockTag()
-    {
-    }
 
     public string NameEx;
     public override string Name
@@ -23,22 +20,4 @@ public class MockTag:Tag
         get { return AnnotationEx; }
     }
 
-}
-public class MockTagAnnotation:TagAnnotation
-{
-    public MockTagAnnotation()
-    {
-    }
-
-    public Signature TaggerEx;
-    public override Signature Tagger
-    {
-        get { return TaggerEx; }
-    }
-
-    public GitObject TargetEx;
-    public override GitObject Target
-    {
-        get { return TargetEx; }
-    }
 }

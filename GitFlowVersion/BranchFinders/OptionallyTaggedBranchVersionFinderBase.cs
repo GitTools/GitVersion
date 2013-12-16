@@ -14,9 +14,9 @@ namespace GitFlowVersion
             BranchType branchType,
             string baseBranchName)
         {
-            int nbHotfixCommits = NumberOfCommitsInBranchNotKnownFromBaseBranch(repo, branch, branchType, baseBranchName);
+            var nbHotfixCommits = NumberOfCommitsInBranchNotKnownFromBaseBranch(repo, branch, branchType, baseBranchName);
 
-            string versionString = branch.GetSuffix(branchType);
+            var versionString = branch.GetSuffix(branchType);
             var version = SemanticVersionParser.Parse(versionString, false);
 
             EnsureVersionIsValid(version, branch, branchType);

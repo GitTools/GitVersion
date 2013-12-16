@@ -111,6 +111,7 @@
     <Compile Include="Mocks\MockBuildEngine.cs" />
     <Compile Include="Mocks\MockMergeCommit.cs" />
     <Compile Include="Mocks\MockReflogCollection.cs" />
+    <Compile Include="Mocks\MockTagAnnotation.cs" />
     <Compile Include="NugetVersionBuilderTests.cs" />
     <Compile Include="SemanticVersionParserTests.cs" />
     <Compile Include="ShortVersionParserTests.cs" />
