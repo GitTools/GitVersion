@@ -156,9 +156,7 @@ namespace GitFlowVersion
 
                          };
 
-            var howMany = repo.Commits.QueryBy(filter).Count();
-
-            return howMany;
+            return repo.Commits.QueryBy(filter).Count();
         }
     }
 }

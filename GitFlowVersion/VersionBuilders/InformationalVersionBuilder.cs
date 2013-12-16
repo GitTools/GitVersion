@@ -28,6 +28,10 @@
 
 
             //else Hotfix, Develop or Release
+            if (version.Stability == Stability.Final)
+            {
+                return string.Format("{0} Sha:'{1}'", versionPrefix, versionAndBranch.Sha);
+            }
             if (version.Stability == Stability.ReleaseCandidate)
             {
                 return string.Format("{0}-rc{1} Branch:'{2}' Sha:'{3}'", versionPrefix, GetPreRelease(version), versionAndBranch.BranchName, versionAndBranch.Sha);

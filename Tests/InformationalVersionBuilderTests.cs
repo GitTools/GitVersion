@@ -134,6 +134,26 @@ public class InformationalVersionBuilderTests
 
         Assert.AreEqual("1.2.3-beta645 Branch:'hotfix-foo' Sha:'a682956dc1a2752aa24597a0f5cd939f93614509'", informationalVersion);
     }
+    [Test]
+    public void HotfixFinal()
+    {
+        var semanticVersion = new VersionAndBranch
+                              {
+                                  BranchType = BranchType.Hotfix,
+                                  BranchName = "hotfix-foo",
+                                  Sha = "a682956dc1a2752aa24597a0f5cd939f93614509",
+                                  Version = new SemanticVersion
+                                                       {
+                                                           Major = 1,
+                                                           Minor = 2,
+                                                           Patch = 3,
+                                                           Stability = Stability.Final,
+                                                       }
+                              };
+        var informationalVersion = semanticVersion.ToLongString();
+
+        Assert.AreEqual("1.2.3 Sha:'a682956dc1a2752aa24597a0f5cd939f93614509'", informationalVersion);
+    }
 
     [Test]
     public void Master()
