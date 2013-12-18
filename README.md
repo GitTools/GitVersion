@@ -226,6 +226,7 @@ foreach ($remoteBranch in . git branch -r) {
   . git pull 2>&1 | write-host  
 }  
 . git checkout $branchBeingBuilt 2>&1 | write-host  
+exit 0
 ```
 
 you should get build output like
