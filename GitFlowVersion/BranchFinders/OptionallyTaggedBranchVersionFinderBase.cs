@@ -12,7 +12,8 @@ namespace GitFlowVersion
             Branch branch,
             Commit commit,
             BranchType branchType,
-            string baseBranchName)
+            string baseBranchName,
+            Stability defaultStability = Stability.Alpha)
         {
             var nbHotfixCommits = NumberOfCommitsInBranchNotKnownFromBaseBranch(repo, branch, branchType, baseBranchName);
 
@@ -33,8 +34,8 @@ namespace GitFlowVersion
                                                      Major = version.Major,
                                                      Minor = version.Minor,
                                                      Patch = version.Patch,
-                                                     Stability = version.Stability ?? Stability.Final,
-                                                     PreReleasePartOne = version.PreReleasePartOne,
+                                                     Stability = version.Stability ?? defaultStability,
+                                                     PreReleasePartOne = version.PreReleasePartOne ?? 0,
                                                      PreReleasePartTwo = (nbHotfixCommits == 0) ? default(int?) : nbHotfixCommits
                                                  },
                                    };
@@ -42,7 +43,7 @@ namespace GitFlowVersion
             if (tagVersion != null)
             {
                 versionAndBranch.Version.Stability = tagVersion.Stability;
-                versionAndBranch.Version.PreReleasePartOne= tagVersion.PreReleasePartOne;
+                versionAndBranch.Version.PreReleasePartOne = tagVersion.PreReleasePartOne;
             }
 
             return versionAndBranch;

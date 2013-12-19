@@ -7,7 +7,7 @@ using Tests.Helpers;
 public class ReleaseTests : Lg2sHelperBase
 {
     [Test]
-    public void No_commits()
+    public void No_commits_with_tag()
     {
         var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
@@ -37,6 +37,36 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since there is no commits");
         }
     }
+
+    [Test]
+    public void No_commits_with_no_tag()
+    {
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        using (var repo = new Repository(repoPath))
+        {
+            const string branchName = "release-0.3.0";
+
+            var branchingCommit = repo.Branches["develop"].Tip;
+            var releaseBranch = repo.Branches.Add(branchName, branchingCommit);
+
+            var finder = new ReleaseVersionFinder
+            {
+                Repository = repo,
+                Commit = branchingCommit,
+                ReleaseBranch = releaseBranch,
+            };
+
+            var version = finder.FindVersion();
+            Assert.AreEqual(0, version.Version.Major);
+            Assert.AreEqual(3, version.Version.Minor);
+            Assert.AreEqual(0, version.Version.Patch);
+            Assert.AreEqual(Stability.Alpha, version.Version.Stability);
+            Assert.AreEqual(BranchType.Release, version.BranchType);
+            Assert.AreEqual(0, version.Version.PreReleasePartOne, "PreReleasePartOne should be set to 5 from the tag");
+            Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since there is no commits");
+        }
+    }
+
 
     [Test]
     public void First_commit()
@@ -72,7 +102,7 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.AreEqual(BranchType.Release, version.BranchType);
             Assert.AreEqual(5, version.Version.PreReleasePartOne, "PreReleasePartOne should be set to 5 from the tag");
             Assert.AreEqual(1, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 1 since there is 1 commit");
-        } 
+        }
     }
 
     [Test]
@@ -141,9 +171,9 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(4, version.Version.Minor);
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual(Stability.Final, version.Version.Stability);
+            Assert.AreEqual(Stability.Alpha, version.Version.Stability);
             Assert.AreEqual(BranchType.Release, version.BranchType);
-            Assert.IsNull(version.Version.PreReleasePartOne);
+            Assert.AreEqual(0, version.Version.PreReleasePartOne);
             Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is 2 commits on the branch");
         }
     }
@@ -228,7 +258,7 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.Throws<ErrorException>(() => finder.FindVersion());
         }
     }
-        //TODO:
+    //TODO:
     //[Test]
     //[ExpectedException]
     //public void Override_stage_using_tag_should_throw_on_version_mismatch()
