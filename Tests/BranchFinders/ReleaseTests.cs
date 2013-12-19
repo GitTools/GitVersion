@@ -62,7 +62,7 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Patch);
             Assert.AreEqual(Stability.Beta, version.Version.Stability);
             Assert.AreEqual(BranchType.Release, version.BranchType);
-            Assert.AreEqual(0, version.Version.PreReleasePartOne, "PreReleasePartOne should be set to 5 from the tag");
+            Assert.AreEqual(0, version.Version.PreReleasePartOne, "PreReleasePartOne should be set to 0 when no tag");
             Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since there is no commits");
         }
     }

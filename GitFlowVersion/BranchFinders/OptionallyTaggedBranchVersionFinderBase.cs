@@ -12,8 +12,7 @@ namespace GitFlowVersion
             Branch branch,
             Commit commit,
             BranchType branchType,
-            string baseBranchName,
-            Stability defaultStability = Stability.Beta)
+            string baseBranchName)
         {
             var nbHotfixCommits = NumberOfCommitsInBranchNotKnownFromBaseBranch(repo, branch, branchType, baseBranchName);
 
@@ -34,7 +33,7 @@ namespace GitFlowVersion
                                                      Major = version.Major,
                                                      Minor = version.Minor,
                                                      Patch = version.Patch,
-                                                     Stability = version.Stability ?? defaultStability,
+                                                     Stability = version.Stability ?? Stability.Beta,
                                                      PreReleasePartOne = version.PreReleasePartOne ?? 0,
                                                      PreReleasePartTwo = (nbHotfixCommits == 0) ? default(int?) : nbHotfixCommits
                                                  },
