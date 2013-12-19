@@ -60,7 +60,7 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(3, version.Version.Minor);
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual(Stability.Alpha, version.Version.Stability);
+            Assert.AreEqual(Stability.Beta, version.Version.Stability);
             Assert.AreEqual(BranchType.Release, version.BranchType);
             Assert.AreEqual(0, version.Version.PreReleasePartOne, "PreReleasePartOne should be set to 5 from the tag");
             Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since there is no commits");
@@ -171,7 +171,7 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(4, version.Version.Minor);
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual(Stability.Alpha, version.Version.Stability);
+            Assert.AreEqual(Stability.Beta, version.Version.Stability);
             Assert.AreEqual(BranchType.Release, version.BranchType);
             Assert.AreEqual(0, version.Version.PreReleasePartOne);
             Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is 2 commits on the branch");
