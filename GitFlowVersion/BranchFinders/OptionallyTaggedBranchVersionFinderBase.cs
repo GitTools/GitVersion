@@ -15,9 +15,14 @@ namespace GitFlowVersion
             var nbHotfixCommits = NumberOfCommitsInBranchNotKnownFromBaseBranch(context.Repository, context.CurrentBranch, branchType, baseBranchName);
 
             var versionString = context.CurrentBranch.GetSuffix(branchType);
-            var version = SemanticVersionParser.Parse(versionString, false);
+            var version = SemanticVersionParser.Parse(versionString);
 
             EnsureVersionIsValid(version, context.CurrentBranch, branchType);
+
+            if (branchType == BranchType.Hotfix)
+                version.Tag.Name = "hotfix";
+            if (branchType == BranchType.Release)
+                version.Tag.Name = "beta";
 
             var tagVersion = RetrieveMostRecentOptionalTagVersion(context.Repository, version, context.CurrentBranch.Commits.Take(nbHotfixCommits + 1));
 
@@ -31,16 +36,14 @@ namespace GitFlowVersion
                     Major = version.Major,
                     Minor = version.Minor,
                     Patch = version.Patch,
-                    Stability = version.Stability ?? Stability.Beta,
-                    PreReleasePartOne = version.PreReleasePartOne ?? 0,
+                    Tag = version.Tag,
                     PreReleasePartTwo = (nbHotfixCommits == 0) ? default(int?) : nbHotfixCommits
                 },
             };
 
             if (tagVersion != null)
             {
-                versionAndBranch.Version.Stability = tagVersion.Stability;
-                versionAndBranch.Version.PreReleasePartOne = tagVersion.PreReleasePartOne;
+                versionAndBranch.Version.Tag = tagVersion.Tag;
             }
 
             return versionAndBranch;
@@ -78,8 +81,7 @@ namespace GitFlowVersion
             var msg = string.Format("Branch '{0}' doesn't respect the {1} branch naming convention. ",
                 branch.Name, branchType);
 
-            if (version.Stability != null ||
-                version.PreReleasePartOne != null ||
+            if (version.Tag.Name != null ||
                 version.PreReleasePartTwo != null)
             {
                 throw new ErrorException(msg +
@@ -108,12 +110,12 @@ namespace GitFlowVersion
                     throw new NotSupportedException(string.Format("Unexpected branch type {0}.", branchType));
             }
 
-            if (version.Stability == Stability.Final || version.Stability == null)
+            if (string.IsNullOrEmpty(version.Tag.Name))
             {
                 return;
             }
 
-            if (version.PreReleasePartOne == null)
+            if (!version.Tag.HasReleaseNumber())
             {
                 throw new ErrorException(msg +
                                          string.Format("When a stability is defined on a {0} branch the pre-release part one number must also be defined."

@@ -1,16 +1,10 @@
 namespace GitFlowVersion
 {
-    using System;
     using System.Linq;
 
     public class SemanticVersionParser
     {
         public static bool TryParse(string versionString, out SemanticVersion semanticVersion)
-        {
-            return TryParse(versionString, out semanticVersion, true);
-        }
-
-        public static bool TryParse(string versionString, out SemanticVersion semanticVersion, bool normalize)
         {
             var parts = versionString.Split('-');
             if (parts.Length > 2)
@@ -60,46 +54,19 @@ namespace GitFlowVersion
 
             if (parts.Length > 1)
             {
-                var prereleaseString = parts[1];
-
-                var buildIndex = prereleaseString.IndexOfAny("0123456789".ToCharArray());
-                if (buildIndex < 0)
-                {
-                    semanticVersion = null;
-                    return false;
-                }
-                var stageString = prereleaseString.Substring(0, buildIndex);
-
-                if (stageString == "RC")
-                {
-                    parsedVersion.Stability = Stability.ReleaseCandidate;    
-                }
-                else
-                {
-                    Stability stability;
-                    if (!Enum.TryParse(stageString, true, out stability))
-                    {
-                        semanticVersion = null;
-                        return false;
-                    }
-                    parsedVersion.Stability = stability;    
-                }
-
-                int preReleasePartOne;
-                var preReleaseString = prereleaseString.Substring(buildIndex);
+                var preReleaseString = parts[1];
                 var preReleaseParts = preReleaseString.Split('.');
                 if (preReleaseParts.Length > 2)
                 {
+                    semanticVersion = null;
+                    return false;
+                }
 
-                    semanticVersion = null;
-                    return false;
-                }
-                if (!int.TryParse(preReleaseParts[0], out preReleasePartOne))
+                parsedVersion.Tag = new SemanticVersionTag
                 {
-                    semanticVersion = null;
-                    return false;
-                }
-                parsedVersion.PreReleasePartOne = preReleasePartOne;
+                    Name = preReleaseParts[0]
+                };
+                
 
                 if ((preReleaseParts.Length > 1))
                 {
@@ -113,21 +80,15 @@ namespace GitFlowVersion
                     parsedVersion.PreReleasePartTwo = preReleasePartTwo;
                 }
             }
-            else
-            {
-                if (normalize)
-                {
-                    parsedVersion.Stability = Stability.Final;
-                }
-            }
+
             semanticVersion = parsedVersion;
             return true;
         }
 
-        public static SemanticVersion Parse(string versionString, bool normalize)
+        public static SemanticVersion Parse(string versionString)
         {
             SemanticVersion parsedVersion;
-            if (TryParse(versionString, out parsedVersion, normalize))
+            if (TryParse(versionString, out parsedVersion))
             {
                 return parsedVersion;
             }

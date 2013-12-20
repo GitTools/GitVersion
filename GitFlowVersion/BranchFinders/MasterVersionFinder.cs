@@ -40,8 +40,7 @@ namespace GitFlowVersion
                 {
                     Major = major,
                     Minor = minor,
-                    Patch = patch,
-                    Stability = Stability.Final
+                    Patch = patch
                 }
             };
         }

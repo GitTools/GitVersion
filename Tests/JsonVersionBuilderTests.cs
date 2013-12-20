@@ -18,8 +18,7 @@ public class JsonVersionBuilderTests
                                                            Major = 1,
                                                            Minor = 2,
                                                            Patch = 3,
-                                                           Stability = Stability.Unstable,
-                                                           PreReleasePartOne = 4,
+                                                           Tag = "unstable4",
                                                            Suffix = "a682956d",
                                                        }
                               };

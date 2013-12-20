@@ -17,7 +17,7 @@ public class InformationalVersionBuilderTests
                                                            Major = 1,
                                                            Minor = 2,
                                                            Patch = 3,
-                                                           Stability = Stability.Unstable,
+                                                           Tag = Stability.Unstable.ToString().ToLower(),
                                                            Suffix = "a682956d",
                                                        }
                               };
@@ -39,8 +39,7 @@ public class InformationalVersionBuilderTests
                                                            Major = 1,
                                                            Minor = 2,
                                                            Patch = 3,
-                                                           PreReleasePartOne = 645,
-                                                           Stability = Stability.Alpha,
+                                                           Tag = "alpha645"
                                                        }
                               };
         var informationalVersion = semanticVersion.ToLongString();
@@ -60,8 +59,7 @@ public class InformationalVersionBuilderTests
                                                            Major = 1,
                                                            Minor = 2,
                                                            Patch = 3,
-                                                           PreReleasePartOne = 645,
-                                                           Stability = Stability.Unstable,
+                                                           Tag = "unstable645"
                                                        }
                               };
         var informationalVersion = semanticVersion.ToLongString();
@@ -81,8 +79,7 @@ public class InformationalVersionBuilderTests
                                                            Major = 1,
                                                            Minor = 2,
                                                            Patch = 3,
-                                                           PreReleasePartOne = 645,
-                                                           Stability = Stability.Beta,
+                                                           Tag = "beta645"
                                                        }
                               };
         var informationalVersion = semanticVersion.ToLongString();
@@ -103,8 +100,7 @@ public class InformationalVersionBuilderTests
                                                            Major = 1,
                                                            Minor = 2,
                                                            Patch = 3,
-                                                           PreReleasePartOne = 645,
-                                                           Stability = Stability.Alpha,
+                                                           Tag = "alpha645"
                                                        }
 
                               };
@@ -125,8 +121,7 @@ public class InformationalVersionBuilderTests
                                                            Major = 1,
                                                            Minor = 2,
                                                            Patch = 3,
-                                                           PreReleasePartOne = 645,
-                                                           Stability = Stability.Beta,
+                                                           Tag = "beta645"
                                                        }
 
                               };
@@ -147,7 +142,6 @@ public class InformationalVersionBuilderTests
                                                            Major = 1,
                                                            Minor = 2,
                                                            Patch = 3,
-                                                           Stability = Stability.Final,
                                                        }
                               };
         var informationalVersion = semanticVersion.ToLongString();
@@ -168,7 +162,6 @@ public class InformationalVersionBuilderTests
                                                            Major = 1,
                                                            Minor = 2,
                                                            Patch = 3,
-                                                           Stability = Stability.Final,
                                                        }
                               };
         var informationalVersion = semanticVersion.ToLongString();
@@ -189,8 +182,7 @@ public class InformationalVersionBuilderTests
                                                            Major = 1,
                                                            Minor = 2,
                                                            Patch = 3,
-                                                           PreReleasePartOne = 3,
-                                                           Stability = Stability.Unstable,
+                                                           Tag = "unstable3"
                                                        }
                               };
         var informationalVersion = semanticVersion.ToLongString();
@@ -202,19 +194,18 @@ public class InformationalVersionBuilderTests
     public void ReleaseBeta()
     {
         var semanticVersion = new VersionAndBranch
-                              {
-                                  BranchType = BranchType.Release,
-                                  BranchName = "release-1.2",
-                                  Sha = "a682956dc1a2752aa24597a0f5cd939f93614509",
-                                  Version = new SemanticVersion
-                                                       {
-                                                           Major = 1,
-                                                           Minor = 2,
-                                                           Patch = 0,
-                                                           PreReleasePartOne = 2,
-                                                           Stability = Stability.Beta,
-                                                       }
-                              };
+        {
+            BranchType = BranchType.Release,
+            BranchName = "release-1.2",
+            Sha = "a682956dc1a2752aa24597a0f5cd939f93614509",
+            Version = new SemanticVersion
+            {
+                Major = 1,
+                Minor = 2,
+                Patch = 0,
+                Tag = "beta2"
+            }
+        };
         var informationalVersion = semanticVersion.ToLongString();
 
         Assert.AreEqual("1.2.0-beta2 Branch:'release-1.2' Sha:'a682956dc1a2752aa24597a0f5cd939f93614509'", informationalVersion);
@@ -224,19 +215,18 @@ public class InformationalVersionBuilderTests
     public void ReleaseAlpha()
     {
         var semanticVersion = new VersionAndBranch
-                              {
-                                  BranchType = BranchType.Release,
-                                  BranchName = "release-1.2",
-                                  Sha = "a682956dc1a2752aa24597a0f5cd939f93614509",
-                                  Version = new SemanticVersion
-                                                       {
-                                                           Major = 1,
-                                                           Minor = 2,
-                                                           Patch = 0,
-                                                           PreReleasePartOne = 2,
-                                                           Stability = Stability.Alpha,
-                                                       }
-                              };
+        {
+            BranchType = BranchType.Release,
+            BranchName = "release-1.2",
+            Sha = "a682956dc1a2752aa24597a0f5cd939f93614509",
+            Version = new SemanticVersion
+            {
+                Major = 1,
+                Minor = 2,
+                Patch = 0,
+                Tag = "alpha2",
+            }
+        };
         var informationalVersion = semanticVersion.ToLongString();
 
         Assert.AreEqual("1.2.0-alpha2 Branch:'release-1.2' Sha:'a682956dc1a2752aa24597a0f5cd939f93614509'", informationalVersion);

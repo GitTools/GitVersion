@@ -11,17 +11,17 @@
             builder.AppendLineFormat("  \"Major\":{0},", versionAndBranch.Version.Major);
             builder.AppendLineFormat("  \"Minor\":{0},", versionAndBranch.Version.Minor);
             builder.AppendLineFormat("  \"Patch\":{0},", versionAndBranch.Version.Patch);
-            if (versionAndBranch.Version.PreReleasePartTwo != null)
+            if (versionAndBranch.Version.Tag.HasReleaseNumber())
             {
-                builder.AppendLineFormat("  \"PreReleasePartOne\":{0},", versionAndBranch.Version.PreReleasePartOne);
+                builder.AppendLineFormat("  \"PreReleasePartOne\":{0},", versionAndBranch.Version.Tag.ReleaseNumber());
             }
             if (versionAndBranch.Version.PreReleasePartTwo != null)
             {
                 builder.AppendLineFormat("  \"PreReleasePartTwo\":{0},", versionAndBranch.Version.PreReleasePartTwo);
             }
-            if (versionAndBranch.Version.Stability != null)
+            if (!string.IsNullOrEmpty(versionAndBranch.Version.Tag.Name))
             {
-                builder.AppendLineFormat("  \"Stability\":\"{0}\",", versionAndBranch.Version.Stability);
+                builder.AppendLineFormat("  \"Stability\":\"{0}\",", versionAndBranch.Version.Tag.InferStability());
             }
             builder.AppendLineFormat("  \"Suffix\":\"{0}\",", versionAndBranch.Version.Suffix.JsonEncode());
             builder.AppendLineFormat("  \"LongVersion\":\"{0}\",", versionAndBranch.ToLongString().JsonEncode());

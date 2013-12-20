@@ -13,7 +13,7 @@ public class SemanticVersionParserTests
         Assert.AreEqual(1,version.Major);
         Assert.AreEqual(2,version.Minor);
         Assert.AreEqual(3, version.Patch);
-        Assert.AreEqual(Stability.Final, version.Stability);
+        Assert.AreEqual(Stability.Final, version.Tag.InferStability());
     }
     [Test]
     public void Major_minor()
@@ -23,7 +23,7 @@ public class SemanticVersionParserTests
         Assert.AreEqual(1,version.Major);
         Assert.AreEqual(2,version.Minor);
         Assert.AreEqual(0,version.Patch);
-        Assert.AreEqual(Stability.Final,version.Stability);
+        Assert.AreEqual(Stability.Final, version.Tag.InferStability());
     }
     [Test]
     public void Major()
@@ -33,7 +33,7 @@ public class SemanticVersionParserTests
         Assert.AreEqual(1,version.Major);
         Assert.AreEqual(0,version.Minor);
         Assert.AreEqual(0, version.Patch);
-        Assert.AreEqual(Stability.Final, version.Stability);
+        Assert.AreEqual(Stability.Final, version.Tag.InferStability());
     }
 
     [Test]
@@ -44,8 +44,8 @@ public class SemanticVersionParserTests
         Assert.AreEqual(1,version.Major);
         Assert.AreEqual(2,version.Minor);
         Assert.AreEqual(3,version.Patch);
-        Assert.AreEqual(Stability.Beta,version.Stability);
-        Assert.AreEqual(3,version.PreReleasePartOne);
+        Assert.AreEqual(Stability.Beta, version.Tag.InferStability());
+        Assert.AreEqual(3,version.Tag.ReleaseNumber());
     }
     [Test]
     public void Major_minor_patch_stability_Alpha()
@@ -55,8 +55,8 @@ public class SemanticVersionParserTests
         Assert.AreEqual(1,version.Major);
         Assert.AreEqual(2,version.Minor);
         Assert.AreEqual(3,version.Patch);
-        Assert.AreEqual(Stability.Alpha,version.Stability);
-        Assert.AreEqual(4,version.PreReleasePartOne);
+        Assert.AreEqual(Stability.Alpha, version.Tag.InferStability());
+        Assert.AreEqual(4,version.Tag.ReleaseNumber());
     }
     [Test]
     public void Major_minor_patch_lower_stability()
@@ -66,8 +66,8 @@ public class SemanticVersionParserTests
         Assert.AreEqual(1,version.Major);
         Assert.AreEqual(2,version.Minor);
         Assert.AreEqual(3,version.Patch);
-        Assert.AreEqual(Stability.Alpha,version.Stability);
-        Assert.AreEqual(4,version.PreReleasePartOne);
+        Assert.AreEqual(Stability.Alpha, version.Tag.InferStability());
+        Assert.AreEqual(4,version.Tag.ReleaseNumber());
     }
     [Test]
     public void Major_minor_patch_rc_stability()
@@ -77,8 +77,8 @@ public class SemanticVersionParserTests
         Assert.AreEqual(1,version.Major);
         Assert.AreEqual(2,version.Minor);
         Assert.AreEqual(3,version.Patch);
-        Assert.AreEqual(Stability.ReleaseCandidate,version.Stability);
-        Assert.AreEqual(3,version.PreReleasePartOne);
+        Assert.AreEqual(Stability.ReleaseCandidate, version.Tag.InferStability());
+        Assert.AreEqual(3,version.Tag.ReleaseNumber());
     }
     [Test]
     public void BothPreRelease()
@@ -88,8 +88,8 @@ public class SemanticVersionParserTests
         Assert.AreEqual(1,version.Major);
         Assert.AreEqual(2,version.Minor);
         Assert.AreEqual(3,version.Patch);
-        Assert.AreEqual(Stability.ReleaseCandidate,version.Stability);
-        Assert.AreEqual(3,version.PreReleasePartOne);
+        Assert.AreEqual(Stability.ReleaseCandidate, version.Tag.InferStability());
+        Assert.AreEqual(3,version.Tag.ReleaseNumber());
         Assert.AreEqual(1,version.PreReleasePartTwo);
     }
     [Test]
@@ -100,8 +100,8 @@ public class SemanticVersionParserTests
         Assert.AreEqual(1,version.Major);
         Assert.AreEqual(2,version.Minor);
         Assert.AreEqual(3,version.Patch);
-        Assert.AreEqual(Stability.ReleaseCandidate,version.Stability);
-        Assert.AreEqual(3,version.PreReleasePartOne);
+        Assert.AreEqual(Stability.ReleaseCandidate, version.Tag.InferStability());
+        Assert.AreEqual(3,version.Tag.ReleaseNumber());
     }
 
     [Test]
@@ -112,8 +112,8 @@ public class SemanticVersionParserTests
         Assert.AreEqual(1,version.Major);
         Assert.AreEqual(2,version.Minor);
         Assert.AreEqual(3,version.Patch);
-        Assert.AreEqual(Stability.ReleaseCandidate,version.Stability);
-        Assert.AreEqual(3,version.PreReleasePartOne);
+        Assert.AreEqual(Stability.ReleaseCandidate, version.Tag.InferStability());
+        Assert.AreEqual(3,version.Tag.ReleaseNumber());
     }
 
     [Test]

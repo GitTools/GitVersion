@@ -4,19 +4,18 @@
  
     public static class NugetVersionBuilder
     {
-
         public static string GenerateNugetVersion(this VersionAndBranch versionAndBranch)
         {
             var prereleaseString = "";
 
-            var stability = versionAndBranch.Version.Stability;
+            var stability = versionAndBranch.Version.Tag.InferStability();
             if (stability == null)
             {
                 throw new Exception("Stability cannot be null");
             }
             if (stability != Stability.Final)
             {
-                var preReleaseVersion = versionAndBranch.Version.PreReleasePartOne.Value.ToString("D4");
+                var preReleaseVersion = versionAndBranch.Version.Tag.ReleaseNumber().Value.ToString("D4");
                 if (versionAndBranch.Version.PreReleasePartTwo != null)
                 {
                     preReleaseVersion += "-" + versionAndBranch.Version.PreReleasePartTwo.Value.ToString("D4");

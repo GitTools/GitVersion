@@ -13,11 +13,10 @@ public class NugetVersionBuilderTests
                                    BranchType = BranchType.Develop,
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleasePartOne = 4,
-                                                 Stability = Stability.Unstable
+                                                 Tag = "unstable4"
                                              }
                                };
-        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        var nugetVersion = versionAndBranch.GenerateNugetVersion();
         NuGet.SemanticVersion.Parse(nugetVersion);
         Assert.AreEqual("0.0.0-Unstable0004", nugetVersion);
 
@@ -31,13 +30,12 @@ public class NugetVersionBuilderTests
                                    BranchType = BranchType.Develop,
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleasePartOne = 4,
                                                  PreReleasePartTwo = 6,
-                                                 Stability = Stability.Unstable
+                                                 Tag = "unstable4"
                                              }
                                };
 
-        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        var nugetVersion = versionAndBranch.GenerateNugetVersion();
         NuGet.SemanticVersion.Parse(nugetVersion);
         Assert.AreEqual("0.0.0-Unstable0004-0006", nugetVersion);
     }
@@ -50,12 +48,11 @@ public class NugetVersionBuilderTests
                                    BranchType = BranchType.Release,
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleasePartOne = 4,
-                                                 Stability = Stability.Beta,
+                                                 Tag = "beta4"
                                              }
                                };
 
-        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        var nugetVersion = versionAndBranch.GenerateNugetVersion();
         NuGet.SemanticVersion.Parse(nugetVersion);
         Assert.AreEqual("0.0.0-Beta0004", nugetVersion);
     }
@@ -68,13 +65,12 @@ public class NugetVersionBuilderTests
                                    BranchType = BranchType.Release,
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleasePartOne = 4,
                                                  PreReleasePartTwo = 8,
-                                                 Stability = Stability.Beta,
+                                                 Tag = "beta4"
                                              }
                                };
 
-        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        var nugetVersion = versionAndBranch.GenerateNugetVersion();
         NuGet.SemanticVersion.Parse(nugetVersion);
         Assert.AreEqual("0.0.0-Beta0004-0008", nugetVersion);
     }
@@ -87,12 +83,11 @@ public class NugetVersionBuilderTests
                                    BranchType = BranchType.Hotfix,
                                    Version = new SemanticVersion
                                              {
-                                                 Stability = Stability.Beta,
-                                                 PreReleasePartOne = 4
+                                                 Tag = "beta4"
                                              }
                                };
 
-        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        var nugetVersion = versionAndBranch.GenerateNugetVersion();
         NuGet.SemanticVersion.Parse(nugetVersion);
         Assert.AreEqual("0.0.0-Beta0004", nugetVersion);
     }
@@ -105,13 +100,12 @@ public class NugetVersionBuilderTests
                                    BranchType = BranchType.Hotfix,
                                    Version = new SemanticVersion
                                              {
-                                                 Stability = Stability.Beta,
-                                                 PreReleasePartOne = 4,
+                                                 Tag = "beta4",
                                                  PreReleasePartTwo = 7,
                                              }
                                };
 
-        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        var nugetVersion = versionAndBranch.GenerateNugetVersion();
         NuGet.SemanticVersion.Parse(nugetVersion);
         Assert.AreEqual("0.0.0-Beta0004-0007", nugetVersion);
     }
@@ -125,13 +119,12 @@ public class NugetVersionBuilderTests
                                    Version = new SemanticVersion
                                              {
                                                  Suffix = "1571",
-                                                 PreReleasePartOne = 131231232, //ignored
                                                  PreReleasePartTwo = 131231232, //ignored
-                                                 Stability = Stability.Unstable
+                                                 Tag = "unstable131231232"
                                              }
                                };
 
-        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        var nugetVersion = versionAndBranch.GenerateNugetVersion();
         NuGet.SemanticVersion.Parse(nugetVersion);
         Assert.AreEqual("0.0.0-PullRequest-1571", nugetVersion);
     }
@@ -146,13 +139,12 @@ public class NugetVersionBuilderTests
                                    BranchName = "AFeature",
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleasePartOne = 4, //ignored
                                                  PreReleasePartTwo = 4, //ignored
-                                                 Stability = Stability.Unstable
+                                                 Tag = "unstable4"
                                              }
                                };
 
-        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        var nugetVersion = versionAndBranch.GenerateNugetVersion();
         NuGet.SemanticVersion.Parse(nugetVersion);
         Assert.AreEqual("0.0.0-Feature-AFeature-TheSha", nugetVersion);
     }
@@ -164,14 +156,12 @@ public class NugetVersionBuilderTests
                                {
                                    Version = new SemanticVersion
                                              {
-                                                 Stability = Stability.Final,
                                                  Suffix = "1571", //ignored
-                                                 PreReleasePartOne = 131231232, //ignored
                                                  PreReleasePartTwo = 131231232 //ignored
                                              }
                                };
 
-        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        var nugetVersion = versionAndBranch.GenerateNugetVersion();
         NuGet.SemanticVersion.Parse(nugetVersion);
         Assert.AreEqual("0.0.0", nugetVersion);
     }
@@ -184,15 +174,15 @@ public class NugetVersionBuilderTests
                                    BranchType = BranchType.Develop,
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleasePartOne = 4,
-                                                 Stability = Stability.Unstable
+                                                 Tag = "unstable4"
                                              }
                                };
-        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        var nugetVersion = versionAndBranch.GenerateNugetVersion();
         NuGet.SemanticVersion.Parse(nugetVersion);
         Assert.AreEqual("0.0.0-Unstable0004", nugetVersion);
     }
 
+    //TODO This feels like a good candidate for parameterised unit tests..
     [Test]
     public void NuGet_version_should_be_padded_to_workaround_stupid_nuget_issue_with_sorting_one_digit_with_preReleaseTwo()
     {
@@ -201,12 +191,11 @@ public class NugetVersionBuilderTests
                                    BranchType = BranchType.Develop,
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleasePartOne = 4,
                                                  PreReleasePartTwo = 5,
-                                                 Stability = Stability.Unstable
+                                                 Tag = "unstable4"
                                              }
                                };
-        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        var nugetVersion = versionAndBranch.GenerateNugetVersion();
         NuGet.SemanticVersion.Parse(nugetVersion);
         Assert.AreEqual("0.0.0-Unstable0004-0005", nugetVersion);
     }
@@ -219,11 +208,10 @@ public class NugetVersionBuilderTests
                                    BranchType = BranchType.Develop,
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleasePartOne = 40,
-                                                 Stability = Stability.Unstable
+                                                 Tag = "unstable40"
                                              }
                                };
-        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        var nugetVersion = versionAndBranch.GenerateNugetVersion();
         NuGet.SemanticVersion.Parse(nugetVersion);
         Assert.AreEqual("0.0.0-Unstable0040", nugetVersion);
     }
@@ -236,12 +224,11 @@ public class NugetVersionBuilderTests
                                    BranchType = BranchType.Develop,
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleasePartOne = 40,
                                                  PreReleasePartTwo = 50,
-                                                 Stability = Stability.Unstable
+                                                 Tag = "unstable40"
                                              }
                                };
-        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        var nugetVersion = versionAndBranch.GenerateNugetVersion();
         NuGet.SemanticVersion.Parse(nugetVersion);
         Assert.AreEqual("0.0.0-Unstable0040-0050", nugetVersion);
     }
@@ -254,11 +241,10 @@ public class NugetVersionBuilderTests
                                    BranchType = BranchType.Develop,
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleasePartOne = 400,
-                                                 Stability = Stability.Unstable
+                                                 Tag = "unstable400"
                                              }
                                };
-        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        var nugetVersion = versionAndBranch.GenerateNugetVersion();
         NuGet.SemanticVersion.Parse(nugetVersion);
         Assert.AreEqual("0.0.0-Unstable0400", nugetVersion);
     }
@@ -271,12 +257,11 @@ public class NugetVersionBuilderTests
                                    BranchType = BranchType.Develop,
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleasePartOne = 400,
                                                  PreReleasePartTwo = 500,
-                                                 Stability = Stability.Unstable
+                                                 Tag = "unstable400"
                                              }
                                };
-        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        var nugetVersion = versionAndBranch.GenerateNugetVersion();
         NuGet.SemanticVersion.Parse(nugetVersion);
         Assert.AreEqual("0.0.0-Unstable0400-0500", nugetVersion);
     }
@@ -289,11 +274,10 @@ public class NugetVersionBuilderTests
                                    BranchType = BranchType.Develop,
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleasePartOne = 4000,
-                                                 Stability = Stability.Unstable
+                                                 Tag = "unstable4000"
                                              }
                                };
-        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        var nugetVersion = versionAndBranch.GenerateNugetVersion();
         NuGet.SemanticVersion.Parse(nugetVersion);
         Assert.AreEqual("0.0.0-Unstable4000", nugetVersion);
     }
@@ -306,12 +290,11 @@ public class NugetVersionBuilderTests
                                    BranchType = BranchType.Develop,
                                    Version = new SemanticVersion
                                              {
-                                                 PreReleasePartOne = 4000,
                                                  PreReleasePartTwo = 4000,
-                                                 Stability = Stability.Unstable
+                                                 Tag = "unstable4000"
                                              }
                                };
-        var nugetVersion = NugetVersionBuilder.GenerateNugetVersion(versionAndBranch);
+        var nugetVersion = versionAndBranch.GenerateNugetVersion();
         NuGet.SemanticVersion.Parse(nugetVersion);
         Assert.AreEqual("0.0.0-Unstable4000-4000", nugetVersion);
     }
