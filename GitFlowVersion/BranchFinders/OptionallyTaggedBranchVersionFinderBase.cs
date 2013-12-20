@@ -33,8 +33,8 @@ namespace GitFlowVersion
                                                      Major = version.Major,
                                                      Minor = version.Minor,
                                                      Patch = version.Patch,
-                                                     Stability = version.Stability ?? Stability.Final,
-                                                     PreReleasePartOne = version.PreReleasePartOne,
+                                                     Stability = version.Stability ?? Stability.Beta,
+                                                     PreReleasePartOne = version.PreReleasePartOne ?? 0,
                                                      PreReleasePartTwo = (nbHotfixCommits == 0) ? default(int?) : nbHotfixCommits
                                                  },
                                    };
@@ -42,7 +42,7 @@ namespace GitFlowVersion
             if (tagVersion != null)
             {
                 versionAndBranch.Version.Stability = tagVersion.Stability;
-                versionAndBranch.Version.PreReleasePartOne= tagVersion.PreReleasePartOne;
+                versionAndBranch.Version.PreReleasePartOne = tagVersion.PreReleasePartOne;
             }
 
             return versionAndBranch;

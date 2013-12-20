@@ -80,12 +80,12 @@
                 {
                     return string.Format("{0}-rc{1}", versionPrefix, GetPreRelease(version));
                 }
-                return string.Format("{0}-beta{1}", versionPrefix, GetPreRelease(version));
+                return string.Format("{0}-{1}{2}", versionPrefix, version.Stability.ToString().ToLowerInvariant(), GetPreRelease(version));
             }
 
             if (versionAndBranch.BranchType == BranchType.Hotfix)
             {
-                return string.Format("{0}-beta{1}", versionPrefix, GetPreRelease(version));
+                return string.Format("{0}-{1}{2}", versionPrefix, version.Stability.ToString().ToLowerInvariant(), GetPreRelease(version));
             }
 
             if (versionAndBranch.BranchType == BranchType.Master)
