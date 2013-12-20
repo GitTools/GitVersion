@@ -38,14 +38,14 @@ public class PullBranchTests : Lg2sHelperBase
             var branchingCommit = repo.Branches["develop"].Tip;
             var pullBranch = repo.Branches.Add(invalidFakePullBranchName, branchingCommit);
 
-            var finder = new PullVersionFinder
-                {
-                             Repository = repo,
-                             Commit = branchingCommit,
-                             PullBranch = pullBranch,
-                         };
+            var finder = new PullVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion());
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
+            {
+                Repository = repo,
+                Tip = branchingCommit,
+                CurrentBranch = pullBranch,
+            }));
         }
     }
 
@@ -62,14 +62,14 @@ public class PullBranchTests : Lg2sHelperBase
 
             var pullBranch = repo.Head;
 
-            var finder = new PullVersionFinder
-                         {
-                             Repository = repo,
-                             Commit = pullBranch.Tip,
-                             PullBranch = pullBranch,
-                         };
+            var finder = new PullVersionFinder();
 
-            var version = finder.FindVersion();
+            var version = finder.FindVersion(new GitFlowVersionContext
+            {
+                Repository = repo,
+                Tip = pullBranch.Tip,
+                CurrentBranch = pullBranch,
+            });
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
@@ -97,14 +97,14 @@ public class PullBranchTests : Lg2sHelperBase
 
             var pullBranch = repo.Head;
 
-            var finder = new PullVersionFinder
+            var finder = new PullVersionFinder();
+
+            var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Commit = pullBranch.Tip,
-                PullBranch = pullBranch,
-            };
-
-            var version = finder.FindVersion();
+                Tip = pullBranch.Tip,
+                CurrentBranch = pullBranch,
+            });
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 

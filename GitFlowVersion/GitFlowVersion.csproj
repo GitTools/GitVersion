@@ -63,6 +63,7 @@
     <Compile Include="BuildServers\GitHelper.cs" />
     <Compile Include="BuildServers\IBuildServer.cs" />
     <Compile Include="BuildServers\TeamCity.cs" />
+    <Compile Include="GitFlowVersionContext.cs" />
     <Compile Include="HelpWriter.cs" />
     <Compile Include="VersionBuilders\JsonVersionBuilder.cs" />
     <Compile Include="VersionBuilders\NugetVersionBuilder.cs" />

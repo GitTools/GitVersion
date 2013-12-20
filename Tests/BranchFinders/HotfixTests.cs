@@ -17,14 +17,14 @@ public class HotfixTests : Lg2sHelperBase
             var branchingCommit = repo.Branches["master"].Tip;
             var hotfixBranch = repo.Branches.Add(branchName, branchingCommit);
 
-            var finder = new HotfixVersionFinder
+            var finder = new HotfixVersionFinder();
+
+            var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Commit = branchingCommit,
-                HotfixBranch = hotfixBranch,
-            };
-
-            var version = finder.FindVersion();
+                Tip = branchingCommit,
+                CurrentBranch = hotfixBranch,
+            });
 
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(1, version.Version.Minor);
@@ -55,14 +55,14 @@ public class HotfixTests : Lg2sHelperBase
             var sign = Constants.SignatureNow();
             repo.Tags.Add("0.1.3-beta4", branchingCommit, sign, "hotfix");
 
-            var finder = new HotfixVersionFinder
+            var finder = new HotfixVersionFinder();
+
+            var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Commit = firstCommit,
-                HotfixBranch = hotfixBranch,
-            };
-
-            var version = finder.FindVersion();
+                Tip = firstCommit,
+                CurrentBranch = hotfixBranch,
+            });
 
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(1, version.Version.Minor);
@@ -94,14 +94,14 @@ public class HotfixTests : Lg2sHelperBase
             var sign = Constants.SignatureNow();
             repo.Tags.Add("0.1.3-alpha5", firstCommit, sign, "hotfix");
 
-            var finder = new HotfixVersionFinder
+            var finder = new HotfixVersionFinder();
+
+            var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Commit = secondCommit,
-                HotfixBranch = hotfixBranch,
-            };
-
-            var version = finder.FindVersion();
+                Tip = secondCommit,
+                CurrentBranch = hotfixBranch,
+            });
 
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(1, version.Version.Minor);
@@ -130,14 +130,14 @@ public class HotfixTests : Lg2sHelperBase
             var hotfixBranch = repo.Branches[branchName];
             var secondCommit = hotfixBranch.Tip;
 
-            var finder = new HotfixVersionFinder
+            var finder = new HotfixVersionFinder();
+
+            var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Commit = secondCommit,
-                HotfixBranch = hotfixBranch,
-            };
-
-            var version = finder.FindVersion();
+                Tip = secondCommit,
+                CurrentBranch = hotfixBranch,
+            });
 
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(1, version.Version.Minor);
@@ -171,14 +171,14 @@ public class HotfixTests : Lg2sHelperBase
 
             repo.Tags.Add("0.1.4-RC1", secondCommit, sign, "hotfix");
 
-            var finder = new HotfixVersionFinder
+            var finder = new HotfixVersionFinder();
+
+            var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Commit = secondCommit,
-                HotfixBranch = hotfixBranch,
-            };
-
-            var version = finder.FindVersion();
+                Tip = secondCommit,
+                CurrentBranch = hotfixBranch,
+            });
 
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(1, version.Version.Minor);
@@ -201,14 +201,14 @@ public class HotfixTests : Lg2sHelperBase
             var branchingCommit = repo.Branches["master"].Tip;
             var hotfixBranch = repo.Branches.Add(branchName, branchingCommit);
 
-            var finder = new HotfixVersionFinder
+            var finder = new HotfixVersionFinder();
+
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Commit = branchingCommit,
-                HotfixBranch = hotfixBranch,
-            };
-
-            Assert.Throws<ErrorException>(() => finder.FindVersion());
+                Tip = branchingCommit,
+                CurrentBranch = hotfixBranch,
+            }));
         }
     }
 
@@ -223,14 +223,14 @@ public class HotfixTests : Lg2sHelperBase
             var branchingCommit = repo.Branches["master"].Tip;
             var hotfixBranch = repo.Branches.Add(branchName, branchingCommit);
 
-            var finder = new HotfixVersionFinder
+            var finder = new HotfixVersionFinder();
+
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Commit = branchingCommit,
-                HotfixBranch = hotfixBranch,
-            };
-
-            Assert.Throws<ErrorException>(() => finder.FindVersion());
+                Tip = branchingCommit,
+                CurrentBranch = hotfixBranch,
+            }));
         }
     }
 }

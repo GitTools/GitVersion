@@ -1,44 +1,39 @@
 namespace GitFlowVersion
 {
-    using LibGit2Sharp;
-
     class MasterVersionFinder
     {
-        public Commit Commit;
-        public IRepository Repository;
-
-        public VersionAndBranch FindVersion()
+        public VersionAndBranch FindVersion(GitFlowVersionContext context)
         {
             int major;
             int minor;
             int patch;
-            foreach (var tag in Repository.TagsByDate(Commit))
+            foreach (var tag in context.Repository.TagsByDate(context.Tip))
             {
                 if (ShortVersionParser.TryParse(tag.Name, out major, out minor, out patch))
                 {
-                    return BuildVersion(major, minor, patch);
+                    return BuildVersion(context, major, minor, patch);
                 }
             }
 
             string versionString;
-            if (MergeMessageParser.TryParse(Commit, out versionString))
+            if (MergeMessageParser.TryParse(context.Tip, out versionString))
             {
                 if (ShortVersionParser.TryParse(versionString, out major, out minor, out patch))
                 {
-                    return BuildVersion(major, minor, patch);
+                    return BuildVersion(context, major, minor, patch);
                 }
             }
 
             throw new ErrorException("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
         }
 
-        VersionAndBranch BuildVersion(int major, int minor, int patch)
+        VersionAndBranch BuildVersion(GitFlowVersionContext context, int major, int minor, int patch)
         {
             return new VersionAndBranch
             {
                 BranchType = BranchType.Master,
                 BranchName = "master",
-                Sha = Commit.Sha,
+                Sha = context.Tip.Sha,
                 Version = new SemanticVersion
                 {
                     Major = major,

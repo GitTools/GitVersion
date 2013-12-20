@@ -7,12 +7,12 @@ namespace Tests.Helpers
     {
         public static VersionAndBranch RetrieveMasterVersion(Repository repo)
         {
-            var masterFinder = new MasterVersionFinder
-                               {
-                                   Repository = repo,
-                                   Commit = repo.Branches["master"].Tip
-                               };
-            var masterVersion = masterFinder.FindVersion();
+            var masterFinder = new MasterVersionFinder();
+            var masterVersion = masterFinder.FindVersion(new GitFlowVersionContext
+            {
+                Repository = repo,
+                Tip = repo.Branches["master"].Tip
+            });
             return masterVersion;
         }
     }

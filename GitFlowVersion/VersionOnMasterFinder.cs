@@ -1,20 +1,15 @@
 namespace GitFlowVersion
 {
     using System;
-    using LibGit2Sharp;
 
     class VersionOnMasterFinder
     {
-        public IRepository Repository;
-        public DateTimeOffset OlderThan;
-
-        public VersionPoint Execute()
+        public VersionPoint Execute(GitFlowVersionContext context, DateTimeOffset olderThan)
         {
-            var masterBranch = Repository
-                .FindBranch("master");
-            foreach (var commit in masterBranch.CommitsPriorToThan(OlderThan))
+            var masterBranch = context.Repository.FindBranch("master");
+            foreach (var commit in masterBranch.CommitsPriorToThan(olderThan))
             {
-                foreach (var tag in Repository.TagsByDate(commit))
+                foreach (var tag in context.Repository.TagsByDate(commit))
                 {
                     int major;
                     int minor;

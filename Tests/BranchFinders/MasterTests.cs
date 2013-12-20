@@ -15,22 +15,22 @@ public class MasterTests
                          MessageEx = "Not a merge commit",
                          CommitterEx = 2.Seconds().Ago().ToSignature()
                      };
-        var finder = new MasterVersionFinder
-                     {
-                         Repository = new MockRepository
-                                      {
-                                          Branches = new MockBranchCollection
-                                                     {
-                                                         new MockBranch("master")
-                                                         {
-                                                             commit
-                                                         },
-                                                     }
-                                      },
-                         Commit = commit
-                     };
+        var finder = new MasterVersionFinder();
 
-        var exception = Assert.Throws<ErrorException>(() => finder.FindVersion());
+        var exception = Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
+        {
+            Repository = new MockRepository
+            {
+                Branches = new MockBranchCollection
+                {
+                    new MockBranch("master")
+                    {
+                        commit
+                    },
+                }
+            },
+            Tip = commit
+        }));
         Assert.AreEqual("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.", exception.Message);
     }
 
@@ -48,11 +48,12 @@ public class MasterTests
                              MessageEx = "Merge branch 'hotfix-0.1.5'",
                              CommitterEx = 2.Seconds().Ago().ToSignature()
                          };
-        var finder = new MasterVersionFinder
+        var finder = new MasterVersionFinder();
+        var version = finder.FindVersion(new GitFlowVersionContext
         {
             Repository = new MockRepository
             {
-                Branches =  new MockBranchCollection
+                Branches = new MockBranchCollection
                        {
                            new MockBranch("master")
                            {
@@ -60,9 +61,8 @@ public class MasterTests
                            },
                        }
             },
-            Commit = hotfixMergeCommit
-        };
-        var version = finder.FindVersion();
+            Tip = hotfixMergeCommit
+        });
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(1, version.Version.Minor);
         Assert.AreEqual(5, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
@@ -78,7 +78,8 @@ public class MasterTests
         {
             CommitterEx = 2.Seconds().Ago().ToSignature()
         };
-        var finder = new MasterVersionFinder
+        var finder = new MasterVersionFinder();
+        var version = finder.FindVersion(new GitFlowVersionContext
         {
             Repository = new MockRepository
             {
@@ -89,7 +90,7 @@ public class MasterTests
                                commit
                            },
                        },
-                       Tags = new MockTagCollection
+                Tags = new MockTagCollection
                               {
                                   new MockTag
                                   {
@@ -98,9 +99,8 @@ public class MasterTests
                                   }
                               }
             },
-            Commit = commit
-        };
-        var version = finder.FindVersion();
+            Tip = commit
+        });
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
@@ -117,7 +117,8 @@ public class MasterTests
         {
             CommitterEx = 2.Seconds().Ago().ToSignature()
         };
-        var finder = new MasterVersionFinder
+        var finder = new MasterVersionFinder();
+        var version = finder.FindVersion(new GitFlowVersionContext
         {
             Repository = new MockRepository
             {
@@ -137,9 +138,8 @@ public class MasterTests
                                   }
                               }
             },
-            Commit = commit
-        };
-        var version = finder.FindVersion();
+            Tip = commit
+        });
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(1, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
@@ -157,7 +157,8 @@ public class MasterTests
             CommitterEx = 2.Seconds().Ago().ToSignature(),
             MessageEx = "Merge branch 'release-0.2.0'"
         };
-        var finder = new MasterVersionFinder
+        var finder = new MasterVersionFinder();
+        var version = finder.FindVersion(new GitFlowVersionContext
         {
             Repository = new MockRepository
             {
@@ -169,9 +170,8 @@ public class MasterTests
                            },
                        },
             },
-            Commit = commit
-        };
-        var version = finder.FindVersion();
+            Tip = commit
+        });
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to 0");

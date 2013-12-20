@@ -19,29 +19,29 @@ public class DevelopTests
                               {
                                   CommitterEx = 1.Seconds().Ago().ToSignature()
                               };
-        var finder = new DevelopVersionFinder
-                     {
-                         Repository = new MockRepository
-                                      {
-                                          Branches = new MockBranchCollection
-                                                     {
-                                                         new MockBranch("master")
-                                                         {
-                                                             new MockMergeCommit
-                                                             {
-                                                                 MessageEx = "hotfix-0.1.1",
-                                                                 CommitterEx = 2.Seconds().Ago().ToSignature()
-                                                             }
-                                                         },
-                                                         new MockBranch("develop")
-                                                         {
-                                                             commitOnDevelop
-                                                         }
-                                                     }
-                                      },
-                         Commit = commitOnDevelop
-                     };
-        var version = finder.FindVersion();
+        var finder = new DevelopVersionFinder();
+        var version = finder.FindVersion(new GitFlowVersionContext
+        {
+            Repository = new MockRepository
+            {
+                Branches = new MockBranchCollection
+                {
+                    new MockBranch("master")
+                    {
+                        new MockMergeCommit
+                        {
+                            MessageEx = "hotfix-0.1.1",
+                            CommitterEx = 2.Seconds().Ago().ToSignature()
+                        }
+                    },
+                    new MockBranch("develop")
+                    {
+                        commitOnDevelop
+                    }
+                }
+            },
+            Tip = commitOnDevelop
+        });
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Version.Patch);
@@ -61,7 +61,8 @@ public class DevelopTests
                              {
                                  CommitterEx = 2.Seconds().Ago().ToSignature()
                              };
-        var finder = new DevelopVersionFinder
+        var finder = new DevelopVersionFinder();
+        var context = new GitFlowVersionContext
                      {
                          Repository = new MockRepository
                                       {
@@ -85,10 +86,10 @@ public class DevelopTests
                                                      }
                                                  }
                                       },
-                         Commit = commitOnDevelop
+                         Tip = commitOnDevelop
                      };
 
-        var version = finder.FindVersion();
+        var version = finder.FindVersion(context);
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Version.Patch);
@@ -119,7 +120,8 @@ public class DevelopTests
                              {
                                  CommitterEx = 2.Seconds().Ago().ToSignature(),
                              };
-        var finder = new DevelopVersionFinder
+        var finder = new DevelopVersionFinder();
+        var context = new GitFlowVersionContext
                      {
                          Repository = new MockRepository
                                       {
@@ -156,10 +158,10 @@ public class DevelopTests
                                                      }
                                                  }
                                       },
-                         Commit = commitTwoOnDevelop
+                         Tip = commitTwoOnDevelop
                      };
 
-        var version = finder.FindVersion();
+        var version = finder.FindVersion(context);
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(4, version.Version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Version.Patch);

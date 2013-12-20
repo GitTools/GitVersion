@@ -3,41 +3,31 @@ namespace GitFlowVersion
     using System.Linq;
     using LibGit2Sharp;
 
-    class DevelopBasedVersionFinderBase
+    abstract class DevelopBasedVersionFinderBase
     {
-        public VersionAndBranch FindVersion(
-            IRepository repo,
-            Branch branch,
-            Commit commit,
+        protected VersionAndBranch FindVersion(
+            GitFlowVersionContext context,
             BranchType branchType)
         {
-            var ancestor = FindCommonAncestorWithDevelop(repo, branch, branchType);
+            var ancestor = FindCommonAncestorWithDevelop(context.Repository, context.CurrentBranch, branchType);
 
-            if (!IsThereAnyCommitOnTheBranch(repo, branch))
+            if (!IsThereAnyCommitOnTheBranch(context.Repository, context.CurrentBranch))
             {
-                var developVersionFinder = new DevelopVersionFinder
-                {
-                    Commit = commit,
-                    Repository = repo
-                };
-                var versionFromDevelopFinder = developVersionFinder.FindVersion();
+                var developVersionFinder = new DevelopVersionFinder();
+                var versionFromDevelopFinder = developVersionFinder.FindVersion(context);
                 versionFromDevelopFinder.BranchType = branchType;
-                versionFromDevelopFinder.BranchName = branch.Name;
+                versionFromDevelopFinder.BranchName = context.CurrentBranch.Name;
                 return versionFromDevelopFinder;
             }
 
-            var versionOnMasterFinder = new VersionOnMasterFinder
-            {
-                Repository = repo,
-                OlderThan = commit.When()
-            };
-            var versionFromMaster = versionOnMasterFinder.Execute();
+            var versionOnMasterFinder = new VersionOnMasterFinder();
+            var versionFromMaster = versionOnMasterFinder.Execute(context, context.Tip.Committer.When);
 
             return new VersionAndBranch
             {
                 BranchType = branchType,
-                BranchName = branch.Name,
-                Sha = commit.Sha,
+                BranchName = context.CurrentBranch.Name,
+                Sha = context.Tip.Sha,
                 Version = new SemanticVersion
                 {
                     Major = versionFromMaster.Major,

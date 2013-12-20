@@ -1,16 +1,10 @@
 namespace GitFlowVersion
 {
-    using LibGit2Sharp;
-
     class HotfixVersionFinder : OptionallyTaggedBranchVersionFinderBase
     {
-        public Commit Commit;
-        public Branch HotfixBranch;
-        public IRepository Repository;
-
-        public VersionAndBranch FindVersion()
+        public VersionAndBranch FindVersion(GitFlowVersionContext context)
         {
-            return FindVersion(Repository, HotfixBranch, Commit, BranchType.Hotfix, "master");
+            return FindVersion(context, BranchType.Hotfix, "master");
         }
     }
 }

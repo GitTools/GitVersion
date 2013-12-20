@@ -7,27 +7,25 @@ namespace GitFlowVersion
 
     abstract class OptionallyTaggedBranchVersionFinderBase
     {
-        public VersionAndBranch FindVersion(
-            IRepository repo,
-            Branch branch,
-            Commit commit,
+        protected VersionAndBranch FindVersion(
+            GitFlowVersionContext context,
             BranchType branchType,
             string baseBranchName)
         {
-            var nbHotfixCommits = NumberOfCommitsInBranchNotKnownFromBaseBranch(repo, branch, branchType, baseBranchName);
+            var nbHotfixCommits = NumberOfCommitsInBranchNotKnownFromBaseBranch(context.Repository, context.CurrentBranch, branchType, baseBranchName);
 
-            var versionString = branch.GetSuffix(branchType);
+            var versionString = context.CurrentBranch.GetSuffix(branchType);
             var version = SemanticVersionParser.Parse(versionString, false);
 
-            EnsureVersionIsValid(version, branch, branchType);
+            EnsureVersionIsValid(version, context.CurrentBranch, branchType);
 
-            var tagVersion = RetrieveMostRecentOptionalTagVersion(repo, version, branch.Commits.Take(nbHotfixCommits + 1));
+            var tagVersion = RetrieveMostRecentOptionalTagVersion(context.Repository, version, context.CurrentBranch.Commits.Take(nbHotfixCommits + 1));
 
             var versionAndBranch = new VersionAndBranch
                                    {
                                        BranchType = branchType,
-                                       BranchName = branch.Name,
-                                       Sha = commit.Sha,
+                                       BranchName = context.CurrentBranch.Name,
+                                       Sha = context.Tip.Sha,
                                        Version = new SemanticVersion
                                                  {
                                                      Major = version.Major,
