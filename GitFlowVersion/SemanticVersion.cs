@@ -23,7 +23,7 @@ namespace GitFlowVersion
                    Minor == obj.Minor &&
                    Patch == obj.Patch &&
                    PreReleasePartOne == obj.PreReleasePartOne &&
-                   PreReleasePartOne == obj.PreReleasePartTwo &&
+                   PreReleasePartTwo == obj.PreReleasePartTwo &&
                    Stability == obj.Stability &&
                    Suffix == obj.Suffix;
         }
