@@ -7,73 +7,21 @@ using NUnit.Framework;
 public class MergeMessageParserTests
 {
 
-    [Test]
-    public void MergeHotFix()
-    {
-        AssertMergeMessage("0.1.5", "Merge branch 'hotfix-0.1.5'\n");
-    }
-
-    [Test]
-    public void MergeHotFixWithLargeNumber()
-    {
-        AssertMergeMessage("10.10.50", "Merge branch 'hotfix-10.10.50'\n");
-    }
-
-    [Test]
-    public void MergeRelease()
-    {
-        AssertMergeMessage("0.2.0", "Merge branch 'release-0.2.0'\n");
-    }
-
-    [Test]
-    public void MergeReleaseNotStartingWithNumber()
-    {
-        AssertMergeMessage(null, "Merge branch 's'\n");
-    }
-
-    [Test]
-    public void MergeReleaseWithLargeNumber()
-    {
-        AssertMergeMessage("10.10.50", "Merge branch 'release-10.10.50'\n");
-    }
-
-    [Test]
-    public void MergeBadNamedHotfixBranch()
-    {
-        //TODO: possible make it a config option to support this
-        AssertMergeMessage("4.0.3", "Merge branch '4.0.3'\n");
-    }
-
-    [Test]
-    public void TooManyTrailingCharacters()
-    {
-        AssertMergeMessage(null, "Merge branch 'develop' of github.com:Particular/NServiceBus into develop\n");
-    }
-
-    [Test]
-    public void NotAMergeCommit()
-    {
-        var c = new MockCommit
-        {
-            MessageEx = "Merge branch 'hotfix-0.1.5'\n",
-        };
-
-        string versionPart;
-        Assert.IsFalse(MergeMessageParser.TryParse(c, out versionPart));
-    }
-
-    [Test]
-    public void Supports_multiline_commit_message()
-    {
-        AssertMergeMessage("0.1.5", "Merge branch 'hotfix-0.1.5'\n\nRelates to: TicketId");
-    }
-
-    void AssertMergeMessage(string expectedVersion, string message)
+    [TestCase("Merge branch 'hotfix-0.1.5'\n", false, null)]
+    [TestCase("Merge branch 'develop' of github.com:Particular/NServiceBus into develop\n", true, null)]
+    [TestCase("Merge branch '4.0.3'\n", true, "4.0.3")] //TODO: possible make it a config option to support this
+    [TestCase("Merge branch 'release-10.10.50'\n", true, "10.10.50")]
+    [TestCase("Merge branch 's'\n", true, null)] // Must start with a number
+    [TestCase("Merge branch 'release-0.2.0'\n", true, "0.2.0")]
+    [TestCase("Merge branch 'hotfix-10.10.50'\n", true, "10.10.50")]
+    [TestCase("Merge branch 'hotfix-0.1.5'\n", true, "0.1.5")]
+    [TestCase("Merge branch 'hotfix-0.1.5'\n\nRelates to: TicketId", true, "0.1.5")]
+    public void AssertMergeMessage(string message, bool isMergeCommit, string expectedVersion)
     {
         var c = new MockCommit
                 {
                     MessageEx = message,
-                    ParentsEx = new List<Commit> {null, null}
+                    ParentsEx = isMergeCommit ? new List<Commit> {null, null} : new List<Commit>{ null }
                 };
 
         string versionPart;
