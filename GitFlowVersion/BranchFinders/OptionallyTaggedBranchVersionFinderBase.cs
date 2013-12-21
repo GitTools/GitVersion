@@ -20,9 +20,9 @@ namespace GitFlowVersion
             EnsureVersionIsValid(version, context.CurrentBranch, branchType);
 
             if (branchType == BranchType.Hotfix)
-                version.Tag.Name = "hotfix";
+                version.Tag.Name = "hotfix0";
             if (branchType == BranchType.Release)
-                version.Tag.Name = "beta";
+                version.Tag.Name = "beta0";
 
             var tagVersion = RetrieveMostRecentOptionalTagVersion(context.Repository, version, context.CurrentBranch.Commits.Take(nbHotfixCommits + 1));
 

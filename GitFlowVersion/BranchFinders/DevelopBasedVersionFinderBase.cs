@@ -35,7 +35,7 @@ namespace GitFlowVersion
                     Patch = 0,
                     Tag = new SemanticVersionTag
                     {
-                        Name = "unstable"
+                        Name = "unstable0"
                     },
                     Suffix = ancestor.Prefix()
                 }

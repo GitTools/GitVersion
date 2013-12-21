@@ -101,7 +101,8 @@ namespace GitFlowVersion
         public bool HasReleaseNumber()
         {
             if (Name == null) return false;
-            return Regex.IsMatch(Name, "\\d+");
+            var hasReleaseNumber = Regex.IsMatch(Name, "\\d+$");
+            return hasReleaseNumber;
         }
 
         public int? ReleaseNumber()
@@ -110,10 +111,11 @@ namespace GitFlowVersion
                 return null;
 
             int releaseNumber;
-            if (int.TryParse(Regex.Match(Name, "\\d+").Value, out releaseNumber))
+            var value = Regex.Match(Name, "\\d+$").Value;
+            if (int.TryParse(value, out releaseNumber))
                 return releaseNumber;
 
-            return 0;
+            return null;
         }
     }
 }

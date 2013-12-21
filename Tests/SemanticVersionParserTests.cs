@@ -120,21 +120,24 @@ public class SemanticVersionParserTests
     public void Major_minor_patch_stability_missing_pre_release()
     {
         SemanticVersion version;
-        Assert.IsFalse(SemanticVersionParser.TryParse("1.2.3-beta", out version));
+        Assert.IsTrue(SemanticVersionParser.TryParse("1.2.3-beta", out version));
+        Assert.IsFalse(version.Tag.HasReleaseNumber());
+        Assert.Null(version.Tag.ReleaseNumber());
     }
 
     [Test]
     public void Trailing_character()
     {
         SemanticVersion version;
-        Assert.IsFalse(SemanticVersionParser.TryParse("1.2.3-beta3f", out version));
+        Assert.IsTrue(SemanticVersionParser.TryParse("1.2.3-beta3f", out version));
     }
 
     [Test]
     public void Bad_stability()
     {
         SemanticVersion version;
-        Assert.IsFalse(SemanticVersionParser.TryParse("1.2.3-notAStability1", out version));
+        Assert.IsTrue(SemanticVersionParser.TryParse("1.2.3-notAStability1", out version));
+        Assert.Null(version.Tag.InferStability());
     }
 
     [Test]
