@@ -128,7 +128,7 @@
                                       };
             var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText();
 
-            var tempFileName = string.Format("AssemblyInfo_{0}_{1}.cs", Path.GetFileNameWithoutExtension(ProjectFile), Path.GetRandomFileName());
+            var tempFileName = string.Format("AssemblyInfo_{0}_{1}.g.cs", Path.GetFileNameWithoutExtension(ProjectFile), Path.GetRandomFileName());
             AssemblyInfoTempFilePath = Path.Combine(TempFileTracker.TempPath, tempFileName);
             File.WriteAllText(AssemblyInfoTempFilePath, assemblyInfo);
         }
