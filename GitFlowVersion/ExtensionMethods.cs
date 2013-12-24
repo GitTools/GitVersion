@@ -1,13 +1,18 @@
 namespace GitFlowVersion
 {
+    using System;
     using System.Text;
     using JetBrains.Annotations;
 
     static class ExtensionMethods
     {
-        public static string TrimNewLines(this string s)
+        public static string TrimToFirstLine(this string s)
         {
-            return s.TrimEnd('\r', '\n');
+            return s.Split(new[]
+            {
+                "\r\n",
+                "\n"
+            }, StringSplitOptions.None)[0];
         }
         [StringFormatMethod("format")]
         public static void AppendLineFormat(this StringBuilder stringBuilder, string format, params object[] args)

@@ -62,6 +62,12 @@ public class MergeMessageParserTests
         Assert.IsFalse(MergeMessageParser.TryParse(c, out versionPart));
     }
 
+    [Test]
+    public void Supports_multiline_commit_message()
+    {
+        AssertMergeMessage("0.1.5", "Merge branch 'hotfix-0.1.5'\n\nRelates to: TicketId");
+    }
+
     void AssertMergeMessage(string expectedVersion, string message)
     {
         var c = new MockCommit
