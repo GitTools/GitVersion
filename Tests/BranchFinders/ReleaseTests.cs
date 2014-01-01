@@ -49,14 +49,14 @@ public class ReleaseTests : Lg2sHelperBase
             var branchingCommit = repo.Branches["develop"].Tip;
             var releaseBranch = repo.Branches.Add(branchName, branchingCommit);
 
-            var finder = new ReleaseVersionFinder
-            {
-                Repository = repo,
-                Commit = branchingCommit,
-                ReleaseBranch = releaseBranch,
-            };
+            var finder = new ReleaseVersionFinder();
 
-            var version = finder.FindVersion();
+            var version = finder.FindVersion(new GitFlowVersionContext
+            {
+                CurrentBranch = releaseBranch,
+                Repository = repo
+            });
+
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(3, version.Version.Minor);
             Assert.AreEqual(0, version.Version.Patch);

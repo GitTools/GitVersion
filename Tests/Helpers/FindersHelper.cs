@@ -8,11 +8,7 @@ namespace Tests.Helpers
         public static VersionAndBranch RetrieveMasterVersion(Repository repo)
         {
             var masterFinder = new MasterVersionFinder();
-            var masterVersion = masterFinder.FindVersion(new GitFlowVersionContext
-            {
-                Repository = repo,
-                Tip = repo.Branches["master"].Tip
-            });
+            var masterVersion = masterFinder.FindVersion(repo, repo.Branches["master"].Tip);
             return masterVersion;
         }
     }

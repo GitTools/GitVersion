@@ -2,6 +2,9 @@
 {
     using LibGit2Sharp;
 
+    /// <summary>
+    /// Contextual information about where GitFlowVersion is being run
+    /// </summary>
     public class GitFlowVersionContext
     {
         public Commit Tip;

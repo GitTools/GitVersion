@@ -2,6 +2,7 @@ namespace GitFlowVersion
 {
     using System;
     using System.Linq;
+    using LibGit2Sharp;
 
     public class GitFlowVersionFinder
     {
@@ -11,7 +12,7 @@ namespace GitFlowVersion
 
             if (context.CurrentBranch.IsMaster())
             {
-                return new MasterVersionFinder().FindVersion(context);
+                return new MasterVersionFinder().FindVersion(context.Repository, context.Tip);
             }
 
             if (context.CurrentBranch.IsHotfix())
@@ -39,8 +40,8 @@ namespace GitFlowVersion
 
         void EnsureMainTopologyConstraints(GitFlowVersionContext context)
         {
-            EnsureLocalBranchExists(context, "master");
-            EnsureLocalBranchExists(context, "develop");
+            EnsureLocalBranchExists(context.Repository, "master");
+            EnsureLocalBranchExists(context.Repository, "develop");
             EnsureHeadIsNotDetached(context);
         }
 
@@ -55,14 +56,14 @@ namespace GitFlowVersion
             throw new ErrorException(message);
         }
 
-        void EnsureLocalBranchExists(GitFlowVersionContext context, string branchName)
+        void EnsureLocalBranchExists(IRepository repository, string branchName)
         {
-            if (context.Repository.FindBranch(branchName) != null)
+            if (repository.FindBranch(branchName) != null)
             {
                 return;
             }
 
-            var existingBranches = string.Format("'{0}'", string.Join("', '", context.Repository.Branches.Select(x=>x.CanonicalName)));
+            var existingBranches = string.Format("'{0}'", string.Join("', '", repository.Branches.Select(x => x.CanonicalName)));
             throw new ErrorException(string.Format("This repository doesn't contain a branch named '{0}'. Please create one. Existing branches: {1}", branchName, existingBranches));
         }
     }
