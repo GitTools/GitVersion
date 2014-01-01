@@ -1,4 +1,3 @@
-using System.Linq;
 using GitFlowVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -23,7 +22,6 @@ public class FeatureBranchTests : Lg2sHelperBase
             var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Tip = branchingCommit,
                 CurrentBranch = featureBranch
             });
 
@@ -58,7 +56,6 @@ public class FeatureBranchTests : Lg2sHelperBase
             var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Tip = featureBranch.Tip,
                 CurrentBranch = featureBranch
             });
 
@@ -94,7 +91,6 @@ public class FeatureBranchTests : Lg2sHelperBase
             var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Tip = featureBranch.Tip,
                 CurrentBranch = featureBranch
             });
 
@@ -130,7 +126,6 @@ public class FeatureBranchTests : Lg2sHelperBase
             var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Tip = featureBranch.Tip.Parents.Single(),
                 CurrentBranch = featureBranch,
             });
 

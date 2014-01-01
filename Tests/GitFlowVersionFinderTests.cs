@@ -14,6 +14,7 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
         {
             const string branchName = "master";
             var master = repo.Branches[branchName];
+            repo.Checkout(master);
 
             var finder = new GitFlowVersionFinder();
 
@@ -21,7 +22,6 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             {
                 Repository = repo,
                 CurrentBranch = master,
-                Tip = master.Tip
             });
 
             Assert.AreEqual(branchName, versionAndBranch.BranchName);
@@ -50,7 +50,6 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             {
                 Repository = repo,
                 CurrentBranch = develop,
-                Tip = develop.Tip
             });
 
             Assert.AreEqual(branchName, versionAndBranch.BranchName);
@@ -89,7 +88,6 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             {
                 Repository = repo,
                 CurrentBranch = feature,
-                Tip = feature.Tip
             });
 
             Assert.AreEqual(branchName, versionAndBranch.BranchName);
@@ -132,7 +130,6 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             {
                 Repository = repo,
                 CurrentBranch = hotfix,
-                Tip = hotfix.Tip
 
             });
 
@@ -177,7 +174,6 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             {
                 Repository = repo,
                 CurrentBranch = release,
-                Tip = release.Tip
 
             });
 
@@ -210,7 +206,6 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             {
                 Repository = repo,
                 CurrentBranch = repo.Head,
-                Tip = repo.Head.Tip
             }));
         }
     }
@@ -231,7 +226,6 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             {
                 Repository = repo,
                 CurrentBranch = repo.Head,
-                Tip = repo.Head.Tip
             }));
         }
     }
@@ -257,7 +251,6 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             {
                 Repository = repo,
                 CurrentBranch = feature,
-                Tip = feature.Tip
             }));
         }
     }
@@ -283,7 +276,6 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             {
                 Repository = repo,
                 CurrentBranch = feature,
-                Tip = feature.Tip
             }));
         }
     }
@@ -309,7 +301,6 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             {
                 Repository = repo,
                 CurrentBranch = pull,
-                Tip = pull.Tip
             }));
         }
     }
@@ -333,7 +324,6 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             {
                 Repository = repo,
                 CurrentBranch = repo.Head,
-                Tip = repo.Head.Tip
             });
 
             Assert.AreEqual(branchName, versionAndBranch.BranchName);
@@ -376,7 +366,6 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             {
                 Repository = repo,
                 CurrentBranch = feature,
-                Tip = feature.Tip
             }));
         }
     }

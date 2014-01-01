@@ -12,7 +12,6 @@ namespace GitFlowVersion
             return gitFlowVersionFinder.FindVersion(new GitFlowVersionContext
             {
                 CurrentBranch = repository.Head,
-                Tip = repository.Head.Tip,
                 Repository = repository
             });
         }

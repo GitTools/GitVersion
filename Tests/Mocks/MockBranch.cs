@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using LibGit2Sharp;
 
 public class MockBranch : Branch, ICollection<Commit>
@@ -23,7 +24,7 @@ public class MockBranch : Branch, ICollection<Commit>
     string canonicalName;
     public override string Name { get { return name; } }
     public override ICommitLog Commits { get { return commits; } }
-
+    public override Commit Tip { get { return commits.First(); } }
     public override string CanonicalName
     {
         get { return canonicalName; }

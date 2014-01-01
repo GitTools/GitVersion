@@ -25,7 +25,6 @@ public class ReleaseTests : Lg2sHelperBase
             var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Tip = branchingCommit,
                 CurrentBranch = releaseBranch,
             });
             Assert.AreEqual(0, version.Version.Major);
@@ -82,7 +81,6 @@ public class ReleaseTests : Lg2sHelperBase
             AddOneCommitToHead(repo, "first commit on release");
 
             var releaseBranch = repo.Branches[branchName];
-            var firstCommit = releaseBranch.Tip;
 
             var sign = Constants.SignatureNow();
             repo.Tags.Add("0.5.0-alpha5", branchingCommit, sign, "release");
@@ -92,7 +90,6 @@ public class ReleaseTests : Lg2sHelperBase
             var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Tip = firstCommit,
                 CurrentBranch = releaseBranch,
             });
             Assert.AreEqual(0, version.Version.Major);
@@ -120,7 +117,6 @@ public class ReleaseTests : Lg2sHelperBase
             AddOneCommitToHead(repo, "second commit on release");
 
             var releaseBranch = repo.Branches[branchName];
-            var secondCommit = releaseBranch.Tip;
 
             var sign = Constants.SignatureNow();
             repo.Tags.Add("0.4.0-alpha5", branchingCommit, sign, "release");
@@ -130,7 +126,6 @@ public class ReleaseTests : Lg2sHelperBase
             var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Tip = secondCommit,
                 CurrentBranch = releaseBranch,
             });
             Assert.AreEqual(0, version.Version.Major);
@@ -158,14 +153,12 @@ public class ReleaseTests : Lg2sHelperBase
             AddOneCommitToHead(repo, "second commit on release");
 
             var releaseBranch = repo.Branches[branchName];
-            var secondCommit = releaseBranch.Tip;
 
             var finder = new ReleaseVersionFinder();
 
             var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Tip = secondCommit,
                 CurrentBranch = releaseBranch,
             });
             Assert.AreEqual(0, version.Version.Major);
@@ -192,7 +185,6 @@ public class ReleaseTests : Lg2sHelperBase
             AddOneCommitToHead(repo, "first commit on release");
 
             var releaseBranch = repo.Branches[branchName];
-            var firstCommit = releaseBranch.Tip;
 
             var sign = Constants.SignatureNow();
             repo.Tags.Add("0.4.0-RC4", branchingCommit, sign, "release");
@@ -202,7 +194,6 @@ public class ReleaseTests : Lg2sHelperBase
             var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Tip = firstCommit,
                 CurrentBranch = releaseBranch,
             });
             //tag: 0.4.0-RC1 => 
@@ -231,7 +222,6 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Tip = branchingCommit,
                 CurrentBranch = releaseBranch,
             }));
         }
@@ -253,7 +243,6 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Tip = branchingCommit,
                 CurrentBranch = releaseBranch,
             }));
         }

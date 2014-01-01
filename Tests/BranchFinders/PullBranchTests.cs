@@ -43,7 +43,6 @@ public class PullBranchTests : Lg2sHelperBase
             Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Tip = branchingCommit,
                 CurrentBranch = pullBranch,
             }));
         }
@@ -67,7 +66,6 @@ public class PullBranchTests : Lg2sHelperBase
             var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Tip = pullBranch.Tip,
                 CurrentBranch = pullBranch,
             });
 
@@ -102,7 +100,6 @@ public class PullBranchTests : Lg2sHelperBase
             var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Tip = pullBranch.Tip,
                 CurrentBranch = pullBranch,
             });
 

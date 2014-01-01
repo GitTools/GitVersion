@@ -7,8 +7,9 @@
     /// </summary>
     public class GitFlowVersionContext
     {
-        public Commit Tip;
+        public Commit Tip { get { return Repository.Head.Tip; } }
         public IRepository Repository;
-        public Branch CurrentBranch; 
+        public Branch CurrentBranch;
     }
+
 }
