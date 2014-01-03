@@ -45,7 +45,7 @@ namespace GitFlowVersion
             {
                 return false;
             }
-            trimmed = trimmed.TrimNewLines();
+            trimmed = trimmed.TrimToFirstLine();
             if (!trimmed.EndsWith("'"))
             {
                 return false;
