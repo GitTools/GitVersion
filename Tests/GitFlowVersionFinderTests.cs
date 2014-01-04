@@ -15,14 +15,13 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             const string branchName = "master";
             var master = repo.Branches[branchName];
 
-            var finder = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder();
+
+            var versionAndBranch = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Branch = master,
-                Commit = master.Tip
-            };
-
-            var versionAndBranch = finder.FindVersion();
+                CurrentBranch = master,
+            });
 
             Assert.AreEqual(branchName, versionAndBranch.BranchName);
             Assert.AreEqual(BranchType.Master, versionAndBranch.BranchType);
@@ -44,14 +43,13 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             const string branchName = "develop";
             var develop = repo.Branches[branchName];
 
-            var finder = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder();
+
+            var versionAndBranch = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Branch = develop,
-                Commit = develop.Tip
-            };
-
-            var versionAndBranch = finder.FindVersion();
+                CurrentBranch = develop,
+            });
 
             Assert.AreEqual(branchName, versionAndBranch.BranchName);
             Assert.AreEqual(BranchType.Develop, versionAndBranch.BranchType);
@@ -83,14 +81,13 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             var feature = repo.Branches[branchName];
 
-            var finder = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder();
+
+            var versionAndBranch = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Branch = feature,
-                Commit = feature.Tip
-            };
-
-            var versionAndBranch = finder.FindVersion();
+                CurrentBranch = feature,
+            });
 
             Assert.AreEqual(branchName, versionAndBranch.BranchName);
             Assert.AreEqual(BranchType.Feature, versionAndBranch.BranchType);
@@ -126,14 +123,14 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             repo.Tags.Add("1.0.2-Beta1", hotfix.Tip, Constants.SignatureNow(), " ");
 
-            var finder = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder();
+
+            var versionAndBranch = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Branch = hotfix,
-                Commit = hotfix.Tip
-            };
+                CurrentBranch = hotfix,
 
-            var versionAndBranch = finder.FindVersion();
+            });
 
             Assert.AreEqual(branchName, versionAndBranch.BranchName);
             Assert.AreEqual(BranchType.Hotfix, versionAndBranch.BranchType);
@@ -170,14 +167,14 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             repo.Tags.Add("2.0.0-Beta1", release.Tip, Constants.SignatureNow(), " ");
 
-            var finder = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder();
+
+            var versionAndBranch = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Branch = release,
-                Commit = release.Tip
-            };
+                CurrentBranch = release,
 
-            var versionAndBranch = finder.FindVersion();
+            });
 
             Assert.AreEqual(branchName, versionAndBranch.BranchName);
             Assert.AreEqual(BranchType.Release, versionAndBranch.BranchType);
@@ -202,14 +199,13 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             repo.Branches.Remove("master");
 
-            var finder = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder();
+
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Branch = repo.Head,
-                Commit = repo.Head.Tip
-            };
-
-            Assert.Throws<ErrorException>(() => finder.FindVersion());
+                CurrentBranch = repo.Head,
+            }));
         }
     }
 
@@ -223,14 +219,13 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             repo.Branches.Remove("develop");
 
-            var finder = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder();
+
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Branch = repo.Head,
-                Commit = repo.Head.Tip
-            };
-
-            Assert.Throws<ErrorException>(() => finder.FindVersion());
+                CurrentBranch = repo.Head,
+            }));
         }
     }
 
@@ -249,14 +244,13 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             var feature = repo.Branches[branchName];
 
-            var finder = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder();
+
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Branch = feature,
-                Commit = feature.Tip
-            };
-
-            Assert.Throws<ErrorException>(() => finder.FindVersion());
+                CurrentBranch = feature,
+            }));
         }
     }
 
@@ -275,14 +269,13 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             var feature = repo.Branches[branchName];
 
-            var finder = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder();
+
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Branch = feature,
-                Commit = feature.Tip
-            };
-
-            Assert.Throws<ErrorException>(() => finder.FindVersion());
+                CurrentBranch = feature,
+            }));
         }
     }
 
@@ -301,14 +294,13 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             var pull = repo.Branches[branchName];
 
-            var finder = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder();
+
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Branch = pull,
-                Commit = pull.Tip
-            };
-
-            Assert.Throws<ErrorException>(() => finder.FindVersion());
+                CurrentBranch = pull,
+            }));
         }
     }
 
@@ -325,14 +317,13 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             AddOneCommitToHead(repo, "code");
 
-            var finder = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder();
+
+            var versionAndBranch = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Branch = repo.Head,
-                Commit = repo.Head.Tip
-            };
-
-            var versionAndBranch = finder.FindVersion();
+                CurrentBranch = repo.Head,
+            });
 
             Assert.AreEqual(branchName, versionAndBranch.BranchName);
             Assert.AreEqual(BranchType.Feature, versionAndBranch.BranchType);
@@ -368,14 +359,13 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             var feature = repo.Branches[branchName];
 
-            var gfvf = new GitFlowVersionFinder
+            var gfvf = new GitFlowVersionFinder();
+
+            Assert.Throws<ErrorException>(() => gfvf.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Branch = feature,
-                Commit = feature.Tip
-            };
-
-            Assert.Throws<ErrorException>(() => gfvf.FindVersion());
+                CurrentBranch = feature,
+            }));
         }
     }
 }

@@ -1,4 +1,3 @@
-using System.Linq;
 using GitFlowVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -18,14 +17,13 @@ public class FeatureBranchTests : Lg2sHelperBase
             var branchingCommit = repo.Branches["develop"].Tip;
             var featureBranch = repo.Branches.Add("featureWithNoCommits", branchingCommit);
 
-            var finder = new FeatureVersionFinder
-                         {
-                             Repository = repo,
-                             Commit = branchingCommit,
-                             FeatureBranch = featureBranch,
-                         };
+            var finder = new FeatureVersionFinder();
 
-            var version = finder.FindVersion();
+            var version = finder.FindVersion(new GitFlowVersionContext
+            {
+                Repository = repo,
+                CurrentBranch = featureBranch
+            });
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
@@ -53,14 +51,13 @@ public class FeatureBranchTests : Lg2sHelperBase
 
             var featureBranch = repo.Branches["featureWithOneCommit"];
 
-            var finder = new FeatureVersionFinder
+            var finder = new FeatureVersionFinder();
+
+            var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Commit = featureBranch.Tip,
-                FeatureBranch = featureBranch,
-            };
-
-            var version = finder.FindVersion();
+                CurrentBranch = featureBranch
+            });
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
@@ -89,14 +86,13 @@ public class FeatureBranchTests : Lg2sHelperBase
 
             var featureBranch = repo.Branches["featureWithOneCommit"];
 
-            var finder = new FeatureVersionFinder
+            var finder = new FeatureVersionFinder();
+
+            var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Commit = featureBranch.Tip,
-                FeatureBranch = featureBranch,
-            };
-
-            var version = finder.FindVersion();
+                CurrentBranch = featureBranch
+            });
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
@@ -125,14 +121,13 @@ public class FeatureBranchTests : Lg2sHelperBase
 
             var featureBranch = repo.Branches["featureWithOneCommit"];
 
-            var finder = new FeatureVersionFinder
+            var finder = new FeatureVersionFinder();
+
+            var version = finder.FindVersion(new GitFlowVersionContext
             {
                 Repository = repo,
-                Commit = featureBranch.Tip.Parents.Single(),
-                FeatureBranch = featureBranch,
-            };
-
-            var version = finder.FindVersion();
+                CurrentBranch = featureBranch,
+            });
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 

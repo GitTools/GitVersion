@@ -6,96 +6,64 @@ namespace GitFlowVersion
 
     public class GitFlowVersionFinder
     {
-        public Commit Commit;
-        public IRepository Repository;
-        public Branch Branch;
-
-        public VersionAndBranch FindVersion()
+        public VersionAndBranch FindVersion(GitFlowVersionContext context)
         {
-            EnsureMainTopologyConstraints();
+            EnsureMainTopologyConstraints(context);
 
-            if (Branch.IsMaster())
+            if (context.CurrentBranch.IsMaster())
             {
-                return new MasterVersionFinder
-                       {
-                           Commit = Commit,
-                           Repository = Repository
-                       }.FindVersion();
+                return new MasterVersionFinder().FindVersion(context.Repository, context.CurrentBranch.Tip);
             }
 
-            if (Branch.IsHotfix())
+            if (context.CurrentBranch.IsHotfix())
             {
-                return new HotfixVersionFinder
-                       {
-                           Commit = Commit,
-                           HotfixBranch = Branch,
-                           Repository = Repository
-                       }.FindVersion();
+                return new HotfixVersionFinder().FindVersion(context);
             }
 
-            if (Branch.IsRelease())
+            if (context.CurrentBranch.IsRelease())
             {
-                return new ReleaseVersionFinder
-                       {
-                           Commit = Commit,
-                           Repository = Repository,
-                           ReleaseBranch = Branch,
-                       }.FindVersion();
+                return new ReleaseVersionFinder().FindVersion(context);
             }
 
-            if (Branch.IsDevelop())
+            if (context.CurrentBranch.IsDevelop())
             {
-                return new DevelopVersionFinder
-                       {
-                           Commit = Commit,
-                           Repository = Repository
-                       }.FindVersion();
+                return new DevelopVersionFinder().FindVersion(context);
             }
 
-            if (Branch.IsPullRequest())
+            if (context.CurrentBranch.IsPullRequest())
             {
-                return new PullVersionFinder
-                       {
-                           Commit = Commit,
-                           Repository = Repository,
-                           PullBranch = Branch
-                       }.FindVersion();
+                return new PullVersionFinder().FindVersion(context);
             }
 
-            return new FeatureVersionFinder
-                    {
-                        Commit = Commit,
-                        Repository = Repository,
-                        FeatureBranch = Branch
-                    }.FindVersion();
+            return new FeatureVersionFinder().FindVersion(context);
         }
 
-        void EnsureMainTopologyConstraints()
+        void EnsureMainTopologyConstraints(GitFlowVersionContext context)
         {
-            EnsureLocalBranchExists("master");
-            EnsureLocalBranchExists("develop");
-            EnsureHeadIsNotDetached();
+            EnsureLocalBranchExists(context.Repository, "master");
+            EnsureLocalBranchExists(context.Repository, "develop");
+            EnsureHeadIsNotDetached(context);
         }
 
-        void EnsureHeadIsNotDetached()
+        void EnsureHeadIsNotDetached(GitFlowVersionContext context)
         {
-            if (!Branch.CanonicalName.Equals("(no branch)", StringComparison.OrdinalIgnoreCase))
+            if (!context.CurrentBranch.CanonicalName.Equals("(no branch)", StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
 
-            var message = string.Format("It looks like the branch being examined is a detached Head pointing to commit '{0}'. Without a proper branch name GitFlowVersion cannot determine the build version.", Branch.Tip.Id.ToString(7));
+            var message = string.Format("It looks like the branch being examined is a detached Head pointing to commit '{0}'. Without a proper branch name GitFlowVersion cannot determine the build version.", context.CurrentBranch.Tip.Id.ToString(7));
             throw new ErrorException(message);
         }
 
-        void EnsureLocalBranchExists(string branchName)
+        void EnsureLocalBranchExists(IRepository repository, string branchName)
         {
-            if (Repository.FindBranch(branchName) != null)
+            if (repository.FindBranch(branchName) != null)
             {
                 return;
             }
 
-            var existingBranches = string.Format("'{0}'", string.Join("', '", Repository.Branches.Select(x=>x.CanonicalName)));
+            var existingBranches = string.Format("'{0}'", string.Join("', '", repository.Branches.Select(x => x.CanonicalName)));
             throw new ErrorException(string.Format("This repository doesn't contain a branch named '{0}'. Please create one. Existing branches: {1}", branchName, existingBranches));
         }
     }

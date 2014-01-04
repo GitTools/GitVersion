@@ -19,29 +19,30 @@ public class DevelopTests
                               {
                                   CommitterEx = 1.Seconds().Ago().ToSignature()
                               };
-        var finder = new DevelopVersionFinder
-                     {
-                         Repository = new MockRepository
-                                      {
-                                          Branches = new MockBranchCollection
-                                                     {
-                                                         new MockBranch("master")
-                                                         {
-                                                             new MockMergeCommit
-                                                             {
-                                                                 MessageEx = "hotfix-0.1.1",
-                                                                 CommitterEx = 2.Seconds().Ago().ToSignature()
-                                                             }
-                                                         },
-                                                         new MockBranch("develop")
-                                                         {
-                                                             commitOnDevelop
-                                                         }
-                                                     }
-                                      },
-                         Commit = commitOnDevelop
-                     };
-        var version = finder.FindVersion();
+        var finder = new DevelopVersionFinder();
+        var mockBranch = new MockBranch("develop")
+        {
+            commitOnDevelop
+        };
+        var version = finder.FindVersion(new GitFlowVersionContext
+        {
+            Repository = new MockRepository
+            {
+                Branches = new MockBranchCollection
+                {
+                    new MockBranch("master")
+                    {
+                        new MockMergeCommit
+                        {
+                            MessageEx = "hotfix-0.1.1",
+                            CommitterEx = 2.Seconds().Ago().ToSignature()
+                        }
+                    },
+                    mockBranch
+                },
+            },
+            CurrentBranch = mockBranch
+        });
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Version.Patch);
@@ -61,34 +62,36 @@ public class DevelopTests
                              {
                                  CommitterEx = 2.Seconds().Ago().ToSignature()
                              };
-        var finder = new DevelopVersionFinder
-                     {
-                         Repository = new MockRepository
-                                      {
-                                          Branches = new MockBranchCollection
-                                                     {
-                                                         new MockBranch("master")
-                                                         {
-                                                             commitOnMaster
-                                                         },
-                                                         new MockBranch("develop")
-                                                         {
-                                                             commitOnDevelop
-                                                         }
-                                                     },
-                                          Tags = new MockTagCollection
-                                                 {
-                                                     new MockTag
-                                                     {
-                                                         TargetEx = commitOnMaster,
-                                                         NameEx = "0.1.0"
-                                                     }
-                                                 }
-                                      },
-                         Commit = commitOnDevelop
-                     };
+        var finder = new DevelopVersionFinder();
+        var develop = new MockBranch("develop")
+        {
+            commitOnDevelop
+        };
+        var context = new GitFlowVersionContext
+        {
+            Repository = new MockRepository
+            {
+                Branches = new MockBranchCollection
+                {
+                    new MockBranch("master")
+                    {
+                        commitOnMaster
+                    },
+                    develop
+                },
+                Tags = new MockTagCollection
+                {
+                    new MockTag
+                    {
+                        TargetEx = commitOnMaster,
+                        NameEx = "0.1.0"
+                    }
+                }
+            },
+            CurrentBranch = develop
+        };
 
-        var version = finder.FindVersion();
+        var version = finder.FindVersion(context);
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Version.Patch);
@@ -119,47 +122,49 @@ public class DevelopTests
                              {
                                  CommitterEx = 2.Seconds().Ago().ToSignature(),
                              };
-        var finder = new DevelopVersionFinder
-                     {
-                         Repository = new MockRepository
-                                      {
-                                          Branches = new MockBranchCollection
-                                                     {
-                                                         new MockBranch("master")
-                                                         {
-                                                             commitThreeOnMaster,
-                                                             commitTwoOnMaster,
-                                                             commitOneOnMaster,
-                                                         },
-                                                         new MockBranch("develop")
-                                                         {
-                                                             commitTwoOnDevelop,
-                                                             commitOneOnDevelop
-                                                         }
-                                                     },
-                                          Tags = new MockTagCollection
-                                                 {
-                                                     new MockTag
-                                                     {
-                                                         TargetEx = commitOneOnMaster,
-                                                         NameEx = "0.2.0"
-                                                     },
-                                                     new MockTag
-                                                     {
-                                                         TargetEx = commitTwoOnMaster,
-                                                         NameEx = "0.3.0"
-                                                     },
-                                                     new MockTag
-                                                     {
-                                                         TargetEx = commitThreeOnMaster,
-                                                         NameEx = "0.3.3"
-                                                     }
-                                                 }
-                                      },
-                         Commit = commitTwoOnDevelop
-                     };
+        var finder = new DevelopVersionFinder();
+        var develop = new MockBranch("develop")
+        {
+            commitTwoOnDevelop,
+            commitOneOnDevelop
+        };
+        var context = new GitFlowVersionContext
+        {
+            Repository = new MockRepository
+            {
+                Branches = new MockBranchCollection
+                {
+                    new MockBranch("master")
+                    {
+                        commitThreeOnMaster,
+                        commitTwoOnMaster,
+                        commitOneOnMaster,
+                    },
+                    develop
+                },
+                Tags = new MockTagCollection
+                {
+                    new MockTag
+                    {
+                        TargetEx = commitOneOnMaster,
+                        NameEx = "0.2.0"
+                    },
+                    new MockTag
+                    {
+                        TargetEx = commitTwoOnMaster,
+                        NameEx = "0.3.0"
+                    },
+                    new MockTag
+                    {
+                        TargetEx = commitThreeOnMaster,
+                        NameEx = "0.3.3"
+                    }
+                },
+            },
+            CurrentBranch = develop
+        };
 
-        var version = finder.FindVersion();
+        var version = finder.FindVersion(context);
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(4, version.Version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Version.Patch);

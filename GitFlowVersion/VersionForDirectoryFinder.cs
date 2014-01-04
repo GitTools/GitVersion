@@ -8,13 +8,12 @@ namespace GitFlowVersion
 
         public VersionAndBranch GetVersion(Repository repository)
         {
-            var gitFlowVersionFinder = new GitFlowVersionFinder
-                                       {
-                                           Branch = repository.Head,
-                                           Commit = repository.Head.Tip,
-                                           Repository = repository
-                                       };
-            return gitFlowVersionFinder.FindVersion();
+            var gitFlowVersionFinder = new GitFlowVersionFinder();
+            return gitFlowVersionFinder.FindVersion(new GitFlowVersionContext
+            {
+                CurrentBranch = repository.Head,
+                Repository = repository
+            });
         }
     }
 }

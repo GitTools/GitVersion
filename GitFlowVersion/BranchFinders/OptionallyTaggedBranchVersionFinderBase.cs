@@ -7,37 +7,35 @@ namespace GitFlowVersion
 
     abstract class OptionallyTaggedBranchVersionFinderBase
     {
-        public VersionAndBranch FindVersion(
-            IRepository repo,
-            Branch branch,
-            Commit commit,
+        protected VersionAndBranch FindVersion(
+            GitFlowVersionContext context,
             BranchType branchType,
             string baseBranchName)
         {
-            var nbHotfixCommits = NumberOfCommitsInBranchNotKnownFromBaseBranch(repo, branch, branchType, baseBranchName);
+            var nbHotfixCommits = NumberOfCommitsInBranchNotKnownFromBaseBranch(context.Repository, context.CurrentBranch, branchType, baseBranchName);
 
-            var versionString = branch.GetSuffix(branchType);
+            var versionString = context.CurrentBranch.GetSuffix(branchType);
             var version = SemanticVersionParser.Parse(versionString, false);
 
-            EnsureVersionIsValid(version, branch, branchType);
+            EnsureVersionIsValid(version, context.CurrentBranch, branchType);
 
-            var tagVersion = RetrieveMostRecentOptionalTagVersion(repo, version, branch.Commits.Take(nbHotfixCommits + 1));
+            var tagVersion = RetrieveMostRecentOptionalTagVersion(context.Repository, version, context.CurrentBranch.Commits.Take(nbHotfixCommits + 1));
 
             var versionAndBranch = new VersionAndBranch
-                                   {
-                                       BranchType = branchType,
-                                       BranchName = branch.Name,
-                                       Sha = commit.Sha,
-                                       Version = new SemanticVersion
-                                                 {
-                                                     Major = version.Major,
-                                                     Minor = version.Minor,
-                                                     Patch = version.Patch,
-                                                     Stability = version.Stability ?? Stability.Beta,
-                                                     PreReleasePartOne = version.PreReleasePartOne ?? 0,
-                                                     PreReleasePartTwo = (nbHotfixCommits == 0) ? default(int?) : nbHotfixCommits
-                                                 },
-                                   };
+            {
+                BranchType = branchType,
+                BranchName = context.CurrentBranch.Name,
+                Sha = context.CurrentBranch.Tip.Sha,
+                Version = new SemanticVersion
+                {
+                    Major = version.Major,
+                    Minor = version.Minor,
+                    Patch = version.Patch,
+                    Stability = version.Stability ?? Stability.Beta,
+                    PreReleasePartOne = version.PreReleasePartOne ?? 0,
+                    PreReleasePartTwo = (nbHotfixCommits == 0) ? default(int?) : nbHotfixCommits
+                },
+            };
 
             if (tagVersion != null)
             {

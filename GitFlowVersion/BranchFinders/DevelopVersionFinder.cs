@@ -1,16 +1,12 @@
 namespace GitFlowVersion
 {
     using System.Linq;
-    using LibGit2Sharp;
 
     class DevelopVersionFinder
     {
-        public Commit Commit;
-        public IRepository Repository;
-
-        public VersionAndBranch FindVersion()
+        public VersionAndBranch FindVersion(GitFlowVersionContext context)
         {
-            var version = GetSemanticVersion();
+            var version = GetSemanticVersion(context);
 
             version.Minor++;
             version.Patch = 0;
@@ -21,23 +17,19 @@ namespace GitFlowVersion
                    {
                        BranchType = BranchType.Develop,
                        BranchName = "develop",
-                       Sha = Commit.Sha,
+                       Sha = context.CurrentBranch.Tip.Sha,
                        Version = version
                    };
         }
 
-        SemanticVersion GetSemanticVersion()
+        SemanticVersion GetSemanticVersion(GitFlowVersionContext context)
         {
-            var versionOnMasterFinder = new VersionOnMasterFinder
-                                        {
-                                            Repository = Repository,
-                                            OlderThan = Commit.When()
-                                        };
-            var versionFromMaster = versionOnMasterFinder.Execute();
+            var versionOnMasterFinder = new VersionOnMasterFinder();
+            var versionFromMaster = versionOnMasterFinder.Execute(context, context.CurrentBranch.Tip.When());
 
-            var developBranch = Repository.FindBranch("develop");
+            var developBranch = context.Repository.FindBranch("develop");
             var preReleasePartOne = developBranch.Commits
-                .SkipWhile(x => x != Commit)
+                .SkipWhile(x => x != context.CurrentBranch.Tip)
                 .TakeWhile(x => x.When() >= versionFromMaster.Timestamp)
                 .Count();
             return new SemanticVersion

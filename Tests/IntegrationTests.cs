@@ -40,30 +40,26 @@ public class IntegrationTests
         using (var repository = new Repository(@"C:\Code\NServiceBus"))
         {
             var branch = repository.Branches.First(x => x.Name == "develop");
-            var commit = branch.Commits.First();
 
-            var finder = new GitFlowVersionFinder
-                         {
-                             Commit = commit,
-                             Repository = repository,
-                             Branch = branch
-                         };
-            finder.FindVersion();
+            var finder = new GitFlowVersionFinder();
+            finder.FindVersion(new GitFlowVersionContext
+            {
+                Repository = repository,
+                CurrentBranch = branch
+            });
         }
         Debug.WriteLine(startNew.ElapsedMilliseconds);
         startNew = Stopwatch.StartNew();
         using (var repository = new Repository(@"C:\Code\NServiceBus"))
         {
             var branch = repository.Branches.First(x => x.Name == "develop");
-            var commit = branch.Commits.First();
 
-            var finder = new GitFlowVersionFinder
-                         {
-                             Commit = commit,
-                             Repository = repository,
-                             Branch = branch
-                         };
-            finder.FindVersion();
+            var finder = new GitFlowVersionFinder();
+            finder.FindVersion(new GitFlowVersionContext
+            {
+                Repository = repository,
+                CurrentBranch = branch
+            });
         }
         Debug.WriteLine(startNew.ElapsedMilliseconds);
     }
@@ -85,15 +81,13 @@ public class IntegrationTests
         using (var repository = new Repository(@"C:\Code\NServiceBus"))
         {
             var branch = repository.Branches.First(x => x.Name == "release-4.1.0");
-            var commit = branch.Commits.First();
 
-            var finder = new GitFlowVersionFinder
-                         {
-                             Commit = commit,
-                             Repository = repository,
-                             Branch = branch
-                         };
-            var version = finder.FindVersion();
+            var finder = new GitFlowVersionFinder();
+            var version = finder.FindVersion(new GitFlowVersionContext
+            {
+                Repository = repository,
+                CurrentBranch = branch
+            });
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
@@ -111,15 +105,14 @@ public class IntegrationTests
         using (var repository = new Repository(@"C:\Code\NServiceBus"))
         {
             var branch = repository.Branches.First(x => x.Name == "release-4.1.0");
-            var commit = branch.Commits.First(x => x.Id.Sha == "c0e0a5e13775552cd3e08e039f453e4cf1fd4235");
+            repository.Checkout("c0e0a5e13775552cd3e08e039f453e4cf1fd4235");
 
-            var finder = new GitFlowVersionFinder
-                         {
-                             Commit = commit,
-                             Repository = repository,
-                             Branch = branch
-                         };
-            var version = finder.FindVersion();
+            var finder = new GitFlowVersionFinder();
+            var version = finder.FindVersion(new GitFlowVersionContext
+            {
+                Repository = repository,
+                CurrentBranch = branch
+            });
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
@@ -137,15 +130,13 @@ public class IntegrationTests
         using (var repository = new Repository(@"C:\Code\NServiceBus"))
         {
             var branch = repository.Branches.First(x => x.Name == "hotfix-4.1.1");
-            var commit = branch.Commits.First();
 
-            var finder = new GitFlowVersionFinder
-                         {
-                             Commit = commit,
-                             Repository = repository,
-                             Branch = branch
-                         };
-            var version = finder.FindVersion();
+            var finder = new GitFlowVersionFinder();
+            var version = finder.FindVersion(new GitFlowVersionContext
+            {
+                Repository = repository,
+                CurrentBranch = branch
+            });
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
@@ -162,15 +153,13 @@ public class IntegrationTests
         using (var repository = new Repository(@"C:\Code\NServiceBus"))
         {
             var branch = repository.Branches.First(x => x.Name == "master");
-            var commit = branch.Commits.First();
 
-            var finder = new GitFlowVersionFinder
-                         {
-                             Commit = commit,
-                             Repository = repository,
-                             Branch = branch
-                         };
-            var version = finder.FindVersion();
+            var finder = new GitFlowVersionFinder();
+            var version = finder.FindVersion(new GitFlowVersionContext
+            {
+                Repository = repository,
+                CurrentBranch = branch  
+            });
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
@@ -187,15 +176,13 @@ public class IntegrationTests
         using (var repository = new Repository(@"C:\Code\NServiceBus"))
         {
             var branch = repository.Branches.First(x => x.Name == "develop");
-            var commit = branch.Commits.First();
 
-            var finder = new GitFlowVersionFinder
-                         {
-                             Commit = commit,
-                             Repository = repository,
-                             Branch = branch
-                         };
-            var version = finder.FindVersion();
+            var finder = new GitFlowVersionFinder();
+            var version = finder.FindVersion(new GitFlowVersionContext
+            {
+                Repository = repository,
+                CurrentBranch = branch
+            });
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
@@ -212,15 +199,13 @@ public class IntegrationTests
         using (var repository = new Repository(@"C:\Code\NServiceBus"))
         {
             var branch = repository.Head;
-            var commit = branch.Commits.First();
 
-            var finder = new GitFlowVersionFinder
-                         {
-                             Commit = commit,
-                             Repository = repository,
-                             Branch = branch
-                         };
-            var version = finder.FindVersion();
+            var finder = new GitFlowVersionFinder();
+            var version = finder.FindVersion(new GitFlowVersionContext
+            {
+                Repository = repository,
+                CurrentBranch = branch
+            });
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
@@ -248,15 +233,14 @@ public class IntegrationTests
         using (var repository = new Repository(@"C:\Code\NServiceBus"))
         {
             var branch = repository.Branches.First(x => x.Name == "develop");
-            var commit = branch.Commits.First(x => x.Id.Sha == "c0e0a5e13775552cd3e08e039f453e4cf1fd4235");
+            repository.Checkout("c0e0a5e13775552cd3e08e039f453e4cf1fd4235");
 
-            var finder = new GitFlowVersionFinder
-                         {
-                             Commit = commit,
-                             Repository = repository,
-                             Branch = branch
-                         };
-            var version = finder.FindVersion();
+            var finder = new GitFlowVersionFinder();
+            var version = finder.FindVersion(new GitFlowVersionContext
+            {
+                Repository = repository,
+                CurrentBranch = branch
+            });
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
@@ -273,15 +257,13 @@ public class IntegrationTests
         using (var repository = new Repository(@"C:\Code\Particular\ServicePulse"))
         {
             var branch = repository.Branches.First(x => x.Name == "feature-newUI");
-            var commit = branch.Commits.First();
 
-            var finder = new GitFlowVersionFinder
-                         {
-                             Commit = commit,
-                             Repository = repository,
-                             Branch = branch
-                         };
-            var version = finder.FindVersion();
+            var finder = new GitFlowVersionFinder();
+            var version = finder.FindVersion(new GitFlowVersionContext
+            {
+                Repository = repository,
+                CurrentBranch = branch
+            });
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
@@ -297,15 +279,13 @@ public class IntegrationTests
         using (var repository = new Repository(@"C:\Code\NServiceBus.Nhibernate"))
         {
             var branch = repository.FindBranch("develop");
-            var commit = branch.Commits.First();
 
-            var finder = new GitFlowVersionFinder
+            var finder = new GitFlowVersionFinder();
+            var version = finder.FindVersion(new GitFlowVersionContext
             {
-                Commit = commit,
                 Repository = repository,
-                Branch = branch
-            };
-            var version = finder.FindVersion();
+                CurrentBranch = branch
+            });
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
