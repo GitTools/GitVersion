@@ -14,7 +14,6 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
         {
             const string branchName = "master";
             var master = repo.Branches[branchName];
-            repo.Checkout(master);
 
             var finder = new GitFlowVersionFinder();
 

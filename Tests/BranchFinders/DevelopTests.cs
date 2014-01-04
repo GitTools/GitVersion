@@ -40,8 +40,8 @@ public class DevelopTests
                     },
                     mockBranch
                 },
-                Head = mockBranch
-            }
+            },
+            CurrentBranch = mockBranch
         });
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor, "Minor should be master.Minor+1");
@@ -86,9 +86,9 @@ public class DevelopTests
                         TargetEx = commitOnMaster,
                         NameEx = "0.1.0"
                     }
-                },
-                Head = develop
-            }
+                }
+            },
+            CurrentBranch = develop
         };
 
         var version = finder.FindVersion(context);
@@ -160,8 +160,8 @@ public class DevelopTests
                         NameEx = "0.3.3"
                     }
                 },
-                Head = develop
-            }
+            },
+            CurrentBranch = develop
         };
 
         var version = finder.FindVersion(context);

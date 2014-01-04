@@ -33,8 +33,8 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         var task = new LocalUpdateAssemblyInfo
         {
             BuildEngine = new MockBuildEngine(),
-                SolutionDirectory = ASBMTestRepoWorkingDirPath,
-            };
+            SolutionDirectory = ASBMTestRepoWorkingDirPath,
+        };
 
         Assert.True(task.InnerExecute());
     }
@@ -89,18 +89,18 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
 
         using (var repo = new Repository(repoPath))
         {
-            repo.Checkout(repo.Head.Tip);
+            repo.Checkout("469f851");
             Assert.IsTrue(repo.Info.IsHeadDetached);
         }
 
         var task = new LocalUpdateAssemblyInfo
         {
             BuildEngine = new MockBuildEngine(),
-                SolutionDirectory = repoPath,
-            };
+            SolutionDirectory = repoPath,
+        };
 
         var exception = Assert.Throws<ErrorException>(() => task.InnerExecute());
-        Assert.AreEqual("It looks like the branch being examined is a detached Head pointing to commit '469f851'. Without a proper branch name GitFlowVersion cannot determine the build version.",exception.Message);
+        Assert.AreEqual("It looks like the branch being examined is a detached Head pointing to commit '469f851'. Without a proper branch name GitFlowVersion cannot determine the build version.", exception.Message);
     }
 
     string CheckoutLocal(string repositoryPath, string monitoredReference)

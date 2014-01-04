@@ -16,7 +16,6 @@ public class FeatureBranchTests : Lg2sHelperBase
         {
             var branchingCommit = repo.Branches["develop"].Tip;
             var featureBranch = repo.Branches.Add("featureWithNoCommits", branchingCommit);
-            repo.Checkout(featureBranch);
 
             var finder = new FeatureVersionFinder();
 
