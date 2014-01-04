@@ -12,7 +12,7 @@ namespace GitFlowVersion
 
             if (context.CurrentBranch.IsMaster())
             {
-                return new MasterVersionFinder().FindVersion(context.Repository, context.Tip);
+                return new MasterVersionFinder().FindVersion(context.Repository, context.CurrentBranch.Tip);
             }
 
             if (context.CurrentBranch.IsHotfix())
@@ -52,7 +52,7 @@ namespace GitFlowVersion
                 return;
             }
 
-            var message = string.Format("It looks like the branch being examined is a detached Head pointing to commit '{0}'. Without a proper branch name GitFlowVersion cannot determine the build version.", context.Tip.Id.ToString(7));
+            var message = string.Format("It looks like the branch being examined is a detached Head pointing to commit '{0}'. Without a proper branch name GitFlowVersion cannot determine the build version.", context.CurrentBranch.Tip.Id.ToString(7));
             throw new ErrorException(message);
         }
 

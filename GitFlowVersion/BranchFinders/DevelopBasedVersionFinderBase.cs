@@ -21,13 +21,13 @@ namespace GitFlowVersion
             }
 
             var versionOnMasterFinder = new VersionOnMasterFinder();
-            var versionFromMaster = versionOnMasterFinder.Execute(context, context.Tip.Committer.When);
+            var versionFromMaster = versionOnMasterFinder.Execute(context, context.CurrentBranch.Tip.Committer.When);
 
             return new VersionAndBranch
             {
                 BranchType = branchType,
                 BranchName = context.CurrentBranch.Name,
-                Sha = context.Tip.Sha,
+                Sha = context.CurrentBranch.Tip.Sha,
                 Version = new SemanticVersion
                 {
                     Major = versionFromMaster.Major,

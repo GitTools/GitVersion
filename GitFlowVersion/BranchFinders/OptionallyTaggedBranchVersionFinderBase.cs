@@ -22,20 +22,20 @@ namespace GitFlowVersion
             var tagVersion = RetrieveMostRecentOptionalTagVersion(context.Repository, version, context.CurrentBranch.Commits.Take(nbHotfixCommits + 1));
 
             var versionAndBranch = new VersionAndBranch
-                                   {
-                                       BranchType = branchType,
-                                       BranchName = context.CurrentBranch.Name,
-                                       Sha = context.Tip.Sha,
-                                       Version = new SemanticVersion
-                                                 {
-                                                     Major = version.Major,
-                                                     Minor = version.Minor,
-                                                     Patch = version.Patch,
-                                                     Stability = version.Stability ?? Stability.Beta,
-                                                     PreReleasePartOne = version.PreReleasePartOne ?? 0,
-                                                     PreReleasePartTwo = (nbHotfixCommits == 0) ? default(int?) : nbHotfixCommits
-                                                 },
-                                   };
+            {
+                BranchType = branchType,
+                BranchName = context.CurrentBranch.Name,
+                Sha = context.CurrentBranch.Tip.Sha,
+                Version = new SemanticVersion
+                {
+                    Major = version.Major,
+                    Minor = version.Minor,
+                    Patch = version.Patch,
+                    Stability = version.Stability ?? Stability.Beta,
+                    PreReleasePartOne = version.PreReleasePartOne ?? 0,
+                    PreReleasePartTwo = (nbHotfixCommits == 0) ? default(int?) : nbHotfixCommits
+                },
+            };
 
             if (tagVersion != null)
             {

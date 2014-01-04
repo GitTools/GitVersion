@@ -17,7 +17,7 @@ namespace GitFlowVersion
                    {
                        BranchType = BranchType.Develop,
                        BranchName = "develop",
-                       Sha = context.Tip.Sha,
+                       Sha = context.CurrentBranch.Tip.Sha,
                        Version = version
                    };
         }
@@ -25,11 +25,11 @@ namespace GitFlowVersion
         SemanticVersion GetSemanticVersion(GitFlowVersionContext context)
         {
             var versionOnMasterFinder = new VersionOnMasterFinder();
-            var versionFromMaster = versionOnMasterFinder.Execute(context, context.Tip.When());
+            var versionFromMaster = versionOnMasterFinder.Execute(context, context.CurrentBranch.Tip.When());
 
             var developBranch = context.Repository.FindBranch("develop");
             var preReleasePartOne = developBranch.Commits
-                .SkipWhile(x => x != context.Tip)
+                .SkipWhile(x => x != context.CurrentBranch.Tip)
                 .TakeWhile(x => x.When() >= versionFromMaster.Timestamp)
                 .Count();
             return new SemanticVersion
