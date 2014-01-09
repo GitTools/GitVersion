@@ -60,7 +60,7 @@ public class MasterTests
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(1, version.Version.Minor);
         Assert.AreEqual(5, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
-        Assert.Null(version.Version.Tag.Name);
+        Assert.Null(version.Version.Tag);
         Assert.AreEqual(BranchType.Master, version.BranchType);
     }
 
@@ -94,7 +94,7 @@ public class MasterTests
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
-        Assert.Null(version.Version.Tag.Name);
+        Assert.Null(version.Version.Tag);
         Assert.AreEqual(BranchType.Master, version.BranchType);
     }
 
@@ -129,7 +129,7 @@ public class MasterTests
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(1, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
-        Assert.AreEqual("", version.Version.Tag.Name);
+        Assert.AreEqual("", version.Version.Tag);
         Assert.AreEqual(BranchType.Master, version.BranchType);
     }
 
@@ -157,7 +157,7 @@ public class MasterTests
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to 0");
-        Assert.Null(version.Version.Tag.Name);
+        Assert.Null(version.Version.Tag);
         Assert.AreEqual(BranchType.Master, version.BranchType);
     }
 

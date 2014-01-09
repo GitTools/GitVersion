@@ -12,7 +12,7 @@ namespace GitFlowVersion
 
         public static ReleaseInformation Calculate(BranchType? branchType, SemanticVersionTag tag)
         {
-            return new ReleaseInformation(InferStability(tag.Name), ReleaseNumber(tag.Name));
+            return new ReleaseInformation(InferStability(tag), ReleaseNumber(tag));
         }
 
         private static int? ReleaseNumber(string tagName)

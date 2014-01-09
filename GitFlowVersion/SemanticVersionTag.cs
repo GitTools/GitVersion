@@ -4,11 +4,11 @@ namespace GitFlowVersion
 
     public class SemanticVersionTag
     {
-        public string Name;
+        private string _name;
 
         protected bool Equals(SemanticVersionTag other)
         {
-            return string.Equals(Name, other.Name);
+            return string.Equals(_name, other._name);
         }
 
         public override bool Equals(object obj)
@@ -30,7 +30,7 @@ namespace GitFlowVersion
 
         public override int GetHashCode()
         {
-            return (Name != null ? Name.GetHashCode() : 0);
+            return (_name != null ? _name.GetHashCode() : 0);
         }
 
         public static bool operator ==(SemanticVersionTag left, SemanticVersionTag right)
@@ -45,32 +45,40 @@ namespace GitFlowVersion
 
         public static bool operator >(SemanticVersionTag left, SemanticVersionTag right)
         {
-            return StringComparer.InvariantCultureIgnoreCase.Compare(left.Name, right.Name) == 1;
+            return StringComparer.InvariantCultureIgnoreCase.Compare(left._name, right._name) == 1;
         }
 
         public static bool operator <(SemanticVersionTag left, SemanticVersionTag right)
         {
-            return StringComparer.InvariantCultureIgnoreCase.Compare(left.Name, right.Name) == -1;
+            return StringComparer.InvariantCultureIgnoreCase.Compare(left._name, right._name) == -1;
         }
 
         public static bool operator >=(SemanticVersionTag left, SemanticVersionTag right)
         {
-            return StringComparer.InvariantCultureIgnoreCase.Compare(left.Name, right.Name) != -1;
+            return StringComparer.InvariantCultureIgnoreCase.Compare(left._name, right._name) != -1;
         }
 
         public static bool operator <=(SemanticVersionTag left, SemanticVersionTag right)
         {
-            return StringComparer.InvariantCultureIgnoreCase.Compare(left.Name, right.Name) != 1;
+            return StringComparer.InvariantCultureIgnoreCase.Compare(left._name, right._name) != 1;
         }
 
         public static implicit operator SemanticVersionTag(string name)
         {
             return new SemanticVersionTag
             {
-                Name = name
+                _name = name
             };
         }
 
+        public static implicit operator string(SemanticVersionTag tag)
+        {
+            return tag._name;
+        }
 
+        public override string ToString()
+        {
+            return _name;
+        }
     }
 }

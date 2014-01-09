@@ -31,7 +31,7 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             Assert.AreEqual(1, version.Major);
             Assert.AreEqual(0, version.Minor);
             Assert.AreEqual(1, version.Patch);
-            Assert.Null(version.Tag.Name);
+            Assert.Null(version.Tag);
         }
     }
 
@@ -59,7 +59,7 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             Assert.AreEqual(1, version.Major);
             Assert.AreEqual(1, version.Minor);
             Assert.AreEqual(0, version.Patch);
-            Assert.AreEqual("unstable3", version.Tag.Name);
+            Assert.AreEqual("unstable3", version.Tag);
         }
     }
 
@@ -97,7 +97,7 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             Assert.AreEqual(1, version.Major);
             Assert.AreEqual(1, version.Minor);
             Assert.AreEqual(0, version.Patch);
-            Assert.AreEqual("unstable0", version.Tag.Name);
+            Assert.AreEqual("unstable0", version.Tag);
         }
     }
 
@@ -140,7 +140,7 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             Assert.AreEqual(1, version.Major);
             Assert.AreEqual(0, version.Minor);
             Assert.AreEqual(2, version.Patch);
-            Assert.AreEqual("Beta1", version.Tag.Name);
+            Assert.AreEqual("Beta1", version.Tag);
         }
     }
 
@@ -183,7 +183,7 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             Assert.AreEqual(2, version.Major);
             Assert.AreEqual(0, version.Minor);
             Assert.AreEqual(0, version.Patch);
-            Assert.AreEqual("Beta1", version.Tag.Name);
+            Assert.AreEqual("Beta1", version.Tag);
         }
     }
 
@@ -331,7 +331,7 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             Assert.AreEqual(1, version.Major);
             Assert.AreEqual(1, version.Minor);
             Assert.AreEqual(0, version.Patch);
-            Assert.AreEqual("unstable0", version.Tag.Name);
+            Assert.AreEqual("unstable0", version.Tag);
             Assert.AreEqual(repo.Branches["develop"].Tip.Prefix(), version.Suffix);
         }
     }

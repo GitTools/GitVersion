@@ -74,7 +74,7 @@ public class PullBranchTests : Lg2sHelperBase
             Assert.AreEqual(masterVersion.Version.Major, version.Version.Major);
             Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual("unstable0", version.Version.Tag.Name);
+            Assert.AreEqual("unstable0", version.Version.Tag);
             Assert.AreEqual(BranchType.PullRequest, version.BranchType);
             Assert.AreEqual("1735", version.Version.Suffix, "Suffix should be the develop commit it was branched from");
         }
@@ -107,7 +107,7 @@ public class PullBranchTests : Lg2sHelperBase
             Assert.AreEqual(masterVersion.Version.Major, version.Version.Major);
             Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual("unstable0", version.Version.Tag.Name);
+            Assert.AreEqual("unstable0", version.Version.Tag);
             Assert.AreEqual(BranchType.PullRequest, version.BranchType);
             Assert.AreEqual("1735", version.Version.Suffix, "Suffix should be the develop commit it was branched from");
         }

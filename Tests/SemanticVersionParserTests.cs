@@ -31,7 +31,7 @@ public class SemanticVersionParserTests
             Assert.AreEqual(major, version.Major);
             Assert.AreEqual(minor, version.Minor);
             Assert.AreEqual(patch, version.Patch);
-            Assert.AreEqual(tag, version.Tag.Name);
+            Assert.AreEqual(tag, version.Tag);
             Assert.AreEqual(preReleaseTwo, version.PreReleasePartTwo);
         }
     }
