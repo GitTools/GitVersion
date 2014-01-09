@@ -31,7 +31,7 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             Assert.AreEqual(1, version.Major);
             Assert.AreEqual(0, version.Minor);
             Assert.AreEqual(1, version.Patch);
-            Assert.AreEqual(Stability.Final, version.Stability);
+            Assert.AreEqual(Stability.Final, version.Tag.InferStability());
         }
     }
 
@@ -59,7 +59,7 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             Assert.AreEqual(1, version.Major);
             Assert.AreEqual(1, version.Minor);
             Assert.AreEqual(0, version.Patch);
-            Assert.AreEqual(Stability.Unstable, version.Stability);
+            Assert.AreEqual(Stability.Unstable, version.Tag.InferStability());
         }
     }
 
@@ -97,7 +97,7 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             Assert.AreEqual(1, version.Major);
             Assert.AreEqual(1, version.Minor);
             Assert.AreEqual(0, version.Patch);
-            Assert.AreEqual(Stability.Unstable, version.Stability);
+            Assert.AreEqual(Stability.Unstable, version.Tag.InferStability());
         }
     }
 
@@ -140,8 +140,8 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             Assert.AreEqual(1, version.Major);
             Assert.AreEqual(0, version.Minor);
             Assert.AreEqual(2, version.Patch);
-            Assert.AreEqual(Stability.Beta, version.Stability);
-            Assert.AreEqual(1, version.PreReleasePartOne);
+            Assert.AreEqual(Stability.Beta, version.Tag.InferStability());
+            Assert.AreEqual(1, version.Tag.ReleaseNumber());
         }
     }
 
@@ -184,8 +184,8 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             Assert.AreEqual(2, version.Major);
             Assert.AreEqual(0, version.Minor);
             Assert.AreEqual(0, version.Patch);
-            Assert.AreEqual(Stability.Beta, version.Stability);
-            Assert.AreEqual(1, version.PreReleasePartOne);
+            Assert.AreEqual(Stability.Beta, version.Tag.InferStability());
+            Assert.AreEqual(1, version.Tag.ReleaseNumber());
         }
     }
 
@@ -333,8 +333,8 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             Assert.AreEqual(1, version.Major);
             Assert.AreEqual(1, version.Minor);
             Assert.AreEqual(0, version.Patch);
-            Assert.AreEqual(Stability.Unstable, version.Stability);
-            Assert.AreEqual(0, version.PreReleasePartOne);
+            Assert.AreEqual(Stability.Unstable, version.Tag.InferStability());
+            Assert.AreEqual(0, version.Tag.ReleaseNumber());
             Assert.AreEqual(repo.Branches["develop"].Tip.Prefix(), version.Suffix);
         }
     }

@@ -28,29 +28,30 @@
 
 
             //else Hotfix, Develop or Release
-            if (version.Stability == Stability.Final)
+            var stability = version.Tag.InferStability();
+            if (stability == Stability.Final)
             {
                 return string.Format("{0} Sha:'{1}'", versionPrefix, versionAndBranch.Sha);
             }
-            if (version.Stability == Stability.ReleaseCandidate)
+            if (stability == Stability.ReleaseCandidate)
             {
                 return string.Format("{0}-rc{1} Branch:'{2}' Sha:'{3}'", versionPrefix, GetPreRelease(version), versionAndBranch.BranchName, versionAndBranch.Sha);
             }
-            return string.Format("{0}-{1}{2} Branch:'{3}' Sha:'{4}'", versionPrefix,version.Stability.ToString().ToLowerInvariant(), GetPreRelease(version), versionAndBranch.BranchName, versionAndBranch.Sha);
+            return string.Format("{0}-{1}{2} Branch:'{3}' Sha:'{4}'", versionPrefix,stability.ToString().ToLowerInvariant(), GetPreRelease(version), versionAndBranch.BranchName, versionAndBranch.Sha);
         }
 
         static string GetPreRelease(SemanticVersion version)
         {
-            if (version.PreReleasePartOne == null)
+            if (!version.Tag.HasReleaseNumber())
             {
                 throw new Exception("pre-release number is required");
             }
             if (version.PreReleasePartTwo == null)
             {
-                return version.PreReleasePartOne.ToString();
+                return version.Tag.ReleaseNumber().ToString();
             }
 
-            return string.Format("{0}.{1}", version.PreReleasePartOne, version.PreReleasePartTwo);
+            return string.Format("{0}.{1}", version.Tag.ReleaseNumber(), version.PreReleasePartTwo);
         }
 
         public static string ToShortString(this VersionAndBranch versionAndBranch)
@@ -76,16 +77,16 @@
 
             if (versionAndBranch.BranchType == BranchType.Release)
             {
-                if (version.Stability == Stability.ReleaseCandidate)
+                if (version.Tag.InferStability() == Stability.ReleaseCandidate)
                 {
                     return string.Format("{0}-rc{1}", versionPrefix, GetPreRelease(version));
                 }
-                return string.Format("{0}-{1}{2}", versionPrefix, version.Stability.ToString().ToLowerInvariant(), GetPreRelease(version));
+                return string.Format("{0}-{1}{2}", versionPrefix, version.Tag.InferStability().ToString().ToLowerInvariant(), GetPreRelease(version));
             }
 
             if (versionAndBranch.BranchType == BranchType.Hotfix)
             {
-                return string.Format("{0}-{1}{2}", versionPrefix, version.Stability.ToString().ToLowerInvariant(), GetPreRelease(version));
+                return string.Format("{0}-{1}{2}", versionPrefix, version.Tag.InferStability().ToString().ToLowerInvariant(), GetPreRelease(version));
             }
 
             if (versionAndBranch.BranchType == BranchType.Master)

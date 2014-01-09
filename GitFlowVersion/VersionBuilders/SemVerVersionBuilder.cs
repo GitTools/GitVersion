@@ -9,14 +9,14 @@
             var prereleaseString = string.Empty;
 
             var semVer = versionAndBranch.Version;
-            var stability = semVer.Stability;
+            var stability = semVer.Tag.InferStability();
             if (stability == null)
             {
                 throw new Exception("Stability cannot be null");
             }
             if (stability != Stability.Final)
             {
-                var preReleaseVersion = semVer.PreReleasePartOne.ToString();
+                var preReleaseVersion = semVer.Tag.ReleaseNumber().ToString();
                 if (semVer.PreReleasePartTwo != null)
                 {
                     preReleaseVersion += "." + semVer.PreReleasePartTwo;

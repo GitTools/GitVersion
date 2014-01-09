@@ -8,10 +8,13 @@ namespace GitFlowVersion
         public int Major;
         public int Minor;
         public int Patch;
-        public int? PreReleasePartOne;
+        public SemanticVersionTag Tag;
         public int? PreReleasePartTwo;
-        public Stability? Stability;
 
+        public SemanticVersion()
+        {
+            Tag = new SemanticVersionTag();
+        }
 
         public bool Equals(SemanticVersion obj)
         {
@@ -22,9 +25,8 @@ namespace GitFlowVersion
             return Major == obj.Major &&
                    Minor == obj.Minor &&
                    Patch == obj.Patch &&
-                   PreReleasePartOne == obj.PreReleasePartOne &&
-                   PreReleasePartOne == obj.PreReleasePartTwo &&
-                   Stability == obj.Stability &&
+                   Tag == obj.Tag &&
+                   PreReleasePartTwo == obj.PreReleasePartTwo &&
                    Suffix == obj.Suffix;
         }
 
@@ -100,17 +102,9 @@ namespace GitFlowVersion
                 }
                 return -1;
             }
-            if (Stability != value.Stability)
+            if (Tag != value.Tag)
             {
-                if (Stability > value.Stability)
-                {
-                    return 1;
-                }
-                return -1;
-            }
-            if (PreReleasePartOne != value.PreReleasePartOne)
-            {
-                if (PreReleasePartOne > value.PreReleasePartOne)
+                if (Tag > value.Tag)
                 {
                     return 1;
                 }
@@ -126,7 +120,5 @@ namespace GitFlowVersion
             }
             return -1;
         }
-
-
     }
 }

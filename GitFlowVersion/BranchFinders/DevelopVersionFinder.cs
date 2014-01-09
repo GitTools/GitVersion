@@ -11,8 +11,6 @@ namespace GitFlowVersion
             version.Minor++;
             version.Patch = 0;
 
-            version.Stability = Stability.Unstable;
-
             return new VersionAndBranch
                    {
                        BranchType = BranchType.Develop,
@@ -36,7 +34,7 @@ namespace GitFlowVersion
             {
                 Major = versionFromMaster.Major,
                 Minor = versionFromMaster.Minor,
-                PreReleasePartOne = preReleasePartOne
+                Tag = Stability.Unstable.ToString().ToLower() + preReleasePartOne
             };
         }
 

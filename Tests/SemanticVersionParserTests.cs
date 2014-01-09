@@ -5,158 +5,37 @@ using NUnit.Framework;
 public class SemanticVersionParserTests
 {
 
-    [Test]
-    public void Major_minor_patch()
+    [TestCase("1.2.3", true, 1, 2, 3, null, Stability.Final, null, null)]
+    [TestCase("1.2", true, 1, 2, 0, null, Stability.Final, null, null)]
+    [TestCase("1", true, 1, 0, 0, null, Stability.Final, null, null)]
+    [TestCase("1.2.3-beta", true, 1, 2, 3, "beta", Stability.Beta, null, null)]
+    [TestCase("1.2.3-beta3", true, 1, 2, 3, "beta3", Stability.Beta, 3, null)]
+    [TestCase("1.2.3-alpha", true, 1, 2, 3, "alpha", Stability.Alpha, null, null)]
+    [TestCase("1.2.3-alpha4", true, 1, 2, 3, "alpha4", Stability.Alpha, 4, null)]
+    [TestCase("1.2.3-rc", true, 1, 2, 3, "rc", Stability.ReleaseCandidate, null, null)]
+    [TestCase("1.2.3-rc3", true, 1, 2, 3, "rc3", Stability.ReleaseCandidate, 3, null)]
+    [TestCase("1.2.3-RC3", true, 1, 2, 3, "RC3", Stability.ReleaseCandidate, 3, null)]
+    [TestCase("1.2.3-rc3.1", true, 1, 2, 3, "rc3", Stability.ReleaseCandidate, 3, 1)]
+    [TestCase("01.02.03-rc03", true, 1, 2, 3, "rc03", Stability.ReleaseCandidate, 3, null)]
+    [TestCase("1.2.3-beta3f", true, 1, 2, 3, "beta3f", null, null, null)]
+    [TestCase("1.2.3-notAStability1", true, 1, 2, 3, "notAStability1", null, 1, null)]
+    [TestCase("someText", false)]
+    [TestCase("1.2.3.4", false)] // TODO Maybe we should allow this to be parsed and 4th part is preReleaseTwo
+    [TestCase("some-T-ext", false)]
+    public void ValidateVersionParsing(string versionString, bool canParse, int major, int minor, int patch, string tag, 
+        Stability? stability, int? releaseNumber, int? preReleaseTwo)
     {
         SemanticVersion version;
-        SemanticVersionParser.TryParse("1.2.3", out version);
-        Assert.AreEqual(1,version.Major);
-        Assert.AreEqual(2,version.Minor);
-        Assert.AreEqual(3, version.Patch);
-        Assert.AreEqual(Stability.Final, version.Stability);
+        Assert.AreEqual(canParse, SemanticVersionParser.TryParse(versionString, out version), "TryParse Result");
+        if (canParse)
+        {
+            Assert.AreEqual(major, version.Major);
+            Assert.AreEqual(minor, version.Minor);
+            Assert.AreEqual(patch, version.Patch);
+            Assert.AreEqual(stability, version.Tag.InferStability());
+            Assert.AreEqual(releaseNumber, version.Tag.ReleaseNumber());
+            Assert.AreEqual(preReleaseTwo, version.PreReleasePartTwo);
+        }
     }
-    [Test]
-    public void Major_minor()
-    {
-        SemanticVersion version;
-        SemanticVersionParser.TryParse("1.2", out version);
-        Assert.AreEqual(1,version.Major);
-        Assert.AreEqual(2,version.Minor);
-        Assert.AreEqual(0,version.Patch);
-        Assert.AreEqual(Stability.Final,version.Stability);
-    }
-    [Test]
-    public void Major()
-    {
-        SemanticVersion version;
-        SemanticVersionParser.TryParse("1", out version);
-        Assert.AreEqual(1,version.Major);
-        Assert.AreEqual(0,version.Minor);
-        Assert.AreEqual(0, version.Patch);
-        Assert.AreEqual(Stability.Final, version.Stability);
-    }
-
-    [Test]
-    public void Major_minor_patch_stability_beta()
-    {
-        SemanticVersion version;
-        SemanticVersionParser.TryParse("1.2.3-beta3", out version);
-        Assert.AreEqual(1,version.Major);
-        Assert.AreEqual(2,version.Minor);
-        Assert.AreEqual(3,version.Patch);
-        Assert.AreEqual(Stability.Beta,version.Stability);
-        Assert.AreEqual(3,version.PreReleasePartOne);
-    }
-    [Test]
-    public void Major_minor_patch_stability_Alpha()
-    {
-        SemanticVersion version;
-        SemanticVersionParser.TryParse("1.2.3-alpha4", out version);
-        Assert.AreEqual(1,version.Major);
-        Assert.AreEqual(2,version.Minor);
-        Assert.AreEqual(3,version.Patch);
-        Assert.AreEqual(Stability.Alpha,version.Stability);
-        Assert.AreEqual(4,version.PreReleasePartOne);
-    }
-    [Test]
-    public void Major_minor_patch_lower_stability()
-    {
-        SemanticVersion version;
-        SemanticVersionParser.TryParse("1.2.3-alpha4", out version);
-        Assert.AreEqual(1,version.Major);
-        Assert.AreEqual(2,version.Minor);
-        Assert.AreEqual(3,version.Patch);
-        Assert.AreEqual(Stability.Alpha,version.Stability);
-        Assert.AreEqual(4,version.PreReleasePartOne);
-    }
-    [Test]
-    public void Major_minor_patch_rc_stability()
-    {
-        SemanticVersion version;
-        SemanticVersionParser.TryParse("1.2.3-rc3", out version);
-        Assert.AreEqual(1,version.Major);
-        Assert.AreEqual(2,version.Minor);
-        Assert.AreEqual(3,version.Patch);
-        Assert.AreEqual(Stability.ReleaseCandidate,version.Stability);
-        Assert.AreEqual(3,version.PreReleasePartOne);
-    }
-    [Test]
-    public void BothPreRelease()
-    {
-        SemanticVersion version;
-        SemanticVersionParser.TryParse("1.2.3-rc3.1", out version);
-        Assert.AreEqual(1,version.Major);
-        Assert.AreEqual(2,version.Minor);
-        Assert.AreEqual(3,version.Patch);
-        Assert.AreEqual(Stability.ReleaseCandidate,version.Stability);
-        Assert.AreEqual(3,version.PreReleasePartOne);
-        Assert.AreEqual(1,version.PreReleasePartTwo);
-    }
-    [Test]
-    public void Major_minor_patch_rc_upper_stability()
-    {
-        SemanticVersion version;
-        SemanticVersionParser.TryParse("1.2.3-RC3", out version);
-        Assert.AreEqual(1,version.Major);
-        Assert.AreEqual(2,version.Minor);
-        Assert.AreEqual(3,version.Patch);
-        Assert.AreEqual(Stability.ReleaseCandidate,version.Stability);
-        Assert.AreEqual(3,version.PreReleasePartOne);
-    }
-
-    [Test]
-    public void Major_minor_patch_stability_padded_zeroes()
-    {
-        SemanticVersion version;
-        SemanticVersionParser.TryParse("01.02.03-rc03", out version);
-        Assert.AreEqual(1,version.Major);
-        Assert.AreEqual(2,version.Minor);
-        Assert.AreEqual(3,version.Patch);
-        Assert.AreEqual(Stability.ReleaseCandidate,version.Stability);
-        Assert.AreEqual(3,version.PreReleasePartOne);
-    }
-
-    [Test]
-    public void Major_minor_patch_stability_missing_pre_release()
-    {
-        SemanticVersion version;
-        Assert.IsFalse(SemanticVersionParser.TryParse("1.2.3-beta", out version));
-    }
-
-    [Test]
-    public void Trailing_character()
-    {
-        SemanticVersion version;
-        Assert.IsFalse(SemanticVersionParser.TryParse("1.2.3-beta3f", out version));
-    }
-
-    [Test]
-    public void Bad_stability()
-    {
-        SemanticVersion version;
-        Assert.IsFalse(SemanticVersionParser.TryParse("1.2.3-notAStability1", out version));
-    }
-
-    [Test]
-    public void PlainText()
-    {
-        SemanticVersion version;
-        Assert.IsFalse(SemanticVersionParser.TryParse("someText", out version));
-    }
-
-    [Test]
-    public void Too_many_main_version_parts()
-    {
-        SemanticVersion version;
-        Assert.IsFalse(SemanticVersionParser.TryParse("1.2.3.4", out version));
-    }
-
-    [Test]
-    public void Too_many_parts()
-    {
-        SemanticVersion version;
-        Assert.IsFalse(SemanticVersionParser.TryParse("some-T-ext", out version));
-    }
-
 
 }

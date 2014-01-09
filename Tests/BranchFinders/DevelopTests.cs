@@ -46,9 +46,9 @@ public class DevelopTests
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Version.Patch);
-        Assert.AreEqual(Stability.Unstable, version.Version.Stability);
+        Assert.AreEqual(Stability.Unstable, version.Version.Tag.InferStability());
         Assert.AreEqual(BranchType.Develop, version.BranchType);
-        Assert.AreEqual(1, version.Version.PreReleasePartOne, "Prerelease should to the number of commits ahead of master(by date)");
+        Assert.AreEqual(1, version.Version.Tag.ReleaseNumber(), "Prerelease should to the number of commits ahead of master(by date)");
     }
 
     [Test]
@@ -95,9 +95,9 @@ public class DevelopTests
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Version.Patch);
-        Assert.AreEqual(Stability.Unstable, version.Version.Stability);
+        Assert.AreEqual(Stability.Unstable, version.Version.Tag.InferStability());
         Assert.AreEqual(BranchType.Develop, version.BranchType);
-        Assert.AreEqual(1, version.Version.PreReleasePartOne, "Prerelease should to the number of commits ahead of master(by date)");
+        Assert.AreEqual(1, version.Version.Tag.ReleaseNumber(), "Prerelease should to the number of commits ahead of master(by date)");
     }
     [Test]
     public void Multiple_minor_versions_on_master()
@@ -168,8 +168,8 @@ public class DevelopTests
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(4, version.Version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Version.Patch);
-        Assert.AreEqual(Stability.Unstable, version.Version.Stability);
+        Assert.AreEqual(Stability.Unstable, version.Version.Tag.InferStability());
         Assert.AreEqual(BranchType.Develop, version.BranchType);
-        Assert.AreEqual(2, version.Version.PreReleasePartOne, "Prerelease should to the number of commits ahead of master(by date)");
+        Assert.AreEqual(2, version.Version.Tag.ReleaseNumber(), "Prerelease should to the number of commits ahead of master(by date)");
     }
 }
