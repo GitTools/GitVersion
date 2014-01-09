@@ -113,6 +113,7 @@
     <Compile Include="Mocks\MockReflogCollection.cs" />
     <Compile Include="Mocks\MockTagAnnotation.cs" />
     <Compile Include="NugetVersionBuilderTests.cs" />
+    <Compile Include="ReleaseInformationCalculatorTests.cs" />
     <Compile Include="SemanticVersionParserTests.cs" />
     <Compile Include="ShortVersionParserTests.cs" />
     <Compile Include="UpdateAssemblyInfoTests.cs" />

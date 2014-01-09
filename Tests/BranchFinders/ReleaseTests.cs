@@ -30,9 +30,8 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(3, version.Version.Minor);
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual(Stability.Alpha, version.Version.Tag.InferStability());
+            Assert.AreEqual("alpha5", version.Version.Tag.Name);
             Assert.AreEqual(BranchType.Release, version.BranchType);
-            Assert.AreEqual(5, version.Version.Tag.ReleaseNumber(), "PreReleasePartOne should be set to 5 from the tag");
             Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since there is no commits");
         }
     }
@@ -59,9 +58,8 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(3, version.Version.Minor);
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual(Stability.Beta, version.Version.Tag.InferStability());
+            Assert.AreEqual("beta0", version.Version.Tag.Name);
             Assert.AreEqual(BranchType.Release, version.BranchType);
-            Assert.AreEqual(0, version.Version.Tag.ReleaseNumber(), "PreReleasePartOne should be set to 0 when no tag");
             Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since there is no commits");
         }
     }
@@ -94,9 +92,8 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(5, version.Version.Minor);
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual(Stability.Alpha, version.Version.Tag.InferStability());
+            Assert.AreEqual("alpha5", version.Version.Tag.Name);
             Assert.AreEqual(BranchType.Release, version.BranchType);
-            Assert.AreEqual(5, version.Version.Tag.ReleaseNumber(), "PreReleasePartOne should be set to 5 from the tag");
             Assert.AreEqual(1, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 1 since there is 1 commit");
         }
     }
@@ -130,9 +127,8 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(4, version.Version.Minor);
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual(Stability.Alpha, version.Version.Tag.InferStability());
+            Assert.AreEqual("alpha5", version.Version.Tag.Name);
             Assert.AreEqual(BranchType.Release, version.BranchType);
-            Assert.AreEqual(5, version.Version.Tag.ReleaseNumber(), "PreReleasePartOne should be set to 5 from the tag");
             Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is 2 commits on the branch");
         }
     }
@@ -163,9 +159,8 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(4, version.Version.Minor);
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual(Stability.Beta, version.Version.Tag.InferStability());
+            Assert.AreEqual("beta0", version.Version.Tag.Name);
             Assert.AreEqual(BranchType.Release, version.BranchType);
-            Assert.AreEqual(0, version.Version.Tag.ReleaseNumber());
             Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is 2 commits on the branch");
         }
     }
@@ -199,9 +194,8 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(4, version.Version.Minor);
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual(Stability.ReleaseCandidate, version.Version.Tag.InferStability());
+            Assert.AreEqual("RC4", version.Version.Tag.Name);
             Assert.AreEqual(BranchType.Release, version.BranchType);
-            Assert.AreEqual(4, version.Version.Tag.ReleaseNumber());
         }
     }
 

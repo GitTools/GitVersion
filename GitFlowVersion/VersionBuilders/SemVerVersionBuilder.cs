@@ -9,14 +9,14 @@
             var prereleaseString = string.Empty;
 
             var semVer = versionAndBranch.Version;
-            var stability = semVer.Tag.InferStability();
-            if (stability == null)
+            var releaseInfo = versionAndBranch.CalculateReleaseInfo();
+            if (releaseInfo.Stability == null)
             {
                 throw new Exception("Stability cannot be null");
             }
-            if (stability != Stability.Final)
+            if (releaseInfo.Stability != Stability.Final)
             {
-                var preReleaseVersion = semVer.Tag.ReleaseNumber().ToString();
+                var preReleaseVersion = releaseInfo.ReleaseNumber.ToString();
                 if (semVer.PreReleasePartTwo != null)
                 {
                     preReleaseVersion += "." + semVer.PreReleasePartTwo;
@@ -25,15 +25,15 @@
                 switch (versionAndBranch.BranchType)
                 {
                     case BranchType.Develop:
-                        prereleaseString = "-" + stability + preReleaseVersion;
+                        prereleaseString = "-" + releaseInfo.Stability + preReleaseVersion;
                         break;
 
                     case BranchType.Release:
-                        prereleaseString = "-" + stability + preReleaseVersion;
+                        prereleaseString = "-" + releaseInfo.Stability + preReleaseVersion;
                         break;
 
                     case BranchType.Hotfix:
-                        prereleaseString = "-" + stability + preReleaseVersion;
+                        prereleaseString = "-" + releaseInfo.Stability + preReleaseVersion;
                         break;
                     case BranchType.PullRequest:
                         prereleaseString = "-PullRequest-" + semVer.Suffix;

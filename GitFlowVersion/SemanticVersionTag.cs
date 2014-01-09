@@ -1,37 +1,10 @@
 namespace GitFlowVersion
 {
     using System;
-    using System.Text.RegularExpressions;
 
     public class SemanticVersionTag
     {
         public string Name;
-
-        public Stability? InferStability()
-        {
-            if (Name == null)
-                return Stability.Final;
-
-            var stageString = Name.TrimEnd("0123456789".ToCharArray());
-
-            if (stageString.Equals("RC", StringComparison.InvariantCultureIgnoreCase))
-            {
-                return Stability.ReleaseCandidate;
-            }
-
-            if (stageString.Equals("hotfix", StringComparison.InvariantCultureIgnoreCase))
-            {
-                return Stability.Beta;
-            }
-
-            Stability stability;
-            if (!Enum.TryParse(stageString, true, out stability))
-            {
-                return null;
-            }
-
-            return stability;
-        }
 
         protected bool Equals(SemanticVersionTag other)
         {
@@ -98,24 +71,6 @@ namespace GitFlowVersion
             };
         }
 
-        public bool HasReleaseNumber()
-        {
-            if (Name == null) return false;
-            var hasReleaseNumber = Regex.IsMatch(Name, "\\d+$");
-            return hasReleaseNumber;
-        }
 
-        public int? ReleaseNumber()
-        {
-            if (Name == null)
-                return null;
-
-            int releaseNumber;
-            var value = Regex.Match(Name, "\\d+$").Value;
-            if (int.TryParse(value, out releaseNumber))
-                return releaseNumber;
-
-            return null;
-        }
     }
 }

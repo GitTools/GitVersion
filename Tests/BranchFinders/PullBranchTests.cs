@@ -74,10 +74,9 @@ public class PullBranchTests : Lg2sHelperBase
             Assert.AreEqual(masterVersion.Version.Major, version.Version.Major);
             Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual(Stability.Unstable, version.Version.Tag.InferStability());
+            Assert.AreEqual("unstable0", version.Version.Tag.Name);
             Assert.AreEqual(BranchType.PullRequest, version.BranchType);
             Assert.AreEqual("1735", version.Version.Suffix, "Suffix should be the develop commit it was branched from");
-            Assert.AreEqual(0, version.Version.Tag.ReleaseNumber(), "Prerelease is always 0 for pull requests");
         }
     }
 
@@ -108,10 +107,9 @@ public class PullBranchTests : Lg2sHelperBase
             Assert.AreEqual(masterVersion.Version.Major, version.Version.Major);
             Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual(Stability.Unstable, version.Version.Tag.InferStability());
+            Assert.AreEqual("unstable0", version.Version.Tag.Name);
             Assert.AreEqual(BranchType.PullRequest, version.BranchType);
             Assert.AreEqual("1735", version.Version.Suffix, "Suffix should be the develop commit it was branched from");
-            Assert.AreEqual(0, version.Version.Tag.ReleaseNumber(), "Prerelease is always 0 for pull requests");
         }
     }
 }

@@ -8,14 +8,14 @@
         {
             var prereleaseString = "";
 
-            var stability = versionAndBranch.Version.Tag.InferStability();
-            if (stability == null)
+            var releaseInfo = versionAndBranch.CalculateReleaseInfo();
+            if (!releaseInfo.Stability.HasValue)
             {
                 throw new Exception("Stability cannot be null");
             }
-            if (stability != Stability.Final)
+            if (releaseInfo.Stability != Stability.Final)
             {
-                var preReleaseVersion = versionAndBranch.Version.Tag.ReleaseNumber().Value.ToString("D4");
+                var preReleaseVersion = releaseInfo.ReleaseNumber.Value.ToString("D4");
                 if (versionAndBranch.Version.PreReleasePartTwo != null)
                 {
                     preReleaseVersion += "-" + versionAndBranch.Version.PreReleasePartTwo.Value.ToString("D4");
@@ -24,13 +24,13 @@
                 switch (versionAndBranch.BranchType)
                 {
                     case BranchType.Develop:
-                        prereleaseString = "-" + stability + preReleaseVersion;
+                        prereleaseString = "-" + releaseInfo.Stability + preReleaseVersion;
                         break;
                     case BranchType.Release:
-                        prereleaseString = "-" + stability + preReleaseVersion;
+                        prereleaseString = "-" + releaseInfo.Stability + preReleaseVersion;
                         break;
                     case BranchType.Hotfix:
-                        prereleaseString = "-" + stability + preReleaseVersion;
+                        prereleaseString = "-" + releaseInfo.Stability + preReleaseVersion;
                         break;
                     case BranchType.PullRequest:
                         prereleaseString = "-PullRequest-" + versionAndBranch.Version.Suffix;

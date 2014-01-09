@@ -30,10 +30,9 @@ public class FeatureBranchTests : Lg2sHelperBase
             Assert.AreEqual(masterVersion.Version.Major, version.Version.Major);
             Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual(Stability.Unstable, version.Version.Tag.InferStability());
+            Assert.AreEqual("unstable3", version.Version.Tag.Name);
             Assert.AreEqual(BranchType.Feature, version.BranchType);
             Assert.AreEqual(null, version.Version.Suffix);
-            Assert.AreEqual(3, version.Version.Tag.ReleaseNumber(), "Should be the number of commits ahead of master");
         }
     }
 
@@ -64,10 +63,9 @@ public class FeatureBranchTests : Lg2sHelperBase
             Assert.AreEqual(masterVersion.Version.Major, version.Version.Major);
             Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual(Stability.Unstable, version.Version.Tag.InferStability());
+            Assert.AreEqual("unstable0", version.Version.Tag.Name);
             Assert.AreEqual(BranchType.Feature, version.BranchType);
             Assert.AreEqual(branchingCommit.Prefix(), version.Version.Suffix, "Suffix should be the develop commit it was branched from");
-            Assert.AreEqual(0, version.Version.Tag.ReleaseNumber(), "Prerelease is always 0 for feature branches");
         }
     }
 
@@ -99,10 +97,9 @@ public class FeatureBranchTests : Lg2sHelperBase
             Assert.AreEqual(masterVersion.Version.Major, version.Version.Major);
             Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual(Stability.Unstable, version.Version.Tag.InferStability());
+            Assert.AreEqual("unstable0", version.Version.Tag.Name);
             Assert.AreEqual(BranchType.Feature, version.BranchType);
             Assert.AreEqual(branchingCommit.Prefix(), version.Version.Suffix, "Suffix should be the develop commit it was branched from");
-            Assert.AreEqual(0, version.Version.Tag.ReleaseNumber(), "Prerelease is always 0 for feature branches");
         }
     }
 
@@ -134,10 +131,9 @@ public class FeatureBranchTests : Lg2sHelperBase
             Assert.AreEqual(masterVersion.Version.Major, version.Version.Major);
             Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual(Stability.Unstable, version.Version.Tag.InferStability());
+            Assert.AreEqual("unstable0", version.Version.Tag.Name);
             Assert.AreEqual(BranchType.Feature, version.BranchType);
             Assert.AreEqual(branchingCommit.Prefix(), version.Version.Suffix, "Suffix should be the develop commit it was branched from");
-            Assert.AreEqual(0, version.Version.Tag.ReleaseNumber(), "Prerelease is always 0 for feature branches");
         }
     }
 }

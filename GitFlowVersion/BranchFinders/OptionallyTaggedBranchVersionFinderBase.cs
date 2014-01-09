@@ -109,18 +109,6 @@ namespace GitFlowVersion
                 default:
                     throw new NotSupportedException(string.Format("Unexpected branch type {0}.", branchType));
             }
-
-            if (string.IsNullOrEmpty(version.Tag.Name))
-            {
-                return;
-            }
-
-            if (!version.Tag.HasReleaseNumber())
-            {
-                throw new ErrorException(msg +
-                                         string.Format("When a stability is defined on a {0} branch the pre-release part one number must also be defined."
-                                             , branchType));
-            }
         }
 
         int NumberOfCommitsInBranchNotKnownFromBaseBranch(
