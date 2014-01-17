@@ -80,5 +80,10 @@ namespace GitFlowVersion
         {
             return _name;
         }
+
+        public bool HasTag()
+        {
+            return !string.IsNullOrEmpty(_name);
+        }
     }
 }

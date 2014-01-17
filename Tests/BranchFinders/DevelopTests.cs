@@ -46,7 +46,7 @@ public class DevelopTests
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Version.Patch);
-        Assert.AreEqual("unstable1", version.Version.Tag);
+        Assert.AreEqual("unstable1", version.Version.Tag.ToString());
         Assert.AreEqual(BranchType.Develop, version.BranchType);
 
     }
@@ -95,7 +95,7 @@ public class DevelopTests
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Version.Patch);
-        Assert.AreEqual("unstable1", version.Version.Tag);
+        Assert.AreEqual("unstable1", version.Version.Tag.ToString());
         Assert.AreEqual(BranchType.Develop, version.BranchType);
     }
     [Test]
@@ -167,7 +167,7 @@ public class DevelopTests
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(4, version.Version.Minor, "Minor should be master.Minor+1");
         Assert.AreEqual(0, version.Version.Patch);
-        Assert.AreEqual("unstable2", version.Version.Tag);
+        Assert.AreEqual("unstable2", version.Version.Tag.ToString());
         Assert.AreEqual(BranchType.Develop, version.BranchType);
     }
 }

@@ -30,7 +30,7 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(3, version.Version.Minor);
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual("alpha5", version.Version.Tag);
+            Assert.AreEqual("alpha5", version.Version.Tag.ToString());
             Assert.AreEqual(BranchType.Release, version.BranchType);
             Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since there is no commits");
         }
@@ -58,7 +58,7 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(3, version.Version.Minor);
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual("beta0", version.Version.Tag);
+            Assert.AreEqual("beta0", version.Version.Tag.ToString());
             Assert.AreEqual(BranchType.Release, version.BranchType);
             Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since there is no commits");
         }
@@ -92,7 +92,7 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(5, version.Version.Minor);
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual("alpha5", version.Version.Tag);
+            Assert.AreEqual("alpha5", version.Version.Tag.ToString());
             Assert.AreEqual(BranchType.Release, version.BranchType);
             Assert.AreEqual(1, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 1 since there is 1 commit");
         }
@@ -127,7 +127,7 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(4, version.Version.Minor);
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual("alpha5", version.Version.Tag);
+            Assert.AreEqual("alpha5", version.Version.Tag.ToString());
             Assert.AreEqual(BranchType.Release, version.BranchType);
             Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is 2 commits on the branch");
         }
@@ -159,7 +159,7 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(4, version.Version.Minor);
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual("beta0", version.Version.Tag);
+            Assert.AreEqual("beta0", version.Version.Tag.ToString());
             Assert.AreEqual(BranchType.Release, version.BranchType);
             Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is 2 commits on the branch");
         }
@@ -194,7 +194,7 @@ public class ReleaseTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(4, version.Version.Minor);
             Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual("RC4", version.Version.Tag);
+            Assert.AreEqual("RC4", version.Version.Tag.ToString());
             Assert.AreEqual(BranchType.Release, version.BranchType);
         }
     }

@@ -81,7 +81,7 @@ namespace GitFlowVersion
             var msg = string.Format("Branch '{0}' doesn't respect the {1} branch naming convention. ",
                 branch.Name, branchType);
 
-            if (version.Tag != null ||
+            if (version.Tag.HasTag() ||
                 version.PreReleasePartTwo != null)
             {
                 throw new ErrorException(msg +
