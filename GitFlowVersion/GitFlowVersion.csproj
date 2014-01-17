@@ -99,6 +99,8 @@
     <Compile Include="ErrorException.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="GemAssets\gitflowversion" />
+    <None Include="GemAssets\gitflowversion.gemspec" />
     <None Include="NugetRefAssets\GitFlowVersion.nuspec">
       <SubType>Designer</SubType>
     </None>
@@ -133,6 +135,7 @@
   </Target>
   <UsingTask TaskName="PepitaPackage.CreatePackageTask" AssemblyFile="$(SolutionDir)Tools\Pepita\PepitaPackage.dll" />
   <Target Name="AfterBuild" DependsOnTargets="Clean">
+    <!-- NugetExeBuild -->
     <MakeDir Directories="$(SolutionDir)NuGetExeBuild" />
     <CreateItem Include="$(SolutionDir)GitFlowVersion\bin\$(ConfigurationName)\NativeBinaries\amd64\*.dll">
       <Output TaskParameter="Include" ItemName="amd64" />
@@ -142,19 +145,36 @@
       <Output TaskParameter="Include" ItemName="x86" />
     </CreateItem>
     <Copy SourceFiles="@(x86)" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools\NativeBinaries\x86" />
-    <Copy SourceFiles="$(OutputPath)\GitFlowVersion.exe" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
     <Copy SourceFiles="$(OutputPath)\GitFlowVersion.pdb" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
+    <Copy SourceFiles="$(OutputPath)\GitFlowVersion.exe" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
     <Copy SourceFiles="$(OutputPath)\LibGit2Sharp.dll" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
     <Copy SourceFiles="$(ProjectDir)NugetExeAssets\chocolateyInstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
     <Copy SourceFiles="$(ProjectDir)NugetExeAssets\chocolateyUninstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
     <Copy SourceFiles="$(ProjectDir)NugetExeAssets\GitFlowVersion.nuspec" DestinationFolder="$(SolutionDir)NuGetExeBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetExeBuild" MetadataAssembly="$(OutputPath)GitFlowVersion.exe" />
+    <!-- NugetRefBuild -->
     <MakeDir Directories="$(SolutionDir)NuGetRefBuild" />
     <Copy SourceFiles="$(OutputPath)\GitFlowVersion.exe" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
     <Copy SourceFiles="$(OutputPath)\GitFlowVersion.pdb" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
     <Copy SourceFiles="$(OutputPath)\GitFlowVersion.xml" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
     <Copy SourceFiles="$(ProjectDir)NugetRefAssets\GitFlowVersion.nuspec" DestinationFolder="$(SolutionDir)NuGetRefBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetRefBuild" MetadataAssembly="$(OutputPath)GitFlowVersion.exe" />
+    <!-- Gem -->
+    <MakeDir Directories="$(SolutionDir)GemBuild" />
+    <MakeDir Directories="$(SolutionDir)GemBuild\bin" />
+    <CreateItem Include="$(SolutionDir)GitFlowVersion\bin\$(ConfigurationName)\NativeBinaries\amd64\*.dll">
+      <Output TaskParameter="Include" ItemName="amd64" />
+    </CreateItem>
+    <Copy SourceFiles="@(amd64)" DestinationFolder="$(SolutionDir)GemBuild\bin\NativeBinaries\amd64" />
+    <CreateItem Include="$(SolutionDir)GitFlowVersion\bin\$(ConfigurationName)\NativeBinaries\x86\*.dll">
+      <Output TaskParameter="Include" ItemName="x86" />
+    </CreateItem>
+    <Copy SourceFiles="@(x86)" DestinationFolder="$(SolutionDir)GemBuild\bin\NativeBinaries\x86" />
+    <Copy SourceFiles="$(OutputPath)\GitFlowVersion.pdb" DestinationFolder="$(SolutionDir)GemBuild\bin" />
+    <Copy SourceFiles="$(OutputPath)\GitFlowVersion.exe" DestinationFolder="$(SolutionDir)GemBuild\bin" />
+    <Copy SourceFiles="$(OutputPath)\LibGit2Sharp.dll" DestinationFolder="$(SolutionDir)GemBuild\bin" />
+    <Copy SourceFiles="$(ProjectDir)GemAssets\gitflowversion" DestinationFolder="$(SolutionDir)GemBuild\bin" />
+    <Copy SourceFiles="$(ProjectDir)GemAssets\gitflowversion.gemspec" DestinationFolder="$(SolutionDir)GemBuild" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent>
