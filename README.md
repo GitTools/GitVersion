@@ -56,6 +56,13 @@ GitFlowVersion [path] [/l logFilePath]
 }
 ```
 
+### 4. A ruby gem
+If you want a ruby gem version installed on your machine then you can use [Bundler](http://bundler.io/) or Gem(http://rubygems.org/) to install GitFlowVersion
+
+	gem install GitFlowVersion
+	
+The calling conventions and the output are the same as the command line version.	
+
 ## The Problem
 
 Builds are getting more complex and as we're moving towards scm structure with a lot of fine grained repositories we need to take a convention based approach for our product versioning.
