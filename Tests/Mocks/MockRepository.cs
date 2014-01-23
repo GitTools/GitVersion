@@ -70,12 +70,22 @@ public class MockRepository : IRepository
         throw new System.NotImplementedException();
     }
 
+    public void Reset(ResetMode resetMode, Commit commit)
+    {
+        throw new System.NotImplementedException();
+    }
+
     public void Reset(Commit commit, IEnumerable<string> paths = null, ExplicitPathsOptions explicitPathsOptions = null)
     {
         throw new System.NotImplementedException();
     }
 
     public void RemoveUntrackedFiles()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public BlameHunkCollection Blame(string path, BlameOptions options = null)
     {
         throw new System.NotImplementedException();
     }
@@ -93,5 +103,16 @@ public class MockRepository : IRepository
     public NoteCollection Notes { get; private set; }
     public SubmoduleCollection Submodules { get; private set; }
     public IEnumerable<MergeHead> MergeHeads { get; private set; }
+
+    public Ignore Ignore
+    {
+        get { throw new System.NotImplementedException(); }
+    }
+
     public Network Network { get; private set; }
+
+    public StashCollection Stashes
+    {
+        get { throw new System.NotImplementedException(); }
+    }
 }
