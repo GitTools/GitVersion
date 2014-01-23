@@ -4,20 +4,18 @@
 
     public  class AssemblyInfoBuilder
     {
-
         public VersionAndBranch VersionAndBranch;
         public bool SignAssembly;
 
         public string GetAssemblyInfoText()
         {
             var assemblyVersion = GetAssemblyVersion();
-            var assemblyFileVersion = GetAssemblyFileVersion();
             var assemblyInfo = string.Format(@"
 using System.Reflection;
 [assembly: AssemblyVersion(""{0}"")]
 [assembly: AssemblyFileVersion(""{1}"")]
 [assembly: AssemblyInformationalVersion(""{2}"")]
-", assemblyVersion, assemblyFileVersion, VersionAndBranch.ToLongString());
+", assemblyVersion, NugetVersionBuilder.GenerateNugetVersion(VersionAndBranch), VersionAndBranch.ToLongString());
             return assemblyInfo;
         }
 
