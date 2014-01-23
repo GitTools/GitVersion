@@ -20,8 +20,6 @@ public class PullBranchTests : Lg2sHelperBase
         AssertInvalidPullBranchName("pull");
         AssertInvalidPullBranchName("pull/1735");
         AssertInvalidPullBranchName("pull/merge");
-        AssertInvalidPullBranchName("pull//merge");
-        AssertInvalidPullBranchName("pull///merge");
         AssertInvalidPullBranchName("pull/1735/a/merge");
         AssertInvalidPullBranchName("pull/1735-a/merge");
         AssertInvalidPullBranchName("pull/-1735/merge");

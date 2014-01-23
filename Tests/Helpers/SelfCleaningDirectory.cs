@@ -18,13 +18,10 @@
             }
 
             DirectoryPath = path;
-            RootedDirectoryPath = Path.GetFullPath(path);
-
             directoryRemover.Register(DirectoryPath);
         }
 
         public string DirectoryPath;
-        public string RootedDirectoryPath;
 
         protected static string BuildTempPath()
         {

@@ -5,6 +5,6 @@ public static class SignatureBuilder
 {
     public static Signature ToSignature(this DateTimeOffset dateTimeOffset)
     {
-        return new Signature(null, null, dateTimeOffset);
+        return new Signature("fakeName", "fakeEmail", dateTimeOffset);
     }
 }
