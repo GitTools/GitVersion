@@ -38,6 +38,7 @@ ForSample/
 *NugetTaskBuild*
 *NugetRefBuild*
 *NugetExeBuild*
+*GemBuild*
 
 # Visual Studio profiler
 *.psess
