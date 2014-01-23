@@ -13,7 +13,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <FodyPath>..\packages\Fody.1.19.0.0</FodyPath>
+    <FodyPath>..\packages\Fody.1.19.1.0</FodyPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -69,9 +69,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Tools\Cecil\Mono.Cecil.Rocks.dll</HintPath>
     </Reference>
-    <Reference Include="NCrunch.Framework, Version=2.0.0.97, Culture=neutral, PublicKeyToken=01d101bf6f3e0aea, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\NCrunch.Framework.2.0.0.97\lib\net35\NCrunch.Framework.dll</HintPath>
+    <Reference Include="NCrunch.Framework, Version=2.3.0.14, Culture=neutral, PublicKeyToken=01d101bf6f3e0aea, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NCrunch.Framework.2.3.0.14\lib\NCrunch.Framework.dll</HintPath>
     </Reference>
     <Reference Include="NuGet.Core, Version=2.7.41101.299, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

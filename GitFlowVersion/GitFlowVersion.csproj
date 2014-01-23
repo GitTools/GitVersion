@@ -11,7 +11,7 @@
     <AssemblyName>GitFlowVersion</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <FodyPath>..\packages\Fody.1.19.0.0</FodyPath>
+    <FodyPath>..\packages\Fody.1.19.1.0</FodyPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JetBrains.Annotations">
-      <HintPath>..\packages\JetBrainsAnnotations.Fody.1.0.0\Lib\JetBrains.Annotations.dll</HintPath>
+      <HintPath>..\packages\JetBrainsAnnotations.Fody.1.0.1\Lib\JetBrains.Annotations.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="LibGit2Sharp, Version=0.14.1.0, Culture=neutral, processorArchitecture=MSIL">
