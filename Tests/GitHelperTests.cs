@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Linq;
 using GitFlowVersion;
 using GitFlowVersion.GitFlowVersion;
 using LibGit2Sharp;
@@ -20,7 +22,6 @@ public class GitHelperTests : Lg2sHelperBase
             Assert.IsNotNull(versionAndBranch);
         }
     }
-
 
     [Test]
     public void CanDetermineTheVersionFromAPullRequest()
@@ -102,22 +103,15 @@ public class GitHelperTests : Lg2sHelperBase
 
         using (var repo = new Repository(repoPath))
         {
-            Remote remote;
+            var remote = repo.Network.Remotes.Add("origin", upstreamRepository);
+            Debug.Assert(remote.FetchRefSpecs.Single().Specification == "+refs/heads/*:refs/remotes/origin/*");
+            repo.Network.Fetch(remote);
 
             if (monitoredReference.StartsWith("refs/pull/"))
             {
-                remote = repo.Network.Remotes.Add("origin", upstreamRepository,
-                    string.Format("+{0}:{0}", monitoredReference));
-
-                repo.Network.Fetch(remote);
-
-                repo.Config.Unset("remote.origin.url");
-                repo.Config.Unset("remote.origin.fetch");
+                repo.Network.Fetch(remote, new[]{ string.Format("+{0}:{0}", monitoredReference) });
             }
 
-            remote = repo.Network.Remotes.Add("origin", upstreamRepository, "+refs/heads/*:refs/remotes/origin/*");
-
-            repo.Network.Fetch(remote);
 
             var src = monitoredReference;
             var dst = monitoredReference.Replace("refs/heads/", "refs/remotes/origin/");
