@@ -19,7 +19,14 @@
             {
                 if (File.GetLastWriteTime(file) < DateTime.Now.AddDays(-1))
                 {
-                    File.Delete(file);
+                    try
+                    {
+                        File.Delete(file);
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        //ignore contention
+                    }
                 }
             }
         }
