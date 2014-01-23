@@ -1,23 +1,52 @@
 ﻿namespace GitFlowVersionTask
 {
     using GitFlowVersion;
+    using GitFlowVersion.VersionBuilders;
 
     public  class AssemblyInfoBuilder
     {
 
         public VersionAndBranch VersionAndBranch;
         public bool SignAssembly;
+        public string AssemblyName;
 
         public string GetAssemblyInfoText()
         {
-            var assemblyVersion = GetAssemblyVersion();
-            var assemblyFileVersion = GetAssemblyFileVersion();
             var assemblyInfo = string.Format(@"
+using System;
 using System.Reflection;
+
 [assembly: AssemblyVersion(""{0}"")]
 [assembly: AssemblyFileVersion(""{1}"")]
 [assembly: AssemblyInformationalVersion(""{2}"")]
-", assemblyVersion, assemblyFileVersion, VersionAndBranch.ToLongString());
+[assembly: {4}.NugetVersion(""{3}"")]
+
+namespace {4}
+{{
+    class NugetVersionAttribute : Attribute
+    {{
+        public NugetVersionAttribute(string version)
+        {{
+            Version = version;
+        }}
+
+        public string Version{{get;set;}}
+    }}
+}}
+namespace {4}
+{{
+    static class GitFlowVersionInformation
+    {{
+        public static string AssemblyVersion = ""{0}"";
+        public static string AssemblyFileVersion = ""{1}"";
+        public static string AssemblyInformationalVersion = ""{2}"";
+        public static string NugetVersion = ""{3}"";
+        public static string SemVer = ""{5}"";
+    }}
+}}
+
+", GetAssemblyVersion(), GetAssemblyFileVersion(), VersionAndBranch.ToLongString(), VersionAndBranch.GenerateNugetVersion(), AssemblyName, VersionAndBranch.GenerateSemVer());
+            
             return assemblyInfo;
         }
 

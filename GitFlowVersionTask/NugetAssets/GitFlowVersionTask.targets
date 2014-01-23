@@ -11,7 +11,8 @@
     <Target Name="UpdateAssemblyInfo"
             BeforeTargets="CoreCompile">
         <GitFlowVersionTask.UpdateAssemblyInfo 
-          SolutionDirectory="$(SolutionDir)" 
+          SolutionDirectory="$(SolutionDir)"
+          AssemblyName="$(AssemblyName)" 
           ProjectFile="$(ProjectPath)" 
           SignAssembly="$(SignAssembly)"
           CompileFiles ="@(Compile)">

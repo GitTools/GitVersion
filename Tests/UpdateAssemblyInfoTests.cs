@@ -7,6 +7,7 @@ using LibGit2Sharp;
 using NUnit.Framework;
 using Tests.Helpers;
 
+
 [TestFixture]
 public class UpdateAssemblyInfoTests : Lg2sHelperBase
 {
