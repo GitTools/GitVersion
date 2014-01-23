@@ -20,9 +20,9 @@ namespace GitFlowVersion
             EnsureVersionIsValid(version, context.CurrentBranch, branchType);
 
             if (branchType == BranchType.Hotfix)
-                version.Tag.Name = "hotfix0";
+                version.Tag = "hotfix0";
             if (branchType == BranchType.Release)
-                version.Tag.Name = "beta0";
+                version.Tag = "beta0";
 
             var tagVersion = RetrieveMostRecentOptionalTagVersion(context.Repository, version, context.CurrentBranch.Commits.Take(nbHotfixCommits + 1));
 
@@ -81,7 +81,7 @@ namespace GitFlowVersion
             var msg = string.Format("Branch '{0}' doesn't respect the {1} branch naming convention. ",
                 branch.Name, branchType);
 
-            if (version.Tag.Name != null ||
+            if (version.Tag.HasTag() ||
                 version.PreReleasePartTwo != null)
             {
                 throw new ErrorException(msg +
@@ -108,18 +108,6 @@ namespace GitFlowVersion
 
                 default:
                     throw new NotSupportedException(string.Format("Unexpected branch type {0}.", branchType));
-            }
-
-            if (string.IsNullOrEmpty(version.Tag.Name))
-            {
-                return;
-            }
-
-            if (!version.Tag.HasReleaseNumber())
-            {
-                throw new ErrorException(msg +
-                                         string.Format("When a stability is defined on a {0} branch the pre-release part one number must also be defined."
-                                             , branchType));
             }
         }
 

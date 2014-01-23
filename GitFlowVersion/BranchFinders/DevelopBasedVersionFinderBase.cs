@@ -33,10 +33,7 @@ namespace GitFlowVersion
                     Major = versionFromMaster.Major,
                     Minor = versionFromMaster.Minor + 1,
                     Patch = 0,
-                    Tag = new SemanticVersionTag
-                    {
-                        Name = "unstable0"
-                    },
+                    Tag = "unstable0",
                     Suffix = ancestor.Prefix()
                 }
             };

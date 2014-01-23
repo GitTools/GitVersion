@@ -62,11 +62,7 @@ namespace GitFlowVersion
                     return false;
                 }
 
-                parsedVersion.Tag = new SemanticVersionTag
-                {
-                    Name = preReleaseParts[0]
-                };
-                
+                parsedVersion.Tag = preReleaseParts[0];
 
                 if ((preReleaseParts.Length > 1))
                 {

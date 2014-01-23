@@ -60,9 +60,8 @@ public class MasterTests
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(1, version.Version.Minor);
         Assert.AreEqual(5, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
-        Assert.AreEqual(Stability.Final, version.Version.Tag.InferStability());
         Assert.AreEqual(BranchType.Master, version.BranchType);
-        Assert.IsNull(version.Version.Tag.ReleaseNumber());
+        Assert.Null(version.Version.Tag.ToString());
     }
 
     [Test]
@@ -95,9 +94,8 @@ public class MasterTests
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
-        Assert.AreEqual(Stability.Final, version.Version.Tag.InferStability());
         Assert.AreEqual(BranchType.Master, version.BranchType);
-        Assert.IsNull(version.Version.Tag.ReleaseNumber());
+        Assert.Null(version.Version.Tag.ToString());
     }
 
     [Test]
@@ -131,9 +129,8 @@ public class MasterTests
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(1, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
-        Assert.AreEqual(Stability.Beta, version.Version.Tag.InferStability());
+        Assert.AreEqual("", version.Version.Tag.ToString());
         Assert.AreEqual(BranchType.Master, version.BranchType);
-        Assert.AreEqual(1, version.Version.Tag.ReleaseNumber());
     }
 
 
@@ -160,9 +157,8 @@ public class MasterTests
         Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to 0");
-        Assert.AreEqual(Stability.Final, version.Version.Tag.InferStability());
         Assert.AreEqual(BranchType.Master, version.BranchType);
-        Assert.IsNull(version.Version.Tag.ReleaseNumber());
+        Assert.Null(version.Version.Tag.ToString());
     }
 
 }

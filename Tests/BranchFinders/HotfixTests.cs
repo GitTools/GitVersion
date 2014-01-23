@@ -28,9 +28,8 @@ public class HotfixTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(1, version.Version.Minor);
             Assert.AreEqual(4, version.Version.Patch);
-            Assert.AreEqual(Stability.Beta, version.Version.Tag.InferStability());
+            Assert.AreEqual("hotfix0", version.Version.Tag.ToString());
             Assert.AreEqual(BranchType.Hotfix, version.BranchType);
-            Assert.AreEqual(0, version.Version.Tag.ReleaseNumber());
             Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since there is no commits");
         }
     }
@@ -64,9 +63,8 @@ public class HotfixTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(1, version.Version.Minor);
             Assert.AreEqual(3, version.Version.Patch);
-            Assert.AreEqual(Stability.Beta, version.Version.Tag.InferStability());
+            Assert.AreEqual("beta4", version.Version.Tag.ToString());
             Assert.AreEqual(BranchType.Hotfix, version.BranchType);
-            Assert.AreEqual(4, version.Version.Tag.ReleaseNumber(), "PreReleasePartOne should be set to 4 from the tag");
             Assert.AreEqual(1, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 1 since there is a commit on the branch");
         }
     }
@@ -101,9 +99,8 @@ public class HotfixTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(1, version.Version.Minor);
             Assert.AreEqual(3, version.Version.Patch);
-            Assert.AreEqual(Stability.Alpha, version.Version.Tag.InferStability());
+            Assert.AreEqual("alpha5", version.Version.Tag.ToString());
             Assert.AreEqual(BranchType.Hotfix, version.BranchType);
-            Assert.AreEqual(5, version.Version.Tag.ReleaseNumber(), "PreReleasePartOne should be set to 5 from the tag");
             Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is a commit on the branch");
         }
     }
@@ -135,9 +132,8 @@ public class HotfixTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(1, version.Version.Minor);
             Assert.AreEqual(3, version.Version.Patch);
-            Assert.AreEqual(Stability.Beta, version.Version.Tag.InferStability());
+            Assert.AreEqual("hotfix0", version.Version.Tag.ToString());
             Assert.AreEqual(BranchType.Hotfix, version.BranchType);
-            Assert.AreEqual(0, version.Version.Tag.ReleaseNumber());
             Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is a commit on the branch");
         }
     }
@@ -175,9 +171,8 @@ public class HotfixTests : Lg2sHelperBase
             Assert.AreEqual(0, version.Version.Major);
             Assert.AreEqual(1, version.Version.Minor);
             Assert.AreEqual(3, version.Version.Patch);
-            Assert.AreEqual(Stability.Alpha, version.Version.Tag.InferStability());
+            Assert.AreEqual("alpha5", version.Version.Tag.ToString());
             Assert.AreEqual(BranchType.Hotfix, version.BranchType);
-            Assert.AreEqual(5, version.Version.Tag.ReleaseNumber(), "PreReleasePartOne should be set to 5 from the tag");
             Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is a commit on the branch");
         }
     }

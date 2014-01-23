@@ -65,6 +65,8 @@
     <Compile Include="BuildServers\TeamCity.cs" />
     <Compile Include="GitFlowVersionContext.cs" />
     <Compile Include="HelpWriter.cs" />
+    <Compile Include="ReleaseInformation.cs" />
+    <Compile Include="ReleaseInformationCalculator.cs" />
     <Compile Include="SemanticVersionTag.cs" />
     <Compile Include="VersionBuilders\JsonVersionBuilder.cs" />
     <Compile Include="VersionBuilders\NugetVersionBuilder.cs" />

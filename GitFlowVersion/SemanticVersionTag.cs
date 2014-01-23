@@ -1,41 +1,14 @@
 namespace GitFlowVersion
 {
     using System;
-    using System.Text.RegularExpressions;
 
     public class SemanticVersionTag
     {
-        public string Name;
-
-        public Stability? InferStability()
-        {
-            if (Name == null)
-                return Stability.Final;
-
-            var stageString = Name.TrimEnd("0123456789".ToCharArray());
-
-            if (stageString.Equals("RC", StringComparison.InvariantCultureIgnoreCase))
-            {
-                return Stability.ReleaseCandidate;
-            }
-
-            if (stageString.Equals("hotfix", StringComparison.InvariantCultureIgnoreCase))
-            {
-                return Stability.Beta;
-            }
-
-            Stability stability;
-            if (!Enum.TryParse(stageString, true, out stability))
-            {
-                return null;
-            }
-
-            return stability;
-        }
+        private string _name;
 
         protected bool Equals(SemanticVersionTag other)
         {
-            return string.Equals(Name, other.Name);
+            return string.Equals(_name, other._name);
         }
 
         public override bool Equals(object obj)
@@ -57,7 +30,7 @@ namespace GitFlowVersion
 
         public override int GetHashCode()
         {
-            return (Name != null ? Name.GetHashCode() : 0);
+            return (_name != null ? _name.GetHashCode() : 0);
         }
 
         public static bool operator ==(SemanticVersionTag left, SemanticVersionTag right)
@@ -72,50 +45,45 @@ namespace GitFlowVersion
 
         public static bool operator >(SemanticVersionTag left, SemanticVersionTag right)
         {
-            return StringComparer.InvariantCultureIgnoreCase.Compare(left.Name, right.Name) == 1;
+            return StringComparer.InvariantCultureIgnoreCase.Compare(left._name, right._name) == 1;
         }
 
         public static bool operator <(SemanticVersionTag left, SemanticVersionTag right)
         {
-            return StringComparer.InvariantCultureIgnoreCase.Compare(left.Name, right.Name) == -1;
+            return StringComparer.InvariantCultureIgnoreCase.Compare(left._name, right._name) == -1;
         }
 
         public static bool operator >=(SemanticVersionTag left, SemanticVersionTag right)
         {
-            return StringComparer.InvariantCultureIgnoreCase.Compare(left.Name, right.Name) != -1;
+            return StringComparer.InvariantCultureIgnoreCase.Compare(left._name, right._name) != -1;
         }
 
         public static bool operator <=(SemanticVersionTag left, SemanticVersionTag right)
         {
-            return StringComparer.InvariantCultureIgnoreCase.Compare(left.Name, right.Name) != 1;
+            return StringComparer.InvariantCultureIgnoreCase.Compare(left._name, right._name) != 1;
         }
 
         public static implicit operator SemanticVersionTag(string name)
         {
             return new SemanticVersionTag
             {
-                Name = name
+                _name = name
             };
         }
 
-        public bool HasReleaseNumber()
+        public static implicit operator string(SemanticVersionTag tag)
         {
-            if (Name == null) return false;
-            var hasReleaseNumber = Regex.IsMatch(Name, "\\d+$");
-            return hasReleaseNumber;
+            return tag._name;
         }
 
-        public int? ReleaseNumber()
+        public override string ToString()
         {
-            if (Name == null)
-                return null;
+            return _name;
+        }
 
-            int releaseNumber;
-            var value = Regex.Match(Name, "\\d+$").Value;
-            if (int.TryParse(value, out releaseNumber))
-                return releaseNumber;
-
-            return null;
+        public bool HasTag()
+        {
+            return !string.IsNullOrEmpty(_name);
         }
     }
 }
