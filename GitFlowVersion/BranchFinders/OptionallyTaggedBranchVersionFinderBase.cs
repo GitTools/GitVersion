@@ -36,8 +36,7 @@ namespace GitFlowVersion
                     Major = version.Major,
                     Minor = version.Minor,
                     Patch = version.Patch,
-                    Tag = version.Tag,
-                    PreReleasePartTwo = (nbHotfixCommits == 0) ? default(int?) : nbHotfixCommits
+                    Tag = version.Tag
                 },
             };
 
@@ -46,7 +45,33 @@ namespace GitFlowVersion
                 versionAndBranch.Version.Tag = tagVersion.Tag;
             }
 
+
+            if (!IsMostRecentCommitTagged(context))
+            {
+                versionAndBranch.Version.PreReleasePartTwo = (nbHotfixCommits == 0) ? default(int?) : nbHotfixCommits;
+            }
+
             return versionAndBranch;
+        }
+
+        bool IsMostRecentCommitTagged(GitFlowVersionContext context)
+        {
+            var currentCommit = context.CurrentBranch.Commits.First();
+
+            var tags = context.Repository.Tags
+                .Where(tag => tag.PeeledTarget() == currentCommit)
+                .ToList();
+
+            foreach (var tag in tags)
+            {
+                SemanticVersion version;
+                if (SemanticVersionParser.TryParse(tag.Name, out version))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         SemanticVersion RetrieveMostRecentOptionalTagVersion(

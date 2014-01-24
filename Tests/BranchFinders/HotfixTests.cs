@@ -173,7 +173,7 @@ public class HotfixTests : Lg2sHelperBase
             Assert.AreEqual(3, version.Version.Patch);
             Assert.AreEqual("alpha5", version.Version.Tag.ToString());
             Assert.AreEqual(BranchType.Hotfix, version.BranchType);
-            Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is a commit on the branch");
+            Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since the tag takes precedence");
         }
     }
 
