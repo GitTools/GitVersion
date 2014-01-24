@@ -4,7 +4,7 @@ using System.Reflection;
 
 [assembly: AssemblyVersion("1.2.3")]
 [assembly: AssemblyFileVersion("1.2.3")]
-[assembly: AssemblyInformationalVersion("1.2.3-unstable.feature-a682956d Branch:'feature1' Sha:'a682956dc1a2752aa24597a0f5cd939f93614509'")]
+[assembly: AssemblyInformationalVersion("1.2.3-unstable.feature-a682956d+Branch.feature1.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
 [assembly: MyAssembly.NugetVersion("1.2.3-Feature-feature1-a682956dc1a2752aa24597a0f5cd939f93614509")]
 
 namespace MyAssembly
@@ -25,7 +25,7 @@ namespace MyAssembly
     {
         public static string AssemblyVersion = "1.2.3";
         public static string AssemblyFileVersion = "1.2.3";
-        public static string AssemblyInformationalVersion = "1.2.3-unstable.feature-a682956d Branch:'feature1' Sha:'a682956dc1a2752aa24597a0f5cd939f93614509'";
+        public static string AssemblyInformationalVersion = "1.2.3-unstable.feature-a682956d+Branch.feature1.Sha.a682956dc1a2752aa24597a0f5cd939f93614509";
         public static string NugetVersion = "1.2.3-Feature-feature1-a682956dc1a2752aa24597a0f5cd939f93614509";
         public static string SemVer = "1.2.3-Feature-feature1-a682956dc1a2752aa24597a0f5cd939f93614509";
     }
