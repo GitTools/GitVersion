@@ -23,6 +23,7 @@ using System.Reflection;
 
 namespace {4}
 {{
+    [System.Runtime.CompilerServices.CompilerGenerated]
     class NugetVersionAttribute : Attribute
     {{
         public NugetVersionAttribute(string version)
@@ -35,6 +36,7 @@ namespace {4}
 }}
 namespace {4}
 {{
+    [System.Runtime.CompilerServices.CompilerGenerated]
     static class GitFlowVersionInformation
     {{
         public static string AssemblyVersion = ""{0}"";
