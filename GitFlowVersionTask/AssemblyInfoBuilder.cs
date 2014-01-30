@@ -1,12 +1,12 @@
 ﻿namespace GitFlowVersionTask
 {
+    using System.Collections.Generic;
     using GitFlowVersion;
-    using GitFlowVersion.VersionBuilders;
 
-    public  class AssemblyInfoBuilder
+    public class AssemblyInfoBuilder
     {
 
-        public VersionAndBranch VersionAndBranch;
+        public Dictionary<string, string> Variables;
         public bool SignAssembly;
         public string AssemblyName;
 
@@ -45,28 +45,25 @@ namespace {4}
     }}
 }}
 
-", GetAssemblyVersion(), GetAssemblyFileVersion(), VersionAndBranch.ToLongString(), VersionAndBranch.GenerateNugetVersion(), AssemblyName, VersionAndBranch.GenerateSemVer());
-            
+", GetAssemblyVersion(), GetAssemblyFileVersion(), Variables[GitFlowVariableProvider.LongVersion], Variables[GitFlowVariableProvider.NugetVersion], AssemblyName, Variables[GitFlowVariableProvider.SemVer]);
+
             return assemblyInfo;
         }
 
         string GetAssemblyVersion()
         {
-            var semanticVersion = VersionAndBranch.Version;
             if (SignAssembly)
             {
                 // for strong named we don't want to include the patch to avoid binding redirect issues
-                return string.Format("{0}.{1}.0", semanticVersion.Major, semanticVersion.Minor);
+                return string.Format("{0}.{1}.0", Variables[GitFlowVariableProvider.Major], Variables[GitFlowVariableProvider.Minor]);
             }
             // for non strong named we want to include the patch
-            return string.Format("{0}.{1}.{2}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch);
+            return string.Format("{0}.{1}.{2}", Variables[GitFlowVariableProvider.Major], Variables[GitFlowVariableProvider.Minor], Variables[GitFlowVariableProvider.Patch]);
         }
 
         string GetAssemblyFileVersion()
         {
-            var semanticVersion = VersionAndBranch.Version;
-
-            return string.Format("{0}.{1}.{2}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch);
+            return string.Format("{0}.{1}.{2}", Variables[GitFlowVariableProvider.Major], Variables[GitFlowVariableProvider.Minor], Variables[GitFlowVariableProvider.Patch]);
         }
     }
 }

@@ -5,7 +5,6 @@
     using System.IO;
     using System.Linq;
     using GitFlowVersion;
-    using GitFlowVersion.VersionBuilders;
     using Microsoft.Build.Framework;
     using Microsoft.Build.Utilities;
     using Logger = GitFlowVersion.Logger;
@@ -85,23 +84,23 @@
                 logger.LogInfo(string.Format("Executing PerformPreProcessingSteps for '{0}'.", buildServer.GetType().Name));
                 buildServer.PerformPreProcessingSteps(gitDirectory);
             }
-            var versionAndBranch = VersionCache.GetVersion(gitDirectory);
+            var variables = VersionCache.GetVersion(gitDirectory);
 
-            WriteIntegrationParameters(versionAndBranch, gitDirectory, applicableBuildServers);
+            WriteIntegrationParameters(variables, gitDirectory, applicableBuildServers);
 
-            CreateTempAssemblyInfo(versionAndBranch);
+            CreateTempAssemblyInfo(variables);
 
             return true;
         }
 
-        public void WriteIntegrationParameters(VersionAndBranch versionAndBranch, string gitDirectory, List<IBuildServer> applicableBuildServers)
+        public void WriteIntegrationParameters(Dictionary<string, string> versionAndBranch, string gitDirectory, List<IBuildServer> applicableBuildServers)
         {
             foreach (var buildServer in applicableBuildServers)
             {
                 logger.LogInfo(string.Format("Executing GenerateSetVersionMessage for '{0}'.", buildServer.GetType().Name));
-                logger.LogInfo(buildServer.GenerateSetVersionMessage(versionAndBranch.GenerateSemVer()));
+                logger.LogInfo(buildServer.GenerateSetVersionMessage(versionAndBranch[GitFlowVariableProvider.SemVer]));
                 logger.LogInfo(string.Format("Executing GenerateBuildLogOutput for '{0}'.", buildServer.GetType().Name));
-                foreach (var buildParameter in BuildOutputGenerator.GenerateBuildLogOutput(versionAndBranch, buildServer))
+                foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(versionAndBranch, buildServer))
                 {
                     logger.LogInfo(buildParameter);
                 }
@@ -120,11 +119,11 @@
         }
   
 
-        void CreateTempAssemblyInfo(VersionAndBranch versionAndBranch)
+        void CreateTempAssemblyInfo(Dictionary<string, string> variables)
         {
             var assemblyInfoBuilder = new AssemblyInfoBuilder
                                       {
-                                          VersionAndBranch = versionAndBranch,
+                                          Variables = variables,
                                           SignAssembly = SignAssembly,
                                           AssemblyName = AssemblyName
                                       };
