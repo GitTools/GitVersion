@@ -2,7 +2,7 @@ namespace GitFlowVersion
 {
     class PullVersionFinder : DevelopBasedVersionFinderBase
     {
-        public VersionAndBranch FindVersion(GitFlowVersionContext context)
+        public VersionAndBranch FindVersion(GitVersionContext context)
         {
             var suffix = ExtractIssueNumber(context);
 
@@ -12,7 +12,7 @@ namespace GitFlowVersion
             return version;
         }
 
-        string ExtractIssueNumber(GitFlowVersionContext context)
+        string ExtractIssueNumber(GitVersionContext context)
         {
             const string prefix = "/pull/";
             var pullRequestBranch = context.CurrentBranch;

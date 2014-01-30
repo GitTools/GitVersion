@@ -5,7 +5,7 @@ using System.IO;
 using Tests.Helpers;
 
 [TestFixture]
-public class GitFlowVersionFinderTests : Lg2sHelperBase
+public class GitVersionFinderTests : Lg2sHelperBase
 {
     [Test]
     public void FromExistingMaster()
@@ -15,9 +15,9 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             const string branchName = "master";
             var master = repo.Branches[branchName];
 
-            var finder = new GitFlowVersionFinder();
+            var finder = new GitVersionFinder();
 
-            var versionAndBranch = finder.FindVersion(new GitFlowVersionContext
+            var versionAndBranch = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = master,
@@ -43,9 +43,9 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
             const string branchName = "develop";
             var develop = repo.Branches[branchName];
 
-            var finder = new GitFlowVersionFinder();
+            var finder = new GitVersionFinder();
 
-            var versionAndBranch = finder.FindVersion(new GitFlowVersionContext
+            var versionAndBranch = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = develop,
@@ -81,9 +81,9 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             var feature = repo.Branches[branchName];
 
-            var finder = new GitFlowVersionFinder();
+            var finder = new GitVersionFinder();
 
-            var versionAndBranch = finder.FindVersion(new GitFlowVersionContext
+            var versionAndBranch = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = feature,
@@ -123,9 +123,9 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             repo.Tags.Add("1.0.2-Beta1", hotfix.Tip, Constants.SignatureNow(), " ");
 
-            var finder = new GitFlowVersionFinder();
+            var finder = new GitVersionFinder();
 
-            var versionAndBranch = finder.FindVersion(new GitFlowVersionContext
+            var versionAndBranch = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = hotfix,
@@ -166,9 +166,9 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             repo.Tags.Add("2.0.0-Beta1", release.Tip, Constants.SignatureNow(), " ");
 
-            var finder = new GitFlowVersionFinder();
+            var finder = new GitVersionFinder();
 
-            var versionAndBranch = finder.FindVersion(new GitFlowVersionContext
+            var versionAndBranch = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = release,
@@ -197,9 +197,9 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             repo.Branches.Remove("master");
 
-            var finder = new GitFlowVersionFinder();
+            var finder = new GitVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = repo.Head,
@@ -217,9 +217,9 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             repo.Branches.Remove("develop");
 
-            var finder = new GitFlowVersionFinder();
+            var finder = new GitVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = repo.Head,
@@ -242,9 +242,9 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             var feature = repo.Branches[branchName];
 
-            var finder = new GitFlowVersionFinder();
+            var finder = new GitVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = feature,
@@ -267,9 +267,9 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             var feature = repo.Branches[branchName];
 
-            var finder = new GitFlowVersionFinder();
+            var finder = new GitVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = feature,
@@ -292,9 +292,9 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             var pull = repo.Branches[branchName];
 
-            var finder = new GitFlowVersionFinder();
+            var finder = new GitVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = pull,
@@ -315,9 +315,9 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             AddOneCommitToHead(repo, "code");
 
-            var finder = new GitFlowVersionFinder();
+            var finder = new GitVersionFinder();
 
-            var versionAndBranch = finder.FindVersion(new GitFlowVersionContext
+            var versionAndBranch = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = repo.Head,
@@ -356,9 +356,9 @@ public class GitFlowVersionFinderTests : Lg2sHelperBase
 
             var feature = repo.Branches[branchName];
 
-            var gfvf = new GitFlowVersionFinder();
+            var gfvf = new GitVersionFinder();
 
-            Assert.Throws<ErrorException>(() => gfvf.FindVersion(new GitFlowVersionContext
+            Assert.Throws<ErrorException>(() => gfvf.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = feature,

@@ -19,7 +19,7 @@ public class HotfixTests : Lg2sHelperBase
 
             var finder = new HotfixVersionFinder();
 
-            var version = finder.FindVersion(new GitFlowVersionContext
+            var version = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = hotfixBranch,
@@ -54,7 +54,7 @@ public class HotfixTests : Lg2sHelperBase
 
             var finder = new HotfixVersionFinder();
 
-            var version = finder.FindVersion(new GitFlowVersionContext
+            var version = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = hotfixBranch,
@@ -90,7 +90,7 @@ public class HotfixTests : Lg2sHelperBase
 
             var finder = new HotfixVersionFinder();
 
-            var version = finder.FindVersion(new GitFlowVersionContext
+            var version = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = hotfixBranch,
@@ -123,7 +123,7 @@ public class HotfixTests : Lg2sHelperBase
 
             var finder = new HotfixVersionFinder();
 
-            var version = finder.FindVersion(new GitFlowVersionContext
+            var version = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = hotfixBranch,
@@ -162,7 +162,7 @@ public class HotfixTests : Lg2sHelperBase
 
             var finder = new HotfixVersionFinder();
 
-            var version = finder.FindVersion(new GitFlowVersionContext
+            var version = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = hotfixBranch,
@@ -190,7 +190,7 @@ public class HotfixTests : Lg2sHelperBase
 
             var finder = new HotfixVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = hotfixBranch,
@@ -211,7 +211,7 @@ public class HotfixTests : Lg2sHelperBase
 
             var finder = new HotfixVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = hotfixBranch,

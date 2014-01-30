@@ -24,7 +24,7 @@ public class DevelopTests
         {
             commitOnDevelop
         };
-        var version = finder.FindVersion(new GitFlowVersionContext
+        var version = finder.FindVersion(new GitVersionContext
         {
             Repository = new MockRepository
             {
@@ -67,7 +67,7 @@ public class DevelopTests
         {
             commitOnDevelop
         };
-        var context = new GitFlowVersionContext
+        var context = new GitVersionContext
         {
             Repository = new MockRepository
             {
@@ -127,7 +127,7 @@ public class DevelopTests
             commitTwoOnDevelop,
             commitOneOnDevelop
         };
-        var context = new GitFlowVersionContext
+        var context = new GitVersionContext
         {
             Repository = new MockRepository
             {

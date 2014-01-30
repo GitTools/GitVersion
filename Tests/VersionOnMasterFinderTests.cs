@@ -11,7 +11,7 @@ public class VersionOnMasterFinderTests
     public void Should_find_previous_commit_that_was_at_least_a_minor_bump()
     {
         var finder = new VersionOnMasterFinder();
-        var version = finder.Execute(new GitFlowVersionContext
+        var version = finder.Execute(new GitVersionContext
         {
             Repository = new MockRepository
             {

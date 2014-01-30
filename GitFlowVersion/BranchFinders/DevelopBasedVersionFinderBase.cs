@@ -6,7 +6,7 @@ namespace GitFlowVersion
     abstract class DevelopBasedVersionFinderBase
     {
         protected VersionAndBranch FindVersion(
-            GitFlowVersionContext context,
+            GitVersionContext context,
             BranchType branchType)
         {
             var ancestor = FindCommonAncestorWithDevelop(context.Repository, context.CurrentBranch, branchType);
