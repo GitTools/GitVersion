@@ -51,12 +51,14 @@
   <ItemGroup>
     <Compile Include="ArgumentParser.cs" />
     <Compile Include="Arguments.cs" />
+    <Compile Include="GitFlow\GitFlowVersionFinder.cs" />
     <Compile Include="GitFlow\BranchClassifier.cs" />
-    <Compile Include="BranchFinders\DevelopBasedVersionFinderBase.cs" />
-    <Compile Include="BranchFinders\OptionallyTaggedBranchVersionFinderBase.cs" />
-    <Compile Include="BranchFinders\FeatureVersionFinder.cs" />
-    <Compile Include="BranchFinders\DevelopVersionFinder.cs" />
-    <Compile Include="BranchFinders\HotfixVersionFinder.cs" />
+    <Compile Include="GitFlow\BranchFinders\DevelopBasedVersionFinderBase.cs" />
+    <Compile Include="GitFlow\BranchFinders\OptionallyTaggedBranchVersionFinderBase.cs" />
+    <Compile Include="GitFlow\BranchFinders\FeatureVersionFinder.cs" />
+    <Compile Include="GitFlow\BranchFinders\DevelopVersionFinder.cs" />
+    <Compile Include="GitFlow\BranchFinders\HotfixVersionFinder.cs" />
+    <Compile Include="GitHubFlow\GitHubFlowVersionFinder.cs" />
     <Compile Include="OutputFormatters\BuildOutputFormatter.cs" />
     <Compile Include="BuildServers\BuildServerList.cs" />
     <Compile Include="BuildServers\ContinuaCi.cs" />
@@ -81,12 +83,12 @@
     <Compile Include="VersionBuilders\InformationalVersionBuilder.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="GitFlow\MergeMessageParser.cs" />
-    <Compile Include="BranchFinders\PullVersionFinder.cs" />
-    <Compile Include="BranchFinders\ReleaseVersionFinder.cs" />
+    <Compile Include="GitFlow\BranchFinders\PullVersionFinder.cs" />
+    <Compile Include="GitFlow\BranchFinders\ReleaseVersionFinder.cs" />
     <Compile Include="LibGitExtensions.cs" />
     <Compile Include="GitVersionFinder.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs" />
-    <Compile Include="BranchFinders\MasterVersionFinder.cs" />
+    <Compile Include="GitFlow\BranchFinders\MasterVersionFinder.cs" />
     <Compile Include="MissingBranchException.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RepositoryLoader.cs" />
