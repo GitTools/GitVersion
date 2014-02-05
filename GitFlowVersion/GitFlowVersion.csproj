@@ -58,7 +58,12 @@
     <Compile Include="GitFlow\BranchFinders\FeatureVersionFinder.cs" />
     <Compile Include="GitFlow\BranchFinders\DevelopVersionFinder.cs" />
     <Compile Include="GitFlow\BranchFinders\HotfixVersionFinder.cs" />
+    <Compile Include="GitHubFlow\BuildNumberCalculator.cs" />
+    <Compile Include="GitHubFlow\VersionTaggedCommit.cs" />
     <Compile Include="GitHubFlow\GitHubFlowVersionFinder.cs" />
+    <Compile Include="GitHubFlow\LastTaggedReleaseFinder.cs" />
+    <Compile Include="GitHubFlow\NextSemverCalculator.cs" />
+    <Compile Include="GitHubFlow\NextVersionTxtFileFinder.cs" />
     <Compile Include="OutputFormatters\BuildOutputFormatter.cs" />
     <Compile Include="BuildServers\BuildServerList.cs" />
     <Compile Include="BuildServers\ContinuaCi.cs" />

@@ -22,7 +22,7 @@ namespace GitFlowVersion
         void EnsureMainTopologyConstraints(GitVersionContext context)
         {
             EnsureLocalBranchExists(context.Repository, "master");
-            EnsureLocalBranchExists(context.Repository, "develop");
+            // TODO somehow enforce this? EnsureLocalBranchExists(context.Repository, "develop");
             EnsureHeadIsNotDetached(context);
         }
 
