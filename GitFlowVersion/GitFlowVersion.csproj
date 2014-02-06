@@ -51,39 +51,40 @@
   <ItemGroup>
     <Compile Include="ArgumentParser.cs" />
     <Compile Include="Arguments.cs" />
-    <Compile Include="BranchClassifier.cs" />
+    <Compile Include="GitFlow\BranchClassifier.cs" />
     <Compile Include="BranchFinders\DevelopBasedVersionFinderBase.cs" />
     <Compile Include="BranchFinders\OptionallyTaggedBranchVersionFinderBase.cs" />
     <Compile Include="BranchFinders\FeatureVersionFinder.cs" />
     <Compile Include="BranchFinders\DevelopVersionFinder.cs" />
     <Compile Include="BranchFinders\HotfixVersionFinder.cs" />
-    <Compile Include="BuildServers\BuildOutputGenerator.cs" />
+    <Compile Include="OutputFormatters\BuildOutputFormatter.cs" />
     <Compile Include="BuildServers\BuildServerList.cs" />
     <Compile Include="BuildServers\ContinuaCi.cs" />
     <Compile Include="BuildServers\GitHelper.cs" />
     <Compile Include="BuildServers\IBuildServer.cs" />
     <Compile Include="BuildServers\TeamCity.cs" />
-    <Compile Include="GitFlowVersionContext.cs" />
+    <Compile Include="GitFlow\GitFlowVariableProvider.cs" />
+    <Compile Include="GitVersionContext.cs" />
     <Compile Include="HelpWriter.cs" />
-    <Compile Include="ReleaseInformation.cs" />
-    <Compile Include="ReleaseInformationCalculator.cs" />
+    <Compile Include="GitFlow\ReleaseInformation.cs" />
+    <Compile Include="GitFlow\ReleaseInformationCalculator.cs" />
     <Compile Include="SemanticVersionTag.cs" />
-    <Compile Include="VersionBuilders\JsonVersionBuilder.cs" />
+    <Compile Include="OutputFormatters\JsonOutputFormatter.cs" />
     <Compile Include="VersionBuilders\NugetVersionBuilder.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="ShortVersionParser.cs" />
     <Compile Include="VersionOnMasterFinder.cs" />
-    <Compile Include="BranchType.cs" />
+    <Compile Include="GitFlow\BranchType.cs" />
     <Compile Include="CachedVersion.cs" />
     <Compile Include="DirectoryDateFinder.cs" />
     <Compile Include="GitDirFinder.cs" />
     <Compile Include="VersionBuilders\InformationalVersionBuilder.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="MergeMessageParser.cs" />
+    <Compile Include="GitFlow\MergeMessageParser.cs" />
     <Compile Include="BranchFinders\PullVersionFinder.cs" />
     <Compile Include="BranchFinders\ReleaseVersionFinder.cs" />
     <Compile Include="LibGitExtensions.cs" />
-    <Compile Include="GitFlowVersionFinder.cs" />
+    <Compile Include="GitVersionFinder.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs" />
     <Compile Include="BranchFinders\MasterVersionFinder.cs" />
     <Compile Include="MissingBranchException.cs" />
@@ -93,8 +94,8 @@
     <Compile Include="SemanticVersionParser.cs" />
     <Compile Include="VersionBuilders\SemVerVersionBuilder.cs" />
     <Compile Include="SemanticVersion.cs" />
-    <Compile Include="Stability.cs" />
-    <Compile Include="VersionAndBranch.cs" />
+    <Compile Include="GitFlow\Stability.cs" />
+    <Compile Include="GitFlow\VersionAndBranch.cs" />
     <Compile Include="VersionCache.cs" />
     <Compile Include="VersionForDirectoryFinder.cs" />
     <Compile Include="VersionPoint.cs" />
@@ -124,6 +125,7 @@
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="Clean">
     <ItemGroup>

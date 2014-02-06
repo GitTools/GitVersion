@@ -27,30 +27,15 @@ namespace GitFlowVersion
                     Environment.Exit(1);
                 }
 
-                var versionAndBranch = VersionCache.GetVersion(gitDirectory);
+                var variables = VersionCache.GetVersion(gitDirectory);
 
                 switch (arguments.VersionPart)
                 {
                     case null: 
-                        Console.WriteLine(versionAndBranch.ToJson()); 
+                        Console.WriteLine(JsonOutputFormatter.ToJson(variables)); 
                         break;
-                    case "nuget":
-                        Console.WriteLine(versionAndBranch.GenerateNugetVersion()); 
-                        break;
-                    case "major":
-                        Console.WriteLine(versionAndBranch.Version.Major);
-                        break;
-                    case "minor":
-                        Console.WriteLine(versionAndBranch.Version.Minor);
-                        break;
-                    case "patch":
-                        Console.WriteLine(versionAndBranch.Version.Patch);
-                        break;
-                    case "long":
-                        Console.WriteLine(versionAndBranch.ToLongString());
-                        break;
-                    case "short":
-                        Console.WriteLine(versionAndBranch.ToShortString());
+                    default:
+                        Console.WriteLine(variables[arguments.VersionPart]);
                         break;
                 }
                     

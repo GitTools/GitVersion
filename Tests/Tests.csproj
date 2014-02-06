@@ -93,7 +93,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApprovaleTestsConfig.cs" />
+    <Compile Include="ApprovalTestsConfig.cs" />
     <Compile Include="ArgumentParserTests.cs" />
     <Compile Include="AssemblyInfoBuilderTests.cs" />
     <Compile Include="AssemblyLocation.cs" />
@@ -101,11 +101,11 @@
     <Compile Include="BranchFinders\DevelopTests.cs" />
     <Compile Include="BuildServers\TeamCityTests.cs" />
     <Compile Include="BuildServers\ContinuaCiTests.cs" />
+    <Compile Include="GitFlow\GitFlowVersionFinderTests.cs" />
     <Compile Include="GitHelperTests.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\DirectoryHelper.cs" />
     <Compile Include="Helpers\FindersHelper.cs" />
-    <Compile Include="GitFlowVersionFinderTests.cs" />
     <Compile Include="Helpers\IPostTestDirectoryRemover.cs" />
     <Compile Include="Helpers\LibGit2SharpExtensions.cs" />
     <Compile Include="Helpers\SelfCleaningDirectory.cs" />
@@ -118,7 +118,7 @@
     <Compile Include="Mocks\MockReflogCollection.cs" />
     <Compile Include="Mocks\MockTagAnnotation.cs" />
     <Compile Include="NugetVersionBuilderTests.cs" />
-    <Compile Include="ReleaseInformationCalculatorTests.cs" />
+    <Compile Include="GitFlow\ReleaseInformationCalculatorTests.cs" />
     <Compile Include="SemanticVersionParserTests.cs" />
     <Compile Include="ShortVersionParserTests.cs" />
     <Compile Include="UpdateAssemblyInfoTests.cs" />
@@ -135,7 +135,7 @@
     <Compile Include="InformationalVersionBuilderTests.cs" />
     <Compile Include="IntegrationTests.cs" />
     <Compile Include="BranchFinders\MasterTests.cs" />
-    <Compile Include="MergeMessageParserTests.cs" />
+    <Compile Include="GitFlow\MergeMessageParserTests.cs" />
     <Compile Include="Mocks\MockTag.cs" />
     <Compile Include="Mocks\MockTagCollection.cs" />
     <Compile Include="ModuleInitializer.cs" />
@@ -168,6 +168,7 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

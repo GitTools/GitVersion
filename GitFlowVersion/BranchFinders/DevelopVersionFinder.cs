@@ -4,7 +4,7 @@ namespace GitFlowVersion
 
     class DevelopVersionFinder
     {
-        public VersionAndBranch FindVersion(GitFlowVersionContext context)
+        public VersionAndBranch FindVersion(GitVersionContext context)
         {
             var version = GetSemanticVersion(context);
 
@@ -20,7 +20,7 @@ namespace GitFlowVersion
                    };
         }
 
-        SemanticVersion GetSemanticVersion(GitFlowVersionContext context)
+        SemanticVersion GetSemanticVersion(GitVersionContext context)
         {
             var versionOnMasterFinder = new VersionOnMasterFinder();
             var versionFromMaster = versionOnMasterFinder.Execute(context, context.CurrentBranch.Tip.When());

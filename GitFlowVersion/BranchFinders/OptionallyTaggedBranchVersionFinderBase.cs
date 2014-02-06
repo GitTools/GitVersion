@@ -8,7 +8,7 @@ namespace GitFlowVersion
     abstract class OptionallyTaggedBranchVersionFinderBase
     {
         protected VersionAndBranch FindVersion(
-            GitFlowVersionContext context,
+            GitVersionContext context,
             BranchType branchType,
             string baseBranchName)
         {
@@ -54,7 +54,7 @@ namespace GitFlowVersion
             return versionAndBranch;
         }
 
-        bool IsMostRecentCommitTagged(GitFlowVersionContext context)
+        bool IsMostRecentCommitTagged(GitVersionContext context)
         {
             var currentCommit = context.CurrentBranch.Commits.First();
 

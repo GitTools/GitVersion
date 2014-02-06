@@ -22,7 +22,8 @@ public class JsonVersionBuilderTests
                                                            Suffix = "a682956d",
                                                        }
                               };
-        var json = semanticVersion.ToJson();
+        var dictionary = new GitFlowVariableProvider().GetVariables(semanticVersion);
+        var json = JsonOutputFormatter.ToJson(dictionary);
         Approvals.Verify(json);
     }
 

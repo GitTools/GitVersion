@@ -4,7 +4,7 @@ namespace GitFlowVersion
 
     class VersionOnMasterFinder
     {
-        public VersionPoint Execute(GitFlowVersionContext context, DateTimeOffset olderThan)
+        public VersionPoint Execute(GitVersionContext context, DateTimeOffset olderThan)
         {
             var masterBranch = context.Repository.FindBranch("master");
             foreach (var commit in masterBranch.CommitsPriorToThan(olderThan))

@@ -7,7 +7,7 @@
     {
         static Dictionary<string, CachedVersion> versionCacheVersions = new Dictionary<string, CachedVersion>();
 
-        public static VersionAndBranch GetVersion(string gitDirectory)
+        public static Dictionary<string, string> GetVersion(string gitDirectory)
         {
             using (var repo = RepositoryLoader.GetRepo(gitDirectory))
             {
@@ -44,7 +44,8 @@
                                                     Timestamp = ticks
                                                 };
                 }
-                return versionAndBranch;
+
+                return new GitFlowVariableProvider().GetVariables(versionAndBranch);
             }
         }
 

@@ -1,4 +1,4 @@
-﻿namespace GitFlowVersion.VersionBuilders
+﻿namespace GitFlowVersion
 {
     using System;
 

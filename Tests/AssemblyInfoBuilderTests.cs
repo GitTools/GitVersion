@@ -31,7 +31,7 @@ public class AssemblyInfoBuilderTests
         };
         var assemblyInfoBuilder = new AssemblyInfoBuilder
             {
-                VersionAndBranch = semanticVersion,
+                Variables = new GitFlowVariableProvider().GetVariables(semanticVersion),
                 AssemblyName = "MyAssembly"
             };
         var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText();

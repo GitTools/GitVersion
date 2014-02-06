@@ -2,7 +2,7 @@ namespace GitFlowVersion
 {
     class FeatureVersionFinder : DevelopBasedVersionFinderBase
     {
-        public VersionAndBranch FindVersion(GitFlowVersionContext context)
+        public VersionAndBranch FindVersion(GitVersionContext context)
         {
             return FindVersion(context, BranchType.Feature);
         }

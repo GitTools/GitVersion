@@ -4,9 +4,9 @@ namespace GitFlowVersion
     using System.Linq;
     using LibGit2Sharp;
 
-    public class GitFlowVersionFinder
+    public class GitVersionFinder
     {
-        public VersionAndBranch FindVersion(GitFlowVersionContext context)
+        public VersionAndBranch FindVersion(GitVersionContext context)
         {
             EnsureMainTopologyConstraints(context);
 
@@ -38,14 +38,14 @@ namespace GitFlowVersion
             return new FeatureVersionFinder().FindVersion(context);
         }
 
-        void EnsureMainTopologyConstraints(GitFlowVersionContext context)
+        void EnsureMainTopologyConstraints(GitVersionContext context)
         {
             EnsureLocalBranchExists(context.Repository, "master");
             EnsureLocalBranchExists(context.Repository, "develop");
             EnsureHeadIsNotDetached(context);
         }
 
-        void EnsureHeadIsNotDetached(GitFlowVersionContext context)
+        void EnsureHeadIsNotDetached(GitVersionContext context)
         {
             if (!context.CurrentBranch.CanonicalName.Equals("(no branch)", StringComparison.OrdinalIgnoreCase))
             {

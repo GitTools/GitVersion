@@ -22,7 +22,7 @@ public class ReleaseTests : Lg2sHelperBase
 
             var finder = new ReleaseVersionFinder();
 
-            var version = finder.FindVersion(new GitFlowVersionContext
+            var version = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = releaseBranch,
@@ -49,7 +49,7 @@ public class ReleaseTests : Lg2sHelperBase
 
             var finder = new ReleaseVersionFinder();
 
-            var version = finder.FindVersion(new GitFlowVersionContext
+            var version = finder.FindVersion(new GitVersionContext
             {
                 CurrentBranch = releaseBranch,
                 Repository = repo
@@ -81,7 +81,7 @@ public class ReleaseTests : Lg2sHelperBase
 
             var finder = new ReleaseVersionFinder();
 
-            var version = finder.FindVersion(new GitFlowVersionContext
+            var version = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = releaseBranch,
@@ -115,7 +115,7 @@ public class ReleaseTests : Lg2sHelperBase
 
             var finder = new ReleaseVersionFinder();
 
-            var version = finder.FindVersion(new GitFlowVersionContext
+            var version = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = releaseBranch,
@@ -150,7 +150,7 @@ public class ReleaseTests : Lg2sHelperBase
 
             var finder = new ReleaseVersionFinder();
 
-            var version = finder.FindVersion(new GitFlowVersionContext
+            var version = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = releaseBranch,
@@ -185,7 +185,7 @@ public class ReleaseTests : Lg2sHelperBase
 
             var finder = new ReleaseVersionFinder();
 
-            var version = finder.FindVersion(new GitFlowVersionContext
+            var version = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = releaseBranch,
@@ -217,7 +217,7 @@ public class ReleaseTests : Lg2sHelperBase
 
             var finder = new ReleaseVersionFinder();
 
-            var version = finder.FindVersion(new GitFlowVersionContext
+            var version = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = releaseBranch,
@@ -251,7 +251,7 @@ public class ReleaseTests : Lg2sHelperBase
 
             var finder = new ReleaseVersionFinder();
 
-            var version = finder.FindVersion(new GitFlowVersionContext
+            var version = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = releaseBranch,
@@ -278,7 +278,7 @@ public class ReleaseTests : Lg2sHelperBase
 
             var finder = new ReleaseVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = releaseBranch,
@@ -299,7 +299,7 @@ public class ReleaseTests : Lg2sHelperBase
 
             var finder = new ReleaseVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitFlowVersionContext
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = releaseBranch,
