@@ -27,6 +27,13 @@ namespace GitFlowVersion
                     Environment.Exit(1);
                 }
 
+                var applicableBuildServers = GetApplicableBuildServers().ToList();
+
+                foreach (var buildServer in applicableBuildServers)
+                {
+                    buildServer.PerformPreProcessingSteps(gitDirectory);
+                }
+
                 var variables = VersionCache.GetVersion(gitDirectory);
 
                 switch (arguments.VersionPart)
@@ -50,6 +57,11 @@ namespace GitFlowVersion
                 Console.Error.Write("An unexpected error occurred:\r\n{0}", exception);
                 Environment.Exit(1);
             }
+        }
+
+        static IEnumerable<IBuildServer> GetApplicableBuildServers()
+        {
+            return BuildServerList.BuildServers.Where(buildServer => buildServer.CanApplyToCurrentContext());
         }
 
         static void ConfigureLogging(Arguments arguments)
