@@ -29,7 +29,9 @@ namespace GitFlowVersion
             if (context.CurrentBranch.IsPullRequest())
             {
                 EnsurePullBranchShareACommonAncestorWithMaster(_gitRepo, _gitRepo.Head);
-                semanticVersion.Suffix = "PullRequest" + ExtractIssueNumber(context);
+                var extractIssueNumber = ExtractIssueNumber(context);
+                semanticVersion.Tag = "unstable" + extractIssueNumber;
+                semanticVersion.Suffix = extractIssueNumber;
                 return new VersionAndBranch
                 {
                     BranchName = context.CurrentBranch.Name,

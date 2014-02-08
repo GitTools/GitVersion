@@ -17,12 +17,12 @@
             var filePath = Path.Combine(repositoryDirectory, "NextVersion.txt");
             if (!File.Exists(filePath))
             {
-                return null;
+                return new SemanticVersion();
             }
             var version = File.ReadAllText(filePath);
 
             if (string.IsNullOrEmpty(version))
-                return null;
+                return new SemanticVersion();
 
             SemanticVersion semanticVersion;
             if (!SemanticVersionParser.TryParse(version, out semanticVersion))
