@@ -12,14 +12,17 @@
             this.repositoryDirectory = repositoryDirectory;
         }
 
-        public SemanticVersion GetNextVersion(SemanticVersion taggedVersion)
+        public SemanticVersion GetNextVersion()
         {
             var filePath = Path.Combine(repositoryDirectory, "NextVersion.txt");
             if (!File.Exists(filePath))
             {
-                File.WriteAllText(filePath, taggedVersion.ToString());
+                return null;
             }
             var version = File.ReadAllText(filePath);
+
+            if (string.IsNullOrEmpty(version))
+                return null;
 
             SemanticVersion semanticVersion;
             if (!SemanticVersionParser.TryParse(version, out semanticVersion))
