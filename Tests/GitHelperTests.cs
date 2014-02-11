@@ -96,7 +96,6 @@ public class GitHelperTests : Lg2sHelperBase
         }
     }
 
-
     string FakeTeamCityFetchAndCheckout(string upstreamRepository, string monitoredReference)
     {
         var repoPath = InitNewRepository();
@@ -136,7 +135,6 @@ public class GitHelperTests : Lg2sHelperBase
                 repo.Refs.Remove(monitoredReference);
             }
         }
-        GitHelper.NormalizeGitDirectory(repoPath);
 
         return repoPath;
     }
