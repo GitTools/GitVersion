@@ -65,7 +65,7 @@ public class MockRepository : IRepository
         throw new System.NotImplementedException();
     }
 
-    public void Reset(ResetOptions resetOptions, Commit commit)
+    public MergeResult Merge(Commit commit, Signature merger)
     {
         throw new System.NotImplementedException();
     }
