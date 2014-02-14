@@ -10,38 +10,19 @@ namespace GitFlowVersion
         {
             EnsureMainTopologyConstraints(context);
 
-            if (context.CurrentBranch.IsMaster())
-            {
-                return new MasterVersionFinder().FindVersion(context.Repository, context.CurrentBranch.Tip);
-            }
+            var hasDevelopBranch = context.Repository.FindBranch("develop") != null;
 
-            if (context.CurrentBranch.IsHotfix())
+            if (hasDevelopBranch)
             {
-                return new HotfixVersionFinder().FindVersion(context);
+                return new GitFlowVersionFinder().FindVersion(context);
             }
-
-            if (context.CurrentBranch.IsRelease())
-            {
-                return new ReleaseVersionFinder().FindVersion(context);
-            }
-
-            if (context.CurrentBranch.IsDevelop())
-            {
-                return new DevelopVersionFinder().FindVersion(context);
-            }
-
-            if (context.CurrentBranch.IsPullRequest())
-            {
-                return new PullVersionFinder().FindVersion(context);
-            }
-
-            return new FeatureVersionFinder().FindVersion(context);
+            return new GitHubFlowVersionFinder().FindVersion(context);
         }
 
         void EnsureMainTopologyConstraints(GitVersionContext context)
         {
             EnsureLocalBranchExists(context.Repository, "master");
-            EnsureLocalBranchExists(context.Repository, "develop");
+            // TODO somehow enforce this? EnsureLocalBranchExists(context.Repository, "develop");
             EnsureHeadIsNotDetached(context);
         }
 
