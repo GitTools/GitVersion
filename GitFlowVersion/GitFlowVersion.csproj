@@ -69,6 +69,7 @@
     <Compile Include="BuildServers\ContinuaCi.cs" />
     <Compile Include="BuildServers\GitHelper.cs" />
     <Compile Include="BuildServers\IBuildServer.cs" />
+    <Compile Include="BuildServers\ProcessEnvironment.cs" />
     <Compile Include="BuildServers\TeamCity.cs" />
     <Compile Include="GitFlow\GitFlowVariableProvider.cs" />
     <Compile Include="GitVersionContext.cs" />
