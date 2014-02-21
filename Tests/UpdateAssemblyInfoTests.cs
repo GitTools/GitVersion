@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using GitFlowVersion;
@@ -101,6 +102,19 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         Assert.AreEqual("It looks like the branch being examined is a detached Head pointing to commit '469f851'. Without a proper branch name GitFlowVersion cannot determine the build version.", exception.Message);
     }
 
+    [SetUp]
+    public void SetUp()
+    {
+        //avoid buildserver detection to make the tests pass on the buildserver
+        BuildServerList.Selector = () => new List<IBuildServer>();
+    }
+
+
+    [TearDown]
+    public void TearDown()
+    {
+        BuildServerList.ResetSelector();
+    }
     string CheckoutLocal(string repositoryPath, string monitoredReference)
     {
         var repoPath = Clone(repositoryPath);

@@ -1,5 +1,6 @@
 ﻿namespace GitFlowVersion
 {
+    using System;
     using System.Collections.Generic;
 
     public static class BuildServerList
@@ -10,7 +11,19 @@
                 new TeamCity()
             };
 
+        public static Func<IEnumerable<IBuildServer>> Selector = () => DefaultSelector();
+
+        public static void ResetSelector()
+        {
+            Selector = DefaultSelector;
+        }
+
         public static IEnumerable<IBuildServer> GetApplicableBuildServers()
+        {
+            return Selector();
+        }
+
+        static IEnumerable<IBuildServer> DefaultSelector()
         {
             foreach (var buildServer in BuildServers)
             {
