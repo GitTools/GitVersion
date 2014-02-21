@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using GitFlowVersion;
     using Microsoft.Build.Framework;
     using Microsoft.Build.Utilities;
@@ -34,13 +33,15 @@
             CompileFiles = new ITaskItem[] {};
             logger = new TaskLogger(this);
             Logger.WriteInfo = this.LogInfo;
+            Logger.WriteWarning = this.LogWarning;
         }
 
         public override bool Execute()
         {
             try
             {
-                return InnerExecute();
+                InnerExecute();
+                return true;
             }
             catch (ErrorException errorException)
             {
@@ -58,42 +59,25 @@
             }
         }
 
-        public bool InnerExecute()
+        public void InnerExecute()
         {
             TempFileTracker.DeleteTempFiles();
 
             InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
-
-            var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
-
-            if (string.IsNullOrEmpty(gitDirectory))
+            
+            VersionAndBranch versionAndBranch;
+            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch))
             {
-                var message =
-                    "No .git directory found in provided solution path. This means the assembly may not be versioned correctly. " +
-                    "To fix this warning either clone the repository using git or remove the `GitFlowVersion.Fody` nuget package. " +
-                    "To temporarily work around this issue add a AssemblyInfo.cs with an appropriate `AssemblyVersionAttribute`." +
-                    "If it is detected that this build is occurring on a CI server an error may be thrown.";
-                logger.LogWarning(message);
-                return true;
+                return;
             }
 
-            var applicableBuildServers = GetApplicableBuildServers().ToList();
-
-            foreach (var buildServer in applicableBuildServers)
-            {
-                logger.LogInfo(string.Format("Executing PerformPreProcessingSteps for '{0}'.", buildServer.GetType().Name));
-                buildServer.PerformPreProcessingSteps(gitDirectory);
-            }
-            var versionAndBranch = VersionCache.GetVersion(gitDirectory);
-
-            WriteIntegrationParameters(versionAndBranch,  applicableBuildServers);
+            WriteIntegrationParameters(versionAndBranch, BuildServerList.GetApplicableBuildServers());
 
             CreateTempAssemblyInfo(versionAndBranch);
 
-            return true;
         }
 
-        public void WriteIntegrationParameters(VersionAndBranch versionAndBranch, List<IBuildServer> applicableBuildServers)
+        public void WriteIntegrationParameters(VersionAndBranch versionAndBranch, IEnumerable<IBuildServer> applicableBuildServers)
         {
             foreach (var buildServer in applicableBuildServers)
             {
@@ -103,17 +87,6 @@
                 foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(versionAndBranch, buildServer))
                 {
                     logger.LogInfo(buildParameter);
-                }
-            }
-        }
-        public virtual IEnumerable<IBuildServer> GetApplicableBuildServers()
-        {
-            foreach (var buildServer in BuildServerList.BuildServers)
-            {
-                if (buildServer.CanApplyToCurrentContext())
-                {
-                    logger.LogInfo(string.Format("Applicable build agent found: '{0}'.", buildServer.GetType().Name));
-                    yield return buildServer;
                 }
             }
         }

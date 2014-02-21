@@ -55,6 +55,7 @@
     <Compile Include="TaskLogger.cs" />
     <Compile Include="TempFileTracker.cs" />
     <Compile Include="UpdateAssemblyInfo.cs" />
+    <Compile Include="VersionAndBranchFinder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Fody.targets" />

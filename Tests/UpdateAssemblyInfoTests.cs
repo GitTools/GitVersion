@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using GitFlowVersion;
@@ -12,13 +11,13 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     [Test]
     public void StandardExecutionMode_LackOfAValidGitDirectoryDoesNotPreventExecution()
     {
-        var task = new LocalUpdateAssemblyInfo
-            {            
-                BuildEngine = new MockBuildEngine(),
-                SolutionDirectory = Path.GetTempPath(),
-            };
+        var task = new UpdateAssemblyInfo
+        {
+            BuildEngine = new MockBuildEngine(),
+            SolutionDirectory = Path.GetTempPath(),
+        };
 
-        Assert.True(task.InnerExecute());
+        task.InnerExecute();
     }
 
     [Test]
@@ -29,13 +28,13 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
             Assert.AreEqual(0, repo.Network.Remotes.Count());
         }
 
-        var task = new LocalUpdateAssemblyInfo
+        var task = new UpdateAssemblyInfo
         {
             BuildEngine = new MockBuildEngine(),
             SolutionDirectory = ASBMTestRepoWorkingDirPath,
         };
 
-        Assert.True(task.InnerExecute());
+        task.InnerExecute();
     }
 
     [Test]
@@ -43,13 +42,13 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     {
         var repoPath = CheckoutLocal(ASBMTestRepoWorkingDirPath, "refs/heads/master");
 
-        var task = new LocalUpdateAssemblyInfo
+        var task = new UpdateAssemblyInfo
         {
             BuildEngine = new MockBuildEngine(),
-                SolutionDirectory = repoPath,
-            };
+            SolutionDirectory = repoPath,
+        };
 
-        Assert.True(task.InnerExecute());
+        task.InnerExecute();
     }
 
     [Test]
@@ -57,13 +56,13 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     {
         var repoPath = CheckoutLocal(ASBMTestRepoWorkingDirPath, "refs/heads/develop");
 
-        var task = new LocalUpdateAssemblyInfo
+        var task = new UpdateAssemblyInfo
         {
             BuildEngine = new MockBuildEngine(),
-                SolutionDirectory = repoPath,
-            };
+            SolutionDirectory = repoPath,
+        };
 
-        Assert.True(task.InnerExecute());
+        task.InnerExecute();
     }
 
 
@@ -72,13 +71,13 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     {
         var repoPath = CheckoutLocal(ASBMTestRepoWorkingDirPath, "refs/heads/feature/one");
 
-        var task = new LocalUpdateAssemblyInfo
+        var task = new UpdateAssemblyInfo
         {
             BuildEngine = new MockBuildEngine(),
-                SolutionDirectory = repoPath,
-            };
+            SolutionDirectory = repoPath,
+        };
 
-        Assert.True(task.InnerExecute());
+        task.InnerExecute();
     }
 
     [Test]
@@ -92,13 +91,13 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
             Assert.IsTrue(repo.Info.IsHeadDetached);
         }
 
-        var task = new LocalUpdateAssemblyInfo
+        var task = new UpdateAssemblyInfo
         {
             BuildEngine = new MockBuildEngine(),
             SolutionDirectory = repoPath,
         };
 
-        var exception = Assert.Throws<ErrorException>(() => task.InnerExecute());
+        var exception = Assert.Throws<ErrorException>(task.InnerExecute);
         Assert.AreEqual("It looks like the branch being examined is a detached Head pointing to commit '469f851'. Without a proper branch name GitFlowVersion cannot determine the build version.", exception.Message);
     }
 
@@ -113,12 +112,4 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         return repoPath;
     }
 
-
-    public class LocalUpdateAssemblyInfo : UpdateAssemblyInfo
-    {
-        public override IEnumerable<IBuildServer> GetApplicableBuildServers()
-        {
-            yield break;
-        }
-    }
 }
