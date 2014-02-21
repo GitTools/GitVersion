@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
 
-    public class GitFlowVariableProvider
+    public static class GitFlowVariableProvider
     {
         public static string SemVer = "SemVer";
         public static string LongVersion = "LongVersion";
@@ -12,7 +12,7 @@
         public static string Minor = "Minor";
         public static string Patch = "Patch";
 
-        public Dictionary<string, string> GetVariables(VersionAndBranch versionAndBranch)
+        public static Dictionary<string, string> GetVariables(this VersionAndBranch versionAndBranch)
         {
             var variables = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
             {

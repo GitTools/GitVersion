@@ -5,8 +5,6 @@ using GitFlowVersion;
 using GitFlowVersionTask;
 using LibGit2Sharp;
 using NUnit.Framework;
-using Tests.Helpers;
-
 
 [TestFixture]
 public class UpdateAssemblyInfoTests : Lg2sHelperBase
@@ -118,7 +116,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
 
     public class LocalUpdateAssemblyInfo : UpdateAssemblyInfo
     {
-        public override IEnumerable<IBuildServer> GetApplicableBuildServers(string gitDirectory)
+        public override IEnumerable<IBuildServer> GetApplicableBuildServers()
         {
             yield break;
         }

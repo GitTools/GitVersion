@@ -1,7 +1,7 @@
 using GitFlowVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
-using Tests.Helpers;
+using ObjectApproval;
 
 [TestFixture]
 public class HotfixTests : Lg2sHelperBase
@@ -25,12 +25,8 @@ public class HotfixTests : Lg2sHelperBase
                 CurrentBranch = hotfixBranch,
             });
 
-            Assert.AreEqual(0, version.Version.Major);
-            Assert.AreEqual(1, version.Version.Minor);
-            Assert.AreEqual(4, version.Version.Patch);
-            Assert.AreEqual("hotfix0", version.Version.Tag.ToString());
-            Assert.AreEqual(BranchType.Hotfix, version.BranchType);
             Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since there is no commits");
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
 
@@ -60,12 +56,8 @@ public class HotfixTests : Lg2sHelperBase
                 CurrentBranch = hotfixBranch,
             });
 
-            Assert.AreEqual(0, version.Version.Major);
-            Assert.AreEqual(1, version.Version.Minor);
-            Assert.AreEqual(3, version.Version.Patch);
-            Assert.AreEqual("beta4", version.Version.Tag.ToString());
-            Assert.AreEqual(BranchType.Hotfix, version.BranchType);
             Assert.AreEqual(1, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 1 since there is a commit on the branch");
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
 
@@ -96,12 +88,8 @@ public class HotfixTests : Lg2sHelperBase
                 CurrentBranch = hotfixBranch,
             });
 
-            Assert.AreEqual(0, version.Version.Major);
-            Assert.AreEqual(1, version.Version.Minor);
-            Assert.AreEqual(3, version.Version.Patch);
-            Assert.AreEqual("alpha5", version.Version.Tag.ToString());
-            Assert.AreEqual(BranchType.Hotfix, version.BranchType);
             Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is a commit on the branch");
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
 
@@ -129,12 +117,8 @@ public class HotfixTests : Lg2sHelperBase
                 CurrentBranch = hotfixBranch,
             });
 
-            Assert.AreEqual(0, version.Version.Major);
-            Assert.AreEqual(1, version.Version.Minor);
-            Assert.AreEqual(3, version.Version.Patch);
-            Assert.AreEqual("hotfix0", version.Version.Tag.ToString());
-            Assert.AreEqual(BranchType.Hotfix, version.BranchType);
             Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is a commit on the branch");
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
 
@@ -167,13 +151,8 @@ public class HotfixTests : Lg2sHelperBase
                 Repository = repo,
                 CurrentBranch = hotfixBranch,
             });
-
-            Assert.AreEqual(0, version.Version.Major);
-            Assert.AreEqual(1, version.Version.Minor);
-            Assert.AreEqual(3, version.Version.Patch);
-            Assert.AreEqual("alpha5", version.Version.Tag.ToString());
-            Assert.AreEqual(BranchType.Hotfix, version.BranchType);
             Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since the tag takes precedence");
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
 

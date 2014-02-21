@@ -1,0 +1,15 @@
+﻿{
+    "Version": {
+        "Suffix": "469f8519",
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 0,
+        "Tag": {
+            "name": "unstable0"
+        },
+        "PreReleasePartTwo": null
+    },
+    "BranchType": 1,
+    "BranchName": "every-feature-is-welcome",
+    "Sha": "000000000000000000000000000000000000000"
+}

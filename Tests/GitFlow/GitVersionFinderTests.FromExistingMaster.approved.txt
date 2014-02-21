@@ -1,0 +1,10 @@
+﻿{
+    "Suffix": null,
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 1,
+    "Tag": {
+        "name": null
+    },
+    "PreReleasePartTwo": null
+}

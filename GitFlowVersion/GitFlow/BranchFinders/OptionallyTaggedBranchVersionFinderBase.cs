@@ -156,10 +156,8 @@ namespace GitFlowVersion
 
             if (ancestor == null)
             {
-                throw new ErrorException(
-                    string.Format("A {0} branch is expected to branch off of '{1}'. "
-                                  + "However, branch '{1}' and '{2}' do not share a common ancestor."
-                        , branchType, baseBranchName, branch.Name));
+                var message = string.Format("A {0} branch is expected to branch off of '{1}'. However, branch '{1}' and '{2}' do not share a common ancestor.", branchType, baseBranchName, branch.Name);
+                throw new ErrorException(message);
             }
 
             var filter = new CommitFilter

@@ -45,7 +45,7 @@
                                                 };
                 }
 
-                return new GitFlowVariableProvider().GetVariables(versionAndBranch);
+                return versionAndBranch.GetVariables();
             }
         }
 

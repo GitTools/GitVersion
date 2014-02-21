@@ -2,6 +2,7 @@ using FluentDate;
 using FluentDateTimeOffset;
 using GitFlowVersion;
 using NUnit.Framework;
+using ObjectApproval;
 
 [TestFixture]
 public class MasterTests
@@ -57,11 +58,8 @@ public class MasterTests
                 }
             }, hotfixMergeCommit);
 
-        Assert.AreEqual(0, version.Version.Major);
-        Assert.AreEqual(1, version.Version.Minor);
         Assert.AreEqual(5, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
-        Assert.AreEqual(BranchType.Master, version.BranchType);
-        Assert.Null(version.Version.Tag.ToString());
+        ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
     }
 
     [Test]
@@ -91,11 +89,8 @@ public class MasterTests
                     }
                 }
             }, commit);
-        Assert.AreEqual(0, version.Version.Major);
-        Assert.AreEqual(2, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
-        Assert.AreEqual(BranchType.Master, version.BranchType);
-        Assert.Null(version.Version.Tag.ToString());
+        ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
     }
 
     [Test]
@@ -126,11 +121,8 @@ public class MasterTests
                     }
                 }
             }, commit);
-        Assert.AreEqual(0, version.Version.Major);
-        Assert.AreEqual(1, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
-        Assert.AreEqual("", version.Version.Tag.ToString());
-        Assert.AreEqual(BranchType.Master, version.BranchType);
+        ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
     }
 
 
@@ -154,11 +146,8 @@ public class MasterTests
                     },
                 },
             }, commit);
-        Assert.AreEqual(0, version.Version.Major);
-        Assert.AreEqual(2, version.Version.Minor);
         Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to 0");
-        Assert.AreEqual(BranchType.Master, version.BranchType);
-        Assert.Null(version.Version.Tag.ToString());
+        ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
     }
 
 }

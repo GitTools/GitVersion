@@ -2,7 +2,7 @@
 using LibGit2Sharp;
 using NUnit.Framework;
 using System.IO;
-using Tests.Helpers;
+using ObjectApproval;
 
 [TestFixture]
 public class GitVersionFinderTests : Lg2sHelperBase
@@ -28,10 +28,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
             Assert.AreEqual(master.Tip.Sha, versionAndBranch.Sha);
 
             var version = versionAndBranch.Version;
-            Assert.AreEqual(1, version.Major);
-            Assert.AreEqual(0, version.Minor);
-            Assert.AreEqual(1, version.Patch);
-            Assert.Null(version.Tag.ToString());
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
 
@@ -56,10 +53,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
             Assert.AreEqual(develop.Tip.Sha, versionAndBranch.Sha);
 
             var version = versionAndBranch.Version;
-            Assert.AreEqual(1, version.Major);
-            Assert.AreEqual(1, version.Minor);
-            Assert.AreEqual(0, version.Patch);
-            Assert.AreEqual("unstable3", version.Tag.ToString());
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
 
@@ -94,10 +88,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
             Assert.AreEqual(feature.Tip.Sha, versionAndBranch.Sha);
 
             var version = versionAndBranch.Version;
-            Assert.AreEqual(1, version.Major);
-            Assert.AreEqual(1, version.Minor);
-            Assert.AreEqual(0, version.Patch);
-            Assert.AreEqual("unstable0", version.Tag.ToString());
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
 
@@ -137,10 +128,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
             Assert.AreEqual(hotfix.Tip.Sha, versionAndBranch.Sha);
 
             var version = versionAndBranch.Version;
-            Assert.AreEqual(1, version.Major);
-            Assert.AreEqual(0, version.Minor);
-            Assert.AreEqual(2, version.Patch);
-            Assert.AreEqual("Beta1", version.Tag.ToString());
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
 
@@ -175,15 +163,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             });
 
-            Assert.AreEqual(branchName, versionAndBranch.BranchName);
-            Assert.AreEqual(BranchType.Release, versionAndBranch.BranchType);
-            Assert.AreEqual(release.Tip.Sha, versionAndBranch.Sha);
-
-            var version = versionAndBranch.Version;
-            Assert.AreEqual(2, version.Major);
-            Assert.AreEqual(0, version.Minor);
-            Assert.AreEqual(0, version.Patch);
-            Assert.AreEqual("Beta1", version.Tag.ToString());
+            ObjectApprover.VerifyWithJson(versionAndBranch, Scrubbers.GuidScrubber);
         }
     }
 
@@ -323,16 +303,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
                 CurrentBranch = repo.Head,
             });
 
-            Assert.AreEqual(branchName, versionAndBranch.BranchName);
-            Assert.AreEqual(BranchType.Feature, versionAndBranch.BranchType);
-            Assert.AreEqual(repo.Head.Tip.Sha, versionAndBranch.Sha);
-
-            var version = versionAndBranch.Version;
-            Assert.AreEqual(1, version.Major);
-            Assert.AreEqual(1, version.Minor);
-            Assert.AreEqual(0, version.Patch);
-            Assert.AreEqual("unstable0", version.Tag.ToString());
-            Assert.AreEqual(repo.Branches["develop"].Tip.Prefix(), version.Suffix);
+            ObjectApprover.VerifyWithJson(versionAndBranch, Scrubbers.GuidScrubber);
         }
     }
 

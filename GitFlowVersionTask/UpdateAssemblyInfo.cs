@@ -77,7 +77,7 @@
                 return true;
             }
 
-            var applicableBuildServers = GetApplicableBuildServers(gitDirectory).ToList();
+            var applicableBuildServers = GetApplicableBuildServers().ToList();
 
             foreach (var buildServer in applicableBuildServers)
             {
@@ -86,14 +86,14 @@
             }
             var variables = VersionCache.GetVersion(gitDirectory);
 
-            WriteIntegrationParameters(variables, gitDirectory, applicableBuildServers);
+            WriteIntegrationParameters(variables,  applicableBuildServers);
 
             CreateTempAssemblyInfo(variables);
 
             return true;
         }
 
-        public void WriteIntegrationParameters(Dictionary<string, string> versionAndBranch, string gitDirectory, List<IBuildServer> applicableBuildServers)
+        public void WriteIntegrationParameters(Dictionary<string, string> versionAndBranch, List<IBuildServer> applicableBuildServers)
         {
             foreach (var buildServer in applicableBuildServers)
             {
@@ -106,7 +106,7 @@
                 }
             }
         }
-        public virtual IEnumerable<IBuildServer> GetApplicableBuildServers(string gitDirectory)
+        public virtual IEnumerable<IBuildServer> GetApplicableBuildServers()
         {
             foreach (var buildServer in BuildServerList.BuildServers)
             {

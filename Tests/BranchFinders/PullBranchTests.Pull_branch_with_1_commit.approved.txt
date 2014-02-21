@@ -1,0 +1,15 @@
+﻿{
+    "Version": {
+        "Suffix": "1735",
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 0,
+        "Tag": {
+            "name": "unstable0"
+        },
+        "PreReleasePartTwo": null
+    },
+    "BranchType": 0,
+    "BranchName": "pull/1735/merge",
+    "Sha": "000000000000000000000000000000000000000"
+}

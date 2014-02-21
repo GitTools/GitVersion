@@ -4,7 +4,6 @@ using GitFlowVersion;
 using GitFlowVersion.GitFlowVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
-using Tests.Helpers;
 
 [TestFixture]
 public class GitHelperTests : Lg2sHelperBase

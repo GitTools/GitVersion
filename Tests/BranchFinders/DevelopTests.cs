@@ -2,6 +2,7 @@ using FluentDate;
 using FluentDateTimeOffset;
 using GitFlowVersion;
 using NUnit.Framework;
+using ObjectApproval;
 
 [TestFixture]
 public class DevelopTests
@@ -43,11 +44,8 @@ public class DevelopTests
             },
             CurrentBranch = mockBranch
         });
-        Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor, "Minor should be master.Minor+1");
-        Assert.AreEqual(0, version.Version.Patch);
-        Assert.AreEqual("unstable1", version.Version.Tag.ToString());
-        Assert.AreEqual(BranchType.Develop, version.BranchType);
+        ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
 
     }
 
@@ -92,11 +90,8 @@ public class DevelopTests
         };
 
         var version = finder.FindVersion(context);
-        Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(2, version.Version.Minor, "Minor should be master.Minor+1");
-        Assert.AreEqual(0, version.Version.Patch);
-        Assert.AreEqual("unstable1", version.Version.Tag.ToString());
-        Assert.AreEqual(BranchType.Develop, version.BranchType);
+        ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
     }
     [Test]
     public void Multiple_minor_versions_on_master()
@@ -164,10 +159,7 @@ public class DevelopTests
         };
 
         var version = finder.FindVersion(context);
-        Assert.AreEqual(0, version.Version.Major);
         Assert.AreEqual(4, version.Version.Minor, "Minor should be master.Minor+1");
-        Assert.AreEqual(0, version.Version.Patch);
-        Assert.AreEqual("unstable2", version.Version.Tag.ToString());
-        Assert.AreEqual(BranchType.Develop, version.BranchType);
+        ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
     }
 }

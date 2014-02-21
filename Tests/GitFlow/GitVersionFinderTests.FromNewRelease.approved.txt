@@ -1,0 +1,15 @@
+﻿{
+    "Version": {
+        "Suffix": null,
+        "Major": 2,
+        "Minor": 0,
+        "Patch": 0,
+        "Tag": {
+            "name": "Beta1"
+        },
+        "PreReleasePartTwo": null
+    },
+    "BranchType": 3,
+    "BranchName": "release/2.0.0",
+    "Sha": "000000000000000000000000000000000000000"
+}

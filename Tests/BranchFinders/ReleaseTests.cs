@@ -1,7 +1,7 @@
 using GitFlowVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
-using Tests.Helpers;
+using ObjectApproval;
 
 [TestFixture]
 public class ReleaseTests : Lg2sHelperBase
@@ -27,12 +27,9 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo,
                 CurrentBranch = releaseBranch,
             });
-            Assert.AreEqual(0, version.Version.Major);
-            Assert.AreEqual(3, version.Version.Minor);
-            Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual("alpha5", version.Version.Tag.ToString());
-            Assert.AreEqual(BranchType.Release, version.BranchType);
             Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since there is no commits");
+
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
 
@@ -55,12 +52,8 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo
             });
 
-            Assert.AreEqual(0, version.Version.Major);
-            Assert.AreEqual(3, version.Version.Minor);
-            Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual("beta0", version.Version.Tag.ToString());
-            Assert.AreEqual(BranchType.Release, version.BranchType);
             Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since there is no commits");
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
 
@@ -86,12 +79,8 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo,
                 CurrentBranch = releaseBranch,
             });
-            Assert.AreEqual(0, version.Version.Major);
-            Assert.AreEqual(5, version.Version.Minor);
-            Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual("beta0", version.Version.Tag.ToString());
-            Assert.AreEqual(BranchType.Release, version.BranchType);
             Assert.AreEqual(1, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 1 since there is 1 commit");
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
 
@@ -120,12 +109,9 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo,
                 CurrentBranch = releaseBranch,
             });
-            Assert.AreEqual(0, version.Version.Major);
-            Assert.AreEqual(5, version.Version.Minor);
-            Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual("alpha5", version.Version.Tag.ToString());
-            Assert.AreEqual(BranchType.Release, version.BranchType);
             Assert.AreEqual(1, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 1 since there is 1 commit");
+
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
 
@@ -155,12 +141,8 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo,
                 CurrentBranch = releaseBranch,
             });
-            Assert.AreEqual(0, version.Version.Major);
-            Assert.AreEqual(5, version.Version.Minor);
-            Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual("alpha5", version.Version.Tag.ToString());
-            Assert.AreEqual(BranchType.Release, version.BranchType);
             Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since the tag takes precedence");
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
 
@@ -190,12 +172,8 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo,
                 CurrentBranch = releaseBranch,
             });
-            Assert.AreEqual(0, version.Version.Major);
-            Assert.AreEqual(4, version.Version.Minor);
-            Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual("alpha5", version.Version.Tag.ToString());
-            Assert.AreEqual(BranchType.Release, version.BranchType);
             Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is 2 commits on the branch");
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
 
@@ -222,12 +200,8 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo,
                 CurrentBranch = releaseBranch,
             });
-            Assert.AreEqual(0, version.Version.Major);
-            Assert.AreEqual(4, version.Version.Minor);
-            Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual("beta0", version.Version.Tag.ToString());
-            Assert.AreEqual(BranchType.Release, version.BranchType);
             Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is 2 commits on the branch");
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
 
@@ -257,11 +231,7 @@ public class ReleaseTests : Lg2sHelperBase
                 CurrentBranch = releaseBranch,
             });
             //tag: 0.4.0-RC1 => 
-            Assert.AreEqual(0, version.Version.Major);
-            Assert.AreEqual(4, version.Version.Minor);
-            Assert.AreEqual(0, version.Version.Patch);
-            Assert.AreEqual("RC4", version.Version.Tag.ToString());
-            Assert.AreEqual(BranchType.Release, version.BranchType);
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
 

@@ -1,7 +1,4 @@
-﻿namespace Tests.Helpers
+﻿public interface IPostTestDirectoryRemover
 {
-    public interface IPostTestDirectoryRemover
-    {
-        void Register(string directoryPath);
-    }
+    void Register(string directoryPath);
 }

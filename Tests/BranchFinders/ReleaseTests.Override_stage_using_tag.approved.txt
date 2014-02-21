@@ -1,0 +1,15 @@
+﻿{
+    "Version": {
+        "Suffix": null,
+        "Major": 0,
+        "Minor": 4,
+        "Patch": 0,
+        "Tag": {
+            "name": "RC4"
+        },
+        "PreReleasePartTwo": 1
+    },
+    "BranchType": 3,
+    "BranchName": "release-0.4.0",
+    "Sha": "000000000000000000000000000000000000000"
+}

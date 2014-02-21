@@ -75,6 +75,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="ObjectApproval, Version=0.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ObjectApproval.0.1.3\Lib\NET40\ObjectApproval.dll</HintPath>
+    </Reference>
     <Reference Include="Roslyn.Compilers">
       <HintPath>..\packages\Roslyn.Compilers.Common.1.2.20906.2\lib\net45\Roslyn.Compilers.dll</HintPath>
     </Reference>
@@ -104,6 +108,7 @@
     <Compile Include="Helpers\FindersHelper.cs" />
     <Compile Include="Helpers\IPostTestDirectoryRemover.cs" />
     <Compile Include="Helpers\LibGit2SharpExtensions.cs" />
+    <Compile Include="Helpers\Scrubbers.cs" />
     <Compile Include="Helpers\SelfCleaningDirectory.cs" />
     <Compile Include="JsonVersionBuilderTests.cs" />
     <Compile Include="GitDirFinderTests.cs" />

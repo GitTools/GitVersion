@@ -1,0 +1,15 @@
+﻿{
+    "Version": {
+        "Suffix": "f44e5fa9",
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 0,
+        "Tag": {
+            "name": "unstable0"
+        },
+        "PreReleasePartTwo": null
+    },
+    "BranchType": 1,
+    "BranchName": "featureWithOneCommit",
+    "Sha": "000000000000000000000000000000000000000"
+}
