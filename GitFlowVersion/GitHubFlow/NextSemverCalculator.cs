@@ -2,21 +2,21 @@
 {
     public class NextSemverCalculator
     {
-        private readonly NextVersionTxtFileFinder _nextVersionTxtFileFinder;
-        private readonly LastTaggedReleaseFinder _lastTaggedReleaseFinder;
+        NextVersionTxtFileFinder nextVersionTxtFileFinder;
+        LastTaggedReleaseFinder lastTaggedReleaseFinder;
 
         public NextSemverCalculator(
             NextVersionTxtFileFinder nextVersionTxtFileFinder,
             LastTaggedReleaseFinder lastTaggedReleaseFinder)
         {
-            _nextVersionTxtFileFinder = nextVersionTxtFileFinder;
-            _lastTaggedReleaseFinder = lastTaggedReleaseFinder;
+            this.nextVersionTxtFileFinder = nextVersionTxtFileFinder;
+            this.lastTaggedReleaseFinder = lastTaggedReleaseFinder;
         }
 
         public SemanticVersion NextVersion()
         {
-            var lastRelease = _lastTaggedReleaseFinder.GetVersion().SemVer;
-            var fileVersion = _nextVersionTxtFileFinder.GetNextVersion();
+            var lastRelease = lastTaggedReleaseFinder.GetVersion().SemVer;
+            var fileVersion = nextVersionTxtFileFinder.GetNextVersion();
             if (fileVersion <= lastRelease)
             {
                 return new SemanticVersion

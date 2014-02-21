@@ -5,7 +5,7 @@
 
     public class NextVersionTxtFileFinder
     {
-        private readonly string repositoryDirectory;
+        string repositoryDirectory;
 
         public NextVersionTxtFileFinder(string repositoryDirectory)
         {

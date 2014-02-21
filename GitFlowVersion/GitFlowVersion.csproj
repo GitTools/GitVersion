@@ -11,7 +11,7 @@
     <AssemblyName>GitFlowVersion</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <FodyPath>..\packages\Fody.1.19.1.0</FodyPath>
+    <FodyPath>..\packages\Fody.1.20.0.0</FodyPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,6 +47,10 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="Visualize">
+      <HintPath>..\packages\Visualize.Fody.0.2.3.0\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\Visualize.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArgumentParser.cs" />
@@ -109,6 +113,9 @@
     <Compile Include="ErrorException.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Fody.targets">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="GemAssets\gitflowversion" />
     <None Include="GemAssets\gitflowversion.gemspec" />
     <None Include="NugetRefAssets\GitFlowVersion.nuspec">

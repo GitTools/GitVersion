@@ -6,29 +6,29 @@ namespace GitFlowVersion
 
     public class BuildNumberCalculator
     {
-        private readonly NextSemverCalculator _nextSemverCalculator;
-        private readonly LastTaggedReleaseFinder _lastTaggedReleaseFinder;
-        private readonly IRepository _gitRepo;
+        NextSemverCalculator nextSemverCalculator;
+        LastTaggedReleaseFinder lastTaggedReleaseFinder;
+        IRepository gitRepo;
 
         public BuildNumberCalculator(
             NextSemverCalculator nextSemverCalculator,
             LastTaggedReleaseFinder lastTaggedReleaseFinder,
             IRepository gitRepo)
         {
-            _nextSemverCalculator = nextSemverCalculator;
-            _lastTaggedReleaseFinder = lastTaggedReleaseFinder;
-            _gitRepo = gitRepo;
+            this.nextSemverCalculator = nextSemverCalculator;
+            this.lastTaggedReleaseFinder = lastTaggedReleaseFinder;
+            this.gitRepo = gitRepo;
         }
 
         public VersionAndBranch GetBuildNumber(GitVersionContext context)
         {
-            var commit = _lastTaggedReleaseFinder.GetVersion().Commit;
-            var commitsSinceLastRelease = NumberOfCommitsOnBranchSinceCommit(_gitRepo.Head, commit);
-            var semanticVersion = _nextSemverCalculator.NextVersion();
+            var commit = lastTaggedReleaseFinder.GetVersion().Commit;
+            var commitsSinceLastRelease = NumberOfCommitsOnBranchSinceCommit(gitRepo.Head, commit);
+            var semanticVersion = nextSemverCalculator.NextVersion();
             semanticVersion.PreReleasePartTwo = commitsSinceLastRelease;
             if (context.CurrentBranch.IsPullRequest())
             {
-                EnsurePullBranchShareACommonAncestorWithMaster(_gitRepo, _gitRepo.Head);
+                EnsurePullBranchShareACommonAncestorWithMaster(gitRepo, gitRepo.Head);
                 var extractIssueNumber = ExtractIssueNumber(context);
                 semanticVersion.Tag = "unstable" + extractIssueNumber;
                 semanticVersion.Suffix = extractIssueNumber;

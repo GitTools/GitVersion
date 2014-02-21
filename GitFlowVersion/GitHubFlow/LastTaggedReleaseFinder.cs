@@ -7,18 +7,18 @@ namespace GitFlowVersion
 
     public class LastTaggedReleaseFinder
     {
-        private readonly string _workingDirectory;
-        private readonly Lazy<VersionTaggedCommit> _lastTaggedRelease;
+        string workingDirectory;
+        Lazy<VersionTaggedCommit> lastTaggedRelease;
 
         public LastTaggedReleaseFinder(IRepository gitRepo, string workingDirectory)
         {
-            _workingDirectory = workingDirectory;
-            _lastTaggedRelease = new Lazy<VersionTaggedCommit>(() => GetVersion(gitRepo));
+            this.workingDirectory = workingDirectory;
+            lastTaggedRelease = new Lazy<VersionTaggedCommit>(() => GetVersion(gitRepo));
         }
 
         public VersionTaggedCommit GetVersion()
         {
-            return _lastTaggedRelease.Value;
+            return lastTaggedRelease.Value;
         }
 
         private VersionTaggedCommit GetVersion(IRepository gitRepo)
@@ -43,7 +43,7 @@ namespace GitFlowVersion
                 return tags.Last(a => a.Commit.Sha == lastTaggedCommit.Sha);
 
             // Create a next version txt as 0.1.0
-            var filePath = Path.Combine(_workingDirectory, "NextVersion.txt");
+            var filePath = Path.Combine(workingDirectory, "NextVersion.txt");
             if (!File.Exists(filePath))
                 File.WriteAllText(filePath, "0.1.0");
 

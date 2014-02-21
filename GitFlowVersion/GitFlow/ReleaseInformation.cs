@@ -8,7 +8,7 @@ namespace GitFlowVersion
             Stability = stability;
         }
 
-        public readonly Stability? Stability;
-        public readonly int? ReleaseNumber;
+        public Stability? Stability;
+        public int? ReleaseNumber;
     }
 }

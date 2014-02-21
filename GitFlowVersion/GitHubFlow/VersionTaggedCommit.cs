@@ -4,8 +4,8 @@
 
     public class VersionTaggedCommit
     {
-        public readonly Commit Commit;
-        public readonly SemanticVersion SemVer;
+        public Commit Commit;
+        public SemanticVersion SemVer;
 
         public VersionTaggedCommit(Commit commit, SemanticVersion semVer)
         {
