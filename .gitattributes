@@ -21,3 +21,5 @@
 *.snk binary
 *.pdb binary
 *.svg binary
+
+*.approved.* binary
