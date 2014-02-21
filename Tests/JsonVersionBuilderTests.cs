@@ -22,7 +22,7 @@ public class JsonVersionBuilderTests
                                                            Suffix = "a682956d",
                                                        }
                               };
-        var dictionary = semanticVersion.GetVariables();
+        var dictionary = semanticVersion.ToKeyValue();
         var json = JsonOutputFormatter.ToJson(dictionary);
         Approvals.Verify(json);
     }

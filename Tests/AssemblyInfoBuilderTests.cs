@@ -31,7 +31,7 @@ public class AssemblyInfoBuilderTests
         };
         var assemblyInfoBuilder = new AssemblyInfoBuilder
             {
-                Variables = semanticVersion.GetVariables(),
+                VersionAndBranch = semanticVersion,
                 AssemblyName = "MyAssembly"
             };
         var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText();

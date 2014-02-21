@@ -5,28 +5,21 @@
 
     public static class GitFlowVariableProvider
     {
-        public static string SemVer = "SemVer";
-        public static string LongVersion = "LongVersion";
-        public static string NugetVersion = "NugetVersion";
-        public static string Major = "Major";
-        public static string Minor = "Minor";
-        public static string Patch = "Patch";
-
-        public static Dictionary<string, string> GetVariables(this VersionAndBranch versionAndBranch)
+        public static Dictionary<string, string> ToKeyValue(this VersionAndBranch versionAndBranch)
         {
             var variables = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
             {
-                {Major, versionAndBranch.Version.Major.ToString()},
-                {Minor, versionAndBranch.Version.Minor.ToString()},
-                {Patch, versionAndBranch.Version.Patch.ToString()},
+                {"Major", versionAndBranch.Version.Major.ToString()},
+                {"Minor", versionAndBranch.Version.Minor.ToString()},
+                {"Patch", versionAndBranch.Version.Patch.ToString()},
                 {"Suffix", versionAndBranch.Version.Suffix},
-                {LongVersion, versionAndBranch.ToLongString()},
-                {NugetVersion, versionAndBranch.GenerateNugetVersion()},
+                {"LongVersion", versionAndBranch.ToLongString()},
+                {"NugetVersion", versionAndBranch.GenerateNugetVersion()},
                 {"ShortVersion", versionAndBranch.ToShortString()},
                 {"BranchName", versionAndBranch.BranchName},
                 {"BranchType", versionAndBranch.BranchType == null ? null : versionAndBranch.BranchType.ToString()},
                 {"Sha", versionAndBranch.Sha},
-                {SemVer, versionAndBranch.GenerateSemVer()}
+                {"SemVer", versionAndBranch.GenerateSemVer()}
             };
 
             var releaseInformation = ReleaseInformationCalculator.Calculate(versionAndBranch.BranchType, versionAndBranch.Version.Tag);

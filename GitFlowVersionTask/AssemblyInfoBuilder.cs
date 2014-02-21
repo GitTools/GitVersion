@@ -1,12 +1,11 @@
 ﻿namespace GitFlowVersionTask
 {
-    using System.Collections.Generic;
     using GitFlowVersion;
 
     public class AssemblyInfoBuilder
     {
 
-        public Dictionary<string, string> Variables;
+        public VersionAndBranch VersionAndBranch;
         public bool SignAssembly;
         public string AssemblyName;
 
@@ -47,7 +46,7 @@ namespace {4}
     }}
 }}
 
-", GetAssemblyVersion(), GetAssemblyFileVersion(), Variables[GitFlowVariableProvider.LongVersion], Variables[GitFlowVariableProvider.NugetVersion], AssemblyName, Variables[GitFlowVariableProvider.SemVer]);
+", GetAssemblyVersion(), GetAssemblyFileVersion(), VersionAndBranch.ToLongString(), VersionAndBranch.GenerateNugetVersion(), AssemblyName, VersionAndBranch.GenerateSemVer());
 
             return assemblyInfo;
         }
@@ -57,15 +56,15 @@ namespace {4}
             if (SignAssembly)
             {
                 // for strong named we don't want to include the patch to avoid binding redirect issues
-                return string.Format("{0}.{1}.0", Variables[GitFlowVariableProvider.Major], Variables[GitFlowVariableProvider.Minor]);
+                return string.Format("{0}.{1}.0", VersionAndBranch.Version.Major, VersionAndBranch.Version.Minor);
             }
             // for non strong named we want to include the patch
-            return string.Format("{0}.{1}.{2}", Variables[GitFlowVariableProvider.Major], Variables[GitFlowVariableProvider.Minor], Variables[GitFlowVariableProvider.Patch]);
+            return string.Format("{0}.{1}.{2}", VersionAndBranch.Version.Major, VersionAndBranch.Version.Minor, VersionAndBranch.Version.Patch);
         }
 
         string GetAssemblyFileVersion()
         {
-            return string.Format("{0}.{1}.{2}", Variables[GitFlowVariableProvider.Major], Variables[GitFlowVariableProvider.Minor], Variables[GitFlowVariableProvider.Patch]);
+            return string.Format("{0}.{1}.{2}", VersionAndBranch.Version.Major, VersionAndBranch.Version.Minor, VersionAndBranch.Version.Patch);
         }
     }
 }

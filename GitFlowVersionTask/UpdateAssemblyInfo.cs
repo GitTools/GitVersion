@@ -84,21 +84,21 @@
                 logger.LogInfo(string.Format("Executing PerformPreProcessingSteps for '{0}'.", buildServer.GetType().Name));
                 buildServer.PerformPreProcessingSteps(gitDirectory);
             }
-            var variables = VersionCache.GetVersion(gitDirectory);
+            var versionAndBranch = VersionCache.GetVersion(gitDirectory);
 
-            WriteIntegrationParameters(variables,  applicableBuildServers);
+            WriteIntegrationParameters(versionAndBranch,  applicableBuildServers);
 
-            CreateTempAssemblyInfo(variables);
+            CreateTempAssemblyInfo(versionAndBranch);
 
             return true;
         }
 
-        public void WriteIntegrationParameters(Dictionary<string, string> versionAndBranch, List<IBuildServer> applicableBuildServers)
+        public void WriteIntegrationParameters(VersionAndBranch versionAndBranch, List<IBuildServer> applicableBuildServers)
         {
             foreach (var buildServer in applicableBuildServers)
             {
                 logger.LogInfo(string.Format("Executing GenerateSetVersionMessage for '{0}'.", buildServer.GetType().Name));
-                logger.LogInfo(buildServer.GenerateSetVersionMessage(versionAndBranch[GitFlowVariableProvider.SemVer]));
+                logger.LogInfo(buildServer.GenerateSetVersionMessage(versionAndBranch.GenerateSemVer()));
                 logger.LogInfo(string.Format("Executing GenerateBuildLogOutput for '{0}'.", buildServer.GetType().Name));
                 foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(versionAndBranch, buildServer))
                 {
@@ -119,11 +119,11 @@
         }
   
 
-        void CreateTempAssemblyInfo(Dictionary<string, string> variables)
+        void CreateTempAssemblyInfo(VersionAndBranch versionAndBranch)
         {
             var assemblyInfoBuilder = new AssemblyInfoBuilder
                                       {
-                                          Variables = variables,
+                                          VersionAndBranch = versionAndBranch,
                                           SignAssembly = SignAssembly,
                                           AssemblyName = AssemblyName
                                       };

@@ -7,7 +7,7 @@
     {
         static Dictionary<string, CachedVersion> versionCacheVersions = new Dictionary<string, CachedVersion>();
 
-        public static Dictionary<string, string> GetVersion(string gitDirectory)
+        public static VersionAndBranch GetVersion(string gitDirectory)
         {
             using (var repo = RepositoryLoader.GetRepo(gitDirectory))
             {
@@ -45,7 +45,7 @@
                                                 };
                 }
 
-                return versionAndBranch.GetVariables();
+                return versionAndBranch;
             }
         }
 

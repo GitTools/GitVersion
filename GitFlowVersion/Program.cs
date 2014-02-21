@@ -34,15 +34,21 @@ namespace GitFlowVersion
                     buildServer.PerformPreProcessingSteps(gitDirectory);
                 }
 
-                var variables = VersionCache.GetVersion(gitDirectory);
+                var versionAndBranch = VersionCache.GetVersion(gitDirectory);
 
+                var versionAsKeyValue = versionAndBranch.ToKeyValue();
                 switch (arguments.VersionPart)
                 {
-                    case null: 
-                        Console.WriteLine(JsonOutputFormatter.ToJson(variables)); 
+                    case null:
+                        Console.WriteLine(JsonOutputFormatter.ToJson(versionAsKeyValue)); 
                         break;
                     default:
-                        Console.WriteLine(variables[arguments.VersionPart]);
+                        string part;
+                        if (!versionAsKeyValue.TryGetValue(arguments.VersionPart, out part))
+                        {
+                            throw new ErrorException(string.Format("Could not extract '{0}' from the available parts.", arguments.VersionPart));
+                        }
+                        Console.WriteLine(part);
                         break;
                 }
                     
