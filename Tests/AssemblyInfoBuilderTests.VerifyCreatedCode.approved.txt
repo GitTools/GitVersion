@@ -9,6 +9,7 @@ using System.Reflection;
 
 namespace MyAssembly
 {
+    [System.Runtime.CompilerServices.CompilerGenerated]
     class NugetVersionAttribute : Attribute
     {
         public NugetVersionAttribute(string version)
@@ -21,6 +22,7 @@ namespace MyAssembly
 }
 namespace MyAssembly
 {
+    [System.Runtime.CompilerServices.CompilerGenerated]
     static class GitFlowVersionInformation
     {
         public static string AssemblyVersion = "1.2.3";
