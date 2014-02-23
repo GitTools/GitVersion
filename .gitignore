@@ -10,7 +10,7 @@
 *.user
 *.sln.docstates
 *.pidb
-
+*.received.txt
 # Build results
 [Dd]ebug/
 [Rr]elease/
