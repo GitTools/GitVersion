@@ -247,9 +247,9 @@ public class IntegrationTests
     [Test,Explicit]
     public void Foo()
     {
-        using (var repository = new Repository(@"C:\Code\Particular\ServicePulse"))
+        using (var repository = new Repository(@"C:\Code\ServiceControl"))
         {
-            var branch = repository.Branches.First(x => x.Name == "feature-newUI");
+            var branch = repository.Branches.First(x => x.Name == "develop");
 
             var finder = new GitVersionFinder();
             var version = finder.FindVersion(new GitVersionContext
@@ -262,7 +262,7 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Patch);
             Debug.WriteLine(version.Version.Tag);
             Debug.WriteLine(version.BranchType);
-            Debug.WriteLine(version.Version.Suffix);
+            Debug.WriteLine(version.GenerateSemVer());
         }
     }
     [Test, Explicit]
