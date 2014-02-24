@@ -32,6 +32,8 @@
 
         [Output]
         public string BranchName { get; set; }
+        [Output]
+        public string MajorMinorPatch { get; set; }
 
         [Output]
         public string ShortVersion { get; set; }
@@ -70,7 +72,7 @@
                 VersionAndBranch versionAndBranch;
                 if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch))
                 {
-
+                    MajorMinorPatch = string.Format("{0}.{1}.{2}", versionAndBranch.Version.Major, versionAndBranch.Version.Minor, versionAndBranch.Version.Patch);
                     Major = versionAndBranch.Version.Major;
                     Minor = versionAndBranch.Version.Minor;
                     Patch = versionAndBranch.Version.Patch;

@@ -262,7 +262,7 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Patch);
             Debug.WriteLine(version.Version.Tag);
             Debug.WriteLine(version.BranchType);
-            Debug.WriteLine(version.GenerateSemVer());
+            Debug.WriteLine(version.ToShortString());
         }
     }
     [Test, Explicit]

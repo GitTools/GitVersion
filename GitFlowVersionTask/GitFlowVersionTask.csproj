@@ -51,6 +51,7 @@
     </Compile>
     <Compile Include="AssemblyInfoBuilder.cs" />
     <Compile Include="BuildLogger.cs" />
+    <Compile Include="WriteVersionInfoToBuildLog.cs" />
     <Compile Include="GetVersion.cs" />
     <Compile Include="InvalidFileChecker.cs" />
     <Compile Include="TaskLogger.cs" />

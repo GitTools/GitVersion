@@ -19,13 +19,18 @@
                 {"BranchName", versionAndBranch.BranchName},
                 {"BranchType", versionAndBranch.BranchType == null ? null : versionAndBranch.BranchType.ToString()},
                 {"Sha", versionAndBranch.Sha},
-                {"SemVer", versionAndBranch.GenerateSemVer()}
+                {"MajorMinorPatch", string.Format("{0}.{1}.{2}", versionAndBranch.Version.Major, versionAndBranch.Version.Minor, versionAndBranch.Version.Patch)},
+                {"SemVer", versionAndBranch.GenerateSemVer()},
+                //TODO: legacy. people should move over to semver 
+                {"Version", versionAndBranch.GenerateSemVer()}
             };
 
             var releaseInformation = ReleaseInformationCalculator.Calculate(versionAndBranch.BranchType, versionAndBranch.Version.Tag);
             if (releaseInformation.ReleaseNumber.HasValue)
             {
                 variables.Add("PreReleasePartOne", releaseInformation.ReleaseNumber.ToString());
+                //TODO: legacy. people should move over to PreReleasePartOne 
+                variables.Add("PreReleaseNumber", releaseInformation.ReleaseNumber.ToString());
             }
             if (versionAndBranch.Version.PreReleasePartTwo != null)
             {

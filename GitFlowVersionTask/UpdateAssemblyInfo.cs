@@ -1,7 +1,6 @@
 ﻿namespace GitFlowVersionTask
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using GitFlowVersion;
     using Microsoft.Build.Framework;
@@ -71,26 +70,10 @@
                 return;
             }
 
-            WriteIntegrationParameters(versionAndBranch, BuildServerList.GetApplicableBuildServers());
-
             CreateTempAssemblyInfo(versionAndBranch);
 
         }
 
-        public void WriteIntegrationParameters(VersionAndBranch versionAndBranch, IEnumerable<IBuildServer> applicableBuildServers)
-        {
-            foreach (var buildServer in applicableBuildServers)
-            {
-                logger.LogInfo(string.Format("Executing GenerateSetVersionMessage for '{0}'.", buildServer.GetType().Name));
-                logger.LogInfo(buildServer.GenerateSetVersionMessage(versionAndBranch.GenerateSemVer()));
-                logger.LogInfo(string.Format("Executing GenerateBuildLogOutput for '{0}'.", buildServer.GetType().Name));
-                foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(versionAndBranch, buildServer))
-                {
-                    logger.LogInfo(buildParameter);
-                }
-            }
-        }
-  
 
         void CreateTempAssemblyInfo(VersionAndBranch versionAndBranch)
         {
