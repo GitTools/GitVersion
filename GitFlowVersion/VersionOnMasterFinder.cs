@@ -19,7 +19,8 @@ namespace GitFlowVersion
                         {
                             Major = major,
                             Minor = minor,
-                            Timestamp = commit.When()
+                            Timestamp = commit.When(),
+                            CommitSha = commit.Sha,
                         };
                     }
                 }
@@ -34,7 +35,8 @@ namespace GitFlowVersion
                         {
                             Major = major,
                             Minor = minor,
-                            Timestamp = commit.When()
+                            Timestamp = commit.When(),
+                            CommitSha = commit.Sha,
                         };
                     }
                 }
@@ -44,7 +46,8 @@ namespace GitFlowVersion
             {
                 Major = 0,
                 Minor = 1,
-                Timestamp = DateTimeOffset.MinValue
+                Timestamp = DateTimeOffset.MinValue,
+                CommitSha = null,
             };
         }
 

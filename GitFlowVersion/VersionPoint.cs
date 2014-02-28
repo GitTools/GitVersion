@@ -7,5 +7,6 @@ namespace GitFlowVersion
         public int Major;
         public int Minor;
         public DateTimeOffset Timestamp;
+        public string CommitSha;
     }
 }
