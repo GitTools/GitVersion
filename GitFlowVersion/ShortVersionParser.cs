@@ -31,7 +31,7 @@ namespace GitFlowVersion
             minor = 0;
             patch = 0;
             var strings = versionString.Split('.');
-            if (strings.Length < 2)
+            if (strings.Length < 2 || strings.Length > 3)
             {
                 return false;
             }
@@ -45,7 +45,7 @@ namespace GitFlowVersion
                 return false;
             }
 
-            if (strings.Length >= 3)
+            if (strings.Length == 3)
             {
                 if (!int.TryParse(strings[2], out patch))
                 {
