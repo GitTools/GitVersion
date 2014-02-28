@@ -16,7 +16,10 @@ namespace GitFlowVersion
         {
             int patch;
 
-            TryParse(versionString, out major, out minor, out patch);
+            if (!TryParse(versionString, out major, out minor, out patch))
+            {
+                return false;
+            }
 
             // Note: during scanning of master we only want the last major / minor, not the patch, so patch must be zero
             return patch == 0;
