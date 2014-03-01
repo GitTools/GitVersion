@@ -1,14 +1,14 @@
-![Icon](https://raw.github.com/Particular/GitFlowVersion/master/Icons/package_icon.png)
+![Icon](https://raw.github.com/Particular/GitVersion/master/Icons/package_icon.png)
 
-Use convention to derive a SemVer product version from a GitFlow based repository
+Use convention to derive a SemVer product version from a GitFlow/GitHubFlow based repository. To detect that branching model that is in use GitVersion will look for a develop branch. If a develop branch is found GitFlow based version will be appiled
 
 ## Usage:
 
-GitFlowVersion can be used in several ways
+GitVersion can be used in several ways
 
 ### 1. An MSBuild Task
 
-This will wire GitFlowVersion into the MSBuild pipeline of a project and automatically stamp that assembly with the appropriate SemVer information
+This will wire GitVersion into the MSBuild pipeline of a project and automatically stamp that assembly with the appropriate SemVer information
 
 Available on [Nuget](https://www.nuget.org) under [GitFlowVersionTask](https://www.nuget.org/packages/GitFlowVersionTask/)
 
@@ -16,7 +16,7 @@ Available on [Nuget](https://www.nuget.org) under [GitFlowVersionTask](https://w
 
 ### 2. A nuget reference package
 
-This can be used if you want to reference GitFlowVersion and reuse is from .net.
+This can be used if you want to reference GitVersion and reuse is from .net.
 
 Available on [Nuget](https://www.nuget.org) under [GitFlowVersion](https://www.nuget.org/packages/GitFlowVersion/)
 
@@ -71,7 +71,7 @@ This also have the added benefit of forcing us to follow our branching strategy 
 
 ### Assumptions:
 
-* Using the [GitFlow branching model](http://nvie.com/git-model/) which means that we always have a master and a develop branch.
+* Using the [GitFlow branching model](http://nvie.com/git-model/) which means that we always have a master and a develop branch or the [GitHubFlow branching model](http://scottchacon.com/2011/08/31/github-flow.html) which only has a master branch.
 * Following [Semantic Versioning](http://semver.org/)
 * Planned releases (bumps in major or minor) are done on release branches prefixed with release-. Eg: release-4.1 (or release-4.1.0)
 * Hotfixes are prefixed with hotfix- Eg. hotfix-4.0.4
