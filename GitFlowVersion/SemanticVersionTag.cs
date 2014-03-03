@@ -8,7 +8,9 @@ namespace GitFlowVersion
 
         protected bool Equals(SemanticVersionTag other)
         {
-            return string.Equals(name, other.name);
+            if (other == null)
+                return false;
+            return string.Equals(_name, other._name);
         }
 
         public override bool Equals(object obj)
