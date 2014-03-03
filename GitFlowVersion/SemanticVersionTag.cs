@@ -10,7 +10,7 @@ namespace GitFlowVersion
         {
             if (other == null)
                 return false;
-            return string.Equals(_name, other._name);
+            return string.Equals(name, other.name);
         }
 
         public override bool Equals(object obj)
