@@ -22,12 +22,26 @@
 
         public string GenerateSetParameterMessage(string name, string value)
         {
-            return string.Format("##teamcity[setParameter name='GitFlowVersion.{0}' value='{1}']", name, value);
+            return string.Format("##teamcity[setParameter name='GitFlowVersion.{0}' value='{1}']", name, EscapeValue(value));
         }
 
         public string GenerateSetVersionMessage(string versionToUseForBuildNumber)
         {
-            return string.Format("##teamcity[buildNumber '{0}']", versionToUseForBuildNumber);
+            return string.Format("##teamcity[buildNumber '{0}']", EscapeValue(versionToUseForBuildNumber));
+        }
+
+        static string EscapeValue(string value)
+        {
+            // List of escape values from http://confluence.jetbrains.com/display/TCD8/Build+Script+Interaction+with+TeamCity
+
+            value = value.Replace("|", "||");
+            value = value.Replace("'", "|'");
+            value = value.Replace("[", "|[");
+            value = value.Replace("]", "|]");
+            value = value.Replace("\r", "|r");
+            value = value.Replace("\n", "|n");
+
+            return value;
         }
     }
 }
