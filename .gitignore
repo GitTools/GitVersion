@@ -48,6 +48,8 @@ ForSample/
 _ReSharper*
 
 !GitFlowRepo/**/*
+!GitFlowVersionRepo/**/*
+!GitVersionRepo/**/*
 
 # Others
 [Bb]in

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using GitFlowVersion;
+using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
 

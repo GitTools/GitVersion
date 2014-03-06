@@ -1,0 +1,2 @@
+result = system(File.dirname(__FILE__) + "/GitVersion.exe " + ARGV.join(' '))
+exit 1 unless result

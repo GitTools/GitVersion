@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)..\</SolutionDir>
+  </PropertyGroup>
+
+  <UsingTask
+      TaskName="GitVersionTask.UpdateAssemblyInfo"
+      AssemblyFile="$(MSBuildThisFileDirectory)..\GitVersionTask.dll" />
+  <UsingTask
+      TaskName="GitVersionTask.WriteVersionInfoToBuildLog"
+      AssemblyFile="$(MSBuildThisFileDirectory)..\GitVersionTask.dll" />
+
+    <Target Name="UpdateAssemblyInfo"
+            BeforeTargets="CoreCompile">
+      <WriteVersionInfoToBuildLog
+        SolutionDirectory="$(SolutionDir)"
+        />
+        <UpdateAssemblyInfo 
+          SolutionDirectory="$(SolutionDir)"
+          AssemblyName="$(AssemblyName)" 
+          ProjectFile="$(ProjectPath)" 
+          SignAssembly="$(SignAssembly)"
+          CompileFiles ="@(Compile)">
+          <Output 
+            TaskParameter="AssemblyInfoTempFilePath" 
+            PropertyName="AssemblyInfoTempFilePath" />
+        </UpdateAssemblyInfo>
+
+        <ItemGroup>
+            <Compile Include="$(AssemblyInfoTempFilePath)" />
+        </ItemGroup>
+    </Target>
+
+  <!--Support for ncrunch-->
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)..\GitVersionTask.dll" />
+    <None Include="$(MSBuildThisFileDirectory)..\GitVersionTask.pdb" />
+    <None Include="$(MSBuildThisFileDirectory)..\GitVersion.exe" />
+    <None Include="$(MSBuildThisFileDirectory)..\GitVersion.pdb" />
+    <None Include="$(MSBuildThisFileDirectory)..\LibGit2Sharp.dll" />
+    <None Include="$(MSBuildThisFileDirectory)..\NativeBinaries\**\*" />
+  </ItemGroup>
+
+
+</Project>
+
+

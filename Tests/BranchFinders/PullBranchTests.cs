@@ -1,4 +1,4 @@
-using GitFlowVersion;
+using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
 using ObjectApproval;

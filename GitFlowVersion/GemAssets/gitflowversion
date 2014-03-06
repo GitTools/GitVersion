@@ -1,2 +1,0 @@
-result = system(File.dirname(__FILE__) + "/GitFlowVersion.exe " + ARGV.join(' '))
-exit 1 unless result

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using GitFlowVersion;
-using GitFlowVersionTask;
+using GitVersion;
+using GitVersionTask;
 using LibGit2Sharp;
 using NUnit.Framework;
 
@@ -99,7 +99,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         };
 
         var exception = Assert.Throws<ErrorException>(task.InnerExecute);
-        Assert.AreEqual("It looks like the branch being examined is a detached Head pointing to commit '469f851'. Without a proper branch name GitFlowVersion cannot determine the build version.", exception.Message);
+        Assert.AreEqual("It looks like the branch being examined is a detached Head pointing to commit '469f851'. Without a proper branch name GitVersion cannot determine the build version.", exception.Message);
     }
 
     [SetUp]

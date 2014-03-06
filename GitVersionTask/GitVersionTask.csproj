@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GitVersionTask</RootNamespace>
+    <AssemblyName>GitVersionTask</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FodyPath>..\packages\Fody.1.20.0.0</FodyPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Build" />
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Tasks.v4.0" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="AssemblyInfoBuilder.cs" />
+    <Compile Include="BuildLogger.cs" />
+    <Compile Include="WriteVersionInfoToBuildLog.cs" />
+    <Compile Include="GetVersion.cs" />
+    <Compile Include="InvalidFileChecker.cs" />
+    <Compile Include="TaskLogger.cs" />
+    <Compile Include="TempFileTracker.cs" />
+    <Compile Include="UpdateAssemblyInfo.cs" />
+    <Compile Include="VersionAndBranchFinder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Fody.targets" />
+    <None Include="NugetAssets\GitVersionTask.targets">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NugetAssets\GitVersionTask.nuspec">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="FodyWeavers.xml">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GitVersion\GitVersion.csproj">
+      <Project>{C3578A7B-09A6-4444-9383-0DEAFA4958BD}</Project>
+      <Name>GitVersion</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="Clean">
+    <ItemGroup>
+      <FilesToDelete Include="$(SolutionDir)NuGetTaskBuild\**\*.*" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
+  </Target>
+  <UsingTask TaskName="PepitaPackage.CreatePackageTask" AssemblyFile="$(SolutionDir)Tools\Pepita\PepitaPackage.dll" />
+  <Target Name="AfterBuild" DependsOnTargets="Clean">
+    <MakeDir Directories="$(SolutionDir)NuGetTaskBuild" />
+    <CreateItem Include="$(SolutionDir)GitVersionTask\bin\$(ConfigurationName)\NativeBinaries\amd64\*.dll">
+      <Output TaskParameter="Include" ItemName="amd64" />
+    </CreateItem>
+    <Copy SourceFiles="@(amd64)" DestinationFolder="$(SolutionDir)NuGetTaskBuild\NativeBinaries\amd64" />
+    <CreateItem Include="$(SolutionDir)GitVersionTask\bin\$(ConfigurationName)\NativeBinaries\x86\*.dll">
+      <Output TaskParameter="Include" ItemName="x86" />
+    </CreateItem>
+    <Copy SourceFiles="@(x86)" DestinationFolder="$(SolutionDir)NuGetTaskBuild\NativeBinaries\x86" />
+    <Copy SourceFiles="$(OutputPath)\GitVersionTask.dll" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
+    <Copy SourceFiles="$(OutputPath)\GitVersionTask.pdb" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
+    <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
+    <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
+    <Copy SourceFiles="$(OutputPath)\LibGit2Sharp.dll" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.targets" DestinationFolder="$(SolutionDir)NuGetTaskBuild\Build" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.nuspec" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetTaskBuild" MetadataAssembly="$(OutputPath)GitVersionTask.dll" />
+  </Target>
+  <PropertyGroup>
+    <PostBuildEvent>
+if not exist "$(TargetDir)NativeBinaries" md "$(TargetDir)NativeBinaries"
+if not exist "$(TargetDir)NativeBinaries\x86" md "$(TargetDir)NativeBinaries\x86"
+xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.16.0.0\lib\net35\NativeBinaries\x86\*.*" "$(TargetDir)NativeBinaries\x86"
+if not exist "$(TargetDir)NativeBinaries\amd64" md "$(TargetDir)NativeBinaries\amd64"
+xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.16.0.0\lib\net35\NativeBinaries\amd64\*.*" "$(TargetDir)NativeBinaries\amd64"</PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="Fody.targets" />
+</Project>

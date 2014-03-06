@@ -158,13 +158,13 @@
     <Content Include="JsonVersionBuilderTests.Json.approved.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GitFlowVersionTask\GitFlowVersionTask.csproj">
+    <ProjectReference Include="..\GitVersionTask\GitVersionTask.csproj">
       <Project>{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}</Project>
-      <Name>GitFlowVersionTask</Name>
+      <Name>GitVersionTask</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GitFlowVersion\GitFlowVersion.csproj">
+    <ProjectReference Include="..\GitVersion\GitVersion.csproj">
       <Project>{C3578A7B-09A6-4444-9383-0DEAFA4958BD}</Project>
-      <Name>GitFlowVersion</Name>
+      <Name>GitVersion</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

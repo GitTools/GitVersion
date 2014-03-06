@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C3578A7B-09A6-4444-9383-0DEAFA4958BD}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>GitVersion</RootNamespace>
+    <AssemblyName>GitVersion</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FodyPath>..\packages\Fody.1.20.0.0</FodyPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <DocumentationFile>bin\Debug\GitVersion.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <DocumentationFile>bin\Release\GitVersion.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="JetBrains.Annotations">
+      <HintPath>..\packages\JetBrainsAnnotations.Fody.1.0.1\Lib\JetBrains.Annotations.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="LibGit2Sharp, Version=0.16.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\LibGit2Sharp.0.16.0.0\lib\net35\LibGit2Sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Visualize">
+      <HintPath>..\packages\Visualize.Fody.0.2.3.0\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\Visualize.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ArgumentParser.cs" />
+    <Compile Include="Arguments.cs" />
+    <Compile Include="GitFlow\GitFlowVersionFinder.cs" />
+    <Compile Include="GitFlow\BranchClassifier.cs" />
+    <Compile Include="GitFlow\BranchFinders\DevelopBasedVersionFinderBase.cs" />
+    <Compile Include="GitFlow\BranchFinders\OptionallyTaggedBranchVersionFinderBase.cs" />
+    <Compile Include="GitFlow\BranchFinders\FeatureVersionFinder.cs" />
+    <Compile Include="GitFlow\BranchFinders\DevelopVersionFinder.cs" />
+    <Compile Include="GitFlow\BranchFinders\HotfixVersionFinder.cs" />
+    <Compile Include="GitHubFlow\BuildNumberCalculator.cs" />
+    <Compile Include="GitHubFlow\VersionTaggedCommit.cs" />
+    <Compile Include="GitHubFlow\GitHubFlowVersionFinder.cs" />
+    <Compile Include="GitHubFlow\LastTaggedReleaseFinder.cs" />
+    <Compile Include="GitHubFlow\NextSemverCalculator.cs" />
+    <Compile Include="GitHubFlow\NextVersionTxtFileFinder.cs" />
+    <Compile Include="OutputFormatters\BuildOutputFormatter.cs" />
+    <Compile Include="BuildServers\BuildServerList.cs" />
+    <Compile Include="BuildServers\ContinuaCi.cs" />
+    <Compile Include="BuildServers\GitHelper.cs" />
+    <Compile Include="BuildServers\IBuildServer.cs" />
+    <Compile Include="BuildServers\TeamCity.cs" />
+    <Compile Include="GitFlow\GitFlowVariableProvider.cs" />
+    <Compile Include="GitVersionContext.cs" />
+    <Compile Include="HelpWriter.cs" />
+    <Compile Include="GitFlow\ReleaseInformation.cs" />
+    <Compile Include="GitFlow\ReleaseInformationCalculator.cs" />
+    <Compile Include="SemanticVersionTag.cs" />
+    <Compile Include="OutputFormatters\JsonOutputFormatter.cs" />
+    <Compile Include="VersionBuilders\NugetVersionBuilder.cs" />
+    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="ShortVersionParser.cs" />
+    <Compile Include="VersionOnMasterFinder.cs" />
+    <Compile Include="GitFlow\BranchType.cs" />
+    <Compile Include="CachedVersion.cs" />
+    <Compile Include="DirectoryDateFinder.cs" />
+    <Compile Include="GitDirFinder.cs" />
+    <Compile Include="VersionBuilders\InformationalVersionBuilder.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="GitFlow\MergeMessageParser.cs" />
+    <Compile Include="GitFlow\BranchFinders\PullVersionFinder.cs" />
+    <Compile Include="GitFlow\BranchFinders\ReleaseVersionFinder.cs" />
+    <Compile Include="LibGitExtensions.cs" />
+    <Compile Include="GitVersionFinder.cs" />
+    <Compile Include="..\CommonAssemblyInfo.cs" />
+    <Compile Include="GitFlow\BranchFinders\MasterVersionFinder.cs" />
+    <Compile Include="MissingBranchException.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="RepositoryLoader.cs" />
+    <Compile Include="SearchPath.cs" />
+    <Compile Include="SemanticVersionParser.cs" />
+    <Compile Include="VersionBuilders\SemVerVersionBuilder.cs" />
+    <Compile Include="SemanticVersion.cs" />
+    <Compile Include="GitFlow\Stability.cs" />
+    <Compile Include="GitFlow\VersionAndBranch.cs" />
+    <Compile Include="VersionCache.cs" />
+    <Compile Include="VersionForDirectoryFinder.cs" />
+    <Compile Include="VersionPoint.cs" />
+    <Compile Include="ErrorException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Fody.targets">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="GemAssets\gitversion" />
+    <None Include="GemAssets\gitversion.gemspec" />
+    <None Include="NugetRefAssets\GitVersion.nuspec">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NugetExeAssets\chocolateyInstall.ps1">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NugetExeAssets\chocolateyUninstall.ps1">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NugetExeAssets\GitVersion.nuspec">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="FodyWeavers.xml">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="Clean">
+    <ItemGroup>
+      <ExeFilesToDelete Include="$(SolutionDir)NuGetExeBuild\**\*.*" />
+    </ItemGroup>
+    <Delete Files="@(ExeFilesToDelete)" />
+    <ItemGroup>
+      <RefFilesToDelete Include="$(SolutionDir)NuGetRefBuild\**\*.*" />
+    </ItemGroup>
+    <Delete Files="@(RefFilesToDelete)" />
+  </Target>
+  <UsingTask TaskName="PepitaPackage.CreatePackageTask" AssemblyFile="$(SolutionDir)Tools\Pepita\PepitaPackage.dll" />
+  <Target Name="AfterBuild" DependsOnTargets="Clean">
+    <!-- NugetExeBuild -->
+    <MakeDir Directories="$(SolutionDir)NuGetExeBuild" />
+    <CreateItem Include="$(SolutionDir)GitVersion\bin\$(ConfigurationName)\NativeBinaries\amd64\*.dll">
+      <Output TaskParameter="Include" ItemName="amd64" />
+    </CreateItem>
+    <Copy SourceFiles="@(amd64)" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools\NativeBinaries\amd64" />
+    <CreateItem Include="$(SolutionDir)GitVersion\bin\$(ConfigurationName)\NativeBinaries\x86\*.dll">
+      <Output TaskParameter="Include" ItemName="x86" />
+    </CreateItem>
+    <Copy SourceFiles="@(x86)" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools\NativeBinaries\x86" />
+    <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
+    <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
+    <Copy SourceFiles="$(OutputPath)\LibGit2Sharp.dll" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
+    <Copy SourceFiles="$(ProjectDir)NugetExeAssets\chocolateyInstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
+    <Copy SourceFiles="$(ProjectDir)NugetExeAssets\chocolateyUninstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
+    <Copy SourceFiles="$(ProjectDir)NugetExeAssets\GitVersion.nuspec" DestinationFolder="$(SolutionDir)NuGetExeBuild" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetExeBuild" MetadataAssembly="$(OutputPath)GitVersion.exe" />
+    <!-- NugetRefBuild -->
+    <MakeDir Directories="$(SolutionDir)NuGetRefBuild" />
+    <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
+    <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
+    <Copy SourceFiles="$(OutputPath)\GitVersion.xml" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
+    <Copy SourceFiles="$(ProjectDir)NugetRefAssets\GitVersion.nuspec" DestinationFolder="$(SolutionDir)NuGetRefBuild" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetRefBuild" MetadataAssembly="$(OutputPath)GitVersion.exe" />
+    <!-- Gem -->
+    <MakeDir Directories="$(SolutionDir)GemBuild" />
+    <MakeDir Directories="$(SolutionDir)GemBuild\bin" />
+    <CreateItem Include="$(SolutionDir)GitVersion\bin\$(ConfigurationName)\NativeBinaries\amd64\*.dll">
+      <Output TaskParameter="Include" ItemName="amd64" />
+    </CreateItem>
+    <Copy SourceFiles="@(amd64)" DestinationFolder="$(SolutionDir)GemBuild\bin\NativeBinaries\amd64" />
+    <CreateItem Include="$(SolutionDir)GitVersion\bin\$(ConfigurationName)\NativeBinaries\x86\*.dll">
+      <Output TaskParameter="Include" ItemName="x86" />
+    </CreateItem>
+    <Copy SourceFiles="@(x86)" DestinationFolder="$(SolutionDir)GemBuild\bin\NativeBinaries\x86" />
+    <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(SolutionDir)GemBuild\bin" />
+    <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(SolutionDir)GemBuild\bin" />
+    <Copy SourceFiles="$(OutputPath)\LibGit2Sharp.dll" DestinationFolder="$(SolutionDir)GemBuild\bin" />
+    <Copy SourceFiles="$(ProjectDir)GemAssets\gitversion" DestinationFolder="$(SolutionDir)GemBuild\bin" />
+    <Copy SourceFiles="$(ProjectDir)GemAssets\gitversion.gemspec" DestinationFolder="$(SolutionDir)GemBuild" />
+  </Target>
+  <PropertyGroup>
+    <PostBuildEvent>
+if not exist "$(TargetDir)NativeBinaries" md "$(TargetDir)NativeBinaries"
+if not exist "$(TargetDir)NativeBinaries\x86" md "$(TargetDir)NativeBinaries\x86"
+xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.16.0.0\lib\net35\NativeBinaries\x86\*.*" "$(TargetDir)NativeBinaries\x86"
+if not exist "$(TargetDir)NativeBinaries\amd64" md "$(TargetDir)NativeBinaries\amd64"
+xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.16.0.0\lib\net35\NativeBinaries\amd64\*.*" "$(TargetDir)NativeBinaries\amd64"</PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="Fody.targets" />
+</Project>
