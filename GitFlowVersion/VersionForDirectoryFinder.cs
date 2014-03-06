@@ -4,8 +4,6 @@ namespace GitFlowVersion
 
     public class VersionForRepositoryFinder
     {
-        public SemanticVersion SemanticVersion;
-
         public VersionAndBranch GetVersion(Repository repository)
         {
             var gitFlowVersionFinder = new GitVersionFinder();
