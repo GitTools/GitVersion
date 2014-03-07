@@ -10,13 +10,17 @@ namespace GitVersion
         {
             EnsureMainTopologyConstraints(context);
 
-            var hasDevelopBranch = context.Repository.FindBranch("develop") != null;
-
-            if (hasDevelopBranch)
+            if (ShouldGitHubFlowVersioningSchemeApply(context.Repository))
             {
-                return new GitFlowVersionFinder().FindVersion(context);
+                return new GitHubFlowVersionFinder().FindVersion(context);
             }
-            return new GitHubFlowVersionFinder().FindVersion(context);
+
+            return new GitFlowVersionFinder().FindVersion(context);
+        }
+
+        public static bool ShouldGitHubFlowVersioningSchemeApply(IRepository repo)
+        {
+            return repo.FindBranch("develop") == null;
         }
 
         void EnsureMainTopologyConstraints(GitVersionContext context)

@@ -6,6 +6,7 @@ using System.Reflection;
 [assembly: AssemblyFileVersion("1.2.3")]
 [assembly: AssemblyInformationalVersion("1.2.3-unstable.feature-a682956d Branch:'feature1' Sha:'a682956dc1a2752aa24597a0f5cd939f93614509'")]
 [assembly: MyAssembly.NugetVersion("1.2.3-Feature-feature1-a682956dc1a2752aa24597a0f5cd939f93614509")]
+[assembly: MyAssembly.ReleaseDate("2014-03-01", "2014-03-06")]
 
 namespace MyAssembly
 {
@@ -18,6 +19,19 @@ namespace MyAssembly
         }
 
         public string Version{get;set;}
+    }
+
+    [System.Runtime.CompilerServices.CompilerGenerated]
+    class ReleaseDateAttribute : System.Attribute
+    {
+        public string OriginalDate { get; private set; }
+        public string Date { get; private set; }
+
+        public ReleaseDateAttribute(string originalDate, string date)
+        {
+            OriginalDate = date;
+            Date = date;
+        }
     }
 }
 namespace MyAssembly

@@ -47,7 +47,7 @@
 
         public void InnerExecute()
         {
-            VersionAndBranch versionAndBranch;
+            VersionAndBranchAndDate versionAndBranch;
             if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch))
             {
                 return;

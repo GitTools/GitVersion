@@ -69,7 +69,7 @@
         {
             try
             {
-                VersionAndBranch versionAndBranch;
+                VersionAndBranchAndDate versionAndBranch;
                 if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch))
                 {
                     MajorMinorPatch = string.Format("{0}.{1}.{2}", versionAndBranch.Version.Major, versionAndBranch.Version.Minor, versionAndBranch.Version.Patch);

@@ -6,9 +6,9 @@ using LibGit2Sharp;
 [DebuggerDisplay("{DebuggerDisplay}")]
 public class MockCommit:Commit
 {
-    public MockCommit()
+    public MockCommit(ObjectId id = null)
     {
-        idEx = new ObjectId(Guid.NewGuid().ToString().Replace("-", "")+ "00000000");
+        idEx = id ?? new ObjectId(Guid.NewGuid().ToString().Replace("-", "")+ "00000000");
         MessageEx = "";
         ParentsEx = new List<Commit> { null };
     }

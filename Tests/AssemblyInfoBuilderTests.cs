@@ -15,7 +15,7 @@ public class AssemblyInfoBuilderTests
     [Test]
     public void VerifyCreatedCode()
     {
-        var semanticVersion = new VersionAndBranch
+        var semanticVersion = new VersionAndBranchAndDate
         {
             BranchType = BranchType.Feature,
             BranchName = "feature1",
@@ -27,6 +27,11 @@ public class AssemblyInfoBuilderTests
                 Patch = 3,
                 Tag = "unstable4",
                 Suffix = "a682956d",
+            },
+            ReleaseDate = new ReleaseDate
+            {
+                OriginalDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z"),
+                Date = DateTimeOffset.Parse("2014-03-06 23:59:59Z"),
             }
         };
         var assemblyInfoBuilder = new AssemblyInfoBuilder

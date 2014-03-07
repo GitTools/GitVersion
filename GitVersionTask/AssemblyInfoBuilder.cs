@@ -5,7 +5,7 @@
     public class AssemblyInfoBuilder
     {
 
-        public VersionAndBranch VersionAndBranch;
+        public VersionAndBranchAndDate VersionAndBranch;
         public bool SignAssembly;
         public string AssemblyName;
 
@@ -19,6 +19,7 @@ using System.Reflection;
 [assembly: AssemblyFileVersion(""{1}"")]
 [assembly: AssemblyInformationalVersion(""{2}"")]
 [assembly: {4}.NugetVersion(""{3}"")]
+[assembly: {4}.ReleaseDate(""{6}"", ""{7}"")]
 
 namespace {4}
 {{
@@ -31,6 +32,19 @@ namespace {4}
         }}
 
         public string Version{{get;set;}}
+    }}
+
+    [System.Runtime.CompilerServices.CompilerGenerated]
+    class ReleaseDateAttribute : System.Attribute
+    {{
+        public string OriginalDate {{ get; private set; }}
+        public string Date {{ get; private set; }}
+
+        public ReleaseDateAttribute(string originalDate, string date)
+        {{
+            OriginalDate = date;
+            Date = date;
+        }}
     }}
 }}
 namespace {4}
@@ -46,7 +60,8 @@ namespace {4}
     }}
 }}
 
-", GetAssemblyVersion(), GetAssemblyFileVersion(), VersionAndBranch.ToLongString(), VersionAndBranch.GenerateNugetVersion(), AssemblyName, VersionAndBranch.GenerateSemVer());
+", GetAssemblyVersion(), GetAssemblyFileVersion(), VersionAndBranch.ToLongString(), VersionAndBranch.GenerateNugetVersion(), AssemblyName, VersionAndBranch.GenerateSemVer(),
+ VersionAndBranch.ReleaseDate.OriginalDate.UtcDateTime.ToString("yyyy-MM-dd"), VersionAndBranch.ReleaseDate.Date.UtcDateTime.ToString("yyyy-MM-dd"));
 
             return assemblyInfo;
         }

@@ -4,16 +4,18 @@ namespace GitVersion
 
     public class VersionForRepositoryFinder
     {
-        public SemanticVersion SemanticVersion;
-
-        public VersionAndBranch GetVersion(Repository repository)
+        public VersionAndBranchAndDate GetVersion(Repository repository)
         {
             var gitVersionFinder = new GitVersionFinder();
-            return gitVersionFinder.FindVersion(new GitVersionContext
+            var vab =  gitVersionFinder.FindVersion(new GitVersionContext
             {
                 CurrentBranch = repository.Head,
                 Repository = repository
             });
+
+            var rd = ReleaseDateFinder.Execute(repository, vab);
+
+            return new VersionAndBranchAndDate(vab, rd);
         }
     }
 }
