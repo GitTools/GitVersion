@@ -32,6 +32,10 @@
 
         static string EscapeValue(string value)
         {
+            if (value == null)
+            {
+                return null;
+            }
             // List of escape values from http://confluence.jetbrains.com/display/TCD8/Build+Script+Interaction+with+TeamCity
 
             value = value.Replace("|", "||");
