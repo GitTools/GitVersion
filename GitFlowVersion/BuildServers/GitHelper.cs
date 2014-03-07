@@ -1,5 +1,6 @@
 namespace GitFlowVersion.GitFlowVersion
 {
+    using System;
     using System.Linq;
     using LibGit2Sharp;
 
@@ -14,7 +15,8 @@ namespace GitFlowVersion.GitFlowVersion
                 Logger.WriteInfo(string.Format("Fetching from remote '{0}' using the following refspecs: {1}.",
                     remote.Name, string.Join(", ", remote.FetchRefSpecs.Select(r => r.Specification))));
 
-                repo.Network.Fetch(remote);
+                var fetchOptions = BuildFetchOptions();
+                repo.Network.Fetch(remote, fetchOptions);
 
                 CreateMissingLocalBranchesFromRemoteTrackingOnes(repo, remote.Name);
 
@@ -28,6 +30,21 @@ namespace GitFlowVersion.GitFlowVersion
 
                 CreateFakeBranchPointingAtThePullRequestTip(repo);
             }
+        }
+
+        static FetchOptions BuildFetchOptions()
+        {
+            var username = Environment.GetEnvironmentVariable("GITVERSION_REMOTE_USERNAME");
+            var password = Environment.GetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD");
+
+            var fetchOptions = new FetchOptions();
+
+            if (!string.IsNullOrEmpty(username))
+            {
+                fetchOptions.Credentials = new Credentials { Username = username, Password = password };
+            }
+
+            return fetchOptions;
         }
 
         static void CreateFakeBranchPointingAtThePullRequestTip(Repository repo)
