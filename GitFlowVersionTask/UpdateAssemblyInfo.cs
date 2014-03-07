@@ -64,7 +64,7 @@
 
             InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
             
-            VersionAndBranch versionAndBranch;
+            VersionAndBranchAndDate versionAndBranch;
             if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch))
             {
                 return;
@@ -75,7 +75,7 @@
         }
 
 
-        void CreateTempAssemblyInfo(VersionAndBranch versionAndBranch)
+        void CreateTempAssemblyInfo(VersionAndBranchAndDate versionAndBranch)
         {
             var assemblyInfoBuilder = new AssemblyInfoBuilder
                                       {

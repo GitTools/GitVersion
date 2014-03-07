@@ -4,14 +4,18 @@ namespace GitFlowVersion
 
     public class VersionForRepositoryFinder
     {
-        public VersionAndBranch GetVersion(Repository repository)
+        public VersionAndBranchAndDate GetVersion(Repository repository)
         {
             var gitFlowVersionFinder = new GitVersionFinder();
-            return gitFlowVersionFinder.FindVersion(new GitVersionContext
+            var vab =  gitFlowVersionFinder.FindVersion(new GitVersionContext
             {
                 CurrentBranch = repository.Head,
                 Repository = repository
             });
+
+            var rd = ReleaseDateFinder.Execute(repository, vab);
+
+            return new VersionAndBranchAndDate(vab, rd);
         }
     }
 }
