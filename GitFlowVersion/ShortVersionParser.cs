@@ -16,7 +16,10 @@ namespace GitFlowVersion
         {
             int patch;
 
-            TryParse(versionString, out major, out minor, out patch);
+            if (!TryParse(versionString, out major, out minor, out patch))
+            {
+                return false;
+            }
 
             // Note: during scanning of master we only want the last major / minor, not the patch, so patch must be zero
             return patch == 0;
@@ -28,7 +31,7 @@ namespace GitFlowVersion
             minor = 0;
             patch = 0;
             var strings = versionString.Split('.');
-            if (strings.Length < 2)
+            if (strings.Length < 2 || strings.Length > 3)
             {
                 return false;
             }
@@ -42,7 +45,7 @@ namespace GitFlowVersion
                 return false;
             }
 
-            if (strings.Length >= 3)
+            if (strings.Length == 3)
             {
                 if (!int.TryParse(strings[2], out patch))
                 {

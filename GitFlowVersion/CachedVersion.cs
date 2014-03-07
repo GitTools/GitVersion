@@ -2,7 +2,7 @@
 {
     class CachedVersion
     {
-        public VersionAndBranch VersionAndBranch;
+        public VersionAndBranchAndDate VersionAndBranch;
         public long Timestamp;
     }
 }

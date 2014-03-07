@@ -7,7 +7,7 @@
     {
         static Dictionary<string, CachedVersion> versionCacheVersions = new Dictionary<string, CachedVersion>();
 
-        public static VersionAndBranch GetVersion(string gitDirectory)
+        public static VersionAndBranchAndDate GetVersion(string gitDirectory)
         {
             using (var repo = RepositoryLoader.GetRepo(gitDirectory))
             {
@@ -19,7 +19,7 @@
                 var ticks = DirectoryDateFinder.GetLastDirectoryWrite(gitDirectory);
                 var key = string.Format("{0}:{1}:{2}", repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
                 CachedVersion cachedVersion;
-                VersionAndBranch versionAndBranch;
+                VersionAndBranchAndDate versionAndBranch;
                 if (versionCacheVersions.TryGetValue(key, out cachedVersion))
                 {
                     Logger.WriteInfo("Version read from cache.");
@@ -49,7 +49,7 @@
             }
         }
 
-        static VersionAndBranch GetSemanticVersion(Repository repository)
+        static VersionAndBranchAndDate GetSemanticVersion(Repository repository)
         {
             var versionForRepositoryFinder = new VersionForRepositoryFinder();
             return versionForRepositoryFinder.GetVersion(repository);

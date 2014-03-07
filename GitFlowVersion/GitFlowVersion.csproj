@@ -62,6 +62,7 @@
     <Compile Include="GitFlow\BranchFinders\FeatureVersionFinder.cs" />
     <Compile Include="GitFlow\BranchFinders\DevelopVersionFinder.cs" />
     <Compile Include="GitFlow\BranchFinders\HotfixVersionFinder.cs" />
+    <Compile Include="GitFlow\VersionAndBranchAndDate.cs" />
     <Compile Include="GitHubFlow\BuildNumberCalculator.cs" />
     <Compile Include="GitHubFlow\VersionTaggedCommit.cs" />
     <Compile Include="GitHubFlow\GitHubFlowVersionFinder.cs" />
@@ -79,6 +80,8 @@
     <Compile Include="HelpWriter.cs" />
     <Compile Include="GitFlow\ReleaseInformation.cs" />
     <Compile Include="GitFlow\ReleaseInformationCalculator.cs" />
+    <Compile Include="ReleaseDate.cs" />
+    <Compile Include="ReleaseDateFinder.cs" />
     <Compile Include="SemanticVersionTag.cs" />
     <Compile Include="OutputFormatters\JsonOutputFormatter.cs" />
     <Compile Include="VersionBuilders\NugetVersionBuilder.cs" />
