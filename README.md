@@ -10,30 +10,30 @@ GitVersion can be used in several ways
 
 This will wire GitVersion into the MSBuild pipeline of a project and automatically stamp that assembly with the appropriate SemVer information
 
-Available on [Nuget](https://www.nuget.org) under [GitFlowVersionTask](https://www.nuget.org/packages/GitFlowVersionTask/)
+Available on [Nuget](https://www.nuget.org) under [GitVersionTask](https://www.nuget.org/packages/GitVersionTask/)
 
-    Install-Package GitFlowVersionTask
+    Install-Package GitVersionTask
 
 ### 2. A nuget reference package
 
 This can be used if you want to reference GitVersion and reuse is from .net.
 
-Available on [Nuget](https://www.nuget.org) under [GitFlowVersion](https://www.nuget.org/packages/GitFlowVersion/)
+Available on [Nuget](https://www.nuget.org) under [GitVersion](https://www.nuget.org/packages/GitVersion/)
 
-    Install-Package GitFlowVersion
+    Install-Package GitVersion
 
 ### 3. A command line tool
 
-If you want a command line version installed on your machine then you can use [Chocolatey](http://chocolatey.org) to install GitFlowVersion
+If you want a command line version installed on your machine then you can use [Chocolatey](http://chocolatey.org) to install GitVersion
 
-Available on [Chocolatey](http://chocolatey.org) under [GitFlowVersionTask](http://chocolatey.org/packages/GitFlowVersion)
+Available on [Chocolatey](http://chocolatey.org) under [GitVersionTask](http://chocolatey.org/packages/GitVersion)
 
-    cinst GitFlowVersion
+    cinst GitVersion
 
 #### Calling convention
 
 ```    
-GitFlowVersion [path] [/l logFilePath]
+GitVersion [path] [/l logFilePath]
         path    The directory containing .git. If not defined current directory is used.
         /l      Path to logfile.
 ```
@@ -57,9 +57,9 @@ GitFlowVersion [path] [/l logFilePath]
 ```
 
 ### 4. A ruby gem
-If you want a ruby gem version installed on your machine then you can use [Bundler](http://bundler.io/) or Gem(http://rubygems.org/) to install GitFlowVersion
+If you want a ruby gem version installed on your machine then you can use [Bundler](http://bundler.io/) or Gem(http://rubygems.org/) to install GitVersion
 
-	gem install GitFlowVersion
+	gem install GitVersion
 	
 The calling conventions and the output are the same as the command line version.	
 
@@ -75,9 +75,9 @@ This also have the added benefit of forcing us to follow our branching strategy 
 * Following [Semantic Versioning](http://semver.org/)
 * Planned releases (bumps in major or minor) are done on release branches prefixed with release-. Eg: release-4.1 (or release-4.1.0)
 * Hotfixes are prefixed with hotfix- Eg. hotfix-4.0.4
-* The original GitFlow model (http://nvie.com/posts/a-successful-git-branching-model/) specifies branches with a "-" separator while the git flow extensions (https://github.com/nvie/gitflow) default to a "/" separator.  Either work with GitFlowVersion.
+* The original GitFlow model (http://nvie.com/posts/a-successful-git-branching-model/) specifies branches with a "-" separator while the git flow extensions (https://github.com/nvie/gitflow) default to a "/" separator.  Either work with GitVersion.
 * Tags are used on the master branch and reflects the SemVer of each stable release eg 3.3.8 , 4.0.0, etc
-* Tags can also be used to override versions while we transition repositories over to GitFlowVersion
+* Tags can also be used to override versions while we transition repositories over to GitVersion
 * Using a build server with multi-branch building enabled eg TeamCity 8
 
 ### How Branches are handled
@@ -206,21 +206,21 @@ How do we do release candidates?? Perhaps  tag a release branch and then count c
 * Make sure to use agent checkouts
 * For the moment you need to promote the `%teamcity.build.vcs.branch.{configurationid}%` build parameter to an environment variable with the same name for pull requests to be handled correctly
 * We update the TC build number to the GFV number automatically
-* We output the individual values of the GFV version as the build parameter: `GitFlowVersion.*` (Eg: `GitFlowVersion.Major`) if you need access to them in your build script 
+* We output the individual values of the GFV version as the build parameter: `GitVersion.*` (Eg: `GitVersion.Major`) if you need access to them in your build script 
 
 ### NuGet in TeamCity
 * Add dummy [parameter](http://confluence.jetbrains.com/display/TCD8/Configuring+Build+Parameters) to 
-the project called `GitFlowVersion.NugetVersion`. If many of your projects uses git-flow and SemVer you
+the project called `GitVersion.NugetVersion`. If many of your projects uses git-flow and SemVer you
 can add the parameter to the "root-project" (TeamCity 8.x+)
-* Then setup you nuget pack build set the "version" to `%GitFlowVersion.NugetVersion%`
+* Then setup you nuget pack build set the "version" to `%GitVersion.NugetVersion%`
 
 ### When TeamCity -> GitHub can't use https
 
-GitFlowVersion requires the presence of master branch in order to determine the version number.  If TeamCity uses https to clone git repos then GitFlowVersion will pull down master branch for you during the build.
+GitVersion requires the presence of master branch in order to determine the version number.  If TeamCity uses https to clone git repos then GitVersion will pull down master branch for you during the build.
 
-If however your TeamCity uses SSH to clone git repos and https is unavailable then GitFlowVersion will error with a message like
+If however your TeamCity uses SSH to clone git repos and https is unavailable then GitVersion will error with a message like
 
-> [GitFlowVersionTask.UpdateAssemblyInfo] Error occurred: GitFlowVersion.MissingBranchException: Could not fetch from 'git@github.dev.xero.com:Xero/Bus.git' since LibGit2 does not support the transport. You have most likely cloned using SSH. If there is a remote branch named 'master' then fetch it manually, otherwise please create a local branch named 'master'. ---> LibGit2Sharp.LibGit2SharpException: An error was raised by libgit2. Category = Net (Error).
+> [GitVersionTask.UpdateAssemblyInfo] Error occurred: GitVersion.MissingBranchException: Could not fetch from 'git@github.dev.xero.com:Xero/Bus.git' since LibGit2 does not support the transport. You have most likely cloned using SSH. If there is a remote branch named 'master' then fetch it manually, otherwise please create a local branch named 'master'. ---> LibGit2Sharp.LibGit2SharpException: An error was raised by libgit2. Category = Net (Error).
 This transport isn't implemented. Sorry
 
 You need to create a TeamCity build step before your compile step which manually creates a local master branch which tracks remote master.  Like so (in powershell):
@@ -239,7 +239,7 @@ exit 0
 you should get build output like
 
 ```
-[Step 1/1]: Ensure all branches are available for GitFlowVersion (Powershell) (5s)
+[Step 1/1]: Ensure all branches are available for GitVersion (Powershell) (5s)
 [Step 1/1] From file:///C:/BuildAgent2/system/git/git-12345678
 [Step 1/1]  * [new branch]      master     -> origin/master
 [Step 1/1] Switched to a new branch 'master'

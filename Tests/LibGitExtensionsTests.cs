@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentDate;
 using FluentDateTimeOffset;
-using GitFlowVersion;
+using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
 

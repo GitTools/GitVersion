@@ -37,7 +37,7 @@ namespace MyAssembly
 namespace MyAssembly
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
-    static class GitFlowVersionInformation
+    static class GitVersionInformation
     {
         public static string AssemblyVersion = "1.2.3";
         public static string AssemblyFileVersion = "1.2.3";

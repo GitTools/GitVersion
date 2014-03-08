@@ -1,5 +1,5 @@
 using ApprovalTests;
-using GitFlowVersion;
+using GitVersion;
 using NUnit.Framework;
 
 [TestFixture]
