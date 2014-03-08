@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
 
-    public static class GitFlowVariableProvider
+    public static class VariableProvider
     {
         public static Dictionary<string, string> ToKeyValue(this VersionAndBranch versionAndBranch)
         {

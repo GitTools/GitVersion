@@ -7,9 +7,9 @@ Gem::Specification.new do |spec|
   spec.bindir = 'bin'
   spec.executables << 'gitversion'
 
-  spec.summary     = 'Derives SemVer information from a repository following GitFlow.'
+  spec.summary     = 'Derives SemVer information from a repository following GitFlow or GitHubFlow.'
   spec.description = <<-EOF 
-Derives SemVer information from a repository following GitFlow.
+Derives SemVer information from a repository following GitFlow or GitHubFlow.
 EOF
   
   spec.authors           = ['NServiceBus','Simon Cropp']
