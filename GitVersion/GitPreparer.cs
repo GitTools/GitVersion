@@ -69,6 +69,32 @@
 
             Repository.Clone(Url, gitDirectory, checkout: false, credentials: credentials);
 
+            if (!string.IsNullOrWhiteSpace(BranchName))
+            {
+                // Normalize (download branches) before using the branch
+                GitHelper.NormalizeGitDirectory(gitDirectory);
+
+                using (var repository = new Repository(gitDirectory))
+                {
+                    var targetBranchName = string.Format("refs/heads/{0}", BranchName);
+                    if (!string.Equals(repository.Head.CanonicalName, targetBranchName))
+                    {
+                        Logger.WriteInfo(string.Format("Switching to branch '{0}'", BranchName));
+
+                        var branch = repository.FindBranch(BranchName);
+                        if ((branch != null) && !branch.IsCurrentRepositoryHead)
+                        {
+                            var finalName = string.Format("refs/heads/{0}", BranchName);
+                            //repository.Refs.Add("HEAD", branch.UpstreamBranchCanonicalName, true);
+
+                            repository.Refs.Add("HEAD", finalName, true);
+
+                            //var symRef = repository.Refs.Create("HEAD", string.Format("refs/heads/{0}", BranchName));
+                        }
+                    }
+                }
+            }
+
             DynamicGitRepositoryPath = gitDirectory;
 
             return gitDirectory;

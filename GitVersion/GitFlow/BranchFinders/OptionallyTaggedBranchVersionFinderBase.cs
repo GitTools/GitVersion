@@ -142,8 +142,7 @@ namespace GitVersion
             BranchType branchType,
             string baseBranchName)
         {
-            var baseTip = repo.Branches[baseBranchName].Tip;
-
+            var baseTip = repo.FindBranch(baseBranchName).Tip;
             if (branch.Tip == baseTip)
             {
                 // The branch bears no additional commit

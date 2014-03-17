@@ -34,6 +34,7 @@ namespace GitVersion
 
         static FetchOptions BuildFetchOptions()
         {
+            // TODO: Respect username/password of arguments?
             var username = Environment.GetEnvironmentVariable("GITVERSION_REMOTE_USERNAME");
             var password = Environment.GetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD");
 
