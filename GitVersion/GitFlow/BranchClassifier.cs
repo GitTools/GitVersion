@@ -43,12 +43,12 @@ namespace GitVersion
 
         public static bool IsDevelop(this Branch branch)
         {
-            return branch.Name.EndsWith("develop");
+            return branch.Name == "develop";
         }
 
         public static bool IsMaster(this Branch branch)
         {
-            return branch.Name.EndsWith("master");
+            return branch.Name == "master";
         }
 
         public static bool IsPullRequest(this Branch branch)
