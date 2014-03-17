@@ -84,12 +84,15 @@
                         var branch = repository.FindBranch(BranchName);
                         if ((branch != null) && !branch.IsCurrentRepositoryHead)
                         {
-                            var finalName = string.Format("refs/heads/{0}", BranchName);
-                            //repository.Refs.Add("HEAD", branch.UpstreamBranchCanonicalName, true);
+                            // Option 1: checkout (slow)
+                            //repository.Checkout(branch, CheckoutModifiers.Force, null, null);
 
-                            repository.Refs.Add("HEAD", finalName, true);
+                            // Option 2: add head refs
+                            //var finalName = string.Format("refs/heads/{0}", BranchName);
+                            //repository.Refs.Add("HEAD", finalName, true);
 
-                            //var symRef = repository.Refs.Create("HEAD", string.Format("refs/heads/{0}", BranchName));
+                            // Option 3: replace head
+                            repository.Refs.UpdateTarget("HEAD", branch.CanonicalName);
                         }
                     }
                 }
