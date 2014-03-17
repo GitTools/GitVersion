@@ -16,9 +16,9 @@ namespace GitVersion
             if (commandLineArguments.Count == 0)
             {
                 return new Arguments
-                    {
-                        TargetPath = Environment.CurrentDirectory
-                    };
+                {
+                    TargetPath = Environment.CurrentDirectory
+                };
             }
 
             var firstArgument = commandLineArguments.First();
@@ -33,9 +33,9 @@ namespace GitVersion
             if (commandLineArguments.Count == 1)
             {
                 return new Arguments
-                    {
-                        TargetPath = firstArgument
-                    };
+                {
+                    TargetPath = firstArgument
+                };
             }
 
             List<string> namedArguments;
@@ -61,6 +61,30 @@ namespace GitVersion
                 if (IsSwitch("l", name))
                 {
                     arguments.LogFilePath = value;
+                    continue;
+                }
+
+                if (IsSwitch("url", name))
+                {
+                    arguments.TargetUrl = value;
+                    continue;
+                }
+
+                if (IsSwitch("b", name))
+                {
+                    arguments.TargetBranch = value;
+                    continue;
+                }
+
+                if (IsSwitch("u", name))
+                {
+                    arguments.Username = value;
+                    continue;
+                }
+
+                if (IsSwitch("p", name))
+                {
+                    arguments.Password = value;
                     continue;
                 }
 

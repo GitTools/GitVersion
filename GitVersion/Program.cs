@@ -2,6 +2,7 @@ namespace GitVersion
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
 
@@ -9,21 +10,25 @@ namespace GitVersion
     {
         static void Main()
         {
+            int? exitCode = null;
+
             try
             {
                 var arguments = ArgumentParser.ParseArguments(GetArgumentsWithoutExeName());
-
                 if (arguments.IsHelp)
                 {
                     HelpWriter.Write();
                     return;
                 }
-                ConfigureLogging(arguments);
-                var gitDirectory = GitDirFinder.TreeWalkForGitDir(arguments.TargetPath);
 
+                ConfigureLogging(arguments);
+
+                var gitPreparer = new GitPreparer(arguments.TargetPath, arguments.TargetUrl,
+                    arguments.TargetBranch, arguments.Username, arguments.Password);
+                var gitDirectory = gitPreparer.Prepare();
                 if (string.IsNullOrEmpty(gitDirectory))
                 {
-                    Console.Error.WriteLine("Could not find .git directory");
+                    Console.Error.WriteLine("Failed to prepare or find the .git directory in path '{0}'", arguments.TargetPath);
                     Environment.Exit(1);
                 }
 
@@ -40,8 +45,9 @@ namespace GitVersion
                 switch (arguments.VersionPart)
                 {
                     case null:
-                        Console.WriteLine(JsonOutputFormatter.ToJson(versionAsKeyValue)); 
+                        Console.WriteLine(JsonOutputFormatter.ToJson(versionAsKeyValue));
                         break;
+
                     default:
                         string part;
                         if (!versionAsKeyValue.TryGetValue(arguments.VersionPart, out part))
@@ -51,18 +57,38 @@ namespace GitVersion
                         Console.WriteLine(part);
                         break;
                 }
-                    
+
+                if (gitPreparer.IsDynamicGitRepository)
+                {
+                    DeleteHelper.DeleteGitRepository(gitPreparer.DynamicGitRepositoryPath);
+                }
             }
             catch (ErrorException exception)
             {
-                Console.Error.Write("An error occurred:\r\n{0}", exception.Message);
-                Environment.Exit(1);
+                var error = string.Format("An error occurred:\r\n{0}", exception.Message);
+                Logger.WriteWarning(error);
+
+                exitCode = 1;
             }
             catch (Exception exception)
             {
-                Console.Error.Write("An unexpected error occurred:\r\n{0}", exception);
-                Environment.Exit(1);
+                var error = string.Format("An unexpected error occurred:\r\n{0}", exception);
+                Logger.WriteWarning(error);
+
+                exitCode = 1;
             }
+
+            if (Debugger.IsAttached)
+            {
+                Console.ReadKey();
+            }
+
+            if (!exitCode.HasValue)
+            {
+                exitCode = 0;
+            }
+
+            Environment.Exit(exitCode.Value);
         }
 
         static IEnumerable<IBuildServer> GetApplicableBuildServers()
@@ -72,20 +98,32 @@ namespace GitVersion
 
         static void ConfigureLogging(Arguments arguments)
         {
+            Action<string> writeAction;
+
             if (arguments.LogFilePath == null)
             {
-                Logger.WriteInfo = s =>{};
+                writeAction = x =>
+                {
+                    Console.WriteLine(x);
+                };
             }
             else
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(arguments.LogFilePath));
                 if (File.Exists(arguments.LogFilePath))
                 {
-                    using (File.CreateText(arguments.LogFilePath)) { }   
+                    using (File.CreateText(arguments.LogFilePath)) { }
                 }
 
-                Logger.WriteInfo = s => WriteLogEntry(arguments, s);
+                writeAction = x =>
+                {
+                    Console.WriteLine(x);
+                    WriteLogEntry(arguments, x);
+                };
             }
+
+            Logger.WriteInfo = writeAction;
+            Logger.WriteWarning = writeAction;
         }
 
         static void WriteLogEntry(Arguments arguments, string s)

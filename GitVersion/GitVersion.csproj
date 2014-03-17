@@ -68,6 +68,8 @@
     <Compile Include="GitHubFlow\LastTaggedReleaseFinder.cs" />
     <Compile Include="GitHubFlow\NextSemverCalculator.cs" />
     <Compile Include="GitHubFlow\NextVersionTxtFileFinder.cs" />
+    <Compile Include="GitPreparer.cs" />
+    <Compile Include="Helpers\DeleteHelper.cs" />
     <Compile Include="OutputFormatters\BuildOutputFormatter.cs" />
     <Compile Include="BuildServers\BuildServerList.cs" />
     <Compile Include="BuildServers\ContinuaCi.cs" />
