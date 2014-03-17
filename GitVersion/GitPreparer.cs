@@ -81,19 +81,7 @@
                     {
                         Logger.WriteInfo(string.Format("Switching to branch '{0}'", BranchName));
 
-                        var branch = repository.FindBranch(BranchName);
-                        if ((branch != null) && !branch.IsCurrentRepositoryHead)
-                        {
-                            // Option 1: checkout (slow)
-                            //repository.Checkout(branch, CheckoutModifiers.Force, null, null);
-
-                            // Option 2: add head refs
-                            //var finalName = string.Format("refs/heads/{0}", BranchName);
-                            //repository.Refs.Add("HEAD", finalName, true);
-
-                            // Option 3: replace head
-                            repository.Refs.UpdateTarget("HEAD", branch.CanonicalName);
-                        }
+                        repository.Refs.UpdateTarget("HEAD", targetBranchName);
                     }
                 }
             }
