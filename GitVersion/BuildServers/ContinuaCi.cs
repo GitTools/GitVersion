@@ -2,7 +2,7 @@
 {
     using Microsoft.Win32;
 
-    public class ContinuaCi : IBuildServer
+    public class ContinuaCi : BuildServerBase
     {
         readonly Arguments _arguments;
 
@@ -11,15 +11,24 @@
             _arguments = arguments;
         }
 
-        public bool CanApplyToCurrentContext()
+        public override bool CanApplyToCurrentContext()
         {
-            using (var registryKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\VSoft Technologies\\Continua CI Agent"))
+            const string KeyName = @"Software\VSoft Technologies\Continua CI Agent";
+
+            if (RegistryKeyExists(KeyName, RegistryView.Registry32))
             {
-                return registryKey != null;
+                return true;
             }
+
+            if (RegistryKeyExists(KeyName, RegistryView.Registry64))
+            {
+                return true;
+            }
+
+            return false;
         }
 
-        public void PerformPreProcessingSteps(string gitDirectory)
+        public override void PerformPreProcessingSteps(string gitDirectory)
         {
             if (string.IsNullOrEmpty(gitDirectory))
             {
@@ -29,18 +38,25 @@
             GitHelper.NormalizeGitDirectory(gitDirectory, _arguments);
         }
 
-        public string[] GenerateSetParameterMessage(string name, string value)
+        public override string[] GenerateSetParameterMessage(string name, string value)
         {
-            return new []
+            return new[]
             {
                 string.Format("@@continua[setVariable name='GitVersion.{0}' value='{1}']", name, value)
             };
         }
 
-        public string GenerateSetVersionMessage(string versionToUseForBuildNumber)
+        public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
         {
             return string.Format("@@continua[setBuildVersion value='{0}']", versionToUseForBuildNumber);
         }
-    }
 
+        private static bool RegistryKeyExists(string keyName, RegistryView registryView)
+        {
+            var localKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, registryView);
+            localKey = localKey.OpenSubKey(keyName);
+
+            return localKey != null;
+        }
+    }
 }

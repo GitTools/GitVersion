@@ -40,6 +40,11 @@ namespace GitVersion
 
                 var versionAndBranch = VersionCache.GetVersion(gitDirectory);
 
+                foreach (var buildServer in applicableBuildServers)
+                {
+                    buildServer.WriteIntegration(versionAndBranch, Logger.WriteInfo);
+                }
+
                 var versionAsKeyValue = versionAndBranch.ToKeyValue();
                 switch (arguments.VersionPart)
                 {

@@ -16,6 +16,7 @@
                 {
                     throw new ErrorException("No Tip found. Has repo been initialize?");
                 }
+
                 var ticks = DirectoryDateFinder.GetLastDirectoryWrite(gitDirectory);
                 var key = string.Format("{0}:{1}:{2}", repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
                 CachedVersion cachedVersion;

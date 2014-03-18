@@ -30,14 +30,25 @@
                 };
             }
 
+            var buildServices = new List<IBuildServer>();
+
             foreach (var buildServer in BuildServers)
             {
-                if (buildServer.CanApplyToCurrentContext())
+                try
                 {
-                    Logger.WriteInfo(string.Format("Applicable build agent found: '{0}'.", buildServer.GetType().Name));
-                    yield return buildServer;
+                    if (buildServer.CanApplyToCurrentContext())
+                    {
+                        Logger.WriteInfo(string.Format("Applicable build agent found: '{0}'.", buildServer.GetType().Name));
+                        buildServices.Add(buildServer);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteWarning(string.Format("Failed to check build server '{0}': {1}", buildServer.GetType().Name, ex.Message));
                 }
             }
+
+            return buildServices;
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class TeamCity : IBuildServer
+    public class TeamCity : BuildServerBase
     {
         readonly Arguments _arguments;
 
@@ -12,12 +12,12 @@
         }
 
 
-        public bool CanApplyToCurrentContext()
+        public override bool CanApplyToCurrentContext()
         {
             return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TEAMCITY_VERSION"));
         }
 
-        public void PerformPreProcessingSteps(string gitDirectory)
+        public override void PerformPreProcessingSteps(string gitDirectory)
         {
             if (string.IsNullOrEmpty(gitDirectory))
             {
@@ -27,7 +27,7 @@
             GitHelper.NormalizeGitDirectory(gitDirectory, _arguments);
         }
 
-        public string[] GenerateSetParameterMessage(string name, string value)
+        public override string[] GenerateSetParameterMessage(string name, string value)
         {
             return new[]
             {
@@ -37,7 +37,7 @@
             };
         }
 
-        public string GenerateSetVersionMessage(string versionToUseForBuildNumber)
+        public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
         {
             return string.Format("##teamcity[buildNumber '{0}']", EscapeValue(versionToUseForBuildNumber));
         }
