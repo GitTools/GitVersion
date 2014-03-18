@@ -21,7 +21,8 @@
                 return false;
             }
 
-            foreach (var buildServer in BuildServerList.GetApplicableBuildServers())
+            var arguments = new Arguments();
+            foreach (var buildServer in BuildServerList.GetApplicableBuildServers(arguments))
             {
                 Logger.WriteInfo(string.Format("Executing PerformPreProcessingSteps for '{0}'.", buildServer.GetType().Name));
                 buildServer.PerformPreProcessingSteps(gitDirectory);

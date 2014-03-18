@@ -23,8 +23,7 @@ namespace GitVersion
 
                 ConfigureLogging(arguments);
 
-                var gitPreparer = new GitPreparer(arguments.TargetPath, arguments.TargetUrl,
-                    arguments.TargetBranch, arguments.Username, arguments.Password);
+                var gitPreparer = new GitPreparer(arguments);
                 var gitDirectory = gitPreparer.Prepare();
                 if (string.IsNullOrEmpty(gitDirectory))
                 {
@@ -32,7 +31,7 @@ namespace GitVersion
                     Environment.Exit(1);
                 }
 
-                var applicableBuildServers = GetApplicableBuildServers().ToList();
+                var applicableBuildServers = GetApplicableBuildServers(arguments).ToList();
 
                 foreach (var buildServer in applicableBuildServers)
                 {
@@ -91,9 +90,9 @@ namespace GitVersion
             Environment.Exit(exitCode.Value);
         }
 
-        static IEnumerable<IBuildServer> GetApplicableBuildServers()
+        static IEnumerable<IBuildServer> GetApplicableBuildServers(Arguments arguments)
         {
-            return BuildServerList.BuildServers.Where(buildServer => buildServer.CanApplyToCurrentContext());
+            return BuildServerList.GetApplicableBuildServers(arguments);
         }
 
         static void ConfigureLogging(Arguments arguments)

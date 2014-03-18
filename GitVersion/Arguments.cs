@@ -1,7 +1,15 @@
 namespace GitVersion
 {
-    class Arguments
+    using System;
+
+    public class Arguments
     {
+        public Arguments()
+        {
+            Username = Environment.GetEnvironmentVariable("GITVERSION_REMOTE_USERNAME");
+            Password = Environment.GetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD");
+        }
+
         public string TargetPath;
 
         public string TargetUrl;

@@ -106,7 +106,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     public void SetUp()
     {
         //avoid buildserver detection to make the tests pass on the buildserver
-        BuildServerList.Selector = () => new List<IBuildServer>();
+        BuildServerList.Selector = arguments => new List<IBuildServer>();
     }
 
 

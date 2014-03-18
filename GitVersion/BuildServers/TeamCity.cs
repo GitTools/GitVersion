@@ -4,6 +4,14 @@
 
     public class TeamCity : IBuildServer
     {
+        readonly Arguments _arguments;
+
+        public TeamCity(Arguments arguments)
+        {
+            _arguments = arguments;
+        }
+
+
         public bool CanApplyToCurrentContext()
         {
             return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TEAMCITY_VERSION"));
@@ -16,7 +24,7 @@
                 throw new ErrorException("Failed to find .git directory on agent. Please make sure agent checkout mode is enabled for you VCS roots - http://confluence.jetbrains.com/display/TCD8/VCS+Checkout+Mode");
             }
 
-            GitHelper.NormalizeGitDirectory(gitDirectory);
+            GitHelper.NormalizeGitDirectory(gitDirectory, _arguments);
         }
 
         public string[] GenerateSetParameterMessage(string name, string value)

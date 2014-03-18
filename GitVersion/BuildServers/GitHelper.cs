@@ -1,12 +1,11 @@
 namespace GitVersion
 {
-    using System;
     using System.Linq;
     using LibGit2Sharp;
 
     public static class GitHelper
     {
-        public static void NormalizeGitDirectory(string gitDirectory)
+        public static void NormalizeGitDirectory(string gitDirectory, Arguments arguments)
         {
             using (var repo = new Repository(gitDirectory))
             {
@@ -15,7 +14,7 @@ namespace GitVersion
                 Logger.WriteInfo(string.Format("Fetching from remote '{0}' using the following refspecs: {1}.",
                     remote.Name, string.Join(", ", remote.FetchRefSpecs.Select(r => r.Specification))));
 
-                var fetchOptions = BuildFetchOptions();
+                var fetchOptions = BuildFetchOptions(arguments.Username, arguments.Password);
                 repo.Network.Fetch(remote, fetchOptions);
 
                 CreateMissingLocalBranchesFromRemoteTrackingOnes(repo, remote.Name);
@@ -32,17 +31,17 @@ namespace GitVersion
             }
         }
 
-        static FetchOptions BuildFetchOptions()
+        static FetchOptions BuildFetchOptions(string username, string password)
         {
-            // TODO: Respect username/password of arguments?
-            var username = Environment.GetEnvironmentVariable("GITVERSION_REMOTE_USERNAME");
-            var password = Environment.GetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD");
-
             var fetchOptions = new FetchOptions();
 
             if (!string.IsNullOrEmpty(username))
             {
-                fetchOptions.Credentials = new Credentials { Username = username, Password = password };
+                fetchOptions.Credentials = new Credentials
+                {
+                    Username = username, 
+                    Password = password
+                };
             }
 
             return fetchOptions;

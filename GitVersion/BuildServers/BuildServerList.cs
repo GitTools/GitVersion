@@ -5,26 +5,31 @@
 
     public static class BuildServerList
     {
-        public static List<IBuildServer> BuildServers = new List<IBuildServer>
-            {
-                new ContinuaCi(),
-                new TeamCity()
-            };
+        static List<IBuildServer> BuildServers;
 
-        public static Func<IEnumerable<IBuildServer>> Selector = () => DefaultSelector();
+        public static Func<Arguments, IEnumerable<IBuildServer>> Selector = arguments => DefaultSelector(arguments);
 
         public static void ResetSelector()
         {
             Selector = DefaultSelector;
         }
 
-        public static IEnumerable<IBuildServer> GetApplicableBuildServers()
+        public static IEnumerable<IBuildServer> GetApplicableBuildServers(Arguments arguments)
         {
-            return Selector();
+            return Selector(arguments);
         }
 
-        static IEnumerable<IBuildServer> DefaultSelector()
+        static IEnumerable<IBuildServer> DefaultSelector(Arguments arguments)
         {
+            if (BuildServers == null)
+            {
+                BuildServers = new List<IBuildServer>
+                {
+                    new ContinuaCi(arguments),
+                    new TeamCity(arguments)
+                };
+            }
+
             foreach (var buildServer in BuildServers)
             {
                 if (buildServer.CanApplyToCurrentContext())

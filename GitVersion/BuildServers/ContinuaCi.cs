@@ -4,6 +4,13 @@
 
     public class ContinuaCi : IBuildServer
     {
+        readonly Arguments _arguments;
+
+        public ContinuaCi(Arguments arguments)
+        {
+            _arguments = arguments;
+        }
+
         public bool CanApplyToCurrentContext()
         {
             using (var registryKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\VSoft Technologies\\Continua CI Agent"))
@@ -19,7 +26,7 @@
                 throw new ErrorException("Failed to find .git directory on agent");
             }
 
-            GitHelper.NormalizeGitDirectory(gitDirectory);
+            GitHelper.NormalizeGitDirectory(gitDirectory, _arguments);
         }
 
         public string[] GenerateSetParameterMessage(string name, string value)
