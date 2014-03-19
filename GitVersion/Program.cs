@@ -40,26 +40,32 @@ namespace GitVersion
 
                 var versionAndBranch = VersionCache.GetVersion(gitDirectory);
 
-                foreach (var buildServer in applicableBuildServers)
+                if (arguments.Output == OutputType.BuildServer)
                 {
-                    buildServer.WriteIntegration(versionAndBranch, Logger.WriteInfo);
+                    foreach (var buildServer in applicableBuildServers)
+                    {
+                        buildServer.WriteIntegration(versionAndBranch, Logger.WriteInfo);
+                    }
                 }
 
-                var versionAsKeyValue = versionAndBranch.ToKeyValue();
-                switch (arguments.VersionPart)
+                if (arguments.Output == OutputType.Json)
                 {
-                    case null:
-                        Console.WriteLine(JsonOutputFormatter.ToJson(versionAsKeyValue));
-                        break;
+                    var versionAsKeyValue = versionAndBranch.ToKeyValue();
+                    switch (arguments.VersionPart)
+                    {
+                        case null:
+                            Console.WriteLine(JsonOutputFormatter.ToJson(versionAsKeyValue));
+                            break;
 
-                    default:
-                        string part;
-                        if (!versionAsKeyValue.TryGetValue(arguments.VersionPart, out part))
-                        {
-                            throw new ErrorException(string.Format("Could not extract '{0}' from the available parts.", arguments.VersionPart));
-                        }
-                        Console.WriteLine(part);
-                        break;
+                        default:
+                            string part;
+                            if (!versionAsKeyValue.TryGetValue(arguments.VersionPart, out part))
+                            {
+                                throw new ErrorException(string.Format("Could not extract '{0}' from the available parts.", arguments.VersionPart));
+                            }
+                            Console.WriteLine(part);
+                            break;
+                    }
                 }
 
                 if (gitPreparer.IsDynamicGitRepository)
@@ -108,7 +114,6 @@ namespace GitVersion
             {
                 writeAction = x =>
                 {
-                    Console.WriteLine(x);
                 };
             }
             else
@@ -121,7 +126,6 @@ namespace GitVersion
 
                 writeAction = x =>
                 {
-                    Console.WriteLine(x);
                     WriteLogEntry(arguments, x);
                 };
             }

@@ -62,6 +62,34 @@ public class ArgumentParserTests
     }
 
     [Test]
+    public void Unknown_output_should_throw()
+    {
+        var exception = Assert.Throws<ErrorException>(() => ArgumentParser.ParseArguments("targetDirectoryPath -output invalid_value"));
+        Assert.AreEqual("Value 'invalid_value' cannot be parsed as output type, please use 'json' or 'buildserver'", exception.Message);
+    }
+
+    [Test]
+    public void Output_defaults_to_json()
+    {
+        var arguments = ArgumentParser.ParseArguments("targetDirectoryPath");
+        Assert.AreEqual(OutputType.Json, arguments.Output);
+    }
+
+    [Test]
+    public void Output_json_can_be_parsed()
+    {
+        var arguments = ArgumentParser.ParseArguments("targetDirectoryPath -output json");
+        Assert.AreEqual(OutputType.Json, arguments.Output);
+    }
+
+    [Test]
+    public void Output_buildserver_can_be_parsed()
+    {
+        var arguments = ArgumentParser.ParseArguments("targetDirectoryPath -output buildserver");
+        Assert.AreEqual(OutputType.BuildServer, arguments.Output);
+    }
+
+    [Test]
     public void Url_and_BranchName_can_be_parsed()
     {
         var arguments = ArgumentParser.ParseArguments("targetDirectoryPath -url http://github.com/Particular/GitVersion.git -b somebranch");

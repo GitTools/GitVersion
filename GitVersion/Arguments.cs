@@ -2,12 +2,20 @@ namespace GitVersion
 {
     using System;
 
+    public enum OutputType
+    {
+        BuildServer,
+
+        Json
+    }
+
     public class Arguments
     {
         public Arguments()
         {
             Username = Environment.GetEnvironmentVariable("GITVERSION_REMOTE_USERNAME");
             Password = Environment.GetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD");
+            Output = OutputType.Json;
         }
 
         public string TargetPath;
@@ -21,5 +29,7 @@ namespace GitVersion
         public bool IsHelp;
         public string LogFilePath;
         public string VersionPart;
+
+        public OutputType Output;
     }
 }

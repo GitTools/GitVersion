@@ -94,6 +94,18 @@ namespace GitVersion
                     continue;
                 }
 
+                if (IsSwitch("output", name))
+                {
+                    var outputType = OutputType.Json;
+                    if (!Enum.TryParse(value, true, out outputType))
+                    {
+                        throw new ErrorException(string.Format("Value '{0}' cannot be parsed as output type, please use 'json' or 'buildserver'", value));
+                    }
+
+                    arguments.Output = outputType;
+                    continue;
+                }
+
                 throw new ErrorException(string.Format("Could not parse command line parameter '{0}'.", name));
             }
             return arguments;
@@ -125,13 +137,10 @@ namespace GitVersion
 
         static bool IsHelp(string singleArgument)
         {
-            return (singleArgument == "?") ||
-                   (singleArgument == "/h") ||
-                   (singleArgument == "/help") ||
-                   (singleArgument == "/?") ||
-                   (singleArgument == "-h") ||
-                   (singleArgument == "-help") ||
-                   (singleArgument == "-?");
+            return (singleArgument == "?") || 
+                IsSwitch("h", singleArgument) || 
+                IsSwitch("help", singleArgument) || 
+                IsSwitch("?", singleArgument);
         }
 
         static string[] VersionParts = {"major", "minor", "patch", "long", "short", "nuget"};
