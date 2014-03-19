@@ -10,8 +10,8 @@
   "BranchType":"Master",
   "Sha":"000000000000000000000000000000000000000",
   "MajorMinorPatch":"1.0.4",
-  "SemVer":"1.0.4",
-  "Version":"1.0.4",
-  "PreReleasePartTwo":12,
+  "SemVer":"1.0.4+1",
+  "Version":"1.0.4+1",
+  "PreReleasePartTwo":1,
   "Stability":"Final"
 }
