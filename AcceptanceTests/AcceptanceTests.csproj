@@ -82,7 +82,6 @@
     <Compile Include="TagFollowedByCommitsWithApplicableNextVersionTxtSpecification.cs" />
     <Compile Include="TagFollowedByCommitsWithNoNextVersionTxtSpecification.cs" />
     <Compile Include="TagFollowedByCommitsWithRedundantNextVersionTxtSpecification.cs" />
-    <Compile Include="ToFileSpecification.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
