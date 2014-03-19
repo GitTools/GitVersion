@@ -8,6 +8,8 @@ namespace GitVersion
 
     class Program
     {
+        private const string MsBuild = @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
+
         static void Main()
         {
             int? exitCode = null;
@@ -67,6 +69,9 @@ namespace GitVersion
                             break;
                     }
                 }
+                
+                RunMsBuildIfNeeded(arguments, gitDirectory);
+                RunExecCommandIfNeeded(arguments, gitDirectory);
 
                 if (gitPreparer.IsDynamicGitRepository)
                 {
@@ -145,6 +150,31 @@ namespace GitVersion
             return Environment.GetCommandLineArgs()
                 .Skip(1)
                 .ToList();
+        }
+
+        private static void RunMsBuildIfNeeded(Arguments args, string gitDirectory)
+        {
+            if (string.IsNullOrEmpty(args.Proj)) return;
+
+            Console.WriteLine("Launching {0} \"{1}\"{2}", MsBuild, args.Proj, args.ProjArgs);
+            var results = ProcessHelper.Run(
+                Console.WriteLine, Console.Error.WriteLine,
+                null, MsBuild, string.Format("\"{0}\"{1}", args.Proj, args.ProjArgs), gitDirectory);
+
+            if (results != 0)
+                throw new ErrorException("MsBuild execution failed, non-zero return code");
+        }
+
+        private static void RunExecCommandIfNeeded(Arguments args, string gitDirectory)
+        {
+            if (string.IsNullOrEmpty(args.Exec)) return;
+
+            Console.WriteLine("Launching {0} {1}", args.Exec, args.ExecArgs);
+            var results = ProcessHelper.Run(
+                Console.WriteLine, Console.Error.WriteLine,
+                null, args.Exec, args.ExecArgs, gitDirectory);
+            if (results != 0)
+                throw new ErrorException(string.Format("Execution of {0} failed, non-zero return code", args.Exec));
         }
     }
 }

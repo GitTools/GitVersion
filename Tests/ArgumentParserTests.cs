@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using GitVersion;
 using NUnit.Framework;
 
@@ -40,6 +41,56 @@ public class ArgumentParserTests
         Assert.IsNull(arguments.TargetPath);
         Assert.IsNull(arguments.LogFilePath);
         Assert.IsTrue(arguments.IsHelp);
+    }
+
+    [Test]
+    public void exec()
+    {
+        var arguments = ArgumentParser.ParseArguments("-exec rake");
+        Assert.AreEqual("rake", arguments.Exec);
+    }
+
+    [Test]
+    public void exec_with_args()
+    {
+        var arguments = ArgumentParser.ParseArguments(new List<string>
+        {
+            "-exec",
+            "rake",
+            "-execargs",
+            "clean build"
+        });
+        Assert.AreEqual("rake", arguments.Exec);
+        Assert.AreEqual("clean build", arguments.ExecArgs);
+    }
+
+    [Test]
+    public void msbuild()
+    {
+        var arguments = ArgumentParser.ParseArguments("-proj msbuild.proj");
+        Assert.AreEqual("msbuild.proj", arguments.Proj);
+    }
+
+    [Test]
+    public void msbuild_with_args()
+    {
+        var arguments = ArgumentParser.ParseArguments(new List<string>
+        {
+            "-proj",
+            "msbuild.proj",
+            "-projargs",
+            "/p:Configuration=Debug /p:Platform=AnyCPU"
+        });
+        Assert.AreEqual("msbuild.proj", arguments.Proj);
+        Assert.AreEqual("/p:Configuration=Debug /p:Platform=AnyCPU", arguments.ProjArgs);
+    }
+
+    [Test]
+    public void execwith_targetdirectory()
+    {
+        var arguments = ArgumentParser.ParseArguments("targetDirectoryPath -exec rake");
+        Assert.AreEqual("targetDirectoryPath", arguments.TargetPath);
+        Assert.AreEqual("rake", arguments.Exec);
     }
 
     [Test]

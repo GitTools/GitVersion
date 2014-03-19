@@ -82,6 +82,7 @@
     <Compile Include="HelpWriter.cs" />
     <Compile Include="GitFlow\ReleaseInformation.cs" />
     <Compile Include="GitFlow\ReleaseInformationCalculator.cs" />
+    <Compile Include="ProcessHelper.cs" />
     <Compile Include="ReleaseDate.cs" />
     <Compile Include="ReleaseDateFinder.cs" />
     <Compile Include="SemanticVersionTag.cs" />

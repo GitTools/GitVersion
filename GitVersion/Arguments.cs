@@ -31,5 +31,10 @@ namespace GitVersion
         public string VersionPart;
 
         public OutputType Output;
+        
+        public string Proj;
+        public string ProjArgs;
+        public string Exec;
+        public string ExecArgs;
     }
 }
