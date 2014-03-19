@@ -1,0 +1,17 @@
+﻿{
+  "Major":1,
+  "Minor":0,
+  "Patch":4,
+  "Suffix":"",
+  "LongVersion":"1.0.4 Sha:'000000000000000000000000000000000000000'",
+  "NugetVersion":"1.0.4",
+  "ShortVersion":"1.0.4",
+  "BranchName":"master",
+  "BranchType":"Master",
+  "Sha":"000000000000000000000000000000000000000",
+  "MajorMinorPatch":"1.0.4",
+  "SemVer":"1.0.4",
+  "Version":"1.0.4",
+  "PreReleasePartTwo":2,
+  "Stability":"Final"
+}
