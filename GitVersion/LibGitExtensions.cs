@@ -30,8 +30,8 @@ namespace GitVersion
                 return exact;
             }
 
-            return repository.Branches.FirstOrDefault(x => x.Name == "origin/"+branchName);
-         }
+            return repository.Branches.FirstOrDefault(x => x.Name == "origin/" + branchName);
+        }
 
         public static SemanticVersion NewestSemVerTag(this IRepository repository, Commit commit)
         {
@@ -43,6 +43,7 @@ namespace GitVersion
                     return version;
                 }
             }
+
             return null;
         }
 
@@ -67,7 +68,7 @@ namespace GitVersion
 
             while (target is TagAnnotation)
             {
-                target = ((TagAnnotation) (target)).Target;
+                target = ((TagAnnotation)(target)).Target;
             }
 
             return target;

@@ -53,7 +53,8 @@
                 return;
             }
 
-            WriteIntegrationParameters(versionAndBranch, BuildServerList.GetApplicableBuildServers());
+            var arguments = new Arguments();
+            WriteIntegrationParameters(versionAndBranch, BuildServerList.GetApplicableBuildServers(arguments));
         }
 
         public void WriteIntegrationParameters(VersionAndBranch versionAndBranch, IEnumerable<IBuildServer> applicableBuildServers)
@@ -69,6 +70,5 @@
                 }
             }
         }
-  
     }
 }

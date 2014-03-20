@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="ArgumentParser.cs" />
     <Compile Include="Arguments.cs" />
+    <Compile Include="BuildServers\BuildServerBase.cs" />
     <Compile Include="GitFlow\GitFlowVersionFinder.cs" />
     <Compile Include="GitFlow\BranchClassifier.cs" />
     <Compile Include="GitFlow\BranchFinders\DevelopBasedVersionFinderBase.cs" />
@@ -68,6 +69,8 @@
     <Compile Include="GitHubFlow\LastTaggedReleaseFinder.cs" />
     <Compile Include="GitHubFlow\NextSemverCalculator.cs" />
     <Compile Include="GitHubFlow\NextVersionTxtFileFinder.cs" />
+    <Compile Include="GitPreparer.cs" />
+    <Compile Include="Helpers\DeleteHelper.cs" />
     <Compile Include="OutputFormatters\BuildOutputFormatter.cs" />
     <Compile Include="BuildServers\BuildServerList.cs" />
     <Compile Include="BuildServers\ContinuaCi.cs" />

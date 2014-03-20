@@ -5,34 +5,50 @@
 
     public static class BuildServerList
     {
-        public static List<IBuildServer> BuildServers = new List<IBuildServer>
-            {
-                new ContinuaCi(),
-                new TeamCity()
-            };
+        static List<IBuildServer> BuildServers;
 
-        public static Func<IEnumerable<IBuildServer>> Selector = () => DefaultSelector();
+        public static Func<Arguments, IEnumerable<IBuildServer>> Selector = arguments => DefaultSelector(arguments);
 
         public static void ResetSelector()
         {
             Selector = DefaultSelector;
         }
 
-        public static IEnumerable<IBuildServer> GetApplicableBuildServers()
+        public static IEnumerable<IBuildServer> GetApplicableBuildServers(Arguments arguments)
         {
-            return Selector();
+            return Selector(arguments);
         }
 
-        static IEnumerable<IBuildServer> DefaultSelector()
+        static IEnumerable<IBuildServer> DefaultSelector(Arguments arguments)
         {
+            if (BuildServers == null)
+            {
+                BuildServers = new List<IBuildServer>
+                {
+                    new ContinuaCi(arguments),
+                    new TeamCity(arguments)
+                };
+            }
+
+            var buildServices = new List<IBuildServer>();
+
             foreach (var buildServer in BuildServers)
             {
-                if (buildServer.CanApplyToCurrentContext())
+                try
                 {
-                    Logger.WriteInfo(string.Format("Applicable build agent found: '{0}'.", buildServer.GetType().Name));
-                    yield return buildServer;
+                    if (buildServer.CanApplyToCurrentContext())
+                    {
+                        Logger.WriteInfo(string.Format("Applicable build agent found: '{0}'.", buildServer.GetType().Name));
+                        buildServices.Add(buildServer);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteWarning(string.Format("Failed to check build server '{0}': {1}", buildServer.GetType().Name, ex.Message));
                 }
             }
+
+            return buildServices;
         }
     }
 }

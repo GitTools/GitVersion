@@ -2,24 +2,32 @@
 {
     using System;
 
-    public class TeamCity : IBuildServer
+    public class TeamCity : BuildServerBase
     {
-        public bool CanApplyToCurrentContext()
+        readonly Arguments _arguments;
+
+        public TeamCity(Arguments arguments)
+        {
+            _arguments = arguments;
+        }
+
+
+        public override bool CanApplyToCurrentContext()
         {
             return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TEAMCITY_VERSION"));
         }
 
-        public void PerformPreProcessingSteps(string gitDirectory)
+        public override void PerformPreProcessingSteps(string gitDirectory)
         {
             if (string.IsNullOrEmpty(gitDirectory))
             {
                 throw new ErrorException("Failed to find .git directory on agent. Please make sure agent checkout mode is enabled for you VCS roots - http://confluence.jetbrains.com/display/TCD8/VCS+Checkout+Mode");
             }
 
-            GitHelper.NormalizeGitDirectory(gitDirectory);
+            GitHelper.NormalizeGitDirectory(gitDirectory, _arguments);
         }
 
-        public string[] GenerateSetParameterMessage(string name, string value)
+        public override string[] GenerateSetParameterMessage(string name, string value)
         {
             return new[]
             {
@@ -29,7 +37,7 @@
             };
         }
 
-        public string GenerateSetVersionMessage(string versionToUseForBuildNumber)
+        public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
         {
             return string.Format("##teamcity[buildNumber '{0}']", EscapeValue(versionToUseForBuildNumber));
         }

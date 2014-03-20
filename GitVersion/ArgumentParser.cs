@@ -16,9 +16,9 @@ namespace GitVersion
             if (commandLineArguments.Count == 0)
             {
                 return new Arguments
-                    {
-                        TargetPath = Environment.CurrentDirectory
-                    };
+                {
+                    TargetPath = Environment.CurrentDirectory
+                };
             }
 
             var firstArgument = commandLineArguments.First();
@@ -33,9 +33,9 @@ namespace GitVersion
             if (commandLineArguments.Count == 1)
             {
                 return new Arguments
-                    {
-                        TargetPath = firstArgument
-                    };
+                {
+                    TargetPath = firstArgument
+                };
             }
 
             List<string> namedArguments;
@@ -64,9 +64,45 @@ namespace GitVersion
                     continue;
                 }
 
+                if (IsSwitch("url", name))
+                {
+                    arguments.TargetUrl = value;
+                    continue;
+                }
+
+                if (IsSwitch("b", name))
+                {
+                    arguments.TargetBranch = value;
+                    continue;
+                }
+
+                if (IsSwitch("u", name))
+                {
+                    arguments.Username = value;
+                    continue;
+                }
+
+                if (IsSwitch("p", name))
+                {
+                    arguments.Password = value;
+                    continue;
+                }
+
                 if ((IsSwitch("v", name)) && VersionParts.Contains(value.ToLower()))
                 {
                     arguments.VersionPart = value.ToLower();
+                    continue;
+                }
+
+                if (IsSwitch("output", name))
+                {
+                    var outputType = OutputType.Json;
+                    if (!Enum.TryParse(value, true, out outputType))
+                    {
+                        throw new ErrorException(string.Format("Value '{0}' cannot be parsed as output type, please use 'json' or 'buildserver'", value));
+                    }
+
+                    arguments.Output = outputType;
                     continue;
                 }
 
@@ -101,13 +137,10 @@ namespace GitVersion
 
         static bool IsHelp(string singleArgument)
         {
-            return (singleArgument == "?") ||
-                   (singleArgument == "/h") ||
-                   (singleArgument == "/help") ||
-                   (singleArgument == "/?") ||
-                   (singleArgument == "-h") ||
-                   (singleArgument == "-help") ||
-                   (singleArgument == "-?");
+            return (singleArgument == "?") || 
+                IsSwitch("h", singleArgument) || 
+                IsSwitch("help", singleArgument) || 
+                IsSwitch("?", singleArgument);
         }
 
         static string[] VersionParts = {"major", "minor", "patch", "long", "short", "nuget"};

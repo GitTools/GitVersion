@@ -2,38 +2,61 @@
 {
     using Microsoft.Win32;
 
-    public class ContinuaCi : IBuildServer
+    public class ContinuaCi : BuildServerBase
     {
-        public bool CanApplyToCurrentContext()
+        readonly Arguments _arguments;
+
+        public ContinuaCi(Arguments arguments)
         {
-            using (var registryKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\VSoft Technologies\\Continua CI Agent"))
-            {
-                return registryKey != null;
-            }
+            _arguments = arguments;
         }
 
-        public void PerformPreProcessingSteps(string gitDirectory)
+        public override bool CanApplyToCurrentContext()
+        {
+            const string KeyName = @"Software\VSoft Technologies\Continua CI Agent";
+
+            if (RegistryKeyExists(KeyName, RegistryView.Registry32))
+            {
+                return true;
+            }
+
+            if (RegistryKeyExists(KeyName, RegistryView.Registry64))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public override void PerformPreProcessingSteps(string gitDirectory)
         {
             if (string.IsNullOrEmpty(gitDirectory))
             {
                 throw new ErrorException("Failed to find .git directory on agent");
             }
 
-            GitHelper.NormalizeGitDirectory(gitDirectory);
+            GitHelper.NormalizeGitDirectory(gitDirectory, _arguments);
         }
 
-        public string[] GenerateSetParameterMessage(string name, string value)
+        public override string[] GenerateSetParameterMessage(string name, string value)
         {
-            return new []
+            return new[]
             {
-                string.Format("@@continua[setVariable name='GitVersion.{0}' value='{1}']", name, value)
+                string.Format("@@continua[setVariable name='GitVersion_{0}' value='{1}']", name, value)
             };
         }
 
-        public string GenerateSetVersionMessage(string versionToUseForBuildNumber)
+        public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
         {
             return string.Format("@@continua[setBuildVersion value='{0}']", versionToUseForBuildNumber);
         }
-    }
 
+        private static bool RegistryKeyExists(string keyName, RegistryView registryView)
+        {
+            var localKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, registryView);
+            localKey = localKey.OpenSubKey(keyName);
+
+            return localKey != null;
+        }
+    }
 }
