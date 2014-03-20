@@ -43,7 +43,9 @@
                         break;
                 }
             }
-            return string.Format("{0}.{1}.{2}{3}", semVer.Major, semVer.Minor, semVer.Patch, prereleaseString);
+            return string.Format("{0}.{1}.{2}{3}{4}", 
+                semVer.Major, semVer.Minor, semVer.Patch, prereleaseString, 
+                semVer.PreReleasePartTwo == null ? null : "+" + semVer.PreReleasePartTwo);
         }
     }
 }

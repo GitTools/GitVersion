@@ -77,7 +77,7 @@
     <Compile Include="BuildServers\GitHelper.cs" />
     <Compile Include="BuildServers\IBuildServer.cs" />
     <Compile Include="BuildServers\TeamCity.cs" />
-    <Compile Include="GitFlow\VariableProvider.cs" />
+    <Compile Include="OutputVariables\VariableProvider.cs" />
     <Compile Include="GitVersionContext.cs" />
     <Compile Include="HelpWriter.cs" />
     <Compile Include="GitFlow\ReleaseInformation.cs" />
@@ -86,7 +86,7 @@
     <Compile Include="ReleaseDateFinder.cs" />
     <Compile Include="SemanticVersionTag.cs" />
     <Compile Include="OutputFormatters\JsonOutputFormatter.cs" />
-    <Compile Include="VersionBuilders\NugetVersionBuilder.cs" />
+    <Compile Include="OutputVariables\VersionBuilders\NugetVersionBuilder.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="ShortVersionParser.cs" />
     <Compile Include="VersionOnMasterFinder.cs" />
@@ -94,7 +94,7 @@
     <Compile Include="CachedVersion.cs" />
     <Compile Include="DirectoryDateFinder.cs" />
     <Compile Include="GitDirFinder.cs" />
-    <Compile Include="VersionBuilders\InformationalVersionBuilder.cs" />
+    <Compile Include="OutputVariables\VersionBuilders\InformationalVersionBuilder.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="GitFlow\MergeMessageParser.cs" />
     <Compile Include="GitFlow\BranchFinders\PullVersionFinder.cs" />
@@ -108,7 +108,7 @@
     <Compile Include="RepositoryLoader.cs" />
     <Compile Include="SearchPath.cs" />
     <Compile Include="SemanticVersionParser.cs" />
-    <Compile Include="VersionBuilders\SemVerVersionBuilder.cs" />
+    <Compile Include="OutputVariables\VersionBuilders\SemVerVersionBuilder.cs" />
     <Compile Include="SemanticVersion.cs" />
     <Compile Include="GitFlow\Stability.cs" />
     <Compile Include="GitFlow\VersionAndBranch.cs" />
