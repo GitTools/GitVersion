@@ -9,7 +9,7 @@ namespace GitVersion
             var message =
 @"Use convention to derive a SemVer product version from a GitFlow or GitHub based repository.
 
-GitVersion [path] [/l logFilePath] [/exec executable] [/execargs args]
+GitVersion [path] [/l logFilePath]
 
     path       The directory containing .git. If not defined current directory is used.
     /url       Url to remote git repository.

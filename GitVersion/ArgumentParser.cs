@@ -63,7 +63,7 @@ namespace GitVersion
                     arguments.LogFilePath = value;
                     continue;
                 }
-                
+
                 if (IsSwitch("url", name))
                 {
                     arguments.TargetUrl = value;
