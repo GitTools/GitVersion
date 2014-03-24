@@ -6,7 +6,7 @@ namespace GitVersion
     using System.Runtime.InteropServices;
     using System.Threading;
 
-    public static class ProcessHelper
+    static class ProcessHelper
     {
         private static volatile object _lockObject = new object();
 
@@ -88,16 +88,13 @@ namespace GitVersion
         }
 
         [Flags]
-        public enum ErrorModes
+        enum ErrorModes
         {
-            Default = 0x0,
             FailCriticalErrors = 0x1,
-            NoGpFaultErrorBox = 0x2,
-            NoAlignmentFaultExcept = 0x4,
-            NoOpenFileErrorBox = 0x8000
+            NoGpFaultErrorBox = 0x2
         }
 
-        public struct ChangeErrorMode : IDisposable
+        struct ChangeErrorMode : IDisposable
         {
             private readonly int _oldMode;
 
