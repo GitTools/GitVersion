@@ -44,7 +44,7 @@ namespace GitVersion
                 {
                     foreach (var buildServer in applicableBuildServers)
                     {
-                        buildServer.WriteIntegration(versionAndBranch, Logger.WriteInfo);
+                        buildServer.WriteIntegration(versionAndBranch, Console.WriteLine);
                     }
                 }
 
