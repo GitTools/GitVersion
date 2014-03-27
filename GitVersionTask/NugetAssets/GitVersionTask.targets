@@ -16,20 +16,19 @@
       <WriteVersionInfoToBuildLog
         SolutionDirectory="$(SolutionDir)"
         />
-        <UpdateAssemblyInfo 
-          SolutionDirectory="$(SolutionDir)"
-          AssemblyName="$(AssemblyName)" 
-          ProjectFile="$(ProjectPath)" 
-          SignAssembly="$(SignAssembly)"
-          CompileFiles ="@(Compile)">
-          <Output 
-            TaskParameter="AssemblyInfoTempFilePath" 
-            PropertyName="AssemblyInfoTempFilePath" />
-        </UpdateAssemblyInfo>
+      <UpdateAssemblyInfo 
+        SolutionDirectory="$(SolutionDir)"
+        ProjectFile="$(ProjectPath)" 
+        SignAssembly="$(SignAssembly)"
+        CompileFiles ="@(Compile)">
+        <Output 
+          TaskParameter="AssemblyInfoTempFilePath" 
+          PropertyName="AssemblyInfoTempFilePath" />
+      </UpdateAssemblyInfo>
 
-        <ItemGroup>
-            <Compile Include="$(AssemblyInfoTempFilePath)" />
-        </ItemGroup>
+      <ItemGroup>
+          <Compile Include="$(AssemblyInfoTempFilePath)" />
+      </ItemGroup>
     </Target>
 
   <!--Support for ncrunch-->

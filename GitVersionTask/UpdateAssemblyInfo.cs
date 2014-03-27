@@ -18,8 +18,6 @@
         [Required]
         public string ProjectFile { get; set; }
         [Required]
-        public string AssemblyName { get; set; }
-        [Required]
         public ITaskItem[] CompileFiles { get; set; }
 
         [Output]
@@ -80,8 +78,7 @@
             var assemblyInfoBuilder = new AssemblyInfoBuilder
                                       {
                                           VersionAndBranch = versionAndBranch,
-                                          SignAssembly = SignAssembly,
-                                          AssemblyName = AssemblyName
+                                          SignAssembly = SignAssembly
                                       };
             var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText();
 
