@@ -11,7 +11,7 @@ namespace GitVersion
             {
                 var remote = EnsureOnlyOneRemoteIsDefined(repo);
 
-                FetchMissingMasterRefSpec(repo, remote);
+                AddMissingRefSpecs(repo, remote);
 
                 Logger.WriteInfo(string.Format("Fetching from remote '{0}' using the following refspecs: {1}.",
                     remote.Name, string.Join(", ", remote.FetchRefSpecs.Select(r => r.Specification))));
@@ -41,18 +41,17 @@ namespace GitVersion
             }
         }
 
-        static void FetchMissingMasterRefSpec(Repository repo, Remote remote)
+        static void AddMissingRefSpecs(Repository repo, Remote remote)
         {
-            if (remote.FetchRefSpecs.Any(r => r.Source == "refs/heads/master"))
+            if (remote.FetchRefSpecs.Any(r => r.Source == "refs/heads/*"))
                 return;
 
-            string masterRefSpec = string.Format("+refs/heads/master:refs/remotes/{0}/master", remote.Name);
+            string masterRefSpec = string.Format("+refs/heads/*:refs/remotes/{0}/*", remote.Name);
 
             Logger.WriteInfo(string.Format("Adding refspec: {0}", masterRefSpec));
 
             repo.Network.Remotes.Update(remote,
-                r => r.FetchRefSpecs.Add(masterRefSpec),
-                r => r.PushRefSpecs.Add(masterRefSpec));
+                r => r.FetchRefSpecs.Add(masterRefSpec));
         }
 
         static FetchOptions BuildFetchOptions(string username, string password)
