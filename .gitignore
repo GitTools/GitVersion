@@ -31,6 +31,7 @@
 *.vspscc
 .builds
 *.dotCover
+*.orig
 
 ##  If you have NuGet Package Restore enabled, uncomment this
 packages/

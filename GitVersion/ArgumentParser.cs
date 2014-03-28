@@ -88,6 +88,30 @@ namespace GitVersion
                     continue;
                 }
 
+                if (IsSwitch("exec", name))
+                {
+                    arguments.Exec = value;
+                    continue;
+                }
+
+                if (IsSwitch("execargs", name))
+                {
+                    arguments.ExecArgs = value;
+                    continue;
+                }
+
+                if (IsSwitch("proj", name))
+                {
+                    arguments.Proj = value;
+                    continue;
+                }
+
+                if (IsSwitch("projargs", name))
+                {
+                    arguments.ProjArgs = value;
+                    continue;
+                }
+
                 if ((IsSwitch("v", name)) && VersionParts.Contains(value.ToLower()))
                 {
                     arguments.VersionPart = value.ToLower();
