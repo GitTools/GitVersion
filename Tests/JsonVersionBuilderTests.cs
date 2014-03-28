@@ -18,7 +18,7 @@ public class JsonVersionBuilderTests
                                                            Major = 1,
                                                            Minor = 2,
                                                            Patch = 3,
-                                                           Tag = "unstable4",
+                                                           Tag = "1.2.3-unstable4",
                                                            Suffix = "a682956d",
                                                        }
                               };
