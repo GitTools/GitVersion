@@ -13,8 +13,5 @@
     <description>Derives SemVer information from a repository following GitFlow or GitHubFlow.</description>
     <language>en-AU</language>
     <tags>Git, Versioning, GitVersion, GitFlowVersion, GitFlow, GitHubFlow, SemVer</tags>
-    <dependencies>
-      <dependency id="LibGit2Sharp"  version="0.14.1.0" />
-    </dependencies>
   </metadata>
 </package>
