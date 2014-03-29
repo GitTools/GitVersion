@@ -3,8 +3,9 @@
     "Major": 1,
     "Minor": 1,
     "Patch": 0,
-    "Tag": {
-        "name": "unstable3"
+    "PreReleaseTag": {
+        "Name": "unstable",
+        "Number": 3
     },
     "PreReleasePartTwo": null
 }

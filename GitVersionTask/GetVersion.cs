@@ -13,48 +13,55 @@
         public string SolutionDirectory { get; set; }
 
         [Output]
-        public Stability? Stability { get; set; }
+        public string Major { get; set; }
 
         [Output]
-        public int? PreReleasePartTwo { get; set; }
+        public string Minor { get; set; }
 
         [Output]
-        public int? PreReleasePartOne { get; set; }
+        public string Patch { get; set; }
 
         [Output]
-        public string SemVer { get; set; }
+        public string PreReleaseTag { get; set; }
 
         [Output]
-        public string Sha { get; set; }
-
-        [Output]
-        public string BranchType { get; set; }
-
-        [Output]
-        public string BranchName { get; set; }
-        [Output]
-        public string MajorMinorPatch { get; set; }
-
-        [Output]
-        public string ShortVersion { get; set; }
-
-        [Output]
-        public string NugetVersion { get; set; }
-
-        [Output]
-        public string LongVersion { get; set; }
+        public string PreReleaseTagWithDash { get; set; }
 
         [Output]
         public string Suffix { get; set; }
 
         [Output]
-        public int Patch { get; set; }
+        public string InformationalVersion { get; set; }
 
         [Output]
-        public int Minor { get; set; }
+        public string MajorMinorPatch { get; set; }
 
         [Output]
-        public int Major { get; set; }
+        public string SemVer { get; set; }
+
+        [Output]
+        public string SemVerPadded { get; set; }
+
+        [Output]
+        public string AssemblySemVer { get; set; }
+
+        [Output]
+        public string FullSemVer { get; set; }
+
+        [Output]
+        public string FullSemVerPadded { get; set; }
+
+        [Output]
+        public string ClassicVersion { get; set; }
+
+        [Output]
+        public string BranchName { get; set; }
+
+        [Output]
+        public string BranchType { get; set; }
+
+        [Output]
+        public string Sha { get; set; }
 
         TaskLogger logger;
 
@@ -72,22 +79,12 @@
                 VersionAndBranchAndDate versionAndBranch;
                 if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch))
                 {
-                    MajorMinorPatch = string.Format("{0}.{1}.{2}", versionAndBranch.Version.Major, versionAndBranch.Version.Minor, versionAndBranch.Version.Patch);
-                    Major = versionAndBranch.Version.Major;
-                    Minor = versionAndBranch.Version.Minor;
-                    Patch = versionAndBranch.Version.Patch;
-                    Suffix = versionAndBranch.Version.Suffix;
-                    LongVersion = versionAndBranch.ToLongString();
-                    NugetVersion = versionAndBranch.GenerateNugetVersion();
-                    ShortVersion = versionAndBranch.ToShortString();
-                    BranchName = versionAndBranch.BranchName;
-                    BranchType = versionAndBranch.BranchType == null ? null : versionAndBranch.BranchType.ToString();
-                    Sha = versionAndBranch.Sha;
-                    SemVer = versionAndBranch.GenerateSemVer();
-                    var releaseInformation = ReleaseInformationCalculator.Calculate(versionAndBranch.BranchType, versionAndBranch.Version.Tag);
-                    PreReleasePartOne = releaseInformation.ReleaseNumber;
-                    PreReleasePartTwo = versionAndBranch.Version.PreReleasePartTwo;
-                    Stability = releaseInformation.Stability;
+                    var thisType = typeof(GetVersion);
+                    var variables = versionAndBranch.ToKeyValue();
+                    foreach (var variable in variables)
+                    {
+                        thisType.GetProperty(variable.Key).SetValue(this, variable.Value, null);
+                    }
                 }
                 return true;
             }

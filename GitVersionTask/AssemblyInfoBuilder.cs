@@ -1,5 +1,6 @@
 ﻿namespace GitVersionTask
 {
+    using System.Text;
     using GitVersion;
 
     public class AssemblyInfoBuilder
@@ -15,19 +16,7 @@ using System.Reflection;
 [assembly: AssemblyVersion(""{0}"")]
 [assembly: AssemblyFileVersion(""{1}"")]
 [assembly: AssemblyInformationalVersion(""{2}"")]
-[assembly: NugetVersion(""{3}"")]
-[assembly: ReleaseDate(""{5}"", ""{6}"")]
-
-[System.Runtime.CompilerServices.CompilerGenerated]
-class NugetVersionAttribute : Attribute
-{{
-    public NugetVersionAttribute(string version)
-    {{
-        Version = version;
-    }}
-
-    public string Version{{get;set;}}
-}}
+[assembly: ReleaseDate(""{3}"", ""{4}"")]
 
 [System.Runtime.CompilerServices.CompilerGenerated]
 class ReleaseDateAttribute : System.Attribute
@@ -45,18 +34,27 @@ class ReleaseDateAttribute : System.Attribute
 [System.Runtime.CompilerServices.CompilerGenerated]
 static class GitVersionInformation
 {{
-    public static string AssemblyVersion = ""{0}"";
-    public static string AssemblyFileVersion = ""{1}"";
-    public static string AssemblyInformationalVersion = ""{2}"";
-    public static string NugetVersion = ""{3}"";
-    public static string SemVer = ""{4}"";
+{5}
 }}
 
 
-", GetAssemblyVersion(), GetAssemblyFileVersion(), VersionAndBranch.ToLongString(), VersionAndBranch.GenerateNugetVersion(), VersionAndBranch.GenerateSemVer(),
- VersionAndBranch.ReleaseDate.OriginalDate.UtcDateTime.ToString("yyyy-MM-dd"), VersionAndBranch.ReleaseDate.Date.UtcDateTime.ToString("yyyy-MM-dd"));
+", GetAssemblyVersion(), GetAssemblyFileVersion(), VersionAndBranch.ToLongString(), 
+ VersionAndBranch.ReleaseDate.OriginalDate.UtcDateTime.ToString("yyyy-MM-dd"), 
+ VersionAndBranch.ReleaseDate.Date.UtcDateTime.ToString("yyyy-MM-dd"),
+ GenerateVariableMembers());
 
             return assemblyInfo;
+        }
+
+        string GenerateVariableMembers()
+        {
+            var members = new StringBuilder();
+            foreach (var variable in VersionAndBranch.ToKeyValue())
+            {
+                members.AppendLine(string.Format("    public static string {0} = \"{1}\";", variable.Key, variable.Value));
+            }
+
+            return members.ToString();
         }
 
         string GetAssemblyVersion()

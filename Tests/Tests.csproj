@@ -102,6 +102,7 @@
     <Compile Include="BuildServers\ContinuaCiTests.cs" />
     <Compile Include="GitFlow\GitFlowVersionFinderTests.cs" />
     <Compile Include="GitHelperTests.cs" />
+    <Compile Include="GitVersionTask.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\DirectoryHelper.cs" />
     <Compile Include="Helpers\FindersHelper.cs" />
@@ -117,8 +118,6 @@
     <Compile Include="Mocks\MockMergeCommit.cs" />
     <Compile Include="Mocks\MockReflogCollection.cs" />
     <Compile Include="Mocks\MockTagAnnotation.cs" />
-    <Compile Include="OutputVariables\NugetVersionBuilderTests.cs" />
-    <Compile Include="GitFlow\ReleaseInformationCalculatorTests.cs" />
     <Compile Include="SemanticVersionParserTests.cs" />
     <Compile Include="ShortVersionParserTests.cs" />
     <Compile Include="UpdateAssemblyInfoTests.cs" />

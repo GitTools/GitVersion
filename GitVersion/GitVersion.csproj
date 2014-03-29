@@ -80,14 +80,11 @@
     <Compile Include="OutputVariables\VariableProvider.cs" />
     <Compile Include="GitVersionContext.cs" />
     <Compile Include="HelpWriter.cs" />
-    <Compile Include="GitFlow\ReleaseInformation.cs" />
-    <Compile Include="GitFlow\ReleaseInformationCalculator.cs" />
     <Compile Include="ProcessHelper.cs" />
     <Compile Include="ReleaseDate.cs" />
     <Compile Include="ReleaseDateFinder.cs" />
-    <Compile Include="SemanticVersionTag.cs" />
+    <Compile Include="SemanticVersionPreReleaseTag.cs" />
     <Compile Include="OutputFormatters\JsonOutputFormatter.cs" />
-    <Compile Include="OutputVariables\VersionBuilders\NugetVersionBuilder.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="ShortVersionParser.cs" />
     <Compile Include="VersionOnMasterFinder.cs" />

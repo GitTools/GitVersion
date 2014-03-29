@@ -4,8 +4,9 @@
         "Major": 0,
         "Minor": 1,
         "Patch": 4,
-        "Tag": {
-            "name": "hotfix0"
+        "PreReleaseTag": {
+            "Name": "hotfix",
+            "Number": 0
         },
         "PreReleasePartTwo": null
     },

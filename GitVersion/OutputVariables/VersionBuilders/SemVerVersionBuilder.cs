@@ -1,51 +1,123 @@
 ﻿namespace GitVersion
 {
-    using System;
-
     public static class SemVerVersionBuilder
     {
+        // TODO move to ToString on SemVer class
         public static string GenerateSemVer(this VersionAndBranch versionAndBranch)
         {
-            var prereleaseString = string.Empty;
-
-            var semVer = versionAndBranch.Version;
-            var releaseInfo = versionAndBranch.CalculateReleaseInfo();
-            if (releaseInfo.Stability == null)
+            if (versionAndBranch.Version.PreReleaseTag.HasTag())
             {
-                throw new Exception("Stability cannot be null");
+                return string.Format("{0}.{1}.{2}-{3}",
+                    versionAndBranch.Version.Major,
+                    versionAndBranch.Version.Minor,
+                    versionAndBranch.Version.Patch,
+                    versionAndBranch.Version.PreReleaseTag);
             }
-            if (releaseInfo.Stability != Stability.Final)
+
+            return string.Format("{0}.{1}.{2}",
+                    versionAndBranch.Version.Major,
+                    versionAndBranch.Version.Minor,
+                    versionAndBranch.Version.Patch);
+        }
+
+        // TODO move to ToString on SemVer class
+        public static string GenerateAssemblySemVer(this VersionAndBranch versionAndBranch)
+        {
+            return string.Format("{0}.{1}.{2}.0",
+                    versionAndBranch.Version.Major,
+                    versionAndBranch.Version.Minor,
+                    versionAndBranch.Version.Patch);
+        }
+
+        // TODO move to ToString on SemVer class
+        public static string GenerateClassicVersion(this VersionAndBranch versionAndBranch)
+        {
+            if (versionAndBranch.Version.PreReleaseTag.HasTag())
             {
-                var preReleaseVersion = releaseInfo.ReleaseNumber.ToString();
-                if (semVer.PreReleasePartTwo != null)
-                {
-                    preReleaseVersion += "." + semVer.PreReleasePartTwo;
-                }
-
-                switch (versionAndBranch.BranchType)
-                {
-                    case BranchType.Develop:
-                        prereleaseString = "-" + releaseInfo.Stability + preReleaseVersion;
-                        break;
-
-                    case BranchType.Release:
-                        prereleaseString = "-" + releaseInfo.Stability + preReleaseVersion;
-                        break;
-
-                    case BranchType.Hotfix:
-                        prereleaseString = "-" + releaseInfo.Stability + preReleaseVersion;
-                        break;
-                    case BranchType.PullRequest:
-                        prereleaseString = "-PullRequest-" + semVer.Suffix;
-                        break;
-                    case BranchType.Feature:
-                        prereleaseString = "-Feature-" + versionAndBranch.BranchName + "-" + versionAndBranch.Sha;
-                        break;
-                }
+                return string.Format("{0}.{1}.{2}.{3}",
+                    versionAndBranch.Version.Major,
+                    versionAndBranch.Version.Minor,
+                    versionAndBranch.Version.Patch,
+                    versionAndBranch.Version.PreReleaseTag.Number ?? 0);
             }
-            return string.Format("{0}.{1}.{2}{3}{4}", 
-                semVer.Major, semVer.Minor, semVer.Patch, prereleaseString, 
-                semVer.PreReleasePartTwo == null ? null : "+" + semVer.PreReleasePartTwo);
+
+            return string.Format("{0}.{1}.{2}.0",
+                    versionAndBranch.Version.Major,
+                    versionAndBranch.Version.Minor,
+                    versionAndBranch.Version.Patch);
+        }
+
+        // TODO move to ToString on SemVer class
+        public static string GeneratePaddedSemVer(this VersionAndBranch versionAndBranch)
+        {
+            //TODO Fix Padded SemVer
+            if (versionAndBranch.Version.PreReleaseTag.HasTag())
+            {
+                return string.Format("{0}.{1}.{2}-{3}",
+                    versionAndBranch.Version.Major,
+                    versionAndBranch.Version.Minor,
+                    versionAndBranch.Version.Patch,
+                    versionAndBranch.Version.PreReleaseTag.ToString("p"));
+            }
+
+            return string.Format("{0}.{1}.{2}",
+                    versionAndBranch.Version.Major,
+                    versionAndBranch.Version.Minor,
+                    versionAndBranch.Version.Patch);
+        }
+
+        // TODO move to ToString on SemVer class
+        public static string GenerateFullSemVer(this VersionAndBranch versionAndBranch)
+        {
+            if (versionAndBranch.Version.PreReleaseTag.HasTag())
+            {
+                return string.Format("{0}.{1}.{2}-{3}",
+                    versionAndBranch.Version.Major,
+                    versionAndBranch.Version.Minor,
+                    versionAndBranch.Version.Patch,
+                    versionAndBranch.Version.PreReleaseTag);
+            }
+
+            return string.Format("{0}.{1}.{2}",
+                    versionAndBranch.Version.Major,
+                    versionAndBranch.Version.Minor,
+                    versionAndBranch.Version.Patch);
+        }
+
+        // TODO move to ToString on SemVer class
+        public static string GeneratePaddedFullSemVer(this VersionAndBranch versionAndBranch)
+        {
+            //TODO Fix Padded SemVer
+            if (versionAndBranch.Version.PreReleaseTag.HasTag() && !string.IsNullOrEmpty(versionAndBranch.Version.Suffix))
+            {
+                return string.Format("{0}.{1}.{2}-{3}+{4}",
+                    versionAndBranch.Version.Major,
+                    versionAndBranch.Version.Minor,
+                    versionAndBranch.Version.Patch,
+                    versionAndBranch.Version.PreReleaseTag.ToString("p"),
+                    versionAndBranch.Version.Suffix);
+            }
+            if (versionAndBranch.Version.PreReleaseTag.HasTag())
+            {
+                return string.Format("{0}.{1}.{2}-{3}",
+                    versionAndBranch.Version.Major,
+                    versionAndBranch.Version.Minor,
+                    versionAndBranch.Version.Patch,
+                    versionAndBranch.Version.PreReleaseTag.ToString("p"));
+            }
+            if (!string.IsNullOrEmpty(versionAndBranch.Version.Suffix))
+            {
+                return string.Format("{0}.{1}.{2}+{3}",
+                    versionAndBranch.Version.Major,
+                    versionAndBranch.Version.Minor,
+                    versionAndBranch.Version.Patch,
+                    versionAndBranch.Version.Suffix);
+            }
+
+            return string.Format("{0}.{1}.{2}",
+                    versionAndBranch.Version.Major,
+                    versionAndBranch.Version.Minor,
+                    versionAndBranch.Version.Patch);
         }
     }
 }

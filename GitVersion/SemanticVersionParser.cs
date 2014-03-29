@@ -62,7 +62,7 @@ namespace GitVersion
                     return false;
                 }
 
-                parsedVersion.Tag = preReleaseParts[0];
+                parsedVersion.PreReleaseTag = preReleaseParts[0];
 
                 if ((preReleaseParts.Length > 1))
                 {

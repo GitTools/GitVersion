@@ -9,16 +9,16 @@ public class SemanticVersionParserTests
     [TestCase("1.2",  1, 2, 0, null, null)]
     [TestCase("1",  1, 0, 0, null, null)]
     [TestCase("1.2.3-beta",  1, 2, 3, "beta", null)]
-    [TestCase("1.2.3-beta3",  1, 2, 3, "beta3", null)]
+    [TestCase("1.2.3-beta3",  1, 2, 3, "beta.3", null)]
     [TestCase("1.2.3-alpha",  1, 2, 3, "alpha", null)]
-    [TestCase("1.2.3-alpha4",  1, 2, 3, "alpha4", null)]
+    [TestCase("1.2.3-alpha4",  1, 2, 3, "alpha.4", null)]
     [TestCase("1.2.3-rc",  1, 2, 3, "rc", null)]
-    [TestCase("1.2.3-rc3",  1, 2, 3, "rc3", null)]
-    [TestCase("1.2.3-RC3",  1, 2, 3, "RC3", null)]
-    [TestCase("1.2.3-rc3.1",  1, 2, 3, "rc3", 1)]
-    [TestCase("01.02.03-rc03",  1, 2, 3, "rc03", null)]
+    [TestCase("1.2.3-rc3",  1, 2, 3, "rc.3", null)]
+    [TestCase("1.2.3-RC3",  1, 2, 3, "RC.3", null)]
+    [TestCase("1.2.3-rc3.1",  1, 2, 3, "rc.3", 1)]
+    [TestCase("01.02.03-rc03",  1, 2, 3, "rc.3", null)]
     [TestCase("1.2.3-beta3f",  1, 2, 3, "beta3f", null)]
-    [TestCase("1.2.3-notAStability1",  1, 2, 3, "notAStability1", null)]
+    [TestCase("1.2.3-notAStability1",  1, 2, 3, "notAStability.1", null)]
     public void ValidateVersionParsing(string versionString, int major, int minor, int patch, string tag, int? preReleaseTwo)
     {
         SemanticVersion version;
@@ -26,7 +26,7 @@ public class SemanticVersionParserTests
         Assert.AreEqual(major, version.Major);
         Assert.AreEqual(minor, version.Minor);
         Assert.AreEqual(patch, version.Patch);
-        Assert.AreEqual(tag, version.Tag.ToString());
+        Assert.AreEqual(tag, version.PreReleaseTag.ToString());
         Assert.AreEqual(preReleaseTwo, version.PreReleasePartTwo);
     }
 

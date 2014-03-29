@@ -20,9 +20,9 @@ namespace GitVersion
             EnsureVersionIsValid(version, context.CurrentBranch, branchType);
 
             if (branchType == BranchType.Hotfix)
-                version.Tag = "hotfix0";
+                version.PreReleaseTag = "hotfix0";
             if (branchType == BranchType.Release)
-                version.Tag = "beta0";
+                version.PreReleaseTag = "beta0";
 
             var tagVersion = RetrieveMostRecentOptionalTagVersion(context.Repository, version, context.CurrentBranch.Commits.Take(nbHotfixCommits + 1));
 
@@ -36,13 +36,13 @@ namespace GitVersion
                     Major = version.Major,
                     Minor = version.Minor,
                     Patch = version.Patch,
-                    Tag = version.Tag
+                    PreReleaseTag = version.PreReleaseTag
                 },
             };
 
             if (tagVersion != null)
             {
-                versionAndBranch.Version.Tag = tagVersion.Tag;
+                versionAndBranch.Version.PreReleaseTag = tagVersion.PreReleaseTag;
             }
 
 
@@ -106,7 +106,7 @@ namespace GitVersion
             var msg = string.Format("Branch '{0}' doesn't respect the {1} branch naming convention. ",
                 branch.Name, branchType);
 
-            if (version.Tag.HasTag() ||
+            if (version.PreReleaseTag.HasTag() ||
                 version.PreReleasePartTwo != null)
             {
                 throw new ErrorException(msg +

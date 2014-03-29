@@ -4,8 +4,9 @@
         "Major": 0,
         "Minor": 2,
         "Patch": 0,
-        "Tag": {
-            "name": null
+        "PreReleaseTag": {
+            "Name": null,
+            "Number": null
         },
         "PreReleasePartTwo": null
     },

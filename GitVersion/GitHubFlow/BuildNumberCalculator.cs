@@ -30,7 +30,7 @@ namespace GitVersion
             {
                 EnsurePullBranchShareACommonAncestorWithMaster(gitRepo, gitRepo.Head);
                 var extractIssueNumber = ExtractIssueNumber(context);
-                semanticVersion.Tag = "unstable" + extractIssueNumber;
+                semanticVersion.PreReleaseTag = "unstable" + extractIssueNumber;
                 semanticVersion.Suffix = extractIssueNumber;
                 return new VersionAndBranch
                 {

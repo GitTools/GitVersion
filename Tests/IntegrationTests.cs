@@ -24,7 +24,7 @@ public class IntegrationTests
                         SemanticVersion version;
                         if (SemanticVersionParser.TryParse(versionPart, out version))
                         {
-                            Debug.WriteLine("{0}.{1}.{2}.{3}.{4}", version.Major, version.Minor, version.Patch, version.Tag, version.Suffix);
+                            Debug.WriteLine("{0}.{1}.{2}.{3}.{4}", version.Major, version.Minor, version.Patch, version.PreReleaseTag, version.Suffix);
                         }
                     }
                 }
@@ -91,7 +91,7 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.Tag);
+            Debug.WriteLine(version.Version.PreReleaseTag);
             Debug.WriteLine(version.Version.PreReleasePartTwo);
             Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Version.Suffix);
@@ -115,7 +115,7 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.Tag);
+            Debug.WriteLine(version.Version.PreReleaseTag);
             Debug.WriteLine(version.Version.PreReleasePartTwo);
             Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Version.Suffix);
@@ -138,7 +138,7 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.Tag);
+            Debug.WriteLine(version.Version.PreReleaseTag);
             Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Version.Suffix);
         }
@@ -160,7 +160,7 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.Tag);
+            Debug.WriteLine(version.Version.PreReleaseTag);
             Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Version.Suffix);
         }
@@ -182,7 +182,7 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.Tag);
+            Debug.WriteLine(version.Version.PreReleaseTag);
             Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Version.Suffix);
         }
@@ -204,7 +204,7 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.Tag);
+            Debug.WriteLine(version.Version.PreReleaseTag);
             Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Version.Suffix);
         }
@@ -238,7 +238,7 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.Tag);
+            Debug.WriteLine(version.Version.PreReleaseTag);
             Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Version.Suffix);
         }
@@ -260,9 +260,8 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.Tag);
+            Debug.WriteLine(version.Version.PreReleaseTag);
             Debug.WriteLine(version.BranchType);
-            Debug.WriteLine(version.ToShortString());
         }
     }
     [Test, Explicit]
@@ -281,7 +280,7 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Major);
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.Tag);
+            Debug.WriteLine(version.Version.PreReleaseTag);
             Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Version.Suffix);
         }

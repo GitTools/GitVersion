@@ -33,7 +33,7 @@ namespace GitVersion
                     Major = versionFromMaster.Major,
                     Minor = versionFromMaster.Minor + 1,
                     Patch = 0,
-                    Tag = "unstable0",
+                    PreReleaseTag = "unstable0",
                     Suffix = ancestor.Prefix()
                 }
             };

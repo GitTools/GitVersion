@@ -4,8 +4,9 @@
         "Major": 0,
         "Minor": 4,
         "Patch": 0,
-        "Tag": {
-            "name": "RC4"
+        "PreReleaseTag": {
+            "Name": "RC",
+            "Number": 4
         },
         "PreReleasePartTwo": 1
     },

@@ -8,12 +8,12 @@ namespace GitVersion
         public int Major;
         public int Minor;
         public int Patch;
-        public SemanticVersionTag Tag;
+        public SemanticVersionPreReleaseTag PreReleaseTag;
         public int? PreReleasePartTwo;
 
         public SemanticVersion()
         {
-            Tag = new SemanticVersionTag();
+            PreReleaseTag = new SemanticVersionPreReleaseTag();
         }
 
         public bool Equals(SemanticVersion obj)
@@ -25,7 +25,7 @@ namespace GitVersion
             return Major == obj.Major &&
                    Minor == obj.Minor &&
                    Patch == obj.Patch &&
-                   Tag == obj.Tag &&
+                   PreReleaseTag == obj.PreReleaseTag &&
                    PreReleasePartTwo == obj.PreReleasePartTwo &&
                    Suffix == obj.Suffix;
         }
@@ -102,9 +102,9 @@ namespace GitVersion
                 }
                 return -1;
             }
-            if (Tag != value.Tag)
+            if (PreReleaseTag != value.PreReleaseTag)
             {
-                if (Tag > value.Tag)
+                if (PreReleaseTag > value.PreReleaseTag)
                 {
                     return 1;
                 }

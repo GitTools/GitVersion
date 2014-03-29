@@ -34,7 +34,7 @@ namespace GitVersion
             {
                 Major = versionFromMaster.Major,
                 Minor = versionFromMaster.Minor,
-                Tag = Stability.Unstable.ToString().ToLower() + preReleasePartOne
+                PreReleaseTag = Stability.Unstable.ToString().ToLower() + preReleasePartOne
             };
         }
 
