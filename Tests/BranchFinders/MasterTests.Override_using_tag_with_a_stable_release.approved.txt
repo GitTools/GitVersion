@@ -10,7 +10,7 @@
         "CommitsSinceTag": null,
         "Branch": "master",
         "Sha": "000000000000000000000000000000000000000",
-        "OriginalReleaseDate": null,
-        "ReleaseDate": null
+        "OriginalReleaseDate": "<date replaced>",
+        "ReleaseDate": "<date replaced>"
     }
 }
