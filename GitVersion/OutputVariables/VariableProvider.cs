@@ -31,7 +31,7 @@
                 {Minor, versionAndBranch.Version.Minor.ToString()},
                 {Patch, versionAndBranch.Version.Patch.ToString()},
                 {PreReleaseTag, versionAndBranch.Version.PreReleaseTag},
-                {PreReleaseTagWithDash, "-" + versionAndBranch.Version.PreReleaseTag},
+                {PreReleaseTagWithDash, versionAndBranch.Version.PreReleaseTag.HasTag() ? "-" + versionAndBranch.Version.PreReleaseTag : null},
                 {Suffix, versionAndBranch.Version.Suffix},
                 {InformationalVersion, versionAndBranch.ToLongString()},
                 {MajorMinorPatch, string.Format("{0}.{1}.{2}", versionAndBranch.Version.Major, versionAndBranch.Version.Minor, versionAndBranch.Version.Patch)},
