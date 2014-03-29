@@ -3,7 +3,7 @@
   "Minor":2,
   "Patch":0,
   "Suffix":"",
-  "LongVersion":"0.2.0 Sha:'000000000000000000000000000000000000000'",
+  "LongVersion":"0.2.0+Sha.000000000000000000000000000000000000000",
   "NugetVersion":"0.2.0",
   "ShortVersion":"0.2.0",
   "BranchName":"master",

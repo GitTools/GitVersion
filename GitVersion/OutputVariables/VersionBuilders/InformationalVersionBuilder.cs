@@ -13,31 +13,31 @@
             if (versionAndBranch.BranchType == BranchType.Feature)
             {
                 var shortSha = versionAndBranch.Sha.Substring(0, 8);
-                return string.Format("{0}-unstable.feature-{1} Branch:'{2}' Sha:'{3}'", versionPrefix, shortSha, versionAndBranch.BranchName, versionAndBranch.Sha);
+                return string.Format("{0}-unstable.feature-{1}+Branch.{2}.Sha.{3}", versionPrefix, shortSha, versionAndBranch.BranchName, versionAndBranch.Sha);
             }
 
             if (versionAndBranch.BranchType == BranchType.PullRequest)
             {
-                return string.Format("{0}-unstable.pull-request-{1} Branch:'{2}' Sha:'{3}'", versionPrefix, GetPreRelease(version.PreReleasePartTwo, releaseInformation), versionAndBranch.BranchName, versionAndBranch.Sha);
+                return string.Format("{0}-unstable.pull-request-{1}+Branch.{2}.Sha.{3}", versionPrefix, GetPreRelease(version.PreReleasePartTwo, releaseInformation), versionAndBranch.BranchName, versionAndBranch.Sha);
             }
 
 
             if (versionAndBranch.BranchType == BranchType.Master)
             {
-                return string.Format("{0} Sha:'{1}'", versionPrefix, versionAndBranch.Sha);
+                return string.Format("{0}+Sha.{1}", versionPrefix, versionAndBranch.Sha);
             }
 
 
             //else Hotfix, Develop or Release
             if (releaseInformation.Stability == Stability.Final)
             {
-                return string.Format("{0} Sha:'{1}'", versionPrefix, versionAndBranch.Sha);
+                return string.Format("{0}+Sha.{1}", versionPrefix, versionAndBranch.Sha);
             }
             if (releaseInformation.Stability == Stability.ReleaseCandidate)
             {
-                return string.Format("{0}-rc{1} Branch:'{2}' Sha:'{3}'", versionPrefix, GetPreRelease(version.PreReleasePartTwo, releaseInformation), versionAndBranch.BranchName, versionAndBranch.Sha);
+                return string.Format("{0}-rc{1}+Branch.{2}.Sha.{3}", versionPrefix, GetPreRelease(version.PreReleasePartTwo, releaseInformation), versionAndBranch.BranchName, versionAndBranch.Sha);
             }
-            return string.Format("{0}-{1}{2} Branch:'{3}' Sha:'{4}'", versionPrefix,releaseInformation.Stability.ToString().ToLowerInvariant(), GetPreRelease(version.PreReleasePartTwo, releaseInformation), versionAndBranch.BranchName, versionAndBranch.Sha);
+            return string.Format("{0}-{1}{2}+Branch.{3}.Sha.{4}", versionPrefix,releaseInformation.Stability.ToString().ToLowerInvariant(), GetPreRelease(version.PreReleasePartTwo, releaseInformation), versionAndBranch.BranchName, versionAndBranch.Sha);
         }
 
         static string GetPreRelease(int? preReleasePartTwo, ReleaseInformation releaseInformation)
