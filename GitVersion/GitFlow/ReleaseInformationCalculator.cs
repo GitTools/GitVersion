@@ -17,9 +17,11 @@ namespace GitVersion
 
         private static int? ReleaseNumber(string tagName)
         {
-            if (tagName == null)
+            if (tagName == null || !tagName.Contains("-"))
+            {
                 return null;
-
+            }
+            
             int releaseNumber;
             var value = Regex.Match(tagName, "\\d+$").Value;
             if (int.TryParse(value, out releaseNumber))
@@ -30,10 +32,12 @@ namespace GitVersion
 
         private static Stability? InferStability(string tagName)
         {
-            if (tagName == null)
+            if (tagName == null || !tagName.Contains("-"))
+            {
                 return Stability.Final;
-
-            var stageString = tagName.TrimEnd("0123456789".ToCharArray());
+            }
+               
+            var stageString = tagName.Substring(tagName.IndexOf("-")+1).TrimEnd("0123456789".ToCharArray());
 
             if (stageString.Equals("RC", StringComparison.InvariantCultureIgnoreCase))
             {
