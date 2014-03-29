@@ -59,7 +59,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EmptyRepositorySpecification.cs" />
     <Compile Include="ExecArgSpecification.cs" />
     <Compile Include="Helpers\ExecutionResults.cs" />
     <Compile Include="Helpers\GitHelper.cs" />
