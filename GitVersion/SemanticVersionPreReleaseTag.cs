@@ -3,7 +3,7 @@ namespace GitVersion
     using System;
     using System.Text.RegularExpressions;
 
-    public class SemanticVersionPreReleaseTag : IFormattable
+    public class SemanticVersionPreReleaseTag : IFormattable, IComparable<SemanticVersionPreReleaseTag>
     {
 
         public SemanticVersionPreReleaseTag()
@@ -62,17 +62,17 @@ namespace GitVersion
 
         public static bool operator >(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)
         {
-            return StringComparer.InvariantCultureIgnoreCase.Compare(left.Name, right.Name) == 1;
+            return left.CompareTo(right) > 0;
         }
 
         public static bool operator <(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)
         {
-            return StringComparer.InvariantCultureIgnoreCase.Compare(left.Name, right.Name) == -1;
+            return left.CompareTo(right) < 0;
         }
 
         public static bool operator >=(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)
         {
-            return StringComparer.InvariantCultureIgnoreCase.Compare(left.Name, right.Name) != -1;
+            return left.CompareTo(right) >= 0;
         }
 
         public static bool operator <=(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)
@@ -106,6 +106,15 @@ namespace GitVersion
 
             return new SemanticVersionPreReleaseTag(match.Groups["name"].Value, 
                 match.Groups["number"].Success ? int.Parse(match.Groups["number"].Value) : (int?) null);
+        }
+
+        public int CompareTo(SemanticVersionPreReleaseTag other)
+        {
+            var nameComparison = StringComparer.InvariantCultureIgnoreCase.Compare(Name, other);
+            if (nameComparison != 0)
+                return nameComparison;
+
+            return Nullable.Compare(Number, other.Number);
         }
 
         public override string ToString()
