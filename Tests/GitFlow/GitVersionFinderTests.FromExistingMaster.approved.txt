@@ -7,5 +7,5 @@
         "Name": null,
         "Number": null
     },
-    "PreReleasePartTwo": null
+    "BuildMetaData": null
 }

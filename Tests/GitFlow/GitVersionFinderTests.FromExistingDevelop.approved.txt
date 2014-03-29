@@ -7,5 +7,5 @@
         "Name": "unstable",
         "Number": 3
     },
-    "PreReleasePartTwo": null
+    "BuildMetaData": null
 }

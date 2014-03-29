@@ -2,6 +2,7 @@ namespace GitVersion
 {
     using System.Linq;
 
+    //TODO Move into SemanticVersionClass
     public class SemanticVersionParser
     {
         public static bool TryParse(string versionString, out SemanticVersion semanticVersion)
@@ -73,7 +74,7 @@ namespace GitVersion
                         return false;
                     }
 
-                    parsedVersion.PreReleasePartTwo = preReleasePartTwo;
+                    parsedVersion.BuildMetaData = new SemanticVersionBuildMetaData(preReleasePartTwo);
                 }
             }
 

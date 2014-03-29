@@ -27,7 +27,7 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo,
                 CurrentBranch = releaseBranch,
             });
-            Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since there is no commits");
+            Assert.IsNull(version.Version.BuildMetaData, "BuildMetaData null since there is no commits");
 
             ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
@@ -52,7 +52,6 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo
             });
 
-            Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since there is no commits");
             ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
@@ -79,7 +78,7 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo,
                 CurrentBranch = releaseBranch,
             });
-            Assert.AreEqual(1, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 1 since there is 1 commit");
+            Assert.AreEqual(1, version.Version.BuildMetaData.CommitsSinceTag, "BuildMetaData should be set to 1 since there is 1 commit");
             ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
@@ -109,7 +108,7 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo,
                 CurrentBranch = releaseBranch,
             });
-            Assert.AreEqual(1, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 1 since there is 1 commit");
+            Assert.AreEqual(1, version.Version.BuildMetaData.CommitsSinceTag, "BuildMetaData should be set to 1 since there is 1 commit");
 
             ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
@@ -141,7 +140,6 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo,
                 CurrentBranch = releaseBranch,
             });
-            Assert.IsNull(version.Version.PreReleasePartTwo, "PreReleasePartTwo null since the tag takes precedence");
             ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
@@ -172,7 +170,7 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo,
                 CurrentBranch = releaseBranch,
             });
-            Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is 2 commits on the branch");
+            Assert.AreEqual(2, version.Version.BuildMetaData.CommitsSinceTag, "BuildMetaData should be set to 2 since there is 2 commits on the branch");
             ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
@@ -200,7 +198,7 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo,
                 CurrentBranch = releaseBranch,
             });
-            Assert.AreEqual(2, version.Version.PreReleasePartTwo, "PreReleasePartTwo should be set to 2 since there is 2 commits on the branch");
+            Assert.AreEqual(2, version.Version.BuildMetaData.CommitsSinceTag, "BuildMetaData should be set to 2 since there is 2 commits on the branch");
             ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }

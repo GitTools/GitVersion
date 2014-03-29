@@ -83,6 +83,7 @@
     <Compile Include="ProcessHelper.cs" />
     <Compile Include="ReleaseDate.cs" />
     <Compile Include="ReleaseDateFinder.cs" />
+    <Compile Include="SemanticVersionBuildMetaData.cs" />
     <Compile Include="SemanticVersionPreReleaseTag.cs" />
     <Compile Include="OutputFormatters\JsonOutputFormatter.cs" />
     <Compile Include="ExtensionMethods.cs" />

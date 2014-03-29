@@ -8,7 +8,7 @@
             "Name": "unstable",
             "Number": 1
         },
-        "PreReleasePartTwo": null
+        "BuildMetaData": null
     },
     "BranchType": 2,
     "BranchName": "develop",

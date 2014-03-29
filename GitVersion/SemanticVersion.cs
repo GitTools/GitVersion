@@ -9,7 +9,7 @@ namespace GitVersion
         public int Minor;
         public int Patch;
         public SemanticVersionPreReleaseTag PreReleaseTag;
-        public int? PreReleasePartTwo;
+        public SemanticVersionBuildMetaData BuildMetaData;
 
         public SemanticVersion()
         {
@@ -26,7 +26,7 @@ namespace GitVersion
                    Minor == obj.Minor &&
                    Patch == obj.Patch &&
                    PreReleaseTag == obj.PreReleaseTag &&
-                   PreReleasePartTwo == obj.PreReleasePartTwo &&
+                   BuildMetaData == obj.BuildMetaData &&
                    Suffix == obj.Suffix;
         }
 
@@ -110,14 +110,7 @@ namespace GitVersion
                 }
                 return -1;
             }
-            if (PreReleasePartTwo != value.PreReleasePartTwo)
-            {
-                if (PreReleasePartTwo > value.PreReleasePartTwo)
-                {
-                    return 1;
-                }
-                return -1;
-            }
+
             return -1;
         }
     }

@@ -7,5 +7,5 @@
         "Name": "Beta",
         "Number": 1
     },
-    "PreReleasePartTwo": null
+    "BuildMetaData": null
 }

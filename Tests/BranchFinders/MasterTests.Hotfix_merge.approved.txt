@@ -8,7 +8,7 @@
             "Name": null,
             "Number": null
         },
-        "PreReleasePartTwo": null
+        "BuildMetaData": null
     },
     "BranchType": 4,
     "BranchName": "master",

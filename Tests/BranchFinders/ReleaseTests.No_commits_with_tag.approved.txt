@@ -8,7 +8,7 @@
             "Name": "alpha",
             "Number": 5
         },
-        "PreReleasePartTwo": null
+        "BuildMetaData": null
     },
     "BranchType": 3,
     "BranchName": "release-0.3.0",

@@ -48,7 +48,7 @@ namespace GitVersion
 
             if (!IsMostRecentCommitTagged(context))
             {
-                versionAndBranch.Version.PreReleasePartTwo = (nbHotfixCommits == 0) ? default(int?) : nbHotfixCommits;
+                versionAndBranch.Version.BuildMetaData = new SemanticVersionBuildMetaData(nbHotfixCommits, context.CurrentBranch.Name, branchType, context.CurrentBranch.Tip.Sha);
             }
 
             return versionAndBranch;
@@ -107,7 +107,7 @@ namespace GitVersion
                 branch.Name, branchType);
 
             if (version.PreReleaseTag.HasTag() ||
-                version.PreReleasePartTwo != null)
+                version.BuildMetaData != null)
             {
                 throw new ErrorException(msg +
                                          string.Format("Supported format is '{0}-Major.Minor.Patch'.", branchType.ToString().ToLowerInvariant()));

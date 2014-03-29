@@ -8,7 +8,7 @@
             "Name": "Beta",
             "Number": 1
         },
-        "PreReleasePartTwo": null
+        "BuildMetaData": null
     },
     "BranchType": 3,
     "BranchName": "release/2.0.0",

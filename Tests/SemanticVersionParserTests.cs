@@ -27,7 +27,7 @@ public class SemanticVersionParserTests
         Assert.AreEqual(minor, version.Minor);
         Assert.AreEqual(patch, version.Patch);
         Assert.AreEqual(tag, version.PreReleaseTag.ToString());
-        Assert.AreEqual(preReleaseTwo, version.PreReleasePartTwo);
+        Assert.AreEqual(preReleaseTwo, version.BuildMetaData == null ? (int?)null : version.BuildMetaData.CommitsSinceTag);
     }
 
     [TestCase("someText")]

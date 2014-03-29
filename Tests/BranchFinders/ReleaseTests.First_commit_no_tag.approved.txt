@@ -8,7 +8,12 @@
             "Name": "beta",
             "Number": 0
         },
-        "PreReleasePartTwo": 1
+        "BuildMetaData": {
+            "CommitsSinceTag": 1,
+            "Branch": "release-0.5.0",
+            "BranchType": 3,
+            "Sha": "000000000000000000000000000000000000000"
+        }
     },
     "BranchType": 3,
     "BranchName": "release-0.5.0",

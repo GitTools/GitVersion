@@ -25,7 +25,8 @@ namespace GitVersion
             var commit = lastTaggedReleaseFinder.GetVersion().Commit;
             var commitsSinceLastRelease = NumberOfCommitsOnBranchSinceCommit(gitRepo.Head, commit);
             var semanticVersion = nextSemverCalculator.NextVersion();
-            semanticVersion.PreReleasePartTwo = commitsSinceLastRelease;
+            // TODO Branch type
+            semanticVersion.BuildMetaData = new SemanticVersionBuildMetaData(commitsSinceLastRelease, context.CurrentBranch.Name, null, context.CurrentBranch.Tip.Sha);
             if (context.CurrentBranch.IsPullRequest())
             {
                 EnsurePullBranchShareACommonAncestorWithMaster(gitRepo, gitRepo.Head);

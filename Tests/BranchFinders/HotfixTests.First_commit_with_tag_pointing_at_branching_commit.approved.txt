@@ -8,7 +8,12 @@
             "Name": "beta",
             "Number": 4
         },
-        "PreReleasePartTwo": 1
+        "BuildMetaData": {
+            "CommitsSinceTag": 1,
+            "Branch": "hotfix-0.1.3",
+            "BranchType": 5,
+            "Sha": "000000000000000000000000000000000000000"
+        }
     },
     "BranchType": 5,
     "BranchName": "hotfix-0.1.3",

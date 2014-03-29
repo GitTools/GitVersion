@@ -92,7 +92,7 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
             Debug.WriteLine(version.Version.PreReleaseTag);
-            Debug.WriteLine(version.Version.PreReleasePartTwo);
+            Debug.WriteLine(version.Version.BuildMetaData);
             Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Version.Suffix);
         }
@@ -116,7 +116,7 @@ public class IntegrationTests
             Debug.WriteLine(version.Version.Minor);
             Debug.WriteLine(version.Version.Patch);
             Debug.WriteLine(version.Version.PreReleaseTag);
-            Debug.WriteLine(version.Version.PreReleasePartTwo);
+            Debug.WriteLine(version.Version.BuildMetaData);
             Debug.WriteLine(version.BranchType);
             Debug.WriteLine(version.Version.Suffix);
         }
