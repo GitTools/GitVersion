@@ -52,9 +52,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\CommonAssemblyInfo.cs">
-      <Link>CommonAssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="ArgumentParser.cs" />
     <Compile Include="Arguments.cs" />
     <Compile Include="BuildServers\AppVeyor.cs" />
@@ -96,8 +93,10 @@
     <Compile Include="MissingBranchException.cs" />
     <Compile Include="OutputFormatters\BuildOutputFormatter.cs" />
     <Compile Include="OutputFormatters\JsonOutputFormatter.cs" />
+    <Compile Include="OutputType.cs" />
     <Compile Include="OutputVariables\CiFeedFormatter.cs" />
     <Compile Include="OutputVariables\VariableProvider.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReleaseDate.cs" />
     <Compile Include="ReleaseDateFinder.cs" />
     <Compile Include="RepositoryLoader.cs" />

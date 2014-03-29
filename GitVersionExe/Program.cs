@@ -84,8 +84,22 @@ namespace GitVersion
                     }
                 }
 
-                RunMsBuildIfNeeded(arguments, workingDirectory, variables);
-                RunExecCommandIfNeeded(arguments, workingDirectory, variables);
+                using (var assemblyInfoUpdate = new AssemblyInfoFileUpdate(arguments, workingDirectory, variables))
+                {
+                    var execRun = RunExecCommandIfNeeded(arguments, workingDirectory, variables);
+                    var msbuildRun = RunMsBuildIfNeeded(arguments, workingDirectory, variables);
+                    if (!execRun && !msbuildRun)
+                    {
+                        assemblyInfoUpdate.DoNotRestoreAssemblyInfo();
+                        //TODO Put warning back
+                        //if (!context.CurrentBuildServer.IsRunningInBuildAgent())
+                        //{
+                        //    Console.WriteLine("WARNING: Not running in build server and /ProjectFile or /Exec arguments not passed");
+                        //    Console.WriteLine();
+                        //    Console.WriteLine("Run GitVersion.exe /? for help");
+                        //}
+                    }
+                }
 
                 if (gitPreparer.IsDynamicGitRepository)
                 {
@@ -129,7 +143,11 @@ namespace GitVersion
         {
             Action<string> writeAction = x => { };
 
-            if (arguments.LogFilePath != null)
+            if (arguments.LogFilePath == "console")
+            {
+                writeAction = Console.WriteLine;
+            }
+            else if (arguments.LogFilePath != null)
             {
                 try
                 {
@@ -165,9 +183,9 @@ namespace GitVersion
                 .ToList();
         }
 
-        static void RunMsBuildIfNeeded(Arguments args, string workingDirectory, Dictionary<string, string> variables)
+        static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, Dictionary<string, string> variables)
         {
-            if (string.IsNullOrEmpty(args.Proj)) return;
+            if (string.IsNullOrEmpty(args.Proj)) return false;
 
             Logger.WriteInfo(string.Format("Launching {0} \"{1}\" {2}", MsBuild, args.Proj, args.ProjArgs));
             var results = ProcessHelper.Run(
@@ -177,11 +195,13 @@ namespace GitVersion
 
             if (results != 0)
                 throw new ErrorException("MsBuild execution failed, non-zero return code");
+
+            return true;
         }
 
-        static void RunExecCommandIfNeeded(Arguments args, string workingDirectory, Dictionary<string, string> variables)
+        static bool RunExecCommandIfNeeded(Arguments args, string workingDirectory, Dictionary<string, string> variables)
         {
-            if (string.IsNullOrEmpty(args.Exec)) return;
+            if (string.IsNullOrEmpty(args.Exec)) return false;
 
             Logger.WriteInfo(string.Format("Launching {0} {1}", args.Exec, args.ExecArgs));
             var results = ProcessHelper.Run(
@@ -190,6 +210,8 @@ namespace GitVersion
                 GetEnvironmentalVariables(variables));
             if (results != 0)
                 throw new ErrorException(string.Format("Execution of {0} failed, non-zero return code", args.Exec));
+
+            return true;
         }
 
         static KeyValuePair<string, string>[] GetEnvironmentalVariables(Dictionary<string, string> variables)
