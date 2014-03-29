@@ -22,26 +22,26 @@
         public const string PreReleaseTag = "PreReleaseTag";
         public const string PreReleaseTagWithDash = "PreReleaseTagWithDash";
 
-        public static Dictionary<string, string> ToKeyValue(this VersionAndBranch versionAndBranch)
+        public static Dictionary<string, string> GetVariablesFor(SemanticVersion semanticVersion)
         {
             var variables = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
             {
-                {Major, versionAndBranch.Version.Major.ToString()},
-                {Minor, versionAndBranch.Version.Minor.ToString()},
-                {Patch, versionAndBranch.Version.Patch.ToString()},
-                {PreReleaseTag, versionAndBranch.Version.PreReleaseTag},
-                {PreReleaseTagWithDash, versionAndBranch.Version.PreReleaseTag.HasTag() ? "-" + versionAndBranch.Version.PreReleaseTag : null},
-                {BuildMetaData, versionAndBranch.Version.BuildMetaData},
-                {FullBuildMetaData, versionAndBranch.Version.BuildMetaData.ToString("f")},
-                {MajorMinorPatch, string.Format("{0}.{1}.{2}", versionAndBranch.Version.Major, versionAndBranch.Version.Minor, versionAndBranch.Version.Patch)},
-                {SemVer, versionAndBranch.Version.ToString()},
-                {SemVerPadded, versionAndBranch.Version.ToString("sp")},
-                {AssemblySemVer, versionAndBranch.Version.ToString("j") + ".0"},
-                {FullSemVer, versionAndBranch.Version.ToString("f")},
-                {FullSemVerPadded, versionAndBranch.Version.ToString("fp")},
-                {ClassicVersion, versionAndBranch.Version.ToString("j") + (versionAndBranch.Version.BuildMetaData.CommitsSinceTag ?? 0)},
-                {BranchName, versionAndBranch.Version.BuildMetaData.Branch},
-                {Sha, versionAndBranch.Sha},
+                {Major, semanticVersion.Major.ToString()},
+                {Minor, semanticVersion.Minor.ToString()},
+                {Patch, semanticVersion.Patch.ToString()},
+                {PreReleaseTag, semanticVersion.PreReleaseTag},
+                {PreReleaseTagWithDash, semanticVersion.PreReleaseTag.HasTag() ? "-" + semanticVersion.PreReleaseTag : null},
+                {BuildMetaData, semanticVersion.BuildMetaData},
+                {FullBuildMetaData, semanticVersion.BuildMetaData.ToString("f")},
+                {MajorMinorPatch, string.Format("{0}.{1}.{2}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch)},
+                {SemVer, semanticVersion.ToString()},
+                {SemVerPadded, semanticVersion.ToString("sp")},
+                {AssemblySemVer, semanticVersion.ToString("j") + ".0"},
+                {FullSemVer, semanticVersion.ToString("f")},
+                {FullSemVerPadded, semanticVersion.ToString("fp")},
+                {ClassicVersion, semanticVersion.ToString("j") + (semanticVersion.BuildMetaData.CommitsSinceTag ?? 0)},
+                {BranchName, semanticVersion.BuildMetaData.Branch},
+                {Sha, semanticVersion.BuildMetaData.Sha},
             };
 
             return variables;

@@ -18,21 +18,15 @@ public class InformationalVersionBuilderTests
     public void ValidateInformationalVersionBuilder(BranchType branchType, string branchName, string sha, int major, int minor, int patch,
         string tag, int? suffix, string versionString)
     {
-        var semanticVersion = new VersionAndBranch
-            {
-                BranchType = branchType,
-                BranchName = branchName,
-                Sha = sha,
-                Version = new SemanticVersion
-                    {
-                        Major = major,
-                        Minor = minor,
-                        Patch = patch,
-                        PreReleaseTag = tag,
-                        BuildMetaData = new SemanticVersionBuildMetaData(suffix, branchName, sha),
-                    }
-            };
-        var informationalVersion = semanticVersion.Version.ToString("f");
+        var semanticVersion = new SemanticVersion
+        {
+            Major = major,
+            Minor = minor,
+            Patch = patch,
+            PreReleaseTag = tag,
+            BuildMetaData = new SemanticVersionBuildMetaData(suffix, branchName, sha, null, null),
+        };
+        var informationalVersion = semanticVersion.ToString("f");
 
         Assert.AreEqual(versionString, informationalVersion);
     }

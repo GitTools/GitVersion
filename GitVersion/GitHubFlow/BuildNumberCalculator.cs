@@ -20,34 +20,28 @@ namespace GitVersion
             this.gitRepo = gitRepo;
         }
 
-        public VersionAndBranch GetBuildNumber(GitVersionContext context)
+        public SemanticVersion GetBuildNumber(GitVersionContext context)
         {
             var commit = lastTaggedReleaseFinder.GetVersion().Commit;
             var commitsSinceLastRelease = NumberOfCommitsOnBranchSinceCommit(gitRepo.Head, commit);
             var semanticVersion = nextSemverCalculator.NextVersion();
-            semanticVersion.BuildMetaData = new SemanticVersionBuildMetaData(commitsSinceLastRelease, context.CurrentBranch.Name, context.CurrentBranch.Tip.Sha);
+
+            var sha = context.CurrentBranch.Tip.Sha;
+            var releaseDate = ReleaseDateFinder.Execute(context.Repository, sha, semanticVersion.Patch);
+
+            // TODO Need a way of setting this in a cross cutting way
+            semanticVersion.BuildMetaData = new SemanticVersionBuildMetaData(commitsSinceLastRelease, 
+                context.CurrentBranch.Name, sha,
+                releaseDate.OriginalDate, releaseDate.Date);
             if (context.CurrentBranch.IsPullRequest())
             {
                 EnsurePullBranchShareACommonAncestorWithMaster(gitRepo, gitRepo.Head);
                 var extractIssueNumber = ExtractIssueNumber(context);
-                semanticVersion.PreReleaseTag = "unstable" + extractIssueNumber;
-                semanticVersion.BuildMetaData = commitsSinceLastRelease;
-                return new VersionAndBranch
-                {
-                    BranchName = context.CurrentBranch.Name,
-                    BranchType = BranchType.PullRequest,
-                    Sha = context.CurrentBranch.Tip.Sha,
-                    Version = semanticVersion
-                };
+                semanticVersion.PreReleaseTag = "PullRequest" + extractIssueNumber;
+                return semanticVersion;
             }
-            
-            return new VersionAndBranch
-            {
-                BranchName = context.CurrentBranch.Name,
-                BranchType = BranchType.Master,
-                Sha = context.CurrentBranch.Tip.Sha,
-                Version = semanticVersion
-            };
+
+            return semanticVersion;
         }
 
         int NumberOfCommitsOnBranchSinceCommit(Branch branch, Commit commit)

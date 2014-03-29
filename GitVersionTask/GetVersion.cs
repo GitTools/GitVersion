@@ -73,11 +73,11 @@
         {
             try
             {
-                VersionAndBranchAndDate versionAndBranch;
+                SemanticVersion versionAndBranch;
                 if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch))
                 {
                     var thisType = typeof(GetVersion);
-                    var variables = versionAndBranch.ToKeyValue();
+                    var variables = VariableProvider.GetVariablesFor(versionAndBranch);
                     foreach (var variable in variables)
                     {
                         thisType.GetProperty(variable.Key).SetValue(this, variable.Value, null);

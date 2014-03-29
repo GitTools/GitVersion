@@ -27,7 +27,7 @@ public class FeatureBranchTests : Lg2sHelperBase
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
-            Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
+            Assert.AreEqual(masterVersion.Minor + 1, version.Minor, "Minor should be master.Minor+1");
             ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }
@@ -56,10 +56,10 @@ public class FeatureBranchTests : Lg2sHelperBase
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
-            Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
+            Assert.AreEqual(masterVersion.Minor + 1, version.Minor, "Minor should be master.Minor+1");
             //TODO Assert.AreEqual(branchingCommit.Prefix(), version.Version.Suffix, "Suffix should be the develop commit it was branched from");
 
-            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
         }
     }
 
@@ -88,9 +88,9 @@ public class FeatureBranchTests : Lg2sHelperBase
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
-            Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
+            Assert.AreEqual(masterVersion.Minor + 1, version.Minor, "Minor should be master.Minor+1");
             //TODO Assert.AreEqual(branchingCommit.Prefix(), version.Version.Suffix, "Suffix should be the develop commit it was branched from");
-            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
         }
     }
 
@@ -119,9 +119,9 @@ public class FeatureBranchTests : Lg2sHelperBase
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
-            Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
+            Assert.AreEqual(masterVersion.Minor + 1, version.Minor, "Minor should be master.Minor+1");
             //TODO Assert.AreEqual(branchingCommit.Prefix(), version.Version.Suffix, "Suffix should be the develop commit it was branched from");
-            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
         }
     }
 }

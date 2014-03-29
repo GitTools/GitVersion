@@ -7,7 +7,7 @@
     {
         static Dictionary<string, CachedVersion> versionCacheVersions = new Dictionary<string, CachedVersion>();
 
-        public static VersionAndBranchAndDate GetVersion(string gitDirectory)
+        public static SemanticVersion GetVersion(string gitDirectory)
         {
             using (var repo = RepositoryLoader.GetRepo(gitDirectory))
             {
@@ -20,18 +20,18 @@
                 var ticks = DirectoryDateFinder.GetLastDirectoryWrite(gitDirectory);
                 var key = string.Format("{0}:{1}:{2}", repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
                 CachedVersion cachedVersion;
-                VersionAndBranchAndDate versionAndBranch;
+                SemanticVersion versionAndBranch;
                 if (versionCacheVersions.TryGetValue(key, out cachedVersion))
                 {
                     Logger.WriteInfo("Version read from cache.");
                     if (cachedVersion.Timestamp == ticks)
                     {
-                        versionAndBranch = cachedVersion.VersionAndBranch;
+                        versionAndBranch = cachedVersion.SemanticVersion;
                     }
                     else
                     {
                         Logger.WriteInfo("Change detected. flushing cache.");
-                        versionAndBranch = cachedVersion.VersionAndBranch = GetSemanticVersion(repo);
+                        versionAndBranch = cachedVersion.SemanticVersion = GetSemanticVersion(repo);
                     }
                 }
                 else
@@ -41,7 +41,7 @@
 
                     versionCacheVersions[key] = new CachedVersion
                                                 {
-                                                    VersionAndBranch = versionAndBranch,
+                                                    SemanticVersion = versionAndBranch,
                                                     Timestamp = ticks
                                                 };
                 }
@@ -50,10 +50,14 @@
             }
         }
 
-        static VersionAndBranchAndDate GetSemanticVersion(Repository repository)
+        static SemanticVersion GetSemanticVersion(Repository repository)
         {
-            var versionForRepositoryFinder = new VersionForRepositoryFinder();
-            return versionForRepositoryFinder.GetVersion(repository);
+            var versionForRepositoryFinder = new GitVersionFinder();
+            return versionForRepositoryFinder.FindVersion(new GitVersionContext
+            {
+                CurrentBranch = repository.Head,
+                Repository = repository
+            });
         }
     }
 }

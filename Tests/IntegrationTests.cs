@@ -88,12 +88,11 @@ public class IntegrationTests
                 Repository = repository,
                 CurrentBranch = branch
             });
-            Debug.WriteLine(version.Version.Major);
-            Debug.WriteLine(version.Version.Minor);
-            Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.PreReleaseTag);
-            Debug.WriteLine(version.Version.BuildMetaData);
-            Debug.WriteLine(version.BranchType);
+            Debug.WriteLine(version.Major);
+            Debug.WriteLine(version.Minor);
+            Debug.WriteLine(version.Patch);
+            Debug.WriteLine(version.PreReleaseTag);
+            Debug.WriteLine(version.BuildMetaData);
         }
     }
 
@@ -111,12 +110,11 @@ public class IntegrationTests
                 Repository = repository,
                 CurrentBranch = branch
             });
-            Debug.WriteLine(version.Version.Major);
-            Debug.WriteLine(version.Version.Minor);
-            Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.PreReleaseTag);
-            Debug.WriteLine(version.Version.BuildMetaData);
-            Debug.WriteLine(version.BranchType);
+            Debug.WriteLine(version.Major);
+            Debug.WriteLine(version.Minor);
+            Debug.WriteLine(version.Patch);
+            Debug.WriteLine(version.PreReleaseTag);
+            Debug.WriteLine(version.BuildMetaData);
         }
     }
 
@@ -133,12 +131,11 @@ public class IntegrationTests
                 Repository = repository,
                 CurrentBranch = branch
             });
-            Debug.WriteLine(version.Version.Major);
-            Debug.WriteLine(version.Version.Minor);
-            Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.PreReleaseTag);
-            Debug.WriteLine(version.Version.BuildMetaData);
-            Debug.WriteLine(version.BranchType);
+            Debug.WriteLine(version.Major);
+            Debug.WriteLine(version.Minor);
+            Debug.WriteLine(version.Patch);
+            Debug.WriteLine(version.PreReleaseTag);
+            Debug.WriteLine(version.BuildMetaData);
         }
     }
 
@@ -155,12 +152,11 @@ public class IntegrationTests
                 Repository = repository,
                 CurrentBranch = branch  
             });
-            Debug.WriteLine(version.Version.Major);
-            Debug.WriteLine(version.Version.Minor);
-            Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.PreReleaseTag);
-            Debug.WriteLine(version.Version.BuildMetaData);
-            Debug.WriteLine(version.BranchType);
+            Debug.WriteLine(version.Major);
+            Debug.WriteLine(version.Minor);
+            Debug.WriteLine(version.Patch);
+            Debug.WriteLine(version.PreReleaseTag);
+            Debug.WriteLine(version.BuildMetaData);
         }
     }
 
@@ -177,12 +173,11 @@ public class IntegrationTests
                 Repository = repository,
                 CurrentBranch = branch
             });
-            Debug.WriteLine(version.Version.Major);
-            Debug.WriteLine(version.Version.Minor);
-            Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.PreReleaseTag);
-            Debug.WriteLine(version.Version.BuildMetaData);
-            Debug.WriteLine(version.BranchType);
+            Debug.WriteLine(version.Major);
+            Debug.WriteLine(version.Minor);
+            Debug.WriteLine(version.Patch);
+            Debug.WriteLine(version.PreReleaseTag);
+            Debug.WriteLine(version.BuildMetaData);
         }
     }
 
@@ -199,12 +194,11 @@ public class IntegrationTests
                 Repository = repository,
                 CurrentBranch = branch
             });
-            Debug.WriteLine(version.Version.Major);
-            Debug.WriteLine(version.Version.Minor);
-            Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.PreReleaseTag);
-            Debug.WriteLine(version.Version.BuildMetaData);
-            Debug.WriteLine(version.BranchType);
+            Debug.WriteLine(version.Major);
+            Debug.WriteLine(version.Minor);
+            Debug.WriteLine(version.Patch);
+            Debug.WriteLine(version.PreReleaseTag);
+            Debug.WriteLine(version.BuildMetaData);
         }
     }
     [Test,Explicit]
@@ -233,12 +227,11 @@ public class IntegrationTests
                 Repository = repository,
                 CurrentBranch = branch
             });
-            Debug.WriteLine(version.Version.Major);
-            Debug.WriteLine(version.Version.Minor);
-            Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.PreReleaseTag);
-            Debug.WriteLine(version.Version.BuildMetaData);
-            Debug.WriteLine(version.BranchType);
+            Debug.WriteLine(version.Major);
+            Debug.WriteLine(version.Minor);
+            Debug.WriteLine(version.Patch);
+            Debug.WriteLine(version.PreReleaseTag);
+            Debug.WriteLine(version.BuildMetaData);
         }
     }
     
@@ -255,11 +248,10 @@ public class IntegrationTests
                 Repository = repository,
                 CurrentBranch = branch
             });
-            Debug.WriteLine(version.Version.Major);
-            Debug.WriteLine(version.Version.Minor);
-            Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.PreReleaseTag);
-            Debug.WriteLine(version.BranchType);
+            Debug.WriteLine(version.Major);
+            Debug.WriteLine(version.Minor);
+            Debug.WriteLine(version.Patch);
+            Debug.WriteLine(version.PreReleaseTag);
         }
     }
     [Test, Explicit]
@@ -275,12 +267,11 @@ public class IntegrationTests
                 Repository = repository,
                 CurrentBranch = branch
             });
-            Debug.WriteLine(version.Version.Major);
-            Debug.WriteLine(version.Version.Minor);
-            Debug.WriteLine(version.Version.Patch);
-            Debug.WriteLine(version.Version.PreReleaseTag);
-            Debug.WriteLine(version.Version.BuildMetaData);
-            Debug.WriteLine(version.BranchType);
+            Debug.WriteLine(version.Major);
+            Debug.WriteLine(version.Minor);
+            Debug.WriteLine(version.Patch);
+            Debug.WriteLine(version.PreReleaseTag);
+            Debug.WriteLine(version.BuildMetaData);
         }
     }
 }

@@ -40,28 +40,28 @@ namespace GitVersion
                     buildServer.PerformPreProcessingSteps(gitDirectory);
                 }
 
-                var versionAndBranch = VersionCache.GetVersion(gitDirectory);
+                var semanticVersion = VersionCache.GetVersion(gitDirectory);
 
                 if (arguments.Output == OutputType.BuildServer)
                 {
                     foreach (var buildServer in applicableBuildServers)
                     {
-                        buildServer.WriteIntegration(versionAndBranch, Console.WriteLine);
+                        buildServer.WriteIntegration(semanticVersion, Console.WriteLine);
                     }
                 }
 
                 if (arguments.Output == OutputType.Json)
                 {
-                    var versionAsKeyValue = versionAndBranch.ToKeyValue();
+                    var variables = VariableProvider.GetVariablesFor(semanticVersion);
                     switch (arguments.VersionPart)
                     {
                         case null:
-                            Console.WriteLine(JsonOutputFormatter.ToJson(versionAsKeyValue));
+                            Console.WriteLine(JsonOutputFormatter.ToJson(variables));
                             break;
 
                         default:
                             string part;
-                            if (!versionAsKeyValue.TryGetValue(arguments.VersionPart, out part))
+                            if (!variables.TryGetValue(arguments.VersionPart, out part))
                             {
                                 throw new ErrorException(string.Format("Could not extract '{0}' from the available parts.", arguments.VersionPart));
                             }

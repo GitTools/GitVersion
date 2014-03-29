@@ -1,19 +1,16 @@
 ﻿{
-    "Version": {
-        "Major": 0,
-        "Minor": 5,
-        "Patch": 0,
-        "PreReleaseTag": {
-            "Name": "beta",
-            "Number": 0
-        },
-        "BuildMetaData": {
-            "CommitsSinceTag": 1,
-            "Branch": "release-0.5.0",
-            "Sha": "000000000000000000000000000000000000000"
-        }
+    "Major": 0,
+    "Minor": 5,
+    "Patch": 0,
+    "PreReleaseTag": {
+        "Name": "beta",
+        "Number": 0
     },
-    "BranchType": 3,
-    "BranchName": "release-0.5.0",
-    "Sha": "000000000000000000000000000000000000000"
+    "BuildMetaData": {
+        "CommitsSinceTag": 1,
+        "Branch": "release-0.5.0",
+        "Sha": "000000000000000000000000000000000000000",
+        "OriginalReleaseDate": "<date replaced>",
+        "ReleaseDate": "<date replaced>"
+    }
 }

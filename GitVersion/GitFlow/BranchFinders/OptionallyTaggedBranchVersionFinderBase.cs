@@ -7,7 +7,7 @@ namespace GitVersion
 
     abstract class OptionallyTaggedBranchVersionFinderBase
     {
-        protected VersionAndBranch FindVersion(
+        protected SemanticVersion FindVersion(
             GitVersionContext context,
             BranchType branchType,
             string baseBranchName)
@@ -26,32 +26,31 @@ namespace GitVersion
 
             var tagVersion = RetrieveMostRecentOptionalTagVersion(context.Repository, version, context.CurrentBranch.Commits.Take(nbHotfixCommits + 1));
 
-            var versionAndBranch = new VersionAndBranch
+            var sha = context.CurrentBranch.Tip.Sha;
+            var releaseDate = ReleaseDateFinder.Execute(context.Repository, sha, version.Patch);
+            var semanticVersion = new SemanticVersion
             {
-                BranchType = branchType,
-                BranchName = context.CurrentBranch.Name,
-                Sha = context.CurrentBranch.Tip.Sha,
-                Version = new SemanticVersion
-                {
-                    Major = version.Major,
-                    Minor = version.Minor,
-                    Patch = version.Patch,
-                    PreReleaseTag = version.PreReleaseTag
-                },
+                Major = version.Major,
+                Minor = version.Minor,
+                Patch = version.Patch,
+                PreReleaseTag = version.PreReleaseTag,
+                BuildMetaData = new SemanticVersionBuildMetaData(
+                    nbHotfixCommits, context.CurrentBranch.Name, sha,
+                    releaseDate.OriginalDate, releaseDate.Date)
             };
 
             if (tagVersion != null)
             {
-                versionAndBranch.Version.PreReleaseTag = tagVersion.PreReleaseTag;
+                semanticVersion.PreReleaseTag = tagVersion.PreReleaseTag;
             }
 
+            //TODO DOnt think this is needed anymore
+            //if (!IsMostRecentCommitTagged(context))
+            //{
+            //    semanticVersion.BuildMetaData = new SemanticVersionBuildMetaData(nbHotfixCommits, context.CurrentBranch.Name, context.CurrentBranch.Tip.Sha);
+            //}
 
-            if (!IsMostRecentCommitTagged(context))
-            {
-                versionAndBranch.Version.BuildMetaData = new SemanticVersionBuildMetaData(nbHotfixCommits, context.CurrentBranch.Name, context.CurrentBranch.Tip.Sha);
-            }
-
-            return versionAndBranch;
+            return semanticVersion;
         }
 
         bool IsMostRecentCommitTagged(GitVersionContext context)

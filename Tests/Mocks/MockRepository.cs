@@ -1,93 +1,96 @@
+using System;
 using System.Collections.Generic;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 
 public class MockRepository : IRepository
 {
-
     public MockRepository()
     {
         Tags = new MockTagCollection();
         Refs = new MockReferenceCollection();
     }
+
     public void Dispose()
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public Branch Checkout(Branch branch, CheckoutModifiers checkoutModifiers, CheckoutProgressHandler onCheckoutProgress, CheckoutNotificationOptions checkoutNotificationOptions)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public Branch Checkout(string committishOrBranchSpec, CheckoutModifiers checkoutModifiers, CheckoutProgressHandler onCheckoutProgress, CheckoutNotificationOptions checkoutNotificationOptions)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public Branch Checkout(Commit commit, CheckoutModifiers checkoutModifiers, CheckoutProgressHandler onCheckoutProgress, CheckoutNotificationOptions checkoutNotificationOptions)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public void CheckoutPaths(string committishOrBranchSpec, IList<string> paths, CheckoutModifiers checkoutOptions, CheckoutProgressHandler onCheckoutProgress, CheckoutNotificationOptions checkoutNotificationOptions)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public void CheckoutPaths(string committishOrBranchSpec, IEnumerable<string> paths, CheckoutOptions checkoutOptions = null)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public GitObject Lookup(ObjectId id)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public GitObject Lookup(string objectish)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public GitObject Lookup(ObjectId id, ObjectType type)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public GitObject Lookup(string objectish, ObjectType type)
     {
-        throw new System.NotImplementedException();
+        return new MockCommit();
     }
+
+    public Dictionary<string, GitObject> LookupResults { get; private set; }
 
     public Commit Commit(string message, Signature author, Signature committer, bool amendPreviousCommit = false)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public MergeResult Merge(Commit commit, Signature merger)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public void Reset(ResetMode resetMode, Commit commit)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public void Reset(Commit commit, IEnumerable<string> paths = null, ExplicitPathsOptions explicitPathsOptions = null)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public void RemoveUntrackedFiles()
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public BlameHunkCollection Blame(string path, BlameOptions options = null)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public Branch Head { get; set; }
@@ -106,13 +109,13 @@ public class MockRepository : IRepository
 
     public Ignore Ignore
     {
-        get { throw new System.NotImplementedException(); }
+        get { throw new NotImplementedException(); }
     }
 
     public Network Network { get; private set; }
 
     public StashCollection Stashes
     {
-        get { throw new System.NotImplementedException(); }
+        get { throw new NotImplementedException(); }
     }
 }

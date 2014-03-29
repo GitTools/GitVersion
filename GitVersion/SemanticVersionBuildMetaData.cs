@@ -4,9 +4,11 @@ namespace GitVersion
 
     public class SemanticVersionBuildMetaData : IFormattable
     {
-        public readonly int? CommitsSinceTag;
-        public readonly string Branch;
-        public readonly string Sha;
+        public int? CommitsSinceTag;
+        public string Branch;
+        public string Sha;
+        public DateTimeOffset? OriginalReleaseDate;
+        public DateTimeOffset? ReleaseDate;
 
         public SemanticVersionBuildMetaData()
         {
@@ -17,8 +19,12 @@ namespace GitVersion
             CommitsSinceTag = commitsSinceTag;
         }
 
-        public SemanticVersionBuildMetaData(int? commitsSinceTag, string branch, string sha)
+        public SemanticVersionBuildMetaData(
+            int? commitsSinceTag, string branch, string sha, 
+            DateTimeOffset? originalReleaseDate, DateTimeOffset? releaseDate)
         {
+            ReleaseDate = releaseDate;
+            OriginalReleaseDate = originalReleaseDate;
             Sha = sha;
             CommitsSinceTag = commitsSinceTag;
             Branch = branch;
@@ -26,7 +32,7 @@ namespace GitVersion
 
         protected bool Equals(SemanticVersionBuildMetaData other)
         {
-            return CommitsSinceTag == other.CommitsSinceTag && string.Equals(Branch, other.Branch) && string.Equals(Sha, other.Sha);
+            return CommitsSinceTag == other.CommitsSinceTag && string.Equals(Branch, other.Branch) && string.Equals(Sha, other.Sha) && OriginalReleaseDate.Equals(other.OriginalReleaseDate) && ReleaseDate.Equals(other.ReleaseDate);
         }
 
         public override bool Equals(object obj)
@@ -43,7 +49,20 @@ namespace GitVersion
             {
                 return false;
             }
-            return Equals((SemanticVersionBuildMetaData)obj);
+            return Equals((SemanticVersionBuildMetaData) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = CommitsSinceTag.GetHashCode();
+                hashCode = (hashCode*397) ^ (Branch != null ? Branch.GetHashCode() : 0);
+                hashCode = (hashCode*397) ^ (Sha != null ? Sha.GetHashCode() : 0);
+                hashCode = (hashCode*397) ^ OriginalReleaseDate.GetHashCode();
+                hashCode = (hashCode*397) ^ ReleaseDate.GetHashCode();
+                return hashCode;
+            }
         }
 
         public override string ToString()
@@ -104,12 +123,6 @@ namespace GitVersion
         public static implicit operator SemanticVersionBuildMetaData(string preReleaseTag)
         {
             return Parse(preReleaseTag);
-        }
-
-        public static implicit operator SemanticVersionBuildMetaData(int numberOfCommitsSinceLastTag)
-        {
-            //TODO not sure about this implicit cast?
-            return new SemanticVersionBuildMetaData(numberOfCommitsSinceLastTag);
         }
 
         static SemanticVersionBuildMetaData Parse(string buildMetaData)

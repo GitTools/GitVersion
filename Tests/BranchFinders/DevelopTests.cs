@@ -44,8 +44,8 @@ public class DevelopTests
             },
             CurrentBranch = mockBranch
         });
-        Assert.AreEqual(2, version.Version.Minor, "Minor should be master.Minor+1");
-        ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
+        Assert.AreEqual(2, version.Minor, "Minor should be master.Minor+1");
+        ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
 
     }
 
@@ -90,8 +90,8 @@ public class DevelopTests
         };
 
         var version = finder.FindVersion(context);
-        Assert.AreEqual(2, version.Version.Minor, "Minor should be master.Minor+1");
-        ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
+        Assert.AreEqual(2, version.Minor, "Minor should be master.Minor+1");
+        ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
     }
     [Test]
     public void Multiple_minor_versions_on_master()
@@ -159,7 +159,7 @@ public class DevelopTests
         };
 
         var version = finder.FindVersion(context);
-        Assert.AreEqual(4, version.Version.Minor, "Minor should be master.Minor+1");
-        ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
+        Assert.AreEqual(4, version.Minor, "Minor should be master.Minor+1");
+        ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
     }
 }

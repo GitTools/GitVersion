@@ -7,8 +7,10 @@
         "Number": 1
     },
     "BuildMetaData": {
-        "CommitsSinceTag": null,
-        "Branch": null,
-        "Sha": null
+        "CommitsSinceTag": 1,
+        "Branch": "hotfix/1.0.2",
+        "Sha": "000000000000000000000000000000000000000",
+        "OriginalReleaseDate": "<date replaced>",
+        "ReleaseDate": "<date replaced>"
     }
 }

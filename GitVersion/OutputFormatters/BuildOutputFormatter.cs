@@ -4,11 +4,11 @@
 
     public static class BuildOutputFormatter
     {
-        public static IEnumerable<string> GenerateBuildLogOutput(VersionAndBranch versionAndBranch, IBuildServer buildServer)
+        public static IEnumerable<string> GenerateBuildLogOutput(SemanticVersion semanticVersion, IBuildServer buildServer)
         {
             var output = new List<string>();
 
-            foreach (var variable in versionAndBranch.ToKeyValue())
+            foreach (var variable in VariableProvider.GetVariablesFor(semanticVersion))
             {
                 output.AddRange(buildServer.GenerateSetParameterMessage(variable.Key, variable.Value));
             }

@@ -2,12 +2,12 @@ namespace GitVersion
 {
     class PullVersionFinder : DevelopBasedVersionFinderBase
     {
-        public VersionAndBranch FindVersion(GitVersionContext context)
+        public SemanticVersion FindVersion(GitVersionContext context)
         {
             var issueNumber = ExtractIssueNumber(context);
 
             var version = FindVersion(context, BranchType.PullRequest);
-            version.Version.PreReleaseTag = new SemanticVersionPreReleaseTag("PullRequest", int.Parse(issueNumber));
+            version.PreReleaseTag = new SemanticVersionPreReleaseTag("PullRequest", int.Parse(issueNumber));
             //TODO version.Version.BuildMetaData = NumberOfCommitsOnBranchSinceCommit(context.CurrentBranch, commonAncestor);
             return version;
         }

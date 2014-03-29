@@ -1,19 +1,16 @@
 ﻿{
-    "Version": {
-        "Major": 0,
-        "Minor": 2,
-        "Patch": 0,
-        "PreReleaseTag": {
-            "Name": null,
-            "Number": null
-        },
-        "BuildMetaData": {
-            "CommitsSinceTag": null,
-            "Branch": null,
-            "Sha": null
-        }
+    "Major": 0,
+    "Minor": 2,
+    "Patch": 0,
+    "PreReleaseTag": {
+        "Name": null,
+        "Number": null
     },
-    "BranchType": 4,
-    "BranchName": "master",
-    "Sha": "000000000000000000000000000000000000000"
+    "BuildMetaData": {
+        "CommitsSinceTag": null,
+        "Branch": "master",
+        "Sha": "000000000000000000000000000000000000000",
+        "OriginalReleaseDate": null,
+        "ReleaseDate": null
+    }
 }

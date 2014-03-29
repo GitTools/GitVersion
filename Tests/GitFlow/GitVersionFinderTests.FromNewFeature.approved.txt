@@ -8,7 +8,9 @@
     },
     "BuildMetaData": {
         "CommitsSinceTag": 1,
-        "Branch": null,
-        "Sha": null
+        "Branch": "feature/new",
+        "Sha": "000000000000000000000000000000000000000",
+        "OriginalReleaseDate": "<date replaced>",
+        "ReleaseDate": "<date replaced>"
     }
 }

@@ -17,18 +17,16 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             var finder = new GitVersionFinder();
 
-            var versionAndBranch = finder.FindVersion(new GitVersionContext
+            var semanticVersion = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = master,
             });
 
-            Assert.AreEqual(branchName, versionAndBranch.BranchName);
-            Assert.AreEqual(BranchType.Master, versionAndBranch.BranchType);
-            Assert.AreEqual(master.Tip.Sha, versionAndBranch.Sha);
+            Assert.AreEqual(branchName, semanticVersion.BuildMetaData.Branch);
+            Assert.AreEqual(master.Tip.Sha, semanticVersion.BuildMetaData.Sha);
 
-            var version = versionAndBranch.Version;
-            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
+            ObjectApprover.VerifyWithJson(semanticVersion, Scrubbers.GuidScrubber);
         }
     }
 
@@ -42,18 +40,16 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             var finder = new GitVersionFinder();
 
-            var versionAndBranch = finder.FindVersion(new GitVersionContext
+            var semanticVersion = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = develop,
             });
 
-            Assert.AreEqual(branchName, versionAndBranch.BranchName);
-            Assert.AreEqual(BranchType.Develop, versionAndBranch.BranchType);
-            Assert.AreEqual(develop.Tip.Sha, versionAndBranch.Sha);
+            Assert.AreEqual(branchName, semanticVersion.BuildMetaData.Branch);
+            Assert.AreEqual(develop.Tip.Sha, semanticVersion.BuildMetaData.Sha);
 
-            var version = versionAndBranch.Version;
-            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
+            ObjectApprover.VerifyWithJson(semanticVersion, Scrubbers.GuidAndDateScrubber);
         }
     }
 
@@ -77,18 +73,16 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             var finder = new GitVersionFinder();
 
-            var versionAndBranch = finder.FindVersion(new GitVersionContext
+            var semanticVersion = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = feature,
             });
 
-            Assert.AreEqual(branchName, versionAndBranch.BranchName);
-            Assert.AreEqual(BranchType.Feature, versionAndBranch.BranchType);
-            Assert.AreEqual(feature.Tip.Sha, versionAndBranch.Sha);
+            Assert.AreEqual(branchName, semanticVersion.BuildMetaData.Branch);
+            Assert.AreEqual(feature.Tip.Sha, semanticVersion.BuildMetaData.Sha);
 
-            var version = versionAndBranch.Version;
-            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
+            ObjectApprover.VerifyWithJson(semanticVersion, Scrubbers.GuidAndDateScrubber);
         }
     }
 
@@ -116,18 +110,16 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             var finder = new GitVersionFinder();
 
-            var versionAndBranch = finder.FindVersion(new GitVersionContext
+            var semanticVersion = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = hotfix
             });
 
-            Assert.AreEqual(branchName, versionAndBranch.BranchName);
-            Assert.AreEqual(BranchType.Hotfix, versionAndBranch.BranchType);
-            Assert.AreEqual(hotfix.Tip.Sha, versionAndBranch.Sha);
+            Assert.AreEqual(branchName, semanticVersion.BuildMetaData.Branch);
+            Assert.AreEqual(hotfix.Tip.Sha, semanticVersion.BuildMetaData.Sha);
 
-            var version = versionAndBranch.Version;
-            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
+            ObjectApprover.VerifyWithJson(semanticVersion, Scrubbers.GuidAndDateScrubber);
         }
     }
 
@@ -162,7 +154,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             });
 
-            ObjectApprover.VerifyWithJson(versionAndBranch, Scrubbers.GuidScrubber);
+            ObjectApprover.VerifyWithJson(versionAndBranch, Scrubbers.GuidAndDateScrubber);
         }
     }
 
@@ -302,7 +294,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
                 CurrentBranch = repo.Head,
             });
 
-            ObjectApprover.VerifyWithJson(versionAndBranch, Scrubbers.GuidScrubber);
+            ObjectApprover.VerifyWithJson(versionAndBranch, Scrubbers.GuidAndDateScrubber);
         }
     }
 

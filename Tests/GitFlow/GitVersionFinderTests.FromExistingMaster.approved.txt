@@ -8,7 +8,9 @@
     },
     "BuildMetaData": {
         "CommitsSinceTag": null,
-        "Branch": null,
-        "Sha": null
+        "Branch": "master",
+        "Sha": "000000000000000000000000000000000000000",
+        "OriginalReleaseDate": null,
+        "ReleaseDate": null
     }
 }

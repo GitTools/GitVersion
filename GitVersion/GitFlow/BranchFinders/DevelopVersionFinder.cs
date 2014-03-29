@@ -4,40 +4,30 @@ namespace GitVersion
 
     class DevelopVersionFinder
     {
-        public VersionAndBranch FindVersion(GitVersionContext context)
-        {
-            var version = GetSemanticVersion(context);
-
-            version.Minor++;
-            version.Patch = 0;
-
-            return new VersionAndBranch
-                   {
-                       BranchType = BranchType.Develop,
-                       BranchName = "develop",
-                       Sha = context.CurrentBranch.Tip.Sha,
-                       Version = version
-                   };
-        }
-
-        SemanticVersion GetSemanticVersion(GitVersionContext context)
+        public SemanticVersion FindVersion(GitVersionContext context)
         {
             var versionOnMasterFinder = new VersionOnMasterFinder();
-            var versionFromMaster = versionOnMasterFinder.Execute(context, context.CurrentBranch.Tip.When());
+            var tip = context.CurrentBranch.Tip;
+            var versionFromMaster = versionOnMasterFinder.Execute(context, tip.When());
 
             var developBranch = context.Repository.FindBranch("develop");
-            var preReleasePartOne = developBranch.Commits
-                .SkipWhile(x => x != context.CurrentBranch.Tip)
+            var numberOfCommitsSinceRelease = developBranch.Commits
+                .SkipWhile(x => x != tip)
                 .TakeWhile(x => x.When() >= versionFromMaster.Timestamp)
                 .Count();
-            return new SemanticVersion
+
+            var releaseDate = ReleaseDateFinder.Execute(context.Repository, tip.Sha, 0);
+            var semanticVersion = new SemanticVersion
             {
                 Major = versionFromMaster.Major,
-                Minor = versionFromMaster.Minor,
-                PreReleaseTag = Stability.Unstable.ToString().ToLower() + preReleasePartOne
+                Minor = versionFromMaster.Minor + 1,
+                Patch = 0,
+                PreReleaseTag = Stability.Unstable.ToString().ToLower() + numberOfCommitsSinceRelease,
+                BuildMetaData = new SemanticVersionBuildMetaData(numberOfCommitsSinceRelease, context.CurrentBranch.Name, tip.Sha,
+                    releaseDate.OriginalDate, releaseDate.Date),
             };
+            return semanticVersion;
         }
-
 
     }
 }

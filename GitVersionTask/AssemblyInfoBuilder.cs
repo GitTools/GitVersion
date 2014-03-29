@@ -5,7 +5,7 @@
 
     public class AssemblyInfoBuilder
     {
-        public VersionAndBranchAndDate VersionAndBranch;
+        public SemanticVersion SemanticVersion;
         public bool SignAssembly;
         public string GetAssemblyInfoText()
         {
@@ -38,9 +38,9 @@ static class GitVersionInformation
 }}
 
 
-", GetAssemblyVersion(), GetAssemblyFileVersion(), VersionAndBranch.Version.ToString("f"), 
- VersionAndBranch.ReleaseDate.OriginalDate.UtcDateTime.ToString("yyyy-MM-dd"), 
- VersionAndBranch.ReleaseDate.Date.UtcDateTime.ToString("yyyy-MM-dd"),
+", GetAssemblyVersion(), GetAssemblyFileVersion(), SemanticVersion.ToString("f"), 
+ SemanticVersion.BuildMetaData.OriginalReleaseDate.Value.UtcDateTime.ToString("yyyy-MM-dd"),
+ SemanticVersion.BuildMetaData.ReleaseDate.Value.UtcDateTime.ToString("yyyy-MM-dd"),
  GenerateVariableMembers());
 
             return assemblyInfo;
@@ -49,7 +49,7 @@ static class GitVersionInformation
         string GenerateVariableMembers()
         {
             var members = new StringBuilder();
-            foreach (var variable in VersionAndBranch.ToKeyValue())
+            foreach (var variable in VariableProvider.GetVariablesFor(SemanticVersion))
             {
                 members.AppendLine(string.Format("    public static string {0} = \"{1}\";", variable.Key, variable.Value));
             }
@@ -62,15 +62,15 @@ static class GitVersionInformation
             if (SignAssembly)
             {
                 // for strong named we don't want to include the patch to avoid binding redirect issues
-                return string.Format("{0}.{1}.0", VersionAndBranch.Version.Major, VersionAndBranch.Version.Minor);
+                return string.Format("{0}.{1}.0", SemanticVersion.Major, SemanticVersion.Minor);
             }
             // for non strong named we want to include the patch
-            return string.Format("{0}.{1}.{2}", VersionAndBranch.Version.Major, VersionAndBranch.Version.Minor, VersionAndBranch.Version.Patch);
+            return string.Format("{0}.{1}.{2}", SemanticVersion.Major, SemanticVersion.Minor, SemanticVersion.Patch);
         }
 
         string GetAssemblyFileVersion()
         {
-            return string.Format("{0}.{1}.{2}", VersionAndBranch.Version.Major, VersionAndBranch.Version.Minor, VersionAndBranch.Version.Patch);
+            return string.Format("{0}.{1}.{2}", SemanticVersion.Major, SemanticVersion.Minor, SemanticVersion.Patch);
         }
     }
 }

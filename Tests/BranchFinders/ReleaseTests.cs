@@ -77,8 +77,8 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo,
                 CurrentBranch = releaseBranch,
             });
-            Assert.AreEqual(1, version.Version.BuildMetaData.CommitsSinceTag, "BuildMetaData should be set to 1 since there is 1 commit");
-            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
+            Assert.AreEqual(1, version.BuildMetaData.CommitsSinceTag, "BuildMetaData should be set to 1 since there is 1 commit");
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
         }
     }
 
@@ -107,12 +107,11 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo,
                 CurrentBranch = releaseBranch,
             });
-            Assert.AreEqual(1, version.Version.BuildMetaData.CommitsSinceTag, "BuildMetaData should be set to 1 since there is 1 commit");
+            Assert.AreEqual(1, version.BuildMetaData.CommitsSinceTag, "BuildMetaData should be set to 1 since there is 1 commit");
 
-            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
         }
     }
-
 
     [Test]
     public void First_commit_with_tag_on_new_commit()
@@ -139,7 +138,7 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo,
                 CurrentBranch = releaseBranch,
             });
-            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
         }
     }
 
@@ -169,8 +168,8 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo,
                 CurrentBranch = releaseBranch,
             });
-            Assert.AreEqual(2, version.Version.BuildMetaData.CommitsSinceTag, "BuildMetaData should be set to 2 since there is 2 commits on the branch");
-            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
+            Assert.AreEqual(2, version.BuildMetaData.CommitsSinceTag, "BuildMetaData should be set to 2 since there is 2 commits on the branch");
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
         }
     }
 
@@ -197,8 +196,8 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo,
                 CurrentBranch = releaseBranch,
             });
-            Assert.AreEqual(2, version.Version.BuildMetaData.CommitsSinceTag, "BuildMetaData should be set to 2 since there is 2 commits on the branch");
-            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
+            Assert.AreEqual(2, version.BuildMetaData.CommitsSinceTag, "BuildMetaData should be set to 2 since there is 2 commits on the branch");
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
         }
     }
 
@@ -228,7 +227,7 @@ public class ReleaseTests : Lg2sHelperBase
                 CurrentBranch = releaseBranch,
             });
             //tag: 0.4.0-RC1 => 
-            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
         }
     }
 

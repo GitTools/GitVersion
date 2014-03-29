@@ -58,7 +58,7 @@ public class MasterTests
                 }
             }, hotfixMergeCommit);
 
-        Assert.AreEqual(5, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
+        Assert.AreEqual(5, version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
         ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
     }
 
@@ -89,7 +89,7 @@ public class MasterTests
                     }
                 }
             }, commit);
-        Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
+        Assert.AreEqual(0, version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
         ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
     }
 
@@ -121,7 +121,7 @@ public class MasterTests
                     }
                 }
             }, commit);
-        Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
+        Assert.AreEqual(0, version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
         ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
     }
 
@@ -146,7 +146,7 @@ public class MasterTests
                     },
                 },
             }, commit);
-        Assert.AreEqual(0, version.Version.Patch, "Should set the patch version to 0");
+        Assert.AreEqual(0, version.Patch, "Should set the patch version to 0");
         ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
     }
 

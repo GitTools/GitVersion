@@ -11,6 +11,7 @@ public class MockCommit:Commit
         idEx = id ?? new ObjectId(Guid.NewGuid().ToString().Replace("-", "")+ "00000000");
         MessageEx = "";
         ParentsEx = new List<Commit> { null };
+        CommitterEx = new Signature("Joe", "Joe@bloggs.net", DateTimeOffset.Now);
     }
 
     public string MessageEx;

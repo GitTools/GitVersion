@@ -9,7 +9,7 @@
         public abstract string GenerateSetVersionMessage(string versionToUseForBuildNumber);
         public abstract string[] GenerateSetParameterMessage(string name, string value);
 
-        public virtual void WriteIntegration(VersionAndBranch versionAndBranch, Action<string> writer)
+        public virtual void WriteIntegration(SemanticVersion versionAndBranch, Action<string> writer)
         {
             if (versionAndBranch == null)
             {
@@ -22,7 +22,7 @@
             }
 
             writer(string.Format("Executing GenerateSetVersionMessage for '{0}'.", GetType().Name));
-            writer(GenerateSetVersionMessage(versionAndBranch.Version.ToString()));
+            writer(GenerateSetVersionMessage(versionAndBranch.ToString()));
             writer(string.Format("Executing GenerateBuildLogOutput for '{0}'.", GetType().Name));
             foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(versionAndBranch, this))
             {

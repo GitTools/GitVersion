@@ -2,7 +2,7 @@ namespace GitVersion
 {
     public class GitFlowVersionFinder
     {
-        public VersionAndBranch FindVersion(GitVersionContext context)
+        public SemanticVersion FindVersion(GitVersionContext context)
         {
             if (context.CurrentBranch.IsMaster())
             {

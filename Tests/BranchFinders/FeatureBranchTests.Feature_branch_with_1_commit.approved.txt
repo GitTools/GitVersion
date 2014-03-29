@@ -1,19 +1,16 @@
 ﻿{
-    "Version": {
-        "Major": 1,
-        "Minor": 1,
-        "Patch": 0,
-        "PreReleaseTag": {
-            "Name": "unstable",
-            "Number": 0
-        },
-        "BuildMetaData": {
-            "CommitsSinceTag": 1,
-            "Branch": null,
-            "Sha": null
-        }
+    "Major": 1,
+    "Minor": 1,
+    "Patch": 0,
+    "PreReleaseTag": {
+        "Name": "unstable",
+        "Number": 0
     },
-    "BranchType": 1,
-    "BranchName": "featureWithOneCommit",
-    "Sha": "000000000000000000000000000000000000000"
+    "BuildMetaData": {
+        "CommitsSinceTag": 1,
+        "Branch": "featureWithOneCommit",
+        "Sha": "000000000000000000000000000000000000000",
+        "OriginalReleaseDate": "<date replaced>",
+        "ReleaseDate": "<date replaced>"
+    }
 }

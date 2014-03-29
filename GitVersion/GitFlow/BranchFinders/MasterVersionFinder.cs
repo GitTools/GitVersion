@@ -4,7 +4,7 @@ namespace GitVersion
 
     class MasterVersionFinder
     {
-        public VersionAndBranch FindVersion(IRepository repository, Commit tip)
+        public SemanticVersion FindVersion(IRepository repository, Commit tip)
         {
             int major;
             int minor;
@@ -13,7 +13,7 @@ namespace GitVersion
             {
                 if (ShortVersionParser.TryParse(tag.Name, out major, out minor, out patch))
                 {
-                    return BuildVersion(tip, major, minor, patch);
+                    return BuildVersion(repository, tip, major, minor, patch);
                 }
             }
 
@@ -22,26 +22,22 @@ namespace GitVersion
             {
                 if (ShortVersionParser.TryParse(versionString, out major, out minor, out patch))
                 {
-                    return BuildVersion(tip, major, minor, patch);
+                    return BuildVersion(repository, tip, major, minor, patch);
                 }
             }
 
             throw new ErrorException("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
         }
 
-        VersionAndBranch BuildVersion(Commit tip, int major, int minor, int patch)
+        SemanticVersion BuildVersion(IRepository repository, Commit tip, int major, int minor, int patch)
         {
-            return new VersionAndBranch
+            var releaseDate = ReleaseDateFinder.Execute(repository, tip.Sha, patch);
+            return new SemanticVersion
             {
-                BranchType = BranchType.Master,
-                BranchName = "master",
-                Sha = tip.Sha,
-                Version = new SemanticVersion
-                {
-                    Major = major,
-                    Minor = minor,
-                    Patch = patch
-                }
+                Major = major,
+                Minor = minor,
+                Patch = patch,
+                BuildMetaData = new SemanticVersionBuildMetaData(null, "master", tip.Sha, releaseDate.OriginalDate, releaseDate.Date)
             };
         }
     }

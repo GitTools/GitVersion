@@ -7,8 +7,10 @@
         "Number": 3
     },
     "BuildMetaData": {
-        "CommitsSinceTag": null,
-        "Branch": null,
-        "Sha": null
+        "CommitsSinceTag": 3,
+        "Branch": "develop",
+        "Sha": "000000000000000000000000000000000000000",
+        "OriginalReleaseDate": "<date replaced>",
+        "ReleaseDate": "<date replaced>"
     }
 }

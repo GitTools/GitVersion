@@ -14,16 +14,12 @@
             var properties = taskType.GetProperties()
                 .Where(p => p.GetCustomAttributes(typeof(OutputAttribute), false).Any())
                 .Select(p => p.Name);
-            var variables = new VersionAndBranch
-            {
-                BranchName = "master",
-                Version = new SemanticVersion
+            var variables = VariableProvider.GetVariablesFor(new SemanticVersion
                 {
                     Major = 1,
                     Minor = 2,
                     Patch = 3
-                }
-            }.ToKeyValue().Keys;
+            }).Keys;
 
             CollectionAssert.AreEquivalent(properties, variables);
         }

@@ -4,9 +4,9 @@ using LibGit2Sharp;
 
 public class ReleaseDateFinder
 {
-    public static ReleaseDate Execute(IRepository repo, VersionAndBranch vab)
+    public static ReleaseDate Execute(IRepository repo, string commitSha, int calculatedPatch)
     {
-        var c = repo.Lookup<Commit>(vab.Sha);
+        var c = repo.Lookup<Commit>(commitSha);
         Debug.Assert(c != null);
 
         var rd = new ReleaseDate
@@ -22,7 +22,7 @@ public class ReleaseDateFinder
             return rd;
         }
 
-        if (vab.Version.Patch == 0)
+        if (calculatedPatch == 0)
         {
             return rd;
         }
