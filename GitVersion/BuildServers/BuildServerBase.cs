@@ -22,7 +22,7 @@
             }
 
             writer(string.Format("Executing GenerateSetVersionMessage for '{0}'.", GetType().Name));
-            writer(GenerateSetVersionMessage(versionAndBranch.GenerateSemVer()));
+            writer(GenerateSetVersionMessage(versionAndBranch.Version.ToString()));
             writer(string.Format("Executing GenerateBuildLogOutput for '{0}'.", GetType().Name));
             foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(versionAndBranch, this))
             {

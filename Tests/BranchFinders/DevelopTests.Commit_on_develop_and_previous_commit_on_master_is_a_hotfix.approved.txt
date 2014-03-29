@@ -1,6 +1,5 @@
 ﻿{
     "Version": {
-        "Suffix": null,
         "Major": 0,
         "Minor": 2,
         "Patch": 0,
@@ -8,7 +7,11 @@
             "Name": "unstable",
             "Number": 1
         },
-        "BuildMetaData": null
+        "BuildMetaData": {
+            "CommitsSinceTag": null,
+            "Branch": null,
+            "Sha": null
+        }
     },
     "BranchType": 2,
     "BranchName": "develop",

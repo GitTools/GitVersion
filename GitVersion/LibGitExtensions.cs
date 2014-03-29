@@ -13,15 +13,6 @@ namespace GitVersion
             return commit.Committer.When;
         }
 
-        public static string Prefix(this ObjectId objectId)
-        {
-            return objectId.Sha.Substring(0, 8);
-        }
-        public static string Prefix(this Commit commit)
-        {
-            return commit.Sha.Substring(0, 8);
-        }
-
         public static Branch FindBranch(this IRepository repository, string branchName)
         {
             var exact = repository.Branches.FirstOrDefault(x => x.Name == branchName);

@@ -26,7 +26,7 @@ public class AssemblyInfoBuilderTests
                 Minor = 2,
                 Patch = 3,
                 PreReleaseTag = "unstable4",
-                Suffix = "a682956d",
+                BuildMetaData = new SemanticVersionBuildMetaData(5, "feature1", "a682956dc1a2752aa24597a0f5cd939f93614509"),
             },
             ReleaseDate = new ReleaseDate
             {

@@ -8,10 +8,9 @@
         public const string Major = "Major";
         public const string Minor = "Minor";
         public const string Patch = "Patch";
-        public const string Suffix = "Suffix";
-        public const string InformationalVersion = "InformationalVersion";
+        public const string BuildMetaData = "BuildMetaData";
+        public const string FullBuildMetaData = "FullBuildMetaData";
         public const string BranchName = "BranchName";
-        public const string BranchType = "BranchType";
         public const string Sha = "Sha";
         public const string MajorMinorPatch = "MajorMinorPatch";
         public const string SemVer = "SemVer";
@@ -32,17 +31,16 @@
                 {Patch, versionAndBranch.Version.Patch.ToString()},
                 {PreReleaseTag, versionAndBranch.Version.PreReleaseTag},
                 {PreReleaseTagWithDash, versionAndBranch.Version.PreReleaseTag.HasTag() ? "-" + versionAndBranch.Version.PreReleaseTag : null},
-                {Suffix, versionAndBranch.Version.Suffix},
-                {InformationalVersion, versionAndBranch.ToLongString()},
+                {BuildMetaData, versionAndBranch.Version.BuildMetaData},
+                {FullBuildMetaData, versionAndBranch.Version.BuildMetaData.ToString("f")},
                 {MajorMinorPatch, string.Format("{0}.{1}.{2}", versionAndBranch.Version.Major, versionAndBranch.Version.Minor, versionAndBranch.Version.Patch)},
-                {SemVer, versionAndBranch.GenerateSemVer()},
-                {SemVerPadded, versionAndBranch.GeneratePaddedSemVer()},
-                {AssemblySemVer, versionAndBranch.GenerateAssemblySemVer()},
-                {FullSemVer, versionAndBranch.GenerateFullSemVer()},
-                {FullSemVerPadded, versionAndBranch.GeneratePaddedFullSemVer()},
-                {ClassicVersion, versionAndBranch.GenerateClassicVersion()},
-                {BranchName, versionAndBranch.BranchName},
-                {BranchType, versionAndBranch.BranchType == null ? null : versionAndBranch.BranchType.ToString()},
+                {SemVer, versionAndBranch.Version.ToString()},
+                {SemVerPadded, versionAndBranch.Version.ToString("sp")},
+                {AssemblySemVer, versionAndBranch.Version.ToString("j") + ".0"},
+                {FullSemVer, versionAndBranch.Version.ToString("f")},
+                {FullSemVerPadded, versionAndBranch.Version.ToString("fp")},
+                {ClassicVersion, versionAndBranch.Version.ToString("j") + (versionAndBranch.Version.BuildMetaData.CommitsSinceTag ?? 0)},
+                {BranchName, versionAndBranch.Version.BuildMetaData.Branch},
                 {Sha, versionAndBranch.Sha},
             };
 

@@ -48,7 +48,7 @@ namespace GitVersion
 
             if (!IsMostRecentCommitTagged(context))
             {
-                versionAndBranch.Version.BuildMetaData = new SemanticVersionBuildMetaData(nbHotfixCommits, context.CurrentBranch.Name, branchType, context.CurrentBranch.Tip.Sha);
+                versionAndBranch.Version.BuildMetaData = new SemanticVersionBuildMetaData(nbHotfixCommits, context.CurrentBranch.Name, context.CurrentBranch.Tip.Sha);
             }
 
             return versionAndBranch;
@@ -106,11 +106,9 @@ namespace GitVersion
             var msg = string.Format("Branch '{0}' doesn't respect the {1} branch naming convention. ",
                 branch.Name, branchType);
 
-            if (version.PreReleaseTag.HasTag() ||
-                version.BuildMetaData != null)
+            if (version.PreReleaseTag.HasTag())
             {
-                throw new ErrorException(msg +
-                                         string.Format("Supported format is '{0}-Major.Minor.Patch'.", branchType.ToString().ToLowerInvariant()));
+                throw new ErrorException(msg + string.Format("Supported format is '{0}-Major.Minor.Patch'.", branchType.ToString().ToLowerInvariant()));
             }
 
             switch (branchType)

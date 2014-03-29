@@ -27,7 +27,6 @@ public class ReleaseTests : Lg2sHelperBase
                 Repository = repo,
                 CurrentBranch = releaseBranch,
             });
-            Assert.IsNull(version.Version.BuildMetaData, "BuildMetaData null since there is no commits");
 
             ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }

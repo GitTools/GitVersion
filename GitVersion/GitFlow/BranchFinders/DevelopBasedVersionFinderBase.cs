@@ -10,7 +10,7 @@ namespace GitVersion
             BranchType branchType)
         {
             var ancestor = FindCommonAncestorWithDevelop(context.Repository, context.CurrentBranch, branchType);
-
+            
             if (!IsThereAnyCommitOnTheBranch(context.Repository, context.CurrentBranch))
             {
                 var developVersionFinder = new DevelopVersionFinder();
@@ -34,9 +34,16 @@ namespace GitVersion
                     Minor = versionFromMaster.Minor + 1,
                     Patch = 0,
                     PreReleaseTag = "unstable0",
-                    Suffix = ancestor.Prefix()
+                    BuildMetaData = NumberOfCommitsOnBranchSinceCommit(context.CurrentBranch, ancestor)
                 }
             };
+        }
+
+        protected int NumberOfCommitsOnBranchSinceCommit(Branch branch, Commit commit)
+        {
+            return branch.Commits
+                .TakeWhile(x => x != commit)
+                .Count();
         }
 
         Commit FindCommonAncestorWithDevelop(IRepository repo, Branch branch, BranchType branchType)

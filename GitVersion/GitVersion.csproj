@@ -93,7 +93,6 @@
     <Compile Include="CachedVersion.cs" />
     <Compile Include="DirectoryDateFinder.cs" />
     <Compile Include="GitDirFinder.cs" />
-    <Compile Include="OutputVariables\VersionBuilders\InformationalVersionBuilder.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="GitFlow\MergeMessageParser.cs" />
     <Compile Include="GitFlow\BranchFinders\PullVersionFinder.cs" />
@@ -107,7 +106,6 @@
     <Compile Include="RepositoryLoader.cs" />
     <Compile Include="SearchPath.cs" />
     <Compile Include="SemanticVersionParser.cs" />
-    <Compile Include="OutputVariables\VersionBuilders\SemVerVersionBuilder.cs" />
     <Compile Include="SemanticVersion.cs" />
     <Compile Include="GitFlow\Stability.cs" />
     <Compile Include="GitFlow\VersionAndBranch.cs" />

@@ -28,10 +28,10 @@
         public string PreReleaseTagWithDash { get; set; }
 
         [Output]
-        public string Suffix { get; set; }
+        public string BuildMetaData { get; set; }
 
         [Output]
-        public string InformationalVersion { get; set; }
+        public string FullBuildMetaData { get; set; }
 
         [Output]
         public string MajorMinorPatch { get; set; }
@@ -56,9 +56,6 @@
 
         [Output]
         public string BranchName { get; set; }
-
-        [Output]
-        public string BranchType { get; set; }
 
         [Output]
         public string Sha { get; set; }

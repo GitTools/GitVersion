@@ -1,6 +1,5 @@
 ﻿{
     "Version": {
-        "Suffix": null,
         "Major": 2,
         "Minor": 0,
         "Patch": 0,
@@ -8,7 +7,11 @@
             "Name": "Beta",
             "Number": 1
         },
-        "BuildMetaData": null
+        "BuildMetaData": {
+            "CommitsSinceTag": null,
+            "Branch": null,
+            "Sha": null
+        }
     },
     "BranchType": 3,
     "BranchName": "release/2.0.0",

@@ -25,14 +25,13 @@ namespace GitVersion
             var commit = lastTaggedReleaseFinder.GetVersion().Commit;
             var commitsSinceLastRelease = NumberOfCommitsOnBranchSinceCommit(gitRepo.Head, commit);
             var semanticVersion = nextSemverCalculator.NextVersion();
-            // TODO Branch type
-            semanticVersion.BuildMetaData = new SemanticVersionBuildMetaData(commitsSinceLastRelease, context.CurrentBranch.Name, null, context.CurrentBranch.Tip.Sha);
+            semanticVersion.BuildMetaData = new SemanticVersionBuildMetaData(commitsSinceLastRelease, context.CurrentBranch.Name, context.CurrentBranch.Tip.Sha);
             if (context.CurrentBranch.IsPullRequest())
             {
                 EnsurePullBranchShareACommonAncestorWithMaster(gitRepo, gitRepo.Head);
                 var extractIssueNumber = ExtractIssueNumber(context);
                 semanticVersion.PreReleaseTag = "unstable" + extractIssueNumber;
-                semanticVersion.Suffix = extractIssueNumber;
+                semanticVersion.BuildMetaData = commitsSinceLastRelease;
                 return new VersionAndBranch
                 {
                     BranchName = context.CurrentBranch.Name,

@@ -1,6 +1,5 @@
 ﻿{
     "Version": {
-        "Suffix": null,
         "Major": 0,
         "Minor": 3,
         "Patch": 0,
@@ -11,7 +10,6 @@
         "BuildMetaData": {
             "CommitsSinceTag": 0,
             "Branch": "release-0.3.0",
-            "BranchType": 3,
             "Sha": "000000000000000000000000000000000000000"
         }
     },

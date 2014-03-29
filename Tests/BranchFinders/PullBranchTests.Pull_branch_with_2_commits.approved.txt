@@ -1,14 +1,17 @@
 ﻿{
     "Version": {
-        "Suffix": "1735",
         "Major": 1,
         "Minor": 1,
         "Patch": 0,
         "PreReleaseTag": {
-            "Name": "unstable",
-            "Number": 0
+            "Name": "PullRequest",
+            "Number": 1735
         },
-        "BuildMetaData": null
+        "BuildMetaData": {
+            "CommitsSinceTag": 2,
+            "Branch": null,
+            "Sha": null
+        }
     },
     "BranchType": 0,
     "BranchName": "pull/1735/merge",

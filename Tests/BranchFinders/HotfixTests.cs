@@ -25,7 +25,6 @@ public class HotfixTests : Lg2sHelperBase
                 CurrentBranch = hotfixBranch,
             });
 
-            Assert.IsNull(version.Version.BuildMetaData, "BuildMetaData null since there is no commits");
             ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
         }
     }

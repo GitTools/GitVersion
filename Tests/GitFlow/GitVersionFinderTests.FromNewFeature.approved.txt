@@ -1,5 +1,4 @@
 ﻿{
-    "Suffix": "469f8519",
     "Major": 1,
     "Minor": 1,
     "Patch": 0,
@@ -7,5 +6,9 @@
         "Name": "unstable",
         "Number": 0
     },
-    "BuildMetaData": null
+    "BuildMetaData": {
+        "CommitsSinceTag": 1,
+        "Branch": null,
+        "Sha": null
+    }
 }

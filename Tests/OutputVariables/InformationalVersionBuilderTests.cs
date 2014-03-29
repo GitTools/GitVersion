@@ -4,19 +4,19 @@ using NUnit.Framework;
 [TestFixture]
 public class InformationalVersionBuilderTests
 {
-    [TestCase(BranchType.Feature, "feature1", "a682956dc1a2752aa24597a0f5cd939f93614509", 1, 2, 3, "unstable", "a682956d", "1.2.3-unstable+a682956d.Branch.feature1.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
+    [TestCase(BranchType.Feature, "feature1", "a682956dc1a2752aa24597a0f5cd939f93614509", 1, 2, 3, "unstable", 1, "1.2.3-unstable+1.Branch.feature1.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
     [TestCase(BranchType.Develop, "develop", "a682956dc1a2752aa24597a0f5cd939f93614509", 1, 2, 3, "alpha645", null, "1.2.3-alpha.645+Branch.develop.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
     [TestCase(BranchType.Develop, "develop", "a682956dc1a2752aa24597a0f5cd939f93614509", 1, 2, 3, "unstable645", null, "1.2.3-unstable.645+Branch.develop.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
     [TestCase(BranchType.Develop, "develop", "a682956dc1a2752aa24597a0f5cd939f93614509", 1, 2, 3, "beta645", null, "1.2.3-beta.645+Branch.develop.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
     [TestCase(BranchType.Hotfix, "hotfix-foo", "a682956dc1a2752aa24597a0f5cd939f93614509", 1, 2, 3, "alpha645", null, "1.2.3-alpha.645+Branch.hotfix-foo.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
     [TestCase(BranchType.Hotfix, "hotfix-foo", "a682956dc1a2752aa24597a0f5cd939f93614509", 1, 2, 3, "beta645", null, "1.2.3-beta.645+Branch.hotfix-foo.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
     [TestCase(BranchType.Hotfix, "hotfix-foo", "a682956dc1a2752aa24597a0f5cd939f93614509", 1, 2, 3, null, null, "1.2.3+Branch.hotfix-foo.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
-    [TestCase(BranchType.Master, "master", "a682956dc1a2752aa24597a0f5cd939f93614509", 1, 2, 3, null, null, "1.2.3+Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
+    [TestCase(BranchType.Master, "master", "a682956dc1a2752aa24597a0f5cd939f93614509", 1, 2, 3, null, null, "1.2.3+Branch.master.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
     [TestCase(BranchType.PullRequest, "myPullRequest", "a682956dc1a2752aa24597a0f5cd939f93614509", 1, 2, 3, "unstable3", null, "1.2.3-unstable.3+Branch.myPullRequest.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
     [TestCase(BranchType.Release, "release-1.2", "a682956dc1a2752aa24597a0f5cd939f93614509", 1, 2, 0, "beta2", null, "1.2.0-beta.2+Branch.release-1.2.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
     [TestCase(BranchType.Release, "release-1.2", "a682956dc1a2752aa24597a0f5cd939f93614509", 1, 2, 0, "alpha2", null, "1.2.0-alpha.2+Branch.release-1.2.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
     public void ValidateInformationalVersionBuilder(BranchType branchType, string branchName, string sha, int major, int minor, int patch,
-        string tag, string suffix, string versionString)
+        string tag, int? suffix, string versionString)
     {
         var semanticVersion = new VersionAndBranch
             {
@@ -29,10 +29,10 @@ public class InformationalVersionBuilderTests
                         Minor = minor,
                         Patch = patch,
                         PreReleaseTag = tag,
-                        Suffix = suffix,
+                        BuildMetaData = new SemanticVersionBuildMetaData(suffix, branchName, sha),
                     }
             };
-        var informationalVersion = semanticVersion.ToLongString();
+        var informationalVersion = semanticVersion.Version.ToString("f");
 
         Assert.AreEqual(versionString, informationalVersion);
     }

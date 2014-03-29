@@ -4,11 +4,11 @@ namespace GitVersion
     {
         public VersionAndBranch FindVersion(GitVersionContext context)
         {
-            var suffix = ExtractIssueNumber(context);
+            var issueNumber = ExtractIssueNumber(context);
 
             var version = FindVersion(context, BranchType.PullRequest);
-            version.Version.Suffix = suffix;
-
+            version.Version.PreReleaseTag = new SemanticVersionPreReleaseTag("PullRequest", int.Parse(issueNumber));
+            //TODO version.Version.BuildMetaData = NumberOfCommitsOnBranchSinceCommit(context.CurrentBranch, commonAncestor);
             return version;
         }
 

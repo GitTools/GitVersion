@@ -119,8 +119,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
             var versionAndBranch = finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
-                CurrentBranch = hotfix,
-
+                CurrentBranch = hotfix
             });
 
             Assert.AreEqual(branchName, versionAndBranch.BranchName);
