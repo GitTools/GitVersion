@@ -16,7 +16,20 @@ namespace GitVersion
 
             try
             {
-                var arguments = ArgumentParser.ParseArguments(GetArgumentsWithoutExeName());
+                Arguments arguments;
+                var argumentsWithoutExeName = GetArgumentsWithoutExeName();
+                try
+                {
+                    arguments = ArgumentParser.ParseArguments(argumentsWithoutExeName);
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Failed to parse arguments: {0}", string.Join(" ", argumentsWithoutExeName));
+
+                    HelpWriter.Write();
+                    return;
+                }
+
                 if (arguments.IsHelp)
                 {
                     HelpWriter.Write();
@@ -33,6 +46,7 @@ namespace GitVersion
                     Environment.Exit(1);
                 }
 
+                var workingDirectory = Directory.GetParent(gitDirectory).FullName;
                 var applicableBuildServers = GetApplicableBuildServers(arguments).ToList();
 
                 foreach (var buildServer in applicableBuildServers)
@@ -50,9 +64,9 @@ namespace GitVersion
                     }
                 }
 
+                var variables = VariableProvider.GetVariablesFor(semanticVersion);
                 if (arguments.Output == OutputType.Json)
                 {
-                    var variables = VariableProvider.GetVariablesFor(semanticVersion);
                     switch (arguments.VersionPart)
                     {
                         case null:
@@ -70,8 +84,8 @@ namespace GitVersion
                     }
                 }
 
-                RunMsBuildIfNeeded(arguments, gitDirectory);
-                RunExecCommandIfNeeded(arguments, gitDirectory);
+                RunMsBuildIfNeeded(arguments, workingDirectory, variables);
+                RunExecCommandIfNeeded(arguments, workingDirectory, variables);
 
                 if (gitPreparer.IsDynamicGitRepository)
                 {
@@ -125,10 +139,7 @@ namespace GitVersion
                         using (File.CreateText(arguments.LogFilePath)) { }
                     }
 
-                    writeAction = x =>
-                    {
-                        WriteLogEntry(arguments, x);
-                    };
+                    writeAction = x => WriteLogEntry(arguments, x);
                 }
                 catch (Exception ex)
                 {
@@ -143,8 +154,8 @@ namespace GitVersion
 
         static void WriteLogEntry(Arguments arguments, string s)
         {
-            var contents = string.Format("{0}\t\t{1}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), s);
-            File.WriteAllText(arguments.LogFilePath, contents);
+            var contents = string.Format("{0}\t\t{1}\r\n", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), s);
+            File.AppendAllText(arguments.LogFilePath, contents);
         }
 
         static List<string> GetArgumentsWithoutExeName()
@@ -154,29 +165,38 @@ namespace GitVersion
                 .ToList();
         }
 
-        private static void RunMsBuildIfNeeded(Arguments args, string gitDirectory)
+        private static void RunMsBuildIfNeeded(Arguments args, string workingDirectory, Dictionary<string, string> variables)
         {
             if (string.IsNullOrEmpty(args.Proj)) return;
 
-            Console.WriteLine("Launching {0} \"{1}\"{2}", MsBuild, args.Proj, args.ProjArgs);
+            Logger.WriteInfo(string.Format("Launching {0} \"{1}\" {2}", MsBuild, args.Proj, args.ProjArgs));
             var results = ProcessHelper.Run(
-                Console.WriteLine, Console.Error.WriteLine,
-                null, MsBuild, string.Format("\"{0}\"{1}", args.Proj, args.ProjArgs), gitDirectory);
+                Logger.WriteInfo, Logger.WriteError,
+                null, MsBuild, string.Format("\"{0}\" {1}", args.Proj, args.ProjArgs), workingDirectory,
+                GetEnvironmentalVariables(variables));
 
             if (results != 0)
                 throw new ErrorException("MsBuild execution failed, non-zero return code");
         }
 
-        private static void RunExecCommandIfNeeded(Arguments args, string gitDirectory)
+        private static void RunExecCommandIfNeeded(Arguments args, string workingDirectory, Dictionary<string, string> variables)
         {
             if (string.IsNullOrEmpty(args.Exec)) return;
 
-            Console.WriteLine("Launching {0} {1}", args.Exec, args.ExecArgs);
+            Logger.WriteInfo(string.Format("Launching {0} {1}", args.Exec, args.ExecArgs));
             var results = ProcessHelper.Run(
-                Console.WriteLine, Console.Error.WriteLine,
-                null, args.Exec, args.ExecArgs, gitDirectory);
+                Logger.WriteInfo, Logger.WriteError,
+                null, args.Exec, args.ExecArgs, workingDirectory,
+                GetEnvironmentalVariables(variables));
             if (results != 0)
                 throw new ErrorException(string.Format("Execution of {0} failed, non-zero return code", args.Exec));
+        }
+
+        static KeyValuePair<string, string>[] GetEnvironmentalVariables(Dictionary<string, string> variables)
+        {
+            return variables
+                .Select(v => new KeyValuePair<string, string>("GitVersion_" + v.Key, v.Value))
+                .ToArray();
         }
     }
 }

@@ -147,7 +147,7 @@ namespace GitVersion
                 value = value.Remove(0, 1);
             }
 
-            return (string.Equals(switchName, value));
+            return (string.Equals(switchName, value, StringComparison.InvariantCultureIgnoreCase));
         }
 
         static void EnsureArgumentsEvenCount(List<string> commandLineArguments, List<string> namedArguments)

@@ -9,9 +9,9 @@
         public abstract string GenerateSetVersionMessage(string versionToUseForBuildNumber);
         public abstract string[] GenerateSetParameterMessage(string name, string value);
 
-        public virtual void WriteIntegration(SemanticVersion versionAndBranch, Action<string> writer)
+        public virtual void WriteIntegration(SemanticVersion semanticVersion, Action<string> writer)
         {
-            if (versionAndBranch == null)
+            if (semanticVersion == null)
             {
                 return;
             }
@@ -22,9 +22,9 @@
             }
 
             writer(string.Format("Executing GenerateSetVersionMessage for '{0}'.", GetType().Name));
-            writer(GenerateSetVersionMessage(versionAndBranch.ToString()));
+            writer(GenerateSetVersionMessage(semanticVersion.ToString()));
             writer(string.Format("Executing GenerateBuildLogOutput for '{0}'.", GetType().Name));
-            foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(versionAndBranch, this))
+            foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(semanticVersion, this))
             {
                 writer(buildParameter);
             }

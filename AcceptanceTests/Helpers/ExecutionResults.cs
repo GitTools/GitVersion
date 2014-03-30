@@ -1,16 +1,24 @@
 ﻿namespace GitHubFlowVersion.AcceptanceTests.Helpers
 {
     using System.Collections.Generic;
+    using System.Web.Script.Serialization;
 
     public class ExecutionResults
     {
-        public ExecutionResults(int exitCode, Dictionary<string, string> output)
+        public ExecutionResults(int exitCode, string output, string logContents)
         {
             ExitCode = exitCode;
             Output = output;
+            Log = logContents;
         }
 
         public int ExitCode { get; private set; }
-        public Dictionary<string, string> Output { get; private set; }
+        public string Output { get; private set; }
+        public string Log { get; set; }
+
+        public Dictionary<string, string> OutputVariables
+        {
+            get { return new JavaScriptSerializer().Deserialize<Dictionary<string, string>>(Output); }
+        }
     }
 }

@@ -6,20 +6,20 @@ using LibGit2Sharp;
 namespace GitHubFlowVersion.AcceptanceTests.Helpers
 {
     using System.Collections.Generic;
-    using System.Web.Script.Serialization;
+    using GitVersion;
 
     public static class GitVersionHelper
     {
         public static ExecutionResults ExecuteIn(string workingDirectory, 
-            string exec = null, string execArgs = null, string projectFile = null, string targets = null,
+            string exec = null, string execArgs = null, string projectFile = null, string projectArgs = null,
             bool isTeamCity = false)
         {
             var logFile = Path.Combine(workingDirectory, "log.txt");
             var gitHubFlowVersion = Path.Combine(PathHelper.GetCurrentDirectory(), "GitVersion.exe");
-            var execArg = exec == null ? null : string.Format(" /Exec \"{0}\"", exec);
-            var execArgsArg = execArgs == null ? null : string.Format(" /ExecArgs \"{0}\"", execArgs);
-            var projectFileArg = projectFile == null ? null : string.Format(" /Proj \"{0}\"", projectFile);
-            var targetsArg = targets == null ? null : string.Format(" /Targets \"{0}\"", targets);
+            var execArg = exec == null ? null : string.Format(" /exec \"{0}\"", exec);
+            var execArgsArg = execArgs == null ? null : string.Format(" /execArgs \"{0}\"", execArgs);
+            var projectFileArg = projectFile == null ? null : string.Format(" /proj \"{0}\"", projectFile);
+            var targetsArg = projectArgs == null ? null : string.Format(" /projargs \"{0}\"", projectArgs);
             var logArg = string.Format(" /l \"{0}\"", logFile);
             var arguments = string.Format("\"{0}\"{1}{2}{3}{4}{5}", workingDirectory, execArg, execArgsArg,
                 projectFileArg, targetsArg, logArg);
@@ -37,6 +37,7 @@ namespace GitHubFlowVersion.AcceptanceTests.Helpers
                 gitHubFlowVersion, arguments, workingDirectory,
                 environmentalVariables);
 
+            var logContents = File.ReadAllText(logFile);
             Console.WriteLine("Output from GitVersion.exe");
             Console.WriteLine("-------------------------------------------------------");
             Console.WriteLine(output.ToString());
@@ -45,12 +46,12 @@ namespace GitHubFlowVersion.AcceptanceTests.Helpers
             Console.WriteLine("-------------------------------------------------------");
             Console.WriteLine("Log from GitVersion.exe");
             Console.WriteLine("-------------------------------------------------------");
-            Console.WriteLine(File.ReadAllText(logFile));
+            Console.WriteLine(logContents);
             Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine("-------------------------------------------------------");
 
-            return new ExecutionResults(exitCode, new JavaScriptSerializer().Deserialize<Dictionary<string, string>>(output.ToString()));
+            return new ExecutionResults(exitCode, output.ToString(), logContents);
         }
 
         public static void AddNextVersionTxtFile(this IRepository repository, string version)

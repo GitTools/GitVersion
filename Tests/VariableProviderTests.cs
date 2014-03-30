@@ -15,13 +15,13 @@
                 Major = 1,
                 Minor = 2,
                 Patch = 3,
-                PreReleaseTag = "beta.4",
+                PreReleaseTag = "unstable.4",
                 BuildMetaData = "5.Branch.develop"
             };
 
             var vars = VariableProvider.GetVariablesFor(semVer);
 
-            vars[VariableProvider.SemVer].ShouldBe("1.2.3.5-beta.4");
+            vars[VariableProvider.SemVer].ShouldBe("1.2.3.5-unstable");
         }
     }
 }

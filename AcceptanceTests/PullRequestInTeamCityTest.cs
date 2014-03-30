@@ -8,7 +8,7 @@
     using Shouldly;
     using Xunit.Extensions;
 
-    public class NormaliseGitDirectoryInTeamCity
+    public class PullRequestInTeamCityTest
     {
         private const string TaggedVersion = "1.0.3";
 
@@ -17,7 +17,7 @@
         [InlineData("refs/pull/5/merge")]
         public void GivenARemoteWithATagOnMaster_AndAPullRequestWithTwoCommits_AndBuildIsRunningInTeamCity_VersionIsCalclatedProperly(string pullRequestRef)
         {
-            using (var fixture = new EmptyRepository())
+            using (var fixture = new EmptyRepositoryFixture())
             {
                 var remoteRepositoryPath = PathHelper.GetTempPath();
                 Repository.Init(remoteRepositoryPath);
@@ -44,7 +44,7 @@
                 var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, isTeamCity: true);
 
                 result.ExitCode.ShouldBe(0);
-                result.Output[VariableProvider.FullSemVer].ShouldBe("1.0.4-PullRequest.5+3");
+                result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.0.4-PullRequest.5+3");
             }
         }
     }

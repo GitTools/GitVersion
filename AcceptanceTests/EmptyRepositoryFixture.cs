@@ -5,12 +5,12 @@ using LibGit2Sharp;
 
 namespace GitHubFlowVersion.AcceptanceTests
 {
-    public class EmptyRepository : IDisposable
+    public class EmptyRepositoryFixture : IDisposable
     {
         public readonly string RepositoryPath;
         public readonly Repository Repository;
 
-        public EmptyRepository()
+        public EmptyRepositoryFixture()
         {
             RepositoryPath = PathHelper.GetTempPath();
             Repository.Init(RepositoryPath);

@@ -12,14 +12,14 @@
         [Fact]
         public void WhenDevelopBranchedFromMaster_MinorIsIncreased()
         {
-            using (var fixture = new EmptyRepository())
+            using (var fixture = new EmptyRepositoryFixture())
             {
                 fixture.Repository.MakeATaggedCommit("1.0.0");
                 fixture.Repository.CreateBranch("develop").Checkout();
 
                 var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath);
 
-                result.Output[VariableProvider.SemVer].ShouldBe("1.1.0.1-unstable");
+                result.OutputVariables[VariableProvider.SemVer].ShouldBe("1.1.0.1-unstable");
             }
         }
     }
