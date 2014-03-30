@@ -46,12 +46,12 @@ namespace GitVersion
             if (remote.FetchRefSpecs.Any(r => r.Source == "refs/heads/*"))
                 return;
 
-            string masterRefSpec = string.Format("+refs/heads/*:refs/remotes/{0}/*", remote.Name);
+            string allBranchesFetchRefSpec = string.Format("+refs/heads/*:refs/remotes/{0}/*", remote.Name);
 
-            Logger.WriteInfo(string.Format("Adding refspec: {0}", masterRefSpec));
+            Logger.WriteInfo(string.Format("Adding refspec: {0}", allBranchesFetchRefSpec));
 
             repo.Network.Remotes.Update(remote,
-                r => r.FetchRefSpecs.Add(masterRefSpec));
+                r => r.FetchRefSpecs.Add(allBranchesFetchRefSpec));
         }
 
         static FetchOptions BuildFetchOptions(string username, string password)
