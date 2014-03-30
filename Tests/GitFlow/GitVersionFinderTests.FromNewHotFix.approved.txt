@@ -11,6 +11,7 @@
         "Branch": "hotfix/1.0.2",
         "Sha": "000000000000000000000000000000000000000",
         "OriginalReleaseDate": "<date replaced>",
-        "ReleaseDate": "<date replaced>"
+        "ReleaseDate": "<date replaced>",
+        "OtherMetaData": null
     }
 }

@@ -11,6 +11,7 @@
         "Branch": "pull/1735/merge",
         "Sha": "000000000000000000000000000000000000000",
         "OriginalReleaseDate": "<date replaced>",
-        "ReleaseDate": "<date replaced>"
+        "ReleaseDate": "<date replaced>",
+        "OtherMetaData": null
     }
 }

@@ -1,22 +1,23 @@
 namespace GitVersion
 {
     using System;
+    using System.Text.RegularExpressions;
 
     public class SemanticVersionBuildMetaData : IFormattable
     {
+        static readonly Regex ParseRegex = new Regex(
+            @"(?<BuildNumber>\d+)?(\.?Branch(Name)?\.(?<BranchName>[^\.]+))?(\.?Sha?\.(?<Sha>[^\.]+))?(?<Other>.*)",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         public int? CommitsSinceTag;
         public string Branch;
         public string Sha;
         public DateTimeOffset? OriginalReleaseDate;
         public DateTimeOffset? ReleaseDate;
+        public string OtherMetaData;
 
         public SemanticVersionBuildMetaData()
         {
-        }
-
-        public SemanticVersionBuildMetaData(int? commitsSinceTag)
-        {
-            CommitsSinceTag = commitsSinceTag;
         }
 
         public SemanticVersionBuildMetaData(
@@ -127,8 +128,25 @@ namespace GitVersion
 
         public static SemanticVersionBuildMetaData Parse(string buildMetaData)
         {
-            //TODO Parse
-            return new SemanticVersionBuildMetaData();
+            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData();
+            if (string.IsNullOrEmpty(buildMetaData))
+                return semanticVersionBuildMetaData;
+
+            var parsed = ParseRegex.Match(buildMetaData);
+
+            if (parsed.Groups["BuildNumber"].Success)
+                semanticVersionBuildMetaData.CommitsSinceTag = int.Parse(parsed.Groups["BuildNumber"].Value);
+
+            if (parsed.Groups["BranchName"].Success)
+                semanticVersionBuildMetaData.Branch = parsed.Groups["BranchName"].Value;
+
+            if (parsed.Groups["Sha"].Success)
+                semanticVersionBuildMetaData.Sha = parsed.Groups["Sha"].Value;
+
+            if (parsed.Groups["Other"].Success && !string.IsNullOrEmpty(parsed.Groups["Other"].Value))
+                semanticVersionBuildMetaData.OtherMetaData = parsed.Groups["Other"].Value;
+
+            return semanticVersionBuildMetaData;
         }
     }
 }
