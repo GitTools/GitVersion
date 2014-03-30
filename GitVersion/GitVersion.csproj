@@ -76,6 +76,7 @@
     <Compile Include="BuildServers\GitHelper.cs" />
     <Compile Include="BuildServers\IBuildServer.cs" />
     <Compile Include="BuildServers\TeamCity.cs" />
+    <Compile Include="OutputVariables\CiFeedFormatter.cs" />
     <Compile Include="OutputVariables\VariableProvider.cs" />
     <Compile Include="GitVersionContext.cs" />
     <Compile Include="HelpWriter.cs" />

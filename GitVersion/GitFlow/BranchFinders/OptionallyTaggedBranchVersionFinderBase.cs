@@ -22,7 +22,7 @@ namespace GitVersion
             if (branchType == BranchType.Hotfix)
                 version.PreReleaseTag = "hotfix0";
             if (branchType == BranchType.Release)
-                version.PreReleaseTag = "beta0";
+                version.PreReleaseTag = "beta1";
 
             var tagVersion = RetrieveMostRecentOptionalTagVersion(context.Repository, version, context.CurrentBranch.Commits.Take(nbHotfixCommits + 1));
 
@@ -41,13 +41,14 @@ namespace GitVersion
 
             if (tagVersion != null)
             {
+                tagVersion.PreReleaseTag.Number++;
                 semanticVersion.PreReleaseTag = tagVersion.PreReleaseTag;
             }
 
             return semanticVersion;
         }
 
-        bool IsMostRecentCommitTagged(GitVersionContext context)
+        bool IsMostRecentCommitTagged(GitVersionContext context, out SemanticVersion version)
         {
             var currentCommit = context.CurrentBranch.Commits.First();
 
@@ -57,13 +58,13 @@ namespace GitVersion
 
             foreach (var tag in tags)
             {
-                SemanticVersion version;
                 if (SemanticVersion.TryParse(tag.Name, out version))
                 {
                     return true;
                 }
             }
 
+            version = null;
             return false;
         }
 

@@ -4,10 +4,10 @@
     "Patch": 0,
     "PreReleaseTag": {
         "Name": "unstable",
-        "Number": 3
+        "Number": 1
     },
     "BuildMetaData": {
-        "CommitsSinceTag": 3,
+        "CommitsSinceTag": 1,
         "Branch": "develop",
         "Sha": "000000000000000000000000000000000000000",
         "OriginalReleaseDate": "<date replaced>",

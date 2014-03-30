@@ -4,7 +4,7 @@
     "Patch": 3,
     "PreReleaseTag": {
         "Name": "alpha",
-        "Number": 5
+        "Number": 6
     },
     "BuildMetaData": {
         "CommitsSinceTag": 2,

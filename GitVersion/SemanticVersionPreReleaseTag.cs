@@ -5,6 +5,8 @@ namespace GitVersion
 
     public class SemanticVersionPreReleaseTag : IFormattable, IComparable<SemanticVersionPreReleaseTag>
     {
+        public string Name;
+        public int? Number;
 
         public SemanticVersionPreReleaseTag()
         {
@@ -15,10 +17,6 @@ namespace GitVersion
             Name = name;
             Number = number;
         }
-
-        public readonly string Name;
-
-        public readonly int? Number;
 
         protected bool Equals(SemanticVersionPreReleaseTag other)
         {
@@ -40,14 +38,6 @@ namespace GitVersion
                 return false;
             }
             return Equals((SemanticVersionPreReleaseTag) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return ((Name != null ? Name.GetHashCode() : 0)*397) ^ Number.GetHashCode();
-            }
         }
 
         public static bool operator ==(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)

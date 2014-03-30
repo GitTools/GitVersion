@@ -1,6 +1,7 @@
 namespace GitVersion
 {
     using System.Linq;
+    using LibGit2Sharp;
 
     class DevelopVersionFinder
     {
@@ -10,11 +11,14 @@ namespace GitVersion
             var tip = context.CurrentBranch.Tip;
             var versionFromMaster = versionOnMasterFinder.Execute(context, tip.When());
 
-            var developBranch = context.Repository.FindBranch("develop");
-            var numberOfCommitsSinceRelease = developBranch.Commits
-                .SkipWhile(x => x != tip)
-                .TakeWhile(x => x.When() >= versionFromMaster.Timestamp)
-                .Count();
+            var f = new CommitFilter
+            {
+                Since = tip,
+                Until = context.Repository.FindBranch("master").Tip
+            };
+
+            var c = context.Repository.Commits.QueryBy(f);
+            var numberOfCommitsSinceRelease = c.Count();
 
             var releaseDate = ReleaseDateFinder.Execute(context.Repository, tip.Sha, 0);
             var semanticVersion = new SemanticVersion

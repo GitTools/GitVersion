@@ -5,6 +5,8 @@ using LibGit2Sharp;
 
 namespace GitHubFlowVersion.AcceptanceTests.Helpers
 {
+    using GitVersion;
+
     public static class GitHelper
     {
         public static Commit MakeACommit(this IRepository repository)
@@ -12,7 +14,13 @@ namespace GitHubFlowVersion.AcceptanceTests.Helpers
             var randomFile = Path.Combine(repository.Info.WorkingDirectory, Guid.NewGuid().ToString());
             File.WriteAllText(randomFile, string.Empty);
             repository.Index.Stage(randomFile);
-            return repository.Commit("Test Commit", new Signature("Test User", "test@email.com", DateTimeOffset.UtcNow));
+            return repository.Commit("Test Commit", Constants.SignatureNow());
+        }
+        public static void MergeNoFF(this IRepository repository, string branch, Signature sig)
+        {
+            repository.MakeACommit();
+            repository.Merge(repository.FindBranch(branch).Tip, sig);
+            repository.Commit(string.Format("Merge branch '{0}'", branch), amendPreviousCommit: true);
         }
 
         public static Commit[] MakeCommits(this IRepository repository, int numCommitsToMake)

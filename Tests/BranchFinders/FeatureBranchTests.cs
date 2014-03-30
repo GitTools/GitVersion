@@ -7,6 +7,7 @@ using ObjectApproval;
 public class FeatureBranchTests : Lg2sHelperBase
 {
     [Test]
+    [Ignore] //TODO Delete?
     public void Feature_branch_with_no_commit()
     {
         //this scenario should redirect to the develop finder since there is no diff btw this branch and the develop branch

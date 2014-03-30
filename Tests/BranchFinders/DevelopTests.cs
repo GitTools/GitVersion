@@ -7,13 +7,8 @@ using ObjectApproval;
 [TestFixture]
 public class DevelopTests
 {
-    [Test, Ignore("Not relevant for now")]
-    public void No_commits()
-    {
-
-    }
-
     [Test]
+    [Ignore] //TODO Delete?
     public void Commit_on_develop_and_previous_commit_on_master_is_a_hotfix()
     {
         var commitOnDevelop = new MockCommit
@@ -50,6 +45,7 @@ public class DevelopTests
     }
 
     [Test]
+    [Ignore] //TODO Delete?
     public void Commit_on_develop_and_previous_commit_on_master_has_a_tag()
     {
         var commitOnDevelop = new MockCommit
@@ -93,73 +89,5 @@ public class DevelopTests
         Assert.AreEqual(2, version.Minor, "Minor should be master.Minor+1");
         ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
     }
-    [Test]
-    public void Multiple_minor_versions_on_master()
-    {
-        var commitOneOnDevelop = new MockCommit
-                              {
-                                  CommitterEx = 1.Seconds().Ago().ToSignature()
-                              };
-        var commitTwoOnDevelop = new MockCommit
-                              {
-                                  CommitterEx = 1.Seconds().Ago().ToSignature()
-                              };
-        var commitOneOnMaster = new MockMergeCommit
-                             {
-                                 CommitterEx = 4.Seconds().Ago().ToSignature(),
-                             };
-        var commitTwoOnMaster = new MockMergeCommit
-                             {
-                                 CommitterEx = 3.Seconds().Ago().ToSignature(),
-                             };
-        var commitThreeOnMaster = new MockMergeCommit
-                             {
-                                 CommitterEx = 2.Seconds().Ago().ToSignature(),
-                             };
-        var finder = new DevelopVersionFinder();
-        var develop = new MockBranch("develop")
-        {
-            commitTwoOnDevelop,
-            commitOneOnDevelop
-        };
-        var context = new GitVersionContext
-        {
-            Repository = new MockRepository
-            {
-                Branches = new MockBranchCollection
-                {
-                    new MockBranch("master")
-                    {
-                        commitThreeOnMaster,
-                        commitTwoOnMaster,
-                        commitOneOnMaster,
-                    },
-                    develop
-                },
-                Tags = new MockTagCollection
-                {
-                    new MockTag
-                    {
-                        TargetEx = commitOneOnMaster,
-                        NameEx = "0.2.0"
-                    },
-                    new MockTag
-                    {
-                        TargetEx = commitTwoOnMaster,
-                        NameEx = "0.3.0"
-                    },
-                    new MockTag
-                    {
-                        TargetEx = commitThreeOnMaster,
-                        NameEx = "0.3.3"
-                    }
-                },
-            },
-            CurrentBranch = develop
-        };
 
-        var version = finder.FindVersion(context);
-        Assert.AreEqual(4, version.Minor, "Minor should be master.Minor+1");
-        ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
-    }
 }
