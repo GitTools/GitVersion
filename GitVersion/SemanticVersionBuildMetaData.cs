@@ -97,10 +97,12 @@ namespace GitVersion
                     return string.Format("{0}{1}", CommitsSinceTag, string.IsNullOrEmpty(Sha) ? null : ".Sha." + Sha).TrimStart('.');
                 case "f":
                     return string.Format(
-                        "{0}{1}{2}",
+                        "{0}{1}{2}{3}",
                         CommitsSinceTag, 
                         string.IsNullOrEmpty(Branch) ? null : ".Branch." + Branch,
-                        string.IsNullOrEmpty(Sha) ? null : ".Sha." + Sha).TrimStart('.');
+                        string.IsNullOrEmpty(Sha) ? null : ".Sha." + Sha,
+                        string.IsNullOrEmpty(OtherMetaData) ? null : "." + OtherMetaData)
+                        .TrimStart('.');
                 default:
                     throw new ArgumentException("Unrecognised format", "format");
             }
@@ -144,7 +146,7 @@ namespace GitVersion
                 semanticVersionBuildMetaData.Sha = parsed.Groups["Sha"].Value;
 
             if (parsed.Groups["Other"].Success && !string.IsNullOrEmpty(parsed.Groups["Other"].Value))
-                semanticVersionBuildMetaData.OtherMetaData = parsed.Groups["Other"].Value;
+                semanticVersionBuildMetaData.OtherMetaData = parsed.Groups["Other"].Value.TrimStart('.');
 
             return semanticVersionBuildMetaData;
         }
