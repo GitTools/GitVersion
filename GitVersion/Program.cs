@@ -69,7 +69,7 @@ namespace GitVersion
                             break;
                     }
                 }
-                
+
                 RunMsBuildIfNeeded(arguments, gitDirectory);
                 RunExecCommandIfNeeded(arguments, gitDirectory);
 
@@ -81,7 +81,7 @@ namespace GitVersion
             catch (ErrorException exception)
             {
                 var error = string.Format("An error occurred:\r\n{0}", exception.Message);
-                Logger.WriteWarning(error);
+                Logger.WriteError(error);
 
                 exitCode = 1;
             }
@@ -113,30 +113,32 @@ namespace GitVersion
 
         static void ConfigureLogging(Arguments arguments)
         {
-            Action<string> writeAction;
+            Action<string> writeAction = x => { };
 
-            if (arguments.LogFilePath == null)
+            if (arguments.LogFilePath != null)
             {
-                writeAction = x =>
+                try
                 {
-                };
-            }
-            else
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(arguments.LogFilePath));
-                if (File.Exists(arguments.LogFilePath))
-                {
-                    using (File.CreateText(arguments.LogFilePath)) { }
+                    Directory.CreateDirectory(Path.GetDirectoryName(arguments.LogFilePath));
+                    if (File.Exists(arguments.LogFilePath))
+                    {
+                        using (File.CreateText(arguments.LogFilePath)) { }
+                    }
+
+                    writeAction = x =>
+                    {
+                        WriteLogEntry(arguments, x);
+                    };
                 }
-
-                writeAction = x =>
+                catch (Exception ex)
                 {
-                    WriteLogEntry(arguments, x);
-                };
+                    Console.WriteLine("Failed to configure logging: " + ex.Message);
+                }
             }
 
             Logger.WriteInfo = writeAction;
             Logger.WriteWarning = writeAction;
+            Logger.WriteError = writeAction;
         }
 
         static void WriteLogEntry(Arguments arguments, string s)

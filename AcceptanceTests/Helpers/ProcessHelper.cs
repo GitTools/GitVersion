@@ -1,6 +1,7 @@
 ﻿namespace GitHubFlowVersion.AcceptanceTests.Helpers
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.Runtime.InteropServices;
@@ -28,7 +29,7 @@
         }
 
         // http://csharptest.net/532/using-processstart-to-capture-console-output/
-        public static int Run(Action<string> output, Action<string> errorOutput, TextReader input, string exe, string args, string workingDirectory)
+        public static int Run(Action<string> output, Action<string> errorOutput, TextReader input, string exe, string args, string workingDirectory, params KeyValuePair<string, string>[] environmentalVariables)
         {
             if (String.IsNullOrEmpty(exe))
                 throw new FileNotFoundException();
@@ -48,6 +49,10 @@
                 FileName = exe,
                 Arguments = args
             };
+            foreach (var environmentalVariable in environmentalVariables)
+            {
+                psi.EnvironmentVariables.Add(environmentalVariable.Key, environmentalVariable.Value);
+            }
 
             using (var process = Process.Start(psi))
             using (var mreOut = new ManualResetEvent(false))

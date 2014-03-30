@@ -21,6 +21,7 @@
         public const string ClassicVersion = "ClassicVersion";
         public const string PreReleaseTag = "PreReleaseTag";
         public const string PreReleaseTagWithDash = "PreReleaseTagWithDash";
+        public const string InformationalVersion = "InformationalVersion";
 
         public static Dictionary<string, string> GetVariablesFor(SemanticVersion semanticVersion)
         {
@@ -39,6 +40,7 @@
                 {AssemblySemVer, semanticVersion.ToString("j") + ".0"},
                 {FullSemVer, semanticVersion.ToString("f")},
                 {FullSemVerPadded, semanticVersion.ToString("fp")},
+                {InformationalVersion, semanticVersion.ToString("i")},
                 {ClassicVersion, string.Format("{0}.{1}", semanticVersion.ToString("j"), (semanticVersion.BuildMetaData.CommitsSinceTag ?? 0))},
                 {BranchName, semanticVersion.BuildMetaData.Branch},
                 {Sha, semanticVersion.BuildMetaData.Sha},

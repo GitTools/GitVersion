@@ -40,6 +40,9 @@
     <Reference Include="LibGit2Sharp">
       <HintPath>..\packages\LibGit2Sharp.0.16.0.0\lib\net35\LibGit2Sharp.dll</HintPath>
     </Reference>
+    <Reference Include="Shouldly">
+      <HintPath>..\packages\Shouldly.2.1.1\lib\net40\Shouldly.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web.Extensions" />
@@ -47,10 +50,6 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TestStack.BDDfy, Version=3.19.1.0, Culture=neutral, PublicKeyToken=a357057d05a879bd, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\TestStack.BDDfy.3.19.1\lib\NET40\TestStack.BDDfy.dll</HintPath>
-    </Reference>
     <Reference Include="xunit">
       <HintPath>..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
     </Reference>
@@ -60,6 +59,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExecArgSpecification.cs" />
+    <Compile Include="NormaliseGitDirectoryInTeamCity.cs" />
+    <Compile Include="RepositoryFixture.cs" />
     <Compile Include="Helpers\ExecutionResults.cs" />
     <Compile Include="Helpers\GitHelper.cs" />
     <Compile Include="Helpers\GitVersionHelper.cs" />
@@ -67,8 +68,7 @@
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="Helpers\ProcessHelper.cs" />
     <Compile Include="Helpers\Scrubbers.cs" />
-    <Compile Include="GitHubFlow\NoTagsInRepositorySpecification.cs" />
-    <Compile Include="GitHubFlow\NoTagsInRepositoryWithNextVersionTxtSpecification.cs" />
+    <Compile Include="GitHubFlow\MasterTests.cs" />
     <Compile Include="ProjArgSpecification.cs" />
     <Compile Include="Properties\ApprovalTestsConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -77,11 +77,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="GitHubFlow\PullRequestsFixture.cs" />
-    <Compile Include="GitHubFlow\RepositoryFixture.cs" />
-    <Compile Include="GitHubFlow\TagFollowedByCommitsWithApplicableNextVersionTxtSpecification.cs" />
-    <Compile Include="GitHubFlow\TagFollowedByCommitsWithNoNextVersionTxtSpecification.cs" />
-    <Compile Include="GitHubFlow\TagFollowedByCommitsWithRedundantNextVersionTxtSpecification.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -100,7 +95,9 @@
       <Name>GitVersion</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="GitFlow\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

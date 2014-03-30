@@ -10,8 +10,9 @@
   "SemVer":"1.2.3-unstable.4",
   "SemVerPadded":"1.2.3-unstable.0004",
   "AssemblySemVer":"1.2.3.0",
-  "FullSemVer":"1.2.3-unstable.4+5.Branch.feature1.Sha.a682956dc1a2752aa24597a0f5cd939f93614509",
-  "FullSemVerPadded":"1.2.3-unstable.0004+5.Branch.feature1.Sha.a682956dc1a2752aa24597a0f5cd939f93614509",
+  "FullSemVer":"1.2.3-unstable.4+5",
+  "FullSemVerPadded":"1.2.3-unstable.0004+5",
+  "InformationalVersion":"1.2.3-unstable.4+5.Branch.feature1.Sha.a682956dc1a2752aa24597a0f5cd939f93614509",
   "ClassicVersion":"1.2.3.5",
   "BranchName":"feature1",
   "Sha":"a682956dc1a2752aa24597a0f5cd939f93614509"

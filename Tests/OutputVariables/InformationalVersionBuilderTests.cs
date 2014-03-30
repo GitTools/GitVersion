@@ -26,7 +26,7 @@ public class InformationalVersionBuilderTests
             PreReleaseTag = tag,
             BuildMetaData = new SemanticVersionBuildMetaData(suffix, branchName, sha, null, null),
         };
-        var informationalVersion = semanticVersion.ToString("f");
+        var informationalVersion = semanticVersion.ToString("i");
 
         Assert.AreEqual(versionString, informationalVersion);
     }

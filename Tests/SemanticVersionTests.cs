@@ -40,7 +40,7 @@ public class SemanticVersionTests
         Assert.AreEqual(branchName, version.BuildMetaData.Branch);
         Assert.AreEqual(sha, version.BuildMetaData.Sha);
         Assert.AreEqual(otherMetaData, version.BuildMetaData.OtherMetaData);
-        Assert.AreEqual(fullFormattedVersionString, version.ToString("f"));
+        Assert.AreEqual(fullFormattedVersionString, version.ToString("i"));
     }
 
     [TestCase("someText")]

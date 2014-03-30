@@ -49,6 +49,9 @@
         public string FullSemVer { get; set; }
 
         [Output]
+        public string InformationalVersion { get; set; }
+
+        [Output]
         public string FullSemVerPadded { get; set; }
 
         [Output]
