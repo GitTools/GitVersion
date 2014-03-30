@@ -142,7 +142,6 @@
     <Compile Include="BranchFinders\PullBranchTests.cs" />
     <Compile Include="BranchFinders\ReleaseTests.cs" />
     <Compile Include="Verifier.cs" />
-    <Compile Include="VersionConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

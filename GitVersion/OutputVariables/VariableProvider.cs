@@ -39,7 +39,7 @@
                 {AssemblySemVer, semanticVersion.ToString("j") + ".0"},
                 {FullSemVer, semanticVersion.ToString("f")},
                 {FullSemVerPadded, semanticVersion.ToString("fp")},
-                {ClassicVersion, semanticVersion.ToString("j") + (semanticVersion.BuildMetaData.CommitsSinceTag ?? 0)},
+                {ClassicVersion, string.Format("{0}.{1}", semanticVersion.ToString("j"), (semanticVersion.BuildMetaData.CommitsSinceTag ?? 0))},
                 {BranchName, semanticVersion.BuildMetaData.Branch},
                 {Sha, semanticVersion.BuildMetaData.Sha},
             };

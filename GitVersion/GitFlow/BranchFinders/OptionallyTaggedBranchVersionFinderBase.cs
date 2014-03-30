@@ -44,12 +44,6 @@ namespace GitVersion
                 semanticVersion.PreReleaseTag = tagVersion.PreReleaseTag;
             }
 
-            //TODO DOnt think this is needed anymore
-            //if (!IsMostRecentCommitTagged(context))
-            //{
-            //    semanticVersion.BuildMetaData = new SemanticVersionBuildMetaData(nbHotfixCommits, context.CurrentBranch.Name, context.CurrentBranch.Tip.Sha);
-            //}
-
             return semanticVersion;
         }
 

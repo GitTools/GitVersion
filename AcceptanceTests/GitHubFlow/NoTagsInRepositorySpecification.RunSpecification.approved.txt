@@ -1,0 +1,18 @@
+﻿{
+  "Major":0,
+  "Minor":1,
+  "Patch":0,
+  "PreReleaseTag":"",
+  "PreReleaseTagWithDash":"",
+  "BuildMetaData":2,
+  "FullBuildMetaData":"2.Branch.master.Sha.000000000000000000000000000000000000000",
+  "MajorMinorPatch":"0.1.0",
+  "SemVer":"0.1.0",
+  "SemVerPadded":"0.1.0",
+  "AssemblySemVer":"0.1.0.0",
+  "FullSemVer":"0.1.0+2.Branch.master.Sha.000000000000000000000000000000000000000",
+  "FullSemVerPadded":"0.1.0+2.Branch.master.Sha.000000000000000000000000000000000000000",
+  "ClassicVersion":"0.1.0.2",
+  "BranchName":"master",
+  "Sha":"000000000000000000000000000000000000000"
+}

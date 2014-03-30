@@ -3,12 +3,12 @@ using Xunit;
 
 namespace GitHubFlowVersion.AcceptanceTests
 {
-    using System;
     using ApprovalTests;
     using TestStack.BDDfy;
 
-    public class NoTagsInRepositorySpecification : IUseFixture<RepositoryFixture>
+    public class NoTagsInRepositoryWithNextVersionTxtSpecification : IUseFixture<RepositoryFixture>
     {
+        private const string ExpectedNextVersion = "0.2.0";
         private ExecutionResults _result;
         RepositoryFixture _data;
 
@@ -17,6 +17,11 @@ namespace GitHubFlowVersion.AcceptanceTests
             _data.Repository.MakeACommit();
             _data.Repository.MakeACommit();
             _data.Repository.MakeACommit();
+        }
+
+        public void AndGivenANextVersionTxtFile()
+        {
+            _data.Repository.AddNextVersionTxtFile(ExpectedNextVersion);
         }
 
         public void WhenGitHubFlowVersionIsExecuted()
@@ -37,8 +42,6 @@ namespace GitHubFlowVersion.AcceptanceTests
         [Fact]
         public virtual void RunSpecification()
         {
-            // If we are actually running in teamcity, lets delete this environmental variable
-            Environment.SetEnvironmentVariable("TEAMCITY_VERSION", null);
             this.BDDfy();
         }
 

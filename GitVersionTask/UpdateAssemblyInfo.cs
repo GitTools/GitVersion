@@ -72,7 +72,6 @@
 
         }
 
-
         void CreateTempAssemblyInfo(SemanticVersion semanticVersion)
         {
             var assemblyInfoBuilder = new AssemblyInfoBuilder
@@ -86,7 +85,6 @@
             AssemblyInfoTempFilePath = Path.Combine(TempFileTracker.TempPath, tempFileName);
             File.WriteAllText(AssemblyInfoTempFilePath, assemblyInfo);
         }
-
 
     }
 }
