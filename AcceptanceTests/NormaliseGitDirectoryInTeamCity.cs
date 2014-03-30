@@ -17,7 +17,7 @@
         [InlineData("refs/pull/5/merge")]
         public void GivenARemoteWithATagOnMaster_AndAPullRequestWithTwoCommits_AndBuildIsRunningInTeamCity_VersionIsCalclatedProperly(string pullRequestRef)
         {
-            using (var fixture = new RepositoryFixture())
+            using (var fixture = new EmptyRepository())
             {
                 var remoteRepositoryPath = PathHelper.GetTempPath();
                 Repository.Init(remoteRepositoryPath);

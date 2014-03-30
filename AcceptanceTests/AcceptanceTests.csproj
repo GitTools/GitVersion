@@ -59,8 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExecArgSpecification.cs" />
+    <Compile Include="GitFlow\DevelopScenarios.cs" />
     <Compile Include="NormaliseGitDirectoryInTeamCity.cs" />
-    <Compile Include="RepositoryFixture.cs" />
+    <Compile Include="EmptyRepository.cs" />
     <Compile Include="Helpers\ExecutionResults.cs" />
     <Compile Include="Helpers\GitHelper.cs" />
     <Compile Include="Helpers\GitVersionHelper.cs" />
@@ -95,9 +96,7 @@
       <Name>GitVersion</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="GitFlow\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

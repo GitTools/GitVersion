@@ -2,6 +2,7 @@ namespace GitVersion
 {
     using System;
 
+    //TODO Replace with SemVer class
     public class ShortVersionParser
     {
         public static void Parse(string versionString, out int major, out int minor, out int patch)

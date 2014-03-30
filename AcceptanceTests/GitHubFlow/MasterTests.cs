@@ -10,7 +10,7 @@
         [Fact]
         public void GivenARepositoryWithCommitsButNoTags_VersionShouldBe_0_1()
         {
-            using (var fixture = new RepositoryFixture())
+            using (var fixture = new EmptyRepository())
             {
                 // Given
                 fixture.Repository.MakeACommit();
@@ -28,7 +28,7 @@
         [Fact]
         public void GivenARepositoryWithNoTagsAndANextVersionTxtFile_VersionShouldMatchVersionTxtFile()
         {
-            using (var fixture = new RepositoryFixture())
+            using (var fixture = new EmptyRepository())
             {
                 const string ExpectedNextVersion = "1.0.0";
                 fixture.Repository.MakeACommit();
@@ -46,7 +46,7 @@
         [Fact]
         public void GivenARepositoryWithTagAndANextVersionTxtFile_VersionShouldMatchVersionTxtFile()
         {
-            using (var fixture = new RepositoryFixture())
+            using (var fixture = new EmptyRepository())
             {
                 const string ExpectedNextVersion = "1.1.0";
                 const string TaggedVersion = "1.0.3";
@@ -64,7 +64,7 @@
         [Fact]
         public void GivenARepositoryWithTagAndNoNextVersionTxtFile_VersionShouldBeTagWithBumpedPatch()
         {
-            using (var fixture = new RepositoryFixture())
+            using (var fixture = new EmptyRepository())
             {
                 const string TaggedVersion = "1.0.3";
                 fixture.Repository.MakeATaggedCommit(TaggedVersion);
@@ -80,7 +80,7 @@
         [Fact]
         public void GivenARepositoryWithTagAndOldNextVersionTxtFile_VersionShouldBeTagWithBumpedPatch()
         {
-            using (var fixture = new RepositoryFixture())
+            using (var fixture = new EmptyRepository())
             {
                 const string NextVersionTxt = "1.0.0";
                 const string TaggedVersion = "1.1.0";

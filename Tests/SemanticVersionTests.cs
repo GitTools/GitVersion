@@ -51,4 +51,5 @@ public class SemanticVersionTests
         Assert.IsFalse(SemanticVersion.TryParse(versionString, out version), "TryParse Result");
     }
 
+
 }

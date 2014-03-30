@@ -49,13 +49,16 @@
         public string FullSemVer { get; set; }
 
         [Output]
-        public string InformationalVersion { get; set; }
-
-        [Output]
         public string FullSemVerPadded { get; set; }
 
         [Output]
+        public string InformationalVersion { get; set; }
+
+        [Output]
         public string ClassicVersion { get; set; }
+
+        [Output]
+        public string ClassicVersionWithTag { get; set; }
 
         [Output]
         public string BranchName { get; set; }

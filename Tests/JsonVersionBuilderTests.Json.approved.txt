@@ -14,6 +14,7 @@
   "FullSemVerPadded":"1.2.3-unstable.0004+5",
   "InformationalVersion":"1.2.3-unstable.4+5.Branch.feature1.Sha.a682956dc1a2752aa24597a0f5cd939f93614509",
   "ClassicVersion":"1.2.3.5",
+  "ClassicVersionWithTag":"1.2.3.5-unstable.4",
   "BranchName":"feature1",
   "Sha":"a682956dc1a2752aa24597a0f5cd939f93614509"
 }

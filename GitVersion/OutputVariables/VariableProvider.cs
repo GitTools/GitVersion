@@ -19,12 +19,15 @@
         public const string FullSemVerPadded = "FullSemVerPadded";
         public const string AssemblySemVer = "AssemblySemVer";
         public const string ClassicVersion = "ClassicVersion";
+        public const string ClassicVersionWithTag = "ClassicVersionWithTag";
         public const string PreReleaseTag = "PreReleaseTag";
         public const string PreReleaseTagWithDash = "PreReleaseTagWithDash";
         public const string InformationalVersion = "InformationalVersion";
 
         public static Dictionary<string, string> GetVariablesFor(SemanticVersion semanticVersion)
         {
+            var formatter = semanticVersion.BuildMetaData.Branch == "develop" ? new CiFeedFormatter() : null;
+
             var variables = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
             {
                 {Major, semanticVersion.Major.ToString()},
@@ -35,18 +38,48 @@
                 {BuildMetaData, semanticVersion.BuildMetaData},
                 {FullBuildMetaData, semanticVersion.BuildMetaData.ToString("f")},
                 {MajorMinorPatch, string.Format("{0}.{1}.{2}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch)},
-                {SemVer, semanticVersion.ToString()},
-                {SemVerPadded, semanticVersion.ToString("sp")},
+                {SemVer, semanticVersion.ToString(null, formatter)},
+                {SemVerPadded, semanticVersion.ToString("sp", formatter)},
                 {AssemblySemVer, semanticVersion.ToString("j") + ".0"},
                 {FullSemVer, semanticVersion.ToString("f")},
-                {FullSemVerPadded, semanticVersion.ToString("fp")},
-                {InformationalVersion, semanticVersion.ToString("i")},
+                {FullSemVerPadded, semanticVersion.ToString("fp", formatter)},
+                {InformationalVersion, semanticVersion.ToString("i", formatter)},
                 {ClassicVersion, string.Format("{0}.{1}", semanticVersion.ToString("j"), (semanticVersion.BuildMetaData.CommitsSinceTag ?? 0))},
+                {ClassicVersionWithTag, string.Format("{0}.{1}{2}", semanticVersion.ToString("j"),
+                    semanticVersion.BuildMetaData.CommitsSinceTag ?? 0,
+                    semanticVersion.PreReleaseTag.HasTag() ? "-" + semanticVersion.PreReleaseTag : null)},
                 {BranchName, semanticVersion.BuildMetaData.Branch},
-                {Sha, semanticVersion.BuildMetaData.Sha},
+                {Sha, semanticVersion.BuildMetaData.Sha}
             };
 
             return variables;
+        }
+    }
+
+    public class CiFeedFormatter : IFormatProvider, ICustomFormatter
+    {
+        public object GetFormat(Type formatType)
+        {
+            if (formatType == typeof(SemanticVersion))
+                return this;
+
+            return null;
+        }
+
+        public string Format(string format, object arg, IFormatProvider formatProvider)
+        {
+            var semanticVersion = (SemanticVersion) arg;
+
+            switch (format)
+            {
+                case "s":
+                case "sp":
+                    return string.Format("{0}.{1}{2}", semanticVersion.ToString("j"),
+                        semanticVersion.BuildMetaData.CommitsSinceTag ?? 0,
+                        semanticVersion.PreReleaseTag.HasTag() ? "-" + semanticVersion.PreReleaseTag.Name: null);
+                default:
+                    return semanticVersion.ToString(format);
+            }
         }
     }
 }

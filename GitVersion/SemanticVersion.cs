@@ -183,6 +183,9 @@ namespace GitVersion
         /// </summary>
         public string ToString(string format, IFormatProvider formatProvider = null)
         {
+            if (string.IsNullOrEmpty(format))
+                format = "s";
+
             if (formatProvider != null)
             {
                 var formatter = formatProvider.GetFormat(GetType()) as ICustomFormatter;
@@ -190,9 +193,6 @@ namespace GitVersion
                 if (formatter != null)
                     return formatter.Format(format, this, formatProvider);
             }
-
-            if (string.IsNullOrEmpty(format))
-                format = "s";
 
             switch (format.ToLower())
             {
