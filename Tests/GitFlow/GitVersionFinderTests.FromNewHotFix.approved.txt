@@ -1,10 +1,17 @@
 ﻿{
-    "Suffix": null,
     "Major": 1,
     "Minor": 0,
     "Patch": 2,
-    "Tag": {
-        "name": "Beta1"
+    "PreReleaseTag": {
+        "Name": "Beta",
+        "Number": 1
     },
-    "PreReleasePartTwo": null
+    "BuildMetaData": {
+        "CommitsSinceTag": 1,
+        "Branch": "hotfix/1.0.2",
+        "Sha": "000000000000000000000000000000000000000",
+        "OriginalReleaseDate": "<date replaced>",
+        "ReleaseDate": "<date replaced>",
+        "OtherMetaData": null
+    }
 }

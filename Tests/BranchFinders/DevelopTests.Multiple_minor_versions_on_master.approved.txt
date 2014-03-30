@@ -1,15 +1,17 @@
 ﻿{
-    "Version": {
-        "Suffix": null,
-        "Major": 0,
-        "Minor": 4,
-        "Patch": 0,
-        "Tag": {
-            "name": "unstable2"
-        },
-        "PreReleasePartTwo": null
+    "Major": 0,
+    "Minor": 4,
+    "Patch": 0,
+    "PreReleaseTag": {
+        "Name": "unstable",
+        "Number": 2
     },
-    "BranchType": 2,
-    "BranchName": "develop",
-    "Sha": "000000000000000000000000000000000000000"
+    "BuildMetaData": {
+        "CommitsSinceTag": 2,
+        "Branch": "develop",
+        "Sha": "000000000000000000000000000000000000000",
+        "OriginalReleaseDate": "<date replaced>",
+        "ReleaseDate": "<date replaced>",
+        "OtherMetaData": null
+    }
 }

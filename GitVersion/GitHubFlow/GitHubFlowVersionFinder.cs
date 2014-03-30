@@ -2,7 +2,7 @@ namespace GitVersion
 {
     public class GitHubFlowVersionFinder
     {
-        public VersionAndBranch FindVersion(GitVersionContext context)
+        public SemanticVersion FindVersion(GitVersionContext context)
         {
             var repositoryDirectory = context.Repository.Info.WorkingDirectory;
             var lastTaggedReleaseFinder = new LastTaggedReleaseFinder(context.Repository, repositoryDirectory);

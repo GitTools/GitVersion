@@ -62,22 +62,21 @@
 
             InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
             
-            VersionAndBranchAndDate versionAndBranch;
-            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch))
+            SemanticVersion semanticVersion;
+            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion))
             {
                 return;
             }
 
-            CreateTempAssemblyInfo(versionAndBranch);
+            CreateTempAssemblyInfo(semanticVersion);
 
         }
 
-
-        void CreateTempAssemblyInfo(VersionAndBranchAndDate versionAndBranch)
+        void CreateTempAssemblyInfo(SemanticVersion semanticVersion)
         {
             var assemblyInfoBuilder = new AssemblyInfoBuilder
                                       {
-                                          VersionAndBranch = versionAndBranch,
+                                          SemanticVersion = semanticVersion,
                                           SignAssembly = SignAssembly
                                       };
             var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText();
@@ -86,7 +85,6 @@
             AssemblyInfoTempFilePath = Path.Combine(TempFileTracker.TempPath, tempFileName);
             File.WriteAllText(AssemblyInfoTempFilePath, assemblyInfo);
         }
-
 
     }
 }

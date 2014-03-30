@@ -6,7 +6,7 @@ namespace GitVersion
 
     public class GitVersionFinder
     {
-        public VersionAndBranch FindVersion(GitVersionContext context)
+        public SemanticVersion FindVersion(GitVersionContext context)
         {
             EnsureMainTopologyConstraints(context);
 

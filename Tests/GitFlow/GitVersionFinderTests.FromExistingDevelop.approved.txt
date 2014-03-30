@@ -1,10 +1,17 @@
 ﻿{
-    "Suffix": null,
     "Major": 1,
     "Minor": 1,
     "Patch": 0,
-    "Tag": {
-        "name": "unstable3"
+    "PreReleaseTag": {
+        "Name": "unstable",
+        "Number": 1
     },
-    "PreReleasePartTwo": null
+    "BuildMetaData": {
+        "CommitsSinceTag": 1,
+        "Branch": "develop",
+        "Sha": "000000000000000000000000000000000000000",
+        "OriginalReleaseDate": "<date replaced>",
+        "ReleaseDate": "<date replaced>",
+        "OtherMetaData": null
+    }
 }

@@ -5,41 +5,53 @@
 
     public static class VariableProvider
     {
-        public static Dictionary<string, string> ToKeyValue(this VersionAndBranch versionAndBranch)
+        public const string Major = "Major";
+        public const string Minor = "Minor";
+        public const string Patch = "Patch";
+        public const string BuildMetaData = "BuildMetaData";
+        public const string FullBuildMetaData = "FullBuildMetaData";
+        public const string BranchName = "BranchName";
+        public const string Sha = "Sha";
+        public const string MajorMinorPatch = "MajorMinorPatch";
+        public const string SemVer = "SemVer";
+        public const string SemVerPadded = "SemVerPadded";
+        public const string FullSemVer = "FullSemVer";
+        public const string FullSemVerPadded = "FullSemVerPadded";
+        public const string AssemblySemVer = "AssemblySemVer";
+        public const string ClassicVersion = "ClassicVersion";
+        public const string ClassicVersionWithTag = "ClassicVersionWithTag";
+        public const string PreReleaseTag = "PreReleaseTag";
+        public const string PreReleaseTagWithDash = "PreReleaseTagWithDash";
+        public const string InformationalVersion = "InformationalVersion";
+
+        public static Dictionary<string, string> GetVariablesFor(SemanticVersion semanticVersion)
         {
+            var formatter = semanticVersion.BuildMetaData.Branch == "develop" ? new CiFeedFormatter() : null;
+
             var variables = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
             {
-                {"Major", versionAndBranch.Version.Major.ToString()},
-                {"Minor", versionAndBranch.Version.Minor.ToString()},
-                {"Patch", versionAndBranch.Version.Patch.ToString()},
-                {"Suffix", versionAndBranch.Version.Suffix},
-                {"LongVersion", versionAndBranch.ToLongString()},
-                {"NugetVersion", versionAndBranch.GenerateNugetVersion()},
-                {"ShortVersion", versionAndBranch.ToShortString()},
-                {"BranchName", versionAndBranch.BranchName},
-                {"BranchType", versionAndBranch.BranchType == null ? null : versionAndBranch.BranchType.ToString()},
-                {"Sha", versionAndBranch.Sha},
-                {"MajorMinorPatch", string.Format("{0}.{1}.{2}", versionAndBranch.Version.Major, versionAndBranch.Version.Minor, versionAndBranch.Version.Patch)},
-                {"SemVer", versionAndBranch.GenerateSemVer()},
-                //TODO: legacy. people should move over to semver 
-                {"Version", versionAndBranch.GenerateSemVer()}
+                {Major, semanticVersion.Major.ToString()},
+                {Minor, semanticVersion.Minor.ToString()},
+                {Patch, semanticVersion.Patch.ToString()},
+                {PreReleaseTag, semanticVersion.PreReleaseTag},
+                {PreReleaseTagWithDash, semanticVersion.PreReleaseTag.HasTag() ? "-" + semanticVersion.PreReleaseTag : null},
+                {BuildMetaData, semanticVersion.BuildMetaData},
+                {FullBuildMetaData, semanticVersion.BuildMetaData.ToString("f")},
+                {MajorMinorPatch, string.Format("{0}.{1}.{2}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch)},
+                {SemVer, semanticVersion.ToString(null, formatter)},
+                {SemVerPadded, semanticVersion.ToString("sp", formatter)},
+                {AssemblySemVer, semanticVersion.ToString("j") + ".0"},
+                {FullSemVer, semanticVersion.ToString("f", formatter)},
+                {FullSemVerPadded, semanticVersion.ToString("fp", formatter)},
+                {InformationalVersion, semanticVersion.ToString("i", formatter)},
+                {ClassicVersion, string.Format("{0}.{1}", semanticVersion.ToString("j"), (semanticVersion.BuildMetaData.CommitsSinceTag ?? 0))},
+                {ClassicVersionWithTag, string.Format("{0}.{1}{2}", semanticVersion.ToString("j"),
+                    semanticVersion.BuildMetaData.CommitsSinceTag ?? 0,
+                    semanticVersion.PreReleaseTag.HasTag() ? "-" + semanticVersion.PreReleaseTag : null)},
+                {BranchName, semanticVersion.BuildMetaData.Branch},
+                {Sha, semanticVersion.BuildMetaData.Sha}
             };
 
-            var releaseInformation = ReleaseInformationCalculator.Calculate(versionAndBranch.BranchType, versionAndBranch.Version.Tag);
-            if (releaseInformation.ReleaseNumber.HasValue)
-            {
-                variables.Add("PreReleasePartOne", releaseInformation.ReleaseNumber.ToString());
-                //TODO: legacy. people should move over to PreReleasePartOne 
-                variables.Add("PreReleaseNumber", releaseInformation.ReleaseNumber.ToString());
-            }
-            if (versionAndBranch.Version.PreReleasePartTwo != null)
-            {
-                variables.Add("PreReleasePartTwo", versionAndBranch.Version.PreReleasePartTwo.ToString());
-            }
-            if (releaseInformation.Stability.HasValue)
-            {
-                variables.Add("Stability", releaseInformation.Stability.ToString());
-            }
             return variables;
         }
     }

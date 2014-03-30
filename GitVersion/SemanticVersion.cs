@@ -1,19 +1,24 @@
 namespace GitVersion
 {
     using System;
+    using System.Text.RegularExpressions;
 
-    public class SemanticVersion
+    public class SemanticVersion : IFormattable, IComparable<SemanticVersion>
     {
-        public string Suffix;
+        static readonly Regex ParseSemVer = new Regex(
+            @"[vV]?(?<SemVer>(?<Major>\d+)(\.(?<Minor>\d+))?(\.(?<Patch>\d+))?)(\.(?<FourthPart>\d+))?(-(?<Tag>[^\+]*))?(\+(?<BuildMetaData>.*))?",
+            RegexOptions.Compiled);
+
         public int Major;
         public int Minor;
         public int Patch;
-        public SemanticVersionTag Tag;
-        public int? PreReleasePartTwo;
+        public SemanticVersionPreReleaseTag PreReleaseTag;
+        public SemanticVersionBuildMetaData BuildMetaData;
 
         public SemanticVersion()
         {
-            Tag = new SemanticVersionTag();
+            PreReleaseTag = new SemanticVersionPreReleaseTag();
+            BuildMetaData = new SemanticVersionBuildMetaData();
         }
 
         public bool Equals(SemanticVersion obj)
@@ -25,9 +30,8 @@ namespace GitVersion
             return Major == obj.Major &&
                    Minor == obj.Minor &&
                    Patch == obj.Patch &&
-                   Tag == obj.Tag &&
-                   PreReleasePartTwo == obj.PreReleasePartTwo &&
-                   Suffix == obj.Suffix;
+                   PreReleaseTag == obj.PreReleaseTag &&
+                   BuildMetaData == obj.BuildMetaData;
         }
 
         public static bool operator ==(SemanticVersion v1, SemanticVersion v2)
@@ -38,38 +42,86 @@ namespace GitVersion
             }
             return v1.Equals(v2);
         }
-        
+
         public static bool operator !=(SemanticVersion v1, SemanticVersion v2)
         {
             return !(v1 == v2);
         }
-        
+
         public static bool operator >(SemanticVersion v1, SemanticVersion v2)
         {
-            return (v2 < v1);
+            if (v1 == null)
+                throw new ArgumentNullException("v1");
+            if (v2 == null)
+                throw new ArgumentNullException("v2");
+            return v1.CompareTo(v2) > 0;
         }
 
         public static bool operator >=(SemanticVersion v1, SemanticVersion v2)
         {
-            return (v2 <= v1);
+            if (v1 == null)
+                throw new ArgumentNullException("v1");
+            if (v2 == null)
+                throw new ArgumentNullException("v2");
+            return v1.CompareTo(v2) >= 0;
         }
 
         public static bool operator <=(SemanticVersion v1, SemanticVersion v2)
         {
             if (v1 == null)
-            {
                 throw new ArgumentNullException("v1");
-            }
-            return (v1.CompareTo(v2) <= 0);
+            if (v2 == null)
+                throw new ArgumentNullException("v2");
+
+            return v1.CompareTo(v2) <= 0;
         }
 
         public static bool operator <(SemanticVersion v1, SemanticVersion v2)
         {
             if (v1 == null)
-            {
                 throw new ArgumentNullException("v1");
+            if (v2 == null)
+                throw new ArgumentNullException("v2");
+
+            return v1.CompareTo(v2) < 0;
+        }
+
+        public static SemanticVersion Parse(string version)
+        {
+            SemanticVersion semanticVersion;
+            if (!TryParse(version, out semanticVersion))
+                throw new ErrorException(string.Format("Failed to parse {0} into a Semantic Version", version));
+
+            return semanticVersion;
+        }
+
+        public static bool TryParse(string version, out SemanticVersion semanticVersion)
+        {
+            var parsed = ParseSemVer.Match(version);
+
+            if (!parsed.Success)
+            {
+                semanticVersion = null;
+                return false;
             }
-            return (v1.CompareTo(v2) < 0);
+
+            var semanticVersionBuildMetaData = SemanticVersionBuildMetaData.Parse(parsed.Groups["BuildMetaData"].Value);
+            var fourthPart = parsed.Groups["FourthPart"];
+            if (fourthPart.Success && semanticVersionBuildMetaData.CommitsSinceTag == null)
+            {
+                semanticVersionBuildMetaData.CommitsSinceTag = int.Parse(fourthPart.Value);
+            }
+
+            semanticVersion = new SemanticVersion
+            {
+                Major = int.Parse(parsed.Groups["Major"].Value),
+                Minor = parsed.Groups["Minor"].Success ? int.Parse(parsed.Groups["Minor"].Value) : 0,
+                Patch = parsed.Groups["Patch"].Success ? int.Parse(parsed.Groups["Patch"].Value) : 0,
+                PreReleaseTag = SemanticVersionPreReleaseTag.Parse(parsed.Groups["Tag"].Value),
+                BuildMetaData = semanticVersionBuildMetaData
+            };
+
+            return true;
         }
 
         public int CompareTo(SemanticVersion value)
@@ -102,23 +154,81 @@ namespace GitVersion
                 }
                 return -1;
             }
-            if (Tag != value.Tag)
+            if (PreReleaseTag != value.PreReleaseTag)
             {
-                if (Tag > value.Tag)
+                if (PreReleaseTag > value.PreReleaseTag)
                 {
                     return 1;
                 }
                 return -1;
             }
-            if (PreReleasePartTwo != value.PreReleasePartTwo)
-            {
-                if (PreReleasePartTwo > value.PreReleasePartTwo)
-                {
-                    return 1;
-                }
-                return -1;
-            }
+
             return -1;
+        }
+
+        public override string ToString()
+        {
+            return ToString(null);
+        }
+
+        /// <summary>
+        /// <para>s - Default SemVer [1.2.3-beta.4+5]</para>
+        /// <para>sp - Default SemVer with padded tag [1.2.3-beta.0004]</para>
+        /// <para>f - Full SemVer [1.2.3-beta.4+5]</para>
+        /// <para>fp - Full SemVer with padded tag [1.2.3-beta.0004+5]</para>
+        /// <para>i - Informational SemVer [1.2.3-beta.4+5.Branch.master.BranchType.Master.Sha.000000]</para>
+        /// <para>ip - Informational SemVer with padded tag [1.2.3-beta.0004+5.Branch.master.BranchType.Master.Sha.000000]</para>
+        /// <para>j - Just the SemVer part [1.2.3]</para>
+        /// <para>t - SemVer with the tag [1.2.3-beta.4]</para>
+        /// </summary>
+        public string ToString(string format, IFormatProvider formatProvider = null)
+        {
+            if (string.IsNullOrEmpty(format))
+                format = "s";
+
+            if (formatProvider != null)
+            {
+                var formatter = formatProvider.GetFormat(GetType()) as ICustomFormatter;
+
+                if (formatter != null)
+                    return formatter.Format(format, this, formatProvider);
+            }
+
+            switch (format.ToLower())
+            {
+                case "j":
+                    return string.Format("{0}.{1}.{2}", Major, Minor, Patch);
+                case "s":
+                    return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag) : ToString("j");
+                case "sp":
+                    return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag.ToString("p")) : ToString("j");
+                case "f":
+                    {
+                        var buildMetadata = BuildMetaData.ToString();
+
+                        return !string.IsNullOrEmpty(buildMetadata) ? string.Format("{0}+{1}", ToString("s"), buildMetadata) : ToString("s");
+                    }
+                case "fp":
+                    {
+                        var buildMetadata = BuildMetaData.ToString();
+
+                        return !string.IsNullOrEmpty(buildMetadata) ? string.Format("{0}+{1}", ToString("sp"), buildMetadata) : ToString("sp");
+                    }
+                case "i":
+                    {
+                        var buildMetadata = BuildMetaData.ToString("f");
+
+                        return !string.IsNullOrEmpty(buildMetadata) ? string.Format("{0}+{1}", ToString("s"), buildMetadata) : ToString("s");
+                    }
+                case "ip":
+                    {
+                        var buildMetadata = BuildMetaData.ToString("f");
+
+                        return !string.IsNullOrEmpty(buildMetadata) ? string.Format("{0}+{1}", ToString("sp"), buildMetadata) : ToString("sp");
+                    }
+                default:
+                    throw new ArgumentException("Unrecognised format", "format");
+            }
         }
     }
 }

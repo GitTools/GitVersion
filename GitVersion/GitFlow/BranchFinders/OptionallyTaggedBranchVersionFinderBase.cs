@@ -7,7 +7,7 @@ namespace GitVersion
 
     abstract class OptionallyTaggedBranchVersionFinderBase
     {
-        protected VersionAndBranch FindVersion(
+        protected SemanticVersion FindVersion(
             GitVersionContext context,
             BranchType branchType,
             string baseBranchName)
@@ -15,46 +15,40 @@ namespace GitVersion
             var nbHotfixCommits = NumberOfCommitsInBranchNotKnownFromBaseBranch(context.Repository, context.CurrentBranch, branchType, baseBranchName);
 
             var versionString = context.CurrentBranch.GetSuffix(branchType);
-            var version = SemanticVersionParser.Parse(versionString);
+            var version = SemanticVersion.Parse(versionString);
 
             EnsureVersionIsValid(version, context.CurrentBranch, branchType);
 
             if (branchType == BranchType.Hotfix)
-                version.Tag = "hotfix0";
+                version.PreReleaseTag = "hotfix0";
             if (branchType == BranchType.Release)
-                version.Tag = "beta0";
+                version.PreReleaseTag = "beta1";
 
             var tagVersion = RetrieveMostRecentOptionalTagVersion(context.Repository, version, context.CurrentBranch.Commits.Take(nbHotfixCommits + 1));
 
-            var versionAndBranch = new VersionAndBranch
+            var sha = context.CurrentBranch.Tip.Sha;
+            var releaseDate = ReleaseDateFinder.Execute(context.Repository, sha, version.Patch);
+            var semanticVersion = new SemanticVersion
             {
-                BranchType = branchType,
-                BranchName = context.CurrentBranch.Name,
-                Sha = context.CurrentBranch.Tip.Sha,
-                Version = new SemanticVersion
-                {
-                    Major = version.Major,
-                    Minor = version.Minor,
-                    Patch = version.Patch,
-                    Tag = version.Tag
-                },
+                Major = version.Major,
+                Minor = version.Minor,
+                Patch = version.Patch,
+                PreReleaseTag = version.PreReleaseTag,
+                BuildMetaData = new SemanticVersionBuildMetaData(
+                    nbHotfixCommits, context.CurrentBranch.Name, sha,
+                    releaseDate.OriginalDate, releaseDate.Date)
             };
 
             if (tagVersion != null)
             {
-                versionAndBranch.Version.Tag = tagVersion.Tag;
+                tagVersion.PreReleaseTag.Number++;
+                semanticVersion.PreReleaseTag = tagVersion.PreReleaseTag;
             }
 
-
-            if (!IsMostRecentCommitTagged(context))
-            {
-                versionAndBranch.Version.PreReleasePartTwo = (nbHotfixCommits == 0) ? default(int?) : nbHotfixCommits;
-            }
-
-            return versionAndBranch;
+            return semanticVersion;
         }
 
-        bool IsMostRecentCommitTagged(GitVersionContext context)
+        bool IsMostRecentCommitTagged(GitVersionContext context, out SemanticVersion version)
         {
             var currentCommit = context.CurrentBranch.Commits.First();
 
@@ -64,13 +58,13 @@ namespace GitVersion
 
             foreach (var tag in tags)
             {
-                SemanticVersion version;
-                if (SemanticVersionParser.TryParse(tag.Name, out version))
+                if (SemanticVersion.TryParse(tag.Name, out version))
                 {
                     return true;
                 }
             }
 
+            version = null;
             return false;
         }
 
@@ -82,7 +76,7 @@ namespace GitVersion
                 foreach (var tag in repository.TagsByDate(commit))
                 {
                     SemanticVersion version;
-                    if (!SemanticVersionParser.TryParse(tag.Name, out version))
+                    if (!SemanticVersion.TryParse(tag.Name, out version))
                     {
                         continue;
                     }
@@ -106,11 +100,9 @@ namespace GitVersion
             var msg = string.Format("Branch '{0}' doesn't respect the {1} branch naming convention. ",
                 branch.Name, branchType);
 
-            if (version.Tag.HasTag() ||
-                version.PreReleasePartTwo != null)
+            if (version.PreReleaseTag.HasTag())
             {
-                throw new ErrorException(msg +
-                                         string.Format("Supported format is '{0}-Major.Minor.Patch'.", branchType.ToString().ToLowerInvariant()));
+                throw new ErrorException(msg + string.Format("Supported format is '{0}-Major.Minor.Patch'.", branchType.ToString().ToLowerInvariant()));
             }
 
             switch (branchType)

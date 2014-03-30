@@ -15,28 +15,21 @@ public class AssemblyInfoBuilderTests
     [Test]
     public void VerifyCreatedCode()
     {
-        var semanticVersion = new VersionAndBranchAndDate
+        var semanticVersion = new SemanticVersion
         {
-            BranchType = BranchType.Feature,
-            BranchName = "feature1",
-            Sha = "a682956dc1a2752aa24597a0f5cd939f93614509",
-            Version = new SemanticVersion
-            {
-                Major = 1,
-                Minor = 2,
-                Patch = 3,
-                Tag = "unstable4",
-                Suffix = "a682956d",
-            },
-            ReleaseDate = new ReleaseDate
-            {
-                OriginalDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z"),
-                Date = DateTimeOffset.Parse("2014-03-06 23:59:59Z"),
-            }
+            Major = 1,
+            Minor = 2,
+            Patch = 3,
+            PreReleaseTag = "unstable4",
+            BuildMetaData = new SemanticVersionBuildMetaData(5,
+                "feature1",
+                "a682956dc1a2752aa24597a0f5cd939f93614509",
+                DateTimeOffset.Parse("2014-03-01 00:00:01Z"),
+                DateTimeOffset.Parse("2014-03-06 23:59:59Z")),
         };
         var assemblyInfoBuilder = new AssemblyInfoBuilder
             {
-                VersionAndBranch = semanticVersion
+                SemanticVersion = semanticVersion
             };
         var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText();
         Approvals.Verify(assemblyInfoText);

@@ -69,9 +69,9 @@ public class PullBranchTests : Lg2sHelperBase
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
-            Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
-            Assert.AreEqual("1735", version.Version.Suffix, "Suffix should be the develop commit it was branched from");
-            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
+            Assert.AreEqual(masterVersion.Minor + 1, version.Minor, "Minor should be master.Minor+1");
+            Assert.AreEqual(1735, version.PreReleaseTag.Number);
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
         }
     }
 
@@ -99,9 +99,9 @@ public class PullBranchTests : Lg2sHelperBase
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
-            Assert.AreEqual(masterVersion.Version.Minor + 1, version.Version.Minor, "Minor should be master.Minor+1");
-            Assert.AreEqual("1735", version.Version.Suffix, "Suffix should be the develop commit it was branched from");
-            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
+            Assert.AreEqual(masterVersion.Minor + 1, version.Minor, "Minor should be master.Minor+1");
+            Assert.AreEqual(1735, version.PreReleaseTag.Number);
+            ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
         }
     }
 }

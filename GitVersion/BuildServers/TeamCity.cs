@@ -11,7 +11,6 @@
             _arguments = arguments;
         }
 
-
         public override bool CanApplyToCurrentContext()
         {
             return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TEAMCITY_VERSION"));

@@ -62,7 +62,6 @@
     <Compile Include="GitFlow\BranchFinders\FeatureVersionFinder.cs" />
     <Compile Include="GitFlow\BranchFinders\DevelopVersionFinder.cs" />
     <Compile Include="GitFlow\BranchFinders\HotfixVersionFinder.cs" />
-    <Compile Include="GitFlow\VersionAndBranchAndDate.cs" />
     <Compile Include="GitHubFlow\BuildNumberCalculator.cs" />
     <Compile Include="GitHubFlow\VersionTaggedCommit.cs" />
     <Compile Include="GitHubFlow\GitHubFlowVersionFinder.cs" />
@@ -77,17 +76,16 @@
     <Compile Include="BuildServers\GitHelper.cs" />
     <Compile Include="BuildServers\IBuildServer.cs" />
     <Compile Include="BuildServers\TeamCity.cs" />
+    <Compile Include="OutputVariables\CiFeedFormatter.cs" />
     <Compile Include="OutputVariables\VariableProvider.cs" />
     <Compile Include="GitVersionContext.cs" />
     <Compile Include="HelpWriter.cs" />
-    <Compile Include="GitFlow\ReleaseInformation.cs" />
-    <Compile Include="GitFlow\ReleaseInformationCalculator.cs" />
     <Compile Include="ProcessHelper.cs" />
     <Compile Include="ReleaseDate.cs" />
     <Compile Include="ReleaseDateFinder.cs" />
-    <Compile Include="SemanticVersionTag.cs" />
+    <Compile Include="SemanticVersionBuildMetaData.cs" />
+    <Compile Include="SemanticVersionPreReleaseTag.cs" />
     <Compile Include="OutputFormatters\JsonOutputFormatter.cs" />
-    <Compile Include="OutputVariables\VersionBuilders\NugetVersionBuilder.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="ShortVersionParser.cs" />
     <Compile Include="VersionOnMasterFinder.cs" />
@@ -95,7 +93,6 @@
     <Compile Include="CachedVersion.cs" />
     <Compile Include="DirectoryDateFinder.cs" />
     <Compile Include="GitDirFinder.cs" />
-    <Compile Include="OutputVariables\VersionBuilders\InformationalVersionBuilder.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="GitFlow\MergeMessageParser.cs" />
     <Compile Include="GitFlow\BranchFinders\PullVersionFinder.cs" />
@@ -108,13 +105,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="RepositoryLoader.cs" />
     <Compile Include="SearchPath.cs" />
-    <Compile Include="SemanticVersionParser.cs" />
-    <Compile Include="OutputVariables\VersionBuilders\SemVerVersionBuilder.cs" />
     <Compile Include="SemanticVersion.cs" />
-    <Compile Include="GitFlow\Stability.cs" />
-    <Compile Include="GitFlow\VersionAndBranch.cs" />
     <Compile Include="VersionCache.cs" />
-    <Compile Include="VersionForDirectoryFinder.cs" />
     <Compile Include="VersionPoint.cs" />
     <Compile Include="ErrorException.cs" />
   </ItemGroup>

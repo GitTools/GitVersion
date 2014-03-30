@@ -9,7 +9,7 @@
         string GenerateSetVersionMessage(string versionToUseForBuildNumber);
         string[] GenerateSetParameterMessage(string name, string value);
 
-        void WriteIntegration(VersionAndBranch versionAndBranch, Action<string> writer);
+        void WriteIntegration(SemanticVersion semanticVersion, Action<string> writer);
     }
 
 }

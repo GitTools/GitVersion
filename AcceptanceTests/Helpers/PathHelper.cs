@@ -13,7 +13,7 @@ namespace GitHubFlowVersion.AcceptanceTests.Helpers
 
         public static string GetTempPath()
         {
-            return Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            return Path.Combine(GetCurrentDirectory(), "TestRepositories", Guid.NewGuid().ToString());
         } 
     }
 }

@@ -5,7 +5,7 @@
     public static class VersionAndBranchFinder
     {
 
-        public static bool TryGetVersion(string directory, out VersionAndBranchAndDate versionAndBranch)
+        public static bool TryGetVersion(string directory, out SemanticVersion versionAndBranch)
         {
             var gitDirectory = GitDirFinder.TreeWalkForGitDir(directory);
 

@@ -5,38 +5,44 @@ namespace GitVersion
 
     abstract class DevelopBasedVersionFinderBase
     {
-        protected VersionAndBranch FindVersion(
+        protected SemanticVersion FindVersion(
             GitVersionContext context,
             BranchType branchType)
         {
             var ancestor = FindCommonAncestorWithDevelop(context.Repository, context.CurrentBranch, branchType);
-
+            
             if (!IsThereAnyCommitOnTheBranch(context.Repository, context.CurrentBranch))
             {
                 var developVersionFinder = new DevelopVersionFinder();
-                var versionFromDevelopFinder = developVersionFinder.FindVersion(context);
-                versionFromDevelopFinder.BranchType = branchType;
-                versionFromDevelopFinder.BranchName = context.CurrentBranch.Name;
-                return versionFromDevelopFinder;
+                return developVersionFinder.FindVersion(context);
             }
 
             var versionOnMasterFinder = new VersionOnMasterFinder();
             var versionFromMaster = versionOnMasterFinder.Execute(context, context.CurrentBranch.Tip.Committer.When);
 
-            return new VersionAndBranch
+            var numberOfCommitsOnBranchSinceCommit = NumberOfCommitsOnBranchSinceCommit(context.CurrentBranch, ancestor);
+            var sha = context.CurrentBranch.Tip.Sha;
+            var releaseDate = ReleaseDateFinder.Execute(context.Repository, sha, 0);
+            var semanticVersion = new SemanticVersion
             {
-                BranchType = branchType,
-                BranchName = context.CurrentBranch.Name,
-                Sha = context.CurrentBranch.Tip.Sha,
-                Version = new SemanticVersion
-                {
-                    Major = versionFromMaster.Major,
-                    Minor = versionFromMaster.Minor + 1,
-                    Patch = 0,
-                    Tag = "unstable0",
-                    Suffix = ancestor.Prefix()
-                }
+                Major = versionFromMaster.Major,
+                Minor = versionFromMaster.Minor + 1,
+                Patch = 0,
+                PreReleaseTag = "unstable0",
+                BuildMetaData = new SemanticVersionBuildMetaData(
+                    numberOfCommitsOnBranchSinceCommit,
+                    context.CurrentBranch.Name, sha,
+                    releaseDate.OriginalDate, releaseDate.Date)
             };
+
+            return semanticVersion;
+        }
+
+        protected int NumberOfCommitsOnBranchSinceCommit(Branch branch, Commit commit)
+        {
+            return branch.Commits
+                .TakeWhile(x => x != commit)
+                .Count();
         }
 
         Commit FindCommonAncestorWithDevelop(IRepository repo, Branch branch, BranchType branchType)

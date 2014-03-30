@@ -47,24 +47,24 @@
 
         public void InnerExecute()
         {
-            VersionAndBranchAndDate versionAndBranch;
-            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch))
+            SemanticVersion semanticVersion;
+            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion))
             {
                 return;
             }
 
             var arguments = new Arguments();
-            WriteIntegrationParameters(versionAndBranch, BuildServerList.GetApplicableBuildServers(arguments));
+            WriteIntegrationParameters(semanticVersion, BuildServerList.GetApplicableBuildServers(arguments));
         }
 
-        public void WriteIntegrationParameters(VersionAndBranch versionAndBranch, IEnumerable<IBuildServer> applicableBuildServers)
+        public void WriteIntegrationParameters(SemanticVersion semanticVersion, IEnumerable<IBuildServer> applicableBuildServers)
         {
             foreach (var buildServer in applicableBuildServers)
             {
                 logger.LogInfo(string.Format("Executing GenerateSetVersionMessage for '{0}'.", buildServer.GetType().Name));
-                logger.LogInfo(buildServer.GenerateSetVersionMessage(versionAndBranch.GenerateSemVer()));
+                logger.LogInfo(buildServer.GenerateSetVersionMessage(semanticVersion.ToString()));
                 logger.LogInfo(string.Format("Executing GenerateBuildLogOutput for '{0}'.", buildServer.GetType().Name));
-                foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(versionAndBranch, buildServer))
+                foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(semanticVersion, buildServer))
                 {
                     logger.LogInfo(buildParameter);
                 }

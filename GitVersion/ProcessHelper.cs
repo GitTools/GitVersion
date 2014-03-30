@@ -1,6 +1,7 @@
 namespace GitVersion
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.Runtime.InteropServices;
@@ -28,7 +29,7 @@ namespace GitVersion
         }
 
         // http://csharptest.net/532/using-processstart-to-capture-console-output/
-        public static int Run(Action<string> output, Action<string> errorOutput, TextReader input, string exe, string args, string workingDirectory)
+        public static int Run(Action<string> output, Action<string> errorOutput, TextReader input, string exe, string args, string workingDirectory, params KeyValuePair<string, string>[] environmentalVariables)
         {
             if (String.IsNullOrEmpty(exe))
                 throw new FileNotFoundException();
@@ -48,6 +49,10 @@ namespace GitVersion
                 FileName = exe,
                 Arguments = args
             };
+            foreach (var environmentalVariable in environmentalVariables)
+            {
+                psi.EnvironmentVariables.Add(environmentalVariable.Key, environmentalVariable.Value);
+            }
 
             using (var process = Process.Start(psi))
             using (var mreOut = new ManualResetEvent(false))
@@ -88,13 +93,16 @@ namespace GitVersion
         }
 
         [Flags]
-        enum ErrorModes
+        public enum ErrorModes
         {
+            Default = 0x0,
             FailCriticalErrors = 0x1,
-            NoGpFaultErrorBox = 0x2
+            NoGpFaultErrorBox = 0x2,
+            NoAlignmentFaultExcept = 0x4,
+            NoOpenFileErrorBox = 0x8000
         }
 
-        struct ChangeErrorMode : IDisposable
+        public struct ChangeErrorMode : IDisposable
         {
             private readonly int _oldMode;
 
@@ -109,4 +117,5 @@ namespace GitVersion
             private static extern int SetErrorMode(int newMode);
         }
     }
+
 }

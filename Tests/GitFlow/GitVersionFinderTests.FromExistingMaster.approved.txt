@@ -1,10 +1,17 @@
 ﻿{
-    "Suffix": null,
     "Major": 1,
     "Minor": 0,
     "Patch": 1,
-    "Tag": {
-        "name": null
+    "PreReleaseTag": {
+        "Name": null,
+        "Number": null
     },
-    "PreReleasePartTwo": null
+    "BuildMetaData": {
+        "CommitsSinceTag": null,
+        "Branch": "master",
+        "Sha": "000000000000000000000000000000000000000",
+        "OriginalReleaseDate": "2013-11-17T12:51:40Z",
+        "ReleaseDate": "2013-11-17T12:58:35Z",
+        "OtherMetaData": null
+    }
 }

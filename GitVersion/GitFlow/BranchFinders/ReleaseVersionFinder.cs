@@ -2,7 +2,7 @@ namespace GitVersion
 {
     class ReleaseVersionFinder : OptionallyTaggedBranchVersionFinderBase
     {
-        public VersionAndBranch FindVersion(GitVersionContext context)
+        public SemanticVersion FindVersion(GitVersionContext context)
         {
             return FindVersion(context, BranchType.Release, "develop");
         }

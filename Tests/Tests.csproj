@@ -84,6 +84,9 @@
     <Reference Include="Roslyn.Compilers.CSharp">
       <HintPath>..\packages\Roslyn.Compilers.CSharp.1.2.20906.2\lib\net45\Roslyn.Compilers.CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Shouldly">
+      <HintPath>..\packages\Shouldly.2.1.1\lib\net40\Shouldly.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -102,6 +105,7 @@
     <Compile Include="BuildServers\ContinuaCiTests.cs" />
     <Compile Include="GitFlow\GitFlowVersionFinderTests.cs" />
     <Compile Include="GitHelperTests.cs" />
+    <Compile Include="GitVersionTask.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\DirectoryHelper.cs" />
     <Compile Include="Helpers\FindersHelper.cs" />
@@ -117,11 +121,10 @@
     <Compile Include="Mocks\MockMergeCommit.cs" />
     <Compile Include="Mocks\MockReflogCollection.cs" />
     <Compile Include="Mocks\MockTagAnnotation.cs" />
-    <Compile Include="OutputVariables\NugetVersionBuilderTests.cs" />
-    <Compile Include="GitFlow\ReleaseInformationCalculatorTests.cs" />
-    <Compile Include="SemanticVersionParserTests.cs" />
+    <Compile Include="SemanticVersionTests.cs" />
     <Compile Include="ShortVersionParserTests.cs" />
     <Compile Include="UpdateAssemblyInfoTests.cs" />
+    <Compile Include="VariableProviderTests.cs" />
     <Compile Include="VersionOnMasterFinderTests.cs" />
     <Compile Include="Mocks\SignatureBuilder.cs" />
     <Compile Include="Mocks\MockCommitLog.cs" />
@@ -143,7 +146,6 @@
     <Compile Include="BranchFinders\PullBranchTests.cs" />
     <Compile Include="BranchFinders\ReleaseTests.cs" />
     <Compile Include="Verifier.cs" />
-    <Compile Include="VersionConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
@@ -168,9 +170,7 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="GitHubFlow\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

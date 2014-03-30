@@ -4,20 +4,8 @@ using System.Reflection;
 
 [assembly: AssemblyVersion("1.2.3")]
 [assembly: AssemblyFileVersion("1.2.3")]
-[assembly: AssemblyInformationalVersion("1.2.3-unstable.feature-a682956d+Branch.feature1.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
-[assembly: NugetVersion("1.2.3-Feature-feature1-a682956dc1a2752aa24597a0f5cd939f93614509")]
+[assembly: AssemblyInformationalVersion("1.2.3-unstable.4+5.Branch.feature1.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
 [assembly: ReleaseDate("2014-03-01", "2014-03-06")]
-
-[System.Runtime.CompilerServices.CompilerGenerated]
-class NugetVersionAttribute : Attribute
-{
-    public NugetVersionAttribute(string version)
-    {
-        Version = version;
-    }
-
-    public string Version{get;set;}
-}
 
 [System.Runtime.CompilerServices.CompilerGenerated]
 class ReleaseDateAttribute : System.Attribute
@@ -35,11 +23,25 @@ class ReleaseDateAttribute : System.Attribute
 [System.Runtime.CompilerServices.CompilerGenerated]
 static class GitVersionInformation
 {
-    public static string AssemblyVersion = "1.2.3";
-    public static string AssemblyFileVersion = "1.2.3";
-    public static string AssemblyInformationalVersion = "1.2.3-unstable.feature-a682956d+Branch.feature1.Sha.a682956dc1a2752aa24597a0f5cd939f93614509";
-    public static string NugetVersion = "1.2.3-Feature-feature1-a682956dc1a2752aa24597a0f5cd939f93614509";
-    public static string SemVer = "1.2.3-Feature-feature1-a682956dc1a2752aa24597a0f5cd939f93614509";
+    public static string Major = "1";
+    public static string Minor = "2";
+    public static string Patch = "3";
+    public static string PreReleaseTag = "unstable.4";
+    public static string PreReleaseTagWithDash = "-unstable.4";
+    public static string BuildMetaData = "5";
+    public static string FullBuildMetaData = "5.Branch.feature1.Sha.a682956dc1a2752aa24597a0f5cd939f93614509";
+    public static string MajorMinorPatch = "1.2.3";
+    public static string SemVer = "1.2.3-unstable.4";
+    public static string SemVerPadded = "1.2.3-unstable.0004";
+    public static string AssemblySemVer = "1.2.3.0";
+    public static string FullSemVer = "1.2.3-unstable.4+5";
+    public static string FullSemVerPadded = "1.2.3-unstable.0004+5";
+    public static string InformationalVersion = "1.2.3-unstable.4+5.Branch.feature1.Sha.a682956dc1a2752aa24597a0f5cd939f93614509";
+    public static string ClassicVersion = "1.2.3.5";
+    public static string ClassicVersionWithTag = "1.2.3.5-unstable.4";
+    public static string BranchName = "feature1";
+    public static string Sha = "a682956dc1a2752aa24597a0f5cd939f93614509";
+
 }
 
 
