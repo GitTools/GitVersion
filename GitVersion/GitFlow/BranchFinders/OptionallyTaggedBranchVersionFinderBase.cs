@@ -15,7 +15,7 @@ namespace GitVersion
             var nbHotfixCommits = NumberOfCommitsInBranchNotKnownFromBaseBranch(context.Repository, context.CurrentBranch, branchType, baseBranchName);
 
             var versionString = context.CurrentBranch.GetSuffix(branchType);
-            var version = SemanticVersionParser.Parse(versionString);
+            var version = SemanticVersion.Parse(versionString);
 
             EnsureVersionIsValid(version, context.CurrentBranch, branchType);
 
@@ -64,7 +64,7 @@ namespace GitVersion
             foreach (var tag in tags)
             {
                 SemanticVersion version;
-                if (SemanticVersionParser.TryParse(tag.Name, out version))
+                if (SemanticVersion.TryParse(tag.Name, out version))
                 {
                     return true;
                 }
@@ -81,7 +81,7 @@ namespace GitVersion
                 foreach (var tag in repository.TagsByDate(commit))
                 {
                     SemanticVersion version;
-                    if (!SemanticVersionParser.TryParse(tag.Name, out version))
+                    if (!SemanticVersion.TryParse(tag.Name, out version))
                     {
                         continue;
                     }

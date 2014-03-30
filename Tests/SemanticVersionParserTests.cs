@@ -15,14 +15,15 @@ public class SemanticVersionParserTests
     [TestCase("1.2.3-rc",  1, 2, 3, "rc", null)]
     [TestCase("1.2.3-rc3",  1, 2, 3, "rc.3", null)]
     [TestCase("1.2.3-RC3",  1, 2, 3, "RC.3", null)]
-    [TestCase("1.2.3-rc3.1",  1, 2, 3, "rc.3", 1)]
+    [TestCase("1.2.3-rc3.1",  1, 2, 3, "rc3.1", null)]
     [TestCase("01.02.03-rc03",  1, 2, 3, "rc.3", null)]
     [TestCase("1.2.3-beta3f",  1, 2, 3, "beta3f", null)]
     [TestCase("1.2.3-notAStability1",  1, 2, 3, "notAStability.1", null)]
+    [TestCase("1.2.3.4")]
     public void ValidateVersionParsing(string versionString, int major, int minor, int patch, string tag, int? preReleaseTwo)
     {
         SemanticVersion version;
-        Assert.IsTrue(SemanticVersionParser.TryParse(versionString, out version), "TryParse Result");
+        Assert.IsTrue(SemanticVersion.TryParse(versionString, out version), "TryParse Result");
         Assert.AreEqual(major, version.Major);
         Assert.AreEqual(minor, version.Minor);
         Assert.AreEqual(patch, version.Patch);
@@ -31,12 +32,11 @@ public class SemanticVersionParserTests
     }
 
     [TestCase("someText")]
-    [TestCase("1.2.3.4")] // TODO Maybe we should allow this to be parsed and 4th part is preReleaseTwo
     [TestCase("some-T-ext")]
     public void ValidateInvalidVersionParsing(string versionString)
     {
         SemanticVersion version;
-        Assert.IsFalse(SemanticVersionParser.TryParse(versionString, out version), "TryParse Result");
+        Assert.IsFalse(SemanticVersion.TryParse(versionString, out version), "TryParse Result");
     }
 
 }

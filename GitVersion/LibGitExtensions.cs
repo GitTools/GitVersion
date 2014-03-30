@@ -29,7 +29,7 @@ namespace GitVersion
             foreach (var tag in repository.TagsByDate(commit))
             {
                 SemanticVersion version;
-                if (SemanticVersionParser.TryParse(tag.Name, out version))
+                if (SemanticVersion.TryParse(tag.Name, out version))
                 {
                     return version;
                 }

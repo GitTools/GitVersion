@@ -1,9 +1,14 @@
 namespace GitVersion
 {
     using System;
+    using System.Text.RegularExpressions;
 
-    public class SemanticVersion : IFormattable
+    public class SemanticVersion : IFormattable, IComparable<SemanticVersion>
     {
+        static readonly Regex ParseSemVer = new Regex(
+            @"[vV]?(?<SemVer>(?<Major>\d+)(\.(?<Minor>\d+))?(\.(?<Patch>\d+))?)(\.(?<FourthPart>\d+))?(-(?<Tag>[^\+]*))?(\+(?<BuildMetaData>.*))?",
+            RegexOptions.Compiled);
+
         public int Major;
         public int Minor;
         public int Patch;
@@ -45,30 +50,78 @@ namespace GitVersion
 
         public static bool operator >(SemanticVersion v1, SemanticVersion v2)
         {
-            return (v2 < v1);
+            if (v1 == null)
+                throw new ArgumentNullException("v1");
+            if (v2 == null)
+                throw new ArgumentNullException("v2");
+            return v1.CompareTo(v2) > 0;
         }
 
         public static bool operator >=(SemanticVersion v1, SemanticVersion v2)
         {
-            return (v2 <= v1);
+            if (v1 == null)
+                throw new ArgumentNullException("v1");
+            if (v2 == null)
+                throw new ArgumentNullException("v2");
+            return v1.CompareTo(v2) >= 0;
         }
 
         public static bool operator <=(SemanticVersion v1, SemanticVersion v2)
         {
             if (v1 == null)
-            {
                 throw new ArgumentNullException("v1");
-            }
-            return (v1.CompareTo(v2) <= 0);
+            if (v2 == null)
+                throw new ArgumentNullException("v2");
+
+            return v1.CompareTo(v2) <= 0;
         }
 
         public static bool operator <(SemanticVersion v1, SemanticVersion v2)
         {
             if (v1 == null)
-            {
                 throw new ArgumentNullException("v1");
+            if (v2 == null)
+                throw new ArgumentNullException("v2");
+
+            return v1.CompareTo(v2) < 0;
+        }
+
+        public static SemanticVersion Parse(string version)
+        {
+            SemanticVersion semanticVersion;
+            if (!TryParse(version, out semanticVersion))
+                throw new ErrorException(string.Format("Failed to parse {0} into a Semantic Version", version));
+
+            return semanticVersion;
+        }
+
+        public static bool TryParse(string version, out SemanticVersion semanticVersion)
+        {
+            var parsed = ParseSemVer.Match(version);
+
+            if (!parsed.Success)
+            {
+                semanticVersion = null;
+                return false;
             }
-            return (v1.CompareTo(v2) < 0);
+
+            var semanticVersionBuildMetaData = SemanticVersionBuildMetaData.Parse(parsed.Groups["BuildMetaData"].Value);
+            var fourthPart = parsed.Groups["FourthPart"];
+            if (fourthPart.Success && semanticVersionBuildMetaData.CommitsSinceTag == null)
+            {
+                semanticVersionBuildMetaData.CommitsSinceTag = int.Parse(fourthPart.Value);
+            }
+
+            semanticVersion = new SemanticVersion
+            {
+                Major = int.Parse(parsed.Groups["Major"].Value),
+                Minor = parsed.Groups["Minor"].Success ? int.Parse(parsed.Groups["Minor"].Value) : 0,
+                Patch = parsed.Groups["Patch"].Success ? int.Parse(parsed.Groups["Patch"].Value) : 0,
+                PreReleaseTag = SemanticVersionPreReleaseTag.Parse(parsed.Groups["Tag"].Value),
+                BuildMetaData = semanticVersionBuildMetaData
+            };
+
+            return true;
         }
 
         public int CompareTo(SemanticVersion value)

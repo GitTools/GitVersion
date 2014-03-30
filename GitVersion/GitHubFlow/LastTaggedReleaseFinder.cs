@@ -27,7 +27,7 @@ namespace GitVersion
             var tags = gitRepo.Tags.Select(t =>
             {
                 SemanticVersion version;
-                if (SemanticVersionParser.TryParse(t.Name.TrimStart('v'), out version))
+                if (SemanticVersion.TryParse(t.Name.TrimStart('v'), out version))
                 {
                     return new VersionTaggedCommit((Commit)t.Target, version);
                 }

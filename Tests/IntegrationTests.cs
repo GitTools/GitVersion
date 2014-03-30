@@ -22,7 +22,7 @@ public class IntegrationTests
                     {
                         Debug.WriteLine(versionPart);
                         SemanticVersion version;
-                        if (SemanticVersionParser.TryParse(versionPart, out version))
+                        if (SemanticVersion.TryParse(versionPart, out version))
                         {
                             Debug.WriteLine("{0}.{1}.{2}.{3}.{4}", version.Major, version.Minor, version.Patch, version.PreReleaseTag, version.BuildMetaData);
                         }

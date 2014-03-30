@@ -125,7 +125,7 @@ namespace GitVersion
             return Parse(preReleaseTag);
         }
 
-        static SemanticVersionBuildMetaData Parse(string buildMetaData)
+        public static SemanticVersionBuildMetaData Parse(string buildMetaData)
         {
             //TODO Parse
             return new SemanticVersionBuildMetaData();

@@ -22,7 +22,7 @@ namespace GitVersion
                 Major = versionFromMaster.Major,
                 Minor = versionFromMaster.Minor + 1,
                 Patch = 0,
-                PreReleaseTag = Stability.Unstable.ToString().ToLower() + numberOfCommitsSinceRelease,
+                PreReleaseTag = "unstable" + numberOfCommitsSinceRelease,
                 BuildMetaData = new SemanticVersionBuildMetaData(numberOfCommitsSinceRelease, context.CurrentBranch.Name, tip.Sha,
                     releaseDate.OriginalDate, releaseDate.Date),
             };

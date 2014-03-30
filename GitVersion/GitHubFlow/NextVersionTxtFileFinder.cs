@@ -25,7 +25,7 @@
                 return new SemanticVersion();
 
             SemanticVersion semanticVersion;
-            if (!SemanticVersionParser.TryParse(version, out semanticVersion))
+            if (!SemanticVersion.TryParse(version, out semanticVersion))
                 throw new ArgumentException("Make sure you have a valid semantic version in NextVersion.txt");
 
             return semanticVersion;
