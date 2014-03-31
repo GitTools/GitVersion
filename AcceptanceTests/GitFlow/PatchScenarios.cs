@@ -35,8 +35,8 @@
                 fixture.AssertFullSemver("1.3.0.0-unstable");
 
                 fixture.Repository.MergeNoFF("hotfix-1.2.1", Constants.SignatureNow());
-                
-                //todo: figure out why this is .2 instead of the .1, perhaps the wiki is wrong?
+
+                //todo: why lib2git has support for no-ff merges this should be 1.3.0.1-unstable instead (like the wiki says)
                 fixture.AssertFullSemver("1.3.0.2-unstable");
             }
         }
