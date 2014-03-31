@@ -59,7 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExecCmdLineArgumentTest.cs" />
+    <Compile Include="GitFlow\BaseGitFlowRepositoryFixture.cs" />
     <Compile Include="GitFlow\DevelopScenarios.cs" />
+    <Compile Include="GitFlow\PatchScenarios.cs" />
     <Compile Include="GitFlow\WikiScenarios.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="PullRequestInTeamCityTest.cs" />

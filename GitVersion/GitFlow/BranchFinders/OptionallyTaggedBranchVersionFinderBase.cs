@@ -20,7 +20,7 @@ namespace GitVersion
             EnsureVersionIsValid(version, context.CurrentBranch, branchType);
 
             if (branchType == BranchType.Hotfix)
-                version.PreReleaseTag = "hotfix0";
+                version.PreReleaseTag = "beta.1";
             if (branchType == BranchType.Release)
                 version.PreReleaseTag = "beta1";
 

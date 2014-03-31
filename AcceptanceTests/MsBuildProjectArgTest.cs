@@ -3,8 +3,9 @@
 namespace GitHubFlowVersion.AcceptanceTests
 {
     using System.IO;
+    using global::AcceptanceTests;
+    using global::AcceptanceTests.Helpers;
     using global::AcceptanceTests.Properties;
-    using Helpers;
     using Shouldly;
     using Xunit;
 

@@ -1,16 +1,18 @@
-﻿namespace AcceptanceTests
+namespace AcceptanceTests.GitFlow
 {
     using System;
     using System.IO;
+    using GitVersion;
     using Helpers;
     using LibGit2Sharp;
+    using Shouldly;
 
-    public class EmptyRepositoryFixture : IDisposable
+    public class BaseGitFlowRepositoryFixture : IDisposable
     {
         public readonly string RepositoryPath;
         public readonly Repository Repository;
 
-        public EmptyRepositoryFixture()
+        public BaseGitFlowRepositoryFixture(string initialVersion)
         {
             RepositoryPath = PathHelper.GetTempPath();
             Repository.Init(RepositoryPath);
@@ -23,7 +25,16 @@
             var randomFile = Path.Combine(Repository.Info.WorkingDirectory, Guid.NewGuid().ToString());
             File.WriteAllText(randomFile, string.Empty);
             Repository.Index.Stage(randomFile);
-            Repository.Commit("Initial Commit", new Signature("Test User", "test@email.com", DateTimeOffset.UtcNow));
+
+            Repository.MakeATaggedCommit(initialVersion);
+
+            Repository.CreateBranch("develop").Checkout();
+
+        }
+
+        public void AssertFullSemver(string fullSemver)
+        {
+            ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe(fullSemver);
         }
 
         public void Dispose()

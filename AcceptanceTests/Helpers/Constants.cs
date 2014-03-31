@@ -1,10 +1,13 @@
 ﻿using System;
 using LibGit2Sharp;
 
-public static class Constants
+namespace AcceptanceTests.Helpers
 {
-    public static Signature SignatureNow()
+    public static class Constants
     {
-        return new Signature("A. U. Thor", "thor@valhalla.asgard.com", DateTimeOffset.Now);
+        public static Signature SignatureNow()
+        {
+            return new Signature("A. U. Thor", "thor@valhalla.asgard.com", DateTimeOffset.Now);
+        }
     }
 }

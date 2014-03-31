@@ -2,8 +2,8 @@
 {
     using System;
     using GitHubFlowVersion.AcceptanceTests;
-    using GitHubFlowVersion.AcceptanceTests.Helpers;
     using GitVersion;
+    using Helpers;
     using LibGit2Sharp;
     using Shouldly;
     using Xunit.Extensions;

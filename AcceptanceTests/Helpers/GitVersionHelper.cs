@@ -1,12 +1,11 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using LibGit2Sharp;
-
-namespace GitHubFlowVersion.AcceptanceTests.Helpers
+﻿namespace AcceptanceTests.Helpers
 {
+    using System;
     using System.Collections.Generic;
+    using System.IO;
+    using System.Text;
     using GitVersion;
+    using LibGit2Sharp;
 
     public static class GitVersionHelper
     {

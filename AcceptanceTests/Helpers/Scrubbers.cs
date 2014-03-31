@@ -1,9 +1,12 @@
 using System.Text.RegularExpressions;
 
-public static class Scrubbers
+namespace AcceptanceTests.Helpers
 {
-    public static string GuidScrubber(string value)
+    public static class Scrubbers
     {
-        return Regex.Replace(value, @"\b[a-f0-9]{40}\b", "000000000000000000000000000000000000000");
+        public static string GuidScrubber(string value)
+        {
+            return Regex.Replace(value, @"\b[a-f0-9]{40}\b", "000000000000000000000000000000000000000");
+        }
     }
 }

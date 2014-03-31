@@ -1,4 +1,4 @@
-﻿namespace GitHubFlowVersion.AcceptanceTests.Helpers
+﻿namespace AcceptanceTests.Helpers
 {
     using System.Collections.Generic;
     using System.Web.Script.Serialization;

@@ -1,9 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
-
-namespace GitHubFlowVersion.AcceptanceTests.Helpers
+﻿namespace AcceptanceTests.Helpers
 {
+    using System;
+    using System.IO;
+    using System.Reflection;
+
     public static class PathHelper
     {
         public static string GetCurrentDirectory()

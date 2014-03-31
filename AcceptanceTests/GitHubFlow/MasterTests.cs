@@ -1,8 +1,9 @@
 ﻿namespace GitHubFlowVersion.AcceptanceTests
 {
     using GitVersion;
+    using global::AcceptanceTests;
+    using global::AcceptanceTests.Helpers;
     using Shouldly;
-    using Helpers;
     using Xunit;
 
     public class MasterTests
