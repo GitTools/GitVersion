@@ -17,7 +17,8 @@
                 fixture.AssertFullSemver("1.2.1-beta.1+0");
                 fixture.Repository.MakeACommit();
                 fixture.AssertFullSemver("1.2.1-beta.1+1");
-                
+                fixture.Repository.ApplyTag("1.2.1-beta.1");
+                fixture.AssertFullSemver("1.2.1-beta.2+1");
 
                 // Merge hotfix branch to master
                 fixture.Repository.Checkout("master");
@@ -36,7 +37,7 @@
 
                 fixture.Repository.MergeNoFF("hotfix-1.2.1", Constants.SignatureNow());
 
-                //todo: why lib2git has support for no-ff merges this should be 1.3.0.1-unstable instead (like the wiki says)
+                //todo: when lib2git has support for no-ff merges this should be 1.3.0.1-unstable instead (like the wiki says)
                 fixture.AssertFullSemver("1.3.0.2-unstable");
             }
         }

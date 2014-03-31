@@ -134,7 +134,6 @@
     <Compile Include="Mocks\MockReferenceCollection.cs" />
     <Compile Include="Mocks\MockRepository.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="BranchFinders\HotfixTests.cs" />
     <Compile Include="OutputVariables\InformationalVersionBuilderTests.cs" />
     <Compile Include="IntegrationTests.cs" />
     <Compile Include="BranchFinders\MasterTests.cs" />
