@@ -19,7 +19,7 @@
 
                 var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath);
 
-                result.OutputVariables[VariableProvider.SemVer].ShouldBe("1.1.0.1-unstable");
+                result.OutputVariables[VariableProvider.SemVer].ShouldBe("1.1.0.0-unstable");
             }
         }
     }
