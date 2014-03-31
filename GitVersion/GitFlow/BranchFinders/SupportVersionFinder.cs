@@ -2,7 +2,7 @@ namespace GitVersion
 {
     using LibGit2Sharp;
 
-    class MasterVersionFinder
+    class SupportVersionFinder
     {
         public SemanticVersion FindVersion(IRepository repository, Commit tip)
         {
@@ -26,7 +26,7 @@ namespace GitVersion
                 }
             }
 
-            throw new ErrorException("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
+            throw new ErrorException("The head of a support branch should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
         }
 
         SemanticVersion BuildVersion(IRepository repository, Commit tip, int major, int minor, int patch)
@@ -37,8 +37,8 @@ namespace GitVersion
                 Major = major,
                 Minor = minor,
                 Patch = patch,
-                BuildMetaData = new SemanticVersionBuildMetaData(null, "master", tip.Sha, releaseDate.OriginalDate, releaseDate.Date)
+                BuildMetaData = new SemanticVersionBuildMetaData(null, "support", tip.Sha, releaseDate.OriginalDate, releaseDate.Date)
             };
-        }
+        } 
     }
 }

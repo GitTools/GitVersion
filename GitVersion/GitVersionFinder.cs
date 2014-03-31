@@ -12,9 +12,11 @@ namespace GitVersion
 
             if (ShouldGitHubFlowVersioningSchemeApply(context.Repository))
             {
+                Logger.WriteInfo("GitHubFlow version strategy will be used");
                 return new GitHubFlowVersionFinder().FindVersion(context);
             }
 
+            Logger.WriteInfo("GitFlow version strategy will be used");
             return new GitFlowVersionFinder().FindVersion(context);
         }
 

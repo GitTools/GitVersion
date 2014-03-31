@@ -55,5 +55,10 @@ namespace GitVersion
         {
             return branch.CanonicalName.Contains("/pull/");
         }
+
+        public static bool IsSupport(this Branch branch)
+        {
+            return branch.Name.ToLower().StartsWith("support-");
+        }
     }
 }

@@ -9,10 +9,20 @@ namespace AcceptanceTests.GitFlow
 
     public class BaseGitFlowRepositoryFixture : IDisposable
     {
-        public readonly string RepositoryPath;
-        public readonly Repository Repository;
+        public string RepositoryPath;
+        public Repository Repository;
 
         public BaseGitFlowRepositoryFixture(string initialVersion)
+        {
+            SetupRepo(r => r.MakeATaggedCommit(initialVersion));
+        }
+
+        public BaseGitFlowRepositoryFixture(Action<Repository> initialMasterAction)
+        {
+            SetupRepo(initialMasterAction);
+        }
+
+        void SetupRepo(Action<Repository> initialMasterAction)
         {
             RepositoryPath = PathHelper.GetTempPath();
             Repository.Init(RepositoryPath);
@@ -26,7 +36,8 @@ namespace AcceptanceTests.GitFlow
             File.WriteAllText(randomFile, string.Empty);
             Repository.Index.Stage(randomFile);
 
-            Repository.MakeATaggedCommit(initialVersion);
+            initialMasterAction(Repository);
+
 
             Repository.CreateBranch("develop").Checkout();
 
