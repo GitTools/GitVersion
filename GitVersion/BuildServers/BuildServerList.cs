@@ -26,7 +26,8 @@
                 BuildServers = new List<IBuildServer>
                 {
                     new ContinuaCi(arguments),
-                    new TeamCity(arguments)
+                    new TeamCity(arguments),
+                    new AppVeyor(arguments)
                 };
             }
 

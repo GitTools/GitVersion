@@ -56,6 +56,7 @@
     <Compile Include="Arguments.cs" />
     <Compile Include="BuildServers\BuildServerBase.cs" />
     <Compile Include="GitFlow\BranchFinders\SupportVersionFinder.cs" />
+    <Compile Include="BuildServers\AppVeyor.cs" />
     <Compile Include="GitFlow\GitFlowVersionFinder.cs" />
     <Compile Include="GitFlow\BranchClassifier.cs" />
     <Compile Include="GitFlow\BranchFinders\DevelopBasedVersionFinderBase.cs" />
