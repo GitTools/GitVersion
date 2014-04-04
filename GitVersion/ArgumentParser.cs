@@ -3,9 +3,16 @@ namespace GitVersion
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
 
     class ArgumentParser
     {
+        static ArgumentParser()
+        {
+            var fields = typeof(VariableProvider).GetFields(BindingFlags.Public | BindingFlags.Static);
+            VersionParts = fields.Select(x => x.Name.ToLower()).ToArray();
+        }
+
         public static Arguments ParseArguments(string commandLineArguments)
         {
             return ParseArguments(commandLineArguments.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries).ToList());
@@ -167,6 +174,6 @@ namespace GitVersion
                 IsSwitch("?", singleArgument);
         }
 
-        static string[] VersionParts = {"major", "minor", "patch", "long", "short", "nuget"};
+        static string[] VersionParts;
     }
 }
