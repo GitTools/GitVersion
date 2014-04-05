@@ -167,9 +167,9 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             var feature = repo.Branches[branchName];
 
-            var gfvf = new GitVersionFinder();
+            var finder = new GitVersionFinder();
 
-            Assert.Throws<ErrorException>(() => gfvf.FindVersion(new GitVersionContext
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext
             {
                 Repository = repo,
                 CurrentBranch = feature,

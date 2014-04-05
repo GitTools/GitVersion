@@ -1,6 +1,5 @@
 ﻿namespace AcceptanceTests.GitFlow
 {
-    using GitHubFlowVersion.AcceptanceTests;
     using GitVersion;
     using Helpers;
     using LibGit2Sharp;

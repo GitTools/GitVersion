@@ -46,7 +46,7 @@ namespace GitVersion
             if (remote.FetchRefSpecs.Any(r => r.Source == "refs/heads/*"))
                 return;
 
-            string allBranchesFetchRefSpec = string.Format("+refs/heads/*:refs/remotes/{0}/*", remote.Name);
+            var allBranchesFetchRefSpec = string.Format("+refs/heads/*:refs/remotes/{0}/*", remote.Name);
 
             Logger.WriteInfo(string.Format("Adding refspec: {0}", allBranchesFetchRefSpec));
 

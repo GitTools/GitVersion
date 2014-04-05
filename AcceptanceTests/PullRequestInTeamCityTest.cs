@@ -1,7 +1,6 @@
 ﻿namespace AcceptanceTests
 {
     using System;
-    using GitHubFlowVersion.AcceptanceTests;
     using GitVersion;
     using Helpers;
     using LibGit2Sharp;
@@ -15,7 +14,7 @@
         [Theory]
         //TODO Stash support [InlineData("refs/pull-requests/5/merge-clean")]
         [InlineData("refs/pull/5/merge")]
-        public void GivenARemoteWithATagOnMaster_AndAPullRequestWithTwoCommits_AndBuildIsRunningInTeamCity_VersionIsCalclatedProperly(string pullRequestRef)
+        public void GivenARemoteWithATagOnMaster_AndAPullRequestWithTwoCommits_AndBuildIsRunningInTeamCity_VersionIsCalculatedProperly(string pullRequestRef)
         {
             using (var fixture = new EmptyRepositoryFixture())
             {

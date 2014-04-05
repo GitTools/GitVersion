@@ -144,7 +144,6 @@
     <Compile Include="BranchFinders\FeatureBranchTests.cs" />
     <Compile Include="BranchFinders\PullBranchTests.cs" />
     <Compile Include="BranchFinders\ReleaseTests.cs" />
-    <Compile Include="Verifier.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
