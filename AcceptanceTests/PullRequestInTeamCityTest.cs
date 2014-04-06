@@ -9,7 +9,7 @@
 
     public class PullRequestInTeamCityTest
     {
-        private const string TaggedVersion = "1.0.3";
+        const string TaggedVersion = "1.0.3";
 
         [Theory]
         //TODO Stash support [InlineData("refs/pull-requests/5/merge-clean")]

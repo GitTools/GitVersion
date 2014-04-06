@@ -5,7 +5,8 @@ namespace GitVersion
     using System.Linq;
     using System.Reflection;
 
-    class ArgumentParser
+ 
+    public class ArgumentParser
     {
         static ArgumentParser()
         {

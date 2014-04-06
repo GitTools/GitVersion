@@ -10,8 +10,8 @@ namespace GitHubFlowVersion.AcceptanceTests
 
     public class ExecCmdLineArgumentTest
     {
-        private const string MsBuild = @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
-        private const string TaggedVersion = "1.2.3";
+        const string MsBuild = @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
+        const string TaggedVersion = "1.2.3";
 
         [Fact]
         public void RunExecViaCommandLine()

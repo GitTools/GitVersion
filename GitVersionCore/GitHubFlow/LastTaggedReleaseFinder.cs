@@ -21,7 +21,7 @@ namespace GitVersion
             return lastTaggedRelease.Value;
         }
 
-        private VersionTaggedCommit GetVersion(IRepository gitRepo)
+        VersionTaggedCommit GetVersion(IRepository gitRepo)
         {
             var branch = gitRepo.FindBranch("master");
             var tags = gitRepo.Tags.Select(t =>

@@ -74,8 +74,7 @@
     <Compile Include="Helpers\Scrubbers.cs" />
     <Compile Include="GitHubFlow\MasterTests.cs" />
     <Compile Include="MsBuildProjectArgTest.cs" />
-    <Compile Include="Properties\ApprovalTestsConfig.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ApprovalTestsConfig.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -94,9 +93,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GitVersion\GitVersion.csproj">
+    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj">
+      <Project>{f9741a0d-b9d7-4557-9a1c-a7252c1071f5}</Project>
+      <Name>GitVersionCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GitVersionExe\GitVersionExe.csproj">
       <Project>{c3578a7b-09a6-4444-9383-0deafa4958bd}</Project>
-      <Name>GitVersion</Name>
+      <Name>GitVersionExe</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

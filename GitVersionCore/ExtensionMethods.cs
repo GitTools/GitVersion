@@ -6,6 +6,10 @@ namespace GitVersion
 
     static class ExtensionMethods
     {
+        public static bool IsOdd(this int number)
+        {
+            return number % 2 != 0;
+        }
         public static string TrimToFirstLine(this string s)
         {
             return s.Split(new[]
@@ -30,10 +34,6 @@ namespace GitVersion
             return value.Substring(startIndex);
         }
 
-        public static bool IsOdd(this int number)
-        {
-            return number % 2 != 0;
-        }
         public static string JsonEncode(this string value)
         {
             if (value != null)

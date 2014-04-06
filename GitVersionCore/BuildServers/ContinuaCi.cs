@@ -4,11 +4,11 @@
 
     public class ContinuaCi : BuildServerBase
     {
-        readonly Arguments _arguments;
+        Arguments arguments;
 
         public ContinuaCi(Arguments arguments)
         {
-            _arguments = arguments;
+            this.arguments = arguments;
         }
 
         public override bool CanApplyToCurrentContext()
@@ -35,7 +35,7 @@
                 throw new ErrorException("Failed to find .git directory on agent");
             }
 
-            GitHelper.NormalizeGitDirectory(gitDirectory, _arguments);
+            GitHelper.NormalizeGitDirectory(gitDirectory, arguments);
         }
 
         public override string[] GenerateSetParameterMessage(string name, string value)
@@ -51,7 +51,7 @@
             return string.Format("@@continua[setBuildVersion value='{0}']", versionToUseForBuildNumber);
         }
 
-        private static bool RegistryKeyExists(string keyName, RegistryView registryView)
+        static bool RegistryKeyExists(string keyName, RegistryView registryView)
         {
             var localKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, registryView);
             localKey = localKey.OpenSubKey(keyName);

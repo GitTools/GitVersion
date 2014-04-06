@@ -73,9 +73,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GitVersion\GitVersion.csproj">
-      <Project>{C3578A7B-09A6-4444-9383-0DEAFA4958BD}</Project>
-      <Name>GitVersion</Name>
+    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj">
+      <Project>{f9741a0d-b9d7-4557-9a1c-a7252c1071f5}</Project>
+      <Name>GitVersionCore</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -85,13 +85,12 @@
     </ItemGroup>
     <Delete Files="@(FilesToDelete)" />
   </Target>
-  <UsingTask TaskName="PepitaPackage.CreatePackageTask" AssemblyFile="$(SolutionDir)Tools\Pepita\PepitaPackage.dll" />
   <Target Name="AfterBuild" DependsOnTargets="Clean">
     <MakeDir Directories="$(SolutionDir)NuGetTaskBuild" />
-    <Copy SourceFiles="$(OutputPath)\GitVersionTask.dll" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
-    <Copy SourceFiles="$(OutputPath)\GitVersionTask.pdb" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
-    <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
-    <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
+    <Copy SourceFiles="$(OutputPath)GitVersionTask.dll" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
+    <Copy SourceFiles="$(OutputPath)GitVersionTask.pdb" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
+    <Copy SourceFiles="$(OutputPath)GitVersionCore.dll" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
+    <Copy SourceFiles="$(OutputPath)GitVersionCore.pdb" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.targets" DestinationFolder="$(SolutionDir)NuGetTaskBuild\Build" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.nuspec" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetTaskBuild" MetadataAssembly="$(OutputPath)GitVersionTask.dll" />
@@ -102,5 +101,7 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Fody.1.22.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.22.1\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets'))" />
   </Target>
+  <Import Project="..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets')" />
 </Project>

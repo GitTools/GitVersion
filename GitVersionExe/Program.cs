@@ -8,7 +8,7 @@ namespace GitVersion
 
     class Program
     {
-        private const string MsBuild = @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
+        const string MsBuild = @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
 
         static void Main()
         {
@@ -165,7 +165,7 @@ namespace GitVersion
                 .ToList();
         }
 
-        private static void RunMsBuildIfNeeded(Arguments args, string workingDirectory, Dictionary<string, string> variables)
+        static void RunMsBuildIfNeeded(Arguments args, string workingDirectory, Dictionary<string, string> variables)
         {
             if (string.IsNullOrEmpty(args.Proj)) return;
 
@@ -179,7 +179,7 @@ namespace GitVersion
                 throw new ErrorException("MsBuild execution failed, non-zero return code");
         }
 
-        private static void RunExecCommandIfNeeded(Arguments args, string workingDirectory, Dictionary<string, string> variables)
+        static void RunExecCommandIfNeeded(Arguments args, string workingDirectory, Dictionary<string, string> variables)
         {
             if (string.IsNullOrEmpty(args.Exec)) return;
 

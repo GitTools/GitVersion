@@ -52,79 +52,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArgumentParser.cs" />
-    <Compile Include="Arguments.cs" />
-    <Compile Include="BuildServers\BuildServerBase.cs" />
-    <Compile Include="GitFlow\BranchFinders\SupportVersionFinder.cs" />
-    <Compile Include="BuildServers\AppVeyor.cs" />
-    <Compile Include="GitFlow\GitFlowVersionFinder.cs" />
-    <Compile Include="GitFlow\BranchClassifier.cs" />
-    <Compile Include="GitFlow\BranchFinders\DevelopBasedVersionFinderBase.cs" />
-    <Compile Include="GitFlow\BranchFinders\OptionallyTaggedBranchVersionFinderBase.cs" />
-    <Compile Include="GitFlow\BranchFinders\FeatureVersionFinder.cs" />
-    <Compile Include="GitFlow\BranchFinders\DevelopVersionFinder.cs" />
-    <Compile Include="GitFlow\BranchFinders\HotfixVersionFinder.cs" />
-    <Compile Include="GitHubFlow\BuildNumberCalculator.cs" />
-    <Compile Include="GitHubFlow\VersionTaggedCommit.cs" />
-    <Compile Include="GitHubFlow\GitHubFlowVersionFinder.cs" />
-    <Compile Include="GitHubFlow\LastTaggedReleaseFinder.cs" />
-    <Compile Include="GitHubFlow\NextSemverCalculator.cs" />
-    <Compile Include="GitHubFlow\NextVersionTxtFileFinder.cs" />
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GitPreparer.cs" />
-    <Compile Include="Helpers\DeleteHelper.cs" />
-    <Compile Include="OutputFormatters\BuildOutputFormatter.cs" />
-    <Compile Include="BuildServers\BuildServerList.cs" />
-    <Compile Include="BuildServers\ContinuaCi.cs" />
-    <Compile Include="BuildServers\GitHelper.cs" />
-    <Compile Include="BuildServers\IBuildServer.cs" />
-    <Compile Include="BuildServers\TeamCity.cs" />
-    <Compile Include="OutputVariables\CiFeedFormatter.cs" />
-    <Compile Include="OutputVariables\VariableProvider.cs" />
-    <Compile Include="GitVersionContext.cs" />
     <Compile Include="HelpWriter.cs" />
     <Compile Include="ProcessHelper.cs" />
-    <Compile Include="ReleaseDate.cs" />
-    <Compile Include="ReleaseDateFinder.cs" />
-    <Compile Include="SemanticVersionBuildMetaData.cs" />
-    <Compile Include="SemanticVersionPreReleaseTag.cs" />
-    <Compile Include="OutputFormatters\JsonOutputFormatter.cs" />
-    <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="ShortVersionParser.cs" />
-    <Compile Include="VersionOnMasterFinder.cs" />
-    <Compile Include="GitFlow\BranchType.cs" />
-    <Compile Include="CachedVersion.cs" />
-    <Compile Include="DirectoryDateFinder.cs" />
-    <Compile Include="GitDirFinder.cs" />
-    <Compile Include="Logger.cs" />
-    <Compile Include="GitFlow\MergeMessageParser.cs" />
-    <Compile Include="GitFlow\BranchFinders\PullVersionFinder.cs" />
-    <Compile Include="GitFlow\BranchFinders\ReleaseVersionFinder.cs" />
-    <Compile Include="LibGitExtensions.cs" />
-    <Compile Include="GitVersionFinder.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs" />
-    <Compile Include="GitFlow\BranchFinders\MasterVersionFinder.cs" />
-    <Compile Include="MissingBranchException.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="RepositoryLoader.cs" />
-    <Compile Include="SearchPath.cs" />
-    <Compile Include="SemanticVersion.cs" />
-    <Compile Include="VersionCache.cs" />
-    <Compile Include="VersionPoint.cs" />
-    <Compile Include="ErrorException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GemAssets\gitversion" />
     <None Include="GemAssets\gitversion.gemspec" />
-    <None Include="NugetRefAssets\GitVersion.nuspec">
+    <None Include="NugetAssets\chocolateyInstall.ps1">
       <SubType>Designer</SubType>
     </None>
-    <None Include="NugetExeAssets\chocolateyInstall.ps1">
+    <None Include="NugetAssets\chocolateyUninstall.ps1">
       <SubType>Designer</SubType>
     </None>
-    <None Include="NugetExeAssets\chocolateyUninstall.ps1">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="NugetExeAssets\GitVersion.nuspec">
+    <None Include="NugetAssets\GitVersion.nuspec">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config">
@@ -142,35 +86,28 @@
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj">
+      <Project>{f9741a0d-b9d7-4557-9a1c-a7252c1071f5}</Project>
+      <Name>GitVersionCore</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="Clean">
     <ItemGroup>
       <ExeFilesToDelete Include="$(SolutionDir)NuGetExeBuild\**\*.*" />
     </ItemGroup>
     <Delete Files="@(ExeFilesToDelete)" />
-    <ItemGroup>
-      <RefFilesToDelete Include="$(SolutionDir)NuGetRefBuild\**\*.*" />
-    </ItemGroup>
-    <Delete Files="@(RefFilesToDelete)" />
   </Target>
-  <UsingTask TaskName="PepitaPackage.CreatePackageTask" AssemblyFile="$(SolutionDir)Tools\Pepita\PepitaPackage.dll" />
   <Target Name="AfterBuild" DependsOnTargets="Clean">
     <!-- NugetExeBuild -->
     <MakeDir Directories="$(SolutionDir)NuGetExeBuild" />
     <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
     <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
-    <Copy SourceFiles="$(ProjectDir)NugetExeAssets\chocolateyInstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
-    <Copy SourceFiles="$(ProjectDir)NugetExeAssets\chocolateyUninstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
-    <Copy SourceFiles="$(ProjectDir)NugetExeAssets\GitVersion.nuspec" DestinationFolder="$(SolutionDir)NuGetExeBuild" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyInstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyUninstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.nuspec" DestinationFolder="$(SolutionDir)NuGetExeBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetExeBuild" MetadataAssembly="$(OutputPath)GitVersion.exe" />
-    <!-- NugetRefBuild -->
-    <MakeDir Directories="$(SolutionDir)NuGetRefBuild" />
-    <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
-    <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
-    <Copy SourceFiles="$(OutputPath)\GitVersion.xml" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
-    <Copy SourceFiles="$(ProjectDir)NugetRefAssets\GitVersion.nuspec" DestinationFolder="$(SolutionDir)NuGetRefBuild" />
-    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetRefBuild" MetadataAssembly="$(OutputPath)GitVersion.exe" />
     <!-- Gem -->
     <MakeDir Directories="$(SolutionDir)GemBuild" />
     <MakeDir Directories="$(SolutionDir)GemBuild\bin" />
@@ -185,6 +122,7 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Fody.1.22.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.22.1\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets'))" />
   </Target>
   <UsingTask TaskName="CosturaCleanup" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" TaskFactory="CodeTaskFactory">
     <ParameterGroup>
@@ -222,4 +160,5 @@ foreach (var item in filesToCleanup)
   <Target Name="CleanReferenceCopyLocalPaths" AfterTargets="AfterBuild;NonWinFodyTarget">
     <CosturaCleanup Config="FodyWeavers.xml" Files="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" />
   </Target>
+  <Import Project="..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets')" />
 </Project>

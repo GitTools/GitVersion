@@ -5,11 +5,11 @@
 
     public class GitPreparer
     {
-        readonly Arguments _arguments;
+        readonly Arguments arguments;
 
         public GitPreparer(Arguments arguments)
         {
-            _arguments = arguments;
+            this.arguments = arguments;
         }
 
         public bool IsDynamicGitRepository
@@ -21,9 +21,9 @@
 
         public string Prepare()
         {
-            var gitPath = _arguments.TargetPath;
+            var gitPath = arguments.TargetPath;
 
-            if (!string.IsNullOrWhiteSpace(_arguments.TargetUrl))
+            if (!string.IsNullOrWhiteSpace(arguments.TargetUrl))
             {
                 gitPath = GetGitInfoFromUrl();
             }
@@ -31,9 +31,9 @@
             return GitDirFinder.TreeWalkForGitDir(gitPath);
         }
 
-        private string GetGitInfoFromUrl()
+        string GetGitInfoFromUrl()
         {
-            var gitDirectory = Path.Combine(_arguments.TargetPath, "_dynamicrepository", ".git");
+            var gitDirectory = Path.Combine(arguments.TargetPath, "_dynamicrepository", ".git");
             if (Directory.Exists(gitDirectory))
             {
                 Logger.WriteInfo(string.Format("Deleting existing .git folder from '{0}' to force new checkout from url", gitDirectory));
@@ -42,32 +42,32 @@
             }
 
             Credentials credentials = null;
-            if (!string.IsNullOrWhiteSpace(_arguments.Username) && !string.IsNullOrWhiteSpace(_arguments.Password))
+            if (!string.IsNullOrWhiteSpace(arguments.Username) && !string.IsNullOrWhiteSpace(arguments.Password))
             {
-                Logger.WriteInfo(string.Format("Setting up credentials using name '{0}'", _arguments.Username));
+                Logger.WriteInfo(string.Format("Setting up credentials using name '{0}'", arguments.Username));
 
                 credentials = new Credentials
                     {
-                    Username = _arguments.Username,
-                    Password = _arguments.Password
+                    Username = arguments.Username,
+                    Password = arguments.Password
                 };
             }
 
-            Logger.WriteInfo(string.Format("Retrieving git info from url '{0}'", _arguments.TargetUrl));
+            Logger.WriteInfo(string.Format("Retrieving git info from url '{0}'", arguments.TargetUrl));
 
-            Repository.Clone(_arguments.TargetUrl, gitDirectory, true, false, credentials: credentials);
+            Repository.Clone(arguments.TargetUrl, gitDirectory, true, false, credentials: credentials);
 
-            if (!string.IsNullOrWhiteSpace(_arguments.TargetBranch))
+            if (!string.IsNullOrWhiteSpace(arguments.TargetBranch))
             {
                 // Normalize (download branches) before using the branch
-                GitHelper.NormalizeGitDirectory(gitDirectory, _arguments);
+                GitHelper.NormalizeGitDirectory(gitDirectory, arguments);
 
                 using (var repository = new Repository(gitDirectory))
                 {
-                    var targetBranchName = string.Format("refs/heads/{0}", _arguments.TargetBranch);
+                    var targetBranchName = string.Format("refs/heads/{0}", arguments.TargetBranch);
                     if (!string.Equals(repository.Head.CanonicalName, targetBranchName))
                     {
-                        Logger.WriteInfo(string.Format("Switching to branch '{0}'", _arguments.TargetBranch));
+                        Logger.WriteInfo(string.Format("Switching to branch '{0}'", arguments.TargetBranch));
 
                         repository.Refs.UpdateTarget("HEAD", targetBranchName);
                     }
