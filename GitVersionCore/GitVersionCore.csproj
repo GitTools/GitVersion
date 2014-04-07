@@ -148,7 +148,7 @@ xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.16.0.0\lib\net35\NativeBin
     <Copy SourceFiles="$(OutputPath)GitVersionCore.dll" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
     <Copy SourceFiles="$(OutputPath)GitVersionCore.pdb" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
     <Copy SourceFiles="$(OutputPath)GitVersionCore.xml" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
-    <Copy SourceFiles="$(ProjectDir)NugetRefAssets\GitVersion.nuspec" DestinationFolder="$(SolutionDir)NuGetRefBuild" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.nuspec" DestinationFolder="$(SolutionDir)NuGetRefBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetRefBuild" MetadataAssembly="$(OutputPath)GitVersion.dll" />
   </Target>
   <Import Project="..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets')" />
