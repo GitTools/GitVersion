@@ -227,7 +227,7 @@ namespace GitVersion
                         return !string.IsNullOrEmpty(buildMetadata) ? string.Format("{0}+{1}", ToString("sp"), buildMetadata) : ToString("sp");
                     }
                 default:
-                    throw new ArgumentException("Unrecognised format", "format");
+                    throw new ArgumentException(string.Format("Unrecognised format '{0}'", format), "format");
             }
         }
     }

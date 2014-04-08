@@ -61,10 +61,8 @@ namespace GitVersion
                 return;
             }
 
-            throw new Exception(
-                "A pull request branch is expected to branch off of 'master'. "
-                + string.Format("However, branch 'master' and '{0}' do not share a common ancestor."
-                    , pullBranch.Name));
+            var message = string.Format("A pull request branch is expected to branch off of 'master'. However, branch 'master' and '{0}' do not share a common ancestor.", pullBranch.Name);
+            throw new Exception(message);
         }
 
         // TODO refactor to remove duplication
@@ -87,8 +85,8 @@ namespace GitVersion
 
             if (!LooksLikeAValidPullRequestNumber(issueNumber))
             {
-                throw new ErrorException(string.Format("Unable to extract pull request number from '{0}'.",
-                    pullRequestBranch.CanonicalName));
+                var message = string.Format("Unable to extract pull request number from '{0}'.", pullRequestBranch.CanonicalName);
+                throw new ErrorException(message);
             }
 
             return issueNumber;
