@@ -87,7 +87,17 @@
   </Target>
   <Target Name="AfterBuild" DependsOnTargets="Clean">
     <MakeDir Directories="$(SolutionDir)NuGetTaskBuild" />
+    <CreateItem Include="$(SolutionDir)GitVersionTask\bin\$(ConfigurationName)\NativeBinaries\amd64\*.dll">
+      <Output TaskParameter="Include" ItemName="amd64" />
+    </CreateItem>
+    <Copy SourceFiles="@(amd64)" DestinationFolder="$(SolutionDir)NuGetTaskBuild\NativeBinaries\amd64" />
+    <CreateItem Include="$(SolutionDir)GitVersionTask\bin\$(ConfigurationName)\NativeBinaries\x86\*.dll">
+      <Output TaskParameter="Include" ItemName="x86" />
+    </CreateItem>
+    <Copy SourceFiles="@(x86)" DestinationFolder="$(SolutionDir)NuGetTaskBuild\NativeBinaries\x86" />
+
     <Copy SourceFiles="$(OutputPath)GitVersionTask.dll" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
+    <Copy SourceFiles="$(OutputPath)LibGit2Sharp.dll" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
     <Copy SourceFiles="$(OutputPath)GitVersionTask.pdb" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
     <Copy SourceFiles="$(OutputPath)GitVersionCore.dll" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
     <Copy SourceFiles="$(OutputPath)GitVersionCore.pdb" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
@@ -103,5 +113,13 @@
     <Error Condition="!Exists('..\packages\Fody.1.22.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.22.1\build\Fody.targets'))" />
     <Error Condition="!Exists('..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets'))" />
   </Target>
-  <Import Project="..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets')" />
+  <Import Project="..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets')" />  <PropertyGroup>
+    <PostBuildEvent>
+if not exist "$(TargetDir)NativeBinaries" md "$(TargetDir)NativeBinaries"
+if not exist "$(TargetDir)NativeBinaries\x86" md "$(TargetDir)NativeBinaries\x86"
+xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.16.0.0\lib\net35\NativeBinaries\x86\*.*" "$(TargetDir)NativeBinaries\x86"
+if not exist "$(TargetDir)NativeBinaries\amd64" md "$(TargetDir)NativeBinaries\amd64"
+xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.16.0.0\lib\net35\NativeBinaries\amd64\*.*" "$(TargetDir)NativeBinaries\amd64"</PostBuildEvent>
+  </PropertyGroup>
+
 </Project>

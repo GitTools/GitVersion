@@ -7,6 +7,8 @@
     {
         public SemanticVersion SemanticVersion;
         public bool SignAssembly;
+        public bool AppendRevision;
+
         public string GetAssemblyInfoText()
         {
             var assemblyInfo = string.Format(@"
@@ -38,10 +40,10 @@ static class GitVersionInformation
 }}
 
 
-", GetAssemblyVersion(), GetAssemblyFileVersion(), SemanticVersion.ToString("i"), 
- SemanticVersion.BuildMetaData.OriginalReleaseDate.Value.UtcDateTime.ToString("yyyy-MM-dd"),
- SemanticVersion.BuildMetaData.ReleaseDate.Value.UtcDateTime.ToString("yyyy-MM-dd"),
- GenerateVariableMembers());
+", GetAssemblyVersion(), GetAssemblyFileVersion(), SemanticVersion.ToString("i"),
+                SemanticVersion.BuildMetaData.OriginalReleaseDate.Value.UtcDateTime.ToString("yyyy-MM-dd"),
+                SemanticVersion.BuildMetaData.ReleaseDate.Value.UtcDateTime.ToString("yyyy-MM-dd"),
+                GenerateVariableMembers());
 
             return assemblyInfo;
         }
@@ -65,12 +67,21 @@ static class GitVersionInformation
                 return string.Format("{0}.{1}.0", SemanticVersion.Major, SemanticVersion.Minor);
             }
             // for non strong named we want to include the patch
-            return string.Format("{0}.{1}.{2}", SemanticVersion.Major, SemanticVersion.Minor, SemanticVersion.Patch);
+            return GetAssemblyFileVersion();
         }
 
         string GetAssemblyFileVersion()
         {
+            if (AppendRevision && SemanticVersion.BuildMetaData.Branch == "master")
+            {
+                if (SemanticVersion.BuildMetaData.CommitsSinceTag != null)
+                {
+                    return string.Format("{0}.{1}.{2}.{3}", SemanticVersion.Major, SemanticVersion.Minor, SemanticVersion.Patch, SemanticVersion.BuildMetaData.CommitsSinceTag);   
+                }
+            }
             return string.Format("{0}.{1}.{2}", SemanticVersion.Major, SemanticVersion.Minor, SemanticVersion.Patch);
         }
     }
+
+
 }

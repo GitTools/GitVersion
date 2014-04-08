@@ -10,6 +10,8 @@
     public class UpdateAssemblyInfo : Task
     {
 
+        public bool AppendRevision { get; set; }
+
         public bool SignAssembly { get; set; }
 
         [Required]
@@ -77,7 +79,8 @@
             var assemblyInfoBuilder = new AssemblyInfoBuilder
                                       {
                                           SemanticVersion = semanticVersion,
-                                          SignAssembly = SignAssembly
+                                          SignAssembly = SignAssembly, 
+                                          AppendRevision = AppendRevision
                                       };
             var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText();
 

@@ -3,6 +3,9 @@
   <PropertyGroup>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)..\</SolutionDir>
   </PropertyGroup>
+  <PropertyGroup>
+    <GitVersionAppendRevision Condition="$(GitVersionAppendRevision) == '' Or $(GitVersionAppendRevision) == '*Undefined*'">false</GitVersionAppendRevision>
+  </PropertyGroup>
 
   <UsingTask
       TaskName="GitVersionTask.UpdateAssemblyInfo"
@@ -11,32 +14,33 @@
       TaskName="GitVersionTask.WriteVersionInfoToBuildLog"
       AssemblyFile="$(MSBuildThisFileDirectory)..\GitVersionTask.dll" />
 
-    <Target Name="UpdateAssemblyInfo"
-            BeforeTargets="CoreCompile">
-      <WriteVersionInfoToBuildLog
-        SolutionDirectory="$(SolutionDir)"
+  <Target Name="UpdateAssemblyInfo"
+          BeforeTargets="CoreCompile">
+    <WriteVersionInfoToBuildLog
+      SolutionDirectory="$(SolutionDir)"
         />
-      <UpdateAssemblyInfo 
-        SolutionDirectory="$(SolutionDir)"
-        ProjectFile="$(ProjectPath)" 
-        SignAssembly="$(SignAssembly)"
-        CompileFiles ="@(Compile)">
-        <Output 
-          TaskParameter="AssemblyInfoTempFilePath" 
-          PropertyName="AssemblyInfoTempFilePath" />
-      </UpdateAssemblyInfo>
+    <UpdateAssemblyInfo
+      SolutionDirectory="$(SolutionDir)"
+      ProjectFile="$(ProjectPath)"
+      AppendRevision="$(GitVersionAppendRevision)"
+      SignAssembly="$(SignAssembly)"
+      CompileFiles ="@(Compile)">
+      <Output
+        TaskParameter="AssemblyInfoTempFilePath"
+        PropertyName="AssemblyInfoTempFilePath" />
+    </UpdateAssemblyInfo>
 
-      <ItemGroup>
-          <Compile Include="$(AssemblyInfoTempFilePath)" />
-      </ItemGroup>
-    </Target>
+    <ItemGroup>
+      <Compile Include="$(AssemblyInfoTempFilePath)" />
+    </ItemGroup>
+  </Target>
 
   <!--Support for ncrunch-->
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)..\GitVersionTask.dll" />
     <None Include="$(MSBuildThisFileDirectory)..\GitVersionTask.pdb" />
-    <None Include="$(MSBuildThisFileDirectory)..\GitVersion.exe" />
-    <None Include="$(MSBuildThisFileDirectory)..\GitVersion.pdb" />
+    <None Include="$(MSBuildThisFileDirectory)..\GitVersionCore.dll" />
+    <None Include="$(MSBuildThisFileDirectory)..\GitVersionCore.pdb" />
     <None Include="$(MSBuildThisFileDirectory)..\LibGit2Sharp.dll" />
     <None Include="$(MSBuildThisFileDirectory)..\NativeBinaries\**\*" />
   </ItemGroup>
