@@ -1,18 +1,15 @@
 namespace GitVersion
 {
     using System;
-    using System.IO;
     using System.Linq;
     using LibGit2Sharp;
 
     public class LastTaggedReleaseFinder
     {
-        string workingDirectory;
         Lazy<VersionTaggedCommit> lastTaggedRelease;
 
-        public LastTaggedReleaseFinder(IRepository gitRepo, string workingDirectory)
+        public LastTaggedReleaseFinder(IRepository gitRepo)
         {
-            this.workingDirectory = workingDirectory;
             lastTaggedRelease = new Lazy<VersionTaggedCommit>(() => GetVersion(gitRepo));
         }
 
@@ -41,11 +38,6 @@ namespace GitVersion
 
             if (lastTaggedCommit != null)
                 return tags.Last(a => a.Commit.Sha == lastTaggedCommit.Sha);
-
-            // Create a next version txt as 0.1.0
-            var filePath = Path.Combine(workingDirectory, "NextVersion.txt");
-            if (!File.Exists(filePath))
-                File.WriteAllText(filePath, "0.1.0");
 
             var commit = branch.Commits.Last();
             return new VersionTaggedCommit(commit, new SemanticVersion());

@@ -2,13 +2,6 @@ namespace GitVersion
 {
     using System;
 
-    public enum OutputType
-    {
-        BuildServer,
-
-        Json
-    }
-
     public class Arguments
     {
         public Arguments()
@@ -36,5 +29,7 @@ namespace GitVersion
         public string ProjArgs;
         public string Exec;
         public string ExecArgs;
+
+        public bool UpdateAssemblyInfo;
     }
 }

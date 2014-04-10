@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using GitVersion;
 using NUnit.Framework;
+using Shouldly;
 
 [TestFixture]
 public class ArgumentParserTests
@@ -154,7 +155,7 @@ public class ArgumentParserTests
     public void Wrong_number_of_arguments_should_throw()
     {
         var exception = Assert.Throws<ErrorException>(() => ArgumentParser.ParseArguments("targetDirectoryPath -l logFilePath extraArg"));
-        Assert.AreEqual("Could not parse arguments: 'targetDirectoryPath -l logFilePath extraArg'.", exception.Message);
+        exception.Message.ShouldBe("Could not parse command line parameter 'extraArg'.");
     }
 
     [Test]
@@ -162,5 +163,19 @@ public class ArgumentParserTests
     {
         var exception = Assert.Throws<ErrorException>(() => ArgumentParser.ParseArguments("targetDirectoryPath -x logFilePath"));
         Assert.AreEqual("Could not parse command line parameter '-x'.", exception.Message);
+    }
+
+    [Test]
+    public void update_assembly_info()
+    {
+        var arguments = ArgumentParser.ParseArguments("-updateAssemblyInfo -proj foo.sln");
+        arguments.UpdateAssemblyInfo.ShouldBe(true);
+    }
+
+    [Test]
+    public void can_log_to_console()
+    {
+        var arguments = ArgumentParser.ParseArguments("-l console -proj foo.sln");
+        arguments.LogFilePath.ShouldBe("console");
     }
 }

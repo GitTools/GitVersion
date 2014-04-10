@@ -16,7 +16,7 @@ namespace GitVersion
 
         public static Arguments ParseArguments(string commandLineArguments)
         {
-            return ParseArguments(commandLineArguments.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries).ToList());
+            return ParseArguments(commandLineArguments.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList());
         }
 
         public static Arguments ParseArguments(List<string> commandLineArguments)
@@ -59,12 +59,10 @@ namespace GitVersion
                 namedArguments = commandLineArguments.Skip(1).ToList();
             }
 
-            EnsureArgumentsEvenCount(commandLineArguments, namedArguments);
-
-            for (var index = 0; index < namedArguments.Count; index = index+2)
+            for (var index = 0; index < namedArguments.Count; index = index + 2)
             {
                 var name = namedArguments[index];
-                var value = namedArguments[index + 1];
+                var value = namedArguments.Count > index + 1 ? namedArguments[index + 1] : null;
 
                 if (IsSwitch("l", name))
                 {
@@ -120,6 +118,24 @@ namespace GitVersion
                     continue;
                 }
 
+                if (IsSwitch("updateAssemblyInfo", name))
+                {
+                    if (new[] { "1", "true" }.Contains(value))
+                    {
+                        arguments.UpdateAssemblyInfo = true;
+                    }
+                    else if (new[] { "0", "false" }.Contains(value))
+                    {
+                        arguments.UpdateAssemblyInfo = false;
+                    }
+                    else
+                    {
+                        arguments.UpdateAssemblyInfo = true;
+                        index--;
+                    }
+                    continue;
+                }
+
                 if ((IsSwitch("v", name)) && VersionParts.Contains(value.ToLower()))
                 {
                     arguments.VersionPart = value.ToLower();
@@ -128,7 +144,7 @@ namespace GitVersion
 
                 if (IsSwitch("output", name))
                 {
-                    var outputType = OutputType.Json;
+                    OutputType outputType;
                     if (!Enum.TryParse(value, true, out outputType))
                     {
                         throw new ErrorException(string.Format("Value '{0}' cannot be parsed as output type, please use 'json' or 'buildserver'", value));
@@ -158,20 +174,11 @@ namespace GitVersion
             return (string.Equals(switchName, value, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        static void EnsureArgumentsEvenCount(List<string> commandLineArguments, List<string> namedArguments)
-        {
-            if (namedArguments.Count.IsOdd())
-            {
-                var message = string.Format("Could not parse arguments: '{0}'.", string.Join(" ", commandLineArguments));
-                throw new ErrorException(message);
-            }
-        }
-
         static bool IsHelp(string singleArgument)
         {
-            return (singleArgument == "?") || 
-                IsSwitch("h", singleArgument) || 
-                IsSwitch("help", singleArgument) || 
+            return (singleArgument == "?") ||
+                IsSwitch("h", singleArgument) ||
+                IsSwitch("help", singleArgument) ||
                 IsSwitch("?", singleArgument);
         }
 
