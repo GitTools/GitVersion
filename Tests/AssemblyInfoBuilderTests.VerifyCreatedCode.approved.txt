@@ -8,7 +8,7 @@ using System.Reflection;
 [assembly: ReleaseDate("2014-03-01", "2014-03-06")]
 
 [System.Runtime.CompilerServices.CompilerGenerated]
-class ReleaseDateAttribute : System.Attribute
+sealed class ReleaseDateAttribute : System.Attribute
 {
     public string OriginalDate { get; private set; }
     public string Date { get; private set; }

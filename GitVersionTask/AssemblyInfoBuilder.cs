@@ -21,7 +21,7 @@ using System.Reflection;
 [assembly: ReleaseDate(""{3}"", ""{4}"")]
 
 [System.Runtime.CompilerServices.CompilerGenerated]
-class ReleaseDateAttribute : System.Attribute
+sealed class ReleaseDateAttribute : System.Attribute
 {{
     public string OriginalDate {{ get; private set; }}
     public string Date {{ get; private set; }}
