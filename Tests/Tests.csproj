@@ -104,7 +104,7 @@
     <Compile Include="BuildServers\TeamCityTests.cs" />
     <Compile Include="BuildServers\ContinuaCiTests.cs" />
     <Compile Include="LambdaEqualityHelperFixture.cs" />
-    <Compile Include="GitFlow\VersionByCommitFixture.cs" />
+    <Compile Include="GitFlow\MetaDataByCommitFixture.cs" />
     <Compile Include="GitFlow\GitFlowVersionFinderTests.cs" />
     <Compile Include="GitHelperTests.cs" />
     <Compile Include="GitVersionTask.cs" />
