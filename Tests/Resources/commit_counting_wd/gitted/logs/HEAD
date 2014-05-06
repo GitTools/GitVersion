@@ -1,0 +1,40 @@
+0000000000000000000000000000000000000000 7bf37e6d273e6d4d1675b2392c7efc7905e659a1 nulltoken <emeric.fermas@gmail.com> 1392199480 +0100	commit (initial): Initial commit
+7bf37e6d273e6d4d1675b2392c7efc7905e659a1 7bf37e6d273e6d4d1675b2392c7efc7905e659a1 nulltoken <emeric.fermas@gmail.com> 1392199511 +0100	checkout: moving from develop to master
+7bf37e6d273e6d4d1675b2392c7efc7905e659a1 7bf37e6d273e6d4d1675b2392c7efc7905e659a1 nulltoken <emeric.fermas@gmail.com> 1392199684 +0100	checkout: moving from master to develop
+7bf37e6d273e6d4d1675b2392c7efc7905e659a1 7f981d15f0f26fdef40e5ce27fd31245d183c00f nulltoken <emeric.fermas@gmail.com> 1392199778 +0100	commit (amend): A
+7f981d15f0f26fdef40e5ce27fd31245d183c00f 7bf37e6d273e6d4d1675b2392c7efc7905e659a1 nulltoken <emeric.fermas@gmail.com> 1392199795 +0100	reset: moving to 7bf37e6d273e6d4d1675b2392c7efc7905e659a1
+7bf37e6d273e6d4d1675b2392c7efc7905e659a1 8c890487ed143d5a72d151e64be1c5ddb314c908 nulltoken <emeric.fermas@gmail.com> 1392199816 +0100	commit (amend): A
+8c890487ed143d5a72d151e64be1c5ddb314c908 7bf37e6d273e6d4d1675b2392c7efc7905e659a1 nulltoken <emeric.fermas@gmail.com> 1392199826 +0100	checkout: moving from develop to master
+7bf37e6d273e6d4d1675b2392c7efc7905e659a1 8c890487ed143d5a72d151e64be1c5ddb314c908 nulltoken <emeric.fermas@gmail.com> 1392199835 +0100	reset: moving to 8c890487ed143d5a72d151e64be1c5ddb314c908
+8c890487ed143d5a72d151e64be1c5ddb314c908 8c890487ed143d5a72d151e64be1c5ddb314c908 nulltoken <emeric.fermas@gmail.com> 1392199858 +0100	checkout: moving from master to develop
+8c890487ed143d5a72d151e64be1c5ddb314c908 fab69e28ee35dd912c0c95d5993dd84e4f2bcd92 nulltoken <emeric.fermas@gmail.com> 1392199880 +0100	commit: B
+fab69e28ee35dd912c0c95d5993dd84e4f2bcd92 8c890487ed143d5a72d151e64be1c5ddb314c908 nulltoken <emeric.fermas@gmail.com> 1392199902 +0100	checkout: moving from develop to master
+8c890487ed143d5a72d151e64be1c5ddb314c908 8c890487ed143d5a72d151e64be1c5ddb314c908 nulltoken <emeric.fermas@gmail.com> 1392199954 +0100	checkout: moving from master to hotfix-1.2.1
+8c890487ed143d5a72d151e64be1c5ddb314c908 e480263d0b3eeb3a35e6559032a0fdcb9eb19baa nulltoken <emeric.fermas@gmail.com> 1392200031 +0100	commit: C
+e480263d0b3eeb3a35e6559032a0fdcb9eb19baa fab69e28ee35dd912c0c95d5993dd84e4f2bcd92 nulltoken <emeric.fermas@gmail.com> 1392200056 +0100	checkout: moving from hotfix-1.2.1 to develop
+fab69e28ee35dd912c0c95d5993dd84e4f2bcd92 fab69e28ee35dd912c0c95d5993dd84e4f2bcd92 nulltoken <emeric.fermas@gmail.com> 1392200119 +0100	checkout: moving from develop to release-1.3.0
+fab69e28ee35dd912c0c95d5993dd84e4f2bcd92 b53054c614d36edc9d1bee8c35cd2ed575a43607 nulltoken <emeric.fermas@gmail.com> 1392200308 +0100	commit: D
+b53054c614d36edc9d1bee8c35cd2ed575a43607 fab69e28ee35dd912c0c95d5993dd84e4f2bcd92 nulltoken <emeric.fermas@gmail.com> 1392200347 +0100	checkout: moving from release-1.3.0 to develop
+fab69e28ee35dd912c0c95d5993dd84e4f2bcd92 320f4b6820cf4b0853dc08ac153f04fbd4958200 nulltoken <emeric.fermas@gmail.com> 1392200423 +0100	commit: E
+320f4b6820cf4b0853dc08ac153f04fbd4958200 8c890487ed143d5a72d151e64be1c5ddb314c908 nulltoken <emeric.fermas@gmail.com> 1392200454 +0100	checkout: moving from develop to master
+8c890487ed143d5a72d151e64be1c5ddb314c908 576a28e321cd6dc764b52c5fface672fa076f37f nulltoken <emeric.fermas@gmail.com> 1392200473 +0100	merge hotfix-1.2.1: Merge made by the 'recursive' strategy.
+576a28e321cd6dc764b52c5fface672fa076f37f b53054c614d36edc9d1bee8c35cd2ed575a43607 nulltoken <emeric.fermas@gmail.com> 1392200507 +0100	checkout: moving from master to release-1.3.0
+b53054c614d36edc9d1bee8c35cd2ed575a43607 9ea56e0287af87d6b80fad6425949ee6a92fd4c8 nulltoken <emeric.fermas@gmail.com> 1392200593 +0100	commit: G
+9ea56e0287af87d6b80fad6425949ee6a92fd4c8 576a28e321cd6dc764b52c5fface672fa076f37f nulltoken <emeric.fermas@gmail.com> 1392200651 +0100	checkout: moving from release-1.3.0 to master
+576a28e321cd6dc764b52c5fface672fa076f37f 5b84136c848fd48f1f8b3fa4e1b767a1f6101279 nulltoken <emeric.fermas@gmail.com> 1392200662 +0100	merge release-1.3.0: Merge made by the 'recursive' strategy.
+5b84136c848fd48f1f8b3fa4e1b767a1f6101279 320f4b6820cf4b0853dc08ac153f04fbd4958200 nulltoken <emeric.fermas@gmail.com> 1392200682 +0100	checkout: moving from master to develop
+320f4b6820cf4b0853dc08ac153f04fbd4958200 243f56dcdb543688fd0a99bd3e0e72dd9a786603 nulltoken <emeric.fermas@gmail.com> 1392200697 +0100	merge release-1.3.0: Merge made by the 'recursive' strategy.
+243f56dcdb543688fd0a99bd3e0e72dd9a786603 320f4b6820cf4b0853dc08ac153f04fbd4958200 nulltoken <emeric.fermas@gmail.com> 1392200783 +0100	checkout: moving from develop to feature
+320f4b6820cf4b0853dc08ac153f04fbd4958200 0491c5dac30d706f4e54c5cb26d082baad8228d1 nulltoken <emeric.fermas@gmail.com> 1392200833 +0100	commit: J
+0491c5dac30d706f4e54c5cb26d082baad8228d1 1b9cff4589e2f37bc624a18c349b7d95c360aaf7 nulltoken <emeric.fermas@gmail.com> 1392200861 +0100	commit: K
+1b9cff4589e2f37bc624a18c349b7d95c360aaf7 5b84136c848fd48f1f8b3fa4e1b767a1f6101279 nulltoken <emeric.fermas@gmail.com> 1392200898 +0100	checkout: moving from feature to hotfix-1.3.1
+5b84136c848fd48f1f8b3fa4e1b767a1f6101279 253e94347a96fe4a1eab4e47972afd16f6992528 nulltoken <emeric.fermas@gmail.com> 1392200974 +0100	commit: L
+253e94347a96fe4a1eab4e47972afd16f6992528 243f56dcdb543688fd0a99bd3e0e72dd9a786603 nulltoken <emeric.fermas@gmail.com> 1392200992 +0100	checkout: moving from hotfix-1.3.1 to develop
+243f56dcdb543688fd0a99bd3e0e72dd9a786603 0b7a2482ab7d167cefa4ecfc106db001dc5c17ff nulltoken <emeric.fermas@gmail.com> 1392201004 +0100	merge feature: Merge made by the 'recursive' strategy.
+0b7a2482ab7d167cefa4ecfc106db001dc5c17ff 5b84136c848fd48f1f8b3fa4e1b767a1f6101279 nulltoken <emeric.fermas@gmail.com> 1392201026 +0100	checkout: moving from develop to master
+5b84136c848fd48f1f8b3fa4e1b767a1f6101279 3b012518e0c89bb753459912738604a915cd70d6 nulltoken <emeric.fermas@gmail.com> 1392201040 +0100	merge hotfix-1.3.1: Merge made by the 'recursive' strategy.
+3b012518e0c89bb753459912738604a915cd70d6 0b7a2482ab7d167cefa4ecfc106db001dc5c17ff nulltoken <emeric.fermas@gmail.com> 1392201126 +0100	checkout: moving from master to develop
+0b7a2482ab7d167cefa4ecfc106db001dc5c17ff 7655537837096d925a4f974232f78ec589d86ebd nulltoken <emeric.fermas@gmail.com> 1392201235 +0100	merge hotfix-1.3.1: Merge made by the 'recursive' strategy.
+7655537837096d925a4f974232f78ec589d86ebd 4d65c519f88773854f9345eaf5dbb30cb49f6a74 nulltoken <emeric.fermas@gmail.com> 1392201298 +0100	commit: P
+4d65c519f88773854f9345eaf5dbb30cb49f6a74 3b012518e0c89bb753459912738604a915cd70d6 nulltoken <emeric.fermas@gmail.com> 1392201444 +0100	checkout: moving from develop to master
+3b012518e0c89bb753459912738604a915cd70d6 4d65c519f88773854f9345eaf5dbb30cb49f6a74 nulltoken <emeric.fermas@gmail.com> 1392201538 +0100	checkout: moving from master to develop
