@@ -10,10 +10,7 @@ namespace GitVersion
         LastTaggedReleaseFinder lastTaggedReleaseFinder;
         IRepository gitRepo;
 
-        public BuildNumberCalculator(
-            NextSemverCalculator nextSemverCalculator,
-            LastTaggedReleaseFinder lastTaggedReleaseFinder,
-            IRepository gitRepo)
+        public BuildNumberCalculator(NextSemverCalculator nextSemverCalculator, LastTaggedReleaseFinder lastTaggedReleaseFinder, IRepository gitRepo)
         {
             this.nextSemverCalculator = nextSemverCalculator;
             this.lastTaggedReleaseFinder = lastTaggedReleaseFinder;

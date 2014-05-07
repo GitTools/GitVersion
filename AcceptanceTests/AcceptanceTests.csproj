@@ -64,6 +64,7 @@
     <Compile Include="GitFlow\DevelopScenarios.cs" />
     <Compile Include="GitFlow\PatchScenarios.cs" />
     <Compile Include="GitFlow\WikiScenarios.cs" />
+    <Compile Include="GitHubFlow\ReleaseBranchTests.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="PullRequestInTeamCityTest.cs" />
     <Compile Include="EmptyRepositoryFixture.cs" />
