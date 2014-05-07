@@ -3,11 +3,14 @@ namespace GitVersion
     using System;
     using System.Text.RegularExpressions;
 
-    public class SemanticVersionBuildMetaData : IFormattable
+    public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVersionBuildMetaData>
     {
         static readonly Regex ParseRegex = new Regex(
             @"(?<BuildNumber>\d+)?(\.?Branch(Name)?\.(?<BranchName>[^\.]+))?(\.?Sha?\.(?<Sha>[^\.]+))?(?<Other>.*)",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static readonly LambdaEqualityHelper<SemanticVersionBuildMetaData> equalityHelper =
+           new LambdaEqualityHelper<SemanticVersionBuildMetaData>(x => x.CommitsSinceTag, x => x.Branch, x => x.Sha, x => x.ReleaseDate);
 
         public int? CommitsSinceTag;
         public string Branch;
@@ -28,41 +31,19 @@ namespace GitVersion
             Branch = branch;
         }
 
-        protected bool Equals(SemanticVersionBuildMetaData other)
-        {
-            return CommitsSinceTag == other.CommitsSinceTag &&
-                string.Equals(Branch, other.Branch) &&
-                string.Equals(Sha, other.Sha) &&
-                Equals(ReleaseDate, other.ReleaseDate);
-        }
-
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-            if (obj.GetType() != GetType())
-            {
-                return false;
-            }
-            return Equals((SemanticVersionBuildMetaData) obj);
+            return Equals(obj as SemanticVersionBuildMetaData);
+        }
+
+        public bool Equals(SemanticVersionBuildMetaData other)
+        {
+            return equalityHelper.Equals(this, other);
         }
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hashCode = CommitsSinceTag.GetHashCode();
-                hashCode = (hashCode*397) ^ (Branch != null ? Branch.GetHashCode() : 0);
-                hashCode = (hashCode*397) ^ (Sha != null ? Sha.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (ReleaseDate != null ? ReleaseDate.GetHashCode() : 0);
-                return hashCode;
-            }
+            return equalityHelper.GetHashCode(this);
         }
 
         public override string ToString()
