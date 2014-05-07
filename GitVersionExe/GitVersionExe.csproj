@@ -38,9 +38,8 @@
       <HintPath>..\packages\JetBrainsAnnotations.Fody.1.0.2\Lib\JetBrains.Annotations.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="LibGit2Sharp, Version=0.16.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\LibGit2Sharp.0.16.0.0\lib\net35\LibGit2Sharp.dll</HintPath>
+    <Reference Include="LibGit2Sharp">
+      <HintPath>..\packages\LibGit2Sharp.0.17.0.0\lib\net35\LibGit2Sharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -77,11 +76,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\Packages\LibGit2Sharp.0.16.0.0\lib\net35\NativeBinaries\amd64\git2-65e9dc6.dll">
-      <Link>costura64\git2-65e9dc6.dll</Link>
+    <EmbeddedResource Include="..\Packages\LibGit2Sharp.0.17.0.0\lib\net35\NativeBinaries\amd64\git2-06d772d.dll">
+      <Link>costura64\git2-06d772d.dll</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\Packages\LibGit2Sharp.0.16.0.0\lib\net35\NativeBinaries\x86\git2-65e9dc6.dll">
-      <Link>costura32\git2-65e9dc6.dll</Link>
+    <EmbeddedResource Include="..\Packages\LibGit2Sharp.0.17.0.0\lib\net35\NativeBinaries\x86\git2-06d772d.dll">
+      <Link>costura32\git2-06d772d.dll</Link>
     </EmbeddedResource>
     <Content Include="FodyWeavers.xml">
       <SubType>Designer</SubType>
@@ -162,4 +161,12 @@ foreach (var item in filesToCleanup)
     <CosturaCleanup Config="FodyWeavers.xml" Files="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" />
   </Target>
   <Import Project="..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>
+if not exist "$(TargetDir)NativeBinaries" md "$(TargetDir)NativeBinaries"
+if not exist "$(TargetDir)NativeBinaries\x86" md "$(TargetDir)NativeBinaries\x86"
+xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.17.0.0\lib\net35\NativeBinaries\x86\*.*" "$(TargetDir)NativeBinaries\x86"
+if not exist "$(TargetDir)NativeBinaries\amd64" md "$(TargetDir)NativeBinaries\amd64"
+xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.17.0.0\lib\net35\NativeBinaries\amd64\*.*" "$(TargetDir)NativeBinaries\amd64"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

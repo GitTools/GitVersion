@@ -46,7 +46,7 @@
             {
                 Logger.WriteInfo(string.Format("Setting up credentials using name '{0}'", arguments.Username));
 
-                credentials = new Credentials
+                credentials = new UsernamePasswordCredentials
                     {
                     Username = arguments.Username,
                     Password = arguments.Password

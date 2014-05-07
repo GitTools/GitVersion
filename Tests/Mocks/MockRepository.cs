@@ -36,6 +36,21 @@ public class MockRepository : IRepository
         throw new NotImplementedException();
     }
 
+    public Branch Checkout(Branch branch, CheckoutModifiers checkoutModifiers, CheckoutProgressHandler onCheckoutProgress, CheckoutNotificationOptions checkoutNotificationOptions, Signature signature = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Branch Checkout(string committishOrBranchSpec, CheckoutModifiers checkoutModifiers, CheckoutProgressHandler onCheckoutProgress, CheckoutNotificationOptions checkoutNotificationOptions, Signature signature = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Branch Checkout(Commit commit, CheckoutModifiers checkoutModifiers, CheckoutProgressHandler onCheckoutProgress, CheckoutNotificationOptions checkoutNotificationOptions, Signature signature = null)
+    {
+        throw new NotImplementedException();
+    }
+
     public void CheckoutPaths(string committishOrBranchSpec, IEnumerable<string> paths, CheckoutOptions checkoutOptions = null)
     {
         throw new NotImplementedException();
@@ -61,9 +76,19 @@ public class MockRepository : IRepository
         return new MockCommit();
     }
 
+    public Commit Commit(string message, Signature author, Signature committer, CommitOptions options = null)
+    {
+        throw new NotImplementedException();
+    }
+
     public Dictionary<string, GitObject> LookupResults { get; private set; }
 
     public Commit Commit(string message, Signature author, Signature committer, bool amendPreviousCommit = false)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Reset(ResetMode resetMode, Commit commit, Signature signature = null, string logMessage = null)
     {
         throw new NotImplementedException();
     }
@@ -84,6 +109,21 @@ public class MockRepository : IRepository
     }
 
     public void RemoveUntrackedFiles()
+    {
+        throw new NotImplementedException();
+    }
+
+    public MergeResult Merge(Commit commit, Signature merger, MergeOptions options = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public MergeResult Merge(Branch branch, Signature merger, MergeOptions options = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public MergeResult Merge(string committish, Signature merger, MergeOptions options = null)
     {
         throw new NotImplementedException();
     }
