@@ -1,7 +1,6 @@
 ﻿namespace AcceptanceTests
 {
     using System;
-    using System.IO;
     using Helpers;
     using LibGit2Sharp;
 
@@ -19,11 +18,6 @@
             Repository = new Repository(RepositoryPath);
             Repository.Config.Set("user.name", "Test");
             Repository.Config.Set("user.email", "test@email.com");
-
-            var randomFile = Path.Combine(Repository.Info.WorkingDirectory, Guid.NewGuid().ToString());
-            File.WriteAllText(randomFile, string.Empty);
-            Repository.Index.Stage(randomFile);
-            Repository.Commit("Initial Commit", new Signature("Test User", "test@email.com", DateTimeOffset.UtcNow));
         }
 
         public void Dispose()

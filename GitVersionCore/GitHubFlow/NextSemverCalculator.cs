@@ -15,8 +15,18 @@
 
         public SemanticVersion NextVersion()
         {
+            var versionZero = new SemanticVersion();
             var lastRelease = lastTaggedReleaseFinder.GetVersion().SemVer;
             var fileVersion = nextVersionTxtFileFinder.GetNextVersion();
+
+            if (lastRelease == versionZero && fileVersion == versionZero)
+            {
+                return new SemanticVersion
+                {
+                    Minor = 1
+                };
+            }
+
             if (fileVersion <= lastRelease)
             {
                 return new SemanticVersion
