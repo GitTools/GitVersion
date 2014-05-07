@@ -31,8 +31,8 @@
             return new[]
             {
                 // Note: see discussion at https://github.com/Particular/GitVersion/issues/90, keep GitFlowVersion for now
-                string.Format("##teamcity[setParameter name='GitFlowVersion.{0}' value='{1}']", name, EscapeValue(value)),
-                string.Format("##teamcity[setParameter name='GitVersion.{0}' value='{1}']", name, EscapeValue(value))
+                string.Format("##teamcity[setParameter name='system.GitFlowVersion.{0}' value='{1}']", name, EscapeValue(value)),
+                string.Format("##teamcity[setParameter name='system.GitVersion.{0}' value='{1}']", name, EscapeValue(value))
             };
         }
 
