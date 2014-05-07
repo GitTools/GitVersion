@@ -7,6 +7,7 @@
         NextVersionTxtFileFinder nextVersionTxtFileFinder;
         LastTaggedReleaseFinder lastTaggedReleaseFinder;
         MasterReleaseVersionFinder releaseVersionFinder;
+        OtherBranchVersionFinder unknownBranchFinder;
         GitVersionContext context;
         MergedBranchesWithVersionFinder mergedBranchesWithVersionFinder;
 
@@ -19,6 +20,7 @@
             this.lastTaggedReleaseFinder = lastTaggedReleaseFinder;
             releaseVersionFinder = new MasterReleaseVersionFinder();
             mergedBranchesWithVersionFinder = new MergedBranchesWithVersionFinder(context);
+            unknownBranchFinder = new OtherBranchVersionFinder();
             this.context = context;
         }
 
@@ -29,7 +31,8 @@
             var fileVersion = nextVersionTxtFileFinder.GetNextVersion();
             var releaseVersion = context.CurrentBranch.IsRelease() ? releaseVersionFinder.FindVersion(context) : versionZero;
             var mergedBranchVersion = mergedBranchesWithVersionFinder.GetVersion();
-            var maxCalculated = new[] { fileVersion, releaseVersion, mergedBranchVersion }.Max();
+            var otherBranchVersion = unknownBranchFinder.FindVersion(context);
+            var maxCalculated = new[]{ fileVersion, releaseVersion, otherBranchVersion, mergedBranchVersion }.Max();
 
             if (lastRelease == versionZero && maxCalculated == versionZero)
             {

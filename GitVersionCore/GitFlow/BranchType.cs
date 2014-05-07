@@ -7,6 +7,7 @@ namespace GitVersion
         Develop,
         Release,
         Master,
-        Hotfix
+        Hotfix,
+        Unknown
     }
 }

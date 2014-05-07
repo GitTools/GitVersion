@@ -90,6 +90,7 @@
     <Compile Include="GitHubFlow\MergedBranchesWithVersionFinder.cs" />
     <Compile Include="GitHubFlow\NextSemverCalculator.cs" />
     <Compile Include="GitHubFlow\NextVersionTxtFileFinder.cs" />
+    <Compile Include="GitHubFlow\OtherBranchVersionFinder.cs" />
     <Compile Include="GitHubFlow\VersionTaggedCommit.cs" />
     <Compile Include="GitVersionContext.cs" />
     <Compile Include="GitVersionFinder.cs" />
