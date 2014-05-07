@@ -11,9 +11,8 @@ namespace GitVersion
 
         public int? CommitsSinceTag;
         public string Branch;
+        public ReleaseDate ReleaseDate;
         public string Sha;
-        public DateTimeOffset? OriginalReleaseDate;
-        public DateTimeOffset? ReleaseDate;
         public string OtherMetaData;
 
         public SemanticVersionBuildMetaData()
@@ -21,19 +20,20 @@ namespace GitVersion
         }
 
         public SemanticVersionBuildMetaData(
-            int? commitsSinceTag, string branch, string sha, 
-            DateTimeOffset? originalReleaseDate, DateTimeOffset? releaseDate)
+            int? commitsSinceTag, string branch, ReleaseDate releaseDate)
         {
             ReleaseDate = releaseDate;
-            OriginalReleaseDate = originalReleaseDate;
-            Sha = sha;
+            Sha = releaseDate.CommitSha;
             CommitsSinceTag = commitsSinceTag;
             Branch = branch;
         }
 
         protected bool Equals(SemanticVersionBuildMetaData other)
         {
-            return CommitsSinceTag == other.CommitsSinceTag && string.Equals(Branch, other.Branch) && string.Equals(Sha, other.Sha) && OriginalReleaseDate.Equals(other.OriginalReleaseDate) && ReleaseDate.Equals(other.ReleaseDate);
+            return CommitsSinceTag == other.CommitsSinceTag &&
+                string.Equals(Branch, other.Branch) &&
+                string.Equals(Sha, other.Sha) &&
+                Equals(ReleaseDate, other.ReleaseDate);
         }
 
         public override bool Equals(object obj)
@@ -60,8 +60,7 @@ namespace GitVersion
                 var hashCode = CommitsSinceTag.GetHashCode();
                 hashCode = (hashCode*397) ^ (Branch != null ? Branch.GetHashCode() : 0);
                 hashCode = (hashCode*397) ^ (Sha != null ? Sha.GetHashCode() : 0);
-                hashCode = (hashCode*397) ^ OriginalReleaseDate.GetHashCode();
-                hashCode = (hashCode*397) ^ ReleaseDate.GetHashCode();
+                hashCode = (hashCode * 397) ^ (ReleaseDate != null ? ReleaseDate.GetHashCode() : 0);
                 return hashCode;
             }
         }

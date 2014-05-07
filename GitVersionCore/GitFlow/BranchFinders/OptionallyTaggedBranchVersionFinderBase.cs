@@ -35,8 +35,7 @@ namespace GitVersion
                 Patch = version.Patch,
                 PreReleaseTag = version.PreReleaseTag,
                 BuildMetaData = new SemanticVersionBuildMetaData(
-                    nbHotfixCommits, context.CurrentBranch.Name, sha,
-                    releaseDate.OriginalDate, releaseDate.Date)
+                    nbHotfixCommits, context.CurrentBranch.Name, releaseDate)
             };
 
             if (tagVersion != null)
