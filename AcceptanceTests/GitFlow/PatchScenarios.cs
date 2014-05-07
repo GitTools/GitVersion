@@ -37,9 +37,7 @@
                 fixture.AssertFullSemver("1.3.0.0-unstable");
 
                 fixture.Repository.MergeNoFF("hotfix-1.2.1", Constants.SignatureNow());
-
-                //we get .2 because there is 2 commits added to develop, commit on hotfix + merge from hotfix-branch
-                fixture.AssertFullSemver("1.3.0.2-unstable");
+                fixture.AssertFullSemver("1.3.0.1-unstable");
             }
         }
 
