@@ -9,7 +9,7 @@
 
     public static class GitVersionHelper
     {
-        public static ExecutionResults ExecuteIn(string workingDirectory, 
+        public static ExecutionResults ExecuteIn(string workingDirectory,
             string exec = null, string execArgs = null, string projectFile = null, string projectArgs = null,
             bool isTeamCity = false)
         {
@@ -27,12 +27,11 @@
 
             Console.WriteLine("Executing: {0} {1}", gitHubFlowVersion, arguments);
             Console.WriteLine();
-            var environmentalVariables = isTeamCity ?
-                new []{new KeyValuePair<string, string>("TEAMCITY_VERSION", "8.0.0") } :
-                new KeyValuePair<string, string>[0];
+            var environmentalVariables =
+                new[] { new KeyValuePair<string, string>("TEAMCITY_VERSION", isTeamCity ? "8.0.0" : null) };
 
             var exitCode = ProcessHelper.Run(
-                s => output.AppendLine(s), s => output.AppendLine(s), null, 
+                s => output.AppendLine(s), s => output.AppendLine(s), null,
                 gitHubFlowVersion, arguments, workingDirectory,
                 environmentalVariables);
 
