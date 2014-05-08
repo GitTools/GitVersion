@@ -24,9 +24,12 @@ public class AssemblyInfoBuilderTests
             PreReleaseTag = "unstable4",
             BuildMetaData = new SemanticVersionBuildMetaData(5,
                 "feature1",
-                "a682956dc1a2752aa24597a0f5cd939f93614509",
-                DateTimeOffset.Parse("2014-03-01 00:00:01Z"),
-                DateTimeOffset.Parse("2014-03-06 23:59:59Z")),
+                new ReleaseDate
+                {
+                    CommitSha = "a682956dc1a2752aa24597a0f5cd939f93614509",
+                    OriginalDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z"),
+                    Date = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+                })
         };
         var assemblyInfoBuilder = new AssemblyInfoBuilder
             {

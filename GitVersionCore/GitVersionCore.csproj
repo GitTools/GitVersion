@@ -91,6 +91,7 @@
     <Compile Include="GitVersionContext.cs" />
     <Compile Include="GitVersionFinder.cs" />
     <Compile Include="Helpers\DeleteHelper.cs" />
+    <Compile Include="LambdaEqualityHelper.cs" />
     <Compile Include="LibGitExtensions.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="MissingBranchException.cs" />

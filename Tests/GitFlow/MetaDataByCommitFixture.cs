@@ -1,9 +1,10 @@
+using System;
 using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
-public class VersionByCommitFixture : Lg2sHelperBase
+public class MetaDataByCommitFixture : Lg2sHelperBase
 {
     /*
      *  hotfix-1.2.1       -----------C--      
@@ -33,53 +34,70 @@ public class VersionByCommitFixture : Lg2sHelperBase
         using (var repo = new Repository(repoPath))
         {
             ResetToP(repo);
-            Assert.AreEqual(7, CommitCountFor(repo, "develop"));
+            EnsureMetaDataMatch(repo, "develop", 7);
 
             ResetToO(repo);
-            Assert.AreEqual(6, CommitCountFor(repo, "develop"));
+            EnsureMetaDataMatch(repo, "develop", 6);
 
             ResetToN(repo);
-            Assert.IsNull(CommitCountFor(repo, "master"));
+            EnsureMetaDataMatch(repo, "master", null, r => (Commit)r.Tags["1.3.0"].Target);
 
             ResetToM(repo);
-            Assert.AreEqual(5, CommitCountFor(repo, "develop"));
+            EnsureMetaDataMatch(repo, "develop", 5);
 
             ResetToL(repo);
-            Assert.AreEqual(1, CommitCountFor(repo, "hotfix-1.3.1"));
+            EnsureMetaDataMatch(repo, "hotfix-1.3.1", 1, r => (Commit)r.Tags["1.3.0"].Target);
 
             ResetToK(repo);
-            Assert.AreEqual(2, CommitCountFor(repo, "feature"));
+            EnsureMetaDataMatch(repo, "feature", 2);
 
             ResetToJ(repo);
-            Assert.AreEqual(1, CommitCountFor(repo, "feature"));
+            EnsureMetaDataMatch(repo, "feature", 1);
 
             ResetToI(repo);
-            Assert.AreEqual(2, CommitCountFor(repo, "develop"));
+            EnsureMetaDataMatch(repo, "develop", 2);
 
             ResetToH(repo);
-            Assert.IsNull(CommitCountFor(repo, "master"));
+            EnsureMetaDataMatch(repo, "master", null, r => (Commit)r.Tags["1.3.0"].Target);
 
             ResetToG(repo);
-            Assert.AreEqual(2, CommitCountFor(repo, "release-1.3.0"));
+            EnsureMetaDataMatch(repo, "release-1.3.0", 2);
 
             ResetToF(repo);
-            Assert.IsNull(CommitCountFor(repo, "master"));
+            EnsureMetaDataMatch(repo, "master", null, r => (Commit)r.Tags["1.2.0"].Target);
 
             ResetToE(repo);
-            Assert.AreEqual(2, CommitCountFor(repo, "develop"));
+            EnsureMetaDataMatch(repo, "develop", 2);
 
             ResetToD(repo);
-            Assert.AreEqual(1, CommitCountFor(repo, "release-1.3.0"));
+            EnsureMetaDataMatch(repo, "release-1.3.0", 1);
 
             ResetToC(repo);
-            Assert.AreEqual(1, CommitCountFor(repo, "hotfix-1.2.1"));
+            EnsureMetaDataMatch(repo, "hotfix-1.2.1", 1, r => (Commit)r.Tags["1.2.0"].Target);
 
             ResetToB(repo);
-            Assert.AreEqual(1, CommitCountFor(repo, "develop"));
+            EnsureMetaDataMatch(repo, "develop", 1);
         }
     }
 
-    static int? CommitCountFor(Repository repo, string branchName)
+    static void EnsureMetaDataMatch(
+        Repository repo, string branchName,
+        int? expectedCommitCount, Func<Repository, Commit> commitFinder = null)
+    {
+        var sv = GetSemanticVersionFrom(repo, branchName);
+
+        var referenceCommitFinder = commitFinder ?? (r => r.FindBranch(branchName).Tip);
+
+        var commit = referenceCommitFinder(repo);
+
+        Assert.AreEqual(expectedCommitCount, sv.BuildMetaData.CommitsSinceTag);
+
+        var releaseDate = sv.BuildMetaData.ReleaseDate;
+        Assert.AreEqual(commit.Sha, releaseDate.OriginalCommitSha);
+        Assert.AreEqual(commit.Committer.When, releaseDate.OriginalDate);
+    }
+
+    static SemanticVersion GetSemanticVersionFrom(Repository repo, string branchName)
     {
         var gvf = new GitVersionFinder();
         var context = new GitVersionContext
@@ -89,10 +107,7 @@ public class VersionByCommitFixture : Lg2sHelperBase
                                 };
 
         var sv = gvf.FindVersion(context);
-
-        var number = sv.BuildMetaData.CommitsSinceTag;
-
-        return number;
+        return sv;
     }
 
     void DropTags(Repository repo, params string[] names)
