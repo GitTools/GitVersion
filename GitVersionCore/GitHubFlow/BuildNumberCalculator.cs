@@ -31,8 +31,7 @@ namespace GitVersion
 
             // TODO Need a way of setting this in a cross cutting way
             semanticVersion.BuildMetaData = new SemanticVersionBuildMetaData(commitsSinceLastRelease, 
-                context.CurrentBranch.Name, sha,
-                releaseDate.OriginalDate, releaseDate.Date);
+                context.CurrentBranch.Name, releaseDate);
             if (context.CurrentBranch.IsPullRequest())
             {
                 EnsurePullBranchShareACommonAncestorWithMaster(gitRepo, gitRepo.Head);

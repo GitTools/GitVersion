@@ -3,10 +3,14 @@ namespace GitVersion
     using System;
     using System.Text.RegularExpressions;
 
-    public class SemanticVersionPreReleaseTag : IFormattable, IComparable<SemanticVersionPreReleaseTag>
+    public class SemanticVersionPreReleaseTag : 
+        IFormattable, IComparable<SemanticVersionPreReleaseTag>, IEquatable<SemanticVersionPreReleaseTag>
     {
         public string Name;
         public int? Number;
+
+        private static readonly LambdaEqualityHelper<SemanticVersionPreReleaseTag> equalityHelper =
+           new LambdaEqualityHelper<SemanticVersionPreReleaseTag>(x => x.Name, x => x.Number);
 
         public SemanticVersionPreReleaseTag()
         {
@@ -18,26 +22,19 @@ namespace GitVersion
             Number = number;
         }
 
-        protected bool Equals(SemanticVersionPreReleaseTag other)
-        {
-            return string.Equals(Name, other.Name) && Number == other.Number;
-        }
-
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-            if (obj.GetType() != GetType())
-            {
-                return false;
-            }
-            return Equals((SemanticVersionPreReleaseTag) obj);
+            return Equals(obj as SemanticVersionPreReleaseTag);
+        }
+
+        public bool Equals(SemanticVersionPreReleaseTag other)
+        {
+            return equalityHelper.Equals(this, other);
+        }
+
+        public override int GetHashCode()
+        {
+            return equalityHelper.GetHashCode(this);
         }
 
         public static bool operator ==(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)
