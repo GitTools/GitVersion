@@ -71,7 +71,6 @@
     <Compile Include="Helpers\ExecutionResults.cs" />
     <Compile Include="Helpers\GitHelper.cs" />
     <Compile Include="Helpers\GitVersionHelper.cs" />
-    <Compile Include="Helpers\IPostTestDirectoryRemover.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="Helpers\Scrubbers.cs" />
     <Compile Include="GitHubFlow\MasterTests.cs" />
