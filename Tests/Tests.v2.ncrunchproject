@@ -21,6 +21,6 @@
   <UseCPUArchitecture>AutoDetect</UseCPUArchitecture>
   <MSTestThreadApartmentState>STA</MSTestThreadApartmentState>
   <BuildProcessArchitecture>x86</BuildProcessArchitecture>
-  <AdditionalFilesToInclude>Resources\**.*;..\Packages\LibGit2Sharp.0.16.0.0\lib\net35\NativeBinaries\**.*</AdditionalFilesToInclude>
+  <AdditionalFilesToInclude>Resources\**.*;..\Packages\LibGit2Sharp.0.17.0.0\lib\net35\NativeBinaries\**.*</AdditionalFilesToInclude>
   <HiddenWarnings>CopyReferencedAssembliesToWorkspaceIsOn</HiddenWarnings>
 </ProjectConfiguration>

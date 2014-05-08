@@ -58,7 +58,7 @@ note over develop: 1.4.0.2-unstable
                 // Merge into develop
                 fixture.Repository.Checkout("develop");
                 fixture.Repository.MergeNoFF("pull/2/merge", Constants.SignatureNow());
-                fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.3.0.3-unstable");
+                fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.3.0.2-unstable");
 
                 // Create release branch
                 fixture.Repository.CreateBranch("release-1.3.0").Checkout();
@@ -67,7 +67,7 @@ note over develop: 1.4.0.2-unstable
                 // Make another commit on develop
                 fixture.Repository.Checkout("develop");
                 fixture.Repository.MakeACommit();
-                fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.3.0.4-unstable");
+                fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.3.0.3-unstable");
 
                 // Make a commit to release-1.3.0
                 fixture.Repository.Checkout("release-1.3.0");
@@ -80,8 +80,6 @@ note over develop: 1.4.0.2-unstable
 
                 // Merge release branch to master
                 fixture.Repository.Checkout("master");
-                // No way to force a merge commit in libgit2, so commit before merge
-                fixture.Repository.MakeACommit();
                 fixture.Repository.MergeNoFF("release-1.3.0", Constants.SignatureNow());
                 fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.3.0");
                 fixture.Repository.ApplyTag("1.3.0");
@@ -89,7 +87,7 @@ note over develop: 1.4.0.2-unstable
                 // Verify develop version
                 fixture.Repository.Checkout("develop");
                 fixture.Repository.MergeNoFF("release-1.3.0", Constants.SignatureNow());
-                fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.4.0.3-unstable");
+                fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.4.0.2-unstable");
             }
         }
     }

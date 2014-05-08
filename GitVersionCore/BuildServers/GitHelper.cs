@@ -60,7 +60,7 @@ namespace GitVersion
 
             if (!string.IsNullOrEmpty(username))
             {
-                fetchOptions.Credentials = new Credentials
+                fetchOptions.Credentials = new UsernamePasswordCredentials
                 {
                     Username = username,
                     Password = password

@@ -101,6 +101,9 @@ public abstract class Lg2sHelperBase : IPostTestDirectoryRemover
 
     protected static Commit AddOneCommitToHead(Repository repo, string type)
     {
+        var randomFile = Path.Combine(repo.Info.WorkingDirectory, Guid.NewGuid().ToString());
+        File.WriteAllText(randomFile, string.Empty);
+        repo.Index.Stage(randomFile);
         var sign = Constants.SignatureNow();
         return repo.Commit(type + " commit", sign, sign);
     }

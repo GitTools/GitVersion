@@ -51,7 +51,10 @@ namespace GitVersion
             };
             foreach (var environmentalVariable in environmentalVariables)
             {
-                psi.EnvironmentVariables.Add(environmentalVariable.Key, environmentalVariable.Value);
+                if (!psi.EnvironmentVariables.ContainsKey(environmentalVariable.Key) && environmentalVariable.Value != null)
+                    psi.EnvironmentVariables.Add(environmentalVariable.Key, environmentalVariable.Value);
+                if (psi.EnvironmentVariables.ContainsKey(environmentalVariable.Key) && environmentalVariable.Value == null)
+                    psi.EnvironmentVariables.Remove(environmentalVariable.Key);
             }
 
             using (var process = Process.Start(psi))
