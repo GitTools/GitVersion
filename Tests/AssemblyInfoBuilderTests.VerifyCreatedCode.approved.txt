@@ -2,8 +2,8 @@
 using System;
 using System.Reflection;
 
-[assembly: AssemblyVersion("1.2.3")]
-[assembly: AssemblyFileVersion("1.2.3")]
+[assembly: AssemblyVersion("1.2.3.0")]
+[assembly: AssemblyFileVersion("1.2.3.0")]
 [assembly: AssemblyInformationalVersion("1.2.3-unstable.4+5.Branch.feature1.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
 [assembly: ReleaseDate("2014-03-01", "2014-03-06")]
 
@@ -41,6 +41,8 @@ static class GitVersionInformation
     public static string ClassicVersionWithTag = "1.2.3.5-unstable.4";
     public static string BranchName = "feature1";
     public static string Sha = "a682956dc1a2752aa24597a0f5cd939f93614509";
+    public static string AssemblyVersion = "1.2.3.0";
+    public static string AssemblyFileVersion = "1.2.3.0";
 
 }
 

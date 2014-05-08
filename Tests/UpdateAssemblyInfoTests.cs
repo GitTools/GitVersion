@@ -102,6 +102,43 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         Assert.AreEqual("It looks like the branch being examined is a detached Head pointing to commit '469f851'. Without a proper branch name GitVersion cannot determine the build version.", exception.Message);
     }
 
+    [TestCase("Major")]
+    [TestCase("MajorMinorPatch")]
+    [TestCase("None")]
+    [TestCase("mAjOr")]
+    [TestCase("mAjOrMiNorpatch")]
+    [TestCase("NONe")]
+    public void StandardExecutionMode_CanAcceptAssemblyVersioningSchemes(string assemblyVersioningScheme)
+    {
+        var repoPath = CheckoutLocal(ASBMTestRepoWorkingDirPath, "refs/heads/master");
+
+        var task = new UpdateAssemblyInfo
+        {
+            BuildEngine = new MockBuildEngine(),
+            SolutionDirectory = repoPath,
+            AssemblyVersioningScheme = assemblyVersioningScheme
+        };
+
+        task.InnerExecute();
+    }
+
+    [Test]
+    public void StandardExecutionMode_ThrowsUponUnexpectedAssemblyVersioningSchemes()
+    {
+        var repoPath = CheckoutLocal(ASBMTestRepoWorkingDirPath, "refs/heads/master");
+
+        var task = new UpdateAssemblyInfo
+        {
+            BuildEngine = new MockBuildEngine(),
+            SolutionDirectory = repoPath,
+            AssemblyVersioningScheme = "Boom"
+        };
+
+        var exception = Assert.Throws<ErrorException>(task.InnerExecute);
+        Assert.AreEqual("Unexpected assembly versioning scheme 'Boom'.", exception.Message);
+
+    }
+
     [SetUp]
     public void SetUp()
     {

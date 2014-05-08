@@ -16,5 +16,7 @@
   "ClassicVersion":"1.2.3.5",
   "ClassicVersionWithTag":"1.2.3.5-unstable.4",
   "BranchName":"feature1",
-  "Sha":"a682956dc1a2752aa24597a0f5cd939f93614509"
+  "Sha":"a682956dc1a2752aa24597a0f5cd939f93614509",
+  "AssemblyVersion":"1.2.3.0",
+  "AssemblyFileVersion":"1.2.3.0"
 }

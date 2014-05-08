@@ -1,16 +1,18 @@
 ﻿namespace GitVersionTask
 {
+    using System.Collections.Generic;
     using System.Text;
     using GitVersion;
 
     public class AssemblyInfoBuilder
     {
         public SemanticVersion SemanticVersion;
-        public bool SignAssembly;
+        public AssemblyVersioningScheme AssemblyVersioningScheme;
         public bool AppendRevision;
 
         public string GetAssemblyInfoText()
         {
+            var vars = VariableProvider.GetVariablesFor(SemanticVersion, AssemblyVersioningScheme, AppendRevision);
             var assemblyInfo = string.Format(@"
 using System;
 using System.Reflection;
@@ -40,18 +42,18 @@ static class GitVersionInformation
 }}
 
 
-", GetAssemblyVersion(), GetAssemblyFileVersion(), SemanticVersion.ToString("i"),
+", vars[VariableProvider.AssemblyVersion], vars[VariableProvider.AssemblyFileVersion], SemanticVersion.ToString("i"),
                 SemanticVersion.BuildMetaData.ReleaseDate.OriginalDate.UtcDateTime.ToString("yyyy-MM-dd"),
                 SemanticVersion.BuildMetaData.ReleaseDate.Date.UtcDateTime.ToString("yyyy-MM-dd"),
-                GenerateVariableMembers());
+                GenerateVariableMembers(vars));
 
             return assemblyInfo;
         }
 
-        string GenerateVariableMembers()
+        string GenerateVariableMembers(IEnumerable<KeyValuePair<string, string>> vars)
         {
             var members = new StringBuilder();
-            foreach (var variable in VariableProvider.GetVariablesFor(SemanticVersion))
+            foreach (var variable in vars)
             {
                 members.AppendLine(string.Format("    public static string {0} = \"{1}\";", variable.Key, variable.Value));
             }
@@ -59,28 +61,7 @@ static class GitVersionInformation
             return members.ToString();
         }
 
-        string GetAssemblyVersion()
-        {
-            if (SignAssembly)
-            {
-                // for strong named we don't want to include the patch to avoid binding redirect issues
-                return string.Format("{0}.{1}.0", SemanticVersion.Major, SemanticVersion.Minor);
-            }
-            // for non strong named we want to include the patch
-            return GetAssemblyFileVersion();
-        }
 
-        string GetAssemblyFileVersion()
-        {
-            if (AppendRevision && SemanticVersion.BuildMetaData.Branch == "master")
-            {
-                if (SemanticVersion.BuildMetaData.CommitsSinceTag != null)
-                {
-                    return string.Format("{0}.{1}.{2}.{3}", SemanticVersion.Major, SemanticVersion.Minor, SemanticVersion.Patch, SemanticVersion.BuildMetaData.CommitsSinceTag);   
-                }
-            }
-            return string.Format("{0}.{1}.{2}", SemanticVersion.Major, SemanticVersion.Minor, SemanticVersion.Patch);
-        }
     }
 
 
