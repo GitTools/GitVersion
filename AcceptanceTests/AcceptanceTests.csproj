@@ -59,6 +59,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Tests\Helpers\DirectoryHelper.cs">
+      <Link>Helpers\DirectoryHelper.cs</Link>
+    </Compile>
     <Compile Include="ExecCmdLineArgumentTest.cs" />
     <Compile Include="GitFlow\BaseGitFlowRepositoryFixture.cs" />
     <Compile Include="GitFlow\DevelopScenarios.cs" />

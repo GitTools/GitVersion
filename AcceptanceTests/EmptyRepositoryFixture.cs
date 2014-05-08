@@ -25,7 +25,7 @@
             Repository.Dispose();
             try
             {
-                //Directory.Delete(RepositoryPath, true);
+                DirectoryHelper.DeleteDirectory(RepositoryPath);
             }
             catch (Exception e)
             {
