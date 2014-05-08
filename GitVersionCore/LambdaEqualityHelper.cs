@@ -32,7 +32,7 @@ namespace GitVersion
                 return false;
             }
 
-            foreach (Func<T, object> accessor in equalityContributorAccessors)
+            foreach (var accessor in equalityContributorAccessors)
             {
                 if (!Equals(accessor(instance), accessor(other)))
                 {
@@ -45,13 +45,13 @@ namespace GitVersion
 
         public int GetHashCode(T instance)
         {
-            int hashCode = GetType().GetHashCode();
+            var hashCode = GetType().GetHashCode();
 
             unchecked
             {
-                foreach (Func<T, object> accessor in equalityContributorAccessors)
+                foreach (var accessor in equalityContributorAccessors)
                 {
-                    object item = accessor(instance);
+                    var item = accessor(instance);
                     hashCode = (hashCode * 397) ^ (item != null ? item.GetHashCode() : 0);
                 }
             }
