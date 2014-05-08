@@ -1,0 +1,49 @@
+﻿
+using System;
+using System.Reflection;
+
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("2.3.4.0")]
+[assembly: AssemblyInformationalVersion("2.3.4+5.Branch.master.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
+[assembly: ReleaseDate("2014-03-01", "2014-03-06")]
+
+[System.Runtime.CompilerServices.CompilerGenerated]
+sealed class ReleaseDateAttribute : System.Attribute
+{
+    public string OriginalDate { get; private set; }
+    public string Date { get; private set; }
+
+    public ReleaseDateAttribute(string originalDate, string date)
+    {
+        OriginalDate = date;
+        Date = date;
+    }
+}
+
+[System.Runtime.CompilerServices.CompilerGenerated]
+static class GitVersionInformation
+{
+    public static string Major = "2";
+    public static string Minor = "3";
+    public static string Patch = "4";
+    public static string PreReleaseTag = "";
+    public static string PreReleaseTagWithDash = "";
+    public static string BuildMetaData = "5";
+    public static string FullBuildMetaData = "5.Branch.master.Sha.a682956dc1a2752aa24597a0f5cd939f93614509";
+    public static string MajorMinorPatch = "2.3.4";
+    public static string SemVer = "2.3.4";
+    public static string SemVerPadded = "2.3.4";
+    public static string AssemblySemVer = "2.3.4.0";
+    public static string FullSemVer = "2.3.4+5";
+    public static string FullSemVerPadded = "2.3.4+5";
+    public static string InformationalVersion = "2.3.4+5.Branch.master.Sha.a682956dc1a2752aa24597a0f5cd939f93614509";
+    public static string ClassicVersion = "2.3.4.5";
+    public static string ClassicVersionWithTag = "2.3.4.5";
+    public static string BranchName = "master";
+    public static string Sha = "a682956dc1a2752aa24597a0f5cd939f93614509";
+    public static string AssemblyVersion = "1.0.0.0";
+    public static string AssemblyFileVersion = "2.3.4.0";
+
+}
+
+

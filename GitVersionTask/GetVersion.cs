@@ -66,6 +66,12 @@
         [Output]
         public string Sha { get; set; }
 
+        [Output]
+        public string AssemblyVersion { get; set; }
+
+        [Output]
+        public string AssemblyFileVersion { get; set; }
+
         TaskLogger logger;
 
         public GetVersion()

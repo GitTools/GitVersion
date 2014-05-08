@@ -9,10 +9,9 @@
 
     public class UpdateAssemblyInfo : Task
     {
-
         public bool AppendRevision { get; set; }
 
-        public bool SignAssembly { get; set; }
+        public string AssemblyVersioningScheme { get; set; }
 
         [Required]
         public string SolutionDirectory { get; set; }
@@ -60,6 +59,8 @@
 
         public void InnerExecute()
         {
+            var avs = ParseAssemblyVersioningScheme(AssemblyVersioningScheme);
+
             TempFileTracker.DeleteTempFiles();
 
             InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
@@ -70,16 +71,32 @@
                 return;
             }
 
-            CreateTempAssemblyInfo(semanticVersion);
-
+            CreateTempAssemblyInfo(semanticVersion, avs);
         }
 
-        void CreateTempAssemblyInfo(SemanticVersion semanticVersion)
+        AssemblyVersioningScheme ParseAssemblyVersioningScheme(string assemblyVersioningScheme)
+        {
+            if (assemblyVersioningScheme == null)
+            {
+                return GitVersion.AssemblyVersioningScheme.MajorMinorPatch;
+            }
+
+            AssemblyVersioningScheme avs;
+
+            if (Enum.TryParse(assemblyVersioningScheme, true, out avs))
+            {
+                return avs;
+            }
+
+            throw new ErrorException(string.Format("Unexpected assembly versioning scheme '{0}'.", assemblyVersioningScheme));
+        }
+
+        void CreateTempAssemblyInfo(SemanticVersion semanticVersion, AssemblyVersioningScheme avs)
         {
             var assemblyInfoBuilder = new AssemblyInfoBuilder
                                       {
                                           SemanticVersion = semanticVersion,
-                                          SignAssembly = SignAssembly, 
+                                          AssemblyVersioningScheme = avs, 
                                           AppendRevision = AppendRevision
                                       };
             var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText();
