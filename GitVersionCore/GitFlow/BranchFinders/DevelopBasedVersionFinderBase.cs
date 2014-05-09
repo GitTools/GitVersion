@@ -20,7 +20,7 @@ namespace GitVersion
             var versionOnMasterFinder = new VersionOnMasterFinder();
             var versionFromMaster = versionOnMasterFinder.Execute(context, context.CurrentBranch.Tip.Committer.When);
 
-            var numberOfCommitsOnBranchSinceCommit = NumberOfCommitsOnBranchSinceCommit(context.CurrentBranch, ancestor);
+            var numberOfCommitsOnBranchSinceCommit = NumberOfCommitsOnBranchSinceCommit(context, ancestor);
             var sha = context.CurrentBranch.Tip.Sha;
             var releaseDate = ReleaseDateFinder.Execute(context.Repository, sha, 0);
             var semanticVersion = new SemanticVersion
@@ -37,9 +37,13 @@ namespace GitVersion
             return semanticVersion;
         }
 
-        protected int NumberOfCommitsOnBranchSinceCommit(Branch branch, Commit commit)
+        int NumberOfCommitsOnBranchSinceCommit(GitVersionContext context, Commit commit)
         {
-            return branch.Commits
+            return context.Repository.Commits.QueryBy(new CommitFilter
+            {
+                Since = context.CurrentBranch,
+                SortBy = CommitSortStrategies.Topological
+            })
                 .TakeWhile(x => x != commit)
                 .Count();
         }

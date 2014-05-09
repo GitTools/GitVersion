@@ -37,7 +37,7 @@
                 fixture.AssertFullSemver("1.3.0.0-unstable");
 
                 fixture.Repository.MergeNoFF("hotfix-1.2.1", Constants.SignatureNow());
-                fixture.AssertFullSemver("1.3.0.0-unstable");
+                fixture.AssertFullSemver("1.3.0.1-unstable");
             }
         }
 

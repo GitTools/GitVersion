@@ -53,11 +53,13 @@
         static SemanticVersion GetSemanticVersion(Repository repository)
         {
             var versionForRepositoryFinder = new GitVersionFinder();
-            return versionForRepositoryFinder.FindVersion(new GitVersionContext
+            var gitVersionContext = new GitVersionContext
             {
                 CurrentBranch = repository.Head,
                 Repository = repository
-            });
+            };
+            Logger.WriteInfo("Running against branch: " + gitVersionContext.CurrentBranch.Name);
+            return versionForRepositoryFinder.FindVersion(gitVersionContext);
         }
     }
 }

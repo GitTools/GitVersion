@@ -20,7 +20,7 @@ namespace GitVersion
         public SemanticVersion GetBuildNumber(GitVersionContext context)
         {
             var commit = lastTaggedReleaseFinder.GetVersion().Commit;
-            var commitsSinceLastRelease = NumberOfCommitsOnBranchSinceCommit(gitRepo.Head, commit);
+            var commitsSinceLastRelease = NumberOfCommitsOnBranchSinceCommit(context, commit);
             var semanticVersion = nextSemverCalculator.NextVersion();
 
             var sha = context.CurrentBranch.Tip.Sha;
@@ -40,9 +40,13 @@ namespace GitVersion
             return semanticVersion;
         }
 
-        int NumberOfCommitsOnBranchSinceCommit(Branch branch, Commit commit)
+        int NumberOfCommitsOnBranchSinceCommit(GitVersionContext context, Commit commit)
         {
-            return branch.Commits
+            return context.Repository.Commits.QueryBy(new CommitFilter
+            {
+                Since = context.CurrentBranch,
+                SortBy = CommitSortStrategies.Topological
+            })
                 .TakeWhile(x => x != commit)
                 .Count();
         }
