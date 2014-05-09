@@ -58,7 +58,7 @@ namespace GitVersion
         public VersionPoint FindLatestStableTaggedCommitReachableFrom(IRepository repo, Commit commit)
         {
             var masterTip = repo.FindBranch("master").Tip;
-            var ancestor = repo.Commits.FindCommonAncestor(masterTip, commit);
+            var ancestor = repo.Commits.FindMergeBase(masterTip, commit);
 
             var allTags = repo.Tags.ToList();
 

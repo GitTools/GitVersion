@@ -54,7 +54,7 @@ namespace GitVersion
         void EnsurePullBranchShareACommonAncestorWithMaster(IRepository repository, Branch pullBranch)
         {
             var masterTip = repository.FindBranch("master").Tip;
-            var ancestor = repository.Commits.FindCommonAncestor(masterTip, pullBranch.Tip);
+            var ancestor = repository.Commits.FindMergeBase(masterTip, pullBranch.Tip);
 
             if (ancestor != null)
             {
