@@ -82,7 +82,7 @@
     <Compile Include="GitFlow\BranchFinders\SupportVersionFinder.cs" />
     <Compile Include="GitFlow\BranchType.cs" />
     <Compile Include="GitFlow\GitFlowVersionFinder.cs" />
-    <Compile Include="GitFlow\MergeMessageParser.cs" />
+    <Compile Include="MergeMessageParser.cs" />
     <Compile Include="GitHubFlow\BuildNumberCalculator.cs" />
     <Compile Include="GitHubFlow\GitHubFlowVersionFinder.cs" />
     <Compile Include="GitHubFlow\LastTaggedReleaseFinder.cs" />

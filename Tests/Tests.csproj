@@ -140,7 +140,7 @@
     <Compile Include="OutputVariables\InformationalVersionBuilderTests.cs" />
     <Compile Include="IntegrationTests.cs" />
     <Compile Include="BranchFinders\MasterTests.cs" />
-    <Compile Include="GitFlow\MergeMessageParserTests.cs" />
+    <Compile Include="MergeMessageParserTests.cs" />
     <Compile Include="Mocks\MockTag.cs" />
     <Compile Include="Mocks\MockTagCollection.cs" />
     <Compile Include="ModuleInitializer.cs" />
