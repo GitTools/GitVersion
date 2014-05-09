@@ -1,5 +1,6 @@
 ﻿namespace Tests
 {
+    using System;
     using GitVersion;
     using NUnit.Framework;
     using Shouldly;
@@ -17,6 +18,14 @@
                 Patch = 3,
                 PreReleaseTag = "unstable.4",
                 BuildMetaData = "5.Branch.develop"
+            };
+
+            semVer.BuildMetaData.ReleaseDate = new ReleaseDate
+            {
+                OriginalCommitSha = "originalCommitSha",
+                OriginalDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z"),
+                CommitSha = "commitSha",
+                Date = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
             };
 
             var vars = VariableProvider.GetVariablesFor(semVer);
@@ -48,6 +57,14 @@
                 Patch = patch,
                 BuildMetaData = buildMetadata
             };
+
+            semVer.BuildMetaData.ReleaseDate = new ReleaseDate
+                            {
+                                OriginalCommitSha = "originalCommitSha",
+                                OriginalDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z"),
+                                CommitSha = "commitSha",
+                                Date = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+                            };
 
             var vars = VariableProvider.GetVariablesFor(semVer, versioningScheme, addNumberOfCommitsSinceTagOnMasterBranchToFileVersion);
 

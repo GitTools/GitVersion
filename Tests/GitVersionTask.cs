@@ -1,5 +1,6 @@
 ﻿namespace Tests
 {
+    using System;
     using System.Linq;
     using GitVersion;
     using Microsoft.Build.Framework;
@@ -18,8 +19,15 @@
                 {
                     Major = 1,
                     Minor = 2,
-                    Patch = 3
-            }).Keys;
+                    Patch = 3,
+                    BuildMetaData = new SemanticVersionBuildMetaData(5, "develop", new ReleaseDate
+                                        {
+                                            OriginalCommitSha = "originalCommitSha",
+                                            OriginalDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z"),
+                                            CommitSha = "commitSha",
+                                            Date = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+                                        })
+                }).Keys;
 
             CollectionAssert.AreEquivalent(properties, variables);
         }
