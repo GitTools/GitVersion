@@ -34,9 +34,10 @@
             {
                 const string TaggedVersion = "1.0.3";
                 fixture.Repository.MakeATaggedCommit(TaggedVersion);
-                fixture.Repository.MakeCommits(5);
+                fixture.Repository.MakeCommits(1);
                 fixture.Repository.CreateBranch("release-2.0.0");
                 fixture.Repository.Checkout("release-2.0.0");
+                fixture.Repository.MakeCommits(4);
                 fixture.Repository.Checkout("master");
                 fixture.Repository.MergeNoFF("release-2.0.0", Constants.SignatureNow());
 

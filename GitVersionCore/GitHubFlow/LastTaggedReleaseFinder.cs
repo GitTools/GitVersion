@@ -8,9 +8,9 @@ namespace GitVersion
     {
         Lazy<VersionTaggedCommit> lastTaggedRelease;
 
-        public LastTaggedReleaseFinder(IRepository gitRepo)
+        public LastTaggedReleaseFinder(GitVersionContext context)
         {
-            lastTaggedRelease = new Lazy<VersionTaggedCommit>(() => GetVersion(gitRepo));
+            lastTaggedRelease = new Lazy<VersionTaggedCommit>(() => GetVersion(context));
         }
 
         public VersionTaggedCommit GetVersion()
@@ -18,10 +18,9 @@ namespace GitVersion
             return lastTaggedRelease.Value;
         }
 
-        VersionTaggedCommit GetVersion(IRepository gitRepo)
+        VersionTaggedCommit GetVersion(GitVersionContext context)
         {
-            var branch = gitRepo.FindBranch("master");
-            var tags = gitRepo.Tags.Select(t =>
+            var tags = context.Repository.Tags.Select(t =>
             {
                 SemanticVersion version;
                 if (SemanticVersion.TryParse(t.Name.TrimStart('v'), out version))
@@ -32,14 +31,14 @@ namespace GitVersion
             })
                 .Where(a => a != null)
                 .ToArray();
-            var olderThan = branch.Tip.Committer.When;
+            var olderThan = context.CurrentBranch.Tip.Committer.When;
             var lastTaggedCommit =
-                branch.Commits.FirstOrDefault(c => c.Committer.When <= olderThan && tags.Any(a => a.Commit == c));
+                context.CurrentBranch.Commits.FirstOrDefault(c => c.Committer.When <= olderThan && tags.Any(a => a.Commit == c));
 
             if (lastTaggedCommit != null)
                 return tags.Last(a => a.Commit.Sha == lastTaggedCommit.Sha);
 
-            var commit = branch.Commits.Last();
+            var commit = context.CurrentBranch.Commits.Last();
             return new VersionTaggedCommit(commit, new SemanticVersion());
         }
     }
