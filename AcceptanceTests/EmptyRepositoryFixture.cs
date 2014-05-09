@@ -1,41 +1,20 @@
 ﻿namespace AcceptanceTests
 {
     using System;
-    using Helpers;
     using LibGit2Sharp;
 
-    public class EmptyRepositoryFixture : IDisposable
+    public class EmptyRepositoryFixture : RepositoryFixtureBase
     {
-        public readonly string RepositoryPath;
-        public readonly Repository Repository;
+        public EmptyRepositoryFixture() :
+            base(CreateNewRepository)
+        { }
 
-        public EmptyRepositoryFixture()
+        private static IRepository CreateNewRepository(string path)
         {
-            RepositoryPath = PathHelper.GetTempPath();
-            Repository.Init(RepositoryPath);
-            Console.WriteLine("Created git repository at {0}", RepositoryPath);
+            LibGit2Sharp.Repository.Init(path);
+            Console.WriteLine("Created git repository at '{0}'", path);
 
-            Repository = new Repository(RepositoryPath);
-            Repository.Config.Set("user.name", "Test");
-            Repository.Config.Set("user.email", "test@email.com");
-        }
-
-        public void Dispose()
-        {
-            Repository.Dispose();
-            try
-            {
-                DirectoryHelper.DeleteDirectory(RepositoryPath);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Failed to clean up repository path at {0}. Received exception: {1}", RepositoryPath, e.Message);
-            }
-        }
-
-        public ExecutionResults ExecuteGitVersion()
-        {
-            return GitVersionHelper.ExecuteIn(RepositoryPath);
+            return new Repository(path);
         }
     }
 }
