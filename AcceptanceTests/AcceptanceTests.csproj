@@ -59,6 +59,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Tests\Helpers\DirectoryHelper.cs">
+      <Link>Helpers\DirectoryHelper.cs</Link>
+    </Compile>
     <Compile Include="ExecCmdLineArgumentTest.cs" />
     <Compile Include="GitFlow\BaseGitFlowRepositoryFixture.cs" />
     <Compile Include="GitFlow\DevelopScenarios.cs" />
@@ -71,7 +74,6 @@
     <Compile Include="Helpers\ExecutionResults.cs" />
     <Compile Include="Helpers\GitHelper.cs" />
     <Compile Include="Helpers\GitVersionHelper.cs" />
-    <Compile Include="Helpers\IPostTestDirectoryRemover.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="Helpers\Scrubbers.cs" />
     <Compile Include="GitHubFlow\MasterTests.cs" />
