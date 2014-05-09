@@ -47,6 +47,7 @@ namespace GitVersion
                 }
 
                 var workingDirectory = Directory.GetParent(gitDirectory).FullName;
+                Logger.WriteInfo("Working directory: " + workingDirectory);
                 var applicableBuildServers = GetApplicableBuildServers(arguments).ToList();
 
                 foreach (var buildServer in applicableBuildServers)

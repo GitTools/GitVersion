@@ -1,11 +1,14 @@
 ﻿namespace GitVersion
 {
+    using System.Linq;
+
     public class NextSemverCalculator
     {
         NextVersionTxtFileFinder nextVersionTxtFileFinder;
         LastTaggedReleaseFinder lastTaggedReleaseFinder;
         MasterReleaseVersionFinder releaseVersionFinder;
         GitVersionContext context;
+        MergedBranchesWithVersionFinder mergedBranchesWithVersionFinder;
 
         public NextSemverCalculator(
             NextVersionTxtFileFinder nextVersionTxtFileFinder,
@@ -15,6 +18,7 @@
             this.nextVersionTxtFileFinder = nextVersionTxtFileFinder;
             this.lastTaggedReleaseFinder = lastTaggedReleaseFinder;
             releaseVersionFinder = new MasterReleaseVersionFinder();
+            mergedBranchesWithVersionFinder = new MergedBranchesWithVersionFinder(context);
             this.context = context;
         }
 
@@ -24,7 +28,8 @@
             var lastRelease = lastTaggedReleaseFinder.GetVersion().SemVer;
             var fileVersion = nextVersionTxtFileFinder.GetNextVersion();
             var releaseVersion = context.CurrentBranch.IsRelease() ? releaseVersionFinder.FindVersion(context) : versionZero;
-            var maxCalculated = fileVersion > releaseVersion ? fileVersion : releaseVersion;
+            var mergedBranchVersion = mergedBranchesWithVersionFinder.GetVersion();
+            var maxCalculated = new[] { fileVersion, releaseVersion, mergedBranchVersion }.Max();
 
             if (lastRelease == versionZero && maxCalculated == versionZero)
             {

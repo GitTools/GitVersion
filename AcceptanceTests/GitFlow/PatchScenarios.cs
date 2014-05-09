@@ -41,7 +41,6 @@
             }
         }
 
-
         [Fact]
         public void PatchOlderReleaseExample()
         {

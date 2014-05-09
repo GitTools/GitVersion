@@ -16,6 +16,7 @@ public class MergeMessageParserTests
     [TestCase("Merge branch 'hotfix-10.10.50'\n", true, "10.10.50")]
     [TestCase("Merge branch 'hotfix-0.1.5'\n", true, "0.1.5")]
     [TestCase("Merge branch 'hotfix-0.1.5'\n\nRelates to: TicketId", true, "0.1.5")]
+    [TestCase("Merge branch 'alpha-0.1.5'", true, "0.1.5")]
     public void AssertMergeMessage(string message, bool isMergeCommit, string expectedVersion)
     {
         var c = new MockCommit

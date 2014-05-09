@@ -36,6 +36,18 @@ namespace GitVersion
             else if (message.StartsWith("Merge branch '"))
             {
                 trimmed = message.Replace("Merge branch '", "");
+                var branchName = trimmed.Split('\'').First();
+                var dashSeparared = branchName.Split('-');
+                // Support branchname-1.2.3
+                if (dashSeparared.Length == 2)
+                {
+                    trimmed = dashSeparared[1];
+                    if (!char.IsNumber(trimmed.First()))
+                        return false;
+
+                    versionPart = trimmed;
+                    return true;
+                }
                 if (!char.IsNumber(trimmed.First()))
                 {
                     return false;
