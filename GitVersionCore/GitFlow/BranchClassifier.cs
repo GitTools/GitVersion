@@ -26,6 +26,14 @@ namespace GitVersion
             return branch.Name.TrimStart("release-").TrimStart("release/");
         }
 
+        public static string GetUnknownBranchSuffix(this Branch branch)
+        {
+            var unknownBranchSuffix = branch.Name.Split('-', '/');
+            if (unknownBranchSuffix.Length == 1)
+                return branch.Name;
+            return unknownBranchSuffix[1];
+        }
+
         public static string GetSuffix(this Branch branch, BranchType branchType)
         {
             switch (branchType)
@@ -35,6 +43,9 @@ namespace GitVersion
 
                 case BranchType.Release:
                     return branch.GetReleaseSuffix();
+
+                case BranchType.Unknown:
+                    return branch.GetUnknownBranchSuffix();
 
                 default:
                     throw new NotSupportedException(string.Format("Unexpected branch type {0}.", branchType));

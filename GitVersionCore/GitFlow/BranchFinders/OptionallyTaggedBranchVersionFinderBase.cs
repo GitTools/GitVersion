@@ -15,6 +15,8 @@ namespace GitVersion
             var nbHotfixCommits = NumberOfCommitsInBranchNotKnownFromBaseBranch(context.Repository, context.CurrentBranch, branchType, baseBranchName);
 
             var versionString = context.CurrentBranch.GetSuffix(branchType);
+            if (!versionString.Contains("."))
+                return new SemanticVersion();
             var version = SemanticVersion.Parse(versionString);
 
             EnsureVersionIsValid(version, context.CurrentBranch, branchType);
@@ -22,7 +24,9 @@ namespace GitVersion
             if (branchType == BranchType.Hotfix)
                 version.PreReleaseTag = "beta.1";
             if (branchType == BranchType.Release)
-                version.PreReleaseTag = "beta1";
+                version.PreReleaseTag = "beta.1";
+            if (branchType == BranchType.Unknown)
+                version.PreReleaseTag = context.CurrentBranch.Name.Replace("-" + versionString, string.Empty) + ".1";
 
             var tagVersion = RetrieveMostRecentOptionalTagVersion(context.Repository, version, context.CurrentBranch.Commits.Take(nbHotfixCommits + 1));
 
@@ -120,6 +124,9 @@ namespace GitVersion
                         throw new ErrorException(msg + "A patch segment equals to zero is required.");
                     }
 
+                    break;
+
+                case BranchType.Unknown:
                     break;
 
                 default:
