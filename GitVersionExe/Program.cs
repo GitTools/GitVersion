@@ -36,6 +36,9 @@ namespace GitVersion
                     return;
                 }
 
+                if (!string.IsNullOrEmpty(arguments.Proj) || !string.IsNullOrEmpty(arguments.Exec))
+                    arguments.Output = OutputType.BuildServer;
+
                 ConfigureLogging(arguments);
 
                 var gitPreparer = new GitPreparer(arguments);
