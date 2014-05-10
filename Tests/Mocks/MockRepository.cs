@@ -16,26 +16,6 @@ public class MockRepository : IRepository
         throw new NotImplementedException();
     }
 
-    public Branch Checkout(Branch branch, CheckoutModifiers checkoutModifiers, CheckoutProgressHandler onCheckoutProgress, CheckoutNotificationOptions checkoutNotificationOptions)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Branch Checkout(string committishOrBranchSpec, CheckoutModifiers checkoutModifiers, CheckoutProgressHandler onCheckoutProgress, CheckoutNotificationOptions checkoutNotificationOptions)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Branch Checkout(Commit commit, CheckoutModifiers checkoutModifiers, CheckoutProgressHandler onCheckoutProgress, CheckoutNotificationOptions checkoutNotificationOptions)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void CheckoutPaths(string committishOrBranchSpec, IList<string> paths, CheckoutModifiers checkoutOptions, CheckoutProgressHandler onCheckoutProgress, CheckoutNotificationOptions checkoutNotificationOptions)
-    {
-        throw new NotImplementedException();
-    }
-
     public Branch Checkout(Branch branch, CheckoutModifiers checkoutModifiers, CheckoutProgressHandler onCheckoutProgress, CheckoutNotificationOptions checkoutNotificationOptions, Signature signature = null)
     {
         throw new NotImplementedException();
@@ -89,16 +69,6 @@ public class MockRepository : IRepository
     }
 
     public void Reset(ResetMode resetMode, Commit commit, Signature signature = null, string logMessage = null)
-    {
-        throw new NotImplementedException();
-    }
-
-    public MergeResult Merge(Commit commit, Signature merger)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Reset(ResetMode resetMode, Commit commit)
     {
         throw new NotImplementedException();
     }

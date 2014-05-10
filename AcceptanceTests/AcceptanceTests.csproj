@@ -62,9 +62,11 @@
     <Compile Include="..\Tests\Helpers\DirectoryHelper.cs">
       <Link>Helpers\DirectoryHelper.cs</Link>
     </Compile>
+    <Compile Include="CommitCountingRepoFixture.cs" />
     <Compile Include="ExecCmdLineArgumentTest.cs" />
     <Compile Include="GitFlow\BaseGitFlowRepositoryFixture.cs" />
     <Compile Include="GitFlow\DevelopScenarios.cs" />
+    <Compile Include="GitFlow\MetaDataByCommitFixture.cs" />
     <Compile Include="GitFlow\PatchScenarios.cs" />
     <Compile Include="GitFlow\WikiScenarios.cs" />
     <Compile Include="GitHubFlow\ReleaseBranchTests.cs" />
@@ -84,6 +86,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="RepositoryFixtureBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

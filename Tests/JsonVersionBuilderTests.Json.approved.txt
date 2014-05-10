@@ -5,18 +5,19 @@
   "PreReleaseTag":"unstable.4",
   "PreReleaseTagWithDash":"-unstable.4",
   "BuildMetaData":5,
-  "FullBuildMetaData":"5.Branch.feature1.Sha.a682956dc1a2752aa24597a0f5cd939f93614509",
+  "FullBuildMetaData":"5.Branch.feature1.Sha.commitSha",
   "MajorMinorPatch":"1.2.3",
   "SemVer":"1.2.3-unstable.4",
   "SemVerPadded":"1.2.3-unstable.0004",
   "AssemblySemVer":"1.2.3.0",
   "FullSemVer":"1.2.3-unstable.4+5",
   "FullSemVerPadded":"1.2.3-unstable.0004+5",
-  "InformationalVersion":"1.2.3-unstable.4+5.Branch.feature1.Sha.a682956dc1a2752aa24597a0f5cd939f93614509",
+  "InformationalVersion":"1.2.3-unstable.4+5.Branch.feature1.Sha.commitSha",
   "ClassicVersion":"1.2.3.5",
   "ClassicVersionWithTag":"1.2.3.5-unstable.4",
   "BranchName":"feature1",
-  "Sha":"a682956dc1a2752aa24597a0f5cd939f93614509",
+  "Sha":"commitSha",
   "AssemblyVersion":"1.2.3.0",
-  "AssemblyFileVersion":"1.2.3.0"
+  "AssemblyFileVersion":"1.2.3.0",
+  "OriginalRelease":"originalCommitSha.2014-03-01 00:00:01Z"
 }

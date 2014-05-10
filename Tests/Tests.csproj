@@ -106,7 +106,6 @@
     <Compile Include="BuildServers\ContinuaCiTests.cs" />
     <Compile Include="GitHubFlow\MergedBranchesWithVersionFinderTests.cs" />
     <Compile Include="LambdaEqualityHelperFixture.cs" />
-    <Compile Include="GitFlow\MetaDataByCommitFixture.cs" />
     <Compile Include="GitFlow\GitFlowVersionFinderTests.cs" />
     <Compile Include="GitHelperTests.cs" />
     <Compile Include="GitVersionTask.cs" />

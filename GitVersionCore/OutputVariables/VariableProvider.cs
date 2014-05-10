@@ -25,13 +25,15 @@
         public const string InformationalVersion = "InformationalVersion";
         public const string AssemblyVersion = "AssemblyVersion";
         public const string AssemblyFileVersion = "AssemblyFileVersion";
+        public const string OriginalRelease = "OriginalRelease";
 
         public static Dictionary<string, string> GetVariablesFor(
             SemanticVersion semanticVersion,
             AssemblyVersioningScheme assemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
             bool addNumberOfCommitsSinceTagOnMasterBranchToFileVersion = true)
         {
-            var formatter = semanticVersion.BuildMetaData.Branch == "develop" ? new CiFeedFormatter() : null;
+            var bmd = semanticVersion.BuildMetaData;
+            var formatter = bmd.Branch == "develop" ? new CiFeedFormatter() : null;
 
             var assemblyMetaData = AssemblyVersionsGenerator.Process(
                 semanticVersion, assemblyVersioningScheme, addNumberOfCommitsSinceTagOnMasterBranchToFileVersion);
@@ -43,8 +45,8 @@
                 {Patch, semanticVersion.Patch.ToString()},
                 {PreReleaseTag, semanticVersion.PreReleaseTag},
                 {PreReleaseTagWithDash, semanticVersion.PreReleaseTag.HasTag() ? "-" + semanticVersion.PreReleaseTag : null},
-                {BuildMetaData, semanticVersion.BuildMetaData},
-                {FullBuildMetaData, semanticVersion.BuildMetaData.ToString("f")},
+                {BuildMetaData, bmd},
+                {FullBuildMetaData, bmd.ToString("f")},
                 {MajorMinorPatch, string.Format("{0}.{1}.{2}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch)},
                 {SemVer, semanticVersion.ToString(null, formatter)},
                 {SemVerPadded, semanticVersion.ToString("sp", formatter)},
@@ -52,14 +54,17 @@
                 {FullSemVer, semanticVersion.ToString("f", formatter)},
                 {FullSemVerPadded, semanticVersion.ToString("fp", formatter)},
                 {InformationalVersion, semanticVersion.ToString("i", formatter)},
-                {ClassicVersion, string.Format("{0}.{1}", semanticVersion.ToString("j"), (semanticVersion.BuildMetaData.CommitsSinceTag ?? 0))},
+                {ClassicVersion, string.Format("{0}.{1}", semanticVersion.ToString("j"), (bmd.CommitsSinceTag ?? 0))},
                 {ClassicVersionWithTag, string.Format("{0}.{1}{2}", semanticVersion.ToString("j"),
-                    semanticVersion.BuildMetaData.CommitsSinceTag ?? 0,
+                    bmd.CommitsSinceTag ?? 0,
                     semanticVersion.PreReleaseTag.HasTag() ? "-" + semanticVersion.PreReleaseTag : null)},
-                {BranchName, semanticVersion.BuildMetaData.Branch},
-                {Sha, semanticVersion.BuildMetaData.Sha},
+                {BranchName, bmd.Branch},
+                {Sha, bmd.Sha},
                 {AssemblyVersion, assemblyMetaData.Version},
                 {AssemblyFileVersion, assemblyMetaData.FileVersion},
+                {OriginalRelease, string.Format("{0}.{1}", 
+                    bmd.ReleaseDate.OriginalCommitSha,
+                    bmd.ReleaseDate.OriginalDate.UtcDateTime.ToString("u"))},
             };
 
             return variables;

@@ -72,6 +72,9 @@
         [Output]
         public string AssemblyFileVersion { get; set; }
 
+        [Output]
+        public string OriginalRelease { get; set; }
+
         TaskLogger logger;
 
         public GetVersion()

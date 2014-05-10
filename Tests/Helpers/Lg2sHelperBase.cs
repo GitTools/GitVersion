@@ -37,7 +37,6 @@ public abstract class Lg2sHelperBase : IPostTestDirectoryRemover
     }
 
     protected static string ASBMTestRepoWorkingDirPath { private set; get; }
-    protected static string CCTestRepoWorkingDirPath { private set; get; }
     static DirectoryInfo ResourcesDirectory;
 
     static void SetUpTestEnvironment()
@@ -55,7 +54,6 @@ public abstract class Lg2sHelperBase : IPostTestDirectoryRemover
 
         // Setup standard paths to our test repositories
         ASBMTestRepoWorkingDirPath = Path.Combine(ResourcesDirectory.FullName, "asbm_wd");
-        CCTestRepoWorkingDirPath = Path.Combine(ResourcesDirectory.FullName, "commit_counting_wd");
     }
 
     protected SelfCleaningDirectory BuildSelfCleaningDirectory()

@@ -26,8 +26,9 @@ public class AssemblyInfoBuilderTests
                 "feature1",
                 new ReleaseDate
                 {
-                    CommitSha = "a682956dc1a2752aa24597a0f5cd939f93614509",
+                    OriginalCommitSha = "originalCommitSha",
                     OriginalDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z"),
+                    CommitSha = "commitSha",
                     Date = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
                 })
         };
@@ -76,8 +77,9 @@ public class AssemblyInfoBuilderTests
                 "master",
                 new ReleaseDate
                 {
-                    CommitSha = "a682956dc1a2752aa24597a0f5cd939f93614509",
+                    OriginalCommitSha = "originalCommitSha",
                     OriginalDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z"),
+                    CommitSha = "commitSha",
                     Date = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
                 }),
         };
