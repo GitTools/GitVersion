@@ -142,11 +142,11 @@ namespace GitVersion
 
         static void ConfigureLogging(Arguments arguments)
         {
-            Action<string> writeAction = x => { };
+            var writeActions = new List<Action<string>>();
 
-            if (arguments.LogFilePath == "console")
+            if (arguments.LogFilePath == "console" || arguments.Output == OutputType.BuildServer)
             {
-                writeAction = Console.WriteLine;
+                writeActions.Add(Console.WriteLine);
             }
             else if (arguments.LogFilePath != null)
             {
@@ -158,7 +158,7 @@ namespace GitVersion
                         using (File.CreateText(arguments.LogFilePath)) { }
                     }
 
-                    writeAction = x => WriteLogEntry(arguments, x);
+                    writeActions.Add(x => WriteLogEntry(arguments, x));
                 }
                 catch (Exception ex)
                 {
@@ -166,9 +166,9 @@ namespace GitVersion
                 }
             }
 
-            Logger.WriteInfo = writeAction;
-            Logger.WriteWarning = writeAction;
-            Logger.WriteError = writeAction;
+            Logger.WriteInfo = s => writeActions.ForEach(a => a(s));
+            Logger.WriteWarning = s => writeActions.ForEach(a => a(s));
+            Logger.WriteError = s => writeActions.ForEach(a => a(s));
         }
 
         static void WriteLogEntry(Arguments arguments, string s)
