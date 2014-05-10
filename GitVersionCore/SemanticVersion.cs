@@ -173,13 +173,12 @@ namespace GitVersion
 
         /// <summary>
         /// <para>s - Default SemVer [1.2.3-beta.4+5]</para>
-        /// <para>sp - Default SemVer with padded tag [1.2.3-beta.0004]</para>
         /// <para>f - Full SemVer [1.2.3-beta.4+5]</para>
-        /// <para>fp - Full SemVer with padded tag [1.2.3-beta.0004+5]</para>
         /// <para>i - Informational SemVer [1.2.3-beta.4+5.Branch.master.BranchType.Master.Sha.000000]</para>
-        /// <para>ip - Informational SemVer with padded tag [1.2.3-beta.0004+5.Branch.master.BranchType.Master.Sha.000000]</para>
         /// <para>j - Just the SemVer part [1.2.3]</para>
         /// <para>t - SemVer with the tag [1.2.3-beta.4]</para>
+        /// <para>l - Legacy SemVer tag for systems which do not support SemVer 2.0 properly [1.2.3-beta4]</para>
+        /// <para>lp - Legacy SemVer tag for systems which do not support SemVer 2.0 properly (padded) [1.2.3-beta0004]</para>
         /// </summary>
         public string ToString(string format, IFormatProvider formatProvider = null)
         {
@@ -200,31 +199,21 @@ namespace GitVersion
                     return string.Format("{0}.{1}.{2}", Major, Minor, Patch);
                 case "s":
                     return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag) : ToString("j");
-                case "sp":
-                    return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag.ToString("p")) : ToString("j");
+                case "l":
+                    return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag.ToString("l")) : ToString("j");
+                case "lp":
+                    return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag.ToString("lp")) : ToString("j");
                 case "f":
                     {
                         var buildMetadata = BuildMetaData.ToString();
 
                         return !string.IsNullOrEmpty(buildMetadata) ? string.Format("{0}+{1}", ToString("s"), buildMetadata) : ToString("s");
                     }
-                case "fp":
-                    {
-                        var buildMetadata = BuildMetaData.ToString();
-
-                        return !string.IsNullOrEmpty(buildMetadata) ? string.Format("{0}+{1}", ToString("sp"), buildMetadata) : ToString("sp");
-                    }
                 case "i":
                     {
                         var buildMetadata = BuildMetaData.ToString("f");
 
                         return !string.IsNullOrEmpty(buildMetadata) ? string.Format("{0}+{1}", ToString("s"), buildMetadata) : ToString("s");
-                    }
-                case "ip":
-                    {
-                        var buildMetadata = BuildMetaData.ToString("f");
-
-                        return !string.IsNullOrEmpty(buildMetadata) ? string.Format("{0}+{1}", ToString("sp"), buildMetadata) : ToString("sp");
                     }
                 default:
                     throw new ArgumentException(string.Format("Unrecognised format '{0}'", format), "format");

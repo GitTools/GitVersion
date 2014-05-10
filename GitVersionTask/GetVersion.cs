@@ -40,16 +40,16 @@
         public string SemVer { get; set; }
 
         [Output]
-        public string SemVerPadded { get; set; }
+        public string LegacySemVer { get; set; }
+
+        [Output]
+        public string LegacySemVerPadded { get; set; }
 
         [Output]
         public string AssemblySemVer { get; set; }
 
         [Output]
         public string FullSemVer { get; set; }
-
-        [Output]
-        public string FullSemVerPadded { get; set; }
 
         [Output]
         public string InformationalVersion { get; set; }
