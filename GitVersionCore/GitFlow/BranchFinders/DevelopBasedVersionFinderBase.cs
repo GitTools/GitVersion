@@ -39,12 +39,15 @@ namespace GitVersion
 
         int NumberOfCommitsOnBranchSinceCommit(GitVersionContext context, Commit commit)
         {
-            return context.Repository.Commits.QueryBy(new CommitFilter
+            var qf = new CommitFilter
             {
                 Since = context.CurrentBranch,
-                SortBy = CommitSortStrategies.Topological
-            })
-                .TakeWhile(x => x != commit)
+                Until = commit,
+                SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
+            };
+
+            return context.Repository.Commits
+                .QueryBy(qf)
                 .Count();
         }
 
