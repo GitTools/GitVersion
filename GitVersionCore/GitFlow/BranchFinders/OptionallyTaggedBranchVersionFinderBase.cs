@@ -15,6 +15,8 @@ namespace GitVersion
             var nbHotfixCommits = NumberOfCommitsInBranchNotKnownFromBaseBranch(context.Repository, context.CurrentBranch, branchType, baseBranchName);
 
             var versionString = context.CurrentBranch.GetSuffix(branchType);
+            if (!versionString.Contains("."))
+                return new SemanticVersion();
             var version = SemanticVersion.Parse(versionString);
 
             EnsureVersionIsValid(version, context.CurrentBranch, branchType);

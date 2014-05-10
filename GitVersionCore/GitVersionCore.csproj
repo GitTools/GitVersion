@@ -86,7 +86,6 @@
     <Compile Include="GitHubFlow\BuildNumberCalculator.cs" />
     <Compile Include="GitHubFlow\GitHubFlowVersionFinder.cs" />
     <Compile Include="GitHubFlow\LastTaggedReleaseFinder.cs" />
-    <Compile Include="GitHubFlow\MasterReleaseVersionFinder.cs" />
     <Compile Include="GitHubFlow\MergedBranchesWithVersionFinder.cs" />
     <Compile Include="GitHubFlow\NextSemverCalculator.cs" />
     <Compile Include="GitHubFlow\NextVersionTxtFileFinder.cs" />

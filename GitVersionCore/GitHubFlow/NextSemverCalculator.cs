@@ -6,7 +6,6 @@
     {
         NextVersionTxtFileFinder nextVersionTxtFileFinder;
         LastTaggedReleaseFinder lastTaggedReleaseFinder;
-        MasterReleaseVersionFinder releaseVersionFinder;
         OtherBranchVersionFinder unknownBranchFinder;
         GitVersionContext context;
         MergedBranchesWithVersionFinder mergedBranchesWithVersionFinder;
@@ -18,7 +17,6 @@
         {
             this.nextVersionTxtFileFinder = nextVersionTxtFileFinder;
             this.lastTaggedReleaseFinder = lastTaggedReleaseFinder;
-            releaseVersionFinder = new MasterReleaseVersionFinder();
             mergedBranchesWithVersionFinder = new MergedBranchesWithVersionFinder(context);
             unknownBranchFinder = new OtherBranchVersionFinder();
             this.context = context;
@@ -29,10 +27,12 @@
             var versionZero = new SemanticVersion();
             var lastRelease = lastTaggedReleaseFinder.GetVersion().SemVer;
             var fileVersion = nextVersionTxtFileFinder.GetNextVersion();
-            var releaseVersion = context.CurrentBranch.IsRelease() ? releaseVersionFinder.FindVersion(context) : versionZero;
             var mergedBranchVersion = mergedBranchesWithVersionFinder.GetVersion();
             var otherBranchVersion = unknownBranchFinder.FindVersion(context);
-            var maxCalculated = new[]{ fileVersion, releaseVersion, otherBranchVersion, mergedBranchVersion }.Max();
+            if (otherBranchVersion != null && otherBranchVersion.PreReleaseTag != null && otherBranchVersion.PreReleaseTag.Name == "release")
+                otherBranchVersion.PreReleaseTag.Name = "beta";
+
+            var maxCalculated = new[]{ fileVersion, otherBranchVersion, mergedBranchVersion }.Max();
 
             if (lastRelease == versionZero && maxCalculated == versionZero)
             {
