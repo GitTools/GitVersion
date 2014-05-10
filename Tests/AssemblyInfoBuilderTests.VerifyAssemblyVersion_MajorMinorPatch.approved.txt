@@ -32,10 +32,10 @@ static class GitVersionInformation
     public static string FullBuildMetaData = "5.Branch.master.Sha.commitSha";
     public static string MajorMinorPatch = "2.3.4";
     public static string SemVer = "2.3.4";
-    public static string SemVerPadded = "2.3.4";
+    public static string LegacySemVer = "2.3.4";
+    public static string LegacySemVerPadded = "2.3.4";
     public static string AssemblySemVer = "2.3.4.0";
     public static string FullSemVer = "2.3.4+5";
-    public static string FullSemVerPadded = "2.3.4+5";
     public static string InformationalVersion = "2.3.4+5.Branch.master.Sha.commitSha";
     public static string ClassicVersion = "2.3.4.5";
     public static string ClassicVersionWithTag = "2.3.4.5";

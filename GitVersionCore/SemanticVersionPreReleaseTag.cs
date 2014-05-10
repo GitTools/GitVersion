@@ -112,7 +112,8 @@ namespace GitVersion
         /// <summary>
         /// Default formats:
         /// <para>t - SemVer 2.0 formatted tag [beta.1]</para>
-        /// <para>p - SemVer 2.0 tag with the tag number padded. [beta.0001]</para>
+        /// <para>l - Legacy SemVer tag with the tag number padded. [beta1]</para>
+        /// <para>lp - Legacy SemVer tag with the tag number padded. [beta0001]</para>
         /// </summary>
         public string ToString(string format, IFormatProvider formatProvider = null)
         {
@@ -131,8 +132,10 @@ namespace GitVersion
             {
                 case "t":
                     return Number.HasValue ? string.Format("{0}.{1}", Name, Number) : Name;
-                case "p":
-                    return Number.HasValue ? string.Format("{0}.{1}", Name, Number.Value.ToString("D4")) : Name;
+                case "l":
+                    return Number.HasValue ? string.Format("{0}{1}", Name, Number) : Name;
+                case "lp":
+                    return Number.HasValue ? string.Format("{0}{1}", Name, Number.Value.ToString("D4")) : Name;
                 default:
                     throw new ArgumentException("Unknown format", "format");
             }

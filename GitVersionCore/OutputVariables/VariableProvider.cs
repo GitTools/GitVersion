@@ -14,9 +14,9 @@
         public const string Sha = "Sha";
         public const string MajorMinorPatch = "MajorMinorPatch";
         public const string SemVer = "SemVer";
-        public const string SemVerPadded = "SemVerPadded";
+        public const string LegacySemVer = "LegacySemVer";
+        public const string LegacySemVerPadded = "LegacySemVerPadded";
         public const string FullSemVer = "FullSemVer";
-        public const string FullSemVerPadded = "FullSemVerPadded";
         public const string AssemblySemVer = "AssemblySemVer";
         public const string ClassicVersion = "ClassicVersion";
         public const string ClassicVersionWithTag = "ClassicVersionWithTag";
@@ -49,10 +49,10 @@
                 {FullBuildMetaData, bmd.ToString("f")},
                 {MajorMinorPatch, string.Format("{0}.{1}.{2}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch)},
                 {SemVer, semanticVersion.ToString(null, formatter)},
-                {SemVerPadded, semanticVersion.ToString("sp", formatter)},
+                {LegacySemVer, semanticVersion.ToString("l", formatter)},
+                {LegacySemVerPadded, semanticVersion.ToString("lp", formatter)},
                 {AssemblySemVer, semanticVersion.ToString("j") + ".0"},
                 {FullSemVer, semanticVersion.ToString("f", formatter)},
-                {FullSemVerPadded, semanticVersion.ToString("fp", formatter)},
                 {InformationalVersion, semanticVersion.ToString("i", formatter)},
                 {ClassicVersion, string.Format("{0}.{1}", semanticVersion.ToString("j"), (bmd.CommitsSinceTag ?? 0))},
                 {ClassicVersionWithTag, string.Format("{0}.{1}{2}", semanticVersion.ToString("j"),
