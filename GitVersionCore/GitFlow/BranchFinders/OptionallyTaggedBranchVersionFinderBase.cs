@@ -147,7 +147,7 @@ namespace GitVersion
                 return 0;
             }
 
-            var ancestor = repo.Commits.FindCommonAncestor(
+            var ancestor = repo.Commits.FindMergeBase(
                 baseTip,
                 branch.Tip);
 
