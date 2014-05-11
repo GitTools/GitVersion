@@ -1,6 +1,7 @@
 ﻿namespace AcceptanceTests.GitFlow
 {
     using System.Linq;
+    using System.Threading;
     using Helpers;
     using LibGit2Sharp;
     using Xunit;
@@ -25,7 +26,6 @@
                 fixture.Repository.Checkout("master");
                 
                 
-                // No way to force a merge commit in libgit2, so commit before merge
                 fixture.Repository.MergeNoFF("hotfix-1.2.1", Constants.SignatureNow());
                 fixture.AssertFullSemver("1.2.1");
 
@@ -70,8 +70,6 @@
                 fixture.Repository.CreateBranch("support-1.2", (Commit)fixture.Repository.Tags.Single(t => t.Name == "1.1.0").Target).Checkout();
                 fixture.AssertFullSemver("1.1.0");
 
-
-                // No way to force a merge commit in libgit2, so commit before merge
                 fixture.Repository.MergeNoFF("hotfix-1.1.1", Constants.SignatureNow());
                 fixture.AssertFullSemver("1.1.1");
 
