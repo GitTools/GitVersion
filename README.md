@@ -2,7 +2,7 @@
 
 The easy way to use semantic versioning (semver.org) with a Git.
 
-*GitHubFlowVersion* will automatically version your application to SemVer of  `{vLast.Major}.{vLast.Minor}.{vLast.Patch+1}` where vLast is the last **Git Tag** in your repo and furthermore, it supports detection and versioning of **Pull Requests** if you are using GitHub or Stash.
+*GitVersion* will automatically version your application to SemVer of  `{vLast.Major}.{vLast.Minor}.{vLast.Patch+1}` where vLast is the last **Git Tag** in your repo and furthermore, it supports detection and versioning of **Pull Requests** if you are using GitHub or Stash.
 
 This means your versions are based on **source control metadata** making it repeatable. *GitVersion* gives you flexibility by making variables available to your build so you can meet all your versioning requirements. 
 
@@ -66,7 +66,7 @@ The command line too makes variables available for you to use, we currently supp
 ### 4. A ruby gem
 If you want a ruby gem version installed on your machine then you can use [Bundler](http://bundler.io/) or Gem(http://rubygems.org/) to install GitVersion
 
-	gem install GitVersion
+	gem install gitversion
 
 The calling conventions and the output are the same as the command line version.	
 
