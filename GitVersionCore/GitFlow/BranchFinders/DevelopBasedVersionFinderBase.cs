@@ -53,7 +53,7 @@ namespace GitVersion
 
         Commit FindCommonAncestorWithDevelop(IRepository repo, Branch branch, BranchType branchType)
         {
-            var ancestor = repo.Commits.FindCommonAncestor(
+            var ancestor = repo.Commits.FindMergeBase(
                 repo.FindBranch("develop").Tip,
                 branch.Tip);
 
