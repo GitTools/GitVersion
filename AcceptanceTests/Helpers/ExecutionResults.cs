@@ -14,9 +14,9 @@
 
         public int ExitCode { get; private set; }
         public string Output { get; private set; }
-        public string Log { get; set; }
+        public string Log { get; private set; }
 
-        public Dictionary<string, string> OutputVariables
+        public virtual Dictionary<string, string> OutputVariables
         {
             get { return new JavaScriptSerializer().Deserialize<Dictionary<string, string>>(Output); }
         }

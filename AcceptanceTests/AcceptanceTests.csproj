@@ -72,6 +72,8 @@
     <Compile Include="GitHubFlow\OtherBranchTests.cs" />
     <Compile Include="GitHubFlow\ReleaseBranchTests.cs" />
     <Compile Include="Helpers\Constants.cs" />
+    <Compile Include="Helpers\InProcessExecutionResults.cs" />
+    <Compile Include="ModuleInitializer.cs" />
     <Compile Include="PullRequestInTeamCityTest.cs" />
     <Compile Include="EmptyRepositoryFixture.cs" />
     <Compile Include="Helpers\ExecutionResults.cs" />
@@ -110,7 +112,9 @@
       <Name>GitVersionExe</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="FodyWeavers.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
@@ -120,6 +124,13 @@ xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.17.0.0\lib\net35\NativeBin
 if not exist "$(TargetDir)NativeBinaries\amd64" md "$(TargetDir)NativeBinaries\amd64"
 xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.17.0.0\lib\net35\NativeBinaries\amd64\*.*" "$(TargetDir)NativeBinaries\amd64"</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\Fody.1.22.1\build\Fody.targets" Condition="Exists('..\packages\Fody.1.22.1\build\Fody.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Fody.1.22.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.22.1\build\Fody.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
