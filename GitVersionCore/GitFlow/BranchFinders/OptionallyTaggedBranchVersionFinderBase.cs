@@ -160,8 +160,8 @@ namespace GitVersion
             var filter = new CommitFilter
                          {
                              Since = branch.Tip,
-                             Until = ancestor
-
+                             Until = ancestor,
+                             SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
                          };
 
             return repo.Commits.QueryBy(filter).Count();
