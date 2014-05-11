@@ -147,7 +147,7 @@ namespace GitVersion
                 return 0;
             }
 
-            var ancestor = repo.Commits.FindCommonAncestor(
+            var ancestor = repo.Commits.FindMergeBase(
                 baseTip,
                 branch.Tip);
 
@@ -160,8 +160,8 @@ namespace GitVersion
             var filter = new CommitFilter
                          {
                              Since = branch.Tip,
-                             Until = ancestor
-
+                             Until = ancestor,
+                             SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
                          };
 
             return repo.Commits.QueryBy(filter).Count();

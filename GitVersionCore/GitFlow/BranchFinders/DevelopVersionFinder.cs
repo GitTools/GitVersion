@@ -14,7 +14,8 @@ namespace GitVersion
             var f = new CommitFilter
             {
                 Since = tip,
-                Until = context.Repository.FindBranch("master").Tip
+                Until = context.Repository.FindBranch("master").Tip,
+                SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
             };
 
             var c = context.Repository.Commits.QueryBy(f);

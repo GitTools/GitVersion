@@ -20,7 +20,7 @@
                 fixture.Repository.CreateBranch("release-2.0.0");
                 fixture.Repository.Checkout("release-2.0.0");
 
-                var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath);
+                var result = fixture.ExecuteGitVersion();
 
                 result.ExitCode.ShouldBe(0);
                 result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("2.0.0-beta.1+5");
@@ -41,7 +41,7 @@
                 fixture.Repository.Checkout("master");
                 fixture.Repository.MergeNoFF("release-2.0.0", Constants.SignatureNow());
 
-                var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath);
+                var result = fixture.ExecuteGitVersion();
 
                 result.ExitCode.ShouldBe(0);
                 result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("2.0.0+6");
