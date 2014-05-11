@@ -17,11 +17,10 @@
         }
         public static void MergeNoFF(this IRepository repository, string branch, Signature sig)
         {
-            repository.Merge(repository.FindBranch(branch).Tip, sig, new MergeOptions
+            repository.Merge(repository.FindBranch(branch), sig, new MergeOptions
             {
                 FastForwardStrategy = FastForwardStrategy.NoFastFoward
             });
-            repository.Commit(string.Format("Merge branch '{0}'", branch), amendPreviousCommit: true);
         }
 
         public static Commit[] MakeCommits(this IRepository repository, int numCommitsToMake)
