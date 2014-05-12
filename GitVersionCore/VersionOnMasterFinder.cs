@@ -62,7 +62,12 @@ namespace GitVersion
 
             var allTags = repo.Tags.ToList();
 
-            foreach (var c in repo.Commits.QueryBy(new CommitFilter { Since = ancestor.Id }))
+            foreach (var c in repo.Commits.QueryBy(new CommitFilter 
+                {
+                    Since = ancestor.Id,
+                    SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
+                }
+            ))
             {
                 var vp = RetrieveStableVersionPointFor(allTags, c);
 

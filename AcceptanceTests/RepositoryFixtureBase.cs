@@ -1,6 +1,7 @@
 namespace AcceptanceTests
 {
     using System;
+    using GitVersion;
     using Helpers;
     using LibGit2Sharp;
 
@@ -17,9 +18,23 @@ namespace AcceptanceTests
             Repository.Config.Set("user.email", "test@email.com");
         }
 
-        public ExecutionResults ExecuteGitVersion()
+        public ExecutionResults ExecuteGitVersion(bool inProcess = true)
         {
-            return GitVersionHelper.ExecuteIn(RepositoryPath);
+            if (!inProcess)
+            {
+                return GitVersionHelper.ExecuteIn(RepositoryPath);
+            }
+
+            var vf = new GitVersionFinder();
+            var sv = vf.FindVersion(new GitVersionContext
+            {
+                Repository = Repository,
+                CurrentBranch = Repository.Head
+            });
+
+            var vars = VariableProvider.GetVariablesFor(sv);
+
+            return new InProcessExecutionResults(vars);
         }
 
         public void Dispose()
