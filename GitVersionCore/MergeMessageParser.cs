@@ -39,7 +39,7 @@ namespace GitVersion
                 var branch = Regex.Match(message, "from (?<branch>.*)").Groups["branch"].Value;
                 var lastBranchPart = branch.Split('/', '-').Last();
 
-                if (!char.IsNumber(lastBranchPart.First()))
+                if (!char.IsNumber(lastBranchPart.First()) || !lastBranchPart.Contains("."))
                 {
                     return false;
                 }
