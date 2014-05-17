@@ -1,6 +1,7 @@
 namespace GitVersion
 {
     using System.Linq;
+    using System.Text.RegularExpressions;
     using LibGit2Sharp;
 
     class MergeMessageParser
@@ -32,6 +33,19 @@ namespace GitVersion
             else if (message.StartsWith("Merge branch 'release/"))
             {
                 trimmed = message.Replace("Merge branch 'release/", "");
+            }
+            else if (Regex.IsMatch(message, "Merge pull request #\\d+ from "))
+            {
+                var branch = Regex.Match(message, "from (?<branch>.*)").Groups["branch"].Value;
+                var lastBranchPart = branch.Split('/', '-').Last();
+
+                if (!char.IsNumber(lastBranchPart.First()))
+                {
+                    return false;
+                }
+
+                versionPart = lastBranchPart;
+                return true;
             }
             else if (message.StartsWith("Merge branch '"))
             {

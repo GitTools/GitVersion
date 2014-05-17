@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
+using Shouldly;
 
 [TestFixture]
 public class MergeMessageParserTests
@@ -17,6 +18,7 @@ public class MergeMessageParserTests
     [TestCase("Merge branch 'hotfix-0.1.5'\n", true, "0.1.5")]
     [TestCase("Merge branch 'hotfix-0.1.5'\n\nRelates to: TicketId", true, "0.1.5")]
     [TestCase("Merge branch 'alpha-0.1.5'", true, "0.1.5")]
+    [TestCase("Merge pull request #165 from Particular/release-1.0.0", true, "1.0.0")]
     public void AssertMergeMessage(string message, bool isMergeCommit, string expectedVersion)
     {
         var c = new MockCommit
@@ -30,12 +32,12 @@ public class MergeMessageParserTests
 
         if (expectedVersion == null)
         {
-            Assert.IsFalse(parsed);
+            parsed.ShouldBe(false);
         }
         else
         {
-            Assert.IsTrue(parsed);
-            Assert.AreEqual(expectedVersion, versionPart);
+            parsed.ShouldBe(true);
+            versionPart.ShouldBe(expectedVersion);
         }
     }
 }
