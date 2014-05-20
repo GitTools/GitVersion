@@ -23,7 +23,6 @@
       SolutionDirectory="$(SolutionDir)"
       ProjectFile="$(ProjectPath)"
       AppendRevision="$(GitVersionAppendRevision)"
-      SignAssembly="$(SignAssembly)"
       CompileFiles ="@(Compile)">
       <Output
         TaskParameter="AssemblyInfoTempFilePath"
