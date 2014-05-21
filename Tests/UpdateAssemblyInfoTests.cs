@@ -103,9 +103,11 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     }
 
     [TestCase("Major")]
+    [TestCase("MajorMinor")]
     [TestCase("MajorMinorPatch")]
     [TestCase("None")]
     [TestCase("mAjOr")]
+    [TestCase("mAjOrMiNor")]
     [TestCase("mAjOrMiNorpatch")]
     [TestCase("NONe")]
     public void StandardExecutionMode_CanAcceptAssemblyVersioningSchemes(string assemblyVersioningScheme)

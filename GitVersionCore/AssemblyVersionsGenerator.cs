@@ -22,6 +22,10 @@
                     version = string.Format("{0}.0.0.0", sv.Major);
                     break;
 
+                case AssemblyVersioningScheme.MajorMinor:
+                    version = string.Format("{0}.{1}.0.0", sv.Major, sv.Minor);
+                    break;
+
                 case AssemblyVersioningScheme.MajorMinorPatch:
                     version = GetStrictAssemblyFileVersion(sv, false);
                     break;
