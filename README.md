@@ -6,7 +6,7 @@ GitVersion uses your *git* repository branching conventions to determine the cur
 
 GitVersion in action!
 
-![README](Icons\README.png)
+![README](Icons/README.png)
 
 You are seeing:
 
