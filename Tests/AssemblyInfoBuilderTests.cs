@@ -54,6 +54,13 @@ public class AssemblyInfoBuilderTests
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
+    public void VerifyAssemblyVersion_MajorMinor()
+    {
+        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinor);
+    }
+
+    [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public void VerifyAssemblyVersion_MajorMinorPatch()
     {
         VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatch);
