@@ -147,7 +147,12 @@ namespace GitVersion
         {
             var writeActions = new List<Action<string>>();
 
-            if (arguments.LogFilePath == "console" || arguments.Output == OutputType.BuildServer)
+            if (arguments.Output == OutputType.BuildServer)
+            {
+                writeActions.Add(Console.WriteLine);
+            }
+
+            if (arguments.LogFilePath == "console")
             {
                 writeActions.Add(Console.WriteLine);
             }
