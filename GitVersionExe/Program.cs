@@ -36,6 +36,9 @@ namespace GitVersion
                     return;
                 }
 
+                if (!string.IsNullOrEmpty(arguments.Proj) || !string.IsNullOrEmpty(arguments.Exec))
+                    arguments.Output = OutputType.BuildServer;
+
                 ConfigureLogging(arguments);
 
                 var gitPreparer = new GitPreparer(arguments);
@@ -142,11 +145,16 @@ namespace GitVersion
 
         static void ConfigureLogging(Arguments arguments)
         {
-            Action<string> writeAction = x => { };
+            var writeActions = new List<Action<string>>();
+
+            if (arguments.Output == OutputType.BuildServer)
+            {
+                writeActions.Add(Console.WriteLine);
+            }
 
             if (arguments.LogFilePath == "console")
             {
-                writeAction = Console.WriteLine;
+                writeActions.Add(Console.WriteLine);
             }
             else if (arguments.LogFilePath != null)
             {
@@ -158,7 +166,7 @@ namespace GitVersion
                         using (File.CreateText(arguments.LogFilePath)) { }
                     }
 
-                    writeAction = x => WriteLogEntry(arguments, x);
+                    writeActions.Add(x => WriteLogEntry(arguments, x));
                 }
                 catch (Exception ex)
                 {
@@ -166,9 +174,9 @@ namespace GitVersion
                 }
             }
 
-            Logger.WriteInfo = writeAction;
-            Logger.WriteWarning = writeAction;
-            Logger.WriteError = writeAction;
+            Logger.WriteInfo = s => writeActions.ForEach(a => a(s));
+            Logger.WriteWarning = s => writeActions.ForEach(a => a(s));
+            Logger.WriteError = s => writeActions.ForEach(a => a(s));
         }
 
         static void WriteLogEntry(Arguments arguments, string s)
