@@ -75,6 +75,9 @@
         [Output]
         public string OriginalRelease { get; set; }
 
+        [Output]
+        public string NugetPackageVersion { get; set; }
+
         TaskLogger logger;
 
         public GetVersion()
