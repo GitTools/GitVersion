@@ -2,7 +2,7 @@ Gem::Specification.new do |spec|
   spec.platform    = Gem::Platform::RUBY
   spec.name        = 'gitversion'
   spec.licenses    = ['MIT']
-  spec.version     = '0.20.0'
+  spec.version     = '1.0.0'
   spec.files = Dir['bin/**/*']
   spec.bindir = 'bin'
   spec.executables << 'gitversion'
