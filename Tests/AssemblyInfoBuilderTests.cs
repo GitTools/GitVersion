@@ -23,7 +23,7 @@ public class AssemblyInfoBuilderTests
             Patch = 3,
             PreReleaseTag = "unstable4",
             BuildMetaData = new SemanticVersionBuildMetaData(5,
-                "feature1",
+                "feature-Add_xyz",
                 new ReleaseDate
                 {
                     OriginalCommitSha = "originalCommitSha",
