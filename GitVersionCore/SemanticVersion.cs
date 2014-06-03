@@ -1,6 +1,7 @@
 namespace GitVersion
 {
     using System;
+    using System.Linq;
     using System.Text.RegularExpressions;
 
     public class SemanticVersion : IFormattable, IComparable<SemanticVersion>
@@ -215,9 +216,71 @@ namespace GitVersion
 
                         return !string.IsNullOrEmpty(buildMetadata) ? string.Format("{0}+{1}", ToString("s"), buildMetadata) : ToString("s");
                     }
+                case "n":
+                    {
+                        if (BuildMetaData == null || String.IsNullOrWhiteSpace(BuildMetaData.Branch))
+                        {
+                            return ToString("j");
+                        }
+
+                        var branch = BuildMetaData.Branch;
+                        if (branch.Equals("master", StringComparison.CurrentCultureIgnoreCase)
+                            || branch.Equals("release", StringComparison.CurrentCultureIgnoreCase)
+                            || branch.Equals("develop", StringComparison.CurrentCultureIgnoreCase)
+                            || branch.Equals("support", StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            // "master", "release", "develop", and "support" branches will be versioned without commit count or extra branch metadata
+                            return ToString("lp");
+                        }
+
+                        if (new[] { "-", "/" }.Any(suffix => 
+                                branch.ToLower().StartsWith("hotfix" + suffix, StringComparison.CurrentCultureIgnoreCase) 
+                                || branch.ToLower().StartsWith("support" + suffix, StringComparison.CurrentCultureIgnoreCase) 
+                                || branch.ToLower().StartsWith("release" + suffix, StringComparison.CurrentCultureIgnoreCase)))
+                        {
+                            // "hotfix-", "hotfix/", "support-", "support/", "release-", "release/" branches will have commit count appended to version
+                            var buildMetaData = BuildMetaData.ToString();
+                            return String.Format("{0}+{1}", ToString("lp"), String.IsNullOrWhiteSpace(buildMetaData) ? "0" : buildMetaData);
+                        }
+
+                        var specialVersion = SanitizeFeatureBranchNameForNugetSpecialVersion(branch);
+
+                        if (String.IsNullOrWhiteSpace(specialVersion))
+                        {
+                            // unknown branch types will get default SemVer
+                            return ToString("s");
+                        }
+
+                        // "feature-" and "feature/" branches will have branch metadata appended as special version information
+                        return string.Format("{0}.{1}.{2}-{3}", Major, Minor, Patch, specialVersion);
+                    }
                 default:
                     throw new ArgumentException(string.Format("Unrecognised format '{0}'", format), "format");
             }
+        }
+
+        /// <summary>
+        /// <para>Removes feature branch prefix and chops branch name at 20 characters to meet nuget special version requirements</para>
+        /// </summary>
+        /// <param name="branch">Current branch name</param>
+        /// <returns>String.Empty for non-feature branches, otherwise nuget special version formatted string</returns>
+        private static String SanitizeFeatureBranchNameForNugetSpecialVersion(String branch)
+        {
+            if (branch == null)
+                throw new ArgumentNullException("branch");
+
+            // Nuget Packages should not include slashes
+            var branchWithoutSlashes = branch.Replace(@"/", "-");
+
+            // Remove branch type prefix as it is not required in a version
+            var branchWithoutTypePrefix = branchWithoutSlashes.RegexReplace("^feature-", "", RegexOptions.IgnoreCase);
+
+            // https://nuget.codeplex.com/workitem/3426
+            // https://github.com/Haacked/NuGet/blob/master/src/Core/Authoring/PackageBuilder.cs#L556-L559
+            // nuget does not allow for 'version.SpecialVersion' to be over 20 characters
+            var specialVersion = branchWithoutTypePrefix.Length > 20 ? branchWithoutTypePrefix.Substring(0, 20) : branchWithoutTypePrefix;
+
+            return specialVersion;
         }
     }
 }

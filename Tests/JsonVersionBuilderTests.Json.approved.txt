@@ -19,5 +19,6 @@
   "Sha":"commitSha",
   "AssemblyVersion":"1.2.3.0",
   "AssemblyFileVersion":"1.2.3.0",
-  "OriginalRelease":"originalCommitSha.2014-03-01 00:00:01Z"
+  "OriginalRelease":"originalCommitSha.2014-03-01 00:00:01Z",
+  "NugetPackageVersion":"1.2.3-feature1"
 }

@@ -34,5 +34,11 @@ namespace AcceptanceTests.GitFlow
         {
             ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe(fullSemver);
         }
+
+        public void AssertNugetPackageVersion(string nugetVersion)
+        {
+            var version = ExecuteGitVersion();
+                version.OutputVariables[VariableProvider.NugetPackageVersion].ShouldBe(nugetVersion);
+        }
     }
 }
