@@ -86,6 +86,23 @@
         }
 
         [Fact]
+        public void GivenARepositoryWithTagAndANextVersionTxtFileAndNoCommits_VersionShouldBeTag()
+        {
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                const string ExpectedNextVersion = "1.1.0";
+                const string TaggedVersion = "1.0.3";
+                fixture.Repository.MakeATaggedCommit(TaggedVersion);
+                fixture.Repository.AddNextVersionTxtFile(ExpectedNextVersion);
+
+                var result = fixture.ExecuteGitVersion();
+
+                result.ExitCode.ShouldBe(0);
+                result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.0.3+0");
+            }
+        }
+
+        [Fact]
         public void GivenARepositoryWithTagAndNoNextVersionTxtFile_VersionShouldBeTagWithBumpedPatch()
         {
             using (var fixture = new EmptyRepositoryFixture())
@@ -98,6 +115,21 @@
 
                 result.ExitCode.ShouldBe(0);
                 result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.0.4+5");
+            }
+        }
+
+        [Fact]
+        public void GivenARepositoryWithTagAndNoNextVersionTxtFileAndNoCommits_VersionShouldBeTag()
+        {
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                const string TaggedVersion = "1.0.3";
+                fixture.Repository.MakeATaggedCommit(TaggedVersion);
+
+                var result = fixture.ExecuteGitVersion();
+
+                result.ExitCode.ShouldBe(0);
+                result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.0.3+0");
             }
         }
 
@@ -116,6 +148,23 @@
 
                 result.ExitCode.ShouldBe(0);
                 result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.1.1+5");
+            }
+        }
+
+        [Fact]
+        public void GivenARepositoryWithTagAndOldNextVersionTxtFileAndNoCommits_VersionShouldBeTag()
+        {
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                const string NextVersionTxt = "1.0.0";
+                const string TaggedVersion = "1.1.0";
+                fixture.Repository.MakeATaggedCommit(TaggedVersion);
+                fixture.Repository.AddNextVersionTxtFile(NextVersionTxt);
+
+                var result = fixture.ExecuteGitVersion();
+
+                result.ExitCode.ShouldBe(0);
+                result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.1.0+0");
             }
         }
     }
