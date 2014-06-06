@@ -36,7 +36,7 @@ namespace GitVersion
                 }
                 else
                 {
-                    CreateFakeBranchPointingAtThePullRequestTip(repo);
+                    CreateFakeBranchPointingAtThePullRequestTip(repo, arguments);
                 }
             }
         }
@@ -70,10 +70,15 @@ namespace GitVersion
             return fetchOptions;
         }
 
-        static void CreateFakeBranchPointingAtThePullRequestTip(Repository repo)
+        static void CreateFakeBranchPointingAtThePullRequestTip(Repository repo, Arguments arguments)
         {
             var remote = repo.Network.Remotes.Single();
-            var remoteTips = repo.Network.ListReferences(remote);
+            var credentials = string.IsNullOrEmpty(arguments.Username) ? (Credentials) new DefaultCredentials() : new UsernamePasswordCredentials()
+            {
+                Username = arguments.Username,
+                Password = arguments.Password
+            };
+            var remoteTips = repo.Network.ListReferences(remote, credentials);
 
             var headTipSha = repo.Head.Tip.Sha;
 
