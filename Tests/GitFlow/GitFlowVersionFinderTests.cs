@@ -148,6 +148,31 @@ public class GitVersionFinderTests : Lg2sHelperBase
     }
 
     [Test]
+    public void AFeatureBranchPrefixIsNotIncludedInTag()
+    {
+        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
+        using (var repo = new Repository(repoPath))
+        {
+            repo.Branches["develop"].ForceCheckout();
+
+            const string branchName = "feature/ABC-1234_SomeDescription";
+            repo.Branches.Add(branchName, repo.Head.Tip).ForceCheckout();
+
+            AddOneCommitToHead(repo, "code");
+
+            var finder = new GitVersionFinder();
+
+            var versionAndBranch = finder.FindVersion(new GitVersionContext
+            {
+                Repository = repo,
+                CurrentBranch = repo.Head,
+            });
+
+            ObjectApprover.VerifyWithJson(versionAndBranch, Scrubbers.GuidAndDateScrubber);
+        }
+    }
+
+    [Test]
     public void AReleaseBranchIsRequiredToBranchOffOfDevelopBranch()
     {
         var repoPath = Clone(ASBMTestRepoWorkingDirPath);
