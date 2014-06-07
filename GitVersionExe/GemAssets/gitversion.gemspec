@@ -2,7 +2,7 @@ Gem::Specification.new do |spec|
   spec.platform    = Gem::Platform::RUBY
   spec.name        = 'gitversion'
   spec.licenses    = ['MIT']
-  spec.version     = '0.20.0'
+  spec.version     = '$version$'
   spec.summary     = 'Derives SemVer information from a repository following GitFlow or GitHubFlow.'
   spec.description = <<-EOF
 Derives SemVer information from a repository following GitFlow or GitHubFlow.
