@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using LibGit2Sharp;
-using LibGit2Sharp.Handlers;
 
 public class MockRepository : IRepository
 {
