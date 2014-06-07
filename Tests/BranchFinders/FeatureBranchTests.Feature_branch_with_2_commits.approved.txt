@@ -3,8 +3,8 @@
     "Minor": 1,
     "Patch": 0,
     "PreReleaseTag": {
-        "Name": "unstable",
-        "Number": 0
+        "Name": "featureWithOneCommit",
+        "Number": null
     },
     "BuildMetaData": {
         "CommitsSinceTag": 2,

@@ -49,10 +49,10 @@
                 EnsureMetaDataMatch(f, "hotfix-1.3.1", "1.3.1-beta.1+1", r => (Commit)r.Tags["1.3.0"].Target);
 
                 ResetToK(f.Repository);
-                EnsureMetaDataMatch(f, "feature", "1.4.0-unstable.0+2");
+                EnsureMetaDataMatch(f, "feature", "1.4.0-feature+2");
 
                 ResetToJ(f.Repository);
-                EnsureMetaDataMatch(f, "feature", "1.4.0-unstable.0+1");
+                EnsureMetaDataMatch(f, "feature", "1.4.0-feature+1");
 
                 ResetToI(f.Repository);
                 EnsureMetaDataMatch(f, "develop", "1.4.0.2-unstable");
