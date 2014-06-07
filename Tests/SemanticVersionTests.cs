@@ -1,5 +1,6 @@
 using GitVersion;
 using NUnit.Framework;
+using Shouldly;
 
 [TestFixture]
 public class SemanticVersionTests
@@ -49,6 +50,15 @@ public class SemanticVersionTests
     {
         SemanticVersion version;
         Assert.IsFalse(SemanticVersion.TryParse(versionString, out version), "TryParse Result");
+    }
+
+    [Test]
+    public void LegacySemVerTest()
+    {
+        new SemanticVersionPreReleaseTag("TKT-2134_JiraDescription", null).ToString("l").ShouldBe("TKT2134");
+        new SemanticVersionPreReleaseTag("AReallyReallyReallyLongBranchName", null).ToString("l").ShouldBe("AReallyReallyReallyL");
+        new SemanticVersionPreReleaseTag("TKT-2134_JiraDescription", 1).ToString("lp").ShouldBe("TKT21340001");
+        new SemanticVersionPreReleaseTag("AReallyReallyReallyLongBranchName", 1).ToString("lp").ShouldBe("AReallyReallyRea0001");
     }
 
 
