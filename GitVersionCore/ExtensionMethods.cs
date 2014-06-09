@@ -29,7 +29,7 @@ namespace GitVersion
 
         public static string TrimStart(this string value, string toTrim)
         {
-            if (!value.StartsWith(toTrim))
+            if (!value.StartsWith(toTrim, StringComparison.InvariantCultureIgnoreCase))
             {
                 return value;
             }

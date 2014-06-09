@@ -3,12 +3,12 @@
     "Minor": 1,
     "Patch": 0,
     "PreReleaseTag": {
-        "Name": "every-feature-is-welcome",
+        "Name": "ABC-1234_SomeDescription",
         "Number": null
     },
     "BuildMetaData": {
         "CommitsSinceTag": 1,
-        "Branch": "every-feature-is-welcome",
+        "Branch": "feature/ABC-1234_SomeDescription",
         "ReleaseDate": {
             "OriginalDate": "<date replaced>",
             "OriginalCommitSha": "000000000000000000000000000000000000000",

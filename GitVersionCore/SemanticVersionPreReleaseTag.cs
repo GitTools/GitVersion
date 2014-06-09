@@ -133,12 +133,29 @@ namespace GitVersion
                 case "t":
                     return Number.HasValue ? string.Format("{0}.{1}", Name, Number) : Name;
                 case "l":
-                    return Number.HasValue ? string.Format("{0}{1}", Name, Number) : Name;
+                    return Number.HasValue ? FormatLegacy(GetLegacyName(), Number.ToString()) : FormatLegacy(GetLegacyName());
                 case "lp":
-                    return Number.HasValue ? string.Format("{0}{1}", Name, Number.Value.ToString("D4")) : Name;
+                    return Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString("D4")) : FormatLegacy(GetLegacyName());
                 default:
                     throw new ArgumentException("Unknown format", "format");
             }
+        }
+
+        string FormatLegacy(string tag, string number = null)
+        {
+            var tagLength = tag.Length;
+            var numberLength = number == null ? 0 : number.Length;
+
+            if (tagLength + numberLength > 20)
+                return string.Format("{0}{1}", tag.Substring(0, 20 - numberLength), number);
+
+            return string.Format("{0}{1}", tag, number);
+        }
+
+        string GetLegacyName()
+        {
+            var firstPart = Name.Split('_')[0];
+            return firstPart.Replace("-", string.Empty).Replace(".", string.Empty);
         }
 
         public bool HasTag()
