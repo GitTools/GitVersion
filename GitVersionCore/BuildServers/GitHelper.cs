@@ -1,5 +1,6 @@
 namespace GitVersion
 {
+    using System.Collections.Generic;
     using System.Linq;
     using LibGit2Sharp;
 
@@ -36,7 +37,7 @@ namespace GitVersion
                 }
                 else
                 {
-                    CreateFakeBranchPointingAtThePullRequestTip(repo);
+                    CreateFakeBranchPointingAtThePullRequestTip(repo, arguments);
                 }
             }
         }
@@ -70,10 +71,13 @@ namespace GitVersion
             return fetchOptions;
         }
 
-        static void CreateFakeBranchPointingAtThePullRequestTip(Repository repo)
+        static void CreateFakeBranchPointingAtThePullRequestTip(Repository repo, Arguments arguments)
         {
             var remote = repo.Network.Remotes.Single();
-            var remoteTips = repo.Network.ListReferences(remote);
+
+            var remoteTips = string.IsNullOrEmpty(arguments.Username) ?
+                GetRemoteTipsForAnonymousUser(repo, remote) :
+                GetRemoteTipsUsingUsernamePasswordCredentials(repo, remote, arguments.Username, arguments.Password);
 
             var headTipSha = repo.Head.Tip.Sha;
 
@@ -108,6 +112,21 @@ namespace GitVersion
 
             Logger.WriteInfo(string.Format("Checking local branch '{0}' out.", fakeBranchName));
             repo.Checkout(fakeBranchName);
+        }
+
+        static IEnumerable<DirectReference> GetRemoteTipsUsingUsernamePasswordCredentials(Repository repo, Remote remote, string username, string password)
+        {
+            return repo.Network.ListReferences(remote,
+                new UsernamePasswordCredentials
+                {
+                    Username = username,
+                    Password = password
+                });
+        }
+
+        static IEnumerable<DirectReference> GetRemoteTipsForAnonymousUser(Repository repo, Remote remote)
+        {
+            return repo.Network.ListReferences(remote);
         }
 
         static void CreateMissingLocalBranchesFromRemoteTrackingOnes(Repository repo, string remoteName)

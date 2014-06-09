@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using LibGit2Sharp;
-using LibGit2Sharp.Handlers;
 
 public class MockRepository : IRepository
 {
@@ -16,17 +15,17 @@ public class MockRepository : IRepository
         throw new NotImplementedException();
     }
 
-    public Branch Checkout(Branch branch, CheckoutModifiers checkoutModifiers, CheckoutProgressHandler onCheckoutProgress, CheckoutNotificationOptions checkoutNotificationOptions, Signature signature = null)
+    public Branch Checkout(Branch branch, CheckoutOptions options, Signature signature = null)
     {
         throw new NotImplementedException();
     }
 
-    public Branch Checkout(string committishOrBranchSpec, CheckoutModifiers checkoutModifiers, CheckoutProgressHandler onCheckoutProgress, CheckoutNotificationOptions checkoutNotificationOptions, Signature signature = null)
+    public Branch Checkout(string committishOrBranchSpec, CheckoutOptions options, Signature signature = null)
     {
         throw new NotImplementedException();
     }
 
-    public Branch Checkout(Commit commit, CheckoutModifiers checkoutModifiers, CheckoutProgressHandler onCheckoutProgress, CheckoutNotificationOptions checkoutNotificationOptions, Signature signature = null)
+    public Branch Checkout(Commit commit, CheckoutOptions options, Signature signature = null)
     {
         throw new NotImplementedException();
     }
@@ -83,6 +82,11 @@ public class MockRepository : IRepository
         throw new NotImplementedException();
     }
 
+    public RevertResult Revert(Commit commit, Signature reverter, RevertOptions options = null)
+    {
+        throw new NotImplementedException();
+    }
+
     public MergeResult Merge(Commit commit, Signature merger, MergeOptions options = null)
     {
         throw new NotImplementedException();
@@ -115,7 +119,6 @@ public class MockRepository : IRepository
     public ObjectDatabase ObjectDatabase { get; private set; }
     public NoteCollection Notes { get; private set; }
     public SubmoduleCollection Submodules { get; private set; }
-    public IEnumerable<MergeHead> MergeHeads { get; private set; }
 
     public Ignore Ignore
     {
