@@ -6,13 +6,10 @@ using ObjectApproval;
 [TestFixture]
 public class PullBranchTests : Lg2sHelperBase
 {
-
     [Test, Ignore("Not valid since Github wont allow empty pulls")]
     public void Pull_request_with_no_commit()
     {
-
     }
-
 
     [Test]
     public void Invalid_pull_branch_name()
@@ -38,11 +35,7 @@ public class PullBranchTests : Lg2sHelperBase
 
             var finder = new PullVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext
-            {
-                Repository = repo,
-                CurrentBranch = pullBranch,
-            }));
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext(repo, pullBranch)));
         }
     }
 
@@ -61,11 +54,7 @@ public class PullBranchTests : Lg2sHelperBase
 
             var finder = new PullVersionFinder();
 
-            var version = finder.FindVersion(new GitVersionContext
-            {
-                Repository = repo,
-                CurrentBranch = pullBranch,
-            });
+            var version = finder.FindVersion(new GitVersionContext(repo, pullBranch));
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
@@ -91,11 +80,7 @@ public class PullBranchTests : Lg2sHelperBase
 
             var finder = new PullVersionFinder();
 
-            var version = finder.FindVersion(new GitVersionContext
-            {
-                Repository = repo,
-                CurrentBranch = pullBranch,
-            });
+            var version = finder.FindVersion(new GitVersionContext(repo, pullBranch));
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 

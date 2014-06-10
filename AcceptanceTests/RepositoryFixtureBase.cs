@@ -26,11 +26,7 @@ namespace AcceptanceTests
             }
 
             var vf = new GitVersionFinder();
-            var sv = vf.FindVersion(new GitVersionContext
-            {
-                Repository = Repository,
-                CurrentBranch = Repository.Head
-            });
+            var sv = vf.FindVersion(new GitVersionContext(Repository));
 
             var vars = VariableProvider.GetVariablesFor(sv);
 

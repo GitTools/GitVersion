@@ -7,7 +7,6 @@ using NUnit.Framework;
 [TestFixture]
 public class IntegrationTests
 {
-
     [Test, Explicit]
     public void ProcessAllTheCommits()
     {
@@ -32,7 +31,6 @@ public class IntegrationTests
         }
     }
 
-
     [Test, Explicit]
     public void TimingOnNSB()
     {
@@ -42,11 +40,7 @@ public class IntegrationTests
             var branch = repository.Branches.First(x => x.Name == "develop");
 
             var finder = new GitVersionFinder();
-            finder.FindVersion(new GitVersionContext
-            {
-                Repository = repository,
-                CurrentBranch = branch
-            });
+            finder.FindVersion(new GitVersionContext(repository, branch));
         }
         Debug.WriteLine(startNew.ElapsedMilliseconds);
         startNew = Stopwatch.StartNew();
@@ -55,16 +49,12 @@ public class IntegrationTests
             var branch = repository.Branches.First(x => x.Name == "develop");
 
             var finder = new GitVersionFinder();
-            finder.FindVersion(new GitVersionContext
-            {
-                Repository = repository,
-                CurrentBranch = branch
-            });
+            finder.FindVersion(new GitVersionContext(repository, branch));
         }
         Debug.WriteLine(startNew.ElapsedMilliseconds);
     }
-    
-    [Test,Explicit]
+
+    [Test, Explicit]
     public void DirectoryDateFinderTest()
     {
         var stopwatch = Stopwatch.StartNew();
@@ -75,7 +65,7 @@ public class IntegrationTests
         Debug.WriteLine(stopwatch.ElapsedMilliseconds);
     }
 
-    [Test,Explicit]
+    [Test, Explicit]
     public void NServiceBusRelease()
     {
         using (var repository = new Repository(@"C:\Code\NServiceBus"))
@@ -83,11 +73,7 @@ public class IntegrationTests
             var branch = repository.Branches.First(x => x.Name == "release-4.1.0");
 
             var finder = new GitVersionFinder();
-            var version = finder.FindVersion(new GitVersionContext
-            {
-                Repository = repository,
-                CurrentBranch = branch
-            });
+            var version = finder.FindVersion(new GitVersionContext(repository, branch));
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
@@ -96,7 +82,7 @@ public class IntegrationTests
         }
     }
 
-    [Test,Explicit]
+    [Test, Explicit]
     public void NServiceBusReleaseSpecificCommit()
     {
         using (var repository = new Repository(@"C:\Code\NServiceBus"))
@@ -105,11 +91,7 @@ public class IntegrationTests
             repository.Checkout("c0e0a5e13775552cd3e08e039f453e4cf1fd4235");
 
             var finder = new GitVersionFinder();
-            var version = finder.FindVersion(new GitVersionContext
-            {
-                Repository = repository,
-                CurrentBranch = branch
-            });
+            var version = finder.FindVersion(new GitVersionContext(repository, branch));
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
@@ -118,7 +100,7 @@ public class IntegrationTests
         }
     }
 
-    [Test,Explicit]
+    [Test, Explicit]
     public void NServiceBusHotfix()
     {
         using (var repository = new Repository(@"C:\Code\NServiceBus"))
@@ -126,11 +108,7 @@ public class IntegrationTests
             var branch = repository.Branches.First(x => x.Name == "hotfix-4.1.1");
 
             var finder = new GitVersionFinder();
-            var version = finder.FindVersion(new GitVersionContext
-            {
-                Repository = repository,
-                CurrentBranch = branch
-            });
+            var version = finder.FindVersion(new GitVersionContext(repository, branch));
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
@@ -139,7 +117,7 @@ public class IntegrationTests
         }
     }
 
-    [Test,Explicit]
+    [Test, Explicit]
     public void NServiceBusMaster()
     {
         using (var repository = new Repository(@"C:\Code\NServiceBus"))
@@ -147,11 +125,7 @@ public class IntegrationTests
             var branch = repository.Branches.First(x => x.Name == "master");
 
             var finder = new GitVersionFinder();
-            var version = finder.FindVersion(new GitVersionContext
-            {
-                Repository = repository,
-                CurrentBranch = branch  
-            });
+            var version = finder.FindVersion(new GitVersionContext(repository, branch));
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
@@ -160,7 +134,7 @@ public class IntegrationTests
         }
     }
 
-    [Test,Explicit]
+    [Test, Explicit]
     public void NServiceBusDevelop()
     {
         using (var repository = new Repository(@"C:\Code\NServiceBus"))
@@ -168,11 +142,7 @@ public class IntegrationTests
             var branch = repository.Branches.First(x => x.Name == "develop");
 
             var finder = new GitVersionFinder();
-            var version = finder.FindVersion(new GitVersionContext
-            {
-                Repository = repository,
-                CurrentBranch = branch
-            });
+            var version = finder.FindVersion(new GitVersionContext(repository, branch));
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
@@ -181,7 +151,7 @@ public class IntegrationTests
         }
     }
 
-    [Test,Explicit]
+    [Test, Explicit]
     public void NServiceBusHead()
     {
         using (var repository = new Repository(@"C:\Code\NServiceBus"))
@@ -189,11 +159,7 @@ public class IntegrationTests
             var branch = repository.Head;
 
             var finder = new GitVersionFinder();
-            var version = finder.FindVersion(new GitVersionContext
-            {
-                Repository = repository,
-                CurrentBranch = branch
-            });
+            var version = finder.FindVersion(new GitVersionContext(repository, branch));
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
@@ -201,19 +167,20 @@ public class IntegrationTests
             Debug.WriteLine(version.BuildMetaData);
         }
     }
-    [Test,Explicit]
+
+    [Test, Explicit]
     public void GitTests()
     {
         using (var repository = new Repository(@"C:\Code\Experiments"))
         {
-
             foreach (var tag in repository.Tags)
             {
                 Debug.WriteLine(tag.Annotation.Tagger.When);
             }
         }
     }
-    [Test,Explicit]
+
+    [Test, Explicit]
     public void NServiceBusDevelopOlderCommit()
     {
         using (var repository = new Repository(@"C:\Code\NServiceBus"))
@@ -222,11 +189,7 @@ public class IntegrationTests
             repository.Checkout("c0e0a5e13775552cd3e08e039f453e4cf1fd4235");
 
             var finder = new GitVersionFinder();
-            var version = finder.FindVersion(new GitVersionContext
-            {
-                Repository = repository,
-                CurrentBranch = branch
-            });
+            var version = finder.FindVersion(new GitVersionContext(repository, branch));
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
@@ -234,8 +197,8 @@ public class IntegrationTests
             Debug.WriteLine(version.BuildMetaData);
         }
     }
-    
-    [Test,Explicit]
+
+    [Test, Explicit]
     public void Foo()
     {
         using (var repository = new Repository(@"C:\Code\ServiceControl"))
@@ -243,17 +206,14 @@ public class IntegrationTests
             var branch = repository.Branches.First(x => x.Name == "develop");
 
             var finder = new GitVersionFinder();
-            var version = finder.FindVersion(new GitVersionContext
-            {
-                Repository = repository,
-                CurrentBranch = branch
-            });
+            var version = finder.FindVersion(new GitVersionContext(repository, branch));
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
             Debug.WriteLine(version.PreReleaseTag);
         }
     }
+
     [Test, Explicit]
     public void NServiceBusNhibernate()
     {
@@ -262,11 +222,7 @@ public class IntegrationTests
             var branch = repository.FindBranch("develop");
 
             var finder = new GitVersionFinder();
-            var version = finder.FindVersion(new GitVersionContext
-            {
-                Repository = repository,
-                CurrentBranch = branch
-            });
+            var version = finder.FindVersion(new GitVersionContext(repository, branch));
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);

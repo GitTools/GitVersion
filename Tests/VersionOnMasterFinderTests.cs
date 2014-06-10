@@ -14,16 +14,14 @@ public class VersionOnMasterFinderTests
     {
         var finder = new VersionOnMasterFinder();
 
-        var dateTime = new DateTimeOffset(2000, 10, 10,0,0,0,new TimeSpan(0));
+        var dateTime = new DateTimeOffset(2000, 10, 10, 0, 0, 0, new TimeSpan(0));
         var signature = 2.Seconds().Before(dateTime).ToSignature();
 
         const string sha = "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef";
 
-        var version = finder.Execute(new GitVersionContext
+        var repository = new MockRepository
         {
-            Repository = new MockRepository
-            {
-                Branches = new MockBranchCollection
+            Branches = new MockBranchCollection
                 {
                     new MockBranch("master")
                     {
@@ -44,8 +42,8 @@ public class VersionOnMasterFinderTests
                         },
                     },
                 }
-            }
-        }, 1.Seconds().Ago());
+        };
+        var version = finder.Execute(new GitVersionContext(repository), 1.Seconds().Ago());
         ObjectApprover.VerifyWithJson(version);
     }
 }

@@ -20,11 +20,9 @@ public class DevelopTests
         {
             commitOnDevelop
         };
-        var version = finder.FindVersion(new GitVersionContext
+        var repository = new MockRepository
         {
-            Repository = new MockRepository
-            {
-                Branches = new MockBranchCollection
+            Branches = new MockBranchCollection
                 {
                     new MockBranch("master")
                     {
@@ -36,12 +34,10 @@ public class DevelopTests
                     },
                     mockBranch
                 },
-            },
-            CurrentBranch = mockBranch
-        });
+        };
+        var version = finder.FindVersion(new GitVersionContext(repository, mockBranch));
         Assert.AreEqual(2, version.Minor, "Minor should be master.Minor+1");
         ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
-
     }
 
     [Test]
@@ -61,11 +57,9 @@ public class DevelopTests
         {
             commitOnDevelop
         };
-        var context = new GitVersionContext
+        var repository = new MockRepository
         {
-            Repository = new MockRepository
-            {
-                Branches = new MockBranchCollection
+            Branches = new MockBranchCollection
                 {
                     new MockBranch("master")
                     {
@@ -73,7 +67,7 @@ public class DevelopTests
                     },
                     develop
                 },
-                Tags = new MockTagCollection
+            Tags = new MockTagCollection
                 {
                     new MockTag
                     {
@@ -81,13 +75,11 @@ public class DevelopTests
                         NameEx = "0.1.0"
                     }
                 }
-            },
-            CurrentBranch = develop
         };
+        var context = new GitVersionContext(repository, develop);
 
         var version = finder.FindVersion(context);
         Assert.AreEqual(2, version.Minor, "Minor should be master.Minor+1");
         ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
     }
-
 }

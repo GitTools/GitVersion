@@ -18,11 +18,7 @@ public class ReleaseTests : Lg2sHelperBase
 
             var finder = new ReleaseVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext
-            {
-                Repository = repo,
-                CurrentBranch = releaseBranch,
-            }));
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext(repo, releaseBranch)));
         }
     }
 
@@ -39,13 +35,10 @@ public class ReleaseTests : Lg2sHelperBase
 
             var finder = new ReleaseVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext
-            {
-                Repository = repo,
-                CurrentBranch = releaseBranch,
-            }));
+            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext(repo, releaseBranch)));
         }
     }
+
     //TODO:
     //[Test]
     //[ExpectedException]
@@ -60,5 +53,4 @@ public class ReleaseTests : Lg2sHelperBase
         //TODO
         //Assert.Throws<Exception>(() => FinderWrapper.FindVersionForCommit("TODO", "release-0.5.0"));
     }
-
 }

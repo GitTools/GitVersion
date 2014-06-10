@@ -7,8 +7,18 @@
     /// </summary>
     public class GitVersionContext
     {
-        public IRepository Repository;
-        public Branch CurrentBranch;
-    }
+        public GitVersionContext(IRepository repository)
+            : this(repository, repository.Head)
+        {
+        }
 
+        public GitVersionContext(IRepository repository, Branch currentBranch)
+        {
+            Repository = repository;
+            CurrentBranch = currentBranch;
+        }
+
+        public IRepository Repository { get; private set; }
+        public Branch CurrentBranch { get; private set; }
+    }
 }

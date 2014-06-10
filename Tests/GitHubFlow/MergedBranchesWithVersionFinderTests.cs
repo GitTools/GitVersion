@@ -18,10 +18,7 @@
                     MessageEx = "Merge branch 'release-2.0.0'"
                 }
             };
-            var sut = new MergedBranchesWithVersionFinder(new GitVersionContext
-            {
-                CurrentBranch = currentBranch
-            });
+            var sut = new MergedBranchesWithVersionFinder(new GitVersionContext(null, currentBranch));
 
             var version = sut.GetVersion();
 

@@ -17,11 +17,7 @@ public class GitHelperTests : Lg2sHelperBase
 
         using (var repository = new Repository(gitDirectory))
         {
-            var semanticVersion = new GitVersionFinder().FindVersion(new GitVersionContext
-            {
-                Repository = repository,
-                CurrentBranch = repository.Head
-            });
+            var semanticVersion = new GitVersionFinder().FindVersion(new GitVersionContext(repository));
             Assert.IsNotNull(semanticVersion);
         }
     }
@@ -39,15 +35,10 @@ public class GitHelperTests : Lg2sHelperBase
 
         using (var repository = new Repository(gitDirectory))
         {
-            var semanticVersion = new GitVersionFinder().FindVersion(new GitVersionContext
-            {
-                Repository = repository,
-                CurrentBranch = repository.Head
-            });
+            var semanticVersion = new GitVersionFinder().FindVersion(new GitVersionContext(repository));
             Assert.IsNotNull(semanticVersion);
         }
     }
-
 
     [Test]
     public void CanDetermineTheVersionFromAFetchedDevelop()
@@ -59,14 +50,11 @@ public class GitHelperTests : Lg2sHelperBase
 
         using (var repository = new Repository(gitDirectory))
         {
-            var semanticVersion = new GitVersionFinder().FindVersion(new GitVersionContext
-            {
-                Repository = repository,
-                CurrentBranch = repository.Head
-            });
+            var semanticVersion = new GitVersionFinder().FindVersion(new GitVersionContext(repository));
             Assert.IsNotNull(semanticVersion);
         }
     }
+
     [Test]
     public void CanDetermineTheVersionFromAFetchedFeature()
     {
@@ -77,15 +65,10 @@ public class GitHelperTests : Lg2sHelperBase
 
         using (var repository = new Repository(gitDirectory))
         {
-            var semanticVersion = new GitVersionFinder().FindVersion(new GitVersionContext
-            {
-                Repository = repository,
-                CurrentBranch = repository.Head
-            });
+            var semanticVersion = new GitVersionFinder().FindVersion(new GitVersionContext(repository));
             Assert.IsNotNull(semanticVersion);
         }
     }
-
 
     static void CreateFakePullRequest(string repoPath, string issueNumber)
     {
@@ -106,7 +89,7 @@ public class GitHelperTests : Lg2sHelperBase
             var m = repo.ObjectDatabase.CreateCommit(
                 sign, sign,
                 string.Format("Merge pull request #{0} from nulltoken/ntk/fix/{0}", issueNumber)
-                , c.Tree, new[] {repo.Branches["develop"].Tip, c}, true);
+                , c.Tree, new[] { repo.Branches["develop"].Tip, c }, true);
 
             repo.Refs.Add(string.Format("refs/pull/{0}/merge", issueNumber), m.Id);
 
@@ -127,9 +110,8 @@ public class GitHelperTests : Lg2sHelperBase
 
             if (monitoredReference.StartsWith("refs/pull/"))
             {
-                repo.Network.Fetch(remote, new[]{ string.Format("+{0}:{0}", monitoredReference) });
+                repo.Network.Fetch(remote, new[] { string.Format("+{0}:{0}", monitoredReference) });
             }
-
 
             var src = monitoredReference;
             var dst = monitoredReference.Replace("refs/heads/", "refs/remotes/origin/");
@@ -157,6 +139,4 @@ public class GitHelperTests : Lg2sHelperBase
 
         return repoPath;
     }
-
 }
-
