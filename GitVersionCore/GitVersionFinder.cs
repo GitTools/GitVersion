@@ -39,7 +39,7 @@ namespace GitVersion
                 return;
             }
 
-            var message = string.Format("It looks like the branch being examined is a detached Head pointing to commit '{0}'. Without a proper branch name GitVersion cannot determine the build version.", context.CurrentBranch.Tip.Id.ToString(7));
+            var message = string.Format("It looks like the branch being examined is a detached Head pointing to commit '{0}'. Without a proper branch name GitVersion cannot determine the build version.", context.CurrentCommit.Id.ToString(7));
             throw new ErrorException(message);
         }
 

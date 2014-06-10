@@ -8,7 +8,7 @@ namespace GitVersion
         public SemanticVersion FindVersion(GitVersionContext context)
         {
             var versionOnMasterFinder = new VersionOnMasterFinder();
-            var tip = context.CurrentBranch.Tip;
+            var tip = context.CurrentCommit;
             var versionFromMaster = versionOnMasterFinder.Execute(context, tip.When());
 
             var f = new CommitFilter
@@ -32,6 +32,5 @@ namespace GitVersion
             };
             return semanticVersion;
         }
-
     }
 }

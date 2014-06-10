@@ -10,7 +10,7 @@ namespace GitVersion
             BranchType branchType)
         {
             var ancestor = FindCommonAncestorWithDevelop(context.Repository, context.CurrentBranch, branchType);
-            
+
             if (!IsThereAnyCommitOnTheBranch(context.Repository, context.CurrentBranch))
             {
                 var developVersionFinder = new DevelopVersionFinder();
@@ -18,10 +18,10 @@ namespace GitVersion
             }
 
             var versionOnMasterFinder = new VersionOnMasterFinder();
-            var versionFromMaster = versionOnMasterFinder.Execute(context, context.CurrentBranch.Tip.Committer.When);
+            var versionFromMaster = versionOnMasterFinder.Execute(context, context.CurrentCommit.Committer.When);
 
             var numberOfCommitsOnBranchSinceCommit = NumberOfCommitsOnBranchSinceCommit(context, ancestor);
-            var sha = context.CurrentBranch.Tip.Sha;
+            var sha = context.CurrentCommit.Sha;
             var releaseDate = ReleaseDateFinder.Execute(context.Repository, sha, 0);
             var preReleaseTag = context.CurrentBranch.Name
                 .TrimStart(branchType.ToString() + '-')

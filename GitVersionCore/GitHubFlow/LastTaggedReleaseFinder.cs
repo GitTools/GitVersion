@@ -31,7 +31,7 @@ namespace GitVersion
             })
                 .Where(a => a != null)
                 .ToArray();
-            var olderThan = context.CurrentBranch.Tip.Committer.When;
+            var olderThan = context.CurrentCommit.Committer.When;
             var lastTaggedCommit =
                 context.CurrentBranch.Commits.FirstOrDefault(c => c.Committer.When <= olderThan && tags.Any(a => a.Commit == c));
 

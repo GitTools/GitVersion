@@ -30,7 +30,7 @@ namespace GitVersion
 
             var tagVersion = RetrieveMostRecentOptionalTagVersion(context.Repository, version, context.CurrentBranch.Commits.Take(nbHotfixCommits + 1));
 
-            var sha = context.CurrentBranch.Tip.Sha;
+            var sha = context.CurrentCommit.Sha;
             var releaseDate = ReleaseDateFinder.Execute(context.Repository, sha, version.Patch);
             var semanticVersion = new SemanticVersion
             {

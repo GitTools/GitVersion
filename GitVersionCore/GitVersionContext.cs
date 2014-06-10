@@ -16,9 +16,11 @@
         {
             Repository = repository;
             CurrentBranch = currentBranch;
+            CurrentCommit = CurrentBranch.Tip;
         }
 
         public IRepository Repository { get; private set; }
         public Branch CurrentBranch { get; private set; }
+        public Commit CurrentCommit { get; private set; }
     }
 }

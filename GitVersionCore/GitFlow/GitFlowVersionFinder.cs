@@ -6,7 +6,7 @@ namespace GitVersion
         {
             if (context.CurrentBranch.IsMaster())
             {
-                return new MasterVersionFinder().FindVersion(context.Repository, context.CurrentBranch.Tip);
+                return new MasterVersionFinder().FindVersion(context.Repository, context.CurrentCommit);
             }
 
             if (context.CurrentBranch.IsHotfix())
@@ -31,12 +31,10 @@ namespace GitVersion
 
             if (context.CurrentBranch.IsSupport())
             {
-                return new SupportVersionFinder().FindVersion(context.Repository, context.CurrentBranch.Tip);
+                return new SupportVersionFinder().FindVersion(context.Repository, context.CurrentCommit);
             }
 
             return new FeatureVersionFinder().FindVersion(context);
         }
     }
-
-
 }
