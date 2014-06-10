@@ -66,7 +66,6 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         task.InnerExecute();
     }
 
-
     [Test]
     public void StandardExecutionMode_CanDetermineTheVersionFromALocalFeature()
     {
@@ -79,27 +78,6 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         };
 
         task.InnerExecute();
-    }
-
-    [Test]
-    public void StandardExecutionMode_CannotDetermineTheVersionFromADetachedHead()
-    {
-        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
-
-        using (var repo = new Repository(repoPath))
-        {
-            repo.Checkout("469f851");
-            Assert.IsTrue(repo.Info.IsHeadDetached);
-        }
-
-        var task = new UpdateAssemblyInfo
-        {
-            BuildEngine = new MockBuildEngine(),
-            SolutionDirectory = repoPath,
-        };
-
-        var exception = Assert.Throws<WarningException>(task.InnerExecute);
-        Assert.AreEqual("It looks like the branch being examined is a detached Head pointing to commit '469f851'. Without a proper branch name GitVersion cannot determine the build version.", exception.Message);
     }
 
     [TestCase("Major")]
@@ -138,7 +116,6 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
 
         var exception = Assert.Throws<WarningException>(task.InnerExecute);
         Assert.AreEqual("Unexpected assembly versioning scheme 'Boom'.", exception.Message);
-
     }
 
     [SetUp]
@@ -148,12 +125,12 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         BuildServerList.Selector = arguments => new List<IBuildServer>();
     }
 
-
     [TearDown]
     public void TearDown()
     {
         BuildServerList.ResetSelector();
     }
+
     string CheckoutLocal(string repositoryPath, string monitoredReference)
     {
         var repoPath = Clone(repositoryPath);
@@ -164,5 +141,4 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         }
         return repoPath;
     }
-
 }

@@ -7,7 +7,6 @@ namespace GitVersion
 
     static class LibGitExtensions
     {
-
         public static DateTimeOffset When(this Commit commit)
         {
             return commit.Committer.When;
@@ -68,6 +67,11 @@ namespace GitVersion
         public static IEnumerable<Commit> CommitsPriorToThan(this Branch branch, DateTimeOffset olderThan)
         {
             return branch.Commits.SkipWhile(c => c.When() > olderThan);
+        }
+
+        public static bool IsDetachedHead(this Branch branch)
+        {
+            return branch.CanonicalName.Equals("(no branch)", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

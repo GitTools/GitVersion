@@ -1,6 +1,5 @@
 namespace GitVersion
 {
-    using System;
     using System.Linq;
     using LibGit2Sharp;
 
@@ -34,7 +33,7 @@ namespace GitVersion
 
         void EnsureHeadIsNotDetached(GitVersionContext context)
         {
-            if (!context.CurrentBranch.CanonicalName.Equals("(no branch)", StringComparison.OrdinalIgnoreCase))
+            if (!context.CurrentBranch.IsDetachedHead())
             {
                 return;
             }

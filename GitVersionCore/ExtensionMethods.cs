@@ -1,6 +1,7 @@
 namespace GitVersion
 {
     using System;
+    using System.Collections.Generic;
     using System.Text;
     using System.Text.RegularExpressions;
     using JetBrains.Annotations;
@@ -11,6 +12,7 @@ namespace GitVersion
         {
             return number % 2 != 0;
         }
+
         public static string TrimToFirstLine(this string s)
         {
             return s.Split(new[]
@@ -37,7 +39,6 @@ namespace GitVersion
             return value.Substring(startIndex);
         }
 
-
         public static string JsonEncode(this string value)
         {
             if (value != null)
@@ -59,5 +60,25 @@ namespace GitVersion
             return Regex.Replace(input, pattern, replace, options);
         }
 
+        public static T OnlyOrDefault<T>(this IEnumerable<T> source)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+
+            var list = source as IList<T>;
+
+            if (list != null && list.Count == 1)
+            {
+                return list[0];
+            }
+
+            using (var e = source.GetEnumerator())
+            {
+                if (!e.MoveNext()) return default(T);
+                var result = e.Current;
+                if (!e.MoveNext()) return result;
+            }
+
+            return default(T);
+        }
     }
 }
