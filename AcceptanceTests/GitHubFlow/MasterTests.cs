@@ -3,6 +3,7 @@
     using GitVersion;
     using global::AcceptanceTests;
     using global::AcceptanceTests.Helpers;
+    using LibGit2Sharp;
     using Shouldly;
     using Xunit;
 
@@ -17,6 +18,28 @@
                 fixture.Repository.MakeACommit();
                 fixture.Repository.MakeACommit();
                 fixture.Repository.MakeACommit();
+
+                // When
+                var result = fixture.ExecuteGitVersion();
+
+                result.ExitCode.ShouldBe(0);
+                result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("0.1.0+2");
+            }
+        }
+
+        [Fact]
+        public void GivenARepositoryWithCommitsButNoTagsWithDetachedHead_VersionShouldBe_0_1()
+        {
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                // Given
+                fixture.Repository.MakeACommit();
+                fixture.Repository.MakeACommit();
+                fixture.Repository.MakeACommit();
+
+                var commit = fixture.Repository.Head.Tip;
+                fixture.Repository.MakeACommit();
+                fixture.Repository.Checkout(commit);
 
                 // When
                 var result = fixture.ExecuteGitVersion();

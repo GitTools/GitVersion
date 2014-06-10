@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Weavers>
-  <Caseless />
-  <Fielder />
-  <Publicize />
-  <Visualize />
-  <Virtuosity />
-  <JetBrainsAnnotations />
+  <Caseless/>
+  <JetBrainsAnnotations/>
+  <Visualize/>
 </Weavers>

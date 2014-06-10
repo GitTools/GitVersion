@@ -44,7 +44,7 @@ namespace GitVersion
         {
             var qf = new CommitFilter
             {
-                Since = context.CurrentBranch,
+                Since = context.CurrentCommit,
                 Until = commit,
                 SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
             };
