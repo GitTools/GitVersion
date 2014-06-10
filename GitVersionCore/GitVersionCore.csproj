@@ -49,8 +49,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Visualize">
-      <HintPath>..\packages\Visualize.Fody.0.3.0.0\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\Visualize.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\Visualize.Fody.0.4.0.0\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\Visualize.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

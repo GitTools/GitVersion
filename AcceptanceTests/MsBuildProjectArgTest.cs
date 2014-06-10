@@ -1,6 +1,4 @@
-﻿
-
-namespace GitHubFlowVersion.AcceptanceTests
+﻿namespace GitHubFlowVersion.AcceptanceTests
 {
     using System.IO;
     using global::AcceptanceTests;
@@ -11,7 +9,6 @@ namespace GitHubFlowVersion.AcceptanceTests
 
     public class MsBuildProjectArgTest
     {
-
         [Fact]
         public void RunsMsBuildProvideViaCommandLineArg()
         {
@@ -25,7 +22,7 @@ namespace GitHubFlowVersion.AcceptanceTests
                 var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, projectFile: "TestBuildFile.proj", projectArgs: "/target:OutputResults");
 
                 result.ExitCode.ShouldBe(0);
-                result.Log.ShouldContain("FullSemVer: 1.2.4+0");
+                result.Log.ShouldContain("FullSemVer: 1.2.3+0");
             }
         }
     }

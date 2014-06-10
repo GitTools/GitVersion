@@ -25,16 +25,16 @@
         public SemanticVersion NextVersion()
         {
             var versionZero = new SemanticVersion();
-            var lastRelease = lastTaggedReleaseFinder.GetVersion().SemVer;
+            var lastRelease = lastTaggedReleaseFinder.GetVersion();
             var fileVersion = nextVersionTxtFileFinder.GetNextVersion();
             var mergedBranchVersion = mergedBranchesWithVersionFinder.GetVersion();
             var otherBranchVersion = unknownBranchFinder.FindVersion(context);
             if (otherBranchVersion != null && otherBranchVersion.PreReleaseTag != null && otherBranchVersion.PreReleaseTag.Name == "release")
                 otherBranchVersion.PreReleaseTag.Name = "beta";
 
-            var maxCalculated = new[]{ fileVersion, otherBranchVersion, mergedBranchVersion }.Max();
+            var maxCalculated = new[] { fileVersion, otherBranchVersion, mergedBranchVersion }.Max();
 
-            if (lastRelease == versionZero && maxCalculated == versionZero)
+            if (lastRelease.SemVer == versionZero && maxCalculated == versionZero)
             {
                 return new SemanticVersion
                 {
@@ -42,13 +42,18 @@
                 };
             }
 
-            if (maxCalculated <= lastRelease)
+            if (string.Equals(context.CurrentCommit.Sha, lastRelease.Commit.Sha))
+            {
+                return lastRelease.SemVer;
+            }
+
+            if (maxCalculated <= lastRelease.SemVer)
             {
                 return new SemanticVersion
                 {
-                    Major = lastRelease.Major,
-                    Minor = lastRelease.Minor,
-                    Patch = lastRelease.Patch + 1
+                    Major = lastRelease.SemVer.Major,
+                    Minor = lastRelease.SemVer.Minor,
+                    Patch = lastRelease.SemVer.Patch + 1
                 };
             }
 
