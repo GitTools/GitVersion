@@ -4,14 +4,14 @@ namespace GitVersion
     using System.Runtime.Serialization;
 
     [Serializable]
-    public class ErrorException : Exception
+    public class WarningException : Exception
     {
-        public ErrorException(string message)
+        public WarningException(string message)
             : base(message)
         {
         }
 
-        protected ErrorException(SerializationInfo info, StreamingContext context)
+        protected WarningException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

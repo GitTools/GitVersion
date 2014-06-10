@@ -40,7 +40,7 @@ namespace GitVersion
             }
 
             var message = string.Format("It looks like the branch being examined is a detached Head pointing to commit '{0}'. Without a proper branch name GitVersion cannot determine the build version.", context.CurrentCommit.Id.ToString(7));
-            throw new ErrorException(message);
+            throw new WarningException(message);
         }
 
         void EnsureLocalBranchExists(IRepository repository, string branchName)
@@ -51,7 +51,7 @@ namespace GitVersion
             }
 
             var existingBranches = string.Format("'{0}'", string.Join("', '", repository.Branches.Select(x => x.CanonicalName)));
-            throw new ErrorException(string.Format("This repository doesn't contain a branch named '{0}'. Please create one. Existing branches: {1}", branchName, existingBranches));
+            throw new WarningException(string.Format("This repository doesn't contain a branch named '{0}'. Please create one. Existing branches: {1}", branchName, existingBranches));
         }
     }
 }

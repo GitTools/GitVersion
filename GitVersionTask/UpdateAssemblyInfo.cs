@@ -28,7 +28,7 @@
 
         public UpdateAssemblyInfo()
         {
-            CompileFiles = new ITaskItem[] {};
+            CompileFiles = new ITaskItem[] { };
             logger = new TaskLogger(this);
             Logger.WriteInfo = this.LogInfo;
             Logger.WriteWarning = this.LogWarning;
@@ -41,10 +41,10 @@
                 InnerExecute();
                 return true;
             }
-            catch (ErrorException errorException)
+            catch (WarningException errorException)
             {
-                logger.LogError(errorException.Message);
-                return false;
+                logger.LogWarning(errorException.Message);
+                return true;
             }
             catch (Exception exception)
             {
@@ -64,7 +64,7 @@
             TempFileTracker.DeleteTempFiles();
 
             InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
-            
+
             SemanticVersion semanticVersion;
             if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion))
             {
@@ -88,7 +88,7 @@
                 return avs;
             }
 
-            throw new ErrorException(string.Format("Unexpected assembly versioning scheme '{0}'.", assemblyVersioningScheme));
+            throw new WarningException(string.Format("Unexpected assembly versioning scheme '{0}'.", assemblyVersioningScheme));
         }
 
         void CreateTempAssemblyInfo(SemanticVersion semanticVersion, AssemblyVersioningScheme avs)
@@ -96,7 +96,7 @@
             var assemblyInfoBuilder = new AssemblyInfoBuilder
                                       {
                                           SemanticVersion = semanticVersion,
-                                          AssemblyVersioningScheme = avs, 
+                                          AssemblyVersioningScheme = avs,
                                           AppendRevision = AppendRevision
                                       };
             var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText();
@@ -105,6 +105,5 @@
             AssemblyInfoTempFilePath = Path.Combine(TempFileTracker.TempPath, tempFileName);
             File.WriteAllText(AssemblyInfoTempFilePath, assemblyInfo);
         }
-
     }
 }

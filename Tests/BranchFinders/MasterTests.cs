@@ -18,7 +18,7 @@ public class MasterTests
                      };
         var finder = new MasterVersionFinder();
 
-        var exception = Assert.Throws<ErrorException>(() => finder.FindVersion(new MockRepository
+        var exception = Assert.Throws<WarningException>(() => finder.FindVersion(new MockRepository
         {
             Branches = new MockBranchCollection
             {

@@ -98,7 +98,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
             SolutionDirectory = repoPath,
         };
 
-        var exception = Assert.Throws<ErrorException>(task.InnerExecute);
+        var exception = Assert.Throws<WarningException>(task.InnerExecute);
         Assert.AreEqual("It looks like the branch being examined is a detached Head pointing to commit '469f851'. Without a proper branch name GitVersion cannot determine the build version.", exception.Message);
     }
 
@@ -136,7 +136,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
             AssemblyVersioningScheme = "Boom"
         };
 
-        var exception = Assert.Throws<ErrorException>(task.InnerExecute);
+        var exception = Assert.Throws<WarningException>(task.InnerExecute);
         Assert.AreEqual("Unexpected assembly versioning scheme 'Boom'.", exception.Message);
 
     }

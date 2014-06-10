@@ -15,7 +15,7 @@
             {
                 if (exception.Message.Contains("LibGit2Sharp.Core.NativeMethods") || exception.Message.Contains("FilePathMarshaler"))
                 {
-                    throw new ErrorException("Restart of the process may be required to load an updated version of LibGit2Sharp.");
+                    throw new WarningException("Restart of the process may be required to load an updated version of LibGit2Sharp.");
                 }
                 throw;
             }

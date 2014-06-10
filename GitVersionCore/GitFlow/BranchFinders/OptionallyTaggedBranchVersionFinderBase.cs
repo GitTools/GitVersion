@@ -105,7 +105,7 @@ namespace GitVersion
 
             if (version.PreReleaseTag.HasTag())
             {
-                throw new ErrorException(msg + string.Format("Supported format is '{0}-Major.Minor.Patch'.", branchType.ToString().ToLowerInvariant()));
+                throw new WarningException(msg + string.Format("Supported format is '{0}-Major.Minor.Patch'.", branchType.ToString().ToLowerInvariant()));
             }
 
             switch (branchType)
@@ -113,7 +113,7 @@ namespace GitVersion
                 case BranchType.Hotfix:
                     if (version.Patch == 0)
                     {
-                        throw new ErrorException(msg + "A patch segment different than zero is required.");
+                        throw new WarningException(msg + "A patch segment different than zero is required.");
                     }
 
                     break;
@@ -121,7 +121,7 @@ namespace GitVersion
                 case BranchType.Release:
                     if (version.Patch != 0)
                     {
-                        throw new ErrorException(msg + "A patch segment equals to zero is required.");
+                        throw new WarningException(msg + "A patch segment equals to zero is required.");
                     }
 
                     break;
@@ -154,7 +154,7 @@ namespace GitVersion
             if (ancestor == null)
             {
                 var message = string.Format("A {0} branch is expected to branch off of '{1}'. However, branch '{1}' and '{2}' do not share a common ancestor.", branchType, baseBranchName, branch.Name);
-                throw new ErrorException(message);
+                throw new WarningException(message);
             }
 
             var filter = new CommitFilter

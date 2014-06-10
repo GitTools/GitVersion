@@ -31,7 +31,7 @@ namespace GitVersion
 
             if (!LooksLikeAValidPullRequestNumber(issueNumber))
             {
-                throw new ErrorException(string.Format("Unable to extract pull request number from '{0}'.",
+                throw new WarningException(string.Format("Unable to extract pull request number from '{0}'.",
                     pullRequestBranch.CanonicalName));
             }
 

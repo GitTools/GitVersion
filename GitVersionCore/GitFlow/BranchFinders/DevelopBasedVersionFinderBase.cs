@@ -65,7 +65,7 @@ namespace GitVersion
                 return ancestor;
             }
 
-            throw new ErrorException(
+            throw new WarningException(
                 string.Format("A {0} branch is expected to branch off of 'develop'. "
                               + "However, branch 'develop' and '{1}' do not share a common ancestor."
                     , branchType, branch.Name));

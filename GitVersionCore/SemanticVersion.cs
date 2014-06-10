@@ -90,7 +90,7 @@ namespace GitVersion
         {
             SemanticVersion semanticVersion;
             if (!TryParse(version, out semanticVersion))
-                throw new ErrorException(string.Format("Failed to parse {0} into a Semantic Version", version));
+                throw new WarningException(string.Format("Failed to parse {0} into a Semantic Version", version));
 
             return semanticVersion;
         }

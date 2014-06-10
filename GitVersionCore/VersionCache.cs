@@ -14,7 +14,7 @@
                 var branch = repo.Head;
                 if (branch.Tip == null)
                 {
-                    throw new ErrorException("No Tip found. Has repo been initialized?");
+                    throw new WarningException("No Tip found. Has repo been initialized?");
                 }
 
                 var ticks = DirectoryDateFinder.GetLastDirectoryWrite(gitDirectory);

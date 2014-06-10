@@ -32,7 +32,7 @@
         {
             if (string.IsNullOrEmpty(gitDirectory))
             {
-                throw new ErrorException("Failed to find .git directory on agent");
+                throw new WarningException("Failed to find .git directory on agent");
             }
 
             GitHelper.NormalizeGitDirectory(gitDirectory, arguments);

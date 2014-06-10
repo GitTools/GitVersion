@@ -116,7 +116,7 @@ public class ArgumentParserTests
     [Test]
     public void Unknown_output_should_throw()
     {
-        var exception = Assert.Throws<ErrorException>(() => ArgumentParser.ParseArguments("targetDirectoryPath -output invalid_value"));
+        var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments("targetDirectoryPath -output invalid_value"));
         Assert.AreEqual("Value 'invalid_value' cannot be parsed as output type, please use 'json' or 'buildserver'", exception.Message);
     }
 
@@ -154,14 +154,14 @@ public class ArgumentParserTests
     [Test]
     public void Wrong_number_of_arguments_should_throw()
     {
-        var exception = Assert.Throws<ErrorException>(() => ArgumentParser.ParseArguments("targetDirectoryPath -l logFilePath extraArg"));
+        var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments("targetDirectoryPath -l logFilePath extraArg"));
         exception.Message.ShouldBe("Could not parse command line parameter 'extraArg'.");
     }
 
     [Test]
     public void Unknown_argument_should_throw()
     {
-        var exception = Assert.Throws<ErrorException>(() => ArgumentParser.ParseArguments("targetDirectoryPath -x logFilePath"));
+        var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments("targetDirectoryPath -x logFilePath"));
         Assert.AreEqual("Could not parse command line parameter '-x'.", exception.Message);
     }
 

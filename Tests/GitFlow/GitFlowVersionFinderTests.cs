@@ -19,7 +19,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             var finder = new GitVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext(repo)));
+            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo)));
         }
     }
 
@@ -35,7 +35,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             var finder = new GitVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext(repo)));
+            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo)));
         }
     }
 
@@ -56,7 +56,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             var finder = new GitVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext(repo, feature)));
+            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, feature)));
         }
     }
 
@@ -77,7 +77,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             var finder = new GitVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext(repo, feature)));
+            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, feature)));
         }
     }
 
@@ -98,7 +98,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             var finder = new GitVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext(repo, pull)));
+            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, pull)));
         }
     }
 
@@ -166,7 +166,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             var finder = new GitVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext(repo, feature)));
+            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, feature)));
         }
     }
 }

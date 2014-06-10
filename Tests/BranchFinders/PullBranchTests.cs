@@ -35,7 +35,7 @@ public class PullBranchTests : Lg2sHelperBase
 
             var finder = new PullVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext(repo, pullBranch)));
+            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, pullBranch)));
         }
     }
 

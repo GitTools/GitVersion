@@ -18,7 +18,7 @@ public class ReleaseTests : Lg2sHelperBase
 
             var finder = new ReleaseVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext(repo, releaseBranch)));
+            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, releaseBranch)));
         }
     }
 
@@ -35,7 +35,7 @@ public class ReleaseTests : Lg2sHelperBase
 
             var finder = new ReleaseVersionFinder();
 
-            Assert.Throws<ErrorException>(() => finder.FindVersion(new GitVersionContext(repo, releaseBranch)));
+            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, releaseBranch)));
         }
     }
 

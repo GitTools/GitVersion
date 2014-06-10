@@ -22,7 +22,7 @@
         {
             if (string.IsNullOrEmpty(gitDirectory))
             {
-                throw new ErrorException("Failed to find .git directory on agent. Please make sure agent checkout mode is enabled for you VCS roots - http://confluence.jetbrains.com/display/TCD8/VCS+Checkout+Mode");
+                throw new WarningException("Failed to find .git directory on agent. Please make sure agent checkout mode is enabled for you VCS roots - http://confluence.jetbrains.com/display/TCD8/VCS+Checkout+Mode");
             }
 
             var repoBranch = Environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH");

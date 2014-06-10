@@ -86,14 +86,14 @@ namespace GitVersion
             if (refs.Count == 0)
             {
                 var message = string.Format("Couldn't find any remote tips from remote '{0}' pointing at the commit '{1}'.", remote.Url, headTipSha);
-                throw new ErrorException(message);
+                throw new WarningException(message);
             }
 
             if (refs.Count > 1)
             {
                 var names = string.Join(", ", refs.Select(r => r.CanonicalName));
                 var message = string.Format("Found more than one remote tip from remote '{0}' pointing at the commit '{1}'. Unable to determine which one to use ({2}).", remote.Url, headTipSha, names);
-                throw new ErrorException(message);
+                throw new WarningException(message);
             }
 
             var canonicalName = refs[0].CanonicalName;
@@ -102,7 +102,7 @@ namespace GitVersion
             if (!canonicalName.StartsWith("refs/pull/"))
             {
                 var message = string.Format("Remote tip '{0}' from remote '{1}' doesn't look like a valid pull request.", canonicalName, remote.Url);
-                throw new ErrorException(message);
+                throw new WarningException(message);
             }
 
             var fakeBranchName = canonicalName.Replace("refs/pull/", "refs/heads/pull/");
@@ -168,7 +168,7 @@ namespace GitVersion
             }
 
             var message = string.Format("{0} remote(s) have been detected. When being run on a TeamCity agent, the Git repository is expected to bear one (and no more than one) remote.", howMany);
-            throw new ErrorException(message);
+            throw new WarningException(message);
         }
     }
 }

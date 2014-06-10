@@ -81,7 +81,7 @@ namespace GitVersion
                             string part;
                             if (!variables.TryGetValue(arguments.VersionPart, out part))
                             {
-                                throw new ErrorException(string.Format("Could not extract '{0}' from the available parts.", arguments.VersionPart));
+                                throw new WarningException(string.Format("Could not extract '{0}' from the available parts.", arguments.VersionPart));
                             }
                             Console.WriteLine(part);
                             break;
@@ -110,17 +110,17 @@ namespace GitVersion
                     DeleteHelper.DeleteGitRepository(gitPreparer.DynamicGitRepositoryPath);
                 }
             }
-            catch (ErrorException exception)
+            catch (WarningException exception)
             {
                 var error = string.Format("An error occurred:\r\n{0}", exception.Message);
-                Logger.WriteError(error);
+                Logger.WriteWarning(error);
 
                 exitCode = 1;
             }
             catch (Exception exception)
             {
                 var error = string.Format("An unexpected error occurred:\r\n{0}", exception);
-                Logger.WriteWarning(error);
+                Logger.WriteError(error);
 
                 exitCode = 1;
             }
@@ -203,7 +203,7 @@ namespace GitVersion
                 GetEnvironmentalVariables(variables));
 
             if (results != 0)
-                throw new ErrorException("MsBuild execution failed, non-zero return code");
+                throw new WarningException("MsBuild execution failed, non-zero return code");
 
             return true;
         }
@@ -218,7 +218,7 @@ namespace GitVersion
                 null, args.Exec, args.ExecArgs, workingDirectory,
                 GetEnvironmentalVariables(variables));
             if (results != 0)
-                throw new ErrorException(string.Format("Execution of {0} failed, non-zero return code", args.Exec));
+                throw new WarningException(string.Format("Execution of {0} failed, non-zero return code", args.Exec));
 
             return true;
         }

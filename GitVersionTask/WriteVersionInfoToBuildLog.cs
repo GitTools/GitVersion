@@ -9,7 +9,6 @@
 
     public class WriteVersionInfoToBuildLog : Task
     {
-
         [Required]
         public string SolutionDirectory { get; set; }
 
@@ -29,10 +28,10 @@
                 InnerExecute();
                 return true;
             }
-            catch (ErrorException errorException)
+            catch (WarningException errorException)
             {
-                logger.LogError(errorException.Message);
-                return false;
+                logger.LogWarning(errorException.Message);
+                return true;
             }
             catch (Exception exception)
             {

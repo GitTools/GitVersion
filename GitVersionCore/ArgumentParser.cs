@@ -147,14 +147,14 @@ namespace GitVersion
                     OutputType outputType;
                     if (!Enum.TryParse(value, true, out outputType))
                     {
-                        throw new ErrorException(string.Format("Value '{0}' cannot be parsed as output type, please use 'json' or 'buildserver'", value));
+                        throw new WarningException(string.Format("Value '{0}' cannot be parsed as output type, please use 'json' or 'buildserver'", value));
                     }
 
                     arguments.Output = outputType;
                     continue;
                 }
 
-                throw new ErrorException(string.Format("Could not parse command line parameter '{0}'.", name));
+                throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", name));
             }
             return arguments;
         }

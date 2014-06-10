@@ -26,7 +26,7 @@ namespace GitVersion
                 }
             }
 
-            throw new ErrorException("The head of a support branch should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
+            throw new WarningException("The head of a support branch should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
         }
 
         SemanticVersion BuildVersion(IRepository repository, Commit tip, int major, int minor, int patch)
