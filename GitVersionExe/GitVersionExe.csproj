@@ -127,7 +127,7 @@
     <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyInstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyUninstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.nuspec" DestinationFolder="$(SolutionDir)NuGetExeBuild" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.Portable.nuspec" DestinationFolder="$(SolutionDir)NuGetExeBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetExeBuild" MetadataAssembly="$(OutputPath)GitVersion.exe" />
     <!-- NugetCommandLineBuild -->
     <MakeDir Directories="$(SolutionDir)NuGetCommandLineBuild" />
@@ -147,11 +147,16 @@
     <Copy SourceFiles="$(ProjectDir)GemAssets\gitversion" DestinationFolder="$(SolutionDir)GemBuild\bin" />
     <Copy SourceFiles="$(ProjectDir)GemAssets\gitversion.gemspec" DestinationFolder="$(SolutionDir)GemBuild" />
 
+    <PropertyGroup>
+      <GemVersion Condition="'$(GitVersion_PreReleaseTag)' == ''">$(GitVersion_MajorMinorPatch)</GemVersion>
+      <GemVersion Condition="'$(GitVersion_PreReleaseTag)' != ''">$(GitVersion_MajorMinorPatch).$(GitVersion_PreReleaseTag)</GemVersion>
+    </PropertyGroup>
+    
     <ReplaceFileText
         InputFilename="$(SolutionDir)GemBuild\gitversion.gemspec"
         OutputFilename="$(SolutionDir)GemBuild\gitversion.gemspec"
         MatchExpression="\$version\$"
-        ReplacementText="$(GitVersion_SemVer)"
+        ReplacementText="$(GemVersion)"
         Condition="'$(GitVersion_SemVer)' != ''"/>
     
     <Exec Command="gem build gitversion.gemspec" ContinueOnError="True"
