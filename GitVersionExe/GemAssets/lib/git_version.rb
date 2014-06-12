@@ -23,20 +23,45 @@ class GitVersion
   end
 
   def gitversion_exe
-    @gitversion_exe ||= File.join(File.dirname(__FILE__), '../bin/GitVersion.exe')
+    @gitversion_exe ||= File.expand_path(File.join(File.dirname(__FILE__), '../bin/GitVersion.exe'))
+  end
+
+  def inspect
+    unless @json
+
+      return <<EOF
+#{to_s}
+Will invoke #{cmd_string} when first used.
+EOF
+
+    else
+
+      return <<EOF
+#{to_s}
+Invoked #{cmd_string} and parsed its output:
+#{json.inspect}
+EOF
+
+    end
   end
 
   private
   def run_gitversion
-    cmd = [gitversion_exe]
-    cmd << args
-    cmd = cmd.flatten.reject(&:nil?)
-
     stdout_and_stderr, status = Open3.capture2e(*cmd)
 
-    raise StandardError.new("Failed running #{cmd.join(' ')}, #{status}. We received the following output:\n#{stdout_and_stderr}") unless status.success?
+    raise StandardError.new("Failed running #{cmd_string}, #{status}. We received the following output:\n#{stdout_and_stderr}") unless status.success?
 
     JSON.parse(stdout_and_stderr)
+  end
+
+  def cmd
+    cmd = [gitversion_exe]
+    cmd << args
+    cmd.flatten.reject(&:nil?)
+  end
+
+  def cmd_string
+    cmd.join(' ')
   end
 
   def pascal_case(str)

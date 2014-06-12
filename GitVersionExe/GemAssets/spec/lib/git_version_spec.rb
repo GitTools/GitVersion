@@ -2,7 +2,7 @@ require 'git_version'
 
 describe GitVersion do
   describe 'defaults' do
-    its(:gitversion_exe) { should match(%r|\.\./bin/GitVersion.exe$|) }
+    its(:gitversion_exe) { should match(%r|/bin/GitVersion.exe$|) }
     its(:args) { should be_empty }
   end
 
@@ -77,6 +77,25 @@ describe GitVersion do
 
       it 'should yield nil' do
         expect(subject.is_nil).to be_nil
+      end
+    end
+  end
+
+  describe '#inspect' do
+    context 'no properties accessed yet' do
+      it 'writes what will happen' do
+        expect(subject.inspect).to match(/.+GitVersion.+\nWill invoke .+GitVersion.exe when first used./)
+      end
+    end
+
+    context 'properties accessed' do
+      before {
+        allow(Open3).to receive(:capture2e).and_return(['{ "Sha": 1234 }', OpenStruct.new(success?: true)])
+      }
+
+      it 'writes what happened' do
+        subject.sha
+        expect(subject.inspect).to match(/.+GitVersion.+\nInvoked .+GitVersion.exe and parsed its output:\n.+/)
       end
     end
   end
