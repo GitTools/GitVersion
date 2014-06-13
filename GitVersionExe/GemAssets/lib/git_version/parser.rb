@@ -1,5 +1,6 @@
 require 'json'
 require 'open3'
+require 'tempfile'
 
 module GitVersion
   class Parser
@@ -28,41 +29,65 @@ module GitVersion
     end
 
     def inspect
-      unless @json
-
-        return <<EOF
-#{to_s}
-Will invoke #{cmd_string} when first used.
-EOF
-
-      else
-
-        return <<EOF
-#{to_s}
-Invoked #{cmd_string} and parsed its output:
-#{json.inspect}
-EOF
-
-      end
+      (inspect_past if @json) || inspect_future
     end
 
     private
     def run_gitversion
-      stdout_and_stderr, status = Open3.capture2e(*cmd)
+      cmd, log_dir, log_file = needs_log_file(command)
 
-      raise StandardError.new("Failed running #{cmd_string}, #{status}. We received the following output:\n#{stdout_and_stderr}") unless status.success?
+      begin
+        stdout_and_stderr, status = Open3.capture2e(*cmd)
 
-      JSON.parse(stdout_and_stderr)
+        raise_on_error(status, cmd, stdout_and_stderr, log_file)
+
+        JSON.parse(stdout_and_stderr)
+      ensure
+        FileUtils.rm_rf(log_dir) unless log_dir.nil?
+      end
     end
 
-    def cmd
+    def raise_on_error(status, cmd, stdout_and_stderr, log_file)
+      message = <<MSG
+Failed running #{cmd.join(' ')}, #{status}.
+
+The log file written by GitVersion.exe contains:
+#{File.read(log_file) if File.readable?(log_file)}
+
+We received the following output:
+#{stdout_and_stderr}
+MSG
+      raise StandardError.new(message) unless status.success?
+    end
+
+    def command
       cmd = [gitversion_exe]
       cmd << args
       cmd.flatten.reject(&:nil?)
     end
 
-    def cmd_string
-      cmd.join(' ')
+    def needs_log_file(cmd)
+      log_dir, log_file = log(cmd)
+
+      cmd << '/l' << log_file if log_dir
+
+      [cmd, log_dir, log_file]
+    end
+
+    def log(cmd)
+      if log_file = log_file_specified_by_user(cmd)
+        return [nil, log_file]
+      end
+
+      log_dir = Dir.mktmpdir('gitversion-log-')
+      log_file = File.join(log_dir, 'gitversion.log')
+
+      [log_dir, log_file]
+    end
+
+    def log_file_specified_by_user(cmd)
+      return unless index = cmd.find_index('/l')
+      cmd[index + 1]
     end
 
     def pascal_case(str)
@@ -71,6 +96,21 @@ EOF
       .split('_')
       .inject([]) { |buffer, e| buffer.push(e.capitalize) }
       .join
+    end
+
+    def inspect_future
+      <<MSG
+#{to_s}
+Will invoke #{command.join(' ')} when first used.
+MSG
+    end
+
+    def inspect_past
+      <<MSG
+#{to_s}
+Invoked #{command.join(' ')} and parsed its output:
+#{json.inspect}
+MSG
     end
   end
 end

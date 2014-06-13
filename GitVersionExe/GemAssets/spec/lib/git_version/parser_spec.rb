@@ -32,15 +32,21 @@ describe GitVersion::Parser do
       it 'should pass args to the executable' do
         subject.sha
 
-        expect(Open3).to have_received(:capture2e).with(*([subject.gitversion_exe] + args))
+        # with(array_including(exe_and_args)) doesn't seem to work here.
+        expect(Open3).to have_received(:capture2e) do |*with|
+          exe_and_args = [subject.gitversion_exe] + args
+          expect(with).to include(*exe_and_args)
+        end
       end
     end
 
     context 'GitVersion.exe fails' do
-      let(:gitversion_exe_return) { ['some error output', OpenStruct.new(success?: false)] }
+      context 'without error log' do
+        let(:gitversion_exe_return) { ['some error output', OpenStruct.new(success?: false)] }
 
-      it 'should fail' do
-        expect { subject.it_does_not_matter }.to raise_error(StandardError, /Failed running.*some error output/m)
+        it 'should fail' do
+          expect { subject.it_does_not_matter }.to raise_error(StandardError, /Failed running.*some error output/m)
+        end
       end
     end
   end
@@ -52,6 +58,64 @@ describe GitVersion::Parser do
 
     its(:json) { should_not be_nil }
     its(:sha) { should match(/[0-9 a-f]{40}/) }
+
+    context 'GitVersion.exe fails' do
+      let(:repository) {
+        tmp = Dir.mktmpdir('repository-')
+
+        Dir.chdir(tmp) { `git init` }
+
+        tmp
+      }
+
+      after {
+        FileUtils.rm_rf(repository)
+      }
+
+      context 'without log specified' do
+        subject { described_class.new(repository) }
+
+        it 'should write the log contents' do
+          expect { subject.json }.to raise_error(StandardError, /No Tip found\. Has repo been initialized\?/m)
+        end
+      end
+
+      context 'with log specified by the user' do
+        let(:log_file) { File.join(Dir.mktmpdir('log-path-'), 'log.txt') }
+
+        subject { described_class.new([repository, '/l', log_file]) }
+
+        after {
+          FileUtils.rm_rf(File.dirname(log_file))
+        }
+
+        it 'should write the log contents' do
+          expect { subject.json }.to raise_error(StandardError, /No Tip found\. Has repo been initialized\?/m)
+        end
+
+        it 'should use the user-supplied log file' do
+          allow(Open3).to receive(:capture2e)
+
+          subject.json rescue nil
+
+          expect(Open3).to have_received(:capture2e) do |*with|
+            log_switch_and_user_log_file = ['/l', log_file]
+            expect(with).to include(*log_switch_and_user_log_file)
+          end
+        end
+
+        it 'should have only one log switch' do
+          allow(Open3).to receive(:capture2e)
+
+          subject.json rescue nil
+
+          expect(Open3).to have_received(:capture2e) do |*with|
+            one_log_switch = Proc.new { |args| args.one? { |arg| arg == '/l' } }
+            expect(with).to satisfy { |args| one_log_switch.call(args) }
+          end
+        end
+      end
+    end
   end
 
   describe 'accessing properties' do
