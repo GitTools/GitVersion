@@ -60,8 +60,6 @@
     <Compile Include="AssemblyInfoFileUpdate.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GemAssets\gitversion" />
-    <None Include="GemAssets\gitversion.gemspec" />
     <None Include="NugetAssets\chocolateyInstall.ps1">
       <SubType>Designer</SubType>
     </None>
@@ -109,12 +107,14 @@
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.nuspec" DestinationFolder="$(SolutionDir)NuGetExeBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetExeBuild" MetadataAssembly="$(OutputPath)GitVersion.exe" />
     <!-- Gem -->
-    <MakeDir Directories="$(SolutionDir)GemBuild" />
-    <MakeDir Directories="$(SolutionDir)GemBuild\bin" />
     <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(SolutionDir)GemBuild\bin" />
     <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(SolutionDir)GemBuild\bin" />
-    <Copy SourceFiles="$(ProjectDir)GemAssets\gitversion" DestinationFolder="$(SolutionDir)GemBuild\bin" />
-    <Copy SourceFiles="$(ProjectDir)GemAssets\gitversion.gemspec" DestinationFolder="$(SolutionDir)GemBuild" />
+    <ItemGroup>
+      <GemFiles Include="$(ProjectDir)GemAssets\bin*\**\*.*" />
+      <GemFiles Include="$(ProjectDir)GemAssets\lib*\**\*.*" />
+      <GemFiles Include="$(ProjectDir)GemAssets\*.gemspec" />
+    </ItemGroup>
+    <Copy SourceFiles="@(GemFiles)" DestinationFiles="@(GemFiles->'$(SolutionDir)GemBuild\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
