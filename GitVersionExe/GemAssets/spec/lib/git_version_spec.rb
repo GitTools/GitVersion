@@ -3,7 +3,7 @@ require 'git_version'
 describe GitVersion do
   include described_class
 
-  it 'creates a GitVersionParser' do
+  it 'should create a ' + GitVersion::Parser.to_s do
     expect(git_version).to be_an_instance_of(GitVersion::Parser)
   end
 end

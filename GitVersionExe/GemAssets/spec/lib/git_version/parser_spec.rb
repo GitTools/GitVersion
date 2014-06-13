@@ -83,7 +83,7 @@ describe GitVersion::Parser do
 
   describe '#inspect' do
     context 'no properties accessed yet' do
-      it 'writes what will happen' do
+      it 'should write what will happen' do
         expect(subject.inspect).to match(/.+GitVersion.+\nWill invoke .+GitVersion.exe when first used./)
       end
     end
@@ -93,7 +93,7 @@ describe GitVersion::Parser do
         allow(Open3).to receive(:capture2e).and_return(['{ "Sha": 1234 }', OpenStruct.new(success?: true)])
       }
 
-      it 'writes what happened' do
+      it 'should write what happened' do
         subject.sha
         expect(subject.inspect).to match(/.+GitVersion.+\nInvoked .+GitVersion.exe and parsed its output:\n.+/)
       end
