@@ -141,11 +141,13 @@
     <ItemGroup>
       <GemFiles Include="$(ProjectDir)GemAssets\bin*\**\*.*" />
       <GemFiles Include="$(ProjectDir)GemAssets\lib*\**\*.*" />
+      <GemFiles Include="$(ProjectDir)GemAssets\spec*\**\*.*" />
       <GemFiles Include="$(ProjectDir)GemAssets\*.gemspec" />
+      <GemFiles Include="$(ProjectDir)GemAssets\.rspec" />
+      <GemFiles Include="$(ProjectDir)GemAssets\Guardfile" />
+      <GemFiles Include="$(ProjectDir)GemAssets\Gemfile" />
     </ItemGroup>
     <Copy SourceFiles="@(GemFiles)" DestinationFiles="@(GemFiles->'$(SolutionDir)GemBuild\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="$(ProjectDir)GemAssets\gitversion" DestinationFolder="$(SolutionDir)GemBuild\bin" />
-    <Copy SourceFiles="$(ProjectDir)GemAssets\gitversion.gemspec" DestinationFolder="$(SolutionDir)GemBuild" />
 
     <PropertyGroup>
       <GemVersion Condition="'$(GitVersion_PreReleaseTag)' == ''">$(GitVersion_MajorMinorPatch)</GemVersion>
