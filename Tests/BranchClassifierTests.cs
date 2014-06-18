@@ -43,4 +43,13 @@ public class BranchClassifierTests
         Assert.IsTrue(new MockBranch("fix for issue xxx","/pull/4").IsPullRequest());
         Assert.IsFalse(new MockBranch("hotfix1","").IsPullRequest());
     }
+    [Test]
+    public void IsSupport()
+    {
+        Assert.IsTrue(new MockBranch("/support/support-1").IsSupport());
+        Assert.IsTrue(new MockBranch("/support/net35").IsSupport());
+        Assert.IsTrue(new MockBranch("support-1").IsSupport());
+        Assert.IsTrue(new MockBranch("support-net35").IsSupport());
+        Assert.IsFalse(new MockBranch("hotfix1", "").IsSupport());
+    }
 }
