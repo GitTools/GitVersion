@@ -10,6 +10,10 @@ namespace GitVersion
             var bmd = semanticVersion.BuildMetaData;
             var majorMinorPatch = string.Format("{0}.{1}.{2}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch);
             var commitsSinceTag = (bmd.CommitsSinceTag ?? 0).ToString().PadLeft(3, '0');
+
+            //If there's no branch specified, make it a M.m.p.b format version.
+            if (String.IsNullOrWhiteSpace(bmd.Branch)) return string.Format("{0}.{1}", majorMinorPatch, bmd.CommitsSinceTag ?? 0);
+
             var branch = bmd.Branch.ToLower();
 
             //The following is in heirarchical order for NuGet versioning, meaning that a hotfix version supercedes a develop version, a release version supercedes a hotfix etc.

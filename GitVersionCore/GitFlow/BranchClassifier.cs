@@ -69,7 +69,7 @@ namespace GitVersion
 
         public static bool IsSupport(this Branch branch)
         {
-            return branch.Name.ToLower().Contains("support");
+            return branch.Name.ToLower().StartsWith("support-");
         }
     }
 }

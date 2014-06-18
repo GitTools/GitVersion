@@ -71,10 +71,10 @@ namespace GitVersion
             {
                 var branch = Regex.Match(message, "Release-(?<branch>.*)").Groups["branch"].Value;
                 var lastBranchPart = branch.Split('/', '-').Last();
-
-                if (!char.IsNumber(lastBranchPart.First()) || !lastBranchPart.Contains("."))
+                
+                if (lastBranchPart.Length == 0 || !char.IsNumber(lastBranchPart.First()) || !lastBranchPart.Contains("."))
                 {
-                    return false;
+                    return false; 
                 }
 
                 versionPart = lastBranchPart;
@@ -85,7 +85,7 @@ namespace GitVersion
                 var branch = Regex.Match(message, "Finish (?<branch>.*)").Groups["branch"].Value;
                 var lastBranchPart = branch.Split('/', '-').Last();
 
-                if (!char.IsNumber(lastBranchPart.First()) || !lastBranchPart.Contains("."))
+                if (lastBranchPart.Length == 0 || !char.IsNumber(lastBranchPart.First()) || !lastBranchPart.Contains("."))
                 {
                     return false;
                 }

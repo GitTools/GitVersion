@@ -25,9 +25,7 @@
         [TestCase(0, 1, 0, "0.Branch.release/0.1.0", "0.1.0-rc000")]
         [TestCase(0, 1, 0, "0.Branch.release", "0.1.0-rc000")]
         [TestCase(0, 1, 0, "0.Branch.master", "0.1.0")]
-        [TestCase(5, 1, 0, "0.Branch.support/support-net35", "0.1.0-sptNet35c5")]
-        [TestCase(5, 1, 0, "0.Branch.support-net35", "0.1.0-sptNet35c5")]
-        [TestCase(5, 1, 0, "0.Branch.support/net35", "0.1.0-sptNet35c5")]
+        [TestCase(0, 1, 0, "5.Branch.support-net35", "0.1.0-sptNet35c005")]              
         public void GetVersion(int major, int minor, int patch, string buildMetadata, string expectedVersion)
         {
             var semVer = new SemanticVersion
