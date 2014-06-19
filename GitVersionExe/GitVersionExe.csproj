@@ -66,6 +66,7 @@
     <None Include="NugetAssets\chocolateyUninstall.ps1">
       <SubType>Designer</SubType>
     </None>
+    <None Include="NugetAssets\GitVersion.CommandLine.nuspec" />
     <None Include="NugetAssets\GitVersion.nuspec">
       <SubType>Designer</SubType>
     </None>
@@ -97,6 +98,28 @@
     </ItemGroup>
     <Delete Files="@(ExeFilesToDelete)" />
   </Target>
+  <UsingTask TaskName="ReplaceFileText" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+    <ParameterGroup>
+      <InputFilename ParameterType="System.String" Required="true" />
+      <OutputFilename ParameterType="System.String" Required="true" />
+      <MatchExpression ParameterType="System.String" Required="true" />
+      <ReplacementText ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="System.Core" />
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+            File.WriteAllText(
+                OutputFilename,
+                Regex.Replace(File.ReadAllText(InputFilename), MatchExpression, ReplacementText)
+                );
+          ]]>
+      </Code>
+    </Task>
+  </UsingTask>
   <Target Name="AfterBuild" DependsOnTargets="Clean">
     <!-- NugetExeBuild -->
     <MakeDir Directories="$(SolutionDir)NuGetExeBuild" />
@@ -104,17 +127,42 @@
     <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyInstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyUninstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.nuspec" DestinationFolder="$(SolutionDir)NuGetExeBuild" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.Portable.nuspec" DestinationFolder="$(SolutionDir)NuGetExeBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetExeBuild" MetadataAssembly="$(OutputPath)GitVersion.exe" />
+    <!-- NugetCommandLineBuild -->
+    <MakeDir Directories="$(SolutionDir)NuGetCommandLineBuild" />
+    <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(SolutionDir)NuGetCommandLineBuild\Tools" />
+    <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(SolutionDir)NuGetCommandLineBuild\Tools" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.CommandLine.nuspec" DestinationFolder="$(SolutionDir)NuGetCommandLineBuild" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetCommandLineBuild" MetadataAssembly="$(OutputPath)GitVersion.exe" />
     <!-- Gem -->
     <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(SolutionDir)GemBuild\bin" />
     <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(SolutionDir)GemBuild\bin" />
     <ItemGroup>
       <GemFiles Include="$(ProjectDir)GemAssets\bin*\**\*.*" />
       <GemFiles Include="$(ProjectDir)GemAssets\lib*\**\*.*" />
+      <GemFiles Include="$(ProjectDir)GemAssets\spec*\**\*.*" />
       <GemFiles Include="$(ProjectDir)GemAssets\*.gemspec" />
+      <GemFiles Include="$(ProjectDir)GemAssets\.rspec" />
+      <GemFiles Include="$(ProjectDir)GemAssets\Guardfile" />
+      <GemFiles Include="$(ProjectDir)GemAssets\Gemfile" />
     </ItemGroup>
     <Copy SourceFiles="@(GemFiles)" DestinationFiles="@(GemFiles->'$(SolutionDir)GemBuild\%(RecursiveDir)%(Filename)%(Extension)')" />
+
+    <PropertyGroup>
+      <GemVersion Condition="'$(GitVersion_PreReleaseTag)' == ''">$(GitVersion_MajorMinorPatch)</GemVersion>
+      <GemVersion Condition="'$(GitVersion_PreReleaseTag)' != ''">$(GitVersion_MajorMinorPatch).$(GitVersion_PreReleaseTag)</GemVersion>
+    </PropertyGroup>
+    
+    <ReplaceFileText
+        InputFilename="$(SolutionDir)GemBuild\gitversion.gemspec"
+        OutputFilename="$(SolutionDir)GemBuild\gitversion.gemspec"
+        MatchExpression="\$version\$"
+        ReplacementText="$(GemVersion)"
+        Condition="'$(GitVersion_SemVer)' != ''"/>
+    
+    <Exec Command="gem build gitversion.gemspec" ContinueOnError="True"
+          WorkingDirectory="$(SolutionDir)GemBuild" Condition="'$(GitVersion_SemVer)' != ''" />
   </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

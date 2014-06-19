@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
-    <id>GitVersion</id>
+    <id>GitVersion.CommandLine</id>
     <version>$version$</version>
     <title>GitVersion</title>
     <authors>NServiceBus Ltd</authors>
