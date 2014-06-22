@@ -2,20 +2,31 @@
 Param (
     [string] $workingDir = (Join-Path "%teamcity.build.workingDir%" "%mr.GitVersion.gitCheckoutDir%"),
     [string] $output = "%mr.GitVersion.output%",
-    [string] $outputFile = (Join-Path "%teamcity.build.workingDir%" "%mr.GitVersion.outputFile%"),
+    [string] $outputFile = "%mr.GitVersion.outputFile%",
     [string] $url = "%mr.GitVersion.url%",
     [string] $branch = "%mr.GitVersion.branch%",
     [string] $username = "%mr.GitVersion.username%",
     [string] $password = "%mr.GitVersion.password%",
-    [string] $logFile = (Join-Path "%teamcity.build.workingDir%" "%mr.GitVersion.logFile%"),
-    [string] $exec = (Join-Path "%teamcity.build.workingDir%" "%mr.GitVersion.exec%"),
+    [string] $logFile = "%mr.GitVersion.logFile%",
+    [string] $exec = "%mr.GitVersion.exec%",
     [string] $execArgs = "%mr.GitVersion.execArgs%",
-    [string] $proj = (Join-Path "%teamcity.build.workingDir%" "%mr.GitVersion.proj%"),
+    [string] $proj = "%mr.GitVersion.proj%",
     [string] $projArgs = "%mr.GitVersion.projArgs%",
     [string] $updateAssemblyInfo = "%mr.GitVersion.updateAssemblyInfo%"
 )
 
 $ErrorActionPreference = "Stop"
+
+function Join-ToWorkingDirectoryIfSpecified($path) {
+    $workingDir = "%teamcity.build.workingDir%"
+    if ($workingDir -match "teamcity.build.workingDir") {
+        return $path
+    }
+    if (Test-IsSpecified $path) {
+        return Join-Path $workingDir $path
+    }
+    return $path
+}
 
 function Test-IsSpecified ($value) {
     if ($value -ne $null -and $value -ne "" -and -not ($value -match "mr.GitVersion.")) {
@@ -65,9 +76,9 @@ try {
 
     $chocolateyDir = Join-Path $env:SYSTEMDRIVE Chocolatey
     if (-not (Test-Path $chocolateyDir)) {
-        Write-Host "Chocolatey not installed; installing Chocolatey"
+        Write-Host "##teamcity[progressMessage 'Chocolatey not installed; installing Chocolatey']"
         iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
-        if ($LASTEXITCODE -ne 0) {
+        if (-not (Test-Path $chocolateyDir)) {
             throw "Error installing Chocolatey"
         }
     } else {
@@ -77,7 +88,7 @@ try {
     $chocolateyBinDir = Join-Path $chocolateyDir "bin"
     $gitversion = Join-Path $chocolateyBinDir "gitversion.bat"
     if (-not (Test-Path $gitversion)) {
-        Write-Host "GitVersion not installed; installing GitVersion using Chocolatey"
+        Write-Host "##teamcity[progressMessage 'GitVersion not installed; installing GitVersion']"
         $cinst = Join-Path $chocolateyBinDir "cinst.bat"
         iex "$cinst gitversion"
         if ($LASTEXITCODE -ne 0) {
@@ -87,14 +98,20 @@ try {
         Write-Host "GitVersion already installed"
     }
 
+    $outputFile = Join-ToWorkingDirectoryIfSpecified $outputFile
+    $logFile = Join-ToWorkingDirectoryIfSpecified $logFile
+    $exec = Join-ToWorkingDirectoryIfSpecified $exec
+    $proj = Join-ToWorkingDirectoryIfSpecified $proj
+
     $arguments = Build-Arguments
-    Write-Host "Running: $gitversion $arguments"
+    Write-Host "##teamcity[progressMessage 'Running: $gitversion $arguments']"
     iex "$gitversion $arguments"
     if ($LASTEXITCODE -ne 0) {
         throw "Error running GitVersion"
     }
 }
 catch {
-    $Host.UI.WriteErrorLine($_)
+    Write-Host "##teamcity[buildStatus text='$_' status='FAILURE']"
+    Write-Host "##teamcity[message text='$_' status='ERROR']"
     exit 1
 }
