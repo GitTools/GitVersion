@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 public class LambdaEqualityHelperFixture
 {
-    // From the LibGit2Sharp project (ligit2sharp.com)
+    // From the LibGit2Sharp project (libgit2sharp.com)
     // MIT License - Copyright (c) 2011-2014 LibGit2Sharp contributors
     // see https://github.com/libgit2/libgit2sharp/blob/7af5c60f22f9bd6064204f84467cfa62bedd1147/LibGit2Sharp.Tests/EqualityFixture.cs
 

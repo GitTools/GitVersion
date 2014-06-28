@@ -13,7 +13,7 @@
             {
                 new MockCommit(),
                 new MockCommit(),
-                new MockMergeCommit()
+                new MockMergeCommit
                 {
                     MessageEx = "Merge branch 'release-2.0.0'"
                 }
