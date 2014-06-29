@@ -56,7 +56,7 @@
     <Compile Include="HelpWriter.cs" />
     <Compile Include="ProcessHelper.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="AssemblyInfoFileUpdate.cs" />
   </ItemGroup>
   <ItemGroup>

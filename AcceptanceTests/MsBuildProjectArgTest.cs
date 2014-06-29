@@ -3,7 +3,6 @@
     using System.IO;
     using global::AcceptanceTests;
     using global::AcceptanceTests.Helpers;
-    using global::AcceptanceTests.Properties;
     using Shouldly;
     using Xunit;
 
@@ -18,7 +17,13 @@
                 fixture.Repository.MakeATaggedCommit(TaggedVersion);
 
                 var buildFile = Path.Combine(fixture.RepositoryPath, "TestBuildFile.proj");
-                File.WriteAllBytes(buildFile, Resources.TestBuildFile);
+                var buildFileContent = @"<?xml version=""1.0"" encoding=""utf-8""?>
+<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
+  <Target Name=""OutputResults"">
+    <Message Text=""GitVersion_FullSemVer: $(GitVersion_FullSemVer)""/>
+  </Target>
+</Project>";
+                File.WriteAllText(buildFile, buildFileContent);
                 var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, projectFile: "TestBuildFile.proj", projectArgs: "/target:OutputResults");
 
                 result.ExitCode.ShouldBe(0);

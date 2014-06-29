@@ -1,9 +1,7 @@
-﻿
-namespace GitHubFlowVersion.AcceptanceTests
+﻿namespace GitHubFlowVersion.AcceptanceTests
 {
     using global::AcceptanceTests;
     using global::AcceptanceTests.Helpers;
-    using global::AcceptanceTests.Properties;
     using System.IO;
     using Shouldly;
     using Xunit;
@@ -22,7 +20,13 @@ namespace GitHubFlowVersion.AcceptanceTests
                 fixture.Repository.MakeACommit();
 
                 var buildFile = Path.Combine(fixture.RepositoryPath, "TestBuildFile.proj");
-                File.WriteAllBytes(buildFile, Resources.TestBuildFile);
+                var buildFileContent = @"<?xml version=""1.0"" encoding=""utf-8""?>
+<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
+  <Target Name=""OutputResults"">
+    <Message Text=""GitVersion_FullSemVer: $(GitVersion_FullSemVer)""/>
+  </Target>
+</Project>";
+                File.WriteAllText(buildFile, buildFileContent);
                 var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, MsBuild, "TestBuildFile.proj /target:OutputResults");
 
                 result.ExitCode.ShouldBe(0);

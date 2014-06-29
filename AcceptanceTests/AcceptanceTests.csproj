@@ -85,23 +85,11 @@
     <Compile Include="GitHubFlow\MasterTests.cs" />
     <Compile Include="MsBuildProjectArgTest.cs" />
     <Compile Include="ApprovalTestsConfig.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="RepositoryFixtureBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="TestBuildFile.proj" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj">
@@ -132,11 +120,4 @@ xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.18.1.0\lib\net40\NativeBin
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Fody.1.24.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.24.0\build\Fody.targets'))" />
   </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
