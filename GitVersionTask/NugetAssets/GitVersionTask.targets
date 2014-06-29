@@ -10,6 +10,9 @@
   <UsingTask
       TaskName="GitVersionTask.UpdateAssemblyInfo"
       AssemblyFile="$(MSBuildThisFileDirectory)..\GitVersionTask.dll" />
+  <UsingTask 
+    TaskName="GitVersionTask.GetVersion" 
+    AssemblyFile="$(MSBuildThisFileDirectory)..\GitVersionTask.dll"  />
   <UsingTask
       TaskName="GitVersionTask.WriteVersionInfoToBuildLog"
       AssemblyFile="$(MSBuildThisFileDirectory)..\GitVersionTask.dll" />
