@@ -11,7 +11,7 @@
     <AssemblyName>GitVersionTask</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>ed88a080</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>1ef7c3b1</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -59,7 +59,7 @@
     <Compile Include="TempFileTracker.cs" />
     <Compile Include="UpdateAssemblyInfo.cs" />
     <Compile Include="VersionAndBranchFinder.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="NugetAssets\GitVersionTask.targets">
@@ -89,32 +89,35 @@
     <Delete Files="@(FilesToDelete)" />
   </Target>
   <Target Name="AfterBuild" DependsOnTargets="Clean">
+    <MakeDir Directories="$(TargetDir)ILMergeTemp\" />
+    <Exec Command="&quot;$(SolutionDir)tools\ilmerge.exe&quot;  /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)LibGit2Sharp.dll&quot; /target:library /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /internalize " />
+    <ItemGroup>
+      <TempFiles Include="$(TargetDir)ILMergeTemp\*.*" />
+    </ItemGroup>
     <MakeDir Directories="$(SolutionDir)NuGetTaskBuild" />
-    <CreateItem Include="$(SolutionDir)GitVersionTask\bin\$(ConfigurationName)\NativeBinaries\amd64\*.dll">
+    <CreateItem Include="$(TargetDir)NativeBinaries\amd64\*.dll">
       <Output TaskParameter="Include" ItemName="amd64" />
     </CreateItem>
     <Copy SourceFiles="@(amd64)" DestinationFolder="$(SolutionDir)NuGetTaskBuild\NativeBinaries\amd64" />
-    <CreateItem Include="$(SolutionDir)GitVersionTask\bin\$(ConfigurationName)\NativeBinaries\x86\*.dll">
+    <CreateItem Include="$(TargetDir)NativeBinaries\x86\*.dll">
       <Output TaskParameter="Include" ItemName="x86" />
     </CreateItem>
     <Copy SourceFiles="@(x86)" DestinationFolder="$(SolutionDir)NuGetTaskBuild\NativeBinaries\x86" />
-    <Copy SourceFiles="$(OutputPath)GitVersionTask.dll" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
-    <Copy SourceFiles="$(OutputPath)LibGit2Sharp.dll" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
-    <Copy SourceFiles="$(OutputPath)GitVersionTask.pdb" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
-    <Copy SourceFiles="$(OutputPath)GitVersionCore.dll" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
-    <Copy SourceFiles="$(OutputPath)GitVersionCore.pdb" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
+    <Copy SourceFiles="$(TargetDir)ILMergeTemp\GitVersionTask.dll" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
+    <Copy SourceFiles="$(TargetDir)ILMergeTemp\GitVersionTask.pdb" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.targets" DestinationFolder="$(SolutionDir)NuGetTaskBuild\Build" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.nuspec" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
-    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetTaskBuild" MetadataAssembly="$(OutputPath)GitVersionTask.dll" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetTaskBuild" MetadataAssembly="$(ILMergeTemp)GitVersionTask.dll" />
+    <Delete Files="@(TempFiles)" />
+    <RemoveDir Directories="$(TargetDir)ILMergeTemp\" />
   </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets'))" />
     <Error Condition="!Exists('..\packages\Fody.1.24.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.24.0\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets'))" />
   </Target>
-  <Import Project="..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets')" />
   <PropertyGroup>
     <PostBuildEvent>
 if not exist "$(TargetDir)NativeBinaries" md "$(TargetDir)NativeBinaries"
@@ -124,4 +127,7 @@ if not exist "$(TargetDir)NativeBinaries\amd64" md "$(TargetDir)NativeBinaries\a
 xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.18.1.0\lib\net40\NativeBinaries\amd64\*.*" "$(TargetDir)NativeBinaries\amd64"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Fody.1.24.0\build\Fody.targets" Condition="Exists('..\packages\Fody.1.24.0\build\Fody.targets')" />
+  <Target Name="ILMerge" BeforeTargets="AfterCompile">
+  </Target>
+  <Import Project="..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets')" />
 </Project>

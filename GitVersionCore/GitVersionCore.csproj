@@ -11,7 +11,7 @@
     <AssemblyName>GitVersionCore</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>e4626a5c</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>d883b6ac</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -103,7 +103,7 @@
     <Compile Include="OutputType.cs" />
     <Compile Include="OutputVariables\CiFeedFormatter.cs" />
     <Compile Include="OutputVariables\VariableProvider.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="ReleaseDate.cs" />
     <Compile Include="ReleaseDateFinder.cs" />
     <Compile Include="RepositoryLoader.cs" />
@@ -130,8 +130,8 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets'))" />
     <Error Condition="!Exists('..\packages\Fody.1.24.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.24.0\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets'))" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent>
@@ -156,6 +156,6 @@ xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.18.1.0\lib\net40\NativeBin
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.nuspec" DestinationFolder="$(SolutionDir)NuGetRefBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetRefBuild" MetadataAssembly="$(OutputPath)GitVersionCore.dll" />
   </Target>
-  <Import Project="..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.20.0.0\build\PepitaPackage.targets')" />
   <Import Project="..\packages\Fody.1.24.0\build\Fody.targets" Condition="Exists('..\packages\Fody.1.24.0\build\Fody.targets')" />
+  <Import Project="..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.20.1.0\build\PepitaPackage.targets')" />
 </Project>
