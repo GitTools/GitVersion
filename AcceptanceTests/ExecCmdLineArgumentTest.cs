@@ -19,7 +19,8 @@
                 fixture.Repository.MakeATaggedCommit(TaggedVersion);
                 fixture.Repository.MakeACommit();
 
-                var buildFile = Path.Combine(fixture.RepositoryPath, "TestBuildFile.proj");
+                var buildFile = Path.Combine(fixture.RepositoryPath, "RunExecViaCommandLine.proj");
+                File.Delete(buildFile);
                 var buildFileContent = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
   <Target Name=""OutputResults"">
