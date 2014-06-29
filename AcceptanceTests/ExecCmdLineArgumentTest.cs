@@ -28,7 +28,7 @@
   </Target>
 </Project>";
                 File.WriteAllText(buildFile, buildFileContent);
-                var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, MsBuild, "TestBuildFile.proj /target:OutputResults");
+                var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, MsBuild, "RunExecViaCommandLine.proj /target:OutputResults");
 
                 result.ExitCode.ShouldBe(0);
                 result.Log.ShouldContain("GitVersion_FullSemVer: 1.2.4+1");

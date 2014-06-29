@@ -25,7 +25,7 @@
   </Target>
 </Project>";
                 File.WriteAllText(buildFile, buildFileContent);
-                var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, projectFile: "TestBuildFile.proj", projectArgs: "/target:OutputResults");
+                var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, projectFile: "RunsMsBuildProvideViaCommandLineArg.proj", projectArgs: "/target:OutputResults");
 
                 result.ExitCode.ShouldBe(0);
                 result.Log.ShouldContain("FullSemVer: 1.2.3+0");
