@@ -35,18 +35,40 @@
     <ItemGroup>
       <Compile Include="$(AssemblyInfoTempFilePath)" />
     </ItemGroup>
+
+
+    <GetVersion SolutionDirectory="$(SolutionDir)">
+      <Output TaskParameter="Major" PropertyName="GfvMajor" />
+      <Output TaskParameter="Minor" PropertyName="GfvMinor" />
+      <Output TaskParameter="Patch" PropertyName="GfvPatch" />
+      <Output TaskParameter="BuildMetaData" PropertyName="GfvBuildMetaData" />
+      <Output TaskParameter="FullBuildMetaData" PropertyName="GfvFullBuildMetaData" />
+      <Output TaskParameter="BranchName" PropertyName="GfvBranchName" />
+      <Output TaskParameter="Sha" PropertyName="GfvSha" />
+      <Output TaskParameter="MajorMinorPatch" PropertyName="GfvMajorMinorPatch" />
+      <Output TaskParameter="SemVer" PropertyName="GfvSemVer" />
+      <Output TaskParameter="LegacySemVer" PropertyName="GfvLegacySemVer" />
+      <Output TaskParameter="LegacySemVerPadded" PropertyName="GfvLegacySemVerPadded" />
+      <Output TaskParameter="FullSemVer" PropertyName="GfvFullSemVer" />
+      <Output TaskParameter="AssemblySemVer" PropertyName="GfvAssemblySemVer" />
+      <Output TaskParameter="ClassicVersion" PropertyName="GfvClassicVersion" />
+      <Output TaskParameter="ClassicVersionWithTag" PropertyName="GfvClassicVersionWithTag" />
+      <Output TaskParameter="PreReleaseTag" PropertyName="GfvPreReleaseTag" />
+      <Output TaskParameter="PreReleaseTagWithDash" PropertyName="GfvPreReleaseTagWithDash" />
+      <Output TaskParameter="InformationalVersion" PropertyName="GfvInformationalVersion" />
+      <Output TaskParameter="AssemblyVersion" PropertyName="GfvAssemblyVersion" />
+      <Output TaskParameter="AssemblyFileVersion" PropertyName="GfvAssemblyFileVersion" />
+      <Output TaskParameter="OriginalRelease" PropertyName="GfvOriginalRelease" />
+    </GetVersion>
+
   </Target>
 
   <!--Support for ncrunch-->
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)..\GitVersionTask.dll" />
     <None Include="$(MSBuildThisFileDirectory)..\GitVersionTask.pdb" />
-    <None Include="$(MSBuildThisFileDirectory)..\GitVersionCore.dll" />
-    <None Include="$(MSBuildThisFileDirectory)..\GitVersionCore.pdb" />
-    <None Include="$(MSBuildThisFileDirectory)..\LibGit2Sharp.dll" />
     <None Include="$(MSBuildThisFileDirectory)..\NativeBinaries\**\*" />
   </ItemGroup>
-
 
 </Project>
 
