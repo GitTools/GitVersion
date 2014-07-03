@@ -5,7 +5,7 @@
 
     public class GitPreparer
     {
-        readonly Arguments arguments;
+        Arguments arguments;
 
         public GitPreparer(Arguments arguments)
         {

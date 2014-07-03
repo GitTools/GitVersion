@@ -4,10 +4,10 @@ namespace GitVersion
     using System.Collections.Generic;
     using System.IO;
 
-    internal class AssemblyInfoFileUpdate : IDisposable
+    class AssemblyInfoFileUpdate : IDisposable
     {
-        private readonly List<Action> _restoreBackupTasks = new List<Action>();
-        private readonly List<Action> _cleanupBackupTasks = new List<Action>();
+        List<Action> restoreBackupTasks = new List<Action>();
+        List<Action> cleanupBackupTasks = new List<Action>();
 
         public AssemblyInfoFileUpdate(Arguments args, string workingDirectory, Dictionary<string, string> variables)
         {
@@ -24,13 +24,13 @@ namespace GitVersion
                 var backupAssemblyInfo = assemblyInfoFile + ".bak";
                 var localAssemblyInfo = assemblyInfoFile;
                 File.Copy(assemblyInfoFile, backupAssemblyInfo, true);
-                _restoreBackupTasks.Add(() =>
+                restoreBackupTasks.Add(() =>
                 {
                     if (File.Exists(localAssemblyInfo))
                         File.Delete(localAssemblyInfo);
                     File.Move(backupAssemblyInfo, localAssemblyInfo);
                 });
-                _cleanupBackupTasks.Add(() => File.Delete(backupAssemblyInfo));
+                cleanupBackupTasks.Add(() => File.Delete(backupAssemblyInfo));
 
                 var assemblyVersion = string.Format("{0}.{1}.0.0", variables[VariableProvider.Major], variables[VariableProvider.Minor]);
                 var assemblyInfoVersion = variables[VariableProvider.InformationalVersion];
@@ -46,23 +46,23 @@ namespace GitVersion
 
         public void Dispose()
         {
-            foreach (var restoreBackup in _restoreBackupTasks)
+            foreach (var restoreBackup in restoreBackupTasks)
             {
                 restoreBackup();
             }
 
-            _cleanupBackupTasks.Clear();
-            _restoreBackupTasks.Clear();
+            cleanupBackupTasks.Clear();
+            restoreBackupTasks.Clear();
         }
 
         public void DoNotRestoreAssemblyInfo()
         {
-            foreach (var cleanupBackupTask in _cleanupBackupTasks)
+            foreach (var cleanupBackupTask in cleanupBackupTasks)
             {
                 cleanupBackupTask();
             }
-            _cleanupBackupTasks.Clear();
-            _restoreBackupTasks.Clear();
+            cleanupBackupTasks.Clear();
+            restoreBackupTasks.Clear();
         }
     }
 }

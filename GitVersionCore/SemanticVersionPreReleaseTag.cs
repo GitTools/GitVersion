@@ -9,7 +9,7 @@ namespace GitVersion
         public string Name;
         public int? Number;
 
-        private static readonly LambdaEqualityHelper<SemanticVersionPreReleaseTag> equalityHelper =
+        static LambdaEqualityHelper<SemanticVersionPreReleaseTag> equalityHelper =
            new LambdaEqualityHelper<SemanticVersionPreReleaseTag>(x => x.Name, x => x.Number);
 
         public SemanticVersionPreReleaseTag()

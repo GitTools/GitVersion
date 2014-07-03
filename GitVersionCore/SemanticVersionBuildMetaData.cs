@@ -5,11 +5,11 @@ namespace GitVersion
 
     public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVersionBuildMetaData>
     {
-        static readonly Regex ParseRegex = new Regex(
+        static Regex ParseRegex = new Regex(
             @"(?<BuildNumber>\d+)?(\.?Branch(Name)?\.(?<BranchName>[^\.]+))?(\.?Sha?\.(?<Sha>[^\.]+))?(?<Other>.*)",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly LambdaEqualityHelper<SemanticVersionBuildMetaData> equalityHelper =
+        static LambdaEqualityHelper<SemanticVersionBuildMetaData> equalityHelper =
            new LambdaEqualityHelper<SemanticVersionBuildMetaData>(x => x.CommitsSinceTag, x => x.Branch, x => x.Sha, x => x.ReleaseDate);
 
         public int? CommitsSinceTag;

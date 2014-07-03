@@ -9,7 +9,7 @@
             base(CreateNewRepository)
         { }
 
-        private static IRepository CreateNewRepository(string path)
+        static IRepository CreateNewRepository(string path)
         {
             LibGit2Sharp.Repository.Init(path);
             Console.WriteLine("Created git repository at '{0}'", path);

@@ -16,7 +16,7 @@ public class MockCommitLog:ICommitLog,ICollection<Commit>
         return GetEnumerator();
     }
 
-    public CommitSortStrategies SortedBy { get; private set; }
+    public CommitSortStrategies SortedBy { get; set; }
     public void Add(Commit item)
     {
         Commits.Add(item);

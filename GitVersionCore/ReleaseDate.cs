@@ -8,7 +8,7 @@ public class ReleaseDate : IEquatable<ReleaseDate>
     public DateTimeOffset Date;
     public string CommitSha;
 
-    private static readonly LambdaEqualityHelper<ReleaseDate> equalityHelper =
+    static LambdaEqualityHelper<ReleaseDate> equalityHelper =
            new LambdaEqualityHelper<ReleaseDate>(x => x.OriginalDate, x => x.OriginalCommitSha, x => x.Date, x => x.CommitSha);
 
     public override bool Equals(object obj)

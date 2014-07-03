@@ -4,7 +4,7 @@
 
     public class TeamCity : BuildServerBase
     {
-        readonly Arguments arguments;
+        Arguments arguments;
 
         public TeamCity(Arguments arguments)
         {

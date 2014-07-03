@@ -60,7 +60,7 @@ public class MockRepository : IRepository
         throw new NotImplementedException();
     }
 
-    public Dictionary<string, GitObject> LookupResults { get; private set; }
+    public Dictionary<string, GitObject> LookupResults { get; set; }
 
     public Commit Commit(string message, Signature author, Signature committer, bool amendPreviousCommit = false)
     {
@@ -108,24 +108,24 @@ public class MockRepository : IRepository
     }
 
     public Branch Head { get; set; }
-    public Configuration Config { get; private set; }
-    public Index Index { get; private set; }
+    public Configuration Config { get; set; }
+    public Index Index { get; set; }
     public ReferenceCollection Refs { get; set; }
     public IQueryableCommitLog Commits { get; set; }
     public BranchCollection Branches { get; set; }
     public TagCollection Tags { get; set; }
-    public RepositoryInformation Info { get; private set; }
-    public Diff Diff { get; private set; }
-    public ObjectDatabase ObjectDatabase { get; private set; }
-    public NoteCollection Notes { get; private set; }
-    public SubmoduleCollection Submodules { get; private set; }
+    public RepositoryInformation Info { get; set; }
+    public Diff Diff { get; set; }
+    public ObjectDatabase ObjectDatabase { get; set; }
+    public NoteCollection Notes { get; set; }
+    public SubmoduleCollection Submodules { get; set; }
 
     public Ignore Ignore
     {
         get { throw new NotImplementedException(); }
     }
 
-    public Network Network { get; private set; }
+    public Network Network { get; set; }
 
     public StashCollection Stashes
     {

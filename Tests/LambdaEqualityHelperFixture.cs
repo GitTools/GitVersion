@@ -38,7 +38,7 @@ public class LambdaEqualityHelperFixture
 
     private class ObjectWithEquality : GitObject
     {
-        private readonly ObjectId id;
+        ObjectId id;
 
         public ObjectWithEquality(ObjectId id = null)
         {

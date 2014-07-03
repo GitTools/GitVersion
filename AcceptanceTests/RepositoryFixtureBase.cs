@@ -7,8 +7,8 @@ namespace AcceptanceTests
 
     public abstract class RepositoryFixtureBase : IDisposable
     {
-        public readonly string RepositoryPath;
-        public readonly IRepository Repository;
+        public string RepositoryPath;
+        public IRepository Repository;
 
         protected RepositoryFixtureBase(Func<string, IRepository> repoBuilder)
         {

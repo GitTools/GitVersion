@@ -5,10 +5,9 @@ namespace GitVersion
     // From the LibGit2Sharp project (libgit2sharp.com)
     // MIT License - Copyright (c) 2011-2014 LibGit2Sharp contributors
     // see https://github.com/libgit2/libgit2sharp/blob/7af5c60f22f9bd6064204f84467cfa62bedd1147/LibGit2Sharp/Core/LambdaEqualityHelper.cs
-
-    internal class LambdaEqualityHelper<T>
+    class LambdaEqualityHelper<T>
     {
-        private readonly Func<T, object>[] equalityContributorAccessors;
+        Func<T, object>[] equalityContributorAccessors;
 
         public LambdaEqualityHelper(params Func<T, object>[] equalityContributorAccessors)
         {

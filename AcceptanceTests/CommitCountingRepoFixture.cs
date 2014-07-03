@@ -10,7 +10,7 @@
             base(CloneTestRepo)
         { }
 
-        private static IRepository CloneTestRepo(string path)
+        static IRepository CloneTestRepo(string path)
         {
             const string repoName = "commit_counting_wd";
             var source = new DirectoryInfo(@"../../Resources/" + repoName);
