@@ -1,8 +1,9 @@
 namespace GitVersion
 {
+    using LibGit2Sharp;
     using System.Collections.Generic;
     using System.Linq;
-    using LibGit2Sharp;
+    using System.Text.RegularExpressions;
 
     public static class GitHelper
     {
@@ -40,6 +41,42 @@ namespace GitVersion
                     CreateFakeBranchPointingAtThePullRequestTip(repo, authentication);
                 }
             }
+        }
+
+        public static bool LooksLikeAValidPullRequestNumber(string issueNumber)
+        {
+            if (string.IsNullOrEmpty(issueNumber))
+            {
+                return false;
+            }
+
+            uint res;
+            if (!uint.TryParse(issueNumber, out res))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static string ExtractIssueNumber(string mergeMessage)
+        {
+            // Github Message: refs/heads/pull/5/merge
+            // Stash Message:  refs/heads/pull-requests/5/merge-clean
+
+            string pattern = "refs/heads/pull(-requests)?/(?<issuenumber>[0-9]*)/merge(-clean)?";
+
+            var regex = new Regex(pattern);
+            var match = regex.Match(mergeMessage);
+
+            string issueNumber = null;
+
+            if (match != null)
+            {
+                issueNumber = match.Groups["issuenumber"].Value;
+            }
+
+            return issueNumber;
         }
 
         static void AddMissingRefSpecs(Repository repo, Remote remote)
@@ -99,13 +136,13 @@ namespace GitVersion
             var canonicalName = refs[0].CanonicalName;
             Logger.WriteInfo(string.Format("Found remote tip '{0}' pointing at the commit '{1}'.", canonicalName, headTipSha));
 
-            if (!canonicalName.StartsWith("refs/pull/"))
+            if (!canonicalName.StartsWith("refs/pull/") && !canonicalName.StartsWith("refs/pull-requests/"))
             {
                 var message = string.Format("Remote tip '{0}' from remote '{1}' doesn't look like a valid pull request.", canonicalName, remote.Url);
                 throw new WarningException(message);
             }
 
-            var fakeBranchName = canonicalName.Replace("refs/pull/", "refs/heads/pull/");
+            var fakeBranchName = canonicalName.Replace("refs/pull/", "refs/heads/pull/").Replace("refs/pull-requests/", "refs/heads/pull-requests/");
 
             Logger.WriteInfo(string.Format("Creating fake local branch '{0}'.", fakeBranchName));
             repo.Refs.Add(fakeBranchName, new ObjectId(headTipSha));
