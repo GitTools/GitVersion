@@ -47,6 +47,19 @@ namespace GitVersion
                 versionPart = lastBranchPart;
                 return true;
             }
+            else if (Regex.IsMatch(message, "Merge pull request #\\d+ in "))
+            {
+                var branch = Regex.Match(message, "in (?<branch>.*)").Groups["branch"].Value;
+                var lastBranchPart = branch.Split('/', '-').Last();
+
+                if (!char.IsNumber(lastBranchPart.First()) || !lastBranchPart.Contains("."))
+                {
+                    return false;
+                }
+
+                versionPart = lastBranchPart;
+                return true;
+            }
             else if (message.StartsWith("Merge branch '"))
             {
                 trimmed = message.Replace("Merge branch '", "");
