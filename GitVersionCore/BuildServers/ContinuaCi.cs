@@ -42,7 +42,7 @@
         {
             return new[]
             {
-                string.Format("@@continua[setVariable name='GitVersion_{0}' value='{1}']", name, value)
+                string.Format("@@continua[setVariable name='GitVersion_{0}' value='{1}' skipIfNotDefined='true']", name, value)
             };
         }
 
