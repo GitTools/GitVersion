@@ -1,10 +1,11 @@
 ﻿namespace GitVersionTask
 {
+    using System.Collections.Generic;
     using GitVersion;
 
     public static class VersionAndBranchFinder
     {
-
+        static List<string> processedDirectories = new List<string>(); 
         public static bool TryGetVersion(string directory, out SemanticVersion versionAndBranch)
         {
             var gitDirectory = GitDirFinder.TreeWalkForGitDir(directory);
@@ -21,11 +22,15 @@
                 return false;
             }
 
-            var authentication = new Authentication();
-            foreach (var buildServer in BuildServerList.GetApplicableBuildServers(authentication))
+            if (!processedDirectories.Contains(directory))
             {
-                Logger.WriteInfo(string.Format("Executing PerformPreProcessingSteps for '{0}'.", buildServer.GetType().Name));
-                buildServer.PerformPreProcessingSteps(gitDirectory);
+                processedDirectories.Add(directory);
+                var authentication = new Authentication();
+                foreach (var buildServer in BuildServerList.GetApplicableBuildServers(authentication))
+                {
+                    Logger.WriteInfo(string.Format("Executing PerformPreProcessingSteps for '{0}'.", buildServer.GetType().Name));
+                    buildServer.PerformPreProcessingSteps(gitDirectory);
+                }
             }
             versionAndBranch = VersionCache.GetVersion(gitDirectory);
             return true;
