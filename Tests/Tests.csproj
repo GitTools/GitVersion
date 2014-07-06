@@ -111,7 +111,7 @@
     <Compile Include="LambdaEqualityHelperFixture.cs" />
     <Compile Include="GitFlow\GitFlowVersionFinderTests.cs" />
     <Compile Include="GitHelperTests.cs" />
-    <Compile Include="GitVersionTask.cs" />
+    <Compile Include="GetVersionTaskTests.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\DirectoryHelper.cs" />
     <Compile Include="Helpers\FindersHelper.cs" />

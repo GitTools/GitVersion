@@ -61,8 +61,6 @@ static class GitVersionInformation
             return members.ToString();
         }
 
-
     }
-
 
 }
