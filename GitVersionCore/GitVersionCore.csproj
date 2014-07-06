@@ -53,8 +53,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArgumentParser.cs" />
-    <Compile Include="Arguments.cs" />
     <Compile Include="AssemblyMetaData.cs" />
     <Compile Include="AssemblyVersionsGenerator.cs" />
     <Compile Include="AssemblyVersioningScheme.cs" />
