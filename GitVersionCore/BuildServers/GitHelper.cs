@@ -6,7 +6,7 @@ namespace GitVersion
 
     public static class GitHelper
     {
-        public static void NormalizeGitDirectory(string gitDirectory, Arguments arguments, string branch = null)
+        public static void NormalizeGitDirectory(string gitDirectory, Authentication authentication, string branch = null)
         {
             using (var repo = new Repository(gitDirectory))
             {
@@ -17,7 +17,7 @@ namespace GitVersion
                 Logger.WriteInfo(string.Format("Fetching from remote '{0}' using the following refspecs: {1}.",
                     remote.Name, string.Join(", ", remote.FetchRefSpecs.Select(r => r.Specification))));
 
-                var fetchOptions = BuildFetchOptions(arguments.Username, arguments.Password);
+                var fetchOptions = BuildFetchOptions(authentication.Username, authentication.Password);
                 repo.Network.Fetch(remote, fetchOptions);
 
                 CreateMissingLocalBranchesFromRemoteTrackingOnes(repo, remote.Name);
@@ -37,7 +37,7 @@ namespace GitVersion
                 }
                 else
                 {
-                    CreateFakeBranchPointingAtThePullRequestTip(repo, arguments);
+                    CreateFakeBranchPointingAtThePullRequestTip(repo, authentication);
                 }
             }
         }
@@ -71,13 +71,13 @@ namespace GitVersion
             return fetchOptions;
         }
 
-        static void CreateFakeBranchPointingAtThePullRequestTip(Repository repo, Arguments arguments)
+        static void CreateFakeBranchPointingAtThePullRequestTip(Repository repo, Authentication authentication)
         {
             var remote = repo.Network.Remotes.Single();
 
-            var remoteTips = string.IsNullOrEmpty(arguments.Username) ?
+            var remoteTips = string.IsNullOrEmpty(authentication.Username) ?
                 GetRemoteTipsForAnonymousUser(repo, remote) :
-                GetRemoteTipsUsingUsernamePasswordCredentials(repo, remote, arguments.Username, arguments.Password);
+                GetRemoteTipsUsingUsernamePasswordCredentials(repo, remote, authentication.Username, authentication.Password);
 
             var headTipSha = repo.Head.Tip.Sha;
 

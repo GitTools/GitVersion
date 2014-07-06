@@ -51,7 +51,7 @@ namespace GitVersion
 
                 var workingDirectory = Directory.GetParent(gitDirectory).FullName;
                 Logger.WriteInfo("Working directory: " + workingDirectory);
-                var applicableBuildServers = GetApplicableBuildServers(arguments).ToList();
+                var applicableBuildServers = GetApplicableBuildServers(arguments.Authentication).ToList();
 
                 foreach (var buildServer in applicableBuildServers)
                 {
@@ -138,9 +138,9 @@ namespace GitVersion
             Environment.Exit(exitCode.Value);
         }
 
-        static IEnumerable<IBuildServer> GetApplicableBuildServers(Arguments arguments)
+        static IEnumerable<IBuildServer> GetApplicableBuildServers(Authentication authentication)
         {
-            return BuildServerList.GetApplicableBuildServers(arguments);
+            return BuildServerList.GetApplicableBuildServers(authentication);
         }
 
         static void ConfigureLogging(Arguments arguments)

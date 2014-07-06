@@ -6,11 +6,11 @@
 
     public class AppVeyor : BuildServerBase
     {
-        Arguments arguments;
+        Authentication authentication;
 
-        public AppVeyor(Arguments arguments)
+        public AppVeyor(Authentication authentication)
         {
-            this.arguments = arguments;
+            this.authentication = authentication;
         }
 
         public override bool CanApplyToCurrentContext()
@@ -27,7 +27,7 @@
 
             var repoBranch = Environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH");
 
-            GitHelper.NormalizeGitDirectory(gitDirectory, arguments, repoBranch);
+            GitHelper.NormalizeGitDirectory(gitDirectory, authentication, repoBranch);
         }
 
         public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)

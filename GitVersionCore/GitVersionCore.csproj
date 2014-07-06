@@ -58,6 +58,7 @@
     <Compile Include="AssemblyMetaData.cs" />
     <Compile Include="AssemblyVersionsGenerator.cs" />
     <Compile Include="AssemblyVersioningScheme.cs" />
+    <Compile Include="Authentication.cs" />
     <Compile Include="BuildServers\AppVeyor.cs" />
     <Compile Include="BuildServers\BuildServerBase.cs" />
     <Compile Include="BuildServers\BuildServerList.cs" />

@@ -52,8 +52,8 @@
                 return;
             }
 
-            var arguments = new Arguments();
-            WriteIntegrationParameters(semanticVersion, BuildServerList.GetApplicableBuildServers(arguments));
+            var authentication = new Authentication();
+            WriteIntegrationParameters(semanticVersion, BuildServerList.GetApplicableBuildServers(authentication));
         }
 
         public void WriteIntegrationParameters(SemanticVersion semanticVersion, IEnumerable<IBuildServer> applicableBuildServers)

@@ -4,11 +4,11 @@
 
     public class TeamCity : BuildServerBase
     {
-        Arguments arguments;
+        Authentication authentication;
 
-        public TeamCity(Arguments arguments)
+        public TeamCity(Authentication authentication)
         {
-            this.arguments = arguments;
+            this.authentication = authentication;
         }
 
         public override bool CanApplyToCurrentContext()
@@ -23,7 +23,7 @@
                 throw new WarningException("Failed to find .git directory on agent. Please make sure agent checkout mode is enabled for you VCS roots - http://confluence.jetbrains.com/display/TCD8/VCS+Checkout+Mode");
             }
 
-            GitHelper.NormalizeGitDirectory(gitDirectory, arguments);
+            GitHelper.NormalizeGitDirectory(gitDirectory, authentication);
         }
 
         public override string[] GenerateSetParameterMessage(string name, string value)

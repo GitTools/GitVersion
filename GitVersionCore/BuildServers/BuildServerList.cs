@@ -7,27 +7,27 @@
     {
         static List<IBuildServer> BuildServers;
 
-        public static Func<Arguments, IEnumerable<IBuildServer>> Selector = arguments => DefaultSelector(arguments);
+        public static Func<Authentication, IEnumerable<IBuildServer>> Selector = arguments => DefaultSelector(arguments);
 
         public static void ResetSelector()
         {
             Selector = DefaultSelector;
         }
 
-        public static IEnumerable<IBuildServer> GetApplicableBuildServers(Arguments arguments)
+        public static IEnumerable<IBuildServer> GetApplicableBuildServers(Authentication authentication)
         {
-            return Selector(arguments);
+            return Selector(authentication);
         }
 
-        static IEnumerable<IBuildServer> DefaultSelector(Arguments arguments)
+        static IEnumerable<IBuildServer> DefaultSelector(Authentication authentication)
         {
             if (BuildServers == null)
             {
                 BuildServers = new List<IBuildServer>
                 {
-                    new ContinuaCi(arguments),
-                    new TeamCity(arguments),
-                    new AppVeyor(arguments)
+                    new ContinuaCi(authentication),
+                    new TeamCity(authentication),
+                    new AppVeyor(authentication)
                 };
             }
 

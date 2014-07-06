@@ -42,14 +42,15 @@
             }
 
             Credentials credentials = null;
-            if (!string.IsNullOrWhiteSpace(arguments.Username) && !string.IsNullOrWhiteSpace(arguments.Password))
+            var authentication = arguments.Authentication;
+            if (!string.IsNullOrWhiteSpace(authentication.Username) && !string.IsNullOrWhiteSpace(authentication.Password))
             {
-                Logger.WriteInfo(string.Format("Setting up credentials using name '{0}'", arguments.Username));
+                Logger.WriteInfo(string.Format("Setting up credentials using name '{0}'", authentication.Username));
 
                 credentials = new UsernamePasswordCredentials
                     {
-                    Username = arguments.Username,
-                    Password = arguments.Password
+                        Username = authentication.Username,
+                        Password = authentication.Password
                 };
             }
 
@@ -61,7 +62,7 @@
             if (!string.IsNullOrWhiteSpace(arguments.TargetBranch))
             {
                 // Normalize (download branches) before using the branch
-                GitHelper.NormalizeGitDirectory(gitDirectory, arguments);
+                GitHelper.NormalizeGitDirectory(gitDirectory, arguments.Authentication);
 
                 using (var repository = new Repository(gitDirectory))
                 {

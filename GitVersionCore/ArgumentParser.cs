@@ -84,13 +84,13 @@ namespace GitVersion
 
                 if (IsSwitch("u", name))
                 {
-                    arguments.Username = value;
+                    arguments.Authentication.Username = value;
                     continue;
                 }
 
                 if (IsSwitch("p", name))
                 {
-                    arguments.Password = value;
+                    arguments.Authentication.Password = value;
                     continue;
                 }
 

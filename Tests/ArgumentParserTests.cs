@@ -108,8 +108,8 @@ public class ArgumentParserTests
     {
         var arguments = ArgumentParser.ParseArguments("targetDirectoryPath -u [username] -p [password]");
         Assert.AreEqual("targetDirectoryPath", arguments.TargetPath);
-        Assert.AreEqual("[username]", arguments.Username);
-        Assert.AreEqual("[password]", arguments.Password);
+        Assert.AreEqual("[username]", arguments.Authentication.Username);
+        Assert.AreEqual("[password]", arguments.Authentication.Password);
         Assert.IsFalse(arguments.IsHelp);
     }
 

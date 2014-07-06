@@ -4,11 +4,11 @@
 
     public class ContinuaCi : BuildServerBase
     {
-        Arguments arguments;
+        Authentication authentication;
 
-        public ContinuaCi(Arguments arguments)
+        public ContinuaCi(Authentication authentication)
         {
-            this.arguments = arguments;
+            this.authentication = authentication;
         }
 
         public override bool CanApplyToCurrentContext()
@@ -35,7 +35,7 @@
                 throw new WarningException("Failed to find .git directory on agent");
             }
 
-            GitHelper.NormalizeGitDirectory(gitDirectory, arguments);
+            GitHelper.NormalizeGitDirectory(gitDirectory, authentication);
         }
 
         public override string[] GenerateSetParameterMessage(string name, string value)
