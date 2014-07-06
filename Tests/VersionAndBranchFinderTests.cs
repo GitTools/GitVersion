@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using GitVersion;
+﻿using GitVersion;
 using GitVersionTask;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -21,6 +20,6 @@ public class VersionAndBranchFinderTests: Lg2sHelperBase
         }
         SemanticVersion versionAndBranch;
         VersionAndBranchFinder.TryGetVersion(ASBMTestRepoWorkingDirPath, out versionAndBranch);
-        Debug.Write(versionAndBranch);
+        Assert.IsNotNull(versionAndBranch);
     }
 }
