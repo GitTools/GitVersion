@@ -43,9 +43,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\ApprovalUtilities.3.0.6\lib\net35\ApprovalUtilities.dll</HintPath>
     </Reference>
-    <Reference Include="FluentDateTime, Version=1.10.0.0, Culture=neutral, PublicKeyToken=6ccbc613702e6c71, processorArchitecture=MSIL">
+    <Reference Include="FluentDateTime, Version=1.10.1.0, Culture=neutral, PublicKeyToken=6ccbc613702e6c71, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\FluentDateTime.1.10.0.0\Lib\NET35\FluentDateTime.dll</HintPath>
+      <HintPath>..\packages\FluentDateTime.1.10.1.0\Lib\NET35\FluentDateTime.dll</HintPath>
     </Reference>
     <Reference Include="LibGit2Sharp, Version=0.18.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -68,10 +68,6 @@
     </Reference>
     <Reference Include="Mono.Cecil.Rocks">
       <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
-    </Reference>
-    <Reference Include="NuGet.Core, Version=2.8.50126.400, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Nuget.Core.2.8.0\lib\net40-Client\NuGet.Core.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
