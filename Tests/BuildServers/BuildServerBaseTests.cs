@@ -4,7 +4,8 @@ using GitVersion;
 using NUnit.Framework;
 using Shouldly;
 
-public class BuildServerBaseTests : BuildServerBase
+[TestFixture]
+public class BuildServerBaseTests 
 {
     [Test]
     public void BuildNumberIsFullSemVer()
@@ -27,28 +28,32 @@ public class BuildServerBaseTests : BuildServerBase
             Date = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
         };
 
-        base.WriteIntegration(semanticVersion, writes.Add);
+
+        new BuildServer().WriteIntegration(semanticVersion, writes.Add);
 
         writes[1].ShouldBe("1.2.3-beta.1+5");
     }
 
-    public override bool CanApplyToCurrentContext()
+    public class BuildServer : BuildServerBase
     {
-        throw new NotImplementedException();
-    }
+        public override bool CanApplyToCurrentContext()
+        {
+            throw new NotImplementedException();
+        }
 
-    public override void PerformPreProcessingSteps(string gitDirectory)
-    {
-        throw new NotImplementedException();
-    }
+        public override void PerformPreProcessingSteps(string gitDirectory)
+        {
+            throw new NotImplementedException();
+        }
 
-    public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
-    {
-        return versionToUseForBuildNumber;
-    }
+        public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
+        {
+            return versionToUseForBuildNumber;
+        }
 
-    public override string[] GenerateSetParameterMessage(string name, string value)
-    {
-        return new string[0];
+        public override string[] GenerateSetParameterMessage(string name, string value)
+        {
+            return new string[0];
+        }
     }
 }
