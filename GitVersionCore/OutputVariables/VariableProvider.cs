@@ -26,6 +26,7 @@
         public const string AssemblyVersion = "AssemblyVersion";
         public const string AssemblyFileVersion = "AssemblyFileVersion";
         public const string OriginalRelease = "OriginalRelease";
+        public const string NuGetVersion = "NuGetVersion";
 
         public static Dictionary<string, string> GetVariablesFor(
             SemanticVersion semanticVersion,
@@ -65,9 +66,11 @@
                 {OriginalRelease, string.Format("{0}.{1}", 
                     bmd.ReleaseDate.OriginalCommitSha,
                     bmd.ReleaseDate.OriginalDate.UtcDateTime.ToString("u"))},
+                {NuGetVersion, NuGetSemVer1Formatter.GetVersion(semanticVersion)}
             };
 
             return variables;
         }
+
     }
 }

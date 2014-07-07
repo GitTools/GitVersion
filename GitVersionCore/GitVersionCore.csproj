@@ -66,6 +66,7 @@
     <Compile Include="BuildServers\TeamCity.cs" />
     <Compile Include="CachedVersion.cs" />
     <Compile Include="DirectoryDateFinder.cs" />
+    <Compile Include="OutputVariables\NuGetSemVer1Formatter.cs" />
     <Compile Include="WarningException.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GitDirFinder.cs" />

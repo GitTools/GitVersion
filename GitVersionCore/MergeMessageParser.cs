@@ -67,6 +67,32 @@ namespace GitVersion
                     return false;
                 }
             }
+            else if (message.StartsWith("Finish Release-")) //Match Syntevo SmartGit client's GitFlow 'release' merge commit message formatting
+            {
+                var branch = Regex.Match(message, "Release-(?<branch>.*)").Groups["branch"].Value;
+                var lastBranchPart = branch.Split('/', '-').Last();
+                
+                if (lastBranchPart.Length == 0 || !char.IsNumber(lastBranchPart.First()) || !lastBranchPart.Contains("."))
+                {
+                    return false; 
+                }
+
+                versionPart = lastBranchPart;
+                return true;
+            }
+            else if (message.StartsWith("Finish ")) //Match Syntevo SmartGit client's GitFlow 'hotfix' merge commit message formatting
+            {
+                var branch = Regex.Match(message, "Finish (?<branch>.*)").Groups["branch"].Value;
+                var lastBranchPart = branch.Split('/', '-').Last();
+
+                if (lastBranchPart.Length == 0 || !char.IsNumber(lastBranchPart.First()) || !lastBranchPart.Contains("."))
+                {
+                    return false;
+                }
+
+                versionPart = lastBranchPart;
+                return true;
+            }
             else
             {
                 return false;
