@@ -72,5 +72,9 @@ public class VariableProviderTests
 
         vars[VariableProvider.AssemblyVersion].ShouldBe(version);
         vars[VariableProvider.AssemblyFileVersion].ShouldBe(fileVersion);
+
+        vars[VariableProvider.Version].ShouldBe(vars[VariableProvider.LegacySemVer]);
+        vars[VariableProvider.NuGetVersionV2].ShouldBe(vars[VariableProvider.LegacySemVerPadded].ToLower());
+        vars[VariableProvider.NuGetVersion].ShouldBe(vars[VariableProvider.NuGetVersionV2]);
     }
 }
