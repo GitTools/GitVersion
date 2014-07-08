@@ -19,14 +19,18 @@
             {
                 return new SemanticVersion();
             }
-            var version = File.ReadAllText(filePath);
 
+            var version = File.ReadAllText(filePath);
             if (string.IsNullOrEmpty(version))
+            {
                 return new SemanticVersion();
+            }
 
             SemanticVersion semanticVersion;
             if (!SemanticVersion.TryParse(version, out semanticVersion))
+            {
                 throw new ArgumentException("Make sure you have a valid semantic version in NextVersion.txt");
+            }
 
             return semanticVersion;
         }

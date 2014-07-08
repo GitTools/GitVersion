@@ -37,6 +37,8 @@ namespace GitVersion
                     context.CurrentBranch.Name, releaseDate)
             };
 
+            semanticVersion.OverrideVersionManuallyIfNeeded(context.Repository);
+
             return semanticVersion;
         }
 
