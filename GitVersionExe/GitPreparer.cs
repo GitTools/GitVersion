@@ -74,7 +74,6 @@
                         repository.Refs.UpdateTarget("HEAD", targetBranchName);
                     }
 
-                    // TODO: Are there other files?
                     repository.CheckoutFilesIfExist("NextVersion.txt");
                 }
             }

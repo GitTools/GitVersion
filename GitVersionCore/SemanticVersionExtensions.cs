@@ -10,9 +10,12 @@
             var manualNextVersion = nextVersionTxtFileFinder.GetNextVersion();
             if (!manualNextVersion.IsEmpty())
             {
-                version.Major = manualNextVersion.Major;
-                version.Minor = manualNextVersion.Minor;
-                version.Patch = manualNextVersion.Patch;
+                if (manualNextVersion > version)
+                {
+                    version.Major = manualNextVersion.Major;
+                    version.Minor = manualNextVersion.Minor;
+                    version.Patch = manualNextVersion.Patch;
+                }
             }
         }
     }
