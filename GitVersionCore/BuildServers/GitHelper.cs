@@ -7,6 +7,8 @@ namespace GitVersion
 
     public static class GitHelper
     {
+        private const string MergeMessageRegexPattern = "refs/heads/pull(-requests)?/(?<issuenumber>[0-9]*)/merge(-clean)?";
+
         public static void NormalizeGitDirectory(string gitDirectory, Authentication authentication, string branch = null)
         {
             using (var repo = new Repository(gitDirectory))
@@ -51,12 +53,7 @@ namespace GitVersion
             }
 
             uint res;
-            if (!uint.TryParse(issueNumber, out res))
-            {
-                return false;
-            }
-
-            return true;
+            return uint.TryParse(issueNumber, out res);
         }
 
         public static string ExtractIssueNumber(string mergeMessage)
@@ -64,17 +61,12 @@ namespace GitVersion
             // Github Message: refs/heads/pull/5/merge
             // Stash Message:  refs/heads/pull-requests/5/merge-clean
 
-            string pattern = "refs/heads/pull(-requests)?/(?<issuenumber>[0-9]*)/merge(-clean)?";
-
-            var regex = new Regex(pattern);
+            var regex = new Regex(MergeMessageRegexPattern);
             var match = regex.Match(mergeMessage);
 
             string issueNumber = null;
 
-            if (match != null)
-            {
-                issueNumber = match.Groups["issuenumber"].Value;
-            }
+            issueNumber = match.Groups["issuenumber"].Value;
 
             return issueNumber;
         }

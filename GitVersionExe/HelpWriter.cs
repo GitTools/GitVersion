@@ -6,8 +6,7 @@ namespace GitVersion
     {
         public static void Write()
         {
-            var message =
-@"Use convention to derive a SemVer product version from a GitFlow or GitHub based repository.
+            const string message = @"Use convention to derive a SemVer product version from a GitFlow or GitHub based repository.
 
 GitVersion [path] [/l logFilePath]
 
