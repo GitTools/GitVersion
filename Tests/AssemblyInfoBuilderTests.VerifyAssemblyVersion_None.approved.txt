@@ -44,6 +44,9 @@ static class GitVersionInformation
     public static string AssemblyVersion = "1.0.0.0";
     public static string AssemblyFileVersion = "2.3.4.0";
     public static string OriginalRelease = "originalCommitSha.2014-03-01 00:00:01Z";
+    public static string Version = "2.3.4";
+    public static string NuGetVersionV2 = "2.3.4";
+    public static string NuGetVersion = "2.3.4";
 
 }
 
