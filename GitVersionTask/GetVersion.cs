@@ -75,9 +75,6 @@
         public string OriginalRelease { get; set; }
 
         [Output]
-        public string Version { get; set; }
-
-        [Output]
         public string NuGetVersionV2 { get; set; }
 
         [Output]

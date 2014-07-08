@@ -28,7 +28,6 @@
         public const string OriginalRelease = "OriginalRelease";
 
         // Synonyms
-        public const string Version = "Version";
         public const string NuGetVersionV2 = "NuGetVersionV2";
         public const string NuGetVersionV3 = "NuGetVersionV3";
         public const string NuGetVersion = "NuGetVersion";
@@ -72,9 +71,6 @@
                     bmd.ReleaseDate.OriginalCommitSha,
                     bmd.ReleaseDate.OriginalDate.UtcDateTime.ToString("u"))},
             };
-
-            // Synonyms to ensure backwards compatibility
-            variables[Version] = variables[LegacySemVer];
 
             // Use ToLower() to fix a bug where Beta and beta are different in NuGet
             variables[NuGetVersionV2] = variables[LegacySemVerPadded].ToLower();
