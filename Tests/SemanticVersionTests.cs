@@ -61,5 +61,12 @@ public class SemanticVersionTests
         new SemanticVersionPreReleaseTag("AReallyReallyReallyLongBranchName", 1).ToString("lp").ShouldBe("AReallyReallyRea0001");
     }
 
+    [Test]
+    public void EmptyVersion()
+    {
+        Assert.IsTrue(SemanticVersion.Empty.IsEmpty());
 
+        var emptyVersion = new SemanticVersion();
+        Assert.IsTrue(emptyVersion.IsEmpty());
+    }
 }

@@ -30,6 +30,9 @@ namespace GitVersion
                 PreReleaseTag = "unstable" + numberOfCommitsSinceRelease,
                 BuildMetaData = new SemanticVersionBuildMetaData(numberOfCommitsSinceRelease, context.CurrentBranch.Name, releaseDate),
             };
+
+            semanticVersion.OverrideVersionManuallyIfNeeded(context.Repository);
+
             return semanticVersion;
         }
     }

@@ -73,6 +73,8 @@
 
                         repository.Refs.UpdateTarget("HEAD", targetBranchName);
                     }
+
+                    repository.CheckoutFilesIfExist("NextVersion.txt");
                 }
             }
 
