@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<meta-runner name="GitVersion">
+  <description>Execute GitVersion</description>
+  <settings>
+    <parameters>
+      <param name="mr.GitVersion.gitCheckoutDir" value="" spec="text description='The directory containing .git relative to the working directory. Leave blank for the working directory itself.' display='normal' label='Git Repository Directory:'" />
+      <param name="mr.GitVersion.output" value="buildserver" spec="checkbox checkedValue='buildserver' description='Update the TeamCity build number or output JSON?' display='normal' label='Update TeamCity build version:' uncheckedValue='json'" />
+      <param name="mr.GitVersion.outputFile" value="" spec="text description='Optional path to a file relative to the working directory to output the json into if you selected JSON above.' display='normal' label='Json output file:'" />
+      <param name="mr.GitVersion.url" value="" spec="text description='Optional URL to remote git repository if you have not already checked one out.' display='normal' label='Remote Git Repository:'" />
+      <param name="mr.GitVersion.branch" value="" spec="text description='Remote branch to use.' display='normal' label='Remote Git Branch:'" />
+      <param name="mr.GitVersion.username" value="" spec="text description='Remote git repo username (if private).' display='normal' label='Remote Git Username:'" />
+      <param name="mr.GitVersion.password" value="" spec="text description='Remote git repo password (if private).' display='normal' label='Remote Git Password:'" />
+      <param name="mr.GitVersion.logFile" value="" spec="text description='Optional path to a file relative to the working directory to log output messages to.' display='normal' label='Log File:'" />
+      <param name="mr.GitVersion.exec" value="" spec="text description='Optional executable relative to the working directory to run using GitVersion - environment vars will be available to the process.' display='normal' label='Executable:'" />
+      <param name="mr.GitVersion.execArgs" value="" spec="text description='If an Executable is specified then arguments to pass to the executable.' display='normal' label='Executable Arguments:'" />
+      <param name="mr.GitVersion.proj" value="" spec="text description='Optional MSBuild file relative to the working directory to run using GitVersion - environment vars will be available to the process.' display='normal' label='MSBuild File:'" />
+      <param name="mr.GitVersion.projArgs" value="" spec="text description='If an MSBuild file is specified then arguments to pass to MSBuild.' display='normal' label='MSBuild Arguments:'" />
+      <param name="mr.GitVersion.updateAssemblyInfo" value="false" spec="checkbox checkedValue='true' description='Update any AssemblyInfo files while running the Executable or MSBuild file?' display='normal' label='Update AssemblyInfo Files:' uncheckedValue='false'" />
+    </parameters>
+    <build-runners>
+      <runner name="GitVersion" type="jetbrains_powershell">
+        <parameters>
+          <param name="jetbrains_powershell_execution" value="PS1" />
+          <param name="jetbrains_powershell_noprofile" value="true" />
+          <param name="jetbrains_powershell_errorToError" value="error" />
+          <param name="jetbrains_powershell_script_mode" value="CODE" />
+          <param name="jetbrains_powershell_bitness" value="x86" />
+          <param name="teamcity.step.mode" value="default" />
+          <param name="jetbrains_powershell_script_code"><![CDATA[
+[CmdletBinding()]
+Param (
+    [string] $workingDir = (Join-Path "%teamcity.build.workingDir%" "%mr.GitVersion.gitCheckoutDir%"),
+    [string] $output = "%mr.GitVersion.output%",
+    [string] $outputFile = "%mr.GitVersion.outputFile%",
+    [string] $url = "%mr.GitVersion.url%",
+    [string] $branch = "%mr.GitVersion.branch%",
+    [string] $username = "%mr.GitVersion.username%",
+    [string] $password = "%mr.GitVersion.password%",
+    [string] $logFile = "%mr.GitVersion.logFile%",
+    [string] $exec = "%mr.GitVersion.exec%",
+    [string] $execArgs = "%mr.GitVersion.execArgs%",
+    [string] $proj = "%mr.GitVersion.proj%",
+    [string] $projArgs = "%mr.GitVersion.projArgs%",
+    [string] $updateAssemblyInfo = "%mr.GitVersion.updateAssemblyInfo%"
+)
+
+$ErrorActionPreference = "Stop"
+
+function Join-ToWorkingDirectoryIfSpecified($path) {
+    $workingDir = "%teamcity.build.workingDir%"
+    if ($workingDir -match "teamcity.build.workingDir") {
+        return $path
+    }
+    if (Test-IsSpecified $path) {
+        return Join-Path $workingDir $path
+    }
+    return $path
+}
+
+function Test-IsSpecified ($value) {
+    if ($value -ne $null -and $value -ne "" -and -not ($value -match "mr.GitVersion.")) {
+        return $true
+    }
+    return $false
+}
+
+function Append-IfSpecified($appendTo, $command, $value) {
+    if (Test-IsSpecified $value) {
+        return "$appendTo /$command ""$value"""
+    }
+    return $appendTo
+}
+
+function Build-Arguments() {
+    $args = "";
+    if (Test-IsSpecified $workingDir) {
+        $args = """$workingDir"""
+    }
+    if (Test-IsSpecified $url) {
+        $args = Append-IfSpecified $args "url" $url
+        $args = Append-IfSpecified $args "b" $branch
+        $args = Append-IfSpecified $args "u" $username
+        $args = Append-IfSpecified $args "p" $password
+    }
+    $args = Append-IfSpecified $args "output" $output
+    $args = Append-IfSpecified $args "l" $logFile
+    if (Test-IsSpecified $exec) {
+        $args = Append-IfSpecified $args "exec" $exec
+        $args = Append-IfSpecified $args "execargs" $execargs
+    }
+    if (Test-IsSpecified $proj) {
+        $args = Append-IfSpecified $args "proj" $proj
+        $args = Append-IfSpecified $args "projargs" $projargs
+    }
+    if ($updateAssemblyInfo -eq "true") {
+        $args = "$args /UpdateAssemblyInfo"
+    }
+    if ($output -eq "json" -and (Test-IsSpecified $outputFile)) {
+        $args = "$args > ""$outputFile"""
+    }
+    return $args
+}
+
+try {
+
+    $chocolateyDir = Join-Path $env:SYSTEMDRIVE Chocolatey
+    if (-not (Test-Path $chocolateyDir)) {
+        Write-Host "##teamcity[progressMessage 'Chocolatey not installed; installing Chocolatey']"
+        iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))
+        if (-not (Test-Path $chocolateyDir)) {
+            throw "Error installing Chocolatey"
+        }
+    } else {
+        Write-Host "Chocolatey already installed"
+    }
+
+    $chocolateyBinDir = Join-Path $chocolateyDir "bin"
+    $gitversion = Join-Path $chocolateyBinDir "gitversion.bat"
+    if (-not (Test-Path $gitversion)) {
+        Write-Host "##teamcity[progressMessage 'GitVersion not installed; installing GitVersion']"
+        $cinst = Join-Path $chocolateyBinDir "cinst.bat"
+        iex "$cinst gitversion"
+        if ($LASTEXITCODE -ne 0) {
+            throw "Error installing GitVersion"
+        }
+    } else {
+        Write-Host "GitVersion already installed"
+    }
+
+    $outputFile = Join-ToWorkingDirectoryIfSpecified $outputFile
+    $logFile = Join-ToWorkingDirectoryIfSpecified $logFile
+    $exec = Join-ToWorkingDirectoryIfSpecified $exec
+    $proj = Join-ToWorkingDirectoryIfSpecified $proj
+
+    $arguments = Build-Arguments
+    Write-Host "##teamcity[progressMessage 'Running: $gitversion $arguments']"
+    iex "$gitversion $arguments"
+    if ($LASTEXITCODE -ne 0) {
+        throw "Error running GitVersion"
+    }
+}
+catch {
+    Write-Host "##teamcity[buildStatus text='$_' status='FAILURE']"
+    Write-Host "##teamcity[message text='$_' status='ERROR']"
+    exit 1
+}
+          ]]></param>
+        </parameters>
+      </runner>
+    </build-runners>
+    <requirements />
+  </settings>
+</meta-runner>
