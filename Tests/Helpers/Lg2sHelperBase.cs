@@ -105,4 +105,13 @@ public abstract class Lg2sHelperBase : IPostTestDirectoryRemover
         var sign = Constants.SignatureNow();
         return repo.Commit(type + " commit", sign, sign);
     }
+
+    protected static void AddTag(Repository repo, string tagName)
+    {
+        var randomFile = Path.Combine(repo.Info.WorkingDirectory, Guid.NewGuid().ToString());
+        File.WriteAllText(randomFile, string.Empty);
+        repo.Index.Stage(randomFile);
+        var sign = Constants.SignatureNow();
+        repo.ApplyTag(tagName, repo.Head.Tip.Id.Sha, sign, "foo");
+    }
 }

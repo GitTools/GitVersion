@@ -20,7 +20,9 @@
                 fixture.Repository.MakeACommit();
                 fixture.AssertFullSemver("1.2.1-beta.1+1");
                 fixture.Repository.ApplyTag("1.2.1-beta.1");
-                fixture.AssertFullSemver("1.2.1-beta.2+1");
+                fixture.AssertFullSemver("1.2.1-beta.1+1");
+                fixture.Repository.MakeACommit();
+                fixture.AssertFullSemver("1.2.1-beta.2+2");
 
                 // Merge hotfix branch to master
                 fixture.Repository.Checkout("master");
