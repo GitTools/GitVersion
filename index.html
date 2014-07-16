@@ -1,100 +1,119 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>GitVersion by Particular</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>GitVersion</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="javascripts/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
+    <!-- Custom styles for this template -->
+    <link href="stylesheets/carousel.css" rel="stylesheet">
   </head>
+<!-- NAVBAR
+================================================== -->
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/Particular/GitVersion">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/Particular/GitVersion/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/Particular/GitVersion/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
+    <div class="navbar-wrapper">
+      <div class="container">
 
-    <div class="wrapper">
-
-      <section>
-        <div id="title">
-          <h1>GitVersion</h1>
-          <p>Use convention to derive a SemVer product version from a Git repository</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/Particular">Particular</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        <div class="navbar navbar-default navbar-static-top" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">GitVersion</a>
+            </div>
+            <div class="navbar-collapse collapse">
+              <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Home</a></li>
+                <li><a href="https://github.com/Particular/GitVersion/wiki/Getting-Started" target="_blank">Getting started</a></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Docs <span class="caret"></span></a>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="https://github.com/Particular/GitVersion/wiki/Intro-to-Semantic-Versioning">Intro to Semantic Versioning</a></li>
+                    <li><a href="https://github.com/Particular/GitVersion/wiki/FAQ">GitVersion FAQ</a></li>
+                    <li><a href="https://github.com/Particular/GitVersion/wiki/Choosing-branching-strategy">Choosing branching strategy</a></li>
+                    <li class="divider"></li>
+                    <li class="dropdown-header">GitHubFlow (Master + Pull Requests)</li>
+                    <li><a href="https://github.com/Particular/GitVersion/wiki/GitFlow">Introduction to GitHubFlow</a></li>
+                    <li><a href="https://github.com/Particular/GitVersion/wiki/GitFlowExamples">GitHubFlow examples</a></li>
+                    <li class="divider"></li>
+                    <li class="dropdown-header">GitFlow</li>
+                    <li><a href="https://github.com/Particular/GitVersion/wiki/GitHubFlow">Introduction to GitFlow</a></li>
+                    <li><a href="https://github.com/Particular/GitVersion/wiki/GitHubFlowExamples">GitFlow examples</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
 
-        <p><img src="https://raw.github.com/Particular/GitVersion/master/Icons/package_icon.png" alt="Icon"></p>
-
-<p>The easy way to use semantic versioning (semver.org) with a Git.</p>
-
-<p>GitVersion uses your <em>git</em> repository branching conventions to determine the current <a href="http://semver.org">Semantic Version</a> of your application. It supports <a href="https://github.com/Particular/GitVersion/wiki/GitFlow">GitFlow</a> and the much simpler <a href="https://github.com/Particular/GitVersion/wiki/GitHubFlow">GitHubFlow</a> and might work with others (let us know).</p>
-
-<p>GitVersion in action!</p>
-
-<p><img src="Icons/README.png" alt="README"></p>
-
-<p>You are seeing:</p>
-
-<ul>
-<li>Pull requests being built as pre-release builds</li>
-<li>A branch called <code>release-1.0.0</code> producing beta v1 packages</li>
-</ul><p>Once a release is done, and you <strong>tag</strong> the commit which was released, the version will automatically be bumped. See our wiki for the rules and examples of how we increment the SemVer.</p>
-
-<h2>
-<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage:</h2>
-
-<p>GitVersion can be used in several ways</p>
-
-<ul>
-<li><a href="https://github.com/Particular/GitVersion/wiki/MSBuild-Task-Usage">An MSBuild Task</a></li>
-<li>
-<a href="https://github.com/Particular/GitVersion/wiki/GitVersion-NuGet-Library">A NuGet Library package</a> - to use from your own code</li>
-<li><a href="https://github.com/Particular/GitVersion/wiki/Command-Line-Tool">A Command Line tool</a></li>
-<li><a href="https://github.com/Particular/GitVersion/wiki/Ruby-Gem">A Ruby Gem</a></li>
-</ul><h3>
-<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h3>
-
-<p>We have a bunch of examples in our Wiki, if something is missing, let us know! There are examples for GitHubFlow and GitFlow</p>
-
-<h3>
-<a name="supported-variables" class="anchor" href="#supported-variables"><span class="octicon octicon-link"></span></a>Supported Variables</h3>
-
-<p>Because not everyone is the same, we give you a bunch of different variables which you can use in your builds to meet <em>your</em> requirements</p>
-
-<h2>
-<a name="additional-links" class="anchor" href="#additional-links"><span class="octicon octicon-link"></span></a>Additional Links</h2>
-
-<h3>
-<a name="faq-and-common-problems" class="anchor" href="#faq-and-common-problems"><span class="octicon octicon-link"></span></a><a href="https://github.com/Particular/GitVersion/wiki/FAQ">FAQ and Common Problems</a>
-</h3>
-
-<h3>
-<a name="semantic-versioning" class="anchor" href="#semantic-versioning"><span class="octicon octicon-link"></span></a><a href="http://semver.org/">Semantic Versioning</a>
-</h3>
-
-<h2>
-<a name="icon" class="anchor" href="#icon"><span class="octicon octicon-link"></span></a>Icon</h2>
-
-<p><a href="http://thenounproject.com/noun/tree/#icon-No13389" target="_blank">Tree</a> designed by <a href="http://thenounproject.com/david.chapman" target="_blank">David Chapman</a> from The Noun Project</p>
-      </section>
-
+      </div>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-    
+
+
+    <!-- Carousel
+    ================================================== -->
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+      <!-- Indicators -->
+      <div class="carousel-inner">
+        <div class="item active">
+          <img src="images/Headline-1.jpg" alt="First slide">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1>Make Semantic Versioning easy</h1>
+              <p>GitVersion uses your Git history to infer your semantic version using a set of built in conventions. It currently works with GitHubFlow and GitFlow.</p>
+              <p><a class="btn btn-lg btn-primary" href="https://github.com/Particular/GitVersion/wiki/Getting-Started" role="button">Getting Started</a></p>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <img src="images/Headline-2.jpg" alt="Second slide">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1>GitVersion in action</h1>
+              <p><img src="https://github.com/Particular/GitVersion/raw/master/Icons/README.png" /></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+      <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+    </div><!-- /.carousel -->
+
+    <!-- Marketing messaging and featurettes
+    ================================================== -->
+    <!-- Wrap the rest of the page in another container to center all the content. -->
+
+    <div class="container">
+      <h1></h1>
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="javascripts/docs.min.js"></script>
   </body>
 </html>
