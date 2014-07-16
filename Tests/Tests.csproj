@@ -91,6 +91,7 @@
     <Compile Include="BuildServers\BuildServerBaseTests.cs" />
     <Compile Include="BuildServers\TeamCityTests.cs" />
     <Compile Include="BuildServers\ContinuaCiTests.cs" />
+    <Compile Include="SemanticVersionPreReleaseTagTests.cs" />
     <Compile Include="VersionAndBranchFinderTests.cs" />
     <Compile Include="GitHubFlow\MergedBranchesWithVersionFinderTests.cs" />
     <Compile Include="LambdaEqualityHelperFixture.cs" />
@@ -142,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_Major.approved.txt" />
+    <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor.approved.txt" />
     <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatch.approved.txt" />
     <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_None.approved.txt" />
     <Content Include="AssemblyInfoBuilderTests.VerifyCreatedCode.approved.txt" />

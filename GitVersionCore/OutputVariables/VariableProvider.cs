@@ -27,6 +27,11 @@
         public const string AssemblyFileVersion = "AssemblyFileVersion";
         public const string OriginalRelease = "OriginalRelease";
 
+        // Synonyms
+        public const string NuGetVersionV2 = "NuGetVersionV2";
+        public const string NuGetVersionV3 = "NuGetVersionV3";
+        public const string NuGetVersion = "NuGetVersion";
+
         public static Dictionary<string, string> GetVariablesFor(
             SemanticVersion semanticVersion,
             AssemblyVersioningScheme assemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
@@ -66,6 +71,10 @@
                     bmd.ReleaseDate.OriginalCommitSha,
                     bmd.ReleaseDate.OriginalDate.UtcDateTime.ToString("u"))},
             };
+
+            variables[NuGetVersionV2] = variables[LegacySemVerPadded];
+            //variables[NuGetVersionV3] = variables[LegacySemVerPadded]; // TODO: when v3 is released, determine what to use
+            variables[NuGetVersion] = variables[NuGetVersionV2];
 
             return variables;
         }
