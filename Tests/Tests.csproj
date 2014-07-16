@@ -142,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_Major.approved.txt" />
+    <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor.approved.txt" />
     <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatch.approved.txt" />
     <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_None.approved.txt" />
     <Content Include="AssemblyInfoBuilderTests.VerifyCreatedCode.approved.txt" />
