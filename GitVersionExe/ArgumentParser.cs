@@ -128,6 +128,11 @@ namespace GitVersion
                     {
                         arguments.UpdateAssemblyInfo = false;
                     }
+                    else if (!IsSwitchArgument(value))
+                    {
+                        arguments.UpdateAssemblyInfo = true;
+                        arguments.UpdateAssemblyInfoFileName = value;
+                    }
                     else
                     {
                         arguments.UpdateAssemblyInfo = true;
@@ -157,6 +162,11 @@ namespace GitVersion
                 throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", name));
             }
             return arguments;
+        }
+
+        static bool IsSwitchArgument(string value)
+        {
+            return value != null && value.StartsWith("-") || value.StartsWith("/");
         }
 
         static bool IsSwitch(string switchName, string value)

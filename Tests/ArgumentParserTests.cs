@@ -165,11 +165,37 @@ public class ArgumentParserTests
         Assert.AreEqual("Could not parse command line parameter '-x'.", exception.Message);
     }
 
-    [Test]
-    public void update_assembly_info()
+    [TestCase("-updateAssemblyInfo true")]
+    [TestCase("-updateAssemblyInfo 1")]
+    [TestCase("-updateAssemblyInfo -proj foo.sln")]
+    public void update_assembly_info_true(string command)
     {
-        var arguments = ArgumentParser.ParseArguments("-updateAssemblyInfo -proj foo.sln");
+        var arguments = ArgumentParser.ParseArguments(command);
         arguments.UpdateAssemblyInfo.ShouldBe(true);
+    }
+
+    [TestCase("-updateAssemblyInfo false")]
+    [TestCase("-updateAssemblyInfo 0")]
+    public void update_assembly_info_false(string command)
+    {
+        var arguments = ArgumentParser.ParseArguments(command);
+        arguments.UpdateAssemblyInfo.ShouldBe(false);
+    }
+
+    [Test]
+    public void update_assembly_info_with_filename()
+    {
+        var arguments = ArgumentParser.ParseArguments("-updateAssemblyInfo CommonAssemblyInfo.cs");
+        arguments.UpdateAssemblyInfo.ShouldBe(true);
+        arguments.UpdateAssemblyInfoFileName.ShouldBe("CommonAssemblyInfo.cs");
+    }
+
+    [Test]
+    public void update_assembly_info_with_relative_filename()
+    {
+        var arguments = ArgumentParser.ParseArguments("-updateAssemblyInfo ..\\..\\CommonAssemblyInfo.cs");
+        arguments.UpdateAssemblyInfo.ShouldBe(true);
+        arguments.UpdateAssemblyInfoFileName.ShouldBe("..\\..\\CommonAssemblyInfo.cs");
     }
 
     [Test]
