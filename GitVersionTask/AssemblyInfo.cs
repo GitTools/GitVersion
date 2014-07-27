@@ -3,4 +3,4 @@
 [assembly: AssemblyTitle("GitVersionTask")]
 [assembly: AssemblyProduct("GitVersionTask")]
 [assembly: AssemblyVersion("1.1.0")]
-[assembly: AssemblyFileVersion("1.1.0-beta0001")]
+[assembly: AssemblyFileVersion("1.1.0")]
