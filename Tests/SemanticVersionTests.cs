@@ -62,6 +62,12 @@ public class SemanticVersionTests
     }
 
     [Test]
+    public void VersionSorting()
+    {
+        SemanticVersion.Parse("1.0.0").ShouldBeGreaterThan(SemanticVersion.Parse("1.0.0-beta"));
+    }
+
+    [Test]
     public void EmptyVersion()
     {
         Assert.IsTrue(SemanticVersion.Empty.IsEmpty());
