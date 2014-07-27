@@ -97,6 +97,15 @@ namespace GitVersion
 
         public int CompareTo(SemanticVersionPreReleaseTag other)
         {
+            if (!HasTag() && other.HasTag())
+            {
+                return 1;
+            }
+            if (HasTag() && !other.HasTag())
+            {
+                return -1;
+            }
+
             var nameComparison = StringComparer.InvariantCultureIgnoreCase.Compare(Name, other);
             if (nameComparison != 0)
                 return nameComparison;
