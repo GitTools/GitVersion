@@ -126,13 +126,13 @@
     <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyInstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyUninstall.ps1" DestinationFolder="$(SolutionDir)NuGetExeBuild\Tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.Portable.nuspec" DestinationFolder="$(SolutionDir)NuGetExeBuild" />
-    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetExeBuild" MetadataAssembly="$(OutputPath)GitVersion.exe" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetExeBuild" MetadataAssembly="$(OutputPath)GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
     <!-- NugetCommandLineBuild -->
     <MakeDir Directories="$(SolutionDir)NuGetCommandLineBuild" />
     <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(SolutionDir)NuGetCommandLineBuild\Tools" />
     <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(SolutionDir)NuGetCommandLineBuild\Tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.CommandLine.nuspec" DestinationFolder="$(SolutionDir)NuGetCommandLineBuild" />
-    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetCommandLineBuild" MetadataAssembly="$(OutputPath)GitVersion.exe" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetCommandLineBuild" MetadataAssembly="$(OutputPath)GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
     <!-- Gem -->
     <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(SolutionDir)GemBuild\bin" />
     <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(SolutionDir)GemBuild\bin" />
