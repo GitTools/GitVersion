@@ -1,6 +1,6 @@
 # v1.1.0 
 
-- [#222](https://github.com/Particular/GitVersion/pull/222) - Log is printed to console on error
+ - [#222](https://github.com/Particular/GitVersion/pull/222) - Log is printed to console on error
  - [#211](https://github.com/Particular/GitVersion/pull/211) - should get exact version from tag contributed by Simon Cropp ([SimonCropp](https://github.com/SimonCropp))
  - [#210](https://github.com/Particular/GitVersion/pull/210) - Added additional variables for NuGet (see #201) contributed by Geert van Horrik ([GeertvanHorrik](https://github.com/GeertvanHorrik))
  - [#208](https://github.com/Particular/GitVersion/pull/208) - Added support for NextVersion.txt in GitFlow and dynamic repositories contributed by Geert van Horrik ([GeertvanHorrik](https://github.com/GeertvanHorrik))
