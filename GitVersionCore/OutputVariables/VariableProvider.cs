@@ -72,8 +72,9 @@
                     bmd.ReleaseDate.OriginalDate.UtcDateTime.ToString("u"))},
             };
 
-            variables[NuGetVersionV2] = variables[LegacySemVerPadded];
-            //variables[NuGetVersionV3] = variables[LegacySemVerPadded]; // TODO: when v3 is released, determine what to use
+            // Use ToLower() to fix a bug where Beta and beta are different in NuGet
+            variables[NuGetVersionV2] = variables[LegacySemVerPadded].ToLower();
+            //variables[NuGetVersionV3] = variables[LegacySemVerPadded].ToLower(); // TODO: when v3 is released, determine what to use
             variables[NuGetVersion] = variables[NuGetVersionV2];
 
             return variables;

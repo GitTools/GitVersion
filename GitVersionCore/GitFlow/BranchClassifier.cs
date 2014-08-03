@@ -64,7 +64,7 @@ namespace GitVersion
 
         public static bool IsPullRequest(this Branch branch)
         {
-            return branch.CanonicalName.Contains("/pull/");
+            return branch.CanonicalName.Contains("/pull/") || branch.CanonicalName.Contains("/pull-requests/");
         }
 
         public static bool IsSupport(this Branch branch)

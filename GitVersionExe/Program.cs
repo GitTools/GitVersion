@@ -5,9 +5,11 @@ namespace GitVersion
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Text;
 
     class Program
     {
+        static StringBuilder log = new StringBuilder();
         const string MsBuild = @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
 
         static void Main()
@@ -134,6 +136,11 @@ namespace GitVersion
             {
                 exitCode = 0;
             }
+            else
+            {
+                // Dump log to console if we fail to complete successfully
+                Console.Write(log.ToString());
+            }
 
             Environment.Exit(exitCode.Value);
         }
@@ -145,7 +152,10 @@ namespace GitVersion
 
         static void ConfigureLogging(Arguments arguments)
         {
-            var writeActions = new List<Action<string>>();
+            var writeActions = new List<Action<string>>
+            {
+                s => log.AppendLine(s)
+            };
 
             if (arguments.Output == OutputType.BuildServer)
             {

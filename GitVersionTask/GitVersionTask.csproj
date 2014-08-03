@@ -22,6 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -107,7 +108,7 @@
     <Copy SourceFiles="$(TargetDir)ILMergeTemp\GitVersionTask.pdb" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.targets" DestinationFolder="$(SolutionDir)NuGetTaskBuild\Build" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.nuspec" DestinationFolder="$(SolutionDir)NuGetTaskBuild" />
-    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetTaskBuild" MetadataAssembly="$(ILMergeTemp)GitVersionTask.dll" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetTaskBuild" MetadataAssembly="$(ILMergeTemp)GitVersionTask.dll" Version="$(GitVersion_NuGetVersion)" />
     <Delete Files="@(TempFiles)" />
     <RemoveDir Directories="$(TargetDir)ILMergeTemp\" />
   </Target>

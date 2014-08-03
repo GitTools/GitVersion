@@ -44,8 +44,12 @@ namespace GitVersion
 
             if (tagVersion != null)
             {
-                tagVersion.PreReleaseTag.Number++;
-                semanticVersion.PreReleaseTag = tagVersion.PreReleaseTag;
+                //If the tag is on the eact commit then dont bump the PreReleaseTag 
+                if (context.CurrentCommit.Sha != tagVersion.Commit.Sha)
+                {
+                    tagVersion.SemVer.PreReleaseTag.Number++;
+                }
+                semanticVersion.PreReleaseTag = tagVersion.SemVer.PreReleaseTag;
             }
 
             return semanticVersion;
@@ -71,7 +75,7 @@ namespace GitVersion
             return false;
         }
 
-        SemanticVersion RetrieveMostRecentOptionalTagVersion(
+        VersionTaggedCommit RetrieveMostRecentOptionalTagVersion(
             IRepository repository, SemanticVersion branchVersion, IEnumerable<Commit> take)
         {
             foreach (var commit in take)
@@ -91,7 +95,7 @@ namespace GitVersion
                         continue;
                     }
 
-                    return version;
+                    return new VersionTaggedCommit(commit, version);
                 }
             }
 

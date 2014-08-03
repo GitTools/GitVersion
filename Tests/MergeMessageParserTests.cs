@@ -20,6 +20,10 @@ public class MergeMessageParserTests
     [TestCase("Merge branch 'alpha-0.1.5'", true, "0.1.5")]
     [TestCase("Merge pull request #165 from Particular/release-1.0.0", true, "1.0.0")]
     [TestCase("Merge pull request #95 from Particular/issue-94", false, null)]
+    [TestCase("Merge pull request #165 in Particular/release-1.0.0", true, "1.0.0")]
+    [TestCase("Merge pull request #95 in Particular/issue-94", false, null)]
+    [TestCase("Finish Release-0.12.0", true, "0.12.0")] //Support Syntevo SmartGit/Hg's Gitflow merge commit messages for finishing a 'Release' branch
+    [TestCase("Finish 0.14.1", true, "0.14.1")] //Support Syntevo SmartGit/Hg's Gitflow merge commit messages for finishing a 'Hotfix' branch
     public void AssertMergeMessage(string message, bool isMergeCommit, string expectedVersion)
     {
         var c = new MockCommit
