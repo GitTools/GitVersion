@@ -28,5 +28,6 @@ namespace GitVersion
         public string ExecArgs;
 
         public bool UpdateAssemblyInfo;
+        public string UpdateAssemblyInfoFileName;
     }
 }

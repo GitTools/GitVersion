@@ -16,8 +16,7 @@ namespace GitVersion
             if (args.Output != OutputType.Json)
                 Console.WriteLine("Updating assembly info files");
 
-            var assemblyInfoFiles = Directory.GetFiles(workingDirectory, "AssemblyInfo.cs",
-                SearchOption.AllDirectories);
+            var assemblyInfoFiles = GetAssemblyInfoFiles(workingDirectory, args);
 
             foreach (var assemblyInfoFile in assemblyInfoFiles)
             {
@@ -42,6 +41,19 @@ namespace GitVersion
 
                 File.WriteAllText(assemblyInfoFile, fileContents);
             }
+        }
+
+        static IEnumerable<string> GetAssemblyInfoFiles(string workingDirectory, Arguments args)
+        {
+            if (args.UpdateAssemblyInfoFileName != null)
+            {
+                if (File.Exists(args.UpdateAssemblyInfoFileName))
+                {
+                    return new[] { Path.GetFullPath(args.UpdateAssemblyInfoFileName) };
+                }
+            }
+
+            return Directory.GetFiles(workingDirectory, "AssemblyInfo.cs", SearchOption.AllDirectories);
         }
 
         public void Dispose()
