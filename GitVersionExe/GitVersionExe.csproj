@@ -93,7 +93,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="Clean">
     <ItemGroup>
-      <ExeFilesToDelete Include="$(SolutionDir)NuGetExeBuild\**\*.*" />
+      <ExeFilesToDelete Include="$(SolutionDir)NuGetExeBuild\**\*.*;$(SolutionDir)NuGetCommandLineBuild\**\*.*" />
     </ItemGroup>
     <Delete Files="@(ExeFilesToDelete)" />
   </Target>
