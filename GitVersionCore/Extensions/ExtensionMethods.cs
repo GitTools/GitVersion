@@ -6,7 +6,7 @@ namespace GitVersion
     using System.Text.RegularExpressions;
     using JetBrains.Annotations;
 
-    static class ExtensionMethods
+    static partial class ExtensionMethods
     {
         public static bool IsOdd(this int number)
         {

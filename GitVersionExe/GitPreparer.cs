@@ -1,6 +1,7 @@
 ﻿namespace GitVersion
 {
     using System.IO;
+    using System.Linq;
     using LibGit2Sharp;
 
     public class GitPreparer
@@ -51,13 +52,13 @@
                     {
                         Username = authentication.Username,
                         Password = authentication.Password
-                };
+                    };
             }
 
             Logger.WriteInfo(string.Format("Retrieving git info from url '{0}'", arguments.TargetUrl));
 
-            Repository.Clone(arguments.TargetUrl, gitDirectory, 
-                new CloneOptions { IsBare = true, Checkout = false, Credentials = credentials});
+            Repository.Clone(arguments.TargetUrl, gitDirectory,
+                new CloneOptions { IsBare = true, Checkout = false, Credentials = credentials });
 
             if (!string.IsNullOrWhiteSpace(arguments.TargetBranch))
             {
@@ -66,12 +67,21 @@
 
                 using (var repository = new Repository(gitDirectory))
                 {
-                    var targetBranchName = string.Format("refs/heads/{0}", arguments.TargetBranch);
-                    if (!string.Equals(repository.Head.CanonicalName, targetBranchName))
+                    var newHead = GetReference(repository, arguments.TargetBranch, arguments.TargetUrl);
+                    if (newHead != null)
                     {
-                        Logger.WriteInfo(string.Format("Switching to branch '{0}'", arguments.TargetBranch));
+                        var directReference = newHead as DirectReference;
+                        if (directReference != null)
+                        {
+                            repository.Network.Fetch(arguments.TargetUrl, new[]
+                            {
+                                string.Format("{0}:{1}", directReference.CanonicalName, arguments.TargetBranch) //refs/head/gitversion_dynamic")
+                            });
 
-                        repository.Refs.UpdateTarget("HEAD", targetBranchName);
+                            newHead = repository.Refs[string.Format("refs/heads/{0}", arguments.TargetBranch)];
+                        }
+
+                        repository.Refs.UpdateTarget(repository.Refs.Head, newHead);
                     }
 
                     repository.CheckoutFilesIfExist("NextVersion.txt");
@@ -81,6 +91,29 @@
             DynamicGitRepositoryPath = gitDirectory;
 
             return gitDirectory;
+        }
+
+        private static Reference GetReference(Repository repository, string branchName, string repositoryUrl)
+        {
+            var targetBranchName = branchName.GetCanonicalBranchName();
+            foreach (var localRef in repository.Refs)
+            {
+                if (string.Equals(localRef.CanonicalName, targetBranchName))
+                {
+                    return localRef;
+                }
+            }
+
+            var remoteReferences = repository.Network.ListReferences(repositoryUrl);
+            foreach (var remoteRef in remoteReferences)
+            {
+                if (string.Equals(remoteRef.CanonicalName, targetBranchName))
+                {
+                    return remoteRef;
+                }
+            }
+
+            return null;
         }
     }
 }
