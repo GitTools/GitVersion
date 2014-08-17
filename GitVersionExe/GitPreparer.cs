@@ -34,12 +34,13 @@
 
         string GetGitInfoFromUrl()
         {
-            var gitDirectory = Path.Combine(arguments.TargetPath, "_dynamicrepository", ".git");
-            if (Directory.Exists(gitDirectory))
+            var gitRootDirectory = Path.Combine(arguments.TargetPath, "_dynamicrepository");
+            var gitDirectory =  Path.Combine(gitRootDirectory, ".git");
+            if (Directory.Exists(gitRootDirectory))
             {
-                Logger.WriteInfo(string.Format("Deleting existing .git folder from '{0}' to force new checkout from url", gitDirectory));
+                Logger.WriteInfo(string.Format("Deleting existing .git folder from '{0}' to force new checkout from url", gitRootDirectory));
 
-                DeleteHelper.DeleteGitRepository(gitDirectory);
+                DeleteHelper.DeleteGitRepository(gitRootDirectory);
             }
 
             Credentials credentials = null;
@@ -67,20 +68,30 @@
 
                 using (var repository = new Repository(gitDirectory))
                 {
-                    var newHead = GetReference(repository, arguments.TargetBranch, arguments.TargetUrl);
-                    if (newHead != null)
+                    Reference newHead = null;
+
+                    var localReference = GetLocalReference(repository, arguments.TargetBranch);
+                    if (localReference != null)
                     {
-                        var directReference = newHead as DirectReference;
-                        if (directReference != null)
+                        newHead = localReference;
+                    }
+
+                    if (newHead == null)
+                    {
+                        var remoteReference = GetRemoteReference(repository, arguments.TargetBranch, arguments.TargetUrl);
+                        if (remoteReference != null)
                         {
                             repository.Network.Fetch(arguments.TargetUrl, new[]
                             {
-                                string.Format("{0}:{1}", directReference.CanonicalName, arguments.TargetBranch) //refs/head/gitversion_dynamic")
+                                string.Format("{0}:{1}", remoteReference.CanonicalName, arguments.TargetBranch)
                             });
 
                             newHead = repository.Refs[string.Format("refs/heads/{0}", arguments.TargetBranch)];
                         }
+                    }
 
+                    if (newHead != null)
+                    {
                         repository.Refs.UpdateTarget(repository.Refs.Head, newHead);
                     }
 
@@ -93,7 +104,7 @@
             return gitDirectory;
         }
 
-        private static Reference GetReference(Repository repository, string branchName, string repositoryUrl)
+        private static Reference GetLocalReference(Repository repository, string branchName)
         {
             var targetBranchName = branchName.GetCanonicalBranchName();
             foreach (var localRef in repository.Refs)
@@ -104,6 +115,12 @@
                 }
             }
 
+            return null;
+        }
+
+        private static DirectReference GetRemoteReference(Repository repository, string branchName, string repositoryUrl)
+        {
+            var targetBranchName = branchName.GetCanonicalBranchName();
             var remoteReferences = repository.Network.ListReferences(repositoryUrl);
             foreach (var remoteRef in remoteReferences)
             {
