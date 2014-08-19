@@ -6,22 +6,8 @@ namespace GitVersion
     public class SemanticVersionPreReleaseTag : 
         IFormattable, IComparable<SemanticVersionPreReleaseTag>, IEquatable<SemanticVersionPreReleaseTag>
     {
+        public string Name;
         public int? Number;
-        private string _name;
-
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (!string.IsNullOrWhiteSpace(value))
-                {
-                    value = value.ToLower();
-                }
-
-                _name = value;
-            }
-        }
 
         static LambdaEqualityHelper<SemanticVersionPreReleaseTag> equalityHelper =
            new LambdaEqualityHelper<SemanticVersionPreReleaseTag>(x => x.Name, x => x.Number);

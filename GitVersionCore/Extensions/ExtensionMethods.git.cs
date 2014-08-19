@@ -9,7 +9,6 @@
             if (branchName.IsPullRequest())
             {
                 branchName = branchName.Replace("pull-requests", "pull");
-                branchName = branchName.Replace("pull", "pull");
                 branchName = branchName.Replace("pr", "pull");
 
                 return string.Format("refs/{0}/head", branchName);
