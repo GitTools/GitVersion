@@ -107,30 +107,16 @@
         private static Reference GetLocalReference(Repository repository, string branchName)
         {
             var targetBranchName = branchName.GetCanonicalBranchName();
-            foreach (var localRef in repository.Refs)
-            {
-                if (string.Equals(localRef.CanonicalName, targetBranchName))
-                {
-                    return localRef;
-                }
-            }
 
-            return null;
+            return repository.Refs.FirstOrDefault(localRef => string.Equals(localRef.CanonicalName, targetBranchName));
         }
 
         private static DirectReference GetRemoteReference(Repository repository, string branchName, string repositoryUrl)
         {
             var targetBranchName = branchName.GetCanonicalBranchName();
             var remoteReferences = repository.Network.ListReferences(repositoryUrl);
-            foreach (var remoteRef in remoteReferences)
-            {
-                if (string.Equals(remoteRef.CanonicalName, targetBranchName))
-                {
-                    return remoteRef;
-                }
-            }
 
-            return null;
+            return remoteReferences.FirstOrDefault(remoteRef => string.Equals(remoteRef.CanonicalName, targetBranchName));
         }
     }
 }
