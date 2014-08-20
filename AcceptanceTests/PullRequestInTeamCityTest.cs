@@ -12,7 +12,7 @@
         const string TaggedVersion = "1.0.3";
 
         [Theory]
-        [InlineData("refs/pull-requests/5/merge-clean")]
+        [InlineData("refs/pull-requests/5/merge")]
         [InlineData("refs/pull/5/merge")]
         public void GivenARemoteWithATagOnMaster_AndAPullRequestWithTwoCommits_AndBuildIsRunningInTeamCity_VersionIsCalculatedProperly(string pullRequestRef)
         {
