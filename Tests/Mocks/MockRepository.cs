@@ -35,6 +35,11 @@ public class MockRepository : IRepository
         throw new NotImplementedException();
     }
 
+    public CherryPickResult CherryPick(Commit commit, Signature committer, CherryPickOptions options = null)
+    {
+        throw new NotImplementedException();
+    }
+
     public GitObject Lookup(ObjectId id)
     {
         throw new NotImplementedException();
