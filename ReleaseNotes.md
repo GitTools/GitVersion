@@ -1,3 +1,6 @@
+# v1.2.1
+Fixing an issue with lib2gitsharp - [#246](https://github.com/Particular/GitVersion/issues/246)
+
 # v1.2.0
 Support updating a single common AssemblyInfo.cs [#227](https://github.com/Particular/GitVersion/pull/227) thanks @hmemcpy
 Note we do not have the assembly info switches in the command line help at the moment, see [#237](https://github.com/Particular/GitVersion/issues/237)
