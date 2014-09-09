@@ -47,5 +47,49 @@
                 result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("2.0.0+6");
             }
         }
+
+        [Fact(Skip = "Not supported yet")]
+        public void WhenMergingReleaseBackToDevShouldNotResetBetaVersion()
+        {
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                const string TaggedVersion = "1.0.3";
+                fixture.Repository.MakeATaggedCommit(TaggedVersion);
+                fixture.Repository.CreateBranch("develop");
+                fixture.Repository.Checkout("develop");
+              
+                fixture.Repository.MakeCommits(1);
+
+                fixture.Repository.CreateBranch("release-2.0.0");
+                fixture.Repository.Checkout("release-2.0.0");
+                fixture.Repository.MakeCommits(1);
+
+                VerifyVersion(fixture, "2.0.0-beta.1+1");
+
+                //tag it to bump to beta 2
+                fixture.Repository.ApplyTag("2.0.0-beta1");
+
+                fixture.Repository.MakeCommits(1);
+
+                VerifyVersion(fixture, "2.0.0-beta.2+2");
+                
+                //merge down to develop
+                fixture.Repository.Checkout("develop");
+                fixture.Repository.MergeNoFF("release-2.0.0", Constants.SignatureNow());
+                
+                //but keep working on the release
+                fixture.Repository.Checkout("release-2.0.0");
+             
+                VerifyVersion(fixture, "2.0.0-beta.2+2");
+            }
+        }
+
+        static void VerifyVersion(EmptyRepositoryFixture fixture, string semver)
+        {
+            var result = fixture.ExecuteGitVersion();
+
+            result.ExitCode.ShouldBe(0);
+            result.OutputVariables[VariableProvider.FullSemVer].ShouldBe(semver);
+        }
     }
 }
