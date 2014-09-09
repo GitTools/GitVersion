@@ -61,6 +61,10 @@ namespace GitVersion
                 }
 
                 var semanticVersion = VersionCache.GetVersion(gitDirectory);
+                if (arguments.PreReleaseTag != null)
+                {
+                    semanticVersion.PreReleaseTag = arguments.PreReleaseTag;
+                }
 
                 if (arguments.Output == OutputType.BuildServer)
                 {
