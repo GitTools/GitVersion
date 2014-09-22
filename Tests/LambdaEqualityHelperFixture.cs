@@ -36,7 +36,7 @@ public class LambdaEqualityHelperFixture
         Assert.AreNotEqual(one.GetHashCode(), three.GetHashCode());
     }
 
-    private class ObjectWithEquality : GitObject
+    class ObjectWithEquality : GitObject
     {
         ObjectId id;
 

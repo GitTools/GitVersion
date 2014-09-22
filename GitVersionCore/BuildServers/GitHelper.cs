@@ -7,7 +7,7 @@ namespace GitVersion
 
     public static class GitHelper
     {
-        private const string MergeMessageRegexPattern = "refs/heads/pull(-requests)?/(?<issuenumber>[0-9]*)/merge";
+        const string MergeMessageRegexPattern = "refs/heads/pull(-requests)?/(?<issuenumber>[0-9]*)/merge";
 
         public static void NormalizeGitDirectory(string gitDirectory, Authentication authentication, string branch = null)
         {

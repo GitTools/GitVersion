@@ -34,7 +34,7 @@ public class BuildServerBaseTests
         writes[1].ShouldBe("1.2.3-beta.1+5");
     }
 
-    private class BuildServer : BuildServerBase
+    class BuildServer : BuildServerBase
     {
         public override bool CanApplyToCurrentContext()
         {

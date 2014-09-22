@@ -25,7 +25,7 @@
 
             if (repository != null && currentBranch.IsDetachedHead())
             {
-                CurrentBranch = GetBranchesContaininingCommit(CurrentCommit.Sha).OnlyOrDefault() ?? currentBranch;
+                CurrentBranch = GetBranchesContainingCommit(CurrentCommit.Sha).OnlyOrDefault() ?? currentBranch;
             }
             else
             {
@@ -37,7 +37,7 @@
         public Branch CurrentBranch { get; private set; }
         public Commit CurrentCommit { get; private set; }
 
-        private IEnumerable<Branch> GetBranchesContaininingCommit(string commitSha)
+        IEnumerable<Branch> GetBranchesContainingCommit(string commitSha)
         {
             var directBranchHasBeenFound = false;
             foreach (var branch in Repository.Branches)
