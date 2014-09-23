@@ -10,7 +10,7 @@
     public static class GitVersionHelper
     {
         public static ExecutionResults ExecuteIn(string workingDirectory,
-            string exec = null, string execArgs = null, string projectFile = null, string projectArgs = null,
+            string exec = null, string execArgs = null, string projectFile = null, string projectArgs = null, string preReleaseTag = null,
             bool isTeamCity = false)
         {
             var logFile = Path.Combine(workingDirectory, "log.txt");
@@ -19,9 +19,10 @@
             var execArgsArg = execArgs == null ? null : string.Format(" /execArgs \"{0}\"", execArgs);
             var projectFileArg = projectFile == null ? null : string.Format(" /proj \"{0}\"", projectFile);
             var targetsArg = projectArgs == null ? null : string.Format(" /projargs \"{0}\"", projectArgs);
+            var prereleaseTagArg = preReleaseTag == null ? null : string.Format(" /preReleaseTag \"{0}\"", preReleaseTag);
             var logArg = string.Format(" /l \"{0}\"", logFile);
-            var arguments = string.Format("\"{0}\"{1}{2}{3}{4}{5}", workingDirectory, execArg, execArgsArg,
-                projectFileArg, targetsArg, logArg);
+            var arguments = string.Format("\"{0}\"{1}{2}{3}{4}{5}{6}", workingDirectory, execArg, execArgsArg,
+                projectFileArg, targetsArg, logArg, prereleaseTagArg);
 
             var output = new StringBuilder();
 

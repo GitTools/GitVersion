@@ -73,6 +73,7 @@
     <Compile Include="GitFlow\BaseGitFlowRepositoryFixture.cs" />
     <Compile Include="GitFlow\DevelopScenarios.cs" />
     <Compile Include="GitFlow\MetaDataByCommitFixture.cs" />
+    <Compile Include="OverwritePrereleaseTagArgTest.cs" />
     <Compile Include="GitFlow\PatchScenarios.cs" />
     <Compile Include="GitFlow\WikiScenarios.cs" />
     <Compile Include="GitHubFlow\OtherBranchTests.cs" />

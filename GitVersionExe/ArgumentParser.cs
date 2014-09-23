@@ -158,6 +158,11 @@ namespace GitVersion
                     arguments.Output = outputType;
                     continue;
                 }
+                if (IsSwitch("preReleaseTag", name))
+                {
+                    arguments.PreReleaseTag = value;
+                    continue;
+                }
 
                 throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", name));
             }
