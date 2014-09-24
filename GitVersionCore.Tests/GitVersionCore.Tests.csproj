@@ -62,7 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Tests\Helpers\DirectoryHelper.cs">
+    <Compile Include="..\GitVersionTask.Tests\Helpers\DirectoryHelper.cs">
       <Link>Helpers\DirectoryHelper.cs</Link>
     </Compile>
     <Compile Include="CommitCountingRepoFixture.cs" />

@@ -8,8 +8,8 @@
     <ProjectGuid>{5A86453B-96FB-4B6E-A283-225BB9F753D3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tests</RootNamespace>
-    <AssemblyName>Tests</AssemblyName>
+    <RootNamespace>GitVersionTask.Tests</RootNamespace>
+    <AssemblyName>GitVersionTask.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersionExe", "GitVersionExe\GitVersionExe.csproj", "{C3578A7B-09A6-4444-9383-0DEAFA4958BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{5A86453B-96FB-4B6E-A283-225BB9F753D3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersionTask.Tests", "GitVersionTask.Tests\GitVersionTask.Tests.csproj", "{5A86453B-96FB-4B6E-A283-225BB9F753D3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersionTask", "GitVersionTask\GitVersionTask.csproj", "{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}"
 EndProject
