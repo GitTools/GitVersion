@@ -14,22 +14,8 @@ public static class ModuleInitializer
     public static void Initialize()
     {
         Logger.WriteInfo = s => Trace.WriteLine(s);
-        var nativeBinaries = Path.Combine(AssemblyLocation.CurrentDirectory(), "NativeBinaries", GetProcessorArchitecture());
-        var existingPath = Environment.GetEnvironmentVariable("PATH");
-        if (existingPath.Contains(nativeBinaries))
-        {
-            return;
-        }
-        var newPath = string.Concat(nativeBinaries, Path.PathSeparator, existingPath);
-        Environment.SetEnvironmentVariable("PATH", newPath);
+        Logger.WriteError = s => Trace.WriteLine(s);
+        Logger.WriteWarning = s => Trace.WriteLine(s);
     }
 
-    static string GetProcessorArchitecture()
-    {
-        if (Environment.Is64BitProcess)
-        {
-            return "amd64";
-        }
-        return "x86";
-    }
 }
