@@ -82,6 +82,7 @@
     <Compile Include="GitHubFlow\MasterTests.cs" />
     <Compile Include="ApprovalTestsConfig.cs" />
     <Compile Include="RepositoryFixtureBase.cs" />
+    <Compile Include="VariableProviderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
