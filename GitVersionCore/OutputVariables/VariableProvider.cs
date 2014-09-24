@@ -23,8 +23,6 @@
         public const string PreReleaseTag = "PreReleaseTag";
         public const string PreReleaseTagWithDash = "PreReleaseTagWithDash";
         public const string InformationalVersion = "InformationalVersion";
-        public const string AssemblyVersion = "AssemblyVersion";
-        public const string AssemblyFileVersion = "AssemblyFileVersion";
         public const string OriginalRelease = "OriginalRelease";
 
         // Synonyms
@@ -33,16 +31,11 @@
         public const string NuGetVersion = "NuGetVersion";
 
         public static Dictionary<string, string> GetVariablesFor(
-            SemanticVersion semanticVersion,
-            AssemblyVersioningScheme assemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
-            bool addNumberOfCommitsSinceTagOnMasterBranchToFileVersion = true)
+            SemanticVersion semanticVersion)
         {
             var bmd = semanticVersion.BuildMetaData;
             var formatter = bmd.Branch == "develop" ? new CiFeedFormatter() : null;
-
-            var assemblyMetaData = AssemblyVersionsGenerator.Process(
-                semanticVersion, assemblyVersioningScheme, addNumberOfCommitsSinceTagOnMasterBranchToFileVersion);
-
+            
             var variables = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
             {
                 {Major, semanticVersion.Major.ToString()},
@@ -65,8 +58,6 @@
                     semanticVersion.PreReleaseTag.HasTag() ? "-" + semanticVersion.PreReleaseTag : null)},
                 {BranchName, bmd.Branch},
                 {Sha, bmd.Sha},
-                {AssemblyVersion, assemblyMetaData.Version},
-                {AssemblyFileVersion, assemblyMetaData.FileVersion},
                 {OriginalRelease, string.Format("{0}.{1}", 
                     bmd.ReleaseDate.OriginalCommitSha,
                     bmd.ReleaseDate.OriginalDate.UtcDateTime.ToString("u"))},

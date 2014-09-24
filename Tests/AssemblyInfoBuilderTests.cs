@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using ApprovalTests;
 using GitVersion;
-using GitVersionTask;
 using NUnit.Framework;
 using Roslyn.Compilers;
 using Roslyn.Compilers.CSharp;
@@ -64,13 +63,6 @@ public class AssemblyInfoBuilderTests
     public void VerifyAssemblyVersion_MajorMinorPatch()
     {
         VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatch);
-    }
-
-    [Test]
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    public void VerifyAssemblyVersion_None()
-    {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.None);
     }
 
     static void VerifyAssemblyVersion(AssemblyVersioningScheme avs)

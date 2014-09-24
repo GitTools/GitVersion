@@ -13,7 +13,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>dd4d35ea</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>7a13d6bc</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -92,6 +92,7 @@
     <Compile Include="BuildServers\BuildServerBaseTests.cs" />
     <Compile Include="BuildServers\TeamCityTests.cs" />
     <Compile Include="BuildServers\ContinuaCiTests.cs" />
+    <Compile Include="ConfigReaderTests.cs" />
     <Compile Include="VersionAndBranchFinderTests.cs" />
     <Compile Include="GitHubFlow\MergedBranchesWithVersionFinderTests.cs" />
     <Compile Include="LambdaEqualityHelperFixture.cs" />
@@ -145,7 +146,6 @@
     <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_Major.approved.txt" />
     <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor.approved.txt" />
     <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatch.approved.txt" />
-    <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_None.approved.txt" />
     <Content Include="AssemblyInfoBuilderTests.VerifyCreatedCode.approved.txt" />
     <Content Include="FodyWeavers.xml" />
     <Content Include="JsonVersionBuilderTests.Json.approved.txt" />
@@ -177,11 +177,11 @@ xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.19.0.0\lib\net40\NativeBin
 if not exist "$(TargetDir)NativeBinaries\amd64" md "$(TargetDir)NativeBinaries\amd64"
 xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.19.0.0\lib\net40\NativeBinaries\amd64\*.*" "$(TargetDir)NativeBinaries\amd64"</PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\Fody.1.24.0\build\Fody.targets" Condition="Exists('..\packages\Fody.1.24.0\build\Fody.targets')" />
+  <Import Project="..\packages\Fody.1.25.0\build\Fody.targets" Condition="Exists('..\packages\Fody.1.25.0\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Fody.1.24.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.24.0\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Fody.1.25.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.25.0\build\Fody.targets'))" />
   </Target>
 </Project>

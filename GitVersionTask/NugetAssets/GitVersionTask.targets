@@ -5,6 +5,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <GitVersionAppendRevision Condition="$(GitVersionAppendRevision) == '' Or $(GitVersionAppendRevision) == '*Undefined*'">false</GitVersionAppendRevision>
+    <GitVersionAssemblyVersioningScheme Condition="$(GitVersionAssemblyVersioningScheme) == '' Or $(GitVersionAssemblyVersioningScheme) == '*Undefined*'"></GitVersionAssemblyVersioningScheme>
   </PropertyGroup>
 
   <UsingTask
@@ -26,6 +27,7 @@
       SolutionDirectory="$(SolutionDir)"
       ProjectFile="$(ProjectPath)"
       AppendRevision="$(GitVersionAppendRevision)"
+      AssemblyVersioningScheme="$(GitVersionAssemblyVersioningScheme)"
       CompileFiles ="@(Compile)">
       <Output
         TaskParameter="AssemblyInfoTempFilePath"
@@ -56,8 +58,6 @@
       <Output TaskParameter="PreReleaseTag" PropertyName="GfvPreReleaseTag" />
       <Output TaskParameter="PreReleaseTagWithDash" PropertyName="GfvPreReleaseTagWithDash" />
       <Output TaskParameter="InformationalVersion" PropertyName="GfvInformationalVersion" />
-      <Output TaskParameter="AssemblyVersion" PropertyName="GfvAssemblyVersion" />
-      <Output TaskParameter="AssemblyFileVersion" PropertyName="GfvAssemblyFileVersion" />
       <Output TaskParameter="OriginalRelease" PropertyName="GfvOriginalRelease" />
     </GetVersion>
 

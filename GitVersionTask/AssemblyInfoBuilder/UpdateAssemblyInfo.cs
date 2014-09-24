@@ -59,7 +59,6 @@
 
         public void InnerExecute()
         {
-            var avs = ParseAssemblyVersioningScheme(AssemblyVersioningScheme);
 
             TempFileTracker.DeleteTempFiles();
 
@@ -71,32 +70,43 @@
                 return;
             }
 
-            CreateTempAssemblyInfo(semanticVersion, avs);
+            CreateTempAssemblyInfo(semanticVersion);
         }
 
-        AssemblyVersioningScheme ParseAssemblyVersioningScheme(string assemblyVersioningScheme)
+        AssemblyVersioningScheme GetAssemblyVersioningScheme()
         {
-            if (assemblyVersioningScheme == null)
+            if (string.IsNullOrWhiteSpace(AssemblyVersioningScheme))
             {
-                return GitVersion.AssemblyVersioningScheme.MajorMinorPatch;
+                var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
+
+                var configFilePath = Path.Combine(Directory.GetParent(gitDirectory).FullName, "GitVersionConfig.yaml");
+                if (File.Exists(configFilePath))
+                {
+                    using (var reader = File.OpenText(configFilePath))
+                    {
+                        return ConfigReader.Read(reader).AssemblyVersioningScheme;
+                    }
+                }
+                return global::AssemblyVersioningScheme.MajorMinorPatch;
             }
 
-            AssemblyVersioningScheme avs;
+            AssemblyVersioningScheme versioningScheme;
 
-            if (Enum.TryParse(assemblyVersioningScheme, true, out avs))
+            if (Enum.TryParse(AssemblyVersioningScheme, true, out versioningScheme))
             {
-                return avs;
+                return versioningScheme;
             }
 
-            throw new WarningException(string.Format("Unexpected assembly versioning scheme '{0}'.", assemblyVersioningScheme));
+            throw new WarningException(string.Format("Unexpected assembly versioning scheme '{0}'.", AssemblyVersioningScheme));
         }
 
-        void CreateTempAssemblyInfo(SemanticVersion semanticVersion, AssemblyVersioningScheme avs)
+        void CreateTempAssemblyInfo(SemanticVersion semanticVersion)
         {
+            var versioningScheme = GetAssemblyVersioningScheme();
             var assemblyInfoBuilder = new AssemblyInfoBuilder
                                       {
                                           SemanticVersion = semanticVersion,
-                                          AssemblyVersioningScheme = avs,
+                                          AssemblyVersioningScheme = versioningScheme,
                                           AppendRevision = AppendRevision
                                       };
             var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText();

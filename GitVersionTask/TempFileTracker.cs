@@ -1,36 +1,32 @@
-﻿namespace GitVersionTask
+﻿using System;
+using System.IO;
+
+public static class TempFileTracker
 {
-    using System;
-    using System.IO;
+    public static string TempPath;
 
-    public static class TempFileTracker
+    static TempFileTracker()
     {
-        public static string TempPath;
+        TempPath = Path.Combine(Path.GetTempPath(), "GitVersionTask");
+        Directory.CreateDirectory(TempPath);
+    }
 
-        static TempFileTracker()
+    public static void DeleteTempFiles()
+    {
+        foreach (var file in Directory.GetFiles(TempPath))
         {
-            TempPath = Path.Combine(Path.GetTempPath(), "GitVersionTask");
-            Directory.CreateDirectory(TempPath);
-        }
-
-        public static void DeleteTempFiles()
-        {
-            foreach (var file in Directory.GetFiles(TempPath))
+            if (File.GetLastWriteTime(file) < DateTime.Now.AddDays(-1))
             {
-                if (File.GetLastWriteTime(file) < DateTime.Now.AddDays(-1))
+                try
                 {
-                    try
-                    {
-                        File.Delete(file);
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        //ignore contention
-                    }
+                    File.Delete(file);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    //ignore contention
                 }
             }
         }
-
-        
     }
+
 }
