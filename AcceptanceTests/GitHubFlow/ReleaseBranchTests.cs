@@ -1,10 +1,8 @@
 ﻿namespace GitHubFlowVersion.AcceptanceTests
 {
-    using GitVersion;
     using global::AcceptanceTests;
     using global::AcceptanceTests.Helpers;
     using LibGit2Sharp;
-    using Shouldly;
     using Xunit;
 
     public class ReleaseBranchTests
@@ -20,10 +18,7 @@
                 fixture.Repository.CreateBranch("release-2.0.0");
                 fixture.Repository.Checkout("release-2.0.0");
 
-                var result = fixture.ExecuteGitVersion();
-
-                result.ExitCode.ShouldBe(0);
-                result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("2.0.0-beta.1+5");
+                fixture.AssertFullSemver("2.0.0-beta.1+5");
             }
         }
 
@@ -41,10 +36,7 @@
                 fixture.Repository.Checkout("master");
                 fixture.Repository.MergeNoFF("release-2.0.0", Constants.SignatureNow());
 
-                var result = fixture.ExecuteGitVersion();
-
-                result.ExitCode.ShouldBe(0);
-                result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("2.0.0+6");
+                fixture.AssertFullSemver("2.0.0+6");
             }
         }
     }

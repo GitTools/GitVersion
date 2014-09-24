@@ -36,7 +36,7 @@
 
                 // Verify develop version
                 fixture.Repository.Checkout("develop");
-                fixture.AssertFullSemver("1.3.0.0-unstable");
+                fixture.AssertFullSemver("1.3.0-unstable.0+0");
 
                 // Warning: Hack-ish hack
                 //
@@ -46,7 +46,7 @@
                 Thread.Sleep(1000); 
                 fixture.Repository.MergeNoFF("hotfix-1.2.1", Constants.SignatureNow());
 
-                fixture.AssertFullSemver("1.3.0.1-unstable");
+                fixture.AssertFullSemver("1.3.0-unstable.1+1");
             }
         }
 
@@ -80,7 +80,7 @@
 
                 // Verify develop version
                 fixture.Repository.Checkout("develop");
-                fixture.AssertFullSemver("1.3.0.0-unstable");
+                fixture.AssertFullSemver("1.3.0-unstable.0+0");
             }
         }
     }

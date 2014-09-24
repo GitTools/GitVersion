@@ -2,10 +2,8 @@ namespace AcceptanceTests.GitFlow
 {
     using System;
     using System.IO;
-    using GitVersion;
     using Helpers;
     using LibGit2Sharp;
-    using Shouldly;
 
     public class BaseGitFlowRepositoryFixture : EmptyRepositoryFixture
     {
@@ -30,9 +28,5 @@ namespace AcceptanceTests.GitFlow
             Repository.CreateBranch("develop").Checkout();
         }
 
-        public void AssertFullSemver(string fullSemver)
-        {
-            ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe(fullSemver);
-        }
     }
 }

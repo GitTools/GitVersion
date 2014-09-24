@@ -4,6 +4,7 @@ namespace AcceptanceTests
     using GitVersion;
     using Helpers;
     using LibGit2Sharp;
+    using Shouldly;
 
     public abstract class RepositoryFixtureBase : IDisposable
     {
@@ -18,19 +19,15 @@ namespace AcceptanceTests
             Repository.Config.Set("user.email", "test@email.com");
         }
 
-        public ExecutionResults ExecuteGitVersion(bool inProcess = true)
+        public SemanticVersion ExecuteGitVersion()
         {
-            if (!inProcess)
-            {
-                return GitVersionHelper.ExecuteIn(RepositoryPath);
-            }
-
             var vf = new GitVersionFinder();
-            var sv = vf.FindVersion(new GitVersionContext(Repository));
+            return vf.FindVersion(new GitVersionContext(Repository));
+        }
 
-            var vars = VariableProvider.GetVariablesFor(sv);
-
-            return new InProcessExecutionResults(vars);
+        public void AssertFullSemver(string fullSemver)
+        {
+            ExecuteGitVersion().ToString("f").ShouldBe(fullSemver);
         }
 
         public void Dispose()

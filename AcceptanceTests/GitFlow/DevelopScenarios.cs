@@ -1,9 +1,7 @@
 ﻿namespace AcceptanceTests.GitFlow
 {
-    using GitVersion;
     using Helpers;
     using LibGit2Sharp;
-    using Shouldly;
     using Xunit;
 
     public class DevelopScenarios
@@ -15,10 +13,7 @@
             {
                 fixture.Repository.MakeATaggedCommit("1.0.0");
                 fixture.Repository.CreateBranch("develop").Checkout();
-
-                var result = fixture.ExecuteGitVersion();
-
-                result.OutputVariables[VariableProvider.SemVer].ShouldBe("1.1.0.0-unstable");
+                fixture.AssertFullSemver("1.1.0-unstable.0+0");
             }
         }
 
@@ -33,10 +28,7 @@
                 var commit = fixture.Repository.Head.Tip;
                 fixture.Repository.MakeACommit();
                 fixture.Repository.Checkout(commit);
-
-                var result = fixture.ExecuteGitVersion();
-
-                result.OutputVariables[VariableProvider.SemVer].ShouldBe("1.1.0.1-unstable");
+                fixture.AssertFullSemver("1.1.0-unstable.1+1");
             }
         }
     }

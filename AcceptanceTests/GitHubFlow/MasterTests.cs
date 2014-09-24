@@ -1,10 +1,8 @@
 ﻿namespace GitHubFlowVersion.AcceptanceTests
 {
-    using GitVersion;
     using global::AcceptanceTests;
     using global::AcceptanceTests.Helpers;
     using LibGit2Sharp;
-    using Shouldly;
     using Xunit;
 
     public class MasterTests
@@ -20,10 +18,7 @@
                 fixture.Repository.MakeACommit();
 
                 // When
-                var result = fixture.ExecuteGitVersion();
-
-                result.ExitCode.ShouldBe(0);
-                result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("0.1.0+2");
+                fixture.AssertFullSemver("0.1.0+2");
             }
         }
 
@@ -42,10 +37,7 @@
                 fixture.Repository.Checkout(commit);
 
                 // When
-                var result = fixture.ExecuteGitVersion();
-
-                result.ExitCode.ShouldBe(0);
-                result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("0.1.0+2");
+                fixture.AssertFullSemver("0.1.0+2");
             }
         }
 
@@ -59,11 +51,8 @@
                 fixture.Repository.MakeACommit();
                 fixture.Repository.MakeACommit();
                 fixture.Repository.AddNextVersionTxtFile(ExpectedNextVersion);
-
-                var result = fixture.ExecuteGitVersion();
-
-                result.ExitCode.ShouldBe(0);
-                result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.0.0+2");
+                
+                fixture.AssertFullSemver("1.0.0+2");
             }
         }
 
@@ -77,11 +66,8 @@
                 fixture.Repository.MakeATaggedCommit(TaggedVersion);
                 fixture.Repository.MakeCommits(5);
                 fixture.Repository.AddNextVersionTxtFile(ExpectedNextVersion);
-
-                var result = fixture.ExecuteGitVersion();
-
-                result.ExitCode.ShouldBe(0);
-                result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.1.0+5");
+                
+                fixture.AssertFullSemver("1.1.0+5");
             }
         }
 
@@ -94,11 +80,8 @@
                 const string TaggedVersion = "1.0.3";
                 fixture.Repository.MakeATaggedCommit(TaggedVersion);
                 fixture.Repository.AddNextVersionTxtFile(ExpectedNextVersion);
-
-                var result = fixture.ExecuteGitVersion();
-
-                result.ExitCode.ShouldBe(0);
-                result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.0.3+0");
+                
+                fixture.AssertFullSemver("1.0.3+0");
             }
         }
 
@@ -110,11 +93,8 @@
                 const string TaggedVersion = "1.0.3";
                 fixture.Repository.MakeATaggedCommit(TaggedVersion);
                 fixture.Repository.MakeCommits(5);
-
-                var result = fixture.ExecuteGitVersion();
-
-                result.ExitCode.ShouldBe(0);
-                result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.0.4+5");
+                
+                fixture.AssertFullSemver("1.0.4+5");
             }
         }
 
@@ -125,11 +105,8 @@
             {
                 const string TaggedVersion = "1.0.3";
                 fixture.Repository.MakeATaggedCommit(TaggedVersion);
-
-                var result = fixture.ExecuteGitVersion();
-
-                result.ExitCode.ShouldBe(0);
-                result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.0.3+0");
+                
+                fixture.AssertFullSemver("1.0.3+0");
             }
         }
 
@@ -143,11 +120,8 @@
                 fixture.Repository.MakeATaggedCommit(TaggedVersion);
                 fixture.Repository.MakeCommits(5);
                 fixture.Repository.AddNextVersionTxtFile(NextVersionTxt);
-
-                var result = fixture.ExecuteGitVersion();
-
-                result.ExitCode.ShouldBe(0);
-                result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.1.1+5");
+                
+                fixture.AssertFullSemver("1.1.1+5");
             }
         }
 
@@ -160,11 +134,8 @@
                 const string TaggedVersion = "1.1.0";
                 fixture.Repository.MakeATaggedCommit(TaggedVersion);
                 fixture.Repository.AddNextVersionTxtFile(NextVersionTxt);
-
-                var result = fixture.ExecuteGitVersion();
-
-                result.ExitCode.ShouldBe(0);
-                result.OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.1.0+0");
+                
+                fixture.AssertFullSemver("1.1.0+0");
             }
         }
     }

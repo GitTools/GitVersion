@@ -34,16 +34,16 @@
             using (var f = new CommitCountingRepoFixture())
             {
                 ResetToP(f.Repository);
-                EnsureMetaDataMatch(f, "develop", "1.4.0.7-unstable");
+                EnsureMetaDataMatch(f, "develop", "1.4.0-unstable.7+7");
 
                 ResetToO(f.Repository);
-                EnsureMetaDataMatch(f, "develop", "1.4.0.6-unstable");
+                EnsureMetaDataMatch(f, "develop", "1.4.0-unstable.6+6");
 
                 ResetToN(f.Repository);
                 EnsureMetaDataMatch(f, "master", "1.3.1", r => (Commit)r.Tags["1.3.0"].Target);
 
                 ResetToM(f.Repository);
-                EnsureMetaDataMatch(f, "develop", "1.4.0.5-unstable");
+                EnsureMetaDataMatch(f, "develop", "1.4.0-unstable.5+5");
 
                 ResetToL(f.Repository);
                 EnsureMetaDataMatch(f, "hotfix-1.3.1", "1.3.1-beta.1+1", r => (Commit)r.Tags["1.3.0"].Target);
@@ -55,7 +55,7 @@
                 EnsureMetaDataMatch(f, "feature", "1.4.0-feature+1");
 
                 ResetToI(f.Repository);
-                EnsureMetaDataMatch(f, "develop", "1.4.0.2-unstable");
+                EnsureMetaDataMatch(f, "develop", "1.4.0-unstable.2+2");
 
                 ResetToH(f.Repository);
                 EnsureMetaDataMatch(f, "master", "1.3.0", r => (Commit)r.Tags["1.3.0"].Target);
@@ -67,7 +67,7 @@
                 EnsureMetaDataMatch(f, "master", "1.2.1", r => (Commit)r.Tags["1.2.0"].Target);
 
                 ResetToE(f.Repository);
-                EnsureMetaDataMatch(f, "develop", "1.3.0.2-unstable");
+                EnsureMetaDataMatch(f, "develop", "1.3.0-unstable.2+2");
 
                 ResetToD(f.Repository);
                 EnsureMetaDataMatch(f, "release-1.3.0", "1.3.0-beta.1+1");
@@ -76,7 +76,7 @@
                 EnsureMetaDataMatch(f, "hotfix-1.2.1", "1.2.1-beta.1+1", r => (Commit)r.Tags["1.2.0"].Target);
 
                 ResetToB(f.Repository);
-                EnsureMetaDataMatch(f, "develop", "1.3.0.1-unstable");
+                EnsureMetaDataMatch(f, "develop", "1.3.0-unstable.1+1");
             }
         }
 
@@ -90,16 +90,9 @@
             var commit = referenceCommitFinder(fixture.Repository);
 
             var result = fixture.ExecuteGitVersion();
-            var vars = result.OutputVariables;
-            vars[VariableProvider.FullSemVer].ShouldBe(expectedSemVer);
-            vars[VariableProvider.OriginalRelease].ShouldBe(BuildReleaseMetaDateFrom(commit));
-        }
-
-        static string BuildReleaseMetaDateFrom(Commit commit)
-        {
-            return string.Format("{0}.{1}",
-                commit.Sha,
-                commit.Committer.When.UtcDateTime.ToString("u"));
+            result.ToString("f").ShouldBe(expectedSemVer);
+            result.BuildMetaData.ReleaseDate.OriginalCommitSha.ShouldBe(commit.Sha);
+            result.BuildMetaData.ReleaseDate.OriginalDate.ShouldBe(commit.Committer.When);
         }
 
         void DropTags(IRepository repo, params string[] names)

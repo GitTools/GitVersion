@@ -1,9 +1,7 @@
 ﻿namespace AcceptanceTests.GitFlow
 {
-    using GitVersion;
     using Helpers;
     using LibGit2Sharp;
-    using Shouldly;
     using Xunit;
 
     public class WikiScenarios
@@ -47,51 +45,51 @@ note over develop: 1.4.0.2-unstable
 
                 // Branch to develop
                 fixture.Repository.CreateBranch("develop").Checkout();
-                fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.3.0.0-unstable");
+                fixture.AssertFullSemver("1.3.0-unstable.0+0");
 
                 // Open Pull Request
                 fixture.Repository.CreateBranch("pull/2/merge").Checkout();
-                fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.3.0-PullRequest.2+0");
+                fixture.AssertFullSemver("1.3.0-PullRequest.2+0");
                 fixture.Repository.MakeACommit();
-                fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.3.0-PullRequest.2+1");
+                fixture.AssertFullSemver("1.3.0-PullRequest.2+1");
 
                 // Merge into develop
                 fixture.Repository.Checkout("develop");
                 fixture.Repository.MergeNoFF("pull/2/merge", Constants.SignatureNow());
-                fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.3.0.2-unstable");
+                fixture.AssertFullSemver("1.3.0-unstable.2+2");
 
                 // Create release branch
                 fixture.Repository.CreateBranch("release-1.3.0").Checkout();
-                fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.3.0-beta.1+0");
+                fixture.AssertFullSemver("1.3.0-beta.1+0");
 
                 // Make another commit on develop
                 fixture.Repository.Checkout("develop");
                 fixture.Repository.MakeACommit();
-                fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.3.0.3-unstable");
+                fixture.AssertFullSemver("1.3.0-unstable.3+3");
 
                 // Make a commit to release-1.3.0
                 fixture.Repository.Checkout("release-1.3.0");
                 fixture.Repository.MakeACommit();
-                fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.3.0-beta.1+1");
+                fixture.AssertFullSemver("1.3.0-beta.1+1");
 
                 // Apply beta.0 tag should be exact tag
                 fixture.Repository.ApplyTag("1.3.0-beta.1");
-                fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.3.0-beta.1+1");
+                fixture.AssertFullSemver("1.3.0-beta.1+1");
 
                 // Make a commit after a tag should bump up the beta
                 fixture.Repository.MakeACommit();
-                fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.3.0-beta.2+2");
+                fixture.AssertFullSemver("1.3.0-beta.2+2");
 
                 // Merge release branch to master
                 fixture.Repository.Checkout("master");
                 fixture.Repository.MergeNoFF("release-1.3.0", Constants.SignatureNow());
-                fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.3.0");
+                fixture.AssertFullSemver("1.3.0");
                 fixture.Repository.ApplyTag("1.3.0");
 
                 // Verify develop version
                 fixture.Repository.Checkout("develop");
                 fixture.Repository.MergeNoFF("release-1.3.0", Constants.SignatureNow());
-                fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.4.0.2-unstable");
+                fixture.AssertFullSemver("1.4.0-unstable.2+2");
             }
         }
     }
