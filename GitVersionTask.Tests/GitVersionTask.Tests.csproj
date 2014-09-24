@@ -120,7 +120,6 @@
     <Compile Include="Mocks\MockCommit.cs" />
     <Compile Include="Mocks\MockReferenceCollection.cs" />
     <Compile Include="Mocks\MockRepository.cs" />
-    <Compile Include="OutputVariables\InformationalVersionBuilderTests.cs" />
     <Compile Include="IntegrationTests.cs" />
     <Compile Include="BranchFinders\MasterTests.cs" />
     <Compile Include="MergeMessageParserTests.cs" />
@@ -156,7 +155,9 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="OutputVariables\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
