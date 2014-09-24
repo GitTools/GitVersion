@@ -1,7 +1,13 @@
+# v1.3.0
+
+Add config file support to GatVersionTask - [#246](https://github.com/Particular/GitVersion/issues/256)
+
 # v1.2.1
+
 Fixing an issue with lib2gitsharp - [#246](https://github.com/Particular/GitVersion/issues/246)
 
 # v1.2.0
+
 Support updating a single common AssemblyInfo.cs [#227](https://github.com/Particular/GitVersion/pull/227) thanks @hmemcpy
 Note we do not have the assembly info switches in the command line help at the moment, see [#237](https://github.com/Particular/GitVersion/issues/237)
 
@@ -12,6 +18,7 @@ Usage for updating assembly info is /updateAssemblyInfo if you want to specify t
 ```
 
 # v1.1.0
+
 Bug fix with release branches in GitHubFlow
 
 # v1.1.0 
