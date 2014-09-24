@@ -66,6 +66,7 @@
       <Link>Helpers\DirectoryHelper.cs</Link>
     </Compile>
     <Compile Include="CommitCountingRepoFixture.cs" />
+    <Compile Include="GitDirFinderTests.cs" />
     <Compile Include="GitFlow\BaseGitFlowRepositoryFixture.cs" />
     <Compile Include="GitFlow\DevelopScenarios.cs" />
     <Compile Include="GitFlow\MetaDataByCommitFixture.cs" />
