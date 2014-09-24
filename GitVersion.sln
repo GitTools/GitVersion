@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersionTask", "GitVersionTask\GitVersionTask.csproj", "{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcceptanceTests", "AcceptanceTests\AcceptanceTests.csproj", "{BF905F84-382C-440D-92F5-C61108626D8D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersionCore.Tests", "GitVersionCore.Tests\GitVersionCore.Tests.csproj", "{BF905F84-382C-440D-92F5-C61108626D8D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3EFFC5D6-88D0-49D9-BB53-E1B7EB49DD45}"
 	ProjectSection(SolutionItems) = preProject
@@ -18,11 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersionCore", "GitVersionCore\GitVersionCore.csproj", "{F9741A0D-B9D7-4557-9A1C-A7252C1071F5}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{38030E9E-0660-405D-BA1F-07BA797798D1}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersionExe.Tests", "GitVersionExe.Tests\GitVersionExe.Tests.csproj", "{75C2BE85-1DAF-4E34-8305-B17AFAA982A6}"
 EndProject

@@ -7,5 +7,5 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyFileVersion("1.0.0")]
 [assembly: InternalsVisibleTo("Tests")]
 [assembly: InternalsVisibleTo("GitVersion")]
-[assembly: InternalsVisibleTo("AcceptanceTests")]
+[assembly: InternalsVisibleTo("GitVersionCore.Tests")]
 [assembly: InternalsVisibleTo("GitVersionExe.Tests")]
