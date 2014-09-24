@@ -85,7 +85,7 @@ public class GitHelperTests : Lg2sHelperBase
             var c = repo.Head.Tip;
             repo.Refs.Add(string.Format("refs/pull/{0}/head", issueNumber), c.Id);
 
-            var sign = Constants.SignatureNow();
+            var sign = SignatureBuilder.SignatureNow();
             var m = repo.ObjectDatabase.CreateCommit(
                 sign, sign,
                 string.Format("Merge pull request #{0} from nulltoken/ntk/fix/{0}", issueNumber)

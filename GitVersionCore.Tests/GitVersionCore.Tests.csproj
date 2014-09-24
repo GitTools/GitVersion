@@ -75,6 +75,7 @@
     <Compile Include="GitHubFlow\ReleaseBranchTests.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\NextVersionWriter.cs" />
+    <Compile Include="JsonVersionBuilderTests.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="EmptyRepositoryFixture.cs" />
     <Compile Include="Helpers\GitHelper.cs" />
@@ -82,6 +83,8 @@
     <Compile Include="GitHubFlow\MasterTests.cs" />
     <Compile Include="ApprovalTestsConfig.cs" />
     <Compile Include="RepositoryFixtureBase.cs" />
+    <Compile Include="SemanticVersionTests.cs" />
+    <Compile Include="ShortVersionParserTests.cs" />
     <Compile Include="VariableProviderTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
+    <Content Include="JsonVersionBuilderTests.Json.approved.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

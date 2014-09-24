@@ -159,7 +159,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
             File.AppendAllText(path, "Release\n");
 
             repo.Index.Stage(path);
-            var sign = Constants.SignatureNow();
+            var sign = SignatureBuilder.SignatureNow();
             repo.Commit("release unborn", sign, sign);
 
             var feature = repo.Branches[branchName];

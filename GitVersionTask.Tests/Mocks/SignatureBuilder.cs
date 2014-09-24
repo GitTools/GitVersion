@@ -7,4 +7,9 @@ public static class SignatureBuilder
     {
         return new Signature("fakeName", "fakeEmail", dateTimeOffset);
     }
+
+    public static Signature SignatureNow()
+    {
+        return new Signature("A. U. Thor", "thor@valhalla.asgard.com", DateTimeOffset.Now);
+    }
 }
