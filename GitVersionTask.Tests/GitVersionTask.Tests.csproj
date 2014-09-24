@@ -84,7 +84,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApprovalTestsConfig.cs" />
-    <Compile Include="ArgumentParserTests.cs" />
     <Compile Include="AssemblyInfoBuilderTests.cs" />
     <Compile Include="AssemblyLocation.cs" />
     <Compile Include="BranchClassifierTests.cs" />
@@ -152,10 +151,6 @@
     <ProjectReference Include="..\GitVersionTask\GitVersionTask.csproj">
       <Project>{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}</Project>
       <Name>GitVersionTask</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GitVersionExe\GitVersionExe.csproj">
-      <Project>{C3578A7B-09A6-4444-9383-0DEAFA4958BD}</Project>
-      <Name>GitVersionExe</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
