@@ -8,3 +8,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Tests")]
 [assembly: InternalsVisibleTo("GitVersion")]
 [assembly: InternalsVisibleTo("AcceptanceTests")]
+[assembly: InternalsVisibleTo("GitVersionExe.Tests")]
