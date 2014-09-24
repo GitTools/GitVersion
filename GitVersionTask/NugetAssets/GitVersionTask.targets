@@ -4,7 +4,6 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)..\</SolutionDir>
   </PropertyGroup>
   <PropertyGroup>
-    <GitVersionAppendRevision Condition="$(GitVersionAppendRevision) == '' Or $(GitVersionAppendRevision) == '*Undefined*'">false</GitVersionAppendRevision>
     <GitVersionAssemblyVersioningScheme Condition="$(GitVersionAssemblyVersioningScheme) == '' Or $(GitVersionAssemblyVersioningScheme) == '*Undefined*'"></GitVersionAssemblyVersioningScheme>
   </PropertyGroup>
 
@@ -26,7 +25,6 @@
     <UpdateAssemblyInfo
       SolutionDirectory="$(SolutionDir)"
       ProjectFile="$(ProjectPath)"
-      AppendRevision="$(GitVersionAppendRevision)"
       AssemblyVersioningScheme="$(GitVersionAssemblyVersioningScheme)"
       CompileFiles ="@(Compile)">
       <Output

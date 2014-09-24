@@ -6,12 +6,9 @@ public class AssemblyInfoBuilder
 {
     public SemanticVersion SemanticVersion;
     public AssemblyVersioningScheme AssemblyVersioningScheme;
-    public bool AppendRevision;
 
     public string GetAssemblyInfoText()
     {
-        var assemblyMetaData = AssemblyVersionsGenerator.Process(SemanticVersion, AssemblyVersioningScheme, AppendRevision);
-
         var vars = VariableProvider.GetVariablesFor(SemanticVersion);
         var assemblyInfo = string.Format(@"
 using System;
@@ -42,7 +39,7 @@ static class GitVersionInformation
 }}
 
 
-", assemblyMetaData.Version, assemblyMetaData.FileVersion, SemanticVersion.ToString("i"),
+", SemanticVersion.GetAssemblyVersion(AssemblyVersioningScheme), string.Format("{0}.{1}.{2}.0", SemanticVersion.Major, SemanticVersion.Minor, SemanticVersion.Patch), SemanticVersion.ToString("i"),
             SemanticVersion.BuildMetaData.ReleaseDate.OriginalDate.UtcDateTime.ToString("yyyy-MM-dd"),
             SemanticVersion.BuildMetaData.ReleaseDate.Date.UtcDateTime.ToString("yyyy-MM-dd"),
             GenerateVariableMembers(vars));

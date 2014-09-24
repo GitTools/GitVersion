@@ -9,8 +9,6 @@
 
     public class UpdateAssemblyInfo : Task
     {
-        public bool AppendRevision { get; set; }
-
         public string AssemblyVersioningScheme { get; set; }
 
         [Required]
@@ -107,7 +105,6 @@
                                       {
                                           SemanticVersion = semanticVersion,
                                           AssemblyVersioningScheme = versioningScheme,
-                                          AppendRevision = AppendRevision
                                       };
             var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText();
 
