@@ -51,6 +51,7 @@
       <Output TaskParameter="LegacySemVerPadded" PropertyName="GfvLegacySemVerPadded" />
       <Output TaskParameter="FullSemVer" PropertyName="GfvFullSemVer" />
       <Output TaskParameter="AssemblySemVer" PropertyName="GfvAssemblySemVer" />
+      <Output TaskParameter="NuGetVersion" PropertyName="GfvNuGetVersion" />
       <Output TaskParameter="ClassicVersion" PropertyName="GfvClassicVersion" />
       <Output TaskParameter="ClassicVersionWithTag" PropertyName="GfvClassicVersionWithTag" />
       <Output TaskParameter="PreReleaseTag" PropertyName="GfvPreReleaseTag" />
