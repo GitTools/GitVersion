@@ -61,8 +61,12 @@
 
         public override string[] GenerateSetParameterMessage(string name, string value)
         {
-            // Currently not supported by AppVeyor API
-            return new string[0];
+            Environment.SetEnvironmentVariable("GitVersion." + name, value);
+
+            return new[]
+            {
+                string.Format("Adding Environment Variable. name='GitVersion.{0}' value='{1}']", name, value),
+            };
         }
     }
 }
