@@ -38,8 +38,8 @@ namespace GitVersion
                 // In order to decide whether a fake branch is required or not, first check to see if any local branches have the same commit SHA of the head SHA.
                 // If they do, go ahead and checkout that branch
                 // If no, go ahead and check out a new branch, using the known commit SHA as the pointer
-                var localBranchesWhereCommitShaIsHead = repo.Branches.Where(b => b.Tip.Sha == headSha).ToList();
-
+                var localBranchesWhereCommitShaIsHead = repo.Branches.Where(b => !b.IsRemote && b.Tip.Sha == headSha).ToList();
+                
                 if (localBranchesWhereCommitShaIsHead.Count > 1)
                 {
                     var names = string.Join(", ", localBranchesWhereCommitShaIsHead.Select(r => r.CanonicalName));
