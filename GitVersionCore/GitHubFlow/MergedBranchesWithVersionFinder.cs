@@ -19,6 +19,15 @@ namespace GitVersion
 
         SemanticVersion GetVersion(GitVersionContext context)
         {
+
+            foreach (var commit in context.CurrentBranch.Commits)
+            {
+                string versionPart;
+                if (MergeMessageParser.TryParse(commit, out versionPart))
+                {
+                    
+                }
+            }
             return context.CurrentBranch.Commits.Where(c =>
                 {
                     string versionPart;

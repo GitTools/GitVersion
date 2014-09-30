@@ -8,7 +8,11 @@ namespace GitVersion
     {
         public static bool TryParse(Commit mergeCommit, out string versionPart)
         {
+            return Inner(mergeCommit, out versionPart);
+        }
 
+        static bool Inner(Commit mergeCommit, out string versionPart)
+        {
             if (mergeCommit.Parents.Count() < 2)
             {
                 versionPart = null;
@@ -55,7 +59,10 @@ namespace GitVersion
 
             if (message.StartsWith("Merge pull request #"))
             {
-                var split = message.Split(new[] { "/" },StringSplitOptions.RemoveEmptyEntries);
+                var split = message.Split(new[]
+                {
+                    "/"
+                }, StringSplitOptions.RemoveEmptyEntries);
                 if (split.Length != 2)
                 {
                     versionPart = null;
@@ -63,13 +70,13 @@ namespace GitVersion
                 }
                 return split[1].TryGetSuffix(out versionPart, "-");
             }
-            
+
             if (message.StartsWith("Finish Release-")) //Match Syntevo SmartGit client's GitFlow 'release' merge commit message formatting
             {
                 versionPart = message.Replace("Finish Release-", "");
                 return true;
             }
-            
+
             if (message.StartsWith("Finish ")) //Match Syntevo SmartGit client's GitFlow 'hotfix' merge commit message formatting
             {
                 versionPart = message.Replace("Finish ", "");

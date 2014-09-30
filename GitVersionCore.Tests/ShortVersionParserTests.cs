@@ -8,66 +8,59 @@ public class ShortVersionParserTests
     [Test]
     public void Major_minor_patch()
     {
-        int minor;
-        int major;
-        int patch;
-        ShortVersionParser.Parse("1.2.3", out major,out minor,out patch);
-        Assert.AreEqual(1, major);
-        Assert.AreEqual(2, minor);
-        Assert.AreEqual(3, patch);
+        ShortVersion shortVersion;
+        ShortVersionParser.Parse("1.2.3", out shortVersion);
+        Assert.AreEqual(1, shortVersion.Major);
+        Assert.AreEqual(2, shortVersion.Minor);
+        Assert.AreEqual(3, shortVersion.Patch);
     }
 
     [Test]
     public void Major_minor_patchTry()
     {
-        int minor;
-        int major;
-        int patch;
-        var result = ShortVersionParser.TryParse("1.2.3", out major,out minor,out patch);
+        ShortVersion shortVersion;
+        var result = ShortVersionParser.TryParse("1.2.3", out shortVersion);
         Assert.IsTrue(result);
-        Assert.AreEqual(1, major);
-        Assert.AreEqual(2, minor);
-        Assert.AreEqual(3, patch);
+        Assert.AreEqual(1, shortVersion.Major);
+        Assert.AreEqual(2, shortVersion.Minor);
+        Assert.AreEqual(3, shortVersion.Patch);
     }
 
     [Test]
     public void Major_minor_missingPatch()
     {
-        int minor;
-        int major;
-        int patch;
-        var result = ShortVersionParser.TryParse("1.2", out major, out minor, out patch);
+        ShortVersion shortVersion;
+        var result = ShortVersionParser.TryParse("1.2", out shortVersion);
 
         Assert.IsTrue(result);
-        Assert.AreEqual(1, major);
-        Assert.AreEqual(2, minor);
-        Assert.AreEqual(0, patch);
+        Assert.AreEqual(1, shortVersion.Major);
+        Assert.AreEqual(2, shortVersion.Minor);
+        Assert.AreEqual(0, shortVersion.Patch);
     }
 
     [Test]
     public void Major_minorTry()
     {
-        int minor;
-        int major;
-        var result = ShortVersionParser.TryParseMajorMinor("1.2.3", out major, out minor);
+        ShortVersion shortVersion;
+        var result = ShortVersionParser.TryParseMajorMinor("1.2.3", out shortVersion);
         Assert.IsFalse(result);
 
-        result = ShortVersionParser.TryParseMajorMinor("1.2.0-alpha1", out major, out minor);
+        result = ShortVersionParser.TryParseMajorMinor("1.2.0-alpha1", out shortVersion);
         Assert.IsFalse(result);
 
-        result = ShortVersionParser.TryParseMajorMinor("1.2.0.0", out major, out minor);
+        result = ShortVersionParser.TryParseMajorMinor("1.2.0.0", out shortVersion);
         Assert.IsFalse(result);
 
-        result = ShortVersionParser.TryParseMajorMinor("1.2.0.1", out major, out minor);
+        result = ShortVersionParser.TryParseMajorMinor("1.2.0.1", out shortVersion);
         Assert.IsFalse(result);
 
-        result = ShortVersionParser.TryParseMajorMinor("1.2", out major, out minor);
+        result = ShortVersionParser.TryParseMajorMinor("1.2", out shortVersion);
         Assert.IsTrue(result);
 
-        result = ShortVersionParser.TryParseMajorMinor("1.2.0", out major, out minor);
+        result = ShortVersionParser.TryParseMajorMinor("1.2.0", out shortVersion);
         Assert.IsTrue(result);
 
-        Assert.AreEqual(1, major);
-        Assert.AreEqual(2, minor);
+        Assert.AreEqual(1, shortVersion.Major);
+        Assert.AreEqual(2, shortVersion.Minor);
     }
 }
