@@ -17,14 +17,10 @@ namespace GitVersion
 
             var semanticVersion = new SemanticVersion();
 
-            string versionString;
-            if (MergeMessageParser.TryParse(tip, out versionString))
+            ShortVersion versionFromTip;
+            if (MergeMessageParser.TryParse(tip, out versionFromTip))
             {
-                ShortVersion shortVersion;
-                if (ShortVersionParser.TryParse(versionString, out shortVersion))
-                {
-                    semanticVersion = BuildVersion(repository, tip, shortVersion);
-                }
+                semanticVersion = BuildVersion(repository, tip, versionFromTip);
             }
 
             semanticVersion.OverrideVersionManuallyIfNeeded(repository);

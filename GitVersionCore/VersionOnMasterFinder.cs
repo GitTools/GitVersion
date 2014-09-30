@@ -27,22 +27,18 @@ namespace GitVersion
                         };
                     }
                 }
-                string versionString;
-                if (MergeMessageParser.TryParse(commit, out versionString))
-                {
-                    ShortVersion shortVersion;
-                    if (ShortVersionParser.TryParseMajorMinor(versionString, out shortVersion))
-                    {
-                        return new VersionPoint
-                        {
-                            Major = shortVersion.Major,
-                            Minor = shortVersion.Minor,
-                            Timestamp = commit.When(),
-                            CommitSha = commit.Sha,
-                        };
-                    }
-                }
 
+                ShortVersion shortVersionFromMergeMessage;
+                if (MergeMessageParser.TryParse(commit, out shortVersionFromMergeMessage))
+                {
+                    return new VersionPoint
+                    {
+                        Major = shortVersionFromMergeMessage.Major,
+                        Minor = shortVersionFromMergeMessage.Minor,
+                        Timestamp = commit.When(),
+                        CommitSha = commit.Sha,
+                    };
+                }
             }
             return new VersionPoint
             {

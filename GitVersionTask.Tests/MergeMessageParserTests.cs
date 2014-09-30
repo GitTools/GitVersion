@@ -46,7 +46,7 @@ public class MergeMessageParserTests
             ParentsEx = parents
         };
 
-        string versionPart;
+        ShortVersion versionPart;
         var parsed = MergeMessageParser.TryParse(commit, out versionPart);
 
         if (expectedVersion == null)
@@ -56,7 +56,8 @@ public class MergeMessageParserTests
         else
         {
             parsed.ShouldBe(true);
-            versionPart.ShouldBe(expectedVersion);
+            var versionAsString = string.Format("{0}.{1}.{2}", versionPart.Major, versionPart.Minor, versionPart.Patch);
+            versionAsString.ShouldBe(expectedVersion);
         }
     }
 

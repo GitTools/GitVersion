@@ -16,15 +16,10 @@ public class IntegrationTests
             {
                 foreach (var commit in branch.Commits)
                 {
-                    string versionPart;
-                    if (MergeMessageParser.TryParse(commit, out versionPart))
+                    ShortVersion version;
+                    if (MergeMessageParser.TryParse(commit, out version))
                     {
-                        Debug.WriteLine(versionPart);
-                        SemanticVersion version;
-                        if (SemanticVersion.TryParse(versionPart, out version))
-                        {
-                            Debug.WriteLine("{0}.{1}.{2}.{3}.{4}", version.Major, version.Minor, version.Patch, version.PreReleaseTag, version.BuildMetaData);
-                        }
+                        Debug.WriteLine("{0}.{1}.{2}", version.Major, version.Minor, version.Patch);
                     }
                 }
             }
