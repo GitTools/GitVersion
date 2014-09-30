@@ -8,14 +8,15 @@ using Shouldly;
 public class MergeMessageParserTests
 {
 
-    [TestCase("Merge branch 'hotfix-0.1.5'\n", false, null)]
-    [TestCase("Merge branch 'develop' of github.com:Particular/NServiceBus into develop\n", true, null)]
-    [TestCase("Merge branch '4.0.3'\n", true, "4.0.3")] //TODO: possible make it a config option to support this
-    [TestCase("Merge branch 'release-10.10.50'\n", true, "10.10.50")]
-    [TestCase("Merge branch 's'\n", true, null)] // Must start with a number
-    [TestCase("Merge branch 'release-0.2.0'\n", true, "0.2.0")]
-    [TestCase("Merge branch 'hotfix-10.10.50'\n", true, "10.10.50")]
-    [TestCase("Merge branch 'hotfix-0.1.5'\n", true, "0.1.5")]
+    [TestCase("Merge branch 'hotfix-0.1.5'", false, null)]
+    [TestCase("Merge branch 'develop' of github.com:Particular/NServiceBus into develop", true, null)]
+    [TestCase("Merge branch '4.0.3'", true, "4.0.3")] //TODO: possible make it a config option to support this
+    [TestCase("Merge branch 'release-10.10.50'", true, "10.10.50")]
+    [TestCase("Merge branch 's'", true, null)] // Must start with a number
+    [TestCase("Merge branch 'release-0.2.0'", true, "0.2.0")]
+    [TestCase("Merge branch 'hotfix-4.6.6' into support-4.6", true, "4.6.6")]
+    [TestCase("Merge branch 'hotfix-10.10.50'", true, "10.10.50")]
+    [TestCase("Merge branch 'hotfix-0.1.5'", true, "0.1.5")]
     [TestCase("Merge branch 'hotfix-0.1.5'\n\nRelates to: TicketId", true, "0.1.5")]
     [TestCase("Merge branch 'alpha-0.1.5'", true, "0.1.5")]
     [TestCase("Merge pull request #165 from Particular/release-1.0.0", true, "1.0.0")]
@@ -26,14 +27,27 @@ public class MergeMessageParserTests
     [TestCase("Finish 0.14.1", true, "0.14.1")] //Support Syntevo SmartGit/Hg's Gitflow merge commit messages for finishing a 'Hotfix' branch
     public void AssertMergeMessage(string message, bool isMergeCommit, string expectedVersion)
     {
-        var c = new MockCommit
-                {
-                    MessageEx = message,
-                    ParentsEx = isMergeCommit ? new List<Commit> {null, null} : new List<Commit>{ null }
-                };
+        var parents = GetParents(isMergeCommit);
+        AssertMereMessage(message, expectedVersion, parents);
+        AssertMereMessage(message+ " ", expectedVersion, parents);
+        AssertMereMessage(message+"\r ", expectedVersion, parents);
+        AssertMereMessage(message+"\r", expectedVersion, parents);
+        AssertMereMessage(message+"\r\n", expectedVersion, parents);
+        AssertMereMessage(message+"\r\n ", expectedVersion, parents);
+        AssertMereMessage(message+"\n", expectedVersion, parents);
+        AssertMereMessage(message+"\n ", expectedVersion, parents);
+    }
+
+    static void AssertMereMessage(string message, string expectedVersion, List<Commit> parents)
+    {
+        var commit = new MockCommit
+        {
+            MessageEx = message,
+            ParentsEx = parents
+        };
 
         string versionPart;
-        var parsed = MergeMessageParser.TryParse(c, out versionPart);
+        var parsed = MergeMessageParser.TryParse(commit, out versionPart);
 
         if (expectedVersion == null)
         {
@@ -44,5 +58,21 @@ public class MergeMessageParserTests
             parsed.ShouldBe(true);
             versionPart.ShouldBe(expectedVersion);
         }
+    }
+
+    static List<Commit> GetParents(bool isMergeCommit)
+    {
+        if (isMergeCommit)
+        {
+            return new List<Commit>
+            {
+                null,
+                null
+            };
+        }
+        return new List<Commit>
+        {
+            null
+        };
     }
 }

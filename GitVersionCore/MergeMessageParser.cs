@@ -1,123 +1,107 @@
 namespace GitVersion
 {
+    using System;
     using System.Linq;
-    using System.Text.RegularExpressions;
     using LibGit2Sharp;
 
-    class MergeMessageParser
+    static class MergeMessageParser
     {
         public static bool TryParse(Commit mergeCommit, out string versionPart)
         {
-            versionPart = null;
 
             if (mergeCommit.Parents.Count() < 2)
             {
+                versionPart = null;
                 return false;
             }
 
-            var message = mergeCommit.Message;
+            var message = mergeCommit.Message.TrimToFirstLine();
 
-            string trimmed;
+
             if (message.StartsWith("Merge branch 'hotfix-"))
             {
-                trimmed = message.Replace("Merge branch 'hotfix-", "");
+                var suffix = message.Replace("Merge branch 'hotfix-", "");
+                return suffix.TryGetPrefix(out versionPart, "'");
             }
-            else if (message.StartsWith("Merge branch 'hotfix/"))
-            {
-                trimmed = message.Replace("Merge branch 'hotfix/", "");
-            }
-            else if (message.StartsWith("Merge branch 'release-"))
-            {
-                trimmed = message.Replace("Merge branch 'release-", "");
-            }
-            else if (message.StartsWith("Merge branch 'release/"))
-            {
-                trimmed = message.Replace("Merge branch 'release/", "");
-            }
-            else if (Regex.IsMatch(message, "Merge pull request #\\d+ from "))
-            {
-                var branch = Regex.Match(message, "from (?<branch>.*)").Groups["branch"].Value;
-                var lastBranchPart = branch.Split('/', '-').Last();
 
-                if (!char.IsNumber(lastBranchPart.First()) || !lastBranchPart.Contains("."))
+            if (message.StartsWith("Merge branch 'hotfix/"))
+            {
+                var suffix = message.Replace("Merge branch 'hotfix/", "");
+                return suffix.TryGetPrefix(out versionPart, "'");
+            }
+
+            if (message.StartsWith("Merge branch 'release-"))
+            {
+                var suffix = message.Replace("Merge branch 'release-", "");
+                return suffix.TryGetPrefix(out versionPart, "'");
+            }
+
+            if (message.StartsWith("Merge branch 'release/"))
+            {
+                var suffix = message.Replace("Merge branch 'release/", "");
+                return suffix.TryGetPrefix(out versionPart, "'");
+            }
+
+            if (message.StartsWith("Merge branch '"))
+            {
+                var suffix = message.Replace("Merge branch '", "");
+
+                if (suffix.Contains("-"))
                 {
+                    suffix = suffix.Split('-')[1];
+                }
+                return suffix.TryGetPrefix(out versionPart, "'");
+            }
+
+            if (message.StartsWith("Merge pull request #"))
+            {
+                var split = message.Split(new[] { "/" },StringSplitOptions.RemoveEmptyEntries);
+                if (split.Length != 2)
+                {
+                    versionPart = null;
                     return false;
                 }
-
-                versionPart = lastBranchPart;
+                return split[1].TryGetSuffix(out versionPart, "-");
+            }
+            
+            if (message.StartsWith("Finish Release-")) //Match Syntevo SmartGit client's GitFlow 'release' merge commit message formatting
+            {
+                versionPart = message.Replace("Finish Release-", "");
                 return true;
             }
-            else if (Regex.IsMatch(message, "Merge pull request #\\d+ in "))
+            
+            if (message.StartsWith("Finish ")) //Match Syntevo SmartGit client's GitFlow 'hotfix' merge commit message formatting
             {
-                var branch = Regex.Match(message, "in (?<branch>.*)").Groups["branch"].Value;
-                var lastBranchPart = branch.Split('/', '-').Last();
-
-                if (!char.IsNumber(lastBranchPart.First()) || !lastBranchPart.Contains("."))
-                {
-                    return false;
-                }
-
-                versionPart = lastBranchPart;
+                versionPart = message.Replace("Finish ", "");
                 return true;
             }
-            else if (message.StartsWith("Merge branch '"))
+
+            versionPart = null;
+            return false;
+        }
+
+        static bool TryGetPrefix(this string target, out string result, string splitter)
+        {
+            var indexOf = target.IndexOf(splitter);
+            if (indexOf == -1)
             {
-                trimmed = message.Replace("Merge branch '", "");
-                var branchName = trimmed.Split('\'').First();
-                var dashSeparared = branchName.Split('-');
-                // Support branchname-1.2.3
-                if (dashSeparared.Length == 2)
-                {
-                    trimmed = dashSeparared[1];
-                    if (!char.IsNumber(trimmed.First()))
-                        return false;
-
-                    versionPart = trimmed;
-                    return true;
-                }
-                if (!char.IsNumber(trimmed.First()))
-                {
-                    return false;
-                }
-            }
-            else if (message.StartsWith("Finish Release-")) //Match Syntevo SmartGit client's GitFlow 'release' merge commit message formatting
-            {
-                var branch = Regex.Match(message, "Release-(?<branch>.*)").Groups["branch"].Value;
-                var lastBranchPart = branch.Split('/', '-').Last();
-
-                if (!char.IsNumber(lastBranchPart.First()) || !lastBranchPart.Contains("."))
-                {
-                    return false;
-                }
-
-                versionPart = lastBranchPart;
-                return true;
-            }
-            else if (message.StartsWith("Finish ")) //Match Syntevo SmartGit client's GitFlow 'hotfix' merge commit message formatting
-            {
-                var branch = Regex.Match(message, "Finish (?<branch>.*)").Groups["branch"].Value;
-                var lastBranchPart = branch.Split('/', '-').Last();
-
-                if (!char.IsNumber(lastBranchPart.First()) || !lastBranchPart.Contains("."))
-                {
-                    return false;
-                }
-
-                versionPart = lastBranchPart;
-                return true;
-            }
-            else
-            {
+                result = null;
                 return false;
             }
-            trimmed = trimmed.TrimToFirstLine();
-            if (!trimmed.EndsWith("'"))
-            {
-                return false;
-            }
-            versionPart = trimmed.TrimEnd('\'');
+            result = target.Substring(0, indexOf);
             return true;
         }
 
+        static bool TryGetSuffix(this string target, out string result, string splitter)
+        {
+            var indexOf = target.IndexOf(splitter);
+            if (indexOf == -1)
+            {
+                result = null;
+                return false;
+            }
+            result = target.Substring(indexOf + 1, target.Length - indexOf - 1);
+            return true;
+        }
     }
 }

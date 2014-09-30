@@ -15,12 +15,14 @@ namespace GitVersion
 
         public static string TrimToFirstLine(this string s)
         {
-            return s.Split(new[]
+            var firstLine = s.Split(new[]
             {
                 "\r\n",
                 "\n"
             }, StringSplitOptions.None)[0];
+            return firstLine.Trim();
         }
+
 
         [StringFormatMethod("format")]
         public static void AppendLineFormat(this StringBuilder stringBuilder, string format, params object[] args)
