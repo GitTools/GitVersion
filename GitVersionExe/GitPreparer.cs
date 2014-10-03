@@ -58,8 +58,14 @@
 
             Logger.WriteInfo(string.Format("Retrieving git info from url '{0}'", arguments.TargetUrl));
 
-            Repository.Clone(arguments.TargetUrl, gitDirectory,
-                new CloneOptions { IsBare = true, Checkout = false, Credentials = credentials });
+            var cloneOptions = new CloneOptions
+            {
+                IsBare = true,
+                Checkout = false,
+                CredentialsProvider = (url, fromUrl, types) => credentials
+            };
+
+            Repository.Clone(arguments.TargetUrl, gitDirectory, cloneOptions);
 
             if (!string.IsNullOrWhiteSpace(arguments.TargetBranch))
             {
