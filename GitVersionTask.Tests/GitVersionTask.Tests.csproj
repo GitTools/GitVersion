@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5A86453B-96FB-4B6E-A283-225BB9F753D3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GitVersionTask.Tests</RootNamespace>
+    <AssemblyName>GitVersionTask.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>7a13d6bc</NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ApprovalTests, Version=3.0.0.0, Culture=neutral, PublicKeyToken=11bd7d124fc62e0f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ApprovalTests.3.0.7\lib\net40\ApprovalTests.dll</HintPath>
+    </Reference>
+    <Reference Include="ApprovalUtilities, Version=3.0.0.0, Culture=neutral, PublicKeyToken=11bd7d124fc62e0f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ApprovalUtilities.3.0.7\lib\net35\ApprovalUtilities.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentDateTime, Version=1.11.0.0, Culture=neutral, PublicKeyToken=6ccbc613702e6c71, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\FluentDateTime.1.11.0\Lib\NET35\FluentDateTime.dll</HintPath>
+    </Reference>
+    <Reference Include="LibGit2Sharp, Version=0.19.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\LibGit2Sharp.0.19.0.0\lib\net40\LibGit2Sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.XmlTransform">
+      <HintPath>..\packages\Microsoft.Web.Xdt.1.0.0\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="ObjectApproval, Version=0.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ObjectApproval.0.2.1\Lib\NET40\ObjectApproval.dll</HintPath>
+    </Reference>
+    <Reference Include="Roslyn.Compilers">
+      <HintPath>..\packages\Roslyn.Compilers.Common.1.2.20906.2\lib\net45\Roslyn.Compilers.dll</HintPath>
+    </Reference>
+    <Reference Include="Roslyn.Compilers.CSharp">
+      <HintPath>..\packages\Roslyn.Compilers.CSharp.1.2.20906.2\lib\net45\Roslyn.Compilers.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Shouldly, Version=2.2.0.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Shouldly.2.2.0\lib\net40\Shouldly.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApprovalTestsConfig.cs" />
+    <Compile Include="AssemblyInfoBuilderTests.cs" />
+    <Compile Include="AssemblyLocation.cs" />
+    <Compile Include="BranchClassifierTests.cs" />
+    <Compile Include="BranchFinders\DevelopTests.cs" />
+    <Compile Include="BuildServers\BuildServerBaseTests.cs" />
+    <Compile Include="BuildServers\TeamCityTests.cs" />
+    <Compile Include="BuildServers\ContinuaCiTests.cs" />
+    <Compile Include="Extensions\ExtensionMethodsTests.cs" />
+    <Compile Include="Extensions\ExtensionMethodsTests.git.cs" />
+    <Compile Include="SemanticVersionPreReleaseTagTests.cs" />
+    <Compile Include="ConfigReaderTests.cs" />
+    <Compile Include="VersionAndBranchFinderTests.cs" />
+    <Compile Include="GitHubFlow\MergedBranchesWithVersionFinderTests.cs" />
+    <Compile Include="LambdaEqualityHelperFixture.cs" />
+    <Compile Include="GitFlow\GitFlowVersionFinderTests.cs" />
+    <Compile Include="GitHelperTests.cs" />
+    <Compile Include="GetVersionTaskTests.cs" />
+    <Compile Include="Helpers\Constants.cs" />
+    <Compile Include="Helpers\DirectoryHelper.cs" />
+    <Compile Include="Helpers\FindersHelper.cs" />
+    <Compile Include="Helpers\IPostTestDirectoryRemover.cs" />
+    <Compile Include="Helpers\LibGit2SharpExtensions.cs" />
+    <Compile Include="Helpers\Scrubbers.cs" />
+    <Compile Include="Helpers\SelfCleaningDirectory.cs" />
+    <Compile Include="Helpers\Lg2sHelperBase.cs" />
+    <Compile Include="LibGitExtensionsTests.cs" />
+    <Compile Include="Mocks\MockBuildEngine.cs" />
+    <Compile Include="Mocks\MockMergeCommit.cs" />
+    <Compile Include="Mocks\MockReflogCollection.cs" />
+    <Compile Include="Mocks\MockTagAnnotation.cs" />
+    <Compile Include="UpdateAssemblyInfoTests.cs" />
+    <Compile Include="VersionOnMasterFinderTests.cs" />
+    <Compile Include="Mocks\SignatureBuilder.cs" />
+    <Compile Include="Mocks\MockCommitLog.cs" />
+    <Compile Include="Mocks\MockBranch.cs" />
+    <Compile Include="Mocks\MockBranchCollection.cs" />
+    <Compile Include="Mocks\MockCommit.cs" />
+    <Compile Include="Mocks\MockReferenceCollection.cs" />
+    <Compile Include="Mocks\MockRepository.cs" />
+    <Compile Include="IntegrationTests.cs" />
+    <Compile Include="BranchFinders\MasterTests.cs" />
+    <Compile Include="MergeMessageParserTests.cs" />
+    <Compile Include="Mocks\MockTag.cs" />
+    <Compile Include="Mocks\MockTagCollection.cs" />
+    <Compile Include="ModuleInitializer.cs" />
+    <Compile Include="BranchFinders\FeatureBranchTests.cs" />
+    <Compile Include="BranchFinders\PullBranchTests.cs" />
+    <Compile Include="BranchFinders\ReleaseTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_Major.approved.txt" />
+    <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor.approved.txt" />
+    <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatch.approved.txt" />
+    <Content Include="AssemblyInfoBuilderTests.VerifyCreatedCode.approved.txt" />
+    <Content Include="FodyWeavers.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj">
+      <Project>{F9741A0D-B9D7-4557-9A1C-A7252C1071F5}</Project>
+      <Name>GitVersionCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GitVersionTask\GitVersionTask.csproj">
+      <Project>{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}</Project>
+      <Name>GitVersionTask</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="OutputVariables\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+if not exist "$(TargetDir)NativeBinaries" md "$(TargetDir)NativeBinaries"
+if not exist "$(TargetDir)NativeBinaries\x86" md "$(TargetDir)NativeBinaries\x86"
+xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.19.0.0\lib\net40\NativeBinaries\x86\*.*" "$(TargetDir)NativeBinaries\x86"
+if not exist "$(TargetDir)NativeBinaries\amd64" md "$(TargetDir)NativeBinaries\amd64"
+xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.19.0.0\lib\net40\NativeBinaries\amd64\*.*" "$(TargetDir)NativeBinaries\amd64"</PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="..\packages\Fody.1.25.0\build\Fody.targets" Condition="Exists('..\packages\Fody.1.25.0\build\Fody.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Fody.1.25.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.25.0\build\Fody.targets'))" />
+  </Target>
+</Project>

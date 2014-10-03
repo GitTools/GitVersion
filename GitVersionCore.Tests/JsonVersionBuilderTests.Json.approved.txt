@@ -1,0 +1,23 @@
+﻿{
+  "Major":1,
+  "Minor":2,
+  "Patch":3,
+  "PreReleaseTag":"unstable.4",
+  "PreReleaseTagWithDash":"-unstable.4",
+  "BuildMetaData":5,
+  "FullBuildMetaData":"5.Branch.feature1.Sha.commitSha",
+  "MajorMinorPatch":"1.2.3",
+  "SemVer":"1.2.3-unstable.4",
+  "LegacySemVer":"1.2.3-unstable4",
+  "LegacySemVerPadded":"1.2.3-unstable0004",
+  "AssemblySemVer":"1.2.3.0",
+  "FullSemVer":"1.2.3-unstable.4+5",
+  "InformationalVersion":"1.2.3-unstable.4+5.Branch.feature1.Sha.commitSha",
+  "ClassicVersion":"1.2.3.5",
+  "ClassicVersionWithTag":"1.2.3.5-unstable.4",
+  "BranchName":"feature1",
+  "Sha":"commitSha",
+  "OriginalRelease":"originalCommitSha.2014-03-01 00:00:01Z",
+  "NuGetVersionV2":"1.2.3-unstable0004",
+  "NuGetVersion":"1.2.3-unstable0004"
+}

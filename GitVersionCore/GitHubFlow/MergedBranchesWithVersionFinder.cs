@@ -1,6 +1,7 @@
 namespace GitVersion
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     public class MergedBranchesWithVersionFinder
@@ -19,19 +20,32 @@ namespace GitVersion
 
         SemanticVersion GetVersion(GitVersionContext context)
         {
-            return context.CurrentBranch.Commits.Where(c =>
+            var shortVersion = GetAllVersions(context)
+                .OrderBy(x=>x.Major)
+                .ThenBy(x=>x.Minor).ThenBy(x=>x.Patch)
+                .LastOrDefault();
+            if (shortVersion == null)
+            {
+                return null;
+            }
+            return new SemanticVersion
+            {
+                Major = shortVersion.Major,
+                Minor = shortVersion.Minor,
+                Patch = shortVersion.Patch
+            };
+        }
+
+        static IEnumerable<ShortVersion> GetAllVersions(GitVersionContext context)
+        {
+            foreach (var commit in context.CurrentBranch.Commits)
+            {
+                ShortVersion version;
+                if (MergeMessageParser.TryParse(commit, out version))
                 {
-                    string versionPart;
-                    SemanticVersion semanticVersion;
-                    return MergeMessageParser.TryParse(c, out versionPart) && SemanticVersion.TryParse(versionPart, out semanticVersion);
-                })
-                .Select(c =>
-                {
-                    string versionPart;
-                    MergeMessageParser.TryParse(c, out versionPart);
-                    return SemanticVersion.Parse(versionPart);
-                })
-                .Max();
+                    yield return version;
+                }
+            }
         }
     }
 }

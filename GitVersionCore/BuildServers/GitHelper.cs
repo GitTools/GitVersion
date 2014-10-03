@@ -7,9 +7,9 @@ namespace GitVersion
 
     public static class GitHelper
     {
-        private const string MergeMessageRegexPattern = "refs/heads/pull(-requests)?/(?<issuenumber>[0-9]*)/merge(-clean)?";
+        const string MergeMessageRegexPattern = "refs/heads/pull(-requests)?/(?<issuenumber>[0-9]*)/merge";
 
-        public static void NormalizeGitDirectory(string gitDirectory, Authentication authentication, string branch = null)
+        public static void NormalizeGitDirectory(string gitDirectory, Authentication authentication)
         {
             using (var repo = new Repository(gitDirectory))
             {
@@ -25,22 +25,37 @@ namespace GitVersion
 
                 CreateMissingLocalBranchesFromRemoteTrackingOnes(repo, remote.Name);
 
+                var headSha = repo.Refs.Head.TargetIdentifier;
+
                 if (!repo.Info.IsHeadDetached)
                 {
-                    Logger.WriteInfo(string.Format("HEAD points at branch '{0}'.", repo.Refs.Head.TargetIdentifier));
+                    Logger.WriteInfo(string.Format("HEAD points at branch '{0}'.", headSha));
                     return;
                 }
-
-                Logger.WriteInfo(string.Format("HEAD is detached and points at commit '{0}'.", repo.Refs.Head.TargetIdentifier));
-
-                if (branch != null)
+                
+                Logger.WriteInfo(string.Format("HEAD is detached and points at commit '{0}'.", headSha));
+                
+                // In order to decide whether a fake branch is required or not, first check to see if any local branches have the same commit SHA of the head SHA.
+                // If they do, go ahead and checkout that branch
+                // If no, go ahead and check out a new branch, using the known commit SHA as the pointer
+                var localBranchesWhereCommitShaIsHead = repo.Branches.Where(b => !b.IsRemote && b.Tip.Sha == headSha).ToList();
+                
+                if (localBranchesWhereCommitShaIsHead.Count > 1)
                 {
-                    Logger.WriteInfo(string.Format("Checking out local branch 'refs/heads/{0}'.", branch));
-                    repo.Checkout("refs/heads/" + branch);
+                    var names = string.Join(", ", localBranchesWhereCommitShaIsHead.Select(r => r.CanonicalName));
+                    var message = string.Format("Found more than one local branch pointing at the commit '{0}'. Unable to determine which one to use ({1}).", headSha, names);
+                    throw new WarningException(message);
+                }
+
+                if (localBranchesWhereCommitShaIsHead.Count == 0)
+                {
+                    Logger.WriteInfo(string.Format("No local branch pointing at the commit '{0}'. Fake branch needs to be created.", headSha));
+                    CreateFakeBranchPointingAtThePullRequestTip(repo, authentication);
                 }
                 else
                 {
-                    CreateFakeBranchPointingAtThePullRequestTip(repo, authentication);
+                    Logger.WriteInfo(string.Format("Checking out local branch 'refs/heads/{0}'.", localBranchesWhereCommitShaIsHead[0].Name));
+                    repo.Branches[localBranchesWhereCommitShaIsHead[0].Name].Checkout();   
                 }
             }
         }
@@ -60,7 +75,7 @@ namespace GitVersion
         {
             // Dynamic: refs/heads/pr/5
             // Github Message: refs/heads/pull/5/merge
-            // Stash Message:  refs/heads/pull-requests/5/merge-clean
+            // Stash Message:  refs/heads/pull-requests/5/merge
 
             // Note by @GeertvanHorrik: sorry, I suck at regex so did a quick hack, feel free to replace by regex
             if (mergeMessage.Contains("refs/heads/pr/"))

@@ -15,36 +15,30 @@ namespace GitVersion
             {
                 foreach (var tag in context.Repository.TagsByDate(commit))
                 {
-                    int major;
-                    int minor;
-                    if (ShortVersionParser.TryParseMajorMinor(tag.Name, out major, out minor))
+                    ShortVersion shortVersion;
+                    if (ShortVersionParser.TryParseMajorMinor(tag.Name, out shortVersion))
                     {
                         return new VersionPoint
                         {
-                            Major = major,
-                            Minor = minor,
-                            Timestamp = commit.When(),
-                            CommitSha = commit.Sha,
-                        };
-                    }
-                }
-                string versionString;
-                if (MergeMessageParser.TryParse(commit, out versionString))
-                {
-                    int major;
-                    int minor;
-                    if (ShortVersionParser.TryParseMajorMinor(versionString, out major, out minor))
-                    {
-                        return new VersionPoint
-                        {
-                            Major = major,
-                            Minor = minor,
+                            Major = shortVersion.Major,
+                            Minor = shortVersion.Minor,
                             Timestamp = commit.When(),
                             CommitSha = commit.Sha,
                         };
                     }
                 }
 
+                ShortVersion shortVersionFromMergeMessage;
+                if (MergeMessageParser.TryParse(commit, out shortVersionFromMergeMessage))
+                {
+                    return new VersionPoint
+                    {
+                        Major = shortVersionFromMergeMessage.Major,
+                        Minor = shortVersionFromMergeMessage.Minor,
+                        Timestamp = commit.When(),
+                        CommitSha = commit.Sha,
+                    };
+                }
             }
             return new VersionPoint
             {
@@ -107,16 +101,15 @@ namespace GitVersion
 
         static VersionPoint BuildFrom(Tag stableTag, Commit commit)
         {
-            int major;
-            int minor;
+            ShortVersion shortVersion;
 
-            var hasParsed = ShortVersionParser.TryParseMajorMinor(stableTag.Name, out major, out minor);
+            var hasParsed = ShortVersionParser.TryParseMajorMinor(stableTag.Name, out shortVersion);
             Debug.Assert(hasParsed);
 
             return new VersionPoint
                    {
-                       Major = major,
-                       Minor = minor,
+                       Major = shortVersion.Major,
+                       Minor = shortVersion.Minor,
                        CommitSha = commit.Id.Sha,
                    };
         }
@@ -138,10 +131,8 @@ namespace GitVersion
 
         static bool IsStableRelease(string tagName)
         {
-            int major;
-            int minor;
-
-            return ShortVersionParser.TryParseMajorMinor(tagName, out major, out minor);
+            ShortVersion shortVersion;
+            return ShortVersionParser.TryParseMajorMinor(tagName, out shortVersion);
         }
     }
 }

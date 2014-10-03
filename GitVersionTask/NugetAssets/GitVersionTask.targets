@@ -4,7 +4,7 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)..\</SolutionDir>
   </PropertyGroup>
   <PropertyGroup>
-    <GitVersionAppendRevision Condition="$(GitVersionAppendRevision) == '' Or $(GitVersionAppendRevision) == '*Undefined*'">false</GitVersionAppendRevision>
+    <GitVersionAssemblyVersioningScheme Condition="$(GitVersionAssemblyVersioningScheme) == '' Or $(GitVersionAssemblyVersioningScheme) == '*Undefined*'"></GitVersionAssemblyVersioningScheme>
   </PropertyGroup>
 
   <UsingTask
@@ -25,7 +25,7 @@
     <UpdateAssemblyInfo
       SolutionDirectory="$(SolutionDir)"
       ProjectFile="$(ProjectPath)"
-      AppendRevision="$(GitVersionAppendRevision)"
+      AssemblyVersioningScheme="$(GitVersionAssemblyVersioningScheme)"
       CompileFiles ="@(Compile)">
       <Output
         TaskParameter="AssemblyInfoTempFilePath"
@@ -51,13 +51,12 @@
       <Output TaskParameter="LegacySemVerPadded" PropertyName="GfvLegacySemVerPadded" />
       <Output TaskParameter="FullSemVer" PropertyName="GfvFullSemVer" />
       <Output TaskParameter="AssemblySemVer" PropertyName="GfvAssemblySemVer" />
+      <Output TaskParameter="NuGetVersion" PropertyName="GfvNuGetVersion" />
       <Output TaskParameter="ClassicVersion" PropertyName="GfvClassicVersion" />
       <Output TaskParameter="ClassicVersionWithTag" PropertyName="GfvClassicVersionWithTag" />
       <Output TaskParameter="PreReleaseTag" PropertyName="GfvPreReleaseTag" />
       <Output TaskParameter="PreReleaseTagWithDash" PropertyName="GfvPreReleaseTagWithDash" />
       <Output TaskParameter="InformationalVersion" PropertyName="GfvInformationalVersion" />
-      <Output TaskParameter="AssemblyVersion" PropertyName="GfvAssemblyVersion" />
-      <Output TaskParameter="AssemblyFileVersion" PropertyName="GfvAssemblyFileVersion" />
       <Output TaskParameter="OriginalRelease" PropertyName="GfvOriginalRelease" />
     </GetVersion>
 

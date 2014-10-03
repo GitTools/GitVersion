@@ -1,0 +1,50 @@
+﻿
+using System;
+using System.Reflection;
+
+[assembly: AssemblyVersion("2.3.0.0")]
+[assembly: AssemblyFileVersion("2.3.4.0")]
+[assembly: AssemblyInformationalVersion("2.3.4+5.Branch.master.Sha.commitSha")]
+[assembly: ReleaseDate("2014-03-01", "2014-03-06")]
+
+[System.Runtime.CompilerServices.CompilerGenerated]
+sealed class ReleaseDateAttribute : System.Attribute
+{
+    public string OriginalDate { get; private set; }
+    public string Date { get; private set; }
+
+    public ReleaseDateAttribute(string originalDate, string date)
+    {
+        OriginalDate = date;
+        Date = date;
+    }
+}
+
+[System.Runtime.CompilerServices.CompilerGenerated]
+static class GitVersionInformation
+{
+    public static string Major = "2";
+    public static string Minor = "3";
+    public static string Patch = "4";
+    public static string PreReleaseTag = "";
+    public static string PreReleaseTagWithDash = "";
+    public static string BuildMetaData = "5";
+    public static string FullBuildMetaData = "5.Branch.master.Sha.commitSha";
+    public static string MajorMinorPatch = "2.3.4";
+    public static string SemVer = "2.3.4";
+    public static string LegacySemVer = "2.3.4";
+    public static string LegacySemVerPadded = "2.3.4";
+    public static string AssemblySemVer = "2.3.4.0";
+    public static string FullSemVer = "2.3.4+5";
+    public static string InformationalVersion = "2.3.4+5.Branch.master.Sha.commitSha";
+    public static string ClassicVersion = "2.3.4.5";
+    public static string ClassicVersionWithTag = "2.3.4.5";
+    public static string BranchName = "master";
+    public static string Sha = "commitSha";
+    public static string OriginalRelease = "originalCommitSha.2014-03-01 00:00:01Z";
+    public static string NuGetVersionV2 = "2.3.4";
+    public static string NuGetVersion = "2.3.4";
+
+}
+
+

@@ -1,29 +1,26 @@
-﻿namespace GitVersionTask
+﻿using Microsoft.Build.Framework;
+
+class TaskLogger
 {
-    using Microsoft.Build.Framework;
+    ITask task;
 
-    class TaskLogger
+    public TaskLogger(ITask task)
     {
-        ITask task;
+        this.task = task;
+    }
 
-        public TaskLogger(ITask task)
-        {
-            this.task = task;
-        }
+    public void LogWarning(string message)
+    {
+        task.BuildEngine.LogWarningEvent(new BuildWarningEventArgs(string.Empty, string.Empty, null, 0, 0, 0, 0, message, string.Empty, "GitVersionTask"));
+    }
 
-        public void LogWarning(string message)
-        {
-            task.BuildEngine.LogWarningEvent(new BuildWarningEventArgs(string.Empty, string.Empty, null, 0, 0, 0, 0, message, string.Empty, "GitVersionTask"));
-        }
+    public void LogInfo(string message)
+    {
+        task.BuildEngine.LogMessageEvent(new BuildMessageEventArgs(message, string.Empty, "GitVersionTask", MessageImportance.Normal));
+    }
 
-        public void LogInfo(string message)
-        {
-            task.BuildEngine.LogMessageEvent(new BuildMessageEventArgs(message, string.Empty, "GitVersionTask", MessageImportance.Normal));
-        }
-
-        public void LogError(string message, string file = null)
-        {
-            task.BuildEngine.LogErrorEvent(new BuildErrorEventArgs(string.Empty, string.Empty, file, 0, 0, 0, 0, message, string.Empty, "GitVersionTask"));
-        }
+    public void LogError(string message, string file = null)
+    {
+        task.BuildEngine.LogErrorEvent(new BuildErrorEventArgs(string.Empty, string.Empty, file, 0, 0, 0, 0, message, string.Empty, "GitVersionTask"));
     }
 }

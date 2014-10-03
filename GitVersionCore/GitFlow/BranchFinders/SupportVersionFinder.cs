@@ -6,26 +6,21 @@ namespace GitVersion
     {
         public SemanticVersion FindVersion(IRepository repository, Commit tip)
         {
-            int major;
-            int minor;
-            int patch;
             foreach (var tag in repository.TagsByDate(tip))
             {
-                if (ShortVersionParser.TryParse(tag.Name, out major, out minor, out patch))
+            ShortVersion shortVersion;
+            if (ShortVersionParser.TryParse(tag.Name, out shortVersion))
                 {
-                    return BuildVersion(repository, tip, major, minor, patch);
+                    return BuildVersion(repository, tip, shortVersion);
                 }
             }
 
             var semanticVersion = new SemanticVersion();
 
-            string versionString;
-            if (MergeMessageParser.TryParse(tip, out versionString))
+            ShortVersion versionFromTip;
+            if (MergeMessageParser.TryParse(tip, out versionFromTip))
             {
-                if (ShortVersionParser.TryParse(versionString, out major, out minor, out patch))
-                {
-                    semanticVersion = BuildVersion(repository, tip, major, minor, patch);
-                }
+                semanticVersion = BuildVersion(repository, tip, versionFromTip);
             }
 
             semanticVersion.OverrideVersionManuallyIfNeeded(repository);
@@ -38,14 +33,14 @@ namespace GitVersion
             return semanticVersion;
         }
 
-        SemanticVersion BuildVersion(IRepository repository, Commit tip, int major, int minor, int patch)
+        SemanticVersion BuildVersion(IRepository repository, Commit tip, ShortVersion shortVersion)
         {
-            var releaseDate = ReleaseDateFinder.Execute(repository, tip.Sha, patch);
+            var releaseDate = ReleaseDateFinder.Execute(repository, tip.Sha, shortVersion.Patch);
             return new SemanticVersion
             {
-                Major = major,
-                Minor = minor,
-                Patch = patch,
+                Major = shortVersion.Major,
+                Minor = shortVersion.Minor,
+                Patch = shortVersion.Patch,
                 BuildMetaData = new SemanticVersionBuildMetaData(null, "support", releaseDate)
             };
         } 

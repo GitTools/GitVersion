@@ -22,12 +22,10 @@
         {
             if (string.IsNullOrEmpty(gitDirectory))
             {
-                throw new WarningException("Failed to find .git directory on agent. Please make sure agent checkout mode is enabled for you VCS roots - http://confluence.jetbrains.com/display/TCD8/VCS+Checkout+Mode");
+                throw new WarningException("Failed to find .git directory on agent.");
             }
 
-            var repoBranch = Environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH");
-
-            GitHelper.NormalizeGitDirectory(gitDirectory, authentication, repoBranch);
+            GitHelper.NormalizeGitDirectory(gitDirectory, authentication);
         }
 
         public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
@@ -63,8 +61,12 @@
 
         public override string[] GenerateSetParameterMessage(string name, string value)
         {
-            // Currently not supported by AppVeyor API
-            return new string[0];
+            Environment.SetEnvironmentVariable("GitVersion." + name, value);
+
+            return new[]
+            {
+                string.Format("Adding Environment Variable. name='GitVersion.{0}' value='{1}']", name, value),
+            };
         }
     }
 }

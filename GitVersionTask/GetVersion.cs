@@ -66,12 +66,6 @@
         public string Sha { get; set; }
 
         [Output]
-        public string AssemblyVersion { get; set; }
-
-        [Output]
-        public string AssemblyFileVersion { get; set; }
-
-        [Output]
         public string OriginalRelease { get; set; }
 
         [Output]
