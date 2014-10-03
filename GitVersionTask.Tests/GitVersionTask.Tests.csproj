@@ -91,9 +91,6 @@
     <Compile Include="BuildServers\BuildServerBaseTests.cs" />
     <Compile Include="BuildServers\TeamCityTests.cs" />
     <Compile Include="BuildServers\ContinuaCiTests.cs" />
-    <Compile Include="Extensions\ExtensionMethodsTests.cs" />
-    <Compile Include="Extensions\ExtensionMethodsTests.git.cs" />
-    <Compile Include="SemanticVersionPreReleaseTagTests.cs" />
     <Compile Include="ConfigReaderTests.cs" />
     <Compile Include="VersionAndBranchFinderTests.cs" />
     <Compile Include="GitHubFlow\MergedBranchesWithVersionFinderTests.cs" />
