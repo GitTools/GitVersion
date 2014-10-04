@@ -4,9 +4,11 @@ using LibGit2Sharp;
 
 namespace GitVersion
 {
+    using System;
+
     public class LastVersionOnMasterFinder
     {
-        public static ReleaseDate Execute(IRepository repo, Commit commit)
+        public static DateTimeOffset Execute(IRepository repo, Commit commit)
         {
             //dont need an if for release since we want the current date for a release branch
             if (
@@ -15,17 +17,9 @@ namespace GitVersion
                 )
             {
                 var vp = FindLatestStableTaggedCommitReachableFrom(repo, commit);
-                return new ReleaseDate
-                {
-                    OriginalDate = vp.When(),
-                    OriginalCommitSha = vp.Sha,
-                };
+                return vp.When();
             }
-            return new ReleaseDate
-            {
-                OriginalDate = commit.When(),
-                OriginalCommitSha = commit.Sha,
-            };
+            return commit.When();
         }
 
         static Commit FindLatestStableTaggedCommitReachableFrom(IRepository repo, Commit commit)

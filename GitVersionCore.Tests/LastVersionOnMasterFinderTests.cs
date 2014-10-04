@@ -85,8 +85,7 @@ public class LastVersionOnMasterFinderTests
 
         var commit = referenceCommitFinder(fixture.Repository);
         var releaseDate = LastVersionOnMasterFinder.Execute(fixture.Repository, commit);
-        releaseDate.OriginalCommitSha.ShouldBe(commit.Sha);
-        releaseDate.OriginalDate.ShouldBe(commit.Committer.When);
+        releaseDate.ShouldBe(commit.Committer.When);
     }
 
     void DropTags(IRepository repo, params string[] names)
