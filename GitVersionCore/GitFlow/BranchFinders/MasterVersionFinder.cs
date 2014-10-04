@@ -11,7 +11,7 @@ namespace GitVersion
                 ShortVersion shortVersion;
                 if (ShortVersionParser.TryParse(tag.Name, out shortVersion))
                 {
-                    return BuildVersion(repository, tip, shortVersion);
+                    return BuildVersion(tip, shortVersion);
                 }
             }
 
@@ -20,7 +20,7 @@ namespace GitVersion
             ShortVersion versionFromTip;
             if (MergeMessageParser.TryParse(tip, out versionFromTip))
             {
-                semanticVersion = BuildVersion(repository, tip, versionFromTip);
+                semanticVersion = BuildVersion(tip, versionFromTip);
             }
 
             if (semanticVersion == null || semanticVersion.IsEmpty())
@@ -31,15 +31,14 @@ namespace GitVersion
             return semanticVersion;
         }
 
-        SemanticVersion BuildVersion(IRepository repository, Commit tip, ShortVersion shortVersion)
+        SemanticVersion BuildVersion(Commit tip, ShortVersion shortVersion)
         {
-            var releaseDate = ReleaseDateFinder.Execute(repository, tip, shortVersion.Patch);
             return new SemanticVersion
             {
                 Major = shortVersion.Major,
                 Minor = shortVersion.Minor,
                 Patch = shortVersion.Patch,
-                BuildMetaData = new SemanticVersionBuildMetaData(null, "master", releaseDate,tip.Sha,tip.When())
+                BuildMetaData = new SemanticVersionBuildMetaData(null, "master",tip.Sha,tip.When())
             };
         }
     }

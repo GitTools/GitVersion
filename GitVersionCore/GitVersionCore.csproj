@@ -103,8 +103,6 @@
     <Compile Include="OutputVariables\CiFeedFormatter.cs" />
     <Compile Include="OutputVariables\VariableProvider.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="ReleaseDate.cs" />
-    <Compile Include="ReleaseDateFinder.cs" />
     <Compile Include="RepositoryLoader.cs" />
     <Compile Include="SearchPath.cs" />
     <Compile Include="SemanticVersion.cs" />

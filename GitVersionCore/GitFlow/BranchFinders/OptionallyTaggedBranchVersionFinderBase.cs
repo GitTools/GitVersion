@@ -30,7 +30,6 @@ namespace GitVersion
 
             var tagVersion = RetrieveMostRecentOptionalTagVersion(context.Repository, version, context.CurrentBranch.Commits.Take(nbHotfixCommits + 1));
 
-            var releaseDate = ReleaseDateFinder.Execute(context.Repository, context.CurrentCommit, version.Patch);
             var semanticVersion = new SemanticVersion
             {
                 Major = version.Major,
@@ -38,7 +37,7 @@ namespace GitVersion
                 Patch = version.Patch,
                 PreReleaseTag = version.PreReleaseTag,
                 BuildMetaData = new SemanticVersionBuildMetaData(
-                    nbHotfixCommits, context.CurrentBranch.Name, releaseDate, context.CurrentCommit.Sha, context.CurrentCommit.When())
+                    nbHotfixCommits, context.CurrentBranch.Name, context.CurrentCommit.Sha, context.CurrentCommit.When())
             };
 
             if (tagVersion != null)

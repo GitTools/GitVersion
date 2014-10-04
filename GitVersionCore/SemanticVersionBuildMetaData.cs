@@ -10,11 +10,10 @@ namespace GitVersion
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         static LambdaEqualityHelper<SemanticVersionBuildMetaData> equalityHelper =
-           new LambdaEqualityHelper<SemanticVersionBuildMetaData>(x => x.CommitsSinceTag, x => x.Branch, x => x.Sha, x => x.ReleaseDate);
+           new LambdaEqualityHelper<SemanticVersionBuildMetaData>(x => x.CommitsSinceTag, x => x.Branch, x => x.Sha);
 
         public int? CommitsSinceTag;
         public string Branch;
-        public ReleaseDate ReleaseDate;
         public string Sha;
         public string OtherMetaData;
         public DateTimeOffset CommitDate;
@@ -23,9 +22,8 @@ namespace GitVersion
         {
         }
 
-        public SemanticVersionBuildMetaData(int? commitsSinceTag, string branch, ReleaseDate releaseDate, string commitSha,DateTimeOffset commitDate)
+        public SemanticVersionBuildMetaData(int? commitsSinceTag, string branch, string commitSha,DateTimeOffset commitDate)
         {
-            ReleaseDate = releaseDate;
             Sha = commitSha;
             CommitsSinceTag = commitsSinceTag;
             Branch = branch;

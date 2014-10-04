@@ -23,10 +23,8 @@ namespace GitVersion
             var commitsSinceLastRelease = NumberOfCommitsOnBranchSinceCommit(context, commit);
             var semanticVersion = nextSemverCalculator.NextVersion();
 
-            var releaseDate = ReleaseDateFinder.Execute(context.Repository, context.CurrentCommit, semanticVersion.Patch);
-
             // TODO Need a way of setting this in a cross cutting way
-            semanticVersion.BuildMetaData = new SemanticVersionBuildMetaData(commitsSinceLastRelease, context.CurrentBranch.Name, releaseDate, context.CurrentCommit.Sha, context.CurrentCommit.When());
+            semanticVersion.BuildMetaData = new SemanticVersionBuildMetaData(commitsSinceLastRelease, context.CurrentBranch.Name, context.CurrentCommit.Sha, context.CurrentCommit.When());
             if (context.CurrentBranch.IsPullRequest())
             {
                 EnsurePullBranchShareACommonAncestorWithMaster(gitRepo, gitRepo.Head);
