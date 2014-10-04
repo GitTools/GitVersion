@@ -4,12 +4,14 @@ namespace GitVersion
 
     class ShortVersionParser
     {
-        public static void Parse(string versionString, out ShortVersion shortVersion)
+        public static ShortVersion Parse(string versionString)
         {
+            ShortVersion shortVersion;
             if (!TryParse(versionString, out shortVersion))
             {
                 throw new Exception(string.Format("Could not parse version from '{0}' expected 'major.minor.patch'", versionString));
             }
+            return shortVersion;
         }
 
         public static bool TryParseMajorMinor(string versionString, out ShortVersion shortVersion)

@@ -63,6 +63,8 @@
     <Compile Include="BuildServers\GitHelper.cs" />
     <Compile Include="BuildServers\IBuildServer.cs" />
     <Compile Include="BuildServers\TeamCity.cs" />
+    <Compile Include="GitFlow\BranchFinders\BranchCommitDifferenceFinder.cs" />
+    <Compile Include="GitFlow\BranchFinders\OptionallyTaggedBranchVersionFinderBase - Copy.cs" />
     <Compile Include="LastVersionOnMasterFinder.cs" />
     <Compile Include="ShortVersion.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />

@@ -1,3 +1,4 @@
+using System;
 using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -36,7 +37,7 @@ public class ReleaseTests : Lg2sHelperBase
 
             var finder = new ReleaseVersionFinder();
 
-            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, releaseBranch)));
+            Assert.Throws<Exception>(() => finder.FindVersion(new GitVersionContext(repo, releaseBranch)));
         }
     }
 

@@ -8,8 +8,7 @@ public class ShortVersionParserTests
     [Test]
     public void Major_minor_patch()
     {
-        ShortVersion shortVersion;
-        ShortVersionParser.Parse("1.2.3", out shortVersion);
+        var shortVersion = ShortVersionParser.Parse("1.2.3");
         Assert.AreEqual(1, shortVersion.Major);
         Assert.AreEqual(2, shortVersion.Minor);
         Assert.AreEqual(3, shortVersion.Patch);
