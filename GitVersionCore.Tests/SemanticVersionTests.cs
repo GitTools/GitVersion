@@ -68,14 +68,6 @@ public class SemanticVersionTests
     }
 
     [Test]
-    public void EmptyVersion()
-    {
-        Assert.IsTrue(SemanticVersion.Empty.IsEmpty());
-
-        var emptyVersion = new SemanticVersion();
-        Assert.IsTrue(emptyVersion.IsEmpty());
-    }
-    [Test]
     public void ToStringJTests()
     {
         Assert.AreEqual("1.2.3", SemanticVersion.Parse("1.2.3").ToString("j"));

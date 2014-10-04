@@ -1,5 +1,6 @@
 ﻿namespace GitVersion
 {
+    using System.Collections.Generic;
     using System.Linq;
 
     public class NextSemverCalculator
@@ -26,13 +27,21 @@
         {
             var versionZero = new SemanticVersion();
             var lastRelease = lastTaggedReleaseFinder.GetVersion();
-            var fileVersion = nextVersionTxtFileFinder.GetNextVersion();
-            var mergedBranchVersion = mergedBranchesWithVersionFinder.GetVersion();
+            var versions = new List<SemanticVersion>();
+            SemanticVersion fileVersion;
+            if(nextVersionTxtFileFinder.TryGetNextVersion(out fileVersion))
+            {
+                versions.Add(fileVersion);
+            }
+            versions.Add(mergedBranchesWithVersionFinder.GetVersion());
             var otherBranchVersion = unknownBranchFinder.FindVersion(context);
             if (otherBranchVersion != null && otherBranchVersion.PreReleaseTag != null && otherBranchVersion.PreReleaseTag.Name == "release")
+            {
                 otherBranchVersion.PreReleaseTag.Name = "beta";
+            }
+            versions.Add(otherBranchVersion);
 
-            var maxCalculated = new[] { fileVersion, otherBranchVersion, mergedBranchVersion }.Max();
+            var maxCalculated = versions.Max();
 
             if (lastRelease.SemVer == versionZero && maxCalculated == versionZero)
             {

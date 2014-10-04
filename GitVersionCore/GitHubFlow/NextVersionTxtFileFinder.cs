@@ -12,27 +12,29 @@
             this.repositoryDirectory = repositoryDirectory;
         }
 
-        public SemanticVersion GetNextVersion()
+        public bool TryGetNextVersion(out SemanticVersion semanticVersion)
         {
             var filePath = Path.Combine(repositoryDirectory, "NextVersion.txt");
             if (!File.Exists(filePath))
             {
-                return new SemanticVersion();
+                semanticVersion = null;
+                return false;
             }
 
             var version = File.ReadAllText(filePath);
             if (string.IsNullOrEmpty(version))
             {
-                return new SemanticVersion();
+                semanticVersion = null;
+                return false;
             }
 
-            SemanticVersion semanticVersion;
             if (!SemanticVersion.TryParse(version, out semanticVersion))
             {
                 throw new ArgumentException("Make sure you have a valid semantic version in NextVersion.txt");
             }
 
-            return semanticVersion;
+
+                return true;
         }
     }
 }

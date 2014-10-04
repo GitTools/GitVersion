@@ -7,8 +7,8 @@
         public static void OverrideVersionManuallyIfNeeded(this SemanticVersion version, IRepository repository)
         {
             var nextVersionTxtFileFinder = new NextVersionTxtFileFinder(repository.GetRepositoryDirectory());
-            var manualNextVersion = nextVersionTxtFileFinder.GetNextVersion();
-            if (!manualNextVersion.IsEmpty())
+            SemanticVersion manualNextVersion ;
+            if (nextVersionTxtFileFinder.TryGetNextVersion(out manualNextVersion))
             {
                 if (manualNextVersion > version)
                 {

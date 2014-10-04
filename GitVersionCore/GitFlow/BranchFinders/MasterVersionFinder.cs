@@ -15,20 +15,12 @@ namespace GitVersion
                 }
             }
 
-            var semanticVersion = new SemanticVersion();
-
             ShortVersion versionFromTip;
             if (MergeMessageParser.TryParse(tip, out versionFromTip))
             {
-                semanticVersion = BuildVersion(tip, versionFromTip);
+                return BuildVersion(tip, versionFromTip);
             }
-
-            if (semanticVersion == null || semanticVersion.IsEmpty())
-            {
-                throw new WarningException("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
-            }
-
-            return semanticVersion;
+            throw new WarningException("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
         }
 
         SemanticVersion BuildVersion(Commit tip, ShortVersion shortVersion)
