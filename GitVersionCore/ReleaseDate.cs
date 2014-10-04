@@ -5,11 +5,9 @@ public class ReleaseDate : IEquatable<ReleaseDate>
 {
     public DateTimeOffset OriginalDate;
     public string OriginalCommitSha;
-    public DateTimeOffset Date;
-    public string CommitSha;
 
     static LambdaEqualityHelper<ReleaseDate> equalityHelper =
-           new LambdaEqualityHelper<ReleaseDate>(x => x.OriginalDate, x => x.OriginalCommitSha, x => x.Date, x => x.CommitSha);
+           new LambdaEqualityHelper<ReleaseDate>(x => x.OriginalDate, x => x.OriginalCommitSha);
 
     public override bool Equals(object obj)
     {

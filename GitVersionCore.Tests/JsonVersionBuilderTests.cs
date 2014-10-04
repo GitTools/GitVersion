@@ -20,9 +20,7 @@ public class JsonVersionBuilderTests
                     {
                         OriginalCommitSha = "originalCommitSha",
                         OriginalDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z"),
-                        CommitSha = "commitSha",
-                        Date = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
-                    })
+                    }, "commitSha",DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
             };
         var variables = VariableProvider.GetVariablesFor(semanticVersion);
         var json = JsonOutputFormatter.ToJson(variables);

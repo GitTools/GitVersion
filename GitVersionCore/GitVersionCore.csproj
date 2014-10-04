@@ -65,7 +65,7 @@
     <Compile Include="BuildServers\TeamCity.cs" />
     <Compile Include="CachedVersion.cs" />
     <Compile Include="DirectoryDateFinder.cs" />
-    <Compile Include="ReleaseDateFinder - Copy.cs" />
+    <Compile Include="LastVersionOnMasterFinder.cs" />
     <Compile Include="ShortVersion.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />
     <Compile Include="WarningException.cs" />

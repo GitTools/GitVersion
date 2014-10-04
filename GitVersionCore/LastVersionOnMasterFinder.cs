@@ -19,16 +19,12 @@ namespace GitVersion
                 {
                     OriginalDate = vp.When(),
                     OriginalCommitSha = vp.Sha,
-                    Date = commit.When(),
-                    CommitSha = commit.Sha,
                 };
             }
             return new ReleaseDate
             {
                 OriginalDate = commit.When(),
                 OriginalCommitSha = commit.Sha,
-                Date = commit.When(),
-                CommitSha = commit.Sha,
             };
         }
 

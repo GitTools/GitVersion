@@ -1,3 +1,4 @@
+using System;
 using GitVersion;
 using NUnit.Framework;
 
@@ -24,7 +25,7 @@ public class InformationalVersionBuilderTests
             Minor = minor,
             Patch = patch,
             PreReleaseTag = tag,
-            BuildMetaData = new SemanticVersionBuildMetaData(suffix, branchName, new ReleaseDate{ CommitSha = sha }),
+            BuildMetaData = new SemanticVersionBuildMetaData(suffix, branchName, new ReleaseDate(),sha,DateTimeOffset.MinValue),
         };
         var informationalVersion = semanticVersion.ToString("i");
 

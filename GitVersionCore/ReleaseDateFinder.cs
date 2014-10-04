@@ -12,8 +12,6 @@ namespace GitVersion
             {
                 OriginalDate = commit.When(),
                 OriginalCommitSha = commit.Sha,
-                Date = commit.When(),
-                CommitSha = commit.Sha,
             };
 
             if (GitVersionFinder.ShouldGitHubFlowVersioningSchemeApply(repo))

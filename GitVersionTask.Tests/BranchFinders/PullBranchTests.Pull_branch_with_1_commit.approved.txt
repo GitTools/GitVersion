@@ -11,11 +11,10 @@
         "Branch": "pull/1735/merge",
         "ReleaseDate": {
             "OriginalDate": "<date replaced>",
-            "OriginalCommitSha": "000000000000000000000000000000000000000",
-            "Date": "<date replaced>",
-            "CommitSha": "000000000000000000000000000000000000000"
+            "OriginalCommitSha": "000000000000000000000000000000000000000"
         },
         "Sha": "000000000000000000000000000000000000000",
-        "OtherMetaData": null
+        "OtherMetaData": null,
+        "CommitDate": "<date replaced>"
     }
 }

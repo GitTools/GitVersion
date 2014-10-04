@@ -39,7 +39,7 @@ namespace GitVersion
                 Major = shortVersion.Major,
                 Minor = shortVersion.Minor,
                 Patch = shortVersion.Patch,
-                BuildMetaData = new SemanticVersionBuildMetaData(null, "master", releaseDate)
+                BuildMetaData = new SemanticVersionBuildMetaData(null, "master", releaseDate,tip.Sha,tip.When())
             };
         }
     }

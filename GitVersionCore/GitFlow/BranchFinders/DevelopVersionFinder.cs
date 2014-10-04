@@ -28,7 +28,7 @@ namespace GitVersion
                 Minor = versionFromMaster.Minor + 1,
                 Patch = 0,
                 PreReleaseTag = "unstable" + numberOfCommitsSinceRelease,
-                BuildMetaData = new SemanticVersionBuildMetaData(numberOfCommitsSinceRelease, context.CurrentBranch.Name, releaseDate),
+                BuildMetaData = new SemanticVersionBuildMetaData(numberOfCommitsSinceRelease, context.CurrentBranch.Name, releaseDate,tip.Sha,tip.When()),
             };
 
             semanticVersion.OverrideVersionManuallyIfNeeded(context.Repository);

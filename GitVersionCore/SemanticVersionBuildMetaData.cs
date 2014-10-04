@@ -17,19 +17,21 @@ namespace GitVersion
         public ReleaseDate ReleaseDate;
         public string Sha;
         public string OtherMetaData;
+        public DateTimeOffset CommitDate;
 
         public SemanticVersionBuildMetaData()
         {
         }
 
-        public SemanticVersionBuildMetaData(
-            int? commitsSinceTag, string branch, ReleaseDate releaseDate)
+        public SemanticVersionBuildMetaData(int? commitsSinceTag, string branch, ReleaseDate releaseDate, string commitSha,DateTimeOffset commitDate)
         {
             ReleaseDate = releaseDate;
-            Sha = releaseDate.CommitSha;
+            Sha = commitSha;
             CommitsSinceTag = commitsSinceTag;
             Branch = branch;
+            CommitDate = commitDate;
         }
+
 
         public override bool Equals(object obj)
         {

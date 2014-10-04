@@ -33,7 +33,7 @@ namespace GitVersion
                 PreReleaseTag = preReleaseTag,
                 BuildMetaData = new SemanticVersionBuildMetaData(
                     numberOfCommitsOnBranchSinceCommit,
-                    context.CurrentBranch.Name, releaseDate)
+                    context.CurrentBranch.Name, releaseDate, context.CurrentCommit.Sha, context.CurrentCommit.When())
             };
 
             semanticVersion.OverrideVersionManuallyIfNeeded(context.Repository);
