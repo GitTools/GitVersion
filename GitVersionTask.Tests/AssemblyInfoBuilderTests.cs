@@ -38,7 +38,7 @@ public class AssemblyInfoBuilderTests
         var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText();
         Approvals.Verify(assemblyInfoText);
         var syntaxTree = SyntaxTree.ParseText(assemblyInfoText);
-        var references = new[] {new MetadataFileReference(typeof(object).Assembly.Location), };
+        var references = new[] {new MetadataFileReference(typeof(object).Assembly.Location)};
         var compilation = Compilation.Create("Greeter.dll", new CompilationOptions(OutputKind.NetModule), new[] { syntaxTree }, references);
         var emitResult = compilation.Emit(new MemoryStream());
         Assert.IsTrue(emitResult.Success, string.Join(Environment.NewLine, emitResult.Diagnostics.Select(x => x.Info)));
@@ -91,7 +91,7 @@ public class AssemblyInfoBuilderTests
         var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText();
         Approvals.Verify(assemblyInfoText);
         var syntaxTree = SyntaxTree.ParseText(assemblyInfoText);
-        var references = new[] { new MetadataFileReference(typeof(object).Assembly.Location), };
+        var references = new[] { new MetadataFileReference(typeof(object).Assembly.Location)};
         var compilation = Compilation.Create("Greeter.dll", new CompilationOptions(OutputKind.NetModule), new[] { syntaxTree }, references);
         var emitResult = compilation.Emit(new MemoryStream());
         Assert.IsTrue(emitResult.Success, string.Join(Environment.NewLine, emitResult.Diagnostics.Select(x => x.Info)));

@@ -1,9 +1,11 @@
-﻿using LibGit2Sharp;
-using NUnit.Framework;
-using Shouldly;
+﻿    using System;
+    using GitVersion;
+    using LibGit2Sharp;
+    using NUnit.Framework;
+    using Shouldly;
 
 [TestFixture]
-public class MetaDataByCommitFixture
+public class LastVersionOnMasterFinderTests
 {
     /*
          *  hotfix-1.2.1       -----------C--      
@@ -31,56 +33,60 @@ public class MetaDataByCommitFixture
         using (var f = new CommitCountingRepoFixture())
         {
             ResetToP(f.Repository);
-            EnsureMetaDataMatch(f, "1.4.0-unstable.7+7");
+            EnsureMetaDataMatch(f, "develop");
 
             ResetToO(f.Repository);
-            EnsureMetaDataMatch(f, "1.4.0-unstable.6+6");
+            EnsureMetaDataMatch(f, "develop");
 
             ResetToN(f.Repository);
-            EnsureMetaDataMatch(f, "1.3.1");
+            EnsureMetaDataMatch(f, "master", r => (Commit) r.Tags["1.3.0"].Target);
 
             ResetToM(f.Repository);
-            EnsureMetaDataMatch(f, "1.4.0-unstable.5+5");
+            EnsureMetaDataMatch(f, "develop");
 
             ResetToL(f.Repository);
-            EnsureMetaDataMatch(f, "1.3.1-beta.1+1");
+            EnsureMetaDataMatch(f, "hotfix-1.3.1", r => (Commit) r.Tags["1.3.0"].Target);
 
             ResetToK(f.Repository);
-            EnsureMetaDataMatch(f, "1.4.0-feature+2");
+            EnsureMetaDataMatch(f, "feature");
 
             ResetToJ(f.Repository);
-            EnsureMetaDataMatch(f, "1.4.0-feature+1");
+            EnsureMetaDataMatch(f, "feature");
 
             ResetToI(f.Repository);
-            EnsureMetaDataMatch(f, "1.4.0-unstable.2+2");
+            EnsureMetaDataMatch(f, "develop");
 
             ResetToH(f.Repository);
-            EnsureMetaDataMatch(f, "1.3.0");
+            EnsureMetaDataMatch(f, "master", r => (Commit) r.Tags["1.3.0"].Target);
 
             ResetToG(f.Repository);
-            EnsureMetaDataMatch(f, "1.3.0-beta.1+2");
+            EnsureMetaDataMatch(f, "release-1.3.0");
 
             ResetToF(f.Repository);
-            EnsureMetaDataMatch(f, "1.2.1");
+            EnsureMetaDataMatch(f, "master", r => (Commit) r.Tags["1.2.0"].Target);
 
             ResetToE(f.Repository);
-            EnsureMetaDataMatch(f, "1.3.0-unstable.2+2");
+            EnsureMetaDataMatch(f, "develop");
 
             ResetToD(f.Repository);
-            EnsureMetaDataMatch(f, "1.3.0-beta.1+1");
+            EnsureMetaDataMatch(f, "release-1.3.0");
 
             ResetToC(f.Repository);
-            EnsureMetaDataMatch(f, "1.2.1-beta.1+1");
+            EnsureMetaDataMatch(f, "hotfix-1.2.1", r => (Commit) r.Tags["1.2.0"].Target);
 
             ResetToB(f.Repository);
-            EnsureMetaDataMatch(f, "1.3.0-unstable.1+1");
+            EnsureMetaDataMatch(f, "develop");
         }
     }
 
-    static void EnsureMetaDataMatch(CommitCountingRepoFixture fixture,string expectedSemVer)
+    static void EnsureMetaDataMatch(CommitCountingRepoFixture fixture, string branchName, Func<IRepository, Commit> commitFinder = null)
     {
-        var result = fixture.ExecuteGitVersion();
-        result.ToString("f").ShouldBe(expectedSemVer);
+        var referenceCommitFinder = commitFinder ?? (r => r.FindBranch(branchName).Tip);
+
+        var commit = referenceCommitFinder(fixture.Repository);
+        var releaseDate = LastVersionOnMasterFinder.Execute(fixture.Repository, commit);
+        releaseDate.OriginalCommitSha.ShouldBe(commit.Sha);
+        releaseDate.OriginalDate.ShouldBe(commit.Committer.When);
     }
 
     void DropTags(IRepository repo, params string[] names)

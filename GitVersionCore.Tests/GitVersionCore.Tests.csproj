@@ -78,6 +78,7 @@
     <Compile Include="Helpers\NextVersionWriter.cs" />
     <Compile Include="InformationalVersionBuilderTests.cs" />
     <Compile Include="JsonVersionBuilderTests.cs" />
+    <Compile Include="LastVersionOnMasterFinderTests.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="EmptyRepositoryFixture.cs" />
     <Compile Include="Helpers\GitHelper.cs" />
