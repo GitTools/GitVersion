@@ -33,7 +33,7 @@ namespace GitVersion
 
         SemanticVersion BuildVersion(IRepository repository, Commit tip, ShortVersion shortVersion)
         {
-            var releaseDate = ReleaseDateFinder.Execute(repository, tip.Sha, shortVersion.Patch);
+            var releaseDate = ReleaseDateFinder.Execute(repository, tip, shortVersion.Patch);
             return new SemanticVersion
             {
                 Major = shortVersion.Major,

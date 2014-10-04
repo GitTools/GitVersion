@@ -21,8 +21,7 @@ namespace GitVersion
             var versionFromMaster = versionOnMasterFinder.Execute(context, context.CurrentCommit.Committer.When);
 
             var numberOfCommitsOnBranchSinceCommit = NumberOfCommitsOnBranchSinceCommit(context, ancestor);
-            var sha = context.CurrentCommit.Sha;
-            var releaseDate = ReleaseDateFinder.Execute(context.Repository, sha, 0);
+            var releaseDate = ReleaseDateFinder.Execute(context.Repository, context.CurrentCommit, 0);
             var preReleaseTag = context.CurrentBranch.Name
                 .TrimStart(branchType.ToString() + '-')
                 .TrimStart(branchType.ToString() + '/');

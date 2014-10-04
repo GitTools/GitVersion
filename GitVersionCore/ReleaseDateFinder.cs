@@ -7,9 +7,8 @@ namespace GitVersion
 {
     public class ReleaseDateFinder
     {
-        public static ReleaseDate Execute(IRepository repo, string commitSha, int calculatedPatch)
+        public static ReleaseDate Execute(IRepository repo, Commit commit, int calculatedPatch)
         {
-            var commit = repo.Lookup<Commit>(commitSha);
             var rd = new ReleaseDate
             {
                 OriginalDate = commit.When(),

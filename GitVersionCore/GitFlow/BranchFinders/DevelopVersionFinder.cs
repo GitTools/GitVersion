@@ -21,7 +21,7 @@ namespace GitVersion
             var c = context.Repository.Commits.QueryBy(f);
             var numberOfCommitsSinceRelease = c.Count();
 
-            var releaseDate = ReleaseDateFinder.Execute(context.Repository, tip.Sha, 0);
+            var releaseDate = ReleaseDateFinder.Execute(context.Repository, tip, 0);
             var semanticVersion = new SemanticVersion
             {
                 Major = versionFromMaster.Major,
