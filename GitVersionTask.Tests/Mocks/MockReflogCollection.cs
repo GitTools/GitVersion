@@ -6,7 +6,7 @@ public class MockReflogCollection : ReflogCollection, ICollection<Commit>
 {
     public List<Commit> Commits = new List<Commit>();
 
-    public IEnumerator<Commit> GetEnumerator()
+    public new IEnumerator<Commit> GetEnumerator()
     {
         return Commits.GetEnumerator();
     }
