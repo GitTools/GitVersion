@@ -17,7 +17,6 @@
   "ClassicVersionWithTag":"1.2.3.5-unstable.4",
   "BranchName":"feature1",
   "Sha":"commitSha",
-  "OriginalRelease":"originalCommitSha.2014-03-01 00:00:01Z",
   "NuGetVersionV2":"1.2.3-unstable0004",
   "NuGetVersion":"1.2.3-unstable0004"
 }

@@ -58,9 +58,6 @@
                     semanticVersion.PreReleaseTag.HasTag() ? "-" + semanticVersion.PreReleaseTag : null)},
                 {BranchName, bmd.Branch},
                 {Sha, bmd.Sha},
-                {OriginalRelease, string.Format("{0}.{1}", 
-                    bmd.ReleaseDate.OriginalCommitSha,
-                    bmd.ReleaseDate.OriginalDate.UtcDateTime.ToString("u"))},
             };
 
             // Use ToLower() to fix a bug where Beta and beta are different in NuGet
