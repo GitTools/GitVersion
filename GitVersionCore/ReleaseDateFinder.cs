@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using LibGit2Sharp;
 
@@ -28,13 +27,12 @@ namespace GitVersion
             }
 
             var vp = FindLatestStableTaggedCommitReachableFrom(repo, commit);
-            var latestStable = repo.Lookup<Commit>(vp.CommitSha);
-            rd.OriginalDate = latestStable.When();
-            rd.OriginalCommitSha = vp.CommitSha;
+            rd.OriginalDate = vp.When();
+            rd.OriginalCommitSha = vp.Sha;
             return rd;
         }
 
-        static VersionPoint FindLatestStableTaggedCommitReachableFrom(IRepository repo, Commit commit)
+        static Commit FindLatestStableTaggedCommitReachableFrom(IRepository repo, Commit commit)
         {
             var masterTip = repo.FindBranch("master").Tip;
             var ancestor = repo.Commits.FindMergeBase(masterTip, commit);
@@ -59,7 +57,7 @@ namespace GitVersion
             return null;
         }
 
-        static VersionPoint RetrieveStableVersionPointFor(IEnumerable<Tag> allTags, Commit c)
+        static Commit RetrieveStableVersionPointFor(IEnumerable<Tag> allTags, Commit c)
         {
             var tags = allTags
                 .Where(tag => tag.PeeledTarget() == c)
@@ -80,7 +78,7 @@ namespace GitVersion
             var stableTag = tags.Single();
             var commit = RetrieveMergeCommit(stableTag);
 
-            return BuildFrom(stableTag, commit);
+            return commit;
         }
 
         static bool IsStableRelease(string tagName)
@@ -99,21 +97,6 @@ namespace GitVersion
             }
             var message = string.Format("Target '{0}' of Tag '{1}' isn't a Commit.", target.Id.ToString(7), stableTag.Name);
             throw new WarningException(message);
-        }
-
-        static VersionPoint BuildFrom(Tag stableTag, Commit commit)
-        {
-            ShortVersion shortVersion;
-
-            var hasParsed = ShortVersionParser.TryParseMajorMinor(stableTag.Name, out shortVersion);
-            Debug.Assert(hasParsed);
-
-            return new VersionPoint
-            {
-                Major = shortVersion.Major,
-                Minor = shortVersion.Minor,
-                CommitSha = commit.Id.Sha,
-            };
         }
 
 
