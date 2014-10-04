@@ -18,7 +18,7 @@ namespace GitVersion
             }
 
             var versionOnMasterFinder = new VersionOnMasterFinder();
-            var versionFromMaster = versionOnMasterFinder.Execute(context, context.CurrentCommit.Committer.When);
+            var versionFromMaster = versionOnMasterFinder.Execute(context, context.CurrentCommit.When());
 
             var numberOfCommitsOnBranchSinceCommit = NumberOfCommitsOnBranchSinceCommit(context, ancestor);
             var preReleaseTag = context.CurrentBranch.Name
