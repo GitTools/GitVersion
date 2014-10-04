@@ -33,11 +33,18 @@
             {
                 versions.Add(fileVersion);
             }
-            versions.Add(mergedBranchesWithVersionFinder.GetVersion());
-            var otherBranchVersion = unknownBranchFinder.FindVersion(context);
-            if (otherBranchVersion != null && otherBranchVersion.PreReleaseTag != null && otherBranchVersion.PreReleaseTag.Name == "release")
+            SemanticVersion tryGetVersion;
+            if (mergedBranchesWithVersionFinder.TryGetVersion(out tryGetVersion))
             {
-                otherBranchVersion.PreReleaseTag.Name = "beta";
+                versions.Add(tryGetVersion);
+            }
+            var otherBranchVersion = unknownBranchFinder.FindVersion(context);
+            if (otherBranchVersion != null)
+            {
+                if (otherBranchVersion.PreReleaseTag != null && otherBranchVersion.PreReleaseTag.Name == "release")
+                {
+                    otherBranchVersion.PreReleaseTag.Name = "beta";
+                }
             }
             versions.Add(otherBranchVersion);
 

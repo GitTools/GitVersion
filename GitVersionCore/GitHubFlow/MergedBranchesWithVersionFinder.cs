@@ -1,24 +1,18 @@
 namespace GitVersion
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 
     public class MergedBranchesWithVersionFinder
     {
-        Lazy<SemanticVersion> lastMergedBranchWithVersion;
+        GitVersionContext context;
 
         public MergedBranchesWithVersionFinder(GitVersionContext context)
         {
-            lastMergedBranchWithVersion = new Lazy<SemanticVersion>(() => GetVersion(context));
+            this.context = context;
         }
 
-        public SemanticVersion GetVersion()
-        {
-            return lastMergedBranchWithVersion.Value;
-        }
-
-        SemanticVersion GetVersion(GitVersionContext context)
+        public bool TryGetVersion(out SemanticVersion semanticVersion)
         {
             var shortVersion = GetAllVersions(context)
                 .OrderBy(x=>x.Major)
@@ -26,14 +20,16 @@ namespace GitVersion
                 .LastOrDefault();
             if (shortVersion == null)
             {
-                return null;
+                semanticVersion = null;
+                return false;
             }
-            return new SemanticVersion
+            semanticVersion =new SemanticVersion
             {
                 Major = shortVersion.Major,
                 Minor = shortVersion.Minor,
                 Patch = shortVersion.Patch
             };
+            return true;
         }
 
         static IEnumerable<ShortVersion> GetAllVersions(GitVersionContext context)

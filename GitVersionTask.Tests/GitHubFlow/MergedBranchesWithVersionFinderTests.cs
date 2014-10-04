@@ -18,7 +18,8 @@ public class MergedBranchesWithVersionFinderTests
         };
         var sut = new MergedBranchesWithVersionFinder(new GitVersionContext(null, currentBranch));
 
-        var version = sut.GetVersion();
+        SemanticVersion version;
+        sut.TryGetVersion(out version);
 
         version.ToString().ShouldBe("2.0.0");
     }

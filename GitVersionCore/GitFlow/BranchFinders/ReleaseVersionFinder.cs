@@ -8,8 +8,6 @@ namespace GitVersion
         public SemanticVersion FindVersion(GitVersionContext context)
         {
             var versionString = GetSuffix(context.CurrentBranch);
-            if (!versionString.Contains("."))
-                return new SemanticVersion();
             var shortVersion = ShortVersionParser.Parse(versionString);
 
             EnsureVersionIsValid(shortVersion, context.CurrentBranch);
