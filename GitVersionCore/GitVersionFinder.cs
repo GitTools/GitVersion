@@ -19,6 +19,13 @@ namespace GitVersion
             return new GitFlowVersionFinder().FindVersion(context);
         }
 
+        public static SemanticVersion GetSemanticVersion(Repository repository)
+        {
+            var versionForRepositoryFinder = new GitVersionFinder();
+            var gitVersionContext = new GitVersionContext(repository);
+            Logger.WriteInfo("Running against branch: " + gitVersionContext.CurrentBranch.Name);
+            return versionForRepositoryFinder.FindVersion(gitVersionContext);
+        }
         public static bool ShouldGitHubFlowVersioningSchemeApply(IRepository repo)
         {
             return repo.FindBranch("develop") == null;

@@ -62,7 +62,7 @@
 
             InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
 
-            SemanticVersion semanticVersion;
+            CachedVersion semanticVersion;
             if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion))
             {
                 return;
@@ -98,12 +98,12 @@
             throw new WarningException(string.Format("Unexpected assembly versioning scheme '{0}'.", AssemblyVersioningScheme));
         }
 
-        void CreateTempAssemblyInfo(SemanticVersion semanticVersion)
+        void CreateTempAssemblyInfo(CachedVersion semanticVersion)
         {
             var versioningScheme = GetAssemblyVersioningScheme();
             var assemblyInfoBuilder = new AssemblyInfoBuilder
                                       {
-                                          SemanticVersion = semanticVersion,
+                                          CachedVersion = semanticVersion,
                                           AssemblyVersioningScheme = versioningScheme,
                                       };
             var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText();

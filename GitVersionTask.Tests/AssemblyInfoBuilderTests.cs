@@ -31,7 +31,10 @@ public class AssemblyInfoBuilderTests
         };
         var assemblyInfoBuilder = new AssemblyInfoBuilder
             {
-                SemanticVersion = semanticVersion
+                CachedVersion = new CachedVersion
+                {
+                    SemanticVersion = semanticVersion
+                }
             };
         var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText();
         Approvals.Verify(assemblyInfoText);
@@ -80,7 +83,10 @@ public class AssemblyInfoBuilderTests
         };
         var assemblyInfoBuilder = new AssemblyInfoBuilder
         {
-            SemanticVersion = semanticVersion,
+            CachedVersion = new CachedVersion
+            {
+                SemanticVersion = semanticVersion
+            },
             AssemblyVersioningScheme = avs,
         };
 

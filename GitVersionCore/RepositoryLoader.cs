@@ -9,7 +9,14 @@
         {
             try
             {
-                return new Repository(gitDirectory);
+                var repository = new Repository(gitDirectory);
+
+                var branch = repository.Head;
+                if (branch.Tip == null)
+                {
+                    throw new WarningException("No Tip found. Has repo been initialized?");
+                }
+                return repository;
             }
             catch (Exception exception)
             {

@@ -4,7 +4,7 @@ using GitVersion;
 public static class VersionAndBranchFinder
 {
     static List<string> processedDirectories = new List<string>(); 
-    public static bool TryGetVersion(string directory, out SemanticVersion versionAndBranch)
+    public static bool TryGetVersion(string directory, out CachedVersion versionAndBranch)
     {
         var gitDirectory = GitDirFinder.TreeWalkForGitDir(directory);
 

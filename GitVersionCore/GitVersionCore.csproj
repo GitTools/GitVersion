@@ -63,8 +63,6 @@
     <Compile Include="BuildServers\GitHelper.cs" />
     <Compile Include="BuildServers\IBuildServer.cs" />
     <Compile Include="BuildServers\TeamCity.cs" />
-    <Compile Include="CachedVersion.cs" />
-    <Compile Include="DirectoryDateFinder.cs" />
     <Compile Include="LastVersionOnMasterFinder.cs" />
     <Compile Include="ShortVersion.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />
@@ -113,7 +111,6 @@
     <Compile Include="SemanticVersionBuildMetaData.cs" />
     <Compile Include="SemanticVersionPreReleaseTag.cs" />
     <Compile Include="ShortVersionParser.cs" />
-    <Compile Include="VersionCache.cs" />
     <Compile Include="GitFlow\BranchFinders\VersionOnMasterFinder.cs" />
     <Compile Include="VersionPoint.cs" />
   </ItemGroup>
