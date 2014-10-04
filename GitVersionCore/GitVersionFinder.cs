@@ -26,7 +26,8 @@ namespace GitVersion
             Logger.WriteInfo("Running against branch: " + gitVersionContext.CurrentBranch.Name);
             return versionForRepositoryFinder.FindVersion(gitVersionContext);
         }
-        public static bool ShouldGitHubFlowVersioningSchemeApply(IRepository repo)
+
+        static bool ShouldGitHubFlowVersioningSchemeApply(IRepository repo)
         {
             return repo.FindBranch("develop") == null;
         }

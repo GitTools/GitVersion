@@ -18,9 +18,7 @@
             }
         }
 
-        protected SemanticVersion FindVersion(
-            GitVersionContext context,
-            string baseBranchName)
+        SemanticVersion FindVersion(GitVersionContext context, string baseBranchName)
         {
             var versionString = GetUnknownBranchSuffix(context.CurrentBranch);
             if (!versionString.Contains("."))

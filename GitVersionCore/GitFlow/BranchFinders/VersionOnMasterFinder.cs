@@ -18,8 +18,6 @@ namespace GitVersion
                         {
                             Major = shortVersion.Major,
                             Minor = shortVersion.Minor,
-                            Timestamp = commit.When(),
-                            CommitSha = commit.Sha,
                         };
                     }
                 }
@@ -31,8 +29,6 @@ namespace GitVersion
                     {
                         Major = shortVersionFromMergeMessage.Major,
                         Minor = shortVersionFromMergeMessage.Minor,
-                        Timestamp = commit.When(),
-                        CommitSha = commit.Sha,
                     };
                 }
             }
@@ -40,8 +36,6 @@ namespace GitVersion
             {
                 Major = 0,
                 Minor = 1,
-                Timestamp = DateTimeOffset.MinValue,
-                CommitSha = null,
             };
         }
 
