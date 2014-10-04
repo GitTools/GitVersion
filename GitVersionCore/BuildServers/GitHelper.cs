@@ -73,17 +73,27 @@ namespace GitVersion
 
         public static string ExtractIssueNumber(string mergeMessage)
         {
+            // Dynamic: refs/heads/pr/5
             // Github Message: refs/heads/pull/5/merge
             // Stash Message:  refs/heads/pull-requests/5/merge
 
-            var regex = new Regex(MergeMessageRegexPattern);
-            var match = regex.Match(mergeMessage);
+            // Note by @GeertvanHorrik: sorry, I suck at regex so did a quick hack, feel free to replace by regex
+            if (mergeMessage.Contains("refs/heads/pr/"))
+            {
+                var issueNumber = mergeMessage.Replace("refs/heads/pr/", string.Empty);
+                return issueNumber;
+            }
+            else
+            {
+                var regex = new Regex(MergeMessageRegexPattern);
+                var match = regex.Match(mergeMessage);
 
-            string issueNumber = null;
+                string issueNumber = null;
 
-            issueNumber = match.Groups["issuenumber"].Value;
+                issueNumber = match.Groups["issuenumber"].Value;
 
-            return issueNumber;
+                return issueNumber;
+            }
         }
 
         static void AddMissingRefSpecs(Repository repo, Remote remote)
