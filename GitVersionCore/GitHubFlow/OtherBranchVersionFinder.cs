@@ -14,7 +14,7 @@
             }
             var shortVersion = ShortVersionParser.Parse(versionString);
 
-            var semanticVersionPreReleaseTag = context.CurrentBranch.Name.Replace("-" + versionString, string.Empty) + ".1";
+            SemanticVersionPreReleaseTag semanticVersionPreReleaseTag = context.CurrentBranch.Name.Replace("-" + versionString, string.Empty) + ".1";
 
             var nbHotfixCommits = BranchCommitDifferenceFinder.NumberOfCommitsInBranchNotKnownFromBaseBranch(context.Repository, context.CurrentBranch, BranchType.Unknown, "master");
 
@@ -22,6 +22,11 @@
             if (tagVersion != null)
             {
                 semanticVersionPreReleaseTag = tagVersion;
+            }
+
+            if (semanticVersionPreReleaseTag.Name == "release")
+            {
+                semanticVersionPreReleaseTag.Name = "beta";
             }
 
             return new SemanticVersion

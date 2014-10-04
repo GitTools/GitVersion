@@ -38,14 +38,8 @@
             {
                 versions.Add(tryGetVersion);
             }
+
             var otherBranchVersion = unknownBranchFinder.FindVersion(context);
-            if (otherBranchVersion != null)
-            {
-                if (otherBranchVersion.PreReleaseTag != null && otherBranchVersion.PreReleaseTag.Name == "release")
-                {
-                    otherBranchVersion.PreReleaseTag.Name = "beta";
-                }
-            }
             versions.Add(otherBranchVersion);
 
             var maxCalculated = versions.Max();
