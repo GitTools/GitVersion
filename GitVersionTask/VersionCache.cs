@@ -24,6 +24,11 @@ public static class VersionCache
             }
             Logger.WriteInfo("Version not in cache. Calculating version.");
 
+            //TODO: cope with githubflow
+            //if (GitVersionFinder.ShouldGitHubFlowVersioningSchemeApply(repo))
+            //{
+            //    return rd;
+            //}
             return versionCacheVersions[key] = new CachedVersion
             {
                 SemanticVersion = GitVersionFinder.GetSemanticVersion(repo),
