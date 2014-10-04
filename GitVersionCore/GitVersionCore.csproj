@@ -64,7 +64,7 @@
     <Compile Include="BuildServers\IBuildServer.cs" />
     <Compile Include="BuildServers\TeamCity.cs" />
     <Compile Include="GitFlow\BranchFinders\BranchCommitDifferenceFinder.cs" />
-    <Compile Include="GitFlow\BranchFinders\OptionallyTaggedBranchVersionFinderBase - Copy.cs" />
+    <Compile Include="GitFlow\BranchFinders\RecentTagVersionExtractor.cs" />
     <Compile Include="LastVersionOnMasterFinder.cs" />
     <Compile Include="ShortVersion.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />
@@ -77,7 +77,6 @@
     <Compile Include="GitFlow\BranchFinders\FeatureVersionFinder.cs" />
     <Compile Include="GitFlow\BranchFinders\HotfixVersionFinder.cs" />
     <Compile Include="GitFlow\BranchFinders\MasterVersionFinder.cs" />
-    <Compile Include="GitFlow\BranchFinders\OptionallyTaggedBranchVersionFinderBase.cs" />
     <Compile Include="GitFlow\BranchFinders\PullVersionFinder.cs" />
     <Compile Include="GitFlow\BranchFinders\ReleaseVersionFinder.cs" />
     <Compile Include="GitFlow\BranchFinders\SupportVersionFinder.cs" />
