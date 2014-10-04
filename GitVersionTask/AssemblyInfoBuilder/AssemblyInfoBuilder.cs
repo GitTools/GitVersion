@@ -41,7 +41,7 @@ static class GitVersionInformation
 
 
 ", semanticVersion.GetAssemblyVersion(AssemblyVersioningScheme), string.Format("{0}.{1}.{2}.0", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch), semanticVersion.ToString("i"),
-            semanticVersion.BuildMetaData.ReleaseDate.OriginalDate.UtcDateTime.ToString("yyyy-MM-dd"),
+            CachedVersion.ReleaseDate.OriginalDate.UtcDateTime.ToString("yyyy-MM-dd"),
             semanticVersion.BuildMetaData.CommitDate.UtcDateTime.ToString("yyyy-MM-dd"),
             GenerateVariableMembers(vars));
 

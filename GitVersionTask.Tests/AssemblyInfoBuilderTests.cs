@@ -33,7 +33,12 @@ public class AssemblyInfoBuilderTests
             {
                 CachedVersion = new CachedVersion
                 {
-                    SemanticVersion = semanticVersion
+                    SemanticVersion = semanticVersion,
+                    ReleaseDate = new ReleaseDate
+                    {
+                        OriginalCommitSha = "originalCommitSha",
+                        OriginalDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z"),
+                    }
                 }
             };
         var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText();
@@ -85,7 +90,12 @@ public class AssemblyInfoBuilderTests
         {
             CachedVersion = new CachedVersion
             {
-                SemanticVersion = semanticVersion
+                SemanticVersion = semanticVersion,
+                ReleaseDate = new ReleaseDate
+                {
+                    OriginalCommitSha = "originalCommitSha",
+                    OriginalDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z"),
+                }
             },
             AssemblyVersioningScheme = avs,
         };

@@ -18,6 +18,7 @@ public static class VersionCache
                 {
                     Logger.WriteInfo("Change detected. flushing cache.");
                     cachedVersion.SemanticVersion = GitVersionFinder.GetSemanticVersion(repo);
+                    cachedVersion.ReleaseDate = LastVersionOnMasterFinder.Execute(repo, repo.Head.Tip);
                 }
                 return cachedVersion;
             }
@@ -26,6 +27,7 @@ public static class VersionCache
             return versionCacheVersions[key] = new CachedVersion
             {
                 SemanticVersion = GitVersionFinder.GetSemanticVersion(repo),
+                ReleaseDate = LastVersionOnMasterFinder.Execute(repo,repo.Head.Tip),
                 Timestamp = ticks
             };
 
