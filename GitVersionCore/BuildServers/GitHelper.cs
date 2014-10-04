@@ -79,11 +79,7 @@ namespace GitVersion
             var regex = new Regex(MergeMessageRegexPattern);
             var match = regex.Match(mergeMessage);
 
-            string issueNumber = null;
-
-            issueNumber = match.Groups["issuenumber"].Value;
-
-            return issueNumber;
+            return match.Groups["issuenumber"].Value;
         }
 
         static void AddMissingRefSpecs(Repository repo, Remote remote)

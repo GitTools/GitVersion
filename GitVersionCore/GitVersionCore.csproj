@@ -113,7 +113,7 @@
     <Compile Include="SemanticVersionPreReleaseTag.cs" />
     <Compile Include="ShortVersionParser.cs" />
     <Compile Include="VersionCache.cs" />
-    <Compile Include="VersionOnMasterFinder.cs" />
+    <Compile Include="GitFlow\BranchFinders\VersionOnMasterFinder.cs" />
     <Compile Include="VersionPoint.cs" />
   </ItemGroup>
   <ItemGroup>
