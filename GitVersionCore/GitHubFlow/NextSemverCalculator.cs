@@ -52,7 +52,7 @@
                 };
             }
 
-            if (string.Equals(context.CurrentCommit.Sha, lastRelease.Commit.Sha))
+            if (context.CurrentCommit.Sha ==  lastRelease.Commit.Sha)
             {
                 return lastRelease.SemVer;
             }
