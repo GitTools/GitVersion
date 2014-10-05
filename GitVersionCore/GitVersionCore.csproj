@@ -78,9 +78,15 @@
     <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\IFileSystem.cs" />
     <Compile Include="LastMinorVersionFinder.cs" />
+    <Compile Include="Extensions\ExtensionMethods.git.cs" />
+    <Compile Include="GitFlow\BranchFinders\BranchCommitDifferenceFinder.cs" />
+    <Compile Include="GitFlow\BranchFinders\RecentTagVersionExtractor.cs" />
+    <Compile Include="GitFlow\BranchFinders\VersionOnMasterFinder.cs" />
+    <Compile Include="LastVersionOnMasterFinder.cs" />
+    <Compile Include="ShortVersion.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />
     <Compile Include="WarningException.cs" />
-    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="Extensions\ExtensionMethods.cs" />
     <Compile Include="GitDirFinder.cs" />
     <Compile Include="GitFlow\BranchClassifier.cs" />
     <Compile Include="GitFlow\BranchFinders\DevelopBasedVersionFinderBase.cs" />
@@ -121,6 +127,7 @@
     <Compile Include="SemanticVersionBuildMetaData.cs" />
     <Compile Include="SemanticVersionPreReleaseTag.cs" />
     <Compile Include="GitFlow\BranchFinders\VersionOnMasterFinder.cs" />
+    <Compile Include="ShortVersionParser.cs" />
     <Compile Include="VersionPoint.cs" />
   </ItemGroup>
   <ItemGroup>
