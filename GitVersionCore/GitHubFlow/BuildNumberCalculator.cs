@@ -19,8 +19,7 @@ namespace GitVersion
 
         public SemanticVersion GetBuildNumber(GitVersionContext context)
         {
-            var commit = lastTaggedReleaseFinder.GetVersion().Commit;
-            var commitsSinceLastRelease = NumberOfCommitsOnBranchSinceCommit(context, commit);
+            var commitsSinceLastRelease = GetCommitsSinceLastRelease(context);
             var semanticVersion = nextSemverCalculator.NextVersion();
 
             // TODO Need a way of setting this in a cross cutting way
@@ -34,6 +33,21 @@ namespace GitVersion
             }
 
             return semanticVersion;
+        }
+
+        int GetCommitsSinceLastRelease(GitVersionContext context)
+        {
+            int commitsSinceLastRelease;
+            VersionTaggedCommit versionTaggedCommit;
+            if (lastTaggedReleaseFinder.GetVersion(out versionTaggedCommit))
+            {
+                commitsSinceLastRelease = NumberOfCommitsOnBranchSinceCommit(context, versionTaggedCommit.Commit);
+            }
+            else
+            {
+                commitsSinceLastRelease = NumberOfCommitsOnBranchSinceCommit(context, context.CurrentBranch.Commits.Last());
+            }
+            return commitsSinceLastRelease;
         }
 
         int NumberOfCommitsOnBranchSinceCommit(GitVersionContext context, Commit commit)

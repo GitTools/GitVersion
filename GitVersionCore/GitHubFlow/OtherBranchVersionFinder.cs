@@ -5,12 +5,13 @@
 
     class OtherBranchVersionFinder 
     {
-        public SemanticVersion FindVersion(GitVersionContext context)
+        public bool FindVersion(GitVersionContext context, out SemanticVersion semanticVersion)
         {
             var versionString = GetUnknownBranchSuffix(context.CurrentBranch);
             if (!versionString.Contains("."))
             {
-                return new SemanticVersion();
+                semanticVersion = null;
+                return false;
             }
             var shortVersion = ShortVersionParser.Parse(versionString);
 
@@ -29,7 +30,7 @@
                 semanticVersionPreReleaseTag.Name = "beta";
             }
 
-            return new SemanticVersion
+            semanticVersion = new SemanticVersion
             {
                 Major = shortVersion.Major,
                 Minor = shortVersion.Minor,
@@ -37,6 +38,7 @@
                 PreReleaseTag = semanticVersionPreReleaseTag,
                 BuildMetaData = new SemanticVersionBuildMetaData(nbHotfixCommits, context.CurrentBranch.Name, context.CurrentCommit.Sha, context.CurrentCommit.When())
             };
+            return true;
         }
 
         static string GetUnknownBranchSuffix(Branch branch)
