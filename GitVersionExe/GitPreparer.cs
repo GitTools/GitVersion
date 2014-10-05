@@ -97,6 +97,8 @@
 
                     if (newHead != null)
                     {
+                        Logger.WriteInfo(string.Format("Switching to branch '{0}'", arguments.TargetBranch));
+
                         repository.Refs.UpdateTarget(repository.Refs.Head, newHead);
                     }
 
