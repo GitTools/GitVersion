@@ -1,6 +1,6 @@
 # v1.3.0
 
-Add config file support to GitVersionTask - [#246](https://github.com/Particular/GitVersion/issues/256)
+Add config file support to GitVersionTask - [#256](https://github.com/Particular/GitVersion/issues/256)
 
 # v1.2.1
 
