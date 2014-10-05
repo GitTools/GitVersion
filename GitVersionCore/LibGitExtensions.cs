@@ -24,20 +24,6 @@ namespace GitVersion
             return repository.Branches.FirstOrDefault(x => x.Name == "origin/" + branchName);
         }
 
-        public static SemanticVersion NewestSemVerTag(this IRepository repository, Commit commit)
-        {
-            foreach (var tag in repository.TagsByDate(commit))
-            {
-                SemanticVersion version;
-                if (SemanticVersion.TryParse(tag.Name, out version))
-                {
-                    return version;
-                }
-            }
-
-            return null;
-        }
-
         public static IEnumerable<Tag> TagsByDate(this IRepository repository, Commit commit)
         {
             return repository.Tags
