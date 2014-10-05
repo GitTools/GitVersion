@@ -59,8 +59,11 @@ namespace GitVersion
                 {
                     buildServer.PerformPreProcessingSteps(gitDirectory);
                 }
-
-                var semanticVersion = VersionCache.GetVersion(gitDirectory);
+                SemanticVersion semanticVersion;
+                using (var repo = RepositoryLoader.GetRepo(gitDirectory))
+                {
+                    semanticVersion = GitVersionFinder.GetSemanticVersion(repo);
+                }
 
                 if (arguments.Output == OutputType.BuildServer)
                 {

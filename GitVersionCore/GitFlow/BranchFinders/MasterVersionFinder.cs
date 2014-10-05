@@ -11,35 +11,26 @@ namespace GitVersion
                 ShortVersion shortVersion;
                 if (ShortVersionParser.TryParse(tag.Name, out shortVersion))
                 {
-                    return BuildVersion(repository, tip, shortVersion);
+                    return BuildVersion(tip, shortVersion);
                 }
             }
-
-            var semanticVersion = new SemanticVersion();
 
             ShortVersion versionFromTip;
             if (MergeMessageParser.TryParse(tip, out versionFromTip))
             {
-                semanticVersion = BuildVersion(repository, tip, versionFromTip);
+                return BuildVersion(tip, versionFromTip);
             }
-
-            if (semanticVersion == null || semanticVersion.IsEmpty())
-            {
-                throw new WarningException("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
-            }
-
-            return semanticVersion;
+            throw new WarningException("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
         }
 
-        SemanticVersion BuildVersion(IRepository repository, Commit tip, ShortVersion shortVersion)
+        SemanticVersion BuildVersion(Commit tip, ShortVersion shortVersion)
         {
-            var releaseDate = ReleaseDateFinder.Execute(repository, tip.Sha, shortVersion.Patch);
             return new SemanticVersion
             {
                 Major = shortVersion.Major,
                 Minor = shortVersion.Minor,
                 Patch = shortVersion.Patch,
-                BuildMetaData = new SemanticVersionBuildMetaData(null, "master", releaseDate)
+                BuildMetaData = new SemanticVersionBuildMetaData(null, "master",tip.Sha,tip.When())
             };
         }
     }

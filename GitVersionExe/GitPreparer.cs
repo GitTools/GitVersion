@@ -1,7 +1,6 @@
 ﻿namespace GitVersion
 {
     using System.IO;
-    using System.Linq;
     using LibGit2Sharp;
 
     public class GitPreparer
@@ -34,13 +33,12 @@
 
         string GetGitInfoFromUrl()
         {
-            var gitRootDirectory = Path.Combine(arguments.TargetPath, "_dynamicrepository");
-            var gitDirectory =  Path.Combine(gitRootDirectory, ".git");
-            if (Directory.Exists(gitRootDirectory))
+            var gitDirectory = Path.Combine(arguments.TargetPath, "_dynamicrepository", ".git");
+            if (Directory.Exists(gitDirectory))
             {
-                Logger.WriteInfo(string.Format("Deleting existing .git folder from '{0}' to force new checkout from url", gitRootDirectory));
+                Logger.WriteInfo(string.Format("Deleting existing .git folder from '{0}' to force new checkout from url", gitDirectory));
 
-                DeleteHelper.DeleteGitRepository(gitRootDirectory);
+                DeleteHelper.DeleteGitRepository(gitDirectory);
             }
 
             Credentials credentials = null;
@@ -53,19 +51,13 @@
                     {
                         Username = authentication.Username,
                         Password = authentication.Password
-                    };
+                };
             }
 
             Logger.WriteInfo(string.Format("Retrieving git info from url '{0}'", arguments.TargetUrl));
 
-            var cloneOptions = new CloneOptions
-            {
-                IsBare = true,
-                Checkout = false,
-                CredentialsProvider = (url, fromUrl, types) => credentials
-            };
-
-            Repository.Clone(arguments.TargetUrl, gitDirectory, cloneOptions);
+            Repository.Clone(arguments.TargetUrl, gitDirectory, 
+                new CloneOptions { IsBare = true, Checkout = false, Credentials = credentials});
 
             if (!string.IsNullOrWhiteSpace(arguments.TargetBranch))
             {
@@ -74,31 +66,12 @@
 
                 using (var repository = new Repository(gitDirectory))
                 {
-                    Reference newHead = null;
-
-                    var localReference = GetLocalReference(repository, arguments.TargetBranch);
-                    if (localReference != null)
+                    var targetBranchName = string.Format("refs/heads/{0}", arguments.TargetBranch);
+                    if (!string.Equals(repository.Head.CanonicalName, targetBranchName))
                     {
-                        newHead = localReference;
-                    }
+                        Logger.WriteInfo(string.Format("Switching to branch '{0}'", arguments.TargetBranch));
 
-                    if (newHead == null)
-                    {
-                        var remoteReference = GetRemoteReference(repository, arguments.TargetBranch, arguments.TargetUrl);
-                        if (remoteReference != null)
-                        {
-                            repository.Network.Fetch(arguments.TargetUrl, new[]
-                            {
-                                string.Format("{0}:{1}", remoteReference.CanonicalName, arguments.TargetBranch)
-                            });
-
-                            newHead = repository.Refs[string.Format("refs/heads/{0}", arguments.TargetBranch)];
-                        }
-                    }
-
-                    if (newHead != null)
-                    {
-                        repository.Refs.UpdateTarget(repository.Refs.Head, newHead);
+                        repository.Refs.UpdateTarget("HEAD", targetBranchName);
                     }
 
                     repository.CheckoutFilesIfExist("NextVersion.txt");
@@ -108,21 +81,6 @@
             DynamicGitRepositoryPath = gitDirectory;
 
             return gitDirectory;
-        }
-
-        private static Reference GetLocalReference(Repository repository, string branchName)
-        {
-            var targetBranchName = branchName.GetCanonicalBranchName();
-
-            return repository.Refs.FirstOrDefault(localRef => string.Equals(localRef.CanonicalName, targetBranchName));
-        }
-
-        private static DirectReference GetRemoteReference(Repository repository, string branchName, string repositoryUrl)
-        {
-            var targetBranchName = branchName.GetCanonicalBranchName();
-            var remoteReferences = repository.Network.ListReferences(repositoryUrl);
-
-            return remoteReferences.FirstOrDefault(remoteRef => string.Equals(remoteRef.CanonicalName, targetBranchName));
         }
     }
 }

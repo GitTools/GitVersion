@@ -21,14 +21,13 @@ namespace GitVersion
             var c = context.Repository.Commits.QueryBy(f);
             var numberOfCommitsSinceRelease = c.Count();
 
-            var releaseDate = ReleaseDateFinder.Execute(context.Repository, tip.Sha, 0);
             var semanticVersion = new SemanticVersion
             {
                 Major = versionFromMaster.Major,
                 Minor = versionFromMaster.Minor + 1,
                 Patch = 0,
                 PreReleaseTag = "unstable" + numberOfCommitsSinceRelease,
-                BuildMetaData = new SemanticVersionBuildMetaData(numberOfCommitsSinceRelease, context.CurrentBranch.Name, releaseDate),
+                BuildMetaData = new SemanticVersionBuildMetaData(numberOfCommitsSinceRelease, context.CurrentBranch.Name,tip.Sha,tip.When()),
             };
 
             semanticVersion.OverrideVersionManuallyIfNeeded(context.Repository);

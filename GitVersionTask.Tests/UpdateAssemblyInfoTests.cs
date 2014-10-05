@@ -124,7 +124,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     }
 
     [TearDown]
-    public void TearDown()
+    public new void TearDown()
     {
         BuildServerList.ResetSelector();
     }

@@ -41,7 +41,6 @@ public class BranchClassifierTests
     public void IsPullRequest()
     {
         Assert.IsTrue(new MockBranch("fix for issue xxx","/pull/4").IsPullRequest());
-        Assert.IsTrue(new MockBranch("fix for issue xxx", "/pr/4").IsPullRequest());
         Assert.IsFalse(new MockBranch("hotfix1","").IsPullRequest());
     }
 }

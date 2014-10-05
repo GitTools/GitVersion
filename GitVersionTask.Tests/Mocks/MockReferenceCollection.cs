@@ -15,7 +15,7 @@ public class MockReferenceCollection : ReferenceCollection, ICollection<Commit>
 
     public List<Commit> Commits = new List<Commit>();
 
-    public IEnumerator<Commit> GetEnumerator()
+    public new IEnumerator<Commit> GetEnumerator()
     {
         return Commits.GetEnumerator();
     }

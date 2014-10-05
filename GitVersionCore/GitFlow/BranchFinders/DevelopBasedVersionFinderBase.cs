@@ -18,11 +18,9 @@ namespace GitVersion
             }
 
             var versionOnMasterFinder = new VersionOnMasterFinder();
-            var versionFromMaster = versionOnMasterFinder.Execute(context, context.CurrentCommit.Committer.When);
+            var versionFromMaster = versionOnMasterFinder.Execute(context, context.CurrentCommit.When());
 
             var numberOfCommitsOnBranchSinceCommit = NumberOfCommitsOnBranchSinceCommit(context, ancestor);
-            var sha = context.CurrentCommit.Sha;
-            var releaseDate = ReleaseDateFinder.Execute(context.Repository, sha, 0);
             var preReleaseTag = context.CurrentBranch.Name
                 .TrimStart(branchType.ToString() + '-')
                 .TrimStart(branchType.ToString() + '/');
@@ -34,7 +32,7 @@ namespace GitVersion
                 PreReleaseTag = preReleaseTag,
                 BuildMetaData = new SemanticVersionBuildMetaData(
                     numberOfCommitsOnBranchSinceCommit,
-                    context.CurrentBranch.Name, releaseDate)
+                    context.CurrentBranch.Name, context.CurrentCommit.Sha, context.CurrentCommit.When())
             };
 
             semanticVersion.OverrideVersionManuallyIfNeeded(context.Repository);

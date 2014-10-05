@@ -66,9 +66,6 @@
         public string Sha { get; set; }
 
         [Output]
-        public string OriginalRelease { get; set; }
-
-        [Output]
         public string NuGetVersionV2 { get; set; }
 
         [Output]
@@ -87,11 +84,11 @@
         {
             try
             {
-                SemanticVersion versionAndBranch;
+                CachedVersion versionAndBranch;
                 if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch))
                 {
                     var thisType = typeof(GetVersion);
-                    var variables = VariableProvider.GetVariablesFor(versionAndBranch);
+                    var variables = VariableProvider.GetVariablesFor(versionAndBranch.SemanticVersion);
                     foreach (var variable in variables)
                     {
                         thisType.GetProperty(variable.Key).SetValue(this, variable.Value, null);

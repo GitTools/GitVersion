@@ -1,5 +1,6 @@
 ﻿namespace GitVersion
 {
+    using System.Collections.Generic;
     using System.Linq;
 
     public class NextSemverCalculator
@@ -24,40 +25,55 @@
 
         public SemanticVersion NextVersion()
         {
-            var versionZero = new SemanticVersion();
-            var lastRelease = lastTaggedReleaseFinder.GetVersion();
-            var fileVersion = nextVersionTxtFileFinder.GetNextVersion();
-            var mergedBranchVersion = mergedBranchesWithVersionFinder.GetVersion();
-            var otherBranchVersion = unknownBranchFinder.FindVersion(context);
-            if (otherBranchVersion != null && otherBranchVersion.PreReleaseTag != null && otherBranchVersion.PreReleaseTag.Name == "release")
-                otherBranchVersion.PreReleaseTag.Name = "beta";
+            var versions = GetPossibleVersions().ToList();
 
-            var maxCalculated = new[] { fileVersion, otherBranchVersion, mergedBranchVersion }.Max();
-
-            if (lastRelease.SemVer == versionZero && maxCalculated == versionZero)
+            if (versions.Any())
             {
-                return new SemanticVersion
+                return versions.Max();
+            }
+            return new SemanticVersion
+            {
+                Minor = 1
+            };
+        }
+
+        public IEnumerable<SemanticVersion> GetPossibleVersions()
+        {
+
+            VersionTaggedCommit lastTaggedRelease;
+            if (lastTaggedReleaseFinder.GetVersion(out lastTaggedRelease))
+            {
+                //If the exact commit is tagged then just return that commit
+                if (context.CurrentCommit.Sha == lastTaggedRelease.Commit.Sha)
                 {
-                    Minor = 1
-                };
+                    yield return lastTaggedRelease.SemVer;
+                    yield break;
+                }
+                yield return new SemanticVersion
+                    {
+                        Major = lastTaggedRelease.SemVer.Major,
+                        Minor = lastTaggedRelease.SemVer.Minor,
+                        Patch = lastTaggedRelease.SemVer.Patch + 1
+                    };
             }
 
-            if (string.Equals(context.CurrentCommit.Sha, lastRelease.Commit.Sha))
+            SemanticVersion fileVersion;
+            if (nextVersionTxtFileFinder.TryGetNextVersion(out fileVersion))
             {
-                return lastRelease.SemVer;
+                yield return fileVersion;
             }
-
-            if (maxCalculated <= lastRelease.SemVer)
+            SemanticVersion tryGetVersion;
+            if (mergedBranchesWithVersionFinder.TryGetVersion(out tryGetVersion))
             {
-                return new SemanticVersion
-                {
-                    Major = lastRelease.SemVer.Major,
-                    Minor = lastRelease.SemVer.Minor,
-                    Patch = lastRelease.SemVer.Patch + 1
-                };
+                yield return tryGetVersion;
             }
 
-            return maxCalculated;
+            SemanticVersion otherBranchVersion;
+            if (unknownBranchFinder.FindVersion(context, out otherBranchVersion))
+            {
+                yield return otherBranchVersion;
+            }
+
         }
     }
 }

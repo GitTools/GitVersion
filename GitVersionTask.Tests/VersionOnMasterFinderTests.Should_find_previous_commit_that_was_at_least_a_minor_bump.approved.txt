@@ -1,6 +1,4 @@
 ﻿{
     "Major": 0,
-    "Minor": 3,
-    "Timestamp": "2000-10-09T23:59:58Z",
-    "CommitSha": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
+    "Minor": 3
 }

@@ -4,12 +4,13 @@ using GitVersion;
 
 public class AssemblyInfoBuilder
 {
-    public SemanticVersion SemanticVersion;
+    public CachedVersion CachedVersion;
     public AssemblyVersioningScheme AssemblyVersioningScheme;
 
     public string GetAssemblyInfoText()
     {
-        var vars = VariableProvider.GetVariablesFor(SemanticVersion);
+        var semanticVersion = CachedVersion.SemanticVersion;
+        var vars = VariableProvider.GetVariablesFor(semanticVersion);
         var assemblyInfo = string.Format(@"
 using System;
 using System.Reflection;
@@ -39,9 +40,9 @@ static class GitVersionInformation
 }}
 
 
-", SemanticVersion.GetAssemblyVersion(AssemblyVersioningScheme), string.Format("{0}.{1}.{2}.0", SemanticVersion.Major, SemanticVersion.Minor, SemanticVersion.Patch), SemanticVersion.ToString("i"),
-            SemanticVersion.BuildMetaData.ReleaseDate.OriginalDate.UtcDateTime.ToString("yyyy-MM-dd"),
-            SemanticVersion.BuildMetaData.ReleaseDate.Date.UtcDateTime.ToString("yyyy-MM-dd"),
+", semanticVersion.GetAssemblyVersion(AssemblyVersioningScheme), string.Format("{0}.{1}.{2}.0", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch), semanticVersion.ToString("i"),
+            CachedVersion.MasterReleaseDate.UtcDateTime.ToString("yyyy-MM-dd"),
+            semanticVersion.BuildMetaData.CommitDate.UtcDateTime.ToString("yyyy-MM-dd"),
             GenerateVariableMembers(vars));
 
         return assemblyInfo;

@@ -24,20 +24,6 @@ namespace GitVersion
             return repository.Branches.FirstOrDefault(x => x.Name == "origin/" + branchName);
         }
 
-        public static SemanticVersion NewestSemVerTag(this IRepository repository, Commit commit)
-        {
-            foreach (var tag in repository.TagsByDate(commit))
-            {
-                SemanticVersion version;
-                if (SemanticVersion.TryParse(tag.Name, out version))
-                {
-                    return version;
-                }
-            }
-
-            return null;
-        }
-
         public static IEnumerable<Tag> TagsByDate(this IRepository repository, Commit commit)
         {
             return repository.Tags
@@ -75,16 +61,11 @@ namespace GitVersion
             return branch.CanonicalName.Equals("(no branch)", StringComparison.OrdinalIgnoreCase);
         }
 
-        public static string GetRepositoryDirectory(this IRepository repository)
+        public static string GetRepositoryDirectory(this IRepository repository, bool omitGitPostFix = true)
         {
-            var gitDirectory = repository.Info.Path;
+            var gitDirectory = omitGitPostFix ? repository.Info.WorkingDirectory : repository.Info.Path;
 
             gitDirectory = gitDirectory.TrimEnd('\\');
-
-            if (gitDirectory.EndsWith(".git"))
-            {
-                gitDirectory = gitDirectory.Substring(0, gitDirectory.Length - ".git".Length);
-            }
 
             return gitDirectory;
         }

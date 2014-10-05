@@ -22,23 +22,20 @@ public class AssemblyInfoBuilderTests
             Patch = 3,
             PreReleaseTag = "unstable4",
             BuildMetaData = new SemanticVersionBuildMetaData(5,
-                "feature1",
-                new ReleaseDate
-                {
-                    OriginalCommitSha = "originalCommitSha",
-                    OriginalDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z"),
-                    CommitSha = "commitSha",
-                    Date = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
-                })
+                "feature1", "commitSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
         };
         var assemblyInfoBuilder = new AssemblyInfoBuilder
+        {
+            CachedVersion = new CachedVersion
             {
-                SemanticVersion = semanticVersion
-            };
+                SemanticVersion = semanticVersion,
+                MasterReleaseDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z"),
+            }
+        };
         var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText();
         Approvals.Verify(assemblyInfoText);
         var syntaxTree = SyntaxTree.ParseText(assemblyInfoText);
-        var references = new[] {new MetadataFileReference(typeof(object).Assembly.Location), };
+        var references = new[] { new MetadataFileReference(typeof(object).Assembly.Location) };
         var compilation = Compilation.Create("Greeter.dll", new CompilationOptions(OutputKind.NetModule), new[] { syntaxTree }, references);
         var emitResult = compilation.Emit(new MemoryStream());
         Assert.IsTrue(emitResult.Success, string.Join(Environment.NewLine, emitResult.Diagnostics.Select(x => x.Info)));
@@ -73,25 +70,22 @@ public class AssemblyInfoBuilderTests
             Minor = 3,
             Patch = 4,
             BuildMetaData = new SemanticVersionBuildMetaData(5,
-                "master",
-                new ReleaseDate
-                {
-                    OriginalCommitSha = "originalCommitSha",
-                    OriginalDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z"),
-                    CommitSha = "commitSha",
-                    Date = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
-                }),
+                "master", "commitSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z")),
         };
         var assemblyInfoBuilder = new AssemblyInfoBuilder
         {
-            SemanticVersion = semanticVersion,
+            CachedVersion = new CachedVersion
+            {
+                SemanticVersion = semanticVersion,
+                MasterReleaseDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z")
+            },
             AssemblyVersioningScheme = avs,
         };
 
         var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText();
         Approvals.Verify(assemblyInfoText);
         var syntaxTree = SyntaxTree.ParseText(assemblyInfoText);
-        var references = new[] { new MetadataFileReference(typeof(object).Assembly.Location), };
+        var references = new[] { new MetadataFileReference(typeof(object).Assembly.Location) };
         var compilation = Compilation.Create("Greeter.dll", new CompilationOptions(OutputKind.NetModule), new[] { syntaxTree }, references);
         var emitResult = compilation.Emit(new MemoryStream());
         Assert.IsTrue(emitResult.Success, string.Join(Environment.NewLine, emitResult.Diagnostics.Select(x => x.Info)));

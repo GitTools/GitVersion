@@ -41,7 +41,6 @@ static class GitVersionInformation
     public static string ClassicVersionWithTag = "1.2.3.5-unstable.4";
     public static string BranchName = "feature1";
     public static string Sha = "commitSha";
-    public static string OriginalRelease = "originalCommitSha.2014-03-01 00:00:01Z";
     public static string NuGetVersionV2 = "1.2.3-unstable0004";
     public static string NuGetVersion = "1.2.3-unstable0004";
 

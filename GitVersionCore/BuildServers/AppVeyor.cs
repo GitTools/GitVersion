@@ -65,7 +65,7 @@
 
             return new[]
             {
-                string.Format("Adding Environment Variable. name='GitVersion.{0}' value='{1}']", name, value),
+                string.Format("Adding Environment Variable. name='GitVersion.{0}' value='{1}']", name, value)
             };
         }
     }

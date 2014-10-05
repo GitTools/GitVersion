@@ -1,24 +1,18 @@
 namespace GitVersion
 {
-    using System;
     using System.Linq;
     using LibGit2Sharp;
 
     public class LastTaggedReleaseFinder
     {
-        Lazy<VersionTaggedCommit> lastTaggedRelease;
+        GitVersionContext context;
 
         public LastTaggedReleaseFinder(GitVersionContext context)
         {
-            lastTaggedRelease = new Lazy<VersionTaggedCommit>(() => GetVersion(context));
+            this.context = context;
         }
 
-        public VersionTaggedCommit GetVersion()
-        {
-            return lastTaggedRelease.Value;
-        }
-
-        VersionTaggedCommit GetVersion(GitVersionContext context)
+        public bool GetVersion(out VersionTaggedCommit versionTaggedCommit)
         {
             var tags = context.Repository.Tags.Select(t =>
             {
@@ -31,15 +25,18 @@ namespace GitVersion
             })
                 .Where(a => a != null)
                 .ToArray();
-            var olderThan = context.CurrentCommit.Committer.When;
+            var olderThan = context.CurrentCommit.When();
             var lastTaggedCommit =
-                context.CurrentBranch.Commits.FirstOrDefault(c => c.Committer.When <= olderThan && tags.Any(a => a.Commit == c));
+                context.CurrentBranch.Commits.FirstOrDefault(c => c.When() <= olderThan && tags.Any(a => a.Commit == c));
 
             if (lastTaggedCommit != null)
-                return tags.Last(a => a.Commit.Sha == lastTaggedCommit.Sha);
+            {
+                versionTaggedCommit = tags.Last(a => a.Commit.Sha == lastTaggedCommit.Sha);
+                return true;
+            }
 
-            var commit = context.CurrentBranch.Commits.Last();
-            return new VersionTaggedCommit(commit, new SemanticVersion());
+            versionTaggedCommit = null;
+            return false;
         }
     }
 }
