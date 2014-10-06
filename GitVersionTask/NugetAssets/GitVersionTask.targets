@@ -57,7 +57,6 @@
       <Output TaskParameter="PreReleaseTag" PropertyName="GfvPreReleaseTag" />
       <Output TaskParameter="PreReleaseTagWithDash" PropertyName="GfvPreReleaseTagWithDash" />
       <Output TaskParameter="InformationalVersion" PropertyName="GfvInformationalVersion" />
-      <Output TaskParameter="OriginalRelease" PropertyName="GfvOriginalRelease" />
     </GetVersion>
 
   </Target>
