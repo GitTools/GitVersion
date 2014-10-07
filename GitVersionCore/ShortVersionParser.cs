@@ -27,6 +27,7 @@ namespace GitVersion
 
         public static bool TryParse(string versionString, out ShortVersion shortVersion)
         {
+            versionString = versionString.TrimStart('v', 'V');
             int major;
             int minor;
             var patch = 0;

@@ -13,6 +13,22 @@ public class ShortVersionParserTests
         Assert.AreEqual(2, shortVersion.Minor);
         Assert.AreEqual(3, shortVersion.Patch);
     }
+    [Test]
+    public void With_V()
+    {
+        var shortVersion = ShortVersionParser.Parse("V1.2.3");
+        Assert.AreEqual(1, shortVersion.Major);
+        Assert.AreEqual(2, shortVersion.Minor);
+        Assert.AreEqual(3, shortVersion.Patch);
+    }
+    [Test]
+    public void With_v()
+    {
+        var shortVersion = ShortVersionParser.Parse("v1.2.3");
+        Assert.AreEqual(1, shortVersion.Major);
+        Assert.AreEqual(2, shortVersion.Minor);
+        Assert.AreEqual(3, shortVersion.Patch);
+    }
 
     [Test]
     public void Major_minor_patchTry()

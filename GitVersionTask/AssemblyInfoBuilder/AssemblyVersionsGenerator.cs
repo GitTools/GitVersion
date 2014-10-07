@@ -1,6 +1,5 @@
-﻿
-    using System;
-    using GitVersion;
+﻿using System;
+using GitVersion;
 
 public static class AssemblyVersionsGenerator
 {
