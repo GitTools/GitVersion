@@ -61,11 +61,19 @@
 
         public override string[] GenerateSetParameterMessage(string name, string value)
         {
-            Environment.SetEnvironmentVariable("GitVersion." + name, value);
+            using (var wc = new WebClient())
+            {
+                wc.BaseAddress = Environment.GetEnvironmentVariable("APPVEYOR_API_URL");
+                wc.Headers["Accept"] = "application/json";
+                wc.Headers["Content-type"] = "application/json";
+
+                var body = string.Format("{{ \"name\": \"GitVersion_{0}\", \"value\": \"{1}\" }}", name, value);
+                wc.UploadData("api/build/variables", "POST", Encoding.UTF8.GetBytes(body));
+            }
 
             return new[]
             {
-                string.Format("Adding Environment Variable. name='GitVersion.{0}' value='{1}']", name, value)
+                string.Format("Adding Environment Variable. name='GitVersion_{0}' value='{1}']", name, value)
             };
         }
     }
