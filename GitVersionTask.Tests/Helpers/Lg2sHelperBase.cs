@@ -1,10 +1,10 @@
 ﻿// From https://github.com/libgit2/libgit2sharp/blob/f43d558/LibGit2Sharp.Tests/TestHelpers/BaseFixture.cs
 
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using LibGit2Sharp;
-    using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using LibGit2Sharp;
+using NUnit.Framework;
 
 public abstract class Lg2sHelperBase : IPostTestDirectoryRemover
 {

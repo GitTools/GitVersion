@@ -1,6 +1,6 @@
-﻿    using System.IO;
-    using NUnit.Framework;
-    using Shouldly;
+﻿using System.IO;
+using NUnit.Framework;
+using Shouldly;
 
 [TestFixture]
 public class ExecCmdLineArgumentTest

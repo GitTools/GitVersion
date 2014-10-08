@@ -1,6 +1,6 @@
-﻿    using System;
-    using System.IO;
-    using LibGit2Sharp;
+﻿using System;
+using System.IO;
+using LibGit2Sharp;
 
 public class CommitCountingRepoFixture : RepositoryFixtureBase
 {

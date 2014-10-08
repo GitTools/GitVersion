@@ -1,9 +1,8 @@
-﻿    using System;
-    using System.Diagnostics;
-    using GitVersion;
-    using LibGit2Sharp;
-    using NUnit.Framework;
-    using Shouldly;
+﻿using System;
+using GitVersion;
+using LibGit2Sharp;
+using NUnit.Framework;
+using Shouldly;
 
 [TestFixture]
 public class LastVersionOnMasterFinderTests

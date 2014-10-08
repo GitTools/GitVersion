@@ -1,9 +1,9 @@
-﻿    using System;
-    using System.Linq;
-    using GitVersion;
-    using GitVersionTask;
-    using Microsoft.Build.Framework;
-    using NUnit.Framework;
+﻿using System;
+using System.Linq;
+using GitVersion;
+using GitVersionTask;
+using Microsoft.Build.Framework;
+using NUnit.Framework;
 
 [TestFixture]
 public class GetVersionTaskTests

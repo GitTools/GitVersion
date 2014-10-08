@@ -1,5 +1,5 @@
-﻿    using System;
-    using LibGit2Sharp;
+﻿using System;
+using LibGit2Sharp;
 
 public class EmptyRepositoryFixture : RepositoryFixtureBase
 {
