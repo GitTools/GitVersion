@@ -4,35 +4,54 @@ namespace GitVersion
 
     static class BranchClassifier
     {
-
         public static bool IsHotfix(this Branch branch)
         {
-            return branch.Name.StartsWith("hotfix-") || branch.Name.StartsWith("hotfix/");
+            return branch.Name.IsHotfix();
+        }
+
+        public static string GetHotfixSuffix(this Branch branch)
+        {
+            return branch.Name.GetHotfixSuffix();
         }
 
         public static bool IsRelease(this Branch branch)
         {
-            return branch.Name.StartsWith("release-") || branch.Name.StartsWith("release/");
+            return branch.Name.IsRelease();
+        }
+
+        public static string GetReleaseSuffix(this Branch branch)
+        {
+            return branch.Name.GetReleaseSuffix();
+        }
+
+        public static string GetUnknownBranchSuffix(this Branch branch)
+        {
+            return branch.Name.GetUnknownBranchSuffix();
+        }
+
+        public static string GetSuffix(this Branch branch, BranchType branchType)
+        {
+            return branch.CanonicalName.GetSuffix(branchType);
         }
 
         public static bool IsDevelop(this Branch branch)
         {
-            return branch.Name == "develop";
+            return branch.Name.IsDevelop();
         }
 
         public static bool IsMaster(this Branch branch)
         {
-            return branch.Name == "master";
+            return branch.Name.IsMaster();
         }
 
         public static bool IsPullRequest(this Branch branch)
         {
-            return branch.CanonicalName.Contains("/pull/") || branch.CanonicalName.Contains("/pull-requests/");
+            return branch.CanonicalName.IsPullRequest();
         }
 
         public static bool IsSupport(this Branch branch)
         {
-            return branch.Name.ToLower().StartsWith("support-");
+            return branch.Name.IsSupport();
         }
     }
 }
