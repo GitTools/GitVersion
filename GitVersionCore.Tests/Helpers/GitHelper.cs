@@ -8,10 +8,15 @@ public static class GitHelper
 {
     public static Commit MakeACommit(this IRepository repository)
     {
+        return MakeACommit(repository, DateTimeOffset.Now);
+    }
+
+    public static Commit MakeACommit(this IRepository repository, DateTimeOffset dateTimeOffset)
+    {
         var randomFile = Path.Combine(repository.Info.WorkingDirectory, Guid.NewGuid().ToString());
         File.WriteAllText(randomFile, string.Empty);
         repository.Index.Stage(randomFile);
-        return repository.Commit("Test Commit", Constants.SignatureNow());
+        return repository.Commit("Test Commit", Constants.Signature(dateTimeOffset), Constants.Signature(dateTimeOffset));
     }
 
     public static void MergeNoFF(this IRepository repository, string branch, Signature sig)

@@ -25,6 +25,12 @@ namespace GitVersion
             return shortVersion.Patch == 0;
         }
 
+        public static bool IsMajorMinor(string versionString)
+        {
+            ShortVersion shortVersion;
+            return TryParseMajorMinor(versionString, out shortVersion);
+        }
+
         public static bool TryParse(string versionString, out ShortVersion shortVersion)
         {
             versionString = versionString.TrimStart('v', 'V');

@@ -1,4 +1,5 @@
 ﻿    using System;
+    using System.Diagnostics;
     using GitVersion;
     using LibGit2Sharp;
     using NUnit.Framework;
@@ -7,6 +8,67 @@
 [TestFixture]
 public class LastVersionOnMasterFinderTests
 {
+    
+    [Test]
+    public void WhenMasterHasPatchTagEnsureLastMinorTagIsUsed()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            var stamp = new DateTimeOffset(2000, 1, 1, 1, 1, 1, TimeSpan.Zero);
+            fixture.Repository.MakeACommit(stamp);
+            fixture.Repository.ApplyTag("1.2.0");
+            fixture.Repository.MakeACommit(stamp); 
+            fixture.Repository.ApplyTag("1.2.1");
+            fixture.Repository.MakeACommit();
+
+            var dateTimeOffset = LastMinorVersionFinder.Execute(fixture.Repository, fixture.Repository.Head.Tip);
+            Assert.AreEqual(stamp,dateTimeOffset);
+        }
+    }
+    [Test]
+    public void WhenSupportIsBranchedFromMasterEnsureLastMinorTagIsUsed()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            var stamp = new DateTimeOffset(2000, 1, 1, 1, 1, 1, TimeSpan.Zero);
+            fixture.Repository.MakeACommit(stamp);
+            fixture.Repository.ApplyTag("1.2.0");
+            fixture.Repository.CreateBranch("Support-1.2.0");
+            fixture.Repository.Checkout("Support-1.2.0");
+            fixture.Repository.MakeACommit();
+            
+            var dateTimeOffset = LastMinorVersionFinder.Execute(fixture.Repository, fixture.Repository.Head.Tip);
+            Assert.AreEqual(stamp,dateTimeOffset);
+        }
+    }
+
+    [Test]
+    public void WhenSupportIsBranchedAndTaggedFromAnotherSupportEnsureNewMinorIsUsed()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeACommit();
+            fixture.Repository.CreateBranch("Support-1.2.0");
+            fixture.Repository.Checkout("Support-1.2.0");
+            fixture.Repository.MakeACommit();
+            fixture.Repository.ApplyTag("1.2.0");
+
+            fixture.Repository.CreateBranch("Support-1.3.0");
+            fixture.Repository.Checkout("Support-1.3.0");
+            var stamp = new DateTimeOffset(2000, 1, 1, 1, 1, 1, TimeSpan.Zero);
+            var commit = fixture.Repository.MakeACommit(stamp);
+            fixture.Repository.ApplyTag("1.3.0", commit.Sha);
+
+            //Move On
+            fixture.Repository.MakeACommit();
+            fixture.Repository.MakeACommit();
+
+            
+            var dateTimeOffset = LastMinorVersionFinder.Execute(fixture.Repository, fixture.Repository.Head.Tip);
+            Assert.AreEqual(stamp,dateTimeOffset);
+        }
+    }
+    
     /*
          *  hotfix-1.2.1       -----------C--      
          *                    /              \     
@@ -39,13 +101,13 @@ public class LastVersionOnMasterFinderTests
             EnsureMetaDataMatch(f, "develop");
 
             ResetToN(f.Repository);
-            EnsureMetaDataMatch(f, "master", r => (Commit) r.Tags["1.3.0"].Target);
+            EnsureMetaDataMatch(f, "master", r => (Commit)r.Tags["1.3.0"].Target);
 
             ResetToM(f.Repository);
             EnsureMetaDataMatch(f, "develop");
 
             ResetToL(f.Repository);
-            EnsureMetaDataMatch(f, "hotfix-1.3.1", r => (Commit) r.Tags["1.3.0"].Target);
+            EnsureMetaDataMatch(f, "hotfix-1.3.1", r => (Commit)r.Tags["1.3.0"].Target);
 
             ResetToK(f.Repository);
             EnsureMetaDataMatch(f, "feature");
@@ -57,13 +119,13 @@ public class LastVersionOnMasterFinderTests
             EnsureMetaDataMatch(f, "develop");
 
             ResetToH(f.Repository);
-            EnsureMetaDataMatch(f, "master", r => (Commit) r.Tags["1.3.0"].Target);
+            EnsureMetaDataMatch(f, "master", r => (Commit)r.Tags["1.3.0"].Target);
 
             ResetToG(f.Repository);
             EnsureMetaDataMatch(f, "release-1.3.0");
 
             ResetToF(f.Repository);
-            EnsureMetaDataMatch(f, "master", r => (Commit) r.Tags["1.2.0"].Target);
+            EnsureMetaDataMatch(f, "master", r => (Commit)r.Tags["1.2.0"].Target);
 
             ResetToE(f.Repository);
             EnsureMetaDataMatch(f, "develop");
@@ -72,7 +134,7 @@ public class LastVersionOnMasterFinderTests
             EnsureMetaDataMatch(f, "release-1.3.0");
 
             ResetToC(f.Repository);
-            EnsureMetaDataMatch(f, "hotfix-1.2.1", r => (Commit) r.Tags["1.2.0"].Target);
+            EnsureMetaDataMatch(f, "hotfix-1.2.1", r => (Commit)r.Tags["1.2.0"].Target);
 
             ResetToB(f.Repository);
             EnsureMetaDataMatch(f, "develop");
@@ -84,7 +146,7 @@ public class LastVersionOnMasterFinderTests
         var referenceCommitFinder = commitFinder ?? (r => r.FindBranch(branchName).Tip);
 
         var commit = referenceCommitFinder(fixture.Repository);
-        var releaseDate = LastVersionOnMasterFinder.Execute(fixture.Repository, commit);
+        var releaseDate = LastMinorVersionFinder.Execute(fixture.Repository, commit);
         releaseDate.ShouldBe(commit.When());
     }
 

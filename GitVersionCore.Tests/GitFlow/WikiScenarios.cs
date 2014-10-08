@@ -71,7 +71,7 @@ note over develop: 1.4.0.2-unstable
             fixture.AssertFullSemver("1.3.0-beta.1+1");
 
             // Apply beta.0 tag should be exact tag
-            fixture.Repository.ApplyTag("1.3.0-beta.1");
+            fixture.Repository. ApplyTag("1.3.0-beta.1");
             fixture.AssertFullSemver("1.3.0-beta.1+1");
 
             // Make a commit after a tag should bump up the beta

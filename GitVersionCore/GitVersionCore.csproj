@@ -65,7 +65,7 @@
     <Compile Include="BuildServers\TeamCity.cs" />
     <Compile Include="GitFlow\BranchFinders\BranchCommitDifferenceFinder.cs" />
     <Compile Include="GitFlow\BranchFinders\RecentTagVersionExtractor.cs" />
-    <Compile Include="LastVersionOnMasterFinder.cs" />
+    <Compile Include="LastMinorVersionFinder.cs" />
     <Compile Include="ShortVersion.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />
     <Compile Include="WarningException.cs" />
