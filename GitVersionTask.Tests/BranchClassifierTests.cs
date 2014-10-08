@@ -24,6 +24,15 @@ public class BranchClassifierTests
         Assert.IsFalse(new MockBranch("release").IsRelease());
     }
     [Test]
+    public void IsSupport()
+    {
+        Assert.IsTrue(new MockBranch("support-1").IsSupport());
+        Assert.IsTrue(new MockBranch("support/1").IsSupport());
+        Assert.IsTrue(new MockBranch("Support-1").IsSupport());
+        Assert.IsTrue(new MockBranch("Support/1").IsSupport());
+        Assert.IsFalse(new MockBranch("release").IsRelease());
+    }
+    [Test]
     public void IsDevelop()
     {
         Assert.IsTrue(new MockBranch("develop").IsDevelop());
