@@ -28,6 +28,8 @@
 
         public override string[] GenerateSetParameterMessage(string name, string value)
         {
+            Environment.SetEnvironmentVariable("GitVersion." + name, value);
+            
             return new[]
             {
                 string.Format("##teamcity[setParameter name='GitVersion.{0}' value='{1}']", name, EscapeValue(value)),
