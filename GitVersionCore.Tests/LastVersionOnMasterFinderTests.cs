@@ -24,6 +24,19 @@ public class LastVersionOnMasterFinderTests
             Assert.AreEqual(stamp,dateTimeOffset);
         }
     }
+
+    [Test]
+    public void WhenNoTagsOrMergeCommitsShouldUseFirstCommit()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            var stamp = new DateTimeOffset(2000, 1, 1, 1, 1, 1, TimeSpan.Zero);
+            fixture.Repository.MakeACommit(stamp);
+
+            var dateTimeOffset = LastMinorVersionFinder.Execute(fixture.Repository, fixture.Repository.Head.Tip);
+            Assert.AreEqual(stamp,dateTimeOffset);
+        }
+    }
     [Test]
     public void WhenSupportIsBranchedFromMasterEnsureLastMinorTagIsUsed()
     {
