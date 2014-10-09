@@ -56,14 +56,14 @@
             WriteIntegrationParameters(semanticVersion, BuildServerList.GetApplicableBuildServers(authentication));
         }
 
-        public void WriteIntegrationParameters(CachedVersion semanticVersion, IEnumerable<IBuildServer> applicableBuildServers)
+        public void WriteIntegrationParameters(CachedVersion cachedVersion, IEnumerable<IBuildServer> applicableBuildServers)
         {
             foreach (var buildServer in applicableBuildServers)
             {
                 logger.LogInfo(string.Format("Executing GenerateSetVersionMessage for '{0}'.", buildServer.GetType().Name));
-                logger.LogInfo(buildServer.GenerateSetVersionMessage(semanticVersion.ToString()));
+                logger.LogInfo(buildServer.GenerateSetVersionMessage(cachedVersion.SemanticVersion.ToString()));
                 logger.LogInfo(string.Format("Executing GenerateBuildLogOutput for '{0}'.", buildServer.GetType().Name));
-                foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(semanticVersion.SemanticVersion, buildServer))
+                foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(cachedVersion.SemanticVersion, buildServer))
                 {
                     logger.LogInfo(buildParameter);
                 }
