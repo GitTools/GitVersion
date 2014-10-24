@@ -73,6 +73,7 @@
     <None Include="TestBuildFile.proj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArgumentBuilder.cs" />
     <Compile Include="ArgumentParserTests.cs" />
     <Compile Include="ExecCmdLineArgumentTest.cs" />
     <Compile Include="ExecutionResults.cs" />
