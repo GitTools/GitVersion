@@ -45,7 +45,7 @@ namespace GitVersion
                     Console.WriteLine("Failed to parse arguments: {0}", string.Join(" ", argumentsWithoutExeName));
 
                     HelpWriter.Write();
-                    return 0;
+                    return 1;
                 }
 
                 if (arguments.IsHelp)
