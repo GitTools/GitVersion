@@ -70,6 +70,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="NugetAssets\GitVersion.CommandLine.nuspec" />
+    <None Include="NugetAssets\GitVersion.Portable.nuspec" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
