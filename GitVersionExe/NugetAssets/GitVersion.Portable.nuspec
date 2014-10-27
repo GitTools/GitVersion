@@ -13,8 +13,6 @@
     <description>Derives SemVer information from a repository following GitFlow or GitHubFlow.</description>
     <language>en-AU</language>
     <tags>Git, Versioning, GitVersion, GitFlowVersion, GitFlow, GitHubFlow, SemVer</tags>
-    <releaseNotes>
-      Full release notes can be found here - https://github.com/Particular/GitVersion/blob/master/ReleaseNotes.md
-    </releaseNotes>
+    <releaseNotes>https://github.com/Particular/GitVersion/releases</releaseNotes>
   </metadata>
 </package>

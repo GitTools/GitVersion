@@ -14,5 +14,6 @@
     <language>en-AU</language>
     <tags>Git, Versioning, GitVersion, GitFlowVersion, GitFlow, GitHubFlow, SemVer</tags>
     <developmentDependency>true</developmentDependency>
+    <releaseNotes>https://github.com/Particular/GitVersion/releases</releaseNotes>
   </metadata>
 </package>
