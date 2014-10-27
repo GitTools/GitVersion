@@ -172,10 +172,12 @@ namespace GitVersion
         static void CreateMissingLocalBranchesFromRemoteTrackingOnes(Repository repo, string remoteName)
         {
             var prefix = string.Format("refs/remotes/{0}/", remoteName);
+            var remoteHeadCanonicalName = string.Format("{0}{1}", prefix, "HEAD");
 
-            foreach (var remoteTrackingReference in repo.Refs.FromGlob(prefix + "*"))
+            foreach (var remoteTrackingReference in repo.Refs.FromGlob(prefix + "*").Where(r => r.CanonicalName != remoteHeadCanonicalName))
             {
                 var localCanonicalName = "refs/heads/" + remoteTrackingReference.CanonicalName.Substring(prefix.Length);
+
                 if (repo.Refs.Any(x => x.CanonicalName == localCanonicalName))
                 {
                     Logger.WriteInfo(string.Format("Skipping local branch creation since it already exists '{0}'.", remoteTrackingReference.CanonicalName));
