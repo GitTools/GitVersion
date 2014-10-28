@@ -33,13 +33,13 @@
         {
             return new[]
             {
-                string.Format("##teamcity[setParameter name='GitVersion.{0}' value='{1}']", name, EscapeValue(value))
+                string.Format("##myget[setParameter name='GitVersion.{0}' value='{1}']", name, EscapeValue(value))
             };
         }
 
         public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
         {
-            return string.Format("##teamcity[buildNumber '{0}']", EscapeValue(versionToUseForBuildNumber));
+            return string.Format("##myget[buildNumber '{0}']", EscapeValue(versionToUseForBuildNumber));
         }
 
         static string EscapeValue(string value)
