@@ -33,8 +33,7 @@
         {
             return new[]
             {
-                string.Format("##teamcity[setParameter name='GitVersion.{0}' value='{1}']", name, EscapeValue(value)),
-                string.Format("##teamcity[setParameter name='system.GitVersion.{0}' value='{1}']", name, EscapeValue(value))
+                string.Format("##teamcity[setParameter name='GitVersion.{0}' value='{1}']", name, EscapeValue(value))
             };
         }
 
