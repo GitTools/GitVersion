@@ -31,6 +31,8 @@
 
         public override string[] GenerateSetParameterMessage(string name, string value)
         {
+            Environment.SetEnvironmentVariable(string.Format("GitVersion.{0}", name), value, EnvironmentVariableTarget.Process);
+
             return new[]
             {
                 string.Format("##myget[setParameter name='GitVersion.{0}' value='{1}']", name, EscapeValue(value))
