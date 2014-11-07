@@ -37,6 +37,23 @@ namespace GitVersion
             return null;
         }
 
+        public static IEnumerable<Tag> SemVerTagsRelatedToVersion(this IRepository repository, SemanticVersion version)
+        {
+            foreach (var tag in repository.Tags)
+            {
+                SemanticVersion tagVersion = null;
+                if (SemanticVersion.TryParse(tag.Name, out tagVersion))
+                {
+                    if (version.Major == tagVersion.Major &&
+                        version.Minor == tagVersion.Minor &&
+                        version.Patch == tagVersion.Patch)
+                    {
+                        yield return tag;
+                    }
+                }
+            }
+        }
+
         public static IEnumerable<Tag> TagsByDate(this IRepository repository, Commit commit)
         {
             return repository.Tags

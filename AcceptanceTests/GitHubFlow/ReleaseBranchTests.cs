@@ -48,7 +48,7 @@
             }
         }
 
-        [Fact(Skip = "Not supported yet")]
+        [Fact]
         public void WhenMergingReleaseBackToDevShouldNotResetBetaVersion()
         {
             using (var fixture = new EmptyRepositoryFixture())
@@ -71,7 +71,7 @@
 
                 fixture.Repository.MakeCommits(1);
 
-                VerifyVersion(fixture, "2.0.0-beta.2+2");
+                VerifyVersion(fixture, "2.0.0-beta.2+0");
                 
                 //merge down to develop
                 fixture.Repository.Checkout("develop");
@@ -80,7 +80,7 @@
                 //but keep working on the release
                 fixture.Repository.Checkout("release-2.0.0");
              
-                VerifyVersion(fixture, "2.0.0-beta.2+2");
+                VerifyVersion(fixture, "2.0.0-beta.2+0");
             }
         }
 
