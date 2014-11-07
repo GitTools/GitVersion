@@ -76,7 +76,7 @@ note over develop: 1.4.0.2-unstable
 
                 // Apply beta.0 tag
                 fixture.Repository.ApplyTag("1.3.0-beta.1");
-                fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.3.0-beta.2+1");
+                fixture.ExecuteGitVersion().OutputVariables[VariableProvider.FullSemVer].ShouldBe("1.3.0-beta.1+1");
 
                 // Merge release branch to master
                 fixture.Repository.Checkout("master");

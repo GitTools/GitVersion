@@ -12,7 +12,6 @@ namespace GitVersion
             BranchType branchType,
             string baseBranchName)
         {
-            var nbHotfixCommits = NumberOfCommitsInBranchNotKnownFromBaseBranch(context.Repository, context.CurrentBranch, branchType, baseBranchName);
 
             var versionString = context.CurrentBranch.GetSuffix(branchType);
             if (!versionString.Contains("."))
@@ -28,7 +27,12 @@ namespace GitVersion
             if (branchType == BranchType.Unknown)
                 version.PreReleaseTag = context.CurrentBranch.Name.Replace("-" + versionString, string.Empty) + ".1";
 
-            var tagVersion = RetrieveMostRecentOptionalTagVersion(context.Repository, version, context.CurrentBranch.Commits.Take(nbHotfixCommits + 1));
+            var tagsApplicableToBranchVersion = context.Repository.SemVerTagsRelatedToVersion(version).OrderByDescending(tag => SemanticVersion.Parse(tag.Name)).ToList();
+            var latestTaggedCommit = tagsApplicableToBranchVersion.Select(tag => tag.Target).FirstOrDefault();
+
+            var numberOfCommitsSinceLastTagOrBranchPoint = NumberOfCommitsSinceLastTagOrBranchPoint(context, tagsApplicableToBranchVersion, branchType, baseBranchName);
+
+            var tagVersion = RetrieveMostRecentOptionalTagVersion(tagsApplicableToBranchVersion);
 
             var sha = context.CurrentCommit.Sha;
             var releaseDate = ReleaseDateFinder.Execute(context.Repository, sha, version.Patch);
@@ -39,63 +43,57 @@ namespace GitVersion
                 Patch = version.Patch,
                 PreReleaseTag = version.PreReleaseTag,
                 BuildMetaData = new SemanticVersionBuildMetaData(
-                    nbHotfixCommits, context.CurrentBranch.Name, releaseDate)
+                    numberOfCommitsSinceLastTagOrBranchPoint, context.CurrentBranch.Name, releaseDate)
             };
 
             if (tagVersion != null)
             {
-                tagVersion.PreReleaseTag.Number++;
+                if (latestTaggedCommit != context.CurrentCommit)
+                {
+                    tagVersion.PreReleaseTag.Number++;
+                }
                 semanticVersion.PreReleaseTag = tagVersion.PreReleaseTag;
             }
 
             return semanticVersion;
+
         }
 
-        bool IsMostRecentCommitTagged(GitVersionContext context, out SemanticVersion version)
+        SemanticVersion RetrieveMostRecentOptionalTagVersion(IEnumerable<Tag> tagsApplicableToBranchVersion)
         {
-            var currentCommit = context.CurrentBranch.Commits.First();
-
-            var tags = context.Repository.Tags
-                .Where(tag => tag.PeeledTarget() == currentCommit)
-                .ToList();
-
-            foreach (var tag in tags)
-            {
-                if (SemanticVersion.TryParse(tag.Name, out version))
-                {
-                    return true;
-                }
-            }
-
-            version = null;
-            return false;
+            return tagsApplicableToBranchVersion.Select(tag => SemanticVersion.Parse(tag.Name)).OrderByDescending(version => version).FirstOrDefault();
         }
 
-        SemanticVersion RetrieveMostRecentOptionalTagVersion(
-            IRepository repository, SemanticVersion branchVersion, IEnumerable<Commit> take)
+
+        int NumberOfCommitsSinceLastTagOrBranchPoint(GitVersionContext context, ICollection<Tag> tagsInDescVersionOrder, BranchType branchType, string baseBranchName)
         {
-            foreach (var commit in take)
+            if (!tagsInDescVersionOrder.Any())
             {
-                foreach (var tag in repository.TagsByDate(commit))
+                return NumberOfCommitsInBranchNotKnownFromBaseBranch(context.Repository, context.CurrentBranch, branchType, baseBranchName);
+            }
+            
+            var mostRecentTag = tagsInDescVersionOrder.First();
+            var ancestor = mostRecentTag;
+            if (mostRecentTag.Target == context.CurrentCommit)
+            {
+                var previousTag = tagsInDescVersionOrder.Skip(1).FirstOrDefault();
+                if (previousTag != null)
                 {
-                    SemanticVersion version;
-                    if (!SemanticVersion.TryParse(tag.Name, out version))
-                    {
-                        continue;
-                    }
-
-                    if (branchVersion.Major != version.Major ||
-                        branchVersion.Minor != version.Minor ||
-                        branchVersion.Patch != version.Patch)
-                    {
-                        continue;
-                    }
-
-                    return version;
+                    ancestor = previousTag;
+                }
+                else
+                {
+                    return NumberOfCommitsInBranchNotKnownFromBaseBranch(context.Repository, context.CurrentBranch, branchType, baseBranchName);
                 }
             }
+            var filter = new CommitFilter
+                         {
+                             Since = context.CurrentCommit,
+                             Until = ancestor.Target,
+                             SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
+                         };
 
-            return null;
+            return context.Repository.Commits.QueryBy(filter).Count() - 1;
         }
 
         void EnsureVersionIsValid(SemanticVersion version, Branch branch, BranchType branchType)
