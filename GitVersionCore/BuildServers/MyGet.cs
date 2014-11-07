@@ -1,6 +1,7 @@
 ﻿namespace GitVersion
 {
     using System;
+    using System.Collections.Generic;
 
     public class MyGet : BuildServerBase
     {
@@ -31,35 +32,22 @@
 
         public override string[] GenerateSetParameterMessage(string name, string value)
         {
-            Environment.SetEnvironmentVariable(string.Format("GitVersion.{0}", name), value, EnvironmentVariableTarget.Process);
-
-            return new[]
+            var messages = new List<string>
             {
-                string.Format("##myget[setParameter name='GitVersion.{0}' value='{1}']", name, EscapeValue(value))
+                string.Format("##myget[setParameter name='GitVersion.{0}' value='{1}']", name, ServiceMessageEscapeHelper.EscapeValue(value))
             };
+
+            if (string.Equals(name, "LegacySemVerPadded", StringComparison.InvariantCultureIgnoreCase))
+            {
+                messages.Add(string.Format("##myget[buildNumber '{0}']", ServiceMessageEscapeHelper.EscapeValue(value)));
+            }
+
+            return messages.ToArray();
         }
 
         public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
         {
-            return string.Format("##myget[buildNumber '{0}']", EscapeValue(versionToUseForBuildNumber));
-        }
-
-        static string EscapeValue(string value)
-        {
-            if (value == null)
-            {
-                return null;
-            }
-            // List of escape values from http://confluence.jetbrains.com/display/TCD8/Build+Script+Interaction+with+TeamCity
-
-            value = value.Replace("|", "||");
-            value = value.Replace("'", "|'");
-            value = value.Replace("[", "|[");
-            value = value.Replace("]", "|]");
-            value = value.Replace("\r", "|r");
-            value = value.Replace("\n", "|n");
-
-            return value;
+            return null;
         }
     }
 }

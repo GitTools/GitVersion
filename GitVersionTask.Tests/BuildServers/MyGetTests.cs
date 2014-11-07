@@ -10,7 +10,7 @@ public class MyGetTests
         var authentication = new Authentication();
         var versionBuilder = new MyGet(authentication);
         var message = versionBuilder.GenerateSetVersionMessage("0.0.0-Unstable4");
-        Assert.AreEqual("##myget[buildNumber '0.0.0-Unstable4']", message);
+        Assert.AreEqual(null, message);
     }
 
     [Test]
@@ -22,4 +22,12 @@ public class MyGetTests
         Assert.AreEqual("##myget[setParameter name='GitVersion.Foo' value='0.8.0-unstable568 Branch:|'develop|' Sha:|'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb|'']", message[0]);
     }
 
+    [Test]
+    public void BuildNumber()
+    {
+        var authentication = new Authentication();
+        var versionBuilder = new MyGet(authentication);
+        var message = versionBuilder.GenerateSetParameterMessage("LegacySemVerPadded", "0.8.0-unstable568");
+        Assert.AreEqual("##myget[buildNumber '0.8.0-unstable568']", message[1]);
+    }
 }
