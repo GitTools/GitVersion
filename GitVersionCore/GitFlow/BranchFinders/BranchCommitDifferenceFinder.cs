@@ -1,5 +1,6 @@
 namespace GitVersion
 {
+    using System.Collections.Generic;
     using System.Linq;
     using LibGit2Sharp;
 
@@ -33,6 +34,39 @@ namespace GitVersion
 
             return repo.Commits.QueryBy(filter)
                 .Count();
+        }
+
+        public static int NumberOfCommitsSinceLastTagOrBranchPoint(GitVersionContext context, List<Tag> tagsInDescendingOrder, BranchType branchType,  string baseBranchName)
+        {
+            if (!tagsInDescendingOrder.Any())
+            {
+                return NumberOfCommitsInBranchNotKnownFromBaseBranch(context.Repository, context.CurrentBranch, branchType, baseBranchName);
+            }
+
+            var mostRecentTag = tagsInDescendingOrder.First();
+            var ancestor = mostRecentTag;
+            if (mostRecentTag.Target == context.CurrentCommit)
+            {
+                var previousTag = tagsInDescendingOrder.Skip(1).FirstOrDefault();
+                if (previousTag != null)
+                {
+                    ancestor = previousTag;
+                }
+                else
+                {
+                    return NumberOfCommitsInBranchNotKnownFromBaseBranch(context.Repository, context.CurrentBranch, BranchType.Release, baseBranchName);
+                }
+
+            }
+
+            var filter = new CommitFilter
+            {
+                Since = context.CurrentCommit,
+                Until = ancestor.Target,
+                SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
+            };
+
+            return context.Repository.Commits.QueryBy(filter).Count() - 1;
         }
     }
 }

@@ -11,26 +11,22 @@ namespace GitVersion
             var shortVersion = ShortVersionParser.Parse(versionString);
 
             EnsureVersionIsValid(shortVersion, context.CurrentBranch);
-            var semanticVersionPreReleaseTag = "beta.1";
-
-            var nbHotfixCommits = BranchCommitDifferenceFinder.NumberOfCommitsInBranchNotKnownFromBaseBranch(context.Repository, context.CurrentBranch, BranchType.Release, "develop");
             
-            var tagVersion = RecentTagVersionExtractor.RetrieveMostRecentOptionalTagVersion(context.Repository, shortVersion, context.CurrentBranch.Commits.Take(nbHotfixCommits + 1));
-            if (tagVersion != null)
-            {
-                semanticVersionPreReleaseTag = tagVersion;
-            }
+            var applicableTagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(shortVersion).OrderByDescending(tag => SemanticVersion.Parse(tag.Name)).ToList();
+            var numberOfCommitsSinceLastTagOrBranchPoint = BranchCommitDifferenceFinder.NumberOfCommitsSinceLastTagOrBranchPoint(context, applicableTagsInDescendingOrder, BranchType.Release, "develop");
+            var semanticVersionPreReleaseTag = RecentTagVersionExtractor.RetrieveMostRecentOptionalTagVersion(context, applicableTagsInDescendingOrder) ?? "beta.1";
+
             return new SemanticVersion
             {
                 Major = shortVersion.Major,
                 Minor = shortVersion.Minor,
                 Patch = shortVersion.Patch,
                 PreReleaseTag = semanticVersionPreReleaseTag,
-                BuildMetaData = new SemanticVersionBuildMetaData(nbHotfixCommits, context.CurrentBranch.Name, context.CurrentCommit.Sha, context.CurrentCommit.When())
+                BuildMetaData = new SemanticVersionBuildMetaData(numberOfCommitsSinceLastTagOrBranchPoint, context.CurrentBranch.Name, context.CurrentCommit.Sha, context.CurrentCommit.When())
             };
         }
 
-        void EnsureVersionIsValid(ShortVersion version, Branch branch)
+        static void EnsureVersionIsValid(ShortVersion version, Branch branch)
         {
             if (version.Patch != 0)
             {

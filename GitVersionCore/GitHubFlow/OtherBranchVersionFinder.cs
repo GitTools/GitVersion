@@ -15,15 +15,11 @@
             }
             var shortVersion = ShortVersionParser.Parse(versionString);
 
-            SemanticVersionPreReleaseTag semanticVersionPreReleaseTag = context.CurrentBranch.Name.Replace("-" + versionString, string.Empty) + ".1";
 
-            var nbHotfixCommits = BranchCommitDifferenceFinder.NumberOfCommitsInBranchNotKnownFromBaseBranch(context.Repository, context.CurrentBranch, BranchType.Unknown, "master");
+            var applicableTagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(shortVersion).OrderByDescending(tag => SemanticVersion.Parse(tag.Name)).ToList();
+            var nbHotfixCommits = BranchCommitDifferenceFinder.NumberOfCommitsSinceLastTagOrBranchPoint(context, applicableTagsInDescendingOrder, BranchType.Unknown, "master");
+            var semanticVersionPreReleaseTag = RecentTagVersionExtractor.RetrieveMostRecentOptionalTagVersion(context, applicableTagsInDescendingOrder) ?? CreateDefaultPreReleaseTag(context, versionString);
 
-            var tagVersion = RecentTagVersionExtractor.RetrieveMostRecentOptionalTagVersion(context.Repository, shortVersion, context.CurrentBranch.Commits.Take(nbHotfixCommits + 1));
-            if (tagVersion != null)
-            {
-                semanticVersionPreReleaseTag = tagVersion;
-            }
 
             if (semanticVersionPreReleaseTag.Name == "release")
             {
@@ -39,6 +35,11 @@
                 BuildMetaData = new SemanticVersionBuildMetaData(nbHotfixCommits, context.CurrentBranch.Name, context.CurrentCommit.Sha, context.CurrentCommit.When())
             };
             return true;
+        }
+
+        SemanticVersionPreReleaseTag CreateDefaultPreReleaseTag(GitVersionContext context, string versionString)
+        {
+            return context.CurrentBranch.Name.Replace("-" + versionString, string.Empty) + ".1";
         }
 
         static string GetUnknownBranchSuffix(Branch branch)

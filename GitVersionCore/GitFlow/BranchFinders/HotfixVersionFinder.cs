@@ -1,6 +1,5 @@
 namespace GitVersion
 {
-    using System.Linq;
     using LibGit2Sharp;
 
     class HotfixVersionFinder 
@@ -28,7 +27,7 @@ namespace GitVersion
         static string GetSemanticVersionPreReleaseTag(GitVersionContext context, ShortVersion shortVersion, int nbHotfixCommits)
         {
             var semanticVersionPreReleaseTag = "beta.1";
-            var tagVersion = RecentTagVersionExtractor.RetrieveMostRecentOptionalTagVersion(context.Repository, shortVersion, context.CurrentBranch.Commits.Take(nbHotfixCommits + 1));
+            var tagVersion = RecentTagVersionExtractor.RetrieveMostRecentOptionalTagVersion(context, shortVersion);
             if (tagVersion != null)
             {
                 semanticVersionPreReleaseTag = tagVersion;
