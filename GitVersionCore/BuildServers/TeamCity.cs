@@ -30,32 +30,14 @@
         {
             return new[]
             {
-                string.Format("##teamcity[setParameter name='GitVersion.{0}' value='{1}']", name, EscapeValue(value)),
-                string.Format("##teamcity[setParameter name='system.GitVersion.{0}' value='{1}']", name, EscapeValue(value))
+                string.Format("##teamcity[setParameter name='GitVersion.{0}' value='{1}']", name, ServiceMessageEscapeHelper.EscapeValue(value)),
+                string.Format("##teamcity[setParameter name='system.GitVersion.{0}' value='{1}']", name, ServiceMessageEscapeHelper.EscapeValue(value))
             };
         }
 
         public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
         {
-            return string.Format("##teamcity[buildNumber '{0}']", EscapeValue(versionToUseForBuildNumber));
-        }
-
-        static string EscapeValue(string value)
-        {
-            if (value == null)
-            {
-                return null;
-            }
-            // List of escape values from http://confluence.jetbrains.com/display/TCD8/Build+Script+Interaction+with+TeamCity
-
-            value = value.Replace("|", "||");
-            value = value.Replace("'", "|'");
-            value = value.Replace("[", "|[");
-            value = value.Replace("]", "|]");
-            value = value.Replace("\r", "|r");
-            value = value.Replace("\n", "|n");
-
-            return value;
+            return string.Format("##teamcity[buildNumber '{0}']", ServiceMessageEscapeHelper.EscapeValue(versionToUseForBuildNumber));
         }
     }
 }

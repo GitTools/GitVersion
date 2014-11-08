@@ -27,7 +27,8 @@
                 {
                     new ContinuaCi(authentication),
                     new TeamCity(authentication),
-                    new AppVeyor(authentication)
+                    new AppVeyor(authentication),
+                    new MyGet(authentication)
                 };
             }
 
