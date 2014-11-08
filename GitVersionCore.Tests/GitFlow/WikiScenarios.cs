@@ -76,7 +76,7 @@ note over develop: 1.4.0.2-unstable
 
             // Make a commit after a tag should bump up the beta
             fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver("1.3.0-beta.2+2");
+            fixture.AssertFullSemver("1.3.0-beta.2+0");
 
             // Merge release branch to master
             fixture.Repository.Checkout("master");
