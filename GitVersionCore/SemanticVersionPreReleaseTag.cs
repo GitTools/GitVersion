@@ -106,7 +106,7 @@ namespace GitVersion
                 return -1;
             }
 
-            var nameComparison = StringComparer.InvariantCultureIgnoreCase.Compare(Name, other);
+            var nameComparison = StringComparer.InvariantCultureIgnoreCase.Compare(Name, other.Name);
             if (nameComparison != 0)
                 return nameComparison;
 

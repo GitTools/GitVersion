@@ -65,6 +65,8 @@ public class SemanticVersionTests
     public void VersionSorting()
     {
         SemanticVersion.Parse("1.0.0").ShouldBeGreaterThan(SemanticVersion.Parse("1.0.0-beta"));
+        SemanticVersion.Parse("1.0.0-beta.2").ShouldBeGreaterThan(SemanticVersion.Parse("1.0.0-beta.1"));
+        SemanticVersion.Parse("1.0.0-beta.1").ShouldBeLessThan(SemanticVersion.Parse("1.0.0-beta.2"));
     }
 
     [Test]
