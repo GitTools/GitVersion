@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using GitVersion.Configuration;
 using NUnit.Framework;
 using Shouldly;
 
@@ -10,7 +11,7 @@ public class ExecCmdLineArgumentTest
     [Test]
     public void RunExecViaCommandLine()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeATaggedCommit("1.2.3");
             fixture.Repository.MakeACommit();
@@ -34,7 +35,7 @@ public class ExecCmdLineArgumentTest
     [Test]
     public void InvalidArgumentsExitCodeShouldNotBeZero()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeATaggedCommit("1.2.3");
             fixture.Repository.MakeACommit();

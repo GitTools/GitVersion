@@ -1,4 +1,5 @@
-﻿using LibGit2Sharp;
+﻿using GitVersion.Configuration;
+using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
@@ -7,7 +8,7 @@ public class OtherBranchTests
     [Test]
     public void CanTakeVersionFromReleaseBranch()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             const string TaggedVersion = "1.0.3";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);

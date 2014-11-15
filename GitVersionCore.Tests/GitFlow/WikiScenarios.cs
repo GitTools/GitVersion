@@ -1,4 +1,5 @@
-﻿using LibGit2Sharp;
+﻿using GitVersion.Configuration;
+using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
@@ -37,7 +38,7 @@ note over develop: 1.4.0.2-unstable
     [Test]
     public void MinorReleaseExample()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeATaggedCommit("1.2.0");
 

@@ -1,4 +1,5 @@
-﻿using LibGit2Sharp;
+﻿using GitVersion.Configuration;
+using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
@@ -7,7 +8,7 @@ public class ReleaseBranchTests
     [Test]
     public void CanTakeVersionFromReleaseBranch()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.MakeCommits(5);
@@ -21,7 +22,7 @@ public class ReleaseBranchTests
     [Test]
     public void WhenReleaseBranchIsMergedIntoMasterVersionIsTakenWithIt()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.MakeCommits(1);
@@ -37,7 +38,7 @@ public class ReleaseBranchTests
     [Test]
     public void WhenReleaseBranchIsMergedIntoMasterHighestVersionIsTakenWithIt()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.MakeCommits(1);

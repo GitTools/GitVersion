@@ -1,4 +1,5 @@
-﻿using LibGit2Sharp;
+﻿using GitVersion.Configuration;
+using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
@@ -7,7 +8,7 @@ public class MasterTests
     [Test]
     public void GivenARepositoryWithCommitsButNoTags_VersionShouldBe_0_1()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             // Given
             fixture.Repository.MakeACommit();
@@ -22,7 +23,7 @@ public class MasterTests
     [Test]
     public void GivenARepositoryWithCommitsButNoTagsWithDetachedHead_VersionShouldBe_0_1()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             // Given
             fixture.Repository.MakeACommit();
@@ -41,7 +42,7 @@ public class MasterTests
     [Test]
     public void GivenARepositoryWithNoTagsAndANextVersionTxtFile_VersionShouldMatchVersionTxtFile()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             const string ExpectedNextVersion = "1.0.0";
             fixture.Repository.MakeACommit();
@@ -56,7 +57,7 @@ public class MasterTests
     [Test]
     public void GivenARepositoryWithTagAndANextVersionTxtFile_VersionShouldMatchVersionTxtFile()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             const string ExpectedNextVersion = "1.1.0";
             const string TaggedVersion = "1.0.3";
@@ -71,7 +72,7 @@ public class MasterTests
     [Test]
     public void GivenARepositoryWithTagAndANextVersionTxtFileAndNoCommits_VersionShouldBeTag()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             const string ExpectedNextVersion = "1.1.0";
             const string TaggedVersion = "1.0.3";
@@ -85,7 +86,7 @@ public class MasterTests
     [Test]
     public void GivenARepositoryWithTagAndNoNextVersionTxtFile_VersionShouldBeTagWithBumpedPatch()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             const string TaggedVersion = "1.0.3";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
@@ -98,7 +99,7 @@ public class MasterTests
     [Test]
     public void GivenARepositoryWithTagAndNoNextVersionTxtFileAndNoCommits_VersionShouldBeTag()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             const string TaggedVersion = "1.0.3";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
@@ -110,7 +111,7 @@ public class MasterTests
     [Test]
     public void GivenARepositoryWithTagAndOldNextVersionTxtFile_VersionShouldBeTagWithBumpedPatch()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             const string NextVersionTxt = "1.0.0";
             const string TaggedVersion = "1.1.0";
@@ -125,7 +126,7 @@ public class MasterTests
     [Test]
     public void GivenARepositoryWithTagAndOldNextVersionTxtFileAndNoCommits_VersionShouldBeTag()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             const string NextVersionTxt = "1.0.0";
             const string TaggedVersion = "1.1.0";

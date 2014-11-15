@@ -1,5 +1,6 @@
 ﻿using System;
 using GitVersion;
+using GitVersion.Configuration;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
@@ -12,7 +13,7 @@ public class PullRequestInTeamCityTest
     [TestCase("refs/pull/5/merge")]
     public void GivenARemoteWithATagOnMaster_AndAPullRequestWithTwoCommits_AndBuildIsRunningInTeamCity_VersionIsCalculatedProperly(string pullRequestRef)
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             var remoteRepositoryPath = PathHelper.GetTempPath();
             Repository.Init(remoteRepositoryPath);

@@ -1,4 +1,5 @@
-﻿using LibGit2Sharp;
+﻿using GitVersion.Configuration;
+using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
@@ -7,7 +8,7 @@ public class DevelopScenarios
     [Test]
     public void WhenDevelopBranchedFromMaster_MinorIsIncreased()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("develop").Checkout();
@@ -18,7 +19,7 @@ public class DevelopScenarios
     [Test]
     public void WhenDevelopBranchedFromMasterDetachedHead_MinorIsIncreased()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("develop").Checkout();
