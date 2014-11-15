@@ -16,6 +16,7 @@ You are seeing:
 Once a release is done, and you **tag** the commit which was released, the version will automatically be bumped. See our wiki for the rules and examples of how we increment the SemVer.
 
 ## Usage:
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/ParticularLabs/GitVersion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 GitVersion can be used in several ways
 
