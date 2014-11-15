@@ -12,6 +12,10 @@
     {
         public string AssemblyVersioningScheme { get; set; }
 
+        public string DevelopBranchTag { get; set; }
+
+        public string ReleaseBranchTag { get; set; }
+
         [Required]
         public string SolutionDirectory { get; set; }
 
@@ -68,6 +72,30 @@
                 return;
 
             var config = ConfigurationProvider.Provide(gitDirectory);
+            if (!string.IsNullOrEmpty(AssemblyVersioningScheme))
+            {
+                AssemblyVersioningScheme versioningScheme;
+                if (Enum.TryParse(AssemblyVersioningScheme, true, out versioningScheme))
+                {
+                    config.AssemblyVersioningScheme = versioningScheme;
+                }
+                else
+                {
+                    throw new WarningException(string.Format("Unexpected assembly versioning scheme '{0}'.", AssemblyVersioningScheme));
+                }
+            }
+
+            // TODO This should be covered by tests
+            // Null is intentional. Empty string means the user has set the value to an empty string and wants to clear the tag
+            if (DevelopBranchTag != null)
+            {
+                config.DevelopBranchTag = DevelopBranchTag;
+            }
+
+            if (ReleaseBranchTag != null)
+            {
+                config.ReleaseBranchTag = ReleaseBranchTag;
+            }
 
             CachedVersion semanticVersion;
             if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion, config))
@@ -96,11 +124,10 @@
 
         void CreateTempAssemblyInfo(CachedVersion semanticVersion, Config config)
         {
-            var versioningScheme = GetAssemblyVersioningScheme(config);
             var assemblyInfoBuilder = new AssemblyInfoBuilder
                                       {
                                           CachedVersion = semanticVersion,
-                                          AssemblyVersioningScheme = versioningScheme,
+                                          AssemblyVersioningScheme = config.AssemblyVersioningScheme,
                                       };
             var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText();
 

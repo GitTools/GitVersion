@@ -15,6 +15,34 @@ public class DevelopScenarios
             fixture.AssertFullSemver("1.1.0-unstable.0+0");
         }
     }
+    
+    [Test]
+    public void CanChangeDevelopTagViaConfig()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config
+        {
+            DevelopBranchTag = "alpha"
+        }))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.CreateBranch("develop").Checkout();
+            fixture.AssertFullSemver("1.1.0-alpha.0+0");
+        }
+    }
+    
+    [Test]
+    public void CanClearDevelopTagViaConfig()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config
+        {
+            DevelopBranchTag = ""
+        }))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.CreateBranch("develop").Checkout();
+            fixture.AssertFullSemver("1.1.0+0");
+        }
+    }
 
     [Test]
     public void WhenDevelopBranchedFromMasterDetachedHead_MinorIsIncreased()
