@@ -64,6 +64,9 @@
             InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
 
             var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
+            if (string.IsNullOrEmpty(gitDirectory))
+                return;
+
             var config = ConfigurationProvider.Provide(gitDirectory);
 
             CachedVersion semanticVersion;

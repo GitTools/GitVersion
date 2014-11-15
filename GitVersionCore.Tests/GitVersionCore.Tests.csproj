@@ -93,6 +93,70 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Resources\commit_counting_wd\gitted\config" />
+    <None Include="Resources\commit_counting_wd\gitted\HEAD" />
+    <None Include="Resources\commit_counting_wd\gitted\index" />
+    <None Include="Resources\commit_counting_wd\gitted\info\exclude" />
+    <None Include="Resources\commit_counting_wd\gitted\logs\HEAD" />
+    <None Include="Resources\commit_counting_wd\gitted\logs\refs\heads\develop" />
+    <None Include="Resources\commit_counting_wd\gitted\logs\refs\heads\feature" />
+    <None Include="Resources\commit_counting_wd\gitted\logs\refs\heads\hotfix-1.2.1" />
+    <None Include="Resources\commit_counting_wd\gitted\logs\refs\heads\hotfix-1.3.1" />
+    <None Include="Resources\commit_counting_wd\gitted\logs\refs\heads\master" />
+    <None Include="Resources\commit_counting_wd\gitted\logs\refs\heads\release-1.3.0" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\04\91c5dac30d706f4e54c5cb26d082baad8228d1" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\05\bc4a442c2c04ceadedee7cccc5e0632603e81a" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\09\bde4792dca146fcae327df52e020c01ae7c234" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\0b\7a2482ab7d167cefa4ecfc106db001dc5c17ff" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\10\ddd6d257e01349d514541981aeecea6b2e741d" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\14\5754f4b45a854df209b0caaf85dacc9da12073" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\1b\9cff4589e2f37bc624a18c349b7d95c360aaf7" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\24\3f56dcdb543688fd0a99bd3e0e72dd9a786603" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\25\3e94347a96fe4a1eab4e47972afd16f6992528" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\2b\a23b8f9fa44d39579ec460df3d1119f0386c55" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\32\0f4b6820cf4b0853dc08ac153f04fbd4958200" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\37\985ac1a12f009b0ebb7138292c1be30393d343" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\3b\012518e0c89bb753459912738604a915cd70d6" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\3c\5acc4409d4d1dd9d9bb34c7ec0d030f61efd20" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\48\79bade90ff18f945a5963b2137a6177255dc1d" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\4d\65c519f88773854f9345eaf5dbb30cb49f6a74" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\57\6a28e321cd6dc764b52c5fface672fa076f37f" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\5b\84136c848fd48f1f8b3fa4e1b767a1f6101279" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\5d\28d9be43f88fd2e559c8df05d672519fd98def" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\76\55537837096d925a4f974232f78ec589d86ebd" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\7b\f37e6d273e6d4d1675b2392c7efc7905e659a1" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\7f\981d15f0f26fdef40e5ce27fd31245d183c00f" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\80\979fd11b309d75ba0e449a044eb5bd68f1dbb5" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\8c\890487ed143d5a72d151e64be1c5ddb314c908" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\96\eab83bf7e621e5864bdbbf7dca2babc7d782ef" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\98\0a0d5f19a64b4b30a87d4206aade58726b60e3" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\99\5f657dd218bbac404f037f9e757553253fadcf" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\9a\c3b3ad9cc2cad280b8f792be0ae9f11dcd54fd" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\9e\a56e0287af87d6b80fad6425949ee6a92fd4c8" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\a2\0830e41b797241be247c3be78dd58844726b1a" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\a2\af6fa735df44810544c678d8905f29279621b3" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\b5\3054c614d36edc9d1bee8c35cd2ed575a43607" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\ba\4c5142cc3836ccd2c913c6c45b1326aaa32a85" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\bc\bf8b84bd9f843c1d41adbc48605191993c9d64" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\cc\adf23feaf76eeb160074aa727df2a2db99a2b5" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\d6\c22a049123e6ad6f6978afcb83c54e7ffe49cd" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\d8\e9d74ba870d039a1c434f4c849865f9392afba" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\e4\80263d0b3eeb3a35e6559032a0fdcb9eb19baa" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\e9\65047ad7c57865823c7d992b1d046ea66edf78" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\ec\b2da563e05f8b1470ca0358836a828c3a5d3e4" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\ee\329e1c19d40b05ad157fb1fcc424af9d375f24" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\fa\b69e28ee35dd912c0c95d5993dd84e4f2bcd92" />
+    <None Include="Resources\commit_counting_wd\gitted\objects\fc\eb2620f88c2fb6284a08f2b67f9f174afe3b91" />
+    <None Include="Resources\commit_counting_wd\gitted\refs\heads\develop" />
+    <None Include="Resources\commit_counting_wd\gitted\refs\heads\feature" />
+    <None Include="Resources\commit_counting_wd\gitted\refs\heads\hotfix-1.2.1" />
+    <None Include="Resources\commit_counting_wd\gitted\refs\heads\hotfix-1.3.1" />
+    <None Include="Resources\commit_counting_wd\gitted\refs\heads\master" />
+    <None Include="Resources\commit_counting_wd\gitted\refs\heads\release-1.3.0" />
+    <None Include="Resources\commit_counting_wd\gitted\refs\tags\1.2.0" />
+    <None Include="Resources\commit_counting_wd\gitted\refs\tags\1.2.1" />
+    <None Include="Resources\commit_counting_wd\gitted\refs\tags\1.3.0" />
+    <None Include="Resources\commit_counting_wd\gitted\refs\tags\1.3.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj">
@@ -103,6 +167,10 @@
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
     <Content Include="JsonVersionBuilderTests.Json.approved.txt" />
+    <Content Include="Resources\.gitattributes" />
+    <Content Include="Resources\commit_counting_wd\another.txt" />
+    <Content Include="Resources\commit_counting_wd\file.txt" />
+    <Content Include="Resources\commit_counting_wd\new.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

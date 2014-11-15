@@ -33,8 +33,7 @@
                 throw new ArgumentException("Make sure you have a valid semantic version in NextVersion.txt");
             }
 
-
-                return true;
+            return true;
         }
     }
 }

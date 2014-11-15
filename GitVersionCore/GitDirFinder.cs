@@ -11,7 +11,7 @@
 
             if (gitDirectory != null)
             {
-                return gitDirectory.TrimEnd(new []{ Path.DirectorySeparatorChar });
+                return gitDirectory.TrimEnd(Path.DirectorySeparatorChar);
             }
 
             return null;
