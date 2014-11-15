@@ -69,13 +69,13 @@
     <Compile Include="ConfigReaderTests.cs" />
     <Compile Include="GitDirFinderTests.cs" />
     <Compile Include="Fixtures\BaseGitFlowRepositoryFixture.cs" />
-    <Compile Include="GitFlow\DevelopScenarios.cs" />
-    <Compile Include="GitFlow\MetaDataByCommitScenarios.cs" />
-    <Compile Include="GitFlow\PatchScenarios.cs" />
-    <Compile Include="GitFlow\ReleaseBranchTests.cs" />
-    <Compile Include="GitFlow\WikiScenarios.cs" />
-    <Compile Include="GitHubFlow\OtherBranchTests.cs" />
-    <Compile Include="GitHubFlow\ReleaseBranchTests.cs" />
+    <Compile Include="IntegrationTests\GitFlow\DevelopScenarios.cs" />
+    <Compile Include="IntegrationTests\GitFlow\MetaDataByCommitScenarios.cs" />
+    <Compile Include="IntegrationTests\GitFlow\PatchScenarios.cs" />
+    <Compile Include="IntegrationTests\GitFlow\ReleaseBranchTests.cs" />
+    <Compile Include="IntegrationTests\GitFlow\WikiScenarios.cs" />
+    <Compile Include="IntegrationTests\GitHubFlow\OtherBranchTests.cs" />
+    <Compile Include="IntegrationTests\GitHubFlow\ReleaseBranchTests.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\NextVersionWriter.cs" />
     <Compile Include="InformationalVersionBuilderTests.cs" />
@@ -85,7 +85,7 @@
     <Compile Include="Fixtures\EmptyRepositoryFixture.cs" />
     <Compile Include="Helpers\GitHelper.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
-    <Compile Include="GitHubFlow\MasterTests.cs" />
+    <Compile Include="IntegrationTests\GitHubFlow\MasterTests.cs" />
     <Compile Include="ApprovalTestsConfig.cs" />
     <Compile Include="Fixtures\RepositoryFixtureBase.cs" />
     <Compile Include="SemanticVersionTests.cs" />
@@ -173,6 +173,7 @@
     <Content Include="Resources\commit_counting_wd\file.txt" />
     <Content Include="Resources\commit_counting_wd\new.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
