@@ -55,12 +55,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfoBuilder\AssemblyInfoBuilder.cs" />
-    <Compile Include="AssemblyInfoBuilder\AssemblyVersioningScheme.cs" />
     <Compile Include="AssemblyInfoBuilder\AssemblyVersionsGenerator.cs" />
     <Compile Include="BuildLogger.cs" />
     <Compile Include="CachedVersion.cs" />
-    <Compile Include="Config.cs" />
-    <Compile Include="ConfigReader.cs" />
     <Compile Include="DirectoryDateFinder.cs" />
     <Compile Include="VersionCache.cs" />
     <Compile Include="WriteVersionInfoToBuildLog.cs" />

@@ -53,8 +53,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Packages\Visualize.Fody.0.4.0.0\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\Visualize.dll</HintPath>
     </Reference>
+    <Reference Include="YamlDotNet">
+      <HintPath>..\packages\YamlDotNet.3.3.0\lib\net35\YamlDotNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyVersioningScheme.cs" />
     <Compile Include="Authentication.cs" />
     <Compile Include="BuildServers\AppVeyor.cs" />
     <Compile Include="BuildServers\BuildServerBase.cs" />
@@ -64,6 +68,8 @@
     <Compile Include="BuildServers\IBuildServer.cs" />
     <Compile Include="BuildServers\MyGet.cs" />
     <Compile Include="BuildServers\TeamCity.cs" />
+    <Compile Include="Configuration\Config.cs" />
+    <Compile Include="Configuration\ConfigReader.cs" />
     <Compile Include="GitFlow\BranchFinders\BranchCommitDifferenceFinder.cs" />
     <Compile Include="GitFlow\BranchFinders\RecentTagVersionExtractor.cs" />
     <Compile Include="LastMinorVersionFinder.cs" />
