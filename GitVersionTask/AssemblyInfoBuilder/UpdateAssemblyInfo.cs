@@ -3,6 +3,7 @@
     using System;
     using System.IO;
     using GitVersion;
+    using GitVersion.Configuration;
     using Microsoft.Build.Framework;
     using Microsoft.Build.Utilities;
     using Logger = GitVersion.Logger;
@@ -85,7 +86,7 @@
                         return ConfigReader.Read(reader).AssemblyVersioningScheme;
                     }
                 }
-                return global::AssemblyVersioningScheme.MajorMinorPatch;
+                return GitVersion.AssemblyVersioningScheme.MajorMinorPatch;
             }
 
             AssemblyVersioningScheme versioningScheme;

@@ -1,4 +1,7 @@
-﻿public class Config
+﻿namespace GitVersion.Configuration
 {
-    public AssemblyVersioningScheme AssemblyVersioningScheme { get; set; }
+    public class Config
+    {
+        public AssemblyVersioningScheme AssemblyVersioningScheme { get; set; }
+    }
 }

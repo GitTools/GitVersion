@@ -1,6 +1,9 @@
-﻿public enum AssemblyVersioningScheme
+﻿namespace GitVersion
 {
-    MajorMinorPatch,
-    MajorMinor,
-    Major,
+    public enum AssemblyVersioningScheme
+    {
+        MajorMinorPatch,
+        MajorMinor,
+        Major,
+    }
 }
