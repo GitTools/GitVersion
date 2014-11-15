@@ -65,13 +65,14 @@
     <Compile Include="..\GitVersionTask.Tests\Helpers\DirectoryHelper.cs">
       <Link>Helpers\DirectoryHelper.cs</Link>
     </Compile>
-    <Compile Include="CommitCountingRepoFixture.cs" />
+    <Compile Include="Fixtures\CommitCountingRepoFixture.cs" />
     <Compile Include="ConfigReaderTests.cs" />
     <Compile Include="GitDirFinderTests.cs" />
-    <Compile Include="GitFlow\BaseGitFlowRepositoryFixture.cs" />
+    <Compile Include="Fixtures\BaseGitFlowRepositoryFixture.cs" />
     <Compile Include="GitFlow\DevelopScenarios.cs" />
-    <Compile Include="GitFlow\MetaDataByCommitFixture.cs" />
+    <Compile Include="GitFlow\MetaDataByCommitScenarios.cs" />
     <Compile Include="GitFlow\PatchScenarios.cs" />
+    <Compile Include="GitFlow\ReleaseBranchTests.cs" />
     <Compile Include="GitFlow\WikiScenarios.cs" />
     <Compile Include="GitHubFlow\OtherBranchTests.cs" />
     <Compile Include="GitHubFlow\ReleaseBranchTests.cs" />
@@ -81,12 +82,12 @@
     <Compile Include="JsonVersionBuilderTests.cs" />
     <Compile Include="LastVersionOnMasterFinderTests.cs" />
     <Compile Include="ModuleInitializer.cs" />
-    <Compile Include="EmptyRepositoryFixture.cs" />
+    <Compile Include="Fixtures\EmptyRepositoryFixture.cs" />
     <Compile Include="Helpers\GitHelper.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="GitHubFlow\MasterTests.cs" />
     <Compile Include="ApprovalTestsConfig.cs" />
-    <Compile Include="RepositoryFixtureBase.cs" />
+    <Compile Include="Fixtures\RepositoryFixtureBase.cs" />
     <Compile Include="SemanticVersionTests.cs" />
     <Compile Include="ShortVersionParserTests.cs" />
     <Compile Include="VariableProviderTests.cs" />

@@ -3,7 +3,7 @@ using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class MetaDataByCommitFixture
+public class MetaDataByCommitScenarios
 {
     /*
          *  hotfix-1.2.1       -----------C--      
