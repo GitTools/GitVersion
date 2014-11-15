@@ -136,4 +136,30 @@ public class MasterTests
             fixture.AssertFullSemver("1.1.0+0");
         }
     }
+
+    [Test]
+    public void CanSpecifyTagPrefixes()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config{ TagPrefix = "version-"}))
+        {
+            const string TaggedVersion = "version-1.0.3";
+            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+            fixture.Repository.MakeCommits(5);
+
+            fixture.AssertFullSemver("1.0.4+5");
+        }
+    }
+
+    [Test]
+    public void CanSpecifyTagPrefixesAsRegex()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config{ TagPrefix = "[version-|v]"}))
+        {
+            const string TaggedVersion = "v1.0.3";
+            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+            fixture.Repository.MakeCommits(5);
+
+            fixture.AssertFullSemver("1.0.4+5");
+        }
+    }
 }
