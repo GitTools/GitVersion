@@ -1,5 +1,6 @@
 <ProjectConfiguration>
-  <CopyReferencedAssembliesToWorkspace>true</CopyReferencedAssembliesToWorkspace>
+  <BuildPriority>1000</BuildPriority>
+  <CopyReferencedAssembliesToWorkspace>false</CopyReferencedAssembliesToWorkspace>
   <ConsiderInconclusiveTestsAsPassing>false</ConsiderInconclusiveTestsAsPassing>
   <PreloadReferencedAssemblies>false</PreloadReferencedAssemblies>
   <AllowDynamicCodeContractChecking>true</AllowDynamicCodeContractChecking>
@@ -21,6 +22,5 @@
   <UseCPUArchitecture>AutoDetect</UseCPUArchitecture>
   <MSTestThreadApartmentState>STA</MSTestThreadApartmentState>
   <BuildProcessArchitecture>x86</BuildProcessArchitecture>
-  <AdditionalFilesToInclude>..\Tools\Pepita\**.*</AdditionalFilesToInclude>
   <HiddenWarnings>CopyReferencedAssembliesToWorkspaceIsOn;PostBuildEventDisabled</HiddenWarnings>
 </ProjectConfiguration>
