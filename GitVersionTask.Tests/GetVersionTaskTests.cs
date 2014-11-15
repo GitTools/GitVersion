@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using GitVersion;
+using GitVersion.Configuration;
 using GitVersionTask;
 using Microsoft.Build.Framework;
 using NUnit.Framework;
@@ -21,7 +22,7 @@ public class GetVersionTaskTests
             Minor = 2,
             Patch = 3,
             BuildMetaData = new SemanticVersionBuildMetaData(5, "develop", "commitSha",DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
-        }).Keys;
+        }, new Config()).Keys;
 
         CollectionAssert.AreEquivalent(properties, variables);
     }

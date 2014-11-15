@@ -133,10 +133,9 @@
         {
             var assemblyInfoBuilder = new AssemblyInfoBuilder
                                       {
-                                          CachedVersion = semanticVersion,
-                                          AssemblyVersioningScheme = config.AssemblyVersioningScheme,
+                                          CachedVersion = semanticVersion
                                       };
-            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText();
+            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(config);
 
             var tempFileName = string.Format("AssemblyInfo_{0}_{1}.g.cs", Path.GetFileNameWithoutExtension(ProjectFile), Path.GetRandomFileName());
             AssemblyInfoTempFilePath = Path.Combine(TempFileTracker.TempPath, tempFileName);

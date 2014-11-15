@@ -49,6 +49,9 @@
         public string AssemblySemVer { get; set; }
 
         [Output]
+        public string AssemblyFileSemVer { get; set; }
+
+        [Output]
         public string FullSemVer { get; set; }
 
         [Output]
@@ -115,7 +118,7 @@
                 if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch, config))
                 {
                     var thisType = typeof(GetVersion);
-                    var variables = VariableProvider.GetVariablesFor(versionAndBranch.SemanticVersion);
+                    var variables = VariableProvider.GetVariablesFor(versionAndBranch.SemanticVersion, config);
                     foreach (var variable in variables)
                     {
                         thisType.GetProperty(variable.Key).SetValue(this, variable.Value, null);

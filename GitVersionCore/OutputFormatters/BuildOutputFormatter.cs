@@ -1,6 +1,7 @@
 ﻿namespace GitVersion
 {
     using System.Collections.Generic;
+    using GitVersion.Configuration;
 
     public static class BuildOutputFormatter
     {
@@ -8,7 +9,7 @@
         {
             var output = new List<string>();
 
-            foreach (var variable in VariableProvider.GetVariablesFor(semanticVersion))
+            foreach (var variable in VariableProvider.GetVariablesFor(semanticVersion, new Config()))
             {
                 output.AddRange(buildServer.GenerateSetParameterMessage(variable.Key, variable.Value));
             }

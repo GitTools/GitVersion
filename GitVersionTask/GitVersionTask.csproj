@@ -55,7 +55,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfoBuilder\AssemblyInfoBuilder.cs" />
-    <Compile Include="AssemblyInfoBuilder\AssemblyVersionsGenerator.cs" />
     <Compile Include="BuildLogger.cs" />
     <Compile Include="CachedVersion.cs" />
     <Compile Include="DirectoryDateFinder.cs" />

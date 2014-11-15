@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using GitVersion.Configuration;
 
     public static class VariableProvider
     {
@@ -18,6 +19,7 @@
         public const string LegacySemVerPadded = "LegacySemVerPadded";
         public const string FullSemVer = "FullSemVer";
         public const string AssemblySemVer = "AssemblySemVer";
+        public const string AssemblyFileSemVer = "AssemblyFileSemVer";
         public const string ClassicVersion = "ClassicVersion";
         public const string ClassicVersionWithTag = "ClassicVersionWithTag";
         public const string PreReleaseTag = "PreReleaseTag";
@@ -30,8 +32,7 @@
         public const string NuGetVersionV3 = "NuGetVersionV3";
         public const string NuGetVersion = "NuGetVersion";
 
-        public static Dictionary<string, string> GetVariablesFor(
-            SemanticVersion semanticVersion)
+        public static Dictionary<string, string> GetVariablesFor(SemanticVersion semanticVersion, Config configuration)
         {
             var bmd = semanticVersion.BuildMetaData;
             var formatter = bmd.Branch == "develop" ? new CiFeedFormatter() : null;
@@ -49,7 +50,8 @@
                 {SemVer, semanticVersion.ToString(null, formatter)},
                 {LegacySemVer, semanticVersion.ToString("l", formatter)},
                 {LegacySemVerPadded, semanticVersion.ToString("lp", formatter)},
-                {AssemblySemVer, semanticVersion.ToString("j") + ".0"},
+                {AssemblySemVer, semanticVersion.GetAssemblyVersion(configuration.AssemblyVersioningScheme)},
+                {AssemblyFileSemVer, semanticVersion.GetAssemblyFileVersion(configuration.AssemblyVersioningScheme)},
                 {FullSemVer, semanticVersion.ToString("f", formatter)},
                 {InformationalVersion, semanticVersion.ToString("i", formatter)},
                 {ClassicVersion, string.Format("{0}.{1}", semanticVersion.ToString("j"), (bmd.CommitsSinceTag ?? 0))},

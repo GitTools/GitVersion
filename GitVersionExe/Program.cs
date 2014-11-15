@@ -80,9 +80,10 @@ namespace GitVersion
                 }
                 SemanticVersion semanticVersion;
                 var versionFinder = new GitVersionFinder();
+                var configuration = ConfigurationProvider.Provide(gitDirectory);
                 using (var repo = RepositoryLoader.GetRepo(gitDirectory))
                 {
-                    var gitVersionContext = new GitVersionContext(repo, ConfigurationProvider.Provide(gitDirectory));
+                    var gitVersionContext = new GitVersionContext(repo, configuration);
                     semanticVersion = versionFinder.FindVersion(gitVersionContext);
                 }
 
@@ -94,7 +95,7 @@ namespace GitVersion
                     }
                 }
 
-                var variables = VariableProvider.GetVariablesFor(semanticVersion);
+                var variables = VariableProvider.GetVariablesFor(semanticVersion, configuration);
                 if (arguments.Output == OutputType.Json)
                 {
                     switch (arguments.VersionPart)

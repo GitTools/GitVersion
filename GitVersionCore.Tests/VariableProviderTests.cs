@@ -1,5 +1,6 @@
 ﻿using System;
 using GitVersion;
+using GitVersion.Configuration;
 using NUnit.Framework;
 using Shouldly;
 
@@ -22,7 +23,7 @@ public class VariableProviderTests
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
 
-        var vars = VariableProvider.GetVariablesFor(semVer);
+        var vars = VariableProvider.GetVariablesFor(semVer, new Config());
 
         vars[VariableProvider.SemVer].ShouldBe("1.2.3.5-unstable");
     }

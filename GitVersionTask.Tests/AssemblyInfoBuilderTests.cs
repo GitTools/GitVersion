@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using ApprovalTests;
 using GitVersion;
+using GitVersion.Configuration;
 using NUnit.Framework;
 using Roslyn.Compilers;
 using Roslyn.Compilers.CSharp;
@@ -32,7 +33,7 @@ public class AssemblyInfoBuilderTests
                     MasterReleaseDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z"),
                 }
             };
-        var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText();
+        var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(new Config());
         Approvals.Verify(assemblyInfoText);
         var syntaxTree = SyntaxTree.ParseText(assemblyInfoText);
         var references = new[] {new MetadataFileReference(typeof(object).Assembly.Location)};
@@ -62,6 +63,13 @@ public class AssemblyInfoBuilderTests
         VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatch);
     }
 
+    [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public void VerifyAssemblyVersion_MajorMinorPatchMetadata()
+    {
+        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatchMetadata);
+    }
+
     static void VerifyAssemblyVersion(AssemblyVersioningScheme avs)
     {
         var semanticVersion = new SemanticVersion
@@ -79,10 +87,9 @@ public class AssemblyInfoBuilderTests
                 SemanticVersion = semanticVersion,
                 MasterReleaseDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z")
             },
-            AssemblyVersioningScheme = avs,
         };
 
-        var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText();
+        var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(new Config { AssemblyVersioningScheme = avs });
         Approvals.Verify(assemblyInfoText);
         var syntaxTree = SyntaxTree.ParseText(assemblyInfoText);
         var references = new[] { new MetadataFileReference(typeof(object).Assembly.Location)};

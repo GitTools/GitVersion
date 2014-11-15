@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using GitVersion;
+using GitVersion.Configuration;
 
 public class AssemblyInfoBuilder
 {
     public CachedVersion CachedVersion;
-    public AssemblyVersioningScheme AssemblyVersioningScheme;
 
-    public string GetAssemblyInfoText()
+    public string GetAssemblyInfoText(Config configuration)
     {
         var semanticVersion = CachedVersion.SemanticVersion;
-        var vars = VariableProvider.GetVariablesFor(semanticVersion);
+        var vars = VariableProvider.GetVariablesFor(semanticVersion, configuration);
         var assemblyInfo = string.Format(@"
 using System;
 using System.Reflection;
@@ -40,7 +40,9 @@ static class GitVersionInformation
 }}
 
 
-", semanticVersion.GetAssemblyVersion(AssemblyVersioningScheme), string.Format("{0}.{1}.{2}.0", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch), semanticVersion.ToString("i"),
+", vars[VariableProvider.AssemblySemVer],
+ vars[VariableProvider.AssemblyFileSemVer], 
+ semanticVersion.ToString("i"),
             CachedVersion.MasterReleaseDate.UtcDateTime.ToString("yyyy-MM-dd"),
             semanticVersion.BuildMetaData.CommitDate.UtcDateTime.ToString("yyyy-MM-dd"),
             GenerateVariableMembers(vars));

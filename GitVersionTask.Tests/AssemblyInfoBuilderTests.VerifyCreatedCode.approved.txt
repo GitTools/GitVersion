@@ -35,6 +35,7 @@ static class GitVersionInformation
     public static string LegacySemVer = "1.2.3-unstable4";
     public static string LegacySemVerPadded = "1.2.3-unstable0004";
     public static string AssemblySemVer = "1.2.3.0";
+    public static string AssemblyFileSemVer = "1.2.3.0";
     public static string FullSemVer = "1.2.3-unstable.4+5";
     public static string InformationalVersion = "1.2.3-unstable.4+5.Branch.feature1.Sha.commitSha";
     public static string ClassicVersion = "1.2.3.5";
