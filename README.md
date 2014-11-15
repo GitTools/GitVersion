@@ -36,6 +36,12 @@ Because not everyone is the same, we give you a bunch of different variables whi
 
 ### [Semantic Versioning](http://semver.org/)
 
+## Chat
+
+Have questions?  Come join in the chat room:
+
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/ParticularLabs/GitVersion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## Icon
 
 <a href="http://thenounproject.com/noun/tree/#icon-No13389" target="_blank">Tree</a> designed by <a href="http://thenounproject.com/david.chapman" target="_blank">David Chapman</a> from The Noun Project
