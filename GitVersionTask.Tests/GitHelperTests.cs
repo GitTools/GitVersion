@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Linq;
 using GitVersion;
+using GitVersion.Configuration;
 using LibGit2Sharp;
 using NUnit.Framework;
 
@@ -17,7 +18,7 @@ public class GitHelperTests : Lg2sHelperBase
 
         using (var repository = new Repository(gitDirectory))
         {
-            var semanticVersion = new GitVersionFinder().FindVersion(new GitVersionContext(repository));
+            var semanticVersion = new GitVersionFinder().FindVersion(new GitVersionContext(repository, new Config()));
             Assert.IsNotNull(semanticVersion);
         }
     }
@@ -35,7 +36,7 @@ public class GitHelperTests : Lg2sHelperBase
 
         using (var repository = new Repository(gitDirectory))
         {
-            var semanticVersion = new GitVersionFinder().FindVersion(new GitVersionContext(repository));
+            var semanticVersion = new GitVersionFinder().FindVersion(new GitVersionContext(repository, new Config()));
             Assert.IsNotNull(semanticVersion);
         }
     }
@@ -50,7 +51,7 @@ public class GitHelperTests : Lg2sHelperBase
 
         using (var repository = new Repository(gitDirectory))
         {
-            var semanticVersion = new GitVersionFinder().FindVersion(new GitVersionContext(repository));
+            var semanticVersion = new GitVersionFinder().FindVersion(new GitVersionContext(repository, new Config()));
             Assert.IsNotNull(semanticVersion);
         }
     }
@@ -65,7 +66,7 @@ public class GitHelperTests : Lg2sHelperBase
 
         using (var repository = new Repository(gitDirectory))
         {
-            var semanticVersion = new GitVersionFinder().FindVersion(new GitVersionContext(repository));
+            var semanticVersion = new GitVersionFinder().FindVersion(new GitVersionContext(repository, new Config()));
             Assert.IsNotNull(semanticVersion);
         }
     }

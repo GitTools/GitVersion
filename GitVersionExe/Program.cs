@@ -6,6 +6,7 @@ namespace GitVersion
     using System.IO;
     using System.Linq;
     using System.Text;
+    using GitVersion.Configuration;
 
     class Program
     {
@@ -78,9 +79,11 @@ namespace GitVersion
                     buildServer.PerformPreProcessingSteps(gitDirectory);
                 }
                 SemanticVersion semanticVersion;
+                var versionFinder = new GitVersionFinder();
                 using (var repo = RepositoryLoader.GetRepo(gitDirectory))
                 {
-                    semanticVersion = GitVersionFinder.GetSemanticVersion(repo);
+                    var gitVersionContext = new GitVersionContext(repo, ConfigurationProvider.Provide(gitDirectory));
+                    semanticVersion = versionFinder.FindVersion(gitVersionContext);
                 }
 
                 if (arguments.Output == OutputType.BuildServer)

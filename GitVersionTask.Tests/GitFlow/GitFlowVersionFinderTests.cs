@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using GitVersion;
+using GitVersion.Configuration;
 using LibGit2Sharp;
 using NUnit.Framework;
 using ObjectApproval;
@@ -19,7 +20,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             var finder = new GitVersionFinder();
 
-            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo)));
+            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, new Config())));
         }
     }
 
@@ -35,7 +36,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             var finder = new GitVersionFinder();
 
-            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo)));
+            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, new Config())));
         }
     }
 
@@ -56,7 +57,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             var finder = new GitVersionFinder();
 
-            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, feature)));
+            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, feature, new Config())));
         }
     }
 
@@ -77,7 +78,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             var finder = new GitVersionFinder();
 
-            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, feature)));
+            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, feature, new Config())));
         }
     }
 
@@ -98,7 +99,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             var finder = new GitVersionFinder();
 
-            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, pull)));
+            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, pull, new Config())));
         }
     }
 
@@ -117,7 +118,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             var finder = new GitVersionFinder();
 
-            var versionAndBranch = finder.FindVersion(new GitVersionContext(repo));
+            var versionAndBranch = finder.FindVersion(new GitVersionContext(repo, new Config()));
 
             ObjectApprover.VerifyWithJson(versionAndBranch, Scrubbers.GuidAndDateScrubber);
         }
@@ -138,7 +139,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             var finder = new GitVersionFinder();
 
-            var versionAndBranch = finder.FindVersion(new GitVersionContext(repo));
+            var versionAndBranch = finder.FindVersion(new GitVersionContext(repo, new Config()));
 
             ObjectApprover.VerifyWithJson(versionAndBranch, Scrubbers.GuidAndDateScrubber);
         }
@@ -166,7 +167,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
 
             var finder = new GitVersionFinder();
 
-            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, feature)));
+            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, feature, new Config())));
         }
     }
 }

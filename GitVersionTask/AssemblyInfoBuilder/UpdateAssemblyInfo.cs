@@ -63,30 +63,22 @@
 
             InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
 
+            var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
+            var config = ConfigurationProvider.Provide(gitDirectory);
+
             CachedVersion semanticVersion;
-            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion))
+            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion, config))
             {
                 return;
             }
-
-            CreateTempAssemblyInfo(semanticVersion);
+            CreateTempAssemblyInfo(semanticVersion, config);
         }
 
-        AssemblyVersioningScheme GetAssemblyVersioningScheme()
+        AssemblyVersioningScheme GetAssemblyVersioningScheme(Config config)
         {
             if (string.IsNullOrWhiteSpace(AssemblyVersioningScheme))
             {
-                var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
-
-                var configFilePath = Path.Combine(Directory.GetParent(gitDirectory).FullName, "GitVersionConfig.yaml");
-                if (File.Exists(configFilePath))
-                {
-                    using (var reader = File.OpenText(configFilePath))
-                    {
-                        return ConfigReader.Read(reader).AssemblyVersioningScheme;
-                    }
-                }
-                return GitVersion.AssemblyVersioningScheme.MajorMinorPatch;
+                return config.AssemblyVersioningScheme;
             }
 
             AssemblyVersioningScheme versioningScheme;
@@ -99,9 +91,9 @@
             throw new WarningException(string.Format("Unexpected assembly versioning scheme '{0}'.", AssemblyVersioningScheme));
         }
 
-        void CreateTempAssemblyInfo(CachedVersion semanticVersion)
+        void CreateTempAssemblyInfo(CachedVersion semanticVersion, Config config)
         {
-            var versioningScheme = GetAssemblyVersioningScheme();
+            var versioningScheme = GetAssemblyVersioningScheme(config);
             var assemblyInfoBuilder = new AssemblyInfoBuilder
                                       {
                                           CachedVersion = semanticVersion,

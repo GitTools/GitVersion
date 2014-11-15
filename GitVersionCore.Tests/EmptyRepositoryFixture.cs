@@ -1,10 +1,11 @@
 ﻿using System;
+using GitVersion.Configuration;
 using LibGit2Sharp;
 
 public class EmptyRepositoryFixture : RepositoryFixtureBase
 {
     public EmptyRepositoryFixture() :
-        base(CreateNewRepository)
+        base(CreateNewRepository, new Config())
     {
     }
 

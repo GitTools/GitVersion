@@ -1,4 +1,5 @@
-﻿using LibGit2Sharp;
+﻿using GitVersion.Configuration;
+using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
@@ -17,7 +18,7 @@ public class VersionAndBranchFinderTests: Lg2sHelperBase
 
         }
         CachedVersion versionAndBranch;
-        VersionAndBranchFinder.TryGetVersion(ASBMTestRepoWorkingDirPath, out versionAndBranch);
+        VersionAndBranchFinder.TryGetVersion(ASBMTestRepoWorkingDirPath, out versionAndBranch, new Config());
         Assert.IsNotNull(versionAndBranch);
     }
 }

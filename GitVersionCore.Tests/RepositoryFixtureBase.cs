@@ -1,5 +1,6 @@
 using System;
 using GitVersion;
+using GitVersion.Configuration;
 using LibGit2Sharp;
 using Shouldly;
 
@@ -7,9 +8,11 @@ public abstract class RepositoryFixtureBase : IDisposable
 {
     public string RepositoryPath;
     public IRepository Repository;
+    Config configuration;
 
-    protected RepositoryFixtureBase(Func<string, IRepository> repoBuilder)
+    protected RepositoryFixtureBase(Func<string, IRepository> repoBuilder, Config configuration)
     {
+        this.configuration = configuration;
         RepositoryPath = PathHelper.GetTempPath();
         Repository = repoBuilder(RepositoryPath);
         Repository.Config.Set("user.name", "Test");
@@ -19,7 +22,7 @@ public abstract class RepositoryFixtureBase : IDisposable
     public SemanticVersion ExecuteGitVersion()
     {
         var vf = new GitVersionFinder();
-        return vf.FindVersion(new GitVersionContext(Repository));
+        return vf.FindVersion(new GitVersionContext(Repository, configuration));
     }
 
     public void AssertFullSemver(string fullSemver)

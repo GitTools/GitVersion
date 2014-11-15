@@ -1,4 +1,5 @@
 ﻿using GitVersion;
+using GitVersion.Configuration;
 using NUnit.Framework;
 using Shouldly;
 
@@ -16,7 +17,7 @@ public class MergedBranchesWithVersionFinderTests
                 MessageEx = "Merge branch 'release-2.0.0'"
             }
         };
-        var sut = new MergedBranchesWithVersionFinder(new GitVersionContext(null, currentBranch));
+        var sut = new MergedBranchesWithVersionFinder(new GitVersionContext(null, currentBranch, new Config()));
 
         SemanticVersion version;
         sut.TryGetVersion(out version);

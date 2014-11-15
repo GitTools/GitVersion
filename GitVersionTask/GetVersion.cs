@@ -2,6 +2,7 @@
 {
     using System;
     using GitVersion;
+    using GitVersion.Configuration;
     using Microsoft.Build.Framework;
     using Microsoft.Build.Utilities;
     using Logger = GitVersion.Logger;
@@ -85,7 +86,9 @@
             try
             {
                 CachedVersion versionAndBranch;
-                if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch))
+                var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
+                var config = ConfigurationProvider.Provide(gitDirectory);
+                if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch, config))
                 {
                     var thisType = typeof(GetVersion);
                     var variables = VariableProvider.GetVariablesFor(versionAndBranch.SemanticVersion);

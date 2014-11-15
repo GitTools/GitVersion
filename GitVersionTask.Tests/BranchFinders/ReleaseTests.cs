@@ -1,5 +1,6 @@
 using System;
 using GitVersion;
+using GitVersion.Configuration;
 using LibGit2Sharp;
 using NUnit.Framework;
 using ObjectApproval;
@@ -20,7 +21,7 @@ public class ReleaseTests : Lg2sHelperBase
 
             var finder = new ReleaseVersionFinder();
 
-            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, releaseBranch)));
+            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, releaseBranch, new Config())));
         }
     }
 
@@ -37,7 +38,7 @@ public class ReleaseTests : Lg2sHelperBase
 
             var finder = new ReleaseVersionFinder();
 
-            Assert.Throws<Exception>(() => finder.FindVersion(new GitVersionContext(repo, releaseBranch)));
+            Assert.Throws<Exception>(() => finder.FindVersion(new GitVersionContext(repo, releaseBranch, new Config())));
         }
     }
 
@@ -55,7 +56,7 @@ public class ReleaseTests : Lg2sHelperBase
 
             var finder = new ReleaseVersionFinder();
 
-            var version = finder.FindVersion(new GitVersionContext(repo, repo.Head));
+            var version = finder.FindVersion(new GitVersionContext(repo, repo.Head, new Config()));
             ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
         }
     }

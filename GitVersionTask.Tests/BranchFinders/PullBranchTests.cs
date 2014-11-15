@@ -1,4 +1,5 @@
 using GitVersion;
+using GitVersion.Configuration;
 using LibGit2Sharp;
 using NUnit.Framework;
 using ObjectApproval;
@@ -35,7 +36,7 @@ public class PullBranchTests : Lg2sHelperBase
 
             var finder = new PullVersionFinder();
 
-            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, pullBranch)));
+            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, pullBranch, new Config())));
         }
     }
 
@@ -54,7 +55,7 @@ public class PullBranchTests : Lg2sHelperBase
 
             var finder = new PullVersionFinder();
 
-            var version = finder.FindVersion(new GitVersionContext(repo, pullBranch));
+            var version = finder.FindVersion(new GitVersionContext(repo, pullBranch, new Config()));
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
@@ -80,7 +81,7 @@ public class PullBranchTests : Lg2sHelperBase
 
             var finder = new PullVersionFinder();
 
-            var version = finder.FindVersion(new GitVersionContext(repo, pullBranch));
+            var version = finder.FindVersion(new GitVersionContext(repo, pullBranch, new Config()));
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 

@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using GitVersion;
+using GitVersion.Configuration;
 
 public static class VersionAndBranchFinder
 {
     static List<string> processedDirectories = new List<string>(); 
-    public static bool TryGetVersion(string directory, out CachedVersion versionAndBranch)
+    public static bool TryGetVersion(string directory, out CachedVersion versionAndBranch, Config configuration)
     {
         var gitDirectory = GitDirFinder.TreeWalkForGitDir(directory);
 
@@ -30,7 +31,7 @@ public static class VersionAndBranchFinder
                 buildServer.PerformPreProcessingSteps(gitDirectory);
             }
         }
-        versionAndBranch = VersionCache.GetVersion(gitDirectory);
+        versionAndBranch = VersionCache.GetVersion(gitDirectory, configuration);
         return true;
     }
 }

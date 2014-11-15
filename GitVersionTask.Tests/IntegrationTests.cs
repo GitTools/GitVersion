@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Linq;
 using GitVersion;
+using GitVersion.Configuration;
 using LibGit2Sharp;
 using NUnit.Framework;
 
@@ -35,7 +36,7 @@ public class IntegrationTests
             var branch = repository.Branches.First(x => x.Name == "develop");
 
             var finder = new GitVersionFinder();
-            finder.FindVersion(new GitVersionContext(repository, branch));
+            finder.FindVersion(new GitVersionContext(repository, branch, new Config()));
         }
         Debug.WriteLine(startNew.ElapsedMilliseconds);
         startNew = Stopwatch.StartNew();
@@ -44,7 +45,7 @@ public class IntegrationTests
             var branch = repository.Branches.First(x => x.Name == "develop");
 
             var finder = new GitVersionFinder();
-            finder.FindVersion(new GitVersionContext(repository, branch));
+            finder.FindVersion(new GitVersionContext(repository, branch, new Config()));
         }
         Debug.WriteLine(startNew.ElapsedMilliseconds);
     }
@@ -68,7 +69,7 @@ public class IntegrationTests
             var branch = repository.Branches.First(x => x.Name == "release-4.1.0");
 
             var finder = new GitVersionFinder();
-            var version = finder.FindVersion(new GitVersionContext(repository, branch));
+            var version = finder.FindVersion(new GitVersionContext(repository, branch, new Config()));
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
@@ -86,7 +87,7 @@ public class IntegrationTests
             repository.Checkout("c0e0a5e13775552cd3e08e039f453e4cf1fd4235");
 
             var finder = new GitVersionFinder();
-            var version = finder.FindVersion(new GitVersionContext(repository, branch));
+            var version = finder.FindVersion(new GitVersionContext(repository, branch, new Config()));
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
@@ -103,7 +104,7 @@ public class IntegrationTests
             var branch = repository.Branches.First(x => x.Name == "hotfix-4.1.1");
 
             var finder = new GitVersionFinder();
-            var version = finder.FindVersion(new GitVersionContext(repository, branch));
+            var version = finder.FindVersion(new GitVersionContext(repository, branch, new Config()));
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
@@ -120,7 +121,7 @@ public class IntegrationTests
             var branch = repository.Branches.First(x => x.Name == "master");
 
             var finder = new GitVersionFinder();
-            var version = finder.FindVersion(new GitVersionContext(repository, branch));
+            var version = finder.FindVersion(new GitVersionContext(repository, branch, new Config()));
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
@@ -137,7 +138,7 @@ public class IntegrationTests
             var branch = repository.Branches.First(x => x.Name == "develop");
 
             var finder = new GitVersionFinder();
-            var version = finder.FindVersion(new GitVersionContext(repository, branch));
+            var version = finder.FindVersion(new GitVersionContext(repository, branch, new Config()));
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
@@ -154,7 +155,7 @@ public class IntegrationTests
             var branch = repository.Head;
 
             var finder = new GitVersionFinder();
-            var version = finder.FindVersion(new GitVersionContext(repository, branch));
+            var version = finder.FindVersion(new GitVersionContext(repository, branch, new Config()));
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
@@ -184,7 +185,7 @@ public class IntegrationTests
             repository.Checkout("c0e0a5e13775552cd3e08e039f453e4cf1fd4235");
 
             var finder = new GitVersionFinder();
-            var version = finder.FindVersion(new GitVersionContext(repository, branch));
+            var version = finder.FindVersion(new GitVersionContext(repository, branch, new Config()));
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
@@ -201,7 +202,7 @@ public class IntegrationTests
             var branch = repository.Branches.First(x => x.Name == "develop");
 
             var finder = new GitVersionFinder();
-            var version = finder.FindVersion(new GitVersionContext(repository, branch));
+            var version = finder.FindVersion(new GitVersionContext(repository, branch, new Config()));
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);
@@ -217,7 +218,7 @@ public class IntegrationTests
             var branch = repository.FindBranch("develop");
 
             var finder = new GitVersionFinder();
-            var version = finder.FindVersion(new GitVersionContext(repository, branch));
+            var version = finder.FindVersion(new GitVersionContext(repository, branch, new Config()));
             Debug.WriteLine(version.Major);
             Debug.WriteLine(version.Minor);
             Debug.WriteLine(version.Patch);

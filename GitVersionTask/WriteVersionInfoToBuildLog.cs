@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using GitVersion;
+    using GitVersion.Configuration;
     using Microsoft.Build.Framework;
     using Microsoft.Build.Utilities;
     using Logger = GitVersion.Logger;
@@ -47,7 +48,9 @@
         public void InnerExecute()
         {
             CachedVersion semanticVersion;
-            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion))
+            var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
+            var config = ConfigurationProvider.Provide(gitDirectory);
+            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion, config))
             {
                 return;
             }
