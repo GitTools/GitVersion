@@ -16,6 +16,8 @@
 
         public string ReleaseBranchTag { get; set; }
 
+        public string TagPrefix { get; set; }
+
         [Required]
         public string SolutionDirectory { get; set; }
 
@@ -95,6 +97,11 @@
             if (ReleaseBranchTag != null)
             {
                 config.ReleaseBranchTag = ReleaseBranchTag;
+            }
+
+            if (TagPrefix != null)
+            {
+                config.TagPrefix = TagPrefix;
             }
 
             CachedVersion semanticVersion;

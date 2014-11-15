@@ -76,6 +76,8 @@
 
         public string ReleaseBranchTag { get; set; }
 
+        public string TagPrefix { get; set; }
+
         TaskLogger logger;
 
         public GetVersion()
@@ -103,6 +105,11 @@
                 if (ReleaseBranchTag != null)
                 {
                     config.ReleaseBranchTag = ReleaseBranchTag;
+                }
+
+                if (TagPrefix != null)
+                {
+                    config.TagPrefix = TagPrefix;
                 }
 
                 if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch, config))
