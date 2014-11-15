@@ -9,7 +9,7 @@ public class ConfigReaderTests
     public void CanReadDocument()
     {
         var text = "assemblyVersioningScheme: MajorMinor";
-          var config = ConfigReader.Read(new StringReader(text));
+        var config = ConfigReader.Read(new StringReader(text));
         Assert.AreEqual(AssemblyVersioningScheme.MajorMinor, config.AssemblyVersioningScheme);
     }
 
