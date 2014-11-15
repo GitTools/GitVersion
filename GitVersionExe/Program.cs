@@ -14,8 +14,24 @@ namespace GitVersion
 
         static void Main()
         {
-            int? exitCode = null;
+            var exitCode = Run();
 
+            if (Debugger.IsAttached)
+            {
+                Console.ReadKey();
+            }
+
+            if (exitCode != 0)
+            {
+                // Dump log to console if we fail to complete successfully
+                Console.Write(log.ToString());
+            } 
+            
+            Environment.Exit(exitCode);
+        }
+
+        static int Run()
+        {
             try
             {
                 Arguments arguments;
@@ -29,17 +45,19 @@ namespace GitVersion
                     Console.WriteLine("Failed to parse arguments: {0}", string.Join(" ", argumentsWithoutExeName));
 
                     HelpWriter.Write();
-                    return;
+                    return 1;
                 }
 
                 if (arguments.IsHelp)
                 {
                     HelpWriter.Write();
-                    return;
+                    return 0;
                 }
 
                 if (!string.IsNullOrEmpty(arguments.Proj) || !string.IsNullOrEmpty(arguments.Exec))
+                {
                     arguments.Output = OutputType.BuildServer;
+                }
 
                 ConfigureLogging(arguments);
 
@@ -48,7 +66,7 @@ namespace GitVersion
                 if (string.IsNullOrEmpty(gitDirectory))
                 {
                     Console.Error.WriteLine("Failed to prepare or find the .git directory in path '{0}'", arguments.TargetPath);
-                    Environment.Exit(1);
+                    return 1;
                 }
 
                 var workingDirectory = Directory.GetParent(gitDirectory).FullName;
@@ -119,33 +137,16 @@ namespace GitVersion
             {
                 var error = string.Format("An error occurred:\r\n{0}", exception.Message);
                 Logger.WriteWarning(error);
-
-                exitCode = 1;
+                return 1;
             }
             catch (Exception exception)
             {
                 var error = string.Format("An unexpected error occurred:\r\n{0}", exception);
                 Logger.WriteError(error);
-
-                exitCode = 1;
+                return 1;
             }
 
-            if (Debugger.IsAttached)
-            {
-                Console.ReadKey();
-            }
-
-            if (!exitCode.HasValue)
-            {
-                exitCode = 0;
-            }
-            else
-            {
-                // Dump log to console if we fail to complete successfully
-                Console.Write(log.ToString());
-            }
-
-            Environment.Exit(exitCode.Value);
+            return 0;
         }
 
         static IEnumerable<IBuildServer> GetApplicableBuildServers(Authentication authentication)

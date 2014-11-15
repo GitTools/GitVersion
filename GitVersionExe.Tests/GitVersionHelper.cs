@@ -12,15 +12,19 @@ public static class GitVersionHelper
         bool isTeamCity = false)
     {
         var logFile = Path.Combine(workingDirectory, "log.txt");
-        var gitHubFlowVersion = Path.Combine(PathHelper.GetCurrentDirectory(), "GitVersion.exe");
-        var execArg = exec == null ? null : string.Format(" /exec \"{0}\"", exec);
-        var execArgsArg = execArgs == null ? null : string.Format(" /execArgs \"{0}\"", execArgs);
-        var projectFileArg = projectFile == null ? null : string.Format(" /proj \"{0}\"", projectFile);
-        var targetsArg = projectArgs == null ? null : string.Format(" /projargs \"{0}\"", projectArgs);
-        var logArg = string.Format(" /l \"{0}\"", logFile);
-        var arguments = string.Format("\"{0}\"{1}{2}{3}{4}{5}", workingDirectory, execArg, execArgsArg,
-            projectFileArg, targetsArg, logArg);
+        var args = new ArgumentBuilder(workingDirectory, exec, execArgs, projectFile, projectArgs, logFile, isTeamCity);
+        return ExecuteIn(args);
+    }
 
+    public static ExecutionResults ExecuteIn(string workingDirectory, string arguments, bool isTeamCity = false)
+    {
+        var args = new ArgumentBuilder(workingDirectory, arguments, isTeamCity);
+        return ExecuteIn(args);
+    }
+
+    static ExecutionResults ExecuteIn(ArgumentBuilder arguments)
+    {
+        var gitHubFlowVersion = Path.Combine(PathHelper.GetCurrentDirectory(), "GitVersion.exe");
         var output = new StringBuilder();
 
         Console.WriteLine("Executing: {0} {1}", gitHubFlowVersion, arguments);
@@ -28,21 +32,27 @@ public static class GitVersionHelper
         var environmentalVariables =
             new[]
             {
-                new KeyValuePair<string, string>("TEAMCITY_VERSION", isTeamCity ? "8.0.0" : null)
+                new KeyValuePair<string, string>("TEAMCITY_VERSION", arguments.IsTeamCity ? "8.0.0" : null)
             };
 
         var exitCode = ProcessHelper.Run(
             s => output.AppendLine(s), s => output.AppendLine(s), null,
-            gitHubFlowVersion, arguments, workingDirectory,
+            gitHubFlowVersion, arguments.ToString(), arguments.WorkingDirectory,
             environmentalVariables);
 
-        var logContents = File.ReadAllText(logFile);
         Console.WriteLine("Output from GitVersion.exe");
         Console.WriteLine("-------------------------------------------------------");
         Console.WriteLine(output.ToString());
         Console.WriteLine();
         Console.WriteLine();
         Console.WriteLine("-------------------------------------------------------");
+
+        if (string.IsNullOrWhiteSpace(arguments.LogFile))
+        {
+            return new ExecutionResults(exitCode, output.ToString(), null);
+        }
+
+        var logContents = File.ReadAllText(arguments.LogFile);
         Console.WriteLine("Log from GitVersion.exe");
         Console.WriteLine("-------------------------------------------------------");
         Console.WriteLine(logContents);
