@@ -35,9 +35,9 @@ public class BranchClassifierTests
     [Test]
     public void IsDevelop()
     {
-        Assert.IsTrue(new MockBranch("develop").IsDevelop());
-        Assert.IsTrue(new MockBranch("Develop").IsDevelop());
-        Assert.IsFalse(new MockBranch("hotfix1").IsDevelop());
+        Assert.IsTrue(new MockBranch("develop").IsDevelop(new Config()));
+        Assert.IsTrue(new MockBranch("Develop").IsDevelop(new Config()));
+        Assert.IsFalse(new MockBranch("hotfix1").IsDevelop(new Config()));
     }
     [Test]
     public void IsMaster()

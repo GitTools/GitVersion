@@ -9,9 +9,9 @@ namespace GitVersion
             GitVersionContext context,
             BranchType branchType)
         {
-            var ancestor = FindCommonAncestorWithDevelop(context.Repository, context.CurrentBranch, branchType);
+            var ancestor = FindCommonAncestorWithDevelop(context.Repository, context.CurrentBranch, branchType, context.Configuration);
 
-            if (!IsThereAnyCommitOnTheBranch(context.Repository, context.CurrentBranch))
+            if (!IsThereAnyCommitOnTheBranch(context.Repository, context.CurrentBranch, context.Configuration))
             {
                 var developVersionFinder = new DevelopVersionFinder();
                 return developVersionFinder.FindVersion(context);
@@ -54,10 +54,10 @@ namespace GitVersion
                 .Count();
         }
 
-        Commit FindCommonAncestorWithDevelop(IRepository repo, Branch branch, BranchType branchType)
+        Commit FindCommonAncestorWithDevelop(IRepository repo, Branch branch, BranchType branchType, Config configuration)
         {
             var ancestor = repo.Commits.FindMergeBase(
-                repo.FindBranch("develop").Tip,
+                repo.FindBranch(configuration.DevelopBranchName).Tip,
                 branch.Tip);
 
             if (ancestor != null)
@@ -71,12 +71,12 @@ namespace GitVersion
                     , branchType, branch.Name));
         }
 
-        public bool IsThereAnyCommitOnTheBranch(IRepository repo, Branch branch)
+        public bool IsThereAnyCommitOnTheBranch(IRepository repo, Branch branch, Config config)
         {
             var filter = new CommitFilter
             {
                 Since = branch,
-                Until = repo.FindBranch("develop")
+                Until = repo.FindBranch(config.DevelopBranchName)
             };
 
             var commits = repo.Commits.QueryBy(filter);

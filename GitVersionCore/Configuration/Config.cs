@@ -8,6 +8,7 @@
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch;
             DevelopBranchTag = "unstable";
+            DevelopBranchName = "develop";
             ReleaseBranchTag = "beta";
             TagPrefix = "v";
         }
@@ -16,6 +17,9 @@
 
         [YamlAlias("develop-branch-tag")]
         public string DevelopBranchTag { get; set; }
+
+        [YamlAlias("develop-branch-name")]
+        public string DevelopBranchName { get; set; }
 
         [YamlAlias("release-branch-tag")]
         public string ReleaseBranchTag { get; set; }

@@ -19,7 +19,7 @@ namespace GitVersion
                 return new ReleaseVersionFinder().FindVersion(context);
             }
 
-            if (context.CurrentBranch.IsDevelop())
+            if (context.CurrentBranch.IsDevelop(context.Configuration))
             {
                 return new DevelopVersionFinder().FindVersion(context);
             }
