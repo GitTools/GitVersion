@@ -63,6 +63,16 @@
     <Compile Include="AssemblyInfoFileUpdate.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="GemAssets\.rspec" />
+    <None Include="GemAssets\bin\gitversion" />
+    <None Include="GemAssets\Gemfile" />
+    <None Include="GemAssets\gitversion.gemspec" />
+    <None Include="GemAssets\Guardfile" />
+    <None Include="GemAssets\lib\git_version.rb" />
+    <None Include="GemAssets\lib\git_version\parser.rb" />
+    <None Include="GemAssets\spec\lib\git_version\parser_spec.rb" />
+    <None Include="GemAssets\spec\lib\git_version_spec.rb" />
+    <None Include="GemAssets\spec\spec_helper.rb" />
     <None Include="NugetAssets\chocolateyInstall.ps1">
       <SubType>Designer</SubType>
     </None>
@@ -76,6 +86,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="GemAssets\.gitignore" />
     <EmbeddedResource Include="..\Packages\LibGit2Sharp.0.19.0.0\lib\net40\NativeBinaries\amd64\git2-69db893.dll">
       <Link>costura64\git2-69db893.dll</Link>
     </EmbeddedResource>
