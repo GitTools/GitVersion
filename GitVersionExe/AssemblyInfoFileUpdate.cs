@@ -47,9 +47,11 @@ namespace GitVersion
         {
             if (args.UpdateAssemblyInfoFileName != null)
             {
-                if (File.Exists(args.UpdateAssemblyInfoFileName))
+                var fullPath = Path.Combine(workingDirectory, args.UpdateAssemblyInfoFileName);
+
+                if (File.Exists(fullPath))
                 {
-                    return new[] { Path.GetFullPath(args.UpdateAssemblyInfoFileName) };
+                    return new[] { fullPath };
                 }
             }
 
