@@ -114,7 +114,7 @@ namespace GitVersion
                     }
                 }
 
-                using (var assemblyInfoUpdate = new AssemblyInfoFileUpdate(arguments, workingDirectory, variables))
+                using (var assemblyInfoUpdate = new AssemblyInfoFileUpdate(arguments, workingDirectory, variables, new FileSystem()))
                 {
                     var execRun = RunExecCommandIfNeeded(arguments, workingDirectory, variables);
                     var msbuildRun = RunMsBuildIfNeeded(arguments, workingDirectory, variables);

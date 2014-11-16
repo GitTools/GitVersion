@@ -55,8 +55,10 @@
     <Compile Include="ArgumentParser.cs" />
     <Compile Include="Arguments.cs" />
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="FileSystem.cs" />
     <Compile Include="GitPreparer.cs" />
     <Compile Include="HelpWriter.cs" />
+    <Compile Include="IFileSystem.cs" />
     <Compile Include="ProcessHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="AssemblyInfo.cs" />
