@@ -76,7 +76,7 @@ public class ReleaseBranchTests
     [Test]
     public void WhenMergingReleaseBackToDevShouldNotResetBetaVersion()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             const string TaggedVersion = "1.0.3";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);

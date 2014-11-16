@@ -96,29 +96,29 @@
             {
                 CachedVersion versionAndBranch;
                 var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
-                var config = ConfigurationProvider.Provide(gitDirectory);
+                var configuration = ConfigurationProvider.Provide(gitDirectory);
 
                 // TODO This should be covered by tests
                 // Null is intentional. Empty string means the user has set the value to an empty string and wants to clear the tag
                 if (DevelopBranchTag != null)
                 {
-                    config.DevelopBranchTag = DevelopBranchTag;
+                    configuration.DevelopBranchTag = DevelopBranchTag;
                 }
 
                 if (ReleaseBranchTag != null)
                 {
-                    config.ReleaseBranchTag = ReleaseBranchTag;
+                    configuration.ReleaseBranchTag = ReleaseBranchTag;
                 }
 
                 if (TagPrefix != null)
                 {
-                    config.TagPrefix = TagPrefix;
+                    configuration.TagPrefix = TagPrefix;
                 }
 
-                if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch, config))
+                if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch, configuration))
                 {
                     var thisType = typeof(GetVersion);
-                    var variables = VariableProvider.GetVariablesFor(versionAndBranch.SemanticVersion, config);
+                    var variables = VariableProvider.GetVariablesFor(versionAndBranch.SemanticVersion, configuration);
                     foreach (var variable in variables)
                     {
                         thisType.GetProperty(variable.Key).SetValue(this, variable.Value, null);

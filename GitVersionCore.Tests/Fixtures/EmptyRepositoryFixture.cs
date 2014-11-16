@@ -4,8 +4,8 @@ using LibGit2Sharp;
 
 public class EmptyRepositoryFixture : RepositoryFixtureBase
 {
-    public EmptyRepositoryFixture(Config config) :
-        base(CreateNewRepository, config)
+    public EmptyRepositoryFixture(Config configuration) :
+        base(CreateNewRepository, configuration)
     {
     }
 

@@ -49,8 +49,8 @@
         {
             CachedVersion semanticVersion;
             var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
-            var config = ConfigurationProvider.Provide(gitDirectory);
-            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion, config))
+            var configuration = ConfigurationProvider.Provide(gitDirectory);
+            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion, configuration))
             {
                 return;
             }

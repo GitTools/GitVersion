@@ -8,7 +8,7 @@ public abstract class RepositoryFixtureBase : IDisposable
 {
     public string RepositoryPath;
     public IRepository Repository;
-    Config configuration;
+    private Config configuration;
 
     protected RepositoryFixtureBase(Func<string, IRepository> repoBuilder, Config configuration)
     {

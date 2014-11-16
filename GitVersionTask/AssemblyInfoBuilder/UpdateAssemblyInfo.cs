@@ -73,13 +73,13 @@
             if (string.IsNullOrEmpty(gitDirectory))
                 return;
 
-            var config = ConfigurationProvider.Provide(gitDirectory);
+            var configuration = ConfigurationProvider.Provide(gitDirectory);
             if (!string.IsNullOrEmpty(AssemblyVersioningScheme))
             {
                 AssemblyVersioningScheme versioningScheme;
                 if (Enum.TryParse(AssemblyVersioningScheme, true, out versioningScheme))
                 {
-                    config.AssemblyVersioningScheme = versioningScheme;
+                    configuration.AssemblyVersioningScheme = versioningScheme;
                 }
                 else
                 {
@@ -91,51 +91,34 @@
             // Null is intentional. Empty string means the user has set the value to an empty string and wants to clear the tag
             if (DevelopBranchTag != null)
             {
-                config.DevelopBranchTag = DevelopBranchTag;
+                configuration.DevelopBranchTag = DevelopBranchTag;
             }
 
             if (ReleaseBranchTag != null)
             {
-                config.ReleaseBranchTag = ReleaseBranchTag;
+                configuration.ReleaseBranchTag = ReleaseBranchTag;
             }
 
             if (TagPrefix != null)
             {
-                config.TagPrefix = TagPrefix;
+                configuration.TagPrefix = TagPrefix;
             }
 
             CachedVersion semanticVersion;
-            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion, config))
+            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion, configuration))
             {
                 return;
             }
-            CreateTempAssemblyInfo(semanticVersion, config);
+            CreateTempAssemblyInfo(semanticVersion, configuration);
         }
 
-        AssemblyVersioningScheme GetAssemblyVersioningScheme(Config config)
-        {
-            if (string.IsNullOrWhiteSpace(AssemblyVersioningScheme))
-            {
-                return config.AssemblyVersioningScheme;
-            }
-
-            AssemblyVersioningScheme versioningScheme;
-
-            if (Enum.TryParse(AssemblyVersioningScheme, true, out versioningScheme))
-            {
-                return versioningScheme;
-            }
-
-            throw new WarningException(string.Format("Unexpected assembly versioning scheme '{0}'.", AssemblyVersioningScheme));
-        }
-
-        void CreateTempAssemblyInfo(CachedVersion semanticVersion, Config config)
+        void CreateTempAssemblyInfo(CachedVersion semanticVersion, Config configuration)
         {
             var assemblyInfoBuilder = new AssemblyInfoBuilder
                                       {
                                           CachedVersion = semanticVersion
                                       };
-            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(config);
+            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(configuration);
 
             var tempFileName = string.Format("AssemblyInfo_{0}_{1}.g.cs", Path.GetFileNameWithoutExtension(ProjectFile), Path.GetRandomFileName());
             AssemblyInfoTempFilePath = Path.Combine(TempFileTracker.TempPath, tempFileName);
