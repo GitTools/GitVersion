@@ -57,4 +57,40 @@ public class ReleaseBranchTests
             fixture.AssertFullSemver("2.0.0+11");
         }
     }
+
+    [Test]
+    public void WhenMergingReleaseBackToDevShouldNotResetBetaVersion()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            const string TaggedVersion = "1.0.3";
+            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+            fixture.Repository.CreateBranch("develop");
+            fixture.Repository.Checkout("develop");
+
+            fixture.Repository.MakeCommits(1);
+
+            fixture.Repository.CreateBranch("release-2.0.0");
+            fixture.Repository.Checkout("release-2.0.0");
+            fixture.Repository.MakeCommits(1);
+
+            fixture.AssertFullSemver("2.0.0-beta.1+1");
+
+            //tag it to bump to beta 2
+            fixture.Repository.ApplyTag("2.0.0-beta1");
+
+            fixture.Repository.MakeCommits(1);
+
+            fixture.AssertFullSemver("2.0.0-beta.2+0");
+
+            //merge down to develop
+            fixture.Repository.Checkout("develop");
+            fixture.Repository.MergeNoFF("release-2.0.0", Constants.SignatureNow());
+
+            //but keep working on the release
+            fixture.Repository.Checkout("release-2.0.0");
+
+            fixture.AssertFullSemver("2.0.0-beta.2+0");
+        }
+    }
 }

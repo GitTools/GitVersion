@@ -1,46 +1,33 @@
 namespace GitVersion
 {
     using System.Collections.Generic;
+    using System.Linq;
     using LibGit2Sharp;
 
     class RecentTagVersionExtractor
     {
-        internal static SemanticVersionPreReleaseTag RetrieveMostRecentOptionalTagVersion(IRepository repository, ShortVersion matchVersion, IEnumerable<Commit> take)
+        internal static SemanticVersionPreReleaseTag RetrieveMostRecentOptionalTagVersion(GitVersionContext context, ShortVersion matchVersion)
         {
-            Commit first = null;
-            foreach (var commit in take)
-            {
-                if (first == null)
-                {
-                    first = commit;
-                }
-                foreach (var tag in repository.TagsByDate(commit))
-                {
-                    SemanticVersion version;
-                    if (!SemanticVersion.TryParse(tag.Name, out version))
-                    {
-                        continue;
-                    }
-
-                    if (matchVersion.Major == version.Major && 
-                        matchVersion.Minor == version.Minor && 
-                        matchVersion.Patch == version.Patch)
-                    {
-                        var preReleaseTag = version.PreReleaseTag;
-
-                        //If the tag is on the eact commit then dont bump the PreReleaseTag 
-                        if (first != commit)
-                        {
-                            preReleaseTag.Number++;
-                        }
-                        return preReleaseTag;
-                    }
-                }
-            }
-
-            return null;
+            var tagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(matchVersion).OrderByDescending(tag => SemanticVersion.Parse(tag.Name));
+            return RetrieveMostRecentOptionalTagVersion(context, tagsInDescendingOrder.ToList());
         }
 
-
+        internal static SemanticVersionPreReleaseTag RetrieveMostRecentOptionalTagVersion(GitVersionContext context, List<Tag> applicableTagsInDescendingOrder)
+        {
+            if (applicableTagsInDescendingOrder.Any())
+            {
+                var taggedCommit = applicableTagsInDescendingOrder.First().Target;
+                var preReleaseVersion = applicableTagsInDescendingOrder.Select(tag => SemanticVersion.Parse(tag.Name)).FirstOrDefault();
+                if (preReleaseVersion != null)
+                {
+                    if (taggedCommit != context.CurrentCommit)
+                    {
+                        preReleaseVersion.PreReleaseTag.Number++;
+                    }
+                    return preReleaseVersion.PreReleaseTag;
+                }
+            }
+            return null;
+        }
     }
 }
