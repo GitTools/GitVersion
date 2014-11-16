@@ -1,4 +1,4 @@
-namespace GitVersion.Configuration
+namespace GitVersion
 {
     using System.IO;
 
@@ -11,9 +11,7 @@ namespace GitVersion.Configuration
             {
                 using (var reader = File.OpenText(configFilePath))
                 {
-                    {
-                        return ConfigReader.Read(reader);
-                    }
+                    return ConfigReader.Read(reader);
                 }
             }
 

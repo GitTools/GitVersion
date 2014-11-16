@@ -1,6 +1,5 @@
 ﻿using System;
 using GitVersion;
-using GitVersion.Configuration;
 using NUnit.Framework;
 using Shouldly;
 

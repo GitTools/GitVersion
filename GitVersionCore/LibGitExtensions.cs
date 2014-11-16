@@ -4,7 +4,6 @@ namespace GitVersion
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using GitVersion.Configuration;
     using LibGit2Sharp;
 
     static class LibGitExtensions

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using ApprovalTests;
 using GitVersion;
-using GitVersion.Configuration;
 using NUnit.Framework;
 using Roslyn.Compilers;
 using Roslyn.Compilers.CSharp;

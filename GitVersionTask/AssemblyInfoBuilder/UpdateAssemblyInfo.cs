@@ -3,7 +3,6 @@
     using System;
     using System.IO;
     using GitVersion;
-    using GitVersion.Configuration;
     using Microsoft.Build.Framework;
     using Microsoft.Build.Utilities;
     using Logger = GitVersion.Logger;

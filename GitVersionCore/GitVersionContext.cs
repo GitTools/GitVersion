@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-    using GitVersion.Configuration;
     using LibGit2Sharp;
 
     /// <summary>

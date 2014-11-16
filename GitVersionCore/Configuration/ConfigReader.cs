@@ -2,7 +2,7 @@
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace GitVersion.Configuration
+namespace GitVersion
 {
     public class ConfigReader
     {

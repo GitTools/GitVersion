@@ -6,7 +6,6 @@ namespace GitVersion
     using System.IO;
     using System.Linq;
     using System.Text;
-    using GitVersion.Configuration;
 
     class Program
     {

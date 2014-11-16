@@ -1,6 +1,5 @@
 using System;
 using GitVersion;
-using GitVersion.Configuration;
 using LibGit2Sharp;
 using NUnit.Framework;
 using ObjectApproval;

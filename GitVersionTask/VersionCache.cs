@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using GitVersion;
-using GitVersion.Configuration;
 
 public static class VersionCache
 {

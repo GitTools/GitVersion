@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using GitVersion.Configuration;
 
     public static class VariableProvider
     {

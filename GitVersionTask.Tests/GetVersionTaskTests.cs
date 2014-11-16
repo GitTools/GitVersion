@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using GitVersion;
-using GitVersion.Configuration;
 using GitVersionTask;
 using Microsoft.Build.Framework;
 using NUnit.Framework;

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using GitVersion;
-using GitVersion.Configuration;
 
 public class AssemblyInfoBuilder
 {

@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Linq;
 using GitVersion;
-using GitVersion.Configuration;
 using LibGit2Sharp;
 using NUnit.Framework;
 

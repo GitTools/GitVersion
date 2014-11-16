@@ -1,7 +1,6 @@
 ﻿namespace GitVersion
 {
     using System.Collections.Generic;
-    using GitVersion.Configuration;
 
     public static class BuildOutputFormatter
     {

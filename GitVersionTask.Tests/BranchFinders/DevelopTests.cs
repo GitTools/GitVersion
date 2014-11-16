@@ -1,7 +1,6 @@
 using FluentDate;
 using FluentDateTimeOffset;
 using GitVersion;
-using GitVersion.Configuration;
 using NUnit.Framework;
 using ObjectApproval;
 

@@ -1,6 +1,5 @@
 namespace GitVersion
 {
-    using GitVersion.Configuration;
     using LibGit2Sharp;
 
     class SupportVersionFinder

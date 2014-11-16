@@ -2,7 +2,6 @@
 {
     using System;
     using System.IO;
-    using GitVersion.Configuration;
 
     public class NextVersionTxtFileFinder
     {

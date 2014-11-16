@@ -1,4 +1,4 @@
-﻿using GitVersion.Configuration;
+﻿using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
 

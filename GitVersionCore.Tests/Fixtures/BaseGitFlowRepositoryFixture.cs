@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using GitVersion.Configuration;
+using GitVersion;
 using LibGit2Sharp;
 
 public class BaseGitFlowRepositoryFixture : EmptyRepositoryFixture

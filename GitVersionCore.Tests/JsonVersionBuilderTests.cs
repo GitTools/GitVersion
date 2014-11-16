@@ -1,7 +1,6 @@
 using System;
 using ApprovalTests;
 using GitVersion;
-using GitVersion.Configuration;
 using NUnit.Framework;
 
 [TestFixture]
