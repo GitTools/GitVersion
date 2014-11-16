@@ -2,14 +2,17 @@
 {
     using System;
     using System.IO;
+    using GitVersion.Configuration;
 
     public class NextVersionTxtFileFinder
     {
         string repositoryDirectory;
+        Config configuration;
 
-        public NextVersionTxtFileFinder(string repositoryDirectory)
+        public NextVersionTxtFileFinder(string repositoryDirectory, Config configuration)
         {
             this.repositoryDirectory = repositoryDirectory;
+            this.configuration = configuration;
         }
 
         public bool TryGetNextVersion(out SemanticVersion semanticVersion)
@@ -28,7 +31,7 @@
                 return false;
             }
 
-            if (!SemanticVersion.TryParse(version, out semanticVersion))
+            if (!SemanticVersion.TryParse(version, configuration.TagPrefix, out semanticVersion))
             {
                 throw new ArgumentException("Make sure you have a valid semantic version in NextVersion.txt");
             }

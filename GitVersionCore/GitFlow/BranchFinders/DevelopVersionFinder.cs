@@ -30,7 +30,7 @@ namespace GitVersion
                 BuildMetaData = new SemanticVersionBuildMetaData(numberOfCommitsSinceRelease, context.CurrentBranch.Name,tip.Sha,tip.When()),
             };
 
-            semanticVersion.OverrideVersionManuallyIfNeeded(context.Repository);
+            semanticVersion.OverrideVersionManuallyIfNeeded(context.Repository, context.Configuration);
 
             return semanticVersion;
         }

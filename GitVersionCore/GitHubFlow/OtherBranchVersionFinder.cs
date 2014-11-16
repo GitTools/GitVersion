@@ -16,7 +16,7 @@
             var shortVersion = ShortVersionParser.Parse(versionString);
 
 
-            var applicableTagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(shortVersion).OrderByDescending(tag => SemanticVersion.Parse(tag.Name)).ToList();
+            var applicableTagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(context.Configuration, shortVersion).OrderByDescending(tag => SemanticVersion.Parse(tag.Name, context.Configuration.TagPrefix)).ToList();
             var nbHotfixCommits = BranchCommitDifferenceFinder.NumberOfCommitsSinceLastTagOrBranchPoint(context, applicableTagsInDescendingOrder, BranchType.Unknown, "master");
             var semanticVersionPreReleaseTag = RecentTagVersionExtractor.RetrieveMostRecentOptionalTagVersion(context, applicableTagsInDescendingOrder) ?? CreateDefaultPreReleaseTag(context, versionString);
 

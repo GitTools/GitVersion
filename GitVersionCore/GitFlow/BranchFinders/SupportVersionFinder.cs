@@ -1,10 +1,11 @@
 namespace GitVersion
 {
+    using GitVersion.Configuration;
     using LibGit2Sharp;
 
     class SupportVersionFinder
     {
-        public SemanticVersion FindVersion(IRepository repository, Commit tip)
+        public SemanticVersion FindVersion(IRepository repository, Commit tip, Config configuration)
         {
             foreach (var tag in repository.TagsByDate(tip))
             {
@@ -19,7 +20,7 @@ namespace GitVersion
             if (MergeMessageParser.TryParse(tip, out versionFromTip))
             {
                 var semanticVersion = BuildVersion(tip, versionFromTip);
-                semanticVersion.OverrideVersionManuallyIfNeeded(repository);
+                semanticVersion.OverrideVersionManuallyIfNeeded(repository, configuration);
                 return semanticVersion;
             }
             throw new WarningException("The head of a support branch should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");

@@ -116,17 +116,19 @@ namespace GitVersion
             return v1.CompareTo(v2) < 0;
         }
 
-        public static SemanticVersion Parse(string version)
+        public static SemanticVersion Parse(string version, string tagPrefixRegex)
         {
             SemanticVersion semanticVersion;
-            if (!TryParse(version, out semanticVersion))
+            if (!TryParse(version, tagPrefixRegex, out semanticVersion))
                 throw new WarningException(string.Format("Failed to parse {0} into a Semantic Version", version));
 
             return semanticVersion;
         }
 
-        public static bool TryParse(string version, out SemanticVersion semanticVersion)
+        public static bool TryParse(string version, string tagPrefixRegex, out SemanticVersion semanticVersion)
         {
+            var match = Regex.Match(version, string.Format("({0})?(?<version>.*)", tagPrefixRegex));
+            version = match.Groups["version"].Value;
             var parsed = ParseSemVer.Match(version);
 
             if (!parsed.Success)

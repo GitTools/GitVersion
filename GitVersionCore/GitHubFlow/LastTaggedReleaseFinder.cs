@@ -1,7 +1,6 @@
 namespace GitVersion
 {
     using System.Linq;
-    using System.Text.RegularExpressions;
     using LibGit2Sharp;
 
     public class LastTaggedReleaseFinder
@@ -17,9 +16,8 @@ namespace GitVersion
         {
             var tags = context.Repository.Tags.Select(t =>
             {
-                var match = Regex.Match(t.Name, string.Format("({0})?(?<version>.*)", context.Configuration.TagPrefix));
                 SemanticVersion version;
-                if (SemanticVersion.TryParse(match.Groups["version"].Value, out version))
+                if (SemanticVersion.TryParse(t.Name, context.Configuration.TagPrefix, out version))
                 {
                     return new VersionTaggedCommit((Commit)t.Target, version);
                 }
