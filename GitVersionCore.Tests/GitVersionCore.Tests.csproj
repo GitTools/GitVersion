@@ -74,6 +74,7 @@
     <Compile Include="IntegrationTests\GitFlow\MetaDataByCommitScenarios.cs" />
     <Compile Include="IntegrationTests\GitFlow\PatchScenarios.cs" />
     <Compile Include="IntegrationTests\GitFlow\ReleaseBranchTests.cs" />
+    <Compile Include="IntegrationTests\GitFlow\SwitchingToGitFlowScenarios.cs" />
     <Compile Include="IntegrationTests\GitFlow\WikiScenarios.cs" />
     <Compile Include="IntegrationTests\GitHubFlow\OtherBranchTests.cs" />
     <Compile Include="IntegrationTests\GitHubFlow\ReleaseBranchTests.cs" />
@@ -90,7 +91,6 @@
     <Compile Include="ApprovalTestsConfig.cs" />
     <Compile Include="Fixtures\RepositoryFixtureBase.cs" />
     <Compile Include="SemanticVersionTests.cs" />
-    <Compile Include="ShortVersionParserTests.cs" />
     <Compile Include="VariableProviderTests.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -46,8 +46,8 @@ public class MergeMessageParserTests
             ParentsEx = parents
         };
 
-        ShortVersion versionPart;
-        var parsed = MergeMessageParser.TryParse(commit, out versionPart);
+        SemanticVersion versionPart;
+        var parsed = MergeMessageParser.TryParse(commit, new Config(), out versionPart);
 
         if (expectedVersion == null)
         {

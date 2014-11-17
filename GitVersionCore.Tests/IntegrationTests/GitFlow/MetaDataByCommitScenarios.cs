@@ -157,7 +157,7 @@ public class MetaDataByCommitScenarios
         var referenceCommitFinder = commitFinder ?? (r => r.FindBranch(branchName).Tip);
 
         var commit = referenceCommitFinder(fixture.Repository);
-        var releaseDate = LastMinorVersionFinder.Execute(fixture.Repository, commit);
+        var releaseDate = LastMinorVersionFinder.Execute(fixture.Repository, new Config(), commit);
         releaseDate.ShouldBe(commit.When());
     }
 

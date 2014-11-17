@@ -43,7 +43,7 @@ public class VersionOnMasterFinderTests
                     },
                 }
         };
-        var version = finder.Execute(new GitVersionContext(repository, null), 1.Seconds().Ago());
+        var version = finder.Execute(new GitVersionContext(repository, null, new Config()), 1.Seconds().Ago());
         ObjectApprover.VerifyWithJson(version);
     }
 }

@@ -39,7 +39,7 @@ namespace GitVersion
                 });
         }
 
-        public static IEnumerable<Tag> SemVerTagsRelatedToVersion(this IRepository repository, Config configuration, ShortVersion version)
+        public static IEnumerable<Tag> SemVerTagsRelatedToVersion(this IRepository repository, Config configuration, SemanticVersion version)
         {
             foreach (var tag in repository.Tags)
             {

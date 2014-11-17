@@ -54,9 +54,10 @@ public class PullBranchTests : Lg2sHelperBase
 
             var finder = new PullVersionFinder();
 
-            var version = finder.FindVersion(new GitVersionContext(repo, pullBranch, new Config()));
+            var configuration = new Config();
+            var version = finder.FindVersion(new GitVersionContext(repo, pullBranch, configuration));
 
-            var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
+            var masterVersion = FindersHelper.RetrieveMasterVersion(repo, configuration);
 
             Assert.AreEqual(masterVersion.Minor + 1, version.Minor, "Minor should be master.Minor+1");
             Assert.AreEqual(1735, version.PreReleaseTag.Number);
@@ -80,9 +81,10 @@ public class PullBranchTests : Lg2sHelperBase
 
             var finder = new PullVersionFinder();
 
-            var version = finder.FindVersion(new GitVersionContext(repo, pullBranch, new Config()));
+            var configuration = new Config();
+            var version = finder.FindVersion(new GitVersionContext(repo, pullBranch, configuration));
 
-            var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
+            var masterVersion = FindersHelper.RetrieveMasterVersion(repo, configuration);
 
             Assert.AreEqual(masterVersion.Minor + 1, version.Minor, "Minor should be master.Minor+1");
             Assert.AreEqual(1735, version.PreReleaseTag.Number);

@@ -8,7 +8,7 @@ namespace GitVersion
 
     public class LastMinorVersionFinder
     {
-        public static DateTimeOffset Execute(IRepository repo, Commit commit)
+        public static DateTimeOffset Execute(IRepository repo, Config configuration, Commit commit)
         {
             // Release/Develop = current
             // Hotfix/Master/Support = walk back current branch until previous commits till a merge commit (or tag) has a patch with a 0
@@ -18,7 +18,7 @@ namespace GitVersion
                 repo.Head.IsSupport()
                 )
             {
-                var fromTag = GetTimeStampFromTag(repo, commit);
+                var fromTag = GetTimeStampFromTag(repo, configuration, commit);
                 
                 if (fromTag != DateTimeOffset.MinValue)
                 {
@@ -29,15 +29,15 @@ namespace GitVersion
         }
 
 
-        static DateTimeOffset GetTimeStampFromTag(IRepository repository, Commit targetCommit)
+        static DateTimeOffset GetTimeStampFromTag(IRepository repository, Config configuration, Commit targetCommit)
         {
             var allMajorMinorTags = repository.Tags
-                .Where(x => ShortVersionParser.IsMajorMinor(x.Name))
+                .Where(x => SemanticVersion.Parse(x.Name, configuration.TagPrefix).Patch == 0)
                 .ToDictionary(x => x.PeeledTarget(), x => x);
             var olderThan = targetCommit.When();
             foreach (var commit in repository.Head.Commits.Where(x => x.When() <= olderThan))
             {
-                if (IsMajorMinor(commit, allMajorMinorTags))
+                if (IsMajorMinor(commit, allMajorMinorTags, configuration))
                 {
                     return commit.When();
                 }
@@ -45,10 +45,10 @@ namespace GitVersion
             return DateTimeOffset.MinValue;
         }
 
-        static bool IsMajorMinor(Commit commit, Dictionary<GitObject, Tag> allMajorMinorTags)
+        static bool IsMajorMinor(Commit commit, Dictionary<GitObject, Tag> allMajorMinorTags, Config configuration)
         {
-            ShortVersion version;
-            if (MergeMessageParser.TryParse(commit, out version))
+            SemanticVersion version;
+            if (MergeMessageParser.TryParse(commit, configuration, out version))
             {
                 if (version.Patch == 0)
                 {

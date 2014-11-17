@@ -8,15 +8,15 @@ namespace GitVersion
         {
             foreach (var tag in repository.TagsByDate(tip))
             {
-                ShortVersion shortVersion;
-                if (ShortVersionParser.TryParse(tag.Name, out shortVersion))
+                SemanticVersion shortVersion;
+                if (SemanticVersion.TryParse(tag.Name, configuration.TagPrefix, out shortVersion))
                 {
                     return BuildVersion(tip, shortVersion);
                 }
             }
 
-            ShortVersion versionFromTip;
-            if (MergeMessageParser.TryParse(tip, out versionFromTip))
+            SemanticVersion versionFromTip;
+            if (MergeMessageParser.TryParse(tip, configuration, out versionFromTip))
             {
                 var semanticVersion = BuildVersion(tip, versionFromTip);
                 semanticVersion.OverrideVersionManuallyIfNeeded(repository, configuration);
@@ -25,7 +25,7 @@ namespace GitVersion
             throw new WarningException("The head of a support branch should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
         }
 
-        SemanticVersion BuildVersion(Commit tip, ShortVersion shortVersion)
+        SemanticVersion BuildVersion(Commit tip, SemanticVersion shortVersion)
         {
             return new SemanticVersion
             {
