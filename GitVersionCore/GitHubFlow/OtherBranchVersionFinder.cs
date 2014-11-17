@@ -39,7 +39,9 @@
 
         SemanticVersionPreReleaseTag CreateDefaultPreReleaseTag(GitVersionContext context, string versionString)
         {
-            return context.CurrentBranch.Name.Replace("-" + versionString, string.Empty) + ".1";
+            return context.CurrentBranch.Name
+                .Replace("-" + versionString, string.Empty)
+                .Replace("/" + versionString, string.Empty) + ".1";
         }
 
         static string GetUnknownBranchSuffix(Branch branch)
