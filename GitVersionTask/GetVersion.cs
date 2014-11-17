@@ -80,6 +80,8 @@
 
         public string TagPrefix { get; set; }
 
+        public string DevelopBranchName { get; set; }
+
         TaskLogger logger;
 
         public GetVersion()
@@ -112,6 +114,11 @@
                 if (TagPrefix != null)
                 {
                     configuration.TagPrefix = TagPrefix;
+                }
+
+                if (DevelopBranchName != null)
+                {
+                    configuration.DevelopBranchName = DevelopBranchName;
                 }
 
                 if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch, configuration))

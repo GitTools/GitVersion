@@ -17,6 +17,8 @@
 
         public string TagPrefix { get; set; }
 
+        public string DevelopBranchName { get; set; }
+
         [Required]
         public string SolutionDirectory { get; set; }
 
@@ -101,6 +103,11 @@
             if (TagPrefix != null)
             {
                 configuration.TagPrefix = TagPrefix;
+            }
+
+            if (DevelopBranchName != null)
+            {
+                configuration.DevelopBranchName = DevelopBranchName;
             }
 
             CachedVersion semanticVersion;

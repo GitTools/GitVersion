@@ -34,7 +34,7 @@
         public static Dictionary<string, string> GetVariablesFor(SemanticVersion semanticVersion, Config configuration)
         {
             var bmd = semanticVersion.BuildMetaData;
-            var formatter = bmd.Branch == "develop" ? new CiFeedFormatter() : null;
+            var formatter = bmd.Branch == configuration.DevelopBranchName ? new CiFeedFormatter() : null;
             
             var variables = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
             {

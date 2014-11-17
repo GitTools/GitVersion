@@ -15,9 +15,9 @@ namespace GitVersion
             return branch.Name.StartsWith("release-") || branch.Name.StartsWith("release/");
         }
 
-        public static bool IsDevelop(this Branch branch)
+        public static bool IsDevelop(this Branch branch, Config config)
         {
-            return branch.Name == "develop";
+            return branch.Name == config.DevelopBranchName;
         }
 
         public static bool IsMaster(this Branch branch)

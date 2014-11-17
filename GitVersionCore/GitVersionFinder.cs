@@ -10,7 +10,7 @@ namespace GitVersion
             Logger.WriteInfo("Running against branch: " + context.CurrentBranch.Name);
             EnsureMainTopologyConstraints(context);
 
-            if (ShouldGitHubFlowVersioningSchemeApply(context.Repository))
+            if (ShouldGitHubFlowVersioningSchemeApply(context.Repository, context.Configuration))
             {
                 Logger.WriteInfo("GitHubFlow version strategy will be used");
                 return new GitHubFlowVersionFinder().FindVersion(context);
@@ -20,9 +20,9 @@ namespace GitVersion
             return new GitFlowVersionFinder().FindVersion(context);
         }
 
-        static bool ShouldGitHubFlowVersioningSchemeApply(IRepository repo)
+        static bool ShouldGitHubFlowVersioningSchemeApply(IRepository repo, Config configuration)
         {
-            return repo.FindBranch("develop") == null;
+            return repo.FindBranch(configuration.DevelopBranchName) == null;
         }
 
         void EnsureMainTopologyConstraints(GitVersionContext context)
