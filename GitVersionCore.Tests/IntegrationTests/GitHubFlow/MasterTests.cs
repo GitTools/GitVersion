@@ -1,6 +1,8 @@
-﻿using GitVersion;
+﻿using System;
+using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
+using Shouldly;
 
 [TestFixture]
 public class MasterTests
@@ -70,6 +72,31 @@ public class MasterTests
     }
 
     [Test]
+    public void GivenARepositoryWithTagAndNextVersionInConfig_VersionShouldMatchVersionTxtFile()
+    {
+        const string ExpectedNextVersion = "1.1.0";
+        using (var fixture = new EmptyRepositoryFixture(new Config { NextVersion = ExpectedNextVersion }))
+        {
+            const string TaggedVersion = "1.0.3";
+            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+            fixture.Repository.MakeCommits(5);
+
+            fixture.AssertFullSemver("1.1.0+5");
+        }
+    }
+
+    [Test]
+    public void GivenARepositoryWithANextVersionTxtFileAndNextVersionInConfig_ErrorIsThrown()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config { NextVersion = "1.1.0" }))
+        {
+            fixture.Repository.AddNextVersionTxtFile("1.1.0");
+
+            Should.Throw<Exception>(() => fixture.AssertFullSemver("1.1.0+5"));
+        }
+    }
+
+    [Test]
     public void GivenARepositoryWithTagAndANextVersionTxtFileAndNoCommits_VersionShouldBeTag()
     {
         using (var fixture = new EmptyRepositoryFixture(new Config()))
@@ -124,6 +151,20 @@ public class MasterTests
     }
 
     [Test]
+    public void GivenARepositoryWithTagAndOldNextVersionConfig_VersionShouldBeTagWithBumpedPatch()
+    {
+        const string NextVersionConfig = "1.0.0";
+        using (var fixture = new EmptyRepositoryFixture(new Config { NextVersion = NextVersionConfig }))
+        {
+            const string TaggedVersion = "1.1.0";
+            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+            fixture.Repository.MakeCommits(5);
+
+            fixture.AssertFullSemver("1.1.1+5");
+        }
+    }
+
+    [Test]
     public void GivenARepositoryWithTagAndOldNextVersionTxtFileAndNoCommits_VersionShouldBeTag()
     {
         using (var fixture = new EmptyRepositoryFixture(new Config()))
@@ -140,7 +181,7 @@ public class MasterTests
     [Test]
     public void CanSpecifyTagPrefixes()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config{ TagPrefix = "version-"}))
+        using (var fixture = new EmptyRepositoryFixture(new Config { TagPrefix = "version-" }))
         {
             const string TaggedVersion = "version-1.0.3";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
@@ -153,7 +194,7 @@ public class MasterTests
     [Test]
     public void CanSpecifyTagPrefixesAsRegex()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config{ TagPrefix = "[version-|v]"}))
+        using (var fixture = new EmptyRepositoryFixture(new Config { TagPrefix = "[version-|v]" }))
         {
             const string TaggedVersion = "v1.0.3";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
