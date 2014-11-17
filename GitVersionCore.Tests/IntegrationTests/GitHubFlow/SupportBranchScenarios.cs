@@ -1,5 +1,6 @@
 ﻿namespace GitVersionCore.Tests.IntegrationTests.GitHubFlow
 {
+    using System;
     using GitVersion;
     using LibGit2Sharp;
     using NUnit.Framework;
@@ -50,6 +51,31 @@
                 fixture.Repository.MergeNoFF("hotfix/1.2.1");
                 fixture.AssertFullSemver("1.2.1+2");
             }
-        } 
+        }
+
+
+
+        [Test]
+        public void WhenSupportIsBranchedAndTaggedFromAnotherSupportEnsureNewMinorIsUsed()
+        {
+            using (var fixture = new EmptyRepositoryFixture(new Config()))
+            {
+                fixture.Repository.MakeACommit();
+                fixture.Repository.CreateBranch("Support-1.2.0");
+                fixture.Repository.Checkout("Support-1.2.0");
+                fixture.Repository.MakeACommit();
+                fixture.Repository.ApplyTag("1.2.0");
+
+                fixture.Repository.CreateBranch("Support-1.3.0");
+                fixture.Repository.Checkout("Support-1.3.0");
+                fixture.Repository.ApplyTag("1.3.0");
+
+                //Move On
+                fixture.Repository.MakeACommit();
+                fixture.Repository.MakeACommit();
+
+                fixture.AssertFullSemver("1.3.1+2");
+            }
+        }
     }
 }

@@ -80,6 +80,7 @@
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\NextVersionWriter.cs" />
     <Compile Include="InformationalVersionBuilderTests.cs" />
+    <Compile Include="IntegrationTests\GitHubFlow\SupportBranchScenarios.cs" />
     <Compile Include="JsonVersionBuilderTests.cs" />
     <Compile Include="LastVersionOnMasterFinderTests.cs" />
     <Compile Include="ModuleInitializer.cs" />
