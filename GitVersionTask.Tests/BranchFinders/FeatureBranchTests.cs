@@ -20,7 +20,7 @@ public class FeatureBranchTests : Lg2sHelperBase
 
             var finder = new FeatureVersionFinder();
 
-            var version = finder.FindVersion(new GitVersionContext(repo, featureBranch));
+            var version = finder.FindVersion(new GitVersionContext(repo, featureBranch, new Config()));
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
@@ -45,7 +45,7 @@ public class FeatureBranchTests : Lg2sHelperBase
 
             var finder = new FeatureVersionFinder();
 
-            var version = finder.FindVersion(new GitVersionContext(repo, featureBranch));
+            var version = finder.FindVersion(new GitVersionContext(repo, featureBranch, new Config()));
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
@@ -73,7 +73,7 @@ public class FeatureBranchTests : Lg2sHelperBase
 
             var finder = new FeatureVersionFinder();
 
-            var version = finder.FindVersion(new GitVersionContext(repo, featureBranch));
+            var version = finder.FindVersion(new GitVersionContext(repo, featureBranch, new Config()));
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 
@@ -100,7 +100,7 @@ public class FeatureBranchTests : Lg2sHelperBase
 
             var finder = new FeatureVersionFinder();
 
-            var version = finder.FindVersion(new GitVersionContext(repo, featureBranch));
+            var version = finder.FindVersion(new GitVersionContext(repo, featureBranch, new Config()));
 
             var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
 

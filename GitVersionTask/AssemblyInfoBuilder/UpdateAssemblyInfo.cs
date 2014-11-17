@@ -11,6 +11,12 @@
     {
         public string AssemblyVersioningScheme { get; set; }
 
+        public string DevelopBranchTag { get; set; }
+
+        public string ReleaseBranchTag { get; set; }
+
+        public string TagPrefix { get; set; }
+
         [Required]
         public string SolutionDirectory { get; set; }
 
@@ -62,51 +68,56 @@
 
             InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
 
+            var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
+            if (string.IsNullOrEmpty(gitDirectory))
+                return;
+
+            var configuration = ConfigurationProvider.Provide(gitDirectory);
+            if (!string.IsNullOrEmpty(AssemblyVersioningScheme))
+            {
+                AssemblyVersioningScheme versioningScheme;
+                if (Enum.TryParse(AssemblyVersioningScheme, true, out versioningScheme))
+                {
+                    configuration.AssemblyVersioningScheme = versioningScheme;
+                }
+                else
+                {
+                    throw new WarningException(string.Format("Unexpected assembly versioning scheme '{0}'.", AssemblyVersioningScheme));
+                }
+            }
+
+            // TODO This should be covered by tests
+            // Null is intentional. Empty string means the user has set the value to an empty string and wants to clear the tag
+            if (DevelopBranchTag != null)
+            {
+                configuration.DevelopBranchTag = DevelopBranchTag;
+            }
+
+            if (ReleaseBranchTag != null)
+            {
+                configuration.ReleaseBranchTag = ReleaseBranchTag;
+            }
+
+            if (TagPrefix != null)
+            {
+                configuration.TagPrefix = TagPrefix;
+            }
+
             CachedVersion semanticVersion;
-            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion))
+            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion, configuration))
             {
                 return;
             }
-
-            CreateTempAssemblyInfo(semanticVersion);
+            CreateTempAssemblyInfo(semanticVersion, configuration);
         }
 
-        AssemblyVersioningScheme GetAssemblyVersioningScheme()
+        void CreateTempAssemblyInfo(CachedVersion semanticVersion, Config configuration)
         {
-            if (string.IsNullOrWhiteSpace(AssemblyVersioningScheme))
-            {
-                var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
-
-                var configFilePath = Path.Combine(Directory.GetParent(gitDirectory).FullName, "GitVersionConfig.yaml");
-                if (File.Exists(configFilePath))
-                {
-                    using (var reader = File.OpenText(configFilePath))
-                    {
-                        return ConfigReader.Read(reader).AssemblyVersioningScheme;
-                    }
-                }
-                return global::AssemblyVersioningScheme.MajorMinorPatch;
-            }
-
-            AssemblyVersioningScheme versioningScheme;
-
-            if (Enum.TryParse(AssemblyVersioningScheme, true, out versioningScheme))
-            {
-                return versioningScheme;
-            }
-
-            throw new WarningException(string.Format("Unexpected assembly versioning scheme '{0}'.", AssemblyVersioningScheme));
-        }
-
-        void CreateTempAssemblyInfo(CachedVersion semanticVersion)
-        {
-            var versioningScheme = GetAssemblyVersioningScheme();
             var assemblyInfoBuilder = new AssemblyInfoBuilder
                                       {
-                                          CachedVersion = semanticVersion,
-                                          AssemblyVersioningScheme = versioningScheme,
+                                          CachedVersion = semanticVersion
                                       };
-            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText();
+            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(configuration);
 
             var tempFileName = string.Format("AssemblyInfo_{0}_{1}.g.cs", Path.GetFileNameWithoutExtension(ProjectFile), Path.GetRandomFileName());
             AssemblyInfoTempFilePath = Path.Combine(TempFileTracker.TempPath, tempFileName);

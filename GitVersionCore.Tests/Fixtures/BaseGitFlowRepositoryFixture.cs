@@ -1,15 +1,16 @@
 using System;
 using System.IO;
+using GitVersion;
 using LibGit2Sharp;
 
 public class BaseGitFlowRepositoryFixture : EmptyRepositoryFixture
 {
-    public BaseGitFlowRepositoryFixture(string initialVersion)
+    public BaseGitFlowRepositoryFixture(string initialVersion) : base(new Config())
     {
         SetupRepo(r => r.MakeATaggedCommit(initialVersion));
     }
 
-    public BaseGitFlowRepositoryFixture(Action<IRepository> initialMasterAction)
+    public BaseGitFlowRepositoryFixture(Action<IRepository> initialMasterAction) : base(new Config())
     {
         SetupRepo(initialMasterAction);
     }

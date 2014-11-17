@@ -2,16 +2,19 @@
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-public class ConfigReader
+namespace GitVersion
 {
-    public static Config Read(TextReader reader)
+    public class ConfigReader
     {
-        var deserializer = new Deserializer(null, new CamelCaseNamingConvention());
-        var deserialize = deserializer.Deserialize<Config>(reader);
-        if (deserialize == null)
+        public static Config Read(TextReader reader)
         {
-            return new Config();
+            var deserializer = new Deserializer(null, new CamelCaseNamingConvention());
+            var deserialize = deserializer.Deserialize<Config>(reader);
+            if (deserialize == null)
+            {
+                return new Config();
+            }
+            return deserialize;
         }
-        return deserialize;
     }
 }

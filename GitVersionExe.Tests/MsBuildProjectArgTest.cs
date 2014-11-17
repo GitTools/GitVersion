@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using GitVersion;
 using NUnit.Framework;
 using Shouldly;
 
@@ -9,7 +10,7 @@ public class MsBuildProjectArgTest
     public void RunsMsBuildProvideViaCommandLineArg()
     {
         const string TaggedVersion = "1.2.3";
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
 

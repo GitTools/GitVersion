@@ -11,7 +11,7 @@ public class LastVersionOnMasterFinderTests
     [Test]
     public void WhenMasterHasPatchTagEnsureLastMinorTagIsUsed()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             var stamp = new DateTimeOffset(2000, 1, 1, 1, 1, 1, TimeSpan.Zero);
             fixture.Repository.MakeACommit(stamp);
@@ -28,7 +28,7 @@ public class LastVersionOnMasterFinderTests
     [Test]
     public void WhenNoTagsOrMergeCommitsShouldUseFirstCommit()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             var stamp = new DateTimeOffset(2000, 1, 1, 1, 1, 1, TimeSpan.Zero);
             fixture.Repository.MakeACommit(stamp);
@@ -40,7 +40,7 @@ public class LastVersionOnMasterFinderTests
     [Test]
     public void WhenSupportIsBranchedFromMasterEnsureLastMinorTagIsUsed()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             var stamp = new DateTimeOffset(2000, 1, 1, 1, 1, 1, TimeSpan.Zero);
             fixture.Repository.MakeACommit(stamp);
@@ -57,7 +57,7 @@ public class LastVersionOnMasterFinderTests
     [Test]
     public void WhenSupportIsBranchedAndTaggedFromAnotherSupportEnsureNewMinorIsUsed()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeACommit();
             fixture.Repository.CreateBranch("Support-1.2.0");

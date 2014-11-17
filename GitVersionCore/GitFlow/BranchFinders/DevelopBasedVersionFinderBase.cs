@@ -35,7 +35,7 @@ namespace GitVersion
                     context.CurrentBranch.Name, context.CurrentCommit.Sha, context.CurrentCommit.When())
             };
 
-            semanticVersion.OverrideVersionManuallyIfNeeded(context.Repository);
+            semanticVersion.OverrideVersionManuallyIfNeeded(context.Repository, context.Configuration);
 
             return semanticVersion;
         }

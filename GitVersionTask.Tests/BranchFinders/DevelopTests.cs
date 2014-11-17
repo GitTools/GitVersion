@@ -35,7 +35,7 @@ public class DevelopTests
                     mockBranch
                 },
         };
-        var version = finder.FindVersion(new GitVersionContext(repository, mockBranch));
+        var version = finder.FindVersion(new GitVersionContext(repository, mockBranch, new Config()));
         Assert.AreEqual(2, version.Minor, "Minor should be master.Minor+1");
         ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
     }
@@ -76,7 +76,7 @@ public class DevelopTests
                     }
                 }
         };
-        var context = new GitVersionContext(repository, develop);
+        var context = new GitVersionContext(repository, develop, new Config());
 
         var version = finder.FindVersion(context);
         Assert.AreEqual(2, version.Minor, "Minor should be master.Minor+1");

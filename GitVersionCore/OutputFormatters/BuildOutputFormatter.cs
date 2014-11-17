@@ -8,7 +8,7 @@
         {
             var output = new List<string>();
 
-            foreach (var variable in VariableProvider.GetVariablesFor(semanticVersion))
+            foreach (var variable in VariableProvider.GetVariablesFor(semanticVersion, new Config()))
             {
                 output.AddRange(buildServer.GenerateSetParameterMessage(variable.Key, variable.Value));
             }

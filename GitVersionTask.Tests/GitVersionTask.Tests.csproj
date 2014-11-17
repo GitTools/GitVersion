@@ -92,7 +92,6 @@
     <Compile Include="BuildServers\MyGetTests.cs" />
     <Compile Include="BuildServers\TeamCityTests.cs" />
     <Compile Include="BuildServers\ContinuaCiTests.cs" />
-    <Compile Include="ConfigReaderTests.cs" />
     <Compile Include="VersionAndBranchFinderTests.cs" />
     <Compile Include="GitHubFlow\MergedBranchesWithVersionFinderTests.cs" />
     <Compile Include="LambdaEqualityHelperFixture.cs" />
@@ -244,9 +243,7 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="OutputVariables\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

@@ -8,7 +8,7 @@ namespace GitVersion
     {
         internal static SemanticVersionPreReleaseTag RetrieveMostRecentOptionalTagVersion(GitVersionContext context, ShortVersion matchVersion)
         {
-            var tagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(matchVersion).OrderByDescending(tag => SemanticVersion.Parse(tag.Name));
+            var tagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(context.Configuration, matchVersion).OrderByDescending(tag => SemanticVersion.Parse(tag.Name, context.Configuration.TagPrefix));
             return RetrieveMostRecentOptionalTagVersion(context, tagsInDescendingOrder.ToList());
         }
 
@@ -17,7 +17,7 @@ namespace GitVersion
             if (applicableTagsInDescendingOrder.Any())
             {
                 var taggedCommit = applicableTagsInDescendingOrder.First().Target;
-                var preReleaseVersion = applicableTagsInDescendingOrder.Select(tag => SemanticVersion.Parse(tag.Name)).FirstOrDefault();
+                var preReleaseVersion = applicableTagsInDescendingOrder.Select(tag => SemanticVersion.Parse(tag.Name, context.Configuration.TagPrefix)).FirstOrDefault();
                 if (preReleaseVersion != null)
                 {
                     if (taggedCommit != context.CurrentCommit)

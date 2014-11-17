@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyVersioningScheme.cs" />
+    <Compile Include="AssemblyVersionsGenerator.cs" />
     <Compile Include="Authentication.cs" />
     <Compile Include="BuildServers\AppVeyor.cs" />
     <Compile Include="BuildServers\BuildServerBase.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="BuildServers\TeamCity.cs" />
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Configuration\ConfigReader.cs" />
+    <Compile Include="Configuration\ConfigurationProvider.cs" />
     <Compile Include="GitFlow\BranchFinders\BranchCommitDifferenceFinder.cs" />
     <Compile Include="GitFlow\BranchFinders\RecentTagVersionExtractor.cs" />
     <Compile Include="LastMinorVersionFinder.cs" />

@@ -31,7 +31,7 @@ namespace GitVersion
 
             if (context.CurrentBranch.IsSupport())
             {
-                return new SupportVersionFinder().FindVersion(context.Repository, context.CurrentCommit);
+                return new SupportVersionFinder().FindVersion(context.Repository, context.CurrentCommit, context.Configuration);
             }
 
             return new FeatureVersionFinder().FindVersion(context);

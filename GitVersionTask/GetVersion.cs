@@ -48,6 +48,9 @@
         public string AssemblySemVer { get; set; }
 
         [Output]
+        public string AssemblyFileSemVer { get; set; }
+
+        [Output]
         public string FullSemVer { get; set; }
 
         [Output]
@@ -71,6 +74,12 @@
         [Output]
         public string NuGetVersion { get; set; }
 
+        public string DevelopBranchTag { get; set; }
+
+        public string ReleaseBranchTag { get; set; }
+
+        public string TagPrefix { get; set; }
+
         TaskLogger logger;
 
         public GetVersion()
@@ -85,10 +94,30 @@
             try
             {
                 CachedVersion versionAndBranch;
-                if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch))
+                var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
+                var configuration = ConfigurationProvider.Provide(gitDirectory);
+
+                // TODO This should be covered by tests
+                // Null is intentional. Empty string means the user has set the value to an empty string and wants to clear the tag
+                if (DevelopBranchTag != null)
+                {
+                    configuration.DevelopBranchTag = DevelopBranchTag;
+                }
+
+                if (ReleaseBranchTag != null)
+                {
+                    configuration.ReleaseBranchTag = ReleaseBranchTag;
+                }
+
+                if (TagPrefix != null)
+                {
+                    configuration.TagPrefix = TagPrefix;
+                }
+
+                if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch, configuration))
                 {
                     var thisType = typeof(GetVersion);
-                    var variables = VariableProvider.GetVariablesFor(versionAndBranch.SemanticVersion);
+                    var variables = VariableProvider.GetVariablesFor(versionAndBranch.SemanticVersion, configuration);
                     foreach (var variable in variables)
                     {
                         thisType.GetProperty(variable.Key).SetValue(this, variable.Value, null);

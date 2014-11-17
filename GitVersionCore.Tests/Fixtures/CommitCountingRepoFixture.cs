@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
+using GitVersion;
 using LibGit2Sharp;
 
 public class CommitCountingRepoFixture : RepositoryFixtureBase
 {
     public CommitCountingRepoFixture() :
-        base(CloneTestRepo)
+        base(CloneTestRepo, new Config())
     {
     }
 

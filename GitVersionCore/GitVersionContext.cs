@@ -9,14 +9,16 @@
     /// </summary>
     public class GitVersionContext
     {
-        public GitVersionContext(IRepository repository)
-            : this(repository, repository.Head)
+        public GitVersionContext(IRepository repository, Config configuration)
+            : this(repository, repository.Head, configuration)
         {
+            Configuration = configuration;
         }
 
-        public GitVersionContext(IRepository repository, Branch currentBranch)
+        public GitVersionContext(IRepository repository, Branch currentBranch, Config configuration)
         {
             Repository = repository;
+            Configuration = configuration;
 
             if (currentBranch == null)
                 return;
@@ -33,6 +35,7 @@
             }
         }
 
+        public Config Configuration { get; private set; }
         public IRepository Repository { get; private set; }
         public Branch CurrentBranch { get; private set; }
         public Commit CurrentCommit { get; private set; }

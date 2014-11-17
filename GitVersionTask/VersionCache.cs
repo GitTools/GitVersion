@@ -5,10 +5,12 @@ public static class VersionCache
 {
     static Dictionary<string, CachedVersion> versionCacheVersions = new Dictionary<string, CachedVersion>();
 
-    public static CachedVersion GetVersion(string gitDirectory)
+    public static CachedVersion GetVersion(string gitDirectory, Config configuration)
     {
         using (var repo = RepositoryLoader.GetRepo(gitDirectory))
         {
+            var versionFinder = new GitVersionFinder();
+            var context = new GitVersionContext(repo, configuration);
             var ticks = DirectoryDateFinder.GetLastDirectoryWrite(gitDirectory);
             var key = string.Format("{0}:{1}:{2}", repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
             CachedVersion cachedVersion;
@@ -17,21 +19,16 @@ public static class VersionCache
                 if (cachedVersion.Timestamp != ticks)
                 {
                     Logger.WriteInfo("Change detected. flushing cache.");
-                    cachedVersion.SemanticVersion = GitVersionFinder.GetSemanticVersion(repo);
+                    cachedVersion.SemanticVersion = versionFinder.FindVersion(context);
                     cachedVersion.MasterReleaseDate = LastMinorVersionFinder.Execute(repo, repo.Head.Tip);
                 }
                 return cachedVersion;
             }
             Logger.WriteInfo("Version not in cache. Calculating version.");
 
-            //TODO: cope with githubflow
-            //if (GitVersionFinder.ShouldGitHubFlowVersioningSchemeApply(repo))
-            //{
-            //    return rd;
-            //}
             return versionCacheVersions[key] = new CachedVersion
             {
-                SemanticVersion = GitVersionFinder.GetSemanticVersion(repo),
+                SemanticVersion = versionFinder.FindVersion(context),
                 MasterReleaseDate = LastMinorVersionFinder.Execute(repo,repo.Head.Tip),
                 Timestamp = ticks
             };

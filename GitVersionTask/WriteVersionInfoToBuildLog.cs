@@ -47,7 +47,9 @@
         public void InnerExecute()
         {
             CachedVersion semanticVersion;
-            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion))
+            var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
+            var configuration = ConfigurationProvider.Provide(gitDirectory);
+            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion, configuration))
             {
                 return;
             }

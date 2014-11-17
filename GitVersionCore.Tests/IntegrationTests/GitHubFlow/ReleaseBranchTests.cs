@@ -1,4 +1,5 @@
-﻿using LibGit2Sharp;
+﻿using GitVersion;
+using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
@@ -7,7 +8,7 @@ public class ReleaseBranchTests
     [Test]
     public void CanTakeVersionFromReleaseBranch()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.MakeCommits(5);
@@ -19,9 +20,23 @@ public class ReleaseBranchTests
     }
 
     [Test]
+    public void CanTakeVersionFromReleaseBranchWithTagOverriden()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config { ReleaseBranchTag = "rc" }))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.3");
+            fixture.Repository.MakeCommits(5);
+            fixture.Repository.CreateBranch("release-2.0.0");
+            fixture.Repository.Checkout("release-2.0.0");
+
+            fixture.AssertFullSemver("2.0.0-rc.1+5");
+        }
+    }
+
+    [Test]
     public void WhenReleaseBranchIsMergedIntoMasterVersionIsTakenWithIt()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.MakeCommits(1);
@@ -37,7 +52,7 @@ public class ReleaseBranchTests
     [Test]
     public void WhenReleaseBranchIsMergedIntoMasterHighestVersionIsTakenWithIt()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.MakeCommits(1);
@@ -61,7 +76,7 @@ public class ReleaseBranchTests
     [Test]
     public void WhenMergingReleaseBackToDevShouldNotResetBetaVersion()
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             const string TaggedVersion = "1.0.3";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
