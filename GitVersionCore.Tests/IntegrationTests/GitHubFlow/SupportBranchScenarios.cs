@@ -1,6 +1,5 @@
 ﻿namespace GitVersionCore.Tests.IntegrationTests.GitHubFlow
 {
-    using System;
     using GitVersion;
     using LibGit2Sharp;
     using NUnit.Framework;

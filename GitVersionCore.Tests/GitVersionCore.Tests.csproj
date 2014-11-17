@@ -82,7 +82,6 @@
     <Compile Include="InformationalVersionBuilderTests.cs" />
     <Compile Include="IntegrationTests\GitHubFlow\SupportBranchScenarios.cs" />
     <Compile Include="JsonVersionBuilderTests.cs" />
-    <Compile Include="LastVersionOnMasterFinderTests.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="Fixtures\EmptyRepositoryFixture.cs" />
     <Compile Include="Helpers\GitHelper.cs" />
