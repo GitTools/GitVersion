@@ -15,6 +15,22 @@ public class DevelopScenarios
             fixture.AssertFullSemver("1.1.0-unstable.0+0");
         }
     }
+
+    [Test]
+    public void MergingReleaseBranchBackIntoDevelopWithoutMergingToMaster_DoesNotBumpDevelopVersion()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.CreateBranch("develop").Checkout();
+            fixture.Repository.CreateBranch("release-2.0.0").Checkout();
+            fixture.AssertFullSemver("2.0.0-beta.1+0");
+            fixture.Repository.Checkout("develop");
+            fixture.AssertFullSemver("1.1.0-unstable.0+0");
+            fixture.Repository.MergeNoFF("release-2.0.0", Constants.SignatureNow());
+            fixture.AssertFullSemver("1.1.0-unstable.0+0");
+        }
+    }
     
     [Test]
     public void CanChangeDevelopTagViaConfig()
