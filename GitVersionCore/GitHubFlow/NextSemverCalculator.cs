@@ -1,5 +1,6 @@
 ﻿namespace GitVersion
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -58,10 +59,22 @@
             }
 
             SemanticVersion fileVersion;
-            if (nextVersionTxtFileFinder.TryGetNextVersion(out fileVersion))
+            var hasNextVersionTxtVersion = nextVersionTxtFileFinder.TryGetNextVersion(out fileVersion);
+            if (hasNextVersionTxtVersion && !string.IsNullOrEmpty(context.Configuration.NextVersion))
+            {
+                throw new Exception("You cannot specify a next version in both NextVersion.txt and GitVersionConfig.yaml. Please delete NextVersion.txt and use GitVersionConfig.yaml");
+            }
+
+            if (!string.IsNullOrEmpty(context.Configuration.NextVersion))
+            {
+                yield return SemanticVersion.Parse(context.Configuration.NextVersion, context.Configuration.TagPrefix);
+            }
+
+            if (hasNextVersionTxtVersion)
             {
                 yield return fileVersion;
             }
+
             SemanticVersion tryGetVersion;
             if (mergedBranchesWithVersionFinder.TryGetVersion(out tryGetVersion))
             {

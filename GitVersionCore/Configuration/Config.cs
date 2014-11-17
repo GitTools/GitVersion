@@ -9,7 +9,7 @@
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch;
             DevelopBranchTag = "unstable";
             ReleaseBranchTag = "beta";
-            TagPrefix = "v";
+            TagPrefix = "[vV]";
         }
 
         public AssemblyVersioningScheme AssemblyVersioningScheme { get; set; }
@@ -22,5 +22,8 @@
 
         [YamlAlias("tag-prefix")]
         public string TagPrefix { get; set; }
+
+        [YamlAlias("next-version")]
+        public string NextVersion { get; set; }
     }
 }

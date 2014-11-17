@@ -17,6 +17,8 @@
 
         public string TagPrefix { get; set; }
 
+        public string NextVersion { get; set; }
+
         [Required]
         public string SolutionDirectory { get; set; }
 
@@ -87,6 +89,7 @@
             }
 
             // TODO This should be covered by tests
+            // TODO would be good to not have to duplicate this in both msbuild tasks
             // Null is intentional. Empty string means the user has set the value to an empty string and wants to clear the tag
             if (DevelopBranchTag != null)
             {
@@ -101,6 +104,11 @@
             if (TagPrefix != null)
             {
                 configuration.TagPrefix = TagPrefix;
+            }
+
+            if (NextVersion != null)
+            {
+                configuration.NextVersion = NextVersion;
             }
 
             CachedVersion semanticVersion;
