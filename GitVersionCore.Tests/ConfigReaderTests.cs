@@ -31,6 +31,6 @@ tag-prefix: '[vV|version-]'
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
         config.DevelopBranchTag.ShouldBe("unstable");
         config.ReleaseBranchTag.ShouldBe("beta");
-        config.TagPrefix.ShouldBe("v");
+        config.TagPrefix.ShouldBe("[vV]");
     }
 }
