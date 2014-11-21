@@ -31,7 +31,16 @@ namespace GitVersion
                 });
                 cleanupBackupTasks.Add(() => fileSystem.Delete(backupAssemblyInfo));
 
-                var assemblyVersion = string.Format("{0}.{1}.0.0", variables[VariableProvider.Major], variables[VariableProvider.Minor]);
+                string assemblyVersion;
+                if (!string.IsNullOrWhiteSpace(args.AssemblyVersionFormat))
+                {
+                    assemblyVersion = variables[args.AssemblyVersionFormat];
+                }
+                else
+                {
+                    assemblyVersion = string.Format("{0}.{1}.0.0", variables[VariableProvider.Major], variables[VariableProvider.Minor]);
+                }
+
                 var assemblyInfoVersion = variables[VariableProvider.InformationalVersion];
                 var assemblyFileVersion = variables[VariableProvider.AssemblySemVer];
                 var fileContents = fileSystem.ReadAllText(assemblyInfoFile)
