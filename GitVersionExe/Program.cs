@@ -25,8 +25,8 @@ namespace GitVersion
             {
                 // Dump log to console if we fail to complete successfully
                 Console.Write(log.ToString());
-            } 
-            
+            }
+
             Environment.Exit(exitCode);
         }
 
@@ -113,6 +113,14 @@ namespace GitVersion
                             break;
                     }
                 }
+
+                if (!string.IsNullOrWhiteSpace(arguments.AssemblyVersionFormat) && !variables.ContainsKey(arguments.AssemblyVersionFormat))
+                {
+                    Console.WriteLine("Unrecognised AssemblyVersionFormat argument. Valid values for this argument are: {0}", string.Join(" ", variables.Keys.OrderBy(a => a)));
+                    HelpWriter.Write();
+                    return 1;                   
+                }
+
 
                 using (var assemblyInfoUpdate = new AssemblyInfoFileUpdate(arguments, workingDirectory, variables, new FileSystem()))
                 {

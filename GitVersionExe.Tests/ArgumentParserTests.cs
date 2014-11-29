@@ -199,6 +199,23 @@ public class ArgumentParserTests
     }
 
     [Test]
+    public void update_assembly_info_with_assembly_version_format()
+    {
+        var arguments = ArgumentParser.ParseArguments("-updateAssemblyInfo true -assemblyVersionFormat MajorMinorPatch");
+        arguments.UpdateAssemblyInfo.ShouldBe(true);       
+        arguments.AssemblyVersionFormat.ShouldBe("MajorMinorPatch");
+    }
+
+    [Test]
+    public void update_assembly_info_with_filename_and_assembly_version_format()
+    {
+        var arguments = ArgumentParser.ParseArguments("-updateAssemblyInfo CommonAssemblyInfo.cs -assemblyVersionFormat MajorMinorPatch");
+        arguments.UpdateAssemblyInfo.ShouldBe(true);
+        arguments.AssemblyVersionFormat.ShouldBe("MajorMinorPatch");
+        arguments.UpdateAssemblyInfoFileName.ShouldBe("CommonAssemblyInfo.cs");
+    }
+
+    [Test]
     public void can_log_to_console()
     {
         var arguments = ArgumentParser.ParseArguments("-l console -proj foo.sln");

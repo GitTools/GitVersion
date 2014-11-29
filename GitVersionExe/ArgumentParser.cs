@@ -141,6 +141,12 @@ namespace GitVersion
                     continue;
                 }
 
+                if (IsSwitch("assemblyversionformat", name))
+                {
+                    arguments.AssemblyVersionFormat = value;
+                    continue;
+                }
+
                 if ((IsSwitch("v", name)) && VersionParts.Contains(value.ToLower()))
                 {
                     arguments.VersionPart = value.ToLower();
