@@ -19,6 +19,11 @@ public static class GitHelper
         return repository.Commit("Test Commit", Constants.Signature(dateTimeOffset), Constants.Signature(dateTimeOffset));
     }
 
+    public static void MergeNoFF(this IRepository repository, string branch)
+    {
+        MergeNoFF(repository, branch, Constants.SignatureNow());
+    }
+
     public static void MergeNoFF(this IRepository repository, string branch, Signature sig)
     {
         repository.Merge(repository.FindBranch(branch), sig, new MergeOptions

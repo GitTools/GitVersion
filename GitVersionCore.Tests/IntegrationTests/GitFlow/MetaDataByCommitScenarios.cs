@@ -1,4 +1,6 @@
-﻿using LibGit2Sharp;
+﻿using System;
+using GitVersion;
+using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
 
@@ -26,7 +28,7 @@ public class MetaDataByCommitScenarios
         */
 
     [Test]
-    public void CanCorrectlyDetectCommitCountsAndReleaseDataWhenThatApplies()
+    public void CanCorrectlyDetectCommitCountsSemVer()
     {
         using (var f = new CommitCountingRepoFixture())
         {
@@ -76,6 +78,89 @@ public class MetaDataByCommitScenarios
             EnsureMetaDataMatch(f, "1.3.0-unstable.1+1");
         }
     }
+
+
+    /*
+         *  hotfix-1.2.1       -----------C--      
+         *                    /              \     
+         *  master           A----------------F-----H-------N
+         *                    \                    / \     /
+         *  hotfix-1.3.1       \                  /   ----L
+         *                      \                /         \
+         *  release-1.3.0        \        -D----G---        \
+         *                        \      /          \        \
+         *  develop                -----B----E-------I-----M--O--P
+         *                                    \           /
+         *  feature                            -------J-K-
+         * 
+         *
+         *  - A is tagged `1.2.0`
+         *  - F is tagged `1.2.1`
+         *  - H is tagged `1.3.0`
+         *  - N is tagged `1.3.1`
+        */
+
+    [Test]
+    public void CanCorrectlyDetectCommitCountsAndReleaseDataWhenThatApplies()
+    {
+        using (var f = new CommitCountingRepoFixture())
+        {
+            ResetToP(f.Repository);
+            EnsureBranchMatch(f, "develop");
+
+            ResetToO(f.Repository);
+            EnsureBranchMatch(f, "develop");
+
+            ResetToN(f.Repository);
+            EnsureBranchMatch(f, "master", r => (Commit)r.Tags["1.3.0"].Target);
+
+            ResetToM(f.Repository);
+            EnsureBranchMatch(f, "develop");
+
+            ResetToL(f.Repository);
+            EnsureBranchMatch(f, "hotfix-1.3.1", r => (Commit)r.Tags["1.3.0"].Target);
+
+            ResetToK(f.Repository);
+            EnsureBranchMatch(f, "feature");
+
+            ResetToJ(f.Repository);
+            EnsureBranchMatch(f, "feature");
+
+            ResetToI(f.Repository);
+            EnsureBranchMatch(f, "develop");
+
+            ResetToH(f.Repository);
+            EnsureBranchMatch(f, "master", r => (Commit)r.Tags["1.3.0"].Target);
+
+            ResetToG(f.Repository);
+            EnsureBranchMatch(f, "release-1.3.0");
+
+            ResetToF(f.Repository);
+            EnsureBranchMatch(f, "master", r => (Commit)r.Tags["1.2.0"].Target);
+
+            ResetToE(f.Repository);
+            EnsureBranchMatch(f, "develop");
+
+            ResetToD(f.Repository);
+            EnsureBranchMatch(f, "release-1.3.0");
+
+            ResetToC(f.Repository);
+            EnsureBranchMatch(f, "hotfix-1.2.1", r => (Commit)r.Tags["1.2.0"].Target);
+
+            ResetToB(f.Repository);
+            EnsureBranchMatch(f, "develop");
+        }
+    }
+
+    static void EnsureBranchMatch(CommitCountingRepoFixture fixture, string branchName, Func<IRepository, Commit> commitFinder = null)
+    {
+        var referenceCommitFinder = commitFinder ?? (r => r.FindBranch(branchName).Tip);
+
+        var commit = referenceCommitFinder(fixture.Repository);
+        var releaseDate = LastMinorVersionFinder.Execute(fixture.Repository, commit);
+        releaseDate.ShouldBe(commit.When());
+    }
+
 
     static void EnsureMetaDataMatch(CommitCountingRepoFixture fixture,string expectedSemVer)
     {

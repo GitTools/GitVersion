@@ -39,6 +39,7 @@ namespace GitVersion
         {
             return branch.Name.TrimStart("hotfix-").TrimStart("hotfix/");
         }
+
         void EnsureVersionIsValid(ShortVersion version, Branch branch)
         {
             if (version.Patch == 0)

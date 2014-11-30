@@ -70,6 +70,7 @@
     <Compile Include="GitDirFinderTests.cs" />
     <Compile Include="Fixtures\BaseGitFlowRepositoryFixture.cs" />
     <Compile Include="IntegrationTests\GitFlow\DevelopScenarios.cs" />
+    <Compile Include="IntegrationTests\GitFlow\SupportBranchScenarios.cs" />
     <Compile Include="IntegrationTests\GitFlow\MetaDataByCommitScenarios.cs" />
     <Compile Include="IntegrationTests\GitFlow\PatchScenarios.cs" />
     <Compile Include="IntegrationTests\GitFlow\ReleaseBranchTests.cs" />
@@ -79,8 +80,8 @@
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\NextVersionWriter.cs" />
     <Compile Include="InformationalVersionBuilderTests.cs" />
+    <Compile Include="IntegrationTests\GitHubFlow\SupportBranchScenarios.cs" />
     <Compile Include="JsonVersionBuilderTests.cs" />
-    <Compile Include="LastVersionOnMasterFinderTests.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="Fixtures\EmptyRepositoryFixture.cs" />
     <Compile Include="Helpers\GitHelper.cs" />

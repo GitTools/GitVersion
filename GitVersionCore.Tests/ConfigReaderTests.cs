@@ -14,11 +14,13 @@ public class ConfigReaderTests
 assemblyVersioningScheme: MajorMinor
 develop-branch-tag: alpha
 release-branch-tag: rc
+tag-prefix: '[vV|version-]'
 ";
         var config = ConfigReader.Read(new StringReader(text));
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
         config.DevelopBranchTag.ShouldBe("alpha");
         config.ReleaseBranchTag.ShouldBe("rc");
+        config.TagPrefix.ShouldBe("[vV|version-]");
     }
 
     [Test]
@@ -29,5 +31,6 @@ release-branch-tag: rc
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
         config.DevelopBranchTag.ShouldBe("unstable");
         config.ReleaseBranchTag.ShouldBe("beta");
+        config.TagPrefix.ShouldBe("[vV]");
     }
 }
