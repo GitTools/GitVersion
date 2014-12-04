@@ -101,7 +101,7 @@ namespace GitVersion
 
             if (!string.IsNullOrEmpty(username))
             {
-                fetchOptions.Credentials = new UsernamePasswordCredentials
+                fetchOptions.CredentialsProvider = (url, user, types) =>  new UsernamePasswordCredentials
                 {
                     Username = username,
                     Password = password
