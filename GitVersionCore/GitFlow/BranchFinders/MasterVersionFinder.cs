@@ -4,26 +4,26 @@ namespace GitVersion
 
     class MasterVersionFinder
     {
-        public SemanticVersion FindVersion(IRepository repository, Commit tip)
+        public SemanticVersion FindVersion(GitVersionContext context)
         {
-            foreach (var tag in repository.TagsByDate(tip))
+            foreach (var tag in context.Repository.TagsByDate(context.CurrentCommit))
             {
-                ShortVersion shortVersion;
-                if (ShortVersionParser.TryParse(tag.Name, out shortVersion))
+                SemanticVersion shortVersion;
+                if (SemanticVersion.TryParse(tag.Name, context.Configuration.TagPrefix, out shortVersion))
                 {
-                    return BuildVersion(tip, shortVersion);
+                    return BuildVersion(context.CurrentCommit, shortVersion);
                 }
             }
 
-            ShortVersion versionFromTip;
-            if (MergeMessageParser.TryParse(tip, out versionFromTip))
+            SemanticVersion versionFromTip;
+            if (MergeMessageParser.TryParse(context.CurrentCommit, context.Configuration, out versionFromTip))
             {
-                return BuildVersion(tip, versionFromTip);
+                return BuildVersion(context.CurrentCommit, versionFromTip);
             }
             throw new WarningException("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.");
         }
 
-        SemanticVersion BuildVersion(Commit tip, ShortVersion shortVersion)
+        SemanticVersion BuildVersion(Commit tip, SemanticVersion shortVersion)
         {
             return new SemanticVersion
             {

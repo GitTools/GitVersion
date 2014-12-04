@@ -8,6 +8,7 @@ public class MockBranch : Branch, ICollection<Commit>
     public MockBranch(string name)
     {
         this.name = name;
+        canonicalName = name;
     }
     public MockBranch(string name, string canonicalName)
     {

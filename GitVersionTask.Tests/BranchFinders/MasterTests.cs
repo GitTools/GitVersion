@@ -18,23 +18,28 @@ public class MasterTests
                      };
         var finder = new MasterVersionFinder();
 
-        var exception = Assert.Throws<WarningException>(() => finder.FindVersion(new MockRepository
+        var mockBranch = new MockBranch("master")
+            {
+                commit
+            };
+        var mockRepository = new MockRepository
         {
             Branches = new MockBranchCollection
-            {
-                new MockBranch("master")
                 {
-                    commit
-                },
-            }
-        }, commit));
+                    mockBranch,
+                }
+        };
+        var exception = Assert.Throws<WarningException>(() =>
+        {
+            finder.FindVersion(new GitVersionContext(mockRepository, mockBranch, new Config()));
+        });
         Assert.AreEqual("The head of master should always be a merge commit if you follow gitflow. Please create one or work around this by tagging the commit with SemVer compatible Id.", exception.Message);
     }
 
     [Test]
     public void Commit_in_front_of_tag_should_return_tag_as_version()
     {
-       //should throw
+        //should throw
     }
 
     [Test]
@@ -46,17 +51,18 @@ public class MasterTests
                              CommitterEx = 2.Seconds().Ago().ToSignature()
                          };
         var finder = new MasterVersionFinder();
-        var version = finder.FindVersion(
-            new MockRepository
+        var mockBranch = new MockBranch("master")
+        {
+            hotfixMergeCommit
+        };
+        var mockRepository = new MockRepository
+        {
+            Branches = new MockBranchCollection
             {
-                Branches = new MockBranchCollection
-                {
-                    new MockBranch("master")
-                    {
-                        hotfixMergeCommit
-                    },
-                }
-            }, hotfixMergeCommit);
+                mockBranch,
+            }
+        };
+        var version = finder.FindVersion(new GitVersionContext(mockRepository, mockBranch, new Config()));
 
         Assert.AreEqual(5, version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
         ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
@@ -70,25 +76,26 @@ public class MasterTests
             CommitterEx = 2.Seconds().Ago().ToSignature()
         };
         var finder = new MasterVersionFinder();
-        var version = finder.FindVersion(
-            new MockRepository
+        var mockBranch = new MockBranch("master")
+        {
+            commit
+        };
+        var mockRepository = new MockRepository
+        {
+            Branches = new MockBranchCollection
             {
-                Branches = new MockBranchCollection
+                mockBranch,
+            },
+            Tags = new MockTagCollection
+            {
+                new MockTag
                 {
-                    new MockBranch("master")
-                    {
-                        commit
-                    },
-                },
-                Tags = new MockTagCollection
-                {
-                    new MockTag
-                    {
-                        NameEx = "0.2.0",
-                        TargetEx = commit
-                    }
+                    NameEx = "0.2.0",
+                    TargetEx = commit
                 }
-            }, commit);
+            }
+        };
+        var version = finder.FindVersion(new GitVersionContext(mockRepository, mockBranch, new Config()));
         Assert.AreEqual(0, version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
         ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
     }
@@ -102,25 +109,26 @@ public class MasterTests
             CommitterEx = 2.Seconds().Ago().ToSignature()
         };
         var finder = new MasterVersionFinder();
-        var version = finder.FindVersion(
-            new MockRepository
+        var mockBranch = new MockBranch("master")
+        {
+            commit
+        };
+        var mockRepository = new MockRepository
+        {
+            Branches = new MockBranchCollection
             {
-                Branches = new MockBranchCollection
+                mockBranch
+            },
+            Tags = new MockTagCollection
+            {
+                new MockTag
                 {
-                    new MockBranch("master")
-                    {
-                        commit
-                    },
-                },
-                Tags = new MockTagCollection
-                {
-                    new MockTag
-                    {
-                        NameEx = "0.1.0-beta1",
-                        TargetEx = commit
-                    }
+                    NameEx = "0.1.0-beta1",
+                    TargetEx = commit
                 }
-            }, commit);
+            }
+        };
+        var version = finder.FindVersion(new GitVersionContext(mockRepository, mockBranch, new Config()));
         Assert.AreEqual(0, version.Patch, "Should set the patch version to the patch of the latest hotfix merge commit");
         ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
     }
@@ -135,17 +143,18 @@ public class MasterTests
             MessageEx = "Merge branch 'release-0.2.0'"
         };
         var finder = new MasterVersionFinder();
-        var version = finder.FindVersion(
-            new MockRepository
+        var mockBranch = new MockBranch("master")
+        {
+            commit
+        };
+        var mockRepository = new MockRepository
+        {
+            Branches = new MockBranchCollection
             {
-                Branches = new MockBranchCollection
-                {
-                    new MockBranch("master")
-                    {
-                        commit
-                    },
-                },
-            }, commit);
+                mockBranch
+            },
+        };
+        var version = finder.FindVersion(new GitVersionContext(mockRepository, mockBranch, new Config()));
         Assert.AreEqual(0, version.Patch, "Should set the patch version to 0");
         ObjectApprover.VerifyWithJson(version, Scrubbers.GuidAndDateScrubber);
     }

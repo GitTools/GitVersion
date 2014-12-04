@@ -13,7 +13,7 @@
                 semanticVersion = null;
                 return false;
             }
-            var shortVersion = ShortVersionParser.Parse(versionString);
+            var shortVersion = SemanticVersion.Parse(versionString, context.Configuration.TagPrefix);
 
 
             var applicableTagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(context.Configuration, shortVersion).OrderByDescending(tag => SemanticVersion.Parse(tag.Name, context.Configuration.TagPrefix)).ToList();

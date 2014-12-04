@@ -6,7 +6,7 @@ namespace GitVersion
         {
             if (context.CurrentBranch.IsMaster())
             {
-                return new MasterVersionFinder().FindVersion(context.Repository, context.CurrentCommit);
+                return new MasterVersionFinder().FindVersion(context);
             }
 
             if (context.CurrentBranch.IsHotfix())

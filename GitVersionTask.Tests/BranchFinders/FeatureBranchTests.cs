@@ -20,9 +20,10 @@ public class FeatureBranchTests : Lg2sHelperBase
 
             var finder = new FeatureVersionFinder();
 
-            var version = finder.FindVersion(new GitVersionContext(repo, featureBranch, new Config()));
+            var configuration = new Config();
+            var version = finder.FindVersion(new GitVersionContext(repo, featureBranch, configuration));
 
-            var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
+            var masterVersion = FindersHelper.RetrieveMasterVersion(repo, configuration);
 
             Assert.AreEqual(masterVersion.Minor + 1, version.Minor, "Minor should be master.Minor+1");
             ObjectApprover.VerifyWithJson(version, Scrubbers.GuidScrubber);
@@ -45,9 +46,10 @@ public class FeatureBranchTests : Lg2sHelperBase
 
             var finder = new FeatureVersionFinder();
 
-            var version = finder.FindVersion(new GitVersionContext(repo, featureBranch, new Config()));
+            var configuration = new Config();
+            var version = finder.FindVersion(new GitVersionContext(repo, featureBranch, configuration));
 
-            var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
+            var masterVersion = FindersHelper.RetrieveMasterVersion(repo, configuration);
 
             Assert.AreEqual(masterVersion.Minor + 1, version.Minor, "Minor should be master.Minor+1");
             //TODO Assert.AreEqual(branchingCommit.Prefix(), version.Version.Suffix, "Suffix should be the develop commit it was branched from");
@@ -73,9 +75,10 @@ public class FeatureBranchTests : Lg2sHelperBase
 
             var finder = new FeatureVersionFinder();
 
-            var version = finder.FindVersion(new GitVersionContext(repo, featureBranch, new Config()));
+            var configuration = new Config();
+            var version = finder.FindVersion(new GitVersionContext(repo, featureBranch, configuration));
 
-            var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
+            var masterVersion = FindersHelper.RetrieveMasterVersion(repo, configuration);
 
             Assert.AreEqual(masterVersion.Minor + 1, version.Minor, "Minor should be master.Minor+1");
             //TODO Assert.AreEqual(branchingCommit.Prefix(), version.Version.Suffix, "Suffix should be the develop commit it was branched from");
@@ -100,9 +103,10 @@ public class FeatureBranchTests : Lg2sHelperBase
 
             var finder = new FeatureVersionFinder();
 
-            var version = finder.FindVersion(new GitVersionContext(repo, featureBranch, new Config()));
+            var configuration = new Config();
+            var version = finder.FindVersion(new GitVersionContext(repo, featureBranch, configuration));
 
-            var masterVersion = FindersHelper.RetrieveMasterVersion(repo);
+            var masterVersion = FindersHelper.RetrieveMasterVersion(repo, configuration);
 
             Assert.AreEqual(masterVersion.Minor + 1, version.Minor, "Minor should be master.Minor+1");
             //TODO Assert.AreEqual(branchingCommit.Prefix(), version.Version.Suffix, "Suffix should be the develop commit it was branched from");

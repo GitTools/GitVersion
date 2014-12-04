@@ -32,12 +32,12 @@ namespace GitVersion
             return true;
         }
 
-        static IEnumerable<ShortVersion> GetAllVersions(GitVersionContext context)
+        static IEnumerable<SemanticVersion> GetAllVersions(GitVersionContext context)
         {
             foreach (var commit in context.CurrentBranch.Commits)
             {
-                ShortVersion version;
-                if (MergeMessageParser.TryParse(commit, out version))
+                SemanticVersion version;
+                if (MergeMessageParser.TryParse(commit, context.Configuration, out version))
                 {
                     yield return version;
                 }

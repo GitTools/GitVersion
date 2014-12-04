@@ -6,12 +6,12 @@ namespace GitVersion
 
     static class MergeMessageParser
     {
-        public static bool TryParse(Commit mergeCommit, out ShortVersion shortVersion)
+        public static bool TryParse(Commit mergeCommit, Config configuration, out SemanticVersion shortVersion)
         {
             string versionPart;
             if (Inner(mergeCommit, out versionPart))
             {
-                return ShortVersionParser.TryParse(versionPart, out shortVersion);
+                return SemanticVersion.TryParse(versionPart, configuration.TagPrefix, out shortVersion);
             }
             shortVersion = null;
             return false;
