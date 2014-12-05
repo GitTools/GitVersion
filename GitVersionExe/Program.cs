@@ -69,6 +69,12 @@ namespace GitVersion
                     return 1;
                 }
 
+                if (arguments.Init)
+                {
+                    ConfigurationProvider.WriteSample(gitDirectory);
+                    return 0;
+                }
+
                 var workingDirectory = Directory.GetParent(gitDirectory).FullName;
                 Logger.WriteInfo("Working directory: " + workingDirectory);
                 var applicableBuildServers = GetApplicableBuildServers(arguments.Authentication).ToList();

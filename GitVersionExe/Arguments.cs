@@ -15,6 +15,7 @@ namespace GitVersion
         public string TargetUrl;
         public string TargetBranch;
 
+        public bool Init;
 
         public bool IsHelp;
         public string LogFilePath;

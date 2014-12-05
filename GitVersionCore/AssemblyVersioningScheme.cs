@@ -5,6 +5,6 @@
         MajorMinorPatchMetadata,
         MajorMinorPatch,
         MajorMinor,
-        Major,
+        Major
     }
 }
