@@ -2,13 +2,24 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using GitVersion;
+using GitVersion.Helpers;
+using GitVersionCore.Tests;
 using NUnit.Framework;
 using Shouldly;
 using YamlDotNet.Serialization;
 
 [TestFixture]
-public class ConfigReaderTests
+public class ConfigProviderTests
 {
+    string gitDirectory;
+    IFileSystem fileSystem;
+
+    [SetUp]
+    public void Setup()
+    {
+        fileSystem = new TestFileSystem();
+        gitDirectory = "c:\\MyGitRepo\\.git";
+    }
 
     [Test]
     public void CanReadDocument()
@@ -20,7 +31,9 @@ release-branch-tag: rc
 next-version: 2.0.0
 tag-prefix: '[vV|version-]'
 ";
-        var config = ConfigReader.Read(new StringReader(text));
+        SetupConfigFileContent(text);
+
+        var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
         config.DevelopBranchTag.ShouldBe("alpha");
         config.ReleaseBranchTag.ShouldBe("rc");
@@ -29,10 +42,20 @@ tag-prefix: '[vV|version-]'
     }
 
     [Test]
+    public void CanReadOldDocument()
+    {
+        const string text = @"assemblyVersioningScheme: MajorMinor";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
+        config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
+    }
+
+    [Test]
     public void CanReadDefaultDocument()
     {
         const string text = "";
-        var config = ConfigReader.Read(new StringReader(text));
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
         config.DevelopBranchTag.ShouldBe("unstable");
         config.ReleaseBranchTag.ShouldBe("beta");
@@ -63,5 +86,10 @@ tag-prefix: '[vV|version-]'
         var propertiesMissingAlias = config.GetProperties().Where(p => p.GetCustomAttribute(typeof(YamlAliasAttribute)) == null).Select(p => p.Name);
 
         propertiesMissingAlias.ShouldBeEmpty();
+    }
+
+    void SetupConfigFileContent(string text)
+    {
+        fileSystem.WriteAllText(Path.Combine(Directory.GetParent(gitDirectory).FullName, "GitVersionConfig.yaml"), text);
     }
 }

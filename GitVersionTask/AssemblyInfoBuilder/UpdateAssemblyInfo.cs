@@ -3,6 +3,7 @@
     using System;
     using System.IO;
     using GitVersion;
+    using GitVersion.Helpers;
     using Microsoft.Build.Framework;
     using Microsoft.Build.Utilities;
     using Logger = GitVersion.Logger;
@@ -31,11 +32,13 @@
         public string AssemblyInfoTempFilePath { get; set; }
 
         TaskLogger logger;
+        IFileSystem fileSystem;
 
         public UpdateAssemblyInfo()
         {
             CompileFiles = new ITaskItem[] { };
             logger = new TaskLogger(this);
+            fileSystem = new FileSystem();
             Logger.WriteInfo = this.LogInfo;
             Logger.WriteWarning = this.LogWarning;
         }
@@ -74,7 +77,7 @@
             if (string.IsNullOrEmpty(gitDirectory))
                 return;
 
-            var configuration = ConfigurationProvider.Provide(gitDirectory);
+            var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
             if (!string.IsNullOrEmpty(AssemblyVersioningScheme))
             {
                 AssemblyVersioningScheme versioningScheme;

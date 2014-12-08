@@ -1,14 +1,14 @@
-﻿using System.IO;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
-
-namespace GitVersion
+﻿namespace GitVersion
 {
+    using System.IO;
+    using YamlDotNet.Serialization;
+    using YamlDotNet.Serialization.NamingConventions;
+
     public class ConfigReader
     {
         public static Config Read(TextReader reader)
         {
-            var deserializer = new Deserializer(null, new CamelCaseNamingConvention());
+            var deserializer = new Deserializer(null, new HyphenatedNamingConvention());
             var deserialize = deserializer.Deserialize<Config>(reader);
             if (deserialize == null)
             {

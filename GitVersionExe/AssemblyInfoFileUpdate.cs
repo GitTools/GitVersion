@@ -3,6 +3,7 @@ namespace GitVersion
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using GitVersion.Helpers;
 
     class AssemblyInfoFileUpdate : IDisposable
     {

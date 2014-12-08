@@ -1,9 +1,9 @@
-namespace GitVersion
+namespace GitVersion.Helpers
 {
     using System.Collections.Generic;
     using System.IO;
 
-    class FileSystem : IFileSystem
+    public class FileSystem : IFileSystem
     {
         public void Copy(string @from, string to, bool overwrite)
         {
@@ -38,6 +38,11 @@ namespace GitVersion
         public IEnumerable<string> DirectoryGetFiles(string directory, string searchPattern, SearchOption searchOption)
         {
             return Directory.GetFiles(directory, searchPattern, searchOption);
+        }
+
+        public Stream OpenWrite(string path)
+        {
+            return File.OpenWrite(path);
         }
     }
 }

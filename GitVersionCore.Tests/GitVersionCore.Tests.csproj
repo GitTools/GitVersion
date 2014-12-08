@@ -70,7 +70,7 @@
       <Link>Helpers\DirectoryHelper.cs</Link>
     </Compile>
     <Compile Include="Fixtures\CommitCountingRepoFixture.cs" />
-    <Compile Include="ConfigReaderTests.cs" />
+    <Compile Include="ConfigProviderTests.cs" />
     <Compile Include="GitDirFinderTests.cs" />
     <Compile Include="Fixtures\BaseGitFlowRepositoryFixture.cs" />
     <Compile Include="IntegrationTests\GitFlow\DevelopScenarios.cs" />
@@ -89,12 +89,13 @@
     <Compile Include="JsonVersionBuilderTests.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="Fixtures\EmptyRepositoryFixture.cs" />
-    <Compile Include="Helpers\GitHelper.cs" />
+    <Compile Include="Helpers\GitTestExtensions.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="IntegrationTests\GitHubFlow\MasterTests.cs" />
     <Compile Include="ApprovalTestsConfig.cs" />
     <Compile Include="Fixtures\RepositoryFixtureBase.cs" />
     <Compile Include="SemanticVersionTests.cs" />
+    <Compile Include="TestFileSystem.cs" />
     <Compile Include="VariableProviderTests.cs" />
   </ItemGroup>
   <ItemGroup>

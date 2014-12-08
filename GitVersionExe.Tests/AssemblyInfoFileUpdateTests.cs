@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.IO;
     using GitVersion;
+    using GitVersion.Helpers;
     using NSubstitute;
     using NUnit.Framework;
 
