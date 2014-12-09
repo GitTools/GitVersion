@@ -6,6 +6,7 @@ namespace GitVersion
     using System.IO;
     using System.Linq;
     using System.Text;
+    using GitVersion.Helpers;
 
     class Program
     {
@@ -69,6 +70,13 @@ namespace GitVersion
                     return 1;
                 }
 
+                var fileSystem = new FileSystem();
+                if (arguments.Init)
+                {
+                    ConfigurationProvider.WriteSample(gitDirectory, fileSystem);
+                    return 0;
+                }
+
                 var workingDirectory = Directory.GetParent(gitDirectory).FullName;
                 Logger.WriteInfo("Working directory: " + workingDirectory);
                 var applicableBuildServers = GetApplicableBuildServers(arguments.Authentication).ToList();
@@ -79,7 +87,7 @@ namespace GitVersion
                 }
                 SemanticVersion semanticVersion;
                 var versionFinder = new GitVersionFinder();
-                var configuration = ConfigurationProvider.Provide(gitDirectory);
+                var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
                 using (var repo = RepositoryLoader.GetRepo(gitDirectory))
                 {
                     var gitVersionContext = new GitVersionContext(repo, configuration);
@@ -122,7 +130,7 @@ namespace GitVersion
                 }
 
 
-                using (var assemblyInfoUpdate = new AssemblyInfoFileUpdate(arguments, workingDirectory, variables, new FileSystem()))
+                using (var assemblyInfoUpdate = new AssemblyInfoFileUpdate(arguments, workingDirectory, variables, fileSystem))
                 {
                     var execRun = RunExecCommandIfNeeded(arguments, workingDirectory, variables);
                     var msbuildRun = RunMsBuildIfNeeded(arguments, workingDirectory, variables);

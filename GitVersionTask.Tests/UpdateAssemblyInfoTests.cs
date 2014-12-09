@@ -112,7 +112,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
             AssemblyVersioningScheme = "Boom"
         };
 
-        var exception = Assert.Throws<WarningException>(task.InnerExecute);
+        var exception = Assert.Throws<WarningException>(() => task.InnerExecute());
         Assert.AreEqual("Unexpected assembly versioning scheme 'Boom'.", exception.Message);
     }
 

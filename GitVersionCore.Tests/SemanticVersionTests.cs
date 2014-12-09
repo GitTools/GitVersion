@@ -8,7 +8,6 @@ public class SemanticVersionTests
 
     [TestCase("1.2.3", 1, 2, 3, null, null, null, null, null, null, null)]
     [TestCase("1.2", 1, 2, 0, null, null, null, null, null, null, "1.2.0")]
-    [TestCase("1", 1, 0, 0, null, null, null, null, null, null, "1.0.0")]
     [TestCase("1.2.3-beta", 1, 2, 3, "beta", null, null, null, null, null, null)]
     [TestCase("1.2.3-beta3", 1, 2, 3, "beta", 3, null, null, null, null, "1.2.3-beta.3")]
     [TestCase("1.2.3-alpha", 1, 2, 3, "alpha", null, null, null, null, null, null)]

@@ -4,7 +4,7 @@ using System.Linq;
 using GitVersion;
 using LibGit2Sharp;
 
-public static class GitHelper
+public static class GitTestExtensions
 {
     public static Commit MakeACommit(this IRepository repository)
     {

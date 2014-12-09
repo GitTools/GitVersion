@@ -1,21 +1,54 @@
 namespace GitVersion
 {
     using System.IO;
+    using System.Text.RegularExpressions;
+    using GitVersion.Helpers;
 
     public class ConfigurationProvider
     {
-        public static Config Provide(string gitDirectory)
+        static Regex oldAssemblyVersioningScheme = new Regex("assemblyVersioningScheme", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        public static Config Provide(string gitDirectory, IFileSystem fileSystem)
         {
-            var configFilePath = Path.Combine(Directory.GetParent(gitDirectory).FullName, "GitVersionConfig.yaml");
-            if (File.Exists(configFilePath))
+            var configFilePath = GetConfigFilePath(gitDirectory);
+
+            if (fileSystem.Exists(configFilePath))
             {
-                using (var reader = File.OpenText(configFilePath))
+                var readAllText = fileSystem.ReadAllText(configFilePath);
+                if (oldAssemblyVersioningScheme.IsMatch(readAllText))
                 {
-                    return ConfigReader.Read(reader);
+                    readAllText = oldAssemblyVersioningScheme.Replace(readAllText, "assembly-versioning-scheme");
+                    fileSystem.WriteAllText(configFilePath, readAllText);
+                    Logger.WriteWarning("Found legacy configuration value 'assemblyVersioningScheme', replaced with 'assembly-versioning-scheme");
                 }
+
+                return ConfigReader.Read(new StringReader(readAllText));
             }
 
             return new Config();
+        }
+
+        public static void WriteSample(string gitDirectory, IFileSystem fileSystem)
+        {
+            var configFilePath = GetConfigFilePath(gitDirectory);
+
+            if (!fileSystem.Exists(configFilePath))
+            {
+                using (var stream = fileSystem.OpenWrite(configFilePath))
+                using (var writer = new StreamWriter(stream))
+                {
+                    ConfigReader.WriteSample(writer);
+                }
+            }
+            else
+            {
+                Logger.WriteError("Cannot write sample, GitVersionConfig.yaml already exists");
+            }
+        }
+
+        static string GetConfigFilePath(string gitDirectory)
+        {
+            return Path.Combine(Directory.GetParent(gitDirectory).FullName, "GitVersionConfig.yaml");
         }
     }
 }

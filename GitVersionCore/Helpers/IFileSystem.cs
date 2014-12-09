@@ -1,4 +1,4 @@
-namespace GitVersion
+namespace GitVersion.Helpers
 {
     using System.Collections.Generic;
     using System.IO;
@@ -12,5 +12,6 @@ namespace GitVersion
         string ReadAllText(string path);
         void WriteAllText(string file, string fileContents);
         IEnumerable<string> DirectoryGetFiles(string directory, string searchPattern, SearchOption searchOption);
+        Stream OpenWrite(string path);
     }
 }

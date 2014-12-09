@@ -37,6 +37,14 @@ namespace GitVersion
                     IsHelp = true
                 };
             }
+            if (IsInit(firstArgument))
+            {
+                return new Arguments
+                {
+                    TargetPath = Environment.CurrentDirectory,
+                    Init = true
+                };
+            }
 
             if (commandLineArguments.Count == 1)
             {
@@ -188,6 +196,11 @@ namespace GitVersion
             }
 
             return (string.Equals(switchName, value, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        static bool IsInit(string singleArgument)
+        {
+            return singleArgument.Equals("init", StringComparison.InvariantCultureIgnoreCase);
         }
 
         static bool IsHelp(string singleArgument)
