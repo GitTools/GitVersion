@@ -1,3 +1,5 @@
+This is a test...
+
 ![Icon](https://raw.github.com/Particular/GitVersion/master/Icons/package_icon.png)
 
 The easy way to use semantic versioning (semver.org) with a Git.
