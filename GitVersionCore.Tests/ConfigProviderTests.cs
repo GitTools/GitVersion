@@ -30,6 +30,13 @@ develop-branch-tag: alpha
 release-branch-tag: rc
 next-version: 2.0.0
 tag-prefix: '[vV|version-]'
+mode: ContinuousDelivery
+develop:
+    mode: ContinuousDeployment
+    tag: dev
+release*:
+   mode: ContinuousDeployment
+   tag: rc 
 ";
         SetupConfigFileContent(text);
 
@@ -39,6 +46,25 @@ tag-prefix: '[vV|version-]'
         config.ReleaseBranchTag.ShouldBe("rc");
         config.NextVersion.ShouldBe("2.0.0");
         config.TagPrefix.ShouldBe("[vV|version-]");
+        config.Release.VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
+        config.Develop.VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
+        config.VersioningMode.ShouldBe(VersioningMode.ContinuousDelivery);
+        config.Release.Tag.ShouldBe("rc");
+        config.Develop.Tag.ShouldBe("dev");
+    }
+
+    [Test]
+    public void CanInheritVersioningMode()
+    {
+        const string text = @"
+mode: ContinuousDelivery
+develop:
+    mode: ContinuousDeployment
+";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
+        config.Develop.VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment); 
+        config.Release.VersioningMode.ShouldBe(VersioningMode.ContinuousDelivery);
     }
 
     [Test]
