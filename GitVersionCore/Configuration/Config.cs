@@ -1,5 +1,7 @@
 ﻿namespace GitVersion
 {
+    using System;
+
     using YamlDotNet.Serialization;
 
     public class Config
@@ -9,22 +11,43 @@
         public Config()
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch;
-            DevelopBranchTag = "unstable";
-            ReleaseBranchTag = "beta";
             TagPrefix = "[vV]";
-            Release = new BranchConfig();
-            Develop = new BranchConfig();
+            Release = new BranchConfig { Tag = "beta" };
+            Develop = new BranchConfig { Tag = "unstable" };
             VersioningMode = VersioningMode.ContinuousDelivery;
+            Develop.VersioningMode = VersioningMode.ContinuousDeployment;
         }
 
         [YamlAlias("assembly-versioning-scheme")]
         public AssemblyVersioningScheme AssemblyVersioningScheme { get; set; }
 
         [YamlAlias("develop-branch-tag")]
-        public string DevelopBranchTag { get; set; }
+        [Obsolete]
+        public string DevelopBranchTag
+        {
+            set
+            {
+                Develop.Tag = value;
+            }
+            get
+            {
+                return Develop.Tag;
+            }
+        }
 
         [YamlAlias("release-branch-tag")]
-        public string ReleaseBranchTag { get; set; }
+        [Obsolete]
+        public string ReleaseBranchTag 
+        {
+            set
+            {
+                Release.Tag = value;
+            }
+            get
+            {
+                return Release.Tag;
+            }
+        }
 
         [YamlAlias("mode")]
         public VersioningMode VersioningMode

@@ -23,7 +23,7 @@
 
             if (semanticVersionPreReleaseTag.Name == "release")
             {
-                semanticVersionPreReleaseTag.Name = context.Configuration.ReleaseBranchTag;
+                semanticVersionPreReleaseTag.Name = context.Configuration.Release.Tag;
             }
 
             semanticVersion = new SemanticVersion
