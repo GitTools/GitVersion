@@ -64,6 +64,7 @@ branches:
         var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
         config.Branches["develop"].VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
         config.Release.VersioningMode.ShouldBe(VersioningMode.ContinuousDelivery);
+        config.Develop.Tag.ShouldBe("unstable");
     }
 
     [Test]

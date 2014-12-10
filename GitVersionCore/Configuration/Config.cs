@@ -76,8 +76,19 @@
             }
             set
             {
-                value.ToList().ForEach(_ => branches[_.Key] = _.Value);
+                value.ToList().ForEach(_ => branches[_.Key] = MergeObjects(branches[_.Key],  _.Value));
             }
+        }
+
+        private T MergeObjects<T>(T target, T source)
+        {
+            typeof(T).GetProperties()
+                .Where(prop => prop.CanRead && prop.CanWrite)
+                .Select(_ => new {prop = _, value =_.GetValue(source, null) } )
+                .Where(_ => _.value != null)
+                .ToList()
+                .ForEach(_ => _.prop.SetValue(target, _.value, null));
+            return target;
         }
 
         [YamlAlias("tag-prefix")]
