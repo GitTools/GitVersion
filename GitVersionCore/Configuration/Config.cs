@@ -1,6 +1,8 @@
 ﻿namespace GitVersion
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     using YamlDotNet.Serialization;
 
@@ -8,12 +10,14 @@
     {
         VersioningMode versioningMode;
 
+        Dictionary<string, BranchConfig> branches = new Dictionary<string, BranchConfig>();
+
         public Config()
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch;
             TagPrefix = "[vV]";
-            Release = new BranchConfig { Tag = "beta" };
-            Develop = new BranchConfig { Tag = "unstable" };
+            Branches["release[/-]"] = new BranchConfig { Tag = "beta" };
+            Branches["develop"] = new BranchConfig { Tag = "unstable" };
             VersioningMode = VersioningMode.ContinuousDelivery;
             Develop.VersioningMode = VersioningMode.ContinuousDeployment;
         }
@@ -58,23 +62,46 @@
             }
             set
             {
-                Develop.VersioningMode = value;
-                Release.VersioningMode = value;
+                Branches.ToList().ForEach(b => b.Value.VersioningMode = value);
                 versioningMode = value;
             }
         }
 
-        [YamlAlias("develop")]
-        public BranchConfig Develop { get; set; }
-
-        [YamlAlias("release*")]
-        public BranchConfig Release { get; set; }
-
+        [YamlAlias("branches")]
+        public Dictionary<string, BranchConfig> Branches
+        {
+            get
+            {
+                return branches;
+            }
+            set
+            {
+                value.ToList().ForEach(_ => branches[_.Key] = _.Value);
+            }
+        }
 
         [YamlAlias("tag-prefix")]
         public string TagPrefix { get; set; }
 
         [YamlAlias("next-version")]
         public string NextVersion { get; set; }
+
+        [Obsolete]
+        public BranchConfig Develop
+        {
+            get
+            {
+                return Branches["develop"];
+            }
+        }
+
+        [Obsolete]
+        public BranchConfig Release
+        {
+            get
+            {
+                return Branches["release[/-]"];
+            }
+        }
     }
 }

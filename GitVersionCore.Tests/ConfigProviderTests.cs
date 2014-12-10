@@ -30,12 +30,13 @@ assembly-versioning-scheme: MajorMinor
 next-version: 2.0.0
 tag-prefix: '[vV|version-]'
 mode: ContinuousDelivery
-develop:
-    mode: ContinuousDeployment
-    tag: dev
-release*:
-   mode: ContinuousDeployment
-   tag: rc 
+branches:
+    develop:
+        mode: ContinuousDeployment
+        tag: dev
+    release[/-]:
+       mode: ContinuousDeployment
+       tag: rc 
 ";
         SetupConfigFileContent(text);
 
@@ -43,11 +44,11 @@ release*:
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
         config.NextVersion.ShouldBe("2.0.0");
         config.TagPrefix.ShouldBe("[vV|version-]");
-        config.Release.VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
-        config.Develop.VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
         config.VersioningMode.ShouldBe(VersioningMode.ContinuousDelivery);
-        config.Release.Tag.ShouldBe("rc");
-        config.Develop.Tag.ShouldBe("dev");
+        config.Branches["develop"].Tag.ShouldBe("dev");
+        config.Branches["release[/-]"].Tag.ShouldBe("rc");
+        config.Branches["release[/-]"].VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
+        config.Branches["develop"].VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
     }
 
     [Test]
@@ -55,12 +56,13 @@ release*:
     {
         const string text = @"
 mode: ContinuousDelivery
-develop:
-    mode: ContinuousDeployment
+branches:
+    develop:
+        mode: ContinuousDeployment
 ";
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
-        config.Develop.VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment); 
+        config.Branches["develop"].VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
         config.Release.VersioningMode.ShouldBe(VersioningMode.ContinuousDelivery);
     }
 
@@ -75,8 +77,8 @@ release-branch-tag: rc
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
-        config.Develop.Tag.ShouldBe("alpha");
-        config.Release.Tag.ShouldBe("rc");
+        config.Branches["develop"].Tag.ShouldBe("alpha");
+        config.Branches["release[/-]"].Tag.ShouldBe("rc");
     }
 
     [Test]
@@ -86,8 +88,8 @@ release-branch-tag: rc
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
-        config.Develop.Tag.ShouldBe("unstable");
-        config.Release.Tag.ShouldBe("beta");
+        config.Branches["develop"].Tag.ShouldBe("unstable");
+        config.Branches["release[/-]"].Tag.ShouldBe("beta");
         config.TagPrefix.ShouldBe("[vV]");
         config.NextVersion.ShouldBe(null);
     }
@@ -112,7 +114,7 @@ release-branch-tag: rc
     public void VerifyAliases()
     {
         var config = typeof(Config);
-        var propertiesMissingAlias = config.GetProperties().Where(p => p.GetCustomAttribute(typeof(YamlAliasAttribute)) == null).Select(p => p.Name);
+        var propertiesMissingAlias = config.GetProperties().Where(p => p.GetCustomAttribute<ObsoleteAttribute>() == null).Where(p => p.GetCustomAttribute(typeof(YamlAliasAttribute)) == null).Select(p => p.Name);
 
         propertiesMissingAlias.ShouldBeEmpty();
     }

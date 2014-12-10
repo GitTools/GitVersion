@@ -35,12 +35,9 @@ public class DevelopScenarios
     [Test]
     public void CanChangeDevelopTagViaConfig()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config
-        {
-            Develop = {
-                       Tag = "alpha"
-            }
-        }))
+        var config = new Config();
+        config.Branches["develop"].Tag = "alpha";
+        using (var fixture = new EmptyRepositoryFixture(config))
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("develop").Checkout();
@@ -51,13 +48,9 @@ public class DevelopScenarios
     [Test]
     public void CanHandleContinuousDelivery()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config
-        {
-            Develop =
-            {
-                VersioningMode = VersioningMode.ContinuousDelivery
-            }
-        }))
+        var config = new Config();
+        config.Branches["develop"].VersioningMode = VersioningMode.ContinuousDelivery;
+        using (var fixture = new EmptyRepositoryFixture(config))
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("develop").Checkout();

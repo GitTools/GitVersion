@@ -9,7 +9,7 @@ namespace GitVersion
             GitVersionContext context,
             BranchType branchType)
         {
-            context.CurrentBranchConfig = context.Configuration.Develop;
+            context.CurrentBranchConfig = context.Configuration.Branches["develop"];
             var ancestor = FindCommonAncestorWithDevelop(context.Repository, context.CurrentBranch, branchType);
 
             if (!IsThereAnyCommitOnTheBranch(context.Repository, context.CurrentBranch))
