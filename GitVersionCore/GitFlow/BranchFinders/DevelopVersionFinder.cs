@@ -21,7 +21,7 @@ namespace GitVersion
             var c = context.Repository.Commits.QueryBy(f);
             var numberOfCommitsSinceRelease = c.Count();
 
-            var shortVersion = new SemanticVersion()
+            var shortVersion = new SemanticVersion
                                    {
                                        Major = versionFromMaster.Major,
                                        Minor = versionFromMaster.Minor + 1,

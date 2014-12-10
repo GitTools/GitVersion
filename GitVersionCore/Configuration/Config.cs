@@ -54,13 +54,13 @@
         {
             get
             {
-                return this.versioningMode;
+                return versioningMode;
             }
             set
             {
                 Develop.VersioningMode = value;
                 Release.VersioningMode = value;
-                this.versioningMode = value;
+                versioningMode = value;
             }
         }
 
