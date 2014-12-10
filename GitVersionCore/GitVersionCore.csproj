@@ -70,6 +70,7 @@
     <Compile Include="BuildServers\IBuildServer.cs" />
     <Compile Include="BuildServers\MyGet.cs" />
     <Compile Include="BuildServers\TeamCity.cs" />
+    <Compile Include="Configuration\BranchConfig.cs" />
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Configuration\ConfigReader.cs" />
     <Compile Include="Configuration\ConfigurationProvider.cs" />
@@ -79,6 +80,10 @@
     <Compile Include="Helpers\IFileSystem.cs" />
     <Compile Include="LastMinorVersionFinder.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />
+    <Compile Include="VersioningModes\ContinuousDeliveryMode.cs" />
+    <Compile Include="VersioningModes\ContinuousDeploymentMode.cs" />
+    <Compile Include="VersioningModes\VersioningMode.cs" />
+    <Compile Include="VersioningModes\VersioningModeBase.cs" />
     <Compile Include="WarningException.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GitDirFinder.cs" />

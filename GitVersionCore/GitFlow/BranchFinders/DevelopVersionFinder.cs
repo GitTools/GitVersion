@@ -21,12 +21,23 @@ namespace GitVersion
             var c = context.Repository.Commits.QueryBy(f);
             var numberOfCommitsSinceRelease = c.Count();
 
+            var shortVersion = new SemanticVersion
+                                   {
+                                       Major = versionFromMaster.Major,
+                                       Minor = versionFromMaster.Minor + 1,
+                                       Patch = 0,
+                                   };
+
+            var applicableTagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(context.Configuration, shortVersion).OrderByDescending(tag => SemanticVersion.Parse(tag.Name, context.Configuration.TagPrefix)).ToList();
+            var preReleaseTag = context.CurrentBranchConfig.VersioningMode.GetInstance().GetPreReleaseTag(context, applicableTagsInDescendingOrder, numberOfCommitsSinceRelease);
+
+
             var semanticVersion = new SemanticVersion
             {
-                Major = versionFromMaster.Major,
-                Minor = versionFromMaster.Minor + 1,
-                Patch = 0,
-                PreReleaseTag = context.Configuration.DevelopBranchTag + numberOfCommitsSinceRelease,
+                Major = shortVersion.Major,
+                Minor = shortVersion.Minor,
+                Patch = shortVersion.Patch,
+                PreReleaseTag = preReleaseTag,
                 BuildMetaData = new SemanticVersionBuildMetaData(numberOfCommitsSinceRelease, context.CurrentBranch.Name,tip.Sha,tip.When()),
             };
 

@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -26,28 +27,59 @@ public class ConfigProviderTests
     {
         const string text = @"
 assembly-versioning-scheme: MajorMinor
-develop-branch-tag: alpha
-release-branch-tag: rc
 next-version: 2.0.0
 tag-prefix: '[vV|version-]'
+mode: ContinuousDelivery
+branches:
+    develop:
+        mode: ContinuousDeployment
+        tag: dev
+    release[/-]:
+       mode: ContinuousDeployment
+       tag: rc 
 ";
         SetupConfigFileContent(text);
 
         var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
-        config.DevelopBranchTag.ShouldBe("alpha");
-        config.ReleaseBranchTag.ShouldBe("rc");
         config.NextVersion.ShouldBe("2.0.0");
         config.TagPrefix.ShouldBe("[vV|version-]");
+        config.VersioningMode.ShouldBe(VersioningMode.ContinuousDelivery);
+        config.Branches["develop"].Tag.ShouldBe("dev");
+        config.Branches["release[/-]"].Tag.ShouldBe("rc");
+        config.Branches["release[/-]"].VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
+        config.Branches["develop"].VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
+    }
+
+    [Test]
+    public void CanInheritVersioningMode()
+    {
+        const string text = @"
+mode: ContinuousDelivery
+branches:
+    develop:
+        mode: ContinuousDeployment
+";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
+        config.Branches["develop"].VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
+        config.Release.VersioningMode.ShouldBe(VersioningMode.ContinuousDelivery);
+        config.Develop.Tag.ShouldBe("unstable");
     }
 
     [Test]
     public void CanReadOldDocument()
     {
-        const string text = @"assemblyVersioningScheme: MajorMinor";
+        const string text = @"
+assemblyVersioningScheme: MajorMinor
+develop-branch-tag: alpha
+release-branch-tag: rc
+";
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
+        config.Branches["develop"].Tag.ShouldBe("alpha");
+        config.Branches["release[/-]"].Tag.ShouldBe("rc");
     }
 
     [Test]
@@ -57,8 +89,8 @@ tag-prefix: '[vV|version-]'
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
-        config.DevelopBranchTag.ShouldBe("unstable");
-        config.ReleaseBranchTag.ShouldBe("beta");
+        config.Branches["develop"].Tag.ShouldBe("unstable");
+        config.Branches["release[/-]"].Tag.ShouldBe("beta");
         config.TagPrefix.ShouldBe("[vV]");
         config.NextVersion.ShouldBe(null);
     }
@@ -67,7 +99,7 @@ tag-prefix: '[vV|version-]'
     public void VerifyInit()
     {
         var config = typeof(Config);
-        var aliases = config.GetProperties().Select(p => ((YamlAliasAttribute) p.GetCustomAttribute(typeof(YamlAliasAttribute))).Alias);
+        var aliases = config.GetProperties().Where(p => p.GetCustomAttribute<ObsoleteAttribute>() == null).Select(p => ((YamlAliasAttribute) p.GetCustomAttribute(typeof(YamlAliasAttribute))).Alias);
         var writer = new StringWriter();
 
         ConfigReader.WriteSample(writer);
@@ -83,7 +115,7 @@ tag-prefix: '[vV|version-]'
     public void VerifyAliases()
     {
         var config = typeof(Config);
-        var propertiesMissingAlias = config.GetProperties().Where(p => p.GetCustomAttribute(typeof(YamlAliasAttribute)) == null).Select(p => p.Name);
+        var propertiesMissingAlias = config.GetProperties().Where(p => p.GetCustomAttribute<ObsoleteAttribute>() == null).Where(p => p.GetCustomAttribute(typeof(YamlAliasAttribute)) == null).Select(p => p.Name);
 
         propertiesMissingAlias.ShouldBeEmpty();
     }

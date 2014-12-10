@@ -20,10 +20,12 @@
         public static void WriteSample(TextWriter writer)
         {
             writer.WriteLine("# assembly-versioning-scheme: MajorMinorPatchMetadata | MajorMinorPatch | MajorMinor | Major");
-            writer.WriteLine("# develop-branch-tag: alpha");
-            writer.WriteLine("# release-branch-tag: rc");
             writer.WriteLine("# tag-prefix: '[vV|version-] # regex to match git tag prefix");
             writer.WriteLine("# next-version: 1.0.0");
+            writer.WriteLine("# mode: ContinuousDelivery | ContinuousDeployment");
+            writer.WriteLine("#branches:");
+            writer.WriteLine("#   release[/-]*:\n    mode: ContinuousDelivery | ContinuousDeployment\n    tag: rc");
+            writer.WriteLine("#   develop:\n    mode: ContinuousDelivery | ContinuousDeployment\n    tag: alpha");
         }
     }
 }

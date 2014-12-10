@@ -35,14 +35,27 @@ public class DevelopScenarios
     [Test]
     public void CanChangeDevelopTagViaConfig()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config
-        {
-            DevelopBranchTag = "alpha"
-        }))
+        var config = new Config();
+        config.Branches["develop"].Tag = "alpha";
+        using (var fixture = new EmptyRepositoryFixture(config))
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("develop").Checkout();
             fixture.AssertFullSemver("1.1.0-alpha.0+0");
+        }
+    }
+
+    [Test]
+    public void CanHandleContinuousDelivery()
+    {
+        var config = new Config();
+        config.Branches["develop"].VersioningMode = VersioningMode.ContinuousDelivery;
+        using (var fixture = new EmptyRepositoryFixture(config))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.CreateBranch("develop").Checkout();
+            fixture.Repository.MakeATaggedCommit("1.1.0-alpha7");
+            fixture.AssertFullSemver("1.1.0-alpha.7+1");
         }
     }
     
@@ -51,7 +64,7 @@ public class DevelopScenarios
     {
         using (var fixture = new EmptyRepositoryFixture(new Config
         {
-            DevelopBranchTag = ""
+            Develop = {Tag= ""}
         }))
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
