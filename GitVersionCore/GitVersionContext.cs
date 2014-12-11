@@ -45,7 +45,7 @@
             var directBranchHasBeenFound = false;
             foreach (var branch in Repository.Branches)
             {
-                if (branch.Tip.Sha != commitSha)
+                if (branch.Tip.Sha != commitSha || !branch.IsTracking)
                 {
                     continue;
                 }
