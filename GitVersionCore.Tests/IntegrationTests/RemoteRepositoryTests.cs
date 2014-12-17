@@ -39,8 +39,7 @@ namespace GitVersionCore.Tests.IntegrationTests
 
             using (var fixture = new RemoteRepositoryFixture(new Config()))
             {
-                GitVersionContext.IsContextForTrackedBrancesOnly = false;
-
+                fixture.IsForTrackedBranchOnly = false;
                 fixture.LocalRepository.Checkout(fixture.LocalRepository.Head.Tip);
 
                 Assert.Throws<WarningException>(() => fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepository), "It looks like the branch being examined is a detached Head pointing to commit '{0}'. Without a proper branch name GitVersion cannot determine the build version.", fixture.LocalRepository.Head.Tip.Id.ToString(7));

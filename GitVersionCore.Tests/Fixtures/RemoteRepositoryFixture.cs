@@ -13,8 +13,11 @@ namespace GitVersionCore.Tests.Fixtures
         public RemoteRepositoryFixture(Config configuration)
             : base(CreateNewRepository, configuration)
         {
+        
             CloneRepository();
         }
+
+    
 
         static IRepository CreateNewRepository(string path)
         {

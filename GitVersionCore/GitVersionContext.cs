@@ -1,7 +1,9 @@
 ﻿namespace GitVersion
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using LibGit2Sharp;
 
     /// <summary>
@@ -9,16 +11,17 @@
     /// </summary>
     public class GitVersionContext
     {
-        public GitVersionContext(IRepository repository, Config configuration)
-            : this(repository, repository.Head, configuration)
+        public GitVersionContext(IRepository repository, Config configuration, bool isForTrackingBranchOnly = true)
+            : this(repository, repository.Head, configuration, isForTrackingBranchOnly)
         {
             Configuration = configuration;
         }
 
-        public GitVersionContext(IRepository repository, Branch currentBranch, Config configuration)
+        public GitVersionContext(IRepository repository, Branch currentBranch, Config configuration, bool isForTrackingBranchOnly = true)
         {
             Repository = repository;
-            Configuration = configuration;      
+            Configuration = configuration;
+            IsContextForTrackedBranchesOnly = isForTrackingBranchOnly;
 
             if (currentBranch == null)
                 return;
@@ -40,14 +43,15 @@
         public Branch CurrentBranch { get; private set; }
         public Commit CurrentCommit { get; private set; }
 
-        public static bool? IsContextForTrackedBrancesOnly { private get; set; }
+        public bool IsContextForTrackedBranchesOnly = true;
+
 
         IEnumerable<Branch> GetBranchesContainingCommit(string commitSha)
         {
             var directBranchHasBeenFound = false;
             foreach (var branch in Repository.Branches)
             {
-                if (branch.Tip.Sha != commitSha || (IsContextForTrackedBrancesOnly.GetValueOrDefault(true) && !branch.IsTracking))
+                if (branch.Tip.Sha != commitSha || (IsContextForTrackedBranchesOnly && !branch.IsTracking))
                 {
                     continue;
                 }
