@@ -18,7 +18,7 @@
         public GitVersionContext(IRepository repository, Branch currentBranch, Config configuration)
         {
             Repository = repository;
-            Configuration = configuration;
+            Configuration = configuration;      
 
             if (currentBranch == null)
                 return;
@@ -33,7 +33,6 @@
             {
                 CurrentBranch = currentBranch;
             }
-            IsContextForTrackedBrancesOnly = true;
         }
 
         public Config Configuration { get; private set; }
@@ -41,14 +40,14 @@
         public Branch CurrentBranch { get; private set; }
         public Commit CurrentCommit { get; private set; }
 
-        public static bool IsContextForTrackedBrancesOnly { private get; set; }
+        public static bool? IsContextForTrackedBrancesOnly { private get; set; }
 
         IEnumerable<Branch> GetBranchesContainingCommit(string commitSha)
         {
             var directBranchHasBeenFound = false;
             foreach (var branch in Repository.Branches)
             {
-                if (branch.Tip.Sha != commitSha || (IsContextForTrackedBrancesOnly && !branch.IsTracking))
+                if (branch.Tip.Sha != commitSha || (IsContextForTrackedBrancesOnly.GetValueOrDefault(true) && !branch.IsTracking))
                 {
                     continue;
                 }
