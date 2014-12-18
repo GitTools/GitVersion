@@ -1,9 +1,7 @@
 ﻿namespace GitVersion
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Threading;
     using LibGit2Sharp;
 
     /// <summary>
@@ -43,7 +41,7 @@
         public Branch CurrentBranch { get; private set; }
         public Commit CurrentCommit { get; private set; }
 
-        public bool IsContextForTrackedBranchesOnly = true;
+        readonly bool IsContextForTrackedBranchesOnly = true;
 
 
         IEnumerable<Branch> GetBranchesContainingCommit(string commitSha)

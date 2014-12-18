@@ -19,7 +19,7 @@ public abstract class RepositoryFixtureBase : IDisposable
         IsForTrackedBranchOnly = true;
     }
 
-    public bool IsForTrackedBranchOnly { get; set; }
+    public bool IsForTrackedBranchOnly { private get; set; }
 
     public SemanticVersion ExecuteGitVersion(IRepository repository = null)
     {
