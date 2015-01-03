@@ -27,7 +27,7 @@
         public string ProjectFile { get; set; }
 
         [Required]
-        public string IntermediateOutputDirectory { get; set; }
+        public string IntermediateOutputPath { get; set; }
 
         [Required]
         public ITaskItem[] CompileFiles { get; set; }
@@ -135,7 +135,7 @@
             var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(configuration);
 
             string tempFileName = "GitVersionTaskAssemblyInfo.g.cs";
-            AssemblyInfoTempFilePath = Path.Combine(IntermediateOutputDirectory, tempFileName);
+            AssemblyInfoTempFilePath = Path.Combine(IntermediateOutputPath, tempFileName);
             File.WriteAllText(AssemblyInfoTempFilePath, assemblyInfo);
         }
     }

@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)..\</SolutionDir>
-    <IntermediateOutputDirectory Condition="$(IntermediateOutputDirectory) == '' Or $(IntermediateOutputDirectory) == '*Undefined*'">$(MSBuildProjectDirectory)obj\$(Configuration)\</IntermediateOutputDirectory>
+    <IntermediateOutputPath Condition="$(IntermediateOutputPath) == '' Or $(IntermediateOutputPath) == '*Undefined*'">$(MSBuildProjectDirectory)obj\$(Configuration)\</IntermediateOutputPath>
     <GitVersionAssemblyVersioningScheme Condition="$(GitVersionAssemblyVersioningScheme) == '' Or $(GitVersionAssemblyVersioningScheme) == '*Undefined*'"></GitVersionAssemblyVersioningScheme>
   </PropertyGroup>
 
@@ -24,7 +24,7 @@
     <UpdateAssemblyInfo
       SolutionDirectory="$(SolutionDir)"
       ProjectFile="$(MSBuildProjectFullPath)"
-      IntermediateOutputDirectory="$(IntermediateOutputDirectory)"
+      IntermediateOutputPath="$(IntermediateOutputPath)"
       AssemblyVersioningScheme="$(GitVersionAssemblyVersioningScheme)"
       CompileFiles ="@(Compile)">
       <Output
