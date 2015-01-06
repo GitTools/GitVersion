@@ -20,5 +20,18 @@ namespace GitVersionCore.Tests.IntegrationTests.GitHubFlow
                 fixture.AssertFullSemver("1.0.1-feature.JIRA.123+5");
             }
         }    
+        [Test]
+        public void TestFeatureBranch()
+        {
+            using (var fixture = new EmptyRepositoryFixture(new Config()))
+            {
+                fixture.Repository.MakeATaggedCommit("1.0.0");
+                fixture.Repository.CreateBranch("feature-test");
+                fixture.Repository.Checkout("feature-test");
+                fixture.Repository.MakeCommits(5);
+
+                fixture.AssertFullSemver("1.0.1-feature.test+5");
+            }
+        }    
     }
 }
