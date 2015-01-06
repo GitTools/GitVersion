@@ -76,6 +76,7 @@
     <Compile Include="Fixtures\BaseGitFlowRepositoryFixture.cs" />
     <Compile Include="IntegrationTests\RemoteRepositoryTests.cs" />
     <Compile Include="IntegrationTests\GitFlow\DevelopScenarios.cs" />
+    <Compile Include="IntegrationTests\GitFlow\FeatureBranchTests.cs" />
     <Compile Include="IntegrationTests\GitFlow\SupportBranchScenarios.cs" />
     <Compile Include="IntegrationTests\GitFlow\MetaDataByCommitScenarios.cs" />
     <Compile Include="IntegrationTests\GitFlow\PatchScenarios.cs" />
