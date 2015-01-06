@@ -1,24 +1,25 @@
 ﻿namespace GitVersion
 {
+    using System;
     using System.Linq;
-    using LibGit2Sharp;
 
     class OtherBranchVersionFinder 
     {
-        public bool FindVersion(GitVersionContext context, out SemanticVersion semanticVersion)
+        public bool FindVersion(GitVersionContext context, SemanticVersion defaultNextVersion, out SemanticVersion semanticVersion)
         {
-            var versionString = GetUnknownBranchSuffix(context.CurrentBranch);
-            if (!versionString.Contains("."))
+            var versionInBranch = GetVersionInBranch(context);
+            if (versionInBranch == null)
             {
+                if (!context.CurrentBranch.IsMaster())
+                    defaultNextVersion.PreReleaseTag = context.CurrentBranch.Name.Replace("-", ".").Replace("/", ".");
                 semanticVersion = null;
+
                 return false;
             }
-            var shortVersion = SemanticVersion.Parse(versionString, context.Configuration.TagPrefix);
 
-
-            var applicableTagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(context.Configuration, shortVersion).OrderByDescending(tag => SemanticVersion.Parse(tag.Name, context.Configuration.TagPrefix)).ToList();
+            var applicableTagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(context.Configuration, versionInBranch.Item2).OrderByDescending(tag => SemanticVersion.Parse(tag.Name, context.Configuration.TagPrefix)).ToList();
             var nbHotfixCommits = BranchCommitDifferenceFinder.NumberOfCommitsSinceLastTagOrBranchPoint(context, applicableTagsInDescendingOrder, BranchType.Unknown, "master");
-            var semanticVersionPreReleaseTag = RecentTagVersionExtractor.RetrieveMostRecentOptionalTagVersion(context, applicableTagsInDescendingOrder) ?? CreateDefaultPreReleaseTag(context, versionString);
+            var semanticVersionPreReleaseTag = RecentTagVersionExtractor.RetrieveMostRecentOptionalTagVersion(context, applicableTagsInDescendingOrder) ?? CreateDefaultPreReleaseTag(context, versionInBranch.Item1);
 
 
             if (semanticVersionPreReleaseTag.Name == "release")
@@ -28,28 +29,35 @@
 
             semanticVersion = new SemanticVersion
             {
-                Major = shortVersion.Major,
-                Minor = shortVersion.Minor,
-                Patch = shortVersion.Patch,
+                Major = versionInBranch.Item2.Major,
+                Minor = versionInBranch.Item2.Minor,
+                Patch = versionInBranch.Item2.Patch,
                 PreReleaseTag = semanticVersionPreReleaseTag,
                 BuildMetaData = new SemanticVersionBuildMetaData(nbHotfixCommits, context.CurrentBranch.Name, context.CurrentCommit.Sha, context.CurrentCommit.When())
             };
             return true;
         }
 
+        Tuple<string, SemanticVersion> GetVersionInBranch(GitVersionContext context)
+        {
+            var branchParts = context.CurrentBranch.Name.Split('/', '-');
+            foreach (var part in branchParts)
+            {
+                SemanticVersion semanticVersion;
+                if (SemanticVersion.TryParse(part, context.Configuration.TagPrefix, out semanticVersion))
+                {
+                    return Tuple.Create(part, semanticVersion);
+                }
+            }
+
+            return null;
+        }
+
         SemanticVersionPreReleaseTag CreateDefaultPreReleaseTag(GitVersionContext context, string versionString)
         {
             return context.CurrentBranch.Name
-                .Replace("-" + versionString, string.Empty)
-                .Replace("/" + versionString, string.Empty) + ".1";
-        }
-
-        static string GetUnknownBranchSuffix(Branch branch)
-        {
-            var unknownBranchSuffix = branch.Name.Split('-', '/');
-            if (unknownBranchSuffix.Length == 1)
-                return branch.Name;
-            return unknownBranchSuffix[1];
+                .Replace("/" + versionString, string.Empty)
+                .Replace("-" + versionString, string.Empty) + ".1";
         }
 
     }

@@ -20,7 +20,7 @@ public class FeatureBranchTests
             // Current output 1.1.0-JIRA-.123+5
 
             // A valid assert from my point of view
-            fixture.AssertFullSemver("1.1.0-JIRA-123.5");
+            fixture.AssertFullSemver("1.1.0-JIRA.123+5");
 
             // Or possible, but I'll guess it depends on wheter we're using a CD och CI flow?
             // fixture.AssertFullSemver("1.1.0-JIRA-123+5");
