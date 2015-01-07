@@ -84,7 +84,7 @@
 
         void AssignBranchConfiguration()
         {
-            var matchingBranches = Configuration.Branches.Where(b => Regex.IsMatch(CurrentBranch.Name, b.Key)).ToArray();
+            var matchingBranches = Configuration.Branches.Where(b => Regex.IsMatch("^" + CurrentBranch.Name, b.Key)).ToArray();
 
             if (matchingBranches.Length == 0)
             {
