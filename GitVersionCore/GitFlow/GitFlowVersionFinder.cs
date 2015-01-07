@@ -11,19 +11,16 @@ namespace GitVersion
 
             if (context.CurrentBranch.IsHotfix())
             {
-                context.CurrentBranchConfig = context.Configuration.Branches["release[/-]"];
                 return new HotfixVersionFinder().FindVersion(context);
             }
 
             if (context.CurrentBranch.IsRelease())
             {
-                context.CurrentBranchConfig = context.Configuration.Branches["release[/-]"];
                 return new ReleaseVersionFinder().FindVersion(context);
             }
 
             if (context.CurrentBranch.IsDevelop())
             {
-                context.CurrentBranchConfig = context.Configuration.Branches["develop"];
                 return new DevelopVersionFinder().FindVersion(context);
             }
 

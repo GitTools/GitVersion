@@ -1,7 +1,9 @@
 ﻿namespace GitVersion
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using LibGit2Sharp;
 
     /// <summary>
@@ -34,6 +36,8 @@
             {
                 CurrentBranch = currentBranch;
             }
+
+            AssignBranchConfiguration();
         }
 
         public Config Configuration { get; private set; }
@@ -41,7 +45,7 @@
         public Branch CurrentBranch { get; private set; }
         public Commit CurrentCommit { get; private set; }
 
-        public BranchConfig CurrentBranchConfig { get; set; }
+        public BranchConfig CurrentBranchConfig { get; private set; }
 
         readonly bool IsContextForTrackedBranchesOnly = true;
 
@@ -75,6 +79,24 @@
                 }
 
                 yield return branch;
+            }
+        }
+
+        void AssignBranchConfiguration()
+        {
+            var matchingBranches = Configuration.Branches.Where(b => Regex.IsMatch(CurrentBranch.Name, b.Key)).ToArray();
+
+            if (matchingBranches.Length == 0)
+            {
+                CurrentBranchConfig = new BranchConfig();
+            }
+            else if (matchingBranches.Length == 1)
+            {
+                CurrentBranchConfig = matchingBranches[0].Value;
+            }
+            else
+            {
+                throw new Exception(string.Format("Multiple branch configurations match the current branch name of ''. Matching configurations: '{0}'", string.Join(", ", matchingBranches.Select(b => b.Key))));
             }
         }
     }
