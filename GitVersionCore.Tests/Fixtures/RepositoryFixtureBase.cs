@@ -16,20 +16,23 @@ public abstract class RepositoryFixtureBase : IDisposable
         Repository = repoBuilder(RepositoryPath);
         Repository.Config.Set("user.name", "Test");
         Repository.Config.Set("user.email", "test@email.com");
+        IsForTrackedBranchOnly = true;
     }
 
-    public SemanticVersion ExecuteGitVersion()
+    public bool IsForTrackedBranchOnly { private get; set; }
+
+    public SemanticVersion ExecuteGitVersion(IRepository repository = null)
     {
         var vf = new GitVersionFinder();
-        return vf.FindVersion(new GitVersionContext(Repository, configuration));
+        return vf.FindVersion(new GitVersionContext(repository ?? Repository, configuration, IsForTrackedBranchOnly));
     }
 
-    public void AssertFullSemver(string fullSemver)
+    public void AssertFullSemver(string fullSemver, IRepository repository = null)
     {
-        ExecuteGitVersion().ToString("f").ShouldBe(fullSemver);
+        ExecuteGitVersion(repository).ToString("f").ShouldBe(fullSemver);
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         Repository.Dispose();
 

@@ -71,8 +71,10 @@
     </Compile>
     <Compile Include="Fixtures\CommitCountingRepoFixture.cs" />
     <Compile Include="ConfigProviderTests.cs" />
+    <Compile Include="Fixtures\RemoteRepositoryFixture.cs" />
     <Compile Include="GitDirFinderTests.cs" />
     <Compile Include="Fixtures\BaseGitFlowRepositoryFixture.cs" />
+    <Compile Include="IntegrationTests\RemoteRepositoryTests.cs" />
     <Compile Include="IntegrationTests\GitFlow\DevelopScenarios.cs" />
     <Compile Include="IntegrationTests\GitFlow\SupportBranchScenarios.cs" />
     <Compile Include="IntegrationTests\GitFlow\MetaDataByCommitScenarios.cs" />
