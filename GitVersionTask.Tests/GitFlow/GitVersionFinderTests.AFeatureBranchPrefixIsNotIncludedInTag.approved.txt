@@ -3,7 +3,7 @@
     "Minor": 1,
     "Patch": 0,
     "PreReleaseTag": {
-        "Name": "ABC.1234_SomeDescription",
+        "Name": "ABC-1234_SomeDescription",
         "Number": null
     },
     "BuildMetaData": {

@@ -11,7 +11,7 @@
             if (versionInBranch == null)
             {
                 if (!context.CurrentBranch.IsMaster())
-                    defaultNextVersion.PreReleaseTag = context.CurrentBranch.Name.Replace("-", ".").Replace("/", ".");
+                    defaultNextVersion.PreReleaseTag = context.CurrentBranch.Name.Split('/').Last();
                 semanticVersion = null;
 
                 return false;

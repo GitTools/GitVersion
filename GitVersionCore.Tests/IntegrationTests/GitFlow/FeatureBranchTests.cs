@@ -17,16 +17,7 @@ public class FeatureBranchTests
             fixture.Repository.Checkout("feature/JIRA-123");
             fixture.Repository.MakeCommits(5);
 
-            // Current output 1.1.0-JIRA-.123+5
-
-            // A valid assert from my point of view
-            fixture.AssertFullSemver("1.1.0-JIRA.123+5");
-
-            // Or possible, but I'll guess it depends on wheter we're using a CD och CI flow?
-            // fixture.AssertFullSemver("1.1.0-JIRA-123+5");
-
-            // Or depending on how we treat the build number meta data
-            // fixture.AssertFullSemver("1.1.0-JIRA-123.5+5");
+            fixture.AssertFullSemver("1.1.0-JIRA-123+5");
         }
     }    
 }
