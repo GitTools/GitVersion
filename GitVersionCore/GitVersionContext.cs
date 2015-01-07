@@ -41,6 +41,8 @@
         public Branch CurrentBranch { get; private set; }
         public Commit CurrentCommit { get; private set; }
 
+        public BranchConfig CurrentBranchConfig { get; set; }
+
         readonly bool IsContextForTrackedBranchesOnly = true;
 
 
