@@ -39,12 +39,12 @@ namespace GitVersion
                 });
         }
 
-        public static IEnumerable<Tag> SemVerTagsRelatedToVersion(this IRepository repository, Config configuration, SemanticVersion version)
+        public static IEnumerable<Tag> SemVerTagsRelatedToVersion(this IRepository repository, EffectiveConfiguration configuration, SemanticVersion version)
         {
             foreach (var tag in repository.Tags)
             {
                 SemanticVersion tagVersion;
-                if (SemanticVersion.TryParse(tag.Name, configuration.TagPrefix, out tagVersion))
+                if (SemanticVersion.TryParse(tag.Name, configuration.GitTagPrefix, out tagVersion))
                 {
                     if (version.Major == tagVersion.Major &&
                         version.Minor == tagVersion.Minor &&

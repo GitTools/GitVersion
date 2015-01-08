@@ -8,13 +8,13 @@ namespace GitVersion
         public SemanticVersion FindVersion(GitVersionContext context)
         {
             var versionString = GetSuffix(context.CurrentBranch);
-            var shortVersion = SemanticVersion.Parse(versionString, context.Configuration.TagPrefix);
+            var shortVersion = SemanticVersion.Parse(versionString, context.Configuration.GitTagPrefix);
 
             EnsureVersionIsValid(shortVersion, context.CurrentBranch);
 
-            var applicableTagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(context.Configuration, shortVersion).OrderByDescending(tag => SemanticVersion.Parse(tag.Name, context.Configuration.TagPrefix)).ToList();
+            var applicableTagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(context.Configuration, shortVersion).OrderByDescending(tag => SemanticVersion.Parse(tag.Name, context.Configuration.GitTagPrefix)).ToList();
             var numberOfCommitsSinceLastTagOrBranchPoint = BranchCommitDifferenceFinder.NumberOfCommitsSinceLastTagOrBranchPoint(context, applicableTagsInDescendingOrder, BranchType.Release, "develop");
-            var semanticVersionPreReleaseTag = context.Configuration.Branches["release[/-]"].VersioningMode.GetInstance().GetPreReleaseTag(context, applicableTagsInDescendingOrder, numberOfCommitsSinceLastTagOrBranchPoint);
+            var semanticVersionPreReleaseTag = context.Configuration.VersioningMode.GetInstance().GetPreReleaseTag(context, applicableTagsInDescendingOrder, numberOfCommitsSinceLastTagOrBranchPoint);
 
             return new SemanticVersion
             {

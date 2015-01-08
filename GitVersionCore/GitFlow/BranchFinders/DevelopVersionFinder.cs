@@ -28,8 +28,8 @@ namespace GitVersion
                                        Patch = 0,
                                    };
 
-            var applicableTagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(context.Configuration, shortVersion).OrderByDescending(tag => SemanticVersion.Parse(tag.Name, context.Configuration.TagPrefix)).ToList();
-            var preReleaseTag = context.CurrentBranchConfig.VersioningMode.GetInstance().GetPreReleaseTag(context, applicableTagsInDescendingOrder, numberOfCommitsSinceRelease);
+            var applicableTagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(context.Configuration, shortVersion).OrderByDescending(tag => SemanticVersion.Parse(tag.Name, context.Configuration.GitTagPrefix)).ToList();
+            var preReleaseTag = context.Configuration.VersioningMode.GetInstance().GetPreReleaseTag(context, applicableTagsInDescendingOrder, numberOfCommitsSinceRelease);
 
 
             var semanticVersion = new SemanticVersion

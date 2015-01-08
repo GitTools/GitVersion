@@ -22,7 +22,7 @@ public class BuildServerBaseTests
 
         semanticVersion.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
         semanticVersion.BuildMetaData.Sha = "commitSha";
-        new BuildServer().WriteIntegration(semanticVersion, writes.Add);
+        new BuildServer().WriteIntegration(semanticVersion, writes.Add, new Dictionary<string, string>());
 
         writes[1].ShouldBe("1.2.3-beta.1+5");
     }

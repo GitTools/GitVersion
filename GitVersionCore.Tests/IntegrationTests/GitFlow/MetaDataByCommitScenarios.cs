@@ -1,5 +1,6 @@
 ﻿using System;
 using GitVersion;
+using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
@@ -157,7 +158,7 @@ public class MetaDataByCommitScenarios
         var referenceCommitFinder = commitFinder ?? (r => r.FindBranch(branchName).Tip);
 
         var commit = referenceCommitFinder(fixture.Repository);
-        var releaseDate = LastMinorVersionFinder.Execute(fixture.Repository, new Config(), commit);
+        var releaseDate = LastMinorVersionFinder.Execute(fixture.Repository, new TestEffectiveConfiguration(), commit);
         releaseDate.ShouldBe(commit.When());
     }
 

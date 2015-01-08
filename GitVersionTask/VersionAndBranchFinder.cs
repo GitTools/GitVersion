@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GitVersion;
 
 public static class VersionAndBranchFinder
 {
     static List<string> processedDirectories = new List<string>(); 
-    public static bool TryGetVersion(string directory, out CachedVersion versionAndBranch, Config configuration)
+    public static bool TryGetVersion(string directory, out Tuple<CachedVersion, GitVersionContext> versionAndBranch, Config configuration)
     {
         var gitDirectory = GitDirFinder.TreeWalkForGitDir(directory);
 

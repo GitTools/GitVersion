@@ -9,7 +9,7 @@ namespace GitVersion
             foreach (var tag in context.Repository.TagsByDate(context.CurrentCommit))
             {
                 SemanticVersion shortVersion;
-                if (SemanticVersion.TryParse(tag.Name, context.Configuration.TagPrefix, out shortVersion))
+                if (SemanticVersion.TryParse(tag.Name, context.Configuration.GitTagPrefix, out shortVersion))
                 {
                     return BuildVersion(context.CurrentCommit, shortVersion);
                 }

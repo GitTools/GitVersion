@@ -12,17 +12,17 @@
     public class GitVersionContext
     {
         readonly bool IsContextForTrackedBranchesOnly;
+        readonly Config configuration;
 
         public GitVersionContext(IRepository repository, Config configuration, bool isForTrackingBranchOnly = true)
             : this(repository, repository.Head, configuration, isForTrackingBranchOnly)
         {
-            Configuration = configuration;
         }
 
         public GitVersionContext(IRepository repository, Branch currentBranch, Config configuration, bool isForTrackingBranchOnly = true)
         {
             Repository = repository;
-            Configuration = configuration;
+            this.configuration = configuration;
             IsContextForTrackedBranchesOnly = isForTrackingBranchOnly;
 
             if (currentBranch == null)
@@ -39,16 +39,13 @@
                 CurrentBranch = currentBranch;
             }
 
-            AssignBranchConfiguration();
+            CalculateEffectiveConfiguration();
         }
 
-        public Config Configuration { get; private set; }
+        public EffectiveConfiguration Configuration { get; private set; }
         public IRepository Repository { get; private set; }
         public Branch CurrentBranch { get; private set; }
         public Commit CurrentCommit { get; private set; }
-
-        public BranchConfig CurrentBranchConfig { get; private set; }
-
 
         IEnumerable<Branch> GetBranchesContainingCommit(string commitSha)
         {
@@ -82,23 +79,32 @@
             }
         }
 
-        void AssignBranchConfiguration()
+        void CalculateEffectiveConfiguration()
         {
-            var matchingBranches = Configuration.Branches.Where(b => Regex.IsMatch("^" + CurrentBranch.Name, b.Key)).ToArray();
+            var matchingBranches = configuration.Branches.Where(b => Regex.IsMatch("^" + CurrentBranch.Name, b.Key)).ToArray();
 
+            var currentBranchConfig = GetBranchConfiguration(matchingBranches);
+
+            var versioningMode = currentBranchConfig.VersioningMode ?? configuration.VersioningMode ?? VersioningMode.ContinuousDelivery;
+            var tag = currentBranchConfig.Tag;
+            var nextVersion = configuration.NextVersion;
+
+            Configuration = new EffectiveConfiguration(configuration.AssemblyVersioningScheme, versioningMode, configuration.TagPrefix, tag, nextVersion);
+        }
+
+        BranchConfig GetBranchConfiguration(KeyValuePair<string, BranchConfig>[] matchingBranches)
+        {
             if (matchingBranches.Length == 0)
             {
-                CurrentBranchConfig = new BranchConfig();
+                return new BranchConfig();
             }
-            else if (matchingBranches.Length == 1)
+            if (matchingBranches.Length == 1)
             {
-                CurrentBranchConfig = matchingBranches[0].Value;
+                return matchingBranches[0].Value;
             }
-            else
-            {
-                const string format = "Multiple branch configurations match the current branch name of '{0}'. Matching configurations: '{1}'";
-                throw new Exception(string.Format(format, CurrentBranch.Name, string.Join(", ", matchingBranches.Select(b => b.Key))));
-            }
+
+            const string format = "Multiple branch configurations match the current branch name of '{0}'. Matching configurations: '{1}'";
+            throw new Exception(string.Format(format, CurrentBranch.Name, string.Join(", ", matchingBranches.Select(b => b.Key))));
         }
     }
 }

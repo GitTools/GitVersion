@@ -6,8 +6,6 @@
 
     public class Config
     {
-        VersioningMode versioningMode;
-
         Dictionary<string, BranchConfig> branches = new Dictionary<string, BranchConfig>();
 
         public Config()
@@ -28,18 +26,7 @@
         public AssemblyVersioningScheme AssemblyVersioningScheme { get; set; }
 
         [YamlAlias("mode")]
-        public VersioningMode VersioningMode
-        {
-            get
-            {
-                return versioningMode;
-            }
-            set
-            {
-                Branches.ToList().ForEach(b => b.Value.VersioningMode = value);
-                versioningMode = value;
-            }
-        }
+        public VersioningMode? VersioningMode { get; set; }
 
         [YamlAlias("branches")]
         public Dictionary<string, BranchConfig> Branches

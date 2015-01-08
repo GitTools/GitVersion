@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Linq;
 using GitVersion;
+using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
 
@@ -17,7 +18,7 @@ public class IntegrationTests
                 foreach (var commit in branch.Commits)
                 {
                     SemanticVersion version;
-                    if (MergeMessageParser.TryParse(commit, new Config(), out version))
+                    if (MergeMessageParser.TryParse(commit, new TestEffectiveConfiguration(), out version))
                     {
                         Debug.WriteLine("{0}.{1}.{2}", version.Major, version.Minor, version.Patch);
                     }

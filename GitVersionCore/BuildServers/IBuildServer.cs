@@ -1,6 +1,7 @@
 ﻿namespace GitVersion
 {
     using System;
+    using System.Collections.Generic;
 
     public interface IBuildServer
     {
@@ -9,7 +10,7 @@
         string GenerateSetVersionMessage(string versionToUseForBuildNumber);
         string[] GenerateSetParameterMessage(string name, string value);
 
-        void WriteIntegration(SemanticVersion semanticVersion, Action<string> writer);
+        void WriteIntegration(SemanticVersion semanticVersion, Action<string> writer, Dictionary<string,string> variables);
     }
 
 }

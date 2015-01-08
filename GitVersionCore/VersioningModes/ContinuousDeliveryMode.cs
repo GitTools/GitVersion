@@ -9,7 +9,7 @@
         public override SemanticVersionPreReleaseTag GetPreReleaseTag(GitVersionContext context, List<Tag> possibleCommits, int numberOfCommits)
         {
             return RecentTagVersionExtractor.RetrieveMostRecentOptionalTagVersion(context, possibleCommits) 
-                ?? context.CurrentBranchConfig.Tag + ".1";
+                ?? context.Configuration.Tag + ".1";
         }
     }
 }

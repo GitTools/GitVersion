@@ -90,11 +90,12 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     {
         var repoPath = CheckoutLocal(ASBMTestRepoWorkingDirPath, "refs/heads/master");
 
+        // TODO Tasks need a way to overrride configuration in tests
         var task = new UpdateAssemblyInfo
         {
             BuildEngine = new MockBuildEngine(),
             SolutionDirectory = repoPath,
-            AssemblyVersioningScheme = assemblyVersioningScheme
+            // TODO AssemblyVersioningScheme = assemblyVersioningScheme
         };
 
         task.InnerExecute();
@@ -109,7 +110,7 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         {
             BuildEngine = new MockBuildEngine(),
             SolutionDirectory = repoPath,
-            AssemblyVersioningScheme = "Boom"
+            // TODO AssemblyVersioningScheme = "Boom"
         };
 
         var exception = Assert.Throws<WarningException>(() => task.InnerExecute());

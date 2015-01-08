@@ -15,13 +15,15 @@ public class GetVersionTaskTests
         var properties = taskType.GetProperties()
             .Where(p => p.GetCustomAttributes(typeof(OutputAttribute), false).Any())
             .Select(p => p.Name);
+        Config configuration = new Config();
         var variables = VariableProvider.GetVariablesFor(new SemanticVersion
         {
             Major = 1,
             Minor = 2,
             Patch = 3,
             BuildMetaData = new SemanticVersionBuildMetaData(5, "develop", "commitSha",DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
-        }, new Config()).Keys;
+        }, configuration.AssemblyVersioningScheme,
+        VersioningMode.ContinuousDelivery).Keys;
 
         CollectionAssert.AreEquivalent(properties, variables);
     }
