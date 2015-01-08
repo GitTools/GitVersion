@@ -6,6 +6,11 @@ namespace GitVersion
 
     static class BranchCommitDifferenceFinder
     {
+        public static int NumberOfCommitsInBranchNotKnownFromBaseBranch(IRepository repo, Branch branch, string baseBranchName)
+        {
+            return NumberOfCommitsInBranchNotKnownFromBaseBranch(repo, branch, BranchType.Unknown, baseBranchName);
+        }
+
         public static int NumberOfCommitsInBranchNotKnownFromBaseBranch(IRepository repo, Branch branch, BranchType branchType, string baseBranchName)
         {
             var baseTip = repo.FindBranch(baseBranchName).Tip;
@@ -34,6 +39,11 @@ namespace GitVersion
 
             return repo.Commits.QueryBy(filter)
                 .Count();
+        }
+
+        public static int NumberOfCommitsSinceLastTagOrBranchPoint(GitVersionContext context, List<Tag> tagsInDescendingOrder, string baseBranchName)
+        {
+           return NumberOfCommitsSinceLastTagOrBranchPoint(context, tagsInDescendingOrder, BranchType.Unknown, baseBranchName);
         }
 
         public static int NumberOfCommitsSinceLastTagOrBranchPoint(GitVersionContext context, List<Tag> tagsInDescendingOrder, BranchType branchType,  string baseBranchName)

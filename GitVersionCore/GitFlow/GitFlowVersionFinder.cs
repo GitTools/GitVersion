@@ -1,5 +1,9 @@
 namespace GitVersion
 {
+    using System.Linq;
+
+    using GitVersion.VersionStrategies;
+
     public class GitFlowVersionFinder
     {
         public SemanticVersion FindVersion(GitVersionContext context)
@@ -11,17 +15,20 @@ namespace GitVersion
 
             if (context.CurrentBranch.IsHotfix())
             {
-                return new HotfixVersionFinder().FindVersion(context);
+                var versionStrategies = new VersionStrategyBase[] { new LastTagVersionStrategy(), new CurrentBranchNameVersionStrategy() };
+                return versionStrategies.Select(s => s.CalculateVersion(context)).Max();
             }
 
             if (context.CurrentBranch.IsRelease())
             {
-                return new ReleaseVersionFinder().FindVersion(context);
+                var versionStrategies = new VersionStrategyBase[] { new LastTagVersionStrategy(), new CurrentBranchNameVersionStrategy() };
+                return versionStrategies.Select(s => s.CalculateVersion(context)).Max();
             }
 
             if (context.CurrentBranch.IsDevelop())
             {
-                return new DevelopVersionFinder().FindVersion(context);
+                var versionStrategies = new VersionStrategyBase[] { new LastTagVersionStrategy(), new CurrentBranchNameVersionStrategy() };
+                return versionStrategies.Select(s => s.CalculateVersion(context)).Max();
             }
 
             if (context.CurrentBranch.IsPullRequest())

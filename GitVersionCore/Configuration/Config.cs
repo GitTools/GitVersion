@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using GitVersion.Configuration;
+
     using YamlDotNet.Serialization;
 
     public class Config
@@ -16,9 +18,55 @@
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch;
             TagPrefix = "[vV]";
-            Branches["release[/-]"] = new BranchConfig { Tag = "beta" };
-            Branches["hotfix[/-]"] = new BranchConfig { Tag = "beta" };
-            Branches["develop"] = new BranchConfig { Tag = "unstable" };
+            Branches["release[/-]"] = new BranchConfig
+            {
+                Tag = "beta",
+                ReferenceBranch = "develop",
+                IncrementType = IncrementType.PreReleaseTag,
+                Prefixes = new List<string> { "release-", "release/" },
+                IncrementOnTag = false
+            };
+            Branches["develop"] = new BranchConfig
+            {
+                Tag = "unstable",
+                IncrementType = IncrementType.Minor,
+                ReferenceBranch = "master",
+                LastTagReferenceBranch = "master",
+                IncrementOnTag = true,
+                ForceBuildMetdataFromReferenceBranch = true
+            };
+            Branches["hotfix[/-]"] = new BranchConfig()
+            {
+                Tag = "beta",
+                ReferenceBranch = "master",
+                IncrementType = IncrementType.PreReleaseTag,
+                Prefixes = new List<string> { "hotifx-", "hotfix/" },
+                IncrementOnTag = false,
+                ForceBuildMetdataFromReferenceBranch = true
+            };
+            Branches["master"] = new BranchConfig()
+            {
+                Tag = ""
+            };
+            Branches["support[/-]"] = new BranchConfig()
+            {
+                Tag = "",
+                ReferenceBranch = "master"
+            };
+            Branches["feature[/-]"] = new BranchConfig()
+            {
+                Tag = "feature",
+                ReferenceBranch = "develop"
+            };
+            Branches["(pull)|(pull-requests)\\/"] = new BranchConfig()
+            {
+                Tag = "PullRequest",
+                IncrementType = IncrementType.Minor,
+                ReferenceBranch = "master",
+                LastTagReferenceBranch = "master",
+                IncrementOnTag = true,
+                ForceBuildMetdataFromReferenceBranch = true
+            };
             VersioningMode = VersioningMode.ContinuousDelivery;
             Develop.VersioningMode = VersioningMode.ContinuousDeployment;
         }
