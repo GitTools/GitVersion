@@ -10,18 +10,18 @@
         public void SupportIsCalculatedCorrectly()
         {
             using (var fixture = new BaseGitFlowRepositoryFixture("1.1.0"))
-            {   
+            {
                 // Create 2.0.0 release
                 fixture.Repository.CreateBranch("release-2.0.0").Checkout();
                 fixture.Repository.MakeCommits(2);
-                
+
                 // Merge into develop and master
                 fixture.Repository.Checkout("master");
                 fixture.Repository.MergeNoFF("release-2.0.0");
                 fixture.Repository.ApplyTag("2.0.0");
                 fixture.Repository.Checkout("develop");
                 fixture.Repository.MergeNoFF("release-2.0.0");
-                fixture.AssertFullSemver("2.1.0-unstable.0+0");
+                fixture.AssertFullSemver("2.1.0-unstable.1+1");
 
                 // Now lets support 1.x release
                 fixture.Repository.Checkout("1.1.0");
@@ -47,6 +47,6 @@
                 fixture.Repository.MergeNoFF("hotfix/1.2.1");
                 fixture.AssertFullSemver("1.2.1");
             }
-        } 
+        }
     }
 }

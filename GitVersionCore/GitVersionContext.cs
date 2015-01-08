@@ -1,7 +1,9 @@
 ﻿namespace GitVersion
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using LibGit2Sharp;
 
     /// <summary>
@@ -9,6 +11,8 @@
     /// </summary>
     public class GitVersionContext
     {
+        readonly bool IsContextForTrackedBranchesOnly;
+
         public GitVersionContext(IRepository repository, Config configuration, bool isForTrackingBranchOnly = true)
             : this(repository, repository.Head, configuration, isForTrackingBranchOnly)
         {
@@ -34,6 +38,8 @@
             {
                 CurrentBranch = currentBranch;
             }
+
+            AssignBranchConfiguration();
         }
 
         public Config Configuration { get; private set; }
@@ -41,9 +47,7 @@
         public Branch CurrentBranch { get; private set; }
         public Commit CurrentCommit { get; private set; }
 
-        public BranchConfig CurrentBranchConfig { get; set; }
-
-        readonly bool IsContextForTrackedBranchesOnly = true;
+        public BranchConfig CurrentBranchConfig { get; private set; }
 
 
         IEnumerable<Branch> GetBranchesContainingCommit(string commitSha)
@@ -75,6 +79,25 @@
                 }
 
                 yield return branch;
+            }
+        }
+
+        void AssignBranchConfiguration()
+        {
+            var matchingBranches = Configuration.Branches.Where(b => Regex.IsMatch("^" + CurrentBranch.Name, b.Key)).ToArray();
+
+            if (matchingBranches.Length == 0)
+            {
+                CurrentBranchConfig = new BranchConfig();
+            }
+            else if (matchingBranches.Length == 1)
+            {
+                CurrentBranchConfig = matchingBranches[0].Value;
+            }
+            else
+            {
+                const string format = "Multiple branch configurations match the current branch name of '{0}'. Matching configurations: '{1}'";
+                throw new Exception(string.Format(format, CurrentBranch.Name, string.Join(", ", matchingBranches.Select(b => b.Key))));
             }
         }
     }

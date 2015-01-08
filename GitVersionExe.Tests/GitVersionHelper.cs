@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using GitVersion;
+using GitVersion.Helpers;
 using LibGit2Sharp;
 
 public static class GitVersionHelper

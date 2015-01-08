@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading;
 using LibGit2Sharp;
 using NUnit.Framework;
 
@@ -14,13 +13,13 @@ public class PatchScenarios
             // create hotfix
             fixture.Repository.CreateBranch("hotfix-1.2.1").Checkout();
 
-            fixture.AssertFullSemver("1.2.1-beta.1+0");
-            fixture.Repository.MakeACommit();
             fixture.AssertFullSemver("1.2.1-beta.1+1");
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver("1.2.1-beta.1+2");
             fixture.Repository.ApplyTag("1.2.1-beta.1");
-            fixture.AssertFullSemver("1.2.1-beta.1+1");
+            fixture.AssertFullSemver("1.2.1-beta.1+2");
             fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver("1.2.1-beta.2+2");
+            fixture.AssertFullSemver("1.2.1-beta.2+3");
 
             // Merge hotfix branch to master
             fixture.Repository.Checkout("master");
@@ -36,14 +35,7 @@ public class PatchScenarios
             fixture.Repository.Checkout("develop");
             fixture.AssertFullSemver("1.3.0-unstable.0+0");
 
-            // Warning: Hack-ish hack
-            //
-            // Ensure the merge commit is done at a different time than the previous one
-            // Otherwise, as they would have the same content and signature, the same sha would be generated.
-            // Thus 'develop' and 'master' would point at the same exact commit and the Assert below would fail.
-            Thread.Sleep(1000);
             fixture.Repository.MergeNoFF("hotfix-1.2.1", Constants.SignatureNow());
-
             fixture.AssertFullSemver("1.3.0-unstable.1+1");
         }
     }
@@ -58,7 +50,6 @@ public class PatchScenarios
             r.MakeATaggedCommit("1.2.0");
         }))
         {
-
             // create hotfix branch
             fixture.Repository.CreateBranch("hotfix-1.1.1", (Commit) fixture.Repository.Tags.Single(t => t.Name == "1.1.0").Target).Checkout();
 
@@ -78,7 +69,7 @@ public class PatchScenarios
 
             // Verify develop version
             fixture.Repository.Checkout("develop");
-            fixture.AssertFullSemver("1.3.0-unstable.0+0");
+            fixture.AssertFullSemver("1.3.0-unstable.1+1");
         }
     }
 }

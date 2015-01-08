@@ -17,6 +17,7 @@
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch;
             TagPrefix = "[vV]";
             Branches["release[/-]"] = new BranchConfig { Tag = "beta" };
+            Branches["hotfix[/-]"] = new BranchConfig { Tag = "beta" };
             Branches["develop"] = new BranchConfig { Tag = "unstable" };
             VersioningMode = VersioningMode.ContinuousDelivery;
             Develop.VersioningMode = VersioningMode.ContinuousDeployment;
