@@ -96,7 +96,8 @@
             }
             else
             {
-                throw new Exception(string.Format("Multiple branch configurations match the current branch name of ''. Matching configurations: '{0}'", string.Join(", ", matchingBranches.Select(b => b.Key))));
+                const string format = "Multiple branch configurations match the current branch name of '{0}'. Matching configurations: '{1}'";
+                throw new Exception(string.Format(format, CurrentBranch.Name, string.Join(", ", matchingBranches.Select(b => b.Key))));
             }
         }
     }
