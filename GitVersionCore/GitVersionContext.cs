@@ -11,6 +11,8 @@
     /// </summary>
     public class GitVersionContext
     {
+        readonly bool IsContextForTrackedBranchesOnly;
+
         public GitVersionContext(IRepository repository, Config configuration, bool isForTrackingBranchOnly = true)
             : this(repository, repository.Head, configuration, isForTrackingBranchOnly)
         {
@@ -46,8 +48,6 @@
         public Commit CurrentCommit { get; private set; }
 
         public BranchConfig CurrentBranchConfig { get; private set; }
-
-        readonly bool IsContextForTrackedBranchesOnly = true;
 
 
         IEnumerable<Branch> GetBranchesContainingCommit(string commitSha)

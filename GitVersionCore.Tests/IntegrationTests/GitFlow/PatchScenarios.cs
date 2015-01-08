@@ -58,7 +58,6 @@ public class PatchScenarios
             r.MakeATaggedCommit("1.2.0");
         }))
         {
-
             // create hotfix branch
             fixture.Repository.CreateBranch("hotfix-1.1.1", (Commit) fixture.Repository.Tags.Single(t => t.Name == "1.1.0").Target).Checkout();
 
