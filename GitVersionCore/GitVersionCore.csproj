@@ -74,6 +74,7 @@
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Configuration\ConfigReader.cs" />
     <Compile Include="Configuration\ConfigurationProvider.cs" />
+    <Compile Include="Configuration\IncrementType.cs" />
     <Compile Include="GitFlow\BranchFinders\BranchCommitDifferenceFinder.cs" />
     <Compile Include="GitFlow\BranchFinders\RecentTagVersionExtractor.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
@@ -85,6 +86,9 @@
     <Compile Include="VersioningModes\ContinuousDeploymentMode.cs" />
     <Compile Include="VersioningModes\VersioningMode.cs" />
     <Compile Include="VersioningModes\VersioningModeBase.cs" />
+    <Compile Include="VersionStrategies\CurrentBranchNameVersionStrategy.cs" />
+    <Compile Include="VersionStrategies\LastTagVersionStrategy.cs" />
+    <Compile Include="VersionStrategies\VersionStrategyBase.cs" />
     <Compile Include="WarningException.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GitDirFinder.cs" />
