@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading;
 using LibGit2Sharp;
 using NUnit.Framework;
 
@@ -36,14 +35,7 @@ public class PatchScenarios
             fixture.Repository.Checkout("develop");
             fixture.AssertFullSemver("1.3.0-unstable.0+0");
 
-            // Warning: Hack-ish hack
-            //
-            // Ensure the merge commit is done at a different time than the previous one
-            // Otherwise, as they would have the same content and signature, the same sha would be generated.
-            // Thus 'develop' and 'master' would point at the same exact commit and the Assert below would fail.
-            Thread.Sleep(1000);
             fixture.Repository.MergeNoFF("hotfix-1.2.1", Constants.SignatureNow());
-
             fixture.AssertFullSemver("1.3.0-unstable.1+1");
         }
     }
