@@ -1,4 +1,4 @@
-namespace GitVersion
+namespace GitVersion.Helpers
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,7 @@ namespace GitVersion
     using System.Runtime.InteropServices;
     using System.Threading;
 
-    static class ProcessHelper
+    public static class ProcessHelper
     {
         static volatile object lockObject = new object();
 

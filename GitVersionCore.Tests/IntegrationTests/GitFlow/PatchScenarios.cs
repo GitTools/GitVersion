@@ -14,13 +14,13 @@ public class PatchScenarios
             // create hotfix
             fixture.Repository.CreateBranch("hotfix-1.2.1").Checkout();
 
-            fixture.AssertFullSemver("1.2.1-beta.1+0");
-            fixture.Repository.MakeACommit();
             fixture.AssertFullSemver("1.2.1-beta.1+1");
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver("1.2.1-beta.1+2");
             fixture.Repository.ApplyTag("1.2.1-beta.1");
-            fixture.AssertFullSemver("1.2.1-beta.1+1");
+            fixture.AssertFullSemver("1.2.1-beta.1+2");
             fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver("1.2.1-beta.2+2");
+            fixture.AssertFullSemver("1.2.1-beta.2+3");
 
             // Merge hotfix branch to master
             fixture.Repository.Checkout("master");
@@ -77,7 +77,7 @@ public class PatchScenarios
 
             // Verify develop version
             fixture.Repository.Checkout("develop");
-            fixture.AssertFullSemver("1.3.0-unstable.0+0");
+            fixture.AssertFullSemver("1.3.0-unstable.1+1");
         }
     }
 }
