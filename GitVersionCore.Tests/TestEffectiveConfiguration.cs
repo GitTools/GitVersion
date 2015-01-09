@@ -5,7 +5,7 @@ namespace GitVersionCore.Tests
     public class TestEffectiveConfiguration : EffectiveConfiguration
     {
         public TestEffectiveConfiguration(
-            AssemblyVersioningScheme assemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchMetadata, 
+            AssemblyVersioningScheme assemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch, 
             VersioningMode versioningMode = VersioningMode.ContinuousDelivery, 
             string gitTagPrefix = "v", 
             string tag = "",

@@ -12,13 +12,13 @@
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch;
             TagPrefix = "[vV]";
-            VersioningMode = VersioningMode.ContinuousDelivery;
+            VersioningMode = GitVersion.VersioningMode.ContinuousDelivery;
             Branches["release[/-]"] = new BranchConfig { Tag = "beta" };
             Branches["hotfix[/-]"] = new BranchConfig { Tag = "beta" };
             Branches["develop"] = new BranchConfig
             {
                 Tag = "unstable",
-                VersioningMode = VersioningMode.ContinuousDeployment
+                VersioningMode = GitVersion.VersioningMode.ContinuousDeployment
             };
         }
 

@@ -101,22 +101,6 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
         task.InnerExecute();
     }
 
-    [Test]
-    public void StandardExecutionMode_ThrowsUponUnexpectedAssemblyVersioningSchemes()
-    {
-        var repoPath = CheckoutLocal(ASBMTestRepoWorkingDirPath, "refs/heads/master");
-
-        var task = new UpdateAssemblyInfo
-        {
-            BuildEngine = new MockBuildEngine(),
-            SolutionDirectory = repoPath,
-            // TODO AssemblyVersioningScheme = "Boom"
-        };
-
-        var exception = Assert.Throws<WarningException>(() => task.InnerExecute());
-        Assert.AreEqual("Unexpected assembly versioning scheme 'Boom'.", exception.Message);
-    }
-
     [SetUp]
     public void SetUp()
     {

@@ -26,7 +26,7 @@
             IsContextForTrackedBranchesOnly = isForTrackingBranchOnly;
 
             if (currentBranch == null)
-                return;
+                throw new InvalidOperationException("Need a branch to operate on");
 
             CurrentCommit = currentBranch.Tip;
 
