@@ -74,6 +74,7 @@
     <Compile Include="Fixtures\RemoteRepositoryFixture.cs" />
     <Compile Include="GitDirFinderTests.cs" />
     <Compile Include="Fixtures\BaseGitFlowRepositoryFixture.cs" />
+    <Compile Include="GitVersionContextTests.cs" />
     <Compile Include="IntegrationTests\RemoteRepositoryTests.cs" />
     <Compile Include="IntegrationTests\GitFlow\DevelopScenarios.cs" />
     <Compile Include="IntegrationTests\GitFlow\FeatureBranchTests.cs" />
@@ -91,6 +92,18 @@
     <Compile Include="InformationalVersionBuilderTests.cs" />
     <Compile Include="IntegrationTests\GitHubFlow\SupportBranchScenarios.cs" />
     <Compile Include="JsonVersionBuilderTests.cs" />
+    <Compile Include="Mocks\MockBranch.cs" />
+    <Compile Include="Mocks\MockBranchCollection.cs" />
+    <Compile Include="Mocks\MockCommit.cs" />
+    <Compile Include="Mocks\MockCommitLog.cs" />
+    <Compile Include="Mocks\MockMergeCommit.cs" />
+    <Compile Include="Mocks\MockReferenceCollection.cs" />
+    <Compile Include="Mocks\MockReflogCollection.cs" />
+    <Compile Include="Mocks\MockRepository.cs" />
+    <Compile Include="Mocks\MockTag.cs" />
+    <Compile Include="Mocks\MockTagAnnotation.cs" />
+    <Compile Include="Mocks\MockTagCollection.cs" />
+    <Compile Include="Mocks\SignatureBuilder.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="Fixtures\EmptyRepositoryFixture.cs" />
     <Compile Include="Helpers\GitTestExtensions.cs" />

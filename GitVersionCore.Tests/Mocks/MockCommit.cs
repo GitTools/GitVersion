@@ -4,24 +4,24 @@ using System.Diagnostics;
 using LibGit2Sharp;
 
 [DebuggerDisplay("{DebuggerDisplay}")]
-public class MockCommit:Commit
+public class MockCommit : Commit
 {
     public MockCommit(ObjectId id = null)
     {
-        idEx = id ?? new ObjectId(Guid.NewGuid().ToString().Replace("-", "")+ "00000000");
+        idEx = id ?? new ObjectId(Guid.NewGuid().ToString().Replace("-", "") + "00000000");
         MessageEx = "";
         ParentsEx = new List<Commit> { null };
         CommitterEx = new Signature("Joe", "Joe@bloggs.net", DateTimeOffset.Now);
     }
 
     public string MessageEx;
-    public override string Message{get { return MessageEx; }}
+    public override string Message { get { return MessageEx; } }
 
     public Signature CommitterEx;
-    public override Signature Committer{get { return CommitterEx; }}
+    public override Signature Committer { get { return CommitterEx; } }
 
     ObjectId idEx;
-    public override ObjectId Id{get { return idEx; }}
+    public override ObjectId Id { get { return idEx; } }
 
     public override string Sha { get { return idEx.Sha; } }
 
