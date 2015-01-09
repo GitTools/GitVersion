@@ -12,10 +12,6 @@
     {
         public string AssemblyVersioningScheme { get; set; }
 
-        public string DevelopBranchTag { get; set; }
-
-        public string ReleaseBranchTag { get; set; }
-
         public string TagPrefix { get; set; }
 
         public string NextVersion { get; set; }
@@ -101,16 +97,6 @@
             // TODO This should be covered by tests
             // TODO would be good to not have to duplicate this in both msbuild tasks
             // Null is intentional. Empty string means the user has set the value to an empty string and wants to clear the tag
-            if (DevelopBranchTag != null)
-            {
-                configuration.DevelopBranchTag = DevelopBranchTag;
-            }
-
-            if (ReleaseBranchTag != null)
-            {
-                configuration.ReleaseBranchTag = ReleaseBranchTag;
-            }
-
             if (TagPrefix != null)
             {
                 configuration.TagPrefix = TagPrefix;

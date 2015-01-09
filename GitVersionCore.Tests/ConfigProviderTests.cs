@@ -63,8 +63,8 @@ branches:
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
         config.Branches["develop"].VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
-        config.Release.VersioningMode.ShouldBe(VersioningMode.ContinuousDelivery);
-        config.Develop.Tag.ShouldBe("unstable");
+        config.Branches["develop"].Tag.ShouldBe("unstable");
+        config.Branches["release[/-]"].VersioningMode.ShouldBe(VersioningMode.ContinuousDelivery);
     }
 
     [Test]
@@ -76,10 +76,11 @@ develop-branch-tag: alpha
 release-branch-tag: rc
 ";
         SetupConfigFileContent(text);
-        var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
-        config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
-        config.Branches["develop"].Tag.ShouldBe("alpha");
-        config.Branches["release[/-]"].Tag.ShouldBe("rc");
+        var error = Should.Throw<OldConfigurationException>(() => ConfigurationProvider.Provide(gitDirectory, fileSystem));
+        error.Message.ShouldContainWithoutWhitespace(@"GitVersionConfig.yaml contains old configuration, please fix the following errors:
+assemblyVersioningScheme has been replaced by assembly-versioning-scheme
+develop-branch-tag has been replaced by branch specific configuration.See https://github.com/ParticularLabs/GitVersion/wiki/Branch-Specific-Configuration
+release-branch-tag has been replaced by branch specific configuration.See https://github.com/ParticularLabs/GitVersion/wiki/Branch-Specific-Configuration");
     }
 
     [Test]
