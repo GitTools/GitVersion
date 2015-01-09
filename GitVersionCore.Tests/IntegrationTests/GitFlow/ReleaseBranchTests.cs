@@ -23,7 +23,9 @@ public class GitFlowReleaseBranchTests
     [Test]
     public void CanTakeVersionFromReleaseBranchWithTagOverriden()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config { ReleaseBranchTag = "rc" }))
+        var config = new Config();
+        config.Branches["release[/-]"].Tag = "rc";
+        using (var fixture = new EmptyRepositoryFixture(config))
         {
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.CreateBranch("develop");

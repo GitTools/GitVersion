@@ -62,10 +62,9 @@ public class DevelopScenarios
     [Test]
     public void CanClearDevelopTagViaConfig()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config
-        {
-            Develop = {Tag= ""}
-        }))
+        var config = new Config();
+        config.Branches["develop"].Tag = "";
+        using (var fixture = new EmptyRepositoryFixture(config))
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("develop").Checkout();
