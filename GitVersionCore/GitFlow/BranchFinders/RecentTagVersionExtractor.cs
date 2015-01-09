@@ -11,7 +11,7 @@ namespace GitVersion
             if (applicableTagsInDescendingOrder.Any())
             {
                 var taggedCommit = applicableTagsInDescendingOrder.First().Target;
-                var preReleaseVersion = applicableTagsInDescendingOrder.Select(tag => SemanticVersion.Parse(tag.Name, context.Configuration.TagPrefix)).FirstOrDefault();
+                var preReleaseVersion = applicableTagsInDescendingOrder.Select(tag => SemanticVersion.Parse(tag.Name, context.Configuration.GitTagPrefix)).FirstOrDefault();
                 if (preReleaseVersion != null)
                 {
                     if (taggedCommit != context.CurrentCommit)

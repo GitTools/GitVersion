@@ -86,23 +86,24 @@ namespace GitVersion
                     buildServer.PerformPreProcessingSteps(gitDirectory);
                 }
                 SemanticVersion semanticVersion;
+                Dictionary<string, string> variables;
                 var versionFinder = new GitVersionFinder();
                 var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
                 using (var repo = RepositoryLoader.GetRepo(gitDirectory))
                 {
                     var gitVersionContext = new GitVersionContext(repo, configuration);
                     semanticVersion = versionFinder.FindVersion(gitVersionContext);
+                    variables = VariableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration.AssemblyVersioningScheme, gitVersionContext.Configuration.VersioningMode);
                 }
 
                 if (arguments.Output == OutputType.BuildServer)
                 {
                     foreach (var buildServer in applicableBuildServers)
                     {
-                        buildServer.WriteIntegration(semanticVersion, Console.WriteLine);
+                        buildServer.WriteIntegration(semanticVersion, Console.WriteLine, variables);
                     }
                 }
 
-                var variables = VariableProvider.GetVariablesFor(semanticVersion, configuration);
                 if (arguments.Output == OutputType.Json)
                 {
                     switch (arguments.VersionPart)

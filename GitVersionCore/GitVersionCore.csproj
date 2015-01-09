@@ -77,6 +77,7 @@
     <Compile Include="Configuration\LegacyConfig.cs" />
     <Compile Include="Configuration\LegacyConfigNotifier.cs" />
     <Compile Include="Configuration\OldConfigurationException.cs" />
+    <Compile Include="EffectiveConfiguration.cs" />
     <Compile Include="GitFlow\BranchFinders\BranchCommitDifferenceFinder.cs" />
     <Compile Include="GitFlow\BranchFinders\RecentTagVersionExtractor.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="VersioningModes\ContinuousDeploymentMode.cs" />
     <Compile Include="VersioningModes\VersioningMode.cs" />
     <Compile Include="VersioningModes\VersioningModeBase.cs" />
+    <Compile Include="VersioningModes\VersioningModeExtension.cs" />
     <Compile Include="WarningException.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GitDirFinder.cs" />

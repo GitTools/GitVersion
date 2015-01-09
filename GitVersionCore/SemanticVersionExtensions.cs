@@ -4,7 +4,7 @@
 
     public static class SemanticVersionExtensions
     {
-        public static void OverrideVersionManuallyIfNeeded(this SemanticVersion version, IRepository repository, Config configuration)
+        public static void OverrideVersionManuallyIfNeeded(this SemanticVersion version, IRepository repository, EffectiveConfiguration configuration)
         {
             var nextVersionTxtFileFinder = new NextVersionTxtFileFinder(repository.GetRepositoryDirectory(), configuration);
             SemanticVersion manualNextVersion ;

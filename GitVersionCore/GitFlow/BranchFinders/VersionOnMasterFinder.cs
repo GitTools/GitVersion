@@ -12,7 +12,7 @@ namespace GitVersion
                 foreach (var tag in context.Repository.TagsByDate(commit))
                 {
                     SemanticVersion semanticVersion;
-                    if (SemanticVersion.TryParse(tag.Name, context.Configuration.TagPrefix, out semanticVersion))
+                    if (SemanticVersion.TryParse(tag.Name, context.Configuration.GitTagPrefix, out semanticVersion))
                     {
                         return new VersionPoint
                         {

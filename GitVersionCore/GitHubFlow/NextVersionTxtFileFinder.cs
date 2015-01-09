@@ -5,10 +5,10 @@
 
     public class NextVersionTxtFileFinder
     {
+        EffectiveConfiguration configuration;
         string repositoryDirectory;
-        Config configuration;
 
-        public NextVersionTxtFileFinder(string repositoryDirectory, Config configuration)
+        public NextVersionTxtFileFinder(string repositoryDirectory, EffectiveConfiguration configuration)
         {
             this.repositoryDirectory = repositoryDirectory;
             this.configuration = configuration;
@@ -30,7 +30,7 @@
                 return false;
             }
 
-            if (!SemanticVersion.TryParse(version, configuration.TagPrefix, out semanticVersion))
+            if (!SemanticVersion.TryParse(version, configuration.GitTagPrefix, out semanticVersion))
             {
                 throw new ArgumentException("Make sure you have a valid semantic version in NextVersion.txt");
             }

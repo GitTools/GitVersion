@@ -2,20 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using LibGit2Sharp;
 
-public class MockReferenceCollection : ReferenceCollection, ICollection<Commit>
+public class MockCommitLog : ICommitLog, ICollection<Commit>
 {
-
-    public override ReflogCollection Log(string canonicalName)
-    {
-        return new MockReflogCollection
-               {
-                   Commits = Commits
-               };
-    }
-
     public List<Commit> Commits = new List<Commit>();
 
-    public new IEnumerator<Commit> GetEnumerator()
+    public IEnumerator<Commit> GetEnumerator()
     {
         return Commits.GetEnumerator();
     }
@@ -25,6 +16,7 @@ public class MockReferenceCollection : ReferenceCollection, ICollection<Commit>
         return GetEnumerator();
     }
 
+    public CommitSortStrategies SortedBy { get; set; }
     public void Add(Commit item)
     {
         Commits.Add(item);
@@ -34,6 +26,7 @@ public class MockReferenceCollection : ReferenceCollection, ICollection<Commit>
     {
         Commits.Clear();
     }
+
 
     public bool Contains(Commit item)
     {
@@ -50,11 +43,7 @@ public class MockReferenceCollection : ReferenceCollection, ICollection<Commit>
         return Commits.Remove(item);
     }
 
-    public int Count
-    {
-        get { return Commits.Count; }
-    }
-
+    public int Count { get { return Commits.Count; } }
     public bool IsReadOnly
     {
         get { return false; }

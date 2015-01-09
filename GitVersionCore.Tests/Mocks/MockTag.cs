@@ -1,6 +1,6 @@
 using LibGit2Sharp;
 
-public class MockTag:Tag
+public class MockTag : Tag
 {
 
     public string NameEx;

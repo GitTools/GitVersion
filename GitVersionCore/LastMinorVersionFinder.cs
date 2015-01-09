@@ -8,7 +8,7 @@ namespace GitVersion
 
     public class LastMinorVersionFinder
     {
-        public static DateTimeOffset Execute(IRepository repo, Config configuration, Commit commit)
+        public static DateTimeOffset Execute(IRepository repo, EffectiveConfiguration configuration, Commit commit)
         {
             // Release/Develop = current
             // Hotfix/Master/Support = walk back current branch until previous commits till a merge commit (or tag) has a patch with a 0
@@ -29,10 +29,10 @@ namespace GitVersion
         }
 
 
-        static DateTimeOffset GetTimeStampFromTag(IRepository repository, Config configuration, Commit targetCommit)
+        static DateTimeOffset GetTimeStampFromTag(IRepository repository, EffectiveConfiguration configuration, Commit targetCommit)
         {
             var allMajorMinorTags = repository.Tags
-                .Where(x => SemanticVersion.Parse(x.Name, configuration.TagPrefix).Patch == 0)
+                .Where(x => SemanticVersion.Parse(x.Name, configuration.GitTagPrefix).Patch == 0)
                 .ToDictionary(x => x.PeeledTarget(), x => x);
             var olderThan = targetCommit.When();
             foreach (var commit in repository.Head.Commits.Where(x => x.When() <= olderThan))
@@ -45,7 +45,7 @@ namespace GitVersion
             return DateTimeOffset.MinValue;
         }
 
-        static bool IsMajorMinor(Commit commit, Dictionary<GitObject, Tag> allMajorMinorTags, Config configuration)
+        static bool IsMajorMinor(Commit commit, Dictionary<GitObject, Tag> allMajorMinorTags, EffectiveConfiguration configuration)
         {
             SemanticVersion version;
             if (MergeMessageParser.TryParse(commit, configuration, out version))

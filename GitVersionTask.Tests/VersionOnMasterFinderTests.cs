@@ -19,31 +19,32 @@ public class VersionOnMasterFinderTests
 
         const string sha = "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef";
 
+        var mockBranch = new MockBranch("master")
+        {
+            new MockMergeCommit(new ObjectId(sha))
+            {
+                MessageEx = "Merge branch 'hotfix-0.3.0'",
+                CommitterEx = signature
+            },
+            new MockMergeCommit
+            {
+                MessageEx = "Merge branch 'hotfix-0.3.1'",
+                CommitterEx = signature,
+            },
+            new MockMergeCommit
+            {
+                MessageEx = "Merge branch 'hotfix-0.2.0'",
+                CommitterEx = signature
+            },
+        };
         var repository = new MockRepository
         {
             Branches = new MockBranchCollection
                 {
-                    new MockBranch("master")
-                    {
-                        new MockMergeCommit(new ObjectId(sha))
-                        {
-                            MessageEx = "Merge branch 'hotfix-0.3.0'",
-                            CommitterEx = signature
-                        },
-                        new MockMergeCommit
-                        {
-                            MessageEx = "Merge branch 'hotfix-0.3.1'",
-                            CommitterEx = signature,
-                        },
-                        new MockMergeCommit
-                        {
-                            MessageEx = "Merge branch 'hotfix-0.2.0'",
-                            CommitterEx = signature
-                        },
-                    },
+                    mockBranch,
                 }
         };
-        var version = finder.Execute(new GitVersionContext(repository, null, new Config()), 1.Seconds().Ago());
+        var version = finder.Execute(new GitVersionContext(repository, mockBranch, new Config()), 1.Seconds().Ago());
         ObjectApprover.VerifyWithJson(version);
     }
 }

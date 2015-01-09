@@ -52,22 +52,6 @@ branches:
     }
 
     [Test]
-    public void CanInheritVersioningMode()
-    {
-        const string text = @"
-mode: ContinuousDelivery
-branches:
-    develop:
-        mode: ContinuousDeployment
-";
-        SetupConfigFileContent(text);
-        var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
-        config.Branches["develop"].VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
-        config.Branches["develop"].Tag.ShouldBe("unstable");
-        config.Branches["release[/-]"].VersioningMode.ShouldBe(VersioningMode.ContinuousDelivery);
-    }
-
-    [Test]
     public void CanReadOldDocument()
     {
         const string text = @"

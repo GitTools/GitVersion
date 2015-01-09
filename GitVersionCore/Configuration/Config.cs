@@ -6,21 +6,19 @@
 
     public class Config
     {
-        VersioningMode versioningMode;
-
         Dictionary<string, BranchConfig> branches = new Dictionary<string, BranchConfig>();
 
         public Config()
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch;
             TagPrefix = "[vV]";
-            VersioningMode = VersioningMode.ContinuousDelivery;
+            VersioningMode = GitVersion.VersioningMode.ContinuousDelivery;
             Branches["release[/-]"] = new BranchConfig { Tag = "beta" };
             Branches["hotfix[/-]"] = new BranchConfig { Tag = "beta" };
             Branches["develop"] = new BranchConfig
             {
                 Tag = "unstable",
-                VersioningMode = VersioningMode.ContinuousDeployment
+                VersioningMode = GitVersion.VersioningMode.ContinuousDeployment
             };
         }
 
@@ -28,18 +26,7 @@
         public AssemblyVersioningScheme AssemblyVersioningScheme { get; set; }
 
         [YamlAlias("mode")]
-        public VersioningMode VersioningMode
-        {
-            get
-            {
-                return versioningMode;
-            }
-            set
-            {
-                Branches.ToList().ForEach(b => b.Value.VersioningMode = value);
-                versioningMode = value;
-            }
-        }
+        public VersioningMode? VersioningMode { get; set; }
 
         [YamlAlias("branches")]
         public Dictionary<string, BranchConfig> Branches

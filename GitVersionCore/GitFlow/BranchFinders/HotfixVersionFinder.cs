@@ -9,13 +9,13 @@ namespace GitVersion
         public SemanticVersion FindVersion(GitVersionContext context)
         {
             var versionString = GetSuffix(context.CurrentBranch);
-            var shortVersion = SemanticVersion.Parse(versionString, context.Configuration.TagPrefix);
+            var shortVersion = SemanticVersion.Parse(versionString, context.Configuration.GitTagPrefix);
 
             EnsureVersionIsValid(shortVersion, context.CurrentBranch);
             
             var nbHotfixCommits = BranchCommitDifferenceFinder.NumberOfCommitsInBranchNotKnownFromBaseBranch(context.Repository, context.CurrentBranch, BranchType.Hotfix, "master");
-            var tagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(context.Configuration, shortVersion).OrderByDescending(tag => SemanticVersion.Parse(tag.Name, context.Configuration.TagPrefix)).ToList();
-            var semanticVersionPreReleaseTag = context.CurrentBranchConfig.VersioningMode.GetInstance().GetPreReleaseTag(context, tagsInDescendingOrder, nbHotfixCommits);
+            var tagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(context.Configuration, shortVersion).OrderByDescending(tag => SemanticVersion.Parse(tag.Name, context.Configuration.GitTagPrefix)).ToList();
+            var semanticVersionPreReleaseTag = context.Configuration.VersioningMode.GetInstance().GetPreReleaseTag(context, tagsInDescendingOrder, nbHotfixCommits);
             return new SemanticVersion
             {
                 Major = shortVersion.Major,

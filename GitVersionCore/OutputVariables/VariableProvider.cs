@@ -31,7 +31,8 @@
         public const string NuGetVersionV3 = "NuGetVersionV3";
         public const string NuGetVersion = "NuGetVersion";
 
-        public static Dictionary<string, string> GetVariablesFor(SemanticVersion semanticVersion, Config configuration)
+        //TODO replace Dictionary<string, string> with a proper type which can be passed around
+        public static Dictionary<string, string> GetVariablesFor(SemanticVersion semanticVersion, AssemblyVersioningScheme assemblyVersioningScheme, VersioningMode mode)
         {
             var bmd = semanticVersion.BuildMetaData;
             var formatter = bmd.Branch == "develop" ? new CiFeedFormatter() : null;
@@ -49,8 +50,8 @@
                 {SemVer, semanticVersion.ToString(null, formatter)},
                 {LegacySemVer, semanticVersion.ToString("l", formatter)},
                 {LegacySemVerPadded, semanticVersion.ToString("lp", formatter)},
-                {AssemblySemVer, semanticVersion.GetAssemblyVersion(configuration.AssemblyVersioningScheme)},
-                {AssemblyFileSemVer, semanticVersion.GetAssemblyFileVersion(configuration.AssemblyVersioningScheme)},
+                {AssemblySemVer, semanticVersion.GetAssemblyVersion(assemblyVersioningScheme)},
+                {AssemblyFileSemVer, semanticVersion.GetAssemblyFileVersion(assemblyVersioningScheme)},
                 {FullSemVer, semanticVersion.ToString("f", formatter)},
                 {InformationalVersion, semanticVersion.ToString("i", formatter)},
                 {ClassicVersion, string.Format("{0}.{1}", semanticVersion.ToString("j"), (bmd.CommitsSinceTag ?? 0))},

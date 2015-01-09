@@ -8,7 +8,7 @@
     {
         public override SemanticVersionPreReleaseTag GetPreReleaseTag(GitVersionContext context, List<Tag> possibleTags, int numberOfCommits)
         {
-            return context.CurrentBranchConfig.Tag + "." + numberOfCommits;
+            return context.Configuration.Tag + "." + numberOfCommits;
         }
     }
 }

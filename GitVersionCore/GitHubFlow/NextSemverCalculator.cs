@@ -65,7 +65,7 @@
 
             if (!string.IsNullOrEmpty(context.Configuration.NextVersion))
             {
-                yield return SemanticVersion.Parse(context.Configuration.NextVersion, context.Configuration.TagPrefix);
+                yield return SemanticVersion.Parse(context.Configuration.NextVersion, context.Configuration.GitTagPrefix);
             }
 
             if (hasNextVersionTxtVersion)

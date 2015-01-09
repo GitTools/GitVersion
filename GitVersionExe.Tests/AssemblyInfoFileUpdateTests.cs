@@ -45,7 +45,7 @@ AssemblyFileVersion(""1.0.0.0"");";
                              {
                                  AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch
                              };
-            var variable = VariableProvider.GetVariablesFor(version, config); 
+            var variable = VariableProvider.GetVariablesFor(version, config.AssemblyVersioningScheme, VersioningMode.ContinuousDelivery); 
             var args = new Arguments
                            {
                                UpdateAssemblyInfo = true,
@@ -83,7 +83,7 @@ AssemblyFileVersion(""1.0.0.*"");";
                              {
                                  AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch
                              };
-            var variable = VariableProvider.GetVariablesFor(version, config);
+            var variable = VariableProvider.GetVariablesFor(version, config.AssemblyVersioningScheme, VersioningMode.ContinuousDelivery);
             var args = new Arguments
                            {
                                UpdateAssemblyInfo = true,
