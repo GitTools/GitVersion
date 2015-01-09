@@ -15,7 +15,7 @@ public class GetVersionTaskTests
         var properties = taskType.GetProperties()
             .Where(p => p.GetCustomAttributes(typeof(OutputAttribute), false).Any())
             .Select(p => p.Name);
-        Config configuration = new Config();
+        var configuration = new Config();
         var variables = VariableProvider.GetVariablesFor(new SemanticVersion
         {
             Major = 1,
