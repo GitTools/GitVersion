@@ -118,6 +118,7 @@
     <Compile Include="VersionCalculation\BaseVersionCalculatorTests.cs" />
     <Compile Include="VersionCalculation\Strategies\ConfigNextVersionBaseVersionStrategyTests.cs" />
     <Compile Include="VersionCalculation\Strategies\GitVersionContextBuilder.cs" />
+    <Compile Include="VersionCalculation\Strategies\MergeMessageBaseVersionStrategyTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
