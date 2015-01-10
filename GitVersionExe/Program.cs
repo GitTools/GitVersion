@@ -85,14 +85,13 @@ namespace GitVersion
                 {
                     buildServer.PerformPreProcessingSteps(gitDirectory);
                 }
-                SemanticVersion semanticVersion;
-                Dictionary<string, string> variables;
+                VersionVariables variables;
                 var versionFinder = new GitVersionFinder();
                 var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
                 using (var repo = RepositoryLoader.GetRepo(gitDirectory))
                 {
                     var gitVersionContext = new GitVersionContext(repo, configuration);
-                    semanticVersion = versionFinder.FindVersion(gitVersionContext);
+                    var semanticVersion = versionFinder.FindVersion(gitVersionContext);
                     variables = VariableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration.AssemblyVersioningScheme, gitVersionContext.Configuration.VersioningMode);
                 }
 
@@ -100,7 +99,7 @@ namespace GitVersion
                 {
                     foreach (var buildServer in applicableBuildServers)
                     {
-                        buildServer.WriteIntegration(semanticVersion, Console.WriteLine, variables);
+                        buildServer.WriteIntegration(Console.WriteLine, variables);
                     }
                 }
 
@@ -125,9 +124,9 @@ namespace GitVersion
 
                 if (!string.IsNullOrWhiteSpace(arguments.AssemblyVersionFormat) && !variables.ContainsKey(arguments.AssemblyVersionFormat))
                 {
-                    Console.WriteLine("Unrecognised AssemblyVersionFormat argument. Valid values for this argument are: {0}", string.Join(" ", variables.Keys.OrderBy(a => a)));
+                    Console.WriteLine("Unrecognised AssemblyVersionFormat argument. Valid values for this argument are: {0}", string.Join(" ", variables.AvailableVariables));
                     HelpWriter.Write();
-                    return 1;                   
+                    return 1;
                 }
 
 
@@ -226,7 +225,7 @@ namespace GitVersion
                 .ToList();
         }
 
-        static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, Dictionary<string, string> variables)
+        static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
         {
             if (string.IsNullOrEmpty(args.Proj)) return false;
 
@@ -242,7 +241,7 @@ namespace GitVersion
             return true;
         }
 
-        static bool RunExecCommandIfNeeded(Arguments args, string workingDirectory, Dictionary<string, string> variables)
+        static bool RunExecCommandIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
         {
             if (string.IsNullOrEmpty(args.Exec)) return false;
 
@@ -257,7 +256,7 @@ namespace GitVersion
             return true;
         }
 
-        static KeyValuePair<string, string>[] GetEnvironmentalVariables(Dictionary<string, string> variables)
+        static KeyValuePair<string, string>[] GetEnvironmentalVariables(VersionVariables variables)
         {
             return variables
                 .Select(v => new KeyValuePair<string, string>("GitVersion_" + v.Key, v.Value))

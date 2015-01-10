@@ -67,7 +67,7 @@
             WriteIntegrationParameters(cachedVersion, BuildServerList.GetApplicableBuildServers(authentication), variablesFor);
         }
 
-        public void WriteIntegrationParameters(CachedVersion cachedVersion, IEnumerable<IBuildServer> applicableBuildServers, Dictionary<string, string> variables)
+        public void WriteIntegrationParameters(CachedVersion cachedVersion, IEnumerable<IBuildServer> applicableBuildServers, VersionVariables variables)
         {
             foreach (var buildServer in applicableBuildServers)
             {

@@ -84,6 +84,7 @@
     <Compile Include="Helpers\IFileSystem.cs" />
     <Compile Include="Helpers\ProcessHelper.cs" />
     <Compile Include="LastMinorVersionFinder.cs" />
+    <Compile Include="OutputVariables\VersionVariables.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />
     <Compile Include="VersioningModes\ContinuousDeliveryMode.cs" />
     <Compile Include="VersioningModes\ContinuousDeploymentMode.cs" />

@@ -24,7 +24,7 @@ public class VariableProviderTests
 
         var vars = VariableProvider.GetVariablesFor(semVer, AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDelivery);
 
-        vars[VariableProvider.SemVer].ShouldBe("1.2.3.5-unstable");
+        vars.SemVer.ShouldBe("1.2.3.5-unstable");
     }
 
 }
