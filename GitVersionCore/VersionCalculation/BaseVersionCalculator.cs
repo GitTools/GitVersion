@@ -1,9 +1,9 @@
 ﻿namespace GitVersion.VersionCalculation
 {
     using System.Linq;
-    using GitVersion.VersionCalculation.BaseVersionCalculators;
+    using BaseVersionCalculators;
 
-    public class BaseVersionCalculator
+    public class BaseVersionCalculator : IBaseVersionCalculator
     {
         readonly BaseVersionStrategy[] strategies;
 

@@ -9,5 +9,8 @@
 
         [YamlAlias("tag")]
         public string Tag { get; set; }
+
+        [YamlAlias("increment")]
+        public IncrementStrategy? Increment { get; set; }
     }
 }

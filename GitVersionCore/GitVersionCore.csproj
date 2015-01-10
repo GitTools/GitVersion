@@ -74,6 +74,7 @@
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Configuration\ConfigReader.cs" />
     <Compile Include="Configuration\ConfigurationProvider.cs" />
+    <Compile Include="Configuration\IncrementStrategy.cs" />
     <Compile Include="Configuration\LegacyConfig.cs" />
     <Compile Include="Configuration\LegacyConfigNotifier.cs" />
     <Compile Include="Configuration\OldConfigurationException.cs" />
@@ -93,6 +94,8 @@
     <Compile Include="VersionCalculation\BaseVersionCalculators\LastTagBaseVersionStrategy.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\MergeMessageBaseVersionStrategy.cs" />
     <Compile Include="VersionCalculation\BaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\IBaseVersionCalculator.cs" />
+    <Compile Include="VersionCalculation\NewNextVersionCalculator.cs" />
     <Compile Include="VersioningModes\ContinuousDeliveryMode.cs" />
     <Compile Include="VersioningModes\ContinuousDeploymentMode.cs" />
     <Compile Include="VersioningModes\VersioningMode.cs" />
