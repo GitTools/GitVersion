@@ -18,7 +18,7 @@
             var metaData = new SemanticVersionBuildMetaData(semanticVersion.BuildMetaData)
             {
                 CommitsSinceTag = null
-            }.ToString();
+            }.ToString(format.ToLower() == "i" ? "f" : null);
 
             return string.Format("{0}.{1}{2}{3}",
                 semanticVersion.ToString("j"),
