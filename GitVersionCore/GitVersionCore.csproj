@@ -84,6 +84,7 @@
     <Compile Include="Helpers\IFileSystem.cs" />
     <Compile Include="Helpers\ProcessHelper.cs" />
     <Compile Include="LastMinorVersionFinder.cs" />
+    <Compile Include="OutputVariables\CommitsAsFourthVersionPartFormatter.cs" />
     <Compile Include="OutputVariables\VersionVariables.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />
     <Compile Include="VersioningModes\ContinuousDeliveryMode.cs" />
@@ -124,7 +125,6 @@
     <Compile Include="OutputFormatters\BuildOutputFormatter.cs" />
     <Compile Include="OutputFormatters\JsonOutputFormatter.cs" />
     <Compile Include="OutputType.cs" />
-    <Compile Include="OutputVariables\CiFeedFormatter.cs" />
     <Compile Include="OutputVariables\VariableProvider.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="RepositoryLoader.cs" />
