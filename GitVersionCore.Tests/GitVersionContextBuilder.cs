@@ -1,4 +1,4 @@
-﻿namespace GitVersionCore.Tests.VersionCalculation.Strategies
+﻿namespace GitVersionCore.Tests
 {
     using GitVersion;
     using LibGit2Sharp;
@@ -20,6 +20,15 @@
             return this;
         }
 
+        public GitVersionContextBuilder WithTaggedMaster()
+        {
+            repository = CreateRepository();
+            var target = repository.Head.Tip;
+            ((MockTagCollection)repository.Tags).Add(new MockTag ("1.0.0", target));
+            ((MockBranch)repository.Head).Add(new MockCommit { CommitterEx = SignatureBuilder.SignatureNow() });
+            return this;
+        }
+
         public GitVersionContext Build()
         {
             return new GitVersionContext(repository ?? CreateRepository(), config ?? new Config());
@@ -34,6 +43,7 @@
                 {
                     mockBranch
                 },
+                Tags = new MockTagCollection(),
                 Head = mockBranch
             };
 

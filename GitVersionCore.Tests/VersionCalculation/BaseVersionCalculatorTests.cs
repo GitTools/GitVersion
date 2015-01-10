@@ -3,7 +3,6 @@
     using GitVersion;
     using GitVersion.VersionCalculation;
     using GitVersion.VersionCalculation.BaseVersionCalculators;
-    using GitVersionCore.Tests.VersionCalculation.Strategies;
     using NUnit.Framework;
     using Shouldly;
 
