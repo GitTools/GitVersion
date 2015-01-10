@@ -22,9 +22,23 @@
                 case "sp":
                 case "f":
                 case "fp":
-                    return string.Format("{0}.{1}{2}", semanticVersion.ToString("j"),
+                    return string.Format("{0}.{1}-{2}", semanticVersion.ToString("j"),
                         semanticVersion.BuildMetaData.CommitsSinceTag ?? 0,
-                        semanticVersion.PreReleaseTag.HasTag() ? "-" + semanticVersion.PreReleaseTag.Name: null);
+                        semanticVersion.PreReleaseTag);
+                case "l":
+                case "lp":
+                    return string.Format("{0}.{1}-{2}", semanticVersion.ToString("j"),
+                        semanticVersion.BuildMetaData.CommitsSinceTag ?? 0,
+                        semanticVersion.PreReleaseTag.ToString(format));
+                case "i":
+                {
+                        var buildMetadata = semanticVersion.BuildMetaData.ToString("f");
+
+                        return string.Format("{0}.{1}-{2}{3}", semanticVersion.ToString("j"),
+                            semanticVersion.BuildMetaData.CommitsSinceTag ?? 0,
+                            semanticVersion.PreReleaseTag,
+                            string.IsNullOrEmpty(buildMetadata) ? string.Empty : "+" + buildMetadata);
+                    }
                 default:
                     return semanticVersion.ToString(format);
             }

@@ -40,7 +40,7 @@ static class GitVersionInformation
 
 
 ", vars.AssemblySemVer,
- vars.AssemblyFileSemVer, 
+ vars.AssemblySemVer, 
  semanticVersion.ToString("i"),
             CachedVersion.MasterReleaseDate.UtcDateTime.ToString("yyyy-MM-dd"),
             semanticVersion.BuildMetaData.CommitDate.UtcDateTime.ToString("yyyy-MM-dd"),

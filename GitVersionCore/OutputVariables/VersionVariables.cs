@@ -6,7 +6,7 @@
 
     public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     {
-        public VersionVariables(string major, string minor, string patch, string buildMetaData, string fullBuildMetaData, string branchName, string sha, string majorMinorPatch, string semVer, string legacySemVer, string legacySemVerPadded, string fullSemVer, string assemblySemVer, string assemblyFileSemVer, string classicVersion, string classicVersionWithTag, string preReleaseTag, string preReleaseTagWithDash, string informationalVersion)
+        public VersionVariables(string major, string minor, string patch, string buildMetaData, string fullBuildMetaData, string branchName, string sha, string majorMinorPatch, string semVer, string legacySemVer, string legacySemVerPadded, string fullSemVer, string assemblySemVer, string preReleaseTag, string preReleaseTagWithDash, string informationalVersion)
         {
             Major = major;
             Minor = minor;
@@ -21,9 +21,6 @@
             LegacySemVerPadded = legacySemVerPadded;
             FullSemVer = fullSemVer;
             AssemblySemVer = assemblySemVer;
-            AssemblyFileSemVer = assemblyFileSemVer;
-            ClassicVersion = classicVersion;
-            ClassicVersionWithTag = classicVersionWithTag;
             PreReleaseTag = preReleaseTag;
             PreReleaseTagWithDash = preReleaseTagWithDash;
             InformationalVersion = informationalVersion;
@@ -41,11 +38,8 @@
         public string LegacySemVer { get; private set; }
         public string LegacySemVerPadded { get; private set; }
         public string AssemblySemVer { get; private set; }
-        public string AssemblyFileSemVer { get; private set; }
         public string FullSemVer { get; private set; }
         public string InformationalVersion { get; private set; }
-        public string ClassicVersion { get; private set; }
-        public string ClassicVersionWithTag { get; private set; }
         public string BranchName { get; private set; }
         public string Sha { get; private set; }
 
