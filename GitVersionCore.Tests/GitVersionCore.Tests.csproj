@@ -115,6 +115,7 @@
     <Compile Include="TestFileSystem.cs" />
     <Compile Include="VariableProviderTests.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculatorTests.cs" />
+    <Compile Include="VersionCalculation\NewNextVersionCalculatorTests.cs" />
     <Compile Include="VersionCalculation\Strategies\ConfigNextVersionBaseVersionStrategyTests.cs" />
     <Compile Include="GitVersionContextBuilder.cs" />
     <Compile Include="VersionCalculation\Strategies\LastTagBaseVersionStrategyTests.cs" />

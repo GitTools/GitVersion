@@ -10,7 +10,7 @@ namespace GitVersionCore.Tests
             string gitTagPrefix = "v", 
             string tag = "",
             string nextVersion = null) : 
-                base(assemblyVersioningScheme, versioningMode, gitTagPrefix, tag, nextVersion)
+                base(assemblyVersioningScheme, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch)
         {
         }
     }
