@@ -11,7 +11,7 @@
         [Test]
         public void ShouldIncrementVersionBasedOnConfig()
         {
-            var baseCalculator = new TestBaseVersionCalculator(true, new SemanticVersion(1), DateTimeOffset.Now);
+            var baseCalculator = new TestBaseVersionCalculator(true, new SemanticVersion(1), new MockCommit());
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(1, "master", "b1a34e", DateTimeOffset.Now);
             var sut = new NewNextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
             var config = new Config();
@@ -29,7 +29,7 @@
         [Test]
         public void DoesNotIncrementWhenBaseVersionSaysNotTo()
         {
-            var baseCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), DateTimeOffset.Now);
+            var baseCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit());
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(1, "master", "b1a34e", DateTimeOffset.Now);
             var sut = new NewNextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
             var config = new Config();
@@ -42,6 +42,21 @@
             var version = sut.FindVersion(context);
 
             version.ToString().ShouldBe("1.0.0");
+        }
+
+        [Test]
+        public void AppliesBranchPreReleaseTag()
+        {
+            var baseCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit());
+            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(1, "develop", "b1a34e", DateTimeOffset.Now);
+            var sut = new NewNextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
+            var context = new GitVersionContextBuilder()
+                .WithDevelopBranch()
+                .Build();
+
+            var version = sut.FindVersion(context);
+
+            version.ToString().ShouldBe("1.0.0-unstable.1");
         }
     }
 }

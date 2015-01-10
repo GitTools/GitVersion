@@ -9,7 +9,7 @@
                 SemanticVersion semanticVersion;
                 // TODO when this approach works, inline the other class into here
                 if (MergeMessageParser.TryParse(context.CurrentCommit, context.Configuration, out semanticVersion))
-                    return new BaseVersion(true, semanticVersion, commit.When());
+                    return new BaseVersion(true, semanticVersion, commit);
             }
             return null;
         }

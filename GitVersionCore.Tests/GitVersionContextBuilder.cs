@@ -29,6 +29,18 @@
             return this;
         }
 
+        public GitVersionContextBuilder WithDevelopBranch()
+        {
+            repository = CreateRepository();
+            var mockBranch = new MockBranch("develop")
+            {
+                new MockCommit()
+            };
+            ((MockBranchCollection) repository.Branches).Add(mockBranch);
+            ((MockRepository)repository).Head = mockBranch;
+            return this;
+        }
+
         public GitVersionContext Build()
         {
             return new GitVersionContext(repository ?? CreateRepository(), config ?? new Config());

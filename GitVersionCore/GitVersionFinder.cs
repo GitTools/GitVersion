@@ -10,6 +10,8 @@ namespace GitVersion
             Logger.WriteInfo("Running against branch: " + context.CurrentBranch.Name);
             EnsureMainTopologyConstraints(context);
 
+            //return new NewNextVersionCalculator().FindVersion(context);
+
             if (ShouldGitHubFlowVersioningSchemeApply(context.Repository))
             {
                 Logger.WriteInfo("GitHubFlow version strategy will be used");
