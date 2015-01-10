@@ -87,6 +87,10 @@
     <Compile Include="OutputVariables\CommitsAsFourthVersionPartFormatter.cs" />
     <Compile Include="OutputVariables\VersionVariables.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculator.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\BaseVersion.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\ConfigNextVersionBaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\BaseVersionStrategy.cs" />
     <Compile Include="VersioningModes\ContinuousDeliveryMode.cs" />
     <Compile Include="VersioningModes\ContinuousDeploymentMode.cs" />
     <Compile Include="VersioningModes\VersioningMode.cs" />
@@ -143,6 +147,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
