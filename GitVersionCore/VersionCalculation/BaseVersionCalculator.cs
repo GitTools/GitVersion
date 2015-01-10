@@ -17,7 +17,15 @@
             return strategies
                 .Select(s => s.GetVersion(context))
                 .Where(v => v != null)
-                .Aggregate((v1, v2) => v1.SemanticVersion > v2.SemanticVersion ? v1 : v2);
+                .Aggregate((v1, v2) =>
+                {
+                    if (v1.SemanticVersion > v2.SemanticVersion)
+                    {
+                        return new BaseVersion(v1.ShouldIncrement, v1.SemanticVersion, v1.BaseVersionWhenFrom ?? v2.BaseVersionWhenFrom);
+                    }
+
+                    return new BaseVersion(v2.ShouldIncrement, v2.SemanticVersion, v2.BaseVersionWhenFrom ?? v1.BaseVersionWhenFrom);
+                });
         }
     }
 }

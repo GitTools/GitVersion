@@ -6,9 +6,11 @@
     public class NewNextVersionCalculator
     {
         IBaseVersionCalculator baseVersionFinder;
+        IMetaDataCalculator metaDataCalculator;
 
-        public NewNextVersionCalculator(IBaseVersionCalculator baseVersionCalculator = null)
+        public NewNextVersionCalculator(IBaseVersionCalculator baseVersionCalculator = null, IMetaDataCalculator metaDataCalculator = null)
         {
+            this.metaDataCalculator = metaDataCalculator ?? new MetaDataCalculator();
             baseVersionFinder = baseVersionCalculator ??
                 new BaseVersionCalculator(
                 new ConfigNextVersionBaseVersionStrategy(),
@@ -21,6 +23,8 @@
             var baseVersion = baseVersionFinder.GetBaseVersion(context);
 
             if (baseVersion.ShouldIncrement) IncrementVersion(context, baseVersion);
+
+            baseVersion.SemanticVersion.BuildMetaData = metaDataCalculator.Create(baseVersion.BaseVersionWhenFrom, context);
 
             return baseVersion.SemanticVersion;
         }

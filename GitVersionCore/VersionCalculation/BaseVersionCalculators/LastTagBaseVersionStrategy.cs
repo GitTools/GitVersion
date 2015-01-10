@@ -6,7 +6,7 @@
         {
             VersionTaggedCommit version;
             if (new LastTaggedReleaseFinder(context).GetVersion(out version))
-                return new BaseVersion(true, version.SemVer);
+                return new BaseVersion(true, version.SemVer, version.Commit.When());
 
             return null;
         }

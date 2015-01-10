@@ -6,7 +6,7 @@
         {
             if (string.IsNullOrEmpty(context.Configuration.NextVersion))
                 return null;
-            return new BaseVersion(false, SemanticVersion.Parse(context.Configuration.NextVersion, context.Configuration.GitTagPrefix));
+            return new BaseVersion(false, SemanticVersion.Parse(context.Configuration.NextVersion, context.Configuration.GitTagPrefix), null);
         }
     }
 }

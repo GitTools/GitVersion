@@ -70,7 +70,11 @@
             var context = new GitVersionContextBuilder()
                 .WithRepository(new MockRepository
                 {
-                    Head = new MockBranch("master") { commit }
+                    Head = new MockBranch("master")
+                    {
+                        commit,
+                        new MockCommit()
+                    }
                 })
                 .Build();
             var sut = new MergeMessageBaseVersionStrategy();

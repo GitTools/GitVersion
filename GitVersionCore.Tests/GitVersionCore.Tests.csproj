@@ -121,6 +121,8 @@
     <Compile Include="GitVersionContextBuilder.cs" />
     <Compile Include="VersionCalculation\Strategies\LastTagBaseVersionStrategyTests.cs" />
     <Compile Include="VersionCalculation\Strategies\MergeMessageBaseVersionStrategyTests.cs" />
+    <Compile Include="VersionCalculation\TestBaseVersionCalculator.cs" />
+    <Compile Include="VersionCalculation\TestMetaDataCalculator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
