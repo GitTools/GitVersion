@@ -4,6 +4,7 @@
     using GitVersion;
     using GitVersion.VersionCalculation;
     using GitVersion.VersionCalculation.BaseVersionCalculators;
+    using LibGit2Sharp;
     using NUnit.Framework;
     using Shouldly;
 
@@ -21,7 +22,7 @@
 
             baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
             baseVersion.ShouldIncrement.ShouldBe(true);
-            baseVersion.BaseVersionWhenFrom.ShouldBe(dateTimeOffset);
+            baseVersion.BaseVersionSource.When().ShouldBe(dateTimeOffset);
         }
 
         [Test]
@@ -35,7 +36,7 @@
 
             baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
             baseVersion.ShouldIncrement.ShouldBe(true);
-            baseVersion.BaseVersionWhenFrom.ShouldBe(when);
+            baseVersion.BaseVersionSource.When().ShouldBe(when);
         }
 
         [Test]
@@ -49,16 +50,16 @@
 
             baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
             baseVersion.ShouldIncrement.ShouldBe(true);
-            baseVersion.BaseVersionWhenFrom.ShouldBe(when);
+            baseVersion.BaseVersionSource.When().ShouldBe(when);
         }
 
         class V1Strategy : BaseVersionStrategy
         {
-            readonly DateTimeOffset? when;
+            readonly Commit when;
 
             public V1Strategy(DateTimeOffset? when)
             {
-                this.when = when;
+                this.when = when == null ? null : new MockCommit { CommitterEx = when.Value.ToSignature() };
             }
 
             public override BaseVersion GetVersion(GitVersionContext context)
@@ -69,11 +70,11 @@
 
         class V2Strategy : BaseVersionStrategy
         {
-            DateTimeOffset? when;
+            Commit when;
 
             public V2Strategy(DateTimeOffset? when)
             {
-                this.when = when;
+                this.when = when == null ? null : new MockCommit { CommitterEx = when.Value.ToSignature() };
             }
 
             public override BaseVersion GetVersion(GitVersionContext context)

@@ -1,16 +1,15 @@
 ﻿namespace GitVersion.VersionCalculation
 {
-    using System;
     using System.Linq;
     using LibGit2Sharp;
 
     public class MetaDataCalculator : IMetaDataCalculator
     {
-        public SemanticVersionBuildMetaData Create(DateTimeOffset? baseVersionWhenFrom, GitVersionContext context)
+        public SemanticVersionBuildMetaData Create(Commit baseVersionSource, GitVersionContext context)
         {
             var qf = new CommitFilter
             {
-                Since = baseVersionWhenFrom,
+                Since = baseVersionSource,
                 Until = context.CurrentCommit,
                 SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
             };

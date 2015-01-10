@@ -21,10 +21,10 @@
                 {
                     if (v1.SemanticVersion > v2.SemanticVersion)
                     {
-                        return new BaseVersion(v1.ShouldIncrement, v1.SemanticVersion, v1.BaseVersionWhenFrom ?? v2.BaseVersionWhenFrom);
+                        return new BaseVersion(v1.ShouldIncrement, v1.SemanticVersion, v1.BaseVersionSource ?? v2.BaseVersionSource);
                     }
 
-                    return new BaseVersion(v2.ShouldIncrement, v2.SemanticVersion, v2.BaseVersionWhenFrom ?? v1.BaseVersionWhenFrom);
+                    return new BaseVersion(v2.ShouldIncrement, v2.SemanticVersion, v2.BaseVersionSource ?? v1.BaseVersionSource);
                 });
         }
     }

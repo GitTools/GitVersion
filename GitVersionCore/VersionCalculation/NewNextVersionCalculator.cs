@@ -24,7 +24,12 @@
 
             if (baseVersion.ShouldIncrement) IncrementVersion(context, baseVersion);
 
-            baseVersion.SemanticVersion.BuildMetaData = metaDataCalculator.Create(baseVersion.BaseVersionWhenFrom, context);
+            if (!baseVersion.SemanticVersion.PreReleaseTag.HasTag() && !string.IsNullOrEmpty(context.Configuration.Tag))
+            {
+                baseVersion.SemanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(context.Configuration.Tag, 1);
+            }
+
+            baseVersion.SemanticVersion.BuildMetaData = metaDataCalculator.Create(baseVersion.BaseVersionSource, context);
 
             return baseVersion.SemanticVersion;
         }

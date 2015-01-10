@@ -1,8 +1,8 @@
 ﻿namespace GitVersionCore.Tests.VersionCalculation
 {
-    using System;
     using GitVersion;
     using GitVersion.VersionCalculation;
+    using LibGit2Sharp;
 
     public class TestMetaDataCalculator : IMetaDataCalculator
     {
@@ -13,7 +13,7 @@
             this.metaData = metaData;
         }
 
-        public SemanticVersionBuildMetaData Create(DateTimeOffset? baseVersionWhenFrom, GitVersionContext context)
+        public SemanticVersionBuildMetaData Create(Commit baseVersionSource, GitVersionContext context)
         {
             return metaData;
         }

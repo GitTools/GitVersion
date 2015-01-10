@@ -18,6 +18,7 @@
             Branches["develop"] = new BranchConfig
             {
                 Tag = "unstable",
+                Increment = IncrementStrategy.Minor,
                 VersioningMode = GitVersion.VersioningMode.ContinuousDeployment
             };
         }
