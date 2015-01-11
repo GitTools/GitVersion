@@ -26,7 +26,7 @@
 
             if (baseVersion.ShouldIncrement) IncrementVersion(context, baseVersion);
 
-            if (!baseVersion.SemanticVersion.PreReleaseTag.HasTag() && !string.IsNullOrEmpty(context.Configuration.Tag))
+            if (baseVersion.ShouldUpdateTag && !baseVersion.SemanticVersion.PreReleaseTag.HasTag() && !string.IsNullOrEmpty(context.Configuration.Tag))
             {
                 var tagToUse = context.Configuration.Tag;
                 if (tagToUse == "useBranchName")

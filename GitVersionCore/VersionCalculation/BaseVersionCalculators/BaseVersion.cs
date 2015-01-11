@@ -4,14 +4,17 @@
 
     public class BaseVersion
     {
-        public BaseVersion(bool shouldIncrement, SemanticVersion semanticVersion, Commit baseVersionSource)
+        public BaseVersion(bool shouldIncrement, bool shouldUpdateTag, SemanticVersion semanticVersion, Commit baseVersionSource)
         {
             ShouldIncrement = shouldIncrement;
+            ShouldUpdateTag = shouldUpdateTag;
             SemanticVersion = semanticVersion;
             BaseVersionSource = baseVersionSource;
         }
 
         public bool ShouldIncrement { get; private set; }
+
+        public bool ShouldUpdateTag { get; private set; }
 
         public SemanticVersion SemanticVersion { get; private set; }
 

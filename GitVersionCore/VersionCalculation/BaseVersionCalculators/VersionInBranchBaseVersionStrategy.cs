@@ -11,7 +11,7 @@
             if (versionInBranch != null)
             {
                 var firstCommitOfBranch = context.CurrentBranch.Commits.Last();
-                return new BaseVersion(false, versionInBranch.Item2, firstCommitOfBranch);
+                return new BaseVersion(false, true, versionInBranch.Item2, firstCommitOfBranch);
             }
 
             return null;

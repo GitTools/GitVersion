@@ -7,8 +7,8 @@
             VersionTaggedCommit version;
             if (new LastTaggedReleaseFinder(context).GetVersion(out version))
             {
-                var shouldIncrement = version.Commit != context.CurrentCommit;
-                return new BaseVersion(shouldIncrement, version.SemVer, version.Commit);
+                var shouldUpdateVersion = version.Commit != context.CurrentCommit;
+                return new BaseVersion(shouldUpdateVersion, shouldUpdateVersion, version.SemVer, version.Commit);
             }
 
             return null;
