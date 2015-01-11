@@ -30,6 +30,9 @@ We have a bunch of examples in our Wiki, if something is missing, let us know! T
 ### Supported Variables
 Because not everyone is the same, we give you a bunch of different variables which you can use in your builds to meet *your* requirements
 
+### Who is using GitVersion?
+Find a list of projects who are currently using GitVersion [here](https://github.com/ParticularLabs/GitVersion/wiki/Who-is-using-GitVersion%3F)
+
 ## Additional Links
 
 ### [FAQ and Common Problems](https://github.com/Particular/GitVersion/wiki/FAQ)

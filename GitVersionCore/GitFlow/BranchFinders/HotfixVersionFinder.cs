@@ -7,7 +7,7 @@ namespace GitVersion
         public SemanticVersion FindVersion(GitVersionContext context)
         {
             var versionString = GetSuffix(context.CurrentBranch);
-            var shortVersion = ShortVersionParser.Parse(versionString);
+            var shortVersion = SemanticVersion.Parse(versionString, context.Configuration.TagPrefix);
 
             EnsureVersionIsValid(shortVersion, context.CurrentBranch);
             
@@ -24,7 +24,7 @@ namespace GitVersion
             };
         }
 
-        static string GetSemanticVersionPreReleaseTag(GitVersionContext context, ShortVersion shortVersion, int nbHotfixCommits)
+        static string GetSemanticVersionPreReleaseTag(GitVersionContext context, SemanticVersion shortVersion, int nbHotfixCommits)
         {
             var semanticVersionPreReleaseTag = context.Configuration.ReleaseBranchTag + ".1";
             var tagVersion = RecentTagVersionExtractor.RetrieveMostRecentOptionalTagVersion(context, shortVersion);
@@ -39,7 +39,8 @@ namespace GitVersion
         {
             return branch.Name.TrimStart("hotfix-").TrimStart("hotfix/");
         }
-        void EnsureVersionIsValid(ShortVersion version, Branch branch)
+
+        void EnsureVersionIsValid(SemanticVersion version, Branch branch)
         {
             if (version.Patch == 0)
             {

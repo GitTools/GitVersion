@@ -2,6 +2,7 @@
 {
     using System;
     using GitVersion;
+    using GitVersion.Helpers;
     using Microsoft.Build.Framework;
     using Microsoft.Build.Utilities;
     using Logger = GitVersion.Logger;
@@ -83,10 +84,12 @@
         public string NextVersion { get; set; }
 
         TaskLogger logger;
+        IFileSystem fileSystem;
 
         public GetVersion()
         {
             logger = new TaskLogger(this);
+            fileSystem = new FileSystem();
             Logger.WriteInfo = this.LogInfo;
             Logger.WriteWarning = this.LogWarning;
         }
@@ -97,7 +100,7 @@
             {
                 CachedVersion versionAndBranch;
                 var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
-                var configuration = ConfigurationProvider.Provide(gitDirectory);
+                var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
 
                 // TODO This should be covered by tests
                 // Null is intentional. Empty string means the user has set the value to an empty string and wants to clear the tag

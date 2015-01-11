@@ -15,6 +15,7 @@ namespace GitVersion
         public string TargetUrl;
         public string TargetBranch;
 
+        public bool Init;
 
         public bool IsHelp;
         public string LogFilePath;
@@ -29,5 +30,6 @@ namespace GitVersion
 
         public bool UpdateAssemblyInfo;
         public string UpdateAssemblyInfoFileName;
+        public string AssemblyVersionFormat;      
     }
 }

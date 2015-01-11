@@ -11,24 +11,24 @@ namespace GitVersion
             {
                 foreach (var tag in context.Repository.TagsByDate(commit))
                 {
-                    ShortVersion shortVersion;
-                    if (ShortVersionParser.TryParseMajorMinor(tag.Name, out shortVersion))
+                    SemanticVersion semanticVersion;
+                    if (SemanticVersion.TryParse(tag.Name, context.Configuration.TagPrefix, out semanticVersion))
                     {
                         return new VersionPoint
                         {
-                            Major = shortVersion.Major,
-                            Minor = shortVersion.Minor,
+                            Major = semanticVersion.Major,
+                            Minor = semanticVersion.Minor,
                         };
                     }
                 }
 
-                ShortVersion shortVersionFromMergeMessage;
-                if (MergeMessageParser.TryParse(commit, out shortVersionFromMergeMessage))
+                SemanticVersion semanticVersionFromMergeMessage;
+                if (MergeMessageParser.TryParse(commit, context.Configuration, out semanticVersionFromMergeMessage))
                 {
                     return new VersionPoint
                     {
-                        Major = shortVersionFromMergeMessage.Major,
-                        Minor = shortVersionFromMergeMessage.Minor,
+                        Major = semanticVersionFromMergeMessage.Major,
+                        Minor = semanticVersionFromMergeMessage.Minor,
                     };
                 }
             }
@@ -38,10 +38,6 @@ namespace GitVersion
                 Minor = 1,
             };
         }
-
-    
-
-
 
     }
 }

@@ -25,6 +25,8 @@
     <UpdateAssemblyInfo
       SolutionDirectory="$(SolutionDir)"
       ProjectFile="$(ProjectPath)"
+      ProjectDir="$(ProjectDir)"
+      Configuration="$(ConfigurationName)"
       AssemblyVersioningScheme="$(GitVersionAssemblyVersioningScheme)"
       CompileFiles ="@(Compile)">
       <Output

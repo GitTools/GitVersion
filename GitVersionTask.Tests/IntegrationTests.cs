@@ -16,8 +16,8 @@ public class IntegrationTests
             {
                 foreach (var commit in branch.Commits)
                 {
-                    ShortVersion version;
-                    if (MergeMessageParser.TryParse(commit, out version))
+                    SemanticVersion version;
+                    if (MergeMessageParser.TryParse(commit, new Config(), out version))
                     {
                         Debug.WriteLine("{0}.{1}.{2}", version.Major, version.Minor, version.Patch);
                     }

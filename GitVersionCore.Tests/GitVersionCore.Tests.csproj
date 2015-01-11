@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>c2203629</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>1123b588</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -60,36 +60,46 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="YamlDotNet, Version=3.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\YamlDotNet.3.3.1\lib\net35\YamlDotNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GitVersionTask.Tests\Helpers\DirectoryHelper.cs">
       <Link>Helpers\DirectoryHelper.cs</Link>
     </Compile>
     <Compile Include="Fixtures\CommitCountingRepoFixture.cs" />
-    <Compile Include="ConfigReaderTests.cs" />
+    <Compile Include="ConfigProviderTests.cs" />
+    <Compile Include="Fixtures\RemoteRepositoryFixture.cs" />
     <Compile Include="GitDirFinderTests.cs" />
     <Compile Include="Fixtures\BaseGitFlowRepositoryFixture.cs" />
+    <Compile Include="IntegrationTests\RemoteRepositoryTests.cs" />
     <Compile Include="IntegrationTests\GitFlow\DevelopScenarios.cs" />
+    <Compile Include="IntegrationTests\GitFlow\FeatureBranchTests.cs" />
+    <Compile Include="IntegrationTests\GitFlow\SupportBranchScenarios.cs" />
     <Compile Include="IntegrationTests\GitFlow\MetaDataByCommitScenarios.cs" />
     <Compile Include="IntegrationTests\GitFlow\PatchScenarios.cs" />
     <Compile Include="IntegrationTests\GitFlow\ReleaseBranchTests.cs" />
+    <Compile Include="IntegrationTests\GitFlow\SwitchingToGitFlowScenarios.cs" />
     <Compile Include="IntegrationTests\GitFlow\WikiScenarios.cs" />
+    <Compile Include="IntegrationTests\GitHubFlow\FeatureBranchTests.cs" />
     <Compile Include="IntegrationTests\GitHubFlow\OtherBranchTests.cs" />
     <Compile Include="IntegrationTests\GitHubFlow\ReleaseBranchTests.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="Helpers\NextVersionWriter.cs" />
     <Compile Include="InformationalVersionBuilderTests.cs" />
+    <Compile Include="IntegrationTests\GitHubFlow\SupportBranchScenarios.cs" />
     <Compile Include="JsonVersionBuilderTests.cs" />
-    <Compile Include="LastVersionOnMasterFinderTests.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="Fixtures\EmptyRepositoryFixture.cs" />
-    <Compile Include="Helpers\GitHelper.cs" />
+    <Compile Include="Helpers\GitTestExtensions.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="IntegrationTests\GitHubFlow\MasterTests.cs" />
     <Compile Include="ApprovalTestsConfig.cs" />
     <Compile Include="Fixtures\RepositoryFixtureBase.cs" />
     <Compile Include="SemanticVersionTests.cs" />
-    <Compile Include="ShortVersionParserTests.cs" />
+    <Compile Include="TestFileSystem.cs" />
     <Compile Include="VariableProviderTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -115,11 +125,11 @@ xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.19.0.0\lib\net40\NativeBin
 if not exist "$(TargetDir)NativeBinaries\amd64" md "$(TargetDir)NativeBinaries\amd64"
 xcopy /s /y /d "$(SolutionDir)packages\LibGit2Sharp.0.19.0.0\lib\net40\NativeBinaries\amd64\*.*" "$(TargetDir)NativeBinaries\amd64"</PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\Fody.1.25.0\build\Fody.targets" Condition="Exists('..\packages\Fody.1.25.0\build\Fody.targets')" />
+  <Import Project="..\packages\Fody.1.26.2\build\Fody.targets" Condition="Exists('..\packages\Fody.1.26.2\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Fody.1.25.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.25.0\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Fody.1.26.2\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.26.2\build\Fody.targets'))" />
   </Target>
 </Project>

@@ -12,6 +12,7 @@
             TagPrefix = "[vV]";
         }
 
+        [YamlAlias("assembly-versioning-scheme")]
         public AssemblyVersioningScheme AssemblyVersioningScheme { get; set; }
 
         [YamlAlias("develop-branch-tag")]

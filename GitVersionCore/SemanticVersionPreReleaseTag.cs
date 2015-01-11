@@ -6,9 +6,6 @@ namespace GitVersion
     public class SemanticVersionPreReleaseTag : 
         IFormattable, IComparable<SemanticVersionPreReleaseTag>, IEquatable<SemanticVersionPreReleaseTag>
     {
-        public string Name;
-        public int? Number;
-
         static LambdaEqualityHelper<SemanticVersionPreReleaseTag> equalityHelper =
            new LambdaEqualityHelper<SemanticVersionPreReleaseTag>(x => x.Name, x => x.Number);
 
@@ -21,6 +18,8 @@ namespace GitVersion
             Name = name;
             Number = number;
         }
+        public string Name { get; set; }
+        public int? Number { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -91,8 +90,12 @@ namespace GitVersion
                 return new SemanticVersionPreReleaseTag();
             }
 
-            return new SemanticVersionPreReleaseTag(match.Groups["name"].Value, 
-                match.Groups["number"].Success ? int.Parse(match.Groups["number"].Value) : (int?) null);
+            var value = match.Groups["name"].Value;
+            var number = match.Groups["number"].Success ? int.Parse(match.Groups["number"].Value) : (int?) null;
+            if (value.EndsWith("-"))
+                return new SemanticVersionPreReleaseTag(preReleaseTag, null);
+
+            return new SemanticVersionPreReleaseTag(value, number);
         }
 
         public int CompareTo(SemanticVersionPreReleaseTag other)

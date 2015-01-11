@@ -6,6 +6,7 @@ namespace GitVersion
     using System.IO;
     using System.Linq;
     using System.Text;
+    using GitVersion.Helpers;
 
     class Program
     {
@@ -25,8 +26,8 @@ namespace GitVersion
             {
                 // Dump log to console if we fail to complete successfully
                 Console.Write(log.ToString());
-            } 
-            
+            }
+
             Environment.Exit(exitCode);
         }
 
@@ -69,6 +70,13 @@ namespace GitVersion
                     return 1;
                 }
 
+                var fileSystem = new FileSystem();
+                if (arguments.Init)
+                {
+                    ConfigurationProvider.WriteSample(gitDirectory, fileSystem);
+                    return 0;
+                }
+
                 var workingDirectory = Directory.GetParent(gitDirectory).FullName;
                 Logger.WriteInfo("Working directory: " + workingDirectory);
                 var applicableBuildServers = GetApplicableBuildServers(arguments.Authentication).ToList();
@@ -79,7 +87,7 @@ namespace GitVersion
                 }
                 SemanticVersion semanticVersion;
                 var versionFinder = new GitVersionFinder();
-                var configuration = ConfigurationProvider.Provide(gitDirectory);
+                var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
                 using (var repo = RepositoryLoader.GetRepo(gitDirectory))
                 {
                     var gitVersionContext = new GitVersionContext(repo, configuration);
@@ -114,7 +122,15 @@ namespace GitVersion
                     }
                 }
 
-                using (var assemblyInfoUpdate = new AssemblyInfoFileUpdate(arguments, workingDirectory, variables))
+                if (!string.IsNullOrWhiteSpace(arguments.AssemblyVersionFormat) && !variables.ContainsKey(arguments.AssemblyVersionFormat))
+                {
+                    Console.WriteLine("Unrecognised AssemblyVersionFormat argument. Valid values for this argument are: {0}", string.Join(" ", variables.Keys.OrderBy(a => a)));
+                    HelpWriter.Write();
+                    return 1;                   
+                }
+
+
+                using (var assemblyInfoUpdate = new AssemblyInfoFileUpdate(arguments, workingDirectory, variables, fileSystem))
                 {
                     var execRun = RunExecCommandIfNeeded(arguments, workingDirectory, variables);
                     var msbuildRun = RunMsBuildIfNeeded(arguments, workingDirectory, variables);

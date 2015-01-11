@@ -4,7 +4,7 @@ using System.Linq;
 using GitVersion;
 using LibGit2Sharp;
 
-public static class GitHelper
+public static class GitTestExtensions
 {
     public static Commit MakeACommit(this IRepository repository)
     {
@@ -17,6 +17,11 @@ public static class GitHelper
         File.WriteAllText(randomFile, string.Empty);
         repository.Index.Stage(randomFile);
         return repository.Commit("Test Commit", Constants.Signature(dateTimeOffset), Constants.Signature(dateTimeOffset));
+    }
+
+    public static void MergeNoFF(this IRepository repository, string branch)
+    {
+        MergeNoFF(repository, branch, Constants.SignatureNow());
     }
 
     public static void MergeNoFF(this IRepository repository, string branch, Signature sig)

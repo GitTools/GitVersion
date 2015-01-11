@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using GitVersion;
+    using GitVersion.Helpers;
     using Microsoft.Build.Framework;
     using Microsoft.Build.Utilities;
     using Logger = GitVersion.Logger;
@@ -13,10 +14,12 @@
         public string SolutionDirectory { get; set; }
 
         TaskLogger logger;
+        IFileSystem fileSystem;
 
         public WriteVersionInfoToBuildLog()
         {
             logger = new TaskLogger(this);
+            fileSystem = new FileSystem();
             Logger.WriteInfo = this.LogInfo;
             Logger.WriteWarning = this.LogWarning;
         }
@@ -48,7 +51,7 @@
         {
             CachedVersion semanticVersion;
             var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
-            var configuration = ConfigurationProvider.Provide(gitDirectory);
+            var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
             if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion, configuration))
             {
                 return;

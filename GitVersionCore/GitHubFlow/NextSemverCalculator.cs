@@ -26,20 +26,17 @@
 
         public SemanticVersion NextVersion()
         {
-            var versions = GetPossibleVersions().ToList();
-
-            if (versions.Any())
-            {
-                return versions.Max();
-            }
-            return new SemanticVersion
-            {
-                Minor = 1
-            };
+            return GetPossibleVersions().Max();
         }
 
         public IEnumerable<SemanticVersion> GetPossibleVersions()
         {
+            // always provide a minimum fallback version for other strategies
+            var defaultNextVersion = new SemanticVersion
+            {
+                Minor = 1
+            };
+            yield return defaultNextVersion;
 
             VersionTaggedCommit lastTaggedRelease;
             if (lastTaggedReleaseFinder.GetVersion(out lastTaggedRelease))
@@ -50,12 +47,13 @@
                     yield return lastTaggedRelease.SemVer;
                     yield break;
                 }
-                yield return new SemanticVersion
-                    {
-                        Major = lastTaggedRelease.SemVer.Major,
-                        Minor = lastTaggedRelease.SemVer.Minor,
-                        Patch = lastTaggedRelease.SemVer.Patch + 1
-                    };
+                defaultNextVersion = new SemanticVersion
+                {
+                    Major = lastTaggedRelease.SemVer.Major,
+                    Minor = lastTaggedRelease.SemVer.Minor,
+                    Patch = lastTaggedRelease.SemVer.Patch + 1
+                };
+                yield return defaultNextVersion;
             }
 
             SemanticVersion fileVersion;
@@ -82,7 +80,7 @@
             }
 
             SemanticVersion otherBranchVersion;
-            if (unknownBranchFinder.FindVersion(context, out otherBranchVersion))
+            if (unknownBranchFinder.FindVersion(context, defaultNextVersion, out otherBranchVersion))
             {
                 yield return otherBranchVersion;
             }

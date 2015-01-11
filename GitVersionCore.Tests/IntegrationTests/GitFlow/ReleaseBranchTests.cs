@@ -36,6 +36,21 @@ public class GitFlowReleaseBranchTests
     }
 
     [Test]
+    public void CanHandleReleaseBranchWithStability()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.3");
+            fixture.Repository.CreateBranch("develop");
+            fixture.Repository.MakeCommits(5);
+            fixture.Repository.CreateBranch("release-2.0.0-Final");
+            fixture.Repository.Checkout("release-2.0.0-Final");
+
+            fixture.AssertFullSemver("2.0.0-beta.1+5");
+        }
+    }
+
+    [Test]
     public void WhenReleaseBranchIsMergedIntoMasterVersionIsTakenWithIt()
     {
         using (var fixture = new EmptyRepositoryFixture(new Config()))

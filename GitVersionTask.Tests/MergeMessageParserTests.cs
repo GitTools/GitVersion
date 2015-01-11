@@ -22,7 +22,9 @@ public class MergeMessageParserTests
     [TestCase("Merge pull request #165 from Particular/release-1.0.0", true, "1.0.0")]
     [TestCase("Merge pull request #95 from Particular/issue-94", false, null)]
     [TestCase("Merge pull request #165 in Particular/release-1.0.0", true, "1.0.0")]
+    [TestCase("Merge pull request #95 in Particular/issue-94", true, null)]
     [TestCase("Merge pull request #95 in Particular/issue-94", false, null)]
+    [TestCase("Merge pull request #64 from arledesma/feature-VS2013_3rd_party_test_framework_support", true, null)]
     [TestCase("Finish Release-0.12.0", true, "0.12.0")] //Support Syntevo SmartGit/Hg's Gitflow merge commit messages for finishing a 'Release' branch
     [TestCase("Finish 0.14.1", true, "0.14.1")] //Support Syntevo SmartGit/Hg's Gitflow merge commit messages for finishing a 'Hotfix' branch
     public void AssertMergeMessage(string message, bool isMergeCommit, string expectedVersion)
@@ -46,8 +48,8 @@ public class MergeMessageParserTests
             ParentsEx = parents
         };
 
-        ShortVersion versionPart;
-        var parsed = MergeMessageParser.TryParse(commit, out versionPart);
+        SemanticVersion versionPart;
+        var parsed = MergeMessageParser.TryParse(commit, new Config(), out versionPart);
 
         if (expectedVersion == null)
         {

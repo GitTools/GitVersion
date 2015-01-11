@@ -3,6 +3,7 @@
     using System;
     using System.IO;
     using GitVersion;
+    using GitVersion.Helpers;
     using Microsoft.Build.Framework;
     using Microsoft.Build.Utilities;
     using Logger = GitVersion.Logger;
@@ -24,6 +25,13 @@
 
         [Required]
         public string ProjectFile { get; set; }
+
+        [Required]
+        public string ProjectDir { get; set; }
+
+        [Required]
+        public string Configuration { get; set; }
+
         [Required]
         public ITaskItem[] CompileFiles { get; set; }
 
@@ -31,11 +39,13 @@
         public string AssemblyInfoTempFilePath { get; set; }
 
         TaskLogger logger;
+        IFileSystem fileSystem;
 
         public UpdateAssemblyInfo()
         {
             CompileFiles = new ITaskItem[] { };
             logger = new TaskLogger(this);
+            fileSystem = new FileSystem();
             Logger.WriteInfo = this.LogInfo;
             Logger.WriteWarning = this.LogWarning;
         }
@@ -74,7 +84,7 @@
             if (string.IsNullOrEmpty(gitDirectory))
                 return;
 
-            var configuration = ConfigurationProvider.Provide(gitDirectory);
+            var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
             if (!string.IsNullOrEmpty(AssemblyVersioningScheme))
             {
                 AssemblyVersioningScheme versioningScheme;
@@ -127,8 +137,20 @@
                                       };
             var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(configuration);
 
-            var tempFileName = string.Format("AssemblyInfo_{0}_{1}.g.cs", Path.GetFileNameWithoutExtension(ProjectFile), Path.GetRandomFileName());
-            AssemblyInfoTempFilePath = Path.Combine(TempFileTracker.TempPath, tempFileName);
+            string tempFileName, tempDir;
+            if (string.IsNullOrEmpty(ProjectDir) || string.IsNullOrWhiteSpace(ProjectDir))
+            {
+                tempDir = TempFileTracker.TempPath;
+                tempFileName = string.Format("AssemblyInfo_{0}_{1}.g.cs", Path.GetFileNameWithoutExtension(ProjectFile), Path.GetRandomFileName());
+            }
+            else
+            {
+                tempDir = Path.Combine(ProjectDir, "obj", Configuration);
+                Directory.CreateDirectory(tempDir);
+                tempFileName = string.Format("GitVersionTaskAssemblyInfo.g.cs");
+            }
+
+            AssemblyInfoTempFilePath = Path.Combine(tempDir, tempFileName);
             File.WriteAllText(AssemblyInfoTempFilePath, assemblyInfo);
         }
     }
