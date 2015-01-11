@@ -107,8 +107,7 @@
 
                 if (branchConfiguration.Increment == IncrementStrategy.Inherit)
                 {
-                    var tips = Repository.Branches.Select(b => b.Tip).Where(c => c.Sha != CurrentCommit.Sha).ToList();
-                    var branchPoint = Repository.Commits.First(c => tips.Contains(c) || c.Parents.Count() > 1);
+                    var branchPoint = currentBranch.FindCommitBranchWasBranchedFrom(Repository);
                     var branches = ListBranchesContaininingCommit(Repository, branchPoint.Sha).ToArray();
                     var currentTipBranches = ListBranchesContaininingCommit(Repository, CurrentCommit.Sha).ToArray();
                     var branchNameComparer = new BranchNameComparer();

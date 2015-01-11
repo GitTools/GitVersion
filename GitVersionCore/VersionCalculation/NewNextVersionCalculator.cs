@@ -14,6 +14,7 @@
             this.metaDataCalculator = metaDataCalculator ?? new MetaDataCalculator();
             baseVersionFinder = baseVersionCalculator ??
                 new BaseVersionCalculator(
+                    new FallbackBaseVersionStrategy(),
                 new ConfigNextVersionBaseVersionStrategy(),
                 new LastTagBaseVersionStrategy(),
                 new MergeMessageBaseVersionStrategy(),

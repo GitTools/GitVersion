@@ -10,8 +10,9 @@
             var versionInBranch = GetVersionInBranch(context);
             if (versionInBranch != null)
             {
-                var firstCommitOfBranch = context.CurrentBranch.Commits.Last();
-                return new BaseVersion(false, true, versionInBranch.Item2, firstCommitOfBranch);
+                var commitBranchWasBranchedFrom = context.CurrentBranch.FindCommitBranchWasBranchedFrom(context.Repository);
+                var baseVersionSource = context.CurrentBranch.Commits.First(c => c.Sha != commitBranchWasBranchedFrom.Sha);
+                return new BaseVersion(false, true, versionInBranch.Item2, baseVersionSource);
             }
 
             return null;
