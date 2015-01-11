@@ -81,9 +81,7 @@
 
         void CalculateEffectiveConfiguration()
         {
-            var matchingBranches = configuration.Branches.Where(b => Regex.IsMatch("^" + CurrentBranch.Name, b.Key)).ToArray();
-
-            var currentBranchConfig = GetBranchConfiguration(matchingBranches);
+            var currentBranchConfig = GetBranchConfiguration(CurrentBranch);
 
             var versioningMode = currentBranchConfig.VersioningMode ?? configuration.VersioningMode ?? VersioningMode.ContinuousDelivery;
             var tag = currentBranchConfig.Tag;
@@ -93,19 +91,58 @@
             Configuration = new EffectiveConfiguration(configuration.AssemblyVersioningScheme, versioningMode, configuration.TagPrefix, tag, nextVersion, incrementStrategy);
         }
 
-        BranchConfig GetBranchConfiguration(KeyValuePair<string, BranchConfig>[] matchingBranches)
+        BranchConfig GetBranchConfiguration(Branch currentBranch)
         {
+            KeyValuePair<string, BranchConfig>[] matchingBranches = configuration.Branches.Where(b => Regex.IsMatch("^" + currentBranch.Name, b.Key)).ToArray();
+
             if (matchingBranches.Length == 0)
             {
                 return new BranchConfig();
             }
             if (matchingBranches.Length == 1)
             {
-                return matchingBranches[0].Value;
+                var branchConfiguration = matchingBranches[0].Value;
+
+                if (branchConfiguration.Increment == IncrementStrategy.Inherit)
+                {
+                    var firstCommitOfBranch = currentBranch.Commits.Last();
+                    var parentCommit = Repository.Commits.QueryBy(new CommitFilter
+                    {
+                        Until = firstCommitOfBranch
+                    }).First().Parents.First();
+                    var branchesContainingFirstCommit = ListBranchesContaininingCommit(Repository, firstCommitOfBranch.Sha);
+                    var branchesContainingParentCommit = ListBranchesContaininingCommit(Repository, parentCommit.Sha);
+
+                    var branchNameComparer = new BranchNameComparer();
+                    var possibleParents = branchesContainingFirstCommit
+                        .Intersect(branchesContainingParentCommit, branchNameComparer)
+                        .Except(new[] { currentBranch }, branchNameComparer)
+                        .ToArray();
+
+                    if (possibleParents.Length == 1)
+                    {
+                        return new BranchConfig(branchConfiguration)
+                        {
+                            Increment = GetBranchConfiguration(possibleParents[0]).Increment
+                        };
+                    }
+
+                    throw new Exception("Failed to inherit Increment branch configuration");
+                }
+
+                return branchConfiguration;
             }
 
-            const string format = "Multiple branch configurations match the current branch name of '{0}'. Matching configurations: '{1}'";
-            throw new Exception(string.Format(format, CurrentBranch.Name, string.Join(", ", matchingBranches.Select(b => b.Key))));
+            const string format = "Multiple branch configurations match the current branch branchName of '{0}'. Matching configurations: '{1}'";
+            throw new Exception(string.Format(format, currentBranch.Name, string.Join(", ", matchingBranches.Select(b => b.Key))));
+        }
+
+        static IEnumerable<Branch> ListBranchesContaininingCommit(IRepository repo, string commitSha)
+        {
+            return from branch in repo.Branches
+                   let commits = repo.Commits.QueryBy(new CommitFilter { Since = branch }).Where(c => c.Sha == commitSha)
+                   where commits.Any()
+                   select branch;
         }
     }
 }

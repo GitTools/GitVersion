@@ -4,6 +4,17 @@
 
     public class BranchConfig
     {
+        public BranchConfig()
+        {
+        }
+
+        public BranchConfig(BranchConfig branchConfiguration)
+        {
+            VersioningMode = branchConfiguration.VersioningMode;
+            Tag = branchConfiguration.Tag;
+            Increment = branchConfiguration.Increment;
+        }
+
         [YamlAlias("mode")]
         public VersioningMode? VersioningMode { get; set; }
 

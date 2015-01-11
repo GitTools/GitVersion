@@ -5,6 +5,10 @@
         None,
         Major,
         Minor,
-        Patch
+        Patch,
+        /// <summary>
+        /// Uses the increment strategy from the branch the current branch was branched from
+        /// </summary>
+        Inherit 
     }
 }

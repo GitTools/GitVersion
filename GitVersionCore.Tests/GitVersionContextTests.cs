@@ -1,6 +1,7 @@
 ﻿namespace GitVersionCore.Tests
 {
     using GitVersion;
+    using LibGit2Sharp;
     using NUnit.Framework;
     using Shouldly;
 
@@ -49,6 +50,27 @@
             var context = new GitVersionContext(mockRepository, develop, config);
             context.Configuration.VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
             context.Configuration.Tag.ShouldBe("alpha");
+        }
+
+        [Test]
+        public void CanFindParentBranchForInheritingIncrementStrategy()
+        {
+            var config = new Config();
+            config.Branches["develop"].Increment = IncrementStrategy.Major;
+            config.Branches["feature[/-]"].Increment = IncrementStrategy.Inherit;
+
+            using (var repo = new EmptyRepositoryFixture(config))
+            {
+                repo.Repository.MakeACommit();
+                repo.Repository.CreateBranch("develop").Checkout();
+                repo.Repository.MakeACommit();
+                var featureBranch = repo.Repository.CreateBranch("feature/foo");
+                featureBranch.Checkout();
+                repo.Repository.MakeACommit();
+
+                var context = new GitVersionContext(repo.Repository, featureBranch, config);
+                context.Configuration.Increment.ShouldBe(IncrementStrategy.Major);
+            }
         }
     }
 }
