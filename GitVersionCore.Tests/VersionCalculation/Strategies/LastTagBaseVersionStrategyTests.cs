@@ -10,6 +10,8 @@
         [Test]
         public void ShouldAllowVersionIncrement()
         {
+            // TODO Looks like our MockRepostory stuff doesn't work properly. commits are added to end of list, but Tip is first.
+            // Changing behaviour breaks a bunch of tests
             var context = new GitVersionContextBuilder()
                 .WithTaggedMaster()
                 .AddCommit()

@@ -9,8 +9,8 @@
         {
             var qf = new CommitFilter
             {
-                Since = baseVersionSource,
-                Until = context.CurrentCommit,
+                Since = context.CurrentCommit,
+                Until = baseVersionSource,
                 SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
             };
 
