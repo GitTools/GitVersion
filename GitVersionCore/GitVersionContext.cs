@@ -107,21 +107,20 @@
 
                 if (branchConfiguration.Increment == IncrementStrategy.Inherit)
                 {
-                    var firstCommitOfBranch = currentBranch.Commits.Last();
-                    var parentCommit = Repository.Commits.QueryBy(new CommitFilter
-                    {
-                        Until = firstCommitOfBranch
-                    }).First().Parents.First();
-                    var branchesContainingFirstCommit = ListBranchesContaininingCommit(Repository, firstCommitOfBranch.Sha);
-                    var branchesContainingParentCommit = ListBranchesContaininingCommit(Repository, parentCommit.Sha);
-
+                    var tips = Repository.Branches.Select(b => b.Tip).Where(c => c.Sha != CurrentCommit.Sha).ToList();
+                    var branchPoint = Repository.Commits.First(c => tips.Contains(c) || c.Parents.Count() > 1);
+                    var branches = ListBranchesContaininingCommit(Repository, branchPoint.Sha).ToArray();
+                    var currentTipBranches = ListBranchesContaininingCommit(Repository, CurrentCommit.Sha).ToArray();
                     var branchNameComparer = new BranchNameComparer();
-                    var possibleParents = branchesContainingFirstCommit
-                        .Intersect(branchesContainingParentCommit, branchNameComparer)
-                        .Except(new[] { currentBranch }, branchNameComparer)
-                        .ToArray();
+                    var possibleParents = branches
+                        .Except(currentTipBranches, branchNameComparer)
+                        .ToList();
 
-                    if (possibleParents.Length == 1)
+                    // If it comes down to master and something, master is always first so we pick other branch
+                    if (possibleParents.Count == 2 && possibleParents.Any(p => p.Name == "master"))
+                        possibleParents.Remove(possibleParents.Single(p => p.Name == "master"));
+
+                    if (possibleParents.Count == 1)
                     {
                         return new KeyValuePair<string, BranchConfig>(
                             keyValuePair.Key,

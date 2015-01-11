@@ -68,7 +68,7 @@
                 featureBranch.Checkout();
                 repo.Repository.MakeACommit();
 
-                var context = new GitVersionContext(repo.Repository, featureBranch, config);
+                var context = new GitVersionContext(repo.Repository, config);
                 context.Configuration.Increment.ShouldBe(IncrementStrategy.Major);
             }
         }
