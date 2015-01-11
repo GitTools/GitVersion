@@ -8,7 +8,21 @@
     public class LastTagBaseVersionStrategyTests
     {
         [Test]
-        public void ShouldAllowVersionIncremenet()
+        public void ShouldAllowVersionIncrement()
+        {
+            var context = new GitVersionContextBuilder()
+                .WithTaggedMaster()
+                .AddCommit()
+                .Build();
+            var sut = new LastTagBaseVersionStrategy();
+
+            var baseVersion = sut.GetVersion(context);
+
+            baseVersion.ShouldIncrement.ShouldBe(true);
+        }
+
+        [Test]
+        public void ShouldNotAllowVersionIncrementWhenTagComesFromCurrentCommit()
         {
             var context = new GitVersionContextBuilder()
                 .WithTaggedMaster()
@@ -17,7 +31,7 @@
 
             var baseVersion = sut.GetVersion(context);
 
-            baseVersion.ShouldIncrement.ShouldBe(true);
+            baseVersion.ShouldIncrement.ShouldBe(false);
         }
     }
 }

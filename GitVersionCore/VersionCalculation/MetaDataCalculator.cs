@@ -14,8 +14,10 @@
                 SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
             };
 
+            var commitsSinceTag = context.Repository.Commits.QueryBy(qf).Count();
+
             return new SemanticVersionBuildMetaData(
-                context.Repository.Commits.QueryBy(qf).Count(),
+                commitsSinceTag,
                 context.CurrentBranch.Name,
                 context.CurrentCommit.Sha,
                 context.CurrentCommit.When());

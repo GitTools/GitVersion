@@ -57,8 +57,11 @@
             }
             else
             {
-                baseVersion.SemanticVersion.PreReleaseTag.Number = baseVersion.SemanticVersion.PreReleaseTag.Number ?? 0;
-                baseVersion.SemanticVersion.PreReleaseTag.Number++;
+                if (baseVersion.SemanticVersion.PreReleaseTag.Number != null)
+                {
+                    baseVersion.SemanticVersion.PreReleaseTag.Number = baseVersion.SemanticVersion.PreReleaseTag.Number;
+                    baseVersion.SemanticVersion.PreReleaseTag.Number++;
+                }
             }
         }
     }
