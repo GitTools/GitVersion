@@ -83,25 +83,27 @@
         {
             var currentBranchConfig = GetBranchConfiguration(CurrentBranch);
 
-            var versioningMode = currentBranchConfig.VersioningMode ?? configuration.VersioningMode ?? VersioningMode.ContinuousDelivery;
-            var tag = currentBranchConfig.Tag;
+            var versioningMode = currentBranchConfig.Value.VersioningMode ?? configuration.VersioningMode ?? VersioningMode.ContinuousDelivery;
+            var tag = currentBranchConfig.Value.Tag;
             var nextVersion = configuration.NextVersion;
-            var incrementStrategy = currentBranchConfig.Increment ?? IncrementStrategy.Patch;
-
-            Configuration = new EffectiveConfiguration(configuration.AssemblyVersioningScheme, versioningMode, configuration.TagPrefix, tag, nextVersion, incrementStrategy);
+            var incrementStrategy = currentBranchConfig.Value.Increment ?? IncrementStrategy.Patch;
+            var assemblyVersioningScheme = configuration.AssemblyVersioningScheme;
+            var gitTagPrefix = configuration.TagPrefix;
+            Configuration = new EffectiveConfiguration(assemblyVersioningScheme, versioningMode, gitTagPrefix, tag, nextVersion, incrementStrategy, currentBranchConfig.Key);
         }
 
-        BranchConfig GetBranchConfiguration(Branch currentBranch)
+        KeyValuePair<string, BranchConfig> GetBranchConfiguration(Branch currentBranch)
         {
             KeyValuePair<string, BranchConfig>[] matchingBranches = configuration.Branches.Where(b => Regex.IsMatch("^" + currentBranch.Name, b.Key)).ToArray();
 
             if (matchingBranches.Length == 0)
             {
-                return new BranchConfig();
+                return new KeyValuePair<string, BranchConfig>(string.Empty, new BranchConfig());
             }
             if (matchingBranches.Length == 1)
             {
-                var branchConfiguration = matchingBranches[0].Value;
+                var keyValuePair = matchingBranches[0];
+                var branchConfiguration = keyValuePair.Value;
 
                 if (branchConfiguration.Increment == IncrementStrategy.Inherit)
                 {
@@ -121,16 +123,18 @@
 
                     if (possibleParents.Length == 1)
                     {
-                        return new BranchConfig(branchConfiguration)
+                        return new KeyValuePair<string, BranchConfig>(
+                            keyValuePair.Key,
+                            new BranchConfig(branchConfiguration)
                         {
-                            Increment = GetBranchConfiguration(possibleParents[0]).Increment
-                        };
+                            Increment = GetBranchConfiguration(possibleParents[0]).Value.Increment
+                        });
                     }
 
                     throw new Exception("Failed to inherit Increment branch configuration");
                 }
 
-                return branchConfiguration;
+                return keyValuePair;
             }
 
             const string format = "Multiple branch configurations match the current branch branchName of '{0}'. Matching configurations: '{1}'";

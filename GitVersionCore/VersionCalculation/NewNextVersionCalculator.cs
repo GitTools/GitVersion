@@ -1,6 +1,7 @@
 ﻿namespace GitVersion.VersionCalculation
 {
     using System;
+    using System.Text.RegularExpressions;
     using BaseVersionCalculators;
 
     public class NewNextVersionCalculator
@@ -27,7 +28,10 @@
 
             if (!baseVersion.SemanticVersion.PreReleaseTag.HasTag() && !string.IsNullOrEmpty(context.Configuration.Tag))
             {
-                baseVersion.SemanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(context.Configuration.Tag, 1);
+                var tagToUse = context.Configuration.Tag;
+                if (tagToUse == "useBranchName")
+                    tagToUse = context.CurrentBranch.Name.RegexReplace(context.Configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
+                baseVersion.SemanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, 1);
             }
 
             baseVersion.SemanticVersion.BuildMetaData = metaDataCalculator.Create(baseVersion.BaseVersionSource, context);

@@ -43,6 +43,11 @@
         public GitVersionContextBuilder WithBranch(string branchName)
         {
             repository = CreateRepository();
+            return AddBranch(branchName);
+        }
+
+        public GitVersionContextBuilder AddBranch(string branchName)
+        {
             var mockBranch = new MockBranch(branchName)
             {
                 new MockCommit()

@@ -17,6 +17,7 @@
             Branches["feature[/-]"] = new BranchConfig
             {
                 Increment = IncrementStrategy.Inherit,
+                Tag = "useBranchName"
             };
             Branches["hotfix[/-]"] = new BranchConfig { Tag = "beta" };
             Branches["develop"] = new BranchConfig

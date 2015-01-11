@@ -9,8 +9,9 @@ namespace GitVersionCore.Tests
             VersioningMode versioningMode = VersioningMode.ContinuousDelivery, 
             string gitTagPrefix = "v", 
             string tag = "",
-            string nextVersion = null) : 
-                base(assemblyVersioningScheme, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch)
+            string nextVersion = null,
+            string branchPrefixToTrim = "") : 
+                base(assemblyVersioningScheme, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch, branchPrefixToTrim)
         {
         }
     }

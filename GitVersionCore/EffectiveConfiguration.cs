@@ -5,7 +5,7 @@
     /// </summary>
     public class EffectiveConfiguration
     {
-        public EffectiveConfiguration(AssemblyVersioningScheme assemblyVersioningScheme, VersioningMode versioningMode, string gitTagPrefix, string tag, string nextVersion, IncrementStrategy increment)
+        public EffectiveConfiguration(AssemblyVersioningScheme assemblyVersioningScheme, VersioningMode versioningMode, string gitTagPrefix, string tag, string nextVersion, IncrementStrategy increment, string branchPrefixToTrim)
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
             VersioningMode = versioningMode;
@@ -13,6 +13,7 @@
             Tag = tag;
             NextVersion = nextVersion;
             Increment = increment;
+            BranchPrefixToTrim = branchPrefixToTrim;
         }
 
         public VersioningMode VersioningMode { get; private set; }
@@ -30,6 +31,9 @@
         public string Tag { get; private set; }
 
         public string NextVersion { get; private set; }
+
         public IncrementStrategy Increment { get; private set; }
+
+        public string BranchPrefixToTrim { get; private set; }
     }
 }
