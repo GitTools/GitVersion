@@ -29,14 +29,25 @@
             return this;
         }
 
+        public GitVersionContextBuilder AddCommit()
+        {
+            ((MockBranch)repository.Head).Add(new MockCommit());
+            return this;
+        }
+
         public GitVersionContextBuilder WithDevelopBranch()
         {
+            return WithBranch("develop");
+        }
+
+        public GitVersionContextBuilder WithBranch(string branchName)
+        {
             repository = CreateRepository();
-            var mockBranch = new MockBranch("develop")
+            var mockBranch = new MockBranch(branchName)
             {
                 new MockCommit()
             };
-            ((MockBranchCollection) repository.Branches).Add(mockBranch);
+            ((MockBranchCollection)repository.Branches).Add(mockBranch);
             ((MockRepository)repository).Head = mockBranch;
             return this;
         }

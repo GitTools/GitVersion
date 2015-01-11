@@ -15,7 +15,8 @@
                 new BaseVersionCalculator(
                 new ConfigNextVersionBaseVersionStrategy(),
                 new LastTagBaseVersionStrategy(),
-                new MergeMessageBaseVersionStrategy());
+                new MergeMessageBaseVersionStrategy(),
+                new VersionInBranchBaseVersionStrategy());
         }
 
         public SemanticVersion FindVersion(GitVersionContext context)
