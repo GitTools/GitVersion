@@ -96,6 +96,7 @@
     <Compile Include="Mocks\MockCommit.cs" />
     <Compile Include="Mocks\MockCommitLog.cs" />
     <Compile Include="Mocks\MockMergeCommit.cs" />
+    <Compile Include="Mocks\MockQueryableCommitLog.cs" />
     <Compile Include="Mocks\MockReferenceCollection.cs" />
     <Compile Include="Mocks\MockReflogCollection.cs" />
     <Compile Include="Mocks\MockRepository.cs" />

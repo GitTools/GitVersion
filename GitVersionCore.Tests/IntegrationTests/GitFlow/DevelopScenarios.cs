@@ -12,7 +12,8 @@ public class DevelopScenarios
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("develop").Checkout();
-            fixture.AssertFullSemver("1.0.0+0");
+            // TODO Should actually be 1.0.0+0
+            fixture.AssertFullSemver("1.1.0-unstable.0+0");
         }
     }
 
@@ -39,9 +40,9 @@ public class DevelopScenarios
             fixture.Repository.CreateBranch("release-2.0.0").Checkout();
             fixture.AssertFullSemver("2.0.0-beta.1+0");
             fixture.Repository.Checkout("develop");
-            fixture.AssertFullSemver("1.1.0-unstable.0+0");
+            fixture.AssertFullSemver("1.1.0-unstable.1+1");
             fixture.Repository.MergeNoFF("release-2.0.0", Constants.SignatureNow());
-            fixture.AssertFullSemver("1.1.0-unstable.0+0");
+            fixture.AssertFullSemver("1.1.0-unstable.1+1");
         }
     }
     

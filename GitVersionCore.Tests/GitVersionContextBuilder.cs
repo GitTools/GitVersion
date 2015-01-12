@@ -25,7 +25,6 @@
             repository = CreateRepository();
             var target = repository.Head.Tip;
             ((MockTagCollection)repository.Tags).Add(new MockTag ("1.0.0", target));
-            ((MockBranch)repository.Head).Add(new MockCommit { CommitterEx = SignatureBuilder.SignatureNow() });
             return this;
         }
 

@@ -21,9 +21,9 @@ public class VersionOnMasterFinderTests
 
         var mockBranch = new MockBranch("master")
         {
-            new MockMergeCommit(new ObjectId(sha))
+            new MockMergeCommit
             {
-                MessageEx = "Merge branch 'hotfix-0.3.0'",
+                MessageEx = "Merge branch 'hotfix-0.2.0'",
                 CommitterEx = signature
             },
             new MockMergeCommit
@@ -31,9 +31,9 @@ public class VersionOnMasterFinderTests
                 MessageEx = "Merge branch 'hotfix-0.3.1'",
                 CommitterEx = signature,
             },
-            new MockMergeCommit
+            new MockMergeCommit(new ObjectId(sha))
             {
-                MessageEx = "Merge branch 'hotfix-0.2.0'",
+                MessageEx = "Merge branch 'hotfix-0.3.0'",
                 CommitterEx = signature
             },
         };

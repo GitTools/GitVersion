@@ -13,7 +13,7 @@
         [TestCase("hotfix-2.0.0", "2.0.0")]
         [TestCase("hotfix/2.0.0", "2.0.0")]
         [TestCase("hotfix/2.0.0", "2.0.0")]
-        [TestCase("feature/JIRA-123", null)]
+        [TestCase("custom/JIRA-123", null)]
         public void CanTakeVersionFromBranchName(string branchName, string expectedBaseVersion)
         {
             var context = new GitVersionContextBuilder()

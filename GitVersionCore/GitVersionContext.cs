@@ -108,12 +108,24 @@
                 if (branchConfiguration.Increment == IncrementStrategy.Inherit)
                 {
                     var branchPoint = currentBranch.FindCommitBranchWasBranchedFrom(Repository);
-                    var branches = ListBranchesContaininingCommit(Repository, branchPoint.Sha).ToArray();
-                    var currentTipBranches = ListBranchesContaininingCommit(Repository, CurrentCommit.Sha).ToArray();
-                    var branchNameComparer = new BranchNameComparer();
-                    var possibleParents = branches
-                        .Except(currentTipBranches, branchNameComparer)
-                        .ToList();
+
+                    List<Branch> possibleParents;
+                    if (branchPoint.Sha == CurrentCommit.Sha)
+                    {
+                        possibleParents = ListBranchesContaininingCommit(Repository, CurrentCommit.Sha).Except(new[]
+                        {
+                            currentBranch
+                        }).ToList();
+                    }
+                    else
+                    {
+                        var branches = ListBranchesContaininingCommit(Repository, branchPoint.Sha).ToArray();
+                        var currentTipBranches = ListBranchesContaininingCommit(Repository, CurrentCommit.Sha).ToArray();
+                        var branchNameComparer = new BranchNameComparer();
+                        possibleParents = branches
+                            .Except(currentTipBranches, branchNameComparer)
+                            .ToList();
+                    }
 
                     // If it comes down to master and something, master is always first so we pick other branch
                     if (possibleParents.Count == 2 && possibleParents.Any(p => p.Name == "master"))
@@ -142,6 +154,7 @@
         static IEnumerable<Branch> ListBranchesContaininingCommit(IRepository repo, string commitSha)
         {
             return from branch in repo.Branches
+                   where !branch.IsRemote
                    let commits = repo.Commits.QueryBy(new CommitFilter { Since = branch }).Where(c => c.Sha == commitSha)
                    where commits.Any()
                    select branch;

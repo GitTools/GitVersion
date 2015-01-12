@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using LibGit2Sharp;
 
 public class MockCommitLog : ICommitLog, ICollection<Commit>
@@ -8,7 +9,10 @@ public class MockCommitLog : ICommitLog, ICollection<Commit>
 
     public IEnumerator<Commit> GetEnumerator()
     {
-        return Commits.GetEnumerator();
+        if (SortedBy == CommitSortStrategies.Reverse)
+            return Commits.GetEnumerator();
+
+        return Enumerable.Reverse(Commits).GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
