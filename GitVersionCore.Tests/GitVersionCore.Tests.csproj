@@ -115,6 +115,15 @@
     <Compile Include="TestEffectiveConfiguration.cs" />
     <Compile Include="TestFileSystem.cs" />
     <Compile Include="VariableProviderTests.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculatorTests.cs" />
+    <Compile Include="VersionCalculation\NewNextVersionCalculatorTests.cs" />
+    <Compile Include="VersionCalculation\Strategies\ConfigNextVersionBaseVersionStrategyTests.cs" />
+    <Compile Include="GitVersionContextBuilder.cs" />
+    <Compile Include="VersionCalculation\Strategies\LastTagBaseVersionStrategyTests.cs" />
+    <Compile Include="VersionCalculation\Strategies\MergeMessageBaseVersionStrategyTests.cs" />
+    <Compile Include="VersionCalculation\Strategies\VersionInBranchBaseVersionStrategyTests.cs" />
+    <Compile Include="VersionCalculation\TestBaseVersionCalculator.cs" />
+    <Compile Include="VersionCalculation\TestMetaDataCalculator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -88,8 +88,9 @@
             var versioningMode = currentBranchConfig.VersioningMode ?? configuration.VersioningMode ?? VersioningMode.ContinuousDelivery;
             var tag = currentBranchConfig.Tag;
             var nextVersion = configuration.NextVersion;
+            var incrementStrategy = currentBranchConfig.Increment ?? IncrementStrategy.Patch;
 
-            Configuration = new EffectiveConfiguration(configuration.AssemblyVersioningScheme, versioningMode, configuration.TagPrefix, tag, nextVersion);
+            Configuration = new EffectiveConfiguration(configuration.AssemblyVersioningScheme, versioningMode, configuration.TagPrefix, tag, nextVersion, incrementStrategy);
         }
 
         BranchConfig GetBranchConfiguration(KeyValuePair<string, BranchConfig>[] matchingBranches)
