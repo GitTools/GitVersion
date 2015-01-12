@@ -133,12 +133,6 @@
                                           CachedVersion = semanticVersion
                                       };
             var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(configuration);
-            
-            var assemblyInfoBuilder = new AssemblyInfoBuilder
-                                      {
-                                          CachedVersion = semanticVersion
-                                      };
-            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(configuration);
 
             string tempFileName, tempDir;
             if (IntermediateOutputPath == null)
