@@ -133,9 +133,28 @@
                                           CachedVersion = semanticVersion
                                       };
             var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(configuration);
+            
+            var assemblyInfoBuilder = new AssemblyInfoBuilder
+                                      {
+                                          CachedVersion = semanticVersion
+                                      };
+            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(configuration);
 
-            string tempFileName = "GitVersionTaskAssemblyInfo.g.cs";
-            AssemblyInfoTempFilePath = Path.Combine(IntermediateOutputPath, tempFileName);
+            string tempFileName, tempDir;
+            if (IntermediateOutputPath == null)
+            {
+                tempDir = TempFileTracker.TempPath;
+                tempFileName = string.Format("AssemblyInfo_{0}_{1}.g.cs",
+                    Path.GetFileNameWithoutExtension(ProjectFile), Path.GetRandomFileName());
+            }
+            else
+            {
+                tempDir = Path.Combine(IntermediateOutputPath, "obj", Configuration);
+                Directory.CreateDirectory(tempDir);
+                tempFileName = string.Format("GitVersionTaskAssemblyInfo.g.cs");
+            }
+
+            AssemblyInfoTempFilePath = Path.Combine(tempDir, tempFileName);
             File.WriteAllText(AssemblyInfoTempFilePath, assemblyInfo);
         }
     }
