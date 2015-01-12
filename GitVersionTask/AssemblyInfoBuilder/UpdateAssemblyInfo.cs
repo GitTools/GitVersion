@@ -142,7 +142,7 @@
             }
             else
             {
-                tempDir = Path.Combine(IntermediateOutputPath, "obj", Configuration);
+                tempDir = Path.Combine(IntermediateOutputPath, "obj", assemblyInfo);
                 Directory.CreateDirectory(tempDir);
                 tempFileName = string.Format("GitVersionTaskAssemblyInfo.g.cs");
             }
