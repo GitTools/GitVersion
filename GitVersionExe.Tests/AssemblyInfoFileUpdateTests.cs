@@ -1,7 +1,6 @@
 ﻿namespace GitVersionExe.Tests
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using GitVersion;
     using GitVersion.Helpers;
@@ -16,7 +15,8 @@
         {
             var fileSystem = Substitute.For<IFileSystem>();
             const string workingDir = "C:\\Testing";
-            using (new AssemblyInfoFileUpdate(new Arguments{ UpdateAssemblyInfo = true }, workingDir, new Dictionary<string, string>(), fileSystem))
+            var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDelivery);
+            using (new AssemblyInfoFileUpdate(new Arguments{ UpdateAssemblyInfo = true }, workingDir, variables, fileSystem))
             {
                 fileSystem.Received().DirectoryGetFiles(Arg.Is(workingDir), Arg.Any<string>(), Arg.Any<SearchOption>());
             }

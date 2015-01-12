@@ -4,7 +4,7 @@
 
     public static class BuildOutputFormatter
     {
-        public static IEnumerable<string> GenerateBuildLogOutput(IBuildServer buildServer, Dictionary<string, string> variables)
+        public static IEnumerable<string> GenerateBuildLogOutput(IBuildServer buildServer, VersionVariables variables)
         {
             var output = new List<string>();
 

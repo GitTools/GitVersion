@@ -18,6 +18,13 @@ namespace GitVersion
             Name = name;
             Number = number;
         }
+
+        public SemanticVersionPreReleaseTag(SemanticVersionPreReleaseTag preReleaseTag)
+        {
+            Name = preReleaseTag.Name;
+            Number = preReleaseTag.Number;
+        }
+
         public string Name { get; set; }
         public int? Number { get; set; }
 

@@ -21,6 +21,16 @@ namespace GitVersion
             BuildMetaData = new SemanticVersionBuildMetaData();
         }
 
+        public SemanticVersion(SemanticVersion semanticVersion)
+        {
+            Major = semanticVersion.Major;
+            Minor = semanticVersion.Minor;
+            Patch = semanticVersion.Patch;
+
+            PreReleaseTag = new SemanticVersionPreReleaseTag(semanticVersion.PreReleaseTag);
+            BuildMetaData = new SemanticVersionBuildMetaData(semanticVersion.BuildMetaData);
+        }
+
         public bool Equals(SemanticVersion obj)
         {
             if (obj == null)
