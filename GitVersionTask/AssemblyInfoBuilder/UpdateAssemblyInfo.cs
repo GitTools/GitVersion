@@ -144,8 +144,7 @@
             if (IntermediateOutputPath == null)
             {
                 tempDir = TempFileTracker.TempPath;
-                tempFileName = string.Format("AssemblyInfo_{0}_{1}.g.cs",
-                    Path.GetFileNameWithoutExtension(ProjectFile), Path.GetRandomFileName());
+                tempFileName = string.Format("AssemblyInfo_{0}_{1}.g.cs", Path.GetFileNameWithoutExtension(ProjectFile), Path.GetRandomFileName());
             }
             else
             {
