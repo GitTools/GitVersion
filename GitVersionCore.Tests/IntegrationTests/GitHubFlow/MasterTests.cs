@@ -1,8 +1,6 @@
-﻿using System;
-using GitVersion;
+﻿using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
-using Shouldly;
 
 [TestFixture]
 public class MasterTests
@@ -42,36 +40,6 @@ public class MasterTests
     }
 
     [Test]
-    public void GivenARepositoryWithNoTagsAndANextVersionTxtFile_VersionShouldMatchVersionTxtFile()
-    {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
-        {
-            const string ExpectedNextVersion = "1.0.0";
-            fixture.Repository.MakeACommit();
-            fixture.Repository.MakeACommit();
-            fixture.Repository.MakeACommit();
-            fixture.Repository.AddNextVersionTxtFile(ExpectedNextVersion);
-
-            fixture.AssertFullSemver("1.0.0+2");
-        }
-    }
-
-    [Test]
-    public void GivenARepositoryWithTagAndANextVersionTxtFile_VersionShouldMatchVersionTxtFile()
-    {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
-        {
-            const string ExpectedNextVersion = "1.1.0";
-            const string TaggedVersion = "1.0.3";
-            fixture.Repository.MakeATaggedCommit(TaggedVersion);
-            fixture.Repository.MakeCommits(5);
-            fixture.Repository.AddNextVersionTxtFile(ExpectedNextVersion);
-
-            fixture.AssertFullSemver("1.1.0+5");
-        }
-    }
-
-    [Test]
     public void GivenARepositoryWithTagAndNextVersionInConfig_VersionShouldMatchVersionTxtFile()
     {
         const string ExpectedNextVersion = "1.1.0";
@@ -86,25 +54,13 @@ public class MasterTests
     }
 
     [Test]
-    public void GivenARepositoryWithANextVersionTxtFileAndNextVersionInConfig_ErrorIsThrown()
-    {
-        using (var fixture = new EmptyRepositoryFixture(new Config { NextVersion = "1.1.0" }))
-        {
-            fixture.Repository.AddNextVersionTxtFile("1.1.0");
-
-            Should.Throw<Exception>(() => fixture.AssertFullSemver("1.1.0+5"));
-        }
-    }
-
-    [Test]
     public void GivenARepositoryWithTagAndANextVersionTxtFileAndNoCommits_VersionShouldBeTag()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
-        {
             const string ExpectedNextVersion = "1.1.0";
+        using (var fixture = new EmptyRepositoryFixture(new Config { NextVersion = ExpectedNextVersion }))
+        {
             const string TaggedVersion = "1.0.3";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
-            fixture.Repository.AddNextVersionTxtFile(ExpectedNextVersion);
 
             fixture.AssertFullSemver("1.0.3+0");
         }
@@ -136,21 +92,6 @@ public class MasterTests
     }
 
     [Test]
-    public void GivenARepositoryWithTagAndOldNextVersionTxtFile_VersionShouldBeTagWithBumpedPatch()
-    {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
-        {
-            const string NextVersionTxt = "1.0.0";
-            const string TaggedVersion = "1.1.0";
-            fixture.Repository.MakeATaggedCommit(TaggedVersion);
-            fixture.Repository.MakeCommits(5);
-            fixture.Repository.AddNextVersionTxtFile(NextVersionTxt);
-
-            fixture.AssertFullSemver("1.1.1+5");
-        }
-    }
-
-    [Test]
     public void GivenARepositoryWithTagAndOldNextVersionConfig_VersionShouldBeTagWithBumpedPatch()
     {
         const string NextVersionConfig = "1.0.0";
@@ -165,14 +106,13 @@ public class MasterTests
     }
 
     [Test]
-    public void GivenARepositoryWithTagAndOldNextVersionTxtFileAndNoCommits_VersionShouldBeTag()
+    public void GivenARepositoryWithTagAndOldNextVersionConfigAndNoCommits_VersionShouldBeTag()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        const string NextVersionConfig = "1.0.0";
+        using (var fixture = new EmptyRepositoryFixture(new Config { NextVersion = NextVersionConfig }))
         {
-            const string NextVersionTxt = "1.0.0";
             const string TaggedVersion = "1.1.0";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
-            fixture.Repository.AddNextVersionTxtFile(NextVersionTxt);
 
             fixture.AssertFullSemver("1.1.0+0");
         }

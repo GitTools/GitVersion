@@ -1,5 +1,7 @@
 namespace GitVersion
 {
+    using System;
+    using System.IO;
     using System.Linq;
     using LibGit2Sharp;
 
@@ -9,6 +11,12 @@ namespace GitVersion
         {
             Logger.WriteInfo("Running against branch: " + context.CurrentBranch.Name);
             EnsureMainTopologyConstraints(context);
+
+            var filePath = Path.Combine(context.Repository.GetRepositoryDirectory(), "NextVersion.txt");
+            if (File.Exists(filePath))
+            {
+                throw new Exception("NextVersion.txt has been depreciated. See https://github.com/ParticularLabs/GitVersion/wiki/GitVersionConfig.yaml-Configuration-File for replacement");
+            }
 
             if (ShouldGitHubFlowVersioningSchemeApply(context.Repository))
             {
