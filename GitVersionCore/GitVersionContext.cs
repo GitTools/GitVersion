@@ -94,7 +94,7 @@
 
         KeyValuePair<string, BranchConfig> GetBranchConfiguration(Branch currentBranch)
         {
-            KeyValuePair<string, BranchConfig>[] matchingBranches = configuration.Branches.Where(b => Regex.IsMatch("^" + currentBranch.Name, b.Key)).ToArray();
+            var matchingBranches = configuration.Branches.Where(b => Regex.IsMatch("^" + currentBranch.Name, b.Key)).ToArray();
 
             if (matchingBranches.Length == 0)
             {
