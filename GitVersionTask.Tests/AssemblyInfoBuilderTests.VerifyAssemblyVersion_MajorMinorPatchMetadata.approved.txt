@@ -15,7 +15,7 @@ sealed class ReleaseDateAttribute : System.Attribute
 
     public ReleaseDateAttribute(string originalDate, string date)
     {
-        OriginalDate = date;
+        OriginalDate = originalDate;
         Date = date;
     }
 }
