@@ -80,7 +80,7 @@
 
         public static bool IsSupport(this string branchName)
         {
-            return branchName.ToLower().StartsWith("support-");
+            return branchName.ToLower().StartsWith("support-") || branchName.ToLower().StartsWith("support/");
         }
     }
 }

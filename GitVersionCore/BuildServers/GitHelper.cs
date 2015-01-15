@@ -7,7 +7,7 @@ namespace GitVersion
 
     public static class GitHelper
     {
-        const string MergeMessageRegexPattern = "refs/heads/pull(-requests)?/(?<issuenumber>[0-9]*)/merge";
+        const string MergeMessageRegexPattern = "refs/heads/(pr|pull(-requests)?/(?<issuenumber>[0-9]*)/merge)";
 
         public static void NormalizeGitDirectory(string gitDirectory, Authentication authentication)
         {
@@ -32,14 +32,14 @@ namespace GitVersion
                     Logger.WriteInfo(string.Format("HEAD points at branch '{0}'.", headSha));
                     return;
                 }
-                
+
                 Logger.WriteInfo(string.Format("HEAD is detached and points at commit '{0}'.", headSha));
-                
+
                 // In order to decide whether a fake branch is required or not, first check to see if any local branches have the same commit SHA of the head SHA.
                 // If they do, go ahead and checkout that branch
                 // If no, go ahead and check out a new branch, using the known commit SHA as the pointer
                 var localBranchesWhereCommitShaIsHead = repo.Branches.Where(b => !b.IsRemote && b.Tip.Sha == headSha).ToList();
-                
+
                 if (localBranchesWhereCommitShaIsHead.Count > 1)
                 {
                     var names = string.Join(", ", localBranchesWhereCommitShaIsHead.Select(r => r.CanonicalName));
@@ -55,7 +55,7 @@ namespace GitVersion
                 else
                 {
                     Logger.WriteInfo(string.Format("Checking out local branch 'refs/heads/{0}'.", localBranchesWhereCommitShaIsHead[0].Name));
-                    repo.Branches[localBranchesWhereCommitShaIsHead[0].Name].Checkout();   
+                    repo.Branches[localBranchesWhereCommitShaIsHead[0].Name].Checkout();
                 }
             }
         }
@@ -76,22 +76,12 @@ namespace GitVersion
             // Dynamic: refs/heads/pr/5
             // Github Message: refs/heads/pull/5/merge
             // Stash Message:  refs/heads/pull-requests/5/merge
+            var regex = new Regex(MergeMessageRegexPattern);
+            var match = regex.Match(mergeMessage);
 
-            // Note by @GeertvanHorrik: sorry, I suck at regex so did a quick hack, feel free to replace by regex
-            if (mergeMessage.Contains("refs/heads/pr/"))
-            {
-                var issueNumber = mergeMessage.Replace("refs/heads/pr/", string.Empty);
-                return issueNumber;
-            }
-            else
-            {
-                var regex = new Regex(MergeMessageRegexPattern);
-                var match = regex.Match(mergeMessage);
+            var issueNumber = match.Groups["issuenumber"].Value;
 
-                var issueNumber = match.Groups["issuenumber"].Value;
-
-                return issueNumber;
-            }
+            return issueNumber;
         }
 
         static void AddMissingRefSpecs(Repository repo, Remote remote)
@@ -113,7 +103,7 @@ namespace GitVersion
 
             if (!string.IsNullOrEmpty(username))
             {
-                fetchOptions.CredentialsProvider = (url, user, types) =>  new UsernamePasswordCredentials
+                fetchOptions.CredentialsProvider = (url, user, types) => new UsernamePasswordCredentials
                 {
                     Username = username,
                     Password = password

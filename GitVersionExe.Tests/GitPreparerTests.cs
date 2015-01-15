@@ -15,39 +15,43 @@
             Logger.WriteError = s => { };
         }
 
-        const string RemoteRepositoryUrl = "https://github.com/ParticularLabs/GitVersion.git";
         const string DefaultBranchName = "master";
-        const string SpecificBranchName = "gh-pages";
+        const string SpecificBranchName = "feature/foo";
 
-        [Explicit]
+        [Test]
         [TestCase(null, DefaultBranchName)]
         [TestCase(SpecificBranchName, SpecificBranchName)]
         public void WorksCorrectlyWithRemoteRepository(string branchName, string expectedBranchName)
         {
             var tempDir = Path.GetTempPath();
 
-            var arguments = new Arguments
+            using (var fixture = new EmptyRepositoryFixture(new Config()))
             {
-                TargetPath = tempDir,
-                TargetUrl = RemoteRepositoryUrl
-            };
+                fixture.Repository.MakeCommits(5);
+                fixture.Repository.CreateBranch("feature/foo");
+                var arguments = new Arguments
+                {
+                    TargetPath = tempDir,
+                    TargetUrl = fixture.RepositoryPath
+                };
 
-            if (!string.IsNullOrWhiteSpace(branchName))
-            {
-                arguments.TargetBranch = branchName;
-            }
+                if (!string.IsNullOrWhiteSpace(branchName))
+                {
+                    arguments.TargetBranch = branchName;
+                }
 
-            var gitPreparer = new GitPreparer(arguments);
-            var dynamicRepositoryPath = gitPreparer.Prepare();
+                var gitPreparer = new GitPreparer(arguments);
+                var dynamicRepositoryPath = gitPreparer.Prepare();
 
-            Assert.AreEqual(Path.Combine(tempDir, "_dynamicrepository", ".git"), dynamicRepositoryPath);
-            Assert.IsTrue(gitPreparer.IsDynamicGitRepository);
+                Assert.AreEqual(Path.Combine(tempDir, "_dynamicrepository", ".git"), dynamicRepositoryPath);
+                Assert.IsTrue(gitPreparer.IsDynamicGitRepository);
 
-            using (var repository = new Repository(dynamicRepositoryPath))
-            {
-                var currentBranch = repository.Head.CanonicalName;
+                using (var repository = new Repository(dynamicRepositoryPath))
+                {
+                    var currentBranch = repository.Head.CanonicalName;
 
-                Assert.IsTrue(currentBranch.EndsWith(expectedBranchName));
+                    Assert.IsTrue(currentBranch.EndsWith(expectedBranchName));
+                }
             }
         }
 
