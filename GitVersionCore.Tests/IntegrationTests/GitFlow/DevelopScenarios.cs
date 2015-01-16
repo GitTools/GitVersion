@@ -6,13 +6,26 @@ using NUnit.Framework;
 public class DevelopScenarios
 {
     [Test]
+    public void WhenDevelopBranchedFromTaggedCommitOnMasterVersionDoesNotChange()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.CreateBranch("develop").Checkout();
+            // TODO Should actually be 1.0.0+0
+            fixture.AssertFullSemver("1.1.0-unstable.0+0");
+        }
+    }
+
+    [Test]
     public void WhenDevelopBranchedFromMaster_MinorIsIncreased()
     {
         using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("develop").Checkout();
-            fixture.AssertFullSemver("1.1.0-unstable.0+0");
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver("1.1.0-unstable.1+1");
         }
     }
 
@@ -23,12 +36,13 @@ public class DevelopScenarios
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("develop").Checkout();
+            fixture.Repository.MakeACommit();
             fixture.Repository.CreateBranch("release-2.0.0").Checkout();
             fixture.AssertFullSemver("2.0.0-beta.1+0");
             fixture.Repository.Checkout("develop");
-            fixture.AssertFullSemver("1.1.0-unstable.0+0");
+            fixture.AssertFullSemver("1.1.0-unstable.1+1");
             fixture.Repository.MergeNoFF("release-2.0.0", Constants.SignatureNow());
-            fixture.AssertFullSemver("1.1.0-unstable.0+0");
+            fixture.AssertFullSemver("1.1.0-unstable.1+1");
         }
     }
     

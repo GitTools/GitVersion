@@ -81,30 +81,82 @@
 
         void CalculateEffectiveConfiguration()
         {
-            var matchingBranches = configuration.Branches.Where(b => Regex.IsMatch("^" + CurrentBranch.Name, b.Key)).ToArray();
+            var currentBranchConfig = GetBranchConfiguration(CurrentBranch);
 
-            var currentBranchConfig = GetBranchConfiguration(matchingBranches);
-
-            var versioningMode = currentBranchConfig.VersioningMode ?? configuration.VersioningMode ?? VersioningMode.ContinuousDelivery;
-            var tag = currentBranchConfig.Tag;
+            var versioningMode = currentBranchConfig.Value.VersioningMode ?? configuration.VersioningMode ?? VersioningMode.ContinuousDelivery;
+            var tag = currentBranchConfig.Value.Tag;
             var nextVersion = configuration.NextVersion;
-
-            Configuration = new EffectiveConfiguration(configuration.AssemblyVersioningScheme, versioningMode, configuration.TagPrefix, tag, nextVersion);
+            var incrementStrategy = currentBranchConfig.Value.Increment ?? IncrementStrategy.Patch;
+            var assemblyVersioningScheme = configuration.AssemblyVersioningScheme;
+            var gitTagPrefix = configuration.TagPrefix;
+            Configuration = new EffectiveConfiguration(assemblyVersioningScheme, versioningMode, gitTagPrefix, tag, nextVersion, incrementStrategy, currentBranchConfig.Key);
         }
 
-        BranchConfig GetBranchConfiguration(KeyValuePair<string, BranchConfig>[] matchingBranches)
+        KeyValuePair<string, BranchConfig> GetBranchConfiguration(Branch currentBranch)
         {
+            var matchingBranches = configuration.Branches.Where(b => Regex.IsMatch("^" + currentBranch.Name, b.Key)).ToArray();
+
             if (matchingBranches.Length == 0)
             {
-                return new BranchConfig();
+                return new KeyValuePair<string, BranchConfig>(string.Empty, new BranchConfig());
             }
             if (matchingBranches.Length == 1)
             {
-                return matchingBranches[0].Value;
+                var keyValuePair = matchingBranches[0];
+                var branchConfiguration = keyValuePair.Value;
+
+                if (branchConfiguration.Increment == IncrementStrategy.Inherit)
+                {
+                    var branchPoint = currentBranch.FindCommitBranchWasBranchedFrom(Repository);
+
+                    List<Branch> possibleParents;
+                    if (branchPoint.Sha == CurrentCommit.Sha)
+                    {
+                        possibleParents = ListBranchesContaininingCommit(Repository, CurrentCommit.Sha).Except(new[]
+                        {
+                            currentBranch
+                        }).ToList();
+                    }
+                    else
+                    {
+                        var branches = ListBranchesContaininingCommit(Repository, branchPoint.Sha).ToArray();
+                        var currentTipBranches = ListBranchesContaininingCommit(Repository, CurrentCommit.Sha).ToArray();
+                        possibleParents = branches
+                            .Except(currentTipBranches)
+                            .ToList();
+                    }
+
+                    // If it comes down to master and something, master is always first so we pick other branch
+                    if (possibleParents.Count == 2 && possibleParents.Any(p => p.Name == "master"))
+                        possibleParents.Remove(possibleParents.Single(p => p.Name == "master"));
+
+                    if (possibleParents.Count == 1)
+                    {
+                        return new KeyValuePair<string, BranchConfig>(
+                            keyValuePair.Key,
+                            new BranchConfig(branchConfiguration)
+                        {
+                            Increment = GetBranchConfiguration(possibleParents[0]).Value.Increment
+                        });
+                    }
+
+                    throw new Exception("Failed to inherit Increment branch configuration");
+                }
+
+                return keyValuePair;
             }
 
-            const string format = "Multiple branch configurations match the current branch name of '{0}'. Matching configurations: '{1}'";
-            throw new Exception(string.Format(format, CurrentBranch.Name, string.Join(", ", matchingBranches.Select(b => b.Key))));
+            const string format = "Multiple branch configurations match the current branch branchName of '{0}'. Matching configurations: '{1}'";
+            throw new Exception(string.Format(format, currentBranch.Name, string.Join(", ", matchingBranches.Select(b => b.Key))));
+        }
+
+        static IEnumerable<Branch> ListBranchesContaininingCommit(IRepository repo, string commitSha)
+        {
+            return from branch in repo.Branches
+                   where !branch.IsRemote
+                   let commits = repo.Commits.QueryBy(new CommitFilter { Since = branch }).Where(c => c.Sha == commitSha)
+                   where commits.Any()
+                   select branch;
         }
     }
 }

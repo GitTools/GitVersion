@@ -4,6 +4,8 @@ using LibGit2Sharp;
 
 public class MockRepository : IRepository
 {
+    IQueryableCommitLog commits;
+
     public MockRepository()
     {
         Tags = new MockTagCollection();
@@ -116,7 +118,13 @@ public class MockRepository : IRepository
     public Configuration Config { get; set; }
     public Index Index { get; set; }
     public ReferenceCollection Refs { get; set; }
-    public IQueryableCommitLog Commits { get; set; }
+
+    public IQueryableCommitLog Commits
+    {
+        get { return commits ?? new MockQueryableCommitLog(Head.Commits); }
+        set { commits = value; }
+    }
+
     public BranchCollection Branches { get; set; }
     public TagCollection Tags { get; set; }
     public RepositoryInformation Info { get; set; }

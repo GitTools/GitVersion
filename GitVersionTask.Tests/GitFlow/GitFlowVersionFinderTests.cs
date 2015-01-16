@@ -40,27 +40,6 @@ public class GitVersionFinderTests : Lg2sHelperBase
     }
 
     [Test]
-    public void AFeatureBranchIsRequiredToBranchOffOfDevelopBranch()
-    {
-        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
-        using (var repo = new Repository(repoPath))
-        {
-            const string branchName = "feature/unborn";
-
-            // Create a new unborn feature branch sharing no history with "develop"
-            repo.Refs.UpdateTarget(repo.Refs.Head.CanonicalName, "refs/heads/" + branchName);
-
-            AddOneCommitToHead(repo, "feature");
-
-            var feature = repo.Branches[branchName];
-
-            var finder = new GitVersionFinder();
-
-            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, feature, new Config())));
-        }
-    }
-
-    [Test]
     public void AHotfixBranchIsRequiredToBranchOffOfMasterBranch()
     {
         var repoPath = Clone(ASBMTestRepoWorkingDirPath);

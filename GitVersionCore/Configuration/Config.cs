@@ -14,10 +14,16 @@
             TagPrefix = "[vV]";
             VersioningMode = GitVersion.VersioningMode.ContinuousDelivery;
             Branches["release[/-]"] = new BranchConfig { Tag = "beta" };
+            Branches["feature[/-]"] = new BranchConfig
+            {
+                Increment = IncrementStrategy.Inherit,
+                Tag = "useBranchName"
+            };
             Branches["hotfix[/-]"] = new BranchConfig { Tag = "beta" };
             Branches["develop"] = new BranchConfig
             {
                 Tag = "unstable",
+                Increment = IncrementStrategy.Minor,
                 VersioningMode = GitVersion.VersioningMode.ContinuousDeployment
             };
         }

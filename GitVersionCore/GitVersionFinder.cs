@@ -3,6 +3,7 @@ namespace GitVersion
     using System;
     using System.IO;
     using System.Linq;
+    using GitVersion.VersionCalculation;
     using LibGit2Sharp;
 
     public class GitVersionFinder
@@ -18,20 +19,21 @@ namespace GitVersion
                 throw new Exception("NextVersion.txt has been depreciated. See https://github.com/ParticularLabs/GitVersion/wiki/GitVersionConfig.yaml-Configuration-File for replacement");
             }
 
-            if (ShouldGitHubFlowVersioningSchemeApply(context.Repository))
-            {
-                Logger.WriteInfo("GitHubFlow version strategy will be used");
-                return new GitHubFlowVersionFinder().FindVersion(context);
-            }
+            return new NewNextVersionCalculator().FindVersion(context);
+            //if (ShouldGitHubFlowVersioningSchemeApply(context.Repository))
+            //{
+            //    Logger.WriteInfo("GitHubFlow version strategy will be used");
+            //    return new GitHubFlowVersionFinder().FindVersion(context);
+            //}
 
-            Logger.WriteInfo("GitFlow version strategy will be used");
-            return new GitFlowVersionFinder().FindVersion(context);
+            //Logger.WriteInfo("GitFlow version strategy will be used");
+            //return new GitFlowVersionFinder().FindVersion(context);
         }
 
-        static bool ShouldGitHubFlowVersioningSchemeApply(IRepository repo)
-        {
-            return repo.FindBranch("develop") == null;
-        }
+        //static bool ShouldGitHubFlowVersioningSchemeApply(IRepository repo)
+        //{
+        //    return repo.FindBranch("develop") == null;
+        //}
 
         void EnsureMainTopologyConstraints(GitVersionContext context)
         {

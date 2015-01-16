@@ -1,8 +1,6 @@
 using System;
 using System.IO;
-using System.Text;
 using GitVersion;
-using GitVersion.Helpers;
 using LibGit2Sharp;
 
 /// <summary>
@@ -40,20 +38,5 @@ public class BaseGitFlowRepositoryFixture : EmptyRepositoryFixture
 
         Repository.CreateBranch("develop").Checkout();
         Repository.MakeACommit();
-    }
-
-    public void DumpGraph()
-    {
-        var output = new StringBuilder();
-
-        ProcessHelper.Run(
-            o => output.AppendLine(o),
-            e => output.AppendLineFormat("ERROR: {0}", e),
-            null,
-            "git",
-            @"log --graph --abbrev-commit --decorate --date=relative --all",
-            RepositoryPath);
-
-        Console.Write(output.ToString());
     }
 }
