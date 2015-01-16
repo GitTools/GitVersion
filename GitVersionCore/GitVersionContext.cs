@@ -121,9 +121,8 @@
                     {
                         var branches = ListBranchesContaininingCommit(Repository, branchPoint.Sha).ToArray();
                         var currentTipBranches = ListBranchesContaininingCommit(Repository, CurrentCommit.Sha).ToArray();
-                        var branchNameComparer = new BranchNameComparer();
                         possibleParents = branches
-                            .Except(currentTipBranches, branchNameComparer)
+                            .Except(currentTipBranches)
                             .ToList();
                     }
 

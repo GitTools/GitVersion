@@ -62,7 +62,6 @@
     <Compile Include="AssemblyVersioningScheme.cs" />
     <Compile Include="AssemblyVersionsGenerator.cs" />
     <Compile Include="Authentication.cs" />
-    <Compile Include="BranchNameComparer.cs" />
     <Compile Include="BuildServers\AppVeyor.cs" />
     <Compile Include="BuildServers\BuildServerBase.cs" />
     <Compile Include="BuildServers\BuildServerList.cs" />
