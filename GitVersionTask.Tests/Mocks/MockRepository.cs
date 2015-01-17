@@ -112,6 +112,56 @@ public class MockRepository : IRepository
         throw new NotImplementedException();
     }
 
+    public void Stage(string path, StageOptions stageOptions)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Stage(IEnumerable<string> paths, StageOptions stageOptions)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Unstage(string path, ExplicitPathsOptions explicitPathsOptions)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Unstage(IEnumerable<string> paths, ExplicitPathsOptions explicitPathsOptions)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Move(string sourcePath, string destinationPath)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Move(IEnumerable<string> sourcePaths, IEnumerable<string> destinationPaths)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Remove(string path, bool removeFromWorkingDirectory, ExplicitPathsOptions explicitPathsOptions)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Remove(IEnumerable<string> paths, bool removeFromWorkingDirectory, ExplicitPathsOptions explicitPathsOptions)
+    {
+        throw new NotImplementedException();
+    }
+
+    public FileStatus RetrieveStatus(string filePath)
+    {
+        throw new NotImplementedException();
+    }
+
+    public RepositoryStatus RetrieveStatus(StatusOptions options)
+    {
+        throw new NotImplementedException();
+    }
+
     public Branch Head { get; set; }
     public Configuration Config { get; set; }
     public Index Index { get; set; }

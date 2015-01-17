@@ -22,7 +22,7 @@ public class LibGitExtensionsTests
                           TargetEx = c,
                           AnnotationEx = new MockTagAnnotation
                                          {
-                                             TaggerEx = new Signature("a", "", 5.Seconds().Ago()),
+                                             TaggerEx = new Signature("a", "a@b.com", 5.Seconds().Ago()),
                                              TargetEx = c,
                                          }
                       };
@@ -35,7 +35,7 @@ public class LibGitExtensionsTests
                     TargetEx = first.Annotation,
                     AnnotationEx = new MockTagAnnotation
                     {
-                        TaggerEx = new Signature("a", "", 2.Seconds().Ago()),
+                        TaggerEx = new Signature("a", "a@b.com", 2.Seconds().Ago()),
                         TargetEx = c,
                     }
 
