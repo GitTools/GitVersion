@@ -106,7 +106,11 @@
                     repository.Refs.UpdateTarget(repository.Refs.Head, newHead);
                 }
 
+                // < 3.0 method
                 repository.CheckoutFilesIfExist("NextVersion.txt");
+
+                // > 3.0 method
+                repository.CheckoutFilesIfExist("GitVersionConfig.yaml");
             }
 
             DynamicGitRepositoryPath = gitDirectory;
