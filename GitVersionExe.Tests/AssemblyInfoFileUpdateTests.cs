@@ -26,7 +26,7 @@
         public void ShouldReplaceAssemblyVersion()
         {
             var fileSystem = Substitute.For<IFileSystem>();
-            var version = new SemanticVersion()
+            var version = new SemanticVersion
                 {
                     BuildMetaData = new SemanticVersionBuildMetaData(3, "foo", "hash", DateTimeOffset.Now),
                     Major = 2,
@@ -41,7 +41,7 @@ AssemblyFileVersion(""1.0.0.0"");";
             
             fileSystem.Exists("C:\\Testing\\AssemblyInfo.cs").Returns(true);
             fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.cs").Returns(assemblyInfoFile);
-            var config = new Config()
+            var config = new Config
                              {
                                  AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch
                              };
@@ -64,7 +64,7 @@ AssemblyFileVersion(""2.3.1.0"");";
         public void ShouldReplaceAssemblyVersionWithStar()
         {
             var fileSystem = Substitute.For<IFileSystem>();
-            var version = new SemanticVersion()
+            var version = new SemanticVersion
                               {
                                   BuildMetaData = new SemanticVersionBuildMetaData(3, "foo", "hash", DateTimeOffset.Now),
                                   Major = 2,
@@ -79,7 +79,7 @@ AssemblyFileVersion(""1.0.0.*"");";
 
             fileSystem.Exists("C:\\Testing\\AssemblyInfo.cs").Returns(true);
             fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.cs").Returns(assemblyInfoFile);
-            var config = new Config()
+            var config = new Config
                              {
                                  AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch
                              };
