@@ -13,7 +13,7 @@ namespace GitVersion
             
             var nbHotfixCommits = BranchCommitDifferenceFinder.NumberOfCommitsInBranchNotKnownFromBaseBranch(context.Repository, context.CurrentBranch, BranchType.Hotfix, "master");
 
-            var semanticVersionPreReleaseTag = GetSemanticVersionPreReleaseTag(context, shortVersion, nbHotfixCommits);
+            var semanticVersionPreReleaseTag = GetSemanticVersionPreReleaseTag(context, shortVersion);
             return new SemanticVersion
             {
                 Major = shortVersion.Major,
@@ -24,7 +24,7 @@ namespace GitVersion
             };
         }
 
-        static string GetSemanticVersionPreReleaseTag(GitVersionContext context, SemanticVersion shortVersion, int nbHotfixCommits)
+        static string GetSemanticVersionPreReleaseTag(GitVersionContext context, SemanticVersion shortVersion)
         {
             var semanticVersionPreReleaseTag = context.Configuration.ReleaseBranchTag + ".1";
             var tagVersion = RecentTagVersionExtractor.RetrieveMostRecentOptionalTagVersion(context, shortVersion);

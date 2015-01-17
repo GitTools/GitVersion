@@ -158,12 +158,11 @@ namespace GitVersion
 
         static IEnumerable<DirectReference> GetRemoteTipsUsingUsernamePasswordCredentials(Repository repo, Remote remote, string username, string password)
         {
-            return repo.Network.ListReferences(remote,
-                new UsernamePasswordCredentials
-                {
-                    Username = username,
-                    Password = password
-                });
+            return repo.Network.ListReferences(remote, (url, fromUrl, types) => new UsernamePasswordCredentials
+                                                                                {
+                                                                                    Username = username,
+                                                                                    Password = password
+                                                                                });
         }
 
         static IEnumerable<DirectReference> GetRemoteTipsForAnonymousUser(Repository repo, Remote remote)

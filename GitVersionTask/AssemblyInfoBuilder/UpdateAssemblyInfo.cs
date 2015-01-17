@@ -134,7 +134,8 @@
                                       };
             var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(configuration);
 
-            string tempFileName, tempDir;
+            string tempFileName;
+            string tempDir;
             if (IntermediateOutputPath == null)
             {
                 tempDir = TempFileTracker.TempPath;

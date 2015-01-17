@@ -1,6 +1,4 @@
-﻿namespace GitVersionExe.Tests
-{
-    using System.IO;
+﻿    using System.IO;
     using GitVersion;
     using LibGit2Sharp;
     using NSubstitute;
