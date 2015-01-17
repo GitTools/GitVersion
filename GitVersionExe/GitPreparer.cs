@@ -61,49 +61,52 @@
             Repository.Clone(arguments.TargetUrl, gitDirectory,
                 new CloneOptions
                 {
-                    IsBare = true, 
+                    IsBare = true,
                     Checkout = false,
                     CredentialsProvider = (url, usernameFromUrl, types) => credentials
                 });
 
-            if (!string.IsNullOrWhiteSpace(arguments.TargetBranch))
+            // Normalize (download branches) before using the branch
+            GitHelper.NormalizeGitDirectory(gitDirectory, arguments.Authentication);
+
+            using (var repository = new Repository(gitDirectory))
             {
-                // Normalize (download branches) before using the branch
-                GitHelper.NormalizeGitDirectory(gitDirectory, arguments.Authentication);
-
-                using (var repository = new Repository(gitDirectory))
+                var targetBranch = arguments.TargetBranch;
+                if (string.IsNullOrWhiteSpace(targetBranch))
                 {
-                    Reference newHead = null;
+                    targetBranch = repository.Head.Name;
+                }
 
-                    var localReference = GetLocalReference(repository, arguments.TargetBranch);
-                    if (localReference != null)
-                    {
-                        newHead = localReference;
-                    }
+                Reference newHead = null;
 
-                    if (newHead == null)
+                var localReference = GetLocalReference(repository, targetBranch);
+                if (localReference != null)
+                {
+                    newHead = localReference;
+                }
+
+                if (newHead == null)
+                {
+                    var remoteReference = GetRemoteReference(repository, targetBranch, arguments.TargetUrl);
+                    if (remoteReference != null)
                     {
-                        var remoteReference = GetRemoteReference(repository, arguments.TargetBranch, arguments.TargetUrl);
-                        if (remoteReference != null)
-                        {
-                            repository.Network.Fetch(arguments.TargetUrl, new[]
+                        repository.Network.Fetch(arguments.TargetUrl, new[]
                             {
-                                string.Format("{0}:{1}", remoteReference.CanonicalName, arguments.TargetBranch)
+                                string.Format("{0}:{1}", remoteReference.CanonicalName, targetBranch)
                             });
 
-                            newHead = repository.Refs[string.Format("refs/heads/{0}", arguments.TargetBranch)];
-                        }
+                        newHead = repository.Refs[string.Format("refs/heads/{0}", targetBranch)];
                     }
-
-                    if (newHead != null)
-                    {
-                        Logger.WriteInfo(string.Format("Switching to branch '{0}'", arguments.TargetBranch));
-
-                        repository.Refs.UpdateTarget(repository.Refs.Head, newHead);
-                    }
-
-                    repository.CheckoutFilesIfExist("NextVersion.txt");
                 }
+
+                if (newHead != null)
+                {
+                    Logger.WriteInfo(string.Format("Switching to branch '{0}'", targetBranch));
+
+                    repository.Refs.UpdateTarget(repository.Refs.Head, newHead);
+                }
+
+                repository.CheckoutFilesIfExist("NextVersion.txt");
             }
 
             DynamicGitRepositoryPath = gitDirectory;
