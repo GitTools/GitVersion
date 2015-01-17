@@ -73,14 +73,15 @@
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Configuration\ConfigReader.cs" />
     <Compile Include="Configuration\ConfigurationProvider.cs" />
-    <Compile Include="GitFlow\BranchFinders\BranchCommitDifferenceFinder.cs" />
     <Compile Include="GitFlow\BranchFinders\RecentTagVersionExtractor.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\IFileSystem.cs" />
     <Compile Include="LastMinorVersionFinder.cs" />
+    <Compile Include="Extensions\ExtensionMethods.git.cs" />
+    <Compile Include="GitFlow\BranchFinders\BranchCommitDifferenceFinder.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />
     <Compile Include="WarningException.cs" />
-    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="Extensions\ExtensionMethods.cs" />
     <Compile Include="GitDirFinder.cs" />
     <Compile Include="GitFlow\BranchClassifier.cs" />
     <Compile Include="GitFlow\BranchFinders\DevelopBasedVersionFinderBase.cs" />
