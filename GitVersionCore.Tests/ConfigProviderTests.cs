@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using GitVersion;
 using GitVersion.Helpers;
-using GitVersionCore.Tests;
 using NUnit.Framework;
 using Shouldly;
 using YamlDotNet.Serialization;
