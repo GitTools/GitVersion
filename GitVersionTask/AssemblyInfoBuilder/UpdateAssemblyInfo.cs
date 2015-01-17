@@ -128,27 +128,22 @@
 
         void CreateTempAssemblyInfo(CachedVersion semanticVersion, Config configuration)
         {
-            var assemblyInfoBuilder = new AssemblyInfoBuilder
-                                      {
-                                          CachedVersion = semanticVersion
-                                      };
-            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(configuration);
 
-            string tempFileName;
-            string tempDir;
             if (IntermediateOutputPath == null)
             {
-                tempDir = TempFileTracker.TempPath;
-                tempFileName = string.Format("AssemblyInfo_{0}_{1}.g.cs", Path.GetFileNameWithoutExtension(ProjectFile), Path.GetRandomFileName());
+                var tempFileName = string.Format("AssemblyInfo_{0}_{1}.g.cs", Path.GetFileNameWithoutExtension(ProjectFile), Path.GetRandomFileName());
+                AssemblyInfoTempFilePath = Path.Combine(TempFileTracker.TempPath, tempFileName);
             }
             else
             {
-                tempDir = Path.Combine(IntermediateOutputPath, "obj", assemblyInfo);
-                Directory.CreateDirectory(tempDir);
-                tempFileName = string.Format("GitVersionTaskAssemblyInfo.g.cs");
+                AssemblyInfoTempFilePath = Path.Combine(IntermediateOutputPath, "GitVersionTaskAssemblyInfo.g.cs");
             }
 
-            AssemblyInfoTempFilePath = Path.Combine(tempDir, tempFileName);
+            var assemblyInfoBuilder = new AssemblyInfoBuilder
+            {
+                CachedVersion = semanticVersion
+            };
+            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(configuration);
             File.WriteAllText(AssemblyInfoTempFilePath, assemblyInfo);
         }
     }
