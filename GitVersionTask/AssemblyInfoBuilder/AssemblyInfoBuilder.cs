@@ -6,10 +6,10 @@ public class AssemblyInfoBuilder
 {
     public CachedVersion CachedVersion;
 
-    public string GetAssemblyInfoText(Config configuration)
+    public string GetAssemblyInfoText(EffectiveConfiguration configuration)
     {
         var semanticVersion = CachedVersion.SemanticVersion;
-        var vars = VariableProvider.GetVariablesFor(semanticVersion, configuration);
+        var vars = VariableProvider.GetVariablesFor(semanticVersion, configuration.AssemblyVersioningScheme, configuration.VersioningMode);
         var assemblyInfo = string.Format(@"
 using System;
 using System.Reflection;
@@ -39,8 +39,8 @@ static class GitVersionInformation
 }}
 
 
-", vars[VariableProvider.AssemblySemVer],
- vars[VariableProvider.AssemblyFileSemVer], 
+", vars.AssemblySemVer,
+ vars.AssemblySemVer, 
  semanticVersion.ToString("i"),
             CachedVersion.MasterReleaseDate.UtcDateTime.ToString("yyyy-MM-dd"),
             semanticVersion.BuildMetaData.CommitDate.UtcDateTime.ToString("yyyy-MM-dd"),

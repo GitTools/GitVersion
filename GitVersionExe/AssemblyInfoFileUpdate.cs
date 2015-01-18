@@ -10,7 +10,7 @@ namespace GitVersion
         List<Action> restoreBackupTasks = new List<Action>();
         List<Action> cleanupBackupTasks = new List<Action>();
 
-        public AssemblyInfoFileUpdate(Arguments args, string workingDirectory, Dictionary<string, string> variables, IFileSystem fileSystem)
+        public AssemblyInfoFileUpdate(Arguments args, string workingDirectory, VersionVariables variables, IFileSystem fileSystem)
         {
             if (!args.UpdateAssemblyInfo) return;
 
@@ -39,11 +39,11 @@ namespace GitVersion
                 }
                 else
                 {
-                    assemblyVersion = string.Format("{0}.{1}.0.0", variables[VariableProvider.Major], variables[VariableProvider.Minor]);
+                    assemblyVersion = string.Format("{0}.{1}.0.0", variables.Major, variables.Minor);
                 }
 
-                var assemblyInfoVersion = variables[VariableProvider.InformationalVersion];
-                var assemblyFileVersion = variables[VariableProvider.AssemblySemVer];
+                var assemblyInfoVersion = variables.InformationalVersion;
+                var assemblyFileVersion = variables.AssemblySemVer;
                 var fileContents = fileSystem.ReadAllText(assemblyInfoFile)
                     .RegexReplace(@"AssemblyVersion\(""\d+.\d+.\d+(.(\d+|\*))?""\)", string.Format("AssemblyVersion(\"{0}\")", assemblyVersion))
                     .RegexReplace(@"AssemblyInformationalVersion\(""\d+.\d+.\d+(.(\d+|\*))?""\)", string.Format("AssemblyInformationalVersion(\"{0}\")", assemblyInfoVersion))

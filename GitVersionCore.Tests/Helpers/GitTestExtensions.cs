@@ -8,14 +8,14 @@ public static class GitTestExtensions
 {
     public static Commit MakeACommit(this IRepository repository)
     {
-        return MakeACommit(repository, DateTimeOffset.Now);
+        return MakeACommit(repository, Constants.Now);
     }
 
     public static Commit MakeACommit(this IRepository repository, DateTimeOffset dateTimeOffset)
     {
         var randomFile = Path.Combine(repository.Info.WorkingDirectory, Guid.NewGuid().ToString());
         File.WriteAllText(randomFile, string.Empty);
-        repository.Index.Stage(randomFile);
+        repository.Stage(randomFile);
         return repository.Commit("Test Commit", Constants.Signature(dateTimeOffset), Constants.Signature(dateTimeOffset));
     }
 
@@ -26,6 +26,7 @@ public static class GitTestExtensions
 
     public static void MergeNoFF(this IRepository repository, string branch, Signature sig)
     {
+        // Fixes a race condition
         repository.Merge(repository.FindBranch(branch), sig, new MergeOptions
         {
             FastForwardStrategy = FastForwardStrategy.NoFastFoward

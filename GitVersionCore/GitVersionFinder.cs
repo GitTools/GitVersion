@@ -1,6 +1,9 @@
 namespace GitVersion
 {
+    using System;
+    using System.IO;
     using System.Linq;
+    using GitVersion.VersionCalculation;
     using LibGit2Sharp;
 
     public class GitVersionFinder
@@ -10,20 +13,27 @@ namespace GitVersion
             Logger.WriteInfo("Running against branch: " + context.CurrentBranch.Name);
             EnsureMainTopologyConstraints(context);
 
-            if (ShouldGitHubFlowVersioningSchemeApply(context.Repository))
+            var filePath = Path.Combine(context.Repository.GetRepositoryDirectory(), "NextVersion.txt");
+            if (File.Exists(filePath))
             {
-                Logger.WriteInfo("GitHubFlow version strategy will be used");
-                return new GitHubFlowVersionFinder().FindVersion(context);
+                throw new Exception("NextVersion.txt has been depreciated. See https://github.com/ParticularLabs/GitVersion/wiki/GitVersionConfig.yaml-Configuration-File for replacement");
             }
 
-            Logger.WriteInfo("GitFlow version strategy will be used");
-            return new GitFlowVersionFinder().FindVersion(context);
+            return new NewNextVersionCalculator().FindVersion(context);
+            //if (ShouldGitHubFlowVersioningSchemeApply(context.Repository))
+            //{
+            //    Logger.WriteInfo("GitHubFlow version strategy will be used");
+            //    return new GitHubFlowVersionFinder().FindVersion(context);
+            //}
+
+            //Logger.WriteInfo("GitFlow version strategy will be used");
+            //return new GitFlowVersionFinder().FindVersion(context);
         }
 
-        static bool ShouldGitHubFlowVersioningSchemeApply(IRepository repo)
-        {
-            return repo.FindBranch("develop") == null;
-        }
+        //static bool ShouldGitHubFlowVersioningSchemeApply(IRepository repo)
+        //{
+        //    return repo.FindBranch("develop") == null;
+        //}
 
         void EnsureMainTopologyConstraints(GitVersionContext context)
         {

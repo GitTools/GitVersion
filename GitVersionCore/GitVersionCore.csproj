@@ -71,16 +71,42 @@
     <Compile Include="BuildServers\IBuildServer.cs" />
     <Compile Include="BuildServers\MyGet.cs" />
     <Compile Include="BuildServers\TeamCity.cs" />
+    <Compile Include="Configuration\BranchConfig.cs" />
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Configuration\ConfigReader.cs" />
     <Compile Include="Configuration\ConfigurationProvider.cs" />
+    <Compile Include="Configuration\IncrementStrategy.cs" />
+    <Compile Include="Configuration\LegacyConfig.cs" />
+    <Compile Include="Configuration\LegacyConfigNotifier.cs" />
+    <Compile Include="Configuration\OldConfigurationException.cs" />
+    <Compile Include="EffectiveConfiguration.cs" />
     <Compile Include="GitFlow\BranchFinders\RecentTagVersionExtractor.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\IFileSystem.cs" />
+    <Compile Include="Helpers\ProcessHelper.cs" />
     <Compile Include="LastMinorVersionFinder.cs" />
+    <Compile Include="OutputVariables\CommitsAsFourthVersionPartFormatter.cs" />
+    <Compile Include="OutputVariables\VersionVariables.cs" />
     <Compile Include="Extensions\ExtensionMethods.git.cs" />
     <Compile Include="GitFlow\BranchFinders\BranchCommitDifferenceFinder.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculator.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\BaseVersion.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\ConfigNextVersionBaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\LastTagBaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\MergeMessageBaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\VersionInBranchBaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\BaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\FallbackBaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\IBaseVersionCalculator.cs" />
+    <Compile Include="VersionCalculation\IMetaDataCalculator.cs" />
+    <Compile Include="VersionCalculation\MetaDataCalculator.cs" />
+    <Compile Include="VersionCalculation\NewNextVersionCalculator.cs" />
+    <Compile Include="VersioningModes\ContinuousDeliveryMode.cs" />
+    <Compile Include="VersioningModes\ContinuousDeploymentMode.cs" />
+    <Compile Include="VersioningModes\VersioningMode.cs" />
+    <Compile Include="VersioningModes\VersioningModeBase.cs" />
+    <Compile Include="VersioningModes\VersioningModeExtension.cs" />
     <Compile Include="WarningException.cs" />
     <Compile Include="Extensions\ExtensionMethods.cs" />
     <Compile Include="GitDirFinder.cs" />
@@ -101,7 +127,6 @@
     <Compile Include="GitHubFlow\LastTaggedReleaseFinder.cs" />
     <Compile Include="GitHubFlow\MergedBranchesWithVersionFinder.cs" />
     <Compile Include="GitHubFlow\NextSemverCalculator.cs" />
-    <Compile Include="GitHubFlow\NextVersionTxtFileFinder.cs" />
     <Compile Include="GitHubFlow\OtherBranchVersionFinder.cs" />
     <Compile Include="GitHubFlow\VersionTaggedCommit.cs" />
     <Compile Include="GitVersionContext.cs" />
@@ -114,7 +139,6 @@
     <Compile Include="OutputFormatters\BuildOutputFormatter.cs" />
     <Compile Include="OutputFormatters\JsonOutputFormatter.cs" />
     <Compile Include="OutputType.cs" />
-    <Compile Include="OutputVariables\CiFeedFormatter.cs" />
     <Compile Include="OutputVariables\VariableProvider.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="RepositoryLoader.cs" />
@@ -134,6 +158,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

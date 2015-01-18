@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.Script.Serialization;
+using GitVersion;
 
 public class ExecutionResults
 {
@@ -14,8 +17,18 @@ public class ExecutionResults
     public string Output { get; private set; }
     public string Log { get; private set; }
 
-    public virtual Dictionary<string, string> OutputVariables
+    public virtual VersionVariables OutputVariables
     {
-        get { return new JavaScriptSerializer().Deserialize<Dictionary<string, string>>(Output); }
+        get
+        {
+            var outputVariables = new JavaScriptSerializer().Deserialize<Dictionary<string, string>>(Output);
+            var type = typeof(VersionVariables);
+            var ctor = type.GetConstructors().Single();
+            var ctorArgs = ctor.GetParameters()
+                .Select(p => outputVariables.Single(v => v.Key.ToLower() == p.Name.ToLower()).Value)
+                .Cast<object>()
+                .ToArray();
+            return (VersionVariables) Activator.CreateInstance(type, ctorArgs);
+        }
     }
 }

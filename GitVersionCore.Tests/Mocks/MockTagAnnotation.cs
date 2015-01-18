@@ -1,6 +1,6 @@
 using LibGit2Sharp;
 
-public class MockTagAnnotation:TagAnnotation
+public class MockTagAnnotation : TagAnnotation
 {
 
     public Signature TaggerEx;

@@ -1,23 +1,19 @@
 ﻿namespace GitVersion
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 
     public class NextSemverCalculator
     {
-        NextVersionTxtFileFinder nextVersionTxtFileFinder;
         LastTaggedReleaseFinder lastTaggedReleaseFinder;
         OtherBranchVersionFinder unknownBranchFinder;
         GitVersionContext context;
         MergedBranchesWithVersionFinder mergedBranchesWithVersionFinder;
 
         public NextSemverCalculator(
-            NextVersionTxtFileFinder nextVersionTxtFileFinder,
             LastTaggedReleaseFinder lastTaggedReleaseFinder,
             GitVersionContext context)
         {
-            this.nextVersionTxtFileFinder = nextVersionTxtFileFinder;
             this.lastTaggedReleaseFinder = lastTaggedReleaseFinder;
             mergedBranchesWithVersionFinder = new MergedBranchesWithVersionFinder(context);
             unknownBranchFinder = new OtherBranchVersionFinder();
@@ -56,21 +52,9 @@
                 yield return defaultNextVersion;
             }
 
-            SemanticVersion fileVersion;
-            var hasNextVersionTxtVersion = nextVersionTxtFileFinder.TryGetNextVersion(out fileVersion);
-            if (hasNextVersionTxtVersion && !string.IsNullOrEmpty(context.Configuration.NextVersion))
-            {
-                throw new Exception("You cannot specify a next version in both NextVersion.txt and GitVersionConfig.yaml. Please delete NextVersion.txt and use GitVersionConfig.yaml");
-            }
-
             if (!string.IsNullOrEmpty(context.Configuration.NextVersion))
             {
-                yield return SemanticVersion.Parse(context.Configuration.NextVersion, context.Configuration.TagPrefix);
-            }
-
-            if (hasNextVersionTxtVersion)
-            {
-                yield return fileVersion;
+                yield return SemanticVersion.Parse(context.Configuration.NextVersion, context.Configuration.GitTagPrefix);
             }
 
             SemanticVersion tryGetVersion;

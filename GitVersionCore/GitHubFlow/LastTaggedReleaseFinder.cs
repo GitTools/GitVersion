@@ -17,7 +17,7 @@ namespace GitVersion
             var tags = context.Repository.Tags.Select(t =>
             {
                 SemanticVersion version;
-                if (SemanticVersion.TryParse(t.Name, context.Configuration.TagPrefix, out version))
+                if (SemanticVersion.TryParse(t.Name, context.Configuration.GitTagPrefix, out version))
                 {
                     return new VersionTaggedCommit((Commit)t.Target, version);
                 }

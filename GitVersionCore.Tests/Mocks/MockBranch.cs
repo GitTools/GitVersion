@@ -18,7 +18,7 @@ public class MockBranch : Branch, ICollection<Commit>
 
     public MockBranch()
     {
-        
+
     }
     MockCommitLog commits = new MockCommitLog();
     string name;
@@ -66,7 +66,7 @@ public class MockBranch : Branch, ICollection<Commit>
         return commits.Remove(item);
     }
 
-    public int Count{get{return commits.Count;}}
+    public int Count { get { return commits.Count; } }
 
-    public bool IsReadOnly { get{return false;} }
+    public bool IsReadOnly { get { return false; } }
 }

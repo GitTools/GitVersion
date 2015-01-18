@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using LibGit2Sharp;
 
-public class MockTagCollection : TagCollection,ICollection<Tag>
+public class MockTagCollection : TagCollection, ICollection<Tag>
 {
 
     public List<Tag> Tags = new List<Tag>();

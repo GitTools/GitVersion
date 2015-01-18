@@ -17,14 +17,14 @@
                 return false;
             }
 
-            var applicableTagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(context.Configuration, versionInBranch.Item2).OrderByDescending(tag => SemanticVersion.Parse(tag.Name, context.Configuration.TagPrefix)).ToList();
+            var applicableTagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(context.Configuration, versionInBranch.Item2).OrderByDescending(tag => SemanticVersion.Parse(tag.Name, context.Configuration.GitTagPrefix)).ToList();
             var nbHotfixCommits = BranchCommitDifferenceFinder.NumberOfCommitsSinceLastTagOrBranchPoint(context, applicableTagsInDescendingOrder, BranchType.Unknown, "master");
             var semanticVersionPreReleaseTag = RecentTagVersionExtractor.RetrieveMostRecentOptionalTagVersion(context, applicableTagsInDescendingOrder) ?? CreateDefaultPreReleaseTag(context, versionInBranch.Item1);
 
 
             if (semanticVersionPreReleaseTag.Name == "release")
             {
-                semanticVersionPreReleaseTag.Name = context.Configuration.ReleaseBranchTag;
+                semanticVersionPreReleaseTag.Name = context.Configuration.Tag;
             }
 
             semanticVersion = new SemanticVersion
@@ -44,7 +44,7 @@
             foreach (var part in branchParts)
             {
                 SemanticVersion semanticVersion;
-                if (SemanticVersion.TryParse(part, context.Configuration.TagPrefix, out semanticVersion))
+                if (SemanticVersion.TryParse(part, context.Configuration.GitTagPrefix, out semanticVersion))
                 {
                     return Tuple.Create(part, semanticVersion);
                 }

@@ -13,7 +13,7 @@ public class MockBranchCollection : BranchCollection, ICollection<Branch>
 
     public override Branch this[string name]
     {
-        get { return Branches.FirstOrDefault(x=>x.Name ==name); }
+        get { return Branches.FirstOrDefault(x => x.Name == name); }
     }
 
     public void Add(Branch item)
@@ -40,16 +40,17 @@ public class MockBranchCollection : BranchCollection, ICollection<Branch>
     {
         Branches.Remove(item);
     }
-     bool ICollection<Branch>.Remove(Branch item)
+    bool ICollection<Branch>.Remove(Branch item)
     {
         return Branches.Remove(item);
     }
 
     public int Count
     {
-        get {
+        get
+        {
             return Branches.Count;
         }
     }
-    public bool IsReadOnly { get{return false;}}
+    public bool IsReadOnly { get { return false; } }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using GitVersion;
+using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
@@ -49,7 +50,7 @@ public class MergeMessageParserTests
         };
 
         SemanticVersion versionPart;
-        var parsed = MergeMessageParser.TryParse(commit, new Config(), out versionPart);
+        var parsed = MergeMessageParser.TryParse(commit, new TestEffectiveConfiguration(), out versionPart);
 
         if (expectedVersion == null)
         {

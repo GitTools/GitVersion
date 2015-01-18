@@ -17,10 +17,23 @@ namespace GitVersion
         public SemanticVersionPreReleaseTag PreReleaseTag;
         public SemanticVersionBuildMetaData BuildMetaData;
 
-        public SemanticVersion()
+        public SemanticVersion(int major = 0, int minor = 0, int patch = 0)
         {
+            Major = major;
+            Minor = minor;
+            Patch = patch;
             PreReleaseTag = new SemanticVersionPreReleaseTag();
             BuildMetaData = new SemanticVersionBuildMetaData();
+        }
+
+        public SemanticVersion(SemanticVersion semanticVersion)
+        {
+            Major = semanticVersion.Major;
+            Minor = semanticVersion.Minor;
+            Patch = semanticVersion.Patch;
+
+            PreReleaseTag = new SemanticVersionPreReleaseTag(semanticVersion.PreReleaseTag);
+            BuildMetaData = new SemanticVersionBuildMetaData(semanticVersion.BuildMetaData);
         }
 
         public bool Equals(SemanticVersion obj)

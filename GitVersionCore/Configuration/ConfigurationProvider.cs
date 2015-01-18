@@ -15,12 +15,7 @@ namespace GitVersion
             if (fileSystem.Exists(configFilePath))
             {
                 var readAllText = fileSystem.ReadAllText(configFilePath);
-                if (oldAssemblyVersioningScheme.IsMatch(readAllText))
-                {
-                    readAllText = oldAssemblyVersioningScheme.Replace(readAllText, "assembly-versioning-scheme");
-                    fileSystem.WriteAllText(configFilePath, readAllText);
-                    Logger.WriteWarning("Found legacy configuration value 'assemblyVersioningScheme', replaced with 'assembly-versioning-scheme");
-                }
+                LegacyConfigNotifier.Notify(new StringReader(readAllText));
 
                 return ConfigReader.Read(new StringReader(readAllText));
             }

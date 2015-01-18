@@ -6,18 +6,12 @@ namespace GitVersion
 
     class RecentTagVersionExtractor
     {
-        internal static SemanticVersionPreReleaseTag RetrieveMostRecentOptionalTagVersion(GitVersionContext context, SemanticVersion matchVersion)
-        {
-            var tagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(context.Configuration, matchVersion).OrderByDescending(tag => SemanticVersion.Parse(tag.Name, context.Configuration.TagPrefix));
-            return RetrieveMostRecentOptionalTagVersion(context, tagsInDescendingOrder.ToList());
-        }
-
         internal static SemanticVersionPreReleaseTag RetrieveMostRecentOptionalTagVersion(GitVersionContext context, List<Tag> applicableTagsInDescendingOrder)
         {
             if (applicableTagsInDescendingOrder.Any())
             {
                 var taggedCommit = applicableTagsInDescendingOrder.First().Target;
-                var preReleaseVersion = applicableTagsInDescendingOrder.Select(tag => SemanticVersion.Parse(tag.Name, context.Configuration.TagPrefix)).FirstOrDefault();
+                var preReleaseVersion = applicableTagsInDescendingOrder.Select(tag => SemanticVersion.Parse(tag.Name, context.Configuration.GitTagPrefix)).FirstOrDefault();
                 if (preReleaseVersion != null)
                 {
                     if (taggedCommit != context.CurrentCommit)

@@ -19,7 +19,7 @@ public class GitFlowSupportBranchScenarios
             fixture.Repository.ApplyTag("2.0.0");
             fixture.Repository.Checkout("develop");
             fixture.Repository.MergeNoFF("release-2.0.0");
-            fixture.AssertFullSemver("2.1.0-unstable.0+0");
+            fixture.AssertFullSemver("2.1.0-unstable.1+1");
 
             // Now lets support 1.x release
             fixture.Repository.Checkout("1.1.0");

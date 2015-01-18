@@ -1,5 +1,4 @@
 ﻿    using System;
-    using System.Collections.Generic;
     using System.IO;
     using GitVersion;
     using GitVersion.Helpers;
@@ -14,10 +13,8 @@ public class AssemblyInfoFileUpdateTests
     {
         var fileSystem = Substitute.For<IFileSystem>();
         const string workingDir = "C:\\Testing";
-        using (new AssemblyInfoFileUpdate(new Arguments
-                                          {
-                                              UpdateAssemblyInfo = true
-                                          }, workingDir, new Dictionary<string, string>(), fileSystem))
+        var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDelivery);
+        using (new AssemblyInfoFileUpdate(new Arguments{ UpdateAssemblyInfo = true }, workingDir, variables, fileSystem))
         {
             fileSystem.Received().DirectoryGetFiles(Arg.Is(workingDir), Arg.Any<string>(), Arg.Any<SearchOption>());
         }
@@ -46,7 +43,7 @@ AssemblyFileVersion(""1.0.0.0"");";
                      {
                          AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch
                      };
-        var variable = VariableProvider.GetVariablesFor(version, config);
+        var variable = VariableProvider.GetVariablesFor(version, config.AssemblyVersioningScheme, VersioningMode.ContinuousDelivery); 
         var args = new Arguments
                    {
                        UpdateAssemblyInfo = true,
@@ -84,7 +81,7 @@ AssemblyFileVersion(""1.0.0.*"");";
                      {
                          AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch
                      };
-        var variable = VariableProvider.GetVariablesFor(version, config);
+        var variable = VariableProvider.GetVariablesFor(version, config.AssemblyVersioningScheme, VersioningMode.ContinuousDelivery);
         var args = new Arguments
                    {
                        UpdateAssemblyInfo = true,

@@ -1,6 +1,6 @@
 using LibGit2Sharp;
 
-public class MockTag:Tag
+public class MockTag : Tag
 {
 
     public string NameEx;
@@ -15,6 +15,15 @@ public class MockTag:Tag
         get { return TargetEx; }
     }
     public TagAnnotation AnnotationEx;
+
+    public MockTag() { }
+
+    public MockTag(string name, Commit target)
+    {
+        NameEx = name;
+        TargetEx = target;
+    }
+
     public override TagAnnotation Annotation
     {
         get { return AnnotationEx; }

@@ -23,7 +23,9 @@ public class GitFlowReleaseBranchTests
     [Test]
     public void CanTakeVersionFromReleaseBranchWithTagOverriden()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config { ReleaseBranchTag = "rc" }))
+        var config = new Config();
+        config.Branches["release[/-]"].Tag = "rc";
+        using (var fixture = new EmptyRepositoryFixture(config))
         {
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.CreateBranch("develop");
@@ -32,6 +34,25 @@ public class GitFlowReleaseBranchTests
             fixture.Repository.Checkout("release-2.0.0");
 
             fixture.AssertFullSemver("2.0.0-rc.1+5");
+        }
+    }
+
+    [Test]
+    public void CanHandleContinuousDeployment()
+    {
+        var config = new Config
+                         {
+                             VersioningMode = VersioningMode.ContinuousDeployment
+                         };
+        using (var fixture = new EmptyRepositoryFixture(config))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.3");
+            fixture.Repository.CreateBranch("develop");
+            fixture.Repository.MakeCommits(5);
+            fixture.Repository.CreateBranch("release-2.0.0");
+            fixture.Repository.Checkout("release-2.0.0");
+
+            fixture.AssertFullSemver("2.0.0-beta.5+5");
         }
     }
 

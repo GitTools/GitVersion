@@ -1,5 +1,7 @@
 namespace GitVersion
 {
+    using System.Linq;
+
     using LibGit2Sharp;
 
     class HotfixVersionFinder 
@@ -7,13 +9,13 @@ namespace GitVersion
         public SemanticVersion FindVersion(GitVersionContext context)
         {
             var versionString = GetSuffix(context.CurrentBranch);
-            var shortVersion = SemanticVersion.Parse(versionString, context.Configuration.TagPrefix);
+            var shortVersion = SemanticVersion.Parse(versionString, context.Configuration.GitTagPrefix);
 
             EnsureVersionIsValid(shortVersion, context.CurrentBranch);
             
             var nbHotfixCommits = BranchCommitDifferenceFinder.NumberOfCommitsInBranchNotKnownFromBaseBranch(context.Repository, context.CurrentBranch, BranchType.Hotfix, "master");
-
-            var semanticVersionPreReleaseTag = GetSemanticVersionPreReleaseTag(context, shortVersion);
+            var tagsInDescendingOrder = context.Repository.SemVerTagsRelatedToVersion(context.Configuration, shortVersion).OrderByDescending(tag => SemanticVersion.Parse(tag.Name, context.Configuration.GitTagPrefix)).ToList();
+            var semanticVersionPreReleaseTag = context.Configuration.VersioningMode.GetInstance().GetPreReleaseTag(context, tagsInDescendingOrder, nbHotfixCommits);
             return new SemanticVersion
             {
                 Major = shortVersion.Major,
@@ -22,17 +24,6 @@ namespace GitVersion
                 PreReleaseTag = semanticVersionPreReleaseTag,
                 BuildMetaData = new SemanticVersionBuildMetaData(nbHotfixCommits, context.CurrentBranch.Name, context.CurrentCommit.Sha, context.CurrentCommit.When())
             };
-        }
-
-        static string GetSemanticVersionPreReleaseTag(GitVersionContext context, SemanticVersion shortVersion)
-        {
-            var semanticVersionPreReleaseTag = context.Configuration.ReleaseBranchTag + ".1";
-            var tagVersion = RecentTagVersionExtractor.RetrieveMostRecentOptionalTagVersion(context, shortVersion);
-            if (tagVersion != null)
-            {
-                semanticVersionPreReleaseTag = tagVersion;
-            }
-            return semanticVersionPreReleaseTag;
         }
 
         static string GetSuffix(Branch branch)

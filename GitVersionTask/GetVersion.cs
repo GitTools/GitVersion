@@ -49,19 +49,10 @@
         public string AssemblySemVer { get; set; }
 
         [Output]
-        public string AssemblyFileSemVer { get; set; }
-
-        [Output]
         public string FullSemVer { get; set; }
 
         [Output]
         public string InformationalVersion { get; set; }
-
-        [Output]
-        public string ClassicVersion { get; set; }
-
-        [Output]
-        public string ClassicVersionWithTag { get; set; }
 
         [Output]
         public string BranchName { get; set; }
@@ -74,14 +65,6 @@
 
         [Output]
         public string NuGetVersion { get; set; }
-
-        public string DevelopBranchTag { get; set; }
-
-        public string ReleaseBranchTag { get; set; }
-
-        public string TagPrefix { get; set; }
-
-        public string NextVersion { get; set; }
 
         TaskLogger logger;
         IFileSystem fileSystem;
@@ -98,36 +81,16 @@
         {
             try
             {
-                CachedVersion versionAndBranch;
+                Tuple<CachedVersion, GitVersionContext> versionAndBranch;
                 var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
                 var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
-
-                // TODO This should be covered by tests
-                // Null is intentional. Empty string means the user has set the value to an empty string and wants to clear the tag
-                if (DevelopBranchTag != null)
-                {
-                    configuration.DevelopBranchTag = DevelopBranchTag;
-                }
-
-                if (ReleaseBranchTag != null)
-                {
-                    configuration.ReleaseBranchTag = ReleaseBranchTag;
-                }
-
-                if (TagPrefix != null)
-                {
-                    configuration.TagPrefix = TagPrefix;
-                }
-
-                if (NextVersion != null)
-                {
-                    configuration.NextVersion = NextVersion;
-                }
 
                 if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch, configuration))
                 {
                     var thisType = typeof(GetVersion);
-                    var variables = VariableProvider.GetVariablesFor(versionAndBranch.SemanticVersion, configuration);
+                    var cachedVersion = versionAndBranch.Item1;
+                    var effectiveConfiguration = versionAndBranch.Item2.Configuration;
+                    var variables = VariableProvider.GetVariablesFor(cachedVersion.SemanticVersion, effectiveConfiguration.AssemblyVersioningScheme, effectiveConfiguration.VersioningMode);
                     foreach (var variable in variables)
                     {
                         thisType.GetProperty(variable.Key).SetValue(this, variable.Value, null);

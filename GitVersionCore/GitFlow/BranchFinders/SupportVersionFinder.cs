@@ -4,12 +4,12 @@ namespace GitVersion
 
     class SupportVersionFinder
     {
-        public SemanticVersion FindVersion(IRepository repository, Commit tip, Config configuration)
+        public SemanticVersion FindVersion(IRepository repository, Commit tip, EffectiveConfiguration configuration)
         {
             foreach (var tag in repository.TagsByDate(tip))
             {
                 SemanticVersion shortVersion;
-                if (SemanticVersion.TryParse(tag.Name, configuration.TagPrefix, out shortVersion))
+                if (SemanticVersion.TryParse(tag.Name, configuration.GitTagPrefix, out shortVersion))
                 {
                     return BuildVersion(tip, shortVersion);
                 }
