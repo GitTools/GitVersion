@@ -53,7 +53,7 @@ public static class GitTestExtensions
         File.WriteAllText(randomFile, Guid.NewGuid().ToString());
 
         // GHK: 2015-01-18: I know it's very ugly, but somehow we need to retry here otherwise "there is nothing to commit"
-        int retryCount = 3;
+        var retryCount = 3;
         while (retryCount > 0)
         {
             try
