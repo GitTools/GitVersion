@@ -17,10 +17,7 @@
         public string ProjectFile { get; set; }
 
         [Required]
-        public string ProjectDir { get; set; }
-
-        [Required]
-        public string Configuration { get; set; }
+        public string IntermediateOutputPath { get; set; }
 
         [Required]
         public ITaskItem[] CompileFiles { get; set; }
@@ -91,15 +88,16 @@
                                       };
             var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(configuration);
 
-            string tempFileName, tempDir;
-            if (string.IsNullOrEmpty(ProjectDir) || string.IsNullOrWhiteSpace(ProjectDir))
+            string tempFileName;
+            string tempDir;
+            if (IntermediateOutputPath == null)
             {
                 tempDir = TempFileTracker.TempPath;
                 tempFileName = string.Format("AssemblyInfo_{0}_{1}.g.cs", Path.GetFileNameWithoutExtension(ProjectFile), Path.GetRandomFileName());
             }
             else
             {
-                tempDir = Path.Combine(ProjectDir, "obj", Configuration);
+                tempDir = Path.Combine(IntermediateOutputPath, "obj", assemblyInfo);
                 Directory.CreateDirectory(tempDir);
                 tempFileName = string.Format("GitVersionTaskAssemblyInfo.g.cs");
             }

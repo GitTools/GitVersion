@@ -5,6 +5,8 @@ namespace GitVersion
 
     public class SemanticVersion : IFormattable, IComparable<SemanticVersion>
     {
+        public static SemanticVersion Empty = new SemanticVersion();
+
         static Regex ParseSemVer = new Regex(
             @"(?<SemVer>(?<Major>\d+)(\.(?<Minor>\d+))(\.(?<Patch>\d+))?)(\.(?<FourthPart>\d+))?(-(?<Tag>[^\+]*))?(\+(?<BuildMetaData>.*))?",
             RegexOptions.Compiled);
@@ -45,6 +47,11 @@ namespace GitVersion
                    Patch == obj.Patch &&
                    PreReleaseTag == obj.PreReleaseTag &&
                    BuildMetaData == obj.BuildMetaData;
+        }
+
+        public bool IsEmpty()
+        {
+            return Equals(Empty);
         }
 
         public override bool Equals(object obj)

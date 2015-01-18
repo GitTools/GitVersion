@@ -84,15 +84,16 @@ namespace GitVersion
             return branch.CanonicalName.Equals("(no branch)", StringComparison.OrdinalIgnoreCase);
         }
 
-        public static string GetRepositoryDirectory(this IRepository repository)
+        public static string GetRepositoryDirectory(this IRepository repository, bool omitGitPostFix = true)
         {
             var gitDirectory = repository.Info.Path;
 
             gitDirectory = gitDirectory.TrimEnd('\\');
 
-            if (gitDirectory.EndsWith(".git"))
+            if (omitGitPostFix && gitDirectory.EndsWith(".git"))
             {
                 gitDirectory = gitDirectory.Substring(0, gitDirectory.Length - ".git".Length);
+                gitDirectory = gitDirectory.TrimEnd('\\');
             }
 
             return gitDirectory;
