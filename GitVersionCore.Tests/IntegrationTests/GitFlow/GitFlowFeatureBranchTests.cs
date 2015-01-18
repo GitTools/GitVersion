@@ -17,7 +17,7 @@ public class GitFlowFeatureBranchTests
             fixture.Repository.Checkout("feature/JIRA-123");
             fixture.Repository.MakeCommits(5);
 
-            fixture.AssertFullSemver("1.1.0-JIRA-123+5");
+            fixture.AssertFullSemver("1.1.0-JIRA-123.1+5");
         }
     }    
 }
