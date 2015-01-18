@@ -37,16 +37,16 @@ public class GitHubFlowSupportBranchScenarios
             // Create 1.2.0 release
             fixture.Repository.Checkout("support/1.0.0");
             fixture.Repository.MergeNoFF("release/1.2.0");
-            fixture.AssertFullSemver("1.2.0+2");
+            fixture.AssertFullSemver("1.2.0+0");
             fixture.Repository.ApplyTag("1.2.0");
 
             // Create 1.2.1 hotfix
             fixture.Repository.CreateBranch("hotfix/1.2.1").Checkout();
             fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver("1.2.1+1");
+            fixture.AssertFullSemver("1.2.1-beta.1+1");
             fixture.Repository.Checkout("support/1.0.0");
             fixture.Repository.MergeNoFF("hotfix/1.2.1");
-            fixture.AssertFullSemver("1.2.1+2");
+            fixture.AssertFullSemver("1.2.1+0");
         }
     }
 
@@ -69,7 +69,7 @@ public class GitHubFlowSupportBranchScenarios
             fixture.Repository.MakeACommit();
             fixture.Repository.MakeACommit();
 
-            fixture.AssertFullSemver("1.3.1+2");
+            fixture.AssertFullSemver("1.3.1+0");
         }
     }
 }

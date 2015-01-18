@@ -44,7 +44,8 @@ note over develop: 1.4.0.2-unstable
 
             // Branch to develop
             fixture.Repository.CreateBranch("develop").Checkout();
-            fixture.AssertFullSemver("1.3.0-unstable.0+0");
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver("1.3.0-unstable.1+1");
 
             // Open Pull Request
             fixture.Repository.CreateBranch("pull/2/merge").Checkout();

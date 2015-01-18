@@ -13,6 +13,12 @@
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch;
             TagPrefix = "[vV]";
             VersioningMode = GitVersion.VersioningMode.ContinuousDelivery;
+
+            Branches["master"] = new BranchConfig
+            {
+                Tag = string.Empty,
+                Increment = IncrementStrategy.Patch,
+            };
             Branches["release[/-]"] = new BranchConfig { Tag = "beta" };
             Branches["feature[/-]"] = new BranchConfig
             {
@@ -25,6 +31,11 @@
                 Tag = "unstable",
                 Increment = IncrementStrategy.Minor,
                 VersioningMode = GitVersion.VersioningMode.ContinuousDeployment
+            };
+            Branches[@"(pull|pull\-requests|pr)[/-]"] = new BranchConfig
+            {
+                Tag = "PullRequest",
+                Increment = IncrementStrategy.Inherit
             };
         }
 

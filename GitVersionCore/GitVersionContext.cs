@@ -83,8 +83,10 @@
         {
             var currentBranchConfig = GetBranchConfiguration(CurrentBranch);
 
-            var versioningMode = currentBranchConfig.Value.VersioningMode ?? configuration.VersioningMode ?? VersioningMode.ContinuousDelivery;
-            var tag = currentBranchConfig.Value.Tag;
+            // Versioning mode drills down, if top level is specified then it takes priority
+            var versioningMode = configuration.VersioningMode ?? currentBranchConfig.Value.VersioningMode ?? VersioningMode.ContinuousDelivery;
+
+            var tag = currentBranchConfig.Value.Tag ?? "useBranchName";
             var nextVersion = configuration.NextVersion;
             var incrementStrategy = currentBranchConfig.Value.Increment ?? IncrementStrategy.Patch;
             var assemblyVersioningScheme = configuration.AssemblyVersioningScheme;

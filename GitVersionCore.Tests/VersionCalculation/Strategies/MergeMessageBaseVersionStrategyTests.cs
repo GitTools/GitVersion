@@ -10,8 +10,10 @@
     public class MergeMessageBaseVersionStrategyTests
     {
         [Test]
-        public void ShouldAllowIncrementOfVersion()
+        public void ShouldNotAllowIncrementOfVersion()
         {
+            // When a branch is merged in you want to start building stable packages of that version
+            // So we shouldn't bump the version
             var context = new GitVersionContextBuilder().WithRepository(new MockRepository
             {
                 Head = new MockBranch("master") { new MockCommit
@@ -24,7 +26,7 @@
 
             var baseVersion = sut.GetVersion(context);
 
-            baseVersion.ShouldIncrement.ShouldBe(true);
+            baseVersion.ShouldIncrement.ShouldBe(false);
         }
 
         [TestCase("Merge branch 'hotfix-0.1.5'", false, null)]
