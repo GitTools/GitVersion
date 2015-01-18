@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using GitVersion;
 using LibGit2Sharp;
 
@@ -51,9 +52,31 @@ public static class GitTestExtensions
 
         File.WriteAllText(randomFile, Guid.NewGuid().ToString());
 
-        repository.Index.Stage(randomFile);
-        return repository.Commit(string.Format("Test Commit for file '{0}'", relativeFileName), 
-            Constants.Signature(dateTimeOffset), Constants.Signature(dateTimeOffset));
+        // GHK: 2015-01-18: I know it's very ugly, but somehow we need to retry here otherwise "there is nothing to commit"
+        int retryCount = 3;
+        while (retryCount > 0)
+        {
+            try
+            {
+                repository.Stage(randomFile);
+
+                return repository.Commit(string.Format("Test Commit for file '{0}'", relativeFileName),
+                    Constants.Signature(dateTimeOffset), Constants.Signature(dateTimeOffset));
+            }
+            catch (EmptyCommitException)
+            {
+                if (retryCount <= 0)
+                {
+                    throw;
+                }
+
+                Thread.Sleep(100);
+            }
+
+            retryCount--;
+        }
+
+        return null;
     }
 
     public static Tag MakeATaggedCommit(this IRepository repository, string tag)

@@ -70,7 +70,7 @@ public class GitPreparerTests
 
                 if (checkConfig)
                 {
-                    var expectedConfigPath = Path.Combine(dynamicRepositoryPath, "GitVersionConfig.yaml");
+                    var expectedConfigPath = Path.Combine(dynamicRepositoryPath, "..\\GitVersionConfig.yaml");
                     Assert.IsTrue(File.Exists(expectedConfigPath));
                 }
             }
