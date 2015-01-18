@@ -8,6 +8,7 @@ using NUnit.Framework;
 
 public abstract class Lg2sHelperBase : IPostTestDirectoryRemover
 {
+    public const string TemporaryReposPath = "TestRepos";
     List<string> directories;
 
     [TestFixtureSetUp]
@@ -30,9 +31,9 @@ public abstract class Lg2sHelperBase : IPostTestDirectoryRemover
         // Do the set up in the static ctor so it only happens once
         SetUpTestEnvironment();
 
-        if (Directory.Exists(Constants.TemporaryReposPath))
+        if (Directory.Exists(TemporaryReposPath))
         {
-            DirectoryHelper.DeleteSubDirectories(Constants.TemporaryReposPath);
+            DirectoryHelper.DeleteSubDirectories(TemporaryReposPath);
         }
     }
 
@@ -58,12 +59,17 @@ public abstract class Lg2sHelperBase : IPostTestDirectoryRemover
 
     protected SelfCleaningDirectory BuildSelfCleaningDirectory()
     {
-        return new SelfCleaningDirectory(this);
+        return new SelfCleaningDirectory(this, BuildTempPath());
     }
 
     protected SelfCleaningDirectory BuildSelfCleaningDirectory(string path)
     {
         return new SelfCleaningDirectory(this, path);
+    }
+
+    protected static string BuildTempPath()
+    {
+        return Path.Combine(TemporaryReposPath, Guid.NewGuid().ToString().Substring(0, 8));
     }
 
     protected string Clone(string sourceDirectoryPath, params string[] additionalSourcePaths)
