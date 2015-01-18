@@ -9,10 +9,10 @@ namespace GitVersion
     {
         public string assemblyVersioningScheme { get; set; }
 
-        [YamlAlias("develop-branch-tag")]
+        [YamlMember(Alias = "develop-branch-tag")]
         public string DevelopBranchTag { get; set; }
 
-        [YamlAlias("release-branch-tag")]
+        [YamlMember(Alias = "release-branch-tag")]
         public string ReleaseBranchTag { get; set; }
     }
 }

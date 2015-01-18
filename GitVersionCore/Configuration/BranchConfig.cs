@@ -15,16 +15,16 @@
             Increment = branchConfiguration.Increment;
         }
 
-        [YamlAlias("mode")]
+        [YamlMember(Alias = "mode")]
         public VersioningMode? VersioningMode { get; set; }
 
         /// <summary>
         /// Special value 'useBranchName' will extract the tag from the branch name
         /// </summary>
-        [YamlAlias("tag")]
+        [YamlMember(Alias = "tag")]
         public string Tag { get; set; }
 
-        [YamlAlias("increment")]
+        [YamlMember(Alias = "increment")]
         public IncrementStrategy? Increment { get; set; }
     }
 }

@@ -83,7 +83,9 @@ release-branch-tag has been replaced by branch specific configuration.See https:
     public void VerifyInit()
     {
         var config = typeof(Config);
-        var aliases = config.GetProperties().Where(p => p.GetCustomAttribute<ObsoleteAttribute>() == null).Select(p => ((YamlAliasAttribute) p.GetCustomAttribute(typeof(YamlAliasAttribute))).Alias);
+        var aliases = config.GetProperties()
+            .Where(p => p.GetCustomAttribute<ObsoleteAttribute>() == null)
+            .Select(p => ((YamlMemberAttribute) p.GetCustomAttribute(typeof(YamlMemberAttribute))).Alias);
         var writer = new StringWriter();
 
         ConfigReader.WriteSample(writer);
@@ -99,7 +101,10 @@ release-branch-tag has been replaced by branch specific configuration.See https:
     public void VerifyAliases()
     {
         var config = typeof(Config);
-        var propertiesMissingAlias = config.GetProperties().Where(p => p.GetCustomAttribute<ObsoleteAttribute>() == null).Where(p => p.GetCustomAttribute(typeof(YamlAliasAttribute)) == null).Select(p => p.Name);
+        var propertiesMissingAlias = config.GetProperties()
+            .Where(p => p.GetCustomAttribute<ObsoleteAttribute>() == null)
+            .Where(p => p.GetCustomAttribute(typeof(YamlMemberAttribute)) == null)
+            .Select(p => p.Name);
 
         propertiesMissingAlias.ShouldBeEmpty();
     }

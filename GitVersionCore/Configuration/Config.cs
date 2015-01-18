@@ -28,13 +28,19 @@
             };
         }
 
-        [YamlAlias("assembly-versioning-scheme")]
+        [YamlMember(Alias = "assembly-versioning-scheme")]
         public AssemblyVersioningScheme AssemblyVersioningScheme { get; set; }
 
-        [YamlAlias("mode")]
+        [YamlMember(Alias = "mode")]
         public VersioningMode? VersioningMode { get; set; }
 
-        [YamlAlias("branches")]
+        [YamlMember(Alias = "tag-prefix")]
+        public string TagPrefix { get; set; }
+
+        [YamlMember(Alias = "next-version")]
+        public string NextVersion { get; set; }
+
+        [YamlMember(Alias = "branches")]
         public Dictionary<string, BranchConfig> Branches
         {
             get
@@ -57,11 +63,5 @@
                 .ForEach(_ => _.prop.SetValue(target, _.value, null));
             return target;
         }
-
-        [YamlAlias("tag-prefix")]
-        public string TagPrefix { get; set; }
-
-        [YamlAlias("next-version")]
-        public string NextVersion { get; set; }
     }
 }
