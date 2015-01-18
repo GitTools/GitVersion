@@ -101,7 +101,7 @@ public abstract class Lg2sHelperBase : IPostTestDirectoryRemover
     {
         var randomFile = Path.Combine(repo.Info.WorkingDirectory, Guid.NewGuid().ToString());
         File.WriteAllText(randomFile, string.Empty);
-        repo.Index.Stage(randomFile);
+        repo.Stage(randomFile);
         var sign = SignatureBuilder.SignatureNow();
         return repo.Commit(type + " commit", sign, sign);
     }
@@ -110,7 +110,7 @@ public abstract class Lg2sHelperBase : IPostTestDirectoryRemover
     {
         var randomFile = Path.Combine(repo.Info.WorkingDirectory, Guid.NewGuid().ToString());
         File.WriteAllText(randomFile, string.Empty);
-        repo.Index.Stage(randomFile);
+        repo.Stage(randomFile);
         var sign = SignatureBuilder.SignatureNow();
         repo.ApplyTag(tagName, repo.Head.Tip.Id.Sha, sign, "foo");
     }
