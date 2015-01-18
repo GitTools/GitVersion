@@ -64,7 +64,7 @@
 
             public override BaseVersion GetVersion(GitVersionContext context)
             {
-                return new BaseVersion(false, true, new SemanticVersion(1), when);
+                return new BaseVersion("Source 1", false, true, new SemanticVersion(1), when, null);
             }
         }
 
@@ -79,7 +79,7 @@
 
             public override BaseVersion GetVersion(GitVersionContext context)
             {
-                return new BaseVersion(true, true, new SemanticVersion(2), when);
+                return new BaseVersion("Source 2", true, true, new SemanticVersion(2), when, null);
             }
         }
     }
