@@ -19,7 +19,7 @@ namespace GitVersion
                 )
             {
                 var fromTag = GetTimeStampFromTag(repo, configuration, commit);
-                
+
                 if (fromTag != DateTimeOffset.MinValue)
                 {
                     return fromTag;
@@ -28,11 +28,18 @@ namespace GitVersion
             return commit.When();
         }
 
-
         static DateTimeOffset GetTimeStampFromTag(IRepository repository, Config configuration, Commit targetCommit)
         {
             var allMajorMinorTags = repository.Tags
-                .Where(x => SemanticVersion.Parse(x.Name, configuration.TagPrefix).Patch == 0)
+                .Where(x =>
+                {
+                    SemanticVersion version;
+                    if (!SemanticVersion.TryParse(x.Name, configuration.TagPrefix, out version))
+                    {
+                        return false;
+                    }
+                    return version.Patch == 0;
+                })
                 .ToDictionary(x => x.PeeledTarget(), x => x);
             var olderThan = targetCommit.When();
             foreach (var commit in repository.Head.Commits.Where(x => x.When() <= olderThan))
