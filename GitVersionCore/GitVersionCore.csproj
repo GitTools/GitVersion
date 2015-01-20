@@ -160,7 +160,7 @@
     <Copy SourceFiles="$(OutputPath)GitVersionCore.pdb" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
     <Copy SourceFiles="$(OutputPath)GitVersionCore.xml" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.nuspec" DestinationFolder="$(SolutionDir)NuGetRefBuild" />
-    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetRefBuild" MetadataAssembly="$(OutputPath)GitVersionCore.dll" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetRefBuild" MetadataAssembly="$(OutputPath)GitVersionCore.dll" Version="$(GitVersion_NuGetVersion)" />
   </Target>
   <Import Project="..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" />
   <Import Project="..\packages\Fody.1.26.4\build\Fody.targets" Condition="Exists('..\packages\Fody.1.26.4\build\Fody.targets')" />
