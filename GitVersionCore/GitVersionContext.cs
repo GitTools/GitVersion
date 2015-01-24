@@ -127,11 +127,19 @@
             if (parentCount == 2)
             {
                 var parents = CurrentCommit.Parents.ToArray();
-                var branch = Repository.Branches.SingleOrDefault(b => b.Tip == parents[1]);
+                var branch = Repository.Branches.SingleOrDefault(b => b.Tip == parents[1]) ;
                 if (branch != null)
                 {
-                    excludedBranches = new[] { currentBranch, branch };
+                    excludedBranches = new[]
+                    {
+                        currentBranch,
+                        branch
+                    };
                     currentBranch = branch;
+                }
+                else
+                {
+                    currentBranch = Repository.Branches.SingleOrDefault(b => b.Tip == parents[0]) ?? currentBranch;
                 }
             }
 
