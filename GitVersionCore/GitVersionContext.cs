@@ -109,40 +109,7 @@
 
                 if (branchConfiguration.Increment == IncrementStrategy.Inherit)
                 {
-                    var branchPoint = currentBranch.FindCommitBranchWasBranchedFrom(Repository);
-
-                    List<Branch> possibleParents;
-                    if (branchPoint.Sha == CurrentCommit.Sha)
-                    {
-                        possibleParents = ListBranchesContaininingCommit(Repository, CurrentCommit.Sha).Except(new[]
-                        {
-                            currentBranch
-                        }).ToList();
-                    }
-                    else
-                    {
-                        var branches = ListBranchesContaininingCommit(Repository, branchPoint.Sha).ToArray();
-                        var currentTipBranches = ListBranchesContaininingCommit(Repository, CurrentCommit.Sha).ToArray();
-                        possibleParents = branches
-                            .Except(currentTipBranches)
-                            .ToList();
-                    }
-
-                    // If it comes down to master and something, master is always first so we pick other branch
-                    if (possibleParents.Count == 2 && possibleParents.Any(p => p.Name == "master"))
-                        possibleParents.Remove(possibleParents.Single(p => p.Name == "master"));
-
-                    if (possibleParents.Count == 1)
-                    {
-                        return new KeyValuePair<string, BranchConfig>(
-                            keyValuePair.Key,
-                            new BranchConfig(branchConfiguration)
-                        {
-                            Increment = GetBranchConfiguration(possibleParents[0]).Value.Increment
-                        });
-                    }
-
-                    throw new Exception("Failed to inherit Increment branch configuration");
+                    return InheritBranchConfiguration(currentBranch, keyValuePair, branchConfiguration);
                 }
 
                 return keyValuePair;
@@ -152,9 +119,63 @@
             throw new Exception(string.Format(format, currentBranch.Name, string.Join(", ", matchingBranches.Select(b => b.Key))));
         }
 
-        static IEnumerable<Branch> ListBranchesContaininingCommit(IRepository repo, string commitSha)
+        KeyValuePair<string, BranchConfig> InheritBranchConfiguration(Branch currentBranch, KeyValuePair<string, BranchConfig> keyValuePair, BranchConfig branchConfiguration)
         {
-            return from branch in repo.Branches
+            var excludedBranches = new Branch[0];
+            // Check if we are a merge commit. If so likely we are a pull request
+            var parentCount = CurrentCommit.Parents.Count();
+            if (parentCount == 2)
+            {
+                var parents = CurrentCommit.Parents.ToArray();
+                var branch = Repository.Branches.SingleOrDefault(b => b.Tip == parents[1]);
+                if (branch != null)
+                {
+                    excludedBranches = new[] { currentBranch, branch };
+                    currentBranch = branch;
+                }
+            }
+
+            var branchPoint = currentBranch.FindCommitBranchWasBranchedFrom(Repository, excludedBranches);
+
+            List<Branch> possibleParents;
+            if (branchPoint.Sha == CurrentCommit.Sha)
+            {
+                possibleParents = ListBranchesContaininingCommit(Repository, CurrentCommit.Sha, excludedBranches).Except(new[]
+                {
+                    currentBranch
+                }).ToList();
+            }
+            else
+            {
+                var branches = ListBranchesContaininingCommit(Repository, branchPoint.Sha, excludedBranches).ToArray();
+                var currentTipBranches = ListBranchesContaininingCommit(Repository, CurrentCommit.Sha, excludedBranches).ToArray();
+                possibleParents = branches
+                    .Except(currentTipBranches)
+                    .ToList();
+            }
+
+            // If it comes down to master and something, master is always first so we pick other branch
+            if (possibleParents.Count == 2 && possibleParents.Any(p => p.Name == "master"))
+            {
+                possibleParents.Remove(possibleParents.Single(p => p.Name == "master"));
+            }
+
+            if (possibleParents.Count == 1)
+            {
+                return new KeyValuePair<string, BranchConfig>(
+                    keyValuePair.Key,
+                    new BranchConfig(branchConfiguration)
+                    {
+                        Increment = GetBranchConfiguration(possibleParents[0]).Value.Increment
+                    });
+            }
+
+            throw new Exception("Failed to inherit Increment branch configuration");
+        }
+
+        static IEnumerable<Branch> ListBranchesContaininingCommit(IRepository repo, string commitSha, Branch[] excludedBranches)
+        {
+            return from branch in repo.Branches.Except(excludedBranches)
                    where !branch.IsRemote
                    let commits = repo.Commits.QueryBy(new CommitFilter { Since = branch }).Where(c => c.Sha == commitSha)
                    where commits.Any()

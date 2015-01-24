@@ -31,6 +31,16 @@ public class MockBranch : Branch, ICollection<Commit>
         get { return canonicalName; }
     }
 
+    public override int GetHashCode()
+    {
+        return name.GetHashCode();
+    }
+
+    public override bool Equals(object obj)
+    {
+        return ReferenceEquals(this, obj);
+    }
+
     public IEnumerator<Commit> GetEnumerator()
     {
         return commits.GetEnumerator();

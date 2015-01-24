@@ -24,10 +24,10 @@ namespace GitVersion
             return repository.Branches.FirstOrDefault(x => x.Name == "origin/" + branchName);
         }
 
-        public static Commit FindCommitBranchWasBranchedFrom(this Branch branch, IRepository repository)
+        public static Commit FindCommitBranchWasBranchedFrom(this Branch branch, IRepository repository, params Branch[] excludedBranches)
         {
-            var tips = repository.Branches.Where(b => b != branch).Select(b => b.Tip).ToList();
-            return repository.Commits.FirstOrDefault(c => tips.Contains(c) || c.Parents.Count() > 1) ?? branch.Tip;
+            var tips = repository.Branches.Except(excludedBranches).Where(b => b != branch).Select(b => b.Tip).ToList();
+            return branch.Commits.FirstOrDefault(c => tips.Contains(c) || c.Parents.Count() > 1) ?? branch.Tip;
         }
 
         public static IEnumerable<Tag> TagsByDate(this IRepository repository, Commit commit)
