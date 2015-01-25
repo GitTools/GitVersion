@@ -26,7 +26,7 @@ namespace GitVersion
 
         public static Commit FindCommitBranchWasBranchedFrom(this Branch branch, IRepository repository, params Branch[] excludedBranches)
         {
-            var tips = repository.Branches.Except(excludedBranches).Where(b => b != branch).Select(b => b.Tip).ToList();
+            var tips = repository.Branches.Except(excludedBranches).Where(b => b != branch && !b.IsRemote).Select(b => b.Tip).ToList();
             return branch.Commits.FirstOrDefault(c => tips.Contains(c) || c.Parents.Count() > 1) ?? branch.Tip;
         }
 
