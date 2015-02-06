@@ -7,7 +7,7 @@ namespace GitVersion
 
     public static class GitHelper
     {
-        const string MergeMessageRegexPattern = "refs/heads/(pr|pull(-requests)?/(?<issuenumber>[0-9]*)/merge)";
+        const string MergeMessageRegexPattern = "refs/heads/(pr|pull(-requests)?/(?<issuenumber>[0-9]*)/(merge|head))";
 
         public static void NormalizeGitDirectory(string gitDirectory, Authentication authentication)
         {
@@ -76,6 +76,7 @@ namespace GitVersion
             // Dynamic: refs/heads/pr/5
             // Github Message: refs/heads/pull/5/merge
             // Stash Message:  refs/heads/pull-requests/5/merge
+            // refs/heads/pull/5/head
             var regex = new Regex(MergeMessageRegexPattern);
             var match = regex.Match(mergeMessage);
 
