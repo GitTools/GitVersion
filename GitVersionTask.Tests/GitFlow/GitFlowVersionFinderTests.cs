@@ -137,7 +137,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
             var path = Path.Combine(repo.Info.WorkingDirectory, "README");
             File.AppendAllText(path, "Release\n");
 
-            repo.Index.Stage(path);
+            repo.Stage(path);
             var sign = SignatureBuilder.SignatureNow();
             repo.Commit("release unborn", sign, sign);
 

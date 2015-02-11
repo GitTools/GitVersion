@@ -32,7 +32,7 @@ public class BaseGitFlowRepositoryFixture : EmptyRepositoryFixture
     {
         var randomFile = Path.Combine(Repository.Info.WorkingDirectory, Guid.NewGuid().ToString());
         File.WriteAllText(randomFile, string.Empty);
-        Repository.Index.Stage(randomFile);
+        Repository.Stage(randomFile);
 
         initialMasterAction(Repository);
 

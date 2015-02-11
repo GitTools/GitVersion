@@ -99,8 +99,6 @@
     <Compile Include="GitFlow\GitFlowVersionFinderTests.cs" />
     <Compile Include="GitHelperTests.cs" />
     <Compile Include="GetVersionTaskTests.cs" />
-    <Compile Include="Helpers\Constants.cs" />
-    <Compile Include="Helpers\DirectoryHelper.cs" />
     <Compile Include="Helpers\FindersHelper.cs" />
     <Compile Include="Helpers\IPostTestDirectoryRemover.cs" />
     <Compile Include="Helpers\LibGit2SharpExtensions.cs" />
