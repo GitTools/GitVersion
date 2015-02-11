@@ -128,7 +128,6 @@
     <Compile Include="SemanticVersion.cs" />
     <Compile Include="SemanticVersionBuildMetaData.cs" />
     <Compile Include="SemanticVersionPreReleaseTag.cs" />
-    <Compile Include="GitFlow\BranchFinders\VersionOnMasterFinder.cs" />
     <Compile Include="VersionPoint.cs" />
   </ItemGroup>
   <ItemGroup>

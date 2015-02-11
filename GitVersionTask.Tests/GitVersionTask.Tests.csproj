@@ -100,7 +100,6 @@
     <Compile Include="Helpers\Lg2sHelperBase.cs" />
     <Compile Include="LibGitExtensionsTests.cs" />
     <Compile Include="UpdateAssemblyInfoTests.cs" />
-    <Compile Include="VersionOnMasterFinderTests.cs" />
     <Compile Include="IntegrationTests.cs" />
     <Compile Include="MergeMessageParserTests.cs" />
     <Compile Include="ModuleInitializer.cs" />
