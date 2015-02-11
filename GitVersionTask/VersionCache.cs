@@ -22,7 +22,6 @@ public static class VersionCache
                 {
                     Logger.WriteInfo("Change detected. flushing cache.");
                     result.Item1.SemanticVersion = versionFinder.FindVersion(context);
-                    result.Item1.MasterReleaseDate = LastMinorVersionFinder.Execute(repo, context.Configuration, repo.Head.Tip);
                 }
                 return result;
             }
@@ -31,7 +30,6 @@ public static class VersionCache
             return versionCacheVersions[key] = Tuple.Create(new CachedVersion
             {
                 SemanticVersion = versionFinder.FindVersion(context),
-                MasterReleaseDate = LastMinorVersionFinder.Execute(repo, context.Configuration, repo.Head.Tip),
                 Timestamp = ticks
             }, context);
         }

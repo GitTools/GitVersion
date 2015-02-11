@@ -84,7 +84,6 @@
     <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\IFileSystem.cs" />
     <Compile Include="Helpers\ProcessHelper.cs" />
-    <Compile Include="LastMinorVersionFinder.cs" />
     <Compile Include="OutputVariables\CommitsAsFourthVersionPartFormatter.cs" />
     <Compile Include="OutputVariables\VersionVariables.cs" />
     <Compile Include="Extensions\ExtensionMethods.git.cs" />

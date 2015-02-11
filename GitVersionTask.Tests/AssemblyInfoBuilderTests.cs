@@ -29,8 +29,7 @@ public class AssemblyInfoBuilderTests
         {
             CachedVersion = new CachedVersion
             {
-                SemanticVersion = semanticVersion,
-                MasterReleaseDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z"),
+                SemanticVersion = semanticVersion
             }
         };
         var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(new TestEffectiveConfiguration());
@@ -84,8 +83,7 @@ public class AssemblyInfoBuilderTests
         {
             CachedVersion = new CachedVersion
             {
-                SemanticVersion = semanticVersion,
-                MasterReleaseDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z")
+                SemanticVersion = semanticVersion
             },
         };
 
