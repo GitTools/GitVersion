@@ -92,6 +92,7 @@
 
         KeyValuePair<string, BranchConfig> InheritBranchConfiguration(Branch currentBranch, KeyValuePair<string, BranchConfig> keyValuePair, BranchConfig branchConfiguration)
         {
+            Logger.WriteInfo("Attempting to inherit branch configuration from parent branch");
             var excludedBranches = new Branch[0];
             // Check if we are a merge commit. If so likely we are a pull request
             var parentCount = CurrentCommit.Parents.Count();
@@ -112,6 +113,8 @@
                 {
                     currentBranch = Repository.Branches.SingleOrDefault(b => !b.IsRemote && b.Tip == parents[0]) ?? currentBranch;
                 }
+
+                Logger.WriteInfo("HEAD is merge commit, this is likely a pull request using " + currentBranch.Name + " as base");
             }
 
             var branchPoint = currentBranch.FindCommitBranchWasBranchedFrom(Repository, OnlyEvaluateTrackedBranches, excludedBranches);
@@ -133,6 +136,8 @@
                     .ToList();
             }
 
+            Logger.WriteInfo("Found possible parent branches: " + string.Join(", ", possibleParents.Select(p => p.Name)));
+
             // If it comes down to master and something, master is always first so we pick other branch
             if (possibleParents.Count == 2 && possibleParents.Any(p => p.Name == "master"))
             {
@@ -149,7 +154,10 @@
                     });
             }
 
-            throw new Exception("Failed to inherit Increment branch configuration");
+            if (possibleParents.Count == 0)
+                throw new Exception("Failed to inherit Increment branch configuration, no branches found");
+
+            throw new Exception("Failed to inherit Increment branch configuration, ended up with: " + string.Join(", ", possibleParents.Select(p => p.Name)));
         }
 
         static IEnumerable<Branch> ListBranchesContaininingCommit(IRepository repo, string commitSha, Branch[] excludedBranches)
