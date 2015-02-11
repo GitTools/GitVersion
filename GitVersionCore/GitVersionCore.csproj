@@ -112,8 +112,6 @@
     <Compile Include="GitFlow\BranchClassifier.cs" />
     <Compile Include="GitFlow\BranchType.cs" />
     <Compile Include="MergeMessageParser.cs" />
-    <Compile Include="GitHubFlow\LastTaggedReleaseFinder.cs" />
-    <Compile Include="GitHubFlow\VersionTaggedCommit.cs" />
     <Compile Include="GitVersionContext.cs" />
     <Compile Include="GitVersionFinder.cs" />
     <Compile Include="Helpers\DeleteHelper.cs" />
