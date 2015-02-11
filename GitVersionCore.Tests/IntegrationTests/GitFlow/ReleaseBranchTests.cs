@@ -16,7 +16,9 @@ public class GitFlowReleaseBranchTests
             fixture.Repository.CreateBranch("release-2.0.0");
             fixture.Repository.Checkout("release-2.0.0");
 
-            fixture.AssertFullSemver("2.0.0-beta.1+5");
+            fixture.AssertFullSemver("2.0.0-beta.1+0");
+            fixture.Repository.MakeCommits(2);
+            fixture.AssertFullSemver("2.0.0-beta.1+2");
         }
     }
 
@@ -33,26 +35,9 @@ public class GitFlowReleaseBranchTests
             fixture.Repository.CreateBranch("release-2.0.0");
             fixture.Repository.Checkout("release-2.0.0");
 
-            fixture.AssertFullSemver("2.0.0-rc.1+5");
-        }
-    }
-
-    [Test]
-    public void CanHandleContinuousDeployment()
-    {
-        var config = new Config
-                         {
-                             VersioningMode = VersioningMode.ContinuousDeployment
-                         };
-        using (var fixture = new EmptyRepositoryFixture(config))
-        {
-            fixture.Repository.MakeATaggedCommit("1.0.3");
-            fixture.Repository.CreateBranch("develop");
-            fixture.Repository.MakeCommits(5);
-            fixture.Repository.CreateBranch("release-2.0.0");
-            fixture.Repository.Checkout("release-2.0.0");
-
-            fixture.AssertFullSemver("2.0.0-beta.5+5");
+            fixture.AssertFullSemver("2.0.0-rc.1+0");
+            fixture.Repository.MakeCommits(2);
+            fixture.AssertFullSemver("2.0.0-rc.1+2");
         }
     }
 
@@ -67,7 +52,9 @@ public class GitFlowReleaseBranchTests
             fixture.Repository.CreateBranch("release-2.0.0-Final");
             fixture.Repository.Checkout("release-2.0.0-Final");
 
-            fixture.AssertFullSemver("2.0.0-beta.1+5");
+            fixture.AssertFullSemver("2.0.0-beta.1+0");
+            fixture.Repository.MakeCommits(2);
+            fixture.AssertFullSemver("2.0.0-beta.1+2");
         }
     }
 
@@ -85,13 +72,13 @@ public class GitFlowReleaseBranchTests
             fixture.Repository.Checkout("master");
             fixture.Repository.MergeNoFF("release-2.0.0", Constants.SignatureNow());
 
-            // TODO For GitHubFlow this is 2.0.0+6, why is it different
-            fixture.AssertFullSemver("2.0.0");
+            fixture.AssertFullSemver("2.0.0+0");
+            fixture.Repository.MakeCommits(2);
+            fixture.AssertFullSemver("2.0.0+2");
         }
     }
 
-    // TODO This test fails for GitFlow, it needs to be fixed (although in reality a support branch should be used)
-    [Test, Ignore]
+    [Test]
     public void WhenReleaseBranchIsMergedIntoMasterHighestVersionIsTakenWithIt()
     {
         using (var fixture = new EmptyRepositoryFixture(new Config()))
@@ -116,7 +103,7 @@ public class GitFlowReleaseBranchTests
             fixture.Repository.Checkout("develop");
             fixture.Repository.MergeNoFF("release-1.0.0", Constants.SignatureNow());
 
-            fixture.AssertFullSemver("2.0.0+11");
+            fixture.AssertFullSemver("2.0.0-unstable.1+5");
         }
     }
 }

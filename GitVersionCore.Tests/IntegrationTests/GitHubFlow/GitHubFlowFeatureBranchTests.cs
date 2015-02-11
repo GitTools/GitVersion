@@ -15,7 +15,7 @@ public class GitHubFlowFeatureBranchTests
             fixture.Repository.Checkout("feature/JIRA-123");
             fixture.Repository.MakeCommits(5);
 
-            fixture.AssertFullSemver("1.0.1-JIRA-123+5");
+            fixture.AssertFullSemver("1.0.1-JIRA-123.1+5");
         }
     }
 
@@ -29,7 +29,7 @@ public class GitHubFlowFeatureBranchTests
             fixture.Repository.Checkout("feature-test");
             fixture.Repository.MakeCommits(5);
 
-            fixture.AssertFullSemver("1.0.1-feature-test+5");
+            fixture.AssertFullSemver("1.0.1-test.1+5");
         }
     }
 }

@@ -22,7 +22,7 @@ namespace GitVersionCore.Tests.VersionCalculation
 
         public BaseVersion GetBaseVersion(GitVersionContext context)
         {
-            return new BaseVersion(shouldIncrement, shouldUpdateTag, semanticVersion, source);
+            return new BaseVersion("Test source", shouldIncrement, shouldUpdateTag, semanticVersion, source, null);
         }
     }
 }

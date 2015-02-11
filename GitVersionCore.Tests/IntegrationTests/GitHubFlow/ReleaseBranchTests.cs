@@ -15,7 +15,9 @@ public class ReleaseBranchTests
             fixture.Repository.CreateBranch("release-2.0.0");
             fixture.Repository.Checkout("release-2.0.0");
 
-            fixture.AssertFullSemver("2.0.0-beta.1+5");
+            fixture.AssertFullSemver("2.0.0-beta.1+0");
+            fixture.Repository.MakeCommits(2);
+            fixture.AssertFullSemver("2.0.0-beta.1+2");
         }
     }
 
@@ -31,7 +33,9 @@ public class ReleaseBranchTests
             fixture.Repository.CreateBranch("release-2.0.0");
             fixture.Repository.Checkout("release-2.0.0");
 
-            fixture.AssertFullSemver("2.0.0-rc.1+5");
+            fixture.AssertFullSemver("2.0.0-rc.1+0");
+            fixture.Repository.MakeCommits(2);
+            fixture.AssertFullSemver("2.0.0-rc.1+2");
         }
     }
 
@@ -48,7 +52,7 @@ public class ReleaseBranchTests
             fixture.Repository.Checkout("master");
             fixture.Repository.MergeNoFF("release-2.0.0", Constants.SignatureNow());
 
-            fixture.AssertFullSemver("2.0.0+6");
+            fixture.AssertFullSemver("2.0.0+0");
         }
     }
     [Test]
@@ -71,7 +75,7 @@ public class ReleaseBranchTests
             fixture.Repository.Checkout("master");
             fixture.Repository.MergeNoFF("release-1.0.0", Constants.SignatureNow());
 
-            fixture.AssertFullSemver("2.0.0+11");
+            fixture.AssertFullSemver("2.0.0+5");
         }
     }
 

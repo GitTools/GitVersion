@@ -16,7 +16,7 @@
                     if (MergeMessageParser.TryParse(c, context.Configuration, out semanticVersion))
                         return new[]
                         {
-                            new BaseVersion(true, true, semanticVersion, c)
+                            new BaseVersion(string.Format("Merge message '{0}'", c.Message.Trim()), false, true, semanticVersion, c, null)
                         };
                     return Enumerable.Empty<BaseVersion>();
                 })

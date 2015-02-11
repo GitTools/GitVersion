@@ -12,8 +12,35 @@ public class DevelopScenarios
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("develop").Checkout();
-            // TODO Should actually be 1.0.0+0
-            fixture.AssertFullSemver("1.1.0-unstable.0+0");
+            fixture.AssertFullSemver("1.0.0+0");
+        }
+    }
+
+    [Test]
+    public void CanChangeDevelopTagViaConfig()
+    {
+        var config = new Config();
+        config.Branches["develop"].Tag = "alpha";
+        using (var fixture = new EmptyRepositoryFixture(config))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.CreateBranch("develop").Checkout();
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver("1.1.0-alpha.1+1");
+        }
+    }
+
+    [Test]
+    public void CanClearDevelopTagViaConfig()
+    {
+        var config = new Config();
+        config.Branches["develop"].Tag = "";
+        using (var fixture = new EmptyRepositoryFixture(config))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.CreateBranch("develop").Checkout();
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver("1.1.0+1");
         }
     }
 
@@ -45,19 +72,6 @@ public class DevelopScenarios
             fixture.AssertFullSemver("1.1.0-unstable.1+1");
         }
     }
-    
-    [Test]
-    public void CanChangeDevelopTagViaConfig()
-    {
-        var config = new Config();
-        config.Branches["develop"].Tag = "alpha";
-        using (var fixture = new EmptyRepositoryFixture(config))
-        {
-            fixture.Repository.MakeATaggedCommit("1.0.0");
-            fixture.Repository.CreateBranch("develop").Checkout();
-            fixture.AssertFullSemver("1.1.0-alpha.0+0");
-        }
-    }
 
     [Test]
     public void CanHandleContinuousDelivery()
@@ -69,20 +83,7 @@ public class DevelopScenarios
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("develop").Checkout();
             fixture.Repository.MakeATaggedCommit("1.1.0-alpha7");
-            fixture.AssertFullSemver("1.1.0-alpha.7+1");
-        }
-    }
-    
-    [Test]
-    public void CanClearDevelopTagViaConfig()
-    {
-        var config = new Config();
-        config.Branches["develop"].Tag = "";
-        using (var fixture = new EmptyRepositoryFixture(config))
-        {
-            fixture.Repository.MakeATaggedCommit("1.0.0");
-            fixture.Repository.CreateBranch("develop").Checkout();
-            fixture.AssertFullSemver("1.1.0+0");
+            fixture.AssertFullSemver("1.1.0-alpha.7+0");
         }
     }
 

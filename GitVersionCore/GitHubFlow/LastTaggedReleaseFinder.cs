@@ -19,7 +19,7 @@ namespace GitVersion
                 SemanticVersion version;
                 if (SemanticVersion.TryParse(t.Name, context.Configuration.GitTagPrefix, out version))
                 {
-                    return new VersionTaggedCommit((Commit)t.Target, version);
+                    return new VersionTaggedCommit((Commit)t.Target, version, t.Name);
                 }
                 return null;
             })

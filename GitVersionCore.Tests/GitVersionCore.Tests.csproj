@@ -77,6 +77,7 @@
     <Compile Include="GitDirFinderTests.cs" />
     <Compile Include="Fixtures\BaseGitFlowRepositoryFixture.cs" />
     <Compile Include="GitVersionContextTests.cs" />
+    <Compile Include="IntegrationTests\PullRequestScenarios.cs" />
     <Compile Include="IntegrationTests\RemoteRepositoryTests.cs" />
     <Compile Include="IntegrationTests\GitFlow\DevelopScenarios.cs" />
     <Compile Include="IntegrationTests\GitFlow\GitFlowFeatureBranchTests.cs" />

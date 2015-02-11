@@ -7,7 +7,7 @@
     {
         public override BaseVersion GetVersion(GitVersionContext context)
         {
-            return new BaseVersion(false, true, new SemanticVersion(minor: 1), context.CurrentBranch.Commits.Last());
+            return new BaseVersion("Fallback base version", false, true, new SemanticVersion(minor: 1), context.CurrentBranch.Commits.Last(), null);
         }
     }
 }
