@@ -42,7 +42,7 @@
                 int? number = 1;
                 var lastTag = lastTagBaseVersionStrategy.GetVersion(context);
                 if (lastTag != null &&
-                    lastTag.BaseVersionSource != context.CurrentCommit &&
+                    !context.IsCurrentCommitTagged &&
                     MajorMinorPatchEqual(lastTag.SemanticVersion, baseVersion.SemanticVersion) &&
                     lastTag.SemanticVersion.PreReleaseTag.HasTag())
                 {
@@ -76,9 +76,12 @@
                     case IncrementStrategy.Major:
                         Logger.WriteInfo("Incrementing Major Version");
                         baseVersion.SemanticVersion.Major++;
+                        baseVersion.SemanticVersion.Minor = 0;
+                        baseVersion.SemanticVersion.Patch = 0;
                         break;
                     case IncrementStrategy.Minor:
                         baseVersion.SemanticVersion.Minor++;
+                        baseVersion.SemanticVersion.Patch = 0;
                         Logger.WriteInfo("Incrementing Minor Version");
                         break;
                     case IncrementStrategy.Patch:

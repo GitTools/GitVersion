@@ -69,7 +69,7 @@ public class SupportBranchScenarios
             fixture.Repository.MakeACommit();
             fixture.Repository.MakeACommit();
 
-            fixture.AssertFullSemver("1.3.1+0");
+            fixture.AssertFullSemver("1.3.0+2");
         }
     }
 }

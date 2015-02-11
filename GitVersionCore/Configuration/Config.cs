@@ -18,6 +18,7 @@
             {
                 Tag = string.Empty,
                 Increment = IncrementStrategy.Patch,
+                PreventIncrementOfMergedBranchVersion = true
             };
             Branches["release[/-]"] = new BranchConfig { Tag = "beta" };
             Branches["feature[/-]"] = new BranchConfig
@@ -30,6 +31,7 @@
             {
                 Tag = string.Empty,
                 Increment = IncrementStrategy.Patch,
+                PreventIncrementOfMergedBranchVersion = true
             };
             Branches["develop"] = new BranchConfig
             {

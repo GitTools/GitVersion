@@ -36,7 +36,7 @@ public class PatchScenarios
             fixture.AssertFullSemver("1.3.0-unstable.1+1");
 
             fixture.Repository.MergeNoFF("hotfix-1.2.1", Constants.SignatureNow());
-            fixture.AssertFullSemver("1.3.0-unstable.1+1");
+            fixture.AssertFullSemver("1.3.0-unstable.1+0");
         }
     }
 

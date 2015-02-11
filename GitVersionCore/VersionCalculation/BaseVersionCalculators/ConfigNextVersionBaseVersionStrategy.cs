@@ -4,7 +4,7 @@
     {
         public override BaseVersion GetVersion(GitVersionContext context)
         {
-            if (string.IsNullOrEmpty(context.Configuration.NextVersion))
+            if (string.IsNullOrEmpty(context.Configuration.NextVersion) || context.IsCurrentCommitTagged)
                 return null;
             var semanticVersion = SemanticVersion.Parse(context.Configuration.NextVersion, context.Configuration.GitTagPrefix);
             return new BaseVersion("NextVersion in GitVersionConfig.yaml", false, true, semanticVersion, null, null);

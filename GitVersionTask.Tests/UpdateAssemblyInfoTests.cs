@@ -70,7 +70,6 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     public void StandardExecutionMode_CanDetermineTheVersionFromALocalFeature()
     {
         var repoPath = CheckoutLocal(ASBMTestRepoWorkingDirPath, "refs/heads/feature/one");
-
         var task = new UpdateAssemblyInfo
         {
             BuildEngine = new MockBuildEngine(),
