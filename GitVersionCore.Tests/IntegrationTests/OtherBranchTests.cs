@@ -16,7 +16,7 @@ public class OtherBranchTests
             fixture.Repository.CreateBranch("alpha-2.0.0");
             fixture.Repository.Checkout("alpha-2.0.0");
 
-            fixture.AssertFullSemver("2.0.0-alpha.1+5");
+            fixture.AssertFullSemver("2.0.0-alpha.1+0");
         }
     }
 }

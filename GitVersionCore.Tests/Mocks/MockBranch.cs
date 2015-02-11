@@ -26,6 +26,8 @@ public class MockBranch : Branch, ICollection<Commit>
     public override string Name { get { return name; } }
     public override ICommitLog Commits { get { return commits; } }
     public override Commit Tip { get { return commits.First(); } }
+    public override bool IsTracking { get { return true; } }
+
     public override string CanonicalName
     {
         get { return canonicalName; }

@@ -24,10 +24,44 @@ namespace GitVersion
             return repository.Branches.FirstOrDefault(x => x.Name == "origin/" + branchName);
         }
 
-        public static Commit FindCommitBranchWasBranchedFrom(this Branch branch, IRepository repository, params Branch[] excludedBranches)
+        public static Commit FindCommitBranchWasBranchedFrom(this Branch branch, IRepository repository, bool onlyTrackedBranches, params Branch[] excludedBranches)
         {
+            var currentBranches = branch.Tip.GetBranchesContainingCommit(repository, onlyTrackedBranches).ToList();
             var tips = repository.Branches.Except(excludedBranches).Where(b => b != branch && !b.IsRemote).Select(b => b.Tip).ToList();
-            return branch.Commits.FirstOrDefault(c => tips.Contains(c) || c.Parents.Count() > 1) ?? branch.Tip;
+            var branchPoint = branch.Commits.FirstOrDefault(c => tips.Contains(c) || c.GetBranchesContainingCommit(repository, onlyTrackedBranches).Count() > currentBranches.Count);
+            return branchPoint ?? branch.Tip;
+        }
+
+        public static IEnumerable<Branch> GetBranchesContainingCommit(this Commit commit, IRepository repository, bool onlyTrackedBranches)
+        {
+            var directBranchHasBeenFound = false;
+            foreach (var branch in repository.Branches)
+            {
+                if (branch.Tip.Sha != commit.Sha || (onlyTrackedBranches && !branch.IsTracking))
+                {
+                    continue;
+                }
+
+                directBranchHasBeenFound = true;
+                yield return branch;
+            }
+
+            if (directBranchHasBeenFound)
+            {
+                yield break;
+            }
+
+            foreach (var branch in repository.Branches)
+            {
+                var commits = repository.Commits.QueryBy(new CommitFilter { Since = branch }).Where(c => c.Sha == commit.Sha);
+
+                if (!commits.Any())
+                {
+                    continue;
+                }
+
+                yield return branch;
+            }
         }
 
         public static IEnumerable<Tag> TagsByDate(this IRepository repository, Commit commit)

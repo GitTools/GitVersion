@@ -11,7 +11,6 @@
     /// </summary>
     public class GitVersionContext
     {
-        readonly bool IsContextForTrackedBranchesOnly;
         readonly Config configuration;
 
         public GitVersionContext(IRepository repository, Config configuration, bool isForTrackingBranchOnly = true)
@@ -19,11 +18,11 @@
         {
         }
 
-        public GitVersionContext(IRepository repository, Branch currentBranch, Config configuration, bool isForTrackingBranchOnly = true)
+        public GitVersionContext(IRepository repository, Branch currentBranch, Config configuration, bool isForTrackingBranch = true)
         {
             Repository = repository;
             this.configuration = configuration;
-            IsContextForTrackedBranchesOnly = isForTrackingBranchOnly;
+            OnlyEvaluateTrackedBranches = isForTrackingBranch;
 
             if (currentBranch == null)
                 throw new InvalidOperationException("Need a branch to operate on");
@@ -32,7 +31,7 @@
 
             if (repository != null && currentBranch.IsDetachedHead())
             {
-                CurrentBranch = GetBranchesContainingCommit(CurrentCommit.Sha).OnlyOrDefault() ?? currentBranch;
+                CurrentBranch = CurrentCommit.GetBranchesContainingCommit(repository, OnlyEvaluateTrackedBranches).OnlyOrDefault() ?? currentBranch;
             }
             else
             {
@@ -42,42 +41,11 @@
             CalculateEffectiveConfiguration();
         }
 
+        public bool OnlyEvaluateTrackedBranches { get; private set; }
         public EffectiveConfiguration Configuration { get; private set; }
         public IRepository Repository { get; private set; }
         public Branch CurrentBranch { get; private set; }
         public Commit CurrentCommit { get; private set; }
-
-        IEnumerable<Branch> GetBranchesContainingCommit(string commitSha)
-        {
-            var directBranchHasBeenFound = false;
-            foreach (var branch in Repository.Branches)
-            {
-                if (branch.Tip.Sha != commitSha || (IsContextForTrackedBranchesOnly && !branch.IsTracking))
-                {
-                    continue;
-                }
-
-                directBranchHasBeenFound = true;
-                yield return branch;
-            }
-
-            if (directBranchHasBeenFound)
-            {
-                yield break;
-            }
-
-            foreach (var branch in Repository.Branches)
-            {
-                var commits = Repository.Commits.QueryBy(new CommitFilter { Since = branch }).Where(c => c.Sha == commitSha);
-
-                if (!commits.Any())
-                {
-                    continue;
-                }
-
-                yield return branch;
-            }
-        }
 
         void CalculateEffectiveConfiguration()
         {
@@ -96,7 +64,7 @@
 
         KeyValuePair<string, BranchConfig> GetBranchConfiguration(Branch currentBranch)
         {
-            var matchingBranches = configuration.Branches.Where(b => Regex.IsMatch("^" + currentBranch.Name, b.Key)).ToArray();
+            var matchingBranches = configuration.Branches.Where(b => Regex.IsMatch(currentBranch.Name, "^" + b.Key, RegexOptions.IgnoreCase)).ToArray();
 
             if (matchingBranches.Length == 0)
             {
@@ -143,7 +111,7 @@
                 }
             }
 
-            var branchPoint = currentBranch.FindCommitBranchWasBranchedFrom(Repository, excludedBranches);
+            var branchPoint = currentBranch.FindCommitBranchWasBranchedFrom(Repository, OnlyEvaluateTrackedBranches, excludedBranches);
 
             List<Branch> possibleParents;
             if (branchPoint.Sha == CurrentCommit.Sha)

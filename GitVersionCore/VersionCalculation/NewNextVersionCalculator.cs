@@ -8,15 +8,17 @@
     {
         IBaseVersionCalculator baseVersionFinder;
         IMetaDataCalculator metaDataCalculator;
+        LastTagBaseVersionStrategy lastTagBaseVersionStrategy;
 
         public NewNextVersionCalculator(IBaseVersionCalculator baseVersionCalculator = null, IMetaDataCalculator metaDataCalculator = null)
         {
             this.metaDataCalculator = metaDataCalculator ?? new MetaDataCalculator();
+            lastTagBaseVersionStrategy = new LastTagBaseVersionStrategy();
             baseVersionFinder = baseVersionCalculator ??
                 new BaseVersionCalculator(
                     new FallbackBaseVersionStrategy(),
                 new ConfigNextVersionBaseVersionStrategy(),
-                new LastTagBaseVersionStrategy(),
+                lastTagBaseVersionStrategy,
                 new MergeMessageBaseVersionStrategy(),
                 new VersionInBranchBaseVersionStrategy());
         }
@@ -37,12 +39,29 @@
                     var name = baseVersion.BranchNameOverride ?? context.CurrentBranch.Name;
                     tagToUse = name.RegexReplace(context.Configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
                 }
-                baseVersion.SemanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, 1);
+                int? number = 1;
+                var lastTag = lastTagBaseVersionStrategy.GetVersion(context);
+                if (lastTag != null &&
+                    lastTag.BaseVersionSource != context.CurrentCommit &&
+                    MajorMinorPatchEqual(lastTag.SemanticVersion, baseVersion.SemanticVersion) &&
+                    lastTag.SemanticVersion.PreReleaseTag.HasTag())
+                {
+                    number = lastTag.SemanticVersion.PreReleaseTag.Number + 1;
+                }
+                
+                baseVersion.SemanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, number);
             }
 
             baseVersion.SemanticVersion.BuildMetaData = metaDataCalculator.Create(baseVersion.BaseVersionSource, context);
 
             return baseVersion.SemanticVersion;
+        }
+
+        static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion)
+        {
+            return lastTag.Major == baseVersion.Major &&
+                   lastTag.Minor == baseVersion.Minor &&
+                   lastTag.Patch == baseVersion.Patch;
         }
 
         static void IncrementVersion(GitVersionContext context, BaseVersion baseVersion)

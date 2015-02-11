@@ -26,6 +26,11 @@
                 Tag = "useBranchName"
             };
             Branches["hotfix[/-]"] = new BranchConfig { Tag = "beta" };
+            Branches["support[/-]"] = new BranchConfig
+            {
+                Tag = string.Empty,
+                Increment = IncrementStrategy.Patch,
+            };
             Branches["develop"] = new BranchConfig
             {
                 Tag = "unstable",

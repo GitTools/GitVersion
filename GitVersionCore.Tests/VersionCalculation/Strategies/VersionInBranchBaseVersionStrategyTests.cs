@@ -1,6 +1,8 @@
 ﻿namespace GitVersionCore.Tests.VersionCalculation.Strategies
 {
+    using GitVersion;
     using GitVersion.VersionCalculation.BaseVersionCalculators;
+    using LibGit2Sharp;
     using NUnit.Framework;
     using Shouldly;
 
@@ -16,19 +18,20 @@
         [TestCase("custom/JIRA-123", null)]
         public void CanTakeVersionFromBranchName(string branchName, string expectedBaseVersion)
         {
-            var context = new GitVersionContextBuilder()
-                .WithBranch(branchName)
-                .AddCommit()
-                .Build();
+            var configuration = new Config();
+            using (var fixture = new EmptyRepositoryFixture(configuration))
+            {
+                fixture.Repository.MakeACommit();
+                var branch = fixture.Repository.CreateBranch(branchName);
+                var sut = new VersionInBranchBaseVersionStrategy();
 
-            var sut = new VersionInBranchBaseVersionStrategy();
+                var baseVersion = sut.GetVersion(new GitVersionContext(fixture.Repository, branch, configuration));
 
-            var baseVersion = sut.GetVersion(context);
-
-            if (expectedBaseVersion == null)
-                baseVersion.ShouldBe(null);
-            else
-                baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
+                if (expectedBaseVersion == null)
+                    baseVersion.ShouldBe(null);
+                else
+                    baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
+            }
         }
     }
 }
