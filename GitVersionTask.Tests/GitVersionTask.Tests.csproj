@@ -86,7 +86,6 @@
     <Compile Include="ApprovalTestsConfig.cs" />
     <Compile Include="AssemblyInfoBuilderTests.cs" />
     <Compile Include="AssemblyLocation.cs" />
-    <Compile Include="BranchClassifierTests.cs" />
     <Compile Include="Mocks\MockBuildEngine.cs" />
     <Compile Include="VersionAndBranchFinderTests.cs" />
     <Compile Include="LambdaEqualityHelperFixture.cs" />

@@ -107,7 +107,6 @@
     <Compile Include="WarningException.cs" />
     <Compile Include="Extensions\ExtensionMethods.cs" />
     <Compile Include="GitDirFinder.cs" />
-    <Compile Include="GitFlow\BranchClassifier.cs" />
     <Compile Include="GitFlow\BranchType.cs" />
     <Compile Include="MergeMessageParser.cs" />
     <Compile Include="GitVersionContext.cs" />
