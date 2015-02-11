@@ -20,20 +20,7 @@ namespace GitVersion
             }
 
             return new NewNextVersionCalculator().FindVersion(context);
-            //if (ShouldGitHubFlowVersioningSchemeApply(context.Repository))
-            //{
-            //    Logger.WriteInfo("GitHubFlow version strategy will be used");
-            //    return new GitHubFlowVersionFinder().FindVersion(context);
-            //}
-
-            //Logger.WriteInfo("GitFlow version strategy will be used");
-            //return new GitFlowVersionFinder().FindVersion(context);
         }
-
-        //static bool ShouldGitHubFlowVersioningSchemeApply(IRepository repo)
-        //{
-        //    return repo.FindBranch("develop") == null;
-        //}
 
         void EnsureMainTopologyConstraints(GitVersionContext context)
         {

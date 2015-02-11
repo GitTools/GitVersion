@@ -80,15 +80,12 @@
     <Compile Include="Configuration\LegacyConfigNotifier.cs" />
     <Compile Include="Configuration\OldConfigurationException.cs" />
     <Compile Include="EffectiveConfiguration.cs" />
-    <Compile Include="GitFlow\BranchFinders\RecentTagVersionExtractor.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\IFileSystem.cs" />
     <Compile Include="Helpers\ProcessHelper.cs" />
-    <Compile Include="LastMinorVersionFinder.cs" />
     <Compile Include="OutputVariables\CommitsAsFourthVersionPartFormatter.cs" />
     <Compile Include="OutputVariables\VersionVariables.cs" />
     <Compile Include="Extensions\ExtensionMethods.git.cs" />
-    <Compile Include="GitFlow\BranchFinders\BranchCommitDifferenceFinder.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculator.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\BaseVersion.cs" />
@@ -110,25 +107,8 @@
     <Compile Include="WarningException.cs" />
     <Compile Include="Extensions\ExtensionMethods.cs" />
     <Compile Include="GitDirFinder.cs" />
-    <Compile Include="GitFlow\BranchClassifier.cs" />
-    <Compile Include="GitFlow\BranchFinders\DevelopBasedVersionFinderBase.cs" />
-    <Compile Include="GitFlow\BranchFinders\DevelopVersionFinder.cs" />
-    <Compile Include="GitFlow\BranchFinders\FeatureVersionFinder.cs" />
-    <Compile Include="GitFlow\BranchFinders\HotfixVersionFinder.cs" />
-    <Compile Include="GitFlow\BranchFinders\MasterVersionFinder.cs" />
-    <Compile Include="GitFlow\BranchFinders\PullVersionFinder.cs" />
-    <Compile Include="GitFlow\BranchFinders\ReleaseVersionFinder.cs" />
-    <Compile Include="GitFlow\BranchFinders\SupportVersionFinder.cs" />
     <Compile Include="GitFlow\BranchType.cs" />
-    <Compile Include="GitFlow\GitFlowVersionFinder.cs" />
     <Compile Include="MergeMessageParser.cs" />
-    <Compile Include="GitHubFlow\BuildNumberCalculator.cs" />
-    <Compile Include="GitHubFlow\GitHubFlowVersionFinder.cs" />
-    <Compile Include="GitHubFlow\LastTaggedReleaseFinder.cs" />
-    <Compile Include="GitHubFlow\MergedBranchesWithVersionFinder.cs" />
-    <Compile Include="GitHubFlow\NextSemverCalculator.cs" />
-    <Compile Include="GitHubFlow\OtherBranchVersionFinder.cs" />
-    <Compile Include="GitHubFlow\VersionTaggedCommit.cs" />
     <Compile Include="GitVersionContext.cs" />
     <Compile Include="GitVersionFinder.cs" />
     <Compile Include="Helpers\DeleteHelper.cs" />
@@ -146,7 +126,6 @@
     <Compile Include="SemanticVersion.cs" />
     <Compile Include="SemanticVersionBuildMetaData.cs" />
     <Compile Include="SemanticVersionPreReleaseTag.cs" />
-    <Compile Include="GitFlow\BranchFinders\VersionOnMasterFinder.cs" />
     <Compile Include="VersionPoint.cs" />
   </ItemGroup>
   <ItemGroup>
