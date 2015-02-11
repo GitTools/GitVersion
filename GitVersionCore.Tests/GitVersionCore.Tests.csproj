@@ -68,9 +68,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\GitVersionTask.Tests\Helpers\DirectoryHelper.cs">
-      <Link>Helpers\DirectoryHelper.cs</Link>
-    </Compile>
     <Compile Include="BuildServers\BuildServerBaseTests.cs" />
     <Compile Include="BuildServers\ContinuaCiTests.cs" />
     <Compile Include="BuildServers\MyGetTests.cs" />
@@ -81,6 +78,7 @@
     <Compile Include="GitDirFinderTests.cs" />
     <Compile Include="Fixtures\BaseGitFlowRepositoryFixture.cs" />
     <Compile Include="GitVersionContextTests.cs" />
+    <Compile Include="Helpers\DirectoryHelper.cs" />
     <Compile Include="IntegrationTests\PullRequestScenarios.cs" />
     <Compile Include="IntegrationTests\RemoteRepositoryTests.cs" />
     <Compile Include="IntegrationTests\GitFlow\DevelopScenarios.cs" />

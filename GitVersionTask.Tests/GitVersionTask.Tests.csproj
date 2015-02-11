@@ -87,15 +87,12 @@
     <Compile Include="AssemblyInfoBuilderTests.cs" />
     <Compile Include="AssemblyLocation.cs" />
     <Compile Include="BranchClassifierTests.cs" />
-    <Compile Include="BranchFinders\DevelopTests.cs" />
     <Compile Include="Mocks\MockBuildEngine.cs" />
     <Compile Include="VersionAndBranchFinderTests.cs" />
-    <Compile Include="GitHubFlow\MergedBranchesWithVersionFinderTests.cs" />
     <Compile Include="LambdaEqualityHelperFixture.cs" />
     <Compile Include="GitFlow\GitFlowVersionFinderTests.cs" />
     <Compile Include="GitHelperTests.cs" />
     <Compile Include="GetVersionTaskTests.cs" />
-    <Compile Include="Helpers\FindersHelper.cs" />
     <Compile Include="Helpers\IPostTestDirectoryRemover.cs" />
     <Compile Include="Helpers\LibGit2SharpExtensions.cs" />
     <Compile Include="Helpers\Scrubbers.cs" />
@@ -105,12 +102,8 @@
     <Compile Include="UpdateAssemblyInfoTests.cs" />
     <Compile Include="VersionOnMasterFinderTests.cs" />
     <Compile Include="IntegrationTests.cs" />
-    <Compile Include="BranchFinders\MasterTests.cs" />
     <Compile Include="MergeMessageParserTests.cs" />
     <Compile Include="ModuleInitializer.cs" />
-    <Compile Include="BranchFinders\FeatureBranchTests.cs" />
-    <Compile Include="BranchFinders\PullBranchTests.cs" />
-    <Compile Include="BranchFinders\ReleaseTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
