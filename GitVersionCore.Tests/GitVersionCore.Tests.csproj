@@ -71,6 +71,10 @@
     <Compile Include="..\GitVersionTask.Tests\Helpers\DirectoryHelper.cs">
       <Link>Helpers\DirectoryHelper.cs</Link>
     </Compile>
+    <Compile Include="BuildServers\BuildServerBaseTests.cs" />
+    <Compile Include="BuildServers\ContinuaCiTests.cs" />
+    <Compile Include="BuildServers\MyGetTests.cs" />
+    <Compile Include="BuildServers\TeamCityTests.cs" />
     <Compile Include="Fixtures\CommitCountingRepoFixture.cs" />
     <Compile Include="ConfigProviderTests.cs" />
     <Compile Include="Fixtures\RemoteRepositoryFixture.cs" />
