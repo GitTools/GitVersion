@@ -31,40 +31,40 @@ public class MetaDataByCommitScenarios
         using (var f = new CommitCountingRepoFixture())
         {
             ResetToP(f.Repository);
-            EnsureMetaDataMatch(f, "1.4.0-unstable.7+7");
+            EnsureMetaDataMatch(f, "1.4.0-unstable.1+1");
 
             ResetToO(f.Repository);
-            EnsureMetaDataMatch(f, "1.4.0-unstable.6+6");
+            EnsureMetaDataMatch(f, "1.4.0-unstable.1+0");
 
             ResetToN(f.Repository);
-            EnsureMetaDataMatch(f, "1.3.1");
+            EnsureMetaDataMatch(f, "1.3.1+0");
 
             ResetToM(f.Repository);
-            EnsureMetaDataMatch(f, "1.4.0-unstable.5+5");
+            EnsureMetaDataMatch(f, "1.4.0-unstable.1+3");
 
             ResetToL(f.Repository);
             EnsureMetaDataMatch(f, "1.3.1-beta.1+1");
 
             ResetToK(f.Repository);
-            EnsureMetaDataMatch(f, "1.4.0-feature+2");
+            EnsureMetaDataMatch(f, "1.2.1-feature.1+4");
 
             ResetToJ(f.Repository);
-            EnsureMetaDataMatch(f, "1.4.0-feature+1");
+            EnsureMetaDataMatch(f, "1.2.1-feature.1+3");
 
             ResetToI(f.Repository);
-            EnsureMetaDataMatch(f, "1.4.0-unstable.2+2");
+            EnsureMetaDataMatch(f, "1.4.0-unstable.1+0");
 
             ResetToH(f.Repository);
-            EnsureMetaDataMatch(f, "1.3.0");
+            EnsureMetaDataMatch(f, "1.3.0+0");
 
             ResetToG(f.Repository);
             EnsureMetaDataMatch(f, "1.3.0-beta.1+2");
 
             ResetToF(f.Repository);
-            EnsureMetaDataMatch(f, "1.2.1");
+            EnsureMetaDataMatch(f, "1.2.1+0");
 
             ResetToE(f.Repository);
-            EnsureMetaDataMatch(f, "1.3.0-unstable.2+2");
+            EnsureMetaDataMatch(f, "1.3.0-unstable.1+2");
 
             ResetToD(f.Repository);
             EnsureMetaDataMatch(f, "1.3.0-beta.1+1");
