@@ -80,7 +80,6 @@
     <Compile Include="GitVersionContextTests.cs" />
     <Compile Include="Helpers\DirectoryHelper.cs" />
     <Compile Include="IntegrationTests\PullRequestScenarios.cs" />
-    <Compile Include="GitFlowFeatureBranchTests.cs" />
     <Compile Include="IntegrationTests\RemoteRepositoryTests.cs" />
     <Compile Include="IntegrationTests\DevelopScenarios.cs" />
     <Compile Include="IntegrationTests\FeatureBranchTests.cs" />

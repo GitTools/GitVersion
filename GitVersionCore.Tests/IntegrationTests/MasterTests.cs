@@ -21,6 +21,22 @@ public class MasterTests
     }
 
     [Test]
+    public void GivenARepositoryWithCommitsButBadTags_VersionShouldBe_0_1()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            // Given
+            fixture.Repository.MakeACommit();
+            fixture.Repository.ApplyTag("BadTag");
+            fixture.Repository.MakeACommit();
+            fixture.Repository.MakeACommit();
+
+            // When
+            fixture.AssertFullSemver("0.1.0+2");
+        }
+    }
+
+    [Test]
     public void GivenARepositoryWithCommitsButNoTagsWithDetachedHead_VersionShouldBe_0_1()
     {
         using (var fixture = new EmptyRepositoryFixture(new Config()))
