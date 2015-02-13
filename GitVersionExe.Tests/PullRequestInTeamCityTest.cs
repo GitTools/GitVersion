@@ -10,6 +10,7 @@ public class PullRequestInTeamCityTest
 
     [TestCase("refs/pull-requests/5/merge")]
     [TestCase("refs/pull/5/merge")]
+    [TestCase("refs/heads/pull/5/head")]
     public void GivenARemoteWithATagOnMaster_AndAPullRequestWithTwoCommits_AndBuildIsRunningInTeamCity_VersionIsCalculatedProperly(string pullRequestRef)
     {
         using (var fixture = new EmptyRepositoryFixture(new Config()))

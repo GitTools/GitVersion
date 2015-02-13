@@ -4,10 +4,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using ApprovalTests;
 using GitVersion;
-using GitVersionCore.Tests;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using NUnit.Framework;
-using Roslyn.Compilers;
-using Roslyn.Compilers.CSharp;
 
 [TestFixture]
 public class AssemblyInfoBuilderTests
@@ -34,11 +33,15 @@ public class AssemblyInfoBuilderTests
         };
         var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(new TestEffectiveConfiguration());
         Approvals.Verify(assemblyInfoText);
-        var syntaxTree = SyntaxTree.ParseText(assemblyInfoText);
-        var references = new[] { new MetadataFileReference(typeof(object).Assembly.Location) };
-        var compilation = Compilation.Create("Greeter.dll", new CompilationOptions(OutputKind.NetModule), new[] { syntaxTree }, references);
+
+        var compilation = CSharpCompilation.Create("Fake.dll")
+            .WithOptions(new CSharpCompilationOptions(OutputKind.NetModule))
+            .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
+            .AddSyntaxTrees(CSharpSyntaxTree.ParseText(assemblyInfoText));
+        
+
         var emitResult = compilation.Emit(new MemoryStream());
-        Assert.IsTrue(emitResult.Success, string.Join(Environment.NewLine, emitResult.Diagnostics.Select(x => x.Info)));
+        Assert.IsTrue(emitResult.Success, string.Join(Environment.NewLine, emitResult.Diagnostics.Select(x => x.Descriptor)));
     }
 
     [Test]
@@ -89,10 +92,13 @@ public class AssemblyInfoBuilderTests
 
         var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(new TestEffectiveConfiguration(assemblyVersioningScheme: avs));
         Approvals.Verify(assemblyInfoText);
-        var syntaxTree = SyntaxTree.ParseText(assemblyInfoText);
-        var references = new[] { new MetadataFileReference(typeof(object).Assembly.Location) };
-        var compilation = Compilation.Create("Greeter.dll", new CompilationOptions(OutputKind.NetModule), new[] { syntaxTree }, references);
+
+        var compilation = CSharpCompilation.Create("Fake.dll")
+    .WithOptions(new CSharpCompilationOptions(OutputKind.NetModule))
+    .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
+    .AddSyntaxTrees(CSharpSyntaxTree.ParseText(assemblyInfoText));
+
         var emitResult = compilation.Emit(new MemoryStream());
-        Assert.IsTrue(emitResult.Success, string.Join(Environment.NewLine, emitResult.Diagnostics.Select(x => x.Info)));
+        Assert.IsTrue(emitResult.Success, string.Join(Environment.NewLine, emitResult.Diagnostics.Select(x => x.Descriptor)));
     }
 }
