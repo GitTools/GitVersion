@@ -1,10 +1,10 @@
 ﻿{
     "Major": 1,
-    "Minor": 1,
-    "Patch": 0,
+    "Minor": 0,
+    "Patch": 2,
     "PreReleaseTag": {
         "Name": "every-feature-is-welcome",
-        "Number": null
+        "Number": 1
     },
     "BuildMetaData": {
         "CommitsSinceTag": 1,

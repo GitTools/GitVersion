@@ -1,5 +1,4 @@
-﻿using System.IO;
-using GitVersion;
+﻿using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
 using ObjectApproval;
@@ -20,64 +19,6 @@ public class GitVersionFinderTests : Lg2sHelperBase
             var finder = new GitVersionFinder();
 
             Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, new Config())));
-        }
-    }
-
-    [Test, Ignore("Need a way to enforce this check")]
-    public void RequiresALocalDevelopBranch()
-    {
-        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
-        using (var repo = new Repository(repoPath))
-        {
-            repo.Branches["feature/one"].ForceCheckout();
-
-            repo.Branches.Remove("develop");
-
-            var finder = new GitVersionFinder();
-
-            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, new Config())));
-        }
-    }
-
-    [Test]
-    public void AHotfixBranchIsRequiredToBranchOffOfMasterBranch()
-    {
-        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
-        using (var repo = new Repository(repoPath))
-        {
-            const string branchName = "hotfix/1.0.2";
-
-            // Create a new unborn hotfix branch sharing no history with "master"
-            repo.Refs.UpdateTarget(repo.Refs.Head.CanonicalName, "refs/heads/" + branchName);
-
-            AddOneCommitToHead(repo, "hotfix");
-
-            var feature = repo.Branches[branchName];
-
-            var finder = new GitVersionFinder();
-
-            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, feature, new Config())));
-        }
-    }
-
-    [Test]
-    public void APullRequestBranchIsRequiredToBranchOffOfDevelopBranch()
-    {
-        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
-        using (var repo = new Repository(repoPath))
-        {
-            const string branchName = "pull/1735/merge";
-
-            // Create a new unborn pull request branch sharing no history with "develop"
-            repo.Refs.UpdateTarget(repo.Refs.Head.CanonicalName, "refs/heads/" + branchName);
-
-            AddOneCommitToHead(repo, "code");
-
-            var pull = repo.Branches[branchName];
-
-            var finder = new GitVersionFinder();
-
-            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, pull, new Config())));
         }
     }
 
@@ -120,32 +61,6 @@ public class GitVersionFinderTests : Lg2sHelperBase
             var versionAndBranch = finder.FindVersion(new GitVersionContext(repo, new Config()));
 
             ObjectApprover.VerifyWithJson(versionAndBranch, Scrubbers.GuidAndDateScrubber);
-        }
-    }
-
-    [Test]
-    public void AReleaseBranchIsRequiredToBranchOffOfDevelopBranch()
-    {
-        var repoPath = Clone(ASBMTestRepoWorkingDirPath);
-        using (var repo = new Repository(repoPath))
-        {
-            const string branchName = "release/1.2.0";
-
-            // Create a new unborn release branch sharing no history with "develop"
-            repo.Refs.UpdateTarget(repo.Refs.Head.CanonicalName, "refs/heads/" + branchName);
-
-            var path = Path.Combine(repo.Info.WorkingDirectory, "README");
-            File.AppendAllText(path, "Release\n");
-
-            repo.Stage(path);
-            var sign = SignatureBuilder.SignatureNow();
-            repo.Commit("release unborn", sign, sign);
-
-            var feature = repo.Branches[branchName];
-
-            var finder = new GitVersionFinder();
-
-            Assert.Throws<WarningException>(() => finder.FindVersion(new GitVersionContext(repo, feature, new Config())));
         }
     }
 }

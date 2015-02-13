@@ -15,15 +15,11 @@
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(1, "master", "b1a34e", DateTimeOffset.Now);
             var sut = new NewNextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
             var config = new Config();
-            config.Branches.Add("master", new BranchConfig
-            {
-                Increment = IncrementStrategy.Major
-            });
             var context = new GitVersionContextBuilder().WithConfig(config).Build();
 
             var version = sut.FindVersion(context);
 
-            version.ToString().ShouldBe("2.0.0");
+            version.ToString().ShouldBe("1.0.1");
         }
 
         [Test]
@@ -33,10 +29,6 @@
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(1, "master", "b1a34e", DateTimeOffset.Now);
             var sut = new NewNextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
             var config = new Config();
-            config.Branches.Add("master", new BranchConfig
-            {
-                Increment = IncrementStrategy.Major
-            });
             var context = new GitVersionContextBuilder().WithConfig(config).Build();
 
             var version = sut.FindVersion(context);

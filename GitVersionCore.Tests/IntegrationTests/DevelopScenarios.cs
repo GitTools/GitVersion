@@ -57,7 +57,7 @@ public class DevelopScenarios
     }
 
     [Test]
-    public void MergingReleaseBranchBackIntoDevelopWithoutMergingToMaster_DoesNotBumpDevelopVersion()
+    public void MergingReleaseBranchBackIntoDevelopWithMergingToMaster_DoesBumpDevelopVersion()
     {
         using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
@@ -65,11 +65,13 @@ public class DevelopScenarios
             fixture.Repository.CreateBranch("develop").Checkout();
             fixture.Repository.MakeACommit();
             fixture.Repository.CreateBranch("release-2.0.0").Checkout();
-            fixture.AssertFullSemver("2.0.0-beta.1+0");
-            fixture.Repository.Checkout("develop");
-            fixture.AssertFullSemver("1.1.0-unstable.1+1");
+            fixture.Repository.MakeACommit();
+            fixture.Repository.Checkout("master");
             fixture.Repository.MergeNoFF("release-2.0.0", Constants.SignatureNow());
-            fixture.AssertFullSemver("1.1.0-unstable.1+1");
+
+            fixture.Repository.Checkout("develop");
+            fixture.Repository.MergeNoFF("release-2.0.0", Constants.SignatureNow());
+            fixture.AssertFullSemver("2.1.0-unstable.1+0");
         }
     }
 

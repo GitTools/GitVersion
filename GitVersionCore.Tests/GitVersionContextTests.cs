@@ -48,7 +48,6 @@
                 }
             };
             var context = new GitVersionContext(mockRepository, develop, config);
-            context.Configuration.VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
             context.Configuration.Tag.ShouldBe("alpha");
         }
 

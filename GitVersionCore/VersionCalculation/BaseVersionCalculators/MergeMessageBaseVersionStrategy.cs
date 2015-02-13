@@ -14,10 +14,13 @@
                     SemanticVersion semanticVersion;
                     // TODO when this approach works, inline the other class into here
                     if (MergeMessageParser.TryParse(c, context.Configuration, out semanticVersion))
+                    {
+                        var shouldIncrement = !context.Configuration.PreventIncrementForMergedBranchVersion;
                         return new[]
                         {
-                            new BaseVersion(string.Format("Merge message '{0}'", c.Message.Trim()), false, true, semanticVersion, c, null)
+                            new BaseVersion(string.Format("Merge message '{0}'", c.Message.Trim()), shouldIncrement, true, semanticVersion, c, null)
                         };
+                    }
                     return Enumerable.Empty<BaseVersion>();
                 })
                 .ToArray();

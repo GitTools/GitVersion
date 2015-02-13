@@ -10,8 +10,9 @@ namespace GitVersionCore.Tests
             string gitTagPrefix = "v", 
             string tag = "",
             string nextVersion = null,
-            string branchPrefixToTrim = "") : 
-                base(assemblyVersioningScheme, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch, branchPrefixToTrim)
+            string branchPrefixToTrim = "",
+            bool preventIncrementForMergedBranchVersion = false) : 
+                base(assemblyVersioningScheme, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch, branchPrefixToTrim, preventIncrementForMergedBranchVersion)
         {
         }
     }

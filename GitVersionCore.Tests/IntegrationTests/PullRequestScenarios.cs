@@ -91,9 +91,8 @@ public class PullRequestScenarios
             fixture.Repository.Checkout("pull/2/merge");
             // If we delete the branch, it is effectively the same as remote PR
             fixture.Repository.Branches.Remove("feature/Foo");
-
-            fixture.DumpGraph();
-            fixture.AssertFullSemver("0.2.0-PullRequest.1+3");
+            
+            fixture.AssertFullSemver("0.2.0-PullRequest.2+3");
         }
     }
 }

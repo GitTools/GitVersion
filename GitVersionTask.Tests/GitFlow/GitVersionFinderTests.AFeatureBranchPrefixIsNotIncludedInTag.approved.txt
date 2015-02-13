@@ -4,7 +4,7 @@
     "Patch": 0,
     "PreReleaseTag": {
         "Name": "ABC-1234_SomeDescription",
-        "Number": null
+        "Number": 1
     },
     "BuildMetaData": {
         "CommitsSinceTag": 1,

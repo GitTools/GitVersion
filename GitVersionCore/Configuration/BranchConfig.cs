@@ -26,5 +26,8 @@
 
         [YamlMember(Alias = "increment")]
         public IncrementStrategy? Increment { get; set; }
+
+        [YamlMember(Alias = "preventIncrementOfMergedBranchVersion")]
+        public bool? PreventIncrementOfMergedBranchVersion { get; set; }
     }
 }

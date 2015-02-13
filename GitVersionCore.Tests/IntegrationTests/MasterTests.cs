@@ -56,7 +56,7 @@ public class MasterTests
     [Test]
     public void GivenARepositoryWithTagAndANextVersionTxtFileAndNoCommits_VersionShouldBeTag()
     {
-            const string ExpectedNextVersion = "1.1.0";
+        const string ExpectedNextVersion = "1.1.0";
         using (var fixture = new EmptyRepositoryFixture(new Config { NextVersion = ExpectedNextVersion }))
         {
             const string TaggedVersion = "1.0.3";
