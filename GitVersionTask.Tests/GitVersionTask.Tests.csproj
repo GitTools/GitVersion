@@ -101,7 +101,6 @@
     <Compile Include="Mocks\MockBuildEngine.cs" />
     <Compile Include="VersionAndBranchFinderTests.cs" />
     <Compile Include="LambdaEqualityHelperFixture.cs" />
-    <Compile Include="GitFlow\GitFlowVersionFinderTests.cs" />
     <Compile Include="GitHelperTests.cs" />
     <Compile Include="GetVersionTaskTests.cs" />
     <Compile Include="Helpers\IPostTestDirectoryRemover.cs" />
