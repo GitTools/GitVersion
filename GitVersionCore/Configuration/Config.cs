@@ -42,6 +42,7 @@
             Branches[@"(pull|pull\-requests|pr)[/-]"] = new BranchConfig
             {
                 Tag = "PullRequest",
+                TagNumberPattern = @"[/-](?<number>\d+)[-/]",
                 Increment = IncrementStrategy.Inherit
             };
         }

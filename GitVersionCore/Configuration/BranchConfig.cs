@@ -13,6 +13,8 @@
             VersioningMode = branchConfiguration.VersioningMode;
             Tag = branchConfiguration.Tag;
             Increment = branchConfiguration.Increment;
+            PreventIncrementOfMergedBranchVersion = branchConfiguration.PreventIncrementOfMergedBranchVersion;
+            TagNumberPattern = branchConfiguration.TagNumberPattern;
         }
 
         [YamlMember(Alias = "mode")]
@@ -29,5 +31,8 @@
 
         [YamlMember(Alias = "preventIncrementOfMergedBranchVersion")]
         public bool? PreventIncrementOfMergedBranchVersion { get; set; }
+
+        [YamlMember(Alias = "tagNumberPattern")]
+        public string TagNumberPattern { get; set; }
     }
 }

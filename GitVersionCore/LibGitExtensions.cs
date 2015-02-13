@@ -28,7 +28,12 @@ namespace GitVersion
         {
             var currentBranches = branch.Tip.GetBranchesContainingCommit(repository, onlyTrackedBranches).ToList();
             var tips = repository.Branches.Except(excludedBranches).Where(b => b != branch && !b.IsRemote).Select(b => b.Tip).ToList();
-            var branchPoint = branch.Commits.FirstOrDefault(c => tips.Contains(c) || c.GetBranchesContainingCommit(repository, onlyTrackedBranches).Count() > currentBranches.Count);
+            var branchPoint = branch.Commits.FirstOrDefault(c =>
+            {
+                if (tips.Contains(c)) return true;
+                var branchesContainingCommit = c.GetBranchesContainingCommit(repository, onlyTrackedBranches).ToList();
+                return branchesContainingCommit.Count > currentBranches.Count;
+            });
             return branchPoint ?? branch.Tip;
         }
 

@@ -10,7 +10,8 @@
             VersioningMode versioningMode, string gitTagPrefix, 
             string tag, string nextVersion, IncrementStrategy increment, 
             string branchPrefixToTrim, 
-            bool preventIncrementForMergedBranchVersion)
+            bool preventIncrementForMergedBranchVersion, 
+            string tagNumberPattern)
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
             VersioningMode = versioningMode;
@@ -20,6 +21,7 @@
             Increment = increment;
             BranchPrefixToTrim = branchPrefixToTrim;
             PreventIncrementForMergedBranchVersion = preventIncrementForMergedBranchVersion;
+            TagNumberPattern = tagNumberPattern;
         }
 
         public VersioningMode VersioningMode { get; private set; }
@@ -43,5 +45,7 @@
         public string BranchPrefixToTrim { get; private set; }
 
         public bool PreventIncrementForMergedBranchVersion { get; private set; }
+
+        public string TagNumberPattern { get; private set; }
     }
 }

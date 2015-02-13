@@ -22,7 +22,7 @@ public class PullRequestScenarios
             fixture.Repository.Checkout("pull/2/merge");
 
             fixture.DumpGraph();
-            fixture.AssertFullSemver("0.1.1-PullRequest.1+2");
+            fixture.AssertFullSemver("0.1.1-PullRequest.2+2");
         }
     }
 
@@ -39,13 +39,13 @@ public class PullRequestScenarios
 
             fixture.Repository.Checkout("develop");
             fixture.Repository.MergeNoFF("feature/Foo");
-            fixture.Repository.CreateBranch("pull/2/merge").Checkout();
+            fixture.Repository.CreateBranch("pull/44/merge").Checkout();
             fixture.Repository.Checkout("develop");
             fixture.Repository.Reset(ResetMode.Hard, "HEAD~1");
-            fixture.Repository.Checkout("pull/2/merge");
+            fixture.Repository.Checkout("pull/44/merge");
 
             fixture.DumpGraph();
-            fixture.AssertFullSemver("0.2.0-PullRequest.1+3");
+            fixture.AssertFullSemver("0.2.0-PullRequest.44+3");
         }
     }
 
@@ -68,7 +68,7 @@ public class PullRequestScenarios
             fixture.Repository.Branches.Remove("feature/Foo");
 
             fixture.DumpGraph();
-            fixture.AssertFullSemver("0.1.1-PullRequest.1+2");
+            fixture.AssertFullSemver("0.1.1-PullRequest.2+2");
         }
     }
 

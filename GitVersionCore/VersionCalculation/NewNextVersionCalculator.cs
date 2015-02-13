@@ -39,16 +39,28 @@
                     var name = baseVersion.BranchNameOverride ?? context.CurrentBranch.Name;
                     tagToUse = name.RegexReplace(context.Configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
                 }
-                int? number = 1;
+                int? number = null;
+                if (!string.IsNullOrEmpty(context.Configuration.TagNumberPattern))
+                {
+                    var match = Regex.Match(context.CurrentBranch.CanonicalName, context.Configuration.TagNumberPattern);
+                    var numberGroup = match.Groups["number"];
+                    if (numberGroup.Success)
+                        number = int.Parse(numberGroup.Value);
+                }
+
                 var lastTag = lastTagBaseVersionStrategy.GetVersion(context);
-                if (lastTag != null &&
+                if (number == null &&
+                    lastTag != null &&
                     !context.IsCurrentCommitTagged &&
                     MajorMinorPatchEqual(lastTag.SemanticVersion, baseVersion.SemanticVersion) &&
                     lastTag.SemanticVersion.PreReleaseTag.HasTag())
                 {
                     number = lastTag.SemanticVersion.PreReleaseTag.Number + 1;
                 }
-                
+
+                if (number == null)
+                    number = 1;
+
                 baseVersion.SemanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, number);
             }
 
