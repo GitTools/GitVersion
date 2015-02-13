@@ -16,11 +16,11 @@
         {
         }
 
-        public GitVersionContext(IRepository repository, Branch currentBranch, Config configuration, bool isForTrackingBranch = true)
+        public GitVersionContext(IRepository repository, Branch currentBranch, Config configuration, bool onlyEvaluateTrackedBranches = true)
         {
             Repository = repository;
             this.configuration = configuration;
-            OnlyEvaluateTrackedBranches = isForTrackingBranch;
+            OnlyEvaluateTrackedBranches = onlyEvaluateTrackedBranches;
 
             if (currentBranch == null)
                 throw new InvalidOperationException("Need a branch to operate on");
