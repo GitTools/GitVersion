@@ -88,6 +88,7 @@ branches:
     }
 
     [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public void CanWriteOutEffectiveConfiguration()
     {
         var config = ConfigurationProvider.GetEffectiveConfigAsString(gitDirectory, fileSystem);
