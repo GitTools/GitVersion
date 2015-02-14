@@ -22,6 +22,20 @@ public class GitFlowReleaseBranchTests
     }
 
     [Test]
+    public void ReleaseBranchWithNextVersionSetInConfig()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config { NextVersion = "2.0.0"}))
+        {
+            fixture.Repository.MakeCommits(5);
+            fixture.Repository.CreateBranch("release-2.0.0").Checkout();
+
+            fixture.AssertFullSemver("2.0.0-beta.1+0");
+            fixture.Repository.MakeCommits(2);
+            fixture.AssertFullSemver("2.0.0-beta.1+2");
+        }
+    }
+
+    [Test]
     public void CanTakeVersionFromReleaseBranchWithTagOverriden()
     {
         var config = new Config();
