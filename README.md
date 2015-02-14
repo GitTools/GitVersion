@@ -46,9 +46,11 @@ If you have other branch types GitVersion is entirely configuration driven, so c
 Those of you who have tried to do SemVer with Octopus Deploy or consume CI packages out of TeamCity would have hit 
 the problem that the SemVer version does not change each commit.
 
-By default GitVersion is setup for *continuous delivery*, meaning that when you want to release you publish the artifact attached to your CI Build ([read more about what this means](https://github.com/ParticularLabs/GitVersion/wiki/Continuous-Delivery-Mode).
+By default GitVersion is setup for *continuous delivery*, meaning that when you want to release you publish the artifact attached to 
+your CI Build ([read more about what this means](https://github.com/ParticularLabs/GitVersion/wiki/Continuous-Delivery-Mode)).
 
-If you want to consume packages from you CI server, for instance Octopus Deploy is looking at TeamCity's NuGet feed then you want GitVersion's *continuous deployment mode*. See the [Configuration]
+If you want to consume packages from you CI server, for instance Octopus Deploy is looking at TeamCity's NuGet feed then you want GitVersion's *continuous deployment mode*. 
+See the [Configuration](#configuration)
 
 When using the continuous deployment mode all builds *must* have a pre-release tag, except for builds which are explicitly tagged as stable. 
 Then the build metadata (which is the commit count) is promoted to the pre-release tag. Applying those rules the above commit graph would produce:
@@ -65,6 +67,9 @@ b5d142		->		2.0.0-ci.0 (2.0.0 branch was merged, so master is now at 2.0.0)
 ```
 
 As you can see the versions now no longer conflict. When you want to create a stable `2.0.0` release you simply `git tag 2.0.0` then build the tag and it will produce a stable 2.0.0 package.
+
+For more information/background on why we have come to this conclusion read [Xavier Decoster's blog post on the subject](http://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions).
+The issue has also been discussed in quite a few issues. If you have other thoughts on this subject please open an issue to discuss!
 
 ### NuGet Compatibility
 Again, if you have used NuGet you would notice the versions above are not compatible with NuGet. GitVersion solves this by providing *variables*.
