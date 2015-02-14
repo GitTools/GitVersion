@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using System;
 using GitVersion;
 using LibGit2Sharp;
 
@@ -17,7 +17,7 @@ public class EmptyRepositoryFixture : RepositoryFixtureBase
     static IRepository CreateNewRepository(string path)
     {
         LibGit2Sharp.Repository.Init(path);
-        Trace.WriteLine("Created git repository at '{0}'", path);
+        Console.WriteLine("Created git repository at '{0}'", path);
 
         return new Repository(path);
     }

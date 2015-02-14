@@ -9,10 +9,7 @@ using LibGit2Sharp;
 
 public static class GitTestExtensions
 {
-    public static Commit MakeACommit(this IRepository repository)
-    {
-        return MakeACommit(repository, Constants.Now);
-    }
+    static int pad = 1;
 
     public static void DumpGraph(this IRepository repository)
     {
@@ -29,12 +26,9 @@ public static class GitTestExtensions
         Trace.Write(output.ToString());
     }
 
-    public static Commit MakeACommit(this IRepository repository, DateTimeOffset dateTimeOffset)
+    public static Commit MakeACommit(this IRepository repository)
     {
-        var randomFile = Path.Combine(repository.Info.WorkingDirectory, Guid.NewGuid().ToString());
-        File.WriteAllText(randomFile, string.Empty);
-        repository.Stage(randomFile);
-        return repository.Commit("Test Commit", Constants.Signature(dateTimeOffset), Constants.Signature(dateTimeOffset));
+        return CreateFileAndCommit(repository, Guid.NewGuid().ToString());
     }
 
     public static void MergeNoFF(this IRepository repository, string branch)
@@ -56,6 +50,24 @@ public static class GitTestExtensions
         return Enumerable.Range(1, numCommitsToMake)
             .Select(x => repository.MakeACommit())
             .ToArray();
+    }
+
+    public static Commit CreateFileAndCommit(this IRepository repository, string relativeFileName)
+    {
+        var randomFile = Path.Combine(repository.Info.WorkingDirectory, relativeFileName);
+        if (File.Exists(randomFile))
+        {
+            File.Delete(randomFile);
+        }
+
+        var totalWidth = 36 + (pad++ % 10);
+        var contents = Guid.NewGuid().ToString().PadRight(totalWidth, '.');
+        File.WriteAllText(randomFile, contents);
+
+        repository.Stage(randomFile);
+
+        return repository.Commit(string.Format("Test Commit for file '{0}'", relativeFileName),
+            Constants.SignatureNow(), Constants.SignatureNow());
     }
 
     public static Tag MakeATaggedCommit(this IRepository repository, string tag)
