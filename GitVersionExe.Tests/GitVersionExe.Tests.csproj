@@ -88,6 +88,7 @@
     <Compile Include="ExecutionResults.cs" />
     <Compile Include="GitPreparerTests.cs" />
     <Compile Include="GitVersionHelper.cs" />
+    <Compile Include="HelpWriterTests.cs" />
     <Compile Include="MsBuildProjectArgTest.cs" />
     <Compile Include="PullRequestInTeamCityTest.cs" />
     <Compile Include="AssemblyInfoFileUpdateTests.cs" />

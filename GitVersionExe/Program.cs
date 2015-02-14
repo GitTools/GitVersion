@@ -76,6 +76,11 @@ namespace GitVersion
                     ConfigurationProvider.WriteSample(gitDirectory, fileSystem);
                     return 0;
                 }
+                if (arguments.ShowConfig)
+                {
+                    Console.WriteLine(ConfigurationProvider.GetEffectiveConfigAsString(gitDirectory, fileSystem));
+                    return 0;
+                }
 
                 var workingDirectory = Directory.GetParent(gitDirectory).FullName;
                 Logger.WriteInfo("Working directory: " + workingDirectory);
@@ -88,6 +93,7 @@ namespace GitVersion
                 VersionVariables variables;
                 var versionFinder = new GitVersionFinder();
                 var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
+
                 using (var repo = RepositoryLoader.GetRepo(gitDirectory))
                 {
                     var gitVersionContext = new GitVersionContext(repo, configuration);
@@ -105,7 +111,7 @@ namespace GitVersion
 
                 if (arguments.Output == OutputType.Json)
                 {
-                    switch (arguments.VersionPart)
+                    switch (arguments.ShowVariable)
                     {
                         case null:
                             Console.WriteLine(JsonOutputFormatter.ToJson(variables));
@@ -113,22 +119,14 @@ namespace GitVersion
 
                         default:
                             string part;
-                            if (!variables.TryGetValue(arguments.VersionPart, out part))
+                            if (!variables.TryGetValue(arguments.ShowVariable, out part))
                             {
-                                throw new WarningException(string.Format("Could not extract '{0}' from the available parts.", arguments.VersionPart));
+                                throw new WarningException(string.Format("'{0}' variable does not exist", arguments.ShowVariable));
                             }
                             Console.WriteLine(part);
                             break;
                     }
                 }
-
-                if (!string.IsNullOrWhiteSpace(arguments.AssemblyVersionFormat) && !variables.ContainsKey(arguments.AssemblyVersionFormat))
-                {
-                    Console.WriteLine("Unrecognised AssemblyVersionFormat argument. Valid values for this argument are: {0}", string.Join(" ", variables.AvailableVariables));
-                    HelpWriter.Write();
-                    return 1;
-                }
-
 
                 using (var assemblyInfoUpdate = new AssemblyInfoFileUpdate(arguments, workingDirectory, variables, fileSystem))
                 {

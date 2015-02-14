@@ -78,6 +78,12 @@ namespace GitVersion
                     continue;
                 }
 
+                if (IsSwitch("targetpath", name))
+                {
+                    arguments.TargetPath = value;
+                    continue;
+                }
+
                 if (IsSwitch("url", name))
                 {
                     arguments.TargetUrl = value;
@@ -151,13 +157,30 @@ namespace GitVersion
 
                 if (IsSwitch("assemblyversionformat", name))
                 {
-                    arguments.AssemblyVersionFormat = value;
-                    continue;
+                    throw new WarningException("assemblyversionformat switch removed, use AssemblyVersioningScheme configuration value instead");
                 }
 
                 if ((IsSwitch("v", name)) && VersionParts.Contains(value.ToLower()))
                 {
-                    arguments.VersionPart = value.ToLower();
+                    arguments.ShowVariable = value.ToLower();
+                    continue;
+                }
+
+                if (IsSwitch("showConfig", name))
+                {
+                    if (new[] { "1", "true" }.Contains(value))
+                    {
+                        arguments.ShowConfig = true;
+                    }
+                    else if (new[] { "0", "false" }.Contains(value))
+                    {
+                        arguments.UpdateAssemblyInfo = false;
+                    }
+                    else
+                    {
+                        arguments.ShowConfig = true;
+                        index--;
+                    }
                     continue;
                 }
 
