@@ -3,17 +3,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using GitVersion;
 using GitVersion.Helpers;
 using LibGit2Sharp;
 
 public static class GitTestExtensions
 {
-    public static Commit MakeACommit(this IRepository repository)
-    {
-        return MakeACommit(repository, Constants.Now);
-    }
+    static int pad = 1;
 
     public static void DumpGraph(this IRepository repository)
     {
@@ -30,9 +26,9 @@ public static class GitTestExtensions
         Trace.Write(output.ToString());
     }
 
-    public static Commit MakeACommit(this IRepository repository, DateTimeOffset dateTimeOffset)
+    public static Commit MakeACommit(this IRepository repository)
     {
-        return CreateFileAndCommit(repository, Guid.NewGuid().ToString(), dateTimeOffset);
+        return CreateFileAndCommit(repository, Guid.NewGuid().ToString());
     }
 
     public static void MergeNoFF(this IRepository repository, string branch)
@@ -56,46 +52,22 @@ public static class GitTestExtensions
             .ToArray();
     }
 
-    public static Commit CreateFileAndCommit(this IRepository repository, string relativeFileName, DateTimeOffset dateTimeOffset = default(DateTimeOffset))
+    public static Commit CreateFileAndCommit(this IRepository repository, string relativeFileName)
     {
-        if (dateTimeOffset == default(DateTimeOffset))
-        {
-            dateTimeOffset = DateTimeOffset.Now;
-        }
-
         var randomFile = Path.Combine(repository.Info.WorkingDirectory, relativeFileName);
         if (File.Exists(randomFile))
         {
             File.Delete(randomFile);
         }
 
-        File.WriteAllText(randomFile, Guid.NewGuid().ToString());
+        var totalWidth = 36 + (pad++ % 10);
+        var contents = Guid.NewGuid().ToString().PadRight(totalWidth, '.');
+        File.WriteAllText(randomFile, contents);
 
-        // GHK: 2015-01-18: I know it's very ugly, but somehow we need to retry here otherwise "there is nothing to commit"
-        var retryCount = 3;
-        while (retryCount > 0)
-        {
-            try
-            {
-                repository.Stage(randomFile);
+        repository.Stage(randomFile);
 
-                return repository.Commit(string.Format("Test Commit for file '{0}'", relativeFileName),
-                    Constants.Signature(dateTimeOffset), Constants.Signature(dateTimeOffset));
-            }
-            catch (EmptyCommitException)
-            {
-                if (retryCount <= 0)
-                {
-                    throw;
-                }
-
-                Thread.Sleep(100);
-            }
-
-            retryCount--;
-        }
-
-        return null;
+        return repository.Commit(string.Format("Test Commit for file '{0}'", relativeFileName),
+            Constants.SignatureNow(), Constants.SignatureNow());
     }
 
     public static Tag MakeATaggedCommit(this IRepository repository, string tag)

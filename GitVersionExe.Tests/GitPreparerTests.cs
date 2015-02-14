@@ -2,6 +2,7 @@
 using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
+using Shouldly;
 
 [TestFixture]
 public class GitPreparerTests
@@ -59,19 +60,19 @@ public class GitPreparerTests
             var gitPreparer = new GitPreparer(arguments);
             var dynamicRepositoryPath = gitPreparer.Prepare();
 
-            Assert.AreEqual(Path.Combine(tempDir, "_dynamicrepository", ".git"), dynamicRepositoryPath);
-            Assert.IsTrue(gitPreparer.IsDynamicGitRepository);
+            dynamicRepositoryPath.ShouldBe(Path.Combine(tempDir, "_dynamicrepository", ".git"));
+            gitPreparer.IsDynamicGitRepository.ShouldBe(true);
 
             using (var repository = new Repository(dynamicRepositoryPath))
             {
                 var currentBranch = repository.Head.CanonicalName;
 
-                Assert.IsTrue(currentBranch.EndsWith(expectedBranchName));
+                currentBranch.EndsWith(expectedBranchName).ShouldBe(true);
 
                 if (checkConfig)
                 {
                     var expectedConfigPath = Path.Combine(dynamicRepositoryPath, "..\\GitVersionConfig.yaml");
-                    Assert.IsTrue(File.Exists(expectedConfigPath));
+                    File.Exists(expectedConfigPath).ShouldBe(true);
                 }
             }
         }
@@ -90,7 +91,7 @@ public class GitPreparerTests
         var gitPreparer = new GitPreparer(arguments);
         var dynamicRepositoryPath = gitPreparer.Prepare();
 
-        Assert.AreEqual(null, dynamicRepositoryPath);
-        Assert.IsFalse(gitPreparer.IsDynamicGitRepository);
+        dynamicRepositoryPath.ShouldBe(null);
+        gitPreparer.IsDynamicGitRepository.ShouldBe(false);
     }
 }
