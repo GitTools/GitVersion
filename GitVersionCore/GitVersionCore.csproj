@@ -74,7 +74,7 @@
     <Compile Include="BuildServers\TeamCity.cs" />
     <Compile Include="Configuration\BranchConfig.cs" />
     <Compile Include="Configuration\Config.cs" />
-    <Compile Include="Configuration\ConfigReader.cs" />
+    <Compile Include="Configuration\ConfigSerialiser.cs" />
     <Compile Include="Configuration\ConfigurationProvider.cs" />
     <Compile Include="Configuration\IncrementStrategy.cs" />
     <Compile Include="Configuration\LegacyConfig.cs" />

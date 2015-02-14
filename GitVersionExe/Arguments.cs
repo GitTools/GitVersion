@@ -19,7 +19,7 @@ namespace GitVersion
 
         public bool IsHelp;
         public string LogFilePath;
-        public string VersionPart;
+        public string ShowVariable;
 
         public OutputType Output;
         
@@ -30,6 +30,7 @@ namespace GitVersion
 
         public bool UpdateAssemblyInfo;
         public string UpdateAssemblyInfoFileName;
-        public string AssemblyVersionFormat;      
+
+        public bool ShowConfig;
     }
 }

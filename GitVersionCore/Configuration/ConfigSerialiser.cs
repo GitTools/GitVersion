@@ -4,7 +4,7 @@
     using YamlDotNet.Serialization;
     using YamlDotNet.Serialization.NamingConventions;
 
-    public class ConfigReader
+    public class ConfigSerialiser
     {
         public static Config Read(TextReader reader)
         {
@@ -15,6 +15,12 @@
                 return new Config();
             }
             return deserialize;
+        }
+
+        public static void Write(Config config, TextWriter writer)
+        {
+            var serializer = new Serializer(SerializationOptions.None, new HyphenatedNamingConvention());
+            serializer.Serialize(writer, config);
         }
 
         public static void WriteSample(TextWriter writer)

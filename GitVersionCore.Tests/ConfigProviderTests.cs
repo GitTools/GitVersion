@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using ApprovalTests;
 using GitVersion;
 using GitVersion.Helpers;
 using NUnit.Framework;
@@ -34,7 +35,7 @@ branches:
         mode: ContinuousDeployment
         tag: dev
     release[/-]:
-       mode: ContinuousDeployment
+       mode: continuousDeployment
        tag: rc 
 ";
         SetupConfigFileContent(text);
@@ -67,6 +68,34 @@ release-branch-tag has been replaced by branch specific configuration.See https:
     }
 
     [Test]
+    public void OverwritesDefaultsWithProvidedConfig()
+    {
+        const string text = @"
+next-version: 2.0.0
+branches:
+    develop:
+        mode: ContinuousDeployment
+        tag: dev";
+        SetupConfigFileContent(text);
+        var defaultConfig = new Config();
+        var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
+
+        config.NextVersion.ShouldBe("2.0.0");
+        config.AssemblyVersioningScheme.ShouldBe(defaultConfig.AssemblyVersioningScheme);
+        config.Branches["develop"].Increment.ShouldBe(defaultConfig.Branches["develop"].Increment);
+        config.Branches["develop"].VersioningMode.ShouldBe(defaultConfig.Branches["develop"].VersioningMode);
+        config.Branches["develop"].Tag.ShouldBe("dev");
+    }
+
+    [Test]
+    public void CanWriteOutEffectiveConfiguration()
+    {
+        var config = ConfigurationProvider.GetEffectiveConfigAsString(gitDirectory, fileSystem);
+
+        Approvals.Verify(config);
+    }
+
+    [Test]
     public void CanReadDefaultDocument()
     {
         const string text = "";
@@ -88,7 +117,7 @@ release-branch-tag has been replaced by branch specific configuration.See https:
             .Select(p => ((YamlMemberAttribute) p.GetCustomAttribute(typeof(YamlMemberAttribute))).Alias);
         var writer = new StringWriter();
 
-        ConfigReader.WriteSample(writer);
+        ConfigSerialiser.WriteSample(writer);
         var initFile = writer.GetStringBuilder().ToString();
 
         foreach (var alias in aliases)
