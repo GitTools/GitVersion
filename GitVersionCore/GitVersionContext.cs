@@ -65,7 +65,7 @@
                 assemblyVersioningScheme, versioningMode, gitTagPrefix, 
                 tag, nextVersion, incrementStrategy, currentBranchConfig.Key, 
                 preventIncrementForMergedBranchVersion, 
-                tagNumberPattern);
+                tagNumberPattern, configuration.ContinuousDeploymentFallbackTag);
         }
     }
 }

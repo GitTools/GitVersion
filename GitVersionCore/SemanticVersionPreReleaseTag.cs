@@ -1,6 +1,7 @@
 namespace GitVersion
 {
     using System;
+    using System.Linq;
     using System.Text.RegularExpressions;
 
     public class SemanticVersionPreReleaseTag : 
@@ -152,7 +153,7 @@ namespace GitVersion
                 case "t":
                     return Number.HasValue ? string.Format("{0}.{1}", Name, Number) : Name;
                 case "l":
-                    return Number.HasValue ? FormatLegacy(GetLegacyName(), Number.ToString()) : FormatLegacy(GetLegacyName());
+                    return Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString()) : FormatLegacy(GetLegacyName());
                 case "lp":
                     return Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString("D4")) : FormatLegacy(GetLegacyName());
                 default:
@@ -160,13 +161,14 @@ namespace GitVersion
             }
         }
 
-        string FormatLegacy(string tag, string number = null)
+        string FormatLegacy(string tag, string number = "")
         {
-            var tagLength = tag.Length;
-            var numberLength = number == null ? 0 : number.Length;
+            var tagEndsWithANumber = char.IsNumber(tag.Last());
+            if (tagEndsWithANumber && number.Length > 0)
+                number = "-" + number;
 
-            if (tagLength + numberLength > 20)
-                return string.Format("{0}{1}", tag.Substring(0, 20 - numberLength), number);
+            if (tag.Length + number.Length > 20)
+                return string.Format("{0}{1}", tag.Substring(0, 20 - number.Length), number);
 
             return string.Format("{0}{1}", tag, number);
         }
@@ -174,7 +176,7 @@ namespace GitVersion
         string GetLegacyName()
         {
             var firstPart = Name.Split('_')[0];
-            return firstPart.Replace("-", string.Empty).Replace(".", string.Empty);
+            return firstPart.Replace(".", string.Empty);
         }
 
         public bool HasTag()

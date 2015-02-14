@@ -11,7 +11,8 @@
             string tag, string nextVersion, IncrementStrategy increment, 
             string branchPrefixToTrim, 
             bool preventIncrementForMergedBranchVersion, 
-            string tagNumberPattern)
+            string tagNumberPattern,
+            string continuousDeploymentFallbackTag)
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
             VersioningMode = versioningMode;
@@ -22,6 +23,7 @@
             BranchPrefixToTrim = branchPrefixToTrim;
             PreventIncrementForMergedBranchVersion = preventIncrementForMergedBranchVersion;
             TagNumberPattern = tagNumberPattern;
+            ContinuousDeploymentFallbackTag = continuousDeploymentFallbackTag;
         }
 
         public VersioningMode VersioningMode { get; private set; }
@@ -47,5 +49,7 @@
         public bool PreventIncrementForMergedBranchVersion { get; private set; }
 
         public string TagNumberPattern { get; private set; }
+
+        public string ContinuousDeploymentFallbackTag { get; private set; }
     }
 }

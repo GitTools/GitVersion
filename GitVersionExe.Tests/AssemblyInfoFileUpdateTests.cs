@@ -13,7 +13,7 @@ public class AssemblyInfoFileUpdateTests
     {
         var fileSystem = Substitute.For<IFileSystem>();
         const string workingDir = "C:\\Testing";
-        var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDelivery);
+        var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDelivery, "ci", false);
         using (new AssemblyInfoFileUpdate(new Arguments { UpdateAssemblyInfo = true }, workingDir, variables, fileSystem))
         {
             fileSystem.Received().DirectoryGetFiles(Arg.Is(workingDir), Arg.Any<string>(), Arg.Any<SearchOption>());
@@ -43,7 +43,7 @@ AssemblyFileVersion(""1.0.0.0"");";
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor
         };
-        var variable = VariableProvider.GetVariablesFor(version, config.AssemblyVersioningScheme, VersioningMode.ContinuousDelivery);
+        var variable = VariableProvider.GetVariablesFor(version, config.AssemblyVersioningScheme, VersioningMode.ContinuousDelivery, "ci", false);
         var args = new Arguments
         {
             UpdateAssemblyInfo = true,
@@ -81,7 +81,7 @@ AssemblyFileVersion(""1.0.0.*"");";
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor
         };
-        var variable = VariableProvider.GetVariablesFor(version, config.AssemblyVersioningScheme, VersioningMode.ContinuousDelivery);
+        var variable = VariableProvider.GetVariablesFor(version, config.AssemblyVersioningScheme, VersioningMode.ContinuousDelivery, "ci", false);
         var args = new Arguments
         {
             UpdateAssemblyInfo = true,
