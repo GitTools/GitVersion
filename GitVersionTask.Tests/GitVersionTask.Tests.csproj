@@ -107,9 +107,7 @@
     <Compile Include="Helpers\Scrubbers.cs" />
     <Compile Include="Helpers\SelfCleaningDirectory.cs" />
     <Compile Include="Helpers\Lg2sHelperBase.cs" />
-    <Compile Include="LibGitExtensionsTests.cs" />
     <Compile Include="UpdateAssemblyInfoTests.cs" />
-    <Compile Include="MergeMessageParserTests.cs" />
     <Compile Include="ModuleInitializer.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -32,13 +32,13 @@ public class MergeMessageParserTests
     {
         var parents = GetParents(isMergeCommit);
         AssertMereMessage(message, expectedVersion, parents);
-        AssertMereMessage(message+ " ", expectedVersion, parents);
-        AssertMereMessage(message+"\r ", expectedVersion, parents);
-        AssertMereMessage(message+"\r", expectedVersion, parents);
-        AssertMereMessage(message+"\r\n", expectedVersion, parents);
-        AssertMereMessage(message+"\r\n ", expectedVersion, parents);
-        AssertMereMessage(message+"\n", expectedVersion, parents);
-        AssertMereMessage(message+"\n ", expectedVersion, parents);
+        AssertMereMessage(message + " ", expectedVersion, parents);
+        AssertMereMessage(message + "\r ", expectedVersion, parents);
+        AssertMereMessage(message + "\r", expectedVersion, parents);
+        AssertMereMessage(message + "\r\n", expectedVersion, parents);
+        AssertMereMessage(message + "\r\n ", expectedVersion, parents);
+        AssertMereMessage(message + "\n", expectedVersion, parents);
+        AssertMereMessage(message + "\n ", expectedVersion, parents);
     }
 
     static void AssertMereMessage(string message, string expectedVersion, List<Commit> parents)
@@ -69,14 +69,14 @@ public class MergeMessageParserTests
         if (isMergeCommit)
         {
             return new List<Commit>
-            {
-                null,
-                null
-            };
+                {
+                    null,
+                    null
+                };
         }
         return new List<Commit>
-        {
-            null
-        };
+            {
+                null
+            };
     }
 }
