@@ -60,10 +60,15 @@
             var authentication = new Authentication();
 
             var cachedVersion = result.Item1;
-            var assemblyVersioningScheme = result.Item2.Configuration.AssemblyVersioningScheme;
-            var versioningMode = result.Item2.Configuration.VersioningMode;
+            var gitVersionContext = result.Item2;
+            var config = gitVersionContext.Configuration;
+            var assemblyVersioningScheme = config.AssemblyVersioningScheme;
+            var versioningMode = config.VersioningMode;
 
-            var variablesFor = VariableProvider.GetVariablesFor(cachedVersion.SemanticVersion, assemblyVersioningScheme, versioningMode);
+            var variablesFor = VariableProvider.GetVariablesFor(
+                cachedVersion.SemanticVersion, assemblyVersioningScheme, versioningMode, 
+                config.ContinuousDeploymentFallbackTag, 
+                gitVersionContext.IsCurrentCommitTagged);
             WriteIntegrationParameters(cachedVersion, BuildServerList.GetApplicableBuildServers(authentication), variablesFor);
         }
 

@@ -9,7 +9,7 @@ public class AssemblyInfoBuilder
     public string GetAssemblyInfoText(EffectiveConfiguration configuration)
     {
         var semanticVersion = CachedVersion.SemanticVersion;
-        var vars = VariableProvider.GetVariablesFor(semanticVersion, configuration.AssemblyVersioningScheme, configuration.VersioningMode);
+        var vars = VariableProvider.GetVariablesFor(semanticVersion, configuration.AssemblyVersioningScheme, configuration.VersioningMode, "ci", false);
         var assemblyInfo = string.Format(@"
 using System;
 using System.Reflection;

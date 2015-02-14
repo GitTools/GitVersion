@@ -89,8 +89,12 @@
                 {
                     var thisType = typeof(GetVersion);
                     var cachedVersion = versionAndBranch.Item1;
-                    var effectiveConfiguration = versionAndBranch.Item2.Configuration;
-                    var variables = VariableProvider.GetVariablesFor(cachedVersion.SemanticVersion, effectiveConfiguration.AssemblyVersioningScheme, effectiveConfiguration.VersioningMode);
+                    var gitVersionContext = versionAndBranch.Item2;
+                    var config = gitVersionContext.Configuration;
+                    var variables = VariableProvider.GetVariablesFor(
+                        cachedVersion.SemanticVersion, config.AssemblyVersioningScheme, 
+                        config.VersioningMode, config.ContinuousDeploymentFallbackTag,
+                        gitVersionContext.IsCurrentCommitTagged);
                     foreach (var variable in variables)
                     {
                         thisType.GetProperty(variable.Key).SetValue(this, variable.Value, null);

@@ -17,7 +17,7 @@ public class JsonVersionBuilderTests
                 PreReleaseTag = "unstable4",
                 BuildMetaData = new SemanticVersionBuildMetaData(5, "feature1", "commitSha",DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
             };
-        var variables = VariableProvider.GetVariablesFor(semanticVersion, AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDelivery);
+        var variables = VariableProvider.GetVariablesFor(semanticVersion, AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDelivery, "ci", false);
         var json = JsonOutputFormatter.ToJson(variables);
         Approvals.Verify(json);
     }

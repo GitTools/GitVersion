@@ -13,6 +13,7 @@
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch;
             TagPrefix = "[vV]";
             VersioningMode = GitVersion.VersioningMode.ContinuousDelivery;
+            ContinuousDeploymentFallbackTag = "ci";
 
             Branches["master"] = new BranchConfig
             {
@@ -55,6 +56,9 @@
 
         [YamlMember(Alias = "tag-prefix")]
         public string TagPrefix { get; set; }
+
+        [YamlMember(Alias = "continuous-delivery-fallback-tag")]
+        public string ContinuousDeploymentFallbackTag { get; set; }
 
         [YamlMember(Alias = "next-version")]
         public string NextVersion { get; set; }

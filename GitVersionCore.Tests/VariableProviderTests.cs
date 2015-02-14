@@ -21,7 +21,7 @@ public class VariableProviderTests
         semVer.BuildMetaData.Sha = "commitSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
-        var vars = VariableProvider.GetVariablesFor(semVer, AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDelivery);
+        var vars = VariableProvider.GetVariablesFor(semVer, AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDelivery, "ci", false);
 
         Approvals.Verify(JsonOutputFormatter.ToJson(vars));
     }
@@ -41,7 +41,7 @@ public class VariableProviderTests
         semVer.BuildMetaData.Sha = "commitSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
-        var vars = VariableProvider.GetVariablesFor(semVer, AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDeployment);
+        var vars = VariableProvider.GetVariablesFor(semVer, AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDeployment, "ci", false);
 
         Approvals.Verify(JsonOutputFormatter.ToJson(vars));
     }
@@ -60,7 +60,7 @@ public class VariableProviderTests
         semVer.BuildMetaData.Sha = "commitSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
-        var vars = VariableProvider.GetVariablesFor(semVer, AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDelivery);
+        var vars = VariableProvider.GetVariablesFor(semVer, AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDelivery, "ci", false);
 
         Approvals.Verify(JsonOutputFormatter.ToJson(vars));
     }
@@ -79,7 +79,29 @@ public class VariableProviderTests
         semVer.BuildMetaData.Sha = "commitSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
-        var vars = VariableProvider.GetVariablesFor(semVer, AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDeployment);
+        var vars = VariableProvider.GetVariablesFor(semVer, AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDeployment, "ci", false);
+
+        Approvals.Verify(JsonOutputFormatter.ToJson(vars));
+    }
+
+    [Test]
+    public void ProvidesVariablesInContinuousDeploymentModeForStableWhenCurrentCommitIsTagged()
+    {
+        var semVer = new SemanticVersion
+        {
+            Major = 1,
+            Minor = 2,
+            Patch = 3,
+            BuildMetaData =
+            {
+                CommitsSinceTag = 5,
+                Sha = "commitSha",
+                CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
+            }
+        };
+
+
+        var vars = VariableProvider.GetVariablesFor(semVer, AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDeployment, "ci", true);
 
         Approvals.Verify(JsonOutputFormatter.ToJson(vars));
     }

@@ -98,7 +98,8 @@ namespace GitVersion
                 {
                     var gitVersionContext = new GitVersionContext(repo, configuration);
                     var semanticVersion = versionFinder.FindVersion(gitVersionContext);
-                    variables = VariableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration.AssemblyVersioningScheme, gitVersionContext.Configuration.VersioningMode);
+                    var config = gitVersionContext.Configuration;
+                    variables = VariableProvider.GetVariablesFor(semanticVersion, config.AssemblyVersioningScheme, config.VersioningMode, config.ContinuousDeploymentFallbackTag, gitVersionContext.IsCurrentCommitTagged);
                 }
 
                 if (arguments.Output == OutputType.BuildServer)
