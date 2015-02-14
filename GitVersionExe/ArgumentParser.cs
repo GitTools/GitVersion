@@ -46,7 +46,7 @@ namespace GitVersion
                 };
             }
 
-            if (commandLineArguments.Count == 1)
+            if (commandLineArguments.Count == 1 && !(commandLineArguments[0].StartsWith("-") || commandLineArguments[0].StartsWith("/")))
             {
                 return new Arguments
                 {
@@ -180,7 +180,7 @@ namespace GitVersion
 
         static bool IsSwitchArgument(string value)
         {
-            return value != null && value.StartsWith("-") || value.StartsWith("/");
+            return value != null && (value.StartsWith("-") || value.StartsWith("/"));
         }
 
         static bool IsSwitch(string switchName, string value)
