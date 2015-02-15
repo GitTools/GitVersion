@@ -108,17 +108,23 @@ For the `release/3.0.0` branch of GitVersion it shows:
 ```
 
 ## Configuration
-GitVersion 3.0 is mainly powered by configuration and no longer has branching strategies hard coded. This means it probably can be changed to work for your scenario.
+GitVersion 3.0 is mainly powered by configuration and no longer has branching strategies hard coded.  
+**Note: ** GitVersion ships with internal default configuration which works with GitHubFlow and GitFlow, probably with others too. You **do not** need to run `GitVersion /init` to get started!
+
+You can run `GitVersion /showConfig` to see the effective configuration (defaults + overrides)
 
 To create your config file just type `GitVersion init` in your repo directory after installing via chocolatey and we will create a sample (but commented out) config file. 
 Uncomment and modify as you need. 
 
 The configuration options are:
 
+ - `next-version`: Allows you to bump the next version explicitly, useful for bumping `master` or a feature with breaking changes a major increment.
  - `assembly-versioning-scheme`: When updating assembly info tells GitVersion how to treat the AssemblyVersion attribute. Useful to lock the major when using Strong Naming.
  - `mode`: Either ContinuousDelivery or ContinuousDeployment. See [Octopus Deploy/CI Build NuGet Packages](#continuousdeployment) above for more information
  - `continuous-delivery-fallback-tag`: When using `mode: ContinuousDeployment` the value specified will be used as the pre-release tag for branches which do not have one specified.
  - `tag-prefix`: A regex which is used to trim git tags before processing (eg v1.0.0). Default is `[vV]` though this is just for illustrative purposes as we do a IgnoreCase match and could be `v`
+
+#### Branch configuration
 
 Then we have branch specific configuration, which looks something like this:
 
