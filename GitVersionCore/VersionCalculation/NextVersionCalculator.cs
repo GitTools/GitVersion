@@ -25,12 +25,25 @@
 
         public SemanticVersion FindVersion(GitVersionContext context)
         {
+            // If current commit is tagged, don't do anything except add build metadata
+            if (context.IsCurrentCommitTagged)
+            {
+                // Will always be 0, don't bother with the +0 on tags
+                var semanticVersionBuildMetaData = metaDataCalculator.Create(context.CurrentCommit, context);
+                semanticVersionBuildMetaData.CommitsSinceTag = null;
+                var semanticVersion = new SemanticVersion(context.CurrentCommitTaggedVersion)
+                {
+                    BuildMetaData = semanticVersionBuildMetaData
+                };
+                return semanticVersion;
+            }
+
             var baseVersion = baseVersionFinder.GetBaseVersion(context);
 
             if (baseVersion.ShouldIncrement) IncrementVersion(context, baseVersion);
             else Logger.WriteInfo("Skipping version increment");
 
-            if (!context.IsCurrentCommitTagged && !baseVersion.SemanticVersion.PreReleaseTag.HasTag() && !string.IsNullOrEmpty(context.Configuration.Tag))
+            if (!baseVersion.SemanticVersion.PreReleaseTag.HasTag() && !string.IsNullOrEmpty(context.Configuration.Tag))
             {
                 UpdatePreReleaseTag(context, baseVersion);
             }
@@ -63,7 +76,6 @@
             var lastTag = highestTagBaseVersionStrategy.GetVersion(context);
             if (number == null &&
                 lastTag != null &&
-                !context.IsCurrentCommitTagged &&
                 MajorMinorPatchEqual(lastTag.SemanticVersion, baseVersion.SemanticVersion) &&
                 lastTag.SemanticVersion.PreReleaseTag.HasTag())
             {

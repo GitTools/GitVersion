@@ -12,7 +12,7 @@ public class DevelopScenarios
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("develop").Checkout();
-            fixture.AssertFullSemver("1.0.0+0");
+            fixture.AssertFullSemver("1.0.0");
         }
     }
 
@@ -85,7 +85,7 @@ public class DevelopScenarios
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("develop").Checkout();
             fixture.Repository.MakeATaggedCommit("1.1.0-alpha7");
-            fixture.AssertFullSemver("1.1.0-alpha.7+0");
+            fixture.AssertFullSemver("1.1.0-alpha.7");
         }
     }
 

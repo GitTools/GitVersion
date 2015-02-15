@@ -22,12 +22,12 @@ public class SupportBranchScenarios
             fixture.Repository.Checkout("master");
             fixture.Repository.MergeNoFF("release-2.0.0");
             fixture.Repository.ApplyTag("2.0.0");
-            fixture.AssertFullSemver("2.0.0+0");
+            fixture.AssertFullSemver("2.0.0");
 
             // Now lets support 1.x release
             fixture.Repository.Checkout("1.1.0");
             fixture.Repository.CreateBranch("support/1.0.0").Checkout();
-            fixture.AssertFullSemver("1.1.0+0");
+            fixture.AssertFullSemver("1.1.0");
 
             // Create release branch from support branch
             fixture.Repository.CreateBranch("release/1.2.0").Checkout();

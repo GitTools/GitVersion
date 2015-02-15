@@ -26,8 +26,6 @@
                 throw new InvalidOperationException("Need a branch to operate on");
 
             CurrentCommit = currentBranch.Tip;
-            IsCurrentCommitTagged = repository.Tags.Any(t => t.PeeledTarget() == CurrentCommit);
-
             if (currentBranch.IsDetachedHead())
             {
                 CurrentBranch = CurrentCommit.GetBranchesContainingCommit(repository, OnlyEvaluateTrackedBranches).OnlyOrDefault() ?? currentBranch;
@@ -38,8 +36,20 @@
             }
 
             CalculateEffectiveConfiguration();
+
+            CurrentCommitTaggedVersion = repository.Tags
+                .SelectMany(t =>
+                {
+                    SemanticVersion version;
+                    if (t.PeeledTarget() == CurrentCommit && SemanticVersion.TryParse(t.Name, Configuration.GitTagPrefix, out version))
+                        return new[] { version };
+                    return new SemanticVersion[0];
+                })
+                .Max();
+            IsCurrentCommitTagged = CurrentCommitTaggedVersion != null;
         }
 
+        public SemanticVersion CurrentCommitTaggedVersion { get; private set; }
         public bool OnlyEvaluateTrackedBranches { get; private set; }
         public EffectiveConfiguration Configuration { get; private set; }
         public IRepository Repository { get; private set; }

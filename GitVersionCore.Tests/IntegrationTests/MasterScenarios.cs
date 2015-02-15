@@ -78,7 +78,7 @@ public class MasterScenarios
             const string TaggedVersion = "1.0.3";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
 
-            fixture.AssertFullSemver("1.0.3+0");
+            fixture.AssertFullSemver("1.0.3");
         }
     }
 
@@ -103,7 +103,7 @@ public class MasterScenarios
             const string TaggedVersion = "1.0.3";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
 
-            fixture.AssertFullSemver("1.0.3+0");
+            fixture.AssertFullSemver("1.0.3");
         }
     }
 
@@ -130,7 +130,7 @@ public class MasterScenarios
             const string TaggedVersion = "1.1.0";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
 
-            fixture.AssertFullSemver("1.1.0+0");
+            fixture.AssertFullSemver("1.1.0");
         }
     }
 
