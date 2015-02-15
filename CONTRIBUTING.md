@@ -12,16 +12,20 @@ If you end up not being able to complete the task, please post another comment s
 Issues are also welcome, [failing tests](#writing-tests) are even more welcome. 
 
 # Architecture
-GitVersion has two distict steps for calculating versions in v3.0.
+GitVersion has three distict steps for calculating versions in v3.0.
 
-1. A set of strategies are evaluated to decide on the base version and some metadata about that version. 
+1. If the current commit is tagged, the tag is used and build metadata (Excluding commit count) is added. The other two steps will not execute
+2. A set of strategies are evaluated to decide on the base version and some metadata about that version. 
    These strategies include HighestReachableTag, NextVersionInConfig, MergedBranchWithVersion, VersionInBranchName etc.
-2. The highest base version is selected, using that base version the new version is calculated. 
+3. The highest base version is selected, using that base version the new version is calculated. 
 
 Visually it looks something like this:
 ![Version Calculation](http://www.plantuml.com:80/plantuml/png/fLCxJyCm4DxzAsuib4P914i69De1CS38Vd6kYIN7ZcodK8aVp-KX6Y2fKCbY9NV-7lVb2WoOeoVOMRDNfH0lz1vUoNbbpGwrR3K6ws1p3rlk-bN8u972f2AC3GHEbLN8m1D1Jjg-mPuXAZvx9kL1ZW1KY5dOZczMI0Pf54VnHtf7jpaAWJg0sW-uXw4PK3Eb1sMaevfCW6i1_0m6po1l7HfPJUxvu5XYUOHLWq5MLptCudmMK9--u5glJ0dIEaVo1Dw3JgVM6Km4cM9mzyrQXHuQHnj7chhl0JcnIrHjno1wiWtgfi8eWVK_7OQAmBHrJWvORFVM2PmrE7AcWZGh-Lj0FvptVvLiUPnCdG_XhNhOov9wQ1fzv7nw5S5EwSvw6CDQNfnMwUAP0XQyQpj70nkx3Nn3p5NFY9IshbNWepKi8ublWFiSPkC0ee8El75Dv5aOxqZQBScbWpWn0Pe2wb6aM1p4Eea_0G00)
 
 [Edit Diagram](http://www.plantuml.com/plantuml/form?url=http://www.plantuml.com/plantuml/png/fLCxJyCm4DxzAsuib4P914i69De1CS38Vd6kYIN7ZcodK8aVp-KX6Y2fKCbY9NV-7lVb2WoOeoVOMRDNfH0lz1vUoNbbpGwrR3K6ws1p3rlk-bN8u972f2AC3GHEbLN8m1D1Jjg-mPuXAZvx9kL1ZW1KY5dOZczMI0Pf54VnHtf7jpaAWJg0sW-uXw4PK3Eb1sMaevfCW6i1_0m6po1l7HfPJUxvu5XYUOHLWq5MLptCudmMK9--u5glJ0dIEaVo1Dw3JgVM6Km4cM9mzyrQXHuQHnj7chhl0JcnIrHjno1wiWtgfi8eWVK_7OQAmBHrJWvORFVM2PmrE7AcWZGh-Lj0FvptVvLiUPnCdG_XhNhOov9wQ1fzv7nw5S5EwSvw6CDQNfnMwUAP0XQyQpj70nkx3Nn3p5NFY9IshbNWepKi8ublWFiSPkC0ee8El75Dv5aOxqZQBScbWpWn0Pe2wb6aM1p4Eea_0G00)
+
+**\*** Some strategies allow the version to be incremented, others don't. More info below  
+**+** This version is out of context with the rest of the example. It is here just to show what happens if the check is true
 
 ## Base Version Strategies
 Currently we have the following strategies
