@@ -26,7 +26,7 @@
                 throw new InvalidOperationException("Need a branch to operate on");
 
             CurrentCommit = currentBranch.Tip;
-            IsCurrentCommitTagged = repository.Tags.Any(t => t.Target == CurrentCommit);
+            IsCurrentCommitTagged = repository.Tags.Any(t => t.PeeledTarget() == CurrentCommit);
 
             if (currentBranch.IsDetachedHead())
             {
