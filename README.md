@@ -141,7 +141,8 @@ branches:
 ```
 
 The options in here are:
- - `tag`: The pre release tag to use for this branch
+ - `tag`: The pre release tag to use for this branch. Use the value `useBranchNameAsTag` to use the branch name instead.  
+   For example `feature/foo` would become a pre-release tag of `foo` with this value
  - `increment`: the part of the SemVer to increment when GitVersion detects it needs to be (i.e commit after a tag)
  - `preventIncrementOfMergedBranchVersion`: When `release-2.0.0` is merged into master, we want master to build `2.0.0`.
     If `release-2.0.0` is merged into develop we want it to build `2.1.0`, this option prevents incrementing after a versioned branch is merged
