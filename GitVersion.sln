@@ -14,6 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3EFFC5D6-88D0-49D9-BB53-E1B7EB49DD45}"
 	ProjectSection(SolutionItems) = preProject
 		BREAKING CHANGES.md = BREAKING CHANGES.md
+		CONTRIBUTING.md = CONTRIBUTING.md
 		GitVersionConfig.yaml = GitVersionConfig.yaml
 		LICENSE = LICENSE
 		README.md = README.md
