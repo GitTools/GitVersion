@@ -3,7 +3,7 @@ using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
-public class MasterTests
+public class MasterScenarios
 {
     [Test]
     public void GivenARepositoryWithCommitsButNoTags_VersionShouldBe_0_1()

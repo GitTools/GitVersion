@@ -3,7 +3,7 @@ using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
-public class GitFlowReleaseBranchTests
+public class ReleaseBranchScenarios
 {
     [Test]
     public void CanTakeVersionFromReleaseBranch()

@@ -4,7 +4,7 @@ using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
-public class RemoteRepositoryTests
+public class RemoteRepositoryScenarios
 {
     [Test]
     public void GivenARemoteGitRepositoryWithCommits_ThenClonedLocalShouldMatchRemoteVersion()

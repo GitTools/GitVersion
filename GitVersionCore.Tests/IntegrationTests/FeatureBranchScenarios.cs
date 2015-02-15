@@ -3,7 +3,7 @@ using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
-public class FeatureBranchTests
+public class FeatureBranchScenarios
 {
     [Test]
     public void ShouldNotUseNumberInFeatureBranchAsPreReleaseNumberOffDevelop()
