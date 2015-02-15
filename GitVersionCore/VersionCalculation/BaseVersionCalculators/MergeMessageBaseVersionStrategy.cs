@@ -19,7 +19,7 @@
                         var shouldIncrement = !context.Configuration.PreventIncrementForMergedBranchVersion;
                         return new[]
                         {
-                            new BaseVersion(string.Format("Merge message '{0}'", c.Message.Trim()), shouldIncrement, true, semanticVersion, c, null)
+                            new BaseVersion(string.Format("Merge message '{0}'", c.Message.Trim()), shouldIncrement, semanticVersion, c, null)
                         };
                     }
                     return Enumerable.Empty<BaseVersion>();

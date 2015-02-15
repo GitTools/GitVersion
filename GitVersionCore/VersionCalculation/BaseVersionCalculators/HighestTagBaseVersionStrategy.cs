@@ -11,7 +11,7 @@
             if (GetVersion(context, out version))
             {
                 var shouldUpdateVersion = version.Commit.Sha != context.CurrentCommit.Sha;
-                return new BaseVersion(string.Format("Git tag '{0}'", version.Tag), shouldUpdateVersion, shouldUpdateVersion, version.SemVer, version.Commit, null);
+                return new BaseVersion(string.Format("Git tag '{0}'", version.Tag), shouldUpdateVersion, version.SemVer, version.Commit, null);
             }
 
             return null;

@@ -11,7 +11,7 @@
             {
                 var commitBranchWasBranchedFrom = context.CurrentBranch.FindCommitBranchWasBranchedFrom(context.Repository, context.OnlyEvaluateTrackedBranches);
                 var branchNameOverride = context.CurrentBranch.Name.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
-                return new BaseVersion("Version in branch name", false, true, versionInBranch.Item2, commitBranchWasBranchedFrom, branchNameOverride);
+                return new BaseVersion("Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom, branchNameOverride);
             }
 
             return null;

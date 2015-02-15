@@ -4,11 +4,10 @@
 
     public class BaseVersion
     {
-        public BaseVersion(string source, bool shouldIncrement, bool shouldUpdateTag, SemanticVersion semanticVersion, Commit baseVersionSource, string branchNameOverride)
+        public BaseVersion(string source, bool shouldIncrement, SemanticVersion semanticVersion, Commit baseVersionSource, string branchNameOverride)
         {
             Source = source;
             ShouldIncrement = shouldIncrement;
-            ShouldUpdateTag = shouldUpdateTag;
             SemanticVersion = semanticVersion;
             BaseVersionSource = baseVersionSource;
             BranchNameOverride = branchNameOverride;
@@ -17,8 +16,6 @@
         public string Source { get; private set; }
 
         public bool ShouldIncrement { get; private set; }
-
-        public bool ShouldUpdateTag { get; private set; }
 
         public SemanticVersion SemanticVersion { get; private set; }
 
