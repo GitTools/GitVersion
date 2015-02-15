@@ -3,7 +3,6 @@
   <PropertyGroup>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)..\</SolutionDir>
     <IntermediateOutputPath Condition="$(IntermediateOutputPath) == '' Or $(IntermediateOutputPath) == '*Undefined*'">$(MSBuildProjectDirectory)obj\$(Configuration)\</IntermediateOutputPath>
-    <GitVersionAssemblyVersioningScheme Condition="$(GitVersionAssemblyVersioningScheme) == '' Or $(GitVersionAssemblyVersioningScheme) == '*Undefined*'"></GitVersionAssemblyVersioningScheme>
   </PropertyGroup>
 
   <UsingTask
@@ -25,7 +24,6 @@
       SolutionDirectory="$(SolutionDir)"
       ProjectFile="$(MSBuildProjectFullPath)"
       IntermediateOutputPath="$(IntermediateOutputPath)"
-      AssemblyVersioningScheme="$(GitVersionAssemblyVersioningScheme)"
       CompileFiles ="@(Compile)">
       <Output
         TaskParameter="AssemblyInfoTempFilePath"
