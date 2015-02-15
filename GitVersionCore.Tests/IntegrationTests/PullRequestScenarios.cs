@@ -13,13 +13,8 @@ public class PullRequestScenarios
             fixture.Repository.MakeATaggedCommit("0.1.0");
             fixture.Repository.CreateBranch("feature/Foo").Checkout();
             fixture.Repository.MakeACommit();
-
-            fixture.Repository.Checkout("master");
-            fixture.Repository.MergeNoFF("feature/Foo");
-            fixture.Repository.CreateBranch("pull/2/merge").Checkout();
-            fixture.Repository.Checkout("master");
-            fixture.Repository.Reset(ResetMode.Hard, "HEAD~1");
-            fixture.Repository.Checkout("pull/2/merge");
+            
+            fixture.Repository.CreatePullRequest("feature/Foo", "master");
 
             fixture.DumpGraph();
             fixture.AssertFullSemver("0.1.1-PullRequest.2+2");
@@ -37,12 +32,7 @@ public class PullRequestScenarios
             fixture.Repository.CreateBranch("feature/Foo").Checkout();
             fixture.Repository.MakeACommit();
 
-            fixture.Repository.Checkout("develop");
-            fixture.Repository.MergeNoFF("feature/Foo");
-            fixture.Repository.CreateBranch("pull/44/merge").Checkout();
-            fixture.Repository.Checkout("develop");
-            fixture.Repository.Reset(ResetMode.Hard, "HEAD~1");
-            fixture.Repository.Checkout("pull/44/merge");
+            fixture.Repository.CreatePullRequest("feature/Foo", "develop", 44);
 
             fixture.DumpGraph();
             fixture.AssertFullSemver("0.2.0-PullRequest.44+3");
@@ -58,14 +48,8 @@ public class PullRequestScenarios
             fixture.Repository.CreateBranch("feature/Foo").Checkout();
             fixture.Repository.MakeACommit();
 
-            fixture.Repository.Checkout("master");
-            fixture.Repository.MergeNoFF("feature/Foo");
-            fixture.Repository.CreateBranch("pull/2/merge").Checkout();
-            fixture.Repository.Checkout("master");
-            fixture.Repository.Reset(ResetMode.Hard, "HEAD~1");
-            fixture.Repository.Checkout("pull/2/merge");
-            // If we delete the branch, it is effectively the same as remote PR
-            fixture.Repository.Branches.Remove("feature/Foo");
+
+            fixture.Repository.CreatePullRequest("feature/Foo", "master");
 
             fixture.DumpGraph();
             fixture.AssertFullSemver("0.1.1-PullRequest.2+2");
@@ -83,14 +67,7 @@ public class PullRequestScenarios
             fixture.Repository.CreateBranch("feature/Foo").Checkout();
             fixture.Repository.MakeACommit();
 
-            fixture.Repository.Checkout("develop");
-            fixture.Repository.MergeNoFF("feature/Foo");
-            fixture.Repository.CreateBranch("pull/2/merge").Checkout();
-            fixture.Repository.Checkout("develop");
-            fixture.Repository.Reset(ResetMode.Hard, "HEAD~1");
-            fixture.Repository.Checkout("pull/2/merge");
-            // If we delete the branch, it is effectively the same as remote PR
-            fixture.Repository.Branches.Remove("feature/Foo");
+            fixture.Repository.CreatePullRequest("feature/Foo", "develop");
 
             fixture.AssertFullSemver("0.2.0-PullRequest.2+3");
         }

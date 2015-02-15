@@ -78,4 +78,21 @@ public static class GitTestExtensions
             return existingTag;
         return repository.Tags.Add(tag, commit);
     }
+
+    public static Branch CreatePullRequest(this IRepository repository, string from, string to, int prNumber = 2, bool isRemotePr = true)
+    {
+        repository.Checkout(to);
+        repository.MergeNoFF(from);
+        repository.CreateBranch("pull/" + prNumber + "/merge").Checkout();
+        repository.Checkout(to);
+        repository.Reset(ResetMode.Hard, "HEAD~1");
+        var pullBranch = repository.Checkout("pull/" + prNumber + "/merge");
+        if (isRemotePr)
+        {
+            // If we delete the branch, it is effectively the same as remote PR
+            repository.Branches.Remove(from);
+        }
+
+        return pullBranch;
+    }
 }
