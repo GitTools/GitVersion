@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using ApprovalTests;
 using GitVersion;
 using GitVersion.Helpers;

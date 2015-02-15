@@ -10,13 +10,11 @@
         [Test]
         public void ShouldAllowVersionIncrement()
         {
-            // TODO Looks like our MockRepostory stuff doesn't work properly. commits are added to end of list, but Tip is first.
-            // Changing behaviour breaks a bunch of tests
             var context = new GitVersionContextBuilder()
                 .WithTaggedMaster()
                 .AddCommit()
                 .Build();
-            var sut = new LastTagBaseVersionStrategy();
+            var sut = new HighestTagBaseVersionStrategy();
 
             var baseVersion = sut.GetVersion(context);
 
@@ -29,7 +27,7 @@
             var context = new GitVersionContextBuilder()
                 .WithTaggedMaster()
                 .Build();
-            var sut = new LastTagBaseVersionStrategy();
+            var sut = new HighestTagBaseVersionStrategy();
 
             var baseVersion = sut.GetVersion(context);
 

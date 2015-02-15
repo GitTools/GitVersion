@@ -87,7 +87,7 @@
     <Compile Include="IntegrationTests\DevelopScenarios.cs" />
     <Compile Include="IntegrationTests\FeatureBranchTests.cs" />
     <Compile Include="IntegrationTests\SupportBranchScenarios.cs" />
-    <Compile Include="IntegrationTests\PatchScenarios.cs" />
+    <Compile Include="IntegrationTests\HotfixBranchScenarios.cs" />
     <Compile Include="IntegrationTests\ReleaseBranchTests.cs" />
     <Compile Include="IntegrationTests\SwitchingToGitFlowScenarios.cs" />
     <Compile Include="IntegrationTests\WikiScenarios.cs" />

@@ -8,17 +8,17 @@
     {
         IBaseVersionCalculator baseVersionFinder;
         IMetaDataCalculator metaDataCalculator;
-        LastTagBaseVersionStrategy lastTagBaseVersionStrategy;
+        HighestTagBaseVersionStrategy highestTagBaseVersionStrategy;
 
         public NewNextVersionCalculator(IBaseVersionCalculator baseVersionCalculator = null, IMetaDataCalculator metaDataCalculator = null)
         {
             this.metaDataCalculator = metaDataCalculator ?? new MetaDataCalculator();
-            lastTagBaseVersionStrategy = new LastTagBaseVersionStrategy();
+            highestTagBaseVersionStrategy = new HighestTagBaseVersionStrategy();
             baseVersionFinder = baseVersionCalculator ??
                 new BaseVersionCalculator(
                     new FallbackBaseVersionStrategy(),
                 new ConfigNextVersionBaseVersionStrategy(),
-                lastTagBaseVersionStrategy,
+                highestTagBaseVersionStrategy,
                 new MergeMessageBaseVersionStrategy(),
                 new VersionInBranchBaseVersionStrategy());
         }
@@ -48,7 +48,7 @@
                         number = int.Parse(numberGroup.Value);
                 }
 
-                var lastTag = lastTagBaseVersionStrategy.GetVersion(context);
+                var lastTag = highestTagBaseVersionStrategy.GetVersion(context);
                 if (number == null &&
                     lastTag != null &&
                     !context.IsCurrentCommitTagged &&
