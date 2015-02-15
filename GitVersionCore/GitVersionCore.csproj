@@ -108,7 +108,6 @@
     <Compile Include="Extensions\ExtensionMethods.cs" />
     <Compile Include="GitDirFinder.cs" />
     <Compile Include="GitFlow\BranchType.cs" />
-    <Compile Include="MergeMessageParser.cs" />
     <Compile Include="GitVersionContext.cs" />
     <Compile Include="GitVersionFinder.cs" />
     <Compile Include="Helpers\DeleteHelper.cs" />
