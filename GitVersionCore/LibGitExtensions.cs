@@ -69,38 +69,6 @@ namespace GitVersion
             }
         }
 
-        public static IEnumerable<Tag> TagsByDate(this IRepository repository, Commit commit)
-        {
-            return repository.Tags
-                .Where(tag => tag.PeeledTarget() == commit)
-                .OrderByDescending(tag =>
-                {
-                    if (tag.Annotation != null)
-                    {
-                        return tag.Annotation.Tagger.When;
-                    }
-                    //lightweight tags will not have an Annotation
-                    return commit.Committer.When;
-                });
-        }
-
-        public static IEnumerable<Tag> SemVerTagsRelatedToVersion(this IRepository repository, EffectiveConfiguration configuration, SemanticVersion version)
-        {
-            foreach (var tag in repository.Tags)
-            {
-                SemanticVersion tagVersion;
-                if (SemanticVersion.TryParse(tag.Name, configuration.GitTagPrefix, out tagVersion))
-                {
-                    if (version.Major == tagVersion.Major &&
-                        version.Minor == tagVersion.Minor &&
-                        version.Patch == tagVersion.Patch)
-                    {
-                        yield return tag;
-                    }
-                }
-            }
-        }
-
         public static GitObject PeeledTarget(this Tag tag)
         {
             var target = tag.Target;
