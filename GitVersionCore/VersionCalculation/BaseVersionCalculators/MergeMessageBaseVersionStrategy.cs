@@ -28,7 +28,8 @@
 
             return baseVersions.Length > 1 ? baseVersions.Aggregate((x, y) => x.SemanticVersion > y.SemanticVersion ? x : y) : baseVersions.SingleOrDefault();
         }
-        public static bool TryParse(Commit mergeCommit, EffectiveConfiguration configuration, out SemanticVersion semanticVersion)
+
+        static bool TryParse(Commit mergeCommit, EffectiveConfiguration configuration, out SemanticVersion semanticVersion)
         {
             string versionPart;
             if (Inner(mergeCommit, out versionPart))
@@ -117,7 +118,7 @@
 
         static bool TryGetPrefix(string target, out string result, string splitter)
         {
-            var indexOf = target.IndexOf(splitter);
+            var indexOf = target.IndexOf(splitter, StringComparison.Ordinal);
             if (indexOf == -1)
             {
                 result = null;
@@ -129,7 +130,7 @@
 
         static bool TryGetSuffix(string target, out string result, string splitter)
         {
-            var indexOf = target.IndexOf(splitter);
+            var indexOf = target.IndexOf(splitter, StringComparison.Ordinal);
             if (indexOf == -1)
             {
                 result = null;
