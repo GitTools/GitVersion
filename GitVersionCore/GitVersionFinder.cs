@@ -19,7 +19,7 @@ namespace GitVersion
                 throw new Exception("NextVersion.txt has been depreciated. See https://github.com/ParticularLabs/GitVersion/wiki/GitVersionConfig.yaml-Configuration-File for replacement");
             }
 
-            return new NewNextVersionCalculator().FindVersion(context);
+            return new NextVersionCalculator().FindVersion(context);
         }
 
         void EnsureMainTopologyConstraints(GitVersionContext context)

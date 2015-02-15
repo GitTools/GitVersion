@@ -98,7 +98,7 @@
     <Compile Include="VersionCalculation\IBaseVersionCalculator.cs" />
     <Compile Include="VersionCalculation\IMetaDataCalculator.cs" />
     <Compile Include="VersionCalculation\MetaDataCalculator.cs" />
-    <Compile Include="VersionCalculation\NewNextVersionCalculator.cs" />
+    <Compile Include="VersionCalculation\NextVersionCalculator.cs" />
     <Compile Include="VersioningModes\ContinuousDeliveryMode.cs" />
     <Compile Include="VersioningModes\ContinuousDeploymentMode.cs" />
     <Compile Include="VersioningModes\VersioningMode.cs" />

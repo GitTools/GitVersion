@@ -6,14 +6,14 @@
     using NUnit.Framework;
     using Shouldly;
 
-    public class NewNextVersionCalculatorTests
+    public class NextVersionCalculatorTests
     {
         [Test]
         public void ShouldIncrementVersionBasedOnConfig()
         {
             var baseCalculator = new TestBaseVersionCalculator(true, true, new SemanticVersion(1), new MockCommit());
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(1, "master", "b1a34e", DateTimeOffset.Now);
-            var sut = new NewNextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
+            var sut = new NextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
             var config = new Config();
             var context = new GitVersionContextBuilder().WithConfig(config).Build();
 
@@ -27,7 +27,7 @@
         {
             var baseCalculator = new TestBaseVersionCalculator(false, true, new SemanticVersion(1), new MockCommit());
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(1, "master", "b1a34e", DateTimeOffset.Now);
-            var sut = new NewNextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
+            var sut = new NextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
             var config = new Config();
             var context = new GitVersionContextBuilder().WithConfig(config).Build();
 
@@ -41,7 +41,7 @@
         {
             var baseCalculator = new TestBaseVersionCalculator(false, true, new SemanticVersion(1), new MockCommit());
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(2, "develop", "b1a34e", DateTimeOffset.Now);
-            var sut = new NewNextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
+            var sut = new NextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
             var context = new GitVersionContextBuilder()
                 .WithDevelopBranch()
                 .Build();
@@ -52,26 +52,11 @@
         }
 
         [Test]
-        public void DoesNotApplyPreReleaseTagWhenBaseVersionSaysNotTo()
-        {
-            var baseCalculator = new TestBaseVersionCalculator(false, false, new SemanticVersion(1), new MockCommit());
-            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(1, "develop", "b1a34e", DateTimeOffset.Now);
-            var sut = new NewNextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
-            var context = new GitVersionContextBuilder()
-                .WithDevelopBranch()
-                .Build();
-
-            var version = sut.FindVersion(context);
-
-            version.ToString("f").ShouldBe("1.0.0+1");
-        }
-
-        [Test]
         public void PreReleaseTagCanUseBranchName()
         {
             var baseCalculator = new TestBaseVersionCalculator(false, true, new SemanticVersion(1), new MockCommit());
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(2, "develop", "b1a34e", DateTimeOffset.Now);
-            var sut = new NewNextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
+            var sut = new NextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
             var config = new Config();
             config.Branches.Add("custom/", new BranchConfig
             {

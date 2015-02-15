@@ -4,13 +4,13 @@
     using System.Text.RegularExpressions;
     using BaseVersionCalculators;
 
-    public class NewNextVersionCalculator
+    public class NextVersionCalculator
     {
         IBaseVersionCalculator baseVersionFinder;
         IMetaDataCalculator metaDataCalculator;
         HighestTagBaseVersionStrategy highestTagBaseVersionStrategy;
 
-        public NewNextVersionCalculator(IBaseVersionCalculator baseVersionCalculator = null, IMetaDataCalculator metaDataCalculator = null)
+        public NextVersionCalculator(IBaseVersionCalculator baseVersionCalculator = null, IMetaDataCalculator metaDataCalculator = null)
         {
             this.metaDataCalculator = metaDataCalculator ?? new MetaDataCalculator();
             highestTagBaseVersionStrategy = new HighestTagBaseVersionStrategy();
@@ -30,43 +30,52 @@
             if (baseVersion.ShouldIncrement) IncrementVersion(context, baseVersion);
             else Logger.WriteInfo("Skipping version increment");
 
-            if (baseVersion.ShouldUpdateTag && !baseVersion.SemanticVersion.PreReleaseTag.HasTag() && !string.IsNullOrEmpty(context.Configuration.Tag))
+            if (!context.IsCurrentCommitTagged && !baseVersion.SemanticVersion.PreReleaseTag.HasTag() && !string.IsNullOrEmpty(context.Configuration.Tag))
             {
-                var tagToUse = context.Configuration.Tag;
-                if (tagToUse == "useBranchName")
-                {
-                    Logger.WriteInfo("Using branch name to calculate version tag");
-                    var name = baseVersion.BranchNameOverride ?? context.CurrentBranch.Name;
-                    tagToUse = name.RegexReplace(context.Configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
-                }
-                int? number = null;
-                if (!string.IsNullOrEmpty(context.Configuration.TagNumberPattern))
-                {
-                    var match = Regex.Match(context.CurrentBranch.CanonicalName, context.Configuration.TagNumberPattern);
-                    var numberGroup = match.Groups["number"];
-                    if (numberGroup.Success)
-                        number = int.Parse(numberGroup.Value);
-                }
-
-                var lastTag = highestTagBaseVersionStrategy.GetVersion(context);
-                if (number == null &&
-                    lastTag != null &&
-                    !context.IsCurrentCommitTagged &&
-                    MajorMinorPatchEqual(lastTag.SemanticVersion, baseVersion.SemanticVersion) &&
-                    lastTag.SemanticVersion.PreReleaseTag.HasTag())
-                {
-                    number = lastTag.SemanticVersion.PreReleaseTag.Number + 1;
-                }
-
-                if (number == null)
-                    number = 1;
-
-                baseVersion.SemanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, number);
+                UpdatePreReleaseTag(context, baseVersion);
             }
 
             baseVersion.SemanticVersion.BuildMetaData = metaDataCalculator.Create(baseVersion.BaseVersionSource, context);
 
             return baseVersion.SemanticVersion;
+        }
+
+        void UpdatePreReleaseTag(GitVersionContext context, BaseVersion baseVersion)
+        {
+            var tagToUse = context.Configuration.Tag;
+            if (tagToUse == "useBranchName")
+            {
+                Logger.WriteInfo("Using branch name to calculate version tag");
+                var name = baseVersion.BranchNameOverride ?? context.CurrentBranch.Name;
+                tagToUse = name.RegexReplace(context.Configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
+            }
+            int? number = null;
+            if (!string.IsNullOrEmpty(context.Configuration.TagNumberPattern))
+            {
+                var match = Regex.Match(context.CurrentBranch.CanonicalName, context.Configuration.TagNumberPattern);
+                var numberGroup = match.Groups["number"];
+                if (numberGroup.Success)
+                {
+                    number = int.Parse(numberGroup.Value);
+                }
+            }
+
+            var lastTag = highestTagBaseVersionStrategy.GetVersion(context);
+            if (number == null &&
+                lastTag != null &&
+                !context.IsCurrentCommitTagged &&
+                MajorMinorPatchEqual(lastTag.SemanticVersion, baseVersion.SemanticVersion) &&
+                lastTag.SemanticVersion.PreReleaseTag.HasTag())
+            {
+                number = lastTag.SemanticVersion.PreReleaseTag.Number + 1;
+            }
+
+            if (number == null)
+            {
+                number = 1;
+            }
+
+            baseVersion.SemanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, number);
         }
 
         static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion)
