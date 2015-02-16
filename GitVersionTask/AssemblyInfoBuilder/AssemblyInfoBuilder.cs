@@ -37,8 +37,9 @@ static class GitVersionInformation
 }}
 
 
-", vars.AssemblySemVer,
- vars.AssemblySemVer, 
+", 
+vars.AssemblySemVer,
+ vars.MajorMinorPatch + ".0", 
  semanticVersion.ToString("i"),
             semanticVersion.BuildMetaData.CommitDate.UtcDateTime.ToString("yyyy-MM-dd"),
             GenerateVariableMembers(vars));
