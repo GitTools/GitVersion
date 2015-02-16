@@ -129,7 +129,7 @@ public class ReleaseBranchScenarios
             fixture.Repository.Checkout("develop");
             fixture.Repository.MergeNoFF("release-1.0.0", Constants.SignatureNow());
 
-            fixture.AssertFullSemver("2.1.0-unstable.1+5");
+            fixture.AssertFullSemver("2.1.0-unstable.5");
         }
     }
 

@@ -90,6 +90,7 @@
     <Compile Include="IntegrationTests\HotfixBranchScenarios.cs" />
     <Compile Include="IntegrationTests\ReleaseBranchScenarios.cs" />
     <Compile Include="IntegrationTests\SwitchingToGitFlowScenarios.cs" />
+    <Compile Include="IntegrationTests\VersionBumpingScenarios.cs" />
     <Compile Include="IntegrationTests\WikiScenarios.cs" />
     <Compile Include="IntegrationTests\OtherBranchScenarios.cs" />
     <Compile Include="Helpers\Constants.cs" />

@@ -72,7 +72,13 @@
             }
             set
             {
-                value.ToList().ForEach(_ => branches[_.Key] = MergeObjects(branches[_.Key],  _.Value));
+                value.ToList().ForEach(_ =>
+                {
+                    if (!branches.ContainsKey(_.Key))
+                        branches.Add(_.Key, new BranchConfig());
+
+                    branches[_.Key] = MergeObjects(branches[_.Key], _.Value);
+                });
             }
         }
 

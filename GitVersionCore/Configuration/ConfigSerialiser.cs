@@ -31,8 +31,8 @@
             writer.WriteLine("# mode: ContinuousDelivery | ContinuousDeployment");
             writer.WriteLine("# continuous-delivery-fallback-tag: ci");
             writer.WriteLine("#branches:");
-            writer.WriteLine("#   release[/-]*:\n    mode: ContinuousDelivery | ContinuousDeployment\n    tag: rc");
-            writer.WriteLine("#   develop:\n    mode: ContinuousDelivery | ContinuousDeployment\n    tag: alpha");
+            writer.WriteLine("#   release[/-]:\n    mode: ContinuousDelivery | ContinuousDeployment\n    tag: rc");
+            writer.WriteLine("#   develop:\n#    mode: ContinuousDelivery | ContinuousDeployment\n#    tag: alpha");
         }
     }
 }

@@ -89,6 +89,20 @@ branches:
     }
 
     [Test]
+    public void CanProvideConfigForNewBranch()
+    {
+        const string text = @"
+next-version: 2.0.0
+branches:
+    bug[/-]:
+        tag: bugfix";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
+        
+        config.Branches["bug[/-]"].Tag.ShouldBe("bugfix");
+    }
+
+    [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public void CanWriteOutEffectiveConfiguration()
     {

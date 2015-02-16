@@ -60,10 +60,8 @@
         void CalculateEffectiveConfiguration()
         {
             var currentBranchConfig = BranchConfigurationCalculator.GetBranchConfiguration(CurrentCommit, Repository, OnlyEvaluateTrackedBranches, configuration, CurrentBranch);
-
-            // Versioning mode drills down, if top level is specified then it takes priority
-            var versioningMode = configuration.VersioningMode ?? currentBranchConfig.Value.VersioningMode ?? VersioningMode.ContinuousDelivery;
-
+            
+            var versioningMode = currentBranchConfig.Value.VersioningMode ?? configuration.VersioningMode ?? VersioningMode.ContinuousDelivery;
             var tag = currentBranchConfig.Value.Tag ?? "useBranchName";
             var nextVersion = configuration.NextVersion;
             var incrementStrategy = currentBranchConfig.Value.Increment ?? IncrementStrategy.Patch;
