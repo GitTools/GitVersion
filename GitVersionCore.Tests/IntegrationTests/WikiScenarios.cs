@@ -45,7 +45,7 @@ note over develop: 1.4.0.2-unstable
             // Branch to develop
             fixture.Repository.CreateBranch("develop").Checkout();
             fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver("1.3.0-unstable.1+1");
+            fixture.AssertFullSemver("1.3.0-unstable.1");
 
             // Open Pull Request
             fixture.Repository.CreateBranch("pull/2/merge").Checkout();
@@ -56,7 +56,7 @@ note over develop: 1.4.0.2-unstable
             // Merge into develop
             fixture.Repository.Checkout("develop");
             fixture.Repository.MergeNoFF("pull/2/merge", Constants.SignatureNow());
-            fixture.AssertFullSemver("1.3.0-unstable.1+3");
+            fixture.AssertFullSemver("1.3.0-unstable.3");
 
             // Create release branch
             fixture.Repository.CreateBranch("release-1.3.0").Checkout();
@@ -65,7 +65,7 @@ note over develop: 1.4.0.2-unstable
             // Make another commit on develop
             fixture.Repository.Checkout("develop");
             fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver("1.3.0-unstable.1+4");
+            fixture.AssertFullSemver("1.3.0-unstable.4");
 
             // Make a commit to release-1.3.0
             fixture.Repository.Checkout("release-1.3.0");
@@ -89,7 +89,7 @@ note over develop: 1.4.0.2-unstable
             // Verify develop version
             fixture.Repository.Checkout("develop");
             fixture.Repository.MergeNoFF("release-1.3.0", Constants.SignatureNow());
-            fixture.AssertFullSemver("1.4.0-unstable.1+0");
+            fixture.AssertFullSemver("1.4.0-unstable.0");
         }
     }
 }

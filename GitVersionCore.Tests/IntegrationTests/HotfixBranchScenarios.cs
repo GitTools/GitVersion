@@ -33,10 +33,10 @@ public class HotfixBranchScenarios
 
             // Verify develop version
             fixture.Repository.Checkout("develop");
-            fixture.AssertFullSemver("1.3.0-unstable.1+1");
+            fixture.AssertFullSemver("1.3.0-unstable.1");
 
             fixture.Repository.MergeNoFF("hotfix-1.2.1", Constants.SignatureNow());
-            fixture.AssertFullSemver("1.3.0-unstable.1+0");
+            fixture.AssertFullSemver("1.3.0-unstable.0");
         }
     }
 
@@ -84,9 +84,9 @@ public class HotfixBranchScenarios
 
             // Verify develop version
             fixture.Repository.Checkout("develop");
-            fixture.AssertFullSemver("2.1.0-unstable.1+1");
+            fixture.AssertFullSemver("2.1.0-unstable.1");
             fixture.Repository.MergeNoFF("support-1.1", Constants.SignatureNow());
-            fixture.AssertFullSemver("2.1.0-unstable.1+7");
+            fixture.AssertFullSemver("2.1.0-unstable.7");
         }
     }
 }

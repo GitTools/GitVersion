@@ -26,21 +26,7 @@ public class DevelopScenarios
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("develop").Checkout();
             fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver("1.1.0-alpha.1+1");
-        }
-    }
-
-    [Test]
-    public void CanClearDevelopTagViaConfig()
-    {
-        var config = new Config();
-        config.Branches["develop"].Tag = "";
-        using (var fixture = new EmptyRepositoryFixture(config))
-        {
-            fixture.Repository.MakeATaggedCommit("1.0.0");
-            fixture.Repository.CreateBranch("develop").Checkout();
-            fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver("1.1.0+1");
+            fixture.AssertFullSemver("1.1.0-alpha.1");
         }
     }
 
@@ -52,7 +38,7 @@ public class DevelopScenarios
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("develop").Checkout();
             fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver("1.1.0-unstable.1+1");
+            fixture.AssertFullSemver("1.1.0-unstable.1");
         }
     }
 
@@ -71,7 +57,7 @@ public class DevelopScenarios
 
             fixture.Repository.Checkout("develop");
             fixture.Repository.MergeNoFF("release-2.0.0", Constants.SignatureNow());
-            fixture.AssertFullSemver("2.1.0-unstable.1+0");
+            fixture.AssertFullSemver("2.1.0-unstable.0");
         }
     }
 
@@ -100,7 +86,7 @@ public class DevelopScenarios
             var commit = fixture.Repository.Head.Tip;
             fixture.Repository.MakeACommit();
             fixture.Repository.Checkout(commit);
-            fixture.AssertFullSemver("1.1.0-unstable.1+1");
+            fixture.AssertFullSemver("1.1.0-unstable.1");
         }
     }
 }
