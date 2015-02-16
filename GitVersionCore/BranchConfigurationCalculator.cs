@@ -39,7 +39,7 @@ namespace GitVersion
             BranchConfig branchConfiguration, Config config)
         {
             Logger.WriteInfo("Attempting to inherit branch configuration from parent branch");
-            var excludedBranches = new Branch[0];
+            var excludedBranches = new [] { currentBranch };
             // Check if we are a merge commit. If so likely we are a pull request
             var parentCount = currentCommit.Parents.Count();
             if (parentCount == 2)
@@ -68,15 +68,12 @@ namespace GitVersion
             List<Branch> possibleParents;
             if (branchPoint.Sha == currentCommit.Sha)
             {
-                possibleParents = ListBranchesContaininingCommit(repository, currentCommit.Sha, excludedBranches).Except(new[]
-                {
-                    currentBranch
-                }).ToList();
+                possibleParents = currentCommit.GetBranchesContainingCommit(repository, true).Except(excludedBranches).ToList();
             }
             else
             {
-                var branches = ListBranchesContaininingCommit(repository, branchPoint.Sha, excludedBranches).ToList();
-                var currentTipBranches = ListBranchesContaininingCommit(repository, currentCommit.Sha, excludedBranches).ToList();
+                var branches = branchPoint.GetBranchesContainingCommit(repository, true).Except(excludedBranches).ToList();
+                var currentTipBranches = currentCommit.GetBranchesContainingCommit(repository, true).Except(excludedBranches).ToList();
                 possibleParents = branches
                     .Except(currentTipBranches)
                     .ToList();
@@ -118,15 +115,6 @@ namespace GitVersion
                 {
                     Increment = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, repository.Branches[branchName]).Value.Increment
                 });
-        }
-
-        static IEnumerable<Branch> ListBranchesContaininingCommit(IRepository repo, string commitSha, Branch[] excludedBranches)
-        {
-            return from branch in repo.Branches.Except(excludedBranches)
-                   where !branch.IsRemote
-                   let commits = repo.Commits.QueryBy(new CommitFilter { Since = branch }).Where(c => c.Sha == commitSha)
-                   where commits.Any()
-                   select branch;
         }
     }
 }
