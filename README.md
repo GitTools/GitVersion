@@ -109,7 +109,7 @@ For the `release/3.0.0` branch of GitVersion it shows:
 
 ## Configuration
 GitVersion 3.0 is mainly powered by configuration and no longer has branching strategies hard coded.  
-**Note: ** GitVersion ships with internal default configuration which works with GitHubFlow and GitFlow, probably with others too. You **do not** need to run `GitVersion /init` to get started!
+**Note:** GitVersion ships with internal default configuration which works with GitHubFlow and GitFlow, probably with others too. You **do not** need to run `GitVersion /init` to get started!
 
 You can run `GitVersion /showConfig` to see the effective configuration (defaults + overrides)
 
