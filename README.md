@@ -41,6 +41,19 @@ This is just a small sample of the way GitVersion works. The idea is you just pl
 
 If you have other branch types GitVersion is entirely configuration driven, so check out the [Configuration](#Configuration) section of the readme to understand how to make GitVersion work for you.
 
+### The rules
+GitVersion has a few things which can impact the version, first we calculate the base version then we increment if needed and finally we calculate the build metadata (including commit count). 
+The exception, if a commit is tagged we always use that version. 
+
+There are a few ways the base version is found, they are:
+
+ - Git tag (increments using default rules)
+ - Version in branch name - for example `release-1.0.0` (does not get incremented)
+ - Merge message - so when the versioned branch is merged the version is carried with it (does not get incremented)
+ - GitVersion.yaml configuration file (`next-version` property) (does not get incremented)
+
+The commit counting is done from where the base version originated from.
+
 <a name='continuousdeployment' />
 ## Octopus Deploy/CI Build NuGet Packages
 Those of you who have tried to do SemVer with Octopus Deploy or consume CI packages out of TeamCity would have hit 
