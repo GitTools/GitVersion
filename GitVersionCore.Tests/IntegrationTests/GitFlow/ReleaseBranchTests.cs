@@ -53,16 +53,25 @@ public class GitFlowReleaseBranchTests
     [Test]
     public void WhenReleaseBranchIsMergedIntoMasterVersionIsTakenWithIt()
     {
+        DoReleaseBranchIsMergedIntoMasterVersion("release-2.0.0");
+    }
+    [Test]
+    public void WhenReleaseBranchWithUpperCaseIsMergedIntoMasterVersionIsTakenWithIt()
+    {
+        DoReleaseBranchIsMergedIntoMasterVersion("Release-2.0.0");
+    }
+    static void DoReleaseBranchIsMergedIntoMasterVersion(string releaseBranchName)
+    {
         using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.CreateBranch("develop");
             fixture.Repository.MakeCommits(1);
-            fixture.Repository.CreateBranch("release-2.0.0");
-            fixture.Repository.Checkout("release-2.0.0");
+            fixture.Repository.CreateBranch(releaseBranchName);
+            fixture.Repository.Checkout(releaseBranchName);
             fixture.Repository.MakeCommits(4);
             fixture.Repository.Checkout("master");
-            fixture.Repository.MergeNoFF("release-2.0.0", Constants.SignatureNow());
+            fixture.Repository.MergeNoFF(releaseBranchName, Constants.SignatureNow());
 
             // TODO For GitHubFlow this is 2.0.0+6, why is it different
             fixture.AssertFullSemver("2.0.0");
