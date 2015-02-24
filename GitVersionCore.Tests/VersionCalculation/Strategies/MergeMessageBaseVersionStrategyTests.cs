@@ -35,8 +35,12 @@
         [TestCase("Merge branch 'release-10.10.50'", true, "10.10.50")]
         [TestCase("Merge branch 's'", true, null)] // Must start with a number
         [TestCase("Merge branch 'release-0.2.0'", true, "0.2.0")]
+        [TestCase("Merge branch 'Release-0.2.0'", true, "0.2.0")]
+        [TestCase("Merge branch 'Release/0.2.0'", true, "0.2.0")]
         [TestCase("Merge branch 'hotfix-4.6.6' into support-4.6", true, "4.6.6")]
         [TestCase("Merge branch 'hotfix-10.10.50'", true, "10.10.50")]
+        [TestCase("Merge branch 'Hotfix-10.10.50'", true, "10.10.50")]
+        [TestCase("Merge branch 'Hotfix/10.10.50'", true, "10.10.50")]
         [TestCase("Merge branch 'hotfix-0.1.5'", true, "0.1.5")]
         [TestCase("Merge branch 'hotfix-4.2.2' into support-4.2", true, "4.2.2")]
         [TestCase("Merge branch 'hotfix-0.1.5'\n\nRelates to: TicketId", true, "0.1.5")]
