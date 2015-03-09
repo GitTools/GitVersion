@@ -16,6 +16,7 @@ public class MergeMessageParserTests
     [TestCase("Merge branch 'release-0.2.0'", true, "0.2.0")]
     [TestCase("Merge branch 'hotfix-4.6.6' into support-4.6", true, "4.6.6")]
     [TestCase("Merge branch 'hotfix-10.10.50'", true, "10.10.50")]
+    [TestCase("Merge tag '10.10.50'", true, "10.10.50")]
     [TestCase("Merge branch 'hotfix-0.1.5'", true, "0.1.5")]
     [TestCase("Merge branch 'hotfix-0.1.5'\n\nRelates to: TicketId", true, "0.1.5")]
     [TestCase("Merge branch 'alpha-0.1.5'", true, "0.1.5")]
