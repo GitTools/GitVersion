@@ -13,7 +13,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>b7aeafc9</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>4ce14672</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -157,7 +157,7 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\LibGit2Sharp.0.20.1.0\build\net40\LibGit2Sharp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.0.20.1.0\build\net40\LibGit2Sharp.props'))" />
-    <Error Condition="!Exists('..\packages\Fody.1.27.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.27.1\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Fody.1.28.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.28.0\build\Fody.targets'))" />
   </Target>
-  <Import Project="..\packages\Fody.1.27.1\build\Fody.targets" Condition="Exists('..\packages\Fody.1.27.1\build\Fody.targets')" />
+  <Import Project="..\packages\Fody.1.28.0\build\Fody.targets" Condition="Exists('..\packages\Fody.1.28.0\build\Fody.targets')" />
 </Project>
