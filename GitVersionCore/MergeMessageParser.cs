@@ -63,6 +63,17 @@ namespace GitVersion
                 return suffix.TryGetPrefix(out versionPart, "'");
             }
 
+            if (message.StartsWith("Merge tag '"))
+            {
+                var suffix = message.Replace("Merge tag '", "");
+
+                if (suffix.Contains("-"))
+                {
+                    suffix = suffix.Split('-')[1];
+                }
+                return suffix.TryGetPrefix(out versionPart, "'");
+            }
+
             if (message.StartsWith("Merge pull request #"))
             {
                 var split = message.Split(new[]
