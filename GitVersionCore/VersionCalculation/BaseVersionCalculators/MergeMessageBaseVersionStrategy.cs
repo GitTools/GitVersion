@@ -50,31 +50,17 @@
 
             var message = mergeCommit.Message.TrimToFirstLine();
 
+            var knownMergePrefixes = new[] { "Merge branch 'hotfix-", "Merge branch 'hotfix/", "Merge branch 'release-", "Merge branch 'release/" };
 
-            if (message.StartsWith("Merge branch 'hotfix-"))
+            foreach (var prefix in knownMergePrefixes)
             {
-                var suffix = message.Replace("Merge branch 'hotfix-", "");
-                return TryGetPrefix(suffix, out versionPart, "'");
+                if (message.StartsWith(prefix))
+                {
+                    var suffix = message.Substring(prefix.Length);
+                    return TryGetPrefix(suffix, out versionPart, "'");
+                }
             }
-
-            if (message.StartsWith("Merge branch 'hotfix/"))
-            {
-                var suffix = message.Replace("Merge branch 'hotfix/", "");
-                return TryGetPrefix(suffix, out versionPart, "'");
-            }
-
-            if (message.StartsWith("Merge branch 'release-"))
-            {
-                var suffix = message.Replace("Merge branch 'release-", "");
-                return TryGetPrefix(suffix, out versionPart, "'");
-            }
-
-            if (message.StartsWith("Merge branch 'release/"))
-            {
-                var suffix = message.Replace("Merge branch 'release/", "");
-                return TryGetPrefix(suffix, out versionPart, "'");
-            }
-
+            
             if (message.StartsWith("Merge branch '"))
             {
                 var suffix = message.Replace("Merge branch '", "");
