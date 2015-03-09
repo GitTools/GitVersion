@@ -31,35 +31,26 @@
 
         static bool TryParse(Commit mergeCommit, EffectiveConfiguration configuration, out SemanticVersion semanticVersion)
         {
-            string versionPart;
-            if (Inner(mergeCommit, out versionPart))
-            {
-                return SemanticVersion.TryParse(versionPart, configuration.GitTagPrefix, out semanticVersion);
-            }
-            semanticVersion = null;
-            return false;
+            semanticVersion = Inner(mergeCommit, configuration);
+            return semanticVersion != null;
         }
 
-        static bool Inner(Commit mergeCommit, out string versionPart)
+        private static SemanticVersion Inner(Commit mergeCommit, EffectiveConfiguration configuration)
         {
             if (mergeCommit.Parents.Count() < 2)
             {
-                versionPart = null;
-                return false;
+                return null;
             }
 
-            var version = mergeCommit
+            return mergeCommit
                 .Message.Split('/', '-', '\'', '"', ' ')
                 .Select(part =>
                 {
                     SemanticVersion v;
-                    return SemanticVersion.TryParse(part, "", out v) ? v : null;
+                    return SemanticVersion.TryParse(part, configuration.GitTagPrefix, out v) ? v : null;
                 }).FirstOrDefault(v => v != null)
                 ;
 
-            versionPart = version!=null ? version.ToString() : null;
-
-            return versionPart != null;
         }
 
         static bool TryGetPrefix(string target, out string result, string splitter)
