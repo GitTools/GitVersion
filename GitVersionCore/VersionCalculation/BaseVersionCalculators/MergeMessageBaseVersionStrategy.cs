@@ -55,6 +55,17 @@
             foreach (var prefix in knownMergePrefixes)
             {
                 if (message.StartsWith(prefix))
+            if (message.StartsWith("Merge tag '"))
+            {
+                var suffix = message.Replace("Merge tag '", "");
+
+                if (suffix.Contains("-"))
+                {
+                    suffix = suffix.Split('-')[1];
+                }
+                return TryGetPrefix(suffix, out versionPart, "'");
+            }
+
                 {
                     var suffix = message.Substring(prefix.Length);
                     return TryGetPrefix(suffix, out versionPart, "'");
