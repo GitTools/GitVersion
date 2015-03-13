@@ -18,7 +18,8 @@ public class GetVersionTaskTests
 
         var variablesProperties = typeof(VersionVariables)
             .GetProperties()
-            .Select(p => p.Name);
+            .Select(p => p.Name)
+            .Except(new[] { "AvailableVariables", "Item" });
 
         taskProperties.ShouldBe(variablesProperties, ignoreOrder: true);
     }
