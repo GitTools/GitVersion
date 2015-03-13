@@ -2,9 +2,9 @@
 
 public static class LibGit2SharpExtensions
 {
-    public static void ForceCheckout(this Branch branch)
+    public static void ForceCheckout(this IRepository repository, Branch branch)
     {
-        branch.Checkout(new CheckoutOptions
+        repository.Checkout(branch, new CheckoutOptions
         {
             CheckoutModifiers = CheckoutModifiers.Force
         });

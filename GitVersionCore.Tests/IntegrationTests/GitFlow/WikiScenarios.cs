@@ -43,11 +43,13 @@ note over develop: 1.4.0.2-unstable
             fixture.Repository.MakeATaggedCommit("1.2.0");
 
             // Branch to develop
-            fixture.Repository.CreateBranch("develop").Checkout();
+            var developBranch = fixture.Repository.CreateBranch("develop");
+            fixture.Repository.Checkout(developBranch);
             fixture.AssertFullSemver("1.3.0-unstable.0+0");
 
             // Open Pull Request
-            fixture.Repository.CreateBranch("pull/2/merge").Checkout();
+            var pullBranch = fixture.Repository.CreateBranch("pull/2/merge");
+            fixture.Repository.Checkout(pullBranch);
             fixture.AssertFullSemver("1.3.0-PullRequest.2+0");
             fixture.Repository.MakeACommit();
             fixture.AssertFullSemver("1.3.0-PullRequest.2+1");
@@ -58,7 +60,8 @@ note over develop: 1.4.0.2-unstable
             fixture.AssertFullSemver("1.3.0-unstable.2+2");
 
             // Create release branch
-            fixture.Repository.CreateBranch("release-1.3.0").Checkout();
+            var releaseBranch = fixture.Repository.CreateBranch("release-1.3.0");
+            fixture.Repository.Checkout(releaseBranch);
             fixture.AssertFullSemver("1.3.0-beta.1+0");
 
             // Make another commit on develop

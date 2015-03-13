@@ -12,7 +12,8 @@ public class PatchScenarios
         using (var fixture = new BaseGitFlowRepositoryFixture("1.2.0"))
         {
             // create hotfix
-            fixture.Repository.CreateBranch("hotfix-1.2.1").Checkout();
+            var branch = fixture.Repository.CreateBranch("hotfix-1.2.1");
+            fixture.Repository.Checkout(branch);
 
             fixture.AssertFullSemver("1.2.1-beta.1+0");
             fixture.Repository.MakeACommit();
@@ -60,14 +61,16 @@ public class PatchScenarios
         {
 
             // create hotfix branch
-            fixture.Repository.CreateBranch("hotfix-1.1.1", (Commit) fixture.Repository.Tags.Single(t => t.Name == "1.1.0").Target).Checkout();
+            var branch = fixture.Repository.CreateBranch("hotfix-1.1.1", (Commit) fixture.Repository.Tags.Single(t => t.Name == "1.1.0").Target);
+            fixture.Repository.Checkout(branch);
 
             fixture.AssertFullSemver("1.1.1-beta.1+0");
             fixture.Repository.MakeACommit();
             fixture.AssertFullSemver("1.1.1-beta.1+1");
 
             // Merge hotfix branch to support
-            fixture.Repository.CreateBranch("support-1.2", (Commit) fixture.Repository.Tags.Single(t => t.Name == "1.1.0").Target).Checkout();
+            var supportBranch = fixture.Repository.CreateBranch("support-1.2", (Commit) fixture.Repository.Tags.Single(t => t.Name == "1.1.0").Target);
+            fixture.Repository.Checkout(supportBranch);
             fixture.AssertFullSemver("1.1.0");
 
             fixture.Repository.MergeNoFF("hotfix-1.1.1", Constants.SignatureNow());

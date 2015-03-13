@@ -77,7 +77,7 @@ public class GitHelperTests : Lg2sHelperBase
         using (var repo = new Repository(repoPath))
         {
             var branch = repo.CreateBranch("temp", repo.Branches["develop"].Tip);
-            branch.Checkout();
+            repo.Checkout(branch);
 
             AddOneCommitToHead(repo, "code");
             AddOneCommitToHead(repo, "code");

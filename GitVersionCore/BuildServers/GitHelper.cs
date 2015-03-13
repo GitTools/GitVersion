@@ -55,7 +55,8 @@ namespace GitVersion
                 else
                 {
                     Logger.WriteInfo(string.Format("Checking out local branch 'refs/heads/{0}'.", localBranchesWhereCommitShaIsHead[0].Name));
-                    repo.Branches[localBranchesWhereCommitShaIsHead[0].Name].Checkout();
+                    var branch = repo.Branches[localBranchesWhereCommitShaIsHead[0].Name];
+                    repo.Checkout(branch);
                 }
             }
         }

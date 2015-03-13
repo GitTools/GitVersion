@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\LibGit2Sharp.0.20.1.0\build\net40\LibGit2Sharp.props" Condition="Exists('..\packages\LibGit2Sharp.0.20.1.0\build\net40\LibGit2Sharp.props')" />
+  <Import Project="..\packages\LibGit2Sharp.0.22.0-pre20150223185624\build\net40\LibGit2Sharp.props" Condition="Exists('..\packages\LibGit2Sharp.0.22.0-pre20150223185624\build\net40\LibGit2Sharp.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -12,7 +12,7 @@
     <AssemblyName>GitVersionCore</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>c31ea180</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>0a9a46a9</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,9 +39,9 @@
       <HintPath>..\packages\JetBrainsAnnotations.Fody.1.0.2\Lib\JetBrains.Annotations.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="LibGit2Sharp, Version=0.20.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="LibGit2Sharp, Version=0.22.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\LibGit2Sharp.0.20.1.0\lib\net40\LibGit2Sharp.dll</HintPath>
+      <HintPath>..\packages\LibGit2Sharp.0.22.0-pre20150223185624\lib\net40\LibGit2Sharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -141,7 +141,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets'))" />
     <Error Condition="!Exists('..\packages\Fody.1.26.4\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.26.4\build\Fody.targets'))" />
-    <Error Condition="!Exists('..\packages\LibGit2Sharp.0.20.1.0\build\net40\LibGit2Sharp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.0.20.1.0\build\net40\LibGit2Sharp.props'))" />
+    <Error Condition="!Exists('..\packages\LibGit2Sharp.0.22.0-pre20150223185624\build\net40\LibGit2Sharp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.0.22.0-pre20150223185624\build\net40\LibGit2Sharp.props'))" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent>

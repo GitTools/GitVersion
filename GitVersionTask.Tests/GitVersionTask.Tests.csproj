@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\LibGit2Sharp.0.22.0-pre20150223185624\build\net40\LibGit2Sharp.props" Condition="Exists('..\packages\LibGit2Sharp.0.22.0-pre20150223185624\build\net40\LibGit2Sharp.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -13,7 +14,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>9f7f2482</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>85980eee</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,9 +48,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\FluentDateTime.1.11.0\Lib\NET35\FluentDateTime.dll</HintPath>
     </Reference>
-    <Reference Include="LibGit2Sharp, Version=0.20.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="LibGit2Sharp, Version=0.22.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\LibGit2Sharp.0.20.1.0\lib\net40\LibGit2Sharp.dll</HintPath>
+      <HintPath>..\packages\LibGit2Sharp.0.22.0-pre20150223185624\lib\net40\LibGit2Sharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
@@ -271,5 +272,6 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Fody.1.26.4\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.26.4\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\LibGit2Sharp.0.22.0-pre20150223185624\build\net40\LibGit2Sharp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.0.22.0-pre20150223185624\build\net40\LibGit2Sharp.props'))" />
   </Target>
 </Project>
