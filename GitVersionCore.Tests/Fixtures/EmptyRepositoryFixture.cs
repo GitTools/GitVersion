@@ -9,6 +9,11 @@ public class EmptyRepositoryFixture : RepositoryFixtureBase
     {
     }
 
+    public void DumpGraph()
+    {
+        Repository.DumpGraph();
+    }
+
     static IRepository CreateNewRepository(string path)
     {
         LibGit2Sharp.Repository.Init(path);

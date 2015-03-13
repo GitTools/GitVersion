@@ -24,35 +24,48 @@ namespace GitVersion
             return repository.Branches.FirstOrDefault(x => x.Name == "origin/" + branchName);
         }
 
-        public static IEnumerable<Tag> TagsByDate(this IRepository repository, Commit commit)
+        public static Commit FindCommitBranchWasBranchedFrom(this Branch branch, IRepository repository, bool onlyTrackedBranches, params Branch[] excludedBranches)
         {
-            return repository.Tags
-                .Where(tag => tag.PeeledTarget() == commit)
-                .OrderByDescending(tag =>
-                {
-                    if (tag.Annotation != null)
-                    {
-                        return tag.Annotation.Tagger.When;
-                    }
-                    //lightweight tags will not have an Annotation
-                    return commit.Committer.When;
-                });
+            var currentBranches = branch.Tip.GetBranchesContainingCommit(repository, onlyTrackedBranches).ToList();
+            var tips = repository.Branches.Except(excludedBranches).Where(b => b != branch && !b.IsRemote).Select(b => b.Tip).ToList();
+            var branchPoint = branch.Commits.FirstOrDefault(c =>
+            {
+                if (tips.Contains(c)) return true;
+                var branchesContainingCommit = c.GetBranchesContainingCommit(repository, onlyTrackedBranches).ToList();
+                return branchesContainingCommit.Count > currentBranches.Count;
+            });
+            return branchPoint ?? branch.Tip;
         }
 
-        public static IEnumerable<Tag> SemVerTagsRelatedToVersion(this IRepository repository, Config configuration, SemanticVersion version)
+        public static IEnumerable<Branch> GetBranchesContainingCommit(this Commit commit, IRepository repository, bool onlyTrackedBranches)
         {
-            foreach (var tag in repository.Tags)
+            var directBranchHasBeenFound = false;
+            foreach (var branch in repository.Branches)
             {
-                SemanticVersion tagVersion;
-                if (SemanticVersion.TryParse(tag.Name, configuration.TagPrefix, out tagVersion))
+                if (branch.Tip.Sha != commit.Sha || (onlyTrackedBranches && !branch.IsTracking))
                 {
-                    if (version.Major == tagVersion.Major &&
-                        version.Minor == tagVersion.Minor &&
-                        version.Patch == tagVersion.Patch)
-                    {
-                        yield return tag;
-                    }
+                    continue;
                 }
+
+                directBranchHasBeenFound = true;
+                yield return branch;
+            }
+
+            if (directBranchHasBeenFound)
+            {
+                yield break;
+            }
+
+            foreach (var branch in repository.Branches)
+            {
+                var commits = repository.Commits.QueryBy(new CommitFilter { Since = branch }).Where(c => c.Sha == commit.Sha);
+
+                if (!commits.Any())
+                {
+                    continue;
+                }
+
+                yield return branch;
             }
         }
 

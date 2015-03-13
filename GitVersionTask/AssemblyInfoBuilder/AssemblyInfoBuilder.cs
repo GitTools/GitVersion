@@ -6,10 +6,10 @@ public class AssemblyInfoBuilder
 {
     public CachedVersion CachedVersion;
 
-    public string GetAssemblyInfoText(Config configuration)
+    public string GetAssemblyInfoText(EffectiveConfiguration configuration)
     {
         var semanticVersion = CachedVersion.SemanticVersion;
-        var vars = VariableProvider.GetVariablesFor(semanticVersion, configuration);
+        var vars = VariableProvider.GetVariablesFor(semanticVersion, configuration.AssemblyVersioningScheme, configuration.VersioningMode, "ci", false);
         var assemblyInfo = string.Format(@"
 using System;
 using System.Reflection;
@@ -17,17 +17,15 @@ using System.Reflection;
 [assembly: AssemblyVersion(""{0}"")]
 [assembly: AssemblyFileVersion(""{1}"")]
 [assembly: AssemblyInformationalVersion(""{2}"")]
-[assembly: ReleaseDate(""{3}"", ""{4}"")]
+[assembly: ReleaseDate(""{3}"")]
 
 [System.Runtime.CompilerServices.CompilerGenerated]
 sealed class ReleaseDateAttribute : System.Attribute
 {{
-    public string OriginalDate {{ get; private set; }}
     public string Date {{ get; private set; }}
 
-    public ReleaseDateAttribute(string originalDate, string date)
+    public ReleaseDateAttribute(string date)
     {{
-        OriginalDate = originalDate;
         Date = date;
     }}
 }}
@@ -35,14 +33,14 @@ sealed class ReleaseDateAttribute : System.Attribute
 [System.Runtime.CompilerServices.CompilerGenerated]
 static class GitVersionInformation
 {{
-{5}
+{4}
 }}
 
 
-", vars[VariableProvider.AssemblySemVer],
- vars[VariableProvider.AssemblyFileSemVer], 
+", 
+vars.AssemblySemVer,
+ vars.MajorMinorPatch + ".0", 
  semanticVersion.ToString("i"),
-            CachedVersion.MasterReleaseDate.UtcDateTime.ToString("yyyy-MM-dd"),
             semanticVersion.BuildMetaData.CommitDate.UtcDateTime.ToString("yyyy-MM-dd"),
             GenerateVariableMembers(vars));
 

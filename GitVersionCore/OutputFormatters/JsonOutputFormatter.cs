@@ -1,12 +1,11 @@
 ﻿namespace GitVersion
 {
-    using System.Collections.Generic;
     using System.Linq;
     using System.Text;
 
     public static class JsonOutputFormatter
     {
-        public static string ToJson(Dictionary<string, string> variables)
+        public static string ToJson(VersionVariables variables)
         {
             var builder = new StringBuilder();
             builder.AppendLine("{");

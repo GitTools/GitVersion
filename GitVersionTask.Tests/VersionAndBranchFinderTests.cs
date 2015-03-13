@@ -1,4 +1,5 @@
-﻿using GitVersion;
+﻿using System;
+using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
 
@@ -17,7 +18,8 @@ public class VersionAndBranchFinderTests: Lg2sHelperBase
             AddOneCommitToHead(repo, "code");
 
         }
-        CachedVersion versionAndBranch;
+
+        Tuple<CachedVersion, GitVersionContext> versionAndBranch;
         VersionAndBranchFinder.TryGetVersion(ASBMTestRepoWorkingDirPath, out versionAndBranch, new Config());
         Assert.IsNotNull(versionAndBranch);
     }

@@ -21,15 +21,22 @@ public abstract class RepositoryFixtureBase : IDisposable
 
     public bool IsForTrackedBranchOnly { private get; set; }
 
-    public SemanticVersion ExecuteGitVersion(IRepository repository = null)
-    {
-        var vf = new GitVersionFinder();
-        return vf.FindVersion(new GitVersionContext(repository ?? Repository, configuration, IsForTrackedBranchOnly));
-    }
-
     public void AssertFullSemver(string fullSemver, IRepository repository = null)
     {
-        ExecuteGitVersion(repository).ToString("f").ShouldBe(fullSemver);
+        var gitVersionContext = new GitVersionContext(repository ?? Repository, configuration, IsForTrackedBranchOnly);
+        var executeGitVersion = ExecuteGitVersion(gitVersionContext);
+        var variables = VariableProvider.GetVariablesFor(executeGitVersion, 
+            gitVersionContext.Configuration.AssemblyVersioningScheme,
+            gitVersionContext.Configuration.VersioningMode, 
+            gitVersionContext.Configuration.ContinuousDeploymentFallbackTag,
+            gitVersionContext.IsCurrentCommitTagged);
+        variables.FullSemVer.ShouldBe(fullSemver);
+    }
+
+    private SemanticVersion ExecuteGitVersion(GitVersionContext context)
+    {
+        var vf = new GitVersionFinder();
+        return vf.FindVersion(context);
     }
 
     public virtual void Dispose()

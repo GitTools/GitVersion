@@ -26,7 +26,7 @@ public class MsBuildProjectArgTest
             var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, projectFile: "RunsMsBuildProvideViaCommandLineArg.proj", projectArgs: "/target:OutputResults");
 
             result.ExitCode.ShouldBe(0);
-            result.Log.ShouldContain("FullSemVer: 1.2.3+0");
+            result.Log.ShouldContain("FullSemVer: 1.2.3");
         }
     }
 }

@@ -1,13 +1,11 @@
 namespace GitVersion
 {
     using System.IO;
-    using System.Text.RegularExpressions;
+    using System.Text;
     using GitVersion.Helpers;
 
     public class ConfigurationProvider
     {
-        static Regex oldAssemblyVersioningScheme = new Regex("assemblyVersioningScheme", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
         public static Config Provide(string gitDirectory, IFileSystem fileSystem)
         {
             var configFilePath = GetConfigFilePath(gitDirectory);
@@ -15,17 +13,24 @@ namespace GitVersion
             if (fileSystem.Exists(configFilePath))
             {
                 var readAllText = fileSystem.ReadAllText(configFilePath);
-                if (oldAssemblyVersioningScheme.IsMatch(readAllText))
-                {
-                    readAllText = oldAssemblyVersioningScheme.Replace(readAllText, "assembly-versioning-scheme");
-                    fileSystem.WriteAllText(configFilePath, readAllText);
-                    Logger.WriteWarning("Found legacy configuration value 'assemblyVersioningScheme', replaced with 'assembly-versioning-scheme");
-                }
+                LegacyConfigNotifier.Notify(new StringReader(readAllText));
 
-                return ConfigReader.Read(new StringReader(readAllText));
+                return ConfigSerialiser.Read(new StringReader(readAllText));
             }
 
             return new Config();
+        }
+
+        public static string GetEffectiveConfigAsString(string gitDirectory, IFileSystem fileSystem)
+        {
+            var config = Provide(gitDirectory, fileSystem);
+            var stringBuilder = new StringBuilder();
+            using (var stream = new StringWriter(stringBuilder))
+            {
+                ConfigSerialiser.Write(config, stream);
+                stream.Flush();
+            }
+            return stringBuilder.ToString();
         }
 
         public static void WriteSample(string gitDirectory, IFileSystem fileSystem)
@@ -37,7 +42,7 @@ namespace GitVersion
                 using (var stream = fileSystem.OpenWrite(configFilePath))
                 using (var writer = new StreamWriter(stream))
                 {
-                    ConfigReader.WriteSample(writer);
+                    ConfigSerialiser.WriteSample(writer);
                 }
             }
             else

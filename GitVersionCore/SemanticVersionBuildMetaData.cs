@@ -22,14 +22,23 @@ namespace GitVersion
         {
         }
 
-        public SemanticVersionBuildMetaData(int? commitsSinceTag, string branch, string commitSha,DateTimeOffset commitDate)
+        public SemanticVersionBuildMetaData(int? commitsSinceTag, string branch, string commitSha, DateTimeOffset commitDate, string otherMetadata = null)
         {
             Sha = commitSha;
             CommitsSinceTag = commitsSinceTag;
             Branch = branch;
             CommitDate = commitDate;
+            OtherMetaData = otherMetadata;
         }
 
+        public SemanticVersionBuildMetaData(SemanticVersionBuildMetaData buildMetaData)
+        {
+            Sha = buildMetaData.Sha;
+            CommitsSinceTag = buildMetaData.CommitsSinceTag;
+            Branch = buildMetaData.Branch;
+            CommitDate = buildMetaData.CommitDate;
+            OtherMetaData = buildMetaData.OtherMetaData;
+        }
 
         public override bool Equals(object obj)
         {

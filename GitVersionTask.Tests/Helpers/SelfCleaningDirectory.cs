@@ -3,11 +3,6 @@ using System.IO;
 
 public class SelfCleaningDirectory
 {
-    public SelfCleaningDirectory(IPostTestDirectoryRemover directoryRemover)
-        : this(directoryRemover, BuildTempPath())
-    {
-    }
-
     public SelfCleaningDirectory(IPostTestDirectoryRemover directoryRemover, string path)
     {
         if (Directory.Exists(path))
@@ -20,9 +15,4 @@ public class SelfCleaningDirectory
     }
 
     public string DirectoryPath;
-
-    protected static string BuildTempPath()
-    {
-        return Path.Combine(Constants.TemporaryReposPath, Guid.NewGuid().ToString().Substring(0, 8));
-    }
 }
