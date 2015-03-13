@@ -26,7 +26,8 @@ public class GitHubFlowSupportBranchScenarios
 
             // Now lets support 1.x release
             fixture.Repository.Checkout("1.1.0");
-            fixture.Repository.CreateBranch("support/1.0.0").Checkout();
+            var supportBranch = fixture.Repository.CreateBranch("support/1.0.0").Checkout();
+            fixture.Repository.Checkout(branch);
             fixture.AssertFullSemver("1.1.0+0");
 
             // Create release branch from support branch

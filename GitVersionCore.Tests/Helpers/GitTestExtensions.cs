@@ -51,7 +51,7 @@ public static class GitTestExtensions
 
         File.WriteAllText(randomFile, Guid.NewGuid().ToString());
 
-        repository.Index.Stage(randomFile);
+        repository.Stage(randomFile);
         return repository.Commit(string.Format("Test Commit for file '{0}'", relativeFileName), 
             Constants.Signature(dateTimeOffset), Constants.Signature(dateTimeOffset));
     }

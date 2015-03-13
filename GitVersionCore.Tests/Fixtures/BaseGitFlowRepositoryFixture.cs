@@ -19,10 +19,11 @@ public class BaseGitFlowRepositoryFixture : EmptyRepositoryFixture
     {
         var randomFile = Path.Combine(Repository.Info.WorkingDirectory, Guid.NewGuid().ToString());
         File.WriteAllText(randomFile, string.Empty);
-        Repository.Index.Stage(randomFile);
+        Repository.Stage(randomFile);
 
         initialMasterAction(Repository);
 
-        Repository.CreateBranch("develop").Checkout();
+        var branch = Repository.CreateBranch("develop");
+        Repository.Checkout(branch);
     }
 }
