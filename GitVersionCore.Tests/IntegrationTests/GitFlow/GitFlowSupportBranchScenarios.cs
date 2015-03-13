@@ -10,8 +10,8 @@ public class GitFlowSupportBranchScenarios
         using (var fixture = new BaseGitFlowRepositoryFixture("1.1.0"))
         {
             // Create 2.0.0 release
-            var branch = fixture.Repository.CreateBranch("release-2.0.0");
-            fixture.Repository.Checkout(branch);
+            var releaseBranch = fixture.Repository.CreateBranch("release-2.0.0");
+            fixture.Repository.Checkout(releaseBranch);
             fixture.Repository.MakeCommits(2);
 
             // Merge into develop and master
@@ -29,8 +29,8 @@ public class GitFlowSupportBranchScenarios
             fixture.AssertFullSemver("1.1.0");
 
             // Create release branch from support branch
-            var releaseBranch = fixture.Repository.CreateBranch("release/1.2.0");
-            fixture.Repository.Checkout(releaseBranch);
+            var newReleaseBranch = fixture.Repository.CreateBranch("release/1.2.0");
+            fixture.Repository.Checkout(newReleaseBranch);
             fixture.Repository.MakeACommit();
             fixture.AssertFullSemver("1.2.0-beta.1+1");
 

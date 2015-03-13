@@ -30,7 +30,7 @@ public class ReleaseTests : Lg2sHelperBase
         using (var repo = new Repository(repoPath))
         {
             // Create a release branch from the parent of current develop tip
-            repo.Branches.Add("release-5.0.0", "develop~").ForceCheckout();
+            repo.ForceCheckout(repo.Branches.Add("release-5.0.0", "develop~"));
 
             AddOneCommitToHead(repo, "code");
             AddTag(repo, "5.0.0-beta2");

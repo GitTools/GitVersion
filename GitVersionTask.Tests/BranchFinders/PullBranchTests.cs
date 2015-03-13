@@ -46,7 +46,7 @@ public class PullBranchTests : Lg2sHelperBase
         using (var repo = new Repository(repoPath))
         {
             // Create a pull request branch from the parent of current develop tip
-            repo.Branches.Add("pull/1735/merge", "develop~").ForceCheckout();
+            repo.ForceCheckout(repo.Branches.Add("pull/1735/merge", "develop~"));
 
             AddOneCommitToHead(repo, "code");
 
@@ -72,7 +72,7 @@ public class PullBranchTests : Lg2sHelperBase
         using (var repo = new Repository(repoPath))
         {
             // Create a pull request branch from the parent of current develop tip
-            repo.Branches.Add("pull/1735/merge", "develop~").ForceCheckout();
+            repo.ForceCheckout(repo.Branches.Add("pull/1735/merge", "develop~"));
 
             AddOneCommitToHead(repo, "code");
             AddOneCommitToHead(repo, "more code");

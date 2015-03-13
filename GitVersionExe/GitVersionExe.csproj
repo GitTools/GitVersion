@@ -87,13 +87,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\Packages\LibGit2Sharp.0.22.0-pre20150223185624\lib\net40\NativeBinaries\amd64\git2-e0902fb.dll">
+      <Link>costura64\git2-e0902fb.dll</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Packages\LibGit2Sharp.0.22.0-pre20150223185624\lib\net40\NativeBinaries\x86\git2-e0902fb.dll">
+      <Link>costura32\git2-e0902fb.dll</Link>
+    </EmbeddedResource>
     <Content Include="GemAssets\.gitignore" />
-    <EmbeddedResource Include="..\Packages\LibGit2Sharp.0.20.1.0\lib\net40\NativeBinaries\amd64\git2-91fa31f.dll">
-      <Link>costura64\git2-91fa31f.dll</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Packages\LibGit2Sharp.0.20.1.0\lib\net40\NativeBinaries\x86\git2-91fa31f.dll">
-      <Link>costura32\git2-91fa31f.dll</Link>
-    </EmbeddedResource>
     <Content Include="FodyWeavers.xml">
       <SubType>Designer</SubType>
     </Content>

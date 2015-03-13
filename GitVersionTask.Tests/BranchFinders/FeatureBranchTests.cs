@@ -37,7 +37,7 @@ public class FeatureBranchTests : Lg2sHelperBase
         using (var repo = new Repository(repoPath))
         {
             // Create a feature branch from the parent of current develop tip
-            repo.Branches.Add("featureWithOneCommit", "develop~").ForceCheckout();
+            repo.ForceCheckout(repo.Branches.Add("featureWithOneCommit", "develop~"));
             //var branchingCommit = repo.Head.Tip;
 
             AddOneCommitToHead(repo, "feature");
@@ -65,7 +65,7 @@ public class FeatureBranchTests : Lg2sHelperBase
         using (var repo = new Repository(repoPath))
         {
             // Create a feature branch from the parent of current develop tip
-            repo.Branches.Add("featureWithOneCommit", "develop~").ForceCheckout();
+            repo.ForceCheckout(repo.Branches.Add("featureWithOneCommit", "develop~"));
             //var branchingCommit = repo.Head.Tip;
 
             AddOneCommitToHead(repo, "feature");
@@ -93,7 +93,7 @@ public class FeatureBranchTests : Lg2sHelperBase
         using (var repo = new Repository(repoPath))
         {
             // Create a feature branch from the parent of current develop tip
-            repo.Branches.Add("featureWithOneCommit", "develop~").ForceCheckout();
+            repo.ForceCheckout(repo.Branches.Add("featureWithOneCommit", "develop~"));
             //var branchingCommit = repo.Head.Tip;
 
             AddOneCommitToHead(repo, "feature");

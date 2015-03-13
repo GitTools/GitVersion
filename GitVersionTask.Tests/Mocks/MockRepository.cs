@@ -15,22 +15,27 @@ public class MockRepository : IRepository
         throw new NotImplementedException();
     }
 
-    public Branch Checkout(Branch branch, CheckoutOptions options, Signature signature = null)
+    public Branch Checkout(Branch branch, CheckoutOptions options, Signature signature)
     {
         throw new NotImplementedException();
     }
 
-    public Branch Checkout(string committishOrBranchSpec, CheckoutOptions options, Signature signature = null)
+    public Branch Checkout(string committishOrBranchSpec, CheckoutOptions options, Signature signature)
     {
         throw new NotImplementedException();
     }
 
-    public Branch Checkout(Commit commit, CheckoutOptions options, Signature signature = null)
+    public Branch Checkout(Commit commit, CheckoutOptions options, Signature signature)
     {
         throw new NotImplementedException();
     }
 
     public void CheckoutPaths(string committishOrBranchSpec, IEnumerable<string> paths, CheckoutOptions checkoutOptions = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public MergeResult MergeFetchedRefs(Signature merger, MergeOptions options)
     {
         throw new NotImplementedException();
     }
@@ -158,6 +163,11 @@ public class MockRepository : IRepository
     }
 
     public RepositoryStatus RetrieveStatus(StatusOptions options)
+    {
+        throw new NotImplementedException();
+    }
+
+    public string Describe(Commit commit, DescribeOptions options)
     {
         throw new NotImplementedException();
     }

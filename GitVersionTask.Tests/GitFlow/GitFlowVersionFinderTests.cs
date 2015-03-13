@@ -13,7 +13,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
         var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
-            repo.Branches["feature/one"].ForceCheckout();
+            repo.ForceCheckout(repo.Branches["feature/one"]);
 
             repo.Branches.Remove("master");
 
@@ -29,7 +29,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
         var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
-            repo.Branches["feature/one"].ForceCheckout();
+            repo.ForceCheckout(repo.Branches["feature/one"]);
 
             repo.Branches.Remove("develop");
 
@@ -108,10 +108,10 @@ public class GitVersionFinderTests : Lg2sHelperBase
         var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
-            repo.Branches["develop"].ForceCheckout();
+            repo.ForceCheckout(repo.Branches["develop"]);
 
             const string branchName = "every-feature-is-welcome";
-            repo.Branches.Add(branchName, repo.Head.Tip).ForceCheckout();
+            repo.ForceCheckout(repo.Branches.Add(branchName, repo.Head.Tip));
 
             AddOneCommitToHead(repo, "code");
 
@@ -129,10 +129,10 @@ public class GitVersionFinderTests : Lg2sHelperBase
         var repoPath = Clone(ASBMTestRepoWorkingDirPath);
         using (var repo = new Repository(repoPath))
         {
-            repo.Branches["develop"].ForceCheckout();
+            repo.ForceCheckout(repo.Branches["develop"]);
 
             const string branchName = "feature/ABC-1234_SomeDescription";
-            repo.Branches.Add(branchName, repo.Head.Tip).ForceCheckout();
+            repo.ForceCheckout(repo.Branches.Add(branchName, repo.Head.Tip));
 
             AddOneCommitToHead(repo, "code");
 
@@ -158,7 +158,7 @@ public class GitVersionFinderTests : Lg2sHelperBase
             var path = Path.Combine(repo.Info.WorkingDirectory, "README");
             File.AppendAllText(path, "Release\n");
 
-            repo.Index.Stage(path);
+            repo.Stage(path);
             var sign = SignatureBuilder.SignatureNow();
             repo.Commit("release unborn", sign, sign);
 
