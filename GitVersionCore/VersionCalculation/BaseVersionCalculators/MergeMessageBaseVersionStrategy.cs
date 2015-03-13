@@ -31,75 +31,26 @@
 
         static bool TryParse(Commit mergeCommit, EffectiveConfiguration configuration, out SemanticVersion semanticVersion)
         {
-            string versionPart;
-            if (Inner(mergeCommit, out versionPart))
-            {
-                return SemanticVersion.TryParse(versionPart, configuration.GitTagPrefix, out semanticVersion);
-            }
-            semanticVersion = null;
-            return false;
+            semanticVersion = Inner(mergeCommit, configuration);
+            return semanticVersion != null;
         }
 
-        static bool Inner(Commit mergeCommit, out string versionPart)
+        private static SemanticVersion Inner(Commit mergeCommit, EffectiveConfiguration configuration)
         {
             if (mergeCommit.Parents.Count() < 2)
             {
-                versionPart = null;
-                return false;
+                return null;
             }
 
-            var message = mergeCommit.Message.TrimToFirstLine();
-
-            var knownMergePrefixes = new[] { "Merge branch 'hotfix-", "Merge branch 'hotfix/", "Merge branch 'release-", "Merge branch 'release/" };
-
-            foreach (var prefix in knownMergePrefixes)
-            {
-                if (message.StartsWith(prefix))
+            return mergeCommit
+                .Message.Split('/', '-', '\'', '"', ' ')
+                .Select(part =>
                 {
-                    var suffix = message.Substring(prefix.Length);
-                    return TryGetPrefix(suffix, out versionPart, "'");
-                }
-            }
-            
-            if (message.StartsWith("Merge branch '"))
-            {
-                var suffix = message.Replace("Merge branch '", "");
+                    SemanticVersion v;
+                    return SemanticVersion.TryParse(part, configuration.GitTagPrefix, out v) ? v : null;
+                }).FirstOrDefault(v => v != null)
+                ;
 
-                if (suffix.Contains("-"))
-                {
-                    suffix = suffix.Split('-')[1];
-                }
-                return TryGetPrefix(suffix, out versionPart, "'");
-            }
-
-            if (message.StartsWith("Merge pull request #"))
-            {
-                var split = message.Split(new[]
-                {
-                    "/"
-                }, StringSplitOptions.RemoveEmptyEntries);
-                if (split.Length != 2)
-                {
-                    versionPart = null;
-                    return false;
-                }
-                return TryGetSuffix(split[1], out versionPart, "-");
-            }
-
-            if (message.StartsWith("Finish Release-")) //Match Syntevo SmartGit client's GitFlow 'release' merge commit message formatting
-            {
-                versionPart = message.Replace("Finish Release-", "");
-                return true;
-            }
-
-            if (message.StartsWith("Finish ")) //Match Syntevo SmartGit client's GitFlow 'hotfix' merge commit message formatting
-            {
-                versionPart = message.Replace("Finish ", "");
-                return true;
-            }
-
-            versionPart = null;
-            return false;
         }
 
         static bool TryGetPrefix(string target, out string result, string splitter)
