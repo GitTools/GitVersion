@@ -40,7 +40,7 @@
             {
                 Logger.WriteWarning("No specific commit specified or found, falling back to latest commit on specified branch");
 
-                CurrentCommit = repository.Head.Tip;
+                CurrentCommit = currentBranch.Tip;
             }
 
             if (currentBranch.IsDetachedHead())
