@@ -108,6 +108,12 @@ namespace GitVersion
                     continue;
                 }
 
+                if (IsSwitch("c", name))
+                {
+                    arguments.CommitId = value;
+                    continue;
+                }
+
                 if (IsSwitch("exec", name))
                 {
                     arguments.Exec = value;
@@ -198,6 +204,7 @@ namespace GitVersion
 
                 throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", name));
             }
+
             return arguments;
         }
 

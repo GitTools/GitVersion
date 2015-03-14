@@ -37,6 +37,7 @@ GitVersion [path]
     /b              Name of the branch to use on the remote repository, must be used in combination with /url.
     /u              Username in case authentication is required.
     /p              Password in case authentication is required.
+    /c              The commit id to check. If not specified, the latest available commit on the specified branch will be used.
     
     # Execute build args
     /exec           Executes target executable making GitVersion variables available as environmental variables

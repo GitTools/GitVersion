@@ -14,6 +14,7 @@ namespace GitVersion
 
         public string TargetUrl;
         public string TargetBranch;
+        public string CommitId;
 
         public bool Init;
 
