@@ -90,6 +90,7 @@
     <Compile Include="VersionCalculation\BaseVersionCalculator.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\BaseVersion.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\ConfigNextVersionBaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\GitFlowDevelopBranchBaseVersionStrategy.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\HighestTagBaseVersionStrategy.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\MergeMessageBaseVersionStrategy.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\VersionInBranchBaseVersionStrategy.cs" />

@@ -6,6 +6,56 @@ using NUnit.Framework;
 public class ReleaseBranchScenarios
 {
     [Test]
+    public void NoMergeBacksToDevelopInCaseThereAreNoChangesInReleaseBranch()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            fixture.Repository.MakeACommit();
+            fixture.Repository.CreateBranch("develop").Checkout();
+            fixture.Repository.MakeCommits(3);
+            var releaseBranch = fixture.Repository.CreateBranch("release/1.0.0");
+            releaseBranch.Checkout();
+            fixture.Repository.Checkout("master");
+            fixture.Repository.MergeNoFF("release/1.0.0");
+            fixture.Repository.ApplyTag("1.0.0");
+            fixture.Repository.Checkout("develop");
+            fixture.Repository.MakeACommit();
+
+            fixture.Repository.Branches.Remove(releaseBranch);
+
+            fixture.AssertFullSemver("1.1.0-unstable.1");
+        }
+    }
+
+    [Test]
+    public void NoMergeBacksToDevelopInCaseThereAreChangesInReleaseBranch()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            fixture.Repository.MakeACommit();
+            fixture.Repository.CreateBranch("develop").Checkout();
+            fixture.Repository.MakeCommits(3);
+            var releaseBranch = fixture.Repository.CreateBranch("release/1.0.0");
+            releaseBranch.Checkout();
+            fixture.Repository.MakeACommit();
+
+            // Merge to master
+            fixture.Repository.Checkout("master");
+            fixture.Repository.MergeNoFF("release/1.0.0");
+            fixture.Repository.ApplyTag("1.0.0");
+
+            // Merge to develop
+            fixture.Repository.Checkout("develop");
+            fixture.Repository.MergeNoFF("release/1.0.0");
+
+            fixture.Repository.MakeACommit();
+            fixture.Repository.Branches.Remove(releaseBranch);
+
+            fixture.AssertFullSemver("1.1.0-unstable.1");
+        }
+    }
+
+    [Test]
     public void CanTakeVersionFromReleaseBranch()
     {
         using (var fixture = new EmptyRepositoryFixture(new Config()))

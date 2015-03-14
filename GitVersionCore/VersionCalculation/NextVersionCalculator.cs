@@ -17,10 +17,11 @@
             baseVersionFinder = baseVersionCalculator ??
                 new BaseVersionCalculator(
                     new FallbackBaseVersionStrategy(),
-                new ConfigNextVersionBaseVersionStrategy(),
-                highestTagBaseVersionStrategy,
-                new MergeMessageBaseVersionStrategy(),
-                new VersionInBranchBaseVersionStrategy());
+                    new ConfigNextVersionBaseVersionStrategy(),
+                    highestTagBaseVersionStrategy,
+                    new GitFlowDevelopBranchBaseVersionStrategy(),
+                    new MergeMessageBaseVersionStrategy(),
+                    new VersionInBranchBaseVersionStrategy());
         }
 
         public SemanticVersion FindVersion(GitVersionContext context)
