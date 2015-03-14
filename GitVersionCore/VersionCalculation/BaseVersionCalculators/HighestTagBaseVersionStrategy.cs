@@ -1,5 +1,6 @@
 ﻿namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
+    using System;
     using System.Linq;
     using LibGit2Sharp;
 
@@ -17,17 +18,29 @@
             return null;
         }
 
+        protected virtual bool IsValidTag(string branchName, Tag tag, Commit commit)
+        {
+            return tag.PeeledTarget() == commit;
+        }
+
         bool GetVersion(GitVersionContext context, out VersionTaggedCommit versionTaggedCommit)
         {
+            string currentBranchName = null;
+            var head = context.Repository.Head;
+            if (head != null)
+            {
+                currentBranchName = head.CanonicalName;
+            }
+
             var olderThan = context.CurrentCommit.When();
             var allTags = context.Repository.Tags
-                .Where(tag => ((Commit) tag.PeeledTarget()).When() <= olderThan)
+                .Where(tag => ((Commit)tag.PeeledTarget()).When() <= olderThan)
                 .ToList();
             var tagsOnBranch = context.CurrentBranch
                 .Commits
                 .SelectMany(commit =>
                 {
-                    return allTags.Where(t => t.PeeledTarget() == commit);
+                    return allTags.Where(t => IsValidTag(currentBranchName, t, commit));
                 })
                 .Select(t =>
                 {
