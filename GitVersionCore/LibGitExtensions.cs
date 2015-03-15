@@ -69,30 +69,6 @@ namespace GitVersion
             }
         }
 
-        public static bool IsDirectMergeFromCommit(this Tag tag, Commit commit)
-        {
-            var targetCommit = tag.Target as Commit;
-            if (targetCommit != null)
-            {
-                var parents = targetCommit.Parents;
-                if (parents != null)
-                {
-                    foreach (var parent in parents)
-                    {
-                        if (parent != null)
-                        {
-                            if (string.Equals(parent.Id.Sha, commit.Id.Sha, StringComparison.OrdinalIgnoreCase))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
-
         public static GitObject PeeledTarget(this Tag tag)
         {
             var target = tag.Target;

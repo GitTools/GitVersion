@@ -15,6 +15,7 @@
             Increment = branchConfiguration.Increment;
             PreventIncrementOfMergedBranchVersion = branchConfiguration.PreventIncrementOfMergedBranchVersion;
             TagNumberPattern = branchConfiguration.TagNumberPattern;
+            TrackMergeTarget = branchConfiguration.TrackMergeTarget;
         }
 
         [YamlMember(Alias = "mode")]
@@ -29,10 +30,13 @@
         [YamlMember(Alias = "increment")]
         public IncrementStrategy? Increment { get; set; }
 
-        [YamlMember(Alias = "preventIncrementOfMergedBranchVersion")]
+        [YamlMember(Alias = "prevent-increment-of-merged-branch-version")]
         public bool? PreventIncrementOfMergedBranchVersion { get; set; }
 
-        [YamlMember(Alias = "tagNumberPattern")]
+        [YamlMember(Alias = "tag-number-pattern")]
         public string TagNumberPattern { get; set; }
+
+        [YamlMember(Alias = "track-merge-target")]
+        public bool TrackMergeTarget { get; set; }
     }
 }

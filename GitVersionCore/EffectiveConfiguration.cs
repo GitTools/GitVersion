@@ -12,7 +12,8 @@
             string branchPrefixToTrim, 
             bool preventIncrementForMergedBranchVersion, 
             string tagNumberPattern,
-            string continuousDeploymentFallbackTag)
+            string continuousDeploymentFallbackTag, 
+            bool trackMergeTarget)
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
             VersioningMode = versioningMode;
@@ -24,6 +25,7 @@
             PreventIncrementForMergedBranchVersion = preventIncrementForMergedBranchVersion;
             TagNumberPattern = tagNumberPattern;
             ContinuousDeploymentFallbackTag = continuousDeploymentFallbackTag;
+            TrackMergeTarget = trackMergeTarget;
         }
 
         public VersioningMode VersioningMode { get; private set; }
@@ -51,5 +53,6 @@
         public string TagNumberPattern { get; private set; }
 
         public string ContinuousDeploymentFallbackTag { get; private set; }
+        public bool TrackMergeTarget { get; private set; }
     }
 }
