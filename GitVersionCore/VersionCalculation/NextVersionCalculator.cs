@@ -19,7 +19,7 @@
                     new FallbackBaseVersionStrategy(),
                     new ConfigNextVersionBaseVersionStrategy(),
                     highestTagBaseVersionStrategy,
-                    new GitFlowDevelopBranchBaseVersionStrategy(),
+                    new TrackMergeTargetBaseVersionStrategy(),
                     new MergeMessageBaseVersionStrategy(),
                     new VersionInBranchBaseVersionStrategy());
         }

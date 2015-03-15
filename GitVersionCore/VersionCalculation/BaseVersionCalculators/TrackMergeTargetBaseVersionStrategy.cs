@@ -4,7 +4,7 @@
     using System.Linq;
     using LibGit2Sharp;
 
-    public class GitFlowDevelopBranchBaseVersionStrategy : HighestTagBaseVersionStrategy
+    public class TrackMergeTargetBaseVersionStrategy : HighestTagBaseVersionStrategy
     {
         protected override bool IsValidTag(GitVersionContext context, string branchName, Tag tag, Commit commit)
         {
