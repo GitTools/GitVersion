@@ -89,11 +89,13 @@ namespace GitVersion
 
             if (possibleParents.Count == 1)
             {
+                var branchConfig = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, possibleParents[0]).Value;
                 return new KeyValuePair<string, BranchConfig>(
                     keyValuePair.Key,
                     new BranchConfig(branchConfiguration)
                     {
-                        Increment = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, possibleParents[0]).Value.Increment
+                        Increment = branchConfig.Increment,
+                        PreventIncrementOfMergedBranchVersion = branchConfig.PreventIncrementOfMergedBranchVersion
                     });
             }
 
@@ -109,11 +111,13 @@ namespace GitVersion
             var branchName = hasDevelop ? "develop" : "master";
 
             Logger.WriteWarning(errorMessage + Environment.NewLine + Environment.NewLine + "Falling back to " + branchName + " branch config");
+            var value = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, repository.Branches[branchName]).Value;
             return new KeyValuePair<string, BranchConfig>(
                 keyValuePair.Key,
                 new BranchConfig(branchConfiguration)
                 {
-                    Increment = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, repository.Branches[branchName]).Value.Increment
+                    Increment = value.Increment,
+                    PreventIncrementOfMergedBranchVersion = value.PreventIncrementOfMergedBranchVersion
                 });
         }
     }
