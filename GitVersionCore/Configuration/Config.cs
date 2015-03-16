@@ -38,7 +38,8 @@
             {
                 Tag = "unstable",
                 Increment = IncrementStrategy.Minor,
-                VersioningMode = GitVersion.VersioningMode.ContinuousDeployment
+                VersioningMode = GitVersion.VersioningMode.ContinuousDeployment,
+                TrackMergeTarget = true
             };
             Branches[@"(pull|pull\-requests|pr)[/-]"] = new BranchConfig
             {

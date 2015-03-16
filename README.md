@@ -147,21 +147,24 @@ branches:
   master:
     tag: 
     increment: Patch
-    preventIncrementOfMergedBranchVersion: true
+    prevent-increment-of-merged-branch-version: true
   (pull|pull\-requests|pr)[/-]:
     tag: PullRequest
     increment: Inherit
-    tagNumberPattern: '[/-](?<number>\d+)[-/]'
+    tag-number-pattern: '[/-](?<number>\d+)[-/]'
 ```
 
 The options in here are:
- - `tag`: The pre release tag to use for this branch. Use the value `useBranchNameAsTag` to use the branch name instead.  
+ - `mode`: Same as above
+ - `tag`: The pre release tag to use for this branch. Use the value `use-branch-name-as-tag` to use the branch name instead.  
    For example `feature/foo` would become a pre-release tag of `foo` with this value
  - `increment`: the part of the SemVer to increment when GitVersion detects it needs to be (i.e commit after a tag)
- - `preventIncrementOfMergedBranchVersion`: When `release-2.0.0` is merged into master, we want master to build `2.0.0`.
+ - `prevent-increment-of-merged-branch-version`: When `release-2.0.0` is merged into master, we want master to build `2.0.0`.
     If `release-2.0.0` is merged into develop we want it to build `2.1.0`, this option prevents incrementing after a versioned branch is merged
- - `tagNumberPattern`: Pull requests require us to pull the pre-release number out of the branch name so `refs/pulls/534/merge` builds as `PullRequest.5`. 
+ - `tag-number-pattern`: Pull requests require us to pull the pre-release number out of the branch name so `refs/pulls/534/merge` builds as `PullRequest.5`. 
    This is a regex with a named capture group called `number`
+ - `track-merge-target`: Strategy which will look for tagged merge commits directly off the current branch. For example
+   develop -> release/1.0.0 -> merge into master and tag 1.0.0. The tag is *not* on develop, but develop should be 1.0.0 now.
 
 We don't envision many people needing to change most of these configuration values, but they are there if you need to.
 

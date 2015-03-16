@@ -13,9 +13,11 @@ namespace GitVersionCore.Tests
             string branchPrefixToTrim = "",
             bool preventIncrementForMergedBranchVersion = false,
             string tagNumberPattern = null,
-            string continuousDeploymentFallbackTag = "ci") : 
+            string continuousDeploymentFallbackTag = "ci",
+            bool trackMergeTarget = false) : 
                 base(assemblyVersioningScheme, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch, 
-                    branchPrefixToTrim, preventIncrementForMergedBranchVersion, tagNumberPattern, continuousDeploymentFallbackTag)
+                    branchPrefixToTrim, preventIncrementForMergedBranchVersion, tagNumberPattern, continuousDeploymentFallbackTag,
+                    trackMergeTarget)
         {
         }
     }
