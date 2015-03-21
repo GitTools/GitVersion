@@ -24,7 +24,7 @@ public class HelpWriterTests
         typeof(Arguments).GetFields()
             .Select(p => p.Name)
             .Where(p => IsNotInHelp(lookup, p, helpText))
-            .Except(new[] { "Authentication" })
+            .Except(new[] { "Authentication", "CommitId" })
             .ShouldBeEmpty();
     }
 

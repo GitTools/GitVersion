@@ -11,12 +11,12 @@
     {
         readonly Config configuration;
 
-        public GitVersionContext(IRepository repository, Config configuration, bool isForTrackingBranchOnly = true)
-            : this(repository, repository.Head, configuration, isForTrackingBranchOnly)
+        public GitVersionContext(IRepository repository, Config configuration, bool isForTrackingBranchOnly = true, string commitId = null)
+            : this(repository, repository.Head, configuration, isForTrackingBranchOnly, commitId)
         {
         }
 
-        public GitVersionContext(IRepository repository, Branch currentBranch, Config configuration, bool onlyEvaluateTrackedBranches = true)
+        public GitVersionContext(IRepository repository, Branch currentBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
         {
             Repository = repository;
             this.configuration = configuration;
@@ -25,7 +25,24 @@
             if (currentBranch == null)
                 throw new InvalidOperationException("Need a branch to operate on");
 
-            CurrentCommit = currentBranch.Tip;
+            if (!string.IsNullOrWhiteSpace(commitId))
+            {
+                Logger.WriteInfo(string.Format("Searching for specific commit '{0}'", commitId));
+
+                var commit = repository.Commits.FirstOrDefault(c => string.Equals(c.Sha, commitId, StringComparison.OrdinalIgnoreCase));
+                if (commit != null)
+                {
+                    CurrentCommit = commit;
+                }
+            }
+
+            if (CurrentCommit == null)
+            {
+                Logger.WriteWarning("No specific commit specified or found, falling back to latest commit on specified branch");
+
+                CurrentCommit = currentBranch.Tip;
+            }
+
             if (currentBranch.IsDetachedHead())
             {
                 CurrentBranch = CurrentCommit.GetBranchesContainingCommit(repository, OnlyEvaluateTrackedBranches).OnlyOrDefault() ?? currentBranch;

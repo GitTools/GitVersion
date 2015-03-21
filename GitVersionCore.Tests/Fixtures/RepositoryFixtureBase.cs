@@ -21,9 +21,9 @@ public abstract class RepositoryFixtureBase : IDisposable
 
     public bool IsForTrackedBranchOnly { private get; set; }
 
-    public void AssertFullSemver(string fullSemver, IRepository repository = null)
+    public void AssertFullSemver(string fullSemver, IRepository repository = null, string commitId = null)
     {
-        var gitVersionContext = new GitVersionContext(repository ?? Repository, configuration, IsForTrackedBranchOnly);
+        var gitVersionContext = new GitVersionContext(repository ?? Repository, configuration, IsForTrackedBranchOnly, commitId);
         var executeGitVersion = ExecuteGitVersion(gitVersionContext);
         var variables = VariableProvider.GetVariablesFor(executeGitVersion, 
             gitVersionContext.Configuration.AssemblyVersioningScheme,

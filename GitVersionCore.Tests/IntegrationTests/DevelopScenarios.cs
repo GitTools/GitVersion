@@ -6,6 +6,42 @@ using NUnit.Framework;
 public class DevelopScenarios
 {
     [Test]
+    public void WhenDevelopHasMultipleCommits_SpecifyExistingCommitId()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.CreateBranch("develop").Checkout();
+
+            fixture.Repository.MakeACommit();
+            fixture.Repository.MakeACommit();
+            var thirdCommit = fixture.Repository.MakeACommit();
+            fixture.Repository.MakeACommit();
+            fixture.Repository.MakeACommit();
+
+            fixture.AssertFullSemver("1.1.0-unstable.3", commitId: thirdCommit.Sha);
+        }
+    }
+
+    [Test]
+    public void WhenDevelopHasMultipleCommits_SpecifyNonExistingCommitId()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.CreateBranch("develop").Checkout();
+
+            fixture.Repository.MakeACommit();
+            fixture.Repository.MakeACommit();
+            fixture.Repository.MakeACommit();
+            fixture.Repository.MakeACommit();
+            fixture.Repository.MakeACommit();
+
+            fixture.AssertFullSemver("1.1.0-unstable.5", commitId: "nonexistingcommitid");
+        }
+    }
+
+    [Test]
     public void WhenDevelopBranchedFromTaggedCommitOnMasterVersionDoesNotChange()
     {
         using (var fixture = new EmptyRepositoryFixture(new Config()))
