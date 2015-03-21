@@ -7,7 +7,7 @@ public static class VersionAndBranchFinder
     static List<string> processedDirectories = new List<string>(); 
     public static bool TryGetVersion(string directory, out Tuple<CachedVersion, GitVersionContext> versionAndBranch, Config configuration)
     {
-        var gitDirectory = GitDirFinder.TreeWalkForGitDir(directory);
+        var gitDirectory = GitDirFinder.TreeWalkForDotGitDir(directory);
 
         if (string.IsNullOrEmpty(gitDirectory))
         {

@@ -66,7 +66,7 @@
 
             InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
 
-            var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
+            var gitDirectory = GitDirFinder.TreeWalkForDotGitDir(SolutionDirectory);
             if (string.IsNullOrEmpty(gitDirectory))
                 return;
 
