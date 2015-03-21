@@ -1,7 +1,7 @@
 ﻿namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
-    using System;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using LibGit2Sharp;
 
     public class MergeMessageBaseVersionStrategy : BaseVersionStrategy
@@ -42,39 +42,16 @@
                 return null;
             }
 
-            return mergeCommit
-                .Message.Split('/', '-', '\'', '"', ' ')
+            var possibleVersions = Regex.Matches(mergeCommit.Message, @"^.*?(-|/|'|Finish )(?<PossibleVersions>\d+\.\d+\.\d+)")
+                .Cast<Match>()
+                .Select(m => m.Groups["PossibleVersions"].Value);
+
+            return possibleVersions
                 .Select(part =>
                 {
                     SemanticVersion v;
                     return SemanticVersion.TryParse(part, configuration.GitTagPrefix, out v) ? v : null;
-                }).FirstOrDefault(v => v != null)
-                ;
-
-        }
-
-        static bool TryGetPrefix(string target, out string result, string splitter)
-        {
-            var indexOf = target.IndexOf(splitter, StringComparison.Ordinal);
-            if (indexOf == -1)
-            {
-                result = null;
-                return false;
-            }
-            result = target.Substring(0, indexOf);
-            return true;
-        }
-
-        static bool TryGetSuffix(string target, out string result, string splitter)
-        {
-            var indexOf = target.IndexOf(splitter, StringComparison.Ordinal);
-            if (indexOf == -1)
-            {
-                result = null;
-                return false;
-            }
-            result = target.Substring(indexOf + 1, target.Length - indexOf - 1);
-            return true;
+                }).FirstOrDefault(v => v != null);
         }
     }
 }
