@@ -12,8 +12,9 @@ namespace GitVersion
         public static void Run(Arguments arguments, IFileSystem fileSystem)
         {
             var gitPreparer = new GitPreparer(arguments);
-            var gitDirectory = gitPreparer.Prepare();
-            if (string.IsNullOrEmpty(gitDirectory))
+            gitPreparer.InitialiseDynamicRepositoryIfNeeded();
+            var dotGitDirectory = gitPreparer.GetDotGitDirectory();
+            if (string.IsNullOrEmpty(dotGitDirectory))
             {
                 throw new Exception(string.Format("Failed to prepare or find the .git directory in path '{0}'", arguments.TargetPath));
             }
@@ -21,13 +22,13 @@ namespace GitVersion
 
             foreach (var buildServer in applicableBuildServers)
             {
-                buildServer.PerformPreProcessingSteps(gitDirectory);
+                buildServer.PerformPreProcessingSteps(dotGitDirectory);
             }
             VersionVariables variables;
             var versionFinder = new GitVersionFinder();
-            var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
+            var configuration = ConfigurationProvider.Provide(dotGitDirectory, fileSystem);
 
-            using (var repo = RepositoryLoader.GetRepo(gitDirectory))
+            using (var repo = RepositoryLoader.GetRepo(dotGitDirectory))
             {
                 var gitVersionContext = new GitVersionContext(repo, configuration, commitId: arguments.CommitId);
                 var semanticVersion = versionFinder.FindVersion(gitVersionContext);
