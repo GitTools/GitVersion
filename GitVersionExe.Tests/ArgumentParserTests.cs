@@ -234,25 +234,4 @@ public class ArgumentParserTests
         arguments.IncludeUntrackedBranches.ShouldBe(false);
     }
 
-    [Test]
-    public void writejsontofile_with_no_file_throws()
-    {
-        var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments("-writejsontofile"));
-        exception.Message.ShouldBe("-writejsontofile requires a file to write to.");
-    }
-
-    [Test]
-    public void writejsontofile_with_no_file_and_following_argument_throws()
-    {
-        var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments("-writejsontofile -l console"));
-        exception.Message.ShouldBe("-writejsontofile requires a file to write to.");
-    }
-
-    [Test]
-    public void writejsontofile_with_valid_file()
-    {
-        var arguments = ArgumentParser.ParseArguments(@"-writejsontofile c:\temp");
-        arguments.JsonOutputFile.ShouldBe(@"c:\temp");
-    }
-
 }

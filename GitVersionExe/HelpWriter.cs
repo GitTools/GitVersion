@@ -27,10 +27,6 @@ GitVersion [path]
     /showconfig     Outputs the effective GitVersion config (defaults + custom from GitVersion.yaml) in yaml format
     /includeuntrackedbranches
                     Allows untracked branches to be used in the calculation of version.
-    /writejsontofile
-                    Used in conjunction with '/output json', will output json or json variable to file.
-                    eg /writejsontofile c:\temp\gitversion.json
-        
 
     # AssemblyInfo updating
     /updateassemblyinfo
