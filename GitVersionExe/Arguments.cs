@@ -35,5 +35,7 @@ namespace GitVersion
         public bool ShowConfig;
 
         public bool IncludeUntrackedBranches;
+
+        public string JsonOutputFile;
     }
 }
