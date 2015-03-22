@@ -14,12 +14,13 @@ namespace GitVersion
 
         public string TargetUrl;
         public string TargetBranch;
+        public string CommitId;
 
         public bool Init;
 
         public bool IsHelp;
         public string LogFilePath;
-        public string VersionPart;
+        public string ShowVariable;
 
         public OutputType Output;
         
@@ -30,6 +31,7 @@ namespace GitVersion
 
         public bool UpdateAssemblyInfo;
         public string UpdateAssemblyInfoFileName;
-        public string AssemblyVersionFormat;      
+
+        public bool ShowConfig;
     }
 }

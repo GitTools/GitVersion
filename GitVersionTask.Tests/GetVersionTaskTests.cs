@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using GitVersion;
 using GitVersionTask;
 using Microsoft.Build.Framework;
 using NUnit.Framework;
+using Shouldly;
 
 [TestFixture]
 public class GetVersionTaskTests
@@ -11,18 +11,16 @@ public class GetVersionTaskTests
     [Test]
     public void OutputsShouldMatchVariableProvider()
     {
-        var taskType = typeof(GetVersion);
-        var properties = taskType.GetProperties()
+        var taskProperties = typeof(GetVersion)
+            .GetProperties()
             .Where(p => p.GetCustomAttributes(typeof(OutputAttribute), false).Any())
             .Select(p => p.Name);
-        var variables = VariableProvider.GetVariablesFor(new SemanticVersion
-        {
-            Major = 1,
-            Minor = 2,
-            Patch = 3,
-            BuildMetaData = new SemanticVersionBuildMetaData(5, "develop", "commitSha",DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
-        }, new Config()).Keys;
 
-        CollectionAssert.AreEquivalent(properties, variables);
+        var variablesProperties = typeof(VersionVariables)
+            .GetProperties()
+            .Select(p => p.Name)
+            .Except(new[] { "AvailableVariables", "Item" });
+
+        taskProperties.ShouldBe(variablesProperties, ignoreOrder: true);
     }
 }

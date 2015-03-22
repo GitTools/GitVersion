@@ -7,32 +7,31 @@ using Shouldly;
 [TestFixture]
 public class ArgumentParserTests
 {
-
     [Test]
     public void Empty_means_use_current_directory()
     {
         var arguments = ArgumentParser.ParseArguments("");
-        Assert.AreEqual(Environment.CurrentDirectory, arguments.TargetPath);
-        Assert.IsNull(arguments.LogFilePath);
-        Assert.IsFalse(arguments.IsHelp);
+        arguments.TargetPath.ShouldBe(Environment.CurrentDirectory);
+        arguments.LogFilePath.ShouldBe(null);
+        arguments.IsHelp.ShouldBe(false);
     }
 
     [Test]
     public void Single_means_use_as_target_directory()
     {
         var arguments = ArgumentParser.ParseArguments("path");
-        Assert.AreEqual("path", arguments.TargetPath);
-        Assert.IsNull(arguments.LogFilePath);
-        Assert.IsFalse(arguments.IsHelp);
+        arguments.TargetPath.ShouldBe("path");
+        arguments.LogFilePath.ShouldBe(null);
+        arguments.IsHelp.ShouldBe(false);
     }
 
     [Test]
     public void No_path_and_logfile_should_use_current_directory_TargetDirectory()
     {
         var arguments = ArgumentParser.ParseArguments("-l logFilePath");
-        Assert.AreEqual(Environment.CurrentDirectory, arguments.TargetPath);
-        Assert.AreEqual("logFilePath", arguments.LogFilePath);
-        Assert.IsFalse(arguments.IsHelp);
+        arguments.TargetPath.ShouldBe(Environment.CurrentDirectory);
+        arguments.LogFilePath.ShouldBe("logFilePath");
+        arguments.IsHelp.ShouldBe(false);
     }
 
     [Test]
@@ -41,14 +40,14 @@ public class ArgumentParserTests
         var arguments = ArgumentParser.ParseArguments("-h");
         Assert.IsNull(arguments.TargetPath);
         Assert.IsNull(arguments.LogFilePath);
-        Assert.IsTrue(arguments.IsHelp);
+        arguments.IsHelp.ShouldBe(true);
     }
 
     [Test]
     public void exec()
     {
         var arguments = ArgumentParser.ParseArguments("-exec rake");
-        Assert.AreEqual("rake", arguments.Exec);
+        arguments.Exec.ShouldBe("rake");
     }
 
     [Test]
@@ -61,15 +60,15 @@ public class ArgumentParserTests
             "-execargs",
             "clean build"
         });
-        Assert.AreEqual("rake", arguments.Exec);
-        Assert.AreEqual("clean build", arguments.ExecArgs);
+        arguments.Exec.ShouldBe("rake");
+        arguments.ExecArgs.ShouldBe("clean build");
     }
 
     [Test]
     public void msbuild()
     {
         var arguments = ArgumentParser.ParseArguments("-proj msbuild.proj");
-        Assert.AreEqual("msbuild.proj", arguments.Proj);
+        arguments.Proj.ShouldBe("msbuild.proj");
     }
 
     [Test]
@@ -82,73 +81,80 @@ public class ArgumentParserTests
             "-projargs",
             "/p:Configuration=Debug /p:Platform=AnyCPU"
         });
-        Assert.AreEqual("msbuild.proj", arguments.Proj);
-        Assert.AreEqual("/p:Configuration=Debug /p:Platform=AnyCPU", arguments.ProjArgs);
+        arguments.Proj.ShouldBe("msbuild.proj");
+        arguments.ProjArgs.ShouldBe("/p:Configuration=Debug /p:Platform=AnyCPU");
     }
 
     [Test]
     public void execwith_targetdirectory()
     {
         var arguments = ArgumentParser.ParseArguments("targetDirectoryPath -exec rake");
-        Assert.AreEqual("targetDirectoryPath", arguments.TargetPath);
-        Assert.AreEqual("rake", arguments.Exec);
+        arguments.TargetPath.ShouldBe("targetDirectoryPath");
+        arguments.Exec.ShouldBe("rake");
     }
 
     [Test]
     public void TargetDirectory_and_LogFilePath_can_be_parsed()
     {
         var arguments = ArgumentParser.ParseArguments("targetDirectoryPath -l logFilePath");
-        Assert.AreEqual("targetDirectoryPath", arguments.TargetPath);
-        Assert.AreEqual("logFilePath", arguments.LogFilePath);
-        Assert.IsFalse(arguments.IsHelp);
+        arguments.TargetPath.ShouldBe("targetDirectoryPath");
+        arguments.LogFilePath.ShouldBe("logFilePath");
+        arguments.IsHelp.ShouldBe(false);
     }
 
     [Test]
     public void Username_and_Password_can_be_parsed()
     {
         var arguments = ArgumentParser.ParseArguments("targetDirectoryPath -u [username] -p [password]");
-        Assert.AreEqual("targetDirectoryPath", arguments.TargetPath);
-        Assert.AreEqual("[username]", arguments.Authentication.Username);
-        Assert.AreEqual("[password]", arguments.Authentication.Password);
-        Assert.IsFalse(arguments.IsHelp);
+        arguments.TargetPath.ShouldBe("targetDirectoryPath");
+        arguments.Authentication.Username.ShouldBe("[username]");
+        arguments.Authentication.Password.ShouldBe("[password]");
+        arguments.IsHelp.ShouldBe(false);
     }
 
     [Test]
     public void Unknown_output_should_throw()
     {
         var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments("targetDirectoryPath -output invalid_value"));
-        Assert.AreEqual("Value 'invalid_value' cannot be parsed as output type, please use 'json' or 'buildserver'", exception.Message);
+        exception.Message.ShouldBe("Value 'invalid_value' cannot be parsed as output type, please use 'json' or 'buildserver'");
     }
 
     [Test]
     public void Output_defaults_to_json()
     {
         var arguments = ArgumentParser.ParseArguments("targetDirectoryPath");
-        Assert.AreEqual(OutputType.Json, arguments.Output);
+        arguments.Output.ShouldBe(OutputType.Json);
     }
 
     [Test]
     public void Output_json_can_be_parsed()
     {
         var arguments = ArgumentParser.ParseArguments("targetDirectoryPath -output json");
-        Assert.AreEqual(OutputType.Json, arguments.Output);
+        arguments.Output.ShouldBe(OutputType.Json);
     }
 
     [Test]
     public void Output_buildserver_can_be_parsed()
     {
         var arguments = ArgumentParser.ParseArguments("targetDirectoryPath -output buildserver");
-        Assert.AreEqual(OutputType.BuildServer, arguments.Output);
+        arguments.Output.ShouldBe(OutputType.BuildServer);
+    }
+
+    [Test]
+    public void MultipleArgsAndFlag()
+    {
+        var arguments = ArgumentParser.ParseArguments("targetDirectoryPath -output buildserver -updateAssemblyInfo");
+        arguments.Output.ShouldBe(OutputType.BuildServer);
     }
 
     [Test]
     public void Url_and_BranchName_can_be_parsed()
     {
         var arguments = ArgumentParser.ParseArguments("targetDirectoryPath -url http://github.com/Particular/GitVersion.git -b somebranch");
-        Assert.AreEqual("targetDirectoryPath", arguments.TargetPath);
-        Assert.AreEqual("http://github.com/Particular/GitVersion.git", arguments.TargetUrl);
-        Assert.AreEqual("somebranch", arguments.TargetBranch);
-        Assert.IsFalse(arguments.IsHelp);
+        arguments.TargetPath.ShouldBe("targetDirectoryPath");
+        arguments.TargetUrl.ShouldBe("http://github.com/Particular/GitVersion.git");
+        arguments.TargetBranch.ShouldBe("somebranch");
+        arguments.IsHelp.ShouldBe(false);
     }
 
     [Test]
@@ -162,11 +168,12 @@ public class ArgumentParserTests
     public void Unknown_argument_should_throw()
     {
         var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments("targetDirectoryPath -x logFilePath"));
-        Assert.AreEqual("Could not parse command line parameter '-x'.", exception.Message);
+        exception.Message.ShouldBe("Could not parse command line parameter '-x'.");
     }
 
     [TestCase("-updateAssemblyInfo true")]
     [TestCase("-updateAssemblyInfo 1")]
+    [TestCase("-updateAssemblyInfo")]
     [TestCase("-updateAssemblyInfo -proj foo.sln")]
     public void update_assembly_info_true(string command)
     {
@@ -196,23 +203,6 @@ public class ArgumentParserTests
         var arguments = ArgumentParser.ParseArguments("-updateAssemblyInfo ..\\..\\CommonAssemblyInfo.cs");
         arguments.UpdateAssemblyInfo.ShouldBe(true);
         arguments.UpdateAssemblyInfoFileName.ShouldBe("..\\..\\CommonAssemblyInfo.cs");
-    }
-
-    [Test]
-    public void update_assembly_info_with_assembly_version_format()
-    {
-        var arguments = ArgumentParser.ParseArguments("-updateAssemblyInfo true -assemblyVersionFormat MajorMinorPatch");
-        arguments.UpdateAssemblyInfo.ShouldBe(true);       
-        arguments.AssemblyVersionFormat.ShouldBe("MajorMinorPatch");
-    }
-
-    [Test]
-    public void update_assembly_info_with_filename_and_assembly_version_format()
-    {
-        var arguments = ArgumentParser.ParseArguments("-updateAssemblyInfo CommonAssemblyInfo.cs -assemblyVersionFormat MajorMinorPatch");
-        arguments.UpdateAssemblyInfo.ShouldBe(true);
-        arguments.AssemblyVersionFormat.ShouldBe("MajorMinorPatch");
-        arguments.UpdateAssemblyInfoFileName.ShouldBe("CommonAssemblyInfo.cs");
     }
 
     [Test]

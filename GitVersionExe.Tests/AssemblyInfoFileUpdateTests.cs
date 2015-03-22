@@ -1,10 +1,9 @@
-﻿    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using GitVersion;
-    using GitVersion.Helpers;
-    using NSubstitute;
-    using NUnit.Framework;
+﻿using System;
+using System.IO;
+using GitVersion;
+using GitVersion.Helpers;
+using NSubstitute;
+using NUnit.Framework;
 
 [TestFixture]
 public class AssemblyInfoFileUpdateTests
@@ -14,10 +13,8 @@ public class AssemblyInfoFileUpdateTests
     {
         var fileSystem = Substitute.For<IFileSystem>();
         const string workingDir = "C:\\Testing";
-        using (new AssemblyInfoFileUpdate(new Arguments
-                                          {
-                                              UpdateAssemblyInfo = true
-                                          }, workingDir, new Dictionary<string, string>(), fileSystem))
+        var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDelivery, "ci", false);
+        using (new AssemblyInfoFileUpdate(new Arguments { UpdateAssemblyInfo = true }, workingDir, variables, fileSystem))
         {
             fileSystem.Received().DirectoryGetFiles(Arg.Is(workingDir), Arg.Any<string>(), Arg.Any<SearchOption>());
         }
@@ -28,12 +25,12 @@ public class AssemblyInfoFileUpdateTests
     {
         var fileSystem = Substitute.For<IFileSystem>();
         var version = new SemanticVersion
-                      {
-                          BuildMetaData = new SemanticVersionBuildMetaData(3, "foo", "hash", DateTimeOffset.Now),
-                          Major = 2,
-                          Minor = 3,
-                          Patch = 1
-                      };
+        {
+            BuildMetaData = new SemanticVersionBuildMetaData(3, "foo", "hash", DateTimeOffset.Now),
+            Major = 2,
+            Minor = 3,
+            Patch = 1
+        };
 
         const string workingDir = "C:\\Testing";
         const string assemblyInfoFile = @"AssemblyVersion(""1.0.0.0"");
@@ -43,15 +40,15 @@ AssemblyFileVersion(""1.0.0.0"");";
         fileSystem.Exists("C:\\Testing\\AssemblyInfo.cs").Returns(true);
         fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.cs").Returns(assemblyInfoFile);
         var config = new Config
-                     {
-                         AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch
-                     };
-        var variable = VariableProvider.GetVariablesFor(version, config);
+        {
+            AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor
+        };
+        var variable = VariableProvider.GetVariablesFor(version, config.AssemblyVersioningScheme, VersioningMode.ContinuousDelivery, "ci", false);
         var args = new Arguments
-                   {
-                       UpdateAssemblyInfo = true,
-                       UpdateAssemblyInfoFileName = "AssemblyInfo.cs"
-                   };
+        {
+            UpdateAssemblyInfo = true,
+            UpdateAssemblyInfoFileName = "AssemblyInfo.cs"
+        };
         using (new AssemblyInfoFileUpdate(args, workingDir, variable, fileSystem))
         {
             const string expected = @"AssemblyVersion(""2.3.0.0"");
@@ -66,12 +63,12 @@ AssemblyFileVersion(""2.3.1.0"");";
     {
         var fileSystem = Substitute.For<IFileSystem>();
         var version = new SemanticVersion
-                      {
-                          BuildMetaData = new SemanticVersionBuildMetaData(3, "foo", "hash", DateTimeOffset.Now),
-                          Major = 2,
-                          Minor = 3,
-                          Patch = 1
-                      };
+        {
+            BuildMetaData = new SemanticVersionBuildMetaData(3, "foo", "hash", DateTimeOffset.Now),
+            Major = 2,
+            Minor = 3,
+            Patch = 1
+        };
 
         const string workingDir = "C:\\Testing";
         const string assemblyInfoFile = @"AssemblyVersion(""1.0.0.*"");
@@ -81,15 +78,15 @@ AssemblyFileVersion(""1.0.0.*"");";
         fileSystem.Exists("C:\\Testing\\AssemblyInfo.cs").Returns(true);
         fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.cs").Returns(assemblyInfoFile);
         var config = new Config
-                     {
-                         AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch
-                     };
-        var variable = VariableProvider.GetVariablesFor(version, config);
+        {
+            AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor
+        };
+        var variable = VariableProvider.GetVariablesFor(version, config.AssemblyVersioningScheme, VersioningMode.ContinuousDelivery, "ci", false);
         var args = new Arguments
-                   {
-                       UpdateAssemblyInfo = true,
-                       UpdateAssemblyInfoFileName = "AssemblyInfo.cs"
-                   };
+        {
+            UpdateAssemblyInfo = true,
+            UpdateAssemblyInfoFileName = "AssemblyInfo.cs"
+        };
         using (new AssemblyInfoFileUpdate(args, workingDir, variable, fileSystem))
         {
             const string expected = @"AssemblyVersion(""2.3.0.0"");

@@ -46,7 +46,7 @@ namespace GitVersion
                 };
             }
 
-            if (commandLineArguments.Count == 1)
+            if (commandLineArguments.Count == 1 && !(commandLineArguments[0].StartsWith("-") || commandLineArguments[0].StartsWith("/")))
             {
                 return new Arguments
                 {
@@ -78,6 +78,12 @@ namespace GitVersion
                     continue;
                 }
 
+                if (IsSwitch("targetpath", name))
+                {
+                    arguments.TargetPath = value;
+                    continue;
+                }
+
                 if (IsSwitch("url", name))
                 {
                     arguments.TargetUrl = value;
@@ -99,6 +105,12 @@ namespace GitVersion
                 if (IsSwitch("p", name))
                 {
                     arguments.Authentication.Password = value;
+                    continue;
+                }
+
+                if (IsSwitch("c", name))
+                {
+                    arguments.CommitId = value;
                     continue;
                 }
 
@@ -151,13 +163,30 @@ namespace GitVersion
 
                 if (IsSwitch("assemblyversionformat", name))
                 {
-                    arguments.AssemblyVersionFormat = value;
-                    continue;
+                    throw new WarningException("assemblyversionformat switch removed, use AssemblyVersioningScheme configuration value instead");
                 }
 
                 if ((IsSwitch("v", name)) && VersionParts.Contains(value.ToLower()))
                 {
-                    arguments.VersionPart = value.ToLower();
+                    arguments.ShowVariable = value.ToLower();
+                    continue;
+                }
+
+                if (IsSwitch("showConfig", name))
+                {
+                    if (new[] { "1", "true" }.Contains(value))
+                    {
+                        arguments.ShowConfig = true;
+                    }
+                    else if (new[] { "0", "false" }.Contains(value))
+                    {
+                        arguments.UpdateAssemblyInfo = false;
+                    }
+                    else
+                    {
+                        arguments.ShowConfig = true;
+                        index--;
+                    }
                     continue;
                 }
 
@@ -175,12 +204,13 @@ namespace GitVersion
 
                 throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", name));
             }
+
             return arguments;
         }
 
         static bool IsSwitchArgument(string value)
         {
-            return value != null && value.StartsWith("-") || value.StartsWith("/");
+            return value != null && (value.StartsWith("-") || value.StartsWith("/"));
         }
 
         static bool IsSwitch(string switchName, string value)

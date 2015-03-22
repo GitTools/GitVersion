@@ -70,7 +70,6 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     public void StandardExecutionMode_CanDetermineTheVersionFromALocalFeature()
     {
         var repoPath = CheckoutLocal(ASBMTestRepoWorkingDirPath, "refs/heads/feature/one");
-
         var task = new UpdateAssemblyInfo
         {
             BuildEngine = new MockBuildEngine(),
@@ -90,30 +89,15 @@ public class UpdateAssemblyInfoTests : Lg2sHelperBase
     {
         var repoPath = CheckoutLocal(ASBMTestRepoWorkingDirPath, "refs/heads/master");
 
+        // TODO Tasks need a way to overrride configuration in tests
         var task = new UpdateAssemblyInfo
         {
             BuildEngine = new MockBuildEngine(),
             SolutionDirectory = repoPath,
-            AssemblyVersioningScheme = assemblyVersioningScheme
+            // TODO AssemblyVersioningScheme = assemblyVersioningScheme
         };
 
         task.InnerExecute();
-    }
-
-    [Test]
-    public void StandardExecutionMode_ThrowsUponUnexpectedAssemblyVersioningSchemes()
-    {
-        var repoPath = CheckoutLocal(ASBMTestRepoWorkingDirPath, "refs/heads/master");
-
-        var task = new UpdateAssemblyInfo
-        {
-            BuildEngine = new MockBuildEngine(),
-            SolutionDirectory = repoPath,
-            AssemblyVersioningScheme = "Boom"
-        };
-
-        var exception = Assert.Throws<WarningException>(() => task.InnerExecute());
-        Assert.AreEqual("Unexpected assembly versioning scheme 'Boom'.", exception.Message);
     }
 
     [SetUp]

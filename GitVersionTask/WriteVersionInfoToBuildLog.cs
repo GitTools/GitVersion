@@ -49,26 +49,37 @@
 
         public void InnerExecute()
         {
-            CachedVersion semanticVersion;
+            Tuple<CachedVersion, GitVersionContext> result;
             var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
             var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
-            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion, configuration))
+            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out result, configuration))
             {
                 return;
             }
 
             var authentication = new Authentication();
-            WriteIntegrationParameters(semanticVersion, BuildServerList.GetApplicableBuildServers(authentication));
+
+            var cachedVersion = result.Item1;
+            var gitVersionContext = result.Item2;
+            var config = gitVersionContext.Configuration;
+            var assemblyVersioningScheme = config.AssemblyVersioningScheme;
+            var versioningMode = config.VersioningMode;
+
+            var variablesFor = VariableProvider.GetVariablesFor(
+                cachedVersion.SemanticVersion, assemblyVersioningScheme, versioningMode, 
+                config.ContinuousDeploymentFallbackTag, 
+                gitVersionContext.IsCurrentCommitTagged);
+            WriteIntegrationParameters(cachedVersion, BuildServerList.GetApplicableBuildServers(authentication), variablesFor);
         }
 
-        public void WriteIntegrationParameters(CachedVersion cachedVersion, IEnumerable<IBuildServer> applicableBuildServers)
+        public void WriteIntegrationParameters(CachedVersion cachedVersion, IEnumerable<IBuildServer> applicableBuildServers, VersionVariables variables)
         {
             foreach (var buildServer in applicableBuildServers)
             {
                 logger.LogInfo(string.Format("Executing GenerateSetVersionMessage for '{0}'.", buildServer.GetType().Name));
                 logger.LogInfo(buildServer.GenerateSetVersionMessage(cachedVersion.SemanticVersion.ToString()));
                 logger.LogInfo(string.Format("Executing GenerateBuildLogOutput for '{0}'.", buildServer.GetType().Name));
-                foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(cachedVersion.SemanticVersion, buildServer))
+                foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(buildServer, variables))
                 {
                     logger.LogInfo(buildParameter);
                 }

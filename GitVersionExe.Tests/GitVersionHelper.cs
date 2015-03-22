@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using GitVersion;
-using LibGit2Sharp;
+using GitVersion.Helpers;
 
 public static class GitVersionHelper
 {
@@ -61,11 +60,5 @@ public static class GitVersionHelper
         Console.WriteLine("-------------------------------------------------------");
 
         return new ExecutionResults(exitCode, output.ToString(), logContents);
-    }
-
-    public static void AddNextVersionTxtFile(this IRepository repository, string version)
-    {
-        var nextVersionFile = Path.Combine(repository.Info.WorkingDirectory, "NextVersion.txt");
-        File.WriteAllText(nextVersionFile, version);
     }
 }

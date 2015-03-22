@@ -12,7 +12,7 @@
     <AssemblyName>GitVersionCore</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>c31ea180</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>0e09d4de</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,19 +50,20 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Visualize, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Visualize, Version=0.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Packages\Visualize.Fody.0.4.0.0\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\Visualize.dll</HintPath>
+      <HintPath>..\packages\Visualize.Fody.0.4.1.0\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\Visualize.dll</HintPath>
     </Reference>
     <Reference Include="YamlDotNet, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\YamlDotNet.3.5.0\lib\net35\YamlDotNet.dll</HintPath>
+      <HintPath>..\packages\YamlDotNet.3.5.1\lib\net35\YamlDotNet.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyVersioningScheme.cs" />
     <Compile Include="AssemblyVersionsGenerator.cs" />
     <Compile Include="Authentication.cs" />
+    <Compile Include="BranchConfigurationCalculator.cs" />
     <Compile Include="BuildServers\AppVeyor.cs" />
     <Compile Include="BuildServers\BuildServerBase.cs" />
     <Compile Include="BuildServers\BuildServerList.cs" />
@@ -71,39 +72,43 @@
     <Compile Include="BuildServers\IBuildServer.cs" />
     <Compile Include="BuildServers\MyGet.cs" />
     <Compile Include="BuildServers\TeamCity.cs" />
+    <Compile Include="Configuration\BranchConfig.cs" />
     <Compile Include="Configuration\Config.cs" />
-    <Compile Include="Configuration\ConfigReader.cs" />
+    <Compile Include="Configuration\ConfigSerialiser.cs" />
     <Compile Include="Configuration\ConfigurationProvider.cs" />
-    <Compile Include="GitFlow\BranchFinders\RecentTagVersionExtractor.cs" />
+    <Compile Include="Configuration\IncrementStrategy.cs" />
+    <Compile Include="Configuration\LegacyConfig.cs" />
+    <Compile Include="Configuration\LegacyConfigNotifier.cs" />
+    <Compile Include="Configuration\OldConfigurationException.cs" />
+    <Compile Include="EffectiveConfiguration.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\IFileSystem.cs" />
-    <Compile Include="LastMinorVersionFinder.cs" />
+    <Compile Include="Helpers\ProcessHelper.cs" />
+    <Compile Include="OutputVariables\VersionVariables.cs" />
     <Compile Include="Extensions\ExtensionMethods.git.cs" />
-    <Compile Include="GitFlow\BranchFinders\BranchCommitDifferenceFinder.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculator.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\BaseVersion.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\ConfigNextVersionBaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\TrackMergeTargetBaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\HighestTagBaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\MergeMessageBaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\VersionInBranchBaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\BaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\FallbackBaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\IBaseVersionCalculator.cs" />
+    <Compile Include="VersionCalculation\IMetaDataCalculator.cs" />
+    <Compile Include="VersionCalculation\MetaDataCalculator.cs" />
+    <Compile Include="VersionCalculation\NextVersionCalculator.cs" />
+    <Compile Include="VersioningModes\ContinuousDeliveryMode.cs" />
+    <Compile Include="VersioningModes\ContinuousDeploymentMode.cs" />
+    <Compile Include="VersioningModes\VersioningMode.cs" />
+    <Compile Include="VersioningModes\VersioningModeBase.cs" />
+    <Compile Include="VersioningModes\VersioningModeExtension.cs" />
     <Compile Include="WarningException.cs" />
     <Compile Include="Extensions\ExtensionMethods.cs" />
     <Compile Include="GitDirFinder.cs" />
-    <Compile Include="GitFlow\BranchClassifier.cs" />
-    <Compile Include="GitFlow\BranchFinders\DevelopBasedVersionFinderBase.cs" />
-    <Compile Include="GitFlow\BranchFinders\DevelopVersionFinder.cs" />
-    <Compile Include="GitFlow\BranchFinders\FeatureVersionFinder.cs" />
-    <Compile Include="GitFlow\BranchFinders\HotfixVersionFinder.cs" />
-    <Compile Include="GitFlow\BranchFinders\MasterVersionFinder.cs" />
-    <Compile Include="GitFlow\BranchFinders\PullVersionFinder.cs" />
-    <Compile Include="GitFlow\BranchFinders\ReleaseVersionFinder.cs" />
-    <Compile Include="GitFlow\BranchFinders\SupportVersionFinder.cs" />
     <Compile Include="GitFlow\BranchType.cs" />
-    <Compile Include="GitFlow\GitFlowVersionFinder.cs" />
-    <Compile Include="MergeMessageParser.cs" />
-    <Compile Include="GitHubFlow\BuildNumberCalculator.cs" />
-    <Compile Include="GitHubFlow\GitHubFlowVersionFinder.cs" />
-    <Compile Include="GitHubFlow\LastTaggedReleaseFinder.cs" />
-    <Compile Include="GitHubFlow\MergedBranchesWithVersionFinder.cs" />
-    <Compile Include="GitHubFlow\NextSemverCalculator.cs" />
-    <Compile Include="GitHubFlow\NextVersionTxtFileFinder.cs" />
-    <Compile Include="GitHubFlow\OtherBranchVersionFinder.cs" />
-    <Compile Include="GitHubFlow\VersionTaggedCommit.cs" />
     <Compile Include="GitVersionContext.cs" />
     <Compile Include="GitVersionFinder.cs" />
     <Compile Include="Helpers\DeleteHelper.cs" />
@@ -114,7 +119,6 @@
     <Compile Include="OutputFormatters\BuildOutputFormatter.cs" />
     <Compile Include="OutputFormatters\JsonOutputFormatter.cs" />
     <Compile Include="OutputType.cs" />
-    <Compile Include="OutputVariables\CiFeedFormatter.cs" />
     <Compile Include="OutputVariables\VariableProvider.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="RepositoryLoader.cs" />
@@ -122,11 +126,11 @@
     <Compile Include="SemanticVersion.cs" />
     <Compile Include="SemanticVersionBuildMetaData.cs" />
     <Compile Include="SemanticVersionPreReleaseTag.cs" />
-    <Compile Include="GitFlow\BranchFinders\VersionOnMasterFinder.cs" />
-    <Compile Include="VersionPoint.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="FodyWeavers.xml" />
+    <Content Include="FodyWeavers.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="NugetAssets\GitVersion.nuspec">
@@ -134,14 +138,15 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets'))" />
-    <Error Condition="!Exists('..\packages\Fody.1.26.4\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.26.4\build\Fody.targets'))" />
     <Error Condition="!Exists('..\packages\LibGit2Sharp.0.20.1.0\build\net40\LibGit2Sharp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.0.20.1.0\build\net40\LibGit2Sharp.props'))" />
+    <Error Condition="!Exists('..\packages\Fody.1.28.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.28.1\build\Fody.targets'))" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent>
@@ -163,5 +168,5 @@
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetRefBuild" MetadataAssembly="$(OutputPath)GitVersionCore.dll" Version="$(GitVersion_NuGetVersion)" />
   </Target>
   <Import Project="..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" />
-  <Import Project="..\packages\Fody.1.26.4\build\Fody.targets" Condition="Exists('..\packages\Fody.1.26.4\build\Fody.targets')" />
+  <Import Project="..\packages\Fody.1.28.1\build\Fody.targets" Condition="Exists('..\packages\Fody.1.28.1\build\Fody.targets')" />
 </Project>

@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GitVersion;
 
 public static class VersionCache
 {
-    static Dictionary<string, CachedVersion> versionCacheVersions = new Dictionary<string, CachedVersion>();
+    static Dictionary<string, Tuple<CachedVersion, GitVersionContext>> versionCacheVersions = new Dictionary<string, Tuple<CachedVersion, GitVersionContext>>();
 
-    public static CachedVersion GetVersion(string gitDirectory, Config configuration)
+    public static Tuple<CachedVersion, GitVersionContext> GetVersion(string gitDirectory, Config configuration)
     {
         using (var repo = RepositoryLoader.GetRepo(gitDirectory))
         {
@@ -13,26 +14,24 @@ public static class VersionCache
             var context = new GitVersionContext(repo, configuration);
             var ticks = DirectoryDateFinder.GetLastDirectoryWrite(gitDirectory);
             var key = string.Format("{0}:{1}:{2}", repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
-            CachedVersion cachedVersion;
-            if (versionCacheVersions.TryGetValue(key, out cachedVersion))
+
+            Tuple<CachedVersion, GitVersionContext> result;
+            if (versionCacheVersions.TryGetValue(key, out result))
             {
-                if (cachedVersion.Timestamp != ticks)
+                if (result.Item1.Timestamp != ticks)
                 {
                     Logger.WriteInfo("Change detected. flushing cache.");
-                    cachedVersion.SemanticVersion = versionFinder.FindVersion(context);
-                    cachedVersion.MasterReleaseDate = LastMinorVersionFinder.Execute(repo, new Config(), repo.Head.Tip);
+                    result.Item1.SemanticVersion = versionFinder.FindVersion(context);
                 }
-                return cachedVersion;
+                return result;
             }
             Logger.WriteInfo("Version not in cache. Calculating version.");
 
-            return versionCacheVersions[key] = new CachedVersion
+            return versionCacheVersions[key] = Tuple.Create(new CachedVersion
             {
                 SemanticVersion = versionFinder.FindVersion(context),
-                MasterReleaseDate = LastMinorVersionFinder.Execute(repo, new Config(), repo.Head.Tip),
                 Timestamp = ticks
-            };
-
+            }, context);
         }
     }
 

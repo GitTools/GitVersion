@@ -56,9 +56,10 @@ public class SemanticVersionTests
     [Test]
     public void LegacySemVerTest()
     {
-        new SemanticVersionPreReleaseTag("TKT-2134_JiraDescription", null).ToString("l").ShouldBe("TKT2134");
+        new SemanticVersionPreReleaseTag("TKT-2134_JiraDescription", null).ToString("l").ShouldBe("TKT-2134");
         new SemanticVersionPreReleaseTag("AReallyReallyReallyLongBranchName", null).ToString("l").ShouldBe("AReallyReallyReallyL");
-        new SemanticVersionPreReleaseTag("TKT-2134_JiraDescription", 1).ToString("lp").ShouldBe("TKT21340001");
+        new SemanticVersionPreReleaseTag("TKT-2134_JiraDescription", 1).ToString("lp").ShouldBe("TKT-2134-0001");
+        new SemanticVersionPreReleaseTag("TKT-2134", 1).ToString("lp").ShouldBe("TKT-2134-0001");
         new SemanticVersionPreReleaseTag("AReallyReallyReallyLongBranchName", 1).ToString("lp").ShouldBe("AReallyReallyRea0001");
     }
 

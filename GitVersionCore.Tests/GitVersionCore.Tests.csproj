@@ -13,7 +13,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>e51a7a82</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>347f25de</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,11 +37,17 @@
   <ItemGroup>
     <Reference Include="ApprovalTests, Version=3.0.0.0, Culture=neutral, PublicKeyToken=11bd7d124fc62e0f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ApprovalTests.3.0.7\lib\net40\ApprovalTests.dll</HintPath>
+      <HintPath>..\packages\ApprovalTests.3.0.8\lib\net40\ApprovalTests.dll</HintPath>
     </Reference>
     <Reference Include="ApprovalUtilities, Version=3.0.0.0, Culture=neutral, PublicKeyToken=11bd7d124fc62e0f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ApprovalUtilities.3.0.7\lib\net35\ApprovalUtilities.dll</HintPath>
+      <HintPath>..\packages\ApprovalUtilities.3.0.8\lib\net45\ApprovalUtilities.dll</HintPath>
+    </Reference>
+    <Reference Include="ApprovalUtilities.Net45">
+      <HintPath>..\packages\ApprovalUtilities.3.0.8\lib\net45\ApprovalUtilities.Net45.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentDateTime">
+      <HintPath>..\packages\FluentDateTime.1.11.0\Lib\NET35\FluentDateTime.dll</HintPath>
     </Reference>
     <Reference Include="LibGit2Sharp, Version=0.20.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -51,9 +57,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="Shouldly, Version=2.3.1.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
+    <Reference Include="Shouldly, Version=2.4.0.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Shouldly.2.3.1\lib\net40\Shouldly.dll</HintPath>
+      <HintPath>..\packages\Shouldly.2.4.0\lib\net40\Shouldly.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -64,46 +70,68 @@
     <Reference Include="System.Xml" />
     <Reference Include="YamlDotNet, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\YamlDotNet.3.5.0\lib\net35\YamlDotNet.dll</HintPath>
+      <HintPath>..\packages\YamlDotNet.3.5.1\lib\net35\YamlDotNet.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\GitVersionTask.Tests\Helpers\DirectoryHelper.cs">
-      <Link>Helpers\DirectoryHelper.cs</Link>
-    </Compile>
+    <Compile Include="BuildServers\BuildServerBaseTests.cs" />
+    <Compile Include="BuildServers\ContinuaCiTests.cs" />
+    <Compile Include="BuildServers\MyGetTests.cs" />
+    <Compile Include="BuildServers\TeamCityTests.cs" />
     <Compile Include="Fixtures\CommitCountingRepoFixture.cs" />
     <Compile Include="ConfigProviderTests.cs" />
     <Compile Include="Fixtures\RemoteRepositoryFixture.cs" />
     <Compile Include="GitDirFinderTests.cs" />
     <Compile Include="Fixtures\BaseGitFlowRepositoryFixture.cs" />
-    <Compile Include="GitFlowFeatureBranchTests.cs" />
-    <Compile Include="IntegrationTests\RemoteRepositoryTests.cs" />
-    <Compile Include="IntegrationTests\GitFlow\DevelopScenarios.cs" />
-    <Compile Include="IntegrationTests\GitFlow\GitFlowFeatureBranchTests.cs" />
-    <Compile Include="IntegrationTests\GitFlow\GitFlowSupportBranchScenarios.cs" />
-    <Compile Include="IntegrationTests\GitFlow\MetaDataByCommitScenarios.cs" />
-    <Compile Include="IntegrationTests\GitFlow\PatchScenarios.cs" />
-    <Compile Include="IntegrationTests\GitFlow\ReleaseBranchTests.cs" />
-    <Compile Include="IntegrationTests\GitFlow\SwitchingToGitFlowScenarios.cs" />
-    <Compile Include="IntegrationTests\GitFlow\WikiScenarios.cs" />
-    <Compile Include="IntegrationTests\GitHubFlow\GitHubFlowFeatureBranchTests.cs" />
-    <Compile Include="IntegrationTests\GitHubFlow\OtherBranchTests.cs" />
-    <Compile Include="IntegrationTests\GitHubFlow\ReleaseBranchTests.cs" />
+    <Compile Include="GitVersionContextTests.cs" />
+    <Compile Include="Helpers\DirectoryHelper.cs" />
+    <Compile Include="IntegrationTests\PullRequestScenarios.cs" />
+    <Compile Include="IntegrationTests\RemoteRepositoryScenarios.cs" />
+    <Compile Include="IntegrationTests\DevelopScenarios.cs" />
+    <Compile Include="IntegrationTests\FeatureBranchScenarios.cs" />
+    <Compile Include="IntegrationTests\SupportBranchScenarios.cs" />
+    <Compile Include="IntegrationTests\HotfixBranchScenarios.cs" />
+    <Compile Include="IntegrationTests\ReleaseBranchScenarios.cs" />
+    <Compile Include="IntegrationTests\SwitchingToGitFlowScenarios.cs" />
+    <Compile Include="IntegrationTests\VersionBumpingScenarios.cs" />
+    <Compile Include="IntegrationTests\WikiScenarios.cs" />
+    <Compile Include="IntegrationTests\OtherBranchScenarios.cs" />
     <Compile Include="Helpers\Constants.cs" />
-    <Compile Include="Helpers\NextVersionWriter.cs" />
     <Compile Include="InformationalVersionBuilderTests.cs" />
-    <Compile Include="IntegrationTests\GitHubFlow\GitHubFlowSupportBranchScenarios.cs" />
     <Compile Include="JsonVersionBuilderTests.cs" />
+    <Compile Include="Mocks\MockBranch.cs" />
+    <Compile Include="Mocks\MockBranchCollection.cs" />
+    <Compile Include="Mocks\MockCommit.cs" />
+    <Compile Include="Mocks\MockCommitLog.cs" />
+    <Compile Include="Mocks\MockMergeCommit.cs" />
+    <Compile Include="Mocks\MockQueryableCommitLog.cs" />
+    <Compile Include="Mocks\MockReferenceCollection.cs" />
+    <Compile Include="Mocks\MockReflogCollection.cs" />
+    <Compile Include="Mocks\MockRepository.cs" />
+    <Compile Include="Mocks\MockTag.cs" />
+    <Compile Include="Mocks\MockTagAnnotation.cs" />
+    <Compile Include="Mocks\MockTagCollection.cs" />
+    <Compile Include="Mocks\SignatureBuilder.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="Fixtures\EmptyRepositoryFixture.cs" />
     <Compile Include="Helpers\GitTestExtensions.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
-    <Compile Include="IntegrationTests\GitHubFlow\MasterTests.cs" />
+    <Compile Include="IntegrationTests\MasterScenarios.cs" />
     <Compile Include="ApprovalTestsConfig.cs" />
     <Compile Include="Fixtures\RepositoryFixtureBase.cs" />
     <Compile Include="SemanticVersionTests.cs" />
+    <Compile Include="TestEffectiveConfiguration.cs" />
     <Compile Include="TestFileSystem.cs" />
     <Compile Include="VariableProviderTests.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculatorTests.cs" />
+    <Compile Include="VersionCalculation\NextVersionCalculatorTests.cs" />
+    <Compile Include="VersionCalculation\Strategies\ConfigNextVersionBaseVersionStrategyTests.cs" />
+    <Compile Include="GitVersionContextBuilder.cs" />
+    <Compile Include="VersionCalculation\Strategies\LastTagBaseVersionStrategyTests.cs" />
+    <Compile Include="VersionCalculation\Strategies\MergeMessageBaseVersionStrategyTests.cs" />
+    <Compile Include="VersionCalculation\Strategies\VersionInBranchBaseVersionStrategyTests.cs" />
+    <Compile Include="VersionCalculation\TestBaseVersionCalculator.cs" />
+    <Compile Include="VersionCalculation\TestMetaDataCalculator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -124,12 +152,12 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\Fody.1.26.4\build\Fody.targets" Condition="Exists('..\packages\Fody.1.26.4\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Fody.1.26.4\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.26.4\build\Fody.targets'))" />
     <Error Condition="!Exists('..\packages\LibGit2Sharp.0.20.1.0\build\net40\LibGit2Sharp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.0.20.1.0\build\net40\LibGit2Sharp.props'))" />
+    <Error Condition="!Exists('..\packages\Fody.1.28.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.28.1\build\Fody.targets'))" />
   </Target>
+  <Import Project="..\packages\Fody.1.28.1\build\Fody.targets" Condition="Exists('..\packages\Fody.1.28.1\build\Fody.targets')" />
 </Project>

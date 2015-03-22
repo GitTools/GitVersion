@@ -5,17 +5,15 @@ using System.Reflection;
 [assembly: AssemblyVersion("2.0.0.0")]
 [assembly: AssemblyFileVersion("2.3.4.0")]
 [assembly: AssemblyInformationalVersion("2.3.4+5.Branch.master.Sha.commitSha")]
-[assembly: ReleaseDate("2014-03-01", "2014-03-06")]
+[assembly: ReleaseDate("2014-03-06")]
 
 [System.Runtime.CompilerServices.CompilerGenerated]
 sealed class ReleaseDateAttribute : System.Attribute
 {
-    public string OriginalDate { get; private set; }
     public string Date { get; private set; }
 
-    public ReleaseDateAttribute(string originalDate, string date)
+    public ReleaseDateAttribute(string date)
     {
-        OriginalDate = originalDate;
         Date = date;
     }
 }
@@ -35,11 +33,8 @@ static class GitVersionInformation
     public static string LegacySemVer = "2.3.4";
     public static string LegacySemVerPadded = "2.3.4";
     public static string AssemblySemVer = "2.0.0.0";
-    public static string AssemblyFileSemVer = "2.3.4.0";
     public static string FullSemVer = "2.3.4+5";
     public static string InformationalVersion = "2.3.4+5.Branch.master.Sha.commitSha";
-    public static string ClassicVersion = "2.3.4.5";
-    public static string ClassicVersionWithTag = "2.3.4.5";
     public static string BranchName = "master";
     public static string Sha = "commitSha";
     public static string NuGetVersionV2 = "2.3.4";

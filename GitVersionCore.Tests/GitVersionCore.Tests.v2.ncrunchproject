@@ -23,5 +23,5 @@
   <MSTestThreadApartmentState>STA</MSTestThreadApartmentState>
   <BuildProcessArchitecture>x86</BuildProcessArchitecture>
   <AdditionalFilesToInclude>..\Packages\LibGit2Sharp.0.19.0.0\lib\net40\NativeBinaries\**.*;Resources\**.*</AdditionalFilesToInclude>
-  <HiddenWarnings>PostBuildEventDisabled</HiddenWarnings>
+  <HiddenWarnings>PostBuildEventDisabled;CopyReferencedAssembliesToWorkspaceIsOn</HiddenWarnings>
 </ProjectConfiguration>

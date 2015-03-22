@@ -65,6 +65,7 @@ public class GitHelperTests : Lg2sHelperBase
 
         using (var repository = new Repository(gitDirectory))
         {
+            repository.DumpGraph();
             var semanticVersion = new GitVersionFinder().FindVersion(new GitVersionContext(repository, new Config()));
             Assert.IsNotNull(semanticVersion);
         }

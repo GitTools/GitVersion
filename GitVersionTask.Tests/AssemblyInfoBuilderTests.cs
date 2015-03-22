@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using ApprovalTests;
 using GitVersion;
+using GitVersionCore.Tests;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using NUnit.Framework;
@@ -22,17 +23,16 @@ public class AssemblyInfoBuilderTests
             Patch = 3,
             PreReleaseTag = "unstable4",
             BuildMetaData = new SemanticVersionBuildMetaData(5,
-                "feature1","commitSha",DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
+                "feature1", "commitSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
         };
         var assemblyInfoBuilder = new AssemblyInfoBuilder
+        {
+            CachedVersion = new CachedVersion
             {
-                CachedVersion = new CachedVersion
-                {
-                    SemanticVersion = semanticVersion,
-                    MasterReleaseDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z"),
-                }
-            };
-        var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(new Config());
+                SemanticVersion = semanticVersion
+            }
+        };
+        var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(new TestEffectiveConfiguration());
         Approvals.Verify(assemblyInfoText);
 
         var compilation = CSharpCompilation.Create("Fake.dll")
@@ -81,18 +81,17 @@ public class AssemblyInfoBuilderTests
             Minor = 3,
             Patch = 4,
             BuildMetaData = new SemanticVersionBuildMetaData(5,
-                "master","commitSha",DateTimeOffset.Parse("2014-03-06 23:59:59Z")),
+                "master", "commitSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z")),
         };
         var assemblyInfoBuilder = new AssemblyInfoBuilder
         {
             CachedVersion = new CachedVersion
             {
-                SemanticVersion = semanticVersion,
-                MasterReleaseDate = DateTimeOffset.Parse("2014-03-01 00:00:01Z")
+                SemanticVersion = semanticVersion
             },
         };
 
-        var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(new Config { AssemblyVersioningScheme = avs });
+        var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(new TestEffectiveConfiguration(assemblyVersioningScheme: avs));
         Approvals.Verify(assemblyInfoText);
 
         var compilation = CSharpCompilation.Create("Fake.dll")

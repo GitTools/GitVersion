@@ -51,7 +51,7 @@
             {
                 if (response.StatusCode != HttpStatusCode.OK && response.StatusCode != HttpStatusCode.NoContent)
                 {
-                    var message = String.Format("Request failed. Received HTTP {0}", response.StatusCode);
+                    var message = string.Format("Request failed. Received HTTP {0}", response.StatusCode);
                     return message;
                 }
             }
