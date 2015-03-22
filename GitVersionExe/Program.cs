@@ -96,7 +96,7 @@ namespace GitVersion
 
                 using (var repo = RepositoryLoader.GetRepo(gitDirectory))
                 {
-                    var gitVersionContext = new GitVersionContext(repo, configuration, !arguments.IncludeUntrackedBranches, arguments.CommitId);
+                    var gitVersionContext = new GitVersionContext(repo, configuration, commitId: arguments.CommitId);
                     var semanticVersion = versionFinder.FindVersion(gitVersionContext);
                     var config = gitVersionContext.Configuration;
                     variables = VariableProvider.GetVariablesFor(semanticVersion, config.AssemblyVersioningScheme, config.VersioningMode, config.ContinuousDeploymentFallbackTag, gitVersionContext.IsCurrentCommitTagged);
