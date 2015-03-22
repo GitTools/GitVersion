@@ -85,7 +85,7 @@
             return false;
         }
 
-        bool ContainsKey(string variable)
+        public bool ContainsKey(string variable)
         {
             return typeof(VersionVariables).GetProperty(variable) != null;
         }

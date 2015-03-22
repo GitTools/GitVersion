@@ -10,7 +10,7 @@ namespace GitVersion
     {
         static ArgumentParser()
         {
-            var fields = typeof(VersionVariables).GetProperties();
+            var fields = typeof(VariableProvider).GetFields(BindingFlags.Public | BindingFlags.Static);
             VersionParts = fields.Select(x => x.Name.ToLower()).ToArray();
         }
 
@@ -168,7 +168,7 @@ namespace GitVersion
 
                 if ((IsSwitch("v", name)) && VersionParts.Contains(value.ToLower()))
                 {
-                    arguments.ShowVariable = value;
+                    arguments.ShowVariable = value.ToLower();
                     continue;
                 }
 
