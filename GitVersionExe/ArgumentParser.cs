@@ -3,9 +3,7 @@ namespace GitVersion
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
 
- 
     public class ArgumentParser
     {
         static ArgumentParser()
@@ -206,6 +204,16 @@ namespace GitVersion
                 {
                     arguments.IncludeUntrackedBranches = true;
                     index--;
+                    continue;
+                }
+
+                if (IsSwitch("writejsontofile", name))
+                {
+                    if (IsSwitchArgument(value) || string.IsNullOrEmpty(value))
+                    {
+                        throw new WarningException("-writejsontofile requires a file to write to.");
+                    }
+                    arguments.JsonOutputFile = value;
                     continue;
                 }
 
