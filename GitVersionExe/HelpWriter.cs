@@ -25,6 +25,8 @@ GitVersion [path]
                     eg /output json /showvariable SemVer - will output `1.2.3+beta.4`
     /l              Path to logfile.
     /showconfig     Outputs the effective GitVersion config (defaults + custom from GitVersion.yaml) in yaml format
+    /includeuntrackedbranches
+                    Allows untracked branches to be used in the calculation of version.
 
     # AssemblyInfo updating
     /updateassemblyinfo
