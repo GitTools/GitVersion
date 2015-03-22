@@ -79,11 +79,6 @@ namespace GitVersion
                     //}
                 }
             }
-
-            if (gitPreparer.IsDynamicGitRepository)
-            {
-                DeleteHelper.DeleteGitRepository(gitPreparer.DynamicGitRepositoryPath);
-            }
         }
 
         static IEnumerable<IBuildServer> GetApplicableBuildServers(Authentication authentication)

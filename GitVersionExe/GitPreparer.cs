@@ -85,9 +85,9 @@
             var gitDirectory = Path.Combine(targetPath, ".git");
             if (Directory.Exists(targetPath))
             {
-                Logger.WriteInfo(string.Format("Deleting existing .git folder from '{0}' to force new checkout from url", targetPath));
+                Logger.WriteInfo("Git repository already exists at {0}, skipping clone");
 
-                DeleteHelper.DeleteGitRepository(targetPath);
+                return gitDirectory;
             }
 
             Credentials credentials = null;
@@ -150,9 +150,6 @@
 
                     repository.Refs.UpdateTarget(repository.Refs.Head, newHead);
                 }
-
-                // > 3.0 method
-                repository.CheckoutFilesIfExist("GitVersionConfig.yaml");
             }
 
             return gitDirectory;

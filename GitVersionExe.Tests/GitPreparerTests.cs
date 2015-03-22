@@ -20,11 +20,9 @@ public class GitPreparerTests
     const string SpecificBranchName = "feature/foo";
 
     [Test]
-    [TestCase(null, DefaultBranchName, false)]
-    [TestCase(SpecificBranchName, SpecificBranchName, false)]
-    [TestCase(null, DefaultBranchName, true)]
-    [TestCase(SpecificBranchName, SpecificBranchName, true)]
-    public void WorksCorrectlyWithRemoteRepository(string branchName, string expectedBranchName, bool checkConfig)
+    [TestCase(null, DefaultBranchName)]
+    [TestCase(SpecificBranchName, SpecificBranchName)]
+    public void WorksCorrectlyWithRemoteRepository(string branchName, string expectedBranchName)
     {
         var repoName = Guid.NewGuid().ToString();
         var tempPath = Path.GetTempPath();
@@ -41,21 +39,7 @@ public class GitPreparerTests
                 fixture.Repository.MakeCommits(5);
                 fixture.Repository.CreateFileAndCommit("TestFile.txt");
 
-                if (checkConfig)
-                {
-                    fixture.Repository.CreateFileAndCommit("GitVersionConfig.yaml");
-                }
-
                 fixture.Repository.CreateBranch(SpecificBranchName);
-
-                if (checkConfig)
-                {
-                    fixture.Repository.Refs.UpdateTarget(fixture.Repository.Refs.Head, fixture.Repository.Refs["refs/heads/" + SpecificBranchName]);
-
-                    fixture.Repository.CreateFileAndCommit("GitVersionConfig.yaml");
-
-                    fixture.Repository.Refs.UpdateTarget(fixture.Repository.Refs.Head, fixture.Repository.Refs["refs/heads/" + DefaultBranchName]);
-                }
 
                 var arguments = new Arguments
                 {
@@ -83,12 +67,6 @@ public class GitPreparerTests
                     var currentBranch = repository.Head.CanonicalName;
 
                     currentBranch.EndsWith(expectedBranchName).ShouldBe(true);
-
-                    if (checkConfig)
-                    {
-                        var expectedConfigPath = Path.Combine(dynamicRepositoryPath, "..\\GitVersionConfig.yaml");
-                        File.Exists(expectedConfigPath).ShouldBe(true);
-                    }
                 }
             }
         }
