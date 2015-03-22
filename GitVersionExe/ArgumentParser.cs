@@ -202,6 +202,13 @@ namespace GitVersion
                     continue;
                 }
 
+                if (IsSwitch("includeuntrackedbranches", name))
+                {
+                    arguments.IncludeUntrackedBranches = true;
+                    index--;
+                    continue;
+                }
+
                 throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", name));
             }
 
