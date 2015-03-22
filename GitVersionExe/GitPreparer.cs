@@ -32,9 +32,7 @@
         string CalculateTemporaryRepositoryPath(string targetUrl)
         {
             var userTemp = Path.GetTempPath();
-            var repositoryName = targetUrl.EndsWith(".git") ?
-                targetUrl.Split('/', '\\').Last().Replace(".git", string.Empty) :
-                targetUrl.Split('/', '\\').Last();
+            var repositoryName = targetUrl.Split('/', '\\').Last().Replace(".git", string.Empty);
             var possiblePath = Path.Combine(userTemp, repositoryName);
 
             // Verify that the existing directory is ok for us to use
