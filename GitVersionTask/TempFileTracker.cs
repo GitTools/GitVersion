@@ -13,6 +13,11 @@ public static class TempFileTracker
 
     public static void DeleteTempFiles()
     {
+        if (!Directory.Exists(TempPath))
+        {
+            return;
+        }
+
         foreach (var file in Directory.GetFiles(TempPath))
         {
             if (File.GetLastWriteTime(file) < DateTime.Now.AddDays(-1))
