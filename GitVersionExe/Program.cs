@@ -96,7 +96,7 @@ namespace GitVersion
 
                 using (var repo = RepositoryLoader.GetRepo(gitDirectory))
                 {
-                    var gitVersionContext = new GitVersionContext(repo, configuration, commitId: arguments.CommitId);
+                    var gitVersionContext = new GitVersionContext(repo, configuration, !arguments.IncludeUntrackedBranches, arguments.CommitId);
                     var semanticVersion = versionFinder.FindVersion(gitVersionContext);
                     var config = gitVersionContext.Configuration;
                     variables = VariableProvider.GetVariablesFor(semanticVersion, config.AssemblyVersioningScheme, config.VersioningMode, config.ContinuousDeploymentFallbackTag, gitVersionContext.IsCurrentCommitTagged);
@@ -112,10 +112,11 @@ namespace GitVersion
 
                 if (arguments.Output == OutputType.Json)
                 {
+                    string jsonOutput;
                     switch (arguments.ShowVariable)
                     {
                         case null:
-                            Console.WriteLine(JsonOutputFormatter.ToJson(variables));
+                            jsonOutput = JsonOutputFormatter.ToJson(variables);
                             break;
 
                         default:
@@ -124,8 +125,20 @@ namespace GitVersion
                             {
                                 throw new WarningException(string.Format("'{0}' variable does not exist", arguments.ShowVariable));
                             }
-                            Console.WriteLine(part);
+                            jsonOutput =part;
                             break;
+                    }
+                    if (string.IsNullOrWhiteSpace(arguments.JsonOutputFile))
+                    {
+                        Console.WriteLine(jsonOutput);
+                    }
+                    else
+                    {
+                        var outfile = new FileInfo(arguments.JsonOutputFile);
+                        using (var textwriter = outfile.CreateText())
+                        {
+                            textwriter.Write(jsonOutput);
+                        }
                     }
                 }
 

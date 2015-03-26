@@ -3,14 +3,12 @@ namespace GitVersion
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
 
- 
     public class ArgumentParser
     {
         static ArgumentParser()
         {
-            var fields = typeof(VariableProvider).GetFields(BindingFlags.Public | BindingFlags.Static);
+            var fields = typeof(VersionVariables).GetProperties();
             VersionParts = fields.Select(x => x.Name.ToLower()).ToArray();
         }
 
@@ -168,7 +166,7 @@ namespace GitVersion
 
                 if ((IsSwitch("v", name)) && VersionParts.Contains(value.ToLower()))
                 {
-                    arguments.ShowVariable = value.ToLower();
+                    arguments.ShowVariable = value;
                     continue;
                 }
 
@@ -199,6 +197,23 @@ namespace GitVersion
                     }
 
                     arguments.Output = outputType;
+                    continue;
+                }
+
+                if (IsSwitch("includeuntrackedbranches", name))
+                {
+                    arguments.IncludeUntrackedBranches = true;
+                    index--;
+                    continue;
+                }
+
+                if (IsSwitch("writejsontofile", name))
+                {
+                    if (IsSwitchArgument(value) || string.IsNullOrEmpty(value))
+                    {
+                        throw new WarningException("-writejsontofile requires a file to write to.");
+                    }
+                    arguments.JsonOutputFile = value;
                     continue;
                 }
 

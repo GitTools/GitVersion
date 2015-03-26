@@ -211,4 +211,48 @@ public class ArgumentParserTests
         var arguments = ArgumentParser.ParseArguments("-l console -proj foo.sln");
         arguments.LogFilePath.ShouldBe("console");
     }
+
+    [Test]
+    public void can_include_untracked_branches()
+    {
+        var arguments = ArgumentParser.ParseArguments("-includeuntrackedbranches");
+        arguments.IncludeUntrackedBranches.ShouldBe(true);
+    }
+
+    [Test]
+    public void can_include_untracked_branches_with_other_arguments()
+    {
+        var arguments = ArgumentParser.ParseArguments("-includeuntrackedbranches -l console");
+        arguments.IncludeUntrackedBranches.ShouldBe(true);
+        arguments.LogFilePath.ShouldBe("console");
+    }
+
+    [Test]
+    public void default_for_include_untracked_branches_is_false()
+    {
+        var arguments = ArgumentParser.ParseArguments("");
+        arguments.IncludeUntrackedBranches.ShouldBe(false);
+    }
+
+    [Test]
+    public void writejsontofile_with_no_file_throws()
+    {
+        var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments("-writejsontofile"));
+        exception.Message.ShouldBe("-writejsontofile requires a file to write to.");
+    }
+
+    [Test]
+    public void writejsontofile_with_no_file_and_following_argument_throws()
+    {
+        var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments("-writejsontofile -l console"));
+        exception.Message.ShouldBe("-writejsontofile requires a file to write to.");
+    }
+
+    [Test]
+    public void writejsontofile_with_valid_file()
+    {
+        var arguments = ArgumentParser.ParseArguments(@"-writejsontofile c:\temp");
+        arguments.JsonOutputFile.ShouldBe(@"c:\temp");
+    }
+
 }

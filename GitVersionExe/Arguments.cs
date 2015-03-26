@@ -33,5 +33,9 @@ namespace GitVersion
         public string UpdateAssemblyInfoFileName;
 
         public bool ShowConfig;
+
+        public bool IncludeUntrackedBranches;
+
+        public string JsonOutputFile;
     }
 }
