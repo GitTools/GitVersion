@@ -20,7 +20,7 @@ public class VersionAndBranchFinderTests: Lg2sHelperBase
         }
 
         Tuple<CachedVersion, GitVersionContext> versionAndBranch;
-        VersionAndBranchFinder.TryGetVersion(ASBMTestRepoWorkingDirPath, out versionAndBranch, new Config());
+        VersionAndBranchFinder.TryGetVersion(ASBMTestRepoWorkingDirPath, out versionAndBranch, new Config(), false);
         Assert.IsNotNull(versionAndBranch);
     }
 }

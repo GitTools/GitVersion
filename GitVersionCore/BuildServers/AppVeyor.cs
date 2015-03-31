@@ -18,14 +18,17 @@
             return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPVEYOR"));
         }
 
-        public override void PerformPreProcessingSteps(string gitDirectory)
+        public override void PerformPreProcessingSteps(string gitDirectory, bool noFetch)
         {
             if (string.IsNullOrEmpty(gitDirectory))
             {
                 throw new WarningException("Failed to find .git directory on agent.");
             }
 
-            GitHelper.NormalizeGitDirectory(gitDirectory, authentication);
+            if (!noFetch)
+            {
+                GitHelper.NormalizeGitDirectory(gitDirectory, authentication);
+            }
         }
 
         public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)

@@ -25,6 +25,8 @@
         [Output]
         public string AssemblyInfoTempFilePath { get; set; }
 
+        public bool NoFetch { get; set; }
+
         TaskLogger logger;
         IFileSystem fileSystem;
 
@@ -73,7 +75,7 @@
             var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
 
             Tuple<CachedVersion, GitVersionContext> semanticVersion;
-            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion, configuration))
+            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion, configuration, NoFetch))
             {
                 return;
             }

@@ -5,7 +5,7 @@
     public abstract class BuildServerBase : IBuildServer
     {
         public abstract bool CanApplyToCurrentContext();
-        public abstract void PerformPreProcessingSteps(string gitDirectory);
+        public abstract void PerformPreProcessingSteps(string gitDirectory, bool noFetch);
         public abstract string GenerateSetVersionMessage(string versionToUseForBuildNumber);
         public abstract string[] GenerateSetParameterMessage(string name, string value);
 

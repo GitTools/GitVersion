@@ -88,7 +88,7 @@ namespace GitVersion
 
                 foreach (var buildServer in applicableBuildServers)
                 {
-                    buildServer.PerformPreProcessingSteps(gitDirectory);
+                    buildServer.PerformPreProcessingSteps(gitDirectory, arguments.NoFetch);
                 }
                 VersionVariables variables;
                 var versionFinder = new GitVersionFinder();

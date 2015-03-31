@@ -5,7 +5,7 @@ using GitVersion;
 public static class VersionAndBranchFinder
 {
     static List<string> processedDirectories = new List<string>(); 
-    public static bool TryGetVersion(string directory, out Tuple<CachedVersion, GitVersionContext> versionAndBranch, Config configuration)
+    public static bool TryGetVersion(string directory, out Tuple<CachedVersion, GitVersionContext> versionAndBranch, Config configuration, bool noFetch)
     {
         var gitDirectory = GitDirFinder.TreeWalkForGitDir(directory);
 
@@ -28,7 +28,7 @@ public static class VersionAndBranchFinder
             foreach (var buildServer in BuildServerList.GetApplicableBuildServers(authentication))
             {
                 Logger.WriteInfo(string.Format("Executing PerformPreProcessingSteps for '{0}'.", buildServer.GetType().Name));
-                buildServer.PerformPreProcessingSteps(gitDirectory);
+                buildServer.PerformPreProcessingSteps(gitDirectory, noFetch);
             }
         }
         versionAndBranch = VersionCache.GetVersion(gitDirectory, configuration);

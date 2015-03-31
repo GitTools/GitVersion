@@ -35,7 +35,7 @@ public class BuildServerBaseTests
             throw new NotImplementedException();
         }
 
-        public override void PerformPreProcessingSteps(string gitDirectory)
+        public override void PerformPreProcessingSteps(string gitDirectory, bool noFetch)
         {
             throw new NotImplementedException();
         }

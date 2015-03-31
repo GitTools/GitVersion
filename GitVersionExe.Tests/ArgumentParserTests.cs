@@ -211,4 +211,11 @@ public class ArgumentParserTests
         var arguments = ArgumentParser.ParseArguments("-l console -proj foo.sln");
         arguments.LogFilePath.ShouldBe("console");
     }
+
+    [Test]
+    public void nofetch_true_when_defined()
+    {
+        var arguments = ArgumentParser.ParseArguments("-nofetch");
+        arguments.NoFetch = true;
+    }
 }

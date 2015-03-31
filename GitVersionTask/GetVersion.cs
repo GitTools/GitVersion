@@ -12,6 +12,8 @@
         [Required]
         public string SolutionDirectory { get; set; }
 
+        public bool NoFetch { get; set; }
+
         [Output]
         public string Major { get; set; }
 
@@ -85,7 +87,7 @@
                 var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
                 var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
 
-                if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch, configuration))
+                if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch, configuration, NoFetch))
                 {
                     var thisType = typeof(GetVersion);
                     var cachedVersion = versionAndBranch.Item1;

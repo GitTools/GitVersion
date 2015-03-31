@@ -20,14 +20,17 @@
                 && buildRunner.Equals("MyGet", StringComparison.InvariantCultureIgnoreCase);
         }
 
-        public override void PerformPreProcessingSteps(string gitDirectory)
+        public override void PerformPreProcessingSteps(string gitDirectory, bool noFetch)
         {
             if (string.IsNullOrEmpty(gitDirectory))
             {
                 throw new WarningException("Failed to find .git directory on agent.");
             }
 
-            GitHelper.NormalizeGitDirectory(gitDirectory, authentication);
+            if (!noFetch)
+            {
+                GitHelper.NormalizeGitDirectory(gitDirectory, authentication);
+            }
         }
 
         public override string[] GenerateSetParameterMessage(string name, string value)

@@ -202,6 +202,12 @@ namespace GitVersion
                     continue;
                 }
 
+                if (IsSwitch("nofetch", name))
+                {
+                    arguments.NoFetch = true;
+                    continue;
+                }
+
                 throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", name));
             }
 
