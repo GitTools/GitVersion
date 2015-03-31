@@ -5,8 +5,9 @@ namespace GitVersion
     using System.Collections.Specialized;
     using System.Linq;
     using System.Reflection;
+    using System.Text.RegularExpressions;
 
- 
+
     public class ArgumentParser
     {
         static ArgumentParser()
@@ -259,7 +260,8 @@ namespace GitVersion
 
         static bool IsSwitchArgument(string value)
         {
-            return value != null && (value.StartsWith("-") || value.StartsWith("/")) && !value.StartsWith("/p:"); //Exclude msbuild parameters, which should be parsed as values, not switch names.
+            return value != null && (value.StartsWith("-") || value.StartsWith("/")) 
+                && !Regex.Match(value, @"/\w+:").Success; //Exclude msbuild & project parameters in form /blah:, which should be parsed as values, not switch names.
         }
 
         static bool IsSwitch(string switchName, string value)
