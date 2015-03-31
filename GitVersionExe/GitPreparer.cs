@@ -67,7 +67,7 @@
                 });
 
             // Normalize (download branches) before using the branch
-            GitHelper.NormalizeGitDirectory(gitDirectory, arguments.Authentication);
+            GitHelper.NormalizeGitDirectory(gitDirectory, arguments.Authentication, arguments.NoFetch);
 
             using (var repository = new Repository(gitDirectory))
             {

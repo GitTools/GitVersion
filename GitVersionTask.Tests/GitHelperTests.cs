@@ -13,7 +13,7 @@ public class GitHelperTests : Lg2sHelperBase
         var gitDirectory = FakeTeamCityFetchAndCheckout(ASBMTestRepoWorkingDirPath, "refs/heads/master");
 
         var authentication = new Authentication();
-        GitHelper.NormalizeGitDirectory(gitDirectory, authentication);
+        GitHelper.NormalizeGitDirectory(gitDirectory, authentication, false);
 
         using (var repository = new Repository(gitDirectory))
         {
@@ -31,7 +31,7 @@ public class GitHelperTests : Lg2sHelperBase
         var gitDirectory = FakeTeamCityFetchAndCheckout(repoPath, "refs/pull/1735/merge");
 
         var authentication = new Authentication();
-        GitHelper.NormalizeGitDirectory(gitDirectory, authentication);
+        GitHelper.NormalizeGitDirectory(gitDirectory, authentication, false);
 
         using (var repository = new Repository(gitDirectory))
         {
@@ -46,7 +46,7 @@ public class GitHelperTests : Lg2sHelperBase
         var gitDirectory = FakeTeamCityFetchAndCheckout(ASBMTestRepoWorkingDirPath, "refs/heads/develop");
 
         var authentication = new Authentication();
-        GitHelper.NormalizeGitDirectory(gitDirectory, authentication);
+        GitHelper.NormalizeGitDirectory(gitDirectory, authentication, false);
 
         using (var repository = new Repository(gitDirectory))
         {
@@ -61,7 +61,7 @@ public class GitHelperTests : Lg2sHelperBase
         var gitDirectory = FakeTeamCityFetchAndCheckout(ASBMTestRepoWorkingDirPath, "refs/heads/feature/one");
 
         var authentication = new Authentication();
-        GitHelper.NormalizeGitDirectory(gitDirectory, authentication);
+        GitHelper.NormalizeGitDirectory(gitDirectory, authentication, false);
 
         using (var repository = new Repository(gitDirectory))
         {

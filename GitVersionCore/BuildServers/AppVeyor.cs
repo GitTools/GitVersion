@@ -25,10 +25,7 @@
                 throw new WarningException("Failed to find .git directory on agent.");
             }
 
-            if (!noFetch)
-            {
-                GitHelper.NormalizeGitDirectory(gitDirectory, authentication);
-            }
+            GitHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch);
         }
 
         public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)

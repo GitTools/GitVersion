@@ -23,10 +23,7 @@
                 throw new WarningException("Failed to find .git directory on agent. Please make sure agent checkout mode is enabled for you VCS roots - http://confluence.jetbrains.com/display/TCD8/VCS+Checkout+Mode");
             }
 
-            if (!noFetch)
-            {
-                GitHelper.NormalizeGitDirectory(gitDirectory, authentication);
-            }
+            GitHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch);
         }
 
         public override string[] GenerateSetParameterMessage(string name, string value)
