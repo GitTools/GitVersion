@@ -16,14 +16,14 @@
             return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TEAMCITY_VERSION"));
         }
 
-        public override void PerformPreProcessingSteps(string gitDirectory)
+        public override void PerformPreProcessingSteps(string gitDirectory, bool noFetch)
         {
             if (string.IsNullOrEmpty(gitDirectory))
             {
                 throw new WarningException("Failed to find .git directory on agent. Please make sure agent checkout mode is enabled for you VCS roots - http://confluence.jetbrains.com/display/TCD8/VCS+Checkout+Mode");
             }
 
-            GitHelper.NormalizeGitDirectory(gitDirectory, authentication);
+            GitHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch);
         }
 
         public override string[] GenerateSetParameterMessage(string name, string value)

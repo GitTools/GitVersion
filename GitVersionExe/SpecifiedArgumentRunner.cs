@@ -22,7 +22,7 @@ namespace GitVersion
 
             foreach (var buildServer in applicableBuildServers)
             {
-                buildServer.PerformPreProcessingSteps(dotGitDirectory);
+                buildServer.PerformPreProcessingSteps(dotGitDirectory, arguments.NoFetch);
             }
             VersionVariables variables;
             var versionFinder = new GitVersionFinder();

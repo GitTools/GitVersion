@@ -13,6 +13,8 @@
         [Required]
         public string SolutionDirectory { get; set; }
 
+        public bool NoFetch { get; set; }
+
         TaskLogger logger;
         IFileSystem fileSystem;
 
@@ -52,7 +54,7 @@
             Tuple<CachedVersion, GitVersionContext> result;
             var gitDirectory = GitDirFinder.TreeWalkForDotGitDir(SolutionDirectory);
             var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
-            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out result, configuration))
+            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out result, configuration, NoFetch))
             {
                 return;
             }

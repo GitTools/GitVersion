@@ -26,7 +26,7 @@
             if (string.IsNullOrWhiteSpace(arguments.TargetUrl)) return;
 
             var targetPath = CalculateTemporaryRepositoryPath(arguments.TargetUrl, arguments.DynamicRepositoryLocation);
-            DynamicGitRepositoryPath = CreateDynamicRepository(targetPath, arguments.Authentication, arguments.TargetUrl, arguments.TargetBranch);
+            DynamicGitRepositoryPath = CreateDynamicRepository(targetPath, arguments.Authentication, arguments.TargetUrl, arguments.TargetBranch, arguments.NoFetch);
         }
 
         string CalculateTemporaryRepositoryPath(string targetUrl, string dynamicRepositoryLocation)
@@ -78,7 +78,7 @@
             return GitDirFinder.TreeWalkForDotGitDir(arguments.TargetPath);
         }
 
-        static string CreateDynamicRepository(string targetPath, Authentication authentication, string repositoryUrl, string targetBranch)
+        static string CreateDynamicRepository(string targetPath, Authentication authentication, string repositoryUrl, string targetBranch, bool noFetch)
         {
             var gitDirectory = Path.Combine(targetPath, ".git");
             if (Directory.Exists(targetPath))
@@ -111,7 +111,7 @@
                 });
 
             // Normalize (download branches) before using the branch
-            GitHelper.NormalizeGitDirectory(gitDirectory, authentication);
+            GitHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch);
 
             using (var repository = new Repository(gitDirectory))
             {

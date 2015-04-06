@@ -9,8 +9,11 @@ namespace GitVersion
     {
         const string MergeMessageRegexPattern = "refs/heads/(pr|pull(-requests)?/(?<issuenumber>[0-9]*)/(merge|head))";
 
-        public static void NormalizeGitDirectory(string gitDirectory, Authentication authentication)
+        public static void NormalizeGitDirectory(string gitDirectory, Authentication authentication, bool noFetch)
         {
+            //If noFetch is enabled, then GitVersion will assume that the git repository is normalized before execution, so that fetching from remotes is not required.
+            if (noFetch) return;
+
             using (var repo = new Repository(gitDirectory))
             {
                 var remote = EnsureOnlyOneRemoteIsDefined(repo);

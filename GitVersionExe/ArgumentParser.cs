@@ -2,10 +2,12 @@ namespace GitVersion
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.Linq;
     using System.Reflection;
+    using System.Text.RegularExpressions;
 
- 
+
     public class ArgumentParser
     {
         static ArgumentParser()
@@ -66,11 +68,23 @@ namespace GitVersion
                 arguments.TargetPath = firstArgument;
                 namedArguments = commandLineArguments.Skip(1).ToList();
             }
+            
+            var args = CollectSwitchesAndValuesFromArguments(namedArguments);
 
-            for (var index = 0; index < namedArguments.Count; index = index + 2)
+            foreach (var name in args.AllKeys)
             {
-                var name = namedArguments[index];
-                var value = namedArguments.Count > index + 1 ? namedArguments[index + 1] : null;
+                var values = args.GetValues(name);
+                
+                string value = null;
+                
+                if (values != null)
+                {
+                    //Currently, no arguments use more than one value, so having multiple values is an input error.
+                    //In the future, this exception can be removed to support multiple values for a switch.
+                    if (values.Length > 1) throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", values[1]));
+                    
+                    value = values.FirstOrDefault();
+                }                
 
                 if (IsSwitch("l", name))
                 {
@@ -161,8 +175,7 @@ namespace GitVersion
                     }
                     else
                     {
-                        arguments.UpdateAssemblyInfo = true;
-                        index--;
+                        arguments.UpdateAssemblyInfo = true;                        
                     }
                     continue;
                 }
@@ -190,8 +203,7 @@ namespace GitVersion
                     }
                     else
                     {
-                        arguments.ShowConfig = true;
-                        index--;
+                        arguments.ShowConfig = true;                        
                     }
                     continue;
                 }
@@ -208,15 +220,54 @@ namespace GitVersion
                     continue;
                 }
 
+                if (IsSwitch("nofetch", name))
+                {
+                    arguments.NoFetch = true;
+                    continue;
+                }
+
                 throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", name));
             }
 
             return arguments;
         }
 
+        static NameValueCollection CollectSwitchesAndValuesFromArguments(List<string> namedArguments)
+        {
+            var args = new NameValueCollection();
+
+            string currentKey = null;
+            for (var index = 0; index < namedArguments.Count; index = index + 1)
+            {
+                var arg = namedArguments[index];
+                //If this is a switch, create new name/value entry for it, with a null value.
+                if (IsSwitchArgument(arg))
+                {
+                    currentKey = arg;
+                    args.Add(currentKey, null);
+                }
+                    //If this is a value (not a switch)
+                else
+                {
+                    //And if the current switch does not have a value yet, set it's value to this argument.
+                    if (String.IsNullOrEmpty(args[currentKey]))
+                    {
+                        args[currentKey] = arg;
+                    }
+                        //Otherwise add the value under the same switch.
+                    else
+                    {
+                        args.Add(currentKey, arg);
+                    }
+                }
+            }
+            return args;
+        }
+
         static bool IsSwitchArgument(string value)
         {
-            return value != null && (value.StartsWith("-") || value.StartsWith("/"));
+            return value != null && (value.StartsWith("-") || value.StartsWith("/")) 
+                && !Regex.Match(value, @"/\w+:").Success; //Exclude msbuild & project parameters in form /blah:, which should be parsed as values, not switch names.
         }
 
         static bool IsSwitch(string switchName, string value)
