@@ -84,6 +84,12 @@ namespace GitVersion
                     continue;
                 }
 
+                if (IsSwitch("dynamicRepoLocation", name))
+                {
+                    arguments.DynamicRepositoryLocation = value;
+                    continue;
+                }
+
                 if (IsSwitch("url", name))
                 {
                     arguments.TargetUrl = value;

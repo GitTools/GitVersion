@@ -25,13 +25,13 @@
         {
             if (string.IsNullOrWhiteSpace(arguments.TargetUrl)) return;
 
-            var targetPath = CalculateTemporaryRepositoryPath(arguments.TargetUrl);
+            var targetPath = CalculateTemporaryRepositoryPath(arguments.TargetUrl, arguments.DynamicRepositoryLocation);
             DynamicGitRepositoryPath = CreateDynamicRepository(targetPath, arguments.Authentication, arguments.TargetUrl, arguments.TargetBranch);
         }
 
-        string CalculateTemporaryRepositoryPath(string targetUrl)
+        string CalculateTemporaryRepositoryPath(string targetUrl, string dynamicRepositoryLocation)
         {
-            var userTemp = Path.GetTempPath();
+            var userTemp = dynamicRepositoryLocation ?? Path.GetTempPath();
             var repositoryName = targetUrl.Split('/', '\\').Last().Replace(".git", string.Empty);
             var possiblePath = Path.Combine(userTemp, repositoryName);
 

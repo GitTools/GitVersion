@@ -15,6 +15,7 @@ namespace GitVersion
         public string TargetUrl;
         public string TargetBranch;
         public string CommitId;
+        public string DynamicRepositoryLocation;
 
         public bool Init;
 

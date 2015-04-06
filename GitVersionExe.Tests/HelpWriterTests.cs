@@ -15,6 +15,7 @@ public class HelpWriterTests
             { "Init", "init" },
             { "TargetBranch", "/b" },
             { "LogFilePath" , "/l" },
+            { "DynamicRepositoryLocation" , "/dynamicRepoLocation" },
             { "IsHelp", "/?" }
         };
         string helpText = null;
