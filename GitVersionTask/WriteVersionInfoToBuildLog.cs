@@ -1,11 +1,12 @@
 ﻿namespace GitVersionTask
 {
-    using System;
-    using System.Collections.Generic;
     using GitVersion;
     using GitVersion.Helpers;
     using Microsoft.Build.Framework;
     using Microsoft.Build.Utilities;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
     using Logger = GitVersion.Logger;
 
     public class WriteVersionInfoToBuildLog : Task
@@ -53,6 +54,10 @@
         {
             Tuple<CachedVersion, GitVersionContext> result;
             var gitDirectory = GitDirFinder.TreeWalkForDotGitDir(SolutionDirectory);
+
+            if (gitDirectory == null)
+                throw new DirectoryNotFoundException(string.Format("Unable to locate a git repository in \"{0}\". Make sure that the solution is located in a git controlled folder. If you are using continous integration make sure that the sources are checked out on the build agent.", SolutionDirectory));
+
             var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
             if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out result, configuration, NoFetch))
             {
@@ -68,8 +73,8 @@
             var versioningMode = config.VersioningMode;
 
             var variablesFor = VariableProvider.GetVariablesFor(
-                cachedVersion.SemanticVersion, assemblyVersioningScheme, versioningMode, 
-                config.ContinuousDeploymentFallbackTag, 
+                cachedVersion.SemanticVersion, assemblyVersioningScheme, versioningMode,
+                config.ContinuousDeploymentFallbackTag,
                 gitVersionContext.IsCurrentCommitTagged);
             WriteIntegrationParameters(cachedVersion, BuildServerList.GetApplicableBuildServers(authentication), variablesFor);
         }

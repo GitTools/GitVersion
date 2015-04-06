@@ -112,6 +112,7 @@
     <Compile Include="Helpers\Lg2sHelperBase.cs" />
     <Compile Include="UpdateAssemblyInfoTests.cs" />
     <Compile Include="ModuleInitializer.cs" />
+    <Compile Include="WriteVersionInfoToBuildLogTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
