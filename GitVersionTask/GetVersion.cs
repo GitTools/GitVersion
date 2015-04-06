@@ -82,7 +82,7 @@
             try
             {
                 Tuple<CachedVersion, GitVersionContext> versionAndBranch;
-                var gitDirectory = GitDirFinder.TreeWalkForGitDir(SolutionDirectory);
+                var gitDirectory = GitDirFinder.TreeWalkForDotGitDir(SolutionDirectory);
                 var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
 
                 if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch, configuration))

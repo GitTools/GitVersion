@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -18,63 +20,102 @@ public class GitPreparerTests
     const string SpecificBranchName = "feature/foo";
 
     [Test]
-    [TestCase(null, DefaultBranchName, false)]
-    [TestCase(SpecificBranchName, SpecificBranchName, false)]
-    [TestCase(null, DefaultBranchName, true)]
-    [TestCase(SpecificBranchName, SpecificBranchName, true)]
-    public void WorksCorrectlyWithRemoteRepository(string branchName, string expectedBranchName, bool checkConfig)
+    [TestCase(null, DefaultBranchName)]
+    [TestCase(SpecificBranchName, SpecificBranchName)]
+    public void WorksCorrectlyWithRemoteRepository(string branchName, string expectedBranchName)
     {
-        var tempDir = Path.GetTempPath();
+        var repoName = Guid.NewGuid().ToString();
+        var tempPath = Path.GetTempPath();
+        var tempDir = Path.Combine(tempPath, repoName);
+        Directory.CreateDirectory(tempDir);
+        string dynamicRepositoryPath = null;
 
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        try
         {
-            fixture.Repository.MakeCommits(5);
-
-            if (checkConfig)
+            using (var fixture = new EmptyRepositoryFixture(new Config()))
             {
-                fixture.Repository.CreateFileAndCommit("GitVersionConfig.yaml");
-            }
+                var expectedDynamicRepoLocation = Path.Combine(tempPath, fixture.RepositoryPath.Split('\\').Last());
 
-            fixture.Repository.CreateBranch(SpecificBranchName);
+                fixture.Repository.MakeCommits(5);
+                fixture.Repository.CreateFileAndCommit("TestFile.txt");
 
-            if (checkConfig)
-            {
-                fixture.Repository.Refs.UpdateTarget(fixture.Repository.Refs.Head, fixture.Repository.Refs["refs/heads/" + SpecificBranchName]);
+                fixture.Repository.CreateBranch(SpecificBranchName);
 
-                fixture.Repository.CreateFileAndCommit("GitVersionConfig.yaml");
-
-                fixture.Repository.Refs.UpdateTarget(fixture.Repository.Refs.Head, fixture.Repository.Refs["refs/heads/" + DefaultBranchName]);
-            }
-
-            var arguments = new Arguments
-            {
-                TargetPath = tempDir,
-                TargetUrl = fixture.RepositoryPath
-            };
-
-            if (!string.IsNullOrWhiteSpace(branchName))
-            {
-                arguments.TargetBranch = branchName;
-            }
-
-            var gitPreparer = new GitPreparer(arguments);
-            var dynamicRepositoryPath = gitPreparer.Prepare();
-
-            dynamicRepositoryPath.ShouldBe(Path.Combine(tempDir, "_dynamicrepository", ".git"));
-            gitPreparer.IsDynamicGitRepository.ShouldBe(true);
-
-            using (var repository = new Repository(dynamicRepositoryPath))
-            {
-                var currentBranch = repository.Head.CanonicalName;
-
-                currentBranch.EndsWith(expectedBranchName).ShouldBe(true);
-
-                if (checkConfig)
+                var arguments = new Arguments
                 {
-                    var expectedConfigPath = Path.Combine(dynamicRepositoryPath, "..\\GitVersionConfig.yaml");
-                    File.Exists(expectedConfigPath).ShouldBe(true);
+                    TargetPath = tempDir,
+                    TargetUrl = fixture.RepositoryPath
+                };
+
+                // Copy contents into working directory
+                File.Copy(Path.Combine(fixture.RepositoryPath, "TestFile.txt"), Path.Combine(tempDir, "TestFile.txt"));
+
+                if (!string.IsNullOrWhiteSpace(branchName))
+                {
+                    arguments.TargetBranch = branchName;
+                }
+
+                var gitPreparer = new GitPreparer(arguments);
+                gitPreparer.InitialiseDynamicRepositoryIfNeeded();
+                dynamicRepositoryPath = gitPreparer.GetDotGitDirectory();
+
+                gitPreparer.IsDynamicGitRepository.ShouldBe(true);
+                gitPreparer.DynamicGitRepositoryPath.ShouldBe(expectedDynamicRepoLocation + "\\.git");
+
+                using (var repository = new Repository(dynamicRepositoryPath))
+                {
+                    var currentBranch = repository.Head.CanonicalName;
+
+                    currentBranch.EndsWith(expectedBranchName).ShouldBe(true);
                 }
             }
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+            if (dynamicRepositoryPath != null)
+                DeleteHelper.DeleteGitRepository(dynamicRepositoryPath);
+        }
+    }
+
+    [Test]
+    public void PicksAnotherDirectoryNameWhenDynamicRepoFolderTaken()
+    {
+        var repoName = Guid.NewGuid().ToString();
+        var tempPath = Path.GetTempPath();
+        var tempDir = Path.Combine(tempPath, repoName);
+        Directory.CreateDirectory(tempDir);
+        string expectedDynamicRepoLocation = null;
+
+        try
+        {
+            using (var fixture = new EmptyRepositoryFixture(new Config()))
+            {
+                fixture.Repository.CreateFileAndCommit("TestFile.txt");
+                File.Copy(Path.Combine(fixture.RepositoryPath, "TestFile.txt"), Path.Combine(tempDir, "TestFile.txt"));
+                expectedDynamicRepoLocation = Path.Combine(tempPath, fixture.RepositoryPath.Split('\\').Last());
+                Directory.CreateDirectory(expectedDynamicRepoLocation);
+
+                var arguments = new Arguments
+                {
+                    TargetPath = tempDir,
+                    TargetUrl = fixture.RepositoryPath
+                };
+
+                var gitPreparer = new GitPreparer(arguments);
+                gitPreparer.InitialiseDynamicRepositoryIfNeeded();
+
+                gitPreparer.IsDynamicGitRepository.ShouldBe(true);
+                gitPreparer.DynamicGitRepositoryPath.ShouldBe(expectedDynamicRepoLocation + "_1\\.git");
+            }
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+            if (expectedDynamicRepoLocation != null)
+                Directory.Delete(expectedDynamicRepoLocation, true);
+            if (expectedDynamicRepoLocation != null)
+                DeleteHelper.DeleteGitRepository(expectedDynamicRepoLocation + "_1");
         }
     }
 
@@ -89,7 +130,7 @@ public class GitPreparerTests
         };
 
         var gitPreparer = new GitPreparer(arguments);
-        var dynamicRepositoryPath = gitPreparer.Prepare();
+        var dynamicRepositoryPath = gitPreparer.GetDotGitDirectory();
 
         dynamicRepositoryPath.ShouldBe(null);
         gitPreparer.IsDynamicGitRepository.ShouldBe(false);

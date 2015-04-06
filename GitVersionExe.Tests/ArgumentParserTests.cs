@@ -206,6 +206,13 @@ public class ArgumentParserTests
     }
 
     [Test]
+    public void dynamicRepoLocation()
+    {
+        var arguments = ArgumentParser.ParseArguments("-dynamicRepoLocation c:\\foo\\");
+        arguments.DynamicRepositoryLocation.ShouldBe("c:\\foo\\");
+    }
+
+    [Test]
     public void can_log_to_console()
     {
         var arguments = ArgumentParser.ParseArguments("-l console -proj foo.sln");

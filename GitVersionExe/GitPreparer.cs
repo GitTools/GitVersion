@@ -1,5 +1,6 @@
 ﻿namespace GitVersion
 {
+    using System;
     using System.IO;
     using System.Linq;
     using LibGit2Sharp;
@@ -20,31 +21,74 @@
 
         public string DynamicGitRepositoryPath { get; private set; }
 
-        public string Prepare()
+        public void InitialiseDynamicRepositoryIfNeeded()
         {
-            var gitPath = arguments.TargetPath;
+            if (string.IsNullOrWhiteSpace(arguments.TargetUrl)) return;
 
-            if (!string.IsNullOrWhiteSpace(arguments.TargetUrl))
-            {
-                gitPath = GetGitInfoFromUrl();
-            }
-
-            return GitDirFinder.TreeWalkForGitDir(gitPath);
+            var targetPath = CalculateTemporaryRepositoryPath(arguments.TargetUrl, arguments.DynamicRepositoryLocation);
+            DynamicGitRepositoryPath = CreateDynamicRepository(targetPath, arguments.Authentication, arguments.TargetUrl, arguments.TargetBranch);
         }
 
-        string GetGitInfoFromUrl()
+        string CalculateTemporaryRepositoryPath(string targetUrl, string dynamicRepositoryLocation)
         {
-            var gitRootDirectory = Path.Combine(arguments.TargetPath, "_dynamicrepository");
-            var gitDirectory = Path.Combine(gitRootDirectory, ".git");
-            if (Directory.Exists(gitRootDirectory))
-            {
-                Logger.WriteInfo(string.Format("Deleting existing .git folder from '{0}' to force new checkout from url", gitRootDirectory));
+            var userTemp = dynamicRepositoryLocation ?? Path.GetTempPath();
+            var repositoryName = targetUrl.Split('/', '\\').Last().Replace(".git", string.Empty);
+            var possiblePath = Path.Combine(userTemp, repositoryName);
 
-                DeleteHelper.DeleteGitRepository(gitRootDirectory);
+            // Verify that the existing directory is ok for us to use
+            if (Directory.Exists(possiblePath))
+            {
+                if (!GitRepoHasMatchingRemote(possiblePath, targetUrl))
+                {
+                    var i = 1;
+                    var originalPath = possiblePath;
+                    bool possiblePathExists;
+                    do
+                    {
+                        possiblePath = string.Concat(originalPath, "_", i++.ToString());
+                        possiblePathExists = Directory.Exists(possiblePath);
+                    } while (possiblePathExists && !GitRepoHasMatchingRemote(possiblePath, targetUrl));
+                }
+            }
+
+            return possiblePath;
+        }
+
+        static bool GitRepoHasMatchingRemote(string possiblePath, string targetUrl)
+        {
+            try
+            {
+                using (var repository = new Repository(possiblePath))
+                {
+                    return repository.Network.Remotes.Any(r => r.Url == targetUrl);
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            
+        }
+
+        public string GetDotGitDirectory()
+        {
+            if (IsDynamicGitRepository)
+                return DynamicGitRepositoryPath;
+
+            return GitDirFinder.TreeWalkForDotGitDir(arguments.TargetPath);
+        }
+
+        static string CreateDynamicRepository(string targetPath, Authentication authentication, string repositoryUrl, string targetBranch)
+        {
+            var gitDirectory = Path.Combine(targetPath, ".git");
+            if (Directory.Exists(targetPath))
+            {
+                Logger.WriteInfo("Git repository already exists at {0}, skipping clone");
+
+                return gitDirectory;
             }
 
             Credentials credentials = null;
-            var authentication = arguments.Authentication;
             if (!string.IsNullOrWhiteSpace(authentication.Username) && !string.IsNullOrWhiteSpace(authentication.Password))
             {
                 Logger.WriteInfo(string.Format("Setting up credentials using name '{0}'", authentication.Username));
@@ -56,9 +100,9 @@
                 };
             }
 
-            Logger.WriteInfo(string.Format("Retrieving git info from url '{0}'", arguments.TargetUrl));
+            Logger.WriteInfo(string.Format("Retrieving git info from url '{0}'", repositoryUrl));
 
-            Repository.Clone(arguments.TargetUrl, gitDirectory,
+            Repository.Clone(repositoryUrl, gitDirectory,
                 new CloneOptions
                 {
                     IsBare = true,
@@ -67,11 +111,10 @@
                 });
 
             // Normalize (download branches) before using the branch
-            GitHelper.NormalizeGitDirectory(gitDirectory, arguments.Authentication);
+            GitHelper.NormalizeGitDirectory(gitDirectory, authentication);
 
             using (var repository = new Repository(gitDirectory))
             {
-                var targetBranch = arguments.TargetBranch;
                 if (string.IsNullOrWhiteSpace(targetBranch))
                 {
                     targetBranch = repository.Head.Name;
@@ -87,10 +130,10 @@
 
                 if (newHead == null)
                 {
-                    var remoteReference = GetRemoteReference(repository, targetBranch, arguments.TargetUrl);
+                    var remoteReference = GetRemoteReference(repository, targetBranch, repositoryUrl);
                     if (remoteReference != null)
                     {
-                        repository.Network.Fetch(arguments.TargetUrl, new[]
+                        repository.Network.Fetch(repositoryUrl, new[]
                             {
                                 string.Format("{0}:{1}", remoteReference.CanonicalName, targetBranch)
                             });
@@ -105,15 +148,7 @@
 
                     repository.Refs.UpdateTarget(repository.Refs.Head, newHead);
                 }
-
-                // < 3.0 method
-                repository.CheckoutFilesIfExist("NextVersion.txt");
-
-                // > 3.0 method
-                repository.CheckoutFilesIfExist("GitVersionConfig.yaml");
             }
-
-            DynamicGitRepositoryPath = gitDirectory;
 
             return gitDirectory;
         }

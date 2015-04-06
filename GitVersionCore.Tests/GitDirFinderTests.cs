@@ -30,26 +30,26 @@ public class GitDirFinderTests
     [Test]
     public void From_WorkingDirectory()
     {
-        Assert.AreEqual(gitDirectory, GitDirFinder.TreeWalkForGitDir(workDirectory));
+        Assert.AreEqual(gitDirectory, GitDirFinder.TreeWalkForDotGitDir(workDirectory));
     }
 
     [Test]
     public void From_WorkingDirectory_Parent()
     {
         var parentDirectory = Directory.GetParent(workDirectory).FullName;
-        Assert.Null(GitDirFinder.TreeWalkForGitDir(parentDirectory));
+        Assert.Null(GitDirFinder.TreeWalkForDotGitDir(parentDirectory));
     }
 
     [Test]
     public void From_GitDirectory()
     {
-        Assert.AreEqual(gitDirectory, GitDirFinder.TreeWalkForGitDir(gitDirectory));
+        Assert.AreEqual(gitDirectory, GitDirFinder.TreeWalkForDotGitDir(gitDirectory));
     }
 
     [Test]
     public void From_RefsDirectory()
     {
         var refsDirectory = Path.Combine(gitDirectory, "refs");
-        Assert.AreEqual(gitDirectory, GitDirFinder.TreeWalkForGitDir(refsDirectory));
+        Assert.AreEqual(gitDirectory, GitDirFinder.TreeWalkForDotGitDir(refsDirectory));
     }
 }
