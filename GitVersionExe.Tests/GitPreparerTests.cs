@@ -91,20 +91,14 @@ public class GitPreparerTests
         {
             using (var mainRepositoryFixture = new EmptyRepositoryFixture(new Config()))
             {
-                mainRepositoryFixture.Repository.MakeCommits(5);
-                mainRepositoryFixture.Repository.CreateFileAndCommit("TestFile.txt");
-
-                mainRepositoryFixture.Repository.CreateBranch(SpecificBranchName);
+                mainRepositoryFixture.Repository.MakeCommits(1);
 
                 var arguments = new Arguments
                 {
                     TargetPath = tempDir,
-                    TargetUrl = mainRepositoryFixture.RepositoryPath
+                    TargetUrl = mainRepositoryFixture.RepositoryPath,
+                    TargetBranch = "master"
                 };
-
-                // Copy contents into working directory
-                File.Copy(Path.Combine(mainRepositoryFixture.RepositoryPath, "TestFile.txt"), Path.Combine(tempDir, "TestFile.txt"));
-                arguments.TargetBranch = "master";
 
                 var gitPreparer = new GitPreparer(arguments);
                 gitPreparer.InitialiseDynamicRepositoryIfNeeded();
