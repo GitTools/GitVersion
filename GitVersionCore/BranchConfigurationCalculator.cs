@@ -57,7 +57,15 @@ namespace GitVersion
                 }
                 else
                 {
-                    currentBranch = repository.Branches.SingleOrDefault(b => !b.IsRemote && b.Tip == parents[0]) ?? currentBranch;
+                    var possibleTargetBranches = repository.Branches.Where(b => !b.IsRemote && b.Tip == parents[0]).ToList();
+                    if (possibleTargetBranches.Count() > 1)
+                    {
+                        currentBranch = possibleTargetBranches.FirstOrDefault(b => b.Name == "master") ?? possibleTargetBranches.First();
+                    }
+                    else
+                    {
+                        currentBranch = possibleTargetBranches.FirstOrDefault() ?? currentBranch;
+                    }
                 }
 
                 Logger.WriteInfo("HEAD is merge commit, this is likely a pull request using " + currentBranch.Name + " as base");
