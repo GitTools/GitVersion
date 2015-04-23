@@ -55,6 +55,7 @@ namespace GitVersion
                     return 0;
                 }
 
+                ConfigureLogging(arguments);
                 if (arguments.Init)
                 {
                     ConfigurationProvider.WriteSample(arguments.TargetPath, fileSystem);
@@ -71,7 +72,6 @@ namespace GitVersion
                     arguments.Output = OutputType.BuildServer;
                 }
 
-                ConfigureLogging(arguments);
                 Logger.WriteInfo("Working directory: " + arguments.TargetPath);
 
                 SpecifiedArgumentRunner.Run(arguments, fileSystem);
