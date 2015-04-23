@@ -48,4 +48,22 @@ public class FeatureBranchScenarios
             fixture.AssertFullSemver("1.0.1-test.1+5");
         }
     }
+
+    [Test]
+    public void WhenTwoFeatureBranchPointToTheSameCommit()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            fixture.Repository.MakeACommit();
+            fixture.Repository.CreateBranch("develop");
+            fixture.Repository.Checkout("develop");
+            fixture.Repository.CreateBranch("feature/feature1");
+            fixture.Repository.Checkout("feature/feature1");
+            fixture.Repository.MakeACommit();
+            fixture.Repository.CreateBranch("feature/feature2");
+            fixture.Repository.Checkout("feature/feature2");
+
+            fixture.AssertFullSemver("0.1.0-feature2.1+1");
+        }
+    }
 }

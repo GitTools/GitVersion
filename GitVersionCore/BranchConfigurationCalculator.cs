@@ -8,7 +8,7 @@ namespace GitVersion
 
     public class BranchConfigurationCalculator
     {
-        public static KeyValuePair<string, BranchConfig> GetBranchConfiguration(Commit currentCommit, IRepository repository, bool onlyEvaluateTrackedBranches, Config config, Branch currentBranch)
+        public static KeyValuePair<string, BranchConfig> GetBranchConfiguration(Commit currentCommit, IRepository repository, bool onlyEvaluateTrackedBranches, Config config, Branch currentBranch, IList<Branch> excludedInheritBranches = null)
         {
             var matchingBranches = config.Branches.Where(b => Regex.IsMatch(currentBranch.Name, "^" + b.Key, RegexOptions.IgnoreCase)).ToArray();
 
@@ -23,7 +23,7 @@ namespace GitVersion
 
                 if (branchConfiguration.Increment == IncrementStrategy.Inherit)
                 {
-                    return InheritBranchConfiguration(onlyEvaluateTrackedBranches, repository, currentCommit, currentBranch, keyValuePair, branchConfiguration, config);
+                    return InheritBranchConfiguration(onlyEvaluateTrackedBranches, repository, currentCommit, currentBranch, keyValuePair, branchConfiguration, config, excludedInheritBranches);
                 }
 
                 return keyValuePair;
@@ -33,10 +33,7 @@ namespace GitVersion
             throw new Exception(string.Format(format, currentBranch.Name, string.Join(", ", matchingBranches.Select(b => b.Key))));
         }
 
-        static KeyValuePair<string, BranchConfig> InheritBranchConfiguration(
-            bool onlyEvaluateTrackedBranches, IRepository repository, Commit currentCommit,
-            Branch currentBranch, KeyValuePair<string, BranchConfig> keyValuePair,
-            BranchConfig branchConfiguration, Config config)
+        static KeyValuePair<string, BranchConfig> InheritBranchConfiguration(bool onlyEvaluateTrackedBranches, IRepository repository, Commit currentCommit, Branch currentBranch, KeyValuePair<string, BranchConfig> keyValuePair, BranchConfig branchConfiguration, Config config, IList<Branch> excludedInheritBranches)
         {
             Logger.WriteInfo("Attempting to inherit branch configuration from parent branch");
             var excludedBranches = new [] { currentBranch };
@@ -70,18 +67,23 @@ namespace GitVersion
 
                 Logger.WriteInfo("HEAD is merge commit, this is likely a pull request using " + currentBranch.Name + " as base");
             }
+            if (excludedInheritBranches == null)
+            {
+                excludedInheritBranches = new List<Branch>();
+            }
+            excludedBranches.ToList().ForEach(excludedInheritBranches.Add);
 
-            var branchPoint = currentBranch.FindCommitBranchWasBranchedFrom(repository, onlyEvaluateTrackedBranches, excludedBranches);
+            var branchPoint = currentBranch.FindCommitBranchWasBranchedFrom(repository, onlyEvaluateTrackedBranches, excludedInheritBranches.ToArray());
 
             List<Branch> possibleParents;
             if (branchPoint.Sha == currentCommit.Sha)
             {
-                possibleParents = currentCommit.GetBranchesContainingCommit(repository, true).Except(excludedBranches).ToList();
+                possibleParents = currentCommit.GetBranchesContainingCommit(repository, true).Except(excludedInheritBranches).ToList();
             }
             else
             {
-                var branches = branchPoint.GetBranchesContainingCommit(repository, true).Except(excludedBranches).ToList();
-                var currentTipBranches = currentCommit.GetBranchesContainingCommit(repository, true).Except(excludedBranches).ToList();
+                var branches = branchPoint.GetBranchesContainingCommit(repository, true).Except(excludedInheritBranches).ToList();
+                var currentTipBranches = currentCommit.GetBranchesContainingCommit(repository, true).Except(excludedInheritBranches).ToList();
                 possibleParents = branches
                     .Except(currentTipBranches)
                     .ToList();
@@ -97,7 +99,7 @@ namespace GitVersion
 
             if (possibleParents.Count == 1)
             {
-                var branchConfig = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, possibleParents[0]).Value;
+                var branchConfig = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, possibleParents[0], excludedInheritBranches).Value;
                 return new KeyValuePair<string, BranchConfig>(
                     keyValuePair.Key,
                     new BranchConfig(branchConfiguration)
