@@ -63,7 +63,7 @@ public class FeatureBranchScenarios
             fixture.Repository.CreateBranch("feature/feature2");
             fixture.Repository.Checkout("feature/feature2");
 
-            fixture.AssertFullSemver("1.0.1-test.1+5");
+            fixture.AssertFullSemver("0.1.0-feature2.1+1");
         }
     }
 }
