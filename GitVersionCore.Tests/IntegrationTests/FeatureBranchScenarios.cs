@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -22,6 +23,36 @@ public class FeatureBranchScenarios
 
             //Merge it
             fixture.Repository.Checkout("development");
+            fixture.Repository.Merge(feature123, new Signature("me", "me@me.com", DateTimeOffset.Now));
+
+            //Create a second feature branch
+            fixture.Repository.CreateBranch("feature/JIRA-124");
+            fixture.Repository.Checkout("feature/JIRA-124");
+            fixture.Repository.MakeCommits(1);
+
+            fixture.AssertFullSemver("1.1.0-JIRA-124.1+2");
+        }
+    }
+    
+    [Test]
+    public void BranchCreatedAfterFastForwardMergeShouldInheritCorrectly()
+    {
+        var config = new Config();
+        config.Branches.Add("unstable", config.Branches["develop"]);
+
+        using (var fixture = new EmptyRepositoryFixture(config))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.CreateBranch("unstable");
+            fixture.Repository.Checkout("unstable");
+
+            //Create an initial feature branch
+            var feature123 = fixture.Repository.CreateBranch("feature/JIRA-123");
+            fixture.Repository.Checkout("feature/JIRA-123");
+            fixture.Repository.MakeCommits(1);
+
+            //Merge it
+            fixture.Repository.Checkout("unstable");
             fixture.Repository.Merge(feature123, new Signature("me", "me@me.com", DateTimeOffset.Now));
 
             //Create a second feature branch
