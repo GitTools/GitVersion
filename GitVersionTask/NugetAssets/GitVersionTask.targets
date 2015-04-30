@@ -3,6 +3,7 @@
   <PropertyGroup>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)..\</SolutionDir>
     <IntermediateOutputPath Condition="$(IntermediateOutputPath) == '' Or $(IntermediateOutputPath) == '*Undefined*'">$(MSBuildProjectDirectory)obj\$(Configuration)\</IntermediateOutputPath>
+    <GitVersionNoFetchEnabled Condition="$(GitVersionNoFetchEnabled) == ''">false</GitVersionNoFetchEnabled>
   </PropertyGroup>
 
   <UsingTask
@@ -35,7 +36,7 @@
     </ItemGroup>
 
 
-    <GetVersion SolutionDirectory="$(SolutionDir)">
+    <GetVersion SolutionDirectory="$(SolutionDir)" NoFetch="$(GitVersionNoFetchEnabled)">
       <Output TaskParameter="Major" PropertyName="GfvMajor" />
       <Output TaskParameter="Minor" PropertyName="GfvMinor" />
       <Output TaskParameter="Patch" PropertyName="GfvPatch" />
