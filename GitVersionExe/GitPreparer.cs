@@ -80,10 +80,12 @@
 
         static string CreateDynamicRepository(string targetPath, Authentication authentication, string repositoryUrl, string targetBranch, bool noFetch)
         {
+            Logger.WriteInfo(string.Format("Creating dynamic repository at '{0}'", targetPath));
+
             var gitDirectory = Path.Combine(targetPath, ".git");
             if (Directory.Exists(targetPath))
             {
-                Logger.WriteInfo(string.Format("Git repository already exists at {0}", targetPath));
+                Logger.WriteInfo("Git repository already exists");
                 GitHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch);
                 Logger.WriteInfo(string.Format("Updating branch '{0}'", targetBranch));
                 using (var repo = new Repository(targetPath))
