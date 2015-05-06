@@ -71,5 +71,24 @@
                 context.Configuration.Increment.ShouldBe(IncrementStrategy.Major);
             }
         }
+
+        [Test]
+        public void CanFindBranchMostLikelyBranchFromMultipleRemotes()
+        {
+            var config = new Config();
+
+            using (var repo = new EmptyRepositoryFixture(config))
+            {
+                repo.Repository.MakeACommit();
+                repo.Repository.CreateBranch("origin/develop").Checkout();
+                var commit = repo.Repository.MakeACommit();
+                repo.Repository.CreateBranch("origin/feature-foo");
+                repo.Repository.CreateBranch("origin/feature-foo2");
+                repo.Repository.Checkout(commit);
+
+                var context = new GitVersionContext(repo.Repository, config);
+                context.CurrentBranch.Name.ShouldBe("origin/develop");
+            }
+        }
     }
 }

@@ -1,7 +1,9 @@
 ﻿namespace GitVersion
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using LibGit2Sharp;
 
     /// <summary>
@@ -45,7 +47,23 @@
 
             if (currentBranch.IsDetachedHead())
             {
-                CurrentBranch = CurrentCommit.GetBranchesContainingCommit(repository, OnlyEvaluateTrackedBranches).OnlyOrDefault() ?? currentBranch;
+                var branchesContainingCommit = CurrentCommit.GetBranchesContainingCommit(repository, OnlyEvaluateTrackedBranches).ToArray();
+                if (branchesContainingCommit.Count() == 1)
+                {
+                    CurrentBranch = branchesContainingCommit[0];
+                }
+                else
+                {
+                    var bestGuess = TryAndGuessNextBestName(branchesContainingCommit, configuration);
+                    if (bestGuess != null)
+                    {
+                        CurrentBranch = bestGuess;
+                    }
+                    else
+                    {
+                        CurrentBranch = currentBranch;
+                    }
+                }
             }
             else
             {
@@ -64,6 +82,45 @@
                 })
                 .Max();
             IsCurrentCommitTagged = CurrentCommitTaggedVersion != null;
+        }
+
+        Branch TryAndGuessNextBestName(Branch[] branches, Config config)
+        {
+            var items = new List<Tuple<string, BranchConfig, Branch>>();
+            foreach (var branch in branches)
+            {
+                var matchingBranches = config.Branches.Where(b => Regex.IsMatch(branch.Name, "^" + b.Key, RegexOptions.IgnoreCase)).ToArray();
+                items.AddRange(matchingBranches.Select(x=>new Tuple<string,BranchConfig, Branch>(x.Key, x.Value, branch)));
+                var matchingRemoteBranches = config.Branches.Where(b => Regex.IsMatch(branch.Name, "^origin/" + b.Key, RegexOptions.IgnoreCase)).ToArray();
+                items.AddRange(matchingRemoteBranches.Select(x=>new Tuple<string,BranchConfig, Branch>(x.Key, x.Value, branch)));
+            }
+            var selectionAction = new Func<string, List<Tuple<string, BranchConfig, Branch>>, Branch>((key, y) =>
+            {
+                var selectedItem = y.FirstOrDefault(x => x.Item1 == key);
+                if (selectedItem != null)
+                {
+                    return selectedItem.Item3;
+                }
+                return null;
+            });
+
+            var branchTypes = new[]{
+                "master",
+                "release",
+                "hotfix",
+                "develop",
+                "support",
+                "feature"
+            };
+            foreach (var branchType in branchTypes)
+            {
+                var selectedItem = selectionAction(branchType, items);
+                if (selectedItem != null)
+                {
+                    return selectedItem;
+                }
+            }
+            return null;
         }
 
         public SemanticVersion CurrentCommitTaggedVersion { get; private set; }
