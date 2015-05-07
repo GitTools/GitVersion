@@ -79,6 +79,51 @@ public class GitPreparerTests
     }
 
     [Test]
+    public void UpdatesExistingDynamicRepository()
+    {
+        var repoName = Guid.NewGuid().ToString();
+        var tempPath = Path.GetTempPath();
+        var tempDir = Path.Combine(tempPath, repoName);
+        Directory.CreateDirectory(tempDir);
+        string dynamicRepositoryPath = null;
+
+        try
+        {
+            using (var mainRepositoryFixture = new EmptyRepositoryFixture(new Config()))
+            {
+                mainRepositoryFixture.Repository.MakeCommits(1);
+
+                var arguments = new Arguments
+                {
+                    TargetPath = tempDir,
+                    TargetUrl = mainRepositoryFixture.RepositoryPath,
+                    TargetBranch = "master"
+                };
+
+                var gitPreparer = new GitPreparer(arguments);
+                gitPreparer.InitialiseDynamicRepositoryIfNeeded();
+                dynamicRepositoryPath = gitPreparer.GetDotGitDirectory();
+
+                var newCommit = mainRepositoryFixture.Repository.MakeACommit();
+                gitPreparer.InitialiseDynamicRepositoryIfNeeded();
+
+                using (var repository = new Repository(dynamicRepositoryPath))
+                {
+                    mainRepositoryFixture.DumpGraph();
+                    repository.DumpGraph();
+                    repository.Commits.ShouldContain(c => c.Sha == newCommit.Sha);
+                }
+            }
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+            if (dynamicRepositoryPath != null)
+                DeleteHelper.DeleteGitRepository(dynamicRepositoryPath);
+        }
+    }
+
+    [Test]
     public void PicksAnotherDirectoryNameWhenDynamicRepoFolderTaken()
     {
         var repoName = Guid.NewGuid().ToString();

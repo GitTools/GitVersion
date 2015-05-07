@@ -12,7 +12,11 @@ namespace GitVersion
         public static void NormalizeGitDirectory(string gitDirectory, Authentication authentication, bool noFetch)
         {
             //If noFetch is enabled, then GitVersion will assume that the git repository is normalized before execution, so that fetching from remotes is not required.
-            if (noFetch) return;
+            if (noFetch)
+            {
+                Logger.WriteInfo("Skipping fetching");
+                return;
+            }
 
             using (var repo = new Repository(gitDirectory))
             {

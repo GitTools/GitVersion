@@ -83,7 +83,19 @@
             var gitDirectory = Path.Combine(targetPath, ".git");
             if (Directory.Exists(targetPath))
             {
-                Logger.WriteInfo("Git repository already exists at {0}, skipping clone");
+                Logger.WriteInfo(string.Format("Git repository already exists at {0}", targetPath));
+                GitHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch);
+                Logger.WriteInfo(string.Format("Updating branch '{0}'", targetBranch));
+                using (var repo = new Repository(targetPath))
+                {
+                    var targetGitBranch = repo.Branches[targetBranch];
+                    var trackedBranch = targetGitBranch.TrackedBranch;
+                    if (trackedBranch == null)
+                        throw new InvalidOperationException(string.Format("Expecting {0} to have a remote tracking branch", targetBranch));
+                    
+                    targetGitBranch.Checkout();
+                    repo.Reset(ResetMode.Hard, trackedBranch.Tip);
+                }
 
                 return gitDirectory;
             }
@@ -105,7 +117,6 @@
             Repository.Clone(repositoryUrl, gitDirectory,
                 new CloneOptions
                 {
-                    IsBare = true,
                     Checkout = false,
                     CredentialsProvider = (url, usernameFromUrl, types) => credentials
                 });
