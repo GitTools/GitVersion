@@ -96,7 +96,7 @@
             }
             var selectionAction = new Func<string, List<Tuple<string, BranchConfig, Branch>>, Branch>((key, y) =>
             {
-                var selectedItem = y.FirstOrDefault(x => x.Item1 == key);
+                var selectedItem = y.FirstOrDefault(x => x.Item1.StartsWith(key));
                 if (selectedItem != null)
                 {
                     return selectedItem.Item3;

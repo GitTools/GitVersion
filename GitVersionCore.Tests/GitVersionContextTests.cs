@@ -90,5 +90,23 @@
                 context.CurrentBranch.Name.ShouldBe("origin/develop");
             }
         }
+
+        [Test]
+        public void CanFindBranchMostLikelyBranchFromMultipleRemotesIncludingRelease()
+        {
+            var config = new Config();
+
+            using (var repo = new EmptyRepositoryFixture(config))
+            {
+                repo.Repository.MakeACommit();
+                repo.Repository.CreateBranch("origin/develop").Checkout();
+                var commit = repo.Repository.MakeACommit();
+                repo.Repository.CreateBranch("origin/release-foo");
+                repo.Repository.Checkout(commit);
+
+                var context = new GitVersionContext(repo.Repository, config);
+                context.CurrentBranch.Name.ShouldBe("origin/release-foo");
+            }
+        }
     }
 }
