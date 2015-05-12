@@ -54,6 +54,8 @@
         [TestCase("Merge pull request #64 from arledesma/feature-VS2013_3rd_party_test_framework_support", true, null)]
         [TestCase("Finish Release-0.12.0", true, "0.12.0")] //Support Syntevo SmartGit/Hg's Gitflow merge commit messages for finishing a 'Release' branch
         [TestCase("Finish 0.14.1", true, "0.14.1")] //Support Syntevo SmartGit/Hg's Gitflow merge commit messages for finishing a 'Hotfix' branch
+        [TestCase("Merge branch 'Release-v0.2.0'", true, "0.2.0")]
+        [TestCase("Merge branch 'Release-v2.2'", true, "2.2.0")]
         public void AssertMergeMessage(string message, bool isMergeCommit, string expectedVersion)
         {
             var parents = GetParents(isMergeCommit);
