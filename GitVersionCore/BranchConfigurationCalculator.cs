@@ -11,7 +11,10 @@ namespace GitVersion
         public static KeyValuePair<string, BranchConfig> GetBranchConfiguration(Commit currentCommit, IRepository repository, bool onlyEvaluateTrackedBranches, Config config, Branch currentBranch)
         {
             var matchingBranches = config.Branches.Where(b => Regex.IsMatch(currentBranch.Name, "^" + b.Key, RegexOptions.IgnoreCase)).ToArray();
-
+            if (matchingBranches.Any() == false && onlyEvaluateTrackedBranches == false)
+            {
+                matchingBranches = config.Branches.Where(b => Regex.IsMatch(currentBranch.Name, "^origin/" + b.Key, RegexOptions.IgnoreCase)).ToArray();
+            }
             if (matchingBranches.Length == 0)
             {
                 return new KeyValuePair<string, BranchConfig>(string.Empty, new BranchConfig());
