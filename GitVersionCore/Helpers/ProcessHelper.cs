@@ -2,6 +2,7 @@ namespace GitVersion.Helpers
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Diagnostics;
     using System.IO;
     using System.Runtime.InteropServices;
@@ -20,8 +21,24 @@ namespace GitVersion.Helpers
             {
                 using (new ChangeErrorMode(ErrorModes.FailCriticalErrors | ErrorModes.NoGpFaultErrorBox))
                 {
-                    process = Process.Start(startInfo);
-                    process.PriorityClass = ProcessPriorityClass.Idle;
+                    try
+                    {
+                        process = Process.Start(startInfo);
+                        process.PriorityClass = ProcessPriorityClass.Idle;
+                    }
+                    catch (Win32Exception exception)
+                    {
+                        // NOTE: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681382%28v=vs.85%29.aspx?f=255&MSPPError=-2147217396 @asbjornu
+                        if (exception.NativeErrorCode == 2)
+                        {
+                            throw new FileNotFoundException(String.Format("The executable file '{0}' could not be found.",
+                                                                          startInfo.FileName),
+                                                            startInfo.FileName,
+                                                            exception);
+                        }
+                        
+                        throw;
+                    }
                 }
             }
 
@@ -37,10 +54,6 @@ namespace GitVersion.Helpers
                 throw new ArgumentNullException("output");
 
             workingDirectory = workingDirectory ?? Environment.CurrentDirectory;
-            var exePath = Path.Combine(workingDirectory, exe);
-
-            if (!File.Exists(exePath))
-                throw new FileNotFoundException(String.Format("The executable file '{0}' does not exist.", exePath), exePath);
 
             var psi = new ProcessStartInfo
             {
@@ -63,7 +76,7 @@ namespace GitVersion.Helpers
                     psi.EnvironmentVariables.Remove(environmentalVariable.Key);
             }
 
-            using (var process = Process.Start(psi))
+            using (var process = Start(psi))
             using (var mreOut = new ManualResetEvent(false))
             using (var mreErr = new ManualResetEvent(false))
             {
@@ -126,5 +139,4 @@ namespace GitVersion.Helpers
             static extern int SetErrorMode(int newMode);
         }
     }
-
 }
