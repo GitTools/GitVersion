@@ -36,6 +36,12 @@ namespace GitVersion.Helpers
             if (output == null)
                 throw new ArgumentNullException("output");
 
+            workingDirectory = workingDirectory ?? Environment.CurrentDirectory;
+            var exePath = Path.Combine(workingDirectory, exe);
+
+            if (!File.Exists(exePath))
+                throw new FileNotFoundException(String.Format("The executable file '{0}' does not exist.", exePath), exePath);
+
             var psi = new ProcessStartInfo
             {
                 UseShellExecute = false,
@@ -45,7 +51,7 @@ namespace GitVersion.Helpers
                 WindowStyle = ProcessWindowStyle.Hidden,
                 CreateNoWindow = true,
                 ErrorDialog = false,
-                WorkingDirectory = workingDirectory ?? Environment.CurrentDirectory,
+                WorkingDirectory = workingDirectory,
                 FileName = exe,
                 Arguments = args
             };
