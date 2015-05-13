@@ -32,7 +32,7 @@ namespace GitVersion.Helpers
         public static int Run(Action<string> output, Action<string> errorOutput, TextReader input, string exe, string args, string workingDirectory, params KeyValuePair<string, string>[] environmentalVariables)
         {
             if (String.IsNullOrEmpty(exe))
-                throw new FileNotFoundException();
+                throw new ArgumentNullException("exe");
             if (output == null)
                 throw new ArgumentNullException("output");
 
