@@ -56,7 +56,7 @@ namespace GitVersion
                 yield break;
             }
 
-            foreach (var branch in repository.Branches.Where(b => !onlyTrackedBranches || b.IsTracking))
+            foreach (var branch in repository.Branches.Where(b => (onlyTrackedBranches && !b.IsTracking)))
             {
                 var commits = repository.Commits.QueryBy(new CommitFilter { Since = branch }).Where(c => c.Sha == commit.Sha);
 
