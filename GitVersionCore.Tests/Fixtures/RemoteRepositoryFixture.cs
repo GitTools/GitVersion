@@ -8,6 +8,12 @@ public class RemoteRepositoryFixture : RepositoryFixtureBase
     public string LocalRepositoryPath;
     public IRepository LocalRepository;
 
+    public RemoteRepositoryFixture(Func<string, IRepository> builder, Config configuration)
+        : base(builder, configuration)
+    {
+        CloneRepository();
+    }
+
     public RemoteRepositoryFixture(Config configuration)
         : base(CreateNewRepository, configuration)
     {
