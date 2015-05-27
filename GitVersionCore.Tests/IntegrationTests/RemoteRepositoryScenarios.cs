@@ -17,6 +17,33 @@ public class RemoteRepositoryScenarios
     }
 
     [Test]
+    public void GivenARemoteGitRepositoryWithCommitsAndBranches_ThenClonedLocalShouldMatchRemoteVersion()
+    {
+        using (var fixture = new RemoteRepositoryFixture(
+            path =>
+            {
+                Repository.Init(path);
+                Console.WriteLine("Created git repository at '{0}'", path);
+
+                var repo = new Repository(path);
+                repo.MakeCommits(5);
+
+                repo.CreateBranch("develop");
+                repo.CreateBranch("release-1.0");
+
+                repo.Checkout("release-1.0");
+                repo.MakeCommits(5);
+
+                return repo;
+            },
+            new Config()))
+        {
+            fixture.AssertFullSemver("1.0.0-beta.1+5");
+            fixture.AssertFullSemver("1.0.0-beta.1+5", fixture.LocalRepository);
+        }
+    }
+
+    [Test]
     public void GivenARemoteGitRepositoryAheadOfLocalRepository_ThenChangesShouldPull()
     {
         using (var fixture = new RemoteRepositoryFixture(new Config()))
