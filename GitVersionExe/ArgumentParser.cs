@@ -185,7 +185,7 @@ namespace GitVersion
                     throw new WarningException("assemblyversionformat switch removed, use AssemblyVersioningScheme configuration value instead");
                 }
 
-                if ((IsSwitch("v", name)) && VersionParts.Contains(value.ToLower()))
+                if ((IsSwitch("showvariable", name)) && VersionParts.Contains(value.ToLower()))
                 {
                     arguments.ShowVariable = value.ToLower();
                     continue;
