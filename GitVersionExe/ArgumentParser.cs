@@ -12,7 +12,7 @@ namespace GitVersion
     {
         static ArgumentParser()
         {
-            var fields = typeof(VariableProvider).GetFields(BindingFlags.Public | BindingFlags.Static);
+            var fields = typeof(VersionVariables).GetProperties();
             VersionParts = fields.Select(x => x.Name.ToLower()).ToArray();
         }
 
