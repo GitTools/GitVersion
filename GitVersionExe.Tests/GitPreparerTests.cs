@@ -5,6 +5,7 @@ using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
+using GitVersion.Helpers;
 
 [TestFixture]
 public class GitPreparerTests
@@ -75,6 +76,34 @@ public class GitPreparerTests
             Directory.Delete(tempDir, true);
             if (dynamicRepositoryPath != null)
                 DeleteHelper.DeleteGitRepository(dynamicRepositoryPath);
+        }
+    }
+
+    [Test]
+    public void UsesGitVersionConfigWhenCreatingDynamicRepository()
+    {
+        string localRepoPath = PathHelper.GetTempPath();
+        string repoBasePath = Path.GetDirectoryName(PathHelper.GetTempPath());
+
+        try
+        {
+            using (var remote = new EmptyRepositoryFixture(new Config()))
+            {
+                var configFile = Path.Combine(remote.Repository.Info.WorkingDirectory, "GitVersionConfig.yaml");
+                File.WriteAllText(configFile, "next-version: 1.0.0");
+                remote.Repository.Stage(configFile);
+                remote.Repository.Commit("Add GitVersionConfig");
+
+                Repository.Clone(remote.RepositoryPath, localRepoPath);
+
+                var arguments = string.Format(" /url {0} /dynamicRepoLocation {1}", remote.RepositoryPath, repoBasePath);
+                var results = GitVersionHelper.ExecuteIn(localRepoPath, arguments, false);
+                results.OutputVariables.SemVer.ShouldBe("1.0.0");
+            }
+        }
+        finally
+        {
+            DeleteHelper.DeleteGitRepository(repoBasePath);
         }
     }
 
