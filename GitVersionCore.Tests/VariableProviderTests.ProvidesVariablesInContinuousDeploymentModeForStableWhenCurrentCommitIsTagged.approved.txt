@@ -16,5 +16,6 @@
   "BranchName":"",
   "Sha":"commitSha",
   "NuGetVersionV2":"1.2.3",
-  "NuGetVersion":"1.2.3"
+  "NuGetVersion":"1.2.3",
+  "CommitDate":"2014-03-06"
 }

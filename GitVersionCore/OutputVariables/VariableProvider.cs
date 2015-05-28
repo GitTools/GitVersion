@@ -38,7 +38,8 @@
                 fullSemVer: semanticVersion.ToString("f"),
                 informationalVersion: semanticVersion.ToString("i"),
                 branchName: bmd.Branch,
-                sha: bmd.Sha);
+                sha: bmd.Sha,
+                commitDate: bmd.CommitDate.UtcDateTime.ToString("yyyy-MM-dd"));
 
             return variables;
         }

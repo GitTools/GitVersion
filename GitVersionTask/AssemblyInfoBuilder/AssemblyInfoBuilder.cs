@@ -4,12 +4,8 @@ using GitVersion;
 
 public class AssemblyInfoBuilder
 {
-    public CachedVersion CachedVersion;
-
-    public string GetAssemblyInfoText(EffectiveConfiguration configuration)
+    public string GetAssemblyInfoText(VersionVariables vars)
     {
-        var semanticVersion = CachedVersion.SemanticVersion;
-        var vars = VariableProvider.GetVariablesFor(semanticVersion, configuration.AssemblyVersioningScheme, configuration.VersioningMode, "ci", false);
         var assemblyInfo = string.Format(@"
 using System;
 using System.Reflection;
@@ -40,8 +36,8 @@ static class GitVersionInformation
 ", 
 vars.AssemblySemVer,
  vars.MajorMinorPatch + ".0", 
- semanticVersion.ToString("i"),
-            semanticVersion.BuildMetaData.CommitDate.UtcDateTime.ToString("yyyy-MM-dd"),
+ vars.InformationalVersion,
+            vars.CommitDate,
             GenerateVariableMembers(vars));
 
         return assemblyInfo;

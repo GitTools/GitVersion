@@ -68,6 +68,9 @@
         [Output]
         public string NuGetVersion { get; set; }
 
+        [Output]
+        public string CommitDate { get; set; }
+
         TaskLogger logger;
         IFileSystem fileSystem;
 
@@ -83,20 +86,11 @@
         {
             try
             {
-                Tuple<CachedVersion, GitVersionContext> versionAndBranch;
-                var gitDirectory = GitDirFinder.TreeWalkForDotGitDir(SolutionDirectory);
-                var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
+                VersionVariables variables;
 
-                if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionAndBranch, configuration, NoFetch))
+                if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out variables, NoFetch, new Authentication(), fileSystem))
                 {
                     var thisType = typeof(GetVersion);
-                    var cachedVersion = versionAndBranch.Item1;
-                    var gitVersionContext = versionAndBranch.Item2;
-                    var config = gitVersionContext.Configuration;
-                    var variables = VariableProvider.GetVariablesFor(
-                        cachedVersion.SemanticVersion, config.AssemblyVersioningScheme, 
-                        config.VersioningMode, config.ContinuousDeploymentFallbackTag,
-                        gitVersionContext.IsCurrentCommitTagged);
                     foreach (var variable in variables)
                     {
                         thisType.GetProperty(variable.Key).SetValue(this, variable.Value, null);
