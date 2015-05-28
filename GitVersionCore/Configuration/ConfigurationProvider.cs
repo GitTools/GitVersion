@@ -53,7 +53,7 @@ namespace GitVersion
 
         static string GetConfigFilePath(string workingDirectory)
         {
-            return Path.Combine(Directory.GetParent(workingDirectory).FullName, "GitVersionConfig.yaml");
+            return Path.Combine(workingDirectory, "GitVersionConfig.yaml");
         }
     }
 }

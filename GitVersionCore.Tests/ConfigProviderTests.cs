@@ -13,14 +13,14 @@ using YamlDotNet.Serialization;
 [TestFixture]
 public class ConfigProviderTests
 {
-    string gitDirectory;
+    string repoPath;
     IFileSystem fileSystem;
 
     [SetUp]
     public void Setup()
     {
         fileSystem = new TestFileSystem();
-        gitDirectory = "c:\\MyGitRepo\\.git";
+        repoPath = "c:\\MyGitRepo";
     }
 
     [Test]
@@ -41,7 +41,7 @@ branches:
 ";
         SetupConfigFileContent(text);
 
-        var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
         config.NextVersion.ShouldBe("2.0.0");
         config.TagPrefix.ShouldBe("[vV|version-]");
@@ -61,7 +61,7 @@ develop-branch-tag: alpha
 release-branch-tag: rc
 ";
         SetupConfigFileContent(text);
-        var error = Should.Throw<OldConfigurationException>(() => ConfigurationProvider.Provide(gitDirectory, fileSystem));
+        var error = Should.Throw<OldConfigurationException>(() => ConfigurationProvider.Provide(repoPath, fileSystem));
         error.Message.ShouldContainWithoutWhitespace(@"GitVersionConfig.yaml contains old configuration, please fix the following errors:
 assemblyVersioningScheme has been replaced by assembly-versioning-scheme
 develop-branch-tag has been replaced by branch specific configuration.See https://github.com/ParticularLabs/GitVersion/wiki/Branch-Specific-Configuration
@@ -79,7 +79,7 @@ branches:
         tag: dev";
         SetupConfigFileContent(text);
         var defaultConfig = new Config();
-        var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
 
         config.NextVersion.ShouldBe("2.0.0");
         config.AssemblyVersioningScheme.ShouldBe(defaultConfig.AssemblyVersioningScheme);
@@ -97,7 +97,7 @@ branches:
     bug[/-]:
         tag: bugfix";
         SetupConfigFileContent(text);
-        var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         
         config.Branches["bug[/-]"].Tag.ShouldBe("bugfix");
     }
@@ -106,7 +106,7 @@ branches:
     [MethodImpl(MethodImplOptions.NoInlining)]
     public void CanWriteOutEffectiveConfiguration()
     {
-        var config = ConfigurationProvider.GetEffectiveConfigAsString(gitDirectory, fileSystem);
+        var config = ConfigurationProvider.GetEffectiveConfigAsString(repoPath, fileSystem);
 
         Approvals.Verify(config);
     }
@@ -116,7 +116,7 @@ branches:
     {
         const string text = "";
         SetupConfigFileContent(text);
-        var config = ConfigurationProvider.Provide(gitDirectory, fileSystem);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
         config.Branches["develop"].Tag.ShouldBe("unstable");
         config.Branches["release[/-]"].Tag.ShouldBe("beta");
@@ -156,6 +156,6 @@ branches:
 
     void SetupConfigFileContent(string text)
     {
-        fileSystem.WriteAllText(Path.Combine(Directory.GetParent(gitDirectory).FullName, "GitVersionConfig.yaml"), text);
+        fileSystem.WriteAllText(Path.Combine(repoPath, "GitVersionConfig.yaml"), text);
     }
 }

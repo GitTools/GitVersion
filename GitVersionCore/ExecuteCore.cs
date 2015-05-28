@@ -14,6 +14,7 @@ namespace GitVersion
             gitPreparer.Initialise();
             var dotGitDirectory = gitPreparer.GetDotGitDirectory();
             var projectRoot = gitPreparer.GetProjectRootDirectory();
+            Logger.WriteInfo(string.Format("Project root is: " + projectRoot));
             if (string.IsNullOrEmpty(dotGitDirectory) || string.IsNullOrEmpty(projectRoot))
             {
                 // TODO Link to wiki article

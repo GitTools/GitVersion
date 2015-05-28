@@ -181,5 +181,32 @@ public class GitPreparerTests
         gitPreparer.IsDynamicGitRepository.ShouldBe(false);
     }
 
+    [Test]
+    public void UsesGitVersionConfigWhenCreatingDynamicRepository()
+    {
+        string localRepoPath = PathHelper.GetTempPath();
+        string repoBasePath = Path.GetDirectoryName(PathHelper.GetTempPath());
+        Directory.CreateDirectory(localRepoPath);
+
+        try
+        {
+            using (var remote = new EmptyRepositoryFixture(new Config()))
+            {
+                remote.Repository.MakeACommit();
+                var configFile = Path.Combine(localRepoPath, "GitVersionConfig.yaml");
+                File.WriteAllText(configFile, "next-version: 1.0.0");
+ 
+                var arguments = string.Format(" /url {0} /dynamicRepoLocation {1}", remote.RepositoryPath, repoBasePath);
+                var results = GitVersionHelper.ExecuteIn(localRepoPath, arguments, false);
+                results.OutputVariables.SemVer.ShouldBe("1.0.0");
+            }
+        }
+        finally
+        {
+            DeleteHelper.DeleteGitRepository(localRepoPath);
+            DeleteHelper.DeleteGitRepository(repoBasePath);
+        }
+    }
+
     // TODO test around normalisation
 }
