@@ -4,13 +4,6 @@
 
     public class ContinuaCi : BuildServerBase
     {
-        Authentication authentication;
-
-        public ContinuaCi(Authentication authentication)
-        {
-            this.authentication = authentication;
-        }
-
         public override bool CanApplyToCurrentContext()
         {
             const string KeyName = @"Software\VSoft Technologies\Continua CI Agent";
@@ -26,16 +19,6 @@
             }
 
             return false;
-        }
-
-        public override void PerformPreProcessingSteps(string gitDirectory, bool noFetch)
-        {
-            if (string.IsNullOrEmpty(gitDirectory))
-            {
-                throw new WarningException("Failed to find .git directory on agent");
-            }
-
-            GitHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch);
         }
 
         public override string[] GenerateSetParameterMessage(string name, string value)

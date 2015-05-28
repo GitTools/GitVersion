@@ -18,11 +18,12 @@ namespace GitVersion
             var dynamicRepositoryLocation = arguments.DynamicRepositoryLocation;
             var targetBranch = arguments.TargetBranch;
             var commitId = arguments.CommitId;
+
             var variables = ExecuteCore.ExecuteGitVersion(fileSystem, targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId);
 
             if (arguments.Output == OutputType.BuildServer)
             {
-                foreach (var buildServer in BuildServerList.GetApplicableBuildServers(authentication))
+                foreach (var buildServer in BuildServerList.GetApplicableBuildServers())
                 {
                     buildServer.WriteIntegration(Console.WriteLine, variables);
                 }

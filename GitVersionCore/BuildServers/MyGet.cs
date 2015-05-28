@@ -5,29 +5,12 @@
 
     public class MyGet : BuildServerBase
     {
-        Authentication authentication;
-
-        public MyGet(Authentication authentication)
-        {
-            this.authentication = authentication;
-        }
-
         public override bool CanApplyToCurrentContext()
         {
             var buildRunner = Environment.GetEnvironmentVariable("BuildRunner");
 
             return !string.IsNullOrEmpty(buildRunner)
                 && buildRunner.Equals("MyGet", StringComparison.InvariantCultureIgnoreCase);
-        }
-
-        public override void PerformPreProcessingSteps(string gitDirectory, bool noFetch)
-        {
-            if (string.IsNullOrEmpty(gitDirectory))
-            {
-                throw new WarningException("Failed to find .git directory on agent.");
-            }
-
-            GitHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch);
         }
 
         public override string[] GenerateSetParameterMessage(string name, string value)
