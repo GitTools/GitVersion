@@ -187,7 +187,7 @@ namespace GitVersion
 
                 if ((IsSwitch("showvariable", name)) && VersionParts.Contains(value.ToLower()))
                 {
-                    arguments.ShowVariable = value.ToLower();
+                    arguments.ShowVariable = value;
                     continue;
                 }
 
