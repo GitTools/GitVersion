@@ -68,9 +68,9 @@ public class AssemblyInfoBuilderTests
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public void VerifyAssemblyVersion_MajorMinorPatchMetadata()
+    public void VerifyAssemblyVersion_MajorMinorPatchTag()
     {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatchMetadata);
+        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatchTag);
     }
 
     static void VerifyAssemblyVersion(AssemblyVersioningScheme avs)
@@ -80,7 +80,8 @@ public class AssemblyInfoBuilderTests
             Major = 2,
             Minor = 3,
             Patch = 4,
-            BuildMetaData = new SemanticVersionBuildMetaData(5,
+            PreReleaseTag = "beta.5",
+            BuildMetaData = new SemanticVersionBuildMetaData(6,
                 "master", "commitSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z")),
         };
         var assemblyInfoBuilder = new AssemblyInfoBuilder

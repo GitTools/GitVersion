@@ -2,7 +2,7 @@
 {
     public enum AssemblyVersioningScheme
     {
-        MajorMinorPatchMetadata,
+        MajorMinorPatchTag,
         MajorMinorPatch,
         MajorMinor,
         Major
