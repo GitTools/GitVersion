@@ -26,7 +26,7 @@ namespace GitVersion
             }
             VersionVariables variables;
             var versionFinder = new GitVersionFinder();
-            var configuration = ConfigurationProvider.Provide(dotGitDirectory, fileSystem);
+            var configuration = ConfigurationProvider.Provide(arguments.TargetPath, fileSystem);
 
             using (var repo = RepositoryLoader.GetRepo(dotGitDirectory))
             {
