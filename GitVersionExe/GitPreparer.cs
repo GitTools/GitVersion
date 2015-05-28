@@ -7,11 +7,21 @@
 
     public class GitPreparer
     {
-        Arguments arguments;
+        string targetUrl;
+        string dynamicRepositoryLocation;
+        Authentication authentication;
+        string targetBranch;
+        bool noFetch;
+        string targetPath;
 
-        public GitPreparer(Arguments arguments)
+        public GitPreparer(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string targetPath)
         {
-            this.arguments = arguments;
+            this.targetUrl = targetUrl;
+            this.dynamicRepositoryLocation = dynamicRepositoryLocation;
+            this.authentication = authentication;
+            this.targetBranch = targetBranch;
+            this.noFetch = noFetch;
+            this.targetPath = targetPath;
         }
 
         public bool IsDynamicGitRepository
@@ -23,13 +33,13 @@
 
         public void InitialiseDynamicRepositoryIfNeeded()
         {
-            if (string.IsNullOrWhiteSpace(arguments.TargetUrl)) return;
+            if (string.IsNullOrWhiteSpace(targetUrl)) return;
 
-            var targetPath = CalculateTemporaryRepositoryPath(arguments.TargetUrl, arguments.DynamicRepositoryLocation);
-            DynamicGitRepositoryPath = CreateDynamicRepository(targetPath, arguments.Authentication, arguments.TargetUrl, arguments.TargetBranch, arguments.NoFetch);
+            var targetPath = CalculateTemporaryRepositoryPath(targetUrl, dynamicRepositoryLocation);
+            DynamicGitRepositoryPath = CreateDynamicRepository(targetPath, authentication, targetUrl, targetBranch, noFetch);
         }
 
-        string CalculateTemporaryRepositoryPath(string targetUrl, string dynamicRepositoryLocation)
+        static string CalculateTemporaryRepositoryPath(string targetUrl, string dynamicRepositoryLocation)
         {
             var userTemp = dynamicRepositoryLocation ?? Path.GetTempPath();
             var repositoryName = targetUrl.Split('/', '\\').Last().Replace(".git", string.Empty);
@@ -75,7 +85,15 @@
             if (IsDynamicGitRepository)
                 return DynamicGitRepositoryPath;
 
-            return GitDirFinder.TreeWalkForDotGitDir(arguments.TargetPath);
+            return GitDirFinder.TreeWalkForDotGitDir(targetPath);
+        }
+
+        public string GetProjectRootDirectory()
+        {
+            if (IsDynamicGitRepository)
+                return targetPath;
+
+            return Directory.GetParent(GitDirFinder.TreeWalkForDotGitDir(targetPath)).FullName;
         }
 
         static string CreateDynamicRepository(string targetPath, Authentication authentication, string repositoryUrl, string targetBranch, bool noFetch)

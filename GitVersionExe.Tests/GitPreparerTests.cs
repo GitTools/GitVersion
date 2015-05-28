@@ -55,7 +55,7 @@ public class GitPreparerTests
                     arguments.TargetBranch = branchName;
                 }
 
-                var gitPreparer = new GitPreparer(arguments);
+                var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath);
                 gitPreparer.InitialiseDynamicRepositoryIfNeeded();
                 dynamicRepositoryPath = gitPreparer.GetDotGitDirectory();
 
@@ -100,7 +100,7 @@ public class GitPreparerTests
                     TargetBranch = "master"
                 };
 
-                var gitPreparer = new GitPreparer(arguments);
+                var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath);
                 gitPreparer.InitialiseDynamicRepositoryIfNeeded();
                 dynamicRepositoryPath = gitPreparer.GetDotGitDirectory();
 
@@ -147,7 +147,7 @@ public class GitPreparerTests
                     TargetUrl = fixture.RepositoryPath
                 };
 
-                var gitPreparer = new GitPreparer(arguments);
+                var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath);
                 gitPreparer.InitialiseDynamicRepositoryIfNeeded();
 
                 gitPreparer.IsDynamicGitRepository.ShouldBe(true);
@@ -174,7 +174,7 @@ public class GitPreparerTests
             TargetPath = tempDir
         };
 
-        var gitPreparer = new GitPreparer(arguments);
+        var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath);
         var dynamicRepositoryPath = gitPreparer.GetDotGitDirectory();
 
         dynamicRepositoryPath.ShouldBe(null);
