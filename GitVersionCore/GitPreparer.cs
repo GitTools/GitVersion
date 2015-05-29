@@ -13,9 +13,8 @@ namespace GitVersion
         string targetBranch;
         bool noFetch;
         string targetPath;
-        readonly bool normaliseGitDirectory;
 
-        public GitPreparer(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string targetPath, bool normaliseGitDirectory)
+        public GitPreparer(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string targetPath)
         {
             this.targetUrl = targetUrl;
             this.dynamicRepositoryLocation = dynamicRepositoryLocation;
@@ -23,7 +22,6 @@ namespace GitVersion
             this.targetBranch = targetBranch;
             this.noFetch = noFetch;
             this.targetPath = targetPath;
-            this.normaliseGitDirectory = normaliseGitDirectory;
         }
 
         public bool IsDynamicGitRepository
@@ -33,7 +31,7 @@ namespace GitVersion
 
         public string DynamicGitRepositoryPath { get; private set; }
 
-        public void Initialise()
+        public void Initialise(bool normaliseGitDirectory)
         {
             if (string.IsNullOrWhiteSpace(targetUrl))
             {

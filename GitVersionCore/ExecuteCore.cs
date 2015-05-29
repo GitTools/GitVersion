@@ -9,9 +9,8 @@ namespace GitVersion
         public static VersionVariables ExecuteGitVersion(IFileSystem fileSystem, string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId)
         {
             // Normalise if we are running on build server
-            var normaliseGitDirectory = BuildServerList.GetApplicableBuildServers().Any();
-            var gitPreparer = new GitPreparer(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, workingDirectory, normaliseGitDirectory);
-            gitPreparer.Initialise();
+            var gitPreparer = new GitPreparer(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, workingDirectory);
+            gitPreparer.Initialise(BuildServerList.GetApplicableBuildServers().Any());
             var dotGitDirectory = gitPreparer.GetDotGitDirectory();
             var projectRoot = gitPreparer.GetProjectRootDirectory();
             Logger.WriteInfo(string.Format("Project root is: " + projectRoot));
