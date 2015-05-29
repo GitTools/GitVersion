@@ -6,7 +6,6 @@
     using Microsoft.Build.Utilities;
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using Logger = GitVersion.Logger;
 
     public class WriteVersionInfoToBuildLog : Task
@@ -52,39 +51,21 @@
 
         public void InnerExecute()
         {
-            Tuple<CachedVersion, GitVersionContext> result;
-            var gitDirectory = GitDirFinder.TreeWalkForDotGitDir(SolutionDirectory);
-
-            if (gitDirectory == null)
-                throw new DirectoryNotFoundException(string.Format("Unable to locate a git repository in \"{0}\". Make sure that the solution is located in a git controlled folder. If you are using continous integration make sure that the sources are checked out on the build agent.", SolutionDirectory));
-
-            var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
-            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out result, configuration, NoFetch))
+            VersionVariables result;
+            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out result, NoFetch, new Authentication(), fileSystem))
             {
                 return;
             }
-
-            var authentication = new Authentication();
-
-            var cachedVersion = result.Item1;
-            var gitVersionContext = result.Item2;
-            var config = gitVersionContext.Configuration;
-            var assemblyVersioningScheme = config.AssemblyVersioningScheme;
-            var versioningMode = config.VersioningMode;
-
-            var variablesFor = VariableProvider.GetVariablesFor(
-                cachedVersion.SemanticVersion, assemblyVersioningScheme, versioningMode,
-                config.ContinuousDeploymentFallbackTag,
-                gitVersionContext.IsCurrentCommitTagged);
-            WriteIntegrationParameters(cachedVersion, BuildServerList.GetApplicableBuildServers(authentication), variablesFor);
+            
+            WriteIntegrationParameters(BuildServerList.GetApplicableBuildServers(), result);
         }
 
-        public void WriteIntegrationParameters(CachedVersion cachedVersion, IEnumerable<IBuildServer> applicableBuildServers, VersionVariables variables)
+        public void WriteIntegrationParameters(IEnumerable<IBuildServer> applicableBuildServers, VersionVariables variables)
         {
             foreach (var buildServer in applicableBuildServers)
             {
                 logger.LogInfo(string.Format("Executing GenerateSetVersionMessage for '{0}'.", buildServer.GetType().Name));
-                logger.LogInfo(buildServer.GenerateSetVersionMessage(cachedVersion.SemanticVersion.ToString()));
+                logger.LogInfo(buildServer.GenerateSetVersionMessage(variables.FullSemVer));
                 logger.LogInfo(string.Format("Executing GenerateBuildLogOutput for '{0}'.", buildServer.GetType().Name));
                 foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(buildServer, variables))
                 {

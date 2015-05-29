@@ -19,11 +19,12 @@ public class ArgumentBuilder
         this.isTeamCity = isTeamCity;
     }
 
-    public ArgumentBuilder(string workingDirectory, string additionalArguments, bool isTeamCity)
+    public ArgumentBuilder(string workingDirectory, string additionalArguments, bool isTeamCity, string logFile)
     {
         this.workingDirectory = workingDirectory;
         this.isTeamCity = isTeamCity;
         this.additionalArguments = additionalArguments;
+        this.logFile = logFile;
     }
 
 

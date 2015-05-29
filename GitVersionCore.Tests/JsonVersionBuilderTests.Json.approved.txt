@@ -16,5 +16,6 @@
   "BranchName":"feature1",
   "Sha":"commitSha",
   "NuGetVersionV2":"1.2.3-unstable0004",
-  "NuGetVersion":"1.2.3-unstable0004"
+  "NuGetVersion":"1.2.3-unstable0004",
+  "CommitDate":"2014-03-06"
 }

@@ -2,6 +2,6 @@
 
 public class CachedVersion
 {
-    public SemanticVersion SemanticVersion;
+    public VersionVariables VersionVariables;
     public long Timestamp;
 }

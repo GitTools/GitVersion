@@ -6,9 +6,9 @@ namespace GitVersion
 
     public class ConfigurationProvider
     {
-        public static Config Provide(string gitDirectory, IFileSystem fileSystem)
+        public static Config Provide(string workingDirectory, IFileSystem fileSystem)
         {
-            var configFilePath = GetConfigFilePath(gitDirectory);
+            var configFilePath = GetConfigFilePath(workingDirectory);
 
             if (fileSystem.Exists(configFilePath))
             {
@@ -33,9 +33,9 @@ namespace GitVersion
             return stringBuilder.ToString();
         }
 
-        public static void WriteSample(string gitDirectory, IFileSystem fileSystem)
+        public static void WriteSample(string workingDirectory, IFileSystem fileSystem)
         {
-            var configFilePath = GetConfigFilePath(gitDirectory);
+            var configFilePath = GetConfigFilePath(workingDirectory);
 
             if (!fileSystem.Exists(configFilePath))
             {
@@ -51,9 +51,9 @@ namespace GitVersion
             }
         }
 
-        static string GetConfigFilePath(string gitDirectory)
+        static string GetConfigFilePath(string workingDirectory)
         {
-            return Path.Combine(Directory.GetParent(gitDirectory).FullName, "GitVersionConfig.yaml");
+            return Path.Combine(workingDirectory, "GitVersionConfig.yaml");
         }
     }
 }

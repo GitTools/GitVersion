@@ -55,8 +55,8 @@ public class GitPreparerTests
                     arguments.TargetBranch = branchName;
                 }
 
-                var gitPreparer = new GitPreparer(arguments);
-                gitPreparer.InitialiseDynamicRepositoryIfNeeded();
+                var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath);
+                gitPreparer.Initialise(false);
                 dynamicRepositoryPath = gitPreparer.GetDotGitDirectory();
 
                 gitPreparer.IsDynamicGitRepository.ShouldBe(true);
@@ -100,12 +100,12 @@ public class GitPreparerTests
                     TargetBranch = "master"
                 };
 
-                var gitPreparer = new GitPreparer(arguments);
-                gitPreparer.InitialiseDynamicRepositoryIfNeeded();
+                var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath);
+                gitPreparer.Initialise(false);
                 dynamicRepositoryPath = gitPreparer.GetDotGitDirectory();
 
                 var newCommit = mainRepositoryFixture.Repository.MakeACommit();
-                gitPreparer.InitialiseDynamicRepositoryIfNeeded();
+                gitPreparer.Initialise(false);
 
                 using (var repository = new Repository(dynamicRepositoryPath))
                 {
@@ -147,8 +147,8 @@ public class GitPreparerTests
                     TargetUrl = fixture.RepositoryPath
                 };
 
-                var gitPreparer = new GitPreparer(arguments);
-                gitPreparer.InitialiseDynamicRepositoryIfNeeded();
+                var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath);
+                gitPreparer.Initialise(false);
 
                 gitPreparer.IsDynamicGitRepository.ShouldBe(true);
                 gitPreparer.DynamicGitRepositoryPath.ShouldBe(expectedDynamicRepoLocation + "_1\\.git");
@@ -174,10 +174,39 @@ public class GitPreparerTests
             TargetPath = tempDir
         };
 
-        var gitPreparer = new GitPreparer(arguments);
+        var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath);
         var dynamicRepositoryPath = gitPreparer.GetDotGitDirectory();
 
         dynamicRepositoryPath.ShouldBe(null);
         gitPreparer.IsDynamicGitRepository.ShouldBe(false);
     }
+
+    [Test]
+    public void UsesGitVersionConfigWhenCreatingDynamicRepository()
+    {
+        var localRepoPath = PathHelper.GetTempPath();
+        var repoBasePath = Path.GetDirectoryName(PathHelper.GetTempPath());
+        Directory.CreateDirectory(localRepoPath);
+
+        try
+        {
+            using (var remote = new EmptyRepositoryFixture(new Config()))
+            {
+                remote.Repository.MakeACommit();
+                var configFile = Path.Combine(localRepoPath, "GitVersionConfig.yaml");
+                File.WriteAllText(configFile, "next-version: 1.0.0");
+ 
+                var arguments = string.Format(" /url {0} /dynamicRepoLocation {1}", remote.RepositoryPath, repoBasePath);
+                var results = GitVersionHelper.ExecuteIn(localRepoPath, arguments, false);
+                results.OutputVariables.SemVer.ShouldBe("1.0.0");
+            }
+        }
+        finally
+        {
+            DeleteHelper.DeleteGitRepository(localRepoPath);
+            DeleteHelper.DeleteGitRepository(repoBasePath);
+        }
+    }
+
+    // TODO test around normalisation
 }

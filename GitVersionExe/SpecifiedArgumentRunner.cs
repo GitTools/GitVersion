@@ -11,34 +11,19 @@ namespace GitVersion
 
         public static void Run(Arguments arguments, IFileSystem fileSystem)
         {
-            var gitPreparer = new GitPreparer(arguments);
-            gitPreparer.InitialiseDynamicRepositoryIfNeeded();
-            var dotGitDirectory = gitPreparer.GetDotGitDirectory();
-            if (string.IsNullOrEmpty(dotGitDirectory))
-            {
-                throw new Exception(string.Format("Failed to prepare or find the .git directory in path '{0}'", arguments.TargetPath));
-            }
-            var applicableBuildServers = GetApplicableBuildServers(arguments.Authentication).ToList();
+            var noFetch = arguments.NoFetch;
+            var authentication = arguments.Authentication;
+            var targetPath = arguments.TargetPath;
+            var targetUrl = arguments.TargetUrl;
+            var dynamicRepositoryLocation = arguments.DynamicRepositoryLocation;
+            var targetBranch = arguments.TargetBranch;
+            var commitId = arguments.CommitId;
 
-            foreach (var buildServer in applicableBuildServers)
-            {
-                buildServer.PerformPreProcessingSteps(dotGitDirectory, arguments.NoFetch);
-            }
-            VersionVariables variables;
-            var versionFinder = new GitVersionFinder();
-            var configuration = ConfigurationProvider.Provide(dotGitDirectory, fileSystem);
-
-            using (var repo = RepositoryLoader.GetRepo(dotGitDirectory))
-            {
-                var gitVersionContext = new GitVersionContext(repo, configuration, commitId: arguments.CommitId);
-                var semanticVersion = versionFinder.FindVersion(gitVersionContext);
-                var config = gitVersionContext.Configuration;
-                variables = VariableProvider.GetVariablesFor(semanticVersion, config.AssemblyVersioningScheme, config.VersioningMode, config.ContinuousDeploymentFallbackTag, gitVersionContext.IsCurrentCommitTagged);
-            }
+            var variables = ExecuteCore.ExecuteGitVersion(fileSystem, targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId);
 
             if (arguments.Output == OutputType.BuildServer)
             {
-                foreach (var buildServer in applicableBuildServers)
+                foreach (var buildServer in BuildServerList.GetApplicableBuildServers())
                 {
                     buildServer.WriteIntegration(Console.WriteLine, variables);
                 }
@@ -63,10 +48,10 @@ namespace GitVersion
                 }
             }
 
-            using (var assemblyInfoUpdate = new AssemblyInfoFileUpdate(arguments, arguments.TargetPath, variables, fileSystem))
+            using (var assemblyInfoUpdate = new AssemblyInfoFileUpdate(arguments, targetPath, variables, fileSystem))
             {
-                var execRun = RunExecCommandIfNeeded(arguments, arguments.TargetPath, variables);
-                var msbuildRun = RunMsBuildIfNeeded(arguments, arguments.TargetPath, variables);
+                var execRun = RunExecCommandIfNeeded(arguments, targetPath, variables);
+                var msbuildRun = RunMsBuildIfNeeded(arguments, targetPath, variables);
                 if (!execRun && !msbuildRun)
                 {
                     assemblyInfoUpdate.DoNotRestoreAssemblyInfo();
@@ -79,11 +64,6 @@ namespace GitVersion
                     //}
                 }
             }
-        }
-
-        static IEnumerable<IBuildServer> GetApplicableBuildServers(Authentication authentication)
-        {
-            return BuildServerList.GetApplicableBuildServers(authentication);
         }
 
         static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
