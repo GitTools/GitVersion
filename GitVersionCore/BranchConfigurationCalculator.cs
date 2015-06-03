@@ -10,7 +10,7 @@ namespace GitVersion
     {
         public static KeyValuePair<string, BranchConfig> GetBranchConfiguration(Commit currentCommit, IRepository repository, bool onlyEvaluateTrackedBranches, Config config, Branch currentBranch, IList<Branch> excludedInheritBranches = null)
         {
-            var matchingBranches = config.Branches.Where(b => Regex.IsMatch(currentBranch.Name, "^" + b.Key, RegexOptions.IgnoreCase)).ToArray();
+            var matchingBranches = LookupBranchConfiguration(config, currentBranch);
 
             if (matchingBranches.Length == 0)
             {
@@ -31,6 +31,11 @@ namespace GitVersion
 
             const string format = "Multiple branch configurations match the current branch branchName of '{0}'. Matching configurations: '{1}'";
             throw new Exception(string.Format(format, currentBranch.Name, string.Join(", ", matchingBranches.Select(b => b.Key))));
+        }
+
+        static KeyValuePair<string, BranchConfig>[] LookupBranchConfiguration(Config config, Branch currentBranch)
+        {
+            return config.Branches.Where(b => Regex.IsMatch(currentBranch.Name, "^" + b.Key, RegexOptions.IgnoreCase)).ToArray();
         }
 
         static KeyValuePair<string, BranchConfig> InheritBranchConfiguration(bool onlyEvaluateTrackedBranches, IRepository repository, Commit currentCommit, Branch currentBranch, KeyValuePair<string, BranchConfig> keyValuePair, BranchConfig branchConfiguration, Config config, IList<Branch> excludedInheritBranches)
@@ -69,7 +74,11 @@ namespace GitVersion
             }
             if (excludedInheritBranches == null)
             {
-                excludedInheritBranches = new List<Branch>();
+                excludedInheritBranches = repository.Branches.Where(b =>
+                {
+                    var branchConfig = LookupBranchConfiguration(config, b);
+                    return branchConfig.Length == 1 && branchConfig[0].Value.Increment == IncrementStrategy.Inherit;
+                }).ToList();
             }
             excludedBranches.ToList().ForEach(excludedInheritBranches.Add);
 
