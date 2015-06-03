@@ -26,7 +26,7 @@ namespace GitVersion
 
         public static Commit FindCommitBranchWasBranchedFrom(this Branch branch, IRepository repository, params Branch[] excludedBranches)
         {
-            var otherBranches = repository.Branches.Where(b => !b.IsRemote).Except(excludedBranches).Except(new [] { branch });
+            var otherBranches = repository.Branches.Where(b => !b.IsRemote).Except(excludedBranches).Except(new [] { branch }).ToList();
             var mergeBases = otherBranches.Select(b =>
             {
                 var otherCommit = b.Tip;

@@ -83,10 +83,15 @@ namespace GitVersion
             else
             {
                 var branches = branchPoint.GetBranchesContainingCommit(repository, true).Except(excludedInheritBranches).ToList();
-                var currentTipBranches = currentCommit.GetBranchesContainingCommit(repository, true).Except(excludedInheritBranches).ToList();
-                possibleParents = branches
-                    .Except(currentTipBranches)
-                    .ToList();
+                if (branches.Count > 1)
+                {
+                    var currentTipBranches = currentCommit.GetBranchesContainingCommit(repository, true).Except(excludedInheritBranches).ToList();
+                    possibleParents = branches.Except(currentTipBranches).ToList();
+                }
+                else
+                {
+                    possibleParents = branches;
+                }
             }
 
             Logger.WriteInfo("Found possible parent branches: " + string.Join(", ", possibleParents.Select(p => p.Name)));
