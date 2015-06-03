@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -23,7 +21,7 @@ public class FeatureBranchScenarios
 
             //Merge it
             fixture.Repository.Checkout("development");
-            fixture.Repository.Merge(feature123, new Signature("me", "me@me.com", DateTimeOffset.Now));
+            fixture.Repository.Merge(feature123, SignatureBuilder.SignatureNow());
 
             //Create a second feature branch
             fixture.Repository.CreateBranch("feature/JIRA-124");
@@ -53,7 +51,7 @@ public class FeatureBranchScenarios
 
             //Merge it
             fixture.Repository.Checkout("unstable");
-            fixture.Repository.Merge(feature123, new Signature("me", "me@me.com", DateTimeOffset.Now));
+            fixture.Repository.Merge(feature123, SignatureBuilder.SignatureNow());
 
             //Create a second feature branch
             fixture.Repository.CreateBranch("feature/JIRA-124");
