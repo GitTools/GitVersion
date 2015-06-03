@@ -73,10 +73,10 @@ namespace GitVersion
             }
             excludedBranches.ToList().ForEach(excludedInheritBranches.Add);
 
-            var branchPoint = currentBranch.FindCommitBranchWasBranchedFrom(repository, onlyEvaluateTrackedBranches, excludedInheritBranches.ToArray());
+            var branchPoint = currentBranch.FindCommitBranchWasBranchedFrom(repository, excludedInheritBranches.ToArray());
 
             List<Branch> possibleParents;
-            if (branchPoint.Sha == currentCommit.Sha)
+            if (branchPoint == null)
             {
                 possibleParents = currentCommit.GetBranchesContainingCommit(repository, true).Except(excludedInheritBranches).ToList();
             }

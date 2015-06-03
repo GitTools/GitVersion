@@ -24,12 +24,17 @@ namespace GitVersion
             return repository.Branches.FirstOrDefault(x => x.Name == "origin/" + branchName);
         }
 
-        public static Commit FindCommitBranchWasBranchedFrom(this Branch branch, IRepository repository, bool onlyTrackedBranches, params Branch[] excludedBranches)
+        public static Commit FindCommitBranchWasBranchedFrom(this Branch branch, IRepository repository, params Branch[] excludedBranches)
         {
             var otherBranches = repository.Branches.Where(b => !b.IsRemote).Except(excludedBranches).Except(new [] { branch });
             var mergeBases = otherBranches.Select(b =>
             {
-                var mergeBase = repository.Commits.FindMergeBase(b.Tip, branch.Tip);
+                var otherCommit = b.Tip;
+                if (b.Tip.Parents.Contains(branch.Tip))
+                {
+                    otherCommit = b.Tip.Parents.First();
+                }
+                var mergeBase = repository.Commits.FindMergeBase(otherCommit, branch.Tip);
                 return mergeBase;
             }).Where(b => b != null);
             return mergeBases.OrderByDescending(b => b.Committer.When).FirstOrDefault();

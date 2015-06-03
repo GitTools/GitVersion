@@ -238,8 +238,7 @@ public class ReleaseBranchScenarios
 
             //but keep working on the release
             fixture.Repository.Checkout("release-2.0.0");
-
-            fixture.AssertFullSemver("2.0.0-beta.2+3");
+            fixture.AssertFullSemver("2.0.0-beta.2+2");
         }
     }
 }
