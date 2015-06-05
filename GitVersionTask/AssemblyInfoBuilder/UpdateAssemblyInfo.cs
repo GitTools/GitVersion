@@ -67,22 +67,16 @@
             TempFileTracker.DeleteTempFiles();
 
             InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
-
-            var gitDirectory = GitDirFinder.TreeWalkForDotGitDir(SolutionDirectory);
-            if (string.IsNullOrEmpty(gitDirectory))
-                return;
-
-            var configuration = ConfigurationProvider.Provide(gitDirectory, fileSystem);
-
-            Tuple<CachedVersion, GitVersionContext> semanticVersion;
-            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out semanticVersion, configuration, NoFetch))
+            
+            VersionVariables versionVariables;
+            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionVariables, NoFetch, new Authentication(), fileSystem))
             {
                 return;
             }
-            CreateTempAssemblyInfo(semanticVersion.Item1, semanticVersion.Item2.Configuration);
+            CreateTempAssemblyInfo(versionVariables);
         }
 
-        void CreateTempAssemblyInfo(CachedVersion semanticVersion, EffectiveConfiguration configuration)
+        void CreateTempAssemblyInfo(VersionVariables versionVariables)
         {
 
             if (IntermediateOutputPath == null)
@@ -95,11 +89,8 @@
                 AssemblyInfoTempFilePath = Path.Combine(IntermediateOutputPath, "GitVersionTaskAssemblyInfo.g.cs");
             }
 
-            var assemblyInfoBuilder = new AssemblyInfoBuilder
-            {
-                CachedVersion = semanticVersion
-            };
-            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(configuration);
+            var assemblyInfoBuilder = new AssemblyInfoBuilder();
+            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables);
             File.WriteAllText(AssemblyInfoTempFilePath, assemblyInfo);
         }
     }

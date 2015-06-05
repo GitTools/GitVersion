@@ -17,7 +17,8 @@ public static class GitVersionHelper
 
     public static ExecutionResults ExecuteIn(string workingDirectory, string arguments, bool isTeamCity = false)
     {
-        var args = new ArgumentBuilder(workingDirectory, arguments, isTeamCity);
+        var logFile = Path.Combine(workingDirectory, "log.txt");
+        var args = new ArgumentBuilder(workingDirectory, arguments, isTeamCity, logFile);
         return ExecuteIn(args);
     }
 
@@ -46,7 +47,7 @@ public static class GitVersionHelper
         Console.WriteLine();
         Console.WriteLine("-------------------------------------------------------");
 
-        if (string.IsNullOrWhiteSpace(arguments.LogFile))
+        if (string.IsNullOrWhiteSpace(arguments.LogFile) || !File.Exists(arguments.LogFile))
         {
             return new ExecutionResults(exitCode, output.ToString(), null);
         }

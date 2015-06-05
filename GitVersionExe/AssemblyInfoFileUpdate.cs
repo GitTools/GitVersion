@@ -36,9 +36,9 @@ namespace GitVersion
                 var assemblyInfoVersion = variables.InformationalVersion;
                 var assemblyFileVersion = variables.MajorMinorPatch + ".0";
                 var fileContents = fileSystem.ReadAllText(assemblyInfoFile)
-                    .RegexReplace(@"AssemblyVersion\(""\d+.\d+.\d+(.(\d+|\*))?""\)", string.Format("AssemblyVersion(\"{0}\")", assemblyVersion))
-                    .RegexReplace(@"AssemblyInformationalVersion\(""\d+.\d+.\d+(.(\d+|\*))?""\)", string.Format("AssemblyInformationalVersion(\"{0}\")", assemblyInfoVersion))
-                    .RegexReplace(@"AssemblyFileVersion\(""\d+.\d+.\d+(.(\d+|\*))?""\)", string.Format("AssemblyFileVersion(\"{0}\")", assemblyFileVersion));
+                    .RegexReplace(@"AssemblyVersion\(""[^""]*""\)", string.Format("AssemblyVersion(\"{0}\")", assemblyVersion))
+                    .RegexReplace(@"AssemblyInformationalVersion\(""[^""]*""\)", string.Format("AssemblyInformationalVersion(\"{0}\")", assemblyInfoVersion))
+                    .RegexReplace(@"AssemblyFileVersion\(""[^""]*""\)", string.Format("AssemblyFileVersion(\"{0}\")", assemblyFileVersion));
 
                 fileSystem.WriteAllText(assemblyInfoFile, fileContents);
             }

@@ -59,7 +59,6 @@
     <Compile Include="BuildLogger.cs" />
     <Compile Include="CachedVersion.cs" />
     <Compile Include="DirectoryDateFinder.cs" />
-    <Compile Include="VersionCache.cs" />
     <Compile Include="WriteVersionInfoToBuildLog.cs" />
     <Compile Include="GetVersion.cs" />
     <Compile Include="InvalidFileChecker.cs" />

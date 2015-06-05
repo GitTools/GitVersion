@@ -25,7 +25,7 @@
 
         public static void WriteSample(TextWriter writer)
         {
-            writer.WriteLine("# assembly-versioning-scheme: MajorMinorPatchMetadata | MajorMinorPatch | MajorMinor | Major");
+            writer.WriteLine("# assembly-versioning-scheme: MajorMinorPatchTag | MajorMinorPatch | MajorMinor | Major");
             writer.WriteLine("# tag-prefix: '[vV|version-] # regex to match git tag prefix");
             writer.WriteLine("# next-version: 1.0.0");
             writer.WriteLine("# mode: ContinuousDelivery | ContinuousDeployment");

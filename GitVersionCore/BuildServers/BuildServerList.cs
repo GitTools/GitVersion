@@ -5,33 +5,16 @@
 
     public static class BuildServerList
     {
-        static List<IBuildServer> BuildServers;
-
-        public static Func<Authentication, IEnumerable<IBuildServer>> Selector = arguments => DefaultSelector(arguments);
-
-        public static void ResetSelector()
+        static List<IBuildServer> BuildServers = new List<IBuildServer>
         {
-            Selector = DefaultSelector;
-        }
+            new ContinuaCi(),
+            new TeamCity(),
+            new AppVeyor(),
+            new MyGet()
+        };
 
-        public static IEnumerable<IBuildServer> GetApplicableBuildServers(Authentication authentication)
+        public static IEnumerable<IBuildServer> GetApplicableBuildServers()
         {
-            return Selector(authentication);
-        }
-
-        static IEnumerable<IBuildServer> DefaultSelector(Authentication authentication)
-        {
-            if (BuildServers == null)
-            {
-                BuildServers = new List<IBuildServer>
-                {
-                    new ContinuaCi(authentication),
-                    new TeamCity(authentication),
-                    new AppVeyor(authentication),
-                    new MyGet(authentication)
-                };
-            }
-
             var buildServices = new List<IBuildServer>();
 
             foreach (var buildServer in BuildServers)
