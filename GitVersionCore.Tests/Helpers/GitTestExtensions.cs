@@ -15,13 +15,24 @@ public static class GitTestExtensions
     {
         var output = new StringBuilder();
 
-        ProcessHelper.Run(
-            o => output.AppendLine(o),
-            e => output.AppendLineFormat("ERROR: {0}", e),
-            null,
-            "git",
-            @"log --graph --abbrev-commit --decorate --date=relative --all",
-            repository.Info.Path);
+        try
+        {
+            ProcessHelper.Run(
+                o => output.AppendLine(o),
+                e => output.AppendLineFormat("ERROR: {0}", e),
+                null,
+                "git",
+                @"log --graph --abbrev-commit --decorate --date=relative --all",
+                repository.Info.Path);
+        }
+        catch (FileNotFoundException exception)
+        {
+            if (exception.FileName != "git")
+                throw;
+
+            output.AppendLine("Could not execute 'git log' due to the following error:");
+            output.AppendLine(exception.ToString());
+        }
 
         Trace.Write(output.ToString());
     }
