@@ -24,17 +24,25 @@ namespace GitVersion
             return repository.Branches.FirstOrDefault(x => x.Name == "origin/" + branchName);
         }
 
-        public static Commit FindCommitBranchWasBranchedFrom(this Branch branch, IRepository repository, bool onlyTrackedBranches, params Branch[] excludedBranches)
+        public static Commit FindCommitBranchWasBranchedFrom(this Branch branch, IRepository repository, params Branch[] excludedBranches)
         {
-            var currentBranches = branch.Tip.GetBranchesContainingCommit(repository, onlyTrackedBranches).ToList();
-            var tips = repository.Branches.Except(excludedBranches).Where(b => b != branch && !b.IsRemote).Select(b => b.Tip).ToList();
-            var branchPoint = branch.Commits.FirstOrDefault(c =>
+            var otherBranches = repository.Branches.Except(excludedBranches).Where(b => IsSameBranch(branch, b)).ToList();
+            var mergeBases = otherBranches.Select(b =>
             {
-                if (tips.Contains(c)) return true;
-                var branchesContainingCommit = c.GetBranchesContainingCommit(repository, onlyTrackedBranches).ToList();
-                return branchesContainingCommit.Count > currentBranches.Count;
-            });
-            return branchPoint ?? branch.Tip;
+                var otherCommit = b.Tip;
+                if (b.Tip.Parents.Contains(branch.Tip))
+                {
+                    otherCommit = b.Tip.Parents.First();
+                }
+                var mergeBase = repository.Commits.FindMergeBase(otherCommit, branch.Tip);
+                return mergeBase;
+            }).Where(b => b != null).ToList();
+            return mergeBases.OrderByDescending(b => b.Committer.When).FirstOrDefault();
+        }
+
+        static bool IsSameBranch(Branch branch, Branch b)
+        {
+            return (b.IsRemote ? b.Name.Replace(b.Remote.Name + "/", string.Empty) : b.Name) != branch.Name;
         }
 
         public static IEnumerable<Branch> GetBranchesContainingCommit(this Commit commit, IRepository repository, bool onlyTrackedBranches)

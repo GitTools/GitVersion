@@ -109,7 +109,7 @@ public class GitPreparerTests
 
                 using (var repository = new Repository(dynamicRepositoryPath))
                 {
-                    mainRepositoryFixture.DumpGraph();
+                    mainRepositoryFixture.Repository.DumpGraph();
                     repository.DumpGraph();
                     repository.Commits.ShouldContain(c => c.Sha == newCommit.Sha);
                 }

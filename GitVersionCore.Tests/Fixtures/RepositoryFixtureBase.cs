@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using GitVersion;
 using LibGit2Sharp;
 using Shouldly;
@@ -30,7 +31,16 @@ public abstract class RepositoryFixtureBase : IDisposable
             gitVersionContext.Configuration.VersioningMode, 
             gitVersionContext.Configuration.ContinuousDeploymentFallbackTag,
             gitVersionContext.IsCurrentCommitTagged);
-        variables.FullSemVer.ShouldBe(fullSemver);
+        try
+        {
+            variables.FullSemVer.ShouldBe(fullSemver);
+        }
+        catch (Exception)
+        {
+            Trace.WriteLine("Test failing, dumping repository graph");
+            repository.DumpGraph();
+            throw;
+        }
     }
 
     private SemanticVersion ExecuteGitVersion(GitVersionContext context)
