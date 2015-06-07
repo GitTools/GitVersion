@@ -26,7 +26,7 @@ namespace GitVersion
 
         public static Commit FindCommitBranchWasBranchedFrom(this Branch branch, IRepository repository, params Branch[] excludedBranches)
         {
-            var otherBranches = repository.Branches.Where(b => !b.IsRemote).Except(excludedBranches).Except(new [] { branch }).ToList();
+            var otherBranches = repository.Branches.Except(excludedBranches).Where(b => IsSameBranch(branch, b)).ToList();
             var mergeBases = otherBranches.Select(b =>
             {
                 var otherCommit = b.Tip;
@@ -36,8 +36,13 @@ namespace GitVersion
                 }
                 var mergeBase = repository.Commits.FindMergeBase(otherCommit, branch.Tip);
                 return mergeBase;
-            }).Where(b => b != null);
+            }).Where(b => b != null).ToList();
             return mergeBases.OrderByDescending(b => b.Committer.When).FirstOrDefault();
+        }
+
+        static bool IsSameBranch(Branch branch, Branch b)
+        {
+            return (b.IsRemote ? b.Name.Replace(b.Remote.Name + "/", string.Empty) : b.Name) != branch.Name;
         }
 
         public static IEnumerable<Branch> GetBranchesContainingCommit(this Commit commit, IRepository repository, bool onlyTrackedBranches)

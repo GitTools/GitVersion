@@ -16,7 +16,7 @@ public class PullRequestScenarios
             
             fixture.Repository.CreatePullRequest("feature/Foo", "master");
 
-            fixture.DumpGraph();
+            fixture.Repository.DumpGraph();
             fixture.AssertFullSemver("0.1.1-PullRequest.2+2");
         }
     }
@@ -34,7 +34,7 @@ public class PullRequestScenarios
 
             fixture.Repository.CreatePullRequest("feature/Foo", "develop", 44);
 
-            fixture.DumpGraph();
+            fixture.Repository.DumpGraph();
             fixture.AssertFullSemver("0.2.0-PullRequest.44+3");
         }
     }
@@ -51,7 +51,7 @@ public class PullRequestScenarios
 
             fixture.Repository.CreatePullRequest("feature/Foo", "master");
 
-            fixture.DumpGraph();
+            fixture.Repository.DumpGraph();
             fixture.AssertFullSemver("0.1.1-PullRequest.2+2");
         }
     }

@@ -20,7 +20,7 @@ public static class GitTestExtensions
             e => output.AppendLineFormat("ERROR: {0}", e),
             null,
             "git",
-            @"log --graph --abbrev-commit --decorate --date=relative --all",
+            @"log --graph --abbrev-commit --decorate --date=relative --all --remotes=*",
             repository.Info.Path);
 
         Trace.Write(output.ToString());

@@ -105,12 +105,6 @@ namespace GitVersion
 
             Logger.WriteInfo("Found possible parent branches: " + string.Join(", ", possibleParents.Select(p => p.Name)));
 
-            // If it comes down to master and something, master is always first so we pick other branch
-            if (possibleParents.Count == 2 && possibleParents.Any(p => p.Name == "master"))
-            {
-                possibleParents.Remove(possibleParents.Single(p => p.Name == "master"));
-            }
-
             if (possibleParents.Count == 1)
             {
                 var branchConfig = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, possibleParents[0], excludedInheritBranches).Value;
