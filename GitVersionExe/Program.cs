@@ -58,7 +58,7 @@ namespace GitVersion
                 ConfigureLogging(arguments);
                 if (arguments.Init)
                 {
-                    ConfigurationProvider.WriteSample(arguments.TargetPath, fileSystem);
+                    ConfigurationProvider.Init(arguments.TargetPath, fileSystem);
                     return 0;
                 }
                 if (arguments.ShowConfig)

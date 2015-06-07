@@ -33,27 +33,22 @@ namespace GitVersion
             return stringBuilder.ToString();
         }
 
-        public static void WriteSample(string workingDirectory, IFileSystem fileSystem)
-        {
-            var configFilePath = GetConfigFilePath(workingDirectory);
-
-            if (!fileSystem.Exists(configFilePath))
-            {
-                using (var stream = fileSystem.OpenWrite(configFilePath))
-                using (var writer = new StreamWriter(stream))
-                {
-                    ConfigSerialiser.WriteSample(writer);
-                }
-            }
-            else
-            {
-                Logger.WriteError("Cannot write sample, GitVersionConfig.yaml already exists");
-            }
-        }
-
         static string GetConfigFilePath(string workingDirectory)
         {
             return Path.Combine(workingDirectory, "GitVersionConfig.yaml");
+        }
+
+        public static void Init(string workingDirectory, IFileSystem fileSystem)
+        {
+            var configFilePath = GetConfigFilePath(workingDirectory);
+            var config = new ConfigInitWizard().Run(Provide(workingDirectory, fileSystem));
+            if (config == null) return;
+
+            using (var stream = fileSystem.OpenWrite(configFilePath))
+            using (var writer = new StreamWriter(stream))
+            {
+                ConfigSerialiser.Write(config, writer);
+            }
         }
     }
 }
