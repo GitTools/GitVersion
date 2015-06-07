@@ -86,6 +86,7 @@
     <Compile Include="Configuration\Wizard\ConfigureBranch.cs" />
     <Compile Include="Configuration\Wizard\ConfigureBranches.cs" />
     <Compile Include="Configuration\Wizard\EditConfigStep.cs" />
+    <Compile Include="Configuration\Wizard\FinishedSetupStep.cs" />
     <Compile Include="Configuration\Wizard\GitFlowSetupStep.cs" />
     <Compile Include="Configuration\Wizard\GitHubFlowStep.cs" />
     <Compile Include="Configuration\Wizard\PickBranchingStrategy2Step.cs" />

@@ -10,12 +10,16 @@ namespace GitVersion
             switch (result)
             {
                 case "0":
+                    return StepResult.SaveAndExit();
+                case "1":
+                    return StepResult.ExitWithoutSaving();
+                case "2":
                     steps.Enqueue(new ConfigureBranches());
                     return StepResult.Ok();
-                case "1":
+                case "3":
                     steps.Enqueue(new GlobalModeSetting(new EditConfigStep(), false));
                     return StepResult.Ok();
-                case "2":
+                case "4":
                     steps.Enqueue(new AssemblyVersioningSchemeSetting());
                     return StepResult.Ok();
             }
@@ -24,11 +28,13 @@ namespace GitVersion
 
         protected override string GetPrompt(Config config)
         {
-            return @"What parts of the configuration would you like to edit?
+            return string.Format(@"Which would you like to change?
 
-0) Branch specific configuration
-1) Branch Increment mode (per commit/after tag)
-2) Assembly versioning scheme";
+0) Save changes
+1) Exit without saving
+2) Branch specific configuration
+3) Branch Increment mode (per commit/after tag) (Current: {0})
+4) Assembly versioning scheme (Current: {1})", config.VersioningMode, config.AssemblyVersioningScheme);
         }
 
         protected override string DefaultResult

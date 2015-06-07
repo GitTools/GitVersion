@@ -47,7 +47,9 @@ namespace GitVersion
             using (var stream = fileSystem.OpenWrite(configFilePath))
             using (var writer = new StreamWriter(stream))
             {
+                Logger.WriteInfo("Saving config file");
                 ConfigSerialiser.Write(config, writer);
+                stream.Flush();
             }
         }
     }

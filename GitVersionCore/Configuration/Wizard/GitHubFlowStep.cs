@@ -4,7 +4,7 @@ namespace GitVersion
 
     public class GitHubFlowStep : GlobalModeSetting
     {
-        public GitHubFlowStep() : base(new ConfigureBranches(), true)
+        public GitHubFlowStep() : base(new FinishedSetupStep(), true)
         {
         }
 
