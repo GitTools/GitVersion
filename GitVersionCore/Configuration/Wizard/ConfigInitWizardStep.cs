@@ -7,7 +7,7 @@ namespace GitVersion
     {
         public bool Apply(Queue<ConfigInitWizardStep> steps, Config config)
         {
-            Console.WriteLine(Prompt);
+            Console.WriteLine(GetPrompt(config));
             var input = Console.ReadLine();
             if (input == null)
             {
@@ -27,7 +27,7 @@ namespace GitVersion
         }
 
         protected abstract StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config);
-        protected abstract string Prompt { get; }
+        protected abstract string GetPrompt(Config config);
         protected abstract string DefaultResult { get; }
     }
 }

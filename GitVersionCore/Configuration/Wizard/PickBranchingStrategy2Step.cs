@@ -26,9 +26,9 @@ namespace GitVersion
             return StepResult.InvalidResponseSelected();
         }
 
-        protected override string Prompt
+        protected override string GetPrompt(Config config)
         {
-            get { return "Do you stabilise releases while continuing work on the next version? (y/n)"; }
+            return "Do you stabilise releases while continuing work on the next version? (y/n)";
         }
 
         protected override string DefaultResult

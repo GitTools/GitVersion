@@ -74,6 +74,7 @@
     <Compile Include="BuildServers\TeamCity.cs" />
     <Compile Include="Configuration\BranchConfig.cs" />
     <Compile Include="Configuration\Config.cs" />
+    <Compile Include="Configuration\Wizard\AssemblyVersioningSchemeSetting.cs" />
     <Compile Include="Configuration\Wizard\ConfigInitWizard.cs" />
     <Compile Include="Configuration\ConfigSerialiser.cs" />
     <Compile Include="Configuration\ConfigurationProvider.cs" />
@@ -82,12 +83,17 @@
     <Compile Include="Configuration\LegacyConfigNotifier.cs" />
     <Compile Include="Configuration\OldConfigurationException.cs" />
     <Compile Include="Configuration\Wizard\ConfigInitWizardStep.cs" />
-    <Compile Include="Configuration\Wizard\ExpressSetupStep.cs" />
+    <Compile Include="Configuration\Wizard\ConfigureBranch.cs" />
+    <Compile Include="Configuration\Wizard\ConfigureBranches.cs" />
+    <Compile Include="Configuration\Wizard\EditConfigStep.cs" />
     <Compile Include="Configuration\Wizard\GitFlowSetupStep.cs" />
     <Compile Include="Configuration\Wizard\GitHubFlowStep.cs" />
     <Compile Include="Configuration\Wizard\PickBranchingStrategy2Step.cs" />
     <Compile Include="Configuration\Wizard\PickBranchingStrategy3Step.cs" />
     <Compile Include="Configuration\Wizard\PickBranchingStrategy1Step.cs" />
+    <Compile Include="Configuration\Wizard\SetBranchIncrementMode.cs" />
+    <Compile Include="Configuration\Wizard\SetBranchTag.cs" />
+    <Compile Include="Configuration\Wizard\SetConfig\GlobalModeSetting.cs" />
     <Compile Include="Configuration\Wizard\SimpleOrTutorialStep.cs" />
     <Compile Include="Configuration\Wizard\PickBranchingStrategyStep.cs" />
     <Compile Include="Configuration\Wizard\StepResult.cs" />

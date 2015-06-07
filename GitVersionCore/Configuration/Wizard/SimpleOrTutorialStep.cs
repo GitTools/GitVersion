@@ -12,15 +12,15 @@ namespace GitVersion
             }
             else
             {
-                steps.Enqueue(new ExpressSetupStep());
+                steps.Enqueue(new EditConfigStep());
             }
 
             return StepResult.Ok();
         }
 
-        protected override string Prompt
+        protected override string GetPrompt(Config config)
         {
-            get { return "Would you like to run an extended init (more like a tutorial) (y/n)"; }
+            return "Would you like to run an extended init (more like a tutorial) (y/n)";
         }
 
         protected override string DefaultResult

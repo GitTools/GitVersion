@@ -27,12 +27,9 @@ namespace GitVersion
             return StepResult.Ok();
         }
 
-        protected override string Prompt
+        protected override string GetPrompt(Config config)
         {
-            get
-            {
-                return "Do you need to build nightlies or consume packages the CI build creates without releasing those versions? (y/n)";
-            }
+            return "Do you need to build nightlies or consume packages the CI build creates without releasing those versions? (y/n)";
         }
 
         protected override string DefaultResult

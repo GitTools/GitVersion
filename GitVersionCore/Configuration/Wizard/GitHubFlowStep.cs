@@ -1,22 +1,16 @@
 namespace GitVersion
 {
-    using System.Collections.Generic;
+    using Configuration.Wizard.SetConfig;
 
-    public class GitHubFlowStep : ConfigInitWizardStep
+    public class GitHubFlowStep : GlobalModeSetting
     {
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config)
+        public GitHubFlowStep() : base(new ConfigureBranches(), true)
         {
-            throw new System.NotImplementedException();
         }
 
-        protected override string Prompt
+        protected override string GetPrompt(Config config)
         {
-            get { throw new System.NotImplementedException(); }
-        }
-
-        protected override string DefaultResult
-        {
-            get { throw new System.NotImplementedException(); }
+            return "By default GitVersion will only increment the version when tagged\r\n\r\n" + base.GetPrompt(config);
         }
     }
 }

@@ -1,22 +1,16 @@
 namespace GitVersion
 {
-    using System.Collections.Generic;
+    using Configuration.Wizard.SetConfig;
 
-    public class GitFlowSetupStep : ConfigInitWizardStep
+    public class GitFlowSetupStep : GlobalModeSetting
     {
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config)
+        public GitFlowSetupStep() : base(new ConfigureBranches(), true)
         {
-            throw new System.NotImplementedException();
         }
 
-        protected override string Prompt
+        protected override string GetPrompt(Config config)
         {
-            get { throw new System.NotImplementedException(); }
-        }
-
-        protected override string DefaultResult
-        {
-            get { throw new System.NotImplementedException(); }
+            return "By default GitVersion will only increment the version of the 'develop' branch every commit, all other branches will increment when tagged\r\n\r\n" + base.GetPrompt(config);
         }
     }
 }
