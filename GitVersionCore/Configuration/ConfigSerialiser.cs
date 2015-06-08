@@ -22,17 +22,5 @@
             var serializer = new Serializer(SerializationOptions.None, new HyphenatedNamingConvention());
             serializer.Serialize(writer, config);
         }
-
-        public static void WriteSample(TextWriter writer)
-        {
-            writer.WriteLine("# assembly-versioning-scheme: MajorMinorPatchTag | MajorMinorPatch | MajorMinor | Major");
-            writer.WriteLine("# tag-prefix: '[vV|version-] # regex to match git tag prefix");
-            writer.WriteLine("# next-version: 1.0.0");
-            writer.WriteLine("# mode: ContinuousDelivery | ContinuousDeployment");
-            writer.WriteLine("# continuous-delivery-fallback-tag: ci");
-            writer.WriteLine("#branches:");
-            writer.WriteLine("#   release[/-]:\n    mode: ContinuousDelivery | ContinuousDeployment\n    tag: rc");
-            writer.WriteLine("#   develop:\n#    mode: ContinuousDelivery | ContinuousDeployment\n#    tag: alpha");
-        }
     }
 }

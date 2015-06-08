@@ -125,24 +125,6 @@ branches:
     }
 
     [Test]
-    public void VerifyInit()
-    {
-        var config = typeof(Config);
-        var aliases = config.GetProperties()
-            .Where(p => p.GetCustomAttribute<ObsoleteAttribute>() == null)
-            .Select(p => ((YamlMemberAttribute) p.GetCustomAttribute(typeof(YamlMemberAttribute))).Alias);
-        var writer = new StringWriter();
-
-        ConfigSerialiser.WriteSample(writer);
-        var initFile = writer.GetStringBuilder().ToString();
-
-        foreach (var alias in aliases)
-        {
-            initFile.ShouldContain(alias);
-        }
-    }
-
-    [Test]
     public void VerifyAliases()
     {
         var config = typeof(Config);
