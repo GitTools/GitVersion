@@ -4,11 +4,6 @@ GitVersion is a tool to help you achieve Semantic Versioning on your project.
 This influences many of the decisions GitVersion has made, please read and understand this page as it will help you start using GitVersion effectively!
 
 ## Assumptions/Rules
-### You tag releases when you release, not before
-GitVersion assumes that tags are used to *tag a release* and not used to build a release.
-
-This means that the version is calculated pre-emptively, if you currently tag, build then release that tag then GitVersion will probably not work for you.
-
 ### Tags override other rules
 If a commit is tagged, then GitVersion will *always* use that version over any calculated versions. This is so if you rebuild a tag then the same version will be produced.
 
@@ -39,6 +34,6 @@ We recognise that a single formatted version number does not work for all cases.
 You can just run `GitVersion.exe` in your repository to see what variables are available (by default a json object is returned).
 
 ## Exe or MSBuild Task
-There are two ways to consume GitVersion, the first is by running GitVersion.exe. The second is an MSBUild task. The MSBuild task is really easy to get up and running, simply install GitVersionTask from NuGet and it will integrate into your project and write out variables to your build server if it's running on one. The exe offers more options and works for not just .net projects.
+There are two ways to consume GitVersion, the first is by running GitVersion.exe. The second is an MSBuild task. The MSBuild task is really easy to get up and running, simply install GitVersionTask from NuGet and it will integrate into your project and write out variables to your build server if it's running on one. The exe offers more options and works for not just .net projects.
 
 Read more about [using GitVersion](./usage.md)
