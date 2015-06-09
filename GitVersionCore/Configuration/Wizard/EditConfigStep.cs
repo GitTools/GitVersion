@@ -30,7 +30,7 @@ namespace GitVersion
         {
             return string.Format(@"Which would you like to change?
 
-0) Save changes
+0) Save changes and exit
 1) Exit without saving
 2) Branch specific configuration
 3) Branch Increment mode (per commit/after tag) (Current: {0})

@@ -27,7 +27,7 @@ GitFlow allows you to have new development happening on the 'develop' branch, pa
         {
             return @"GitVersion can try to recommend you a branching strategy based on a few questions. 
 
-Do you need to maintain mutliple versions of your application simultanously in production? (y/n)";
+Do you need to maintain multiple versions of your application simultaneously in production? (y/n)";
         }
 
         protected override string DefaultResult

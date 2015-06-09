@@ -35,7 +35,7 @@ namespace GitVersion
 
         protected override string GetPrompt(Config config)
         {
-            return string.Format(@"What do you want the increment mode for {0} to be
+            return string.Format(@"What do you want the increment mode for {0} to be?
 
 0) Back
 1) Follow SemVer and only increment when a release has been tagged (continuous delivery mode)

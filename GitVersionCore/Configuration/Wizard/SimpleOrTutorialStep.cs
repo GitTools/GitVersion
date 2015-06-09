@@ -20,7 +20,7 @@ namespace GitVersion
 
         protected override string GetPrompt(Config config)
         {
-            return "Would you like to run an extended init (more like a tutorial) (y/n)";
+            return "Would you like to run an extended init? (more like a tutorial) (y/n)";
         }
 
         protected override string DefaultResult

@@ -17,7 +17,7 @@ GitVersion will find all tags on the current branch and return the highest one.
 Will increment: true
 
 ### Version in branch name
-If the branch has a version in it, then that version will be returned
+If the branch has a version in it, then that version will be returned.
 
 Will increment: false
 
@@ -27,7 +27,7 @@ If a branch with a version number in it is merged into the current branch, that 
 Will increment: false
 
 ### GitVersionConfig.yaml
-If the next-version property is specified in the config file, it will be used as a version source.
+If the `next-version` property is specified in the config file, it will be used as a version source.
 
 Will increment: false
 
