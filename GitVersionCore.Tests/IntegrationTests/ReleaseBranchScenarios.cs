@@ -86,7 +86,7 @@ public class ReleaseBranchScenarios
     }
 
     [Test]
-    public void CanTakeVersionFromReleaseBranchWithTagOverriden()
+    public void CanTakeVersionFromReleaseBranchWithTagOverridden()
     {
         var config = new Config();
         config.Branches["release[/-]"].Tag = "rc";
