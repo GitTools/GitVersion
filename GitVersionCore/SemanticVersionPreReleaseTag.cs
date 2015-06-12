@@ -155,7 +155,7 @@ namespace GitVersion
                 case "l":
                     return Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString()) : FormatLegacy(GetLegacyName());
                 case "lp":
-                    return Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString("D4")) : FormatLegacy(GetLegacyName());
+                    return FormatLegacy(GetLegacyName());
                 default:
                     throw new ArgumentException("Unknown format", "format");
             }
