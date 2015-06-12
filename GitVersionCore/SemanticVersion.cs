@@ -254,7 +254,12 @@ namespace GitVersion
                 case "l":
                     return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag.ToString("l")) : ToString("j");
                 case "lp":
-                    return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag.ToString("lp")) : ToString("j");
+                    {
+                        var preReleaseTagNumber = PreReleaseTag.Number.HasValue ? PreReleaseTag.Number.Value.ToString("D4") : string.Empty;
+                        var versionExtension = string.IsNullOrEmpty(BuildMetaData) ? preReleaseTagNumber : int.Parse(BuildMetaData).ToString("D4");
+
+                        return PreReleaseTag.HasTag() ? string.Format("{0}-{1}{2}", ToString("j"), PreReleaseTag.ToString("lp"), versionExtension) : ToString("j");
+                    }
                 case "f":
                     {
                         var buildMetadata = BuildMetaData.ToString();
