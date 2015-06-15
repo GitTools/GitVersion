@@ -80,6 +80,7 @@
   Commit message including a IP-number https://10.50.1.1
   A commit message")]
         [TestCase(@"Merge branch 'release/Sprint_2.0_Holdings_Computed_Balances'")]
+        [TestCase(@"Merge branch 'feature/fix-for-08.14-push'")]
         public void MergeMessagesThatsNotRelatedToGitVersion(string commitMessage)
         {
 

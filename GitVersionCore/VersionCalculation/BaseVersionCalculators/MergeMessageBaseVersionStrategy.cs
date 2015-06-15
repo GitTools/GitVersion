@@ -42,7 +42,8 @@
                 return null;
             }
 
-            var possibleVersions = Regex.Matches(mergeCommit.Message, @"^.*?(-|-v|/|/v|'|Finish )(?<PossibleVersions>\d+\.\d+(\.*\d+)*)")
+            //TODO: Make the version prefixes customizable
+            var possibleVersions = Regex.Matches(mergeCommit.Message, @"^.*?(([rR]elease|[hH]otfix|[aA]lpha)-|-v|/|/v|'|Finish )(?<PossibleVersions>\d+\.\d+(\.*\d+)*)")
                 .Cast<Match>()
                 .Select(m => m.Groups["PossibleVersions"].Value);
 
