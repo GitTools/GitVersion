@@ -24,7 +24,8 @@ public static class VersionAndBranchFinder
 
     public static VersionVariables GetVersion(string directory, Authentication authentication, bool noFetch, IFileSystem fileSystem)
     {
-        using (var repo = RepositoryLoader.GetRepo(directory))
+        var gitDir = GitDirFinder.TreeWalkForDotGitDir(directory);
+        using (var repo = RepositoryLoader.GetRepo(gitDir))
         {
             var ticks = DirectoryDateFinder.GetLastDirectoryWrite(directory);
             var key = string.Format("{0}:{1}:{2}", repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
