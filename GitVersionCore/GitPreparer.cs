@@ -172,7 +172,7 @@ namespace GitVersion
 
                 if (newHead == null)
                 {
-                    var remoteReference = GetRemoteReference(repository, targetBranch, repositoryUrl);
+                    var remoteReference = GetRemoteReference(repository, targetBranch, repositoryUrl, authentication);
                     if (remoteReference != null)
                     {
                         repository.Network.Fetch(repositoryUrl, new[]
@@ -202,11 +202,11 @@ namespace GitVersion
             return repository.Refs.FirstOrDefault(localRef => string.Equals(localRef.CanonicalName, targetBranchName));
         }
 
-        private static DirectReference GetRemoteReference(Repository repository, string branchName, string repositoryUrl)
+        private static DirectReference GetRemoteReference(Repository repository, string branchName, string repositoryUrl, Authentication authentication)
         {
             var targetBranchName = branchName.GetCanonicalBranchName();
-            var remoteReferences = repository.Network.ListReferences(repositoryUrl);
 
+            var remoteReferences = GitHelper.GetRemoteTipsUsingUsernamePasswordCredentials(repository, repositoryUrl, authentication.Username, authentication.Password);
             return remoteReferences.FirstOrDefault(remoteRef => string.Equals(remoteRef.CanonicalName, targetBranchName));
         }
     }
