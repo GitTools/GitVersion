@@ -60,6 +60,6 @@
         public bool TrackMergeTarget { get; private set; }
 
         public string[] CommitsToIgnore { get; private set; }
-        public string[] MergeMessagesToIgnore { get; set; }
+        public string[] MergeMessagesToIgnore { get; private set; }
     }
 }
