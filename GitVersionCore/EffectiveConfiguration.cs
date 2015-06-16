@@ -13,7 +13,9 @@
             bool preventIncrementForMergedBranchVersion, 
             string tagNumberPattern,
             string continuousDeploymentFallbackTag, 
-            bool trackMergeTarget)
+            bool trackMergeTarget,
+            string[] commitsToIgnore,
+            string[] mergeMessagesToIgnore)
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
             VersioningMode = versioningMode;
@@ -26,6 +28,8 @@
             TagNumberPattern = tagNumberPattern;
             ContinuousDeploymentFallbackTag = continuousDeploymentFallbackTag;
             TrackMergeTarget = trackMergeTarget;
+            CommitsToIgnore = commitsToIgnore;
+            MergeMessagesToIgnore = mergeMessagesToIgnore;
         }
 
         public VersioningMode VersioningMode { get; private set; }
@@ -54,5 +58,8 @@
 
         public string ContinuousDeploymentFallbackTag { get; private set; }
         public bool TrackMergeTarget { get; private set; }
+
+        public string[] CommitsToIgnore { get; private set; }
+        public string[] MergeMessagesToIgnore { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace GitVersionCore.Tests.VersionCalculation.Strategies
 {
     using System.Collections.Generic;
+    using GitVersion;
     using GitVersion.VersionCalculation.BaseVersionCalculators;
     using LibGit2Sharp;
     using NUnit.Framework;
@@ -87,11 +88,50 @@
             var parents = GetParents(true);
 
             AssertMergeMessage(commitMessage, null, parents);
-        } 
+        }
 
-        static void AssertMergeMessage(string message, string expectedVersion, List<Commit> parents)
+        [TestCase(@"Merge branch 'release/14.08-some-historical-commit'")]
+        public void MergeMessageIgnoresConfiguredMessages(string commitMessage)
         {
-            var commit = new MockCommit
+            var parents = GetParents(true);
+
+            var config = new Config
+            {
+                MergeMessagesToIgnore = new[]
+                {
+                    "release/14.08"
+                }
+            };
+
+            AssertMergeMessage(commitMessage, null, parents, config);
+        }
+
+        [TestCase(@"Merge branch 'Release-v0.2.0'", "9541b36186140ad5201c6e27e1abdc0b02a899e4")]
+        public void MergeMessageIgnoresConfiguredCommits(string commitMessage, string sha)
+        {
+            var parents = GetParents(true);
+
+            var config = new Config
+            {
+                CommitsToIgnore = new[]
+                {
+                    sha
+                }
+            };
+
+            AssertMergeMessage(commitMessage, null, parents, config, sha);
+        }
+
+        static void AssertMergeMessage(string message, string expectedVersion, List<Commit> parents, Config config = null, string commitSha = null)
+        {
+            ObjectId objectId = null;
+
+            if (commitSha != null)
+            {
+                ObjectId.TryParse(commitSha, out objectId);
+            }
+
+            var commit = new MockCommit(objectId)
             {
                 MessageEx = message,
                 ParentsEx = parents
@@ -106,6 +146,7 @@
                         new MockCommit()
                     }
                 })
+                .WithConfig(config)
                 .Build();
             var sut = new MergeMessageBaseVersionStrategy();
 

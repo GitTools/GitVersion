@@ -14,10 +14,12 @@ namespace GitVersionCore.Tests
             bool preventIncrementForMergedBranchVersion = false,
             string tagNumberPattern = null,
             string continuousDeploymentFallbackTag = "ci",
-            bool trackMergeTarget = false) : 
+            bool trackMergeTarget = false,
+            string[] commitsToIgnore = null,
+            string[] mergeMessagesToIgnore = null) : 
                 base(assemblyVersioningScheme, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch, 
                     branchPrefixToTrim, preventIncrementForMergedBranchVersion, tagNumberPattern, continuousDeploymentFallbackTag,
-                    trackMergeTarget)
+                    trackMergeTarget, commitsToIgnore, mergeMessagesToIgnore)
         {
         }
     }

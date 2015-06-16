@@ -1,6 +1,7 @@
 ﻿namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
     using System.Linq;
+    using System.Security.Cryptography.X509Certificates;
     using System.Text.RegularExpressions;
     using LibGit2Sharp;
 
@@ -38,6 +39,16 @@
         private static SemanticVersion Inner(Commit mergeCommit, EffectiveConfiguration configuration)
         {
             if (mergeCommit.Parents.Count() < 2)
+            {
+                return null;
+            }
+
+            if (configuration.CommitsToIgnore != null && configuration.CommitsToIgnore.Contains(mergeCommit.Sha))
+            {
+                return null;
+            }
+
+            if (configuration.MergeMessagesToIgnore != null && configuration.MergeMessagesToIgnore.Any(x => mergeCommit.Message.Contains(x)))
             {
                 return null;
             }

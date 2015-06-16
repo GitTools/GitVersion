@@ -91,7 +91,9 @@
                 tag, nextVersion, incrementStrategy, currentBranchConfig.Key, 
                 preventIncrementForMergedBranchVersion, 
                 tagNumberPattern, configuration.ContinuousDeploymentFallbackTag,
-                currentBranchConfig.Value.TrackMergeTarget);
+                currentBranchConfig.Value.TrackMergeTarget,
+                configuration.CommitsToIgnore,
+                configuration.MergeMessagesToIgnore);
         }
     }
 }

@@ -64,6 +64,12 @@
         [YamlMember(Alias = "next-version")]
         public string NextVersion { get; set; }
 
+        [YamlMember(Alias="commits-to-ignore")]
+        public string[] CommitsToIgnore { get; set; }
+
+        [YamlMember(Alias = "merge-messages-to-ignore")]
+        public string[] MergeMessagesToIgnore { get; set; }
+
         [YamlMember(Alias = "branches")]
         public Dictionary<string, BranchConfig> Branches
         {
