@@ -1,5 +1,6 @@
 namespace GitVersion
 {
+    using System;
     using LibGit2Sharp;
     using System.Collections.Generic;
     using System.Linq;
@@ -162,6 +163,20 @@ namespace GitVersion
 
             Logger.WriteInfo(string.Format("Checking local branch '{0}' out.", fakeBranchName));
             repo.Checkout(fakeBranchName);
+        }
+
+        internal static IEnumerable<DirectReference> GetRemoteTipsUsingUsernamePasswordCredentials(Repository repo, string repoUrl, string username, string password)
+        {
+            // This is a work-around as long as https://github.com/libgit2/libgit2sharp/issues/1099 is not fixed
+            var remote = repo.Network.Remotes.Add(Guid.NewGuid().ToString(), repoUrl);
+            try
+            {
+                return GetRemoteTipsUsingUsernamePasswordCredentials(repo, remote, username, password);
+            }
+            finally
+            {
+                repo.Network.Remotes.Remove(remote.Name);
+            }
         }
 
         static IEnumerable<DirectReference> GetRemoteTipsUsingUsernamePasswordCredentials(Repository repo, Remote remote, string username, string password)
