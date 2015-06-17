@@ -101,6 +101,7 @@
     <Compile Include="ApprovalTestsConfig.cs" />
     <Compile Include="AssemblyInfoBuilderTests.cs" />
     <Compile Include="AssemblyLocation.cs" />
+    <Compile Include="GitVersionTaskDirectoryTests.cs" />
     <Compile Include="Mocks\MockBuildEngine.cs" />
     <Compile Include="GetVersionTaskTests.cs" />
     <Compile Include="Helpers\IPostTestDirectoryRemover.cs" />
