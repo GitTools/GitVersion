@@ -2,7 +2,10 @@ namespace GitVersion
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
+    using System.Linq;
+    using System.Text.RegularExpressions;
     using GitVersion.Helpers;
 
     class AssemblyInfoFileUpdate : IDisposable
@@ -12,12 +15,24 @@ namespace GitVersion
 
         public AssemblyInfoFileUpdate(Arguments args, string workingDirectory, VersionVariables variables, IFileSystem fileSystem)
         {
+            Debugger.Launch();
             if (!args.UpdateAssemblyInfo) return;
 
             if (args.Output != OutputType.Json)
                 Console.WriteLine("Updating assembly info files");
 
-            var assemblyInfoFiles = GetAssemblyInfoFiles(workingDirectory, args, fileSystem);
+            // Don't scan the packages directory, b/c if there is src in there it may pick up assemblyinfo from there
+            var assemblyInfoFiles = GetAssemblyInfoFiles(workingDirectory, args, fileSystem).Where(x => !x.Contains(@"\packages\"));
+
+            var assemblyVersion = variables.AssemblySemVer;
+            var assemblyVersionRegex = new Regex(@"AssemblyVersion\(""[^""]*""\)");
+            var assemblyVersionString = string.Format("AssemblyVersion(\"{0}\")", assemblyVersion);
+            var assemblyInfoVersion = variables.InformationalVersion;
+            var assemblyInfoVersionRegex = new Regex(@"AssemblyInformationalVersion\(""[^""]*""\)");
+            var assemblyInfoVersionString = string.Format("AssemblyInformationalVersion(\"{0}\")", assemblyInfoVersion);
+            var assemblyFileVersion = variables.MajorMinorPatch + ".0";
+            var assemblyFileVersionRegex = new Regex(@"AssemblyFileVersion\(""[^""]*""\)");
+            var assemblyFileVersionString = string.Format("AssemblyFileVersion(\"{0}\")", assemblyFileVersion);
 
             foreach (var assemblyInfoFile in assemblyInfoFiles)
             {
@@ -30,18 +45,32 @@ namespace GitVersion
                         fileSystem.Delete(localAssemblyInfo);
                     fileSystem.Move(backupAssemblyInfo, localAssemblyInfo);
                 });
+
                 cleanupBackupTasks.Add(() => fileSystem.Delete(backupAssemblyInfo));
 
-                var assemblyVersion = variables.AssemblySemVer;
-                var assemblyInfoVersion = variables.InformationalVersion;
-                var assemblyFileVersion = variables.MajorMinorPatch + ".0";
-                var fileContents = fileSystem.ReadAllText(assemblyInfoFile)
-                    .RegexReplace(@"AssemblyVersion\(""[^""]*""\)", string.Format("AssemblyVersion(\"{0}\")", assemblyVersion))
-                    .RegexReplace(@"AssemblyInformationalVersion\(""[^""]*""\)", string.Format("AssemblyInformationalVersion(\"{0}\")", assemblyInfoVersion))
-                    .RegexReplace(@"AssemblyFileVersion\(""[^""]*""\)", string.Format("AssemblyFileVersion(\"{0}\")", assemblyFileVersion));
-
+                var fileContents = fileSystem.ReadAllText(assemblyInfoFile);
+                fileContents = ReplaceOrAppend(assemblyVersionRegex, fileContents, assemblyVersionString);
+                fileContents = ReplaceOrAppend(assemblyInfoVersionRegex, fileContents, assemblyInfoVersionString);
+                fileContents = ReplaceOrAppend(assemblyFileVersionRegex, fileContents, assemblyFileVersionString);
+                
                 fileSystem.WriteAllText(assemblyInfoFile, fileContents);
             }
+        }
+
+        static string ReplaceOrAppend(Regex replaceRegex, string inputString, string replaceString)
+        {
+            const string assemblyAddFormat = "[assembly: {0}]";
+
+            if (replaceRegex.IsMatch(inputString))
+            {
+                inputString = replaceRegex.Replace(inputString, replaceString);
+            }
+            else
+            {
+                inputString += Environment.NewLine + string.Format(assemblyAddFormat, replaceString);
+            }
+
+            return inputString;
         }
 
         static IEnumerable<string> GetAssemblyInfoFiles(string workingDirectory, Arguments args, IFileSystem fileSystem)
