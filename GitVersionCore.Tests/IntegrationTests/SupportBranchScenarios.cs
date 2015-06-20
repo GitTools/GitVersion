@@ -46,7 +46,7 @@ public class SupportBranchScenarios
             fixture.AssertFullSemver("1.2.1-beta.1+1");
             fixture.Repository.Checkout("support/1.0.0");
             fixture.Repository.MergeNoFF("hotfix/1.2.1");
-            fixture.AssertFullSemver("1.2.1+0");
+            fixture.AssertFullSemver("1.2.1+2");
         }
     }
 

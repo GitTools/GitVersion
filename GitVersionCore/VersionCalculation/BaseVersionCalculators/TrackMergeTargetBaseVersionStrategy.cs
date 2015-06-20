@@ -4,7 +4,7 @@
     using System.Linq;
     using LibGit2Sharp;
 
-    public class TrackMergeTargetBaseVersionStrategy : HighestTagBaseVersionStrategy
+    public class TrackMergeTargetBaseVersionStrategy : TaggedCommitVersionStrategy
     {
         protected override bool IsValidTag(GitVersionContext context, string branchName, Tag tag, Commit commit)
         {

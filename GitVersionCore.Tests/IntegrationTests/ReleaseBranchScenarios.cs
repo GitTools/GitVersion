@@ -47,11 +47,12 @@ public class ReleaseBranchScenarios
             // Merge to develop
             fixture.Repository.Checkout("develop");
             fixture.Repository.MergeNoFF("release/1.0.0");
+            fixture.AssertFullSemver("1.1.0-unstable.1");
 
             fixture.Repository.MakeACommit();
             fixture.Repository.Branches.Remove(releaseBranch);
 
-            fixture.AssertFullSemver("1.1.0-unstable.1");
+            fixture.AssertFullSemver("1.1.0-unstable.2");
         }
     }
 

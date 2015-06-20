@@ -1,6 +1,7 @@
 ﻿namespace GitVersionCore.Tests.VersionCalculation.Strategies
 {
     using System.Collections.Generic;
+    using System.Linq;
     using GitVersion.VersionCalculation.BaseVersionCalculators;
     using LibGit2Sharp;
     using NUnit.Framework;
@@ -24,7 +25,7 @@
             }).Build();
             var sut = new MergeMessageBaseVersionStrategy();
 
-            var baseVersion = sut.GetVersion(context);
+            var baseVersion = sut.GetVersions(context).Single();
 
             baseVersion.ShouldIncrement.ShouldBe(false);
         }
@@ -109,7 +110,7 @@
                 .Build();
             var sut = new MergeMessageBaseVersionStrategy();
 
-            var baseVersion = sut.GetVersion(context);
+            var baseVersion = sut.GetVersions(context).SingleOrDefault();
 
             if (expectedVersion == null)
             {

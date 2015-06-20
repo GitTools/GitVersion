@@ -1,20 +1,19 @@
 ﻿namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
     using System;
+    using System.Collections.Generic;
 
     public class VersionInBranchBaseVersionStrategy : BaseVersionStrategy
     {
-        public override BaseVersion GetVersion(GitVersionContext context)
+        public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
             var versionInBranch = GetVersionInBranch(context);
             if (versionInBranch != null)
             {
                 var commitBranchWasBranchedFrom = context.CurrentBranch.FindCommitBranchWasBranchedFrom(context.Repository);
                 var branchNameOverride = context.CurrentBranch.Name.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
-                return new BaseVersion("Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom, branchNameOverride);
+                yield return new BaseVersion("Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom, branchNameOverride);
             }
-
-            return null;
         }
 
         Tuple<string, SemanticVersion> GetVersionInBranch(GitVersionContext context)

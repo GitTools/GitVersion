@@ -24,20 +24,43 @@ namespace GitVersion
             return repository.Branches.FirstOrDefault(x => x.Name == "origin/" + branchName);
         }
 
+        public static SemanticVersion LastVersionTagOnBranch(this Branch branch, IRepository repository, string tagPrefixRegex)
+        {
+            var tags = repository.Tags.Select(t => t).ToList();
+            var until = FindCommitBranchWasBranchedFrom(branch, repository);
+
+            return repository.Commits.QueryBy(new CommitFilter
+            {
+                Since = branch.Tip,
+                Until = until
+            })
+            .SelectMany(c => tags.Where(t => c.Sha == t.Target.Sha).SelectMany(t =>
+            {
+                SemanticVersion semver;
+                if (SemanticVersion.TryParse(t.Name, tagPrefixRegex, out semver))
+                    return new [] { semver };
+                return new SemanticVersion[0];
+            }))
+            .FirstOrDefault();
+        }
+
         public static Commit FindCommitBranchWasBranchedFrom(this Branch branch, IRepository repository, params Branch[] excludedBranches)
         {
-            var otherBranches = repository.Branches.Except(excludedBranches).Where(b => IsSameBranch(branch, b)).ToList();
-            var mergeBases = otherBranches.Select(b =>
+            using (Logger.IndentLog("Finding branch source"))
             {
-                var otherCommit = b.Tip;
-                if (b.Tip.Parents.Contains(branch.Tip))
+                var otherBranches = repository.Branches.Except(excludedBranches).Where(b => IsSameBranch(branch, b)).ToList();
+                var mergeBases = otherBranches.Select(b =>
                 {
-                    otherCommit = b.Tip.Parents.First();
-                }
-                var mergeBase = repository.Commits.FindMergeBase(otherCommit, branch.Tip);
-                return mergeBase;
-            }).Where(b => b != null).ToList();
-            return mergeBases.OrderByDescending(b => b.Committer.When).FirstOrDefault();
+                    var otherCommit = b.Tip;
+                    if (b.Tip.Parents.Contains(branch.Tip))
+                    {
+                        otherCommit = b.Tip.Parents.First();
+                    }
+                    var mergeBase = repository.Commits.FindMergeBase(otherCommit, branch.Tip);
+                    return mergeBase;
+                }).Where(b => b != null).ToList();
+                return mergeBases.OrderByDescending(b => b.Committer.When).FirstOrDefault();
+            }
         }
 
         static bool IsSameBranch(Branch branch, Branch b)

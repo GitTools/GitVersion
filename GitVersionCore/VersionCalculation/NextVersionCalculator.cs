@@ -1,23 +1,21 @@
 ﻿namespace GitVersion.VersionCalculation
 {
     using System.Text.RegularExpressions;
-    using GitVersion.VersionCalculation.BaseVersionCalculators;
+    using BaseVersionCalculators;
 
     public class NextVersionCalculator
     {
         IBaseVersionCalculator baseVersionFinder;
         IMetaDataCalculator metaDataCalculator;
-        HighestTagBaseVersionStrategy highestTagBaseVersionStrategy;
 
         public NextVersionCalculator(IBaseVersionCalculator baseVersionCalculator = null, IMetaDataCalculator metaDataCalculator = null)
         {
             this.metaDataCalculator = metaDataCalculator ?? new MetaDataCalculator();
-            highestTagBaseVersionStrategy = new HighestTagBaseVersionStrategy();
             baseVersionFinder = baseVersionCalculator ??
                 new BaseVersionCalculator(
                     new FallbackBaseVersionStrategy(),
                     new ConfigNextVersionBaseVersionStrategy(),
-                    highestTagBaseVersionStrategy,
+                    new TaggedCommitVersionStrategy(),
                     new TrackMergeTargetBaseVersionStrategy(),
                     new MergeMessageBaseVersionStrategy(),
                     new VersionInBranchBaseVersionStrategy());
@@ -75,14 +73,14 @@
                     number = int.Parse(numberGroup.Value);
                 }
             }
-
-            var lastTag = highestTagBaseVersionStrategy.GetVersion(context);
+            
+            var lastTag = context.CurrentBranch.LastVersionTagOnBranch(context.Repository, context.Configuration.GitTagPrefix);
             if (number == null &&
                 lastTag != null &&
-                MajorMinorPatchEqual(lastTag.SemanticVersion, semanticVersion) &&
-                lastTag.SemanticVersion.PreReleaseTag.HasTag())
+                MajorMinorPatchEqual(lastTag, semanticVersion) &&
+                lastTag.PreReleaseTag.HasTag())
             {
-                number = lastTag.SemanticVersion.PreReleaseTag.Number + 1;
+                number = lastTag.PreReleaseTag.Number + 1;
             }
 
             if (number == null)

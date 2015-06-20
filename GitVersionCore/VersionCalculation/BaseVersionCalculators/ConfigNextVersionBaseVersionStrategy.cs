@@ -1,13 +1,15 @@
 ﻿namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
+    using System.Collections.Generic;
+
     public class ConfigNextVersionBaseVersionStrategy : BaseVersionStrategy
     {
-        public override BaseVersion GetVersion(GitVersionContext context)
+        public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
             if (string.IsNullOrEmpty(context.Configuration.NextVersion) || context.IsCurrentCommitTagged)
-                return null;
+                yield break;
             var semanticVersion = SemanticVersion.Parse(context.Configuration.NextVersion, context.Configuration.GitTagPrefix);
-            return new BaseVersion("NextVersion in GitVersionConfig.yaml", false, semanticVersion, null, null);
+            yield return new BaseVersion("NextVersion in GitVersionConfig.yaml", false, semanticVersion, null, null);
         }
     }
 }

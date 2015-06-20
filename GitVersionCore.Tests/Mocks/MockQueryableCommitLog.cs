@@ -29,12 +29,12 @@ public class MockQueryableCommitLog : IQueryableCommitLog
 
     public ICommitLog QueryBy(CommitFilter filter)
     {
-        throw new NotImplementedException();
+        return this;
     }
 
     public Commit FindMergeBase(Commit first, Commit second)
     {
-        throw new NotImplementedException();
+        return null;
     }
 
     public Commit FindMergeBase(IEnumerable<Commit> commits, MergeBaseFindingStrategy strategy)

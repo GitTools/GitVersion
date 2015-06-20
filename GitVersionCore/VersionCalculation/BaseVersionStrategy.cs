@@ -1,9 +1,10 @@
 ﻿namespace GitVersion.VersionCalculation
 {
-    using GitVersion.VersionCalculation.BaseVersionCalculators;
+    using System.Collections.Generic;
+    using BaseVersionCalculators;
 
     public abstract class BaseVersionStrategy
     {
-        public abstract BaseVersion GetVersion(GitVersionContext context);
+        public abstract IEnumerable<BaseVersion> GetVersions(GitVersionContext context);
     }
 }
