@@ -11,9 +11,7 @@ public static class ModuleInitializer
     /// </summary>
     public static void Initialize()
     {
-        Logger.WriteInfo = s => Trace.WriteLine(s);
-        Logger.WriteError = s => Trace.WriteLine(s);
-        Logger.WriteWarning = s => Trace.WriteLine(s);
+        Logger.SetLoggers(s => Trace.WriteLine(s), s => Trace.WriteLine(s), s => Trace.WriteLine(s));
     }
 
 }

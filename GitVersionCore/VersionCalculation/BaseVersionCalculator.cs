@@ -14,33 +14,34 @@
 
         public BaseVersion GetBaseVersion(GitVersionContext context)
         {
-            Logger.WriteInfo("Base Versions:");
-
-            var baseVersion = strategies
-                .Select(s => s.GetVersion(context))
-                .Where(v =>
-                {
-                    if (v != null)
+            using (Logger.IndentLog("Calculating base versions"))
+            {
+                var baseVersion = strategies
+                    .Select(s => s.GetVersion(context))
+                    .Where(v =>
                     {
-                        Logger.WriteInfo(v.ToString());
-                        return true;
-                    }
+                        if (v != null)
+                        {
+                            Logger.WriteInfo(v.ToString());
+                            return true;
+                        }
 
-                    return false;
-                })
-                .Aggregate((v1, v2) =>
-                {
-                    if (v1.SemanticVersion > v2.SemanticVersion)
+                        return false;
+                    })
+                    .Aggregate((v1, v2) =>
                     {
-                        return new BaseVersion(v1.Source, v1.ShouldIncrement, v1.SemanticVersion, v1.BaseVersionSource ?? v2.BaseVersionSource, v1.BranchNameOverride);
-                    }
+                        if (v1.SemanticVersion > v2.SemanticVersion)
+                        {
+                            return new BaseVersion(v1.Source, v1.ShouldIncrement, v1.SemanticVersion, v1.BaseVersionSource ?? v2.BaseVersionSource, v1.BranchNameOverride);
+                        }
 
-                    return new BaseVersion(v2.Source, v2.ShouldIncrement, v2.SemanticVersion, v2.BaseVersionSource ?? v1.BaseVersionSource, v2.BranchNameOverride);
-                });
+                        return new BaseVersion(v2.Source, v2.ShouldIncrement, v2.SemanticVersion, v2.BaseVersionSource ?? v1.BaseVersionSource, v2.BranchNameOverride);
+                    });
 
-            Logger.WriteInfo(string.Format("Base version used: {0}", baseVersion));
+                Logger.WriteInfo(string.Format("Base version used: {0}", baseVersion));
 
-            return baseVersion;
+                return baseVersion;
+            }
         }
     }
 }

@@ -126,9 +126,10 @@ namespace GitVersion
                 }
             }
 
-            Logger.WriteInfo = s => writeActions.ForEach(a => a(s));
-            Logger.WriteWarning = s => writeActions.ForEach(a => a(s));
-            Logger.WriteError = s => writeActions.ForEach(a => a(s));
+            Logger.SetLoggers(
+                s => writeActions.ForEach(a => a(s)),
+                s => writeActions.ForEach(a => a(s)),
+                s => writeActions.ForEach(a => a(s)));
         }
 
         static void WriteLogEntry(Arguments arguments, string s)

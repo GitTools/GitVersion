@@ -22,8 +22,10 @@
         {
             logger = new TaskLogger(this);
             fileSystem = new FileSystem();
-            Logger.WriteInfo = this.LogInfo;
-            Logger.WriteWarning = this.LogWarning;
+            Logger.SetLoggers(
+                this.LogInfo,
+                this.LogWarning,
+                s => this.LogError(s));
         }
 
         public override bool Execute()
