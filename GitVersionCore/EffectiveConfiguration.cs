@@ -53,6 +53,7 @@
         public string TagNumberPattern { get; private set; }
 
         public string ContinuousDeploymentFallbackTag { get; private set; }
+
         public bool TrackMergeTarget { get; private set; }
     }
 }

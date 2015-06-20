@@ -25,7 +25,7 @@
 
         public override string ToString()
         {
-            return string.Format("{0}: {1} from commit {2}", Source, SemanticVersion.ToString("f"), BaseVersionSource == null ? "External Source" : BaseVersionSource.Sha);
+            return string.Format("{0}: {1} with commit count source {2}", Source, SemanticVersion.ToString("f"), BaseVersionSource == null ? "External Source" : BaseVersionSource.Sha);
         }
     }
 }
