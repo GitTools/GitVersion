@@ -200,7 +200,9 @@ namespace GitVersion
 
             foreach (var remoteTrackingReference in repo.Refs.FromGlob(prefix + "*").Where(r => r.CanonicalName != remoteHeadCanonicalName))
             {
-                var localCanonicalName = "refs/heads/" + remoteTrackingReference.CanonicalName.Substring(prefix.Length);
+                var remoteTrackingReferenceName = remoteTrackingReference.CanonicalName;
+                var branchName = remoteTrackingReferenceName.Substring(prefix.Length);
+                var localCanonicalName = "refs/heads/" + branchName;
 
                 if (repo.Refs.Any(x => x.CanonicalName == localCanonicalName))
                 {
@@ -218,6 +220,9 @@ namespace GitVersion
                 {
                     repo.Refs.Add(localCanonicalName, new ObjectId(symbolicReference.ResolveToDirectReference().TargetIdentifier), true);
                 }
+
+                var branch = repo.Branches[branchName];
+                repo.Branches.Update(branch, b => b.TrackedBranch = remoteTrackingReferenceName);
             }
         }
 
