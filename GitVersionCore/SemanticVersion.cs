@@ -280,10 +280,8 @@ namespace GitVersion
                 switch (incrementStrategy)
                 {
                     case IncrementStrategy.None:
-                        Logger.WriteInfo("Skipping version increment");
                         break;
                     case IncrementStrategy.Major:
-                        Logger.WriteInfo("Incrementing Major Version");
                         incremented.Major++;
                         incremented.Minor = 0;
                         incremented.Patch = 0;
@@ -291,11 +289,9 @@ namespace GitVersion
                     case IncrementStrategy.Minor:
                         incremented.Minor++;
                         incremented.Patch = 0;
-                        Logger.WriteInfo("Incrementing Minor Version");
                         break;
                     case IncrementStrategy.Patch:
                         incremented.Patch++;
-                        Logger.WriteInfo("Incrementing Patch Version");
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -305,7 +301,6 @@ namespace GitVersion
             {
                 if (incremented.PreReleaseTag.Number != null)
                 {
-                    Logger.WriteInfo("Incrementing prerelease");
                     incremented.PreReleaseTag.Number = incremented.PreReleaseTag.Number;
                     incremented.PreReleaseTag.Number++;
                 }

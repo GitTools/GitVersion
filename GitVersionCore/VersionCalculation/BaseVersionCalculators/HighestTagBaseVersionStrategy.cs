@@ -11,10 +11,15 @@
             if (GetVersion(context, out version))
             {
                 var shouldUpdateVersion = version.Commit.Sha != context.CurrentCommit.Sha;
-                return new BaseVersion(string.Format("Git tag '{0}'", version.Tag), shouldUpdateVersion, version.SemVer, version.Commit, null);
+                return new BaseVersion(FormatSource(version), shouldUpdateVersion, version.SemVer, version.Commit, null);
             }
 
             return null;
+        }
+
+        protected virtual string FormatSource(VersionTaggedCommit version)
+        {
+            return string.Format("Git tag '{0}'", version.Tag);
         }
 
         protected virtual bool IsValidTag(GitVersionContext context, string branchName, Tag tag, Commit commit)
@@ -68,7 +73,7 @@
             return true;
         }
 
-        class VersionTaggedCommit
+        protected class VersionTaggedCommit
         {
             public string Tag;
             public Commit Commit;

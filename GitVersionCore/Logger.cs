@@ -19,8 +19,8 @@ namespace GitVersion
         public static IDisposable IndentLog(string operationDescription)
         {
             var start = DateTime.Now;
-            indent = indent + "  ";
             WriteInfo("Begin: " + operationDescription);
+            indent = indent + "  ";
             return new ActionDisposable(() =>
             {
                 indent = indent.Substring(0, indent.Length - 2);

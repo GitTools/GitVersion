@@ -16,8 +16,14 @@
                 }
             }
 
-            return base.IsValidTag(context, branchName, tag, commit);
+            return false;
         }
+
+        protected override string FormatSource(VersionTaggedCommit version)
+        {
+            return string.Format("Merge target tagged '{0}'", version.Tag);
+        }
+
 
         static bool IsDirectMergeFromCommit(Tag tag, Commit commit)
         {
