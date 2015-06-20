@@ -11,9 +11,7 @@ public class GitPreparerTests
 {
     public GitPreparerTests()
     {
-        Logger.WriteInfo = s => { };
-        Logger.WriteWarning = s => { };
-        Logger.WriteError = s => { };
+        Logger.SetLoggers(s => { }, s => { }, s => { });
     }
 
     const string DefaultBranchName = "master";
