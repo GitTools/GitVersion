@@ -57,7 +57,7 @@ public class RemoteRepositoryScenarios
     }
 
     [Test]
-    public void GivenARemoteGitRepositoryWhenCheckingOutDetachedhead_UsingExistingImplemenationThrowsException()
+    public void GivenARemoteGitRepositoryWhenCheckingOutDetachedhead_UsingExistingImplementationThrowsException()
     {
 
         using (var fixture = new RemoteRepositoryFixture(new Config()))

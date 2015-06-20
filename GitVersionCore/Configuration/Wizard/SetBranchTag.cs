@@ -9,8 +9,8 @@ namespace GitVersion
 
         public SetBranchTag(string name, BranchConfig branchConfig)
         {
-            this.branchConfig = branchConfig;
             this.name = name;
+            this.branchConfig = branchConfig;
         }
 
         protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config)

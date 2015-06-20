@@ -121,7 +121,7 @@ namespace GitVersion
                 return;
             }
 
-            Logger.WriteInfo(string.Format("Checking out files that might be needed later in dynamic repository"));
+            Logger.WriteInfo("Checking out files that might be needed later in dynamic repository");
 
             foreach (var fileName in fileNames)
             {

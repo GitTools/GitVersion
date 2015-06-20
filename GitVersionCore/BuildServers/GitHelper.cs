@@ -1,5 +1,6 @@
 namespace GitVersion
 {
+    using System;
     using LibGit2Sharp;
     using System.Collections.Generic;
     using System.Linq;
@@ -164,6 +165,20 @@ namespace GitVersion
             repo.Checkout(fakeBranchName);
         }
 
+        internal static IEnumerable<DirectReference> GetRemoteTipsUsingUsernamePasswordCredentials(Repository repo, string repoUrl, string username, string password)
+        {
+            // This is a work-around as long as https://github.com/libgit2/libgit2sharp/issues/1099 is not fixed
+            var remote = repo.Network.Remotes.Add(Guid.NewGuid().ToString(), repoUrl);
+            try
+            {
+                return GetRemoteTipsUsingUsernamePasswordCredentials(repo, remote, username, password);
+            }
+            finally
+            {
+                repo.Network.Remotes.Remove(remote.Name);
+            }
+        }
+
         static IEnumerable<DirectReference> GetRemoteTipsUsingUsernamePasswordCredentials(Repository repo, Remote remote, string username, string password)
         {
             return repo.Network.ListReferences(remote, (url, fromUrl, types) => new UsernamePasswordCredentials
@@ -185,7 +200,9 @@ namespace GitVersion
 
             foreach (var remoteTrackingReference in repo.Refs.FromGlob(prefix + "*").Where(r => r.CanonicalName != remoteHeadCanonicalName))
             {
-                var localCanonicalName = "refs/heads/" + remoteTrackingReference.CanonicalName.Substring(prefix.Length);
+                var remoteTrackingReferenceName = remoteTrackingReference.CanonicalName;
+                var branchName = remoteTrackingReferenceName.Substring(prefix.Length);
+                var localCanonicalName = "refs/heads/" + branchName;
 
                 if (repo.Refs.Any(x => x.CanonicalName == localCanonicalName))
                 {
@@ -203,6 +220,9 @@ namespace GitVersion
                 {
                     repo.Refs.Add(localCanonicalName, new ObjectId(symbolicReference.ResolveToDirectReference().TargetIdentifier), true);
                 }
+
+                var branch = repo.Branches[branchName];
+                repo.Branches.Update(branch, b => b.TrackedBranch = remoteTrackingReferenceName);
             }
         }
 

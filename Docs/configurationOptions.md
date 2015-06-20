@@ -1,1 +1,1 @@
-# Confiuration options
+# Configuration options
