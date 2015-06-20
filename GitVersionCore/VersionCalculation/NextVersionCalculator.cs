@@ -1,8 +1,7 @@
 ﻿namespace GitVersion.VersionCalculation
 {
-    using System;
     using System.Text.RegularExpressions;
-    using BaseVersionCalculators;
+    using GitVersion.VersionCalculation.BaseVersionCalculators;
 
     public class NextVersionCalculator
     {
@@ -40,27 +39,30 @@
             }
 
             var baseVersion = baseVersionFinder.GetBaseVersion(context);
-
-            if (baseVersion.ShouldIncrement) IncrementVersion(context, baseVersion);
+            var semver = baseVersion.SemanticVersion;
+            if (baseVersion.ShouldIncrement)
+            {
+                semver = semver.IncrementVersion(context.Configuration.Increment);
+            }
             else Logger.WriteInfo("Skipping version increment");
 
-            if (!baseVersion.SemanticVersion.PreReleaseTag.HasTag() && !string.IsNullOrEmpty(context.Configuration.Tag))
+            if (!semver.PreReleaseTag.HasTag() && !string.IsNullOrEmpty(context.Configuration.Tag))
             {
-                UpdatePreReleaseTag(context, baseVersion);
+                UpdatePreReleaseTag(context, semver, baseVersion.BranchNameOverride);
             }
 
-            baseVersion.SemanticVersion.BuildMetaData = metaDataCalculator.Create(baseVersion.BaseVersionSource, context);
+            semver.BuildMetaData = metaDataCalculator.Create(baseVersion.BaseVersionSource, context);
 
-            return baseVersion.SemanticVersion;
+            return semver;
         }
 
-        void UpdatePreReleaseTag(GitVersionContext context, BaseVersion baseVersion)
+        void UpdatePreReleaseTag(GitVersionContext context, SemanticVersion semanticVersion, string branchNameOverride)
         {
             var tagToUse = context.Configuration.Tag;
             if (tagToUse == "useBranchName")
             {
                 Logger.WriteInfo("Using branch name to calculate version tag");
-                var name = baseVersion.BranchNameOverride ?? context.CurrentBranch.Name;
+                var name = branchNameOverride ?? context.CurrentBranch.Name;
                 tagToUse = name.RegexReplace(context.Configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
             }
             int? number = null;
@@ -77,7 +79,7 @@
             var lastTag = highestTagBaseVersionStrategy.GetVersion(context);
             if (number == null &&
                 lastTag != null &&
-                MajorMinorPatchEqual(lastTag.SemanticVersion, baseVersion.SemanticVersion) &&
+                MajorMinorPatchEqual(lastTag.SemanticVersion, semanticVersion) &&
                 lastTag.SemanticVersion.PreReleaseTag.HasTag())
             {
                 number = lastTag.SemanticVersion.PreReleaseTag.Number + 1;
@@ -88,7 +90,7 @@
                 number = 1;
             }
 
-            baseVersion.SemanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, number);
+            semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, number);
         }
 
         static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion)
@@ -96,44 +98,6 @@
             return lastTag.Major == baseVersion.Major &&
                    lastTag.Minor == baseVersion.Minor &&
                    lastTag.Patch == baseVersion.Patch;
-        }
-
-        static void IncrementVersion(GitVersionContext context, BaseVersion baseVersion)
-        {
-            if (!baseVersion.SemanticVersion.PreReleaseTag.HasTag())
-            {
-                switch (context.Configuration.Increment)
-                {
-                    case IncrementStrategy.None:
-                        Logger.WriteInfo("Skipping version increment");
-                        break;
-                    case IncrementStrategy.Major:
-                        Logger.WriteInfo("Incrementing Major Version");
-                        baseVersion.SemanticVersion.Major++;
-                        baseVersion.SemanticVersion.Minor = 0;
-                        baseVersion.SemanticVersion.Patch = 0;
-                        break;
-                    case IncrementStrategy.Minor:
-                        baseVersion.SemanticVersion.Minor++;
-                        baseVersion.SemanticVersion.Patch = 0;
-                        Logger.WriteInfo("Incrementing Minor Version");
-                        break;
-                    case IncrementStrategy.Patch:
-                        baseVersion.SemanticVersion.Patch++;
-                        Logger.WriteInfo("Incrementing Patch Version");
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-            else
-            {
-                if (baseVersion.SemanticVersion.PreReleaseTag.Number != null)
-                {
-                    baseVersion.SemanticVersion.PreReleaseTag.Number = baseVersion.SemanticVersion.PreReleaseTag.Number;
-                    baseVersion.SemanticVersion.PreReleaseTag.Number++;
-                }
-            }
         }
     }
 }

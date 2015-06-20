@@ -24,6 +24,7 @@ public abstract class RepositoryFixtureBase : IDisposable
 
     public void AssertFullSemver(string fullSemver, IRepository repository = null, string commitId = null)
     {
+        Trace.WriteLine("---------");
         var gitVersionContext = new GitVersionContext(repository ?? Repository, configuration, IsForTrackedBranchOnly, commitId);
         var executeGitVersion = ExecuteGitVersion(gitVersionContext);
         var variables = VariableProvider.GetVariablesFor(executeGitVersion, 
@@ -38,7 +39,7 @@ public abstract class RepositoryFixtureBase : IDisposable
         catch (Exception)
         {
             Trace.WriteLine("Test failing, dumping repository graph");
-            repository.DumpGraph();
+            gitVersionContext.Repository.DumpGraph();
             throw;
         }
     }
