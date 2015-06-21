@@ -99,16 +99,12 @@ namespace GitVersion
                 s => log.AppendLine(s)
             };
 
-            if (arguments.Output == OutputType.BuildServer)
+            if (arguments.Output == OutputType.BuildServer || arguments.LogFilePath == "console" || arguments.Init)
             {
                 writeActions.Add(Console.WriteLine);
             }
 
-            if (arguments.LogFilePath == "console")
-            {
-                writeActions.Add(Console.WriteLine);
-            }
-            else if (arguments.LogFilePath != null)
+            if (arguments.LogFilePath != null && arguments.LogFilePath != "console")
             {
                 try
                 {
