@@ -2,6 +2,7 @@ namespace GitVersion
 {
     using System.IO;
     using System.Text;
+    using GitVersion.Configuration.Init.Wizard;
     using GitVersion.Helpers;
 
     public class ConfigurationProvider

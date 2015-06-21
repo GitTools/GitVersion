@@ -1,6 +1,6 @@
-namespace GitVersion
+namespace GitVersion.Configuration.Init.Wizard
 {
-    using Configuration.Wizard.SetConfig;
+    using GitVersion.Configuration.Init.SetConfig;
 
     public class GitHubFlowStep : GlobalModeSetting
     {

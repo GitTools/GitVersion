@@ -1,6 +1,7 @@
-namespace GitVersion
+namespace GitVersion.Configuration.Init.SetConfig
 {
     using System.Collections.Generic;
+    using GitVersion.Configuration.Init.Wizard;
 
     public class AssemblyVersioningSchemeSetting : ConfigInitWizardStep
     {

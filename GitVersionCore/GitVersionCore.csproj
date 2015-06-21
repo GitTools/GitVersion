@@ -74,30 +74,30 @@
     <Compile Include="BuildServers\TeamCity.cs" />
     <Compile Include="Configuration\BranchConfig.cs" />
     <Compile Include="Configuration\Config.cs" />
-    <Compile Include="Configuration\Wizard\AssemblyVersioningSchemeSetting.cs" />
-    <Compile Include="Configuration\Wizard\ConfigInitWizard.cs" />
+    <Compile Include="Configuration\Init\SetConfig\AssemblyVersioningSchemeSetting.cs" />
+    <Compile Include="Configuration\Init\Wizard\ConfigInitWizard.cs" />
     <Compile Include="Configuration\ConfigSerialiser.cs" />
     <Compile Include="Configuration\ConfigurationProvider.cs" />
     <Compile Include="Configuration\IncrementStrategy.cs" />
     <Compile Include="Configuration\LegacyConfig.cs" />
     <Compile Include="Configuration\LegacyConfigNotifier.cs" />
     <Compile Include="Configuration\OldConfigurationException.cs" />
-    <Compile Include="Configuration\Wizard\ConfigInitWizardStep.cs" />
-    <Compile Include="Configuration\Wizard\ConfigureBranch.cs" />
-    <Compile Include="Configuration\Wizard\ConfigureBranches.cs" />
-    <Compile Include="Configuration\Wizard\EditConfigStep.cs" />
-    <Compile Include="Configuration\Wizard\FinishedSetupStep.cs" />
-    <Compile Include="Configuration\Wizard\GitFlowSetupStep.cs" />
-    <Compile Include="Configuration\Wizard\GitHubFlowStep.cs" />
-    <Compile Include="Configuration\Wizard\PickBranchingStrategy2Step.cs" />
-    <Compile Include="Configuration\Wizard\PickBranchingStrategy3Step.cs" />
-    <Compile Include="Configuration\Wizard\PickBranchingStrategy1Step.cs" />
-    <Compile Include="Configuration\Wizard\SetBranchIncrementMode.cs" />
-    <Compile Include="Configuration\Wizard\SetBranchTag.cs" />
-    <Compile Include="Configuration\Wizard\SetConfig\GlobalModeSetting.cs" />
-    <Compile Include="Configuration\Wizard\SimpleOrTutorialStep.cs" />
-    <Compile Include="Configuration\Wizard\PickBranchingStrategyStep.cs" />
-    <Compile Include="Configuration\Wizard\StepResult.cs" />
+    <Compile Include="Configuration\Init\Wizard\ConfigInitWizardStep.cs" />
+    <Compile Include="Configuration\Init\SetConfig\ConfigureBranch.cs" />
+    <Compile Include="Configuration\Init\SetConfig\ConfigureBranches.cs" />
+    <Compile Include="Configuration\Init\EditConfigStep.cs" />
+    <Compile Include="Configuration\Init\Wizard\FinishedSetupStep.cs" />
+    <Compile Include="Configuration\Init\Wizard\GitFlowSetupStep.cs" />
+    <Compile Include="Configuration\Init\Wizard\GitHubFlowStep.cs" />
+    <Compile Include="Configuration\Init\Wizard\PickBranchingStrategy2Step.cs" />
+    <Compile Include="Configuration\Init\Wizard\PickBranchingStrategy3Step.cs" />
+    <Compile Include="Configuration\Init\Wizard\PickBranchingStrategy1Step.cs" />
+    <Compile Include="Configuration\Init\SetConfig\SetBranchIncrementMode.cs" />
+    <Compile Include="Configuration\Init\SetConfig\SetBranchTag.cs" />
+    <Compile Include="Configuration\Init\SetConfig\GlobalModeSetting.cs" />
+    <Compile Include="Configuration\Init\Wizard\SimpleOrTutorialStep.cs" />
+    <Compile Include="Configuration\Init\Wizard\PickBranchingStrategyStep.cs" />
+    <Compile Include="Configuration\Init\StepResult.cs" />
     <Compile Include="EffectiveConfiguration.cs" />
     <Compile Include="ExecuteCore.cs" />
     <Compile Include="GitPreparer.cs" />
@@ -159,7 +159,9 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Configuration\Init\BuildServer\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

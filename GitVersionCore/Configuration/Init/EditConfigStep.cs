@@ -1,7 +1,8 @@
-namespace GitVersion
+namespace GitVersion.Configuration.Init
 {
     using System.Collections.Generic;
-    using GitVersion.Configuration.Wizard.SetConfig;
+    using GitVersion.Configuration.Init.SetConfig;
+    using GitVersion.Configuration.Init.Wizard;
 
     public class EditConfigStep : ConfigInitWizardStep
     {

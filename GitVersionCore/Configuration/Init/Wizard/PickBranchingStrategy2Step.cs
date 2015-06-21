@@ -1,4 +1,4 @@
-namespace GitVersion
+namespace GitVersion.Configuration.Init.Wizard
 {
     using System;
     using System.Collections.Generic;

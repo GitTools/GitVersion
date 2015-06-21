@@ -1,4 +1,4 @@
-namespace GitVersion
+namespace GitVersion.Configuration.Init.Wizard
 {
     public class FinishedSetupStep : EditConfigStep
     {
