@@ -4,10 +4,11 @@ namespace GitVersion.Configuration.Init.SetConfig
     using System.Collections.Generic;
     using System.Linq;
     using GitVersion.Configuration.Init.Wizard;
+    using GitVersion.Helpers;
 
     public class ConfigureBranches : ConfigInitWizardStep
     {
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config)
+        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory, IFileSystem fileSystem)
         {
             int parsed;
             if (int.TryParse(result, out parsed))
@@ -31,7 +32,7 @@ namespace GitVersion.Configuration.Init.SetConfig
             return StepResult.InvalidResponseSelected();
         }
 
-        protected override string GetPrompt(Config config)
+        protected override string GetPrompt(Config config, string workingDirectory, IFileSystem fileSystem)
         {
             return @"Which branch would you like to configure:
 

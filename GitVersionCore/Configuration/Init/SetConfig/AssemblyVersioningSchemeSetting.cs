@@ -1,11 +1,12 @@
 namespace GitVersion.Configuration.Init.SetConfig
 {
     using System.Collections.Generic;
-    using GitVersion.Configuration.Init.Wizard;
+    using GitVersion.Helpers;
+    using Wizard;
 
     public class AssemblyVersioningSchemeSetting : ConfigInitWizardStep
     {
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config)
+        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory, IFileSystem fileSystem)
         {
             switch (result)
             {
@@ -33,7 +34,7 @@ namespace GitVersion.Configuration.Init.SetConfig
             return StepResult.InvalidResponseSelected();
         }
 
-        protected override string GetPrompt(Config config)
+        protected override string GetPrompt(Config config, string workingDirectory, IFileSystem fileSystem)
         {
             return @"What assembly versioning scheme do you want to use:
 

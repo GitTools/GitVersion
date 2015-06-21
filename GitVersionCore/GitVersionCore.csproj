@@ -74,6 +74,8 @@
     <Compile Include="BuildServers\TeamCity.cs" />
     <Compile Include="Configuration\BranchConfig.cs" />
     <Compile Include="Configuration\Config.cs" />
+    <Compile Include="Configuration\Init\BuildServer\AppVeyorSetup.cs" />
+    <Compile Include="Configuration\Init\BuildServer\SetupBuildScripts.cs" />
     <Compile Include="Configuration\Init\SetConfig\AssemblyVersioningSchemeSetting.cs" />
     <Compile Include="Configuration\Init\Wizard\ConfigInitWizard.cs" />
     <Compile Include="Configuration\ConfigSerialiser.cs" />
@@ -95,7 +97,6 @@
     <Compile Include="Configuration\Init\SetConfig\SetBranchIncrementMode.cs" />
     <Compile Include="Configuration\Init\SetConfig\SetBranchTag.cs" />
     <Compile Include="Configuration\Init\SetConfig\GlobalModeSetting.cs" />
-    <Compile Include="Configuration\Init\Wizard\SimpleOrTutorialStep.cs" />
     <Compile Include="Configuration\Init\Wizard\PickBranchingStrategyStep.cs" />
     <Compile Include="Configuration\Init\StepResult.cs" />
     <Compile Include="EffectiveConfiguration.cs" />
@@ -159,9 +160,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Configuration\Init\BuildServer\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

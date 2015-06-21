@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using GitVersion.Configuration.Init.Wizard;
+    using GitVersion.Helpers;
 
     public class GlobalModeSetting : ConfigInitWizardStep
     {
@@ -14,7 +15,7 @@
             this.isPartOfWizard = isPartOfWizard;
         }
 
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config)
+        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory, IFileSystem fileSystem)
         {
             switch (result)
             {
@@ -35,7 +36,7 @@
             return StepResult.InvalidResponseSelected();
         }
 
-        protected override string GetPrompt(Config config)
+        protected override string GetPrompt(Config config, string workingDirectory, IFileSystem fileSystem)
         {
             return string.Format(@"What do you want the default increment mode to be (can be overriden per branch):
 {0}

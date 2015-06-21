@@ -2,6 +2,7 @@ namespace GitVersion.Configuration.Init.SetConfig
 {
     using System.Collections.Generic;
     using GitVersion.Configuration.Init.Wizard;
+    using GitVersion.Helpers;
 
     public class SetBranchTag : ConfigInitWizardStep
     {
@@ -14,7 +15,7 @@ namespace GitVersion.Configuration.Init.SetConfig
             this.branchConfig = branchConfig;
         }
 
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config)
+        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory, IFileSystem fileSystem)
         {
             if (string.IsNullOrWhiteSpace(result))
             {
@@ -37,7 +38,7 @@ namespace GitVersion.Configuration.Init.SetConfig
             }
         }
 
-        protected override string GetPrompt(Config config)
+        protected override string GetPrompt(Config config, string workingDirectory, IFileSystem fileSystem)
         {
             return @"This sets the pre-release tag which will be used for versions on this branch (beta, rc etc)
 

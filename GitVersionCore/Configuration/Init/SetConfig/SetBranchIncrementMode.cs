@@ -2,6 +2,7 @@ namespace GitVersion.Configuration.Init.SetConfig
 {
     using System.Collections.Generic;
     using GitVersion.Configuration.Init.Wizard;
+    using GitVersion.Helpers;
 
     public class SetBranchIncrementMode : ConfigInitWizardStep
     {
@@ -14,7 +15,7 @@ namespace GitVersion.Configuration.Init.SetConfig
             this.branchConfig = branchConfig;
         }
 
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config)
+        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory, IFileSystem fileSystem)
         {
             switch (result)
             {
@@ -34,7 +35,7 @@ namespace GitVersion.Configuration.Init.SetConfig
             return StepResult.InvalidResponseSelected();
         }
 
-        protected override string GetPrompt(Config config)
+        protected override string GetPrompt(Config config, string workingDirectory, IFileSystem fileSystem)
         {
             return string.Format(@"What do you want the increment mode for {0} to be?
 
