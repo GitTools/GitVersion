@@ -34,7 +34,8 @@ namespace GitVersion.Configuration.Init.BuildServer
   - choco install gitversion.portable -pre
 
 before_build:
- - ps: ./tools/gitversion.exe /l console /output buildserver /updateAssemblyInfo
+  - nuget restore
+  - ps: gitversion /l console /output buildserver /updateAssemblyInfo
 
 build:
   project: <your sln file>");
@@ -43,17 +44,21 @@ build:
         void GenerateNuGetConfig(string workingDirectory, IFileSystem fileSystem)
         {
             WriteConfig(workingDirectory, fileSystem, @"install:
-  - choco install gitversion.portable -pre
+  - choco install gitversion.portable -pre -y
+
+assembly_info:
+  patch: false
 
 before_build:
- - ps: ./tools/gitversion.exe /l console /output buildserver /updateAssemblyInfo
+  - nuget restore
+  - ps: gitversion /l console /output buildserver /updateAssemblyInfo
 
 build:
   project: <your sln file>
 
 after_build:
   - cmd: ECHO nuget pack <Project>\<NuSpec>.nuspec -version ""%GitVersion_NuGetVersion%"" -prop ""target=%CONFIGURATION%""
-  - cmd: nuget pack <Project>\<NuSpec>.nuspec - version ""%GitVersion_NuGetVersion%"" - prop ""target=%CONFIGURATION%""
+  - cmd: nuget pack <Project>\<NuSpec>.nuspec -version ""%GitVersion_NuGetVersion%"" -prop ""target=%CONFIGURATION%""
   - cmd: appveyor PushArtifact ""<NuSpec>.%GitVersion_NuGetVersion%.nupkg""");
         }
 
