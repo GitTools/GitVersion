@@ -13,20 +13,20 @@ public class HotfixBranchScenarios
             // create hotfix
             fixture.Repository.CreateBranch("hotfix-1.2.1").Checkout();
 
-            fixture.AssertFullSemver("1.2.1-beta.1+0");
-            fixture.Repository.MakeACommit();
             fixture.AssertFullSemver("1.2.1-beta.1+1");
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver("1.2.1-beta.1+2");
             fixture.Repository.ApplyTag("1.2.1-beta.1");
             fixture.AssertFullSemver("1.2.1-beta.1");
             fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver("1.2.1-beta.2+2");
+            fixture.AssertFullSemver("1.2.1-beta.2+3");
 
             // Merge hotfix branch to master
             fixture.Repository.Checkout("master");
 
 
             fixture.Repository.MergeNoFF("hotfix-1.2.1", Constants.SignatureNow());
-            fixture.AssertFullSemver("1.2.1+0");
+            fixture.AssertFullSemver("1.2.1+4");
 
             fixture.Repository.ApplyTag("1.2.1");
             fixture.AssertFullSemver("1.2.1");
@@ -36,7 +36,7 @@ public class HotfixBranchScenarios
             fixture.AssertFullSemver("1.3.0-unstable.1");
 
             fixture.Repository.MergeNoFF("hotfix-1.2.1", Constants.SignatureNow());
-            fixture.AssertFullSemver("1.3.0-unstable.0");
+            fixture.AssertFullSemver("1.3.0-unstable.4");
         }
     }
 
@@ -73,12 +73,12 @@ public class HotfixBranchScenarios
             fixture.AssertFullSemver("1.1.1-PullRequest.2+4");
             fixture.Repository.Checkout("hotfix-1.1.1");
             fixture.Repository.MergeNoFF("feature/fix", Constants.SignatureNow());
-            fixture.AssertFullSemver("1.1.1-beta.1+1");
+            fixture.AssertFullSemver("1.1.1-beta.1+4");
 
             // Merge hotfix into support branch to complete hotfix
             fixture.Repository.Checkout("support-1.1");
             fixture.Repository.MergeNoFF("hotfix-1.1.1", Constants.SignatureNow());
-            fixture.AssertFullSemver("1.1.1+0");
+            fixture.AssertFullSemver("1.1.1+5");
             fixture.Repository.ApplyTag("1.1.1");
             fixture.AssertFullSemver("1.1.1");
 

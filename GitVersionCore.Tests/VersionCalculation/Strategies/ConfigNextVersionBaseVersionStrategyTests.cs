@@ -1,5 +1,6 @@
 ﻿namespace GitVersionCore.Tests.VersionCalculation.Strategies
 {
+    using System.Linq;
     using GitVersion;
     using GitVersion.VersionCalculation.BaseVersionCalculators;
     using NUnit.Framework;
@@ -18,7 +19,7 @@
                 });
             var sut = new ConfigNextVersionBaseVersionStrategy();
 
-            var baseVersion = sut.GetVersion(contextBuilder.Build());
+            var baseVersion = sut.GetVersions(contextBuilder.Build()).Single();
 
             baseVersion.ShouldIncrement.ShouldBe(false);
             baseVersion.SemanticVersion.ToString().ShouldBe("1.0.0");
@@ -30,7 +31,7 @@
             var contextBuilder = new GitVersionContextBuilder();
             var sut = new ConfigNextVersionBaseVersionStrategy();
 
-            var baseVersion = sut.GetVersion(contextBuilder.Build());
+            var baseVersion = sut.GetVersions(contextBuilder.Build()).SingleOrDefault();
 
             baseVersion.ShouldBe(null);
         }

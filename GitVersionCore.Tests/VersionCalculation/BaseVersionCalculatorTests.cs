@@ -1,6 +1,7 @@
 ﻿namespace GitVersionCore.Tests.VersionCalculation
 {
     using System;
+    using System.Collections.Generic;
     using GitVersion;
     using GitVersion.VersionCalculation;
     using GitVersion.VersionCalculation.BaseVersionCalculators;
@@ -62,9 +63,9 @@
                 this.when = when == null ? null : new MockCommit { CommitterEx = when.Value.ToSignature() };
             }
 
-            public override BaseVersion GetVersion(GitVersionContext context)
+            public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
             {
-                return new BaseVersion("Source 1", false, new SemanticVersion(1), when, null);
+                yield return new BaseVersion("Source 1", false, new SemanticVersion(1), when, null);
             }
         }
 
@@ -77,9 +78,9 @@
                 this.when = when == null ? null : new MockCommit { CommitterEx = when.Value.ToSignature() };
             }
 
-            public override BaseVersion GetVersion(GitVersionContext context)
+            public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
             {
-                return new BaseVersion("Source 2", true, new SemanticVersion(2), when, null);
+                yield return new BaseVersion("Source 2", true, new SemanticVersion(2), when, null);
             }
         }
     }

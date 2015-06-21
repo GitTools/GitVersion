@@ -1,28 +1,12 @@
 ﻿namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
+    using System.Collections.Generic;
     using System.Linq;
     using LibGit2Sharp;
 
-    public class HighestTagBaseVersionStrategy : BaseVersionStrategy
+    public class TaggedCommitVersionStrategy : BaseVersionStrategy
     {
-        public override BaseVersion GetVersion(GitVersionContext context)
-        {
-            VersionTaggedCommit version;
-            if (GetVersion(context, out version))
-            {
-                var shouldUpdateVersion = version.Commit.Sha != context.CurrentCommit.Sha;
-                return new BaseVersion(string.Format("Git tag '{0}'", version.Tag), shouldUpdateVersion, version.SemVer, version.Commit, null);
-            }
-
-            return null;
-        }
-
-        protected virtual bool IsValidTag(GitVersionContext context, string branchName, Tag tag, Commit commit)
-        {
-            return tag.PeeledTarget() == commit;
-        }
-
-        bool GetVersion(GitVersionContext context, out VersionTaggedCommit versionTaggedCommit)
+        public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
             string currentBranchName = null;
             var head = context.Repository.Head;
@@ -55,20 +39,37 @@
 
             if (tagsOnBranch.Count == 0)
             {
-                versionTaggedCommit = null;
-                return false;
+                yield break;
             }
             if (tagsOnBranch.Count == 1)
             {
-                versionTaggedCommit = tagsOnBranch[0];
-                return true;
+                yield return CreateBaseVersion(context, tagsOnBranch[0]);
             }
 
-            versionTaggedCommit = tagsOnBranch.Skip(1).Aggregate(tagsOnBranch[0], (t, t1) => t.SemVer > t1.SemVer ? t : t1);
-            return true;
+            foreach (var result in tagsOnBranch.Select(t => CreateBaseVersion(context, t)))
+            {
+                yield return result;
+            }
         }
 
-        class VersionTaggedCommit
+        BaseVersion CreateBaseVersion(GitVersionContext context, VersionTaggedCommit version)
+        {
+            var shouldUpdateVersion = version.Commit.Sha != context.CurrentCommit.Sha;
+            var baseVersion = new BaseVersion(FormatSource(version), shouldUpdateVersion, version.SemVer, version.Commit, null);
+            return baseVersion;
+        }
+
+        protected virtual string FormatSource(VersionTaggedCommit version)
+        {
+            return string.Format("Git tag '{0}'", version.Tag);
+        }
+
+        protected virtual bool IsValidTag(GitVersionContext context, string branchName, Tag tag, Commit commit)
+        {
+            return tag.PeeledTarget() == commit;
+        }
+
+        protected class VersionTaggedCommit
         {
             public string Tag;
             public Commit Commit;

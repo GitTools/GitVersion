@@ -88,8 +88,10 @@ note over develop: 1.4.0.2-unstable
 
             // Verify develop version
             fixture.Repository.Checkout("develop");
+            fixture.AssertFullSemver("1.3.0-unstable.4");
             fixture.Repository.MergeNoFF("release-1.3.0", Constants.SignatureNow());
-            fixture.AssertFullSemver("1.4.0-unstable.0");
+            // Not 0 for commit count as we can't know the increment rules of the merged branch
+            fixture.AssertFullSemver("1.4.0-unstable.2");
         }
     }
 }
