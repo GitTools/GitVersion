@@ -3,6 +3,7 @@ namespace GitVersion
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using GitVersion.Helpers;
 
     class AssemblyInfoFileUpdate : IDisposable
@@ -56,7 +57,8 @@ namespace GitVersion
                 }
             }
 
-            return fileSystem.DirectoryGetFiles(workingDirectory, "AssemblyInfo.cs", SearchOption.AllDirectories);
+            return fileSystem.DirectoryGetFiles(workingDirectory, "AssemblyInfo.*", SearchOption.AllDirectories)
+                .Where(f => f.EndsWith(".cs", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".vb", StringComparison.OrdinalIgnoreCase));
         }
 
         public void Dispose()
