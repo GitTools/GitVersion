@@ -60,7 +60,7 @@ Those of you who have tried to do SemVer with Octopus Deploy or consume CI packa
 the problem that the SemVer version does not change each commit.
 
 By default GitVersion is setup for *continuous delivery*, meaning that when you want to release you publish the artifact attached to 
-your CI Build ([read more about what this means](https://github.com/ParticularLabs/GitVersion/wiki/Continuous-Delivery-Mode)).
+your CI Build ([read more about what this means](https://github.com/GitTools/GitVersion/wiki/Continuous-Delivery-Mode)).
 
 If you want to consume packages from you CI server, for instance Octopus Deploy is looking at TeamCity's NuGet feed then you want GitVersion's *continuous deployment mode*. 
 See the [Configuration](#configuration)
@@ -193,7 +193,7 @@ GitVersion has multiple ways it can be consumed.
 We have a bunch of examples in our Wiki, if something is missing, let us know! There are examples for GitHubFlow and GitFlow
 
 ### Who is using GitVersion?
-Find a list of projects who are currently using GitVersion [here](https://github.com/ParticularLabs/GitVersion/wiki/Who-is-using-GitVersion%3F)
+Find a list of projects who are currently using GitVersion [here](https://github.com/GitTools/GitVersion/wiki/Who-is-using-GitVersion%3F)
 
 ## Additional Links
 
@@ -207,7 +207,7 @@ Find a list of projects who are currently using GitVersion [here](https://github
 
 Have questions?  Come join in the chat room:
 
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/ParticularLabs/GitVersion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/GitTools/GitVersion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Icon
 <a href="http://thenounproject.com/noun/tree/#icon-No13389" target="_blank">Tree</a> designed by <a href="http://thenounproject.com/david.chapman" target="_blank">David Chapman</a> from The Noun Project
