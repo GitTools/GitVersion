@@ -36,7 +36,7 @@ namespace GitVersion.Helpers
                                                             startInfo.FileName,
                                                             exception);
                         }
-                        
+
                         throw;
                     }
                 }
@@ -70,8 +70,14 @@ namespace GitVersion.Helpers
             };
             foreach (var environmentalVariable in environmentalVariables)
             {
-                if (!psi.EnvironmentVariables.ContainsKey(environmentalVariable.Key) && environmentalVariable.Value != null)
+                if (psi.EnvironmentVariables.ContainsKey(environmentalVariable.Key))
+                {
+                    psi.EnvironmentVariables[environmentalVariable.Key] = environmentalVariable.Value;
+                }
+                else
+                {
                     psi.EnvironmentVariables.Add(environmentalVariable.Key, environmentalVariable.Value);
+                }
                 if (psi.EnvironmentVariables.ContainsKey(environmentalVariable.Key) && environmentalVariable.Value == null)
                     psi.EnvironmentVariables.Remove(environmentalVariable.Key);
             }

@@ -32,7 +32,8 @@ public static class GitVersionHelper
         var environmentalVariables =
             new[]
             {
-                new KeyValuePair<string, string>("TEAMCITY_VERSION", arguments.IsTeamCity ? "8.0.0" : null)
+                new KeyValuePair<string, string>("TEAMCITY_VERSION", arguments.IsTeamCity ? "8.0.0" : null),
+                new KeyValuePair<string, string>("APPVEYOR", null)
             };
 
         var exitCode = ProcessHelper.Run(
