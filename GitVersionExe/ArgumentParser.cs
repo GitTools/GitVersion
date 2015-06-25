@@ -4,7 +4,6 @@ namespace GitVersion
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.Linq;
-    using System.Reflection;
     using System.Text.RegularExpressions;
 
 
@@ -12,7 +11,7 @@ namespace GitVersion
     {
         static ArgumentParser()
         {
-            var fields = typeof(VariableProvider).GetFields(BindingFlags.Public | BindingFlags.Static);
+            var fields = typeof(VersionVariables).GetProperties();
             VersionParts = fields.Select(x => x.Name.ToLower()).ToArray();
         }
 
@@ -185,9 +184,9 @@ namespace GitVersion
                     throw new WarningException("assemblyversionformat switch removed, use AssemblyVersioningScheme configuration value instead");
                 }
 
-                if ((IsSwitch("v", name)) && VersionParts.Contains(value.ToLower()))
+                if ((IsSwitch("showvariable", name)) && VersionParts.Contains(value.ToLower()))
                 {
-                    arguments.ShowVariable = value.ToLower();
+                    arguments.ShowVariable = value;
                     continue;
                 }
 
