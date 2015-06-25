@@ -16,7 +16,7 @@ namespace GitVersion
 GitVersion [path]
 
     path            The directory containing .git. If not defined current directory is used. (Must be first argument)
-    init            Creates a sample GitVersion.yaml config file in the repository. Must be used with no other args
+    init            Configuration utility for gitversion
     /h or /?        Shows Help
 
     /targetpath     Same as 'path', but not positional
@@ -46,6 +46,9 @@ GitVersion [path]
     /execargs       Arguments for the executable specified by /exec
     /proj           Build a msbuild file, GitVersion variables will be passed as msbuild properties
     /projargs       Additional arguments to pass to msbuild
+
+
+gitversion init     Configuration utility for gitversion
 ";
 
             writeAction(message);

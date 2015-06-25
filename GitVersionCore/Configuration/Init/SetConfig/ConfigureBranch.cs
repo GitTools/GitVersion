@@ -1,6 +1,8 @@
-namespace GitVersion
+namespace GitVersion.Configuration.Init.SetConfig
 {
     using System.Collections.Generic;
+    using GitVersion.Configuration.Init.Wizard;
+    using GitVersion.Helpers;
 
     public class ConfigureBranch : ConfigInitWizardStep
     {
@@ -13,7 +15,7 @@ namespace GitVersion
             this.name = name;
         }
 
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config)
+        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory, IFileSystem fileSystem)
         {
             switch (result)
             {
@@ -31,11 +33,11 @@ namespace GitVersion
             return StepResult.InvalidResponseSelected();
         }
 
-        protected override string GetPrompt(Config config)
+        protected override string GetPrompt(Config config, string workingDirectory, IFileSystem fileSystem)
         {
             return string.Format(@"What would you like to change for '{0}':
 
-0) Back
+0) Go Back
 1) Branch Pre-release tag (Current: {1})
 2) Branch Increment mode (per commit/after tag) (Current: {2})", name, branchConfig.Tag, branchConfig.VersioningMode);
         }

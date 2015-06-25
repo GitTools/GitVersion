@@ -1,11 +1,12 @@
-namespace GitVersion
+namespace GitVersion.Configuration.Init.Wizard
 {
     using System;
     using System.Collections.Generic;
+    using GitVersion.Helpers;
 
     public class PickBranchingStrategy3Step : ConfigInitWizardStep
     {
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config)
+        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory, IFileSystem fileSystem)
         {
             switch (result.ToLower())
             {
@@ -27,7 +28,7 @@ namespace GitVersion
             return StepResult.Ok();
         }
 
-        protected override string GetPrompt(Config config)
+        protected override string GetPrompt(Config config, string workingDirectory, IFileSystem fileSystem)
         {
             return "Do you need to build nightlies or consume packages the CI build creates without releasing those versions? (y/n)";
         }

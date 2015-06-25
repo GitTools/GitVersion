@@ -2,6 +2,7 @@ namespace GitVersion
 {
     using System.IO;
     using System.Text;
+    using GitVersion.Configuration.Init.Wizard;
     using GitVersion.Helpers;
 
     public class ConfigurationProvider
@@ -41,7 +42,7 @@ namespace GitVersion
         public static void Init(string workingDirectory, IFileSystem fileSystem)
         {
             var configFilePath = GetConfigFilePath(workingDirectory);
-            var config = new ConfigInitWizard().Run(Provide(workingDirectory, fileSystem));
+            var config = new ConfigInitWizard().Run(Provide(workingDirectory, fileSystem), workingDirectory, fileSystem);
             if (config == null) return;
 
             using (var stream = fileSystem.OpenWrite(configFilePath))

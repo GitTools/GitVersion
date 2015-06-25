@@ -1,12 +1,14 @@
-namespace GitVersion
+namespace GitVersion.Configuration.Init.SetConfig
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using GitVersion.Configuration.Init.Wizard;
+    using GitVersion.Helpers;
 
     public class ConfigureBranches : ConfigInitWizardStep
     {
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config)
+        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory, IFileSystem fileSystem)
         {
             int parsed;
             if (int.TryParse(result, out parsed))
@@ -30,11 +32,11 @@ namespace GitVersion
             return StepResult.InvalidResponseSelected();
         }
 
-        protected override string GetPrompt(Config config)
+        protected override string GetPrompt(Config config, string workingDirectory, IFileSystem fileSystem)
         {
             return @"Which branch would you like to configure:
 
-0) Back
+0) Go Back
 " + string.Join("\r\n", OrderedBranches(config).Select((c, i) => string.Format("{0}) {1}", i + 1, c.Key)));
         }
 

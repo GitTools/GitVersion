@@ -1,6 +1,8 @@
-﻿namespace GitVersion.Configuration.Wizard.SetConfig
+﻿namespace GitVersion.Configuration.Init.SetConfig
 {
     using System.Collections.Generic;
+    using GitVersion.Configuration.Init.Wizard;
+    using GitVersion.Helpers;
 
     public class GlobalModeSetting : ConfigInitWizardStep
     {
@@ -13,7 +15,7 @@
             this.isPartOfWizard = isPartOfWizard;
         }
 
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config)
+        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory, IFileSystem fileSystem)
         {
             switch (result)
             {
@@ -34,14 +36,14 @@
             return StepResult.InvalidResponseSelected();
         }
 
-        protected override string GetPrompt(Config config)
+        protected override string GetPrompt(Config config, string workingDirectory, IFileSystem fileSystem)
         {
             return string.Format(@"What do you want the default increment mode to be (can be overriden per branch):
 {0}
 1) Follow SemVer and only increment when a release has been tagged (continuous delivery mode)
 2) Increment based on branch config every commit (continuous deployment mode)
 {1}", 
-!isPartOfWizard ? "0) Back" : string.Empty,
+!isPartOfWizard ? "0) Go Back" : string.Empty,
 isPartOfWizard ? "3) Skip" : string.Empty);
         }
 

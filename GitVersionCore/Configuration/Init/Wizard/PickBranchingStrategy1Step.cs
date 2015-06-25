@@ -1,11 +1,12 @@
-namespace GitVersion
+namespace GitVersion.Configuration.Init.Wizard
 {
     using System;
     using System.Collections.Generic;
+    using GitVersion.Helpers;
 
     public class PickBranchingStrategy1Step : ConfigInitWizardStep
     {
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config)
+        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory, IFileSystem fileSystem)
         {
             switch (result.ToLower())
             {
@@ -23,7 +24,7 @@ GitFlow allows you to have new development happening on the 'develop' branch, pa
             return StepResult.InvalidResponseSelected();
         }
 
-        protected override string GetPrompt(Config config)
+        protected override string GetPrompt(Config config, string workingDirectory, IFileSystem fileSystem)
         {
             return @"GitVersion can try to recommend you a branching strategy based on a few questions. 
 

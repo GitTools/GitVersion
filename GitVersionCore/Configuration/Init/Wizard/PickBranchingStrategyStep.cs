@@ -1,10 +1,11 @@
-namespace GitVersion
+namespace GitVersion.Configuration.Init.Wizard
 {
     using System.Collections.Generic;
+    using GitVersion.Helpers;
 
     public class PickBranchingStrategyStep : ConfigInitWizardStep
     {
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config)
+        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory, IFileSystem fileSystem)
         {
             switch (result)
             {
@@ -24,7 +25,7 @@ namespace GitVersion
             return StepResult.Ok();
         }
 
-        protected override string GetPrompt(Config config)
+        protected override string GetPrompt(Config config, string workingDirectory, IFileSystem fileSystem)
         {
             return @"The way you will use GitVersion will change a lot based on your branching strategy. What branching strategy will you be using:
 
