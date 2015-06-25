@@ -43,7 +43,7 @@
 1) Follow SemVer and only increment when a release has been tagged (continuous delivery mode)
 2) Increment based on branch config every commit (continuous deployment mode)
 {1}", 
-!isPartOfWizard ? "0) Back" : string.Empty,
+!isPartOfWizard ? "0) Go Back" : string.Empty,
 isPartOfWizard ? "3) Skip" : string.Empty);
         }
 

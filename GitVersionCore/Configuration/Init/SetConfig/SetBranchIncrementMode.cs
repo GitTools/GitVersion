@@ -39,7 +39,7 @@ namespace GitVersion.Configuration.Init.SetConfig
         {
             return string.Format(@"What do you want the increment mode for {0} to be?
 
-0) Back
+0) Go Back
 1) Follow SemVer and only increment when a release has been tagged (continuous delivery mode)
 2) Increment based on branch config every commit (continuous deployment mode)", name);
         }

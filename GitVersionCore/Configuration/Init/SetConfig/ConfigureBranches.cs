@@ -36,7 +36,7 @@ namespace GitVersion.Configuration.Init.SetConfig
         {
             return @"Which branch would you like to configure:
 
-0) Back
+0) Go Back
 " + string.Join("\r\n", OrderedBranches(config).Select((c, i) => string.Format("{0}) {1}", i + 1, c.Key)));
         }
 

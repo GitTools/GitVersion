@@ -38,7 +38,7 @@ namespace GitVersion.Configuration.Init.SetConfig
         {
             return @"What assembly versioning scheme do you want to use:
 
-0) Back
+0) Go Back
 1) Major.0.0.0
 2) Major.Minor.0.0
 3) Major.Minor.Patch.0   (default)

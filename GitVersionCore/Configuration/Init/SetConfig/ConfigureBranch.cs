@@ -37,7 +37,7 @@ namespace GitVersion.Configuration.Init.SetConfig
         {
             return string.Format(@"What would you like to change for '{0}':
 
-0) Back
+0) Go Back
 1) Branch Pre-release tag (Current: {1})
 2) Branch Increment mode (per commit/after tag) (Current: {2})", name, branchConfig.Tag, branchConfig.VersioningMode);
         }

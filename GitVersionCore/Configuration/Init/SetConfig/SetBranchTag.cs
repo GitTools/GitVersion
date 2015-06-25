@@ -42,7 +42,7 @@ namespace GitVersion.Configuration.Init.SetConfig
         {
             return @"This sets the pre-release tag which will be used for versions on this branch (beta, rc etc)
 
-0) Back
+0) Go Back
 1) No tag
 
 Anything else will be used as the tag";
