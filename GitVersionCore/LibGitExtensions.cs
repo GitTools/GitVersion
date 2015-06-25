@@ -27,12 +27,10 @@ namespace GitVersion
         public static SemanticVersion LastVersionTagOnBranch(this Branch branch, IRepository repository, string tagPrefixRegex)
         {
             var tags = repository.Tags.Select(t => t).ToList();
-            var until = FindCommitBranchWasBranchedFrom(branch, repository);
 
             return repository.Commits.QueryBy(new CommitFilter
             {
-                Since = branch.Tip,
-                Until = until
+                Since = branch.Tip
             })
             .SelectMany(c => tags.Where(t => c.Sha == t.Target.Sha).SelectMany(t =>
             {
