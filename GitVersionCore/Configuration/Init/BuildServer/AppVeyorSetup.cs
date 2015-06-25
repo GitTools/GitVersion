@@ -31,7 +31,7 @@ namespace GitVersion.Configuration.Init.BuildServer
         void GenerateBasicConfig(string workingDirectory, IFileSystem fileSystem)
         {
             WriteConfig(workingDirectory, fileSystem, @"install:
-  - choco install gitversion.portable -pre
+  - choco install gitversion.portable -pre -y
 
 before_build:
   - nuget restore
