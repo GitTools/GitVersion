@@ -4,18 +4,11 @@ namespace GitVersion
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.Linq;
-    using System.Reflection;
     using System.Text.RegularExpressions;
 
 
     public class ArgumentParser
     {
-        static ArgumentParser()
-        {
-            var fields = typeof(VariableProvider).GetFields(BindingFlags.Public | BindingFlags.Static);
-            VersionParts = fields.Select(x => x.Name.ToLower()).ToArray();
-        }
-
         public static Arguments ParseArguments(string commandLineArguments)
         {
             return ParseArguments(commandLineArguments.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList());
@@ -185,9 +178,23 @@ namespace GitVersion
                     throw new WarningException("assemblyversionformat switch removed, use AssemblyVersioningScheme configuration value instead");
                 }
 
-                if ((IsSwitch("v", name)) && VersionParts.Contains(value.ToLower()))
+                if (IsSwitch("v", name) || IsSwitch("showvariable", name))
                 {
-                    arguments.ShowVariable = value.ToLower();
+                    string versionVariable = null;
+
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        versionVariable = VersionVariables.AvailableVariables.SingleOrDefault(av => av.Equals(value.Replace("'", ""), StringComparison.CurrentCultureIgnoreCase));
+                    }
+                    
+                    if (versionVariable == null)
+                    {
+                        var messageFormat = "{0} requires a valid version variable.  Available variables are:\n{1}";
+                        var message = string.Format(messageFormat, name, String.Join(", ", VersionVariables.AvailableVariables.Select(x=>string.Concat("'", x, "'"))));
+                        throw new WarningException(message);
+                    }
+
+                    arguments.ShowVariable = versionVariable;
                     continue;
                 }
 
@@ -297,7 +304,5 @@ namespace GitVersion
                 IsSwitch("help", singleArgument) ||
                 IsSwitch("?", singleArgument);
         }
-
-        static string[] VersionParts;
     }
 }
