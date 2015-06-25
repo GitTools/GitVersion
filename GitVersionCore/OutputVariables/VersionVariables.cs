@@ -50,7 +50,7 @@
         public string NuGetVersionV2 { get { return LegacySemVerPadded.ToLower(); } }
         public string NuGetVersion { get { return NuGetVersionV2; } }
 
-        public IEnumerable<string> AvailableVariables
+        public static IEnumerable<string> AvailableVariables
         {
             get { return typeof(VersionVariables).GetProperties().Select(p => p.Name).OrderBy(a => a); }
         }
