@@ -77,6 +77,7 @@
     <Compile Include="Configuration\Init\BuildServer\AppVeyorSetup.cs" />
     <Compile Include="Configuration\Init\BuildServer\SetupBuildScripts.cs" />
     <Compile Include="Configuration\Init\SetConfig\AssemblyVersioningSchemeSetting.cs" />
+    <Compile Include="Configuration\Init\SetNextVersion.cs" />
     <Compile Include="Configuration\Init\Wizard\ConfigInitWizard.cs" />
     <Compile Include="Configuration\ConfigSerialiser.cs" />
     <Compile Include="Configuration\ConfigurationProvider.cs" />

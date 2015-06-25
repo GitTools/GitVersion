@@ -80,7 +80,7 @@ after_build:
 
             prompt.Append(@"What sort of config template would you like generated?
 
-0) Back
+0) Go Back
 1) Generate basic (gitversion + msbuild) configuration
 2) Generate with NuGet package publish");
 

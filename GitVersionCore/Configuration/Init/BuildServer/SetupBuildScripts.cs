@@ -26,7 +26,7 @@
 
 Want to see more? Contribute a pull request!
 
-0) Back
+0) Go Back
 1) AppVeyor";
         }
 
