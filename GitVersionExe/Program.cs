@@ -42,6 +42,19 @@ namespace GitVersion
                 {
                     arguments = ArgumentParser.ParseArguments(argumentsWithoutExeName);
                 }
+                catch (WarningException ex)
+                {
+                    Console.WriteLine("Failed to parse arguments: {0}", string.Join(" ", argumentsWithoutExeName));
+                    if (!string.IsNullOrWhiteSpace(ex.Message))
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine(ex.Message);
+                        Console.WriteLine();
+                    }
+
+                    HelpWriter.Write();
+                    return 1;
+                }
                 catch (Exception)
                 {
                     Console.WriteLine("Failed to parse arguments: {0}", string.Join(" ", argumentsWithoutExeName));
