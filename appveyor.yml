@@ -1,0 +1,27 @@
+assembly_info:
+  patch: false
+
+platform:
+  - Any CPU
+
+configuration:
+  - Debug
+ 
+build_script:
+  - cmd: nuget restore
+  
+  - cmd: msbuild GitVersion.sln "/p:Configuration=%CONFIGURATION%;Platform=%PLATFORM%"
+  - ps: .\NuGetCommandLineBuild\Tools\GitVersion.exe /l console /output buildserver /updateAssemblyInfo
+  - cmd: msbuild GitVersion.sln "/p:Configuration=%CONFIGURATION%;Platform=%PLATFORM%"
+
+  - cmd: appveyor PushArtifact "NuGetExeBuild/GitVersion.Portable.%GitVersion_NuGetVersion%.nupkg"
+  
+  - cmd: appveyor PushArtifact "NuGetCommandLineBuild/GitVersion.CommandLine.%GitVersion_NuGetVersion%.nupkg"
+  - cmd: appveyor PushArtifact "NuGetRefBuild/GitVersion.%GitVersion_NuGetVersion%.nupkg"
+  - cmd: appveyor PushArtifact "NuGetTaskBuild/GitVersionTask.%GitVersion_NuGetVersion%.nupkg"
+  
+  - cmd: 7z a "GitVersion_%GitVersion_NuGetVersion%.zip" .\NuGetCommandLineBuild\Tools\*.*
+  - cmd: appveyor PushArtifact "GitVersion_%GitVersion_NuGetVersion%.zip"
+
+test_script:
+  - nunit-console "GitVersionTask.Tests\bin\%CONFIGURATION%\GitVersionTask.Tests.dll" "GitVersionExe.Tests\bin\%CONFIGURATION%\GitVersionExe.Tests.dll" "GitVersionCore.Tests\bin\%CONFIGURATION%\GitVersionCore.Tests.dll" /noshadow
