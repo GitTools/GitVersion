@@ -27,7 +27,7 @@ public static class VersionAndBranchFinder
         var gitDir = GitDirFinder.TreeWalkForDotGitDir(directory);
         using (var repo = RepositoryLoader.GetRepo(gitDir))
         {
-            var ticks = DirectoryDateFinder.GetLastDirectoryWrite(directory);
+            var ticks = DirectoryDateFinder.GetLastDirectoryWrite(gitDir);
             var key = string.Format("{0}:{1}:{2}", repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
 
             CachedVersion result;
