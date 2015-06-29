@@ -11,18 +11,24 @@ public static class GitTestExtensions
 {
     static int pad = 1;
 
-    public static void DumpGraph(this IRepository repository)
+    public static void DumpGraph(this IRepository repository, bool oneLine = true)
     {
         var output = new StringBuilder();
 
         try
         {
+            var commandLine = @"log --graph --abbrev-commit --decorate --date=relative --all --remotes=*";
+            if (oneLine)
+            {
+                commandLine += " --oneline";
+            }
+
             ProcessHelper.Run(
                 o => output.AppendLine(o),
                 e => output.AppendLineFormat("ERROR: {0}", e),
                 null,
                 "git",
-                @"log --graph --abbrev-commit --decorate --date=relative --all --remotes=*",
+                commandLine,
                 repository.Info.Path);
         }
         catch (FileNotFoundException exception)
