@@ -34,12 +34,15 @@
                 {
                     CurrentCommit = commit;
                 }
+                else
+                {
+                    Logger.WriteWarning(string.Format("Commit '{0}' specified but not found", commitId));
+                }
             }
 
             if (CurrentCommit == null)
             {
-                Logger.WriteWarning("No specific commit specified or found, falling back to latest commit on specified branch");
-
+                Logger.WriteInfo("Using latest commit on specified branch");
                 CurrentCommit = currentBranch.Tip;
             }
 
