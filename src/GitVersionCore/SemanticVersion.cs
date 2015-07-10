@@ -281,25 +281,25 @@ namespace GitVersion
             }
         }
 
-        public SemanticVersion IncrementVersion(IncrementStrategy incrementStrategy)
+        public SemanticVersion IncrementVersion(VersionField incrementStrategy)
         {
             var incremented = new SemanticVersion(this);
             if (!incremented.PreReleaseTag.HasTag())
             {
                 switch (incrementStrategy)
                 {
-                    case IncrementStrategy.None:
+                    case VersionField.None:
                         break;
-                    case IncrementStrategy.Major:
+                    case VersionField.Major:
                         incremented.Major++;
                         incremented.Minor = 0;
                         incremented.Patch = 0;
                         break;
-                    case IncrementStrategy.Minor:
+                    case VersionField.Minor:
                         incremented.Minor++;
                         incremented.Patch = 0;
                         break;
-                    case IncrementStrategy.Patch:
+                    case VersionField.Patch:
                         incremented.Patch++;
                         break;
                     default:
@@ -317,5 +317,13 @@ namespace GitVersion
 
             return incremented;
         }
+    }
+
+    public enum VersionField
+    {
+        None,
+        Patch,
+        Minor,
+        Major
     }
 }

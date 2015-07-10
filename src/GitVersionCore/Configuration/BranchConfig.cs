@@ -16,6 +16,7 @@
             PreventIncrementOfMergedBranchVersion = branchConfiguration.PreventIncrementOfMergedBranchVersion;
             TagNumberPattern = branchConfiguration.TagNumberPattern;
             TrackMergeTarget = branchConfiguration.TrackMergeTarget;
+            CommitMessageIncrementing = branchConfiguration.CommitMessageIncrementing;
         }
 
         [YamlMember(Alias = "mode")]
@@ -38,5 +39,8 @@
 
         [YamlMember(Alias = "track-merge-target")]
         public bool? TrackMergeTarget { get; set; }
+        
+        [YamlMember(Alias = "commit-message-incrementing")]
+        public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
     }
 }

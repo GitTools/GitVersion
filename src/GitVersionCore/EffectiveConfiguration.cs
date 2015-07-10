@@ -13,7 +13,11 @@
             bool preventIncrementForMergedBranchVersion, 
             string tagNumberPattern,
             string continuousDeploymentFallbackTag, 
-            bool trackMergeTarget)
+            bool trackMergeTarget,
+            string majorVersionBumpMessage,
+            string minorVersionBumpMessage,
+            string patchVersionBumpMessage,
+            CommitMessageIncrementMode commitMessageIncrementing)
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
             VersioningMode = versioningMode;
@@ -26,6 +30,10 @@
             TagNumberPattern = tagNumberPattern;
             ContinuousDeploymentFallbackTag = continuousDeploymentFallbackTag;
             TrackMergeTarget = trackMergeTarget;
+            MajorVersionBumpMessage = majorVersionBumpMessage;
+            MinorVersionBumpMessage = minorVersionBumpMessage;
+            PatchVersionBumpMessage = patchVersionBumpMessage;
+            CommitMessageIncrementing = commitMessageIncrementing;
         }
 
         public VersioningMode VersioningMode { get; private set; }
@@ -55,5 +63,13 @@
         public string ContinuousDeploymentFallbackTag { get; private set; }
 
         public bool TrackMergeTarget { get; private set; }
+
+        public string MajorVersionBumpMessage { get; private set; }
+        
+        public string MinorVersionBumpMessage { get; private set; }
+
+        public string PatchVersionBumpMessage { get; private set; }
+
+        public CommitMessageIncrementMode CommitMessageIncrementing { get; private set; }
     }
 }
