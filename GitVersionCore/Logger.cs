@@ -2,6 +2,7 @@ namespace GitVersion
 {
     using System;
     using System.Globalization;
+    using System.Text.RegularExpressions;
 
     public static class Logger
     {
@@ -28,11 +29,22 @@ namespace GitVersion
             });
         }
 
+        static Action<string> ObscurePassword(Action<string> info)
+        {
+            Action<string> logAction = s =>
+            {
+                var rgx = new Regex("(https?://)(.+)(:.+@)");
+                s = rgx.Replace(s, "$1$2:*******@");
+                info(s);
+            };
+            return logAction;
+        }
+
         public static void SetLoggers(Action<string> info, Action<string> warn, Action<string> error)
         {
-            WriteInfo = LogMessage(info, "INFO");
-            WriteWarning = LogMessage(warn, "WARN");
-            WriteError = LogMessage(error, "ERROR");
+            WriteInfo = LogMessage(ObscurePassword(info), "INFO");
+            WriteWarning = LogMessage(ObscurePassword(warn), "WARN");
+            WriteError = LogMessage(ObscurePassword(error), "ERROR");
         }
 
         static Action<string> LogMessage(Action<string> logAction, string level)
