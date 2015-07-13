@@ -25,16 +25,23 @@ public abstract class RepositoryFixtureBase : IDisposable
     public void AssertFullSemver(string fullSemver, IRepository repository = null, string commitId = null)
     {
         Trace.WriteLine("---------");
+
+        var variables = GetVersion(repository, commitId);
+        variables.FullSemVer.ShouldBe(fullSemver);
+    }
+
+    public VersionVariables GetVersion(IRepository repository = null, string commitId = null)
+    {
         var gitVersionContext = new GitVersionContext(repository ?? Repository, configuration, IsForTrackedBranchOnly, commitId);
         var executeGitVersion = ExecuteGitVersion(gitVersionContext);
-        var variables = VariableProvider.GetVariablesFor(executeGitVersion, 
+        var variables = VariableProvider.GetVariablesFor(executeGitVersion,
             gitVersionContext.Configuration.AssemblyVersioningScheme,
-            gitVersionContext.Configuration.VersioningMode, 
+            gitVersionContext.Configuration.VersioningMode,
             gitVersionContext.Configuration.ContinuousDeploymentFallbackTag,
             gitVersionContext.IsCurrentCommitTagged);
         try
         {
-            variables.FullSemVer.ShouldBe(fullSemver);
+            return variables;
         }
         catch (Exception)
         {

@@ -1,6 +1,7 @@
 ﻿using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
+using Shouldly;
 
 [TestFixture]
 public class MasterScenarios
@@ -145,7 +146,7 @@ public class MasterScenarios
 
             fixture.AssertFullSemver("1.0.4+5");
         }
-    }
+    }    
 
     [Test]
     public void CanSpecifyTagPrefixesAsRegex()
@@ -157,6 +158,30 @@ public class MasterScenarios
             fixture.Repository.MakeCommits(5);
 
             fixture.AssertFullSemver("1.0.4+5");
+        }
+    }
+
+    [Test]
+    public void DoesIgnoreTagsNotAdheringToTagPrefix()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config { TagPrefix = "" }))
+        {
+            const string TaggedVersion = "version-1.0.3";
+            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+            fixture.Repository.MakeCommits(5);
+
+            var variables = fixture.GetVersion();
+            variables.FullSemVer.ShouldNotBe("1.0.4+5");
+        }
+
+        using (var fixture = new EmptyRepositoryFixture(new Config { TagPrefix = "" }))
+        {
+            const string TaggedVersion = "bad/1.0.3";
+            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+            fixture.Repository.MakeCommits(5);
+
+            var variables = fixture.GetVersion();
+            variables.FullSemVer.ShouldNotBe("1.0.4+5");
         }
     }
 }
