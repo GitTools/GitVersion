@@ -1,6 +1,6 @@
 ﻿assembly-versioning-scheme: MajorMinorPatch
 mode: ContinuousDelivery
-tag-prefix: 
+tag-prefix: '[vV]|'
 continuous-delivery-fallback-tag: ci
 branches:
   master:
