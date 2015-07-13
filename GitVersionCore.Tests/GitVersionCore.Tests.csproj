@@ -99,6 +99,7 @@
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="InformationalVersionBuilderTests.cs" />
     <Compile Include="JsonVersionBuilderTests.cs" />
+    <Compile Include="LoggerTest.cs" />
     <Compile Include="Mocks\MockBranch.cs" />
     <Compile Include="Mocks\MockBranchCollection.cs" />
     <Compile Include="Mocks\MockCommit.cs" />
