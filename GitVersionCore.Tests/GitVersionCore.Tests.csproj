@@ -99,6 +99,7 @@
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="InformationalVersionBuilderTests.cs" />
     <Compile Include="JsonVersionBuilderTests.cs" />
+    <Compile Include="LoggerTest.cs" />
     <Compile Include="Mocks\MockBranch.cs" />
     <Compile Include="Mocks\MockBranchCollection.cs" />
     <Compile Include="Mocks\MockCommit.cs" />
@@ -145,9 +146,7 @@
     <Content Include="FodyWeavers.xml" />
     <Content Include="JsonVersionBuilderTests.Json.approved.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
