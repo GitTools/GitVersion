@@ -11,7 +11,7 @@
         public Config()
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch;
-            TagPrefix = "[vV]";
+            TagPrefix = "[vV]|";
             VersioningMode = GitVersion.VersioningMode.ContinuousDelivery;
             ContinuousDeploymentFallbackTag = "ci";
 

@@ -145,18 +145,61 @@ public class MasterScenarios
 
             fixture.AssertFullSemver("1.0.4+5");
         }
-    }
+    }    
 
     [Test]
     public void CanSpecifyTagPrefixesAsRegex()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config { TagPrefix = "[version-|v]" }))
+        using (var fixture = new EmptyRepositoryFixture(new Config { TagPrefix = "version-|[vV]" }))
         {
-            const string TaggedVersion = "v1.0.3";
+            string TaggedVersion = "v1.0.3";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
             fixture.Repository.MakeCommits(5);
 
             fixture.AssertFullSemver("1.0.4+5");
+
+            TaggedVersion = "version-1.0.5";
+            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+            fixture.Repository.MakeCommits(5);
+
+            fixture.AssertFullSemver("1.0.6+5");
+        }
+    }
+
+    [Test]
+    public void CanTagPrefixStillBeOptional()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config { TagPrefix = "[vV]|" }))  //we use tag prefix to denote whether optional
+        {
+            string TaggedVersion = "v1.0.3";
+            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+            fixture.Repository.MakeCommits(5);
+
+            fixture.AssertFullSemver("1.0.4+5");
+
+            TaggedVersion = "1.0.5";
+            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+            fixture.Repository.MakeCommits(1);
+
+            fixture.AssertFullSemver("1.0.6+1");
+        }
+    }
+
+    [Test]
+    public void AreTagsNotAdheringToTagPrefixIgnored()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config { TagPrefix = "" }))
+        {
+            string TaggedVersion = "version-1.0.3";
+            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+            fixture.Repository.MakeCommits(5);
+
+            fixture.AssertFullSemver("0.1.0+5");    //Fallback version + 5 commits since tag
+
+            TaggedVersion = "bad/1.0.3";
+            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+
+            fixture.AssertFullSemver("0.1.0+6");   //Fallback version + 6 commits since tag
         }
     }
 }
