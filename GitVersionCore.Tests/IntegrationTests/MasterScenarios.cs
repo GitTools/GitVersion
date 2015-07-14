@@ -1,7 +1,6 @@
 ﻿using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
-using Shouldly;
 
 [TestFixture]
 public class MasterScenarios

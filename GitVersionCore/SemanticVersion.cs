@@ -147,7 +147,7 @@ namespace GitVersion
 
         public static bool TryParse(string version, string tagPrefixRegex, out SemanticVersion semanticVersion)
         {
-            var match = Regex.Match(version, string.Format("^({0})(?<version>.*)$", tagPrefixRegex));
+            var match = Regex.Match(version, string.Format("^({0})?(?<version>.*)$", tagPrefixRegex));
 
             if (!match.Success)
             {

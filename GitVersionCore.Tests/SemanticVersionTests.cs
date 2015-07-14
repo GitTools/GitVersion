@@ -6,33 +6,35 @@ using Shouldly;
 public class SemanticVersionTests
 {
 
-    [TestCase("1.2.3", 1, 2, 3, null, null, null, null, null, null, null)]
-    [TestCase("1.2", 1, 2, 0, null, null, null, null, null, null, "1.2.0")]
-    [TestCase("1.2.3-beta", 1, 2, 3, "beta", null, null, null, null, null, null)]
-    [TestCase("1.2.3-beta3", 1, 2, 3, "beta", 3, null, null, null, null, "1.2.3-beta.3")]
-    [TestCase("1.2.3-beta.3", 1, 2, 3, "beta", 3, null, null, null, null, "1.2.3-beta.3")]
-    [TestCase("1.2.3-beta-3", 1, 2, 3, "beta-3", null, null, null, null, null, "1.2.3-beta-3")]
-    [TestCase("1.2.3-alpha", 1, 2, 3, "alpha", null, null, null, null, null, null)]
-    [TestCase("1.2-alpha4", 1, 2, 0, "alpha", 4, null, null, null, null, "1.2.0-alpha.4")]
-    [TestCase("1.2.3-rc", 1, 2, 3, "rc", null, null, null, null, null, null)]
-    [TestCase("1.2.3-rc3", 1, 2, 3, "rc", 3, null, null, null, null, "1.2.3-rc.3")]
-    [TestCase("1.2.3-RC3", 1, 2, 3, "RC", 3, null, null, null, null, "1.2.3-RC.3")]
-    [TestCase("1.2.3-rc3.1", 1, 2, 3, "rc3", 1, null, null, null, null, "1.2.3-rc3.1")]
-    [TestCase("01.02.03-rc03", 1, 2, 3, "rc", 3, null, null, null, null, "1.2.3-rc.3")]
-    [TestCase("1.2.3-beta3f", 1, 2, 3, "beta3f", null, null, null, null, null, null)]
-    [TestCase("1.2.3-notAStability1", 1, 2, 3, "notAStability", 1, null, null, null, null, "1.2.3-notAStability.1")]
-    [TestCase("1.2.3.4", 1, 2, 3, null, null, 4, null, null, null, "1.2.3+4")]
-    [TestCase("1.2.3+4", 1, 2, 3, null, null, 4, null, null, null, null)]
-    [TestCase("1.2.3+4.Branch.Foo", 1, 2, 3, null, null, 4, "Foo", null, null, null)]
-    [TestCase("1.2.3+randomMetaData", 1, 2, 3, null, null, null, null, null, "randomMetaData", null)]
-    [TestCase("1.2.3-beta.1+4.Sha.12234.Othershiz", 1, 2, 3, "beta", 1, 4, null, "12234", "Othershiz", null)]
-    public void ValidateVersionParsing(string versionString, int major, int minor, int patch, string tag, int? tagNumber, int? numberOfBuilds,
-        string branchName, string sha, string otherMetaData, string fullFormattedVersionString)
+    [TestCase("1.2.3", 1, 2, 3, null, null, null, null, null, null, null, null)]
+    [TestCase("1.2", 1, 2, 0, null, null, null, null, null, null, "1.2.0", null)]
+    [TestCase("1.2.3-beta", 1, 2, 3, "beta", null, null, null, null, null, null, null)]
+    [TestCase("1.2.3-beta3", 1, 2, 3, "beta", 3, null, null, null, null, "1.2.3-beta.3", null)]
+    [TestCase("1.2.3-beta.3", 1, 2, 3, "beta", 3, null, null, null, null, "1.2.3-beta.3", null)]
+    [TestCase("1.2.3-beta-3", 1, 2, 3, "beta-3", null, null, null, null, null, "1.2.3-beta-3", null)]
+    [TestCase("1.2.3-alpha", 1, 2, 3, "alpha", null, null, null, null, null, null, null)]
+    [TestCase("1.2-alpha4", 1, 2, 0, "alpha", 4, null, null, null, null, "1.2.0-alpha.4", null)]
+    [TestCase("1.2.3-rc", 1, 2, 3, "rc", null, null, null, null, null, null, null)]
+    [TestCase("1.2.3-rc3", 1, 2, 3, "rc", 3, null, null, null, null, "1.2.3-rc.3", null)]
+    [TestCase("1.2.3-RC3", 1, 2, 3, "RC", 3, null, null, null, null, "1.2.3-RC.3", null)]
+    [TestCase("1.2.3-rc3.1", 1, 2, 3, "rc3", 1, null, null, null, null, "1.2.3-rc3.1", null)]
+    [TestCase("01.02.03-rc03", 1, 2, 3, "rc", 3, null, null, null, null, "1.2.3-rc.3", null)]
+    [TestCase("1.2.3-beta3f", 1, 2, 3, "beta3f", null, null, null, null, null, null, null)]
+    [TestCase("1.2.3-notAStability1", 1, 2, 3, "notAStability", 1, null, null, null, null, "1.2.3-notAStability.1", null)]
+    [TestCase("1.2.3.4", 1, 2, 3, null, null, 4, null, null, null, "1.2.3+4", null)]
+    [TestCase("1.2.3+4", 1, 2, 3, null, null, 4, null, null, null, null, null)]
+    [TestCase("1.2.3+4.Branch.Foo", 1, 2, 3, null, null, 4, "Foo", null, null, null, null)]
+    [TestCase("1.2.3+randomMetaData", 1, 2, 3, null, null, null, null, null, "randomMetaData", null, null)]
+    [TestCase("1.2.3-beta.1+4.Sha.12234.Othershiz", 1, 2, 3, "beta", 1, 4, null, "12234", "Othershiz", null, null)]
+    [TestCase("1.2.3", 1, 2, 3, null, null, null, null, null, null, null, "v")]
+    public void ValidateVersionParsing(
+        string versionString, int major, int minor, int patch, string tag, int? tagNumber, int? numberOfBuilds,
+        string branchName, string sha, string otherMetaData, string fullFormattedVersionString, string tagPrefixRegex)
     {
         fullFormattedVersionString = fullFormattedVersionString ?? versionString;
 
         SemanticVersion version;
-        Assert.IsTrue(SemanticVersion.TryParse(versionString, null, out version), "TryParse Result");
+        SemanticVersion.TryParse(versionString, tagPrefixRegex, out version).ShouldBe(true, versionString);
         Assert.AreEqual(major, version.Major);
         Assert.AreEqual(minor, version.Minor);
         Assert.AreEqual(patch, version.Patch);
