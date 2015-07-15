@@ -138,7 +138,6 @@
     <Compile Include="LambdaEqualityHelper.cs" />
     <Compile Include="LibGitExtensions.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="MissingBranchException.cs" />
     <Compile Include="OutputFormatters\BuildOutputFormatter.cs" />
     <Compile Include="OutputFormatters\JsonOutputFormatter.cs" />
     <Compile Include="OutputType.cs" />
