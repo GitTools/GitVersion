@@ -11,7 +11,7 @@
             if (mode == VersioningMode.ContinuousDeployment && !currentCommitIsTagged)
             {
                 semanticVersion = new SemanticVersion(semanticVersion);
-                // Continuous Delivery always requires a pre-release tag unless the commit is tagged
+                // Continuous Deployment always requires a pre-release tag unless the commit is tagged
                 if (!semanticVersion.PreReleaseTag.HasTag())
                 {
                     semanticVersion.PreReleaseTag.Name = continuousDeploymentFallbackTag;

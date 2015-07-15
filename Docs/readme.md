@@ -1,5 +1,5 @@
 # GitVersion Docs
-GitVersion is a tool to help you achieve Semantic Versioning on your project.
+GitVersion is a tool to help you achieve *Semantic Versioning* on your project.
 
 This influences many of the decisions GitVersion has made, please read and understand this page as it will help you start using GitVersion effectively!
 
@@ -26,7 +26,7 @@ Read more at [version sources](./versionSources.md)
 ## Configuration
 GitVersion v3 was rewritten to be very configuration driven rather than hardcoding git workflows into it. This has made it a lot more flexible. Configuration options can be set globally or per branch.
 
-Read more about the different [configuration options](./configurationOptions.md)
+Read more about [configuration](./configuration.md)
 
 ## Output Variables
 We recognise that a single formatted version number does not work for all cases. A simple example is NuGet, it doesn't support SemVer 2.0 meaning that the SemVer of `1.3.5-beta.10+500` needs to be formatted as `1.3.5-beta0010` so it will sort properly.

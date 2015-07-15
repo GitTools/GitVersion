@@ -1,0 +1,1 @@
+# Who is using GitVersion
