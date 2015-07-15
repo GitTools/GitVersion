@@ -275,5 +275,16 @@ public class GitPreparerTests
         }
     }
 
+    [Test]
+    public void TestErrorThrownForInvalidAuthentication()
+    {
+        //arrange
+
+        //act
+
+        //assert
+        Assert.Fail("tests not written");
+    }
+
     // TODO test around normalisation
 }
