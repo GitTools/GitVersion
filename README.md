@@ -13,10 +13,10 @@ You are seeing:
  - A branch called `release-1.0.0` producing beta v1 packages
 
 ## Quick Links
- - [Documentation](https://github.com/GitTools/GitVersion/tree/master/Docs)
- - [How it works](https://github.com/GitTools/GitVersion/tree/master/Docs/howItWorks.md)
- - [FAQ](https://github.com/GitTools/GitVersion/tree/master/Docs/faq.md)
- - [Who is using GitVersion](https://github.com/GitTools/GitVersion/tree/master/Docs/whoIsUsingGitVersion)
+ - [Documentation](Docs/)
+ - [How it works](Docs/howItWorks.md)
+ - [FAQ](Docs/faq.md)
+ - [Who is using GitVersion](whoIsUsingGitVersion)
 
 ## Icon
 <a href="http://thenounproject.com/noun/tree/#icon-No13389" target="_blank">Tree</a> designed by <a href="http://thenounproject.com/david.chapman" target="_blank">David Chapman</a> from The Noun Project
