@@ -120,7 +120,7 @@ branches:
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
         config.Branches["develop"].Tag.ShouldBe("unstable");
         config.Branches["release[/-]"].Tag.ShouldBe("beta");
-        config.TagPrefix.ShouldBe("[vV]|");
+        config.TagPrefix.ShouldBe(Config.DefaultTagPrefix);
         config.NextVersion.ShouldBe(null);
     }
 
