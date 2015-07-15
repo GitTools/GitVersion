@@ -266,7 +266,7 @@ public class GitPreparerTests
                 var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath);
                 gitPreparer.Initialise(true);
 
-                Assert.Throws<MissingBranchException>(() => gitPreparer.Initialise(true));
+                Assert.Throws<Exception>(() => gitPreparer.Initialise(true));
             }
         }
         finally
