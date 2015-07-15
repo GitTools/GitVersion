@@ -242,5 +242,38 @@ public class GitPreparerTests
         }
     }
 
+    [Test]
+    public void UsingDynamicRepositoryWithoutTargetBranchFails()
+    {
+        var repoName = Guid.NewGuid().ToString();
+        var tempPath = Path.GetTempPath();
+        var tempDir = Path.Combine(tempPath, repoName);
+        Directory.CreateDirectory(tempDir);
+
+        try
+        {
+            using (var mainRepositoryFixture = new EmptyRepositoryFixture(new Config()))
+            {
+                var commitId = mainRepositoryFixture.Repository.MakeACommit().Id.Sha;
+
+                var arguments = new Arguments
+                {
+                    TargetPath = tempDir,
+                    TargetUrl = mainRepositoryFixture.RepositoryPath,
+                    CommitId = commitId
+                };
+
+                var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath);
+                gitPreparer.Initialise(true);
+
+                Assert.Throws<MissingBranchException>(() => gitPreparer.Initialise(true));
+            }
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
+
     // TODO test around normalisation
 }
