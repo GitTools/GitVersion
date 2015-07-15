@@ -1,4 +1,6 @@
 # GitVersion Docs
+**NOTE:** We will move these docs onto a GitHub.io page, but for the moment just use the GitHub source explorer to move around the docs.
+
 GitVersion is a tool to help you achieve *Semantic Versioning* on your project.
 
 This influences many of the decisions GitVersion has made, please read and understand this page as it will help you start using GitVersion effectively!

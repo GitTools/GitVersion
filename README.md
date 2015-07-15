@@ -13,7 +13,8 @@ You are seeing:
  - A branch called `release-1.0.0` producing beta v1 packages
 
 ## Quick Links
- - [Documentation](Docs/)
+ - [Why GitVersion](Docs/why.md)
+ - [Documentation](Docs/#gitversion-docs)
  - [How it works](Docs/howItWorks.md)
  - [FAQ](Docs/faq.md)
  - [Who is using GitVersion](whoIsUsingGitVersion)
