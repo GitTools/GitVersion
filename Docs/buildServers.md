@@ -13,6 +13,7 @@ When running in MSBuild either from the MSBuild Task or by using the `/proj mypr
 
 ## Setup guides
  - [AppVeyor](buildServerSetup/appVeyor.md)
+ - [TeamCity](buildServerSetup/teamCity.md)
 
 ## Other plugins/helpers
 ### GitVersion meta runner for TeamCity
