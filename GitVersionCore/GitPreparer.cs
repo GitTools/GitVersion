@@ -43,6 +43,7 @@ namespace GitVersion
             }
 
             var targetPath = CalculateTemporaryRepositoryPath(targetUrl, dynamicRepositoryLocation);
+
             DynamicGitRepositoryPath = CreateDynamicRepository(targetPath, authentication, targetUrl, targetBranch, noFetch);
             if (normaliseGitDirectory)
             {
@@ -119,6 +120,10 @@ namespace GitVersion
                 Logger.WriteInfo(string.Format("Updating branch '{0}'", targetBranch));
                 using (var repo = new Repository(targetPath))
                 {
+                    if (string.IsNullOrWhiteSpace(targetBranch))
+                    {
+                        throw new Exception("Dynamic Git repositories must have a target branch (/b)");
+                    }
                     var targetGitBranch = repo.Branches[targetBranch];
                     var trackedBranch = targetGitBranch.TrackedBranch;
                     if (trackedBranch == null)
