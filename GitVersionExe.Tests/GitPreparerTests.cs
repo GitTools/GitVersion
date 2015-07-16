@@ -278,12 +278,38 @@ public class GitPreparerTests
     [Test]
     public void TestErrorThrownForInvalidAuthentication()
     {
-        //arrange
+        var repoName = Guid.NewGuid().ToString();
+        var tempPath = Path.GetTempPath();
+        var tempDir = Path.Combine(tempPath, repoName);
+        Directory.CreateDirectory(tempDir);
 
-        //act
+        try
+        {
+            using (var mainRepositoryFixture = new CredentialSecuredRepositoryFixture(new Config(),"username","password"))
+            {
 
-        //assert
-        Assert.Fail("tests not written");
+                var arguments = new Arguments
+                {
+                    TargetPath = tempDir,
+                    TargetUrl = mainRepositoryFixture.RepositoryPath,
+                    TargetBranch = "feature1",
+                    Authentication = new Authentication()
+                    {
+                        Username = "user",
+                        Password = "password"
+                    }
+                };
+
+                var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath);
+
+                Assert.Throws<Exception>(() => gitPreparer.Initialise(true));
+            }
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+        Assert.Fail("tests not written yet");
     }
 
     // TODO test around normalisation
