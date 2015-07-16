@@ -29,4 +29,12 @@ public class MsBuildProjectArgTest
             result.Log.ShouldContain("FullSemVer: 1.2.3");
         }
     }
+
+    [Test]
+    public void FakeCodeToTestIssue505()
+    {
+        var i = 1 + 1;
+
+        i.ShouldBe(2);
+    }
 }
