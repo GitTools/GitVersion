@@ -1,12 +1,13 @@
 ﻿namespace GitVersion
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using YamlDotNet.Serialization;
 
     public class Config
     {
-        public const string DefaultTagPrefix = "[vV]";
+        internal const string DefaultTagPrefix = "[vV]";
 
         Dictionary<string, BranchConfig> branches = new Dictionary<string, BranchConfig>();
 
