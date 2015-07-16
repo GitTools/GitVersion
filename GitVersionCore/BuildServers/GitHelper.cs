@@ -50,12 +50,33 @@ namespace GitVersion
 
                 if (localBranchesWhereCommitShaIsHead.Count > 1)
                 {
-                    var names = string.Join(", ", localBranchesWhereCommitShaIsHead.Select(r => r.CanonicalName));
-                    var message = string.Format("Found more than one local branch pointing at the commit '{0}'. Unable to determine which one to use ({1}).", headSha, names);
-                    throw new WarningException(message);
-                }
+                    var branchNames = localBranchesWhereCommitShaIsHead.Select(r => r.CanonicalName);
+                    var csvNames = string.Join(", ", branchNames);
+                    const string moveBranchMsg = "Move one of the branches along a commit to remove warning";
 
-                if (localBranchesWhereCommitShaIsHead.Count == 0)
+                    Logger.WriteWarning(string.Format("Found more than one local branch pointing at the commit '{0}' ({1}).", headSha, csvNames));
+                    var master = localBranchesWhereCommitShaIsHead.SingleOrDefault(n => n.Name == "master");
+                    if (master != null)
+                    {
+                        Logger.WriteWarning("Because one of the branches is 'master', will build master." + moveBranchMsg);
+                        master.Checkout();
+                    }
+                    else
+                    {
+                        var branchesWithoutSeparators = localBranchesWhereCommitShaIsHead.Where(b => !b.Name.Contains('/') && !b.Name.Contains('-')).ToList();
+                        if (branchesWithoutSeparators.Count == 1)
+                        {
+                            var branchWithoutSeparator = branchesWithoutSeparators[0];
+                            Logger.WriteWarning(string.Format("Choosing {0} as it is the only branch without / or - in it. " + moveBranchMsg, branchWithoutSeparator.CanonicalName));
+                            branchWithoutSeparator.Checkout();
+                        }
+                        else
+                        {
+                            throw new WarningException("Failed to try and guess branch to use. " + moveBranchMsg);
+                        }
+                    }
+                }
+                else if (localBranchesWhereCommitShaIsHead.Count == 0)
                 {
                     Logger.WriteInfo(string.Format("No local branch pointing at the commit '{0}'. Fake branch needs to be created.", headSha));
                     CreateFakeBranchPointingAtThePullRequestTip(repo, authentication);
