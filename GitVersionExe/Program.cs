@@ -32,11 +32,11 @@ namespace GitVersion
 
         static int VerifyArgumentsAndRun()
         {
+            Arguments arguments = null;
             try
             {
                 var fileSystem = new FileSystem();
 
-                Arguments arguments;
                 var argumentsWithoutExeName = GetArgumentsWithoutExeName();
                 try
                 {
@@ -99,6 +99,14 @@ namespace GitVersion
             {
                 var error = string.Format("An unexpected error occurred:\r\n{0}", exception);
                 Logger.WriteError(error);
+
+                if (arguments != null)
+                {
+                    Logger.WriteInfo(string.Empty);
+                    Logger.WriteInfo("Here is the current git graph (please include in issue): ");
+                    Logger.WriteInfo("Showing max of 100 commits");
+                    LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
+                }
                 return 1;
             }
 
