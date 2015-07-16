@@ -86,6 +86,7 @@
     <Compile Include="Fixtures\BaseGitFlowRepositoryFixture.cs" />
     <Compile Include="GitVersionContextTests.cs" />
     <Compile Include="Helpers\DirectoryHelper.cs" />
+    <Compile Include="IntegrationTests\OtherScenarios.cs" />
     <Compile Include="IntegrationTests\PullRequestScenarios.cs" />
     <Compile Include="IntegrationTests\RemoteRepositoryScenarios.cs" />
     <Compile Include="IntegrationTests\DevelopScenarios.cs" />

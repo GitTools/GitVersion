@@ -20,6 +20,14 @@ public class RemoteRepositoryFixture : RepositoryFixtureBase
         CloneRepository();
     }
 
+    /// <summary>
+    /// Simulates running on build server
+    /// </summary>
+    public void InitialiseRepo()
+    {
+        new GitPreparer(null, null, new Authentication(), null, false, LocalRepositoryPath).Initialise(true);
+    }
+
     static IRepository CreateNewRepository(string path)
     {
         LibGit2Sharp.Repository.Init(path);

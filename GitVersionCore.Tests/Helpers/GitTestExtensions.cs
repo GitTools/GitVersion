@@ -1,41 +1,12 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using GitVersion;
-using GitVersion.Helpers;
 using LibGit2Sharp;
 
 public static class GitTestExtensions
 {
     static int pad = 1;
-
-    public static void DumpGraph(this IRepository repository)
-    {
-        var output = new StringBuilder();
-
-        try
-        {
-            ProcessHelper.Run(
-                o => output.AppendLine(o),
-                e => output.AppendLineFormat("ERROR: {0}", e),
-                null,
-                "git",
-                @"log --graph --abbrev-commit --decorate --date=relative --all --remotes=*",
-                repository.Info.Path);
-        }
-        catch (FileNotFoundException exception)
-        {
-            if (exception.FileName != "git")
-                throw;
-
-            output.AppendLine("Could not execute 'git log' due to the following error:");
-            output.AppendLine(exception.ToString());
-        }
-
-        Trace.Write(output.ToString());
-    }
 
     public static Commit MakeACommit(this IRepository repository)
     {

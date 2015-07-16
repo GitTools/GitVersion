@@ -6,18 +6,23 @@ We love contributions to get started contributing you might need:
  - [An issue to work on](https://github.com/ParticularLabs/GitVersion/labels/up-for-grabs) - We are on [Up for grabs](http://up-for-grabs.net/), our up for grabs issues are tagged `up-for-grabs`
  - An understanding of our [architecture](#architecture) and how [we write tests](#writing-tests)
 
-Once you know how to create a pull request and have an issue to work on, just post a comment saying you will work on it. 
+Once you know how to create a pull request and have an issue to work on, just post a comment saying you will work on it.
 If you end up not being able to complete the task, please post another comment so others can pick it up.
 
-Issues are also welcome, [failing tests](#writing-tests) are even more welcome. 
+Issues are also welcome, [failing tests](#writing-tests) are even more welcome.
+
+# Contribution Guidelines
+ - Try to use feature branches rather than developing on master
+ - Please include tests covering the change
+ - The docs are now stored in the repository under the `Docs` folder, please include documentation updates with your PR
 
 # Architecture
 GitVersion has three distict steps for calculating versions in v3.0.
 
 1. If the current commit is tagged, the tag is used and build metadata (Excluding commit count) is added. The other two steps will not execute
-2. A set of strategies are evaluated to decide on the base version and some metadata about that version. 
+2. A set of strategies are evaluated to decide on the base version and some metadata about that version.
    These strategies include HighestReachableTag, NextVersionInConfig, MergedBranchWithVersion, VersionInBranchName etc.
-3. The highest base version is selected, using that base version the new version is calculated. 
+3. The highest base version is selected, using that base version the new version is calculated.
 
 Visually it looks something like this:
 ![Version Calculation](http://www.plantuml.com:80/plantuml/png/fLCxJyCm4DxzAsuib4P914i69De1CS38Vd6kYIN7ZcodK8aVp-KX6Y2fKCbY9NV-7lVb2WoOeoVOMRDNfH0lz1vUoNbbpGwrR3K6ws1p3rlk-bN8u972f2AC3GHEbLN8m1D1Jjg-mPuXAZvx9kL1ZW1KY5dOZczMI0Pf54VnHtf7jpaAWJg0sW-uXw4PK3Eb1sMaevfCW6i1_0m6po1l7HfPJUxvu5XYUOHLWq5MLptCudmMK9--u5glJ0dIEaVo1Dw3JgVM6Km4cM9mzyrQXHuQHnj7chhl0JcnIrHjno1wiWtgfi8eWVK_7OQAmBHrJWvORFVM2PmrE7AcWZGh-Lj0FvptVvLiUPnCdG_XhNhOov9wQ1fzv7nw5S5EwSvw6CDQNfnMwUAP0XQyQpj70nkx3Nn3p5NFY9IshbNWepKi8ublWFiSPkC0ee8El75Dv5aOxqZQBScbWpWn0Pe2wb6aM1p4Eea_0G00)
@@ -46,7 +51,7 @@ Each strategy needs to return an instance of `BaseVersion` which has the followi
    VersionInBranchBaseVersionStrategy uses this to strip out anything before the first - or /. So `foo` ends up being evaluated as `foo`. If in doubt, just use null
 
 # Writing Tests
-We have made it super easy to write tests in GitVersion. Most tests you are interested in are in `GitVersionCore.Tests\IntegrationTests`. 
+We have made it super easy to write tests in GitVersion. Most tests you are interested in are in `GitVersionCore.Tests\IntegrationTests`.
 
 There is a scenario class for each type of branch. For example MasterScenarios, FeatureBranchScenarios etc.
 
@@ -57,7 +62,7 @@ Find where your issue would logically sit. Or create a new scenario class if it 
 We are currently using NUnit, so just create a descriptive test method and attribute it with `[Test]`
 
 ## 3. Use a fixture
-We have a few fixtures for different scenarios. 
+We have a few fixtures for different scenarios.
 
  - `EmptyRepositoryFixture` - Gives you an empty git repo to start with
  - `RemoteRepositoryFixture` - A local repo tracking a test remote repository. The remote repo is available through the `Repository` property, the local is accessible via `LocalRepository`
