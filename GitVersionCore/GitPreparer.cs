@@ -150,12 +150,7 @@ namespace GitVersion
 
             Logger.WriteInfo(string.Format("Retrieving git info from url '{0}'", repositoryUrl));
 
-            Repository.Clone(repositoryUrl, gitDirectory,
-                new CloneOptions
-                {
-                    Checkout = false,
-                    CredentialsProvider = (url, usernameFromUrl, types) => credentials
-                });
+            CloneRepository(repositoryUrl, gitDirectory, credentials);
 
             // Normalize (download branches) before using the branch
             GitHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch);
@@ -198,6 +193,38 @@ namespace GitVersion
             }
 
             return gitDirectory;
+        }
+
+        private static void CloneRepository(string repositoryUrl, string gitDirectory, Credentials credentials)
+        {
+            try
+            {
+                Repository.Clone(repositoryUrl, gitDirectory,
+                    new CloneOptions
+                    {
+                        Checkout = false,
+                        CredentialsProvider = (url, usernameFromUrl, types) => credentials
+                    });
+            }
+            catch (LibGit2SharpException ex)
+            {
+                var message = ex.Message;
+                if (message.Contains("401"))
+                {
+                    throw new Exception("Unauthorised: Incorrect username/password");
+                }
+                if (message.Contains("403"))
+                {
+                    throw new Exception("Forbidden: Possbily Incorrect username/password");
+                }
+                if (message.Contains("404"))
+                {
+                    throw new Exception("Not found: The repository was not found");
+                }
+                
+                throw new Exception("There was an unknown problem with the Git repository you provided");
+
+            }
         }
 
         private static Reference GetLocalReference(Repository repository, string branchName)
