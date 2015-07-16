@@ -1,7 +1,6 @@
 ﻿namespace GitVersion
 {
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
     using YamlDotNet.Serialization;
 
