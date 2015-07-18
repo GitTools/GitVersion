@@ -6,12 +6,14 @@
 
     public class Config
     {
+        internal const string DefaultTagPrefix = "[vV]";
+
         Dictionary<string, BranchConfig> branches = new Dictionary<string, BranchConfig>();
 
         public Config()
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch;
-            TagPrefix = "[vV]|";
+            TagPrefix = DefaultTagPrefix;
             VersioningMode = GitVersion.VersioningMode.ContinuousDelivery;
             ContinuousDeploymentFallbackTag = "ci";
 
