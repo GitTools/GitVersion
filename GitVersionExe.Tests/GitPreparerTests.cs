@@ -275,5 +275,31 @@ public class GitPreparerTests
         }
     }
 
+    [Test]
+    public void TestErrorThrownForInvalidRepository()
+    {
+        var repoName = Guid.NewGuid().ToString();
+        var tempPath = Path.GetTempPath();
+        var tempDir = Path.Combine(tempPath, repoName);
+        Directory.CreateDirectory(tempDir);
+
+        try
+        {
+            var arguments = new Arguments
+            {
+                TargetPath = tempDir,
+                TargetUrl = "http://127.0.0.1/testrepo.git"
+            };
+
+            var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath);
+
+            Assert.Throws<Exception>(() => gitPreparer.Initialise(true));
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
+
     // TODO test around normalisation
 }
