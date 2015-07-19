@@ -12,7 +12,7 @@ For instance if you are running in TeamCity after you run `GitVersion /output bu
 When running in MSBuild either from the MSBuild Task or by using the `/proj myproject.sln` GitVersion will make the MSBuild variables available in the format `$(GitVersion_SemVer)`.
 
 ## Setup guides
- - [AppVeyor](buildServerSetup/appVeyor.md)
+ - [AppVeyor](buildServerSetup/AppVeyor.md)
  - [TeamCity](buildServerSetup/teamCity.md)
 
 ## Other plugins/helpers

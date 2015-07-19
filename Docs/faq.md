@@ -4,7 +4,7 @@
 GitVersion calculates the semantic version, this will only change once per *release*. Read more at [version increments](./versionIncrements.md)
 
 ## How can GitVersion run for a shallow clone or checkout on server working directories
-GitVersion needs a proper git repository to run, some build servers do not do a proper clone which can cause issues. GitVersion has a feature called [dynamic repositories](dynamicRepositories.md) which solves this by cloning the repository and working against that clone instead of the working directory.
+GitVersion needs a proper git repository to run, some build servers do not do a proper clone which can cause issues. GitVersion has a feature called [dynamic repositories](Dynamic-Repositories.md) which solves this by cloning the repository and working against that clone instead of the working directory.
 
 ## I don't understand what SemVer is all about
 Not a problem, we have a quick introduction to SemVer which can be a good primer to read before reading [SemVer.org](http://semver.org)
