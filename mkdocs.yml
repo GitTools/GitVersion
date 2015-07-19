@@ -1,2 +1,3 @@
 site_name: GitVersion Documentation
-theme: readthedocs
+theme: MkDocs
+repo_url: https://github.com/GitTools/GitVersion
