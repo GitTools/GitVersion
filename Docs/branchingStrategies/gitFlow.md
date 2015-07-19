@@ -1,7 +1,9 @@
 #GitFlow
 GitFlow allows more structured releases, and GitVersion will derive sensible SemVer compatible versions from this structure.
 
-### Assumptions:
+## Resources
+
+## Assumptions:
 
 * Using [GitFlow branching model](http://nvie.com/git-model/) which always has a master and a develop branch
 * Following [Semantic Versioning](http://semver.org/)
@@ -12,14 +14,14 @@ GitFlow allows more structured releases, and GitVersion will derive sensible Sem
 * Tags can also be used to override versions while we transition repositories over to GitVersion
 * Using a build server with multi-branch building enabled eg TeamCity 8
 
-### How Branches are handled
+## How Branches are handled
 
 The descriptions of how commits and branches are versioned can be considered a type of pseudopod. With that in mind there are a few common "variables" that we will refer to:
 
 * `targetBranch` => the branch we are targeting
 * `targetCommit` => the commit we are targeting on `targetbranch`
 
-#### Master branch
+### Master branch
 
 Commits on master will always be a merge commit (Either from a `hotfix` or a `release` branch) or a tag. As such we can simply take the commit message or tag message.
 
@@ -41,7 +43,7 @@ Long version:
     {major}.{minor}.{patch} Sha:'{sha}'
     1.2.3 Sha:'a682956dccae752aa24597a0f5cd939f93614509'
 
-#### Develop branch
+### Develop branch
 
 `targetCommitDate` => the date of the `targetCommit`
 `masterVersionCommit` => the first version (merge commit or SemVer tag) on `master` that is older than the `targetCommitDate`
@@ -57,7 +59,7 @@ Long version:
     {major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
     1.2.3-unstable645 Branch:'develop' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
 
-#### Hotfix branches
+### Hotfix branches
 
 Named: `hotfix-{versionNumber}` eg `hotfix-1.2`
 
@@ -73,7 +75,7 @@ Long version:
     {major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
     1.2.3-beta645 Branch:'hotfix-foo' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
 
-#### Release branches
+### Release branches
 
  * May branch off from: develop
  * Must merge back into: develop and master
@@ -95,7 +97,7 @@ Long version:
     1.2.3-alpha2.4 Branch:'release-1.2' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
     1.2.3-rc2 Branch:'release-1.2' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
 
-#### Feature  branches
+### Feature branches
 
 May branch off from: `develop`
 Must merge back into: `develop`
@@ -114,7 +116,7 @@ Long version:
     {major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
     1.2.3-unstable.feature-a682956d Branch:'feature1' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
 
-#### Pull-request  branches
+### Pull-request branches
 
 May branch off from: `develop`
 Must merge back into: `develop`
@@ -125,7 +127,7 @@ Branch naming convention: anything except `master`, `develop`, `release-{n}`, or
 * patch: 0
 * pre-release: `unstable.pull{n}` where n = the pull request number  ('0' padded to 4 characters)
 
-### Nightly Builds
+## Nightly Builds
 
 **develop**, **feature** and **pull-request** builds are considered nightly builds and as such are not in strict adherence to SemVer.
 
