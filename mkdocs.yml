@@ -5,7 +5,7 @@ repo_url: https://github.com/GitTools/GitVersion
 pages:
 - Home: index.md
 - Usage: usage.md
-- Build Server Setup: build-server-setup.md
+- Build Server Support: build-server-support.md
 - Configuration: configuration.md
 - Examples: examples.md
 - FAQ: faq.md
