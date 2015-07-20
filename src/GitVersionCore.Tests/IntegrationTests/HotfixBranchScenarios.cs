@@ -11,7 +11,9 @@ public class HotfixBranchScenarios
         using (var fixture = new BaseGitFlowRepositoryFixture("1.2.0"))
         {
             // create hotfix
+            fixture.Repository.Checkout("master");
             fixture.Repository.CreateBranch("hotfix-1.2.1").Checkout();
+            fixture.Repository.MakeACommit();
 
             fixture.AssertFullSemver("1.2.1-beta.1+1");
             fixture.Repository.MakeACommit();
@@ -24,7 +26,6 @@ public class HotfixBranchScenarios
             // Merge hotfix branch to master
             fixture.Repository.Checkout("master");
 
-
             fixture.Repository.MergeNoFF("hotfix-1.2.1", Constants.SignatureNow());
             fixture.AssertFullSemver("1.2.1+4");
 
@@ -36,7 +37,7 @@ public class HotfixBranchScenarios
             fixture.AssertFullSemver("1.3.0-unstable.1");
 
             fixture.Repository.MergeNoFF("hotfix-1.2.1", Constants.SignatureNow());
-            fixture.AssertFullSemver("1.3.0-unstable.4");
+            fixture.AssertFullSemver("1.3.0-unstable.5");
         }
     }
 
@@ -51,6 +52,7 @@ public class HotfixBranchScenarios
         }))
         {
             // Merge hotfix branch to support
+            fixture.Repository.Checkout("master");
             fixture.Repository.CreateBranch("support-1.1", (Commit)fixture.Repository.Tags.Single(t => t.Name == "1.1.0").Target).Checkout();
             fixture.AssertFullSemver("1.1.0");
 
