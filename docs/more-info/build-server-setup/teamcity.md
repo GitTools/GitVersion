@@ -11,6 +11,11 @@ Then in your build parameters simply [add a placeholder](https://github.com/Part
 
 GitVersion writes system parameters into TeamCity, so they will automatically be passed to your build scripts to use.
 
+## GitVersion meta runner for TeamCity
+TeamCity has support for meta-runners which allow custom tasks. There is a GitVersion meta-runner available which makes it easy to use GitVersion.
+
+ - [Project Link](https://github.com/JetBrains/meta-runner-power-pack/tree/master/gitversion)
+
 ## Running inside TeamCity
 * Make sure to use **agent checkouts** (required, server checkouts do not copy the needed `.git` directory)
   - If you want to use *checkout on server*, see [dynamic repositories](Dynamic-Repositories.md)
