@@ -8,7 +8,7 @@ configuration:
   - Debug
  
 build_script:
-  - cmd: nuget restore
+  - cmd: nuget restore src/GitVersion.sln
   
   - cmd: msbuild src/GitVersion.sln "/p:Configuration=%CONFIGURATION%;Platform=%PLATFORM%"
   - ps: .\build\NuGetCommandLineBuild\tools\GitVersion.exe /l console /output buildserver /updateAssemblyInfo
