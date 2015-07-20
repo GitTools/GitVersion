@@ -1,10 +1,10 @@
 # Usage
 There are two main ways to consume GitVersion, the first is by running GitVersion.exe. The second is an MSBuild task. The MSBuild task is really easy to get up and running, simply install GitVersionTask from NuGet and it will integrate into your project and write out variables to your build server if it's running on one. The exe offers more options and works for not just .net projects.
 
- - [A Command Line tool](usage/commandLine.md)
- - [An MSBuild Task](usage/msbuildTask.md)
- - [A NuGet Library package](#NuGet-Library)
- - [A Ruby Gem](#Gem)
+ - [A Command Line tool](#command-line)
+ - [An MSBuild Task](#msbuild-task)
+ - [A NuGet Library package](#nuget-library)
+ - [A Ruby Gem](#gem)
 
 ## Command Line
 If you want a command line version installed on your machine then you can use [Chocolatey](http://chocolatey.org) to install GitVersion

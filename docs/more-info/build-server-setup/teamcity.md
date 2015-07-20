@@ -7,7 +7,7 @@ In [TeamCity](https://www.jetbrains.com/teamcity/) you can create a build step a
 * **Command executable:**  `GitVersion.exe`
 * **Command parameters:** `/output buildserver /updateassemblyinfo true`
 
-Then in your build parameters simply [add a placeholder](https://github.com/Particular/GitVersion/wiki/Variables#recommended-teamcity-setup) of the GitVersion variables you would like to use.
+Then in your build parameters simply [add a placeholder](#nuget-in-teamcity) of the GitVersion variables you would like to use.
 
 GitVersion writes system parameters into TeamCity, so they will automatically be passed to your build scripts to use.
 
@@ -18,7 +18,7 @@ TeamCity has support for meta-runners which allow custom tasks. There is a GitVe
 
 ## Running inside TeamCity
 * Make sure to use **agent checkouts** (required, server checkouts do not copy the needed `.git` directory)
-  - If you want to use *checkout on server*, see [dynamic repositories](Dynamic-Repositories.md)
+  - If you want to use *checkout on server*, see [dynamic repositories](../dynamic-repositories.md)
 * For the moment you need to promote the `%teamcity.build.vcs.branch.{configurationid}%` build parameter to an environment variable with the same name for pull requests to be handled correctly
 * We update the TC build number to the GitVersion number automatically
 * We output the individual values of the GitVersion version as the build parameter: `GitVersion.*` (Eg: `GitVersion.Major`) if you need access to them in your build script
