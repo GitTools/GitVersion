@@ -13,6 +13,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>0e09d4de</NuGetPackageImportStamp>
+    <BuildDir>$(SolutionDir)..\build\</BuildDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -176,18 +177,18 @@
   </PropertyGroup>
   <Target Name="Clean">
     <ItemGroup>
-      <RefFilesToDelete Include="$(SolutionDir)NuGetRefBuild\**\*.*" />
+      <RefFilesToDelete Include="$(BuildDir)NuGetRefBuild\**\*.*" />
     </ItemGroup>
     <Delete Files="@(RefFilesToDelete)" />
   </Target>
   <Target Name="AfterBuild" DependsOnTargets="Clean">
     <!-- NugetRefBuild -->
     <MakeDir Directories="$(SolutionDir)NuGetRefBuild" />
-    <Copy SourceFiles="$(OutputPath)GitVersionCore.dll" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
-    <Copy SourceFiles="$(OutputPath)GitVersionCore.pdb" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
-    <Copy SourceFiles="$(OutputPath)GitVersionCore.xml" DestinationFolder="$(SolutionDir)NuGetRefBuild\Lib\Net45" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.nuspec" DestinationFolder="$(SolutionDir)NuGetRefBuild" />
-    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetRefBuild" MetadataAssembly="$(OutputPath)GitVersionCore.dll" Version="$(GitVersion_NuGetVersion)" />
+    <Copy SourceFiles="$(OutputPath)GitVersionCore.dll" DestinationFolder="$(BuildDir)NuGetRefBuild\lib\Net45" />
+    <Copy SourceFiles="$(OutputPath)GitVersionCore.pdb" DestinationFolder="$(BuildDir)NuGetRefBuild\lib\Net45" />
+    <Copy SourceFiles="$(OutputPath)GitVersionCore.xml" DestinationFolder="$(BuildDir)NuGetRefBuild\lib\Net45" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.nuspec" DestinationFolder="$(BuildDir)NuGetRefBuild" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetRefBuild" MetadataAssembly="$(OutputPath)GitVersionCore.dll" Version="$(GitVersion_NuGetVersion)" />
   </Target>
   <Import Project="..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" />
   <Import Project="..\packages\Fody.1.28.1\build\Fody.targets" Condition="Exists('..\packages\Fody.1.28.1\build\Fody.targets')" />
