@@ -1,4 +1,4 @@
-# Branching strategies
+# Git Branching strategies
 There are two mainstream branching strategies in git and many lesser known strategies.
 
 When building GitVersion we had to work through not only how to use the branching strategies but how we could fully support semantic versioning in each of these strategies.
