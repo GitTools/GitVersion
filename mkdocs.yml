@@ -1,3 +1,37 @@
-site_name: GitVersion Documentation
+site_name: GitVersion
 theme: ReadTheDocs
 repo_url: https://github.com/GitTools/GitVersion
+
+pages:
+- Home: index.md
+- Usage: usage.md
+- Build Server Setup: build-server-setup.md
+- Configuration: configuration.md
+- Examples: examples.md
+- FAQ: faq.md
+- Why?: why.md
+- Who is using GitVersion: who.md
+
+- More Info:
+  - How it works: how-it-works.md
+  - Dynamic Repositories: dynamic-repositories.md
+  - Variables: variables.md
+  - Version incrementing: version-increments.md
+  - Version sources: version-sources.md
+  - Incrementing per commit: incrementing-per-commit.md
+
+- Git branching strategies:
+  - Home: index.md
+  - GitFlow: gitflow.md
+  - GitHubFlow: githubflow.md
+  - GitFlow Examples: gitflow-examples.md
+  - GitHubFlow Examples: githubflow-examples.md
+
+- Reference:
+  - Intro to SemVer: intro-to-semver.md
+  - Git setup: git-setup.md
+  - Feature branches: feature-branches.md
+  - Pull requests: pull-requests.md
+  - Mainline development: mainline-development.md
+  - Continous delivery: continuous-delivery.md
+  - Continuous deployment: continuous-deployment.md
