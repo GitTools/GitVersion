@@ -16,9 +16,9 @@ Available on [Chocolatey](http://chocolatey.org) under [GitVersion.Portable](htt
 Switches are available with `GitVersion /?`
 
 ### Output
-By default GitVersion returns a json object to stdout containing all the [variables](variables.md) which GitVersion generates. This works great if you want to get your build scripts to parse the json object then use the variables, but there is a simpler way.
+By default GitVersion returns a json object to stdout containing all the [variables](more-info/variables.md) which GitVersion generates. This works great if you want to get your build scripts to parse the json object then use the variables, but there is a simpler way.
 
-`GitVersion.exe /output buildserver` will change the mode of GitVersion to write out the variables to whatever build server it is running in. You can then use those variables in your build scripts or run different tools to create versioned NuGet packages or whatever you would like to do. See [build servers](buildServers.md) for more information about this.
+`GitVersion.exe /output buildserver` will change the mode of GitVersion to write out the variables to whatever build server it is running in. You can then use those variables in your build scripts or run different tools to create versioned NuGet packages or whatever you would like to do. See [build servers](build-server-support.md) for more information about this.
 
 
 ## MSBuild Task
@@ -45,7 +45,7 @@ Make sure there is a tag somewhere on master named `v1.2.3` before `HEAD` (chang
 
 Continue working as usual and when you release/deploy, tag the branch/release `v1.2.4`.
 
-If you want to bump up the major or minor version, create a text file in the root directory named NextVersion.txt and inside of it on a single line enter the version number that you want your next release to be.  e.g., `2.0`.
+If you want to bump up the major or minor version, create a `GitVersionConfig.yaml` file in the root of your repo and inside of it on a single line enter `next-version: <version you want>`, for example `next-version: 3.0.0`
 
 ### Why is AssemblyVersion only set to Major.Minor?
 

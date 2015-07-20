@@ -6,14 +6,14 @@ When building GitVersion we had to work through not only how to use the branchin
 ## Introduction to branching strategies
 Git is a very powerful tool and if you do not settle on a branching strategy and associated workflows then you will likely lose work at some point. At the start of any project I recommend picking a branching strategy and making sure your whole team understands it.
 
-As mentioned above the GitVersion docs cover GitHubFlow and GitFlow.
+As mentioned above the GitVersion docs cover [GitHubFlow](githubflow.md) and [GitFlow](gitflow.md).
 
 ### GitHubFlow
 GitHubFlow is a simple and powerful branching strategy. It is what GitHub uses and the branching strategy most open source projects use.
 
- - [Mainline development](../Reference/mainline-development.md) on `master`
- - Work on [feature branches](../Reference/featureBranches.md), merge into `master` via [pull requests](../Reference/pull-requests.md)
- - Works well for [continuous delivery](../Reference/Continuous-Delivery.md)
+ - [Mainline development](../reference/mainline-development.md) on `master`
+ - Work on [feature branches](../reference/feature-branches.md), merge into `master` via [pull requests](../reference/pull-requests.md)
+ - Works well for [continuous delivery](../reference/continuous-delivery.md)
  - Does not have a way to manage/maintain old releases
  - Only allows working on a single release at a time
 
@@ -32,4 +32,4 @@ There are a few reasons you would pick GitFlow over GitHubFlow, they are:
 2) You need to work on multiple releases at the same time
  - For example a new feature which will go in the next major version, while bug fixes/smaller features are still going into the current release
 
-But if you do not have a good reason to go with GitFlow, then start with GitHubFlow. It is a far simpler model and if you end up needing GitFlow later, it is [easy to convert](convertingToGitFlow.md)
+But if you do not have a good reason to go with GitFlow, then start with GitHubFlow. It is a far simpler model and if you end up needing GitFlow later, it is [easy to convert](converting-to-gitflow.md)
