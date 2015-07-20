@@ -13,8 +13,6 @@ When running in MSBuild either from the MSBuild Task or by using the `/proj mypr
 
 ## Setup guides
  - [AppVeyor](more-info/build-server-setup/appveyor.md)
- - [TeamCity](more-info/build-server-setup/teamCity.md)
- - [AppVeyor](more-info/build-server-setup/appveyor.md)
  - [TeamCity](more-info/build-server-setup/teamcity.md)
  - [MyGet](more-info/build-server-setup/myget.md)
  - [Bamboo](more-info/build-server-setup/bamboo.md)
