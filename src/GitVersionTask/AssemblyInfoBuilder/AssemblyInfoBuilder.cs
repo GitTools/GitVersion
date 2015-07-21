@@ -50,7 +50,7 @@ namespace {5}
         var members = new StringBuilder();
         foreach (var variable in vars)
         {
-            members.AppendLine(string.Format("    public static string {0} = \"{1}\";", variable.Key, variable.Value));
+            members.AppendLine(string.Format("        public static string {0} = \"{1}\";", variable.Key, variable.Value));
         }
 
         return members.ToString();
