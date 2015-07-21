@@ -36,6 +36,7 @@ pages:
   - GitFlow Examples: git-branching-strategies/gitflow-examples.md
   - GitHubFlow Examples: git-branching-strategies/githubflow-examples.md
   - Converting to GitFlow: git-branching-strategies/converting-to-gitflow.md
+  - Creating/Updating examples: git-branching-strategies/creating-updating-examples.md
 
 - Reference:
   - Intro to SemVer: reference/intro-to-semver.md
