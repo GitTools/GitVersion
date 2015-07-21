@@ -12,6 +12,7 @@ Versioning when using git, solved. GitVersion looks at your git history and work
 |Chocolatey (GitVersion.Portable)|[![Chocolatey](https://img.shields.io/chocolatey/v/gitversion.portable.svg)](https://chocolatey.org/packages/GitVersion.Portable)|[![Chocolatey](https://img.shields.io/chocolatey/vpre/gitversion.portable.svg)](https://chocolatey.org/packages/GitVersion.Portable)|
 |NuGet (GitVersionTask)|[![NuGet](https://img.shields.io/nuget/v/GitVersionTask.svg)](https://www.nuget.org/packages/GitVersionTask)|[![NuGet](https://img.shields.io/nuget/vpre/GitVersionTask.svg)](https://www.nuget.org/packages/GitVersionTask)|
 |NuGet (GitVersion.CommandLine)|[![NuGet](https://img.shields.io/nuget/v/GitVersion.CommandLine.svg)](https://www.nuget.org/packages/GitVersion.CommandLine)|[![NuGet](https://img.shields.io/nuget/vpre/GitVersion.CommandLine.svg)](https://www.nuget.org/packages/GitVersion.CommandLine)|
+|Gem|[![Gem](https://img.shields.io/gem/v/gitversion.svg)](https://rubygems.org/gems/gitversion)|[![Gem](https://img.shields.io/gem/v/gitversion.svg)](https://rubygems.org/gems/gitversion)|
 
 ## Quick Links
  - [Documentation](http://gitversion.readthedocs.org/en/latest)
