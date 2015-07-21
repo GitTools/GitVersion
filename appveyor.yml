@@ -19,7 +19,8 @@ build_script:
   - cmd: appveyor PushArtifact "build\NuGetCommandLineBuild\GitVersion.CommandLine.%GitVersion_NuGetVersion%.nupkg"
   - cmd: appveyor PushArtifact "build\NuGetRefBuild\GitVersion.%GitVersion_NuGetVersion%.nupkg"
   - cmd: appveyor PushArtifact "build\NuGetTaskBuild\GitVersionTask.%GitVersion_NuGetVersion%.nupkg"
-  
+  - cmd: appveyor PushArtifact "build\GemBuild\gitversion-%GitVersion_SemVer%.gem"
+
   - cmd: 7z a "GitVersion_%GitVersion_NuGetVersion%.zip" .\build\NuGetCommandLineBuild\Tools\*.*
   - cmd: appveyor PushArtifact "GitVersion_%GitVersion_NuGetVersion%.zip"
 
