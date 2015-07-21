@@ -21,6 +21,7 @@ using System.Reflection;
 [assembly: GitVersionInformation()]
 
 [System.Runtime.CompilerServices.CompilerGenerated]
+[AttributeUsage(AttributeTargets.Assembly)]
 sealed class ReleaseDateAttribute : System.Attribute
 {{
     public string Date {{ get; private set; }}
@@ -38,6 +39,7 @@ static class GitVersionInformation
 }}
 
 [System.Runtime.CompilerServices.CompilerGenerated]
+[AttributeUsage(AttributeTargets.Assembly)]
 sealed class GitVersionInformationAttribute : System.Attribute
 {{
 {5}
