@@ -6,6 +6,7 @@ using NUnit.Framework;
 public class HotfixBranchScenarios
 {
     [Test]
+    // This test actually validates #465 as well
     public void PatchLatestReleaseExample()
     {
         using (var fixture = new BaseGitFlowRepositoryFixture("1.2.0"))

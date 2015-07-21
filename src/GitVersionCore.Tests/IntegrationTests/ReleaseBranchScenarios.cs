@@ -160,6 +160,26 @@ public class ReleaseBranchScenarios
     }
 
     [Test]
+    public void MasterVersioningContinuousCorrectlyAfterMergingReleaseBranch()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.3");
+            fixture.Repository.MakeCommits(1);
+            fixture.Repository.CreateBranch("release-2.0.0");
+            fixture.Repository.Checkout("release-2.0.0");
+            fixture.Repository.MakeCommits(4);
+            fixture.Repository.Checkout("master");
+            fixture.Repository.MergeNoFF("release-2.0.0", Constants.SignatureNow());
+
+            fixture.AssertFullSemver("2.0.0+0");
+            fixture.Repository.ApplyTag("2.0.0");
+            fixture.Repository.MakeCommits(1);
+            fixture.AssertFullSemver("2.0.1+1");
+        }
+    }
+
+    [Test]
     public void WhenReleaseBranchIsMergedIntoDevelopHighestVersionIsTakenWithIt()
     {
         using (var fixture = new EmptyRepositoryFixture(new Config()))
@@ -180,7 +200,7 @@ public class ReleaseBranchScenarios
             fixture.Repository.Checkout("develop");
             fixture.Repository.MergeNoFF("release-1.0.0", Constants.SignatureNow());
 
-            fixture.AssertFullSemver("2.1.0-unstable.5");
+            fixture.AssertFullSemver("2.1.0-unstable.0");
         }
     }
 
@@ -231,7 +251,7 @@ public class ReleaseBranchScenarios
 
             fixture.Repository.MakeCommits(1);
 
-            fixture.AssertFullSemver("2.0.0-beta.2+2");
+            fixture.AssertFullSemver("2.0.0-beta.2+1");
 
             //merge down to develop
             fixture.Repository.Checkout("develop");
@@ -239,7 +259,7 @@ public class ReleaseBranchScenarios
 
             //but keep working on the release
             fixture.Repository.Checkout("release-2.0.0");
-            fixture.AssertFullSemver("2.0.0-beta.2+2");
+            fixture.AssertFullSemver("2.0.0-beta.2+1");
         }
     }
 }
