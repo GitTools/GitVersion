@@ -122,7 +122,15 @@ noteText.Replace("\n", "\n  "));
         Trace.WriteLine("---------");
 
         var variables = GetVersion(repository, commitId);
-        variables.FullSemVer.ShouldBe(fullSemver);
+        try
+        {
+            variables.FullSemVer.ShouldBe(fullSemver);
+        }
+        catch (Exception)
+        {
+            if (repository != null)
+                repository.DumpGraph();
+        }
         if (commitId == null)
             diagramBuilder.AppendLineFormat("note over {0} #D3D3D3: {1}", GetParticipant(Repository.Head.Name), fullSemver);
     }
