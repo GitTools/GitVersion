@@ -23,7 +23,7 @@ using System.Reflection;
 namespace {6}
 {{
     [System.Runtime.CompilerServices.CompilerGenerated]
-[AttributeUsage(AttributeTargets.Assembly)]
+    [AttributeUsage(AttributeTargets.Assembly)]
     sealed class ReleaseDateAttribute : System.Attribute
     {{
         public string Date {{ get; private set; }}
@@ -41,7 +41,7 @@ namespace {6}
     }}
 
     [System.Runtime.CompilerServices.CompilerGenerated]
-[AttributeUsage(AttributeTargets.Assembly)]
+    [AttributeUsage(AttributeTargets.Assembly)]
     sealed class GitVersionInformationAttribute : System.Attribute
     {{
 {5}
