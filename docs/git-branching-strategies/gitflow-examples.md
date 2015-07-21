@@ -1,9 +1,16 @@
 # GitFlow Examples
+These examples are using the *default* configuration with GitVersion. Which is [continuous deployment](../reference/continuous-deployment.md) mode for `develop` and [continuous delivery](../reference/continuous-delivery.md) mode for all other branches.
+
+This default configuration allows you to publish CI builds from develop to a CI MyGet feed, or another CI feed. Then all other branches are manually released then tagged. Read more about this at [version increments](../more-info/version-increments.md).
+
 ## Feature Branches
 Feature branches will take the feature branch name and use that as the pre-release tag.
 
 ![GitFlow](img/05119d0cd4ecaaefff94_feature-branch.png)
 
+Notice after the feature branch is merged, the version on `develop` is `1.3.0-unstable.3`. This is due to `develop` running in *continuous deployment* mode. If you configured `develop` to use *continuous delivery* the version would still be `1.3.0-unstable.1` and you would have to use release tags to increment the `unstable.1`.
+
+You can see the different on the feature branch itself, notice the version is the same before and after the commit on the feature branch? Only the metadata has changed. If you released the feature branch artifacts then tagged the commit, the following commit would increase to `-beta.2`.
 
 ## Pull Request
 Because feature branches are most likely pushed to a fork, we are showing the

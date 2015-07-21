@@ -1,6 +1,7 @@
 # GitHubFlow Examples
-## Continuous Delivery mode
-TODO Example of GitHubFlow using continuous delivery mode
 
-## Continuous Deployment mode
-TODO Example of GitHubFlow using continuous deployment mode
+## Feature branch
+![GitFlow](img/githubflow_feature-branch.png)
+
+## Pull requests
+![GitFlow](img/githubflow_pull-request.png)
