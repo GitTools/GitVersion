@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+
 using GitVersion;
 
 public class AssemblyInfoBuilder
@@ -33,15 +34,16 @@ static class GitVersionInformation
 }}
 
 
-", 
-vars.AssemblySemVer,
- vars.MajorMinorPatch + ".0", 
- vars.InformationalVersion,
-            vars.CommitDate,
-            GenerateVariableMembers(vars));
+",
+                                         vars.AssemblySemVer,
+                                         vars.MajorMinorPatch + ".0",
+                                         vars.InformationalVersion,
+                                         vars.CommitDate,
+                                         GenerateVariableMembers(vars));
 
         return assemblyInfo;
     }
+
 
     string GenerateVariableMembers(IEnumerable<KeyValuePair<string, string>> vars)
     {
@@ -53,5 +55,4 @@ vars.AssemblySemVer,
 
         return members.ToString();
     }
-
 }
