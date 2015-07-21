@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+
 using GitVersion;
 
 public class AssemblyInfoBuilder
@@ -44,6 +45,7 @@ namespace {5}
 
         return assemblyInfo;
     }
+
 
     string GenerateVariableMembers(IEnumerable<KeyValuePair<string, string>> vars)
     {
