@@ -87,10 +87,6 @@ noteText.Replace("\n", "\n  "));
             diagramBuilder.Append("create ");
             Participant(branchName, @as);
         }
-        else
-        {
-            NoteOver(branchName, branchName, prefix: "h");
-        }
 
         var branch = Repository.Head.Name;
         diagramBuilder.AppendLineFormat("{0} -> {1}: branch from {2}", GetParticipant(branch), GetParticipant(branchName), branch);
