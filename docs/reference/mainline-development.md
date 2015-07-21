@@ -1,0 +1,6 @@
+# Mainline development
+Mainline development is enabled when using [GitHubFlow](../git-branching-strategies/githubflow.md) or any other strategy where you develop on `master`. The main rule of mainline development is that **master is always in a state that it could be deployed to production**. This means that pull requests should not be merged until they are ready to go out.
+
+To properly achieve mainline development you need confidence in your test suite as if it goes green against a PR then you are confident that you can merge and release that pull request. Another property of mainline development is normally that you fix going forward, not revert. When an issue is discovered with a release, add a test or some sort of check to make sure it won't happen again, fix the issue, then do a release with the fix.
+
+Like all things, it is an approach and will work for some people and not for others. GitVersion is unique in the fact that it works very well with mainline development and the version numbers it generates are *predictive* and indicate what the next version to be released is. Most other approaches require bumping the version number before the release which means that the version being built and the version number which will be deployed are often different.
