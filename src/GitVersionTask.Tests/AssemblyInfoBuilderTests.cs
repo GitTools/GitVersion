@@ -117,6 +117,8 @@ public class AssemblyInfoBuilderTests
 
         foreach (var variable in versionVariables)
         {
+            Assert.IsNotNull(variable.Value);
+
             var property = properties.FirstOrDefault(p => p.Name == variable.Key);
             Assert.IsNotNull(property);
 
