@@ -69,7 +69,7 @@
             TempFileTracker.DeleteTempFiles();
 
             InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
-            
+
             VersionVariables versionVariables;
             if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionVariables, NoFetch, new Authentication(), fileSystem))
             {
@@ -80,7 +80,6 @@
 
         void CreateTempAssemblyInfo(VersionVariables versionVariables)
         {
-
             if (IntermediateOutputPath == null)
             {
                 var tempFileName = string.Format("AssemblyInfo_{0}_{1}.g.cs", Path.GetFileNameWithoutExtension(ProjectFile), Path.GetRandomFileName());
@@ -92,7 +91,7 @@
             }
 
             var assemblyInfoBuilder = new AssemblyInfoBuilder();
-            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables);
+            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, Path.GetFileNameWithoutExtension(ProjectFile));
             File.WriteAllText(AssemblyInfoTempFilePath, assemblyInfo);
         }
     }

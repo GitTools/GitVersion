@@ -5,22 +5,24 @@ using System.Reflection;
 [assembly: AssemblyVersion("2.3.4.5")]
 [assembly: AssemblyFileVersion("2.3.4.0")]
 [assembly: AssemblyInformationalVersion("2.3.4-beta.5+6.Branch.master.Sha.commitSha")]
-[assembly: ReleaseDate("2014-03-06")]
+[assembly: Fake.ReleaseDate("2014-03-06")]
 
-[System.Runtime.CompilerServices.CompilerGenerated]
-sealed class ReleaseDateAttribute : System.Attribute
+namespace Fake
 {
-    public string Date { get; private set; }
-
-    public ReleaseDateAttribute(string date)
+    [System.Runtime.CompilerServices.CompilerGenerated]
+    sealed class ReleaseDateAttribute : System.Attribute
     {
-        Date = date;
-    }
-}
+        public string Date { get; private set; }
 
-[System.Runtime.CompilerServices.CompilerGenerated]
-static class GitVersionInformation
-{
+        public ReleaseDateAttribute(string date)
+        {
+            Date = date;
+        }
+    }
+
+    [System.Runtime.CompilerServices.CompilerGenerated]
+    static class GitVersionInformation
+    {
     public static string Major = "2";
     public static string Minor = "3";
     public static string Patch = "4";
@@ -41,6 +43,5 @@ static class GitVersionInformation
     public static string NuGetVersion = "2.3.4-beta0005";
     public static string CommitDate = "2014-03-06";
 
+    }
 }
-
-
