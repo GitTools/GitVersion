@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Reflection;
 
 [assembly: AssemblyVersion("1.2.3.0")]
@@ -40,7 +39,4 @@ static class GitVersionInformation
     public static string NuGetVersionV2 = "1.2.3-unstable0004";
     public static string NuGetVersion = "1.2.3-unstable0004";
     public static string CommitDate = "2014-03-06";
-
 }
-
-

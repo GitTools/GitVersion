@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using GitVersion;
@@ -7,6 +8,8 @@ public class AssemblyInfoBuilder
 {
     public string GetAssemblyInfoText(VersionVariables vars)
     {
+        var v = vars.ToArray();
+
         var assemblyInfo = string.Format(@"
 using System;
 using System.Reflection;
@@ -39,18 +42,25 @@ static class GitVersionInformation
                                          vars.MajorMinorPatch + ".0",
                                          vars.InformationalVersion,
                                          vars.CommitDate,
-                                         GenerateVariableMembers(vars));
+                                         GenerateVariableMembers(v))
+            .Trim();
 
         return assemblyInfo;
     }
 
 
-    string GenerateVariableMembers(IEnumerable<KeyValuePair<string, string>> vars)
+    static string GenerateVariableMembers(IList<KeyValuePair<string, string>> vars)
     {
         var members = new StringBuilder();
-        foreach (var variable in vars)
+        for (var i = 0; i < vars.Count; i++)
         {
-            members.AppendLine(string.Format("    public static string {0} = \"{1}\";", variable.Key, variable.Value));
+            var variable = vars[i];
+            members.AppendFormat("    public static string {0} = \"{1}\";", variable.Key, variable.Value);
+
+            if (i < vars.Count - 1)
+            {
+                members.AppendLine();
+            }
         }
 
         return members.ToString();
