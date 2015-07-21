@@ -367,4 +367,45 @@ public class DocumentationSamples
             fixture.AssertFullSemver("1.2.1+3");
         }
     }
+
+    [Test]
+    public void GitHubFlowMajorRelease()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            fixture.Participant("master");
+
+            fixture.Repository.MakeACommit();
+            fixture.ApplyTag("1.3.0");
+
+            // Create release branch
+            fixture.BranchTo("release/2.0.0", "release");
+            fixture.Activate("release/2.0.0");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("2.0.0-beta.1+1");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("2.0.0-beta.1+2");
+
+            // Apply beta.1 tag should be exact tag
+            fixture.ApplyTag("2.0.0-beta.1");
+            fixture.AssertFullSemver("2.0.0-beta.1");
+
+            // Make a commit after a tag should bump up the beta
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("2.0.0-beta.2+1");
+
+            // Complete release
+            fixture.Checkout("master");
+            fixture.MergeNoFF("release/2.0.0");
+            fixture.Destroy("release/2.0.0");
+            fixture.NoteOver("Release branches are deleted once merged", "release/2.0.0");
+            
+            fixture.AssertFullSemver("2.0.0+0");
+            fixture.ApplyTag("2.0.0");
+            fixture.AssertFullSemver("2.0.0");
+            fixture.MakeACommit();
+            fixture.Repository.DumpGraph();
+            fixture.AssertFullSemver("2.0.1+1");
+        }
+    }
 }
