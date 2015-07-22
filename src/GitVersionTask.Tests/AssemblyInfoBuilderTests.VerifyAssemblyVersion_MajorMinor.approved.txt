@@ -10,7 +10,7 @@ using System.Reflection;
 namespace Fake
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
-[AttributeUsage(AttributeTargets.Assembly)]
+    [AttributeUsage(AttributeTargets.Assembly)]
     sealed class ReleaseDateAttribute : System.Attribute
     {
         public string Date { get; private set; }
@@ -46,7 +46,7 @@ namespace Fake
     }
 
     [System.Runtime.CompilerServices.CompilerGenerated]
-[AttributeUsage(AttributeTargets.Assembly)]
+    [AttributeUsage(AttributeTargets.Assembly)]
     sealed class GitVersionInformationAttribute : System.Attribute
     {
         public string Major { get { return "2"; } }
