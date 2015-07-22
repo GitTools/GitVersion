@@ -61,29 +61,22 @@ namespace {6}
 
     static string GenerateStaticVariableMembers(IList<KeyValuePair<string, string>> vars)
     {
-        var members = new StringBuilder();
-        for (var i = 0; i < vars.Count; i++)
-        {
-            var variable = vars[i];
-            members.AppendFormat("        public static string {0} = \"{1}\";", variable.Key, variable.Value);
-
-            if (i < vars.Count - 1)
-            {
-                members.AppendLine();
-            }
-        }
-
-        return members.ToString();
+        return GenerateMembers(vars, "        public static string {0} = \"{1}\";");
     }
 
 
     static string GenerateAttributeVariableMembers(IList<KeyValuePair<string, string>> vars)
     {
+        return GenerateMembers(vars, "        public string {0} {{ get {{ return \"{1}\"; }} }}");
+    }
+
+    static string GenerateMembers(IList<KeyValuePair<string, string>> vars, string memberFormat)
+    {
         var members = new StringBuilder();
         for (var i = 0; i < vars.Count; i++)
         {
             var variable = vars[i];
-            members.AppendFormat("        public string {0} {{ get {{ return \"{1}\"; }} }}", variable.Key, variable.Value);
+            members.AppendFormat(memberFormat, variable.Key, variable.Value);
 
             if (i < vars.Count - 1)
             {
