@@ -302,4 +302,110 @@ public class DocumentationSamples
             fixture.AssertFullSemver("1.4.0");
         }
     }
+
+
+    [Test]
+    public void GitHubFlowFeatureBranch()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            fixture.Participant("master");
+
+            // GitFlow setup
+            fixture.Repository.MakeACommit();
+            fixture.ApplyTag("1.2.0");
+
+            // Branch to develop
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("1.2.1+1");
+
+            // Open Pull Request
+            fixture.BranchTo("feature/myfeature", "feature");
+            fixture.Activate("feature/myfeature");
+            fixture.AssertFullSemver("1.2.1-myfeature.1+1");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("1.2.1-myfeature.1+2");
+
+            // Merge into master
+            fixture.Checkout("master");
+            fixture.MergeNoFF("feature/myfeature");
+            fixture.Destroy("feature/myfeature");
+            fixture.NoteOver("Feature branches should\r\n" +
+                             "be deleted once merged", "feature/myfeature");
+            fixture.AssertFullSemver("1.2.1+3");
+        }
+    }
+
+    [Test]
+    public void GitHubFlowPullRequestBranch()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            fixture.Participant("master");
+
+            // GitFlow setup
+            fixture.Repository.MakeACommit();
+            fixture.ApplyTag("1.2.0");
+
+            // Branch to develop
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("1.2.1+1");
+
+            // Open Pull Request
+            fixture.BranchTo("pull/2/merge", "pr");
+            fixture.Activate("pull/2/merge");
+            fixture.AssertFullSemver("1.2.1-PullRequest.2+1");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("1.2.1-PullRequest.2+2");
+
+            // Merge into master
+            fixture.Checkout("master");
+            fixture.MergeNoFF("pull/2/merge");
+            fixture.Destroy("pull/2/merge");
+            fixture.NoteOver("Feature branches/pr's should\r\n" +
+                             "be deleted once merged", "pull/2/merge");
+            fixture.AssertFullSemver("1.2.1+3");
+        }
+    }
+
+    [Test]
+    public void GitHubFlowMajorRelease()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            fixture.Participant("master");
+
+            fixture.Repository.MakeACommit();
+            fixture.ApplyTag("1.3.0");
+
+            // Create release branch
+            fixture.BranchTo("release/2.0.0", "release");
+            fixture.Activate("release/2.0.0");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("2.0.0-beta.1+1");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("2.0.0-beta.1+2");
+
+            // Apply beta.1 tag should be exact tag
+            fixture.ApplyTag("2.0.0-beta.1");
+            fixture.AssertFullSemver("2.0.0-beta.1");
+
+            // Make a commit after a tag should bump up the beta
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("2.0.0-beta.2+1");
+
+            // Complete release
+            fixture.Checkout("master");
+            fixture.MergeNoFF("release/2.0.0");
+            fixture.Destroy("release/2.0.0");
+            fixture.NoteOver("Release branches are deleted once merged", "release/2.0.0");
+            
+            fixture.AssertFullSemver("2.0.0+0");
+            fixture.ApplyTag("2.0.0");
+            fixture.AssertFullSemver("2.0.0");
+            fixture.MakeACommit();
+            fixture.Repository.DumpGraph();
+            fixture.AssertFullSemver("2.0.1+1");
+        }
+    }
 }

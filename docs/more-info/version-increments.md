@@ -17,14 +17,7 @@ If you are using GitFlow then builds off the `develop` branch will actually *inc
 If you need to consume packages built from develop, we recommend publishing these packages to a separate NuGet feed as an alpha channel. That way you can publish beta/release candidate builds and only people who opt into the alpha feed will see the unstable pacakges.
 
 ### 2. Octopus deploy
-Because Octopus uses NuGet under the covers you cannot publish every build into Octopus deploy. For this we have two possible options:
-
-#### 2a. 'Release' packages to Octopus deploy
-Rather than all builds going into Octopus's NuGet feed, you release builds into it's feed. When you push a package into the NuGet feed you need to tag that release. The next commit will then increment the version.
-This has the advantage that if you have a multi-stage deployment pipeline you pick packages which you would like to start through the pipeline, then you can see all the versions which did not make it through the pipeline (for instance, they got to UAT but not production due to a bug being found). In the release notes this can be mentioned or those versions can be skipped.
-
-#### 2b. Configure GitVersion to increment per commit
-As mentioned above, this means you will burn multiple versions per release. This might not be an issue for you, but can confuse consumers of your library as the version has semantic meaning.
+See [Octopus deploy](build-server-setup/octopus-deploy.md)
 
 ## Manually incrementing the version
 With v3 there are multiple approaches.
