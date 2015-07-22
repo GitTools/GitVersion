@@ -11,7 +11,6 @@ using NUnit.Framework;
 [TestFixture]
 public class AssemblyInfoBuilderTests
 {
-
     [Test]
     public void VerifyCreatedCode()
     {
@@ -26,14 +25,13 @@ public class AssemblyInfoBuilderTests
         };
         var assemblyInfoBuilder = new AssemblyInfoBuilder();
         var versionVariables = VariableProvider.GetVariablesFor(semanticVersion, AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDelivery, "ci", false);
-        var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables);
+        var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, "Fake");
         Approvals.Verify(assemblyInfoText);
 
         var compilation = CSharpCompilation.Create("Fake.dll")
             .WithOptions(new CSharpCompilationOptions(OutputKind.NetModule))
             .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
             .AddSyntaxTrees(CSharpSyntaxTree.ParseText(assemblyInfoText));
-        
 
         var emitResult = compilation.Emit(new MemoryStream());
         Assert.IsTrue(emitResult.Success, string.Join(Environment.NewLine, emitResult.Diagnostics.Select(x => x.Descriptor)));
@@ -80,7 +78,7 @@ public class AssemblyInfoBuilderTests
         };
         var assemblyInfoBuilder = new AssemblyInfoBuilder();
         var versionVariables = VariableProvider.GetVariablesFor(semanticVersion, avs, VersioningMode.ContinuousDelivery, "ci", false);
-        var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables);
+        var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, "Fake");
         Approvals.Verify(assemblyInfoText);
 
         var compilation = CSharpCompilation.Create("Fake.dll")
