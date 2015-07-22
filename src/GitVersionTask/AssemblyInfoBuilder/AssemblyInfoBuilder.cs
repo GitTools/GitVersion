@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 using GitVersion;
 
 public class AssemblyInfoBuilder
 {
     public string GetAssemblyInfoText(VersionVariables vars, string assemblyName)
     {
-        var v = vars.ToArray();
+        var v = vars.ToList();
 
         var assemblyInfo = string.Format(
 @"using System;
@@ -72,18 +71,6 @@ namespace {6}
 
     static string GenerateMembers(IList<KeyValuePair<string, string>> vars, string memberFormat)
     {
-        var members = new StringBuilder();
-        for (var i = 0; i < vars.Count; i++)
-        {
-            var variable = vars[i];
-            members.AppendFormat(memberFormat, variable.Key, variable.Value);
-
-            if (i < vars.Count - 1)
-            {
-                members.AppendLine();
-            }
-        }
-
-        return members.ToString();
+        return string.Join(Environment.NewLine, vars.Select(v => string.Format(memberFormat, v.Key, v.Value)));
     }
 }
