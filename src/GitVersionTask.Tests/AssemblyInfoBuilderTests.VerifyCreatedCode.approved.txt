@@ -1,15 +1,16 @@
-﻿
-using System;
+﻿using System;
 using System.Reflection;
 
 [assembly: AssemblyVersion("1.2.3.0")]
 [assembly: AssemblyFileVersion("1.2.3.0")]
 [assembly: AssemblyInformationalVersion("1.2.3-unstable.4+5.Branch.feature1.Sha.commitSha")]
 [assembly: Fake.ReleaseDate("2014-03-06")]
+[assembly: Fake.GitVersionInformation()]
 
 namespace Fake
 {
     [System.Runtime.CompilerServices.CompilerGenerated]
+    [AttributeUsage(AttributeTargets.Assembly)]
     sealed class ReleaseDateAttribute : System.Attribute
     {
         public string Date { get; private set; }
@@ -42,6 +43,30 @@ namespace Fake
         public static string NuGetVersionV2 = "1.2.3-unstable0004";
         public static string NuGetVersion = "1.2.3-unstable0004";
         public static string CommitDate = "2014-03-06";
+    }
 
+    [System.Runtime.CompilerServices.CompilerGenerated]
+    [AttributeUsage(AttributeTargets.Assembly)]
+    sealed class GitVersionInformationAttribute : System.Attribute
+    {
+        public string Major { get { return "1"; } }
+        public string Minor { get { return "2"; } }
+        public string Patch { get { return "3"; } }
+        public string PreReleaseTag { get { return "unstable.4"; } }
+        public string PreReleaseTagWithDash { get { return "-unstable.4"; } }
+        public string BuildMetaData { get { return "5"; } }
+        public string FullBuildMetaData { get { return "5.Branch.feature1.Sha.commitSha"; } }
+        public string MajorMinorPatch { get { return "1.2.3"; } }
+        public string SemVer { get { return "1.2.3-unstable.4"; } }
+        public string LegacySemVer { get { return "1.2.3-unstable4"; } }
+        public string LegacySemVerPadded { get { return "1.2.3-unstable0004"; } }
+        public string AssemblySemVer { get { return "1.2.3.0"; } }
+        public string FullSemVer { get { return "1.2.3-unstable.4+5"; } }
+        public string InformationalVersion { get { return "1.2.3-unstable.4+5.Branch.feature1.Sha.commitSha"; } }
+        public string BranchName { get { return "feature1"; } }
+        public string Sha { get { return "commitSha"; } }
+        public string NuGetVersionV2 { get { return "1.2.3-unstable0004"; } }
+        public string NuGetVersion { get { return "1.2.3-unstable0004"; } }
+        public string CommitDate { get { return "2014-03-06"; } }
     }
 }
