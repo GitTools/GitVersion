@@ -64,13 +64,14 @@ release-branch-tag: rc
         var error = Should.Throw<OldConfigurationException>(() => ConfigurationProvider.Provide(repoPath, fileSystem));
         error.Message.ShouldContainWithoutWhitespace(@"GitVersionConfig.yaml contains old configuration, please fix the following errors:
 assemblyVersioningScheme has been replaced by assembly-versioning-scheme
-develop-branch-tag has been replaced by branch specific configuration.See https://github.com/ParticularLabs/GitVersion/wiki/Branch-Specific-Configuration
-release-branch-tag has been replaced by branch specific configuration.See https://github.com/ParticularLabs/GitVersion/wiki/Branch-Specific-Configuration");
+develop-branch-tag has been replaced by branch specific configuration.See http://gitversion.readthedocs.org/en/latest/configuration/#branch-configuration
+release-branch-tag has been replaced by branch specific configuration.See http://gitversion.readthedocs.org/en/latest/configuration/#branch-configuration");
     }
 
     [Test]
     public void OverwritesDefaultsWithProvidedConfig()
     {
+        var defaultConfig = ConfigurationProvider.Provide(repoPath, fileSystem);
         const string text = @"
 next-version: 2.0.0
 branches:
@@ -78,11 +79,9 @@ branches:
         mode: ContinuousDeployment
         tag: dev";
         SetupConfigFileContent(text);
-        var defaultConfig = new Config();
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
 
         config.NextVersion.ShouldBe("2.0.0");
-        config.AssemblyVersioningScheme.ShouldBe(defaultConfig.AssemblyVersioningScheme);
         config.Branches["develop"].Increment.ShouldBe(defaultConfig.Branches["develop"].Increment);
         config.Branches["develop"].VersioningMode.ShouldBe(defaultConfig.Branches["develop"].VersioningMode);
         config.Branches["develop"].Tag.ShouldBe("dev");
@@ -120,7 +119,7 @@ branches:
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
         config.Branches["develop"].Tag.ShouldBe("unstable");
         config.Branches["release[/-]"].Tag.ShouldBe("beta");
-        config.TagPrefix.ShouldBe(Config.DefaultTagPrefix);
+        config.TagPrefix.ShouldBe(ConfigurationProvider.DefaultTagPrefix);
         config.NextVersion.ShouldBe(null);
     }
 

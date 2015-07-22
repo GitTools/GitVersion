@@ -21,10 +21,10 @@ namespace GitVersion
                 issues.Add("assemblyVersioningScheme has been replaced by assembly-versioning-scheme");
 
             if (legacyConfig.DevelopBranchTag != null)
-                issues.Add("develop-branch-tag has been replaced by branch specific configuration. See https://github.com/ParticularLabs/GitVersion/wiki/Branch-Specific-Configuration");
+                issues.Add("develop-branch-tag has been replaced by branch specific configuration. See http://gitversion.readthedocs.org/en/latest/configuration/#branch-configuration");
 
             if (legacyConfig.ReleaseBranchTag != null)
-                issues.Add("release-branch-tag has been replaced by branch specific configuration. See https://github.com/ParticularLabs/GitVersion/wiki/Branch-Specific-Configuration");
+                issues.Add("release-branch-tag has been replaced by branch specific configuration. See http://gitversion.readthedocs.org/en/latest/configuration/#branch-configuration");
 
             if (issues.Any())
                 throw new OldConfigurationException("GitVersionConfig.yaml contains old configuration, please fix the following errors:\r\n" + string.Join("\r\n", issues));

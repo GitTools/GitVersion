@@ -1,6 +1,5 @@
 namespace GitVersion
 {
-    using System;
     using System.IO;
     using System.Linq;
     using GitVersion.VersionCalculation;
@@ -16,7 +15,7 @@ namespace GitVersion
             var filePath = Path.Combine(context.Repository.GetRepositoryDirectory(), "NextVersion.txt");
             if (File.Exists(filePath))
             {
-                throw new Exception("NextVersion.txt has been depreciated. See https://github.com/ParticularLabs/GitVersion/wiki/GitVersionConfig.yaml-Configuration-File for replacement");
+                throw new WarningException("NextVersion.txt has been depreciated. See http://gitversion.readthedocs.org/en/latest/configuration/ for replacement");
             }
 
             return new NextVersionCalculator().FindVersion(context);
@@ -25,7 +24,6 @@ namespace GitVersion
         void EnsureMainTopologyConstraints(GitVersionContext context)
         {
             EnsureLocalBranchExists(context.Repository, "master");
-            // TODO somehow enforce this? EnsureLocalBranchExists(context.Repository, "develop");
             EnsureHeadIsNotDetached(context);
         }
 
@@ -36,7 +34,10 @@ namespace GitVersion
                 return;
             }
 
-            var message = string.Format("It looks like the branch being examined is a detached Head pointing to commit '{0}'. Without a proper branch name GitVersion cannot determine the build version.", context.CurrentCommit.Id.ToString(7));
+            var message = string.Format(
+                "It looks like the branch being examined is a detached Head pointing to commit '{0}'. " +
+                "Without a proper branch name GitVersion cannot determine the build version.",
+                context.CurrentCommit.Id.ToString(7));
             throw new WarningException(message);
         }
 
