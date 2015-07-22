@@ -89,8 +89,13 @@ public class ReleaseBranchScenarios
     [Test]
     public void CanTakeVersionFromReleaseBranchWithTagOverridden()
     {
-        var config = new Config();
-        config.Branches["release[/-]"].Tag = "rc";
+        var config = new Config
+        {
+            Branches =
+            {
+                { "release[/-]", new BranchConfig { Tag = "rc" } }
+            }
+        };
         using (var fixture = new EmptyRepositoryFixture(config))
         {
             fixture.Repository.MakeATaggedCommit("1.0.3");

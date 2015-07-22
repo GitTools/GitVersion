@@ -39,11 +39,7 @@ AssemblyFileVersion(""1.0.0.0"");";
 
         fileSystem.Exists("C:\\Testing\\AssemblyInfo.cs").Returns(true);
         fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.cs").Returns(assemblyInfoFile);
-        var config = new Config
-        {
-            AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor
-        };
-        var variable = VariableProvider.GetVariablesFor(version, config.AssemblyVersioningScheme, VersioningMode.ContinuousDelivery, "ci", false);
+        var variable = VariableProvider.GetVariablesFor(version, AssemblyVersioningScheme.MajorMinor, VersioningMode.ContinuousDelivery, "ci", false);
         var args = new Arguments
         {
             UpdateAssemblyInfo = true,
@@ -77,11 +73,7 @@ AssemblyFileVersion(""1.0.0.*"");";
 
         fileSystem.Exists("C:\\Testing\\AssemblyInfo.cs").Returns(true);
         fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.cs").Returns(assemblyInfoFile);
-        var config = new Config
-        {
-            AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor
-        };
-        var variable = VariableProvider.GetVariablesFor(version, config.AssemblyVersioningScheme, VersioningMode.ContinuousDelivery, "ci", false);
+        var variable = VariableProvider.GetVariablesFor(version, AssemblyVersioningScheme.MajorMinor, VersioningMode.ContinuousDelivery, "ci", false);
         var args = new Arguments
         {
             UpdateAssemblyInfo = true,

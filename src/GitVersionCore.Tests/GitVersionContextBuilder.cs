@@ -58,7 +58,9 @@
 
         public GitVersionContext Build()
         {
-            return new GitVersionContext(repository ?? CreateRepository(), config ?? new Config());
+            var configuration = config ?? new Config();
+            ConfigurationProvider.ApplyDefaultsTo(configuration);
+            return new GitVersionContext(repository ?? CreateRepository(), configuration);
         }
 
         IRepository CreateRepository()

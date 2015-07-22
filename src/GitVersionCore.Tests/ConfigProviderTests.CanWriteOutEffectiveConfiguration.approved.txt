@@ -4,26 +4,45 @@ tag-prefix: '[vV]'
 continuous-delivery-fallback-tag: ci
 branches:
   master:
+    mode: ContinuousDelivery
     tag: 
     increment: Patch
     prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
   release[/-]:
+    mode: ContinuousDelivery
     tag: beta
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
   feature[/-]:
+    mode: ContinuousDelivery
     tag: useBranchName
     increment: Inherit
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+  (pull|pull\-requests|pr)[/-]:
+    mode: ContinuousDelivery
+    tag: PullRequest
+    increment: Inherit
+    prevent-increment-of-merged-branch-version: false
+    tag-number-pattern: '[/-](?<number>\d+)[-/]'
+    track-merge-target: false
   hotfix[/-]:
+    mode: ContinuousDelivery
     tag: beta
+    increment: Patch
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
   support[/-]:
+    mode: ContinuousDelivery
     tag: 
     increment: Patch
     prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
   develop:
     mode: ContinuousDeployment
     tag: unstable
     increment: Minor
+    prevent-increment-of-merged-branch-version: false
     track-merge-target: true
-  (pull|pull\-requests|pr)[/-]:
-    tag: PullRequest
-    increment: Inherit
-    tag-number-pattern: '[/-](?<number>\d+)[-/]'

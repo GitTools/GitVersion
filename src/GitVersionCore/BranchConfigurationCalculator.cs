@@ -14,7 +14,9 @@ namespace GitVersion
 
             if (matchingBranches.Length == 0)
             {
-                return new KeyValuePair<string, BranchConfig>(string.Empty, new BranchConfig());
+                var branchConfig = new BranchConfig();
+                ConfigurationProvider.ApplyBranchDefaults(config, branchConfig);
+                return new KeyValuePair<string, BranchConfig>(string.Empty, branchConfig);
             }
             if (matchingBranches.Length == 1)
             {

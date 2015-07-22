@@ -35,8 +35,13 @@ public class FeatureBranchScenarios
     [Test]
     public void BranchCreatedAfterFastForwardMergeShouldInheritCorrectly()
     {
-        var config = new Config();
-        config.Branches.Add("unstable", config.Branches["develop"]);
+        var config = new Config
+        {
+            Branches =
+            {
+                { "unstable", new BranchConfig { Increment = IncrementStrategy.Minor } }
+            }
+        };
 
         using (var fixture = new EmptyRepositoryFixture(config))
         {

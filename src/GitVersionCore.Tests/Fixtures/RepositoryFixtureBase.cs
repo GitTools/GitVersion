@@ -16,6 +16,7 @@ public abstract class RepositoryFixtureBase : IDisposable
 
     protected RepositoryFixtureBase(Func<string, IRepository> repoBuilder, Config configuration)
     {
+        ConfigurationProvider.ApplyDefaultsTo(configuration);
         diagramBuilder = new StringBuilder();
         diagramBuilder.AppendLine("@startuml");
         this.configuration = configuration;

@@ -15,6 +15,7 @@
             {
                 VersioningMode = mode
             };
+            ConfigurationProvider.ApplyDefaultsTo(config);
 
             var mockBranch = new MockBranch("master") { new MockCommit { CommitterEx = SignatureBuilder.SignatureNow() } };
             var mockRepository = new MockRepository
@@ -34,10 +35,19 @@
         {
             var config = new Config
             {
-                VersioningMode = VersioningMode.ContinuousDelivery
+                VersioningMode = VersioningMode.ContinuousDelivery,
+                Branches =
+                {
+                    {
+                        "develop", new BranchConfig
+                        {
+                            VersioningMode = VersioningMode.ContinuousDeployment,
+                            Tag = "alpha"
+                        }
+                    }
+                }
             };
-            config.Branches["develop"].VersioningMode = VersioningMode.ContinuousDeployment;
-            config.Branches["develop"].Tag = "alpha";
+            ConfigurationProvider.ApplyDefaultsTo(config);
             var develop = new MockBranch("develop") { new MockCommit { CommitterEx = SignatureBuilder.SignatureNow() } };
             var mockRepository = new MockRepository
             {
@@ -54,9 +64,14 @@
         [Test]
         public void CanFindParentBranchForInheritingIncrementStrategy()
         {
-            var config = new Config();
-            config.Branches["develop"].Increment = IncrementStrategy.Major;
-            config.Branches["feature[/-]"].Increment = IncrementStrategy.Inherit;
+            var config = new Config
+            {
+                Branches =
+                {
+                    { "develop", new BranchConfig { Increment = IncrementStrategy.Major} },
+                    { "feature[/-]", new BranchConfig { Increment = IncrementStrategy.Inherit} }
+                }
+            };
 
             using (var repo = new EmptyRepositoryFixture(config))
             {
