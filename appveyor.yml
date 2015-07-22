@@ -6,16 +6,16 @@ platform:
 
 configuration:
   - Debug
- 
+
 build_script:
   - cmd: nuget restore src/GitVersion.sln
-  
+
   - cmd: msbuild src/GitVersion.sln "/p:Configuration=%CONFIGURATION%;Platform=%PLATFORM%"
   - ps: .\build\NuGetCommandLineBuild\tools\GitVersion.exe /l console /output buildserver /updateAssemblyInfo
   - cmd: msbuild src/GitVersion.sln "/p:Configuration=%CONFIGURATION%;Platform=%PLATFORM%"
 
   - cmd: appveyor PushArtifact "build\NuGetExeBuild\GitVersion.Portable.%GitVersion_NuGetVersion%.nupkg"
-  
+
   - cmd: appveyor PushArtifact "build\NuGetCommandLineBuild\GitVersion.CommandLine.%GitVersion_NuGetVersion%.nupkg"
   - cmd: appveyor PushArtifact "build\NuGetRefBuild\GitVersion.%GitVersion_NuGetVersion%.nupkg"
   - cmd: appveyor PushArtifact "build\NuGetTaskBuild\GitVersionTask.%GitVersion_NuGetVersion%.nupkg"
@@ -26,3 +26,6 @@ build_script:
 
 test_script:
   - nunit-console "src\GitVersionTask.Tests\bin\%CONFIGURATION%\GitVersionTask.Tests.dll" "src\GitVersionExe.Tests\bin\%CONFIGURATION%\GitVersionExe.Tests.dll" "src\GitVersionCore.Tests\bin\%CONFIGURATION%\GitVersionCore.Tests.dll" /noshadow
+
+cache:
+  - src\packages -> **\packages.config  # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
