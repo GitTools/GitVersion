@@ -6,21 +6,25 @@
 
     class SetupBuildScripts : ConfigInitWizardStep
     {
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory, IFileSystem fileSystem)
+        public SetupBuildScripts(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)
+        {
+        }
+
+        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(new EditConfigStep());
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
                     return StepResult.Ok();
                 case "1":
-                    steps.Enqueue(new AppVeyorSetup());
+                    steps.Enqueue(new AppVeyorSetup(Console, FileSystem));
                     return StepResult.Ok();
             }
             return StepResult.Ok();
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory, IFileSystem fileSystem)
+        protected override string GetPrompt(Config config, string workingDirectory)
         {
             return @"What build server are you using?
 

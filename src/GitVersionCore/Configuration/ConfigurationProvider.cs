@@ -110,10 +110,11 @@ namespace GitVersion
             return Path.Combine(workingDirectory, "GitVersionConfig.yaml");
         }
 
-        public static void Init(string workingDirectory, IFileSystem fileSystem)
+        public static void Init(string workingDirectory, IFileSystem fileSystem, IConsole console)
         {
             var configFilePath = GetConfigFilePath(workingDirectory);
-            var config = new ConfigInitWizard().Run(Provide(workingDirectory, fileSystem), workingDirectory, fileSystem);
+            var currentConfiguration = Provide(workingDirectory, fileSystem, applyDefaults: false);
+            var config = new ConfigInitWizard(console, fileSystem).Run(currentConfiguration, workingDirectory);
             if (config == null) return;
 
             using (var stream = fileSystem.OpenWrite(configFilePath))

@@ -9,13 +9,14 @@
         readonly ConfigInitWizardStep returnToStep;
         readonly bool isPartOfWizard;
 
-        public GlobalModeSetting(ConfigInitWizardStep returnToStep, bool isPartOfWizard)
+        public GlobalModeSetting(ConfigInitWizardStep returnToStep, bool isPartOfWizard, IConsole console, IFileSystem fileSystem)
+            : base(console, fileSystem)
         {
             this.returnToStep = returnToStep;
             this.isPartOfWizard = isPartOfWizard;
         }
 
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory, IFileSystem fileSystem)
+        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
             switch (result)
             {
@@ -36,7 +37,7 @@
             return StepResult.InvalidResponseSelected();
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory, IFileSystem fileSystem)
+        protected override string GetPrompt(Config config, string workingDirectory)
         {
             return string.Format(@"What do you want the default increment mode to be (can be overriden per branch):
 {0}

@@ -8,21 +8,25 @@ namespace GitVersion.Configuration.Init.SetConfig
 
     public class ConfigureBranches : ConfigInitWizardStep
     {
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory, IFileSystem fileSystem)
+        public ConfigureBranches(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)
+        {
+        }
+
+        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
             int parsed;
             if (int.TryParse(result, out parsed))
             {
                 if (parsed == 0)
                 {
-                    steps.Enqueue(new EditConfigStep());
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
                     return StepResult.Ok();
                 }
 
                 try
                 {
                     var foundBranch = OrderedBranches(config).ElementAt(parsed - 1);
-                    steps.Enqueue(new ConfigureBranch(foundBranch.Key, foundBranch.Value));
+                    steps.Enqueue(new ConfigureBranch(foundBranch.Key, foundBranch.Value, Console, FileSystem));
                     return StepResult.Ok();
                 }
                 catch (ArgumentOutOfRangeException)
@@ -32,7 +36,7 @@ namespace GitVersion.Configuration.Init.SetConfig
             return StepResult.InvalidResponseSelected();
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory, IFileSystem fileSystem)
+        protected override string GetPrompt(Config config, string workingDirectory)
         {
             return @"Which branch would you like to configure:
 
