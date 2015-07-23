@@ -34,7 +34,7 @@ namespace GitVersion.Configuration.Init
 
         protected override string DefaultResult
         {
-            get { throw new System.NotImplementedException(); }
+            get { return null; }
         }
     }
 }
