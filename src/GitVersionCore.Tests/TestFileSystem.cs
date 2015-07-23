@@ -1,6 +1,7 @@
-    using System.Collections.Generic;
-    using System.IO;
-    using GitVersion.Helpers;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using GitVersion.Helpers;
 
 public class TestFileSystem : IFileSystem
 {
@@ -8,12 +9,12 @@ public class TestFileSystem : IFileSystem
 
     public void Copy(string @from, string to, bool overwrite)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public void Move(string @from, string to)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public bool Exists(string file)
@@ -23,7 +24,7 @@ public class TestFileSystem : IFileSystem
 
     public void Delete(string path)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public string ReadAllText(string path)
@@ -41,11 +42,11 @@ public class TestFileSystem : IFileSystem
 
     public IEnumerable<string> DirectoryGetFiles(string directory, string searchPattern, SearchOption searchOption)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public Stream OpenWrite(string path)
     {
-        throw new System.NotImplementedException();
+        return new TestStream(path, this);
     }
 }
