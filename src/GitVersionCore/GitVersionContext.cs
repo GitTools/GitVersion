@@ -80,21 +80,34 @@
         void CalculateEffectiveConfiguration()
         {
             var currentBranchConfig = BranchConfigurationCalculator.GetBranchConfiguration(CurrentCommit, Repository, OnlyEvaluateTrackedBranches, configuration, CurrentBranch);
-            
-            var versioningMode = currentBranchConfig.Value.VersioningMode ?? configuration.VersioningMode ?? VersioningMode.ContinuousDelivery;
-            var tag = currentBranchConfig.Value.Tag ?? "useBranchName";
-            var nextVersion = configuration.NextVersion;
-            var incrementStrategy = currentBranchConfig.Value.Increment ?? IncrementStrategy.Patch;
-            var preventIncrementForMergedBranchVersion = currentBranchConfig.Value.PreventIncrementOfMergedBranchVersion ?? false;
-            var assemblyVersioningScheme = configuration.AssemblyVersioningScheme;
-            var gitTagPrefix = configuration.TagPrefix;
+
+            if (!currentBranchConfig.Value.VersioningMode.HasValue)
+                throw new Exception(string.Format("Configuration value for 'Versioning mode' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
+            if (!currentBranchConfig.Value.Increment.HasValue)
+                throw new Exception(string.Format("Configuration value for 'Increment' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
+            if (!currentBranchConfig.Value.PreventIncrementOfMergedBranchVersion.HasValue)
+                throw new Exception(string.Format("Configuration value for 'PreventIncrementOfMergedBranchVersion' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
+            if (!currentBranchConfig.Value.TrackMergeTarget.HasValue)
+                throw new Exception(string.Format("Configuration value for 'TrackMergeTarget' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
+            if (!configuration.AssemblyVersioningScheme.HasValue)
+                throw new Exception("Configuration value for 'AssemblyVersioningScheme' has no value. (this should not happen, please report an issue)");
+
+            var versioningMode = currentBranchConfig.Value.VersioningMode.Value;
+            var tag = currentBranchConfig.Value.Tag;
             var tagNumberPattern = currentBranchConfig.Value.TagNumberPattern;
+            var incrementStrategy = currentBranchConfig.Value.Increment.Value;
+            var preventIncrementForMergedBranchVersion = currentBranchConfig.Value.PreventIncrementOfMergedBranchVersion.Value;
+            var trackMergeTarget = currentBranchConfig.Value.TrackMergeTarget.Value;
+
+            var nextVersion = configuration.NextVersion;
+            var assemblyVersioningScheme = configuration.AssemblyVersioningScheme.Value;
+            var gitTagPrefix = configuration.TagPrefix;
             Configuration = new EffectiveConfiguration(
                 assemblyVersioningScheme, versioningMode, gitTagPrefix, 
                 tag, nextVersion, incrementStrategy, currentBranchConfig.Key, 
                 preventIncrementForMergedBranchVersion, 
                 tagNumberPattern, configuration.ContinuousDeploymentFallbackTag,
-                currentBranchConfig.Value.TrackMergeTarget);
+                trackMergeTarget);
         }
     }
 }

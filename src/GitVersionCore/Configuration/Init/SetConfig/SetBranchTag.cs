@@ -9,13 +9,14 @@ namespace GitVersion.Configuration.Init.SetConfig
         string name;
         readonly BranchConfig branchConfig;
 
-        public SetBranchTag(string name, BranchConfig branchConfig)
+        public SetBranchTag(string name, BranchConfig branchConfig, IConsole console, IFileSystem fileSystem)
+            : base(console, fileSystem)
         {
             this.name = name;
             this.branchConfig = branchConfig;
         }
 
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory, IFileSystem fileSystem)
+        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
             if (string.IsNullOrWhiteSpace(result))
             {
@@ -25,20 +26,20 @@ namespace GitVersion.Configuration.Init.SetConfig
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(new ConfigureBranch(name, branchConfig));
+                    steps.Enqueue(new ConfigureBranch(name, branchConfig, Console, FileSystem));
                     return StepResult.Ok();
                 case "1":
                     branchConfig.Tag = string.Empty;
-                    steps.Enqueue(new ConfigureBranch(name, branchConfig));
+                    steps.Enqueue(new ConfigureBranch(name, branchConfig, Console, FileSystem));
                     return StepResult.Ok();
                 default:
                     branchConfig.Tag = result;
-                    steps.Enqueue(new ConfigureBranch(name, branchConfig));
+                    steps.Enqueue(new ConfigureBranch(name, branchConfig, Console, FileSystem));
                     return StepResult.Ok();
             }
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory, IFileSystem fileSystem)
+        protected override string GetPrompt(Config config, string workingDirectory)
         {
             return @"This sets the pre-release tag which will be used for versions on this branch (beta, rc etc)
 

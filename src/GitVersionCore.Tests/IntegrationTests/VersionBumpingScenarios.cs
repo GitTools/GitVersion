@@ -7,8 +7,13 @@ public class VersionBumpingScenarios
     [Test]
     public void AppliedPrereleaseTagCausesBump()
     {
-        var configuration = new Config();
-        configuration.Branches["master"].Tag = "pre";
+        var configuration = new Config
+        {
+            Branches =
+            {
+                { "master", new BranchConfig { Tag = "pre" } }
+            }
+        };
         using (var fixture = new EmptyRepositoryFixture(configuration))
         {
             fixture.Repository.MakeACommit();

@@ -6,35 +6,39 @@ namespace GitVersion.Configuration.Init.SetConfig
 
     public class AssemblyVersioningSchemeSetting : ConfigInitWizardStep
     {
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory, IFileSystem fileSystem)
+        public AssemblyVersioningSchemeSetting(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)
+        {
+        }
+
+        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(new EditConfigStep());
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
                     return StepResult.Ok();
                 case "1":
                     config.AssemblyVersioningScheme = AssemblyVersioningScheme.Major;
-                    steps.Enqueue(new EditConfigStep());
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
                     return StepResult.Ok();
                 case "2":
                     config.AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor;
-                    steps.Enqueue(new EditConfigStep());
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
                     return StepResult.Ok();
                 case "3":
                     config.AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch;
-                    steps.Enqueue(new EditConfigStep());
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
                     return StepResult.Ok();
                 case "4":
                     config.AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag;
-                    steps.Enqueue(new EditConfigStep());
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
                     return StepResult.Ok();
             }
 
             return StepResult.InvalidResponseSelected();
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory, IFileSystem fileSystem)
+        protected override string GetPrompt(Config config, string workingDirectory)
         {
             return @"What assembly versioning scheme do you want to use:
 

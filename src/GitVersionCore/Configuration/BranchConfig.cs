@@ -37,6 +37,6 @@
         public string TagNumberPattern { get; set; }
 
         [YamlMember(Alias = "track-merge-target")]
-        public bool TrackMergeTarget { get; set; }
+        public bool? TrackMergeTarget { get; set; }
     }
 }

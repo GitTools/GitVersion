@@ -1,21 +1,29 @@
 namespace GitVersion.Configuration.Init.Wizard
 {
-    using System;
     using System.Collections.Generic;
     using GitVersion.Helpers;
 
     public class ConfigInitWizard
     {
-        public Config Run(Config config, string workingDirectory, IFileSystem fileSystem)
+        readonly IConsole console;
+        readonly IFileSystem fileSystem;
+
+        public ConfigInitWizard(IConsole console, IFileSystem fileSystem)
         {
-            Console.WriteLine("GitVersion init will guide you through setting GitVersion up to work for you");
+            this.console = console;
+            this.fileSystem = fileSystem;
+        }
+
+        public Config Run(Config config, string workingDirectory)
+        {
+            console.WriteLine("GitVersion init will guide you through setting GitVersion up to work for you");
             var steps = new Queue<ConfigInitWizardStep>();
-            steps.Enqueue(new EditConfigStep());
+            steps.Enqueue(new EditConfigStep(console, fileSystem));
 
             while (steps.Count > 0)
             {
                 var currentStep = steps.Dequeue();
-                if (!currentStep.Apply(steps, config, workingDirectory, fileSystem))
+                if (!currentStep.Apply(steps, config, workingDirectory))
                 {
                     return null;
                 }

@@ -5,13 +5,13 @@ namespace GitVersion.Configuration.Init.Wizard
 
     public class GitHubFlowStep : GlobalModeSetting
     {
-        public GitHubFlowStep() : base(new FinishedSetupStep(), true)
+        public GitHubFlowStep(IConsole console, IFileSystem fileSystem) : base(new FinishedSetupStep(console, fileSystem), true, console, fileSystem)
         {
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory, IFileSystem fileSystem)
+        protected override string GetPrompt(Config config, string workingDirectory)
         {
-            return "By default GitVersion will only increment the version when tagged\r\n\r\n" + base.GetPrompt(config, workingDirectory, fileSystem);
+            return "By default GitVersion will only increment the version when tagged\r\n\r\n" + base.GetPrompt(config, workingDirectory);
         }
     }
 }

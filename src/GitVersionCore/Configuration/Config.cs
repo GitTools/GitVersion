@@ -6,53 +6,10 @@
 
     public class Config
     {
-        internal const string DefaultTagPrefix = "[vV]";
-
         Dictionary<string, BranchConfig> branches = new Dictionary<string, BranchConfig>();
 
-        public Config()
-        {
-            AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch;
-            TagPrefix = DefaultTagPrefix;
-            VersioningMode = GitVersion.VersioningMode.ContinuousDelivery;
-            ContinuousDeploymentFallbackTag = "ci";
-
-            Branches["master"] = new BranchConfig
-            {
-                Tag = string.Empty,
-                Increment = IncrementStrategy.Patch,
-                PreventIncrementOfMergedBranchVersion = true
-            };
-            Branches["release[/-]"] = new BranchConfig { Tag = "beta" };
-            Branches["feature[/-]"] = new BranchConfig
-            {
-                Increment = IncrementStrategy.Inherit,
-                Tag = "useBranchName"
-            };
-            Branches["hotfix[/-]"] = new BranchConfig { Tag = "beta" };
-            Branches["support[/-]"] = new BranchConfig
-            {
-                Tag = string.Empty,
-                Increment = IncrementStrategy.Patch,
-                PreventIncrementOfMergedBranchVersion = true
-            };
-            Branches["develop"] = new BranchConfig
-            {
-                Tag = "unstable",
-                Increment = IncrementStrategy.Minor,
-                VersioningMode = GitVersion.VersioningMode.ContinuousDeployment,
-                TrackMergeTarget = true
-            };
-            Branches[@"(pull|pull\-requests|pr)[/-]"] = new BranchConfig
-            {
-                Tag = "PullRequest",
-                TagNumberPattern = @"[/-](?<number>\d+)[-/]",
-                Increment = IncrementStrategy.Inherit
-            };
-        }
-
         [YamlMember(Alias = "assembly-versioning-scheme")]
-        public AssemblyVersioningScheme AssemblyVersioningScheme { get; set; }
+        public AssemblyVersioningScheme? AssemblyVersioningScheme { get; set; }
 
         [YamlMember(Alias = "mode")]
         public VersioningMode? VersioningMode { get; set; }

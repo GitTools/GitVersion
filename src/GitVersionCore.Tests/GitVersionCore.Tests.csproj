@@ -53,6 +53,22 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\LibGit2Sharp.0.20.1.0\lib\net40\LibGit2Sharp.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Cecil, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.9.6.1\lib\net45\Mono.Cecil.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.9.6.1\lib\net45\Mono.Cecil.Mdb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.9.6.1\lib\net45\Mono.Cecil.Pdb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.9.6.1\lib\net45\Mono.Cecil.Rocks.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
@@ -68,6 +84,10 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="TestStack.ConventionTests, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TestStack.ConventionTests.2.2.1\lib\net40\TestStack.ConventionTests.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="YamlDotNet, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\YamlDotNet.3.5.1\lib\net35\YamlDotNet.dll</HintPath>
@@ -85,6 +105,9 @@
     <Compile Include="Fixtures\BaseGitFlowRepositoryFixture.cs" />
     <Compile Include="GitVersionContextTests.cs" />
     <Compile Include="Helpers\DirectoryHelper.cs" />
+    <Compile Include="Init\InitScenarios.cs" />
+    <Compile Include="Init\InitStepsDefaultResponsesDoNotThrow.cs" />
+    <Compile Include="Init\TestConsole.cs" />
     <Compile Include="IntegrationTests\OtherScenarios.cs" />
     <Compile Include="IntegrationTests\PullRequestScenarios.cs" />
     <Compile Include="IntegrationTests\RemoteRepositoryScenarios.cs" />
@@ -124,6 +147,7 @@
     <Compile Include="SemanticVersionTests.cs" />
     <Compile Include="TestEffectiveConfiguration.cs" />
     <Compile Include="TestFileSystem.cs" />
+    <Compile Include="TestStream.cs" />
     <Compile Include="VariableProviderTests.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculatorTests.cs" />
     <Compile Include="VersionCalculation\NextVersionCalculatorTests.cs" />

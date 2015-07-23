@@ -9,28 +9,32 @@ namespace GitVersion.Configuration.Init.BuildServer
 
     class AppVeyorSetup : ConfigInitWizardStep
     {
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory, IFileSystem fileSystem)
+        public AppVeyorSetup(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)
+        {
+        }
+
+        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(new EditConfigStep());
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
                     return StepResult.Ok();
                 case "1":
-                    GenerateBasicConfig(workingDirectory, fileSystem);
-                    steps.Enqueue(new EditConfigStep());
+                    GenerateBasicConfig(workingDirectory);
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
                     return StepResult.Ok();
                 case "2":
-                    GenerateNuGetConfig(workingDirectory, fileSystem);
-                    steps.Enqueue(new EditConfigStep());
+                    GenerateNuGetConfig(workingDirectory);
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
                     return StepResult.Ok();
             }
             return StepResult.InvalidResponseSelected();
         }
 
-        void GenerateBasicConfig(string workingDirectory, IFileSystem fileSystem)
+        void GenerateBasicConfig(string workingDirectory)
         {
-            WriteConfig(workingDirectory, fileSystem, @"install:
+            WriteConfig(workingDirectory, FileSystem, @"install:
   - choco install gitversion.portable -pre -y
 
 before_build:
@@ -41,9 +45,9 @@ build:
   project: <your sln file>");
         }
 
-        void GenerateNuGetConfig(string workingDirectory, IFileSystem fileSystem)
+        void GenerateNuGetConfig(string workingDirectory)
         {
-            WriteConfig(workingDirectory, fileSystem, @"install:
+            WriteConfig(workingDirectory, FileSystem, @"install:
   - choco install gitversion.portable -pre -y
 
 assembly_info:
@@ -69,10 +73,10 @@ after_build:
             Logger.WriteInfo(string.Format("AppVeyor sample config file written to {0}", outputFilename));
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory, IFileSystem fileSystem)
+        protected override string GetPrompt(Config config, string workingDirectory)
         {
             var prompt = new StringBuilder();
-            if (AppVeyorConfigExists(workingDirectory, fileSystem))
+            if (AppVeyorConfigExists(workingDirectory, FileSystem))
             {
                 prompt.AppendLine("GitVersion doesn't support modifying existing appveyor config files. We will generate appveyor.gitversion.yml instead");
                 prompt.AppendLine();

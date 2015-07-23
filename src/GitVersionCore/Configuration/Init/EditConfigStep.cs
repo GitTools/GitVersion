@@ -8,7 +8,11 @@ namespace GitVersion.Configuration.Init
 
     public class EditConfigStep : ConfigInitWizardStep
     {
-        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory, IFileSystem fileSystem)
+        public EditConfigStep(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)
+        {
+        }
+
+        protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
             switch (result)
             {
@@ -18,30 +22,30 @@ namespace GitVersion.Configuration.Init
                     return StepResult.ExitWithoutSaving();
 
                 case "2":
-                    steps.Enqueue(new PickBranchingStrategyStep());
+                    steps.Enqueue(new PickBranchingStrategyStep(Console, FileSystem));
                     return StepResult.Ok();
 
                 case "3":
-                    steps.Enqueue(new SetNextVersion());
+                    steps.Enqueue(new SetNextVersion(Console, FileSystem));
                     return StepResult.Ok();
 
                 case "4":
-                    steps.Enqueue(new ConfigureBranches());
+                    steps.Enqueue(new ConfigureBranches(Console, FileSystem));
                     return StepResult.Ok();
                 case "5":
-                    steps.Enqueue(new GlobalModeSetting(new EditConfigStep(), false));
+                    steps.Enqueue(new GlobalModeSetting(new EditConfigStep(Console, FileSystem), false, Console, FileSystem));
                     return StepResult.Ok();
                 case "6":
-                    steps.Enqueue(new AssemblyVersioningSchemeSetting());
+                    steps.Enqueue(new AssemblyVersioningSchemeSetting(Console, FileSystem));
                     return StepResult.Ok();
                 case "7":
-                    steps.Enqueue(new SetupBuildScripts());
+                    steps.Enqueue(new SetupBuildScripts(Console, FileSystem));
                     return StepResult.Ok();
             }
             return StepResult.InvalidResponseSelected();
         }
 
-        protected override string GetPrompt(Config config, string workingDirectory, IFileSystem fileSystem)
+        protected override string GetPrompt(Config config, string workingDirectory)
         {
             return string.Format(@"Which would you like to change?
 
