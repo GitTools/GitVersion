@@ -152,7 +152,7 @@ public class MasterScenarios
     {
         using (var fixture = new EmptyRepositoryFixture(new Config { TagPrefix = "version-|[vV]" }))
         {
-            string TaggedVersion = "v1.0.3";
+            var TaggedVersion = "v1.0.3";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
             fixture.Repository.MakeCommits(5);
 
@@ -171,7 +171,7 @@ public class MasterScenarios
     {
         using (var fixture = new EmptyRepositoryFixture(new Config { TagPrefix = "" }))
         {
-            string TaggedVersion = "version-1.0.3";
+            var TaggedVersion = "version-1.0.3";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
             fixture.Repository.MakeCommits(5);
 

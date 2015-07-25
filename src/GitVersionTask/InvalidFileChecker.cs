@@ -26,7 +26,7 @@ public static class InvalidFileChecker
         var strings = @"""((\\[^\n]|[^""\n])*)""";
         var verbatimStrings = @"@(""[^""]*"")+";
 
-        string noCommentsOrStrings = Regex.Replace(allText,
+        var noCommentsOrStrings = Regex.Replace(allText,
             blockComments + "|" + lineComments + "|" + strings + "|" + verbatimStrings,
             me =>
             {
