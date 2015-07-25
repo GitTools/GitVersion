@@ -144,7 +144,7 @@ public class ArgumentParserTests
     public void Output_props_can_be_parsed()
     {
         var arguments = ArgumentParser.ParseArguments("targetDirectoryPath -output props");
-        arguments.Output.ShouldBe(OutputType.Json);
+        arguments.Output.ShouldBe(OutputType.Props);
     }
 
     [Test]
