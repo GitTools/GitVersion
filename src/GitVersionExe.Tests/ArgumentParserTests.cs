@@ -141,6 +141,13 @@ public class ArgumentParserTests
     }
 
     [Test]
+    public void Output_props_can_be_parsed()
+    {
+        var arguments = ArgumentParser.ParseArguments("targetDirectoryPath -output props");
+        arguments.Output.ShouldBe(OutputType.Json);
+    }
+
+    [Test]
     public void MultipleArgsAndFlag()
     {
         var arguments = ArgumentParser.ParseArguments("targetDirectoryPath -output buildserver -updateAssemblyInfo");
