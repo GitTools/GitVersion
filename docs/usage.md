@@ -105,7 +105,7 @@ Task Name: `GitVersionTask.GetVersion`
 
 At build time all the derived [variables](more-info/variables.md) will be written to MSBuild properties so the information can be used by other tooling in the build pipeline.
 
-The calss for `GitVersionTask.GetVersion` has a property for each variable. However at MSBuild time these properties a mapped to MSBuild properties that are prefixed with `GitVersion_`. This prevents conflicts with other properties in the pipeline.
+The class for `GitVersionTask.GetVersion` has a property for each variable. However at MSBuild time these properties a mapped to MSBuild properties that are prefixed with `GitVersion_`. This prevents conflicts with other properties in the pipeline.
 
 #### Accessing variable in MSBuild
 
@@ -118,7 +118,7 @@ After `GitVersionTask.GetVersion` has executed the properties can be used in the
 
 Task Name: `GitVersionTask.WriteVersionInfoToBuildLog`
 
-If, at build time, it is detected that the build is occuring inside a Build Server server then the [variables](more-info/variables.md) will be written to the build log in a format that the current Build Server can consume. See [Build Server Support](build-server-support.md).
+If, at build time, it is detected that the build is occurring inside a Build Server server then the [variables](more-info/variables.md) will be written to the build log in a format that the current Build Server can consume. See [Build Server Support](build-server-support.md).
 
 
 ### My Git repository requires authentication. What do I do?
