@@ -91,9 +91,9 @@ public class AssemblyInfoBuilderTests
         Approvals.Verify(assemblyInfoText);
 
         var compilation = CSharpCompilation.Create("Fake.dll")
-    .WithOptions(new CSharpCompilationOptions(OutputKind.NetModule))
-    .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
-    .AddSyntaxTrees(CSharpSyntaxTree.ParseText(assemblyInfoText));
+            .WithOptions(new CSharpCompilationOptions(OutputKind.NetModule))
+            .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
+            .AddSyntaxTrees(CSharpSyntaxTree.ParseText(assemblyInfoText));
 
         var emitResult = compilation.Emit(new MemoryStream());
         Assert.IsTrue(emitResult.Success, string.Join(Environment.NewLine, emitResult.Diagnostics.Select(x => x.Descriptor)));
@@ -101,29 +101,18 @@ public class AssemblyInfoBuilderTests
 
     static void VerifyGitVersionInformationAttribute(Assembly assembly, VersionVariables versionVariables)
     {
-        var gitVersionInformationAttributeData = assembly.CustomAttributes
-            .FirstOrDefault(a => a.AttributeType.Name == "GitVersionInformationAttribute");
-
-        Assert.IsNotNull(gitVersionInformationAttributeData);
-
-        var gitVersionInformationAttributeType = gitVersionInformationAttributeData.AttributeType;
-        var gitVersionInformationAttribute = assembly
-            .GetCustomAttributes(gitVersionInformationAttributeType)
-            .FirstOrDefault();
-
-        Assert.IsNotNull(gitVersionInformationAttribute);
-
-        var properties = gitVersionInformationAttributeType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+        var gitVersionInformation = assembly.GetType("Fake.GitVersionInformation");
+        var fields = gitVersionInformation.GetFields(BindingFlags.Static | BindingFlags.Public);
 
         foreach (var variable in versionVariables)
         {
             Assert.IsNotNull(variable.Value);
 
-            var property = properties.FirstOrDefault(p => p.Name == variable.Key);
-            Assert.IsNotNull(property);
+            var field = fields.FirstOrDefault(p => p.Name == variable.Key);
+            Assert.IsNotNull(field);
 
-            var propertyValue = property.GetValue(gitVersionInformationAttribute, null);
-            Assert.AreEqual(variable.Value, propertyValue, "{0} had an invalid value.", property.Name);
+            var value = field.GetValue(null);
+            Assert.AreEqual(variable.Value, value, "{0} had an invalid value.", field.Name);
         }
     }
 }
