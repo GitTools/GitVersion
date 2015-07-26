@@ -4,22 +4,9 @@ using System.Reflection;
 [assembly: AssemblyVersion("2.3.4.0")]
 [assembly: AssemblyFileVersion("2.3.4.0")]
 [assembly: AssemblyInformationalVersion("2.3.4-beta.5+6.Branch.master.Sha.commitSha")]
-[assembly: Fake.ReleaseDate("2014-03-06")]
-[assembly: Fake.GitVersionInformation()]
 
 namespace Fake
 {
-    [System.Runtime.CompilerServices.CompilerGenerated]
-    [AttributeUsage(AttributeTargets.Assembly)]
-    sealed class ReleaseDateAttribute : System.Attribute
-    {
-        public string Date { get; private set; }
-
-        public ReleaseDateAttribute(string date)
-        {
-            Date = date;
-        }
-    }
 
     [System.Runtime.CompilerServices.CompilerGenerated]
     static class GitVersionInformation
@@ -45,28 +32,4 @@ namespace Fake
         public static string CommitDate = "2014-03-06";
     }
 
-    [System.Runtime.CompilerServices.CompilerGenerated]
-    [AttributeUsage(AttributeTargets.Assembly)]
-    sealed class GitVersionInformationAttribute : System.Attribute
-    {
-        public string Major { get { return "2"; } }
-        public string Minor { get { return "3"; } }
-        public string Patch { get { return "4"; } }
-        public string PreReleaseTag { get { return "beta.5"; } }
-        public string PreReleaseTagWithDash { get { return "-beta.5"; } }
-        public string BuildMetaData { get { return "6"; } }
-        public string FullBuildMetaData { get { return "6.Branch.master.Sha.commitSha"; } }
-        public string MajorMinorPatch { get { return "2.3.4"; } }
-        public string SemVer { get { return "2.3.4-beta.5"; } }
-        public string LegacySemVer { get { return "2.3.4-beta5"; } }
-        public string LegacySemVerPadded { get { return "2.3.4-beta0005"; } }
-        public string AssemblySemVer { get { return "2.3.4.0"; } }
-        public string FullSemVer { get { return "2.3.4-beta.5+6"; } }
-        public string InformationalVersion { get { return "2.3.4-beta.5+6.Branch.master.Sha.commitSha"; } }
-        public string BranchName { get { return "master"; } }
-        public string Sha { get { return "commitSha"; } }
-        public string NuGetVersionV2 { get { return "2.3.4-beta0005"; } }
-        public string NuGetVersion { get { return "2.3.4-beta0005"; } }
-        public string CommitDate { get { return "2014-03-06"; } }
-    }
 }
