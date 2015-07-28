@@ -139,7 +139,7 @@ public class DocumentationSamples
 
             // Make a commit after a tag should bump up the beta
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.3.0-beta.2+1");
+            fixture.AssertFullSemver("1.3.0-beta.2+2");
 
             // Complete release
             fixture.Checkout("master");
@@ -195,7 +195,7 @@ public class DocumentationSamples
 
             // Make a commit after a tag should bump up the beta
             fixture.MakeACommit();
-            fixture.AssertFullSemver("2.0.0-beta.2+1");
+            fixture.AssertFullSemver("2.0.0-beta.2+2");
 
             // Complete release
             fixture.Checkout("master");
@@ -392,7 +392,7 @@ public class DocumentationSamples
 
             // Make a commit after a tag should bump up the beta
             fixture.MakeACommit();
-            fixture.AssertFullSemver("2.0.0-beta.2+1");
+            fixture.AssertFullSemver("2.0.0-beta.2+3");
 
             // Complete release
             fixture.Checkout("master");

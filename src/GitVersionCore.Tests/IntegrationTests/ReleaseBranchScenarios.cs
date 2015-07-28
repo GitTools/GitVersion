@@ -256,7 +256,7 @@ public class ReleaseBranchScenarios
 
             fixture.Repository.MakeCommits(1);
 
-            fixture.AssertFullSemver("2.0.0-beta.2+1");
+            fixture.AssertFullSemver("2.0.0-beta.2+2");
 
             //merge down to develop
             fixture.Repository.Checkout("develop");
@@ -264,7 +264,45 @@ public class ReleaseBranchScenarios
 
             //but keep working on the release
             fixture.Repository.Checkout("release-2.0.0");
-            fixture.AssertFullSemver("2.0.0-beta.2+1");
+            fixture.AssertFullSemver("2.0.0-beta.2+2");
+        }
+    }
+
+    [Test]
+    public void HotfixOffReleaseBranchShouldNotResetCount()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config
+        {
+            VersioningMode = VersioningMode.ContinuousDeployment
+        }))
+        {
+            const string TaggedVersion = "1.0.3";
+            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+            fixture.Repository.CreateBranch("develop");
+            fixture.Repository.Checkout("develop");
+
+            fixture.Repository.MakeCommits(1);
+
+            fixture.Repository.CreateBranch("release-2.0.0");
+            fixture.Repository.Checkout("release-2.0.0");
+            fixture.Repository.MakeCommits(1);
+
+            fixture.AssertFullSemver("2.0.0-beta.1");
+
+            //tag it to bump to beta 2
+            fixture.Repository.MakeCommits(4);
+
+            fixture.AssertFullSemver("2.0.0-beta.5");
+
+            //merge down to develop
+            fixture.Repository.CreateBranch("hotfix-2.0.0");
+            fixture.Repository.MakeCommits(2);
+
+            //but keep working on the release
+            fixture.Repository.Checkout("release-2.0.0");
+            fixture.Repository.MergeNoFF("hotfix-2.0.0", Constants.SignatureNow());
+            fixture.Repository.Branches.Remove(fixture.Repository.FindBranch("hotfix-2.0.0"));
+            fixture.AssertFullSemver("2.0.0-beta.7");
         }
     }
 }

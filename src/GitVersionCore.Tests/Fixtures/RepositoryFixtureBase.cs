@@ -131,6 +131,7 @@ noteText.Replace("\n", "\n  "));
         {
             if (repository != null)
                 repository.DumpGraph();
+            throw;
         }
         if (commitId == null)
             diagramBuilder.AppendLineFormat("note over {0} #D3D3D3: {1}", GetParticipant(Repository.Head.Name), fullSemver);
