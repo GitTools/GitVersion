@@ -6,22 +6,22 @@ namespace GitVersion
     {
         public void WriteLine(string msg)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(msg);
         }
 
         public void WriteLine()
         {
-            throw new NotImplementedException();
+            Console.WriteLine();
         }
 
         public void Write(string msg)
         {
-            throw new NotImplementedException();
+            Console.Write(msg);
         }
 
         public string ReadLine()
         {
-            throw new NotImplementedException();
+            return Console.ReadLine();
         }
 
         public IDisposable UseColor(ConsoleColor consoleColor)
