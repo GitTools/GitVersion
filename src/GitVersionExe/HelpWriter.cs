@@ -20,7 +20,7 @@ GitVersion [path]
     /h or /?        Shows Help
 
     /targetpath     Same as 'path', but not positional
-    /output         Determines the output to the console. Can be either 'json' or 'buildserver', will default to 'json'.
+    /output         Determines the output to the console. Can be 'json', 'props' or 'buildserver', will default to 'json'.
     /showvariable   Used in conjuntion with /output json, will output just a particular variable. 
                     eg /output json /showvariable SemVer - will output `1.2.3+beta.4`
     /l              Path to logfile.

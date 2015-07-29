@@ -99,6 +99,7 @@
     <Compile Include="BuildServers\ContinuaCiTests.cs" />
     <Compile Include="BuildServers\MyGetTests.cs" />
     <Compile Include="BuildServers\TeamCityTests.cs" />
+    <Compile Include="PropertiesFileBuilderTests.cs" />
     <Compile Include="Fixtures\CommitCountingRepoFixture.cs" />
     <Compile Include="ConfigProviderTests.cs" />
     <Compile Include="Fixtures\RemoteRepositoryFixture.cs" />
@@ -169,6 +170,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="PropertiesFileBuilderTests.Props.approved.txt" />
     <Content Include="FodyWeavers.xml" />
     <Content Include="JsonVersionBuilderTests.Json.approved.txt" />
   </ItemGroup>

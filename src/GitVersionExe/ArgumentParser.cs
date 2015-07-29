@@ -220,7 +220,7 @@ namespace GitVersion
                     OutputType outputType;
                     if (!Enum.TryParse(value, true, out outputType))
                     {
-                        throw new WarningException(string.Format("Value '{0}' cannot be parsed as output type, please use 'json' or 'buildserver'", value));
+                        throw new WarningException(string.Format("Value '{0}' cannot be parsed as output type, please use 'json', 'props' or 'buildserver'", value));
                     }
 
                     arguments.Output = outputType;

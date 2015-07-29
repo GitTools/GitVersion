@@ -29,6 +29,12 @@ namespace GitVersion
                 }
             }
 
+            // how to test this?
+            if (arguments.Output == OutputType.Props)
+            {
+                Console.WriteLine(PropertiesOutputFormatter.ToProperties(variables));
+            }
+
             if (arguments.Output == OutputType.Json)
             {
                 switch (arguments.ShowVariable)
