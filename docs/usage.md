@@ -1,4 +1,5 @@
 # Usage
+
 There are two main ways to consume GitVersion, the first is by running GitVersion.exe. The second is an MSBuild task. The MSBuild task is really easy to get up and running, simply install GitVersionTask from NuGet and it will integrate into your project and write out variables to your build server if it's running on one. The exe offers more options and works for not just .net projects.
 
  - [A Command Line tool](#command-line)
@@ -6,7 +7,9 @@ There are two main ways to consume GitVersion, the first is by running GitVersio
  - [A NuGet Library package](#nuget-library)
  - [A Ruby Gem](#gem)
 
+
 ## Command Line
+
 If you want a command line version installed on your machine then you can use [Chocolatey](http://chocolatey.org) to install GitVersion
 
 Available on [Chocolatey](http://chocolatey.org) under [GitVersion.Portable](http://chocolatey.org/packages/GitVersion.Portable)
@@ -15,57 +18,128 @@ Available on [Chocolatey](http://chocolatey.org) under [GitVersion.Portable](htt
 
 Switches are available with `GitVersion /?`
 
+
 ### Output
+
 By default GitVersion returns a json object to stdout containing all the [variables](more-info/variables.md) which GitVersion generates. This works great if you want to get your build scripts to parse the json object then use the variables, but there is a simpler way.
 
 `GitVersion.exe /output buildserver` will change the mode of GitVersion to write out the variables to whatever build server it is running in. You can then use those variables in your build scripts or run different tools to create versioned NuGet packages or whatever you would like to do. See [build servers](build-server-support.md) for more information about this.
 
 
 ## MSBuild Task
-The MSBuild task will wire GitVersion into the MSBuild pipeline of a project and automatically stamp that assembly with the appropriate SemVer information
 
 Available on [Nuget](https://www.nuget.org) under [GitVersionTask](https://www.nuget.org/packages/GitVersionTask/)
 
     Install-Package GitVersionTask
 
-Remove the `Assembly*Version` attributes from your `Properties\AssemblyInfo.cs` file. Sample default:
+The MSBuild task will wire GitVersion into the MSBuild pipeline of a project and perform several actions.
+
+### 1. Inject version metadata into the assembly 
+
+Task Name: `GitVersionTask.UpdateAssemblyInfo`
+
+#### AssemblyInfo Attributes
+
+At build time a temporary AssemblyInfo.cs will be created that contains the appropriate SemVer information. This will will be included in the build pipeline.
+
+Ensure you remove the `Assembly*Version` attributes from your `Properties\AssemblyInfo.cs` file so as to not get duplicate attribute warnings. Sample default:
 
     [assembly: AssemblyVersion("1.0.0.0")]
     [assembly: AssemblyFileVersion("1.0.0.0")]
-    [assembly: AssemblyInformationalVersion("1.0.0.0")]
+    [assembly: AssemblyInformationalVersion("1.1.0+Branch.master.Sha.722aad3217bd49a6576b6f82f60884e612f9ba58")]
 
-Make sure there is a tag somewhere on master named `v1.2.3` before `HEAD` (change the numbers as desired).  Now when you build:
+Now when you build:
 
-* AssemblyVersion will be set to 1.2.0.0 (i.e Major.Minor.0.0)
-* AssemblyFileVersion will be set to 1.2.3.0 (i.e Major.Minor.Patch)
-* AssemblyInformationalVersion will be set to `1.2.4+<commitcount>.Branch.<branchname>.Sha.<commithash>` where:
-    * `<commitcount>` is the number of commits between the `v1.2.3` tag and `HEAD`.
-    * `<branchname>` is the name of the branch you are on.
-    * `<commithash>` is the commit hash of `HEAD`.
+* `AssemblyVersion` will be set to the `AssemblySemVer` variable.
+* `AssemblyFileVersion` will be set to the `MajorMinorPatch` variable with a appended `.0`.
+* `AssemblyInformationalVersion` will be set to the `InformationalVersion` variable.
 
-Continue working as usual and when you release/deploy, tag the branch/release `v1.2.4`.
 
-If you want to bump up the major or minor version, create a `GitVersionConfig.yaml` file in the root of your repo and inside of it on a single line enter `next-version: <version you want>`, for example `next-version: 3.0.0`
+#### Other injected Variables
 
-### Why is AssemblyVersion only set to Major.Minor?
+All other [variables](more-info/variables.md) will be injected into a internal static class.
 
-This is a common approach that gives you the ability to roll out hot fixes to your assembly without breaking existing applications that may be referencing it. You are still able to get the full version number if you need to by looking at its file version number.
+```
+namespace AssemblyName
+{
+	[CompilerGenerated]
+	internal static class GitVersionInformation
+	{
+		public static string Major = "1";
+		public static string Minor = "1";
+		public static string Patch = "0";
+		...All other variables
+	}
+}
+```
+
+
+#### Accessing injected Variables
+
+**All variables**
+
+```
+var assemblyName = assembly.GetName().Name;
+var gitVersionInformationType = assembly.GetType(assemblyName + ".GitVersionInformation");
+var fields = gitVersionInformationType.GetFields();
+
+foreach (var field in fields)
+{
+    Trace.WriteLine(string.Format("{0}: {1}", field.Name, field.GetValue(null)));
+}
+```
+
+**Specific variable**
+
+```
+var assemblyName = assembly.GetName().Name;
+var gitVersionInformationType = assembly.GetType(assemblyName + ".GitVersionInformation");
+var versionField = gitVersionInformationType.GetField("Major");
+Trace.WriteLine(versionField.GetValue(null));
+```
+
+
+### 2. Populate some MSBuild properties with version metadata
+
+Task Name: `GitVersionTask.GetVersion`
+
+At build time all the derived [variables](more-info/variables.md) will be written to MSBuild properties so the information can be used by other tooling in the build pipeline.
+
+The class for `GitVersionTask.GetVersion` has a property for each variable. However at MSBuild time these properties a mapped to MSBuild properties that are prefixed with `GitVersion_`. This prevents conflicts with other properties in the pipeline.
+
+#### Accessing variable in MSBuild
+
+After `GitVersionTask.GetVersion` has executed the properties can be used in the standard way. For example:
+
+    <Message Text="GitVersion_InformationalVersion: $(GitVersion_InformationalVersion)"/> 
+
+
+### 3. Communicate variables to current Build Server
+
+Task Name: `GitVersionTask.WriteVersionInfoToBuildLog`
+
+If, at build time, it is detected that the build is occurring inside a Build Server server then the [variables](more-info/variables.md) will be written to the build log in a format that the current Build Server can consume. See [Build Server Support](build-server-support.md).
+
 
 ### My Git repository requires authentication. What do I do?
 
 Set the environmental variables `GITVERSION_REMOTE_USERNAME` and `GITVERSION_REMOTE_PASSWORD` before the build is initiated.
 
+
 ## NuGet Library
+
 To use GitVersion from your own code.
 
 **Warning, we are not semantically versioning this library and it should be considered unstable.**
 
 It also is not currently documented. Please open an issue if you are consuming the library to let us know, and why you need to.
 
+
 ## Gem
+
 Just a gem wrapper around the command line to make it easier to consume from Rake.
 
-**NOTE** This is currenly not being pushed.. Please get in touch if you are using this
+**NOTE** This is currently not being pushed.. Please get in touch if you are using this
 
 If you want a Ruby gem version installed on your machine then you can use [Bundler](http://bundler.io/) or [Gem](http://rubygems.org/) to install the `gitversion` gem.
 

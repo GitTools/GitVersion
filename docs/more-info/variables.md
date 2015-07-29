@@ -24,3 +24,9 @@ For the `release/3.0.0` branch of GitVersion it shows:
   "NuGetVersion":"3.0.0-beta0001"
 }
 ```
+
+
+#### Why is AssemblyVersion only set to Major.Minor?
+
+This is a common approach that gives you the ability to roll out hot fixes to your assembly without breaking existing applications that may be referencing it. You are still able to get the full version number if you need to by looking at its file version number.
+

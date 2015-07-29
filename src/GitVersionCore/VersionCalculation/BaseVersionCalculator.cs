@@ -53,7 +53,7 @@
                 {
                     baseVersionWithOldestSource = baseVersions
                         .Where(v => v.Version.BaseVersionSource != null)
-                        .OrderBy(v => v.IncrementedVersion)
+                        .OrderByDescending(v => v.IncrementedVersion)
                         .ThenByDescending(v => v.Version.BaseVersionSource.Committer.When)
                         .First()
                         .Version;
