@@ -17,7 +17,7 @@ public class EnvironmentVariableJenkinsTests
         Environment.SetEnvironmentVariable(key, null, EnvironmentVariableTarget.Process);
     }
 
-    [Test, Explicit]
+    [Test]
     public void CanApplyCurrentContextWhenEnvironmentVariableIsSet()
     {
         SetEnvironmentVariableForDetection();
@@ -25,12 +25,11 @@ public class EnvironmentVariableJenkinsTests
         Assert.True(j.CanApplyToCurrentContext());   
     }
     
-    [Test, Explicit]
+    [Test]
     public void CanNotApplyCurrentContextWhenEnvironmentVariableIsNotSet()
     {
         ClearEnvironmentVariableForDetection();
         var j = new Jenkins();
         Assert.False(j.CanApplyToCurrentContext());  
     }
-
 }
