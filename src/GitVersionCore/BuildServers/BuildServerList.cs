@@ -10,7 +10,8 @@
             new ContinuaCi(),
             new TeamCity(),
             new AppVeyor(),
-            new MyGet()
+            new MyGet(),
+            new Jenkins()
         };
 
         public static IEnumerable<IBuildServer> GetApplicableBuildServers()
