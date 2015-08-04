@@ -12,17 +12,16 @@ public class JenkinsMessageGenerationTests
     public void GenerateSetVersionMessageReturnsVersionAsIs_AlthoughThisIsNotUsedByJenkins()
     {
         var j = new Jenkins();
-        var v = j.GenerateSetVersionMessage("0.0.0-Beta4.7");
-        Assert.AreEqual                    ("0.0.0-Beta4.7", v);
+        j.GenerateSetVersionMessage("0.0.0-Beta4.7").ShouldBe("0.0.0-Beta4.7");
     }
 
     [Test]
     public void GenerateMessageTest()
     {
         var j = new Jenkins();
-        var actual = j.GenerateSetParameterMessage("name", "value");
-        Assert.AreEqual(1, actual.Length);
-        Assert.AreEqual("GitVersion_name=value", actual[0]);
+        var generatedParameterMessages = j.GenerateSetParameterMessage("name", "value");
+        generatedParameterMessages.Length.ShouldBe(1);
+        generatedParameterMessages[0].ShouldBe("GitVersion_name=value");
     }
 
     [Test, Explicit]
@@ -63,11 +62,11 @@ public class JenkinsMessageGenerationTests
 
         writes[1].ShouldBe("1.2.3-beta.1+5");
 
-        Assert.True(File.Exists(f));
+        File.Exists(f).ShouldBe(true);
 
         var props = File.ReadAllText(f);
 
-        StringAssert.Contains("GitVersion_Major=1", props);
-        StringAssert.Contains("GitVersion_Minor=2", props);
+        props.ShouldContain("GitVersion_Major=1");
+        props.ShouldContain("GitVersion_Minor=2");
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using GitVersion;
 using NUnit.Framework;
+using Shouldly;
 
 [TestFixture]
 public class EnvironmentVariableJenkinsTests
@@ -22,7 +23,7 @@ public class EnvironmentVariableJenkinsTests
     {
         SetEnvironmentVariableForDetection();
         var j = new Jenkins();
-        Assert.True(j.CanApplyToCurrentContext());   
+        j.CanApplyToCurrentContext().ShouldBe(true);
     }
     
     [Test]
@@ -30,6 +31,6 @@ public class EnvironmentVariableJenkinsTests
     {
         ClearEnvironmentVariableForDetection();
         var j = new Jenkins();
-        Assert.False(j.CanApplyToCurrentContext());  
+        j.CanApplyToCurrentContext().ShouldBe(false);  
     }
 }
