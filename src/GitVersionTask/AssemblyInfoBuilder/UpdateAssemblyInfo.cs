@@ -2,6 +2,7 @@
 {
     using System;
     using System.IO;
+    using System.Text.RegularExpressions;
     using GitVersion;
     using GitVersion.Helpers;
     using Microsoft.Build.Framework;
@@ -90,8 +91,15 @@
                 AssemblyInfoTempFilePath = Path.Combine(IntermediateOutputPath, "GitVersionTaskAssemblyInfo.g.cs");
             }
 
+            var assemblyName = Path.GetFileNameWithoutExtension(ProjectFile);
+            var startsWithNumbers = new Regex(@"^\d+");
+            if (startsWithNumbers.IsMatch(assemblyName))
+            {
+                assemblyName = startsWithNumbers.Replace(assemblyName, string.Empty);
+            }
+
             var assemblyInfoBuilder = new AssemblyInfoBuilder();
-            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, Path.GetFileNameWithoutExtension(ProjectFile));
+            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, assemblyName);
             File.WriteAllText(AssemblyInfoTempFilePath, assemblyInfo);
         }
     }
