@@ -1,19 +1,15 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using System.Linq;
 
 public static class DirectoryDateFinder
 {
     public static long GetLastDirectoryWrite(string path)
     {
-        var lastHigh = DateTime.MinValue;
-        foreach (var file in Directory.EnumerateDirectories(path, "*.*", SearchOption.AllDirectories))
-        {
-            var lastWriteTime = File.GetLastWriteTime(file);
-            if (lastWriteTime > lastHigh)
-            {
-                lastHigh = lastWriteTime;
-            }
-        }
-        return lastHigh.Ticks;
+        return new DirectoryInfo(path)
+            .GetDirectories("*.*", SearchOption.AllDirectories)
+            .Select(d => d.LastWriteTimeUtc)
+            .DefaultIfEmpty()
+            .Max()
+            .Ticks;
     }
 }
