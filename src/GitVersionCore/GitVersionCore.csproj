@@ -74,6 +74,7 @@
     <Compile Include="BuildServers\Jenkins.cs" />
     <Compile Include="BuildServers\MyGet.cs" />
     <Compile Include="BuildServers\TeamCity.cs" />
+    <Compile Include="BuildServers\VsoAgent.cs" />
     <Compile Include="Configuration\BranchConfig.cs" />
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Configuration\ConsoleAdapter.cs" />

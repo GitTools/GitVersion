@@ -117,6 +117,7 @@
     <Compile Include="BuildServers\EnvironmentVariableJenkinsTests.cs" />
     <Compile Include="BuildServers\JenkinsMessageGenerationTests.cs" />
     <Compile Include="BuildServers\MyGetTests.cs" />
+    <Compile Include="BuildServers\VsoAgentTests.cs" />
     <Compile Include="BuildServers\TeamCityTests.cs" />
     <Compile Include="Fixtures\CommitCountingRepoFixture.cs" />
     <Compile Include="ConfigProviderTests.cs" />
