@@ -20,7 +20,7 @@
   "groups": [
     {
       "name": "additional",
-      "displayName": "Additional Options"
+      "displayName": "Additional Options",
       "isExpanded": false
     }
   ],
