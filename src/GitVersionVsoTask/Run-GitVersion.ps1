@@ -23,9 +23,12 @@ function Get-PathToGitVersionExe() {
 
 $updateAssms = Convert-String $updateAssemblyInfo Boolean
 
+$loc = $($env:BUILD_SOURCESDIRECTORY)
+$branch = $($env:BUILD_SOURCEBRANCH)
+
 # Call GitVersion.exe
 $gvPath = Get-PathToGitVersionExe
 Write-Output "Path to GitVersion.exe = $gvPath"
-Invoke-Tool -Path $gvPath -Arguments "/output buildserver /updateAssemblyInfo $updateAssms $additionalArguments"
+Invoke-Tool -Path $gvPath -Arguments "`"$loc`" /output buildserver /nofetch /b $branch /updateAssemblyInfo $updateAssms $additionalArguments"
 
 
