@@ -9,7 +9,9 @@ public class VsoAgentTests
     {
         var versionBuilder = new VsoAgent();
         var vsVersion = versionBuilder.GenerateSetVersionMessage("0.0.0-Unstable4");
-        Assert.AreEqual("##vso[task.setvariable variable=GitBuildNumber;]0.0.0-Unstable4", vsVersion);
+        //  Assert.AreEqual("##vso[task.setvariable variable=GitBuildNumber;]0.0.0-Unstable4", vsVersion);
+
+        Assert.Null(vsVersion);
     }
 
     [Test]

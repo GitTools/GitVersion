@@ -20,8 +20,7 @@
         public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
         {
             // Note: the VSO agent does not yet support updating the build display number from a variable
-            // this is here for later when they do but might need adjusting
-            return string.Format("##vso[task.setvariable variable=GitBuildNumber;]{0}", versionToUseForBuildNumber);
+            return null;
         }
     }
 }
