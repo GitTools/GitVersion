@@ -24,7 +24,7 @@ GitVersion writes build parameters into VSO, so they will automatically be passe
 * We output the individual values of the GitVersion version as the build parameter: `GitVersion.*` (Eg: `GitVersion.Major`) if you need access to them in your build script
 
 ### NuGet in VSO
-* Add dummy parameter to the project called `GitVersion.NuGetVersion`.
-* Then setup you nuget pack build set the "version" to `%GitVersion.NuGetVersion%`
+* If you use a command script to build your NuPkg, use `%GITVERSION_NUGETVERSION%` as the version parameter: `nuget.exe pack path\to\my.nuspec -version %GITVERSION_NUGETVERSION%`
+
 
 
