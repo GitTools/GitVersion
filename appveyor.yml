@@ -24,7 +24,7 @@ build_script:
   - cmd: 7z a "GitVersion_%GitVersion_NuGetVersion%.zip" .\build\NuGetCommandLineBuild\Tools\*.*
   - cmd: appveyor PushArtifact "GitVersion_%GitVersion_NuGetVersion%.zip"
 
-  - cmd: 7z a "GitVersionVsoBuildStep_%GitVersion_NuGetVersion%.zip" .\GitVersionVsoTaskBuild\*.*
+  - cmd: 7z a "GitVersionVsoBuildStep_%GitVersion_NuGetVersion%.zip" .\build\GitVersionVsoTaskBuild\*.*
   - cmd: appveyor PushArtifact "GitVersionVsoBuildStep_%GitVersion_NuGetVersion%.zip"
 
 test_script:
