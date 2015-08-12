@@ -11,6 +11,7 @@
             new TeamCity(),
             new AppVeyor(),
             new MyGet(),
+            new Jenkins(),
             new VsoAgent()
         };
 

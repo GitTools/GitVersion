@@ -115,7 +115,8 @@
     <Copy SourceFiles="@(x86)" DestinationFolder="$(BuildDir)NuGetTaskBuild\NativeBinaries\x86" />
     <Copy SourceFiles="$(TargetDir)ILMergeTemp\GitVersionTask.dll" DestinationFolder="$(BuildDir)NuGetTaskBuild" />
     <Copy SourceFiles="$(TargetDir)ILMergeTemp\GitVersionTask.pdb" DestinationFolder="$(BuildDir)NuGetTaskBuild" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\Build" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\Build\portable-net+sl+win+wpa+wp" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\Build\dotnet" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.nuspec" DestinationFolder="$(BuildDir)NuGetTaskBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetTaskBuild" MetadataAssembly="$(ILMergeTemp)GitVersionTask.dll" Version="$(GitVersion_NuGetVersion)" />
     <Delete Files="@(TempFiles)" />
