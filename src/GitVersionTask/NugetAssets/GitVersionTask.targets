@@ -8,13 +8,13 @@
 
   <UsingTask
       TaskName="GitVersionTask.UpdateAssemblyInfo"
-      AssemblyFile="$(MSBuildThisFileDirectory)..\GitVersionTask.dll" />
+      AssemblyFile="$(MSBuildThisFileDirectory)..\..\GitVersionTask.dll" />
   <UsingTask 
     TaskName="GitVersionTask.GetVersion" 
-    AssemblyFile="$(MSBuildThisFileDirectory)..\GitVersionTask.dll"  />
+    AssemblyFile="$(MSBuildThisFileDirectory)..\..\GitVersionTask.dll"  />
   <UsingTask
       TaskName="GitVersionTask.WriteVersionInfoToBuildLog"
-      AssemblyFile="$(MSBuildThisFileDirectory)..\GitVersionTask.dll" />
+      AssemblyFile="$(MSBuildThisFileDirectory)..\..\GitVersionTask.dll" />
 
   <Target Name="UpdateAssemblyInfo"
           BeforeTargets="CoreCompile">
@@ -61,9 +61,15 @@
 
   <!--Support for ncrunch-->
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)..\GitVersionTask.dll" />
-    <None Include="$(MSBuildThisFileDirectory)..\GitVersionTask.pdb" />
-    <None Include="$(MSBuildThisFileDirectory)..\NativeBinaries\**\*" />
+    <None Include="$(MSBuildThisFileDirectory)..\..\GitVersionTask.dll">
+      <Visible>False</Visible>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)..\..\GitVersionTask.pdb">
+      <Visible>False</Visible>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)..\..\NativeBinaries\**\*">
+      <Visible>False</Visible>
+    </None>
   </ItemGroup>
 
 </Project>
