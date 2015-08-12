@@ -24,7 +24,7 @@
       "isExpanded": false
     }
   ],
-  "instanceNameFormat": "GitVersion $(message)",
+  "instanceNameFormat": "GitVersion for $(BUILD_SOURCEBRANCHNAME)",
   "inputs": [
 
     {
