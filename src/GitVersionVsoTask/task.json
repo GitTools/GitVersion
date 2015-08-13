@@ -24,7 +24,7 @@
       "isExpanded": false
     }
   ],
-  "instanceNameFormat": "GitVersion for $(BUILD_SOURCEBRANCHNAME)",
+  "instanceNameFormat": "GitVersion",
   "inputs": [
     {
       "name": "updateAssemblyInfo",
@@ -45,9 +45,9 @@
     }
   ],
   "execution": {  
-    "CmdLine": {
+    "Process": {
       "target": "$(currentDirectory)\\GitVersion.exe",
-      "argumentFormat": "/output buildserver /updateAssemblyInfo $(updateAssemblyInfo) /nofetch $(additionalArguments)",
+      "argumentFormat": "$(Build.SourcesDirectory) /output buildserver /updateAssemblyInfo $(updateAssemblyInfo) /nofetch $(additionalArguments)",
       "workingDirectory": "$(currentDirectory)"
     }
   }
