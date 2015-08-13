@@ -7,7 +7,6 @@
             VersioningMode mode, string continuousDeploymentFallbackTag, 
             bool currentCommitIsTagged)
         {
-            var bmd = semanticVersion.BuildMetaData;
             if (mode == VersioningMode.ContinuousDeployment && !currentCommitIsTagged)
             {
                 semanticVersion = new SemanticVersion(semanticVersion);
@@ -28,8 +27,8 @@
                 patch: semanticVersion.Patch.ToString(),
                 preReleaseTag: semanticVersion.PreReleaseTag,
                 preReleaseTagWithDash: semanticVersion.PreReleaseTag.HasTag() ? "-" + semanticVersion.PreReleaseTag : null,
-                buildMetaData: bmd,
-                fullBuildMetaData: bmd.ToString("f"),
+                buildMetaData: semanticVersion.BuildMetaData,
+                fullBuildMetaData: semanticVersion.BuildMetaData.ToString("f"),
                 majorMinorPatch: string.Format("{0}.{1}.{2}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch),
                 semVer: semanticVersion.ToString(),
                 legacySemVer: semanticVersion.ToString("l"),
@@ -37,9 +36,9 @@
                 assemblySemVer: semanticVersion.GetAssemblyVersion(assemblyVersioningScheme),
                 fullSemVer: semanticVersion.ToString("f"),
                 informationalVersion: semanticVersion.ToString("i"),
-                branchName: bmd.Branch,
-                sha: bmd.Sha,
-                commitDate: bmd.CommitDate.UtcDateTime.ToString("yyyy-MM-dd"));
+                branchName: semanticVersion.BuildMetaData.Branch,
+                sha: semanticVersion.BuildMetaData.Sha,
+                commitDate: semanticVersion.BuildMetaData.CommitDate.UtcDateTime.ToString("yyyy-MM-dd"));
 
             return variables;
         }
