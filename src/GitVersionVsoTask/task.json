@@ -13,8 +13,8 @@
   "demands": [],
   "version": {
     "Major": "0",
-    "Minor": "1",
-    "Patch": "29"
+    "Minor": "0",
+    "Patch": "0"
   },
   "minimumAgentVersion": "1.83.0",
   "groups": [
@@ -26,7 +26,6 @@
   ],
   "instanceNameFormat": "GitVersion for $(BUILD_SOURCEBRANCHNAME)",
   "inputs": [
-
     {
       "name": "updateAssemblyInfo",
       "type": "boolean",
@@ -46,9 +45,9 @@
     }
   ],
   "execution": {  
-    "PowerShell": {
-      "target": "$(currentDirectory)\\Run-GitVersion.ps1",
-      "argumentFormat": "",
+    "CmdLine": {
+      "target": "$(currentDirectory)\\GitVersion.exe",
+      "argumentFormat": "/output buildserver /updateAssemblyInfo $(updateAssemblyInfo) /nofetch $(additionalArguments)",
       "workingDirectory": "$(currentDirectory)"
     }
   }

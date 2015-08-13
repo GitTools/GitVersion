@@ -153,9 +153,9 @@
     <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
     <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
     <Copy SourceFiles="$(ProjectDir)..\GitVersionVsoTask\icon.png" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
-    <Copy SourceFiles="$(ProjectDir)..\GitVersionVsoTask\Run-GitVersion.ps1" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
     <Copy SourceFiles="$(ProjectDir)..\GitVersionVsoTask\task.json" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
-    
+    <Exec Command="$(BuildDir)\Update-GitVersionVsoTaskVersion.ps1 $(BuildDir)GitVersionVsoTaskBuild\task.json $(GitVersion_Major) $(GitVersion_Minor) $(GitVersion_Patch)" ContinueOnError="True" WorkingDirectory="$(BuildDir)" Condition="'$(GitVersion_SemVer)' != ''" />
+
     <!-- Gem -->
     <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(BuildDir)GemBuild\bin" />
     <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(BuildDir)GemBuild\bin" />
