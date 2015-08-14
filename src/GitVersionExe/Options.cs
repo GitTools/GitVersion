@@ -498,7 +498,7 @@ namespace NDesk.Options
             get { return separators; }
         }
 
-        static readonly char[] NameTerminator = new char[] {'=', ':'};
+        static readonly char[] NameTerminator = new[] {'=', ':'};
 
         OptionValueType ParsePrototype()
         {
@@ -546,7 +546,7 @@ namespace NDesk.Options
             {
                 if (seps.Count == 0)
                 {
-                    separators = new string[] {":", "="};
+                    separators = new[] {":", "="};
                 }
                 else if (seps.Count == 1 && seps[0].Length == 0)
                 {
@@ -1004,10 +1004,9 @@ namespace NDesk.Options
                 return false;
             }
 
-            Option p;
             if (Contains(n))
             {
-                p = this[n];
+                var p = this[n];
                 c.OptionName = f + n;
                 c.Option = p;
                 switch (p.OptionValueType)
@@ -1043,7 +1042,7 @@ namespace NDesk.Options
             {
                 foreach (var o in c.Option.ValueSeparators != null
                                       ? option.Split(c.Option.ValueSeparators, StringSplitOptions.None)
-                                      : new string[] {option})
+                                      : new[] {option})
                 {
                     c.OptionValues.Add(o);
                 }
@@ -1064,12 +1063,11 @@ namespace NDesk.Options
 
         bool ParseBool(string option, string n, OptionContext c)
         {
-            Option p;
             string rn;
             if (n.Length >= 1 && (n[n.Length - 1] == '+' || n[n.Length - 1] == '-') &&
                 Contains((rn = n.Substring(0, n.Length - 1))))
             {
-                p = this[rn];
+                var p = this[rn];
                 var v = n[n.Length - 1] == '+' ? option : null;
                 c.OptionName = option;
                 c.Option = p;
@@ -1239,11 +1237,11 @@ namespace NDesk.Options
             string[] nameStart;
             if (maxIndex == 1)
             {
-                nameStart = new string[] {"{0:", "{"};
+                nameStart = new[] {"{0:", "{"};
             }
             else
             {
-                nameStart = new string[] {"{" + index + ":"};
+                nameStart = new[] {"{" + index + ":"};
             }
             for (var i = 0; i < nameStart.Length; ++i)
             {
