@@ -35,11 +35,16 @@ public class ArgumentParserTests
     }
 
     [Test]
-    public void h_means_IsHelp()
+    [TestCase("-h")]
+    [TestCase("--help")]
+    [TestCase("/h")]
+    [TestCase("/help")]
+    //[TestCase("/?")] This fails for now
+    public void h_means_IsHelp(string helpArg)
     {
-        var arguments = ArgumentParser.ParseArguments("-h");
-        Assert.IsNull(arguments.TargetPath);
-        Assert.IsNull(arguments.LogFilePath);
+        var arguments = ArgumentParser.ParseArguments(helpArg);
+        arguments.TargetPath.ShouldBe(null);
+        arguments.LogFilePath.ShouldBe(null);
         arguments.IsHelp.ShouldBe(true);
     }
 

@@ -5,6 +5,7 @@ namespace GitVersion
     using System.Collections.Specialized;
     using System.Linq;
     using System.Text.RegularExpressions;
+    using NDesk.Options;
 
 
     public class ArgumentParser
@@ -16,6 +17,21 @@ namespace GitVersion
 
         public static Arguments ParseArguments(List<string> commandLineArguments)
         {
+            var arguments = new Arguments();
+
+            var p = new OptionSet()
+                {
+                    {
+                        "h|help", "Show this message and exit",
+                        v => arguments.IsHelp = (v != null)
+                    },
+                };
+
+            p.Parse(commandLineArguments);
+
+            return arguments;
+
+/*
             if (commandLineArguments.Count == 0)
             {
                 return new Arguments
@@ -237,6 +253,7 @@ namespace GitVersion
             }
 
             return arguments;
+*/
         }
 
         static NameValueCollection CollectSwitchesAndValuesFromArguments(List<string> namedArguments)
