@@ -58,6 +58,7 @@
     <Compile Include="Arguments.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="HelpWriter.cs" />
+    <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="AssemblyInfoFileUpdate.cs" />
