@@ -10,7 +10,7 @@ namespace GitVersion
     {
         const string MergeMessageRegexPattern = "refs/heads/(pr|pull(-requests)?/(?<issuenumber>[0-9]*)/(merge|head))";
 
-        public static void NormalizeGitDirectory(string gitDirectory, Authentication authentication, bool noFetch)
+        public static void NormalizeGitDirectory(string gitDirectory, Authentication authentication, bool noFetch, string currentBranch)
         {
             using (var repo = new Repository(gitDirectory))
             {
@@ -18,18 +18,20 @@ namespace GitVersion
 
                 AddMissingRefSpecs(repo, remote);
 
-                Logger.WriteInfo(string.Format("Fetching from remote '{0}' using the following refspecs: {1}.",
-                    remote.Name, string.Join(", ", remote.FetchRefSpecs.Select(r => r.Specification))));
-
-    
                 //If noFetch is enabled, then GitVersion will assume that the git repository is normalized before execution, so that fetching from remotes is not required.
-                if (!noFetch)
+                if (noFetch)
                 {
-                    Logger.WriteInfo("Skipping fetching");
+                    Logger.WriteInfo("Skipping fetching, if GitVersion does not calculate your version as expected you might need to allow fetching or use dynamic repositories");
+                }
+                else
+                {
+                    Logger.WriteInfo(string.Format("Fetching from remote '{0}' using the following refspecs: {1}.",
+                        remote.Name, string.Join(", ", remote.FetchRefSpecs.Select(r => r.Specification))));
                     var fetchOptions = BuildFetchOptions(authentication.Username, authentication.Password);
                     repo.Network.Fetch(remote, fetchOptions);
                 }
 
+                EnsureLocalBranchExistsForCurrentBranch(repo, currentBranch);
                 CreateMissingLocalBranchesFromRemoteTrackingOnes(repo, remote.Name);
 
                 var headSha = repo.Refs.Head.TargetIdentifier;
@@ -41,13 +43,22 @@ namespace GitVersion
                 }
 
                 Logger.WriteInfo(string.Format("HEAD is detached and points at commit '{0}'.", headSha));
+                Logger.WriteInfo(string.Format("Local Refs:\r\n" + string.Join(Environment.NewLine, repo.Refs.FromGlob("*").Select(r => r.CanonicalName))));
 
                 // In order to decide whether a fake branch is required or not, first check to see if any local branches have the same commit SHA of the head SHA.
                 // If they do, go ahead and checkout that branch
                 // If no, go ahead and check out a new branch, using the known commit SHA as the pointer
                 var localBranchesWhereCommitShaIsHead = repo.Branches.Where(b => !b.IsRemote && b.Tip.Sha == headSha).ToList();
 
-                if (localBranchesWhereCommitShaIsHead.Count > 1)
+                var matchingCurrentBranch = !string.IsNullOrEmpty(currentBranch)
+                    ? localBranchesWhereCommitShaIsHead.SingleOrDefault(b => b.CanonicalName.Replace("/heads/", "/") == currentBranch.Replace("/heads/", "/"))
+                    : null;
+                if (matchingCurrentBranch != null)
+                {
+                    Logger.WriteInfo(string.Format("Checking out local branch '{0}'.", currentBranch));
+                    matchingCurrentBranch.Checkout();
+                }
+                else if (localBranchesWhereCommitShaIsHead.Count > 1)
                 {
                     var branchNames = localBranchesWhereCommitShaIsHead.Select(r => r.CanonicalName);
                     var csvNames = string.Join(", ", branchNames);
@@ -86,6 +97,19 @@ namespace GitVersion
                     repo.Branches[localBranchesWhereCommitShaIsHead[0].Name].Checkout();
                 }
             }
+        }
+
+        static void EnsureLocalBranchExistsForCurrentBranch(Repository repo, string currentBranch)
+        {
+            if (string.IsNullOrEmpty(currentBranch)) return;
+            var isBranch = currentBranch.Contains("refs/heads");
+            var localCanonicalName = isBranch ? currentBranch : currentBranch.Replace("refs/", "refs/heads/");
+            if (repo.Branches[localCanonicalName] != null) return;
+
+            Logger.WriteInfo(isBranch ? 
+                string.Format("Creating local branch {0}", localCanonicalName) :
+                string.Format("Creating local branch {0} from ref {1}", localCanonicalName, currentBranch));
+            repo.Refs.Add(localCanonicalName, repo.Head.Tip.Id);
         }
 
         public static bool LooksLikeAValidPullRequestNumber(string issueNumber)
@@ -146,9 +170,13 @@ namespace GitVersion
         {
             var remote = repo.Network.Remotes.Single();
 
-            var remoteTips = string.IsNullOrEmpty(authentication.Username) ?
+            Logger.WriteInfo("Fetching remote refs to see if there is a pull request ref");
+            var remoteTips = (string.IsNullOrEmpty(authentication.Username) ?
                 GetRemoteTipsForAnonymousUser(repo, remote) :
-                GetRemoteTipsUsingUsernamePasswordCredentials(repo, remote, authentication.Username, authentication.Password);
+                GetRemoteTipsUsingUsernamePasswordCredentials(repo, remote, authentication.Username, authentication.Password))
+                .ToList();
+
+            Logger.WriteInfo(string.Format("Remote Refs:\r\n" + string.Join(Environment.NewLine, remoteTips.Select(r => r.CanonicalName))));
 
             var headTipSha = repo.Head.Tip.Sha;
 

@@ -25,7 +25,7 @@ public class RemoteRepositoryFixture : RepositoryFixtureBase
     /// </summary>
     public void InitialiseRepo()
     {
-        new GitPreparer(null, null, new Authentication(), null, false, LocalRepositoryPath).Initialise(true);
+        new GitPreparer(null, null, new Authentication(), null, false, LocalRepositoryPath).Initialise(true, null);
     }
 
     static IRepository CreateNewRepository(string path)

@@ -17,6 +17,11 @@
             };
         }
 
+        public override string GetCurrentBranch()
+        {
+            return Environment.GetEnvironmentVariable("BUILD_SOURCEBRANCH");
+        }
+
         public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
         {
             // Note: the VSO agent does not yet support updating the build display number from a variable

@@ -54,7 +54,7 @@ public class GitPreparerTests
                 }
 
                 var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath);
-                gitPreparer.Initialise(false);
+                gitPreparer.Initialise(false, null);
                 dynamicRepositoryPath = gitPreparer.GetDotGitDirectory();
 
                 gitPreparer.IsDynamicGitRepository.ShouldBe(true);
@@ -99,11 +99,11 @@ public class GitPreparerTests
                 };
 
                 var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath);
-                gitPreparer.Initialise(false);
+                gitPreparer.Initialise(false, null);
                 dynamicRepositoryPath = gitPreparer.GetDotGitDirectory();
 
                 var newCommit = mainRepositoryFixture.Repository.MakeACommit();
-                gitPreparer.Initialise(false);
+                gitPreparer.Initialise(false, null);
 
                 using (var repository = new Repository(dynamicRepositoryPath))
                 {
@@ -146,7 +146,7 @@ public class GitPreparerTests
                 };
 
                 var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath);
-                gitPreparer.Initialise(false);
+                gitPreparer.Initialise(false, null);
 
                 gitPreparer.IsDynamicGitRepository.ShouldBe(true);
                 gitPreparer.DynamicGitRepositoryPath.ShouldBe(expectedDynamicRepoLocation + "_1\\.git");
@@ -229,11 +229,11 @@ public class GitPreparerTests
                 };
 
                 var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath);
-                gitPreparer.Initialise(true);
+                gitPreparer.Initialise(true, null);
 
                 mainRepositoryFixture.Repository.CreateBranch("feature1").Checkout();
 
-                Assert.DoesNotThrow(() => gitPreparer.Initialise(true));
+                Assert.DoesNotThrow(() => gitPreparer.Initialise(true, null));
             }
         }
         finally
@@ -264,9 +264,9 @@ public class GitPreparerTests
                 };
 
                 var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath);
-                gitPreparer.Initialise(true);
+                gitPreparer.Initialise(true, null);
 
-                Assert.Throws<Exception>(() => gitPreparer.Initialise(true));
+                Assert.Throws<Exception>(() => gitPreparer.Initialise(true, null));
             }
         }
         finally
@@ -293,7 +293,7 @@ public class GitPreparerTests
 
             var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath);
 
-            Assert.Throws<Exception>(() => gitPreparer.Initialise(true));
+            Assert.Throws<Exception>(() => gitPreparer.Initialise(true, null));
         }
         finally
         {
