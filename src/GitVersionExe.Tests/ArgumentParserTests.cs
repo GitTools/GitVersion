@@ -294,4 +294,12 @@ public class ArgumentParserTests
         var arguments = ArgumentParser.ParseArguments(command);
         arguments.CommitId.ShouldBe("ce123");
     }
+
+    [TestCase("targetDirectoryPath -assemblyversionformat")]
+    [TestCase("-assemblyversionformat")]
+    public void assemblyversionformat_should_throw_warning(string args)
+    {
+        var exception = Should.Throw<WarningException>(() => ArgumentParser.ParseArguments(args));
+        exception.Message.ShouldBe("assemblyversionformat switch removed, use AssemblyVersioningScheme configuration value instead");
+    }
 }

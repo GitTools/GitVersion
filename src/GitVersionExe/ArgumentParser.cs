@@ -82,6 +82,10 @@ namespace GitVersion
                         "nofetch", "", // help text missing
                         v => arguments.NoFetch = (v != null)
                     },
+                    {
+                        "assemblyversionformat", "Deprecated: use AssemblyVersioningScheme configuration value instead",
+                        v => { throw new WarningException("assemblyversionformat switch removed, use AssemblyVersioningScheme configuration value instead"); }
+                    },
                 };
         }
 
@@ -141,11 +145,6 @@ namespace GitVersion
                     
                     value = values.FirstOrDefault();
                 }                
-
-                if (IsSwitch("assemblyversionformat", name))
-                {
-                    throw new WarningException("assemblyversionformat switch removed, use AssemblyVersioningScheme configuration value instead");
-                }
 
                 if (IsSwitch("v", name) || IsSwitch("showvariable", name))
                 {
