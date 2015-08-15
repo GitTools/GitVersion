@@ -25,7 +25,7 @@ build_script:
   - cmd: appveyor PushArtifact "GitVersion_%GitVersion_NuGetVersion%.zip"
 
   - ps: .\build\Update-GitVersionVsoTaskVersion.ps1 .\build\GitVersionVsoTaskBuild\task.json $env:GitVersion_Major $env:GitVersion_Minor $env:GitVersion_Patch
-  - cmd: 7z a "GitVersionVsoBuildStep_%GitVersion_NuGetVersion%.zip" .\build\GitVersionVsoTaskBuild\*.*
+  - cmd: 7z a "GitVersionVsoBuildTask_%GitVersion_NuGetVersion%.zip" .\build\GitVersionVsoTaskBuild\*.*
   - cmd: appveyor PushArtifact "GitVersionVsoBuildStep_%GitVersion_NuGetVersion%.zip"
 
 test_script:
