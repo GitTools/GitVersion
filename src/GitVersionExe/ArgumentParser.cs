@@ -50,6 +50,10 @@ namespace GitVersion
                         "p|password=", "Password in case authentication is required",
                         v => arguments.Authentication.Password = v
                     },
+                    {
+                        "output=", "Determines the output to the console. Can be either 'json' or 'buildserver', will default to 'json'",
+                        v => arguments.SetOutPutType(v)
+                    },
                 };
         }
 
@@ -89,7 +93,6 @@ namespace GitVersion
                 // TODO: should not overwrite if --targetPath is specified
                 arguments.TargetPath = additionalArguments[0];
             }
-
 
             return arguments;
 
@@ -262,17 +265,17 @@ namespace GitVersion
                     continue;
                 }
 
-                if (IsSwitch("output", name))
-                {
-                    OutputType outputType;
-                    if (!Enum.TryParse(value, true, out outputType))
-                    {
-                        throw new WarningException(string.Format("Value '{0}' cannot be parsed as output type, please use 'json' or 'buildserver'", value));
-                    }
+                //if (IsSwitch("output", name))
+                //{
+                //    OutputType outputType;
+                //    if (!Enum.TryParse(value, true, out outputType))
+                //    {
+                //        throw new WarningException(string.Format("Value '{0}' cannot be parsed as output type, please use 'json' or 'buildserver'", value));
+                //    }
 
-                    arguments.Output = outputType;
-                    continue;
-                }
+                //    arguments.Output = outputType;
+                //    continue;
+                //}
 
                 if (IsSwitch("nofetch", name))
                 {

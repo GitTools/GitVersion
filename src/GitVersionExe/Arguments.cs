@@ -1,5 +1,7 @@
 namespace GitVersion
 {
+    using System;
+
     public class Arguments
     {
         public Arguments()
@@ -24,7 +26,15 @@ namespace GitVersion
         public string ShowVariable;
 
         public OutputType Output;
-        
+
+        public void SetOutPutType(string value)
+        {
+            if (!Enum.TryParse(value, true, out Output))
+            {
+                throw new WarningException(string.Format("Value '{0}' cannot be parsed as output type, please use 'json' or 'buildserver'", value));
+            }
+        }
+
         public string Proj;
         public string ProjArgs;
         public string Exec;
@@ -35,5 +45,6 @@ namespace GitVersion
 
         public bool ShowConfig;
         public bool NoFetch { get; set; }
+
     }
 }
