@@ -43,11 +43,11 @@ namespace GitVersion
                         v => arguments.ProjArgs = v
                     },
                     {
-                        "u|user=", "Username in case authentication is required",
+                        "u=", "Username in case authentication is required",
                         v => arguments.Authentication.Username = v
                     },
                     {
-                        "p|password=", "Password in case authentication is required",
+                        "p=", "Password in case authentication is required",
                         v => arguments.Authentication.Password = v
                     },
                     {
@@ -75,7 +75,7 @@ namespace GitVersion
                         v => arguments.TargetPath = v
                     },                    
                     {
-                        "c|commitid=", "The commit id to check. If not specified, the latest available commit on the specified branch will be used.",
+                        "c=", "The commit id to check. If not specified, the latest available commit on the specified branch will be used.",
                         v => arguments.CommitId = v
                     },                   
                     {
@@ -120,49 +120,16 @@ namespace GitVersion
             ParseSpecialArguments(additionalArguments, arguments);
 
             return arguments;
-
-/*
-            // Following code is not or implicitly tested:
-
-            List<string> namedArguments;
-            var arguments = new Arguments();
-            if (firstArgument.StartsWith("-") || firstArgument.StartsWith("/"))
-            {
-                arguments.TargetPath = Environment.CurrentDirectory;
-                namedArguments = commandLineArguments;
-            }
-            else
-            {
-                arguments.TargetPath = firstArgument;
-                namedArguments = commandLineArguments.Skip(1).ToList();
-            }
-            
-            var args = CollectSwitchesAndValuesFromArguments(namedArguments);
-
-            foreach (var name in args.AllKeys)
-            {
-                var values = args.GetValues(name);
-                
-                string value = null;
-                
-                if (values != null)
-                {
-                    //Currently, no arguments use more than one value, so having multiple values is an input error.
-                    //In the future, this exception can be removed to support multiple values for a switch.
-                    if (values.Length > 1) throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", values[1]));
-                    
-                    value = values.FirstOrDefault();
-                }
-
-                throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", name));
-            }
-
-            return arguments;
-*/
         }
 
         static void ParseSpecialArguments(List<string> additionalArguments, Arguments arguments)
         {
+            // if the first argument is "init" or filename, they get special treatment
+            // it is probably best to deprecate these and replace:
+            // "init" -> -i --init flag
+            // "path" -> --path --targetpath option (already exists, add aliases)
+            // but for now, these special cases are kept as-is for backwards compatibility
+
             if (additionalArguments.Count <= 0)
             {
                 return;
@@ -173,7 +140,7 @@ namespace GitVersion
             if (IsInit(firstArgument))
             {
                 arguments.TargetPath = Environment.CurrentDirectory;
-                arguments.Init = true; // should be replaced by --init switch
+                arguments.Init = true;
             }
             else if (IsSwitchArgument(firstArgument))
             {
@@ -250,12 +217,5 @@ namespace GitVersion
             return singleArgument.Equals("init", StringComparison.InvariantCultureIgnoreCase);
         }
 
-        static bool IsHelp(string singleArgument)
-        {
-            return (singleArgument == "?") ||
-                IsSwitch("h", singleArgument) ||
-                IsSwitch("help", singleArgument) ||
-                IsSwitch("?", singleArgument);
-        }
     }
 }

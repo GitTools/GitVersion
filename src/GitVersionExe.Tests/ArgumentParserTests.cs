@@ -288,7 +288,6 @@ public class ArgumentParserTests
     }
 
     [TestCase("-c ce123")]
-    [TestCase("--commitid ce123")]
     public void can_specify_commitid(string command)
     {
         var arguments = ArgumentParser.ParseArguments(command);
