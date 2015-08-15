@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="ArgumentParser.cs" />
     <Compile Include="Arguments.cs" />
+    <Compile Include="CaseInsensitiveOptionSet.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="HelpWriter.cs" />
     <Compile Include="Options.cs" />

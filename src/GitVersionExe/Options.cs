@@ -1,4 +1,9 @@
 //
+// REMARKS: this file was obtained from http://www.ndesk.org/Options, v 0.2.1
+//
+// It was ONLY modified using ReSharper to meet this project's coding standard.
+// (And to add these first 5 lines)
+//
 // Options.cs
 //
 // Authors:

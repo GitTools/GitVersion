@@ -12,7 +12,7 @@ namespace GitVersion
     {
         public static OptionSet GetOptionSet(Arguments arguments)
         {
-            return new OptionSet
+            return new CaseInsensitiveOptionSet
                 {
                     {
                         "h|?|help", "Show this message and exit",
@@ -63,11 +63,11 @@ namespace GitVersion
                         v => arguments.TargetBranch = v
                     },
                     {
-                        "updateAssemblyInfo", "Will recursively search for all 'AssemblyInfo.cs' files in the git repo and update them",
+                        "updateassemblyinfo", "Will recursively search for all 'AssemblyInfo.cs' files in the git repo and update them",
                         v => arguments.UpdateAssemblyInfo = (v != null)
                     },
                     {
-                        "dynamicRepoLocation=", "By default dynamic repositories will be cloned to %tmp%. Use this switch to override",
+                        "dynamicrepolocation=", "By default dynamic repositories will be cloned to %tmp%. Use this switch to override",
                         v => arguments.DynamicRepositoryLocation = v
                     },
                     {
@@ -209,7 +209,7 @@ namespace GitVersion
                 arguments.TargetPath = Environment.CurrentDirectory;
                 arguments.Init = true; // should be replaced by --init switch
             }
-            else if (IsSwitch(firstArgument, ""))
+            else if (IsSwitchArgument(firstArgument))
             {
                 throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", firstArgument));
             }

@@ -68,13 +68,17 @@ public class ArgumentParserTests
     }
 
     [Test]
-    public void exec_with_args()
+    [TestCase("-execArgs")]
+    [TestCase("-execargs")]
+    [TestCase("-EXECARGS")]
+    [TestCase("-ExEcArGs")]
+    public void exec_with_args(string caseInsensitiveExecArgs)
     {
         var arguments = ArgumentParser.ParseArguments(new List<string>
         {
             "-exec",
             "rake",
-            "-execargs",
+            caseInsensitiveExecArgs,
             "clean build"
         });
         arguments.Exec.ShouldBe("rake");
