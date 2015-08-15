@@ -73,6 +73,10 @@ namespace GitVersion
                     {
                         "targetpath=", "Same as 'path', but not positional",
                         v => arguments.TargetPath = v
+                    },                    
+                    {
+                        "c|commitid=", "The commit id to check. If not specified, the latest available commit on the specified branch will be used.",
+                        v => arguments.CommitId = v
                     },
                     {
                         "nofetch", "", // help text missing
@@ -137,13 +141,6 @@ namespace GitVersion
                     
                     value = values.FirstOrDefault();
                 }                
-
-
-                if (IsSwitch("c", name))
-                {
-                    arguments.CommitId = value;
-                    continue;
-                }
 
                 if (IsSwitch("assemblyversionformat", name))
                 {

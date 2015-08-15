@@ -286,4 +286,12 @@ public class ArgumentParserTests
         var arguments = ArgumentParser.ParseArguments(command);
         arguments.TargetPath.ShouldBe("c:\\expected\\path");
     }
+
+    [TestCase("-c ce123")]
+    [TestCase("--commitid ce123")]
+    public void can_specify_commitid(string command)
+    {
+        var arguments = ArgumentParser.ParseArguments(command);
+        arguments.CommitId.ShouldBe("ce123");
+    }
 }
