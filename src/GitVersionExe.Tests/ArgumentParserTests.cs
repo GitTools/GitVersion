@@ -277,4 +277,13 @@ public class ArgumentParserTests
         arguments.NoFetch.ShouldBe(true);
         arguments.Proj.ShouldBe("foo.sln");
     }
+
+    [TestCase("-targetPath c:\\expected\\path")]
+    [TestCase("c:\\expected\\path -targetPath c:\\foo\\bar")]
+    // [TestCase("init -targetPath c:\\expected\\path")] // should we init in target path or current directory?
+    public void can_specify_target_path(string command)
+    {
+        var arguments = ArgumentParser.ParseArguments(command);
+        arguments.TargetPath.ShouldBe("c:\\expected\\path");
+    }
 }

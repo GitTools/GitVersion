@@ -65,10 +65,14 @@ namespace GitVersion
                     {
                         "updateassemblyinfo", "Will recursively search for all 'AssemblyInfo.cs' files in the git repo and update them",
                         v => arguments.UpdateAssemblyInfo = (v != null)
-                    },
+                    },  // we should be able to use : as optional value here; then == null will indicate it was specified without value
                     {
                         "dynamicrepolocation=", "By default dynamic repositories will be cloned to %tmp%. Use this switch to override",
                         v => arguments.DynamicRepositoryLocation = v
+                    },
+                    {
+                        "targetpath=", "Same as 'path', but not positional",
+                        v => arguments.TargetPath = v
                     },
                     {
                         "nofetch", "", // help text missing
@@ -134,11 +138,6 @@ namespace GitVersion
                     value = values.FirstOrDefault();
                 }                
 
-                if (IsSwitch("targetpath", name))
-                {
-                    arguments.TargetPath = value;
-                    continue;
-                }
 
                 if (IsSwitch("c", name))
                 {
