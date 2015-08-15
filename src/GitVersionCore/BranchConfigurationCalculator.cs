@@ -50,14 +50,18 @@ namespace GitVersion
                 if (parentCount == 2)
                 {
                     var parents = currentCommit.Parents.ToArray();
-                    var branch = repository.Branches.SingleOrDefault(b => !b.IsRemote && b.Tip == parents[1]);
+
+                    // Treat multiple branches as null instead of letting SingleOrDefault() throw
+                    var branches = repository.Branches.Where(b => !b.IsRemote && b.Tip == parents[1]).Take(2).ToList();
+                    var branch = branches.Count() == 1 ? branches.Single() : null;
+
                     if (branch != null)
                     {
                         excludedBranches = new[]
                         {
-                        currentBranch,
-                        branch
-                    };
+                            currentBranch,
+                            branch
+                        };
                         currentBranch = branch;
                     }
                     else
