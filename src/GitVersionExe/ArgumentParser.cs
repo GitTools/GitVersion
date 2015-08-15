@@ -54,6 +54,18 @@ namespace GitVersion
                         "output=", "Determines the output to the console. Can be either 'json' or 'buildserver', will default to 'json'",
                         v => arguments.SetOutPutType(v)
                     },
+                    {
+                        "url=", "Url to remote git repository",
+                        v => arguments.TargetUrl = v
+                    },
+                    {
+                        "b=", "Name of the branch to use on the remote repository, must be used in combination with /url",
+                        v => arguments.TargetBranch = v
+                    },
+                    {
+                        "updateAssemblyInfo", "Will recursively search for all 'AssemblyInfo.cs' files in the git repo and update them",
+                        v => arguments.UpdateAssemblyInfo = (v != null)
+                    },
                 };
         }
 
@@ -129,11 +141,6 @@ namespace GitVersion
                     value = values.FirstOrDefault();
                 }                
 
-                if (IsSwitch("l", name))
-                {
-                    arguments.LogFilePath = value;
-                    continue;
-                }
 
                 if (IsSwitch("targetpath", name))
                 {
@@ -147,24 +154,6 @@ namespace GitVersion
                     continue;
                 }
 
-                if (IsSwitch("url", name))
-                {
-                    arguments.TargetUrl = value;
-                    continue;
-                }
-
-                if (IsSwitch("b", name))
-                {
-                    arguments.TargetBranch = value;
-                    continue;
-                }
-
-                if (IsSwitch("u", name))
-                {
-                    arguments.Authentication.Username = value;
-                    continue;
-                }
-
                 if (IsSwitch("p", name))
                 {
                     arguments.Authentication.Password = value;
@@ -174,52 +163,6 @@ namespace GitVersion
                 if (IsSwitch("c", name))
                 {
                     arguments.CommitId = value;
-                    continue;
-                }
-
-                if (IsSwitch("exec", name))
-                {
-                    arguments.Exec = value;
-                    continue;
-                }
-
-                if (IsSwitch("execargs", name))
-                {
-                    arguments.ExecArgs = value;
-                    continue;
-                }
-
-                if (IsSwitch("proj", name))
-                {
-                    arguments.Proj = value;
-                    continue;
-                }
-
-                if (IsSwitch("projargs", name))
-                {
-                    arguments.ProjArgs = value;
-                    continue;
-                }
-
-                if (IsSwitch("updateAssemblyInfo", name))
-                {
-                    if (new[] { "1", "true" }.Contains(value))
-                    {
-                        arguments.UpdateAssemblyInfo = true;
-                    }
-                    else if (new[] { "0", "false" }.Contains(value))
-                    {
-                        arguments.UpdateAssemblyInfo = false;
-                    }
-                    else if (!IsSwitchArgument(value))
-                    {
-                        arguments.UpdateAssemblyInfo = true;
-                        arguments.UpdateAssemblyInfoFileName = value;
-                    }
-                    else
-                    {
-                        arguments.UpdateAssemblyInfo = true;                        
-                    }
                     continue;
                 }
 
@@ -265,17 +208,6 @@ namespace GitVersion
                     continue;
                 }
 
-                //if (IsSwitch("output", name))
-                //{
-                //    OutputType outputType;
-                //    if (!Enum.TryParse(value, true, out outputType))
-                //    {
-                //        throw new WarningException(string.Format("Value '{0}' cannot be parsed as output type, please use 'json' or 'buildserver'", value));
-                //    }
-
-                //    arguments.Output = outputType;
-                //    continue;
-                //}
 
                 if (IsSwitch("nofetch", name))
                 {
