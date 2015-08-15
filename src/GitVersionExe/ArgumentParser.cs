@@ -12,7 +12,7 @@ namespace GitVersion
     {
         public static OptionSet GetOptionSet(Arguments arguments)
         {
-            return new OptionSet()
+            return new OptionSet
                 {
                     {
                         "h|?|help", "Show this message and exit",
@@ -84,23 +84,12 @@ namespace GitVersion
 
         public static Arguments ParseArguments(List<string> commandLineArguments)
         {
-            if (commandLineArguments.Count == 0)
+            if (commandLineArguments.Count <= 0)
             {
-                return new Arguments
-                {
-                    TargetPath = Environment.CurrentDirectory
-                };
-            }
-
-            var firstArgument = commandLineArguments.First();
-
-            if (IsInit(firstArgument))
-            {
-                return new Arguments
-                {
-                    TargetPath = Environment.CurrentDirectory,
-                    Init = true
-                };
+                return new Arguments()
+                    {
+                        TargetPath = Environment.CurrentDirectory
+                    };
             }
 
             var arguments = new Arguments();
@@ -108,11 +97,7 @@ namespace GitVersion
             var p = GetOptionSet(arguments);
             var additionalArguments = p.Parse(commandLineArguments);
 
-            if (additionalArguments.Count > 0)
-            {
-                // TODO: should not overwrite if --targetPath is specified
-                arguments.TargetPath = additionalArguments[0];
-            }
+            ParseSpecialArguments(additionalArguments, arguments);
 
             return arguments;
 
@@ -208,6 +193,37 @@ namespace GitVersion
 
             return arguments;
 */
+        }
+
+        static void ParseSpecialArguments(List<string> additionalArguments, Arguments arguments)
+        {
+            if (additionalArguments.Count <= 0)
+            {
+                return;
+            }
+
+            var firstArgument = additionalArguments[0];
+
+            if (IsInit(firstArgument))
+            {
+                arguments.TargetPath = Environment.CurrentDirectory;
+                arguments.Init = true; // should be replaced by --init switch
+            }
+            else if (IsSwitch(firstArgument, ""))
+            {
+                throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", firstArgument));
+            }
+            else
+            {
+                // TODO: should not overwrite if --targetPath is specified
+                arguments.TargetPath = firstArgument;
+            }
+
+            if (additionalArguments.Count > 1)
+            {
+                // fail on first unknown argument:
+                throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", additionalArguments[1]));
+            }
         }
 
         static NameValueCollection CollectSwitchesAndValuesFromArguments(List<string> namedArguments)
