@@ -332,10 +332,17 @@ public class ArgumentParserTests
     [Test]
     [TestCase("")]
     [TestCase("-showconfig-")]
-    public void showconfig_false_when_minus_or_notdefined_(string args)
+    public void showconfig_false_when_minus_or_notdefined(string args)
     {
         var arguments = ArgumentParser.ParseArguments(args);
         arguments.ShowConfig.ShouldBe(false);
+    }
+
+    [TestCase("init")]
+    public void can_use_init_as_postional_arg(string args)
+    {
+        var arguments = ArgumentParser.ParseArguments(args);
+        arguments.Init.ShouldBe(true);
     }
 
 }
