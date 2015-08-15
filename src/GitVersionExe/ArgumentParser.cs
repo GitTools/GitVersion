@@ -77,10 +77,18 @@ namespace GitVersion
                     {
                         "c|commitid=", "The commit id to check. If not specified, the latest available commit on the specified branch will be used.",
                         v => arguments.CommitId = v
+                    },                   
+                    {
+                        "v|showvariable=", "Used in conjuntion with /output json, will output just a particular variable",
+                        v => arguments.SetShowVariable(v)
                     },
                     {
                         "nofetch", "", // help text missing
                         v => arguments.NoFetch = (v != null)
+                    },
+                    {
+                        "showconfig", "Outputs the effective GitVersion config (defaults + custom from GitVersion.yaml) in yaml format", // help text missing
+                        v => arguments.ShowConfig = (v != null)
                     },
                     {
                         "assemblyversionformat", "Deprecated: use AssemblyVersioningScheme configuration value instead",
@@ -144,43 +152,6 @@ namespace GitVersion
                     if (values.Length > 1) throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", values[1]));
                     
                     value = values.FirstOrDefault();
-                }                
-
-                if (IsSwitch("v", name) || IsSwitch("showvariable", name))
-                {
-                    string versionVariable = null;
-
-                    if (!string.IsNullOrWhiteSpace(value))
-                    {
-                        versionVariable = VersionVariables.AvailableVariables.SingleOrDefault(av => av.Equals(value.Replace("'", ""), StringComparison.CurrentCultureIgnoreCase));
-                    }
-                    
-                    if (versionVariable == null)
-                    {
-                        var messageFormat = "{0} requires a valid version variable.  Available variables are:\n{1}";
-                        var message = string.Format(messageFormat, name, String.Join(", ", VersionVariables.AvailableVariables.Select(x=>string.Concat("'", x, "'"))));
-                        throw new WarningException(message);
-                    }
-
-                    arguments.ShowVariable = versionVariable;
-                    continue;
-                }
-
-                if (IsSwitch("showConfig", name))
-                {
-                    if (new[] { "1", "true" }.Contains(value))
-                    {
-                        arguments.ShowConfig = true;
-                    }
-                    else if (new[] { "0", "false" }.Contains(value))
-                    {
-                        arguments.UpdateAssemblyInfo = false;
-                    }
-                    else
-                    {
-                        arguments.ShowConfig = true;                        
-                    }
-                    continue;
                 }
 
                 throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", name));

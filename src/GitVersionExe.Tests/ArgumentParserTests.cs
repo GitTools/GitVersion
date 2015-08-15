@@ -295,6 +295,24 @@ public class ArgumentParserTests
         arguments.CommitId.ShouldBe("ce123");
     }
 
+    [TestCase("-v SemVer")]
+    [TestCase("--showvariable SemVer")]
+    [TestCase("-showvariable SemVer")]
+    [TestCase("/showvariable SemVer")]
+    [TestCase("/v SemVer")]
+    public void can_show_variable(string command)
+    {
+        var arguments = ArgumentParser.ParseArguments(command);
+        arguments.ShowVariable.ShouldBe("SemVer");
+    }
+
+    [TestCase("-v thisVariableDoesNotExist")]
+    public void show_non_existing_variable_fails(string args)
+    {
+        var exception = Should.Throw<WarningException>(() => ArgumentParser.ParseArguments(args));
+        exception.Message.ShouldStartWith("show variable switch requires a valid version variable");
+    }
+
     [TestCase("targetDirectoryPath -assemblyversionformat")]
     [TestCase("-assemblyversionformat")]
     public void assemblyversionformat_should_throw_warning(string args)
@@ -302,4 +320,23 @@ public class ArgumentParserTests
         var exception = Should.Throw<WarningException>(() => ArgumentParser.ParseArguments(args));
         exception.Message.ShouldBe("assemblyversionformat switch removed, use AssemblyVersioningScheme configuration value instead");
     }
+
+    [Test]
+    [TestCase("-showconfig")]
+    [TestCase("--showConfig+")]
+    public void showconfig_true_when_defined(string args)
+    {
+        var arguments = ArgumentParser.ParseArguments(args);
+        arguments.ShowConfig.ShouldBe(true);
+    }
+
+    [Test]
+    [TestCase("")]
+    [TestCase("-showconfig-")]
+    public void showconfig_false_when_minus_or_notdefined_(string args)
+    {
+        var arguments = ArgumentParser.ParseArguments(args);
+        arguments.ShowConfig.ShouldBe(false);
+    }
+
 }

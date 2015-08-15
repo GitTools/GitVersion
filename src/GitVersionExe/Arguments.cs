@@ -1,6 +1,7 @@
 namespace GitVersion
 {
     using System;
+    using System.Linq;
 
     public class Arguments
     {
@@ -24,6 +25,24 @@ namespace GitVersion
         public bool IsHelp;
         public string LogFilePath;
         public string ShowVariable;
+
+        public void SetShowVariable(string value)
+        {
+            string versionVariable = null;
+
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                versionVariable = VersionVariables.AvailableVariables.SingleOrDefault(av => av.Equals(value.Replace("'", ""), StringComparison.CurrentCultureIgnoreCase));
+            }
+
+            if (versionVariable == null)
+            {
+                var messageFormat = "show variable switch requires a valid version variable.  Available variables are:\n{0}";
+                var message = string.Format(messageFormat, String.Join(", ", VersionVariables.AvailableVariables.Select(x => string.Concat("'", x, "'"))));
+                throw new WarningException(message);
+            }
+            ShowVariable = versionVariable;
+        }
 
         public OutputType Output;
 
