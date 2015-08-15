@@ -66,6 +66,14 @@ namespace GitVersion
                         "updateAssemblyInfo", "Will recursively search for all 'AssemblyInfo.cs' files in the git repo and update them",
                         v => arguments.UpdateAssemblyInfo = (v != null)
                     },
+                    {
+                        "dynamicRepoLocation=", "By default dynamic repositories will be cloned to %tmp%. Use this switch to override",
+                        v => arguments.DynamicRepositoryLocation = v
+                    },
+                    {
+                        "nofetch", "", // help text missing
+                        v => arguments.NoFetch = (v != null)
+                    },
                 };
         }
 
@@ -109,7 +117,7 @@ namespace GitVersion
             return arguments;
 
 /*
-
+            // Following code is not or implicitly tested:
 
             List<string> namedArguments;
             var arguments = new Arguments();
@@ -141,22 +149,9 @@ namespace GitVersion
                     value = values.FirstOrDefault();
                 }                
 
-
                 if (IsSwitch("targetpath", name))
                 {
                     arguments.TargetPath = value;
-                    continue;
-                }
-
-                if (IsSwitch("dynamicRepoLocation", name))
-                {
-                    arguments.DynamicRepositoryLocation = value;
-                    continue;
-                }
-
-                if (IsSwitch("p", name))
-                {
-                    arguments.Authentication.Password = value;
                     continue;
                 }
 
@@ -205,13 +200,6 @@ namespace GitVersion
                     {
                         arguments.ShowConfig = true;                        
                     }
-                    continue;
-                }
-
-
-                if (IsSwitch("nofetch", name))
-                {
-                    arguments.NoFetch = true;
                     continue;
                 }
 

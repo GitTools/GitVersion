@@ -241,25 +241,36 @@ public class ArgumentParserTests
     }
 
     [Test]
-    public void nofetch_true_when_defined()
+    [TestCase("-nofetch")]
+    [TestCase("-nofetch+")]
+    public void nofetch_true_when_defined(string args)
     {
-        var arguments = ArgumentParser.ParseArguments("-nofetch");
-        arguments.NoFetch = true;
+        var arguments = ArgumentParser.ParseArguments(args);
+        arguments.NoFetch.ShouldBe(true);
+    }
+
+    [Test]
+    [TestCase("")]
+    [TestCase("-nofetch-")]
+    public void nofetch_false_when_minus_or_notdefined_(string args)
+    {
+        var arguments = ArgumentParser.ParseArguments(args);
+        arguments.NoFetch.ShouldBe(false);
     }
 
     [Test]
     public void other_arguments_can_be_parsed_before_nofetch()
     {
         var arguments = ArgumentParser.ParseArguments("targetpath -nofetch ");
-        arguments.TargetPath = "targetpath";
-        arguments.NoFetch = true;
+        arguments.TargetPath.ShouldBe("targetpath");
+        arguments.NoFetch.ShouldBe(true);
     }
 
     [Test]
     public void other_arguments_can_be_parsed_after_nofetch()
     {
         var arguments = ArgumentParser.ParseArguments("-nofetch -proj foo.sln");
-        arguments.NoFetch = true;
-        arguments.Proj = "foo.sln";
+        arguments.NoFetch.ShouldBe(true);
+        arguments.Proj.ShouldBe("foo.sln");
     }
 }
