@@ -176,7 +176,7 @@ namespace GitVersion
                 GetRemoteTipsUsingUsernamePasswordCredentials(repo, remote, authentication.Username, authentication.Password))
                 .ToList();
 
-            Logger.WriteInfo(string.Format("Remote Refs:\r\n" + string.Join(Environment.NewLine, remoteTips.Select(r => r.CanonicalName))));
+            Logger.WriteInfo("Remote Refs:\r\n" + string.Join(Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
 
             var headTipSha = repo.Head.Tip.Sha;
 
