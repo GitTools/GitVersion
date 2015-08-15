@@ -7,6 +7,13 @@ using Shouldly;
 [TestFixture]
 public class ArgumentParserTests
 {
+    [Test, Explicit]
+    public void PrintHelp()
+    {
+        var p = ArgumentParser.GetOptionSet(new Arguments());
+        p.WriteOptionDescriptions(Console.Out);
+    }
+
     [Test]
     public void Empty_means_use_current_directory()
     {
@@ -26,9 +33,14 @@ public class ArgumentParserTests
     }
 
     [Test]
-    public void No_path_and_logfile_should_use_current_directory_TargetDirectory()
+    [TestCase("-l logFilePath")]
+    [TestCase("--log=logFilePath")]
+    [TestCase("-l=logFilePath")]
+    [TestCase("/l logFilePath")]
+    [TestCase("/log=logFilePath")]
+    public void No_path_and_logfile_should_use_current_directory_TargetDirectory(string args)
     {
-        var arguments = ArgumentParser.ParseArguments("-l logFilePath");
+        var arguments = ArgumentParser.ParseArguments(args);
         arguments.TargetPath.ShouldBe(Environment.CurrentDirectory);
         arguments.LogFilePath.ShouldBe("logFilePath");
         arguments.IsHelp.ShouldBe(false);
@@ -39,7 +51,7 @@ public class ArgumentParserTests
     [TestCase("--help")]
     [TestCase("/h")]
     [TestCase("/help")]
-    //[TestCase("/?")] This fails for now
+    [TestCase("/?")]
     public void h_means_IsHelp(string helpArg)
     {
         var arguments = ArgumentParser.ParseArguments(helpArg);

@@ -10,6 +10,49 @@ namespace GitVersion
 
     public class ArgumentParser
     {
+        public static OptionSet GetOptionSet(Arguments arguments)
+        {
+            return new OptionSet()
+                {
+                    {
+                        "h|?|help", "Show this message and exit",
+                        v => arguments.IsHelp = (v != null)
+                    },
+                    {
+                        "l|log=", "Path to logfile",
+                        v =>
+                            {
+                                arguments.LogFilePath = v;
+                                arguments.TargetPath = Environment.CurrentDirectory;
+                            }
+                    },
+                    {
+                        "exec=", "Executes target executable making GitVersion variables available as environmental variables",
+                        v => arguments.Exec = v
+                    },
+                    {
+                        "execargs=", "Arguments for the executable specified by /exec",
+                        v => arguments.ExecArgs = v
+                    },
+                    {
+                        "proj=", "Build an msbuild file, GitVersion variables will be passed as msbuild properties",
+                        v => arguments.Proj = v
+                    },
+                    {
+                        "projargs=", "Additional arguments to pass to msbuild",
+                        v => arguments.ProjArgs = v
+                    },
+                    {
+                        "u|user=", "Username in case authentication is required",
+                        v => arguments.Authentication.Username = v
+                    },
+                    {
+                        "p|password=", "Password in case authentication is required",
+                        v => arguments.Authentication.Password = v
+                    },
+                };
+        }
+
         public static Arguments ParseArguments(string commandLineArguments)
         {
             return ParseArguments(commandLineArguments.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList());
@@ -17,21 +60,6 @@ namespace GitVersion
 
         public static Arguments ParseArguments(List<string> commandLineArguments)
         {
-            var arguments = new Arguments();
-
-            var p = new OptionSet()
-                {
-                    {
-                        "h|help", "Show this message and exit",
-                        v => arguments.IsHelp = (v != null)
-                    },
-                };
-
-            p.Parse(commandLineArguments);
-
-            return arguments;
-
-/*
             if (commandLineArguments.Count == 0)
             {
                 return new Arguments
@@ -41,13 +69,7 @@ namespace GitVersion
             }
 
             var firstArgument = commandLineArguments.First();
-            if (IsHelp(firstArgument))
-            {
-                return new Arguments
-                {
-                    IsHelp = true
-                };
-            }
+
             if (IsInit(firstArgument))
             {
                 return new Arguments
@@ -57,13 +79,22 @@ namespace GitVersion
                 };
             }
 
-            if (commandLineArguments.Count == 1 && !(commandLineArguments[0].StartsWith("-") || commandLineArguments[0].StartsWith("/")))
+            var arguments = new Arguments();
+
+            var p = GetOptionSet(arguments);
+            var additionalArguments = p.Parse(commandLineArguments);
+
+            if (additionalArguments.Count > 0)
             {
-                return new Arguments
-                {
-                    TargetPath = firstArgument
-                };
+                // TODO: should not overwrite if --targetPath is specified
+                arguments.TargetPath = additionalArguments[0];
             }
+
+
+            return arguments;
+
+/*
+
 
             List<string> namedArguments;
             var arguments = new Arguments();
