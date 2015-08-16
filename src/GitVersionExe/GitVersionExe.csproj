@@ -26,6 +26,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <DocumentationFile>bin\Debug\GitVersion.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -108,7 +109,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="Clean">
     <ItemGroup>
-      <ExeFilesToDelete Include="$(BuildDir)NuGetExeBuild\**\*.*;$(BuildDir)NuGetCommandLineBuild\**\*.*" />
+      <ExeFilesToDelete Include="$(BuildDir)NuGetExeBuild\**\*.*;$(BuildDir)NuGetCommandLineBuild\**\*.*;$(BuildDir)GitVersionVsoTaskBuild\**\*.*" />
     </ItemGroup>
     <Delete Files="@(ExeFilesToDelete)" />
   </Target>
@@ -132,7 +133,7 @@
           ]]></Code>
     </Task>
   </UsingTask>
-  <Target Name="AfterBuild" DependsOnTargets="Clean">
+  <Target Name="AfterBuild" DependsOnTargets="Clean" Condition="$(nCrunch)==''">
     <!-- NugetExeBuild -->
     <MakeDir Directories="$(BuildDir)NuGetExeBuild" />
     <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
@@ -147,6 +148,13 @@
     <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.CommandLine.nuspec" DestinationFolder="$(BuildDir)NuGetCommandLineBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetCommandLineBuild" MetadataAssembly="$(OutputPath)GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
+    <!-- VsoBuildTask -->
+    <MakeDir Directories="$(BuildDir)GitVersionVsoTaskBuild" />
+    <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
+    <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
+    <Copy SourceFiles="$(ProjectDir)..\GitVersionVsoTask\icon.png" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
+    <Copy SourceFiles="$(ProjectDir)..\GitVersionVsoTask\task.json" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
+    <Exec Command="powershell -ExecutionPolicy RemoteSigned -NoProfile &quot;$(BuildDir)\Update-GitVersionVsoTaskVersion.ps1 $(BuildDir)GitVersionVsoTaskBuild\task.json $(GitVersion_Major) $(GitVersion_Minor) $(GitVersion_Patch)&quot;" WorkingDirectory="$(BuildDir)" Condition="'$(GitVersion_SemVer)' != ''" />
     <!-- Gem -->
     <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(BuildDir)GemBuild\bin" />
     <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(BuildDir)GemBuild\bin" />

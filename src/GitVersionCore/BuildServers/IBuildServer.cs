@@ -9,6 +9,6 @@
         string[] GenerateSetParameterMessage(string name, string value);
 
         void WriteIntegration(Action<string> writer, VersionVariables variables);
+        string GetCurrentBranch();
     }
-
 }

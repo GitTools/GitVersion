@@ -14,7 +14,7 @@ public class PullRequestScenarios
             fixture.Repository.CreateBranch("feature/Foo").Checkout();
             fixture.Repository.MakeACommit();
             
-            fixture.Repository.CreatePullRequest("feature/Foo", "master");
+            fixture.Repository.CreatePullRequestRef("feature/Foo", "master", normalise: true);
 
             fixture.Repository.DumpGraph();
             fixture.AssertFullSemver("0.1.1-PullRequest.2+2");
@@ -32,7 +32,7 @@ public class PullRequestScenarios
             fixture.Repository.CreateBranch("feature/Foo").Checkout();
             fixture.Repository.MakeACommit();
 
-            fixture.Repository.CreatePullRequest("feature/Foo", "develop", 44);
+            fixture.Repository.CreatePullRequestRef("feature/Foo", "develop", 44, normalise: true);
 
             fixture.Repository.DumpGraph();
             fixture.AssertFullSemver("0.2.0-PullRequest.44+3");
@@ -49,7 +49,7 @@ public class PullRequestScenarios
             fixture.Repository.MakeACommit();
 
 
-            fixture.Repository.CreatePullRequest("feature/Foo", "master");
+            fixture.Repository.CreatePullRequestRef("feature/Foo", "master", normalise: true);
 
             fixture.Repository.DumpGraph();
             fixture.AssertFullSemver("0.1.1-PullRequest.2+2");
@@ -67,7 +67,7 @@ public class PullRequestScenarios
             fixture.Repository.CreateBranch("feature/Foo").Checkout();
             fixture.Repository.MakeACommit();
 
-            fixture.Repository.CreatePullRequest("feature/Foo", "develop");
+            fixture.Repository.CreatePullRequestRef("feature/Foo", "develop", normalise: true);
 
             fixture.AssertFullSemver("0.2.0-PullRequest.2+3");
         }
@@ -85,7 +85,7 @@ public class PullRequestScenarios
             fixture.Repository.CreateBranch("feature/Foo").Checkout();
             fixture.Repository.MakeACommit();
 
-            fixture.Repository.CreatePullRequest("feature/Foo", "develop");
+            fixture.Repository.CreatePullRequestRef("feature/Foo", "develop", normalise: true);
 
             fixture.AssertFullSemver("0.2.0-PullRequest.2+3");
         }
@@ -102,7 +102,7 @@ public class PullRequestScenarios
             fixture.Repository.MakeACommit();
             fixture.Repository.MakeACommit();
 
-            fixture.Repository.CreatePullRequest("release/2.0.0", "master");
+            fixture.Repository.CreatePullRequestRef("release/2.0.0", "master", normalise: true);
 
             fixture.AssertFullSemver("2.0.0-PullRequest.2+0");
         }
