@@ -36,8 +36,8 @@
     <DocumentationFile>bin\Release\GitVersionCore.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JetBrains.Annotations">
-      <HintPath>..\packages\JetBrainsAnnotations.Fody.1.0.2\Lib\JetBrains.Annotations.dll</HintPath>
+    <Reference Include="JetBrains.Annotations, Version=8.1.11.55, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrainsAnnotations.Fody.1.0.4.0\Lib\JetBrains.Annotations.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="LibGit2Sharp, Version=0.20.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -51,9 +51,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Visualize, Version=0.4.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Visualize.Fody.0.4.1.0\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\Visualize.dll</HintPath>
+    <Reference Include="Visualize, Version=0.4.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Visualize.Fody.0.4.3.0\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\Visualize.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="YamlDotNet, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

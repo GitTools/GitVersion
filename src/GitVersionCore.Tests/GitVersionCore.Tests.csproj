@@ -47,8 +47,9 @@
     <Reference Include="ApprovalUtilities.Net45">
       <HintPath>..\packages\ApprovalUtilities.3.0.8\lib\net45\ApprovalUtilities.Net45.dll</HintPath>
     </Reference>
-    <Reference Include="FluentDateTime">
-      <HintPath>..\packages\FluentDateTime.1.11.0\Lib\NET35\FluentDateTime.dll</HintPath>
+    <Reference Include="FluentDateTime, Version=1.12.0.0, Culture=neutral, PublicKeyToken=6ccbc613702e6c71, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentDateTime.1.12.0\Lib\NET35\FluentDateTime.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="LibGit2Sharp, Version=0.20.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
