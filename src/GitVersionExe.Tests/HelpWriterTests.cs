@@ -6,7 +6,7 @@ using Shouldly;
 
 public class HelpWriterTests
 {
-    [Test]
+    [Test, Ignore("Since all options are documented in the option specification, I prefer not to test documentation of options.")]
     public void AllArgsAreInHelp()
     {
         var lookup = new Dictionary<string, string>
