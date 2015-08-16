@@ -89,12 +89,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="GemAssets\.gitignore" />
-    <EmbeddedResource Include="..\Packages\LibGit2Sharp.0.20.1.0\lib\net40\NativeBinaries\amd64\git2-91fa31f.dll">
-      <Link>costura64\git2-91fa31f.dll</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Packages\LibGit2Sharp.0.20.1.0\lib\net40\NativeBinaries\x86\git2-91fa31f.dll">
-      <Link>costura32\git2-91fa31f.dll</Link>
-    </EmbeddedResource>
     <Content Include="FodyWeavers.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -108,7 +102,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="Clean">
     <ItemGroup>
-      <ExeFilesToDelete Include="$(BuildDir)NuGetExeBuild\**\*.*;$(BuildDir)NuGetCommandLineBuild\**\*.*" />
+      <ExeFilesToDelete Include="$(BuildDir)NuGetExeBuild\**\*.*;$(BuildDir)NuGetCommandLineBuild\**\*.*;$(BuildDir)GemBuild\**\*.*" />
     </ItemGroup>
     <Delete Files="@(ExeFilesToDelete)" />
   </Target>
@@ -132,24 +126,47 @@
           ]]></Code>
     </Task>
   </UsingTask>
-  <Target Name="AfterBuild" DependsOnTargets="Clean">
+  <Target Name="AfterBuild" DependsOnTargets="Clean" Condition="$(NCrunch)==''">
+    <MakeDir Directories="$(TargetDir)ILMergeTemp\" />
+    <Exec Command="&quot;$(SolutionDir)tools\ilmerge.exe&quot;  /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)LibGit2Sharp.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:exe /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
+    <ItemGroup>
+      <TempFiles Include="$(TargetDir)ILMergeTemp\*.*" />
+    </ItemGroup>
     <!-- NugetExeBuild -->
     <MakeDir Directories="$(BuildDir)NuGetExeBuild" />
-    <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
-    <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
+    
+    <CreateItem Include="$(TargetDir)NativeBinaries\amd64\*.dll">
+      <Output TaskParameter="Include" ItemName="amd64" />
+    </CreateItem>
+    <CreateItem Include="$(TargetDir)NativeBinaries\x86\*.dll">
+      <Output TaskParameter="Include" ItemName="x86" />
+    </CreateItem>
+
+    <Copy SourceFiles="@(amd64)" DestinationFolder="$(BuildDir)NuGetExeBuild\tools\NativeBinaries\amd64" />
+    <Copy SourceFiles="@(x86)" DestinationFolder="$(BuildDir)NuGetExeBuild\tools\NativeBinaries\x86" />
+
+    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
+    <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyInstall.ps1" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyUninstall.ps1" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.Portable.nuspec" DestinationFolder="$(BuildDir)NuGetExeBuild" />
-    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetExeBuild" MetadataAssembly="$(OutputPath)GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetExeBuild" MetadataAssembly="$(OutputPath)ILMergeTemp\GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
+
     <!-- NugetCommandLineBuild -->
     <MakeDir Directories="$(BuildDir)NuGetCommandLineBuild" />
-    <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" />
-    <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" />
+    <Copy SourceFiles="@(amd64)" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools\NativeBinaries\amd64" />
+    <Copy SourceFiles="@(x86)" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools\NativeBinaries\x86" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" />
+    <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.CommandLine.nuspec" DestinationFolder="$(BuildDir)NuGetCommandLineBuild" />
-    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetCommandLineBuild" MetadataAssembly="$(OutputPath)GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetCommandLineBuild" MetadataAssembly="$(OutputPath)ILMergeTemp\GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
+
     <!-- Gem -->
-    <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(BuildDir)GemBuild\bin" />
-    <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(BuildDir)GemBuild\bin" />
+    <MakeDir Directories="$(BuildDir)GemBuild" />    
+    <Copy SourceFiles="@(amd64)" DestinationFolder="$(BuildDir)GemBuild\bin\NativeBinaries\amd64" />
+    <Copy SourceFiles="@(x86)" DestinationFolder="$(BuildDir)GemBuild\bin\NativeBinaries\x86" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)GemBuild\bin" />
+    <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)GemBuild\bin" />
     <ItemGroup>
       <GemFiles Include="$(ProjectDir)GemAssets\bin*\**\*.*" />
       <GemFiles Include="$(ProjectDir)GemAssets\lib*\**\*.*" />
@@ -166,6 +183,8 @@
     </PropertyGroup>
     <ReplaceFileText InputFilename="$(BuildDir)GemBuild\gitversion.gemspec" OutputFilename="$(BuildDir)GemBuild\gitversion.gemspec" MatchExpression="\$version\$" ReplacementText="$(GemVersion)" Condition="'$(GitVersion_SemVer)' != ''" />
     <Exec Command="gem build gitversion.gemspec" ContinueOnError="True" WorkingDirectory="$(BuildDir)GemBuild" Condition="'$(GitVersion_SemVer)' != ''" />
+    
+    <RemoveDir Directories="$(TargetDir)ILMergeTemp\" />
   </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -175,46 +194,6 @@
     <Error Condition="!Exists('..\packages\LibGit2Sharp.0.20.1.0\build\net40\LibGit2Sharp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.0.20.1.0\build\net40\LibGit2Sharp.props'))" />
     <Error Condition="!Exists('..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
   </Target>
-  <UsingTask TaskName="CosturaCleanup" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" TaskFactory="CodeTaskFactory">
-    <ParameterGroup>
-      <Config Output="false" Required="true" ParameterType="Microsoft.Build.Framework.ITaskItem" />
-      <Files Output="false" Required="true" ParameterType="Microsoft.Build.Framework.ITaskItem[]" />
-    </ParameterGroup>
-    <Task Evaluate="true">
-      <Reference xmlns="http://schemas.microsoft.com/developer/msbuild/2003" Include="System.Xml" />
-      <Reference xmlns="http://schemas.microsoft.com/developer/msbuild/2003" Include="System.Xml.Linq" />
-      <Using xmlns="http://schemas.microsoft.com/developer/msbuild/2003" Namespace="System" />
-      <Using xmlns="http://schemas.microsoft.com/developer/msbuild/2003" Namespace="System.IO" />
-      <Using xmlns="http://schemas.microsoft.com/developer/msbuild/2003" Namespace="System.Xml.Linq" />
-      <Code xmlns="http://schemas.microsoft.com/developer/msbuild/2003" Type="Fragment" Language="cs"><![CDATA[
-var config = XElement.Load(Config.ItemSpec).Elements("Costura").FirstOrDefault();
-
-if (config == null) return true;
-
-var excludedAssemblies = new List<string>();
-var attribute = config.Attribute("ExcludeAssemblies");
-if (attribute != null)
-    foreach (var item in attribute.Value.Split('|').Select(x => x.Trim()).Where(x => x != string.Empty))
-        excludedAssemblies.Add(item);
-var element = config.Element("ExcludeAssemblies");
-if (element != null)
-    foreach (var item in element.Value.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(x => x != string.Empty))
-        excludedAssemblies.Add(item);
-
-var filesToCleanup = Files.Select(f => f.ItemSpec).Where(f => !excludedAssemblies.Contains(Path.GetFileNameWithoutExtension(f), StringComparer.InvariantCultureIgnoreCase));
-
-foreach (var item in filesToCleanup)
-  File.Delete(item);
-]]></Code>
-    </Task>
-  </UsingTask>
-  <Target Name="CleanReferenceCopyLocalPaths" AfterTargets="AfterBuild;NonWinFodyTarget">
-    <CosturaCleanup Config="FodyWeavers.xml" Files="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" />
-  </Target>
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
   <Import Project="..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" />
   <Import Project="..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
 </Project>

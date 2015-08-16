@@ -100,21 +100,24 @@
   </Target>
   <Target Name="AfterBuild" DependsOnTargets="Clean" Condition="$(NCrunch)==''">
     <MakeDir Directories="$(TargetDir)ILMergeTemp\" />
-    <Exec Command="&quot;$(SolutionDir)tools\ilmerge.exe&quot;  /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)LibGit2Sharp.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:library /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /internalize " />
+    <Exec Command="&quot;$(SolutionDir)tools\ilmerge.exe&quot;  /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)LibGit2Sharp.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:library /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
     <ItemGroup>
       <TempFiles Include="$(TargetDir)ILMergeTemp\*.*" />
     </ItemGroup>
     <MakeDir Directories="$(BuildDir)NuGetTaskBuild" />
+
     <CreateItem Include="$(TargetDir)NativeBinaries\amd64\*.dll">
       <Output TaskParameter="Include" ItemName="amd64" />
     </CreateItem>
     <Copy SourceFiles="@(amd64)" DestinationFolder="$(BuildDir)NuGetTaskBuild\NativeBinaries\amd64" />
+
     <CreateItem Include="$(TargetDir)NativeBinaries\x86\*.dll">
       <Output TaskParameter="Include" ItemName="x86" />
     </CreateItem>
     <Copy SourceFiles="@(x86)" DestinationFolder="$(BuildDir)NuGetTaskBuild\NativeBinaries\x86" />
+
     <Copy SourceFiles="$(TargetDir)ILMergeTemp\GitVersionTask.dll" DestinationFolder="$(BuildDir)NuGetTaskBuild" />
-    <Copy SourceFiles="$(TargetDir)ILMergeTemp\GitVersionTask.pdb" DestinationFolder="$(BuildDir)NuGetTaskBuild" />
+    <Copy SourceFiles="$(TargetDir)GitVersionTask.pdb" DestinationFolder="$(BuildDir)NuGetTaskBuild" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\Build\portable-net+sl+win+wpa+wp" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\Build\dotnet" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.nuspec" DestinationFolder="$(BuildDir)NuGetTaskBuild" />
