@@ -1,31 +1,30 @@
 ﻿using System;
-
-    using GitVersion;
-    using LibGit2Sharp;
+using GitVersion;
+using LibGit2Sharp;
 
 public class RemoteRepositoryFixture : RepositoryFixtureBase
 {
-    public string LocalRepositoryPath;
-    public IRepository LocalRepository;
-
     public RemoteRepositoryFixture(Func<string, IRepository> builder, Config configuration)
         : base(builder, configuration)
     {
-        CloneRepository();
+        CreateLocalRepository();
     }
 
     public RemoteRepositoryFixture(Config configuration)
         : base(CreateNewRepository, configuration)
     {
-        CloneRepository();
+        CreateLocalRepository();
     }
+
+    public LocalRepositoryFixture LocalRepositoryFixture { get; private set; }
+
 
     /// <summary>
     /// Simulates running on build server
     /// </summary>
     public void InitialiseRepo()
     {
-        new GitPreparer(null, null, new Authentication(), null, false, LocalRepositoryPath).Initialise(true, null);
+        new GitPreparer(null, null, new Authentication(), null, false, LocalRepositoryFixture.RepositoryPath).Initialise(true, null);
     }
 
     static IRepository CreateNewRepository(string path)
@@ -38,25 +37,14 @@ public class RemoteRepositoryFixture : RepositoryFixtureBase
         return repo;
     }
 
-    void CloneRepository()
+    void CreateLocalRepository()
     {
-        LocalRepositoryPath = PathHelper.GetTempPath();
-        LibGit2Sharp.Repository.Clone(RepositoryPath, LocalRepositoryPath);
-        LocalRepository = new Repository(LocalRepositoryPath);
+        LocalRepositoryFixture = CloneRepository();
     }
 
     public override void Dispose()
     {
-        LocalRepository.Dispose();
-        try
-        {
-            DirectoryHelper.DeleteDirectory(LocalRepositoryPath);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Failed to clean up repository path at {0}. Received exception: {1}", RepositoryPath, e.Message);
-        }
-
+        LocalRepositoryFixture.Dispose();
         base.Dispose();
     }
 }

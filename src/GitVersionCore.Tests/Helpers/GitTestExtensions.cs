@@ -20,7 +20,6 @@ public static class GitTestExtensions
 
     public static void MergeNoFF(this IRepository repository, string branch, Signature sig)
     {
-        // Fixes a race condition
         repository.Merge(repository.FindBranch(branch), sig, new MergeOptions
         {
             FastForwardStrategy = FastForwardStrategy.NoFastFoward
@@ -61,20 +60,26 @@ public static class GitTestExtensions
         return repository.Tags.Add(tag, commit);
     }
 
-    public static Branch CreatePullRequest(this IRepository repository, string from, string to, int prNumber = 2, bool isRemotePr = true)
+    public static Commit CreatePullRequestRef(this IRepository repository, string from, string to, int prNumber = 2, bool normalise = false, bool allowFastFowardMerge = false)
     {
-        repository.Checkout(to);
-        repository.MergeNoFF(from);
-        repository.CreateBranch("pull/" + prNumber + "/merge").Checkout();
-        repository.Checkout(to);
-        repository.Reset(ResetMode.Hard, "HEAD~1");
-        var pullBranch = repository.Checkout("pull/" + prNumber + "/merge");
-        if (isRemotePr)
+        repository.Checkout(repository.FindBranch(to).Tip);
+        if (allowFastFowardMerge)
         {
-            // If we delete the branch, it is effectively the same as remote PR
-            repository.Branches.Remove(from);
+            repository.Merge(repository.FindBranch(from), Constants.SignatureNow());
+        }
+        else
+        {
+            repository.MergeNoFF(from);
+        }
+        var commit = repository.Head.Tip;
+        repository.Refs.Add("refs/pull/" + prNumber + "/merge", commit.Id);
+        repository.Checkout(to);
+        if (normalise)
+        {
+            // Turn the ref into a real branch
+            repository.Branches.Add("pull/" + prNumber + "/merge", commit).Checkout();
         }
 
-        return pullBranch;
+        return commit;
     }
 }

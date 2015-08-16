@@ -9,25 +9,29 @@ using Shouldly;
 public abstract class RepositoryFixtureBase : IDisposable
 {
     Dictionary<string, string> participants = new Dictionary<string, string>();
-    public string RepositoryPath;
-    public IRepository Repository;
     Config configuration;
     StringBuilder diagramBuilder;
 
     protected RepositoryFixtureBase(Func<string, IRepository> repoBuilder, Config configuration)
+        : this(configuration, repoBuilder(PathHelper.GetTempPath()))
+    {
+    }
+
+    protected RepositoryFixtureBase(Config configuration, IRepository repository)
     {
         ConfigurationProvider.ApplyDefaultsTo(configuration);
         diagramBuilder = new StringBuilder();
         diagramBuilder.AppendLine("@startuml");
         this.configuration = configuration;
-        RepositoryPath = PathHelper.GetTempPath();
-        Repository = repoBuilder(RepositoryPath);
+        Repository = repository;
         Repository.Config.Set("user.name", "Test");
         Repository.Config.Set("user.email", "test@email.com");
         IsForTrackedBranchOnly = true;
     }
 
     public bool IsForTrackedBranchOnly { private get; set; }
+    public IRepository Repository { get; private set; }
+    public string RepositoryPath { get { return Repository.Info.WorkingDirectory.TrimEnd('\\'); } }
 
     public void Checkout(string branch)
     {
@@ -189,5 +193,12 @@ noteText.Replace("\n", "\n  "));
         Trace.WriteLine("**Visualisation of test:**");
         Trace.WriteLine(string.Empty);
         Trace.WriteLine(diagramBuilder.ToString());
+    }
+
+    public LocalRepositoryFixture CloneRepository(Config config = null)
+    {
+        var localPath = PathHelper.GetTempPath();
+        LibGit2Sharp.Repository.Clone(RepositoryPath, localPath);
+        return new LocalRepositoryFixture(config ?? new Config(), new Repository(localPath));
     }
 }

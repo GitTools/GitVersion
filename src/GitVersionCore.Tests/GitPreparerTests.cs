@@ -9,11 +9,6 @@ using Shouldly;
 [TestFixture]
 public class GitPreparerTests
 {
-    public GitPreparerTests()
-    {
-        Logger.SetLoggers(s => { }, s => { }, s => { });
-    }
-
     const string DefaultBranchName = "master";
     const string SpecificBranchName = "feature/foo";
 
@@ -168,7 +163,7 @@ public class GitPreparerTests
 
                 mainRepositoryFixture.Repository.CreateBranch("feature1").Checkout();
 
-                Assert.DoesNotThrow(() => gitPreparer.Initialise(true, null));
+                Should.NotThrow(() => gitPreparer.Initialise(true, null));
             }
         }
         finally
@@ -194,7 +189,7 @@ public class GitPreparerTests
                 var gitPreparer = new GitPreparer(mainRepositoryFixture.RepositoryPath, null, new Authentication(), null, false, tempDir);
                 gitPreparer.Initialise(true, null);
 
-                Assert.Throws<Exception>(() => gitPreparer.Initialise(true, null));
+                Should.Throw<Exception>(() => gitPreparer.Initialise(true, null));
             }
         }
         finally
@@ -215,7 +210,7 @@ public class GitPreparerTests
         {
             var gitPreparer = new GitPreparer("http://127.0.0.1/testrepo.git", null, new Authentication(), null, false, tempDir);
 
-            Assert.Throws<Exception>(() => gitPreparer.Initialise(true, null));
+            Should.Throw<Exception>(() => gitPreparer.Initialise(true, null));
         }
         finally
         {

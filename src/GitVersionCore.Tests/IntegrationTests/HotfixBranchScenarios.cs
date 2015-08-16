@@ -72,7 +72,7 @@ public class HotfixBranchScenarios
             fixture.Repository.MakeACommit();
             fixture.AssertFullSemver("1.1.1-fix.1+3");
 
-            fixture.Repository.CreatePullRequest("feature/fix", "hotfix-1.1.1", isRemotePr: false);
+            fixture.Repository.CreatePullRequestRef("feature/fix", "hotfix-1.1.1", normalise: true);
             fixture.AssertFullSemver("1.1.1-PullRequest.2+4");
             fixture.Repository.Checkout("hotfix-1.1.1");
             fixture.Repository.MergeNoFF("feature/fix", Constants.SignatureNow());

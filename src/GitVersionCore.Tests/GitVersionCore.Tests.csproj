@@ -122,6 +122,7 @@
     <Compile Include="BuildServers\TeamCityTests.cs" />
     <Compile Include="Fixtures\CommitCountingRepoFixture.cs" />
     <Compile Include="ConfigProviderTests.cs" />
+    <Compile Include="Fixtures\LocalRepositoryFixture.cs" />
     <Compile Include="Fixtures\RemoteRepositoryFixture.cs" />
     <Compile Include="GitDirFinderTests.cs" />
     <Compile Include="Fixtures\BaseGitFlowRepositoryFixture.cs" />
