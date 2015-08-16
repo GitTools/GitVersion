@@ -7,6 +7,11 @@ set src=%~dp0..\src\
 
 "%SystemDrive%\Windows\Microsoft.NET\Framework\%framework%\MSBuild.exe" "%src%GitVersion.sln"
 
-copy "%~dp0NuGetCommandLineBuild\tools\GitVersion.exe" "%tmp%GitVersion.exe"
+rmdir /s /q "%tmp%GitVersion"
+md "%tmp%GitVersion"
 
-"%tmp%GitVersion.exe" /l console /output buildserver /updateAssemblyInfo /proj "%src%GitVersion.sln"
+xcopy /E "%~dp0NuGetCommandLineBuild\tools" "%tmp%GitVersion"
+
+"%tmp%GitVersion\GitVersion.exe" /l console /output buildserver /updateAssemblyInfo /proj "%src%GitVersion.sln"
+
+rmdir  /s /q "%tmp%GitVersion" 
