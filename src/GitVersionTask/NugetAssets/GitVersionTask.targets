@@ -25,6 +25,7 @@
       SolutionDirectory="$(SolutionDir)"
       ProjectFile="$(MSBuildProjectFullPath)"
       IntermediateOutputPath="$(IntermediateOutputPath)"
+      RootNamespace="$(RootNamespace)"
       CompileFiles ="@(Compile)">
       <Output
         TaskParameter="AssemblyInfoTempFilePath"

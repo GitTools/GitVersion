@@ -22,6 +22,9 @@
         [Required]
         public ITaskItem[] CompileFiles { get; set; }
 
+        [Required]
+        public string RootNamespace { get; set; }
+
         [Output]
         public string AssemblyInfoTempFilePath { get; set; }
 
@@ -91,7 +94,7 @@
             }
 
             var assemblyInfoBuilder = new AssemblyInfoBuilder();
-            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, Path.GetFileNameWithoutExtension(ProjectFile));
+            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, RootNamespace);
             File.WriteAllText(AssemblyInfoTempFilePath, assemblyInfo);
         }
     }
