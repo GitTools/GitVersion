@@ -13,8 +13,8 @@ EOF
   spec.homepage          = 'http://github.com/Particular/GitVersion'
   spec.rubyforge_project = 'GitVersion'
 
-  spec.files         = Dir['bin/**/*', 'lib/**/*', '*.gemspec']
-  spec.executables   = spec.files.grep(%r{^bin/.+(?<!\.exe|\.pdb)$}) { |f| File.basename(f) }
+  spec.files         = Dir['bin/**/*', 'lib/**/*', '*.gemspec'].reject { |f| File.directory?(f) }
+  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }.reject { |f| f =~ /\.(exe|pdb|dll)$/}
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 end
