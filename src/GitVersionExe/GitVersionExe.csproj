@@ -12,7 +12,7 @@
     <AssemblyName>GitVersion</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>10f65802</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>b372c432</NuGetPackageImportStamp>
     <BuildDir>$(SolutionDir)..\build\</BuildDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -26,6 +26,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <DocumentationFile>bin\Debug\GitVersion.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -38,8 +39,8 @@
     <DocumentationFile>bin\Release\GitVersion.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JetBrains.Annotations">
-      <HintPath>..\packages\JetBrainsAnnotations.Fody.1.0.2\Lib\JetBrains.Annotations.dll</HintPath>
+    <Reference Include="JetBrains.Annotations, Version=8.1.11.55, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrainsAnnotations.Fody.1.0.4.0\Lib\JetBrains.Annotations.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="LibGit2Sharp">
@@ -49,8 +50,9 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Visualize">
-      <HintPath>..\packages\Visualize.Fody.0.4.1.0\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\Visualize.dll</HintPath>
+    <Reference Include="Visualize, Version=0.4.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Visualize.Fody.0.4.3.0\Lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\Visualize.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -109,7 +111,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="Clean">
     <ItemGroup>
-      <ExeFilesToDelete Include="$(BuildDir)NuGetExeBuild\**\*.*;$(BuildDir)NuGetCommandLineBuild\**\*.*" />
+      <ExeFilesToDelete Include="$(BuildDir)NuGetExeBuild\**\*.*;$(BuildDir)NuGetCommandLineBuild\**\*.*;$(BuildDir)GitVersionVsoTaskBuild\**\*.*" />
     </ItemGroup>
     <Delete Files="@(ExeFilesToDelete)" />
   </Target>
@@ -133,7 +135,7 @@
           ]]></Code>
     </Task>
   </UsingTask>
-  <Target Name="AfterBuild" DependsOnTargets="Clean">
+  <Target Name="AfterBuild" DependsOnTargets="Clean" Condition="$(nCrunch)==''">
     <!-- NugetExeBuild -->
     <MakeDir Directories="$(BuildDir)NuGetExeBuild" />
     <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
@@ -148,6 +150,13 @@
     <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.CommandLine.nuspec" DestinationFolder="$(BuildDir)NuGetCommandLineBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetCommandLineBuild" MetadataAssembly="$(OutputPath)GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
+    <!-- VsoBuildTask -->
+    <MakeDir Directories="$(BuildDir)GitVersionVsoTaskBuild" />
+    <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
+    <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
+    <Copy SourceFiles="$(ProjectDir)..\GitVersionVsoTask\icon.png" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
+    <Copy SourceFiles="$(ProjectDir)..\GitVersionVsoTask\task.json" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
+    <Exec Command="powershell -ExecutionPolicy RemoteSigned -NoProfile &quot;$(BuildDir)\Update-GitVersionVsoTaskVersion.ps1 $(BuildDir)GitVersionVsoTaskBuild\task.json $(GitVersion_Major) $(GitVersion_Minor) $(GitVersion_Patch)&quot;" WorkingDirectory="$(BuildDir)" Condition="'$(GitVersion_SemVer)' != ''" />
     <!-- Gem -->
     <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(BuildDir)GemBuild\bin" />
     <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(BuildDir)GemBuild\bin" />
@@ -174,7 +183,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets'))" />
     <Error Condition="!Exists('..\packages\LibGit2Sharp.0.20.1.0\build\net40\LibGit2Sharp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.0.20.1.0\build\net40\LibGit2Sharp.props'))" />
-    <Error Condition="!Exists('..\packages\Fody.1.29.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.0\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
   </Target>
   <UsingTask TaskName="CosturaCleanup" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" TaskFactory="CodeTaskFactory">
     <ParameterGroup>
@@ -217,5 +226,5 @@ foreach (var item in filesToCleanup)
     </PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" />
-  <Import Project="..\packages\Fody.1.29.0\build\Fody.targets" Condition="Exists('..\packages\Fody.1.29.0\build\Fody.targets')" />
+  <Import Project="..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
 </Project>

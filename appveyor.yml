@@ -24,6 +24,10 @@ build_script:
   - cmd: 7z a "GitVersion_%GitVersion_NuGetVersion%.zip" .\build\NuGetCommandLineBuild\Tools\*.*
   - cmd: appveyor PushArtifact "GitVersion_%GitVersion_NuGetVersion%.zip"
 
+  - ps: .\build\Update-GitVersionVsoTaskVersion.ps1 .\build\GitVersionVsoTaskBuild\task.json $env:GitVersion_Major $env:GitVersion_Minor $env:GitVersion_Patch
+  - cmd: 7z a "GitVersionVsoBuildTask_%GitVersion_NuGetVersion%.zip" .\build\GitVersionVsoTaskBuild\*.*
+  - cmd: appveyor PushArtifact "GitVersionVsoBuildTask_%GitVersion_NuGetVersion%.zip"
+
 test_script:
   - nunit-console "src\GitVersionTask.Tests\bin\%CONFIGURATION%\GitVersionTask.Tests.dll" "src\GitVersionExe.Tests\bin\%CONFIGURATION%\GitVersionExe.Tests.dll" "src\GitVersionCore.Tests\bin\%CONFIGURATION%\GitVersionCore.Tests.dll" /noshadow
 

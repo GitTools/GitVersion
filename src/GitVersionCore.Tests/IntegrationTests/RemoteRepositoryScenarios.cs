@@ -12,7 +12,7 @@ public class RemoteRepositoryScenarios
         using (var fixture = new RemoteRepositoryFixture(new Config()))
         {
             fixture.AssertFullSemver("0.1.0+4");
-            fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepository);
+            fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepositoryFixture.Repository);
         }
     }
 
@@ -39,7 +39,7 @@ public class RemoteRepositoryScenarios
             new Config()))
         {
             fixture.AssertFullSemver("1.0.0-beta.1+5");
-            fixture.AssertFullSemver("1.0.0-beta.1+5", fixture.LocalRepository);
+            fixture.AssertFullSemver("1.0.0-beta.1+5", fixture.LocalRepositoryFixture.Repository);
         }
     }
 
@@ -50,9 +50,10 @@ public class RemoteRepositoryScenarios
         {
             fixture.Repository.MakeACommit();
             fixture.AssertFullSemver("0.1.0+5");
-            fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepository);
-            fixture.LocalRepository.Network.Pull(fixture.LocalRepository.Config.BuildSignature(new DateTimeOffset(DateTime.Now)), new PullOptions());
-            fixture.AssertFullSemver("0.1.0+5", fixture.LocalRepository);
+            fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepositoryFixture.Repository);
+            var buildSignature = fixture.LocalRepositoryFixture.Repository.Config.BuildSignature(new DateTimeOffset(DateTime.Now));
+            fixture.LocalRepositoryFixture.Repository.Network.Pull(buildSignature, new PullOptions());
+            fixture.AssertFullSemver("0.1.0+5", fixture.LocalRepositoryFixture.Repository);
         }
     }
 
@@ -63,22 +64,22 @@ public class RemoteRepositoryScenarios
         using (var fixture = new RemoteRepositoryFixture(new Config()))
         {
             fixture.IsForTrackedBranchOnly = false;
-            fixture.LocalRepository.Checkout(fixture.LocalRepository.Head.Tip);
+            fixture.LocalRepositoryFixture.Repository.Checkout(fixture.LocalRepositoryFixture.Repository.Head.Tip);
 
-            Assert.Throws<WarningException>(() => fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepository), "It looks like the branch being examined is a detached Head pointing to commit '{0}'. Without a proper branch name GitVersion cannot determine the build version.", fixture.LocalRepository.Head.Tip.Id.ToString(7));
+            Assert.Throws<WarningException>(() => fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepositoryFixture.Repository),
+                "It looks like the branch being examined is a detached Head pointing to commit '{0}'. Without a proper branch name GitVersion cannot determine the build version.",
+                fixture.LocalRepositoryFixture.Repository.Head.Tip.Id.ToString(7));
         }
     }
 
     [Test]
     public void GivenARemoteGitRepositoryWhenCheckingOutDetachedhead_UsingTrackingBranchOnlyBehaviourShouldReturnVersion_0_1_4plus5()
     {
-
         using (var fixture = new RemoteRepositoryFixture(new Config()))
         {
+            fixture.LocalRepositoryFixture.Repository.Checkout(fixture.LocalRepositoryFixture.Repository.Head.Tip);
 
-            fixture.LocalRepository.Checkout(fixture.LocalRepository.Head.Tip);
-
-            fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepository);
+            fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepositoryFixture.Repository);
         }
     }
 }

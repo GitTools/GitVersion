@@ -59,5 +59,10 @@
                 string.Format("Adding Environment Variable. name='GitVersion_{0}' value='{1}']", name, value)
             };
         }
+
+        public override string GetCurrentBranch()
+        {
+            return null;
+        }
     }
 }

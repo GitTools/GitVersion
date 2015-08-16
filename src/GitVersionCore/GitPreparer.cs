@@ -31,23 +31,23 @@ namespace GitVersion
 
         public string DynamicGitRepositoryPath { get; private set; }
 
-        public void Initialise(bool normaliseGitDirectory)
+        public void Initialise(bool normaliseGitDirectory, string currentBranch)
         {
             if (string.IsNullOrWhiteSpace(targetUrl))
             {
                 if (normaliseGitDirectory)
                 {
-                    GitHelper.NormalizeGitDirectory(GetDotGitDirectory(), authentication, noFetch);
+                    GitHelper.NormalizeGitDirectory(GetDotGitDirectory(), authentication, noFetch, currentBranch);
                 }
                 return;
             }
 
-            var targetPath = CalculateTemporaryRepositoryPath(targetUrl, dynamicRepositoryLocation);
+            var tempRepositoryPath = CalculateTemporaryRepositoryPath(targetUrl, dynamicRepositoryLocation);
 
-            DynamicGitRepositoryPath = CreateDynamicRepository(targetPath, authentication, targetUrl, targetBranch, noFetch);
+            DynamicGitRepositoryPath = CreateDynamicRepository(tempRepositoryPath, authentication, targetUrl, targetBranch, noFetch);
             if (normaliseGitDirectory)
             {
-                GitHelper.NormalizeGitDirectory(GetDotGitDirectory(), authentication, noFetch);
+                GitHelper.NormalizeGitDirectory(GetDotGitDirectory(), authentication, noFetch, currentBranch);
             }
         }
 
@@ -116,7 +116,7 @@ namespace GitVersion
             if (Directory.Exists(targetPath))
             {
                 Logger.WriteInfo("Git repository already exists");
-                GitHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch);
+                GitHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch, null);
                 Logger.WriteInfo(string.Format("Updating branch '{0}'", targetBranch));
                 using (var repo = new Repository(targetPath))
                 {
@@ -153,7 +153,7 @@ namespace GitVersion
             CloneRepository(repositoryUrl, gitDirectory, credentials);
 
             // Normalize (download branches) before using the branch
-            GitHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch);
+            GitHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch, null);
 
             using (var repository = new Repository(gitDirectory))
             {
