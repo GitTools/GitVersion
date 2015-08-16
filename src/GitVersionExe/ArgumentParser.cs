@@ -63,9 +63,20 @@ namespace GitVersion
                         v => arguments.TargetBranch = v
                     },
                     {
-                        "updateassemblyinfo", "Will recursively search for all 'AssemblyInfo.cs' files in the git repo and update them",
-                        v => arguments.UpdateAssemblyInfo = (v != null)
-                    },  // we should be able to use : as optional value here; then == null will indicate it was specified without value
+                        "updateassemblyinfo:", "Will recursively search for all 'AssemblyInfo.cs' files in the git repo and update them",
+                        v => 
+                        {
+                            if (v == null)
+                            {
+                                arguments.UpdateAssemblyInfo = true;
+                            }
+                            else
+                            {
+                                arguments.UpdateAssemblyInfo = true;
+                                arguments.UpdateAssemblyInfoFileName = v;
+                            }
+                        }
+                    }, // we should be able to use : as optional value here; then == null will indicate it was specified without value
                     {
                         "dynamicrepolocation=", "By default dynamic repositories will be cloned to %tmp%. Use this switch to override",
                         v => arguments.DynamicRepositoryLocation = v
@@ -195,21 +206,6 @@ namespace GitVersion
         {
             return value != null && (value.StartsWith("-") || value.StartsWith("/")) 
                 && !Regex.Match(value, @"/\w+:").Success; //Exclude msbuild & project parameters in form /blah:, which should be parsed as values, not switch names.
-        }
-
-        static bool IsSwitch(string switchName, string value)
-        {
-            if (value.StartsWith("-"))
-            {
-                value = value.Remove(0, 1);
-            }
-
-            if (value.StartsWith("/"))
-            {
-                value = value.Remove(0, 1);
-            }
-
-            return (string.Equals(switchName, value, StringComparison.InvariantCultureIgnoreCase));
         }
 
         static bool IsInit(string singleArgument)

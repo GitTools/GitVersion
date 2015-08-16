@@ -193,10 +193,7 @@ public class ArgumentParserTests
     }
 
     [TestCase("-updateAssemblyInfo")]
-    [TestCase("-updateAssemblyInfo+")]      // plus added to flag indicates true
     [TestCase("-updateAssemblyInfo -proj foo.sln")]
-    [TestCase("-updateAssemblyInfo true")]  // bogus test: flags should not be implemented this way, breaking change
-    [TestCase("-updateAssemblyInfo 1")]     // bogus test: flags should not be implemented this way, breaking change
     public void update_assembly_info_true(string command)
     {
         var arguments = ArgumentParser.ParseArguments(command);
@@ -204,28 +201,27 @@ public class ArgumentParserTests
     }
 
     [TestCase("-proj foo.sln")]             // absent updateAssemblyInfo flag implies false
-    [TestCase("-updateAssemblyInfo-")]      // minus switch added to flag indicates explicit false value for flag
-    [TestCase("-updateAssemblyInfo false")] // bogus test: flags should not be implemented this way, breaking change
-    [TestCase("-updateAssemblyInfo 0")]     // bogus test: flags should not be implemented this way, breaking change
+    [TestCase("")]            
     public void update_assembly_info_false(string command)
     {
         var arguments = ArgumentParser.ParseArguments(command);
         arguments.UpdateAssemblyInfo.ShouldBe(false);
     }
 
-    // how to do switch-and-value options?
-    [Test]
-    public void update_assembly_info_with_filename()
+    [TestCase("-updateAssemblyInfo=CommonAssemblyInfo.cs")]
+    [TestCase("-updateAssemblyInfo:CommonAssemblyInfo.cs")]
+    public void update_assembly_info_with_filename(string args)
     {
-        var arguments = ArgumentParser.ParseArguments("-updateAssemblyInfo CommonAssemblyInfo.cs");
+        var arguments = ArgumentParser.ParseArguments(args);
         arguments.UpdateAssemblyInfo.ShouldBe(true);
         arguments.UpdateAssemblyInfoFileName.ShouldBe("CommonAssemblyInfo.cs");
     }
 
-    [Test]
-    public void update_assembly_info_with_relative_filename()
+    [TestCase("-updateAssemblyInfo=..\\..\\CommonAssemblyInfo.cs")]
+    [TestCase("-updateAssemblyInfo:..\\..\\CommonAssemblyInfo.cs")]
+    public void update_assembly_info_with_relative_filename(string args)
     {
-        var arguments = ArgumentParser.ParseArguments("-updateAssemblyInfo ..\\..\\CommonAssemblyInfo.cs");
+        var arguments = ArgumentParser.ParseArguments(args);
         arguments.UpdateAssemblyInfo.ShouldBe(true);
         arguments.UpdateAssemblyInfoFileName.ShouldBe("..\\..\\CommonAssemblyInfo.cs");
     }
