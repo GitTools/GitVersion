@@ -32,7 +32,7 @@ namespace GitVersion
                 }
 
                 EnsureLocalBranchExistsForCurrentBranch(repo, currentBranch);
-                CreateMissingLocalBranchesFromRemoteTrackingOnes(repo, remote.Name);
+                CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(repo, remote.Name);
 
                 var headSha = repo.Refs.Head.TargetIdentifier;
 
@@ -104,12 +104,23 @@ namespace GitVersion
             if (string.IsNullOrEmpty(currentBranch)) return;
             var isBranch = currentBranch.Contains("refs/heads");
             var localCanonicalName = isBranch ? currentBranch : currentBranch.Replace("refs/", "refs/heads/");
-            if (repo.Branches[localCanonicalName] != null) return;
+            var repoTip = repo.Head.Tip;
+            var repoTipId = repoTip.Id;
 
-            Logger.WriteInfo(isBranch ? 
-                string.Format("Creating local branch {0}", localCanonicalName) :
-                string.Format("Creating local branch {0} from ref {1}", localCanonicalName, currentBranch));
-            repo.Refs.Add(localCanonicalName, repo.Head.Tip.Id);
+            if (repo.Branches.All(b => b.CanonicalName != localCanonicalName))
+            {
+                Logger.WriteInfo(isBranch ?
+                    string.Format("Creating local branch {0}", localCanonicalName) :
+                    string.Format("Creating local branch {0} from ref {1}", localCanonicalName, currentBranch));
+                repo.Refs.Add(localCanonicalName, repoTipId);
+            }
+            else
+            {
+                Logger.WriteInfo(isBranch ?
+                    string.Format("Updating local branch {0} to point at {1}", localCanonicalName, repoTip.Sha) :
+                    string.Format("Updating local branch {0} to match ref {1}", localCanonicalName, currentBranch));
+                repo.Refs.UpdateTarget(repo.Refs[localCanonicalName], repoTipId);
+            }
         }
 
         public static bool LooksLikeAValidPullRequestNumber(string issueNumber)
@@ -241,7 +252,7 @@ namespace GitVersion
             return repo.Network.ListReferences(remote);
         }
 
-        static void CreateMissingLocalBranchesFromRemoteTrackingOnes(Repository repo, string remoteName)
+        static void CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(Repository repo, string remoteName)
         {
             var prefix = string.Format("refs/remotes/{0}/", remoteName);
             var remoteHeadCanonicalName = string.Format("{0}{1}", prefix, "HEAD");
@@ -254,7 +265,16 @@ namespace GitVersion
 
                 if (repo.Refs.Any(x => x.CanonicalName == localCanonicalName))
                 {
-                    Logger.WriteInfo(string.Format("Skipping local branch creation since it already exists '{0}'.", remoteTrackingReference.CanonicalName));
+                    var localRef = repo.Refs[localCanonicalName];
+                    var remotedirectReference = remoteTrackingReference.ResolveToDirectReference();
+                    if (localRef.ResolveToDirectReference().TargetIdentifier == remotedirectReference.TargetIdentifier)
+                    {
+                        Logger.WriteInfo(string.Format("Skipping update of '{0}' as it already matches the remote ref.", remoteTrackingReference.CanonicalName));
+                        continue;
+                    }
+                    var remoteRefTipId = remotedirectReference.Target.Id;
+                    Logger.WriteInfo(string.Format("Updating local ref '{0}' to point at {1}.", remoteTrackingReference.CanonicalName, remoteRefTipId));
+                    repo.Refs.UpdateTarget(localRef, remoteRefTipId);
                     continue;
                 }
                 Logger.WriteInfo(string.Format("Creating local branch from remote tracking '{0}'.", remoteTrackingReference.CanonicalName));
