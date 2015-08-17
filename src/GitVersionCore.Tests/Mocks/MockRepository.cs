@@ -164,6 +164,11 @@ public class MockRepository : IRepository
         throw new NotImplementedException();
     }
 
+    public string Describe(Commit commit, DescribeOptions options)
+    {
+        throw new NotImplementedException();
+    }
+
     public Branch Head { get; set; }
     public Configuration Config { get; set; }
     public Index Index { get; set; }

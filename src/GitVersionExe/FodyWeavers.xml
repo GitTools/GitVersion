@@ -2,6 +2,5 @@
 <Weavers VerifyAssembly="true" VerifyIgnoreCodes="0x80131869">
   <Caseless/>
   <JetBrainsAnnotations/>
-  <Costura/>
   <Visualize/>
 </Weavers>
