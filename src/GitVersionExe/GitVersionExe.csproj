@@ -105,7 +105,6 @@
   <Target Name="Clean">
     <ItemGroup>
       <ExeFilesToDelete Include="$(BuildDir)NuGetExeBuild\**\*.*;$(BuildDir)NuGetCommandLineBuild\**\*.*;$(BuildDir)GemBuild\**\*.*" />
-      <ExeFilesToDelete Include="$(BuildDir)NuGetExeBuild\**\*.*;$(BuildDir)NuGetCommandLineBuild\**\*.*;$(BuildDir)GitVersionVsoTaskBuild\**\*.*" />
     </ItemGroup>
     <Delete Files="@(ExeFilesToDelete)" />
   </Target>
@@ -135,7 +134,6 @@
     <ItemGroup>
       <TempFiles Include="$(TargetDir)ILMergeTemp\*.*" />
     </ItemGroup>
-  <Target Name="AfterBuild" DependsOnTargets="Clean" Condition="$(nCrunch)==''">
     <!-- NugetExeBuild -->
     <MakeDir Directories="$(BuildDir)NuGetExeBuild" />
     <CreateItem Include="$(TargetDir)NativeBinaries\amd64\*.dll">
@@ -160,14 +158,6 @@
     <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.CommandLine.nuspec" DestinationFolder="$(BuildDir)NuGetCommandLineBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetCommandLineBuild" MetadataAssembly="$(OutputPath)ILMergeTemp\GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
-    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetCommandLineBuild" MetadataAssembly="$(OutputPath)GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
-    <!-- VsoBuildTask -->
-    <MakeDir Directories="$(BuildDir)GitVersionVsoTaskBuild" />
-    <Copy SourceFiles="$(OutputPath)\GitVersion.pdb" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
-    <Copy SourceFiles="$(OutputPath)\GitVersion.exe" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
-    <Copy SourceFiles="$(ProjectDir)..\GitVersionVsoTask\icon.png" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
-    <Copy SourceFiles="$(ProjectDir)..\GitVersionVsoTask\task.json" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
-    <Exec Command="powershell -ExecutionPolicy RemoteSigned -NoProfile &quot;$(BuildDir)\Update-GitVersionVsoTaskVersion.ps1 $(BuildDir)GitVersionVsoTaskBuild\task.json $(GitVersion_Major) $(GitVersion_Minor) $(GitVersion_Patch)&quot;" WorkingDirectory="$(BuildDir)" Condition="'$(GitVersion_SemVer)' != ''" />
     <!-- Gem -->
     <MakeDir Directories="$(BuildDir)GemBuild" />
     <Copy SourceFiles="@(amd64)" DestinationFolder="$(BuildDir)GemBuild\bin\NativeBinaries\amd64" />
