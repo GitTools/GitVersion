@@ -8,7 +8,7 @@ In [Visual Studio Online](https://www.visualstudio.com/) build vNext (the web ba
 See [MSBuild Task](http://gitversion.readthedocs.org/en/latest/usage/#msbuild-task) for further instructions how to use the MS Build Task.
 
 ## Using the GitVersion with the Command Line build step
-1. Make sure to have GitVersion.exe under version control.
+1. Make sure to have GitVersion.exe under version control. There exists also a [Chocolatey package](https://chocolatey.org/packages/GitVersion.Portable) for installing GitVersion.exe on build agents.
 2. Add a Command Line build step to your build definition. You'll probably want to drag the task to be at or near the top to ensure it executes before your other build steps.
 3. Set the Tool parameter to `<pathToGitVersion>\GitVersion.exe`
 4. Set the Arguments parameter to `/output buildserver /nofetch`
