@@ -6,7 +6,7 @@ In [Visual Studio Online](https://www.visualstudio.com/) build vNext (the web ba
 1. Install the `tfx` command line tool as shown [here](https://github.com/Microsoft/tfs-cli/blob/master/docs/buildtasks.md)
 2. Download the GitVersion VSO extension from the latest release on the [GitVersion releases page](https://github.com/GitTools/GitVersion/releases) and unzip.
 3. Run `tfx login` if you haven't yet, make sure to use `https://<server>.visualstudio.com/DefaultCollection` as the URL and provide a Personal Access Token
-4. From the directory outside of where you unzipped the task, run `tfx upload .\GitVersionVsoTask` where GitVersionVsoTask is the directory containing the files.
+4. From the directory outside of where you unzipped the task, run `tfx build tasks upload .\GitVersionVsoTask` where GitVersionVsoTask is the directory containing the files.
 5. It should successfully install
 
 ## Using the GitVersion VSO Build Step
