@@ -153,11 +153,11 @@ namespace GitVersion
 
                 if (IsSwitch("updateAssemblyInfo", name))
                 {
-                    if (new[] { "1", "true" }.Contains(value))
+                    if (new[] { "1", "true" }.Contains(value, StringComparer.OrdinalIgnoreCase))
                     {
                         arguments.UpdateAssemblyInfo = true;
                     }
-                    else if (new[] { "0", "false" }.Contains(value))
+                    else if (new[] { "0", "false" }.Contains(value, StringComparer.OrdinalIgnoreCase))
                     {
                         arguments.UpdateAssemblyInfo = false;
                     }
@@ -200,11 +200,11 @@ namespace GitVersion
 
                 if (IsSwitch("showConfig", name))
                 {
-                    if (new[] { "1", "true" }.Contains(value))
+                    if (new[] { "1", "true" }.Contains(value, StringComparer.OrdinalIgnoreCase))
                     {
                         arguments.ShowConfig = true;
                     }
-                    else if (new[] { "0", "false" }.Contains(value))
+                    else if (new[] { "0", "false" }.Contains(value, StringComparer.OrdinalIgnoreCase))
                     {
                         arguments.UpdateAssemblyInfo = false;
                     }
@@ -289,12 +289,12 @@ namespace GitVersion
                 value = value.Remove(0, 1);
             }
 
-            return (string.Equals(switchName, value, StringComparison.InvariantCultureIgnoreCase));
+            return (string.Equals(switchName, value, StringComparison.OrdinalIgnoreCase));
         }
 
         static bool IsInit(string singleArgument)
         {
-            return singleArgument.Equals("init", StringComparison.InvariantCultureIgnoreCase);
+            return singleArgument.Equals("init", StringComparison.OrdinalIgnoreCase);
         }
 
         static bool IsHelp(string singleArgument)

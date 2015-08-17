@@ -31,7 +31,7 @@ namespace GitVersion.Helpers
                         // NOTE: https://msdn.microsoft.com/en-us/library/windows/desktop/ms681382%28v=vs.85%29.aspx?f=255&MSPPError=-2147217396 @asbjornu
                         if (exception.NativeErrorCode == 2)
                         {
-                            throw new FileNotFoundException(String.Format("The executable file '{0}' could not be found.",
+                            throw new FileNotFoundException(string.Format("The executable file '{0}' could not be found.",
                                                                           startInfo.FileName),
                                                             startInfo.FileName,
                                                             exception);

@@ -20,3 +20,4 @@ When running in MSBuild either from the MSBuild Task or by using the `/proj mypr
  - [Continua CI](more-info/build-server-setup/continua.md))
  - [Team Build (TFS)](more-info/build-server-setup/teambuild.md)
  - [TFS Build vNext](more-info/build-server-setup/tfs-build-vnext.md)
+ - [Octopus Deploy](more-info/build-server-setup/octopus-deploy.md)

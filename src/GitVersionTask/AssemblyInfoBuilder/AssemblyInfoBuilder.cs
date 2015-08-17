@@ -5,7 +5,7 @@ using GitVersion;
 
 public class AssemblyInfoBuilder
 {
-    public string GetAssemblyInfoText(VersionVariables vars, string assemblyName)
+    public string GetAssemblyInfoText(VersionVariables vars, string rootNamespace)
     {
         var v = vars.ToList();
 
@@ -42,7 +42,7 @@ namespace {4}
         vars.MajorMinorPatch + ".0",
         vars.InformationalVersion,
         GenerateStaticVariableMembers(v),
-        assemblyName);
+        rootNamespace);
 
         return assemblyInfo;
     }
