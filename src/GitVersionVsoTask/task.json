@@ -46,7 +46,7 @@
   ],
   "execution": {  
     "Process": {
-      "target": "$(currentDirectory)\\GitVersion.exe",
+      "target": "\"$(currentDirectory)\\GitVersion.exe\"",
       "argumentFormat": "\"$(Build.SourcesDirectory)\" /output buildserver /updateAssemblyInfo $(updateAssemblyInfo) /nofetch $(additionalArguments)",
       "workingDirectory": "$(currentDirectory)"
     }
