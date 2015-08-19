@@ -306,7 +306,7 @@ namespace GitVersion
                 return remote;
             }
 
-            var message = string.Format("{0} remote(s) have been detected. When being run on a TeamCity agent, the Git repository is expected to bear one (and no more than one) remote.", howMany);
+            var message = string.Format("{0} remote(s) have been detected. When being run on a build server, the Git repository is expected to bear one (and no more than one) remote.", howMany);
             throw new WarningException(message);
         }
     }
