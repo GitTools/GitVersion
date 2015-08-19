@@ -316,6 +316,13 @@ public class ArgumentParserTests
         exception.Message.ShouldBe("assemblyversionformat switch removed, use AssemblyVersioningScheme configuration value instead");
     }
 
+    [TestCase("-updateassemblyinfoname")]
+    public void updateassemblyinfoname_should_throw_warning(string args)
+    {
+        var exception = Should.Throw<WarningException>(() => ArgumentParser.ParseArguments(args));
+        exception.Message.ShouldBe("updateassemblyinfoname deprecated, use --updateassemblyinfo=[assemblyinfo.cs] instead");
+    }
+
     [Test]
     [TestCase("-showconfig")]
     [TestCase("--showConfig+")]

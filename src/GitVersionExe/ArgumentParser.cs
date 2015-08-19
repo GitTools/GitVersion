@@ -63,7 +63,8 @@ namespace GitVersion
                         v => arguments.TargetBranch = v
                     },
                     {
-                        "updateassemblyinfo:", "Will recursively search for all 'AssemblyInfo.cs' files in the git repo and update them",
+                        "updateassemblyinfo:", "Will recursively search for all 'AssemblyInfo.cs' files in the git repo and update them/n" +
+                        "Optionally specify the assembly info filename to update.",
                         v => 
                         {
                             if (v == null)
@@ -76,7 +77,11 @@ namespace GitVersion
                                 arguments.UpdateAssemblyInfoFileName = v;
                             }
                         }
-                    }, // we should be able to use : as optional value here; then == null will indicate it was specified without value
+                    },
+                    {
+                        "updateassemblyinfoname", "Deprecated: use --updateassemblyinfo [assemblyinfo.cs] instead.",
+                        v => { throw new WarningException("updateassemblyinfoname deprecated, use --updateassemblyinfo=[assemblyinfo.cs] instead"); }
+                    },
                     {
                         "dynamicrepolocation=", "By default dynamic repositories will be cloned to %tmp%. Use this switch to override",
                         v => arguments.DynamicRepositoryLocation = v
