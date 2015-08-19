@@ -29,7 +29,7 @@
     {
       "name": "updateAssemblyInfo",
       "type": "boolean",
-      "label": "Update AssemblyInfo's",
+      "label": "Update AssemblyInfo files",
       "defaultValue": "false",
       "required": false,
       "helpMarkDown": "Whether to update versions in the AssemblyInfo files"
