@@ -23,6 +23,18 @@
         [YamlMember(Alias = "next-version")]
         public string NextVersion { get; set; }
 
+        [YamlMember(Alias = "major-version-bump-message")]
+        public string MajorVersionBumpMessage { get; set; }
+
+        [YamlMember(Alias = "minor-version-bump-message")]
+        public string MinorVersionBumpMessage { get; set; }
+
+        [YamlMember(Alias = "patch-version-bump-message")]
+        public string PatchVersionBumpMessage { get; set; }
+
+        [YamlMember(Alias = "commit-message-incrementing")]
+        public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
+
         [YamlMember(Alias = "branches")]
         public Dictionary<string, BranchConfig> Branches
         {

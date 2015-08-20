@@ -38,9 +38,10 @@
 
             var baseVersion = baseVersionFinder.GetBaseVersion(context);
             var semver = baseVersion.SemanticVersion;
-            if (baseVersion.ShouldIncrement)
+            var increment = IncrementStrategyFinder.DetermineIncrementedField(context, baseVersion);
+            if (increment != null)
             {
-                semver = semver.IncrementVersion(context.Configuration.Increment);
+                semver = semver.IncrementVersion(increment.Value);
             }
             else Logger.WriteInfo("Skipping version increment");
 

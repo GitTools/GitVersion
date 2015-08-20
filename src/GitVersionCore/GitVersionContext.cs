@@ -91,6 +91,8 @@
                 throw new Exception(string.Format("Configuration value for 'TrackMergeTarget' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
             if (!configuration.AssemblyVersioningScheme.HasValue)
                 throw new Exception("Configuration value for 'AssemblyVersioningScheme' has no value. (this should not happen, please report an issue)");
+            if (!configuration.CommitMessageIncrementing.HasValue)
+                throw new Exception("Configuration value for 'CommitMessageIncrementing' has no value. (this should not happen, please report an issue)");
 
             var versioningMode = currentBranchConfig.Value.VersioningMode.Value;
             var tag = currentBranchConfig.Value.Tag;
@@ -98,16 +100,24 @@
             var incrementStrategy = currentBranchConfig.Value.Increment.Value;
             var preventIncrementForMergedBranchVersion = currentBranchConfig.Value.PreventIncrementOfMergedBranchVersion.Value;
             var trackMergeTarget = currentBranchConfig.Value.TrackMergeTarget.Value;
-
+            
             var nextVersion = configuration.NextVersion;
             var assemblyVersioningScheme = configuration.AssemblyVersioningScheme.Value;
             var gitTagPrefix = configuration.TagPrefix;
+            var majorMessage = configuration.MajorVersionBumpMessage;
+            var minorMessage = configuration.MinorVersionBumpMessage;
+            var patchMessage = configuration.MinorVersionBumpMessage;
+
+            var commitMessageVersionBump = currentBranchConfig.Value.CommitMessageIncrementing ?? configuration.CommitMessageIncrementing.Value;
+
             Configuration = new EffectiveConfiguration(
                 assemblyVersioningScheme, versioningMode, gitTagPrefix, 
                 tag, nextVersion, incrementStrategy, currentBranchConfig.Key, 
                 preventIncrementForMergedBranchVersion, 
                 tagNumberPattern, configuration.ContinuousDeploymentFallbackTag,
-                trackMergeTarget);
+                trackMergeTarget,
+                majorMessage, minorMessage, patchMessage,
+                commitMessageVersionBump);
         }
     }
 }
