@@ -12,7 +12,7 @@
     <AssemblyName>GitVersion</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>7364e8c5</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>3858a53b</NuGetPackageImportStamp>
     <BuildDir>$(SolutionDir)..\build\</BuildDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -140,7 +140,6 @@
     <CreateItem Include="$(TargetDir)NativeBinaries\x86\*.dll">
       <Output TaskParameter="Include" ItemName="x86" />
     </CreateItem>
-
     <!-- NugetExeBuild -->
     <MakeDir Directories="$(BuildDir)NuGetExeBuild" />
     <Copy SourceFiles="@(amd64)" DestinationFolder="$(BuildDir)NuGetExeBuild\tools\NativeBinaries\amd64" />
@@ -151,7 +150,6 @@
     <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyUninstall.ps1" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.Portable.nuspec" DestinationFolder="$(BuildDir)NuGetExeBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetExeBuild" MetadataAssembly="$(OutputPath)ILMergeTemp\GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
-
     <!-- NugetCommandLineBuild -->
     <MakeDir Directories="$(BuildDir)NuGetCommandLineBuild" />
     <Copy SourceFiles="@(amd64)" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools\NativeBinaries\amd64" />
@@ -160,7 +158,6 @@
     <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.CommandLine.nuspec" DestinationFolder="$(BuildDir)NuGetCommandLineBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetCommandLineBuild" MetadataAssembly="$(OutputPath)ILMergeTemp\GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
-
     <!-- VsoBuildTask -->
     <MakeDir Directories="$(BuildDir)GitVersionVsoTaskBuild" />
     <Copy SourceFiles="@(amd64)" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild\NativeBinaries\amd64" />
@@ -170,7 +167,6 @@
     <Copy SourceFiles="$(SolutionDir)GitVersionVsoTask\icon.png" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
     <Copy SourceFiles="$(SolutionDir)GitVersionVsoTask\task.json" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
     <Exec Command="powershell -ExecutionPolicy RemoteSigned -NoProfile &quot;$(BuildDir)\Update-GitVersionVsoTaskVersion.ps1 $(BuildDir)GitVersionVsoTaskBuild\task.json $(GitVersion_Major) $(GitVersion_Minor) $(GitVersion_Patch)&quot;" WorkingDirectory="$(BuildDir)" Condition="'$(GitVersion_SemVer)' != ''" />
-
     <!-- Gem -->
     <MakeDir Directories="$(BuildDir)GemBuild" />
     <Copy SourceFiles="@(amd64)" DestinationFolder="$(BuildDir)GemBuild\bin\NativeBinaries\amd64" />
@@ -193,7 +189,6 @@
     </PropertyGroup>
     <ReplaceFileText InputFilename="$(BuildDir)GemBuild\gitversion.gemspec" OutputFilename="$(BuildDir)GemBuild\gitversion.gemspec" MatchExpression="\$version\$" ReplacementText="$(GemVersion)" Condition="'$(GitVersion_SemVer)' != ''" />
     <Exec Command="gem build gitversion.gemspec" ContinueOnError="True" WorkingDirectory="$(BuildDir)GemBuild" Condition="'$(GitVersion_SemVer)' != ''" />
-
     <!-- Cleanup -->
     <RemoveDir Directories="$(TargetDir)ILMergeTemp\" />
   </Target>
@@ -202,9 +197,9 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets'))" />
-    <Error Condition="!Exists('..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
     <Error Condition="!Exists('..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props'))" />
+    <Error Condition="!Exists('..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
   </Target>
   <Import Project="..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" />
-  <Import Project="..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
+  <Import Project="..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
 </Project>
