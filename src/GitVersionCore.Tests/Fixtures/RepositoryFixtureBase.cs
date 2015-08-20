@@ -124,17 +124,16 @@ noteText.Replace("\n", "\n  "));
 
     public void AssertFullSemver(string fullSemver, IRepository repository = null, string commitId = null)
     {
-        Trace.WriteLine("---------");
+        Console.WriteLine("---------");
 
-        var variables = GetVersion(repository, commitId);
         try
         {
+            var variables = GetVersion(repository, commitId);
             variables.FullSemVer.ShouldBe(fullSemver);
         }
         catch (Exception)
         {
-            if (repository != null)
-                repository.DumpGraph();
+            (repository ?? Repository).DumpGraph();
             throw;
         }
         if (commitId == null)
@@ -164,7 +163,7 @@ noteText.Replace("\n", "\n  "));
         }
         catch (Exception)
         {
-            Trace.WriteLine("Test failing, dumping repository graph");
+            Console.WriteLine("Test failing, dumping repository graph");
             gitVersionContext.Repository.DumpGraph();
             throw;
         }

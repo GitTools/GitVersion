@@ -65,7 +65,7 @@
 
         IRepository CreateRepository()
         {
-            var mockBranch = new MockBranch("master") { new MockCommit { CommitterEx = SignatureBuilder.SignatureNow() } };
+            var mockBranch = new MockBranch("master") { new MockCommit { CommitterEx = Constants.SignatureNow() } };
             var mockRepository = new MockRepository
             {
                 Branches = new MockBranchCollection

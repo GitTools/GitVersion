@@ -21,7 +21,7 @@ public class FeatureBranchScenarios
 
             //Merge it
             fixture.Repository.Checkout("development");
-            fixture.Repository.Merge(feature123, SignatureBuilder.SignatureNow());
+            fixture.Repository.Merge(feature123, Constants.SignatureNow());
 
             //Create a second feature branch
             fixture.Repository.CreateBranch("feature/JIRA-124");
@@ -56,7 +56,7 @@ public class FeatureBranchScenarios
 
             //Merge it
             fixture.Repository.Checkout("unstable");
-            fixture.Repository.Merge(feature123, SignatureBuilder.SignatureNow());
+            fixture.Repository.Merge(feature123, Constants.SignatureNow());
 
             //Create a second feature branch
             fixture.Repository.CreateBranch("feature/JIRA-124");
@@ -126,6 +126,34 @@ public class FeatureBranchScenarios
             fixture.Repository.Checkout("feature/feature2");
 
             fixture.AssertFullSemver("0.1.0-feature2.1+1");
+        }
+    }
+
+    [Test]
+    public void ShouldBePossibleToMergeDevelopForALongRunningBranchWhereDevelopAndMasterAreEqual()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config() { VersioningMode = VersioningMode.ContinuousDeployment }))
+        {
+            fixture.Repository.MakeATaggedCommit("v1.0.0");
+
+            fixture.Repository.CreateBranch("develop");
+            fixture.Repository.Checkout("develop");
+
+            fixture.Repository.CreateBranch("feature/longrunning");
+            fixture.Repository.Checkout("feature/longrunning");
+            fixture.Repository.MakeACommit();
+
+            fixture.Repository.Checkout("develop");
+            fixture.Repository.MakeACommit();
+
+            fixture.Repository.Checkout("master");
+            fixture.Repository.Merge(fixture.Repository.FindBranch("develop"), Constants.SignatureNow());
+            fixture.Repository.ApplyTag("v1.1.0");
+
+            fixture.Repository.Checkout("feature/longrunning"); 
+            fixture.Repository.Merge(fixture.Repository.FindBranch("develop"), Constants.SignatureNow());
+
+            fixture.AssertFullSemver("1.2.0-longrunning.2");
         }
     }
 }

@@ -60,7 +60,7 @@
 
             public V1Strategy(DateTimeOffset? when)
             {
-                this.when = when == null ? null : new MockCommit { CommitterEx = when.Value.ToSignature() };
+                this.when = when == null ? null : new MockCommit { CommitterEx = Constants.Signature(when.Value) };
             }
 
             public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
@@ -75,7 +75,7 @@
 
             public V2Strategy(DateTimeOffset? when)
             {
-                this.when = when == null ? null : new MockCommit { CommitterEx = when.Value.ToSignature() };
+                this.when = when == null ? null : new MockCommit { CommitterEx = Constants.Signature(when.Value) };
             }
 
             public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)

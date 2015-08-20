@@ -49,31 +49,7 @@ namespace GitVersion
                 var parentCount = currentCommit.Parents.Count();
                 if (parentCount == 2)
                 {
-                    var parents = currentCommit.Parents.ToArray();
-                    var branch = repository.Branches.SingleOrDefault(b => !b.IsRemote && b.Tip == parents[1]);
-                    if (branch != null)
-                    {
-                        excludedBranches = new[]
-                        {
-                        currentBranch,
-                        branch
-                    };
-                        currentBranch = branch;
-                    }
-                    else
-                    {
-                        var possibleTargetBranches = repository.Branches.Where(b => !b.IsRemote && b.Tip == parents[0]).ToList();
-                        if (possibleTargetBranches.Count() > 1)
-                        {
-                            currentBranch = possibleTargetBranches.FirstOrDefault(b => b.Name == "master") ?? possibleTargetBranches.First();
-                        }
-                        else
-                        {
-                            currentBranch = possibleTargetBranches.FirstOrDefault() ?? currentBranch;
-                        }
-                    }
-
-                    Logger.WriteInfo("HEAD is merge commit, this is likely a pull request using " + currentBranch.Name + " as base");
+                    excludedBranches = CalculateWhenMultipleParents(repository, currentCommit, ref currentBranch, excludedBranches);
                 }
                 if (excludedInheritBranches == null)
                 {
@@ -141,6 +117,42 @@ namespace GitVersion
                         PreventIncrementOfMergedBranchVersion = value.PreventIncrementOfMergedBranchVersion
                     });
             }
+        }
+
+        static Branch[] CalculateWhenMultipleParents(IRepository repository, Commit currentCommit, ref Branch currentBranch, Branch[] excludedBranches)
+        {
+            var parents = currentCommit.Parents.ToArray();
+            var branches = repository.Branches.Where(b => !b.IsRemote && b.Tip == parents[1]).ToList();
+            if (branches.Count == 1)
+            {
+                var branch = branches[0];
+                excludedBranches = new[]
+                {
+                    currentBranch,
+                    branch
+                };
+                currentBranch = branch;
+            }
+            else if (branches.Count > 1)
+            {
+                currentBranch = branches.FirstOrDefault(b => b.Name == "master") ?? branches.First();
+            }
+            else
+            {
+                var possibleTargetBranches = repository.Branches.Where(b => !b.IsRemote && b.Tip == parents[0]).ToList();
+                if (possibleTargetBranches.Count > 1)
+                {
+                    currentBranch = possibleTargetBranches.FirstOrDefault(b => b.Name == "master") ?? possibleTargetBranches.First();
+                }
+                else
+                {
+                    currentBranch = possibleTargetBranches.FirstOrDefault() ?? currentBranch;
+                }
+            }
+
+            Logger.WriteInfo("HEAD is merge commit, this is likely a pull request using " + currentBranch.Name + " as base");
+
+            return excludedBranches;
         }
     }
 }
