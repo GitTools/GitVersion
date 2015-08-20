@@ -161,7 +161,6 @@
     <Compile Include="Mocks\MockTag.cs" />
     <Compile Include="Mocks\MockTagAnnotation.cs" />
     <Compile Include="Mocks\MockTagCollection.cs" />
-    <Compile Include="Mocks\SignatureBuilder.cs" />
     <Compile Include="ModuleInitializer.cs" />
     <Compile Include="Fixtures\EmptyRepositoryFixture.cs" />
     <Compile Include="Helpers\GitTestExtensions.cs" />

@@ -17,7 +17,7 @@
             };
             ConfigurationProvider.ApplyDefaultsTo(config);
 
-            var mockBranch = new MockBranch("master") { new MockCommit { CommitterEx = SignatureBuilder.SignatureNow() } };
+            var mockBranch = new MockBranch("master") { new MockCommit { CommitterEx = Constants.SignatureNow() } };
             var mockRepository = new MockRepository
             {
                 Branches = new MockBranchCollection
@@ -48,12 +48,12 @@
                 }
             };
             ConfigurationProvider.ApplyDefaultsTo(config);
-            var develop = new MockBranch("develop") { new MockCommit { CommitterEx = SignatureBuilder.SignatureNow() } };
+            var develop = new MockBranch("develop") { new MockCommit { CommitterEx = Constants.SignatureNow() } };
             var mockRepository = new MockRepository
             {
                 Branches = new MockBranchCollection
                 {
-                    new MockBranch("master") { new MockCommit { CommitterEx = SignatureBuilder.SignatureNow() } },
+                    new MockBranch("master") { new MockCommit { CommitterEx = Constants.SignatureNow() } },
                     develop
                 }
             };

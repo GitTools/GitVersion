@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using GitVersion;
+﻿using GitVersion;
 
 /// <summary>
 /// Used by the ModuleInit. All code inside the Initialize method is ran as soon as the assembly is loaded.
@@ -11,7 +10,7 @@ public static class ModuleInitializer
     /// </summary>
     public static void Initialize()
     {
-        Logger.SetLoggers(s => Trace.WriteLine(s), s => Trace.WriteLine(s), s => Trace.WriteLine(s));
+        Logger.SetLoggers(s => System.Console.WriteLine(s), s => System.Console.WriteLine(s), s => System.Console.WriteLine(s));
     }
 
 }
