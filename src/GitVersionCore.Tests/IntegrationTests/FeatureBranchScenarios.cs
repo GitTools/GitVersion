@@ -128,4 +128,32 @@ public class FeatureBranchScenarios
             fixture.AssertFullSemver("0.1.0-feature2.1+1");
         }
     }
+
+    [Test]
+    public void ShouldBePossibleToMergeDevelopForALongRunningBranchWhereDevelopAndMasterAreEqual()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config() { VersioningMode = VersioningMode.ContinuousDeployment }))
+        {
+            fixture.Repository.MakeATaggedCommit("v1.0.0");
+
+            fixture.Repository.CreateBranch("develop");
+            fixture.Repository.Checkout("develop");
+
+            fixture.Repository.CreateBranch("feature/longrunning");
+            fixture.Repository.Checkout("feature/longrunning");
+            fixture.Repository.MakeACommit();
+
+            fixture.Repository.Checkout("develop");
+            fixture.Repository.MakeACommit();
+
+            fixture.Repository.Checkout("master");
+            fixture.Repository.Merge(fixture.Repository.FindBranch("develop"), SignatureBuilder.SignatureNow());
+            fixture.Repository.ApplyTag("v1.1.0");
+
+            fixture.Repository.Checkout("feature/longrunning"); 
+            fixture.Repository.Merge(fixture.Repository.FindBranch("develop"), SignatureBuilder.SignatureNow());
+
+            fixture.AssertFullSemver("1.2.0-longrunning.2");
+        }
+    }
 }
