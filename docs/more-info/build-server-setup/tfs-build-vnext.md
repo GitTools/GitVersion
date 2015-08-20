@@ -30,11 +30,13 @@ If you want the GitVersionTask to update AssemblyInfo files, check the box in th
 
 ## Running inside Visual Studio Online
 ### Using the GitVersion Variables
-GitVersion writes build parameters into VSO, so they will automatically be passed to your build scripts to use. It also writes GITVERSION_* environment variables that are available for any subsequent build step. 
-We output the individual values of the GitVersion version as the build parameter: `GitVersion.*` (Eg: `GitVersion.Major`) if you need access to them in your build script.
+GitVersion passes variables in the form of `GitVersion.*` (Eg: `GitVersion.Major`) to TFS Build and also writes `GITVERSION_*` (Eg: `GITVERSION_MAJOR`) environment variables that are available for any subsequent build step. 
 See [Variables](/more-info/variables/) for an overview of available variables.
 
-Note that due to [current limitations in VSO](https://github.com/Microsoft/vso-agent-tasks/issues/380) it's currently not possible to set the build version inside of VSO to one of the GITVERSION_* variables.
+#### Known limitations
+* Due to a bug in VSO it's currently not possible to use variables added during build in inputs of subsequent build tasks, since the variables are processed at the beginning of the build. 
+As a workaround environment variables can be used in custom scripts.
+* Due to [current limitations in VSO](https://github.com/Microsoft/vso-agent-tasks/issues/380) it's currently not possible to set the build version inside of VSO to one of the `GITVERSION_*` variables.
 
 ## Create a NuGet package in VSO
 If you use a Command Line task to build your NuPkg, use `%GITVERSION_NUGETVERSION%` as the version parameter: `nuget.exe pack path\to\my.nuspec -version %GITVERSION_NUGETVERSION%`
