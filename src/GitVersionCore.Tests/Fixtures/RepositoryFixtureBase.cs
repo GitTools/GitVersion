@@ -126,15 +126,14 @@ noteText.Replace("\n", "\n  "));
     {
         Trace.WriteLine("---------");
 
-        var variables = GetVersion(repository, commitId);
         try
         {
+            var variables = GetVersion(repository, commitId);
             variables.FullSemVer.ShouldBe(fullSemver);
         }
         catch (Exception)
         {
-            if (repository != null)
-                repository.DumpGraph();
+            (repository ?? Repository).DumpGraph();
             throw;
         }
         if (commitId == null)
