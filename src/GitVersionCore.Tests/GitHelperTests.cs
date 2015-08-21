@@ -14,7 +14,7 @@
             {
                 fixture.Repository.MakeACommit();
 
-                fixture.Repository.CreateBranch("feature/foo").Checkout();
+                fixture.Repository.Checkout(fixture.Repository.CreateBranch("feature/foo"));
                 fixture.Repository.MakeACommit();
                 var commit = fixture.Repository.CreatePullRequestRef("feature/foo", "master", prNumber: 3);
                 using (var localFixture = fixture.CloneRepository())
@@ -35,7 +35,7 @@
             {
                 fixture.Repository.MakeACommit();
 
-                fixture.Repository.CreateBranch("feature/foo").Checkout();
+                fixture.Repository.Checkout(fixture.Repository.CreateBranch("feature/foo"));
                 fixture.Repository.MakeACommit();
                 var commit = fixture.Repository.CreatePullRequestRef("feature/foo", "master", prNumber: 3, allowFastFowardMerge: true);
                 using (var localFixture = fixture.CloneRepository())
@@ -56,7 +56,7 @@
             {
                 fixture.Repository.MakeACommit();
 
-                fixture.Repository.CreateBranch("feature/foo").Checkout();
+                fixture.Repository.Checkout(fixture.Repository.CreateBranch("feature/foo"));
                 fixture.Repository.MakeACommit();
                 using (var localFixture = fixture.CloneRepository())
                 {
@@ -68,6 +68,35 @@
                     var normalisedBranch = localFixture.Repository.FindBranch("feature/foo");
                     normalisedBranch.ShouldNotBe(null);
                     normalisedBranch.Tip.Sha.ShouldBe(advancedCommit.Sha);
+                }
+            }
+        }
+
+        [Test]
+        public void UpdatesCurrentBranch()
+        {
+            using (var fixture = new EmptyRepositoryFixture(new Config()))
+            {
+                fixture.Repository.MakeACommit();
+                fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));
+                fixture.Repository.MakeACommit();
+                fixture.Repository.Checkout("master");
+                using (var localFixture = fixture.CloneRepository())
+                {
+                    // Advance remote
+                    fixture.Repository.Checkout("develop");
+                    var advancedCommit = fixture.Repository.MakeACommit();
+                    localFixture.Repository.Network.Fetch(localFixture.Repository.Network.Remotes["origin"]);
+                    localFixture.Repository.Checkout(advancedCommit.Sha);
+                    localFixture.Repository.DumpGraph();
+                    GitHelper.NormalizeGitDirectory(localFixture.RepositoryPath, new Authentication(), noFetch: false, currentBranch: "ref/heads/develop");
+
+                    var normalisedBranch = localFixture.Repository.FindBranch("develop");
+                    normalisedBranch.ShouldNotBe(null);
+                    fixture.Repository.DumpGraph();
+                    localFixture.Repository.DumpGraph();
+                    normalisedBranch.Tip.Sha.ShouldBe(advancedCommit.Sha);
+                    localFixture.Repository.Head.Tip.Sha.ShouldBe(advancedCommit.Sha);
                 }
             }
         }

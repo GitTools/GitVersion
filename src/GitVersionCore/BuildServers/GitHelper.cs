@@ -43,7 +43,7 @@ namespace GitVersion
                 }
 
                 Logger.WriteInfo(string.Format("HEAD is detached and points at commit '{0}'.", headSha));
-                Logger.WriteInfo(string.Format("Local Refs:\r\n" + string.Join(Environment.NewLine, repo.Refs.FromGlob("*").Select(r => r.CanonicalName))));
+                Logger.WriteInfo(string.Format("Local Refs:\r\n" + string.Join(Environment.NewLine, repo.Refs.FromGlob("*").Select(r => string.Format("{0} ({1})", r.CanonicalName, r.TargetIdentifier)))));
 
                 // In order to decide whether a fake branch is required or not, first check to see if any local branches have the same commit SHA of the head SHA.
                 // If they do, go ahead and checkout that branch
@@ -56,7 +56,7 @@ namespace GitVersion
                 if (matchingCurrentBranch != null)
                 {
                     Logger.WriteInfo(string.Format("Checking out local branch '{0}'.", currentBranch));
-                    matchingCurrentBranch.Checkout();
+                    repo.Checkout(matchingCurrentBranch);
                 }
                 else if (localBranchesWhereCommitShaIsHead.Count > 1)
                 {
@@ -69,7 +69,7 @@ namespace GitVersion
                     if (master != null)
                     {
                         Logger.WriteWarning("Because one of the branches is 'master', will build master." + moveBranchMsg);
-                        master.Checkout();
+                        repo.Checkout(master);
                     }
                     else
                     {
@@ -78,7 +78,7 @@ namespace GitVersion
                         {
                             var branchWithoutSeparator = branchesWithoutSeparators[0];
                             Logger.WriteWarning(string.Format("Choosing {0} as it is the only branch without / or - in it. " + moveBranchMsg, branchWithoutSeparator.CanonicalName));
-                            branchWithoutSeparator.Checkout();
+                            repo.Checkout(branchWithoutSeparator);
                         }
                         else
                         {
@@ -94,7 +94,7 @@ namespace GitVersion
                 else
                 {
                     Logger.WriteInfo(string.Format("Checking out local branch 'refs/heads/{0}'.", localBranchesWhereCommitShaIsHead[0].Name));
-                    repo.Branches[localBranchesWhereCommitShaIsHead[0].Name].Checkout();
+                    repo.Checkout(repo.Branches[localBranchesWhereCommitShaIsHead[0].Name]);
                 }
             }
         }
@@ -111,7 +111,7 @@ namespace GitVersion
             {
                 Logger.WriteInfo(isBranch ?
                     string.Format("Creating local branch {0}", localCanonicalName) :
-                    string.Format("Creating local branch {0} from ref {1}", localCanonicalName, currentBranch));
+                    string.Format("Creating local branch {0} pointing at {1}", localCanonicalName, repoTipId));
                 repo.Refs.Add(localCanonicalName, repoTipId);
             }
             else
@@ -273,21 +273,14 @@ namespace GitVersion
                         continue;
                     }
                     var remoteRefTipId = remotedirectReference.Target.Id;
-                    Logger.WriteInfo(string.Format("Updating local ref '{0}' to point at {1}.", remoteTrackingReference.CanonicalName, remoteRefTipId));
+                    Logger.WriteInfo(string.Format("Updating local ref '{0}' to point at {1}.", localRef.CanonicalName, remoteRefTipId));
                     repo.Refs.UpdateTarget(localRef, remoteRefTipId);
+                    repo.Checkout(branchName);
                     continue;
                 }
-                Logger.WriteInfo(string.Format("Creating local branch from remote tracking '{0}'.", remoteTrackingReference.CanonicalName));
 
-                var symbolicReference = remoteTrackingReference as SymbolicReference;
-                if (symbolicReference == null)
-                {
-                    repo.Refs.Add(localCanonicalName, new ObjectId(remoteTrackingReference.TargetIdentifier), true);
-                }
-                else
-                {
-                    repo.Refs.Add(localCanonicalName, new ObjectId(symbolicReference.ResolveToDirectReference().TargetIdentifier), true);
-                }
+                Logger.WriteInfo(string.Format("Creating local branch from remote tracking '{0}'.", remoteTrackingReference.CanonicalName));
+                repo.Refs.Add(localCanonicalName, new ObjectId(remoteTrackingReference.ResolveToDirectReference().TargetIdentifier), true);
 
                 var branch = repo.Branches[branchName];
                 repo.Branches.Update(branch, b => b.TrackedBranch = remoteTrackingReferenceName);
