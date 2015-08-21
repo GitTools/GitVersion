@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CommandLine;
-using CommandLine.Text;
 using GitVersion;
 using GitVersion.Options;
 using NUnit.Framework;
@@ -16,11 +15,16 @@ public class ArgumentParserTests
     public void PrintEntireHelp()
     {
         Parser.Default.ParseArguments(new[] { "help" }, AllOptionTypes().ToArray());
-        foreach (var verb in new[] {"show", "init", "inspect-remote", "buildserver"})
+        foreach (var verb in AllVerbs())
         {
             Parser.Default.ParseArguments(new[] { "help", verb }, AllOptionTypes().ToArray());
         }
         
+    }
+
+    IEnumerable<string> AllVerbs()
+    {
+        return new[] {"show", "init", "inspect-remote", "buildserver", "msbuild", "execute", "update-assembly-info"};
     }
 
     IEnumerable<Type>AllOptionTypes()

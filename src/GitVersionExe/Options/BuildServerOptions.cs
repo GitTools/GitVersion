@@ -16,7 +16,7 @@
         public string BuildServerName { get; set; }
 
 
-        [Usage()]
+        [Usage(ApplicationAlias = "GitVersion")]
         public static IEnumerable<Example> Examples
         {
             get
