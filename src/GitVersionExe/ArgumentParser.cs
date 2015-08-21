@@ -2,7 +2,6 @@ namespace GitVersion
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Specialized;
     using System.Linq;
     using System.Text.RegularExpressions;
     using NDesk.Options;
@@ -13,7 +12,16 @@ namespace GitVersion
         public static OptionSet GetOptionSet(Arguments arguments)
         {
             return new CaseInsensitiveOptionSet
-                {
+                {      
+                    {
+                        "path|targetpath=", 
+                        "The path to inspect\nDefaults to the current directory.",
+                        v => arguments.TargetPath = v
+                    },
+                    {
+                        "i|init", "Start the configuration utility for gitversion",
+                        v => { throw new WarningException("assemblyversionformat switch removed, use AssemblyVersioningScheme configuration value instead"); }
+                    }, 
                     {
                         "h|?|help", "Show this message and exit",
                         v => arguments.IsHelp = (v != null)
@@ -31,11 +39,11 @@ namespace GitVersion
                         v => arguments.Exec = v
                     },
                     {
-                        "execargs=", "Arguments for the executable specified by /exec",
+                        "execargs=", "Arguments for the executable specified by --exec",
                         v => arguments.ExecArgs = v
                     },
                     {
-                        "proj=", "Build an msbuild file, GitVersion variables will be passed as msbuild properties",
+                        "proj=", "Build an msbuild file making GitVersion variables available as msbuild properties",
                         v => arguments.Proj = v
                     },
                     {
@@ -43,15 +51,15 @@ namespace GitVersion
                         v => arguments.ProjArgs = v
                     },
                     {
-                        "u=", "Username in case authentication is required",
+                        "u|username=", "Username in case authentication is required",
                         v => arguments.Authentication.Username = v
                     },
                     {
-                        "p=", "Password in case authentication is required",
+                        "p|password=", "Password in case authentication is required",
                         v => arguments.Authentication.Password = v
                     },
                     {
-                        "output=", "Determines the output to the console. Can be either 'json' or 'buildserver', will default to 'json'",
+                        "o|output=", "Determines the output to the console\nCan be either 'json' or 'buildserver', will default to 'json'.",
                         v => arguments.SetOutPutType(v)
                     },
                     {
@@ -59,12 +67,12 @@ namespace GitVersion
                         v => arguments.TargetUrl = v
                     },
                     {
-                        "b=", "Name of the branch to use on the remote repository, must be used in combination with /url",
+                        "b|remotebranch=", "Name of the branch to use on the remote repository, must be used in combination with --url",
                         v => arguments.TargetBranch = v
                     },
                     {
-                        "updateassemblyinfo:", "Will recursively search for all 'AssemblyInfo.cs' files in the git repo and update them/n" +
-                        "Optionally specify the assembly info filename to update.",
+                        "updateassemblyinfo:", "* Will recursively search for all 'AssemblyInfo.cs' files in the git repo and update them\n" +
+                        "To use another filename use --updateassemblyinfo:[another-assemblyinfo-filename.cs]",
                         v => 
                         {
                             if (v == null)
@@ -79,19 +87,15 @@ namespace GitVersion
                         }
                     },
                     {
-                        "updateassemblyinfoname", "Deprecated: use --updateassemblyinfo [assemblyinfo.cs] instead.",
+                        "updateassemblyinfoname", "* Deprecated: use --updateassemblyinfo:[assemblyinfofilename.cs] instead.",
                         v => { throw new WarningException("updateassemblyinfoname deprecated, use --updateassemblyinfo=[assemblyinfo.cs] instead"); }
                     },
                     {
-                        "dynamicrepolocation=", "By default dynamic repositories will be cloned to %tmp%. Use this switch to override",
+                        "dynamicrepolocation=", "Override locations dynamic repositories are clonden to\nDefaults to %tmp%.",
                         v => arguments.DynamicRepositoryLocation = v
-                    },
+                    },                  
                     {
-                        "targetpath=", "Same as 'path', but not positional",
-                        v => arguments.TargetPath = v
-                    },                    
-                    {
-                        "c=", "The commit id to check. If not specified, the latest available commit on the specified branch will be used.",
+                        "c|commit=", "The commit id to inspect\nDefaults to the latest available commit on the specified branch.",
                         v => arguments.CommitId = v
                     },                   
                     {
@@ -99,15 +103,15 @@ namespace GitVersion
                         v => arguments.SetShowVariable(v)
                     },
                     {
-                        "nofetch", "", // help text missing
+                        "nofetch", "",
                         v => arguments.NoFetch = (v != null)
                     },
                     {
-                        "showconfig", "Outputs the effective GitVersion config (defaults + custom from GitVersion.yaml) in yaml format", // help text missing
+                        "showconfig", "Outputs the effective GitVersion config\nOutputs the defaults and custom from GitVersion.yaml in yaml format.",
                         v => arguments.ShowConfig = (v != null)
                     },
                     {
-                        "assemblyversionformat", "Deprecated: use AssemblyVersioningScheme configuration value instead",
+                        "assemblyversionformat", "Deprecated: use AssemblyVersioningScheme configuration value instead.",
                         v => { throw new WarningException("assemblyversionformat switch removed, use AssemblyVersioningScheme configuration value instead"); }
                     },
                 };
@@ -175,37 +179,6 @@ namespace GitVersion
             }
         }
 
-        static NameValueCollection CollectSwitchesAndValuesFromArguments(List<string> namedArguments)
-        {
-            var args = new NameValueCollection();
-
-            string currentKey = null;
-            for (var index = 0; index < namedArguments.Count; index = index + 1)
-            {
-                var arg = namedArguments[index];
-                //If this is a switch, create new name/value entry for it, with a null value.
-                if (IsSwitchArgument(arg))
-                {
-                    currentKey = arg;
-                    args.Add(currentKey, null);
-                }
-                    //If this is a value (not a switch)
-                else
-                {
-                    //And if the current switch does not have a value yet, set it's value to this argument.
-                    if (String.IsNullOrEmpty(args[currentKey]))
-                    {
-                        args[currentKey] = arg;
-                    }
-                        //Otherwise add the value under the same switch.
-                    else
-                    {
-                        args.Add(currentKey, arg);
-                    }
-                }
-            }
-            return args;
-        }
 
         static bool IsSwitchArgument(string value)
         {

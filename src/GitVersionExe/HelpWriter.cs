@@ -12,12 +12,7 @@ namespace GitVersion
 
         public static void WriteTo(Action<string> writeAction)
         {
-            const string messageHeader = @"Use convention to derive a SemVer product version from a GitFlow or GitHub based repository.
-
-gitversion [path]
-gitversion [init]  Configuration utility for gitversion
-
-";
+            const string messageHeader = "Use convention to derive a SemVer product version from a GitFlow or GitHub based repository.\n\n";
             var options = ArgumentParser.GetOptionSet(new Arguments());
 
             var sw = new StringWriter();

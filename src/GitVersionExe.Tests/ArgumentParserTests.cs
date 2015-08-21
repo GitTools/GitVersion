@@ -10,8 +10,7 @@ public class ArgumentParserTests
     [Test, Explicit]
     public void PrintHelp()
     {
-        var p = ArgumentParser.GetOptionSet(new Arguments());
-        p.WriteOptionDescriptions(Console.Out);
+        HelpWriter.WriteTo(Console.WriteLine);
     }
 
     [Test]
