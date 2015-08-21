@@ -1,12 +1,39 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using CommandLine;
+using CommandLine.Text;
 using GitVersion;
+using GitVersion.Options;
 using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
 public class ArgumentParserTests
 {
+    [Explicit]
+    [Test]
+    public void PrintEntireHelp()
+    {
+        Parser.Default.ParseArguments(new[] { "help" }, AllOptionTypes().ToArray());
+        foreach (var verb in new[] {"show", "init", "inspect-remote", "buildserver"})
+        {
+            Parser.Default.ParseArguments(new[] { "help", verb }, AllOptionTypes().ToArray());
+        }
+        
+    }
+
+    IEnumerable<Type>AllOptionTypes()
+    {
+        yield return typeof(ShowOptions);
+        yield return typeof(InitOptions);
+        yield return typeof(InspectRemoteRepositoryOptions);
+        yield return typeof(BuildServerOptions);
+        yield return typeof(MsBuildOptions);
+        yield return typeof(ExecuteOptions);
+        yield return typeof(UpdateAssemblyInfo);
+    }
+
     [Test]
     public void Empty_means_use_current_directory()
     {

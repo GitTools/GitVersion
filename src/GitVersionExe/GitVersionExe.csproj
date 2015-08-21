@@ -39,6 +39,10 @@
     <DocumentationFile>bin\Release\GitVersion.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommandLine, Version=2.0.251.0, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommandLineParser.2.0.251-beta\lib\net40\CommandLine.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="JetBrains.Annotations, Version=8.1.11.55, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrainsAnnotations.Fody.1.0.4.0\Lib\JetBrains.Annotations.dll</HintPath>
       <Private>False</Private>
@@ -61,6 +65,14 @@
     <Compile Include="Arguments.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="HelpWriter.cs" />
+    <Compile Include="Options\BuildServerOptions.cs" />
+    <Compile Include="Options\InitOptions.cs" />
+    <Compile Include="Options\InspectRemoteRepositoryOptions.cs" />
+    <Compile Include="Options\LoggingOptions.cs" />
+    <Compile Include="Options\MsBuildOptions.cs" />
+    <Compile Include="Options\ExecuteOptions.cs" />
+    <Compile Include="Options\ShowOptions.cs" />
+    <Compile Include="Options\UpdateAssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="AssemblyInfoFileUpdate.cs" />
