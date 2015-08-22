@@ -36,7 +36,7 @@
             using (var fixture = new RemoteRepositoryFixture(new Config()))
             {
                 fixture.Repository.MakeACommit();
-                fixture.Repository.CreateBranch("develop").Checkout();
+                fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));
                 fixture.Repository.MakeACommit();
                 fixture.Repository.MakeATaggedCommit("1.0.0");
                 fixture.Repository.MakeACommit();

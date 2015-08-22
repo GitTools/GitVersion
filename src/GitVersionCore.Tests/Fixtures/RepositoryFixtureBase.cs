@@ -95,7 +95,7 @@ noteText.Replace("\n", "\n  "));
 
         var branch = Repository.Head.Name;
         diagramBuilder.AppendLineFormat("{0} -> {1}: branch from {2}", GetParticipant(branch), GetParticipant(branchName), branch);
-        Repository.CreateBranch(branchName).Checkout();
+        Repository.Checkout(Repository.CreateBranch(branchName));
     }
 
     public void BranchToFromTag(string branchName, string fromTag, string onBranch, string @as = null)
@@ -107,7 +107,7 @@ noteText.Replace("\n", "\n  "));
         }
 
         diagramBuilder.AppendLineFormat("{0} -> {1}: branch from tag ({2})", GetParticipant(onBranch), GetParticipant(branchName), fromTag);
-        Repository.CreateBranch(branchName).Checkout();
+        Repository.Checkout(Repository.CreateBranch(branchName));
     }
 
     public void MakeACommit()

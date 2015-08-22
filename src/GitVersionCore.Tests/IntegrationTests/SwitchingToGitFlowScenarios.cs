@@ -13,7 +13,7 @@ public class SwitchingToGitFlowScenarios
             fixture.Repository.MakeCommits(5);
             fixture.Repository.MakeATaggedCommit("1.0.0.0");
             fixture.Repository.MakeCommits(2);
-            fixture.Repository.CreateBranch("develop").Checkout();
+            fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));
             fixture.AssertFullSemver("1.1.0-unstable.2");
         }
     }

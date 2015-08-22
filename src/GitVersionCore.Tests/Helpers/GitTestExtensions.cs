@@ -77,7 +77,7 @@ public static class GitTestExtensions
         if (normalise)
         {
             // Turn the ref into a real branch
-            repository.Branches.Add("pull/" + prNumber + "/merge", commit).Checkout();
+            repository.Checkout(repository.Branches.Add("pull/" + prNumber + "/merge", commit));
         }
 
         return commit;
