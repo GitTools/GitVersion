@@ -36,7 +36,7 @@ public class BaseGitFlowRepositoryFixture : EmptyRepositoryFixture
 
         initialMasterAction(Repository);
 
-        Repository.CreateBranch("develop").Checkout();
+        Repository.Checkout(Repository.CreateBranch("develop"));
         Repository.MakeACommit();
     }
 }
