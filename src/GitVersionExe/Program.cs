@@ -34,7 +34,7 @@ namespace GitVersion
         static int VerifyArgumentsAndRun()
         {
             var args = Environment.GetCommandLineArgs().Skip(1).ToArray();
-            return Parser.Default.ParseArguments<ShowOptions,
+            return Parser.Default.ParseArguments<InspectOptions,
                 InitOptions,
                 InspectRemoteRepositoryOptions,
                 InjectBuildServerOptions,
@@ -42,7 +42,7 @@ namespace GitVersion
                 InjectProcess,
                 InjectAssemblyInfo>(args)
                          .MapResult(
-                             (ShowOptions opts) => Run(opts),
+                             (InspectOptions opts) => Run(opts),
                              (InitOptions opts) => Run(opts),
                              (InspectRemoteRepositoryOptions opts) => Run(opts),
                              errs => 1);

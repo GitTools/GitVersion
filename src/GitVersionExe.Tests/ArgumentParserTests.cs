@@ -36,7 +36,7 @@ public class ArgumentParserTests
 
     IEnumerable<Type>AllOptionTypes()
     {
-        yield return typeof(ShowOptions);
+        yield return typeof(InspectOptions);
         yield return typeof(InitOptions);
         yield return typeof(InspectRemoteRepositoryOptions);
         yield return typeof(InjectBuildServerOptions);

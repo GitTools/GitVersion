@@ -4,15 +4,24 @@
     using CommandLine;
     using CommandLine.Text;
 
-    [Verb("inspect-remote", 
+    [Verb("inspect-remote",
         HelpText = "Inspect a remote repository.")]
-    class InspectRemoteRepositoryOptions //: ShowOptions
+    class InspectRemoteRepositoryOptions : LoggingOptions
     {
+        [Option('f', "format",
+            HelpText = "The output format (Json, KeyValue or Values).",
+            Default = "Json"
+            )]
+        public string Output { get; set; }
+
+        [Option('v', "variables")]
+        public IEnumerable<string> Variables { get; set; }
+
         [Option("url", Required = true,
             HelpText = "Url to remote git repository.")]
-        string Url { get; set; }
+        public string Url { get; set; }
 
-        [Option('b',"branch", 
+        [Option('b', "branch",
             HelpText = "Name of the branch on the remote repository.")]
         string Branch { get; set; }
 
@@ -37,7 +46,10 @@
             get
             {
                 yield return new Example("Inspect GitVersion's remote repositsory ",
-                    new InspectRemoteRepositoryOptions { Url = "https://github.com/GitTools/GitVersion.git" });
+                                         new InspectRemoteRepositoryOptions
+                                             {
+                                                 Url = "https://github.com/GitTools/GitVersion.git"
+                                             });
             }
         }
     }

@@ -71,7 +71,7 @@
     <Compile Include="Options\LoggingOptions.cs" />
     <Compile Include="Options\InjectMsBuildOptions.cs" />
     <Compile Include="Options\InjectProcess.cs" />
-    <Compile Include="Options\ShowOptions.cs" />
+    <Compile Include="Options\InspectOptions.cs" />
     <Compile Include="Options\InjectAssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="AssemblyInfo.cs" />
