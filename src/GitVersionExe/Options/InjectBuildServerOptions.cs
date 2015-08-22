@@ -4,15 +4,15 @@
     using CommandLine;
     using CommandLine.Text;
 
-    [Verb("buildserver",
+    [Verb("inject-buildserver",
         HelpText = "Inject gitversion variables as environment variables in your build server job.")]
-    class BuildServerOptions : LoggingOptions
+    class InjectBuildServerOptions : LoggingOptions
     {
         [Option(HelpText = "Autodetect the build server, defaults to true.", Default = true)]
         public bool AutoDetect { get; set; }
 
         [Option(HelpText = "The name of the buildserver to use in case auto-detect is false. " +
-                           "One of TeamCity, AppVeyor, ContinuaCi, MyGet, VsoBuild, Jenkis")]
+                           "One of TeamCity, AppVeyor, ContinuaCi, MyGet, VsoBuild, Jenkins.")]
         public string BuildServerName { get; set; }
 
 
@@ -21,10 +21,10 @@
         {
             get
             {
-                yield return new Example("Normal scenario, will detect build server automatically", new BuildServerOptions());
+                yield return new Example("Normal scenario, will detect build server automatically", new InjectBuildServerOptions());
                 yield return new Example("Specific build server, will run the specified build server integration", 
                       UnParserSettings.WithGroupSwitchesOnly(),
-                    new BuildServerOptions { AutoDetect = false, BuildServerName = "Jenkins" });
+                    new InjectBuildServerOptions { AutoDetect = false, BuildServerName = "Jenkins" });
             }
         }
     }

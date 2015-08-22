@@ -4,7 +4,7 @@
 
     [Verb("inspect-remote", 
         HelpText = "Inspect a remote repository.")]
-    class InspectRemoteRepositoryOptions : LoggingOptions
+    class InspectRemoteRepositoryOptions : ShowOptions
     {
         [Option("url", Required = true,
             HelpText = "Url to remote git repository.")]
@@ -18,7 +18,7 @@
             HelpText = "Username in case authentication is required.")]
         public string UserName { get; set; }
 
-        [Option('p', "password",
+        [Option("password",
             HelpText = "Password in case authentication is required.")]
         public string Password { get; set; }
 

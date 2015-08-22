@@ -5,7 +5,7 @@
     class LoggingOptions
     {
         [Option(
-            HelpText = "Prints all messages to standard output.")]
+            HelpText = "Prints all system messages to standard output.")]
         public bool Verbose { get; set; }
 
         [Option(

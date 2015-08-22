@@ -37,10 +37,10 @@ namespace GitVersion
             return Parser.Default.ParseArguments<ShowOptions,
                 InitOptions,
                 InspectRemoteRepositoryOptions,
-                BuildServerOptions,
-                MsBuildOptions,
-                ExecuteOptions,
-                UpdateAssemblyInfo>(args)
+                InjectBuildServerOptions,
+                InjectMsBuildOptions,
+                InjectProcess,
+                InjectAssemblyInfo>(args)
                          .MapResult(
                              (ShowOptions opts) => Run(opts),
                              (InitOptions opts) => Run(opts),

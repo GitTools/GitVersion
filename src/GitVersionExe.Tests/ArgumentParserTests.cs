@@ -17,14 +17,21 @@ public class ArgumentParserTests
         Parser.Default.ParseArguments(new[] { "help" }, AllOptionTypes().ToArray());
         foreach (var verb in AllVerbs())
         {
-            Parser.Default.ParseArguments(new[] { "help", verb }, AllOptionTypes().ToArray());
+            PrintVerbHelp(verb);
         }
-        
+    }
+
+    [TestCaseSource("AllVerbs")]
+    public void PrintVerbHelp(string verb)
+    {
+        Parser.Default.ParseArguments(new[] {"help", verb}, AllOptionTypes().ToArray());
     }
 
     IEnumerable<string> AllVerbs()
     {
-        return new[] {"show", "init", "inspect-remote", "buildserver", "msbuild", "execute", "update-assembly-info"};
+        return AllOptionTypes()
+            .Select(t => (VerbAttribute) Attribute.GetCustomAttribute(t, typeof(VerbAttribute)))
+            .Where(a => a != null).Select(a => a.Name);
     }
 
     IEnumerable<Type>AllOptionTypes()
@@ -32,10 +39,10 @@ public class ArgumentParserTests
         yield return typeof(ShowOptions);
         yield return typeof(InitOptions);
         yield return typeof(InspectRemoteRepositoryOptions);
-        yield return typeof(BuildServerOptions);
-        yield return typeof(MsBuildOptions);
-        yield return typeof(ExecuteOptions);
-        yield return typeof(UpdateAssemblyInfo);
+        yield return typeof(InjectBuildServerOptions);
+        yield return typeof(InjectMsBuildOptions);
+        yield return typeof(InjectProcess);
+        yield return typeof(InjectAssemblyInfo);
     }
 
     [Test]
