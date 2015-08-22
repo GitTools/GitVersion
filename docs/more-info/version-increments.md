@@ -22,6 +22,23 @@ See [Octopus deploy](build-server-setup/octopus-deploy.md)
 ## Manually incrementing the version
 With v3 there are multiple approaches.
 
+### Commit messages
+Adding `+semver: breaking` or `+semver: major` will cause the major version to be increased, `+semver: feature` or `+semver:minor` will bump minor and `+semver:patch` or `+semver:fix` will bump the patch.
+
+#### Configuration
+The feature is enabled by default but can be disabled via configuration, the regex we use can be changed:
+
+```
+major-version-bump-message: '\+semver:\s?(breaking|major)'
+minor-version-bump-message: '\+semver:\s?(feature|minor)'
+patch-version-bump-message: '\+semver:\s?(fix|patch)'
+commit-message-incrementing: Enabled
+```
+
+The options for `commit-message-incrementing` are `Enabled`, `MergeMessageOnly` and `Disabled`
+
+If the incrementing mode is set to `MergeMessageOnly` you can add this information in when merging a pull request. This prevents commits within a PR bumping the version.
+
 ### GitVersionConfig.yaml
 The first is by setting the `next-version` property in the GitVersionConfig.yaml file. This property only serves as a base version,
 
