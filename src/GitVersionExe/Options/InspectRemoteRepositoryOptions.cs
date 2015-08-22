@@ -1,10 +1,12 @@
 ﻿namespace GitVersion.Options
 {
+    using System.Collections.Generic;
     using CommandLine;
+    using CommandLine.Text;
 
     [Verb("inspect-remote", 
         HelpText = "Inspect a remote repository.")]
-    class InspectRemoteRepositoryOptions : ShowOptions
+    class InspectRemoteRepositoryOptions //: ShowOptions
     {
         [Option("url", Required = true,
             HelpText = "Url to remote git repository.")]
@@ -28,5 +30,15 @@
 
         [Option(HelpText = "Target directory to clone to.", Default = "%tmp%")]
         public string DynamicRepositoryLocation { get; set; }
+
+        [Usage(ApplicationAlias = "GitVersion")]
+        public static IEnumerable<Example> RemoteExamples
+        {
+            get
+            {
+                yield return new Example("Inspect GitVersion's remote repositsory ",
+                    new InspectRemoteRepositoryOptions { Url = "https://github.com/GitTools/GitVersion.git" });
+            }
+        }
     }
 }
