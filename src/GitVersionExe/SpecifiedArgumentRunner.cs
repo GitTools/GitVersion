@@ -62,25 +62,6 @@ namespace GitVersion
 
             var variables = GetVariables(fileSystem, targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId);
 
-            if (arguments.Output == OutputType.Json)
-            {
-                switch (arguments.ShowVariable)
-                {
-                    case null:
-                        Console.WriteLine(JsonOutputFormatter.ToJson(variables));
-                        break;
-
-                    default:
-                        string part;
-                        if (!variables.TryGetValue(arguments.ShowVariable, out part))
-                        {
-                            throw new WarningException(string.Format("'{0}' variable does not exist", arguments.ShowVariable));
-                        }
-                        Console.WriteLine(part);
-                        break;
-                }
-            }
-
             using (var assemblyInfoUpdate = new AssemblyInfoFileUpdate(arguments, targetPath, variables, fileSystem))
             {
                 var execRun = RunExecCommandIfNeeded(arguments, targetPath, variables);
