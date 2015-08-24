@@ -10,8 +10,8 @@ namespace GitVersion
     {
         public static void Run(InitOptions opts)
         {
-
-            throw new NotImplementedException(opts.GetType().Name);
+            var fs = new FileSystem();
+            ConfigurationProvider.Init(opts.Path, fs, new ConsoleAdapter());
         }
     }
 
