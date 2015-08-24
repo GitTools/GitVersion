@@ -62,14 +62,6 @@ namespace GitVersion
 
             var variables = GetVariables(fileSystem, targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId);
 
-            if (arguments.Output == OutputType.BuildServer)
-            {
-                foreach (var buildServer in BuildServerList.GetApplicableBuildServers())
-                {
-                    buildServer.WriteIntegration(Console.WriteLine, variables);
-                }
-            }
-
             if (arguments.Output == OutputType.Json)
             {
                 switch (arguments.ShowVariable)
