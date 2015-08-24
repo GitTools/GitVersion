@@ -10,17 +10,6 @@ using Shouldly;
 [TestFixture]
 public class ArgumentParserTests
 {
-    [Explicit]
-    [Test]
-    public void PrintEntireHelp()
-    {
-        Parser.Default.ParseArguments(new[] { "help" }, AllOptionTypes().ToArray());
-        foreach (var verb in AllVerbs())
-        {
-            PrintVerbHelp(verb);
-        }
-    }
-
     [TestCaseSource("AllVerbs")]
     public void PrintVerbHelp(string verb)
     {
@@ -34,7 +23,7 @@ public class ArgumentParserTests
             .Where(a => a != null).Select(a => a.Name);
     }
 
-    IEnumerable<Type>AllOptionTypes()
+    IEnumerable<Type> AllOptionTypes()
     {
         yield return typeof(InspectOptions);
         yield return typeof(InitOptions);
@@ -49,8 +38,8 @@ public class ArgumentParserTests
     public void InputVariablesMustHaveCorrectDefaultValues()
     {
         var iv = new InputVariables();
-     
-   iv.TargetUrl.ShouldBe(null);
+
+        iv.TargetUrl.ShouldBe(null);
 
         iv.DynamicRepositoryLocation.ShouldBe(null);
 
@@ -69,6 +58,15 @@ public class ArgumentParserTests
         iv.TargetPath.ShouldBe(Environment.CurrentDirectory);
     }
 
-    // add tests for mapping input options to input variables
+    [Explicit]
+    [Test]
+    public void PrintEntireHelp()
+    {
+        Parser.Default.ParseArguments(new[] {"help"}, AllOptionTypes().ToArray());
+        foreach (var verb in AllVerbs())
+        {
+            PrintVerbHelp(verb);
+        }
+    }
 
 }
