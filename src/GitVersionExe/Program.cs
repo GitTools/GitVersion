@@ -17,15 +17,14 @@ namespace GitVersion
         {
             var exitCode = VerifyArgumentsAndRun();
 
+            if (exitCode != 0)
+            {
+                Console.Write(log.ToString());
+            }
+
             if (Debugger.IsAttached)
             {
                 Console.ReadKey();
-            }
-
-            if (exitCode != 0)
-            {
-                // Dump log to console if we fail to complete successfully
-                Console.Write(log.ToString());
             }
 
             Environment.Exit(exitCode);
@@ -33,25 +32,50 @@ namespace GitVersion
 
         static int VerifyArgumentsAndRun()
         {
-            var args = Environment.GetCommandLineArgs().Skip(1).ToArray();
-            return Parser.Default.ParseArguments<InspectOptions,
+            var args = GetArgumentsWithoutExeName();
+            try
+            { 
+                Parser.Default.ParseArguments<InspectOptions,
                 InitOptions,
                 InspectRemoteRepositoryOptions,
                 InjectBuildServerOptions,
                 InjectMsBuildOptions,
                 InjectProcess,
                 InjectAssemblyInfo>(args)
-                         .MapResult(
-                             (InspectOptions opts) => Run(opts),
-                             (InitOptions opts) => Run(opts),
-                             (InspectRemoteRepositoryOptions opts) => Run(opts),
-                             errs => 1);
+                .WithParsed<InspectOptions>(InspectRunner.Run)
+                .WithParsed<InitOptions>(InitRunner.Run)
+                //.WithParsed<InspectRemoteRepositoryOptions>(Runner.Run)
+                .WithParsed<InjectBuildServerOptions>(InjectBuildServerRunner.Run)
+                //.WithParsed<InjectMsBuildOptions>(Runner.Run)
+                //.WithParsed<InjectProcess>(Runner.Run)
+                //.WithParsed<InjectAssemblyInfo>(Runner.Run)
+                .WithNotParsed(HandleParseErrors);
+
+                return 0;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return 1;
+            }
         }
 
-        static int Run(object options)
+        static void HandleParseErrors(IEnumerable<Error> commandLineErrors)
         {
-            return 1;
+            var message = commandLineErrors.Aggregate("Error parsing arguments ...", 
+                (current, err) => current + ("\nFailed to parse - " + err));
+            throw new WarningException(message);
         }
+
+        static string[] GetArgumentsWithoutExeName()
+        {
+            return Environment.GetCommandLineArgs()
+                              .Skip(1)
+                              .ToArray();
+        }
+
+
+        // Logging stuf
 
         static void ConfigureLogging(Arguments arguments)
         {
@@ -95,13 +119,6 @@ namespace GitVersion
         {
             var contents = string.Format("{0}\t\t{1}\r\n", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), s);
             File.AppendAllText(arguments.LogFilePath, contents);
-        }
-
-        static List<string> GetArgumentsWithoutExeName()
-        {
-            return Environment.GetCommandLineArgs()
-                              .Skip(1)
-                              .ToList();
         }
     }
 }
