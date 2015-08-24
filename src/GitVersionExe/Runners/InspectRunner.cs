@@ -1,19 +1,9 @@
-﻿using System;
-
-namespace GitVersion
+﻿namespace GitVersion.Runners
 {
+    using System;
     using System.Linq;
     using GitVersion.Helpers;
     using GitVersion.Options;
-
-    class InitRunner
-    {
-        public static void Run(InitOptions opts)
-        {
-            var fs = new FileSystem();
-            ConfigurationProvider.Init(opts.Path, fs, new ConsoleAdapter());
-        }
-    }
 
     class InspectRunner
     {
@@ -48,21 +38,4 @@ namespace GitVersion
             }
         }
     }
-    
-    class InjectBuildServerRunner
-    {
-        public static void Run(InjectBuildServerOptions opts)
-        {
-            var inputVariables = new InputVariables(); // TODO: how to map to input variables
-            var fs = new FileSystem();
-            var variables = SpecifiedArgumentRunner.GetVariables(fs, inputVariables);
-
-            foreach (var buildServer in BuildServerList.GetApplicableBuildServers())
-            {
-                buildServer.WriteIntegration(Console.WriteLine, variables);
-            }
-        }
-    }
-
-     
 }

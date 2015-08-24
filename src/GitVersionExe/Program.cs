@@ -8,6 +8,7 @@ namespace GitVersion
     using System.Text;
     using CommandLine;
     using GitVersion.Options;
+    using GitVersion.Runners;
 
     class Program
     {
