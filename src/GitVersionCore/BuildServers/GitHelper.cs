@@ -35,7 +35,7 @@ namespace GitVersion
                 CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(repo, remote.Name);
 
                 var headSha = repo.Refs.Head.TargetIdentifier;
-
+                
                 if (!repo.Info.IsHeadDetached)
                 {
                     Logger.WriteInfo(string.Format("HEAD points at branch '{0}'.", headSha));
@@ -102,8 +102,10 @@ namespace GitVersion
         static void EnsureLocalBranchExistsForCurrentBranch(Repository repo, string currentBranch)
         {
             if (string.IsNullOrEmpty(currentBranch)) return;
+
+            var isRef = currentBranch.Contains("refs");
             var isBranch = currentBranch.Contains("refs/heads");
-            var localCanonicalName = isBranch ? currentBranch : currentBranch.Replace("refs/", "refs/heads/");
+            var localCanonicalName = !isRef ? "refs/heads/" + currentBranch : isBranch ? currentBranch : currentBranch.Replace("refs/", "refs/heads/");
             var repoTip = repo.Head.Tip;
             var repoTipId = repoTip.Id;
 
@@ -121,6 +123,8 @@ namespace GitVersion
                     string.Format("Updating local branch {0} to match ref {1}", localCanonicalName, currentBranch));
                 repo.Refs.UpdateTarget(repo.Refs[localCanonicalName], repoTipId);
             }
+
+            repo.Checkout(localCanonicalName);
         }
 
         public static bool LooksLikeAValidPullRequestNumber(string issueNumber)

@@ -127,7 +127,6 @@
     <Compile Include="Mocks\MockBuildEngine.cs" />
     <Compile Include="GetVersionTaskTests.cs" />
     <Compile Include="Helpers\IPostTestDirectoryRemover.cs" />
-    <Compile Include="Helpers\LibGit2SharpExtensions.cs" />
     <Compile Include="Helpers\Scrubbers.cs" />
     <Compile Include="Helpers\SelfCleaningDirectory.cs" />
     <Compile Include="Mocks\MockTaskItem.cs" />

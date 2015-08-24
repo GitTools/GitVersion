@@ -71,7 +71,7 @@ public class ExecCmdLineArgumentTest
                 var configFile = Path.Combine(localRepoPath, "GitVersionConfig.yaml");
                 File.WriteAllText(configFile, "next-version: 1.0.0");
 
-                var arguments = string.Format(" /url {0} /dynamicRepoLocation {1}", remote.RepositoryPath, repoBasePath);
+                var arguments = string.Format(" /url {0} /dynamicRepoLocation {1} /b master", remote.RepositoryPath, repoBasePath);
                 var results = GitVersionHelper.ExecuteIn(localRepoPath, arguments, false);
                 results.OutputVariables.SemVer.ShouldBe("1.0.0");
             }

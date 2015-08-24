@@ -1,5 +1,5 @@
 site_name: GitVersion
-theme: ReadTheDocs
+theme: readthedocs
 repo_url: https://github.com/GitTools/GitVersion
 
 pages:

@@ -11,9 +11,9 @@ public class PullRequestScenarios
         using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeATaggedCommit("0.1.0");
-            fixture.Repository.CreateBranch("feature/Foo").Checkout();
+            fixture.Repository.Checkout(fixture.Repository.CreateBranch("feature/Foo"));
             fixture.Repository.MakeACommit();
-            
+
             fixture.Repository.CreatePullRequestRef("feature/Foo", "master", normalise: true);
 
             fixture.Repository.DumpGraph();
@@ -27,9 +27,9 @@ public class PullRequestScenarios
         using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeATaggedCommit("0.1.0");
-            fixture.Repository.CreateBranch("develop").Checkout();
+            fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));
             fixture.Repository.MakeACommit();
-            fixture.Repository.CreateBranch("feature/Foo").Checkout();
+            fixture.Repository.Checkout(fixture.Repository.CreateBranch("feature/Foo"));
             fixture.Repository.MakeACommit();
 
             fixture.Repository.CreatePullRequestRef("feature/Foo", "develop", 44, normalise: true);
@@ -45,7 +45,7 @@ public class PullRequestScenarios
         using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeATaggedCommit("0.1.0");
-            fixture.Repository.CreateBranch("feature/Foo").Checkout();
+            fixture.Repository.Checkout(fixture.Repository.CreateBranch("feature/Foo"));
             fixture.Repository.MakeACommit();
 
 
@@ -62,9 +62,9 @@ public class PullRequestScenarios
         using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeATaggedCommit("0.1.0");
-            fixture.Repository.CreateBranch("develop").Checkout();
+            fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));
             fixture.Repository.MakeACommit();
-            fixture.Repository.CreateBranch("feature/Foo").Checkout();
+            fixture.Repository.Checkout(fixture.Repository.CreateBranch("feature/Foo"));
             fixture.Repository.MakeACommit();
 
             fixture.Repository.CreatePullRequestRef("feature/Foo", "develop", normalise: true);
@@ -79,10 +79,10 @@ public class PullRequestScenarios
         using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeATaggedCommit("0.1.0");
-            fixture.Repository.CreateBranch("develop").Checkout();
+            fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));
             fixture.Repository.MakeACommit();
-            fixture.Repository.CreateBranch("copyOfDevelop").Checkout();
-            fixture.Repository.CreateBranch("feature/Foo").Checkout();
+            fixture.Repository.Checkout(fixture.Repository.CreateBranch("copyOfDevelop"));
+            fixture.Repository.Checkout(fixture.Repository.CreateBranch("feature/Foo"));
             fixture.Repository.MakeACommit();
 
             fixture.Repository.CreatePullRequestRef("feature/Foo", "develop", normalise: true);
@@ -98,7 +98,7 @@ public class PullRequestScenarios
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.MakeACommit();
-            fixture.Repository.CreateBranch("release/2.0.0").Checkout();
+            fixture.Repository.Checkout(fixture.Repository.CreateBranch("release/2.0.0"));
             fixture.Repository.MakeACommit();
             fixture.Repository.MakeACommit();
 
