@@ -5,9 +5,50 @@ namespace GitVersion
     using System.Linq;
     using GitVersion.Helpers;
 
+    public class InputVariables
+    {
+        public InputVariables()
+        {
+            Authentication = new Authentication();
+            NoFetch = true;
+        }
+
+        public string TargetUrl { get; set; }
+        public string DynamicRepositoryLocation { get; set; }
+        public Authentication Authentication { get; set; }
+        public string TargetBranch { get; set; }
+        public bool NoFetch { get; set; }
+        public string TargetPath { get; set; }
+        public string CommitId { get; set; }
+    }
+
     class SpecifiedArgumentRunner
     {
         const string MsBuild = @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
+
+        public static VersionVariables GetVariables(IFileSystem fileSystem, InputVariables inputVariables)
+        {
+            return GetVariables(fileSystem,
+                inputVariables.TargetUrl,
+                inputVariables.DynamicRepositoryLocation,
+                inputVariables.Authentication,
+                inputVariables.TargetBranch,
+                inputVariables.NoFetch,
+                inputVariables.TargetPath,
+                inputVariables.CommitId);
+        }
+
+        private static VersionVariables GetVariables(IFileSystem fileSystem, 
+            string targetUrl, 
+            string dynamicRepositoryLocation, 
+            Authentication authentication, 
+            string targetBranch, 
+            bool noFetch, 
+            string targetPath, 
+            string commitId)
+        {
+            return ExecuteCore.ExecuteGitVersion(fileSystem, targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId);
+        }
 
         public static void Run(Arguments arguments, IFileSystem fileSystem)
         {
@@ -19,7 +60,7 @@ namespace GitVersion
             var targetBranch = arguments.TargetBranch;
             var commitId = arguments.CommitId;
 
-            var variables = ExecuteCore.ExecuteGitVersion(fileSystem, targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId);
+            var variables = GetVariables(fileSystem, targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId);
 
             if (arguments.Output == OutputType.BuildServer)
             {
