@@ -60,7 +60,6 @@
   <ItemGroup>
     <Compile Include="AssemblyInfoBuilder\AssemblyInfoBuilder.cs" />
     <Compile Include="BuildLogger.cs" />
-    <Compile Include="CachedVersion.cs" />
     <Compile Include="DirectoryDateFinder.cs" />
     <Compile Include="WriteVersionInfoToBuildLog.cs" />
     <Compile Include="GetVersion.cs" />

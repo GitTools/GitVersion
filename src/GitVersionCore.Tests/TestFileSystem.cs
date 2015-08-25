@@ -49,4 +49,16 @@ public class TestFileSystem : IFileSystem
     {
         return new TestStream(path, this);
     }
+
+
+    public Stream OpenRead(string path)
+    {
+        throw new NotImplementedException();
+    }
+
+
+    public void CreateDirectory(string path)
+    {
+        throw new NotImplementedException();
+    }
 }
