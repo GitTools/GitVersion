@@ -95,7 +95,7 @@
             }
 
             var assemblyInfoBuilder = new AssemblyInfoBuilder();
-            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, RootNamespace);
+            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, RootNamespace).Trim();
 
             // We need to try to read the existing text first if the file exists and see if it's the same
             // This is to avoid writing when there's no differences and causing a rebuild
@@ -103,7 +103,7 @@
             {
                 if (File.Exists(AssemblyInfoTempFilePath))
                 {
-                    var content = File.ReadAllText(AssemblyInfoTempFilePath, Encoding.UTF8);
+                    var content = File.ReadAllText(AssemblyInfoTempFilePath, Encoding.UTF8).Trim();
                     if (string.Equals(assemblyInfo, content, StringComparison.Ordinal))
                         return; // nothign to do as the file matches what we'd create
                 }
