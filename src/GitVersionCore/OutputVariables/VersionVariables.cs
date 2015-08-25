@@ -1,11 +1,23 @@
 ﻿namespace GitVersion
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
 
     public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     {
+        public static VersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>> properties)
+        {
+            var type = typeof(VersionVariables);
+            var ctor = type.GetConstructors().Single();
+            var ctorArgs = ctor.GetParameters()
+                .Select(p => properties.Single(v => v.Key.ToLower() == p.Name.ToLower()).Value)
+                .Cast<object>()
+                .ToArray();
+            return (VersionVariables)Activator.CreateInstance(type, ctorArgs);
+        }
+
         public VersionVariables(string major, string minor, string patch, string buildMetaData, string buildMetaDataPadded, string fullBuildMetaData, string branchName, string sha, string majorMinorPatch, string semVer, string legacySemVer, string legacySemVerPadded, string fullSemVer, string assemblySemVer, string preReleaseTag, string preReleaseTagWithDash, string informationalVersion,
             string commitDate, string nugetVersion, string nugetVersionV2, string commitsSinceVersionSource, string commitsSinceVersionSourcePadded)
         {
