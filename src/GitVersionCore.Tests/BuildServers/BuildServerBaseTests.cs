@@ -44,10 +44,5 @@ public class BuildServerBaseTests
         {
             return new string[0];
         }
-
-        public override string GetCurrentBranch()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

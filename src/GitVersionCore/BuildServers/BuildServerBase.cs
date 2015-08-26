@@ -7,7 +7,11 @@
         public abstract bool CanApplyToCurrentContext();
         public abstract string GenerateSetVersionMessage(string versionToUseForBuildNumber);
         public abstract string[] GenerateSetParameterMessage(string name, string value);
-        public abstract string GetCurrentBranch();
+
+        public virtual string GetCurrentBranch()
+        {
+            return null;
+        }
 
         public virtual void WriteIntegration(Action<string> writer, VersionVariables variables)
         {
