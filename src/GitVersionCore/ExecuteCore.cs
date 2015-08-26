@@ -13,6 +13,8 @@ namespace GitVersion
             var applicableBuildServers = BuildServerList.GetApplicableBuildServers();
             var buildServer = applicableBuildServers.FirstOrDefault();
             var currentBranch = buildServer == null ? null : buildServer.GetCurrentBranch();
+
+            currentBranch = string.IsNullOrWhiteSpace(currentBranch) ? targetBranch : currentBranch;
             if (!string.IsNullOrEmpty(currentBranch))
             {
                 Logger.WriteInfo("Branch from build environment: " + currentBranch);
