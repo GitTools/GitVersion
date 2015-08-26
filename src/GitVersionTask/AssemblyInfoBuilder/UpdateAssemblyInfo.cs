@@ -2,6 +2,7 @@
 {
     using System;
     using System.IO;
+    using System.Text;
     using GitVersion;
     using GitVersion.Helpers;
     using Microsoft.Build.Framework;
@@ -94,8 +95,25 @@
             }
 
             var assemblyInfoBuilder = new AssemblyInfoBuilder();
-            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, RootNamespace);
-            File.WriteAllText(AssemblyInfoTempFilePath, assemblyInfo);
+            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, RootNamespace).Trim();
+
+            // We need to try to read the existing text first if the file exists and see if it's the same
+            // This is to avoid writing when there's no differences and causing a rebuild
+            try
+            {
+                if (File.Exists(AssemblyInfoTempFilePath))
+                {
+                    var content = File.ReadAllText(AssemblyInfoTempFilePath, Encoding.UTF8).Trim();
+                    if (string.Equals(assemblyInfo, content, StringComparison.Ordinal))
+                        return; // nothign to do as the file matches what we'd create
+                }
+            }
+            catch (Exception)
+            {
+                // Something happened reading the file, try to overwrite anyway
+            }
+
+            File.WriteAllText(AssemblyInfoTempFilePath, assemblyInfo, Encoding.UTF8);
         }
     }
 }
