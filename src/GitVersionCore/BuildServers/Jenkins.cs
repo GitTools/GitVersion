@@ -26,8 +26,6 @@
             return versionToUseForBuildNumber;
         }
 
-        public override string GetCurrentBranch() { return string.Empty; }
-
         public override string[] GenerateSetParameterMessage(string name, string value)
         {
             return new[]

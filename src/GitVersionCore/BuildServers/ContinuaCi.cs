@@ -29,8 +29,6 @@
             };
         }
 
-        public override string GetCurrentBranch() { return string.Empty; }
-
         public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
         {
             return string.Format("@@continua[setBuildVersion value='{0}']", versionToUseForBuildNumber);

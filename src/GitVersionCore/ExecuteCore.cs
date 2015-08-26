@@ -12,12 +12,9 @@ namespace GitVersion
             var gitPreparer = new GitPreparer(targetUrl, dynamicRepositoryLocation, authentication, noFetch, workingDirectory);
             var applicableBuildServers = BuildServerList.GetApplicableBuildServers();
             var buildServer = applicableBuildServers.FirstOrDefault();
-            var currentBranch = buildServer == null ? null : buildServer.GetCurrentBranch();
-            if (!string.IsNullOrEmpty(currentBranch))
-            {
-                Logger.WriteInfo("Branch from build environment: " + currentBranch);
-            }
-            gitPreparer.Initialise(buildServer != null, currentBranch ?? targetBranch);
+
+            gitPreparer.Initialise(buildServer != null, ResolveCurrentBranch(buildServer, targetBranch));
+
             var dotGitDirectory = gitPreparer.GetDotGitDirectory();
             var projectRoot = gitPreparer.GetProjectRootDirectory();
             Logger.WriteInfo(string.Format("Project root is: " + projectRoot));
@@ -39,6 +36,16 @@ namespace GitVersion
             }
 
             return variables;
+        }
+
+        private static string ResolveCurrentBranch(IBuildServer buildServer, string targetBranch)
+        {
+            if (buildServer == null) return targetBranch;
+
+            var currentBranch = buildServer.GetCurrentBranch() ?? targetBranch;
+            Logger.WriteInfo("Branch from build environment: " + currentBranch);
+
+            return currentBranch;
         }
     }
 }

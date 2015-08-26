@@ -9,8 +9,6 @@
             return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TEAMCITY_VERSION"));
         }
 
-        public override string GetCurrentBranch() { return string.Empty; }
-
         public override string[] GenerateSetParameterMessage(string name, string value)
         {
             return new[]
