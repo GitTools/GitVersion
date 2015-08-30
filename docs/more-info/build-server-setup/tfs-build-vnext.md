@@ -34,8 +34,6 @@ GitVersion passes variables in the form of `GitVersion.*` (Eg: `GitVersion.Major
 See [Variables](/more-info/variables/) for an overview of available variables.
 
 #### Known limitations
-* Due to a bug in VSO it's currently not possible to use variables added during build in inputs of subsequent build tasks, since the variables are processed at the beginning of the build. 
-As a workaround environment variables can be used in custom scripts.
 * Due to [current limitations in VSO](https://github.com/Microsoft/vso-agent-tasks/issues/380) it's currently not possible to set the build version inside of VSO to one of the `GITVERSION_*` variables.
 
 ## Create a NuGet package in VSO
