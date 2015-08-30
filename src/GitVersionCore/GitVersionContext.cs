@@ -106,7 +106,7 @@
             var gitTagPrefix = configuration.TagPrefix;
             var majorMessage = configuration.MajorVersionBumpMessage;
             var minorMessage = configuration.MinorVersionBumpMessage;
-            var patchMessage = configuration.MinorVersionBumpMessage;
+            var patchMessage = configuration.PatchVersionBumpMessage;
 
             var commitMessageVersionBump = currentBranchConfig.Value.CommitMessageIncrementing ?? configuration.CommitMessageIncrementing.Value;
 
