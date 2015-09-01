@@ -5,6 +5,7 @@
   "PreReleaseTag":"unstable.5",
   "PreReleaseTagWithDash":"-unstable.5",
   "BuildMetaData":"",
+  "BuildMetaDataPadded":"",
   "FullBuildMetaData":"Branch.develop.Sha.commitSha",
   "MajorMinorPatch":"1.2.3",
   "SemVer":"1.2.3-unstable.5",

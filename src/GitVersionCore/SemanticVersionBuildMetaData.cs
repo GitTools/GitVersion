@@ -78,6 +78,25 @@ namespace GitVersion
             if (string.IsNullOrEmpty(format))
                 format = "b";
 
+
+            format = format.ToLower();
+            if (format.StartsWith("p", StringComparison.Ordinal))
+            {
+                // Handle format
+                var padding = 4;
+                if (format.Length > 1)
+                {
+                    // try to parse
+                    int p;
+                    if (int.TryParse(format.Substring(1), out p))
+                    {
+                        padding = p;
+                    }
+                }
+
+                return CommitsSinceTag != null ? CommitsSinceTag.Value.ToString("D" + padding) : string.Empty; 
+            }
+            
             switch (format.ToLower())
             {
                 case "b":
@@ -92,9 +111,6 @@ namespace GitVersion
                         string.IsNullOrEmpty(Sha) ? null : ".Sha." + Sha,
                         string.IsNullOrEmpty(OtherMetaData) ? null : "." + OtherMetaData)
                         .TrimStart('.');
-                case "p":
-                    return CommitsSinceTag.ToString(); // TODO: implement padding; placeholder
-
                 default:
                     throw new ArgumentException("Unrecognised format", "format");
             }
