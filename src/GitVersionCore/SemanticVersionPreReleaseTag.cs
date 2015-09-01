@@ -133,7 +133,7 @@ namespace GitVersion
         /// Default formats:
         /// <para>t - SemVer 2.0 formatted tag [beta.1]</para>
         /// <para>l - Legacy SemVer tag with the tag number padded. [beta1]</para>
-        /// <para>lp - Legacy SemVer tag with the tag number padded. [beta0001]</para>
+        /// <para>lp - Legacy SemVer tag with the tag number padded. [beta0001]. Can specify an integer to control padding (i.e., lp5)</para>
         /// </summary>
         public string ToString(string format, IFormatProvider formatProvider = null)
         {

@@ -64,6 +64,7 @@ namespace GitVersion
         /// <para>b - Formats just the build number</para>
         /// <para>s - Formats the build number and the Git Sha</para>
         /// <para>f - Formats the full build metadata</para>
+        /// <para>p - Formats the padded build number. Can specify an integer for padding, default is 4. (i.e., p5)</para>
         /// </summary>
         public string ToString(string format, IFormatProvider formatProvider = null)
         {
