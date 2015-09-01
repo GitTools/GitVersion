@@ -28,6 +28,9 @@ namespace GitVersion
             config.MinorVersionBumpMessage = config.MinorVersionBumpMessage ?? IncrementStrategyFinder.DefaultMinorPattern;
             config.PatchVersionBumpMessage = config.PatchVersionBumpMessage ?? IncrementStrategyFinder.DefaultPatchPattern;
             config.CommitMessageIncrementing = config.CommitMessageIncrementing ?? CommitMessageIncrementMode.Enabled;
+            config.LegacySemVerPadding = config.LegacySemVerPadding ?? 4;
+            config.BuildMetaDataPadding = config.BuildMetaDataPadding ?? 4;
+
             var configBranches = config.Branches.ToList();
 
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "master"), defaultTag: string.Empty, defaultPreventIncrement: true);

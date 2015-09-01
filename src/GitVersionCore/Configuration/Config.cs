@@ -32,6 +32,12 @@
         [YamlMember(Alias = "patch-version-bump-message")]
         public string PatchVersionBumpMessage { get; set; }
 
+        [YamlMember(Alias = "legacy-semver-padding")]
+        public int? LegacySemVerPadding { get; set; }
+
+        [YamlMember(Alias = "build-metadata-padding")]
+        public int? BuildMetaDataPadding { get; set; }
+
         [YamlMember(Alias = "commit-message-incrementing")]
         public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
 

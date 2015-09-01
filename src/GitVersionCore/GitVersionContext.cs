@@ -117,7 +117,9 @@
                 tagNumberPattern, configuration.ContinuousDeploymentFallbackTag,
                 trackMergeTarget,
                 majorMessage, minorMessage, patchMessage,
-                commitMessageVersionBump);
+                commitMessageVersionBump,
+                configuration.LegacySemVerPadding.Value,
+                configuration.BuildMetaDataPadding.Value);
         }
     }
 }
