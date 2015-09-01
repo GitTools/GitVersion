@@ -75,16 +75,16 @@ release-branch-tag has been replaced by branch specific configuration.See http:/
         const string text = @"
 next-version: 2.0.0
 branches:
-    develop:
+    dev(elop)?(ment)?$:
         mode: ContinuousDeployment
         tag: dev";
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
 
         config.NextVersion.ShouldBe("2.0.0");
-        config.Branches["develop"].Increment.ShouldBe(defaultConfig.Branches["develop"].Increment);
-        config.Branches["develop"].VersioningMode.ShouldBe(defaultConfig.Branches["develop"].VersioningMode);
-        config.Branches["develop"].Tag.ShouldBe("dev");
+        config.Branches["dev(elop)?(ment)?$"].Increment.ShouldBe(defaultConfig.Branches["dev(elop)?(ment)?$"].Increment);
+        config.Branches["dev(elop)?(ment)?$"].VersioningMode.ShouldBe(defaultConfig.Branches["dev(elop)?(ment)?$"].VersioningMode);
+        config.Branches["dev(elop)?(ment)?$"].Tag.ShouldBe("dev");
     }
 
     [Test]
@@ -117,7 +117,7 @@ branches:
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
-        config.Branches["develop"].Tag.ShouldBe("unstable");
+        config.Branches["dev(elop)?(ment)?$"].Tag.ShouldBe("unstable");
         config.Branches["release[/-]"].Tag.ShouldBe("beta");
         config.TagPrefix.ShouldBe(ConfigurationProvider.DefaultTagPrefix);
         config.NextVersion.ShouldBe(null);

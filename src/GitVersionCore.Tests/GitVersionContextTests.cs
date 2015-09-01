@@ -39,7 +39,7 @@
                 Branches =
                 {
                     {
-                        "develop", new BranchConfig
+                        "dev(elop)?(ment)?$", new BranchConfig
                         {
                             VersioningMode = VersioningMode.ContinuousDeployment,
                             Tag = "alpha"
@@ -68,7 +68,7 @@
             {
                 Branches =
                 {
-                    { "develop", new BranchConfig { Increment = IncrementStrategy.Major} },
+                    { "dev(elop)?(ment)?$", new BranchConfig { Increment = IncrementStrategy.Major} },
                     { "feature[/-]", new BranchConfig { Increment = IncrementStrategy.Inherit} }
                 }
             };

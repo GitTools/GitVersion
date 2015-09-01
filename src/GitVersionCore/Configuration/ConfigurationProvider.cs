@@ -39,7 +39,7 @@ namespace GitVersion
                 defaultIncrementStrategy: IncrementStrategy.Inherit);
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "hotfix[/-]"), defaultTag: "beta");
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "support[/-]"), defaultTag: string.Empty, defaultPreventIncrement: true);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "develop"), 
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "dev(elop)?(ment)?$"), 
                 defaultTag: "unstable",
                 defaultIncrementStrategy: IncrementStrategy.Minor,
                 defaultVersioningMode: VersioningMode.ContinuousDeployment,
