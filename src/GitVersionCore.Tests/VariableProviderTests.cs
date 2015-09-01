@@ -31,6 +31,29 @@ public class VariableProviderTests
     }
 
     [Test]
+    public void ProvidesVariablesInContinuousDeliveryModeForPreReleaseWithPadding()
+    {
+        var semVer = new SemanticVersion
+        {
+            Major = 1,
+            Minor = 2,
+            Patch = 3,
+            PreReleaseTag = "unstable.4",
+            BuildMetaData = "5.Branch.develop"
+        };
+
+        semVer.BuildMetaData.Sha = "commitSha";
+        semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
+
+
+        var config = new TestEffectiveConfiguration(buildMetaDataPadding: 2, legacySemVerPadding: 5);
+
+        var vars = VariableProvider.GetVariablesFor(semVer, config, false);
+
+        Approvals.Verify(JsonOutputFormatter.ToJson(vars));
+    }
+
+    [Test]
     public void ProvidesVariablesInContinuousDeploymentModeForPreRelease()
     {
         var semVer = new SemanticVersion
