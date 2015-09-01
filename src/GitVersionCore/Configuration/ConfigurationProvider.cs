@@ -31,13 +31,13 @@ namespace GitVersion
             var configBranches = config.Branches.ToList();
 
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "master"), defaultTag: string.Empty, defaultPreventIncrement: true);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "release[/-]"), defaultTag: "beta", defaultPreventIncrement: true);
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "releases?[/-]"), defaultTag: "beta", defaultPreventIncrement: true);
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "features?[/-]"), defaultIncrementStrategy: IncrementStrategy.Inherit);
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, @"(pull|pull\-requests|pr)[/-]"),
                 defaultTag: "PullRequest",
                 defaultTagNumberPattern: @"[/-](?<number>\d+)[-/]",
                 defaultIncrementStrategy: IncrementStrategy.Inherit);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "hotfix[/-]"), defaultTag: "beta");
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "hotfix(es)?[/-]"), defaultTag: "beta");
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "support[/-]"), defaultTag: string.Empty, defaultPreventIncrement: true);
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "dev(elop)?(ment)?$"), 
                 defaultTag: "unstable",

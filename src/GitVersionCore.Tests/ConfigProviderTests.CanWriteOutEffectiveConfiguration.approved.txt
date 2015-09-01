@@ -13,7 +13,7 @@ branches:
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-  release[/-]:
+  releases?[/-]:
     mode: ContinuousDelivery
     tag: beta
     increment: Patch
@@ -32,7 +32,7 @@ branches:
     prevent-increment-of-merged-branch-version: false
     tag-number-pattern: '[/-](?<number>\d+)[-/]'
     track-merge-target: false
-  hotfix[/-]:
+  hotfix(es)?[/-]:
     mode: ContinuousDelivery
     tag: beta
     increment: Patch

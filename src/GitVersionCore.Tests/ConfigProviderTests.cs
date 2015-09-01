@@ -118,7 +118,7 @@ branches:
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
         config.Branches["dev(elop)?(ment)?$"].Tag.ShouldBe("unstable");
-        config.Branches["release[/-]"].Tag.ShouldBe("beta");
+        config.Branches["releases?[/-]"].Tag.ShouldBe("beta");
         config.TagPrefix.ShouldBe(ConfigurationProvider.DefaultTagPrefix);
         config.NextVersion.ShouldBe(null);
     }
