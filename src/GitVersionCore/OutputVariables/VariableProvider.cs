@@ -2,18 +2,15 @@
 {
     public static class VariableProvider
     {
-        public static VersionVariables GetVariablesFor(
-            SemanticVersion semanticVersion, AssemblyVersioningScheme assemblyVersioningScheme, 
-            VersioningMode mode, string continuousDeploymentFallbackTag, 
-            bool currentCommitIsTagged)
+        public static VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)
         {
-            if (mode == VersioningMode.ContinuousDeployment && !currentCommitIsTagged)
+            if (config.VersioningMode == VersioningMode.ContinuousDeployment && !isCurrentCommitTagged)
             {
                 semanticVersion = new SemanticVersion(semanticVersion);
                 // Continuous Deployment always requires a pre-release tag unless the commit is tagged
                 if (!semanticVersion.PreReleaseTag.HasTag())
                 {
-                    semanticVersion.PreReleaseTag.Name = continuousDeploymentFallbackTag;
+                    semanticVersion.PreReleaseTag.Name = config.ContinuousDeploymentFallbackTag;
                 }
 
                 // For continuous deployment the commits since tag gets promoted to the pre-release number
@@ -28,12 +25,13 @@
                 preReleaseTag: semanticVersion.PreReleaseTag,
                 preReleaseTagWithDash: semanticVersion.PreReleaseTag.HasTag() ? "-" + semanticVersion.PreReleaseTag : null,
                 buildMetaData: semanticVersion.BuildMetaData,
+                buildMetaDataPadded: semanticVersion.BuildMetaData.ToString("p"),
                 fullBuildMetaData: semanticVersion.BuildMetaData.ToString("f"),
                 majorMinorPatch: string.Format("{0}.{1}.{2}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch),
                 semVer: semanticVersion.ToString(),
                 legacySemVer: semanticVersion.ToString("l"),
                 legacySemVerPadded: semanticVersion.ToString("lp"),
-                assemblySemVer: semanticVersion.GetAssemblyVersion(assemblyVersioningScheme),
+                assemblySemVer: semanticVersion.GetAssemblyVersion(config.AssemblyVersioningScheme),
                 fullSemVer: semanticVersion.ToString("f"),
                 informationalVersion: semanticVersion.ToString("i"),
                 branchName: semanticVersion.BuildMetaData.Branch,

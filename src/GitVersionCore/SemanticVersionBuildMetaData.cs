@@ -92,6 +92,9 @@ namespace GitVersion
                         string.IsNullOrEmpty(Sha) ? null : ".Sha." + Sha,
                         string.IsNullOrEmpty(OtherMetaData) ? null : "." + OtherMetaData)
                         .TrimStart('.');
+                case "p":
+                    return CommitsSinceTag.ToString(); // TODO: implement padding; placeholder
+
                 default:
                     throw new ArgumentException("Unrecognised format", "format");
             }

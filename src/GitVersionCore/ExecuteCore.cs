@@ -31,8 +31,7 @@ namespace GitVersion
             {
                 var gitVersionContext = new GitVersionContext(repo, configuration, commitId: commitId);
                 var semanticVersion = versionFinder.FindVersion(gitVersionContext);
-                var config = gitVersionContext.Configuration;
-                variables = VariableProvider.GetVariablesFor(semanticVersion, config.AssemblyVersioningScheme, config.VersioningMode, config.ContinuousDeploymentFallbackTag, gitVersionContext.IsCurrentCommitTagged);
+                variables = VariableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
             }
 
             return variables;
