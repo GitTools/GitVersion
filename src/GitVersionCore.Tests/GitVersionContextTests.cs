@@ -69,7 +69,7 @@
                 Branches =
                 {
                     { "dev(elop)?(ment)?$", new BranchConfig { Increment = IncrementStrategy.Major} },
-                    { "feature[/-]", new BranchConfig { Increment = IncrementStrategy.Inherit} }
+                    { "features?[/-]", new BranchConfig { Increment = IncrementStrategy.Inherit} }
                 }
             };
 

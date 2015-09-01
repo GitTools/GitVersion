@@ -19,7 +19,7 @@ branches:
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-  feature[/-]:
+  features?[/-]:
     mode: ContinuousDelivery
     tag: useBranchName
     increment: Inherit
