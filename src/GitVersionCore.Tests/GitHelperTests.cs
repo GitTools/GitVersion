@@ -100,5 +100,34 @@
                 }
             }
         }
+
+        [Test]
+        public void ShouldNotChangeBranchWhenNormalizingTheDirectory()
+        {
+            using (var fixture = new EmptyRepositoryFixture(new Config()))
+            {
+                fixture.Repository.MakeATaggedCommit("v1.0.0");
+
+                fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));
+                var lastCommitOnDevelop = fixture.Repository.MakeACommit();
+
+                fixture.Repository.Checkout(fixture.Repository.CreateBranch("feature/foo"));
+                fixture.Repository.MakeACommit();
+
+                using (var localFixture = fixture.CloneRepository())
+                {
+                    localFixture.Repository.Checkout("origin/develop");
+
+                    // Another commit on feature/foo will force an update
+                    fixture.Checkout("feature/foo");
+                    fixture.Repository.MakeACommit();
+
+                    GitHelper.NormalizeGitDirectory(localFixture.RepositoryPath, new Authentication(), noFetch: false, currentBranch: null);
+
+                    localFixture.Repository.DumpGraph();
+                    localFixture.Repository.Head.Tip.Sha.ShouldBe(lastCommitOnDevelop.Sha);
+                }
+            }
+        }
     }
 }
