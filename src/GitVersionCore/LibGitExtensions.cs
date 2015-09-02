@@ -48,7 +48,7 @@ namespace GitVersion
         {
             using (Logger.IndentLog("Finding branch source"))
             {
-                var otherBranches = repository.Branches.Except(excludedBranches).Where(b => IsSameBranch(branch, b)).ToList();
+                var otherBranches = repository.Branches.Except(excludedBranches).Where(b => b.Tip != null).Where(b => IsSameBranch(branch, b)).ToList();
                 var mergeBases = otherBranches.Select(b =>
                 {
                     var otherCommit = b.Tip;
