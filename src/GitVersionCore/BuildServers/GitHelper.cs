@@ -279,7 +279,6 @@ namespace GitVersion
                     var remoteRefTipId = remotedirectReference.Target.Id;
                     Logger.WriteInfo(string.Format("Updating local ref '{0}' to point at {1}.", localRef.CanonicalName, remoteRefTipId));
                     repo.Refs.UpdateTarget(localRef, remoteRefTipId);
-                    repo.Checkout(branchName);
                     continue;
                 }
 
