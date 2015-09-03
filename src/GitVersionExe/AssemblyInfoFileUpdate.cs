@@ -5,12 +5,13 @@ namespace GitVersion
     using System.IO;
     using System.Linq;
     using GitVersion.Helpers;
+    using GitVersion.VersionAssemblyInfoResources;
 
     class AssemblyInfoFileUpdate : IDisposable
     {
         List<Action> restoreBackupTasks = new List<Action>();
         List<Action> cleanupBackupTasks = new List<Action>();
-
+        
         public AssemblyInfoFileUpdate(Arguments args, string workingDirectory, VersionVariables variables, IFileSystem fileSystem)
         {
             if (!args.UpdateAssemblyInfo) return;
@@ -51,14 +52,33 @@ namespace GitVersion
             {
                 var fullPath = Path.Combine(workingDirectory, args.UpdateAssemblyInfoFileName);
 
-                if (fileSystem.Exists(fullPath))
+                if (EnsureVersionAssemblyInfoFile(args, fileSystem, fullPath))
                 {
-                    return new[] { fullPath };
+                    return new[]
+                    {
+                        fullPath
+                    };
                 }
             }
 
             return fileSystem.DirectoryGetFiles(workingDirectory, "AssemblyInfo.*", SearchOption.AllDirectories)
                 .Where(f => f.EndsWith(".cs", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".vb", StringComparison.OrdinalIgnoreCase));
+        }
+
+        static bool EnsureVersionAssemblyInfoFile(Arguments arguments, IFileSystem fileSystem, string fullPath)
+        {
+            if (fileSystem.Exists(fullPath)) return true;
+
+            if (!arguments.EnsureAssemblyInfo) return false;
+
+            var assemblyInfoSource = AssemblyVersionInfoTemplates.GetAssemblyInfoTemplateFor(fullPath);
+            if (!string.IsNullOrWhiteSpace(assemblyInfoSource))
+            {
+                fileSystem.WriteAllText(fullPath, assemblyInfoSource);
+                return true;
+            }
+            Logger.WriteWarning(string.Format("No version assembly info template available to create source file '{0}'", arguments.UpdateAssemblyInfoFileName));
+            return false;
         }
 
         public void Dispose()
