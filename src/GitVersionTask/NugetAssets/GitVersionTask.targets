@@ -42,6 +42,7 @@
       <Output TaskParameter="Minor" PropertyName="GitVersion_Minor" />
       <Output TaskParameter="Patch" PropertyName="GitVersion_Patch" />
       <Output TaskParameter="BuildMetaData" PropertyName="GitVersion_BuildMetaData" />
+      <Output TaskParameter="BuildMetaDataPadded" PropertyName="GitVersion_BuildMetaDataPadded" />
       <Output TaskParameter="FullBuildMetaData" PropertyName="GitVersion_FullBuildMetaData" />
       <Output TaskParameter="BranchName" PropertyName="GitVersion_BranchName" />
       <Output TaskParameter="Sha" PropertyName="GitVersion_Sha" />
