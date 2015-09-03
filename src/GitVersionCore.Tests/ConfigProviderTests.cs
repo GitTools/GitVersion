@@ -24,7 +24,7 @@ public class ConfigProviderTests
     }
 
     [Test]
-    public void CanReadDocument()
+    public void CanReadDocumentAndMigrate()
     {
         const string text = @"
 assembly-versioning-scheme: MajorMinor
@@ -46,10 +46,10 @@ branches:
         config.NextVersion.ShouldBe("2.0.0");
         config.TagPrefix.ShouldBe("[vV|version-]");
         config.VersioningMode.ShouldBe(VersioningMode.ContinuousDelivery);
-        config.Branches["develop"].Tag.ShouldBe("dev");
-        config.Branches["release[/-]"].Tag.ShouldBe("rc");
-        config.Branches["release[/-]"].VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
-        config.Branches["develop"].VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
+        config.Branches["dev(elop)?(ment)?$"].Tag.ShouldBe("dev");
+        config.Branches["releases?[/-]"].Tag.ShouldBe("rc");
+        config.Branches["releases?[/-]"].VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
+        config.Branches["dev(elop)?(ment)?$"].VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
     }
 
     [Test]

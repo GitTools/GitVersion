@@ -1,5 +1,6 @@
 namespace GitVersion
 {
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -20,6 +21,8 @@ namespace GitVersion
 
         public static void ApplyDefaultsTo(Config config)
         {
+            MigrateBranches(config);
+
             config.AssemblyVersioningScheme = config.AssemblyVersioningScheme ?? AssemblyVersioningScheme.MajorMinorPatch;
             config.TagPrefix = config.TagPrefix ?? DefaultTagPrefix;
             config.VersioningMode = config.VersioningMode ?? VersioningMode.ContinuousDelivery;
@@ -52,6 +55,33 @@ namespace GitVersion
                 ApplyBranchDefaults(config, branchConfig.Value);
             }
         }
+
+        static void MigrateBranches(Config config)
+        {
+            // Map of current names and previous names
+            var dict = new Dictionary<string, string[]>
+            {
+                { "hotfix(es)?[/-]", new []{"hotfix[/-]"}},
+                { "features?[/-]", new []{"feature[/-]"}},
+                { "releases?[/-]", new []{"release[/-]"}},
+                { "dev(elop)?(ment)?$", new []{"develop"}}
+            };
+
+            foreach (var mapping in dict)
+            {
+                foreach (var source in mapping.Value)
+                {
+                    if (config.Branches.ContainsKey(source))
+                    {
+                        // found one, rename
+                        var bc = config.Branches[source];
+                        config.Branches.Remove(source);
+                        config.Branches[mapping.Key] = bc; // re-add with new name
+                    }
+                }
+            }
+        }
+
 
         static BranchConfig GetOrCreateBranchDefaults(Config config, string branch)
         {
