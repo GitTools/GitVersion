@@ -71,7 +71,7 @@ namespace GitVersion
         public static IEnumerable<Branch> GetBranchesContainingCommit(this Commit commit, IRepository repository, bool onlyTrackedBranches)
         {
             var directBranchHasBeenFound = false;
-            foreach (var branch in repository.Branches)
+            foreach (var branch in repository.Branches.Where(b => b.Tip != null))
             {
                 if (branch.Tip.Sha != commit.Sha || (onlyTrackedBranches && !branch.IsTracking))
                 {
