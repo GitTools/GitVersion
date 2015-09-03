@@ -32,6 +32,7 @@ namespace GitVersion
 
         public bool UpdateAssemblyInfo;
         public string UpdateAssemblyInfoFileName;
+        public bool EnsureAssemblyInfo;
 
         public bool ShowConfig;
         public bool NoFetch;
