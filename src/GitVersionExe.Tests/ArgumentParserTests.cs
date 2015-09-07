@@ -206,6 +206,27 @@ public class ArgumentParserTests
     }
 
     [Test]
+    public void ensure_assembly_info_true_when_found()
+    {
+        var arguments = ArgumentParser.ParseArguments("-ensureAssemblyInfo");
+        arguments.EnsureAssemblyInfo.ShouldBe(true);
+    }
+
+    [Test]
+    public void ensure_assembly_info_true()
+    {
+        var arguments = ArgumentParser.ParseArguments("-ensureAssemblyInfo true");
+        arguments.EnsureAssemblyInfo.ShouldBe(true);
+    }
+
+    [Test]
+    public void ensure_assembly_info_false()
+    {
+        var arguments = ArgumentParser.ParseArguments("-ensureAssemblyInfo false");
+        arguments.EnsureAssemblyInfo.ShouldBe(false);
+    }
+
+    [Test]
     public void dynamicRepoLocation()
     {
         var arguments = ArgumentParser.ParseArguments("-dynamicRepoLocation c:\\foo\\");

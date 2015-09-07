@@ -233,6 +233,24 @@ namespace GitVersion
                     continue;
                 }
 
+                if (IsSwitch("ensureassemblyinfo", name))
+                {
+                    if (new[] { "1", "true" }.Contains(value, StringComparer.OrdinalIgnoreCase))
+                    {
+                        arguments.EnsureAssemblyInfo = true;
+                    }
+                    else if (new[] { "0", "false" }.Contains(value, StringComparer.OrdinalIgnoreCase))
+                    {
+                        arguments.EnsureAssemblyInfo = false;
+                    }
+                    else
+                    {
+                        arguments.EnsureAssemblyInfo = true;
+                    }
+                    
+                    continue;
+                }
+
                 throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", name));
             }
 
