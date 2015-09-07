@@ -5,6 +5,7 @@
   "PreReleaseTag":"",
   "PreReleaseTagWithDash":"",
   "BuildMetaData":5,
+  "BuildMetaDataPadded":"0005",
   "FullBuildMetaData":"5.Sha.commitSha",
   "MajorMinorPatch":"1.2.3",
   "SemVer":"1.2.3",

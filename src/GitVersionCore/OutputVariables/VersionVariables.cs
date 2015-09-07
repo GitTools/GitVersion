@@ -6,13 +6,14 @@
 
     public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     {
-        public VersionVariables(string major, string minor, string patch, string buildMetaData, string fullBuildMetaData, string branchName, string sha, string majorMinorPatch, string semVer, string legacySemVer, string legacySemVerPadded, string fullSemVer, string assemblySemVer, string preReleaseTag, string preReleaseTagWithDash, string informationalVersion,
+        public VersionVariables(string major, string minor, string patch, string buildMetaData, string buildMetaDataPadded, string fullBuildMetaData, string branchName, string sha, string majorMinorPatch, string semVer, string legacySemVer, string legacySemVerPadded, string fullSemVer, string assemblySemVer, string preReleaseTag, string preReleaseTagWithDash, string informationalVersion,
             string commitDate)
         {
             Major = major;
             Minor = minor;
             Patch = patch;
             BuildMetaData = buildMetaData;
+            BuildMetaDataPadded = buildMetaDataPadded;
             FullBuildMetaData = fullBuildMetaData;
             BranchName = branchName;
             Sha = sha;
@@ -34,6 +35,7 @@
         public string PreReleaseTag { get; private set; }
         public string PreReleaseTagWithDash { get; private set; }
         public string BuildMetaData { get; private set; }
+        public string BuildMetaDataPadded { get; private set; }
         public string FullBuildMetaData { get; private set; }
         public string MajorMinorPatch { get; private set; }
         public string SemVer { get; private set; }

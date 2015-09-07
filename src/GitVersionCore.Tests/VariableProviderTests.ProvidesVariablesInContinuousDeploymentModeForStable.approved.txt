@@ -5,6 +5,7 @@
   "PreReleaseTag":"ci.5",
   "PreReleaseTagWithDash":"-ci.5",
   "BuildMetaData":"",
+  "BuildMetaDataPadded":"",
   "FullBuildMetaData":"Branch.develop.Sha.commitSha",
   "MajorMinorPatch":"1.2.3",
   "SemVer":"1.2.3-ci.5",

@@ -33,6 +33,9 @@
         public string BuildMetaData { get; set; }
 
         [Output]
+        public string BuildMetaDataPadded { get; set; }
+
+        [Output]
         public string FullBuildMetaData { get; set; }
 
         [Output]

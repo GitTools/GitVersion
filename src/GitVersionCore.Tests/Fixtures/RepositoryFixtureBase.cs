@@ -152,11 +152,7 @@ noteText.Replace("\n", "\n  "));
     {
         var gitVersionContext = new GitVersionContext(repository ?? Repository, configuration, IsForTrackedBranchOnly, commitId);
         var executeGitVersion = ExecuteGitVersion(gitVersionContext);
-        var variables = VariableProvider.GetVariablesFor(executeGitVersion,
-            gitVersionContext.Configuration.AssemblyVersioningScheme,
-            gitVersionContext.Configuration.VersioningMode,
-            gitVersionContext.Configuration.ContinuousDeploymentFallbackTag,
-            gitVersionContext.IsCurrentCommitTagged);
+        var variables = VariableProvider.GetVariablesFor(executeGitVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
         try
         {
             return variables;

@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using ApprovalTests;
 using GitVersion;
+using GitVersionCore.Tests;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using NUnit.Framework;
@@ -25,7 +26,10 @@ public class AssemblyInfoBuilderTests
                 "feature1", "commitSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
         };
         var assemblyInfoBuilder = new AssemblyInfoBuilder();
-        var versionVariables = VariableProvider.GetVariablesFor(semanticVersion, AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDelivery, "ci", false);
+
+        var config = new TestEffectiveConfiguration();
+
+        var versionVariables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
         var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, "Fake");
         Approvals.Verify(assemblyInfoText);
 
@@ -86,7 +90,10 @@ public class AssemblyInfoBuilderTests
                 "master", "commitSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z")),
         };
         var assemblyInfoBuilder = new AssemblyInfoBuilder();
-        var versionVariables = VariableProvider.GetVariablesFor(semanticVersion, avs, VersioningMode.ContinuousDelivery, "ci", false);
+
+        var config = new TestEffectiveConfiguration(assemblyVersioningScheme: avs);
+
+        var versionVariables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
         var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, "Fake");
         Approvals.Verify(assemblyInfoText);
 

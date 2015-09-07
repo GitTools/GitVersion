@@ -252,7 +252,15 @@ namespace GitVersion
                     return formatter.Format(format, this, formatProvider);
             }
 
-            switch (format.ToLower())
+            // Check for lp first because the param can varry
+            format = format.ToLower();
+            if (format.StartsWith("lp", StringComparison.Ordinal))
+            {
+                // handle the padding
+                return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag.ToString(format)) : ToString("j");
+            }
+
+            switch (format)
             {
                 case "j":
                     return string.Format("{0}.{1}.{2}", Major, Minor, Patch);
@@ -262,8 +270,6 @@ namespace GitVersion
                     return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag.ToString("t")) : ToString("j");
                 case "l":
                     return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag.ToString("l")) : ToString("j");
-                case "lp":
-                    return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag.ToString("lp")) : ToString("j");
                 case "f":
                     {
                         var buildMetadata = BuildMetaData.ToString();

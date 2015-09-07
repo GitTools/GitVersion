@@ -133,7 +133,7 @@ namespace GitVersion
         /// Default formats:
         /// <para>t - SemVer 2.0 formatted tag [beta.1]</para>
         /// <para>l - Legacy SemVer tag with the tag number padded. [beta1]</para>
-        /// <para>lp - Legacy SemVer tag with the tag number padded. [beta0001]</para>
+        /// <para>lp - Legacy SemVer tag with the tag number padded. [beta0001]. Can specify an integer to control padding (i.e., lp5)</para>
         /// </summary>
         public string ToString(string format, IFormatProvider formatProvider = null)
         {
@@ -148,14 +148,31 @@ namespace GitVersion
             if (string.IsNullOrEmpty(format))
                 format = "t";
 
-            switch (format.ToLower())
+            format = format.ToLower();
+            if (format.StartsWith("lp", StringComparison.Ordinal))
+            {
+                // Handle format
+                var padding = 4;
+                if (format.Length > 2)
+                {
+                    // try to parse
+                    int p;
+                    if (int.TryParse(format.Substring(2), out p))
+                    {
+                        padding = p;
+                    }
+                }
+
+                return Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString("D" + padding)) : FormatLegacy(GetLegacyName());
+            }
+
+
+            switch (format)
             {
                 case "t":
                     return Number.HasValue ? string.Format("{0}.{1}", Name, Number) : Name;
                 case "l":
                     return Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString()) : FormatLegacy(GetLegacyName());
-                case "lp":
-                    return Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString("D4")) : FormatLegacy(GetLegacyName());
                 default:
                     throw new ArgumentException("Unknown format", "format");
             }

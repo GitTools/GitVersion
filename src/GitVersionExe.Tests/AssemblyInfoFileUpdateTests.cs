@@ -2,6 +2,7 @@
 using System.IO;
 using GitVersion;
 using GitVersion.Helpers;
+using GitVersionCore.Tests;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -13,7 +14,9 @@ public class AssemblyInfoFileUpdateTests
     {
         var fileSystem = Substitute.For<IFileSystem>();
         const string workingDir = "C:\\Testing";
-        var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), AssemblyVersioningScheme.MajorMinorPatch, VersioningMode.ContinuousDelivery, "ci", false);
+
+        var config = new TestEffectiveConfiguration();
+        var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), config, false);
         using (new AssemblyInfoFileUpdate(new Arguments { UpdateAssemblyInfo = true }, workingDir, variables, fileSystem))
         {
             fileSystem.Received().DirectoryGetFiles(Arg.Is(workingDir), Arg.Any<string>(), Arg.Any<SearchOption>());
@@ -39,7 +42,10 @@ AssemblyFileVersion(""1.0.0.0"");";
 
         fileSystem.Exists("C:\\Testing\\AssemblyInfo.cs").Returns(true);
         fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.cs").Returns(assemblyInfoFile);
-        var variable = VariableProvider.GetVariablesFor(version, AssemblyVersioningScheme.MajorMinor, VersioningMode.ContinuousDelivery, "ci", false);
+
+        var config = new TestEffectiveConfiguration(assemblyVersioningScheme: AssemblyVersioningScheme.MajorMinor);
+
+        var variable = VariableProvider.GetVariablesFor(version, config, false);
         var args = new Arguments
         {
             UpdateAssemblyInfo = true,
@@ -73,7 +79,9 @@ AssemblyFileVersion(""1.0.0.*"");";
 
         fileSystem.Exists("C:\\Testing\\AssemblyInfo.cs").Returns(true);
         fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.cs").Returns(assemblyInfoFile);
-        var variable = VariableProvider.GetVariablesFor(version, AssemblyVersioningScheme.MajorMinor, VersioningMode.ContinuousDelivery, "ci", false);
+
+        var config = new TestEffectiveConfiguration(assemblyVersioningScheme: AssemblyVersioningScheme.MajorMinor);
+        var variable = VariableProvider.GetVariablesFor(version, config, false);
         var args = new Arguments
         {
             UpdateAssemblyInfo = true,
