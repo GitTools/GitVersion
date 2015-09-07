@@ -59,7 +59,7 @@ public class DevelopScenarios
         {
             Branches =
             {
-                {"develop", new BranchConfig
+                {"dev(elop)?(ment)?$", new BranchConfig
                 {
                     Tag = "alpha"
                 }
@@ -72,6 +72,18 @@ public class DevelopScenarios
             fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));
             fixture.Repository.MakeACommit();
             fixture.AssertFullSemver("1.1.0-alpha.1");
+        }
+    }
+
+    [Test]
+    public void WhenDeveloperBranchExistsDontTreatAsDevelop()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.Checkout(fixture.Repository.CreateBranch("developer"));
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver("1.0.1-developer.1+1"); // this tag should be the branch name by default, not unstable
         }
     }
 
@@ -113,7 +125,7 @@ public class DevelopScenarios
         {
             Branches =
             {
-                {"develop", new BranchConfig
+                {"dev(elop)?(ment)?$", new BranchConfig
                 {
                     VersioningMode = VersioningMode.ContinuousDelivery
                 }

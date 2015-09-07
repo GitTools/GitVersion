@@ -112,6 +112,20 @@ public class FeatureBranchScenarios
     }
 
     [Test]
+    public void TestFeaturesBranch()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.CreateBranch("features/test");
+            fixture.Repository.Checkout("features/test");
+            fixture.Repository.MakeCommits(5);
+
+            fixture.AssertFullSemver("1.0.1-test.1+5");
+        }
+    }
+
+    [Test]
     public void WhenTwoFeatureBranchPointToTheSameCommit()
     {
         using (var fixture = new EmptyRepositoryFixture(new Config()))

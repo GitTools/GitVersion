@@ -43,6 +43,33 @@ public class HotfixBranchScenarios
     }
 
     [Test]
+    public void CanTakeVersionFromHotfixesBranch()
+    {
+        using (var fixture = new BaseGitFlowRepositoryFixture(r =>
+        {
+            r.MakeATaggedCommit("1.0.0");
+            r.MakeATaggedCommit("1.1.0");
+            r.MakeATaggedCommit("2.0.0");
+        }))
+        {
+
+            // Merge hotfix branch to support
+            fixture.Repository.Checkout("master");
+            fixture.Repository.Checkout(fixture.Repository.CreateBranch("support-1.1", (Commit)fixture.Repository.Tags.Single(t => t.Name == "1.1.0").Target));
+            fixture.AssertFullSemver("1.1.0");
+
+            // create hotfix branch
+            fixture.Repository.Checkout(fixture.Repository.CreateBranch("hotfixes/1.1.1"));
+            fixture.AssertFullSemver("1.1.0"); // We are still on a tagged commit
+            fixture.Repository.MakeACommit();
+
+            fixture.AssertFullSemver("1.1.1-beta.1+1");
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver("1.1.1-beta.1+2");
+        }
+    }
+
+    [Test]
     public void PatchOlderReleaseExample()
     {
         using (var fixture = new BaseGitFlowRepositoryFixture(r =>

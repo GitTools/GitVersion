@@ -72,6 +72,22 @@ public class ReleaseBranchScenarios
     }
 
     [Test]
+    public void CanTakeVersionFromReleasesBranch()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.3");
+            fixture.Repository.MakeCommits(5);
+            fixture.Repository.CreateBranch("releases/2.0.0");
+            fixture.Repository.Checkout("releases/2.0.0");
+
+            fixture.AssertFullSemver("2.0.0-beta.1+0");
+            fixture.Repository.MakeCommits(2);
+            fixture.AssertFullSemver("2.0.0-beta.1+2");
+        }
+    }
+
+    [Test]
     public void ReleaseBranchWithNextVersionSetInConfig()
     {
         using (var fixture = new EmptyRepositoryFixture(new Config
@@ -95,7 +111,7 @@ public class ReleaseBranchScenarios
         {
             Branches =
             {
-                { "release[/-]", new BranchConfig { Tag = "rc" } }
+                { "releases?[/-]", new BranchConfig { Tag = "rc" } }
             }
         };
         using (var fixture = new EmptyRepositoryFixture(config))
