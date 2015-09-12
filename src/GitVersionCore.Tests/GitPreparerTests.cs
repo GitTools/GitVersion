@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using GitTools.Testing;
+using GitTools.Testing.Fixtures;
 using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -25,7 +27,7 @@ public class GitPreparerTests
 
         try
         {
-            using (var fixture = new EmptyRepositoryFixture(new Config()))
+            using (var fixture = new EmptyRepositoryFixture())
             {
                 var expectedDynamicRepoLocation = Path.Combine(tempPath, fixture.RepositoryPath.Split('\\').Last());
 
@@ -71,7 +73,7 @@ public class GitPreparerTests
 
         try
         {
-            using (var mainRepositoryFixture = new EmptyRepositoryFixture(new Config()))
+            using (var mainRepositoryFixture = new EmptyRepositoryFixture())
             {
                 mainRepositoryFixture.Repository.MakeCommits(1);
 
@@ -109,7 +111,7 @@ public class GitPreparerTests
 
         try
         {
-            using (var fixture = new EmptyRepositoryFixture(new Config()))
+            using (var fixture = new EmptyRepositoryFixture())
             {
                 fixture.Repository.CreateFileAndCommit("TestFile.txt");
                 File.Copy(Path.Combine(fixture.RepositoryPath, "TestFile.txt"), Path.Combine(tempDir, "TestFile.txt"));
@@ -154,7 +156,7 @@ public class GitPreparerTests
 
         try
         {
-            using (var mainRepositoryFixture = new EmptyRepositoryFixture(new Config()))
+            using (var mainRepositoryFixture = new EmptyRepositoryFixture())
             {
                 mainRepositoryFixture.Repository.MakeACommit();
 
@@ -182,7 +184,7 @@ public class GitPreparerTests
 
         try
         {
-            using (var mainRepositoryFixture = new EmptyRepositoryFixture(new Config()))
+            using (var mainRepositoryFixture = new EmptyRepositoryFixture())
             {
                 mainRepositoryFixture.Repository.MakeACommit();
 

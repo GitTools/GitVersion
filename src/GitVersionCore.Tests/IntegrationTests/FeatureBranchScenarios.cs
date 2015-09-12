@@ -1,4 +1,7 @@
+using GitTools.Testing;
+using GitTools.Testing.Fixtures;
 using GitVersion;
+using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
 
@@ -8,7 +11,7 @@ public class FeatureBranchScenarios
     [Test]
     public void ShouldInheritIncrementCorrectlyWithMultiplePossibleParentsAndWeirdlyNamedDevelopBranch()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("development");
@@ -21,7 +24,7 @@ public class FeatureBranchScenarios
 
             //Merge it
             fixture.Repository.Checkout("development");
-            fixture.Repository.Merge(feature123, Constants.SignatureNow());
+            fixture.Repository.Merge(feature123, Generate.SignatureNow());
 
             //Create a second feature branch
             fixture.Repository.CreateBranch("feature/JIRA-124");
@@ -43,7 +46,7 @@ public class FeatureBranchScenarios
             }
         };
 
-        using (var fixture = new EmptyRepositoryFixture(config))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("unstable");
@@ -56,21 +59,21 @@ public class FeatureBranchScenarios
 
             //Merge it
             fixture.Repository.Checkout("unstable");
-            fixture.Repository.Merge(feature123, Constants.SignatureNow());
+            fixture.Repository.Merge(feature123, Generate.SignatureNow());
 
             //Create a second feature branch
             fixture.Repository.CreateBranch("feature/JIRA-124");
             fixture.Repository.Checkout("feature/JIRA-124");
             fixture.Repository.MakeCommits(1);
 
-            fixture.AssertFullSemver("1.1.0-JIRA-124.1+2");
+            fixture.AssertFullSemver(config, "1.1.0-JIRA-124.1+2");
         }
     }
 
     [Test]
     public void ShouldNotUseNumberInFeatureBranchAsPreReleaseNumberOffDevelop()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("develop");
@@ -86,7 +89,7 @@ public class FeatureBranchScenarios
     [Test]
     public void ShouldNotUseNumberInFeatureBranchAsPreReleaseNumberOffMaster()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("feature/JIRA-123");
@@ -100,7 +103,7 @@ public class FeatureBranchScenarios
     [Test]
     public void TestFeatureBranch()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("feature-test");
@@ -114,7 +117,7 @@ public class FeatureBranchScenarios
     [Test]
     public void TestFeaturesBranch()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("features/test");
@@ -128,7 +131,7 @@ public class FeatureBranchScenarios
     [Test]
     public void WhenTwoFeatureBranchPointToTheSameCommit()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeACommit();
             fixture.Repository.CreateBranch("develop");
@@ -146,7 +149,9 @@ public class FeatureBranchScenarios
     [Test]
     public void ShouldBePossibleToMergeDevelopForALongRunningBranchWhereDevelopAndMasterAreEqual()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config() { VersioningMode = VersioningMode.ContinuousDeployment }))
+        var config = new Config
+        { VersioningMode = VersioningMode.ContinuousDeployment };
+        using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeATaggedCommit("v1.0.0");
 
@@ -161,13 +166,13 @@ public class FeatureBranchScenarios
             fixture.Repository.MakeACommit();
 
             fixture.Repository.Checkout("master");
-            fixture.Repository.Merge(fixture.Repository.FindBranch("develop"), Constants.SignatureNow());
+            fixture.Repository.Merge(fixture.Repository.Branches["develop"], Generate.SignatureNow());
             fixture.Repository.ApplyTag("v1.1.0");
 
             fixture.Repository.Checkout("feature/longrunning"); 
-            fixture.Repository.Merge(fixture.Repository.FindBranch("develop"), Constants.SignatureNow());
+            fixture.Repository.Merge(fixture.Repository.Branches["develop"], Generate.SignatureNow());
 
-            fixture.AssertFullSemver("1.2.0-longrunning.2");
+            fixture.AssertFullSemver(config, "1.2.0-longrunning.2");
         }
     }
 }

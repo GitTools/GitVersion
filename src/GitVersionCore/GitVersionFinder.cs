@@ -43,7 +43,7 @@ namespace GitVersion
 
         void EnsureLocalBranchExists(IRepository repository, string branchName)
         {
-            if (repository.FindBranch(branchName) != null)
+            if (repository.Branches[branchName] != null)
             {
                 return;
             }

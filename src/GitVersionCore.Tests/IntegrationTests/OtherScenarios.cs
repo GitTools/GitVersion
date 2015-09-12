@@ -1,7 +1,8 @@
 ﻿namespace GitVersionCore.Tests.IntegrationTests
 {
     using System.Linq;
-    using GitVersion;
+    using GitTools.Testing;
+    using GitTools.Testing.Fixtures;
     using LibGit2Sharp;
     using NUnit.Framework;
 
@@ -15,7 +16,7 @@
         [Test]
         public void DoNotBlowUpWhenMasterAndDevelopPointAtSameCommit()
         {
-            using (var fixture = new RemoteRepositoryFixture(new Config()))
+            using (var fixture = new RemoteRepositoryFixture())
             {
                 fixture.Repository.MakeACommit();
                 fixture.Repository.MakeATaggedCommit("1.0.0");
@@ -33,7 +34,7 @@
         [Test]
         public void DoNotBlowUpWhenDevelopAndFeatureBranchPointAtSameCommit()
         {
-            using (var fixture = new RemoteRepositoryFixture(new Config()))
+            using (var fixture = new RemoteRepositoryFixture())
             {
                 fixture.Repository.MakeACommit();
                 fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));

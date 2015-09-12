@@ -1,6 +1,8 @@
 ﻿namespace GitVersionCore.Tests.VersionCalculation.Strategies
 {
     using System.Linq;
+    using GitTools.Testing;
+    using GitTools.Testing.Fixtures;
     using GitVersion;
     using GitVersion.VersionCalculation.BaseVersionCalculators;
     using LibGit2Sharp;
@@ -19,14 +21,13 @@
         [TestCase("custom/JIRA-123", null)]
         public void CanTakeVersionFromBranchName(string branchName, string expectedBaseVersion)
         {
-            var configuration = new Config();
-            using (var fixture = new EmptyRepositoryFixture(configuration))
+            using (var fixture = new EmptyRepositoryFixture())
             {
                 fixture.Repository.MakeACommit();
                 var branch = fixture.Repository.CreateBranch(branchName);
                 var sut = new VersionInBranchBaseVersionStrategy();
 
-                var baseVersion = sut.GetVersions(new GitVersionContext(fixture.Repository, branch, configuration)).SingleOrDefault();
+                var baseVersion = sut.GetVersions(new GitVersionContext(fixture.Repository, branch, new Config())).SingleOrDefault();
 
                 if (expectedBaseVersion == null)
                     baseVersion.ShouldBe(null);

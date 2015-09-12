@@ -1,5 +1,8 @@
 ﻿using System;
+using GitTools.Testing;
+using GitTools.Testing.Fixtures;
 using GitVersion;
+using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
 
@@ -9,7 +12,7 @@ public class RemoteRepositoryScenarios
     [Test]
     public void GivenARemoteGitRepositoryWithCommits_ThenClonedLocalShouldMatchRemoteVersion()
     {
-        using (var fixture = new RemoteRepositoryFixture(new Config()))
+        using (var fixture = new RemoteRepositoryFixture())
         {
             fixture.AssertFullSemver("0.1.0+4");
             fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepositoryFixture.Repository);
@@ -35,8 +38,7 @@ public class RemoteRepositoryScenarios
                 repo.MakeCommits(5);
 
                 return repo;
-            },
-            new Config()))
+            }))
         {
             fixture.AssertFullSemver("1.0.0-beta.1+5");
             fixture.AssertFullSemver("1.0.0-beta.1+5", fixture.LocalRepositoryFixture.Repository);
@@ -46,7 +48,7 @@ public class RemoteRepositoryScenarios
     [Test]
     public void GivenARemoteGitRepositoryAheadOfLocalRepository_ThenChangesShouldPull()
     {
-        using (var fixture = new RemoteRepositoryFixture(new Config()))
+        using (var fixture = new RemoteRepositoryFixture())
         {
             fixture.Repository.MakeACommit();
             fixture.AssertFullSemver("0.1.0+5");
@@ -61,7 +63,7 @@ public class RemoteRepositoryScenarios
     public void GivenARemoteGitRepositoryWhenCheckingOutDetachedhead_UsingExistingImplementationThrowsException()
     {
 
-        using (var fixture = new RemoteRepositoryFixture(new Config()))
+        using (var fixture = new RemoteRepositoryFixture())
         {
             fixture.IsForTrackedBranchOnly = false;
             fixture.LocalRepositoryFixture.Repository.Checkout(fixture.LocalRepositoryFixture.Repository.Head.Tip);
@@ -75,7 +77,7 @@ public class RemoteRepositoryScenarios
     [Test]
     public void GivenARemoteGitRepositoryWhenCheckingOutDetachedhead_UsingTrackingBranchOnlyBehaviourShouldReturnVersion_0_1_4plus5()
     {
-        using (var fixture = new RemoteRepositoryFixture(new Config()))
+        using (var fixture = new RemoteRepositoryFixture())
         {
             fixture.LocalRepositoryFixture.Repository.Checkout(fixture.LocalRepositoryFixture.Repository.Head.Tip);
 

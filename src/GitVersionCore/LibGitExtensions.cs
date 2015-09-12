@@ -15,17 +15,6 @@ namespace GitVersion
             return commit.Committer.When;
         }
 
-        public static Branch FindBranch(this IRepository repository, string branchName)
-        {
-            var exact = repository.Branches.FirstOrDefault(x => x.Name == branchName);
-            if (exact != null)
-            {
-                return exact;
-            }
-
-            return repository.Branches.FirstOrDefault(x => x.Name == "origin/" + branchName);
-        }
-
         public static SemanticVersion LastVersionTagOnBranch(this Branch branch, IRepository repository, string tagPrefixRegex)
         {
             var tags = repository.Tags.Select(t => t).ToList();
