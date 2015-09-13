@@ -1,10 +1,10 @@
 ﻿using System;
 using GitTools.Testing;
-using GitTools.Testing.Fixtures;
 using GitVersion;
 using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
+using Shouldly;
 
 [TestFixture]
 public class RemoteRepositoryScenarios
@@ -40,6 +40,8 @@ public class RemoteRepositoryScenarios
                 return repo;
             }))
         {
+            GitHelper.NormalizeGitDirectory(fixture.LocalRepositoryFixture.RepositoryPath, new Authentication(), noFetch: false, currentBranch: string.Empty);
+
             fixture.AssertFullSemver("1.0.0-beta.1+5");
             fixture.AssertFullSemver("1.0.0-beta.1+5", fixture.LocalRepositoryFixture.Repository);
         }
@@ -65,12 +67,11 @@ public class RemoteRepositoryScenarios
 
         using (var fixture = new RemoteRepositoryFixture())
         {
-            fixture.IsForTrackedBranchOnly = false;
             fixture.LocalRepositoryFixture.Repository.Checkout(fixture.LocalRepositoryFixture.Repository.Head.Tip);
 
-            Assert.Throws<WarningException>(() => fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepositoryFixture.Repository),
-                "It looks like the branch being examined is a detached Head pointing to commit '{0}'. Without a proper branch name GitVersion cannot determine the build version.",
-                fixture.LocalRepositoryFixture.Repository.Head.Tip.Id.ToString(7));
+            Should.Throw<WarningException>(() => fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepositoryFixture.Repository, isForTrackedBranchOnly: false),
+                string.Format("It looks like the branch being examined is a detached Head pointing to commit '{0}'. Without a proper branch name GitVersion cannot determine the build version.",
+                fixture.LocalRepositoryFixture.Repository.Head.Tip.Id.ToString(7)));
         }
     }
 

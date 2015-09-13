@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using GitTools.Testing;
-using GitTools.Testing.Fixtures;
 using NUnit.Framework;
 using Shouldly;
 

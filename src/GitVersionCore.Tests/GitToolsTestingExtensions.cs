@@ -1,13 +1,19 @@
 ﻿namespace GitVersionCore.Tests
 {
     using System;
-    using GitTools.Testing.Fixtures;
+    using GitTools.Testing;
     using GitVersion;
     using LibGit2Sharp;
     using Shouldly;
 
     public static class GitToolsTestingExtensions
     {
+        public static Config ApplyDefaults(this Config config)
+        {
+            ConfigurationProvider.ApplyDefaultsTo(config);
+            return config;
+        }
+
         public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Config configuration, IRepository repository = null, string commitId = null, bool isForTrackedBranchOnly = true)
         {
             var gitVersionContext = new GitVersionContext(repository ?? fixture.Repository, configuration, isForTrackedBranchOnly, commitId);
@@ -26,18 +32,19 @@
         }
 
 
-        public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver, IRepository repository = null, string commitId = null)
+        public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver, IRepository repository = null, string commitId = null, bool isForTrackedBranchOnly = true)
         {
-            fixture.AssertFullSemver(new Config(), fullSemver, repository, commitId);
+            fixture.AssertFullSemver(new Config(), fullSemver, repository, commitId, isForTrackedBranchOnly);
         }
 
-        public static void AssertFullSemver(this RepositoryFixtureBase fixture, Config configuration, string fullSemver, IRepository repository = null, string commitId = null)
+        public static void AssertFullSemver(this RepositoryFixtureBase fixture, Config configuration, string fullSemver, IRepository repository = null, string commitId = null, bool isForTrackedBranchOnly = true)
         {
+            ConfigurationProvider.ApplyDefaultsTo(configuration);
             Console.WriteLine("---------");
 
             try
             {
-                var variables = fixture.GetVersion(configuration, repository, commitId);
+                var variables = fixture.GetVersion(configuration, repository, commitId, isForTrackedBranchOnly);
                 variables.FullSemVer.ShouldBe(fullSemver);
             }
             catch (Exception)
@@ -47,8 +54,7 @@
             }
             if (commitId == null)
             {
-                // TODO Restore color: #D3D3D3
-               fixture.SequenceDiagram.NoteOver(fullSemver, fixture.Repository.Head.FriendlyName);
+               fixture.SequenceDiagram.NoteOver(fullSemver, fixture.Repository.Head.FriendlyName, color: "#D3D3D3");
             }
         }
 

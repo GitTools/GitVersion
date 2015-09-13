@@ -1,7 +1,6 @@
 ﻿namespace GitVersionCore.Tests
 {
     using GitTools.Testing;
-    using GitTools.Testing.Fixtures;
     using GitVersion;
     using LibGit2Sharp;
     using NUnit.Framework;
@@ -73,7 +72,7 @@
                     { "dev(elop)?(ment)?$", new BranchConfig { Increment = IncrementStrategy.Major} },
                     { "features?[/-]", new BranchConfig { Increment = IncrementStrategy.Inherit} }
                 }
-            };
+            }.ApplyDefaults();
 
             using (var repo = new EmptyRepositoryFixture())
             {

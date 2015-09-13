@@ -2,7 +2,6 @@
 {
     using System.Linq;
     using GitTools.Testing;
-    using GitTools.Testing.Fixtures;
     using GitVersion;
     using GitVersion.VersionCalculation.BaseVersionCalculators;
     using LibGit2Sharp;
@@ -27,7 +26,8 @@
                 var branch = fixture.Repository.CreateBranch(branchName);
                 var sut = new VersionInBranchBaseVersionStrategy();
 
-                var baseVersion = sut.GetVersions(new GitVersionContext(fixture.Repository, branch, new Config())).SingleOrDefault();
+                var gitVersionContext = new GitVersionContext(fixture.Repository, branch, new Config().ApplyDefaults());
+                var baseVersion = sut.GetVersions(gitVersionContext).SingleOrDefault();
 
                 if (expectedBaseVersion == null)
                     baseVersion.ShouldBe(null);

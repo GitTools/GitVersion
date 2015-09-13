@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using GitTools.Testing;
-using GitTools.Testing.Fixtures;
 using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;

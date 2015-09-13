@@ -1,7 +1,6 @@
 ﻿namespace GitVersionCore.Tests
 {
     using GitTools.Testing;
-    using GitTools.Testing.Fixtures;
     using GitVersion;
     using LibGit2Sharp;
     using NUnit.Framework;

@@ -1,5 +1,4 @@
 ﻿using GitTools.Testing;
-using GitTools.Testing.Fixtures;
 using GitVersion;
 using GitVersionCore.Tests;
 using LibGit2Sharp;
