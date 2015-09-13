@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using GitTools.Testing;
     using GitVersion;
     using GitVersion.VersionCalculation;
     using GitVersion.VersionCalculation.BaseVersionCalculators;
@@ -60,7 +61,7 @@
 
             public V1Strategy(DateTimeOffset? when)
             {
-                this.when = when == null ? null : new MockCommit { CommitterEx = Constants.Signature(when.Value) };
+                this.when = when == null ? null : new MockCommit { CommitterEx = Generate.Signature(when.Value) };
             }
 
             public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
@@ -75,7 +76,7 @@
 
             public V2Strategy(DateTimeOffset? when)
             {
-                this.when = when == null ? null : new MockCommit { CommitterEx = Constants.Signature(when.Value) };
+                this.when = when == null ? null : new MockCommit { CommitterEx = Generate.Signature(when.Value) };
             }
 
             public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)

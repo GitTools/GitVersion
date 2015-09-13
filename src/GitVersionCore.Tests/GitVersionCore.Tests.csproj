@@ -51,6 +51,10 @@
       <HintPath>..\packages\FluentDateTime.1.12.0\Lib\NET35\FluentDateTime.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="GitTools.Testing, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GitTools.Testing.0.2.0-beta0001\lib\net4\GitTools.Testing.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="LibGit2Sharp, Version=0.22.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LibGit2Sharp.0.22.0-pre20150716071016\lib\net40\LibGit2Sharp.dll</HintPath>
       <Private>True</Private>
@@ -91,8 +95,8 @@
       <HintPath>..\packages\NUnitTestAdapter.2.0.0\lib\NUnit.VisualStudio.TestAdapter.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Shouldly, Version=2.5.0.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shouldly.2.5.0\lib\net40\Shouldly.dll</HintPath>
+    <Reference Include="Shouldly, Version=2.6.0.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shouldly.2.6.0\lib\net40\Shouldly.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -119,12 +123,9 @@
     <Compile Include="BuildServers\MyGetTests.cs" />
     <Compile Include="BuildServers\VsoAgentTests.cs" />
     <Compile Include="BuildServers\TeamCityTests.cs" />
-    <Compile Include="Fixtures\CommitCountingRepoFixture.cs" />
+    <Compile Include="GitToolsTestingExtensions.cs" />
     <Compile Include="ConfigProviderTests.cs" />
-    <Compile Include="Fixtures\LocalRepositoryFixture.cs" />
-    <Compile Include="Fixtures\RemoteRepositoryFixture.cs" />
     <Compile Include="GitDirFinderTests.cs" />
-    <Compile Include="Fixtures\BaseGitFlowRepositoryFixture.cs" />
     <Compile Include="GitHelperTests.cs" />
     <Compile Include="GitPreparerTests.cs" />
     <Compile Include="GitVersionContextTests.cs" />
@@ -144,7 +145,6 @@
     <Compile Include="IntegrationTests\VersionBumpingScenarios.cs" />
     <Compile Include="IntegrationTests\DocumentationSamples.cs" />
     <Compile Include="IntegrationTests\OtherBranchScenarios.cs" />
-    <Compile Include="Helpers\Constants.cs" />
     <Compile Include="InformationalVersionBuilderTests.cs" />
     <Compile Include="JsonVersionBuilderTests.cs" />
     <Compile Include="LoggerTest.cs" />
@@ -161,12 +161,9 @@
     <Compile Include="Mocks\MockTagAnnotation.cs" />
     <Compile Include="Mocks\MockTagCollection.cs" />
     <Compile Include="ModuleInitializer.cs" />
-    <Compile Include="Fixtures\EmptyRepositoryFixture.cs" />
-    <Compile Include="Helpers\GitTestExtensions.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="IntegrationTests\MasterScenarios.cs" />
     <Compile Include="ApprovalTestsConfig.cs" />
-    <Compile Include="Fixtures\RepositoryFixtureBase.cs" />
     <Compile Include="SemanticVersionTests.cs" />
     <Compile Include="TestEffectiveConfiguration.cs" />
     <Compile Include="TestFileSystem.cs" />

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using GitTools.Testing;
 using GitVersion;
 using NUnit.Framework;
 using Shouldly;
@@ -11,10 +12,10 @@ public class ExecCmdLineArgumentTest
     [Test]
     public void RunExecViaCommandLine()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
-            fixture.Repository.MakeATaggedCommit("1.2.3");
-            fixture.Repository.MakeACommit();
+            fixture.MakeATaggedCommit("1.2.3");
+            fixture.MakeACommit();
 
             var buildFile = Path.Combine(fixture.RepositoryPath, "RunExecViaCommandLine.proj");
             File.Delete(buildFile);
@@ -35,10 +36,10 @@ public class ExecCmdLineArgumentTest
     [Test]
     public void InvalidArgumentsExitCodeShouldNotBeZero()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
-            fixture.Repository.MakeATaggedCommit("1.2.3");
-            fixture.Repository.MakeACommit();
+            fixture.MakeATaggedCommit("1.2.3");
+            fixture.MakeACommit();
 
             var buildFile = Path.Combine(fixture.RepositoryPath, "RunExecViaCommandLine.proj");
             File.Delete(buildFile);
@@ -65,9 +66,9 @@ public class ExecCmdLineArgumentTest
 
         try
         {
-            using (var remote = new EmptyRepositoryFixture(new Config()))
+            using (var remote = new EmptyRepositoryFixture())
             {
-                remote.Repository.MakeACommit();
+                remote.MakeACommit();
                 var configFile = Path.Combine(localRepoPath, "GitVersionConfig.yaml");
                 File.WriteAllText(configFile, "next-version: 1.0.0");
 

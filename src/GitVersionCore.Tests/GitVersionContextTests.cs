@@ -1,5 +1,6 @@
 ﻿namespace GitVersionCore.Tests
 {
+    using GitTools.Testing;
     using GitVersion;
     using LibGit2Sharp;
     using NUnit.Framework;
@@ -17,7 +18,7 @@
             };
             ConfigurationProvider.ApplyDefaultsTo(config);
 
-            var mockBranch = new MockBranch("master") { new MockCommit { CommitterEx = Constants.SignatureNow() } };
+            var mockBranch = new MockBranch("master") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
             var mockRepository = new MockRepository
             {
                 Branches = new MockBranchCollection
@@ -48,12 +49,12 @@
                 }
             };
             ConfigurationProvider.ApplyDefaultsTo(config);
-            var develop = new MockBranch("develop") { new MockCommit { CommitterEx = Constants.SignatureNow() } };
+            var develop = new MockBranch("develop") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
             var mockRepository = new MockRepository
             {
                 Branches = new MockBranchCollection
                 {
-                    new MockBranch("master") { new MockCommit { CommitterEx = Constants.SignatureNow() } },
+                    new MockBranch("master") { new MockCommit { CommitterEx = Generate.SignatureNow() } },
                     develop
                 }
             };
@@ -71,9 +72,9 @@
                     { "dev(elop)?(ment)?$", new BranchConfig { Increment = IncrementStrategy.Major} },
                     { "features?[/-]", new BranchConfig { Increment = IncrementStrategy.Inherit} }
                 }
-            };
+            }.ApplyDefaults();
 
-            using (var repo = new EmptyRepositoryFixture(config))
+            using (var repo = new EmptyRepositoryFixture())
             {
                 repo.Repository.MakeACommit();
                 repo.Repository.Checkout(repo.Repository.CreateBranch("develop"));

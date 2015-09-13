@@ -7,11 +7,11 @@
 
 # Custom for Visual Studio
 *.cs     diff=csharp
-*.sln    merge=union
-*.csproj merge=union
-*.vbproj merge=union
-*.fsproj merge=union
-*.dbproj merge=union
+*.sln
+*.csproj
+*.vbproj
+*.fsproj
+*.dbproj
 
 # Denote all files that are truly binary and should not be modified.
 *.dll binary

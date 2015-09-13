@@ -1,4 +1,5 @@
-﻿using GitVersion;
+﻿using GitTools.Testing;
+using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
 
@@ -8,7 +9,7 @@ public class SwitchingToGitFlowScenarios
     [Test]
     public void WhenDevelopBranchedFromMasterWithLegacyVersionTags_DevelopCanUseReachableTag()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeCommits(5);
             fixture.Repository.MakeATaggedCommit("1.0.0.0");
