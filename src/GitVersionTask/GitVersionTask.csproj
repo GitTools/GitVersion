@@ -11,6 +11,7 @@
     <RootNamespace>GitVersionTask</RootNamespace>
     <AssemblyName>GitVersionTask</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <LangVersion>5</LangVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>116bc3a1</NuGetPackageImportStamp>
     <BuildDir>$(SolutionDir)..\build\</BuildDir>
@@ -25,7 +26,6 @@
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <NoWarn>1591</NoWarn>
-    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
