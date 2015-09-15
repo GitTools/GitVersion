@@ -38,6 +38,7 @@ branches:
 ```
 
 The options in here are:
+
  - `mode`: Same as above
  - `tag`: The pre release tag to use for this branch. Use the value `use-branch-name-as-tag` to use the branch name instead.  
    For example `feature/foo` would become a pre-release tag of `foo` with this value

@@ -8,6 +8,7 @@
 # User-specific files
 *.suo
 *.user
+*.userprefs
 *.sln.docstates
 *.pidb
 *.received.txt
@@ -62,7 +63,9 @@ TestResults
 ClientBin
 stylecop.*
 ~$*
+*~
 *.dbmdl
+site/
 Generated_Code #added for RIA/Silverlight projects
 
 # Backup & report files from converting an old project file to a newer
