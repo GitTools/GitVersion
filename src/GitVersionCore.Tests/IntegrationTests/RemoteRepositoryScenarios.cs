@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using GitTools.Testing;
 using GitVersion;
 using GitVersionCore.Tests;

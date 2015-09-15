@@ -3,13 +3,11 @@ namespace GitVersion
     using System;
     using LibGit2Sharp;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
-    using System.Text.RegularExpressions;
 
     public static class GitHelper
     {
-        const string MergeMessageRegexPattern = "refs/heads/(pr|pull(-requests)?/(?<issuenumber>[0-9]*)/(merge|head))";
-
         public static void NormalizeGitDirectory(string gitDirectory, Authentication authentication, bool noFetch, string currentBranch)
         {
             using (var repo = new Repository(gitDirectory))
@@ -127,31 +125,6 @@ namespace GitVersion
             repo.Checkout(localCanonicalName);
         }
 
-        public static bool LooksLikeAValidPullRequestNumber(string issueNumber)
-        {
-            if (string.IsNullOrEmpty(issueNumber))
-            {
-                return false;
-            }
-
-            uint res;
-            return uint.TryParse(issueNumber, out res);
-        }
-
-        public static string ExtractIssueNumber(string mergeMessage)
-        {
-            // Dynamic: refs/heads/pr/5
-            // Github Message: refs/heads/pull/5/merge
-            // Stash Message:  refs/heads/pull-requests/5/merge
-            // refs/heads/pull/5/head
-            var regex = new Regex(MergeMessageRegexPattern);
-            var match = regex.Match(mergeMessage);
-
-            var issueNumber = match.Groups["issuenumber"].Value;
-
-            return issueNumber;
-        }
-
         static void AddMissingRefSpecs(Repository repo, Remote remote)
         {
             if (remote.FetchRefSpecs.Any(r => r.Source == "refs/heads/*"))
@@ -226,20 +199,6 @@ namespace GitVersion
 
             Logger.WriteInfo(string.Format("Checking local branch '{0}' out.", fakeBranchName));
             repo.Checkout(fakeBranchName);
-        }
-
-        internal static IEnumerable<DirectReference> GetRemoteTipsUsingUsernamePasswordCredentials(Repository repo, string repoUrl, string username, string password)
-        {
-            // This is a work-around as long as https://github.com/libgit2/libgit2sharp/issues/1099 is not fixed
-            var remote = repo.Network.Remotes.Add(Guid.NewGuid().ToString(), repoUrl);
-            try
-            {
-                return GetRemoteTipsUsingUsernamePasswordCredentials(repo, remote, username, password);
-            }
-            finally
-            {
-                repo.Network.Remotes.Remove(remote.Name);
-            }
         }
 
         static IEnumerable<DirectReference> GetRemoteTipsUsingUsernamePasswordCredentials(Repository repo, Remote remote, string username, string password)

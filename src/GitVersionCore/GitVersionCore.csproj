@@ -114,7 +114,6 @@
     <Compile Include="Helpers\ServiceMessageEscapeHelper.cs" />
     <Compile Include="IncrementStrategyFinder.cs" />
     <Compile Include="OutputVariables\VersionVariables.cs" />
-    <Compile Include="Extensions\ExtensionMethods.git.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculator.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\BaseVersion.cs" />
@@ -134,7 +133,6 @@
     <Compile Include="VersioningModes\VersioningMode.cs" />
     <Compile Include="VersioningModes\VersioningModeBase.cs" />
     <Compile Include="VersioningModes\VersioningModeExtension.cs" />
-    <Compile Include="WarningException.cs" />
     <Compile Include="Extensions\ExtensionMethods.cs" />
     <Compile Include="GitDirFinder.cs" />
     <Compile Include="GitVersionContext.cs" />

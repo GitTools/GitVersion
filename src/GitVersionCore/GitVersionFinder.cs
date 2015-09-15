@@ -1,5 +1,6 @@
 namespace GitVersion
 {
+    using System.ComponentModel;
     using System.IO;
     using System.Linq;
     using GitVersion.VersionCalculation;

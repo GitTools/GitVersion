@@ -58,7 +58,6 @@
   <ItemGroup>
     <Compile Include="ArgumentParser.cs" />
     <Compile Include="Arguments.cs" />
-    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="HelpWriter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="AssemblyInfo.cs" />

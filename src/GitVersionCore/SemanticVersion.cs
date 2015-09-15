@@ -1,6 +1,7 @@
 namespace GitVersion
 {
     using System;
+    using System.ComponentModel;
     using System.Text.RegularExpressions;
 
     public class SemanticVersion : IFormattable, IComparable<SemanticVersion>

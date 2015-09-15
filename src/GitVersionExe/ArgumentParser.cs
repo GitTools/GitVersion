@@ -3,6 +3,7 @@ namespace GitVersion
     using System;
     using System.Collections.Generic;
     using System.Collections.Specialized;
+    using System.ComponentModel;
     using System.Linq;
     using System.Text.RegularExpressions;
 
@@ -77,7 +78,7 @@ namespace GitVersion
                     if (values.Length > 1) throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", values[1]));
                     
                     value = values.FirstOrDefault();
-                }                
+                }
 
                 if (IsSwitch("l", name))
                 {
