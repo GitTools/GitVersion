@@ -36,6 +36,10 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GitTools.Core, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GitTools.Core.0.4.0-beta0001\lib\net4\GitTools.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="LibGit2Sharp, Version=0.22.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LibGit2Sharp.0.22.0-pre20150716071016\lib\net40\LibGit2Sharp.dll</HintPath>
       <Private>True</Private>
@@ -110,14 +114,14 @@
       <Output TaskParameter="Include" ItemName="NativeBinaries" />
     </CreateItem>
     <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)NuGetTaskBuild\NativeBinaries\%(RecursiveDir)%(Filename)%(Extension)')" />
-	<!-- Workaround for issue with DllMap. Mono will currently always prepend lib to start of target dll name. -->
+    <!-- Workaround for issue with DllMap. Mono will currently always prepend lib to start of target dll name. -->
     <CreateItem Include="$(TargetDir)NativeBinaries\**\*.so;$(TargetDir)NativeBinaries\**\*.dylib">
       <Output TaskParameter="Include" ItemName="libNativeBinaries" />
     </CreateItem>
     <Copy SourceFiles="@(libNativeBinaries)" DestinationFiles="@(libNativeBinaries->'$(BuildDir)NuGetTaskBuild\libNativeBinaries\%(RecursiveDir)%(Filename)%(Extension)')" />
-	<!-- The LibGit2Sharp.dll.config file contains dll maps for the osx and linux libgit2 native binaries -->
-	<Copy SourceFiles="$(TargetDir)LibGit2Sharp.dll.config" DestinationFiles="$(BuildDir)NuGetTaskBuild\GitVersionTask.dll.config" />
-	<Copy SourceFiles="$(TargetDir)ILMergeTemp\GitVersionTask.dll" DestinationFolder="$(BuildDir)NuGetTaskBuild" />
+    <!-- The LibGit2Sharp.dll.config file contains dll maps for the osx and linux libgit2 native binaries -->
+    <Copy SourceFiles="$(TargetDir)LibGit2Sharp.dll.config" DestinationFiles="$(BuildDir)NuGetTaskBuild\GitVersionTask.dll.config" />
+    <Copy SourceFiles="$(TargetDir)ILMergeTemp\GitVersionTask.dll" DestinationFolder="$(BuildDir)NuGetTaskBuild" />
     <Copy SourceFiles="$(TargetDir)GitVersionTask.pdb" DestinationFolder="$(BuildDir)NuGetTaskBuild" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\Build\portable-net+sl+win+wpa+wp" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\Build\dotnet" />

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using GitTools.Git;
 using GitTools.Testing;
-using GitVersion;
 using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -41,7 +41,7 @@ public class RemoteRepositoryScenarios
                 return repo;
             }))
         {
-            GitHelper.NormalizeGitDirectory(fixture.LocalRepositoryFixture.RepositoryPath, new Authentication(), noFetch: false, currentBranch: string.Empty);
+            GitRepository.NormalizeGitDirectory(fixture.LocalRepositoryFixture.RepositoryPath, new AuthenticationInfo(), noFetch: false, currentBranch: string.Empty);
 
             fixture.AssertFullSemver("1.0.0-beta.1+5");
             fixture.AssertFullSemver("1.0.0-beta.1+5", fixture.LocalRepositoryFixture.Repository);
