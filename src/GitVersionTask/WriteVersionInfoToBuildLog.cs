@@ -6,6 +6,7 @@
     using Microsoft.Build.Utilities;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using Logger = GitVersion.Logger;
 
     public class WriteVersionInfoToBuildLog : Task

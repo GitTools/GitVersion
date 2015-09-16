@@ -1,6 +1,7 @@
 ﻿namespace GitVersion
 {
     using System;
+    using System.ComponentModel;
     using LibGit2Sharp;
 
     public class RepositoryLoader
