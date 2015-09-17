@@ -8,7 +8,7 @@ In essence continuous delivery means:
  - Your code is automatically built and tested
  - If any of the automated tests fail, the teams #1 priority is to fix the build
  - If the build is green, the application can be deployed at any time
-   - Ideally the buisiness should make that decision
+   - Ideally the business should make that decision
    - The same artifacts which were built and tested should be deployed
    - That means no rebuilding everything when you are deploying
 

@@ -21,3 +21,6 @@
 *.snk binary
 *.pdb binary
 *.svg binary
+
+# Don't check for trailing whitespace at end of lines in the doc pages
+*.md -whitespace=blank-at-eol

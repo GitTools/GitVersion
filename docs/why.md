@@ -2,6 +2,7 @@
 GitVersion makes versioning woes a thing of the past. It looks at your git history to calculate what the version currently is. I have seen and used many different approaches in the past, all have downfalls and often are not transportable between projects.
 
 It solves:
+
  - Rebuilding tags always produces the same version
  - Not having to rebuild to increment versions
  - Not duplicating version information in multiple places (branch release/2.0.0 already has the version in it, why do I need to change something else)
