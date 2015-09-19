@@ -9,5 +9,6 @@ Various people are actively using GitVersion, and taking advantage of the automa
  * [Orchestra](https://github.com/wildgums/orchestra)
  * [Shouldly](https://github.com/shouldly/shouldly)
  * [WeavR](https://github.com/WeavR/WeavR)
+ * [Pomona](http://pomona.io/)
 
 If you are using GitVersion in your projects, and you are not listed above, please feel free to add a link to your project.
