@@ -7,7 +7,8 @@ Various people are actively using GitVersion, and taking advantage of the automa
  * [GitLink](github.com/CatenaLogic/GitLink)
  * [Orc.* packages](https://github.com/wildgums?query=orc)
  * [Orchestra](https://github.com/wildgums/orchestra)
+ * [Pomona](http://pomona.io/)
  * [Shouldly](https://github.com/shouldly/shouldly)
  * [WeavR](https://github.com/WeavR/WeavR)
-
+ 
 If you are using GitVersion in your projects, and you are not listed above, please feel free to add a link to your project.
