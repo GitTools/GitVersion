@@ -18,25 +18,8 @@
 
   <Target Name="UpdateAssemblyInfo"
           BeforeTargets="CoreCompile">
-    <WriteVersionInfoToBuildLog
-      SolutionDirectory="$(SolutionDir)"
-        />
-    <UpdateAssemblyInfo
-      SolutionDirectory="$(SolutionDir)"
-      ProjectFile="$(MSBuildProjectFullPath)"
-      IntermediateOutputPath="$(IntermediateOutputPath)"
-      RootNamespace="$(RootNamespace)"
-      CompileFiles ="@(Compile)">
-      <Output
-        TaskParameter="AssemblyInfoTempFilePath"
-        PropertyName="AssemblyInfoTempFilePath" />
-    </UpdateAssemblyInfo>
 
-    <ItemGroup>
-      <Compile Include="$(AssemblyInfoTempFilePath)" />
-    </ItemGroup>
-
-
+    <!-- Call GetVersion first as it accepts the NoFetch parameter, future calls will use the cached value -->          
     <GetVersion SolutionDirectory="$(SolutionDir)" NoFetch="$(GitVersion_NoFetchEnabled)">
       <Output TaskParameter="Major" PropertyName="GitVersion_Major" />
       <Output TaskParameter="Minor" PropertyName="GitVersion_Minor" />
@@ -59,6 +42,24 @@
       <Output TaskParameter="CommitDate" PropertyName="GitVersion_CommitDate" />
     </GetVersion>
 
+    
+    <WriteVersionInfoToBuildLog
+      SolutionDirectory="$(SolutionDir)"
+        />
+    <UpdateAssemblyInfo
+      SolutionDirectory="$(SolutionDir)"
+      ProjectFile="$(MSBuildProjectFullPath)"
+      IntermediateOutputPath="$(IntermediateOutputPath)"
+      RootNamespace="$(RootNamespace)"
+      CompileFiles ="@(Compile)">
+      <Output
+        TaskParameter="AssemblyInfoTempFilePath"
+        PropertyName="AssemblyInfoTempFilePath" />
+    </UpdateAssemblyInfo>
+
+    <ItemGroup>
+      <Compile Include="$(AssemblyInfoTempFilePath)" />
+    </ItemGroup>
   </Target>
 
   <!--Support for ncrunch-->
