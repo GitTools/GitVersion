@@ -20,9 +20,11 @@
           BeforeTargets="CoreCompile">
     <WriteVersionInfoToBuildLog
       SolutionDirectory="$(SolutionDir)"
+      NoFetch="$(GitVersion_NoFetchEnabled)"
         />
     <UpdateAssemblyInfo
       SolutionDirectory="$(SolutionDir)"
+      NoFetch="$(GitVersion_NoFetchEnabled)"
       ProjectFile="$(MSBuildProjectFullPath)"
       IntermediateOutputPath="$(IntermediateOutputPath)"
       RootNamespace="$(RootNamespace)"
