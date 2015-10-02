@@ -43,6 +43,7 @@ branches:
 
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
+        config.AssemblyInformationalVersioningScheme.ShouldBe(AssemblyInformationalVersioningScheme.FullInformationalVersion);
         config.NextVersion.ShouldBe("2.0.0");
         config.TagPrefix.ShouldBe("[vV|version-]");
         config.VersioningMode.ShouldBe(VersioningMode.ContinuousDelivery);
@@ -111,12 +112,27 @@ branches:
     }
 
     [Test]
+    public void CanUpdateAssemblyInformationalVersioningScheme()
+    {
+        const string text = @"
+assembly-versioning-scheme: MajorMinor
+assembly-informational-versioning-scheme: NugetVersion";
+
+        SetupConfigFileContent(text);
+
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
+        config.AssemblyInformationalVersioningScheme.ShouldBe(AssemblyInformationalVersioningScheme.NugetVersion);
+    }
+
+    [Test]
     public void CanReadDefaultDocument()
     {
         const string text = "";
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
+        config.AssemblyInformationalVersioningScheme.ShouldBe(AssemblyInformationalVersioningScheme.FullInformationalVersion);
         config.Branches["dev(elop)?(ment)?$"].Tag.ShouldBe("unstable");
         config.Branches["releases?[/-]"].Tag.ShouldBe("beta");
         config.TagPrefix.ShouldBe(ConfigurationProvider.DefaultTagPrefix);

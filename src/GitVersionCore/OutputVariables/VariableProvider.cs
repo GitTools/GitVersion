@@ -33,7 +33,7 @@
                 legacySemVerPadded: semanticVersion.ToString("lp" + config.LegacySemVerPadding),
                 assemblySemVer: semanticVersion.GetAssemblyVersion(config.AssemblyVersioningScheme),
                 fullSemVer: semanticVersion.ToString("f"),
-                informationalVersion: semanticVersion.ToString("i"),
+                informationalVersion: semanticVersion.GetAssemblyInformationalVersion(config.AssemblyInformationalVersioningScheme),
                 branchName: semanticVersion.BuildMetaData.Branch,
                 sha: semanticVersion.BuildMetaData.Sha,
                 commitDate: semanticVersion.BuildMetaData.CommitDate.UtcDateTime.ToString("yyyy-MM-dd"));

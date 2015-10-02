@@ -1,4 +1,5 @@
 ﻿assembly-versioning-scheme: MajorMinorPatch
+assembly-informational-versioning-scheme: FullInformationalVersion
 mode: ContinuousDelivery
 tag-prefix: '[vV]'
 continuous-delivery-fallback-tag: ci

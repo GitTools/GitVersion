@@ -39,6 +39,9 @@ namespace GitVersion.Configuration.Init
                     steps.Enqueue(new AssemblyVersioningSchemeSetting(Console, FileSystem));
                     return StepResult.Ok();
                 case "7":
+                    steps.Enqueue(new AssemblyInformationalVersioningSchemeSetting(Console, FileSystem));
+                    return StepResult.Ok();
+                case "8":
                     steps.Enqueue(new SetupBuildScripts(Console, FileSystem));
                     return StepResult.Ok();
             }
@@ -58,7 +61,8 @@ namespace GitVersion.Configuration.Init
 4) Branch specific configuration
 5) Branch Increment mode (per commit/after tag) (Current: {0})
 6) Assembly versioning scheme (Current: {1})
-7) Setup build scripts", config.VersioningMode, config.AssemblyVersioningScheme);
+7) Assembly informational versioning scheme (Current: {2})
+8) Setup build scripts", config.VersioningMode, config.AssemblyVersioningScheme, config.AssemblyInformationalVersioningScheme);
         }
 
         protected override string DefaultResult
