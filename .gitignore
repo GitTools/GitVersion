@@ -33,6 +33,7 @@
 .builds
 *.dotCover
 *.orig
+*~
 
 ##  If you have NuGet Package Restore enabled, uncomment this
 packages/
@@ -93,3 +94,4 @@ NuGetExeBuild/
 NuGetRefBuild/
 Packages/
 NuGetTaskBuild/
+site/
