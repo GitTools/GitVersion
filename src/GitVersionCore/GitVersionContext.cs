@@ -91,6 +91,8 @@
                 throw new Exception(string.Format("Configuration value for 'TrackMergeTarget' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
             if (!configuration.AssemblyVersioningScheme.HasValue)
                 throw new Exception("Configuration value for 'AssemblyVersioningScheme' has no value. (this should not happen, please report an issue)");
+            if (!configuration.AssemblyInformationalVersioningScheme.HasValue)
+                throw new Exception("Configuration value for 'AssemblyInformationalVersioningScheme' has no value. (this should not happen, please report an issue)");
             if (!configuration.CommitMessageIncrementing.HasValue)
                 throw new Exception("Configuration value for 'CommitMessageIncrementing' has no value. (this should not happen, please report an issue)");
 
@@ -103,6 +105,7 @@
             
             var nextVersion = configuration.NextVersion;
             var assemblyVersioningScheme = configuration.AssemblyVersioningScheme.Value;
+            var assemblyInformationalVersioningScheme = configuration.AssemblyInformationalVersioningScheme.Value;
             var gitTagPrefix = configuration.TagPrefix;
             var majorMessage = configuration.MajorVersionBumpMessage;
             var minorMessage = configuration.MinorVersionBumpMessage;
@@ -111,7 +114,7 @@
             var commitMessageVersionBump = currentBranchConfig.Value.CommitMessageIncrementing ?? configuration.CommitMessageIncrementing.Value;
 
             Configuration = new EffectiveConfiguration(
-                assemblyVersioningScheme, versioningMode, gitTagPrefix, 
+                assemblyVersioningScheme, assemblyInformationalVersioningScheme, versioningMode, gitTagPrefix, 
                 tag, nextVersion, incrementStrategy, currentBranchConfig.Key, 
                 preventIncrementForMergedBranchVersion, 
                 tagNumberPattern, configuration.ContinuousDeploymentFallbackTag,
