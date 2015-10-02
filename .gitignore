@@ -39,6 +39,7 @@ ForSample/
 *NugetTaskBuild*
 *NugetRefBuild*
 *NugetExeBuild*
+*GitVersionVsoTaskBuild*
 *GemBuild*
 
 # Visual Studio profiler
@@ -84,3 +85,8 @@ Desktop.ini
 _NCrunch_GitVersion
 NuGetCommandLineBuild/
 GitVersion.sln.ide/
+.vs/
+NuGetExeBuild/
+NuGetRefBuild/
+Packages/
+NuGetTaskBuild/

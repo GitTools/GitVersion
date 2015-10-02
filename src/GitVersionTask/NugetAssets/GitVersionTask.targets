@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)..\</SolutionDir>
+    <IntermediateOutputPath Condition="$(IntermediateOutputPath) == '' Or $(IntermediateOutputPath) == '*Undefined*'">$(MSBuildProjectDirectory)obj\$(Configuration)\</IntermediateOutputPath>
+    <GitVersion_NoFetchEnabled Condition="$(GitVersion_NoFetchEnabled) == ''">false</GitVersion_NoFetchEnabled>
+  </PropertyGroup>
+
+  <UsingTask
+      TaskName="GitVersionTask.UpdateAssemblyInfo"
+      AssemblyFile="$(MSBuildThisFileDirectory)..\..\GitVersionTask.dll" />
+  <UsingTask 
+    TaskName="GitVersionTask.GetVersion" 
+    AssemblyFile="$(MSBuildThisFileDirectory)..\..\GitVersionTask.dll"  />
+  <UsingTask
+      TaskName="GitVersionTask.WriteVersionInfoToBuildLog"
+      AssemblyFile="$(MSBuildThisFileDirectory)..\..\GitVersionTask.dll" />
+
+  <Target Name="UpdateAssemblyInfo"
+          BeforeTargets="CoreCompile">
+    <WriteVersionInfoToBuildLog
+      SolutionDirectory="$(SolutionDir)"
+      NoFetch="$(GitVersion_NoFetchEnabled)"
+        />
+    <UpdateAssemblyInfo
+      SolutionDirectory="$(SolutionDir)"
+      NoFetch="$(GitVersion_NoFetchEnabled)"
+      ProjectFile="$(MSBuildProjectFullPath)"
+      IntermediateOutputPath="$(IntermediateOutputPath)"
+      RootNamespace="$(RootNamespace)"
+      CompileFiles ="@(Compile)">
+      <Output
+        TaskParameter="AssemblyInfoTempFilePath"
+        PropertyName="AssemblyInfoTempFilePath" />
+    </UpdateAssemblyInfo>
+
+    <ItemGroup>
+      <Compile Include="$(AssemblyInfoTempFilePath)" />
+    </ItemGroup>
+
+
+    <GetVersion SolutionDirectory="$(SolutionDir)" NoFetch="$(GitVersion_NoFetchEnabled)">
+      <Output TaskParameter="Major" PropertyName="GitVersion_Major" />
+      <Output TaskParameter="Minor" PropertyName="GitVersion_Minor" />
+      <Output TaskParameter="Patch" PropertyName="GitVersion_Patch" />
+      <Output TaskParameter="BuildMetaData" PropertyName="GitVersion_BuildMetaData" />
+      <Output TaskParameter="BuildMetaDataPadded" PropertyName="GitVersion_BuildMetaDataPadded" />
+      <Output TaskParameter="FullBuildMetaData" PropertyName="GitVersion_FullBuildMetaData" />
+      <Output TaskParameter="BranchName" PropertyName="GitVersion_BranchName" />
+      <Output TaskParameter="Sha" PropertyName="GitVersion_Sha" />
+      <Output TaskParameter="MajorMinorPatch" PropertyName="GitVersion_MajorMinorPatch" />
+      <Output TaskParameter="SemVer" PropertyName="GitVersion_SemVer" />
+      <Output TaskParameter="LegacySemVer" PropertyName="GitVersion_LegacySemVer" />
+      <Output TaskParameter="LegacySemVerPadded" PropertyName="GitVersion_LegacySemVerPadded" />
+      <Output TaskParameter="FullSemVer" PropertyName="GitVersion_FullSemVer" />
+      <Output TaskParameter="AssemblySemVer" PropertyName="GitVersion_AssemblySemVer" />
+      <Output TaskParameter="NuGetVersion" PropertyName="GitVersion_NuGetVersion" />
+      <Output TaskParameter="PreReleaseTag" PropertyName="GitVersion_PreReleaseTag" />
+      <Output TaskParameter="PreReleaseTagWithDash" PropertyName="GitVersion_PreReleaseTagWithDash" />
+      <Output TaskParameter="InformationalVersion" PropertyName="GitVersion_InformationalVersion" />
+      <Output TaskParameter="CommitDate" PropertyName="GitVersion_CommitDate" />
+    </GetVersion>
+
+  </Target>
+
+  <!--Support for ncrunch-->
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)..\..\GitVersionTask.dll">
+      <Visible>False</Visible>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)..\..\GitVersionTask.pdb">
+      <Visible>False</Visible>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)..\..\NativeBinaries\**\*">
+      <Visible>False</Visible>
+    </None>
+  </ItemGroup>
+
+</Project>
+
+

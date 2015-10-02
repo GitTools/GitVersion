@@ -1,0 +1,49 @@
+site_name: GitVersion
+theme: readthedocs
+repo_url: https://github.com/GitTools/GitVersion
+
+pages:
+- Home: index.md
+- Usage: usage.md
+- Build Server Support: build-server-support.md
+- Configuration: configuration.md
+- Examples: examples.md
+- FAQ: faq.md
+- Why?: why.md
+- Who is using GitVersion: who.md
+
+- More Info:
+  - How it works: more-info/how-it-works.md
+  - Dynamic Repositories: more-info/dynamic-repositories.md
+  - Variables: more-info/variables.md
+  - Version incrementing: more-info/version-increments.md
+  - Version sources: more-info/version-sources.md
+  - Incrementing per commit: more-info/incrementing-per-commit.md
+  - Build Servers:
+    - AppVeyor: more-info/build-server-setup/appveyor.md
+    - TeamCity: more-info/build-server-setup/teamcity.md
+    - MyGet: more-info/build-server-setup/myget.md
+    - Bamboo: more-info/build-server-setup/bamboo.md
+    - Jenkins: more-info/build-server-setup/jenkins.md
+    - Continua CI: more-info/build-server-setup/continua.md
+    - Team Build (TFS): more-info/build-server-setup/teambuild.md
+    - TFS Build vNext: more-info/build-server-setup/tfs-build-vnext.md
+    - Octopus Deploy: more-info/build-server-setup/octopus-deploy.md
+
+- Git branching strategies:
+  - Home: git-branching-strategies/index.md
+  - GitFlow: git-branching-strategies/gitflow.md
+  - GitHubFlow: git-branching-strategies/githubflow.md
+  - GitFlow Examples: git-branching-strategies/gitflow-examples.md
+  - GitHubFlow Examples: git-branching-strategies/githubflow-examples.md
+  - Converting to GitFlow: git-branching-strategies/converting-to-gitflow.md
+  - Creating/Updating examples: git-branching-strategies/creating-updating-examples.md
+
+- Reference:
+  - Intro to SemVer: reference/intro-to-semver.md
+  - Git setup: reference/git-setup.md
+  - Feature branches: reference/feature-branches.md
+  - Pull requests: reference/pull-requests.md
+  - Mainline development: reference/mainline-development.md
+  - Continous delivery: reference/continuous-delivery.md
+  - Continuous deployment: reference/continuous-deployment.md

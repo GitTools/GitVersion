@@ -1,4 +1,0 @@
-0000000000000000000000000000000000000000 86925f3dbe9612b1761f4b81c7cca537042d1ba5 nulltoken <emeric.fermas@gmail.com> 1384689111 +0100	commit (initial): Initial commit
-86925f3dbe9612b1761f4b81c7cca537042d1ba5 19f38d066324ff2329881d31f520d16a08ba5da6 nulltoken <emeric.fermas@gmail.com> 1384690787 +0100	merge hotfix/0.2.0: Merge made by the 'recursive' strategy.
-19f38d066324ff2329881d31f520d16a08ba5da6 f01ff126101b1b053c612b82ef2182c69fe1b3a9 nulltoken <emeric.fermas@gmail.com> 1384692700 +0100	merge release/1.0.0: Merge made by the 'recursive' strategy.
-f01ff126101b1b053c612b82ef2182c69fe1b3a9 ac9ea033d52a0e82aff1c78bd662c7141f5af732 nulltoken <emeric.fermas@gmail.com> 1384693115 +0100	merge release/1.0.1: Merge made by the 'recursive' strategy.
