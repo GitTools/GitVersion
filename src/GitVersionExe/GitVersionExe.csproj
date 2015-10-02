@@ -146,7 +146,8 @@
     <MakeDir Directories="$(BuildDir)NuGetExeBuild" />
     <Copy SourceFiles="@(amd64)" DestinationFolder="$(BuildDir)NuGetExeBuild\tools\NativeBinaries\amd64" />
     <Copy SourceFiles="@(x86)" DestinationFolder="$(BuildDir)NuGetExeBuild\tools\NativeBinaries\x86" />
-    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" Condition="Exists('$(OutputPath)GitVersion.pdb')"/>
+    <Copy SourceFiles="$(OutputPath)GitVersion.exe.mdb" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" Condition="Exists('$(OutputPath)GitVersion.exe.mdb')"/>
     <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyInstall.ps1" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyUninstall.ps1" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
@@ -156,7 +157,8 @@
     <MakeDir Directories="$(BuildDir)NuGetCommandLineBuild" />
     <Copy SourceFiles="@(amd64)" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools\NativeBinaries\amd64" />
     <Copy SourceFiles="@(x86)" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools\NativeBinaries\x86" />
-    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" Condition="Exists('$(OutputPath)GitVersion.pdb')"/>
+    <Copy SourceFiles="$(OutputPath)GitVersion.exe.mdb" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" Condition="Exists('$(OutputPath)GitVersion.exe.mdb')"/>
     <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.CommandLine.nuspec" DestinationFolder="$(BuildDir)NuGetCommandLineBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetCommandLineBuild" MetadataAssembly="$(OutputPath)ILMergeTemp\GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
@@ -164,7 +166,8 @@
     <MakeDir Directories="$(BuildDir)GitVersionVsoTaskBuild" />
     <Copy SourceFiles="@(amd64)" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild\NativeBinaries\amd64" />
     <Copy SourceFiles="@(x86)" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild\NativeBinaries\x86" />
-    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" Condition="Exists('$(OutputPath)GitVersion.pdb')" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.exe.mdb" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" Condition="Exists('$(OutputPath)GitVersion.exe.mdb')" />
     <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
     <Copy SourceFiles="$(SolutionDir)GitVersionVsoTask\icon.png" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
     <Copy SourceFiles="$(SolutionDir)GitVersionVsoTask\task.json" DestinationFolder="$(BuildDir)GitVersionVsoTaskBuild" />
@@ -173,7 +176,8 @@
     <MakeDir Directories="$(BuildDir)GemBuild" />
     <Copy SourceFiles="@(amd64)" DestinationFolder="$(BuildDir)GemBuild\bin\NativeBinaries\amd64" />
     <Copy SourceFiles="@(x86)" DestinationFolder="$(BuildDir)GemBuild\bin\NativeBinaries\x86" />
-    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)GemBuild\bin" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)GemBuild\bin" Condition="Exists('$(OutputPath)GitVersion.pdb')" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.exe.mdb" DestinationFolder="$(BuildDir)GemBuild\bin" Condition="Exists('$(OutputPath)GitVersion.exe.mdb')" />
     <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)GemBuild\bin" />
     <ItemGroup>
       <GemFiles Include="$(ProjectDir)GemAssets\bin*\**\*.*" />
