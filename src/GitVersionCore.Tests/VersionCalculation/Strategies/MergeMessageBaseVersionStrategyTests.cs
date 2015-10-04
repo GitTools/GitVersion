@@ -85,6 +85,7 @@
         [TestCase(@"Merge branch 'develop' of http://10.0.6.3/gitblit/r/... into develop")]
         [TestCase(@"Merge branch 'master' of http://172.16.3.10:8082/r/asu_tk/p_sd")]
         [TestCase(@"Merge branch 'master' of http://212.248.89.56:8082/r/asu_tk/p_sd")]
+        [TestCase(@"Merge branch 'DEMO' of http://10.10.10.121/gitlab/mtolland/orcid into DEMO")]
         public void MergeMessagesThatIsNotRelatedToGitVersion(string commitMessage)
         {
 
