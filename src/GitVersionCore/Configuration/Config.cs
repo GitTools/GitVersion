@@ -11,6 +11,9 @@
         [YamlMember(Alias = "assembly-versioning-scheme")]
         public AssemblyVersioningScheme? AssemblyVersioningScheme { get; set; }
 
+        [YamlMember(Alias = "assembly-informational-versioning-scheme")]
+        public AssemblyInformationalVersioningScheme? AssemblyInformationalVersioningScheme { get; set; }
+
         [YamlMember(Alias = "mode")]
         public VersioningMode? VersioningMode { get; set; }
 

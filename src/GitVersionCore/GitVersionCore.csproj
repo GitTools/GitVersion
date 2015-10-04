@@ -62,6 +62,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyInformationalVersioningScheme.cs" />
     <Compile Include="AssemblyVersioningScheme.cs" />
     <Compile Include="AssemblyVersionsGenerator.cs" />
     <Compile Include="Authentication.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Configuration\IConsole.cs" />
     <Compile Include="Configuration\Init\BuildServer\AppVeyorSetup.cs" />
     <Compile Include="Configuration\Init\BuildServer\SetupBuildScripts.cs" />
+    <Compile Include="Configuration\Init\SetConfig\AssemblyInformationalVersioningSchemeSetting.cs" />
     <Compile Include="Configuration\Init\SetConfig\AssemblyVersioningSchemeSetting.cs" />
     <Compile Include="Configuration\Init\SetNextVersion.cs" />
     <Compile Include="Configuration\Init\Wizard\ConfigInitWizard.cs" />

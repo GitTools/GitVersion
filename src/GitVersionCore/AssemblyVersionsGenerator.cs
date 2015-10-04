@@ -21,7 +21,21 @@
                 default:
                     throw new ArgumentException(string.Format("Unexpected value ({0}).", scheme), "scheme");
             }
+        }
 
+        public static string GetAssemblyInformationalVersion(
+            this SemanticVersion sv,
+            AssemblyInformationalVersioningScheme scheme)
+        {
+            switch (scheme)
+            {
+                case AssemblyInformationalVersioningScheme.FullInformationalVersion:
+                    return sv.ToString("i");
+                case AssemblyInformationalVersioningScheme.NugetVersion:
+                    return sv.ToString("lp");
+                default:
+                    throw new ArgumentException(string.Format("Unexpected value ({0}).", scheme), "scheme");
+            }
         }
 
     }
