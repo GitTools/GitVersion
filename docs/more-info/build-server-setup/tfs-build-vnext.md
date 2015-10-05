@@ -35,6 +35,8 @@ See [Variables](/more-info/variables/) for an overview of available variables.
 
 #### Known limitations
 * Due to [current limitations in VSO](https://github.com/Microsoft/vso-agent-tasks/issues/380) it's currently not possible to set the build version inside of VSO to one of the `GITVERSION_*` variables.
+* Due to a know limitation in TFS 2015 On-Prem it's currently not possible to use variables added during build in inputs of subsequent build tasks, since the variables are processed at the beginning of the build. 
+As a workaround environment variables can be used in custom scripts.
 
 ## Create a NuGet package in VSO
 If you use a Command Line task to build your NuPkg, use `%GITVERSION_NUGETVERSION%` as the version parameter: `nuget.exe pack path\to\my.nuspec -version %GITVERSION_NUGETVERSION%`
