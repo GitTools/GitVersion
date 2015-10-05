@@ -47,6 +47,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -62,7 +63,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInformationalVersioningScheme.cs" />
     <Compile Include="AssemblyVersioningScheme.cs" />
     <Compile Include="AssemblyVersionsGenerator.cs" />
     <Compile Include="Authentication.cs" />
@@ -83,7 +83,6 @@
     <Compile Include="Configuration\IConsole.cs" />
     <Compile Include="Configuration\Init\BuildServer\AppVeyorSetup.cs" />
     <Compile Include="Configuration\Init\BuildServer\SetupBuildScripts.cs" />
-    <Compile Include="Configuration\Init\SetConfig\AssemblyInformationalVersioningSchemeSetting.cs" />
     <Compile Include="Configuration\Init\SetConfig\AssemblyVersioningSchemeSetting.cs" />
     <Compile Include="Configuration\Init\SetNextVersion.cs" />
     <Compile Include="Configuration\Init\Wizard\ConfigInitWizard.cs" />
@@ -119,6 +118,8 @@
     <Compile Include="OutputVariables\VersionVariables.cs" />
     <Compile Include="Extensions\ExtensionMethods.git.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />
+    <Compile Include="SemanticVersionFormatValues.cs" />
+    <Compile Include="StringFormatWith.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculator.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\BaseVersion.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\ConfigNextVersionBaseVersionStrategy.cs" />

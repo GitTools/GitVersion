@@ -24,7 +24,7 @@ namespace GitVersion
             MigrateBranches(config);
 
             config.AssemblyVersioningScheme = config.AssemblyVersioningScheme ?? AssemblyVersioningScheme.MajorMinorPatch;
-            config.AssemblyInformationalVersioningScheme = config.AssemblyInformationalVersioningScheme ?? AssemblyInformationalVersioningScheme.FullInformationalVersion;
+            config.AssemblyInformationalFormat = config.AssemblyInformationalFormat;
             config.TagPrefix = config.TagPrefix ?? DefaultTagPrefix;
             config.VersioningMode = config.VersioningMode ?? VersioningMode.ContinuousDelivery;
             config.ContinuousDeploymentFallbackTag = config.ContinuousDeploymentFallbackTag ?? "ci";

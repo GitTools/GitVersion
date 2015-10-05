@@ -54,59 +54,67 @@ public class AssemblyInfoBuilderTests
     [MethodImpl(MethodImplOptions.NoInlining)]
     public void VerifyAssemblyVersion_Major()
     {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.Major, AssemblyInformationalVersioningScheme.FullInformationalVersion);
+        VerifyAssemblyVersion(AssemblyVersioningScheme.Major);
     }
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public void VerifyAssemblyVersion_MajorMinor()
     {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinor, AssemblyInformationalVersioningScheme.FullInformationalVersion);
+        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinor);
     }
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public void VerifyAssemblyVersion_MajorMinorPatch()
     {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatch, AssemblyInformationalVersioningScheme.FullInformationalVersion);
+        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatch);
     }
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public void VerifyAssemblyVersion_MajorMinorPatchTag()
     {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatchTag, AssemblyInformationalVersioningScheme.FullInformationalVersion);
+        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatchTag);
+    }
+
+    [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    [ExpectedException(typeof(WarningException))]
+    public void VerifyAssemblyVersion_Major_InvalidInformationalValue()
+    {
+        VerifyAssemblyVersion(AssemblyVersioningScheme.Major, "{ThisVariableDoesntExist}");
     }
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public void VerifyAssemblyVersion_Major_NugetAssemblyInfo()
     {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.Major, AssemblyInformationalVersioningScheme.NugetVersion);
+        VerifyAssemblyVersion(AssemblyVersioningScheme.Major, "{NugetVersion}");
     }
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public void VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfo()
     {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinor, AssemblyInformationalVersioningScheme.NugetVersion);
+        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinor, "{NugetVersion}");
     }
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public void VerifyAssemblyVersion_MajorMinorPatch_NugetAssemblyInfo()
     {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatch, AssemblyInformationalVersioningScheme.NugetVersion);
+        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatch, "{NugetVersion}");
     }
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public void VerifyAssemblyVersion_MajorMinorPatchTag_NugetAssemblyInfo()
     {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatchTag, AssemblyInformationalVersioningScheme.NugetVersion);
+        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatchTag, "{NugetVersion}");
     }
 
-    static void VerifyAssemblyVersion(AssemblyVersioningScheme avs, AssemblyInformationalVersioningScheme aivs)
+    static void VerifyAssemblyVersion(AssemblyVersioningScheme avs, string assemblyInformationalFormat = null)
     {
         var semanticVersion = new SemanticVersion
         {
@@ -119,7 +127,8 @@ public class AssemblyInfoBuilderTests
         };
         var assemblyInfoBuilder = new AssemblyInfoBuilder();
 
-        var config = new TestEffectiveConfiguration(assemblyVersioningScheme: avs, assemblyInformationalVersioningScheme: aivs);
+
+        var config = new TestEffectiveConfiguration(assemblyVersioningScheme: avs, assemblyInformationalFormat: assemblyInformationalFormat);
 
         var versionVariables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
         var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, "Fake");
