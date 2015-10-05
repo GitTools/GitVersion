@@ -14,6 +14,7 @@ See [MSBuild Task](/usage/#msbuild-task) for further instructions how to use the
 3. Set the Tool parameter to `<pathToGitVersion>\GitVersion.exe`.
 4. Set the Arguments parameter to `/output buildserver /nofetch`.
 5. If you want the GitVersionTask to update AssemblyInfo files add `updateAssemblyInfo true` to the Arguments parameter. 
+6. If you want to update the build number you need to send a [logging command](https://github.com/Microsoft/vso-agent-tasks/blob/master/docs/authoring/commands.md) to TFS.
 
 ### Using the custom GitVersion build step
 #### Installing/updating the custom build step
@@ -29,13 +30,15 @@ From a TFS build definition, select "Add a Step" and then in the Build category,
 
 If you want the GitVersionTask to update AssemblyInfo files, check the box in the task configuration. For advanced usage, you can pass additional options to the GitVersion exe in the Additional arguments section.
 
+The VSO build step updates the build number automatically to the GitVersion number.
+
 ## Running inside TFS
 ### Using the GitVersion Variables
 GitVersion passes variables in the form of `GitVersion.*` (Eg: `GitVersion.Major`) to TFS Build and also writes `GITVERSION_*` (Eg: `GITVERSION_MAJOR`) environment variables that are available for any subsequent build step. 
 See [Variables](/more-info/variables/) for an overview of available variables.
 
 #### Known limitations
-* Due to [current limitations in TFS](https://github.com/Microsoft/vso-agent-tasks/issues/380) it's currently not possible to automatically set the TFS build name to the version detected by GitVersion.
+* Due to [current limitations in TFS2015 On-Prem](https://github.com/Microsoft/vso-agent-tasks/issues/380) it's currently not possible to automatically set the build version in TFS2015 On-Prem.
 * Due to a know limitation in TFS 2015 On-Prem it's currently not possible to use variables added during build in inputs of subsequent build tasks, since the variables are processed at the beginning of the build. 
 As a workaround environment variables can be used in custom scripts.
 
