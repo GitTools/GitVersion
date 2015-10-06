@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\LibGit2Sharp.NativeBinaries.1.0.72\build\LibGit2Sharp.NativeBinaries.props" Condition="Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.72\build\LibGit2Sharp.NativeBinaries.props')" />
   <PropertyGroup>
@@ -132,7 +132,12 @@
   </UsingTask>
   <Target Name="AfterBuild" DependsOnTargets="Clean" Condition="$(NCrunch)==''">
     <MakeDir Directories="$(TargetDir)ILMergeTemp\" />
-    <Exec Command="&quot;$(SolutionDir)tools\ilmerge.exe&quot;  /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot; &quot;$(TargetDir)GitTools.Core.dll&quot; &quot;$(TargetDir)LibGit2Sharp.dll&quot; &quot;$(TargetDir)YamlDotNet.dll&quot; /target:exe /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
+    <PropertyGroup>
+        <Runtime Condition="'$(OS)'=='Unix'">mono</Runtime>
+    </PropertyGroup>
+    <!-- Copy target file so that our temporary file gets the correct permissions -->
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(TargetDir)ILMergeTemp\"/>
+    <Exec Command="$(Runtime) &quot;$(SolutionDir)/packages/ILRepack.2.0.7/tools/ILRepack.exe&quot;  /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)GitTools.Core.dll&quot; &quot;$(TargetDir)LibGit2Sharp.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:exe /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
     <ItemGroup>
       <TempFiles Include="$(TargetDir)ILMergeTemp\*.*" />
     </ItemGroup>
