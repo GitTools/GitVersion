@@ -21,7 +21,7 @@ See [MSBuild Task](/usage/#msbuild-task) for further instructions how to use the
 2. For TFS 2015 On-Prem configure Basic Authentication in TFS as shown [here](https://github.com/Microsoft/tfs-cli/blob/master/docs/configureBasicAuth.md).
 3. Download the GitVersion TFS build task from the latest release on the [GitVersion releases page](https://github.com/GitTools/GitVersion/releases) and unzip.
 4. Run `tfx login` as shown [here](https://github.com/Microsoft/tfs-cli/blob/master/README.md#login).
-5. From the directory outside of where you unzipped the task, run `tfx build tasks upload .\GitVersionVsoTask --overwrite` where GitVersionVsoTask is the directory containing the files.
+5. From the directory outside of where you unzipped the task, run `tfx build tasks upload .\GitVersionTfsTask --overwrite` where GitVersionTfsTask is the directory containing the files.
 6. It should successfully install.
 
 #### Using the GitVersion custom build step
