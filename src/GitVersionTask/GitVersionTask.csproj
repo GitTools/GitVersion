@@ -102,7 +102,12 @@
   </Target>
   <Target Name="AfterBuild" DependsOnTargets="Clean" Condition="$(NCrunch)==''">
     <MakeDir Directories="$(TargetDir)ILMergeTemp\" />
-    <Exec Command="&quot;$(SolutionDir)tools\ilmerge.exe&quot;  /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)LibGit2Sharp.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:library /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
+    <PropertyGroup>
+        <Runtime Condition="'$(OS)'=='Unix'">mono</Runtime>
+    </PropertyGroup>
+    <!-- Copy target file so that our temporary file gets the correct permissions -->
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(TargetDir)ILMergeTemp\"/>
+    <Exec Command="$(Runtime) &quot;$(SolutionDir)/packages/ILRepack.2.0.7/tools/ILRepack.exe&quot;  /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)LibGit2Sharp.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:library /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
     <ItemGroup>
       <TempFiles Include="$(TargetDir)ILMergeTemp\*.*" />
     </ItemGroup>
@@ -115,8 +120,9 @@
       <Output TaskParameter="Include" ItemName="x86" />
     </CreateItem>
     <Copy SourceFiles="@(x86)" DestinationFolder="$(BuildDir)NuGetTaskBuild\NativeBinaries\x86" />
-    <Copy SourceFiles="$(TargetDir)ILMergeTemp\GitVersionTask.dll" DestinationFolder="$(BuildDir)NuGetTaskBuild" />
-    <Copy SourceFiles="$(TargetDir)GitVersionTask.pdb" DestinationFolder="$(BuildDir)NuGetTaskBuild" />
+    <Copy SourceFiles="$(TargetDir)ILMergeTemp\GitVersionTask.dll" DestinationFolder="$(BuildDir)NuGetTaskBuild" Condition="Exists('$(TargetDir)ILMergeTemp\GitVersionTask.dll')" />
+    <Copy SourceFiles="$(TargetDir)GitVersionTask.pdb" DestinationFolder="$(BuildDir)NuGetTaskBuild" Condition="Exists('$(TargetDir)GitVersionTask.pdb')" />
+    <Copy SourceFiles="$(TargetDir)GitVersionTask.dll.mdb" DestinationFolder="$(BuildDir)NuGetTaskBuild" Condition="Exists('$(TargetDir)GitVersionTask.dll.mdb')" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\Build\portable-net+sl+win+wpa+wp" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\Build\dotnet" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.nuspec" DestinationFolder="$(BuildDir)NuGetTaskBuild" />
