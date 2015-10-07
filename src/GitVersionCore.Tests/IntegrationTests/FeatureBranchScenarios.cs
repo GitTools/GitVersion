@@ -170,4 +170,49 @@ public class FeatureBranchScenarios
             fixture.AssertFullSemver("1.2.0-longrunning.2");
         }
     }
+
+    [Test]
+    public void FeatureBranchShouldTrackDevelopBranchIfPossible()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config() { VersioningMode = VersioningMode.ContinuousDeployment }))
+        {
+            fixture.Repository.MakeATaggedCommit("v1.0.0");
+
+            fixture.Repository.CreateBranch("develop");
+            fixture.Repository.Checkout("develop");
+
+            fixture.Repository.CreateBranch("feature/a-feature");
+            fixture.Repository.Checkout("feature/a-feature");
+            fixture.Repository.MakeACommit();
+
+            fixture.Repository.Checkout("develop");
+            fixture.Repository.MergeNoFF("feature/a-feature");
+
+            fixture.Repository.Checkout("master");
+            // NOTE: develop and master will diverge here when running git flow
+            fixture.MergeNoFF("develop");
+            // NOTE: if we're merging develop to master with fast forward, the test will pass
+            // fixture.Repository.Merge(fixture.Repository.FindBranch("develop"), Constants.SignatureNow(), new MergeOptions() {FastForwardStrategy = FastForwardStrategy.FastForwardOnly});
+
+            fixture.Repository.ApplyTag("v2.0.0");
+
+            fixture.Repository.Checkout("develop");
+            fixture.Repository.CreateBranch("feature/snd-feature");
+            fixture.Repository.Checkout("feature/snd-feature");
+            fixture.Repository.MakeACommit();
+
+            fixture.Repository.Checkout("develop");
+            fixture.Repository.MakeACommit();
+
+            fixture.Repository.DumpGraph();
+
+            // NOTE: develop behaves correctly
+            fixture.AssertFullSemver("2.1.0-unstable.1");
+
+            fixture.Checkout("feature/snd-feature");
+            // NOTE: I would expect something like the assertion below
+            fixture.AssertFullSemver("2.1.0-snd-feature.1");
+            // BUT WAS: "1.1.0-snd-feature.3"
+        }
+    }
 }
