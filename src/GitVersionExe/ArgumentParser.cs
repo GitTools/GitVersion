@@ -4,6 +4,7 @@ namespace GitVersion
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.ComponentModel;
+    using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
 
@@ -42,7 +43,8 @@ namespace GitVersion
                 };
             }
 
-            if (commandLineArguments.Count == 1 && !(commandLineArguments[0].StartsWith("-") || commandLineArguments[0].StartsWith("/")))
+            if (commandLineArguments.Count == 1 && !(commandLineArguments[0].StartsWith("-") ||
+                (commandLineArguments[0].StartsWith("/") && Path.DirectorySeparatorChar != '/')))
             {
                 return new Arguments
                 {
@@ -52,7 +54,7 @@ namespace GitVersion
 
             List<string> namedArguments;
             var arguments = new Arguments();
-            if (firstArgument.StartsWith("-") || firstArgument.StartsWith("/"))
+            if (firstArgument.StartsWith("-") || (firstArgument.StartsWith("/") && Path.DirectorySeparatorChar != '/'))
             {
                 arguments.TargetPath = Environment.CurrentDirectory;
                 namedArguments = commandLineArguments;
