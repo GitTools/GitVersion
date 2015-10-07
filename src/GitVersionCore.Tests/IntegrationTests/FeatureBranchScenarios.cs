@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -174,7 +175,15 @@ public class FeatureBranchScenarios
     [Test]
     public void FeatureBranchShouldTrackDevelopBranchIfPossible()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config() { VersioningMode = VersioningMode.ContinuousDeployment }))
+        using (var fixture = new EmptyRepositoryFixture(
+            new Config
+            {
+                VersioningMode = VersioningMode.ContinuousDeployment,
+                Branches =
+                {
+                    { "feature[/-]", new BranchConfig() { TrackMergeTarget = true } }
+                }            
+            }))
         {
             fixture.Repository.MakeATaggedCommit("v1.0.0");
 
