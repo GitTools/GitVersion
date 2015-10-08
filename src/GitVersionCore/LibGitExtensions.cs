@@ -6,6 +6,9 @@ namespace GitVersion
     using System.Linq;
     using System.Text;
     using GitVersion.Helpers;
+
+    using JetBrains.Annotations;
+
     using LibGit2Sharp;
 
     static class LibGitExtensions
@@ -44,8 +47,14 @@ namespace GitVersion
             .FirstOrDefault();
         }
 
-        public static Commit FindCommitBranchWasBranchedFrom(this Branch branch, IRepository repository, params Branch[] excludedBranches)
+
+        public static Commit FindCommitBranchWasBranchedFrom([NotNull] this Branch branch, IRepository repository, params Branch[] excludedBranches)
         {
+            if (branch == null)
+            {
+                throw new ArgumentNullException("branch");
+            }
+
             using (Logger.IndentLog("Finding branch source"))
             {
                 var otherBranches = repository.Branches.Except(excludedBranches).Where(b => IsSameBranch(branch, b)).ToList();
