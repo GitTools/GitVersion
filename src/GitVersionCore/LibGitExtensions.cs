@@ -57,19 +57,21 @@ namespace GitVersion
                 throw new ArgumentNullException("branch");
             }
 
-            if (branch.Tip == null)
-            {
-                throw new ArgumentException(String.Format(missingTipFormat, branch.Name));
-            }
-
             using (Logger.IndentLog("Finding branch source"))
             {
+                if (branch.Tip == null)
+                {
+                    Logger.WriteWarning(String.Format(missingTipFormat, branch.Name));
+                    return null;
+                }
+
                 var otherBranches = repository.Branches.Except(excludedBranches).Where(b => IsSameBranch(branch, b)).ToList();
                 var mergeBases = otherBranches.Select(b =>
                 {
                     if (b.Tip == null)
                     {
-                        throw new InvalidOperationException(String.Format(missingTipFormat, b.Name));
+                        Logger.WriteWarning(String.Format(missingTipFormat, b.Name));
+                        return null;
                     }
 
                     var otherCommit = b.Tip;
@@ -90,12 +92,17 @@ namespace GitVersion
             return (b.IsRemote ? b.Name.Replace(b.Remote.Name + "/", string.Empty) : b.Name) != branch.Name;
         }
 
-        public static IEnumerable<Branch> GetBranchesContainingCommit(this Commit commit, IRepository repository, bool onlyTrackedBranches)
+        public static IEnumerable<Branch> GetBranchesContainingCommit([NotNull] this Commit commit, IRepository repository, bool onlyTrackedBranches)
         {
+            if (commit == null)
+            {
+                throw new ArgumentNullException("commit");
+            }
+
             var directBranchHasBeenFound = false;
             foreach (var branch in repository.Branches)
             {
-                if (branch.Tip.Sha != commit.Sha || (onlyTrackedBranches && !branch.IsTracking))
+                if (branch.Tip != null && branch.Tip.Sha != commit.Sha || (onlyTrackedBranches && !branch.IsTracking))
                 {
                     continue;
                 }
