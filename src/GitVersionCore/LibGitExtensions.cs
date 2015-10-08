@@ -50,9 +50,16 @@ namespace GitVersion
 
         public static Commit FindCommitBranchWasBranchedFrom([NotNull] this Branch branch, IRepository repository, params Branch[] excludedBranches)
         {
+            const string missingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
+
             if (branch == null)
             {
                 throw new ArgumentNullException("branch");
+            }
+
+            if (branch.Tip == null)
+            {
+                throw new ArgumentException(String.Format(missingTipFormat, branch.Name));
             }
 
             using (Logger.IndentLog("Finding branch source"))
@@ -60,6 +67,11 @@ namespace GitVersion
                 var otherBranches = repository.Branches.Except(excludedBranches).Where(b => IsSameBranch(branch, b)).ToList();
                 var mergeBases = otherBranches.Select(b =>
                 {
+                    if (b.Tip == null)
+                    {
+                        throw new InvalidOperationException(String.Format(missingTipFormat, b.Name));
+                    }
+
                     var otherCommit = b.Tip;
                     if (b.Tip.Parents.Contains(branch.Tip))
                     {
@@ -71,6 +83,7 @@ namespace GitVersion
                 return mergeBases.OrderByDescending(b => b.Committer.When).FirstOrDefault();
             }
         }
+
 
         static bool IsSameBranch(Branch branch, Branch b)
         {
