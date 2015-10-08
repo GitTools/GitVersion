@@ -132,11 +132,11 @@ namespace GitVersion
                     var logFileFullPath = Path.GetFullPath(arguments.LogFilePath);
                     var logFile = new FileInfo(logFileFullPath);
 
-                    if (logFile.Directory != null && !logFile.Directory.Exists)
-                    {
-                        // TODO: This should probably be done recursively. @asbjornu
+                    if (logFile.Directory == null)
+                        throw new DirectoryNotFoundException(String.Format("The directory of {0} does not exist.", logFile));
+
+                    if (!logFile.Directory.Exists)
                         logFile.Directory.Create();
-                    }
 
                     if (!logFile.Exists)
                     {
