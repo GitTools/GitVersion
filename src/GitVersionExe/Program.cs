@@ -133,8 +133,10 @@ namespace GitVersion
                     var logFile = new FileInfo(logFileFullPath);
 
                     if (logFile.Directory != null && !logFile.Directory.Exists)
+                    {
                         // TODO: This should probably be done recursively. @asbjornu
                         logFile.Directory.Create();
+                    }
 
                     if (!logFile.Exists)
                     {
