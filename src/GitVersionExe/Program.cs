@@ -149,7 +149,7 @@ namespace GitVersion
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Failed to configure logging for '{0}': {1}", arguments.LogFilePath, ex.Message);
+                    Logger.WriteError(String.Format("Failed to configure logging for '{0}': {1}", arguments.LogFilePath, ex.Message));
                 }
             }
 
