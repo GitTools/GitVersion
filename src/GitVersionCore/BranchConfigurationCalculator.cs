@@ -4,6 +4,9 @@ namespace GitVersion
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
+
+    using JetBrains.Annotations;
+
     using LibGit2Sharp;
 
     public class BranchConfigurationCalculator
@@ -35,10 +38,21 @@ namespace GitVersion
             throw new Exception(string.Format(format, currentBranch.Name, string.Join(", ", matchingBranches.Select(b => b.Key))));
         }
 
-        static KeyValuePair<string, BranchConfig>[] LookupBranchConfiguration(Config config, Branch currentBranch)
+        static KeyValuePair<string, BranchConfig>[] LookupBranchConfiguration([NotNull] Config config, [NotNull] Branch currentBranch)
         {
+            if (config == null)
+            {
+                throw new ArgumentNullException("config");
+            }
+            
+            if (currentBranch == null)
+            {
+                throw new ArgumentNullException("currentBranch");
+            }
+            
             return config.Branches.Where(b => Regex.IsMatch(currentBranch.Name, "^" + b.Key, RegexOptions.IgnoreCase)).ToArray();
         }
+
 
         static KeyValuePair<string, BranchConfig> InheritBranchConfiguration(bool onlyEvaluateTrackedBranches, IRepository repository, Commit currentCommit, Branch currentBranch, KeyValuePair<string, BranchConfig> keyValuePair, BranchConfig branchConfiguration, Config config, IList<Branch> excludedInheritBranches)
         {
