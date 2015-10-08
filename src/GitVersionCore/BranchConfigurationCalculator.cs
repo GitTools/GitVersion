@@ -122,7 +122,14 @@ namespace GitVersion
                 var branchName = developBranch != null ? developBranch.Name : "master";
 
                 Logger.WriteWarning(errorMessage + Environment.NewLine + Environment.NewLine + "Falling back to " + branchName + " branch config");
-                var value = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, repository.Branches[branchName]).Value;
+                currentBranch = repository.Branches[branchName];
+
+                if (currentBranch == null)
+                {
+                    throw new InvalidOperationException(String.Format("Could not find the branch '{0}'.", branchName));
+                }
+
+                var value = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, currentBranch).Value;
                 return new KeyValuePair<string, BranchConfig>(
                     keyValuePair.Key,
                     new BranchConfig(branchConfiguration)
