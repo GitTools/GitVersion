@@ -115,9 +115,9 @@
       <TempFiles Include="$(TargetDir)ILMergeTemp\*.*" />
     </ItemGroup>
     <MakeDir Directories="$(BuildDir)NuGetTaskBuild" />
-    <CreateItem Include="$(TargetDir)NativeBinaries\**\*.dll">
-      <Output TaskParameter="Include" ItemName="NativeBinaries" />
-    </CreateItem>
+    <ItemGroup>
+      <NativeBinaries Include="$(TargetDir)NativeBinaries\**\*.*"/>
+    </ItemGroup>
     <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)NuGetTaskBuild\NativeBinaries\%(RecursiveDir)%(Filename)%(Extension)')" />
     <!-- Workaround for issue with DllMap. Mono will currently always prepend lib to start of target dll name. -->
     <CreateItem Include="$(TargetDir)NativeBinaries\**\*.so;$(TargetDir)NativeBinaries\**\*.dylib">
