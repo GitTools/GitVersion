@@ -129,17 +129,25 @@ namespace GitVersion
             {
                 try
                 {
-                    Directory.CreateDirectory(Path.GetDirectoryName(arguments.LogFilePath));
-                    if (File.Exists(arguments.LogFilePath))
+                    var logFileFullPath = Path.GetFullPath(arguments.LogFilePath);
+                    var logFile = new FileInfo(logFileFullPath);
+
+                    if (logFile.Directory != null && !logFile.Directory.Exists)
+                        // TODO: This should probably be done recursively. @asbjornu
+                        logFile.Directory.Create();
+
+                    if (!logFile.Exists)
                     {
-                        using (File.CreateText(arguments.LogFilePath)) { }
+                        using (logFile.CreateText())
+                        {
+                        }
                     }
 
                     writeActions.Add(x => WriteLogEntry(arguments, x));
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Failed to configure logging: " + ex.Message);
+                    Console.WriteLine("Failed to configure logging for '{0}': {1}", arguments.LogFilePath, ex.Message);
                 }
             }
 
