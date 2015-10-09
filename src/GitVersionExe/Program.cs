@@ -113,6 +113,7 @@ namespace GitVersion
             return 0;
         }
 
+
         static void ConfigureLogging(Arguments arguments)
         {
             var writeActions = new List<Action<string>>
@@ -132,11 +133,11 @@ namespace GitVersion
                     var logFileFullPath = Path.GetFullPath(arguments.LogFilePath);
                     var logFile = new FileInfo(logFileFullPath);
 
-                    if (logFile.Directory == null)
-                        throw new DirectoryNotFoundException(String.Format("The directory of {0} does not exist.", logFile));
-
-                    if (!logFile.Directory.Exists)
+                    // NOTE: logFile.Directory will be null if the path is i.e. C:\logfile.log. @asbjornu
+                    if (logFile.Directory != null)
+                    {
                         logFile.Directory.Create();
+                    }
 
                     if (!logFile.Exists)
                     {
