@@ -65,29 +65,33 @@ namespace GitVersion
                 {
                     excludedBranches = CalculateWhenMultipleParents(repository, currentCommit, ref currentBranch, excludedBranches);
                 }
+
                 if (excludedInheritBranches == null)
                 {
                     excludedInheritBranches = repository.Branches.Where(b =>
                     {
                         var branchConfig = LookupBranchConfiguration(config, b);
-                        return branchConfig.Length == 1 && branchConfig[0].Value.Increment == IncrementStrategy.Inherit;
+
+                        // NOTE: if length is 0 we couldn't find the configuration for the branch e.g. "origin/master"
+                        // NOTE: if the length is greater than 1 we cannot decide which merge strategy to pick
+                        return (branchConfig.Length != 1) || (branchConfig.Length == 1 && branchConfig[0].Value.Increment == IncrementStrategy.Inherit);
                     }).ToList();
                 }
                 excludedBranches.ToList().ForEach(excludedInheritBranches.Add);
+                var branchesToEvaluate = repository.Branches.Except(excludedInheritBranches).ToList();
 
                 var branchPoint = currentBranch.FindCommitBranchWasBranchedFrom(repository, excludedInheritBranches.ToArray());
-
                 List<Branch> possibleParents;
                 if (branchPoint == null)
                 {
-                    possibleParents = currentCommit.GetBranchesContainingCommit(repository, true).Except(excludedInheritBranches).ToList();
+                    possibleParents = currentCommit.GetBranchesContainingCommit(repository, branchesToEvaluate, true).ToList();
                 }
                 else
                 {
-                    var branches = branchPoint.GetBranchesContainingCommit(repository, true).Except(excludedInheritBranches).ToList();
+                    var branches = branchPoint.GetBranchesContainingCommit(repository, branchesToEvaluate, true).ToList();
                     if (branches.Count > 1)
                     {
-                        var currentTipBranches = currentCommit.GetBranchesContainingCommit(repository, true).Except(excludedInheritBranches).ToList();
+                        var currentTipBranches = currentCommit.GetBranchesContainingCommit(repository, branchesToEvaluate, true).ToList();
                         possibleParents = branches.Except(currentTipBranches).ToList();
                     }
                     else

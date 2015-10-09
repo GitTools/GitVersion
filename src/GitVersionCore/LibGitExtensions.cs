@@ -92,7 +92,7 @@ namespace GitVersion
             return (b.IsRemote ? b.Name.Replace(b.Remote.Name + "/", string.Empty) : b.Name) != branch.Name;
         }
 
-        public static IEnumerable<Branch> GetBranchesContainingCommit([NotNull] this Commit commit, IRepository repository, bool onlyTrackedBranches)
+        public static IEnumerable<Branch> GetBranchesContainingCommit([NotNull] this Commit commit, IRepository repository, IList<Branch> branches, bool onlyTrackedBranches)
         {
             if (commit == null)
             {
@@ -100,7 +100,7 @@ namespace GitVersion
             }
 
             var directBranchHasBeenFound = false;
-            foreach (var branch in repository.Branches)
+            foreach (var branch in branches)
             {
                 if (branch.Tip != null && branch.Tip.Sha != commit.Sha || (onlyTrackedBranches && !branch.IsTracking))
                 {
@@ -116,7 +116,7 @@ namespace GitVersion
                 yield break;
             }
 
-            foreach (var branch in repository.Branches.Where(b => (onlyTrackedBranches && !b.IsTracking)))
+            foreach (var branch in branches.Where(b => (onlyTrackedBranches && !b.IsTracking)))
             {
                 var commits = repository.Commits.QueryBy(new CommitFilter { Since = branch }).Where(c => c.Sha == commit.Sha);
 

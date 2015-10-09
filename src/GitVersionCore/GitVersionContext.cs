@@ -48,7 +48,7 @@
 
             if (currentBranch.IsDetachedHead())
             {
-                CurrentBranch = CurrentCommit.GetBranchesContainingCommit(repository, OnlyEvaluateTrackedBranches).OnlyOrDefault() ?? currentBranch;
+                CurrentBranch = CurrentCommit.GetBranchesContainingCommit(repository, repository.Branches.ToList(), OnlyEvaluateTrackedBranches).OnlyOrDefault() ?? currentBranch;
             }
             else
             {
