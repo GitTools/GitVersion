@@ -6,11 +6,13 @@ namespace GitVersion
 
     public static class Logger
     {
+        static readonly Regex ObscurePasswordRegex = new Regex("(https?://)(.+)(:.+@)", RegexOptions.Compiled);
         static string indent = string.Empty;
 
         public static Action<string> WriteInfo { get; private set; }
         public static Action<string> WriteWarning { get; private set; }
         public static Action<string> WriteError { get; private set; }
+
 
         static Logger()
         {
@@ -33,8 +35,7 @@ namespace GitVersion
         {
             Action<string> logAction = s =>
             {
-                var rgx = new Regex("(https?://)(.+)(:.+@)");
-                s = rgx.Replace(s, "$1$2:*******@");
+                s = ObscurePasswordRegex.Replace(s, "$1$2:*******@");
                 info(s);
             };
             return logAction;
