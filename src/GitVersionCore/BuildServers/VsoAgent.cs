@@ -24,8 +24,7 @@
 
         public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
         {
-            // Note: the VSO agent does not yet support updating the build display number from a variable
-            return null;
+            return string.Format("##vso[build.updatebuildnumber]{0}", ServiceMessageEscapeHelper.EscapeValue(versionToUseForBuildNumber));
         }
     }
 }

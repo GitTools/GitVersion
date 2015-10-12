@@ -61,8 +61,12 @@
             if (tagToUse == "useBranchName")
             {
                 Logger.WriteInfo("Using branch name to calculate version tag");
-                var name = branchNameOverride ?? context.CurrentBranch.Name;
-                tagToUse = name.RegexReplace(context.Configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
+                tagToUse = branchNameOverride ?? context.CurrentBranch.Name;
+                if (!string.IsNullOrWhiteSpace(context.Configuration.BranchPrefixToTrim))
+                {
+                    tagToUse = tagToUse.RegexReplace(context.Configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
+                }
+                tagToUse = tagToUse.RegexReplace("[^a-zA-Z0-9-]", "-");
             }
             int? number = null;
             if (!string.IsNullOrEmpty(context.Configuration.TagNumberPattern))
