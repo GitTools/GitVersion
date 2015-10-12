@@ -88,6 +88,20 @@ Task Name: `GitVersionTask.WriteVersionInfoToBuildLog`
 
 If, at build time, it is detected that the build is occurring inside a Build Server server then the [variables](more-info/variables.md) will be written to the build log in a format that the current Build Server can consume. See [Build Server Support](build-server-support.md).
 
+## Conditional control tasks
+
+Properties `WriteVersionInfoToBuildLog`, `UpdateAssemblyInfo` and `GetVersion` are checked before running these tasks.
+
+If you, eg., want to disable `GitVersionTask.UpdateAssemblyInfo` just define `UpdateAssemblyInfo` to something other than `true` in your MSBuild script, like this:
+
+```
+  <PropertyGroup>
+	...
+    <UpdateAssemblyInfo>false</UpdateAssemblyInfo>
+	...
+  </PropertyGroup>
+```
+  
 ## My Git repository requires authentication. What do I do?
 
 Set the environmental variables `GITVERSION_REMOTE_USERNAME` and `GITVERSION_REMOTE_PASSWORD` before the build is initiated.
