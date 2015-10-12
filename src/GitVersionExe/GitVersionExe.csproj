@@ -39,6 +39,10 @@
     <DocumentationFile>bin\Release\GitVersion.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommandLine, Version=2.0.251.0, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommandLineParser.2.0.251-beta\lib\net40\CommandLine.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="JetBrains.Annotations, Version=8.1.11.55, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrainsAnnotations.Fody.1.0.4.0\Lib\JetBrains.Annotations.dll</HintPath>
       <Private>False</Private>
@@ -57,13 +61,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArgumentParser.cs" />
     <Compile Include="Arguments.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="HelpWriter.cs" />
+    <Compile Include="Runners\InitRunner.cs" />
+    <Compile Include="Runners\InspectRunner.cs" />
+    <Compile Include="Options\InjectBuildServerOptions.cs" />
+    <Compile Include="Options\InitOptions.cs" />
+    <Compile Include="Options\InspectRemoteRepositoryOptions.cs" />
+    <Compile Include="Options\LoggingOptions.cs" />
+    <Compile Include="Options\InjectMsBuildOptions.cs" />
+    <Compile Include="Options\InjectProcess.cs" />
+    <Compile Include="Options\InspectOptions.cs" />
+    <Compile Include="Options\InjectAssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="AssemblyInfoFileUpdate.cs" />
+    <Compile Include="Runners\InjectBuildServerRunner.cs" />
     <Compile Include="SpecifiedArgumentRunner.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -101,6 +115,7 @@
       <Name>GitVersionCore</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="Clean">
     <ItemGroup>

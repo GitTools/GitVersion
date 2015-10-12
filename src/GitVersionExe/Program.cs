@@ -6,7 +6,9 @@ namespace GitVersion
     using System.IO;
     using System.Linq;
     using System.Text;
-    using GitVersion.Helpers;
+    using CommandLine;
+    using GitVersion.Options;
+    using GitVersion.Runners;
 
     class Program
     {
@@ -16,15 +18,14 @@ namespace GitVersion
         {
             var exitCode = VerifyArgumentsAndRun();
 
+            if (exitCode != 0)
+            {
+                Console.Write(log.ToString());
+            }
+
             if (Debugger.IsAttached)
             {
                 Console.ReadKey();
-            }
-
-            if (exitCode != 0)
-            {
-                // Dump log to console if we fail to complete successfully
-                Console.Write(log.ToString());
             }
 
             Environment.Exit(exitCode);
@@ -32,93 +33,57 @@ namespace GitVersion
 
         static int VerifyArgumentsAndRun()
         {
-            Arguments arguments = null;
+            var args = GetArgumentsWithoutExeName();
             try
-            {
-                var fileSystem = new FileSystem();
+            { 
+                Parser.Default.ParseArguments<InspectOptions,
+                InitOptions,
+                InspectRemoteRepositoryOptions,
+                InjectBuildServerOptions,
+                InjectMsBuildOptions,
+                InjectProcess,
+                InjectAssemblyInfo>(args)
+                .WithParsed<InspectOptions>(InspectRunner.Run)
+                .WithParsed<InitOptions>(InitRunner.Run)
+                //.WithParsed<InspectRemoteRepositoryOptions>(Runner.Run)
+                .WithParsed<InjectBuildServerOptions>(InjectBuildServerRunner.Run)
+                //.WithParsed<InjectMsBuildOptions>(Runner.Run)
+                //.WithParsed<InjectProcess>(Runner.Run)
+                //.WithParsed<InjectAssemblyInfo>(Runner.Run)
+                .WithNotParsed(HandleParseErrors);
 
-                var argumentsWithoutExeName = GetArgumentsWithoutExeName();
-                try
-                {
-                    arguments = ArgumentParser.ParseArguments(argumentsWithoutExeName);
-                }
-                catch (WarningException ex)
-                {
-                    Console.WriteLine("Failed to parse arguments: {0}", string.Join(" ", argumentsWithoutExeName));
-                    if (!string.IsNullOrWhiteSpace(ex.Message))
-                    {
-                        Console.WriteLine();
-                        Console.WriteLine(ex.Message);
-                        Console.WriteLine();
-                    }
-
-                    HelpWriter.Write();
-                    return 1;
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Failed to parse arguments: {0}", string.Join(" ", argumentsWithoutExeName));
-
-                    HelpWriter.Write();
-                    return 1;
-                }
-                if (arguments.IsHelp)
-                {
-                    HelpWriter.Write();
-                    return 0;
-                }
-
-                ConfigureLogging(arguments);
-                if (arguments.Init)
-                {
-                    ConfigurationProvider.Init(arguments.TargetPath, fileSystem, new ConsoleAdapter());
-                    return 0;
-                }
-                if (arguments.ShowConfig)
-                {
-                    Console.WriteLine(ConfigurationProvider.GetEffectiveConfigAsString(arguments.TargetPath, fileSystem));
-                    return 0;
-                }
-
-                if (!string.IsNullOrEmpty(arguments.Proj) || !string.IsNullOrEmpty(arguments.Exec))
-                {
-                    arguments.Output = OutputType.BuildServer;
-                }
-
-                Logger.WriteInfo("Working directory: " + arguments.TargetPath);
-
-                SpecifiedArgumentRunner.Run(arguments, fileSystem);
+                return 0;
             }
-            catch (WarningException exception)
+            catch (Exception e)
             {
-                var error = string.Format("An error occurred:\r\n{0}", exception.Message);
-                Logger.WriteWarning(error);
+                Console.WriteLine(e);
                 return 1;
             }
-            catch (Exception exception)
-            {
-                var error = string.Format("An unexpected error occurred:\r\n{0}", exception);
-                Logger.WriteError(error);
-
-                if (arguments != null)
-                {
-                    Logger.WriteInfo(string.Empty);
-                    Logger.WriteInfo("Here is the current git graph (please include in issue): ");
-                    Logger.WriteInfo("Showing max of 100 commits");
-                    LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
-                }
-                return 1;
-            }
-
-            return 0;
         }
+
+        static void HandleParseErrors(IEnumerable<Error> commandLineErrors)
+        {
+            var message = commandLineErrors.Aggregate("Error parsing arguments ...", 
+                (current, err) => current + ("\nFailed to parse - " + err));
+            throw new WarningException(message);
+        }
+
+        static string[] GetArgumentsWithoutExeName()
+        {
+            return Environment.GetCommandLineArgs()
+                              .Skip(1)
+                              .ToArray();
+        }
+
+
+        // Logging stuf
 
         static void ConfigureLogging(Arguments arguments)
         {
             var writeActions = new List<Action<string>>
-            {
-                s => log.AppendLine(s)
-            };
+                {
+                    s => log.AppendLine(s)
+                };
 
             if (arguments.Output == OutputType.BuildServer || arguments.LogFilePath == "console" || arguments.Init)
             {
@@ -132,7 +97,9 @@ namespace GitVersion
                     Directory.CreateDirectory(Path.GetDirectoryName(arguments.LogFilePath));
                     if (File.Exists(arguments.LogFilePath))
                     {
-                        using (File.CreateText(arguments.LogFilePath)) { }
+                        using (File.CreateText(arguments.LogFilePath))
+                        {
+                        }
                     }
 
                     writeActions.Add(x => WriteLogEntry(arguments, x));
@@ -153,13 +120,6 @@ namespace GitVersion
         {
             var contents = string.Format("{0}\t\t{1}\r\n", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), s);
             File.AppendAllText(arguments.LogFilePath, contents);
-        }
-
-        static List<string> GetArgumentsWithoutExeName()
-        {
-            return Environment.GetCommandLineArgs()
-                .Skip(1)
-                .ToList();
         }
     }
 }
