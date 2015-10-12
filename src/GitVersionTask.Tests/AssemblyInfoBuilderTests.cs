@@ -95,6 +95,13 @@ public class AssemblyInfoBuilderTests
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
+    public void VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfoWithMultipleVariables()
+    {
+        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinor, "{BranchName}-{Major}.{Minor}.{Patch}-{Sha}");
+    }
+
+    [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public void VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfo()
     {
         VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinor, "{NugetVersion}");

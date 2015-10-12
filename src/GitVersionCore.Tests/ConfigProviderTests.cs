@@ -126,6 +126,20 @@ assembly-informational-format: '{NugetVersion}'";
     }
 
     [Test]
+    public void CanUpdateAssemblyInformationalVersioningSchemeWithMultipleVariables()
+    {
+        const string text = @"
+assembly-versioning-scheme: MajorMinor
+assembly-informational-format: '{Major}.{Minor}.{Patch}'";
+
+        SetupConfigFileContent(text);
+
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
+        config.AssemblyInformationalFormat.ShouldBe("{Major}.{Minor}.{Patch}");
+    }
+
+    [Test]
     public void CanReadDefaultDocument()
     {
         const string text = "";
