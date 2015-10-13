@@ -37,6 +37,12 @@ The VSO build step updates the build number automatically to the GitVersion numb
 GitVersion passes variables in the form of `GitVersion.*` (Eg: `GitVersion.Major`) to TFS Build and also writes `GITVERSION_*` (Eg: `GITVERSION_MAJOR`) environment variables that are available for any subsequent build step. 
 See [Variables](/more-info/variables/) for an overview of available variables.
 
+
+#### Using GitVersion variables in build build name
+To use GitVersion's variables in the build name, just add them in the form `$(GITVERSION_FullSemVer)` into the Build definition's build number string. Then just ensure GitVersion is called with
+`/output buildserver` and it will replace those variables with the calculated version.
+
+
 #### Known limitations
 * Due to [current limitations in TFS2015 On-Prem](https://github.com/Microsoft/vso-agent-tasks/issues/380) it's currently not possible to automatically set the build version in TFS2015 On-Prem. Instead a warning similar to `##[warning]Unable to process logging event:##vso[build.updatebuildnumber 1.0.0-unstable.1` is logged.
 * Due to a know limitation in TFS 2015 On-Prem it's currently not possible to use variables added during build in inputs of subsequent build tasks, since the variables are processed at the beginning of the build. 
