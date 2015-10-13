@@ -27,12 +27,13 @@
       AssemblyFile="$(MSBuildThisFileDirectory)..\..\GitVersionTask.dll" />
 
   <Target Name="WriteVersionInfoToBuildLog" BeforeTargets="CoreCompile" Condition="$(WriteVersionInfoToBuildLog) == 'true'">
-    <WriteVersionInfoToBuildLog SolutionDirectory="$(SolutionDir)" />
+    <WriteVersionInfoToBuildLog SolutionDirectory="$(SolutionDir)" NoFetch="$(GitVersion_NoFetchEnabled)"/>
   </Target>
   
   <Target Name="UpdateAssemblyInfo" BeforeTargets="CoreCompile" Condition="$(UpdateAssemblyInfo) == 'true'">
     <UpdateAssemblyInfo
     SolutionDirectory="$(SolutionDir)"
+    NoFetch="$(GitVersion_NoFetchEnabled)"
     ProjectFile="$(MSBuildProjectFullPath)"
     IntermediateOutputPath="$(IntermediateOutputPath)"
     RootNamespace="$(RootNamespace)"
