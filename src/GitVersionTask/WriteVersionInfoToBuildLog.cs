@@ -67,7 +67,7 @@
             foreach (var buildServer in applicableBuildServers)
             {
                 logger.LogInfo(string.Format("Executing GenerateSetVersionMessage for '{0}'.", buildServer.GetType().Name));
-                logger.LogInfo(buildServer.GenerateSetVersionMessage(variables.FullSemVer));
+                logger.LogInfo(buildServer.GenerateSetVersionMessage(variables));
                 logger.LogInfo(string.Format("Executing GenerateBuildLogOutput for '{0}'.", buildServer.GetType().Name));
                 foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(buildServer, variables))
                 {

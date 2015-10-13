@@ -39,9 +39,9 @@ public class BuildServerBaseTests
             throw new NotImplementedException();
         }
 
-        public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
+        public override string GenerateSetVersionMessage(VersionVariables variables)
         {
-            return versionToUseForBuildNumber;
+            return variables.FullSemVer;
         }
 
         public override string[] GenerateSetParameterMessage(string name, string value)

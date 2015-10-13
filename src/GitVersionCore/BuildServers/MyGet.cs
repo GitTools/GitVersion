@@ -28,7 +28,7 @@
             return messages.ToArray();
         }
 
-        public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
+        public override string GenerateSetVersionMessage(VersionVariables variables)
         {
             return null;
         }

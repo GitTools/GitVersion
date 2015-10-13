@@ -22,9 +22,9 @@
             return Environment.GetEnvironmentVariable("BUILD_SOURCEBRANCH");
         }
 
-        public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
+        public override string GenerateSetVersionMessage(VersionVariables variables)
         {
-            return string.Format("##vso[build.updatebuildnumber]{0}", ServiceMessageEscapeHelper.EscapeValue(versionToUseForBuildNumber));
+            return string.Format("##vso[build.updatebuildnumber]{0}", ServiceMessageEscapeHelper.EscapeValue(variables.FullSemVer));
         }
     }
 }

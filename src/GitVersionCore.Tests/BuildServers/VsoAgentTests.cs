@@ -1,4 +1,5 @@
 ﻿using GitVersion;
+using GitVersionCore.Tests;
 using NUnit.Framework;
 using Shouldly;
 
@@ -9,7 +10,8 @@ public class VsoAgentTests
     public void Develop_branch()
     {
         var versionBuilder = new VsoAgent();
-        var vsVersion = versionBuilder.GenerateSetVersionMessage("0.0.0-Unstable4");
+        var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Unstable4");
+        var vsVersion = versionBuilder.GenerateSetVersionMessage(vars);
         vsVersion.ShouldBe("##vso[build.updatebuildnumber]0.0.0-Unstable4");
     }
 

@@ -1,4 +1,5 @@
 ﻿using GitVersion;
+using GitVersionCore.Tests;
 using NUnit.Framework;
 
 [TestFixture]
@@ -8,7 +9,8 @@ public class TeamCityTests
     public void Develop_branch()
     {
         var versionBuilder = new TeamCity();
-        var tcVersion = versionBuilder.GenerateSetVersionMessage("0.0.0-Unstable4");
+        var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Unstable4");
+        var tcVersion = versionBuilder.GenerateSetVersionMessage(vars);
         Assert.AreEqual("##teamcity[buildNumber '0.0.0-Unstable4']", tcVersion);
     }
 

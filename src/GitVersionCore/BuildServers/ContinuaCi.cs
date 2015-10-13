@@ -29,9 +29,9 @@
             };
         }
 
-        public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
+        public override string GenerateSetVersionMessage(VersionVariables variables)
         {
-            return string.Format("@@continua[setBuildVersion value='{0}']", versionToUseForBuildNumber);
+            return string.Format("@@continua[setBuildVersion value='{0}']", variables.FullSemVer);
         }
 
         static bool RegistryKeyExists(string keyName, RegistryView registryView)
