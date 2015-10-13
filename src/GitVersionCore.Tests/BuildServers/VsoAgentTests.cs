@@ -10,12 +10,15 @@ public class VsoAgentTests
 
     string key = "BUILD_BUILDNUMBER";
 
-    private void SetEnvironmentVariableForTest()
+
+    [SetUp]
+    public void SetEnvironmentVariableForTest()
     {
         Environment.SetEnvironmentVariable(key, "Some Build_Value $(GitVersion_FullSemVer)", EnvironmentVariableTarget.Process);
     }
 
-    private void ClearEnvironmentVariableForTest()
+    [TearDown]
+    public void ClearEnvironmentVariableForTest()
     {
         Environment.SetEnvironmentVariable(key, null, EnvironmentVariableTarget.Process);
     }
@@ -23,11 +26,9 @@ public class VsoAgentTests
     [Test]
     public void Develop_branch()
     {
-        SetEnvironmentVariableForTest();
         var versionBuilder = new VsoAgent();
         var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Unstable4");
         var vsVersion = versionBuilder.GenerateSetVersionMessage(vars);
-        ClearEnvironmentVariableForTest();
 
         vsVersion.ShouldBe("##vso[build.updatebuildnumber]Some Build_Value 0.0.0-Unstable4");
     }
