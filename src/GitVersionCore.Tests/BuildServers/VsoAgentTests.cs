@@ -1,4 +1,5 @@
-﻿using GitVersion;
+﻿using System;
+using GitVersion;
 using GitVersionCore.Tests;
 using NUnit.Framework;
 using Shouldly;
@@ -6,13 +7,29 @@ using Shouldly;
 [TestFixture]
 public class VsoAgentTests
 {
+
+    string key = "BUILD_BUILDNUMBER";
+
+    private void SetEnvironmentVariableForTest()
+    {
+        Environment.SetEnvironmentVariable(key, "Some Build_Value $(GitVersion_FullSemVer)", EnvironmentVariableTarget.Process);
+    }
+
+    private void ClearEnvironmentVariableForTest()
+    {
+        Environment.SetEnvironmentVariable(key, null, EnvironmentVariableTarget.Process);
+    }
+
     [Test]
     public void Develop_branch()
     {
+        SetEnvironmentVariableForTest();
         var versionBuilder = new VsoAgent();
         var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Unstable4");
         var vsVersion = versionBuilder.GenerateSetVersionMessage(vars);
-        vsVersion.ShouldBe("##vso[build.updatebuildnumber]0.0.0-Unstable4");
+        ClearEnvironmentVariableForTest();
+
+        vsVersion.ShouldBe("##vso[build.updatebuildnumber]Some Build_Value 0.0.0-Unstable4");
     }
 
     [Test]
