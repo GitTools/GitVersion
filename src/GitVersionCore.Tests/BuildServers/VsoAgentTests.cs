@@ -14,7 +14,7 @@ public class VsoAgentTests
     [SetUp]
     public void SetEnvironmentVariableForTest()
     {
-        Environment.SetEnvironmentVariable(key, "Some Build_Value $(GitVersion_FullSemVer)", EnvironmentVariableTarget.Process);
+        Environment.SetEnvironmentVariable(key, "Some Build_Value $(GitVersion_FullSemVer) 20151310.3 $(UnknownVar) Release", EnvironmentVariableTarget.Process);
     }
 
     [TearDown]
@@ -30,7 +30,7 @@ public class VsoAgentTests
         var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Unstable4");
         var vsVersion = versionBuilder.GenerateSetVersionMessage(vars);
 
-        vsVersion.ShouldBe("##vso[build.updatebuildnumber]Some Build_Value 0.0.0-Unstable4");
+        vsVersion.ShouldBe("##vso[build.updatebuildnumber]Some Build_Value 0.0.0-Unstable4 20151310.3 $(UnknownVar) Release");
     }
 
     [Test]
