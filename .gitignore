@@ -39,7 +39,7 @@ ForSample/
 *NugetTaskBuild*
 *NugetRefBuild*
 *NugetExeBuild*
-*GitVersionVsoTaskBuild*
+*GitVersionTfsTaskBuild*
 *GemBuild*
 
 # Visual Studio profiler
