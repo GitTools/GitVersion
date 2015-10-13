@@ -41,6 +41,7 @@ See [Variables](/more-info/variables/) for an overview of available variables.
 #### Using GitVersion variables in build name
 To use GitVersion's variables in the build name, just add them in the form `$(GITVERSION_FullSemVer)` into the Build definition's build number string. Then just ensure GitVersion is called with
 `/output buildserver` and it will replace those variables with the calculated version.
+The TFS GitVersion Build Step (above) handles this too, so if you're already using that, there's nothing extra to configure.
 
 
 #### Known limitations
