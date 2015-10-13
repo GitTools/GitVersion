@@ -33,7 +33,7 @@
             var buildNum = Environment.GetEnvironmentVariable("BUILD_BUILDNUMBER");
 
             buildNum = variables.Aggregate(buildNum, (current, kvp) => 
-                current.RegexReplace(string.Format(@"\$\(GITVERSION_{0}\)", kvp.Key ?? string.Empty), kvp.Value, RegexOptions.IgnoreCase));
+                current.RegexReplace(string.Format(@"\$\(GITVERSION_{0}\)", kvp.Key), kvp.Value ?? string.Empty, RegexOptions.IgnoreCase));
 
             return string.Format("##vso[build.updatebuildnumber]{0}", buildNum);
         }
