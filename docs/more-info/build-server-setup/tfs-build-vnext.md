@@ -30,12 +30,25 @@ From a TFS build definition, select "Add a Step" and then in the Build category,
 
 If you want the GitVersionTask to update AssemblyInfo files, check the box in the task configuration. For advanced usage, you can pass additional options to the GitVersion exe in the Additional arguments section.
 
-The VSO build step updates the build number automatically to the GitVersion number.
+The VSO build step can update your build number with GitVersion variables. See below for details.
+
 
 ## Running inside TFS
 ### Using the GitVersion Variables
 GitVersion passes variables in the form of `GitVersion.*` (Eg: `GitVersion.Major`) to TFS Build and also writes `GITVERSION_*` (Eg: `GITVERSION_MAJOR`) environment variables that are available for any subsequent build step. 
 See [Variables](/more-info/variables/) for an overview of available variables.
+
+
+#### Using GitVersion variables in build name
+To use GitVersion's variables in the build name, just add them in the form `$(GITVERSION_FullSemVer)` into the Build definition's build number string. Then just ensure GitVersion is called with
+`/output buildserver` and it will replace those variables with the calculated version.
+The TFS GitVersion Build Step (above) handles this too, so if you're already using that, there's nothing extra to configure.
+
+If you currently use `$(rev:.r)` in your build number, that won't work correctly if you 
+use GitVersion variables as well due to the delayed expansion of the GitVersion vars. Instead,
+You might be able to use `$(GitVersion_BuildMetaData)` to achieve a similar result.
+See [Variables](/more-info/variables/) for more info on the variables.
+
 
 #### Known limitations
 * Due to [current limitations in TFS2015 On-Prem](https://github.com/Microsoft/vso-agent-tasks/issues/380) it's currently not possible to automatically set the build version in TFS2015 On-Prem. Instead a warning similar to `##[warning]Unable to process logging event:##vso[build.updatebuildnumber 1.0.0-unstable.1` is logged.

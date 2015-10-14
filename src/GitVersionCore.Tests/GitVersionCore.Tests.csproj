@@ -169,6 +169,7 @@
     <Compile Include="ApprovalTestsConfig.cs" />
     <Compile Include="Fixtures\RepositoryFixtureBase.cs" />
     <Compile Include="SemanticVersionTests.cs" />
+    <Compile Include="TestableVersionVariables.cs" />
     <Compile Include="TestEffectiveConfiguration.cs" />
     <Compile Include="TestFileSystem.cs" />
     <Compile Include="TestStream.cs" />

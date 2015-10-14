@@ -5,7 +5,7 @@
     public interface IBuildServer
     {
         bool CanApplyToCurrentContext();
-        string GenerateSetVersionMessage(string versionToUseForBuildNumber);
+        string GenerateSetVersionMessage(VersionVariables variables);
         string[] GenerateSetParameterMessage(string name, string value);
 
         void WriteIntegration(Action<string> writer, VersionVariables variables);
