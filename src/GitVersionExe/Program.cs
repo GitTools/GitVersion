@@ -160,7 +160,7 @@ namespace GitVersion
         static void WriteLogEntry(Arguments arguments, string s)
         {
             var contents = string.Format("{0}\t\t{1}\r\n", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), s);
-            File.WriteAllText(arguments.LogFilePath, contents);
+            File.AppendAllText(arguments.LogFilePath, contents);
         }
 
         static List<string> GetArgumentsWithoutExeName()
