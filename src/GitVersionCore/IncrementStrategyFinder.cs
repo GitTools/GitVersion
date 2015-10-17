@@ -83,7 +83,7 @@
         {
             if (baseCommit == null) yield break;
 
-            if (intermediateCommitCache == null)
+            if (intermediateCommitCache == null || intermediateCommitCache.Last() != currentBranch.Tip)
             {
                 var filter = new CommitFilter
                 {
