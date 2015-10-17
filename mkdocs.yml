@@ -10,8 +10,19 @@ pages:
   - MSBuild Task: usage/msbuild-task.md
   - NuGet Library: usage/nuget-library.md
   - Gem: usage/gem.md
-- Build Server Support: build-server-support.md
 - Configuration: configuration.md
+- Build Server Support: 
+    - Introduction: build-server-support/build-server-support.md
+    - Build Servers:
+      - AppVeyor: build-server-support/build-server/appveyor.md
+      - Bamboo: build-server-support/build-server/bamboo.md
+      - Continua CI: build-server-support/build-server/continua.md
+      - Jenkins: build-server-support/build-server/jenkins.md
+      - MyGet: build-server-support/build-server/myget.md
+      - Octopus Deploy: build-server-support/build-server/octopus-deploy.md
+      - TeamCity: build-server-support/build-server/teamcity.md
+      - Team Build (TFS): build-server-support/build-server/teambuild.md
+      - TFS Build vNext: build-server-support/build-server/tfs-build-vnext.md
 - Examples: examples.md
 - FAQ: faq.md
 - Why?: why.md
@@ -24,16 +35,6 @@ pages:
   - Version incrementing: more-info/version-increments.md
   - Version sources: more-info/version-sources.md
   - Incrementing per commit: more-info/incrementing-per-commit.md
-  - Build Servers:
-    - AppVeyor: more-info/build-server-setup/appveyor.md
-    - TeamCity: more-info/build-server-setup/teamcity.md
-    - MyGet: more-info/build-server-setup/myget.md
-    - Bamboo: more-info/build-server-setup/bamboo.md
-    - Jenkins: more-info/build-server-setup/jenkins.md
-    - Continua CI: more-info/build-server-setup/continua.md
-    - Team Build (TFS): more-info/build-server-setup/teambuild.md
-    - TFS Build vNext: more-info/build-server-setup/tfs-build-vnext.md
-    - Octopus Deploy: more-info/build-server-setup/octopus-deploy.md
 
 - Git branching strategies:
   - Home: git-branching-strategies/index.md

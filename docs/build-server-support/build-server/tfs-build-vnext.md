@@ -52,7 +52,7 @@ See [Variables](/more-info/variables/) for more info on the variables.
 
 #### Known limitations
 * Due to [current limitations in TFS2015 On-Prem](https://github.com/Microsoft/vso-agent-tasks/issues/380) it's currently not possible to automatically set the build version in TFS2015 On-Prem. Instead a warning similar to `##[warning]Unable to process logging event:##vso[build.updatebuildnumber 1.0.0-unstable.1` is logged.
-* Due to a know limitation in TFS 2015 On-Prem it's currently not possible to use variables added during build in inputs of subsequent build tasks, since the variables are processed at the beginning of the build. 
+* Due to a known limitation in TFS 2015 On-Prem it's currently not possible to use variables added during build in inputs of subsequent build tasks, since the variables are processed at the beginning of the build. 
 As a workaround environment variables can be used in custom scripts.
 
 ## Create a NuGet package in TFS
