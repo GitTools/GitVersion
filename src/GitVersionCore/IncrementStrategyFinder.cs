@@ -54,7 +54,7 @@
                 return null;
             }
             
-            var commits = GetIntermediateCommits(context.Repository, baseVersion.BaseVersionSource, context.CurrentCommit, context.CurrentBranch);
+            var commits = GetIntermediateCommits(context.Repository, baseVersion.BaseVersionSource, context.CurrentCommit);
 
             if (context.Configuration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
             {
@@ -79,16 +79,15 @@
             return null;
         }
         
-        private static IEnumerable<Commit> GetIntermediateCommits(IRepository repo, Commit baseCommit, Commit headCommit, Branch currentBranch)
+        private static IEnumerable<Commit> GetIntermediateCommits(IRepository repo, Commit baseCommit, Commit headCommit)
         {
             if (baseCommit == null) yield break;
 
-            if (intermediateCommitCache == null || intermediateCommitCache.Last() != currentBranch.Tip)
+            if (intermediateCommitCache == null || intermediateCommitCache.LastOrDefault() != headCommit)
             {
                 var filter = new CommitFilter
                 {
-                    Since = currentBranch.Tip,
-                    Until = baseCommit,
+                    Since = headCommit,
                     SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Reverse
                 };
 
@@ -103,9 +102,6 @@
 
                 if (found)
                     yield return commit;
-
-                if (commit.Sha == headCommit.Sha)
-                    yield break;
             }
         }
 
