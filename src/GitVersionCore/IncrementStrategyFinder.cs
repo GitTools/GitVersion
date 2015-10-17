@@ -15,6 +15,7 @@
 
     public static class IncrementStrategyFinder
     {
+        private static List<Commit> intermediateCommitCache;
         public const string DefaultMajorPattern = @"\+semver:\s?(breaking|major)";
         public const string DefaultMinorPattern = @"\+semver:\s?(feature|minor)";
         public const string DefaultPatchPattern = @"\+semver:\s?(fix|patch)";
@@ -53,7 +54,7 @@
                 return null;
             }
             
-            var commits = GetIntermediateCommits(context.Repository, baseVersion.BaseVersionSource, context.CurrentCommit);
+            var commits = GetIntermediateCommits(context.Repository, baseVersion.BaseVersionSource, context.CurrentCommit, context.CurrentBranch);
 
             if (context.Configuration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
             {
@@ -78,16 +79,34 @@
             return null;
         }
         
-        private static IEnumerable<Commit> GetIntermediateCommits(IRepository repo, Commit baseCommit, Commit headCommit)
+        private static IEnumerable<Commit> GetIntermediateCommits(IRepository repo, Commit baseCommit, Commit headCommit, Branch currentBranch)
         {
-            var filter = new CommitFilter
-            {
-                Since = headCommit,
-                Until = baseCommit,
-                SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Reverse
-            };
+            if (baseCommit == null) yield break;
 
-            return repo.Commits.QueryBy(filter);
+            if (intermediateCommitCache == null)
+            {
+                var filter = new CommitFilter
+                {
+                    Since = currentBranch.Tip,
+                    Until = baseCommit,
+                    SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Reverse
+                };
+
+                intermediateCommitCache = repo.Commits.QueryBy(filter).ToList();
+            }
+
+            var found = false;
+            foreach (var commit in intermediateCommitCache)
+            {
+                if (commit.Sha == baseCommit.Sha)
+                    found = true;
+
+                if (found)
+                    yield return commit;
+
+                if (commit.Sha == headCommit.Sha)
+                    yield break;
+            }
         }
 
         private static VersionField? FindIncrementFromMessage(string message, Regex major, Regex minor, Regex patch)
