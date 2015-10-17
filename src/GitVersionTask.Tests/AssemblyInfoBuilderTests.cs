@@ -78,7 +78,50 @@ public class AssemblyInfoBuilderTests
         VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatchTag);
     }
 
-    static void VerifyAssemblyVersion(AssemblyVersioningScheme avs)
+    [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    [ExpectedException(typeof(WarningException))]
+    public void VerifyAssemblyVersion_Major_InvalidInformationalValue()
+    {
+        VerifyAssemblyVersion(AssemblyVersioningScheme.Major, "{ThisVariableDoesntExist}");
+    }
+
+    [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public void VerifyAssemblyVersion_Major_NugetAssemblyInfo()
+    {
+        VerifyAssemblyVersion(AssemblyVersioningScheme.Major, "{NugetVersion}");
+    }
+
+    [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public void VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfoWithMultipleVariables()
+    {
+        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinor, "{BranchName}-{Major}.{Minor}.{Patch}-{Sha}");
+    }
+
+    [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public void VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfo()
+    {
+        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinor, "{NugetVersion}");
+    }
+
+    [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public void VerifyAssemblyVersion_MajorMinorPatch_NugetAssemblyInfo()
+    {
+        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatch, "{NugetVersion}");
+    }
+
+    [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public void VerifyAssemblyVersion_MajorMinorPatchTag_NugetAssemblyInfo()
+    {
+        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatchTag, "{NugetVersion}");
+    }
+
+    static void VerifyAssemblyVersion(AssemblyVersioningScheme avs, string assemblyInformationalFormat = null)
     {
         var semanticVersion = new SemanticVersion
         {
@@ -91,7 +134,8 @@ public class AssemblyInfoBuilderTests
         };
         var assemblyInfoBuilder = new AssemblyInfoBuilder();
 
-        var config = new TestEffectiveConfiguration(assemblyVersioningScheme: avs);
+
+        var config = new TestEffectiveConfiguration(assemblyVersioningScheme: avs, assemblyInformationalFormat: assemblyInformationalFormat);
 
         var versionVariables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
         var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, "Fake");

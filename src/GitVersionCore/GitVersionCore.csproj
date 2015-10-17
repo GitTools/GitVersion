@@ -47,6 +47,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -117,6 +118,8 @@
     <Compile Include="OutputVariables\VersionVariables.cs" />
     <Compile Include="Extensions\ExtensionMethods.git.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />
+    <Compile Include="SemanticVersionFormatValues.cs" />
+    <Compile Include="StringFormatWith.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculator.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\BaseVersion.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\ConfigNextVersionBaseVersionStrategy.cs" />

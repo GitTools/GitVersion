@@ -7,6 +7,7 @@
     {
         public EffectiveConfiguration(
             AssemblyVersioningScheme assemblyVersioningScheme, 
+            string assemblyInformationalFormat,
             VersioningMode versioningMode, string gitTagPrefix, 
             string tag, string nextVersion, IncrementStrategy increment, 
             string branchPrefixToTrim, 
@@ -23,6 +24,7 @@
             )
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
+            AssemblyInformationalFormat = assemblyInformationalFormat;
             VersioningMode = versioningMode;
             GitTagPrefix = gitTagPrefix;
             Tag = tag;
@@ -44,6 +46,7 @@
         public VersioningMode VersioningMode { get; private set; }
 
         public AssemblyVersioningScheme AssemblyVersioningScheme { get; private set; }
+        public string AssemblyInformationalFormat { get; private set; }
 
         /// <summary>
         /// Git tag prefix

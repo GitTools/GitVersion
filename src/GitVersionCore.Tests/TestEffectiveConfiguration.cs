@@ -6,6 +6,7 @@ namespace GitVersionCore.Tests
     {
         public TestEffectiveConfiguration(
             AssemblyVersioningScheme assemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch, 
+            string assemblyInformationalFormat = null,
             VersioningMode versioningMode = VersioningMode.ContinuousDelivery, 
             string gitTagPrefix = "v", 
             string tag = "",
@@ -21,7 +22,7 @@ namespace GitVersionCore.Tests
             CommitMessageIncrementMode commitMessageMode = CommitMessageIncrementMode.Enabled,
             int legacySemVerPadding = 4,
             int buildMetaDataPadding = 4) : 
-                base(assemblyVersioningScheme, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch, 
+                base(assemblyVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch, 
                     branchPrefixToTrim, preventIncrementForMergedBranchVersion, tagNumberPattern, continuousDeploymentFallbackTag,
                     trackMergeTarget,
                     majorMessage, minorMessage, patchMessage,

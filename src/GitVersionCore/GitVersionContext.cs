@@ -103,6 +103,7 @@
             
             var nextVersion = configuration.NextVersion;
             var assemblyVersioningScheme = configuration.AssemblyVersioningScheme.Value;
+            var assemblyInformationalFormat = configuration.AssemblyInformationalFormat;
             var gitTagPrefix = configuration.TagPrefix;
             var majorMessage = configuration.MajorVersionBumpMessage;
             var minorMessage = configuration.MinorVersionBumpMessage;
@@ -111,7 +112,7 @@
             var commitMessageVersionBump = currentBranchConfig.Value.CommitMessageIncrementing ?? configuration.CommitMessageIncrementing.Value;
 
             Configuration = new EffectiveConfiguration(
-                assemblyVersioningScheme, versioningMode, gitTagPrefix, 
+                assemblyVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix, 
                 tag, nextVersion, incrementStrategy, currentBranchConfig.Key, 
                 preventIncrementForMergedBranchVersion, 
                 tagNumberPattern, configuration.ContinuousDeploymentFallbackTag,
