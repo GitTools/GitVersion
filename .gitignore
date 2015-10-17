@@ -90,3 +90,4 @@ NuGetExeBuild/
 NuGetRefBuild/
 Packages/
 NuGetTaskBuild/
+build/
