@@ -9,4 +9,4 @@ There are two main ways to consume GitVersion, the first is by running GitVersio
  - [Using the Ruby Gem](gem.md)
  
  
- There exist also wrappers around the [Command Line tool](command-line.md) for several build servers. See [Build server support](build-server-support/build-server-support.md) for details. 
+ There exist also wrappers around the [Command Line tool](command-line.md) for several build servers. See [Build server support](../build-server-support/build-server-support.md) for details. 

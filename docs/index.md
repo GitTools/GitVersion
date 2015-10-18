@@ -36,4 +36,4 @@ You can just run `GitVersion.exe` in your repository to see what variables are a
 ## Exe or MSBuild Task
 There are two ways to consume GitVersion, the first is by running GitVersion.exe. The second is an MSBuild task. The MSBuild task is really easy to get up and running, simply install GitVersionTask from NuGet and it will integrate into your project and write out variables to your build server if it's running on one. The exe offers more options and works for not just .net projects.
 
-Read more about [using GitVersion](usage.md)
+Read more about [using GitVersion](usage/usage.md)

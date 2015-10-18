@@ -6,7 +6,7 @@ In Team Foundation Build (the web based build system) you can call GitVersion ei
 ### Using GitVersion with the MSBuild Task NuGet Package
 1. Add the [GitVersionTask](https://www.nuget.org/packages/GitVersionTask/) NuGet package to your projects.
 
-See [MSBuild Task](/usage/#msbuild-task) for further instructions how to use the MS Build Task.
+See [MSBuild Task](/usage/msbuild-task) for further instructions how to use the MS Build Task.
 
 ### Using GitVersion with the Command Line build step
 1. Make sure to have GitVersion.exe under version control. There exists also a [Chocolatey package](https://chocolatey.org/packages/GitVersion.Portable) for installing GitVersion.exe on build agents.
