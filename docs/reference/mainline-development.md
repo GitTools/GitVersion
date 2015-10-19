@@ -1,5 +1,5 @@
 # Mainline development
-Mainline development is enabled when using [GitHubFlow](../git-branching-strategies/githubflow.md) or any other strategy where you develop on `master`. The main rule of mainline development is that **master is always in a state that it could be deployed to production**. This means that pull requests should not be merged until they are ready to go out.
+Mainline development is enabled when using [GitHubFlow](/git-branching-strategies/githubflow.md) or any other strategy where you develop on `master`. The main rule of mainline development is that **master is always in a state that it could be deployed to production**. This means that pull requests should not be merged until they are ready to go out.
 
 To properly achieve mainline development you need confidence in your test suite as if it goes green against a PR then you are confident that you can merge and release that pull request. Another property of mainline development is normally that you fix going forward, not revert. When an issue is discovered with a release, add a test or some sort of check to make sure it won't happen again, fix the issue, then do a release with the fix.
 

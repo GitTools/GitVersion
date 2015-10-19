@@ -27,7 +27,7 @@ This is just a small sample of the way GitVersion works. The idea is you just pl
 If you have other branch types GitVersion is entirely configuration driven, so check out the [Configuration](configuration.md) section of the readme to understand how to make GitVersion work for you.
 
 ## GitFlow
-[See GitFlow Examples](git-branching-strategies/gitflow-examples.md)
+[See GitFlow Examples](/git-branching-strategies/gitflow-examples.md)
 
 ## GitHubFlow
-[See GitHubFlow Examples](git-branching-strategies/githubflow-examples.md)
+[See GitHubFlow Examples](/git-branching-strategies/githubflow-examples.md)
