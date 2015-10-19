@@ -17,7 +17,7 @@ The configuration options are:
 
  - `next-version`: Allows you to bump the next version explicitly, useful for bumping `master` or a feature with breaking changes a major increment.
  - `assembly-versioning-scheme`: When updating assembly info tells GitVersion how to treat the AssemblyVersion attribute. Useful to lock the major when using Strong Naming.
- - `mode`: Either ContinuousDelivery or ContinuousDeployment. See [Octopus Deploy/CI Build NuGet Packages](#continuousdeployment) above for more information
+ - `mode`: Either [ContinuousDelivery](/reference/continuous-delivery/) or [ContinuousDeployment](/reference/continuous-deployment/).
  - `Continuous-Delivery-fallback-tag`: When using `mode: ContinuousDeployment` the value specified will be used as the pre-release tag for branches which do not have one specified.
  - `tag-prefix`: A regex which is used to trim git tags before processing (eg v1.0.0). Default is `[vV]` though this is just for illustrative purposes as we do a IgnoreCase match and could be `v`
 
