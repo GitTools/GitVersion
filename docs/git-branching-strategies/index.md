@@ -11,9 +11,9 @@ As mentioned above the GitVersion docs cover [GitHubFlow](githubflow.md) and [Gi
 ### GitHubFlow
 GitHubFlow is a simple and powerful branching strategy. It is what GitHub uses and the branching strategy most open source projects use.
 
- - [Mainline development](/reference/mainline-development.md) on `master`
- - Work on [feature branches](/reference/feature-branches.md), merge into `master` via [pull requests](/reference/pull-requests.md)
- - Works well for [continuous delivery](/reference/continuous-delivery.md)
+ - [Mainline development](../reference/mainline-development.md) on `master`
+ - Work on [feature branches](../reference/feature-branches.md), merge into `master` via [pull requests](../reference/pull-requests.md)
+ - Works well for [continuous delivery](../reference/continuous-delivery.md)
  - Does not have a way to manage/maintain old releases
  - Only allows working on a single release at a time
 
