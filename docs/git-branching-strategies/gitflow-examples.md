@@ -1,5 +1,5 @@
 # GitFlow Examples
-These examples are using the *default* configuration with GitVersion. Which is [continuous deployment](../reference/continuous-deployment.md) mode for `develop` and [continuous delivery](../reference/continuous-delivery.md) mode for all other branches.
+These examples are using the *default* configuration with GitVersion. Which is [continuous deployment](/reference/continuous-deployment.md) mode for `develop` and [continuous delivery](../reference/continuous-delivery.md) mode for all other branches.
 
 This default configuration allows you to publish CI builds from develop to a CI MyGet feed, or another CI feed. Then all other branches are manually released then tagged. Read more about this at [version increments](../more-info/version-increments.md).
 

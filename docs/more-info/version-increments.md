@@ -17,7 +17,7 @@ If you are using GitFlow then builds off the `develop` branch will actually *inc
 If you need to consume packages built from develop, we recommend publishing these packages to a separate NuGet feed as an alpha channel. That way you can publish beta/release candidate builds and only people who opt into the alpha feed will see the unstable pacakges.
 
 ### 2. Octopus deploy
-See [Octopus deploy](build-server-support/build-server/octopus-deploy.md)
+See [Octopus deploy](/build-server-support/build-server/octopus-deploy.md)
 
 ## Manually incrementing the version
 With v3 there are multiple approaches.
