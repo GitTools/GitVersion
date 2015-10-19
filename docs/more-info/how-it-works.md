@@ -1,7 +1,7 @@
 # How it works
 GitVersion v3 works very differently to v2. Version 2 had knowledge of both GitFlow and GitHubFlow hard coded into it, with each branch having it's own class which calculated the version for that branch type.
 
-v3 is driven by [configuration](/configuration.md), meaning most of the behaviors in GitVersion can be tweaked to work the way you want. It also makes it *much* more predictable and easy to diagnose why odd things are happening. 
+v3 is driven by [configuration](../configuration.md), meaning most of the behaviors in GitVersion can be tweaked to work the way you want. It also makes it *much* more predictable and easy to diagnose why odd things are happening. 
 
 ## Architecture
 GitVersion has three distict steps for calculating versions in v3.0.
