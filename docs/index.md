@@ -10,7 +10,7 @@ If a commit is tagged, then GitVersion will *always* use that version over any c
 ### The Semantic Version does not increment every commit
 This trips a lot of people up, by default GitVersion *does not* increment the SemVer every commit. This means that you will get multiple builds producing the *same version* of your application.
 
-Read more at [version increments](/more-info/version-increments.md)
+Read more at [version increments](more-info/version-increments.md)
 
 ### Version sources
 There are a number of sources GitVersion can get it's versions from, they include:
@@ -21,7 +21,7 @@ There are a number of sources GitVersion can get it's versions from, they includ
  - Track version of another branch (i.e develop tracks master, so when master increments so does develop)
  - GitVersionConfig.yaml file (i.e `next-version: 2.0.0`)
 
-Read more at [version sources](/more-info/version-sources.md)
+Read more at [version sources](more-info/version-sources.md)
 
 ## Configuration
 GitVersion v3 was rewritten to be very configuration driven rather than hardcoding git workflows into it. This has made it a lot more flexible. Configuration options can be set globally or per branch.
@@ -36,4 +36,4 @@ You can just run `GitVersion.exe` in your repository to see what variables are a
 ## Exe or MSBuild Task
 There are two ways to consume GitVersion, the first is by running GitVersion.exe. The second is an MSBuild task. The MSBuild task is really easy to get up and running, simply install GitVersionTask from NuGet and it will integrate into your project and write out variables to your build server if it's running on one. The exe offers more options and works for not just .net projects.
 
-Read more about [using GitVersion](/usage/usage.md)
+Read more about [using GitVersion](usage/usage.md)
