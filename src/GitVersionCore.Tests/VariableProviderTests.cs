@@ -128,6 +128,7 @@ public class VariableProviderTests
             BuildMetaData =
             {
                 CommitsSinceTag = 5,
+                CommitsSinceLastVersion = 5,
                 Sha = "commitSha",
                 CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
             }

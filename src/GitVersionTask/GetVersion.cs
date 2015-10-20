@@ -74,6 +74,9 @@
         [Output]
         public string CommitDate { get; set; }
 
+        [Output]
+        public string CommitsSinceLastVersion { get; set; }
+
         TaskLogger logger;
         IFileSystem fileSystem;
 

@@ -1,5 +1,7 @@
 ﻿namespace GitVersion
 {
+    using System.Globalization;
+
     public class SemanticVersionFormatValues
     {
         readonly SemanticVersion _semver;
@@ -111,6 +113,11 @@
         public string DefaultInformationalVersion
         {
             get { return _semver.ToString("i"); }
+        }
+
+        public string CommitsSinceLastVersion
+        {
+            get { return _semver.BuildMetaData.CommitsSinceLastVersion.ToString(CultureInfo.InvariantCulture); }
         }
 }
 }
