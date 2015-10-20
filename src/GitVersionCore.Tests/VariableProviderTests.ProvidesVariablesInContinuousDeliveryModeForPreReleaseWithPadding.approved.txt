@@ -19,5 +19,6 @@
   "NuGetVersionV2":"1.2.3-unstable00004",
   "NuGetVersion":"1.2.3-unstable00004",
   "CommitsSinceLastVersion":5,
+  "CommitsSinceLastVersionPadded":"0005",
   "CommitDate":"2014-03-06"
 }

@@ -62,7 +62,8 @@
                 semverFormatValues.CommitDate,
                 semverFormatValues.NuGetVersion,
                 semverFormatValues.NuGetVersionV2,
-                semverFormatValues.CommitsSinceLastVersion);
+                semverFormatValues.CommitsSinceLastVersion,
+                semverFormatValues.CommitsSinceLastVersionPadded);
 
             return variables;
         }

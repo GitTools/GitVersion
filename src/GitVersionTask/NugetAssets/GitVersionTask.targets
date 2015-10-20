@@ -60,6 +60,7 @@
       <Output TaskParameter="InformationalVersion" PropertyName="GitVersion_InformationalVersion" />
       <Output TaskParameter="CommitDate" PropertyName="GitVersion_CommitDate" />
       <Output TaskParameter="CommitsSinceLastVersion" PropertyName="GitVersion_CommitsSinceLastVersion" />
+      <Output TaskParameter="CommitsSinceLastVersionPadded" PropertyName="GitVersion_CommitsSinceLastVersionPadded" />
     </GetVersion>
 
   </Target>

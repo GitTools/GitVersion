@@ -21,12 +21,13 @@ namespace GitVersionCore.Tests
             string patchMessage = null,
             CommitMessageIncrementMode commitMessageMode = CommitMessageIncrementMode.Enabled,
             int legacySemVerPadding = 4,
-            int buildMetaDataPadding = 4) : 
+            int buildMetaDataPadding = 4,
+            int commitsSinceLastVersionPadding = 4) : 
                 base(assemblyVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch, 
                     branchPrefixToTrim, preventIncrementForMergedBranchVersion, tagNumberPattern, continuousDeploymentFallbackTag,
                     trackMergeTarget,
                     majorMessage, minorMessage, patchMessage,
-                    commitMessageMode, legacySemVerPadding, buildMetaDataPadding)
+                    commitMessageMode, legacySemVerPadding, buildMetaDataPadding, commitsSinceLastVersionPadding)
         {
         }
     }

@@ -119,5 +119,10 @@
         {
             get { return _semver.BuildMetaData.CommitsSinceLastVersion.ToString(CultureInfo.InvariantCulture); }
         }
-}
+
+        public string CommitsSinceLastVersionPadded
+        {
+            get { return _semver.BuildMetaData.CommitsSinceLastVersion.ToString(CultureInfo.InvariantCulture).PadLeft(_config.CommitsSinceLastVersionPadding, '0'); }
+        }
+    }
 }

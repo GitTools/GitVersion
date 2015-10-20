@@ -77,6 +77,9 @@
         [Output]
         public string CommitsSinceLastVersion { get; set; }
 
+        [Output]
+        public string CommitsSinceLastVersionPadded { get; set; }
+
         TaskLogger logger;
         IFileSystem fileSystem;
 

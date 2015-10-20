@@ -120,7 +120,8 @@
                 majorMessage, minorMessage, patchMessage,
                 commitMessageVersionBump,
                 configuration.LegacySemVerPadding.Value,
-                configuration.BuildMetaDataPadding.Value);
+                configuration.BuildMetaDataPadding.Value,
+                configuration.CommitsSinceLastVersionPadding.Value);
         }
     }
 }

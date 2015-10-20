@@ -41,6 +41,9 @@
         [YamlMember(Alias = "build-metadata-padding")]
         public int? BuildMetaDataPadding { get; set; }
 
+        [YamlMember(Alias = "commits-since-lastversion-padding")]
+        public int? CommitsSinceLastVersionPadding { get; set; }
+
         [YamlMember(Alias = "commit-message-incrementing")]
         public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
 
