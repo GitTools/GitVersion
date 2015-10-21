@@ -8,14 +8,14 @@ Version lock is when we rely on absolute versions, both **FacebookApi** and **Tw
 
 Version Promiscuity is the opposite problem, **JsonLibrary** releases _v1.1.0_ with some breaking changes then we will just upgrade an **TwitterApi** will break unexpectedly.
 
-SemVer introduces conventions about breaking changes into our version numbers so we can safely upgrade dependencies without fear of unexpected breaking changes while still allowing us to upgrade downstream libraries to get new features and bug fixes. The convention is quite simple.
+SemVer introduces conventions about breaking changes into our version numbers so we can safely upgrade dependencies without fear of unexpected breaking changes while still allowing us to upgrade downstream libraries to get new features and bug fixes. The convention is quite simple:
 
-{major}.{minor}.{patch}-{tag}+{buildmetadata}  
-{major} = Only incremented if the release has breaking changes (includes bug fixes which have breaking behavioural changes
-{minor} = Incremented if the release has new non-breaking features
-{patch} = Incremented if the release only contains non-breaking bug fixes
-{tag} = Optional -{tag} denotes a pre-release of the version preceeding
-{buildmetadata} = Options +{buildmetadata} contains additional information about the version, but DOES NOT AFFECT the semantic version preceding it.
+* `{major}.{minor}.{patch}-{tag}+{buildmetadata}`
+* `{major}` is only incremented if the release has breaking changes (includes bug fixes which have breaking behavioural changes
+* `{minor}` is incremented if the release has new non-breaking features
+* `{patch}` is incremented if the release only contains non-breaking bug fixes
+* `{tag}` is optional and denotes a pre-release of the version preceeding
+* `{buildmetadata}` is optional and contains additional information about the version, but **does not affect** the semantic version preceding it.
 
 Only one number should be incremented per release, and all lower parts should be reset to 0 (if major is incrememented then minor and patch should become 0).
 
