@@ -68,7 +68,7 @@ public static class VersionAndBranchFinder
                 fileSystem.CreateDirectory(cacheDir);
             }
 
-            var cacheFileName = Path.Combine(cacheDir, cacheKey);
+            var cacheFileName = string.Concat(Path.Combine(cacheDir, cacheKey), ".yml");
             VersionVariables vv = null;
             if (fileSystem.Exists(cacheFileName))
             {
