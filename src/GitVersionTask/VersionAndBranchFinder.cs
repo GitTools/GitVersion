@@ -25,7 +25,7 @@ public static class VersionAndBranchFinder
         }
         catch (Exception ex)
         {
-            Logger.WriteWarning("Could not determine assembly version: " + ex.Message);
+            Logger.WriteWarning("Could not determine assembly version: " + ex);
             versionVariables = null;
             return false;
         }
@@ -72,28 +72,32 @@ public static class VersionAndBranchFinder
             VersionVariables vv = null;
             if (fileSystem.Exists(cacheFileName))
             {
-                try
+                using (Logger.IndentLog("Deserializing version variables from cache file " + cacheFileName))
                 {
-                    using (var stream = fileSystem.OpenRead(cacheFileName))
-                    using (var sr = new StreamReader(stream))
-                    {
-                        using (Logger.IndentLog("Deserializing version variables from cache file " + cacheFileName))
-                        {
-                            vv = VersionVariables.FromDictionary(new Deserializer().Deserialize<Dictionary<string, string>>(sr));
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Logger.WriteWarning("Unable to read cache file " + cacheFileName + ", deleting it.");
-                    Logger.WriteInfo(ex.ToString());
                     try
                     {
-                        fileSystem.Delete(cacheFileName);
+                        using (var stream = fileSystem.OpenRead(cacheFileName))
+                        {
+                            using (var reader = new StreamReader(stream))
+                            {
+                                var dictionary = new Deserializer().Deserialize<Dictionary<string, string>>(reader);
+                                vv = VersionVariables.FromDictionary(dictionary);
+                            }
+                        }
+
                     }
-                    catch (Exception deleteEx)
+                    catch (Exception ex)
                     {
-                        Logger.WriteWarning(string.Format("Unable delete corrupted version cache file {0}. Got {1} exception.", cacheFileName, deleteEx.GetType().FullName));
+                        Logger.WriteWarning("Unable to read cache file " + cacheFileName + ", deleting it.");
+                        Logger.WriteInfo(ex.ToString());
+                        try
+                        {
+                            fileSystem.Delete(cacheFileName);
+                        }
+                        catch (Exception deleteEx)
+                        {
+                            Logger.WriteWarning(string.Format("Unable delete corrupted version cache file {0}. Got {1} exception.", cacheFileName, deleteEx.GetType().FullName));
+                        }
                     }
                 }
             }
@@ -104,10 +108,16 @@ public static class VersionAndBranchFinder
                 using (var stream = fileSystem.OpenWrite(cacheFileName))
                 using (var sw = new StreamWriter(stream))
                 {
+                    Dictionary<string, string> dictionary;
+                    using (Logger.IndentLog("Creating dictionary"))
+                    {
+                        dictionary = vv.ToDictionary(x => x.Key, x => x.Value);
+                    }
+
                     using (Logger.IndentLog("Storing version variables to cache file " + cacheFileName))
                     {
                         var serializer = new Serializer();
-                        serializer.Serialize(sw, vv.ToDictionary(x => x.Key, x => x.Value));
+                        serializer.Serialize(sw, dictionary);
                     }
                 }
             }
