@@ -47,7 +47,7 @@ namespace GitVersion.Helpers
 
         public Stream OpenRead(string path)
         {
-            return File.OpenWrite(path);
+            return File.OpenRead(path);
         }
 
         public void CreateDirectory(string path)
