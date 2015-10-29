@@ -75,10 +75,10 @@
         public string CommitDate { get; set; }
 
         [Output]
-        public string CommitsSinceLastVersion { get; set; }
+        public string CommitsSinceVersionSource { get; set; }
 
         [Output]
-        public string CommitsSinceLastVersionPadded { get; set; }
+        public string CommitsSinceVersionSourcePadded { get; set; }
 
         TaskLogger logger;
         IFileSystem fileSystem;

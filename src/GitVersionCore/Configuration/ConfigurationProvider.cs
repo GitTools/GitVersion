@@ -34,7 +34,7 @@ namespace GitVersion
             config.CommitMessageIncrementing = config.CommitMessageIncrementing ?? CommitMessageIncrementMode.Enabled;
             config.LegacySemVerPadding = config.LegacySemVerPadding ?? 4;
             config.BuildMetaDataPadding = config.BuildMetaDataPadding ?? 4;
-            config.CommitsSinceLastVersionPadding = config.CommitsSinceLastVersionPadding ?? 4;
+            config.CommitsSinceVersionSourcePadding = config.CommitsSinceVersionSourcePadding ?? 4;
 
             var configBranches = config.Branches.ToList();
 

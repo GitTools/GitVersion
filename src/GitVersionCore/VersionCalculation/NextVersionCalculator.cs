@@ -60,7 +60,7 @@
             if (taggedSemanticVersion != null)
             {
                 // set the commit count on the tagged ver
-                taggedSemanticVersion.BuildMetaData.CommitsSinceLastVersion = semver.BuildMetaData.CommitsSinceLastVersion;
+                taggedSemanticVersion.BuildMetaData.CommitsSinceVersionSource = semver.BuildMetaData.CommitsSinceVersionSource;
             }
 
             return taggedSemanticVersion ?? semver;

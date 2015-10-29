@@ -121,7 +121,7 @@
                 commitMessageVersionBump,
                 configuration.LegacySemVerPadding.Value,
                 configuration.BuildMetaDataPadding.Value,
-                configuration.CommitsSinceLastVersionPadding.Value);
+                configuration.CommitsSinceVersionSourcePadding.Value);
         }
     }
 }

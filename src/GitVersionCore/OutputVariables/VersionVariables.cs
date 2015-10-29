@@ -7,7 +7,7 @@
     public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     {
         public VersionVariables(string major, string minor, string patch, string buildMetaData, string buildMetaDataPadded, string fullBuildMetaData, string branchName, string sha, string majorMinorPatch, string semVer, string legacySemVer, string legacySemVerPadded, string fullSemVer, string assemblySemVer, string preReleaseTag, string preReleaseTagWithDash, string informationalVersion,
-            string commitDate, string nugetVersion, string nugetVersionV2, string commitsSinceLastVersion, string commitsSinceLastVersionPadded)
+            string commitDate, string nugetVersion, string nugetVersionV2, string commitsSinceVersionSource, string commitsSinceVersionSourcePadded)
         {
             Major = major;
             Minor = minor;
@@ -29,8 +29,8 @@
             CommitDate = commitDate;
             NuGetVersion = nugetVersion;
             NuGetVersionV2 = nugetVersionV2;
-            CommitsSinceLastVersion = commitsSinceLastVersion;
-            CommitsSinceLastVersionPadded = commitsSinceLastVersionPadded;
+            CommitsSinceVersionSource = commitsSinceVersionSource;
+            CommitsSinceVersionSourcePadded = commitsSinceVersionSourcePadded;
         }
 
         public string Major { get; private set; }
@@ -52,8 +52,8 @@
         public string Sha { get; private set; }
         public string NuGetVersionV2 { get; private set; }
         public string NuGetVersion { get; private set; }
-        public string CommitsSinceLastVersion { get; private set; }
-        public string CommitsSinceLastVersionPadded { get; private set; }
+        public string CommitsSinceVersionSource { get; private set; }
+        public string CommitsSinceVersionSourcePadded { get; private set; }
 
         public static IEnumerable<string> AvailableVariables
         {

@@ -115,14 +115,14 @@
             get { return _semver.ToString("i"); }
         }
 
-        public string CommitsSinceLastVersion
+        public string CommitsSinceVersionSource
         {
-            get { return _semver.BuildMetaData.CommitsSinceLastVersion.ToString(CultureInfo.InvariantCulture); }
+            get { return _semver.BuildMetaData.CommitsSinceVersionSource.ToString(CultureInfo.InvariantCulture); }
         }
 
-        public string CommitsSinceLastVersionPadded
+        public string CommitsSinceVersionSourcePadded
         {
-            get { return _semver.BuildMetaData.CommitsSinceLastVersion.ToString(CultureInfo.InvariantCulture).PadLeft(_config.CommitsSinceLastVersionPadding, '0'); }
+            get { return _semver.BuildMetaData.CommitsSinceVersionSource.ToString(CultureInfo.InvariantCulture).PadLeft(_config.CommitsSinceVersionSourcePadding, '0'); }
         }
     }
 }

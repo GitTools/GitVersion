@@ -22,12 +22,12 @@ namespace GitVersionCore.Tests
             CommitMessageIncrementMode commitMessageMode = CommitMessageIncrementMode.Enabled,
             int legacySemVerPadding = 4,
             int buildMetaDataPadding = 4,
-            int commitsSinceLastVersionPadding = 4) : 
+            int commitsSinceVersionSourcePadding = 4) : 
                 base(assemblyVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch, 
                     branchPrefixToTrim, preventIncrementForMergedBranchVersion, tagNumberPattern, continuousDeploymentFallbackTag,
                     trackMergeTarget,
                     majorMessage, minorMessage, patchMessage,
-                    commitMessageMode, legacySemVerPadding, buildMetaDataPadding, commitsSinceLastVersionPadding)
+                    commitMessageMode, legacySemVerPadding, buildMetaDataPadding, commitsSinceVersionSourcePadding)
         {
         }
     }
