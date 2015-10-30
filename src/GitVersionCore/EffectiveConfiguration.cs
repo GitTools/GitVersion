@@ -20,7 +20,8 @@
             string patchVersionBumpMessage,
             CommitMessageIncrementMode commitMessageIncrementing,
             int legacySemVerPaddding,
-            int buildMetaDataPadding
+            int buildMetaDataPadding,
+            int commitsSinceVersionSourcePadding
             )
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
@@ -41,6 +42,7 @@
             CommitMessageIncrementing = commitMessageIncrementing;
             LegacySemVerPadding = legacySemVerPaddding;
             BuildMetaDataPadding = buildMetaDataPadding;
+            CommitsSinceVersionSourcePadding = commitsSinceVersionSourcePadding;
         }
 
         public VersioningMode VersioningMode { get; private set; }
@@ -80,6 +82,8 @@
 
         public int LegacySemVerPadding { get; private set; }
         public  int BuildMetaDataPadding { get; private set; }
+
+        public int CommitsSinceVersionSourcePadding { get; private set; }
 
         public CommitMessageIncrementMode CommitMessageIncrementing { get; private set; }
     }

@@ -148,7 +148,7 @@ noteText.Replace("\n", "\n  "));
         return branch;
     }
 
-    VersionVariables GetVersion(IRepository repository = null, string commitId = null)
+    public VersionVariables GetVersion(IRepository repository = null, string commitId = null)
     {
         var gitVersionContext = new GitVersionContext(repository ?? Repository, configuration, IsForTrackedBranchOnly, commitId);
         var executeGitVersion = ExecuteGitVersion(gitVersionContext);

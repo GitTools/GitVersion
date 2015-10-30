@@ -59,6 +59,8 @@
       <Output TaskParameter="PreReleaseTagWithDash" PropertyName="GitVersion_PreReleaseTagWithDash" />
       <Output TaskParameter="InformationalVersion" PropertyName="GitVersion_InformationalVersion" />
       <Output TaskParameter="CommitDate" PropertyName="GitVersion_CommitDate" />
+      <Output TaskParameter="CommitsSinceVersionSource" PropertyName="GitVersion_CommitsSinceVersionSource" />
+      <Output TaskParameter="CommitsSinceVersionSourcePadded" PropertyName="GitVersion_CommitsSinceVersionSourcePadded" />
     </GetVersion>
 
   </Target>

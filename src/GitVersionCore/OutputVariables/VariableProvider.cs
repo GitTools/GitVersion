@@ -17,6 +17,7 @@
 
                 // For continuous deployment the commits since tag gets promoted to the pre-release number
                 semanticVersion.PreReleaseTag.Number = semanticVersion.BuildMetaData.CommitsSinceTag;
+                semanticVersion.BuildMetaData.CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag ?? 0;
                 semanticVersion.BuildMetaData.CommitsSinceTag = null;
             }
 
@@ -60,7 +61,9 @@
                 informationalVersion,
                 semverFormatValues.CommitDate,
                 semverFormatValues.NuGetVersion,
-                semverFormatValues.NuGetVersionV2);
+                semverFormatValues.NuGetVersionV2,
+                semverFormatValues.CommitsSinceVersionSource,
+                semverFormatValues.CommitsSinceVersionSourcePadded);
 
             return variables;
         }
