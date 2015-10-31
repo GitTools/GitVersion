@@ -7,6 +7,12 @@ using Shouldly;
 [TestFixture]
 public class ArgumentParserTests
 {
+    [Test, Explicit]
+    public void PrintHelp()
+    {
+        HelpWriter.WriteTo(Console.WriteLine);
+    }
+
     [Test]
     public void Empty_means_use_current_directory()
     {
@@ -26,20 +32,30 @@ public class ArgumentParserTests
     }
 
     [Test]
-    public void No_path_and_logfile_should_use_current_directory_TargetDirectory()
+    [TestCase("-l logFilePath")]
+    [TestCase("--log=logFilePath")]
+    [TestCase("-l=logFilePath")]
+    [TestCase("/l logFilePath")]
+    [TestCase("/log=logFilePath")]
+    public void No_path_and_logfile_should_use_current_directory_TargetDirectory(string args)
     {
-        var arguments = ArgumentParser.ParseArguments("-l logFilePath");
+        var arguments = ArgumentParser.ParseArguments(args);
         arguments.TargetPath.ShouldBe(Environment.CurrentDirectory);
         arguments.LogFilePath.ShouldBe("logFilePath");
         arguments.IsHelp.ShouldBe(false);
     }
 
     [Test]
-    public void h_means_IsHelp()
+    [TestCase("-h")]
+    [TestCase("--help")]
+    [TestCase("/h")]
+    [TestCase("/help")]
+    [TestCase("/?")]
+    public void h_means_IsHelp(string helpArg)
     {
-        var arguments = ArgumentParser.ParseArguments("-h");
-        Assert.IsNull(arguments.TargetPath);
-        Assert.IsNull(arguments.LogFilePath);
+        var arguments = ArgumentParser.ParseArguments(helpArg);
+        arguments.TargetPath.ShouldBe(null);
+        arguments.LogFilePath.ShouldBe(null);
         arguments.IsHelp.ShouldBe(true);
     }
 
@@ -51,13 +67,17 @@ public class ArgumentParserTests
     }
 
     [Test]
-    public void exec_with_args()
+    [TestCase("-execArgs")]
+    [TestCase("-execargs")]
+    [TestCase("-EXECARGS")]
+    [TestCase("-ExEcArGs")]
+    public void exec_with_args(string caseInsensitiveExecArgs)
     {
         var arguments = ArgumentParser.ParseArguments(new List<string>
         {
             "-exec",
             "rake",
-            "-execargs",
+            caseInsensitiveExecArgs,
             "clean build"
         });
         arguments.Exec.ShouldBe("rake");
@@ -171,8 +191,6 @@ public class ArgumentParserTests
         exception.Message.ShouldBe("Could not parse command line parameter '-x'.");
     }
 
-    [TestCase("-updateAssemblyInfo true")]
-    [TestCase("-updateAssemblyInfo 1")]
     [TestCase("-updateAssemblyInfo")]
     [TestCase("-updateAssemblyInfo -proj foo.sln")]
     public void update_assembly_info_true(string command)
@@ -181,26 +199,28 @@ public class ArgumentParserTests
         arguments.UpdateAssemblyInfo.ShouldBe(true);
     }
 
-    [TestCase("-updateAssemblyInfo false")]
-    [TestCase("-updateAssemblyInfo 0")]
+    [TestCase("-proj foo.sln")]             // absent updateAssemblyInfo flag implies false
+    [TestCase("")]            
     public void update_assembly_info_false(string command)
     {
         var arguments = ArgumentParser.ParseArguments(command);
         arguments.UpdateAssemblyInfo.ShouldBe(false);
     }
 
-    [Test]
-    public void update_assembly_info_with_filename()
+    [TestCase("-updateAssemblyInfo=CommonAssemblyInfo.cs")]
+    [TestCase("-updateAssemblyInfo:CommonAssemblyInfo.cs")]
+    public void update_assembly_info_with_filename(string args)
     {
-        var arguments = ArgumentParser.ParseArguments("-updateAssemblyInfo CommonAssemblyInfo.cs");
+        var arguments = ArgumentParser.ParseArguments(args);
         arguments.UpdateAssemblyInfo.ShouldBe(true);
         arguments.UpdateAssemblyInfoFileName.ShouldBe("CommonAssemblyInfo.cs");
     }
 
-    [Test]
-    public void update_assembly_info_with_relative_filename()
+    [TestCase("-updateAssemblyInfo=..\\..\\CommonAssemblyInfo.cs")]
+    [TestCase("-updateAssemblyInfo:..\\..\\CommonAssemblyInfo.cs")]
+    public void update_assembly_info_with_relative_filename(string args)
     {
-        var arguments = ArgumentParser.ParseArguments("-updateAssemblyInfo ..\\..\\CommonAssemblyInfo.cs");
+        var arguments = ArgumentParser.ParseArguments(args);
         arguments.UpdateAssemblyInfo.ShouldBe(true);
         arguments.UpdateAssemblyInfoFileName.ShouldBe("..\\..\\CommonAssemblyInfo.cs");
     }
@@ -220,25 +240,111 @@ public class ArgumentParserTests
     }
 
     [Test]
-    public void nofetch_true_when_defined()
+    [TestCase("-nofetch")]
+    [TestCase("-nofetch+")]
+    public void nofetch_true_when_defined(string args)
     {
-        var arguments = ArgumentParser.ParseArguments("-nofetch");
-        arguments.NoFetch = true;
+        var arguments = ArgumentParser.ParseArguments(args);
+        arguments.NoFetch.ShouldBe(true);
+    }
+
+    [Test]
+    [TestCase("")]
+    [TestCase("-nofetch-")]
+    public void nofetch_false_when_minus_or_notdefined_(string args)
+    {
+        var arguments = ArgumentParser.ParseArguments(args);
+        arguments.NoFetch.ShouldBe(false);
     }
 
     [Test]
     public void other_arguments_can_be_parsed_before_nofetch()
     {
         var arguments = ArgumentParser.ParseArguments("targetpath -nofetch ");
-        arguments.TargetPath = "targetpath";
-        arguments.NoFetch = true;
+        arguments.TargetPath.ShouldBe("targetpath");
+        arguments.NoFetch.ShouldBe(true);
     }
 
     [Test]
     public void other_arguments_can_be_parsed_after_nofetch()
     {
         var arguments = ArgumentParser.ParseArguments("-nofetch -proj foo.sln");
-        arguments.NoFetch = true;
-        arguments.Proj = "foo.sln";
+        arguments.NoFetch.ShouldBe(true);
+        arguments.Proj.ShouldBe("foo.sln");
     }
+
+    [TestCase("-targetPath c:\\expected\\path")]
+    [TestCase("c:\\expected\\path -targetPath c:\\foo\\bar")]
+    // [TestCase("init -targetPath c:\\expected\\path")] // should we init in target path or current directory?
+    public void can_specify_target_path(string command)
+    {
+        var arguments = ArgumentParser.ParseArguments(command);
+        arguments.TargetPath.ShouldBe("c:\\expected\\path");
+    }
+
+    [TestCase("-c ce123")]
+    public void can_specify_commitid(string command)
+    {
+        var arguments = ArgumentParser.ParseArguments(command);
+        arguments.CommitId.ShouldBe("ce123");
+    }
+
+    [TestCase("-v SemVer")]
+    [TestCase("--showvariable SemVer")]
+    [TestCase("-showvariable SemVer")]
+    [TestCase("/showvariable SemVer")]
+    [TestCase("/v SemVer")]
+    public void can_show_variable(string command)
+    {
+        var arguments = ArgumentParser.ParseArguments(command);
+        arguments.ShowVariable.ShouldBe("SemVer");
+    }
+
+    [TestCase("-v thisVariableDoesNotExist")]
+    public void show_non_existing_variable_fails(string args)
+    {
+        var exception = Should.Throw<WarningException>(() => ArgumentParser.ParseArguments(args));
+        exception.Message.ShouldStartWith("show variable switch requires a valid version variable");
+    }
+
+    [TestCase("targetDirectoryPath -assemblyversionformat")]
+    [TestCase("-assemblyversionformat")]
+    public void assemblyversionformat_should_throw_warning(string args)
+    {
+        var exception = Should.Throw<WarningException>(() => ArgumentParser.ParseArguments(args));
+        exception.Message.ShouldBe("assemblyversionformat switch removed, use AssemblyVersioningScheme configuration value instead");
+    }
+
+    [TestCase("-updateassemblyinfoname")]
+    public void updateassemblyinfoname_should_throw_warning(string args)
+    {
+        var exception = Should.Throw<WarningException>(() => ArgumentParser.ParseArguments(args));
+        exception.Message.ShouldBe("updateassemblyinfoname deprecated, use --updateassemblyinfo=[assemblyinfo.cs] instead");
+    }
+
+    [Test]
+    [TestCase("-showconfig")]
+    [TestCase("--showConfig+")]
+    public void showconfig_true_when_defined(string args)
+    {
+        var arguments = ArgumentParser.ParseArguments(args);
+        arguments.ShowConfig.ShouldBe(true);
+    }
+
+    [Test]
+    [TestCase("")]
+    [TestCase("-showconfig-")]
+    public void showconfig_false_when_minus_or_notdefined(string args)
+    {
+        var arguments = ArgumentParser.ParseArguments(args);
+        arguments.ShowConfig.ShouldBe(false);
+    }
+
+    [TestCase("init")]
+    public void can_use_init_as_postional_arg(string args)
+    {
+        var arguments = ArgumentParser.ParseArguments(args);
+        arguments.Init.ShouldBe(true);
+    }
+
 }
