@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 
 using GitVersion.Helpers;
 
 using LibGit2Sharp;
+
+using NSubstitute;
 
 public class TestFileSystem : IFileSystem
 {
@@ -25,7 +29,7 @@ public class TestFileSystem : IFileSystem
 
     public bool Exists(string file)
     {
-        return fileSystem.ContainsKey(file);
+        return this.fileSystem.ContainsKey(file);
     }
 
 
@@ -37,19 +41,19 @@ public class TestFileSystem : IFileSystem
 
     public string ReadAllText(string path)
     {
-        return fileSystem[path];
+        return this.fileSystem[path];
     }
 
 
     public void WriteAllText(string file, string fileContents)
     {
-        if (fileSystem.ContainsKey(file))
+        if (this.fileSystem.ContainsKey(file))
         {
-            fileSystem[file] = fileContents;
+            this.fileSystem[file] = fileContents;
         }
         else
         {
-            fileSystem.Add(file, fileContents);
+            this.fileSystem.Add(file, fileContents);
         }
     }
 
@@ -68,30 +72,117 @@ public class TestFileSystem : IFileSystem
 
     public Stream OpenRead(string path)
     {
-        throw new NotImplementedException();
+        if (this.fileSystem.ContainsKey(path))
+        {
+            var content = this.fileSystem[path];
+            return new MemoryStream(Encoding.UTF8.GetBytes(content));
+        }
+
+        throw new FileNotFoundException("File not found.", path);
     }
 
 
     public void CreateDirectory(string path)
     {
-        throw new NotImplementedException();
     }
 
 
     public long GetLastDirectoryWrite(string path)
     {
-        throw new NotImplementedException();
+        return 1;
     }
 
 
     public string TreeWalkForDotGitDir(string directory)
     {
-        throw new NotImplementedException();
+        return directory;
     }
 
 
     public IRepository GetRepository(string gitDirectory)
     {
-        throw new NotImplementedException();
+        var repository = Substitute.For<IRepository>();
+        var tip = Substitute.For<Commit>();
+        tip.Committer.Returns(new Signature("Asbjørn Ulsberg", "asbjorn@ulsberg.no", new DateTimeOffset(2015, 11, 10, 13, 37, 0, TimeSpan.FromHours(1))));
+        var commits = new Commits
+        {
+            tip
+        };
+        repository.Commits.QueryBy(null).ReturnsForAnyArgs(commits);
+        var head = Substitute.For<Branch>();
+        head.CanonicalName.Returns("refs/heads/master");
+        tip.Sha.Returns("e7da1b19d03394896fb8da8916cd26f0efb1566f");
+        head.Tip.Returns(tip);
+        repository.Head.Returns(head);
+        var branches = new Branches
+        {
+            { "master", tip }
+        };
+
+        repository.Branches.Returns(branches);
+        return repository;
+    }
+
+
+    class Branches : BranchCollection
+    {
+        IList<Branch> branches;
+
+
+        public Branches()
+        {
+            this.branches = new List<Branch>();
+        }
+
+
+        public override Branch this[string name]
+        {
+            get { return this.branches.FirstOrDefault(b => b.Name == name); }
+        }
+
+
+        public override Branch Add(string name, Commit commit, bool allowOverwrite = false)
+        {
+            var branch = Substitute.For<Branch>();
+            branch.Name.Returns(name);
+            branch.Tip.Returns(commit);
+            this.branches.Add(branch);
+            return branch;
+        }
+
+
+        public override Branch Add(string name, Commit commit, Signature signature, string logMessage = null, bool allowOverwrite = false)
+        {
+            return Add(name, commit, allowOverwrite);
+        }
+
+
+        public override IEnumerator<Branch> GetEnumerator()
+        {
+            return this.branches.GetEnumerator();
+        }
+    }
+
+    class Commits : List<Commit>, IQueryableCommitLog
+    {
+        public CommitSortStrategies SortedBy { get; private set; }
+
+
+        public ICommitLog QueryBy(CommitFilter filter)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public Commit FindMergeBase(Commit first, Commit second)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public Commit FindMergeBase(IEnumerable<Commit> commits, MergeBaseFindingStrategy strategy)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
