@@ -43,7 +43,7 @@ public static class VersionAndBranchFinder
 
             return versionCacheVersions.GetOrAdd(key, k =>
             {
-                Logger.WriteInfo("Version not in memory cache. Attempting to load version from cache.");
+                Logger.WriteInfo("Version not in memory cache. Attempting to load version from disk cache.");
                 return LoadVersionVariablesFromDiskCache(k, directory, authentication, noFetch, fileSystem, gitDir, ticks);
             });
         }
