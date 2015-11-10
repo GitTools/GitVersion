@@ -93,7 +93,7 @@ namespace GitVersion.Helpers
         }
 
 
-        public Repository GetRepository(string gitDirectory)
+        public IRepository GetRepository(string gitDirectory)
         {
             try
             {

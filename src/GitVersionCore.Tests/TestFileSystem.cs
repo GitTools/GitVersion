@@ -90,7 +90,7 @@ public class TestFileSystem : IFileSystem
     }
 
 
-    public Repository GetRepository(string gitDirectory)
+    public IRepository GetRepository(string gitDirectory)
     {
         throw new NotImplementedException();
     }
