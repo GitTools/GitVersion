@@ -62,11 +62,8 @@ public static class VersionAndBranchFinder
             }
 
             var cacheDir = Path.Combine(gitDir, "gitversion_cache");
-            if (!fileSystem.Exists(cacheDir))
-            {
-                Logger.WriteInfo("Creating directory for cache in " + cacheDir);
-                fileSystem.CreateDirectory(cacheDir);
-            }
+            // If the cacheDir already exists, CreateDirectory just won't do anything (it won't fail). @asbjornu
+            fileSystem.CreateDirectory(cacheDir);
 
             var cacheFileName = string.Concat(Path.Combine(cacheDir, cacheKey), ".yml");
             VersionVariables vv = null;
@@ -96,7 +93,7 @@ public static class VersionAndBranchFinder
                         }
                         catch (Exception deleteEx)
                         {
-                            Logger.WriteWarning(string.Format("Unable delete corrupted version cache file {0}. Got {1} exception.", cacheFileName, deleteEx.GetType().FullName));
+                            Logger.WriteWarning(string.Format("Unable to delete corrupted version cache file {0}. Got {1} exception.", cacheFileName, deleteEx.GetType().FullName));
                         }
                     }
                 }
