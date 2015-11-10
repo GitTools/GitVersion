@@ -125,7 +125,7 @@
     <Compile Include="ConfigProviderTests.cs" />
     <Compile Include="Fixtures\LocalRepositoryFixture.cs" />
     <Compile Include="Fixtures\RemoteRepositoryFixture.cs" />
-    <Compile Include="GitDirFinderTests.cs" />
+    <Compile Include="FileSystemTests.cs" />
     <Compile Include="Fixtures\BaseGitFlowRepositoryFixture.cs" />
     <Compile Include="GitHelperTests.cs" />
     <Compile Include="GitPreparerTests.cs" />

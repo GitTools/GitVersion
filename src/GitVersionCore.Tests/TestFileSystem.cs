@@ -74,4 +74,10 @@ public class TestFileSystem : IFileSystem
     {
         throw new NotImplementedException();
     }
+
+
+    public string TreeWalkForDotGitDir(string directory)
+    {
+        throw new NotImplementedException();
+    }
 }

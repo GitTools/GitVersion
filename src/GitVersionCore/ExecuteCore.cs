@@ -9,7 +9,7 @@ namespace GitVersion
         public static VersionVariables ExecuteGitVersion(IFileSystem fileSystem, string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId)
         {
             // Normalise if we are running on build server
-            var gitPreparer = new GitPreparer(targetUrl, dynamicRepositoryLocation, authentication, noFetch, workingDirectory);
+            var gitPreparer = new GitPreparer(targetUrl, dynamicRepositoryLocation, authentication, noFetch, workingDirectory, fileSystem);
             var applicableBuildServers = BuildServerList.GetApplicableBuildServers();
             var buildServer = applicableBuildServers.FirstOrDefault();
 

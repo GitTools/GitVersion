@@ -3,6 +3,9 @@ namespace GitVersion
     using System;
     using System.IO;
     using System.Linq;
+
+    using GitVersion.Helpers;
+
     using LibGit2Sharp;
 
     public class GitPreparer
@@ -12,14 +15,22 @@ namespace GitVersion
         Authentication authentication;
         bool noFetch;
         string targetPath;
+        readonly IFileSystem fileSystem;
 
-        public GitPreparer(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, bool noFetch, string targetPath)
+
+        public GitPreparer(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, bool noFetch, string targetPath, IFileSystem fileSystem)
         {
+            if (fileSystem == null)
+            {
+                throw new ArgumentNullException("fileSystem");
+            }
+
             this.targetUrl = targetUrl;
             this.dynamicRepositoryLocation = dynamicRepositoryLocation;
             this.authentication = authentication;
             this.noFetch = noFetch;
             this.targetPath = targetPath;
+            this.fileSystem = fileSystem;
         }
 
         public bool IsDynamicGitRepository
@@ -91,7 +102,7 @@ namespace GitVersion
             if (IsDynamicGitRepository)
                 return DynamicGitRepositoryPath;
 
-            return GitDirFinder.TreeWalkForDotGitDir(targetPath);
+            return this.fileSystem.TreeWalkForDotGitDir(targetPath);
         }
 
         public string GetProjectRootDirectory()
@@ -99,7 +110,7 @@ namespace GitVersion
             if (IsDynamicGitRepository)
                 return this.targetPath;
 
-            var gitDir = GitDirFinder.TreeWalkForDotGitDir(this.targetPath);
+            var gitDir = fileSystem.TreeWalkForDotGitDir(this.targetPath);
 
             if (String.IsNullOrEmpty(gitDir))
                 throw new DirectoryNotFoundException("Can't find the .git directory in " + targetPath);

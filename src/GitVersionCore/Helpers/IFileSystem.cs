@@ -15,5 +15,6 @@ namespace GitVersion.Helpers
         Stream OpenWrite(string path);
         Stream OpenRead(string path);
         void CreateDirectory(string path);
+        string TreeWalkForDotGitDir(string directory);
     }
 }
