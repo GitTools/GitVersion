@@ -30,7 +30,7 @@ using System.Reflection;
 namespace {4}
 {{
 
-    [System.Runtime.CompilerServices.CompilerGenerated]
+    [global::System.Runtime.CompilerServices.CompilerGenerated]
     static class GitVersionInformation
     {{
 {3}
