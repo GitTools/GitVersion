@@ -2,6 +2,8 @@
 using System.IO;
 using System.Linq;
 using GitVersion;
+using GitVersion.Helpers;
+
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
@@ -37,7 +39,7 @@ public class GitPreparerTests
                 // Copy contents into working directory
                 File.Copy(Path.Combine(fixture.RepositoryPath, "TestFile.txt"), Path.Combine(tempDir, "TestFile.txt"));
 
-                var gitPreparer = new GitPreparer(fixture.RepositoryPath, null, new Authentication(), false, tempDir);
+                var gitPreparer = new GitPreparer(fixture.RepositoryPath, null, new Authentication(), false, tempDir, new FileSystem());
                 gitPreparer.Initialise(false, branchName);
                 dynamicRepositoryPath = gitPreparer.GetDotGitDirectory();
 
@@ -75,7 +77,7 @@ public class GitPreparerTests
             {
                 mainRepositoryFixture.Repository.MakeCommits(1);
 
-                var gitPreparer = new GitPreparer(mainRepositoryFixture.RepositoryPath, null, new Authentication(), false, tempDir);
+                var gitPreparer = new GitPreparer(mainRepositoryFixture.RepositoryPath, null, new Authentication(), false, tempDir, new FileSystem());
                 gitPreparer.Initialise(false, "master");
                 dynamicRepositoryPath = gitPreparer.GetDotGitDirectory();
 
@@ -116,7 +118,7 @@ public class GitPreparerTests
                 expectedDynamicRepoLocation = Path.Combine(tempPath, fixture.RepositoryPath.Split('\\').Last());
                 Directory.CreateDirectory(expectedDynamicRepoLocation);
 
-                var gitPreparer = new GitPreparer(fixture.RepositoryPath, null, new Authentication(), false, tempDir);
+                var gitPreparer = new GitPreparer(fixture.RepositoryPath, null, new Authentication(), false, tempDir, new FileSystem());
                 gitPreparer.Initialise(false, "master");
 
                 gitPreparer.IsDynamicGitRepository.ShouldBe(true);
@@ -137,7 +139,7 @@ public class GitPreparerTests
     public void WorksCorrectlyWithLocalRepository()
     {
         var tempDir = Path.GetTempPath();
-        var gitPreparer = new GitPreparer(null, null, null, false, tempDir);
+        var gitPreparer = new GitPreparer(null, null, null, false, tempDir, new FileSystem());
         var dynamicRepositoryPath = gitPreparer.GetDotGitDirectory();
 
         dynamicRepositoryPath.ShouldBe(null);
@@ -158,7 +160,7 @@ public class GitPreparerTests
             {
                 mainRepositoryFixture.Repository.MakeACommit();
 
-                var gitPreparer = new GitPreparer(mainRepositoryFixture.RepositoryPath, null, new Authentication(), false, tempDir);
+                var gitPreparer = new GitPreparer(mainRepositoryFixture.RepositoryPath, null, new Authentication(), false, tempDir, new FileSystem());
                 gitPreparer.Initialise(true, "feature1");
 
                 mainRepositoryFixture.Repository.Checkout(mainRepositoryFixture.Repository.CreateBranch("feature1"));
@@ -186,7 +188,7 @@ public class GitPreparerTests
             {
                 mainRepositoryFixture.Repository.MakeACommit();
 
-                var gitPreparer = new GitPreparer(mainRepositoryFixture.RepositoryPath, null, new Authentication(), false, tempDir);
+                var gitPreparer = new GitPreparer(mainRepositoryFixture.RepositoryPath, null, new Authentication(), false, tempDir, new FileSystem());
 
                 Should.Throw<Exception>(() => gitPreparer.Initialise(true, null));
             }
@@ -207,7 +209,7 @@ public class GitPreparerTests
 
         try
         {
-            var gitPreparer = new GitPreparer("http://127.0.0.1/testrepo.git", null, new Authentication(), false, tempDir);
+            var gitPreparer = new GitPreparer("http://127.0.0.1/testrepo.git", null, new Authentication(), false, tempDir, new FileSystem());
 
             Should.Throw<Exception>(() => gitPreparer.Initialise(true, "master"));
         }

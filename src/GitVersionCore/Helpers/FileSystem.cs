@@ -3,6 +3,8 @@ namespace GitVersion.Helpers
     using System.Collections.Generic;
     using System.IO;
 
+    using LibGit2Sharp;
+
     public class FileSystem : IFileSystem
     {
         public void Copy(string @from, string to, bool overwrite)
@@ -62,6 +64,19 @@ namespace GitVersion.Helpers
         public void CreateDirectory(string path)
         {
             Directory.CreateDirectory(path);
+        }
+
+
+        public string TreeWalkForDotGitDir(string directory)
+        {
+            var gitDirectory = Repository.Discover(directory);
+
+            if (gitDirectory != null)
+            {
+                return gitDirectory.TrimEnd(Path.DirectorySeparatorChar);
+            }
+
+            return null;
         }
     }
 }
