@@ -131,6 +131,7 @@
     <Compile Include="Helpers\SelfCleaningDirectory.cs" />
     <Compile Include="Mocks\MockTaskItem.cs" />
     <Compile Include="ModuleInitializer.cs" />
+    <Compile Include="VersionAndBranchFinderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
