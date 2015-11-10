@@ -143,6 +143,7 @@
     <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor.approved.txt" />
     <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatch.approved.txt" />
     <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatchTag.approved.txt" />
+    <Content Include="AssemblyInfoBuilderTests.VerifyCreatedCode_NoNamespaceConflict.approved.txt" />
     <Content Include="AssemblyInfoBuilderTests.VerifyCreatedCode.approved.txt" />
     <Content Include="FodyWeavers.xml" />
   </ItemGroup>

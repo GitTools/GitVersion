@@ -41,13 +41,42 @@ public class AssemblyInfoBuilderTests
         using (var stream = new MemoryStream())
         {
             var emitResult = compilation.Emit(stream);
-            
+
             Assert.IsTrue(emitResult.Success, string.Join(Environment.NewLine, emitResult.Diagnostics.Select(x => x.Descriptor)));
 
             stream.Seek(0, SeekOrigin.Begin);
             var assembly = Assembly.Load(stream.ToArray());
             VerifyGitVersionInformationAttribute(assembly, versionVariables);
         }
+    }
+
+    [Test]
+    public void VerifyCreatedCode_NoNamespaceConflict()
+    {
+        var semanticVersion = new SemanticVersion
+        {
+            Major = 1,
+            Minor = 2,
+            Patch = 3,
+            PreReleaseTag = "unstable4",
+            BuildMetaData = new SemanticVersionBuildMetaData(5,
+                "feature1", "commitSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
+        };
+        var assemblyInfoBuilder = new AssemblyInfoBuilder();
+
+        var config = new TestEffectiveConfiguration();
+
+        var versionVariables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
+        var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, "Fake.System");
+        Approvals.Verify(assemblyInfoText);
+
+        var compilation = CSharpCompilation.Create("Fake.System.dll")
+            .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+            .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
+            .AddSyntaxTrees(CSharpSyntaxTree.ParseText(assemblyInfoText));
+
+        var emitResult = compilation.Emit(new MemoryStream());
+        Assert.IsTrue(emitResult.Success, string.Join(Environment.NewLine, emitResult.Diagnostics.Select(x => x.Descriptor)));
     }
 
     [Test]
