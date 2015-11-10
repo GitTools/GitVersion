@@ -27,7 +27,7 @@ namespace GitVersion
             var versionFinder = new GitVersionFinder();
             var configuration = ConfigurationProvider.Provide(projectRoot, fileSystem);
 
-            using (var repo = RepositoryLoader.GetRepo(dotGitDirectory))
+            using (var repo = fileSystem.GetRepository(dotGitDirectory))
             {
                 var gitVersionContext = new GitVersionContext(repo, configuration, commitId: commitId);
                 var semanticVersion = versionFinder.FindVersion(gitVersionContext);

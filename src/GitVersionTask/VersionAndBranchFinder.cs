@@ -35,7 +35,7 @@ public static class VersionAndBranchFinder
     public static VersionVariables GetVersion(string directory, Authentication authentication, bool noFetch, IFileSystem fileSystem)
     {
         var gitDir = fileSystem.TreeWalkForDotGitDir(directory);
-        using (var repo = RepositoryLoader.GetRepo(gitDir))
+        using (var repo = fileSystem.GetRepository(gitDir))
         {
             // Maybe using timestamp in .git/refs directory is enough?
             var ticks = DirectoryDateFinder.GetLastDirectoryWrite(Path.Combine(gitDir, "refs"));
