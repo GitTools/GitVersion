@@ -78,6 +78,12 @@ public class TestFileSystem : IFileSystem
     }
 
 
+    public long GetLastDirectoryWrite(string path)
+    {
+        throw new NotImplementedException();
+    }
+
+
     public string TreeWalkForDotGitDir(string directory)
     {
         throw new NotImplementedException();

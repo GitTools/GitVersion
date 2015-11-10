@@ -38,7 +38,7 @@ public static class VersionAndBranchFinder
         using (var repo = fileSystem.GetRepository(gitDir))
         {
             // Maybe using timestamp in .git/refs directory is enough?
-            var ticks = DirectoryDateFinder.GetLastDirectoryWrite(Path.Combine(gitDir, "refs"));
+            var ticks = fileSystem.GetLastDirectoryWrite(Path.Combine(gitDir, "refs"));
             string key = string.Format("{0}:{1}:{2}:{3}", gitDir, repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
 
             return versionCacheVersions.GetOrAdd(key, k =>
