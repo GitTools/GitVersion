@@ -19,6 +19,6 @@ namespace GitVersion.Helpers
         void CreateDirectory(string path);
         long GetLastDirectoryWrite(string path);
         string TreeWalkForDotGitDir(string directory);
-        Repository GetRepository(string gitDirectory);
+        IRepository GetRepository(string gitDirectory);
     }
 }
