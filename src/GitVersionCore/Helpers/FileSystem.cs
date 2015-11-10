@@ -3,6 +3,7 @@ namespace GitVersion.Helpers
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
 
     using LibGit2Sharp;
 
@@ -65,6 +66,17 @@ namespace GitVersion.Helpers
         public void CreateDirectory(string path)
         {
             Directory.CreateDirectory(path);
+        }
+
+
+        public long GetLastDirectoryWrite(string path)
+        {
+            return new DirectoryInfo(path)
+                .GetDirectories("*.*", SearchOption.AllDirectories)
+                .Select(d => d.LastWriteTimeUtc)
+                .DefaultIfEmpty()
+                .Max()
+                .Ticks;
         }
 
 
