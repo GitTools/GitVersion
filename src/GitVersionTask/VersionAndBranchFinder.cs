@@ -98,6 +98,11 @@ public static class VersionAndBranchFinder
                     }
                 }
             }
+            else
+            {
+                Logger.WriteInfo("Cache file " + cacheFileName + " not found.");
+            }
+
             if (vv == null)
             {
                 vv = ExecuteCore.ExecuteGitVersion(fileSystem, null, null, authentication, null, noFetch, directory, null);
@@ -118,6 +123,7 @@ public static class VersionAndBranchFinder
                     }
                 }
             }
+
             return vv;
         }
     }
