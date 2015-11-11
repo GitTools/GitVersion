@@ -40,6 +40,7 @@ The global configuration options are:
 
  - **`commits-since-version-source-padding:`** The number of characters to pad `CommitsSinceVersionSource` to in the `CommitsSinceVersionSourcePadded` [variable](/more-info/variables). Is default set to `4`, which will pad the `CommitsSinceVersionSource` value of `1` to `0001`.
 
+ - **`commit-message-incrementing:`** Sets whether it should be possible to increment the version with special syntax in the commit message. See the `*-version-bump-message` options above for details on the syntax. Default set to `Enabled`; set to `Disabled` to disable.
 
 ## Branch configuration
 
