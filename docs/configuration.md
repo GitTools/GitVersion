@@ -32,6 +32,8 @@ The global configuration options are:
 
  - **`minor-version-bump-message:`** The regex to match commit messages with to perform a minor version increment. Default set to `'\+semver:\s?(feature|minor)'`, which will match occurrences of `+semver: feature` and `+semver: minor` in a commit message.
 
+ - **`patch-version-bump-message:`** The regex to match commit messages with to perform a patch version increment. Default set to `'\+semver:\s?(fix|patch)'`, which will match occurrences of `+semver: fix` and `+semver: patch` in a commit message.
+
 ## Branch configuration
 
 Then we have branch specific configuration, which looks something like this:
