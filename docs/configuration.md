@@ -36,6 +36,9 @@ The global configuration options are:
 
  - **`legacy-semver-padding:`** The number of characters to pad `LegacySemVer` to  in the `LegacySemVerPadded` [variable](/more-info/variables). Is default set to `4`, which will pad the `LegacySemVer` value of `3.0.0-beta1` to `3.0.0-beta0001`.
 
+ - **`build-metadata-padding:`** The number of characters to pad `BuildMetaData` to in the `BuildMetaDataPadded` [variable](/more-info/variables). Is default set to `4`, which will pad the `BuildMetaData` value of `1` to `0001`.
+
+
 ## Branch configuration
 
 Then we have branch specific configuration, which looks something like this:
