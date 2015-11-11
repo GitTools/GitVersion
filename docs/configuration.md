@@ -38,6 +38,8 @@ The global configuration options are:
 
  - **`build-metadata-padding:`** The number of characters to pad `BuildMetaData` to in the `BuildMetaDataPadded` [variable](/more-info/variables). Is default set to `4`, which will pad the `BuildMetaData` value of `1` to `0001`.
 
+ - **`commits-since-version-source-padding:`** The number of characters to pad `CommitsSinceVersionSource` to in the `CommitsSinceVersionSourcePadded` [variable](/more-info/variables). Is default set to `4`, which will pad the `CommitsSinceVersionSource` value of `1` to `0001`.
+
 
 ## Branch configuration
 
