@@ -13,14 +13,20 @@ You can run `GitVersion /showConfig` to see the effective configuration (default
 To create your config file just type `GitVersion init` in your repo directory after installing via chocolatey and we will create a sample (but commented out) config file.
 Uncomment and modify as you need.
 
-The configuration options are:
+## Global configuration
+The global configuration options are:
 
- - `next-version`: Allows you to bump the next version explicitly, useful for bumping `master` or a feature with breaking changes a major increment.
- - `assembly-versioning-scheme`: When updating assembly info tells GitVersion how to treat the AssemblyVersion attribute. Useful to lock the major when using Strong Naming.
- - `assembly-informational-format`: Set this to any of the available [variables](more-info/variables) to change the value of the `AssemblyInformationalVersion` attribute. Default set to `{InformationalVersion}`.
- - `mode`: Either [ContinuousDelivery](/reference/continuous-delivery/) or [ContinuousDeployment](/reference/continuous-deployment/).
- - `continuous-delivery-fallback-tag`: When using `mode: ContinuousDeployment` the value specified will be used as the pre-release tag for branches which do not have one specified.
- - `tag-prefix`: A regex which is used to trim git tags before processing (eg v1.0.0). Default is `[vV]` though this is just for illustrative purposes as we do a IgnoreCase match and could be `v`
+ - **`next-version:`** Allows you to bump the next version explicitly, useful for bumping `master` or a feature with breaking changes a major increment.
+
+ - **`assembly-versioning-scheme:`** When updating assembly info tells GitVersion how to treat the `AssemblyVersion` attribute. Useful to lock the major when using Strong Naming.
+
+ - **`assembly-informational-format:`** Set this to any of the available [variables](/more-info/variables) to change the value of the `AssemblyInformationalVersion` attribute. Default set to `{InformationalVersion}`.
+
+ - **`mode:`** Sets the mode of how GitVersion should create a new version. Can be set to either `ContinuousDelivery` or `ContinuousDeployment`. Read more about [ContinuousDelivery](/reference/continuous-delivery/) or [ContinuousDeployment](/reference/continuous-deployment/).
+
+ - **`continuous-delivery-fallback-tag:`** When using `mode: ContinuousDeployment`, the value specified will be used as the pre-release tag for branches which do not have one specified. Default set to `ci`.
+
+ - **`tag-prefix:`** A regex which is used to trim git tags before processing (eg v1.0.0). Default is `[vV]` though this is just for illustrative purposes as we do a IgnoreCase match and could be `v`.
 
 ## Branch configuration
 
@@ -39,15 +45,20 @@ branches:
 ```
 
 The options in here are:
- - `mode`: Same as above
- - `tag`: The pre release tag to use for this branch. Use the value `use-branch-name-as-tag` to use the branch name instead.  
+
+ - **`mode:`** Same as above
+
+ - **`tag:`** The pre release tag to use for this branch. Use the value `use-branch-name-as-tag` to use the branch name instead.  
    For example `feature/foo` would become a pre-release tag of `foo` with this value
- - `increment`: the part of the SemVer to increment when GitVersion detects it needs to be (i.e commit after a tag)
- - `prevent-increment-of-merged-branch-version`: When `release-2.0.0` is merged into master, we want master to build `2.0.0`.
+
+ - **`increment:`** the part of the SemVer to increment when GitVersion detects it needs to be (i.e commit after a tag)
+
+ - **`prevent-increment-of-merged-branch-version:`** When `release-2.0.0` is merged into master, we want master to build `2.0.0`.
     If `release-2.0.0` is merged into develop we want it to build `2.1.0`, this option prevents incrementing after a versioned branch is merged
- - `tag-number-pattern`: Pull requests require us to pull the pre-release number out of the branch name so `refs/pulls/534/merge` builds as `PullRequest.5`.
+
+ - **`tag-number-pattern:`** Pull requests require us to pull the pre-release number out of the branch name so `refs/pulls/534/merge` builds as `PullRequest.5`.
    This is a regex with a named capture group called `number`
- - `track-merge-target`: Strategy which will look for tagged merge commits directly off the current branch. For example
-   develop -> release/1.0.0 -> merge into master and tag 1.0.0. The tag is *not* on develop, but develop should be 1.0.0 now.
+
+ - **`track-merge-target:`** Strategy which will look for tagged merge commits directly off the current branch. For example `develop` → `release/1.0.0` → merge into `master` and tag `1.0.0`. The tag is *not* on develop, but develop should be version `1.0.0` now.
 
 We don't envision many people needing to change most of these configuration values, but they are there if you need to.
