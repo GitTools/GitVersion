@@ -1,12 +1,16 @@
 ﻿using System.IO;
+
 using GitVersion;
+
 using NUnit.Framework;
+
 using Shouldly;
 
 [TestFixture]
 public class ExecCmdLineArgumentTest
 {
     const string MsBuild = @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
+
 
     [Test]
     public void RunExecViaCommandLine()
@@ -32,6 +36,7 @@ public class ExecCmdLineArgumentTest
         }
     }
 
+
     [Test]
     public void InvalidArgumentsExitCodeShouldNotBeZero()
     {
@@ -49,12 +54,13 @@ public class ExecCmdLineArgumentTest
   </Target>
 </Project>";
             File.WriteAllText(buildFile, buildFileContent);
-            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /invalid-argument");
+            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments : " /invalid-argument");
 
             result.ExitCode.ShouldBe(1);
             result.Output.ShouldContain("Failed to parse arguments");
         }
     }
+
 
     [Test]
     public void UsesGitVersionConfigWhenCreatingDynamicRepository()

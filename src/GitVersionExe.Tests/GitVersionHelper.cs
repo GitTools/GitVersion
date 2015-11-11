@@ -2,18 +2,23 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+
 using GitVersion.Helpers;
 
 public static class GitVersionHelper
 {
     public static ExecutionResults ExecuteIn(string workingDirectory,
-        string exec = null, string execArgs = null, string projectFile = null, string projectArgs = null,
-        bool isTeamCity = false)
+                                             string exec = null,
+                                             string execArgs = null,
+                                             string projectFile = null,
+                                             string projectArgs = null,
+                                             bool isTeamCity = false)
     {
         var logFile = Path.Combine(workingDirectory, "log.txt");
         var args = new ArgumentBuilder(workingDirectory, exec, execArgs, projectFile, projectArgs, logFile, isTeamCity);
         return ExecuteIn(args);
     }
+
 
     public static ExecutionResults ExecuteIn(string workingDirectory, string arguments, bool isTeamCity = false)
     {
@@ -21,6 +26,7 @@ public static class GitVersionHelper
         var args = new ArgumentBuilder(workingDirectory, arguments, isTeamCity, logFile);
         return ExecuteIn(args);
     }
+
 
     static ExecutionResults ExecuteIn(ArgumentBuilder arguments)
     {
