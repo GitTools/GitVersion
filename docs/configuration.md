@@ -55,6 +55,7 @@ branches:
   (pull|pull\-requests|pr)[/-]:
     tag: PullRequest
     increment: Inherit
+    track-merge-target: true
     tag-number-pattern: '[/-](?<number>\d+)[-/]'
 ```
 
