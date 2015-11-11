@@ -34,6 +34,8 @@ The global configuration options are:
 
  - **`patch-version-bump-message:`** The regex to match commit messages with to perform a patch version increment. Default set to `'\+semver:\s?(fix|patch)'`, which will match occurrences of `+semver: fix` and `+semver: patch` in a commit message.
 
+ - **`legacy-semver-padding:`** The number of characters to pad `LegacySemVer` to  in the `LegacySemVerPadded` [variable](/more-info/variables). Is default set to `4`, which will pad the `LegacySemVer` value of `3.0.0-beta1` to `3.0.0-beta0001`.
+
 ## Branch configuration
 
 Then we have branch specific configuration, which looks something like this:
