@@ -12,17 +12,18 @@ public static class GitVersionHelper
                                              string execArgs = null,
                                              string projectFile = null,
                                              string projectArgs = null,
-                                             bool isTeamCity = false)
+                                             bool isTeamCity = false,
+                                             bool logToFile = true)
     {
-        var logFile = Path.Combine(workingDirectory, "log.txt");
+        var logFile = logToFile ? Path.Combine(workingDirectory, "log.txt") : null;
         var args = new ArgumentBuilder(workingDirectory, exec, execArgs, projectFile, projectArgs, logFile, isTeamCity);
         return ExecuteIn(args);
     }
 
 
-    public static ExecutionResults ExecuteIn(string workingDirectory, string arguments, bool isTeamCity = false)
+    public static ExecutionResults ExecuteIn(string workingDirectory, string arguments, bool isTeamCity = false, bool logToFile = true)
     {
-        var logFile = Path.Combine(workingDirectory, "log.txt");
+        var logFile = logToFile ? Path.Combine(workingDirectory, "log.txt") : null;
         var args = new ArgumentBuilder(workingDirectory, arguments, isTeamCity, logFile);
         return ExecuteIn(args);
     }
