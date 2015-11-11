@@ -28,6 +28,8 @@ The global configuration options are:
 
  - **`tag-prefix:`** A regex which is used to trim git tags before processing (eg v1.0.0). Default is `[vV]` though this is just for illustrative purposes as we do a IgnoreCase match and could be `v`.
 
+ - **`major-version-bump-message:`** The regex to match commit messages with to perform a major version increment. Default set to `'\+semver:\s?(breaking|major)'`, which will match occurrences of `+semver: major` and `+semver: breaking` in a commit message.
+
 ## Branch configuration
 
 Then we have branch specific configuration, which looks something like this:
