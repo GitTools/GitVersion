@@ -88,4 +88,12 @@ public class ExecCmdLineArgumentTest
             DeleteHelper.DeleteGitRepository(repoBasePath);
         }
     }
+
+
+    [Test]
+    public void InvalidWorkingDirectoryCrashesWithInformativeMessage()
+    {
+        var results = GitVersionHelper.ExecuteIn("InvalidDirectory", null, isTeamCity : false, logToFile : false);
+        results.Output.ShouldContain("InvalidDirectory");
+    }
 }
