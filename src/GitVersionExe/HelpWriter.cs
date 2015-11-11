@@ -40,6 +40,7 @@ GitVersion [path]
     /c              The commit id to check. If not specified, the latest available commit on the specified branch will be used.
     /dynamicRepoLocation
                     By default dynamic repositories will be cloned to %tmp%. Use this switch to override
+    /nofetch        Disables 'git fetch' during version calculation. Might cause GitVersion to not calculate your version as expected.
     
     # Execute build args
     /exec           Executes target executable making GitVersion variables available as environmental variables
