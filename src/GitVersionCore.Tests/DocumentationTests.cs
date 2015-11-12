@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 using GitVersion;
 
@@ -8,9 +9,36 @@ using NUnit.Framework;
 
 using Shouldly;
 
+using YamlDotNet.Serialization;
+
 [TestFixture]
 public class DocumentationTests
 {
+    [Test]
+    public void ConfigurationDocumentationIsUpToDate()
+    {
+        var configurationDocumentationFile = ReadDocumentationFile("configuration.md");
+
+        const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance;
+        var configProperties = typeof(Config)
+            .GetProperties(bindingFlags)
+            .Union(typeof(BranchConfig).GetProperties(bindingFlags))
+            .Select(p => p.GetCustomAttribute<YamlMemberAttribute>())
+            .Where(a => a != null)
+            .Select(a => a.Alias)
+            .ToList();
+
+        configProperties.ShouldNotBeEmpty();
+
+        foreach (var configProperty in configProperties)
+        {
+            var formattedConfigProperty = string.Format("**`{0}:`**", configProperty);
+            configurationDocumentationFile.ShouldContain(formattedConfigProperty,
+                                                         Environment.NewLine + configurationDocumentationFile);
+        }
+    }
+
+
     [Test]
     public void VariableDocumentationIsUpToDate()
     {
