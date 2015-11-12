@@ -3,6 +3,7 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
 
     public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     {
@@ -81,8 +82,9 @@
             get
             {
                 return typeof(VersionVariables)
-                    .GetProperties()
+                    .GetProperties(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance)
                     .Select(p => p.Name)
+                    .Where(p => p != "AvailableVariables" && p != "Item")
                     .OrderBy(a => a);
             }
         }
