@@ -6,8 +6,28 @@
 
     public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     {
-        public VersionVariables(string major, string minor, string patch, string buildMetaData, string buildMetaDataPadded, string fullBuildMetaData, string branchName, string sha, string majorMinorPatch, string semVer, string legacySemVer, string legacySemVerPadded, string fullSemVer, string assemblySemVer, string preReleaseTag, string preReleaseTagWithDash, string informationalVersion,
-            string commitDate, string nugetVersion, string nugetVersionV2, string commitsSinceVersionSource, string commitsSinceVersionSourcePadded)
+        public VersionVariables(string major,
+                                string minor,
+                                string patch,
+                                string buildMetaData,
+                                string buildMetaDataPadded,
+                                string fullBuildMetaData,
+                                string branchName,
+                                string sha,
+                                string majorMinorPatch,
+                                string semVer,
+                                string legacySemVer,
+                                string legacySemVerPadded,
+                                string fullSemVer,
+                                string assemblySemVer,
+                                string preReleaseTag,
+                                string preReleaseTagWithDash,
+                                string informationalVersion,
+                                string commitDate,
+                                string nugetVersion,
+                                string nugetVersionV2,
+                                string commitsSinceVersionSource,
+                                string commitsSinceVersionSourcePadded)
         {
             Major = major;
             Minor = minor;
@@ -33,6 +53,7 @@
             CommitsSinceVersionSourcePadded = commitsSinceVersionSourcePadded;
         }
 
+
         public string Major { get; private set; }
         public string Minor { get; private set; }
         public string Patch { get; private set; }
@@ -57,10 +78,22 @@
 
         public static IEnumerable<string> AvailableVariables
         {
-            get { return typeof(VersionVariables).GetProperties().Select(p => p.Name).OrderBy(a => a); }
+            get
+            {
+                return typeof(VersionVariables)
+                    .GetProperties()
+                    .Select(p => p.Name)
+                    .OrderBy(a => a);
+            }
         }
 
         public string CommitDate { get; set; }
+
+        public string this[string variable]
+        {
+            get { return (string)typeof(VersionVariables).GetProperty(variable).GetValue(this, null); }
+        }
+
 
         public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
         {
@@ -68,19 +101,16 @@
             return typeof(VersionVariables)
                 .GetProperties()
                 .Where(p => p.PropertyType == type && !p.GetIndexParameters().Any())
-                .Select(p => new KeyValuePair<string, string>(p.Name, (string) p.GetValue(this, null)))
+                .Select(p => new KeyValuePair<string, string>(p.Name, (string)p.GetValue(this, null)))
                 .GetEnumerator();
         }
+
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
 
-        public string this [string variable]
-        {
-            get { return (string) typeof(VersionVariables).GetProperty(variable).GetValue(this, null); }
-        }
 
         public bool TryGetValue(string variable, out string variableValue)
         {
@@ -93,6 +123,7 @@
             variableValue = null;
             return false;
         }
+
 
         public bool ContainsKey(string variable)
         {
