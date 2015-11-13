@@ -73,15 +73,7 @@ public static class VersionAndBranchFinder
                 {
                     try
                     {
-                        using (var stream = fileSystem.OpenRead(cacheFileName))
-                        {
-                            using (var reader = new StreamReader(stream))
-                            {
-                                var dictionary = new Deserializer().Deserialize<Dictionary<string, string>>(reader);
-                                vv = VersionVariables.FromDictionary(dictionary);
-                            }
-                        }
-
+                        vv = VersionVariables.FromFile(cacheFileName, fileSystem);
                     }
                     catch (Exception ex)
                     {
@@ -106,6 +98,7 @@ public static class VersionAndBranchFinder
             if (vv == null)
             {
                 vv = ExecuteCore.ExecuteGitVersion(fileSystem, null, null, authentication, null, noFetch, directory, null);
+                vv.FileName = cacheFileName;
 
                 using (var stream = fileSystem.OpenWrite(cacheFileName))
                 using (var sw = new StreamWriter(stream))

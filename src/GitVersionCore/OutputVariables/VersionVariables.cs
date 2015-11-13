@@ -3,7 +3,12 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
+
+    using GitVersion.Helpers;
+
+    using YamlDotNet.Serialization;
 
     public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     {
@@ -93,6 +98,9 @@
         public string CommitDate { get; set; }
 
         [ReflectionIgnore]
+        public string FileName { get; set; }
+
+        [ReflectionIgnore]
         public string this[string variable]
         {
             get { return (string)typeof(VersionVariables).GetProperty(variable).GetValue(this, null); }
@@ -125,6 +133,21 @@
                 .Cast<object>()
                 .ToArray();
             return (VersionVariables)Activator.CreateInstance(type, ctorArgs);
+        }
+
+
+        public static VersionVariables FromFile(string filePath, IFileSystem fileSystem)
+        {
+            using (var stream = fileSystem.OpenRead(filePath))
+            {
+                using (var reader = new StreamReader(stream))
+                {
+                    var dictionary = new Deserializer().Deserialize<Dictionary<string, string>>(reader);
+                    var versionVariables = FromDictionary(dictionary);
+                    versionVariables.FileName = filePath;
+                    return versionVariables;
+                }
+            }
         }
 
 
