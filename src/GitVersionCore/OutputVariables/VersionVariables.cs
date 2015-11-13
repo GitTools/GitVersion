@@ -126,6 +126,18 @@
         }
 
 
+        public static VersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>> properties)
+        {
+            var type = typeof(VersionVariables);
+            var ctor = type.GetConstructors().Single();
+            var ctorArgs = ctor.GetParameters()
+                .Select(p => properties.Single(v => v.Key.ToLower() == p.Name.ToLower()).Value)
+                .Cast<object>()
+                .ToArray();
+            return (VersionVariables)Activator.CreateInstance(type, ctorArgs);
+        }
+
+
         public bool TryGetValue(string variable, out string variableValue)
         {
             if (ContainsKey(variable))
