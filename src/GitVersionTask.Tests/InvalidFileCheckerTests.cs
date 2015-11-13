@@ -25,7 +25,14 @@ public class InvalidFileCheckerTests
     [TearDown]
     public void Cleanup()
     {
-        Directory.Delete(projectDirectory, true);
+        try
+        {
+            Directory.Delete(projectDirectory, true);
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine(exception);
+        }
     }
 
     [Test]
