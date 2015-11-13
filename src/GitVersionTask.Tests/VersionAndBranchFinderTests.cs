@@ -9,6 +9,13 @@
 
 #endregion
 
+using System;
+using System.Collections.Concurrent;
+using System.Text;
+
+using GitVersion;
+using GitVersion.Helpers;
+
 using NUnit.Framework;
 
 using Shouldly;
@@ -17,10 +24,9 @@ using Shouldly;
 public class VersionAndBranchFinderTests
 {
     [Test]
-    public void ExistingCacheFile()
+    public void CacheFileExistsOnDisk()
     {
-        var fileSystem = new TestFileSystem();
-        fileSystem.WriteAllText("existing\\gitversion_cache\\C7B23F8A47ECE0E14CBE2E22C04269CC5A88E275.yml", @"
+        const string versionCacheFileContent = @"
 Major: 4
 Minor: 10
 Patch: 3
@@ -43,21 +49,92 @@ NuGetVersion: 4.10.3-test0019
 CommitsSinceVersionSource: 19
 CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
-");
+";
 
-        var vv = VersionAndBranchFinder.GetVersion("existing", null, false, fileSystem);
+        var infoBuilder = new StringBuilder();
+        Action<string> infoLogger = s => { infoBuilder.AppendLine(s); };
 
-        vv.AssemblySemVer.ShouldBe("4.10.3.0");
+        Logger.SetLoggers(infoLogger, null, null);
+
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            var fileSystem = new FileSystem();
+            fixture.Repository.MakeACommit();
+            var vv = VersionAndBranchFinder.GetVersion(fixture.RepositoryPath, null, false, fileSystem);
+
+            vv.AssemblySemVer.ShouldBe("0.1.0.0");
+
+            vv.FileName.ShouldNotBeNullOrEmpty();
+
+            fileSystem.WriteAllText(vv.FileName, versionCacheFileContent);
+
+            // I would rather see that VersionAndBranchFinder was non-static and could be reinstantiated to
+            // clear the in-memory cache, but that's not the case, so I have to perform this ugly hack. @asbjornu
+            VersionAndBranchFinder.VersionCacheVersions = new ConcurrentDictionary<string, VersionVariables>();
+
+            vv = VersionAndBranchFinder.GetVersion(fixture.RepositoryPath, null, false, fileSystem);
+
+            vv.AssemblySemVer.ShouldBe("4.10.3.0");
+        }
+
+        var info = infoBuilder.ToString();
+
+        Console.WriteLine(info);
+
+        info.ShouldContain("Deserializing version variables from cache file", () => info);
     }
 
 
     [Test]
-    public void MissingCacheFile()
+    public void CacheFileExistsInMemory()
     {
-        var fileSystem = new TestFileSystem();
+        var infoBuilder = new StringBuilder();
+        Action<string> infoLogger = s => { infoBuilder.AppendLine(s); };
 
-        var vv = VersionAndBranchFinder.GetVersion("missing", null, false, fileSystem);
+        Logger.SetLoggers(infoLogger, null, null);
 
-        vv.AssemblySemVer.ShouldBe("0.1.0.0");
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            var fileSystem = new FileSystem();
+            fixture.Repository.MakeACommit();
+            var vv = VersionAndBranchFinder.GetVersion(fixture.RepositoryPath, null, false, fileSystem);
+
+            vv.AssemblySemVer.ShouldBe("0.1.0.0");
+
+            vv.FileName.ShouldNotBeNullOrEmpty();
+
+            vv = VersionAndBranchFinder.GetVersion(fixture.RepositoryPath, null, false, fileSystem);
+
+            vv.AssemblySemVer.ShouldBe("0.1.0.0");
+        }
+
+        var info = infoBuilder.ToString();
+
+        Console.WriteLine(info);
+
+        info.ShouldContain("yml not found", () => info);
+        info.ShouldNotContain("Deserializing version variables from cache file", () => info);
+    }
+
+
+    [Test]
+    public void CacheFileIsMissing()
+    {
+        var infoBuilder = new StringBuilder();
+        Action<string> infoLogger = s => { infoBuilder.AppendLine(s); };
+
+        Logger.SetLoggers(infoLogger, null, null);
+
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            fixture.Repository.MakeACommit();
+            var fileSystem = new FileSystem();
+            var vv = VersionAndBranchFinder.GetVersion(fixture.RepositoryPath, null, false, fileSystem);
+
+            vv.AssemblySemVer.ShouldBe("0.1.0.0");
+        }
+
+        var info = infoBuilder.ToString();
+        info.ShouldContain("yml not found", () => info);
     }
 }
