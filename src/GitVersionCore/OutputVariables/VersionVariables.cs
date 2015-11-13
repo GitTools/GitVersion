@@ -112,7 +112,7 @@
             var type = typeof(VersionVariables);
             var ctor = type.GetConstructors().Single();
             var ctorArgs = ctor.GetParameters()
-                .Select(p => properties.Single(v => v.Key.ToLower() == p.Name.ToLower()).Value)
+                .Select(p => properties.Single(v => string.Equals(v.Key, p.Name, StringComparison.CurrentCultureIgnoreCase)).Value)
                 .Cast<object>()
                 .ToArray();
             return (VersionVariables)Activator.CreateInstance(type, ctorArgs);
