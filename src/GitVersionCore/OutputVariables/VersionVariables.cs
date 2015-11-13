@@ -7,19 +7,28 @@
 
     public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     {
-        public static VersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>> properties)
-        {
-            var type = typeof(VersionVariables);
-            var ctor = type.GetConstructors().Single();
-            var ctorArgs = ctor.GetParameters()
-                .Select(p => properties.Single(v => v.Key.ToLower() == p.Name.ToLower()).Value)
-                .Cast<object>()
-                .ToArray();
-            return (VersionVariables)Activator.CreateInstance(type, ctorArgs);
-        }
-
-        public VersionVariables(string major, string minor, string patch, string buildMetaData, string buildMetaDataPadded, string fullBuildMetaData, string branchName, string sha, string majorMinorPatch, string semVer, string legacySemVer, string legacySemVerPadded, string fullSemVer, string assemblySemVer, string preReleaseTag, string preReleaseTagWithDash, string informationalVersion,
-            string commitDate, string nugetVersion, string nugetVersionV2, string commitsSinceVersionSource, string commitsSinceVersionSourcePadded)
+        public VersionVariables(string major,
+                                string minor,
+                                string patch,
+                                string buildMetaData,
+                                string buildMetaDataPadded,
+                                string fullBuildMetaData,
+                                string branchName,
+                                string sha,
+                                string majorMinorPatch,
+                                string semVer,
+                                string legacySemVer,
+                                string legacySemVerPadded,
+                                string fullSemVer,
+                                string assemblySemVer,
+                                string preReleaseTag,
+                                string preReleaseTagWithDash,
+                                string informationalVersion,
+                                string commitDate,
+                                string nugetVersion,
+                                string nugetVersionV2,
+                                string commitsSinceVersionSource,
+                                string commitsSinceVersionSourcePadded)
         {
             Major = major;
             Minor = minor;
@@ -44,6 +53,7 @@
             CommitsSinceVersionSource = commitsSinceVersionSource;
             CommitsSinceVersionSourcePadded = commitsSinceVersionSourcePadded;
         }
+
 
         public string Major { get; private set; }
         public string Minor { get; private set; }
@@ -74,25 +84,40 @@
 
         public string CommitDate { get; set; }
 
+        public string this[string variable]
+        {
+            get { return (string)typeof(VersionVariables).GetProperty(variable).GetValue(this, null); }
+        }
+
+
         public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
         {
             var type = typeof(string);
             return typeof(VersionVariables)
                 .GetProperties()
                 .Where(p => p.PropertyType == type && !p.GetIndexParameters().Any())
-                .Select(p => new KeyValuePair<string, string>(p.Name, (string) p.GetValue(this, null)))
+                .Select(p => new KeyValuePair<string, string>(p.Name, (string)p.GetValue(this, null)))
                 .GetEnumerator();
         }
+
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
 
-        public string this [string variable]
+
+        public static VersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>> properties)
         {
-            get { return (string) typeof(VersionVariables).GetProperty(variable).GetValue(this, null); }
+            var type = typeof(VersionVariables);
+            var ctor = type.GetConstructors().Single();
+            var ctorArgs = ctor.GetParameters()
+                .Select(p => properties.Single(v => v.Key.ToLower() == p.Name.ToLower()).Value)
+                .Cast<object>()
+                .ToArray();
+            return (VersionVariables)Activator.CreateInstance(type, ctorArgs);
         }
+
 
         public bool TryGetValue(string variable, out string variableValue)
         {
@@ -105,6 +130,7 @@
             variableValue = null;
             return false;
         }
+
 
         public bool ContainsKey(string variable)
         {
