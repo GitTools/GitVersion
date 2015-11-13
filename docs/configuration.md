@@ -61,6 +61,8 @@ branches:
 
 The options in here are:
 
+ - **`branches:`** The header for all the individual branch configuration.
+
  - **`mode:`** Same as above
 
  - **`tag:`** The pre release tag to use for this branch. Use the value `use-branch-name-as-tag` to use the branch name instead.  
