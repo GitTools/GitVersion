@@ -89,20 +89,22 @@
         public string CommitsSinceVersionSource { get; private set; }
         public string CommitsSinceVersionSourcePadded { get; private set; }
 
+        [ReflectionIgnore]
         public static IEnumerable<string> AvailableVariables
         {
             get
             {
                 return typeof(VersionVariables)
-                    .GetProperties(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance)
+                    .GetProperties()
+                    .Where(p => !p.GetCustomAttributes(typeof(ReflectionIgnoreAttribute), false).Any())
                     .Select(p => p.Name)
-                    .Where(p => p != "AvailableVariables" && p != "Item")
                     .OrderBy(a => a);
             }
         }
 
         public string CommitDate { get; set; }
 
+        [ReflectionIgnore]
         public string this[string variable]
         {
             get { return (string)typeof(VersionVariables).GetProperty(variable).GetValue(this, null); }
@@ -114,7 +116,7 @@
             var type = typeof(string);
             return typeof(VersionVariables)
                 .GetProperties()
-                .Where(p => p.PropertyType == type && !p.GetIndexParameters().Any())
+                .Where(p => p.PropertyType == type && !p.GetIndexParameters().Any() && !p.GetCustomAttributes(typeof(ReflectionIgnoreAttribute), false).Any())
                 .Select(p => new KeyValuePair<string, string>(p.Name, (string)p.GetValue(this, null)))
                 .GetEnumerator();
         }
@@ -154,6 +156,11 @@
         public bool ContainsKey(string variable)
         {
             return typeof(VersionVariables).GetProperty(variable) != null;
+        }
+
+
+        sealed class ReflectionIgnoreAttribute : Attribute
+        {
         }
     }
 }
