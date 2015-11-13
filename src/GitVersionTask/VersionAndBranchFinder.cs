@@ -13,7 +13,7 @@ using YamlDotNet.Serialization;
 
 public static class VersionAndBranchFinder
 {
-    static ConcurrentDictionary<string, VersionVariables> versionCacheVersions = new ConcurrentDictionary<string, VersionVariables>();
+    internal static ConcurrentDictionary<string, VersionVariables> VersionCacheVersions = new ConcurrentDictionary<string, VersionVariables>();
 
 
     public static bool TryGetVersion(string directory, out VersionVariables versionVariables, bool noFetch, Authentication authentication, IFileSystem fileSystem)
@@ -41,7 +41,7 @@ public static class VersionAndBranchFinder
             var ticks = fileSystem.GetLastDirectoryWrite(Path.Combine(gitDir, "refs"));
             string key = string.Format("{0}:{1}:{2}:{3}", gitDir, repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
 
-            return versionCacheVersions.GetOrAdd(key, k =>
+            return VersionCacheVersions.GetOrAdd(key, k =>
             {
                 Logger.WriteInfo("Version not in memory cache. Attempting to load version from disk cache.");
                 return LoadVersionVariablesFromDiskCache(k, directory, authentication, noFetch, fileSystem, gitDir, ticks);
