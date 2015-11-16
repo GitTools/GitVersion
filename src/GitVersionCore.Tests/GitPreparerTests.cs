@@ -2,6 +2,8 @@
 using System.IO;
 using System.Linq;
 using GitVersion;
+using GitVersion.Helpers;
+
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;

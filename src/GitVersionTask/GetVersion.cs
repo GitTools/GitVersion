@@ -1,14 +1,23 @@
 ﻿namespace GitVersionTask
 {
     using System;
-    using GitVersion;
-    using GitVersion.Helpers;
-    using Microsoft.Build.Framework;
-    using Microsoft.Build.Utilities;
-    using Logger = GitVersion.Logger;
 
-    public class GetVersion : Task
+    using GitVersion;
+
+    using Microsoft.Build.Framework;
+
+    public class GetVersion : GitVersionTaskBase
     {
+        TaskLogger logger;
+
+
+        public GetVersion()
+        {
+            this.logger = new TaskLogger(this);
+            Logger.SetLoggers(this.LogInfo, this.LogWarning, s => this.LogError(s));
+        }
+
+
         [Required]
         public string SolutionDirectory { get; set; }
 
@@ -80,18 +89,6 @@
         [Output]
         public string CommitsSinceVersionSourcePadded { get; set; }
 
-        TaskLogger logger;
-        IFileSystem fileSystem;
-
-        public GetVersion()
-        {
-            logger = new TaskLogger(this);
-            fileSystem = new FileSystem();
-            Logger.SetLoggers(
-                this.LogInfo,
-                this.LogWarning,
-                s => this.LogError(s));
-        }
 
         public override bool Execute()
         {
@@ -99,7 +96,7 @@
             {
                 VersionVariables variables;
 
-                if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out variables, NoFetch, new Authentication(), fileSystem))
+                if (ExecuteCore.TryGetVersion(SolutionDirectory, out variables, NoFetch, new Authentication()))
                 {
                     var thisType = typeof(GetVersion);
                     foreach (var variable in variables)
@@ -111,12 +108,12 @@
             }
             catch (WarningException errorException)
             {
-                logger.LogWarning(errorException.Message);
+                this.logger.LogWarning(errorException.Message);
                 return true;
             }
             catch (Exception exception)
             {
-                logger.LogError("Error occurred: " + exception);
+                this.logger.LogError("Error occurred: " + exception);
                 return false;
             }
             finally

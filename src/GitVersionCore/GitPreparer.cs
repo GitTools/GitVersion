@@ -3,15 +3,17 @@ namespace GitVersion
     using System;
     using System.IO;
     using System.Linq;
+
     using LibGit2Sharp;
 
     public class GitPreparer
     {
-        string targetUrl;
-        string dynamicRepositoryLocation;
         Authentication authentication;
+        string dynamicRepositoryLocation;
         bool noFetch;
         string targetPath;
+        string targetUrl;
+
 
         public GitPreparer(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, bool noFetch, string targetPath)
         {
@@ -22,12 +24,14 @@ namespace GitVersion
             this.targetPath = targetPath;
         }
 
+
         public bool IsDynamicGitRepository
         {
             get { return !string.IsNullOrWhiteSpace(DynamicGitRepositoryPath); }
         }
 
         public string DynamicGitRepositoryPath { get; private set; }
+
 
         public void Initialise(bool normaliseGitDirectory, string currentBranch)
         {
@@ -44,6 +48,7 @@ namespace GitVersion
 
             DynamicGitRepositoryPath = CreateDynamicRepository(tempRepositoryPath, authentication, targetUrl, currentBranch, noFetch);
         }
+
 
         static string CalculateTemporaryRepositoryPath(string targetUrl, string dynamicRepositoryLocation)
         {
@@ -70,6 +75,7 @@ namespace GitVersion
             return possiblePath;
         }
 
+
         static bool GitRepoHasMatchingRemote(string possiblePath, string targetUrl)
         {
             try
@@ -83,24 +89,30 @@ namespace GitVersion
             {
                 return false;
             }
-            
         }
+
 
         public string GetDotGitDirectory()
         {
             if (IsDynamicGitRepository)
+            {
                 return DynamicGitRepositoryPath;
+            }
 
-            return GitDirFinder.TreeWalkForDotGitDir(targetPath);
+            return Repository.Discover(this.targetPath);
         }
+
 
         public string GetProjectRootDirectory()
         {
             if (IsDynamicGitRepository)
+            {
                 return targetPath;
+            }
 
-            return Directory.GetParent(GitDirFinder.TreeWalkForDotGitDir(targetPath)).FullName;
+            return Directory.GetParent(Repository.Discover(this.targetPath)).FullName;
         }
+
 
         static string CreateDynamicRepository(string targetPath, Authentication authentication, string repositoryUrl, string targetBranch, bool noFetch)
         {
@@ -127,7 +139,8 @@ namespace GitVersion
             return gitDirectory;
         }
 
-        private static void CloneRepository(string repositoryUrl, string gitDirectory, Authentication authentication)
+
+        static void CloneRepository(string repositoryUrl, string gitDirectory, Authentication authentication)
         {
             Credentials credentials = null;
             if (!string.IsNullOrWhiteSpace(authentication.Username) && !string.IsNullOrWhiteSpace(authentication.Password))
@@ -146,11 +159,11 @@ namespace GitVersion
             try
             {
                 Repository.Clone(repositoryUrl, gitDirectory,
-                    new CloneOptions
-                    {
-                        Checkout = false,
-                        CredentialsProvider = (url, usernameFromUrl, types) => credentials
-                    });
+                                 new CloneOptions
+                                 {
+                                     Checkout = false,
+                                     CredentialsProvider = (url, usernameFromUrl, types) => credentials
+                                 });
             }
             catch (LibGit2SharpException ex)
             {
@@ -167,7 +180,7 @@ namespace GitVersion
                 {
                     throw new Exception("Not found: The repository was not found");
                 }
-                
+
                 throw new Exception("There was an unknown problem with the Git repository you provided");
             }
         }

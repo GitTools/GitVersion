@@ -60,15 +60,13 @@
   <ItemGroup>
     <Compile Include="AssemblyInfoBuilder\AssemblyInfoBuilder.cs" />
     <Compile Include="BuildLogger.cs" />
-    <Compile Include="CachedVersion.cs" />
-    <Compile Include="DirectoryDateFinder.cs" />
+    <Compile Include="GitVersionTaskBase.cs" />
     <Compile Include="WriteVersionInfoToBuildLog.cs" />
     <Compile Include="GetVersion.cs" />
     <Compile Include="InvalidFileChecker.cs" />
     <Compile Include="TaskLogger.cs" />
     <Compile Include="TempFileTracker.cs" />
     <Compile Include="AssemblyInfoBuilder\UpdateAssemblyInfo.cs" />
-    <Compile Include="VersionAndBranchFinder.cs" />
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,37 +1,44 @@
 ﻿using System;
 using System.IO;
+
+using GitVersion;
+
 using LibGit2Sharp;
+
 using NUnit.Framework;
 
 [TestFixture]
 public class GitVersionTaskDirectoryTests
 {
-    string workDirectory;
+    ExecuteCore executeCore;
     string gitDirectory;
+    string workDirectory;
+
 
     [SetUp]
     public void CreateTemporaryRepository()
     {
-        workDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-
-        gitDirectory = Repository.Init(workDirectory)
-                        .TrimEnd(new[] { Path.DirectorySeparatorChar });
-
-        Assert.NotNull(gitDirectory);
+        this.workDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        this.gitDirectory = Repository.Init(this.workDirectory)
+            .TrimEnd(Path.DirectorySeparatorChar);
+        this.executeCore = new ExecuteCore(new TestFileSystem());
+        Assert.NotNull(this.gitDirectory);
     }
+
 
     [TearDown]
     public void Cleanup()
     {
-        Directory.Delete(workDirectory, true);
+        Directory.Delete(this.workDirectory, true);
     }
+
 
     [Test]
     public void Finds_GitDirectory()
     {
         try
         {
-            VersionAndBranchFinder.GetVersion(workDirectory, null, true, null);
+            this.executeCore.ExecuteGitVersion(null, null, null, null, true, this.workDirectory, null);
         }
         catch (Exception ex)
         {
@@ -41,15 +48,16 @@ public class GitVersionTaskDirectoryTests
         }
     }
 
+
     [Test]
     public void Finds_GitDirectory_In_Parent()
     {
-        var childDir = Path.Combine(workDirectory, "child");
+        var childDir = Path.Combine(this.workDirectory, "child");
         Directory.CreateDirectory(childDir);
 
         try
         {
-            VersionAndBranchFinder.GetVersion(childDir, null, true, null);
+            this.executeCore.ExecuteGitVersion(null, null, null, null, true, childDir, null);
         }
         catch (Exception ex)
         {

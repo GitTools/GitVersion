@@ -1,11 +1,13 @@
 using System;
 using System.IO;
 using GitVersion;
+using GitVersion.Helpers;
+
 using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
-public class GitDirFinderTests
+public class FileSystemTests
 {
     string workDirectory;
     string gitDirectory;
@@ -15,8 +17,7 @@ public class GitDirFinderTests
     {
         workDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 
-        gitDirectory = Repository.Init(workDirectory)
-                        .TrimEnd(new[] { Path.DirectorySeparatorChar });
+        gitDirectory = Repository.Init(workDirectory);
 
         Assert.NotNull(gitDirectory);
     }
@@ -30,26 +31,26 @@ public class GitDirFinderTests
     [Test]
     public void From_WorkingDirectory()
     {
-        Assert.AreEqual(gitDirectory, GitDirFinder.TreeWalkForDotGitDir(workDirectory));
+        Assert.AreEqual(gitDirectory, Repository.Discover(workDirectory));
     }
 
     [Test]
     public void From_WorkingDirectory_Parent()
     {
         var parentDirectory = Directory.GetParent(workDirectory).FullName;
-        Assert.Null(GitDirFinder.TreeWalkForDotGitDir(parentDirectory));
+        Assert.Null(Repository.Discover(parentDirectory));
     }
 
     [Test]
     public void From_GitDirectory()
     {
-        Assert.AreEqual(gitDirectory, GitDirFinder.TreeWalkForDotGitDir(gitDirectory));
+        Assert.AreEqual(gitDirectory, Repository.Discover(gitDirectory));
     }
 
     [Test]
     public void From_RefsDirectory()
     {
         var refsDirectory = Path.Combine(gitDirectory, "refs");
-        Assert.AreEqual(gitDirectory, GitDirFinder.TreeWalkForDotGitDir(refsDirectory));
+        Assert.AreEqual(gitDirectory, Repository.Discover(refsDirectory));
     }
 }

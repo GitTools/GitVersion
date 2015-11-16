@@ -1,5 +1,7 @@
 ﻿using System;
 using GitVersion;
+using GitVersion.Helpers;
+
 using LibGit2Sharp;
 
 public class RemoteRepositoryFixture : RepositoryFixtureBase

@@ -3,14 +3,26 @@
     using System;
     using System.IO;
     using System.Text;
-    using GitVersion;
-    using GitVersion.Helpers;
-    using Microsoft.Build.Framework;
-    using Microsoft.Build.Utilities;
-    using Logger = GitVersion.Logger;
 
-    public class UpdateAssemblyInfo : Task
+    using GitVersion;
+
+    using Microsoft.Build.Framework;
+
+    public class UpdateAssemblyInfo : GitVersionTaskBase
     {
+        TaskLogger logger;
+
+
+        public UpdateAssemblyInfo()
+        {
+            CompileFiles = new ITaskItem[]
+            {
+            };
+            this.logger = new TaskLogger(this);
+            Logger.SetLoggers(this.LogInfo, this.LogWarning, s => this.LogError(s));
+        }
+
+
         [Required]
         public string SolutionDirectory { get; set; }
 
@@ -31,19 +43,6 @@
 
         public bool NoFetch { get; set; }
 
-        TaskLogger logger;
-        IFileSystem fileSystem;
-
-        public UpdateAssemblyInfo()
-        {
-            CompileFiles = new ITaskItem[] { };
-            logger = new TaskLogger(this);
-            fileSystem = new FileSystem();
-            Logger.SetLoggers(
-                this.LogInfo,
-                this.LogWarning,
-                s => this.LogError(s));
-        }
 
         public override bool Execute()
         {
@@ -54,12 +53,12 @@
             }
             catch (WarningException errorException)
             {
-                logger.LogWarning(errorException.Message);
+                this.logger.LogWarning(errorException.Message);
                 return true;
             }
             catch (Exception exception)
             {
-                logger.LogError("Error occurred: " + exception);
+                this.logger.LogError("Error occurred: " + exception);
                 return false;
             }
             finally
@@ -68,19 +67,21 @@
             }
         }
 
-        public void InnerExecute()
+
+        void InnerExecute()
         {
             TempFileTracker.DeleteTempFiles();
 
             InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
 
             VersionVariables versionVariables;
-            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionVariables, NoFetch, new Authentication(), fileSystem))
+            if (!ExecuteCore.TryGetVersion(SolutionDirectory, out versionVariables, NoFetch, new Authentication()))
             {
                 return;
             }
             CreateTempAssemblyInfo(versionVariables);
         }
+
 
         void CreateTempAssemblyInfo(VersionVariables versionVariables)
         {
@@ -105,7 +106,9 @@
                 {
                     var content = File.ReadAllText(AssemblyInfoTempFilePath, Encoding.UTF8).Trim();
                     if (string.Equals(assemblyInfo, content, StringComparison.Ordinal))
+                    {
                         return; // nothign to do as the file matches what we'd create
+                    }
                 }
             }
             catch (Exception)
