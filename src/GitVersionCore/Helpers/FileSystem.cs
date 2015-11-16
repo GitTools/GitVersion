@@ -80,19 +80,6 @@ namespace GitVersion.Helpers
         }
 
 
-        public string TreeWalkForDotGitDir(string directory)
-        {
-            var gitDirectory = Repository.Discover(directory);
-
-            if (gitDirectory != null)
-            {
-                return gitDirectory.TrimEnd(Path.DirectorySeparatorChar);
-            }
-
-            return null;
-        }
-
-
         public IRepository GetRepository(string gitDirectory)
         {
             try

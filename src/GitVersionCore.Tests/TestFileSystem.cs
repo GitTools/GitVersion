@@ -93,12 +93,6 @@ public class TestFileSystem : IFileSystem
     }
 
 
-    public string TreeWalkForDotGitDir(string directory)
-    {
-        return directory;
-    }
-
-
     public IRepository GetRepository(string gitDirectory)
     {
         var repository = Substitute.For<IRepository>();
