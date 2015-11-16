@@ -75,7 +75,7 @@
             InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
 
             VersionVariables versionVariables;
-            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out versionVariables, NoFetch, new Authentication()))
+            if (!ExecuteCore.TryGetVersion(SolutionDirectory, out versionVariables, NoFetch, new Authentication()))
             {
                 return;
             }

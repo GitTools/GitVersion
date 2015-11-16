@@ -67,7 +67,6 @@
     <Compile Include="TaskLogger.cs" />
     <Compile Include="TempFileTracker.cs" />
     <Compile Include="AssemblyInfoBuilder\UpdateAssemblyInfo.cs" />
-    <Compile Include="VersionAndBranchFinder.cs" />
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

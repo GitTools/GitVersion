@@ -10,7 +10,7 @@ using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class VersionAndBranchFinderTests
+public class ExecuteCoreTests
 {
     IFileSystem fileSystem;
 
@@ -50,12 +50,12 @@ CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
 ";
 
-        var versionAndBranchFinder = new VersionAndBranchFinder(this.fileSystem);
+        var versionAndBranchFinder = new ExecuteCore(this.fileSystem);
 
         var info = RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
         {
             this.fileSystem.WriteAllText(vv.FileName, versionCacheFileContent);
-            vv = versionAndBranchFinder.GetVersion(fixture.RepositoryPath, null, false);
+            vv = versionAndBranchFinder.ExecuteGitVersion(null, null, null, null, false, fixture.RepositoryPath, null);
             vv.AssemblySemVer.ShouldBe("4.10.3.0");
         });
 
@@ -67,11 +67,11 @@ CommitDate: 2015-11-10
     public void CacheFileExistsInMemory()
     {
         var cache = new ConcurrentDictionary<string, VersionVariables>();
-        var versionAndBranchFinder = new VersionAndBranchFinder(this.fileSystem, cache.GetOrAdd);
+        var versionAndBranchFinder = new ExecuteCore(this.fileSystem, cache.GetOrAdd);
 
         var info = RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
         {
-            vv = versionAndBranchFinder.GetVersion(fixture.RepositoryPath, null, false);
+            vv = versionAndBranchFinder.ExecuteGitVersion(null, null, null, null, false, fixture.RepositoryPath, null);
             vv.AssemblySemVer.ShouldBe("0.1.0.0");
         });
 
@@ -88,18 +88,18 @@ CommitDate: 2015-11-10
     }
 
 
-    string RepositoryScope(VersionAndBranchFinder versionAndBranchFinder = null, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
+    string RepositoryScope(ExecuteCore executeCore = null, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
     {
         var infoBuilder = new StringBuilder();
         Action<string> infoLogger = s => { infoBuilder.AppendLine(s); };
-        versionAndBranchFinder = versionAndBranchFinder ?? new VersionAndBranchFinder(this.fileSystem);
+        executeCore = executeCore ?? new ExecuteCore(this.fileSystem);
 
-        Logger.SetLoggers(infoLogger, null, null);
+        Logger.SetLoggers(infoLogger, s => { }, s => { });
 
         using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeACommit();
-            var vv = versionAndBranchFinder.GetVersion(fixture.RepositoryPath, null, false);
+            var vv = executeCore.ExecuteGitVersion(null, null, null, null, false, fixture.RepositoryPath, null);
 
             vv.AssemblySemVer.ShouldBe("0.1.0.0");
             vv.FileName.ShouldNotBeNullOrEmpty();

@@ -10,7 +10,7 @@
     public abstract class GitVersionTaskBase : Task
     {
         static readonly ConcurrentDictionary<string, VersionVariables> versionVariablesCache;
-        readonly VersionAndBranchFinder versionAndBranchFinder;
+        readonly ExecuteCore executeCore;
 
 
         static GitVersionTaskBase()
@@ -22,13 +22,13 @@
         protected GitVersionTaskBase()
         {
             var fileSystem = new FileSystem();
-            this.versionAndBranchFinder = new VersionAndBranchFinder(fileSystem, versionVariablesCache.GetOrAdd);
+            this.executeCore = new ExecuteCore(fileSystem, versionVariablesCache.GetOrAdd);
         }
 
 
-        protected VersionAndBranchFinder VersionAndBranchFinder
+        protected ExecuteCore ExecuteCore
         {
-            get { return this.versionAndBranchFinder; }
+            get { return this.executeCore; }
         }
     }
 }
