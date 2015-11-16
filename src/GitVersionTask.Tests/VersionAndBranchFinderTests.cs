@@ -1,15 +1,4 @@
-﻿#region License
-
-// --------------------------------------------------
-// Copyright © OKB. All Rights Reserved.
-// 
-// This software is proprietary information of OKB.
-// USE IS SUBJECT TO LICENSE TERMS.
-// --------------------------------------------------
-
-#endregion
-
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Text;
 
