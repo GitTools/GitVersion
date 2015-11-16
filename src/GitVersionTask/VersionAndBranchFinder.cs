@@ -9,6 +9,8 @@ using System.Text;
 using GitVersion;
 using GitVersion.Helpers;
 
+using LibGit2Sharp;
+
 using YamlDotNet.Serialization;
 
 public static class VersionAndBranchFinder
@@ -34,7 +36,7 @@ public static class VersionAndBranchFinder
 
     public static VersionVariables GetVersion(string directory, Authentication authentication, bool noFetch, IFileSystem fileSystem)
     {
-        var gitDir = fileSystem.TreeWalkForDotGitDir(directory);
+        var gitDir = Repository.Discover(directory);
         using (var repo = fileSystem.GetRepository(gitDir))
         {
             // Maybe using timestamp in .git/refs directory is enough?
