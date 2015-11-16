@@ -103,18 +103,20 @@ public static class VersionAndBranchFinder
                 vv.FileName = cacheFileName;
 
                 using (var stream = fileSystem.OpenWrite(cacheFileName))
-                using (var sw = new StreamWriter(stream))
                 {
-                    Dictionary<string, string> dictionary;
-                    using (Logger.IndentLog("Creating dictionary"))
+                    using (var sw = new StreamWriter(stream))
                     {
-                        dictionary = vv.ToDictionary(x => x.Key, x => x.Value);
-                    }
+                        Dictionary<string, string> dictionary;
+                        using (Logger.IndentLog("Creating dictionary"))
+                        {
+                            dictionary = vv.ToDictionary(x => x.Key, x => x.Value);
+                        }
 
-                    using (Logger.IndentLog("Storing version variables to cache file " + cacheFileName))
-                    {
-                        var serializer = new Serializer();
-                        serializer.Serialize(sw, dictionary);
+                        using (Logger.IndentLog("Storing version variables to cache file " + cacheFileName))
+                        {
+                            var serializer = new Serializer();
+                            serializer.Serialize(sw, dictionary);
+                        }
                     }
                 }
             }
