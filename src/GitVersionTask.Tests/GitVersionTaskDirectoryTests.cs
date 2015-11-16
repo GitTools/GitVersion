@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 
+using GitVersion;
+
 using LibGit2Sharp;
 
 using NUnit.Framework;
@@ -8,8 +10,8 @@ using NUnit.Framework;
 [TestFixture]
 public class GitVersionTaskDirectoryTests
 {
+    ExecuteCore executeCore;
     string gitDirectory;
-    VersionAndBranchFinder versionAndBranchFinder;
     string workDirectory;
 
 
@@ -19,7 +21,7 @@ public class GitVersionTaskDirectoryTests
         this.workDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         this.gitDirectory = Repository.Init(this.workDirectory)
             .TrimEnd(Path.DirectorySeparatorChar);
-        this.versionAndBranchFinder = new VersionAndBranchFinder(new TestFileSystem());
+        this.executeCore = new ExecuteCore(new TestFileSystem());
         Assert.NotNull(this.gitDirectory);
     }
 
@@ -36,7 +38,7 @@ public class GitVersionTaskDirectoryTests
     {
         try
         {
-            this.versionAndBranchFinder.GetVersion(this.workDirectory, null, true);
+            this.executeCore.ExecuteGitVersion(null, null, null, null, true, this.workDirectory, null);
         }
         catch (Exception ex)
         {
@@ -55,7 +57,7 @@ public class GitVersionTaskDirectoryTests
 
         try
         {
-            this.versionAndBranchFinder.GetVersion(childDir, null, true);
+            this.executeCore.ExecuteGitVersion(null, null, null, null, true, childDir, null);
         }
         catch (Exception ex)
         {

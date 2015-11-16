@@ -52,7 +52,7 @@
         void InnerExecute()
         {
             VersionVariables result;
-            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out result, NoFetch, new Authentication()))
+            if (!ExecuteCore.TryGetVersion(SolutionDirectory, out result, NoFetch, new Authentication()))
             {
                 return;
             }

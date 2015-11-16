@@ -96,7 +96,7 @@
             {
                 VersionVariables variables;
 
-                if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out variables, NoFetch, new Authentication()))
+                if (ExecuteCore.TryGetVersion(SolutionDirectory, out variables, NoFetch, new Authentication()))
                 {
                     var thisType = typeof(GetVersion);
                     foreach (var variable in variables)
