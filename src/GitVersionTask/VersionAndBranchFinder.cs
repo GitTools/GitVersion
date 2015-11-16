@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,16 +12,29 @@ using LibGit2Sharp;
 
 using YamlDotNet.Serialization;
 
-public static class VersionAndBranchFinder
+public class VersionAndBranchFinder
 {
-    internal static ConcurrentDictionary<string, VersionVariables> VersionCacheVersions = new ConcurrentDictionary<string, VersionVariables>();
+    readonly IFileSystem fileSystem;
+    readonly Func<string, Func<string, VersionVariables>, VersionVariables> getVersionVariablesFromMemoryCache;
 
 
-    public static bool TryGetVersion(string directory, out VersionVariables versionVariables, bool noFetch, Authentication authentication, IFileSystem fileSystem)
+    public VersionAndBranchFinder(IFileSystem fileSystem, Func<string, Func<string, VersionVariables>, VersionVariables> getVersionVariablesFromMemoryCache = null)
+    {
+        if (fileSystem == null)
+        {
+            throw new ArgumentNullException("fileSystem");
+        }
+
+        this.getVersionVariablesFromMemoryCache = getVersionVariablesFromMemoryCache;
+        this.fileSystem = fileSystem;
+    }
+
+
+    public bool TryGetVersion(string directory, out VersionVariables versionVariables, bool noFetch, Authentication authentication)
     {
         try
         {
-            versionVariables = GetVersion(directory, authentication, noFetch, fileSystem);
+            versionVariables = GetVersion(directory, authentication, noFetch);
             return true;
         }
         catch (Exception ex)
@@ -34,25 +46,30 @@ public static class VersionAndBranchFinder
     }
 
 
-    public static VersionVariables GetVersion(string directory, Authentication authentication, bool noFetch, IFileSystem fileSystem)
+    public VersionVariables GetVersion(string directory, Authentication authentication, bool noFetch)
     {
         var gitDir = Repository.Discover(directory);
-        using (var repo = fileSystem.GetRepository(gitDir))
+        using (var repo = this.fileSystem.GetRepository(gitDir))
         {
             // Maybe using timestamp in .git/refs directory is enough?
-            var ticks = fileSystem.GetLastDirectoryWrite(Path.Combine(gitDir, "refs"));
-            string key = string.Format("{0}:{1}:{2}:{3}", gitDir, repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
+            var ticks = this.fileSystem.GetLastDirectoryWrite(Path.Combine(gitDir, "refs"));
+            var key = string.Format("{0}:{1}:{2}:{3}", gitDir, repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
 
-            return VersionCacheVersions.GetOrAdd(key, k =>
+            if (this.getVersionVariablesFromMemoryCache != null)
             {
-                Logger.WriteInfo("Version not in memory cache. Attempting to load version from disk cache.");
-                return LoadVersionVariablesFromDiskCache(k, directory, authentication, noFetch, fileSystem, gitDir, ticks);
-            });
+                return this.getVersionVariablesFromMemoryCache(key, k =>
+                {
+                    Logger.WriteInfo("Version not in memory cache. Attempting to load version from disk cache.");
+                    return LoadVersionVariablesFromDiskCache(key, directory, authentication, noFetch, gitDir);
+                });
+            }
+
+            return LoadVersionVariablesFromDiskCache(key, directory, authentication, noFetch, gitDir);
         }
     }
 
 
-    static VersionVariables LoadVersionVariablesFromDiskCache(string key, string directory, Authentication authentication, bool noFetch, IFileSystem fileSystem, string gitDir, long ticks)
+    VersionVariables LoadVersionVariablesFromDiskCache(string key, string directory, Authentication authentication, bool noFetch, string gitDir)
     {
         using (Logger.IndentLog("Loading version variables from disk cache"))
         {
@@ -65,11 +82,11 @@ public static class VersionAndBranchFinder
 
             var cacheDir = Path.Combine(gitDir, "gitversion_cache");
             // If the cacheDir already exists, CreateDirectory just won't do anything (it won't fail). @asbjornu
-            fileSystem.CreateDirectory(cacheDir);
+            this.fileSystem.CreateDirectory(cacheDir);
 
             var cacheFileName = string.Concat(Path.Combine(cacheDir, cacheKey), ".yml");
             VersionVariables vv = null;
-            if (fileSystem.Exists(cacheFileName))
+            if (this.fileSystem.Exists(cacheFileName))
             {
                 using (Logger.IndentLog("Deserializing version variables from cache file " + cacheFileName))
                 {
@@ -83,7 +100,7 @@ public static class VersionAndBranchFinder
                         Logger.WriteInfo(ex.ToString());
                         try
                         {
-                            fileSystem.Delete(cacheFileName);
+                            this.fileSystem.Delete(cacheFileName);
                         }
                         catch (Exception deleteEx)
                         {
@@ -99,7 +116,7 @@ public static class VersionAndBranchFinder
 
             if (vv == null)
             {
-                vv = ExecuteCore.ExecuteGitVersion(fileSystem, null, null, authentication, null, noFetch, directory, null);
+                vv = ExecuteCore.ExecuteGitVersion(this.fileSystem, null, null, authentication, null, noFetch, directory, null);
                 vv.FileName = cacheFileName;
 
                 using (var stream = fileSystem.OpenWrite(cacheFileName))

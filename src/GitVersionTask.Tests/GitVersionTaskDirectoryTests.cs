@@ -9,6 +9,7 @@ using NUnit.Framework;
 public class GitVersionTaskDirectoryTests
 {
     string gitDirectory;
+    VersionAndBranchFinder versionAndBranchFinder;
     string workDirectory;
 
 
@@ -18,7 +19,7 @@ public class GitVersionTaskDirectoryTests
         this.workDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         this.gitDirectory = Repository.Init(this.workDirectory)
             .TrimEnd(Path.DirectorySeparatorChar);
-
+        this.versionAndBranchFinder = new VersionAndBranchFinder(new TestFileSystem());
         Assert.NotNull(this.gitDirectory);
     }
 
@@ -35,7 +36,7 @@ public class GitVersionTaskDirectoryTests
     {
         try
         {
-            VersionAndBranchFinder.GetVersion(this.workDirectory, null, true, null);
+            this.versionAndBranchFinder.GetVersion(this.workDirectory, null, true);
         }
         catch (Exception ex)
         {
@@ -54,7 +55,7 @@ public class GitVersionTaskDirectoryTests
 
         try
         {
-            VersionAndBranchFinder.GetVersion(childDir, null, true, null);
+            this.versionAndBranchFinder.GetVersion(childDir, null, true);
         }
         catch (Exception ex)
         {

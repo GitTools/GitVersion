@@ -12,6 +12,16 @@ using Shouldly;
 [TestFixture]
 public class VersionAndBranchFinderTests
 {
+    IFileSystem fileSystem;
+
+
+    [SetUp]
+    public void SetUp()
+    {
+        this.fileSystem = new FileSystem();
+    }
+
+
     [Test]
     public void CacheFileExistsOnDisk()
     {
@@ -40,16 +50,12 @@ CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
 ";
 
-        var info = RepositoryScope((fixture, vv, fs) =>
+        var versionAndBranchFinder = new VersionAndBranchFinder(this.fileSystem);
+
+        var info = RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
         {
-            fs.WriteAllText(vv.FileName, versionCacheFileContent);
-
-            // I would rather see that VersionAndBranchFinder was non-static and could be reinstantiated to
-            // clear the in-memory cache, but that's not the case, so I have to perform this ugly hack. @asbjornu
-            VersionAndBranchFinder.VersionCacheVersions = new ConcurrentDictionary<string, VersionVariables>();
-
-            vv = VersionAndBranchFinder.GetVersion(fixture.RepositoryPath, null, false, fs);
-
+            this.fileSystem.WriteAllText(vv.FileName, versionCacheFileContent);
+            vv = versionAndBranchFinder.GetVersion(fixture.RepositoryPath, null, false);
             vv.AssemblySemVer.ShouldBe("4.10.3.0");
         });
 
@@ -60,9 +66,12 @@ CommitDate: 2015-11-10
     [Test]
     public void CacheFileExistsInMemory()
     {
-        var info = RepositoryScope((fixture, vv, fs) =>
+        var cache = new ConcurrentDictionary<string, VersionVariables>();
+        var versionAndBranchFinder = new VersionAndBranchFinder(this.fileSystem, cache.GetOrAdd);
+
+        var info = RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
         {
-            vv = VersionAndBranchFinder.GetVersion(fixture.RepositoryPath, null, false, fs);
+            vv = versionAndBranchFinder.GetVersion(fixture.RepositoryPath, null, false);
             vv.AssemblySemVer.ShouldBe("0.1.0.0");
         });
 
@@ -79,25 +88,25 @@ CommitDate: 2015-11-10
     }
 
 
-    static string RepositoryScope(Action<EmptyRepositoryFixture, VersionVariables, IFileSystem> fixtureAction = null)
+    string RepositoryScope(VersionAndBranchFinder versionAndBranchFinder = null, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
     {
         var infoBuilder = new StringBuilder();
         Action<string> infoLogger = s => { infoBuilder.AppendLine(s); };
+        versionAndBranchFinder = versionAndBranchFinder ?? new VersionAndBranchFinder(this.fileSystem);
 
         Logger.SetLoggers(infoLogger, null, null);
 
         using (var fixture = new EmptyRepositoryFixture(new Config()))
         {
             fixture.Repository.MakeACommit();
-            var fileSystem = new FileSystem();
-            var vv = VersionAndBranchFinder.GetVersion(fixture.RepositoryPath, null, false, fileSystem);
+            var vv = versionAndBranchFinder.GetVersion(fixture.RepositoryPath, null, false);
 
             vv.AssemblySemVer.ShouldBe("0.1.0.0");
             vv.FileName.ShouldNotBeNullOrEmpty();
 
             if (fixtureAction != null)
             {
-                fixtureAction(fixture, vv, fileSystem);
+                fixtureAction(fixture, vv);
             }
         }
 

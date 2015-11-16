@@ -5,14 +5,11 @@
     using System.Text;
 
     using GitVersion;
-    using GitVersion.Helpers;
 
     using Microsoft.Build.Framework;
 
-    public class UpdateAssemblyInfo : Task
+    public class UpdateAssemblyInfo : GitVersionTaskBase
     {
-        IFileSystem fileSystem;
-
         TaskLogger logger;
 
 
@@ -22,7 +19,6 @@
             {
             };
             this.logger = new TaskLogger(this);
-            this.fileSystem = new FileSystem();
             Logger.SetLoggers(this.LogInfo, this.LogWarning, s => this.LogError(s));
         }
 

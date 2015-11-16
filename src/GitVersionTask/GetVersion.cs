@@ -1,13 +1,12 @@
 ﻿namespace GitVersionTask
 {
     using System;
-    using GitVersion;
-    using GitVersion.Helpers;
-    using Microsoft.Build.Framework;
-    using Microsoft.Build.Utilities;
-    using Logger = GitVersion.Logger;
 
-    public class GetVersion : Task
+    using GitVersion;
+
+    using Microsoft.Build.Framework;
+
+    public class GetVersion : GitVersionTaskBase
     {
         TaskLogger logger;
 
@@ -15,7 +14,6 @@
         public GetVersion()
         {
             this.logger = new TaskLogger(this);
-            this.fileSystem = new FileSystem();
             Logger.SetLoggers(this.LogInfo, this.LogWarning, s => this.LogError(s));
         }
 
@@ -91,7 +89,6 @@
         [Output]
         public string CommitsSinceVersionSourcePadded { get; set; }
 
-        IFileSystem fileSystem;
 
         public override bool Execute()
         {
@@ -99,7 +96,7 @@
             {
                 VersionVariables variables;
 
-                if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out variables, NoFetch, new Authentication(), fileSystem))
+                if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out variables, NoFetch, new Authentication()))
                 {
                     var thisType = typeof(GetVersion);
                     foreach (var variable in variables)
