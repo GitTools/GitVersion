@@ -4,20 +4,17 @@
     using System.Collections.Generic;
 
     using GitVersion;
-    using GitVersion.Helpers;
 
     using Microsoft.Build.Framework;
 
-    public class WriteVersionInfoToBuildLog : Task
+    public class WriteVersionInfoToBuildLog : GitVersionTaskBase
     {
-        readonly IFileSystem fileSystem;
         readonly TaskLogger logger;
 
 
         public WriteVersionInfoToBuildLog()
         {
             this.logger = new TaskLogger(this);
-            this.fileSystem = new FileSystem();
             Logger.SetLoggers(this.LogInfo, this.LogWarning, s => this.LogError(s));
         }
 
@@ -55,7 +52,7 @@
         void InnerExecute()
         {
             VersionVariables result;
-            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out result, NoFetch, new Authentication(), fileSystem))
+            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out result, NoFetch, new Authentication()))
             {
                 return;
             }
