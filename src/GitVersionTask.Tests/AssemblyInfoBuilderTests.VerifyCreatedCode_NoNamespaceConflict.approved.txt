@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: AssemblyFileVersion("1.2.3.0")]
 [assembly: AssemblyInformationalVersion("1.2.3-unstable.4+5.Branch.feature1.Sha.commitSha")]
 
-namespace Fake
+namespace Fake.System
 {
 
     [global::System.Runtime.CompilerServices.CompilerGenerated]
