@@ -50,10 +50,17 @@ namespace GitVersion.Helpers
         {
             if (String.IsNullOrEmpty(exe))
                 throw new ArgumentNullException("exe");
+            
             if (output == null)
                 throw new ArgumentNullException("output");
 
             workingDirectory = workingDirectory ?? Environment.CurrentDirectory;
+
+            if (!Directory.Exists(workingDirectory))
+            {
+                errorOutput(string.Format("The directory {0} doesn't exist.", workingDirectory));
+                return 1;
+            }
 
             var psi = new ProcessStartInfo
             {

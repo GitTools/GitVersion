@@ -97,9 +97,14 @@ namespace GitVersion
         public string GetProjectRootDirectory()
         {
             if (IsDynamicGitRepository)
-                return targetPath;
+                return this.targetPath;
 
-            return Directory.GetParent(GitDirFinder.TreeWalkForDotGitDir(targetPath)).FullName;
+            var gitDir = GitDirFinder.TreeWalkForDotGitDir(this.targetPath);
+
+            if (String.IsNullOrEmpty(gitDir))
+                throw new DirectoryNotFoundException("Can't find the .git directory in " + targetPath);
+
+            return Directory.GetParent(gitDir).FullName;
         }
 
         static string CreateDynamicRepository(string targetPath, Authentication authentication, string repositoryUrl, string targetBranch, bool noFetch)
