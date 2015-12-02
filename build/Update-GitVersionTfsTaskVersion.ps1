@@ -14,4 +14,4 @@ $task.version.Patch = $patch
 
 # get this as a string again
 
-ConvertTo-Json $task | Set-Content -Path $filePath
+ConvertTo-Json $task -Depth 999 | Set-Content -Path $filePath
