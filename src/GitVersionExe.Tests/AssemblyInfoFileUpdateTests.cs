@@ -1,10 +1,10 @@
-﻿using System;
-using System.IO;
-using GitVersion;
+﻿using GitVersion;
 using GitVersion.Helpers;
 using GitVersionCore.Tests;
 using NSubstitute;
 using NUnit.Framework;
+using System;
+using System.IO;
 
 [TestFixture]
 public class AssemblyInfoFileUpdateTests
@@ -92,6 +92,43 @@ AssemblyFileVersion(""1.0.0.*"");";
             const string expected = @"AssemblyVersion(""2.3.0.0"");
 AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"");
 AssemblyFileVersion(""2.3.1.0"");";
+            fileSystem.Received().WriteAllText("C:\\Testing\\AssemblyInfo.cs", expected);
+        }
+    }
+
+    [Test]
+    public void ShouldAddAssemblyVersionIfMissingFromInfoFile()
+    {
+        var fileSystem = Substitute.For<IFileSystem>();
+        var version = new SemanticVersion
+        {
+            BuildMetaData = new SemanticVersionBuildMetaData(3, "foo", "hash", DateTimeOffset.Now),
+            Major = 2,
+            Minor = 3,
+            Patch = 1
+        };
+
+        const string workingDir = "C:\\Testing";
+        const string assemblyInfoFileContent = @"";
+
+        fileSystem.Exists("C:\\Testing\\AssemblyInfo.cs").Returns(true);
+        fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.cs").Returns(assemblyInfoFileContent);
+
+        var config = new TestEffectiveConfiguration(assemblyVersioningScheme: AssemblyVersioningScheme.MajorMinor);
+
+        var variable = VariableProvider.GetVariablesFor(version, config, false);
+        var args = new Arguments
+        {
+            UpdateAssemblyInfo = true,
+            UpdateAssemblyInfoFileName = "AssemblyInfo.cs"
+        };
+
+        using (new AssemblyInfoFileUpdate(args, workingDir, variable, fileSystem))
+        {
+            const string expected = @"
+[assembly: AssemblyVersion(""2.3.0.0"")]
+[assembly: AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")]
+[assembly: AssemblyFileVersion(""2.3.1.0"")]";
             fileSystem.Received().WriteAllText("C:\\Testing\\AssemblyInfo.cs", expected);
         }
     }
