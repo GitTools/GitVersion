@@ -130,6 +130,7 @@ noteText.Replace("\n", "\n  "));
         {
             var variables = GetVersion(repository, commitId);
             variables.FullSemVer.ShouldBe(fullSemver);
+            (repository ?? Repository).DumpGraph();
         }
         catch (Exception)
         {
