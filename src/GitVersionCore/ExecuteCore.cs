@@ -34,15 +34,15 @@ namespace GitVersion
         public VersionVariables ExecuteGitVersion(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId)
         {
             var gitDir = Repository.Discover(workingDirectory);
-            using (var repo = this.fileSystem.GetRepository(gitDir))
+            using (var repo = fileSystem.GetRepository(gitDir))
             {
                 // Maybe using timestamp in .git/refs directory is enough?
-                var ticks = this.fileSystem.GetLastDirectoryWrite(Path.Combine(gitDir, "refs"));
+                var ticks = fileSystem.GetLastDirectoryWrite(Path.Combine(gitDir, "refs"));
                 var key = string.Format("{0}:{1}:{2}:{3}", gitDir, repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
 
-                if (this.getOrAddFromCache != null)
+                if (getOrAddFromCache != null)
                 {
-                    return this.getOrAddFromCache(key, k =>
+                    return getOrAddFromCache(key, k =>
                     {
                         Logger.WriteInfo("Version not in memory cache. Attempting to load version from disk cache.");
                         return LoadVersionVariablesFromDiskCache(key, gitDir, targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, workingDirectory, commitId);
@@ -97,11 +97,11 @@ namespace GitVersion
 
                 var cacheDir = Path.Combine(gitDir, "gitversion_cache");
                 // If the cacheDir already exists, CreateDirectory just won't do anything (it won't fail). @asbjornu
-                this.fileSystem.CreateDirectory(cacheDir);
+                fileSystem.CreateDirectory(cacheDir);
 
                 var cacheFileName = string.Concat(Path.Combine(cacheDir, cacheKey), ".yml");
                 VersionVariables vv = null;
-                if (this.fileSystem.Exists(cacheFileName))
+                if (fileSystem.Exists(cacheFileName))
                 {
                     using (Logger.IndentLog("Deserializing version variables from cache file " + cacheFileName))
                     {
@@ -115,7 +115,7 @@ namespace GitVersion
                             Logger.WriteInfo(ex.ToString());
                             try
                             {
-                                this.fileSystem.Delete(cacheFileName);
+                                fileSystem.Delete(cacheFileName);
                             }
                             catch (Exception deleteEx)
                             {
@@ -179,7 +179,7 @@ namespace GitVersion
             var versionFinder = new GitVersionFinder();
             var configuration = ConfigurationProvider.Provide(projectRoot, fileSystem);
 
-            using (var repo = this.fileSystem.GetRepository(dotGitDirectory))
+            using (var repo = fileSystem.GetRepository(dotGitDirectory))
             {
                 var gitVersionContext = new GitVersionContext(repo, configuration, commitId : commitId);
                 var semanticVersion = versionFinder.FindVersion(gitVersionContext);

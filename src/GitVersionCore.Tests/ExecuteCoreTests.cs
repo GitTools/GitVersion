@@ -18,7 +18,7 @@ public class ExecuteCoreTests
     [SetUp]
     public void SetUp()
     {
-        this.fileSystem = new FileSystem();
+        fileSystem = new FileSystem();
     }
 
 
@@ -50,11 +50,11 @@ CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
 ";
 
-        var versionAndBranchFinder = new ExecuteCore(this.fileSystem);
+        var versionAndBranchFinder = new ExecuteCore(fileSystem);
 
         var info = RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
         {
-            this.fileSystem.WriteAllText(vv.FileName, versionCacheFileContent);
+            fileSystem.WriteAllText(vv.FileName, versionCacheFileContent);
             vv = versionAndBranchFinder.ExecuteGitVersion(null, null, null, null, false, fixture.RepositoryPath, null);
             vv.AssemblySemVer.ShouldBe("4.10.3.0");
         });
@@ -67,10 +67,11 @@ CommitDate: 2015-11-10
     public void CacheFileExistsInMemory()
     {
         var cache = new ConcurrentDictionary<string, VersionVariables>();
-        var versionAndBranchFinder = new ExecuteCore(this.fileSystem, cache.GetOrAdd);
+        var versionAndBranchFinder = new ExecuteCore(fileSystem, cache.GetOrAdd);
 
         var info = RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
         {
+            vv.AssemblySemVer.ShouldBe("0.1.0.0");
             vv = versionAndBranchFinder.ExecuteGitVersion(null, null, null, null, false, fixture.RepositoryPath, null);
             vv.AssemblySemVer.ShouldBe("0.1.0.0");
         });
@@ -90,9 +91,11 @@ CommitDate: 2015-11-10
 
     string RepositoryScope(ExecuteCore executeCore = null, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
     {
+        // Make sure GitVersion doesn't trigger build server mode when we are running the tests
+        Environment.SetEnvironmentVariable("APPVEYOR", null);
         var infoBuilder = new StringBuilder();
         Action<string> infoLogger = s => { infoBuilder.AppendLine(s); };
-        executeCore = executeCore ?? new ExecuteCore(this.fileSystem);
+        executeCore = executeCore ?? new ExecuteCore(fileSystem);
 
         Logger.SetLoggers(infoLogger, s => { }, s => { });
 
