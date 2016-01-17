@@ -61,7 +61,7 @@ namespace GitVersion
             {
                 if (branch.Tip == null)
                 {
-                    Logger.WriteWarning(String.Format(missingTipFormat, branch.Name));
+                    Logger.WriteWarning(string.Format(missingTipFormat, branch.Name));
                     return null;
                 }
 
@@ -70,7 +70,7 @@ namespace GitVersion
                 {
                     if (b.Tip == null)
                     {
-                        Logger.WriteWarning(String.Format(missingTipFormat, b.Name));
+                        Logger.WriteWarning(string.Format(missingTipFormat, b.Name));
                         return null;
                     }
 
@@ -86,10 +86,9 @@ namespace GitVersion
             }
         }
 
-
         static bool IsSameBranch(Branch branch, Branch b)
         {
-            return (b.IsRemote ? b.Name.Replace(b.Remote.Name + "/", string.Empty) : b.Name) != branch.Name;
+            return (b.IsRemote ? b.Name.Substring(b.Name.IndexOf("/", StringComparison.Ordinal) + 1) : b.Name) != branch.Name;
         }
 
         public static IEnumerable<Branch> GetBranchesContainingCommit([NotNull] this Commit commit, IRepository repository, IList<Branch> branches, bool onlyTrackedBranches)
