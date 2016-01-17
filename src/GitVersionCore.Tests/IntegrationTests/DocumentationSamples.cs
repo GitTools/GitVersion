@@ -129,7 +129,7 @@ public class DocumentationSamples
             // Make another commit on develop
             fixture.Checkout("develop");
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.3.0-unstable.2");
+            fixture.AssertFullSemver("1.4.0-unstable.1");
 
             // Make a commit to release-1.3.0
             fixture.Checkout("release/1.3.0");
@@ -158,7 +158,7 @@ public class DocumentationSamples
 
             // Not 0 for commit count as we can't know the increment rules of the merged branch
             fixture.Checkout("develop");
-            fixture.AssertFullSemver("1.4.0-unstable.2");
+            fixture.AssertFullSemver("1.4.0-unstable.4");
         }
     }
 
@@ -185,7 +185,7 @@ public class DocumentationSamples
             // Make another commit on develop
             fixture.Checkout("develop");
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.4.0-unstable.2");
+            fixture.AssertFullSemver("2.1.0-unstable.1");
 
             // Make a commit to release-2.0.0
             fixture.Checkout("release/2.0.0");
@@ -215,7 +215,7 @@ public class DocumentationSamples
 
             // Not 0 for commit count as we can't know the increment rules of the merged branch
             fixture.Checkout("develop");
-            fixture.AssertFullSemver("2.1.0-unstable.2");
+            fixture.AssertFullSemver("2.1.0-unstable.4");
         }
     }
 
