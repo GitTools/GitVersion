@@ -1,7 +1,5 @@
 ﻿namespace GitVersionTask
 {
-    using System.Collections.Concurrent;
-
     using GitVersion;
     using GitVersion.Helpers;
 
@@ -9,26 +7,17 @@
 
     public abstract class GitVersionTaskBase : Task
     {
-        static readonly ConcurrentDictionary<string, VersionVariables> versionVariablesCache;
         readonly ExecuteCore executeCore;
-
-
-        static GitVersionTaskBase()
-        {
-            versionVariablesCache = new ConcurrentDictionary<string, VersionVariables>();
-        }
-
 
         protected GitVersionTaskBase()
         {
             var fileSystem = new FileSystem();
-            this.executeCore = new ExecuteCore(fileSystem, versionVariablesCache.GetOrAdd);
+            executeCore = new ExecuteCore(fileSystem);
         }
-
 
         protected ExecuteCore ExecuteCore
         {
-            get { return this.executeCore; }
+            get { return executeCore; }
         }
     }
 }

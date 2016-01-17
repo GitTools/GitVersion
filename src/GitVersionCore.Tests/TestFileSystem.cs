@@ -5,8 +5,6 @@ using System.Text;
 
 using GitVersion.Helpers;
 
-using LibGit2Sharp;
-
 public class TestFileSystem : IFileSystem
 {
     Dictionary<string, string> fileSystem = new Dictionary<string, string>();
@@ -76,10 +74,5 @@ public class TestFileSystem : IFileSystem
     public long GetLastDirectoryWrite(string path)
     {
         return 1;
-    }
-
-    public IRepository GetRepository(string gitDirectory)
-    {
-        throw new NotImplementedException();
     }
 }

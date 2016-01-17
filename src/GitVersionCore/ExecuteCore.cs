@@ -1,70 +1,37 @@
 namespace GitVersion
 {
     using System;
-    using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
-    using System.Security.Cryptography;
-    using System.Text;
-
     using GitVersion.Helpers;
 
     using LibGit2Sharp;
 
-    using YamlDotNet.Serialization;
-
     public class ExecuteCore
     {
         readonly IFileSystem fileSystem;
+        readonly GitVersionCache gitVersionCache;
 
         public ExecuteCore(IFileSystem fileSystem)
         {
             if (fileSystem == null) throw new ArgumentNullException("fileSystem");
             
             this.fileSystem = fileSystem;
+            gitVersionCache = new GitVersionCache(fileSystem);
         }
 
         public VersionVariables ExecuteGitVersion(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId)
         {
             var gitDir = Repository.Discover(workingDirectory);
-            using (var repo = fileSystem.GetRepository(gitDir))
+            using (var repo = GetRepository(gitDir))
             {
-                // Maybe using timestamp in .git/refs directory is enough?
-                var ticks = fileSystem.GetLastDirectoryWrite(Path.Combine(gitDir, "refs"));
-                var key = string.Format("{0}:{1}:{2}:{3}", gitDir, repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
-
-                var versionVariables = LoadVersionVariablesFromDiskCache(key, gitDir);
+                var versionVariables = gitVersionCache.LoadVersionVariablesFromDiskCache(repo, gitDir);
                 if (versionVariables == null)
                 {
-                    versionVariables = ExecuteInternal(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, workingDirectory, commitId);
-                    WriteVariablesToDiskCache(key, gitDir, versionVariables);
+                    versionVariables = ExecuteInternal(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, workingDirectory, commitId, repo);
+                    gitVersionCache.WriteVariablesToDiskCache(repo, gitDir, versionVariables);
                 }
 
                 return versionVariables;
-            }
-        }
-
-        void WriteVariablesToDiskCache(string key, string gitDir, VersionVariables variablesFromCache)
-        {
-            var cacheFileName = GetCacheFileName(key, GetCacheDir(gitDir));
-            variablesFromCache.FileName = cacheFileName;
-
-            using (var stream = fileSystem.OpenWrite(cacheFileName))
-            {
-                using (var sw = new StreamWriter(stream))
-                {
-                    Dictionary<string, string> dictionary;
-                    using (Logger.IndentLog("Creating dictionary"))
-                    {
-                        dictionary = variablesFromCache.ToDictionary(x => x.Key, x => x.Value);
-                    }
-
-                    using (Logger.IndentLog("Storing version variables to cache file " + cacheFileName))
-                    {
-                        var serializer = new Serializer();
-                        serializer.Serialize(sw, dictionary);
-                    }
-                }
             }
         }
 
@@ -96,66 +63,7 @@ namespace GitVersion
             return currentBranch;
         }
 
-        VersionVariables LoadVersionVariablesFromDiskCache(string key, string gitDir)
-        {
-            using (Logger.IndentLog("Loading version variables from disk cache"))
-            {
-                // If the cacheDir already exists, CreateDirectory just won't do anything (it won't fail). @asbjornu
-
-                var cacheDir = GetCacheDir(gitDir);
-                fileSystem.CreateDirectory(cacheDir);
-                var cacheFileName = GetCacheFileName(key, cacheDir);
-                VersionVariables vv = null;
-                if (fileSystem.Exists(cacheFileName))
-                {
-                    using (Logger.IndentLog("Deserializing version variables from cache file " + cacheFileName))
-                    {
-                        try
-                        {
-                            vv = VersionVariables.FromFile(cacheFileName, fileSystem);
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.WriteWarning("Unable to read cache file " + cacheFileName + ", deleting it.");
-                            Logger.WriteInfo(ex.ToString());
-                            try
-                            {
-                                fileSystem.Delete(cacheFileName);
-                            }
-                            catch (Exception deleteEx)
-                            {
-                                Logger.WriteWarning(string.Format("Unable to delete corrupted version cache file {0}. Got {1} exception.", cacheFileName, deleteEx.GetType().FullName));
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    Logger.WriteInfo("Cache file " + cacheFileName + " not found.");
-                }
-
-                return vv;
-            }
-        }
-
-        static string GetCacheFileName(string key, string cacheDir)
-        {
-            string cacheKey;
-            using (var sha1 = SHA1.Create())
-            {
-                // Make a shorter key by hashing, to avoid having to long cache filename.
-                cacheKey = BitConverter.ToString(sha1.ComputeHash(Encoding.UTF8.GetBytes(key))).Replace("-", "");
-            }
-            var cacheFileName = string.Concat(Path.Combine(cacheDir, cacheKey), ".yml");
-            return cacheFileName;
-        }
-
-        static string GetCacheDir(string gitDir)
-        {
-            return Path.Combine(gitDir, "gitversion_cache");
-        }
-
-        VersionVariables ExecuteInternal(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId)
+        VersionVariables ExecuteInternal(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId, IRepository repo)
         {
             // Normalise if we are running on build server
             var gitPreparer = new GitPreparer(targetUrl, dynamicRepositoryLocation, authentication, noFetch, workingDirectory);
@@ -172,18 +80,36 @@ namespace GitVersion
                 // TODO Link to wiki article
                 throw new Exception(string.Format("Failed to prepare or find the .git directory in path '{0}'.", workingDirectory));
             }
-            VersionVariables variables;
             var versionFinder = new GitVersionFinder();
             var configuration = ConfigurationProvider.Provide(projectRoot, fileSystem);
 
-            using (var repo = fileSystem.GetRepository(dotGitDirectory))
-            {
-                var gitVersionContext = new GitVersionContext(repo, configuration, commitId : commitId);
-                var semanticVersion = versionFinder.FindVersion(gitVersionContext);
-                variables = VariableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
-            }
+            var gitVersionContext = new GitVersionContext(repo, configuration, commitId : commitId);
+            var semanticVersion = versionFinder.FindVersion(gitVersionContext);
 
-            return variables;
+            return VariableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
+        }
+
+        IRepository GetRepository(string gitDirectory)
+        {
+            try
+            {
+                var repository = new Repository(gitDirectory);
+
+                var branch = repository.Head;
+                if (branch.Tip == null)
+                {
+                    throw new WarningException("No Tip found. Has repo been initialized?");
+                }
+                return repository;
+            }
+            catch (Exception exception)
+            {
+                if (exception.Message.Contains("LibGit2Sharp.Core.NativeMethods") || exception.Message.Contains("FilePathMarshaler"))
+                {
+                    throw new WarningException("Restart of the process may be required to load an updated version of LibGit2Sharp.");
+                }
+                throw;
+            }
         }
     }
 }

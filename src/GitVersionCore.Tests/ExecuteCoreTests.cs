@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Text;
 
 using GitVersion;
@@ -14,13 +13,11 @@ public class ExecuteCoreTests
 {
     IFileSystem fileSystem;
 
-
     [SetUp]
     public void SetUp()
     {
         fileSystem = new FileSystem();
     }
-
 
     [Test]
     public void CacheFileExistsOnDisk()
@@ -62,32 +59,12 @@ CommitDate: 2015-11-10
         info.ShouldContain("Deserializing version variables from cache file", () => info);
     }
 
-
-    [Test]
-    public void CacheFileExistsInMemory()
-    {
-        var cache = new ConcurrentDictionary<string, VersionVariables>();
-        var versionAndBranchFinder = new ExecuteCore(fileSystem, cache.GetOrAdd);
-
-        var info = RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
-        {
-            vv.AssemblySemVer.ShouldBe("0.1.0.0");
-            vv = versionAndBranchFinder.ExecuteGitVersion(null, null, null, null, false, fixture.RepositoryPath, null);
-            vv.AssemblySemVer.ShouldBe("0.1.0.0");
-        });
-
-        info.ShouldContain("yml not found", () => info);
-        info.ShouldNotContain("Deserializing version variables from cache file", () => info);
-    }
-
-
     [Test]
     public void CacheFileIsMissing()
     {
         var info = RepositoryScope();
         info.ShouldContain("yml not found", () => info);
     }
-
 
     string RepositoryScope(ExecuteCore executeCore = null, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
     {

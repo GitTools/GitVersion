@@ -1,7 +1,6 @@
 namespace GitVersion
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -10,12 +9,6 @@ namespace GitVersion
     class SpecifiedArgumentRunner
     {
         const string MsBuild = @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
-        static readonly ConcurrentDictionary<string, VersionVariables> versionCache;
-
-        static SpecifiedArgumentRunner()
-        {
-            versionCache = new ConcurrentDictionary<string, VersionVariables>();
-        }
 
         public static void Run(Arguments arguments, IFileSystem fileSystem)
         {
@@ -27,7 +20,7 @@ namespace GitVersion
             var targetBranch = arguments.TargetBranch;
             var commitId = arguments.CommitId;
 
-            var executeCore = new ExecuteCore(fileSystem, versionCache.GetOrAdd);
+            var executeCore = new ExecuteCore(fileSystem);
             var variables = executeCore.ExecuteGitVersion(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId);
 
             if (arguments.Output == OutputType.BuildServer)

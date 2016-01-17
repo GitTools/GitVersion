@@ -110,6 +110,7 @@
     <Compile Include="EffectiveConfiguration.cs" />
     <Compile Include="ExecuteCore.cs" />
     <Compile Include="GitPreparer.cs" />
+    <Compile Include="GitVersionCache.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\IFileSystem.cs" />
     <Compile Include="Helpers\ProcessHelper.cs" />
