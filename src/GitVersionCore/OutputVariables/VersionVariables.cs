@@ -1,9 +1,13 @@
 ﻿namespace GitVersion
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
-    using System.Reflection;
+    using GitVersion.Helpers;
+
+    using YamlDotNet.Serialization;
 
     public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     {
@@ -54,7 +58,6 @@
             CommitsSinceVersionSourcePadded = commitsSinceVersionSourcePadded;
         }
 
-
         public string Major { get; private set; }
         public string Minor { get; private set; }
         public string Patch { get; private set; }
@@ -77,42 +80,69 @@
         public string CommitsSinceVersionSource { get; private set; }
         public string CommitsSinceVersionSourcePadded { get; private set; }
 
+        [ReflectionIgnore]
         public static IEnumerable<string> AvailableVariables
         {
             get
             {
                 return typeof(VersionVariables)
-                    .GetProperties(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance)
+                    .GetProperties()
+                    .Where(p => !p.GetCustomAttributes(typeof(ReflectionIgnoreAttribute), false).Any())
                     .Select(p => p.Name)
-                    .Where(p => p != "AvailableVariables" && p != "Item")
                     .OrderBy(a => a);
             }
         }
 
         public string CommitDate { get; set; }
 
+        [ReflectionIgnore]
+        public string FileName { get; set; }
+
+        [ReflectionIgnore]
         public string this[string variable]
         {
             get { return (string)typeof(VersionVariables).GetProperty(variable).GetValue(this, null); }
         }
-
 
         public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
         {
             var type = typeof(string);
             return typeof(VersionVariables)
                 .GetProperties()
-                .Where(p => p.PropertyType == type && !p.GetIndexParameters().Any())
+                .Where(p => p.PropertyType == type && !p.GetIndexParameters().Any() && !p.GetCustomAttributes(typeof(ReflectionIgnoreAttribute), false).Any())
                 .Select(p => new KeyValuePair<string, string>(p.Name, (string)p.GetValue(this, null)))
                 .GetEnumerator();
         }
-
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
 
+        public static VersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>> properties)
+        {
+            var type = typeof(VersionVariables);
+            var ctor = type.GetConstructors().Single();
+            var ctorArgs = ctor.GetParameters()
+                .Select(p => properties.Single(v => string.Equals(v.Key, p.Name, StringComparison.CurrentCultureIgnoreCase)).Value)
+                .Cast<object>()
+                .ToArray();
+            return (VersionVariables)Activator.CreateInstance(type, ctorArgs);
+        }
+
+        public static VersionVariables FromFile(string filePath, IFileSystem fileSystem)
+        {
+            using (var stream = fileSystem.OpenRead(filePath))
+            {
+                using (var reader = new StreamReader(stream))
+                {
+                    var dictionary = new Deserializer().Deserialize<Dictionary<string, string>>(reader);
+                    var versionVariables = FromDictionary(dictionary);
+                    versionVariables.FileName = filePath;
+                    return versionVariables;
+                }
+            }
+        }
 
         public bool TryGetValue(string variable, out string variableValue)
         {
@@ -126,10 +156,13 @@
             return false;
         }
 
-
         public bool ContainsKey(string variable)
         {
             return typeof(VersionVariables).GetProperty(variable) != null;
+        }
+
+        sealed class ReflectionIgnoreAttribute : Attribute
+        {
         }
     }
 }

@@ -16,10 +16,7 @@ public class GetVersionTaskTests
             .Where(p => p.GetCustomAttributes(typeof(OutputAttribute), false).Any())
             .Select(p => p.Name);
 
-        var variablesProperties = typeof(VersionVariables)
-            .GetProperties()
-            .Select(p => p.Name)
-            .Except(new[] { "AvailableVariables", "Item" });
+        var variablesProperties = VersionVariables.AvailableVariables;
 
         taskProperties.ShouldBe(variablesProperties, ignoreOrder: true);
     }

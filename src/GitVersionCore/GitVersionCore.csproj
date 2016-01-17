@@ -110,6 +110,7 @@
     <Compile Include="EffectiveConfiguration.cs" />
     <Compile Include="ExecuteCore.cs" />
     <Compile Include="GitPreparer.cs" />
+    <Compile Include="GitVersionCache.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\IFileSystem.cs" />
     <Compile Include="Helpers\ProcessHelper.cs" />
@@ -140,7 +141,6 @@
     <Compile Include="VersioningModes\VersioningModeExtension.cs" />
     <Compile Include="WarningException.cs" />
     <Compile Include="Extensions\ExtensionMethods.cs" />
-    <Compile Include="GitDirFinder.cs" />
     <Compile Include="GitVersionContext.cs" />
     <Compile Include="GitVersionFinder.cs" />
     <Compile Include="Helpers\DeleteHelper.cs" />
@@ -152,7 +152,6 @@
     <Compile Include="OutputType.cs" />
     <Compile Include="OutputVariables\VariableProvider.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="RepositoryLoader.cs" />
     <Compile Include="SearchPath.cs" />
     <Compile Include="SemanticVersion.cs" />
     <Compile Include="SemanticVersionBuildMetaData.cs" />

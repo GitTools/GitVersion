@@ -1,32 +1,26 @@
 ﻿namespace GitVersionTask
 {
-    using GitVersion;
-    using GitVersion.Helpers;
-    using Microsoft.Build.Framework;
-    using Microsoft.Build.Utilities;
     using System;
     using System.Collections.Generic;
-    using Logger = GitVersion.Logger;
 
-    public class WriteVersionInfoToBuildLog : Task
+    using GitVersion;
+
+    using Microsoft.Build.Framework;
+
+    public class WriteVersionInfoToBuildLog : GitVersionTaskBase
     {
-        [Required]
-        public string SolutionDirectory { get; set; }
-
-        public bool NoFetch { get; set; }
-
-        TaskLogger logger;
-        IFileSystem fileSystem;
+        readonly TaskLogger logger;
 
         public WriteVersionInfoToBuildLog()
         {
             logger = new TaskLogger(this);
-            fileSystem = new FileSystem();
-            Logger.SetLoggers(
-                this.LogInfo,
-                this.LogWarning,
-                s => this.LogError(s));
+            Logger.SetLoggers(this.LogInfo, this.LogWarning, s => this.LogError(s));
         }
+
+        [Required]
+        public string SolutionDirectory { get; set; }
+
+        public bool NoFetch { get; set; }
 
         public override bool Execute()
         {
@@ -51,18 +45,18 @@
             }
         }
 
-        public void InnerExecute()
+        void InnerExecute()
         {
             VersionVariables result;
-            if (!VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out result, NoFetch, new Authentication(), fileSystem))
+            if (!ExecuteCore.TryGetVersion(SolutionDirectory, out result, NoFetch, new Authentication()))
             {
                 return;
             }
-            
+
             WriteIntegrationParameters(BuildServerList.GetApplicableBuildServers(), result);
         }
 
-        public void WriteIntegrationParameters(IEnumerable<IBuildServer> applicableBuildServers, VersionVariables variables)
+        void WriteIntegrationParameters(IEnumerable<IBuildServer> applicableBuildServers, VersionVariables variables)
         {
             foreach (var buildServer in applicableBuildServers)
             {
