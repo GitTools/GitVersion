@@ -19,12 +19,12 @@
                     new TaggedCommitVersionStrategy(),
                     new TrackMergeTargetBaseVersionStrategy(),
                     new MergeMessageBaseVersionStrategy(),
-                    new VersionInBranchBaseVersionStrategy());
+                    new VersionInBranchBaseVersionStrategy(),
+                    new DevelopVersionStrategy());
         }
 
         public SemanticVersion FindVersion(GitVersionContext context)
         {
-
             SemanticVersion taggedSemanticVersion = null;
             // If current commit is tagged, don't do anything except add build metadata
             if (context.IsCurrentCommitTagged)
@@ -32,8 +32,6 @@
                 // Will always be 0, don't bother with the +0 on tags
                 var semanticVersionBuildMetaData = metaDataCalculator.Create(context.CurrentCommit, context);
                 semanticVersionBuildMetaData.CommitsSinceTag = null;
-
-          
 
                 var semanticVersion = new SemanticVersion(context.CurrentCommitTaggedVersion)
                 {

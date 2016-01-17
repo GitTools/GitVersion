@@ -146,6 +146,7 @@
     <Compile Include="VersionCalculation\BaseVersionCalculators\MergeMessageBaseVersionStrategy.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\VersionInBranchBaseVersionStrategy.cs" />
     <Compile Include="VersionCalculation\BaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\DevelopVersionStrategy.cs" />
     <Compile Include="VersionCalculation\FallbackBaseVersionStrategy.cs" />
     <Compile Include="VersionCalculation\IBaseVersionCalculator.cs" />
     <Compile Include="VersionCalculation\IMetaDataCalculator.cs" />

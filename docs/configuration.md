@@ -48,6 +48,10 @@ The global configuration options are:
    - **`sha:`** A sequence of SHAs to be excluded from the version calculations.  Useful when there is a rogue commit in history yielding a bad version.
    - **`commits-before:`** Allows to setup an exclusion range.  Effectively any commit < `commits-before` will be ignored.
 
+ - **`is-develop:`** Indicates this branch config represents develop in GitFlow
+
+ **`is-release-branch:`** Indicates this branch config represents a release branch in GitFlow
+
 ## Branch configuration
 
 Then we have branch specific configuration, which looks something like this:

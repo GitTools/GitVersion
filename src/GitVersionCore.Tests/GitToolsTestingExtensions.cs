@@ -70,7 +70,7 @@
         /// </summary>
         public static void InitialiseRepo(this RemoteRepositoryFixture fixture)
         {
-            // TODO !!new GitPreparer(null, null, new Authentication(), false, fixture.LocalRepositoryFixture.RepositoryPath).Initialise(true, null);
+            new GitPreparer(null, null, new Authentication(), false, fixture.LocalRepositoryFixture.RepositoryPath).Initialise(true, null);
         }
     }
 }
