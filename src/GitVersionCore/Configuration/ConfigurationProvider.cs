@@ -47,7 +47,7 @@ namespace GitVersion
                 defaultIncrementStrategy: IncrementStrategy.Inherit);
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "hotfix(es)?[/-]"), defaultTag: "beta");
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "support[/-]"), defaultTag: string.Empty, defaultPreventIncrement: true);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "dev(elop)?(ment)?$"), 
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "dev(elop)?(ment)?$"),
                 defaultTag: "unstable",
                 defaultIncrementStrategy: IncrementStrategy.Minor,
                 defaultVersioningMode: VersioningMode.ContinuousDeployment,
@@ -66,10 +66,10 @@ namespace GitVersion
             // Map of current names and previous names
             var dict = new Dictionary<string, string[]>
             {
-                { "hotfix(es)?[/-]", new []{"hotfix[/-]"}},
-                { "features?[/-]", new []{"feature[/-]"}},
-                { "releases?[/-]", new []{"release[/-]"}},
-                { "dev(elop)?(ment)?$", new []{"develop"}}
+                { "hotfix(es)?[/-]", new [] { "hotfix[/-]" }},
+                { "features?[/-]", new [] { "feature[/-]", "feature(s)?[/-]" }},
+                { "releases?[/-]", new [] { "release[/-]" }},
+                { "dev(elop)?(ment)?$", new [] { "develop" }}
             };
 
             foreach (var mapping in dict)
@@ -101,7 +101,7 @@ namespace GitVersion
         }
 
         public static void ApplyBranchDefaults(Config config,
-            BranchConfig branchConfig, 
+            BranchConfig branchConfig,
             string defaultTag = "useBranchName",
             IncrementStrategy defaultIncrementStrategy = IncrementStrategy.Patch,
             bool defaultPreventIncrement = false,
