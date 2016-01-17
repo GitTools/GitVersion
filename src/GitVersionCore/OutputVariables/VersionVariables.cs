@@ -5,25 +5,12 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Reflection;
-
     using GitVersion.Helpers;
 
     using YamlDotNet.Serialization;
 
     public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     {
-        public static VersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>> properties)
-        {
-            var type = typeof(VersionVariables);
-            var ctor = type.GetConstructors().Single();
-            var ctorArgs = ctor.GetParameters()
-                .Select(p => properties.Single(v => v.Key.ToLower() == p.Name.ToLower()).Value)
-                .Cast<object>()
-                .ToArray();
-            return (VersionVariables)Activator.CreateInstance(type, ctorArgs);
-        }
-
         public VersionVariables(string major,
                                 string minor,
                                 string patch,
@@ -134,7 +121,6 @@
         {
             return GetEnumerator();
         }
-
 
         public static VersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>> properties)
         {

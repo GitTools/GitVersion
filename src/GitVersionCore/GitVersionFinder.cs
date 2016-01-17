@@ -1,9 +1,7 @@
 namespace GitVersion
 {
     using System.IO;
-    using System.Linq;
     using GitVersion.VersionCalculation;
-    using LibGit2Sharp;
 
     public class GitVersionFinder
     {
