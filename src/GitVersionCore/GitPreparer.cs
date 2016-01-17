@@ -93,17 +93,17 @@ namespace GitVersion
                 return DynamicGitRepositoryPath;
             }
 
-            return Repository.Discover(this.targetPath);
+            return Repository.Discover(targetPath);
         }
 
         public string GetProjectRootDirectory()
         {
             if (IsDynamicGitRepository)
-                return this.targetPath;
+                return targetPath;
 
-            var gitDir = Repository.Discover(this.targetPath);
+            var gitDir = Repository.Discover(targetPath);
 
-            if (String.IsNullOrEmpty(gitDir))
+            if (string.IsNullOrEmpty(gitDir))
                 throw new DirectoryNotFoundException("Can't find the .git directory in " + targetPath);
 
             return Directory.GetParent(gitDir).FullName;

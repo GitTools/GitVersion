@@ -21,14 +21,24 @@ namespace GitVersion
 
         public VersionVariables ExecuteGitVersion(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId)
         {
-            var gitDir = Repository.Discover(workingDirectory);
-            using (var repo = GetRepository(gitDir))
+            // Normalise if we are running on build server
+            var gitPreparer = new GitPreparer(targetUrl, dynamicRepositoryLocation, authentication, noFetch, workingDirectory);
+            var dotGitDirectory = gitPreparer.GetDotGitDirectory();
+            var projectRoot = gitPreparer.GetProjectRootDirectory();
+            Logger.WriteInfo(string.Format("Project root is: " + projectRoot));
+            if (string.IsNullOrEmpty(dotGitDirectory) || string.IsNullOrEmpty(projectRoot))
             {
-                var versionVariables = gitVersionCache.LoadVersionVariablesFromDiskCache(repo, gitDir);
+                // TODO Link to wiki article
+                throw new Exception(string.Format("Failed to prepare or find the .git directory in path '{0}'.", workingDirectory));
+            }
+            
+            using (var repo = GetRepository(dotGitDirectory))
+            {
+                var versionVariables = gitVersionCache.LoadVersionVariablesFromDiskCache(repo, dotGitDirectory);
                 if (versionVariables == null)
                 {
-                    versionVariables = ExecuteInternal(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, workingDirectory, commitId, repo);
-                    gitVersionCache.WriteVariablesToDiskCache(repo, gitDir, versionVariables);
+                    versionVariables = ExecuteInternal(targetBranch, commitId, repo, gitPreparer, projectRoot);
+                    gitVersionCache.WriteVariablesToDiskCache(repo, dotGitDirectory, versionVariables);
                 }
 
                 return versionVariables;
@@ -63,23 +73,13 @@ namespace GitVersion
             return currentBranch;
         }
 
-        VersionVariables ExecuteInternal(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId, IRepository repo)
+        VersionVariables ExecuteInternal(string targetBranch, string commitId, IRepository repo, GitPreparer gitPreparer, string projectRoot)
         {
-            // Normalise if we are running on build server
-            var gitPreparer = new GitPreparer(targetUrl, dynamicRepositoryLocation, authentication, noFetch, workingDirectory);
             var applicableBuildServers = BuildServerList.GetApplicableBuildServers();
             var buildServer = applicableBuildServers.FirstOrDefault();
 
             gitPreparer.Initialise(buildServer != null, ResolveCurrentBranch(buildServer, targetBranch));
 
-            var dotGitDirectory = gitPreparer.GetDotGitDirectory();
-            var projectRoot = gitPreparer.GetProjectRootDirectory();
-            Logger.WriteInfo(string.Format("Project root is: " + projectRoot));
-            if (string.IsNullOrEmpty(dotGitDirectory) || string.IsNullOrEmpty(projectRoot))
-            {
-                // TODO Link to wiki article
-                throw new Exception(string.Format("Failed to prepare or find the .git directory in path '{0}'.", workingDirectory));
-            }
             var versionFinder = new GitVersionFinder();
             var configuration = ConfigurationProvider.Provide(projectRoot, fileSystem);
 
