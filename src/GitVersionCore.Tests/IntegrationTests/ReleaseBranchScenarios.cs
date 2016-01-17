@@ -262,6 +262,7 @@ public class ReleaseBranchScenarios
             fixture.Repository.Checkout("develop");
 
             fixture.Repository.MakeCommits(1);
+            fixture.AssertFullSemver("1.1.0-unstable.1");
 
             fixture.Repository.CreateBranch("release-2.0.0");
             fixture.Repository.Checkout("release-2.0.0");
@@ -283,6 +284,8 @@ public class ReleaseBranchScenarios
             //but keep working on the release
             fixture.Repository.Checkout("release-2.0.0");
             fixture.AssertFullSemver("2.0.0-beta.2+2");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("2.0.0-beta.2+3");
         }
     }
 
