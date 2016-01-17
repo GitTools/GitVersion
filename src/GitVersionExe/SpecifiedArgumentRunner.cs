@@ -12,12 +12,10 @@ namespace GitVersion
         const string MsBuild = @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
         static readonly ConcurrentDictionary<string, VersionVariables> versionCache;
 
-
         static SpecifiedArgumentRunner()
         {
             versionCache = new ConcurrentDictionary<string, VersionVariables>();
         }
-
 
         public static void Run(Arguments arguments, IFileSystem fileSystem)
         {
@@ -77,13 +75,9 @@ namespace GitVersion
             }
         }
 
-
         static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
         {
-            if (string.IsNullOrEmpty(args.Proj))
-            {
-                return false;
-            }
+            if (string.IsNullOrEmpty(args.Proj)) return false;
 
             Logger.WriteInfo(string.Format("Launching {0} \"{1}\" {2}", MsBuild, args.Proj, args.ProjArgs));
             var results = ProcessHelper.Run(
@@ -92,34 +86,26 @@ namespace GitVersion
                 GetEnvironmentalVariables(variables));
 
             if (results != 0)
-            {
                 throw new WarningException("MsBuild execution failed, non-zero return code");
-            }
 
             return true;
         }
 
-
         static bool RunExecCommandIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
         {
-            if (string.IsNullOrEmpty(args.Exec))
-            {
-                return false;
-            }
+            if (string.IsNullOrEmpty(args.Exec)) return false;
 
             Logger.WriteInfo(string.Format("Launching {0} {1}", args.Exec, args.ExecArgs));
             var results = ProcessHelper.Run(
                 Logger.WriteInfo, Logger.WriteError,
                 null, args.Exec, args.ExecArgs, workingDirectory,
                 GetEnvironmentalVariables(variables));
+
             if (results != 0)
-            {
                 throw new WarningException(string.Format("Execution of {0} failed, non-zero return code", args.Exec));
-            }
 
             return true;
         }
-
 
         static KeyValuePair<string, string>[] GetEnvironmentalVariables(VersionVariables variables)
         {

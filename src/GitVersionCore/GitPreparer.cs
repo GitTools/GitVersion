@@ -8,12 +8,11 @@ namespace GitVersion
 
     public class GitPreparer
     {
-        Authentication authentication;
+        string targetUrl;
         string dynamicRepositoryLocation;
+        Authentication authentication;
         bool noFetch;
         string targetPath;
-        string targetUrl;
-
 
         public GitPreparer(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, bool noFetch, string targetPath)
         {
@@ -24,14 +23,12 @@ namespace GitVersion
             this.targetPath = targetPath;
         }
 
-
         public bool IsDynamicGitRepository
         {
             get { return !string.IsNullOrWhiteSpace(DynamicGitRepositoryPath); }
         }
 
         public string DynamicGitRepositoryPath { get; private set; }
-
 
         public void Initialise(bool normaliseGitDirectory, string currentBranch)
         {
@@ -48,7 +45,6 @@ namespace GitVersion
 
             DynamicGitRepositoryPath = CreateDynamicRepository(tempRepositoryPath, authentication, targetUrl, currentBranch, noFetch);
         }
-
 
         static string CalculateTemporaryRepositoryPath(string targetUrl, string dynamicRepositoryLocation)
         {
@@ -75,7 +71,6 @@ namespace GitVersion
             return possiblePath;
         }
 
-
         static bool GitRepoHasMatchingRemote(string possiblePath, string targetUrl)
         {
             try
@@ -91,7 +86,6 @@ namespace GitVersion
             }
         }
 
-
         public string GetDotGitDirectory()
         {
             if (IsDynamicGitRepository)
@@ -101,7 +95,6 @@ namespace GitVersion
 
             return Repository.Discover(this.targetPath);
         }
-
 
         public string GetProjectRootDirectory()
         {
@@ -115,7 +108,6 @@ namespace GitVersion
 
             return Directory.GetParent(gitDir).FullName;
         }
-
 
         static string CreateDynamicRepository(string targetPath, Authentication authentication, string repositoryUrl, string targetBranch, bool noFetch)
         {
@@ -142,7 +134,6 @@ namespace GitVersion
             return gitDirectory;
         }
 
-
         static void CloneRepository(string repositoryUrl, string gitDirectory, Authentication authentication)
         {
             Credentials credentials = null;
@@ -161,12 +152,12 @@ namespace GitVersion
 
             try
             {
-                Repository.Clone(repositoryUrl, gitDirectory,
-                                 new CloneOptions
-                                 {
-                                     Checkout = false,
-                                     CredentialsProvider = (url, usernameFromUrl, types) => credentials
-                                 });
+                var cloneOptions = new CloneOptions
+                {
+                    Checkout = false,
+                    CredentialsProvider = (url, usernameFromUrl, types) => credentials
+                };
+                Repository.Clone(repositoryUrl, gitDirectory, cloneOptions);
             }
             catch (LibGit2SharpException ex)
             {

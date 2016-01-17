@@ -10,13 +10,11 @@
     {
         TaskLogger logger;
 
-
         public GetVersion()
         {
-            this.logger = new TaskLogger(this);
+            logger = new TaskLogger(this);
             Logger.SetLoggers(this.LogInfo, this.LogWarning, s => this.LogError(s));
         }
-
 
         [Required]
         public string SolutionDirectory { get; set; }
@@ -89,7 +87,6 @@
         [Output]
         public string CommitsSinceVersionSourcePadded { get; set; }
 
-
         public override bool Execute()
         {
             try
@@ -108,12 +105,12 @@
             }
             catch (WarningException errorException)
             {
-                this.logger.LogWarning(errorException.Message);
+                logger.LogWarning(errorException.Message);
                 return true;
             }
             catch (Exception exception)
             {
-                this.logger.LogError("Error occurred: " + exception);
+                logger.LogError("Error occurred: " + exception);
                 return false;
             }
             finally

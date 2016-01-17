@@ -18,7 +18,6 @@ namespace GitVersion
         readonly IFileSystem fileSystem;
         readonly Func<string, Func<string, VersionVariables>, VersionVariables> getOrAddFromCache;
 
-
         public ExecuteCore(IFileSystem fileSystem, Func<string, Func<string, VersionVariables>, VersionVariables> getOrAddFromCache = null)
         {
             if (fileSystem == null)
@@ -29,7 +28,6 @@ namespace GitVersion
             this.getOrAddFromCache = getOrAddFromCache;
             this.fileSystem = fileSystem;
         }
-
 
         public VersionVariables ExecuteGitVersion(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId)
         {
@@ -53,7 +51,6 @@ namespace GitVersion
             }
         }
 
-
         public bool TryGetVersion(string directory, out VersionVariables versionVariables, bool noFetch, Authentication authentication)
         {
             try
@@ -69,7 +66,6 @@ namespace GitVersion
             }
         }
 
-
         static string ResolveCurrentBranch(IBuildServer buildServer, string targetBranch)
         {
             if (buildServer == null)
@@ -82,7 +78,6 @@ namespace GitVersion
 
             return currentBranch;
         }
-
 
         VersionVariables LoadVersionVariablesFromDiskCache(string key, string gitDir, string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId)
         {
@@ -156,7 +151,6 @@ namespace GitVersion
                 return vv;
             }
         }
-
 
         VersionVariables ExecuteInternal(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId)
         {

@@ -58,7 +58,6 @@
             CommitsSinceVersionSourcePadded = commitsSinceVersionSourcePadded;
         }
 
-
         public string Major { get; private set; }
         public string Minor { get; private set; }
         public string Patch { get; private set; }
@@ -105,7 +104,6 @@
             get { return (string)typeof(VersionVariables).GetProperty(variable).GetValue(this, null); }
         }
 
-
         public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
         {
             var type = typeof(string);
@@ -115,7 +113,6 @@
                 .Select(p => new KeyValuePair<string, string>(p.Name, (string)p.GetValue(this, null)))
                 .GetEnumerator();
         }
-
 
         IEnumerator IEnumerable.GetEnumerator()
         {
@@ -133,7 +130,6 @@
             return (VersionVariables)Activator.CreateInstance(type, ctorArgs);
         }
 
-
         public static VersionVariables FromFile(string filePath, IFileSystem fileSystem)
         {
             using (var stream = fileSystem.OpenRead(filePath))
@@ -148,7 +144,6 @@
             }
         }
 
-
         public bool TryGetValue(string variable, out string variableValue)
         {
             if (ContainsKey(variable))
@@ -161,12 +156,10 @@
             return false;
         }
 
-
         public bool ContainsKey(string variable)
         {
             return typeof(VersionVariables).GetProperty(variable) != null;
         }
-
 
         sealed class ReflectionIgnoreAttribute : Attribute
         {
