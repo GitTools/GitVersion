@@ -16,16 +16,11 @@ namespace GitVersion
     public class ExecuteCore
     {
         readonly IFileSystem fileSystem;
-        readonly Func<string, Func<string, VersionVariables>, VersionVariables> getOrAddFromCache;
 
-        public ExecuteCore(IFileSystem fileSystem, Func<string, Func<string, VersionVariables>, VersionVariables> getOrAddFromCache = null)
+        public ExecuteCore(IFileSystem fileSystem)
         {
-            if (fileSystem == null)
-            {
-                throw new ArgumentNullException("fileSystem");
-            }
-
-            this.getOrAddFromCache = getOrAddFromCache;
+            if (fileSystem == null) throw new ArgumentNullException("fileSystem");
+            
             this.fileSystem = fileSystem;
         }
 
@@ -38,16 +33,38 @@ namespace GitVersion
                 var ticks = fileSystem.GetLastDirectoryWrite(Path.Combine(gitDir, "refs"));
                 var key = string.Format("{0}:{1}:{2}:{3}", gitDir, repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
 
-                if (getOrAddFromCache != null)
+                var versionVariables = LoadVersionVariablesFromDiskCache(key, gitDir);
+                if (versionVariables == null)
                 {
-                    return getOrAddFromCache(key, k =>
-                    {
-                        Logger.WriteInfo("Version not in memory cache. Attempting to load version from disk cache.");
-                        return LoadVersionVariablesFromDiskCache(key, gitDir, targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, workingDirectory, commitId);
-                    });
+                    versionVariables = ExecuteInternal(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, workingDirectory, commitId);
+                    WriteVariablesToDiskCache(key, gitDir, versionVariables);
                 }
 
-                return LoadVersionVariablesFromDiskCache(key, gitDir, targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, workingDirectory, commitId);
+                return versionVariables;
+            }
+        }
+
+        void WriteVariablesToDiskCache(string key, string gitDir, VersionVariables variablesFromCache)
+        {
+            var cacheFileName = GetCacheFileName(key, GetCacheDir(gitDir));
+            variablesFromCache.FileName = cacheFileName;
+
+            using (var stream = fileSystem.OpenWrite(cacheFileName))
+            {
+                using (var sw = new StreamWriter(stream))
+                {
+                    Dictionary<string, string> dictionary;
+                    using (Logger.IndentLog("Creating dictionary"))
+                    {
+                        dictionary = variablesFromCache.ToDictionary(x => x.Key, x => x.Value);
+                    }
+
+                    using (Logger.IndentLog("Storing version variables to cache file " + cacheFileName))
+                    {
+                        var serializer = new Serializer();
+                        serializer.Serialize(sw, dictionary);
+                    }
+                }
             }
         }
 
@@ -79,22 +96,15 @@ namespace GitVersion
             return currentBranch;
         }
 
-        VersionVariables LoadVersionVariablesFromDiskCache(string key, string gitDir, string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId)
+        VersionVariables LoadVersionVariablesFromDiskCache(string key, string gitDir)
         {
             using (Logger.IndentLog("Loading version variables from disk cache"))
             {
-                string cacheKey;
-                using (var sha1 = SHA1.Create())
-                {
-                    // Make a shorter key by hashing, to avoid having to long cache filename.
-                    cacheKey = BitConverter.ToString(sha1.ComputeHash(Encoding.UTF8.GetBytes(key))).Replace("-", "");
-                }
-
-                var cacheDir = Path.Combine(gitDir, "gitversion_cache");
                 // If the cacheDir already exists, CreateDirectory just won't do anything (it won't fail). @asbjornu
-                fileSystem.CreateDirectory(cacheDir);
 
-                var cacheFileName = string.Concat(Path.Combine(cacheDir, cacheKey), ".yml");
+                var cacheDir = GetCacheDir(gitDir);
+                fileSystem.CreateDirectory(cacheDir);
+                var cacheFileName = GetCacheFileName(key, cacheDir);
                 VersionVariables vv = null;
                 if (fileSystem.Exists(cacheFileName))
                 {
@@ -124,32 +134,25 @@ namespace GitVersion
                     Logger.WriteInfo("Cache file " + cacheFileName + " not found.");
                 }
 
-                if (vv == null)
-                {
-                    vv = ExecuteInternal(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, workingDirectory, commitId);
-                    vv.FileName = cacheFileName;
-
-                    using (var stream = fileSystem.OpenWrite(cacheFileName))
-                    {
-                        using (var sw = new StreamWriter(stream))
-                        {
-                            Dictionary<string, string> dictionary;
-                            using (Logger.IndentLog("Creating dictionary"))
-                            {
-                                dictionary = vv.ToDictionary(x => x.Key, x => x.Value);
-                            }
-
-                            using (Logger.IndentLog("Storing version variables to cache file " + cacheFileName))
-                            {
-                                var serializer = new Serializer();
-                                serializer.Serialize(sw, dictionary);
-                            }
-                        }
-                    }
-                }
-
                 return vv;
             }
+        }
+
+        static string GetCacheFileName(string key, string cacheDir)
+        {
+            string cacheKey;
+            using (var sha1 = SHA1.Create())
+            {
+                // Make a shorter key by hashing, to avoid having to long cache filename.
+                cacheKey = BitConverter.ToString(sha1.ComputeHash(Encoding.UTF8.GetBytes(key))).Replace("-", "");
+            }
+            var cacheFileName = string.Concat(Path.Combine(cacheDir, cacheKey), ".yml");
+            return cacheFileName;
+        }
+
+        static string GetCacheDir(string gitDir)
+        {
+            return Path.Combine(gitDir, "gitversion_cache");
         }
 
         VersionVariables ExecuteInternal(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId)
