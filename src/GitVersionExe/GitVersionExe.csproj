@@ -166,7 +166,7 @@
     <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\icon.png" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\task.json" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" />
-    <Exec Command="powershell -ExecutionPolicy RemoteSigned -NoProfile &quot;$(BuildDir)\Update-GitVersionTfsTaskVersion.ps1 $(BuildDir)GitVersionTfsTaskBuild\task.json $(GitVersion_Major) $(GitVersion_Minor) $(GitVersion_Patch)&quot;" WorkingDirectory="$(BuildDir)" Condition="'$(GitVersion_SemVer)' != ''" />
+    <Exec Command="powershell -ExecutionPolicy RemoteSigned -NoProfile &quot;$(SolutionDir)src\Update-GitVersionTfsTaskVersion.ps1 $(BuildDir)GitVersionTfsTaskBuild\task.json $(GitVersion_Major) $(GitVersion_Minor) $(GitVersion_Patch)&quot;" WorkingDirectory="$(BuildDir)" Condition="'$(GitVersion_SemVer)' != ''" />
     <!-- Gem -->
     <MakeDir Directories="$(BuildDir)GemBuild" />
     <Copy SourceFiles="@(amd64)" DestinationFolder="$(BuildDir)GemBuild\bin\NativeBinaries\amd64" />
