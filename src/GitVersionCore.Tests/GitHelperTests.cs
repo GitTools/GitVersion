@@ -27,6 +27,33 @@
                 }
             }
         }
+        [Test]
+        public void NormalisationOfTag()
+        {
+            using (var fixture = new EmptyRepositoryFixture(new Config()))
+            {
+                fixture.Repository.MakeACommit();
+
+                fixture.Repository.Checkout(fixture.Repository.CreateBranch("feature/foo"));
+                fixture.Repository.MakeACommit();
+
+                fixture.BranchTo("release/2.0.0");
+                fixture.MakeACommit();
+                fixture.MakeATaggedCommit("2.0.0-rc.1");
+                fixture.Checkout("master");
+                fixture.MergeNoFF("release/2.0.0");
+                fixture.Repository.Branches.Remove(fixture.Repository.FindBranch("release/2.0.0"));
+                var remoteTagSha = fixture.Repository.Tags["2.0.0-rc.1"].Target.Sha;
+                
+                using (var localFixture = fixture.CloneRepository())
+                {
+                    localFixture.Checkout(remoteTagSha);
+                    GitHelper.NormalizeGitDirectory(localFixture.RepositoryPath, new Authentication(), noFetch: false, currentBranch: string.Empty);
+
+                    localFixture.AssertFullSemver("2.0.0-rc.1");
+                }
+            }
+        }
 
         [Test]
         public void NormalisationOfPullRequestsWithoutFetch()
