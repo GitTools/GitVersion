@@ -13,12 +13,13 @@
 
         public override string GenerateSetVersionMessage(VersionVariables variables)
         {
+            var buildNumber = Environment.GetEnvironmentVariable("APPVEYOR_BUILD_NUMBER");
             var restBase = Environment.GetEnvironmentVariable("APPVEYOR_API_URL");
 
             var request = (HttpWebRequest)WebRequest.Create(restBase + "api/build");
             request.Method = "PUT";
 
-            var data = string.Format("{{ \"version\": \"{0}\" }}", variables.FullSemVer);
+            var data = string.Format("{{ \"version\": \"{0}.build.{1}\" }}", variables.FullSemVer, buildNumber);
             var bytes = Encoding.UTF8.GetBytes(data);
             request.ContentLength = bytes.Length;
             request.ContentType = "application/json";
