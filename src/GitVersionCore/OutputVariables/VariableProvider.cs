@@ -59,6 +59,7 @@
                 semverFormatValues.PreReleaseTag,
                 semverFormatValues.PreReleaseTagWithDash,
                 semverFormatValues.PreReleaseLabel,
+                semverFormatValues.PreReleaseNumber,
                 informationalVersion,
                 semverFormatValues.CommitDate,
                 semverFormatValues.NuGetVersion,

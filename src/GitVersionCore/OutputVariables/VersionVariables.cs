@@ -28,6 +28,7 @@
                                 string preReleaseTag,
                                 string preReleaseTagWithDash,
                                 string preReleaseLabel,
+                                string preReleaseNumber,
                                 string informationalVersion,
                                 string commitDate,
                                 string nugetVersion,
@@ -52,6 +53,7 @@
             PreReleaseTag = preReleaseTag;
             PreReleaseTagWithDash = preReleaseTagWithDash;
             PreReleaseLabel = preReleaseLabel;
+            PreReleaseNumber = preReleaseNumber;
             InformationalVersion = informationalVersion;
             CommitDate = commitDate;
             NuGetVersion = nugetVersion;
@@ -66,6 +68,7 @@
         public string PreReleaseTag { get; private set; }
         public string PreReleaseTagWithDash { get; private set; }
         public string PreReleaseLabel { get; private set; }
+        public string PreReleaseNumber { get; private set; }
         public string BuildMetaData { get; private set; }
         public string BuildMetaDataPadded { get; private set; }
         public string FullBuildMetaData { get; private set; }
