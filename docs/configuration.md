@@ -66,7 +66,8 @@ The options in here are:
  - **`mode:`** Same as above
 
  - **`tag:`** The pre release tag to use for this branch. Use the value `use-branch-name-as-tag` to use the branch name instead.  
-   For example `feature/foo` would become a pre-release tag of `foo` with this value
+   For example `feature/foo` would become a pre-release tag of `foo` with this value  
+   **Note:** To clear a default use an empty string: `tag: ""`
 
  - **`increment:`** the part of the SemVer to increment when GitVersion detects it needs to be (i.e commit after a tag)
 
