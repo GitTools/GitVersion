@@ -89,6 +89,21 @@ branches:
     }
 
     [Test]
+    public void CanRemoveTag()
+    {
+        const string text = @"
+next-version: 2.0.0
+branches:
+    releases?[/-]:
+        tag: """"";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+
+        config.NextVersion.ShouldBe("2.0.0");
+        config.Branches["releases?[/-]"].Tag.ShouldBe(string.Empty);
+    }
+
+    [Test]
     public void CanProvideConfigForNewBranch()
     {
         const string text = @"
