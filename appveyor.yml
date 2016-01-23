@@ -24,7 +24,6 @@ build_script:
   - cmd: 7z a "GitVersion_%GitVersion_NuGetVersion%.zip" -r .\build\NuGetCommandLineBuild\Tools\*.*
   - cmd: appveyor PushArtifact "GitVersion_%GitVersion_NuGetVersion%.zip"
 
-  - ps: .\build\Update-GitVersionTfsTaskVersion.ps1 .\build\GitVersionTfsTaskBuild\task.json $env:GitVersion_Major $env:GitVersion_Minor $env:GitVersion_Patch
   - cmd: 7z a "GitVersionTfsBuildTask_%GitVersion_NuGetVersion%.zip" -r .\build\GitVersionTfsTaskBuild\*.*
   - cmd: appveyor PushArtifact "GitVersionTfsBuildTask_%GitVersion_NuGetVersion%.zip"
 
