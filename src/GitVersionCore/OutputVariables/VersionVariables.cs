@@ -27,6 +27,7 @@
                                 string assemblySemVer,
                                 string preReleaseTag,
                                 string preReleaseTagWithDash,
+                                string preReleaseLabel,
                                 string informationalVersion,
                                 string commitDate,
                                 string nugetVersion,
@@ -50,6 +51,7 @@
             AssemblySemVer = assemblySemVer;
             PreReleaseTag = preReleaseTag;
             PreReleaseTagWithDash = preReleaseTagWithDash;
+            PreReleaseLabel = preReleaseLabel;
             InformationalVersion = informationalVersion;
             CommitDate = commitDate;
             NuGetVersion = nugetVersion;
@@ -63,6 +65,7 @@
         public string Patch { get; private set; }
         public string PreReleaseTag { get; private set; }
         public string PreReleaseTagWithDash { get; private set; }
+        public string PreReleaseLabel { get; private set; }
         public string BuildMetaData { get; private set; }
         public string BuildMetaDataPadded { get; private set; }
         public string FullBuildMetaData { get; private set; }

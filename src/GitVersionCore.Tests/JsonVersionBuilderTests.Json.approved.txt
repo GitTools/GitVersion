@@ -4,6 +4,7 @@
   "Patch":3,
   "PreReleaseTag":"unstable.4",
   "PreReleaseTagWithDash":"-unstable.4",
+  "PreReleaseLabel":"unstable",
   "BuildMetaData":5,
   "BuildMetaDataPadded":"0005",
   "FullBuildMetaData":"5.Branch.feature1.Sha.commitSha",

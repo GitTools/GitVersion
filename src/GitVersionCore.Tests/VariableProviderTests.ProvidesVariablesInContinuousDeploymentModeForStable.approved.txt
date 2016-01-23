@@ -4,6 +4,7 @@
   "Patch":3,
   "PreReleaseTag":"ci.5",
   "PreReleaseTagWithDash":"-ci.5",
+  "PreReleaseLabel":"ci",
   "BuildMetaData":"",
   "BuildMetaDataPadded":"",
   "FullBuildMetaData":"Branch.develop.Sha.commitSha",

@@ -38,6 +38,11 @@
             get { return _semver.PreReleaseTag.HasTag() ? "-" + _semver.PreReleaseTag : null; }
         }
 
+        public string PreReleaseLabel
+        {
+            get { return _semver.PreReleaseTag.HasTag() ? _semver.PreReleaseTag.Name : null; }
+        }
+
         public string BuildMetaData
         {
             get { return _semver.BuildMetaData; }
