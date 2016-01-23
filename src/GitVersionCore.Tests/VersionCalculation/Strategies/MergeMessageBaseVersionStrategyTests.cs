@@ -45,6 +45,7 @@
         [TestCase("Merge branch 'Hotfix/10.10.50'", true, "10.10.50")]
         [TestCase("Merge branch 'hotfix-0.1.5'", true, "0.1.5")]
         [TestCase("Merge branch 'hotfix-4.2.2' into support-4.2", true, "4.2.2")]
+        [TestCase("Merge branch 'somebranch' into release-3.0.0", true, null)]
         [TestCase("Merge branch 'hotfix-0.1.5'\n\nRelates to: TicketId", true, "0.1.5")]
         [TestCase("Merge branch 'alpha-0.1.5'", true, "0.1.5")]
         [TestCase("Merge pull request #165 from Particular/release-1.0.0", true, "1.0.0")]
