@@ -1,5 +1,6 @@
 ﻿namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
@@ -41,8 +42,13 @@
                 return null;
             }
 
+            var commitMessage = mergeCommit.Message;
+            var lastIndexOf = commitMessage.LastIndexOf("into", StringComparison.OrdinalIgnoreCase);
+            if (lastIndexOf != -1)
+                commitMessage = commitMessage.Substring(0, lastIndexOf);
+
             //TODO: Make the version prefixes customizable
-            var possibleVersions = Regex.Matches(mergeCommit.Message, @"^.*?(([rR]elease|[hH]otfix|[aA]lpha)-|-v|/|/v|'|Finish )(?<PossibleVersions>(?<!://)\d+\.\d+(\.*\d+)*)")
+            var possibleVersions = Regex.Matches(commitMessage, @"^.*?(([rR]elease|[hH]otfix|[aA]lpha)-|-v|/|/v|'|Finish )(?<PossibleVersions>(?<!://)\d+\.\d+(\.*\d+)*)")
                 .Cast<Match>()
                 .Select(m => m.Groups["PossibleVersions"].Value);
 
