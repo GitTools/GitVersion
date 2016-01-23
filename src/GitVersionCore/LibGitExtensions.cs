@@ -267,12 +267,9 @@ namespace GitVersion
             catch (FileNotFoundException exception)
             {
                 if (exception.FileName != "git")
-                {
                     throw;
-                }
 
-                output.AppendLine("Could not execute 'git log' due to the following error:");
-                output.AppendLine(exception.ToString());
+                output.AppendLine("Unable to display git log (due to 'git' not being on the %PATH%), this is just for debugging purposes to give more information to track down your issue. Run gitversion debug locally instead.");
             }
 
             if (writer != null) writer(output.ToString());
