@@ -22,7 +22,10 @@ For the `release/3.0.0` branch of GitVersion it shows:
   "BranchName":"release/3.0.0",
   "Sha":"28c853159a46b5a87e6cc9c4f6e940c59d6bc68a",
   "NuGetVersionV2":"3.0.0-beta0001",
-  "NuGetVersion":"3.0.0-beta0001"
+  "NuGetVersion":"3.0.0-beta0001",
+  "CommitsSinceVersionSource":1,
+  "CommitsSinceVersionSourcePadded":"0001",
+  "CommitDate":"2014-03-06"
 }
 ```
 

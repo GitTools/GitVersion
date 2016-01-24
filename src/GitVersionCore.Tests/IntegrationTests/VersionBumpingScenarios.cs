@@ -23,4 +23,22 @@ public class VersionBumpingScenarios
             fixture.AssertFullSemver("1.0.0-pre.2+1");
         }
     }
+
+    [Test]
+    public void CanUseCommitMessagesToBumpVersion()
+    {
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            fixture.Repository.MakeACommit();
+            fixture.MakeATaggedCommit("1.0.0");
+            fixture.Repository.MakeACommit("+semver:minor");
+
+            fixture.AssertFullSemver("1.1.0+1");
+
+            fixture.Repository.MakeACommit("+semver:major");
+
+            fixture.AssertFullSemver("2.0.0+2");
+        }
+
+    }
 }

@@ -45,6 +45,7 @@
         [TestCase("Merge branch 'Hotfix/10.10.50'", true, "10.10.50")]
         [TestCase("Merge branch 'hotfix-0.1.5'", true, "0.1.5")]
         [TestCase("Merge branch 'hotfix-4.2.2' into support-4.2", true, "4.2.2")]
+        [TestCase("Merge branch 'somebranch' into release-3.0.0", true, null)]
         [TestCase("Merge branch 'hotfix-0.1.5'\n\nRelates to: TicketId", true, "0.1.5")]
         [TestCase("Merge branch 'alpha-0.1.5'", true, "0.1.5")]
         [TestCase("Merge pull request #165 from Particular/release-1.0.0", true, "1.0.0")]
@@ -82,6 +83,10 @@
   A commit message")]
         [TestCase(@"Merge branch 'release/Sprint_2.0_Holdings_Computed_Balances'")]
         [TestCase(@"Merge branch 'feature/fix-for-08.14-push'")]
+        [TestCase(@"Merge branch 'develop' of http://10.0.6.3/gitblit/r/... into develop")]
+        [TestCase(@"Merge branch 'master' of http://172.16.3.10:8082/r/asu_tk/p_sd")]
+        [TestCase(@"Merge branch 'master' of http://212.248.89.56:8082/r/asu_tk/p_sd")]
+        [TestCase(@"Merge branch 'DEMO' of http://10.10.10.121/gitlab/mtolland/orcid into DEMO")]
         public void MergeMessagesThatIsNotRelatedToGitVersion(string commitMessage)
         {
 

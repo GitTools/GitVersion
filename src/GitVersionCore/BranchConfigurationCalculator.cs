@@ -4,6 +4,9 @@ namespace GitVersion
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
+
+    using JetBrains.Annotations;
+
     using LibGit2Sharp;
 
     public class BranchConfigurationCalculator
@@ -35,10 +38,21 @@ namespace GitVersion
             throw new Exception(string.Format(format, currentBranch.Name, string.Join(", ", matchingBranches.Select(b => b.Key))));
         }
 
-        static KeyValuePair<string, BranchConfig>[] LookupBranchConfiguration(Config config, Branch currentBranch)
+        static KeyValuePair<string, BranchConfig>[] LookupBranchConfiguration([NotNull] Config config, [NotNull] Branch currentBranch)
         {
+            if (config == null)
+            {
+                throw new ArgumentNullException("config");
+            }
+            
+            if (currentBranch == null)
+            {
+                throw new ArgumentNullException("currentBranch");
+            }
+            
             return config.Branches.Where(b => Regex.IsMatch(currentBranch.Name, "^" + b.Key, RegexOptions.IgnoreCase)).ToArray();
         }
+
 
         static KeyValuePair<string, BranchConfig> InheritBranchConfiguration(bool onlyEvaluateTrackedBranches, IRepository repository, Commit currentCommit, Branch currentBranch, KeyValuePair<string, BranchConfig> keyValuePair, BranchConfig branchConfiguration, Config config, IList<Branch> excludedInheritBranches)
         {
@@ -51,29 +65,33 @@ namespace GitVersion
                 {
                     excludedBranches = CalculateWhenMultipleParents(repository, currentCommit, ref currentBranch, excludedBranches);
                 }
+
                 if (excludedInheritBranches == null)
                 {
                     excludedInheritBranches = repository.Branches.Where(b =>
                     {
                         var branchConfig = LookupBranchConfiguration(config, b);
-                        return branchConfig.Length == 1 && branchConfig[0].Value.Increment == IncrementStrategy.Inherit;
+
+                        // NOTE: if length is 0 we couldn't find the configuration for the branch e.g. "origin/master"
+                        // NOTE: if the length is greater than 1 we cannot decide which merge strategy to pick
+                        return (branchConfig.Length != 1) || (branchConfig.Length == 1 && branchConfig[0].Value.Increment == IncrementStrategy.Inherit);
                     }).ToList();
                 }
                 excludedBranches.ToList().ForEach(excludedInheritBranches.Add);
+                var branchesToEvaluate = repository.Branches.Except(excludedInheritBranches).ToList();
 
                 var branchPoint = currentBranch.FindCommitBranchWasBranchedFrom(repository, excludedInheritBranches.ToArray());
-
                 List<Branch> possibleParents;
                 if (branchPoint == null)
                 {
-                    possibleParents = currentCommit.GetBranchesContainingCommit(repository, true).Except(excludedInheritBranches).ToList();
+                    possibleParents = currentCommit.GetBranchesContainingCommit(repository, branchesToEvaluate, true).ToList();
                 }
                 else
                 {
-                    var branches = branchPoint.GetBranchesContainingCommit(repository, true).Except(excludedInheritBranches).ToList();
+                    var branches = branchPoint.GetBranchesContainingCommit(repository, branchesToEvaluate, true).ToList();
                     if (branches.Count > 1)
                     {
-                        var currentTipBranches = currentCommit.GetBranchesContainingCommit(repository, true).Except(excludedInheritBranches).ToList();
+                        var currentTipBranches = currentCommit.GetBranchesContainingCommit(repository, branchesToEvaluate, true).ToList();
                         possibleParents = branches.Except(currentTipBranches).ToList();
                     }
                     else
@@ -104,11 +122,15 @@ namespace GitVersion
                 else
                     errorMessage = "Failed to inherit Increment branch configuration, ended up with: " + string.Join(", ", possibleParents.Select(p => p.Name));
 
-                var developBranch = repository.Branches.FirstOrDefault(b => Regex.IsMatch(b.Name, "^develop", RegexOptions.IgnoreCase));
-                var branchName = developBranch != null ? developBranch.Name : "master";
+                var chosenBranch = repository.Branches.FirstOrDefault(b => Regex.IsMatch(b.Name, "^develop", RegexOptions.IgnoreCase)
+                                                                           || Regex.IsMatch(b.Name, "master$", RegexOptions.IgnoreCase));
+                if (chosenBranch == null)
+                    throw new InvalidOperationException("Could not find a 'develop' or 'master' branch, neither locally nor remotely.");
 
+                var branchName = chosenBranch.Name;
                 Logger.WriteWarning(errorMessage + Environment.NewLine + Environment.NewLine + "Falling back to " + branchName + " branch config");
-                var value = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, repository.Branches[branchName]).Value;
+
+                var value = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, chosenBranch).Value;
                 return new KeyValuePair<string, BranchConfig>(
                     keyValuePair.Key,
                     new BranchConfig(branchConfiguration)

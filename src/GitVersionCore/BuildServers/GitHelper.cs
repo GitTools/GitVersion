@@ -210,8 +210,16 @@ namespace GitVersion
                 throw new WarningException(message);
             }
 
-            var canonicalName = refs[0].CanonicalName;
+            var reference = refs[0];
+            var canonicalName = reference.CanonicalName;
             Logger.WriteInfo(string.Format("Found remote tip '{0}' pointing at the commit '{1}'.", canonicalName, headTipSha));
+
+            if (canonicalName.StartsWith("refs/tags"))
+            {
+                Logger.WriteInfo(string.Format("Checking out tag '{0}'", canonicalName));
+                repo.Checkout(reference.Target.Sha);
+                return;
+            }
 
             if (!canonicalName.StartsWith("refs/pull/") && !canonicalName.StartsWith("refs/pull-requests/"))
             {

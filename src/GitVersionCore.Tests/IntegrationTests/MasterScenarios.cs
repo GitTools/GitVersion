@@ -6,6 +6,52 @@ using NUnit.Framework;
 public class MasterScenarios
 {
     [Test]
+    public void CanHandleContinuousDelivery()
+    {
+        var config = new Config
+        {
+            Branches =
+            {
+                {
+                    "master", new BranchConfig
+                    {
+                        VersioningMode = VersioningMode.ContinuousDelivery
+                    }
+                }
+            }
+        };
+        using(var fixture = new EmptyRepositoryFixture(config))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.MakeCommits(2);
+            fixture.AssertFullSemver("1.0.1+2");
+        }
+    }
+
+    [Test]
+    public void CanHandleContinuousDeployment()
+    {
+        var config = new Config
+        {
+            Branches =
+            {
+                {
+                    "master", new BranchConfig
+                    {
+                        VersioningMode = VersioningMode.ContinuousDeployment
+                    }
+                }
+            }
+        };
+        using(var fixture = new EmptyRepositoryFixture(config))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.MakeCommits(2);
+            fixture.AssertFullSemver("1.0.1-ci.2");
+        }
+    }
+
+    [Test]
     public void GivenARepositoryWithCommitsButNoTags_VersionShouldBe_0_1()
     {
         using (var fixture = new EmptyRepositoryFixture(new Config()))

@@ -34,5 +34,5 @@ The following shows an example with the corresponding git commands:
 
 This approach works well with Semantic Versioning, as you will not be burning version numbers between releases (except if a build fails to get through UAT or something, then the burnt number means something!).
 
-### Configure GitVersion to [increment per commit](../incrementing-per-commit.md)
+### Configure GitVersion to [increment per commit](../../more-info/incrementing-per-commit.md)
 As mentioned above, this means you will burn multiple versions per release. This might not be an issue for you, but can confuse consumers of your library as the version has semantic meaning.

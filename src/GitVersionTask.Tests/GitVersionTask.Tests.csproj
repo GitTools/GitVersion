@@ -143,6 +143,12 @@
     <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor.approved.txt" />
     <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatch.approved.txt" />
     <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatchTag.approved.txt" />
+    <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatchTag_NugetAssemblyInfo.approved.txt" />
+    <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatch_NugetAssemblyInfo.approved.txt" />
+    <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfo.approved.txt" />
+    <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfoWithMultipleVariables.approved.txt" />
+    <Content Include="AssemblyInfoBuilderTests.VerifyAssemblyVersion_Major_NugetAssemblyInfo.approved.txt" />
+    <Content Include="AssemblyInfoBuilderTests.VerifyCreatedCode_NoNamespaceConflict.approved.txt" />
     <Content Include="AssemblyInfoBuilderTests.VerifyCreatedCode.approved.txt" />
     <Content Include="FodyWeavers.xml" />
   </ItemGroup>

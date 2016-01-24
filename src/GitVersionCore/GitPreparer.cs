@@ -3,6 +3,7 @@ namespace GitVersion
     using System;
     using System.IO;
     using System.Linq;
+
     using LibGit2Sharp;
 
     public class GitPreparer
@@ -83,15 +84,16 @@ namespace GitVersion
             {
                 return false;
             }
-            
         }
 
         public string GetDotGitDirectory()
         {
             if (IsDynamicGitRepository)
+            {
                 return DynamicGitRepositoryPath;
+            }
 
-            return GitDirFinder.TreeWalkForDotGitDir(targetPath);
+            return Repository.Discover(targetPath);
         }
 
         public string GetProjectRootDirectory()
@@ -99,7 +101,12 @@ namespace GitVersion
             if (IsDynamicGitRepository)
                 return targetPath;
 
-            return Directory.GetParent(GitDirFinder.TreeWalkForDotGitDir(targetPath)).FullName;
+            var gitDir = Repository.Discover(targetPath);
+
+            if (string.IsNullOrEmpty(gitDir))
+                throw new DirectoryNotFoundException("Can't find the .git directory in " + targetPath);
+
+            return Directory.GetParent(gitDir).FullName;
         }
 
         static string CreateDynamicRepository(string targetPath, Authentication authentication, string repositoryUrl, string targetBranch, bool noFetch)
@@ -127,7 +134,7 @@ namespace GitVersion
             return gitDirectory;
         }
 
-        private static void CloneRepository(string repositoryUrl, string gitDirectory, Authentication authentication)
+        static void CloneRepository(string repositoryUrl, string gitDirectory, Authentication authentication)
         {
             Credentials credentials = null;
             if (!string.IsNullOrWhiteSpace(authentication.Username) && !string.IsNullOrWhiteSpace(authentication.Password))
@@ -145,12 +152,12 @@ namespace GitVersion
 
             try
             {
-                Repository.Clone(repositoryUrl, gitDirectory,
-                    new CloneOptions
-                    {
-                        Checkout = false,
-                        CredentialsProvider = (url, usernameFromUrl, types) => credentials
-                    });
+                var cloneOptions = new CloneOptions
+                {
+                    Checkout = false,
+                    CredentialsProvider = (url, usernameFromUrl, types) => credentials
+                };
+                Repository.Clone(repositoryUrl, gitDirectory, cloneOptions);
             }
             catch (LibGit2SharpException ex)
             {
@@ -167,7 +174,7 @@ namespace GitVersion
                 {
                     throw new Exception("Not found: The repository was not found");
                 }
-                
+
                 throw new Exception("There was an unknown problem with the Git repository you provided");
             }
         }

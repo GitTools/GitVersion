@@ -130,6 +130,7 @@ noteText.Replace("\n", "\n  "));
         {
             var variables = GetVersion(repository, commitId);
             variables.FullSemVer.ShouldBe(fullSemver);
+            (repository ?? Repository).DumpGraph();
         }
         catch (Exception)
         {
@@ -148,7 +149,7 @@ noteText.Replace("\n", "\n  "));
         return branch;
     }
 
-    VersionVariables GetVersion(IRepository repository = null, string commitId = null)
+    public VersionVariables GetVersion(IRepository repository = null, string commitId = null)
     {
         var gitVersionContext = new GitVersionContext(repository ?? Repository, configuration, IsForTrackedBranchOnly, commitId);
         var executeGitVersion = ExecuteGitVersion(gitVersionContext);

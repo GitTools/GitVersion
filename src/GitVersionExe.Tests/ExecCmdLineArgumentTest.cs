@@ -1,12 +1,15 @@
 ﻿using System.IO;
+
 using GitVersion;
 using NUnit.Framework;
+
 using Shouldly;
 
 [TestFixture]
 public class ExecCmdLineArgumentTest
 {
     const string MsBuild = @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
+
 
     [Test]
     public void RunExecViaCommandLine()
@@ -32,6 +35,7 @@ public class ExecCmdLineArgumentTest
         }
     }
 
+
     [Test]
     public void InvalidArgumentsExitCodeShouldNotBeZero()
     {
@@ -49,7 +53,7 @@ public class ExecCmdLineArgumentTest
   </Target>
 </Project>";
             File.WriteAllText(buildFile, buildFileContent);
-            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /invalid-argument");
+            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments : " /invalid-argument");
 
             result.ExitCode.ShouldBe(1);
             result.Output.ShouldContain("Failed to parse arguments");
@@ -57,29 +61,9 @@ public class ExecCmdLineArgumentTest
     }
 
     [Test]
-    public void UsesGitVersionConfigWhenCreatingDynamicRepository()
+    public void InvalidWorkingDirectoryCrashesWithInformativeMessage()
     {
-        var localRepoPath = PathHelper.GetTempPath();
-        var repoBasePath = Path.GetDirectoryName(PathHelper.GetTempPath());
-        Directory.CreateDirectory(localRepoPath);
-
-        try
-        {
-            using (var remote = new EmptyRepositoryFixture(new Config()))
-            {
-                remote.Repository.MakeACommit();
-                var configFile = Path.Combine(localRepoPath, "GitVersionConfig.yaml");
-                File.WriteAllText(configFile, "next-version: 1.0.0");
-
-                var arguments = string.Format(" /url {0} /dynamicRepoLocation {1} /b master", remote.RepositoryPath, repoBasePath);
-                var results = GitVersionHelper.ExecuteIn(localRepoPath, arguments, false);
-                results.OutputVariables.SemVer.ShouldBe("1.0.0");
-            }
-        }
-        finally
-        {
-            DeleteHelper.DeleteGitRepository(localRepoPath);
-            DeleteHelper.DeleteGitRepository(repoBasePath);
-        }
+        var results = GitVersionHelper.ExecuteIn("InvalidDirectory", null, isTeamCity : false, logToFile : false);
+        results.Output.ShouldContain("InvalidDirectory");
     }
 }

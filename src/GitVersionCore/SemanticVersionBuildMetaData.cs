@@ -17,6 +17,7 @@ namespace GitVersion
         public string Sha;
         public string OtherMetaData;
         public DateTimeOffset CommitDate;
+        public int CommitsSinceVersionSource;
 
         public SemanticVersionBuildMetaData()
         {
@@ -29,6 +30,7 @@ namespace GitVersion
             Branch = branch;
             CommitDate = commitDate;
             OtherMetaData = otherMetadata;
+            CommitsSinceVersionSource = commitsSinceTag ?? 0;
         }
 
         public SemanticVersionBuildMetaData(SemanticVersionBuildMetaData buildMetaData)
@@ -146,7 +148,10 @@ namespace GitVersion
             var parsed = ParseRegex.Match(buildMetaData);
 
             if (parsed.Groups["BuildNumber"].Success)
+            {
                 semanticVersionBuildMetaData.CommitsSinceTag = int.Parse(parsed.Groups["BuildNumber"].Value);
+                semanticVersionBuildMetaData.CommitsSinceVersionSource = semanticVersionBuildMetaData.CommitsSinceTag ?? 0;
+            }
 
             if (parsed.Groups["BranchName"].Success)
                 semanticVersionBuildMetaData.Branch = parsed.Groups["BranchName"].Value;

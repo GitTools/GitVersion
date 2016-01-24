@@ -6,16 +6,18 @@ namespace GitVersion
 
     public static class Logger
     {
+        static readonly Regex ObscurePasswordRegex = new Regex("(https?://)(.+)(:.+@)", RegexOptions.Compiled);
         static string indent = string.Empty;
 
-        public static Action<string> WriteInfo { get; private set; }
-        public static Action<string> WriteWarning { get; private set; }
-        public static Action<string> WriteError { get; private set; }
 
         static Logger()
         {
             Reset();
         }
+
+        public static Action<string> WriteInfo { get; private set; }
+        public static Action<string> WriteWarning { get; private set; }
+        public static Action<string> WriteError { get; private set; }
 
         public static IDisposable IndentLog(string operationDescription)
         {
@@ -33,8 +35,7 @@ namespace GitVersion
         {
             Action<string> logAction = s =>
             {
-                var rgx = new Regex("(https?://)(.+)(:.+@)");
-                s = rgx.Replace(s, "$1$2:*******@");
+                s = ObscurePasswordRegex.Replace(s, "$1$2:*******@");
                 info(s);
             };
             return logAction;
@@ -42,6 +43,10 @@ namespace GitVersion
 
         public static void SetLoggers(Action<string> info, Action<string> warn, Action<string> error)
         {
+            if (info == null) throw new ArgumentNullException("info");
+            if (warn == null) throw new ArgumentNullException("warn");
+            if (error == null) throw new ArgumentNullException("error");
+
             WriteInfo = LogMessage(ObscurePassword(info), "INFO");
             WriteWarning = LogMessage(ObscurePassword(warn), "WARN");
             WriteError = LogMessage(ObscurePassword(error), "ERROR");

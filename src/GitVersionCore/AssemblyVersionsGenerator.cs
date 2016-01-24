@@ -21,8 +21,6 @@
                 default:
                     throw new ArgumentException(string.Format("Unexpected value ({0}).", scheme), "scheme");
             }
-
         }
-
     }
 }
