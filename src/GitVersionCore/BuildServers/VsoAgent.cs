@@ -24,6 +24,11 @@
             return Environment.GetEnvironmentVariable("BUILD_SOURCEBRANCH");
         }
 
+        public override bool PreventFetch()
+        {
+            return true;
+        }
+
         public override string GenerateSetVersionMessage(VersionVariables variables)
         {
             // For VSO, we'll get the Build Number and insert GitVersion variables where

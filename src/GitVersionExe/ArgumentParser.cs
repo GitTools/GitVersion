@@ -6,7 +6,6 @@ namespace GitVersion
     using System.Linq;
     using System.Text.RegularExpressions;
 
-
     public class ArgumentParser
     {
         public static Arguments ParseArguments(string commandLineArguments)
@@ -61,23 +60,23 @@ namespace GitVersion
                 arguments.TargetPath = firstArgument;
                 namedArguments = commandLineArguments.Skip(1).ToList();
             }
-            
+
             var args = CollectSwitchesAndValuesFromArguments(namedArguments);
 
             foreach (var name in args.AllKeys)
             {
                 var values = args.GetValues(name);
-                
+
                 string value = null;
-                
+
                 if (values != null)
                 {
                     //Currently, no arguments use more than one value, so having multiple values is an input error.
                     //In the future, this exception can be removed to support multiple values for a switch.
                     if (values.Length > 1) throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", values[1]));
-                    
+
                     value = values.FirstOrDefault();
-                }                
+                }
 
                 if (IsSwitch("l", name))
                 {
@@ -168,7 +167,7 @@ namespace GitVersion
                     }
                     else
                     {
-                        arguments.UpdateAssemblyInfo = true;                        
+                        arguments.UpdateAssemblyInfo = true;
                     }
                     continue;
                 }
@@ -186,11 +185,11 @@ namespace GitVersion
                     {
                         versionVariable = VersionVariables.AvailableVariables.SingleOrDefault(av => av.Equals(value.Replace("'", ""), StringComparison.CurrentCultureIgnoreCase));
                     }
-                    
+
                     if (versionVariable == null)
                     {
                         var messageFormat = "{0} requires a valid version variable.  Available variables are:\n{1}";
-                        var message = string.Format(messageFormat, name, String.Join(", ", VersionVariables.AvailableVariables.Select(x=>string.Concat("'", x, "'"))));
+                        var message = string.Format(messageFormat, name, String.Join(", ", VersionVariables.AvailableVariables.Select(x => string.Concat("'", x, "'"))));
                         throw new WarningException(message);
                     }
 
@@ -210,7 +209,7 @@ namespace GitVersion
                     }
                     else
                     {
-                        arguments.ShowConfig = true;                        
+                        arguments.ShowConfig = true;
                     }
                     continue;
                 }
@@ -253,15 +252,15 @@ namespace GitVersion
                     currentKey = arg;
                     args.Add(currentKey, null);
                 }
-                    //If this is a value (not a switch)
+                //If this is a value (not a switch)
                 else
                 {
                     //And if the current switch does not have a value yet, set it's value to this argument.
-                    if (String.IsNullOrEmpty(args[currentKey]))
+                    if (string.IsNullOrEmpty(args[currentKey]))
                     {
                         args[currentKey] = arg;
                     }
-                        //Otherwise add the value under the same switch.
+                    //Otherwise add the value under the same switch.
                     else
                     {
                         args.Add(currentKey, arg);
@@ -273,7 +272,7 @@ namespace GitVersion
 
         static bool IsSwitchArgument(string value)
         {
-            return value != null && (value.StartsWith("-") || value.StartsWith("/")) 
+            return value != null && (value.StartsWith("-") || value.StartsWith("/"))
                 && !Regex.Match(value, @"/\w+:").Success; //Exclude msbuild & project parameters in form /blah:, which should be parsed as values, not switch names.
         }
 

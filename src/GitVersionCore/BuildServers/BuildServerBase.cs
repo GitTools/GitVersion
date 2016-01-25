@@ -13,6 +13,11 @@
             return null;
         }
 
+        public virtual bool PreventFetch()
+        {
+            return false;
+        }
+
         public virtual void WriteIntegration(Action<string> writer, VersionVariables variables)
         {
             if (writer == null)

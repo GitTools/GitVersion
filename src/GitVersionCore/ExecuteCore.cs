@@ -22,7 +22,10 @@ namespace GitVersion
         public VersionVariables ExecuteGitVersion(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId)
         {
             // Normalise if we are running on build server
-            var gitPreparer = new GitPreparer(targetUrl, dynamicRepositoryLocation, authentication, noFetch, workingDirectory);
+            var applicableBuildServers = BuildServerList.GetApplicableBuildServers();
+            var buildServer = applicableBuildServers.FirstOrDefault();
+            var fetch = noFetch || (buildServer != null && buildServer.PreventFetch());
+            var gitPreparer = new GitPreparer(targetUrl, dynamicRepositoryLocation, authentication, fetch, workingDirectory);
             var dotGitDirectory = gitPreparer.GetDotGitDirectory();
             var projectRoot = gitPreparer.GetProjectRootDirectory();
             Logger.WriteInfo(string.Format("Project root is: " + projectRoot));
@@ -37,7 +40,7 @@ namespace GitVersion
                 var versionVariables = gitVersionCache.LoadVersionVariablesFromDiskCache(repo, dotGitDirectory);
                 if (versionVariables == null)
                 {
-                    versionVariables = ExecuteInternal(targetBranch, commitId, repo, gitPreparer, projectRoot);
+                    versionVariables = ExecuteInternal(targetBranch, commitId, repo, gitPreparer, projectRoot, buildServer);
                     gitVersionCache.WriteVariablesToDiskCache(repo, dotGitDirectory, versionVariables);
                 }
 
@@ -73,11 +76,8 @@ namespace GitVersion
             return currentBranch;
         }
 
-        VersionVariables ExecuteInternal(string targetBranch, string commitId, IRepository repo, GitPreparer gitPreparer, string projectRoot)
+        VersionVariables ExecuteInternal(string targetBranch, string commitId, IRepository repo, GitPreparer gitPreparer, string projectRoot, IBuildServer buildServer)
         {
-            var applicableBuildServers = BuildServerList.GetApplicableBuildServers();
-            var buildServer = applicableBuildServers.FirstOrDefault();
-
             gitPreparer.Initialise(buildServer != null, ResolveCurrentBranch(buildServer, targetBranch));
 
             var versionFinder = new GitVersionFinder();
