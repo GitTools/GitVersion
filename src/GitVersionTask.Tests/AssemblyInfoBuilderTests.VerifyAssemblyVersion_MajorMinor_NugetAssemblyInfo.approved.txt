@@ -26,6 +26,8 @@ namespace Fake
         public static string Patch = "4";
         public static string PreReleaseTag = "beta.5";
         public static string PreReleaseTagWithDash = "-beta.5";
+        public static string PreReleaseLabel = "beta";
+        public static string PreReleaseNumber = "5";
         public static string BuildMetaData = "6";
         public static string BuildMetaDataPadded = "0006";
         public static string FullBuildMetaData = "6.Branch.master.Sha.commitSha";

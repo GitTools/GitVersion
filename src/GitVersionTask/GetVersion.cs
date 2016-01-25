@@ -37,6 +37,12 @@
         public string PreReleaseTagWithDash { get; set; }
 
         [Output]
+        public string PreReleaseLabel { get; set; }
+
+        [Output]
+        public string PreReleaseNumber { get; set; }
+
+        [Output]
         public string BuildMetaData { get; set; }
 
         [Output]

@@ -68,6 +68,8 @@
       <Output TaskParameter="NuGetVersion" PropertyName="GitVersion_NuGetVersion" />
       <Output TaskParameter="PreReleaseTag" PropertyName="GitVersion_PreReleaseTag" />
       <Output TaskParameter="PreReleaseTagWithDash" PropertyName="GitVersion_PreReleaseTagWithDash" />
+      <Output TaskParameter="PreReleaseLabel" PropertyName="GitVersion_PreReleaseLabel" />
+      <Output TaskParameter="PreReleaseNumber" PropertyName="GitVersion_PreReleaseNumber" />
       <Output TaskParameter="InformationalVersion" PropertyName="GitVersion_InformationalVersion" />
       <Output TaskParameter="CommitDate" PropertyName="GitVersion_CommitDate" />
       <Output TaskParameter="CommitsSinceVersionSource" PropertyName="GitVersion_CommitsSinceVersionSource" />
