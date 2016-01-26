@@ -7,9 +7,7 @@ using Shouldly;
 [TestFixture]
 public class VsoAgentTests
 {
-
     string key = "BUILD_BUILDNUMBER";
-
 
     [SetUp]
     public void SetEnvironmentVariableForTest()
