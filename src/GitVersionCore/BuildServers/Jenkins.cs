@@ -21,9 +21,9 @@
             return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("JENKINS_URL"));
         }
 
-        public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
+        public override string GenerateSetVersionMessage(VersionVariables variables)
         {
-            return versionToUseForBuildNumber;
+            return variables.FullSemVer;
         }
 
         public override string[] GenerateSetParameterMessage(string name, string value)
@@ -32,6 +32,16 @@
             {
                 string.Format("GitVersion_{0}={1}", name, value)
             };
+        }
+
+        public override string GetCurrentBranch(bool usingDynamicRepos)
+        {
+            return Environment.GetEnvironmentVariable("GIT_BRANCH");
+        }
+
+        public override bool PreventFetch()
+        {
+            return true;
         }
 
         public override void WriteIntegration(Action<string> writer, VersionVariables variables)

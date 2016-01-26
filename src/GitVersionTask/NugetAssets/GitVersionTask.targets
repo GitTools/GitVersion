@@ -1,32 +1,43 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)..\</SolutionDir>
-    <IntermediateOutputPath Condition="$(IntermediateOutputPath) == '' Or $(IntermediateOutputPath) == '*Undefined*'">$(MSBuildProjectDirectory)obj\$(Configuration)\</IntermediateOutputPath>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)\..\</SolutionDir>
+    <IntermediateOutputPath Condition="$(IntermediateOutputPath) == '' Or $(IntermediateOutputPath) == '*Undefined*'">$(MSBuildProjectDirectory)\obj\$(Configuration)\</IntermediateOutputPath>
     <GitVersion_NoFetchEnabled Condition="$(GitVersion_NoFetchEnabled) == ''">false</GitVersion_NoFetchEnabled>
+
+    <!-- Property that enables WriteVersionInfoToBuildLog -->
+    <WriteVersionInfoToBuildLog Condition=" '$(WriteVersionInfoToBuildLog)' == '' ">true</WriteVersionInfoToBuildLog>
+
+    <!-- Property that enables UpdateAssemblyInfo -->
+    <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
+
+    <!-- Property that enables GetVersion -->
+    <GetVersion Condition=" '$(GetVersion)' == '' ">true</GetVersion>
+
   </PropertyGroup>
 
   <UsingTask
       TaskName="GitVersionTask.UpdateAssemblyInfo"
       AssemblyFile="$(MSBuildThisFileDirectory)..\..\GitVersionTask.dll" />
-  <UsingTask 
-    TaskName="GitVersionTask.GetVersion" 
+  <UsingTask
+    TaskName="GitVersionTask.GetVersion"
     AssemblyFile="$(MSBuildThisFileDirectory)..\..\GitVersionTask.dll"  />
   <UsingTask
       TaskName="GitVersionTask.WriteVersionInfoToBuildLog"
       AssemblyFile="$(MSBuildThisFileDirectory)..\..\GitVersionTask.dll" />
 
-  <Target Name="UpdateAssemblyInfo"
-          BeforeTargets="CoreCompile">
-    <WriteVersionInfoToBuildLog
-      SolutionDirectory="$(SolutionDir)"
-        />
+  <Target Name="WriteVersionInfoToBuildLog" BeforeTargets="CoreCompile" Condition="$(WriteVersionInfoToBuildLog) == 'true'">
+    <WriteVersionInfoToBuildLog SolutionDirectory="$(SolutionDir)" NoFetch="$(GitVersion_NoFetchEnabled)"/>
+  </Target>
+  
+  <Target Name="UpdateAssemblyInfo" BeforeTargets="CoreCompile" Condition="$(UpdateAssemblyInfo) == 'true'">
     <UpdateAssemblyInfo
-      SolutionDirectory="$(SolutionDir)"
-      ProjectFile="$(MSBuildProjectFullPath)"
-      IntermediateOutputPath="$(IntermediateOutputPath)"
-      RootNamespace="$(RootNamespace)"
-      CompileFiles ="@(Compile)">
+    SolutionDirectory="$(SolutionDir)"
+    NoFetch="$(GitVersion_NoFetchEnabled)"
+    ProjectFile="$(MSBuildProjectFullPath)"
+    IntermediateOutputPath="$(IntermediateOutputPath)"
+    RootNamespace="$(RootNamespace)"
+    CompileFiles ="@(Compile)">
       <Output
         TaskParameter="AssemblyInfoTempFilePath"
         PropertyName="AssemblyInfoTempFilePath" />
@@ -35,7 +46,9 @@
     <ItemGroup>
       <Compile Include="$(AssemblyInfoTempFilePath)" />
     </ItemGroup>
-
+  </Target>
+  
+  <Target Name="GetVersion" BeforeTargets="CoreCompile" Condition="$(GetVersion) == 'true'">
 
     <GetVersion SolutionDirectory="$(SolutionDir)" NoFetch="$(GitVersion_NoFetchEnabled)">
       <Output TaskParameter="Major" PropertyName="GitVersion_Major" />
@@ -55,8 +68,12 @@
       <Output TaskParameter="NuGetVersion" PropertyName="GitVersion_NuGetVersion" />
       <Output TaskParameter="PreReleaseTag" PropertyName="GitVersion_PreReleaseTag" />
       <Output TaskParameter="PreReleaseTagWithDash" PropertyName="GitVersion_PreReleaseTagWithDash" />
+      <Output TaskParameter="PreReleaseLabel" PropertyName="GitVersion_PreReleaseLabel" />
+      <Output TaskParameter="PreReleaseNumber" PropertyName="GitVersion_PreReleaseNumber" />
       <Output TaskParameter="InformationalVersion" PropertyName="GitVersion_InformationalVersion" />
       <Output TaskParameter="CommitDate" PropertyName="GitVersion_CommitDate" />
+      <Output TaskParameter="CommitsSinceVersionSource" PropertyName="GitVersion_CommitsSinceVersionSource" />
+      <Output TaskParameter="CommitsSinceVersionSourcePadded" PropertyName="GitVersion_CommitsSinceVersionSourcePadded" />
     </GetVersion>
 
   </Target>

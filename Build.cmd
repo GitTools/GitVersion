@@ -1,7 +1,7 @@
 @echo on
 
 set framework=v4.0.30319
-set src=%~dp0..\src\
+set src=%~dp0src\
 
 "%src%.nuget\nuget.exe" restore %src%
 
@@ -10,8 +10,8 @@ set src=%~dp0..\src\
 rmdir /s /q "%tmp%GitVersion"
 md "%tmp%GitVersion"
 
-xcopy /E "%~dp0NuGetCommandLineBuild\tools" "%tmp%GitVersion"
+xcopy /E "%~dp0build\NuGetCommandLineBuild\tools" "%tmp%GitVersion"
 
 "%tmp%GitVersion\GitVersion.exe" /l console /output buildserver /updateAssemblyInfo /proj "%src%GitVersion.sln"
 
-rmdir  /s /q "%tmp%GitVersion" 
+rmdir /s /q "%tmp%GitVersion"

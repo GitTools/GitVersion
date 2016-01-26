@@ -2,6 +2,7 @@
 using GitVersion;
 using GitVersionCore.Tests;
 using NUnit.Framework;
+using Shouldly;
 
 [TestFixture]
 public class DocumentationSamples
@@ -391,6 +392,10 @@ public class DocumentationSamples
             // Apply beta.1 tag should be exact tag
             fixture.ApplyTag("2.0.0-beta.1");
             fixture.AssertFullSemver("2.0.0-beta.1");
+
+            // test that the CommitsSinceVersionSource should still return commit count
+            var version = fixture.GetVersion();
+            version.CommitsSinceVersionSource.ShouldBe("2");
 
             // Make a commit after a tag should bump up the beta
             fixture.MakeACommit();

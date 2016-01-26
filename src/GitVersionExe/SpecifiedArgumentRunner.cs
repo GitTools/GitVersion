@@ -4,6 +4,7 @@ namespace GitVersion
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
+
     using GitVersion.Helpers;
 
     class SpecifiedArgumentRunner
@@ -20,7 +21,8 @@ namespace GitVersion
             var targetBranch = arguments.TargetBranch;
             var commitId = arguments.CommitId;
 
-            var variables = ExecuteCore.ExecuteGitVersion(fileSystem, targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId);
+            var executeCore = new ExecuteCore(fileSystem);
+            var variables = executeCore.ExecuteGitVersion(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId);
 
             if (arguments.Output == OutputType.BuildServer)
             {
@@ -92,6 +94,7 @@ namespace GitVersion
                 Logger.WriteInfo, Logger.WriteError,
                 null, args.Exec, args.ExecArgs, workingDirectory,
                 GetEnvironmentalVariables(variables));
+
             if (results != 0)
                 throw new WarningException(string.Format("Execution of {0} failed, non-zero return code", args.Exec));
 

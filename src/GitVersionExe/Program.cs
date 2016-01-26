@@ -114,6 +114,7 @@ namespace GitVersion
             return 0;
         }
 
+
         static void ConfigureLogging(Arguments arguments)
         {
             var writeActions = new List<Action<string>>
@@ -130,17 +131,24 @@ namespace GitVersion
             {
                 try
                 {
-                    Directory.CreateDirectory(Path.GetDirectoryName(arguments.LogFilePath));
-                    if (File.Exists(arguments.LogFilePath))
+                    var logFileFullPath = Path.GetFullPath(arguments.LogFilePath);
+                    var logFile = new FileInfo(logFileFullPath);
+
+                    // NOTE: logFile.Directory will be null if the path is i.e. C:\logfile.log. @asbjornu
+                    if (logFile.Directory != null)
                     {
-                        using (File.CreateText(arguments.LogFilePath)) { }
+                        logFile.Directory.Create();
+                    }
+
+                    using (logFile.CreateText())
+                    {
                     }
 
                     writeActions.Add(x => WriteLogEntry(arguments, x));
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Failed to configure logging: " + ex.Message);
+                    Logger.WriteError(String.Format("Failed to configure logging for '{0}': {1}", arguments.LogFilePath, ex.Message));
                 }
             }
 

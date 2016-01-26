@@ -48,7 +48,7 @@
 
             if (currentBranch.IsDetachedHead())
             {
-                CurrentBranch = CurrentCommit.GetBranchesContainingCommit(repository, OnlyEvaluateTrackedBranches).OnlyOrDefault() ?? currentBranch;
+                CurrentBranch = CurrentCommit.GetBranchesContainingCommit(repository, repository.Branches.ToList(), OnlyEvaluateTrackedBranches).OnlyOrDefault() ?? currentBranch;
             }
             else
             {
@@ -103,6 +103,7 @@
             
             var nextVersion = configuration.NextVersion;
             var assemblyVersioningScheme = configuration.AssemblyVersioningScheme.Value;
+            var assemblyInformationalFormat = configuration.AssemblyInformationalFormat;
             var gitTagPrefix = configuration.TagPrefix;
             var majorMessage = configuration.MajorVersionBumpMessage;
             var minorMessage = configuration.MinorVersionBumpMessage;
@@ -111,7 +112,7 @@
             var commitMessageVersionBump = currentBranchConfig.Value.CommitMessageIncrementing ?? configuration.CommitMessageIncrementing.Value;
 
             Configuration = new EffectiveConfiguration(
-                assemblyVersioningScheme, versioningMode, gitTagPrefix, 
+                assemblyVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix, 
                 tag, nextVersion, incrementStrategy, currentBranchConfig.Key, 
                 preventIncrementForMergedBranchVersion, 
                 tagNumberPattern, configuration.ContinuousDeploymentFallbackTag,
@@ -119,7 +120,8 @@
                 majorMessage, minorMessage, patchMessage,
                 commitMessageVersionBump,
                 configuration.LegacySemVerPadding.Value,
-                configuration.BuildMetaDataPadding.Value);
+                configuration.BuildMetaDataPadding.Value,
+                configuration.CommitsSinceVersionSourcePadding.Value);
         }
     }
 }

@@ -1,24 +1,30 @@
 ﻿using System;
 using System.IO;
+
+using GitVersion;
+
 using LibGit2Sharp;
+
 using NUnit.Framework;
 
 [TestFixture]
 public class GitVersionTaskDirectoryTests
 {
-    string workDirectory;
+    ExecuteCore executeCore;
     string gitDirectory;
+    string workDirectory;
+
 
     [SetUp]
     public void CreateTemporaryRepository()
     {
         workDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-
         gitDirectory = Repository.Init(workDirectory)
-                        .TrimEnd(new[] { Path.DirectorySeparatorChar });
-
+            .TrimEnd(Path.DirectorySeparatorChar);
+        executeCore = new ExecuteCore(new TestFileSystem());
         Assert.NotNull(gitDirectory);
     }
+
 
     [TearDown]
     public void Cleanup()
@@ -26,12 +32,13 @@ public class GitVersionTaskDirectoryTests
         Directory.Delete(workDirectory, true);
     }
 
+
     [Test]
     public void Finds_GitDirectory()
     {
         try
         {
-            VersionAndBranchFinder.GetVersion(workDirectory, null, true, null);
+            executeCore.ExecuteGitVersion(null, null, null, null, true, workDirectory, null);
         }
         catch (Exception ex)
         {
@@ -41,6 +48,7 @@ public class GitVersionTaskDirectoryTests
         }
     }
 
+
     [Test]
     public void Finds_GitDirectory_In_Parent()
     {
@@ -49,7 +57,7 @@ public class GitVersionTaskDirectoryTests
 
         try
         {
-            VersionAndBranchFinder.GetVersion(childDir, null, true, null);
+            executeCore.ExecuteGitVersion(null, null, null, null, true, childDir, null);
         }
         catch (Exception ex)
         {

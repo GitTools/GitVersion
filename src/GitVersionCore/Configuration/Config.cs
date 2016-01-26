@@ -11,6 +11,9 @@
         [YamlMember(Alias = "assembly-versioning-scheme")]
         public AssemblyVersioningScheme? AssemblyVersioningScheme { get; set; }
 
+        [YamlMember(Alias = "assembly-informational-format")]
+        public string AssemblyInformationalFormat { get; set; }
+
         [YamlMember(Alias = "mode")]
         public VersioningMode? VersioningMode { get; set; }
 
@@ -37,6 +40,9 @@
 
         [YamlMember(Alias = "build-metadata-padding")]
         public int? BuildMetaDataPadding { get; set; }
+
+        [YamlMember(Alias = "commits-since-version-source-padding")]
+        public int? CommitsSinceVersionSourcePadding { get; set; }
 
         [YamlMember(Alias = "commit-message-incrementing")]
         public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }

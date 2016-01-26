@@ -7,6 +7,7 @@
     {
         public EffectiveConfiguration(
             AssemblyVersioningScheme assemblyVersioningScheme, 
+            string assemblyInformationalFormat,
             VersioningMode versioningMode, string gitTagPrefix, 
             string tag, string nextVersion, IncrementStrategy increment, 
             string branchPrefixToTrim, 
@@ -19,10 +20,12 @@
             string patchVersionBumpMessage,
             CommitMessageIncrementMode commitMessageIncrementing,
             int legacySemVerPaddding,
-            int buildMetaDataPadding
+            int buildMetaDataPadding,
+            int commitsSinceVersionSourcePadding
             )
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
+            AssemblyInformationalFormat = assemblyInformationalFormat;
             VersioningMode = versioningMode;
             GitTagPrefix = gitTagPrefix;
             Tag = tag;
@@ -39,11 +42,13 @@
             CommitMessageIncrementing = commitMessageIncrementing;
             LegacySemVerPadding = legacySemVerPaddding;
             BuildMetaDataPadding = buildMetaDataPadding;
+            CommitsSinceVersionSourcePadding = commitsSinceVersionSourcePadding;
         }
 
         public VersioningMode VersioningMode { get; private set; }
 
         public AssemblyVersioningScheme AssemblyVersioningScheme { get; private set; }
+        public string AssemblyInformationalFormat { get; private set; }
 
         /// <summary>
         /// Git tag prefix
@@ -77,6 +82,8 @@
 
         public int LegacySemVerPadding { get; private set; }
         public  int BuildMetaDataPadding { get; private set; }
+
+        public int CommitsSinceVersionSourcePadding { get; private set; }
 
         public CommitMessageIncrementMode CommitMessageIncrementing { get; private set; }
     }

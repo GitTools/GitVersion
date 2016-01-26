@@ -1,5 +1,7 @@
 ﻿namespace GitVersion
 {
+    using System;
+
     public static class VariableProvider
     {
         public static VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)
@@ -15,28 +17,55 @@
 
                 // For continuous deployment the commits since tag gets promoted to the pre-release number
                 semanticVersion.PreReleaseTag.Number = semanticVersion.BuildMetaData.CommitsSinceTag;
+                semanticVersion.BuildMetaData.CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag ?? 0;
                 semanticVersion.BuildMetaData.CommitsSinceTag = null;
             }
 
+            var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, config);
+
+            string informationalVersion;
+
+            if (string.IsNullOrEmpty(config.AssemblyInformationalFormat))
+            {
+                informationalVersion = semverFormatValues.DefaultInformationalVersion;
+            }
+            else
+            {
+                try
+                {
+                    informationalVersion = config.AssemblyInformationalFormat.FormatWith(semverFormatValues);
+                }
+                catch (FormatException formex)
+                {
+                    throw new WarningException(string.Format("Unable to format AssemblyInformationalVersion.  Check your format string: {0}", formex.Message));
+                }
+            }
+
             var variables = new VersionVariables(
-                major: semanticVersion.Major.ToString(),
-                minor: semanticVersion.Minor.ToString(),
-                patch: semanticVersion.Patch.ToString(),
-                preReleaseTag: semanticVersion.PreReleaseTag,
-                preReleaseTagWithDash: semanticVersion.PreReleaseTag.HasTag() ? "-" + semanticVersion.PreReleaseTag : null,
-                buildMetaData: semanticVersion.BuildMetaData,
-                buildMetaDataPadded: semanticVersion.BuildMetaData.ToString("p" + config.BuildMetaDataPadding),
-                fullBuildMetaData: semanticVersion.BuildMetaData.ToString("f"),
-                majorMinorPatch: string.Format("{0}.{1}.{2}", semanticVersion.Major, semanticVersion.Minor, semanticVersion.Patch),
-                semVer: semanticVersion.ToString(),
-                legacySemVer: semanticVersion.ToString("l"),
-                legacySemVerPadded: semanticVersion.ToString("lp" + config.LegacySemVerPadding),
-                assemblySemVer: semanticVersion.GetAssemblyVersion(config.AssemblyVersioningScheme),
-                fullSemVer: semanticVersion.ToString("f"),
-                informationalVersion: semanticVersion.ToString("i"),
-                branchName: semanticVersion.BuildMetaData.Branch,
-                sha: semanticVersion.BuildMetaData.Sha,
-                commitDate: semanticVersion.BuildMetaData.CommitDate.UtcDateTime.ToString("yyyy-MM-dd"));
+                semverFormatValues.Major,
+                semverFormatValues.Minor,
+                semverFormatValues.Patch,
+                semverFormatValues.BuildMetaData,
+                semverFormatValues.BuildMetaDataPadded,
+                semverFormatValues.FullBuildMetaData,
+                semverFormatValues.BranchName,
+                semverFormatValues.Sha,
+                semverFormatValues.MajorMinorPatch,
+                semverFormatValues.SemVer,
+                semverFormatValues.LegacySemVer,
+                semverFormatValues.LegacySemVerPadded,
+                semverFormatValues.FullSemVer,
+                semverFormatValues.AssemblySemVer,
+                semverFormatValues.PreReleaseTag,
+                semverFormatValues.PreReleaseTagWithDash,
+                semverFormatValues.PreReleaseLabel,
+                semverFormatValues.PreReleaseNumber,
+                informationalVersion,
+                semverFormatValues.CommitDate,
+                semverFormatValues.NuGetVersion,
+                semverFormatValues.NuGetVersionV2,
+                semverFormatValues.CommitsSinceVersionSource,
+                semverFormatValues.CommitsSinceVersionSourcePadded);
 
             return variables;
         }

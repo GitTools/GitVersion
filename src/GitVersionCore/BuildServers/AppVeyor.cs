@@ -11,16 +11,15 @@
             return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPVEYOR"));
         }
 
-        public override string GenerateSetVersionMessage(string versionToUseForBuildNumber)
+        public override string GenerateSetVersionMessage(VersionVariables variables)
         {
             var buildNumber = Environment.GetEnvironmentVariable("APPVEYOR_BUILD_NUMBER");
-
             var restBase = Environment.GetEnvironmentVariable("APPVEYOR_API_URL");
 
             var request = (HttpWebRequest)WebRequest.Create(restBase + "api/build");
             request.Method = "PUT";
 
-            var data = string.Format("{{ \"version\": \"{0} (Build {1})\" }}", versionToUseForBuildNumber, buildNumber);
+            var data = string.Format("{{ \"version\": \"{0}.build.{1}\" }}", variables.FullSemVer, buildNumber);
             var bytes = Encoding.UTF8.GetBytes(data);
             request.ContentLength = bytes.Length;
             request.ContentType = "application/json";
@@ -39,7 +38,7 @@
                 }
             }
 
-            return string.Format("Set AppVeyor build number to '{0} (Build {1})'.", versionToUseForBuildNumber, buildNumber);
+            return string.Format("Set AppVeyor build number to '{0}'.", variables.FullSemVer);
         }
 
         public override string[] GenerateSetParameterMessage(string name, string value)

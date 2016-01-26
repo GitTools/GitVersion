@@ -3,13 +3,19 @@
     using System;
     using System.ComponentModel;
     using GitVersion;
-    using GitVersion.Helpers;
-    using Microsoft.Build.Framework;
-    using Microsoft.Build.Utilities;
-    using Logger = GitVersion.Logger;
 
-    public class GetVersion : Task
+    using Microsoft.Build.Framework;
+
+    public class GetVersion : GitVersionTaskBase
     {
+        TaskLogger logger;
+
+        public GetVersion()
+        {
+            logger = new TaskLogger(this);
+            Logger.SetLoggers(this.LogInfo, this.LogWarning, s => this.LogError(s));
+        }
+
         [Required]
         public string SolutionDirectory { get; set; }
 
@@ -29,6 +35,12 @@
 
         [Output]
         public string PreReleaseTagWithDash { get; set; }
+
+        [Output]
+        public string PreReleaseLabel { get; set; }
+
+        [Output]
+        public string PreReleaseNumber { get; set; }
 
         [Output]
         public string BuildMetaData { get; set; }
@@ -75,18 +87,11 @@
         [Output]
         public string CommitDate { get; set; }
 
-        TaskLogger logger;
-        IFileSystem fileSystem;
+        [Output]
+        public string CommitsSinceVersionSource { get; set; }
 
-        public GetVersion()
-        {
-            logger = new TaskLogger(this);
-            fileSystem = new FileSystem();
-            Logger.SetLoggers(
-                this.LogInfo,
-                this.LogWarning,
-                s => this.LogError(s));
-        }
+        [Output]
+        public string CommitsSinceVersionSourcePadded { get; set; }
 
         public override bool Execute()
         {
@@ -94,7 +99,7 @@
             {
                 VersionVariables variables;
 
-                if (VersionAndBranchFinder.TryGetVersion(SolutionDirectory, out variables, NoFetch, new Authentication(), fileSystem))
+                if (ExecuteCore.TryGetVersion(SolutionDirectory, out variables, NoFetch, new Authentication()))
                 {
                     var thisType = typeof(GetVersion);
                     foreach (var variable in variables)

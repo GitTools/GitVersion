@@ -30,7 +30,9 @@
                     SemanticVersion version;
                     if (SemanticVersion.TryParse(t.Name, context.Configuration.GitTagPrefix, out version))
                     {
-                        return new VersionTaggedCommit((Commit)t.PeeledTarget(), version, t.Name);
+                        var commit = t.PeeledTarget() as Commit;
+                        if (commit != null)
+                            return new VersionTaggedCommit(commit, version, t.Name);
                     }
                     return null;
                 })

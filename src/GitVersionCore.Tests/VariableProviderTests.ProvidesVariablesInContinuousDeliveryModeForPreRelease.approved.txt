@@ -4,6 +4,8 @@
   "Patch":3,
   "PreReleaseTag":"unstable.4",
   "PreReleaseTagWithDash":"-unstable.4",
+  "PreReleaseLabel":"unstable",
+  "PreReleaseNumber":4,
   "BuildMetaData":5,
   "BuildMetaDataPadded":"0005",
   "FullBuildMetaData":"5.Branch.develop.Sha.commitSha",
@@ -18,5 +20,7 @@
   "Sha":"commitSha",
   "NuGetVersionV2":"1.2.3-unstable0004",
   "NuGetVersion":"1.2.3-unstable0004",
+  "CommitsSinceVersionSource":5,
+  "CommitsSinceVersionSourcePadded":"0005",
   "CommitDate":"2014-03-06"
 }

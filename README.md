@@ -18,7 +18,7 @@ Versioning when using git, solved. GitVersion looks at your git history and work
  - [Documentation](http://gitversion.readthedocs.org/en/latest)
  - [Contributing](https://github.com/GitTools/GitVersion/blob/master/CONTRIBUTING.md)
  - [Why GitVersion](http://gitversion.readthedocs.org/en/latest/why)
- - [Usage](http://gitversion.readthedocs.org/en/latest/usage)
+ - [Usage](http://gitversion.readthedocs.org/en/latest/usage/usage/)
  - [How it works](http://gitversion.readthedocs.org/en/latest/more-info/how-it-works/)
  - [FAQ](http://gitversion.readthedocs.org/en/latest/faq/)
  - [Who is using GitVersion](http://gitversion.readthedocs.org/en/latest/who/)

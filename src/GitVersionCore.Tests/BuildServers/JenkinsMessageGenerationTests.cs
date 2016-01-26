@@ -13,7 +13,8 @@ public class JenkinsMessageGenerationTests
     public void GenerateSetVersionMessageReturnsVersionAsIs_AlthoughThisIsNotUsedByJenkins()
     {
         var j = new Jenkins();
-        j.GenerateSetVersionMessage("0.0.0-Beta4.7").ShouldBe("0.0.0-Beta4.7");
+        var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Beta4.7");
+        j.GenerateSetVersionMessage(vars).ShouldBe("0.0.0-Beta4.7");
     }
 
     [Test]

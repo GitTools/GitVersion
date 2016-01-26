@@ -23,17 +23,22 @@
 
         public SemanticVersion FindVersion(GitVersionContext context)
         {
+
+            SemanticVersion taggedSemanticVersion = null;
             // If current commit is tagged, don't do anything except add build metadata
             if (context.IsCurrentCommitTagged)
             {
                 // Will always be 0, don't bother with the +0 on tags
                 var semanticVersionBuildMetaData = metaDataCalculator.Create(context.CurrentCommit, context);
                 semanticVersionBuildMetaData.CommitsSinceTag = null;
+
+          
+
                 var semanticVersion = new SemanticVersion(context.CurrentCommitTaggedVersion)
                 {
                     BuildMetaData = semanticVersionBuildMetaData
                 };
-                return semanticVersion;
+                taggedSemanticVersion = semanticVersion;
             }
 
             var baseVersion = baseVersionFinder.GetBaseVersion(context);
@@ -52,7 +57,13 @@
 
             semver.BuildMetaData = metaDataCalculator.Create(baseVersion.BaseVersionSource, context);
 
-            return semver;
+            if (taggedSemanticVersion != null)
+            {
+                // set the commit count on the tagged ver
+                taggedSemanticVersion.BuildMetaData.CommitsSinceVersionSource = semver.BuildMetaData.CommitsSinceVersionSource;
+            }
+
+            return taggedSemanticVersion ?? semver;
         }
 
         void UpdatePreReleaseTag(GitVersionContext context, SemanticVersion semanticVersion, string branchNameOverride)
@@ -61,8 +72,12 @@
             if (tagToUse == "useBranchName")
             {
                 Logger.WriteInfo("Using branch name to calculate version tag");
-                var name = branchNameOverride ?? context.CurrentBranch.Name;
-                tagToUse = name.RegexReplace(context.Configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
+                tagToUse = branchNameOverride ?? context.CurrentBranch.Name;
+                if (!string.IsNullOrWhiteSpace(context.Configuration.BranchPrefixToTrim))
+                {
+                    tagToUse = tagToUse.RegexReplace(context.Configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
+                }
+                tagToUse = tagToUse.RegexReplace("[^a-zA-Z0-9-]", "-");
             }
             int? number = null;
             if (!string.IsNullOrEmpty(context.Configuration.TagNumberPattern))

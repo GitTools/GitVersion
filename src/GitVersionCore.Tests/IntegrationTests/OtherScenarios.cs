@@ -31,6 +31,21 @@
         }
 
         [Test]
+        public void AllowNotHavingMaster()
+        {
+            using (var fixture = new EmptyRepositoryFixture(new Config()))
+            {
+                fixture.Repository.MakeACommit();
+                fixture.Repository.MakeATaggedCommit("1.0.0");
+                fixture.Repository.MakeACommit();
+                fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));
+                fixture.Repository.Branches.Remove(fixture.Repository.Branches["master"]);
+
+                fixture.AssertFullSemver("1.1.0-unstable.1");
+            }
+        }
+
+        [Test]
         public void DoNotBlowUpWhenDevelopAndFeatureBranchPointAtSameCommit()
         {
             using (var fixture = new RemoteRepositoryFixture())

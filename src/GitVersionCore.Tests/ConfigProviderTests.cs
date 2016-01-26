@@ -43,6 +43,7 @@ branches:
 
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
+        config.AssemblyInformationalFormat.ShouldBe(null);
         config.NextVersion.ShouldBe("2.0.0");
         config.TagPrefix.ShouldBe("[vV|version-]");
         config.VersioningMode.ShouldBe(VersioningMode.ContinuousDelivery);
@@ -88,6 +89,21 @@ branches:
     }
 
     [Test]
+    public void CanRemoveTag()
+    {
+        const string text = @"
+next-version: 2.0.0
+branches:
+    releases?[/-]:
+        tag: """"";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+
+        config.NextVersion.ShouldBe("2.0.0");
+        config.Branches["releases?[/-]"].Tag.ShouldBe(string.Empty);
+    }
+
+    [Test]
     public void CanProvideConfigForNewBranch()
     {
         const string text = @"
@@ -111,12 +127,41 @@ branches:
     }
 
     [Test]
+    public void CanUpdateAssemblyInformationalVersioningScheme()
+    {
+        const string text = @"
+assembly-versioning-scheme: MajorMinor
+assembly-informational-format: '{NugetVersion}'";
+
+        SetupConfigFileContent(text);
+
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
+        config.AssemblyInformationalFormat.ShouldBe("{NugetVersion}");
+    }
+
+    [Test]
+    public void CanUpdateAssemblyInformationalVersioningSchemeWithMultipleVariables()
+    {
+        const string text = @"
+assembly-versioning-scheme: MajorMinor
+assembly-informational-format: '{Major}.{Minor}.{Patch}'";
+
+        SetupConfigFileContent(text);
+
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
+        config.AssemblyInformationalFormat.ShouldBe("{Major}.{Minor}.{Patch}");
+    }
+
+    [Test]
     public void CanReadDefaultDocument()
     {
         const string text = "";
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
+        config.AssemblyInformationalFormat.ShouldBe(null);
         config.Branches["dev(elop)?(ment)?$"].Tag.ShouldBe("unstable");
         config.Branches["releases?[/-]"].Tag.ShouldBe("beta");
         config.TagPrefix.ShouldBe(ConfigurationProvider.DefaultTagPrefix);

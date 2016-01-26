@@ -2,6 +2,7 @@ namespace GitVersion.Helpers
 {
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
 
     public class FileSystem : IFileSystem
     {
@@ -43,6 +44,26 @@ namespace GitVersion.Helpers
         public Stream OpenWrite(string path)
         {
             return File.OpenWrite(path);
+        }
+
+        public Stream OpenRead(string path)
+        {
+            return File.OpenRead(path);
+        }
+
+        public void CreateDirectory(string path)
+        {
+            Directory.CreateDirectory(path);
+        }
+
+        public long GetLastDirectoryWrite(string path)
+        {
+            return new DirectoryInfo(path)
+                .GetDirectories("*.*", SearchOption.AllDirectories)
+                .Select(d => d.LastWriteTimeUtc)
+                .DefaultIfEmpty()
+                .Max()
+                .Ticks;
         }
     }
 }

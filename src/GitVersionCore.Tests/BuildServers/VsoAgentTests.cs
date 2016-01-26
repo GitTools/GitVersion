@@ -1,18 +1,34 @@
-﻿using GitVersion;
+﻿using System;
+using GitVersion;
+using GitVersionCore.Tests;
 using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
 public class VsoAgentTests
 {
+    string key = "BUILD_BUILDNUMBER";
+
+    [SetUp]
+    public void SetEnvironmentVariableForTest()
+    {
+        Environment.SetEnvironmentVariable(key, "Some Build_Value $(GitVersion_FullSemVer) 20151310.3 $(UnknownVar) Release", EnvironmentVariableTarget.Process);
+    }
+
+    [TearDown]
+    public void ClearEnvironmentVariableForTest()
+    {
+        Environment.SetEnvironmentVariable(key, null, EnvironmentVariableTarget.Process);
+    }
+
     [Test]
     public void Develop_branch()
     {
         var versionBuilder = new VsoAgent();
-        var vsVersion = versionBuilder.GenerateSetVersionMessage("0.0.0-Unstable4");
-        //  Assert.AreEqual("##vso[task.setvariable variable=GitBuildNumber;]0.0.0-Unstable4", vsVersion);
+        var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Unstable4");
+        var vsVersion = versionBuilder.GenerateSetVersionMessage(vars);
 
-        vsVersion.ShouldBe(null);
+        vsVersion.ShouldBe("##vso[build.updatebuildnumber]Some Build_Value 0.0.0-Unstable4 20151310.3 $(UnknownVar) Release");
     }
 
     [Test]

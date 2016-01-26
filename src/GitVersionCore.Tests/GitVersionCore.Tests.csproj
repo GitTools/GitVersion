@@ -79,6 +79,10 @@
       <HintPath>..\packages\Mono.Cecil.0.9.6.1\lib\net45\Mono.Cecil.Rocks.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NSubstitute, Version=1.9.2.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
+      <HintPath>..\packages\NSubstitute.1.9.2.0\lib\net45\NSubstitute.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="nunit.core, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnitTestAdapter.2.0.0\lib\nunit.core.dll</HintPath>
       <Private>True</Private>
@@ -128,8 +132,8 @@
     <Compile Include="BuildServers\VsoAgentTests.cs" />
     <Compile Include="BuildServers\TeamCityTests.cs" />
     <Compile Include="GitToolsTestingExtensions.cs" />
+    <Compile Include="DocumentationTests.cs" />
     <Compile Include="ConfigProviderTests.cs" />
-    <Compile Include="GitDirFinderTests.cs" />
     <Compile Include="GitPreparerTests.cs" />
     <Compile Include="GitVersionContextTests.cs" />
     <Compile Include="Helpers\DirectoryHelper.cs" />
@@ -168,10 +172,12 @@
     <Compile Include="IntegrationTests\MasterScenarios.cs" />
     <Compile Include="ApprovalTestsConfig.cs" />
     <Compile Include="SemanticVersionTests.cs" />
+    <Compile Include="TestableVersionVariables.cs" />
     <Compile Include="TestEffectiveConfiguration.cs" />
     <Compile Include="TestFileSystem.cs" />
     <Compile Include="TestStream.cs" />
     <Compile Include="VariableProviderTests.cs" />
+    <Compile Include="ExecuteCoreTests.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculatorTests.cs" />
     <Compile Include="VersionCalculation\NextVersionCalculatorTests.cs" />
     <Compile Include="VersionCalculation\Strategies\ConfigNextVersionBaseVersionStrategyTests.cs" />
@@ -194,6 +200,12 @@
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
     <Content Include="JsonVersionBuilderTests.Json.approved.txt" />
+    <Content Include="VariableProviderTests.ProvidesVariablesInContinuousDeliveryModeForPreRelease.approved.txt" />
+    <Content Include="VariableProviderTests.ProvidesVariablesInContinuousDeliveryModeForPreReleaseWithPadding.approved.txt" />
+    <Content Include="VariableProviderTests.ProvidesVariablesInContinuousDeliveryModeForStable.approved.txt" />
+    <Content Include="VariableProviderTests.ProvidesVariablesInContinuousDeploymentModeForPreRelease.approved.txt" />
+    <Content Include="VariableProviderTests.ProvidesVariablesInContinuousDeploymentModeForStable.approved.txt" />
+    <Content Include="VariableProviderTests.ProvidesVariablesInContinuousDeploymentModeForStableWhenCurrentCommitIsTagged.approved.txt" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

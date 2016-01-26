@@ -4,6 +4,8 @@
   "Patch":3,
   "PreReleaseTag":"ci.5",
   "PreReleaseTagWithDash":"-ci.5",
+  "PreReleaseLabel":"ci",
+  "PreReleaseNumber":5,
   "BuildMetaData":"",
   "BuildMetaDataPadded":"",
   "FullBuildMetaData":"Branch.develop.Sha.commitSha",
@@ -18,5 +20,7 @@
   "Sha":"commitSha",
   "NuGetVersionV2":"1.2.3-ci0005",
   "NuGetVersion":"1.2.3-ci0005",
+  "CommitsSinceVersionSource":5,
+  "CommitsSinceVersionSourcePadded":"0005",
   "CommitDate":"2014-03-06"
 }
