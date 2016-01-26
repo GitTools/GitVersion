@@ -8,9 +8,14 @@
         public abstract string GenerateSetVersionMessage(VersionVariables variables);
         public abstract string[] GenerateSetParameterMessage(string name, string value);
 
-        public virtual string GetCurrentBranch()
+        public virtual string GetCurrentBranch(bool usingDynamicRepos)
         {
             return null;
+        }
+
+        public virtual bool PreventFetch()
+        {
+            return false;
         }
 
         public virtual void WriteIntegration(Action<string> writer, VersionVariables variables)

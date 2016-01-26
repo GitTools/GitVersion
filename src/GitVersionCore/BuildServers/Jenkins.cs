@@ -34,6 +34,16 @@
             };
         }
 
+        public override string GetCurrentBranch(bool usingDynamicRepos)
+        {
+            return Environment.GetEnvironmentVariable("GIT_BRANCH");
+        }
+
+        public override bool PreventFetch()
+        {
+            return true;
+        }
+
         public override void WriteIntegration(Action<string> writer, VersionVariables variables)
         {
             base.WriteIntegration(writer, variables);

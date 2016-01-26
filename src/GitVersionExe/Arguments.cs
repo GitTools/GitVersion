@@ -34,6 +34,6 @@ namespace GitVersion
         public string UpdateAssemblyInfoFileName;
 
         public bool ShowConfig;
-        public bool NoFetch { get; set; }
+        public bool NoFetch;
     }
 }
