@@ -117,6 +117,36 @@ branches:
     }
 
     [Test]
+    public void NextVersionCanBeInteger()
+    {
+        const string text = "next-version: 2";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+
+        config.NextVersion.ShouldBe("2.0");
+    }
+
+    [Test]
+    public void NextVersionCanHaveEnormousMinorVersion()
+    {
+        const string text = "next-version: 2.118998723";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+
+        config.NextVersion.ShouldBe("2.118998723");
+    }
+
+    [Test]
+    public void NextVersionCanHavePatch()
+    {
+        const string text = "next-version: 2.12.654651698";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+
+        config.NextVersion.ShouldBe("2.12.654651698");
+    }
+    
+    [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public void CanWriteOutEffectiveConfiguration()
     {
