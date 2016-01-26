@@ -34,7 +34,7 @@
             };
         }
 
-        public override string GetCurrentBranch()
+        public override string GetCurrentBranch(bool usingDynamicRepos)
         {
             return Environment.GetEnvironmentVariable("GIT_BRANCH");
         }

@@ -63,14 +63,14 @@ namespace GitVersion
             }
         }
 
-        static string ResolveCurrentBranch(IBuildServer buildServer, string targetBranch)
+        static string ResolveCurrentBranch(IBuildServer buildServer, string targetBranch, bool isDynamicRepository)
         {
             if (buildServer == null)
             {
                 return targetBranch;
             }
 
-            var currentBranch = buildServer.GetCurrentBranch() ?? targetBranch;
+            var currentBranch = buildServer.GetCurrentBranch(isDynamicRepository) ?? targetBranch;
             Logger.WriteInfo("Branch from build environment: " + currentBranch);
 
             return currentBranch;
@@ -78,7 +78,7 @@ namespace GitVersion
 
         VersionVariables ExecuteInternal(string targetBranch, string commitId, IRepository repo, GitPreparer gitPreparer, string projectRoot, IBuildServer buildServer)
         {
-            gitPreparer.Initialise(buildServer != null, ResolveCurrentBranch(buildServer, targetBranch));
+            gitPreparer.Initialise(buildServer != null, ResolveCurrentBranch(buildServer, targetBranch, gitPreparer.IsDynamicGitRepository));
 
             var versionFinder = new GitVersionFinder();
             var configuration = ConfigurationProvider.Provide(projectRoot, fileSystem);

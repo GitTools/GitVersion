@@ -17,17 +17,28 @@ TeamCity has support for meta-runners which allow custom tasks. There is a GitVe
  - [Project Link](https://github.com/JetBrains/meta-runner-power-pack/tree/master/gitversion)
 
 ## Running inside TeamCity
-* Make sure to use **agent checkouts** (required, server checkouts do not copy the needed `.git` directory)
-  - If you want to use *checkout on server*, see [dynamic repositories](../../more-info/dynamic-repositories.md)
-* For the moment you need to promote the `%teamcity.build.vcs.branch.{configurationid}%` build parameter to an environment variable with the same name for pull requests to be handled correctly
+When running in TeamCIty you have two options, run using **agent checkout** or use dynamic repositories.
+
+### Agent checkout
+For GitVersion to pick up pull requests properly you need to promote the `%teamcity.build.vcs.branch.{configurationid}%` variable to a system variable called `Git_Branch`
+
+Just go to your build configuration, Parameters, click Add, Name should be `system.Git_Branch`, value should be `%teamcity.build.vcs.branch.{vcsid}%` where vcsid is your VCS root id. You should get auto completion for this.
+
+### Dynamic repositories
+To use server side checkout, you must use the dynamic repositories feature of GitVersion. Server side checkout sends just the files to the agent and not the actual .git folder. Dynamic repositories will clone your repo into a temp folder and use it to calculate version information.
+
+See [dynamic repositories](../../more-info/dynamic-repositories.md) for more info.
+
+### Output
 * We update the TC build number to the GitVersion number automatically
-* We output the individual values of the GitVersion version as the build parameter: `GitVersion.*` (Eg: `GitVersion.Major`) if you need access to them in your build script
+* We output the individual values of the GitVersion version variables as build parameters with format `GitVersion.*` (Eg: `GitVersion.Major`) if you need access to them in your build script. Being system variables they will be passed as msbuild/environmental variables to other build steps
 
 ### NuGet in TeamCity
 * Add dummy [parameter](http://confluence.jetbrains.com/display/TCD8/Configuring+Build+Parameters) to
 the project called `GitVersion.NuGetVersion`. If many of your projects uses git-flow and SemVer you
-can add the parameter to the "root-project" (TeamCity 8.x+)
+can add the parameter to the "root-project" (TeamCity 8.x+). You need a dummy param because GitVersion creates the variables at runtime, and you cannot reference a paramter which is not available statically. GitVersion will overwrite the dummy value
 * Then setup you nuget pack build set the "version" to `%GitVersion.NuGetVersion%`
+* If you do your pack in a build script then you can just use environmental variables because teamcity will pass them through automatically.
 
 ### When TeamCity -> GitHub can't use https
 GitVersion requires the presence of master branch in order to determine the version number.  If TeamCity uses https to clone git repos then GitVersion will pull down master branch for you during the build.
@@ -36,30 +47,6 @@ If however your TeamCity uses SSH to clone git repos and https is unavailable th
 
 > [GitVersionTask.UpdateAssemblyInfo] Error occurred: GitVersion.MissingBranchException: Could not fetch from 'git@github.dev.xero.com:Xero/Bus.git' since LibGit2 does not support the transport. You have most likely cloned using SSH. If there is a remote branch named 'master' then fetch it manually, otherwise please create a local branch named 'master'. ---> LibGit2Sharp.LibGit2SharpException: An error was raised by libgit2. Category = Net (Error).
 This transport isn't implemented. Sorry
-
-You need to create a TeamCity build step before your compile step which manually creates a local master branch which tracks remote master.  Like so (in powershell):
-
-```Powershell
-$branchBeingBuilt = . git symbolic-ref --short -q HEAD  
-. git pull 2>&1 | write-host
-foreach ($remoteBranch in . git branch -r) {
-  . git checkout $remoteBranch.Trim().Replace("origin/", "") 2>&1 | write-host
-  . git pull 2>&1 | write-host  
-}  
-. git checkout $branchBeingBuilt 2>&1 | write-host  
-exit 0
-```
-
-you should get build output like
-
-```
-[Step 1/1]: Ensure all branches are available for GitVersion (Powershell) (5s)
-[Step 1/1] From file:///C:/BuildAgent2/system/git/git-12345678
-[Step 1/1]  * [new branch]      master     -> origin/master
-[Step 1/1] Switched to a new branch 'master'
-[Step 1/1] Branch master set up to track remote branch master from origin.
-[Step 1/1] Switched to branch 'develop'
-```
 
 ## Guides
  - [Continuous Delivery Setup in TeamCity](http://jake.ginnivan.net/blog/2014/07/09/my-typical-teamcity-build-setup)
