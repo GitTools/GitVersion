@@ -79,7 +79,7 @@ namespace GitVersion
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "hotfix(es)?[/-]"), defaultTag: "beta");
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "support[/-]"), defaultTag: string.Empty, defaultPreventIncrement: true);
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "dev(elop)?(ment)?$"),
-                defaultTag: "unstable",
+                defaultTag: "alpha",
                 defaultIncrementStrategy: IncrementStrategy.Minor,
                 defaultVersioningMode: VersioningMode.ContinuousDeployment,
                 defaultTrackMergeTarget: true,

@@ -216,7 +216,7 @@ branches: {}";
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
         config.AssemblyInformationalFormat.ShouldBe(null);
-        config.Branches["dev(elop)?(ment)?$"].Tag.ShouldBe("unstable");
+        config.Branches["dev(elop)?(ment)?$"].Tag.ShouldBe("alpha");
         config.Branches["releases?[/-]"].Tag.ShouldBe("beta");
         config.TagPrefix.ShouldBe(ConfigurationProvider.DefaultTagPrefix);
         config.NextVersion.ShouldBe(null);

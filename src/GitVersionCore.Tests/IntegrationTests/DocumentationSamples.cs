@@ -23,7 +23,7 @@ public class DocumentationSamples
 
             // Branch to develop
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.3.0-unstable.1");
+            fixture.AssertFullSemver("1.3.0-alpha.1");
 
             // Open Pull Request
             fixture.BranchTo("feature/myfeature", "feature");
@@ -38,7 +38,7 @@ public class DocumentationSamples
             fixture.SequenceDiagram.Destroy("feature/myfeature");
             fixture.SequenceDiagram.NoteOver("Feature branches should\r\n" +
                              "be deleted once merged", "feature/myfeature");
-            fixture.AssertFullSemver("1.3.0-unstable.3");
+            fixture.AssertFullSemver("1.3.0-alpha.3");
         }
     }
 
@@ -57,7 +57,7 @@ public class DocumentationSamples
 
             // Branch to develop
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.3.0-unstable.1");
+            fixture.AssertFullSemver("1.3.0-alpha.1");
 
             // Open Pull Request
             fixture.BranchTo("pull/2/merge", "pr");
@@ -72,7 +72,7 @@ public class DocumentationSamples
             fixture.SequenceDiagram.Destroy("pull/2/merge");
             fixture.SequenceDiagram.NoteOver("Feature branches/pr's should\r\n" +
                              "be deleted once merged", "pull/2/merge");
-            fixture.AssertFullSemver("1.3.0-unstable.3");
+            fixture.AssertFullSemver("1.3.0-alpha.3");
         }
     }
 
@@ -130,7 +130,7 @@ public class DocumentationSamples
             // Make another commit on develop
             fixture.Checkout("develop");
             fixture.MakeACommit();
-            fixture.AssertFullSemver("1.4.0-unstable.1");
+            fixture.AssertFullSemver("1.4.0-alpha.1");
 
             // Make a commit to release-1.3.0
             fixture.Checkout("release/1.3.0");
@@ -159,7 +159,7 @@ public class DocumentationSamples
 
             // Not 0 for commit count as we can't know the increment rules of the merged branch
             fixture.Checkout("develop");
-            fixture.AssertFullSemver("1.4.0-unstable.4");
+            fixture.AssertFullSemver("1.4.0-alpha.4");
         }
     }
 
@@ -186,7 +186,7 @@ public class DocumentationSamples
             // Make another commit on develop
             fixture.Checkout("develop");
             fixture.MakeACommit();
-            fixture.AssertFullSemver("2.1.0-unstable.1");
+            fixture.AssertFullSemver("2.1.0-alpha.1");
 
             // Make a commit to release-2.0.0
             fixture.Checkout("release/2.0.0");
@@ -216,7 +216,7 @@ public class DocumentationSamples
 
             // Not 0 for commit count as we can't know the increment rules of the merged branch
             fixture.Checkout("develop");
-            fixture.AssertFullSemver("2.1.0-unstable.4");
+            fixture.AssertFullSemver("2.1.0-alpha.4");
         }
     }
 

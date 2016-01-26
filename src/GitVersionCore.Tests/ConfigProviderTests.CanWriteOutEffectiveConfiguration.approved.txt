@@ -61,7 +61,7 @@ branches:
     is-release-branch: false
   dev(elop)?(ment)?$:
     mode: ContinuousDeployment
-    tag: unstable
+    tag: alpha
     increment: Minor
     prevent-increment-of-merged-branch-version: false
     track-merge-target: true
