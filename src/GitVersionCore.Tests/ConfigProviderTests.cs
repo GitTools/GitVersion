@@ -113,7 +113,7 @@ branches:
         tag: bugfix";
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
-        
+
         config.Branches["bug[/-]"].Tag.ShouldBe("bugfix");
     }
 
@@ -162,7 +162,7 @@ assembly-informational-format: '{Major}.{Minor}.{Patch}'";
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
         config.AssemblyInformationalFormat.ShouldBe(null);
-        config.Branches["dev(elop)?(ment)?$"].Tag.ShouldBe("unstable");
+        config.Branches["dev(elop)?(ment)?$"].Tag.ShouldBe("alpha");
         config.Branches["releases?[/-]"].Tag.ShouldBe("beta");
         config.TagPrefix.ShouldBe(ConfigurationProvider.DefaultTagPrefix);
         config.NextVersion.ShouldBe(null);
