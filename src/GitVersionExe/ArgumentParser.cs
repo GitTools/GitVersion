@@ -279,7 +279,6 @@ namespace GitVersion
                     {
                         throw new WarningException("Can't specify multiple assembly info files when using -ensureassemblyinfo switch, either use a single assembly info file or do not specify -ensureassemblyinfo and create assembly info files manually");
                     }
-
                     continue;
                 }
 

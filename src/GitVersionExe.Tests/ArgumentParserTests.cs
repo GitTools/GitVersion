@@ -247,7 +247,7 @@ public class ArgumentParserTests
         var arguments = ArgumentParser.ParseArguments("-ensureAssemblyInfo false");
         arguments.EnsureAssemblyInfo.ShouldBe(false);
     }
-
+    
     [Test]
     public void dynamicRepoLocation()
     {
