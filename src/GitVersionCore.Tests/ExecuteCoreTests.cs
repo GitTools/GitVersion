@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-
+using GitTools.Testing;
 using GitVersion;
 using GitVersion.Helpers;
 
@@ -78,7 +78,7 @@ CommitDate: 2015-11-10
 
         Logger.SetLoggers(infoLogger, s => { }, s => { });
 
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeACommit();
             var vv = executeCore.ExecuteGitVersion(null, null, null, null, false, fixture.RepositoryPath, null);

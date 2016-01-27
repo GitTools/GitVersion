@@ -11,7 +11,6 @@
         // This is an attempt to automatically resolve the issue where you cannot build
         // when multiple branches point at the same commit
         // Current implementation favors master, then branches without - or / in their name
-
         [Test]
         public void DoNotBlowUpWhenMasterAndDevelopPointAtSameCommit()
         {
@@ -33,7 +32,7 @@
         [Test]
         public void AllowNotHavingMaster()
         {
-            using (var fixture = new EmptyRepositoryFixture(new Config()))
+            using (var fixture = new EmptyRepositoryFixture())
             {
                 fixture.Repository.MakeACommit();
                 fixture.Repository.MakeATaggedCommit("1.0.0");

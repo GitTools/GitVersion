@@ -20,7 +20,7 @@ namespace GitVersion
                 Console.WriteLine("Updating assembly info files");
 
             var assemblyInfoFiles = GetAssemblyInfoFiles(workingDirectory, args, fileSystem);
-            Console.WriteLine(string.Format("Found {0} files", assemblyInfoFiles.Count()));
+            Console.WriteLine("Found {0} files", assemblyInfoFiles.Count());
 
             var assemblyVersion = variables.AssemblySemVer;
             var assemblyVersionRegex = new Regex(@"AssemblyVersion\(""[^""]*""\)");

@@ -42,7 +42,7 @@ namespace GitVersion
             {
                 if (normaliseGitDirectory)
                 {
-                    GitRepository.NormalizeGitDirectory(GetDotGitDirectory(), authentication, noFetch, currentBranch);
+                    GitRepositoryHelper.NormalizeGitDirectory(GetDotGitDirectory(), authentication, noFetch, currentBranch);
                 }
                 return;
             }
@@ -127,7 +127,7 @@ namespace GitVersion
             if (Directory.Exists(targetPath))
             {
                 Logger.WriteInfo("Git repository already exists");
-                GitRepository.NormalizeGitDirectory(gitDirectory, authentication, noFetch, targetBranch);
+                GitRepositoryHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch, targetBranch);
 
                 return gitDirectory;
             }
@@ -135,7 +135,7 @@ namespace GitVersion
             CloneRepository(repositoryUrl, gitDirectory, authentication);
 
             // Normalize (download branches) before using the branch
-            GitRepository.NormalizeGitDirectory(gitDirectory, authentication, noFetch, targetBranch);
+            GitRepositoryHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch, targetBranch);
 
             return gitDirectory;
         }

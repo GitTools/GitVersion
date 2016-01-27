@@ -22,11 +22,11 @@ public class MasterScenarios
                 }
             }
         };
-        using(var fixture = new EmptyRepositoryFixture(config))
+        using(var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.MakeCommits(2);
-            fixture.AssertFullSemver("1.0.1+2");
+            fixture.AssertFullSemver(config, "1.0.1+2");
         }
     }
 
@@ -45,11 +45,11 @@ public class MasterScenarios
                 }
             }
         };
-        using(var fixture = new EmptyRepositoryFixture(config))
+        using(var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.MakeCommits(2);
-            fixture.AssertFullSemver("1.0.1-ci.2");
+            fixture.AssertFullSemver(config, "1.0.1-ci.2");
         }
     }
 

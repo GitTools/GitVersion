@@ -41,7 +41,7 @@ public class RemoteRepositoryScenarios
                 return repo;
             }))
         {
-            GitRepository.NormalizeGitDirectory(fixture.LocalRepositoryFixture.RepositoryPath, new AuthenticationInfo(), noFetch: false, currentBranch: string.Empty);
+            GitRepositoryHelper.NormalizeGitDirectory(fixture.LocalRepositoryFixture.RepositoryPath, new AuthenticationInfo(), noFetch: false, currentBranch: string.Empty);
 
             fixture.AssertFullSemver("1.0.0-beta.1+5");
             fixture.AssertFullSemver("1.0.0-beta.1+5", fixture.LocalRepositoryFixture.Repository);

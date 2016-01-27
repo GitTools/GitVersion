@@ -52,11 +52,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="GitTools.Core, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\GitTools.Core.0.4.0-beta0001\lib\net45\GitTools.Core.dll</HintPath>
+      <HintPath>..\packages\GitTools.Core.0.4.0-beta0004\lib\net45\GitTools.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="GitTools.Testing, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\GitTools.Testing.0.2.0-beta0001\lib\net4\GitTools.Testing.dll</HintPath>
+      <HintPath>..\packages\GitTools.Testing.0.2.0-beta0002\lib\net4\GitTools.Testing.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="LibGit2Sharp, Version=0.22.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -134,7 +134,6 @@
     <Compile Include="GitToolsTestingExtensions.cs" />
     <Compile Include="DocumentationTests.cs" />
     <Compile Include="ConfigProviderTests.cs" />
-    <Compile Include="GitPreparerTests.cs" />
     <Compile Include="GitVersionContextTests.cs" />
     <Compile Include="Helpers\DirectoryHelper.cs" />
     <Compile Include="Init\InitScenarios.cs" />

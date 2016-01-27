@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\LibGit2Sharp.NativeBinaries.1.0.72\build\LibGit2Sharp.NativeBinaries.props" Condition="Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.72\build\LibGit2Sharp.NativeBinaries.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -37,7 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="GitTools.Core, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\GitTools.Core.0.4.0-beta0001\lib\net4\GitTools.Core.dll</HintPath>
+      <HintPath>..\packages\GitTools.Core.0.4.0-beta0004\lib\net4\GitTools.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="LibGit2Sharp, Version=0.22.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -104,17 +104,17 @@
   <Target Name="AfterBuild" DependsOnTargets="Clean" Condition="$(NCrunch)==''">
     <MakeDir Directories="$(TargetDir)ILMergeTemp\" />
     <PropertyGroup>
-        <Runtime Condition="'$(OS)'=='Unix'">mono</Runtime>
+      <Runtime Condition="'$(OS)'=='Unix'">mono</Runtime>
     </PropertyGroup>
     <!-- Copy target file so that our temporary file gets the correct permissions -->
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(TargetDir)ILMergeTemp\"/>
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(TargetDir)ILMergeTemp\" />
     <Exec Command="$(Runtime) &quot;$(SolutionDir)/packages/ILRepack.2.0.7/tools/ILRepack.exe&quot;  /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)GitTools.Core.dll&quot; &quot;$(TargetDir)LibGit2Sharp.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:library /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
     <ItemGroup>
       <TempFiles Include="$(TargetDir)ILMergeTemp\*.*" />
     </ItemGroup>
     <MakeDir Directories="$(BuildDir)NuGetTaskBuild" />
     <ItemGroup>
-      <NativeBinaries Include="$(TargetDir)NativeBinaries\**\*.*"/>
+      <NativeBinaries Include="$(TargetDir)NativeBinaries\**\*.*" />
     </ItemGroup>
     <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)NuGetTaskBuild\NativeBinaries\%(RecursiveDir)%(Filename)%(Extension)')" />
     <!-- Workaround for issue with DllMap. Mono will currently always prepend lib to start of target dll name. -->

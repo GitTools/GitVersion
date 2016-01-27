@@ -16,6 +16,7 @@
 
         public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Config configuration, IRepository repository = null, string commitId = null, bool isForTrackedBranchOnly = true)
         {
+            ConfigurationProvider.ApplyDefaultsTo(configuration);
             var gitVersionContext = new GitVersionContext(repository ?? fixture.Repository, configuration, isForTrackedBranchOnly, commitId);
             var executeGitVersion = ExecuteGitVersion(gitVersionContext);
             var variables = VariableProvider.GetVariablesFor(executeGitVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
@@ -30,7 +31,6 @@
                 throw;
             }
         }
-
 
         public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver, IRepository repository = null, string commitId = null, bool isForTrackedBranchOnly = true)
         {
@@ -64,13 +64,12 @@
             return vf.FindVersion(context);
         }
 
-
         /// <summary>
         /// Simulates running on build server
         /// </summary>
         public static void InitialiseRepo(this RemoteRepositoryFixture fixture)
         {
-            new GitPreparer(null, null, new Authentication(), false, fixture.LocalRepositoryFixture.RepositoryPath).Initialise(true, null);
+            // TODO !!new GitPreparer(null, null, new Authentication(), false, fixture.LocalRepositoryFixture.RepositoryPath).Initialise(true, null);
         }
     }
 }

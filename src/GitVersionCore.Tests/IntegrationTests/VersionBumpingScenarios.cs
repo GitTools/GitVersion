@@ -29,7 +29,7 @@ public class VersionBumpingScenarios
     [Test]
     public void CanUseCommitMessagesToBumpVersion()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeACommit();
             fixture.MakeATaggedCommit("1.0.0");

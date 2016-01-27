@@ -23,7 +23,7 @@ public class OtherBranchScenarios
     [Test]
     public void BranchesWithIllegalCharsShouldNotBeUsedInVersionNames()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             const string TaggedVersion = "1.0.3";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);

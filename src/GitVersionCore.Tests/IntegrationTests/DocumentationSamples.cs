@@ -394,7 +394,7 @@ public class DocumentationSamples
             fixture.AssertFullSemver("2.0.0-beta.1");
 
             // test that the CommitsSinceVersionSource should still return commit count
-            var version = fixture.GetVersion();
+            var version = fixture.GetVersion(new Config());
             version.CommitsSinceVersionSource.ShouldBe("2");
 
             // Make a commit after a tag should bump up the beta
