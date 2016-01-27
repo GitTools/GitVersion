@@ -17,6 +17,8 @@
             TagNumberPattern = branchConfiguration.TagNumberPattern;
             TrackMergeTarget = branchConfiguration.TrackMergeTarget;
             CommitMessageIncrementing = branchConfiguration.CommitMessageIncrementing;
+            IsDevelop = branchConfiguration.IsDevelop;
+            IsReleaseBranch = branchConfiguration.IsReleaseBranch;
         }
 
         [YamlMember(Alias = "mode")]
