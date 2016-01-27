@@ -21,8 +21,9 @@
             CommitMessageIncrementMode commitMessageIncrementing,
             int legacySemVerPaddding,
             int buildMetaDataPadding,
-            int commitsSinceVersionSourcePadding
-            )
+            int commitsSinceVersionSourcePadding,
+            bool isCurrentBranchDevelop,
+            bool isCurrentBranchRelease)
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
             AssemblyInformationalFormat = assemblyInformationalFormat;
@@ -43,7 +44,12 @@
             LegacySemVerPadding = legacySemVerPaddding;
             BuildMetaDataPadding = buildMetaDataPadding;
             CommitsSinceVersionSourcePadding = commitsSinceVersionSourcePadding;
+            IsCurrentBranchDevelop = isCurrentBranchDevelop;
+            IsCurrentBranchRelease = isCurrentBranchRelease;
         }
+
+        public bool IsCurrentBranchDevelop { get; private set; }
+        public bool IsCurrentBranchRelease { get; private set; }
 
         public VersioningMode VersioningMode { get; private set; }
 

@@ -42,6 +42,10 @@ The global configuration options are:
 
  - **`commit-message-incrementing:`** Sets whether it should be possible to increment the version with special syntax in the commit message. See the `*-version-bump-message` options above for details on the syntax. Default set to `Enabled`; set to `Disabled` to disable.
 
+ - **`is-develop:`** Indicates this branch config represents develop in GitFlow
+
+ **`is-release-branch:`** Indicates this branch config represents a release branch in GitFlow
+
 ## Branch configuration
 
 Then we have branch specific configuration, which looks something like this:

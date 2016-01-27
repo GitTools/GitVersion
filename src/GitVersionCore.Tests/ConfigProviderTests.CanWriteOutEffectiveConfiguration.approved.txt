@@ -22,6 +22,7 @@ branches:
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
+    is-release-branch: true
   features?[/-]:
     mode: ContinuousDelivery
     tag: useBranchName
@@ -49,7 +50,8 @@ branches:
     track-merge-target: false
   dev(elop)?(ment)?$:
     mode: ContinuousDeployment
-    tag: unstable
+    tag: alpha
     increment: Minor
     prevent-increment-of-merged-branch-version: false
     track-merge-target: true
+    is-develop: true
