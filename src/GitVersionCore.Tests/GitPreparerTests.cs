@@ -136,12 +136,17 @@ public class GitPreparerTests
     [Test]
     public void WorksCorrectlyWithLocalRepository()
     {
-        var tempDir = Path.GetTempPath();
-        var gitPreparer = new GitPreparer(null, null, null, false, tempDir);
-        var dynamicRepositoryPath = gitPreparer.GetDotGitDirectory();
+        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        {
+            var targetPath = Path.Combine(fixture.RepositoryPath, "tools\\gitversion\\");
+            Directory.CreateDirectory(targetPath);
+            var gitPreparer = new GitPreparer(null, null, null, false, targetPath);
+            var dotGitDirectory = gitPreparer.GetDotGitDirectory();
+            var projectRoot = gitPreparer.GetProjectRootDirectory();
 
-        dynamicRepositoryPath.ShouldBe(null);
-        gitPreparer.IsDynamicGitRepository.ShouldBe(false);
+            dotGitDirectory.ShouldBe(Path.Combine(fixture.RepositoryPath, ".git"));
+            projectRoot.ShouldBe(fixture.RepositoryPath);
+        }
     }
 
     [Test]
