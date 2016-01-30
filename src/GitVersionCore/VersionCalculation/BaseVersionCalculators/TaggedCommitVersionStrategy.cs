@@ -32,19 +32,7 @@
                 .Where(a => a != null)
                 .ToList();
 
-            if (tagsOnBranch.Count == 0)
-            {
-                yield break;
-            }
-            if (tagsOnBranch.Count == 1)
-            {
-                yield return CreateBaseVersion(context, tagsOnBranch[0]);
-            }
-
-            foreach (var result in tagsOnBranch.Select(t => CreateBaseVersion(context, t)))
-            {
-                yield return result;
-            }
+            return tagsOnBranch.Select(t => CreateBaseVersion(context, t));
         }
 
         BaseVersion CreateBaseVersion(GitVersionContext context, VersionTaggedCommit version)
