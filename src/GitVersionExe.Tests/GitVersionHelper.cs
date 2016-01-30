@@ -20,14 +20,12 @@ public static class GitVersionHelper
         return ExecuteIn(args);
     }
 
-
     public static ExecutionResults ExecuteIn(string workingDirectory, string arguments, bool isTeamCity = false, bool logToFile = true)
     {
         var logFile = logToFile ? Path.Combine(workingDirectory, "log.txt") : null;
         var args = new ArgumentBuilder(workingDirectory, arguments, isTeamCity, logFile);
         return ExecuteIn(args);
     }
-
 
     static ExecutionResults ExecuteIn(ArgumentBuilder arguments)
     {
