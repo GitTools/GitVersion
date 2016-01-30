@@ -167,15 +167,22 @@ namespace GitVersion
             }
         }
 
+        private static Dictionary<string, GitObject> _cachedPeeledTarget = new Dictionary<string, GitObject>();
+
         public static GitObject PeeledTarget(this Tag tag)
         {
+            GitObject cachedTarget;
+            if(_cachedPeeledTarget.TryGetValue(tag.Target.Sha, out cachedTarget))
+            {
+                return cachedTarget;
+            }
             var target = tag.Target;
 
             while (target is TagAnnotation)
             {
                 target = ((TagAnnotation)(target)).Target;
             }
-
+            _cachedPeeledTarget.Add(tag.Target.Sha, target);
             return target;
         }
 
