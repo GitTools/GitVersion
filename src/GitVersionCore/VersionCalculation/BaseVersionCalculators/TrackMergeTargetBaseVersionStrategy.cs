@@ -25,14 +25,36 @@
             {
                 yield break;
             }
+            var olderThan = context.CurrentCommit.When();
+            var allTags = context.Repository.Tags
+                .Where(tag => ((Commit)tag.PeeledTarget()).When() <= olderThan)
+                .ToList();
+            var tagsOnBranch = context.CurrentBranch
+                .Commits
+                .SelectMany(commit =>
+                {
+                    return allTags.Where(t => IsValidTag(context, t, commit));
+                })
+                .Select(t =>
+                {
+                    SemanticVersion version;
+                    if (SemanticVersion.TryParse(t.Name, context.Configuration.GitTagPrefix, out version))
+                    {
+                        var commit = t.PeeledTarget() as Commit;
+                        if (commit != null)
+                            return new VersionTaggedCommit(commit, version, t);
+                    }
+                    return null;
+                })
+                .Where(a => a != null);
 
-            foreach (var version in base.GetVersions(context))
+            foreach (var result in tagsOnBranch.Select(t => CreateBaseVersion(context, t)))
             {
-                yield return version;
+                yield return result;
             }
         }
 
-        protected override bool IsValidTag(Tag tag, Commit commit)
+        static bool IsValidTag(GitVersionContext context, Tag tag, Commit commit)
         {
             return IsDirectMergeFromCommit(tag, commit);
         }
