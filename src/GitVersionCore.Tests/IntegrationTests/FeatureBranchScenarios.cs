@@ -170,4 +170,30 @@ public class FeatureBranchScenarios
             fixture.AssertFullSemver("1.2.0-longrunning.2");
         }
     }
+
+    [TestCase("alpha", "JIRA-123", "alpha")]
+    [TestCase("useBranchName", "JIRA-123", "JIRA-123")]
+    [TestCase("alpha.{BranchName}", "JIRA-123", "alpha.JIRA-123")]
+    public void ShouldUseConfiguredTag(string tag, string featureName, string preReleaseTagName)
+    {
+        var config = new Config
+        {
+            Branches =
+            {
+                { "features?[/-]", new BranchConfig { Tag = tag } }
+            }
+        };
+
+        using (var fixture = new EmptyRepositoryFixture(config))
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            var featureBranchName = string.Format("feature/{0}", featureName);
+            fixture.Repository.CreateBranch(featureBranchName);
+            fixture.Repository.Checkout(featureBranchName);
+            fixture.Repository.MakeCommits(5);
+
+            var expectedFullSemVer = string.Format("1.0.1-{0}.1+5", preReleaseTagName);
+            fixture.AssertFullSemver(expectedFullSemVer);
+        }
+    }
 }

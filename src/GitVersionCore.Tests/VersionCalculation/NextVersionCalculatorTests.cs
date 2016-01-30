@@ -72,5 +72,27 @@
 
             version.ToString("f").ShouldBe("1.0.0-foo.1+2");
         }
+
+        [Test]
+        public void PreReleaseTagCanUseBranchNameVariable()
+        {
+            var baseCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit());
+            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(2, "develop", "b1a34e", DateTimeOffset.Now);
+            var sut = new NextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
+            var config = new Config();
+            config.Branches.Add("custom/", new BranchConfig
+            {
+                Tag = "alpha.{BranchName}"
+            });
+            var context = new GitVersionContextBuilder()
+                .WithConfig(config)
+                .WithDevelopBranch()
+                .AddBranch("custom/foo")
+                .Build();
+
+            var version = sut.FindVersion(context);
+
+            version.ToString("f").ShouldBe("1.0.0-alpha.foo.1+2");
+        }
     }
 }
