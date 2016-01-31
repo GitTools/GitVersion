@@ -1,10 +1,10 @@
 ﻿namespace GitVersionCore.Tests.Init
 {
-    using ApprovalTests;
     using GitVersion;
     using GitVersion.Configuration.Init;
     using GitVersion.Configuration.Init.Wizard;
     using NUnit.Framework;
+    using Shouldly;
     using TestStack.ConventionTests;
     using TestStack.ConventionTests.ConventionData;
 
@@ -18,7 +18,7 @@
             var testConsole = new TestConsole("3", "2.0.0", "0");
             ConfigurationProvider.Init("c:\\proj", testFileSystem, testConsole);
 
-            Approvals.Verify(testFileSystem.ReadAllText("c:\\proj\\GitVersionConfig.yaml"));
+            testFileSystem.ReadAllText("c:\\proj\\GitVersionConfig.yaml").ShouldMatchApproved();
         }
 
         [Test]

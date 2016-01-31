@@ -1,8 +1,8 @@
 ﻿using System;
-using ApprovalTests;
 using GitVersion;
 using GitVersionCore.Tests;
 using NUnit.Framework;
+using Shouldly;
 
 [TestFixture]
 public class VariableProviderTests
@@ -27,7 +27,7 @@ public class VariableProviderTests
 
         var vars = VariableProvider.GetVariablesFor(semVer, config, false);
 
-        Approvals.Verify(JsonOutputFormatter.ToJson(vars));
+        JsonOutputFormatter.ToJson(vars).ShouldMatchApproved();
     }
 
     [Test]
@@ -50,7 +50,7 @@ public class VariableProviderTests
 
         var vars = VariableProvider.GetVariablesFor(semVer, config, false);
 
-        Approvals.Verify(JsonOutputFormatter.ToJson(vars));
+        JsonOutputFormatter.ToJson(vars).ShouldMatchApproved();
     }
 
     [Test]
@@ -72,7 +72,7 @@ public class VariableProviderTests
 
         var vars = VariableProvider.GetVariablesFor(semVer, config, false);
 
-        Approvals.Verify(JsonOutputFormatter.ToJson(vars));
+        JsonOutputFormatter.ToJson(vars).ShouldMatchApproved();
     }
 
     [Test]
@@ -93,7 +93,7 @@ public class VariableProviderTests
 
         var vars = VariableProvider.GetVariablesFor(semVer, config, false);
 
-        Approvals.Verify(JsonOutputFormatter.ToJson(vars));
+        JsonOutputFormatter.ToJson(vars).ShouldMatchApproved();
     }
 
     [Test]
@@ -114,7 +114,7 @@ public class VariableProviderTests
 
         var vars = VariableProvider.GetVariablesFor(semVer, config, false);
 
-        Approvals.Verify(JsonOutputFormatter.ToJson(vars));
+        JsonOutputFormatter.ToJson(vars).ShouldMatchApproved();
     }
 
     [Test]
@@ -138,6 +138,6 @@ public class VariableProviderTests
 
         var vars = VariableProvider.GetVariablesFor(semVer, config, true);
 
-        Approvals.Verify(JsonOutputFormatter.ToJson(vars));
+        JsonOutputFormatter.ToJson(vars).ShouldMatchApproved();
     }
 }

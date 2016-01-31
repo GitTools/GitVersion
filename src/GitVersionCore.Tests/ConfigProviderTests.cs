@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using ApprovalTests;
 using GitVersion;
 using GitVersion.Helpers;
 using NUnit.Framework;
@@ -123,7 +122,7 @@ branches:
     {
         var config = ConfigurationProvider.GetEffectiveConfigAsString(repoPath, fileSystem);
 
-        Approvals.Verify(config);
+        config.ShouldMatchApproved();
     }
 
     [Test]

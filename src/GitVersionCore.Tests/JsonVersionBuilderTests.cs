@@ -1,8 +1,8 @@
 using System;
-using ApprovalTests;
 using GitVersion;
 using GitVersionCore.Tests;
 using NUnit.Framework;
+using Shouldly;
 
 [TestFixture]
 public class JsonVersionBuilderTests
@@ -23,6 +23,6 @@ public class JsonVersionBuilderTests
 
         var variables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
         var json = JsonOutputFormatter.ToJson(variables);
-        Approvals.Verify(json);
+        json.ShouldMatchApproved();
     }
 }
