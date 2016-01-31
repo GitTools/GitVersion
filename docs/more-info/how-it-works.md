@@ -34,5 +34,5 @@ Each strategy needs to return an instance of `BaseVersion` which has the followi
  - `ShouldIncrement` - Some strategies should have the version incremented, others do not. eg `ConfigNextVersionBaseVersionStrategy` returns false, `HighestTagBaseVersionStrategy` returns true
  - `SemanticVersion` - SemVer of the base version strategy
  - `BaseVersionSource` - Sha of the source. Commits will be counted from this Sha. Can be null (eg ConfigNextVersionBaseVersionStrategy returns null)
- - `BranchNameOverride` - When `useBranchNameAsTag` is used, this allows the branch name to be changed by a base version.  
+ - `BranchNameOverride` - When `useBranchName` or `{BranchName}` is used in the tag configuration, this allows the branch name to be changed by a base version.  
    VersionInBranchBaseVersionStrategy uses this to strip out anything before the first - or /. So `foo` ends up being evaluated as `foo`. If in doubt, just use null
