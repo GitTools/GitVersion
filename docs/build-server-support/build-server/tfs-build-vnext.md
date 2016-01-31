@@ -22,7 +22,7 @@ See [MSBuild Task](/usage/msbuild-task) for further instructions how to use the 
 2. For TFS 2015 On-Prem configure Basic Authentication in TFS as shown [here](https://github.com/Microsoft/tfs-cli/blob/master/docs/configureBasicAuth.md).
 3. Download the GitVersion TFS build task from the latest release on the [GitVersion releases page](https://github.com/GitTools/GitVersion/releases) and unzip.
 4. Run `tfx login` as shown [here](https://github.com/Microsoft/tfs-cli/blob/master/README.md#login).
-5. From the directory outside of where you unzipped the task, run `tfx build tasks upload .\GitVersionTfsTask --overwrite` where GitVersionTfsTask is the directory containing the files.
+5. From the directory outside of where you unzipped the task, run `tfx build tasks upload --task-path .\GitVersionTfsTask --overwrite` where GitVersionTfsTask is the directory containing the files.
 6. It should successfully install.
 
 #### Using the GitVersion custom build step
@@ -35,7 +35,10 @@ The VSO build step can update your build number with GitVersion variables. See b
 
 ## Running inside TFS
 ### Using the GitVersion Variables
-GitVersion passes variables in the form of `GitVersion.*` (Eg: `GitVersion.Major`) to TFS Build and also writes `GITVERSION_*` (Eg: `GITVERSION_MAJOR`) environment variables that are available for any subsequent build step. 
+GitVersion passes variables in the form of `GitVersion.*` (Eg: `GitVersion.Major`) to TFS Build and also writes `GITVERSION_*` (Eg: `GITVERSION_MAJOR`) environment variables that are available for any subsequent build step.
+
+To use these variables you can just refer to them using the standard variable syntax. For instance `$(GitVersion_NuGetVersion)` in your nuget pack task to set the version number. Since update 1 there are no known limitations.
+
 See [Variables](/more-info/variables/) for an overview of available variables.
 
 
@@ -44,16 +47,12 @@ To use GitVersion's variables in the build name, just add them in the form `$(GI
 `/output buildserver` and it will replace those variables with the calculated version.
 The TFS GitVersion Build Step (above) handles this too, so if you're already using that, there's nothing extra to configure.
 
-If you currently use `$(rev:.r)` in your build number, that won't work correctly if you 
+If GitVersion does not find any substitutions it will just default to using `FullSemVer`
+
+**IMPORTANT:** If you currently use `$(rev:.r)` in your build number, that won't work correctly if you 
 use GitVersion variables as well due to the delayed expansion of the GitVersion vars. Instead,
 You might be able to use `$(GitVersion_BuildMetaData)` to achieve a similar result.
 See [Variables](/more-info/variables/) for more info on the variables.
 
-
 #### Known limitations
-* Due to [current limitations in TFS2015 On-Prem](https://github.com/Microsoft/vso-agent-tasks/issues/380) it's currently not possible to automatically set the build version in TFS2015 On-Prem. Instead a warning similar to `##[warning]Unable to process logging event:##vso[build.updatebuildnumber 1.0.0-unstable.1` is logged.
-* Due to a known limitation in TFS 2015 On-Prem it's currently not possible to use variables added during build in inputs of subsequent build tasks, since the variables are processed at the beginning of the build. 
-As a workaround environment variables can be used in custom scripts.
-
-## Create a NuGet package in TFS
-If you use a Command Line task to build your NuPkg, use `%GITVERSION_NUGETVERSION%` as the version parameter: `nuget.exe pack path\to\my.nuspec -version %GITVERSION_NUGETVERSION%`
+If you are using on premises TFS, make sure you are using at least **TFS 2015 Update 1**, otherwise a few things will not work.
