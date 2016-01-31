@@ -27,6 +27,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersionCore", "GitVersio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersionExe.Tests", "GitVersionExe.Tests\GitVersionExe.Tests.csproj", "{75C2BE85-1DAF-4E34-8305-B17AFAA982A6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TfsTask", "TfsTask", "{A0ED1410-E970-45E8-A357-05605E2B7BFF}"
+	ProjectSection(SolutionItems) = preProject
+		GitVersionTfsTask\GitVersion.ps1 = GitVersionTfsTask\GitVersion.ps1
+		GitVersionTfsTask\icon.png = GitVersionTfsTask\icon.png
+		GitVersionTfsTask\task.json = GitVersionTfsTask\task.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
