@@ -29,9 +29,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersionExe.Tests", "GitV
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TfsTask", "TfsTask", "{A0ED1410-E970-45E8-A357-05605E2B7BFF}"
 	ProjectSection(SolutionItems) = preProject
+		GitVersionTfsTask\Create-Vsix.ps1 = GitVersionTfsTask\Create-Vsix.ps1
 		GitVersionTfsTask\GitVersion.ps1 = GitVersionTfsTask\GitVersion.ps1
 		GitVersionTfsTask\icon.png = GitVersionTfsTask\icon.png
+		GitVersionTfsTask\manifest.json = GitVersionTfsTask\manifest.json
+		GitVersionTfsTask\overview.md = GitVersionTfsTask\overview.md
 		GitVersionTfsTask\task.json = GitVersionTfsTask\task.json
+		GitVersionTfsTask\Update-GitVersionTfsTaskVersion.ps1 = GitVersionTfsTask\Update-GitVersionTfsTaskVersion.ps1
 	EndProjectSection
 EndProject
 Global

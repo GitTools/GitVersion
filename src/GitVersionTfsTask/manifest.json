@@ -1,0 +1,70 @@
+{
+    "id": "gitversion",
+    "name": "GitVersion",
+    "publisher": "jakeginnivan",
+    "author": "GitVersion Contributors",
+    "version": "$version$",
+    "description": "Easy Semantic Versioning (http://semver.org) for projects using Git, includes GitVersion Build Task",
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+        }
+    ],
+    "files": [
+        {
+            "path": "GitVersionTask"
+        }
+    ],
+    "categories": [
+        "Build and release"
+    ],
+    "icons": {
+        "default": "icon.png"
+    },
+    "tags": [
+        "semver",
+        "versioning",
+        "gitflow",
+        "githubflow"
+    ],
+    "links": {
+        "documentation": {
+            "uri": "http://gitversion.readthedocs.org/en/latest"
+        },
+        "getstarted": {
+            "uri": "http://gitversion.readthedocs.org/en/latest/build-server-support/build-server/tfs-build-vnext/#running-inside-tfs"
+        },
+        "repository": {
+            "uri": "https://github.com/GitTools/GitVersion"
+        }
+    },
+    "screenshots": [
+        {
+            "path": "img/builds.png"
+        },
+        {
+            "path": "img/build-task.png"
+        }
+    ],
+    "content": {
+        "details": {
+            "path": "overview.md"
+        }
+    },
+    "scopes": [
+        "vso.build",
+        "vso.build_execute"
+    ],
+    "contributions": [
+        {
+            "id": "gitversion-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "GitVersionTask"
+            }
+        }
+    ]
+}

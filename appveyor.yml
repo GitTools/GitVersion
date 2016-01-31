@@ -9,6 +9,7 @@ configuration:
 
 build_script:
   - cmd: nuget restore src/GitVersion.sln
+  - cmd: npm i -g tfx-cli
 
   - cmd: msbuild src/GitVersion.sln "/p:Configuration=%CONFIGURATION%;Platform=%PLATFORM%"
   - ps: .\build\NuGetCommandLineBuild\tools\GitVersion.exe /l console /output buildserver /updateAssemblyInfo
@@ -24,8 +25,9 @@ build_script:
   - cmd: 7z a "GitVersion_%GitVersion_NuGetVersion%.zip" -r .\build\NuGetCommandLineBuild\Tools\*.*
   - cmd: appveyor PushArtifact "GitVersion_%GitVersion_NuGetVersion%.zip"
 
-  - cmd: 7z a "GitVersionTfsBuildTask_%GitVersion_NuGetVersion%.zip" -r .\build\GitVersionTfsTaskBuild\*.*
+  - cmd: 7z a "GitVersionTfsBuildTask_%GitVersion_NuGetVersion%.zip" -r .\build\GitVersionTfsTaskBuild\GitVersionTask\*.*
   - cmd: appveyor PushArtifact "GitVersionTfsBuildTask_%GitVersion_NuGetVersion%.zip"
+  - cmd: appveyor PushArtifact "jakeginnivan.gitversion-%GitVersion_MajorMinorPatch%.vsix"
 
 test_script:
   - nunit-console "src\GitVersionTask.Tests\bin\%CONFIGURATION%\GitVersionTask.Tests.dll" "src\GitVersionExe.Tests\bin\%CONFIGURATION%\GitVersionExe.Tests.dll" "src\GitVersionCore.Tests\bin\%CONFIGURATION%\GitVersionCore.Tests.dll" /noshadow
