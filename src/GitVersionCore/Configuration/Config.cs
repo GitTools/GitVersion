@@ -1,12 +1,15 @@
 ﻿namespace GitVersion
 {
+    using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using YamlDotNet.Serialization;
 
     public class Config
     {
         Dictionary<string, BranchConfig> branches = new Dictionary<string, BranchConfig>();
+        string nextVersion;
 
         [YamlMember(Alias = "assembly-versioning-scheme")]
         public AssemblyVersioningScheme? AssemblyVersioningScheme { get; set; }
@@ -24,7 +27,17 @@
         public string ContinuousDeploymentFallbackTag { get; set; }
 
         [YamlMember(Alias = "next-version")]
-        public string NextVersion { get; set; }
+        public string NextVersion
+        {
+            get { return this.nextVersion; }
+            set
+            {
+                int major;
+                this.nextVersion = int.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out major)
+                    ? string.Format("{0}.0", major)
+                    : value;
+            }
+        }
 
         [YamlMember(Alias = "major-version-bump-message")]
         public string MajorVersionBumpMessage { get; set; }
