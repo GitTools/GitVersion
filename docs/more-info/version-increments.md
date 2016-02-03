@@ -1,5 +1,5 @@
 # Version Incrementing
-Because GitVersion works with a number of workflows the way it does it's version incrementing may work perfectly for you, or it may cause you issues. This page is split up into two sections, first is all about understanding the approach GitVersion uses by default, and the second is how you can manually increment the version.
+Because GitVersion works with a number of workflows the way it does its version incrementing may work perfectly for you, or it may cause you issues. This page is split up into two sections, first is all about understanding the approach GitVersion uses by default, and the second is how you can manually increment the version.
 
 ## Approach
 Semantic Versioning is all about *releases*, not builds. This means that the version only increases after you release, this directly conflicts with the concept of published CI builds. When you release the next version of your library/app/website/whatever you should only increment major/minor or patch then reset all lower parts to 0, for instance given 1.0.0, the next release should be either `2.0.0`, `1.1.0` or `1.0.1`. Bumping one of the version components by more than 1 in a single release means you will have gaps in your version number, which defeats the purpose of SemVer.
