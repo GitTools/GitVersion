@@ -48,7 +48,7 @@ namespace GitVersion
 
         static IEnumerable<string> GetAssemblyInfoFiles(string workingDirectory, Arguments args, IFileSystem fileSystem)
         {
-            if (args.UpdateAssemblyInfoFileName != null && args.UpdateAssemblyInfoFileName.Any())
+            if (args.UpdateAssemblyInfoFileName != null && args.UpdateAssemblyInfoFileName.Any(x => !string.IsNullOrWhiteSpace(x)))
             {
                 foreach (var item in args.UpdateAssemblyInfoFileName)
                 {
