@@ -30,15 +30,18 @@
         "githubflow"
     ],
     "links": {
-        "documentation": {
+        "learn": {
             "uri": "http://gitversion.readthedocs.org/en/latest"
         },
         "getstarted": {
             "uri": "http://gitversion.readthedocs.org/en/latest/build-server-support/build-server/tfs-build-vnext/#running-inside-tfs"
         },
-        "repository": {
-            "uri": "https://github.com/GitTools/GitVersion"
-        }
+        "license": {
+            "uri": "https://github.com/GitTools/GitVersion/blob/master/LICENSE"
+        },
+        "support": {
+            "uri": "https://github.com/GitTools/GitVersion/issues"
+        }        
     },
     "screenshots": [
         {
