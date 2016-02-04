@@ -1,4 +1,5 @@
 {
+    "manifestVersion": 1,
     "id": "gitversion",
     "name": "GitVersion",
     "publisher": "jakeginnivan",
