@@ -31,10 +31,10 @@
     ],
     "links": {
         "learn": {
-            "uri": "http://gitversion.readthedocs.org/en/latest"
+            "uri": "http://gitversion.readthedocs.org/en/stable"
         },
         "getstarted": {
-            "uri": "http://gitversion.readthedocs.org/en/latest/build-server-support/build-server/tfs-build-vnext/#running-inside-tfs"
+            "uri": "http://gitversion.readthedocs.org/en/stable/build-server-support/build-server/tfs-build-vnext/#running-inside-tfs"
         },
         "license": {
             "uri": "https://github.com/GitTools/GitVersion/blob/master/LICENSE"
