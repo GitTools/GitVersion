@@ -5,7 +5,7 @@
     "publisher": "jakeginnivan",
     "author": "GitVersion Contributors",
     "version": "$version$",
-    "description": "Easy Semantic Versioning (http://semver.org) for projects using Git, includes GitVersion Build Task",
+    "description": "Build task for easy semantic versioning for projects using Git.",
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
@@ -24,6 +24,7 @@
     },
     "tags": [
         "semver",
+        "git",
         "versioning",
         "gitflow",
         "githubflow"
