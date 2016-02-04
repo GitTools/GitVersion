@@ -2,7 +2,8 @@
     "manifestVersion": 1,
     "id": "gitversion",
     "name": "GitVersion",
-    "publisher": "jakeginnivan",
+    "publisher": "gittools",
+    "public": true,
     "author": "GitVersion Contributors",
     "version": "$version$",
     "description": "Build task for easy semantic versioning for projects using Git.",
@@ -41,7 +42,7 @@
         },
         "support": {
             "uri": "https://github.com/GitTools/GitVersion/issues"
-        }        
+        }
     },
     "screenshots": [
         {
