@@ -161,7 +161,7 @@
     <!-- TfsBuildTask -->
     <Copy SourceFiles="@(amd64)" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask\NativeBinaries\amd64" />
     <Copy SourceFiles="@(x86)" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask\NativeBinaries\x86" />
-    <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\icon.png" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" />
+    <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\extension-icon.png" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\manifest.json" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\overview.md" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\builds.png" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\img" />
