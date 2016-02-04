@@ -27,7 +27,7 @@ build_script:
 
   - cmd: 7z a "GitVersionTfsBuildTask_%GitVersion_NuGetVersion%.zip" -r .\build\GitVersionTfsTaskBuild\GitVersionTask\*.*
   - cmd: appveyor PushArtifact "GitVersionTfsBuildTask_%GitVersion_NuGetVersion%.zip"
-  - cmd: appveyor PushArtifact "build\GitVersionTfsTaskBuild\jakeginnivan.gitversion-%GitVersion_MajorMinorPatch%.vsix"
+  - cmd: appveyor PushArtifact "build\GitVersionTfsTaskBuild\jakeginnivan.gitversion-%GitVersion_SemVer%.vsix"
 
 test_script:
   - nunit-console "src\GitVersionTask.Tests\bin\%CONFIGURATION%\GitVersionTask.Tests.dll" "src\GitVersionExe.Tests\bin\%CONFIGURATION%\GitVersionExe.Tests.dll" "src\GitVersionCore.Tests\bin\%CONFIGURATION%\GitVersionCore.Tests.dll" /noshadow
