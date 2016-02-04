@@ -56,10 +56,6 @@
             "path": "overview.md"
         }
     },
-    "scopes": [
-        "vso.build",
-        "vso.build_execute"
-    ],
     "contributions": [
         {
             "id": "gitversion-task",
