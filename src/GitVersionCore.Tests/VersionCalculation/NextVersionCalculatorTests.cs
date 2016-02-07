@@ -1,8 +1,10 @@
 ﻿namespace GitVersionCore.Tests.VersionCalculation
 {
     using System;
+    using System.Collections.Generic;
     using GitVersion;
     using GitVersion.VersionCalculation;
+    using LibGit2Sharp;
     using NUnit.Framework;
     using Shouldly;
 
@@ -93,6 +95,33 @@
             var version = sut.FindVersion(context);
 
             version.ToString("f").ShouldBe("1.0.0-alpha.foo.1+2");
+        }
+
+        [Test]
+        public void PreReleaseNumberShouldBeScopeToPreReleaseLabelInContinuousDelivery()
+        {
+            var config = new Config();
+            config.VersioningMode = VersioningMode.ContinuousDelivery;
+            config.Branches = new Dictionary<string, BranchConfig> {
+                { "master", new BranchConfig() { Tag = "beta" } },
+            };
+
+            using (var fixture = new EmptyRepositoryFixture(config))
+            {
+                fixture.Repository.MakeACommit();
+
+                fixture.Repository.CreateBranch("feature/test");
+                fixture.Repository.Checkout("feature/test");
+                fixture.Repository.MakeATaggedCommit("0.1.0-test.1");
+                fixture.Repository.MakeACommit();
+
+                fixture.AssertFullSemver("0.1.0-test.2+2");
+
+                fixture.Repository.Checkout("master");
+                fixture.Repository.Merge(fixture.Repository.FindBranch("feature/test"), Constants.SignatureNow());
+
+                fixture.AssertFullSemver("0.1.0-beta.1+2");
+            }
         }
     }
 }

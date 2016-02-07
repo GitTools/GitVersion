@@ -29,7 +29,7 @@ namespace GitVersion
             return repository.Branches.FirstOrDefault(x => x.Name == "origin/" + branchName);
         }
 
-        public static SemanticVersion LastVersionTagOnBranch(this Branch branch, IRepository repository, string tagPrefixRegex)
+        public static IEnumerable<SemanticVersion> GetVersionTagsOnBranch(this Branch branch, IRepository repository, string tagPrefixRegex)
         {
             var tags = repository.Tags.Select(t => t).ToList();
 
@@ -43,8 +43,7 @@ namespace GitVersion
                 if (SemanticVersion.TryParse(t.Name, tagPrefixRegex, out semver))
                     return new [] { semver };
                 return new SemanticVersion[0];
-            }))
-            .FirstOrDefault();
+            }));
         }
 
 
