@@ -183,6 +183,23 @@ assembly-informational-format: '{Major}.{Minor}.{Patch}'";
         config.AssemblyInformationalFormat.ShouldBe("{Major}.{Minor}.{Patch}");
     }
 
+
+    [Test]
+    public void CanUpdateAssemblyInformationalVersioningSchemeWithFullSemVer()
+    {
+        const string text = @"assembly-versioning-scheme: MajorMinorPatch
+assembly-informational-format: '{FullSemVer}'
+mode: ContinuousDelivery
+next-version: 5.3.0
+branches: {}";
+
+        SetupConfigFileContent(text);
+
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
+        config.AssemblyInformationalFormat.ShouldBe("{FullSemVer}");
+    }
+
     [Test]
     public void CanReadDefaultDocument()
     {
