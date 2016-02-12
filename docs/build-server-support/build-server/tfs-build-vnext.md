@@ -55,4 +55,12 @@ You might be able to use `$(GitVersion_BuildMetaData)` to achieve a similar resu
 See [Variables](/more-info/variables/) for more info on the variables.
 
 #### Known limitations
-If you are using on premises TFS, make sure you are using at least **TFS 2015 Update 1**, otherwise a few things will not work.
+* If you are using on premises TFS, make sure you are using at least **TFS 2015 Update 1**, otherwise a few things will not work.
+* You need to make sure that all tags are fetched for the Git repository, otherwise you may end with wrong versions (e.g. `FullSemVer` like `1.2.0+5` instead of `1.2.0` for tagged releases) 
+Just checking the `Clean Repository` check box in the build definition settings might not be enough since this will run a `git clean -fdx/reset --hard` without fetching all tags later. 
+You can force deletion of the whole folder and a re-clone containing all tags by settings the variable `Build.Clean` to `true`.
+This will take more time during build but makes sure that all tags are fetched.
+In the future it is planned to allow using `git.exe` instead of current `libgit2sharp` for syncing the repos which might allow other possibilities to solve this issue. 
+For details see this [GitHub issue](https://github.com/Microsoft/vso-agent-tasks/issues/1218).
+* If running a build for a certain commit (through passing the commit SHA while queueing the build) all tags from the repository will be fetched, even the ones newer than the commit.
+This can lead to different version numbers while re-running historical builds.  
