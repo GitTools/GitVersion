@@ -19,7 +19,7 @@ There are a number of sources GitVersion can get it's versions from, they includ
  - Version numbers in branches (i.e `release/2.0.0`)
  - Merge messages (for branches with versions in them, i.e `Merged branch 'release/2.0.0' into master`)
  - Track version of another branch (i.e develop tracks master, so when master increments so does develop)
- - GitVersionConfig.yaml file (i.e `next-version: 2.0.0`)
+ - GitVersion.yml file (i.e `next-version: 2.0.0`)
 
 Read more at [version sources](more-info/version-sources.md)
 

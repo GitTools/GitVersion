@@ -39,8 +39,8 @@ The options for `commit-message-incrementing` are `Enabled`, `MergeMessageOnly` 
 
 If the incrementing mode is set to `MergeMessageOnly` you can add this information in when merging a pull request. This prevents commits within a PR bumping the version.
 
-### GitVersionConfig.yaml
-The first is by setting the `next-version` property in the GitVersionConfig.yaml file. This property only serves as a base version,
+### GitVersion.yml
+The first is by setting the `next-version` property in the GitVersion.yml file. This property only serves as a base version,
 
 ### Branch name
 If you create a branch with the version number in the branch name such as `release-1.2.0` or `hotfix/1.0.1` then GitVersion will take the version number from the branch name as a source
