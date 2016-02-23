@@ -45,7 +45,7 @@ At build time a temporary `AssemblyInfo.cs` will be created that contains the
 appropriate SemVer information. This will be included in the build pipeline.
 Sample default:
 
-```c#
+```csharp
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: AssemblyInformationalVersion("1.1.0+Branch.master.Sha.722aad3217bd49a6576b6f82f60884e612f9ba58")]
@@ -63,7 +63,7 @@ Now when you build:
 All other [variables](../more-info/variables.md) will be injected into an
 internal static class:
 
-```c#
+```csharp
 namespace AssemblyName
 {
     [CompilerGenerated]
@@ -81,7 +81,7 @@ namespace AssemblyName
 
 ##### All variables
 
-```c#
+```csharp
 var assemblyName = assembly.GetName().Name;
 var gitVersionInformationType = assembly.GetType(assemblyName + ".GitVersionInformation");
 var fields = gitVersionInformationType.GetFields();
@@ -94,7 +94,7 @@ foreach (var field in fields)
 
 ##### Specific variable
 
-```c#
+```csharp
 var assemblyName = assembly.GetName().Name;
 var gitVersionInformationType = assembly.GetType(assemblyName + ".GitVersionInformation");
 var versionField = gitVersionInformationType.GetField("Major");
