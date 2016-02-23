@@ -152,12 +152,12 @@ namespace GitVersion
                 return ymlPath;
             }
 
-            var yamlPath = Path.Combine(workingDirectory, "GitVersionConfig.yaml");
-            if (fileSystem.Exists(yamlPath))
+            var deprecatedPath = Path.Combine(workingDirectory, "GitVersionConfig.yaml");
+            if (fileSystem.Exists(deprecatedPath))
             {
                 Logger.WriteWarning("'GitVersionConfig.yaml' is deprecated, use 'GitVersion.yml' instead.");
 
-                return yamlPath;
+                return deprecatedPath;
             }
 
             return ymlPath;
