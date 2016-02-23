@@ -12,7 +12,9 @@ It works simply by installing the [GitVersionTask NuGet
 Package](https://www.nuget.org/packages/GitVersionTask/) into the project you
 want to have versioned by GitVersion:
 
-    Install-Package GitVersionTask
+```shell
+Install-Package GitVersionTask
+```
 
 ### Remove attributes
 
