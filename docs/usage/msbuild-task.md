@@ -1,7 +1,7 @@
 # MSBuild Task
 
-The MSBuild Task for GitVersion — **GitVersionTask** — a simple solution if you
-want to version your assemblies without writing any command line scripts or
+The MSBuild Task for GitVersion — **GitVersionTask** — is a simple solution if
+you want to version your assemblies without writing any command line scripts or
 modifying your build process.
 
 ## TL;DR
