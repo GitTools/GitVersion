@@ -2,7 +2,7 @@
 
 The MSBuild Task for GitVersion — **GitVersionTask** — a simple solution if you
 want to version your assemblies without writing any command line scripts or
-modifying your build process. 
+modifying your build process.
 
 ## TL;DR
 
@@ -10,7 +10,7 @@ modifying your build process.
 
 It works simply by installing the [GitVersionTask NuGet
 Package](https://www.nuget.org/packages/GitVersionTask/) into the project you
-want to have versioned by GitVersion: 
+want to have versioned by GitVersion:
 
     Install-Package GitVersionTask
 
@@ -18,7 +18,7 @@ want to have versioned by GitVersion:
 
 The next thing you need to do, is remove the `Assembly*Version` attributes from
 your `Properties\AssemblyInfo.cs` files, so GitVersionTask can be in charge of
-versioning your assemblies. 
+versioning your assemblies.
 
 ### Done!
 
@@ -32,7 +32,7 @@ described below.
 
 ## How does it work?
 
-### Inject version metadata into the assembly 
+### Inject version metadata into the assembly
 
 The sub-task named `GitVersionTask.UpdateAssemblyInfo` will inject version
 metadata into the assembly which GitVersionTask is added to. For each assembly
@@ -56,24 +56,24 @@ Now when you build:
 * `AssemblyVersion` will be set to the `AssemblySemVer` variable.
 * `AssemblyFileVersion` will be set to the `MajorMinorPatch` variable with a
 * appended `.0`. `AssemblyInformationalVersion` will be set to the
-* `InformationalVersion` variable. 
+* `InformationalVersion` variable.
 
 #### Other injected Variables
 
 All other [variables](../more-info/variables.md) will be injected into an
-internal static class: 
+internal static class:
 
 ```c#
 namespace AssemblyName
 {
-	[CompilerGenerated]
-	internal static class GitVersionInformation
-	{
-		public static string Major = "1";
-		public static string Minor = "1";
-		public static string Patch = "0";
-		...All other variables
-	}
+    [CompilerGenerated]
+    internal static class GitVersionInformation
+    {
+        public static string Major = "1";
+        public static string Minor = "1";
+        public static string Patch = "0";
+        ...All other variables
+    }
 }
 ```
 
@@ -118,7 +118,7 @@ After `GitVersionTask.GetVersion` has executed, the MSBuild properties can be
 used in the standard way. For example:
 
 ```xml
-<Message Text="GitVersion_InformationalVersion: $(GitVersion_InformationalVersion)"/> 
+<Message Text="GitVersion_InformationalVersion: $(GitVersion_InformationalVersion)"/>
 ```
 
 ### Communicate variables to current Build Server
@@ -129,7 +129,7 @@ the version information to the current Build Server log.
 If, at build time, it is detected that the build is occurring inside a Build
 Server then the [variables](../more-info/variables.md) will be written to the
 Build Server log in a format that the current Build Server can consume. See
-[Build Server Support](../build-server-support/build-server-support.md). 
+[Build Server Support](../build-server-support/build-server-support.md).
 
 ## Conditional control tasks
 
@@ -147,7 +147,7 @@ this:
   ...
 </PropertyGroup>
 ```
-  
+
 ## My Git repository requires authentication. What do I do?
 
 Set the environmental variables `GITVERSION_REMOTE_USERNAME` and
