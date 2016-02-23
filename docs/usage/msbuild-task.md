@@ -42,8 +42,8 @@ via NuGet.
 #### AssemblyInfo Attributes
 
 At build time a temporary `AssemblyInfo.cs` will be created that contains the
-appropriate SemVer information. This will will be included in the build
-pipeline. Sample default:
+appropriate SemVer information. This will be included in the build pipeline.
+Sample default:
 
 ```c#
 [assembly: AssemblyVersion("1.0.0.0")]
@@ -108,9 +108,9 @@ The sub-task `GitVersionTask.GetVersion` will write all the derived
 can be used by other tooling in the build pipeline.
 
 The class for `GitVersionTask.GetVersion` has a property for each variable.
-However at MSBuild time these properties a mapped to MSBuild properties that are
-prefixed with `GitVersion_`. This prevents conflicts with other properties in
-the pipeline.
+However at MSBuild time these properties are mapped to MSBuild properties that
+are prefixed with `GitVersion_`. This prevents conflicts with other properties
+in the pipeline.
 
 #### Accessing variable in MSBuild
 
@@ -123,13 +123,13 @@ used in the standard way. For example:
 
 ### Communicate variables to current Build Server
 
-The sub-task `GitVersionTask.WriteVersionInfoToBuildLog` will attemp to write
-the version information to the current build server.
+The sub-task `GitVersionTask.WriteVersionInfoToBuildLog` will attempt to write
+the version information to the current Build Server log.
 
 If, at build time, it is detected that the build is occurring inside a Build
-Server server then the [variables](../more-info/variables.md) will be written to
-the build log in a format that the current Build Server can consume. See [Build
-Server Support](../build-server-support/build-server-support.md). 
+Server then the [variables](../more-info/variables.md) will be written to the
+Build Server log in a format that the current Build Server can consume. See
+[Build Server Support](../build-server-support/build-server-support.md). 
 
 ## Conditional control tasks
 
