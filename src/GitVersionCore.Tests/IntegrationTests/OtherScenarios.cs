@@ -46,6 +46,30 @@
         }
 
         [Test]
+        public void AllowHavingMainInsteadOfMaster()
+        {
+            var config = new Config();
+            config.Branches.Add("main", new BranchConfig
+                                            {
+                                                VersioningMode = VersioningMode.ContinuousDelivery,
+                                                Tag = "useBranchName",
+                                                Increment = IncrementStrategy.Patch,
+                                                PreventIncrementOfMergedBranchVersion = true,
+                                                TrackMergeTarget = false
+                                            });
+
+            using (var fixture = new EmptyRepositoryFixture(config))
+            {
+                fixture.Repository.MakeACommit();
+                fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));
+                fixture.Repository.Checkout(fixture.Repository.CreateBranch("main"));
+                fixture.Repository.Branches.Remove(fixture.Repository.Branches["master"]);
+
+                fixture.AssertFullSemver("0.1.0+0");
+            }
+        }
+
+        [Test]
         public void DoNotBlowUpWhenDevelopAndFeatureBranchPointAtSameCommit()
         {
             using (var fixture = new RemoteRepositoryFixture(new Config()))
