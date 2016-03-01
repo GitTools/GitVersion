@@ -13,13 +13,13 @@ This trips a lot of people up, by default GitVersion *does not* increment the Se
 Read more at [version increments](more-info/version-increments.md)
 
 ### Version sources
-There are a number of sources GitVersion can get it's versions from, they include:
+There are a number of sources GitVersion can get its versions from, they include:
 
  - Tags
- - Version numbers in branches (i.e `release/2.0.0`)
- - Merge messages (for branches with versions in them, i.e `Merged branch 'release/2.0.0' into master`)
- - Track version of another branch (i.e develop tracks master, so when master increments so does develop)
- - GitVersionConfig.yaml file (i.e `next-version: 2.0.0`)
+ - Version numbers in branches (e.g. `release/2.0.0`)
+ - Merge messages (for branches with versions in them, e.g. `Merged branch 'release/2.0.0' into master`)
+ - Track version of another branch (e.g. develop tracks master, so when master increments so does develop)
+ - GitVersionConfig.yaml file (e.g. `next-version: 2.0.0`)
 
 Read more at [version sources](more-info/version-sources.md)
 
@@ -34,7 +34,7 @@ We recognise that a single formatted version number does not work for all cases.
 You can just run `GitVersion.exe` in your repository to see what variables are available (by default a json object is returned).
 
 ## Exe or MSBuild Task
-There are two ways to consume GitVersion, the first is by running GitVersion.exe. The second is an MSBuild task. The MSBuild task is really easy to get up and running, simply install GitVersionTask from NuGet and it will integrate into your project and write out variables to your build server if it's running on one. The exe offers more options and works for not just .net projects.
+There are two ways to consume GitVersion, the first is by running GitVersion.exe. The second is an MSBuild task. The MSBuild task is really easy to get up and running, simply install GitVersionTask from NuGet and it will integrate into your project and write out variables to your build server if it's running on one. The exe offers more options and works for .NET projects as well as other project types.
 
 Read more about [using GitVersion](usage/usage.md)
 
