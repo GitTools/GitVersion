@@ -14,7 +14,7 @@ There are a few ways to handle this problem depending on what your requirements 
 ### 1. GitFlow
 If you are using GitFlow then builds off the `develop` branch will actually *increment on every commit*. This is known in GitVersion as *continuous deployment mode*. By default `develop` builds are tagged with the `unstable` pre-release tag. This is so they are sorted higher than release branches.
 
-If you need to consume packages built from develop, we recommend publishing these packages to a separate NuGet feed as an alpha channel. That way you can publish beta/release candidate builds and only people who opt into the alpha feed will see the unstable pacakges.
+If you need to consume packages built from develop, we recommend publishing these packages to a separate NuGet feed as an alpha channel. That way you can publish beta/release candidate builds and only people who opt into the alpha feed will see the unstable packages.
 
 ### 2. Octopus deploy
 See [Octopus deploy](../build-server-support/build-server/octopus-deploy.md)
