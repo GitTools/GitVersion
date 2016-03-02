@@ -6,59 +6,59 @@ modifying your build process.
 
 ## TL;DR
 
-### Install
+### Install the MSTask targets
 
-It works simply by installing the [GitVersionTask NuGet
-Package](https://www.nuget.org/packages/GitVersionTask/) into the project you
-want to have versioned by GitVersion:
+Add the [GitVersionTask](https://www.nuget.org/packages/GitVersionTask/) NuGet
+Package into the project you want to be versioned by GitVersion.
 
+From the Package Manager Console:
 ```shell
 Install-Package GitVersionTask
 ```
 
-### Remove attributes
+### Remove AssemblyInfo attributes
 
-The next thing you need to do, is remove the `Assembly*Version` attributes from
-your `Properties\AssemblyInfo.cs` files, so GitVersionTask can be in charge of
+The next thing you need to do is to remove the `Assembly*Version` attributes from
+your `Properties\AssemblyInfo.cs` files. This puts GitVersionTask in charge of
 versioning your assemblies.
 
 ### Done!
 
-The TL;DR section is now done and GitVersionTask should be working its magic,
-versioning your assemblies like a champ. However, if you're interested in
-knowing what more GitVersionTask does, or have any questions, please read on.
-
-After being installed into a project, the MSBuild task will wire GitVersion into
-the MSBuild pipeline of a project and perform several actions. These actions are
-described below.
+The setup process is now complete and GitVersionTask should be working its magic,
+versioning your assemblies like a champ. However, more can be done to further 
+customize the build process. Keep reading to find out how the version variables 
+are set and how you can use them in MSBuild tasks.
 
 ## How does it work?
+
+After being installed into a project, the MSBuild task will wire GitVersion into
+the MSBuild pipeline and will then perform several actions. These actions are
+described below.
 
 ### Inject version metadata into the assembly
 
 The sub-task named `GitVersionTask.UpdateAssemblyInfo` will inject version
-metadata into the assembly which GitVersionTask is added to. For each assembly
-you want GitVersion to version, you need to install the GitVersionTask into it
-via NuGet.
+metadata into the assembly where GitVersionTask has been added to. For each assembly
+you want GitVersion to handle versioning, you will need to install 
+[GitVersionTask](https://www.nuget.org/packages/GitVersionTask/) into the corresponding 
+project via NuGet.
 
 #### AssemblyInfo Attributes
 
-At build time a temporary `AssemblyInfo.cs` will be created that contains the
+A temporary `AssemblyInfo.cs` will be created at build time. That file will contain the
 appropriate SemVer information. This will be included in the build pipeline.
-Sample default:
 
+Default sample:
 ```csharp
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: AssemblyInformationalVersion("1.1.0+Branch.master.Sha.722aad3217bd49a6576b6f82f60884e612f9ba58")]
 ```
 
-Now when you build:
-
+Now, when you build:
 * `AssemblyVersion` will be set to the `AssemblySemVer` variable.
-* `AssemblyFileVersion` will be set to the `MajorMinorPatch` variable with a
-* appended `.0`. `AssemblyInformationalVersion` will be set to the
-* `InformationalVersion` variable.
+* `AssemblyFileVersion` will be set to the `MajorMinorPatch` variable with `.0` appended to it.
+* `AssemblyInformationalVersion` will be set to the `InformationalVersion` variable.
 
 #### Other injected Variables
 
@@ -79,7 +79,7 @@ namespace AssemblyName
 }
 ```
 
-#### Accessing injected Variables
+### Accessing injected Variables
 
 ##### All variables
 
@@ -114,9 +114,9 @@ However at MSBuild time these properties are mapped to MSBuild properties that
 are prefixed with `GitVersion_`. This prevents conflicts with other properties
 in the pipeline.
 
-#### Accessing variable in MSBuild
+#### Accessing variables in MSBuild
 
-After `GitVersionTask.GetVersion` has executed, the MSBuild properties can be
+Once `GitVersionTask.GetVersion` has been executed, the MSBuild properties can be
 used in the standard way. For example:
 
 ```xml
@@ -138,8 +138,8 @@ Build Server log in a format that the current Build Server can consume. See
 Properties `WriteVersionInfoToBuildLog`, `UpdateAssemblyInfo` and `GetVersion`
 are checked before running these tasks.
 
-If you, e.g. want to disable `GitVersionTask.UpdateAssemblyInfo` just define
-`UpdateAssemblyInfo` to something other than `true` in your MSBuild script, like
+You can disable `GitVersionTask.UpdateAssemblyInfo` by setting
+`UpdateAssemblyInfo` to `false` in your MSBuild script, like
 this:
 
 ```xml
@@ -150,7 +150,7 @@ this:
 </PropertyGroup>
 ```
 
-## My Git repository requires authentication. What do I do?
+## My Git repository requires authentication. What should I do?
 
-Set the environmental variables `GITVERSION_REMOTE_USERNAME` and
+Set the environment variables `GITVERSION_REMOTE_USERNAME` and
 `GITVERSION_REMOTE_PASSWORD` before the build is initiated.
