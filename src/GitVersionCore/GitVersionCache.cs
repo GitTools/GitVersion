@@ -89,24 +89,32 @@ namespace GitVersion
         {
             // Maybe using timestamp in .git/refs directory is enough?
             var ticks = fileSystem.GetLastDirectoryWrite(Path.Combine(gitDir, "refs"));
-            return string.Format("{0}:{1}:{2}:{3}", gitDir, repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks);
+            var configPath = Path.Combine(repo.GetRepositoryDirectory(), "GitVersionConfig.yaml");
+            var configText = fileSystem.Exists(configPath) ? fileSystem.ReadAllText(configPath) : null;
+            var configHash = configText != null ? GetHash(configText) : null;
+            return string.Join(":", gitDir, repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks, configHash);
         }
 
         static string GetCacheFileName(string key, string cacheDir)
         {
-            string cacheKey;
-            using (var sha1 = SHA1.Create())
-            {
-                // Make a shorter key by hashing, to avoid having to long cache filename.
-                cacheKey = BitConverter.ToString(sha1.ComputeHash(Encoding.UTF8.GetBytes(key))).Replace("-", "");
-            }
-            var cacheFileName = string.Concat(Path.Combine(cacheDir, cacheKey), ".yml");
-            return cacheFileName;
+            var cacheKey = GetHash(key);
+            return string.Concat(Path.Combine(cacheDir, cacheKey), ".yml");
         }
 
         static string GetCacheDir(string gitDir)
         {
             return Path.Combine(gitDir, "gitversion_cache");
+        }
+
+        static string GetHash(string textToHash)
+        {
+            using (var sha1 = SHA1.Create())
+            {
+                var bytes = Encoding.UTF8.GetBytes(textToHash);
+                var hashedBytes = sha1.ComputeHash(bytes);
+                var hashedString = BitConverter.ToString(hashedBytes);
+                return hashedString.Replace("-", "");
+            }
         }
     }
 }
