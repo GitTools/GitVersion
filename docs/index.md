@@ -47,4 +47,4 @@ GitVersion supports the following projects to automatically update its version i
 | ProjectType                           | Command Line Tool           | MS Build Task  |
 | :------------------------------------ | :-------------------------- | :------------- |
 | C# Project with `AssemblyInfo.cs`     | Supported                   | Supported      |
-| VB.NET Project with `AssemblyInfo.vb` | Supported                   | Not supported  |
+| VB.NET Project with `AssemblyInfo.vb` | Supported                   | Supported      |
