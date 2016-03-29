@@ -3,6 +3,9 @@
 ## Why is my version not incrementing?
 GitVersion calculates the semantic version, this will only change once per *release*. Read more at [version increments](more-info/version-increments.md)
 
+## I'm using Octopus deploy
+Because Octopus deploy cannot have the same version of a package to a NuGet feed. There is no magic solution to this, but you can read more about your options at [octopus deploy](build-server-support/build-server/octopus-deploy.md).
+
 ## How can GitVersion run for a shallow clone or checkout on server working directories
 GitVersion needs a proper git repository to run, some build servers do not do a proper clone which can cause issues. GitVersion has a feature called [dynamic repositories](more-info/dynamic-repositories.md) which solves this by cloning the repository and working against that clone instead of the working directory.
 
