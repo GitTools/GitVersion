@@ -133,7 +133,7 @@
           ]]></Code>
     </Task>
   </UsingTask>
-  <Target Name="AfterBuild" DependsOnTargets="Clean" Condition="$(NCrunch)==''">
+  <Target Name="AfterBuild" DependsOnTargets="Clean" Condition="$(NCrunch)=='' And '$(OS)' != 'Unix'">
     <MakeDir Directories="$(TargetDir)ILMergeTemp\" />
     <PropertyGroup>
       <Runtime Condition="'$(OS)'=='Unix'">mono</Runtime>
