@@ -1,3 +1,5 @@
+using System;
+
 using LibGit2Sharp;
 
 public class MockTag : Tag
