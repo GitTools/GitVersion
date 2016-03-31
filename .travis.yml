@@ -3,7 +3,7 @@ solution: src/GitVersion.sln
 sudo: false
 install:
   - nuget restore src/GitVersion.sln
-  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory nunit
+  - nuget install NUnit.Runners -Version 3.2.0 -OutputDirectory ./src/packages
 script:
   - xbuild "./src/GitVersion.sln" 
-  - mono --debug --runtime=v4.0.30319 ./nunit/NUnit.Runners.2.6.4/tools/nunit-console.exe ./src/GitVersionTask.Tests/bin/Debug/GitVersionTask.Tests.dll ./src/GitVersionCore.Tests/bin/Debug/GitVersionCore.Tests.dll ./src/GitVersionTask.Tests/bin/Debug/GitVersionTask.Tests.dll ./src/GitVersionExe.Tests/bin/Debug/GitVersionExe.Tests.dll -nodots
+  - mono --debug --runtime=v4.0.30319 ./src/packages/NUnit.ConsoleRunner.3.2.0/tools/nunit3-console.exe ./src/GitVersionTask.Tests/bin/Debug/GitVersionTask.Tests.dll ./src/GitVersionCore.Tests/bin/Debug/GitVersionCore.Tests.dll ./src/GitVersionTask.Tests/bin/Debug/GitVersionTask.Tests.dll ./src/GitVersionExe.Tests/bin/Debug/GitVersionExe.Tests.dll

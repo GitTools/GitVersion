@@ -148,10 +148,10 @@ public class AssemblyInfoBuilderTests
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    [ExpectedException(typeof(WarningException))]
     public void VerifyAssemblyVersion_Major_InvalidInformationalValue([ValueSource("compilers")]ICompiler compiler)
     {
-        VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.Major, "{ThisVariableDoesntExist}");
+        var exception = Assert.Throws<WarningException>(() => VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.Major, "{ThisVariableDoesntExist}"));
+        Assert.That(exception.Message, Does.Contain("ThisVariableDoesntExist"));
     }
 
     [Test]
