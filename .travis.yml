@@ -5,5 +5,5 @@ install:
   - nuget restore src/GitVersion.sln
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory nunit
 script:
-  - xbuild /p:Configuration=Debug "./src/GitVersion.sln" 
+  - xbuild "./src/GitVersion.sln" 
   - mono --debug --runtime=v4.0.30319 ./nunit/NUnit.Runners.2.6.4/tools/nunit-console.exe ./src/GitVersionTask.Tests/bin/Debug/GitVersionTask.Tests.dll ./src/GitVersionCore.Tests/bin/Debug/GitVersionCore.Tests.dll ./src/GitVersionTask.Tests/bin/Debug/GitVersionTask.Tests.dll ./src/GitVersionExe.Tests/bin/Debug/GitVersionExe.Tests.dll -nodots
