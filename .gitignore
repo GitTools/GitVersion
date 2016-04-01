@@ -94,3 +94,10 @@ site/
 
 .idea
 *.sln.iml
+
+############
+## Linux
+############
+
+# Ignore backup files created by gedit
+*~
