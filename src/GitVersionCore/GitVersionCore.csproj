@@ -198,7 +198,7 @@
   </Target>
   <Target Name="AfterBuild" DependsOnTargets="Clean">
     <!-- NugetRefBuild -->
-    <MakeDir Directories="$(SolutionDir)NuGetRefBuild" />
+    <MakeDir Directories="$(SolutionDir)NuGetRefBuild\lib\Net45" />
     <Copy SourceFiles="$(OutputPath)GitVersionCore.dll" DestinationFolder="$(BuildDir)NuGetRefBuild\lib\Net45" />
     <Copy SourceFiles="$(OutputPath)GitVersionCore.pdb" DestinationFolder="$(BuildDir)NuGetRefBuild\lib\Net45" Condition="Exists('$(OutputPath)GitVersionCore.pdb')" />
     <Copy SourceFiles="$(OutputPath)GitVersionCore.dll.mdb" DestinationFolder="$(BuildDir)NuGetRefBuild\lib\Net45" Condition="Exists('$(OutputPath)GitVersionCore.dll.mdb')" />
