@@ -1,6 +1,6 @@
 # Team Foundation Build (vNext) Setup
 ## Basic Usage
-In Team Foundation Build (the web based build system) you can call GitVersion either using the Command Line build step or install an extension / custom build step. The custom build step requires a one-time setup to import the GitVersion task into your TFS or VSO instance.
+In Team Foundation Build (the web based build system) you can call GitVersion either using the Command Line build step or install an extension / custom build step. The custom build step requires a one-time setup to import the GitVersion task into your TFS or VSTS instance.
 
 ## Executing GitVersion
 ### Using GitVersion with the MSBuild Task NuGet Package
