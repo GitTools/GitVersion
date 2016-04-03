@@ -82,3 +82,10 @@ GitVersion.sln.ide/
 .vs/
 Packages/
 build/
+
+################
+# Project Rider
+################
+
+.idea
+*.sln.iml
