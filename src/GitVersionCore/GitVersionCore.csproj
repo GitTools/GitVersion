@@ -72,6 +72,7 @@
     <Compile Include="BuildServers\BuildServerList.cs" />
     <Compile Include="BuildServers\ContinuaCi.cs" />
     <Compile Include="BuildServers\GitHelper.cs" />
+    <Compile Include="BuildServers\GitLabCi.cs" />
     <Compile Include="BuildServers\IBuildServer.cs" />
     <Compile Include="BuildServers\Jenkins.cs" />
     <Compile Include="BuildServers\MyGet.cs" />

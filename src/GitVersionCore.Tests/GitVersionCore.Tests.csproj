@@ -93,6 +93,7 @@
     <Compile Include="BuildServers\BuildServerBaseTests.cs" />
     <Compile Include="BuildServers\ContinuaCiTests.cs" />
     <Compile Include="BuildServers\EnvironmentVariableJenkinsTests.cs" />
+    <Compile Include="BuildServers\GitLabCiMessageGenerationTest.cs" />
     <Compile Include="BuildServers\JenkinsMessageGenerationTests.cs" />
     <Compile Include="BuildServers\MyGetTests.cs" />
     <Compile Include="BuildServers\VsoAgentTests.cs" />

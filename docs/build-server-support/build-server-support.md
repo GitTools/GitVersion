@@ -4,6 +4,7 @@ GitVersion has support for quite a few build servers out of the box. Currently w
  - [AppVeyor](build-server/appveyor.md)
  - [Bamboo](build-server/bamboo.md)
  - [Continua CI](build-server/continua.md)
+ - [GitLab CI](build-server/gitlab.md)
  - [Jenkins](build-server/jenkins.md)
  - [MyGet](build-server/myget.md)
  - [Octopus Deploy](build-server/octopus-deploy.md)
