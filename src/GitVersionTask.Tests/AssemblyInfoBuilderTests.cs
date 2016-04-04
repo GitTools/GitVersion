@@ -7,14 +7,60 @@ using GitVersion;
 using GitVersionCore.Tests;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.VisualBasic;
 using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
 public class AssemblyInfoBuilderTests
 {
+    public interface ICompiler
+    {
+        Compilation Compile(string assemblyInfoText);
+
+        AssemblyInfoBuilder Builder { get; }
+
+        string ApprovedSubFolder { get; }
+    }
+
+    private class CSharpCompiler : ICompiler
+    {
+        public Compilation Compile(string assemblyInfoText)
+        {
+            return CSharpCompilation.Create("Fake.dll")
+                .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+                .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
+                .AddSyntaxTrees(CSharpSyntaxTree.ParseText(assemblyInfoText));
+        }
+
+        public AssemblyInfoBuilder Builder { get { return new CSharpAssemblyInfoBuilder(); } }
+
+        public string ApprovedSubFolder { get { return Path.Combine("Approved", "CSharp"); } }
+    }
+
+    private class VisualBasicCompiler : ICompiler
+    {
+        public Compilation Compile(string assemblyInfoText)
+        {
+            return VisualBasicCompilation.Create("Fake.dll")
+                .WithOptions(new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, rootNamespace: "Fake"))
+                .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
+                .AddSyntaxTrees(VisualBasicSyntaxTree.ParseText(assemblyInfoText));
+        }
+
+        public AssemblyInfoBuilder Builder { get { return new VisualBasicAssemblyInfoBuilder(); } }
+
+        public string ApprovedSubFolder { get { return Path.Combine("Approved", "VisualBasic"); } }
+    }
+
+    private readonly ICompiler[] compilers = new ICompiler[]
+    {
+        new CSharpCompiler(),
+        new VisualBasicCompiler()
+    };
+
     [Test]
-    public void VerifyCreatedCode()
+    public void VerifyCreatedCode([ValueSource("compilers")]ICompiler compiler)
     {
         var semanticVersion = new SemanticVersion
         {
@@ -25,18 +71,14 @@ public class AssemblyInfoBuilderTests
             BuildMetaData = new SemanticVersionBuildMetaData(5,
                 "feature1", "commitSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
         };
-        var assemblyInfoBuilder = new AssemblyInfoBuilder();
 
         var config = new TestEffectiveConfiguration();
 
         var versionVariables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
-        var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, "Fake");
-        assemblyInfoText.ShouldMatchApproved();
+        var assemblyInfoText = compiler.Builder.GetAssemblyInfoText(versionVariables, "Fake");
+        assemblyInfoText.ShouldMatchApproved(c => c.SubFolder(compiler.ApprovedSubFolder));
 
-        var compilation = CSharpCompilation.Create("Fake.dll")
-            .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
-            .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
-            .AddSyntaxTrees(CSharpSyntaxTree.ParseText(assemblyInfoText));
+        var compilation = compiler.Compile(assemblyInfoText);
 
         using (var stream = new MemoryStream())
         {
@@ -51,7 +93,7 @@ public class AssemblyInfoBuilderTests
     }
 
     [Test]
-    public void VerifyCreatedCode_NoNamespaceConflict()
+    public void VerifyCreatedCode_NoNamespaceConflict([ValueSource("compilers")]ICompiler compiler)
     {
         var semanticVersion = new SemanticVersion
         {
@@ -62,18 +104,14 @@ public class AssemblyInfoBuilderTests
             BuildMetaData = new SemanticVersionBuildMetaData(5,
                 "feature1", "commitSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
         };
-        var assemblyInfoBuilder = new AssemblyInfoBuilder();
 
         var config = new TestEffectiveConfiguration();
 
         var versionVariables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
-        var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, "Fake.System");
-        assemblyInfoText.ShouldMatchApproved();
+        var assemblyInfoText = compiler.Builder.GetAssemblyInfoText(versionVariables, "Fake.System");
+        assemblyInfoText.ShouldMatchApproved(c => c.SubFolder(compiler.ApprovedSubFolder));
 
-        var compilation = CSharpCompilation.Create("Fake.System.dll")
-            .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
-            .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
-            .AddSyntaxTrees(CSharpSyntaxTree.ParseText(assemblyInfoText));
+        var compilation = compiler.Compile(assemblyInfoText);
 
         var emitResult = compilation.Emit(new MemoryStream());
         Assert.IsTrue(emitResult.Success, string.Join(Environment.NewLine, emitResult.Diagnostics.Select(x => x.Descriptor)));
@@ -81,76 +119,76 @@ public class AssemblyInfoBuilderTests
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public void VerifyAssemblyVersion_Major()
+    public void VerifyAssemblyVersion_Major([ValueSource("compilers")]ICompiler compiler)
     {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.Major);
+        VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.Major);
     }
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public void VerifyAssemblyVersion_MajorMinor()
+    public void VerifyAssemblyVersion_MajorMinor([ValueSource("compilers")]ICompiler compiler)
     {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinor);
+        VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.MajorMinor);
     }
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public void VerifyAssemblyVersion_MajorMinorPatch()
+    public void VerifyAssemblyVersion_MajorMinorPatch([ValueSource("compilers")]ICompiler compiler)
     {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatch);
+        VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.MajorMinorPatch);
     }
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public void VerifyAssemblyVersion_MajorMinorPatchTag()
+    public void VerifyAssemblyVersion_MajorMinorPatchTag([ValueSource("compilers")]ICompiler compiler)
     {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatchTag);
+        VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.MajorMinorPatchTag);
     }
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
     [ExpectedException(typeof(WarningException))]
-    public void VerifyAssemblyVersion_Major_InvalidInformationalValue()
+    public void VerifyAssemblyVersion_Major_InvalidInformationalValue([ValueSource("compilers")]ICompiler compiler)
     {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.Major, "{ThisVariableDoesntExist}");
+        VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.Major, "{ThisVariableDoesntExist}");
     }
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public void VerifyAssemblyVersion_Major_NugetAssemblyInfo()
+    public void VerifyAssemblyVersion_Major_NugetAssemblyInfo([ValueSource("compilers")]ICompiler compiler)
     {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.Major, "{NugetVersion}");
+        VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.Major, "{NugetVersion}");
     }
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public void VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfoWithMultipleVariables()
+    public void VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfoWithMultipleVariables([ValueSource("compilers")]ICompiler compiler)
     {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinor, "{BranchName}-{Major}.{Minor}.{Patch}-{Sha}");
+        VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.MajorMinor, "{BranchName}-{Major}.{Minor}.{Patch}-{Sha}");
     }
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public void VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfo()
+    public void VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfo([ValueSource("compilers")]ICompiler compiler)
     {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinor, "{NugetVersion}");
+        VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.MajorMinor, "{NugetVersion}");
     }
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public void VerifyAssemblyVersion_MajorMinorPatch_NugetAssemblyInfo()
+    public void VerifyAssemblyVersion_MajorMinorPatch_NugetAssemblyInfo([ValueSource("compilers")]ICompiler compiler)
     {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatch, "{NugetVersion}");
+        VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.MajorMinorPatch, "{NugetVersion}");
     }
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public void VerifyAssemblyVersion_MajorMinorPatchTag_NugetAssemblyInfo()
+    public void VerifyAssemblyVersion_MajorMinorPatchTag_NugetAssemblyInfo([ValueSource("compilers")]ICompiler compiler)
     {
-        VerifyAssemblyVersion(AssemblyVersioningScheme.MajorMinorPatchTag, "{NugetVersion}");
+        VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.MajorMinorPatchTag, "{NugetVersion}");
     }
 
-    static void VerifyAssemblyVersion(AssemblyVersioningScheme avs, string assemblyInformationalFormat = null)
+    static void VerifyAssemblyVersion(ICompiler compiler, AssemblyVersioningScheme avs, string assemblyInformationalFormat = null)
     {
         var semanticVersion = new SemanticVersion
         {
@@ -161,19 +199,14 @@ public class AssemblyInfoBuilderTests
             BuildMetaData = new SemanticVersionBuildMetaData(6,
                 "master", "commitSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z")),
         };
-        var assemblyInfoBuilder = new AssemblyInfoBuilder();
-
 
         var config = new TestEffectiveConfiguration(assemblyVersioningScheme: avs, assemblyInformationalFormat: assemblyInformationalFormat);
 
         var versionVariables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
-        var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, "Fake");
-        assemblyInfoText.ShouldMatchApproved(c => c.UseCallerLocation());
+        var assemblyInfoText = compiler.Builder.GetAssemblyInfoText(versionVariables, "Fake");
+        assemblyInfoText.ShouldMatchApproved(c => c.UseCallerLocation().SubFolder(compiler.ApprovedSubFolder));
 
-        var compilation = CSharpCompilation.Create("Fake.dll")
-            .WithOptions(new CSharpCompilationOptions(OutputKind.NetModule))
-            .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
-            .AddSyntaxTrees(CSharpSyntaxTree.ParseText(assemblyInfoText));
+        var compilation = compiler.Compile(assemblyInfoText);
 
         var emitResult = compilation.Emit(new MemoryStream());
         Assert.IsTrue(emitResult.Success, string.Join(Environment.NewLine, emitResult.Diagnostics.Select(x => x.Descriptor)));

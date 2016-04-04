@@ -59,6 +59,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfoBuilder\AssemblyInfoBuilder.cs" />
+    <Compile Include="AssemblyInfoBuilder\VisualBasicAssemblyInfoBuilder.cs" />
+    <Compile Include="AssemblyInfoBuilder\CSharpAssemblyInfoBuilder.cs" />
     <Compile Include="BuildLogger.cs" />
     <Compile Include="GitVersionTaskBase.cs" />
     <Compile Include="WriteVersionInfoToBuildLog.cs" />
