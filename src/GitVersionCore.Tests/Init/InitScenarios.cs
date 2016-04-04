@@ -18,7 +18,7 @@
             var testConsole = new TestConsole("3", "2.0.0", "0");
             ConfigurationProvider.Init("c:\\proj", testFileSystem, testConsole);
 
-            testFileSystem.ReadAllText("c:\\proj\\GitVersionConfig.yaml").ShouldMatchApproved();
+            testFileSystem.ReadAllText("c:\\proj\\GitVersion.yml").ShouldMatchApproved();
         }
 
         [Test]
