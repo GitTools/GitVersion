@@ -56,6 +56,11 @@ namespace GitVersion.Helpers
             Directory.CreateDirectory(path);
         }
 
+        public bool DirectoryExists(string path)
+        {
+            return Directory.Exists(path);
+        }
+
         public long GetLastDirectoryWrite(string path)
         {
             return new DirectoryInfo(path)

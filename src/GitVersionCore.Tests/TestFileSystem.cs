@@ -69,6 +69,19 @@ public class TestFileSystem : IFileSystem
 
     public void CreateDirectory(string path)
     {
+        if (fileSystem.ContainsKey(path))
+        {
+            fileSystem[path] = "";
+        }
+        else
+        {
+            fileSystem.Add(path, "");
+        }
+    }
+
+    public bool DirectoryExists(string path)
+    {
+        return fileSystem.ContainsKey(path);
     }
 
     public long GetLastDirectoryWrite(string path)

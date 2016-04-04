@@ -13,6 +13,11 @@ namespace GitVersion
             return ParseArguments(commandLineArguments.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList());
         }
 
+        static void EnsureArgumentValueCount(string[] values, int maxArguments = 1)
+        {
+            if(values != null && values.Length > maxArguments) throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", values[1]));
+        }
+
         public static Arguments ParseArguments(List<string> commandLineArguments)
         {
             if (commandLineArguments.Count == 0)
@@ -73,79 +78,91 @@ namespace GitVersion
                 {
                     //Currently, no arguments use more than one value, so having multiple values is an input error.
                     //In the future, this exception can be removed to support multiple values for a switch.
-                    if (values.Length > 1) throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", values[1]));
+                    // if (values.Length > 1) throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", values[1]));
 
                     value = values.FirstOrDefault();
                 }
 
                 if (IsSwitch("l", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.LogFilePath = value;
                     continue;
                 }
 
                 if (IsSwitch("targetpath", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.TargetPath = value;
                     continue;
                 }
 
                 if (IsSwitch("dynamicRepoLocation", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.DynamicRepositoryLocation = value;
                     continue;
                 }
 
                 if (IsSwitch("url", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.TargetUrl = value;
                     continue;
                 }
 
                 if (IsSwitch("b", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.TargetBranch = value;
                     continue;
                 }
 
                 if (IsSwitch("u", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.Authentication.Username = value;
                     continue;
                 }
 
                 if (IsSwitch("p", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.Authentication.Password = value;
                     continue;
                 }
 
                 if (IsSwitch("c", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.CommitId = value;
                     continue;
                 }
 
                 if (IsSwitch("exec", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.Exec = value;
                     continue;
                 }
 
                 if (IsSwitch("execargs", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.ExecArgs = value;
                     continue;
                 }
 
                 if (IsSwitch("proj", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.Proj = value;
                     continue;
                 }
 
                 if (IsSwitch("projargs", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.ProjArgs = value;
                     continue;
                 }
@@ -160,15 +177,26 @@ namespace GitVersion
                     {
                         arguments.UpdateAssemblyInfo = false;
                     }
+                    else if (values != null && values.Length > 1)
+                    {
+                        arguments.UpdateAssemblyInfo = true;
+                        foreach(var v in values) arguments.AddAssemblyInfoFileName(v);
+                    }
                     else if (!IsSwitchArgument(value))
                     {
                         arguments.UpdateAssemblyInfo = true;
-                        arguments.UpdateAssemblyInfoFileName = value;
+                        arguments.AddAssemblyInfoFileName(value);
                     }
                     else
                     {
                         arguments.UpdateAssemblyInfo = true;
                     }
+
+                    if (arguments.UpdateAssemblyInfoFileName.Count > 1 && arguments.EnsureAssemblyInfo)
+                    {
+                        throw new WarningException("Can't specify multiple assembly info files when using -ensureassemblyinfo switch, either use a single assembly info file or do not specify -ensureassemblyinfo and create assembly info files manually");
+                    }
+
                     continue;
                 }
 
@@ -229,6 +257,28 @@ namespace GitVersion
                 if (IsSwitch("nofetch", name))
                 {
                     arguments.NoFetch = true;
+                    continue;
+                }
+
+                if (IsSwitch("ensureassemblyinfo", name))
+                {
+                    if (new[] { "1", "true" }.Contains(value, StringComparer.OrdinalIgnoreCase))
+                    {
+                        arguments.EnsureAssemblyInfo = true;
+                    }
+                    else if (new[] { "0", "false" }.Contains(value, StringComparer.OrdinalIgnoreCase))
+                    {
+                        arguments.EnsureAssemblyInfo = false;
+                    }
+                    else
+                    {
+                        arguments.EnsureAssemblyInfo = true;
+                    }
+
+                    if (arguments.UpdateAssemblyInfoFileName.Count > 1 && arguments.EnsureAssemblyInfo)
+                    {
+                        throw new WarningException("Can't specify multiple assembly info files when using -ensureassemblyinfo switch, either use a single assembly info file or do not specify -ensureassemblyinfo and create assembly info files manually");
+                    }
                     continue;
                 }
 

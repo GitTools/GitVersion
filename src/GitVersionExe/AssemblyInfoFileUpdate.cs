@@ -5,12 +5,13 @@ namespace GitVersion
     using System.IO;
     using System.Linq;
     using GitVersion.Helpers;
+    using GitVersion.VersionAssemblyInfoResources;
 
     class AssemblyInfoFileUpdate : IDisposable
     {
         List<Action> restoreBackupTasks = new List<Action>();
         List<Action> cleanupBackupTasks = new List<Action>();
-
+        
         public AssemblyInfoFileUpdate(Arguments args, string workingDirectory, VersionVariables variables, IFileSystem fileSystem)
         {
             if (!args.UpdateAssemblyInfo) return;
@@ -20,11 +21,11 @@ namespace GitVersion
 
             var assemblyInfoFiles = GetAssemblyInfoFiles(workingDirectory, args, fileSystem);
 
-            foreach (var assemblyInfoFile in assemblyInfoFiles)
+            foreach (var assemblyInfoFile in assemblyInfoFiles.Select(f => new FileInfo(f)))
             {
-                var backupAssemblyInfo = assemblyInfoFile + ".bak";
-                var localAssemblyInfo = assemblyInfoFile;
-                fileSystem.Copy(assemblyInfoFile, backupAssemblyInfo, true);
+                var backupAssemblyInfo = assemblyInfoFile.FullName + ".bak";
+                var localAssemblyInfo = assemblyInfoFile.FullName;
+                fileSystem.Copy(assemblyInfoFile.FullName, backupAssemblyInfo, true);
                 restoreBackupTasks.Add(() =>
                 {
                     if (fileSystem.Exists(localAssemblyInfo))
@@ -36,29 +37,58 @@ namespace GitVersion
                 var assemblyVersion = variables.AssemblySemVer;
                 var assemblyInfoVersion = variables.InformationalVersion;
                 var assemblyFileVersion = variables.MajorMinorPatch + ".0";
-                var fileContents = fileSystem.ReadAllText(assemblyInfoFile)
+                var fileContents = fileSystem.ReadAllText(assemblyInfoFile.FullName)
                     .RegexReplace(@"AssemblyVersion\(""[^""]*""\)", string.Format("AssemblyVersion(\"{0}\")", assemblyVersion))
                     .RegexReplace(@"AssemblyInformationalVersion\(""[^""]*""\)", string.Format("AssemblyInformationalVersion(\"{0}\")", assemblyInfoVersion))
                     .RegexReplace(@"AssemblyFileVersion\(""[^""]*""\)", string.Format("AssemblyFileVersion(\"{0}\")", assemblyFileVersion));
 
-                fileSystem.WriteAllText(assemblyInfoFile, fileContents);
+                fileSystem.WriteAllText(assemblyInfoFile.FullName, fileContents);
             }
         }
 
         static IEnumerable<string> GetAssemblyInfoFiles(string workingDirectory, Arguments args, IFileSystem fileSystem)
         {
-            if (args.UpdateAssemblyInfoFileName != null)
+            if (args.UpdateAssemblyInfoFileName != null && args.UpdateAssemblyInfoFileName.Any(x => !string.IsNullOrWhiteSpace(x)))
             {
-                var fullPath = Path.Combine(workingDirectory, args.UpdateAssemblyInfoFileName);
-
-                if (fileSystem.Exists(fullPath))
+                foreach (var item in args.UpdateAssemblyInfoFileName)
                 {
-                    return new[] { fullPath };
+                    var fullPath = Path.Combine(workingDirectory, item);
+
+                    if (EnsureVersionAssemblyInfoFile(args, fileSystem, fullPath))
+                    {
+                        yield return fullPath;
+                    }
                 }
             }
+            else
+            {
+                foreach (var item in fileSystem.DirectoryGetFiles(workingDirectory, "AssemblyInfo.*", SearchOption.AllDirectories)
+                    .Where(f => f.EndsWith(".cs", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".vb", StringComparison.OrdinalIgnoreCase)))
+                {
+                    yield return item;
+                }
+            }
+        }
 
-            return fileSystem.DirectoryGetFiles(workingDirectory, "AssemblyInfo.*", SearchOption.AllDirectories)
-                .Where(f => f.EndsWith(".cs", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".vb", StringComparison.OrdinalIgnoreCase));
+        static bool EnsureVersionAssemblyInfoFile(Arguments arguments, IFileSystem fileSystem, string fullPath)
+        {
+            if (fileSystem.Exists(fullPath)) return true;
+
+            if (!arguments.EnsureAssemblyInfo) return false;
+
+            var assemblyInfoSource = AssemblyVersionInfoTemplates.GetAssemblyInfoTemplateFor(fullPath);
+            if (!string.IsNullOrWhiteSpace(assemblyInfoSource))
+            {
+                var fileInfo = new FileInfo(fullPath);
+                if (!fileSystem.DirectoryExists(fileInfo.Directory.FullName))
+                {
+                    fileSystem.CreateDirectory(fileInfo.Directory.FullName);
+                }
+                fileSystem.WriteAllText(fullPath, assemblyInfoSource);
+                return true;
+            }
+            Logger.WriteWarning(string.Format("No version assembly info template available to create source file '{0}'", arguments.UpdateAssemblyInfoFileName));
+            return false;
         }
 
         public void Dispose()
