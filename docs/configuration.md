@@ -20,7 +20,7 @@ The global configuration options are:
 
  - **`assembly-versioning-scheme:`** When updating assembly info tells GitVersion how to treat the `AssemblyVersion` attribute. Useful to lock the major when using Strong Naming.
 
- - **`assembly-informational-format:`** Set this to any of the available [variables](/more-info/variables) to change the value of the `AssemblyInformationalVersion` attribute. Default set to `{InformationalVersion}`.
+ - **`assembly-informational-format:`** Set this to any of the available [variables](/more-info/variables) to change the value of the `AssemblyInformationalVersion` attribute. Default set to `{InformationalVersion}`. It also supports string interpolation (`{MajorMinorPatch}+{Branch}`)
 
  - **`mode:`** Sets the mode of how GitVersion should create a new version. Can be set to either `ContinuousDelivery` or `ContinuousDeployment`. Read more about [ContinuousDelivery](/reference/continuous-delivery/) or [ContinuousDeployment](/reference/continuous-deployment/).
 
@@ -65,8 +65,9 @@ The options in here are:
 
  - **`mode:`** Same as above
 
- - **`tag:`** The pre release tag to use for this branch. Use the value `use-branch-name-as-tag` to use the branch name instead.  
-   For example `feature/foo` would become a pre-release tag of `foo` with this value  
+ - **`tag:`** The pre release tag to use for this branch.  
+   Use the value `useBranchName` to use the branch name instead. For example `feature/foo` would become a pre-release tag of `foo` with this value.  
+   Use the value `{BranchName}` as a placeholder to insert the branch name. For example `feature/foo` would become a pre-release tag of `alpha.foo` with the value of `alpha.{BranchName}`.  
    **Note:** To clear a default use an empty string: `tag: ""`
 
  - **`increment:`** the part of the SemVer to increment when GitVersion detects it needs to be (i.e commit after a tag)

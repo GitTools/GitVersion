@@ -1,22 +1,40 @@
 ﻿namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using LibGit2Sharp;
 
     public class TrackMergeTargetBaseVersionStrategy : TaggedCommitVersionStrategy
     {
-        protected override bool IsValidTag(GitVersionContext context, string branchName, Tag tag, Commit commit)
+        public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
-            if (!string.IsNullOrWhiteSpace(branchName))
+            if(!context.Configuration.TrackMergeTarget)
             {
-                if (context.Configuration.TrackMergeTarget)
-                {
-                    return IsDirectMergeFromCommit(tag, commit);
-                }
+                yield break;
             }
 
-            return false;
+            string currentBranchName = null;
+            var head = context.Repository.Head;
+            if (head != null)
+            {
+                currentBranchName = head.CanonicalName;
+            }
+
+            if (string.IsNullOrWhiteSpace(currentBranchName))
+            {
+                yield break;
+            }
+
+            foreach (var version in base.GetVersions(context))
+            {
+                yield return version;
+            }
+        }
+
+        protected override bool IsValidTag(Tag tag, Commit commit)
+        {
+            return IsDirectMergeFromCommit(tag, commit);
         }
 
         protected override string FormatSource(VersionTaggedCommit version)

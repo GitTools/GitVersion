@@ -84,7 +84,11 @@ namespace GitVersion
                 List<Branch> possibleParents;
                 if (branchPoint == null)
                 {
-                    possibleParents = currentCommit.GetBranchesContainingCommit(repository, branchesToEvaluate, true).ToList();
+                    possibleParents = currentCommit.GetBranchesContainingCommit(repository, branchesToEvaluate, true)
+                        // It fails to inherit Increment branch configuration if more than 1 parent;
+                        // therefore no point to get more than 2 parents
+                        .Take(2)
+                        .ToList();
                 }
                 else
                 {

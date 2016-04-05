@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using ApprovalTests;
 using GitVersion;
 using GitVersion.Helpers;
 using NUnit.Framework;
@@ -63,7 +62,7 @@ release-branch-tag: rc
 ";
         SetupConfigFileContent(text);
         var error = Should.Throw<OldConfigurationException>(() => ConfigurationProvider.Provide(repoPath, fileSystem));
-        error.Message.ShouldContainWithoutWhitespace(@"GitVersionConfig.yaml contains old configuration, please fix the following errors:
+        error.Message.ShouldContainWithoutWhitespace(@"GitVersion configuration file contains old configuration, please fix the following errors:
 assemblyVersioningScheme has been replaced by assembly-versioning-scheme
 develop-branch-tag has been replaced by branch specific configuration.See http://gitversion.readthedocs.org/en/latest/configuration/#branch-configuration
 release-branch-tag has been replaced by branch specific configuration.See http://gitversion.readthedocs.org/en/latest/configuration/#branch-configuration");
@@ -118,12 +117,42 @@ branches:
     }
 
     [Test]
+    public void NextVersionCanBeInteger()
+    {
+        const string text = "next-version: 2";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+
+        config.NextVersion.ShouldBe("2.0");
+    }
+
+    [Test]
+    public void NextVersionCanHaveEnormousMinorVersion()
+    {
+        const string text = "next-version: 2.118998723";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+
+        config.NextVersion.ShouldBe("2.118998723");
+    }
+
+    [Test]
+    public void NextVersionCanHavePatch()
+    {
+        const string text = "next-version: 2.12.654651698";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+
+        config.NextVersion.ShouldBe("2.12.654651698");
+    }
+    
+    [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public void CanWriteOutEffectiveConfiguration()
     {
         var config = ConfigurationProvider.GetEffectiveConfigAsString(repoPath, fileSystem);
 
-        Approvals.Verify(config);
+        config.ShouldMatchApproved();
     }
 
     [Test]
@@ -154,6 +183,23 @@ assembly-informational-format: '{Major}.{Minor}.{Patch}'";
         config.AssemblyInformationalFormat.ShouldBe("{Major}.{Minor}.{Patch}");
     }
 
+
+    [Test]
+    public void CanUpdateAssemblyInformationalVersioningSchemeWithFullSemVer()
+    {
+        const string text = @"assembly-versioning-scheme: MajorMinorPatch
+assembly-informational-format: '{FullSemVer}'
+mode: ContinuousDelivery
+next-version: 5.3.0
+branches: {}";
+
+        SetupConfigFileContent(text);
+
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
+        config.AssemblyInformationalFormat.ShouldBe("{FullSemVer}");
+    }
+
     [Test]
     public void CanReadDefaultDocument()
     {
@@ -180,8 +226,36 @@ assembly-informational-format: '{Major}.{Minor}.{Patch}'";
         propertiesMissingAlias.ShouldBeEmpty();
     }
 
-    void SetupConfigFileContent(string text)
+    [Test]
+    public void WarnOnExistingGitVersionConfigYamlFile()
     {
-        fileSystem.WriteAllText(Path.Combine(repoPath, "GitVersionConfig.yaml"), text);
+        SetupConfigFileContent(string.Empty, "GitVersionConfig.yaml");
+
+        var s = string.Empty;
+        Action<string> action = info => { s = info; };
+        Logger.SetLoggers(action, action, action);
+
+        ConfigurationProvider.Provide(repoPath, fileSystem);
+
+        s.Contains("'GitVersionConfig.yaml' is deprecated, use 'GitVersion.yml' instead.").ShouldBe(true);
+    }
+
+    [Test]
+    public void NoWarnOnGitVersionYmlFile()
+    {
+        SetupConfigFileContent(string.Empty);
+
+        var s = string.Empty;
+        Action<string> action = info => { s = info; };
+        Logger.SetLoggers(action, action, action);
+
+        ConfigurationProvider.Provide(repoPath, fileSystem);
+
+        s.Length.ShouldBe(0);
+    }
+
+    void SetupConfigFileContent(string text, string fileName = "GitVersion.yml")
+    {
+        fileSystem.WriteAllText(Path.Combine(repoPath, fileName), text);
     }
 }

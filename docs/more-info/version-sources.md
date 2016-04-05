@@ -26,7 +26,7 @@ If a branch with a version number in it is merged into the current branch, that 
 
 Will increment: false
 
-### GitVersionConfig.yaml
+### GitVersion.yml
 If the `next-version` property is specified in the config file, it will be used as a version source.
 
 Will increment: false

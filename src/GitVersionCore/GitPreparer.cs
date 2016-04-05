@@ -26,7 +26,7 @@ namespace GitVersion
                     Password = authentication.Password
                 };
             this.noFetch = noFetch;
-            this.targetPath = targetPath;
+            this.targetPath = targetPath.TrimEnd('/', '\\');
         }
 
         public bool IsDynamicGitRepository
@@ -95,11 +95,13 @@ namespace GitVersion
         public string GetDotGitDirectory()
         {
             if (IsDynamicGitRepository)
-            {
                 return DynamicGitRepositoryPath;
-            }
 
-            return Repository.Discover(targetPath);
+            var dotGitDirectory = Repository.Discover(targetPath).TrimEnd('/', '\\');
+            if (string.IsNullOrEmpty(dotGitDirectory))
+                throw new DirectoryNotFoundException("Can't find the .git directory in " + targetPath);
+
+            return dotGitDirectory;
         }
 
         public string GetProjectRootDirectory()
@@ -107,12 +109,7 @@ namespace GitVersion
             if (IsDynamicGitRepository)
                 return targetPath;
 
-            var gitDir = Repository.Discover(targetPath);
-
-            if (string.IsNullOrEmpty(gitDir))
-                throw new DirectoryNotFoundException("Can't find the .git directory in " + targetPath);
-
-            return Directory.GetParent(gitDir).FullName;
+            return Directory.GetParent(GetDotGitDirectory()).FullName;
         }
 
         static string CreateDynamicRepository(string targetPath, AuthenticationInfo authentication, string repositoryUrl, string targetBranch, bool noFetch)

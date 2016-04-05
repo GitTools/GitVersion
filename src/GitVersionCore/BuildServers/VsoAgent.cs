@@ -41,7 +41,8 @@
             // If no variable substitution has happened, use FullSemVer
             if (buildNum == newBuildNum)
             {
-                return string.Format("##vso[build.updatebuildnumber]{0}", variables.FullSemVer);
+                var buildNumber = variables.FullSemVer.EndsWith("+0") ? variables.FullSemVer.Substring(0, variables.FullSemVer.Length - 2) : variables.FullSemVer;
+                return string.Format("##vso[build.updatebuildnumber]{0}", buildNumber);
             }
 
             return string.Format("##vso[build.updatebuildnumber]{0}", newBuildNum);

@@ -1,5 +1,5 @@
 # Version Incrementing
-Because GitVersion works with a number of workflows the way it does it's version incrementing may work perfectly for you, or it may cause you issues. This page is split up into two sections, first is all about understanding the approach GitVersion uses by default, and the second is how you can manually increment the version.
+Because GitVersion works with a number of workflows the way it does its version incrementing may work perfectly for you, or it may cause you issues. This page is split up into two sections, first is all about understanding the approach GitVersion uses by default, and the second is how you can manually increment the version.
 
 ## Approach
 Semantic Versioning is all about *releases*, not builds. This means that the version only increases after you release, this directly conflicts with the concept of published CI builds. When you release the next version of your library/app/website/whatever you should only increment major/minor or patch then reset all lower parts to 0, for instance given 1.0.0, the next release should be either `2.0.0`, `1.1.0` or `1.0.1`. Bumping one of the version components by more than 1 in a single release means you will have gaps in your version number, which defeats the purpose of SemVer.
@@ -14,7 +14,7 @@ There are a few ways to handle this problem depending on what your requirements 
 ### 1. GitFlow
 If you are using GitFlow then builds off the `develop` branch will actually *increment on every commit*. This is known in GitVersion as *continuous deployment mode*. By default `develop` builds are tagged with the `unstable` pre-release tag. This is so they are sorted higher than release branches.
 
-If you need to consume packages built from develop, we recommend publishing these packages to a separate NuGet feed as an alpha channel. That way you can publish beta/release candidate builds and only people who opt into the alpha feed will see the unstable pacakges.
+If you need to consume packages built from develop, we recommend publishing these packages to a separate NuGet feed as an alpha channel. That way you can publish beta/release candidate builds and only people who opt into the alpha feed will see the unstable packages.
 
 ### 2. Octopus deploy
 See [Octopus deploy](../build-server-support/build-server/octopus-deploy.md)
@@ -39,8 +39,8 @@ The options for `commit-message-incrementing` are `Enabled`, `MergeMessageOnly` 
 
 If the incrementing mode is set to `MergeMessageOnly` you can add this information in when merging a pull request. This prevents commits within a PR bumping the version.
 
-### GitVersionConfig.yaml
-The first is by setting the `next-version` property in the GitVersionConfig.yaml file. This property only serves as a base version,
+### GitVersion.yml
+The first is by setting the `next-version` property in the GitVersion.yml file. This property only serves as a base version,
 
 ### Branch name
 If you create a branch with the version number in the branch name such as `release-1.2.0` or `hotfix/1.0.1` then GitVersion will take the version number from the branch name as a source

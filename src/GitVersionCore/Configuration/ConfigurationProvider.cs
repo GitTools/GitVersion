@@ -119,7 +119,7 @@ namespace GitVersion
 
         static Config ReadConfig(string workingDirectory, IFileSystem fileSystem)
         {
-            var configFilePath = GetConfigFilePath(workingDirectory);
+            var configFilePath = GetConfigFilePath(workingDirectory, fileSystem);
 
             if (fileSystem.Exists(configFilePath))
             {
@@ -144,14 +144,28 @@ namespace GitVersion
             return stringBuilder.ToString();
         }
 
-        static string GetConfigFilePath(string workingDirectory)
+        static string GetConfigFilePath(string workingDirectory, IFileSystem fileSystem)
         {
-            return Path.Combine(workingDirectory, "GitVersionConfig.yaml");
+            var ymlPath = Path.Combine(workingDirectory, "GitVersion.yml");
+            if (fileSystem.Exists(ymlPath))
+            {
+                return ymlPath;
+            }
+
+            var deprecatedPath = Path.Combine(workingDirectory, "GitVersionConfig.yaml");
+            if (fileSystem.Exists(deprecatedPath))
+            {
+                Logger.WriteWarning("'GitVersionConfig.yaml' is deprecated, use 'GitVersion.yml' instead.");
+
+                return deprecatedPath;
+            }
+
+            return ymlPath;
         }
 
         public static void Init(string workingDirectory, IFileSystem fileSystem, IConsole console)
         {
-            var configFilePath = GetConfigFilePath(workingDirectory);
+            var configFilePath = GetConfigFilePath(workingDirectory, fileSystem);
             var currentConfiguration = Provide(workingDirectory, fileSystem, applyDefaults: false);
             var config = new ConfigInitWizard(console, fileSystem).Run(currentConfiguration, workingDirectory);
             if (config == null) return;

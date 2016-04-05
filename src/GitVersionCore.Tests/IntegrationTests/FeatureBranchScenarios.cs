@@ -33,7 +33,7 @@ public class FeatureBranchScenarios
             fixture.AssertFullSemver("1.1.0-JIRA-124.1+2");
         }
     }
-    
+
     [Test]
     public void BranchCreatedAfterFastForwardMergeShouldInheritCorrectly()
     {
@@ -148,8 +148,6 @@ public class FeatureBranchScenarios
     [Test]
     public void ShouldBePossibleToMergeDevelopForALongRunningBranchWhereDevelopAndMasterAreEqual()
     {
-        var config = new Config
-        { VersioningMode = VersioningMode.ContinuousDeployment };
         using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeATaggedCommit("v1.0.0");
@@ -168,10 +166,37 @@ public class FeatureBranchScenarios
             fixture.Repository.Merge(fixture.Repository.Branches["develop"], Generate.SignatureNow());
             fixture.Repository.ApplyTag("v1.1.0");
 
-            fixture.Repository.Checkout("feature/longrunning"); 
+            fixture.Repository.Checkout("feature/longrunning");
             fixture.Repository.Merge(fixture.Repository.Branches["develop"], Generate.SignatureNow());
 
-            fixture.AssertFullSemver(config, "1.2.0-longrunning.2");
+            var configuration = new Config { VersioningMode = VersioningMode.ContinuousDeployment };
+            fixture.AssertFullSemver(configuration, "1.2.0-longrunning.2");
+        }
+    }
+
+    [TestCase("alpha", "JIRA-123", "alpha")]
+    [TestCase("useBranchName", "JIRA-123", "JIRA-123")]
+    [TestCase("alpha.{BranchName}", "JIRA-123", "alpha.JIRA-123")]
+    public void ShouldUseConfiguredTag(string tag, string featureName, string preReleaseTagName)
+    {
+        var config = new Config
+        {
+            Branches =
+            {
+                { "features?[/-]", new BranchConfig { Tag = tag } }
+            }
+        };
+
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            var featureBranchName = string.Format("feature/{0}", featureName);
+            fixture.Repository.CreateBranch(featureBranchName);
+            fixture.Repository.Checkout(featureBranchName);
+            fixture.Repository.MakeCommits(5);
+
+            var expectedFullSemVer = string.Format("1.0.1-{0}.1+5", preReleaseTagName);
+            fixture.AssertFullSemver(config, expectedFullSemVer);
         }
     }
 }

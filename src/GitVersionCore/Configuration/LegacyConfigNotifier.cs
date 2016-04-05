@@ -27,7 +27,7 @@ namespace GitVersion
                 issues.Add("release-branch-tag has been replaced by branch specific configuration. See http://gitversion.readthedocs.org/en/latest/configuration/#branch-configuration");
 
             if (issues.Any())
-                throw new OldConfigurationException("GitVersionConfig.yaml contains old configuration, please fix the following errors:\r\n" + string.Join("\r\n", issues));
+                throw new OldConfigurationException("GitVersion configuration file contains old configuration, please fix the following errors:\r\n" + string.Join("\r\n", issues));
         }
     }
 }

@@ -4,12 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using ApprovalTests;
 using GitVersion;
 using GitVersionCore.Tests;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using NUnit.Framework;
+using Shouldly;
 
 [TestFixture]
 public class AssemblyInfoBuilderTests
@@ -32,7 +32,7 @@ public class AssemblyInfoBuilderTests
 
         var versionVariables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
         var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, "Fake");
-        Approvals.Verify(assemblyInfoText);
+        assemblyInfoText.ShouldMatchApproved();
 
         var compilation = CSharpCompilation.Create("Fake.dll")
             .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
@@ -69,7 +69,7 @@ public class AssemblyInfoBuilderTests
 
         var versionVariables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
         var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, "Fake.System");
-        Approvals.Verify(assemblyInfoText);
+        assemblyInfoText.ShouldMatchApproved();
 
         var compilation = CSharpCompilation.Create("Fake.System.dll")
             .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
@@ -169,7 +169,7 @@ public class AssemblyInfoBuilderTests
 
         var versionVariables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
         var assemblyInfoText = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, "Fake");
-        Approvals.Verify(assemblyInfoText);
+        assemblyInfoText.ShouldMatchApproved(c => c.UseCallerLocation());
 
         var compilation = CSharpCompilation.Create("Fake.dll")
             .WithOptions(new CSharpCompilationOptions(OutputKind.NetModule))

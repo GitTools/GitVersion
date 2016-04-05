@@ -1,11 +1,14 @@
 namespace GitVersion
 {
+    using System.Collections.Generic;
+
     public class Arguments
     {
         public Arguments()
         {
             Authentication = new Authentication();
             Output = OutputType.Json;
+            UpdateAssemblyInfoFileName = new HashSet<string>();
         }
 
         public Authentication Authentication;
@@ -31,9 +34,15 @@ namespace GitVersion
         public string ExecArgs;
 
         public bool UpdateAssemblyInfo;
-        public string UpdateAssemblyInfoFileName;
+        public ISet<string> UpdateAssemblyInfoFileName;
+        public bool EnsureAssemblyInfo;
 
         public bool ShowConfig;
         public bool NoFetch;
+
+        public void AddAssemblyInfoFileName(string fileName)
+        {
+            UpdateAssemblyInfoFileName.Add(fileName);
+        }
     }
 }

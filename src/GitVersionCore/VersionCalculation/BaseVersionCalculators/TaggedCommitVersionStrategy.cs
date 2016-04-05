@@ -8,13 +8,6 @@
     {
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
-            string currentBranchName = null;
-            var head = context.Repository.Head;
-            if (head != null)
-            {
-                currentBranchName = head.CanonicalName;
-            }
-
             var olderThan = context.CurrentCommit.When();
             var allTags = context.Repository.Tags
                 .Where(tag => ((Commit)tag.PeeledTarget()).When() <= olderThan)
@@ -23,7 +16,7 @@
                 .Commits
                 .SelectMany(commit =>
                 {
-                    return allTags.Where(t => IsValidTag(context, currentBranchName, t, commit));
+                    return allTags.Where(t => IsValidTag(t, commit));
                 })
                 .Select(t =>
                 {
@@ -39,19 +32,7 @@
                 .Where(a => a != null)
                 .ToList();
 
-            if (tagsOnBranch.Count == 0)
-            {
-                yield break;
-            }
-            if (tagsOnBranch.Count == 1)
-            {
-                yield return CreateBaseVersion(context, tagsOnBranch[0]);
-            }
-
-            foreach (var result in tagsOnBranch.Select(t => CreateBaseVersion(context, t)))
-            {
-                yield return result;
-            }
+            return tagsOnBranch.Select(t => CreateBaseVersion(context, t));
         }
 
         BaseVersion CreateBaseVersion(GitVersionContext context, VersionTaggedCommit version)
@@ -66,7 +47,7 @@
             return string.Format("Git tag '{0}'", version.Tag);
         }
 
-        protected virtual bool IsValidTag(GitVersionContext context, string branchName, Tag tag, Commit commit)
+        protected virtual bool IsValidTag(Tag tag, Commit commit)
         {
             return tag.PeeledTarget() == commit;
         }

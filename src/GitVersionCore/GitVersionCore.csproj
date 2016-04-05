@@ -76,6 +76,7 @@
     <Compile Include="BuildServers\BuildServerBase.cs" />
     <Compile Include="BuildServers\BuildServerList.cs" />
     <Compile Include="BuildServers\ContinuaCi.cs" />
+    <Compile Include="BuildServers\GitLabCi.cs" />
     <Compile Include="BuildServers\IBuildServer.cs" />
     <Compile Include="BuildServers\Jenkins.cs" />
     <Compile Include="BuildServers\MyGet.cs" />
@@ -113,6 +114,7 @@
     <Compile Include="Configuration\Init\StepResult.cs" />
     <Compile Include="EffectiveConfiguration.cs" />
     <Compile Include="ExecuteCore.cs" />
+    <Compile Include="Extensions\ReadEmbeddedResourceExtensions.cs" />
     <Compile Include="GitPreparer.cs" />
     <Compile Include="GitVersionCache.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
@@ -124,6 +126,8 @@
     <Compile Include="SemanticVersionExtensions.cs" />
     <Compile Include="SemanticVersionFormatValues.cs" />
     <Compile Include="StringFormatWith.cs" />
+    <Compile Include="VersionAssemblyInfoResources\AssemblyVersionInfoTemplates.cs" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\VersionAssemblyInfo.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculator.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\BaseVersion.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\ConfigNextVersionBaseVersionStrategy.cs" />
@@ -163,6 +167,8 @@
     <Content Include="FodyWeavers.xml">
       <SubType>Designer</SubType>
     </Content>
+    <EmbeddedResource Include="VersionAssemblyInfoResources\VersionAssemblyInfo.vb" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\VersionAssemblyInfo.fs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="NugetAssets\GitVersion.nuspec">

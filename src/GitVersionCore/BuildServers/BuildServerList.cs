@@ -12,6 +12,7 @@
             new AppVeyor(),
             new MyGet(),
             new Jenkins(),
+            new GitLabCi(),
             new VsoAgent()
         };
 
