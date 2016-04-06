@@ -54,7 +54,7 @@ public class AssemblyInfoBuilderTests
         public string ApprovedSubFolder { get { return Path.Combine("Approved", "VisualBasic"); } }
     }
 
-    private readonly ICompiler[] compilers = new ICompiler[]
+    private static readonly ICompiler[] compilers = new ICompiler[]
     {
         new CSharpCompiler(),
         new VisualBasicCompiler()
