@@ -38,8 +38,8 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FluentDateTime, Version=1.12.0.0, Culture=neutral, PublicKeyToken=6ccbc613702e6c71, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentDateTime.1.12.0\Lib\NET35\FluentDateTime.dll</HintPath>
+    <Reference Include="FluentDateTime, Version=1.13.0.0, Culture=neutral, PublicKeyToken=6ccbc613702e6c71, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentDateTime.1.13.0\lib\NET35\FluentDateTime.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="GitTools.Core, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
