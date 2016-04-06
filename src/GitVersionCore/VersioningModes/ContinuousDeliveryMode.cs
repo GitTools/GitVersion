@@ -16,7 +16,7 @@
             if (applicableTagsInDescendingOrder.Any())
             {
                 var taggedCommit = applicableTagsInDescendingOrder.First().PeeledTarget();
-                var preReleaseVersion = applicableTagsInDescendingOrder.Select(tag => SemanticVersion.Parse(tag.Name, context.Configuration.GitTagPrefix)).FirstOrDefault();
+                var preReleaseVersion = applicableTagsInDescendingOrder.Select(tag => SemanticVersion.Parse(tag.FriendlyName, context.Configuration.GitTagPrefix)).FirstOrDefault();
                 if (preReleaseVersion != null)
                 {
                     if (taggedCommit != context.CurrentCommit)

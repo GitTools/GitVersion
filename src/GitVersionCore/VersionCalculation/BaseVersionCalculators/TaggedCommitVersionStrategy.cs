@@ -21,11 +21,11 @@
                 .Select(t =>
                 {
                     SemanticVersion version;
-                    if (SemanticVersion.TryParse(t.Name, context.Configuration.GitTagPrefix, out version))
+                    if (SemanticVersion.TryParse(t.FriendlyName, context.Configuration.GitTagPrefix, out version))
                     {
                         var commit = t.PeeledTarget() as Commit;
                         if (commit != null)
-                            return new VersionTaggedCommit(commit, version, t.Name);
+                            return new VersionTaggedCommit(commit, version, t.FriendlyName);
                     }
                     return null;
                 })
