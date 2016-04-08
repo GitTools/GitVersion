@@ -9,33 +9,39 @@
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
             var olderThan = context.CurrentCommit.When();
-            var allTags = context.Repository.Tags
-                .Where(tag => ((Commit)tag.PeeledTarget()).When() <= olderThan)
-                .ToList();
-            var tagsOnBranch = context.CurrentBranch
-                .Commits
-                .SelectMany(commit =>
-                {
-                    return allTags.Where(t => IsValidTag(t, commit));
-                })
+            var tags = context.Repository.Tags
+                .Where(tag => ((Commit)tag.PeeledTarget()).When() <= olderThan);
+            
+            return GetVersionsFromTags(context, tags);
+        }
+
+        private IEnumerable<BaseVersion> GetVersionsFromTags(GitVersionContext context, IEnumerable<Tag> tags)
+        {
+            var currentBranchName = context.CurrentBranch.CanonicalName;
+            var versionedTags = tags.Where(t => IsTagInBranch(context, t.PeeledTarget() as Commit, currentBranchName))
                 .Select(t =>
                 {
                     SemanticVersion version;
                     if (SemanticVersion.TryParse(t.Name, context.Configuration.GitTagPrefix, out version))
                     {
-                        var commit = t.PeeledTarget() as Commit;
-                        if (commit != null)
-                            return new VersionTaggedCommit(commit, version, t.Name);
+                        return new VersionTaggedCommit((Commit)t.PeeledTarget(), version, t);
                     }
                     return null;
-                })
-                .Where(a => a != null)
-                .ToList();
-
-            return tagsOnBranch.Select(t => CreateBaseVersion(context, t));
+                }).Where(a => a != null);
+            return versionedTags.Select(t => CreateBaseVersion(context, t));
         }
 
-        BaseVersion CreateBaseVersion(GitVersionContext context, VersionTaggedCommit version)
+        static bool IsTagInBranch(GitVersionContext context, Commit tagCommit, string currentBranchName)
+        {
+            if(tagCommit == null)
+            {
+                return false;
+            }
+            var branches = tagCommit.GetBranchesContainingCommit(context.Repository, new List<Branch> { context.CurrentBranch }, false).ToList();
+            return branches.Any(b =>b.CanonicalName == currentBranchName);
+        }
+
+        protected BaseVersion CreateBaseVersion(GitVersionContext context, VersionTaggedCommit version)
         {
             var shouldUpdateVersion = version.Commit.Sha != context.CurrentCommit.Sha;
             var baseVersion = new BaseVersion(FormatSource(version), shouldUpdateVersion, version.SemVer, version.Commit, null);
@@ -47,18 +53,13 @@
             return string.Format("Git tag '{0}'", version.Tag);
         }
 
-        protected virtual bool IsValidTag(Tag tag, Commit commit)
-        {
-            return tag.PeeledTarget() == commit;
-        }
-
         protected class VersionTaggedCommit
         {
-            public string Tag;
+            public Tag Tag;
             public Commit Commit;
             public SemanticVersion SemVer;
 
-            public VersionTaggedCommit(Commit commit, SemanticVersion semVer, string tag)
+            public VersionTaggedCommit(Commit commit, SemanticVersion semVer, Tag tag)
             {
                 Tag = tag;
                 Commit = commit;

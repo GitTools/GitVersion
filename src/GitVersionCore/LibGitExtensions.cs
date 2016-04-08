@@ -128,7 +128,39 @@ namespace GitVersion
         {
             return (b.IsRemote ? b.Name.Substring(b.Name.IndexOf("/", StringComparison.Ordinal) + 1) : b.Name) != branch.Name;
         }
+        private static IEnumerable<Branch> TryGetBranchesContainingCommitFromGitCmd(Commit commit, IRepository repository)
+        {
+            try
+            {
+                var output = new StringBuilder();
+                ProcessHelper.Run(
+                    o => output.AppendLine(o),
+                    e => { },
+                    null,
+                    "git",
+                    "branch -r --contains " + commit.Sha,
+                    repository.Info.WorkingDirectory);
 
+                ProcessHelper.Run(
+                    o => output.AppendLine(o),
+                    e => { },
+                    null,
+                    "git",
+                    "branch --contains " + commit.Sha,
+                    repository.Info.WorkingDirectory);
+                if (output.Length > 0)
+                {
+                    var branchNames = output.ToString().Replace("\r", "").Replace("*", ""/*current branch*/)
+                        .Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(r => r.Trim());
+                    return repository.Branches.Where(r => branchNames.Contains(r.Name));
+                }
+                return null;
+            }
+            catch (FileNotFoundException)
+            {
+                return null;
+            }
+        }
         public static IEnumerable<Branch> GetBranchesContainingCommit([NotNull] this Commit commit, IRepository repository, IList<Branch> branches, bool onlyTrackedBranches)
         {
             if (commit == null)
@@ -153,7 +185,22 @@ namespace GitVersion
                 yield break;
             }
 
-            foreach (var branch in branches.Where(b => (onlyTrackedBranches && !b.IsTracking)))
+            var branchesFromGitCmd = TryGetBranchesContainingCommitFromGitCmd(commit, repository);
+            if (branchesFromGitCmd != null)
+            {
+                foreach (var b in branchesFromGitCmd.Where(r => !onlyTrackedBranches || !r.IsTracking)
+                    .Intersect(branches.Where(r => !onlyTrackedBranches || !r.IsTracking)))
+                {
+                    yield return b;
+                }
+            }
+
+            if (branchesFromGitCmd != null)
+            {
+                yield break;
+            }
+
+            foreach (var branch in branches.Where(b => (!onlyTrackedBranches || !b.IsTracking)))
             {
                 var commits = repository.Commits.QueryBy(new CommitFilter { Since = branch }).Where(c => c.Sha == commit.Sha);
 
