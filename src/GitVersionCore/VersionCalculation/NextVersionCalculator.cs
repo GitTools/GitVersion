@@ -77,7 +77,7 @@
             {
                 Logger.WriteInfo("Using branch name to calculate version tag");
 
-                var branchName = branchNameOverride ?? context.CurrentBranch.Name;
+                var branchName = branchNameOverride ?? context.CurrentBranch.FriendlyName;
                 if (!string.IsNullOrWhiteSpace(context.Configuration.BranchPrefixToTrim))
                 {
                     branchName = branchName.RegexReplace(context.Configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);

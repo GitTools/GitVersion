@@ -13,7 +13,7 @@ public class MockBranchCollection : BranchCollection, ICollection<Branch>
 
     public override Branch this[string name]
     {
-        get { return Branches.FirstOrDefault(x => x.Name == name); }
+        get { return Branches.FirstOrDefault(x => x.FriendlyName == name); }
     }
 
     public void Add(Branch item)

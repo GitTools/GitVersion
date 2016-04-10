@@ -9,8 +9,8 @@
         {
             var qf = new CommitFilter
             {
-                Since = context.CurrentCommit,
-                Until = baseVersionSource,
+                IncludeReachableFrom = context.CurrentCommit,
+                ExcludeReachableFrom = baseVersionSource,
                 SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
             };
 
@@ -20,7 +20,7 @@
 
             return new SemanticVersionBuildMetaData(
                 commitsSinceTag,
-                context.CurrentBranch.Name,
+                context.CurrentBranch.FriendlyName,
                 context.CurrentCommit.Sha,
                 context.CurrentCommit.When());
         }

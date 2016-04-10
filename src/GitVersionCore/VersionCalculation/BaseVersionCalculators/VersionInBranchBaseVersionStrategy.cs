@@ -11,14 +11,14 @@
             if (versionInBranch != null)
             {
                 var commitBranchWasBranchedFrom = context.CurrentBranch.FindCommitBranchWasBranchedFrom(context.Repository);
-                var branchNameOverride = context.CurrentBranch.Name.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
+                var branchNameOverride = context.CurrentBranch.FriendlyName.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
                 yield return new BaseVersion("Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom, branchNameOverride);
             }
         }
 
         Tuple<string, SemanticVersion> GetVersionInBranch(GitVersionContext context)
         {
-            var branchParts = context.CurrentBranch.Name.Split('/', '-');
+            var branchParts = context.CurrentBranch.FriendlyName.Split('/', '-');
             foreach (var part in branchParts)
             {
                 SemanticVersion semanticVersion;

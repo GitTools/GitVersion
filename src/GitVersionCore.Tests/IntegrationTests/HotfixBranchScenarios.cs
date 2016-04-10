@@ -57,7 +57,7 @@ public class HotfixBranchScenarios
 
             // Merge hotfix branch to support
             fixture.Repository.Checkout("master");
-            fixture.Repository.Checkout(fixture.Repository.CreateBranch("support-1.1", (Commit)fixture.Repository.Tags.Single(t => t.Name == "1.1.0").Target));
+            fixture.Repository.Checkout(fixture.Repository.CreateBranch("support-1.1", (Commit)fixture.Repository.Tags.Single(t => t.FriendlyName == "1.1.0").Target));
             fixture.AssertFullSemver("1.1.0");
 
             // create hotfix branch

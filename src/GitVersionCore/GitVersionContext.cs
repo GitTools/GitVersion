@@ -61,7 +61,7 @@
                 .SelectMany(t =>
                 {
                     SemanticVersion version;
-                    if (t.PeeledTarget() == CurrentCommit && SemanticVersion.TryParse(t.Name, Configuration.GitTagPrefix, out version))
+                    if (t.PeeledTarget() == CurrentCommit && SemanticVersion.TryParse(t.FriendlyName, Configuration.GitTagPrefix, out version))
                         return new[] { version };
                     return new SemanticVersion[0];
                 })
