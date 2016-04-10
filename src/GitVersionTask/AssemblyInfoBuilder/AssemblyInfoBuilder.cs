@@ -4,6 +4,7 @@ using System.Linq;
 using GitVersion;
 using Microsoft.Build.Framework;
 using System.IO;
+using GitTools;
 
 public abstract class AssemblyInfoBuilder
 {
@@ -19,7 +20,7 @@ public abstract class AssemblyInfoBuilder
 
         var assemblyInfoExtension = compileFiles.Select(x => x.ItemSpec)
             .Where(compileFile => compileFile.Contains("AssemblyInfo"))
-            .Select(compileFile => Path.GetExtension(compileFile)).FirstOrDefault();
+            .Select(Path.GetExtension).FirstOrDefault();
 
         if (assemblyInfoBuilders.TryGetValue(assemblyInfoExtension, out builderType))
         {
