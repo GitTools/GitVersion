@@ -26,7 +26,7 @@ public class GitLabCiMessageGenerationTests
         generatedParameterMessages[0].ShouldBe("GitVersion_name=value");
     }
 
-    [Test, Explicit]
+    [Test]
     public void WriteAllVariablesToTheTextWriter()
     {
         // this test method writes to disc, hence marked explicit

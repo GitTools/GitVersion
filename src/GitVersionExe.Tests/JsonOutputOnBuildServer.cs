@@ -1,6 +1,6 @@
 ﻿namespace GitVersionExe.Tests
 {
-    using GitVersion;
+    using GitTools.Testing;
     using NUnit.Framework;
     using Shouldly;
 
@@ -9,7 +9,7 @@
         [Test]
         public void BeingOnBuildServerDoesntOverrideOutputJson()
         {
-            using (var fixture = new RemoteRepositoryFixture(new Config()))
+            using (var fixture = new RemoteRepositoryFixture())
             {
                 fixture.Repository.MakeATaggedCommit("1.2.3");
                 fixture.Repository.MakeACommit();

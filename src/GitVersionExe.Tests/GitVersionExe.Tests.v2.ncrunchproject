@@ -1,4 +1,5 @@
-<ProjectConfiguration>
+﻿<ProjectConfiguration>
+  <AutoDetectNugetBuildDependencies>true</AutoDetectNugetBuildDependencies>
   <BuildPriority>1000</BuildPriority>
   <CopyReferencedAssembliesToWorkspace>true</CopyReferencedAssembliesToWorkspace>
   <ConsiderInconclusiveTestsAsPassing>false</ConsiderInconclusiveTestsAsPassing>
@@ -22,6 +23,5 @@
   <UseCPUArchitecture>AutoDetect</UseCPUArchitecture>
   <MSTestThreadApartmentState>STA</MSTestThreadApartmentState>
   <BuildProcessArchitecture>x86</BuildProcessArchitecture>
-  <AdditionalFilesToInclude>..\Packages\LibGit2Sharp.0.21.0.176\lib\net40\NativeBinaries\**.*</AdditionalFilesToInclude>
   <HiddenWarnings>CopyReferencedAssembliesToWorkspaceIsOn</HiddenWarnings>
 </ProjectConfiguration>

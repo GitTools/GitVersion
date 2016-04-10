@@ -11,12 +11,20 @@ public class TestFileSystem : IFileSystem
 
     public void Copy(string @from, string to, bool overwrite)
     {
-        throw new NotImplementedException();
+        if (fileSystem.ContainsKey(to))
+        {
+            if (overwrite)
+                fileSystem.Remove(to);
+            else
+                throw new IOException("File already exists");
+        }
+        fileSystem.Add(to, fileSystem[from]);
     }
 
     public void Move(string @from, string to)
     {
-        throw new NotImplementedException();
+        Copy(from, to, false);
+        fileSystem.Remove(from);
     }
 
     public bool Exists(string file)
@@ -26,7 +34,7 @@ public class TestFileSystem : IFileSystem
 
     public void Delete(string path)
     {
-        throw new NotImplementedException();
+        fileSystem.Remove(path);
     }
 
     public string ReadAllText(string path)

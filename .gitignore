@@ -8,6 +8,7 @@
 # User-specific files
 *.suo
 *.user
+*.userprefs
 *.sln.docstates
 *.pidb
 *.received.txt
@@ -32,6 +33,7 @@
 .builds
 *.dotCover
 *.orig
+*~
 
 ##  If you have NuGet Package Restore enabled, uncomment this
 packages/
@@ -57,7 +59,9 @@ TestResults
 ClientBin
 stylecop.*
 ~$*
+*~
 *.dbmdl
+site/
 Generated_Code #added for RIA/Silverlight projects
 
 # Backup & report files from converting an old project file to a newer
@@ -82,6 +86,7 @@ GitVersion.sln.ide/
 .vs/
 Packages/
 build/
+site/
 
 ################
 # Project Rider

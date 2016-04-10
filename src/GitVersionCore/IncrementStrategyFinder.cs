@@ -87,7 +87,7 @@
             {
                 var filter = new CommitFilter
                 {
-                    Since = headCommit,
+                    IncludeReachableFrom = headCommit,
                     SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Reverse
                 };
 

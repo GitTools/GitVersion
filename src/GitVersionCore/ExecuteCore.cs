@@ -1,6 +1,7 @@
 namespace GitVersion
 {
     using System;
+    using System.ComponentModel;
     using System.Linq;
     using GitVersion.Helpers;
 
@@ -28,6 +29,19 @@ namespace GitVersion
             var gitPreparer = new GitPreparer(targetUrl, dynamicRepositoryLocation, authentication, fetch, workingDirectory);
             var dotGitDirectory = gitPreparer.GetDotGitDirectory();
             var projectRoot = gitPreparer.GetProjectRootDirectory();
+
+            // TODO Can't use this, it still needs work
+            //var gitRepository = GitRepositoryFactory.CreateRepository(new RepositoryInfo
+            //{
+            //    Url = targetUrl,
+            //    Branch = targetBranch,
+            //    Authentication = new AuthenticationInfo
+            //    {
+            //        Username = authentication.Username,
+            //        Password = authentication.Password
+            //    },
+            //    Directory = workingDirectory
+            //});
             Logger.WriteInfo(string.Format("Project root is: " + projectRoot));
             if (string.IsNullOrEmpty(dotGitDirectory) || string.IsNullOrEmpty(projectRoot))
             {

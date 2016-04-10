@@ -11,7 +11,7 @@
         {
             var baseVersionSource = context.Repository.Commits.QueryBy(new CommitFilter
             {
-                Since = context.CurrentBranch.Tip
+                IncludeReachableFrom = context.CurrentBranch.Tip
             }).First(c => !c.Parents.Any());
             yield return new BaseVersion("Fallback base version", false, new SemanticVersion(minor: 1), baseVersionSource, null);
         }

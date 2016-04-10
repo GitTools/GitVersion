@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props" Condition="Exists('..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props')" />
+  <Import Project="..\packages\LibGit2Sharp.NativeBinaries.1.0.129\build\LibGit2Sharp.NativeBinaries.props" Condition="Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.129\build\LibGit2Sharp.NativeBinaries.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -13,8 +13,9 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <LangVersion>5</LangVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>3858a53b</NuGetPackageImportStamp>
     <BuildDir>$(SolutionDir)..\build\</BuildDir>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,12 +40,16 @@
     <DocumentationFile>bin\Release\GitVersion.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GitTools.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GitTools.Core.1.0.0\lib\net4\GitTools.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="JetBrains.Annotations, Version=8.1.11.55, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrainsAnnotations.Fody.1.0.4.0\Lib\JetBrains.Annotations.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="LibGit2Sharp, Version=0.21.0.176, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LibGit2Sharp.0.21.0.176\lib\net40\LibGit2Sharp.dll</HintPath>
+    <Reference Include="LibGit2Sharp, Version=0.22.0.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
+      <HintPath>..\packages\LibGit2Sharp.0.22.0\lib\net40\LibGit2Sharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -52,15 +57,14 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Visualize, Version=0.4.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Visualize.Fody.0.4.4.0\lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\Visualize.dll</HintPath>
+    <Reference Include="Visualize, Version=0.4.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Visualize.Fody.0.4.5.0\lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\Visualize.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArgumentParser.cs" />
     <Compile Include="Arguments.cs" />
-    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="HelpWriter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="AssemblyInfo.cs" />
@@ -131,21 +135,22 @@
   </UsingTask>
   <Target Name="AfterBuild" DependsOnTargets="Clean" Condition="$(NCrunch)==''">
     <MakeDir Directories="$(TargetDir)ILMergeTemp\" />
-    <Exec Command="&quot;$(SolutionDir)tools\ilmerge.exe&quot;  /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)LibGit2Sharp.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:exe /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
+    <PropertyGroup>
+      <Runtime Condition="'$(OS)'=='Unix'">mono</Runtime>
+    </PropertyGroup>
+    <!-- Copy target file so that our temporary file gets the correct permissions -->
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(TargetDir)ILMergeTemp\" />
+    <Exec Command="$(Runtime) &quot;$(SolutionDir)packages\ILRepack.2.0.10\tools\ILRepack.exe&quot; /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)GitTools.Core.dll&quot; &quot;$(TargetDir)LibGit2Sharp.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:exe /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
     <ItemGroup>
       <TempFiles Include="$(TargetDir)ILMergeTemp\*.*" />
+      <NativeBinaries Include="$(TargetDir)NativeBinaries\**\*.*" />
+      <WindowsBinaries Include="$(TargetDir)NativeBinaries\**\*.dll" />
     </ItemGroup>
-    <CreateItem Include="$(TargetDir)NativeBinaries\amd64\*.dll">
-      <Output TaskParameter="Include" ItemName="amd64" />
-    </CreateItem>
-    <CreateItem Include="$(TargetDir)NativeBinaries\x86\*.dll">
-      <Output TaskParameter="Include" ItemName="x86" />
-    </CreateItem>
     <!-- NugetExeBuild -->
     <MakeDir Directories="$(BuildDir)NuGetExeBuild" />
-    <Copy SourceFiles="@(amd64)" DestinationFolder="$(BuildDir)NuGetExeBuild\tools\NativeBinaries\amd64" />
-    <Copy SourceFiles="@(x86)" DestinationFolder="$(BuildDir)NuGetExeBuild\tools\NativeBinaries\x86" />
-    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
+    <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)NuGetExeBuild\tools\NativeBinaries\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" Condition="Exists('$(OutputPath)GitVersion.pdb')" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.exe.mdb" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" Condition="Exists('$(OutputPath)GitVersion.exe.mdb')" />
     <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyInstall.ps1" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyUninstall.ps1" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
@@ -153,15 +158,15 @@
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetExeBuild" MetadataAssembly="$(OutputPath)ILMergeTemp\GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
     <!-- NugetCommandLineBuild -->
     <MakeDir Directories="$(BuildDir)NuGetCommandLineBuild" />
-    <Copy SourceFiles="@(amd64)" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools\NativeBinaries\amd64" />
-    <Copy SourceFiles="@(x86)" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools\NativeBinaries\x86" />
-    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" />
+    <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)NuGetCommandLineBuild\tools\NativeBinaries\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" Condition="Exists('$(OutputPath)GitVersion.pdb')" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.exe.mdb" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" Condition="Exists('$(OutputPath)GitVersion.exe.mdb')" />
     <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.CommandLine.nuspec" DestinationFolder="$(BuildDir)NuGetCommandLineBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetCommandLineBuild" MetadataAssembly="$(OutputPath)ILMergeTemp\GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
     <!-- TfsBuildTask -->
-    <Copy SourceFiles="@(amd64)" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask\NativeBinaries\amd64" />
-    <Copy SourceFiles="@(x86)" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask\NativeBinaries\x86" />
+    <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)GitVersionTfsTaskBuild\NativeBinaries\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" Condition="Exists('$(OutputPath)GitVersion.pdb')" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\extension-icon.png" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\manifest.json" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\overview.md" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" />
@@ -177,9 +182,10 @@
     <Exec Command="powershell -ExecutionPolicy RemoteSigned -NoProfile &quot;$(SolutionDir)GitVersionTfsTask\Create-Vsix.ps1 $(BuildDir)GitVersionTfsTaskBuild&quot;" Condition="'$(GitVersion_SemVer)' != ''" />
     <!-- Gem -->
     <MakeDir Directories="$(BuildDir)GemBuild" />
-    <Copy SourceFiles="@(amd64)" DestinationFolder="$(BuildDir)GemBuild\bin\NativeBinaries\amd64" />
-    <Copy SourceFiles="@(x86)" DestinationFolder="$(BuildDir)GemBuild\bin\NativeBinaries\x86" />
-    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)GemBuild\bin" />
+    <!-- Gem can only treat files it knows about, so it throws an error for .so and .dylib files when building on Windows -->
+    <Copy SourceFiles="@(WindowsBinaries)" DestinationFiles="@(WindowsBinaries->'$(BuildDir)GemBuild\bin\NativeBinaries\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)GemBuild\bin" Condition="Exists('$(OutputPath)GitVersion.pdb')" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.exe.mdb" DestinationFolder="$(BuildDir)GemBuild\bin" Condition="Exists('$(OutputPath)GitVersion.exe.mdb')" />
     <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)GemBuild\bin" />
     <ItemGroup>
       <GemFiles Include="$(ProjectDir)GemAssets\bin*\**\*.*" />
@@ -205,9 +211,9 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets'))" />
-    <Error Condition="!Exists('..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props'))" />
-    <Error Condition="!Exists('..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.129\build\LibGit2Sharp.NativeBinaries.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.NativeBinaries.1.0.129\build\LibGit2Sharp.NativeBinaries.props'))" />
+    <Error Condition="!Exists('..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
   </Target>
   <Import Project="..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" />
-  <Import Project="..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
+  <Import Project="..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
 </Project>

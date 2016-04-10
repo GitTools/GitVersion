@@ -1,6 +1,5 @@
 ﻿using System.IO;
-
-using GitVersion;
+using GitTools.Testing;
 using NUnit.Framework;
 
 using Shouldly;
@@ -14,10 +13,10 @@ public class ExecCmdLineArgumentTest
     [Test]
     public void RunExecViaCommandLine()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
-            fixture.Repository.MakeATaggedCommit("1.2.3");
-            fixture.Repository.MakeACommit();
+            fixture.MakeATaggedCommit("1.2.3");
+            fixture.MakeACommit();
 
             var buildFile = Path.Combine(fixture.RepositoryPath, "RunExecViaCommandLine.proj");
             File.Delete(buildFile);
@@ -39,10 +38,10 @@ public class ExecCmdLineArgumentTest
     [Test]
     public void InvalidArgumentsExitCodeShouldNotBeZero()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
-            fixture.Repository.MakeATaggedCommit("1.2.3");
-            fixture.Repository.MakeACommit();
+            fixture.MakeATaggedCommit("1.2.3");
+            fixture.MakeACommit();
 
             var buildFile = Path.Combine(fixture.RepositoryPath, "RunExecViaCommandLine.proj");
             File.Delete(buildFile);

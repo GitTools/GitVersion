@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using GitVersion;
 using GitVersion.Helpers;
@@ -9,6 +7,9 @@ using GitVersionCore.Tests;
 using GitVersion.VersionAssemblyInfoResources;
 using NSubstitute;
 using NUnit.Framework;
+using System;
+using System.IO;
+using Shouldly;
 
 [TestFixture]
 public class AssemblyInfoFileUpdateTests
@@ -22,23 +23,22 @@ public class AssemblyInfoFileUpdateTests
     [Test]
     public void ShouldCreateCSharpAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo()
     {
-        var fileSystem = Substitute.For<IFileSystem>();
+        var fileSystem = new TestFileSystem();
         const string workingDir = "C:\\Testing";
-        ISet<string> assemblyInfoFile = new HashSet<string>() { "VersionAssemblyInfo.cs" };
+        ISet<string> assemblyInfoFile = new HashSet<string> { "VersionAssemblyInfo.cs" };
         var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
 
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
         using (new AssemblyInfoFileUpdate(new Arguments { EnsureAssemblyInfo = true, UpdateAssemblyInfo = true, UpdateAssemblyInfoFileName = assemblyInfoFile}, workingDir, variables, fileSystem))
         {
-            var source = AssemblyVersionInfoTemplates.GetAssemblyInfoTemplateFor(fullPath);
-            fileSystem.Received(1).WriteAllText(fullPath, source);
+            fileSystem.ReadAllText(fullPath).ShouldMatchApproved();
         }
     }
 
     [Test]
     public void ShouldCreateCSharpAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo()
     {
-        var fileSystem = Substitute.For<IFileSystem>();
+        var fileSystem = new TestFileSystem();
         const string workingDir = "C:\\Testing";
         ISet<string> assemblyInfoFile = new HashSet<string> { @"src\Project\Properties\VersionAssemblyInfo.cs" };
         var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
@@ -46,15 +46,14 @@ public class AssemblyInfoFileUpdateTests
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
         using (new AssemblyInfoFileUpdate(new Arguments { EnsureAssemblyInfo = true, UpdateAssemblyInfo = true, UpdateAssemblyInfoFileName = assemblyInfoFile }, workingDir, variables, fileSystem))
         {
-            var source = AssemblyVersionInfoTemplates.GetAssemblyInfoTemplateFor(fullPath);
-            fileSystem.Received(1).WriteAllText(fullPath, source);
+            fileSystem.ReadAllText(fullPath).ShouldMatchApproved();
         }
     }
 
     [Test]
     public void ShouldCreateCSharpAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo()
     {
-        var fileSystem = Substitute.For<IFileSystem>();
+        var fileSystem = new TestFileSystem();
         const string workingDir = "C:\\Testing";
         ISet<string> assemblyInfoFile = new HashSet<string> { "AssemblyInfo.cs", @"src\Project\Properties\VersionAssemblyInfo.cs" };
         
@@ -64,8 +63,8 @@ public class AssemblyInfoFileUpdateTests
             foreach (var item in assemblyInfoFile)
             {
                 var fullPath = Path.Combine(workingDir, item);
-                var source = AssemblyVersionInfoTemplates.GetAssemblyInfoTemplateFor(fullPath);
-                fileSystem.Received(1).WriteAllText(fullPath, source);
+                // ReSharper disable once AccessToForEachVariableInClosure
+                fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.WithDescriminator(item.Replace("\\", string.Empty).Replace(".", string.Empty)));
             }
         }
     }
@@ -73,7 +72,7 @@ public class AssemblyInfoFileUpdateTests
     [Test]
     public void ShouldNotCreateCSharpAssemblyInfoFileWhenNotExistsAndNotEnsureAssemblyInfo()
     {
-        var fileSystem = Substitute.For<IFileSystem>();
+        var fileSystem = new TestFileSystem();
         const string workingDir = "C:\\Testing";
         ISet<string> assemblyInfoFile = new HashSet<string> { "VersionAssemblyInfo.cs" };
         var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
@@ -81,8 +80,7 @@ public class AssemblyInfoFileUpdateTests
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
         using (new AssemblyInfoFileUpdate(new Arguments { UpdateAssemblyInfo = true, UpdateAssemblyInfoFileName = assemblyInfoFile }, workingDir, variables, fileSystem))
         {
-            var source = AssemblyVersionInfoTemplates.GetAssemblyInfoTemplateFor(fullPath);
-            fileSystem.Received(0).WriteAllText(fullPath, source);
+            fileSystem.Exists(fullPath).ShouldBeFalse();
         }
     }
 
@@ -290,6 +288,43 @@ AssemblyFileVersion(""2.3.1.0"");";
         }
     }
 
+    [Test]
+    public void ShouldAddAssemblyVersionIfMissingFromInfoFile()
+    {
+        var fileSystem = Substitute.For<IFileSystem>();
+        var version = new SemanticVersion
+        {
+            BuildMetaData = new SemanticVersionBuildMetaData(3, "foo", "hash", DateTimeOffset.Now),
+            Major = 2,
+            Minor = 3,
+            Patch = 1
+        };
+
+        const string workingDir = "C:\\Testing";
+        const string assemblyInfoFileContent = @"";
+
+        fileSystem.Exists("C:\\Testing\\AssemblyInfo.cs").Returns(true);
+        fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.cs").Returns(assemblyInfoFileContent);
+
+        var config = new TestEffectiveConfiguration(assemblyVersioningScheme: AssemblyVersioningScheme.MajorMinor);
+
+        var variable = VariableProvider.GetVariablesFor(version, config, false);
+        var args = new Arguments
+        {
+            UpdateAssemblyInfo = true,
+            UpdateAssemblyInfoFileName = new HashSet<string> { "AssemblyInfo.cs" }
+        };
+
+        using (new AssemblyInfoFileUpdate(args, workingDir, variable, fileSystem))
+        {
+            const string expected = @"
+[assembly: AssemblyVersion(""2.3.0.0"")]
+[assembly: AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")]
+[assembly: AssemblyFileVersion(""2.3.1.0"")]";
+            fileSystem.Received().WriteAllText("C:\\Testing\\AssemblyInfo.cs", expected);
+        }
+    }
+
     [Test] public void ShouldReplaceAlreadySubstitutedValues()
     {
         var fileSystem = Substitute.For<IFileSystem>();
@@ -329,7 +364,7 @@ AssemblyFileVersion(""2.3.1.0"");";
     [Test]
     public void ShouldReplaceAssemblyVersionWhenCreatingCSharpAssemblyVersionFileAndEnsureAssemblyInfo()
     {
-        var fileSystem = Substitute.For<IFileSystem>();
+        var fileSystem = new TestFileSystem();
         var version = new SemanticVersion
         {
             BuildMetaData = new SemanticVersionBuildMetaData(3, "foo", "hash", DateTimeOffset.Now),
@@ -343,8 +378,7 @@ AssemblyFileVersion(""2.3.1.0"");";
 AssemblyInformationalVersion(""1.0.0.0"");
 AssemblyFileVersion(""1.0.0.0"");";
 
-        fileSystem.Exists("C:\\Testing\\AssemblyInfo.cs").Returns(false);
-        fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.cs").Returns(assemblyInfoFile);
+        fileSystem.WriteAllText("C:\\Testing\\AssemblyInfo.cs", assemblyInfoFile);
         var variable = VariableProvider.GetVariablesFor(version, new TestEffectiveConfiguration(), false);
         var args = new Arguments
         {
@@ -354,20 +388,17 @@ AssemblyFileVersion(""1.0.0.0"");";
         };
         using (new AssemblyInfoFileUpdate(args, workingDir, variable, fileSystem))
         {
-            var source = AssemblyVersionInfoTemplates.GetAssemblyInfoTemplateFor(args.UpdateAssemblyInfoFileName.First());
-
             const string expected = @"AssemblyVersion(""2.3.1.0"");
 AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"");
 AssemblyFileVersion(""2.3.1.0"");";
-            fileSystem.Received(1).WriteAllText("C:\\Testing\\AssemblyInfo.cs", source);
-            fileSystem.Received(1).WriteAllText("C:\\Testing\\AssemblyInfo.cs", expected);
+            fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.cs").ShouldBe(expected);
         }
     }
 
     [Test]
     public void ShouldReplaceAssemblyVersionWhenCreatingFSharpAssemblyVersionFileAndEnsureAssemblyInfo()
     {
-        var fileSystem = Substitute.For<IFileSystem>();
+        var fileSystem = new TestFileSystem();
         var version = new SemanticVersion
         {
             BuildMetaData = new SemanticVersionBuildMetaData(3, "foo", "hash", DateTimeOffset.Now),
@@ -381,8 +412,7 @@ AssemblyFileVersion(""2.3.1.0"");";
 AssemblyInformationalVersion(""1.0.0.0"");
 AssemblyFileVersion(""1.0.0.0"");";
 
-        fileSystem.Exists("C:\\Testing\\AssemblyInfo.fs").Returns(false);
-        fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.fs").Returns(assemblyInfoFile);
+        fileSystem.WriteAllText("C:\\Testing\\AssemblyInfo.fs", assemblyInfoFile);
         var variable = VariableProvider.GetVariablesFor(version, new TestEffectiveConfiguration(), false);
         var args = new Arguments
         {
@@ -392,20 +422,17 @@ AssemblyFileVersion(""1.0.0.0"");";
         };
         using (new AssemblyInfoFileUpdate(args, workingDir, variable, fileSystem))
         {
-            var source = AssemblyVersionInfoTemplates.GetAssemblyInfoTemplateFor(args.UpdateAssemblyInfoFileName.First());
-
             const string expected = @"AssemblyVersion(""2.3.1.0"");
 AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"");
 AssemblyFileVersion(""2.3.1.0"");";
-            fileSystem.Received(1).WriteAllText("C:\\Testing\\AssemblyInfo.fs", source);
-            fileSystem.Received(1).WriteAllText("C:\\Testing\\AssemblyInfo.fs", expected);
+            fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.fs").ShouldBe(expected);
         }
     }
 
     [Test]
     public void ShouldReplaceAssemblyVersionWhenCreatingVisualBasicAssemblyVersionFileAndEnsureAssemblyInfo()
     {
-        var fileSystem = Substitute.For<IFileSystem>();
+        var fileSystem = new TestFileSystem();
         var version = new SemanticVersion
         {
             BuildMetaData = new SemanticVersionBuildMetaData(3, "foo", "hash", DateTimeOffset.Now),
@@ -418,9 +445,8 @@ AssemblyFileVersion(""2.3.1.0"");";
         const string assemblyInfoFile = @"AssemblyVersion(""1.0.0.0"");
 AssemblyInformationalVersion(""1.0.0.0"");
 AssemblyFileVersion(""1.0.0.0"");";
-
-        fileSystem.Exists("C:\\Testing\\AssemblyInfo.fs").Returns(false);
-        fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.vb").Returns(assemblyInfoFile);
+        
+        fileSystem.WriteAllText("C:\\Testing\\AssemblyInfo.vb", assemblyInfoFile);
         var variable = VariableProvider.GetVariablesFor(version, new TestEffectiveConfiguration(), false);
         var args = new Arguments
         {
@@ -430,13 +456,10 @@ AssemblyFileVersion(""1.0.0.0"");";
         };
         using (new AssemblyInfoFileUpdate(args, workingDir, variable, fileSystem))
         {
-            var source = AssemblyVersionInfoTemplates.GetAssemblyInfoTemplateFor(args.UpdateAssemblyInfoFileName.First());
-
             const string expected = @"AssemblyVersion(""2.3.1.0"");
 AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"");
 AssemblyFileVersion(""2.3.1.0"");";
-            fileSystem.Received(1).WriteAllText("C:\\Testing\\AssemblyInfo.vb", source);
-            fileSystem.Received(1).WriteAllText("C:\\Testing\\AssemblyInfo.vb", expected);
+            fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.vb").ShouldBe(expected);
         }
     }
 }

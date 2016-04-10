@@ -29,10 +29,10 @@ public static class GitVersionHelper
 
     static ExecutionResults ExecuteIn(ArgumentBuilder arguments)
     {
-        var gitHubFlowVersion = Path.Combine(PathHelper.GetCurrentDirectory(), "GitVersion.exe");
+        var gitVersion = Path.Combine(PathHelper.GetCurrentDirectory(), "GitVersion.exe");
         var output = new StringBuilder();
 
-        Console.WriteLine("Executing: {0} {1}", gitHubFlowVersion, arguments);
+        Console.WriteLine("Executing: {0} {1}", gitVersion, arguments);
         Console.WriteLine();
         var environmentalVariables =
             new[]
@@ -43,7 +43,7 @@ public static class GitVersionHelper
 
         var exitCode = ProcessHelper.Run(
             s => output.AppendLine(s), s => output.AppendLine(s), null,
-            gitHubFlowVersion, arguments.ToString(), arguments.WorkingDirectory,
+            gitVersion, arguments.ToString(), arguments.WorkingDirectory,
             environmentalVariables);
 
         Console.WriteLine("Output from GitVersion.exe");

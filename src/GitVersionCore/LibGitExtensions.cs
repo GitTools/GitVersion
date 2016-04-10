@@ -18,29 +18,18 @@ namespace GitVersion
             return commit.Committer.When;
         }
 
-        public static Branch FindBranch(this IRepository repository, string branchName)
-        {
-            var exact = repository.Branches.FirstOrDefault(x => x.Name == branchName);
-            if (exact != null)
-            {
-                return exact;
-            }
-
-            return repository.Branches.FirstOrDefault(x => x.Name == "origin/" + branchName);
-        }
-
         public static IEnumerable<SemanticVersion> GetVersionTagsOnBranch(this Branch branch, IRepository repository, string tagPrefixRegex)
         {
             var tags = repository.Tags.Select(t => t).ToList();
 
             return repository.Commits.QueryBy(new CommitFilter
             {
-                Since = branch.Tip
+                IncludeReachableFrom = branch.Tip
             })
             .SelectMany(c => tags.Where(t => c.Sha == t.Target.Sha).SelectMany(t =>
             {
                 SemanticVersion semver;
-                if (SemanticVersion.TryParse(t.Name, tagPrefixRegex, out semver))
+                if (SemanticVersion.TryParse(t.FriendlyName, tagPrefixRegex, out semver))
                     return new [] { semver };
                 return new SemanticVersion[0];
             }));
@@ -60,7 +49,7 @@ namespace GitVersion
             {
                 if (branch.Tip == null)
                 {
-                    Logger.WriteWarning(string.Format(missingTipFormat, branch.Name));
+                    Logger.WriteWarning(string.Format(missingTipFormat, branch.FriendlyName));
                     return null;
                 }
 
@@ -72,7 +61,7 @@ namespace GitVersion
                 {
                     if (otherBranch.Tip == null)
                     {
-                        Logger.WriteWarning(string.Format(missingTipFormat, otherBranch.Name));
+                        Logger.WriteWarning(string.Format(missingTipFormat, otherBranch.FriendlyName));
                         return null;
                     }
 
@@ -83,10 +72,10 @@ namespace GitVersion
                         commitToFindCommonBase = otherBranch.Tip.Parents.First();
                     }
  
-                    var findMergeBase = repository.Commits.FindMergeBase(branch.Tip, commitToFindCommonBase);
+                    var findMergeBase = repository.ObjectDatabase.FindMergeBase(branch.Tip, commitToFindCommonBase);
                     if (findMergeBase != null)
                     {
-                        using (Logger.IndentLog(string.Format("Found merge base of {0} against {1}", findMergeBase.Sha, otherBranch.Name)))
+                        using (Logger.IndentLog(string.Format("Found merge base of {0} against {1}", findMergeBase.Sha, otherBranch.FriendlyName)))
                         {
                             // We do not want to include merge base commits which got forward merged into the other branch
                             bool mergeBaseWasFowardMerge;
@@ -101,7 +90,7 @@ namespace GitVersion
                                 {
                                     Logger.WriteInfo("Merge base was due to a forward merge, moving to next merge base");
                                     var second = commitToFindCommonBase.Parents.First();
-                                    var mergeBase = repository.Commits.FindMergeBase(branch.Tip, second);
+                                    var mergeBase = repository.ObjectDatabase.FindMergeBase(branch.Tip, second);
                                     if (mergeBase == findMergeBase) break;
                                     findMergeBase = mergeBase;
                                 }
@@ -126,7 +115,9 @@ namespace GitVersion
 
         static bool IsSameBranch(Branch branch, Branch b)
         {
-            return (b.IsRemote ? b.Name.Substring(b.Name.IndexOf("/", StringComparison.Ordinal) + 1) : b.Name) != branch.Name;
+            return (b.IsRemote ? 
+                b.FriendlyName.Substring(b.FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1) : 
+                b.FriendlyName) != branch.FriendlyName;
         }
 
         public static IEnumerable<Branch> GetBranchesContainingCommit([NotNull] this Commit commit, IRepository repository, IList<Branch> branches, bool onlyTrackedBranches)
@@ -155,7 +146,7 @@ namespace GitVersion
 
             foreach (var branch in branches.Where(b => (onlyTrackedBranches && !b.IsTracking)))
             {
-                var commits = repository.Commits.QueryBy(new CommitFilter { Since = branch }).Where(c => c.Sha == commit.Sha);
+                var commits = repository.Commits.QueryBy(new CommitFilter { IncludeReachableFrom = branch }).Where(c => c.Sha == commit.Sha);
 
                 if (!commits.Any())
                 {
