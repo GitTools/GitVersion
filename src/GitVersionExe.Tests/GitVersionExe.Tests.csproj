@@ -35,8 +35,8 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GitTools.Core, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\GitTools.Core.0.4.0-beta0004\lib\net45\GitTools.Core.dll</HintPath>
+    <Reference Include="GitTools.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GitTools.Core.1.0.0\lib\net45\GitTools.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="GitTools.Testing, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
