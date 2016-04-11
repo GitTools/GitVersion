@@ -293,7 +293,7 @@ namespace GitVersion
                         
                         switch (configOverride[0])
                         {
-                            case "tagPrefix":
+                            case "tag-prefix":
                                 if (1 < configOverride.Length)
                                 {
                                     arguments.OverrideConfig.TagPrefix = configOverride[1];
