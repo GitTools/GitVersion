@@ -285,7 +285,7 @@ namespace GitVersion
                     continue;
                 }
 
-                if (IsSwitch("overrideConfig", name))
+                if (IsSwitch("overrideconfig", name))
                 {
                     foreach (var item in value.Split(';'))
                     {
