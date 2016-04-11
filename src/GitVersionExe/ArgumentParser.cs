@@ -285,6 +285,28 @@ namespace GitVersion
                     continue;
                 }
 
+                if (IsSwitch("overrideConfig", name))
+                {
+                    foreach (var item in value.Split(';'))
+                    {
+                        var configOverride = item.Split('=');
+                        
+                        switch (configOverride[0])
+                        {
+                            case "tagPrefix":
+                                if (1 < configOverride.Length)
+                                {
+                                    arguments.OverrideConfig.TagPrefix = configOverride[1];
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    continue;
+                }
+
                 throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", name));
             }
 
