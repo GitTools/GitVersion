@@ -87,6 +87,7 @@ GitVersion.sln.ide/
 Packages/
 build/
 site/
+/TestResult.xml
 
 ################
 # Project Rider
@@ -94,10 +95,3 @@ site/
 
 .idea
 *.sln.iml
-
-############
-## Linux
-############
-
-# Ignore backup files created by gedit
-*~
