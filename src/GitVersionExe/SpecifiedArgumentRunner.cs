@@ -20,9 +20,10 @@ namespace GitVersion
             var dynamicRepositoryLocation = arguments.DynamicRepositoryLocation;
             var targetBranch = arguments.TargetBranch;
             var commitId = arguments.CommitId;
+            var overrideConfig = arguments.OverrideConfig;
 
             var executeCore = new ExecuteCore(fileSystem);
-            var variables = executeCore.ExecuteGitVersion(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId);
+            var variables = executeCore.ExecuteGitVersion(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId, overrideConfig: overrideConfig);
 
             if (arguments.Output == OutputType.BuildServer)
             {

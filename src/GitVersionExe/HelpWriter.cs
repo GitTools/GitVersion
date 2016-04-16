@@ -25,6 +25,8 @@ GitVersion [path]
                     eg /output json /showvariable SemVer - will output `1.2.3+beta.4`
     /l              Path to logfile.
     /showconfig     Outputs the effective GitVersion config (defaults + custom from GitVersion.yaml) in yaml format
+    /overrideconfig Overrides GitVersion config values inline (semicolon-separated key value pairs e.g. /overrideconfig:tag-prefix=Foo)
+                    Currently supported config overrides: tag-prefix
 
     # AssemblyInfo updating
     /updateassemblyinfo

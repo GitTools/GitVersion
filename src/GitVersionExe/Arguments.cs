@@ -7,11 +7,14 @@ namespace GitVersion
         public Arguments()
         {
             Authentication = new Authentication();
+            OverrideConfig = new Config();
             Output = OutputType.Json;
             UpdateAssemblyInfoFileName = new HashSet<string>();
         }
 
         public Authentication Authentication;
+
+        public Config OverrideConfig;
 
         public string TargetPath;
 
