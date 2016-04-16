@@ -106,7 +106,7 @@ namespace GitVersion
                     Logger.WriteInfo(string.Empty);
                     Logger.WriteInfo("Here is the current git graph (please include in issue): ");
                     Logger.WriteInfo("Showing max of 100 commits");
-                    LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
+                    GitTools.LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
                 }
                 return 1;
             }

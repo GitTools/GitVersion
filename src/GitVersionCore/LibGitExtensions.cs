@@ -4,9 +4,6 @@ namespace GitVersion
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Text;
-    using GitVersion.Helpers;
-
     using JetBrains.Annotations;
 
     using LibGit2Sharp;
@@ -239,38 +236,6 @@ namespace GitVersion
                     Logger.WriteWarning(string.Format("  An error occurred while checking out '{0}': '{1}'", fileName, ex.Message));
                 }
             }
-        }
-
-        public static void DumpGraph(this IRepository repository, Action<string> writer = null, int? maxCommits = null)
-        {
-            DumpGraph(repository.Info.Path, writer, maxCommits);
-        }
-
-        public static void DumpGraph(string workingDirectory, Action<string> writer = null, int? maxCommits = null)
-        {
-            var output = new StringBuilder();
-
-            try
-            {
-                ProcessHelper.Run(
-                    o => output.AppendLine(o),
-                    e => output.AppendLineFormat("ERROR: {0}", e),
-                    null,
-                    "git",
-                    @"log --graph --format=""%h %cr %d"" --decorate --date=relative --all --remotes=*" + (maxCommits != null ? string.Format(" -n {0}", maxCommits) : null),
-                    //@"log --graph --abbrev-commit --decorate --date=relative --all --remotes=*",
-                    workingDirectory);
-            }
-            catch (FileNotFoundException exception)
-            {
-                if (exception.FileName != "git")
-                    throw;
-
-                output.AppendLine("Unable to display git log (due to 'git' not being on the %PATH%), this is just for debugging purposes to give more information to track down your issue. Run gitversion debug locally instead.");
-            }
-
-            if (writer != null) writer(output.ToString());
-            else Console.Write(output.ToString());
         }
     }
 }

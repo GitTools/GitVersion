@@ -1,5 +1,5 @@
-﻿using GitTools.Testing;
-using GitVersion;
+﻿using GitTools;
+using GitTools.Testing;
 using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
