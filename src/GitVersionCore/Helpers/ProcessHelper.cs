@@ -24,7 +24,6 @@ namespace GitVersion.Helpers
                     try
                     {
                         process = Process.Start(startInfo);
-                        process.PriorityClass = ProcessPriorityClass.Idle;
                     }
                     catch (Win32Exception exception)
                     {
