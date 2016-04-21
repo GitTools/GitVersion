@@ -20,9 +20,9 @@ TeamCity has support for meta-runners which allow custom tasks. There is a GitVe
 When running in TeamCIty you have two options, run using **agent checkout** or use dynamic repositories.
 
 ### Agent checkout
-For GitVersion to pick up pull requests properly you need to promote the `%teamcity.build.vcs.branch.{configurationid}%` variable to a system variable called `Git_Branch`
+For GitVersion to pick up pull requests properly you need to promote the `%teamcity.build.vcs.branch.{configurationid}%` variable to an environment variable called `Git_Branch`
 
-Just go to your build configuration, Parameters, click Add, Name should be `system.Git_Branch`, value should be `%teamcity.build.vcs.branch.{vcsid}%` where vcsid is your VCS root id. You should get auto completion for this.
+Just go to your build configuration, Parameters, click Add, Name should be `env.Git_Branch`, value should be `%teamcity.build.vcs.branch.{vcsid}%` where vcsid is your VCS root id. You should get auto completion for this.
 
 ### Dynamic repositories
 To use server side checkout, you must use the dynamic repositories feature of GitVersion. Server side checkout sends just the files to the agent and not the actual .git folder. Dynamic repositories will clone your repo into a temp folder and use it to calculate version information.

@@ -32,7 +32,7 @@
 
 Depending on your authentication and transport setup of your git VCS root things may work. In that case, ignore this warning.
 
-In your TeamCity build configuration, add a parameter called `system.Git_Branch` with value %teamcity.build.vcs.branch.<vcsid>%
+In your TeamCity build configuration, add a parameter called `env.Git_Branch` with value %teamcity.build.vcs.branch.<vcsid>%
 
 See http://gitversion.readthedocs.org/en/latest/build-server-support/build-server/teamcity for more info");
         }
