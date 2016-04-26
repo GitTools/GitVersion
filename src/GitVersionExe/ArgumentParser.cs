@@ -299,8 +299,6 @@ namespace GitVersion
                                     arguments.OverrideConfig.TagPrefix = configOverride[1];
                                 }
                                 break;
-                            default:
-                                break;
                         }
                     }
 
