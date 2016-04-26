@@ -166,7 +166,7 @@
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.CommandLine.nuspec" DestinationFolder="$(BuildDir)NuGetCommandLineBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetCommandLineBuild" MetadataAssembly="$(OutputPath)ILMergeTemp\GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
     <!-- TfsBuildTask -->
-    <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)GitVersionTfsTaskBuild\lib\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask\lib\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" Condition="Exists('$(OutputPath)GitVersion.pdb')" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\extension-icon.png" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\manifest.json" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" />
