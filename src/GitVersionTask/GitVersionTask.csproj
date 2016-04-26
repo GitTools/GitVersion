@@ -119,15 +119,9 @@
     </ItemGroup>
     <MakeDir Directories="$(BuildDir)NuGetTaskBuild" />
     <ItemGroup>
-      <NativeBinaries Include="$(TargetDir)NativeBinaries\**\*.*" />
+      <NativeBinaries Include="$(TargetDir)lib\**\*.*" />
     </ItemGroup>
-    <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)NuGetTaskBuild\NativeBinaries\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <!-- Workaround for issue with DllMap. Mono will currently always prepend lib to start of target dll name. -->
-    <CreateItem Include="$(TargetDir)NativeBinaries\**\*.so;$(TargetDir)NativeBinaries\**\*.dylib">
-      <Output TaskParameter="Include" ItemName="libNativeBinaries" />
-    </CreateItem>
-    <Copy SourceFiles="@(libNativeBinaries)" DestinationFiles="@(libNativeBinaries->'$(BuildDir)NuGetTaskBuild\libNativeBinaries\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <!-- The LibGit2Sharp.dll.config file contains dll maps for the osx and linux libgit2 native binaries -->
+    <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)NuGetTaskBuild\lib\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="$(TargetDir)LibGit2Sharp.dll.config" DestinationFiles="$(BuildDir)NuGetTaskBuild\GitVersionTask.dll.config" />
     <Copy SourceFiles="$(TargetDir)ILMergeTemp\GitVersionTask.dll" DestinationFolder="$(BuildDir)NuGetTaskBuild" Condition="Exists('$(TargetDir)ILMergeTemp\GitVersionTask.dll')" />
     <Copy SourceFiles="$(TargetDir)GitVersionTask.pdb" DestinationFolder="$(BuildDir)NuGetTaskBuild" Condition="Exists('$(TargetDir)GitVersionTask.pdb')" />
