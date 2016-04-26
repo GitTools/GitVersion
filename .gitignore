@@ -87,6 +87,7 @@ GitVersion.sln.ide/
 Packages/
 build/
 site/
+/TestResult.xml
 
 ################
 # Project Rider

@@ -97,8 +97,6 @@ public class MockRepository : IRepository
         throw new NotImplementedException();
     }
 
-    public Dictionary<string, GitObject> LookupResults { get; set; }
-
     public Commit Commit(string message, Signature author, Signature committer, bool amendPreviousCommit = false)
     {
         throw new NotImplementedException();
