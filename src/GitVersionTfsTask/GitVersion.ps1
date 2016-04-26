@@ -5,17 +5,23 @@ param(
     [string]$gitVersionPath
 )
 
+Write-Verbose "updateAssemblyInfo = $updateAssemblyInfo"
+Write-Verbose "updateAssemblyInfoFilename = $updateAssemblyInfoFilename"
+Write-Verbose "additionalArguments = $additionalArguments"
+Write-Verbose "gitVersionPath = $gitVersionPath"
+
 Write-Verbose "Importing modules"
 import-module "Microsoft.TeamFoundation.DistributedTask.Task.Internal"
 import-module "Microsoft.TeamFoundation.DistributedTask.Task.Common"
+
+$updateAssemblyInfoFlag = Convert-String $updateAssemblyInfo Boolean
+Write-Verbose "updateAssemblyInfo (converted) = $updateAssemblyInfoFlag"
 
 $currentDirectory = Convert-Path .
 $sourcesDirectory = $env:Build_SourcesDirectory
 
 Write-Host (Get-LocalizedString -Key "Current Directory:  {0}" -ArgumentList $currentDirectory)
 Write-Host (Get-LocalizedString -Key "Sources Directory:  {0}" -ArgumentList $sourcesDirectory)
-
-Write-Host (Get-LocalizedString -Key "Check/Set GitVersion path")
 
 if(!$gitVersionPath)
 {
@@ -29,7 +35,7 @@ if (-not $gitVersionPath)
 
 $argsGitVersion = "$sourcesDirectory" + " /output buildserver /nofetch"
 
-if($updateAssemblyInfo)
+if($updateAssemblyInfoFlag)
 {
   $argsGitVersion = $argsGitVersion + " /updateassemblyinfo"
 
