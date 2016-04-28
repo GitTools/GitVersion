@@ -39,22 +39,10 @@ public class ExecCmdLineArgumentTest
     {
         using (var fixture = new EmptyRepositoryFixture())
         {
-            fixture.MakeATaggedCommit("1.2.3");
-            fixture.MakeACommit();
-
-            var buildFile = Path.Combine(fixture.RepositoryPath, "RunExecViaCommandLine.proj");
-            File.Delete(buildFile);
-            const string buildFileContent = @"<?xml version=""1.0"" encoding=""utf-8""?>
-<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
-  <Target Name=""OutputResults"">
-    <Message Text=""GitVersion_FullSemVer: $(GitVersion_FullSemVer)""/>
-  </Target>
-</Project>";
-            File.WriteAllText(buildFile, buildFileContent);
             var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /invalid-argument");
 
             result.ExitCode.ShouldBe(1);
-            result.Output.ShouldContain("Failed to parse arguments");
+            result.Output.ShouldContain("Could not parse command line parameter '/invalid-argument'");
         }
     }
 }
