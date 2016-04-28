@@ -45,4 +45,19 @@ public class ExecCmdLineArgumentTest
             result.Output.ShouldContain("Could not parse command line parameter '/invalid-argument'");
         }
     }
+
+    [Test]
+    public void LogPathContainsForwardSlash()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.MakeATaggedCommit("1.2.3");
+            fixture.MakeACommit();
+
+            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: @" /l ""/some/path""", logToFile: false);
+
+            result.ExitCode.ShouldBe(0);
+            result.Output.ShouldContain(@"""MajorMinorPatch"":""1.2.4""");
+        }
+    }
 }

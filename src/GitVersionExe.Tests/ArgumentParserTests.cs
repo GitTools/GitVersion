@@ -284,4 +284,11 @@ public class ArgumentParserTests
         arguments.NoFetch = true;
         arguments.Proj = "foo.sln";
     }
+
+    [Test]
+    public void log_path_can_contain_forward_slash()
+    {
+        var arguments = ArgumentParser.ParseArguments("-l /some/path");
+        arguments.LogFilePath.ShouldBe("/some/path");
+    }
 }
