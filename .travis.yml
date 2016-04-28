@@ -2,6 +2,7 @@ language: csharp
 solution: src/GitVersion.sln
 sudo: true
 install:
+  - nuget help
   - sudo nuget update -self
   - nuget restore src/GitVersion.sln
   - nuget install NUnit.Runners -Version 3.2.1 -OutputDirectory ./src/packages
