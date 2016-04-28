@@ -1,14 +1,12 @@
 ﻿using System.IO;
 using GitTools.Testing;
+using GitVersion;
 using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
 public class ExecCmdLineArgumentTest
 {
-    const string MsBuild = @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
-
-
     [Test]
     public void RunExecViaCommandLine()
     {
@@ -26,7 +24,7 @@ public class ExecCmdLineArgumentTest
   </Target>
 </Project>";
             File.WriteAllText(buildFile, buildFileContent);
-            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, MsBuild, "RunExecViaCommandLine.proj /target:OutputResults");
+            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, SpecifiedArgumentRunner.BuildTool, "RunExecViaCommandLine.proj /target:OutputResults");
 
             result.ExitCode.ShouldBe(0);
             result.Log.ShouldContain("GitVersion_FullSemVer: 1.2.4+1");
