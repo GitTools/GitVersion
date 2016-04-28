@@ -61,6 +61,8 @@ public class AssemblyInfoBuilderTests
     };
 
     [Test]
+    [NUnit.Framework.Category("NoMono")]
+    [NUnit.Framework.Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void VerifyCreatedCode([ValueSource("compilers")]ICompiler compiler)
     {
         var semanticVersion = new SemanticVersion
@@ -94,6 +96,8 @@ public class AssemblyInfoBuilderTests
     }
 
     [Test]
+    [NUnit.Framework.Category("NoMono")]
+    [NUnit.Framework.Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void VerifyCreatedCode_NoNamespaceConflict([ValueSource("compilers")]ICompiler compiler)
     {
         var semanticVersion = new SemanticVersion
@@ -120,6 +124,8 @@ public class AssemblyInfoBuilderTests
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
+    [NUnit.Framework.Category("NoMono")]
+    [NUnit.Framework.Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void VerifyAssemblyVersion_Major([ValueSource("compilers")]ICompiler compiler)
     {
         VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.Major);
@@ -127,6 +133,8 @@ public class AssemblyInfoBuilderTests
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
+    [NUnit.Framework.Category("NoMono")]
+    [NUnit.Framework.Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void VerifyAssemblyVersion_MajorMinor([ValueSource("compilers")]ICompiler compiler)
     {
         VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.MajorMinor);
@@ -134,6 +142,8 @@ public class AssemblyInfoBuilderTests
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
+    [NUnit.Framework.Category("NoMono")]
+    [NUnit.Framework.Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void VerifyAssemblyVersion_MajorMinorPatch([ValueSource("compilers")]ICompiler compiler)
     {
         VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.MajorMinorPatch);
@@ -141,6 +151,8 @@ public class AssemblyInfoBuilderTests
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
+    [NUnit.Framework.Category("NoMono")]
+    [NUnit.Framework.Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void VerifyAssemblyVersion_MajorMinorPatchTag([ValueSource("compilers")]ICompiler compiler)
     {
         VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.MajorMinorPatchTag);
@@ -148,6 +160,8 @@ public class AssemblyInfoBuilderTests
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
+    [NUnit.Framework.Category("NoMono")]
+    [NUnit.Framework.Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void VerifyAssemblyVersion_Major_InvalidInformationalValue([ValueSource("compilers")]ICompiler compiler)
     {
         var exception = Assert.Throws<WarningException>(() => VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.Major, "{ThisVariableDoesntExist}"));
@@ -156,6 +170,8 @@ public class AssemblyInfoBuilderTests
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
+    [NUnit.Framework.Category("NoMono")]
+    [NUnit.Framework.Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void VerifyAssemblyVersion_Major_NugetAssemblyInfo([ValueSource("compilers")]ICompiler compiler)
     {
         VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.Major, "{NugetVersion}");
@@ -163,6 +179,7 @@ public class AssemblyInfoBuilderTests
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
+    [NUnit.Framework.Category("NoMono")]
     public void VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfoWithMultipleVariables([ValueSource("compilers")]ICompiler compiler)
     {
         VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.MajorMinor, "{BranchName}-{Major}.{Minor}.{Patch}-{Sha}");
@@ -170,6 +187,8 @@ public class AssemblyInfoBuilderTests
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
+    [NUnit.Framework.Category("NoMono")]
+    [NUnit.Framework.Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfo([ValueSource("compilers")]ICompiler compiler)
     {
         VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.MajorMinor, "{NugetVersion}");
@@ -177,6 +196,8 @@ public class AssemblyInfoBuilderTests
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
+    [NUnit.Framework.Category("NoMono")]
+    [NUnit.Framework.Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void VerifyAssemblyVersion_MajorMinorPatch_NugetAssemblyInfo([ValueSource("compilers")]ICompiler compiler)
     {
         VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.MajorMinorPatch, "{NugetVersion}");
@@ -184,6 +205,8 @@ public class AssemblyInfoBuilderTests
 
     [Test]
     [MethodImpl(MethodImplOptions.NoInlining)]
+    [NUnit.Framework.Category("NoMono")]
+    [NUnit.Framework.Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void VerifyAssemblyVersion_MajorMinorPatchTag_NugetAssemblyInfo([ValueSource("compilers")]ICompiler compiler)
     {
         VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.MajorMinorPatchTag, "{NugetVersion}");
