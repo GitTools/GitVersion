@@ -119,7 +119,6 @@
     <Compile Include="GitVersionCache.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\IFileSystem.cs" />
-    <Compile Include="Helpers\ProcessHelper.cs" />
     <Compile Include="Helpers\ServiceMessageEscapeHelper.cs" />
     <Compile Include="IncrementStrategyFinder.cs" />
     <Compile Include="OutputVariables\VersionVariables.cs" />
