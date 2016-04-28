@@ -57,7 +57,7 @@ public class DocumentationTests
 
     static string ReadDocumentationFile(string relativeDocumentationFilePath)
     {
-        var currentDirectory = new DirectoryInfo(Environment.CurrentDirectory);
+        var currentDirectory = new FileInfo(typeof(DocumentationTests).Assembly.Location).Directory;
         while (currentDirectory != null)
         {
             var docsDirectory = currentDirectory
