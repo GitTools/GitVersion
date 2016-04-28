@@ -59,9 +59,9 @@ namespace GitVersion
 
         public static void Reset()
         {
-            WriteInfo = s => { throw new Exception("Logger not defined."); };
-            WriteWarning = s => { throw new Exception("Logger not defined."); };
-            WriteError = s => { throw new Exception("Logger not defined."); };
+            WriteInfo = s => { throw new Exception("Info logger not defined. Attempted to log: " + s); };
+            WriteWarning = s => { throw new Exception("Warning logger not defined. Attempted to log: " + s); };
+            WriteError = s => { throw new Exception("Error logger not defined. Attempted to log: " + s); };
         }
 
         class ActionDisposable : IDisposable
