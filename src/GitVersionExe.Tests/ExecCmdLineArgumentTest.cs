@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using GitTools.Testing;
 using NUnit.Framework;
-
 using Shouldly;
 
 [TestFixture]
@@ -52,17 +51,10 @@ public class ExecCmdLineArgumentTest
   </Target>
 </Project>";
             File.WriteAllText(buildFile, buildFileContent);
-            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments : " /invalid-argument");
+            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /invalid-argument");
 
             result.ExitCode.ShouldBe(1);
             result.Output.ShouldContain("Failed to parse arguments");
         }
-    }
-
-    [Test]
-    public void InvalidWorkingDirectoryCrashesWithInformativeMessage()
-    {
-        var results = GitVersionHelper.ExecuteIn("InvalidDirectory", null, isTeamCity : false, logToFile : false);
-        results.Output.ShouldContain("InvalidDirectory");
     }
 }
