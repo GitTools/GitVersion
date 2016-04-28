@@ -100,7 +100,7 @@
             var incrementStrategy = currentBranchConfig.Value.Increment.Value;
             var preventIncrementForMergedBranchVersion = currentBranchConfig.Value.PreventIncrementOfMergedBranchVersion.Value;
             var trackMergeTarget = currentBranchConfig.Value.TrackMergeTarget.Value;
-            
+
             var nextVersion = configuration.NextVersion;
             var assemblyVersioningScheme = configuration.AssemblyVersioningScheme.Value;
             var assemblyInformationalFormat = configuration.AssemblyInformationalFormat;
@@ -111,17 +111,20 @@
 
             var commitMessageVersionBump = currentBranchConfig.Value.CommitMessageIncrementing ?? configuration.CommitMessageIncrementing.Value;
 
+            var versionFilter =
             Configuration = new EffectiveConfiguration(
-                assemblyVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix, 
-                tag, nextVersion, incrementStrategy, currentBranchConfig.Key, 
-                preventIncrementForMergedBranchVersion, 
+                assemblyVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix,
+                tag, nextVersion, incrementStrategy, currentBranchConfig.Key,
+                preventIncrementForMergedBranchVersion,
                 tagNumberPattern, configuration.ContinuousDeploymentFallbackTag,
                 trackMergeTarget,
                 majorMessage, minorMessage, patchMessage,
                 commitMessageVersionBump,
                 configuration.LegacySemVerPadding.Value,
                 configuration.BuildMetaDataPadding.Value,
-                configuration.CommitsSinceVersionSourcePadding.Value);
+                configuration.CommitsSinceVersionSourcePadding.Value,
+                configuration.Ignore.ToFilters()
+                );
         }
     }
 }

@@ -10,6 +10,11 @@
         Dictionary<string, BranchConfig> branches = new Dictionary<string, BranchConfig>();
         string nextVersion;
 
+        public Config()
+        {
+            Ignore = new IgnoreConfig();
+        }
+
         [YamlMember(Alias = "assembly-versioning-scheme")]
         public AssemblyVersioningScheme? AssemblyVersioningScheme { get; set; }
 
@@ -82,11 +87,14 @@
         {
             typeof(T).GetProperties()
                 .Where(prop => prop.CanRead && prop.CanWrite)
-                .Select(_ => new {prop = _, value =_.GetValue(source, null) } )
+                .Select(_ => new { prop = _, value = _.GetValue(source, null) })
                 .Where(_ => _.value != null)
                 .ToList()
                 .ForEach(_ => _.prop.SetValue(target, _.value, null));
             return target;
         }
+
+        [YamlMember(Alias = "ignore")]
+        public IgnoreConfig Ignore { get; set; }
     }
 }

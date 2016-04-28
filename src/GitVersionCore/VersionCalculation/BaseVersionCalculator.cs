@@ -21,13 +21,21 @@
                     .SelectMany(s => s.GetVersions(context))
                     .Where(v =>
                     {
-                        if (v != null)
+                        if (v == null) return false;
+
+                        Logger.WriteInfo(v.ToString());
+
+                        foreach (var filter in context.Configuration.VersionFilters)
                         {
-                            Logger.WriteInfo(v.ToString());
-                            return true;
+                            string reason;
+                            if (filter.Exclude(v, out reason))
+                            {
+                                Logger.WriteInfo(reason);
+                                return false;
+                            }
                         }
 
-                        return false;
+                        return true;
                     })
                     .Select(v => new
                     {

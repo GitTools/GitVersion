@@ -86,6 +86,7 @@
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Configuration\ConsoleAdapter.cs" />
     <Compile Include="Configuration\IConsole.cs" />
+    <Compile Include="Configuration\IgnoreConfig.cs" />
     <Compile Include="Configuration\Init\BuildServer\AppVeyorSetup.cs" />
     <Compile Include="Configuration\Init\BuildServer\SetupBuildScripts.cs" />
     <Compile Include="Configuration\Init\SetConfig\AssemblyVersioningSchemeSetting.cs" />
@@ -125,6 +126,9 @@
     <Compile Include="OutputVariables\VersionVariables.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />
     <Compile Include="SemanticVersionFormatValues.cs" />
+    <Compile Include="VersionFilters\MinDateVersionFilter.cs" />
+    <Compile Include="VersionFilters\IVersionFilter.cs" />
+    <Compile Include="VersionFilters\ShaVersionFilter.cs" />
     <Compile Include="StringFormatWith.cs" />
     <Compile Include="VersionAssemblyInfoResources\AssemblyVersionInfoTemplates.cs" />
     <EmbeddedResource Include="VersionAssemblyInfoResources\VersionAssemblyInfo.cs" />
