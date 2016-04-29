@@ -1,15 +1,14 @@
 language: csharp
 solution: src/GitVersion.sln
 sudo: false
-addons:
-  apt:
-    packages:
-      - nuget: 3.4.3
 before_install:
-  - nuget
+  - mkdir -p .nuget
+  - wget -O .nuget/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
+  - chmod +x .nuget/nuget.exe
+  - .nuget/nuget.exe
 install:
-  - nuget restore src/GitVersion.sln -Verbosity detailed
-  - nuget install NUnit.Runners -Version 3.2.1 -OutputDirectory ./src/packages
+  - .nuget/nuget.exe restore src/GitVersion.sln -Verbosity detailed
+  - .nuget/nuget.exe install NUnit.Runners -Version 3.2.1 -OutputDirectory ./src/packages
 script:
   - xbuild "./src/GitVersion.sln" /property:Configuration="Debug" /verbosity:detailed
 after_script:
