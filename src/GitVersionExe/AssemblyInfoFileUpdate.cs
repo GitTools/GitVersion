@@ -20,8 +20,8 @@ namespace GitVersion
             if (args.Output != OutputType.Json)
                 Logger.WriteInfo("Updating assembly info files");
 
-            var assemblyInfoFiles = GetAssemblyInfoFiles(workingDirectory, args, fileSystem);
-            Logger.WriteInfo(string.Format("Found {0} files", assemblyInfoFiles.Count()));
+            var assemblyInfoFiles = GetAssemblyInfoFiles(workingDirectory, args, fileSystem).ToList();
+            Logger.WriteInfo(string.Format("Found {0} files", assemblyInfoFiles.Count));
 
             var assemblyVersion = variables.AssemblySemVer;
             var assemblyVersionRegex = new Regex(@"AssemblyVersion\(""[^""]*""\)");

@@ -8,6 +8,8 @@ using Shouldly;
 public class VariableProviderTests
 {
     [Test]
+    [Category("NoMono")]
+    [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void ProvidesVariablesInContinuousDeliveryModeForPreRelease()
     {
         var semVer = new SemanticVersion
@@ -31,6 +33,8 @@ public class VariableProviderTests
     }
 
     [Test]
+    [Category("NoMono")]
+    [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void ProvidesVariablesInContinuousDeliveryModeForPreReleaseWithPadding()
     {
         var semVer = new SemanticVersion
@@ -54,6 +58,8 @@ public class VariableProviderTests
     }
 
     [Test]
+    [Category("NoMono")]
+    [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void ProvidesVariablesInContinuousDeploymentModeForPreRelease()
     {
         var semVer = new SemanticVersion
@@ -76,6 +82,8 @@ public class VariableProviderTests
     }
 
     [Test]
+    [Category("NoMono")]
+    [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void ProvidesVariablesInContinuousDeliveryModeForStable()
     {
         var semVer = new SemanticVersion
@@ -97,6 +105,8 @@ public class VariableProviderTests
     }
 
     [Test]
+    [Category("NoMono")]
+    [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void ProvidesVariablesInContinuousDeploymentModeForStable()
     {
         var semVer = new SemanticVersion
@@ -118,6 +128,8 @@ public class VariableProviderTests
     }
 
     [Test]
+    [Category("NoMono")]
+    [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void ProvidesVariablesInContinuousDeploymentModeForStableWhenCurrentCommitIsTagged()
     {
         var semVer = new SemanticVersion

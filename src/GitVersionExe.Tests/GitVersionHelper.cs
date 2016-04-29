@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-
-using GitVersion.Helpers;
+using GitTools;
 
 public static class GitVersionHelper
 {
@@ -41,10 +40,23 @@ public static class GitVersionHelper
                 new KeyValuePair<string, string>("APPVEYOR", null)
             };
 
-        var exitCode = ProcessHelper.Run(
-            s => output.AppendLine(s), s => output.AppendLine(s), null,
-            gitVersion, arguments.ToString(), arguments.WorkingDirectory,
-            environmentalVariables);
+        var exitCode = -1;
+
+        try
+        {
+            exitCode = ProcessHelper.Run(
+                s => output.AppendLine(s), s => output.AppendLine(s), null,
+                gitVersion, arguments.ToString(), arguments.WorkingDirectory,
+                environmentalVariables);
+        }
+        catch (Exception exception)
+        {
+            // NOTE: It's the exit code and output from the process we want to test,
+            //       not the internals of the ProcessHelper. That's why we're catching
+            //       any exceptions here, because problems in the process being executed
+            //       should be visible in the output or exit code. @asbjornu
+            Console.WriteLine(exception);
+        }
 
         Console.WriteLine("Output from GitVersion.exe");
         Console.WriteLine("-------------------------------------------------------");

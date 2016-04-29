@@ -8,6 +8,8 @@ using Shouldly;
 public class JsonVersionBuilderTests
 {
     [Test]
+    [Category("NoMono")]
+    [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void Json()
     {
         var semanticVersion = new SemanticVersion

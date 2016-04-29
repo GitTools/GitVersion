@@ -35,7 +35,7 @@ public class PullRequestInTeamCityTest
                 remoteRepository.Refs.Add(pullRequestRef, new ObjectId(mergeCommitSha));
 
                 // Checkout PR commit
-                fixture.Repository.Fetch("origin");
+                Commands.Fetch((Repository)fixture.Repository, "origin", new string[0], new FetchOptions(), null);
                 fixture.Repository.Checkout(mergeCommitSha);
             }
 
