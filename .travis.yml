@@ -2,7 +2,9 @@ language: csharp
 solution: src/GitVersion.sln
 sudo: false
 addons:
-  nuget: 3.4.3
+  apt:
+    packages:
+      - nuget: 3.4.3
 before_install:
   - nuget
 install:
