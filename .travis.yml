@@ -1,7 +1,7 @@
 language: csharp
 solution: src/GitVersion.sln
 sudo: false
-before_install:
+before_install: # We need to download nuget.exe due to: https://github.com/travis-ci/travis-ci/issues/5932
   - mkdir -p .nuget
   - wget -O .nuget/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
   - mono .nuget/nuget.exe
