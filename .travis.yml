@@ -1,11 +1,12 @@
 language: csharp
 solution: src/GitVersion.sln
-sudo: true
+sudo: false
+addons:
+  nuget: 3.4.3
 before_install:
   - nuget
 install:
-  - sudo nuget update -self
-  - sudo nuget restore src/GitVersion.sln -SolutionDirectory src -Verbosity detailed
+  - nuget restore src/GitVersion.sln -SolutionDirectory src -Verbosity detailed
   - nuget install NUnit.Runners -Version 3.2.1 -OutputDirectory ./src/packages
 script:
   - xbuild "./src/GitVersion.sln" /property:Configuration="Debug" /verbosity:detailed
