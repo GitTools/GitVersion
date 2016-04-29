@@ -4,11 +4,10 @@ sudo: false
 before_install:
   - mkdir -p .nuget
   - wget -O .nuget/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
-  - chmod +x .nuget/nuget.exe
-  - .nuget/nuget.exe
+  - mono .nuget/nuget.exe
 install:
-  - .nuget/nuget.exe restore src/GitVersion.sln -Verbosity detailed
-  - .nuget/nuget.exe install NUnit.Runners -Version 3.2.1 -OutputDirectory ./src/packages
+  - mono .nuget/nuget.exe restore src/GitVersion.sln -Verbosity detailed
+  - mono .nuget/nuget.exe install NUnit.Runners -Version 3.2.1 -OutputDirectory ./src/packages
 script:
   - xbuild "./src/GitVersion.sln" /property:Configuration="Debug" /verbosity:detailed
 after_script:
