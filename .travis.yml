@@ -6,7 +6,7 @@ addons:
 before_install:
   - nuget
 install:
-  - nuget restore src/GitVersion.sln -SolutionDirectory src -Verbosity detailed
+  - nuget restore src/GitVersion.sln -Verbosity detailed
   - nuget install NUnit.Runners -Version 3.2.1 -OutputDirectory ./src/packages
 script:
   - xbuild "./src/GitVersion.sln" /property:Configuration="Debug" /verbosity:detailed
