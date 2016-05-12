@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using GitTools.Testing;
 using NUnit.Framework;
 
@@ -64,5 +65,12 @@ public class ExecCmdLineArgumentTest
     {
         var results = GitVersionHelper.ExecuteIn("InvalidDirectory", null, isTeamCity : false, logToFile : false);
         results.Output.ShouldContain("InvalidDirectory");
+    }
+
+    [Test]
+    public void WorkingDirectoryWithoutGitFolderCrashesWithInformativeMessage()
+    {
+        var results = GitVersionHelper.ExecuteIn(Environment.SystemDirectory, null, isTeamCity: false, logToFile: false);
+        results.Output.ShouldContain("Can't find the .git directory in");
     }
 }

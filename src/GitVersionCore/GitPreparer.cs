@@ -97,7 +97,12 @@ namespace GitVersion
             if (IsDynamicGitRepository)
                 return DynamicGitRepositoryPath;
 
-            var dotGitDirectory = Repository.Discover(targetPath).TrimEnd('/', '\\');
+            var dotGitDirectory = Repository.Discover(targetPath);
+
+            if (String.IsNullOrEmpty(dotGitDirectory))
+                throw new DirectoryNotFoundException("Can't find the .git directory in " + targetPath);
+
+            dotGitDirectory = dotGitDirectory.TrimEnd('/', '\\');
             if (string.IsNullOrEmpty(dotGitDirectory))
                 throw new DirectoryNotFoundException("Can't find the .git directory in " + targetPath);
 

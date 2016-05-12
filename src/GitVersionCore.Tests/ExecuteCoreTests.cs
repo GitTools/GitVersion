@@ -116,6 +116,19 @@ CommitDate: 2015-11-10
         });
     }
 
+
+    [Test]
+    public void WorkingDirectoryWithoutGit()
+    {
+        var versionAndBranchFinder = new ExecuteCore(fileSystem);
+
+        RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
+        {
+            var exception = Assert.Throws<DirectoryNotFoundException>(() => versionAndBranchFinder.ExecuteGitVersion(null, null, null, null, false, Environment.SystemDirectory, null));
+            exception.Message.ShouldContain("Can't find the .git directory in");
+        });
+    }
+
     string RepositoryScope(ExecuteCore executeCore = null, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
     {
         // Make sure GitVersion doesn't trigger build server mode when we are running the tests
