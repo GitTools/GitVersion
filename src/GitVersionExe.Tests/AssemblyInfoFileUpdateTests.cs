@@ -10,6 +10,7 @@ using NUnit.Framework;
 using System;
 using System.IO;
 using Shouldly;
+using System.Text;
 
 [TestFixture]
 public class AssemblyInfoFileUpdateTests
@@ -21,10 +22,12 @@ public class AssemblyInfoFileUpdateTests
     }
     
     [Test]
+    [Category("NoMono")]
+    [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void ShouldCreateCSharpAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo()
     {
         var fileSystem = new TestFileSystem();
-        const string workingDir = "C:\\Testing";
+        var workingDir = Path.GetTempPath();
         ISet<string> assemblyInfoFile = new HashSet<string> { "VersionAssemblyInfo.cs" };
         var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
 
@@ -36,11 +39,13 @@ public class AssemblyInfoFileUpdateTests
     }
 
     [Test]
+    [Category("NoMono")]
+    [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void ShouldCreateCSharpAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo()
     {
         var fileSystem = new TestFileSystem();
-        const string workingDir = "C:\\Testing";
-        ISet<string> assemblyInfoFile = new HashSet<string> { @"src\Project\Properties\VersionAssemblyInfo.cs" };
+        var workingDir = Path.GetTempPath();
+        ISet<string> assemblyInfoFile = new HashSet<string> { Path.Combine("src", "Project", "Properties", "VersionAssemblyInfo.cs") };
         var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
 
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
@@ -51,11 +56,13 @@ public class AssemblyInfoFileUpdateTests
     }
 
     [Test]
+    [Category("NoMono")]
+    [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void ShouldCreateCSharpAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo()
     {
         var fileSystem = new TestFileSystem();
-        const string workingDir = "C:\\Testing";
-        ISet<string> assemblyInfoFile = new HashSet<string> { "AssemblyInfo.cs", @"src\Project\Properties\VersionAssemblyInfo.cs" };
+        var workingDir = Path.GetTempPath();
+        ISet<string> assemblyInfoFile = new HashSet<string> { "AssemblyInfo.cs", Path.Combine("src", "Project", "Properties", "VersionAssemblyInfo.cs") };
         
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
         using (new AssemblyInfoFileUpdate(new Arguments { EnsureAssemblyInfo = true, UpdateAssemblyInfo = true, UpdateAssemblyInfoFileName = assemblyInfoFile }, workingDir, variables, fileSystem))
@@ -63,8 +70,8 @@ public class AssemblyInfoFileUpdateTests
             foreach (var item in assemblyInfoFile)
             {
                 var fullPath = Path.Combine(workingDir, item);
-                // ReSharper disable once AccessToForEachVariableInClosure
-                fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.WithDescriminator(item.Replace("\\", string.Empty).Replace(".", string.Empty)));
+                var fileDescriminator = item.Replace(Path.DirectorySeparatorChar.ToString(), string.Empty).Replace(".", string.Empty);
+                fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.WithDescriminator(fileDescriminator));
             }
         }
     }
@@ -73,7 +80,7 @@ public class AssemblyInfoFileUpdateTests
     public void ShouldNotCreateCSharpAssemblyInfoFileWhenNotExistsAndNotEnsureAssemblyInfo()
     {
         var fileSystem = new TestFileSystem();
-        const string workingDir = "C:\\Testing";
+        var workingDir = Path.GetTempPath();
         ISet<string> assemblyInfoFile = new HashSet<string> { "VersionAssemblyInfo.cs" };
         var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
 
@@ -88,7 +95,7 @@ public class AssemblyInfoFileUpdateTests
     public void ShouldNotCreateFSharpAssemblyInfoFileWhenNotExistsAndNotEnsureAssemblyInfo()
     {
         var fileSystem = Substitute.For<IFileSystem>();
-        const string workingDir = "C:\\Testing";
+        var workingDir = Path.GetTempPath();
         ISet<string> assemblyInfoFile = new HashSet<string> { "VersionAssemblyInfo.fs" };
         var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
 
@@ -104,7 +111,7 @@ public class AssemblyInfoFileUpdateTests
     public void ShouldNotCreateVisualBasicAssemblyInfoFileWhenNotExistsAndNotEnsureAssemblyInfo()
     {
         var fileSystem = Substitute.For<IFileSystem>();
-        const string workingDir = "C:\\Testing";
+        var workingDir = Path.GetTempPath();
         ISet<string> assemblyInfoFile = new HashSet<string> { "VersionAssemblyInfo.vb" };
         var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
 
@@ -121,7 +128,7 @@ public class AssemblyInfoFileUpdateTests
     public void ShouldCreateVisualBasicAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo()
     {
         var fileSystem = Substitute.For<IFileSystem>();
-        const string workingDir = "C:\\Testing";
+        var workingDir = Path.GetTempPath();
         ISet<string> assemblyInfoFile = new HashSet<string> { "VersionAssemblyInfo.vb" };
         var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
         
@@ -137,7 +144,7 @@ public class AssemblyInfoFileUpdateTests
     public void ShouldCreateFSharpAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo()
     {
         var fileSystem = Substitute.For<IFileSystem>();
-        const string workingDir = "C:\\Testing";
+        var workingDir = Path.GetTempPath();
         ISet<string> assemblyInfoFile = new HashSet<string> { "VersionAssemblyInfo.fs" };
         var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
 
@@ -153,7 +160,7 @@ public class AssemblyInfoFileUpdateTests
     public void ShouldNotCreateAssemblyInfoFileForUnknownSourceCodeAndEnsureAssemblyInfo()
     {
         var fileSystem = Substitute.For<IFileSystem>();
-        const string workingDir = "C:\\Testing";
+        var workingDir = Path.GetTempPath();
         ISet<string> assemblyInfoFile = new HashSet<string> { "VersionAssemblyInfo.js" };
         var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
 
@@ -168,7 +175,7 @@ public class AssemblyInfoFileUpdateTests
     public void ShouldStartSearchFromWorkingDirectory()
     {
         var fileSystem = Substitute.For<IFileSystem>();
-        const string workingDir = "C:\\Testing";
+        var workingDir = Path.GetTempPath();
 
         var config = new TestEffectiveConfiguration();
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), config, false);
@@ -190,13 +197,14 @@ public class AssemblyInfoFileUpdateTests
             Patch = 1
         };
 
-        const string workingDir = "C:\\Testing";
-        const string assemblyInfoFile = @"AssemblyVersion(""1.0.0.0"");
-AssemblyInformationalVersion(""1.0.0.0"");
-AssemblyFileVersion(""1.0.0.0"");";
+        var workingDir = Path.GetTempPath();
+        string assemblyInfoFile = Join(@"AssemblyVersion(""1.0.0.0"");",
+            @"AssemblyInformationalVersion(""1.0.0.0"");",
+            @"AssemblyFileVersion(""1.0.0.0"");");
 
-        fileSystem.Exists("C:\\Testing\\AssemblyInfo.cs").Returns(true);
-        fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.cs").Returns(assemblyInfoFile);
+        var fileName = Path.Combine(workingDir, "AssemblyInfo.cs");
+        fileSystem.Exists(fileName).Returns(true);
+        fileSystem.ReadAllText(fileName).Returns(assemblyInfoFile);
 
         var config = new TestEffectiveConfiguration(assemblyVersioningScheme: AssemblyVersioningScheme.MajorMinor);
 
@@ -208,10 +216,10 @@ AssemblyFileVersion(""1.0.0.0"");";
         };
         using (new AssemblyInfoFileUpdate(args, workingDir, variable, fileSystem))
         {
-            const string expected = @"AssemblyVersion(""2.3.0.0"");
-AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"");
-AssemblyFileVersion(""2.3.1.0"");";
-            fileSystem.Received().WriteAllText("C:\\Testing\\AssemblyInfo.cs", expected);
+            string expected = Join(@"AssemblyVersion(""2.3.0.0"");",
+                @"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"");",
+                @"AssemblyFileVersion(""2.3.1.0"");");
+            fileSystem.Received().WriteAllText(fileName, expected);
         }
     }
 
@@ -227,13 +235,14 @@ AssemblyFileVersion(""2.3.1.0"");";
             Patch = 1
         };
 
-        const string workingDir = "C:\\Testing";
-        const string assemblyInfoFile = @"AssemblyVersion(""1.0.0.0"");
-AssemblyInformationalVersion(""1.0.0.0"");
-AssemblyFileVersion(""1.0.0.0"");";
+        var workingDir = Path.GetTempPath();
+        string assemblyInfoFile = Join(@"AssemblyVersion(""1.0.0.0"");",
+            @"AssemblyInformationalVersion(""1.0.0.0"");",
+            @"AssemblyFileVersion(""1.0.0.0"");");
 
-        fileSystem.Exists("C:\\Testing\\Project\\src\\Properties\\AssemblyInfo.cs").Returns(true);
-        fileSystem.ReadAllText("C:\\Testing\\Project\\src\\Properties\\AssemblyInfo.cs").Returns(assemblyInfoFile);
+        var fileName = Path.Combine(workingDir, "Project", "src", "Properties", "AssemblyInfo.cs");
+        fileSystem.Exists(fileName).Returns(true);
+        fileSystem.ReadAllText(fileName).Returns(assemblyInfoFile);
 
         var config = new TestEffectiveConfiguration(assemblyVersioningScheme: AssemblyVersioningScheme.MajorMinor);
 
@@ -241,14 +250,14 @@ AssemblyFileVersion(""1.0.0.0"");";
         var args = new Arguments
         {
             UpdateAssemblyInfo = true,
-            UpdateAssemblyInfoFileName = new HashSet<string> { @"Project\src\Properties\AssemblyInfo.cs" }
+            UpdateAssemblyInfoFileName = new HashSet<string> { Path.Combine("Project", "src", "Properties", "AssemblyInfo.cs") }
         };
         using (new AssemblyInfoFileUpdate(args, workingDir, variable, fileSystem))
         {
-            const string expected = @"AssemblyVersion(""2.3.0.0"");
-AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"");
-AssemblyFileVersion(""2.3.1.0"");";
-            fileSystem.Received().WriteAllText("C:\\Testing\\Project\\src\\Properties\\AssemblyInfo.cs", expected);
+            string expected = Join(@"AssemblyVersion(""2.3.0.0"");",
+                @"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"");",
+                @"AssemblyFileVersion(""2.3.1.0"");");
+            fileSystem.Received().WriteAllText(fileName, expected);
         }
     }
 
@@ -264,13 +273,14 @@ AssemblyFileVersion(""2.3.1.0"");";
             Patch = 1
         };
 
-        const string workingDir = "C:\\Testing";
-        const string assemblyInfoFile = @"AssemblyVersion(""1.0.0.*"");
-AssemblyInformationalVersion(""1.0.0.*"");
-AssemblyFileVersion(""1.0.0.*"");";
+        var workingDir = Path.GetTempPath();
+        string assemblyInfoFile = Join(@"AssemblyVersion(""1.0.0.*"");",
+            @"AssemblyInformationalVersion(""1.0.0.*"");",
+            @"AssemblyFileVersion(""1.0.0.*"");");
 
-        fileSystem.Exists("C:\\Testing\\AssemblyInfo.cs").Returns(true);
-        fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.cs").Returns(assemblyInfoFile);
+        var fileName = Path.Combine(workingDir, "AssemblyInfo.cs");
+        fileSystem.Exists(fileName).Returns(true);
+        fileSystem.ReadAllText(fileName).Returns(assemblyInfoFile);
 
         var config = new TestEffectiveConfiguration(assemblyVersioningScheme: AssemblyVersioningScheme.MajorMinor);
         var variable = VariableProvider.GetVariablesFor(version, config, false);
@@ -281,10 +291,10 @@ AssemblyFileVersion(""1.0.0.*"");";
         };
         using (new AssemblyInfoFileUpdate(args, workingDir, variable, fileSystem))
         {
-            const string expected = @"AssemblyVersion(""2.3.0.0"");
-AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"");
-AssemblyFileVersion(""2.3.1.0"");";
-            fileSystem.Received().WriteAllText("C:\\Testing\\AssemblyInfo.cs", expected);
+            string expected = Join(@"AssemblyVersion(""2.3.0.0"");",
+                @"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"");",
+                @"AssemblyFileVersion(""2.3.1.0"");");
+            fileSystem.Received().WriteAllText(fileName, expected);
         }
     }
 
@@ -300,11 +310,12 @@ AssemblyFileVersion(""2.3.1.0"");";
             Patch = 1
         };
 
-        const string workingDir = "C:\\Testing";
-        const string assemblyInfoFileContent = @"";
+        var workingDir = Path.GetTempPath();
+        const string assemblyInfoFileContent = "";
 
-        fileSystem.Exists("C:\\Testing\\AssemblyInfo.cs").Returns(true);
-        fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.cs").Returns(assemblyInfoFileContent);
+        var fileName = Path.Combine(workingDir, "AssemblyInfo.cs");
+        fileSystem.Exists(fileName).Returns(true);
+        fileSystem.ReadAllText(fileName).Returns(assemblyInfoFileContent);
 
         var config = new TestEffectiveConfiguration(assemblyVersioningScheme: AssemblyVersioningScheme.MajorMinor);
 
@@ -317,11 +328,10 @@ AssemblyFileVersion(""2.3.1.0"");";
 
         using (new AssemblyInfoFileUpdate(args, workingDir, variable, fileSystem))
         {
-            const string expected = @"
-[assembly: AssemblyVersion(""2.3.0.0"")]
-[assembly: AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")]
-[assembly: AssemblyFileVersion(""2.3.1.0"")]";
-            fileSystem.Received().WriteAllText("C:\\Testing\\AssemblyInfo.cs", expected);
+            string expected = Join("", @"[assembly: AssemblyVersion(""2.3.0.0"")]",
+                @"[assembly: AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")]",
+                @"[assembly: AssemblyFileVersion(""2.3.1.0"")]");
+            fileSystem.Received().WriteAllText(fileName, expected);
         }
     }
 
@@ -336,13 +346,14 @@ AssemblyFileVersion(""2.3.1.0"");";
             Patch = 1
         };
 
-        const string workingDir = "C:\\Testing";
-        const string assemblyInfoFile = @"AssemblyVersion(""2.2.0.0"");
-AssemblyInformationalVersion(""2.2.0+5.Branch.foo.Sha.hash"");
-AssemblyFileVersion(""2.2.0.0"");";
+        var workingDir = Path.GetTempPath();
+        string assemblyInfoFile = Join(@"AssemblyVersion(""2.2.0.0"");",
+            @"AssemblyInformationalVersion(""2.2.0+5.Branch.foo.Sha.hash"");",
+            @"AssemblyFileVersion(""2.2.0.0"");");
 
-        fileSystem.Exists("C:\\Testing\\AssemblyInfo.cs").Returns(true);
-        fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.cs").Returns(assemblyInfoFile);
+        var fileName = Path.Combine(workingDir, "AssemblyInfo.cs");
+        fileSystem.Exists(fileName).Returns(true);
+        fileSystem.ReadAllText(fileName).Returns(assemblyInfoFile);
 
         var config = new TestEffectiveConfiguration(assemblyVersioningScheme: AssemblyVersioningScheme.MajorMinor);
         var variable = VariableProvider.GetVariablesFor(version, config, false);
@@ -353,10 +364,10 @@ AssemblyFileVersion(""2.2.0.0"");";
         };
         using (new AssemblyInfoFileUpdate(args, workingDir, variable, fileSystem))
         {
-            const string expected = @"AssemblyVersion(""2.3.0.0"");
-AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"");
-AssemblyFileVersion(""2.3.1.0"");";
-            fileSystem.Received().WriteAllText("C:\\Testing\\AssemblyInfo.cs", expected);
+            string expected = Join(@"AssemblyVersion(""2.3.0.0"");",
+                @"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"");",
+                @"AssemblyFileVersion(""2.3.1.0"");");
+            fileSystem.Received().WriteAllText(fileName, expected);
         }
     }
 
@@ -373,12 +384,13 @@ AssemblyFileVersion(""2.3.1.0"");";
             Patch = 1
         };
 
-        const string workingDir = "C:\\Testing";
-        const string assemblyInfoFile = @"AssemblyVersion(""1.0.0.0"");
-AssemblyInformationalVersion(""1.0.0.0"");
-AssemblyFileVersion(""1.0.0.0"");";
+        var workingDir = Path.GetTempPath();
+        string assemblyInfoFile = Join(@"AssemblyVersion(""1.0.0.0"");",
+            @"AssemblyInformationalVersion(""1.0.0.0"");",
+            @"AssemblyFileVersion(""1.0.0.0"");");
 
-        fileSystem.WriteAllText("C:\\Testing\\AssemblyInfo.cs", assemblyInfoFile);
+        var fileName = Path.Combine(workingDir, "AssemblyInfo.cs");
+        fileSystem.WriteAllText(fileName, assemblyInfoFile);
         var variable = VariableProvider.GetVariablesFor(version, new TestEffectiveConfiguration(), false);
         var args = new Arguments
         {
@@ -388,10 +400,10 @@ AssemblyFileVersion(""1.0.0.0"");";
         };
         using (new AssemblyInfoFileUpdate(args, workingDir, variable, fileSystem))
         {
-            const string expected = @"AssemblyVersion(""2.3.1.0"");
-AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"");
-AssemblyFileVersion(""2.3.1.0"");";
-            fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.cs").ShouldBe(expected);
+            string expected = Join(@"AssemblyVersion(""2.3.1.0"");",
+                @"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"");",
+                @"AssemblyFileVersion(""2.3.1.0"");");
+            fileSystem.ReadAllText(fileName).ShouldBe(expected);
         }
     }
 
@@ -407,12 +419,13 @@ AssemblyFileVersion(""2.3.1.0"");";
             Patch = 1
         };
 
-        const string workingDir = "C:\\Testing";
-        const string assemblyInfoFile = @"AssemblyVersion(""1.0.0.0"");
-AssemblyInformationalVersion(""1.0.0.0"");
-AssemblyFileVersion(""1.0.0.0"");";
+        var workingDir = Path.GetTempPath();
+        string assemblyInfoFile = Join(@"AssemblyVersion(""1.0.0.0"");",
+            @"AssemblyInformationalVersion(""1.0.0.0"");",
+            @"AssemblyFileVersion(""1.0.0.0"");");
 
-        fileSystem.WriteAllText("C:\\Testing\\AssemblyInfo.fs", assemblyInfoFile);
+        var fileName = Path.Combine(workingDir, "AssemblyInfo.fs");
+        fileSystem.WriteAllText(fileName, assemblyInfoFile);
         var variable = VariableProvider.GetVariablesFor(version, new TestEffectiveConfiguration(), false);
         var args = new Arguments
         {
@@ -422,10 +435,10 @@ AssemblyFileVersion(""1.0.0.0"");";
         };
         using (new AssemblyInfoFileUpdate(args, workingDir, variable, fileSystem))
         {
-            const string expected = @"AssemblyVersion(""2.3.1.0"");
-AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"");
-AssemblyFileVersion(""2.3.1.0"");";
-            fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.fs").ShouldBe(expected);
+            string expected = Join(@"AssemblyVersion(""2.3.1.0"");",
+                @"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"");",
+                @"AssemblyFileVersion(""2.3.1.0"");");
+            fileSystem.ReadAllText(fileName).ShouldBe(expected);
         }
     }
 
@@ -441,12 +454,13 @@ AssemblyFileVersion(""2.3.1.0"");";
             Patch = 1
         };
 
-        const string workingDir = "C:\\Testing";
-        const string assemblyInfoFile = @"AssemblyVersion(""1.0.0.0"");
-AssemblyInformationalVersion(""1.0.0.0"");
-AssemblyFileVersion(""1.0.0.0"");";
-        
-        fileSystem.WriteAllText("C:\\Testing\\AssemblyInfo.vb", assemblyInfoFile);
+        var workingDir = Path.GetTempPath();
+        string assemblyInfoFile = Join(@"AssemblyVersion(""1.0.0.0"");",
+            @"AssemblyInformationalVersion(""1.0.0.0"");",
+            @"AssemblyFileVersion(""1.0.0.0"");");
+
+        var fileName = Path.Combine(workingDir, "AssemblyInfo.vb");
+        fileSystem.WriteAllText(fileName, assemblyInfoFile);
         var variable = VariableProvider.GetVariablesFor(version, new TestEffectiveConfiguration(), false);
         var args = new Arguments
         {
@@ -456,10 +470,27 @@ AssemblyFileVersion(""1.0.0.0"");";
         };
         using (new AssemblyInfoFileUpdate(args, workingDir, variable, fileSystem))
         {
-            const string expected = @"AssemblyVersion(""2.3.1.0"");
-AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"");
-AssemblyFileVersion(""2.3.1.0"");";
-            fileSystem.ReadAllText("C:\\Testing\\AssemblyInfo.vb").ShouldBe(expected);
+            string expected = Join(@"AssemblyVersion(""2.3.1.0"");",
+                @"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"");",
+                @"AssemblyFileVersion(""2.3.1.0"");");
+            fileSystem.ReadAllText(fileName).ShouldBe(expected);
         }
+    }
+
+
+    private static string Join(params string[] lines)
+    {
+        var sb = new StringBuilder();
+        for (int i = 0; i < lines.Length; i++)
+        {
+            var line = lines[i];
+            sb.Append(line);
+
+            var lastLine = i == lines.Length - 1;
+            if (!lastLine)
+                sb.AppendLine();
+        }
+
+        return sb.ToString();
     }
 }

@@ -57,7 +57,7 @@ public class RemoteRepositoryScenarios
             fixture.AssertFullSemver("0.1.0+5");
             fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepositoryFixture.Repository);
             var buildSignature = fixture.LocalRepositoryFixture.Repository.Config.BuildSignature(new DateTimeOffset(DateTime.Now));
-            fixture.LocalRepositoryFixture.Repository.Network.Pull(buildSignature, new PullOptions());
+            Commands.Pull((Repository) fixture.LocalRepositoryFixture.Repository, buildSignature, new PullOptions());
             fixture.AssertFullSemver("0.1.0+5", fixture.LocalRepositoryFixture.Repository);
         }
     }

@@ -127,6 +127,7 @@ namespace GitVersion
                 writeActions.Add(Console.WriteLine);
             }
 
+            Exception exception = null;
             if (arguments.LogFilePath != null && arguments.LogFilePath != "console")
             {
                 try
@@ -148,7 +149,7 @@ namespace GitVersion
                 }
                 catch (Exception ex)
                 {
-                    Logger.WriteError(String.Format("Failed to configure logging for '{0}': {1}", arguments.LogFilePath, ex.Message));
+                    exception = ex;
                 }
             }
 
@@ -156,6 +157,9 @@ namespace GitVersion
                 s => writeActions.ForEach(a => a(s)),
                 s => writeActions.ForEach(a => a(s)),
                 s => writeActions.ForEach(a => a(s)));
+
+            if (exception != null)
+                Logger.WriteError(string.Format("Failed to configure logging for '{0}': {1}", arguments.LogFilePath, exception.Message));
         }
 
         static void WriteLogEntry(Arguments arguments, string s)

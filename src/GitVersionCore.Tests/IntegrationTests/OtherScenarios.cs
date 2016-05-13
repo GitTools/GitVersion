@@ -22,7 +22,7 @@
                 fixture.Repository.MakeACommit();
                 fixture.Repository.CreateBranch("develop");
 
-                fixture.LocalRepositoryFixture.Repository.Network.Fetch(fixture.LocalRepositoryFixture.Repository.Network.Remotes.First());
+                Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
                 fixture.LocalRepositoryFixture.Repository.Checkout(fixture.Repository.Head.Tip);
                 fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
                 fixture.InitialiseRepo();
@@ -81,7 +81,7 @@
                 fixture.Repository.MakeACommit();
                 fixture.Repository.CreateBranch("feature/someFeature");
 
-                fixture.LocalRepositoryFixture.Repository.Network.Fetch(fixture.LocalRepositoryFixture.Repository.Network.Remotes.First());
+                Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
                 fixture.LocalRepositoryFixture.Repository.Checkout(fixture.Repository.Head.Tip);
                 fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
                 fixture.InitialiseRepo();

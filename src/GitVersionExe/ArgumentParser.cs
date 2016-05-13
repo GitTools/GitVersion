@@ -316,13 +316,15 @@ namespace GitVersion
             var args = new NameValueCollection();
 
             string currentKey = null;
+            var isBooleanArgument = true;
             for (var index = 0; index < namedArguments.Count; index = index + 1)
             {
                 var arg = namedArguments[index];
-                //If this is a switch, create new name/value entry for it, with a null value.
-                if (IsSwitchArgument(arg))
+                // If the current (previous) argument doesn't require a parameter and this is a switch, create new name/value entry for it, with a null value.
+                if (isBooleanArgument && IsSwitchArgument(arg))
                 {
                     currentKey = arg;
+                    isBooleanArgument = IsBooleanArgument(arg);
                     args.Add(currentKey, null);
                 }
                 //If this is a value (not a switch)
@@ -338,6 +340,9 @@ namespace GitVersion
                     {
                         args.Add(currentKey, arg);
                     }
+
+                    // Reset the boolean argument flag so the next argument won't be ignored.
+                    isBooleanArgument = true;
                 }
             }
             return args;
@@ -345,7 +350,8 @@ namespace GitVersion
 
         static bool IsSwitchArgument(string value)
         {
-            return value != null && (value.StartsWith("-") || value.StartsWith("/"))
+            return value != null
+                && (value.StartsWith("-") || value.StartsWith("/"))
                 && !Regex.Match(value, @"/\w+:").Success; //Exclude msbuild & project parameters in form /blah:, which should be parsed as values, not switch names.
         }
 
@@ -375,6 +381,19 @@ namespace GitVersion
                 IsSwitch("h", singleArgument) ||
                 IsSwitch("help", singleArgument) ||
                 IsSwitch("?", singleArgument);
+        }
+
+        static bool IsBooleanArgument(string switchName)
+        {
+            var booleanArguments = new[]
+            {
+                "init",
+                "updateassemblyinfo",
+                "ensureassemblyinfo",
+                "nofetch"
+            };
+
+            return booleanArguments.Contains(switchName, StringComparer.OrdinalIgnoreCase);
         }
     }
 }

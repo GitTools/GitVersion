@@ -18,7 +18,12 @@ public class TestFileSystem : IFileSystem
             else
                 throw new IOException("File already exists");
         }
-        fileSystem.Add(to, fileSystem[from]);
+
+        string source;
+        if (!fileSystem.TryGetValue(from, out source))
+            throw new FileNotFoundException(string.Format("The source file '{0}' was not found", from), from);
+
+        fileSystem.Add(to, source);
     }
 
     public void Move(string @from, string to)
