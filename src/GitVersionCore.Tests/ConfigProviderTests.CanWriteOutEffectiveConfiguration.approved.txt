@@ -1,4 +1,4 @@
-﻿assembly-versioning-scheme: MajorMinorPatch
+assembly-versioning-scheme: MajorMinorPatch
 mode: ContinuousDelivery
 tag-prefix: '[vV]'
 continuous-delivery-fallback-tag: ci
@@ -53,3 +53,5 @@ branches:
     increment: Minor
     prevent-increment-of-merged-branch-version: false
     track-merge-target: true
+ignore:
+  sha: []
