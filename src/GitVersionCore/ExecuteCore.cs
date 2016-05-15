@@ -1,6 +1,7 @@
 namespace GitVersion
 {
     using System;
+    using System.ComponentModel;
     using System.Linq;
     using GitVersion.Helpers;
 
@@ -19,7 +20,7 @@ namespace GitVersion
             gitVersionCache = new GitVersionCache(fileSystem);
         }
 
-        public VersionVariables ExecuteGitVersion(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId)
+        public VersionVariables ExecuteGitVersion(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId, Config overrideConfig = null)
         {
             // Normalise if we are running on build server
             var applicableBuildServers = BuildServerList.GetApplicableBuildServers();
@@ -28,6 +29,19 @@ namespace GitVersion
             var gitPreparer = new GitPreparer(targetUrl, dynamicRepositoryLocation, authentication, fetch, workingDirectory);
             var dotGitDirectory = gitPreparer.GetDotGitDirectory();
             var projectRoot = gitPreparer.GetProjectRootDirectory();
+
+            // TODO Can't use this, it still needs work
+            //var gitRepository = GitRepositoryFactory.CreateRepository(new RepositoryInfo
+            //{
+            //    Url = targetUrl,
+            //    Branch = targetBranch,
+            //    Authentication = new AuthenticationInfo
+            //    {
+            //        Username = authentication.Username,
+            //        Password = authentication.Password
+            //    },
+            //    Directory = workingDirectory
+            //});
             Logger.WriteInfo(string.Format("Project root is: " + projectRoot));
             if (string.IsNullOrEmpty(dotGitDirectory) || string.IsNullOrEmpty(projectRoot))
             {
@@ -40,7 +54,7 @@ namespace GitVersion
                 var versionVariables = gitVersionCache.LoadVersionVariablesFromDiskCache(repo, dotGitDirectory);
                 if (versionVariables == null)
                 {
-                    versionVariables = ExecuteInternal(targetBranch, commitId, repo, gitPreparer, projectRoot, buildServer);
+                    versionVariables = ExecuteInternal(targetBranch, commitId, repo, gitPreparer, projectRoot, buildServer, overrideConfig: overrideConfig);
                     gitVersionCache.WriteVariablesToDiskCache(repo, dotGitDirectory, versionVariables);
                 }
 
@@ -76,12 +90,12 @@ namespace GitVersion
             return currentBranch;
         }
 
-        VersionVariables ExecuteInternal(string targetBranch, string commitId, IRepository repo, GitPreparer gitPreparer, string projectRoot, IBuildServer buildServer)
+        VersionVariables ExecuteInternal(string targetBranch, string commitId, IRepository repo, GitPreparer gitPreparer, string projectRoot, IBuildServer buildServer, Config overrideConfig = null)
         {
             gitPreparer.Initialise(buildServer != null, ResolveCurrentBranch(buildServer, targetBranch, gitPreparer.IsDynamicGitRepository));
 
             var versionFinder = new GitVersionFinder();
-            var configuration = ConfigurationProvider.Provide(projectRoot, fileSystem);
+            var configuration = ConfigurationProvider.Provide(projectRoot, fileSystem, overrideConfig: overrideConfig);
 
             var gitVersionContext = new GitVersionContext(repo, configuration, commitId : commitId);
             var semanticVersion = versionFinder.FindVersion(gitVersionContext);

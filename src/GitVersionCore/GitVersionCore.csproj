@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props" Condition="Exists('..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props')" />
+  <Import Project="..\packages\LibGit2Sharp.NativeBinaries.1.0.137\build\LibGit2Sharp.NativeBinaries.props" Condition="Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.137\build\LibGit2Sharp.NativeBinaries.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -13,8 +13,9 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <LangVersion>5</LangVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>d8e8d4d0</NuGetPackageImportStamp>
     <BuildDir>$(SolutionDir)..\build\</BuildDir>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,12 +38,16 @@
     <DocumentationFile>bin\Release\GitVersionCore.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GitTools.Core, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GitTools.Core.1.1.0-beta0001\lib\net4\GitTools.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="JetBrains.Annotations, Version=8.1.11.55, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrainsAnnotations.Fody.1.0.4.0\Lib\JetBrains.Annotations.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="LibGit2Sharp, Version=0.21.0.176, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LibGit2Sharp.0.21.0.176\lib\net40\LibGit2Sharp.dll</HintPath>
+    <Reference Include="LibGit2Sharp, Version=0.23.0.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
+      <HintPath>..\packages\LibGit2Sharp.0.23.0-pre20150419160303\lib\net40\LibGit2Sharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -53,12 +58,12 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Visualize, Version=0.4.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Visualize.Fody.0.4.4.0\lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\Visualize.dll</HintPath>
+    <Reference Include="Visualize, Version=0.4.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Visualize.Fody.0.4.5.0\lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\Visualize.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="YamlDotNet, Version=3.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\YamlDotNet.3.6.1\lib\net35\YamlDotNet.dll</HintPath>
+    <Reference Include="YamlDotNet, Version=3.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YamlDotNet.3.8.0\lib\net35\YamlDotNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -71,7 +76,7 @@
     <Compile Include="BuildServers\BuildServerBase.cs" />
     <Compile Include="BuildServers\BuildServerList.cs" />
     <Compile Include="BuildServers\ContinuaCi.cs" />
-    <Compile Include="BuildServers\GitHelper.cs" />
+    <Compile Include="BuildServers\GitLabCi.cs" />
     <Compile Include="BuildServers\IBuildServer.cs" />
     <Compile Include="BuildServers\Jenkins.cs" />
     <Compile Include="BuildServers\MyGet.cs" />
@@ -81,6 +86,7 @@
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Configuration\ConsoleAdapter.cs" />
     <Compile Include="Configuration\IConsole.cs" />
+    <Compile Include="Configuration\IgnoreConfig.cs" />
     <Compile Include="Configuration\Init\BuildServer\AppVeyorSetup.cs" />
     <Compile Include="Configuration\Init\BuildServer\SetupBuildScripts.cs" />
     <Compile Include="Configuration\Init\SetConfig\AssemblyVersioningSchemeSetting.cs" />
@@ -109,18 +115,22 @@
     <Compile Include="Configuration\Init\StepResult.cs" />
     <Compile Include="EffectiveConfiguration.cs" />
     <Compile Include="ExecuteCore.cs" />
+    <Compile Include="Extensions\ReadEmbeddedResourceExtensions.cs" />
     <Compile Include="GitPreparer.cs" />
     <Compile Include="GitVersionCache.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\IFileSystem.cs" />
-    <Compile Include="Helpers\ProcessHelper.cs" />
     <Compile Include="Helpers\ServiceMessageEscapeHelper.cs" />
     <Compile Include="IncrementStrategyFinder.cs" />
     <Compile Include="OutputVariables\VersionVariables.cs" />
-    <Compile Include="Extensions\ExtensionMethods.git.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />
     <Compile Include="SemanticVersionFormatValues.cs" />
+    <Compile Include="VersionFilters\MinDateVersionFilter.cs" />
+    <Compile Include="VersionFilters\IVersionFilter.cs" />
+    <Compile Include="VersionFilters\ShaVersionFilter.cs" />
     <Compile Include="StringFormatWith.cs" />
+    <Compile Include="VersionAssemblyInfoResources\AssemblyVersionInfoTemplates.cs" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\VersionAssemblyInfo.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculator.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\BaseVersion.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\ConfigNextVersionBaseVersionStrategy.cs" />
@@ -139,7 +149,6 @@
     <Compile Include="VersioningModes\VersioningMode.cs" />
     <Compile Include="VersioningModes\VersioningModeBase.cs" />
     <Compile Include="VersioningModes\VersioningModeExtension.cs" />
-    <Compile Include="WarningException.cs" />
     <Compile Include="Extensions\ExtensionMethods.cs" />
     <Compile Include="GitVersionContext.cs" />
     <Compile Include="GitVersionFinder.cs" />
@@ -161,8 +170,11 @@
     <Content Include="FodyWeavers.xml">
       <SubType>Designer</SubType>
     </Content>
+    <EmbeddedResource Include="VersionAssemblyInfoResources\VersionAssemblyInfo.vb" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\VersionAssemblyInfo.fs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="NugetAssets\GitVersion.nuspec">
       <SubType>Designer</SubType>
     </None>
@@ -175,8 +187,8 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets'))" />
-    <Error Condition="!Exists('..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.0.21.0.176\build\net40\LibGit2Sharp.props'))" />
-    <Error Condition="!Exists('..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.137\build\LibGit2Sharp.NativeBinaries.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.NativeBinaries.1.0.137\build\LibGit2Sharp.NativeBinaries.props'))" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent>
@@ -190,13 +202,14 @@
   </Target>
   <Target Name="AfterBuild" DependsOnTargets="Clean">
     <!-- NugetRefBuild -->
-    <MakeDir Directories="$(SolutionDir)NuGetRefBuild" />
+    <MakeDir Directories="$(SolutionDir)NuGetRefBuild\lib\Net45" />
     <Copy SourceFiles="$(OutputPath)GitVersionCore.dll" DestinationFolder="$(BuildDir)NuGetRefBuild\lib\Net45" />
-    <Copy SourceFiles="$(OutputPath)GitVersionCore.pdb" DestinationFolder="$(BuildDir)NuGetRefBuild\lib\Net45" />
+    <Copy SourceFiles="$(OutputPath)GitVersionCore.pdb" DestinationFolder="$(BuildDir)NuGetRefBuild\lib\Net45" Condition="Exists('$(OutputPath)GitVersionCore.pdb')" />
+    <Copy SourceFiles="$(OutputPath)GitVersionCore.dll.mdb" DestinationFolder="$(BuildDir)NuGetRefBuild\lib\Net45" Condition="Exists('$(OutputPath)GitVersionCore.dll.mdb')" />
     <Copy SourceFiles="$(OutputPath)GitVersionCore.xml" DestinationFolder="$(BuildDir)NuGetRefBuild\lib\Net45" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.nuspec" DestinationFolder="$(BuildDir)NuGetRefBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetRefBuild" MetadataAssembly="$(OutputPath)GitVersionCore.dll" Version="$(GitVersion_NuGetVersion)" />
   </Target>
   <Import Project="..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" />
-  <Import Project="..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
+  <Import Project="..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
 </Project>

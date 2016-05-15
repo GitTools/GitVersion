@@ -11,12 +11,25 @@ public class TestFileSystem : IFileSystem
 
     public void Copy(string @from, string to, bool overwrite)
     {
-        throw new NotImplementedException();
+        if (fileSystem.ContainsKey(to))
+        {
+            if (overwrite)
+                fileSystem.Remove(to);
+            else
+                throw new IOException("File already exists");
+        }
+
+        string source;
+        if (!fileSystem.TryGetValue(from, out source))
+            throw new FileNotFoundException(string.Format("The source file '{0}' was not found", from), from);
+
+        fileSystem.Add(to, source);
     }
 
     public void Move(string @from, string to)
     {
-        throw new NotImplementedException();
+        Copy(from, to, false);
+        fileSystem.Remove(from);
     }
 
     public bool Exists(string file)
@@ -26,7 +39,7 @@ public class TestFileSystem : IFileSystem
 
     public void Delete(string path)
     {
-        throw new NotImplementedException();
+        fileSystem.Remove(path);
     }
 
     public string ReadAllText(string path)
@@ -69,6 +82,19 @@ public class TestFileSystem : IFileSystem
 
     public void CreateDirectory(string path)
     {
+        if (fileSystem.ContainsKey(path))
+        {
+            fileSystem[path] = "";
+        }
+        else
+        {
+            fileSystem.Add(path, "");
+        }
+    }
+
+    public bool DirectoryExists(string path)
+    {
+        return fileSystem.ContainsKey(path);
     }
 
     public long GetLastDirectoryWrite(string path)

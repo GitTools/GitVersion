@@ -28,6 +28,6 @@
       <FixtureName>DocumentationTests</FixtureName>
     </FixtureTestSelector>
   </IgnoredTests>
-  <AdditionalFilesToInclude>..\Packages\LibGit2Sharp.0.21.0.176\lib\net40\NativeBinaries\**.*;Resources\**.*</AdditionalFilesToInclude>
+  <AdditionalFilesToInclude>Resources\**.*</AdditionalFilesToInclude>
   <HiddenWarnings>PostBuildEventDisabled;CopyReferencedAssembliesToWorkspaceIsOn</HiddenWarnings>
 </ProjectConfiguration>

@@ -42,7 +42,6 @@
             return string.Format("Merge target tagged '{0}'", version.Tag);
         }
 
-
         static bool IsDirectMergeFromCommit(Tag tag, Commit commit)
         {
             var targetCommit = tag.Target as Commit;

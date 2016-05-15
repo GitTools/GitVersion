@@ -11,9 +11,9 @@ public class MockBranchCollection : BranchCollection, ICollection<Branch>
         return Branches.GetEnumerator();
     }
 
-    public override Branch this[string name]
+    public override Branch this[string friendlyName]
     {
-        get { return Branches.FirstOrDefault(x => x.Name == name); }
+        get { return Branches.FirstOrDefault(x => x.FriendlyName == friendlyName); }
     }
 
     public void Add(Branch item)

@@ -41,6 +41,10 @@ The global configuration options are:
  - **`commits-since-version-source-padding:`** The number of characters to pad `CommitsSinceVersionSource` to in the `CommitsSinceVersionSourcePadded` [variable](/more-info/variables). Is default set to `4`, which will pad the `CommitsSinceVersionSource` value of `1` to `0001`.
 
  - **`commit-message-incrementing:`** Sets whether it should be possible to increment the version with special syntax in the commit message. See the `*-version-bump-message` options above for details on the syntax. Default set to `Enabled`; set to `Disabled` to disable.
+ 
+ - **`ignore:`** The header for ignore configuration
+   - **`sha:`** A sequence of SHAs to be excluded from the version calculations.  Useful when there is a rogue commit in history yielding a bad version.
+   - **`commits-before:`** Allows to setup an exclusion range.  Effectively any commit < `commits-before` will be ignored.
 
 ## Branch configuration
 
@@ -75,7 +79,7 @@ The options in here are:
  - **`prevent-increment-of-merged-branch-version:`** When `release-2.0.0` is merged into master, we want master to build `2.0.0`.
     If `release-2.0.0` is merged into develop we want it to build `2.1.0`, this option prevents incrementing after a versioned branch is merged
 
- - **`tag-number-pattern:`** Pull requests require us to pull the pre-release number out of the branch name so `refs/pulls/534/merge` builds as `PullRequest.5`.
+ - **`tag-number-pattern:`** Pull requests require us to pull the pre-release number out of the branch name so `refs/pulls/534/merge` builds as `PullRequest.534`.
    This is a regex with a named capture group called `number`
 
  - **`track-merge-target:`** Strategy which will look for tagged merge commits directly off the current branch. For example `develop` → `release/1.0.0` → merge into `master` and tag `1.0.0`. The tag is *not* on develop, but develop should be version `1.0.0` now.

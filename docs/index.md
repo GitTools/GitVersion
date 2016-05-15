@@ -19,7 +19,7 @@ There are a number of sources GitVersion can get its versions from, they include
  - Version numbers in branches (e.g. `release/2.0.0`)
  - Merge messages (for branches with versions in them, e.g. `Merged branch 'release/2.0.0' into master`)
  - Track version of another branch (e.g. develop tracks master, so when master increments so does develop)
- - GitVersionConfig.yaml file (e.g. `next-version: 2.0.0`)
+ - GitVersion.yml file (e.g `next-version: 2.0.0`)
 
 Read more at [version sources](more-info/version-sources.md)
 
@@ -47,4 +47,4 @@ GitVersion supports the following projects to automatically update its version i
 | ProjectType                           | Command Line Tool           | MS Build Task  |
 | :------------------------------------ | :-------------------------- | :------------- |
 | C# Project with `AssemblyInfo.cs`     | Supported                   | Supported      |
-| VB.NET Project with `AssemblyInfo.vb` | Supported                   | Not supported  |
+| VB.NET Project with `AssemblyInfo.vb` | Supported                   | Supported      |

@@ -1,30 +1,43 @@
 namespace GitVersion
 {
+    using Helpers;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using GitVersion.Helpers;
+    using System.Text.RegularExpressions;
+    using GitVersion.VersionAssemblyInfoResources;
 
     class AssemblyInfoFileUpdate : IDisposable
     {
         List<Action> restoreBackupTasks = new List<Action>();
         List<Action> cleanupBackupTasks = new List<Action>();
-
+        
         public AssemblyInfoFileUpdate(Arguments args, string workingDirectory, VersionVariables variables, IFileSystem fileSystem)
         {
             if (!args.UpdateAssemblyInfo) return;
 
             if (args.Output != OutputType.Json)
-                Console.WriteLine("Updating assembly info files");
+                Logger.WriteInfo("Updating assembly info files");
 
-            var assemblyInfoFiles = GetAssemblyInfoFiles(workingDirectory, args, fileSystem);
+            var assemblyInfoFiles = GetAssemblyInfoFiles(workingDirectory, args, fileSystem).ToList();
+            Logger.WriteInfo(string.Format("Found {0} files", assemblyInfoFiles.Count));
 
-            foreach (var assemblyInfoFile in assemblyInfoFiles)
+            var assemblyVersion = variables.AssemblySemVer;
+            var assemblyVersionRegex = new Regex(@"AssemblyVersion\(""[^""]*""\)");
+            var assemblyVersionString = string.Format("AssemblyVersion(\"{0}\")", assemblyVersion);
+            var assemblyInfoVersion = variables.InformationalVersion;
+            var assemblyInfoVersionRegex = new Regex(@"AssemblyInformationalVersion\(""[^""]*""\)");
+            var assemblyInfoVersionString = string.Format("AssemblyInformationalVersion(\"{0}\")", assemblyInfoVersion);
+            var assemblyFileVersion = variables.MajorMinorPatch + ".0";
+            var assemblyFileVersionRegex = new Regex(@"AssemblyFileVersion\(""[^""]*""\)");
+            var assemblyFileVersionString = string.Format("AssemblyFileVersion(\"{0}\")", assemblyFileVersion);
+
+            foreach (var assemblyInfoFile in assemblyInfoFiles.Select(f => new FileInfo(f)))
             {
-                var backupAssemblyInfo = assemblyInfoFile + ".bak";
-                var localAssemblyInfo = assemblyInfoFile;
-                fileSystem.Copy(assemblyInfoFile, backupAssemblyInfo, true);
+                var backupAssemblyInfo = assemblyInfoFile.FullName + ".bak";
+                var localAssemblyInfo = assemblyInfoFile.FullName;
+                fileSystem.Copy(assemblyInfoFile.FullName, backupAssemblyInfo, true);
                 restoreBackupTasks.Add(() =>
                 {
                     if (fileSystem.Exists(localAssemblyInfo))
@@ -33,32 +46,75 @@ namespace GitVersion
                 });
                 cleanupBackupTasks.Add(() => fileSystem.Delete(backupAssemblyInfo));
 
-                var assemblyVersion = variables.AssemblySemVer;
-                var assemblyInfoVersion = variables.InformationalVersion;
-                var assemblyFileVersion = variables.MajorMinorPatch + ".0";
-                var fileContents = fileSystem.ReadAllText(assemblyInfoFile)
-                    .RegexReplace(@"AssemblyVersion\(""[^""]*""\)", string.Format("AssemblyVersion(\"{0}\")", assemblyVersion))
-                    .RegexReplace(@"AssemblyInformationalVersion\(""[^""]*""\)", string.Format("AssemblyInformationalVersion(\"{0}\")", assemblyInfoVersion))
-                    .RegexReplace(@"AssemblyFileVersion\(""[^""]*""\)", string.Format("AssemblyFileVersion(\"{0}\")", assemblyFileVersion));
+                var fileContents = fileSystem.ReadAllText(assemblyInfoFile.FullName);
+                fileContents = ReplaceOrAppend(assemblyVersionRegex, fileContents, assemblyVersionString);
+                fileContents = ReplaceOrAppend(assemblyInfoVersionRegex, fileContents, assemblyInfoVersionString);
+                fileContents = ReplaceOrAppend(assemblyFileVersionRegex, fileContents, assemblyFileVersionString);
 
-                fileSystem.WriteAllText(assemblyInfoFile, fileContents);
+                fileSystem.WriteAllText(assemblyInfoFile.FullName, fileContents);
             }
         }
 
-        static IEnumerable<string> GetAssemblyInfoFiles(string workingDirectory, Arguments args, IFileSystem fileSystem)
+        static string ReplaceOrAppend(Regex replaceRegex, string inputString, string replaceString)
         {
-            if (args.UpdateAssemblyInfoFileName != null)
-            {
-                var fullPath = Path.Combine(workingDirectory, args.UpdateAssemblyInfoFileName);
+            const string assemblyAddFormat = "[assembly: {0}]";
 
-                if (fileSystem.Exists(fullPath))
-                {
-                    return new[] { fullPath };
-                }
+            if (replaceRegex.IsMatch(inputString))
+            {
+                inputString = replaceRegex.Replace(inputString, replaceString);
+            }
+            else
+            {
+                inputString += Environment.NewLine + string.Format(assemblyAddFormat, replaceString);
             }
 
-            return fileSystem.DirectoryGetFiles(workingDirectory, "AssemblyInfo.*", SearchOption.AllDirectories)
-                .Where(f => f.EndsWith(".cs", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".vb", StringComparison.OrdinalIgnoreCase));
+            return inputString;
+        }
+
+
+        static IEnumerable<string> GetAssemblyInfoFiles(string workingDirectory, Arguments args, IFileSystem fileSystem)
+        {
+            if (args.UpdateAssemblyInfoFileName != null && args.UpdateAssemblyInfoFileName.Any(x => !string.IsNullOrWhiteSpace(x)))
+            {
+                foreach (var item in args.UpdateAssemblyInfoFileName)
+                {
+                    var fullPath = Path.Combine(workingDirectory, item);
+
+                    if (EnsureVersionAssemblyInfoFile(args, fileSystem, fullPath))
+                    {
+                        yield return fullPath;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var item in fileSystem.DirectoryGetFiles(workingDirectory, "AssemblyInfo.*", SearchOption.AllDirectories)
+                    .Where(f => f.EndsWith(".cs", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".vb", StringComparison.OrdinalIgnoreCase)))
+                {
+                    yield return item;
+                }
+            }
+        }
+
+        static bool EnsureVersionAssemblyInfoFile(Arguments arguments, IFileSystem fileSystem, string fullPath)
+        {
+            if (fileSystem.Exists(fullPath)) return true;
+
+            if (!arguments.EnsureAssemblyInfo) return false;
+
+            var assemblyInfoSource = AssemblyVersionInfoTemplates.GetAssemblyInfoTemplateFor(fullPath);
+            if (!string.IsNullOrWhiteSpace(assemblyInfoSource))
+            {
+                var fileInfo = new FileInfo(fullPath);
+                if (!fileSystem.DirectoryExists(fileInfo.Directory.FullName))
+                {
+                    fileSystem.CreateDirectory(fileInfo.Directory.FullName);
+                }
+                fileSystem.WriteAllText(fullPath, assemblyInfoSource);
+                return true;
+            }
+            Logger.WriteWarning(string.Format("No version assembly info template available to create source file '{0}'", arguments.UpdateAssemblyInfoFileName));
+            return false;
         }
 
         public void Dispose()

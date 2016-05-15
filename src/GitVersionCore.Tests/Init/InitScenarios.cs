@@ -12,13 +12,15 @@
     public class InitScenarios
     {
         [Test]
+        [Category("NoMono")]
+        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
         public void CanSetNextVersion()
         {
             var testFileSystem = new TestFileSystem();
             var testConsole = new TestConsole("3", "2.0.0", "0");
             ConfigurationProvider.Init("c:\\proj", testFileSystem, testConsole);
 
-            testFileSystem.ReadAllText("c:\\proj\\GitVersionConfig.yaml").ShouldMatchApproved();
+            testFileSystem.ReadAllText("c:\\proj\\GitVersion.yml").ShouldMatchApproved();
         }
 
         [Test]

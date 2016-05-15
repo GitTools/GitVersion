@@ -2,6 +2,7 @@ namespace GitVersion
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
@@ -105,7 +106,7 @@ namespace GitVersion
                     Logger.WriteInfo(string.Empty);
                     Logger.WriteInfo("Here is the current git graph (please include in issue): ");
                     Logger.WriteInfo("Showing max of 100 commits");
-                    LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
+                    GitTools.LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
                 }
                 return 1;
             }
@@ -126,6 +127,7 @@ namespace GitVersion
                 writeActions.Add(Console.WriteLine);
             }
 
+            Exception exception = null;
             if (arguments.LogFilePath != null && arguments.LogFilePath != "console")
             {
                 try
@@ -147,7 +149,7 @@ namespace GitVersion
                 }
                 catch (Exception ex)
                 {
-                    Logger.WriteError(String.Format("Failed to configure logging for '{0}': {1}", arguments.LogFilePath, ex.Message));
+                    exception = ex;
                 }
             }
 
@@ -155,6 +157,9 @@ namespace GitVersion
                 s => writeActions.ForEach(a => a(s)),
                 s => writeActions.ForEach(a => a(s)),
                 s => writeActions.ForEach(a => a(s)));
+
+            if (exception != null)
+                Logger.WriteError(string.Format("Failed to configure logging for '{0}': {1}", arguments.LogFilePath, exception.Message));
         }
 
         static void WriteLogEntry(Arguments arguments, string s)

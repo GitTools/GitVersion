@@ -30,7 +30,7 @@ build_script:
   - cmd: appveyor PushArtifact "build\GitVersionTfsTaskBuild\gittools.gitversion-%GitVersion_SemVer%.vsix"
 
 test_script:
-  - nunit-console "src\GitVersionTask.Tests\bin\%CONFIGURATION%\GitVersionTask.Tests.dll" "src\GitVersionExe.Tests\bin\%CONFIGURATION%\GitVersionExe.Tests.dll" "src\GitVersionCore.Tests\bin\%CONFIGURATION%\GitVersionCore.Tests.dll" /noshadow
+  - nunit3-console "src\GitVersionTask.Tests\bin\%CONFIGURATION%\GitVersionTask.Tests.dll" "src\GitVersionExe.Tests\bin\%CONFIGURATION%\GitVersionExe.Tests.dll" "src\GitVersionCore.Tests\bin\%CONFIGURATION%\GitVersionCore.Tests.dll"
 
 cache:
   - src\packages -> **\packages.config  # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified

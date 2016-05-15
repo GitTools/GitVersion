@@ -1,12 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-
+using GitTools.Testing;
 using GitVersion;
 using GitVersion.Helpers;
-
 using NUnit.Framework;
-
 using Shouldly;
 
 [TestFixture]
@@ -107,7 +105,7 @@ CommitDate: 2015-11-10
             fileSystem.WriteAllText(vv.FileName, versionCacheFileContent);
             vv = versionAndBranchFinder.ExecuteGitVersion(null, null, null, null, false, fixture.RepositoryPath, null);
             vv.AssemblySemVer.ShouldBe("4.10.3.0");
-            
+
             var configPath = Path.Combine(fixture.RepositoryPath, "GitVersionConfig.yaml");
             fileSystem.WriteAllText(configPath, "next-version: 5.0");
 
@@ -116,17 +114,34 @@ CommitDate: 2015-11-10
         });
     }
 
+
+    [Test]
+    public void WorkingDirectoryWithoutGit()
+    {
+        var versionAndBranchFinder = new ExecuteCore(fileSystem);
+
+        RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
+        {
+            var exception = Assert.Throws<DirectoryNotFoundException>(() => versionAndBranchFinder.ExecuteGitVersion(null, null, null, null, false, Environment.SystemDirectory, null));
+            exception.Message.ShouldContain("Can't find the .git directory in");
+        });
+    }
+
     string RepositoryScope(ExecuteCore executeCore = null, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
     {
         // Make sure GitVersion doesn't trigger build server mode when we are running the tests
         Environment.SetEnvironmentVariable("APPVEYOR", null);
         var infoBuilder = new StringBuilder();
-        Action<string> infoLogger = s => { infoBuilder.AppendLine(s); };
+        Action<string> infoLogger = s =>
+        {
+            infoBuilder.AppendLine(s);
+            Console.WriteLine(s);
+        };
         executeCore = executeCore ?? new ExecuteCore(fileSystem);
 
-        Logger.SetLoggers(infoLogger, s => { }, s => { });
+        Logger.SetLoggers(infoLogger, Console.WriteLine, Console.WriteLine);
 
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeACommit();
             var vv = executeCore.ExecuteGitVersion(null, null, null, null, false, fixture.RepositoryPath, null);

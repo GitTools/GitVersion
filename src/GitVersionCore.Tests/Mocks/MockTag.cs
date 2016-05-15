@@ -4,7 +4,7 @@ public class MockTag : Tag
 {
 
     public string NameEx;
-    public override string Name
+    public override string FriendlyName
     {
         get { return NameEx; }
     }

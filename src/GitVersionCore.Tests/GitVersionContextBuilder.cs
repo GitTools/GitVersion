@@ -1,5 +1,6 @@
 ﻿namespace GitVersionCore.Tests
 {
+    using GitTools.Testing;
     using GitVersion;
     using LibGit2Sharp;
 
@@ -65,7 +66,7 @@
 
         IRepository CreateRepository()
         {
-            var mockBranch = new MockBranch("master") { new MockCommit { CommitterEx = Constants.SignatureNow() } };
+            var mockBranch = new MockBranch("master") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
             var mockRepository = new MockRepository
             {
                 Branches = new MockBranchCollection

@@ -2,9 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using GitTools.Testing;
     using GitVersion;
     using GitVersion.VersionCalculation;
     using GitVersion.VersionCalculation.BaseVersionCalculators;
+    using GitVersion.VersionFilters;
     using LibGit2Sharp;
     using NUnit.Framework;
     using Shouldly;
@@ -60,7 +62,7 @@
 
             public V1Strategy(DateTimeOffset? when)
             {
-                this.when = when == null ? null : new MockCommit { CommitterEx = Constants.Signature(when.Value) };
+                this.when = when == null ? null : new MockCommit { CommitterEx = Generate.Signature(when.Value) };
             }
 
             public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
@@ -75,12 +77,89 @@
 
             public V2Strategy(DateTimeOffset? when)
             {
-                this.when = when == null ? null : new MockCommit { CommitterEx = Constants.Signature(when.Value) };
+                this.when = when == null ? null : new MockCommit { CommitterEx = Generate.Signature(when.Value) };
             }
 
             public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
             {
                 yield return new BaseVersion("Source 2", true, new SemanticVersion(2), when, null);
+            }
+        }
+
+        [Test]
+        public void ShouldNotFilterVersion()
+        {
+            var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
+            var context = new GitVersionContextBuilder().WithConfig(new Config() { Ignore = fakeIgnoreConfig }).Build();
+            var version = new BaseVersion("dummy", false, new SemanticVersion(2), new MockCommit(), null);
+            var sut = new BaseVersionCalculator(new TestVersionStrategy(version));
+
+            var baseVersion = sut.GetBaseVersion(context);
+
+            baseVersion.Source.ShouldBe(version.Source);
+            baseVersion.ShouldIncrement.ShouldBe(version.ShouldIncrement);
+            baseVersion.SemanticVersion.ShouldBe(version.SemanticVersion);
+        }
+
+        [Test]
+        public void ShouldFilterVersion()
+        {
+            var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
+            var context = new GitVersionContextBuilder().WithConfig(new Config() { Ignore = fakeIgnoreConfig }).Build();
+            var higherVersion = new BaseVersion("exclude", false, new SemanticVersion(2), new MockCommit(), null);
+            var lowerVersion = new BaseVersion("dummy", false, new SemanticVersion(1), new MockCommit(), null);
+            var sut = new BaseVersionCalculator(new TestVersionStrategy(higherVersion, lowerVersion));
+
+            var baseVersion = sut.GetBaseVersion(context);
+
+            baseVersion.Source.ShouldNotBe(higherVersion.Source);
+            baseVersion.SemanticVersion.ShouldNotBe(higherVersion.SemanticVersion);
+            baseVersion.Source.ShouldBe(lowerVersion.Source);
+            baseVersion.SemanticVersion.ShouldBe(lowerVersion.SemanticVersion);
+        }
+
+        internal class TestIgnoreConfig : IgnoreConfig
+        {
+            private readonly IVersionFilter filter;
+
+            public TestIgnoreConfig(IVersionFilter filter)
+            {
+                this.filter = filter;
+            }
+
+            public override IEnumerable<IVersionFilter> ToFilters()
+            {
+                yield return filter;
+            }
+        }
+
+        internal class ExcludeSourcesContainingExclude : IVersionFilter
+        {
+            public bool Exclude(BaseVersion version, out string reason)
+            {
+                reason = null;
+
+                if (version.Source.Contains("exclude"))
+                {
+                    reason = "was excluded";
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        class TestVersionStrategy : BaseVersionStrategy
+        {
+            private readonly IEnumerable<BaseVersion> versions;
+
+            public TestVersionStrategy(params BaseVersion[] versions)
+            {
+                this.versions = versions;
+            }
+
+            public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+            {
+                return versions;
             }
         }
     }

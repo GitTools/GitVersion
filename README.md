@@ -4,6 +4,7 @@ Versioning when using git, solved. GitVersion looks at your git history and work
 
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/GitTools/GitVersion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build status](https://ci.appveyor.com/api/projects/status/sxje0wht0cscmn7w/branch/master?svg=true)](https://ci.appveyor.com/project/GitTools/gitversion/branch/master)
+[![Build Status](https://travis-ci.org/GitTools/GitVersion.svg?branch=master)](https://travis-ci.org/GitTools/GitVersion)
 
 ||Stable|Pre-release|
 |:--:|:--:|:--:|

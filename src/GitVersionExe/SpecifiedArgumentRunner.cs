@@ -3,15 +3,19 @@ namespace GitVersion
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
+    using GitTools;
     using GitVersion.Helpers;
+    using WarningException = System.ComponentModel.WarningException;
 
     class SpecifiedArgumentRunner
     {
-        const string MsBuild = @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
+        private static readonly bool runningOnMono = Type.GetType("Mono.Runtime") != null;
+        public static readonly string BuildTool = runningOnMono? "xbuild" : @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
 
         public static void Run(Arguments arguments, IFileSystem fileSystem)
         {
+            Logger.WriteInfo(string.Format("Running on {0}.", runningOnMono ? "Mono" : "Windows"));
+
             var noFetch = arguments.NoFetch;
             var authentication = arguments.Authentication;
             var targetPath = arguments.TargetPath;
@@ -19,9 +23,10 @@ namespace GitVersion
             var dynamicRepositoryLocation = arguments.DynamicRepositoryLocation;
             var targetBranch = arguments.TargetBranch;
             var commitId = arguments.CommitId;
+            var overrideConfig = arguments.OverrideConfig;
 
             var executeCore = new ExecuteCore(fileSystem);
-            var variables = executeCore.ExecuteGitVersion(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId);
+            var variables = executeCore.ExecuteGitVersion(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId, overrideConfig: overrideConfig);
 
             if (arguments.Output == OutputType.BuildServer)
             {
@@ -72,14 +77,14 @@ namespace GitVersion
         {
             if (string.IsNullOrEmpty(args.Proj)) return false;
 
-            Logger.WriteInfo(string.Format("Launching {0} \"{1}\" {2}", MsBuild, args.Proj, args.ProjArgs));
+            Logger.WriteInfo(string.Format("Launching build tool {0} \"{1}\" {2}", BuildTool, args.Proj, args.ProjArgs));
             var results = ProcessHelper.Run(
                 Logger.WriteInfo, Logger.WriteError,
-                null, MsBuild, string.Format("\"{0}\" {1}", args.Proj, args.ProjArgs), workingDirectory,
+                null, BuildTool, string.Format("\"{0}\" {1}", args.Proj, args.ProjArgs), workingDirectory,
                 GetEnvironmentalVariables(variables));
 
             if (results != 0)
-                throw new WarningException("MsBuild execution failed, non-zero return code");
+                throw new WarningException(string.Format("{0} execution failed, non-zero return code", runningOnMono ? "XBuild" : "MSBuild"));
 
             return true;
         }

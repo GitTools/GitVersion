@@ -35,7 +35,7 @@ namespace GitVersion
             }
 
             const string format = "Multiple branch configurations match the current branch branchName of '{0}'. Matching configurations: '{1}'";
-            throw new Exception(string.Format(format, currentBranch.Name, string.Join(", ", matchingBranches.Select(b => b.Key))));
+            throw new Exception(string.Format(format, currentBranch.FriendlyName, string.Join(", ", matchingBranches.Select(b => b.Key))));
         }
 
         static KeyValuePair<string, BranchConfig>[] LookupBranchConfiguration([NotNull] Config config, [NotNull] Branch currentBranch)
@@ -50,7 +50,7 @@ namespace GitVersion
                 throw new ArgumentNullException("currentBranch");
             }
             
-            return config.Branches.Where(b => Regex.IsMatch(currentBranch.Name, "^" + b.Key, RegexOptions.IgnoreCase)).ToArray();
+            return config.Branches.Where(b => Regex.IsMatch(currentBranch.FriendlyName, "^" + b.Key, RegexOptions.IgnoreCase)).ToArray();
         }
 
 
@@ -104,7 +104,7 @@ namespace GitVersion
                     }
                 }
 
-                Logger.WriteInfo("Found possible parent branches: " + string.Join(", ", possibleParents.Select(p => p.Name)));
+                Logger.WriteInfo("Found possible parent branches: " + string.Join(", ", possibleParents.Select(p => p.FriendlyName)));
 
                 if (possibleParents.Count == 1)
                 {
@@ -124,14 +124,14 @@ namespace GitVersion
                 if (possibleParents.Count == 0)
                     errorMessage = "Failed to inherit Increment branch configuration, no branches found.";
                 else
-                    errorMessage = "Failed to inherit Increment branch configuration, ended up with: " + string.Join(", ", possibleParents.Select(p => p.Name));
+                    errorMessage = "Failed to inherit Increment branch configuration, ended up with: " + string.Join(", ", possibleParents.Select(p => p.FriendlyName));
 
-                var chosenBranch = repository.Branches.FirstOrDefault(b => Regex.IsMatch(b.Name, "^develop", RegexOptions.IgnoreCase)
-                                                                           || Regex.IsMatch(b.Name, "master$", RegexOptions.IgnoreCase));
+                var chosenBranch = repository.Branches.FirstOrDefault(b => Regex.IsMatch(b.FriendlyName, "^develop", RegexOptions.IgnoreCase)
+                                                                           || Regex.IsMatch(b.FriendlyName, "master$", RegexOptions.IgnoreCase));
                 if (chosenBranch == null)
                     throw new InvalidOperationException("Could not find a 'develop' or 'master' branch, neither locally nor remotely.");
 
-                var branchName = chosenBranch.Name;
+                var branchName = chosenBranch.FriendlyName;
                 Logger.WriteWarning(errorMessage + Environment.NewLine + Environment.NewLine + "Falling back to " + branchName + " branch config");
 
                 var value = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, chosenBranch).Value;
@@ -161,14 +161,14 @@ namespace GitVersion
             }
             else if (branches.Count > 1)
             {
-                currentBranch = branches.FirstOrDefault(b => b.Name == "master") ?? branches.First();
+                currentBranch = branches.FirstOrDefault(b => b.FriendlyName == "master") ?? branches.First();
             }
             else
             {
                 var possibleTargetBranches = repository.Branches.Where(b => !b.IsRemote && b.Tip == parents[0]).ToList();
                 if (possibleTargetBranches.Count > 1)
                 {
-                    currentBranch = possibleTargetBranches.FirstOrDefault(b => b.Name == "master") ?? possibleTargetBranches.First();
+                    currentBranch = possibleTargetBranches.FirstOrDefault(b => b.FriendlyName == "master") ?? possibleTargetBranches.First();
                 }
                 else
                 {
@@ -176,7 +176,7 @@ namespace GitVersion
                 }
             }
 
-            Logger.WriteInfo("HEAD is merge commit, this is likely a pull request using " + currentBranch.Name + " as base");
+            Logger.WriteInfo("HEAD is merge commit, this is likely a pull request using " + currentBranch.FriendlyName + " as base");
 
             return excludedBranches;
         }

@@ -32,7 +32,27 @@ public class MockRepository : IRepository
         throw new NotImplementedException();
     }
 
+    public Branch Checkout(Branch branch, CheckoutOptions options)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Branch Checkout(string committishOrBranchSpec, CheckoutOptions options)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Branch Checkout(Commit commit, CheckoutOptions options)
+    {
+        throw new NotImplementedException();
+    }
+
     public void CheckoutPaths(string committishOrBranchSpec, IEnumerable<string> paths, CheckoutOptions checkoutOptions = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public MergeResult MergeFetchedRefs(Signature merger, MergeOptions options)
     {
         throw new NotImplementedException();
     }
@@ -67,7 +87,15 @@ public class MockRepository : IRepository
         throw new NotImplementedException();
     }
 
-    public Dictionary<string, GitObject> LookupResults { get; set; }
+    public void Reset(ResetMode resetMode, Commit commit)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Reset(ResetMode resetMode, Commit commit, CheckoutOptions options)
+    {
+        throw new NotImplementedException();
+    }
 
     public Commit Commit(string message, Signature author, Signature committer, bool amendPreviousCommit = false)
     {
@@ -187,6 +215,7 @@ public class MockRepository : IRepository
     public ObjectDatabase ObjectDatabase { get; set; }
     public NoteCollection Notes { get; set; }
     public SubmoduleCollection Submodules { get; set; }
+    public Rebase Rebase { get; private set; }
 
     public Ignore Ignore
     {

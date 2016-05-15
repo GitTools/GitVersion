@@ -1,5 +1,6 @@
 ﻿namespace GitVersion.VersionCalculation
 {
+    using System.Linq;
     using System.Text.RegularExpressions;
     using BaseVersionCalculators;
 
@@ -77,7 +78,7 @@
             {
                 Logger.WriteInfo("Using branch name to calculate version tag");
 
-                var branchName = branchNameOverride ?? context.CurrentBranch.Name;
+                var branchName = branchNameOverride ?? context.CurrentBranch.FriendlyName;
                 if (!string.IsNullOrWhiteSpace(context.Configuration.BranchPrefixToTrim))
                 {
                     branchName = branchName.RegexReplace(context.Configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
@@ -98,7 +99,10 @@
                 }
             }
             
-            var lastTag = context.CurrentBranch.LastVersionTagOnBranch(context.Repository, context.Configuration.GitTagPrefix);
+            var lastTag = context.CurrentBranch
+                .GetVersionTagsOnBranch(context.Repository, context.Configuration.GitTagPrefix)
+                .FirstOrDefault(v => v.PreReleaseTag.Name == tagToUse);
+
             if (number == null &&
                 lastTag != null &&
                 MajorMinorPatchEqual(lastTag, semanticVersion) &&

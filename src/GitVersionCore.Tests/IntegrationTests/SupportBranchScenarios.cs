@@ -1,4 +1,5 @@
-﻿using GitVersion;
+﻿using GitTools.Testing;
+using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
 
@@ -8,7 +9,7 @@ public class SupportBranchScenarios
     [Test]
     public void SupportIsCalculatedCorrectly()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             // Start at 1.0.0
             fixture.Repository.MakeACommit();
@@ -53,7 +54,7 @@ public class SupportBranchScenarios
     [Test]
     public void WhenSupportIsBranchedAndTaggedFromAnotherSupportEnsureNewMinorIsUsed()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeACommit();
             fixture.Repository.CreateBranch("Support-1.2.0");

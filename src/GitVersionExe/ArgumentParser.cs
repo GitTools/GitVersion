@@ -3,6 +3,8 @@ namespace GitVersion
     using System;
     using System.Collections.Generic;
     using System.Collections.Specialized;
+    using System.ComponentModel;
+    using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
 
@@ -11,6 +13,11 @@ namespace GitVersion
         public static Arguments ParseArguments(string commandLineArguments)
         {
             return ParseArguments(commandLineArguments.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList());
+        }
+
+        static void EnsureArgumentValueCount(string[] values, int maxArguments = 1)
+        {
+            if(values != null && values.Length > maxArguments) throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", values[1]));
         }
 
         public static Arguments ParseArguments(List<string> commandLineArguments)
@@ -40,7 +47,8 @@ namespace GitVersion
                 };
             }
 
-            if (commandLineArguments.Count == 1 && !(commandLineArguments[0].StartsWith("-") || commandLineArguments[0].StartsWith("/")))
+            if (commandLineArguments.Count == 1 && !(commandLineArguments[0].StartsWith("-") ||
+                (commandLineArguments[0].StartsWith("/") && Path.DirectorySeparatorChar != '/')))
             {
                 return new Arguments
                 {
@@ -50,7 +58,7 @@ namespace GitVersion
 
             List<string> namedArguments;
             var arguments = new Arguments();
-            if (firstArgument.StartsWith("-") || firstArgument.StartsWith("/"))
+            if (firstArgument.StartsWith("-") || (firstArgument.StartsWith("/") && Path.DirectorySeparatorChar != '/'))
             {
                 arguments.TargetPath = Environment.CurrentDirectory;
                 namedArguments = commandLineArguments;
@@ -73,79 +81,91 @@ namespace GitVersion
                 {
                     //Currently, no arguments use more than one value, so having multiple values is an input error.
                     //In the future, this exception can be removed to support multiple values for a switch.
-                    if (values.Length > 1) throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", values[1]));
+                    // if (values.Length > 1) throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", values[1]));
 
                     value = values.FirstOrDefault();
                 }
 
                 if (IsSwitch("l", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.LogFilePath = value;
                     continue;
                 }
 
                 if (IsSwitch("targetpath", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.TargetPath = value;
                     continue;
                 }
 
                 if (IsSwitch("dynamicRepoLocation", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.DynamicRepositoryLocation = value;
                     continue;
                 }
 
                 if (IsSwitch("url", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.TargetUrl = value;
                     continue;
                 }
 
                 if (IsSwitch("b", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.TargetBranch = value;
                     continue;
                 }
 
                 if (IsSwitch("u", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.Authentication.Username = value;
                     continue;
                 }
 
                 if (IsSwitch("p", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.Authentication.Password = value;
                     continue;
                 }
 
                 if (IsSwitch("c", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.CommitId = value;
                     continue;
                 }
 
                 if (IsSwitch("exec", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.Exec = value;
                     continue;
                 }
 
                 if (IsSwitch("execargs", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.ExecArgs = value;
                     continue;
                 }
 
                 if (IsSwitch("proj", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.Proj = value;
                     continue;
                 }
 
                 if (IsSwitch("projargs", name))
                 {
+                    EnsureArgumentValueCount(values);
                     arguments.ProjArgs = value;
                     continue;
                 }
@@ -160,15 +180,26 @@ namespace GitVersion
                     {
                         arguments.UpdateAssemblyInfo = false;
                     }
+                    else if (values != null && values.Length > 1)
+                    {
+                        arguments.UpdateAssemblyInfo = true;
+                        foreach(var v in values) arguments.AddAssemblyInfoFileName(v);
+                    }
                     else if (!IsSwitchArgument(value))
                     {
                         arguments.UpdateAssemblyInfo = true;
-                        arguments.UpdateAssemblyInfoFileName = value;
+                        arguments.AddAssemblyInfoFileName(value);
                     }
                     else
                     {
                         arguments.UpdateAssemblyInfo = true;
                     }
+
+                    if (arguments.UpdateAssemblyInfoFileName.Count > 1 && arguments.EnsureAssemblyInfo)
+                    {
+                        throw new WarningException("Can't specify multiple assembly info files when using -ensureassemblyinfo switch, either use a single assembly info file or do not specify -ensureassemblyinfo and create assembly info files manually");
+                    }
+
                     continue;
                 }
 
@@ -232,6 +263,48 @@ namespace GitVersion
                     continue;
                 }
 
+                if (IsSwitch("ensureassemblyinfo", name))
+                {
+                    if (new[] { "1", "true" }.Contains(value, StringComparer.OrdinalIgnoreCase))
+                    {
+                        arguments.EnsureAssemblyInfo = true;
+                    }
+                    else if (new[] { "0", "false" }.Contains(value, StringComparer.OrdinalIgnoreCase))
+                    {
+                        arguments.EnsureAssemblyInfo = false;
+                    }
+                    else
+                    {
+                        arguments.EnsureAssemblyInfo = true;
+                    }
+
+                    if (arguments.UpdateAssemblyInfoFileName.Count > 1 && arguments.EnsureAssemblyInfo)
+                    {
+                        throw new WarningException("Can't specify multiple assembly info files when using -ensureassemblyinfo switch, either use a single assembly info file or do not specify -ensureassemblyinfo and create assembly info files manually");
+                    }
+                    continue;
+                }
+
+                if (IsSwitch("overrideconfig", name))
+                {
+                    foreach (var item in value.Split(';'))
+                    {
+                        var configOverride = item.Split('=');
+                        
+                        switch (configOverride[0])
+                        {
+                            case "tag-prefix":
+                                if (1 < configOverride.Length)
+                                {
+                                    arguments.OverrideConfig.TagPrefix = configOverride[1];
+                                }
+                                break;
+                        }
+                    }
+
+                    continue;
+                }
+
                 throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", name));
             }
 
@@ -243,13 +316,15 @@ namespace GitVersion
             var args = new NameValueCollection();
 
             string currentKey = null;
+            var isBooleanArgument = true;
             for (var index = 0; index < namedArguments.Count; index = index + 1)
             {
                 var arg = namedArguments[index];
-                //If this is a switch, create new name/value entry for it, with a null value.
-                if (IsSwitchArgument(arg))
+                // If the current (previous) argument doesn't require a parameter and this is a switch, create new name/value entry for it, with a null value.
+                if (isBooleanArgument && IsSwitchArgument(arg))
                 {
                     currentKey = arg;
+                    isBooleanArgument = IsBooleanArgument(arg);
                     args.Add(currentKey, null);
                 }
                 //If this is a value (not a switch)
@@ -265,6 +340,9 @@ namespace GitVersion
                     {
                         args.Add(currentKey, arg);
                     }
+
+                    // Reset the boolean argument flag so the next argument won't be ignored.
+                    isBooleanArgument = true;
                 }
             }
             return args;
@@ -272,7 +350,8 @@ namespace GitVersion
 
         static bool IsSwitchArgument(string value)
         {
-            return value != null && (value.StartsWith("-") || value.StartsWith("/"))
+            return value != null
+                && (value.StartsWith("-") || value.StartsWith("/"))
                 && !Regex.Match(value, @"/\w+:").Success; //Exclude msbuild & project parameters in form /blah:, which should be parsed as values, not switch names.
         }
 
@@ -302,6 +381,19 @@ namespace GitVersion
                 IsSwitch("h", singleArgument) ||
                 IsSwitch("help", singleArgument) ||
                 IsSwitch("?", singleArgument);
+        }
+
+        static bool IsBooleanArgument(string switchName)
+        {
+            var booleanArguments = new[]
+            {
+                "init",
+                "updateassemblyinfo",
+                "ensureassemblyinfo",
+                "nofetch"
+            };
+
+            return booleanArguments.Contains(switchName, StringComparer.OrdinalIgnoreCase);
         }
     }
 }

@@ -5,14 +5,14 @@ using LibGit2Sharp;
 
 public class MockBranch : Branch, ICollection<Commit>
 {
-    public MockBranch(string name)
+    public MockBranch(string friendlyName)
     {
-        this.name = name;
-        canonicalName = name;
+        this.friendlyName = friendlyName;
+        this.canonicalName = friendlyName;
     }
-    public MockBranch(string name, string canonicalName)
+    public MockBranch(string friendlyName, string canonicalName)
     {
-        this.name = name;
+        this.friendlyName = friendlyName;
         this.canonicalName = canonicalName;
     }
 
@@ -21,9 +21,9 @@ public class MockBranch : Branch, ICollection<Commit>
 
     }
     MockCommitLog commits = new MockCommitLog();
-    string name;
+    string friendlyName;
     string canonicalName;
-    public override string Name { get { return name; } }
+    public override string FriendlyName { get { return friendlyName; } }
     public override ICommitLog Commits { get { return commits; } }
     public override Commit Tip { get { return commits.First(); } }
     public override bool IsTracking { get { return true; } }
@@ -35,7 +35,7 @@ public class MockBranch : Branch, ICollection<Commit>
 
     public override int GetHashCode()
     {
-        return name.GetHashCode();
+        return this.friendlyName.GetHashCode();
     }
 
     public override bool Equals(object obj)

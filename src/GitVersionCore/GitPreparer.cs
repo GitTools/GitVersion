@@ -3,14 +3,14 @@ namespace GitVersion
     using System;
     using System.IO;
     using System.Linq;
-
+    using GitTools.Git;
     using LibGit2Sharp;
 
     public class GitPreparer
     {
         string targetUrl;
         string dynamicRepositoryLocation;
-        Authentication authentication;
+        AuthenticationInfo authentication;
         bool noFetch;
         string targetPath;
 
@@ -18,7 +18,13 @@ namespace GitVersion
         {
             this.targetUrl = targetUrl;
             this.dynamicRepositoryLocation = dynamicRepositoryLocation;
-            this.authentication = authentication;
+            this.authentication = authentication == null ?
+                null :
+                new AuthenticationInfo
+                {
+                    Username = authentication.Username,
+                    Password = authentication.Password
+                };
             this.noFetch = noFetch;
             this.targetPath = targetPath.TrimEnd('/', '\\');
         }
@@ -36,7 +42,7 @@ namespace GitVersion
             {
                 if (normaliseGitDirectory)
                 {
-                    GitHelper.NormalizeGitDirectory(GetDotGitDirectory(), authentication, noFetch, currentBranch);
+                    GitRepositoryHelper.NormalizeGitDirectory(GetDotGitDirectory(), authentication, noFetch, currentBranch);
                 }
                 return;
             }
@@ -91,7 +97,12 @@ namespace GitVersion
             if (IsDynamicGitRepository)
                 return DynamicGitRepositoryPath;
 
-            var dotGitDirectory = Repository.Discover(targetPath).TrimEnd('/', '\\');
+            var dotGitDirectory = Repository.Discover(targetPath);
+
+            if (String.IsNullOrEmpty(dotGitDirectory))
+                throw new DirectoryNotFoundException("Can't find the .git directory in " + targetPath);
+
+            dotGitDirectory = dotGitDirectory.TrimEnd('/', '\\');
             if (string.IsNullOrEmpty(dotGitDirectory))
                 throw new DirectoryNotFoundException("Can't find the .git directory in " + targetPath);
 
@@ -106,7 +117,7 @@ namespace GitVersion
             return Directory.GetParent(GetDotGitDirectory()).FullName;
         }
 
-        static string CreateDynamicRepository(string targetPath, Authentication authentication, string repositoryUrl, string targetBranch, bool noFetch)
+        static string CreateDynamicRepository(string targetPath, AuthenticationInfo authentication, string repositoryUrl, string targetBranch, bool noFetch)
         {
             if (string.IsNullOrWhiteSpace(targetBranch))
             {
@@ -118,7 +129,7 @@ namespace GitVersion
             if (Directory.Exists(targetPath))
             {
                 Logger.WriteInfo("Git repository already exists");
-                GitHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch, targetBranch);
+                GitRepositoryHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch, targetBranch);
 
                 return gitDirectory;
             }
@@ -126,12 +137,12 @@ namespace GitVersion
             CloneRepository(repositoryUrl, gitDirectory, authentication);
 
             // Normalize (download branches) before using the branch
-            GitHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch, targetBranch);
+            GitRepositoryHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch, targetBranch);
 
             return gitDirectory;
         }
 
-        static void CloneRepository(string repositoryUrl, string gitDirectory, Authentication authentication)
+        static void CloneRepository(string repositoryUrl, string gitDirectory, AuthenticationInfo authentication)
         {
             Credentials credentials = null;
             if (!string.IsNullOrWhiteSpace(authentication.Username) && !string.IsNullOrWhiteSpace(authentication.Password))

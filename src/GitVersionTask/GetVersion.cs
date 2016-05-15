@@ -1,7 +1,7 @@
 ﻿namespace GitVersionTask
 {
     using System;
-
+    using System.ComponentModel;
     using GitVersion;
 
     using Microsoft.Build.Framework;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using GitVersion;
 using NUnit.Framework;
 using Shouldly;
@@ -175,6 +176,10 @@ public class ArgumentParserTests
     [TestCase("-updateAssemblyInfo 1")]
     [TestCase("-updateAssemblyInfo")]
     [TestCase("-updateAssemblyInfo -proj foo.sln")]
+    [TestCase("-updateAssemblyInfo assemblyInfo.cs")]
+    [TestCase("-updateAssemblyInfo assemblyInfo.cs -ensureassemblyinfo")]
+    [TestCase("-updateAssemblyInfo assemblyInfo.cs otherAssemblyInfo.cs")]
+    [TestCase("-updateAssemblyInfo Assembly.cs Assembly.cs -ensureassemblyinfo")]
     public void update_assembly_info_true(string command)
     {
         var arguments = ArgumentParser.ParseArguments(command);
@@ -189,12 +194,29 @@ public class ArgumentParserTests
         arguments.UpdateAssemblyInfo.ShouldBe(false);
     }
 
+    [TestCase("-updateAssemblyInfo Assembly.cs Assembly1.cs -ensureassemblyinfo")]
+    public void create_mulitple_assembly_info_protected(string command)
+    {
+        var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments(command));
+        exception.Message.ShouldBe("Can't specify multiple assembly info files when using -ensureassemblyinfo switch, either use a single assembly info file or do not specify -ensureassemblyinfo and create assembly info files manually");
+    }
+
     [Test]
     public void update_assembly_info_with_filename()
     {
         var arguments = ArgumentParser.ParseArguments("-updateAssemblyInfo CommonAssemblyInfo.cs");
         arguments.UpdateAssemblyInfo.ShouldBe(true);
-        arguments.UpdateAssemblyInfoFileName.ShouldBe("CommonAssemblyInfo.cs");
+        arguments.UpdateAssemblyInfoFileName.ShouldContain("CommonAssemblyInfo.cs");
+    }
+
+    [Test]
+    public void update_assembly_info_with_multiple_filenames()
+    {
+        var arguments = ArgumentParser.ParseArguments("-updateAssemblyInfo CommonAssemblyInfo.cs VersionAssemblyInfo.cs");
+        arguments.UpdateAssemblyInfo.ShouldBe(true);
+        arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(2);
+        arguments.UpdateAssemblyInfoFileName.ShouldContain("CommonAssemblyInfo.cs");
+        arguments.UpdateAssemblyInfoFileName.ShouldContain("VersionAssemblyInfo.cs");
     }
 
     [Test]
@@ -202,9 +224,30 @@ public class ArgumentParserTests
     {
         var arguments = ArgumentParser.ParseArguments("-updateAssemblyInfo ..\\..\\CommonAssemblyInfo.cs");
         arguments.UpdateAssemblyInfo.ShouldBe(true);
-        arguments.UpdateAssemblyInfoFileName.ShouldBe("..\\..\\CommonAssemblyInfo.cs");
+        arguments.UpdateAssemblyInfoFileName.ShouldContain("..\\..\\CommonAssemblyInfo.cs");
     }
 
+    [Test]
+    public void ensure_assembly_info_true_when_found()
+    {
+        var arguments = ArgumentParser.ParseArguments("-ensureAssemblyInfo");
+        arguments.EnsureAssemblyInfo.ShouldBe(true);
+    }
+
+    [Test]
+    public void ensure_assembly_info_true()
+    {
+        var arguments = ArgumentParser.ParseArguments("-ensureAssemblyInfo true");
+        arguments.EnsureAssemblyInfo.ShouldBe(true);
+    }
+
+    [Test]
+    public void ensure_assembly_info_false()
+    {
+        var arguments = ArgumentParser.ParseArguments("-ensureAssemblyInfo false");
+        arguments.EnsureAssemblyInfo.ShouldBe(false);
+    }
+    
     [Test]
     public void dynamicRepoLocation()
     {
@@ -240,5 +283,12 @@ public class ArgumentParserTests
         var arguments = ArgumentParser.ParseArguments("-nofetch -proj foo.sln");
         arguments.NoFetch = true;
         arguments.Proj = "foo.sln";
+    }
+
+    [Test]
+    public void log_path_can_contain_forward_slash()
+    {
+        var arguments = ArgumentParser.ParseArguments("-l /some/path");
+        arguments.LogFilePath.ShouldBe("/some/path");
     }
 }

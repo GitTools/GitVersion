@@ -1,4 +1,6 @@
-﻿using GitVersion;
+﻿using GitTools;
+using GitTools.Testing;
+using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
 
@@ -8,7 +10,7 @@ public class PullRequestScenarios
     [Test]
     public void CanCalculatePullRequestChanges()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeATaggedCommit("0.1.0");
             fixture.Repository.Checkout(fixture.Repository.CreateBranch("feature/Foo"));
@@ -24,7 +26,7 @@ public class PullRequestScenarios
     [Test]
     public void CanCalculatePullRequestChangesInheritingConfig()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeATaggedCommit("0.1.0");
             fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));
@@ -42,7 +44,7 @@ public class PullRequestScenarios
     [Test]
     public void CanCalculatePullRequestChangesFromRemoteRepo()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeATaggedCommit("0.1.0");
             fixture.Repository.Checkout(fixture.Repository.CreateBranch("feature/Foo"));
@@ -59,7 +61,7 @@ public class PullRequestScenarios
     [Test]
     public void CanCalculatePullRequestChangesInheritingConfigFromRemoteRepo()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeATaggedCommit("0.1.0");
             fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));
@@ -76,7 +78,7 @@ public class PullRequestScenarios
     [Test]
     public void CanCalculatePullRequestChangesWhenThereAreMultipleMergeCandidates()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeATaggedCommit("0.1.0");
             fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));
@@ -94,7 +96,7 @@ public class PullRequestScenarios
     [Test]
     public void CalculatesCorrectVersionAfterReleaseBranchMergedToMaster()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config()))
+        using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.MakeACommit();

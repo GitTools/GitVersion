@@ -6,55 +6,13 @@ namespace GitVersion
     using System.Text.RegularExpressions;
     using JetBrains.Annotations;
 
-    static partial class ExtensionMethods
+    static class ExtensionMethods
     {
-        public static bool IsOdd(this int number)
-        {
-            return number % 2 != 0;
-        }
-
-        public static string TrimToFirstLine(this string s)
-        {
-            var firstLine = s.Split(new[]
-            {
-                "\r\n",
-                "\n"
-            }, StringSplitOptions.None)[0];
-            return firstLine.Trim();
-        }
-
-
         [StringFormatMethod("format")]
         public static void AppendLineFormat(this StringBuilder stringBuilder, string format, params object[] args)
         {
             stringBuilder.AppendFormat(format, args);
             stringBuilder.AppendLine();
-        }
-
-        public static string TrimStart(this string value, string toTrim)
-        {
-            if (!value.StartsWith(toTrim, StringComparison.InvariantCultureIgnoreCase))
-            {
-                return value;
-            }
-            var startIndex = toTrim.Length;
-            return value.Substring(startIndex);
-        }
-
-        public static string JsonEncode(this string value)
-        {
-            if (value != null)
-            {
-                return value
-                    .Replace("\"", "\\\"")
-                    .Replace("\\", "\\\\")
-                    .Replace("\b", "\\b")
-                    .Replace("\f", "\\f")
-                    .Replace("\n", "\\n")
-                    .Replace("\t", "\\t")
-                    .Replace("\r", "\\r");
-            }
-            return null;
         }
 
         public static string RegexReplace(this string input, string pattern, string replace, RegexOptions options = RegexOptions.None)
