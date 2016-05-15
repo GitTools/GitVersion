@@ -334,11 +334,12 @@ public class ReleaseBranchScenarios
     [Test]
     public void MergeOnReleaseBranchShouldNotResetCount()
     {
-        using (var fixture = new EmptyRepositoryFixture(new Config
+        var config = new Config
         {
             AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
             VersioningMode = VersioningMode.ContinuousDeployment,
-        }))
+        };
+        using (var fixture = new EmptyRepositoryFixture())
         {
             const string TaggedVersion = "1.0.3";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
@@ -351,14 +352,14 @@ public class ReleaseBranchScenarios
             fixture.Repository.CreateBranch("release/2.0.0-xxx");
             fixture.Repository.Checkout("release/2.0.0-xxx");
             fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver("2.0.0-beta.1");
+            fixture.AssertFullSemver(config, "2.0.0-beta.1");
 
             fixture.Repository.Checkout("release/2.0.0");
             fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver("2.0.0-beta.1");
+            fixture.AssertFullSemver(config, "2.0.0-beta.1");
 
             fixture.Repository.MergeNoFF("release/2.0.0-xxx");
-            fixture.AssertFullSemver("2.0.0-beta.3");
+            fixture.AssertFullSemver(config, "2.0.0-beta.3");
         }
     }
 }
