@@ -142,12 +142,23 @@
     </PropertyGroup>
     <!-- Copy target file so that our temporary file gets the correct permissions -->
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(TargetDir)ILMergeTemp\" />
-    <Exec Command="$(Runtime) &quot;$(SolutionDir)packages\ILRepack.2.0.10\tools\ILRepack.exe&quot; /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)GitTools.Core.dll&quot; &quot;$(TargetDir)LibGit2Sharp.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:exe /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
+    <Exec Command="$(Runtime) &quot;$(SolutionDir)packages\ILRepack.2.0.10\tools\ILRepack.exe&quot; /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)GitTools.Core.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:exe /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
     <ItemGroup>
       <TempFiles Include="$(TargetDir)ILMergeTemp\*.*" />
       <NativeBinaries Include="$(TargetDir)lib\**\*.*" />
       <WindowsBinaries Include="$(TargetDir)lib\**\*.dll" />
+	  <LibGit2SharpFiles Include="$(TargetDir)LibGit2Sharp.*" Exclude="$(TargetDir)LibGit2Sharp.xml" />
     </ItemGroup>
+    <!-- NugetCommandLineBuild -->
+    <MakeDir Directories="$(BuildDir)NuGetCommandLineBuild" />
+    <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)NuGetCommandLineBuild\tools\lib\%(RecursiveDir)%(Filename)%(Extension)')" />
+	<Copy SourceFiles="@(LibGit2SharpFiles)" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" Condition="Exists('$(OutputPath)GitVersion.pdb')" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.exe.mdb" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" Condition="Exists('$(OutputPath)GitVersion.exe.mdb')" />
+    <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.CommandLine.nuspec" DestinationFolder="$(BuildDir)NuGetCommandLineBuild" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetCommandLineBuild" MetadataAssembly="$(OutputPath)ILMergeTemp\GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
+    <Exec Command="$(Runtime) &quot;$(SolutionDir)packages\ILRepack.2.0.10\tools\ILRepack.exe&quot; /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)GitTools.Core.dll&quot; &quot;$(TargetDir)LibGit2Sharp.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:exe /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
     <!-- NugetExeBuild -->
     <MakeDir Directories="$(BuildDir)NuGetExeBuild" />
     <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)NuGetExeBuild\tools\lib\%(RecursiveDir)%(Filename)%(Extension)')" />
@@ -158,14 +169,6 @@
     <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyUninstall.ps1" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.Portable.nuspec" DestinationFolder="$(BuildDir)NuGetExeBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetExeBuild" MetadataAssembly="$(OutputPath)ILMergeTemp\GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
-    <!-- NugetCommandLineBuild -->
-    <MakeDir Directories="$(BuildDir)NuGetCommandLineBuild" />
-    <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)NuGetCommandLineBuild\tools\lib\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" Condition="Exists('$(OutputPath)GitVersion.pdb')" />
-    <Copy SourceFiles="$(OutputPath)GitVersion.exe.mdb" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" Condition="Exists('$(OutputPath)GitVersion.exe.mdb')" />
-    <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.CommandLine.nuspec" DestinationFolder="$(BuildDir)NuGetCommandLineBuild" />
-    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetCommandLineBuild" MetadataAssembly="$(OutputPath)ILMergeTemp\GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
     <!-- TfsBuildTask -->
     <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask\lib\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" Condition="Exists('$(OutputPath)GitVersion.pdb')" />
