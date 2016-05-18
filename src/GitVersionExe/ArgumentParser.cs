@@ -393,7 +393,7 @@ namespace GitVersion
                 "nofetch"
             };
 
-            return booleanArguments.Contains(switchName, StringComparer.OrdinalIgnoreCase);
+            return booleanArguments.Contains(switchName.Substring(1), StringComparer.OrdinalIgnoreCase);
         }
     }
 }
