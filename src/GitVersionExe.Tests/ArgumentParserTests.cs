@@ -291,4 +291,12 @@ public class ArgumentParserTests
         var arguments = ArgumentParser.ParseArguments("-l /some/path");
         arguments.LogFilePath.ShouldBe("/some/path");
     }
+
+    [Test]
+    public void boolean_argument_handling()
+    {
+        var arguments = ArgumentParser.ParseArguments("/nofetch /updateassemblyinfo true");
+        arguments.NoFetch.ShouldBe(true);
+        arguments.UpdateAssemblyInfo.ShouldBe(true);
+    }
 }
