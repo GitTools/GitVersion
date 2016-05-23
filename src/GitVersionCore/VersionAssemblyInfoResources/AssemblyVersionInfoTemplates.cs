@@ -1,5 +1,6 @@
 ﻿namespace GitVersion.VersionAssemblyInfoResources
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -7,18 +8,11 @@
 
     public class AssemblyVersionInfoTemplates
     {
-        static IDictionary<string, FileInfo> assemblyInfoSourceList;
+        static readonly IDictionary<string, FileInfo> assemblyInfoSourceList;
 
         static AssemblyVersionInfoTemplates()
         {
-            var enclosingNamespace = typeof(AssemblyVersionInfoTemplates).Namespace;
-
-            var files = typeof(AssemblyVersionInfoTemplates)
-                .Assembly
-                .GetManifestResourceNames()
-                .Where(n => n.StartsWith(enclosingNamespace ?? string.Empty)).Select(f => new FileInfo(f));
-
-            assemblyInfoSourceList = files.ToDictionary(k => k.Extension, v => v);
+            assemblyInfoSourceList = GetEmbeddedVersionAssemblyFiles().ToDictionary(k => k.Extension, v => v);
         }
 
         public static string GetAssemblyInfoTemplateFor(string assemblyInfoFile)
@@ -33,6 +27,20 @@
                 }
             }
             return null;
+        }
+
+        private static IEnumerable<FileInfo> GetEmbeddedVersionAssemblyFiles()
+        {
+            var enclosingNamespace = typeof(AssemblyVersionInfoTemplates).Namespace;
+
+            if (enclosingNamespace == null)
+                throw new InvalidOperationException("The AssemblyVersionInfoTemplates class is missing its namespace.");
+
+            foreach (var name in typeof(AssemblyVersionInfoTemplates).Assembly.GetManifestResourceNames())
+            {
+                if (name.StartsWith(enclosingNamespace))
+                    yield return new FileInfo(name);
+            }
         }
     }
 }
