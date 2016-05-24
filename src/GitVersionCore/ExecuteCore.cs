@@ -27,6 +27,7 @@ namespace GitVersion
             var buildServer = applicableBuildServers.FirstOrDefault();
             var fetch = noFetch || (buildServer != null && buildServer.PreventFetch());
             var gitPreparer = new GitPreparer(targetUrl, dynamicRepositoryLocation, authentication, fetch, workingDirectory);
+            gitPreparer.Initialise(false, targetBranch);
             var dotGitDirectory = gitPreparer.GetDotGitDirectory();
             var projectRoot = gitPreparer.GetProjectRootDirectory();
 
