@@ -172,11 +172,11 @@ namespace GitVersion
 
                 if (IsSwitch("updateAssemblyInfo", name))
                 {
-                    if (new[] { "1", "true" }.Contains(value, StringComparer.OrdinalIgnoreCase))
+                    if (value.IsTrue())
                     {
                         arguments.UpdateAssemblyInfo = true;
                     }
-                    else if (new[] { "0", "false" }.Contains(value, StringComparer.OrdinalIgnoreCase))
+                    else if (value.IsFalse())
                     {
                         arguments.UpdateAssemblyInfo = false;
                     }
@@ -230,11 +230,11 @@ namespace GitVersion
 
                 if (IsSwitch("showConfig", name))
                 {
-                    if (new[] { "1", "true" }.Contains(value, StringComparer.OrdinalIgnoreCase))
+                    if (value.IsTrue())
                     {
                         arguments.ShowConfig = true;
                     }
-                    else if (new[] { "0", "false" }.Contains(value, StringComparer.OrdinalIgnoreCase))
+                    else if (value.IsFalse())
                     {
                         arguments.UpdateAssemblyInfo = false;
                     }
@@ -265,11 +265,11 @@ namespace GitVersion
 
                 if (IsSwitch("ensureassemblyinfo", name))
                 {
-                    if (new[] { "1", "true" }.Contains(value, StringComparer.OrdinalIgnoreCase))
+                    if (value.IsTrue())
                     {
                         arguments.EnsureAssemblyInfo = true;
                     }
-                    else if (new[] { "0", "false" }.Contains(value, StringComparer.OrdinalIgnoreCase))
+                    else if (value.IsFalse())
                     {
                         arguments.EnsureAssemblyInfo = false;
                     }
