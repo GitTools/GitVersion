@@ -165,11 +165,12 @@ public class ArgumentParserTests
         exception.Message.ShouldBe("Could not parse command line parameter 'extraArg'.");
     }
 
-    [Test]
-    public void Unknown_argument_should_throw()
+    [TestCase("targetDirectoryPath -x logFilePath")]
+    [TestCase("/invalid-argument")]
+    public void Unknown_arguments_should_throw(string arguments)
     {
-        var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments("targetDirectoryPath -x logFilePath"));
-        exception.Message.ShouldBe("Could not parse command line parameter '-x'.");
+        var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments(arguments));
+        exception.Message.ShouldStartWith("Could not parse command line parameter");
     }
 
     [TestCase("-updateAssemblyInfo true")]
