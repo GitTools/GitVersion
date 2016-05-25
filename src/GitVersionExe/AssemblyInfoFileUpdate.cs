@@ -47,17 +47,17 @@ namespace GitVersion
                 cleanupBackupTasks.Add(() => fileSystem.Delete(backupAssemblyInfo));
 
                 var fileContents = fileSystem.ReadAllText(assemblyInfoFile.FullName);
-                fileContents = ReplaceOrAppend(assemblyVersionRegex, fileContents, assemblyVersionString);
-                fileContents = ReplaceOrAppend(assemblyInfoVersionRegex, fileContents, assemblyInfoVersionString);
-                fileContents = ReplaceOrAppend(assemblyFileVersionRegex, fileContents, assemblyFileVersionString);
+                fileContents = ReplaceOrAppend(assemblyVersionRegex, fileContents, assemblyVersionString, assemblyInfoFile.Extension);
+                fileContents = ReplaceOrAppend(assemblyInfoVersionRegex, fileContents, assemblyInfoVersionString, assemblyInfoFile.Extension);
+                fileContents = ReplaceOrAppend(assemblyFileVersionRegex, fileContents, assemblyFileVersionString, assemblyInfoFile.Extension);
 
                 fileSystem.WriteAllText(assemblyInfoFile.FullName, fileContents);
             }
         }
 
-        static string ReplaceOrAppend(Regex replaceRegex, string inputString, string replaceString)
+        static string ReplaceOrAppend(Regex replaceRegex, string inputString, string replaceString, string fileExtension)
         {
-            const string assemblyAddFormat = "[assembly: {0}]";
+            var assemblyAddFormat = AssemblyVersionInfoTemplates.GetAssemblyInfoAddFormatFor(fileExtension);
 
             if (replaceRegex.IsMatch(inputString))
             {

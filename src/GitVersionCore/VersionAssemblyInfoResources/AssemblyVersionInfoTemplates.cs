@@ -5,6 +5,7 @@
     using System.IO;
     using System.Linq;
     using GitVersionCore.Extensions;
+    using JetBrains.Annotations;
 
     public class AssemblyVersionInfoTemplates
     {
@@ -27,6 +28,25 @@
                 }
             }
             return null;
+        }
+
+        public static string GetAssemblyInfoAddFormatFor([NotNull] string fileExtension)
+        {
+            if (fileExtension == null)
+                throw new ArgumentNullException("fileExtension");
+
+            // TODO: It would be nice to do something a bit more clever here, like reusing the VersionAssemblyInfo.* templates somehow. @asbjornu
+            switch (fileExtension.ToLowerInvariant())
+            {
+                case ".cs":
+                    return "[assembly: {0}]";
+                case ".vb":
+                    return "<assembly: {0}>";
+                case ".fs":
+                    return "[<assembly: {0}>]";
+            }
+
+            throw new NotSupportedException(string.Format("Unknown file extension '{0}'.", fileExtension));
         }
 
         private static IEnumerable<FileInfo> GetEmbeddedVersionAssemblyFiles()

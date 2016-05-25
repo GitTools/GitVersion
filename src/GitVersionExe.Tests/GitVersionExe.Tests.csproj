@@ -121,15 +121,20 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Approved\FSharp\AssemblyInfoFileUpdateTests.ShouldAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFile.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoFileUpdateTests.ShouldCreateCSharpAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoFileUpdateTests.ShouldCreateCSharpAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.AssemblyInfocs.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoFileUpdateTests.ShouldCreateCSharpAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.srcProjectPropertiesVersionAssemblyInfocs.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoFileUpdateTests.ShouldCreateCSharpAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\cs\AssemblyInfoFileUpdateTests.ShouldAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFile.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFile.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\vb\AssemblyInfoFileUpdateTests.ShouldAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFile.approved.txt" />
+    <Content Include="Approved\vb\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\vb\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\vb\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\cs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\cs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\cs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Approved\VisualBasic\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
