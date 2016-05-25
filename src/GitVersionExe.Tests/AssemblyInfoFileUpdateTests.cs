@@ -477,6 +477,43 @@ public class AssemblyInfoFileUpdateTests
         }
     }
 
+    [Test]
+    public void ShouldAddAssemblyInformationalVersionWhenUpdatingVisualBasicAssemblyVersionFile()
+    {
+       var fileSystem = new TestFileSystem();
+        var version = new SemanticVersion
+        {
+            BuildMetaData = new SemanticVersionBuildMetaData(3, "foo", "hash", DateTimeOffset.Now),
+            Major = 2,
+            Minor = 3,
+            Patch = 1
+        };
+
+        var workingDir = Path.GetTempPath();
+        var assemblyInfoFile = Join(
+                   "<Assembly: AssemblyVersion(\"1.0.0.0\")>",
+                   "<Assembly: AssemblyFileVersion(\"1.0.0.0\")> ");
+
+        var fileName = Path.Combine(workingDir, "AssemblyInfo.vb");
+        fileSystem.WriteAllText(fileName, assemblyInfoFile);
+        var variable = VariableProvider.GetVariablesFor(version, new TestEffectiveConfiguration(), false);
+
+        var args = new Arguments
+        {
+            // EnsureAssemblyInfo = true,
+            UpdateAssemblyInfo = true,
+            UpdateAssemblyInfoFileName = new HashSet<string> { "AssemblyInfo.vb" }
+        };
+
+        using (new AssemblyInfoFileUpdate(args, workingDir, variable, fileSystem))
+        {
+            string expected = Join(@"<AssemblyVersion(""2.3.1.0"")>",
+                @"<AssemblyFileVersion(""2.3.1.0"")>",
+                @"<AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")>");
+            fileSystem.ReadAllText(fileName).ShouldBe(expected);
+        }
+    }
+
 
     private static string Join(params string[] lines)
     {
