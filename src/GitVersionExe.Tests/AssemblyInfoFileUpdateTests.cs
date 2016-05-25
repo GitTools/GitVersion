@@ -34,7 +34,7 @@ public class AssemblyInfoFileUpdateTests
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
         using (new AssemblyInfoFileUpdate(new Arguments { EnsureAssemblyInfo = true, UpdateAssemblyInfo = true, UpdateAssemblyInfoFileName = assemblyInfoFile}, workingDir, variables, fileSystem))
         {
-            fileSystem.ReadAllText(fullPath).ShouldMatchApproved();
+            fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", "CSharp")));
         }
     }
 
@@ -51,7 +51,7 @@ public class AssemblyInfoFileUpdateTests
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
         using (new AssemblyInfoFileUpdate(new Arguments { EnsureAssemblyInfo = true, UpdateAssemblyInfo = true, UpdateAssemblyInfoFileName = assemblyInfoFile }, workingDir, variables, fileSystem))
         {
-            fileSystem.ReadAllText(fullPath).ShouldMatchApproved();
+            fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", "CSharp")));
         }
     }
 
@@ -71,7 +71,7 @@ public class AssemblyInfoFileUpdateTests
             {
                 var fullPath = Path.Combine(workingDir, item);
                 var fileDescriminator = item.Replace(Path.DirectorySeparatorChar.ToString(), string.Empty).Replace(".", string.Empty);
-                fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.WithDescriminator(fileDescriminator));
+                fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.WithDescriminator(fileDescriminator).SubFolder(Path.Combine("Approved", "CSharp")));
             }
         }
     }
