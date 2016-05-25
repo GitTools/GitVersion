@@ -6,18 +6,24 @@ namespace GitVersion
     using System.ComponentModel;
     using System.IO;
     using System.Linq;
-    using System.Text.RegularExpressions;
 
     public class ArgumentParser
     {
         public static Arguments ParseArguments(string commandLineArguments)
         {
-            return ParseArguments(commandLineArguments.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList());
+            var arguments = commandLineArguments
+                .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                .ToList();
+
+            return ParseArguments(arguments);
         }
 
         static void EnsureArgumentValueCount(string[] values, int maxArguments = 1)
         {
-            if(values != null && values.Length > maxArguments) throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", values[1]));
+            if (values != null && values.Length > maxArguments)
+            {
+                throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", values[1]));
+            }
         }
 
         public static Arguments ParseArguments(List<string> commandLineArguments)
@@ -31,14 +37,16 @@ namespace GitVersion
             }
 
             var firstArgument = commandLineArguments.First();
-            if (IsHelp(firstArgument))
+
+            if (firstArgument.IsHelp())
             {
                 return new Arguments
                 {
                     IsHelp = true
                 };
             }
-            if (IsInit(firstArgument))
+
+            if (firstArgument.IsInit())
             {
                 return new Arguments
                 {
@@ -47,145 +55,120 @@ namespace GitVersion
                 };
             }
 
-            if (commandLineArguments.Count == 1 && !(commandLineArguments[0].StartsWith("-") ||
-                (commandLineArguments[0].StartsWith("/") && Path.DirectorySeparatorChar != '/')))
-            {
-                return new Arguments
-                {
-                    TargetPath = firstArgument
-                };
-            }
-
-            List<string> namedArguments;
             var arguments = new Arguments();
-            if (firstArgument.StartsWith("-") || (firstArgument.StartsWith("/") && Path.DirectorySeparatorChar != '/'))
+            bool firstArgumentIsSwitch;
+            var switchesAndValues = CollectSwitchesAndValuesFromArguments(commandLineArguments, out firstArgumentIsSwitch);
+
+            for (var i = 0; i < switchesAndValues.AllKeys.Length; i++)
             {
-                arguments.TargetPath = Environment.CurrentDirectory;
-                namedArguments = commandLineArguments;
-            }
-            else
-            {
-                arguments.TargetPath = firstArgument;
-                namedArguments = commandLineArguments.Skip(1).ToList();
-            }
+                var name = switchesAndValues.AllKeys[i];
+                var values = switchesAndValues.GetValues(name);
+                var value = values != null ? values.FirstOrDefault() : null;
 
-            var args = CollectSwitchesAndValuesFromArguments(namedArguments);
-
-            foreach (var name in args.AllKeys)
-            {
-                var values = args.GetValues(name);
-
-                string value = null;
-
-                if (values != null)
-                {
-                    //Currently, no arguments use more than one value, so having multiple values is an input error.
-                    //In the future, this exception can be removed to support multiple values for a switch.
-                    // if (values.Length > 1) throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", values[1]));
-
-                    value = values.FirstOrDefault();
-                }
-
-                if (IsSwitch("l", name))
+                if (name.IsSwitch("l"))
                 {
                     EnsureArgumentValueCount(values);
                     arguments.LogFilePath = value;
                     continue;
                 }
 
-                if (IsSwitch("targetpath", name))
+                if (name.IsSwitch("targetpath"))
                 {
                     EnsureArgumentValueCount(values);
                     arguments.TargetPath = value;
                     continue;
                 }
 
-                if (IsSwitch("dynamicRepoLocation", name))
+                if (name.IsSwitch("dynamicRepoLocation"))
                 {
                     EnsureArgumentValueCount(values);
                     arguments.DynamicRepositoryLocation = value;
                     continue;
                 }
 
-                if (IsSwitch("url", name))
+                if (name.IsSwitch("url"))
                 {
                     EnsureArgumentValueCount(values);
                     arguments.TargetUrl = value;
                     continue;
                 }
 
-                if (IsSwitch("b", name))
+                if (name.IsSwitch("b"))
                 {
                     EnsureArgumentValueCount(values);
                     arguments.TargetBranch = value;
                     continue;
                 }
 
-                if (IsSwitch("u", name))
+                if (name.IsSwitch("u"))
                 {
                     EnsureArgumentValueCount(values);
                     arguments.Authentication.Username = value;
                     continue;
                 }
 
-                if (IsSwitch("p", name))
+                if (name.IsSwitch("p"))
                 {
                     EnsureArgumentValueCount(values);
                     arguments.Authentication.Password = value;
                     continue;
                 }
 
-                if (IsSwitch("c", name))
+                if (name.IsSwitch("c"))
                 {
                     EnsureArgumentValueCount(values);
                     arguments.CommitId = value;
                     continue;
                 }
 
-                if (IsSwitch("exec", name))
+                if (name.IsSwitch("exec"))
                 {
                     EnsureArgumentValueCount(values);
                     arguments.Exec = value;
                     continue;
                 }
 
-                if (IsSwitch("execargs", name))
+                if (name.IsSwitch("execargs"))
                 {
                     EnsureArgumentValueCount(values);
                     arguments.ExecArgs = value;
                     continue;
                 }
 
-                if (IsSwitch("proj", name))
+                if (name.IsSwitch("proj"))
                 {
                     EnsureArgumentValueCount(values);
                     arguments.Proj = value;
                     continue;
                 }
 
-                if (IsSwitch("projargs", name))
+                if (name.IsSwitch("projargs"))
                 {
                     EnsureArgumentValueCount(values);
                     arguments.ProjArgs = value;
                     continue;
                 }
 
-                if (IsSwitch("updateAssemblyInfo", name))
+
+                if (name.IsSwitch("updateAssemblyInfo"))
                 {
-                    if (new[] { "1", "true" }.Contains(value, StringComparer.OrdinalIgnoreCase))
+                    if (value.IsTrue())
                     {
                         arguments.UpdateAssemblyInfo = true;
                     }
-                    else if (new[] { "0", "false" }.Contains(value, StringComparer.OrdinalIgnoreCase))
+                    else if (value.IsFalse())
                     {
                         arguments.UpdateAssemblyInfo = false;
                     }
                     else if (values != null && values.Length > 1)
                     {
                         arguments.UpdateAssemblyInfo = true;
-                        foreach(var v in values) arguments.AddAssemblyInfoFileName(v);
+                        foreach (var v in values)
+                        {
+                            arguments.AddAssemblyInfoFileName(v);
+                        }
                     }
-                    else if (!IsSwitchArgument(value))
+                    else if (!value.IsSwitchArgument())
                     {
                         arguments.UpdateAssemblyInfo = true;
                         arguments.AddAssemblyInfoFileName(value);
@@ -203,12 +186,12 @@ namespace GitVersion
                     continue;
                 }
 
-                if (IsSwitch("assemblyversionformat", name))
+                if (name.IsSwitch("assemblyversionformat"))
                 {
                     throw new WarningException("assemblyversionformat switch removed, use AssemblyVersioningScheme configuration value instead");
                 }
 
-                if (IsSwitch("v", name) || IsSwitch("showvariable", name))
+                if (name.IsSwitch("v") || name.IsSwitch("showvariable"))
                 {
                     string versionVariable = null;
 
@@ -228,13 +211,13 @@ namespace GitVersion
                     continue;
                 }
 
-                if (IsSwitch("showConfig", name))
+                if (name.IsSwitch("showConfig"))
                 {
-                    if (new[] { "1", "true" }.Contains(value, StringComparer.OrdinalIgnoreCase))
+                    if (value.IsTrue())
                     {
                         arguments.ShowConfig = true;
                     }
-                    else if (new[] { "0", "false" }.Contains(value, StringComparer.OrdinalIgnoreCase))
+                    else if (value.IsFalse())
                     {
                         arguments.UpdateAssemblyInfo = false;
                     }
@@ -245,7 +228,7 @@ namespace GitVersion
                     continue;
                 }
 
-                if (IsSwitch("output", name))
+                if (name.IsSwitch("output"))
                 {
                     OutputType outputType;
                     if (!Enum.TryParse(value, true, out outputType))
@@ -257,19 +240,19 @@ namespace GitVersion
                     continue;
                 }
 
-                if (IsSwitch("nofetch", name))
+                if (name.IsSwitch("nofetch"))
                 {
                     arguments.NoFetch = true;
                     continue;
                 }
 
-                if (IsSwitch("ensureassemblyinfo", name))
+                if (name.IsSwitch("ensureassemblyinfo"))
                 {
-                    if (new[] { "1", "true" }.Contains(value, StringComparer.OrdinalIgnoreCase))
+                    if (value.IsTrue())
                     {
                         arguments.EnsureAssemblyInfo = true;
                     }
-                    else if (new[] { "0", "false" }.Contains(value, StringComparer.OrdinalIgnoreCase))
+                    else if (value.IsFalse())
                     {
                         arguments.EnsureAssemblyInfo = false;
                     }
@@ -285,12 +268,12 @@ namespace GitVersion
                     continue;
                 }
 
-                if (IsSwitch("overrideconfig", name))
+                if (name.IsSwitch("overrideconfig"))
                 {
                     foreach (var item in value.Split(';'))
                     {
                         var configOverride = item.Split('=');
-                        
+
                         switch (configOverride[0])
                         {
                             case "tag-prefix":
@@ -305,95 +288,85 @@ namespace GitVersion
                     continue;
                 }
 
-                throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", name));
+                var couldNotParseMessage = string.Format("Could not parse command line parameter '{0}'.", name);
+
+                // If we've reached through all argument switches without a match, we can relatively safely assume that the first argument isn't a switch, but the target path.
+                if (i == 0)
+                {
+                    if (name.StartsWith("/"))
+                    {
+                        if (Path.DirectorySeparatorChar == '/' && name.IsValidPath())
+                        {
+                            arguments.TargetPath = name;
+                            continue;
+                        }
+                    }
+                    else if (!name.IsSwitchArgument())
+                    {
+                        arguments.TargetPath = name;
+                        continue;
+                    }
+
+                    couldNotParseMessage += " If it is the target path, make sure it exists.";
+                }
+
+                throw new WarningException(couldNotParseMessage);
+            }
+
+            if (arguments.TargetPath == null)
+            {
+                // If the first argument is a switch, it should already have been consumed in the above loop,
+                // or else a WarningException should have been thrown and we wouldn't end up here.
+                arguments.TargetPath = firstArgumentIsSwitch
+                    ? Environment.CurrentDirectory
+                    : firstArgument;
             }
 
             return arguments;
         }
 
-        static NameValueCollection CollectSwitchesAndValuesFromArguments(List<string> namedArguments)
+        static NameValueCollection CollectSwitchesAndValuesFromArguments(IList<string> namedArguments, out bool firstArgumentIsSwitch)
         {
-            var args = new NameValueCollection();
-
+            firstArgumentIsSwitch = true;
+            var switchesAndValues = new NameValueCollection();
             string currentKey = null;
-            var isBooleanArgument = true;
-            for (var index = 0; index < namedArguments.Count; index = index + 1)
+            var argumentRequiresValue = false;
+
+            for (var i = 0; i < namedArguments.Count; i = i + 1)
             {
-                var arg = namedArguments[index];
-                // If the current (previous) argument doesn't require a parameter and this is a switch, create new name/value entry for it, with a null value.
-                if (isBooleanArgument && IsSwitchArgument(arg))
+                var arg = namedArguments[i];
+
+                // If the current (previous) argument doesn't require a value parameter and this is a switch, create new name/value entry for it, with a null value.
+                if (!argumentRequiresValue && arg.IsSwitchArgument())
                 {
                     currentKey = arg;
-                    isBooleanArgument = IsBooleanArgument(arg);
-                    args.Add(currentKey, null);
+                    argumentRequiresValue = arg.ArgumentRequiresValue(i);
+                    switchesAndValues.Add(currentKey, null);
                 }
-                //If this is a value (not a switch)
-                else
+                // If this is a value (not a switch)
+                else if (currentKey != null)
                 {
-                    //And if the current switch does not have a value yet, set it's value to this argument.
-                    if (string.IsNullOrEmpty(args[currentKey]))
+                    // And if the current switch does not have a value yet and the value is not itself a switch, set its value to this argument.
+                    if (string.IsNullOrEmpty(switchesAndValues[currentKey]))
                     {
-                        args[currentKey] = arg;
+                        switchesAndValues[currentKey] = arg;
                     }
-                    //Otherwise add the value under the same switch.
+                    // Otherwise add the value under the same switch.
                     else
                     {
-                        args.Add(currentKey, arg);
+                        switchesAndValues.Add(currentKey, arg);
                     }
 
                     // Reset the boolean argument flag so the next argument won't be ignored.
-                    isBooleanArgument = true;
+                    argumentRequiresValue = false;
+                }
+                else if (i == 0)
+                {
+                    firstArgumentIsSwitch = false;
                 }
             }
-            return args;
-        }
 
-        static bool IsSwitchArgument(string value)
-        {
-            return value != null
-                && (value.StartsWith("-") || value.StartsWith("/"))
-                && !Regex.Match(value, @"/\w+:").Success; //Exclude msbuild & project parameters in form /blah:, which should be parsed as values, not switch names.
-        }
-
-        static bool IsSwitch(string switchName, string value)
-        {
-            if (value.StartsWith("-"))
-            {
-                value = value.Remove(0, 1);
-            }
-
-            if (value.StartsWith("/"))
-            {
-                value = value.Remove(0, 1);
-            }
-
-            return (string.Equals(switchName, value, StringComparison.OrdinalIgnoreCase));
-        }
-
-        static bool IsInit(string singleArgument)
-        {
-            return singleArgument.Equals("init", StringComparison.OrdinalIgnoreCase);
-        }
-
-        static bool IsHelp(string singleArgument)
-        {
-            return (singleArgument == "?") ||
-                IsSwitch("h", singleArgument) ||
-                IsSwitch("help", singleArgument) ||
-                IsSwitch("?", singleArgument);
-        }
-
-        static bool IsBooleanArgument(string switchName)
-        {
-            var booleanArguments = new[]
-            {
-                "init",
-                "updateassemblyinfo",
-                "ensureassemblyinfo",
-                "nofetch"
-            };
-
-            return booleanArguments.Contains(switchName.Substring(1), StringComparer.OrdinalIgnoreCase);
+            return switchesAndValues;
         }
     }
 }

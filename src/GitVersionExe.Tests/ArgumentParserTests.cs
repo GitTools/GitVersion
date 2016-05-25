@@ -165,11 +165,12 @@ public class ArgumentParserTests
         exception.Message.ShouldBe("Could not parse command line parameter 'extraArg'.");
     }
 
-    [Test]
-    public void Unknown_argument_should_throw()
+    [TestCase("targetDirectoryPath -x logFilePath")]
+    [TestCase("/invalid-argument")]
+    public void Unknown_arguments_should_throw(string arguments)
     {
-        var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments("targetDirectoryPath -x logFilePath"));
-        exception.Message.ShouldBe("Could not parse command line parameter '-x'.");
+        var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments(arguments));
+        exception.Message.ShouldStartWith("Could not parse command line parameter");
     }
 
     [TestCase("-updateAssemblyInfo true")]
@@ -266,23 +267,23 @@ public class ArgumentParserTests
     public void nofetch_true_when_defined()
     {
         var arguments = ArgumentParser.ParseArguments("-nofetch");
-        arguments.NoFetch = true;
+        arguments.NoFetch.ShouldBe(true);
     }
 
     [Test]
     public void other_arguments_can_be_parsed_before_nofetch()
     {
         var arguments = ArgumentParser.ParseArguments("targetpath -nofetch ");
-        arguments.TargetPath = "targetpath";
-        arguments.NoFetch = true;
+        arguments.TargetPath.ShouldBe("targetpath");
+        arguments.NoFetch.ShouldBe(true);
     }
 
     [Test]
     public void other_arguments_can_be_parsed_after_nofetch()
     {
         var arguments = ArgumentParser.ParseArguments("-nofetch -proj foo.sln");
-        arguments.NoFetch = true;
-        arguments.Proj = "foo.sln";
+        arguments.NoFetch.ShouldBe(true);
+        arguments.Proj.ShouldBe("foo.sln");
     }
 
     [Test]
