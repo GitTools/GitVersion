@@ -8,6 +8,7 @@ namespace GitVersion
     using System.Text.RegularExpressions;
     using GitVersion.VersionAssemblyInfoResources;
 
+    // TODO: Consolidate this with GitVersionTask.UpdateAssemblyInfo. @asbjornu
     class AssemblyInfoFileUpdate : IDisposable
     {
         List<Action> restoreBackupTasks = new List<Action>();

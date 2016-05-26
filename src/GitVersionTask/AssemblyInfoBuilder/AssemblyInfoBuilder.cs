@@ -12,6 +12,7 @@ public abstract class AssemblyInfoBuilder
     {
         { ".cs", typeof(CSharpAssemblyInfoBuilder) },
         { ".vb", typeof(VisualBasicAssemblyInfoBuilder) }
+        // TODO: Missing FSharpAssemblyInfoBuilder
     };
 
     public static AssemblyInfoBuilder GetAssemblyInfoBuilder(IEnumerable<ITaskItem> compileFiles)
