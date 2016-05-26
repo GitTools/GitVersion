@@ -25,6 +25,6 @@ public class JsonVersionBuilderTests
 
         var variables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
         var json = JsonOutputFormatter.ToJson(variables);
-        json.ShouldMatchApproved();
+        json.ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 }
