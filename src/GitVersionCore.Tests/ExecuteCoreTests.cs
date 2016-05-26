@@ -134,7 +134,7 @@ CommitDate: 2015-11-10
 
         RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
         {
-            versionAndBranchFinder.ExecuteGitVersion("https://github.com/GitTools/GitVersion.git", null, new Authentication(), "refs/head/master", false, Environment.SystemDirectory, null);
+            versionAndBranchFinder.ExecuteGitVersion("https://github.com/GitTools/GitVersion.git", null, new Authentication(), "refs/head/master", false, "tempProjectPath", null);
         });
     }
 
