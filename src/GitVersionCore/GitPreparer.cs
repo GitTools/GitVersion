@@ -165,7 +165,8 @@ namespace GitVersion
                     Checkout = false,
                     CredentialsProvider = (url, usernameFromUrl, types) => credentials
                 };
-                Repository.Clone(repositoryUrl, gitDirectory, cloneOptions);
+                var returnedPath = Repository.Clone(repositoryUrl, gitDirectory, cloneOptions);
+                Logger.WriteInfo(string.Format("Returned path after repository clone: {0}", returnedPath));
             }
             catch (LibGit2SharpException ex)
             {
