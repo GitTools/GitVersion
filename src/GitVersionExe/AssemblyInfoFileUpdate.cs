@@ -34,7 +34,7 @@ namespace GitVersion
             var assemblyFileVersionRegex = new Regex(@"AssemblyFileVersion\(""[^""]*""\)");
             var assemblyFileVersionString = string.Format("AssemblyFileVersion(\"{0}\")", assemblyFileVersion);
 
-            foreach (var assemblyInfoFile in assemblyInfoFiles.Select(f => new FileInfo(f)))
+            foreach (var assemblyInfoFile in assemblyInfoFiles)
             {
                 var backupAssemblyInfo = assemblyInfoFile.FullName + ".bak";
                 var localAssemblyInfo = assemblyInfoFile.FullName;
@@ -73,7 +73,7 @@ namespace GitVersion
         }
 
 
-        static IEnumerable<string> GetAssemblyInfoFiles(string workingDirectory, Arguments args, IFileSystem fileSystem)
+        static IEnumerable<FileInfo> GetAssemblyInfoFiles(string workingDirectory, Arguments args, IFileSystem fileSystem)
         {
             if (args.UpdateAssemblyInfoFileName != null && args.UpdateAssemblyInfoFileName.Any(x => !string.IsNullOrWhiteSpace(x)))
             {
@@ -83,16 +83,18 @@ namespace GitVersion
 
                     if (EnsureVersionAssemblyInfoFile(args, fileSystem, fullPath))
                     {
-                        yield return fullPath;
+                        yield return new FileInfo(fullPath);
                     }
                 }
             }
             else
             {
-                foreach (var item in fileSystem.DirectoryGetFiles(workingDirectory, "AssemblyInfo.*", SearchOption.AllDirectories)
-                    .Where(f => f.EndsWith(".cs", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".vb", StringComparison.OrdinalIgnoreCase)))
+                foreach (var item in fileSystem.DirectoryGetFiles(workingDirectory, "AssemblyInfo.*", SearchOption.AllDirectories))
                 {
-                    yield return item;
+                    var assemblyInfoFile = new FileInfo(item);
+
+                    if (AssemblyVersionInfoTemplates.IsSupported(assemblyInfoFile.Extension))
+                        yield return assemblyInfoFile;
                 }
             }
         }

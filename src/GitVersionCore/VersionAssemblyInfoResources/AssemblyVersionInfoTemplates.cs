@@ -10,10 +10,18 @@
     public class AssemblyVersionInfoTemplates
     {
         static readonly IDictionary<string, FileInfo> assemblyInfoSourceList;
+        static readonly IDictionary<string, string> assemblyInfoAddFormats;
 
         static AssemblyVersionInfoTemplates()
         {
             assemblyInfoSourceList = GetEmbeddedVersionAssemblyFiles().ToDictionary(k => k.Extension, v => v);
+            // TODO: It would be nice to do something a bit more clever here, like reusing the VersionAssemblyInfo.* templates somehow. @asbjornu
+            assemblyInfoAddFormats = new Dictionary<string, string>
+            {
+                {".cs", "[assembly: {0}]"},
+                {".vb", "<assembly: {0}>"},
+                {".fs", "[<assembly: {0}>]"}
+            };
         }
 
         public static string GetAssemblyInfoTemplateFor(string assemblyInfoFile)
@@ -35,18 +43,19 @@
             if (fileExtension == null)
                 throw new ArgumentNullException("fileExtension");
 
-            // TODO: It would be nice to do something a bit more clever here, like reusing the VersionAssemblyInfo.* templates somehow. @asbjornu
-            switch (fileExtension.ToLowerInvariant())
-            {
-                case ".cs":
-                    return "[assembly: {0}]";
-                case ".vb":
-                    return "<assembly: {0}>";
-                case ".fs":
-                    return "[<assembly: {0}>]";
-            }
+            string assemblyInfoAddFormat;
+            if (!assemblyInfoAddFormats.TryGetValue(fileExtension, out assemblyInfoAddFormat))
+                throw new NotSupportedException(string.Format("Unknown file extension '{0}'.", fileExtension));
 
-            throw new NotSupportedException(string.Format("Unknown file extension '{0}'.", fileExtension));
+            return assemblyInfoAddFormat;
+        }
+
+        public static bool IsSupported([NotNull] string fileExtension)
+        {
+            if (fileExtension == null)
+                throw new ArgumentNullException("fileExtension");
+
+            return assemblyInfoAddFormats.Keys.Contains(fileExtension, StringComparer.OrdinalIgnoreCase);
         }
 
         private static IEnumerable<FileInfo> GetEmbeddedVersionAssemblyFiles()
