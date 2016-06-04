@@ -12,6 +12,19 @@ namespace GitVersion
     {
         internal const string DefaultTagPrefix = "[vV]";
 
+        public static Config Provide(GitPreparer gitPreparer, IFileSystem fileSystem, bool applyDefaults = true, Config overrideConfig = null)
+        {
+            var workingDirectory = gitPreparer.WorkingDirectory;
+            var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
+
+            if (HasConfigFileAt(workingDirectory, fileSystem))
+            {
+                return Provide(workingDirectory, fileSystem, applyDefaults, overrideConfig);
+            }
+
+            return Provide(projectRootDirectory, fileSystem, applyDefaults, overrideConfig);
+        }
+
         public static Config Provide(string workingDirectory, IFileSystem fileSystem, bool applyDefaults = true, Config overrideConfig = null)
         {
             var readConfig = ReadConfig(workingDirectory, fileSystem);
@@ -140,9 +153,9 @@ namespace GitVersion
             return new Config();
         }
 
-        public static string GetEffectiveConfigAsString(string gitDirectory, IFileSystem fileSystem)
+        public static string GetEffectiveConfigAsString(string workingDirectory, IFileSystem fileSystem)
         {
-            var config = Provide(gitDirectory, fileSystem);
+            var config = Provide(workingDirectory, fileSystem);
             var stringBuilder = new StringBuilder();
             using (var stream = new StringWriter(stringBuilder))
             {
@@ -180,7 +193,7 @@ namespace GitVersion
         public static readonly string DefaultConfigFileName = "GitVersion.yml";
         public static readonly string ObsoleteConfigFileName = "GitVersionConfig.yaml";
 
-        static string GetConfigFilePath(string workingDirectory, IFileSystem fileSystem)
+        public static string GetConfigFilePath(string workingDirectory, IFileSystem fileSystem)
         {
             var ymlPath = Path.Combine(workingDirectory, DefaultConfigFileName);
             if (fileSystem.Exists(ymlPath))
@@ -195,6 +208,23 @@ namespace GitVersion
             }
 
             return ymlPath;
+        }
+
+        public static bool HasConfigFileAt(string workingDirectory, IFileSystem fileSystem)
+        {
+            var defaultConfigFilePath = Path.Combine(workingDirectory, DefaultConfigFileName);
+            if (fileSystem.Exists(defaultConfigFilePath))
+            {
+                return true;
+            }
+
+            var deprecatedConfigFilePath = Path.Combine(workingDirectory, ObsoleteConfigFileName);
+            if (fileSystem.Exists(deprecatedConfigFilePath))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         static bool WarnAboutObsoleteConfigFile(string workingDirectory, IFileSystem fileSystem)
