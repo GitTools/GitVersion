@@ -1,6 +1,7 @@
 namespace GitVersion
 {
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -151,23 +152,68 @@ namespace GitVersion
             return stringBuilder.ToString();
         }
 
+        public static void Verify(GitPreparer gitPreparer, IFileSystem fileSystem)
+        {
+            var workingDirectory = gitPreparer.WorkingDirectory;
+            var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
+
+            if(fileSystem.PathsEqual(workingDirectory, projectRootDirectory))
+            {
+                WarnAboutObsoleteConfigFile(workingDirectory, fileSystem);
+                return;
+            }
+
+            WarnAboutObsoleteConfigFile(workingDirectory, fileSystem);
+            WarnAboutObsoleteConfigFile(projectRootDirectory, fileSystem);
+
+            var workingConfigFile = GetConfigFilePath(workingDirectory, fileSystem);
+            var projectRootConfigFile = GetConfigFilePath(projectRootDirectory, fileSystem);
+
+            bool hasConfigInWorkingDirectory = fileSystem.Exists(workingConfigFile);
+            bool hasConfigInProjectRootDirectory = fileSystem.Exists(projectRootConfigFile);
+            if (hasConfigInProjectRootDirectory && hasConfigInWorkingDirectory)
+            {
+                throw new WarningException(string.Format("Ambigous config file selection from '{0}' and '{1}'", workingConfigFile, projectRootConfigFile));
+            }
+        }
+
+        public static readonly string DefaultConfigFileName = "GitVersion.yml";
+        public static readonly string ObsoleteConfigFileName = "GitVersionConfig.yaml";
+
         static string GetConfigFilePath(string workingDirectory, IFileSystem fileSystem)
         {
-            var ymlPath = Path.Combine(workingDirectory, "GitVersion.yml");
+            var ymlPath = Path.Combine(workingDirectory, DefaultConfigFileName);
             if (fileSystem.Exists(ymlPath))
             {
                 return ymlPath;
             }
 
-            var deprecatedPath = Path.Combine(workingDirectory, "GitVersionConfig.yaml");
+            var deprecatedPath = Path.Combine(workingDirectory, ObsoleteConfigFileName);
             if (fileSystem.Exists(deprecatedPath))
             {
-                Logger.WriteWarning("'GitVersionConfig.yaml' is deprecated, use 'GitVersion.yml' instead.");
-
                 return deprecatedPath;
             }
 
             return ymlPath;
+        }
+
+        static bool WarnAboutObsoleteConfigFile(string workingDirectory, IFileSystem fileSystem)
+        {
+            var deprecatedConfigFilePath = Path.Combine(workingDirectory, ObsoleteConfigFileName);
+            if (!fileSystem.Exists(deprecatedConfigFilePath))
+            {
+                return false;
+            }
+
+            var defaultConfigFilePath = Path.Combine(workingDirectory, DefaultConfigFileName);
+            if (fileSystem.Exists(defaultConfigFilePath))
+            {
+                Logger.WriteWarning(string.Format("Ambigous config files at '{0}': '{1}' (deprecated) and '{2}'. Will be used '{2}'", workingDirectory, ObsoleteConfigFileName, DefaultConfigFileName));
+                return true;
+            }
+
+            Logger.WriteWarning(string.Format("'{0}' is deprecated, use '{1}' instead.", deprecatedConfigFilePath, DefaultConfigFileName));
+            return true;
         }
 
         public static void Init(string workingDirectory, IFileSystem fileSystem, IConsole console)

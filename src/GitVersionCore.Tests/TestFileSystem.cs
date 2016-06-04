@@ -101,4 +101,9 @@ public class TestFileSystem : IFileSystem
     {
         return 1;
     }
+
+    public bool PathsEqual(string path, string otherPath)
+    {
+        return path == otherPath;
+    }
 }
