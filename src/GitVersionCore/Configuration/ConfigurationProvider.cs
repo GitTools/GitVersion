@@ -12,6 +12,9 @@ namespace GitVersion
     {
         internal const string DefaultTagPrefix = "[vV]";
 
+        public const string DefaultConfigFileName = "GitVersion.yml";
+        public const string ObsoleteConfigFileName = "GitVersionConfig.yaml";
+
         public static Config Provide(GitPreparer gitPreparer, IFileSystem fileSystem, bool applyDefaults = true, Config overrideConfig = null)
         {
             var workingDirectory = gitPreparer.WorkingDirectory;
@@ -23,6 +26,19 @@ namespace GitVersion
             }
 
             return Provide(projectRootDirectory, fileSystem, applyDefaults, overrideConfig);
+        }
+
+        public static string SelectConfigFilePath(GitPreparer gitPreparer, IFileSystem fileSystem)
+        {
+            var workingDirectory = gitPreparer.WorkingDirectory;
+            var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
+
+            if (HasConfigFileAt(workingDirectory, fileSystem))
+            {
+                return GetConfigFilePath(workingDirectory, fileSystem);
+            }
+
+            return GetConfigFilePath(projectRootDirectory, fileSystem);
         }
 
         public static Config Provide(string workingDirectory, IFileSystem fileSystem, bool applyDefaults = true, Config overrideConfig = null)
@@ -170,6 +186,11 @@ namespace GitVersion
             var workingDirectory = gitPreparer.WorkingDirectory;
             var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
 
+            Verify(workingDirectory,projectRootDirectory, fileSystem);
+        }
+
+        public static void Verify(string workingDirectory, string projectRootDirectory, IFileSystem fileSystem)
+        {
             if(fileSystem.PathsEqual(workingDirectory, projectRootDirectory))
             {
                 WarnAboutObsoleteConfigFile(workingDirectory, fileSystem);
@@ -189,9 +210,6 @@ namespace GitVersion
                 throw new WarningException(string.Format("Ambigous config file selection from '{0}' and '{1}'", workingConfigFile, projectRootConfigFile));
             }
         }
-
-        public static readonly string DefaultConfigFileName = "GitVersion.yml";
-        public static readonly string ObsoleteConfigFileName = "GitVersionConfig.yaml";
 
         public static string GetConfigFilePath(string workingDirectory, IFileSystem fileSystem)
         {
