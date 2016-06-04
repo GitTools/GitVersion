@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -12,14 +13,19 @@ using YamlDotNet.Serialization;
 [TestFixture]
 public class ConfigProviderTests
 {
+    private const string DefaultRepoPath = "c:\\MyGitRepo";
+    private const string DefaultWorkingPath = "c:\\MyGitRepo\\Working";
+
     string repoPath;
+    string workingPath;
     IFileSystem fileSystem;
 
     [SetUp]
     public void Setup()
     {
         fileSystem = new TestFileSystem();
-        repoPath = "c:\\MyGitRepo";
+        repoPath = DefaultRepoPath;
+        workingPath = DefaultWorkingPath;
     }
 
     [Test]
@@ -147,8 +153,8 @@ branches:
     }
     
     [Test]
-    [Category("NoMono")]
-    [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+    [NUnit.Framework.Category("NoMono")]
+    [NUnit.Framework.Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public void CanWriteOutEffectiveConfiguration()
     {
@@ -228,18 +234,51 @@ branches: {}";
         propertiesMissingAlias.ShouldBeEmpty();
     }
 
-    [Test]
-    public void WarnOnExistingGitVersionConfigYamlFile()
+    [TestCase(DefaultRepoPath)]
+    [TestCase(DefaultWorkingPath)]
+    public void WarnOnExistingGitVersionConfigYamlFile(string path)
     {
-        SetupConfigFileContent(string.Empty, "GitVersionConfig.yaml");
+        SetupConfigFileContent(string.Empty, ConfigurationProvider.ObsoleteConfigFileName, path);
 
-        var s = string.Empty;
-        Action<string> action = info => { s = info; };
+        var logOutput = string.Empty;
+        Action<string> action = info => { logOutput = info; };
         Logger.SetLoggers(action, action, action);
 
-        ConfigurationProvider.Provide(repoPath, fileSystem);
+        ConfigurationProvider.Verify(workingPath, repoPath, fileSystem);
 
-        s.Contains("'GitVersionConfig.yaml' is deprecated, use 'GitVersion.yml' instead.").ShouldBe(true);
+        var configFileDeprecatedWarning = string.Format("{0}' is deprecated, use '{1}' instead", ConfigurationProvider.ObsoleteConfigFileName, ConfigurationProvider.DefaultConfigFileName);
+        logOutput.Contains(configFileDeprecatedWarning).ShouldBe(true);
+    }
+
+    [TestCase(DefaultRepoPath)]
+    [TestCase(DefaultWorkingPath)]
+    public void WarnOnAmbigousConfigFilesAtTheSameProjectRootDirectory(string path)
+    {
+        SetupConfigFileContent(string.Empty, ConfigurationProvider.ObsoleteConfigFileName, path);
+        SetupConfigFileContent(string.Empty, ConfigurationProvider.DefaultConfigFileName, path);
+
+        var logOutput = string.Empty;
+        Action<string> action = info => { logOutput = info; };
+        Logger.SetLoggers(action, action, action);
+
+        ConfigurationProvider.Verify(workingPath, repoPath, fileSystem);
+
+        var configFileDeprecatedWarning = string.Format("Ambigous config files at '{0}'", path);
+        logOutput.Contains(configFileDeprecatedWarning).ShouldBe(true);
+    }
+
+    [TestCase(ConfigurationProvider.DefaultConfigFileName, ConfigurationProvider.DefaultConfigFileName)]
+    [TestCase(ConfigurationProvider.DefaultConfigFileName, ConfigurationProvider.ObsoleteConfigFileName)]
+    [TestCase(ConfigurationProvider.ObsoleteConfigFileName, ConfigurationProvider.DefaultConfigFileName)]
+    [TestCase(ConfigurationProvider.ObsoleteConfigFileName, ConfigurationProvider.ObsoleteConfigFileName)]
+    public void ThrowsExceptionOnAmbigousConfigFileLocation(string repoConfigFile, string workingConfigFile)
+    {
+        SetupConfigFileContent(string.Empty, repoConfigFile, repoPath);
+        SetupConfigFileContent(string.Empty, workingConfigFile, workingPath);
+
+        Should.Throw<WarningException>(() => {
+            ConfigurationProvider.Verify(workingPath, repoPath, fileSystem);
+        });
     }
 
     [Test]
@@ -256,8 +295,13 @@ branches: {}";
         s.Length.ShouldBe(0);
     }
 
-    void SetupConfigFileContent(string text, string fileName = "GitVersion.yml")
+    void SetupConfigFileContent(string text, string fileName = ConfigurationProvider.DefaultConfigFileName)
     {
-        fileSystem.WriteAllText(Path.Combine(repoPath, fileName), text);
+        SetupConfigFileContent(text, fileName, repoPath);
+    }
+
+    void SetupConfigFileContent(string text, string fileName, string path)
+    {
+        fileSystem.WriteAllText(Path.Combine(path, fileName), text);
     }
 }

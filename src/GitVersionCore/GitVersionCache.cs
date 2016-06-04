@@ -19,9 +19,10 @@ namespace GitVersion
             this.fileSystem = fileSystem;
         }
 
-        public void WriteVariablesToDiskCache(IRepository repo, string gitDir, VersionVariables variablesFromCache)
+        public void WriteVariablesToDiskCache(GitPreparer gitPreparer, VersionVariables variablesFromCache)
         {
-            var cacheFileName = GetCacheFileName(GetKey(repo, gitDir), GetCacheDir(gitDir));
+            var cacheDir = PrepareCacheDirectory(gitPreparer);
+            var cacheFileName = GetCacheFileName(GetKey(gitPreparer), cacheDir);
             variablesFromCache.FileName = cacheFileName;
 
             Dictionary<string, string> dictionary;
@@ -49,15 +50,24 @@ namespace GitVersion
             retryOperation.Execute();
         }
 
-        public VersionVariables LoadVersionVariablesFromDiskCache(IRepository repo, string gitDir)
+        private string PrepareCacheDirectory(GitPreparer gitPreparer)
+        {
+            var gitDir = gitPreparer.GetDotGitDirectory();
+            
+            // If the cacheDir already exists, CreateDirectory just won't do anything (it won't fail). @asbjornu
+            var cacheDir = GetCacheDir(gitDir);
+            fileSystem.CreateDirectory(cacheDir);
+
+            return cacheDir;
+        }
+
+        public VersionVariables LoadVersionVariablesFromDiskCache(GitPreparer gitPreparer)
         {
             using (Logger.IndentLog("Loading version variables from disk cache"))
             {
-                // If the cacheDir already exists, CreateDirectory just won't do anything (it won't fail). @asbjornu
+                var cacheDir = PrepareCacheDirectory(gitPreparer);
 
-                var cacheDir = GetCacheDir(gitDir);
-                fileSystem.CreateDirectory(cacheDir);
-                var cacheFileName = GetCacheFileName(GetKey(repo, gitDir), cacheDir);
+                var cacheFileName = GetCacheFileName(GetKey(gitPreparer), cacheDir);
                 VersionVariables vv = null;
                 if (fileSystem.Exists(cacheFileName))
                 {
@@ -91,14 +101,18 @@ namespace GitVersion
             }
         }
 
-        string GetKey(IRepository repo, string gitDir)
+        string GetKey(GitPreparer gitPreparer)
         {
+            var gitDir = gitPreparer.GetDotGitDirectory();
+
             // Maybe using timestamp in .git/refs directory is enough?
             var ticks = fileSystem.GetLastDirectoryWrite(Path.Combine(gitDir, "refs"));
-            var configPath = Path.Combine(repo.GetRepositoryDirectory(), "GitVersionConfig.yaml");
+
+            var configPath = ConfigurationProvider.SelectConfigFilePath(gitPreparer, fileSystem);
             var configText = fileSystem.Exists(configPath) ? fileSystem.ReadAllText(configPath) : null;
             var configHash = configText != null ? GetHash(configText) : null;
-            return string.Join(":", gitDir, repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks, configHash);
+
+            return gitPreparer.WithRepository(repo => string.Join(":", gitDir, repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks, configHash));
         }
 
         static string GetCacheFileName(string key, string cacheDir)
