@@ -95,7 +95,7 @@ namespace GitVersion
             gitPreparer.Initialise(buildServer != null, ResolveCurrentBranch(buildServer, targetBranch, gitPreparer.IsDynamicGitRepository));
 
             var versionFinder = new GitVersionFinder();
-           var configuration = ConfigurationProvider.Provide(projectRoot, fileSystem, overrideConfig: overrideConfig);
+           var configuration = ConfigurationProvider.Provide(gitPreparer, fileSystem, overrideConfig: overrideConfig);
 
             var gitVersionContext = new GitVersionContext(repo, configuration, commitId : commitId);
             var semanticVersion = versionFinder.FindVersion(gitVersionContext);
