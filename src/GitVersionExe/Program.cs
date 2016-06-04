@@ -64,6 +64,7 @@ namespace GitVersion
                 }
 
                 ConfigureLogging(arguments);
+                VerifyConfiguration(arguments, fileSystem);
 
                 if (!Directory.Exists(arguments.TargetPath))
                 {
@@ -124,6 +125,11 @@ namespace GitVersion
             return 0;
         }
 
+        private static void VerifyConfiguration(Arguments arguments, IFileSystem fileSystem)
+        {
+            var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation,arguments.Authentication,arguments.NoFetch,arguments.TargetPath);
+            ConfigurationProvider.Verify(gitPreparer, fileSystem);
+        }
 
         static void ConfigureLogging(Arguments arguments)
         {

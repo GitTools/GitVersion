@@ -103,7 +103,7 @@ namespace GitVersion
         VersionVariables ExecuteInternal(string targetBranch, string commitId, IRepository repo, GitPreparer gitPreparer, string projectRoot, IBuildServer buildServer, Config overrideConfig = null)
         {
             var versionFinder = new GitVersionFinder();
-            var configuration = ConfigurationProvider.Provide(projectRoot, fileSystem, overrideConfig: overrideConfig);
+           var configuration = ConfigurationProvider.Provide(projectRoot, fileSystem, overrideConfig: overrideConfig);
 
             var gitVersionContext = new GitVersionContext(repo, configuration, commitId : commitId);
             var semanticVersion = versionFinder.FindVersion(gitVersionContext);

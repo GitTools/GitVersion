@@ -29,6 +29,11 @@ namespace GitVersion
             this.targetPath = targetPath.TrimEnd('/', '\\');
         }
 
+        public string WorkingDirectory
+        {
+            get { return targetPath; }
+        }
+
         public bool IsDynamicGitRepository
         {
             get { return !string.IsNullOrWhiteSpace(DynamicGitRepositoryPath); }
