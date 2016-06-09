@@ -135,7 +135,7 @@
           ]]></Code>
     </Task>
   </UsingTask>
-  <Target Name="AfterBuild" DependsOnTargets="Clean" Condition="$(NCrunch)=='' And '$(OS)' != 'Unix'">
+  <Target Name="AfterBuild" DependsOnTargets="Clean" Condition="$(NCrunch)==''">
     <MakeDir Directories="$(TargetDir)ILMergeTemp\" />
     <PropertyGroup>
       <Runtime Condition="'$(OS)'=='Unix'">mono</Runtime>
@@ -178,7 +178,7 @@
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\builds.png" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\img" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\build-task.png" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\img" />
     <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask" />
-    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask" Condition="Exists('$(OutputPath)GitVersion.pdb')" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\icon.png" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\task.json" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\GitVersion.ps1" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask" />

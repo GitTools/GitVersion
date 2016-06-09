@@ -15,6 +15,8 @@ install:
   - mono .nuget/nuget.exe install NUnit.Runners -Version 3.2.1 -OutputDirectory ./src/packages
 script:
   - xbuild ./src/GitVersion.sln /property:Configuration="Debug" /verbosity:detailed
+  - mono ./build/NuGetCommandLineBuild/tools/GitVersion.exe -l -console -output buildserver -updateAssemblyInfo
+  - xbuild ./src/GitVersion.sln /property:Configuration="Debug" /verbosity:detailed
   - mono ./src/packages/NUnit.ConsoleRunner.3.2.1/tools/nunit3-console.exe ./src/GitVersionTask.Tests/bin/Debug/GitVersionTask.Tests.dll ./src/GitVersionCore.Tests/bin/Debug/GitVersionCore.Tests.dll ./src/GitVersionTask.Tests/bin/Debug/GitVersionTask.Tests.dll ./src/GitVersionExe.Tests/bin/Debug/GitVersionExe.Tests.dll --where "cat != NoMono" --noresult
 
 #
