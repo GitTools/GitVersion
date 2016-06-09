@@ -1,29 +1,15 @@
 language: csharp
-solution: src/GitVersion.sln
 sudo: false
 mono:
   - latest
 os:
   - linux
   - osx
-before_install: # We need to download nuget.exe due to: https://github.com/travis-ci/travis-ci/issues/5932
+before_install:
   - git fetch --unshallow # Travis always does a shallow clone, but GitVersion needs the full history including branches and tags
-  - mkdir -p .nuget
-  - wget -O .nuget/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
-  - mono .nuget/nuget.exe
-install:
-  - mono .nuget/nuget.exe restore src/GitVersion.sln -Verbosity detailed
-  - mono .nuget/nuget.exe install NUnit.Runners -Version 3.2.1 -OutputDirectory ./src/packages
 script:
-  - xbuild ./src/GitVersion.sln /property:Configuration="Debug" /verbosity:detailed
-  - mono ./build/NuGetCommandLineBuild/tools/GitVersion.exe -l console -output buildserver -updateAssemblyInfo
-  - xbuild ./src/GitVersion.sln /property:Configuration="Debug" /verbosity:detailed
-  - mono ./src/packages/NUnit.ConsoleRunner.3.2.1/tools/nunit3-console.exe ./src/GitVersionTask.Tests/bin/Debug/GitVersionTask.Tests.dll ./src/GitVersionCore.Tests/bin/Debug/GitVersionCore.Tests.dll ./src/GitVersionTask.Tests/bin/Debug/GitVersionTask.Tests.dll ./src/GitVersionExe.Tests/bin/Debug/GitVersionExe.Tests.dll --where "cat != NoMono" --noresult
-
-#
-# To run a clean build with Mono, executing just one test, do:
-# xbuild ./src/GitVersion.sln /t:Clean /verbosity:quiet && xbuild ./src/GitVersion.sln /property:Configuration="Debug" /verbosity:quiet && mono ./src/packages/NUnit.ConsoleRunner.3.2.1/tools/nunit3-console.exe ./src/GitVersionTask.Tests/bin/Debug/GitVersionTask.Tests.dll ./src/GitVersionCore.Tests/bin/Debug/GitVersionCore.Tests.dll ./src/GitVersionTask.Tests/bin/Debug/GitVersionTask.Tests.dll ./src/GitVersionExe.Tests/bin/Debug/GitVersionExe.Tests.dll --noresult --where "test =~ /TheNameOfTheTest/"
-#
-# To run a clean build with Mono, executing all tests, do:
-# xbuild ./src/GitVersion.sln /t:Clean /verbosity:quiet && xbuild ./src/GitVersion.sln /property:Configuration="Debug" /verbosity:quiet && mono ./src/packages/NUnit.ConsoleRunner.3.2.1/tools/nunit3-console.exe ./src/GitVersionTask.Tests/bin/Debug/GitVersionTask.Tests.dll ./src/GitVersionCore.Tests/bin/Debug/GitVersionCore.Tests.dll ./src/GitVersionTask.Tests/bin/Debug/GitVersionTask.Tests.dll ./src/GitVersionExe.Tests/bin/Debug/GitVersionExe.Tests.dll --noresult --where "cat != NoMono" --noresult
-#
+  - ./build.sh
+cache:
+  directories:
+    - src/packages
+    - tools
