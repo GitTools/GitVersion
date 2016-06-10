@@ -29,7 +29,7 @@ public class VariableProviderTests
 
         var vars = VariableProvider.GetVariablesFor(semVer, config, false);
 
-        JsonOutputFormatter.ToJson(vars).ShouldMatchApproved();
+        JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -54,7 +54,7 @@ public class VariableProviderTests
 
         var vars = VariableProvider.GetVariablesFor(semVer, config, false);
 
-        JsonOutputFormatter.ToJson(vars).ShouldMatchApproved();
+        JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -78,7 +78,7 @@ public class VariableProviderTests
 
         var vars = VariableProvider.GetVariablesFor(semVer, config, false);
 
-        JsonOutputFormatter.ToJson(vars).ShouldMatchApproved();
+        JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -101,7 +101,7 @@ public class VariableProviderTests
 
         var vars = VariableProvider.GetVariablesFor(semVer, config, false);
 
-        JsonOutputFormatter.ToJson(vars).ShouldMatchApproved();
+        JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -124,7 +124,7 @@ public class VariableProviderTests
 
         var vars = VariableProvider.GetVariablesFor(semVer, config, false);
 
-        JsonOutputFormatter.ToJson(vars).ShouldMatchApproved();
+        JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 
     [Test]
@@ -150,6 +150,6 @@ public class VariableProviderTests
 
         var vars = VariableProvider.GetVariablesFor(semVer, config, true);
 
-        JsonOutputFormatter.ToJson(vars).ShouldMatchApproved();
+        JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
 }

@@ -37,32 +37,26 @@ namespace GitVersion
             try
             {
                 var fileSystem = new FileSystem();
-
                 var argumentsWithoutExeName = GetArgumentsWithoutExeName();
+
                 try
                 {
                     arguments = ArgumentParser.ParseArguments(argumentsWithoutExeName);
                 }
-                catch (WarningException ex)
+                catch (Exception exception)
                 {
                     Console.WriteLine("Failed to parse arguments: {0}", string.Join(" ", argumentsWithoutExeName));
-                    if (!string.IsNullOrWhiteSpace(ex.Message))
+                    if (!string.IsNullOrWhiteSpace(exception.Message))
                     {
                         Console.WriteLine();
-                        Console.WriteLine(ex.Message);
+                        Console.WriteLine(exception.Message);
                         Console.WriteLine();
                     }
 
                     HelpWriter.Write();
                     return 1;
                 }
-                catch (Exception)
-                {
-                    Console.WriteLine("Failed to parse arguments: {0}", string.Join(" ", argumentsWithoutExeName));
 
-                    HelpWriter.Write();
-                    return 1;
-                }
                 if (arguments.IsHelp)
                 {
                     HelpWriter.Write();

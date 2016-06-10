@@ -9,6 +9,7 @@
 
     using Microsoft.Build.Framework;
 
+    // TODO: Consolidate this with GitVersion.AssemblyInfoFileUpdate in GitVersionExe. @asbjornu
     public class UpdateAssemblyInfo : GitVersionTaskBase
     {
         TaskLogger logger;

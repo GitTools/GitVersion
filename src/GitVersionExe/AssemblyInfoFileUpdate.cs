@@ -8,6 +8,7 @@ namespace GitVersion
     using System.Text.RegularExpressions;
     using GitVersion.VersionAssemblyInfoResources;
 
+    // TODO: Consolidate this with GitVersionTask.UpdateAssemblyInfo. @asbjornu
     class AssemblyInfoFileUpdate : IDisposable
     {
         List<Action> restoreBackupTasks = new List<Action>();
@@ -33,7 +34,7 @@ namespace GitVersion
             var assemblyFileVersionRegex = new Regex(@"AssemblyFileVersion\(""[^""]*""\)");
             var assemblyFileVersionString = string.Format("AssemblyFileVersion(\"{0}\")", assemblyFileVersion);
 
-            foreach (var assemblyInfoFile in assemblyInfoFiles.Select(f => new FileInfo(f)))
+            foreach (var assemblyInfoFile in assemblyInfoFiles)
             {
                 var backupAssemblyInfo = assemblyInfoFile.FullName + ".bak";
                 var localAssemblyInfo = assemblyInfoFile.FullName;
@@ -47,17 +48,17 @@ namespace GitVersion
                 cleanupBackupTasks.Add(() => fileSystem.Delete(backupAssemblyInfo));
 
                 var fileContents = fileSystem.ReadAllText(assemblyInfoFile.FullName);
-                fileContents = ReplaceOrAppend(assemblyVersionRegex, fileContents, assemblyVersionString);
-                fileContents = ReplaceOrAppend(assemblyInfoVersionRegex, fileContents, assemblyInfoVersionString);
-                fileContents = ReplaceOrAppend(assemblyFileVersionRegex, fileContents, assemblyFileVersionString);
+                fileContents = ReplaceOrAppend(assemblyVersionRegex, fileContents, assemblyVersionString, assemblyInfoFile.Extension);
+                fileContents = ReplaceOrAppend(assemblyInfoVersionRegex, fileContents, assemblyInfoVersionString, assemblyInfoFile.Extension);
+                fileContents = ReplaceOrAppend(assemblyFileVersionRegex, fileContents, assemblyFileVersionString, assemblyInfoFile.Extension);
 
                 fileSystem.WriteAllText(assemblyInfoFile.FullName, fileContents);
             }
         }
 
-        static string ReplaceOrAppend(Regex replaceRegex, string inputString, string replaceString)
+        static string ReplaceOrAppend(Regex replaceRegex, string inputString, string replaceString, string fileExtension)
         {
-            const string assemblyAddFormat = "[assembly: {0}]";
+            var assemblyAddFormat = AssemblyVersionInfoTemplates.GetAssemblyInfoAddFormatFor(fileExtension);
 
             if (replaceRegex.IsMatch(inputString))
             {
@@ -72,7 +73,7 @@ namespace GitVersion
         }
 
 
-        static IEnumerable<string> GetAssemblyInfoFiles(string workingDirectory, Arguments args, IFileSystem fileSystem)
+        static IEnumerable<FileInfo> GetAssemblyInfoFiles(string workingDirectory, Arguments args, IFileSystem fileSystem)
         {
             if (args.UpdateAssemblyInfoFileName != null && args.UpdateAssemblyInfoFileName.Any(x => !string.IsNullOrWhiteSpace(x)))
             {
@@ -82,16 +83,18 @@ namespace GitVersion
 
                     if (EnsureVersionAssemblyInfoFile(args, fileSystem, fullPath))
                     {
-                        yield return fullPath;
+                        yield return new FileInfo(fullPath);
                     }
                 }
             }
             else
             {
-                foreach (var item in fileSystem.DirectoryGetFiles(workingDirectory, "AssemblyInfo.*", SearchOption.AllDirectories)
-                    .Where(f => f.EndsWith(".cs", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".vb", StringComparison.OrdinalIgnoreCase)))
+                foreach (var item in fileSystem.DirectoryGetFiles(workingDirectory, "AssemblyInfo.*", SearchOption.AllDirectories))
                 {
-                    yield return item;
+                    var assemblyInfoFile = new FileInfo(item);
+
+                    if (AssemblyVersionInfoTemplates.IsSupported(assemblyInfoFile.Extension))
+                        yield return assemblyInfoFile;
                 }
             }
         }

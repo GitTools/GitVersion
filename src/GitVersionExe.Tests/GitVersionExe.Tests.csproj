@@ -120,6 +120,21 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Approved\cs\AssemblyInfoFileUpdateTests.ShouldAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFile.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFile.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\vb\AssemblyInfoFileUpdateTests.ShouldAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFile.approved.txt" />
+    <Content Include="Approved\vb\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\vb\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\vb\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\cs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\cs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\cs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
