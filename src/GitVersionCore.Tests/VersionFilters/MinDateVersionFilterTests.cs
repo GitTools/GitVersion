@@ -1,10 +1,10 @@
-﻿using System;
-using GitVersion;
+﻿using GitVersion;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
 using GitVersion.VersionFilters;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
+using System;
 
 namespace GitVersionCore.Tests.VersionFilters
 {
@@ -14,7 +14,6 @@ namespace GitVersionCore.Tests.VersionFilters
         [Test]
         public void VerifyNullGuard()
         {
-            var commit = new MockCommit();
             var dummy = DateTimeOffset.UtcNow.AddSeconds(1.0);
             var sut = new MinDateVersionFilter(dummy);
 
