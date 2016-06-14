@@ -53,8 +53,11 @@ namespace GitVersion
 
             if (overrideConfig != null)
             {
-                var overridenVersionVariables = ExecuteInternal(targetBranch, commitId, gitPreparer, buildServer, overrideConfig: overrideConfig);
-                return overridenVersionVariables;
+                using (Logger.IndentLog("Override config from command line"))
+                {
+                    var overridenVersionVariables = ExecuteInternal(targetBranch, commitId, gitPreparer, buildServer, overrideConfig: overrideConfig);
+                    return overridenVersionVariables;
+                }
             }
 
             var versionVariables = gitVersionCache.LoadVersionVariablesFromDiskCache(gitPreparer);

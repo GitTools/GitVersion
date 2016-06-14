@@ -49,12 +49,18 @@ namespace GitVersion
             retryOperation.Execute();
         }
 
-        private string PrepareCacheDirectory(GitPreparer gitPreparer)
+        public static string GetCacheDirectory(GitPreparer gitPreparer)
         {
             var gitDir = gitPreparer.GetDotGitDirectory();
+            var cacheDir = Path.Combine(gitDir, "gitversion_cache");
+            return cacheDir;
+        }
+
+        private string PrepareCacheDirectory(GitPreparer gitPreparer)
+        {
+            var cacheDir = GetCacheDirectory(gitPreparer);
 
             // If the cacheDir already exists, CreateDirectory just won't do anything (it won't fail). @asbjornu
-            var cacheDir = GetCacheDir(gitDir);
             fileSystem.CreateDirectory(cacheDir);
 
             return cacheDir;
@@ -119,11 +125,6 @@ namespace GitVersion
         {
             var cacheKey = GetHash(key);
             return string.Concat(Path.Combine(cacheDir, cacheKey), ".yml");
-        }
-
-        static string GetCacheDir(string gitDir)
-        {
-            return Path.Combine(gitDir, "gitversion_cache");
         }
 
         static string GetHash(string textToHash)
