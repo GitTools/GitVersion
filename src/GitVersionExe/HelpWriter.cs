@@ -24,7 +24,7 @@ GitVersion [path]
     /showvariable   Used in conjuntion with /output json, will output just a particular variable. 
                     eg /output json /showvariable SemVer - will output `1.2.3+beta.4`
     /l              Path to logfile.
-    /showconfig     Outputs the effective GitVersion config (defaults + custom from GitVersion.yaml) in yaml format
+    /showconfig     Outputs the effective GitVersion config (defaults + custom from GitVersion.yml) in yaml format
     /overrideconfig Overrides GitVersion config values inline (semicolon-separated key value pairs e.g. /overrideconfig:tag-prefix=Foo)
                     Currently supported config overrides: tag-prefix
 
