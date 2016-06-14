@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel;
+    using System.Text.RegularExpressions;
 
     public static class VariableProvider
     {
@@ -14,6 +15,17 @@
                 if (!semanticVersion.PreReleaseTag.HasTag())
                 {
                     semanticVersion.PreReleaseTag.Name = config.ContinuousDeploymentFallbackTag;
+                }
+
+                // Evaluate tag name pattern and append to prerelease tag
+                if (!string.IsNullOrEmpty(config.TagNamePattern))
+                {
+                    var match = Regex.Match(semanticVersion.BuildMetaData.Branch, config.TagNamePattern);
+                    var numberGroup = match.Groups["number"];
+                    if (numberGroup.Success)
+                    {
+                        semanticVersion.PreReleaseTag.Name += numberGroup.Value;
+                    }
                 }
 
                 // For continuous deployment the commits since tag gets promoted to the pre-release number

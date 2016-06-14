@@ -14,6 +14,7 @@
             Tag = branchConfiguration.Tag;
             Increment = branchConfiguration.Increment;
             PreventIncrementOfMergedBranchVersion = branchConfiguration.PreventIncrementOfMergedBranchVersion;
+            TagNamePattern = branchConfiguration.TagNamePattern;
             TagNumberPattern = branchConfiguration.TagNumberPattern;
             TrackMergeTarget = branchConfiguration.TrackMergeTarget;
             CommitMessageIncrementing = branchConfiguration.CommitMessageIncrementing;
@@ -33,6 +34,9 @@
 
         [YamlMember(Alias = "prevent-increment-of-merged-branch-version")]
         public bool? PreventIncrementOfMergedBranchVersion { get; set; }
+
+        [YamlMember(Alias = "tag-name-pattern")]
+        public string TagNamePattern { get; set; }
 
         [YamlMember(Alias = "tag-number-pattern")]
         public string TagNumberPattern { get; set; }

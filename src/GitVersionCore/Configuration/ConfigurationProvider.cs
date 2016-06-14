@@ -114,9 +114,11 @@ namespace GitVersion
             bool defaultPreventIncrement = false,
             VersioningMode? defaultVersioningMode = null, // Looked up from main config
             bool defaultTrackMergeTarget = false,
-            string defaultTagNumberPattern = null)
+            string defaultTagNumberPattern = null,
+            string defaultTagNamePattern = null)
         {
             branchConfig.Tag = branchConfig.Tag ?? defaultTag;
+            branchConfig.TagNamePattern = branchConfig.TagNamePattern ?? defaultTagNamePattern;
             branchConfig.TagNumberPattern = branchConfig.TagNumberPattern ?? defaultTagNumberPattern;
             branchConfig.Increment = branchConfig.Increment ?? defaultIncrementStrategy;
             branchConfig.PreventIncrementOfMergedBranchVersion = branchConfig.PreventIncrementOfMergedBranchVersion ?? defaultPreventIncrement;

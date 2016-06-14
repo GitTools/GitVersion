@@ -15,6 +15,7 @@ namespace GitVersion
             string tag, string nextVersion, IncrementStrategy increment,
             string branchPrefixToTrim,
             bool preventIncrementForMergedBranchVersion,
+            string tagNamePattern,
             string tagNumberPattern,
             string continuousDeploymentFallbackTag,
             bool trackMergeTarget,
@@ -37,6 +38,7 @@ namespace GitVersion
             Increment = increment;
             BranchPrefixToTrim = branchPrefixToTrim;
             PreventIncrementForMergedBranchVersion = preventIncrementForMergedBranchVersion;
+            TagNamePattern = tagNamePattern;
             TagNumberPattern = tagNumberPattern;
             ContinuousDeploymentFallbackTag = continuousDeploymentFallbackTag;
             TrackMergeTarget = trackMergeTarget;
@@ -72,6 +74,8 @@ namespace GitVersion
         public string BranchPrefixToTrim { get; private set; }
 
         public bool PreventIncrementForMergedBranchVersion { get; private set; }
+
+        public string TagNamePattern { get; private set; }
 
         public string TagNumberPattern { get; private set; }
 

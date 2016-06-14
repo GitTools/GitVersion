@@ -152,4 +152,27 @@ public class VariableProviderTests
 
         JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
     }
+
+    [Test]
+    public void ProvidesVariablesInContinuousDeploymentModeForTagNumber()
+    {
+        var semVer = new SemanticVersion
+        {
+            Major = 1,
+            Minor = 2,
+            Patch = 3,
+            PreReleaseTag = "PullRequest",
+            BuildMetaData = "5.Branch.develop"
+        };
+
+        semVer.BuildMetaData.Branch = "pull/2/merge";
+        semVer.BuildMetaData.Sha = "commitSha";
+        semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
+
+        var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, tagNamePattern: @"[/-](?<number>\d+)[-/]");
+        var vars = VariableProvider.GetVariablesFor(semVer, config, false);
+
+        vars.FullSemVer.ShouldBe("1.2.3-PullRequest2.5");
+    }
+
 }
