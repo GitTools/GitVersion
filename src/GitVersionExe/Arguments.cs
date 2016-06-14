@@ -15,7 +15,6 @@ namespace GitVersion
         public Authentication Authentication;
 
         public Config OverrideConfig;
-        public bool HasOverrideConfig { get; set; }
 
         public string TargetPath;
 
@@ -31,7 +30,7 @@ namespace GitVersion
         public string ShowVariable;
 
         public OutputType Output;
-
+        
         public string Proj;
         public string ProjArgs;
         public string Exec;

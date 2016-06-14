@@ -1,12 +1,12 @@
 namespace GitVersion
 {
-    using GitVersion.Configuration.Init.Wizard;
-    using GitVersion.Helpers;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.IO;
     using System.Linq;
     using System.Text;
+    using GitVersion.Configuration.Init.Wizard;
+    using GitVersion.Helpers;
 
     public class ConfigurationProvider
     {
@@ -103,27 +103,10 @@ namespace GitVersion
             // Map of current names and previous names
             var dict = new Dictionary<string, string[]>
             {
-                {"hotfix(es)?[/-]", new[]
-                    {
-                        "hotfix[/-]"
-                    }
-                },
-                {"features?[/-]", new[]
-                    {
-                        "feature[/-]",
-                        "feature(s)?[/-]"
-                    }
-                },
-                {"releases?[/-]", new[]
-                    {
-                        "release[/-]"
-                    }
-                },
-                {"dev(elop)?(ment)?$", new[]
-                    {
-                        "develop"
-                    }
-                }
+                { "hotfix(es)?[/-]", new [] { "hotfix[/-]" }},
+                { "features?[/-]", new [] { "feature[/-]", "feature(s)?[/-]" }},
+                { "releases?[/-]", new [] { "release[/-]" }},
+                { "dev(elop)?(ment)?$", new [] { "develop" }}
             };
 
             foreach (var mapping in dict)
@@ -203,12 +186,12 @@ namespace GitVersion
             var workingDirectory = gitPreparer.WorkingDirectory;
             var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
 
-            Verify(workingDirectory, projectRootDirectory, fileSystem);
+            Verify(workingDirectory,projectRootDirectory, fileSystem);
         }
 
         public static void Verify(string workingDirectory, string projectRootDirectory, IFileSystem fileSystem)
         {
-            if (fileSystem.PathsEqual(workingDirectory, projectRootDirectory))
+            if(fileSystem.PathsEqual(workingDirectory, projectRootDirectory))
             {
                 WarnAboutObsoleteConfigFile(workingDirectory, fileSystem);
                 return;
@@ -217,11 +200,6 @@ namespace GitVersion
             WarnAboutObsoleteConfigFile(workingDirectory, fileSystem);
             WarnAboutObsoleteConfigFile(projectRootDirectory, fileSystem);
 
-            WarnAboutAmbigousConfigFileSelection(workingDirectory, projectRootDirectory, fileSystem);
-        }
-
-        private static void WarnAboutAmbigousConfigFileSelection(string workingDirectory, string projectRootDirectory, IFileSystem fileSystem)
-        {
             var workingConfigFile = GetConfigFilePath(workingDirectory, fileSystem);
             var projectRootConfigFile = GetConfigFilePath(projectRootDirectory, fileSystem);
 
