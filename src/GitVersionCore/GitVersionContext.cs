@@ -1,8 +1,8 @@
 ﻿namespace GitVersion
 {
+    using LibGit2Sharp;
     using System;
     using System.Linq;
-    using LibGit2Sharp;
 
     /// <summary>
     /// Contextual information about where GitVersion is being run
@@ -111,7 +111,6 @@
 
             var commitMessageVersionBump = currentBranchConfig.Value.CommitMessageIncrementing ?? configuration.CommitMessageIncrementing.Value;
 
-            var versionFilter =
             Configuration = new EffectiveConfiguration(
                 assemblyVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix,
                 tag, nextVersion, incrementStrategy, currentBranchConfig.Key,

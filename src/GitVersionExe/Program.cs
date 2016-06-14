@@ -1,5 +1,6 @@
 namespace GitVersion
 {
+    using GitVersion.Helpers;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -7,7 +8,6 @@ namespace GitVersion
     using System.IO;
     using System.Linq;
     using System.Text;
-    using GitVersion.Helpers;
 
     class Program
     {
@@ -127,7 +127,7 @@ namespace GitVersion
 
         private static void VerifyConfiguration(Arguments arguments, IFileSystem fileSystem)
         {
-            var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation,arguments.Authentication,arguments.NoFetch,arguments.TargetPath);
+            var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.NoFetch, arguments.TargetPath);
             ConfigurationProvider.Verify(gitPreparer, fileSystem);
         }
 
