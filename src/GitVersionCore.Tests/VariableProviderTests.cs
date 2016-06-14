@@ -154,6 +154,8 @@ public class VariableProviderTests
     }
 
     [Test]
+    [Category("NoMono")]
+    [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     public void ProvidesVariablesInContinuousDeploymentModeWithTagNamePattern()
     {
         var semVer = new SemanticVersion
