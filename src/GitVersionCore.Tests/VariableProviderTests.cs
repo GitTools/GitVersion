@@ -154,7 +154,7 @@ public class VariableProviderTests
     }
 
     [Test]
-    public void ProvidesVariablesInContinuousDeploymentModeForTagNumber()
+    public void ProvidesVariablesInContinuousDeploymentModeWithTagNamePattern()
     {
         var semVer = new SemanticVersion
         {
