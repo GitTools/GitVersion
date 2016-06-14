@@ -1,11 +1,10 @@
 namespace GitVersion
 {
+    using GitVersion.Helpers;
+    using LibGit2Sharp;
     using System;
     using System.ComponentModel;
     using System.Linq;
-    using GitVersion.Helpers;
-
-    using LibGit2Sharp;
 
     public class ExecuteCore
     {
@@ -15,7 +14,7 @@ namespace GitVersion
         public ExecuteCore(IFileSystem fileSystem)
         {
             if (fileSystem == null) throw new ArgumentNullException("fileSystem");
-            
+
             this.fileSystem = fileSystem;
             gitVersionCache = new GitVersionCache(fileSystem);
         }
@@ -49,10 +48,16 @@ namespace GitVersion
                 throw new Exception(string.Format("Failed to prepare or find the .git directory in path '{0}'.", workingDirectory));
             }
 
+            if (overrideConfig != null)
+            {
+                var overridenVersionVariables = ExecuteInternal(targetBranch, commitId, gitPreparer, buildServer, overrideConfig: overrideConfig);
+                return overridenVersionVariables;
+            }
+
             var versionVariables = gitVersionCache.LoadVersionVariablesFromDiskCache(gitPreparer);
             if (versionVariables == null)
             {
-                versionVariables = ExecuteInternal(targetBranch, commitId, gitPreparer, buildServer, overrideConfig: overrideConfig);
+                versionVariables = ExecuteInternal(targetBranch, commitId, gitPreparer, buildServer);
                 gitVersionCache.WriteVariablesToDiskCache(gitPreparer, versionVariables);
             }
 
@@ -92,7 +97,7 @@ namespace GitVersion
             gitPreparer.Initialise(buildServer != null, ResolveCurrentBranch(buildServer, targetBranch, gitPreparer.IsDynamicGitRepository));
 
             var versionFinder = new GitVersionFinder();
-           var configuration = ConfigurationProvider.Provide(gitPreparer, fileSystem, overrideConfig: overrideConfig);
+            var configuration = ConfigurationProvider.Provide(gitPreparer, fileSystem, overrideConfig: overrideConfig);
 
             return gitPreparer.WithRepository(repo =>
             {
