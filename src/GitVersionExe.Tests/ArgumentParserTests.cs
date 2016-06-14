@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using GitVersion;
 using NUnit.Framework;
 using Shouldly;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 [TestFixture]
 public class ArgumentParserTests
@@ -199,7 +199,7 @@ public class ArgumentParserTests
     public void create_mulitple_assembly_info_protected(string command)
     {
         var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments(command));
-        exception.Message.ShouldBe("Can't specify multiple assembly info files when using -ensureassemblyinfo switch, either use a single assembly info file or do not specify -ensureassemblyinfo and create assembly info files manually");
+        exception.Message.ShouldBe("Can't specify multiple assembly info files when using /ensureassemblyinfo switch, either use a single assembly info file or do not specify /ensureassemblyinfo and create assembly info files manually");
     }
 
     [Test]
@@ -218,6 +218,37 @@ public class ArgumentParserTests
         arguments.UpdateAssemblyInfoFileName.Count.ShouldBe(2);
         arguments.UpdateAssemblyInfoFileName.ShouldContain("CommonAssemblyInfo.cs");
         arguments.UpdateAssemblyInfoFileName.ShouldContain("VersionAssemblyInfo.cs");
+    }
+
+    [Test]
+    public void overrideconfig_with_no_options()
+    {
+        var arguments = ArgumentParser.ParseArguments("/overrideconfig");
+        arguments.HasOverrideConfig.ShouldBe(false);
+        arguments.OverrideConfig.ShouldNotBeNull();
+    }
+
+    [Test]
+    public void overrideconfig_with_single_tagprefix_option()
+    {
+        var arguments = ArgumentParser.ParseArguments("/overrideconfig tag-prefix=sample");
+        arguments.HasOverrideConfig.ShouldBe(true);
+        arguments.OverrideConfig.TagPrefix.ShouldBe("sample");
+    }
+
+    [TestCase("tag-prefix=sample;tag-prefix=other")]
+    [TestCase("tag-prefix=sample;param2=other")]
+    public void overrideconfig_with_several_options(string options)
+    {
+        var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments(string.Format("/overrideconfig {0}", options)));
+        exception.Message.ShouldContain("Can't specify multiple /overrideconfig options");
+    }
+
+    [TestCase("tag-prefix=sample=asdf")]
+    public void overrideconfig_with_invalid_option(string options)
+    {
+        var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments(string.Format("/overrideconfig {0}", options)));
+        exception.Message.ShouldContain("Could not parse /overrideconfig option");
     }
 
     [Test]
@@ -248,7 +279,7 @@ public class ArgumentParserTests
         var arguments = ArgumentParser.ParseArguments("-ensureAssemblyInfo false");
         arguments.EnsureAssemblyInfo.ShouldBe(false);
     }
-    
+
     [Test]
     public void dynamicRepoLocation()
     {

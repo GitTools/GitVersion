@@ -270,7 +270,7 @@ namespace GitVersion
 
                 if (name.IsSwitch("overrideconfig"))
                 {
-                    var keyValueOptions = value.Split(';');
+                    var keyValueOptions = (value ?? "").Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                     if (keyValueOptions.Length == 0)
                     {
                         continue;
@@ -286,8 +286,8 @@ namespace GitVersion
                     // key=value
                     foreach (var keyValueOption in keyValueOptions)
                     {
-                        var keyAndValue = keyValueOption.Split('=');
-                        if (keyAndValue.Length > 1)
+                        var keyAndValue = keyValueOption.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (keyAndValue.Length != 2)
                         {
                             throw new WarningException(string.Format("Could not parse /overrideconfig option: {0}. Ensure it is in format 'key=value'", keyValueOption));
                         }
