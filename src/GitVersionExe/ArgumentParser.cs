@@ -263,25 +263,43 @@ namespace GitVersion
 
                     if (arguments.UpdateAssemblyInfoFileName.Count > 1 && arguments.EnsureAssemblyInfo)
                     {
-                        throw new WarningException("Can't specify multiple assembly info files when using -ensureassemblyinfo switch, either use a single assembly info file or do not specify -ensureassemblyinfo and create assembly info files manually");
+                        throw new WarningException("Can't specify multiple assembly info files when using /ensureassemblyinfo switch, either use a single assembly info file or do not specify /ensureassemblyinfo and create assembly info files manually");
                     }
                     continue;
                 }
 
                 if (name.IsSwitch("overrideconfig"))
                 {
-                    foreach (var item in value.Split(';'))
+                    var keyValueOptions = value.Split(';');
+                    if (keyValueOptions.Length == 0)
                     {
-                        var configOverride = item.Split('=');
+                        continue;
+                    }
 
-                        switch (configOverride[0])
+                    arguments.HasOverrideConfig = true;
+
+                    if (keyValueOptions.Length > 1)
+                    {
+                        throw new WarningException("Can't specify multiple /overrideconfig options: currently supported only 'tag-prefix' option");
+                    }
+
+                    // key=value
+                    foreach (var keyValueOption in keyValueOptions)
+                    {
+                        var keyAndValue = keyValueOption.Split('=');
+                        if (keyAndValue.Length > 1)
+                        {
+                            throw new WarningException(string.Format("Could not parse /overrideconfig option: {0}. Ensure it is in format 'key=value'", keyValueOption));
+                        }
+
+                        var optionKey = keyAndValue[0].ToLowerInvariant();
+                        switch (optionKey)
                         {
                             case "tag-prefix":
-                                if (1 < configOverride.Length)
-                                {
-                                    arguments.OverrideConfig.TagPrefix = configOverride[1];
-                                }
+                                arguments.OverrideConfig.TagPrefix = keyAndValue[1];
                                 break;
+                            default:
+                                throw new WarningException(string.Format("Could not parse /overrideconfig option: {0}. Currently supported only 'tag-prefix' option", optionKey));
                         }
                     }
 
