@@ -1,13 +1,13 @@
+using GitVersion;
+using GitVersion.Helpers;
+using NUnit.Framework;
+using Shouldly;
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using GitVersion;
-using GitVersion.Helpers;
-using NUnit.Framework;
-using Shouldly;
 using YamlDotNet.Serialization;
 
 [TestFixture]
@@ -118,7 +118,7 @@ branches:
         tag: bugfix";
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
-        
+
         config.Branches["bug[/-]"].Tag.ShouldBe("bugfix");
     }
 
@@ -151,7 +151,7 @@ branches:
 
         config.NextVersion.ShouldBe("2.12.654651698");
     }
-    
+
     [Test]
     [NUnit.Framework.Category("NoMono")]
     [NUnit.Framework.Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
@@ -273,12 +273,13 @@ branches: {}";
     [TestCase(ConfigurationProvider.ObsoleteConfigFileName, ConfigurationProvider.ObsoleteConfigFileName)]
     public void ThrowsExceptionOnAmbigousConfigFileLocation(string repoConfigFile, string workingConfigFile)
     {
-        SetupConfigFileContent(string.Empty, repoConfigFile, repoPath);
-        SetupConfigFileContent(string.Empty, workingConfigFile, workingPath);
+        var repositoryConfigFilePath = SetupConfigFileContent(string.Empty, repoConfigFile, repoPath);
+        var workingDirectoryConfigFilePath = SetupConfigFileContent(string.Empty, workingConfigFile, workingPath);
 
-        Should.Throw<WarningException>(() => {
-            ConfigurationProvider.Verify(workingPath, repoPath, fileSystem);
-        });
+        WarningException exception = Should.Throw<WarningException>(() => { ConfigurationProvider.Verify(workingPath, repoPath, fileSystem); });
+
+        var expecedMessage = string.Format("Ambigous config file selection from '{0}' and '{1}'", workingDirectoryConfigFilePath, repositoryConfigFilePath);
+        exception.Message.ShouldBe(expecedMessage);
     }
 
     [Test]
@@ -295,13 +296,16 @@ branches: {}";
         s.Length.ShouldBe(0);
     }
 
-    void SetupConfigFileContent(string text, string fileName = ConfigurationProvider.DefaultConfigFileName)
+    string SetupConfigFileContent(string text, string fileName = ConfigurationProvider.DefaultConfigFileName)
     {
-        SetupConfigFileContent(text, fileName, repoPath);
+        return SetupConfigFileContent(text, fileName, repoPath);
     }
 
-    void SetupConfigFileContent(string text, string fileName, string path)
+    string SetupConfigFileContent(string text, string fileName, string path)
     {
-        fileSystem.WriteAllText(Path.Combine(path, fileName), text);
+        var fullPath = Path.Combine(path, fileName);
+        fileSystem.WriteAllText(fullPath, text);
+
+        return fullPath;
     }
 }
