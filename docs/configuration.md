@@ -1,4 +1,4 @@
-# Configuration
+﻿# Configuration
 GitVersion 3.0 is mainly powered by configuration and no longer has branching strategies hard coded.
 
 ## Configuration tool
@@ -81,6 +81,21 @@ The options in here are:
 
  - **`tag-number-pattern:`** Pull requests require us to pull the pre-release number out of the branch name so `refs/pulls/534/merge` builds as `PullRequest.534`.
    This is a regex with a named capture group called `number`
+
+ - **`tag-name-pattern:`** This is similar to `tag-number-pattern` but instead of using the pull request number as the number part of the prerelease tag, the number is instead appended to the tag.
+   This is only applicable when the branch mode is set to ContinuousDeployment, where the prerelease tag number part is based on the number of commits since the last tag.
+   It enables consecutive commits to the pull request branch to generate unique full semantic version numbers when the branch is configured to use ContinuousDeployment mode and this value is set.
+   This is a regex with a named capture group called `number`.  
+   Example usage:
+```yaml
+branches:
+  (pull|pull\-requests|pr)[/-]:
+    mode: ContinuousDeployment
+    tag: PullRequest
+    increment: Inherit
+    track-merge-target: true
+    tag-name-pattern: '[/-](?<number>\d+)[-/]'
+```
 
  - **`track-merge-target:`** Strategy which will look for tagged merge commits directly off the current branch. For example `develop` → `release/1.0.0` → merge into `master` and tag `1.0.0`. The tag is *not* on develop, but develop should be version `1.0.0` now.
 
