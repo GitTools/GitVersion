@@ -64,6 +64,16 @@ namespace GitVersion
                 }
 
                 ConfigureLogging(arguments);
+
+                if (!Directory.Exists(arguments.TargetPath))
+                {
+                    Logger.WriteWarning(string.Format("The working directory '{0}' does not exist.", arguments.TargetPath));
+                }
+                else
+                {
+                    Logger.WriteInfo("Working directory: " + arguments.TargetPath);
+                }
+
                 if (arguments.Init)
                 {
                     ConfigurationProvider.Init(arguments.TargetPath, fileSystem, new ConsoleAdapter());
@@ -79,8 +89,6 @@ namespace GitVersion
                 {
                     arguments.Output = OutputType.BuildServer;
                 }
-
-                Logger.WriteInfo("Working directory: " + arguments.TargetPath);
 
                 SpecifiedArgumentRunner.Run(arguments, fileSystem);
             }
