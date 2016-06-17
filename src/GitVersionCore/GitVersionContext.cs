@@ -96,7 +96,6 @@
 
             var versioningMode = currentBranchConfig.Value.VersioningMode.Value;
             var tag = currentBranchConfig.Value.Tag;
-            var tagNamePattern = currentBranchConfig.Value.TagNamePattern;
             var tagNumberPattern = currentBranchConfig.Value.TagNumberPattern;
             var incrementStrategy = currentBranchConfig.Value.Increment.Value;
             var preventIncrementForMergedBranchVersion = currentBranchConfig.Value.PreventIncrementOfMergedBranchVersion.Value;
@@ -117,7 +116,6 @@
                 assemblyVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix,
                 tag, nextVersion, incrementStrategy, currentBranchConfig.Key,
                 preventIncrementForMergedBranchVersion,
-                tagNamePattern,
                 tagNumberPattern, configuration.ContinuousDeploymentFallbackTag,
                 trackMergeTarget,
                 majorMessage, minorMessage, patchMessage,

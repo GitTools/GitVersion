@@ -16,7 +16,6 @@ namespace GitVersionCore.Tests
             string nextVersion = null,
             string branchPrefixToTrim = "",
             bool preventIncrementForMergedBranchVersion = false,
-            string tagNamePattern = null,
             string tagNumberPattern = null,
             string continuousDeploymentFallbackTag = "ci",
             bool trackMergeTarget = false,
@@ -30,7 +29,7 @@ namespace GitVersionCore.Tests
             IEnumerable<IVersionFilter> versionFilters = null
             ) :
             base(assemblyVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch,
-                    branchPrefixToTrim, preventIncrementForMergedBranchVersion, tagNamePattern, tagNumberPattern, continuousDeploymentFallbackTag,
+                    branchPrefixToTrim, preventIncrementForMergedBranchVersion, tagNumberPattern, continuousDeploymentFallbackTag,
                     trackMergeTarget,
                     majorMessage, minorMessage, patchMessage,
                     commitMessageMode, legacySemVerPadding, buildMetaDataPadding, commitsSinceVersionSourcePadding,
