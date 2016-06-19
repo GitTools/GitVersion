@@ -14,6 +14,7 @@ namespace GitVersion
         bool noFetch;
         string targetPath;
 
+        public GitPreparer(string targetPath) : this(null, null, null, false, targetPath) { }
         public GitPreparer(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, bool noFetch, string targetPath)
         {
             this.targetUrl = targetUrl;
@@ -27,6 +28,11 @@ namespace GitVersion
                 };
             this.noFetch = noFetch;
             this.targetPath = targetPath.TrimEnd('/', '\\');
+        }
+
+        public string WorkingDirectory
+        {
+            get { return targetPath; }
         }
 
         public bool IsDynamicGitRepository
@@ -50,6 +56,14 @@ namespace GitVersion
             var tempRepositoryPath = CalculateTemporaryRepositoryPath(targetUrl, dynamicRepositoryLocation);
 
             DynamicGitRepositoryPath = CreateDynamicRepository(tempRepositoryPath, authentication, targetUrl, currentBranch, noFetch);
+        }
+
+        public TResult WithRepository<TResult>(Func<IRepository, TResult> action)
+        {
+            using (IRepository repo = new Repository(GetDotGitDirectory()))
+            {
+                return action(repo);
+            }
         }
 
         static string CalculateTemporaryRepositoryPath(string targetUrl, string dynamicRepositoryLocation)

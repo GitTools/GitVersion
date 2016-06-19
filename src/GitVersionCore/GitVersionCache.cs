@@ -1,13 +1,12 @@
 namespace GitVersion
 {
+    using GitVersion.Helpers;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Security.Cryptography;
     using System.Text;
-    using GitVersion.Helpers;
-    using LibGit2Sharp;
     using YamlDotNet.Serialization;
 
     public class GitVersionCache
@@ -19,9 +18,10 @@ namespace GitVersion
             this.fileSystem = fileSystem;
         }
 
-        public void WriteVariablesToDiskCache(IRepository repo, string gitDir, VersionVariables variablesFromCache)
+        public void WriteVariablesToDiskCache(GitPreparer gitPreparer, VersionVariables variablesFromCache)
         {
-            var cacheFileName = GetCacheFileName(GetKey(repo, gitDir), GetCacheDir(gitDir));
+            var cacheDir = PrepareCacheDirectory(gitPreparer);
+            var cacheFileName = GetCacheFileName(GetKey(gitPreparer), cacheDir);
             variablesFromCache.FileName = cacheFileName;
 
             using (var stream = fileSystem.OpenWrite(cacheFileName))
@@ -43,67 +43,82 @@ namespace GitVersion
             }
         }
 
-        public VersionVariables LoadVersionVariablesFromDiskCache(IRepository repo, string gitDir)
+        public static string GetCacheDirectory(GitPreparer gitPreparer)
+        {
+            var gitDir = gitPreparer.GetDotGitDirectory();
+            var cacheDir = Path.Combine(gitDir, "gitversion_cache");
+            return cacheDir;
+        }
+
+        private string PrepareCacheDirectory(GitPreparer gitPreparer)
+        {
+            var cacheDir = GetCacheDirectory(gitPreparer);
+
+            // If the cacheDir already exists, CreateDirectory just won't do anything (it won't fail). @asbjornu
+            fileSystem.CreateDirectory(cacheDir);
+
+            return cacheDir;
+        }
+
+        public VersionVariables LoadVersionVariablesFromDiskCache(GitPreparer gitPreparer)
         {
             using (Logger.IndentLog("Loading version variables from disk cache"))
             {
-                // If the cacheDir already exists, CreateDirectory just won't do anything (it won't fail). @asbjornu
+                var cacheDir = PrepareCacheDirectory(gitPreparer);
 
-                var cacheDir = GetCacheDir(gitDir);
-                fileSystem.CreateDirectory(cacheDir);
-                var cacheFileName = GetCacheFileName(GetKey(repo, gitDir), cacheDir);
-                VersionVariables vv = null;
-                if (fileSystem.Exists(cacheFileName))
-                {
-                    using (Logger.IndentLog("Deserializing version variables from cache file " + cacheFileName))
-                    {
-                        try
-                        {
-                            vv = VersionVariables.FromFile(cacheFileName, fileSystem);
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.WriteWarning("Unable to read cache file " + cacheFileName + ", deleting it.");
-                            Logger.WriteInfo(ex.ToString());
-                            try
-                            {
-                                fileSystem.Delete(cacheFileName);
-                            }
-                            catch (Exception deleteEx)
-                            {
-                                Logger.WriteWarning(string.Format("Unable to delete corrupted version cache file {0}. Got {1} exception.", cacheFileName, deleteEx.GetType().FullName));
-                            }
-                        }
-                    }
-                }
-                else
+                var cacheFileName = GetCacheFileName(GetKey(gitPreparer), cacheDir);
+                if (!fileSystem.Exists(cacheFileName))
                 {
                     Logger.WriteInfo("Cache file " + cacheFileName + " not found.");
+                    return null;
                 }
 
-                return vv;
+                using (Logger.IndentLog("Deserializing version variables from cache file " + cacheFileName))
+                {
+                    try
+                    {
+                        var loadedVariables = VersionVariables.FromFile(cacheFileName, fileSystem);
+                        return loadedVariables;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.WriteWarning("Unable to read cache file " + cacheFileName + ", deleting it.");
+                        Logger.WriteInfo(ex.ToString());
+                        try
+                        {
+                            fileSystem.Delete(cacheFileName);
+                        }
+                        catch (Exception deleteEx)
+                        {
+                            Logger.WriteWarning(string.Format("Unable to delete corrupted version cache file {0}. Got {1} exception.", cacheFileName, deleteEx.GetType().FullName));
+                        }
+
+                        return null;
+                    }
+                }
             }
         }
 
-        string GetKey(IRepository repo, string gitDir)
+        string GetKey(GitPreparer gitPreparer)
         {
+            var dotGitDirectory = gitPreparer.GetDotGitDirectory();
+
             // Maybe using timestamp in .git/refs directory is enough?
-            var ticks = fileSystem.GetLastDirectoryWrite(Path.Combine(gitDir, "refs"));
-            var configPath = Path.Combine(repo.GetRepositoryDirectory(), "GitVersionConfig.yaml");
-            var configText = fileSystem.Exists(configPath) ? fileSystem.ReadAllText(configPath) : null;
-            var configHash = configText != null ? GetHash(configText) : null;
-            return string.Join(":", gitDir, repo.Head.CanonicalName, repo.Head.Tip.Sha, ticks, configHash);
+            var lastGitRefsChangedTicks = fileSystem.GetLastDirectoryWrite(Path.Combine(dotGitDirectory, "refs"));
+
+            // will return the same hash even when config file will be moved 
+            // from workingDirectory to rootProjectDirectory. It's OK. Config essentially is the same.
+            var configFilePath = ConfigurationProvider.SelectConfigFilePath(gitPreparer, fileSystem);
+            var configFileContent = fileSystem.Exists(configFilePath) ? fileSystem.ReadAllText(configFilePath) : null;
+            var configFileHash = configFileContent != null ? GetHash(configFileContent) : null;
+
+            return gitPreparer.WithRepository(repo => string.Join(":", dotGitDirectory, repo.Head.CanonicalName, repo.Head.Tip.Sha, lastGitRefsChangedTicks, configFileHash));
         }
 
         static string GetCacheFileName(string key, string cacheDir)
         {
             var cacheKey = GetHash(key);
             return string.Concat(Path.Combine(cacheDir, cacheKey), ".yml");
-        }
-
-        static string GetCacheDir(string gitDir)
-        {
-            return Path.Combine(gitDir, "gitversion_cache");
         }
 
         static string GetHash(string textToHash)
