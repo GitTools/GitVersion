@@ -217,10 +217,10 @@ namespace GitVersion
             WarnAboutObsoleteConfigFile(workingDirectory, fileSystem);
             WarnAboutObsoleteConfigFile(projectRootDirectory, fileSystem);
 
-            WarnAboutAmbigousConfigFileSelection(workingDirectory, projectRootDirectory, fileSystem);
+            WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory, fileSystem);
         }
 
-        private static void WarnAboutAmbigousConfigFileSelection(string workingDirectory, string projectRootDirectory, IFileSystem fileSystem)
+        private static void WarnAboutAmbiguousConfigFileSelection(string workingDirectory, string projectRootDirectory, IFileSystem fileSystem)
         {
             var workingConfigFile = GetConfigFilePath(workingDirectory, fileSystem);
             var projectRootConfigFile = GetConfigFilePath(projectRootDirectory, fileSystem);
@@ -229,7 +229,7 @@ namespace GitVersion
             bool hasConfigInProjectRootDirectory = fileSystem.Exists(projectRootConfigFile);
             if (hasConfigInProjectRootDirectory && hasConfigInWorkingDirectory)
             {
-                throw new WarningException(string.Format("Ambigous config file selection from '{0}' and '{1}'", workingConfigFile, projectRootConfigFile));
+                throw new WarningException(string.Format("Ambiguous config file selection from '{0}' and '{1}'", workingConfigFile, projectRootConfigFile));
             }
         }
 
@@ -278,7 +278,7 @@ namespace GitVersion
             var defaultConfigFilePath = Path.Combine(workingDirectory, DefaultConfigFileName);
             if (fileSystem.Exists(defaultConfigFilePath))
             {
-                Logger.WriteWarning(string.Format("Ambigous config files at '{0}': '{1}' (deprecated) and '{2}'. Will be used '{2}'", workingDirectory, ObsoleteConfigFileName, DefaultConfigFileName));
+                Logger.WriteWarning(string.Format("Ambiguous config files at '{0}': '{1}' (deprecated) and '{2}'. Will be used '{2}'", workingDirectory, ObsoleteConfigFileName, DefaultConfigFileName));
                 return true;
             }
 
