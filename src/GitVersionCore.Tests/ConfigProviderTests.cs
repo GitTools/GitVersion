@@ -252,7 +252,7 @@ branches: {}";
 
     [TestCase(DefaultRepoPath)]
     [TestCase(DefaultWorkingPath)]
-    public void WarnOnAmbigousConfigFilesAtTheSameProjectRootDirectory(string path)
+    public void WarnOnAmbiguousConfigFilesAtTheSameProjectRootDirectory(string path)
     {
         SetupConfigFileContent(string.Empty, ConfigurationProvider.ObsoleteConfigFileName, path);
         SetupConfigFileContent(string.Empty, ConfigurationProvider.DefaultConfigFileName, path);
@@ -263,7 +263,7 @@ branches: {}";
 
         ConfigurationProvider.Verify(workingPath, repoPath, fileSystem);
 
-        var configFileDeprecatedWarning = string.Format("Ambigous config files at '{0}'", path);
+        var configFileDeprecatedWarning = string.Format("Ambiguous config files at '{0}'", path);
         logOutput.Contains(configFileDeprecatedWarning).ShouldBe(true);
     }
 
@@ -271,14 +271,14 @@ branches: {}";
     [TestCase(ConfigurationProvider.DefaultConfigFileName, ConfigurationProvider.ObsoleteConfigFileName)]
     [TestCase(ConfigurationProvider.ObsoleteConfigFileName, ConfigurationProvider.DefaultConfigFileName)]
     [TestCase(ConfigurationProvider.ObsoleteConfigFileName, ConfigurationProvider.ObsoleteConfigFileName)]
-    public void ThrowsExceptionOnAmbigousConfigFileLocation(string repoConfigFile, string workingConfigFile)
+    public void ThrowsExceptionOnAmbiguousConfigFileLocation(string repoConfigFile, string workingConfigFile)
     {
         var repositoryConfigFilePath = SetupConfigFileContent(string.Empty, repoConfigFile, repoPath);
         var workingDirectoryConfigFilePath = SetupConfigFileContent(string.Empty, workingConfigFile, workingPath);
 
         WarningException exception = Should.Throw<WarningException>(() => { ConfigurationProvider.Verify(workingPath, repoPath, fileSystem); });
 
-        var expecedMessage = string.Format("Ambigous config file selection from '{0}' and '{1}'", workingDirectoryConfigFilePath, repositoryConfigFilePath);
+        var expecedMessage = string.Format("Ambiguous config file selection from '{0}' and '{1}'", workingDirectoryConfigFilePath, repositoryConfigFilePath);
         exception.Message.ShouldBe(expecedMessage);
     }
 
