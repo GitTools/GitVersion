@@ -36,7 +36,7 @@
 
         public override string GetCurrentBranch(bool usingDynamicRepos)
         {
-            return Environment.GetEnvironmentVariable("GIT_BRANCH");
+            return Environment.GetEnvironmentVariable("GIT_LOCAL_BRANCH");
         }
 
         public override bool PreventFetch()
