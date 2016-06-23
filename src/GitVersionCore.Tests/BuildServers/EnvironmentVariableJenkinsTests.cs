@@ -43,12 +43,17 @@ public class EnvironmentVariableJenkinsTests
         string branchOrig = Environment.GetEnvironmentVariable(branch);
         string localBranchOrig = Environment.GetEnvironmentVariable(localBranch);
 
-        // Set new Environment variables for testing
+        // Set GIT_BRANCH for testing
         Environment.SetEnvironmentVariable(branch, "origin/master");
+
+        // Test Jenkins that GetCurrentBranch falls back to GIT_BRANCH if GIT_LOCAL_BRANCH undefined
+        var j = new Jenkins();
+        j.GetCurrentBranch(true).ShouldBe("origin/master");
+
+        // Set GIT_LOCAL_BRANCH
         Environment.SetEnvironmentVariable(localBranch, "master");
 
-        // Test Jenkins GetCurrentBranch method
-        var j = new Jenkins();
+        // Test Jenkins GetCurrentBranch method now returns GIT_LOCAL_BRANCH
         j.GetCurrentBranch(true).ShouldBe("master");
 
         // Restore environment variables
