@@ -172,7 +172,7 @@ public class VariableProviderTests
         var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, tagNumberPattern: @"[/-](?<number>\d+)[-/]");
         var vars = VariableProvider.GetVariablesFor(semVer, config, false);
 
-        vars.FullSemVer.ShouldBe("1.2.3-PullRequest2.5");
+        vars.FullSemVer.ShouldBe("1.2.3-PullRequest0002.5");
     }
 
     [Test]

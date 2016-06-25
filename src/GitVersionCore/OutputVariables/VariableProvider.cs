@@ -29,7 +29,7 @@
                     var numberGroup = match.Groups["number"];
                     if (numberGroup.Success)
                     {
-                        semanticVersion.PreReleaseTag.Name += numberGroup.Value;
+                        semanticVersion.PreReleaseTag.Name += numberGroup.Value.PadLeft(config.BuildMetaDataPadding, '0');
                     }
                 }
 
