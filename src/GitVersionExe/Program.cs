@@ -64,6 +64,16 @@ namespace GitVersion
                 }
 
                 ConfigureLogging(arguments);
+
+                if (!Directory.Exists(arguments.TargetPath))
+                {
+                    Logger.WriteWarning(string.Format("The working directory '{0}' does not exist.", arguments.TargetPath));
+                }
+                else
+                {
+                    Logger.WriteInfo("Working directory: " + arguments.TargetPath);
+                }
+
                 if (arguments.Init)
                 {
                     ConfigurationProvider.Init(arguments.TargetPath, fileSystem, new ConsoleAdapter());
@@ -79,8 +89,6 @@ namespace GitVersion
                 {
                     arguments.Output = OutputType.BuildServer;
                 }
-
-                Logger.WriteInfo("Working directory: " + arguments.TargetPath);
 
                 SpecifiedArgumentRunner.Run(arguments, fileSystem);
             }
@@ -98,9 +106,17 @@ namespace GitVersion
                 if (arguments != null)
                 {
                     Logger.WriteInfo(string.Empty);
-                    Logger.WriteInfo("Here is the current git graph (please include in issue): ");
+                    Logger.WriteInfo("Attempting to show the current git graph (please include in issue): ");
                     Logger.WriteInfo("Showing max of 100 commits");
-                    GitTools.LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
+
+                    try
+                    {
+                        GitTools.LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
+                    }
+                    catch (Exception dumpGraphException)
+                    {
+                        Logger.WriteError("Couldn't dump the git graph due to the following error: " + dumpGraphException);
+                    }
                 }
                 return 1;
             }

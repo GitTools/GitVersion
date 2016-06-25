@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
+using GitTools;
 using GitTools.Testing;
 using GitVersion;
 using NUnit.Framework;
@@ -65,5 +68,26 @@ public class ExecCmdLineArgumentTest
     {
         var results = GitVersionHelper.ExecuteIn(Environment.SystemDirectory, null, isTeamCity: false, logToFile: false);
         results.Output.ShouldContain("Can't find the .git directory in");
+    }
+
+    [Test]
+    [Category("NoMono")]
+    [Description("Doesn't work on Mono/Unix because of the path heuristics that needs to be done there in order to figure out whether the first argument actually is a path.")]
+    public void WorkingDirectoryDoesNotExistCrashesWithInformativeMessage()
+    {
+        var workingDirectory = Path.Combine(Environment.CurrentDirectory, Guid.NewGuid().ToString("N"));
+        var gitVersion = Path.Combine(PathHelper.GetCurrentDirectory(), "GitVersion.exe");
+        var output = new StringBuilder();
+        var exitCode = ProcessHelper.Run(
+            s => output.AppendLine(s),
+            s => output.AppendLine(s),
+            null,
+            gitVersion,
+            workingDirectory,
+            Environment.CurrentDirectory);
+
+        exitCode.ShouldNotBe(0);
+        var outputString = output.ToString();
+        outputString.ShouldContain(string.Format("The working directory '{0}' does not exist.", workingDirectory), () => outputString);
     }
 }
