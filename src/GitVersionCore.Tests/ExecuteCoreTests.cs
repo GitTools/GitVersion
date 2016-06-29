@@ -127,6 +127,17 @@ CommitDate: 2015-11-10
         });
     }
 
+    [Test]
+    public void DynamicRepositoriesShouldNotErrorWithFailedToFindGitDirectory()
+    {
+        var versionAndBranchFinder = new ExecuteCore(fileSystem);
+
+        RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
+        {
+            versionAndBranchFinder.ExecuteGitVersion("https://github.com/GitTools/GitVersion.git", null, new Authentication(), "refs/head/master", false, fixture.RepositoryPath, null);
+        });
+    }
+
     string RepositoryScope(ExecuteCore executeCore = null, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
     {
         // Make sure GitVersion doesn't trigger build server mode when we are running the tests

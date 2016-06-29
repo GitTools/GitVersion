@@ -27,6 +27,7 @@ namespace GitVersion
             var buildServer = applicableBuildServers.FirstOrDefault();
             var fetch = noFetch || (buildServer != null && buildServer.PreventFetch());
             var gitPreparer = new GitPreparer(targetUrl, dynamicRepositoryLocation, authentication, fetch, workingDirectory);
+            gitPreparer.Initialise(buildServer != null, ResolveCurrentBranch(buildServer, targetBranch, !string.IsNullOrWhiteSpace(dynamicRepositoryLocation)));
             var dotGitDirectory = gitPreparer.GetDotGitDirectory();
             var projectRoot = gitPreparer.GetProjectRootDirectory();
 
@@ -42,7 +43,8 @@ namespace GitVersion
             //    },
             //    Directory = workingDirectory
             //});
-            Logger.WriteInfo(string.Format("Project root is: " + projectRoot));
+            Logger.WriteInfo(string.Format("Project root is: {0}", projectRoot));
+            Logger.WriteInfo(string.Format("DotGit directory is: {0}", dotGitDirectory));
             if (string.IsNullOrEmpty(dotGitDirectory) || string.IsNullOrEmpty(projectRoot))
             {
                 // TODO Link to wiki article
@@ -92,8 +94,6 @@ namespace GitVersion
 
         VersionVariables ExecuteInternal(string targetBranch, string commitId, IRepository repo, GitPreparer gitPreparer, string projectRoot, IBuildServer buildServer, Config overrideConfig = null)
         {
-            gitPreparer.Initialise(buildServer != null, ResolveCurrentBranch(buildServer, targetBranch, gitPreparer.IsDynamicGitRepository));
-
             var versionFinder = new GitVersionFinder();
             var configuration = ConfigurationProvider.Provide(projectRoot, fileSystem, overrideConfig: overrideConfig);
 

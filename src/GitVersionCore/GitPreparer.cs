@@ -111,10 +111,17 @@ namespace GitVersion
 
         public string GetProjectRootDirectory()
         {
+            Logger.WriteInfo(string.Format("IsDynamicGitRepository: {0}", IsDynamicGitRepository));
             if (IsDynamicGitRepository)
+            {
+                Logger.WriteInfo(string.Format("Returning Project Root as {0}", targetPath));
                 return targetPath;
+            }
 
-            return Directory.GetParent(GetDotGitDirectory()).FullName;
+            var dotGetGitDirectory = GetDotGitDirectory();
+            var result = Directory.GetParent(dotGetGitDirectory).FullName;
+            Logger.WriteInfo(string.Format("Returning Project Root from DotGitDirectory: {0} - {1}", dotGetGitDirectory, result));
+            return result;
         }
 
         static string CreateDynamicRepository(string targetPath, AuthenticationInfo authentication, string repositoryUrl, string targetBranch, bool noFetch)
@@ -165,7 +172,8 @@ namespace GitVersion
                     Checkout = false,
                     CredentialsProvider = (url, usernameFromUrl, types) => credentials
                 };
-                Repository.Clone(repositoryUrl, gitDirectory, cloneOptions);
+                var returnedPath = Repository.Clone(repositoryUrl, gitDirectory, cloneOptions);
+                Logger.WriteInfo(string.Format("Returned path after repository clone: {0}", returnedPath));
             }
             catch (LibGit2SharpException ex)
             {
