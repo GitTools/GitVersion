@@ -191,7 +191,7 @@ namespace GitVersion
                     throw new Exception("Not found: The repository was not found");
                 }
 
-                throw new Exception("There was an unknown problem with the Git repository you provided");
+                throw new Exception("There was an unknown problem with the Git repository you provided", ex);
             }
         }
     }
