@@ -2,6 +2,7 @@ namespace GitVersion
 {
     using System;
     using System.ComponentModel;
+    using System.IO;
     using System.Linq;
     using GitVersion.Helpers;
 
@@ -57,7 +58,14 @@ namespace GitVersion
                 if (versionVariables == null)
                 {
                     versionVariables = ExecuteInternal(targetBranch, commitId, repo, gitPreparer, projectRoot, buildServer, overrideConfig: overrideConfig);
-                    gitVersionCache.WriteVariablesToDiskCache(repo, dotGitDirectory, versionVariables);
+                    try
+                    {
+                        gitVersionCache.WriteVariablesToDiskCache(repo, dotGitDirectory, versionVariables);
+                    }
+                    catch (IOException)
+                    {
+                        Logger.WriteInfo("I/O exception during cache write");
+                    }
                 }
 
                 return versionVariables;
