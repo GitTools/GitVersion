@@ -111,8 +111,8 @@ Task("Create-Release-Notes")
 {
     var releaseNotesExitCode = StartProcess(
             @"tools\GitReleaseNotes\tools\gitreleasenotes.exe",
-            new ProcessSettings { Arguments = ". /o artifacts/releasenotes.md" });
-    if (string.IsNullOrEmpty(System.IO.File.ReadAllText("./artifacts/releasenotes.md")))
+            new ProcessSettings { Arguments = ". /o build/releasenotes.md" });
+    if (string.IsNullOrEmpty(System.IO.File.ReadAllText("./build/releasenotes.md")))
         System.IO.File.WriteAllText("./build/releasenotes.md", "No issues closed since last release");
 
     if (releaseNotesExitCode != 0) throw new Exception("Failed to generate release notes");
@@ -126,7 +126,7 @@ Task("Upload-AppVeyor-Artifacts")
     .WithCriteria(() => BuildSystem.AppVeyor.IsRunningOnAppVeyor)
     .Does(() =>
 {
-    System.IO.File.WriteAllLines(outputDir + "artifacts", new[]{
+    System.IO.File.WriteAllLines("build/artifacts", new[]{
         "NuGetExeBuild:GitVersion.Portable." + nugetVersion +".nupkg",
         "NuGetCommandLineBuild:GitVersion.CommandLine." + nugetVersion +".nupkg",
         "NuGetRefBuild:GitVersion." + nugetVersion +".nupkg",
