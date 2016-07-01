@@ -124,33 +124,47 @@ namespace GitVersion
                 throw new ArgumentNullException("commit");
             }
 
-            var directBranchHasBeenFound = false;
-            foreach (var branch in branches)
+            using (Logger.IndentLog(string.Format("Getting branches containing the commit '{0}'.", commit.Id)))
             {
-                if (branch.Tip != null && branch.Tip.Sha != commit.Sha || (onlyTrackedBranches && !branch.IsTracking))
+                var directBranchHasBeenFound = false;
+                Logger.WriteInfo("Trying to find direct branches.");
+                // TODO: It looks wasteful looping through the branches twice. Can't these loops be merged somehow? @asbjornu
+                foreach (var branch in branches)
                 {
-                    continue;
+                    if (branch.Tip != null && branch.Tip.Sha != commit.Sha || (onlyTrackedBranches && !branch.IsTracking))
+                    {
+                        continue;
+                    }
+
+                    directBranchHasBeenFound = true;
+                    Logger.WriteInfo(string.Format("Direct branch found: '{0}'.", branch.FriendlyName));
+                    yield return branch;
                 }
 
-                directBranchHasBeenFound = true;
-                yield return branch;
-            }
-
-            if (directBranchHasBeenFound)
-            {
-                yield break;
-            }
-
-            foreach (var branch in branches.Where(b => (onlyTrackedBranches && !b.IsTracking)))
-            {
-                var commits = repository.Commits.QueryBy(new CommitFilter { IncludeReachableFrom = branch }).Where(c => c.Sha == commit.Sha);
-
-                if (!commits.Any())
+                if (directBranchHasBeenFound)
                 {
-                    continue;
+                    yield break;
                 }
 
-                yield return branch;
+                Logger.WriteInfo(string.Format("No direct branches found, searching through {0} branches.", onlyTrackedBranches ? "tracked" : "all"));
+                foreach (var branch in branches.Where(b => onlyTrackedBranches && !b.IsTracking))
+                {
+                    Logger.WriteInfo(string.Format("Searching for commits reachable from '{0}'.", branch.FriendlyName));
+
+                    var commits = repository.Commits.QueryBy(new CommitFilter
+                    {
+                        IncludeReachableFrom = branch
+                    }).Where(c => c.Sha == commit.Sha);
+
+                    if (!commits.Any())
+                    {
+                        Logger.WriteInfo(string.Format("The branch '{0}' has no matching commits.", branch.FriendlyName));
+                        continue;
+                    }
+
+                    Logger.WriteInfo(string.Format("The branch '{0}' has a matching commit.", branch.FriendlyName));
+                    yield return branch;
+                }
             }
         }
 
