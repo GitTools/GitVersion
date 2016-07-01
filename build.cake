@@ -1,5 +1,5 @@
-#tool "nuget:?package=GitVersion.CommandLine"
 #tool "nuget:?package=NUnit.ConsoleRunner"
+#tool "nuget:?package=GitReleaseNotes"
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
@@ -15,26 +15,60 @@ bool IsTagged = (BuildSystem.AppVeyor.Environment.Repository.Tag.IsTag &&
 bool IsMainGitVersionRepo = StringComparer.OrdinalIgnoreCase.Equals("gittools/gitversion", BuildSystem.AppVeyor.Environment.Repository.Name);
 bool IsPullRequest = BuildSystem.AppVeyor.Environment.PullRequest.IsPullRequest;
 
-Setup(context =>
+void Build()
+{
+    if(IsRunningOnUnix())
+    {
+        XBuild("./src/GitVersion.sln", new XBuildSettings()
+            .SetConfiguration(configuration)
+            .WithProperty("POSIX", "True")
+            .SetVerbosity(Verbosity.Verbose)
+        );
+    }
+    else
+    {
+        MSBuild("./src/GitVersion.sln", new MSBuildSettings()
+            .SetConfiguration(configuration)
+            .SetPlatformTarget(PlatformTarget.MSIL)
+            .WithProperty("Windows", "True")
+            .UseToolVersion(MSBuildToolVersion.VS2015)
+            .SetVerbosity(Verbosity.Minimal)
+            .SetNodeReuse(false));
+    }
+}
+
+Task("DogfoodBuild")
+    .IsDependentOn("NuGet-Package-Restore")
+    .Does(() =>
+{
+    Build();
+});
+
+Task("Version")
+    .IsDependentOn("DogfoodBuild")
+    .Does(() =>
 {
     if(!BuildSystem.IsLocalBuild)
     {
-        GitVersion(new GitVersionSettings{
+        GitVersion(new GitVersionSettings
+        {
             UpdateAssemblyInfo = true,
             LogFilePath = "console",
-            OutputType = GitVersionOutput.BuildServer
+            OutputType = GitVersionOutput.BuildServer,
+            ToolPath = @"src\GitVersionExe\bin\Release\GitVersion.exe"
         });
 
-        version = context.EnvironmentVariable("GitVersion_MajorMinorPatch");
-        nugetVersion = context.EnvironmentVariable("GitVersion_NuGetVersion");
-        preReleaseTag = context.EnvironmentVariable("GitVersion_PreReleaseTag");
-        semVersion = context.EnvironmentVariable("GitVersion_LegacySemVerPadded");
+        version = EnvironmentVariable("GitVersion_MajorMinorPatch");
+        nugetVersion = EnvironmentVariable("GitVersion_NuGetVersion");
+        preReleaseTag = EnvironmentVariable("GitVersion_PreReleaseTag");
+        semVersion = EnvironmentVariable("GitVersion_LegacySemVerPadded");
         milestone = string.Concat("v", version);
     }
 
     GitVersion assertedVersions = GitVersion(new GitVersionSettings
     {
-        OutputType = GitVersionOutput.Json
+        OutputType = GitVersionOutput.Json,
+        ToolPath = @"src\GitVersionExe\bin\Release\GitVersion.exe"
     });
 
     version = assertedVersions.MajorMinorPatch;
@@ -51,27 +85,11 @@ Task("NuGet-Package-Restore")
 });
 
 Task("Build")
+    .IsDependentOn("Version")
     .IsDependentOn("NuGet-Package-Restore")
     .Does(() =>
 {
-    if(IsRunningOnUnix())
-    {
-        XBuild("./Source/Gep13.Cake.Sample.WebApplication.sln", new XBuildSettings()
-            .SetConfiguration(configuration)
-            .WithProperty("POSIX", "True")
-            .SetVerbosity(Verbosity.Verbose)
-        );
-    }
-    else
-    {
-        MSBuild("./src/GitVersion.sln", new MSBuildSettings()
-            .SetConfiguration(configuration)
-            .SetPlatformTarget(PlatformTarget.MSIL)
-            .WithProperty("Windows", "True")
-            .UseToolVersion(MSBuildToolVersion.VS2015)
-            .SetVerbosity(Verbosity.Minimal)
-            .SetNodeReuse(false));
-    }
+    Build();
 });
 
 Task("Run-NUnit-Tests")
@@ -85,150 +103,48 @@ Task("Zip-Files")
     .IsDependentOn("Run-NUnit-Tests")
     .Does(() =>
 {
-    var files = GetFiles("./build/NuGetCommandLineBuild/Tools/*.*");
-
-    Zip("./", "GitVersion_" + nugetVersion + ".zip", files);
-
-    files = GetFiles("./build/GitVersionTfsTaskBuild/GitVersionTask/*.*");
-
-    Zip("./", "GitVersionTfsBuildTask_" + nugetVersion + ".zip", files);
-});
-
-Task("Create-NuGet-Packages")
-    .Does(() =>
-{
-
-});
-
-Task("Create-Chocolatey-Packages")
-    .Does(() =>
-{
-
+    Zip("./build/NuGetCommandLineBuild/Tools/", "GitVersion_" + nugetVersion + ".zip");
 });
 
 Task("Create-Release-Notes")
     .Does(() =>
 {
-    //GitReleaseManagerCreate(parameters.GitHub.UserName, parameters.GitHub.Password, "cake-build", "cake", new GitReleaseManagerCreateSettings {
-    //    Milestone         = parameters.Version.Milestone,
-    //    Name              = parameters.Version.Milestone,
-    //    Prerelease        = true,
-    //    TargetCommitish   = "main"
-    //});
+    var releaseNotesExitCode = StartProcess(
+            @"tools\GitReleaseNotes\tools\gitreleasenotes.exe",
+            new ProcessSettings { Arguments = ". /o artifacts/releasenotes.md" });
+    if (string.IsNullOrEmpty(System.IO.File.ReadAllText("./artifacts/releasenotes.md")))
+        System.IO.File.WriteAllText("./build/releasenotes.md", "No issues closed since last release");
+
+    if (releaseNotesExitCode != 0) throw new Exception("Failed to generate release notes");
 });
 
 Task("Package")
-  .IsDependentOn("Zip-Files")
-  .IsDependentOn("Create-NuGet-Packages")
-  .IsDependentOn("Create-Chocolatey-Packages");
+  .IsDependentOn("Zip-Files");
 
 Task("Upload-AppVeyor-Artifacts")
     .IsDependentOn("Package")
     .WithCriteria(() => BuildSystem.AppVeyor.IsRunningOnAppVeyor)
     .Does(() =>
 {
+    System.IO.File.WriteAllLines(outputDir + "artifacts", new[]{
+        "NuGetExeBuild:GitVersion.Portable." + nugetVersion +".nupkg",
+        "NuGetCommandLineBuild:GitVersion.CommandLine." + nugetVersion +".nupkg",
+        "NuGetRefBuild:GitVersion." + nugetVersion +".nupkg",
+        "NuGetTaskBuild:GitVersionTask." + nugetVersion +".nupkg",
+        "NuGetExeBuild:GitVersion.Portable." + nugetVersion +".nupkg",
+        "zip:GitVersion_" + nugetVersion + ".zip",
+        "releaseNotes:releasenotes.md"
+    });
+
     AppVeyor.UploadArtifact("build/NuGetExeBuild/GitVersion.Portable." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/NuGetCommandLineBuild/GitVersion.CommandLine." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/NuGetRefBuild/GitVersion." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/NuGetTaskBuild/GitVersionTask." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/GitVersionTfsTaskBuild/gittools.gitversion-" + semVersion + ".vsix");
-    AppVeyor.UploadArtifact("GitVersion_" + nugetVersion + ".zip");
-    AppVeyor.UploadArtifact("GitVersionTfsBuildTask_" + nugetVersion + ".zip");
+    AppVeyor.UploadArtifact("build/GitVersion_" + nugetVersion + ".zip");
+    AppVeyor.UploadArtifact("build/GitVersionTfsBuildTask_" + nugetVersion + ".zip");
 });
 
-Task("Publish-MyGet")
-    .IsDependentOn("Package")
-    .WithCriteria(() => !BuildSystem.IsLocalBuild)
-    .WithCriteria(() => !IsPullRequest)
-    .WithCriteria(() => IsMainGitVersionRepo)
-    .Does(() =>
-{
-
-})
-.OnError(exception =>
-{
-    Information("Publish-MyGet Task failed, but continuing with next Task...");
-    publishingError = true;
-});
-
-Task("Publish-NuGet")
-    .IsDependentOn("Package")
-    .WithCriteria(() => !BuildSystem.IsLocalBuild)
-    .WithCriteria(() => !IsPullRequest)
-    .WithCriteria(() => IsMainGitVersionRepo)
-    .WithCriteria(() => IsTagged)
-    .Does(() =>
-{
-
-})
-.OnError(exception =>
-{
-    Information("Publish-NuGet Task failed, but continuing with next Task...");
-    publishingError = true;
-});
-
-Task("Publish-Chocolatey")
-    .IsDependentOn("Package")
-    .WithCriteria(() => !BuildSystem.IsLocalBuild)
-    .WithCriteria(() => !IsPullRequest)
-    .WithCriteria(() => IsMainGitVersionRepo)
-    .WithCriteria(() => IsTagged)
-    .Does(() =>
-{
-
-})
-.OnError(exception =>
-{
-    Information("Publish-Chocolatey Task failed, but continuing with next Task...");
-    publishingError = true;
-});
-
-Task("Publish-Gem")
-    .IsDependentOn("Package")
-    .WithCriteria(() => !BuildSystem.IsLocalBuild)
-    .WithCriteria(() => !IsPullRequest)
-    .WithCriteria(() => IsMainGitVersionRepo)
-    .WithCriteria(() => IsTagged)
-    .Does(() =>
-{
-
-})
-.OnError(exception =>
-{
-    Information("Publish-Gem Task failed, but continuing with next Task...");
-    publishingError = true;
-});
-
-Task("Publish-GitHub-Release")
-    .IsDependentOn("Package")
-    .WithCriteria(() => !BuildSystem.IsLocalBuild)
-    .WithCriteria(() => !IsPullRequest)
-    .WithCriteria(() => IsMainGitVersionRepo)
-    .WithCriteria(() => IsTagged)
-    .Does(() =>
-{
-
-})
-.OnError(exception =>
-{
-    Information("Publish-GitHub-Release Task failed, but continuing with next Task...");
-    publishingError = true;
-});
-
-Task("AppVeyor")
-  .IsDependentOn("Upload-AppVeyor-Artifacts")
-  .IsDependentOn("Publish-MyGet")
-  .IsDependentOn("Publish-NuGet")
-  .IsDependentOn("Publish-Chocolatey")
-  .IsDependentOn("Publish-Gem")
-  .IsDependentOn("Publish-GitHub-Release")
-  .Finally(() =>
-{
-    if(publishingError)
-    {
-        throw new Exception("An error occurred during the publishing of Cake.  All publishing tasks have been attempted.");
-    }
-});
 
 Task("Travis")
   .IsDependentOn("Run-NUnit-Tests");
@@ -237,6 +153,7 @@ Task("ReleaseNotes")
   .IsDependentOn("Create-Release-Notes");
 
 Task("Default")
-  .IsDependentOn("Package");
+  .IsDependentOn("Package")
+  .IsDependentOn("Upload-AppVeyor-Artifacts");
 
 RunTarget(target);
