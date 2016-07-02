@@ -206,6 +206,37 @@ public class AssemblyInfoFileUpdateTests
         });
     }
 
+
+    [TestCase("cs", "[assembly: AssemblyFileVersion(\"1.0.0.0\")]")]
+    [TestCase("fs", "[<assembly: AssemblyFileVersion(\"1.0.0.0\")>]")]
+    [TestCase("vb", "<Assembly: AssemblyFileVersion(\"1.0.0.0\")>")]
+    [Category("NoMono")]
+    [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+    public void ShouldNotReplaceAssemblyVersionWhenExcluded(string fileExtension, string assemblyFileContent)
+    {
+        var workingDir = Path.GetTempPath();
+        var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
+
+        VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
+        {
+            var args = new Arguments
+            {
+                UpdateAssemblyInfo = true,
+                ExcludeUpdateAssemblyVersion = true,
+                UpdateAssemblyInfoFileName = new HashSet<string>
+                {
+                    "AssemblyInfo." + fileExtension
+                }
+            };
+
+            using (new AssemblyInfoFileUpdate(args, workingDir, variables, fileSystem))
+            {
+                assemblyFileContent = fileSystem.ReadAllText(fileName);
+                assemblyFileContent.ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
+            }
+        });
+    }
+
     [TestCase("cs", "[assembly: AssemblyVersion(\"1.0.0.0\")]\r\n[assembly: AssemblyInformationalVersion(\"1.0.0.0\")]\r\n[assembly: AssemblyFileVersion(\"1.0.0.0\")]")]
     [TestCase("fs", "[<assembly: AssemblyVersion(\"1.0.0.0\")>]\r\n[<assembly: AssemblyInformationalVersion(\"1.0.0.0\")>]\r\n[<assembly: AssemblyFileVersion(\"1.0.0.0\")>]")]
     [TestCase("vb", "<Assembly: AssemblyVersion(\"1.0.0.0\")>\r\n<Assembly: AssemblyInformationalVersion(\"1.0.0.0\")>\r\n<Assembly: AssemblyFileVersion(\"1.0.0.0\")>")]
@@ -400,6 +431,37 @@ public class AssemblyInfoFileUpdateTests
             var args = new Arguments
             {
                 UpdateAssemblyInfo = true,
+                UpdateAssemblyInfoFileName = new HashSet<string>
+                {
+                    "AssemblyInfo." + fileExtension
+                }
+            };
+
+            using (new AssemblyInfoFileUpdate(args, workingDir, variables, fileSystem))
+            {
+                assemblyFileContent = fileSystem.ReadAllText(fileName);
+                assemblyFileContent.ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
+            }
+        });
+    }
+
+
+    [TestCase("cs", "[assembly: AssemblyFileVersion(\"1.0.0.0\")]")]
+    [TestCase("fs", "[<assembly: AssemblyFileVersion(\"1.0.0.0\")>]")]
+    [TestCase("vb", "<Assembly: AssemblyFileVersion(\"1.0.0.0\")>")]
+    [Category("NoMono")]
+    [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+    public void ShouldNotAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFileWhenExcluded(string fileExtension, string assemblyFileContent)
+    {
+        var workingDir = Path.GetTempPath();
+        var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
+
+        VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
+        {
+            var args = new Arguments
+            {
+                UpdateAssemblyInfo = true,
+                ExcludeUpdateAssemblyVersion = true,
                 UpdateAssemblyInfoFileName = new HashSet<string>
                 {
                     "AssemblyInfo." + fileExtension

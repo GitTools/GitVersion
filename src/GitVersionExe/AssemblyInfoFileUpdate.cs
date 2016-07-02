@@ -48,7 +48,10 @@ namespace GitVersion
                 cleanupBackupTasks.Add(() => fileSystem.Delete(backupAssemblyInfo));
 
                 var fileContents = fileSystem.ReadAllText(assemblyInfoFile.FullName);
-                fileContents = ReplaceOrAppend(assemblyVersionRegex, fileContents, assemblyVersionString, assemblyInfoFile.Extension);
+                if (!args.ExcludeUpdateAssemblyVersion)
+                {
+                    fileContents = ReplaceOrAppend(assemblyVersionRegex, fileContents, assemblyVersionString, assemblyInfoFile.Extension);
+                }
                 fileContents = ReplaceOrAppend(assemblyInfoVersionRegex, fileContents, assemblyInfoVersionString, assemblyInfoFile.Extension);
                 fileContents = ReplaceOrAppend(assemblyFileVersionRegex, fileContents, assemblyFileVersionString, assemblyInfoFile.Extension);
 

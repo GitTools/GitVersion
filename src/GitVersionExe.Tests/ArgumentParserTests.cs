@@ -187,6 +187,15 @@ public class ArgumentParserTests
         arguments.UpdateAssemblyInfo.ShouldBe(true);
     }
 
+    [TestCase("-excludeUpdateAssemblyVersion true")]
+    [TestCase("-excludeUpdateAssemblyVersion 1")]
+    [TestCase("-excludeUpdateAssemblyVersion")]
+    public void exclude_update_assembly_version_True(string command)
+    {
+        var arguments = ArgumentParser.ParseArguments(command);
+        arguments.ExcludeUpdateAssemblyVersion.ShouldBe(true);
+    }
+
     [TestCase("-updateAssemblyInfo false")]
     [TestCase("-updateAssemblyInfo 0")]
     public void update_assembly_info_false(string command)
