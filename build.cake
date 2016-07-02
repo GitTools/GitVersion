@@ -107,6 +107,7 @@ Task("Zip-Files")
 });
 
 Task("Create-Release-Notes")
+    .IsDependentOn("Build")
     .Does(() =>
 {
     var releaseNotesExitCode = StartProcess(
