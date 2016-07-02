@@ -128,12 +128,17 @@ Task("Upload-AppVeyor-Artifacts")
     .WithCriteria(() => BuildSystem.AppVeyor.IsRunningOnAppVeyor)
     .Does(() =>
 {
+    var gem = string.IsNullOrEmpty(preReleaseTag) ? 
+        "gitversion-" + version + ".gem" :
+        "gitversion-" + version + "." + preReleaseTag + ".gem";
+
     System.IO.File.WriteAllLines("build/artifacts", new[]{
         "NuGetExeBuild:GitVersion.Portable." + nugetVersion +".nupkg",
         "NuGetCommandLineBuild:GitVersion.CommandLine." + nugetVersion +".nupkg",
         "NuGetRefBuild:GitVersion." + nugetVersion +".nupkg",
         "NuGetTaskBuild:GitVersionTask." + nugetVersion +".nupkg",
         "NuGetExeBuild:GitVersion.Portable." + nugetVersion +".nupkg",
+        "GemBuild:" + gem,
         "zip:GitVersion_" + nugetVersion + ".zip",
         "releaseNotes:releasenotes.md"
     });
@@ -144,6 +149,7 @@ Task("Upload-AppVeyor-Artifacts")
     AppVeyor.UploadArtifact("build/NuGetTaskBuild/GitVersionTask." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/GitVersionTfsTaskBuild/gittools.gitversion-" + semVersion + ".vsix");
     AppVeyor.UploadArtifact("build/GitVersion_" + nugetVersion + ".zip");
+    AppVeyor.UploadArtifact("build/GemBuild/" + gem);
 });
 
 
