@@ -96,7 +96,10 @@ Task("Run-NUnit-Tests")
     .IsDependentOn("Build")
     .Does(() =>
 {
-    NUnit3("src/*.Tests/bin/" + configuration + "/*.Tests.dll");
+    NUnit3(new [] {
+        "src/GitVersionCore.Tests/bin/" + configuration + "/GitVersionCore.Tests.dll",
+        "src/GitVersionExe.Tests/bin/" + configuration + "/GitVersionExe.Tests.dll",
+        "src/GitVersionTask.Tests/bin/" + configuration + "/GitVersionTask.Tests.dll" });
 });
 
 Task("Zip-Files")
