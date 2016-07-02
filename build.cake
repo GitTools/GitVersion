@@ -22,6 +22,8 @@ void Build()
         XBuild("./src/GitVersion.sln", new XBuildSettings()
             .SetConfiguration(configuration)
             .WithProperty("POSIX", "True")
+            .WithProperty("GitVersion_NuGetVersion", nugetVersion)
+            .WithProperty("GitVersion_SemVer", semVersion)
             .SetVerbosity(Verbosity.Verbose)
         );
     }
@@ -31,6 +33,8 @@ void Build()
             .SetConfiguration(configuration)
             .SetPlatformTarget(PlatformTarget.MSIL)
             .WithProperty("Windows", "True")
+            .WithProperty("GitVersion_NuGetVersion", nugetVersion)
+            .WithProperty("GitVersion_SemVer", semVersion)
             .UseToolVersion(MSBuildToolVersion.VS2015)
             .SetVerbosity(Verbosity.Minimal)
             .SetNodeReuse(false));
@@ -48,23 +52,13 @@ Task("Version")
     .IsDependentOn("DogfoodBuild")
     .Does(() =>
 {
-    if(!BuildSystem.IsLocalBuild)
+    GitVersion(new GitVersionSettings
     {
-        GitVersion(new GitVersionSettings
-        {
-            UpdateAssemblyInfo = true,
-            LogFilePath = "console",
-            OutputType = GitVersionOutput.BuildServer,
-            ToolPath = @"src\GitVersionExe\bin\Release\GitVersion.exe"
-        });
-
-        version = EnvironmentVariable("GitVersion_MajorMinorPatch");
-        nugetVersion = EnvironmentVariable("GitVersion_NuGetVersion");
-        preReleaseTag = EnvironmentVariable("GitVersion_PreReleaseTag");
-        semVersion = EnvironmentVariable("GitVersion_LegacySemVerPadded");
-        milestone = string.Concat("v", version);
-    }
-
+        UpdateAssemblyInfo = true,
+        LogFilePath = "console",
+        OutputType = GitVersionOutput.BuildServer,
+        ToolPath = @"src\GitVersionExe\bin\Release\GitVersion.exe"
+    });
     GitVersion assertedVersions = GitVersion(new GitVersionSettings
     {
         OutputType = GitVersionOutput.Json,
@@ -75,7 +69,6 @@ Task("Version")
     nugetVersion = assertedVersions.NuGetVersion;
     preReleaseTag = assertedVersions.PreReleaseTag;
     semVersion = assertedVersions.LegacySemVerPadded;
-    milestone = string.Concat("v", version);
 });
 
 Task("NuGet-Package-Restore")
@@ -106,7 +99,7 @@ Task("Zip-Files")
     .IsDependentOn("Run-NUnit-Tests")
     .Does(() =>
 {
-    Zip("./build/NuGetCommandLineBuild/Tools/", "GitVersion_" + nugetVersion + ".zip");
+    Zip("./build/NuGetCommandLineBuild/Tools/", "build/GitVersion_" + nugetVersion + ".zip");
 });
 
 Task("Create-Release-Notes")
@@ -147,7 +140,6 @@ Task("Upload-AppVeyor-Artifacts")
     AppVeyor.UploadArtifact("build/NuGetTaskBuild/GitVersionTask." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/GitVersionTfsTaskBuild/gittools.gitversion-" + semVersion + ".vsix");
     AppVeyor.UploadArtifact("build/GitVersion_" + nugetVersion + ".zip");
-    AppVeyor.UploadArtifact("build/GitVersionTfsBuildTask_" + nugetVersion + ".zip");
 });
 
 

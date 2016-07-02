@@ -177,7 +177,6 @@
 
     <!-- TfsBuildTask -->
     <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask\lib\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" Condition="Exists('$(OutputPath)GitVersion.pdb')" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\extension-icon.png" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\manifest.json" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\overview.md" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" />
