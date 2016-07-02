@@ -119,7 +119,8 @@ Task("Create-Release-Notes")
 });
 
 Task("Package")
-  .IsDependentOn("Zip-Files");
+    .IsDependentOn("Create-Release-Notes")
+    .IsDependentOn("Zip-Files");
 
 Task("Upload-AppVeyor-Artifacts")
     .IsDependentOn("Package")
@@ -149,11 +150,7 @@ Task("Upload-AppVeyor-Artifacts")
 Task("Travis")
   .IsDependentOn("Run-NUnit-Tests");
 
-Task("ReleaseNotes")
-  .IsDependentOn("Create-Release-Notes");
-
 Task("Default")
-  .IsDependentOn("Package")
   .IsDependentOn("Upload-AppVeyor-Artifacts");
 
 RunTarget(target);
