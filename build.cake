@@ -15,7 +15,7 @@ bool IsTagged = (BuildSystem.AppVeyor.Environment.Repository.Tag.IsTag &&
 bool IsMainGitVersionRepo = StringComparer.OrdinalIgnoreCase.Equals("gittools/gitversion", BuildSystem.AppVeyor.Environment.Repository.Name);
 bool IsPullRequest = BuildSystem.AppVeyor.Environment.PullRequest.IsPullRequest;
 
-void Build(string configuration)
+void Build(string configuration, string nugetVersion, string semVersion, string version, string preReleaseTag)
 {
     if(IsRunningOnUnix())
     {
@@ -34,7 +34,8 @@ void Build(string configuration)
             .SetVerbosity(Verbosity.Minimal)
             .SetNodeReuse(false);
 
-        if (BuildSystem.AppVeyor.IsRunningOnAppVeyor) {
+        if (BuildSystem.AppVeyor.IsRunningOnAppVeyor)
+        {
             msBuildSettings = msBuildSettings
                 .WithProperty("GitVersion_NuGetVersion", nugetVersion)
                 .WithProperty("GitVersion_SemVer", semVersion)
@@ -49,7 +50,7 @@ Task("DogfoodBuild")
     .IsDependentOn("NuGet-Package-Restore")
     .Does(() =>
 {
-    Build(configuration);
+    Build(configuration, nugetVersion, semVersion, version, preReleaseTag);
 });
 
 Task("Version")
@@ -86,7 +87,7 @@ Task("Build")
     .IsDependentOn("NuGet-Package-Restore")
     .Does(() =>
 {
-    Build(configuration);
+    Build(configuration, nugetVersion, semVersion, version, preReleaseTag);
 });
 
 Task("Run-NUnit-Tests")
