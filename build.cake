@@ -37,7 +37,9 @@ void Build()
         if (BuildSystem.AppVeyor.IsRunningOnAppVeyor) {
             msBuildSettings = msBuildSettings
                 .WithProperty("GitVersion_NuGetVersion", nugetVersion)
-                .WithProperty("GitVersion_SemVer", semVersion);
+                .WithProperty("GitVersion_SemVer", semVersion)
+                .WithProperty("GitVersion_MajorMinorPatch", version)
+                .WithProperty("GitVersion_PreReleaseTag", preReleaseTag);
         }
         MSBuild("./src/GitVersion.sln", msBuildSettings);
     }
