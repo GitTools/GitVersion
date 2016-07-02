@@ -1,3 +1,6 @@
+install:
+  npm i -g tfx-cli
+
 assembly_info:
   patch: false
 

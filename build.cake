@@ -19,25 +19,27 @@ void Build()
 {
     if(IsRunningOnUnix())
     {
-        XBuild("./src/GitVersion.sln", new XBuildSettings()
+        XBuild("./src/GitVersion.sln",  new XBuildSettings()
             .SetConfiguration(configuration)
             .WithProperty("POSIX", "True")
-            .WithProperty("GitVersion_NuGetVersion", nugetVersion)
-            .WithProperty("GitVersion_SemVer", semVersion)
-            .SetVerbosity(Verbosity.Verbose)
-        );
+            .SetVerbosity(Verbosity.Verbose));
     }
     else
     {
-        MSBuild("./src/GitVersion.sln", new MSBuildSettings()
+        var msBuildSettings = new MSBuildSettings()
             .SetConfiguration(configuration)
             .SetPlatformTarget(PlatformTarget.MSIL)
             .WithProperty("Windows", "True")
-            .WithProperty("GitVersion_NuGetVersion", nugetVersion)
-            .WithProperty("GitVersion_SemVer", semVersion)
             .UseToolVersion(MSBuildToolVersion.VS2015)
             .SetVerbosity(Verbosity.Minimal)
-            .SetNodeReuse(false));
+            .SetNodeReuse(false);
+
+        if (BuildSystem.AppVeyor.IsRunningOnAppVeyor) {
+            msBuildSettings = msBuildSettings
+                .WithProperty("GitVersion_NuGetVersion", nugetVersion)
+                .WithProperty("GitVersion_SemVer", semVersion);
+        }
+        MSBuild("./src/GitVersion.sln", msBuildSettings);
     }
 }
 
