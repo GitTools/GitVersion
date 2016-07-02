@@ -38,6 +38,7 @@
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <DocumentationFile>bin\Release\GitVersion.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="GitTools.Core, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
