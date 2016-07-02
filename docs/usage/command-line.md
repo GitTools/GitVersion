@@ -36,6 +36,8 @@ This can be done for *.cs, *.vb and *.fs files.
 
 When requesting that GitVersion generate an assembly info file you are limited to only specifying a single `<filename>` within the `/updateassemblyinfo` switch, this is to prevent the creation of mulitple assembly info files with the same assembly version attributes.  If this occurs your build will fail.
 
+Optionally, you can have GitVersion skip/ignore an `AssemblyVersion` attribute with the `/excludeUpdateAssemblyVersion` switch. This may be useful in cases where strict control is needed over the `AssemblyVersion` for binding redirects.
+
 ### Example: When AssemblyInfo.cs does not exist
 `GitVersion.exe /updateassemblyinfo AssemblyInfo.cs /ensureassemblyinfo`
 
@@ -45,6 +47,11 @@ A file is generated that contains version attributes (`AssemblyVersion`, `Assemb
 `GitVersion.exe /updateassemblyinfo AssemblyInfo.cs /ensureassemblyinfo`
 
 All known attributes (`AssemblyVersion`, `AssemblyFileVersion`, `AssemblyInformationalVersion`) will be updated
+
+### Example: When AssemblyInfo.cs already exists
+`GitVersion.exe /updateassemblyinfo AssemblyInfo.cs /ensureassemblyinfo /excludeUpdateAssemblyVersion`
+
+Some attributes (`AssemblyFileVersion`, `AssemblyInformationalVersion`) will be updated, `AssemblyVersion` will be ignored.
 
 ### Example: When AssemblyInfo.cs and AssemblyVersionInfo.cs do not exist
 `GitVersion.exe /updateassemblyinfo AssemblyInfo.cs AssemblyVersionInfo.cs /ensureassemblyinfo`

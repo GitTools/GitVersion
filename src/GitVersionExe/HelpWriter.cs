@@ -31,11 +31,13 @@ GitVersion [path]
     # AssemblyInfo updating
     /updateassemblyinfo
                     Will recursively search for all 'AssemblyInfo.cs' files in the git repo and update them
+    /excludeUpdateAssemblyVersion
+                    Will exclude adding or updating the AssemblyVersion attribute when updating assembly info files
     /updateassemblyinfofilename
                     Specify name of AssemblyInfo file. Can also /updateAssemblyInfo GlobalAssemblyInfo.cs as a shorthand
     /ensureassemblyinfo
                     If the assembly info file specified with /updateassemblyinfo or /updateassemblyinfofilename is not found, 
-                    it be created with these attributes: AssemblyFileVersion, FileVersion and AssemblyInformationalVersion
+                    it be created with these attributes: AssemblyFileVersion, AssemblyVersion and AssemblyInformationalVersion
                     ---        
                     Supports writing version info for: C#, F#, VB    
     # Remote repository args
