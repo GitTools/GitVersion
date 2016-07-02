@@ -1,0 +1,11 @@
+install:
+  npm i -g tfx-cli
+
+assembly_info:
+  patch: false
+
+build_script:
+  - ps: .\deploy.ps1
+
+test: off
+skip_non_tags: true

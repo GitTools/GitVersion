@@ -1,28 +1,112 @@
+#addin "Cake.Json"
 
-Task("Publish-MyGet")
-    .IsDependentOn("Package")
-    .WithCriteria(() => !BuildSystem.IsLocalBuild)
-    .WithCriteria(() => !IsPullRequest)
-    .WithCriteria(() => IsMainGitVersionRepo)
+using System.Net;
+using System.Linq;
+using System.Collections.Generic;
+
+string Get(string url)
+{
+    var assetsRequest = WebRequest.CreateHttp(url);
+    assetsRequest.Method = "GET";
+    assetsRequest.Accept = "application/vnd.github.v3+json";
+    assetsRequest.UserAgent = "BuildScript";
+
+    using (var assetsResponse = assetsRequest.GetResponse())
+    {
+        var assetsStream = assetsResponse.GetResponseStream();
+        var assetsReader = new StreamReader(assetsStream);
+        var assetsBody = assetsReader.ReadToEnd();
+        return assetsBody;
+    }
+}
+
+Task("EnsureRequirements")
+    .Does(() =>
+    {
+        if (!AppVeyor.IsRunningOnAppVeyor)
+           throw new Exception("Deployment should happen via appveyor");
+
+        var isTag =
+           AppVeyor.Environment.Repository.Tag.IsTag &&
+           !string.IsNullOrWhiteSpace(AppVeyor.Environment.Repository.Tag.Name);
+        if (!isTag)
+           throw new Exception("Deployment should happen from a published GitHub release");
+    });
+
+var tag = "";
+Dictionary<string, string> artifactLookup = null;
+Task("UpdateVersionInfo")
+    .IsDependentOn("EnsureRequirements")
+    .Does(() =>
+    {
+        tag = AppVeyor.Environment.Repository.Tag.Name;
+        AppVeyor.UpdateBuildVersion(tag);
+    });
+
+Task("DownloadGitHubReleaseArtifacts")
+    .IsDependentOn("UpdateVersionInfo")
+    .Does(() =>
+    {
+        var assets_url = ParseJson(Get("https://api.github.com/repos/shouldly/shouldly/releases/tags/" + tag))
+            .GetValue("assets_url").Value<string>();
+        EnsureDirectoryExists("./releaseArtifacts");
+        foreach(var asset in DeserializeJson<JArray>(Get(assets_url)))
+        {
+            DownloadFile(asset.Value<string>("browser_download_url"), "./releaseArtifacts/" + asset.Value<string>("name"));
+        }
+
+        // Turns .artifacts file into a lookup
+        artifactLookup = System.IO.File
+            .ReadAllLines("./releaseArtifacts/artifacts")
+            .Select(l => l.Split(':'))
+            .ToDictionary(v => v[0], v => v[1]);
+    });
+
+Task("Publish-NuGetPackage")
+    .IsDependentOn("DownloadGitHubReleaseArtifacts")
     .Does(() =>
 {
-
+    NuGetPush(
+        "./releaseArtifacts/" + artifactLookup["NuGetExeBuild"],
+        new NuGetPushSettings {
+            ApiKey = EnvironmentVariable("NuGetApiKey"),
+            Source = "https://www.nuget.org/api/v2/package"
+        });
 })
 .OnError(exception =>
 {
-    Information("Publish-MyGet Task failed, but continuing with next Task...");
+    Information("Publish-NuGet Task failed, but continuing with next Task...");
     publishingError = true;
 });
 
-Task("Publish-NuGet")
-    .IsDependentOn("Package")
-    .WithCriteria(() => !BuildSystem.IsLocalBuild)
-    .WithCriteria(() => !IsPullRequest)
-    .WithCriteria(() => IsMainGitVersionRepo)
-    .WithCriteria(() => IsTagged)
+Task("Publish-NuGetCommandLine")
+    .IsDependentOn("DownloadGitHubReleaseArtifacts")
     .Does(() =>
 {
+    NuGetPush(
+        "./releaseArtifacts/" + artifactLookup["NuGetCommandLineBuild"],
+        new NuGetPushSettings {
+            ApiKey = EnvironmentVariable("NuGetApiKey"),
+            Source = "https://www.nuget.org/api/v2/package"
+        });
+})
+.OnError(exception =>
+{
+    Information("Publish-NuGet Task failed, but continuing with next Task...");
+    publishingError = true;
+});
 
+
+Task("Publish-MsBuildTask")
+    .IsDependentOn("DownloadGitHubReleaseArtifacts")
+    .Does(() =>
+{
+    NuGetPush(
+        "./releaseArtifacts/" + artifactLookup["NuGetTaskBuild"],
+        new NuGetPushSettings {
+            ApiKey = EnvironmentVariable("NuGetApiKey"),
+            Source = "https://www.nuget.org/api/v2/package"
+        });
 })
 .OnError(exception =>
 {
@@ -31,14 +115,15 @@ Task("Publish-NuGet")
 });
 
 Task("Publish-Chocolatey")
-    .IsDependentOn("Package")
-    .WithCriteria(() => !BuildSystem.IsLocalBuild)
-    .WithCriteria(() => !IsPullRequest)
-    .WithCriteria(() => IsMainGitVersionRepo)
-    .WithCriteria(() => IsTagged)
+    .IsDependentOn("DownloadGitHubReleaseArtifacts")
     .Does(() =>
 {
-
+    NuGetPush(
+        "./releaseArtifacts/" + artifactLookup["NuGetExeBuild"],
+        new NuGetPushSettings {
+            ApiKey = EnvironmentVariable("ChocolateyApiKey"),
+            Source = "https://chocolatey.org/api/v2/package"
+        });
 })
 .OnError(exception =>
 {
@@ -47,43 +132,43 @@ Task("Publish-Chocolatey")
 });
 
 Task("Publish-Gem")
-    .IsDependentOn("Package")
-    .WithCriteria(() => !BuildSystem.IsLocalBuild)
-    .WithCriteria(() => !IsPullRequest)
-    .WithCriteria(() => IsMainGitVersionRepo)
-    .WithCriteria(() => IsTagged)
+    .IsDependentOn("DownloadGitHubReleaseArtifacts")
     .Does(() =>
 {
+    var returnCode = StartProcess("gem", new ProcessSettings
+    {
+        Arguments = "push ./releaseArtifacts/" + artifactLookup["NuGetExeBuild"] + " --key " + EnvironmentVariable("GemApiKey")
+    });
 
-})
-.OnError(exception =>
-{
-    Information("Publish-Gem Task failed, but continuing with next Task...");
-    publishingError = true;
+    if (returnCode != 0) {
+        Information("Publish-Gem Task failed, but continuing with next Task...");
+        publishingError = true;
+    }
 });
 
-Task("Publish-GitHub-Release")
-    .IsDependentOn("Package")
-    .WithCriteria(() => !BuildSystem.IsLocalBuild)
-    .WithCriteria(() => !IsPullRequest)
-    .WithCriteria(() => IsMainGitVersionRepo)
-    .WithCriteria(() => IsTagged)
+
+Task("Publish-VstsTask")
+    .IsDependentOn("DownloadGitHubReleaseArtifacts")
     .Does(() =>
 {
+    var returnCode = StartProcess("tfx", new ProcessSettings
+    {
+        Arguments = "extension publish --vsix ./releaseArtifacts/" + artifactLookup["GitVersionTfsTaskBuild"] + " --no-prompt --auth-type pat --token " + EnvironmentVariable("GemApiKey")
+    });
 
-})
-.OnError(exception =>
-{
-    Information("Publish-GitHub-Release Task failed, but continuing with next Task...");
-    publishingError = true;
+    if (returnCode != 0) {
+        Information("Publish-VstsTask Task failed, but continuing with next Task...");
+        publishingError = true;
+    }
 });
 
 Task("Deploy")
-  .IsDependentOn("Publish-MyGet")
-  .IsDependentOn("Publish-NuGet")
+  .IsDependentOn("Publish-NuGetPackage")
+  .IsDependentOn("Publish-NuGetCommandLine")
+  .IsDependentOn("Publish-MsBuildTask")
   .IsDependentOn("Publish-Chocolatey")
   .IsDependentOn("Publish-Gem")
-  .IsDependentOn("Publish-GitHub-Release")
+  .IsDependentOn("Publish-VstsTask")
   .Finally(() =>
 {
     if(publishingError)

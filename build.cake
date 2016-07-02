@@ -15,7 +15,7 @@ bool IsTagged = (BuildSystem.AppVeyor.Environment.Repository.Tag.IsTag &&
 bool IsMainGitVersionRepo = StringComparer.OrdinalIgnoreCase.Equals("gittools/gitversion", BuildSystem.AppVeyor.Environment.Repository.Name);
 bool IsPullRequest = BuildSystem.AppVeyor.Environment.PullRequest.IsPullRequest;
 
-void Build()
+void Build(string configuration)
 {
     if(IsRunningOnUnix())
     {
@@ -49,7 +49,7 @@ Task("DogfoodBuild")
     .IsDependentOn("NuGet-Package-Restore")
     .Does(() =>
 {
-    Build();
+    Build(configuration);
 });
 
 Task("Version")
@@ -86,7 +86,7 @@ Task("Build")
     .IsDependentOn("NuGet-Package-Restore")
     .Does(() =>
 {
-    Build();
+    Build(configuration);
 });
 
 Task("Run-NUnit-Tests")
@@ -137,7 +137,7 @@ Task("Upload-AppVeyor-Artifacts")
         "NuGetCommandLineBuild:GitVersion.CommandLine." + nugetVersion +".nupkg",
         "NuGetRefBuild:GitVersion." + nugetVersion +".nupkg",
         "NuGetTaskBuild:GitVersionTask." + nugetVersion +".nupkg",
-        "NuGetExeBuild:GitVersion.Portable." + nugetVersion +".nupkg",
+        "GitVersionTfsTaskBuild:gittools.gitversion." + semVersion +".vsix",
         "GemBuild:" + gem,
         "zip:GitVersion_" + nugetVersion + ".zip",
         "releaseNotes:releasenotes.md"
