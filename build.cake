@@ -108,10 +108,15 @@ Task("Run-NUnit-Tests")
     .IsDependentOn("Build")
     .Does(() =>
 {
+    var settings = new NUnit3Settings();
+    if(IsRunningOnUnix())
+        settings.Where = "cat != NoMono";
+    }
     NUnit3(new [] {
         "src/GitVersionCore.Tests/bin/" + configuration + "/GitVersionCore.Tests.dll",
         "src/GitVersionExe.Tests/bin/" + configuration + "/GitVersionExe.Tests.dll",
-        "src/GitVersionTask.Tests/bin/" + configuration + "/GitVersionTask.Tests.dll" });
+        "src/GitVersionTask.Tests/bin/" + configuration + "/GitVersionTask.Tests.dll" },
+        settings);
 });
 
 Task("Zip-Files")
