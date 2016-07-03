@@ -58,10 +58,13 @@ Task("Version")
     .Does(() =>
 {
     string url = null;
+    string branch = null;
     // We need to use dynamic repositories on Travis
     if (TravisCI.IsRunningOnTravisCI)
     {
         url = "https://github.com/GitTools/GitVersion.git";
+        branch = EnvironmentVariable("BRANCH");
+        Information("Travis branch: {0}", branch);
     }
 
     GitVersion(new GitVersionSettings
@@ -70,13 +73,15 @@ Task("Version")
         LogFilePath = "console",
         OutputType = GitVersionOutput.BuildServer,
         ToolPath = @"src\GitVersionExe\bin\Release\GitVersion.exe",
-        Url = url
+        Url = url,
+        Branch = branch
     });
     GitVersion assertedVersions = GitVersion(new GitVersionSettings
     {
         OutputType = GitVersionOutput.Json,
         ToolPath = @"src\GitVersionExe\bin\Release\GitVersion.exe",
-        Url = url
+        Url = url,
+        Branch = branch
     });
 
     version = assertedVersions.MajorMinorPatch;
