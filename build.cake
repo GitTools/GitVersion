@@ -110,6 +110,7 @@ Task("Run-NUnit-Tests")
 {
     var settings = new NUnit3Settings();
     if(IsRunningOnUnix())
+    {
         settings.Where = "cat != NoMono";
     }
     NUnit3(new [] {
