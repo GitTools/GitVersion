@@ -57,17 +57,26 @@ Task("Version")
     .IsDependentOn("DogfoodBuild")
     .Does(() =>
 {
+    string url = null;
+    // We need to use dynamic repositories on Travis
+    if (TravisCI.IsRunningOnTravisCI)
+    {
+        url = "https://github.com/GitTools/GitVersion.git";
+    }
+
     GitVersion(new GitVersionSettings
     {
         UpdateAssemblyInfo = true,
         LogFilePath = "console",
         OutputType = GitVersionOutput.BuildServer,
-        ToolPath = @"src\GitVersionExe\bin\Release\GitVersion.exe"
+        ToolPath = @"src\GitVersionExe\bin\Release\GitVersion.exe",
+        Url = url
     });
     GitVersion assertedVersions = GitVersion(new GitVersionSettings
     {
         OutputType = GitVersionOutput.Json,
-        ToolPath = @"src\GitVersionExe\bin\Release\GitVersion.exe"
+        ToolPath = @"src\GitVersionExe\bin\Release\GitVersion.exe",
+        Url = url
     });
 
     version = assertedVersions.MajorMinorPatch;
