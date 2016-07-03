@@ -186,24 +186,6 @@ namespace GitVersion
                     continue;
                 }
 
-                if (name.IsSwitch("excludeUpdateAssemblyVersion"))
-                {
-                    if (value.IsTrue())
-                    {
-                        arguments.ExcludeUpdateAssemblyVersion = true;
-                    }
-                    else if (value.IsFalse())
-                    {
-                        arguments.ExcludeUpdateAssemblyVersion = false;
-                    }
-                    else
-                    {
-                        arguments.ExcludeUpdateAssemblyVersion = true;
-                    }
-
-                    continue;
-                }
-
                 if (name.IsSwitch("assemblyversionformat"))
                 {
                     throw new WarningException("assemblyversionformat switch removed, use AssemblyVersioningScheme configuration value instead");

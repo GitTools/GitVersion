@@ -37,7 +37,6 @@ namespace GitVersion
         public string ExecArgs;
 
         public bool UpdateAssemblyInfo;
-        public bool ExcludeUpdateAssemblyVersion;
         public ISet<string> UpdateAssemblyInfoFileName;
         public bool EnsureAssemblyInfo;
 

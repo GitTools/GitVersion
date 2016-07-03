@@ -5,6 +5,7 @@
         MajorMinorPatchTag,
         MajorMinorPatch,
         MajorMinor,
-        Major
+        Major,
+        None
     }
 }

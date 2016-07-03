@@ -26,7 +26,7 @@ namespace GitVersion
 
             var assemblyVersion = variables.AssemblySemVer;
             var assemblyVersionRegex = new Regex(@"AssemblyVersion\s*\(\s*""[^""]*""\s*\)");
-            var assemblyVersionString = string.Format("AssemblyVersion(\"{0}\")", assemblyVersion);
+            var assemblyVersionString = assemblyVersion != null ? string.Format("AssemblyVersion(\"{0}\")", assemblyVersion) : null;
             var assemblyInfoVersion = variables.InformationalVersion;
             var assemblyInfoVersionRegex = new Regex(@"AssemblyInformationalVersion\s*\(\s*""[^""]*""\s*\)");
             var assemblyInfoVersionString = string.Format("AssemblyInformationalVersion(\"{0}\")", assemblyInfoVersion);
@@ -48,7 +48,7 @@ namespace GitVersion
                 cleanupBackupTasks.Add(() => fileSystem.Delete(backupAssemblyInfo));
 
                 var fileContents = fileSystem.ReadAllText(assemblyInfoFile.FullName);
-                if (!args.ExcludeUpdateAssemblyVersion)
+                if (assemblyVersion != null)
                 {
                     fileContents = ReplaceOrAppend(assemblyVersionRegex, fileContents, assemblyVersionString, assemblyInfoFile.Extension);
                 }

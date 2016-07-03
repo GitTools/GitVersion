@@ -212,17 +212,16 @@ public class AssemblyInfoFileUpdateTests
     [TestCase("vb", "<Assembly: AssemblyFileVersion(\"1.0.0.0\")>")]
     [Category("NoMono")]
     [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
-    public void ShouldNotReplaceAssemblyVersionWhenExcluded(string fileExtension, string assemblyFileContent)
+    public void ShouldNotReplaceAssemblyVersionWhenVersionSchemeIsNone(string fileExtension, string assemblyFileContent)
     {
         var workingDir = Path.GetTempPath();
         var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
 
-        VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
+        VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.None, verify: (fileSystem, variables) =>
         {
             var args = new Arguments
             {
                 UpdateAssemblyInfo = true,
-                ExcludeUpdateAssemblyVersion = true,
                 UpdateAssemblyInfoFileName = new HashSet<string>
                 {
                     "AssemblyInfo." + fileExtension
@@ -451,17 +450,16 @@ public class AssemblyInfoFileUpdateTests
     [TestCase("vb", "<Assembly: AssemblyFileVersion(\"1.0.0.0\")>")]
     [Category("NoMono")]
     [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
-    public void ShouldNotAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFileWhenExcluded(string fileExtension, string assemblyFileContent)
+    public void ShouldNotAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFileWhenVersionSchemeIsNone(string fileExtension, string assemblyFileContent)
     {
         var workingDir = Path.GetTempPath();
         var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
 
-        VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
+        VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.None, verify: (fileSystem, variables) =>
         {
             var args = new Arguments
             {
                 UpdateAssemblyInfo = true,
-                ExcludeUpdateAssemblyVersion = true,
                 UpdateAssemblyInfoFileName = new HashSet<string>
                 {
                     "AssemblyInfo." + fileExtension

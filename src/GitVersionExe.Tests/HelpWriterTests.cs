@@ -16,7 +16,6 @@ public class HelpWriterTests
             { "TargetBranch", "/b" },
             { "LogFilePath" , "/l" },
             { "DynamicRepositoryLocation" , "/dynamicRepoLocation" },
-            { "ExcludeUpdateAssemblyVersion" , "/excludeUpdateAssemblyVersion" },
             { "IsHelp", "/?" }
         };
         string helpText = null;
