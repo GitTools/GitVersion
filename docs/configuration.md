@@ -18,7 +18,7 @@ The global configuration options are:
 
  - **`next-version:`** Allows you to bump the next version explicitly, useful for bumping `master` or a feature with breaking changes a major increment.
 
- - **`assembly-versioning-scheme:`** When updating assembly info tells GitVersion how to treat the `AssemblyVersion` attribute. Useful to lock the major when using Strong Naming.
+ - **`assembly-versioning-scheme:`** When updating assembly info tells GitVersion how to treat the `AssemblyVersion` attribute. Useful to lock the major when using Strong Naming. Note: you can use `None` to skip updating the `AssemblyVersion` while still updating the `AssemblyFileVersion` and `AssemblyInformationVersion` attributes.
 
  - **`assembly-informational-format:`** Set this to any of the available [variables](/more-info/variables) to change the value of the `AssemblyInformationalVersion` attribute. Default set to `{InformationalVersion}`. It also supports string interpolation (`{MajorMinorPatch}+{Branch}`)
 
