@@ -142,6 +142,7 @@ CommitDate: 2015-11-10
     {
         // Make sure GitVersion doesn't trigger build server mode when we are running the tests
         Environment.SetEnvironmentVariable("APPVEYOR", null);
+		Environment.SetEnvironmentVariable("TRAVIS", null);
         var infoBuilder = new StringBuilder();
         Action<string> infoLogger = s =>
         {

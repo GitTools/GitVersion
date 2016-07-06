@@ -37,8 +37,9 @@ public static class GitVersionHelper
             new[]
             {
                 new KeyValuePair<string, string>("TEAMCITY_VERSION", arguments.IsTeamCity ? "8.0.0" : null),
-                new KeyValuePair<string, string>("APPVEYOR", null)
-            };
+                new KeyValuePair<string, string>("APPVEYOR", null),
+				new KeyValuePair<string, string>("TRAVIS", null),
+			};
 
         var exitCode = -1;
 
