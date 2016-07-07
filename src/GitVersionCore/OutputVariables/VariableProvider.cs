@@ -2,6 +2,8 @@
 {
     using System;
     using System.ComponentModel;
+    using System.Text.RegularExpressions;
+    using GitVersion.VersionCalculation;
 
     public static class VariableProvider
     {
@@ -13,7 +15,22 @@
                 // Continuous Deployment always requires a pre-release tag unless the commit is tagged
                 if (!semanticVersion.PreReleaseTag.HasTag())
                 {
-                    semanticVersion.PreReleaseTag.Name = config.ContinuousDeploymentFallbackTag;
+                    semanticVersion.PreReleaseTag.Name = NextVersionCalculator.GetBranchSpecificTag(config, semanticVersion.BuildMetaData.Branch, null);
+                    if (string.IsNullOrEmpty(semanticVersion.PreReleaseTag.Name))
+                    {
+                        semanticVersion.PreReleaseTag.Name = config.ContinuousDeploymentFallbackTag;
+                    }
+                }
+
+                // Evaluate tag number pattern and append to prerelease tag, preserving build metadata
+                if (!string.IsNullOrEmpty(config.TagNumberPattern))
+                {
+                    var match = Regex.Match(semanticVersion.BuildMetaData.Branch, config.TagNumberPattern);
+                    var numberGroup = match.Groups["number"];
+                    if (numberGroup.Success)
+                    {
+                        semanticVersion.PreReleaseTag.Name += numberGroup.Value.PadLeft(config.BuildMetaDataPadding, '0');
+                    }
                 }
 
                 // For continuous deployment the commits since tag gets promoted to the pre-release number

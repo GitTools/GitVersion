@@ -1,4 +1,4 @@
-# Configuration
+﻿# Configuration
 GitVersion 3.0 is mainly powered by configuration and no longer has branching strategies hard coded.
 
 ## Configuration tool
@@ -79,8 +79,20 @@ The options in here are:
  - **`prevent-increment-of-merged-branch-version:`** When `release-2.0.0` is merged into master, we want master to build `2.0.0`.
     If `release-2.0.0` is merged into develop we want it to build `2.1.0`, this option prevents incrementing after a versioned branch is merged
 
- - **`tag-number-pattern:`** Pull requests require us to pull the pre-release number out of the branch name so `refs/pulls/534/merge` builds as `PullRequest.534`.
-   This is a regex with a named capture group called `number`
+ - **`tag-number-pattern:`** Pull requests require us to extract the pre-release number out of the branch name so `refs/pulls/534/merge` builds as `PullRequest.534`.
+   This is a regex with a named capture group called `number`  
+   If the branch mode is set to ContinuousDeployment, then the extracted `number` is appended to the name of the pre-release tag and the number portion is the number of commits since the last tag.
+   This enables consecutive commits to the pull request branch to generate unique full semantic version numbers when the branch is configured to use ContinuousDeployment mode.  
+   Example usage:
+```yaml
+branches:
+  (pull|pull\-requests|pr)[/-]:
+    mode: ContinuousDeployment
+    tag: PullRequest
+    increment: Inherit
+    track-merge-target: true
+    tag-name-pattern: '[/-](?<number>\d+)[-/]'
+```
 
  - **`track-merge-target:`** Strategy which will look for tagged merge commits directly off the current branch. For example `develop` → `release/1.0.0` → merge into `master` and tag `1.0.0`. The tag is *not* on develop, but develop should be version `1.0.0` now.
 

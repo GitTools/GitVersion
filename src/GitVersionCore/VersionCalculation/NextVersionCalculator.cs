@@ -69,24 +69,7 @@
 
         void UpdatePreReleaseTag(GitVersionContext context, SemanticVersion semanticVersion, string branchNameOverride)
         {
-            var tagToUse = context.Configuration.Tag;
-            if (tagToUse == "useBranchName")
-            {
-                tagToUse = "{BranchName}";
-            }
-            if (tagToUse.Contains("{BranchName}"))
-            {
-                Logger.WriteInfo("Using branch name to calculate version tag");
-
-                var branchName = branchNameOverride ?? context.CurrentBranch.FriendlyName;
-                if (!string.IsNullOrWhiteSpace(context.Configuration.BranchPrefixToTrim))
-                {
-                    branchName = branchName.RegexReplace(context.Configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
-                }
-                branchName = branchName.RegexReplace("[^a-zA-Z0-9-]", "-");
-
-                tagToUse = tagToUse.Replace("{BranchName}", branchName);
-            }
+            var tagToUse = GetBranchSpecificTag(context.Configuration, context.CurrentBranch.FriendlyName, branchNameOverride);
 
             int? number = null;
             if (!string.IsNullOrEmpty(context.Configuration.TagNumberPattern))
@@ -117,6 +100,29 @@
             }
 
             semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, number);
+        }
+
+        public static string GetBranchSpecificTag(EffectiveConfiguration configuration, string branchFriendlyName, string branchNameOverride)
+        {
+            var tagToUse = configuration.Tag;
+            if (tagToUse == "useBranchName")
+            {
+                tagToUse = "{BranchName}";
+            }
+            if (tagToUse.Contains("{BranchName}"))
+            {
+                Logger.WriteInfo("Using branch name to calculate version tag");
+
+                var branchName = branchNameOverride ?? branchFriendlyName;
+                if (!string.IsNullOrWhiteSpace(configuration.BranchPrefixToTrim))
+                {
+                    branchName = branchName.RegexReplace(configuration.BranchPrefixToTrim, string.Empty, RegexOptions.IgnoreCase);
+                }
+                branchName = branchName.RegexReplace("[^a-zA-Z0-9-]", "-");
+
+                tagToUse = tagToUse.Replace("{BranchName}", branchName);
+            }
+            return tagToUse;
         }
 
         static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion)
