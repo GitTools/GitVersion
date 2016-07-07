@@ -4,9 +4,9 @@
     using GitVersion.Configuration.Init.Wizard;
     using GitVersion.Helpers;
 
-    class SetupBuildScripts : ConfigInitWizardStep
+    class AppveyorPublicPrivate : ConfigInitWizardStep
     {
-        public SetupBuildScripts(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)
+        public AppveyorPublicPrivate(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)
         {
         }
 
@@ -18,7 +18,10 @@
                     steps.Enqueue(new EditConfigStep(Console, FileSystem));
                     return StepResult.Ok();
                 case "1":
-                    steps.Enqueue(new AppveyorPublicPrivate(Console, FileSystem));
+                    steps.Enqueue(new AppVeyorSetup(Console, FileSystem, ProjectVisibility.Public));
+                    return StepResult.Ok();
+                case "2":
+                    steps.Enqueue(new AppVeyorSetup(Console, FileSystem, ProjectVisibility.Private));
                     return StepResult.Ok();
             }
             return StepResult.Ok();
@@ -26,12 +29,13 @@
 
         protected override string GetPrompt(Config config, string workingDirectory)
         {
-            return @"What build server are you using?
+            return @"Is your project public or private?
 
-Want to see more? Contribute a pull request!
+That is ... does it require authentication to clone/pull?
 
 0) Go Back
-1) AppVeyor";
+1) Public
+2) Private";
         }
 
         protected override string DefaultResult

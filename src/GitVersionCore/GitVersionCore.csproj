@@ -87,6 +87,7 @@
     <Compile Include="Configuration\ConsoleAdapter.cs" />
     <Compile Include="Configuration\IConsole.cs" />
     <Compile Include="Configuration\IgnoreConfig.cs" />
+    <Compile Include="Configuration\Init\BuildServer\AppveyorPublicPrivate.cs" />
     <Compile Include="Configuration\Init\BuildServer\AppVeyorSetup.cs" />
     <Compile Include="Configuration\Init\BuildServer\SetupBuildScripts.cs" />
     <Compile Include="Configuration\Init\SetConfig\AssemblyVersioningSchemeSetting.cs" />
