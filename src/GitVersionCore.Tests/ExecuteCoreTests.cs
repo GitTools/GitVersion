@@ -141,8 +141,8 @@ CommitDate: 2015-11-10
     string RepositoryScope(ExecuteCore executeCore = null, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
     {
         // Make sure GitVersion doesn't trigger build server mode when we are running the tests
-        Environment.SetEnvironmentVariable("APPVEYOR", null);
-		Environment.SetEnvironmentVariable("TRAVIS", null);
+        Environment.SetEnvironmentVariable(AppVeyor.EnvironmentVariableName, null);
+        Environment.SetEnvironmentVariable(TravisCI.EnvironmentVariableName, null);
         var infoBuilder = new StringBuilder();
         Action<string> infoLogger = s =>
         {

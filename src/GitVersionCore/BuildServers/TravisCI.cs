@@ -3,9 +3,11 @@ namespace GitVersion
 {
 	public class TravisCI : BuildServerBase
 	{
+		public const string EnvironmentVariableName = "TRAVIS";
+
 		public override bool CanApplyToCurrentContext ()
 		{
-			return "true".Equals(Environment.GetEnvironmentVariable ("TRAVIS")) && "true".Equals(Environment.GetEnvironmentVariable("CI"));
+			return "true".Equals(Environment.GetEnvironmentVariable(EnvironmentVariableName)) && "true".Equals(Environment.GetEnvironmentVariable("CI"));
 		}
 
 		public override string GenerateSetVersionMessage(VersionVariables variables)
