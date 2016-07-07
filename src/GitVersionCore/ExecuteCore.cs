@@ -62,9 +62,9 @@ namespace GitVersion
                     {
                         gitVersionCache.WriteVariablesToDiskCache(repo, dotGitDirectory, versionVariables);
                     }
-                    catch (IOException)
+                    catch (IOException e)
                     {
-                        Logger.WriteInfo("I/O exception during cache write");
+                        Logger.WriteWarning(string.Format("I/O exception during cache write:{0}{1}", Environment.NewLine, e));
                     }
                 }
 
