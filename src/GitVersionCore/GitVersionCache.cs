@@ -30,17 +30,23 @@ namespace GitVersion
                 dictionary = variablesFromCache.ToDictionary(x => x.Key, x => x.Value);
             }
 
-            using (var stream = fileSystem.OpenWrite(cacheFileName))
+            Action writeCacheOperation = () =>
             {
-                using (var sw = new StreamWriter(stream))
+                using (var stream = fileSystem.OpenWrite(cacheFileName))
                 {
-                    using (Logger.IndentLog("Storing version variables to cache file " + cacheFileName))
+                    using (var sw = new StreamWriter(stream))
                     {
-                        var serializer = new Serializer();
-                        serializer.Serialize(sw, dictionary);
+                        using (Logger.IndentLog("Storing version variables to cache file " + cacheFileName))
+                        {
+                            var serializer = new Serializer();
+                            serializer.Serialize(sw, dictionary);
+                        }
                     }
                 }
-            }
+            };
+
+            var retryOperation = new OperationWithExponentialBackoff<IOException>(new ThreadSleep(), writeCacheOperation, maxRetries: 6);
+            retryOperation.Execute();
         }
 
         public VersionVariables LoadVersionVariablesFromDiskCache(IRepository repo, string gitDir)

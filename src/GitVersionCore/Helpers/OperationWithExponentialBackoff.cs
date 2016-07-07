@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace GitVersion.Helpers
 {
-    internal class RetryOperationExponentialBackoff<T> where T : Exception
+    internal class OperationWithExponentialBackoff<T> where T : Exception
     {
         private IThreadSleep ThreadSleep;
         private Action Operation;
         private int MaxRetries;
 
-        public RetryOperationExponentialBackoff(IThreadSleep threadSleep, Action operation, int maxRetries = 5)
+        public OperationWithExponentialBackoff(IThreadSleep threadSleep, Action operation, int maxRetries = 5)
         {
             if (threadSleep == null)
                 throw new ArgumentNullException("threadSleep");

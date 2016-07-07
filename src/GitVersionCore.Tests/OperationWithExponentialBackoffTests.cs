@@ -5,19 +5,19 @@ using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class RetryOperationExponentialBackoffTests
+public class OperationWithExponentialBackoffTests
 {
     [Test]
     public void RetryOperationThrowsWhenNegativeMaxRetries()
     {
-        Action action = () => new RetryOperationExponentialBackoff<IOException>(new MockThreadSleep(), () => { }, -1);
+        Action action = () => new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), () => { }, -1);
         action.ShouldThrow<ArgumentOutOfRangeException>();
     }
 
     [Test]
     public void RetryOperationThrowsWhenThreadSleepIsNull()
     {
-        Action action = () => new RetryOperationExponentialBackoff<IOException>(null, () => { });
+        Action action = () => new OperationWithExponentialBackoff<IOException>(null, () => { });
         action.ShouldThrow<ArgumentNullException>();
     }
 
@@ -29,7 +29,7 @@ public class RetryOperationExponentialBackoffTests
             throw new Exception();
         };
 
-        var retryOperation = new RetryOperationExponentialBackoff<IOException>(new MockThreadSleep(), operation);
+        var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), operation);
         Action action = () => retryOperation.Execute();
         action.ShouldThrow<Exception>();
     }
@@ -48,7 +48,7 @@ public class RetryOperationExponentialBackoffTests
             }
         };
 
-        var retryOperation = new RetryOperationExponentialBackoff<IOException>(new MockThreadSleep(), operation);
+        var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), operation);
         retryOperation.Execute();
 
         operationCount.ShouldBe(2);
@@ -66,7 +66,7 @@ public class RetryOperationExponentialBackoffTests
             throw new IOException();
         };
 
-        var retryOperation = new RetryOperationExponentialBackoff<IOException>(new MockThreadSleep(), operation, numberOfRetries);
+        var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), operation, numberOfRetries);
         Action action = () => retryOperation.Execute();
         action.ShouldThrow<AggregateException>();
 
@@ -92,7 +92,7 @@ public class RetryOperationExponentialBackoffTests
             expectedSleepMSec *= 2;
         };
 
-        var retryOperation = new RetryOperationExponentialBackoff<IOException>(new MockThreadSleep(validator), operation, numberOfRetries);
+        var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(validator), operation, numberOfRetries);
         Action action = () => retryOperation.Execute();
         action.ShouldThrow<AggregateException>();
 
@@ -115,7 +115,7 @@ public class RetryOperationExponentialBackoffTests
             totalSleep += u;
         };
 
-        var retryOperation = new RetryOperationExponentialBackoff<IOException>(new MockThreadSleep(validator), operation, numberOfRetries);
+        var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(validator), operation, numberOfRetries);
         Action action = () => retryOperation.Execute();
         action.ShouldThrow<AggregateException>();
 
