@@ -104,9 +104,10 @@ Task("Run-NUnit-Tests")
         "src/GitVersionExe.Tests/bin/" + configuration + "/GitVersionExe.Tests.dll",
         "src/GitVersionTask.Tests/bin/" + configuration + "/GitVersionTask.Tests.dll" },
         settings);
-    if (BuildSystem.AppVeyor.IsRunningOnAppVeyor)
+    if (AppVeyor.IsRunningOnAppVeyor)
     {
-        BuildSystem.AppVeyor.UploadTestResults("TestResult.xml", AppVeyorTestResultsType.NUnit3);
+        Information("Uploading test results");
+        AppVeyor.UploadTestResults("TestResult.xml", AppVeyorTestResultsType.NUnit3);
     }
 });
 
@@ -136,7 +137,7 @@ Task("Package")
 
 Task("Upload-AppVeyor-Artifacts")
     .IsDependentOn("Package")
-    .WithCriteria(() => BuildSystem.AppVeyor.IsRunningOnAppVeyor)
+    .WithCriteria(() => AppVeyor.IsRunningOnAppVeyor)
     .Does(() =>
 {
     var gem = string.IsNullOrEmpty(preReleaseTag) ? 
