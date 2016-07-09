@@ -1,36 +1,17 @@
+install:
+  npm i -g tfx-cli
+
 assembly_info:
   patch: false
-
-platform:
-  - Any CPU
 
 configuration:
   - Debug
 
 build_script:
-  - cmd: nuget restore src/GitVersion.sln
-  - cmd: npm i -g tfx-cli
+  - ps: .\build.ps1
 
-  - cmd: msbuild src/GitVersion.sln "/p:Configuration=%CONFIGURATION%;Platform=%PLATFORM%"
-  - ps: .\build\NuGetCommandLineBuild\tools\GitVersion.exe /l console /output buildserver /updateAssemblyInfo
-  - cmd: msbuild src/GitVersion.sln "/p:Configuration=%CONFIGURATION%;Platform=%PLATFORM%"
-
-  - cmd: appveyor PushArtifact "build\NuGetExeBuild\GitVersion.Portable.%GitVersion_NuGetVersion%.nupkg"
-
-  - cmd: appveyor PushArtifact "build\NuGetCommandLineBuild\GitVersion.CommandLine.%GitVersion_NuGetVersion%.nupkg"
-  - cmd: appveyor PushArtifact "build\NuGetRefBuild\GitVersion.%GitVersion_NuGetVersion%.nupkg"
-  - cmd: appveyor PushArtifact "build\NuGetTaskBuild\GitVersionTask.%GitVersion_NuGetVersion%.nupkg"
-  - ps: appveyor PushArtifact ("build\GemBuild\gitversion-$env:GitVersion_MajorMinorPatch" + (&{If($env:GitVersion_PreReleaseTag -eq '' -or $env:GitVersion_PreReleaseTag -eq $null) {""} Else {"."+$env:GitVersion_PreReleaseTag}}) + ".gem")
-
-  - cmd: 7z a "GitVersion_%GitVersion_NuGetVersion%.zip" -r .\build\NuGetCommandLineBuild\Tools\*.*
-  - cmd: appveyor PushArtifact "GitVersion_%GitVersion_NuGetVersion%.zip"
-
-  - cmd: 7z a "GitVersionTfsBuildTask_%GitVersion_NuGetVersion%.zip" -r .\build\GitVersionTfsTaskBuild\GitVersionTask\*.*
-  - cmd: appveyor PushArtifact "GitVersionTfsBuildTask_%GitVersion_NuGetVersion%.zip"
-  - cmd: appveyor PushArtifact "build\GitVersionTfsTaskBuild\gittools.gitversion-%GitVersion_SemVer%.vsix"
-
-test_script:
-  - nunit3-console "src\GitVersionTask.Tests\bin\%CONFIGURATION%\GitVersionTask.Tests.dll" "src\GitVersionExe.Tests\bin\%CONFIGURATION%\GitVersionExe.Tests.dll" "src\GitVersionCore.Tests\bin\%CONFIGURATION%\GitVersionCore.Tests.dll"
+test: off
+skip_tags: true
 
 cache:
   - src\packages -> **\packages.config  # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
