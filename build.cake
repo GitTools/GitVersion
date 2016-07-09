@@ -104,6 +104,10 @@ Task("Run-NUnit-Tests")
         "src/GitVersionExe.Tests/bin/" + configuration + "/GitVersionExe.Tests.dll",
         "src/GitVersionTask.Tests/bin/" + configuration + "/GitVersionTask.Tests.dll" },
         settings);
+    if (BuildSystem.AppVeyor.IsRunningOnAppVeyor)
+    {
+        BuildSystem.AppVeyor.UploadTestResults("TestResult.xml", AppVeyorTestResultsType.NUnit3);
+    }
 });
 
 Task("Zip-Files")
