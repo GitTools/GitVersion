@@ -135,19 +135,34 @@
           ]]></Code>
     </Task>
   </UsingTask>
-  <Target Name="AfterBuild" DependsOnTargets="Clean" Condition="$(NCrunch)=='' And '$(OS)' != 'Unix'">
+  <Target Name="AfterBuild" DependsOnTargets="Clean" Condition="$(NCrunch)==''">
     <MakeDir Directories="$(TargetDir)ILMergeTemp\" />
     <PropertyGroup>
       <Runtime Condition="'$(OS)'=='Unix'">mono</Runtime>
     </PropertyGroup>
     <!-- Copy target file so that our temporary file gets the correct permissions -->
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(TargetDir)ILMergeTemp\" />
-    <Exec Command="$(Runtime) &quot;$(SolutionDir)packages\ILRepack.2.0.10\tools\ILRepack.exe&quot; /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)GitTools.Core.dll&quot; &quot;$(TargetDir)LibGit2Sharp.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:exe /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
     <ItemGroup>
       <TempFiles Include="$(TargetDir)ILMergeTemp\*.*" />
       <NativeBinaries Include="$(TargetDir)lib\**\*.*" />
       <WindowsBinaries Include="$(TargetDir)lib\**\*.dll" />
+	  <LibGit2SharpFiles Include="$(TargetDir)LibGit2Sharp.*" Exclude="$(TargetDir)LibGit2Sharp.xml" />
     </ItemGroup>
+
+    <!-- Repack without LibGit2Sharp for NugetCommandLineBuild -->
+    <Exec Command="$(Runtime) &quot;$(SolutionDir)packages\ILRepack.2.0.10\tools\ILRepack.exe&quot; /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)GitTools.Core.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:exe /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
+    <!-- NugetCommandLineBuild -->
+    <MakeDir Directories="$(BuildDir)NuGetCommandLineBuild" />
+    <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)NuGetCommandLineBuild\tools\lib\%(RecursiveDir)%(Filename)%(Extension)')" />
+	<Copy SourceFiles="@(LibGit2SharpFiles)" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" Condition="Exists('$(OutputPath)GitVersion.pdb')" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.exe.mdb" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" Condition="Exists('$(OutputPath)GitVersion.exe.mdb')" />
+    <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.CommandLine.nuspec" DestinationFolder="$(BuildDir)NuGetCommandLineBuild" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetCommandLineBuild" MetadataAssembly="$(OutputPath)ILMergeTemp\GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
+
+    <!-- Repack with LibGit2Sharp for NugetCommandLineBuild -->
+    <Exec Command="$(Runtime) &quot;$(SolutionDir)packages\ILRepack.2.0.10\tools\ILRepack.exe&quot; /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)GitTools.Core.dll&quot; &quot;$(TargetDir)LibGit2Sharp.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:exe /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
     <!-- NugetExeBuild -->
     <MakeDir Directories="$(BuildDir)NuGetExeBuild" />
     <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)NuGetExeBuild\tools\lib\%(RecursiveDir)%(Filename)%(Extension)')" />
@@ -158,14 +173,7 @@
     <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyUninstall.ps1" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.Portable.nuspec" DestinationFolder="$(BuildDir)NuGetExeBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetExeBuild" MetadataAssembly="$(OutputPath)ILMergeTemp\GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
-    <!-- NugetCommandLineBuild -->
-    <MakeDir Directories="$(BuildDir)NuGetCommandLineBuild" />
-    <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)NuGetCommandLineBuild\tools\lib\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" Condition="Exists('$(OutputPath)GitVersion.pdb')" />
-    <Copy SourceFiles="$(OutputPath)GitVersion.exe.mdb" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" Condition="Exists('$(OutputPath)GitVersion.exe.mdb')" />
-    <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)NuGetCommandLineBuild\tools" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.CommandLine.nuspec" DestinationFolder="$(BuildDir)NuGetCommandLineBuild" />
-    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetCommandLineBuild" MetadataAssembly="$(OutputPath)ILMergeTemp\GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
+
     <!-- TfsBuildTask -->
     <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask\lib\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" Condition="Exists('$(OutputPath)GitVersion.pdb')" />
@@ -175,13 +183,14 @@
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\builds.png" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\img" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\build-task.png" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\img" />
     <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask" />
-    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask" />
+    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask" Condition="Exists('$(OutputPath)GitVersion.pdb')" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\icon.png" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\task.json" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask" />
     <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\GitVersion.ps1" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask" />
     <ReplaceFileText InputFilename="$(BuildDir)GitVersionTfsTaskBuild\manifest.json" OutputFilename="$(BuildDir)GitVersionTfsTaskBuild\manifest.json" MatchExpression="\$version\$" ReplacementText="$(GitVersion_SemVer)" Condition="'$(GitVersion_SemVer)' != ''" />
     <Exec Command="powershell -ExecutionPolicy RemoteSigned -NoProfile &quot;$(SolutionDir)GitVersionTfsTask\Update-GitVersionTfsTaskVersion.ps1 $(BuildDir)GitVersionTfsTaskBuild\GitVersionTask\task.json $(GitVersion_Major) $(GitVersion_Minor) $(GitVersion_Patch)&quot;" WorkingDirectory="$(BuildDir)" Condition="'$(GitVersion_SemVer)' != ''" />
     <Exec Command="powershell -ExecutionPolicy RemoteSigned -NoProfile &quot;$(SolutionDir)GitVersionTfsTask\Create-Vsix.ps1 $(BuildDir)GitVersionTfsTaskBuild&quot;" Condition="'$(GitVersion_SemVer)' != ''" />
+
     <!-- Gem -->
     <MakeDir Directories="$(BuildDir)GemBuild" />
     <!-- Gem can only treat files it knows about, so it throws an error for .so and .dylib files when building on Windows -->
@@ -205,6 +214,7 @@
     </PropertyGroup>
     <ReplaceFileText InputFilename="$(BuildDir)GemBuild\gitversion.gemspec" OutputFilename="$(BuildDir)GemBuild\gitversion.gemspec" MatchExpression="\$version\$" ReplacementText="$(GemVersion)" Condition="'$(GitVersion_SemVer)' != ''" />
     <Exec Command="gem build gitversion.gemspec" ContinueOnError="True" WorkingDirectory="$(BuildDir)GemBuild" Condition="'$(GitVersion_SemVer)' != ''" />
+
     <!-- Cleanup -->
     <RemoveDir Directories="$(TargetDir)ILMergeTemp\" />
   </Target>

@@ -13,7 +13,8 @@
             new MyGet(),
             new Jenkins(),
             new GitLabCi(),
-            new VsoAgent()
+            new VsoAgent(),
+			new TravisCI(),
         };
 
         public static IEnumerable<IBuildServer> GetApplicableBuildServers()
