@@ -113,6 +113,8 @@
     <Compile Include="ConfigProviderTests.cs" />
     <Compile Include="GitVersionContextTests.cs" />
     <Compile Include="Helpers\DirectoryHelper.cs" />
+    <Compile Include="Mocks\MockThreadSleep.cs" />
+    <Compile Include="OperationWithExponentialBackoffTests.cs" />
     <Compile Include="Init\InitScenarios.cs" />
     <Compile Include="Init\InitStepsDefaultResponsesDoNotThrow.cs" />
     <Compile Include="Init\TestConsole.cs" />

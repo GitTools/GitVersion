@@ -24,23 +24,29 @@ namespace GitVersion
             var cacheFileName = GetCacheFileName(GetKey(repo, gitDir), GetCacheDir(gitDir));
             variablesFromCache.FileName = cacheFileName;
 
-            using (var stream = fileSystem.OpenWrite(cacheFileName))
+            Dictionary<string, string> dictionary;
+            using (Logger.IndentLog("Creating dictionary"))
             {
-                using (var sw = new StreamWriter(stream))
-                {
-                    Dictionary<string, string> dictionary;
-                    using (Logger.IndentLog("Creating dictionary"))
-                    {
-                        dictionary = variablesFromCache.ToDictionary(x => x.Key, x => x.Value);
-                    }
+                dictionary = variablesFromCache.ToDictionary(x => x.Key, x => x.Value);
+            }
 
-                    using (Logger.IndentLog("Storing version variables to cache file " + cacheFileName))
+            Action writeCacheOperation = () =>
+            {
+                using (var stream = fileSystem.OpenWrite(cacheFileName))
+                {
+                    using (var sw = new StreamWriter(stream))
                     {
-                        var serializer = new Serializer();
-                        serializer.Serialize(sw, dictionary);
+                        using (Logger.IndentLog("Storing version variables to cache file " + cacheFileName))
+                        {
+                            var serializer = new Serializer();
+                            serializer.Serialize(sw, dictionary);
+                        }
                     }
                 }
-            }
+            };
+
+            var retryOperation = new OperationWithExponentialBackoff<IOException>(new ThreadSleep(), writeCacheOperation, maxRetries: 6);
+            retryOperation.Execute();
         }
 
         public VersionVariables LoadVersionVariablesFromDiskCache(IRepository repo, string gitDir)
