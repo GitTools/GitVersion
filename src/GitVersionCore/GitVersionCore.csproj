@@ -141,7 +141,6 @@
     <Compile Include="VersionCalculation\BaseVersionCalculator.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\BaseVersion.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\ConfigNextVersionBaseVersionStrategy.cs" />
-    <Compile Include="VersionCalculation\BaseVersionCalculators\TrackMergeTargetBaseVersionStrategy.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\TaggedCommitVersionStrategy.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\MergeMessageBaseVersionStrategy.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\VersionInBranchBaseVersionStrategy.cs" />

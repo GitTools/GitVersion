@@ -30,7 +30,7 @@ namespace GitVersion.VersionCalculation
             var master = context.Repository.FindBranch("master");
             if (master != null)
             {
-                return taggedCommitVersionStrategy.GetTaggedVersions(context, master);
+                return taggedCommitVersionStrategy.GetTaggedVersions(context, master, null);
             }
 
             return new BaseVersion[0];

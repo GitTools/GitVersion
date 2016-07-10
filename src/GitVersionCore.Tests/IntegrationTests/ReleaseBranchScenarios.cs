@@ -20,11 +20,10 @@ public class ReleaseBranchScenarios
             fixture.Repository.MergeNoFF("release/1.0.0");
             fixture.Repository.ApplyTag("1.0.0");
             fixture.Repository.Checkout("develop");
-            fixture.Repository.MakeACommit();
 
             fixture.Repository.Branches.Remove(releaseBranch);
 
-            fixture.AssertFullSemver("1.1.0-alpha.1");
+            fixture.AssertFullSemver("1.1.0-alpha.0");
         }
     }
 
