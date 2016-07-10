@@ -13,7 +13,7 @@ namespace GitVersion
     {
         List<Action> restoreBackupTasks = new List<Action>();
         List<Action> cleanupBackupTasks = new List<Action>();
-        
+
         public AssemblyInfoFileUpdate(Arguments args, string workingDirectory, VersionVariables variables, IFileSystem fileSystem)
         {
             if (!args.UpdateAssemblyInfo) return;
@@ -48,18 +48,24 @@ namespace GitVersion
                 cleanupBackupTasks.Add(() => fileSystem.Delete(backupAssemblyInfo));
 
                 var fileContents = fileSystem.ReadAllText(assemblyInfoFile.FullName);
+                var appendedAttributes = false;
                 if (!string.IsNullOrWhiteSpace(assemblyVersion))
                 {
-                    fileContents = ReplaceOrAppend(assemblyVersionRegex, fileContents, assemblyVersionString, assemblyInfoFile.Extension);
+                    fileContents = ReplaceOrAppend(assemblyVersionRegex, fileContents, assemblyVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
                 }
-                fileContents = ReplaceOrAppend(assemblyInfoVersionRegex, fileContents, assemblyInfoVersionString, assemblyInfoFile.Extension);
-                fileContents = ReplaceOrAppend(assemblyFileVersionRegex, fileContents, assemblyFileVersionString, assemblyInfoFile.Extension);
+                fileContents = ReplaceOrAppend(assemblyInfoVersionRegex, fileContents, assemblyInfoVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
+                fileContents = ReplaceOrAppend(assemblyFileVersionRegex, fileContents, assemblyFileVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
 
+                if (appendedAttributes)
+                {
+                    // If we appended any attributes, put a new line after them
+                    fileContents += Environment.NewLine;
+                }
                 fileSystem.WriteAllText(assemblyInfoFile.FullName, fileContents);
             }
         }
 
-        static string ReplaceOrAppend(Regex replaceRegex, string inputString, string replaceString, string fileExtension)
+        static string ReplaceOrAppend(Regex replaceRegex, string inputString, string replaceString, string fileExtension, ref bool appendedAttributes)
         {
             var assemblyAddFormat = AssemblyVersionInfoTemplates.GetAssemblyInfoAddFormatFor(fileExtension);
 
@@ -70,6 +76,7 @@ namespace GitVersion
             else
             {
                 inputString += Environment.NewLine + string.Format(assemblyAddFormat, replaceString);
+                appendedAttributes = true;
             }
 
             return inputString;
