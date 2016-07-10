@@ -162,7 +162,7 @@ Task("Upload-AppVeyor-Artifacts")
     AppVeyor.UploadArtifact("build/GitVersionTfsTaskBuild/gittools.gitversion-" + semVersion + ".vsix");
     AppVeyor.UploadArtifact("build/GitVersion_" + nugetVersion + ".zip");
     AppVeyor.UploadArtifact("build/GemBuild/" + gem);
-    AppVeyor.UploadArtifact("releasenotes.md");
+    AppVeyor.UploadArtifact("build/releasenotes.md");
     AppVeyor.UploadArtifact("build/artifacts");
 });
 
