@@ -178,7 +178,7 @@ public class DevelopScenarios
             fixture.AssertFullSemver("2.1.0-alpha.4");
             fixture.BranchTo("feature/MyFeature");
             fixture.MakeACommit();
-            fixture.AssertFullSemver("2.1.0-MyFeature.1+1");
+            fixture.AssertFullSemver("2.1.0-MyFeature.1+3");
         }
     }
 }

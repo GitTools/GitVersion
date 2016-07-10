@@ -17,7 +17,6 @@
                     new FallbackBaseVersionStrategy(),
                     new ConfigNextVersionBaseVersionStrategy(),
                     new TaggedCommitVersionStrategy(),
-                    new TrackMergeTargetBaseVersionStrategy(),
                     new MergeMessageBaseVersionStrategy(),
                     new VersionInBranchBaseVersionStrategy(),
                     new DevelopVersionStrategy());

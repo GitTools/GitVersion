@@ -199,4 +199,42 @@ public class FeatureBranchScenarios
             fixture.AssertFullSemver(config, expectedFullSemVer);
         }
     }
+
+    [Test]
+    public void BranchCreatedAfterFinishReleaseShouldInheritAndIncrementFromLastMasterCommitTag()
+    {
+        using (var fixture = new BaseGitFlowRepositoryFixture("0.1.0"))
+        {
+            //validate current version
+            fixture.AssertFullSemver("0.2.0-alpha.1");
+            fixture.Repository.CreateBranch("release/0.2.0");
+            fixture.Repository.Checkout("release/0.2.0");
+
+            //validate release version
+            fixture.AssertFullSemver("0.2.0-beta.1+0");
+
+            fixture.Checkout("master");
+            fixture.Repository.MergeNoFF("release/0.2.0");
+            fixture.Repository.ApplyTag("0.2.0");
+
+            //validate master branch version
+            fixture.AssertFullSemver("0.2.0");
+
+            fixture.Checkout("develop");
+            fixture.Repository.MergeNoFF("release/0.2.0");
+            fixture.Repository.Branches.Remove("release/2.0.0");
+                
+            fixture.Repository.MakeACommit();
+
+            //validate develop branch version after merging release 0.2.0 to master and develop (finish release)
+            fixture.AssertFullSemver("0.3.0-alpha.1");
+
+            //create a feature branch from develop
+            fixture.BranchTo("feature/TEST-1");
+            fixture.Repository.MakeACommit();
+
+            //I'm not entirely sure what the + value should be but I know the semvar major/minor/patch should be 0.3.0
+            fixture.AssertFullSemver("0.3.0-TEST-1.1+2");
+        }
+    }
 }

@@ -8,16 +8,18 @@
     {
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
+            return GetTaggedVersions(context, context.CurrentBranch);
+        }
+
+        public IEnumerable<BaseVersion> GetTaggedVersions(GitVersionContext context, Branch currentBranch)
+        {
             var olderThan = context.CurrentCommit.When();
             var allTags = context.Repository.Tags
-                .Where(tag => ((Commit)tag.PeeledTarget()).When() <= olderThan)
+                .Where(tag => ((Commit) tag.PeeledTarget()).When() <= olderThan)
                 .ToList();
-            var tagsOnBranch = context.CurrentBranch
+            var tagsOnBranch = currentBranch
                 .Commits
-                .SelectMany(commit =>
-                {
-                    return allTags.Where(t => IsValidTag(t, commit));
-                })
+                .SelectMany(commit => { return allTags.Where(t => IsValidTag(t, commit)); })
                 .Select(t =>
                 {
                     SemanticVersion version;
