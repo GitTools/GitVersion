@@ -3,7 +3,7 @@ namespace GitVersion.Configuration.Init.SetConfig
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using GitVersion.Configuration.Init.Wizard;
+    using Wizard;
     using GitVersion.Helpers;
 
     public class ConfigureBranches : ConfigInitWizardStep
@@ -26,7 +26,13 @@ namespace GitVersion.Configuration.Init.SetConfig
                 try
                 {
                     var foundBranch = OrderedBranches(config).ElementAt(parsed - 1);
-                    steps.Enqueue(new ConfigureBranch(foundBranch.Key, foundBranch.Value, Console, FileSystem));
+                    var branchConfig = foundBranch.Value;
+                    if (branchConfig == null)
+                    {
+                        branchConfig = new BranchConfig();
+                        config.Branches.Add(foundBranch.Key, branchConfig);
+                    }
+                    steps.Enqueue(new ConfigureBranch(foundBranch.Key, branchConfig, Console, FileSystem));
                     return StepResult.Ok();
                 }
                 catch (ArgumentOutOfRangeException)
@@ -46,7 +52,13 @@ namespace GitVersion.Configuration.Init.SetConfig
 
         static IOrderedEnumerable<KeyValuePair<string, BranchConfig>> OrderedBranches(Config config)
         {
-            return config.Branches.OrderBy(b => b.Key);
+            var defaultConfig = new Config();
+            ConfigurationProvider.ApplyDefaultsTo(defaultConfig);
+            var defaultConfigurationBranches = defaultConfig.Branches
+                .Where(k => !config.Branches.ContainsKey(k.Key))
+                // Return an empty branch config
+                .Select(v => new KeyValuePair<string, BranchConfig>(v.Key, null));
+            return config.Branches.Union(defaultConfigurationBranches).OrderBy(b => b.Key);
         }
 
         protected override string DefaultResult
