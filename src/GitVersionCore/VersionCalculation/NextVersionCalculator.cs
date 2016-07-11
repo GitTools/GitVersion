@@ -1,8 +1,10 @@
 ﻿namespace GitVersion.VersionCalculation
 {
+    using System;
     using System.Linq;
     using System.Text.RegularExpressions;
     using BaseVersionCalculators;
+    using LibGit2Sharp;
 
     public class NextVersionCalculator
     {
@@ -41,12 +43,19 @@
 
             var baseVersion = baseVersionFinder.GetBaseVersion(context);
             var semver = baseVersion.SemanticVersion;
-            var increment = IncrementStrategyFinder.DetermineIncrementedField(context, baseVersion);
-            if (increment != null)
+            if (context.Configuration.VersioningMode == VersioningMode.Mainline)
             {
-                semver = semver.IncrementVersion(increment.Value);
+                semver = FindMainlineModeVersion(baseVersion, context);
             }
-            else Logger.WriteInfo("Skipping version increment");
+            else
+            {
+                var increment = IncrementStrategyFinder.DetermineIncrementedField(context, baseVersion);
+                if (increment != null)
+                {
+                    semver = semver.IncrementVersion(increment.Value);
+                }
+                else Logger.WriteInfo("Skipping version increment");
+            }
 
             if (!semver.PreReleaseTag.HasTag() && !string.IsNullOrEmpty(context.Configuration.Tag))
             {
@@ -64,6 +73,52 @@
             return taggedSemanticVersion ?? semver;
         }
 
+        private SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion, GitVersionContext context)
+        {
+            if (baseVersion.SemanticVersion.PreReleaseTag.HasTag())
+            {
+                throw new NotSupportedException("Mainline development mode doesn't yet support pre-release tags on master");
+            }
+            Logger.WriteInfo("Using mainline development mode to calculate current version");
+            var commitLog = context.Repository.Commits.QueryBy(new CommitFilter
+            {
+                IncludeReachableFrom = context.CurrentBranch,
+                ExcludeReachableFrom = baseVersion.BaseVersionSource,
+                SortBy = CommitSortStrategies.Reverse
+            }).ToList();
+            var mergeCommits = commitLog
+                .Where(l => l.Parents.Count() > 1)
+                .ToList();
+            return mergeCommits
+                .Select(mc =>
+                {
+                    var mergedHead = GetMergedHead(mc);
+                    var findMergeBase = context.Repository.ObjectDatabase.FindMergeBase(mc.Parents.First(), mergedHead);
+                    var filter = new CommitFilter
+                    {
+                        IncludeReachableFrom = mergedHead,
+                        ExcludeReachableFrom = findMergeBase
+                    };
+                    var mergedCommits = context.Repository.Commits.QueryBy(filter).ToList();
+                    return new
+                    {
+                        MergeCommit = mc,
+                        MergeHead = mergedHead,
+                        MergeBase = findMergeBase,
+                        Increment = IncrementStrategyFinder.GetIncrementForCommits(context, mergedCommits)
+                    };
+                })
+                .Aggregate(baseVersion.SemanticVersion, (v, i) => v.IncrementVersion(i.Increment ?? VersionField.Patch));
+        }
+
+        private Commit GetMergedHead(Commit mergeCommit)
+        {
+            var parents = mergeCommit.Parents.Skip(1).ToList();
+            if (parents.Count > 1)
+                throw new NotSupportedException("Mainline development does not support more than one merge source in a single commit yet");
+            return parents.Single();
+        }
+
         void UpdatePreReleaseTag(GitVersionContext context, SemanticVersion semanticVersion, string branchNameOverride)
         {
             var tagToUse = GetBranchSpecificTag(context.Configuration, context.CurrentBranch.FriendlyName, branchNameOverride);
@@ -78,7 +133,7 @@
                     number = int.Parse(numberGroup.Value);
                 }
             }
-            
+
             var lastTag = context.CurrentBranch
                 .GetVersionTagsOnBranch(context.Repository, context.Configuration.GitTagPrefix)
                 .FirstOrDefault(v => v.PreReleaseTag.Name == tagToUse);

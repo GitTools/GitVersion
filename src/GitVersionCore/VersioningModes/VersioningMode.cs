@@ -3,6 +3,7 @@
     public enum VersioningMode
     {
         ContinuousDelivery,
-        ContinuousDeployment
+        ContinuousDeployment,
+        Mainline
     }
 }

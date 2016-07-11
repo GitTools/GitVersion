@@ -61,6 +61,11 @@
                 commits = commits.Where(c => c.Parents.Count() > 1);
             }
 
+            return GetIncrementForCommits(context, commits);
+        }
+
+        public static VersionField? GetIncrementForCommits(GitVersionContext context, IEnumerable<Commit> commits)
+        {
             var majorRegex = CreateRegex(context.Configuration.MajorVersionBumpMessage ?? DefaultMajorPattern);
             var minorRegex = CreateRegex(context.Configuration.MinorVersionBumpMessage ?? DefaultMinorPattern);
             var patchRegex = CreateRegex(context.Configuration.PatchVersionBumpMessage ?? DefaultPatchPattern);
@@ -78,7 +83,7 @@
 
             return null;
         }
-        
+
         private static IEnumerable<Commit> GetIntermediateCommits(IRepository repo, Commit baseCommit, Commit headCommit)
         {
             if (baseCommit == null) yield break;
