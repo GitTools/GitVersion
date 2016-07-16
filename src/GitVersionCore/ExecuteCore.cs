@@ -48,20 +48,12 @@ namespace GitVersion
                 throw new Exception(string.Format("Failed to prepare or find the .git directory in path '{0}'.", workingDirectory));
             }
 
-            if (overrideConfig != null)
-            {
-                using (Logger.IndentLog("Override config from command line"))
-                {
-                    var overridenVersionVariables = ExecuteInternal(targetBranch, commitId, gitPreparer, buildServer, overrideConfig: overrideConfig);
-                    return overridenVersionVariables;
-                }
-            }
-
-            var versionVariables = gitVersionCache.LoadVersionVariablesFromDiskCache(gitPreparer);
+            var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, overrideConfig);
+            var versionVariables = gitVersionCache.LoadVersionVariablesFromDiskCache(gitPreparer, cacheKey);
             if (versionVariables == null)
             {
-                versionVariables = ExecuteInternal(targetBranch, commitId, gitPreparer, buildServer);
-                gitVersionCache.WriteVariablesToDiskCache(gitPreparer, versionVariables);
+                versionVariables = ExecuteInternal(targetBranch, commitId, gitPreparer, buildServer, overrideConfig);
+                gitVersionCache.WriteVariablesToDiskCache(gitPreparer, cacheKey, versionVariables);
             }
 
             return versionVariables;
