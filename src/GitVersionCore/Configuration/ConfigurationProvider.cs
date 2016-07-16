@@ -2,7 +2,6 @@ namespace GitVersion
 {
     using GitVersion.Configuration.Init.Wizard;
     using GitVersion.Helpers;
-    using System.Collections.Generic;
     using System.ComponentModel;
     using System.IO;
     using System.Linq;
@@ -100,27 +99,25 @@ namespace GitVersion
 
         static void MigrateBranches(Config config)
         {
-            // Map of current names and previous names
-            var dict = new Dictionary<string, string[]>
-            {
-                {"hotfix(es)?[/-]", new[] { "hotfix[/-]" }},
-                {"features?[/-]", new[] { "feature[/-]", "feature(s)?[/-]" }},
-                {"releases?[/-]", new[] { "release[/-]" }},
-                {"dev(elop)?(ment)?$", new[] { "develop" }}
-            };
+            MigrateObsoleteBranches(config, "hotfix(es)?[/-]", "hotfix[/-]");
+            MigrateObsoleteBranches(config, "features?[/-]", "feature[/-]", "feature(s)?[/-]");
+            MigrateObsoleteBranches(config, "releases?[/-]", "release[/-]");
+            MigrateObsoleteBranches(config, "dev(elop)?(ment)?$", "develop");
+        }
 
-            foreach (var mapping in dict)
+        static void MigrateObsoleteBranches(Config config, string newBranch, params string[] obsoleteBranches)
+        {
+            foreach (var obsoleteBranch in obsoleteBranches)
             {
-                foreach (var source in mapping.Value)
+                if (!config.Branches.ContainsKey(obsoleteBranch))
                 {
-                    if (config.Branches.ContainsKey(source))
-                    {
-                        // found one, rename
-                        var bc = config.Branches[source];
-                        config.Branches.Remove(source);
-                        config.Branches[mapping.Key] = bc; // re-add with new name
-                    }
+                    continue;
                 }
+
+                // found one, rename
+                var bc = config.Branches[obsoleteBranch];
+                config.Branches.Remove(obsoleteBranch);
+                config.Branches[newBranch] = bc; // re-add with new name
             }
         }
 
