@@ -1,40 +1,14 @@
-﻿using System;
-using System.Diagnostics;
-using GitTools;
-using GitTools.Testing;
+﻿using GitTools.Testing;
 using GitVersion;
 using GitVersionCore.Tests;
 using NUnit.Framework;
-using Shouldly;
 
 public class MainlineDevelopmentMode
 {
     private Config config = new Config
     {
-        Branches =
-        {
-            {
-                "master", new BranchConfig
-                {
-                    VersioningMode = VersioningMode.Mainline
-                }
-            }
-        }
+        VersioningMode = VersioningMode.Mainline
     };
-
-
-    [Test]
-    public void CannotSetMainlineDevelopmentAtAGlobalLevel()
-    {
-        using (var fixture = new EmptyRepositoryFixture())
-        {
-            Should.Throw<NotSupportedException>(() =>
-                fixture.AssertFullSemver(new Config
-                {
-                    VersioningMode = VersioningMode.Mainline
-                }, ""));
-        }
-    }
 
     [Test]
     public void MergedFeatureBranchesToMasterImpliesRelease()
@@ -46,6 +20,7 @@ public class MainlineDevelopmentMode
 
             fixture.BranchTo("feature/foo");
             fixture.Repository.MakeACommit("2");
+            fixture.AssertFullSemver(config, "0.1.1-foo.1+2");
             fixture.Checkout("master");
             fixture.MergeNoFF("feature/foo");
 
@@ -53,18 +28,21 @@ public class MainlineDevelopmentMode
 
             fixture.BranchTo("feature/foo2");
             fixture.Repository.MakeACommit("3 +semver: minor");
+            fixture.AssertFullSemver(config, "0.2.0-foo2.1+4");
             fixture.Checkout("master");
             fixture.MergeNoFF("feature/foo2");
             fixture.AssertFullSemver(config, "0.2.0+5");
 
             fixture.BranchTo("feature/foo3");
             fixture.Repository.MakeACommit("4 +semver: minor");
+            fixture.AssertFullSemver(config, "0.3.0-foo3.1+6");
             fixture.Checkout("master");
             fixture.MergeNoFF("feature/foo3");
             fixture.AssertFullSemver(config, "0.3.0+7");
 
             fixture.BranchTo("feature/foo4");
             fixture.Repository.MakeACommit("5 +semver: major");
+            fixture.AssertFullSemver(config, "1.0.0-foo4.1+8");
             fixture.Checkout("master");
             fixture.MergeNoFF("feature/foo4");
             fixture.AssertFullSemver(config, "1.0.0+9");

@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Text.RegularExpressions;
     using BaseVersionCalculators;
+    using GitTools;
     using LibGit2Sharp;
 
     public class NextVersionCalculator
@@ -49,12 +50,7 @@
             }
             else
             {
-                var increment = IncrementStrategyFinder.DetermineIncrementedField(context, baseVersion);
-                if (increment != null)
-                {
-                    semver = semver.IncrementVersion(increment.Value);
-                }
-                else Logger.WriteInfo("Skipping version increment");
+                semver = PerformIncrement(context, baseVersion, semver);
             }
 
             if (!semver.PreReleaseTag.HasTag() && !string.IsNullOrEmpty(context.Configuration.Tag))
@@ -73,42 +69,68 @@
             return taggedSemanticVersion ?? semver;
         }
 
+        private static SemanticVersion PerformIncrement(GitVersionContext context, BaseVersion baseVersion, SemanticVersion semver)
+        {
+            var increment = IncrementStrategyFinder.DetermineIncrementedField(context, baseVersion);
+            if (increment != null)
+            {
+                semver = semver.IncrementVersion(increment.Value);
+            }
+            else Logger.WriteInfo("Skipping version increment");
+            return semver;
+        }
+
         private SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion, GitVersionContext context)
         {
             if (baseVersion.SemanticVersion.PreReleaseTag.HasTag())
             {
                 throw new NotSupportedException("Mainline development mode doesn't yet support pre-release tags on master");
             }
-            Logger.WriteInfo("Using mainline development mode to calculate current version");
-            var commitLog = context.Repository.Commits.QueryBy(new CommitFilter
+
+            using (Logger.IndentLog("Using mainline development mode to calculate current version"))
             {
-                IncludeReachableFrom = context.CurrentBranch,
-                ExcludeReachableFrom = baseVersion.BaseVersionSource,
-                SortBy = CommitSortStrategies.Reverse
-            }).ToList();
-            var mergeCommits = commitLog
-                .Where(l => l.Parents.Count() > 1)
-                .ToList();
-            return mergeCommits
-                .Select(mc =>
+                var commitLog = context.Repository.Commits.QueryBy(new CommitFilter
                 {
-                    var mergedHead = GetMergedHead(mc);
-                    var findMergeBase = context.Repository.ObjectDatabase.FindMergeBase(mc.Parents.First(), mergedHead);
-                    var filter = new CommitFilter
+                    IncludeReachableFrom = context.CurrentBranch,
+                    ExcludeReachableFrom = baseVersion.BaseVersionSource,
+                    SortBy = CommitSortStrategies.Reverse
+                }).ToList();
+                var mergeCommits = commitLog
+                    .Where(l => l.Parents.Count() > 1)
+                    .ToList();
+
+                Logger.WriteInfo(string.Format("Found {0} merge commits to evaluate increments for..", mergeCommits.Count));
+
+                var mainlineVersion = mergeCommits
+                    .Select(mc =>
                     {
-                        IncludeReachableFrom = mergedHead,
-                        ExcludeReachableFrom = findMergeBase
-                    };
-                    var mergedCommits = context.Repository.Commits.QueryBy(filter).ToList();
-                    return new
-                    {
-                        MergeCommit = mc,
-                        MergeHead = mergedHead,
-                        MergeBase = findMergeBase,
-                        Increment = IncrementStrategyFinder.GetIncrementForCommits(context, mergedCommits)
-                    };
-                })
-                .Aggregate(baseVersion.SemanticVersion, (v, i) => v.IncrementVersion(i.Increment ?? VersionField.Patch));
+                        var mergedHead = GetMergedHead(mc);
+                        var findMergeBase = context.Repository.ObjectDatabase.FindMergeBase(mc.Parents.First(), mergedHead);
+                        return FindMessageIncrement(context, mergedHead, findMergeBase);
+                    })
+                    .Aggregate(baseVersion.SemanticVersion, (v, i) => v.IncrementVersion(i));
+
+                if (context.CurrentBranch.FriendlyName != "master")
+                {
+                    var mergedHead = context.CurrentCommit;
+                    var findMergeBase = context.Repository.FindBranch("master").Tip;
+                    var branchIncrement = FindMessageIncrement(context, mergedHead, findMergeBase);
+                    Logger.WriteInfo(string.Format("Performing {0} increment for current branch ", branchIncrement));
+                    mainlineVersion = mainlineVersion.IncrementVersion(branchIncrement);
+                }
+                return mainlineVersion;
+            }
+        }
+
+        private static VersionField FindMessageIncrement(GitVersionContext context, Commit mergedHead, Commit findMergeBase)
+        {
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = mergedHead,
+                ExcludeReachableFrom = findMergeBase
+            };
+            var commits = context.Repository.Commits.QueryBy(filter).ToList();
+            return IncrementStrategyFinder.GetIncrementForCommits(context, commits) ?? VersionField.Patch;
         }
 
         private Commit GetMergedHead(Commit mergeCommit)
