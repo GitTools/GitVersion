@@ -4,7 +4,7 @@ GitVersion 3.0 is mainly powered by configuration and no longer has branching st
 ## Configuration tool
 If you run `GitVersion init` you will be launched into a configuration tool, it can help you configure GitVersion the way you want it.
 
-It will create file 'GitVersion.yml' in directory where you launched initialization. It can be root repository directory or any subdirectory in case when you have single repository for more then one project or restricted to commit into subdirectory.
+Once complete, the `init` command will create a `GitVersion.yml` file in the working directory. It can be the root repository directory or any subdirectory in case you have a single repository for more than one project or are restricted to commit into a subdirectory.
 
 **Note:** GitVersion ships with internal default configuration which works with GitHubFlow and GitFlow, probably with others too.
 
