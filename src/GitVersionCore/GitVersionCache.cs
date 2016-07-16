@@ -5,8 +5,6 @@ namespace GitVersion
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Security.Cryptography;
-    using System.Text;
     using YamlDotNet.Serialization;
 
     public class GitVersionCache
@@ -18,10 +16,11 @@ namespace GitVersion
             this.fileSystem = fileSystem;
         }
 
-        public void WriteVariablesToDiskCache(GitPreparer gitPreparer, VersionVariables variablesFromCache)
+        public void WriteVariablesToDiskCache(GitPreparer gitPreparer, GitVersionCacheKey cacheKey, VersionVariables variablesFromCache)
         {
             var cacheDir = PrepareCacheDirectory(gitPreparer);
-            var cacheFileName = GetCacheFileName(GetKey(gitPreparer), cacheDir);
+            var cacheFileName = GetCacheFileName(cacheKey, cacheDir);
+
             variablesFromCache.FileName = cacheFileName;
 
             Dictionary<string, string> dictionary;
@@ -66,13 +65,13 @@ namespace GitVersion
             return cacheDir;
         }
 
-        public VersionVariables LoadVersionVariablesFromDiskCache(GitPreparer gitPreparer)
+        public VersionVariables LoadVersionVariablesFromDiskCache(GitPreparer gitPreparer, GitVersionCacheKey key)
         {
             using (Logger.IndentLog("Loading version variables from disk cache"))
             {
                 var cacheDir = PrepareCacheDirectory(gitPreparer);
 
-                var cacheFileName = GetCacheFileName(GetKey(gitPreparer), cacheDir);
+                var cacheFileName = GetCacheFileName(key, cacheDir);
                 if (!fileSystem.Exists(cacheFileName))
                 {
                     Logger.WriteInfo("Cache file " + cacheFileName + " not found.");
@@ -105,37 +104,9 @@ namespace GitVersion
             }
         }
 
-        string GetKey(GitPreparer gitPreparer)
+        static string GetCacheFileName(GitVersionCacheKey key, string cacheDir)
         {
-            var dotGitDirectory = gitPreparer.GetDotGitDirectory();
-
-            // Maybe using timestamp in .git/refs directory is enough?
-            var lastGitRefsChangedTicks = fileSystem.GetLastDirectoryWrite(Path.Combine(dotGitDirectory, "refs"));
-
-            // will return the same hash even when config file will be moved 
-            // from workingDirectory to rootProjectDirectory. It's OK. Config essentially is the same.
-            var configFilePath = ConfigurationProvider.SelectConfigFilePath(gitPreparer, fileSystem);
-            var configFileContent = fileSystem.Exists(configFilePath) ? fileSystem.ReadAllText(configFilePath) : null;
-            var configFileHash = configFileContent != null ? GetHash(configFileContent) : null;
-
-            return gitPreparer.WithRepository(repo => string.Join(":", dotGitDirectory, repo.Head.CanonicalName, repo.Head.Tip.Sha, lastGitRefsChangedTicks, configFileHash));
-        }
-
-        static string GetCacheFileName(string key, string cacheDir)
-        {
-            var cacheKey = GetHash(key);
-            return string.Concat(Path.Combine(cacheDir, cacheKey), ".yml");
-        }
-
-        static string GetHash(string textToHash)
-        {
-            using (var sha1 = SHA1.Create())
-            {
-                var bytes = Encoding.UTF8.GetBytes(textToHash);
-                var hashedBytes = sha1.ComputeHash(bytes);
-                var hashedString = BitConverter.ToString(hashedBytes);
-                return hashedString.Replace("-", "");
-            }
+            return Path.Combine(cacheDir, string.Concat(key.Value, ".yml"));
         }
     }
 }
