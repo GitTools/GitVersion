@@ -4,7 +4,6 @@ namespace GitVersion
     using LibGit2Sharp;
     using System;
     using System.ComponentModel;
-    using System.IO;
     using System.Linq;
 
     public class ExecuteCore

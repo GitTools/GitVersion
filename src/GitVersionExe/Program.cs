@@ -64,8 +64,6 @@ namespace GitVersion
                 }
 
                 ConfigureLogging(arguments);
-                VerifyConfiguration(arguments, fileSystem);
-
                 if (!Directory.Exists(arguments.TargetPath))
                 {
                     Logger.WriteWarning(string.Format("The working directory '{0}' does not exist.", arguments.TargetPath));
@@ -74,6 +72,7 @@ namespace GitVersion
                 {
                     Logger.WriteInfo("Working directory: " + arguments.TargetPath);
                 }
+                VerifyConfiguration(arguments, fileSystem);
 
                 if (arguments.Init)
                 {

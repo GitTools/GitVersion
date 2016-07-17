@@ -2,7 +2,6 @@
 using GitVersion;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
 using GitVersion.VersionFilters;
-using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
 
@@ -54,8 +53,7 @@ namespace GitVersionCore.Tests.VersionFilters
         [Test]
         public void ExcludeShouldAcceptVersionWithNullCommit()
         {
-            Commit nullCommit = null;
-            var version = new BaseVersion("dummy", false, new SemanticVersion(1), nullCommit, string.Empty);
+            var version = new BaseVersion("dummy", false, new SemanticVersion(1), null, string.Empty);
             var sut = new ShaVersionFilter(new[] { "mismatched" });
 
             string reason;
