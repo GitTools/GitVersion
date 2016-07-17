@@ -1,11 +1,11 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using GitTools.Testing;
+﻿using GitTools.Testing;
 using GitVersion;
 using GitVersion.Helpers;
 using NUnit.Framework;
 using Shouldly;
+using System;
+using System.IO;
+using System.Text;
 
 [TestFixture]
 public class ExecuteCoreTests
@@ -58,6 +58,59 @@ CommitDate: 2015-11-10
         });
 
         info.ShouldContain("Deserializing version variables from cache file", () => info);
+    }
+
+
+    [Test]
+    public void CacheFileExistsOnDiskWhenOverrideConfigIsSpecifiedVersionShouldBeDynamicallyCalculatedWithoutSavingInCache()
+    {
+        const string versionCacheFileContent = @"
+Major: 4
+Minor: 10
+Patch: 3
+PreReleaseTag: test.19
+PreReleaseTagWithDash: -test.19
+PreReleaseLabel: test
+PreReleaseNumber: 19
+BuildMetaData: 
+BuildMetaDataPadded: 
+FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+MajorMinorPatch: 4.10.3
+SemVer: 4.10.3-test.19
+LegacySemVer: 4.10.3-test19
+LegacySemVerPadded: 4.10.3-test0019
+AssemblySemVer: 4.10.3.0
+FullSemVer: 4.10.3-test.19
+InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+BranchName: feature/test
+Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+NuGetVersionV2: 4.10.3-test0019
+NuGetVersion: 4.10.3-test0019
+CommitsSinceVersionSource: 19
+CommitsSinceVersionSourcePadded: 0019
+CommitDate: 2015-11-10
+";
+
+        var versionAndBranchFinder = new ExecuteCore(fileSystem);
+
+        RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
+        {
+            fileSystem.WriteAllText(vv.FileName, versionCacheFileContent);
+
+            var gitPreparer = new GitPreparer(null, null, null, false, fixture.RepositoryPath);
+            var cacheDirectory = GitVersionCache.GetCacheDirectory(gitPreparer);
+
+            var cacheDirectoryTimestamp = fileSystem.GetLastDirectoryWrite(cacheDirectory);
+
+            vv = versionAndBranchFinder.ExecuteGitVersion(null, null, null, null, false, fixture.RepositoryPath, null, new Config() { TagPrefix = "prefix" });
+
+            vv.AssemblySemVer.ShouldBe("0.1.0.0");
+
+            var cachedDirectoryTimestampAfter = fileSystem.GetLastDirectoryWrite(cacheDirectory);
+            cachedDirectoryTimestampAfter.ShouldBe(cacheDirectoryTimestamp, () => "Cache was updated when override config was set");
+        });
+
+        // TODO info.ShouldContain("Override config from command line", () => info);
     }
 
     [Test]

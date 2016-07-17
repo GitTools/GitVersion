@@ -120,6 +120,8 @@
     <Compile Include="Extensions\ReadEmbeddedResourceExtensions.cs" />
     <Compile Include="GitPreparer.cs" />
     <Compile Include="GitVersionCache.cs" />
+    <Compile Include="GitVersionCacheKey.cs" />
+    <Compile Include="GitVersionCacheKeyFactory.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\IFileSystem.cs" />
     <Compile Include="Helpers\IThreadSleep.cs" />

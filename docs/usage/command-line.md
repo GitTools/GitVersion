@@ -55,3 +55,13 @@ Will result in command line argument error
 `GitVersion.exe /updateassemblyinfo AssemblyInfo.cs AssemblyVersionInfo.cs`
 
 Will iterate through each file and update known attributes (`AssemblyVersion`, `AssemblyFileVersion`, `AssemblyInformationalVersion`).
+
+## Override config
+`/overrideconfig [key=value]` will override appropriate key from 'GitVersion.yml'. 
+
+At the moment only `tag-prefix` option is supported. Read more about [Configuration](/configuration/).
+
+It will not change config file 'GitVersion.yml'.
+
+### Example: How to override configuration option 'tag-prefix' to use prefix 'custom'
+`GitVersion.exe /output json /overrideconfig tag-prefix=custom`

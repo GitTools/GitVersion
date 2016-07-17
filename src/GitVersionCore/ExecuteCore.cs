@@ -1,12 +1,10 @@
 namespace GitVersion
 {
+    using GitVersion.Helpers;
+    using LibGit2Sharp;
     using System;
     using System.ComponentModel;
-    using System.IO;
     using System.Linq;
-    using GitVersion.Helpers;
-
-    using LibGit2Sharp;
 
     public class ExecuteCore
     {
@@ -16,7 +14,7 @@ namespace GitVersion
         public ExecuteCore(IFileSystem fileSystem)
         {
             if (fileSystem == null) throw new ArgumentNullException("fileSystem");
-            
+
             this.fileSystem = fileSystem;
             gitVersionCache = new GitVersionCache(fileSystem);
         }
@@ -51,25 +49,24 @@ namespace GitVersion
                 // TODO Link to wiki article
                 throw new Exception(string.Format("Failed to prepare or find the .git directory in path '{0}'.", workingDirectory));
             }
-            
-            using (var repo = GetRepository(dotGitDirectory))
-            {
-                var versionVariables = gitVersionCache.LoadVersionVariablesFromDiskCache(repo, dotGitDirectory);
-                if (versionVariables == null)
-                {
-                    versionVariables = ExecuteInternal(targetBranch, commitId, repo, gitPreparer, projectRoot, buildServer, overrideConfig: overrideConfig);
-                    try
-                    {
-                        gitVersionCache.WriteVariablesToDiskCache(repo, dotGitDirectory, versionVariables);
-                    }
-                    catch (AggregateException e)
-                    {
-                        Logger.WriteWarning(string.Format("One or more exceptions during cache write:{0}{1}", Environment.NewLine, e));
-                    }
-                }
 
-                return versionVariables;
+            var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, overrideConfig);
+            var versionVariables = gitVersionCache.LoadVersionVariablesFromDiskCache(gitPreparer, cacheKey);
+            if (versionVariables == null)
+            {
+                versionVariables = ExecuteInternal(targetBranch, commitId, gitPreparer, buildServer, overrideConfig);
+
+                try
+                {
+                    gitVersionCache.WriteVariablesToDiskCache(gitPreparer, cacheKey, versionVariables);
+                }
+                catch (AggregateException e)
+                {
+                    Logger.WriteWarning(string.Format("One or more exceptions during cache write:{0}{1}", Environment.NewLine, e));
+                }
             }
+
+            return versionVariables;
         }
 
         public bool TryGetVersion(string directory, out VersionVariables versionVariables, bool noFetch, Authentication authentication)
@@ -100,15 +97,18 @@ namespace GitVersion
             return currentBranch;
         }
 
-        VersionVariables ExecuteInternal(string targetBranch, string commitId, IRepository repo, GitPreparer gitPreparer, string projectRoot, IBuildServer buildServer, Config overrideConfig = null)
+        VersionVariables ExecuteInternal(string targetBranch, string commitId, GitPreparer gitPreparer, IBuildServer buildServer, Config overrideConfig = null)
         {
             var versionFinder = new GitVersionFinder();
-            var configuration = ConfigurationProvider.Provide(projectRoot, fileSystem, overrideConfig: overrideConfig);
+            var configuration = ConfigurationProvider.Provide(gitPreparer, fileSystem, overrideConfig: overrideConfig);
 
-            var gitVersionContext = new GitVersionContext(repo, configuration, commitId : commitId);
-            var semanticVersion = versionFinder.FindVersion(gitVersionContext);
+            return gitPreparer.WithRepository(repo =>
+            {
+                var gitVersionContext = new GitVersionContext(repo, configuration, commitId: commitId);
+                var semanticVersion = versionFinder.FindVersion(gitVersionContext);
 
-            return VariableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
+                return VariableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
+            });
         }
 
         IRepository GetRepository(string gitDirectory)

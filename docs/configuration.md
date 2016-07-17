@@ -4,6 +4,8 @@ GitVersion 3.0 is mainly powered by configuration and no longer has branching st
 ## Configuration tool
 If you run `GitVersion init` you will be launched into a configuration tool, it can help you configure GitVersion the way you want it.
 
+Once complete, the `init` command will create a `GitVersion.yml` file in the working directory. It can be the root repository directory or any subdirectory in case you have a single repository for more than one project or are restricted to commit into a subdirectory.
+
 **Note:** GitVersion ships with internal default configuration which works with GitHubFlow and GitFlow, probably with others too.
 
 The *develop* branch is set to `ContinuousDeployment` mode by default as we have found that is generally what is needed when using GitFlow.

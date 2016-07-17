@@ -1,16 +1,16 @@
 namespace GitVersion
 {
+    using GitTools;
+    using GitVersion.Helpers;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using GitTools;
-    using GitVersion.Helpers;
     using WarningException = System.ComponentModel.WarningException;
 
     class SpecifiedArgumentRunner
     {
         private static readonly bool runningOnMono = Type.GetType("Mono.Runtime") != null;
-        public static readonly string BuildTool = runningOnMono? "xbuild" : @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
+        public static readonly string BuildTool = runningOnMono ? "xbuild" : @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
 
         public static void Run(Arguments arguments, IFileSystem fileSystem)
         {
@@ -23,10 +23,10 @@ namespace GitVersion
             var dynamicRepositoryLocation = arguments.DynamicRepositoryLocation;
             var targetBranch = arguments.TargetBranch;
             var commitId = arguments.CommitId;
-            var overrideConfig = arguments.OverrideConfig;
+            var overrideConfig = arguments.HasOverrideConfig ? arguments.OverrideConfig : null;
 
             var executeCore = new ExecuteCore(fileSystem);
-            var variables = executeCore.ExecuteGitVersion(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId, overrideConfig: overrideConfig);
+            var variables = executeCore.ExecuteGitVersion(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId, overrideConfig);
 
             if (arguments.Output == OutputType.BuildServer)
             {

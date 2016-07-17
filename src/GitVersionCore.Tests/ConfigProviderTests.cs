@@ -1,25 +1,31 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using GitVersion;
 using GitVersion.Helpers;
 using NUnit.Framework;
 using Shouldly;
+using System;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using YamlDotNet.Serialization;
 
 [TestFixture]
 public class ConfigProviderTests
 {
+    private const string DefaultRepoPath = "c:\\MyGitRepo";
+    private const string DefaultWorkingPath = "c:\\MyGitRepo\\Working";
+
     string repoPath;
+    string workingPath;
     IFileSystem fileSystem;
 
     [SetUp]
     public void Setup()
     {
         fileSystem = new TestFileSystem();
-        repoPath = "c:\\MyGitRepo";
+        repoPath = DefaultRepoPath;
+        workingPath = DefaultWorkingPath;
     }
 
     [Test]
@@ -112,7 +118,7 @@ branches:
         tag: bugfix";
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
-        
+
         config.Branches["bug[/-]"].Tag.ShouldBe("bugfix");
     }
 
@@ -145,10 +151,10 @@ branches:
 
         config.NextVersion.ShouldBe("2.12.654651698");
     }
-    
+
     [Test]
-    [Category("NoMono")]
-    [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+    [NUnit.Framework.Category("NoMono")]
+    [NUnit.Framework.Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public void CanWriteOutEffectiveConfiguration()
     {
@@ -228,18 +234,52 @@ branches: {}";
         propertiesMissingAlias.ShouldBeEmpty();
     }
 
-    [Test]
-    public void WarnOnExistingGitVersionConfigYamlFile()
+    [TestCase(DefaultRepoPath)]
+    [TestCase(DefaultWorkingPath)]
+    public void WarnOnExistingGitVersionConfigYamlFile(string path)
     {
-        SetupConfigFileContent(string.Empty, "GitVersionConfig.yaml");
+        SetupConfigFileContent(string.Empty, ConfigurationProvider.ObsoleteConfigFileName, path);
 
-        var s = string.Empty;
-        Action<string> action = info => { s = info; };
+        var logOutput = string.Empty;
+        Action<string> action = info => { logOutput = info; };
         Logger.SetLoggers(action, action, action);
 
-        ConfigurationProvider.Provide(repoPath, fileSystem);
+        ConfigurationProvider.Verify(workingPath, repoPath, fileSystem);
 
-        s.Contains("'GitVersionConfig.yaml' is deprecated, use 'GitVersion.yml' instead.").ShouldBe(true);
+        var configFileDeprecatedWarning = string.Format("{0}' is deprecated, use '{1}' instead", ConfigurationProvider.ObsoleteConfigFileName, ConfigurationProvider.DefaultConfigFileName);
+        logOutput.Contains(configFileDeprecatedWarning).ShouldBe(true);
+    }
+
+    [TestCase(DefaultRepoPath)]
+    [TestCase(DefaultWorkingPath)]
+    public void WarnOnAmbiguousConfigFilesAtTheSameProjectRootDirectory(string path)
+    {
+        SetupConfigFileContent(string.Empty, ConfigurationProvider.ObsoleteConfigFileName, path);
+        SetupConfigFileContent(string.Empty, ConfigurationProvider.DefaultConfigFileName, path);
+
+        var logOutput = string.Empty;
+        Action<string> action = info => { logOutput = info; };
+        Logger.SetLoggers(action, action, action);
+
+        ConfigurationProvider.Verify(workingPath, repoPath, fileSystem);
+
+        var configFileDeprecatedWarning = string.Format("Ambiguous config files at '{0}'", path);
+        logOutput.Contains(configFileDeprecatedWarning).ShouldBe(true);
+    }
+
+    [TestCase(ConfigurationProvider.DefaultConfigFileName, ConfigurationProvider.DefaultConfigFileName)]
+    [TestCase(ConfigurationProvider.DefaultConfigFileName, ConfigurationProvider.ObsoleteConfigFileName)]
+    [TestCase(ConfigurationProvider.ObsoleteConfigFileName, ConfigurationProvider.DefaultConfigFileName)]
+    [TestCase(ConfigurationProvider.ObsoleteConfigFileName, ConfigurationProvider.ObsoleteConfigFileName)]
+    public void ThrowsExceptionOnAmbiguousConfigFileLocation(string repoConfigFile, string workingConfigFile)
+    {
+        var repositoryConfigFilePath = SetupConfigFileContent(string.Empty, repoConfigFile, repoPath);
+        var workingDirectoryConfigFilePath = SetupConfigFileContent(string.Empty, workingConfigFile, workingPath);
+
+        WarningException exception = Should.Throw<WarningException>(() => { ConfigurationProvider.Verify(workingPath, repoPath, fileSystem); });
+
+        var expecedMessage = string.Format("Ambiguous config file selection from '{0}' and '{1}'", workingDirectoryConfigFilePath, repositoryConfigFilePath);
+        exception.Message.ShouldBe(expecedMessage);
     }
 
     [Test]
@@ -256,8 +296,16 @@ branches: {}";
         s.Length.ShouldBe(0);
     }
 
-    void SetupConfigFileContent(string text, string fileName = "GitVersion.yml")
+    string SetupConfigFileContent(string text, string fileName = ConfigurationProvider.DefaultConfigFileName)
     {
-        fileSystem.WriteAllText(Path.Combine(repoPath, fileName), text);
+        return SetupConfigFileContent(text, fileName, repoPath);
+    }
+
+    string SetupConfigFileContent(string text, string fileName, string path)
+    {
+        var fullPath = Path.Combine(path, fileName);
+        fileSystem.WriteAllText(fullPath, text);
+
+        return fullPath;
     }
 }
