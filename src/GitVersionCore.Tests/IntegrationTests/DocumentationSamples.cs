@@ -1,4 +1,5 @@
-﻿using GitTools;
+﻿using System;
+using GitTools;
 using GitTools.Testing;
 using GitVersionCore.Tests;
 using NUnit.Framework;
@@ -38,6 +39,7 @@ public class DocumentationSamples
             fixture.SequenceDiagram.NoteOver("Feature branches should\r\n" +
                              "be deleted once merged", "feature/myfeature");
             fixture.AssertFullSemver("1.3.0-alpha.3");
+            Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
         }
     }
 
@@ -72,6 +74,7 @@ public class DocumentationSamples
             fixture.SequenceDiagram.NoteOver("Feature branches/pr's should\r\n" +
                              "be deleted once merged", "pull/2/merge");
             fixture.AssertFullSemver("1.3.0-alpha.3");
+            Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
         }
     }
 
@@ -102,6 +105,7 @@ public class DocumentationSamples
             fixture.SequenceDiagram.Destroy("hotfix/1.2.1");
             fixture.SequenceDiagram.NoteOver("Hotfix branches are deleted once merged", "hotfix/1.2.1");
             fixture.ApplyTag("1.2.1");
+            Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
         }
     }
 
@@ -159,6 +163,7 @@ public class DocumentationSamples
             // Not 0 for commit count as we can't know the increment rules of the merged branch
             fixture.Checkout("develop");
             fixture.AssertFullSemver("1.4.0-alpha.4");
+            Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
         }
     }
 
@@ -216,6 +221,7 @@ public class DocumentationSamples
             // Not 0 for commit count as we can't know the increment rules of the merged branch
             fixture.Checkout("develop");
             fixture.AssertFullSemver("2.1.0-alpha.4");
+            Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
         }
     }
 
@@ -259,6 +265,7 @@ public class DocumentationSamples
             fixture.AssertFullSemver("1.3.1+4");
             fixture.ApplyTag("1.3.1");
             fixture.AssertFullSemver("1.3.1");
+            Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
         }
     }
 
@@ -303,6 +310,7 @@ public class DocumentationSamples
             fixture.AssertFullSemver("1.4.0+0");
             fixture.ApplyTag("1.4.0");
             fixture.AssertFullSemver("1.4.0");
+            Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
         }
     }
 
