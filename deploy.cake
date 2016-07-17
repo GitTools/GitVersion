@@ -1,5 +1,7 @@
 #addin "Cake.Json"
 
+var target = Argument("target", "Deploy");
+
 using System.Net;
 using System.Linq;
 using System.Collections.Generic;
@@ -35,6 +37,7 @@ Task("EnsureRequirements")
 
 var tag = "";
 Dictionary<string, string> artifactLookup = null;
+var publishingError = false;
 Task("UpdateVersionInfo")
     .IsDependentOn("EnsureRequirements")
     .Does(() =>
@@ -67,7 +70,7 @@ Task("Publish-NuGetPackage")
     .Does(() =>
 {
     NuGetPush(
-        "./releaseArtifacts/" + artifactLookup["NuGetExeBuild"],
+        "./releaseArtifacts/" + artifactLookup["NuGetRefBuild"],
         new NuGetPushSettings {
             ApiKey = EnvironmentVariable("NuGetApiKey"),
             Source = "https://www.nuget.org/api/v2/package"
@@ -135,9 +138,9 @@ Task("Publish-Gem")
     .IsDependentOn("DownloadGitHubReleaseArtifacts")
     .Does(() =>
 {
-    var returnCode = StartProcess("gem", new ProcessSettings
+    var returnCode = StartProcess("cmd", new ProcessSettings
     {
-        Arguments = "push ./releaseArtifacts/" + artifactLookup["NuGetExeBuild"] + " --key " + EnvironmentVariable("GemApiKey")
+        Arguments = " /c gem push ./releaseArtifacts/" + artifactLookup["GemBuild"] + " --key " + EnvironmentVariable("GemApiKey") + " && exit 0 || exit 1"
     });
 
     if (returnCode != 0) {
@@ -151,9 +154,9 @@ Task("Publish-VstsTask")
     .IsDependentOn("DownloadGitHubReleaseArtifacts")
     .Does(() =>
 {
-    var returnCode = StartProcess("tfx", new ProcessSettings
+    var returnCode = StartProcess("cmd", new ProcessSettings
     {
-        Arguments = "extension publish --vsix ./releaseArtifacts/" + artifactLookup["GitVersionTfsTaskBuild"] + " --no-prompt --auth-type pat --token " + EnvironmentVariable("GemApiKey")
+        Arguments = " /c tfx extension publish --vsix ./releaseArtifacts/" + artifactLookup["GitVersionTfsTaskBuild"] + " --no-prompt --auth-type pat --token " + EnvironmentVariable("MarketplaceApiKey") + " && exit 0 || exit 1"
     });
 
     if (returnCode != 0) {
@@ -167,7 +170,7 @@ Task("Deploy")
   .IsDependentOn("Publish-NuGetCommandLine")
   .IsDependentOn("Publish-MsBuildTask")
   .IsDependentOn("Publish-Chocolatey")
-  .IsDependentOn("Publish-Gem")
+//  .IsDependentOn("Publish-Gem")
   .IsDependentOn("Publish-VstsTask")
   .Finally(() =>
 {
@@ -176,3 +179,5 @@ Task("Deploy")
         throw new Exception("An error occurred during the publishing of Cake.  All publishing tasks have been attempted.");
     }
 });
+
+RunTarget(target);

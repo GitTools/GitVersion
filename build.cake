@@ -149,7 +149,7 @@ Task("Upload-AppVeyor-Artifacts")
         "NuGetCommandLineBuild:GitVersion.CommandLine." + nugetVersion +".nupkg",
         "NuGetRefBuild:GitVersion." + nugetVersion +".nupkg",
         "NuGetTaskBuild:GitVersionTask." + nugetVersion +".nupkg",
-        "GitVersionTfsTaskBuild:gittools.gitversion." + semVersion +".vsix",
+        "GitVersionTfsTaskBuild:gittools.gitversion-" + semVersion +".vsix",
         "GemBuild:" + gem,
         "zip:GitVersion_" + nugetVersion + ".zip",
         "releaseNotes:releasenotes.md"
