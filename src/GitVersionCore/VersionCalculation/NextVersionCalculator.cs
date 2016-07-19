@@ -43,15 +43,9 @@
             }
 
             var baseVersion = baseVersionFinder.GetBaseVersion(context);
-            var semver = baseVersion.SemanticVersion;
-            if (context.Configuration.VersioningMode == VersioningMode.Mainline)
-            {
-                semver = FindMainlineModeVersion(baseVersion, context);
-            }
-            else
-            {
-                semver = PerformIncrement(context, baseVersion, semver);
-            }
+            var semver = context.Configuration.VersioningMode == VersioningMode.Mainline ?
+                FindMainlineModeVersion(baseVersion, context) :
+                PerformIncrement(context, baseVersion);
 
             if (!semver.PreReleaseTag.HasTag() && !string.IsNullOrEmpty(context.Configuration.Tag))
             {
@@ -69,8 +63,9 @@
             return taggedSemanticVersion ?? semver;
         }
 
-        private static SemanticVersion PerformIncrement(GitVersionContext context, BaseVersion baseVersion, SemanticVersion semver)
+        private static SemanticVersion PerformIncrement(GitVersionContext context, BaseVersion baseVersion)
         {
+            var semver = baseVersion.SemanticVersion;
             var increment = IncrementStrategyFinder.DetermineIncrementedField(context, baseVersion);
             if (increment != null)
             {
@@ -102,11 +97,11 @@
                 Logger.WriteInfo(string.Format("Found {0} merge commits to evaluate increments for..", mergeCommits.Count));
 
                 var mainlineVersion = mergeCommits
-                    .Select(mc =>
+                    .Select(mergeCommit =>
                     {
-                        var mergedHead = GetMergedHead(mc);
-                        var findMergeBase = context.Repository.ObjectDatabase.FindMergeBase(mc.Parents.First(), mergedHead);
-                        return FindMessageIncrement(context, mergedHead, findMergeBase);
+                        var mergedHead = GetMergedHead(mergeCommit);
+                        var findMergeBase = context.Repository.ObjectDatabase.FindMergeBase(mergeCommit.Parents.First(), mergedHead);
+                        return FindMessageIncrement(context, mergeCommit, mergedHead, findMergeBase);
                     })
                     .Aggregate(baseVersion.SemanticVersion, (v, i) => v.IncrementVersion(i));
 
@@ -114,7 +109,7 @@
                 {
                     var mergedHead = context.CurrentCommit;
                     var findMergeBase = context.Repository.FindBranch("master").Tip;
-                    var branchIncrement = FindMessageIncrement(context, mergedHead, findMergeBase);
+                    var branchIncrement = FindMessageIncrement(context, findMergeBase, mergedHead, findMergeBase);
                     Logger.WriteInfo(string.Format("Performing {0} increment for current branch ", branchIncrement));
                     mainlineVersion = mainlineVersion.IncrementVersion(branchIncrement);
                 }
@@ -122,7 +117,7 @@
             }
         }
 
-        private static VersionField FindMessageIncrement(GitVersionContext context, Commit mergedHead, Commit findMergeBase)
+        private static VersionField FindMessageIncrement(GitVersionContext context, Commit mergeCommit, Commit mergedHead, Commit findMergeBase)
         {
             var filter = new CommitFilter
             {
@@ -130,7 +125,8 @@
                 ExcludeReachableFrom = findMergeBase
             };
             var commits = context.Repository.Commits.QueryBy(filter).ToList();
-            return IncrementStrategyFinder.GetIncrementForCommits(context, commits) ?? VersionField.Patch;
+            // Need to include merge commit in increment cal
+            return IncrementStrategyFinder.GetIncrementForCommits(context, new [] { mergeCommit }.Union(commits)) ?? VersionField.Patch;
         }
 
         private Commit GetMergedHead(Commit mergeCommit)

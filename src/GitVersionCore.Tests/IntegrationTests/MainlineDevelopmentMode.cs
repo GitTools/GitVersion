@@ -1,6 +1,7 @@
 ﻿using GitTools.Testing;
 using GitVersion;
 using GitVersionCore.Tests;
+using LibGit2Sharp;
 using NUnit.Framework;
 
 public class MainlineDevelopmentMode
@@ -34,10 +35,16 @@ public class MainlineDevelopmentMode
             fixture.AssertFullSemver(config, "0.2.0+5");
 
             fixture.BranchTo("feature/foo3");
-            fixture.Repository.MakeACommit("4 +semver: minor");
-            fixture.AssertFullSemver(config, "0.3.0-foo3.1+6");
+            fixture.Repository.MakeACommit("4");
             fixture.Checkout("master");
             fixture.MergeNoFF("feature/foo3");
+            var commit = fixture.Repository.Head.Tip;
+            // Put semver increment in merge message
+            fixture.Repository.Commit(commit.Message + " +semver: minor", commit.Author, commit.Committer, new CommitOptions
+            {
+                AmendPreviousCommit = true
+            });
+            commit = fixture.Repository.Head.Tip;
             fixture.AssertFullSemver(config, "0.3.0+7");
 
             fixture.BranchTo("feature/foo4");
