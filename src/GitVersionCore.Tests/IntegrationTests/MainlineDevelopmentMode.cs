@@ -76,6 +76,9 @@ public class MainlineDevelopmentMode
             // One more direct commit for good measure
             fixture.MakeACommit("10 +semver: minor");
             fixture.AssertFullSemver(config, "3.3.0+14");
+            // And we can commit without bumping semver
+            fixture.MakeACommit("11 +semver: none");
+            fixture.AssertFullSemver(config, "3.3.0+15");
             Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
         }
     }

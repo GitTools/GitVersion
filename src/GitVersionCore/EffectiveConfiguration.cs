@@ -21,6 +21,7 @@ namespace GitVersion
             string majorVersionBumpMessage,
             string minorVersionBumpMessage,
             string patchVersionBumpMessage,
+            string noBumpMessage,
             CommitMessageIncrementMode commitMessageIncrementing,
             int legacySemVerPaddding,
             int buildMetaDataPadding,
@@ -44,6 +45,7 @@ namespace GitVersion
             MajorVersionBumpMessage = majorVersionBumpMessage;
             MinorVersionBumpMessage = minorVersionBumpMessage;
             PatchVersionBumpMessage = patchVersionBumpMessage;
+            NoBumpMessage = noBumpMessage;
             CommitMessageIncrementing = commitMessageIncrementing;
             LegacySemVerPadding = legacySemVerPaddding;
             BuildMetaDataPadding = buildMetaDataPadding;
@@ -91,6 +93,7 @@ namespace GitVersion
 
         public string PatchVersionBumpMessage { get; private set; }
 
+        public string NoBumpMessage { get; private set; }
         public int LegacySemVerPadding { get; private set; }
         public int BuildMetaDataPadding { get; private set; }
 
