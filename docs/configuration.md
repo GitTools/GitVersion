@@ -36,6 +36,8 @@ The global configuration options are:
 
  - **`patch-version-bump-message:`** The regex to match commit messages with to perform a patch version increment. Default set to `'\+semver:\s?(fix|patch)'`, which will match occurrences of `+semver: fix` and `+semver: patch` in a commit message.
 
+ - **`no-bump-message:`** Used to tell GitVersion not to increment when in Mainline development mode. Default `\+semver:\s?(none|skip)`, which will match occurrences of `+semver: none` and `+semver: skip`
+
  - **`legacy-semver-padding:`** The number of characters to pad `LegacySemVer` to  in the `LegacySemVerPadded` [variable](/more-info/variables). Is default set to `4`, which will pad the `LegacySemVer` value of `3.0.0-beta1` to `3.0.0-beta0001`.
 
  - **`build-metadata-padding:`** The number of characters to pad `BuildMetaData` to in the `BuildMetaDataPadded` [variable](/more-info/variables). Is default set to `4`, which will pad the `BuildMetaData` value of `1` to `0001`.
