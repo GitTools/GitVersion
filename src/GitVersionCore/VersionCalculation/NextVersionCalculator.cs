@@ -1,6 +1,7 @@
 ﻿namespace GitVersion.VersionCalculation
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
     using BaseVersionCalculators;
@@ -84,49 +85,86 @@
 
             using (Logger.IndentLog("Using mainline development mode to calculate current version"))
             {
+                var mainlineVersion = baseVersion.SemanticVersion;
+
                 var commitLog = context.Repository.Commits.QueryBy(new CommitFilter
                 {
                     IncludeReachableFrom = context.CurrentBranch,
                     ExcludeReachableFrom = baseVersion.BaseVersionSource,
                     SortBy = CommitSortStrategies.Reverse
-                }).ToList();
-                var mergeCommits = commitLog
-                    .Where(l => l.Parents.Count() > 1)
-                    .ToList();
+                }).Where(c => c.Sha != baseVersion.BaseVersionSource.Sha).ToList();
+                var directCommits = new List<Commit>();
 
-                Logger.WriteInfo(string.Format("Found {0} merge commits to evaluate increments for..", mergeCommits.Count));
-
-                var mainlineVersion = mergeCommits
-                    .Select(mergeCommit =>
+                foreach (var commit in commitLog)
+                {
+                    directCommits.Add(commit);
+                    if (commit.Parents.Count() > 1)
                     {
+                        // Merge commit, process all merged commits as a batch
+                        var mergeCommit = commit;
                         var mergedHead = GetMergedHead(mergeCommit);
                         var findMergeBase = context.Repository.ObjectDatabase.FindMergeBase(mergeCommit.Parents.First(), mergedHead);
-                        return FindMessageIncrement(context, mergeCommit, mergedHead, findMergeBase);
-                    })
-                    .Aggregate(baseVersion.SemanticVersion, (v, i) => v.IncrementVersion(i));
+                        var findMessageIncrement = FindMessageIncrement(context, mergeCommit, mergedHead, findMergeBase, directCommits);
+
+                        // If this collection is not empty there has been some direct commits against master
+                        // Treat each commit as it's own 'release', we need to do this before we increment the branch
+                        mainlineVersion = IncrementForEachCommit(context, directCommits, mainlineVersion);
+                        directCommits.Clear();
+
+                        // Finally increment for the branch
+                        mainlineVersion = mainlineVersion.IncrementVersion(findMessageIncrement);
+                        Logger.WriteInfo(string.Format("Merge commit {0} incremented base versions {1}, now {2}",
+                            mergeCommit.Sha, findMessageIncrement, mainlineVersion));
+                    }
+                }
 
                 if (context.CurrentBranch.FriendlyName != "master")
                 {
                     var mergedHead = context.CurrentCommit;
-                    var findMergeBase = context.Repository.FindBranch("master").Tip;
-                    var branchIncrement = FindMessageIncrement(context, findMergeBase, mergedHead, findMergeBase);
+                    var findMergeBase = context.Repository.ObjectDatabase.FindMergeBase(context.CurrentCommit, context.Repository.FindBranch("master").Tip);
+                    Logger.WriteInfo(string.Format("Current branch ({0}) was branch from {1}", context.CurrentBranch.FriendlyName, findMergeBase));
+
+                    var branchIncrement = FindMessageIncrement(context, findMergeBase, mergedHead, findMergeBase, directCommits);
+                    mainlineVersion = IncrementForEachCommit(context, directCommits, mainlineVersion);
                     Logger.WriteInfo(string.Format("Performing {0} increment for current branch ", branchIncrement));
                     mainlineVersion = mainlineVersion.IncrementVersion(branchIncrement);
                 }
+                else
+                {
+                    // If we are on master, make sure no commits get left behind
+                    mainlineVersion = IncrementForEachCommit(context, directCommits, mainlineVersion);
+                }
+
                 return mainlineVersion;
             }
         }
 
-        private static VersionField FindMessageIncrement(GitVersionContext context, Commit mergeCommit, Commit mergedHead, Commit findMergeBase)
+        private static SemanticVersion IncrementForEachCommit(GitVersionContext context, List<Commit> directCommits, SemanticVersion mainlineVersion)
+        {
+            foreach (var directCommit in directCommits)
+            {
+                var directCommitIncrement = IncrementStrategyFinder.GetIncrementForCommits(context, new[]
+                                            {
+                                                directCommit
+                                            }) ?? VersionField.Patch;
+                mainlineVersion = mainlineVersion.IncrementVersion(directCommitIncrement);
+                Logger.WriteInfo(string.Format("Direct commit on master {0} incremented base versions {1}, now {2}", 
+                    directCommit.Sha, directCommitIncrement, mainlineVersion));
+            }
+            return mainlineVersion;
+        }
+
+        private static VersionField FindMessageIncrement(
+            GitVersionContext context, Commit mergeCommit, Commit mergedHead, Commit findMergeBase, List<Commit> commitLog)
         {
             var filter = new CommitFilter
             {
                 IncludeReachableFrom = mergedHead,
                 ExcludeReachableFrom = findMergeBase
             };
-            var commits = context.Repository.Commits.QueryBy(filter).ToList();
-            // Need to include merge commit in increment cal
-            return IncrementStrategyFinder.GetIncrementForCommits(context, new [] { mergeCommit }.Union(commits)) ?? VersionField.Patch;
+            var commits = new[] { mergeCommit }.Union(context.Repository.Commits.QueryBy(filter)).ToList();
+            commitLog.RemoveAll(c => commits.Any(c1 => c1.Sha == c.Sha));
+            return IncrementStrategyFinder.GetIncrementForCommits(context, commits) ?? VersionField.Patch;
         }
 
         private Commit GetMergedHead(Commit mergeCommit)
