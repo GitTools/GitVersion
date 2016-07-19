@@ -20,7 +20,7 @@ For this mode we followed the logic in this blog post by Xavier Decoster on the 
 As such we force a pre-release tag on all branches, this is fine for applications but can cause problems for libraries. As such this mode may or may not work for you, which leads us into a new mode in v4. Mainline development.
 
 ## Mainline development
-Mainline development works more like the Continuous Delivery mode, except that it tells GitVersion to *infer* releases from from event.
+Mainline development works more like the Continuous Delivery mode, except that it tells GitVersion to *infer* releases from merges and commits to `master`.
 
 This mode is great if you do not want to tag each release because you simply deploy every commit to master. The behaviour of this mode is as follows:
 
@@ -31,6 +31,8 @@ This mode is great if you do not want to tag each release because you simply dep
     - Calculate the increment for the branch
 1. Calculate increments for each remaining direct commit
 1. For feature branches then calculate increment for the commits so far on your feature branch.
+
+If you *do not want* GitVersion to treat a commit or a pull request as a release and increment the version you can use `+semver: none` or `+semver: skip` in a commit message to skip incrementing for that commit.
 
 Here is an example of what mainline development looks like:
 
