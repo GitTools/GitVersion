@@ -41,7 +41,7 @@
                 fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));
                 fixture.Repository.Branches.Remove(fixture.Repository.Branches["master"]);
 
-                fixture.AssertFullSemver("1.1.0-unstable.1");
+                fixture.AssertFullSemver("1.1.0-alpha.1");
             }
         }
 
@@ -85,7 +85,7 @@
                 fixture.LocalRepositoryFixture.Repository.Checkout(fixture.Repository.Head.Tip);
                 fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
                 fixture.InitialiseRepo();
-                fixture.AssertFullSemver("1.1.0-unstable.1");
+                fixture.AssertFullSemver("1.1.0-alpha.1");
             }
         }
     }

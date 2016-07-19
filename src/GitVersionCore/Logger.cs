@@ -52,6 +52,32 @@ namespace GitVersion
             WriteError = LogMessage(ObscurePassword(error), "ERROR");
         }
 
+        public static IDisposable AddLoggersTemporarily(Action<string> info, Action<string> warn, Action<string> error)
+        {
+            var currentInfo = WriteInfo;
+            var currentWarn = WriteWarning;
+            var currentError = WriteError;
+            SetLoggers(s => {
+                info(s);
+                currentInfo(s);
+            }, s =>
+            {
+                warn(s);
+                currentWarn(s);
+            }, s =>
+            {
+                error(s);
+                currentError(s);
+            });
+
+            return new ActionDisposable(() =>
+            {
+                WriteInfo = currentInfo;
+                WriteWarning =  currentWarn;
+                WriteError = currentError;
+            });
+        }
+
         static Action<string> LogMessage(Action<string> logAction, string level)
         {
             return s => logAction(string.Format(CultureInfo.InvariantCulture, "{0}{1} [{2:MM/dd/yy H:mm:ss:ff}] {3}", indent, level, DateTime.Now, s));

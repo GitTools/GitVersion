@@ -216,7 +216,7 @@ branches: {}";
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
         config.AssemblyInformationalFormat.ShouldBe(null);
-        config.Branches["dev(elop)?(ment)?$"].Tag.ShouldBe("unstable");
+        config.Branches["dev(elop)?(ment)?$"].Tag.ShouldBe("alpha");
         config.Branches["releases?[/-]"].Tag.ShouldBe("beta");
         config.TagPrefix.ShouldBe(ConfigurationProvider.DefaultTagPrefix);
         config.NextVersion.ShouldBe(null);
@@ -242,10 +242,10 @@ branches: {}";
 
         var logOutput = string.Empty;
         Action<string> action = info => { logOutput = info; };
-        Logger.SetLoggers(action, action, action);
-
-        ConfigurationProvider.Verify(workingPath, repoPath, fileSystem);
-
+        using (Logger.AddLoggersTemporarily(action, action, action))
+        {
+            ConfigurationProvider.Verify(workingPath, repoPath, fileSystem);
+        }
         var configFileDeprecatedWarning = string.Format("{0}' is deprecated, use '{1}' instead", ConfigurationProvider.ObsoleteConfigFileName, ConfigurationProvider.DefaultConfigFileName);
         logOutput.Contains(configFileDeprecatedWarning).ShouldBe(true);
     }
@@ -289,10 +289,10 @@ branches: {}";
 
         var s = string.Empty;
         Action<string> action = info => { s = info; };
-        Logger.SetLoggers(action, action, action);
-
-        ConfigurationProvider.Provide(repoPath, fileSystem);
-
+        using (Logger.AddLoggersTemporarily(action, action, action))
+        {
+            ConfigurationProvider.Provide(repoPath, fileSystem);
+        }
         s.Length.ShouldBe(0);
     }
 

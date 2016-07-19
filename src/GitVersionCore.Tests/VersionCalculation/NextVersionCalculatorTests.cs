@@ -52,7 +52,7 @@
 
             var version = sut.FindVersion(context);
 
-            version.ToString("f").ShouldBe("1.0.0-unstable.1+2");
+            version.ToString("f").ShouldBe("1.0.0-alpha.1+2");
         }
 
         [Test]

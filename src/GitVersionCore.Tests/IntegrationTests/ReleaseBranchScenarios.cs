@@ -20,11 +20,10 @@ public class ReleaseBranchScenarios
             fixture.Repository.MergeNoFF("release/1.0.0");
             fixture.Repository.ApplyTag("1.0.0");
             fixture.Repository.Checkout("develop");
-            fixture.Repository.MakeACommit();
 
             fixture.Repository.Branches.Remove(releaseBranch);
 
-            fixture.AssertFullSemver("1.1.0-unstable.1");
+            fixture.AssertFullSemver("1.1.0-alpha.0");
         }
     }
 
@@ -48,12 +47,12 @@ public class ReleaseBranchScenarios
             // Merge to develop
             fixture.Repository.Checkout("develop");
             fixture.Repository.MergeNoFF("release/1.0.0");
-            fixture.AssertFullSemver("1.1.0-unstable.1");
+            fixture.AssertFullSemver("1.1.0-alpha.2");
 
             fixture.Repository.MakeACommit();
             fixture.Repository.Branches.Remove(releaseBranch);
 
-            fixture.AssertFullSemver("1.1.0-unstable.2");
+            fixture.AssertFullSemver("1.1.0-alpha.2");
         }
     }
 
@@ -226,7 +225,7 @@ public class ReleaseBranchScenarios
             fixture.Repository.Checkout("develop");
             fixture.Repository.MergeNoFF("release-1.0.0", Generate.SignatureNow());
 
-            fixture.AssertFullSemver("2.1.0-unstable.5");
+            fixture.AssertFullSemver("2.1.0-alpha.6");
         }
     }
 
@@ -265,7 +264,7 @@ public class ReleaseBranchScenarios
             fixture.Repository.Checkout("develop");
 
             fixture.Repository.MakeCommits(1);
-            fixture.AssertFullSemver("1.1.0-unstable.1");
+            fixture.AssertFullSemver("1.1.0-alpha.1");
 
             fixture.Repository.CreateBranch("release-2.0.0");
             fixture.Repository.Checkout("release-2.0.0");
@@ -328,6 +327,37 @@ public class ReleaseBranchScenarios
             fixture.Repository.MergeNoFF("hotfix-2.0.0", Generate.SignatureNow());
             fixture.Repository.Branches.Remove(fixture.Repository.Branches["hotfix-2.0.0"]);
             fixture.AssertFullSemver(config, "2.0.0-beta.7");
+        }
+    }
+    [Test]
+    public void MergeOnReleaseBranchShouldNotResetCount()
+    {
+        var config = new Config
+        {
+            AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
+            VersioningMode = VersioningMode.ContinuousDeployment,
+        };
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            const string TaggedVersion = "1.0.3";
+            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+            fixture.Repository.CreateBranch("develop");
+            fixture.Repository.Checkout("develop");
+            fixture.Repository.MakeACommit();
+
+            fixture.Repository.CreateBranch("release/2.0.0");
+
+            fixture.Repository.CreateBranch("release/2.0.0-xxx");
+            fixture.Repository.Checkout("release/2.0.0-xxx");
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver(config, "2.0.0-beta.1");
+
+            fixture.Repository.Checkout("release/2.0.0");
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver(config, "2.0.0-beta.1");
+
+            fixture.Repository.MergeNoFF("release/2.0.0-xxx");
+            fixture.AssertFullSemver(config, "2.0.0-beta.2");
         }
     }
 }

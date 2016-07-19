@@ -114,7 +114,9 @@ namespace GitVersion
                         new BranchConfig(branchConfiguration)
                         {
                             Increment = branchConfig.Increment,
-                            PreventIncrementOfMergedBranchVersion = branchConfig.PreventIncrementOfMergedBranchVersion
+                            PreventIncrementOfMergedBranchVersion = branchConfig.PreventIncrementOfMergedBranchVersion,
+                            // If we are inheriting from develop then we should behave like develop
+                            IsDevelop = branchConfig.IsDevelop
                         });
                 }
 
@@ -134,13 +136,15 @@ namespace GitVersion
                 var branchName = chosenBranch.FriendlyName;
                 Logger.WriteWarning(errorMessage + Environment.NewLine + Environment.NewLine + "Falling back to " + branchName + " branch config");
 
-                var value = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, chosenBranch).Value;
+                var inheritingBranchConfig = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, chosenBranch).Value;
                 return new KeyValuePair<string, BranchConfig>(
                     keyValuePair.Key,
                     new BranchConfig(branchConfiguration)
                     {
-                        Increment = value.Increment,
-                        PreventIncrementOfMergedBranchVersion = value.PreventIncrementOfMergedBranchVersion
+                        Increment = inheritingBranchConfig.Increment,
+                        PreventIncrementOfMergedBranchVersion = inheritingBranchConfig.PreventIncrementOfMergedBranchVersion,
+                        // If we are inheriting from develop then we should behave like develop
+                        IsDevelop = inheritingBranchConfig.IsDevelop
                     });
             }
         }

@@ -17,6 +17,8 @@
             TagNumberPattern = branchConfiguration.TagNumberPattern;
             TrackMergeTarget = branchConfiguration.TrackMergeTarget;
             CommitMessageIncrementing = branchConfiguration.CommitMessageIncrementing;
+            IsDevelop = branchConfiguration.IsDevelop;
+            IsReleaseBranch = branchConfiguration.IsReleaseBranch;
         }
 
         [YamlMember(Alias = "mode")]
@@ -42,5 +44,11 @@
         
         [YamlMember(Alias = "commit-message-incrementing")]
         public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
+
+        [YamlMember(Alias = "is-develop")]
+        public bool? IsDevelop { get; set; }
+
+        [YamlMember(Alias = "is-release-branch")]
+        public bool? IsReleaseBranch { get; set; }
     }
 }

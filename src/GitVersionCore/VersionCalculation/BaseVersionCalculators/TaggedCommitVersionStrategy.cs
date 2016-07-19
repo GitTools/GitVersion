@@ -1,5 +1,6 @@
 ﻿namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using LibGit2Sharp;
@@ -8,16 +9,17 @@
     {
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
-            var olderThan = context.CurrentCommit.When();
+            return GetTaggedVersions(context, context.CurrentBranch, context.CurrentCommit.When());
+        }
+
+        public IEnumerable<BaseVersion> GetTaggedVersions(GitVersionContext context, Branch currentBranch, DateTimeOffset? olderThan)
+        {
             var allTags = context.Repository.Tags
-                .Where(tag => ((Commit)tag.PeeledTarget()).When() <= olderThan)
+                .Where(tag => !olderThan.HasValue || ((Commit) tag.PeeledTarget()).When() <= olderThan.Value)
                 .ToList();
-            var tagsOnBranch = context.CurrentBranch
+            var tagsOnBranch = currentBranch
                 .Commits
-                .SelectMany(commit =>
-                {
-                    return allTags.Where(t => IsValidTag(t, commit));
-                })
+                .SelectMany(commit => { return allTags.Where(t => IsValidTag(t, commit)); })
                 .Select(t =>
                 {
                     SemanticVersion version;

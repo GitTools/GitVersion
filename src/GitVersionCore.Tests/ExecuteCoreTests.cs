@@ -200,12 +200,10 @@ CommitDate: 2015-11-10
         Action<string> infoLogger = s =>
         {
             infoBuilder.AppendLine(s);
-            Console.WriteLine(s);
         };
         executeCore = executeCore ?? new ExecuteCore(fileSystem);
 
-        Logger.SetLoggers(infoLogger, Console.WriteLine, Console.WriteLine);
-
+        using (Logger.AddLoggersTemporarily(infoLogger, s => {}, s => { }))
         using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeACommit();

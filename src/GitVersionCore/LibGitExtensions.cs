@@ -62,44 +62,13 @@ namespace GitVersion
                         return null;
                     }
 
-                    // Otherbranch tip is a forward merge
-                    var commitToFindCommonBase = otherBranch.Tip;
-                    if (otherBranch.Tip.Parents.Contains(branch.Tip))
-                    {
-                        commitToFindCommonBase = otherBranch.Tip.Parents.First();
-                    }
- 
-                    var findMergeBase = repository.ObjectDatabase.FindMergeBase(branch.Tip, commitToFindCommonBase);
-                    if (findMergeBase != null)
-                    {
-                        using (Logger.IndentLog(string.Format("Found merge base of {0} against {1}", findMergeBase.Sha, otherBranch.FriendlyName)))
-                        {
-                            // We do not want to include merge base commits which got forward merged into the other branch
-                            bool mergeBaseWasFowardMerge;
-                            do
-                            {
-                                // Now make sure that the merge base is not a forward merge
-                                mergeBaseWasFowardMerge = otherBranch.Commits
-                                    .SkipWhile(c => c != commitToFindCommonBase)
-                                    .TakeWhile(c => c != findMergeBase)
-                                    .Any(c => c.Parents.Contains(findMergeBase));
-                                if (mergeBaseWasFowardMerge)
-                                {
-                                    Logger.WriteInfo("Merge base was due to a forward merge, moving to next merge base");
-                                    var second = commitToFindCommonBase.Parents.First();
-                                    var mergeBase = repository.ObjectDatabase.FindMergeBase(branch.Tip, second);
-                                    if (mergeBase == findMergeBase) break;
-                                    findMergeBase = mergeBase;
-                                }
-                            } while (mergeBaseWasFowardMerge);
-                        }
-                    }
+                    var findMergeBase = FindMergeBase(branch, otherBranch, repository);
                     return new
                     {
                         mergeBaseCommit = findMergeBase,
                         branch = otherBranch
                     };
-                }).Where(b => b != null && b.mergeBaseCommit != null).OrderByDescending(b => b.mergeBaseCommit.Committer.When).ToList();
+                }).Where(b => b != null).OrderByDescending(b => b.mergeBaseCommit.Committer.When).ToList();
 
                 var firstOrDefault = mergeBases.FirstOrDefault();
                 if (firstOrDefault != null)
@@ -107,6 +76,47 @@ namespace GitVersion
                     return firstOrDefault.mergeBaseCommit;
                 }
                 return null;
+            }
+        }
+
+        public static Commit FindMergeBase(this Branch branch, Branch otherBranch, IRepository repository)
+        {
+            using (Logger.IndentLog(string.Format("Finding merge base between '{0}' and {1}.", branch.FriendlyName, otherBranch.FriendlyName)))
+            {
+                // Otherbranch tip is a forward merge
+                var commitToFindCommonBase = otherBranch.Tip;
+                if (otherBranch.Tip.Parents.Contains(branch.Tip))
+                {
+                    commitToFindCommonBase = otherBranch.Tip.Parents.First();
+                }
+
+                var findMergeBase = repository.ObjectDatabase.FindMergeBase(branch.Tip, commitToFindCommonBase);
+                if (findMergeBase != null)
+                {
+                    Logger.WriteInfo(string.Format("Found merge base of {0} against {1}", findMergeBase.Sha, otherBranch.FriendlyName));
+                    // We do not want to include merge base commits which got forward merged into the other branch
+                    bool mergeBaseWasFowardMerge;
+                    do
+                    {
+                        // Now make sure that the merge base is not a forward merge
+                        mergeBaseWasFowardMerge = otherBranch.Commits
+                            .SkipWhile(c => c != commitToFindCommonBase)
+                            .TakeWhile(c => c != findMergeBase)
+                            .Any(c => c.Parents.Contains(findMergeBase));
+                        if (mergeBaseWasFowardMerge)
+                        {
+                            var second = commitToFindCommonBase.Parents.First();
+                            var mergeBase = repository.ObjectDatabase.FindMergeBase(branch.Tip, second);
+                            if (mergeBase == findMergeBase)
+                            {
+                                break;
+                            }
+                            findMergeBase = mergeBase;
+                            Logger.WriteInfo(string.Format("Merge base was due to a forward merge, next merge base is {0}", findMergeBase));
+                        }
+                    } while (mergeBaseWasFowardMerge);
+                }
+                return findMergeBase;
             }
         }
 

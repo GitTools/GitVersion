@@ -70,7 +70,7 @@ namespace GitVersion
             var configBranches = config.Branches.ToList();
 
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "master"), defaultTag: string.Empty, defaultPreventIncrement: true);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "releases?[/-]"), defaultTag: "beta", defaultPreventIncrement: true);
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "releases?[/-]"), defaultTag: "beta", defaultPreventIncrement: true, isReleaseBranch: true);
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "features?[/-]"), defaultIncrementStrategy: IncrementStrategy.Inherit);
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, @"(pull|pull\-requests|pr)[/-]"),
                 defaultTag: "PullRequest",
@@ -79,10 +79,11 @@ namespace GitVersion
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "hotfix(es)?[/-]"), defaultTag: "beta");
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "support[/-]"), defaultTag: string.Empty, defaultPreventIncrement: true);
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "dev(elop)?(ment)?$"),
-                defaultTag: "unstable",
+                defaultTag: "alpha",
                 defaultIncrementStrategy: IncrementStrategy.Minor,
                 defaultVersioningMode: VersioningMode.ContinuousDeployment,
-                defaultTrackMergeTarget: true);
+                defaultTrackMergeTarget: true,
+                isDevelop: true);
 
             // Any user defined branches should have other values defaulted after known branches filled in
             // This allows users to override one value of 
@@ -140,7 +141,9 @@ namespace GitVersion
             bool defaultPreventIncrement = false,
             VersioningMode? defaultVersioningMode = null, // Looked up from main config
             bool defaultTrackMergeTarget = false,
-            string defaultTagNumberPattern = null)
+            string defaultTagNumberPattern = null,
+            bool isDevelop = false,
+            bool isReleaseBranch = false)
         {
             branchConfig.Tag = branchConfig.Tag ?? defaultTag;
             branchConfig.TagNumberPattern = branchConfig.TagNumberPattern ?? defaultTagNumberPattern;
@@ -148,6 +151,8 @@ namespace GitVersion
             branchConfig.PreventIncrementOfMergedBranchVersion = branchConfig.PreventIncrementOfMergedBranchVersion ?? defaultPreventIncrement;
             branchConfig.TrackMergeTarget = branchConfig.TrackMergeTarget ?? defaultTrackMergeTarget;
             branchConfig.VersioningMode = branchConfig.VersioningMode ?? defaultVersioningMode ?? config.VersioningMode;
+            branchConfig.IsDevelop = branchConfig.IsDevelop ?? isDevelop;
+            branchConfig.IsReleaseBranch = branchConfig.IsReleaseBranch ?? isReleaseBranch;
         }
 
         static Config ReadConfig(string workingDirectory, IFileSystem fileSystem)

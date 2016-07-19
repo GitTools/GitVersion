@@ -25,8 +25,9 @@ namespace GitVersion
             int legacySemVerPaddding,
             int buildMetaDataPadding,
             int commitsSinceVersionSourcePadding,
-            IEnumerable<IVersionFilter> versionFilters
-            )
+            IEnumerable<IVersionFilter> versionFilters,
+            bool isCurrentBranchDevelop,
+            bool isCurrentBranchRelease)
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
             AssemblyInformationalFormat = assemblyInformationalFormat;
@@ -48,7 +49,12 @@ namespace GitVersion
             BuildMetaDataPadding = buildMetaDataPadding;
             CommitsSinceVersionSourcePadding = commitsSinceVersionSourcePadding;
             VersionFilters = versionFilters;
+            IsCurrentBranchDevelop = isCurrentBranchDevelop;
+            IsCurrentBranchRelease = isCurrentBranchRelease;
         }
+
+        public bool IsCurrentBranchDevelop { get; private set; }
+        public bool IsCurrentBranchRelease { get; private set; }
 
         public VersioningMode VersioningMode { get; private set; }
 
