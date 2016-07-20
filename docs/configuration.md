@@ -24,7 +24,7 @@ The global configuration options are:
 
  - **`assembly-informational-format:`** Set this to any of the available [variables](/more-info/variables) to change the value of the `AssemblyInformationalVersion` attribute. Default set to `{InformationalVersion}`. It also supports string interpolation (`{MajorMinorPatch}+{Branch}`)
 
- - **`mode:`** Sets the mode of how GitVersion should create a new version. Can be set to either `ContinuousDelivery` or `ContinuousDeployment`. Read more about [ContinuousDelivery](/reference/continuous-delivery/) or [ContinuousDeployment](/reference/continuous-deployment/).
+ - **`mode:`** Sets the mode of how GitVersion should create a new version. Read more at [versioning mode](./versioning-mode.md)
 
  - **`continuous-delivery-fallback-tag:`** When using `mode: ContinuousDeployment`, the value specified will be used as the pre-release tag for branches which do not have one specified. Default set to `ci`.
 
@@ -35,6 +35,8 @@ The global configuration options are:
  - **`minor-version-bump-message:`** The regex to match commit messages with to perform a minor version increment. Default set to `'\+semver:\s?(feature|minor)'`, which will match occurrences of `+semver: feature` and `+semver: minor` in a commit message.
 
  - **`patch-version-bump-message:`** The regex to match commit messages with to perform a patch version increment. Default set to `'\+semver:\s?(fix|patch)'`, which will match occurrences of `+semver: fix` and `+semver: patch` in a commit message.
+
+ - **`no-bump-message:`** Used to tell GitVersion not to increment when in Mainline development mode. Default `\+semver:\s?(none|skip)`, which will match occurrences of `+semver: none` and `+semver: skip`
 
  - **`legacy-semver-padding:`** The number of characters to pad `LegacySemVer` to  in the `LegacySemVerPadded` [variable](/more-info/variables). Is default set to `4`, which will pad the `LegacySemVer` value of `3.0.0-beta1` to `3.0.0-beta0001`.
 

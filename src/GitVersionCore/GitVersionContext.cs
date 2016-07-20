@@ -123,6 +123,7 @@
             var majorMessage = FullConfiguration.MajorVersionBumpMessage;
             var minorMessage = FullConfiguration.MinorVersionBumpMessage;
             var patchMessage = FullConfiguration.PatchVersionBumpMessage;
+            var noBumpMessage = FullConfiguration.NoBumpMessage;
 
             var commitMessageVersionBump = currentBranchConfig.Value.CommitMessageIncrementing ?? FullConfiguration.CommitMessageIncrementing.Value;
 
@@ -132,7 +133,7 @@
                 preventIncrementForMergedBranchVersion,
                 tagNumberPattern, FullConfiguration.ContinuousDeploymentFallbackTag,
                 trackMergeTarget,
-                majorMessage, minorMessage, patchMessage,
+                majorMessage, minorMessage, patchMessage, noBumpMessage,
                 commitMessageVersionBump,
                 FullConfiguration.LegacySemVerPadding.Value,
                 FullConfiguration.BuildMetaDataPadding.Value,

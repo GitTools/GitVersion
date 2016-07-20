@@ -19,6 +19,7 @@
         public const string DefaultMajorPattern = @"\+semver:\s?(breaking|major)";
         public const string DefaultMinorPattern = @"\+semver:\s?(feature|minor)";
         public const string DefaultPatchPattern = @"\+semver:\s?(fix|patch)";
+        public const string DefaultNoBumpPattern = @"\+semver:\s?(none|skip)";
 
         public static VersionField? DetermineIncrementedField(GitVersionContext context, BaseVersion baseVersion)
         {
@@ -61,12 +62,18 @@
                 commits = commits.Where(c => c.Parents.Count() > 1);
             }
 
+            return GetIncrementForCommits(context, commits);
+        }
+
+        public static VersionField? GetIncrementForCommits(GitVersionContext context, IEnumerable<Commit> commits)
+        {
             var majorRegex = CreateRegex(context.Configuration.MajorVersionBumpMessage ?? DefaultMajorPattern);
             var minorRegex = CreateRegex(context.Configuration.MinorVersionBumpMessage ?? DefaultMinorPattern);
             var patchRegex = CreateRegex(context.Configuration.PatchVersionBumpMessage ?? DefaultPatchPattern);
+            var none = CreateRegex(context.Configuration.NoBumpMessage ?? DefaultNoBumpPattern);
 
             var increments = commits
-                .Select(c => FindIncrementFromMessage(c.Message, majorRegex, minorRegex, patchRegex))
+                .Select(c => FindIncrementFromMessage(c.Message, majorRegex, minorRegex, patchRegex, none))
                 .Where(v => v != null)
                 .Select(v => v.Value)
                 .ToList();
@@ -78,7 +85,7 @@
 
             return null;
         }
-        
+
         private static IEnumerable<Commit> GetIntermediateCommits(IRepository repo, Commit baseCommit, Commit headCommit)
         {
             if (baseCommit == null) yield break;
@@ -105,11 +112,12 @@
             }
         }
 
-        private static VersionField? FindIncrementFromMessage(string message, Regex major, Regex minor, Regex patch)
+        private static VersionField? FindIncrementFromMessage(string message, Regex major, Regex minor, Regex patch, Regex none)
         {
             if (major.IsMatch(message)) return VersionField.Major;
             if (minor.IsMatch(message)) return VersionField.Minor;
             if (patch.IsMatch(message)) return VersionField.Patch;
+            if (none.IsMatch(message)) return VersionField.None;
 
             return null;
         }

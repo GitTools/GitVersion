@@ -52,6 +52,9 @@
         [YamlMember(Alias = "patch-version-bump-message")]
         public string PatchVersionBumpMessage { get; set; }
 
+        [YamlMember(Alias = "no-bump-message")]
+        public string NoBumpMessage { get; set; }
+
         [YamlMember(Alias = "legacy-semver-padding")]
         public int? LegacySemVerPadding { get; set; }
 
