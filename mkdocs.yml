@@ -16,6 +16,7 @@ pages:
     - Build Servers:
       - AppVeyor: build-server-support/build-server/appveyor.md
       - Bamboo: build-server-support/build-server/bamboo.md
+      - GitLab CI: build-server-support/build-server/gitlab.md
       - Continua CI: build-server-support/build-server/continua.md
       - Jenkins: build-server-support/build-server/jenkins.md
       - MyGet: build-server-support/build-server/myget.md
