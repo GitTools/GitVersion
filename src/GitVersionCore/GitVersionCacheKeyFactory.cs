@@ -104,17 +104,11 @@
                         // Perform whatever action is required in your scenario.
                         System.IO.FileInfo fi = new System.IO.FileInfo(file);
                         result.Add(fi.Name);
-
-                        var reader = fi.OpenText();
-                        result.Add(reader.ReadToEnd());
-
+                        result.Add(File.ReadAllText(file));
                         //Logger.WriteInfo(string.Format("{0}: {1}, {2}", fi.Name, fi.Length, fi.CreationTime));
                     }
-                    catch (System.IO.FileNotFoundException e)
+                    catch (IOException e)
                     {
-                        // If file was deleted by a separate application
-                        //  or thread since the call to TraverseTree()
-                        // then just continue.
                         Logger.WriteError(e.Message);
                         continue;
                     }
