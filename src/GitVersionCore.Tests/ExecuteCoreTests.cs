@@ -19,6 +19,26 @@ public class ExecuteCoreTests
     }
 
     [Test]
+    public void CacheKeySameAfterReNormalizing()
+    {
+        var versionAndBranchFinder = new ExecuteCore(fileSystem);
+
+        RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
+        {
+            var targetUrl = "https://github.com/GitTools/GitVersion.git";
+            var targetBranch = "refs/head/master";
+            var gitPreparer = new GitPreparer(targetUrl, null, new Authentication(), false, fixture.RepositoryPath);
+            var cacheKey1 = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, null);
+            gitPreparer.Initialise(true, targetBranch);
+            var cacheKey2 = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, null);
+            gitPreparer.Initialise(true, targetBranch);
+            var cacheKey3 = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, null);
+
+            cacheKey3.Value.ShouldBe(cacheKey2.Value);
+        });        
+    }
+
+    [Test]
     public void CacheFileExistsOnDisk()
     {
         const string versionCacheFileContent = @"
