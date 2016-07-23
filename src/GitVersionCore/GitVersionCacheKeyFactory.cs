@@ -6,6 +6,7 @@
     using System.IO;
     using System.Security.Cryptography;
     using System.Text;
+    using System.Linq;
 
     public class GitVersionCacheKeyFactory
     {
@@ -33,20 +34,20 @@
         // lifted from https://msdn.microsoft.com/en-us/library/bb513869.aspx
         public static List<string> TraverseTree(string root)
         {
-            var result = new List<string>();
-            result.Add(root);
+            var result = new List<string> { root };
+
             // Data structure to hold names of subfolders to be
             // examined for files.
-            Stack<string> dirs = new Stack<string>(20);
+            var dirs = new Stack<string>(20);
 
-            if (!System.IO.Directory.Exists(root))
+            if (!Directory.Exists(root))
             {
                 throw new ArgumentException();
             }
 
             dirs.Push(root);
 
-            while (dirs.Count > 0)
+            while (dirs.Any())
             {
                 string currentDir = dirs.Pop();
 
@@ -56,7 +57,7 @@
                 string[] subDirs;
                 try
                 {
-                    subDirs = System.IO.Directory.GetDirectories(currentDir);
+                    subDirs = Directory.GetDirectories(currentDir);
                 }
                 // An UnauthorizedAccessException exception will be thrown if we do not have
                 // discovery permission on a folder or file. It may or may not be acceptable 
@@ -72,7 +73,7 @@
                     Logger.WriteError(e.Message);
                     continue;
                 }
-                catch (System.IO.DirectoryNotFoundException e)
+                catch (DirectoryNotFoundException e)
                 {
                     Logger.WriteError(e.Message);
                     continue;
@@ -81,7 +82,7 @@
                 string[] files = null;
                 try
                 {
-                    files = System.IO.Directory.GetFiles(currentDir);
+                    files = Directory.GetFiles(currentDir);
                 }
 
                 catch (UnauthorizedAccessException e)
@@ -90,19 +91,17 @@
                     continue;
                 }
 
-                catch (System.IO.DirectoryNotFoundException e)
+                catch (DirectoryNotFoundException e)
                 {
                     Logger.WriteError(e.Message);
                     continue;
                 }
-                // Perform the required action on each file here.
-                // Modify this block to perform your required task.
+
                 foreach (string file in files)
                 {
                     try
                     {
-                        // Perform whatever action is required in your scenario.
-                        System.IO.FileInfo fi = new System.IO.FileInfo(file);
+                        var fi = new FileInfo(file);
                         result.Add(fi.Name);
                         result.Add(File.ReadAllText(file));
                         //Logger.WriteInfo(string.Format("{0}: {1}, {2}", fi.Name, fi.Length, fi.CreationTime));
