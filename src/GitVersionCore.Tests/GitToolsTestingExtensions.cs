@@ -15,9 +15,13 @@
             return config;
         }
 
-        public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Config configuration, IRepository repository = null, string commitId = null, bool isForTrackedBranchOnly = true)
+        public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Config configuration = null, IRepository repository = null, string commitId = null, bool isForTrackedBranchOnly = true)
         {
-            ConfigurationProvider.ApplyDefaultsTo(configuration);
+            if (configuration == null)
+            {
+                configuration = new Config();
+                ConfigurationProvider.ApplyDefaultsTo(configuration);
+            }
             var gitVersionContext = new GitVersionContext(repository ?? fixture.Repository, configuration, isForTrackedBranchOnly, commitId);
             var executeGitVersion = ExecuteGitVersion(gitVersionContext);
             var variables = VariableProvider.GetVariablesFor(executeGitVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
@@ -55,7 +59,7 @@
             }
             if (commitId == null)
             {
-               fixture.SequenceDiagram.NoteOver(fullSemver, fixture.Repository.Head.FriendlyName, color: "#D3D3D3");
+                fixture.SequenceDiagram.NoteOver(fullSemver, fixture.Repository.Head.FriendlyName, color: "#D3D3D3");
             }
         }
 
@@ -70,7 +74,7 @@
         /// </summary>
         public static void InitialiseRepo(this RemoteRepositoryFixture fixture)
         {
-            // TODO !!new GitPreparer(null, null, new Authentication(), false, fixture.LocalRepositoryFixture.RepositoryPath).Initialise(true, null);
+            new GitPreparer(null, null, new Authentication(), false, fixture.LocalRepositoryFixture.RepositoryPath).Initialise(true, null);
         }
     }
 }

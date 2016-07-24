@@ -22,18 +22,21 @@ namespace GitVersionCore.Tests
             string majorMessage = null,
             string minorMessage = null,
             string patchMessage = null,
+            string noBumpMessage = null,
             CommitMessageIncrementMode commitMessageMode = CommitMessageIncrementMode.Enabled,
             int legacySemVerPadding = 4,
             int buildMetaDataPadding = 4,
             int commitsSinceVersionSourcePadding = 4,
-            IEnumerable<IVersionFilter> versionFilters = null
-            ) :
+            IEnumerable<IVersionFilter> versionFilters = null,
+            bool isDevelop = false,
+            bool isRelease = false) : 
             base(assemblyVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch,
                     branchPrefixToTrim, preventIncrementForMergedBranchVersion, tagNumberPattern, continuousDeploymentFallbackTag,
                     trackMergeTarget,
-                    majorMessage, minorMessage, patchMessage,
+                    majorMessage, minorMessage, patchMessage, noBumpMessage,
                     commitMessageMode, legacySemVerPadding, buildMetaDataPadding, commitsSinceVersionSourcePadding,
-                    versionFilters ?? Enumerable.Empty<IVersionFilter>())
+                    versionFilters ?? Enumerable.Empty<IVersionFilter>(),
+                    isDevelop, isRelease)
         {
         }
     }

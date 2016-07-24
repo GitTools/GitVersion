@@ -52,12 +52,12 @@ Long version:
 * major: `masterMergeVersion.Major`
 * minor: `masterMergeVersion.Minor + 1` (0 if the override above is used)
 * patch: 0
-* pre-release: `unstable{n}` where n = how many commits `develop` is in front of `masterVersionCommit.Date` ('0' padded to 4 characters)
+* pre-release: `alpha.{n}` where n = how many commits `develop` is in front of `masterVersionCommit.Date` ('0' padded to 4 characters)
 
 Long version:  
 
     {major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
-    1.2.3-unstable645 Branch:'develop' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
+    1.2.3-alpha.645 Branch:'develop' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
 
 ### Hotfix branches
 
@@ -108,13 +108,13 @@ TODO: feature branches cannot start with a SemVer. to stop people from create br
 * major: `masterMergeVersion.Major`
 * minor: `masterMergeVersion.Minor + 1` (0 if the override above is used)
 * patch: 0
-* pre-release: `unstable.feature-{n}` where n = First 8 characters of the commit SHA of the first commit
+* pre-release: `alpha.feature-{n}` where n = First 8 characters of the commit SHA of the first commit
 
 
 Long version:  
 
     {major}.{minor}.{patch}-{pre-release} Branch:'{branchName}' Sha:'{sha}'
-    1.2.3-unstable.feature-a682956d Branch:'feature1' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
+    1.2.3-alpha.feature-a682956d Branch:'feature1' Sha:'a682956dccae752aa24597a0f5cd939f93614509'
 
 ### Pull-request branches
 
@@ -125,7 +125,7 @@ Branch naming convention: anything except `master`, `develop`, `release-{n}`, or
 * major: `masterMergeVersion.Major`
 * minor: `masterMergeVersion.Minor + 1` (0 if the override above is used)
 * patch: 0
-* pre-release: `unstable.pull{n}` where n = the pull request number  ('0' padded to 4 characters)
+* pre-release: `alpha.pull{n}` where n = the pull request number  ('0' padded to 4 characters)
 
 ## Nightly Builds
 

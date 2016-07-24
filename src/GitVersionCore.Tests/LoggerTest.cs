@@ -1,6 +1,8 @@
 ﻿using NUnit.Framework;
 using System;
 using GitVersion;
+using Shouldly;
+
 namespace GitVersionCore.Tests
 {
     [TestFixture]
@@ -15,11 +17,10 @@ namespace GitVersionCore.Tests
             const string password = "password";
             var s = string.Empty;
             Action<string> action = info => { s = info; };
-            Logger.SetLoggers(action, action, action);
+            using (Logger.AddLoggersTemporarily(action, action, action))
+                Logger.WriteInfo(string.Format("{0}://{1}:{2}@workspace.visualstudio.com/DefaultCollection/_git/CAS",protocol,username,password));
 
-            Logger.WriteInfo(string.Format("{0}://{1}:{2}@workspace.visualstudio.com/DefaultCollection/_git/CAS",protocol,username,password));
-
-            Assert.IsFalse(s.Contains(password));
+            s.Contains(password).ShouldBe(false);
         }
 
         [Test]
@@ -27,13 +28,11 @@ namespace GitVersionCore.Tests
         {
             var s = string.Empty;
             Action<string> action = info => { s = info; };
-            Logger.SetLoggers(action, action, action);
-
             const string repoUrl = "http://username@workspace.visualstudio.com/DefaultCollection/_git/CAS";
-            Logger.WriteInfo(repoUrl);
+            using (Logger.AddLoggersTemporarily(action, action, action))
+                Logger.WriteInfo(repoUrl);
 
-            Assert.IsTrue(s.Contains(repoUrl));
+            s.Contains(repoUrl).ShouldBe(true);
         }
-
     }
 }
