@@ -28,7 +28,6 @@ public class ExecuteCoreTests
             var targetUrl = "https://github.com/GitTools/GitVersion.git";
             var targetBranch = "refs/head/master";
             var gitPreparer = new GitPreparer(targetUrl, null, new Authentication(), false, fixture.RepositoryPath);
-            //var cacheKey0 = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, null);
             gitPreparer.Initialise(true, targetBranch);
             var cacheKey1 = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, null);
             gitPreparer.Initialise(true, targetBranch);

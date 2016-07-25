@@ -26,19 +26,19 @@
             var dotGitDirectory = gitPreparer.GetDotGitDirectory();
 
             // traverse the directory and get a list of files, use that for GetHash
-            var traverse = TraverseTree(Path.Combine(dotGitDirectory, "refs"));
+            var contents = calculateDirectoryContents(Path.Combine(dotGitDirectory, "refs"));
 
-            return GetHash(traverse.ToArray());
+            return GetHash(contents.ToArray());
         }
 
-        // lifted from https://msdn.microsoft.com/en-us/library/bb513869.aspx
-        public static List<string> TraverseTree(string root)
+        // based on https://msdn.microsoft.com/en-us/library/bb513869.aspx
+        private static List<string> calculateDirectoryContents(string root)
         {
-            var result = new List<string> { root };
+            var result = new List<string>();
 
             // Data structure to hold names of subfolders to be
             // examined for files.
-            var dirs = new Stack<string>(20);
+            var dirs = new Stack<string>();
 
             if (!Directory.Exists(root))
             {
@@ -104,7 +104,6 @@
                         var fi = new FileInfo(file);
                         result.Add(fi.Name);
                         result.Add(File.ReadAllText(file));
-                        //Logger.WriteInfo(string.Format("{0}: {1}, {2}", fi.Name, fi.Length, fi.CreationTime));
                     }
                     catch (IOException e)
                     {
