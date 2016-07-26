@@ -104,11 +104,11 @@
             var found = false;
             foreach (var commit in intermediateCommitCache)
             {
-                if (commit.Sha == baseCommit.Sha)
-                    found = true;
-
                 if (found)
                     yield return commit;
+
+                if (commit.Sha == baseCommit.Sha)
+                    found = true;
             }
         }
 
