@@ -8,7 +8,7 @@
     using System.Text;
     using System.Linq;
 
-    public class GitVersionCacheKeyFactory
+    class GitVersionCacheKeyFactory
     {
         public static GitVersionCacheKey Create(IFileSystem fileSystem, GitPreparer gitPreparer, Config overrideConfig)
         {
@@ -26,13 +26,13 @@
             var dotGitDirectory = gitPreparer.GetDotGitDirectory();
 
             // traverse the directory and get a list of files, use that for GetHash
-            var contents = calculateDirectoryContents(Path.Combine(dotGitDirectory, "refs"));
+            var contents = CalculateDirectoryContents(Path.Combine(dotGitDirectory, "refs"));
 
             return GetHash(contents.ToArray());
         }
 
         // based on https://msdn.microsoft.com/en-us/library/bb513869.aspx
-        private static List<string> calculateDirectoryContents(string root)
+        private static List<string> CalculateDirectoryContents(string root)
         {
             var result = new List<string>();
 
@@ -84,13 +84,11 @@
                 {
                     files = Directory.GetFiles(currentDir);
                 }
-
                 catch (UnauthorizedAccessException e)
                 {
                     Logger.WriteError(e.Message);
                     continue;
                 }
-
                 catch (DirectoryNotFoundException e)
                 {
                     Logger.WriteError(e.Message);
