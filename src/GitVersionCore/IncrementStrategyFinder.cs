@@ -1,5 +1,6 @@
 ﻿namespace GitVersion
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
@@ -20,6 +21,10 @@
         public const string DefaultMinorPattern = @"\+semver:\s?(feature|minor)";
         public const string DefaultPatchPattern = @"\+semver:\s?(fix|patch)";
         public const string DefaultNoBumpPattern = @"\+semver:\s?(none|skip)";
+        public const string DefaultMajorTagPattern = @"\+semver-(breaking|major)";
+        public const string DefaultMinorTagPattern = @"\+semver-(feature|minor)";
+        public const string DefaultPatchTagPattern = @"\+semver-(fix|patch)";
+        public const string DefaultNoBumpTagPattern = @"\+semver-(none|skip)";
 
         public static VersionField? DetermineIncrementedField(GitVersionContext context, BaseVersion baseVersion)
         {
@@ -71,9 +76,17 @@
             var minorRegex = CreateRegex(context.Configuration.MinorVersionBumpMessage ?? DefaultMinorPattern);
             var patchRegex = CreateRegex(context.Configuration.PatchVersionBumpMessage ?? DefaultPatchPattern);
             var none = CreateRegex(context.Configuration.NoBumpMessage ?? DefaultNoBumpPattern);
+            var majorTagRegex = CreateRegex(context.Configuration.MajorVersionBumpTag ?? DefaultMajorTagPattern);
+            var minorTagRegex = CreateRegex(context.Configuration.MinorVersionBumpTag ?? DefaultMinorTagPattern);
+            var patchTagRegex = CreateRegex(context.Configuration.PatchVersionBumpTag ?? DefaultPatchTagPattern);
+            var noneTag = CreateRegex(context.Configuration.NoBumpTag ?? DefaultNoBumpTagPattern);
+
+            var allTags = context.Repository.Tags
+                .GroupBy(k => ((Commit) k.PeeledTarget()).Sha, v => v.FriendlyName)
+                .ToDictionary(k => k.Key, v => v.ToArray());
 
             var increments = commits
-                .Select(c => FindIncrementFromMessage(c.Message, majorRegex, minorRegex, patchRegex, none))
+                .Select(c => FindIncrementFromCommit(c.Message, allTags.ContainsKey(c.Sha) ? allTags[c.Sha] : Enumerable.Empty<string>(), majorRegex, minorRegex, patchRegex, none, majorTagRegex, minorTagRegex, patchTagRegex, noneTag))                
                 .Where(v => v != null)
                 .Select(v => v.Value)
                 .ToList();
@@ -112,12 +125,12 @@
             }
         }
 
-        private static VersionField? FindIncrementFromMessage(string message, Regex major, Regex minor, Regex patch, Regex none)
-        {
-            if (major.IsMatch(message)) return VersionField.Major;
-            if (minor.IsMatch(message)) return VersionField.Minor;
-            if (patch.IsMatch(message)) return VersionField.Patch;
-            if (none.IsMatch(message)) return VersionField.None;
+        private static VersionField? FindIncrementFromCommit(string message, IEnumerable<string> tags, Regex major, Regex minor, Regex patch, Regex none, Regex majorTag, Regex minorTag, Regex patchTag, Regex noneTag)
+        {            
+            if (major.IsMatch(message) || tags.Any(majorTag.IsMatch)) return VersionField.Major;
+            if (minor.IsMatch(message) || tags.Any(minorTag.IsMatch)) return VersionField.Minor;
+            if (patch.IsMatch(message) || tags.Any(patchTag.IsMatch)) return VersionField.Patch;
+            if (none.IsMatch(message) || tags.Any(noneTag.IsMatch)) return VersionField.None;
 
             return null;
         }

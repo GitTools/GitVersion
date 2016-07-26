@@ -23,6 +23,10 @@ namespace GitVersionCore.Tests
             string minorMessage = null,
             string patchMessage = null,
             string noBumpMessage = null,
+            string majorTag = null,
+            string minorTag = null,
+            string patchTag = null,
+            string noBumpTag = null,
             CommitMessageIncrementMode commitMessageMode = CommitMessageIncrementMode.Enabled,
             int legacySemVerPadding = 4,
             int buildMetaDataPadding = 4,
@@ -34,6 +38,7 @@ namespace GitVersionCore.Tests
                     branchPrefixToTrim, preventIncrementForMergedBranchVersion, tagNumberPattern, continuousDeploymentFallbackTag,
                     trackMergeTarget,
                     majorMessage, minorMessage, patchMessage, noBumpMessage,
+                    majorTag, minorTag, patchTag, noBumpTag,
                     commitMessageMode, legacySemVerPadding, buildMetaDataPadding, commitsSinceVersionSourcePadding,
                     versionFilters ?? Enumerable.Empty<IVersionFilter>(),
                     isDevelop, isRelease)

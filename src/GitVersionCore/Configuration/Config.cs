@@ -55,6 +55,19 @@
         [YamlMember(Alias = "no-bump-message")]
         public string NoBumpMessage { get; set; }
 
+        [YamlMember(Alias = "major-version-bump-tag")]
+        public string MajorVersionBumpTag { get; set; }
+
+        [YamlMember(Alias = "minor-version-bump-tag")]
+        public string MinorVersionBumpTag { get; set; }
+
+        [YamlMember(Alias = "patch-version-bump-tag")]
+        public string PatchVersionBumpTag { get; set; }
+
+        [YamlMember(Alias = "no-bump-tag")]
+        public string NoBumpTag { get; set; }
+
+
         [YamlMember(Alias = "legacy-semver-padding")]
         public int? LegacySemVerPadding { get; set; }
 

@@ -63,6 +63,10 @@ namespace GitVersion
             config.MinorVersionBumpMessage = config.MinorVersionBumpMessage ?? IncrementStrategyFinder.DefaultMinorPattern;
             config.PatchVersionBumpMessage = config.PatchVersionBumpMessage ?? IncrementStrategyFinder.DefaultPatchPattern;
             config.NoBumpMessage = config.NoBumpMessage ?? IncrementStrategyFinder.DefaultNoBumpPattern;
+            config.MajorVersionBumpTag = config.MajorVersionBumpTag ?? IncrementStrategyFinder.DefaultMajorTagPattern;
+            config.MinorVersionBumpTag = config.MinorVersionBumpTag ?? IncrementStrategyFinder.DefaultMinorTagPattern;
+            config.PatchVersionBumpTag = config.PatchVersionBumpTag ?? IncrementStrategyFinder.DefaultPatchTagPattern;
+            config.NoBumpTag = config.NoBumpTag ?? IncrementStrategyFinder.DefaultNoBumpTagPattern;
             config.CommitMessageIncrementing = config.CommitMessageIncrementing ?? CommitMessageIncrementMode.Enabled;
             config.LegacySemVerPadding = config.LegacySemVerPadding ?? 4;
             config.BuildMetaDataPadding = config.BuildMetaDataPadding ?? 4;

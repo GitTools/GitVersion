@@ -124,6 +124,10 @@
             var minorMessage = FullConfiguration.MinorVersionBumpMessage;
             var patchMessage = FullConfiguration.PatchVersionBumpMessage;
             var noBumpMessage = FullConfiguration.NoBumpMessage;
+            var majorTag = FullConfiguration.MajorVersionBumpTag;
+            var minorTag = FullConfiguration.MinorVersionBumpTag;
+            var patchTag = FullConfiguration.PatchVersionBumpTag;
+            var noBumpTag = FullConfiguration.NoBumpTag;
 
             var commitMessageVersionBump = currentBranchConfig.Value.CommitMessageIncrementing ?? FullConfiguration.CommitMessageIncrementing.Value;
 
@@ -134,6 +138,7 @@
                 tagNumberPattern, FullConfiguration.ContinuousDeploymentFallbackTag,
                 trackMergeTarget,
                 majorMessage, minorMessage, patchMessage, noBumpMessage,
+                majorTag, minorTag, patchTag, noBumpTag,
                 commitMessageVersionBump,
                 FullConfiguration.LegacySemVerPadding.Value,
                 FullConfiguration.BuildMetaDataPadding.Value,
