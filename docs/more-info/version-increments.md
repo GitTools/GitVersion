@@ -22,8 +22,10 @@ See [Octopus deploy](../build-server-support/build-server/octopus-deploy.md)
 ## Manually incrementing the version
 With v3 there are multiple approaches.
 
-### Commit messages
-Adding `+semver: breaking` or `+semver: major` will cause the major version to be increased, `+semver: feature` or `+semver:minor` will bump minor and `+semver:patch` or `+semver:fix` will bump the patch.
+### Commit messages and tags
+Adding a commit message containing `+semver: breaking` or `+semver: major` will cause the major version to be increased, `+semver: feature` or `+semver:minor` will bump minor and `+semver:patch` or `+semver:fix` will bump the patch.
+
+Adding a tag to a commit containing `+semver-breaking` or `+semver-major` will cause the major version to be increased, `+semver-feature` or `+semver-minor` will bump minor and `+semver-patch` or `+semver-fix` will bump the patch.
 
 #### Configuration
 The feature is enabled by default but can be disabled via configuration, the regex we use can be changed:
@@ -32,10 +34,13 @@ The feature is enabled by default but can be disabled via configuration, the reg
 major-version-bump-message: '\+semver:\s?(breaking|major)'
 minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
+major-version-bump-tag: '\+semver-(breaking|major)'
+minor-version-bump-tag: '\+semver-(feature|minor)'
+patch-version-bump-tag: '\+semver-(fix|patch)'
 commit-message-incrementing: Enabled
 ```
 
-The options for `commit-message-incrementing` are `Enabled`, `MergeMessageOnly` and `Disabled`
+The options for `commit-message-incrementing` are `Enabled`, `MergeMessageOnly`, and `Disabled`
 
 If the incrementing mode is set to `MergeMessageOnly` you can add this information in when merging a pull request. This prevents commits within a PR bumping the version.
 

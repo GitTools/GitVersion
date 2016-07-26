@@ -43,4 +43,62 @@ public class VersionBumpingScenarios
         }
 
     }
+
+    [Test]
+    public void CanUseCommitMessagesToBumpVersionBaseVersionTagIsAppliedToSameCommit()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeACommit();
+            fixture.MakeATaggedCommit("1.0.0");
+            fixture.Repository.MakeACommit("+semver:minor");
+            fixture.AssertFullSemver("1.1.0+1");
+
+            fixture.ApplyTag("2.0.0");
+
+            fixture.Repository.MakeACommit("Hello");
+
+            // Default bump is patch
+
+            fixture.AssertFullSemver("2.0.1+1");
+        }
+    }
+
+    [Test]
+    public void CanUseTaggedCommitsToBumpVersion()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeACommit();
+            fixture.MakeATaggedCommit("1.0.0");
+            fixture.Repository.MakeATaggedCommit("+semver-minor");
+
+            fixture.AssertFullSemver("1.1.0+1");
+
+            fixture.Repository.MakeATaggedCommit("+semver-major");
+
+            fixture.AssertFullSemver("2.0.0+2");
+        }
+    }
+
+
+    [Test]
+    public void CanUseTaggedCommitsToBumpVersionBaseVersionTagIsAppliedToSameCommit()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeACommit();
+            fixture.MakeATaggedCommit("1.0.0");
+            fixture.Repository.MakeATaggedCommit("+semver-minor");
+            fixture.AssertFullSemver("1.1.0+1");
+
+            fixture.ApplyTag("2.0.0");
+
+            fixture.Repository.MakeACommit("hello");
+
+            // Default bump is patch
+
+            fixture.AssertFullSemver("2.0.1+1");
+        }
+    }
 }
