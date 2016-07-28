@@ -47,8 +47,8 @@ The global configuration options are:
  - **`commit-message-incrementing:`** Sets whether it should be possible to increment the version with special syntax in the commit message. See the `*-version-bump-message` options above for details on the syntax. Default set to `Enabled`; set to `Disabled` to disable.
  
  - **`ignore:`** The header for ignore configuration
-   - **`sha:`** A sequence of SHAs to be excluded from the version calculations.  Useful when there is a rogue commit in history yielding a bad version.
-   - **`commits-before:`** Allows to setup an exclusion range.  Effectively any commit < `commits-before` will be ignored.
+   - **`sha:`** A sequence of SHAs to be excluded from the version calculations. Useful when there is a rogue commit in history yielding a bad version.
+   - **`commits-before:`** Date and time in the format `yyyy-MM-ddTHH:mm:ss` (eg `commits-before: 2015-10-23T12:23:15`) to setup an exclusion range. Effectively any commit < `commits-before` will be ignored.
 
  - **`is-develop:`** Indicates this branch config represents develop in GitFlow
 
