@@ -41,8 +41,8 @@ GitVersion [path]
 
     # .NET Core
     /updateprojectjson
-                    Will recursively seearch for all 'project.json' files that also have a '.xproj' file in the same directory
-                    and update the value of the 'version' attribute in the root of the JSON document
+                    Will recursively search for all 'project.json' files and update the value of the 'version' attribute in 
+                    the root of the JSON document
 
     # Remote repository args
     /url            Url to remote git repository.

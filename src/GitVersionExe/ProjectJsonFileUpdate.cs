@@ -2,7 +2,6 @@
 
 namespace GitVersion
 {
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
 
@@ -15,8 +14,9 @@ namespace GitVersion
 
             if (arguments.Output != OutputType.Json)
                 Logger.WriteInfo("Updating project.json files");
-            
-            foreach (var file in GetFiles(targetPath, fileSystem).ToArray())
+
+            var files = fileSystem.DirectoryGetFiles(targetPath, "project.json", SearchOption.AllDirectories).ToArray();
+            foreach (var file in files)
             {
                 ReplaceInFile(variables, fileSystem, file);
             }
@@ -50,12 +50,6 @@ namespace GitVersion
                 Logger.WriteInfo(string.Format("Replacing version in {0}", file));
                 fileSystem.WriteAllText(file, result.JsonWithReplacement);
             }
-        }
-
-        static IEnumerable<string> GetFiles(string targetPath, IFileSystem fileSystem)
-        {
-            return fileSystem.DirectoryGetFiles(targetPath, "project.json", SearchOption.AllDirectories)
-                .Where(f => fileSystem.DirectoryGetFiles(Path.GetDirectoryName(f), "*.xproj", SearchOption.TopDirectoryOnly).Any());
         }
     }
 }

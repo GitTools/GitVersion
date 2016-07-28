@@ -18,7 +18,7 @@
         public void ShouldCreateBackupsOfTheOriginalFilesAndRemoveThem()
         {
             var fs = new TestFileSystem();
-            var filename = CreateProjectJsonAndXProj(fs, "MyProj");
+            var filename = CreateProjectJson(fs, "MyProj");
             using (CreateTestProjectJsonFileUpdate(fs))
             {
                 fs.ReadAllText(filename + ".bak").ShouldBe(_projectJson);
@@ -30,7 +30,7 @@
         public void ShouldReplaceJsonAndThenRestore()
         {
             var fs = new TestFileSystem();
-            var filename = CreateProjectJsonAndXProj(fs, "MyProj");
+            var filename = CreateProjectJson(fs, "MyProj");
             using (CreateTestProjectJsonFileUpdate(fs))
             {
                 fs.ReadAllText(filename).ShouldBe(_replacedJson);
@@ -43,7 +43,7 @@
         public void ShouldReplaceJsonAndNotRestoreIfDoNotRestoreFilesCalled()
         {
             var fs = new TestFileSystem();
-            var filename = CreateProjectJsonAndXProj(fs, "MyProj");
+            var filename = CreateProjectJson(fs, "MyProj");
             using (var update = CreateTestProjectJsonFileUpdate(fs))
             {
                 fs.ReadAllText(filename).ShouldBe(_replacedJson);
@@ -56,7 +56,7 @@
         public void ShouldRemoveBackupsIfDoNotRestoreFilesCalled()
         {
             var fs = new TestFileSystem();
-            var filename = CreateProjectJsonAndXProj(fs, "MyProj");
+            var filename = CreateProjectJson(fs, "MyProj");
             using (var update = CreateTestProjectJsonFileUpdate(fs))
             {
                 fs.Exists(filename + ".bak").ShouldBe(true);
@@ -69,19 +69,7 @@
         public void ShouldNotReplaceJsonOutsideTestPath()
         {
             var fs = new TestFileSystem();
-            var filename = CreateProjectJsonAndXProj(fs, "..");
-            using (CreateTestProjectJsonFileUpdate(fs))
-            {
-                fs.ReadAllText(filename).ShouldBe(_projectJson);
-            }
-        }
-
-        [Test]
-        public void ShouldNotReplaceJsonIfNoCorrespondingXProjFile()
-        {
-            var fs = new TestFileSystem();
-            var filename = Path.GetFullPath(Path.Combine(_testPath, "foo", "project.json"));
-            fs.WriteAllText(filename, _projectJson);
+            var filename = CreateProjectJson(fs, "..");
             using (CreateTestProjectJsonFileUpdate(fs))
             {
                 fs.ReadAllText(filename).ShouldBe(_projectJson);
@@ -89,11 +77,10 @@
         }
 
 
-        private string CreateProjectJsonAndXProj(TestFileSystem fs, string subdir)
+        private string CreateProjectJson(TestFileSystem fs, string subdir)
         {
             var projectJsonFileName = Path.GetFullPath(Path.Combine(_testPath, subdir, "project.json"));
             fs.WriteAllText(projectJsonFileName, _projectJson);
-            fs.WriteAllText(Path.Combine(_testPath, subdir, "foo.xproj"), _projectJson);
             return projectJsonFileName;
         }
 
