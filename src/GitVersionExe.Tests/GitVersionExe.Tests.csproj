@@ -114,6 +114,8 @@
     <Compile Include="HelpWriterTests.cs" />
     <Compile Include="JsonOutputOnBuildServer.cs" />
     <Compile Include="MsBuildProjectArgTest.cs" />
+    <Compile Include="ProjectJsonFileUpdateTests.cs" />
+    <Compile Include="ProjectJsonVersionReplacerTests.cs" />
     <Compile Include="PullRequestInTeamCityTest.cs" />
     <Compile Include="AssemblyInfoFileUpdateTests.cs" />
   </ItemGroup>
@@ -126,6 +128,9 @@
     <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
     <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
     <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\ProjectJsonVersionReplacerTests.OnlyRootVersionIsReplaced.received.txt" />
+    <Content Include="Approved\ProjectJsonVersionReplacerTests.ShouldOnlyReplaceRootVersionValue.approved.txt" />
+    <Content Include="Approved\ProjectJsonVersionReplacerTests.ShouldWorkAndPreserveFormattingInWeirdlyFormattedJson.approved.txt" />
     <Content Include="Approved\vb\AssemblyInfoFileUpdateTests.ShouldAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFile.approved.txt" />
     <Content Include="Approved\vb\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
     <Content Include="Approved\vb\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 using GitVersion.Helpers;
@@ -61,7 +62,21 @@ public class TestFileSystem : IFileSystem
 
     public IEnumerable<string> DirectoryGetFiles(string directory, string searchPattern, SearchOption searchOption)
     {
-        throw new NotImplementedException();
+        var files = searchOption == SearchOption.TopDirectoryOnly
+            ? fileSystem.Keys.Where(f => Path.GetDirectoryName(f).Equals(directory, StringComparison.CurrentCultureIgnoreCase))
+            : fileSystem.Keys.Where(f => Path.GetDirectoryName(f).StartsWith(directory, StringComparison.CurrentCultureIgnoreCase));
+
+        if (searchPattern.StartsWith("*"))
+        {
+            var endsWith = searchPattern.Substring(1);
+            if(endsWith.Contains('*') || endsWith.Contains('?'))
+                throw new NotImplementedException();
+
+            return files.Where(f => f.EndsWith(endsWith, StringComparison.CurrentCultureIgnoreCase));
+        }
+        if (searchPattern.Contains('*') || searchPattern.Contains('?'))
+            throw new NotImplementedException();
+        return files.Where(f => Path.GetFileName(f).Equals(searchPattern, StringComparison.CurrentCultureIgnoreCase));
     }
 
     public Stream OpenWrite(string path)

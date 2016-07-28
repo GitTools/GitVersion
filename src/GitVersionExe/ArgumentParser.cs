@@ -268,6 +268,12 @@ namespace GitVersion
                     continue;
                 }
 
+                if (name.IsSwitch("updateprojectjson"))
+                {
+                    arguments.UpdateProjectJson = !value.IsFalse();
+                    continue;
+                }
+
                 if (name.IsSwitch("overrideconfig"))
                 {
                     var keyValueOptions = (value ?? "").Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
