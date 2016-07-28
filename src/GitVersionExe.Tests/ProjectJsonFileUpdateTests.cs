@@ -9,7 +9,8 @@
 
     public class ProjectJsonFileUpdateTests
     {
-        private const string _testPath = @"x:\TestPath";
+        
+        private static readonly string _testPath = Environment.OSVersion.Platform == PlatformID.Unix ? "/usr/TestPath" : @"x:\TestPath";
         private const string _projectJson = @"{
 ""version"": """"
 }";

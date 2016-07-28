@@ -128,7 +128,6 @@
     <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
     <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
     <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
-    <Content Include="Approved\ProjectJsonVersionReplacerTests.OnlyRootVersionIsReplaced.received.txt" />
     <Content Include="Approved\ProjectJsonVersionReplacerTests.ShouldOnlyReplaceRootVersionValue.approved.txt" />
     <Content Include="Approved\ProjectJsonVersionReplacerTests.ShouldWorkAndPreserveFormattingInWeirdlyFormattedJson.approved.txt" />
     <Content Include="Approved\vb\AssemblyInfoFileUpdateTests.ShouldAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFile.approved.txt" />

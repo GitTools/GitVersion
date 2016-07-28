@@ -1,6 +1,7 @@
 ﻿namespace GitVersionExe.Tests
 {
     using System;
+    using System.Runtime.CompilerServices;
     using GitVersion;
     using GitVersionCore.Tests;
     using NUnit.Framework;
@@ -8,7 +9,15 @@
 
     public class ProjectJsonVersionReplacerTests
     {
+
+        [SetUp]
+        public void SetUp()
+        {
+            ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
+        }
+
         [Test]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public void ShouldOnlyReplaceRootVersionValue()
         {
             var json =
@@ -31,6 +40,7 @@
         }
 
         [Test]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public void ShouldWorkAndPreserveFormattingInWeirdlyFormattedJson()
         {
             var json =
