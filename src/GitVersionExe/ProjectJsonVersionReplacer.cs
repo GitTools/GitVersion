@@ -46,9 +46,21 @@
                 var str = reader.ReadLine();
                 if (str != null)
                 {
-                    writer.Write(str.Substring(0, pos.LinePosition - pos.Length - 1));
-                    writer.Write(version);
-                    writer.WriteLine(str.Substring(pos.LinePosition - 1));
+                    if (pos.IsNull)
+                    {
+                        writer.Write(str.Substring(0, pos.LinePosition - 4));
+                        writer.Write("\"");
+                        writer.Write(version);
+                        writer.Write("\"");
+                        writer.WriteLine(str.Substring(pos.LinePosition));
+                    }
+                    else
+                    {
+                        writer.Write(str.Substring(0, pos.LinePosition - pos.Length - 1));
+                        writer.Write(version);
+                        writer.WriteLine(str.Substring(pos.LinePosition - 1));
+                    }
+                  
                 }
                 writer.Write(reader.ReadToEnd());
             }
@@ -63,8 +75,11 @@
                     if (r.Depth == 1 && r.TokenType == JsonToken.PropertyName && (string)r.Value == "version")
                     {
                         r.Read();
+                        if(r.TokenType == JsonToken.Null)
+                            return new VersionPosition(r.LineNumber, r.LinePosition, 4, true);
+
                         if (r.TokenType == JsonToken.String)
-                            return new VersionPosition(r.LineNumber, r.LinePosition, ((string)r.Value).Length);
+                            return new VersionPosition(r.LineNumber, r.LinePosition, ((string)r.Value).Length, false);
                     }
                 }
 
@@ -73,16 +88,18 @@
 
         class VersionPosition
         {
-            public VersionPosition(int lineNumber, int linePosition, int length)
+            public VersionPosition(int lineNumber, int linePosition, int length, bool isNull)
             {
                 LineNumber = lineNumber;
                 LinePosition = linePosition;
                 Length = length;
+                IsNull = isNull;
             }
 
             public int LineNumber { get; set; }
             public int LinePosition { get; set; }
             public int Length { get; set; }
+            public bool IsNull { get; set; }
         }
 
         public class ReplacementResult

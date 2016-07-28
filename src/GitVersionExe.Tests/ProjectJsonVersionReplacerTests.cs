@@ -18,6 +18,8 @@
 
         [Test]
         [MethodImpl(MethodImplOptions.NoInlining)]
+        [Category("NoMono")]
+        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
         public void ShouldOnlyReplaceRootVersionValue()
         {
             var json =
@@ -41,6 +43,33 @@
 
         [Test]
         [MethodImpl(MethodImplOptions.NoInlining)]
+        [Category("NoMono")]
+        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        public void ShouldReplaceSuccessfullyWhenValueIsNull()
+        {
+            var json =
+@"{
+  ""dependencies"": {
+    ""Microsoft.NETCore.App"": {
+         ""version"": ""1.0.0""
+    }
+  },
+  ""version"": null,
+  ""runtimes"": {
+    ""win8-x64"": {}
+  }
+}
+";
+            var result = ProjectJsonVersionReplacer.Replace(json, GetVariables());
+            result.HasError.ShouldBe(false);
+            result.VersionElementNotFound.ShouldBe(false);
+            result.JsonWithReplacement.ShouldMatchApproved(c => c.SubFolder("Approved"));
+        }
+
+        [Test]
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        [Category("NoMono")]
+        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
         public void ShouldWorkAndPreserveFormattingInWeirdlyFormattedJson()
         {
             var json =
@@ -111,6 +140,8 @@
             result.HasError.ShouldBe(false);
             result.VersionElementNotFound.ShouldBe(true);
         }
+
+
 
         private static VersionVariables GetVariables()
         {

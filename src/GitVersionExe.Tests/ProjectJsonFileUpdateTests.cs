@@ -11,12 +11,8 @@
     {
         
         private static readonly string _testPath = Environment.OSVersion.Platform == PlatformID.Unix ? "/usr/TestPath" : @"x:\TestPath";
-        private const string _projectJson = @"{
-""version"": """"
-}";
-        private const string _replacedJson = @"{
-""version"": ""1.2.3-foo.4+2.Branch.alpha.Sha.ADF.bar""
-}";
+        private static string _projectJson = "{\n\"version\": \"\"\n}".Replace("\n", Environment.NewLine);
+        private static string _replacedJson = "{\n\"version\": \"1.2.3-foo.4+2.Branch.alpha.Sha.ADF.bar\"\n}".Replace("\n", Environment.NewLine);
 
         [Test]
         public void ShouldCreateBackupsOfTheOriginalFilesAndRemoveThem()
