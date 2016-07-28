@@ -56,6 +56,17 @@ Will result in command line argument error
 
 Will iterate through each file and update known attributes (`AssemblyVersion`, `AssemblyFileVersion`, `AssemblyInformationalVersion`).
 
+## Replace version in project.json
+`GitVersion.exe /updateprojectjson` will recursively search for all `project.json` files that are
+in the same directory as a `.xproj` file. For each found file it will update the value of the `version` element in the
+root of the document with the `InformationalVersion`.
+
+The `dotnet build` command uses the `major.minor.patch` version from the `project.json` as the file and assembly version if the corresponding 
+attributes do not exist. It also automatically adds the `AssemblyInformationalVersion` attribute with the full version excluding metadata.
+
+### Example:
+`GitVersion.exe /updateprojectjson`
+
 ## Override config
 `/overrideconfig [key=value]` will override appropriate key from 'GitVersion.yml'. 
 
