@@ -1,20 +1,10 @@
 # Versioning modes
 GitVersion has multiple modes to fit different different ways of working.
 
-
 ## Continuous Delivery
 [Continuous Delivery](/reference/continuous-delivery) is the default mode. In
 this mode, GitVersion calculates the next version and will use that until that
-is released. For instance:
-
- - 1.1.0+5
- - 1.1.0+6
- - 1.1.0+7  <-- This is the artifact we release, tag the commit which created
-   this version
- - 1.1.1+0
-
-Tags are required in this mode to communicate when the release is done as it's
-an external manual process.
+is released.
 
 ## Continuous deployment
 Sometimes you just want the version to keep changing and

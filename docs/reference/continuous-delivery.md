@@ -1,7 +1,12 @@
 # Continuous Delivery
-Continuous delivery is the practice of having a deployment pipeline. Each stage of the pipeline gets the code going through the pipeline closer to production.
+Continuous Delivery is the practice of having a deployment pipeline and is the
+default mode in GitVersion. Each stage of the pipeline gets the code going
+through the pipeline closer to production.
 
-The topic itself is rather large, here we will just focus on the building and creation of *releasable* artifacts. This is only a part of continuous delivery as a whole, with the hard part being the ability to measure the impacts of what you have deployed into production.
+The topic itself is rather large, here we will just focus on the building and
+creation of *releasable* artifacts. This is only a part of continuous delivery
+as a whole, with the hard part being the ability to measure the impacts of what
+you have deployed into production.
 
 In essence continuous delivery means:
 
@@ -12,15 +17,42 @@ In essence continuous delivery means:
    - The same artifacts which were built and tested should be deployed
    - That means no rebuilding everything when you are deploying
 
-Continuous delivery does not work well with GitFlow. The reason is that you are required to *merge* to master to do a release, triggering a rebuild and a new set of artifacts to go through your pipeline. Depending on how long your pipeline is, this could be a while.
+Continuous delivery does not work well with GitFlow. The reason is that you are
+required to *merge* to master to do a release, triggering a rebuild and a new
+set of artifacts to go through your pipeline. Depending on how long your
+pipeline is, this could be a while.
 
-GitHubFlow is a better fit for Continuous delivery, the [mainline development](mainline-development.md) model means that every merged feature branch will be built as a *stable* version and if the build/builds go green then you are free to deploy to production at any time.
+GitHubFlow is a better fit for Continuous delivery, the
+[mainline development](mainline-development.md) model means that every merged
+feature branch will be built as a *stable* version and if the build/builds go
+green then you are free to deploy to production at any time.
 
 ## How continuous delivery affects GitVersion
-The thing about continuous delivery is that there will be *multiple* candidates to deploy to production and it is a human choice to deploy. This means that GitVersion will build **the same semantic version** until that version is deployed.
+The thing about continuous delivery is that there will be *multiple* candidates
+to deploy to production and it is a human choice to deploy. This means that
+GitVersion will build **the same semantic version** until that version is
+deployed.
 
-GitVersion assumes Continuous Delivery by default in it's [configuration](../configuration.md), if you want to do [continuous deployment](continuous-deployment.md) then just change the configuration setting.
+GitVersion assumes Continuous Delivery by default in its
+[configuration](../configuration.md), if you want to do
+[continuous deployment](continuous-deployment.md) then just change the
+configuration setting.
+
+## Example
+In Continuous Delivery, GitVersion calculates the next version and will use that
+until it is released. For instance:
+
+ - 1.1.0+5
+ - 1.1.0+6
+ - 1.1.0+7  <-- This is the artifact we release, tag the commit which created
+   this version
+ - 1.1.1+0
+
+Tags are required in this mode to communicate when the release is done as it's
+an external manual process.
 
 ## Resources
  - [Continuous Delivery on Wikipedia](https://en.wikipedia.org/wiki/Continuous_delivery)
  - [Continuous Delivery, the book](http://www.amazon.com/Continuous-Delivery-Deployment-Automation-Addison-Wesley/dp/0321601912)
+
+
