@@ -127,14 +127,62 @@ Then we have branch specific configuration, which looks something like this:
 ```yaml
 branches:
   master:
-    tag:
+    mode: ContinuousDelivery
+    tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    is-develop: false
+    is-release-branch: false
+  releases?[/-]:
+    mode: ContinuousDelivery
+    tag: beta
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    is-develop: false
+    is-release-branch: true
+  features?[/-]:
+    mode: ContinuousDelivery
+    tag: useBranchName
+    increment: Inherit
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+    is-develop: false
+    is-release-branch: false
   (pull|pull\-requests|pr)[/-]:
+    mode: ContinuousDelivery
     tag: PullRequest
     increment: Inherit
-    track-merge-target: true
+    prevent-increment-of-merged-branch-version: false
     tag-number-pattern: '[/-](?<number>\d+)[-/]'
+    track-merge-target: false
+    is-develop: false
+    is-release-branch: false
+  hotfix(es)?[/-]:
+    mode: ContinuousDelivery
+    tag: beta
+    increment: Patch
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+    is-develop: false
+    is-release-branch: false
+  support[/-]:
+    mode: ContinuousDelivery
+    tag: ''
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    is-develop: false
+    is-release-branch: false
+  dev(elop)?(ment)?$:
+    mode: ContinuousDeployment
+    tag: unstable
+    increment: Minor
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: true
+    is-develop: true
+    is-release-branch: false
 ```
 
 The options in here are:
