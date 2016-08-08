@@ -24,7 +24,7 @@ The global configuration options are:
 
  - **`assembly-informational-format:`** Set this to any of the available [variables](/more-info/variables) to change the value of the `AssemblyInformationalVersion` attribute. Default set to `{InformationalVersion}`. It also supports string interpolation (`{MajorMinorPatch}+{Branch}`)
 
- - **`mode:`** Sets the mode of how GitVersion should create a new version. Read more at [versioning mode](./versioning-mode.md)
+ - **`mode:`** Sets the mode of how GitVersion should create a new version. Read more at [versioning mode](/reference/versioning-mode)
 
  - **`continuous-delivery-fallback-tag:`** When using `mode: ContinuousDeployment`, the value specified will be used as the pre-release tag for branches which do not have one specified. Default set to `ci`.
 
@@ -45,7 +45,7 @@ The global configuration options are:
  - **`commits-since-version-source-padding:`** The number of characters to pad `CommitsSinceVersionSource` to in the `CommitsSinceVersionSourcePadded` [variable](/more-info/variables). Is default set to `4`, which will pad the `CommitsSinceVersionSource` value of `1` to `0001`.
 
  - **`commit-message-incrementing:`** Sets whether it should be possible to increment the version with special syntax in the commit message. See the `*-version-bump-message` options above for details on the syntax. Default set to `Enabled`; set to `Disabled` to disable.
- 
+
  - **`ignore:`** The header for ignore configuration
    - **`sha:`** A sequence of SHAs to be excluded from the version calculations. Useful when there is a rogue commit in history yielding a bad version.
    - **`commits-before:`** Date and time in the format `yyyy-MM-ddTHH:mm:ss` (eg `commits-before: 2015-10-23T12:23:15`) to setup an exclusion range. Effectively any commit < `commits-before` will be ignored.

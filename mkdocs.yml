@@ -4,14 +4,14 @@ repo_url: https://github.com/GitTools/GitVersion
 
 pages:
 - Home: index.md
-- Usage: 
+- Usage:
   - Usage: usage/usage.md
   - Command Line: usage/command-line.md
   - MSBuild Task: usage/msbuild-task.md
   - NuGet Library: usage/nuget-library.md
   - Gem: usage/gem.md
 - Configuration: configuration.md
-- Build Server Support: 
+- Build Server Support:
     - Introduction: build-server-support/build-server-support.md
     - Build Servers:
       - AppVeyor: build-server-support/build-server/appveyor.md
@@ -51,6 +51,7 @@ pages:
   - Git setup: reference/git-setup.md
   - Feature branches: reference/feature-branches.md
   - Pull requests: reference/pull-requests.md
+  - Versioning mode: reference/versioning-mode.md
   - Mainline development: reference/mainline-development.md
   - Continous delivery: reference/continuous-delivery.md
   - Continuous deployment: reference/continuous-deployment.md
