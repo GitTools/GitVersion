@@ -44,3 +44,14 @@ intermitently (maybe for minor or major releases) because then GitVersion
 will start the version calculation from that point. Much like a snapshot in an
 event sourced system. We will probably add in warnings to tag when things are
 slowing down.
+
+## Usage
+By default GitVersion is set up to do [Continuous Delivery](continuous-delivery.md)
+versioning on all branches but `develop` (which does
+[Continuous Deployment](continuous-deployment.md) by default). To change the
+[versioning mode](versioning-mode.md) to Mainline Development, just
+change the [configuration](../configuration.md) as such:
+
+```yaml
+mode: Mainline
+```
