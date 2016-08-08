@@ -24,7 +24,7 @@ The global configuration options are:
 
  - **`assembly-informational-format:`** Set this to any of the available [variables](/more-info/variables) to change the value of the `AssemblyInformationalVersion` attribute. Default set to `{InformationalVersion}`. It also supports string interpolation (`{MajorMinorPatch}+{Branch}`)
 
- - **`mode:`** Sets the mode of how GitVersion should create a new version. Read more at [versioning mode](/reference/versioning-mode)
+ - **`mode:`** Sets the mode of how GitVersion should create a new version. Read more at [versioning mode](/reference/versioning-mode.md).
 
  - **`continuous-delivery-fallback-tag:`** When using `mode: ContinuousDeployment`, the value specified will be used as the pre-release tag for branches which do not have one specified. Default set to `ci`.
 
