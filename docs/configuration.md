@@ -98,11 +98,6 @@ The global configuration options are:
      `commits-before: 2015-10-23T12:23:15`) to setup an exclusion range.
      Effectively any commit < `commits-before` will be ignored.
 
- - **`is-develop:`** Indicates this branch config represents develop in GitFlow
-
- - **`is-release-branch:`** Indicates this branch config represents a release
-   branch in GitFlow
-
 ## Branch configuration
 
 Then we have branch specific configuration, which looks something like this:
@@ -167,6 +162,11 @@ branches:
    directly off the current branch. For example `develop` → `release/1.0.0` →
    merge into `master` and tag `1.0.0`. The tag is *not* on develop, but develop
    should be version `1.0.0` now.
+
+ - **`is-develop:`** Indicates this branch config represents develop in GitFlow
+
+ - **`is-release-branch:`** Indicates this branch config represents a release
+   branch in GitFlow
 
 We don't envision many people needing to change most of these configuration
 values, but they are there if you need to.
