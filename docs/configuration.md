@@ -25,7 +25,29 @@ after installing via chocolatey and a minimal `GitVersion.yml` configuration
 file will be created. Modify this as you need.
 
 ## Global configuration
-The global configuration options are:
+The global configuration options look like this:
+
+```yaml
+next-version: 1.0
+assembly-versioning-scheme: MajorMinorPatch
+assembly-informational-format: '{InformationalVersion}'
+mode: ContinuousDelivery
+continuous-delivery-fallback-tag: ci
+tag-prefix: '[vV]'
+major-version-bump-message: '\+semver:\s?(breaking|major)'
+minor-version-bump-message: '\+semver:\s?(feature|minor)'
+patch-version-bump-message: '\+semver:\s?(fix|patch)'
+no-bump-message: '\+semver:\s?(none|skip)'
+legacy-semver-padding: 4
+build-metadata-padding: 4
+commits-since-version-source-padding: 4
+commit-message-incrementing: Enabled
+ignore:
+  sha: []
+  commits-before: yyyy-MM-ddTHH:mm:ss
+```
+
+The options are:
 
  - **`next-version:`** Allows you to bump the next version explicitly, useful
    for bumping `master` or a feature with breaking changes a major increment.
