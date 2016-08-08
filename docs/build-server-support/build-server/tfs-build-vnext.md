@@ -13,7 +13,7 @@ See [MSBuild Task](/usage/msbuild-task) for further instructions how to use the 
 2. Add a Command Line build step to your build definition. You'll probably want to drag the task to be at or near the top to ensure it executes before your other build steps.
 3. Set the Tool parameter to `<pathToGitVersion>\GitVersion.exe`.
 4. Set the Arguments parameter to `/output buildserver /nofetch`.
-5. If you want the GitVersionTask to update AssemblyInfo files add `updateAssemblyInfo true` to the Arguments parameter. 
+5. If you want the GitVersionTask to update AssemblyInfo files add `updateAssemblyInfo true` to the Arguments parameter.
 6. If you want to update the build number you need to send a [logging command](https://github.com/Microsoft/vso-agent-tasks/blob/master/docs/authoring/commands.md) to TFS.
 
 ### Using the custom GitVersion build step
@@ -41,9 +41,9 @@ The VSO build step can update your build number with GitVersion variables. See b
 
 ## Running inside TFS
 ### Using the GitVersion Variables
-GitVersion passes variables in the form of `GitVersion.*` (Eg: `GitVersion.Major`) to TFS Build and also writes `GITVERSION_*` (Eg: `GITVERSION_MAJOR`) environment variables that are available for any subsequent build step.
+GitVersion passes variables in the form of `GitVersion.*` (Eg: `GitVersion.Major`) to TFS Build and also writes `GITVERSION.*` (Eg: `GITVERSION.MAJOR`) environment variables that are available for any subsequent build step.
 
-To use these variables you can just refer to them using the standard variable syntax. For instance `$(GitVersion_NuGetVersion)` in your nuget pack task to set the version number. Since update 1 there are no known limitations.
+To use these variables you can just refer to them using the standard variable syntax. For instance `$(GitVersion.NuGetVersion)` in your nuget pack task to set the version number. Since update 1 there are no known limitations.
 
 See [Variables](/more-info/variables/) for an overview of available variables.
 
@@ -55,7 +55,7 @@ The TFS GitVersion Build Step (above) handles this too, so if you're already usi
 
 If GitVersion does not find any substitutions it will just default to using `FullSemVer`
 
-**IMPORTANT:** If you currently use `$(rev:.r)` in your build number, that won't work correctly if you 
+**IMPORTANT:** If you currently use `$(rev:.r)` in your build number, that won't work correctly if you
 use GitVersion variables as well due to the delayed expansion of the GitVersion vars. Instead,
 You might be able to use `$(GitVersion_BuildMetaData)` to achieve a similar result.
 See [Variables](/more-info/variables/) for more info on the variables.
@@ -63,11 +63,11 @@ See [Variables](/more-info/variables/) for more info on the variables.
 #### Known limitations
 * If you are using on premises TFS, make sure you are using at least **TFS 2015 Update 1**, otherwise a few things will not work.
 * Installing the extension on an on premise TFS requires at least TFS 2015 Update 2.
-* You need to make sure that all tags are fetched for the Git repository, otherwise you may end with wrong versions (e.g. `FullSemVer` like `1.2.0+5` instead of `1.2.0` for tagged releases) 
-Just checking the `Clean Repository` check box in the build definition settings might not be enough since this will run a `git clean -fdx/reset --hard` without fetching all tags later. 
+* You need to make sure that all tags are fetched for the Git repository, otherwise you may end with wrong versions (e.g. `FullSemVer` like `1.2.0+5` instead of `1.2.0` for tagged releases)
+Just checking the `Clean Repository` check box in the build definition settings might not be enough since this will run a `git clean -fdx/reset --hard` without fetching all tags later.
 You can force deletion of the whole folder and a re-clone containing all tags by settings the variable `Build.Clean` to `all`.
 This will take more time during build but makes sure that all tags are fetched.
-In the future it is planned to allow using `git.exe` instead of current `libgit2sharp` for syncing the repos which might allow other possibilities to solve this issue. 
+In the future it is planned to allow using `git.exe` instead of current `libgit2sharp` for syncing the repos which might allow other possibilities to solve this issue.
 For details see this [GitHub issue](https://github.com/Microsoft/vso-agent-tasks/issues/1218).
 * If running a build for a certain commit (through passing the commit SHA while queueing the build) all tags from the repository will be fetched, even the ones newer than the commit.
-This can lead to different version numbers while re-running historical builds.  
+This can lead to different version numbers while re-running historical builds.
