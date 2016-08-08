@@ -32,7 +32,7 @@ public class DocumentationTests
 
         foreach (var configProperty in configProperties)
         {
-            var formattedConfigProperty = string.Format("**`{0}:`**", configProperty);
+            var formattedConfigProperty = string.Format("### {0}", configProperty);
             configurationDocumentationFile.ShouldContain(formattedConfigProperty,
                                                          Environment.NewLine + configurationDocumentationFile);
         }
