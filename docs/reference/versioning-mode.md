@@ -6,18 +6,10 @@ GitVersion has multiple modes to fit different different ways of working.
 this mode, GitVersion calculates the next version and will use that until that
 is released.
 
-## Continuous deployment
-Sometimes you just want the version to keep changing and
-[continuously deploy](/reference/continuous-deployment). A good case for this is
-when using Octopus deploy, as you cannot publish the same version of a package
-into the same feed.
-
-For this mode we followed the logic in [this blog post by Xavier Decoster][blog]
-on the issues of incrementing automatically.
-
-As such we force a pre-release tag on all branches, this is fine for
-applications but can cause problems for libraries. As such this mode may or may
-not work for you, which leads us into a new mode in v4. Mainline development.
+## Continuous Deployment
+Sometimes you just want the version to keep changing and deploy continuously.
+In this case, [Continuous Deployment](/reference/continuous-deployment) is a
+good mode to operate GitVersion by.
 
 ## Mainline development
 [Mainline development](/reference/mainline-development) works more like the
@@ -49,5 +41,3 @@ intermitently (maybe for minor or major releases) because then GitVersion
 will start the version calculation from that point. Much like a snapshot in an
 event sourced system. We will probably add in warnings to tag when things are
 slowing down.
-
-[blog]: http://www.xavierdecoster.com/semantic-versioning-auto-incremented-nuget-package-versions
