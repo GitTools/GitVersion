@@ -45,6 +45,35 @@
         [MethodImpl(MethodImplOptions.NoInlining)]
         [Category("NoMono")]
         [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        public void ShouldHandleComments()
+        {
+            var json =
+@"{
+  ""dependencies"": {
+    ""Microsoft.NETCore.App"": {
+         ""version"": ""1.0.0""
+    }
+  },
+  /*
+  Comments in JSON; What a world we live in
+  */  
+  ""version"": ""1.1.0"",
+  //""version"": ""1.1.0"",
+  ""runtimes"": {
+    ""win8-x64"": {}
+  }
+}
+";
+            var result = ProjectJsonVersionReplacer.Replace(json, GetVariables());
+            result.HasError.ShouldBe(false);
+            result.VersionElementNotFound.ShouldBe(false);
+            result.JsonWithReplacement.ShouldMatchApproved(c => c.SubFolder("Approved"));
+        }
+
+        [Test]
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        [Category("NoMono")]
+        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
         public void ShouldReplaceSuccessfullyWhenValueIsNull()
         {
             var json =
