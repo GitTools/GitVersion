@@ -9,7 +9,8 @@
     {
         public static VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)
         {
-            if (config.VersioningMode == VersioningMode.ContinuousDeployment && !isCurrentCommitTagged)
+            var isContinuousDeploymentMode = config.VersioningMode == VersioningMode.ContinuousDeployment && !isCurrentCommitTagged;
+            if (isContinuousDeploymentMode)
             {
                 semanticVersion = new SemanticVersion(semanticVersion);
                 // Continuous Deployment always requires a pre-release tag unless the commit is tagged
@@ -21,22 +22,23 @@
                         semanticVersion.PreReleaseTag.Name = config.ContinuousDeploymentFallbackTag;
                     }
                 }
+            }
 
-                // Evaluate tag number pattern and append to prerelease tag, preserving build metadata
-                if (!string.IsNullOrEmpty(config.TagNumberPattern))
+            // Evaluate tag number pattern and append to prerelease tag, preserving build metadata
+            var appendTagNumberPattern = !string.IsNullOrEmpty(config.TagNumberPattern) && semanticVersion.PreReleaseTag.HasTag();
+            if (appendTagNumberPattern)
+            {
+                var match = Regex.Match(semanticVersion.BuildMetaData.Branch, config.TagNumberPattern);
+                var numberGroup = match.Groups["number"];
+                if (numberGroup.Success)
                 {
-                    var match = Regex.Match(semanticVersion.BuildMetaData.Branch, config.TagNumberPattern);
-                    var numberGroup = match.Groups["number"];
-                    if (numberGroup.Success)
-                    {
-                        semanticVersion.PreReleaseTag.Name += numberGroup.Value.PadLeft(config.BuildMetaDataPadding, '0');
-                    }
+                    semanticVersion.PreReleaseTag.Name += numberGroup.Value.PadLeft(config.BuildMetaDataPadding, '0');
                 }
+            }
 
-                // For continuous deployment the commits since tag gets promoted to the pre-release number
-                semanticVersion.PreReleaseTag.Number = semanticVersion.BuildMetaData.CommitsSinceTag;
-                semanticVersion.BuildMetaData.CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag ?? 0;
-                semanticVersion.BuildMetaData.CommitsSinceTag = null;
+            if (isContinuousDeploymentMode || appendTagNumberPattern || config.VersioningMode == VersioningMode.Mainline)
+            {
+                PromoteNumberOfCommitsToTagNumber(semanticVersion);
             }
 
             var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, config);
@@ -86,6 +88,14 @@
                 semverFormatValues.CommitsSinceVersionSourcePadded);
 
             return variables;
+        }
+
+        static void PromoteNumberOfCommitsToTagNumber(SemanticVersion semanticVersion)
+        {
+            // For continuous deployment the commits since tag gets promoted to the pre-release number
+            semanticVersion.PreReleaseTag.Number = semanticVersion.BuildMetaData.CommitsSinceTag;
+            semanticVersion.BuildMetaData.CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag ?? 0;
+            semanticVersion.BuildMetaData.CommitsSinceTag = null;
         }
     }
 }

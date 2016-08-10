@@ -19,7 +19,7 @@ public class PullRequestScenarios
             fixture.Repository.CreatePullRequestRef("feature/Foo", "master", normalise: true);
 
             fixture.Repository.DumpGraph();
-            fixture.AssertFullSemver("0.1.1-PullRequest.2+2");
+            fixture.AssertFullSemver("0.1.1-PullRequest0002.2");
         }
     }
 
@@ -37,7 +37,7 @@ public class PullRequestScenarios
             fixture.Repository.CreatePullRequestRef("feature/Foo", "develop", 44, normalise: true);
 
             fixture.Repository.DumpGraph();
-            fixture.AssertFullSemver("0.2.0-PullRequest.44+3");
+            fixture.AssertFullSemver("0.2.0-PullRequest0044.3");
         }
     }
 
@@ -54,7 +54,7 @@ public class PullRequestScenarios
             fixture.Repository.CreatePullRequestRef("feature/Foo", "master", normalise: true);
 
             fixture.Repository.DumpGraph();
-            fixture.AssertFullSemver("0.1.1-PullRequest.2+2");
+            fixture.AssertFullSemver("0.1.1-PullRequest0002.2");
         }
     }
 
@@ -71,7 +71,7 @@ public class PullRequestScenarios
 
             fixture.Repository.CreatePullRequestRef("feature/Foo", "develop", normalise: true);
 
-            fixture.AssertFullSemver("0.2.0-PullRequest.2+3");
+            fixture.AssertFullSemver("0.2.0-PullRequest0002.3");
         }
     }
 
@@ -89,7 +89,7 @@ public class PullRequestScenarios
 
             fixture.Repository.CreatePullRequestRef("feature/Foo", "develop", normalise: true);
 
-            fixture.AssertFullSemver("0.2.0-PullRequest.2+3");
+            fixture.AssertFullSemver("0.2.0-PullRequest0002.3");
         }
     }
 
@@ -106,7 +106,7 @@ public class PullRequestScenarios
 
             fixture.Repository.CreatePullRequestRef("release/2.0.0", "master", normalise: true);
 
-            fixture.AssertFullSemver("2.0.0-PullRequest.2+0");
+            fixture.AssertFullSemver("2.0.0-PullRequest0002.0");
         }
     }
 }
