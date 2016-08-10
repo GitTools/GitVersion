@@ -51,7 +51,8 @@ pages:
   - Git setup: reference/git-setup.md
   - Feature branches: reference/feature-branches.md
   - Pull requests: reference/pull-requests.md
-  - Versioning mode: reference/versioning-mode.md
-  - Mainline development: reference/mainline-development.md
-  - Continous delivery: reference/continuous-delivery.md
-  - Continuous deployment: reference/continuous-deployment.md
+  - Versioning modes:
+    - Versioning modes: reference/versioning-mode.md
+    - Mainline development: reference/mainline-development.md
+    - Continous delivery: reference/continuous-delivery.md
+    - Continuous deployment: reference/continuous-deployment.md
