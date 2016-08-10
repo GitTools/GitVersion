@@ -25,7 +25,7 @@ after installing via chocolatey and a minimal `GitVersion.yml` configuration
 file will be created. Modify this as you need.
 
 ## Global configuration
-The global configuration options look like this:
+The global configuration look like this:
 
 ```yaml
 next-version: 1.0
@@ -47,7 +47,7 @@ ignore:
   commits-before: yyyy-MM-ddTHH:mm:ss
 ```
 
-The options are:
+And the description of the available options are:
 
 ### next-version
 Allows you to bump the next version explicitly, useful for bumping `master` or a
@@ -122,7 +122,7 @@ in the commit message. See the `*-version-bump-message` options above for
 details on the syntax. Default set to `Enabled`; set to `Disabled` to disable.
 
 ### ignore
-The header for ignore configuration
+The header for ignore configuration.
 
 #### sha
 A sequence of SHAs to be excluded from the version calculations. Useful when
@@ -204,15 +204,16 @@ values, but here they are if you need to:
 The header for all the individual branch configuration.
 
 ### mode
-Same as for the global configuration, explained above.
+Same as for the [global configuration, explained above](#mode).
 
 ### tag
 The pre release tag to use for this branch. Use the value `useBranchName` to use
 the branch name instead. For example `feature/foo` would become a pre-release
 tag of `foo` with this value. Use the value `{BranchName}` as a placeholder to
 insert the branch name. For example `feature/foo` would become a pre-release tag
-of `alpha.foo` with the value of `alpha.{BranchName}`. **Note:** To clear a
-default use an empty string: `tag: ''`
+of `alpha.foo` with the value of `alpha.{BranchName}`.
+
+**Note:** To clear a default use an empty string: `tag: ''`
 
 ### increment
 The part of the SemVer to increment when GitVersion detects it needs to be (i.e
