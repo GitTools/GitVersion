@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Text.RegularExpressions;
     using BaseVersionCalculators;
-    using GitTools;
     using LibGit2Sharp;
 
     public class NextVersionCalculator
@@ -91,6 +90,11 @@
             {
                 var mainlineVersion = baseVersion.SemanticVersion;
 
+                // Forward merge / PR
+                //          * feature/foo
+                //         / |
+                // master *  *
+                // 
                 var commitLog = context.Repository.Commits.QueryBy(new CommitFilter
                 {
                     IncludeReachableFrom = context.CurrentBranch,
@@ -99,34 +103,21 @@
                 }).Where(c => c.Sha != baseVersion.BaseVersionSource.Sha).ToList();
                 var directCommits = new List<Commit>();
 
+                // Scans commit log in reverse, aggregating merge commits
                 foreach (var commit in commitLog)
                 {
                     directCommits.Add(commit);
                     if (commit.Parents.Count() > 1)
                     {
-                        // Merge commit, process all merged commits as a batch
-                        var mergeCommit = commit;
-                        var mergedHead = GetMergedHead(mergeCommit);
-                        var findMergeBase = context.Repository.ObjectDatabase.FindMergeBase(mergeCommit.Parents.First(), mergedHead);
-                        var findMessageIncrement = FindMessageIncrement(context, mergeCommit, mergedHead, findMergeBase, directCommits);
-
-                        // If this collection is not empty there has been some direct commits against master
-                        // Treat each commit as it's own 'release', we need to do this before we increment the branch
-                        mainlineVersion = IncrementForEachCommit(context, directCommits, mainlineVersion);
-                        directCommits.Clear();
-
-                        // Finally increment for the branch
-                        mainlineVersion = mainlineVersion.IncrementVersion(findMessageIncrement);
-                        Logger.WriteInfo(string.Format("Merge commit {0} incremented base versions {1}, now {2}",
-                            mergeCommit.Sha, findMessageIncrement, mainlineVersion));
+                        mainlineVersion = AggregateMergeCommitIncrement(context, commit, directCommits, mainlineVersion);
                     }
                 }
 
                 if (context.CurrentBranch.FriendlyName != "master")
                 {
                     var mergedHead = context.CurrentCommit;
-                    var second = context.Repository.FindBranch("master").Tip;
-                    var findMergeBase = context.Repository.ObjectDatabase.FindMergeBase(context.CurrentCommit, second);
+                    var mainlineTip = GetMainlineTip(context);
+                    var findMergeBase = context.Repository.ObjectDatabase.FindMergeBase(context.CurrentCommit, mainlineTip);
                     Logger.WriteInfo(string.Format("Current branch ({0}) was branch from {1}", context.CurrentBranch.FriendlyName, findMergeBase));
 
                     var branchIncrement = FindMessageIncrement(context, null, mergedHead, findMergeBase, directCommits);
@@ -149,6 +140,53 @@
 
                 return mainlineVersion;
             }
+        }
+
+        SemanticVersion AggregateMergeCommitIncrement(GitVersionContext context, Commit commit, List<Commit> directCommits, SemanticVersion mainlineVersion)
+        {
+// Merge commit, process all merged commits as a batch
+            var mergeCommit = commit;
+            var mergedHead = GetMergedHead(mergeCommit);
+            var findMergeBase = context.Repository.ObjectDatabase.FindMergeBase(mergeCommit.Parents.First(), mergedHead);
+            var findMessageIncrement = FindMessageIncrement(context, mergeCommit, mergedHead, findMergeBase, directCommits);
+
+            // If this collection is not empty there has been some direct commits against master
+            // Treat each commit as it's own 'release', we need to do this before we increment the branch
+            mainlineVersion = IncrementForEachCommit(context, directCommits, mainlineVersion);
+            directCommits.Clear();
+
+            // Finally increment for the branch
+            mainlineVersion = mainlineVersion.IncrementVersion(findMessageIncrement);
+            Logger.WriteInfo(string.Format("Merge commit {0} incremented base versions {1}, now {2}",
+                mergeCommit.Sha, findMessageIncrement, mainlineVersion));
+            return mainlineVersion;
+        }
+
+        static Commit GetMainlineTip(GitVersionContext context)
+        {
+            var mainlineBranchConfigs = context.FullConfiguration.Branches.Where(b => b.Value.IsMainline == true).ToList();
+            var seenMainlineTips = new List<string>();
+            var mainlineBranches = context.Repository.Branches.Where(b =>
+            {
+                return mainlineBranchConfigs.Any(c => Regex.IsMatch(b.FriendlyName, c.Key));
+            }).Where(b =>
+            {
+                if (seenMainlineTips.Contains(b.Tip.Sha))
+                {
+                    Logger.WriteInfo("Multiple possible mainlines pointing at the same commit, dropping " + b.FriendlyName);
+                    return false;
+                }
+                seenMainlineTips.Add(b.Tip.Sha);
+                return true;
+            }).ToDictionary(b => context.Repository.ObjectDatabase.FindMergeBase(b.Tip, context.CurrentCommit).Sha, b => b);
+            Logger.WriteInfo("Found possible mainline branches: " + string.Join(", ", mainlineBranches.Values.Select(b => b.FriendlyName)));
+
+            // Find closest mainline branch
+            var firstMatchingCommit = context.CurrentBranch.Commits.First(c => mainlineBranches.ContainsKey(c.Sha));
+            var mainlineBranch = mainlineBranches[firstMatchingCommit.Sha];
+            Logger.WriteInfo("Mainline for current branch is " + mainlineBranch.FriendlyName);
+
+            return mainlineBranch.Tip;
         }
 
         private static SemanticVersion IncrementForEachCommit(GitVersionContext context, List<Commit> directCommits, SemanticVersion mainlineVersion)

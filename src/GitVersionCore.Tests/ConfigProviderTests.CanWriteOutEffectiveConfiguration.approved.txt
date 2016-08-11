@@ -19,6 +19,7 @@ branches:
     track-merge-target: false
     is-develop: false
     is-release-branch: false
+    is-mainline: true
   releases?[/-]:
     mode: ContinuousDelivery
     tag: beta
@@ -27,6 +28,7 @@ branches:
     track-merge-target: false
     is-develop: false
     is-release-branch: true
+    is-mainline: false
   features?[/-]:
     mode: ContinuousDelivery
     tag: useBranchName
@@ -35,6 +37,7 @@ branches:
     track-merge-target: false
     is-develop: false
     is-release-branch: false
+    is-mainline: false
   (pull|pull\-requests|pr)[/-]:
     mode: ContinuousDelivery
     tag: PullRequest
@@ -44,6 +47,7 @@ branches:
     track-merge-target: false
     is-develop: false
     is-release-branch: false
+    is-mainline: false
   hotfix(es)?[/-]:
     mode: ContinuousDelivery
     tag: beta
@@ -52,6 +56,7 @@ branches:
     track-merge-target: false
     is-develop: false
     is-release-branch: false
+    is-mainline: false
   support[/-]:
     mode: ContinuousDelivery
     tag: ''
@@ -60,6 +65,7 @@ branches:
     track-merge-target: false
     is-develop: false
     is-release-branch: false
+    is-mainline: true
   dev(elop)?(ment)?$:
     mode: ContinuousDeployment
     tag: alpha
@@ -68,5 +74,6 @@ branches:
     track-merge-target: true
     is-develop: true
     is-release-branch: false
+    is-mainline: false
 ignore:
   sha: []

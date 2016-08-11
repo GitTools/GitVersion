@@ -257,3 +257,6 @@ Indicates this branch config represents develop in GitFlow.
 
 ### is-release-branch
 Indicates this branch config represents a release branch in GitFlow.
+
+### is-mainline
+When using Mainline mode, this indicates that this branch is a mainline. By default support/ and master are mainlines.

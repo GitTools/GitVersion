@@ -6,7 +6,6 @@ using GitVersion;
 using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
-using LibGitExtensions = GitTools.LibGitExtensions;
 
 public class MainlineDevelopmentMode
 {
@@ -105,7 +104,41 @@ public class MainlineDevelopmentMode
     }
 
     [Test]
-    [Ignore("Not passing yet")]
+    public void SupportBranches()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeACommit("1");
+            fixture.MakeATaggedCommit("1.0.0");
+            fixture.MakeACommit(); // 1.0.1
+            fixture.MakeACommit(); // 1.0.2
+            fixture.AssertFullSemver(config, "1.0.2");
+
+            fixture.BranchTo("support/1.0", "support10");
+            fixture.AssertFullSemver(config, "1.0.3");
+
+            // Move master on
+            fixture.Checkout("master");
+            fixture.MakeACommit("+semver: major"); // 2.0.0 (on master)
+            fixture.AssertFullSemver(config, "2.0.0");
+
+            // Continue on support/1.0
+            fixture.Checkout("support/1.0");
+            fixture.MakeACommit(); // 1.0.4
+            fixture.MakeACommit(); // 1.0.5
+            fixture.AssertFullSemver(config, "1.0.5");
+            fixture.BranchTo("feature/foo", "foo");
+            fixture.AssertFullSemver(config, "1.0.5-foo.0");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver(config, "1.0.5-foo.1");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver(config, "1.0.5-foo.2");
+            fixture.Repository.CreatePullRequestRef("feature/foo", "support/1.0", normalise: true, prNumber: 7);
+            fixture.AssertFullSemver(config, "1.0.5-PullRequest0007.3");
+        }
+    }
+
+    [Test]
     public void VerifyForwardMerge()
     {
         using (var fixture = new EmptyRepositoryFixture())
@@ -124,7 +157,7 @@ public class MainlineDevelopmentMode
             fixture.AssertFullSemver(config, "1.0.2");
             fixture.Checkout("feature/foo");
             fixture.MergeNoFF("master");
-            fixture.AssertFullSemver(config, "1.0.3-foo.3");
+            fixture.AssertFullSemver(config, "1.0.4-foo.3");
         }
     }
 }
