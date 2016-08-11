@@ -42,7 +42,7 @@ public class PullRequestInTeamCityTest
             var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, isTeamCity: true);
 
             result.ExitCode.ShouldBe(0);
-            result.OutputVariables.FullSemVer.ShouldBe("1.0.4-PullRequest.5+3");
+            result.OutputVariables.FullSemVer.ShouldBe("1.0.4-PullRequest0005.3");
 
             // Cleanup repository files
             DirectoryHelper.DeleteDirectory(remoteRepositoryPath);
