@@ -68,7 +68,11 @@ namespace GitVersion.VersionCalculation
         {
             var tagPrefixRegex = context.Configuration.GitTagPrefix;
             var repository = context.Repository;
+
             var baseSource = releaseBranch.FindMergeBase(context.CurrentBranch, repository);
+            if (baseSource == context.CurrentCommit)
+                return new BaseVersion[0];
+
             return releaseVersionStrategy
                 .GetVersions(tagPrefixRegex, releaseBranch, repository)
                 .Select(b => new BaseVersion(b.Source, true, b.SemanticVersion, baseSource, b.BranchNameOverride));
