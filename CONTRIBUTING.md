@@ -12,9 +12,12 @@ If you end up not being able to complete the task, please post another comment s
 Issues are also welcome, [failing tests](#writing-tests) are even more welcome.
 
 # Contribution Guidelines
- - Try to use feature branches rather than developing on master
- - Please include tests covering the change
- - The docs are now stored in the repository under the `Docs` folder, please include documentation updates with your PR
+ - Try to use feature branches rather than developing on master.
+ - Please include tests covering the change.
+ - The documentation is stored in the repository under the [`docs`](docs) folder.
+   Have a look at the [documentation readme file](docs/readme.md) for guidance
+   on how to improve the documentation and please include documentation updates
+   with your PR.
 
 # How it works
 See [how it works](http://gitversion.readthedocs.org/en/latest/more-info/how-it-works/) in GitVersion's documentation
