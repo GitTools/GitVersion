@@ -66,6 +66,7 @@
       <Output TaskParameter="FullSemVer" PropertyName="GitVersion_FullSemVer" />
       <Output TaskParameter="AssemblySemVer" PropertyName="GitVersion_AssemblySemVer" />
       <Output TaskParameter="NuGetVersion" PropertyName="GitVersion_NuGetVersion" />
+      <Output TaskParameter="NuGetPreReleaseTag" PropertyName="GitVersion_NuGetPreReleaseTag" />
       <Output TaskParameter="PreReleaseTag" PropertyName="GitVersion_PreReleaseTag" />
       <Output TaskParameter="PreReleaseTagWithDash" PropertyName="GitVersion_PreReleaseTagWithDash" />
       <Output TaskParameter="PreReleaseLabel" PropertyName="GitVersion_PreReleaseLabel" />

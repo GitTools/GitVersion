@@ -40,6 +40,7 @@ NotInheritable Class GitVersionInformation
         Public Shared Sha As String = "commitSha"
         Public Shared NuGetVersionV2 As String = "2.3.4-beta0005"
         Public Shared NuGetVersion As String = "2.3.4-beta0005"
+        Public Shared NuGetPreReleaseTag As String = "beta0005"
         Public Shared CommitsSinceVersionSource As String = "6"
         Public Shared CommitsSinceVersionSourcePadded As String = "0006"
         Public Shared CommitDate As String = "2014-03-06"

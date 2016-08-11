@@ -85,6 +85,9 @@
         public string NuGetVersion { get; set; }
 
         [Output]
+        public string NuGetPreReleaseTag { get; set; }
+
+        [Output]
         public string CommitDate { get; set; }
 
         [Output]

@@ -33,6 +33,7 @@
                                 string commitDate,
                                 string nugetVersion,
                                 string nugetVersionV2,
+                                string nugetPreReleaseTag,
                                 string commitsSinceVersionSource,
                                 string commitsSinceVersionSourcePadded)
         {
@@ -58,6 +59,7 @@
             CommitDate = commitDate;
             NuGetVersion = nugetVersion;
             NuGetVersionV2 = nugetVersionV2;
+            NuGetPreReleaseTag = nugetPreReleaseTag;
             CommitsSinceVersionSource = commitsSinceVersionSource;
             CommitsSinceVersionSourcePadded = commitsSinceVersionSourcePadded;
         }
@@ -83,6 +85,7 @@
         public string Sha { get; private set; }
         public string NuGetVersionV2 { get; private set; }
         public string NuGetVersion { get; private set; }
+        public string NuGetPreReleaseTag { get; private set; }
         public string CommitsSinceVersionSource { get; private set; }
         public string CommitsSinceVersionSourcePadded { get; private set; }
 

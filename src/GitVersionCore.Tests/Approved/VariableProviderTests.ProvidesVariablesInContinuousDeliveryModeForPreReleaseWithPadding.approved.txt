@@ -20,6 +20,7 @@
   "Sha":"commitSha",
   "NuGetVersionV2":"1.2.3-unstable00004",
   "NuGetVersion":"1.2.3-unstable00004",
+  "NuGetPreReleaseTag":"unstable0004",
   "CommitsSinceVersionSource":5,
   "CommitsSinceVersionSourcePadded":"0005",
   "CommitDate":"2014-03-06"
