@@ -1,5 +1,6 @@
 namespace GitVersion
 {
+    using System;
     using GitVersion.Configuration.Init.Wizard;
     using GitVersion.Helpers;
     using System.ComponentModel;
@@ -43,11 +44,26 @@ namespace GitVersion
         public static Config Provide(string workingDirectory, IFileSystem fileSystem, bool applyDefaults = true, Config overrideConfig = null)
         {
             var readConfig = ReadConfig(workingDirectory, fileSystem);
+            VerifyConfiguration(readConfig);
+
             if (applyDefaults)
                 ApplyDefaultsTo(readConfig);
             if (null != overrideConfig)
                 ApplyOverridesTo(readConfig, overrideConfig);
             return readConfig;
+        }
+
+        static void VerifyConfiguration(Config readConfig)
+        {
+            // Verify no branches are set to mainline mode
+            if (readConfig.Branches.Any(b => b.Value.VersioningMode == VersioningMode.Mainline))
+            {
+                throw new Exception(@"Mainline mode only works at the repository level, a single branch cannot be put into mainline mode
+
+This is because mainline mode treats your entire git repository as an event source with each merge into the 'mainline' incrementing the version.
+
+If the docs do not help you decide on the mode open an issue to discuss what you are trying to do.");
+            }
         }
 
         public static void ApplyDefaultsTo(Config config)
@@ -70,7 +86,10 @@ namespace GitVersion
 
             var configBranches = config.Branches.ToList();
 
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "master"), defaultTag: string.Empty, defaultPreventIncrement: true);
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "master"),
+                defaultTag: string.Empty,
+                defaultPreventIncrement: true,
+                isMainline: true);
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "releases?[/-]"), defaultTag: "beta", defaultPreventIncrement: true, isReleaseBranch: true);
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "features?[/-]"), defaultIncrementStrategy: IncrementStrategy.Inherit);
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, @"(pull|pull\-requests|pr)[/-]"),
@@ -78,7 +97,10 @@ namespace GitVersion
                 defaultTagNumberPattern: @"[/-](?<number>\d+)[-/]",
                 defaultIncrementStrategy: IncrementStrategy.Inherit);
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "hotfix(es)?[/-]"), defaultTag: "beta");
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "support[/-]"), defaultTag: string.Empty, defaultPreventIncrement: true);
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "support[/-]"),
+                defaultTag: string.Empty,
+                defaultPreventIncrement: true,
+                isMainline: true);
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "dev(elop)?(ment)?$"),
                 defaultTag: "alpha",
                 defaultIncrementStrategy: IncrementStrategy.Minor,
@@ -144,7 +166,8 @@ namespace GitVersion
             bool defaultTrackMergeTarget = false,
             string defaultTagNumberPattern = null,
             bool isDevelop = false,
-            bool isReleaseBranch = false)
+            bool isReleaseBranch = false,
+            bool isMainline = false)
         {
             branchConfig.Tag = branchConfig.Tag ?? defaultTag;
             branchConfig.TagNumberPattern = branchConfig.TagNumberPattern ?? defaultTagNumberPattern;
@@ -154,6 +177,7 @@ namespace GitVersion
             branchConfig.VersioningMode = branchConfig.VersioningMode ?? defaultVersioningMode ?? config.VersioningMode;
             branchConfig.IsDevelop = branchConfig.IsDevelop ?? isDevelop;
             branchConfig.IsReleaseBranch = branchConfig.IsReleaseBranch ?? isReleaseBranch;
+            branchConfig.IsMainline = branchConfig.IsMainline ?? isMainline;
         }
 
         static Config ReadConfig(string workingDirectory, IFileSystem fileSystem)

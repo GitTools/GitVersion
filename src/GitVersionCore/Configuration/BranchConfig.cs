@@ -19,6 +19,7 @@
             CommitMessageIncrementing = branchConfiguration.CommitMessageIncrementing;
             IsDevelop = branchConfiguration.IsDevelop;
             IsReleaseBranch = branchConfiguration.IsReleaseBranch;
+            IsMainline = branchConfiguration.IsMainline;
         }
 
         [YamlMember(Alias = "mode")]
@@ -50,5 +51,8 @@
 
         [YamlMember(Alias = "is-release-branch")]
         public bool? IsReleaseBranch { get; set; }
+
+        [YamlMember(Alias = "is-mainline")]
+        public bool? IsMainline { get; set; }
     }
 }
