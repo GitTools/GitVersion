@@ -78,8 +78,12 @@ public class DocumentationTests
                 .ToString()
                 .Replace("docs/", string.Empty);
 
-            Console.WriteLine(fullPath);
-            Console.WriteLine(relativePath);
+            // The readme file in the docs directory is not supposed to be deployed to ReadTheDocs;
+            // it's only there for the convenience of contributors wanting to improve the documentation itself.
+            if (relativePath == "readme.md")
+            {
+                continue;
+            }
 
             documentationIndexFile.ShouldContain(relativePath, () => string.Format("The file '{0}' is not listed in 'mkdocs.yml'.", relativePath));
         }
