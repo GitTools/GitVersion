@@ -255,7 +255,7 @@ public class FeatureBranchScenarios
                         }
                     },
                     {
-                        "releases?[/-]", new BranchConfig()
+                        "release", new BranchConfig()
                         {
                             Tag = "rc",
                         }
