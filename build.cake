@@ -122,9 +122,10 @@ Task("Create-Release-Notes")
     .IsDependentOn("Build")
     .Does(() =>
 {
+	var githubToken = Argument<string>("githubToken");
     var releaseNotesExitCode = StartProcess(
             @"tools\GitReleaseNotes\tools\gitreleasenotes.exe",
-            new ProcessSettings { Arguments = ". /o build/releasenotes.md" });
+            new ProcessSettings { Arguments = ". /o build/releasenotes.md /repoToken " + githubToken });
     if (string.IsNullOrEmpty(System.IO.File.ReadAllText("./build/releasenotes.md")))
         System.IO.File.WriteAllText("./build/releasenotes.md", "No issues closed since last release");
 

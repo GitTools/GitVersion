@@ -8,7 +8,7 @@ configuration:
   - Debug
 
 build_script:
-  - ps: .\build.ps1
+  - ps: .\build.ps1 --githubToken $(GitHubToken)
 
 test: off
 skip_tags: true
