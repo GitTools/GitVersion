@@ -20,6 +20,7 @@
   "Sha":"commitSha",
   "NuGetVersionV2":"1.2.3-ci0005",
   "NuGetVersion":"1.2.3-ci0005",
+  "NuGetPreReleaseTagV2":"ci0005",
   "NuGetPreReleaseTag":"ci0005",
   "CommitsSinceVersionSource":5,
   "CommitsSinceVersionSourcePadded":"0005",

@@ -42,6 +42,7 @@ namespace Fake
         public static string Sha = "commitSha";
         public static string NuGetVersionV2 = "2.3.4-beta0005";
         public static string NuGetVersion = "2.3.4-beta0005";
+        public static string NuGetPreReleaseTagV2 = "beta0005";
         public static string NuGetPreReleaseTag = "beta0005";
         public static string CommitsSinceVersionSource = "6";
         public static string CommitsSinceVersionSourcePadded = "0006";
