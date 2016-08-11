@@ -1,5 +1,6 @@
 namespace GitVersion
 {
+    using System;
     using GitVersion.Configuration.Init.Wizard;
     using GitVersion.Helpers;
     using System.ComponentModel;
@@ -43,11 +44,26 @@ namespace GitVersion
         public static Config Provide(string workingDirectory, IFileSystem fileSystem, bool applyDefaults = true, Config overrideConfig = null)
         {
             var readConfig = ReadConfig(workingDirectory, fileSystem);
+            VerifyConfiguration(readConfig);
+
             if (applyDefaults)
                 ApplyDefaultsTo(readConfig);
             if (null != overrideConfig)
                 ApplyOverridesTo(readConfig, overrideConfig);
             return readConfig;
+        }
+
+        static void VerifyConfiguration(Config readConfig)
+        {
+            // Verify no branches are set to mainline mode
+            if (readConfig.Branches.Any(b => b.Value.VersioningMode == VersioningMode.Mainline))
+            {
+                throw new Exception(@"Mainline mode only works at the repository level, a single branch cannot be put into mainline mode
+
+This is because mainline mode treats your entire git repository as an event source with each merge into the 'mainline' incrementing the version.
+
+If the docs do not help you decide on the mode open an issue to discuss what you are trying to do.");
+            }
         }
 
         public static void ApplyDefaultsTo(Config config)
