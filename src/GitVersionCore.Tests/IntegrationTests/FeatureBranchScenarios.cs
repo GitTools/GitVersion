@@ -3,6 +3,7 @@ using GitVersion;
 using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 [TestFixture]
 public class FeatureBranchScenarios
@@ -223,7 +224,7 @@ public class FeatureBranchScenarios
             fixture.Checkout("develop");
             fixture.Repository.MergeNoFF("release/0.2.0");
             fixture.Repository.Branches.Remove("release/2.0.0");
-                
+
             fixture.Repository.MakeACommit();
 
             //validate develop branch version after merging release 0.2.0 to master and develop (finish release)
@@ -235,6 +236,51 @@ public class FeatureBranchScenarios
 
             //I'm not entirely sure what the + value should be but I know the semvar major/minor/patch should be 0.3.0
             fixture.AssertFullSemver("0.3.0-TEST-1.1+2");
+        }
+    }
+
+    [Test]
+    public void PickUpVersionFromMasterMarkedWithIsDevelop()
+    {
+        var config = new Config
+        {
+            VersioningMode = VersioningMode.ContinuousDelivery,
+            Branches = new Dictionary<string, BranchConfig>
+                {
+                    {
+                        "master", new BranchConfig()
+                        {
+                            Tag = "pre",
+                            IsDevelop = true,
+                        }
+                    },
+                    {
+                        "releases?[/-]", new BranchConfig()
+                        {
+                            Tag = "rc",
+                        }
+                    }
+                }
+        };
+
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.MakeACommit();
+
+            // create a release branch and tag a release
+            fixture.BranchTo("release/0.10.0");
+            fixture.MakeACommit();
+            fixture.MakeACommit();
+            fixture.AssertFullSemver(config, "0.10.0-rc.1+2");
+
+            // switch to master and verify the version
+            fixture.Checkout("master");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver(config, "0.10.1-pre.1+1");
+
+            // create a feature branch from master and verify the version
+            fixture.BranchTo("MyFeatureD");
+            fixture.AssertFullSemver(config, "0.10.1-MyFeatureD.1+1");
         }
     }
 }
