@@ -171,7 +171,7 @@ public class DevelopScenarios
             fixture.MakeACommit();
             fixture.MakeACommit();
             fixture.Checkout("develop");
-            fixture.AssertFullSemver("2.1.0-alpha.0");
+            fixture.AssertFullSemver("1.1.0-alpha.1");
             fixture.MakeACommit();
             fixture.AssertFullSemver("2.1.0-alpha.1");
             fixture.MergeNoFF("release/2.0.0");
