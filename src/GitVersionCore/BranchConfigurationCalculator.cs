@@ -1,13 +1,11 @@
 namespace GitVersion
 {
+    using JetBrains.Annotations;
+    using LibGit2Sharp;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
-
-    using JetBrains.Annotations;
-
-    using LibGit2Sharp;
 
     public class BranchConfigurationCalculator
     {
@@ -18,7 +16,7 @@ namespace GitVersion
             if (matchingBranches.Length == 0)
             {
                 var branchConfig = new BranchConfig();
-                ConfigurationProvider.ApplyBranchDefaults(config, branchConfig);
+                ConfigurationProvider.ApplyBranchDefaults(config, branchConfig, isDevelop: true);
                 return new KeyValuePair<string, BranchConfig>(string.Empty, branchConfig);
             }
             if (matchingBranches.Length == 1)
@@ -44,12 +42,12 @@ namespace GitVersion
             {
                 throw new ArgumentNullException("config");
             }
-            
+
             if (currentBranch == null)
             {
                 throw new ArgumentNullException("currentBranch");
             }
-            
+
             return config.Branches.Where(b => Regex.IsMatch(currentBranch.FriendlyName, "^" + b.Key, RegexOptions.IgnoreCase)).ToArray();
         }
 
