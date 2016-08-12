@@ -18,7 +18,7 @@ branches:
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
     regex: master
-    is-develop: false
+    tracks-release-branches: false
     is-release-branch: false
     is-mainline: true
   release:
@@ -28,7 +28,7 @@ branches:
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
     regex: releases?[/-]
-    is-develop: false
+    tracks-release-branches: false
     is-release-branch: true
     is-mainline: false
   feature:
@@ -38,7 +38,7 @@ branches:
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
     regex: features?[/-]
-    is-develop: false
+    tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
   pull-request:
@@ -49,7 +49,7 @@ branches:
     tag-number-pattern: '[/-](?<number>\d+)[-/]'
     track-merge-target: false
     regex: (pull|pull\-requests|pr)[/-]
-    is-develop: false
+    tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
   hotfix:
@@ -59,7 +59,7 @@ branches:
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
     regex: hotfix(es)?[/-]
-    is-develop: false
+    tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
   support:
@@ -69,7 +69,7 @@ branches:
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
     regex: support[/-]
-    is-develop: false
+    tracks-release-branches: false
     is-release-branch: false
     is-mainline: true
   develop:
@@ -79,7 +79,7 @@ branches:
     prevent-increment-of-merged-branch-version: false
     track-merge-target: true
     regex: dev(elop)?(ment)?$
-    is-develop: true
+    tracks-release-branches: true
     is-release-branch: false
     is-mainline: false
 ignore:

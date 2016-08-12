@@ -163,7 +163,7 @@ branches:
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-    is-develop: false
+    tracks-release-branches: false
     is-release-branch: false
   release:
     regex: releases?[/-]
@@ -172,7 +172,7 @@ branches:
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-    is-develop: false
+    tracks-release-branches: false
     is-release-branch: true
   feature:
     regex: features?[/-]
@@ -181,7 +181,7 @@ branches:
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
-    is-develop: false
+    tracks-release-branches: false
     is-release-branch: false
   pull-request:
     regex: (pull|pull\-requests|pr)[/-]
@@ -191,7 +191,7 @@ branches:
     prevent-increment-of-merged-branch-version: false
     tag-number-pattern: '[/-](?<number>\d+)[-/]'
     track-merge-target: false
-    is-develop: false
+    tracks-release-branches: false
     is-release-branch: false
   hotfix:
     regex: hotfix(es)?[/-]
@@ -200,7 +200,7 @@ branches:
     increment: Patch
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
-    is-develop: false
+    tracks-release-branches: false
     is-release-branch: false
   support:
     regex: support[/-]
@@ -209,7 +209,7 @@ branches:
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-    is-develop: false
+    tracks-release-branches: false
     is-release-branch: false
   develop:
     regex: dev(elop)?(ment)?$
@@ -218,7 +218,7 @@ branches:
     increment: Minor
     prevent-increment-of-merged-branch-version: false
     track-merge-target: true
-    is-develop: true
+    tracks-release-branches: true
     is-release-branch: false
 ```
 
@@ -282,7 +282,7 @@ Strategy which will look for tagged merge commits directly off the current
 branch. For example `develop` → `release/1.0.0` → merge into `master` and tag
 `1.0.0`. The tag is *not* on develop, but develop should be version `1.0.0` now.
 
-### is-develop
+### tracks-release-branches
 Indicates this branch config represents develop in GitFlow.
 
 ### is-release-branch

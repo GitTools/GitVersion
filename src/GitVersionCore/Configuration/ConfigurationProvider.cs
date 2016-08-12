@@ -2,6 +2,7 @@ namespace GitVersion
 {
     using Configuration.Init.Wizard;
     using GitVersion.Helpers;
+    using System;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -121,10 +122,10 @@ If the docs do not help you decide on the mode open an issue to discuss what you
                 defaultIncrementStrategy: IncrementStrategy.Minor,
                 defaultVersioningMode: VersioningMode.ContinuousDeployment,
                 defaultTrackMergeTarget: true,
-                isDevelop: true);
+                tracksReleaseBranches: true);
 
             // Any user defined branches should have other values defaulted after known branches filled in
-            // This allows users to override one value of 
+            // This allows users to override one value of
             foreach (var branchConfig in configBranches)
             {
                 var regex = branchConfig.Value.Regex;
@@ -163,7 +164,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             VersioningMode? defaultVersioningMode = null, // Looked up from main config
             bool defaultTrackMergeTarget = false,
             string defaultTagNumberPattern = null,
-            bool isDevelop = false,
+            bool tracksReleaseBranches = false,
             bool isReleaseBranch = false,
             bool isMainline = false)
         {
@@ -174,7 +175,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             branchConfig.PreventIncrementOfMergedBranchVersion = branchConfig.PreventIncrementOfMergedBranchVersion ?? defaultPreventIncrement;
             branchConfig.TrackMergeTarget = branchConfig.TrackMergeTarget ?? defaultTrackMergeTarget;
             branchConfig.VersioningMode = branchConfig.VersioningMode ?? defaultVersioningMode ?? config.VersioningMode;
-            branchConfig.IsDevelop = branchConfig.IsDevelop ?? isDevelop;
+            branchConfig.TracksReleaseBranches = branchConfig.TracksReleaseBranches ?? tracksReleaseBranches;
             branchConfig.IsReleaseBranch = branchConfig.IsReleaseBranch ?? isReleaseBranch;
             branchConfig.IsMainline = branchConfig.IsMainline ?? isMainline;
         }
