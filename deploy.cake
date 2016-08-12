@@ -67,7 +67,7 @@ Task("DownloadGitHubReleaseArtifacts")
         // Have had missing artifacts before, lets fail early in that scenario
         if (!artifactLookup.ContainsKey("NuGetRefBuild")) { throw new Exception("NuGetRefBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("NuGetCommandLineBuild")) { throw new Exception("NuGetCommandLineBuild artifact missing"); }
-        if (!artifactLookup.ContainsKey("NuGetTaskBuild")) { throw new Exception("NuGetTaskBuild" artifact missing"); }
+        if (!artifactLookup.ContainsKey("NuGetTaskBuild")) { throw new Exception("NuGetTaskBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("NuGetExeBuild")) { throw new Exception("NuGetExeBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("GemBuild")) { throw new Exception("GemBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("GitVersionTfsTaskBuild")) { throw new Exception("GitVersionTfsTaskBuild artifact missing"); }
