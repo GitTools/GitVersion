@@ -251,7 +251,7 @@ public class FeatureBranchScenarios
                         "master", new BranchConfig()
                         {
                             Tag = "pre",
-                            IsDevelop = true,
+                            TracksReleaseBranches = true,
                         }
                     },
                     {

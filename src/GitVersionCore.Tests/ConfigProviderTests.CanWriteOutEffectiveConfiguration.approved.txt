@@ -17,7 +17,7 @@ branches:
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-    is-develop: false
+    tracks-release-branches: false
     is-release-branch: false
     is-mainline: true
   releases?[/-]:
@@ -26,7 +26,7 @@ branches:
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-    is-develop: false
+    tracks-release-branches: false
     is-release-branch: true
     is-mainline: false
   features?[/-]:
@@ -35,7 +35,7 @@ branches:
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
-    is-develop: false
+    tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
   (pull|pull\-requests|pr)[/-]:
@@ -45,7 +45,7 @@ branches:
     prevent-increment-of-merged-branch-version: false
     tag-number-pattern: '[/-](?<number>\d+)[-/]'
     track-merge-target: false
-    is-develop: false
+    tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
   hotfix(es)?[/-]:
@@ -54,7 +54,7 @@ branches:
     increment: Patch
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
-    is-develop: false
+    tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
   support[/-]:
@@ -63,7 +63,7 @@ branches:
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-    is-develop: false
+    tracks-release-branches: false
     is-release-branch: false
     is-mainline: true
   dev(elop)?(ment)?$:
@@ -72,7 +72,7 @@ branches:
     increment: Minor
     prevent-increment-of-merged-branch-version: false
     track-merge-target: true
-    is-develop: true
+    tracks-release-branches: true
     is-release-branch: false
     is-mainline: false
 ignore:

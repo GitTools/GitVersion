@@ -42,7 +42,7 @@ branches:
         tag: dev
     release[/-]:
        mode: continuousDeployment
-       tag: rc 
+       tag: rc
 ";
         SetupConfigFileContent(text);
 

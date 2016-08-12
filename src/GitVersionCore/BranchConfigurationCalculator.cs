@@ -16,7 +16,7 @@ namespace GitVersion
             if (matchingBranches.Length == 0)
             {
                 var branchConfig = new BranchConfig();
-                ConfigurationProvider.ApplyBranchDefaults(config, branchConfig, isDevelop: true);
+                ConfigurationProvider.ApplyBranchDefaults(config, branchConfig, tracksReleaseBranches: true);
                 return new KeyValuePair<string, BranchConfig>(string.Empty, branchConfig);
             }
             if (matchingBranches.Length == 1)
@@ -114,7 +114,7 @@ namespace GitVersion
                             Increment = branchConfig.Increment,
                             PreventIncrementOfMergedBranchVersion = branchConfig.PreventIncrementOfMergedBranchVersion,
                             // If we are inheriting from develop then we should behave like develop
-                            IsDevelop = branchConfig.IsDevelop
+                            TracksReleaseBranches = branchConfig.TracksReleaseBranches
                         });
                 }
 
@@ -142,7 +142,7 @@ namespace GitVersion
                         Increment = inheritingBranchConfig.Increment,
                         PreventIncrementOfMergedBranchVersion = inheritingBranchConfig.PreventIncrementOfMergedBranchVersion,
                         // If we are inheriting from develop then we should behave like develop
-                        IsDevelop = inheritingBranchConfig.IsDevelop
+                        TracksReleaseBranches = inheritingBranchConfig.TracksReleaseBranches
                     });
             }
         }
