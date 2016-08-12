@@ -52,6 +52,9 @@ namespace GitVersion
             if (legacyConfig.ReleaseBranchTag != null)
                 issues.Add("release-branch-tag has been replaced by branch specific configuration. See http://gitversion.readthedocs.org/en/latest/configuration/#branch-configuration");
 
+            if (legacyConfig.Branches != null && legacyConfig.Branches.Any(branches => branches.Value.IsDevelop != null))
+                issues.Add("'is-develop' is deprecated, use 'track-release-branches' instead. See http://gitversion.readthedocs.org/en/latest/configuration/#branch-configuration");
+
             if (issues.Any())
                 throw new OldConfigurationException("GitVersion configuration file contains old configuration, please fix the following errors:\r\n" + string.Join("\r\n", issues));
         }
