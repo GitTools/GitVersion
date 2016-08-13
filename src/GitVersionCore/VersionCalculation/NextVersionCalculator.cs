@@ -166,27 +166,44 @@
         {
             var mainlineBranchConfigs = context.FullConfiguration.Branches.Where(b => b.Value.IsMainline == true).ToList();
             var seenMainlineTips = new List<string>();
-            var mainlineBranches = context.Repository.Branches.Where(b =>
-            {
-                return mainlineBranchConfigs.Any(c => Regex.IsMatch(b.FriendlyName, c.Key));
-            }).Where(b =>
-            {
-                if (seenMainlineTips.Contains(b.Tip.Sha))
+            var mainlineBranches = context.Repository.Branches
+                .Where(b =>
                 {
-                    Logger.WriteInfo("Multiple possible mainlines pointing at the same commit, dropping " + b.FriendlyName);
-                    return false;
-                }
-                seenMainlineTips.Add(b.Tip.Sha);
-                return true;
-            }).ToDictionary(b => context.Repository.ObjectDatabase.FindMergeBase(b.Tip, context.CurrentCommit).Sha, b => b);
-            Logger.WriteInfo("Found possible mainline branches: " + string.Join(", ", mainlineBranches.Values.Select(b => b.FriendlyName)));
+                    return mainlineBranchConfigs.Any(c => Regex.IsMatch(b.FriendlyName, c.Key));
+                })
+                .Where(b =>
+                {
+                    if (seenMainlineTips.Contains(b.Tip.Sha))
+                    {
+                        Logger.WriteInfo("Multiple possible mainlines pointing at the same commit, dropping " + b.FriendlyName);
+                        return false;
+                    }
+                    seenMainlineTips.Add(b.Tip.Sha);
+                    return true;
+                })
+               .GroupBy(b => context.Repository.ObjectDatabase.FindMergeBase(b.Tip, context.CurrentCommit).Sha)
+               .ToDictionary(b => b.Key, b => b.ToList());
+
+            var allMainlines = mainlineBranches.Values.SelectMany(branches => branches.Select(b => b.FriendlyName));
+            Logger.WriteInfo("Found possible mainline branches: " + string.Join(", ", allMainlines));
 
             // Find closest mainline branch
             var firstMatchingCommit = context.CurrentBranch.Commits.First(c => mainlineBranches.ContainsKey(c.Sha));
-            var mainlineBranch = mainlineBranches[firstMatchingCommit.Sha];
-            Logger.WriteInfo("Mainline for current branch is " + mainlineBranch.FriendlyName);
+            var possibleMainlineBranches = mainlineBranches[firstMatchingCommit.Sha];
 
-            return mainlineBranch.Tip;
+            if (possibleMainlineBranches.Count == 1)
+            {
+                var mainlineBranch = possibleMainlineBranches[0];
+                Logger.WriteInfo("Mainline for current branch is " + mainlineBranch.FriendlyName);
+                return mainlineBranch.Tip;
+            }
+
+            var chosenMainline = possibleMainlineBranches[0];
+            Logger.WriteInfo(string.Format(
+                "Multiple mainlines ({0}) have the same merge base for the current branch, choosing {1} because we found that branch first...",
+                string.Join(", ", possibleMainlineBranches.Select(b => b.FriendlyName)),
+                chosenMainline.FriendlyName));
+            return chosenMainline.Tip;
         }
 
         private static SemanticVersion IncrementForEachCommit(GitVersionContext context, List<Commit> directCommits, SemanticVersion mainlineVersion)
