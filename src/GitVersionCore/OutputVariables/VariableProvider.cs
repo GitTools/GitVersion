@@ -84,6 +84,8 @@
                 semverFormatValues.CommitDate,
                 semverFormatValues.NuGetVersion,
                 semverFormatValues.NuGetVersionV2,
+                semverFormatValues.NuGetPreReleaseTag,
+                semverFormatValues.NuGetPreReleaseTagV2,
                 semverFormatValues.CommitsSinceVersionSource,
                 semverFormatValues.CommitsSinceVersionSourcePadded);
 

@@ -62,6 +62,8 @@ BranchName: feature/test
 Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 NuGetVersionV2: 4.10.3-test0019
 NuGetVersion: 4.10.3-test0019
+NuGetPreReleaseTagV2: test0019
+NuGetPreReleaseTag: test0019
 CommitsSinceVersionSource: 19
 CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
@@ -105,6 +107,8 @@ BranchName: feature/test
 Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 NuGetVersionV2: 4.10.3-test0019
 NuGetVersion: 4.10.3-test0019
+NuGetPreReleaseTagV2: test0019
+NuGetPreReleaseTag: test0019
 CommitsSinceVersionSource: 19
 CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
@@ -165,6 +169,8 @@ BranchName: feature/test
 Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 NuGetVersionV2: 4.10.3-test0019
 NuGetVersion: 4.10.3-test0019
+NuGetPreReleaseTagV2: test0019
+NuGetPreReleaseTag: test0019
 CommitsSinceVersionSource: 19
 CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
