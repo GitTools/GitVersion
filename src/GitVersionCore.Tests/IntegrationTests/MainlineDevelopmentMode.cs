@@ -160,6 +160,36 @@ public class MainlineDevelopmentMode
             fixture.AssertFullSemver(config, "1.0.4-foo.3");
         }
     }
+
+    [Test]
+    public void VerifySupportForwardMerge()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeACommit("1");
+            fixture.MakeATaggedCommit("1.0.0");
+            fixture.MakeACommit(); // 1.0.1
+
+            fixture.BranchTo("support/1.0", "support10");
+            fixture.MakeACommit();
+            fixture.MakeACommit();
+
+            fixture.Checkout("master");
+            fixture.MakeACommit("+semver: minor");
+            fixture.AssertFullSemver(config, "1.1.0");
+            fixture.MergeNoFF("support/1.0");
+            fixture.AssertFullSemver(config, "1.1.2");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver(config, "1.1.3");
+            fixture.Checkout("support/1.0");
+            fixture.AssertFullSemver(config, "1.0.4");
+
+            fixture.BranchTo("feature/foo", "foo");
+            fixture.MakeACommit();
+            fixture.MakeACommit();
+            fixture.AssertFullSemver(config, "1.0.4-foo.2"); // TODO This probably should be 1.0.5
+        }
+    }
 }
 
 static class CommitExtensions

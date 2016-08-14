@@ -131,7 +131,11 @@ namespace GitVersion
                 var chosenBranch = repository.Branches.FirstOrDefault(b => Regex.IsMatch(b.FriendlyName, "^develop", RegexOptions.IgnoreCase)
                                                                            || Regex.IsMatch(b.FriendlyName, "master$", RegexOptions.IgnoreCase));
                 if (chosenBranch == null)
+                {
+                    // TODO We should call the build server to generate this exception, each build server works differently
+                    // for fetch issues and we could give better warnings.
                     throw new InvalidOperationException("Could not find a 'develop' or 'master' branch, neither locally nor remotely.");
+                }
 
                 var branchName = chosenBranch.FriendlyName;
                 Logger.WriteWarning(errorMessage + Environment.NewLine + Environment.NewLine + "Falling back to " + branchName + " branch config");
