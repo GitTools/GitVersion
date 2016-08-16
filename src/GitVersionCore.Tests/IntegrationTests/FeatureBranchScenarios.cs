@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using GitTools.Testing;
 using GitVersion;
 using GitVersionCore.Tests;
@@ -236,6 +237,240 @@ public class FeatureBranchScenarios
 
             //I'm not entirely sure what the + value should be but I know the semvar major/minor/patch should be 0.3.0
             fixture.AssertFullSemver("0.3.0-TEST-1.1+2");
+        }
+    }
+
+    [Test]
+    public void ShouldPickUpVersionFromDevelopAfterReleaseBranchCreated()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            // Create develop and release branches
+            fixture.MakeACommit();
+            fixture.BranchTo("develop");
+            fixture.MakeACommit();
+            fixture.BranchTo("release/1.0");
+            fixture.MakeACommit();
+            fixture.Checkout("develop");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver("1.1.0-alpha.1");
+
+            // create a feature branch from develop and verify the version
+            fixture.BranchTo("feature/test");
+            fixture.AssertFullSemver("1.1.0-test.1+1");
+        }
+    }
+
+    [Test]
+    public void ShouldPickUpVersionFromDevelopAfterReleaseBranchMergedBack()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            // Create develop and release branches
+            fixture.MakeACommit();
+            fixture.BranchTo("develop");
+            fixture.MakeACommit();
+            fixture.BranchTo("release/1.0");
+            fixture.MakeACommit();
+
+            // merge release into develop
+            fixture.Checkout("develop");
+            fixture.MergeNoFF("release/1.0");
+            fixture.AssertFullSemver("1.1.0-alpha.2");
+
+            // create a feature branch from develop and verify the version
+            fixture.BranchTo("feature/test");
+            fixture.AssertFullSemver("1.1.0-test.1+2");
+        }
+    }
+
+    public class WhenMasterMarkedAsIsDevelop
+    {
+        [Test]
+        public void ShouldPickUpVersionFromMasterAfterReleaseBranchCreated()
+        {
+            var config = new Config
+            {
+                Branches = new Dictionary<string, BranchConfig>
+                {
+                    {
+                        "master", new BranchConfig()
+                        {
+                            IsDevelop = true,
+                            Regex = "master"
+                        }
+                    }
+                }
+            };
+
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                // Create release branch
+                fixture.MakeACommit();
+                fixture.BranchTo("release/1.0");
+                fixture.MakeACommit();
+                fixture.Checkout("master");
+                fixture.MakeACommit();
+                fixture.AssertFullSemver(config, "1.0.1+1");
+
+                // create a feature branch from master and verify the version
+                fixture.BranchTo("feature/test");
+                fixture.AssertFullSemver(config, "1.0.1-test.1+1");
+            }
+        }
+
+        [Test]
+        public void ShouldPickUpVersionFromMasterAfterReleaseBranchMergedBack()
+        {
+            var config = new Config
+            {
+                Branches = new Dictionary<string, BranchConfig>
+                {
+                    {
+                        "master", new BranchConfig()
+                        {
+                            IsDevelop = true,
+                            Regex = "master"
+                        }
+                    }
+                }
+            };
+
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                // Create release branch
+                fixture.MakeACommit();
+                fixture.BranchTo("release/1.0");
+                fixture.MakeACommit();
+
+                // merge release into master
+                fixture.Checkout("master");
+                fixture.MergeNoFF("release/1.0");
+                fixture.AssertFullSemver(config, "1.0.1+2");
+
+                // create a feature branch from master and verify the version
+                fixture.BranchTo("feature/test");
+                fixture.AssertFullSemver(config, "1.0.1-test.1+2");
+            }
+        }
+    }
+
+    public class WhenFeatureBranchHasNoConfig
+    {
+        [Test]
+        public void ShouldPickUpVersionFromMasterAfterReleaseBranchCreated()
+        {
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                // Create develop and release branches
+                fixture.MakeACommit();
+                fixture.BranchTo("develop");
+                fixture.MakeACommit();
+                fixture.BranchTo("release/1.0");
+                fixture.MakeACommit();
+                fixture.Checkout("develop");
+                fixture.MakeACommit();
+                fixture.AssertFullSemver("1.1.0-alpha.1");
+
+                // create a misnamed feature branch (i.e. it uses the default config) from develop and verify the version
+                fixture.BranchTo("misnamed");
+                fixture.AssertFullSemver("1.1.0-misnamed.1+1");
+            }
+        }
+
+        [Test]
+        public void ShouldPickUpVersionFromDevelopAfterReleaseBranchMergedBack()
+        {
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                // Create develop and release branches
+                fixture.MakeACommit();
+                fixture.BranchTo("develop");
+                fixture.MakeACommit();
+                fixture.BranchTo("release/1.0");
+                fixture.MakeACommit();
+
+                // merge release into develop
+                fixture.Checkout("develop");
+                fixture.MergeNoFF("release/1.0");
+                fixture.AssertFullSemver("1.1.0-alpha.2");
+
+                // create a misnamed feature branch (i.e. it uses the default config) from develop and verify the version
+                fixture.BranchTo("misnamed");
+                fixture.AssertFullSemver("1.1.0-misnamed.1+2");
+            }
+        }
+
+        // ReSharper disable once MemberHidesStaticFromOuterClass
+        public class WhenMasterMarkedAsIsDevelop
+        {
+            [Test]
+            public void ShouldPickUpVersionFromMasterAfterReleaseBranchCreated()
+            {
+                var config = new Config
+                {
+                    Branches = new Dictionary<string, BranchConfig>
+                    {
+                        {
+                            "master", new BranchConfig()
+                            {
+                                IsDevelop = true,
+                                Regex = "master"
+                            }
+                        }
+                    }
+                };
+
+                using (var fixture = new EmptyRepositoryFixture())
+                {
+                    // Create release branch
+                    fixture.MakeACommit();
+                    fixture.BranchTo("release/1.0");
+                    fixture.MakeACommit();
+                    fixture.Checkout("master");
+                    fixture.MakeACommit();
+                    fixture.AssertFullSemver(config, "1.0.1+1");
+
+                    // create a misnamed feature branch (i.e. it uses the default config) from master and verify the version
+                    fixture.BranchTo("misnamed");
+                    fixture.AssertFullSemver(config, "1.0.1-misnamed.1+1");
+                }
+            }
+
+            [Test]
+            public void ShouldPickUpVersionFromMasterAfterReleaseBranchMergedBack()
+            {
+                var config = new Config
+                {
+                    Branches = new Dictionary<string, BranchConfig>
+                    {
+                        {
+                            "master", new BranchConfig()
+                            {
+                                IsDevelop = true,
+                                Regex = "master"
+                            }
+                        }
+                    }
+                };
+
+                using (var fixture = new EmptyRepositoryFixture())
+                {
+                    // Create release branch
+                    fixture.MakeACommit();
+                    fixture.BranchTo("release/1.0");
+                    fixture.MakeACommit();
+
+                    // merge release into master
+                    fixture.Checkout("master");
+                    fixture.MergeNoFF("release/1.0");
+                    fixture.AssertFullSemver(config, "1.0.1+2");
+
+                    // create a misnamed feature branch (i.e. it uses the default config) from master and verify the version
+                    fixture.BranchTo("misnamed");
+                    fixture.AssertFullSemver(config, "1.0.1-misnamed.1+2");
+                }
+            }
         }
     }
 
