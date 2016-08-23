@@ -190,6 +190,88 @@ public class MainlineDevelopmentMode
             fixture.AssertFullSemver(config, "1.0.4-foo.2"); // TODO This probably should be 1.0.5
         }
     }
+
+    [Test]
+    public void VerifyMergingMasterToFeatureDoesNotCauseBranchCommitsToIncrementVersion()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.MakeACommit("first in master");
+
+            fixture.BranchTo("feature/foo", "foo");
+            fixture.MakeACommit("first in foo");
+            
+            fixture.Checkout("master");
+            fixture.MakeACommit("second in master");
+
+            fixture.Checkout("feature/foo");
+            fixture.MergeNoFF("master");
+            fixture.MakeACommit("second in foo");
+
+            fixture.Checkout("master");
+            fixture.MakeATaggedCommit("1.0.0");
+
+            fixture.MergeNoFF("feature/foo");
+            fixture.AssertFullSemver(config, "1.0.1");
+        }
+    }
+
+    [Test]
+    public void VerifyMergingMasterToFeatureDoesNotStopMasterCommitsIncrementingVersion()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.MakeACommit("first in master");
+
+            fixture.BranchTo("feature/foo", "foo");
+            fixture.MakeACommit("first in foo");
+
+            fixture.Checkout("master");
+            fixture.MakeATaggedCommit("1.0.0");
+            fixture.MakeACommit("third in master");
+
+            fixture.Checkout("feature/foo");
+            fixture.MergeNoFF("master");
+            fixture.MakeACommit("second in foo");
+
+            fixture.Checkout("master");
+            fixture.MergeNoFF("feature/foo");
+            fixture.AssertFullSemver(config, "1.0.2");
+        }
+    }
+
+    [Test]
+    public void VerifyMergingMasterIntoAFeatureBranchWorksWithMultipleBranches()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.MakeACommit("first in master");
+
+            fixture.BranchTo("feature/foo", "foo");
+            fixture.MakeACommit("first in foo");
+
+            fixture.BranchTo("feature/bar", "bar");
+            fixture.MakeACommit("first in bar");
+
+            fixture.Checkout("master");
+            fixture.MakeACommit("second in master");
+
+            fixture.Checkout("feature/foo");
+            fixture.MergeNoFF("master");
+            fixture.MakeACommit("second in foo");
+
+            fixture.Checkout("feature/bar");
+            fixture.MergeNoFF("master");
+            fixture.MakeACommit("second in bar");
+
+            fixture.Checkout("master");
+            fixture.MakeATaggedCommit("1.0.0");
+
+            fixture.MergeNoFF("feature/foo");
+            fixture.MergeNoFF("feature/bar");
+            fixture.AssertFullSemver(config, "1.0.2");
+        }
+    }
 }
 
 static class CommitExtensions
