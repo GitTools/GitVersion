@@ -99,8 +99,10 @@
                 {
                     IncludeReachableFrom = context.CurrentBranch,
                     ExcludeReachableFrom = baseVersion.BaseVersionSource,
-                    SortBy = CommitSortStrategies.Reverse
+                    SortBy = CommitSortStrategies.Reverse,
+                    FirstParentOnly = true
                 }).Where(c => c.Sha != baseVersion.BaseVersionSource.Sha).ToList();
+
                 var directCommits = new List<Commit>();
 
                 // Scans commit log in reverse, aggregating merge commits
