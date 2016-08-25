@@ -192,6 +192,50 @@ CommitDate: 2015-11-10
         });
     }
 
+    [Test]
+    public void NoCacheBypassesCache()
+    {
+        const string versionCacheFileContent = @"
+Major: 4
+Minor: 10
+Patch: 3
+PreReleaseTag: test.19
+PreReleaseTagWithDash: -test.19
+PreReleaseLabel: test
+PreReleaseNumber: 19
+BuildMetaData: 
+BuildMetaDataPadded: 
+FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+MajorMinorPatch: 4.10.3
+SemVer: 4.10.3-test.19
+LegacySemVer: 4.10.3-test19
+LegacySemVerPadded: 4.10.3-test0019
+AssemblySemVer: 4.10.3.0
+FullSemVer: 4.10.3-test.19
+InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+BranchName: feature/test
+Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+NuGetVersionV2: 4.10.3-test0019
+NuGetVersion: 4.10.3-test0019
+NuGetPreReleaseTagV2: test0019
+NuGetPreReleaseTag: test0019
+CommitsSinceVersionSource: 19
+CommitsSinceVersionSourcePadded: 0019
+CommitDate: 2015-11-10
+";
+
+        var versionAndBranchFinder = new ExecuteCore(fileSystem);
+
+        RepositoryScope(versionAndBranchFinder, (fixture, vv) => {
+            fileSystem.WriteAllText(vv.FileName, versionCacheFileContent);
+            vv = versionAndBranchFinder.ExecuteGitVersion(null, null, null, null, false, fixture.RepositoryPath, null);
+            vv.AssemblySemVer.ShouldBe("4.10.3.0");
+
+            vv = versionAndBranchFinder.ExecuteGitVersion(null, null, null, null, false, fixture.RepositoryPath, null, noCache: true);
+            vv.AssemblySemVer.ShouldBe("0.1.0.0");
+        });
+    }
+
 
     [Test]
     public void WorkingDirectoryWithoutGit()

@@ -331,4 +331,11 @@ public class ArgumentParserTests
         arguments.NoFetch.ShouldBe(true);
         arguments.UpdateAssemblyInfo.ShouldBe(true);
     }
+
+    [Test]
+    public void nocache_true_when_defined()
+    {
+        var arguments = ArgumentParser.ParseArguments("-nocache");
+        arguments.NoCache.ShouldBe(true);
+    }
 }
