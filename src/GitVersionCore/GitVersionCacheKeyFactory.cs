@@ -79,7 +79,7 @@
                     continue;
                 }
 
-                string[] files = null;
+                string[] files;
                 try
                 {
                     files = Directory.GetFiles(currentDir);
