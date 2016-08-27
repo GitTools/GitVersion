@@ -42,6 +42,9 @@ public class PullRequestInTeamCityTest
             var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, isTeamCity: true);
 
             result.ExitCode.ShouldBe(0);
+
+            result.Output.ShouldStartWith("{", "we expect valid json output to parse back output variables");
+
             result.OutputVariables.FullSemVer.ShouldBe("1.0.4-PullRequest0005.3");
 
             // Cleanup repository files
