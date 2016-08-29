@@ -1,9 +1,9 @@
 namespace GitVersionCore.Tests
 {
-    using System.Collections.Generic;
-    using System.Linq;
     using GitVersion;
     using GitVersion.VersionFilters;
+    using System.Collections.Generic;
+    using System.Linq;
 
     public class TestEffectiveConfiguration : EffectiveConfiguration
     {
@@ -28,15 +28,15 @@ namespace GitVersionCore.Tests
             int buildMetaDataPadding = 4,
             int commitsSinceVersionSourcePadding = 4,
             IEnumerable<IVersionFilter> versionFilters = null,
-            bool isDevelop = false,
-            bool isRelease = false) : 
+            bool tracksReleaseBranches = false,
+            bool isRelease = false) :
             base(assemblyVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch,
                     branchPrefixToTrim, preventIncrementForMergedBranchVersion, tagNumberPattern, continuousDeploymentFallbackTag,
                     trackMergeTarget,
                     majorMessage, minorMessage, patchMessage, noBumpMessage,
                     commitMessageMode, legacySemVerPadding, buildMetaDataPadding, commitsSinceVersionSourcePadding,
                     versionFilters ?? Enumerable.Empty<IVersionFilter>(),
-                    isDevelop, isRelease)
+                    tracksReleaseBranches, isRelease)
         {
         }
     }
