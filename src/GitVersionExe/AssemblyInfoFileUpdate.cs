@@ -25,13 +25,13 @@ namespace GitVersion
             Logger.WriteInfo(string.Format("Found {0} files", assemblyInfoFiles.Count));
 
             var assemblyVersion = variables.AssemblySemVer;
-            var assemblyVersionRegex = new Regex(@"AssemblyVersion\s*\(\s*""[^""]*""\s*\)");
+            var assemblyVersionRegex = new Regex(@"AssemblyVersion(Attribute)?\s*\(\s*""[^""]*""\s*\)");
             var assemblyVersionString = !string.IsNullOrWhiteSpace(assemblyVersion) ? string.Format("AssemblyVersion(\"{0}\")", assemblyVersion) : null;
             var assemblyInfoVersion = variables.InformationalVersion;
-            var assemblyInfoVersionRegex = new Regex(@"AssemblyInformationalVersion\s*\(\s*""[^""]*""\s*\)");
+            var assemblyInfoVersionRegex = new Regex(@"AssemblyInformationalVersion(Attribute)?\s*\(\s*""[^""]*""\s*\)");
             var assemblyInfoVersionString = string.Format("AssemblyInformationalVersion(\"{0}\")", assemblyInfoVersion);
             var assemblyFileVersion = variables.MajorMinorPatch + ".0";
-            var assemblyFileVersionRegex = new Regex(@"AssemblyFileVersion\s*\(\s*""[^""]*""\s*\)");
+            var assemblyFileVersionRegex = new Regex(@"AssemblyFileVersion(Attribute)?\s*\(\s*""[^""]*""\s*\)");
             var assemblyFileVersionString = string.Format("AssemblyFileVersion(\"{0}\")", assemblyFileVersion);
 
             foreach (var assemblyInfoFile in assemblyInfoFiles)

@@ -324,6 +324,39 @@ public class AssemblyInfoFileUpdateTests
         });
     }
 
+    [TestCase("cs", "[assembly: AssemblyVersionAttribute(\"1.0.0.0\")]\r\n[assembly: AssemblyInformationalVersionAttribute(\"1.0.0.0\")]\r\n[assembly: AssemblyFileVersionAttribute(\"1.0.0.0\")]")]
+    [TestCase("fs", "[<assembly: AssemblyVersionAttribute(\"1.0.0.0\")>]\r\n[<assembly: AssemblyInformationalVersionAttribute(\"1.0.0.0\")>]\r\n[<assembly: AssemblyFileVersionAttribute(\"1.0.0.0\")>]")]
+    [TestCase("vb", "<Assembly: AssemblyVersionAttribute(\"1.0.0.0\")>\r\n<Assembly: AssemblyInformationalVersionAttribute(\"1.0.0.0\")>\r\n<Assembly: AssemblyFileVersionAttribute(\"1.0.0.0\")>")]
+    [Category("NoMono")]
+    [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+    public void ShouldReplaceAssemblyVersionWithAtttributeSuffix(string fileExtension, string assemblyFileContent)
+    {
+        var workingDir = Path.GetTempPath();
+        var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
+
+        VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
+        {
+            var args = new Arguments
+            {
+                UpdateAssemblyInfo = true,
+                UpdateAssemblyInfoFileName = new HashSet<string>
+                {
+                    "AssemblyInfo." + fileExtension
+                }
+            };
+            using (new AssemblyInfoFileUpdate(args, workingDir, variables, fileSystem))
+            {
+                fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
+                    !s.Contains(@"AssemblyVersionAttribute(""1.0.0.0"")") &&
+                    !s.Contains(@"AssemblyInformationalVersionAttribute(""1.0.0.0"")") &&
+                    !s.Contains(@"AssemblyFileVersionAttribute(""1.0.0.0"")") &&
+                    s.Contains(@"AssemblyVersion(""2.3.1.0"")") && 
+                    s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") && 
+                    s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
+            }
+        });
+    }
+
     [TestCase("cs")]
     [TestCase("fs")]
     [TestCase("vb")]
