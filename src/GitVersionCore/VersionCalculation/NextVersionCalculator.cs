@@ -127,7 +127,7 @@
                     mainlineVersion = IncrementForEachCommit(context, directCommits, mainlineVersion);
                     mainlineVersion.BuildMetaData = metaDataCalculator.Create(findMergeBase, context);
                     // Only increment if head is not a merge commit, ensures PR's and forward merges end up correct.
-                    if (mergedHead.Parents.Count()  == 1)
+                    if (mergedHead.Parents.Count() == 1)
                     {
                         Logger.WriteInfo(string.Format("Performing {0} increment for current branch ", branchIncrement));
                         mainlineVersion = mainlineVersion.IncrementVersion(branchIncrement);
@@ -146,7 +146,7 @@
 
         SemanticVersion AggregateMergeCommitIncrement(GitVersionContext context, Commit commit, List<Commit> directCommits, SemanticVersion mainlineVersion)
         {
-// Merge commit, process all merged commits as a batch
+            // Merge commit, process all merged commits as a batch
             var mergeCommit = commit;
             var mergedHead = GetMergedHead(mergeCommit);
             var findMergeBase = context.Repository.ObjectDatabase.FindMergeBase(mergeCommit.Parents.First(), mergedHead);
@@ -183,8 +183,14 @@
                     seenMainlineTips.Add(b.Tip.Sha);
                     return true;
                 })
-               .GroupBy(b => context.Repository.ObjectDatabase.FindMergeBase(b.Tip, context.CurrentCommit).Sha)
-               .ToDictionary(b => b.Key, b => b.ToList());
+                .Select(b => new
+                {
+                    MergeBase = context.Repository.ObjectDatabase.FindMergeBase(b.Tip, context.CurrentCommit),
+                    Branch = b
+                })
+                .Where(a => a.MergeBase != null)
+                .GroupBy(b => b.MergeBase.Sha, b => b.Branch)
+                .ToDictionary(b => b.Key, b => b.ToList());
 
             var allMainlines = mainlineBranches.Values.SelectMany(branches => branches.Select(b => b.FriendlyName));
             Logger.WriteInfo("Found possible mainline branches: " + string.Join(", ", allMainlines));
@@ -217,7 +223,7 @@
                                                 directCommit
                                             }) ?? VersionField.Patch;
                 mainlineVersion = mainlineVersion.IncrementVersion(directCommitIncrement);
-                Logger.WriteInfo(string.Format("Direct commit on master {0} incremented base versions {1}, now {2}", 
+                Logger.WriteInfo(string.Format("Direct commit on master {0} incremented base versions {1}, now {2}",
                     directCommit.Sha, directCommitIncrement, mainlineVersion));
             }
             return mainlineVersion;
@@ -231,8 +237,8 @@
                 IncludeReachableFrom = mergedHead,
                 ExcludeReachableFrom = findMergeBase
             };
-            var commits = mergeCommit == null ? 
-                context.Repository.Commits.QueryBy(filter).ToList() : 
+            var commits = mergeCommit == null ?
+                context.Repository.Commits.QueryBy(filter).ToList() :
                 new[] { mergeCommit }.Union(context.Repository.Commits.QueryBy(filter)).ToList();
             commitLog.RemoveAll(c => commits.Any(c1 => c1.Sha == c.Sha));
             return IncrementStrategyFinder.GetIncrementForCommits(context, commits) ?? VersionField.Patch;

@@ -108,3 +108,4 @@ site/
 ####################
 /tools
 /*.zip
+GitVersion.CommandLine/*/
