@@ -43,6 +43,7 @@ namespace GitVersion
 
         public bool ShowConfig;
         public bool NoFetch;
+        public bool NoCache;
 
         public void AddAssemblyInfoFileName(string fileName)
         {
