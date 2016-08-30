@@ -46,6 +46,9 @@
         [YamlMember(Alias = "commit-message-incrementing")]
         public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
 
+        [YamlMember(Alias = "regex")]
+        public string Regex { get; set; }
+
         [YamlMember(Alias = "is-develop")]
         public bool? IsDevelop { get; set; }
 

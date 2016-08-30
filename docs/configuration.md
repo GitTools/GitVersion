@@ -126,7 +126,21 @@ The header for ignore configuration.
 
 #### sha
 A sequence of SHAs to be excluded from the version calculations. Useful when
-there is a rogue commit in history yielding a bad version.
+there is a rogue commit in history yielding a bad version. You can use either style below:
+
+```
+ignore:
+  sha: [e7bc24c0f34728a25c9187b8d0b041d935763e3a, 764e16321318f2fdb9cdeaa56d1156a1cba307d7]
+```
+
+or
+
+```
+ignore:
+  sha:
+    - e7bc24c0f34728a25c9187b8d0b041d935763e3a
+    - 764e16321318f2fdb9cdeaa56d1156a1cba307d7
+```
 
 #### commits-before
 Date and time in the format `yyyy-MM-ddTHH:mm:ss` (eg `commits-before:
@@ -136,9 +150,14 @@ Date and time in the format `yyyy-MM-ddTHH:mm:ss` (eg `commits-before:
 ## Branch configuration
 Then we have branch specific configuration, which looks something like this:
 
+**NOTE: ** v4 changed from using regexes for keys, to named configs
+
+If you have branch specific configuration upgrading to v4 will force you to upgrade.
+
 ```yaml
 branches:
   master:
+    regex: master
     mode: ContinuousDelivery
     tag: ''
     increment: Patch
@@ -146,7 +165,8 @@ branches:
     track-merge-target: false
     is-develop: false
     is-release-branch: false
-  releases?[/-]:
+  release:
+    regex: releases?[/-]
     mode: ContinuousDelivery
     tag: beta
     increment: Patch
@@ -154,7 +174,8 @@ branches:
     track-merge-target: false
     is-develop: false
     is-release-branch: true
-  features?[/-]:
+  feature:
+    regex: features?[/-]
     mode: ContinuousDelivery
     tag: useBranchName
     increment: Inherit
@@ -162,7 +183,8 @@ branches:
     track-merge-target: false
     is-develop: false
     is-release-branch: false
-  (pull|pull\-requests|pr)[/-]:
+  pull-request:
+    regex: (pull|pull\-requests|pr)[/-]
     mode: ContinuousDelivery
     tag: PullRequest
     increment: Inherit
@@ -171,7 +193,8 @@ branches:
     track-merge-target: false
     is-develop: false
     is-release-branch: false
-  hotfix(es)?[/-]:
+  hotfix:
+    regex: hotfix(es)?[/-]
     mode: ContinuousDelivery
     tag: beta
     increment: Patch
@@ -179,7 +202,8 @@ branches:
     track-merge-target: false
     is-develop: false
     is-release-branch: false
-  support[/-]:
+  support:
+    regex: support[/-]
     mode: ContinuousDelivery
     tag: ''
     increment: Patch
@@ -187,7 +211,8 @@ branches:
     track-merge-target: false
     is-develop: false
     is-release-branch: false
-  dev(elop)?(ment)?$:
+  develop:
+    regex: dev(elop)?(ment)?$
     mode: ContinuousDeployment
     tag: unstable
     increment: Minor
@@ -196,6 +221,8 @@ branches:
     is-develop: true
     is-release-branch: false
 ```
+
+If you don't specify the regex the inbuilt for that branch config will be used (recommended)
 
 We don't envision many people needing to change most of these configuration
 values, but here they are if you need to:
@@ -239,7 +266,7 @@ the branch is configured to use ContinuousDeployment mode.
 
 ```yaml
 branches:
-  (pull|pull\-requests|pr)[/-]:
+  pull-request:
     mode: ContinuousDeployment
     tag: PullRequest
     increment: Inherit
