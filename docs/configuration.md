@@ -227,6 +227,9 @@ If you don't specify the regex the inbuilt for that branch config will be used (
 We don't envision many people needing to change most of these configuration
 values, but here they are if you need to:
 
+### regex
+This is the regex which is used to match the current branch to the correct branch configuration.
+
 ### branches
 The header for all the individual branch configuration.
 

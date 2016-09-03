@@ -113,7 +113,7 @@ public class ReleaseBranchScenarios
         {
             Branches =
             {
-                { "releases?[/-]", new BranchConfig { Tag = "rc" } }
+                { "release", new BranchConfig { Tag = "rc" } }
             }
         };
         using (var fixture = new EmptyRepositoryFixture())

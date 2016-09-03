@@ -10,6 +10,7 @@
 
         public BranchConfig(BranchConfig branchConfiguration)
         {
+            Regex = branchConfiguration.Regex;
             VersioningMode = branchConfiguration.VersioningMode;
             Tag = branchConfiguration.Tag;
             Increment = branchConfiguration.Increment;

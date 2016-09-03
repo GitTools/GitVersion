@@ -49,8 +49,9 @@
         public void AllowHavingMainInsteadOfMaster()
         {
             var config = new Config();
-            config.Branches.Add("main", new BranchConfig
+            config.Branches.Add("master", new BranchConfig
             {
+                Regex = "main",
                 VersioningMode = VersioningMode.ContinuousDelivery,
                 Tag = "useBranchName",
                 Increment = IncrementStrategy.Patch,

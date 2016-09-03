@@ -62,7 +62,7 @@ public class DevelopScenarios
             Branches =
             {
                 {
-                    "dev(elop)?(ment)?$", new BranchConfig
+                    "develop", new BranchConfig
                     {
                         Tag = "alpha"
                     }
@@ -128,7 +128,7 @@ public class DevelopScenarios
         {
             Branches =
             {
-                {"dev(elop)?(ment)?$", new BranchConfig
+                {"develop", new BranchConfig
                 {
                     VersioningMode = VersioningMode.ContinuousDelivery
                 }

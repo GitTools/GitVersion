@@ -129,7 +129,8 @@
 
             Configuration = new EffectiveConfiguration(
                 assemblyVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix,
-                tag, nextVersion, incrementStrategy, currentBranchConfig.Key,
+                tag, nextVersion, incrementStrategy,
+                currentBranchConfig.Value.Regex,
                 preventIncrementForMergedBranchVersion,
                 tagNumberPattern, FullConfiguration.ContinuousDeploymentFallbackTag,
                 trackMergeTarget,

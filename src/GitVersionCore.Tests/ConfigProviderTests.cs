@@ -4,7 +4,6 @@ using NUnit.Framework;
 using Shouldly;
 using System;
 using System.ComponentModel;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -86,7 +85,7 @@ branches:
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
 
         config.NextVersion.ShouldBe("2.0.0");
-        config.Branches["releases?[/-]"].Tag.ShouldBe(string.Empty);
+        config.Branches["release"].Tag.ShouldBe(string.Empty);
     }
 
     [Test]
@@ -98,7 +97,7 @@ branches:
     bug:
         tag: bugfix";
         SetupConfigFileContent(text);
-        var ex = Should.Throw<ConfigurationException>(() => ConfigurationProvider.Provide(repoPath, fileSystem));
+        var ex = Should.Throw<GitVersionConfigurationException>(() => ConfigurationProvider.Provide(repoPath, fileSystem));
         ex.Message.ShouldBe("Branch configuration 'bug' is missing required configuration 'regex'");
     }
 
@@ -109,7 +108,7 @@ branches:
 next-version: 2.0.0
 branches:
     bug:
-        regex: bug[/-]:
+        regex: 'bug[/-]'
         tag: bugfix";
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
