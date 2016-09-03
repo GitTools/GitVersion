@@ -1,6 +1,6 @@
 ﻿namespace GitVersion
 {
-    using GitVersion.Helpers;
+    using Helpers;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -12,7 +12,7 @@
     {
         public static GitVersionCacheKey Create(IFileSystem fileSystem, GitPreparer gitPreparer, Config overrideConfig)
         {
-            var gitSystemHash = GetGitSystemHash(gitPreparer, fileSystem);
+            var gitSystemHash = GetGitSystemHash(gitPreparer);
             var configFileHash = GetConfigFileHash(fileSystem, gitPreparer);
             var repositorySnapshotHash = GetRepositorySnapshotHash(gitPreparer);
             var overrideConfigHash = GetOverrideConfigHash(overrideConfig);
@@ -21,7 +21,7 @@
             return new GitVersionCacheKey(compositeHash);
         }
 
-        private static string GetGitSystemHash(GitPreparer gitPreparer, IFileSystem fileSystem)
+        static string GetGitSystemHash(GitPreparer gitPreparer)
         {
             var dotGitDirectory = gitPreparer.GetDotGitDirectory();
 
@@ -32,7 +32,7 @@
         }
 
         // based on https://msdn.microsoft.com/en-us/library/bb513869.aspx
-        private static List<string> CalculateDirectoryContents(string root)
+        static List<string> CalculateDirectoryContents(string root)
         {
             var result = new List<string>();
 
@@ -95,7 +95,7 @@
                     continue;
                 }
 
-                foreach (string file in files)
+                foreach (var file in files)
                 {
                     try
                     {
@@ -106,14 +106,13 @@
                     catch (IOException e)
                     {
                         Logger.WriteError(e.Message);
-                        continue;
                     }
                 }
 
                 // Push the subdirectories onto the stack for traversal.
                 // This could also be done before handing the files.
                 // push in reverse order
-                for (int i = subDirs.Length - 1; i >= 0; i--)
+                for (var i = subDirs.Length - 1; i >= 0; i--)
                 {
                     dirs.Push(subDirs[i]);
                 }
