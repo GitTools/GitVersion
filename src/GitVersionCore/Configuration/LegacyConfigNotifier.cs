@@ -17,7 +17,10 @@ namespace GitVersion
             {ConfigurationProvider.ReleaseBranchRegex, ConfigurationProvider.ReleaseBranchKey},
             {ConfigurationProvider.SupportBranchRegex, ConfigurationProvider.SupportBranchKey},
             {ConfigurationProvider.PullRequestRegex, ConfigurationProvider.PullRequestBranchKey},
-            {"release[/-]", ConfigurationProvider.ReleaseBranchKey}
+            {"release[/-]", ConfigurationProvider.ReleaseBranchKey},
+            {"hotfix[/-]", ConfigurationProvider.HotfixBranchKey },
+            {"feature(s)?[/-]", ConfigurationProvider.FeatureBranchKey },
+            {"feature[/-]", ConfigurationProvider.FeatureBranchKey }
         };
 
         public static void Notify(StringReader reader)
