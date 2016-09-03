@@ -13,6 +13,7 @@ namespace GitVersion
 
         public const string DefaultConfigFileName = "GitVersion.yml";
         public const string ObsoleteConfigFileName = "GitVersionConfig.yaml";
+
         public const string ReleaseBranchRegex = "releases?[/-]";
         public const string FeatureBranchRegex = "features?[/-]";
         public const string PullRequestRegex = @"(pull|pull\-requests|pr)[/-]";
