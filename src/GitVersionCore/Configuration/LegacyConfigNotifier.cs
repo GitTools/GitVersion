@@ -32,7 +32,7 @@ namespace GitVersion
 
             var issues = new List<string>();
 
-            var oldConfigs = legacyConfig.Branches.Keys.Where(k => OldConfigKnownRegexes.Keys.Contains(k)).ToList();
+            var oldConfigs = legacyConfig.Branches.Keys.Where(k => OldConfigKnownRegexes.Keys.Contains(k) && k != OldConfigKnownRegexes[k]).ToList();
             if (oldConfigs.Any())
             {
                 var max = oldConfigs.Max(c => c.Length);

@@ -36,6 +36,8 @@ assemblyVersioningScheme: MajorMinor
 develop-branch-tag: alpha
 release-branch-tag: rc
 branches:
+    master:
+        mode: ContinuousDeployment
     dev(elop)?(ment)?$:
         mode: ContinuousDeployment
         tag: dev
