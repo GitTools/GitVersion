@@ -23,8 +23,9 @@ namespace GitVersionCore.Tests.VersionFilters
         [Test]
         public void WhenCommitShouldExcludeWithReason()
         {
+            var context = new GitVersionContextBuilder().Build();
             var commit = new MockCommit(); //when = UtcNow
-            var version = new BaseVersion("dummy", false, new SemanticVersion(1), commit, string.Empty);
+            var version = new BaseVersion(context, "dummy", false, new SemanticVersion(1), commit, string.Empty);
             var futureDate = DateTimeOffset.UtcNow.AddYears(1);
             var sut = new MinDateVersionFilter(futureDate);
 
@@ -37,7 +38,8 @@ namespace GitVersionCore.Tests.VersionFilters
         public void WhenShaMismatchShouldNotExclude()
         {
             var commit = new MockCommit(); //when = UtcNow
-            var version = new BaseVersion("dummy", false, new SemanticVersion(1), commit, string.Empty);
+            var context = new GitVersionContextBuilder().Build();
+            var version = new BaseVersion(context, "dummy", false, new SemanticVersion(1), commit, string.Empty);
             var pastDate = DateTimeOffset.UtcNow.AddYears(-1);
             var sut = new MinDateVersionFilter(pastDate);
 
@@ -49,7 +51,8 @@ namespace GitVersionCore.Tests.VersionFilters
         [Test]
         public void ExcludeShouldAcceptVersionWithNullCommit()
         {
-            var version = new BaseVersion("dummy", false, new SemanticVersion(1), null, string.Empty);
+            var context = new GitVersionContextBuilder().Build();
+            var version = new BaseVersion(context, "dummy", false, new SemanticVersion(1), null, string.Empty);
             var futureDate = DateTimeOffset.UtcNow.AddYears(1);
             var sut = new MinDateVersionFilter(futureDate);
 
