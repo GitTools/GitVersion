@@ -17,8 +17,12 @@ namespace GitVersion
 
             if (matchingBranches.Length == 0)
             {
+                Logger.WriteInfo(string.Format(
+                    "No branch configuration found for branch {0}, falling back to default configuration",
+                    currentBranch.FriendlyName));
+
                 var branchConfig = new BranchConfig();
-                ConfigurationProvider.ApplyBranchDefaults(config, branchConfig);
+                ConfigurationProvider.ApplyBranchDefaults(config, branchConfig, "");
                 return new KeyValuePair<string, BranchConfig>(string.Empty, branchConfig);
             }
             if (matchingBranches.Length == 1)
@@ -49,8 +53,8 @@ namespace GitVersion
             {
                 throw new ArgumentNullException("currentBranch");
             }
-            
-            return config.Branches.Where(b => Regex.IsMatch(currentBranch.FriendlyName, "^" + b.Key, RegexOptions.IgnoreCase)).ToArray();
+
+            return config.Branches.Where(b => Regex.IsMatch(currentBranch.FriendlyName, "^" + b.Value.Regex, RegexOptions.IgnoreCase)).ToArray();
         }
 
 

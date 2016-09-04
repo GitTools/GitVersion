@@ -86,6 +86,7 @@
     <Compile Include="Configuration\BranchConfig.cs" />
     <Compile Include="Configuration\Config.cs" />
     <Compile Include="Configuration\ConsoleAdapter.cs" />
+    <Compile Include="Configuration\GitVersionConfigurationException.cs" />
     <Compile Include="Configuration\IConsole.cs" />
     <Compile Include="Configuration\IgnoreConfig.cs" />
     <Compile Include="Configuration\Init\BuildServer\AppveyorPublicPrivate.cs" />
