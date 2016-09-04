@@ -62,8 +62,19 @@ namespace GitVersion
                     HelpWriter.Write();
                     return 0;
                 }
+                if (arguments.Diag)
+                {
+                    arguments.NoCache = true;
+                    arguments.Output = OutputType.BuildServer;
+                } 
 
                 ConfigureLogging(arguments);
+
+                if (arguments.Diag)
+                {
+                    Logger.WriteInfo("Dumping commit graph: ");
+                    GitTools.LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
+                }
                 if (!Directory.Exists(arguments.TargetPath))
                 {
                     Logger.WriteWarning(string.Format("The working directory '{0}' does not exist.", arguments.TargetPath));
@@ -124,7 +135,7 @@ namespace GitVersion
             return 0;
         }
 
-        private static void VerifyConfiguration(Arguments arguments, IFileSystem fileSystem)
+        static void VerifyConfiguration(Arguments arguments, IFileSystem fileSystem)
         {
             var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.NoFetch, arguments.TargetPath);
             ConfigurationProvider.Verify(gitPreparer, fileSystem);
@@ -179,7 +190,7 @@ namespace GitVersion
 
         static void WriteLogEntry(Arguments arguments, string s)
         {
-            var contents = string.Format("{0}\t\t{1}\r\n", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), s);
+            var contents = string.Format("{0:yyyy-MM-dd HH:mm:ss}\t\t{1}\r\n", DateTime.Now, s);
             File.AppendAllText(arguments.LogFilePath, contents);
         }
 
