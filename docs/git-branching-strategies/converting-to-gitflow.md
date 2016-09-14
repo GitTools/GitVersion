@@ -7,4 +7,4 @@ git checkout -b develop
 git push upstream develop
 ```
 
-Then in GitHub go to your repository settings then set develop to be your default branch. And now all development happens on the `develop` branch
+Afterwards you need to set `develop` to be your default branch. And now all development happens on the `develop` branch
