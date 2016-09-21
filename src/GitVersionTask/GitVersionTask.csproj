@@ -122,13 +122,12 @@
     <ItemGroup>
       <NativeBinaries Include="$(TargetDir)lib\**\*.*" />
     </ItemGroup>
-    <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)NuGetTaskBuild\lib\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="$(TargetDir)LibGit2Sharp.dll.config" DestinationFiles="$(BuildDir)NuGetTaskBuild\GitVersionTask.dll.config" />
-    <Copy SourceFiles="$(TargetDir)ILMergeTemp\GitVersionTask.dll" DestinationFolder="$(BuildDir)NuGetTaskBuild" Condition="Exists('$(TargetDir)ILMergeTemp\GitVersionTask.dll')" />
-    <Copy SourceFiles="$(TargetDir)GitVersionTask.pdb" DestinationFolder="$(BuildDir)NuGetTaskBuild" Condition="Exists('$(TargetDir)GitVersionTask.pdb')" />
-    <Copy SourceFiles="$(TargetDir)GitVersionTask.dll.mdb" DestinationFolder="$(BuildDir)NuGetTaskBuild" Condition="Exists('$(TargetDir)GitVersionTask.dll.mdb')" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\build\portable-net+sl+win+wpa+wp" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\build\dotnet" />
+    <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)NuGetTaskBuild\build\lib\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="$(TargetDir)LibGit2Sharp.dll.config" DestinationFiles="$(BuildDir)NuGetTaskBuild\build\GitVersionTask.dll.config" />
+    <Copy SourceFiles="$(TargetDir)ILMergeTemp\GitVersionTask.dll" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)ILMergeTemp\GitVersionTask.dll')" />
+    <Copy SourceFiles="$(TargetDir)GitVersionTask.pdb" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)GitVersionTask.pdb')" />
+    <Copy SourceFiles="$(TargetDir)GitVersionTask.dll.mdb" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)GitVersionTask.dll.mdb')" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.nuspec" DestinationFolder="$(BuildDir)NuGetTaskBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetTaskBuild" MetadataAssembly="$(ILMergeTemp)GitVersionTask.dll" Version="$(GitVersion_NuGetVersion)" />
     <Delete Files="@(TempFiles)" />
