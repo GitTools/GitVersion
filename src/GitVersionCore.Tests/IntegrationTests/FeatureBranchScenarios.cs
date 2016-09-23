@@ -522,4 +522,73 @@ public class FeatureBranchScenarios
             }
         }
     }
+
+    [Test]
+    public void ShouldPickupConfigsFromParentBranches() {
+        var config = new Config {
+            Branches = new Dictionary<string, BranchConfig>
+            {
+                        {
+                            "master", new BranchConfig()
+                            {
+                                Increment = IncrementStrategy.Major
+                            }
+                        },
+                        {
+                            "child_minor", new BranchConfig()
+                            {
+                                Increment = IncrementStrategy.Minor
+                            }
+                        },
+                        {
+                            "child_patch", new BranchConfig()
+                            {
+                                Increment = IncrementStrategy.Patch
+                            }
+                        },
+                        {
+                            "child_inherit", new BranchConfig()
+                            {
+                                Increment = IncrementStrategy.Inherit
+                            }
+                        }
+                    }
+        };
+
+        using (var fixture = new EmptyRepositoryFixture()) {
+            fixture.MakeACommit();
+
+            // tag master => 1.0.0
+            fixture.ApplyTag("1.0.0");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver(config, "2.0.0+1");
+
+            // branch to child_minor => same version number as master
+            fixture.BranchTo("child_minor");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver(config, "2.0.0+3");
+
+            // tag child_minor as 3.2.0 => 3.3
+            fixture.ApplyTag("3.2.0");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver(config, "3.3.0+1");
+
+            // branch to child_patch from child_minor => same version number as child_minor
+            fixture.BranchTo("child_patch");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver(config, "3.3.0+2");
+
+            // branch to child_inherit from master => same version number as master
+            fixture.Checkout("master");
+            fixture.MakeACommit();
+            fixture.BranchTo("child_inherit");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver(config, "2.0.0+3");
+
+            // tag child_inherit as 5.0.0 => 6.0
+            fixture.ApplyTag("5.0.0");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver(config, "6.0.0+1");
+        }
+    }
 }
