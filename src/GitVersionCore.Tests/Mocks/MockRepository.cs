@@ -47,6 +47,11 @@ public class MockRepository : IRepository
         throw new NotImplementedException();
     }
 
+    public void Checkout(Tree tree, IEnumerable<string> paths, CheckoutOptions opts)
+    {
+        throw new NotImplementedException();
+    }
+
     public void CheckoutPaths(string committishOrBranchSpec, IEnumerable<string> paths, CheckoutOptions checkoutOptions = null)
     {
         throw new NotImplementedException();
@@ -193,6 +198,11 @@ public class MockRepository : IRepository
     }
 
     public string Describe(Commit commit, DescribeOptions options)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void RevParse(string revision, out Reference reference, out GitObject obj)
     {
         throw new NotImplementedException();
     }
