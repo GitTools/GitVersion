@@ -296,6 +296,7 @@ public class FeatureBranchScenarios
                         "master", new BranchConfig()
                         {
                             IsDevelop = true,
+                            Regex = "master"
                         }
                     }
                 }
@@ -328,6 +329,7 @@ public class FeatureBranchScenarios
                         "master", new BranchConfig()
                         {
                             IsDevelop = true,
+                            Regex = "master"
                         }
                     }
                 }
@@ -368,7 +370,8 @@ public class FeatureBranchScenarios
                     {
                         "misnamed", new BranchConfig()
                         {
-                            Increment = strategy
+                            Increment = strategy,
+                            Regex = "misnamed"
                         }
                     }
                 }
@@ -406,7 +409,8 @@ public class FeatureBranchScenarios
                     {
                         "misnamed", new BranchConfig()
                         {
-                            Increment = strategy
+                            Increment = strategy,
+                            Regex = "misnamed"
                         }
                     }
                 }
@@ -450,12 +454,14 @@ public class FeatureBranchScenarios
                             "master", new BranchConfig()
                             {
                                 IsDevelop = true,
+                                Regex = "master"
                             }
                         },
                         {
                             "misnamed", new BranchConfig()
                             {
-                                Increment = strategy
+                                Increment = strategy,
+                                Regex = "misnamed"
                             }
                         }
                     }
@@ -492,12 +498,14 @@ public class FeatureBranchScenarios
                             "master", new BranchConfig()
                             {
                                 IsDevelop = true,
+                                Regex = "master"
                             }
                         },
                         {
                             "misnamed", new BranchConfig()
                             {
-                                Increment = strategy
+                                Increment = strategy,
+                                Regex = "misnamed"
                             }
                         }
                     }
@@ -524,38 +532,45 @@ public class FeatureBranchScenarios
     }
 
     [Test]
-    public void ShouldPickupConfigsFromParentBranches() {
-        var config = new Config {
+    public void ShouldPickupConfigsFromParentBranches()
+    {
+        var config = new Config
+        {
             Branches = new Dictionary<string, BranchConfig>
             {
                         {
                             "master", new BranchConfig()
                             {
-                                Increment = IncrementStrategy.Major
+                                Increment = IncrementStrategy.Major,
+                                Regex = "master"
                             }
                         },
                         {
                             "child_minor", new BranchConfig()
                             {
-                                Increment = IncrementStrategy.Minor
+                                Increment = IncrementStrategy.Minor,
+                                Regex = "child_minor"
                             }
                         },
                         {
                             "child_patch", new BranchConfig()
                             {
-                                Increment = IncrementStrategy.Patch
+                                Increment = IncrementStrategy.Patch,
+                                Regex = "child_patch"
                             }
                         },
                         {
                             "child_inherit", new BranchConfig()
                             {
-                                Increment = IncrementStrategy.Inherit
+                                Increment = IncrementStrategy.Inherit,
+                                Regex = "child_inherit"
                             }
                         }
                     }
         };
 
-        using (var fixture = new EmptyRepositoryFixture()) {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
             fixture.MakeACommit();
 
             // tag master => 1.0.0
