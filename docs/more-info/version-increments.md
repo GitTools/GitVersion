@@ -23,7 +23,7 @@ See [Octopus deploy](../build-server-support/build-server/octopus-deploy.md)
 With v3 there are multiple approaches.
 
 ### Commit messages
-Adding `+semver: breaking` or `+semver: major` will cause the major version to be increased, `+semver: feature` or `+semver:minor` will bump minor and `+semver:patch` or `+semver:fix` will bump the patch.
+Adding `+semver: breaking` or `+semver: major` will cause the major version to be increased, `+semver: feature` or `+semver: minor` will bump minor and `+semver: patch` or `+semver: fix` will bump the patch.
 
 #### Configuration
 The feature is enabled by default but can be disabled via configuration, the regex we use can be changed:
