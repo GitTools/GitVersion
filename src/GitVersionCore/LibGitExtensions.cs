@@ -32,7 +32,10 @@ namespace GitVersion
             }));
         }
 
-
+        /// <summary>
+        /// Find the commit where the given branch was branched from another branch.
+        /// If there are multiple such commits and branches, returns the newest commit.
+        /// </summary>
         public static Commit FindCommitBranchWasBranchedFrom([NotNull] this Branch branch, IRepository repository, params Branch[] excludedBranches)
         {
             const string missingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
@@ -79,6 +82,9 @@ namespace GitVersion
             }
         }
 
+        /// <summary>
+        /// Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
+        /// </summary>
         public static Commit FindMergeBase(this Branch branch, Branch otherBranch, IRepository repository)
         {
             using (Logger.IndentLog(string.Format("Finding merge base between '{0}' and {1}.", branch.FriendlyName, otherBranch.FriendlyName)))
@@ -96,15 +102,15 @@ namespace GitVersion
                 {
                     Logger.WriteInfo(string.Format("Found merge base of {0}", findMergeBase.Sha));
                     // We do not want to include merge base commits which got forward merged into the other branch
-                    bool mergeBaseWasFowardMerge;
+                    bool mergeBaseWasForwardMerge;
                     do
                     {
                         // Now make sure that the merge base is not a forward merge
-                        mergeBaseWasFowardMerge = otherBranch.Commits
+                        mergeBaseWasForwardMerge = otherBranch.Commits
                             .SkipWhile(c => c != commitToFindCommonBase)
                             .TakeWhile(c => c != findMergeBase)
                             .Any(c => c.Parents.Contains(findMergeBase));
-                        if (mergeBaseWasFowardMerge)
+                        if (mergeBaseWasForwardMerge)
                         {
                             var second = commitToFindCommonBase.Parents.First();
                             var mergeBase = repository.ObjectDatabase.FindMergeBase(commit, second);
@@ -115,7 +121,7 @@ namespace GitVersion
                             findMergeBase = mergeBase;
                             Logger.WriteInfo(string.Format("Merge base was due to a forward merge, next merge base is {0}", findMergeBase));
                         }
-                    } while (mergeBaseWasFowardMerge);
+                    } while (mergeBaseWasForwardMerge);
                 }
                 return findMergeBase;
             }

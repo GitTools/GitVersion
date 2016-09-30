@@ -4,6 +4,11 @@
     using System.Collections.Generic;
     using LibGit2Sharp;
 
+    /// <summary>
+    /// Version is extracted from the name of the branch.
+    /// BaseVersionSource is the commit where the branch was branched from its parent.
+    /// Does not increment.
+    /// </summary>
     public class VersionInBranchBaseVersionStrategy : BaseVersionStrategy
     {
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
