@@ -127,10 +127,10 @@ namespace GitVersion
             }
         }
 
-        static bool IsSameBranch(Branch branch, Branch b)
+        public static bool IsSameBranch(Branch branch, Branch b)
         {
-            return (b.IsRemote ? 
-                b.FriendlyName.Substring(b.FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1) : 
+            return (b.IsRemote ?
+                b.FriendlyName.Substring(b.FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1) :
                 b.FriendlyName) != branch.FriendlyName;
         }
 

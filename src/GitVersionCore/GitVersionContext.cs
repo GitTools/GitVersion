@@ -83,7 +83,7 @@
 
         void CalculateEffectiveConfiguration()
         {
-            var currentBranchConfig = BranchConfigurationCalculator.GetBranchConfiguration(CurrentCommit, Repository, OnlyEvaluateTrackedBranches, FullConfiguration, CurrentBranch);
+            var currentBranchConfig = BranchConfigurationCalculator.GetBranchConfiguration(CurrentCommit, Repository, OnlyEvaluateTrackedBranches, FullConfiguration, CurrentBranch, null);
 
             if (!currentBranchConfig.Value.VersioningMode.HasValue)
                 throw new Exception(string.Format("Configuration value for 'Versioning mode' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
