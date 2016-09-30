@@ -38,7 +38,7 @@
                 commitMessageIncrement = VersionField.Minor;
             }
 
-            // don't increment for less than the branch config increment, if the absense of commit messages would have
+            // don't increment for less than the branch config increment, if the absence of commit messages would have
             // still resulted in an increment of configuration.Increment
             if (baseVersion.ShouldIncrement && commitMessageIncrement < defaultIncrement)
             {
@@ -54,7 +54,7 @@
             {
                 return null;
             }
-            
+
             var commits = GetIntermediateCommits(context.Repository, baseVersion.BaseVersionSource, context.CurrentCommit);
 
             if (context.Configuration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
