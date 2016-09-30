@@ -6,6 +6,11 @@
     using System.Text.RegularExpressions;
     using LibGit2Sharp;
 
+    /// <summary>
+    /// Version is extracted from older commits's merge messages.
+    /// BaseVersionSource is the commit where the message was found.
+    /// Increments if PreventIncrementForMergedBranchVersion (from the branch config) is false.
+    /// </summary>
     public class MergeMessageBaseVersionStrategy : BaseVersionStrategy
     {
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)

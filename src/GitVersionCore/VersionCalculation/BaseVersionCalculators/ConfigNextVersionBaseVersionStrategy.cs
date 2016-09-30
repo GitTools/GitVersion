@@ -2,6 +2,11 @@
 {
     using System.Collections.Generic;
 
+    /// <summary>
+    /// Version is from NextVersion (the configuration value), unless the current commit is tagged.
+    /// BaseVersionSource is null.
+    /// Does not increment.
+    /// </summary>
     public class ConfigNextVersionBaseVersionStrategy : BaseVersionStrategy
     {
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
