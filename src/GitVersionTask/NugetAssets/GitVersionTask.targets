@@ -14,17 +14,18 @@
     <!-- Property that enables GetVersion -->
     <GetVersion Condition=" '$(GetVersion)' == '' ">true</GetVersion>
 
+    <GitVersionTaskLibrary>$(MSBuildThisFileDirectory)</GitVersionTaskLibrary>
   </PropertyGroup>
 
   <UsingTask
       TaskName="GitVersionTask.UpdateAssemblyInfo"
-      AssemblyFile="$(MSBuildThisFileDirectory)..\..\GitVersionTask.dll" />
+      AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll" />
   <UsingTask
     TaskName="GitVersionTask.GetVersion"
-    AssemblyFile="$(MSBuildThisFileDirectory)..\..\GitVersionTask.dll"  />
+    AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll"  />
   <UsingTask
       TaskName="GitVersionTask.WriteVersionInfoToBuildLog"
-      AssemblyFile="$(MSBuildThisFileDirectory)..\..\GitVersionTask.dll" />
+      AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll" />
 
   <Target Name="WriteVersionInfoToBuildLog" BeforeTargets="CoreCompile" Condition="$(WriteVersionInfoToBuildLog) == 'true'">
     <WriteVersionInfoToBuildLog SolutionDirectory="$(SolutionDir)" NoFetch="$(GitVersion_NoFetchEnabled)"/>
@@ -81,13 +82,13 @@
 
   <!--Support for ncrunch-->
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)..\..\GitVersionTask.dll">
+    <None Include="$(GitVersionTaskDir)GitVersionTask.dll">
       <Visible>False</Visible>
     </None>
-    <None Include="$(MSBuildThisFileDirectory)..\..\GitVersionTask.pdb">
+    <None Include="$(GitVersionTaskDir)GitVersionTask.pdb">
       <Visible>False</Visible>
     </None>
-    <None Include="$(MSBuildThisFileDirectory)..\..\NativeBinaries\**\*">
+    <None Include="$(GitVersionTaskDir)NativeBinaries\**\*">
       <Visible>False</Visible>
     </None>
   </ItemGroup>

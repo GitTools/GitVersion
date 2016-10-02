@@ -27,6 +27,7 @@ GitVersion [path]
     /showconfig     Outputs the effective GitVersion config (defaults + custom from GitVersion.yml) in yaml format
     /overrideconfig Overrides GitVersion config values inline (semicolon-separated key value pairs e.g. /overrideconfig tag-prefix=Foo)
                     Currently supported config overrides: tag-prefix
+    /nocache        Bypasses the cache, result will not be written to the cache.
 
     # AssemblyInfo updating
     /updateassemblyinfo

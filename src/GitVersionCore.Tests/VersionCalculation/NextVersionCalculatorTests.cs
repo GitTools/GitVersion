@@ -62,8 +62,9 @@
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(2, "develop", "b1a34e", DateTimeOffset.Now);
             var sut = new NextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
             var config = new Config();
-            config.Branches.Add("custom/", new BranchConfig
+            config.Branches.Add("custom", new BranchConfig
             {
+                Regex = "custom/",
                 Tag = "useBranchName"
             });
             var context = new GitVersionContextBuilder()
@@ -84,8 +85,9 @@
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(2, "develop", "b1a34e", DateTimeOffset.Now);
             var sut = new NextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
             var config = new Config();
-            config.Branches.Add("custom/", new BranchConfig
+            config.Branches.Add("custom", new BranchConfig
             {
+                Regex = "custom/",
                 Tag = "alpha.{BranchName}"
             });
             var context = new GitVersionContextBuilder()
