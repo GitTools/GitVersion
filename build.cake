@@ -122,14 +122,22 @@ Task("Create-Release-Notes")
     .IsDependentOn("Build")
     .Does(() =>
 {
-	var githubToken = Argument<string>("githubToken");
-    var releaseNotesExitCode = StartProcess(
-            @"tools\GitReleaseNotes\tools\gitreleasenotes.exe",
-            new ProcessSettings { Arguments = ". /o build/releasenotes.md /repoToken " + githubToken });
-    if (string.IsNullOrEmpty(System.IO.File.ReadAllText("./build/releasenotes.md")))
-        System.IO.File.WriteAllText("./build/releasenotes.md", "No issues closed since last release");
+	var githubToken = EnvironmentVariable("GitHubToken");
 
-    if (releaseNotesExitCode != 0) throw new Exception("Failed to generate release notes");
+    if(!string.IsNullOrWhiteSpace(githubToken))
+    {
+        var releaseNotesExitCode = StartProcess(
+                @"tools\GitReleaseNotes\tools\gitreleasenotes.exe",
+                new ProcessSettings { Arguments = ". /o build/releasenotes.md /repoToken " + githubToken });
+        if (string.IsNullOrEmpty(System.IO.File.ReadAllText("./build/releasenotes.md")))
+            System.IO.File.WriteAllText("./build/releasenotes.md", "No issues closed since last release");
+
+        if (releaseNotesExitCode != 0) throw new Exception("Failed to generate release notes");
+    }
+    else
+    {
+        Information("Create-Release-Notes is being skipped, as GitHub Token is not present.");
+    }
 });
 
 Task("Package")
@@ -141,7 +149,7 @@ Task("Upload-AppVeyor-Artifacts")
     .WithCriteria(() => AppVeyor.IsRunningOnAppVeyor)
     .Does(() =>
 {
-    var gem = string.IsNullOrEmpty(preReleaseTag) ? 
+    var gem = string.IsNullOrEmpty(preReleaseTag) ?
         "gitversion-" + version + ".gem" :
         "gitversion-" + version + "." + preReleaseTag + ".gem";
 
