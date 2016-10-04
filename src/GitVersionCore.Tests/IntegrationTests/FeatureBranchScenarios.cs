@@ -4,7 +4,6 @@ using GitVersion;
 using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
-using System.Collections.Generic;
 
 [TestFixture]
 public class FeatureBranchScenarios
@@ -296,7 +295,7 @@ public class FeatureBranchScenarios
                     {
                         "master", new BranchConfig()
                         {
-                            IsDevelop = true,
+                            TracksReleaseBranches = true,
                             Regex = "master"
                         }
                     }
@@ -329,7 +328,7 @@ public class FeatureBranchScenarios
                     {
                         "master", new BranchConfig()
                         {
-                            IsDevelop = true,
+                            TracksReleaseBranches = true,
                             Regex = "master"
                         }
                     }
@@ -414,7 +413,7 @@ public class FeatureBranchScenarios
                         {
                             "master", new BranchConfig()
                             {
-                                IsDevelop = true,
+                                TracksReleaseBranches = true,
                                 Regex = "master"
                             }
                         }
@@ -447,7 +446,7 @@ public class FeatureBranchScenarios
                         {
                             "master", new BranchConfig()
                             {
-                                IsDevelop = true,
+                                TracksReleaseBranches = true,
                                 Regex = "master"
                             }
                         }

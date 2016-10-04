@@ -147,7 +147,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
         {
             if (!config.Branches.ContainsKey(branchKey))
             {
-                var branchConfig = new BranchConfig();
+                var branchConfig = new BranchConfig {Name = branchKey};
                 config.Branches.Add(branchKey, branchConfig);
                 return branchConfig;
             }
