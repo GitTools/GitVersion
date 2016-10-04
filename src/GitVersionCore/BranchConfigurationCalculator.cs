@@ -19,7 +19,7 @@ namespace GitVersion
         /// <returns>
         /// A KeyValuePair. The key is the name of the branch configuration (from the yaml or the default configs); the value is the actual configuration.
         /// </returns>
-        public static BranchConfig GetBranchConfiguration(Commit currentCommit, IRepository repository, bool onlyEvaluateTrackedBranches, Config config, Branch currentBranch, Branch[] excludedBranches)
+        public static BranchConfig GetBranchConfiguration(Commit currentCommit, IRepository repository, bool onlyEvaluateTrackedBranches, Config config, Branch currentBranch, [NotNull] HashSet<Branch> excludedBranches)
         {
             var matchingBranches = LookupBranchConfiguration(config, currentBranch).ToArray();
 
@@ -73,7 +73,7 @@ namespace GitVersion
         /// <summary>
         /// Recursively look for an IncrementStrategy in the parent branches, which is set and different than <see cref="IncrementStrategy.Inherit"/>.
         /// </summary>
-        static IncrementStrategy? GetParentIncrementStrategy(bool onlyEvaluateTrackedBranches, IRepository repository, Commit currentCommit, Branch currentBranch, BranchConfig branchConfiguration, Config config, Branch[] excludedBranches)
+        static IncrementStrategy? GetParentIncrementStrategy(bool onlyEvaluateTrackedBranches, IRepository repository, Commit currentCommit, Branch currentBranch, BranchConfig branchConfiguration, Config config, HashSet<Branch> excludedBranches)
         {
             if (branchConfiguration.Increment != IncrementStrategy.Inherit && branchConfiguration.Increment != null)
             {
@@ -112,49 +112,47 @@ namespace GitVersion
             }
         }
 
-        public static BranchCommit FindFirstParentBranch(IRepository repository, Commit currentCommit, Branch currentBranch, Branch[] excludedBranches)
+        public static BranchCommit FindFirstParentBranch(IRepository repository, Commit currentCommit, Branch currentBranch, HashSet<Branch> excludedBranches)
         {
             using (Logger.IndentLog("Searching for parent branch"))
             {
                 // Find out which branches to exclude as possible parent branch: The current branch, and possibly more in case of a merge commit.
-                var newlyExcludedBranches = new[]
-                {
-                    currentBranch
-                };
-                // Check if we are a merge commit. If so likely we are a pull request
+                excludedBranches.Add(currentBranch);
+
+                // Check if we are a merge commit. If so, likely we are a pull request.
                 var parentCount = currentCommit.Parents.Count();
                 if (parentCount == 2)
                 {
-                    newlyExcludedBranches = CalculateWhenMultipleParents(repository, currentCommit, ref currentBranch, newlyExcludedBranches);
+                    CalculateWhenMultipleParents(repository, currentCommit, ref currentBranch, excludedBranches);
                 }
 
-                excludedBranches = excludedBranches == null ? newlyExcludedBranches : excludedBranches.Union(newlyExcludedBranches).ToArray();
-
                 // Try to find the branch point commit, i.e. the commit where the branch was created from a different branch.
-                return currentBranch.FindCommitBranchWasBranchedFrom(repository, excludedBranches);
+                return currentBranch.FindCommitBranchWasBranchedFrom(repository, excludedBranches.ToArray());
             }
         }
 
-        static Branch[] CalculateWhenMultipleParents(IRepository repository, Commit currentCommit, ref Branch currentBranch, Branch[] excludedBranches)
+        /// <summary>
+        /// Figure out what to do when there are multiple candidate parent branches (due to a merge commit).
+        /// </summary>
+        static void CalculateWhenMultipleParents(IRepository repository, Commit currentCommit, ref Branch currentBranch, HashSet<Branch> excludedBranches)
         {
             var parents = currentCommit.Parents.ToArray();
             var branches = repository.Branches.Where(b => !b.IsRemote && b.Tip == parents[1]).ToList();
             if (branches.Count == 1)
             {
-                var branch = branches[0];
-                excludedBranches = new[]
-                {
-                    currentBranch,
-                    branch
-                };
-                currentBranch = branch;
+                // Only one parent branch is relevant => use it.
+                var parentBranchToUse = branches[0];
+                excludedBranches.Add(parentBranchToUse);
+                currentBranch = parentBranchToUse;
             }
             else if (branches.Count > 1)
             {
+                // Both branches can be used => use 'master', otherwise the first one.
                 currentBranch = branches.FirstOrDefault(b => b.FriendlyName == "master") ?? branches.First();
             }
             else
             {
+                // None is relevant => check the other parent.
                 var possibleTargetBranches = repository.Branches.Where(b => !b.IsRemote && b.Tip == parents[0]).ToList();
                 if (possibleTargetBranches.Count > 1)
                 {
@@ -167,8 +165,6 @@ namespace GitVersion
             }
 
             Logger.WriteInfo("HEAD is merge commit, this is likely a pull request using " + currentBranch.FriendlyName + " as base");
-
-            return excludedBranches;
         }
     }
 }

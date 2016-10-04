@@ -2,6 +2,7 @@
 {
     using LibGit2Sharp;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     /// <summary>
@@ -53,7 +54,7 @@
                 CurrentBranch = currentBranch;
             }
 
-            CalculateEffectiveConfiguration();
+            Configuration = CalculateEffectiveConfiguration();
 
             CurrentCommitTaggedVersion = repository.Tags
                 .SelectMany(t =>
@@ -81,9 +82,10 @@
         public Commit CurrentCommit { get; private set; }
         public bool IsCurrentCommitTagged { get; private set; }
 
-        void CalculateEffectiveConfiguration()
+        EffectiveConfiguration CalculateEffectiveConfiguration()
         {
-            var currentBranchConfig = BranchConfigurationCalculator.GetBranchConfiguration(CurrentCommit, Repository, OnlyEvaluateTrackedBranches, FullConfiguration, CurrentBranch, null);
+            var excludedBranches = new HashSet<Branch>();
+            var currentBranchConfig = BranchConfigurationCalculator.GetBranchConfiguration(CurrentCommit, Repository, OnlyEvaluateTrackedBranches, FullConfiguration, CurrentBranch, excludedBranches);
 
             if (!currentBranchConfig.VersioningMode.HasValue)
                 throw new Exception(string.Format("Configuration value for 'Versioning mode' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));
@@ -127,7 +129,7 @@
 
             var commitMessageVersionBump = currentBranchConfig.CommitMessageIncrementing ?? FullConfiguration.CommitMessageIncrementing.Value;
 
-            Configuration = new EffectiveConfiguration(
+            return new EffectiveConfiguration(
                 assemblyVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix,
                 tag, nextVersion, incrementStrategy,
                 currentBranchConfig.Regex,
