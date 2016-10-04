@@ -29,7 +29,7 @@ namespace GitVersion.Configuration.Init.SetConfig
                     var branchConfig = foundBranch.Value;
                     if (branchConfig == null)
                     {
-                        branchConfig = new BranchConfig();
+                        branchConfig = new BranchConfig {Name = foundBranch.Key};
                         config.Branches.Add(foundBranch.Key, branchConfig);
                     }
                     steps.Enqueue(new ConfigureBranch(foundBranch.Key, branchConfig, Console, FileSystem));

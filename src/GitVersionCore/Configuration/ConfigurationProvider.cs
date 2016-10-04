@@ -124,7 +124,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
                 isDevelop: true);
 
             // Any user defined branches should have other values defaulted after known branches filled in
-            // This allows users to override one value of 
+            // This allows users to override one value of
             foreach (var branchConfig in configBranches)
             {
                 var regex = branchConfig.Value.Regex;
@@ -146,7 +146,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
         {
             if (!config.Branches.ContainsKey(branchKey))
             {
-                var branchConfig = new BranchConfig();
+                var branchConfig = new BranchConfig {Name = branchKey};
                 config.Branches.Add(branchKey, branchConfig);
                 return branchConfig;
             }
