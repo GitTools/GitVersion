@@ -19,9 +19,9 @@ namespace GitVersion
         /// <returns>
         /// A KeyValuePair. The key is the name of the branch configuration (from the yaml or the default configs); the value is the actual configuration.
         /// </returns>
-        public static KeyValuePair<string, BranchConfig> GetBranchConfiguration(Commit currentCommit, IRepository repository, bool onlyEvaluateTrackedBranches, Config config, Branch currentBranch, Branch[] excludedBranches)
+        public static BranchConfig GetBranchConfiguration(Commit currentCommit, IRepository repository, bool onlyEvaluateTrackedBranches, Config config, Branch currentBranch, Branch[] excludedBranches)
         {
-            var matchingBranches = LookupBranchConfiguration(config, currentBranch);
+            var matchingBranches = LookupBranchConfiguration(config, currentBranch).ToArray();
 
             if (matchingBranches.Length == 0)
             {
@@ -29,14 +29,14 @@ namespace GitVersion
                     "No branch configuration found for branch {0}, falling back to default configuration",
                     currentBranch.FriendlyName));
 
-                var branchConfig = new BranchConfig();
+                var branchConfig = new BranchConfig { Name = string.Empty };
                 ConfigurationProvider.ApplyBranchDefaults(config, branchConfig, "");
-                return new KeyValuePair<string, BranchConfig>(string.Empty, branchConfig);
+                return branchConfig;
             }
+
             if (matchingBranches.Length == 1)
             {
-                var keyValuePair = matchingBranches[0];
-                var branchConfiguration = keyValuePair.Value;
+                var branchConfiguration = matchingBranches[0];
 
                 if (branchConfiguration.Increment == IncrementStrategy.Inherit)
                 {
@@ -47,14 +47,14 @@ namespace GitVersion
                     branchConfiguration.Increment = parentIncrement;
                 }
 
-                return keyValuePair;
+                return branchConfiguration;
             }
 
             const string format = "Multiple branch configurations match the current branch branchName of '{0}'. Matching configurations: '{1}'";
-            throw new Exception(string.Format(format, currentBranch.FriendlyName, string.Join(", ", matchingBranches.Select(b => b.Key))));
+            throw new Exception(string.Format(format, currentBranch.FriendlyName, string.Join(", ", matchingBranches.Select(b => b.Name))));
         }
 
-        static KeyValuePair<string, BranchConfig>[] LookupBranchConfiguration([NotNull] Config config, [NotNull] Branch currentBranch)
+        static IEnumerable<BranchConfig> LookupBranchConfiguration([NotNull] Config config, [NotNull] Branch currentBranch)
         {
             if (config == null)
             {
@@ -66,7 +66,7 @@ namespace GitVersion
                 throw new ArgumentNullException("currentBranch");
             }
 
-            return config.Branches.Where(b => Regex.IsMatch(currentBranch.FriendlyName, "^" + b.Value.Regex, RegexOptions.IgnoreCase)).ToArray();
+            return config.Branches.Where(b => Regex.IsMatch(currentBranch.FriendlyName, "^" + b.Value.Regex, RegexOptions.IgnoreCase)).Select(kvp => kvp.Value);
         }
 
 
@@ -88,7 +88,7 @@ namespace GitVersion
                 if (possibleParents.Count == 1)
                 {
                     // Single parent found => get its IncrementStrategy.
-                    var branchConfig = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, possibleParents[0], excludedBranches).Value;
+                    var branchConfig = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, possibleParents[0], excludedBranches);
                     return branchConfig.Increment;
                 }
 
@@ -112,7 +112,7 @@ namespace GitVersion
                 var branchName = chosenBranch.FriendlyName;
                 Logger.WriteWarning(errorMessage + Environment.NewLine + Environment.NewLine + "Falling back to " + branchName + " branch config");
 
-                var inheritingBranchConfig = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, chosenBranch, null).Value;
+                var inheritingBranchConfig = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, chosenBranch, excludedBranches);
                 return inheritingBranchConfig.Increment;
             }
         }
