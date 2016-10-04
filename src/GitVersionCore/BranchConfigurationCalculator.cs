@@ -83,22 +83,17 @@ namespace GitVersion
 
             using (Logger.IndentLog("Attempting to get increment value from parent branch"))
             {
-                var possibleParents = FindParentBranches(repository, currentCommit, currentBranch, excludedBranches).ToList();
-
-                if (possibleParents.Count == 1)
+                var firstParentBranch = FindFirstParentBranch(repository, currentCommit, currentBranch, excludedBranches);
+                if (firstParentBranch != BranchCommit.Empty)
                 {
-                    // Single parent found => get its IncrementStrategy.
-                    var branchConfig = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, possibleParents[0], excludedBranches);
+                    // A parent was found => get its IncrementStrategy.
+                    var branchConfig = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, firstParentBranch.Branch, excludedBranches);
                     return branchConfig.Increment;
                 }
 
-                // Multiple parents found; it is probably because the branch has been merged and we can't do much.
+                // No parent found; it is probably because the branch has been merged and we can't do much.
                 // So we will fall back to develop's value if develop exists and master if not.
-                string errorMessage;
-                if (possibleParents.Count == 0)
-                    errorMessage = "Failed to inherit Increment branch configuration, no branches found.";
-                else
-                    errorMessage = "Failed to inherit Increment branch configuration, ended up with: " + string.Join(", ", possibleParents.Select(p => p.FriendlyName));
+                const string errorMessage = "Failed to inherit Increment branch configuration, no branches found.";
 
                 var chosenBranch = repository.Branches.FirstOrDefault(b => Regex.IsMatch(b.FriendlyName, "^develop", RegexOptions.IgnoreCase)
                                                                            || Regex.IsMatch(b.FriendlyName, "master$", RegexOptions.IgnoreCase));
@@ -117,11 +112,11 @@ namespace GitVersion
             }
         }
 
-        public static IEnumerable<Branch> FindParentBranches(IRepository repository, Commit currentCommit, Branch currentBranch, Branch[] excludedBranches)
+        public static BranchCommit FindFirstParentBranch(IRepository repository, Commit currentCommit, Branch currentBranch, Branch[] excludedBranches)
         {
-            using (Logger.IndentLog("Searching for parent branches"))
+            using (Logger.IndentLog("Searching for parent branch"))
             {
-                // Find out which branches to exclude as possible parent branches: The current branch, and possibly more in case of a merge commit.
+                // Find out which branches to exclude as possible parent branch: The current branch, and possibly more in case of a merge commit.
                 var newlyExcludedBranches = new[]
                 {
                     currentBranch
@@ -134,27 +129,9 @@ namespace GitVersion
                 }
 
                 excludedBranches = excludedBranches == null ? newlyExcludedBranches : excludedBranches.Union(newlyExcludedBranches).ToArray();
-                var branchesToEvaluate = repository.Branches.ExcludingBranches(excludedBranches).ToList();
 
                 // Try to find the branch point commit, i.e. the commit where the branch was created from a different branch.
-                var branchPoint = currentBranch.FindCommitBranchWasBranchedFrom(repository, excludedBranches);
-                if (branchPoint == BranchCommit.Empty)
-                {
-                    // For whatever reason, no branch point was found.
-                    return Enumerable.Empty<Branch>();
-                }
-
-                // Return the branch of the branch point commit.
-                // TODO Or use the branch where the commit was found?
-                var branches = branchPoint.Commit.GetBranchesContainingCommit(repository, branchesToEvaluate, true).ToList();
-                if (branches.Count > 1)
-                {
-                    // The commit is contained in multiple branches => return all, except those also belonging to the commit.
-                    var currentTipBranches = currentCommit.GetBranchesContainingCommit(repository, branchesToEvaluate, true);
-                    return branches.ExcludingBranches(currentTipBranches);
-                }
-
-                return branches;
+                return currentBranch.FindCommitBranchWasBranchedFrom(repository, excludedBranches);
             }
         }
 
