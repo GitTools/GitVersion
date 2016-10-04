@@ -134,24 +134,24 @@ namespace GitVersion
                 }
 
                 excludedBranches = excludedBranches == null ? newlyExcludedBranches : excludedBranches.Union(newlyExcludedBranches).ToArray();
-                var branchesToEvaluate = repository.Branches.Where(b => excludedBranches.All(eb => !LibGitExtensions.IsSameBranch(b, eb))).ToList();
+                var branchesToEvaluate = repository.Branches.ExcludingBranches(excludedBranches).ToList();
 
                 // Try to find the branch point commit, i.e. the commit where the branch was created from a different branch.
                 var branchPoint = currentBranch.FindCommitBranchWasBranchedFrom(repository, excludedBranches);
-                if (branchPoint == null)
+                if (branchPoint == BranchCommit.Empty)
                 {
-                    // For whatever reason, no branch point was found. Return all branches containg the current commit, as possible parents.
-                    // TODO correct? Or better empty list?
-                    return currentCommit.GetBranchesContainingCommit(repository, branchesToEvaluate, true);
+                    // For whatever reason, no branch point was found.
+                    return Enumerable.Empty<Branch>();
                 }
 
                 // Return the branch of the branch point commit.
-                var branches = branchPoint.GetBranchesContainingCommit(repository, branchesToEvaluate, true).ToList();
+                // TODO Or use the branch where the commit was found?
+                var branches = branchPoint.Commit.GetBranchesContainingCommit(repository, branchesToEvaluate, true).ToList();
                 if (branches.Count > 1)
                 {
                     // The commit is contained in multiple branches => return all, except those also belonging to the commit.
                     var currentTipBranches = currentCommit.GetBranchesContainingCommit(repository, branchesToEvaluate, true);
-                    return branches.Except(currentTipBranches);
+                    return branches.ExcludingBranches(currentTipBranches);
                 }
 
                 return branches;
