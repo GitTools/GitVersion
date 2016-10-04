@@ -89,7 +89,7 @@ namespace GitVersion
 
                 var branchPoint = currentBranch.FindCommitBranchWasBranchedFrom(repository, excludedInheritBranches.ToArray());
                 List<Branch> possibleParents;
-                if (branchPoint == null)
+                if (branchPoint == BranchCommit.Empty)
                 {
                     possibleParents = currentCommit.GetBranchesContainingCommit(repository, branchesToEvaluate, true)
                         // It fails to inherit Increment branch configuration if more than 1 parent;
@@ -99,7 +99,7 @@ namespace GitVersion
                 }
                 else
                 {
-                    var branches = branchPoint.GetBranchesContainingCommit(repository, branchesToEvaluate, true).ToList();
+                    var branches = branchPoint.Commit.GetBranchesContainingCommit(repository, branchesToEvaluate, true).ToList();
                     if (branches.Count > 1)
                     {
                         var currentTipBranches = currentCommit.GetBranchesContainingCommit(repository, branchesToEvaluate, true).ToList();
