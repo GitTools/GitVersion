@@ -24,7 +24,7 @@ You also need to add a property collector for the agents to detect the GitVersio
 * Type => Path Finder Plugin
 * Property Name => Path
 * Executable => GitVersion.exe
-* Search paths => your installation folder (e.g. C:\Tools\GitVersion)
+* Search paths => your installation folder (e.g. `C:\Tools\GitVersion` or if you are using Chocolatey `C:\ProgramData\chocolatey\lib\GitVersion.Portable\tools`)
 
 ## Basic Usage
 To run GitLink inside [Continua CI](https://www.finalbuilder.com/continua-ci), follow the steps below:
