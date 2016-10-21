@@ -16,14 +16,8 @@ namespace GitVersion
         {
             var matchingBranches = LookupBranchConfiguration(config, currentBranch).ToArray();
 
-            if (matchingBranches.Length > 1)
-            {
-                const string format = "Multiple branch configurations match the current branch branchName of '{0}'. Matching configurations: '{1}'";
-                throw new Exception(string.Format(format, currentBranch.FriendlyName, string.Join(", ", matchingBranches.Select(b => b.Name))));
-            }
-
             BranchConfig branchConfiguration;
-            if (matchingBranches.Length == 1)
+            if (matchingBranches.Length > 0)
             {
                 branchConfiguration = matchingBranches[0];
             }
