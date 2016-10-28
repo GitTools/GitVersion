@@ -91,6 +91,38 @@
         }
 
         [Test]
+        public void UsesFirstBranchConfigWhenMultipleMatch()
+        {
+            var config = new Config
+            {
+                VersioningMode = VersioningMode.ContinuousDelivery,
+                Branches =
+                {
+                    { "release/latest", new BranchConfig { Increment = IncrementStrategy.None, Regex = "release/latest" } },
+                    { "release", new BranchConfig { Increment = IncrementStrategy.Patch, Regex = "releases?[/-]" } }
+                }
+            }.ApplyDefaults();
+
+            var releaseLatestBranch = new MockBranch("release/latest") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
+            var releaseVersionBranch = new MockBranch("release/1.0.0") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
+
+            var mockRepository = new MockRepository
+            {
+                Branches = new MockBranchCollection
+                {
+                    releaseLatestBranch,
+                    releaseVersionBranch
+                }
+            };
+
+            var latestContext = new GitVersionContext(mockRepository, releaseLatestBranch, config);
+            latestContext.Configuration.Increment.ShouldBe(IncrementStrategy.None);
+
+            var versionContext = new GitVersionContext(mockRepository, releaseVersionBranch, config);
+            versionContext.Configuration.Increment.ShouldBe(IncrementStrategy.Patch);
+        }
+
+        [Test]
         public void CanFindParentBranchForInheritingIncrementStrategy()
         {
             var config = new Config
