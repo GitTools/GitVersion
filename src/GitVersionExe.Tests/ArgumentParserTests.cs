@@ -338,4 +338,23 @@ public class ArgumentParserTests
         var arguments = ArgumentParser.ParseArguments("-nocache");
         arguments.NoCache.ShouldBe(true);
     }
+
+    [TestCase("-verbosity x", true, VerbosityLevel.None)]
+    [TestCase("-verbosity none", false, VerbosityLevel.None)]
+    [TestCase("-verbosity info", false, VerbosityLevel.Info)]
+    [TestCase("-verbosity INFO", false, VerbosityLevel.Info)]
+    [TestCase("-verbosity warn", false, VerbosityLevel.Warn)]
+    [TestCase("-verbosity error", false, VerbosityLevel.Error)]
+    public void check_verbosity_parsing(string command, bool shouldThrow, VerbosityLevel expectedVerbosity)
+    {
+        if (shouldThrow)
+        {
+            Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments(command));
+        }
+        else
+        {
+            var arguments = ArgumentParser.ParseArguments(command);
+            arguments.Verbosity.ShouldBe(expectedVerbosity);
+        }
+    }
 }
