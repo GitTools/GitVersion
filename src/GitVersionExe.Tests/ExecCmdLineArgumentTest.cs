@@ -62,6 +62,24 @@ public class ExecCmdLineArgumentTest
         }
     }
 
+    [Theory]
+    [TestCase("", "INFO [")]
+    [TestCase("-verbosity Info", "INFO [")]
+    [TestCase("-verbosity Error", "")]
+    public void CheckBuildServerVerbosityConsole(string verbosityArg, string expectedOutput)
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.MakeATaggedCommit("1.2.3");
+            fixture.MakeACommit();
+
+            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: String.Format( @" {0} -output buildserver /l ""/some/path""", verbosityArg), logToFile: false);
+
+            result.ExitCode.ShouldBe(0);
+            result.Output.ShouldContain(expectedOutput);
+        }
+    }
+
     [Test]
     public void WorkingDirectoryWithoutGitFolderCrashesWithInformativeMessage()
     {
