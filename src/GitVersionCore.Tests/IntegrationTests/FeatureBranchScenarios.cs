@@ -305,11 +305,11 @@ public class FeatureBranchScenarios
             using (var fixture = new EmptyRepositoryFixture())
             {
                 // Create release branch
-                fixture.MakeACommit();
+                fixture.MakeACommit("master #1");
                 fixture.BranchTo("release/1.0");
-                fixture.MakeACommit();
+                fixture.MakeACommit("release #1");
                 fixture.Checkout("master");
-                fixture.MakeACommit();
+                fixture.MakeACommit("master #2");
                 fixture.AssertFullSemver(config, "1.0.1+1");
 
                 // create a feature branch from master and verify the version

@@ -29,14 +29,16 @@ namespace GitVersionCore.Tests
             int commitsSinceVersionSourcePadding = 4,
             IEnumerable<IVersionFilter> versionFilters = null,
             bool isDevelop = false,
-            bool isRelease = false) : 
+            bool isRelease = false,
+            ConfigInfo currentBranchInfo = null) :
             base(assemblyVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch,
                     branchPrefixToTrim, preventIncrementForMergedBranchVersion, tagNumberPattern, continuousDeploymentFallbackTag,
                     trackMergeTarget,
                     majorMessage, minorMessage, patchMessage, noBumpMessage,
                     commitMessageMode, legacySemVerPadding, buildMetaDataPadding, commitsSinceVersionSourcePadding,
                     versionFilters ?? Enumerable.Empty<IVersionFilter>(),
-                    isDevelop, isRelease)
+                    isDevelop, isRelease,
+                    currentBranchInfo)
         {
         }
     }

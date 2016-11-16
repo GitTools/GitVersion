@@ -114,7 +114,7 @@ namespace GitVersion
 
         public static BranchCommit FindFirstParentBranch(IRepository repository, Commit currentCommit, Branch currentBranch, HashSet<Branch> excludedBranches)
         {
-            using (Logger.IndentLog("Searching for parent branch"))
+            using (Logger.IndentLog(string.Format("Searching for parent branch of '{0}'", currentBranch.FriendlyName)))
             {
                 // Find out which branches to exclude as possible parent branch: The current branch, and possibly more in case of a merge commit.
                 excludedBranches.Add(currentBranch);

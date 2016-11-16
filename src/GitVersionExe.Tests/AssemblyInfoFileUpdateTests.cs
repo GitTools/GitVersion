@@ -348,8 +348,8 @@ public class AssemblyInfoFileUpdateTests
                     !s.Contains(@"AssemblyVersionAttribute(""1.0.0.0"")") &&
                     !s.Contains(@"AssemblyInformationalVersionAttribute(""1.0.0.0"")") &&
                     !s.Contains(@"AssemblyFileVersionAttribute(""1.0.0.0"")") &&
-                    s.Contains(@"AssemblyVersion(""2.3.1.0"")") && 
-                    s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") && 
+                    s.Contains(@"AssemblyVersion(""2.3.1.0"")") &&
+                    s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
                     s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
             }
         });

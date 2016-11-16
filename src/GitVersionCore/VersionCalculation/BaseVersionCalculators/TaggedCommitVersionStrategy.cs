@@ -1,6 +1,5 @@
 ﻿namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using LibGit2Sharp;
@@ -14,32 +13,38 @@
     {
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
-            return GetTaggedVersions(context, context.CurrentBranch, context.CurrentCommit.When());
+            return GetTaggedVersions(context);
         }
 
-        public IEnumerable<BaseVersion> GetTaggedVersions(GitVersionContext context, Branch currentBranch, DateTimeOffset? olderThan)
+        public IEnumerable<BaseVersion> GetTaggedVersions(GitVersionContext context)
         {
-            var allTags = context.Repository.Tags
-                .Where(tag => !olderThan.HasValue || ((Commit) tag.PeeledTarget()).When() <= olderThan.Value)
-                .ToList();
-            var tagsOnBranch = currentBranch
-                .Commits
-                .SelectMany(commit => { return allTags.Where(t => IsValidTag(t, commit)); })
-                .Select(t =>
-                {
-                    SemanticVersion version;
-                    if (SemanticVersion.TryParse(t.FriendlyName, context.Configuration.GitTagPrefix, out version))
+            foreach (var config in context.Configurations)
+            {
+                var olderThan = config.CurrentBranchInfo.FirstCommit.When();
+                var allTagsForConfig = context.Repository.Tags
+                    .Where(tag => ((Commit) tag.PeeledTarget()).When() <= olderThan)
+                    .ToList();
+                var tagsOnBranch = config.CurrentBranchInfo.RelevantCommits
+                    .SelectMany(commit => allTagsForConfig.Where(tag => IsValidTag(tag, commit)))
+                    .Select(tag =>
                     {
-                        var commit = t.PeeledTarget() as Commit;
-                        if (commit != null)
-                            return new VersionTaggedCommit(commit, version, t.FriendlyName);
-                    }
-                    return null;
-                })
-                .Where(a => a != null)
-                .ToList();
+                        SemanticVersion version;
+                        if (SemanticVersion.TryParse(tag.FriendlyName, config.GitTagPrefix, out version))
+                        {
+                            var commit = tag.PeeledTarget() as Commit;
+                            if (commit != null)
+                                return new VersionTaggedCommit(commit, version, tag.FriendlyName);
+                        }
+                        return null;
+                    })
+                    .Where(commit => commit != null)
+                    .ToList();
 
-            return tagsOnBranch.Select(t => CreateBaseVersion(context, t));
+                foreach (var version in tagsOnBranch.Select(t => CreateBaseVersion(context, t)))
+                {
+                    yield return version;
+                }
+            }
         }
 
         BaseVersion CreateBaseVersion(GitVersionContext context, VersionTaggedCommit version)

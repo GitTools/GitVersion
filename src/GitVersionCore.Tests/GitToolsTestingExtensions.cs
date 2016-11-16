@@ -1,6 +1,7 @@
 ﻿namespace GitVersionCore.Tests
 {
     using System;
+    using System.Linq;
     using GitTools;
     using GitTools.Testing;
     using GitVersion;
@@ -24,7 +25,7 @@
             }
             var gitVersionContext = new GitVersionContext(repository ?? fixture.Repository, configuration, isForTrackedBranchOnly, commitId);
             var executeGitVersion = ExecuteGitVersion(gitVersionContext);
-            var variables = VariableProvider.GetVariablesFor(executeGitVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
+            var variables = VariableProvider.GetVariablesFor(executeGitVersion, gitVersionContext.Configurations.First(), gitVersionContext.IsCurrentCommitTagged);
             try
             {
                 return variables;

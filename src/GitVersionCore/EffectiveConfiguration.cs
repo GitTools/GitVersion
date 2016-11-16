@@ -11,8 +11,11 @@ namespace GitVersion
         public EffectiveConfiguration(
             AssemblyVersioningScheme assemblyVersioningScheme,
             string assemblyInformationalFormat,
-            VersioningMode versioningMode, string gitTagPrefix,
-            string tag, string nextVersion, IncrementStrategy increment,
+            VersioningMode versioningMode,
+            string gitTagPrefix,
+            string tag,
+            string nextVersion,
+            IncrementStrategy increment,
             string branchPrefixToTrim,
             bool preventIncrementForMergedBranchVersion,
             string tagNumberPattern,
@@ -28,7 +31,8 @@ namespace GitVersion
             int commitsSinceVersionSourcePadding,
             IEnumerable<IVersionFilter> versionFilters,
             bool isCurrentBranchDevelop,
-            bool isCurrentBranchRelease)
+            bool isCurrentBranchRelease,
+            ConfigInfo currentBranchInfo)
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
             AssemblyInformationalFormat = assemblyInformationalFormat;
@@ -53,7 +57,10 @@ namespace GitVersion
             VersionFilters = versionFilters;
             IsCurrentBranchDevelop = isCurrentBranchDevelop;
             IsCurrentBranchRelease = isCurrentBranchRelease;
+            CurrentBranchInfo = currentBranchInfo;
         }
+
+        public ConfigInfo CurrentBranchInfo { get; private set; }
 
         public bool IsCurrentBranchDevelop { get; private set; }
         public bool IsCurrentBranchRelease { get; private set; }

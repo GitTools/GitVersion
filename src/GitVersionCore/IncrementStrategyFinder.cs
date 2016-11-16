@@ -23,8 +23,8 @@
 
         public static VersionField? DetermineIncrementedField(GitVersionContext context, BaseVersion baseVersion)
         {
-            var commitMessageIncrement = FindCommitMessageIncrement(context, baseVersion);
-            var defaultIncrement = context.Configuration.Increment.ToVersionField();
+            var commitMessageIncrement = FindCommitMessageIncrement(context, context.Configurations.First(), baseVersion);
+            var defaultIncrement = context.Configurations.First().Increment.ToVersionField();
 
             // use the default branch config increment strategy if there are no commit message overrides
             if (commitMessageIncrement == null)
@@ -48,29 +48,29 @@
             return commitMessageIncrement;
         }
 
-        private static VersionField? FindCommitMessageIncrement(GitVersionContext context, BaseVersion baseVersion)
+        private static VersionField? FindCommitMessageIncrement(GitVersionContext context, EffectiveConfiguration configuration, BaseVersion baseVersion)
         {
-            if (context.Configuration.CommitMessageIncrementing == CommitMessageIncrementMode.Disabled)
+            if (configuration.CommitMessageIncrementing == CommitMessageIncrementMode.Disabled)
             {
                 return null;
             }
-            
+
             var commits = GetIntermediateCommits(context.Repository, baseVersion.BaseVersionSource, context.CurrentCommit);
 
-            if (context.Configuration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
+            if (configuration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
             {
                 commits = commits.Where(c => c.Parents.Count() > 1);
             }
 
-            return GetIncrementForCommits(context, commits);
+            return GetIncrementForCommits(configuration, commits);
         }
 
-        public static VersionField? GetIncrementForCommits(GitVersionContext context, IEnumerable<Commit> commits)
+        public static VersionField? GetIncrementForCommits(EffectiveConfiguration configuration, IEnumerable<Commit> commits)
         {
-            var majorRegex = CreateRegex(context.Configuration.MajorVersionBumpMessage ?? DefaultMajorPattern);
-            var minorRegex = CreateRegex(context.Configuration.MinorVersionBumpMessage ?? DefaultMinorPattern);
-            var patchRegex = CreateRegex(context.Configuration.PatchVersionBumpMessage ?? DefaultPatchPattern);
-            var none = CreateRegex(context.Configuration.NoBumpMessage ?? DefaultNoBumpPattern);
+            var majorRegex = CreateRegex(configuration.MajorVersionBumpMessage ?? DefaultMajorPattern);
+            var minorRegex = CreateRegex(configuration.MinorVersionBumpMessage ?? DefaultMinorPattern);
+            var patchRegex = CreateRegex(configuration.PatchVersionBumpMessage ?? DefaultPatchPattern);
+            var none = CreateRegex(configuration.NoBumpMessage ?? DefaultNoBumpPattern);
 
             var increments = commits
                 .Select(c => FindIncrementFromMessage(c.Message, majorRegex, minorRegex, patchRegex, none))

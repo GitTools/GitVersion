@@ -30,12 +30,9 @@ namespace GitVersion.VersionCalculation
 
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
-            if (context.Configuration.IsCurrentBranchDevelop)
-            {
-                return ReleaseBranchBaseVersions(context).Union(MasterTagsVersions(context));
-            }
-
-            return new BaseVersion[0];
+            return context.Configurations
+                .Where(config => config.IsCurrentBranchDevelop)
+                .SelectMany(config => ReleaseBranchBaseVersions(context).Union(MasterTagsVersions(context)));
         }
 
         private IEnumerable<BaseVersion> MasterTagsVersions(GitVersionContext context)
@@ -43,7 +40,7 @@ namespace GitVersion.VersionCalculation
             var master = context.Repository.FindBranch("master");
             if (master != null)
             {
-                return taggedCommitVersionStrategy.GetTaggedVersions(context, master, null);
+                //return taggedCommitVersionStrategy.GetTaggedVersions(context, master, null);
             }
 
             return new BaseVersion[0];
@@ -79,20 +76,20 @@ namespace GitVersion.VersionCalculation
 
         IEnumerable<BaseVersion> GetReleaseVersion(GitVersionContext context, Branch releaseBranch)
         {
-            var tagPrefixRegex = context.Configuration.GitTagPrefix;
-            var repository = context.Repository;
+            //var tagPrefixRegex = context.Configurations.First().GitTagPrefix;
+            //var repository = context.Repository;
 
-            // Find the commit where the child branch was created.
-            var baseSource = releaseBranch.FindMergeBase(context.CurrentBranch, repository);
-            if (baseSource == context.CurrentCommit)
+            //// Find the commit where the child branch was created.
+            //var baseSource = releaseBranch.FindMergeBase(context.CurrentBranch, repository);
+            //if (baseSource == context.CurrentCommit)
             {
                 // Ignore the branch if it has no commits.
                 return new BaseVersion[0];
             }
 
-            return releaseVersionStrategy
-                .GetVersions(tagPrefixRegex, releaseBranch, repository)
-                .Select(b => new BaseVersion(b.Source, true, b.SemanticVersion, baseSource, b.BranchNameOverride));
+            //return releaseVersionStrategy
+            //    .GetVersions(tagPrefixRegex, releaseBranch, repository)
+            //    .Select(b => new BaseVersion(b.Source, true, b.SemanticVersion, baseSource, b.BranchNameOverride));
         }
     }
 }
