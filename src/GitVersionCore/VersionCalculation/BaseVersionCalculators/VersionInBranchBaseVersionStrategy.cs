@@ -2,27 +2,32 @@
 {
     using System;
     using System.Collections.Generic;
-    using LibGit2Sharp;
 
+    /// <summary>
+    /// Version is extracted from the name of the branch.
+    /// BaseVersionSource is the commit where the branch was branched from its parent.
+    /// Does not increment.
+    /// </summary>
     public class VersionInBranchBaseVersionStrategy : BaseVersionStrategy
     {
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
-            var currentBranch = context.CurrentBranch;
-            var tagPrefixRegex = context.Configuration.GitTagPrefix;
-            var repository = context.Repository;
-            return GetVersions(tagPrefixRegex, currentBranch, repository);
+            return GetBranchBaseVersions(context);
         }
 
-        public IEnumerable<BaseVersion> GetVersions(string tagPrefixRegex, Branch currentBranch, IRepository repository)
+        public IEnumerable<BaseVersion> GetBranchBaseVersions(GitVersionContext context)
         {
-            var branchName = currentBranch.FriendlyName;
-            var versionInBranch = GetVersionInBranch(branchName, tagPrefixRegex);
-            if (versionInBranch != null)
+            foreach (var config in context.Configurations)
             {
-                var commitBranchWasBranchedFrom = currentBranch.FindCommitBranchWasBranchedFrom(repository);
-                var branchNameOverride = branchName.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
-                yield return new BaseVersion("Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom, branchNameOverride);
+                var branchName = config.CurrentBranchInfo.Branch.FriendlyName;
+                var tagPrefixRegex = config.GitTagPrefix;
+                var versionInBranch = GetVersionInBranch(branchName, tagPrefixRegex);
+                if (versionInBranch != null)
+                {
+                    var parentBranchCommit = config.CurrentBranchInfo.LastCommit;
+                    var branchNameOverride = branchName.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
+                    yield return new BaseVersion("Version in branch name", false, versionInBranch.Item2, parentBranchCommit, branchNameOverride);
+                }
             }
         }
 

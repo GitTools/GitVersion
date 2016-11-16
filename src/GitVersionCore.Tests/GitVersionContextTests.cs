@@ -1,5 +1,6 @@
 ﻿namespace GitVersionCore.Tests
 {
+    using System.Linq;
     using GitTools.Testing;
     using GitVersion;
     using LibGit2Sharp;
@@ -28,7 +29,7 @@
             };
 
             var context = new GitVersionContext(mockRepository, mockBranch, config);
-            context.Configuration.VersioningMode.ShouldBe(mode);
+            context.Configurations.First().VersioningMode.ShouldBe(mode);
         }
 
         [Test]
@@ -59,7 +60,7 @@
                 }
             };
             var context = new GitVersionContext(mockRepository, develop, config);
-            context.Configuration.Tag.ShouldBe("alpha");
+            context.Configurations.First().Tag.ShouldBe("alpha");
         }
 
         [Test]
@@ -84,7 +85,7 @@
                 repo.Repository.MakeACommit();
 
                 var context = new GitVersionContext(repo.Repository, config);
-                context.Configuration.Increment.ShouldBe(IncrementStrategy.Major);
+                context.Configurations.First().Increment.ShouldBe(IncrementStrategy.Major);
             }
         }
     }

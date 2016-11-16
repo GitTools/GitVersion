@@ -28,6 +28,7 @@
         public SemanticVersion FindVersion(GitVersionContext context)
         {
             SemanticVersion taggedSemanticVersion = null;
+
             // If current commit is tagged, don't do anything except add build metadata
             if (context.IsCurrentCommitTagged)
             {
@@ -44,15 +45,17 @@
 
             var baseVersion = baseVersionFinder.GetBaseVersion(context);
             SemanticVersion semver;
-            if (context.Configuration.VersioningMode == VersioningMode.Mainline)
+            if (context.Configurations.First().VersioningMode == VersioningMode.Mainline)
+            {
                 semver = FindMainlineModeVersion(baseVersion, context);
+            }
             else
             {
                 semver = PerformIncrement(context, baseVersion);
                 semver.BuildMetaData = metaDataCalculator.Create(baseVersion.BaseVersionSource, context);
             }
 
-            if (!semver.PreReleaseTag.HasTag() && !string.IsNullOrEmpty(context.Configuration.Tag))
+            if (!semver.PreReleaseTag.HasTag() && !string.IsNullOrEmpty(context.Configurations.First().Tag))
             {
                 UpdatePreReleaseTag(context, semver, baseVersion.BranchNameOverride);
             }
@@ -94,7 +97,7 @@
                 //          * feature/foo
                 //         / |
                 // master *  *
-                // 
+                //
                 var commitLog = context.Repository.Commits.QueryBy(new CommitFilter
                 {
                     IncludeReachableFrom = context.CurrentBranch,
@@ -218,7 +221,7 @@
         {
             foreach (var directCommit in directCommits)
             {
-                var directCommitIncrement = IncrementStrategyFinder.GetIncrementForCommits(context, new[]
+                var directCommitIncrement = IncrementStrategyFinder.GetIncrementForCommits(context.Configurations.First(), new[]
                                             {
                                                 directCommit
                                             }) ?? VersionField.Patch;
@@ -241,7 +244,7 @@
                 context.Repository.Commits.QueryBy(filter).ToList() :
                 new[] { mergeCommit }.Union(context.Repository.Commits.QueryBy(filter)).ToList();
             commitLog.RemoveAll(c => commits.Any(c1 => c1.Sha == c.Sha));
-            return IncrementStrategyFinder.GetIncrementForCommits(context, commits) ?? VersionField.Patch;
+            return IncrementStrategyFinder.GetIncrementForCommits(context.Configurations.First(), commits) ?? VersionField.Patch;
         }
 
         private Commit GetMergedHead(Commit mergeCommit)
@@ -254,12 +257,12 @@
 
         void UpdatePreReleaseTag(GitVersionContext context, SemanticVersion semanticVersion, string branchNameOverride)
         {
-            var tagToUse = GetBranchSpecificTag(context.Configuration, context.CurrentBranch.FriendlyName, branchNameOverride);
+            var tagToUse = GetBranchSpecificTag(context.Configurations.First(), context.CurrentBranch.FriendlyName, branchNameOverride);
 
             int? number = null;
 
             var lastTag = context.CurrentBranch
-                .GetVersionTagsOnBranch(context.Repository, context.Configuration.GitTagPrefix)
+                .GetVersionTagsOnBranch(context.Repository, context.Configurations.First().GitTagPrefix)
                 .FirstOrDefault(v => v.PreReleaseTag.Name == tagToUse);
 
             if (lastTag != null &&

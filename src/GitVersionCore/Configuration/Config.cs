@@ -79,7 +79,7 @@
                 value.ToList().ForEach(_ =>
                 {
                     if (!branches.ContainsKey(_.Key))
-                        branches.Add(_.Key, new BranchConfig());
+                        branches.Add(_.Key, new BranchConfig {Name = _.Key});
 
                     branches[_.Key] = MergeObjects(branches[_.Key], _.Value);
                 });

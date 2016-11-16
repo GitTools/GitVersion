@@ -2,6 +2,7 @@
 {
     using LibGit2Sharp;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     /// <summary>
@@ -53,13 +54,13 @@
                 CurrentBranch = currentBranch;
             }
 
-            CalculateEffectiveConfiguration();
+            Configurations = CalculateEffectiveConfiguration().ToArray();
 
             CurrentCommitTaggedVersion = repository.Tags
                 .SelectMany(t =>
                 {
                     SemanticVersion version;
-                    if (t.PeeledTarget() == CurrentCommit && SemanticVersion.TryParse(t.FriendlyName, Configuration.GitTagPrefix, out version))
+                    if (t.PeeledTarget() == CurrentCommit && SemanticVersion.TryParse(t.FriendlyName, Configurations.First().GitTagPrefix, out version))
                         return new[] { version };
                     return new SemanticVersion[0];
                 })
@@ -68,36 +69,21 @@
         }
 
         /// <summary>
-        /// Contains the raw configuration, use Configuration for specific config based on the current GitVersion context.
+        /// Contains the raw configuration, use Configurations for the specific configs based on the current GitVersion context.
         /// </summary>
         public Config FullConfiguration { get; private set; }
 
         public SemanticVersion CurrentCommitTaggedVersion { get; private set; }
         public bool OnlyEvaluateTrackedBranches { get; private set; }
-        public EffectiveConfiguration Configuration { get; private set; }
+        public ICollection<EffectiveConfiguration> Configurations { get; private set; }
 
         public IRepository Repository { get; private set; }
         public Branch CurrentBranch { get; private set; }
         public Commit CurrentCommit { get; private set; }
         public bool IsCurrentCommitTagged { get; private set; }
 
-        void CalculateEffectiveConfiguration()
+        IEnumerable<EffectiveConfiguration> CalculateEffectiveConfiguration()
         {
-            var currentBranchConfig = BranchConfigurationCalculator.GetBranchConfiguration(CurrentCommit, Repository, OnlyEvaluateTrackedBranches, FullConfiguration, CurrentBranch);
-
-            if (!currentBranchConfig.Value.VersioningMode.HasValue)
-                throw new Exception(string.Format("Configuration value for 'Versioning mode' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
-            if (!currentBranchConfig.Value.Increment.HasValue)
-                throw new Exception(string.Format("Configuration value for 'Increment' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
-            if (!currentBranchConfig.Value.PreventIncrementOfMergedBranchVersion.HasValue)
-                throw new Exception(string.Format("Configuration value for 'PreventIncrementOfMergedBranchVersion' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
-            if (!currentBranchConfig.Value.TrackMergeTarget.HasValue)
-                throw new Exception(string.Format("Configuration value for 'TrackMergeTarget' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
-            if (!currentBranchConfig.Value.IsDevelop.HasValue)
-                throw new Exception(string.Format("Configuration value for 'IsDevelop' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
-            if (!currentBranchConfig.Value.IsReleaseBranch.HasValue)
-                throw new Exception(string.Format("Configuration value for 'IsReleaseBranch' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
-
             if (!FullConfiguration.AssemblyVersioningScheme.HasValue)
                 throw new Exception("Configuration value for 'AssemblyVersioningScheme' has no value. (this should not happen, please report an issue)");
             if (!FullConfiguration.CommitMessageIncrementing.HasValue)
@@ -109,39 +95,107 @@
             if (!FullConfiguration.CommitsSinceVersionSourcePadding.HasValue)
                 throw new Exception("Configuration value for 'CommitsSinceVersionSourcePadding' has no value. (this should not happen, please report an issue)");
 
-            var versioningMode = currentBranchConfig.Value.VersioningMode.Value;
-            var tag = currentBranchConfig.Value.Tag;
-            var tagNumberPattern = currentBranchConfig.Value.TagNumberPattern;
-            var incrementStrategy = currentBranchConfig.Value.Increment.Value;
-            var preventIncrementForMergedBranchVersion = currentBranchConfig.Value.PreventIncrementOfMergedBranchVersion.Value;
-            var trackMergeTarget = currentBranchConfig.Value.TrackMergeTarget.Value;
+            var excludedBranches = new HashSet<Branch>();
+            var firstCommit = CurrentCommit;
+            var branch = CurrentBranch;
 
-            var nextVersion = FullConfiguration.NextVersion;
-            var assemblyVersioningScheme = FullConfiguration.AssemblyVersioningScheme.Value;
-            var assemblyInformationalFormat = FullConfiguration.AssemblyInformationalFormat;
-            var gitTagPrefix = FullConfiguration.TagPrefix;
-            var majorMessage = FullConfiguration.MajorVersionBumpMessage;
-            var minorMessage = FullConfiguration.MinorVersionBumpMessage;
-            var patchMessage = FullConfiguration.PatchVersionBumpMessage;
-            var noBumpMessage = FullConfiguration.NoBumpMessage;
+            var parentBranchesInfo = new List<ConfigInfo>();
+            while (true)
+            {
+                var branchConfig = BranchConfigurationCalculator.GetBranchConfiguration(firstCommit, Repository, OnlyEvaluateTrackedBranches, FullConfiguration, branch, new HashSet<Branch>(excludedBranches));
 
-            var commitMessageVersionBump = currentBranchConfig.Value.CommitMessageIncrementing ?? FullConfiguration.CommitMessageIncrementing.Value;
+                var firstParentBranch = BranchConfigurationCalculator.FindFirstParentBranch(Repository, firstCommit, branch, excludedBranches);
+                if (firstParentBranch != BranchCommit.Empty)
+                {
+                    // A parent was found.
+                    var configInfo = new ConfigInfo(branchConfig, branch, firstParentBranch.Branch, firstCommit, firstParentBranch.Commit, Repository);
+                    parentBranchesInfo.Add(configInfo);
 
-            Configuration = new EffectiveConfiguration(
-                assemblyVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix,
-                tag, nextVersion, incrementStrategy,
-                currentBranchConfig.Value.Regex,
-                preventIncrementForMergedBranchVersion,
-                tagNumberPattern, FullConfiguration.ContinuousDeploymentFallbackTag,
-                trackMergeTarget,
-                majorMessage, minorMessage, patchMessage, noBumpMessage,
-                commitMessageVersionBump,
-                FullConfiguration.LegacySemVerPadding.Value,
-                FullConfiguration.BuildMetaDataPadding.Value,
-                FullConfiguration.CommitsSinceVersionSourcePadding.Value,
-                FullConfiguration.Ignore.ToFilters(),
-                currentBranchConfig.Value.IsDevelop.Value,
-                currentBranchConfig.Value.IsReleaseBranch.Value);
+                    firstCommit = firstParentBranch.Commit;
+                    branch = firstParentBranch.Branch;
+                }
+                else
+                {
+                    // No more parents => We are done.
+                    var configInfo = new ConfigInfo(branchConfig, branch, null, firstCommit, null, Repository);
+                    parentBranchesInfo.Add(configInfo);
+                    break;
+                }
+            }
+
+            foreach (var currentBranchInfo in parentBranchesInfo)
+            {
+                var currentBranchConfig = currentBranchInfo.Config;
+                if (!currentBranchConfig.VersioningMode.HasValue)
+                    throw new Exception(string.Format("Configuration value for 'Versioning mode' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));
+                if (!currentBranchConfig.Increment.HasValue)
+                    throw new Exception(string.Format("Configuration value for 'Increment' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));
+                if (!currentBranchConfig.PreventIncrementOfMergedBranchVersion.HasValue)
+                    throw new Exception(string.Format("Configuration value for 'PreventIncrementOfMergedBranchVersion' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));
+                if (!currentBranchConfig.TrackMergeTarget.HasValue)
+                    throw new Exception(string.Format("Configuration value for 'TrackMergeTarget' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));
+                if (!currentBranchConfig.IsDevelop.HasValue)
+                    throw new Exception(string.Format("Configuration value for 'IsDevelop' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));
+                if (!currentBranchConfig.IsReleaseBranch.HasValue)
+                    throw new Exception(string.Format("Configuration value for 'IsReleaseBranch' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));
+
+                yield return new EffectiveConfiguration(
+                    FullConfiguration.AssemblyVersioningScheme.Value,
+                    FullConfiguration.AssemblyInformationalFormat,
+                    currentBranchConfig.VersioningMode.Value,
+                    FullConfiguration.TagPrefix,
+                    currentBranchConfig.Tag,
+                    FullConfiguration.NextVersion,
+                    currentBranchConfig.Increment.Value,
+                    currentBranchConfig.Regex,
+                    currentBranchConfig.PreventIncrementOfMergedBranchVersion.Value,
+                    currentBranchConfig.TagNumberPattern,
+                    FullConfiguration.ContinuousDeploymentFallbackTag,
+                    currentBranchConfig.TrackMergeTarget.Value,
+                    FullConfiguration.MajorVersionBumpMessage,
+                    FullConfiguration.MinorVersionBumpMessage,
+                    FullConfiguration.PatchVersionBumpMessage,
+                    FullConfiguration.NoBumpMessage,
+                    currentBranchConfig.CommitMessageIncrementing ?? FullConfiguration.CommitMessageIncrementing.Value,
+                    FullConfiguration.LegacySemVerPadding.Value,
+                    FullConfiguration.BuildMetaDataPadding.Value,
+                    FullConfiguration.CommitsSinceVersionSourcePadding.Value,
+                    FullConfiguration.Ignore.ToFilters(),
+                    currentBranchConfig.IsDevelop.Value,
+                    currentBranchConfig.IsReleaseBranch.Value,
+                    currentBranchInfo);
+            }
+        }
+    }
+
+    public class ConfigInfo
+    {
+        public ConfigInfo(BranchConfig config, Branch branch, Branch parentBranch, Commit firstCommit, Commit lastCommit, IRepository repository)
+        {
+            Config = config;
+            Branch = branch;
+            ParentBranch = parentBranch;
+            FirstCommit = firstCommit;
+            LastCommit = lastCommit;
+            Repository = repository;
+        }
+
+        public BranchConfig Config { get; private set; }
+        public Branch Branch { get; private set; }
+        public Branch ParentBranch { get; private set; }
+        public Commit FirstCommit { get; private set; }
+        public Commit LastCommit { get; private set; }
+        public IRepository Repository { get; private set; }
+
+        /// <summary>
+        /// Gets the relevant commits in the branch, i.e. all the commits between the <see cref="FirstCommit"/> and <see cref="LastCommit"/>.
+        /// </summary>
+        public IEnumerable<Commit> RelevantCommits
+        {
+            get
+            {
+                return Branch.Commits.SkipWhile(commit => commit != FirstCommit).TakeWhile(commit => commit != LastCommit);
+            }
         }
     }
 }
