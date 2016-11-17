@@ -31,6 +31,34 @@
             context.Configuration.VersioningMode.ShouldBe(mode);
         }
 
+        [TestCase(IncrementStrategy.Inherit, IncrementStrategy.Patch)] // Since it inherits, the increment strategy of master is used => Patch
+        [TestCase(IncrementStrategy.Patch, null)]
+        [TestCase(IncrementStrategy.Major, null)]
+        [TestCase(IncrementStrategy.Minor, null)]
+        [TestCase(IncrementStrategy.None, null)]
+        public void CanInheritIncrement(IncrementStrategy increment, IncrementStrategy? alternateExpected)
+        {
+            // Dummy branch name to make sure that no default config exists.
+            const string dummyBranchName = "dummy";
+
+            var config = new Config
+            {
+                Increment = increment
+            };
+            ConfigurationProvider.ApplyDefaultsTo(config);
+
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.MakeACommit();
+                fixture.BranchTo(dummyBranchName);
+                fixture.MakeACommit();
+
+                var context = new GitVersionContext(fixture.Repository, fixture.Repository.Branches[dummyBranchName], config);
+                context.Configuration.Increment.ShouldBe(alternateExpected ?? increment);
+            }
+
+        }
+
         [Test]
         public void UsesBranchSpecificConfigOverTopLevelDefaults()
         {

@@ -16,31 +16,30 @@ namespace GitVersion
         {
             var matchingBranches = LookupBranchConfiguration(config, currentBranch).ToArray();
 
-            if (matchingBranches.Length == 0)
+            if (matchingBranches.Length > 1)
+            {
+                const string format = "Multiple branch configurations match the current branch branchName of '{0}'. Matching configurations: '{1}'";
+                throw new Exception(string.Format(format, currentBranch.FriendlyName, string.Join(", ", matchingBranches.Select(b => b.Name))));
+            }
+
+            BranchConfig branchConfiguration;
+            if (matchingBranches.Length == 1)
+            {
+                branchConfiguration = matchingBranches[0];
+            }
+            else
             {
                 Logger.WriteInfo(string.Format(
                     "No branch configuration found for branch {0}, falling back to default configuration",
                     currentBranch.FriendlyName));
 
-                var branchConfig = new BranchConfig { Name = string.Empty };
-                ConfigurationProvider.ApplyBranchDefaults(config, branchConfig, "");
-                return branchConfig;
+                branchConfiguration = new BranchConfig { Name = string.Empty };
+                ConfigurationProvider.ApplyBranchDefaults(config, branchConfiguration, "");
             }
 
-            if (matchingBranches.Length == 1)
-            {
-                var branchConfiguration = matchingBranches[0];
-
-                if (branchConfiguration.Increment == IncrementStrategy.Inherit)
-                {
-                    return InheritBranchConfiguration(onlyEvaluateTrackedBranches, repository, currentCommit, currentBranch, branchConfiguration, config, excludedInheritBranches);
-                }
-
-                return branchConfiguration;
-            }
-
-            const string format = "Multiple branch configurations match the current branch branchName of '{0}'. Matching configurations: '{1}'";
-            throw new Exception(string.Format(format, currentBranch.FriendlyName, string.Join(", ", matchingBranches.Select(b => b.Name))));
+            return branchConfiguration.Increment == IncrementStrategy.Inherit ?
+                InheritBranchConfiguration(onlyEvaluateTrackedBranches, repository, currentCommit, currentBranch, branchConfiguration, config, excludedInheritBranches) :
+                branchConfiguration;
         }
 
         static IEnumerable<BranchConfig> LookupBranchConfiguration([NotNull] Config config, [NotNull] Branch currentBranch)
@@ -57,7 +56,6 @@ namespace GitVersion
 
             return config.Branches.Where(b => Regex.IsMatch(currentBranch.FriendlyName, "^" + b.Value.Regex, RegexOptions.IgnoreCase)).Select(kvp => kvp.Value);
         }
-
 
         static BranchConfig InheritBranchConfiguration(bool onlyEvaluateTrackedBranches, IRepository repository, Commit currentCommit, Branch currentBranch, BranchConfig branchConfiguration, Config config, IList<Branch> excludedInheritBranches)
         {

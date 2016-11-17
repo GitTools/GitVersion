@@ -99,5 +99,8 @@
 
         [YamlMember(Alias = "ignore")]
         public IgnoreConfig Ignore { get; set; }
+
+        [YamlMember(Alias = "increment")]
+        public IncrementStrategy? Increment { get; set; }
     }
 }

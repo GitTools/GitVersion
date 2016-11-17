@@ -30,6 +30,8 @@ namespace GitVersion
         public const string SupportBranchKey = "support";
         public const string DevelopBranchKey = "develop";
 
+        private const IncrementStrategy DefaultIncrementStrategy = IncrementStrategy.Inherit;
+
         public static Config Provide(GitPreparer gitPreparer, IFileSystem fileSystem, bool applyDefaults = true, Config overrideConfig = null)
         {
             var workingDirectory = gitPreparer.WorkingDirectory;
@@ -99,24 +101,44 @@ If the docs do not help you decide on the mode open an issue to discuss what you
 
             var configBranches = config.Branches.ToList();
 
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, MasterBranchKey),
+            ApplyBranchDefaults(config,
+                GetOrCreateBranchDefaults(config, MasterBranchKey),
                 MasterBranchRegex,
                 defaultTag: string.Empty,
                 defaultPreventIncrement: true,
+                defaultIncrementStrategy: IncrementStrategy.Patch,
                 isMainline: true);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, ReleaseBranchKey), ReleaseBranchRegex, defaultTag: "beta", defaultPreventIncrement: true, isReleaseBranch: true);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, FeatureBranchKey), FeatureBranchRegex, defaultIncrementStrategy: IncrementStrategy.Inherit);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, PullRequestBranchKey), PullRequestRegex,
+            ApplyBranchDefaults(config,
+                GetOrCreateBranchDefaults(config, ReleaseBranchKey),
+                ReleaseBranchRegex,
+                defaultTag: "beta",
+                defaultPreventIncrement: true,
+                defaultIncrementStrategy: IncrementStrategy.Patch,
+                isReleaseBranch: true);
+            ApplyBranchDefaults(config,
+                GetOrCreateBranchDefaults(config, FeatureBranchKey),
+                FeatureBranchRegex,
+                defaultIncrementStrategy: IncrementStrategy.Inherit);
+            ApplyBranchDefaults(config,
+                GetOrCreateBranchDefaults(config, PullRequestBranchKey),
+                PullRequestRegex,
                 defaultTag: "PullRequest",
                 defaultTagNumberPattern: @"[/-](?<number>\d+)[-/]",
                 defaultIncrementStrategy: IncrementStrategy.Inherit);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, HotfixBranchKey), HotfixBranchRegex, defaultTag: "beta");
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, SupportBranchKey),
+            ApplyBranchDefaults(config,
+                GetOrCreateBranchDefaults(config, HotfixBranchKey),
+                HotfixBranchRegex,
+                defaultTag: "beta",
+                defaultIncrementStrategy: IncrementStrategy.Patch);
+            ApplyBranchDefaults(config,
+                GetOrCreateBranchDefaults(config, SupportBranchKey),
                 SupportBranchRegex,
                 defaultTag: string.Empty,
                 defaultPreventIncrement: true,
+                defaultIncrementStrategy: IncrementStrategy.Patch,
                 isMainline: true);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, DevelopBranchKey),
+            ApplyBranchDefaults(config,
+                GetOrCreateBranchDefaults(config, DevelopBranchKey),
                 DevelopBranchRegex,
                 defaultTag: "alpha",
                 defaultIncrementStrategy: IncrementStrategy.Minor,
@@ -124,8 +146,8 @@ If the docs do not help you decide on the mode open an issue to discuss what you
                 defaultTrackMergeTarget: true,
                 tracksReleaseBranches: true);
 
-            // Any user defined branches should have other values defaulted after known branches filled in
-            // This allows users to override one value of
+            // Any user defined branches should have other values defaulted after known branches filled in.
+            // This allows users to override any of the value.
             foreach (var branchConfig in configBranches)
             {
                 var regex = branchConfig.Value.Regex;
@@ -159,7 +181,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             BranchConfig branchConfig,
             string branchRegex,
             string defaultTag = "useBranchName",
-            IncrementStrategy defaultIncrementStrategy = IncrementStrategy.Patch,
+            IncrementStrategy? defaultIncrementStrategy = null, // Looked up from main config
             bool defaultPreventIncrement = false,
             VersioningMode? defaultVersioningMode = null, // Looked up from main config
             bool defaultTrackMergeTarget = false,
@@ -171,7 +193,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             branchConfig.Regex = string.IsNullOrEmpty(branchConfig.Regex) ? branchRegex : branchConfig.Regex;
             branchConfig.Tag = branchConfig.Tag ?? defaultTag;
             branchConfig.TagNumberPattern = branchConfig.TagNumberPattern ?? defaultTagNumberPattern;
-            branchConfig.Increment = branchConfig.Increment ?? defaultIncrementStrategy;
+            branchConfig.Increment = branchConfig.Increment ?? defaultIncrementStrategy ?? config.Increment ?? DefaultIncrementStrategy;
             branchConfig.PreventIncrementOfMergedBranchVersion = branchConfig.PreventIncrementOfMergedBranchVersion ?? defaultPreventIncrement;
             branchConfig.TrackMergeTarget = branchConfig.TrackMergeTarget ?? defaultTrackMergeTarget;
             branchConfig.VersioningMode = branchConfig.VersioningMode ?? defaultVersioningMode ?? config.VersioningMode;
