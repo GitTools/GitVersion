@@ -11,7 +11,7 @@ namespace GitVersion.VersionCalculation
     /// Active only when the branch is marked as IsDevelop.
     /// Two different algorithms (results are merged):
     /// <para>
-    /// Using <see cref="VersionInBranchBaseVersionStrategy"/>:
+    /// Using <see cref="VersionInBranchNameBaseVersionStrategy"/>:
     /// Version is that of any child branches marked with IsReleaseBranch (except if they have no commits of their own).
     /// BaseVersionSource is the commit where the child branch was created.
     /// Always increments.
@@ -25,7 +25,7 @@ namespace GitVersion.VersionCalculation
     /// </summary>
     public class TrackReleaseBranchesVersionStrategy : BaseVersionStrategy
     {
-        VersionInBranchBaseVersionStrategy releaseVersionStrategy = new VersionInBranchBaseVersionStrategy();
+        VersionInBranchNameBaseVersionStrategy releaseVersionStrategy = new VersionInBranchNameBaseVersionStrategy();
         TaggedCommitVersionStrategy taggedCommitVersionStrategy = new TaggedCommitVersionStrategy();
 
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)

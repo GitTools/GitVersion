@@ -9,7 +9,7 @@
     using Shouldly;
 
     [TestFixture]
-    public class VersionInBranchBaseVersionStrategyTests
+    public class VersionInBranchNameBaseVersionStrategyTests
     {
         [Test]
         [TestCase("release-2.0.0", "2.0.0")]
@@ -23,7 +23,7 @@
             {
                 fixture.Repository.MakeACommit();
                 var branch = fixture.Repository.CreateBranch(branchName);
-                var sut = new VersionInBranchBaseVersionStrategy();
+                var sut = new VersionInBranchNameBaseVersionStrategy();
 
                 var gitVersionContext = new GitVersionContext(fixture.Repository, branch, new Config().ApplyDefaults());
                 var baseVersion = sut.GetVersions(gitVersionContext).SingleOrDefault();
