@@ -9,7 +9,7 @@
     /// BaseVersionSource is the commit where the branch was branched from its parent.
     /// Does not increment.
     /// </summary>
-    public class VersionInBranchBaseVersionStrategy : BaseVersionStrategy
+    public class VersionInBranchNameBaseVersionStrategy : BaseVersionStrategy
     {
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
