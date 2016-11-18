@@ -14,6 +14,7 @@ bool IsTagged = (BuildSystem.AppVeyor.Environment.Repository.Tag.IsTag &&
                 !string.IsNullOrWhiteSpace(BuildSystem.AppVeyor.Environment.Repository.Tag.Name));
 bool IsMainGitVersionRepo = StringComparer.OrdinalIgnoreCase.Equals("gittools/gitversion", BuildSystem.AppVeyor.Environment.Repository.Name);
 bool IsPullRequest = BuildSystem.AppVeyor.Environment.PullRequest.IsPullRequest;
+bool IsMainGitVersionBranch = StringComparer.OrdinalIgnoreCase.Equals("master", BuildSystem.AppVeyor.Environment.Repository.Branch);
 
 void Build(string configuration, string nugetVersion, string semVersion, string version, string preReleaseTag)
 {
@@ -120,6 +121,7 @@ Task("Zip-Files")
 
 Task("Create-Release-Notes")
     .IsDependentOn("Build")
+    .WithCriteria(() => IsMainGitVersionRepo && IsMainGitVersionBranch && !IsPullRequest)
     .Does(() =>
 {
 	var githubToken = EnvironmentVariable("GitHubToken");
@@ -160,8 +162,7 @@ Task("Upload-AppVeyor-Artifacts")
         "NuGetTaskBuild:GitVersionTask." + nugetVersion +".nupkg",
         "GitVersionTfsTaskBuild:gittools.gitversion-" + semVersion +".vsix",
         "GemBuild:" + gem,
-        "zip:GitVersion_" + nugetVersion + ".zip",
-        "releaseNotes:releasenotes.md"
+        "zip:GitVersion_" + nugetVersion + ".zip"
     });
 
     AppVeyor.UploadArtifact("build/NuGetExeBuild/GitVersion.Portable." + nugetVersion +".nupkg");
@@ -171,8 +172,15 @@ Task("Upload-AppVeyor-Artifacts")
     AppVeyor.UploadArtifact("build/GitVersionTfsTaskBuild/gittools.gitversion-" + semVersion + ".vsix");
     AppVeyor.UploadArtifact("build/GitVersion_" + nugetVersion + ".zip");
     AppVeyor.UploadArtifact("build/GemBuild/" + gem);
-    AppVeyor.UploadArtifact("build/releasenotes.md");
     AppVeyor.UploadArtifact("build/artifacts");
+
+    if(IsMainGitVersionRepo && IsMainGitVersionBranch && !IsPullRequest)
+    {
+        if(FileExists("build/releasenotes.md"))
+        {
+            AppVeyor.UploadArtifact("build/releasenotes.md");
+        }
+    }
 });
 
 
