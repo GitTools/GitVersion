@@ -1,11 +1,11 @@
 namespace GitVersion
 {
-    using GitVersion.Configuration.Init.Wizard;
+    using Configuration.Init.Wizard;
     using GitVersion.Helpers;
-    using System.ComponentModel;
     using System.IO;
     using System.Linq;
     using System.Text;
+    using WarningException = System.ComponentModel.WarningException;
 
     public class ConfigurationProvider
     {
@@ -13,6 +13,21 @@ namespace GitVersion
 
         public const string DefaultConfigFileName = "GitVersion.yml";
         public const string ObsoleteConfigFileName = "GitVersionConfig.yaml";
+
+        public const string ReleaseBranchRegex = "releases?[/-]";
+        public const string FeatureBranchRegex = "features?[/-]";
+        public const string PullRequestRegex = @"(pull|pull\-requests|pr)[/-]";
+        public const string HotfixBranchRegex = "hotfix(es)?[/-]";
+        public const string SupportBranchRegex = "support[/-]";
+        public const string DevelopBranchRegex = "dev(elop)?(ment)?$";
+        public const string MasterBranchRegex = "master";
+        public const string MasterBranchKey = "master";
+        public const string ReleaseBranchKey = "release";
+        public const string FeatureBranchKey = "feature";
+        public const string PullRequestBranchKey = "pull-request";
+        public const string HotfixBranchKey = "hotfix";
+        public const string SupportBranchKey = "support";
+        public const string DevelopBranchKey = "develop";
 
         public static Config Provide(GitPreparer gitPreparer, IFileSystem fileSystem, bool applyDefaults = true, Config overrideConfig = null)
         {
@@ -43,6 +58,8 @@ namespace GitVersion
         public static Config Provide(string workingDirectory, IFileSystem fileSystem, bool applyDefaults = true, Config overrideConfig = null)
         {
             var readConfig = ReadConfig(workingDirectory, fileSystem);
+            VerifyConfiguration(readConfig);
+
             if (applyDefaults)
                 ApplyDefaultsTo(readConfig);
             if (null != overrideConfig)
@@ -50,10 +67,21 @@ namespace GitVersion
             return readConfig;
         }
 
+        static void VerifyConfiguration(Config readConfig)
+        {
+            // Verify no branches are set to mainline mode
+            if (readConfig.Branches.Any(b => b.Value.VersioningMode == VersioningMode.Mainline))
+            {
+                throw new GitVersionConfigurationException(@"Mainline mode only works at the repository level, a single branch cannot be put into mainline mode
+
+This is because mainline mode treats your entire git repository as an event source with each merge into the 'mainline' incrementing the version.
+
+If the docs do not help you decide on the mode open an issue to discuss what you are trying to do.");
+            }
+        }
+
         public static void ApplyDefaultsTo(Config config)
         {
-            MigrateBranches(config);
-
             config.AssemblyVersioningScheme = config.AssemblyVersioningScheme ?? AssemblyVersioningScheme.MajorMinorPatch;
             config.AssemblyInformationalFormat = config.AssemblyInformationalFormat;
             config.TagPrefix = config.TagPrefix ?? DefaultTagPrefix;
@@ -70,16 +98,25 @@ namespace GitVersion
 
             var configBranches = config.Branches.ToList();
 
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "master"), defaultTag: string.Empty, defaultPreventIncrement: true);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "releases?[/-]"), defaultTag: "beta", defaultPreventIncrement: true, isReleaseBranch: true);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "features?[/-]"), defaultIncrementStrategy: IncrementStrategy.Inherit);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, @"(pull|pull\-requests|pr)[/-]"),
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, MasterBranchKey),
+                MasterBranchRegex,
+                defaultTag: string.Empty,
+                defaultPreventIncrement: true,
+                isMainline: true);
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, ReleaseBranchKey), ReleaseBranchRegex, defaultTag: "beta", defaultPreventIncrement: true, isReleaseBranch: true);
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, FeatureBranchKey), FeatureBranchRegex, defaultIncrementStrategy: IncrementStrategy.Inherit);
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, PullRequestBranchKey), PullRequestRegex,
                 defaultTag: "PullRequest",
                 defaultTagNumberPattern: @"[/-](?<number>\d+)[-/]",
                 defaultIncrementStrategy: IncrementStrategy.Inherit);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "hotfix(es)?[/-]"), defaultTag: "beta");
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "support[/-]"), defaultTag: string.Empty, defaultPreventIncrement: true);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, "dev(elop)?(ment)?$"),
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, HotfixBranchKey), HotfixBranchRegex, defaultTag: "beta");
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, SupportBranchKey),
+                SupportBranchRegex,
+                defaultTag: string.Empty,
+                defaultPreventIncrement: true,
+                isMainline: true);
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, DevelopBranchKey),
+                DevelopBranchRegex,
                 defaultTag: "alpha",
                 defaultIncrementStrategy: IncrementStrategy.Minor,
                 defaultVersioningMode: VersioningMode.ContinuousDeployment,
@@ -90,53 +127,36 @@ namespace GitVersion
             // This allows users to override one value of 
             foreach (var branchConfig in configBranches)
             {
-                ApplyBranchDefaults(config, branchConfig.Value);
+                var regex = branchConfig.Value.Regex;
+                if (regex == null)
+                {
+                    throw new GitVersionConfigurationException(string.Format("Branch configuration '{0}' is missing required configuration 'regex'", branchConfig.Key));
+                }
+
+                ApplyBranchDefaults(config, branchConfig.Value, regex);
             }
         }
 
-        public static void ApplyOverridesTo(Config config, Config overrideConfig)
+        static void ApplyOverridesTo(Config config, Config overrideConfig)
         {
             config.TagPrefix = string.IsNullOrWhiteSpace(overrideConfig.TagPrefix) ? config.TagPrefix : overrideConfig.TagPrefix;
         }
 
-        static void MigrateBranches(Config config)
+        static BranchConfig GetOrCreateBranchDefaults(Config config, string branchKey)
         {
-            MigrateObsoleteBranches(config, "hotfix(es)?[/-]", "hotfix[/-]");
-            MigrateObsoleteBranches(config, "features?[/-]", "feature[/-]", "feature(s)?[/-]");
-            MigrateObsoleteBranches(config, "releases?[/-]", "release[/-]");
-            MigrateObsoleteBranches(config, "dev(elop)?(ment)?$", "develop");
-        }
-
-        static void MigrateObsoleteBranches(Config config, string newBranch, params string[] obsoleteBranches)
-        {
-            foreach (var obsoleteBranch in obsoleteBranches)
-            {
-                if (!config.Branches.ContainsKey(obsoleteBranch))
-                {
-                    continue;
-                }
-
-                // found one, rename
-                var bc = config.Branches[obsoleteBranch];
-                config.Branches.Remove(obsoleteBranch);
-                config.Branches[newBranch] = bc; // re-add with new name
-            }
-        }
-
-        static BranchConfig GetOrCreateBranchDefaults(Config config, string branch)
-        {
-            if (!config.Branches.ContainsKey(branch))
+            if (!config.Branches.ContainsKey(branchKey))
             {
                 var branchConfig = new BranchConfig();
-                config.Branches.Add(branch, branchConfig);
+                config.Branches.Add(branchKey, branchConfig);
                 return branchConfig;
             }
 
-            return config.Branches[branch];
+            return config.Branches[branchKey];
         }
 
         public static void ApplyBranchDefaults(Config config,
             BranchConfig branchConfig,
+            string branchRegex,
             string defaultTag = "useBranchName",
             IncrementStrategy defaultIncrementStrategy = IncrementStrategy.Patch,
             bool defaultPreventIncrement = false,
@@ -144,8 +164,10 @@ namespace GitVersion
             bool defaultTrackMergeTarget = false,
             string defaultTagNumberPattern = null,
             bool isDevelop = false,
-            bool isReleaseBranch = false)
+            bool isReleaseBranch = false,
+            bool isMainline = false)
         {
+            branchConfig.Regex = string.IsNullOrEmpty(branchConfig.Regex) ? branchRegex : branchConfig.Regex;
             branchConfig.Tag = branchConfig.Tag ?? defaultTag;
             branchConfig.TagNumberPattern = branchConfig.TagNumberPattern ?? defaultTagNumberPattern;
             branchConfig.Increment = branchConfig.Increment ?? defaultIncrementStrategy;
@@ -154,6 +176,7 @@ namespace GitVersion
             branchConfig.VersioningMode = branchConfig.VersioningMode ?? defaultVersioningMode ?? config.VersioningMode;
             branchConfig.IsDevelop = branchConfig.IsDevelop ?? isDevelop;
             branchConfig.IsReleaseBranch = branchConfig.IsReleaseBranch ?? isReleaseBranch;
+            branchConfig.IsMainline = branchConfig.IsMainline ?? isMainline;
         }
 
         static Config ReadConfig(string workingDirectory, IFileSystem fileSystem)
@@ -164,7 +187,6 @@ namespace GitVersion
             {
                 var readAllText = fileSystem.ReadAllText(configFilePath);
                 LegacyConfigNotifier.Notify(new StringReader(readAllText));
-
                 return ConfigSerialiser.Read(new StringReader(readAllText));
             }
 
@@ -205,7 +227,7 @@ namespace GitVersion
             WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory, fileSystem);
         }
 
-        private static void WarnAboutAmbiguousConfigFileSelection(string workingDirectory, string projectRootDirectory, IFileSystem fileSystem)
+        static void WarnAboutAmbiguousConfigFileSelection(string workingDirectory, string projectRootDirectory, IFileSystem fileSystem)
         {
             var workingConfigFile = GetConfigFilePath(workingDirectory, fileSystem);
             var projectRootConfigFile = GetConfigFilePath(projectRootDirectory, fileSystem);
@@ -218,7 +240,7 @@ namespace GitVersion
             }
         }
 
-        public static string GetConfigFilePath(string workingDirectory, IFileSystem fileSystem)
+        static string GetConfigFilePath(string workingDirectory, IFileSystem fileSystem)
         {
             var ymlPath = Path.Combine(workingDirectory, DefaultConfigFileName);
             if (fileSystem.Exists(ymlPath))
@@ -235,7 +257,7 @@ namespace GitVersion
             return ymlPath;
         }
 
-        public static bool HasConfigFileAt(string workingDirectory, IFileSystem fileSystem)
+        static bool HasConfigFileAt(string workingDirectory, IFileSystem fileSystem)
         {
             var defaultConfigFilePath = Path.Combine(workingDirectory, DefaultConfigFileName);
             if (fileSystem.Exists(defaultConfigFilePath))
@@ -252,23 +274,22 @@ namespace GitVersion
             return false;
         }
 
-        static bool WarnAboutObsoleteConfigFile(string workingDirectory, IFileSystem fileSystem)
+        static void WarnAboutObsoleteConfigFile(string workingDirectory, IFileSystem fileSystem)
         {
             var deprecatedConfigFilePath = Path.Combine(workingDirectory, ObsoleteConfigFileName);
             if (!fileSystem.Exists(deprecatedConfigFilePath))
             {
-                return false;
+                return;
             }
 
             var defaultConfigFilePath = Path.Combine(workingDirectory, DefaultConfigFileName);
             if (fileSystem.Exists(defaultConfigFilePath))
             {
                 Logger.WriteWarning(string.Format("Ambiguous config files at '{0}': '{1}' (deprecated) and '{2}'. Will be used '{2}'", workingDirectory, ObsoleteConfigFileName, DefaultConfigFileName));
-                return true;
+                return;
             }
 
             Logger.WriteWarning(string.Format("'{0}' is deprecated, use '{1}' instead.", deprecatedConfigFilePath, DefaultConfigFileName));
-            return true;
         }
 
         public static void Init(string workingDirectory, IFileSystem fileSystem, IConsole console)

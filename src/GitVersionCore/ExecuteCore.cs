@@ -19,7 +19,7 @@ namespace GitVersion
             gitVersionCache = new GitVersionCache(fileSystem);
         }
 
-        public VersionVariables ExecuteGitVersion(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId, Config overrideConfig = null)
+        public VersionVariables ExecuteGitVersion(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId, Config overrideConfig = null, bool noCache = false)
         {
             // Normalise if we are running on build server
             var applicableBuildServers = BuildServerList.GetApplicableBuildServers();
@@ -51,18 +51,21 @@ namespace GitVersion
             }
 
             var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, overrideConfig);
-            var versionVariables = gitVersionCache.LoadVersionVariablesFromDiskCache(gitPreparer, cacheKey);
+            var versionVariables = noCache ? default(VersionVariables) : gitVersionCache.LoadVersionVariablesFromDiskCache(gitPreparer, cacheKey);
             if (versionVariables == null)
             {
                 versionVariables = ExecuteInternal(targetBranch, commitId, gitPreparer, buildServer, overrideConfig);
 
-                try
+                if (!noCache)
                 {
-                    gitVersionCache.WriteVariablesToDiskCache(gitPreparer, cacheKey, versionVariables);
-                }
-                catch (AggregateException e)
-                {
-                    Logger.WriteWarning(string.Format("One or more exceptions during cache write:{0}{1}", Environment.NewLine, e));
+                    try
+                    {
+                        gitVersionCache.WriteVariablesToDiskCache(gitPreparer, cacheKey, versionVariables);
+                    }
+                    catch (AggregateException e)
+                    {
+                        Logger.WriteWarning(string.Format("One or more exceptions during cache write:{0}{1}", Environment.NewLine, e));
+                    }
                 }
             }
 

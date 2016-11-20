@@ -41,7 +41,7 @@ public class FeatureBranchScenarios
         {
             Branches =
             {
-                { "unstable", new BranchConfig { Increment = IncrementStrategy.Minor } }
+                { "unstable", new BranchConfig { Increment = IncrementStrategy.Minor, Regex = "unstable"} }
             }
         };
 
@@ -183,7 +183,7 @@ public class FeatureBranchScenarios
         {
             Branches =
             {
-                { "features?[/-]", new BranchConfig { Tag = tag } }
+                { "feature", new BranchConfig { Tag = tag } }
             }
         };
 

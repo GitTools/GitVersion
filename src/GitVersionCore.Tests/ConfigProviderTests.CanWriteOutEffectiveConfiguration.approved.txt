@@ -17,56 +17,70 @@ branches:
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
+    regex: master
     is-develop: false
     is-release-branch: false
-  releases?[/-]:
+    is-mainline: true
+  release:
     mode: ContinuousDelivery
     tag: beta
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
+    regex: releases?[/-]
     is-develop: false
     is-release-branch: true
-  features?[/-]:
+    is-mainline: false
+  feature:
     mode: ContinuousDelivery
     tag: useBranchName
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
+    regex: features?[/-]
     is-develop: false
     is-release-branch: false
-  (pull|pull\-requests|pr)[/-]:
+    is-mainline: false
+  pull-request:
     mode: ContinuousDelivery
     tag: PullRequest
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     tag-number-pattern: '[/-](?<number>\d+)[-/]'
     track-merge-target: false
+    regex: (pull|pull\-requests|pr)[/-]
     is-develop: false
     is-release-branch: false
-  hotfix(es)?[/-]:
+    is-mainline: false
+  hotfix:
     mode: ContinuousDelivery
     tag: beta
     increment: Patch
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
+    regex: hotfix(es)?[/-]
     is-develop: false
     is-release-branch: false
-  support[/-]:
+    is-mainline: false
+  support:
     mode: ContinuousDelivery
     tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
+    regex: support[/-]
     is-develop: false
     is-release-branch: false
-  dev(elop)?(ment)?$:
+    is-mainline: true
+  develop:
     mode: ContinuousDeployment
     tag: alpha
     increment: Minor
     prevent-increment-of-merged-branch-version: false
     track-merge-target: true
+    regex: dev(elop)?(ment)?$
     is-develop: true
     is-release-branch: false
+    is-mainline: false
 ignore:
   sha: []

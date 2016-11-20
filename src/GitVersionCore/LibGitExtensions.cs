@@ -68,7 +68,7 @@ namespace GitVersion
                         mergeBaseCommit = findMergeBase,
                         branch = otherBranch
                     };
-                }).Where(b => b != null).OrderByDescending(b => b.mergeBaseCommit.Committer.When).ToList();
+                }).Where(b => b.mergeBaseCommit != null).OrderByDescending(b => b.mergeBaseCommit.Committer.When).ToList();
 
                 var firstOrDefault = mergeBases.FirstOrDefault();
                 if (firstOrDefault != null)

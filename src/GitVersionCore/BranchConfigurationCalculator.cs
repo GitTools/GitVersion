@@ -17,8 +17,12 @@ namespace GitVersion
 
             if (matchingBranches.Length == 0)
             {
+                Logger.WriteInfo(string.Format(
+                    "No branch configuration found for branch {0}, falling back to default configuration",
+                    currentBranch.FriendlyName));
+
                 var branchConfig = new BranchConfig();
-                ConfigurationProvider.ApplyBranchDefaults(config, branchConfig);
+                ConfigurationProvider.ApplyBranchDefaults(config, branchConfig, "");
                 return new KeyValuePair<string, BranchConfig>(string.Empty, branchConfig);
             }
             if (matchingBranches.Length == 1)
@@ -49,8 +53,8 @@ namespace GitVersion
             {
                 throw new ArgumentNullException("currentBranch");
             }
-            
-            return config.Branches.Where(b => Regex.IsMatch(currentBranch.FriendlyName, "^" + b.Key, RegexOptions.IgnoreCase)).ToArray();
+
+            return config.Branches.Where(b => Regex.IsMatch(currentBranch.FriendlyName, "^" + b.Value.Regex, RegexOptions.IgnoreCase)).ToArray();
         }
 
 
@@ -131,7 +135,11 @@ namespace GitVersion
                 var chosenBranch = repository.Branches.FirstOrDefault(b => Regex.IsMatch(b.FriendlyName, "^develop", RegexOptions.IgnoreCase)
                                                                            || Regex.IsMatch(b.FriendlyName, "master$", RegexOptions.IgnoreCase));
                 if (chosenBranch == null)
+                {
+                    // TODO We should call the build server to generate this exception, each build server works differently
+                    // for fetch issues and we could give better warnings.
                     throw new InvalidOperationException("Could not find a 'develop' or 'master' branch, neither locally nor remotely.");
+                }
 
                 var branchName = chosenBranch.FriendlyName;
                 Logger.WriteWarning(errorMessage + Environment.NewLine + Environment.NewLine + "Falling back to " + branchName + " branch config");

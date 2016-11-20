@@ -10,6 +10,7 @@
 
         public BranchConfig(BranchConfig branchConfiguration)
         {
+            Regex = branchConfiguration.Regex;
             VersioningMode = branchConfiguration.VersioningMode;
             Tag = branchConfiguration.Tag;
             Increment = branchConfiguration.Increment;
@@ -19,6 +20,7 @@
             CommitMessageIncrementing = branchConfiguration.CommitMessageIncrementing;
             IsDevelop = branchConfiguration.IsDevelop;
             IsReleaseBranch = branchConfiguration.IsReleaseBranch;
+            IsMainline = branchConfiguration.IsMainline;
         }
 
         [YamlMember(Alias = "mode")]
@@ -45,10 +47,16 @@
         [YamlMember(Alias = "commit-message-incrementing")]
         public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
 
+        [YamlMember(Alias = "regex")]
+        public string Regex { get; set; }
+
         [YamlMember(Alias = "is-develop")]
         public bool? IsDevelop { get; set; }
 
         [YamlMember(Alias = "is-release-branch")]
         public bool? IsReleaseBranch { get; set; }
+
+        [YamlMember(Alias = "is-mainline")]
+        public bool? IsMainline { get; set; }
     }
 }
