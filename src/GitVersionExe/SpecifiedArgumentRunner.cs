@@ -57,12 +57,14 @@ namespace GitVersion
             }
 
             using (var assemblyInfoUpdate = new AssemblyInfoFileUpdate(arguments, targetPath, variables, fileSystem))
+            using (var projectJsonUpdate = new ProjectJsonFileUpdate(arguments, targetPath, variables, fileSystem))
             {
                 var execRun = RunExecCommandIfNeeded(arguments, targetPath, variables);
                 var msbuildRun = RunMsBuildIfNeeded(arguments, targetPath, variables);
                 if (!execRun && !msbuildRun)
                 {
-                    assemblyInfoUpdate.DoNotRestoreAssemblyInfo();
+                    assemblyInfoUpdate.DoNotRestoreFiles();
+                    projectJsonUpdate.DoNotRestoreFiles();
                     //TODO Put warning back
                     //if (!context.CurrentBuildServer.IsRunningInBuildAgent())
                     //{
@@ -72,6 +74,7 @@ namespace GitVersion
                     //}
                 }
             }
+
         }
 
         static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
