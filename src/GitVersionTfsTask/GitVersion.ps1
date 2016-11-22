@@ -33,7 +33,7 @@ if (-not $gitVersionPath)
     throw (Get-LocalizedString -Key "Unable to locate {0}" -ArgumentList 'gitversion.exe')
 }
 
-$argsGitVersion = "$sourcesDirectory" + " /output buildserver /nofetch"
+$argsGitVersion = """$sourcesDirectory""" + " /output buildserver /nofetch"
 
 if($updateAssemblyInfoFlag)
 {
