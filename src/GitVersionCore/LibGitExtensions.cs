@@ -4,6 +4,7 @@ namespace GitVersion
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Runtime.CompilerServices;
     using JetBrains.Annotations;
 
     using LibGit2Sharp;
@@ -32,6 +33,8 @@ namespace GitVersion
             }));
         }
 
+        private static List<BranchCommit> cacheMergeBaseCommits;
+
         /// <summary>
         /// Find the commit where the given branch was branched from another branch.
         /// If there are multiple such commits and branches, returns the newest commit.
@@ -53,22 +56,22 @@ namespace GitVersion
                     return BranchCommit.Empty;
                 }
 
-                var otherBranches = repository.Branches
-                    .ExcludingBranches(excludedBranches)
-                    .Where(b => !IsSameBranch(branch, b));
-                var mergeBases = otherBranches.Select(otherBranch =>
+                if (cacheMergeBaseCommits == null)
                 {
-                    if (otherBranch.Tip == null)
+                    cacheMergeBaseCommits = repository.Branches.Select(otherBranch =>
                     {
-                        Logger.WriteWarning(string.Format(missingTipFormat, otherBranch.FriendlyName));
-                        return BranchCommit.Empty;
-                    }
+                        if (otherBranch.Tip == null)
+                        {
+                            Logger.WriteWarning(string.Format(missingTipFormat, otherBranch.FriendlyName));
+                            return BranchCommit.Empty;
+                        }
 
-                    var findMergeBase = FindMergeBase(branch, otherBranch, repository);
-                    return new BranchCommit(findMergeBase,otherBranch);
-                }).Where(b => b.Commit != null).OrderByDescending(b => b.Commit.Committer.When);
+                        var findMergeBase = FindMergeBase(branch, otherBranch, repository);
+                        return new BranchCommit(findMergeBase, otherBranch);
+                    }).Where(b => b.Commit != null).OrderByDescending(b => b.Commit.Committer.When).ToList();
+                }
 
-                return mergeBases.FirstOrDefault();
+                return cacheMergeBaseCommits.ExcludingBranches(excludedBranches).FirstOrDefault(b => !IsSameBranch(branch, b.Branch));
             }
         }
 
@@ -149,6 +152,14 @@ namespace GitVersion
         /// <summary>
         /// Exclude the given branches (by value equality according to friendly name).
         /// </summary>
+        public static IEnumerable<BranchCommit> ExcludingBranches([NotNull] this IEnumerable<BranchCommit> branches, [NotNull] IEnumerable<Branch> branchesToExclude)
+        {
+            return branches.Where(b => branchesToExclude.All(bte => !IsSameBranch(b.Branch, bte)));
+        }
+
+        /// <summary>
+        /// Exclude the given branches (by value equality according to friendly name).
+        /// </summary>
         public static IEnumerable<Branch> ExcludingBranches([NotNull] this IEnumerable<Branch> branches, [NotNull] IEnumerable<Branch> branchesToExclude)
         {
             return branches.Where(b => branchesToExclude.All(bte => !IsSameBranch(b, bte)));
@@ -210,7 +221,7 @@ namespace GitVersion
         public static GitObject PeeledTarget(this Tag tag)
         {
             GitObject cachedTarget;
-            if(_cachedPeeledTarget.TryGetValue(tag.Target.Sha, out cachedTarget))
+            if (_cachedPeeledTarget.TryGetValue(tag.Target.Sha, out cachedTarget))
             {
                 return cachedTarget;
             }
@@ -274,7 +285,7 @@ namespace GitVersion
                     }
 
                     var fullPath = Path.Combine(repository.GetRepositoryDirectory(), fileName);
-                    using (var stream = ((Blob) treeEntry.Target).GetContentStream())
+                    using (var stream = ((Blob)treeEntry.Target).GetContentStream())
                     {
                         using (var streamReader = new BinaryReader(stream))
                         {
@@ -287,6 +298,13 @@ namespace GitVersion
                     Logger.WriteWarning(string.Format("  An error occurred while checking out '{0}': '{1}'", fileName, ex.Message));
                 }
             }
+        }
+
+        internal static void ClearInMemoryCache()
+        {
+            cacheMergeBaseCommits = null;
+            cachedMergeBase.Clear();
+            _cachedPeeledTarget.Clear();
         }
 
         private class MergeBaseData
