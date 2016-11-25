@@ -150,6 +150,16 @@ namespace GitVersion
                 }
 
 
+                if (name.IsSwitch("diag"))
+                {
+                    if (value == null || value.IsTrue())
+                    {
+                        arguments.Diag = true;
+                    }
+                    continue;
+                }
+
+
                 if (name.IsSwitch("updateAssemblyInfo"))
                 {
                     if (value.IsTrue())

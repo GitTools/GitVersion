@@ -21,7 +21,7 @@
                         var shouldIncrement = !context.Configuration.PreventIncrementForMergedBranchVersion;
                         return new[]
                         {
-                            new BaseVersion(string.Format("Merge message '{0}'", c.Message.Trim()), shouldIncrement, semanticVersion, c, null)
+                            new BaseVersion(context, string.Format("Merge message '{0}'", c.Message.Trim()), shouldIncrement, semanticVersion, c, null)
                         };
                     }
                     return Enumerable.Empty<BaseVersion>();
@@ -35,7 +35,7 @@
             return semanticVersion != null;
         }
 
-        private static SemanticVersion Inner(Commit mergeCommit, EffectiveConfiguration configuration)
+        static SemanticVersion Inner(Commit mergeCommit, EffectiveConfiguration configuration)
         {
             if (mergeCommit.Parents.Count() < 2)
             {

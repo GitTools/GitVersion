@@ -67,7 +67,7 @@
 
             public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
             {
-                yield return new BaseVersion("Source 1", false, new SemanticVersion(1), when, null);
+                yield return new BaseVersion(context, "Source 1", false, new SemanticVersion(1), when, null);
             }
         }
 
@@ -82,7 +82,7 @@
 
             public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
             {
-                yield return new BaseVersion("Source 2", true, new SemanticVersion(2), when, null);
+                yield return new BaseVersion(context, "Source 2", true, new SemanticVersion(2), when, null);
             }
         }
 
@@ -91,7 +91,7 @@
         {
             var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
             var context = new GitVersionContextBuilder().WithConfig(new Config() { Ignore = fakeIgnoreConfig }).Build();
-            var version = new BaseVersion("dummy", false, new SemanticVersion(2), new MockCommit(), null);
+            var version = new BaseVersion(context, "dummy", false, new SemanticVersion(2), new MockCommit(), null);
             var sut = new BaseVersionCalculator(new TestVersionStrategy(version));
 
             var baseVersion = sut.GetBaseVersion(context);
@@ -106,8 +106,8 @@
         {
             var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
             var context = new GitVersionContextBuilder().WithConfig(new Config() { Ignore = fakeIgnoreConfig }).Build();
-            var higherVersion = new BaseVersion("exclude", false, new SemanticVersion(2), new MockCommit(), null);
-            var lowerVersion = new BaseVersion("dummy", false, new SemanticVersion(1), new MockCommit(), null);
+            var higherVersion = new BaseVersion(context, "exclude", false, new SemanticVersion(2), new MockCommit(), null);
+            var lowerVersion = new BaseVersion(context, "dummy", false, new SemanticVersion(1), new MockCommit(), null);
             var sut = new BaseVersionCalculator(new TestVersionStrategy(higherVersion, lowerVersion));
 
             var baseVersion = sut.GetBaseVersion(context);

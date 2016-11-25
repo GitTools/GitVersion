@@ -71,7 +71,7 @@
                     throw new Exception("Base version should not be null");
 
                 var calculatedBase = new BaseVersion(
-                    maxVersion.Version.Source, maxVersion.Version.ShouldIncrement, maxVersion.Version.SemanticVersion,
+                    context, maxVersion.Version.Source, maxVersion.Version.ShouldIncrement, maxVersion.Version.SemanticVersion,
                     baseVersionWithOldestSource.BaseVersionSource, maxVersion.Version.BranchNameOverride);
 
                 Logger.WriteInfo(string.Format("Base version used: {0}", calculatedBase));
@@ -80,7 +80,7 @@
             }
         }
 
-        static SemanticVersion MaybeIncrement(GitVersionContext context, BaseVersion version)
+        public static SemanticVersion MaybeIncrement(GitVersionContext context, BaseVersion version)
         {
             var increment = IncrementStrategyFinder.DetermineIncrementedField(context, version);
             if (increment != null)

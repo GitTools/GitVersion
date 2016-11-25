@@ -11,10 +11,10 @@
             var currentBranch = context.CurrentBranch;
             var tagPrefixRegex = context.Configuration.GitTagPrefix;
             var repository = context.Repository;
-            return GetVersions(tagPrefixRegex, currentBranch, repository);
+            return GetVersions(context, tagPrefixRegex, currentBranch, repository);
         }
 
-        public IEnumerable<BaseVersion> GetVersions(string tagPrefixRegex, Branch currentBranch, IRepository repository)
+        public IEnumerable<BaseVersion> GetVersions(GitVersionContext context, string tagPrefixRegex, Branch currentBranch, IRepository repository)
         {
             var branchName = currentBranch.FriendlyName;
             var versionInBranch = GetVersionInBranch(branchName, tagPrefixRegex);
@@ -22,7 +22,7 @@
             {
                 var commitBranchWasBranchedFrom = currentBranch.FindCommitBranchWasBranchedFrom(repository);
                 var branchNameOverride = branchName.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
-                yield return new BaseVersion("Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom, branchNameOverride);
+                yield return new BaseVersion(context, "Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom, branchNameOverride);
             }
         }
 
