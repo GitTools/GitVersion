@@ -72,6 +72,8 @@ namespace GitVersion
             }
         }
 
+        private static List<MergeBaseData> cachedMergeBase = new List<MergeBaseData>();
+
         /// <summary>
         /// Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
         /// </summary>
@@ -79,6 +81,13 @@ namespace GitVersion
         {
             using (Logger.IndentLog(string.Format("Finding merge base between '{0}' and '{1}'.", branch.FriendlyName, otherBranch.FriendlyName)))
             {
+                // Check the cache.
+                var cachedData = cachedMergeBase.FirstOrDefault(data => IsSameBranch(branch, data.Branch) && IsSameBranch(otherBranch, data.OtherBranch) && repository == data.Repository);
+                if (cachedData != null)
+                {
+                    return cachedData.MergeBase;
+                }
+
                 // Otherbranch tip is a forward merge
                 var commitToFindCommonBase = otherBranch.Tip;
                 var commit = branch.Tip;
@@ -113,6 +122,10 @@ namespace GitVersion
                         }
                     } while (mergeBaseWasForwardMerge);
                 }
+
+                // Store in cache.
+                cachedMergeBase.Add(new MergeBaseData(branch, otherBranch, repository, findMergeBase));
+
                 return findMergeBase;
             }
         }
@@ -273,6 +286,23 @@ namespace GitVersion
                 {
                     Logger.WriteWarning(string.Format("  An error occurred while checking out '{0}': '{1}'", fileName, ex.Message));
                 }
+            }
+        }
+
+        private class MergeBaseData
+        {
+            public Branch Branch { get; private set; }
+            public Branch OtherBranch { get; private set; }
+            public IRepository Repository { get; private set; }
+
+            public Commit MergeBase { get; private set; }
+
+            public MergeBaseData(Branch branch, Branch otherBranch, IRepository repository, Commit mergeBase)
+            {
+                Branch = branch;
+                OtherBranch = otherBranch;
+                Repository = repository;
+                MergeBase = mergeBase;
             }
         }
     }
