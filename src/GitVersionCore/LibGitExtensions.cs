@@ -45,7 +45,7 @@ namespace GitVersion
                 throw new ArgumentNullException("branch");
             }
 
-            using (Logger.IndentLog("Finding branch source"))
+            using (Logger.IndentLog(string.Format("Finding branch source of '{0}'", branch.FriendlyName)))
             {
                 if (branch.Tip == null)
                 {
@@ -77,7 +77,7 @@ namespace GitVersion
         /// </summary>
         public static Commit FindMergeBase(this Branch branch, Branch otherBranch, IRepository repository)
         {
-            using (Logger.IndentLog(string.Format("Finding merge base between '{0}' and {1}.", branch.FriendlyName, otherBranch.FriendlyName)))
+            using (Logger.IndentLog(string.Format("Finding merge base between '{0}' and '{1}'.", branch.FriendlyName, otherBranch.FriendlyName)))
             {
                 // Otherbranch tip is a forward merge
                 var commitToFindCommonBase = otherBranch.Tip;
