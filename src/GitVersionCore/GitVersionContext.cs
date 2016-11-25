@@ -16,6 +16,9 @@
 
         public GitVersionContext(IRepository repository, Branch currentBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
         {
+            // With a new context, clear any in-memory caches.
+            LibGitExtensions.ClearInMemoryCache();
+
             Repository = repository;
             FullConfiguration = configuration;
             OnlyEvaluateTrackedBranches = onlyEvaluateTrackedBranches;
