@@ -26,22 +26,25 @@ public class PullRequestInTeamCityTest
                 remoteRepository.MakeATaggedCommit("1.0.3");
 
                 var branch = remoteRepository.CreateBranch("FeatureBranch");
-                remoteRepository.Checkout(branch);
+                Commands.Checkout(remoteRepository, branch);
                 remoteRepository.MakeCommits(2);
-                remoteRepository.Checkout(remoteRepository.Head.Tip.Sha);
+                Commands.Checkout(remoteRepository, remoteRepository.Head.Tip.Sha);
                 //Emulate merge commit
                 var mergeCommitSha = remoteRepository.MakeACommit().Sha;
-                remoteRepository.Checkout("master"); // HEAD cannot be pointing at the merge commit
+                Commands.Checkout(remoteRepository, "master"); // HEAD cannot be pointing at the merge commit
                 remoteRepository.Refs.Add(pullRequestRef, new ObjectId(mergeCommitSha));
 
                 // Checkout PR commit
                 Commands.Fetch((Repository)fixture.Repository, "origin", new string[0], new FetchOptions(), null);
-                fixture.Repository.Checkout(mergeCommitSha);
+                Commands.Checkout(fixture.Repository, mergeCommitSha);
             }
 
             var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, isTeamCity: true);
 
             result.ExitCode.ShouldBe(0);
+
+            result.Output.ShouldStartWith("{", "we expect valid json output to parse back output variables");
+
             result.OutputVariables.FullSemVer.ShouldBe("1.0.4-PullRequest0005.3");
 
             // Cleanup repository files

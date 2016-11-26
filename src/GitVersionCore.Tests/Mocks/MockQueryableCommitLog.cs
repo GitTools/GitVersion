@@ -42,6 +42,11 @@ public class MockQueryableCommitLog : IQueryableCommitLog
         throw new NotImplementedException();
     }
 
+    public IEnumerable<LogEntry> QueryBy(string path, CommitFilter filter)
+    {
+        throw new NotImplementedException();
+    }
+
     public Commit FindMergeBase(Commit first, Commit second)
     {
         return null;
