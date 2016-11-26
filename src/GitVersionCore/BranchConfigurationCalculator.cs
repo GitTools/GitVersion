@@ -83,7 +83,11 @@ namespace GitVersion
                         return (branchConfig.Length != 1) || (branchConfig.Length == 1 && branchConfig[0].Increment == IncrementStrategy.Inherit);
                     }).ToList();
                 }
-                excludedBranches.ToList().ForEach(excludedInheritBranches.Add);
+                // Add new excluded branches.
+                foreach (var excludedBranch in excludedBranches.ExcludingBranches(excludedInheritBranches))
+                {
+                    excludedInheritBranches.Add(excludedBranch);
+                }
                 var branchesToEvaluate = repository.Branches.Except(excludedInheritBranches).ToList();
 
                 var branchPoint = currentBranch.FindCommitBranchWasBranchedFrom(repository, excludedInheritBranches.ToArray());
@@ -144,7 +148,7 @@ namespace GitVersion
                 var branchName = chosenBranch.FriendlyName;
                 Logger.WriteWarning(errorMessage + Environment.NewLine + Environment.NewLine + "Falling back to " + branchName + " branch config");
 
-                var inheritingBranchConfig = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, chosenBranch);
+                var inheritingBranchConfig = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, chosenBranch, excludedInheritBranches);
                 return new BranchConfig(branchConfiguration)
                 {
                     Increment = inheritingBranchConfig.Increment,
