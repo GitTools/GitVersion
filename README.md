@@ -1,19 +1,20 @@
-![Icon](https://raw.github.com/GitTools/GitVersion/master/docs/img/package_icon.png)
+![Icon][icon]
+
 # GitVersion
-Versioning when using git, solved. GitVersion looks at your git history and works out the semantic version ([semver.org](http://semver.org)) of the commit being built.
+Versioning when using git, solved. GitVersion looks at your git history and works out the semantic version ([semver.org][semver] of the commit being built.
 
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/GitTools/GitVersion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build status](https://ci.appveyor.com/api/projects/status/sxje0wht0cscmn7w/branch/master?svg=true)](https://ci.appveyor.com/project/GitTools/gitversion/branch/master)
-[![Build Status](https://travis-ci.org/GitTools/GitVersion.svg?branch=master)](https://travis-ci.org/GitTools/GitVersion)
+[![Gitter][gitter-badge]][gitter]
+[![Build status][appveyor-badge]][appveyor]
+[![Build Status][travis-badge]][travis]
 
-||Stable|Pre-release|
-|:--:|:--:|:--:|
-|Docs|[![Documentation Status](https://readthedocs.org/projects/gitversion/badge/?version=stable)](http://gitversion.readthedocs.org/en/stable/)|[![Documentation Status](https://readthedocs.org/projects/gitversion/badge/?version=latest)](http://gitversion.readthedocs.org/en/latest/)|
-|GitHub Release|-|[![GitHub release](https://img.shields.io/github/release/gittools/gitversion.svg)](https://github.com/GitTools/GitVersion/releases/latest)|
-|Chocolatey (GitVersion.Portable)|[![Chocolatey](https://img.shields.io/chocolatey/v/gitversion.portable.svg)](https://chocolatey.org/packages/GitVersion.Portable)|[![Chocolatey](https://img.shields.io/chocolatey/vpre/gitversion.portable.svg)](https://chocolatey.org/packages/GitVersion.Portable)|
-|NuGet (GitVersionTask)|[![NuGet](https://img.shields.io/nuget/v/GitVersionTask.svg)](https://www.nuget.org/packages/GitVersionTask)|[![NuGet](https://img.shields.io/nuget/vpre/GitVersionTask.svg)](https://www.nuget.org/packages/GitVersionTask)|
-|NuGet (GitVersion.CommandLine)|[![NuGet](https://img.shields.io/nuget/v/GitVersion.CommandLine.svg)](https://www.nuget.org/packages/GitVersion.CommandLine)|[![NuGet](https://img.shields.io/nuget/vpre/GitVersion.CommandLine.svg)](https://www.nuget.org/packages/GitVersion.CommandLine)|
-|Gem|[![Gem](https://img.shields.io/gem/v/gitversion.svg)](https://rubygems.org/gems/gitversion)|[![Gem](https://img.shields.io/gem/v/gitversion.svg)](https://rubygems.org/gems/gitversion)|
+|                                        | Stable                              | Pre-release                                |
+| :--:                                   | :--:                                | :--:                                       |
+| Docs                                   | [![Docs][docs-badge]][docs]         | [![Docs][docs-pre-badge]][docs-pre]        |
+| GitHub Release                         | -                                   | [![GitHub release][gh-rel-badge]][gh-rel]  |
+| Chocolatey (GitVersion.Portable)       | [![Chocolatey][choco-badge]][choco] | [![Chocolatey][choco-pre-badge]][choco]    |
+| NuGet (GitVersionTask)                 | [![NuGet][gvt-badge]][gvt]          | [![NuGet][gvt-pre-badge]][gvt]             |
+| NuGet (GitVersion.CommandLine)         | [![NuGet][gvc-badge]][gvc]          | [![NuGet][gvc-pre-badge]][gvc]             |
+| Gem                                    | [![Gem][gem-badge]][gem]            | [![Gem][gem-badge]][gem]                   |
 
 ## Compatibility
 GitVersion works on Mac, Linux with Mono and Windows.
@@ -23,21 +24,57 @@ Tip: If you get `System.TypeInitializationException: The type initializer for 'L
 You likely need to install `libcurl3`. Run `sudo get-get install libcurl3`
 
 ## Quick Links
- - [Documentation](http://gitversion.readthedocs.org/en/latest)
- - [Contributing](https://github.com/GitTools/GitVersion/blob/master/CONTRIBUTING.md)
- - [Why GitVersion](http://gitversion.readthedocs.org/en/latest/why)
- - [Usage](http://gitversion.readthedocs.org/en/latest/usage/usage/)
- - [How it works](http://gitversion.readthedocs.org/en/latest/more-info/how-it-works/)
- - [FAQ](http://gitversion.readthedocs.org/en/latest/faq/)
- - [Who is using GitVersion](http://gitversion.readthedocs.org/en/latest/who/)
+ - [Documentation][docs]
+   [Contributing][contribute]
+ - [Why GitVersion][why]
+ - [Usage][usage]
+ - [How it works][how]
+ - [FAQ][faq]
+ - [Who is using GitVersion][who]
 
 ## GitVersion in action!
-![README](https://raw.github.com/GitTools/GitVersion/master/docs/img/README.png)
+![README][gv-in-action]
 
 You are seeing:
 
  - Pull requests being built as pre-release builds
- - A branch called `release-1.0.0` producing beta v1 packages
+ - A bra ch called `release-1.0.0` producing beta v1 packages
 
 ## Icon
-<a href="http://thenounproject.com/noun/tree/#icon-No13389" target="_blank">Tree</a> designed by <a href="http://thenounproject.com/david.chapman" target="_blank">David Chapman</a> from The Noun Project
+<a href="http://thenounproject.com/noun/tree/#icon-No13389"
+target="_blank">Tree</a> designed by <a
+href="http://thenounproject.com/david.chapman" target="_blank">David Chapman</a>
+from The Noun Project
+
+[icon]:            https://raw.github.com/GitTools/GitVersion/master/docs/img/package_icon.png
+[semver]:          http://semver.org
+[gitter]:          https://gitter.im/GitTools/GitVersion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+[gitter-badge]:    https://badges.gitter.im/Join+Chat.svg
+[appveyor]:        https://ci.appveyor.com/project/GitTools/gitversion/branch/master
+[appveyor-badge]:  https://ci.appveyor.com/api/projects/status/sxje0wht0cscmn7w/branch/master?svg=true
+[travis]:          https://travis-ci.org/GitTools/GitVersion
+[travis-badge]:    https://travis-ci.org/GitTools/GitVersion.svg?branch=master
+[docs]:            http://gitversion.readthedocs.org/en/stable/
+[docs-badge]:      https://readthedocs.org/projects/gitversion/badge/?version=stable
+[docs-pre]:        http://gitversion.readthedocs.org/en/latest/
+[docs-pre-badge]:  https://readthedocs.org/projects/gitversion/badge/?version=latest
+[gh-rel]:          https://github.com/GitTools/GitVersion/releases/latest
+[gh-rel-badge]:    https://img.shields.io/github/release/gittools/gitversion.svg
+[choco]:           https://chocolatey.org/packages/GitVersion.Portable
+[choco-badge]:     https://img.shields.io/chocolatey/v/gitversion.portable.svg
+[choco-pre-badge]: https://img.shields.io/chocolatey/vpre/gitversion.portable.svg
+[gvt]:             https://www.nuget.org/packages/GitVersionTask
+[gvt-badge]:       https://img.shields.io/nuget/v/GitVersionTask.svg
+[gvt-pre-badge]:   https://img.shields.io/nuget/vpre/GitVersionTask.svg
+[gvc]:             https://www.nuget.org/packages/GitVersion.CommandLine
+[gvc-badge]:       https://img.shields.io/nuget/v/GitVersion.CommandLine.svg
+[gvc-pre-badge]:   https://img.shields.io/nuget/vpre/GitVersion.CommandLine.svg
+[gem-badge]:       https://img.shields.io/gem/v/gitversion.svg
+[gem]:             https://rubygems.org/gems/gitversion
+[contribute]:      https://github.com/GitTools/GitVersion/blob/master/CONTRIBUTING.md
+[why]:             http://gitversion.readthedocs.org/en/latest/why
+[usage]:           http://gitversion.readthedocs.org/en/latest/usage/usage/
+[how]:             http://gitversion.readthedocs.org/en/latest/more-info/how-it-works/
+[faq]:             http://gitversion.readthedocs.org/en/latest/faq/
+[who]:             http://gitversion.readthedocs.org/en/latest/who/
+[gv-in-action]:    https://raw.github.com/GitTools/GitVersion/master/docs/img/README.png
