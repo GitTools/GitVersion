@@ -1,0 +1,19 @@
+{
+  "dependencies"
+        : 
+{
+    "Microsoft.NETCore.App": {
+    "version": "1.0.0"
+    }
+  },
+            "version"
+    :
+"1.2.3-foo.4+2.Branch.alpha.Sha.ADF.bar"
+
+,
+
+
+"runtimes": {
+    "win8-x64": {}
+  }
+}

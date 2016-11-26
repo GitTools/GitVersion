@@ -104,7 +104,8 @@
                 "init",
                 "updateassemblyinfo",
                 "ensureassemblyinfo",
-                "nofetch"
+                "nofetch",
+                "updateprojectjson"
             };
 
             var argumentMightRequireValue = !booleanArguments.Contains(argument.Substring(1), StringComparer.OrdinalIgnoreCase);

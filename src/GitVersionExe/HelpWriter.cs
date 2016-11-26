@@ -40,6 +40,12 @@ GitVersion [path]
                     it be created with these attributes: AssemblyFileVersion, AssemblyVersion and AssemblyInformationalVersion
                     ---        
                     Supports writing version info for: C#, F#, VB    
+
+    # .NET Core
+    /updateprojectjson
+                    Will recursively search for all 'project.json' files and update the value of the 'version' attribute in 
+                    the root of the JSON document
+
     # Remote repository args
     /url            Url to remote git repository.
     /b              Name of the branch to use on the remote repository, must be used in combination with /url.

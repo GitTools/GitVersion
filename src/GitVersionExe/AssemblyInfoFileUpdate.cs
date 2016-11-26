@@ -9,11 +9,8 @@ namespace GitVersion
     using GitVersion.VersionAssemblyInfoResources;
 
     // TODO: Consolidate this with GitVersionTask.UpdateAssemblyInfo. @asbjornu
-    class AssemblyInfoFileUpdate : IDisposable
+    class AssemblyInfoFileUpdate : FileUpdateBase
     {
-        List<Action> restoreBackupTasks = new List<Action>();
-        List<Action> cleanupBackupTasks = new List<Action>();
-
         public AssemblyInfoFileUpdate(Arguments args, string workingDirectory, VersionVariables variables, IFileSystem fileSystem)
         {
             if (!args.UpdateAssemblyInfo) return;
@@ -128,27 +125,6 @@ namespace GitVersion
             }
             Logger.WriteWarning(string.Format("No version assembly info template available to create source file '{0}'", arguments.UpdateAssemblyInfoFileName));
             return false;
-        }
-
-        public void Dispose()
-        {
-            foreach (var restoreBackup in restoreBackupTasks)
-            {
-                restoreBackup();
-            }
-
-            cleanupBackupTasks.Clear();
-            restoreBackupTasks.Clear();
-        }
-
-        public void DoNotRestoreAssemblyInfo()
-        {
-            foreach (var cleanupBackupTask in cleanupBackupTasks)
-            {
-                cleanupBackupTask();
-            }
-            cleanupBackupTasks.Clear();
-            restoreBackupTasks.Clear();
         }
     }
 }
