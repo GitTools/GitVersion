@@ -10,14 +10,14 @@ namespace GitVersion.VersionCalculation
     /// <summary>
     /// Inherit version from release branch and tags on master
     /// </summary>
-    public class DevelopVersionStrategy : BaseVersionStrategy
+    public class TrackReleaseBranchesVersionStrategy : BaseVersionStrategy
     {
         VersionInBranchBaseVersionStrategy releaseVersionStrategy = new VersionInBranchBaseVersionStrategy();
         TaggedCommitVersionStrategy taggedCommitVersionStrategy = new TaggedCommitVersionStrategy();
 
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
-            if (context.Configuration.IsCurrentBranchDevelop)
+            if (context.Configuration.TracksReleaseBranches)
             {
                 return ReleaseBranchBaseVersions(context).Union(MasterTagsVersions(context));
             }

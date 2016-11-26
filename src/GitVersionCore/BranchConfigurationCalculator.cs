@@ -1,13 +1,11 @@
 namespace GitVersion
 {
+    using JetBrains.Annotations;
+    using LibGit2Sharp;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
-
-    using JetBrains.Annotations;
-
-    using LibGit2Sharp;
 
     public class BranchConfigurationCalculator
     {
@@ -48,7 +46,7 @@ namespace GitVersion
             {
                 throw new ArgumentNullException("config");
             }
-            
+
             if (currentBranch == null)
             {
                 throw new ArgumentNullException("currentBranch");
@@ -120,7 +118,7 @@ namespace GitVersion
                             Increment = branchConfig.Increment,
                             PreventIncrementOfMergedBranchVersion = branchConfig.PreventIncrementOfMergedBranchVersion,
                             // If we are inheriting from develop then we should behave like develop
-                            IsDevelop = branchConfig.IsDevelop
+                            TracksReleaseBranches = branchConfig.TracksReleaseBranches
                         });
                 }
 
@@ -152,7 +150,7 @@ namespace GitVersion
                         Increment = inheritingBranchConfig.Increment,
                         PreventIncrementOfMergedBranchVersion = inheritingBranchConfig.PreventIncrementOfMergedBranchVersion,
                         // If we are inheriting from develop then we should behave like develop
-                        IsDevelop = inheritingBranchConfig.IsDevelop
+                        TracksReleaseBranches = inheritingBranchConfig.TracksReleaseBranches
                     });
             }
         }

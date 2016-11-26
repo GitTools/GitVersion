@@ -71,11 +71,9 @@
         /// Contains the raw configuration, use Configuration for specific config based on the current GitVersion context.
         /// </summary>
         public Config FullConfiguration { get; private set; }
-
         public SemanticVersion CurrentCommitTaggedVersion { get; private set; }
         public bool OnlyEvaluateTrackedBranches { get; private set; }
         public EffectiveConfiguration Configuration { get; private set; }
-
         public IRepository Repository { get; private set; }
         public Branch CurrentBranch { get; private set; }
         public Commit CurrentCommit { get; private set; }
@@ -93,8 +91,8 @@
                 throw new Exception(string.Format("Configuration value for 'PreventIncrementOfMergedBranchVersion' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
             if (!currentBranchConfig.Value.TrackMergeTarget.HasValue)
                 throw new Exception(string.Format("Configuration value for 'TrackMergeTarget' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
-            if (!currentBranchConfig.Value.IsDevelop.HasValue)
-                throw new Exception(string.Format("Configuration value for 'IsDevelop' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
+            if (!currentBranchConfig.Value.TracksReleaseBranches.HasValue)
+                throw new Exception(string.Format("Configuration value for 'TracksReleaseBranches' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
             if (!currentBranchConfig.Value.IsReleaseBranch.HasValue)
                 throw new Exception(string.Format("Configuration value for 'IsReleaseBranch' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
 
@@ -140,7 +138,7 @@
                 FullConfiguration.BuildMetaDataPadding.Value,
                 FullConfiguration.CommitsSinceVersionSourcePadding.Value,
                 FullConfiguration.Ignore.ToFilters(),
-                currentBranchConfig.Value.IsDevelop.Value,
+                currentBranchConfig.Value.TracksReleaseBranches.Value,
                 currentBranchConfig.Value.IsReleaseBranch.Value);
         }
     }

@@ -33,11 +33,11 @@
         [YamlMember(Alias = "next-version")]
         public string NextVersion
         {
-            get { return this.nextVersion; }
+            get { return nextVersion; }
             set
             {
                 int major;
-                this.nextVersion = int.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out major)
+                nextVersion = int.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out major)
                     ? string.Format("{0}.0", major)
                     : value;
             }

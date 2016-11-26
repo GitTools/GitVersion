@@ -98,6 +98,7 @@
     <Compile Include="Configuration\ConfigSerialiser.cs" />
     <Compile Include="Configuration\ConfigurationProvider.cs" />
     <Compile Include="Configuration\IncrementStrategy.cs" />
+    <Compile Include="Configuration\LegacyBranchConfig.cs" />
     <Compile Include="Configuration\LegacyConfig.cs" />
     <Compile Include="Configuration\LegacyConfigNotifier.cs" />
     <Compile Include="Configuration\OldConfigurationException.cs" />

@@ -305,4 +305,23 @@ branches: {}";
 
         return fullPath;
     }
+
+    [Test]
+    public void WarnOnObsoleteIsDevelopBranchConfigurationSetting()
+    {
+        const string text = @"
+assembly-versioning-scheme: MajorMinorPatch
+branches:
+  master:
+    tag: beta
+    is-develop: true";
+
+        OldConfigurationException exception = Should.Throw<OldConfigurationException>(() =>
+        {
+            LegacyConfigNotifier.Notify(new StringReader(text));
+        });
+
+        var expecedMessage = string.Format("'is-develop' is deprecated, use 'track-release-branches' instead.");
+        exception.Message.ShouldContain(expecedMessage);
+    }
 }
