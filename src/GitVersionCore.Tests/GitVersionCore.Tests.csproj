@@ -173,7 +173,7 @@
     <Compile Include="VersionCalculation\Strategies\ConfigNextVersionBaseVersionStrategyTests.cs" />
     <Compile Include="GitVersionContextBuilder.cs" />
     <Compile Include="VersionCalculation\Strategies\MergeMessageBaseVersionStrategyTests.cs" />
-    <Compile Include="VersionCalculation\Strategies\VersionInBranchBaseVersionStrategyTests.cs" />
+    <Compile Include="VersionCalculation\Strategies\VersionInBranchNameBaseVersionStrategyTests.cs" />
     <Compile Include="VersionCalculation\TestBaseVersionCalculator.cs" />
     <Compile Include="VersionCalculation\TestMetaDataCalculator.cs" />
     <Compile Include="VersionFilters\MinDateVersionFilterTests.cs" />

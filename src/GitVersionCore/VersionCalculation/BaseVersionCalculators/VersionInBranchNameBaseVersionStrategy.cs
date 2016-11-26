@@ -4,7 +4,12 @@
     using System.Collections.Generic;
     using LibGit2Sharp;
 
-    public class VersionInBranchBaseVersionStrategy : BaseVersionStrategy
+    /// <summary>
+    /// Version is extracted from the name of the branch.
+    /// BaseVersionSource is the commit where the branch was branched from its parent.
+    /// Does not increment.
+    /// </summary>
+    public class VersionInBranchNameBaseVersionStrategy : BaseVersionStrategy
     {
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
@@ -22,7 +27,7 @@
             {
                 var commitBranchWasBranchedFrom = currentBranch.FindCommitBranchWasBranchedFrom(repository);
                 var branchNameOverride = branchName.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
-                yield return new BaseVersion(context, "Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom, branchNameOverride);
+                yield return new BaseVersion(context, "Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom.Commit, branchNameOverride);
             }
         }
 

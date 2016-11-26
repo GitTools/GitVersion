@@ -85,18 +85,18 @@
         {
             var currentBranchConfig = BranchConfigurationCalculator.GetBranchConfiguration(CurrentCommit, Repository, OnlyEvaluateTrackedBranches, FullConfiguration, CurrentBranch);
 
-            if (!currentBranchConfig.Value.VersioningMode.HasValue)
-                throw new Exception(string.Format("Configuration value for 'Versioning mode' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
-            if (!currentBranchConfig.Value.Increment.HasValue)
-                throw new Exception(string.Format("Configuration value for 'Increment' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
-            if (!currentBranchConfig.Value.PreventIncrementOfMergedBranchVersion.HasValue)
-                throw new Exception(string.Format("Configuration value for 'PreventIncrementOfMergedBranchVersion' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
-            if (!currentBranchConfig.Value.TrackMergeTarget.HasValue)
-                throw new Exception(string.Format("Configuration value for 'TrackMergeTarget' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
-            if (!currentBranchConfig.Value.IsDevelop.HasValue)
-                throw new Exception(string.Format("Configuration value for 'IsDevelop' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
-            if (!currentBranchConfig.Value.IsReleaseBranch.HasValue)
-                throw new Exception(string.Format("Configuration value for 'IsReleaseBranch' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Key));
+            if (!currentBranchConfig.VersioningMode.HasValue)
+                throw new Exception(string.Format("Configuration value for 'Versioning mode' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));
+            if (!currentBranchConfig.Increment.HasValue)
+                throw new Exception(string.Format("Configuration value for 'Increment' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));
+            if (!currentBranchConfig.PreventIncrementOfMergedBranchVersion.HasValue)
+                throw new Exception(string.Format("Configuration value for 'PreventIncrementOfMergedBranchVersion' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));
+            if (!currentBranchConfig.TrackMergeTarget.HasValue)
+                throw new Exception(string.Format("Configuration value for 'TrackMergeTarget' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));
+            if (!currentBranchConfig.IsDevelop.HasValue)
+                throw new Exception(string.Format("Configuration value for 'IsDevelop' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));
+            if (!currentBranchConfig.IsReleaseBranch.HasValue)
+                throw new Exception(string.Format("Configuration value for 'IsReleaseBranch' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));
 
             if (!FullConfiguration.AssemblyVersioningScheme.HasValue)
                 throw new Exception("Configuration value for 'AssemblyVersioningScheme' has no value. (this should not happen, please report an issue)");
@@ -109,12 +109,12 @@
             if (!FullConfiguration.CommitsSinceVersionSourcePadding.HasValue)
                 throw new Exception("Configuration value for 'CommitsSinceVersionSourcePadding' has no value. (this should not happen, please report an issue)");
 
-            var versioningMode = currentBranchConfig.Value.VersioningMode.Value;
-            var tag = currentBranchConfig.Value.Tag;
-            var tagNumberPattern = currentBranchConfig.Value.TagNumberPattern;
-            var incrementStrategy = currentBranchConfig.Value.Increment.Value;
-            var preventIncrementForMergedBranchVersion = currentBranchConfig.Value.PreventIncrementOfMergedBranchVersion.Value;
-            var trackMergeTarget = currentBranchConfig.Value.TrackMergeTarget.Value;
+            var versioningMode = currentBranchConfig.VersioningMode.Value;
+            var tag = currentBranchConfig.Tag;
+            var tagNumberPattern = currentBranchConfig.TagNumberPattern;
+            var incrementStrategy = currentBranchConfig.Increment.Value;
+            var preventIncrementForMergedBranchVersion = currentBranchConfig.PreventIncrementOfMergedBranchVersion.Value;
+            var trackMergeTarget = currentBranchConfig.TrackMergeTarget.Value;
 
             var nextVersion = FullConfiguration.NextVersion;
             var assemblyVersioningScheme = FullConfiguration.AssemblyVersioningScheme.Value;
@@ -125,12 +125,12 @@
             var patchMessage = FullConfiguration.PatchVersionBumpMessage;
             var noBumpMessage = FullConfiguration.NoBumpMessage;
 
-            var commitMessageVersionBump = currentBranchConfig.Value.CommitMessageIncrementing ?? FullConfiguration.CommitMessageIncrementing.Value;
+            var commitMessageVersionBump = currentBranchConfig.CommitMessageIncrementing ?? FullConfiguration.CommitMessageIncrementing.Value;
 
             Configuration = new EffectiveConfiguration(
                 assemblyVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix,
                 tag, nextVersion, incrementStrategy,
-                currentBranchConfig.Value.Regex,
+                currentBranchConfig.Regex,
                 preventIncrementForMergedBranchVersion,
                 tagNumberPattern, FullConfiguration.ContinuousDeploymentFallbackTag,
                 trackMergeTarget,
@@ -140,8 +140,8 @@
                 FullConfiguration.BuildMetaDataPadding.Value,
                 FullConfiguration.CommitsSinceVersionSourcePadding.Value,
                 FullConfiguration.Ignore.ToFilters(),
-                currentBranchConfig.Value.IsDevelop.Value,
-                currentBranchConfig.Value.IsReleaseBranch.Value);
+                currentBranchConfig.IsDevelop.Value,
+                currentBranchConfig.IsReleaseBranch.Value);
         }
     }
 }
