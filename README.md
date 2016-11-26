@@ -42,7 +42,7 @@ You likely need to install `libcurl3`. Run `sudo get-get install libcurl3`
 You are seeing:
 
  - Pull requests being built as pre-release builds
- - A bra ch called `release-1.0.0` producing beta v1 packages
+ - A branch called `release-1.0.0` producing beta v1 packages
 
 ## Icon
 <a href="http://thenounproject.com/noun/tree/#icon-No13389"
