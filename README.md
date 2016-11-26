@@ -15,6 +15,7 @@ Versioning when using git, solved. GitVersion looks at your git history and work
 | GitVersionTask            | [![NuGet][gvt-badge]][gvt]          | [![NuGet][gvt-pre-badge]][gvt]             |
 | GitVersion.CommandLine    | [![NuGet][gvc-badge]][gvc]          | [![NuGet][gvc-pre-badge]][gvc]             |
 | Gem                       | [![Gem][gem-badge]][gem]            | [![Gem][gem-badge]][gem]                   |
+| Homebrew                  | [![homebrew][brew-badge]][brew]     | -                                          |
 
 ## Compatibility
 GitVersion works on Mac, Linux with Mono and Windows.
@@ -71,6 +72,8 @@ from The Noun Project
 [gvc-pre-badge]:   https://img.shields.io/nuget/vpre/GitVersion.CommandLine.svg
 [gem-badge]:       https://img.shields.io/gem/v/gitversion.svg
 [gem]:             https://rubygems.org/gems/gitversion
+[brew]:            http://brew.sh/
+[brew-badge]:      https://img.shields.io/homebrew/v/gitversion.svg
 [contribute]:      https://github.com/GitTools/GitVersion/blob/master/CONTRIBUTING.md
 [why]:             http://gitversion.readthedocs.org/en/latest/why
 [usage]:           http://gitversion.readthedocs.org/en/latest/usage/usage/
