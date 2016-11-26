@@ -65,3 +65,6 @@ It will not change config file 'GitVersion.yml'.
 
 ### Example: How to override configuration option 'tag-prefix' to use prefix 'custom'
 `GitVersion.exe /output json /overrideconfig tag-prefix=custom`
+
+## Mono
+To use on mac or linux, install `mono-complete` then just run `mono GitVersion.exe`

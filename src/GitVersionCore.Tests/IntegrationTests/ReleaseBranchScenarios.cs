@@ -13,13 +13,13 @@ public class ReleaseBranchScenarios
         using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeACommit();
-            fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
             fixture.Repository.MakeCommits(3);
             var releaseBranch = fixture.Repository.CreateBranch("release/1.0.0");
-            fixture.Repository.Checkout("master");
+            Commands.Checkout(fixture.Repository, "master");
             fixture.Repository.MergeNoFF("release/1.0.0");
             fixture.Repository.ApplyTag("1.0.0");
-            fixture.Repository.Checkout("develop");
+            Commands.Checkout(fixture.Repository, "develop");
 
             fixture.Repository.Branches.Remove(releaseBranch);
 
@@ -33,19 +33,19 @@ public class ReleaseBranchScenarios
         using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeACommit();
-            fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
             fixture.Repository.MakeCommits(3);
             var releaseBranch = fixture.Repository.CreateBranch("release/1.0.0");
-            fixture.Repository.Checkout(releaseBranch);
+            Commands.Checkout(fixture.Repository, releaseBranch);
             fixture.Repository.MakeACommit();
 
             // Merge to master
-            fixture.Repository.Checkout("master");
+            Commands.Checkout(fixture.Repository, "master");
             fixture.Repository.MergeNoFF("release/1.0.0");
             fixture.Repository.ApplyTag("1.0.0");
 
             // Merge to develop
-            fixture.Repository.Checkout("develop");
+            Commands.Checkout(fixture.Repository, "develop");
             fixture.Repository.MergeNoFF("release/1.0.0");
             fixture.AssertFullSemver("1.1.0-alpha.2");
 
@@ -64,7 +64,7 @@ public class ReleaseBranchScenarios
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.MakeCommits(5);
             fixture.Repository.CreateBranch("release-2.0.0");
-            fixture.Repository.Checkout("release-2.0.0");
+            Commands.Checkout(fixture.Repository, "release-2.0.0");
 
             fixture.AssertFullSemver("2.0.0-beta.1+0");
             fixture.Repository.MakeCommits(2);
@@ -80,7 +80,7 @@ public class ReleaseBranchScenarios
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.MakeCommits(5);
             fixture.Repository.CreateBranch("releases/2.0.0");
-            fixture.Repository.Checkout("releases/2.0.0");
+            Commands.Checkout(fixture.Repository, "releases/2.0.0");
 
             fixture.AssertFullSemver("2.0.0-beta.1+0");
             fixture.Repository.MakeCommits(2);
@@ -98,7 +98,7 @@ public class ReleaseBranchScenarios
         using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeCommits(5);
-            fixture.Repository.Checkout(fixture.Repository.CreateBranch("release-2.0.0"));
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("release-2.0.0"));
 
             fixture.AssertFullSemver(config, "2.0.0-beta.1+0");
             fixture.Repository.MakeCommits(2);
@@ -121,7 +121,7 @@ public class ReleaseBranchScenarios
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.MakeCommits(5);
             fixture.Repository.CreateBranch("release-2.0.0");
-            fixture.Repository.Checkout("release-2.0.0");
+            Commands.Checkout(fixture.Repository, "release-2.0.0");
 
             fixture.AssertFullSemver(config, "2.0.0-rc.1+0");
             fixture.Repository.MakeCommits(2);
@@ -138,7 +138,7 @@ public class ReleaseBranchScenarios
             fixture.Repository.CreateBranch("develop");
             fixture.Repository.MakeCommits(5);
             fixture.Repository.CreateBranch("release-2.0.0-Final");
-            fixture.Repository.Checkout("release-2.0.0-Final");
+            Commands.Checkout(fixture.Repository, "release-2.0.0-Final");
 
             fixture.AssertFullSemver("2.0.0-beta.1+0");
             fixture.Repository.MakeCommits(2);
@@ -156,9 +156,9 @@ public class ReleaseBranchScenarios
             fixture.Repository.MakeCommits(1);
 
             fixture.Repository.CreateBranch("release-2.0.0");
-            fixture.Repository.Checkout("release-2.0.0");
+            Commands.Checkout(fixture.Repository, "release-2.0.0");
             fixture.Repository.MakeCommits(4);
-            fixture.Repository.Checkout("master");
+            Commands.Checkout(fixture.Repository, "master");
             fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
             fixture.AssertFullSemver("2.0.0+0");
@@ -175,9 +175,9 @@ public class ReleaseBranchScenarios
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.MakeCommits(1);
             fixture.Repository.CreateBranch("release-2.0.0");
-            fixture.Repository.Checkout("release-2.0.0");
+            Commands.Checkout(fixture.Repository, "release-2.0.0");
             fixture.Repository.MakeCommits(4);
-            fixture.Repository.Checkout("master");
+            Commands.Checkout(fixture.Repository, "master");
             fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
             fixture.AssertFullSemver("2.0.0+0");
@@ -192,9 +192,9 @@ public class ReleaseBranchScenarios
             fixture.Repository.MakeATaggedCommit("1.0.3");
             fixture.Repository.MakeCommits(1);
             fixture.Repository.CreateBranch("release-2.0.0");
-            fixture.Repository.Checkout("release-2.0.0");
+            Commands.Checkout(fixture.Repository, "release-2.0.0");
             fixture.Repository.MakeCommits(4);
-            fixture.Repository.Checkout("master");
+            Commands.Checkout(fixture.Repository, "master");
             fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
             fixture.AssertFullSemver("2.0.0+0");
@@ -214,15 +214,15 @@ public class ReleaseBranchScenarios
             fixture.Repository.MakeCommits(1);
 
             fixture.Repository.CreateBranch("release-2.0.0");
-            fixture.Repository.Checkout("release-2.0.0");
+            Commands.Checkout(fixture.Repository, "release-2.0.0");
             fixture.Repository.MakeCommits(4);
-            fixture.Repository.Checkout("develop");
+            Commands.Checkout(fixture.Repository, "develop");
             fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
             fixture.Repository.CreateBranch("release-1.0.0");
-            fixture.Repository.Checkout("release-1.0.0");
+            Commands.Checkout(fixture.Repository, "release-1.0.0");
             fixture.Repository.MakeCommits(4);
-            fixture.Repository.Checkout("develop");
+            Commands.Checkout(fixture.Repository, "develop");
             fixture.Repository.MergeNoFF("release-1.0.0", Generate.SignatureNow());
 
             fixture.AssertFullSemver("2.1.0-alpha.6");
@@ -238,15 +238,15 @@ public class ReleaseBranchScenarios
             fixture.Repository.MakeCommits(1);
 
             fixture.Repository.CreateBranch("release-2.0.0");
-            fixture.Repository.Checkout("release-2.0.0");
+            Commands.Checkout(fixture.Repository, "release-2.0.0");
             fixture.Repository.MakeCommits(4);
-            fixture.Repository.Checkout("master");
+            Commands.Checkout(fixture.Repository, "master");
             fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
             fixture.Repository.CreateBranch("release-1.0.0");
-            fixture.Repository.Checkout("release-1.0.0");
+            Commands.Checkout(fixture.Repository, "release-1.0.0");
             fixture.Repository.MakeCommits(4);
-            fixture.Repository.Checkout("master");
+            Commands.Checkout(fixture.Repository, "master");
             fixture.Repository.MergeNoFF("release-1.0.0", Generate.SignatureNow());
 
             fixture.AssertFullSemver("2.0.0+5");
@@ -261,13 +261,13 @@ public class ReleaseBranchScenarios
             const string TaggedVersion = "1.0.3";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
             fixture.Repository.CreateBranch("develop");
-            fixture.Repository.Checkout("develop");
+            Commands.Checkout(fixture.Repository, "develop");
 
             fixture.Repository.MakeCommits(1);
             fixture.AssertFullSemver("1.1.0-alpha.1");
 
             fixture.Repository.CreateBranch("release-2.0.0");
-            fixture.Repository.Checkout("release-2.0.0");
+            Commands.Checkout(fixture.Repository, "release-2.0.0");
             fixture.Repository.MakeCommits(1);
 
             fixture.AssertFullSemver("2.0.0-beta.1+1");
@@ -280,11 +280,11 @@ public class ReleaseBranchScenarios
             fixture.AssertFullSemver("2.0.0-beta.2+2");
 
             //merge down to develop
-            fixture.Repository.Checkout("develop");
+            Commands.Checkout(fixture.Repository, "develop");
             fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
             //but keep working on the release
-            fixture.Repository.Checkout("release-2.0.0");
+            Commands.Checkout(fixture.Repository, "release-2.0.0");
             fixture.AssertFullSemver("2.0.0-beta.2+2");
             fixture.MakeACommit();
             fixture.AssertFullSemver("2.0.0-beta.2+3");
@@ -303,12 +303,12 @@ public class ReleaseBranchScenarios
             const string TaggedVersion = "1.0.3";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
             fixture.Repository.CreateBranch("develop");
-            fixture.Repository.Checkout("develop");
+            Commands.Checkout(fixture.Repository, "develop");
 
             fixture.Repository.MakeCommits(1);
 
             fixture.Repository.CreateBranch("release-2.0.0");
-            fixture.Repository.Checkout("release-2.0.0");
+            Commands.Checkout(fixture.Repository, "release-2.0.0");
             fixture.Repository.MakeCommits(1);
 
             fixture.AssertFullSemver(config, "2.0.0-beta.1");
@@ -323,7 +323,7 @@ public class ReleaseBranchScenarios
             fixture.Repository.MakeCommits(2);
 
             //but keep working on the release
-            fixture.Repository.Checkout("release-2.0.0");
+            Commands.Checkout(fixture.Repository, "release-2.0.0");
             fixture.Repository.MergeNoFF("hotfix-2.0.0", Generate.SignatureNow());
             fixture.Repository.Branches.Remove(fixture.Repository.Branches["hotfix-2.0.0"]);
             fixture.AssertFullSemver(config, "2.0.0-beta.7");
@@ -342,17 +342,17 @@ public class ReleaseBranchScenarios
             const string TaggedVersion = "1.0.3";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
             fixture.Repository.CreateBranch("develop");
-            fixture.Repository.Checkout("develop");
+            Commands.Checkout(fixture.Repository, "develop");
             fixture.Repository.MakeACommit();
 
             fixture.Repository.CreateBranch("release/2.0.0");
 
             fixture.Repository.CreateBranch("release/2.0.0-xxx");
-            fixture.Repository.Checkout("release/2.0.0-xxx");
+            Commands.Checkout(fixture.Repository, "release/2.0.0-xxx");
             fixture.Repository.MakeACommit();
             fixture.AssertFullSemver(config, "2.0.0-beta.1");
 
-            fixture.Repository.Checkout("release/2.0.0");
+            Commands.Checkout(fixture.Repository, "release/2.0.0");
             fixture.Repository.MakeACommit();
             fixture.AssertFullSemver(config, "2.0.0-beta.1");
 

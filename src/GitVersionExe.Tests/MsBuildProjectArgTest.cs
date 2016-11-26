@@ -17,7 +17,7 @@ public class MsBuildProjectArgTest
             var buildFile = Path.Combine(fixture.RepositoryPath, "RunsMsBuildProvideViaCommandLineArg.proj");
             File.Delete(buildFile);
             const string buildFileContent = @"<?xml version=""1.0"" encoding=""utf-8""?>
-<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
+<Project ToolsVersion=""4.0"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
   <Target Name=""OutputResults"">
     <Message Text=""GitVersion_FullSemVer: $(GitVersion_FullSemVer)""/>
   </Target>
