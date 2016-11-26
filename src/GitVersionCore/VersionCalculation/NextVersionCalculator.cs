@@ -22,7 +22,7 @@
                     new TaggedCommitVersionStrategy(),
                     new MergeMessageBaseVersionStrategy(),
                     new VersionInBranchBaseVersionStrategy(),
-                    new DevelopVersionStrategy());
+                    new TrackReleaseBranchesVersionStrategy());
         }
 
         public SemanticVersion FindVersion(GitVersionContext context)

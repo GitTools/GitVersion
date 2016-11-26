@@ -7,11 +7,13 @@ namespace GitVersion
     /// <summary>
     /// Obsolete properties are added to this, so we can check to see if they are used and provide good error messages for migration
     /// </summary>
-    public class LegacyConfig : Config
+    public class LegacyConfig
     {
         private Dictionary<string, LegacyBranchConfig> branches = new Dictionary<string, LegacyBranchConfig>();
 
+#pragma warning disable IDE1006 // Naming Styles
         public string assemblyVersioningScheme { get; set; }
+#pragma warning restore IDE1006 // Naming Styles
 
         [YamlMember(Alias = "develop-branch-tag")]
         public string DevelopBranchTag { get; set; }
