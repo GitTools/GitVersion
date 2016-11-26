@@ -21,8 +21,9 @@ namespace GitVersion
             {
                 branchConfiguration = matchingBranches[0];
 
-                if (matchingBranches.Length > 1) {
-                    Logger.WriteInfo(string.Format(
+                if (matchingBranches.Length > 1)
+                {
+                    Logger.WriteWarning(string.Format(
                         "Multiple branch configurations match the current branch branchName of '{0}'. Using the first matching configuration, '{1}'. Matching configurations include: '{2}'",
                         currentBranch.FriendlyName,
                         branchConfiguration.Name,
