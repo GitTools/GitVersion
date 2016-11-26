@@ -1,7 +1,7 @@
 ![Icon][icon]
 
 # GitVersion
-Versioning when using git, solved. GitVersion looks at your git history and works out the semantic version ([semver.org][semver] of the commit being built.
+Versioning when using git, solved. GitVersion looks at your git history and works out the [semantic version][semver] of the commit being built.
 
 [![Gitter][gitter-badge]][gitter]
 [![Build status][appveyor-badge]][appveyor]
