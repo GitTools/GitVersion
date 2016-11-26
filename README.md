@@ -14,7 +14,7 @@ Versioning when using git, solved. GitVersion looks at your git history and work
 |   **GitVersion.Portable**  | [![Chocolatey][choco-badge]][choco] |   [![Chocolatey][choco-pre-badge]][choco] |
 |        **GitVersionTask**  |     [![NuGet][gvt-badge]][gvt]      |       [![NuGet][gvt-pre-badge]][gvt]      |
 | **GitVersion.CommandLine** |     [![NuGet][gvc-badge]][gvc]      |       [![NuGet][gvc-pre-badge]][gvc]      |
-|                    **Gem** |       [![Gem][gem-badge]][gem]      |          [![Gem][gem-badge]][gem]         |
+|                    **Gem** |       [![Gem][gem-badge]][gem]      |                      -                    |
 |               **Homebrew** |   [![homebrew][brew-badge]][brew]   |                      -                    |
 
 ## Compatibility
