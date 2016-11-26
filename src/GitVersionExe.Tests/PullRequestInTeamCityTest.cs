@@ -26,17 +26,17 @@ public class PullRequestInTeamCityTest
                 remoteRepository.MakeATaggedCommit("1.0.3");
 
                 var branch = remoteRepository.CreateBranch("FeatureBranch");
-                Commands.Checkout(Commands, remoteRepository, branch);
+                Commands.Checkout(remoteRepository, branch);
                 remoteRepository.MakeCommits(2);
-                Commands.Checkout(Commands, remoteRepository, remoteRepository.Head.Tip.Sha);
+                Commands.Checkout(remoteRepository, remoteRepository.Head.Tip.Sha);
                 //Emulate merge commit
                 var mergeCommitSha = remoteRepository.MakeACommit().Sha;
-                Commands.Checkout(Commands, remoteRepository, "master"); // HEAD cannot be pointing at the merge commit
+                Commands.Checkout(remoteRepository, "master"); // HEAD cannot be pointing at the merge commit
                 remoteRepository.Refs.Add(pullRequestRef, new ObjectId(mergeCommitSha));
 
                 // Checkout PR commit
                 Commands.Fetch((Repository)fixture.Repository, "origin", new string[0], new FetchOptions(), null);
-                Commands.Checkout(Commands, fixture.Repository, mergeCommitSha);
+                Commands.Checkout(fixture.Repository, mergeCommitSha);
             }
 
             var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, isTeamCity: true);

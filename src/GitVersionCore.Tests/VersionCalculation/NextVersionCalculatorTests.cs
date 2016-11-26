@@ -129,7 +129,7 @@
 
                 fixture.AssertFullSemver(config, "0.1.0-test.2+2");
 
-                Commands.Checkout(Commands, fixture.Repository, "master");
+                Commands.Checkout(fixture.Repository, "master");
                 fixture.Repository.Merge(fixture.Repository.FindBranch("feature/test"), Generate.SignatureNow());
 
                 fixture.AssertFullSemver(config, "0.1.0-beta.1+2");
