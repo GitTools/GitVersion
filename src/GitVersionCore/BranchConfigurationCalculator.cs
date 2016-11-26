@@ -148,6 +148,16 @@ namespace GitVersion
                 var branchName = chosenBranch.FriendlyName;
                 Logger.WriteWarning(errorMessage + Environment.NewLine + Environment.NewLine + "Falling back to " + branchName + " branch config");
 
+                // To prevent infinite loops, make sure that a new branch was chosen.
+                if (LibGitExtensions.IsSameBranch(currentBranch, chosenBranch))
+                {
+                    Logger.WriteWarning("Fallback branch wants to inherit Increment branch configuration from itself. Using patch increment instead.");
+                    return new BranchConfig(branchConfiguration)
+                    {
+                        Increment = IncrementStrategy.Patch
+                    };
+                }
+
                 var inheritingBranchConfig = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, chosenBranch, excludedInheritBranches);
                 return new BranchConfig(branchConfiguration)
                 {
