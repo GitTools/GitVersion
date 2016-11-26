@@ -7,14 +7,14 @@ Versioning when using git, solved. GitVersion looks at your git history and work
 [![Build status][appveyor-badge]][appveyor]
 [![Build Status][travis-badge]][travis]
 
-|                                        | Stable                              | Pre-release                                |
-| :--:                                   | :--:                                | :--:                                       |
-| Docs                                   | [![Docs][docs-badge]][docs]         | [![Docs][docs-pre-badge]][docs-pre]        |
-| GitHub Release                         | -                                   | [![GitHub release][gh-rel-badge]][gh-rel]  |
-| Chocolatey (GitVersion.Portable)       | [![Chocolatey][choco-badge]][choco] | [![Chocolatey][choco-pre-badge]][choco]    |
-| NuGet (GitVersionTask)                 | [![NuGet][gvt-badge]][gvt]          | [![NuGet][gvt-pre-badge]][gvt]             |
-| NuGet (GitVersion.CommandLine)         | [![NuGet][gvc-badge]][gvc]          | [![NuGet][gvc-pre-badge]][gvc]             |
-| Gem                                    | [![Gem][gem-badge]][gem]            | [![Gem][gem-badge]][gem]                   |
+|                           | Stable                              | Pre-release                                |
+| :--:                      | :--:                                | :--:                                       |
+| Docs                      | [![Docs][docs-badge]][docs]         | [![Docs][docs-pre-badge]][docs-pre]        |
+| GitHub Release            | -                                   | [![GitHub release][gh-rel-badge]][gh-rel]  |
+| GitVersion.Portable       | [![Chocolatey][choco-badge]][choco] | [![Chocolatey][choco-pre-badge]][choco]    |
+| GitVersionTask            | [![NuGet][gvt-badge]][gvt]          | [![NuGet][gvt-pre-badge]][gvt]             |
+| GitVersion.CommandLine    | [![NuGet][gvc-badge]][gvc]          | [![NuGet][gvc-pre-badge]][gvc]             |
+| Gem                       | [![Gem][gem-badge]][gem]            | [![Gem][gem-badge]][gem]                   |
 
 ## Compatibility
 GitVersion works on Mac, Linux with Mono and Windows.
