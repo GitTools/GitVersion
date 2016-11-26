@@ -21,7 +21,7 @@
                     new ConfigNextVersionBaseVersionStrategy(),
                     new TaggedCommitVersionStrategy(),
                     new MergeMessageBaseVersionStrategy(),
-                    new VersionInBranchBaseVersionStrategy(),
+                    new VersionInBranchNameBaseVersionStrategy(),
                     new TrackReleaseBranchesVersionStrategy());
         }
 

@@ -8,11 +8,24 @@ namespace GitVersion.VersionCalculation
     using LibGit2Sharp;
 
     /// <summary>
-    /// Inherit version from release branch and tags on master
+    /// Active only when the branch is marked as IsDevelop.
+    /// Two different algorithms (results are merged):
+    /// <para>
+    /// Using <see cref="VersionInBranchNameBaseVersionStrategy"/>:
+    /// Version is that of any child branches marked with IsReleaseBranch (except if they have no commits of their own).
+    /// BaseVersionSource is the commit where the child branch was created.
+    /// Always increments.
+    /// </para>
+    /// <para>
+    /// Using <see cref="TaggedCommitVersionStrategy"/>:
+    /// Version is extracted from all tags on the <c>master</c> branch which are valid.
+    /// BaseVersionSource is the tag's commit (same as base strategy).
+    /// Increments if the tag is not the current commit (same as base strategy).
+    /// </para>
     /// </summary>
     public class TrackReleaseBranchesVersionStrategy : BaseVersionStrategy
     {
-        VersionInBranchBaseVersionStrategy releaseVersionStrategy = new VersionInBranchBaseVersionStrategy();
+        VersionInBranchNameBaseVersionStrategy releaseVersionStrategy = new VersionInBranchNameBaseVersionStrategy();
         TaggedCommitVersionStrategy taggedCommitVersionStrategy = new TaggedCommitVersionStrategy();
 
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
@@ -70,9 +83,13 @@ namespace GitVersion.VersionCalculation
             var tagPrefixRegex = context.Configuration.GitTagPrefix;
             var repository = context.Repository;
 
+            // Find the commit where the child branch was created.
             var baseSource = releaseBranch.FindMergeBase(context.CurrentBranch, repository);
             if (baseSource == context.CurrentCommit)
+            {
+                // Ignore the branch if it has no commits.
                 return new BaseVersion[0];
+            }
 
             return releaseVersionStrategy
                 .GetVersions(context, tagPrefixRegex, releaseBranch, repository)

@@ -9,38 +9,40 @@ namespace GitVersion
 
     public class BranchConfigurationCalculator
     {
-        public static KeyValuePair<string, BranchConfig> GetBranchConfiguration(Commit currentCommit, IRepository repository, bool onlyEvaluateTrackedBranches, Config config, Branch currentBranch, IList<Branch> excludedInheritBranches = null)
+        /// <summary>
+        /// Gets the <see cref="BranchConfig"/> for the current commit.
+        /// </summary>
+        public static BranchConfig GetBranchConfiguration(Commit currentCommit, IRepository repository, bool onlyEvaluateTrackedBranches, Config config, Branch currentBranch, IList<Branch> excludedInheritBranches = null)
         {
-            var matchingBranches = LookupBranchConfiguration(config, currentBranch);
+            var matchingBranches = LookupBranchConfiguration(config, currentBranch).ToArray();
 
-            if (matchingBranches.Length == 0)
+            if (matchingBranches.Length > 1)
+            {
+                const string format = "Multiple branch configurations match the current branch branchName of '{0}'. Matching configurations: '{1}'";
+                throw new Exception(string.Format(format, currentBranch.FriendlyName, string.Join(", ", matchingBranches.Select(b => b.Name))));
+            }
+
+            BranchConfig branchConfiguration;
+            if (matchingBranches.Length == 1)
+            {
+                branchConfiguration = matchingBranches[0];
+            }
+            else
             {
                 Logger.WriteInfo(string.Format(
                     "No branch configuration found for branch {0}, falling back to default configuration",
                     currentBranch.FriendlyName));
 
-                var branchConfig = new BranchConfig();
-                ConfigurationProvider.ApplyBranchDefaults(config, branchConfig, "");
-                return new KeyValuePair<string, BranchConfig>(string.Empty, branchConfig);
-            }
-            if (matchingBranches.Length == 1)
-            {
-                var keyValuePair = matchingBranches[0];
-                var branchConfiguration = keyValuePair.Value;
-
-                if (branchConfiguration.Increment == IncrementStrategy.Inherit)
-                {
-                    return InheritBranchConfiguration(onlyEvaluateTrackedBranches, repository, currentCommit, currentBranch, keyValuePair, branchConfiguration, config, excludedInheritBranches);
-                }
-
-                return keyValuePair;
+                branchConfiguration = new BranchConfig { Name = string.Empty };
+                ConfigurationProvider.ApplyBranchDefaults(config, branchConfiguration, "");
             }
 
-            const string format = "Multiple branch configurations match the current branch branchName of '{0}'. Matching configurations: '{1}'";
-            throw new Exception(string.Format(format, currentBranch.FriendlyName, string.Join(", ", matchingBranches.Select(b => b.Key))));
+            return branchConfiguration.Increment == IncrementStrategy.Inherit ?
+                InheritBranchConfiguration(onlyEvaluateTrackedBranches, repository, currentCommit, currentBranch, branchConfiguration, config, excludedInheritBranches) :
+                branchConfiguration;
         }
 
-        static KeyValuePair<string, BranchConfig>[] LookupBranchConfiguration([NotNull] Config config, [NotNull] Branch currentBranch)
+        static IEnumerable<BranchConfig> LookupBranchConfiguration([NotNull] Config config, [NotNull] Branch currentBranch)
         {
             if (config == null)
             {
@@ -52,11 +54,10 @@ namespace GitVersion
                 throw new ArgumentNullException("currentBranch");
             }
 
-            return config.Branches.Where(b => Regex.IsMatch(currentBranch.FriendlyName, "^" + b.Value.Regex, RegexOptions.IgnoreCase)).ToArray();
+            return config.Branches.Where(b => Regex.IsMatch(currentBranch.FriendlyName, "^" + b.Value.Regex, RegexOptions.IgnoreCase)).Select(kvp => kvp.Value);
         }
 
-
-        static KeyValuePair<string, BranchConfig> InheritBranchConfiguration(bool onlyEvaluateTrackedBranches, IRepository repository, Commit currentCommit, Branch currentBranch, KeyValuePair<string, BranchConfig> keyValuePair, BranchConfig branchConfiguration, Config config, IList<Branch> excludedInheritBranches)
+        static BranchConfig InheritBranchConfiguration(bool onlyEvaluateTrackedBranches, IRepository repository, Commit currentCommit, Branch currentBranch, BranchConfig branchConfiguration, Config config, IList<Branch> excludedInheritBranches)
         {
             using (Logger.IndentLog("Attempting to inherit branch configuration from parent branch"))
             {
@@ -72,11 +73,11 @@ namespace GitVersion
                 {
                     excludedInheritBranches = repository.Branches.Where(b =>
                     {
-                        var branchConfig = LookupBranchConfiguration(config, b);
+                        var branchConfig = LookupBranchConfiguration(config, b).ToArray();
 
                         // NOTE: if length is 0 we couldn't find the configuration for the branch e.g. "origin/master"
                         // NOTE: if the length is greater than 1 we cannot decide which merge strategy to pick
-                        return (branchConfig.Length != 1) || (branchConfig.Length == 1 && branchConfig[0].Value.Increment == IncrementStrategy.Inherit);
+                        return (branchConfig.Length != 1) || (branchConfig.Length == 1 && branchConfig[0].Increment == IncrementStrategy.Inherit);
                     }).ToList();
                 }
                 excludedBranches.ToList().ForEach(excludedInheritBranches.Add);
@@ -84,7 +85,7 @@ namespace GitVersion
 
                 var branchPoint = currentBranch.FindCommitBranchWasBranchedFrom(repository, excludedInheritBranches.ToArray());
                 List<Branch> possibleParents;
-                if (branchPoint == null)
+                if (branchPoint == BranchCommit.Empty)
                 {
                     possibleParents = currentCommit.GetBranchesContainingCommit(repository, branchesToEvaluate, true)
                         // It fails to inherit Increment branch configuration if more than 1 parent;
@@ -94,7 +95,7 @@ namespace GitVersion
                 }
                 else
                 {
-                    var branches = branchPoint.GetBranchesContainingCommit(repository, branchesToEvaluate, true).ToList();
+                    var branches = branchPoint.Commit.GetBranchesContainingCommit(repository, branchesToEvaluate, true).ToList();
                     if (branches.Count > 1)
                     {
                         var currentTipBranches = currentCommit.GetBranchesContainingCommit(repository, branchesToEvaluate, true).ToList();
@@ -110,16 +111,14 @@ namespace GitVersion
 
                 if (possibleParents.Count == 1)
                 {
-                    var branchConfig = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, possibleParents[0], excludedInheritBranches).Value;
-                    return new KeyValuePair<string, BranchConfig>(
-                        keyValuePair.Key,
-                        new BranchConfig(branchConfiguration)
-                        {
-                            Increment = branchConfig.Increment,
-                            PreventIncrementOfMergedBranchVersion = branchConfig.PreventIncrementOfMergedBranchVersion,
-                            // If we are inheriting from develop then we should behave like develop
-                            TracksReleaseBranches = branchConfig.TracksReleaseBranches
-                        });
+                    var branchConfig = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, possibleParents[0], excludedInheritBranches);
+                    return new BranchConfig(branchConfiguration)
+                    {
+                        Increment = branchConfig.Increment,
+                        PreventIncrementOfMergedBranchVersion = branchConfig.PreventIncrementOfMergedBranchVersion,
+                        // If we are inheriting from develop then we should behave like develop
+                        TracksReleaseBranches = branchConfig.TracksReleaseBranches
+                    };
                 }
 
                 // If we fail to inherit it is probably because the branch has been merged and we can't do much. So we will fall back to develop's config
@@ -142,16 +141,14 @@ namespace GitVersion
                 var branchName = chosenBranch.FriendlyName;
                 Logger.WriteWarning(errorMessage + Environment.NewLine + Environment.NewLine + "Falling back to " + branchName + " branch config");
 
-                var inheritingBranchConfig = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, chosenBranch).Value;
-                return new KeyValuePair<string, BranchConfig>(
-                    keyValuePair.Key,
-                    new BranchConfig(branchConfiguration)
-                    {
-                        Increment = inheritingBranchConfig.Increment,
-                        PreventIncrementOfMergedBranchVersion = inheritingBranchConfig.PreventIncrementOfMergedBranchVersion,
-                        // If we are inheriting from develop then we should behave like develop
-                        TracksReleaseBranches = inheritingBranchConfig.TracksReleaseBranches
-                    });
+                var inheritingBranchConfig = GetBranchConfiguration(currentCommit, repository, onlyEvaluateTrackedBranches, config, chosenBranch);
+                return new BranchConfig(branchConfiguration)
+                {
+                    Increment = inheritingBranchConfig.Increment,
+                    PreventIncrementOfMergedBranchVersion = inheritingBranchConfig.PreventIncrementOfMergedBranchVersion,
+                    // If we are inheriting from develop then we should behave like develop
+                    TracksReleaseBranches = inheritingBranchConfig.TracksReleaseBranches
+                };
             }
         }
 

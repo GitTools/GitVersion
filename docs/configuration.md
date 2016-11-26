@@ -32,6 +32,7 @@ next-version: 1.0
 assembly-versioning-scheme: MajorMinorPatch
 assembly-informational-format: '{InformationalVersion}'
 mode: ContinuousDelivery
+increment: Inherit
 continuous-delivery-fallback-tag: ci
 tag-prefix: '[vV]'
 major-version-bump-message: '\+semver:\s?(breaking|major)'
@@ -69,6 +70,11 @@ value of the `AssemblyInformationalVersion` attribute. Default set to
 ### mode
 Sets the `mode` of how GitVersion should create a new version. Read more at
 [versioning mode](/reference/versioning-mode.md).
+
+### increment
+The part of the SemVer to increment when GitVersion detects it needs to be increased, such as for commits after a tag: `Major`, `Minor`, `Patch`, `None`.
+
+The special value `Inherit` means that GitVersion should find the parent branch (i.e. the branch where the current branch was branched from), and use its values for [increment](#increment), [prevent-increment-of-merged-branch-version](#prevent-increment-of-merged-branch-version) and [is-develop](#is-develop).
 
 ### continuous-delivery-fallback-tag
 When using `mode: ContinuousDeployment`, the value specified in
@@ -246,8 +252,7 @@ of `alpha.foo` with the value of `alpha.{BranchName}`.
 **Note:** To clear a default use an empty string: `tag: ''`
 
 ### increment
-The part of the SemVer to increment when GitVersion detects it needs to be (i.e
-commit after a tag)
+Same as for the [global configuration, explained above](#increment).
 
 ### prevent-increment-of-merged-branch-version
 When `release-2.0.0` is merged into master, we want master to build `2.0.0`. If

@@ -32,8 +32,11 @@ namespace GitVersion
             }));
         }
 
-
-        public static Commit FindCommitBranchWasBranchedFrom([NotNull] this Branch branch, IRepository repository, params Branch[] excludedBranches)
+        /// <summary>
+        /// Find the commit where the given branch was branched from another branch.
+        /// If there are multiple such commits and branches, returns the newest commit.
+        /// </summary>
+        public static BranchCommit FindCommitBranchWasBranchedFrom([NotNull] this Branch branch, IRepository repository, params Branch[] excludedBranches)
         {
             const string missingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
 
@@ -42,46 +45,39 @@ namespace GitVersion
                 throw new ArgumentNullException("branch");
             }
 
-            using (Logger.IndentLog("Finding branch source"))
+            using (Logger.IndentLog(string.Format("Finding branch source of '{0}'", branch.FriendlyName)))
             {
                 if (branch.Tip == null)
                 {
                     Logger.WriteWarning(string.Format(missingTipFormat, branch.FriendlyName));
-                    return null;
+                    return BranchCommit.Empty;
                 }
 
                 var otherBranches = repository.Branches
-                    .Except(excludedBranches)
-                    .Where(b => IsSameBranch(branch, b))
-                    .ToList();
+                    .ExcludingBranches(excludedBranches)
+                    .Where(b => !IsSameBranch(branch, b));
                 var mergeBases = otherBranches.Select(otherBranch =>
                 {
                     if (otherBranch.Tip == null)
                     {
                         Logger.WriteWarning(string.Format(missingTipFormat, otherBranch.FriendlyName));
-                        return null;
+                        return BranchCommit.Empty;
                     }
 
                     var findMergeBase = FindMergeBase(branch, otherBranch, repository);
-                    return new
-                    {
-                        mergeBaseCommit = findMergeBase,
-                        branch = otherBranch
-                    };
-                }).Where(b => b.mergeBaseCommit != null).OrderByDescending(b => b.mergeBaseCommit.Committer.When).ToList();
+                    return new BranchCommit(findMergeBase,otherBranch);
+                }).Where(b => b.Commit != null).OrderByDescending(b => b.Commit.Committer.When);
 
-                var firstOrDefault = mergeBases.FirstOrDefault();
-                if (firstOrDefault != null)
-                {
-                    return firstOrDefault.mergeBaseCommit;
-                }
-                return null;
+                return mergeBases.FirstOrDefault();
             }
         }
 
+        /// <summary>
+        /// Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
+        /// </summary>
         public static Commit FindMergeBase(this Branch branch, Branch otherBranch, IRepository repository)
         {
-            using (Logger.IndentLog(string.Format("Finding merge base between '{0}' and {1}.", branch.FriendlyName, otherBranch.FriendlyName)))
+            using (Logger.IndentLog(string.Format("Finding merge base between '{0}' and '{1}'.", branch.FriendlyName, otherBranch.FriendlyName)))
             {
                 // Otherbranch tip is a forward merge
                 var commitToFindCommonBase = otherBranch.Tip;
@@ -96,15 +92,15 @@ namespace GitVersion
                 {
                     Logger.WriteInfo(string.Format("Found merge base of {0}", findMergeBase.Sha));
                     // We do not want to include merge base commits which got forward merged into the other branch
-                    bool mergeBaseWasFowardMerge;
+                    bool mergeBaseWasForwardMerge;
                     do
                     {
                         // Now make sure that the merge base is not a forward merge
-                        mergeBaseWasFowardMerge = otherBranch.Commits
+                        mergeBaseWasForwardMerge = otherBranch.Commits
                             .SkipWhile(c => c != commitToFindCommonBase)
                             .TakeWhile(c => c != findMergeBase)
                             .Any(c => c.Parents.Contains(findMergeBase));
-                        if (mergeBaseWasFowardMerge)
+                        if (mergeBaseWasForwardMerge)
                         {
                             var second = commitToFindCommonBase.Parents.First();
                             var mergeBase = repository.ObjectDatabase.FindMergeBase(commit, second);
@@ -115,17 +111,34 @@ namespace GitVersion
                             findMergeBase = mergeBase;
                             Logger.WriteInfo(string.Format("Merge base was due to a forward merge, next merge base is {0}", findMergeBase));
                         }
-                    } while (mergeBaseWasFowardMerge);
+                    } while (mergeBaseWasForwardMerge);
                 }
                 return findMergeBase;
             }
         }
 
-        static bool IsSameBranch(Branch branch, Branch b)
+        /// <summary>
+        /// Checks if the two branch objects refer to the same branch (have the same friendly name).
+        /// </summary>
+        public static bool IsSameBranch(Branch branch, Branch otherBranch)
         {
-            return (b.IsRemote ? 
-                b.FriendlyName.Substring(b.FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1) : 
-                b.FriendlyName) != branch.FriendlyName;
+            // For each branch, fixup the friendly name if the branch is remote.
+            var otherBranchFriendlyName = otherBranch.IsRemote ?
+                otherBranch.FriendlyName.Substring(otherBranch.FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1) :
+                otherBranch.FriendlyName;
+            var branchFriendlyName = branch.IsRemote ?
+                branch.FriendlyName.Substring(branch.FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1) :
+                branch.FriendlyName;
+
+            return otherBranchFriendlyName == branchFriendlyName;
+        }
+
+        /// <summary>
+        /// Exclude the given branches (by value equality according to friendly name).
+        /// </summary>
+        public static IEnumerable<Branch> ExcludingBranches([NotNull] this IEnumerable<Branch> branches, [NotNull] IEnumerable<Branch> branchesToExclude)
+        {
+            return branches.Where(b => branchesToExclude.All(bte => !IsSameBranch(b, bte)));
         }
 
         public static IEnumerable<Branch> GetBranchesContainingCommit([NotNull] this Commit commit, IRepository repository, IList<Branch> branches, bool onlyTrackedBranches)
