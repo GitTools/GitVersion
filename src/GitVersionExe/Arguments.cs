@@ -25,6 +25,7 @@ namespace GitVersion
         public string DynamicRepositoryLocation;
 
         public bool Init;
+        public bool Diag;
 
         public bool IsHelp;
         public string LogFilePath;

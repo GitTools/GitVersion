@@ -77,10 +77,10 @@
             using (var repo = new EmptyRepositoryFixture())
             {
                 repo.Repository.MakeACommit();
-                repo.Repository.Checkout(repo.Repository.CreateBranch("develop"));
+                Commands.Checkout(repo.Repository, repo.Repository.CreateBranch("develop"));
                 repo.Repository.MakeACommit();
                 var featureBranch = repo.Repository.CreateBranch("feature/foo");
-                repo.Repository.Checkout(featureBranch);
+                Commands.Checkout(repo.Repository, featureBranch);
                 repo.Repository.MakeACommit();
 
                 var context = new GitVersionContext(repo.Repository, config);

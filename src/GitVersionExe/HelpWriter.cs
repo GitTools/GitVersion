@@ -17,6 +17,7 @@ GitVersion [path]
 
     path            The directory containing .git. If not defined current directory is used. (Must be first argument)
     init            Configuration utility for gitversion
+    /diag           Runs GitVersion with additional diagnostic information (requires git.exe to be installed)
     /h or /?        Shows Help
 
     /targetpath     Same as 'path', but not positional

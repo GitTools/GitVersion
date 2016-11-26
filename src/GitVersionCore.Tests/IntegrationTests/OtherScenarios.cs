@@ -23,7 +23,7 @@
                 fixture.Repository.CreateBranch("develop");
 
                 Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
-                fixture.LocalRepositoryFixture.Repository.Checkout(fixture.Repository.Head.Tip);
+                Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
                 fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
                 fixture.InitialiseRepo();
                 fixture.AssertFullSemver("1.0.1+1");
@@ -38,7 +38,7 @@
                 fixture.Repository.MakeACommit();
                 fixture.Repository.MakeATaggedCommit("1.0.0");
                 fixture.Repository.MakeACommit();
-                fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));
+                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
                 fixture.Repository.Branches.Remove(fixture.Repository.Branches["master"]);
 
                 fixture.AssertFullSemver("1.1.0-alpha.1");
@@ -62,8 +62,8 @@
             using (var fixture = new EmptyRepositoryFixture())
             {
                 fixture.Repository.MakeACommit();
-                fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));
-                fixture.Repository.Checkout(fixture.Repository.CreateBranch("main"));
+                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
+                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("main"));
                 fixture.Repository.Branches.Remove(fixture.Repository.Branches["master"]);
 
                 fixture.AssertFullSemver(config, "0.1.0+0");
@@ -76,14 +76,14 @@
             using (var fixture = new RemoteRepositoryFixture())
             {
                 fixture.Repository.MakeACommit();
-                fixture.Repository.Checkout(fixture.Repository.CreateBranch("develop"));
+                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
                 fixture.Repository.MakeACommit();
                 fixture.Repository.MakeATaggedCommit("1.0.0");
                 fixture.Repository.MakeACommit();
                 fixture.Repository.CreateBranch("feature/someFeature");
 
                 Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
-                fixture.LocalRepositoryFixture.Repository.Checkout(fixture.Repository.Head.Tip);
+                Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
                 fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
                 fixture.InitialiseRepo();
                 fixture.AssertFullSemver("1.1.0-alpha.1");

@@ -197,6 +197,16 @@ public class MockRepository : IRepository
         throw new NotImplementedException();
     }
 
+    public void Checkout(Tree tree, IEnumerable<string> paths, CheckoutOptions opts)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void RevParse(string revision, out Reference reference, out GitObject obj)
+    {
+        throw new NotImplementedException();
+    }
+
     public Branch Head { get; set; }
     public Configuration Config { get; set; }
     public Index Index { get; set; }

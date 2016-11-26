@@ -13,7 +13,7 @@
             {
                 IncludeReachableFrom = context.CurrentBranch.Tip
             }).First(c => !c.Parents.Any());
-            yield return new BaseVersion("Fallback base version", false, new SemanticVersion(minor: 1), baseVersionSource, null);
+            yield return new BaseVersion(context, "Fallback base version", false, new SemanticVersion(minor: 1), baseVersionSource, null);
         }
     }
 }

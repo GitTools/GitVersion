@@ -3,6 +3,13 @@ GitVersion is a tool to help you achieve *Semantic Versioning* on your project.
 
 This influences many of the decisions GitVersion has made, please read and understand this page as it will help you start using GitVersion effectively!
 
+## Compatibility
+GitVersion works on Mac, Linux with Mono and Windows.
+
+Tip: If you get `System.TypeInitializationException: The type initializer for 'LibGit2Sharp.Core.NativeMethods' threw an exception. ---> System.DllNotFoundException: lib/linux/x86_64/libgit2-baa87df.so`
+
+You likely need to install `libcurl3`. Run `sudo get-get install libcurl3`
+
 ## Assumptions/Rules
 ### Tags override other rules
 If a commit is tagged, then GitVersion will *always* use that version over any calculated versions. This is so if you rebuild a tag then the same version will be produced.

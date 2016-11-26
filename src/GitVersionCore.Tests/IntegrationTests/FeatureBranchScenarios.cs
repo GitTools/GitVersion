@@ -14,20 +14,20 @@ public class FeatureBranchScenarios
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("development");
-            fixture.Repository.Checkout("development");
+            Commands.Checkout(fixture.Repository, "development");
 
             //Create an initial feature branch
             var feature123 = fixture.Repository.CreateBranch("feature/JIRA-123");
-            fixture.Repository.Checkout("feature/JIRA-123");
+            Commands.Checkout(fixture.Repository, "feature/JIRA-123");
             fixture.Repository.MakeCommits(1);
 
             //Merge it
-            fixture.Repository.Checkout("development");
+            Commands.Checkout(fixture.Repository, "development");
             fixture.Repository.Merge(feature123, Generate.SignatureNow());
 
             //Create a second feature branch
             fixture.Repository.CreateBranch("feature/JIRA-124");
-            fixture.Repository.Checkout("feature/JIRA-124");
+            Commands.Checkout(fixture.Repository, "feature/JIRA-124");
             fixture.Repository.MakeCommits(1);
 
             fixture.AssertFullSemver("1.1.0-JIRA-124.1+2");
@@ -49,20 +49,20 @@ public class FeatureBranchScenarios
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("unstable");
-            fixture.Repository.Checkout("unstable");
+            Commands.Checkout(fixture.Repository, "unstable");
 
             //Create an initial feature branch
             var feature123 = fixture.Repository.CreateBranch("feature/JIRA-123");
-            fixture.Repository.Checkout("feature/JIRA-123");
+            Commands.Checkout(fixture.Repository, "feature/JIRA-123");
             fixture.Repository.MakeCommits(1);
 
             //Merge it
-            fixture.Repository.Checkout("unstable");
+            Commands.Checkout(fixture.Repository, "unstable");
             fixture.Repository.Merge(feature123, Generate.SignatureNow());
 
             //Create a second feature branch
             fixture.Repository.CreateBranch("feature/JIRA-124");
-            fixture.Repository.Checkout("feature/JIRA-124");
+            Commands.Checkout(fixture.Repository, "feature/JIRA-124");
             fixture.Repository.MakeCommits(1);
 
             fixture.AssertFullSemver(config, "1.1.0-JIRA-124.1+2");
@@ -76,9 +76,9 @@ public class FeatureBranchScenarios
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("develop");
-            fixture.Repository.Checkout("develop");
+            Commands.Checkout(fixture.Repository, "develop");
             fixture.Repository.CreateBranch("feature/JIRA-123");
-            fixture.Repository.Checkout("feature/JIRA-123");
+            Commands.Checkout(fixture.Repository, "feature/JIRA-123");
             fixture.Repository.MakeCommits(5);
 
             fixture.AssertFullSemver("1.1.0-JIRA-123.1+5");
@@ -92,7 +92,7 @@ public class FeatureBranchScenarios
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("feature/JIRA-123");
-            fixture.Repository.Checkout("feature/JIRA-123");
+            Commands.Checkout(fixture.Repository, "feature/JIRA-123");
             fixture.Repository.MakeCommits(5);
 
             fixture.AssertFullSemver("1.0.1-JIRA-123.1+5");
@@ -106,7 +106,7 @@ public class FeatureBranchScenarios
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("feature-test");
-            fixture.Repository.Checkout("feature-test");
+            Commands.Checkout(fixture.Repository, "feature-test");
             fixture.Repository.MakeCommits(5);
 
             fixture.AssertFullSemver("1.0.1-test.1+5");
@@ -120,7 +120,7 @@ public class FeatureBranchScenarios
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
             fixture.Repository.CreateBranch("features/test");
-            fixture.Repository.Checkout("features/test");
+            Commands.Checkout(fixture.Repository, "features/test");
             fixture.Repository.MakeCommits(5);
 
             fixture.AssertFullSemver("1.0.1-test.1+5");
@@ -134,12 +134,12 @@ public class FeatureBranchScenarios
         {
             fixture.Repository.MakeACommit();
             fixture.Repository.CreateBranch("develop");
-            fixture.Repository.Checkout("develop");
+            Commands.Checkout(fixture.Repository, "develop");
             fixture.Repository.CreateBranch("feature/feature1");
-            fixture.Repository.Checkout("feature/feature1");
+            Commands.Checkout(fixture.Repository, "feature/feature1");
             fixture.Repository.MakeACommit();
             fixture.Repository.CreateBranch("feature/feature2");
-            fixture.Repository.Checkout("feature/feature2");
+            Commands.Checkout(fixture.Repository, "feature/feature2");
 
             fixture.AssertFullSemver("0.1.0-feature2.1+1");
         }
@@ -153,20 +153,20 @@ public class FeatureBranchScenarios
             fixture.Repository.MakeATaggedCommit("v1.0.0");
 
             fixture.Repository.CreateBranch("develop");
-            fixture.Repository.Checkout("develop");
+            Commands.Checkout(fixture.Repository, "develop");
 
             fixture.Repository.CreateBranch("feature/longrunning");
-            fixture.Repository.Checkout("feature/longrunning");
+            Commands.Checkout(fixture.Repository, "feature/longrunning");
             fixture.Repository.MakeACommit();
 
-            fixture.Repository.Checkout("develop");
+            Commands.Checkout(fixture.Repository, "develop");
             fixture.Repository.MakeACommit();
 
-            fixture.Repository.Checkout("master");
+            Commands.Checkout(fixture.Repository, "master");
             fixture.Repository.Merge(fixture.Repository.Branches["develop"], Generate.SignatureNow());
             fixture.Repository.ApplyTag("v1.1.0");
 
-            fixture.Repository.Checkout("feature/longrunning");
+            Commands.Checkout(fixture.Repository, "feature/longrunning");
             fixture.Repository.Merge(fixture.Repository.Branches["develop"], Generate.SignatureNow());
 
             var configuration = new Config { VersioningMode = VersioningMode.ContinuousDeployment };
@@ -192,7 +192,7 @@ public class FeatureBranchScenarios
             fixture.Repository.MakeATaggedCommit("1.0.0");
             var featureBranchName = string.Format("feature/{0}", featureName);
             fixture.Repository.CreateBranch(featureBranchName);
-            fixture.Repository.Checkout(featureBranchName);
+            Commands.Checkout(fixture.Repository, featureBranchName);
             fixture.Repository.MakeCommits(5);
 
             var expectedFullSemVer = string.Format("1.0.1-{0}.1+5", preReleaseTagName);
@@ -208,7 +208,7 @@ public class FeatureBranchScenarios
             //validate current version
             fixture.AssertFullSemver("0.2.0-alpha.1");
             fixture.Repository.CreateBranch("release/0.2.0");
-            fixture.Repository.Checkout("release/0.2.0");
+            Commands.Checkout(fixture.Repository, "release/0.2.0");
 
             //validate release version
             fixture.AssertFullSemver("0.2.0-beta.1+0");

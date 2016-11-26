@@ -15,6 +15,13 @@ Versioning when using git, solved. GitVersion looks at your git history and work
 |NuGet (GitVersion.CommandLine)|[![NuGet](https://img.shields.io/nuget/v/GitVersion.CommandLine.svg)](https://www.nuget.org/packages/GitVersion.CommandLine)|[![NuGet](https://img.shields.io/nuget/vpre/GitVersion.CommandLine.svg)](https://www.nuget.org/packages/GitVersion.CommandLine)|
 |Gem|[![Gem](https://img.shields.io/gem/v/gitversion.svg)](https://rubygems.org/gems/gitversion)|[![Gem](https://img.shields.io/gem/v/gitversion.svg)](https://rubygems.org/gems/gitversion)|
 
+## Compatibility
+GitVersion works on Mac, Linux with Mono and Windows.
+
+Tip: If you get `System.TypeInitializationException: The type initializer for 'LibGit2Sharp.Core.NativeMethods' threw an exception. ---> System.DllNotFoundException: lib/linux/x86_64/libgit2-baa87df.so`
+
+You likely need to install `libcurl3`. Run `sudo get-get install libcurl3`
+
 ## Quick Links
  - [Documentation](http://gitversion.readthedocs.org/en/latest)
  - [Contributing](https://github.com/GitTools/GitVersion/blob/master/CONTRIBUTING.md)

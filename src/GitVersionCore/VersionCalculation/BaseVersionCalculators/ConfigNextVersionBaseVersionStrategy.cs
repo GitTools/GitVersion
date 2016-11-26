@@ -9,7 +9,7 @@
             if (string.IsNullOrEmpty(context.Configuration.NextVersion) || context.IsCurrentCommitTagged)
                 yield break;
             var semanticVersion = SemanticVersion.Parse(context.Configuration.NextVersion, context.Configuration.GitTagPrefix);
-            yield return new BaseVersion("NextVersion in GitVersion configuration file", false, semanticVersion, null, null);
+            yield return new BaseVersion(context, "NextVersion in GitVersion configuration file", false, semanticVersion, null, null);
         }
     }
 }

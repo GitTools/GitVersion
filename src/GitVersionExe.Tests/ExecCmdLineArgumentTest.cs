@@ -18,18 +18,18 @@ public class ExecCmdLineArgumentTest
             fixture.MakeATaggedCommit("1.2.3");
             fixture.MakeACommit();
 
-            var buildFile = Path.Combine(fixture.RepositoryPath, "RunExecViaCommandLine.proj");
+            var buildFile = Path.Combine(fixture.RepositoryPath, "RunExecViaCommandLine.csproj");
             File.Delete(buildFile);
             const string buildFileContent = @"<?xml version=""1.0"" encoding=""utf-8""?>
-<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
+<Project ToolsVersion=""4.0"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
   <Target Name=""OutputResults"">
     <Message Text=""GitVersion_FullSemVer: $(GitVersion_FullSemVer)""/>
   </Target>
 </Project>";
             File.WriteAllText(buildFile, buildFileContent);
-            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, SpecifiedArgumentRunner.BuildTool, "RunExecViaCommandLine.proj /target:OutputResults");
+            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, SpecifiedArgumentRunner.BuildTool, "RunExecViaCommandLine.csproj /target:OutputResults");
 
-            result.ExitCode.ShouldBe(0);
+            result.ExitCode.ShouldBe(0, result.Log);
             result.Log.ShouldContain("GitVersion_FullSemVer: 1.2.4+1");
         }
     }
@@ -74,7 +74,7 @@ public class ExecCmdLineArgumentTest
     [Description("Doesn't work on Mono/Unix because of the path heuristics that needs to be done there in order to figure out whether the first argument actually is a path.")]
     public void WorkingDirectoryDoesNotExistCrashesWithInformativeMessage()
     {
-        var workingDirectory = Path.Combine(Environment.CurrentDirectory, Guid.NewGuid().ToString("N"));
+        var workingDirectory = Path.Combine(PathHelper.GetCurrentDirectory(), Guid.NewGuid().ToString("N"));
         var gitVersion = Path.Combine(PathHelper.GetCurrentDirectory(), "GitVersion.exe");
         var output = new StringBuilder();
         var exitCode = ProcessHelper.Run(
@@ -83,7 +83,7 @@ public class ExecCmdLineArgumentTest
             null,
             gitVersion,
             workingDirectory,
-            Environment.CurrentDirectory);
+            PathHelper.GetCurrentDirectory());
 
         exitCode.ShouldNotBe(0);
         var outputString = output.ToString();
