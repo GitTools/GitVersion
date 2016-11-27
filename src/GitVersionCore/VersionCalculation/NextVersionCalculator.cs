@@ -258,8 +258,8 @@
 
             int? number = null;
 
-            var lastTag = context.CurrentBranch
-                .GetVersionTagsOnBranch(context.Repository, context.Configuration.GitTagPrefix)
+            var lastTag = context.RepostioryMetadataProvider
+                .GetVersionTagsOnBranch(context.CurrentBranch, context.Repository, context.Configuration.GitTagPrefix)
                 .FirstOrDefault(v => v.PreReleaseTag.Name == tagToUse);
 
             if (lastTag != null &&

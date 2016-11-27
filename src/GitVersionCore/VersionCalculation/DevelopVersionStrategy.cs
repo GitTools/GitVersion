@@ -84,7 +84,7 @@ namespace GitVersion.VersionCalculation
             var repository = context.Repository;
 
             // Find the commit where the child branch was created.
-            var baseSource = releaseBranch.FindMergeBase(context.CurrentBranch, repository);
+            var baseSource = context.RepostioryMetadataProvider.FindMergeBase(releaseBranch, context.CurrentBranch, repository);
             if (baseSource == context.CurrentCommit)
             {
                 // Ignore the branch if it has no commits.
