@@ -71,14 +71,14 @@ CommitDate: 2015-11-10
 
         var versionAndBranchFinder = new ExecuteCore(fileSystem);
 
-        var info = RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
+        var logs = RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
         {
             fileSystem.WriteAllText(vv.FileName, versionCacheFileContent);
             vv = versionAndBranchFinder.ExecuteGitVersion(null, null, null, null, false, fixture.RepositoryPath, null);
             vv.AssemblySemVer.ShouldBe("4.10.3.0");
         });
 
-        info.ShouldContain("Deserializing version variables from cache file", () => info);
+        logs.Info.ShouldContain("Deserializing version variables from cache file", () => logs.Info);
     }
 
 
@@ -139,8 +139,8 @@ CommitDate: 2015-11-10
     [Test]
     public void CacheFileIsMissing()
     {
-        var info = RepositoryScope();
-        info.ShouldContain("yml not found", () => info);
+        var logsMessages = RepositoryScope();
+        logsMessages.Info.ShouldContain("yml not found", () => logsMessages.Info);
     }
 
 
@@ -260,19 +260,34 @@ CommitDate: 2015-11-10
         });
     }
 
-    string RepositoryScope(ExecuteCore executeCore = null, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
+    LogMessages RepositoryScope(ExecuteCore executeCore = null, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
     {
         // Make sure GitVersion doesn't trigger build server mode when we are running the tests
         Environment.SetEnvironmentVariable(AppVeyor.EnvironmentVariableName, null);
         Environment.SetEnvironmentVariable(TravisCI.EnvironmentVariableName, null);
+        var debugBuilder = new StringBuilder();
+        Action<string> debugLogger = s =>
+        {
+            debugBuilder.AppendLine(s);
+        };
         var infoBuilder = new StringBuilder();
         Action<string> infoLogger = s =>
         {
             infoBuilder.AppendLine(s);
         };
+        var warnBuilder = new StringBuilder();
+        Action<string> warnLogger = s =>
+        {
+            warnBuilder.AppendLine(s);
+        };
+        var errorBuilder = new StringBuilder();
+        Action<string> errorLogger = s =>
+        {
+            errorBuilder.AppendLine(s);
+        };
         executeCore = executeCore ?? new ExecuteCore(fileSystem);
 
-        using (Logger.AddLoggersTemporarily(infoLogger, s => {}, s => { }))
+        using (Logger.AddLoggersTemporarily(debugLogger, infoLogger, warnLogger, errorLogger))
         using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeACommit();
@@ -287,6 +302,12 @@ CommitDate: 2015-11-10
             }
         }
 
-        return infoBuilder.ToString();
+        return new LogMessages
+        {
+            Debug = debugBuilder.ToString(),
+            Info = infoBuilder.ToString(),
+            Warn = warnBuilder.ToString(),
+            Error = errorBuilder.ToString()
+        };
     }
 }

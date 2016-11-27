@@ -9,12 +9,12 @@ namespace GitVersion
         static readonly Regex ObscurePasswordRegex = new Regex("(https?://)(.+)(:.+@)", RegexOptions.Compiled);
         static string indent = string.Empty;
 
-
         static Logger()
         {
             Reset();
         }
 
+        public static Action<string> WriteDebug { get; private set; }
         public static Action<string> WriteInfo { get; private set; }
         public static Action<string> WriteWarning { get; private set; }
         public static Action<string> WriteError { get; private set; }
@@ -41,23 +41,31 @@ namespace GitVersion
             return logAction;
         }
 
-        public static void SetLoggers(Action<string> info, Action<string> warn, Action<string> error)
+        public static void SetLoggers(Action<string> debug, Action<string> info, Action<string> warn, Action<string> error)
         {
+            if (debug == null) throw new ArgumentNullException("debug");
             if (info == null) throw new ArgumentNullException("info");
             if (warn == null) throw new ArgumentNullException("warn");
             if (error == null) throw new ArgumentNullException("error");
 
+            WriteDebug = LogMessage(ObscurePassword(debug), "DEBUG");
             WriteInfo = LogMessage(ObscurePassword(info), "INFO");
             WriteWarning = LogMessage(ObscurePassword(warn), "WARN");
             WriteError = LogMessage(ObscurePassword(error), "ERROR");
         }
 
-        public static IDisposable AddLoggersTemporarily(Action<string> info, Action<string> warn, Action<string> error)
+        public static IDisposable AddLoggersTemporarily(Action<string> debug, Action<string> info, Action<string> warn, Action<string> error)
         {
+            var currentDebug = WriteDebug;
             var currentInfo = WriteInfo;
             var currentWarn = WriteWarning;
             var currentError = WriteError;
-            SetLoggers(s => {
+            SetLoggers(s =>
+            {
+                debug(s);
+                currentDebug(s);
+            }, s =>
+            {
                 info(s);
                 currentInfo(s);
             }, s =>
@@ -72,6 +80,7 @@ namespace GitVersion
 
             return new ActionDisposable(() =>
             {
+                WriteDebug = currentDebug;
                 WriteInfo = currentInfo;
                 WriteWarning =  currentWarn;
                 WriteError = currentError;
@@ -85,6 +94,7 @@ namespace GitVersion
 
         public static void Reset()
         {
+            WriteDebug = s => { throw new Exception("Debug logger not defined. Attempted to log: " + s); };
             WriteInfo = s => { throw new Exception("Info logger not defined. Attempted to log: " + s); };
             WriteWarning = s => { throw new Exception("Warning logger not defined. Attempted to log: " + s); };
             WriteError = s => { throw new Exception("Error logger not defined. Attempted to log: " + s); };

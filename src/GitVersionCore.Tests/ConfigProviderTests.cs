@@ -239,7 +239,7 @@ branches: {}";
 
         var logOutput = string.Empty;
         Action<string> action = info => { logOutput = info; };
-        using (Logger.AddLoggersTemporarily(action, action, action))
+        using (Logger.AddLoggersTemporarily(action, action, action, action))
         {
             ConfigurationProvider.Verify(workingPath, repoPath, fileSystem);
         }
@@ -256,9 +256,10 @@ branches: {}";
 
         var logOutput = string.Empty;
         Action<string> action = info => { logOutput = info; };
-        Logger.SetLoggers(action, action, action);
-
-        ConfigurationProvider.Verify(workingPath, repoPath, fileSystem);
+        using (Logger.AddLoggersTemporarily(action, action, action, action))
+        {
+            ConfigurationProvider.Verify(workingPath, repoPath, fileSystem);
+        }
 
         var configFileDeprecatedWarning = string.Format("Ambiguous config files at '{0}'", path);
         logOutput.Contains(configFileDeprecatedWarning).ShouldBe(true);
@@ -286,7 +287,7 @@ branches: {}";
 
         var s = string.Empty;
         Action<string> action = info => { s = info; };
-        using (Logger.AddLoggersTemporarily(action, action, action))
+        using (Logger.AddLoggersTemporarily(action, action, action, action))
         {
             ConfigurationProvider.Provide(repoPath, fileSystem);
         }

@@ -14,6 +14,7 @@ public static class ModuleInitializer
         Logger.SetLoggers(
             s => Console.WriteLine(s),
             s => Console.WriteLine(s),
+            s => Console.WriteLine(s),
             s => Console.WriteLine(s));
     }
 }
