@@ -63,7 +63,7 @@ namespace GitVersion
             SetLoggers(s =>
             {
                 debug(s);
-                currentInfo(s);
+                currentDebug(s);
             }, s =>
             {
                 info(s);
