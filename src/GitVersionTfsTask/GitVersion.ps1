@@ -54,13 +54,6 @@ if($additionalArguments)
   $argsGitVersion = $argsGitVersion + " $additionalArguments"
 }
 
-if(!$additionalArguments -or !$additionalArguments.Contains("-debug"))
-{
-  if([string]::IsNullOrEmpty($env:SYSTEM_DEBUG) -or $env:SYSTEM_DEBUG -ne "true"){
-    $argsGitVersion = $argsGitVersion + " -verbosity Error"
-  }
-}
-
 Write-Host (Get-LocalizedString -Key "Invoking GitVersion with {0}" -ArgumentList $argsGitVersion)
 
 Invoke-Tool -Path $GitVersionPath -Arguments "$argsGitVersion"
