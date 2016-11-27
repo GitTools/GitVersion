@@ -27,24 +27,29 @@ namespace GitVersion
         {
             if (semanticVersionTagsOnBranchCache.ContainsKey(branch))
             {
+                Logger.WriteDebug(string.Format("Cache hit for version tags on branch '{0}", branch.CanonicalName));
                 return semanticVersionTagsOnBranchCache[branch];
             }
-            var tags = repository.Tags.Select(t => t).ToList();
 
-            var versionTags = repository.Commits.QueryBy(new CommitFilter
+            using (Logger.IndentLog(string.Format("Getting version tags from branch '{0}'.", branch.CanonicalName)))
             {
-                IncludeReachableFrom = branch.Tip
-            })
-            .SelectMany(c => tags.Where(t => c.Sha == t.Target.Sha).SelectMany(t =>
-            {
-                SemanticVersion semver;
-                if (SemanticVersion.TryParse(t.FriendlyName, tagPrefixRegex, out semver))
-                    return new[] { semver };
-                return new SemanticVersion[0];
-            })).ToList();
+                var tags = repository.Tags.Select(t => t).ToList();
 
-            semanticVersionTagsOnBranchCache.Add(branch, versionTags);
-            return versionTags;
+                var versionTags = repository.Commits.QueryBy(new CommitFilter
+                {
+                    IncludeReachableFrom = branch.Tip
+                })
+                .SelectMany(c => tags.Where(t => c.Sha == t.Target.Sha).SelectMany(t =>
+                {
+                    SemanticVersion semver;
+                    if (SemanticVersion.TryParse(t.FriendlyName, tagPrefixRegex, out semver))
+                        return new[] { semver };
+                    return new SemanticVersion[0];
+                })).ToList();
+
+                semanticVersionTagsOnBranchCache.Add(branch, versionTags);
+                return versionTags;
+            }
         }
 
         // TODO Should we cache this?
@@ -54,7 +59,7 @@ namespace GitVersion
             {
                 throw new ArgumentNullException("commit");
             }
-
+            Logger.WriteDebug("Heh");
             using (Logger.IndentLog(string.Format("Getting branches containing the commit '{0}'.", commit.Id)))
             {
                 var directBranchHasBeenFound = false;
@@ -108,6 +113,9 @@ namespace GitVersion
 
             if (mergeBaseCache.ContainsKey(key))
             {
+                Logger.WriteDebug(string.Format(
+                    "Cache hit for merge base between '{0}' and '{1}'.",
+                    branch.FriendlyName, otherBranch.FriendlyName));
                 return mergeBaseCache[key].MergeBase;
             }
 
@@ -183,6 +191,9 @@ namespace GitVersion
         {
             if (mergeBaseCommitsCache.ContainsKey(branch))
             {
+                Logger.WriteDebug(string.Format(
+                    "Cache hit for getting merge commits for branch {0}.",
+                    branch.CanonicalName));
                 return mergeBaseCommitsCache[branch];
             }
 

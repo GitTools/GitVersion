@@ -8,7 +8,10 @@ namespace GitVersion
     {
         public SemanticVersion FindVersion(GitVersionContext context)
         {
-            Logger.WriteInfo(string.Format("Running against branch: {0} ({1})", context.CurrentBranch.FriendlyName, context.CurrentCommit.Sha));
+            Logger.WriteInfo(string.Format(
+                "Running against branch: {0} ({1})",
+                context.CurrentBranch.FriendlyName,
+                context.CurrentCommit == null ? "-" : context.CurrentCommit.Sha));
             EnsureMainTopologyConstraints(context);
 
             var filePath = Path.Combine(context.Repository.GetRepositoryDirectory(), "NextVersion.txt");
