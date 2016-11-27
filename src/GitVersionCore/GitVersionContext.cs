@@ -16,10 +16,8 @@
 
         public GitVersionContext(IRepository repository, Branch currentBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
         {
-            // With a new context, clear any in-memory caches.
-            LibGitExtensions.ClearInMemoryCache();
-
             Repository = repository;
+            RepostioryMetadataProvider = new GitRepoMetadataProvider(repository);
             FullConfiguration = configuration;
             OnlyEvaluateTrackedBranches = onlyEvaluateTrackedBranches;
 
@@ -49,7 +47,7 @@
 
             if (currentBranch.IsDetachedHead())
             {
-                CurrentBranch = CurrentCommit.GetBranchesContainingCommit(repository, repository.Branches.ToList(), OnlyEvaluateTrackedBranches).OnlyOrDefault() ?? currentBranch;
+                CurrentBranch = RepostioryMetadataProvider.GetBranchesContainingCommit(CurrentCommit, repository, repository.Branches.ToList(), OnlyEvaluateTrackedBranches).OnlyOrDefault() ?? currentBranch;
             }
             else
             {
@@ -81,10 +79,11 @@
         public Branch CurrentBranch { get; private set; }
         public Commit CurrentCommit { get; private set; }
         public bool IsCurrentCommitTagged { get; private set; }
+        public GitRepoMetadataProvider RepostioryMetadataProvider { get; private set; }
 
         void CalculateEffectiveConfiguration()
         {
-            var currentBranchConfig = BranchConfigurationCalculator.GetBranchConfiguration(CurrentCommit, Repository, OnlyEvaluateTrackedBranches, FullConfiguration, CurrentBranch);
+            var currentBranchConfig = BranchConfigurationCalculator.GetBranchConfiguration(this, CurrentBranch);
 
             if (!currentBranchConfig.VersioningMode.HasValue)
                 throw new Exception(string.Format("Configuration value for 'Versioning mode' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));

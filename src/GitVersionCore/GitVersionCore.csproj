@@ -122,6 +122,7 @@
     <Compile Include="ExecuteCore.cs" />
     <Compile Include="Extensions\ReadEmbeddedResourceExtensions.cs" />
     <Compile Include="GitPreparer.cs" />
+    <Compile Include="GitRepoMetadataProvider.cs" />
     <Compile Include="GitVersionCache.cs" />
     <Compile Include="GitVersionCacheKey.cs" />
     <Compile Include="GitVersionCacheKeyFactory.cs" />
