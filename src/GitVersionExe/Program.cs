@@ -180,9 +180,9 @@ namespace GitVersion
             }
 
             Logger.SetLoggers(
-                s => writeActions.ForEach(a => a(s)),
-                s => writeActions.ForEach(a => a(s)),
-                s => writeActions.ForEach(a => a(s)));
+                s => writeActions.ForEach(a => { if (arguments.Verbosity >= VerbosityLevel.Info) a(s); }),
+                s => writeActions.ForEach(a => { if (arguments.Verbosity >= VerbosityLevel.Warn) a(s); }),
+                s => writeActions.ForEach(a => { if (arguments.Verbosity >= VerbosityLevel.Error) a(s); }));
 
             if (exception != null)
                 Logger.WriteError(string.Format("Failed to configure logging for '{0}': {1}", arguments.LogFilePath, exception.Message));
