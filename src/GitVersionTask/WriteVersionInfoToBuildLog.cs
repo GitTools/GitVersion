@@ -15,7 +15,7 @@
         public WriteVersionInfoToBuildLog()
         {
             logger = new TaskLogger(this);
-            Logger.SetLoggers(this.LogInfo, this.LogWarning, s => this.LogError(s));
+            Logger.SetLoggers(this.LogDebug, this.LogInfo, this.LogWarning, s => this.LogError(s));
         }
 
         [Required]

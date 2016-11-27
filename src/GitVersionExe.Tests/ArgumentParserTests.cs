@@ -36,7 +36,7 @@ public class ArgumentParserTests
     }
 
     [Test]
-    public void h_means_IsHelp()
+    public void H_means_IsHelp()
     {
         var arguments = ArgumentParser.ParseArguments("-h");
         Assert.IsNull(arguments.TargetPath);
@@ -45,14 +45,14 @@ public class ArgumentParserTests
     }
 
     [Test]
-    public void exec()
+    public void Exec()
     {
         var arguments = ArgumentParser.ParseArguments("-exec rake");
         arguments.Exec.ShouldBe("rake");
     }
 
     [Test]
-    public void exec_with_args()
+    public void Exec_with_args()
     {
         var arguments = ArgumentParser.ParseArguments(new List<string>
         {
@@ -66,14 +66,14 @@ public class ArgumentParserTests
     }
 
     [Test]
-    public void msbuild()
+    public void Msbuild()
     {
         var arguments = ArgumentParser.ParseArguments("-proj msbuild.proj");
         arguments.Proj.ShouldBe("msbuild.proj");
     }
 
     [Test]
-    public void msbuild_with_args()
+    public void Msbuild_with_args()
     {
         var arguments = ArgumentParser.ParseArguments(new List<string>
         {
@@ -87,7 +87,7 @@ public class ArgumentParserTests
     }
 
     [Test]
-    public void execwith_targetdirectory()
+    public void Execwith_targetdirectory()
     {
         var arguments = ArgumentParser.ParseArguments("targetDirectoryPath -exec rake");
         arguments.TargetPath.ShouldBe("targetDirectoryPath");
@@ -181,7 +181,7 @@ public class ArgumentParserTests
     [TestCase("-updateAssemblyInfo assemblyInfo.cs -ensureassemblyinfo")]
     [TestCase("-updateAssemblyInfo assemblyInfo.cs otherAssemblyInfo.cs")]
     [TestCase("-updateAssemblyInfo Assembly.cs Assembly.cs -ensureassemblyinfo")]
-    public void update_assembly_info_true(string command)
+    public void Update_assembly_info_true(string command)
     {
         var arguments = ArgumentParser.ParseArguments(command);
         arguments.UpdateAssemblyInfo.ShouldBe(true);
@@ -189,21 +189,21 @@ public class ArgumentParserTests
 
     [TestCase("-updateAssemblyInfo false")]
     [TestCase("-updateAssemblyInfo 0")]
-    public void update_assembly_info_false(string command)
+    public void Update_assembly_info_false(string command)
     {
         var arguments = ArgumentParser.ParseArguments(command);
         arguments.UpdateAssemblyInfo.ShouldBe(false);
     }
 
     [TestCase("-updateAssemblyInfo Assembly.cs Assembly1.cs -ensureassemblyinfo")]
-    public void create_mulitple_assembly_info_protected(string command)
+    public void Create_mulitple_assembly_info_protected(string command)
     {
         var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments(command));
         exception.Message.ShouldBe("Can't specify multiple assembly info files when using /ensureassemblyinfo switch, either use a single assembly info file or do not specify /ensureassemblyinfo and create assembly info files manually");
     }
 
     [Test]
-    public void update_assembly_info_with_filename()
+    public void Update_assembly_info_with_filename()
     {
         var arguments = ArgumentParser.ParseArguments("-updateAssemblyInfo CommonAssemblyInfo.cs");
         arguments.UpdateAssemblyInfo.ShouldBe(true);
@@ -211,7 +211,7 @@ public class ArgumentParserTests
     }
 
     [Test]
-    public void update_assembly_info_with_multiple_filenames()
+    public void Update_assembly_info_with_multiple_filenames()
     {
         var arguments = ArgumentParser.ParseArguments("-updateAssemblyInfo CommonAssemblyInfo.cs VersionAssemblyInfo.cs");
         arguments.UpdateAssemblyInfo.ShouldBe(true);
@@ -221,7 +221,7 @@ public class ArgumentParserTests
     }
 
     [Test]
-    public void overrideconfig_with_no_options()
+    public void Overrideconfig_with_no_options()
     {
         var arguments = ArgumentParser.ParseArguments("/overrideconfig");
         arguments.HasOverrideConfig.ShouldBe(false);
@@ -229,7 +229,7 @@ public class ArgumentParserTests
     }
 
     [Test]
-    public void overrideconfig_with_single_tagprefix_option()
+    public void Overrideconfig_with_single_tagprefix_option()
     {
         var arguments = ArgumentParser.ParseArguments("/overrideconfig tag-prefix=sample");
         arguments.HasOverrideConfig.ShouldBe(true);
@@ -238,21 +238,21 @@ public class ArgumentParserTests
 
     [TestCase("tag-prefix=sample;tag-prefix=other")]
     [TestCase("tag-prefix=sample;param2=other")]
-    public void overrideconfig_with_several_options(string options)
+    public void Overrideconfig_with_several_options(string options)
     {
         var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments(string.Format("/overrideconfig {0}", options)));
         exception.Message.ShouldContain("Can't specify multiple /overrideconfig options");
     }
 
     [TestCase("tag-prefix=sample=asdf")]
-    public void overrideconfig_with_invalid_option(string options)
+    public void Overrideconfig_with_invalid_option(string options)
     {
         var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments(string.Format("/overrideconfig {0}", options)));
         exception.Message.ShouldContain("Could not parse /overrideconfig option");
     }
 
     [Test]
-    public void update_assembly_info_with_relative_filename()
+    public void Update_assembly_info_with_relative_filename()
     {
         var arguments = ArgumentParser.ParseArguments("-updateAssemblyInfo ..\\..\\CommonAssemblyInfo.cs");
         arguments.UpdateAssemblyInfo.ShouldBe(true);
@@ -260,49 +260,49 @@ public class ArgumentParserTests
     }
 
     [Test]
-    public void ensure_assembly_info_true_when_found()
+    public void Ensure_assembly_info_true_when_found()
     {
         var arguments = ArgumentParser.ParseArguments("-ensureAssemblyInfo");
         arguments.EnsureAssemblyInfo.ShouldBe(true);
     }
 
     [Test]
-    public void ensure_assembly_info_true()
+    public void Ensure_assembly_info_true()
     {
         var arguments = ArgumentParser.ParseArguments("-ensureAssemblyInfo true");
         arguments.EnsureAssemblyInfo.ShouldBe(true);
     }
 
     [Test]
-    public void ensure_assembly_info_false()
+    public void Ensure_assembly_info_false()
     {
         var arguments = ArgumentParser.ParseArguments("-ensureAssemblyInfo false");
         arguments.EnsureAssemblyInfo.ShouldBe(false);
     }
 
     [Test]
-    public void dynamicRepoLocation()
+    public void DynamicRepoLocation()
     {
         var arguments = ArgumentParser.ParseArguments("-dynamicRepoLocation c:\\foo\\");
         arguments.DynamicRepositoryLocation.ShouldBe("c:\\foo\\");
     }
 
     [Test]
-    public void can_log_to_console()
+    public void Can_log_to_console()
     {
         var arguments = ArgumentParser.ParseArguments("-l console -proj foo.sln");
         arguments.LogFilePath.ShouldBe("console");
     }
 
     [Test]
-    public void nofetch_true_when_defined()
+    public void Nofetch_true_when_defined()
     {
         var arguments = ArgumentParser.ParseArguments("-nofetch");
         arguments.NoFetch.ShouldBe(true);
     }
 
     [Test]
-    public void other_arguments_can_be_parsed_before_nofetch()
+    public void Other_arguments_can_be_parsed_before_nofetch()
     {
         var arguments = ArgumentParser.ParseArguments("targetpath -nofetch ");
         arguments.TargetPath.ShouldBe("targetpath");
@@ -310,7 +310,7 @@ public class ArgumentParserTests
     }
 
     [Test]
-    public void other_arguments_can_be_parsed_after_nofetch()
+    public void Other_arguments_can_be_parsed_after_nofetch()
     {
         var arguments = ArgumentParser.ParseArguments("-nofetch -proj foo.sln");
         arguments.NoFetch.ShouldBe(true);
@@ -318,14 +318,14 @@ public class ArgumentParserTests
     }
 
     [Test]
-    public void log_path_can_contain_forward_slash()
+    public void Log_path_can_contain_forward_slash()
     {
         var arguments = ArgumentParser.ParseArguments("-l /some/path");
         arguments.LogFilePath.ShouldBe("/some/path");
     }
 
     [Test]
-    public void boolean_argument_handling()
+    public void Boolean_argument_handling()
     {
         var arguments = ArgumentParser.ParseArguments("/nofetch /updateassemblyinfo true");
         arguments.NoFetch.ShouldBe(true);
@@ -333,7 +333,7 @@ public class ArgumentParserTests
     }
 
     [Test]
-    public void nocache_true_when_defined()
+    public void Nocache_true_when_defined()
     {
         var arguments = ArgumentParser.ParseArguments("-nocache");
         arguments.NoCache.ShouldBe(true);
@@ -342,10 +342,11 @@ public class ArgumentParserTests
     [TestCase("-verbosity x", true, VerbosityLevel.None)]
     [TestCase("-verbosity none", false, VerbosityLevel.None)]
     [TestCase("-verbosity info", false, VerbosityLevel.Info)]
+    [TestCase("-verbosity debug", false, VerbosityLevel.Debug)]
     [TestCase("-verbosity INFO", false, VerbosityLevel.Info)]
     [TestCase("-verbosity warn", false, VerbosityLevel.Warn)]
     [TestCase("-verbosity error", false, VerbosityLevel.Error)]
-    public void check_verbosity_parsing(string command, bool shouldThrow, VerbosityLevel expectedVerbosity)
+    public void Check_verbosity_parsing(string command, bool shouldThrow, VerbosityLevel expectedVerbosity)
     {
         if (shouldThrow)
         {

@@ -5,6 +5,7 @@
         None,
         Error,
         Warn,
-        Info
+        Info,
+        Debug
     }
 }

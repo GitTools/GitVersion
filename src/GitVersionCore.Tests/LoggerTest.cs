@@ -17,7 +17,7 @@ namespace GitVersionCore.Tests
             const string password = "password";
             var s = string.Empty;
             Action<string> action = info => { s = info; };
-            using (Logger.AddLoggersTemporarily(action, action, action))
+            using (Logger.AddLoggersTemporarily(action, action, action, action))
                 Logger.WriteInfo(string.Format("{0}://{1}:{2}@workspace.visualstudio.com/DefaultCollection/_git/CAS",protocol,username,password));
 
             s.Contains(password).ShouldBe(false);
@@ -29,7 +29,7 @@ namespace GitVersionCore.Tests
             var s = string.Empty;
             Action<string> action = info => { s = info; };
             const string repoUrl = "http://username@workspace.visualstudio.com/DefaultCollection/_git/CAS";
-            using (Logger.AddLoggersTemporarily(action, action, action))
+            using (Logger.AddLoggersTemporarily(action, action, action, action))
                 Logger.WriteInfo(repoUrl);
 
             s.Contains(repoUrl).ShouldBe(true);

@@ -10,7 +10,11 @@ public static class ModuleInitializer
     /// </summary>
     public static void Initialize()
     {
-        Logger.SetLoggers(s => System.Console.WriteLine(s), s => System.Console.WriteLine(s), s => System.Console.WriteLine(s));
+        Logger.SetLoggers(
+            s => System.Console.WriteLine(s),
+            s => System.Console.WriteLine(s),
+            s => System.Console.WriteLine(s),
+            s => System.Console.WriteLine(s));
     }
 
 }

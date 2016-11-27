@@ -180,6 +180,7 @@ namespace GitVersion
             }
 
             Logger.SetLoggers(
+                s => writeActions.ForEach(a => { if (arguments.Verbosity >= VerbosityLevel.Debug) a(s); }),
                 s => writeActions.ForEach(a => { if (arguments.Verbosity >= VerbosityLevel.Info) a(s); }),
                 s => writeActions.ForEach(a => { if (arguments.Verbosity >= VerbosityLevel.Warn) a(s); }),
                 s => writeActions.ForEach(a => { if (arguments.Verbosity >= VerbosityLevel.Error) a(s); }));
