@@ -123,7 +123,15 @@
 
         private static string GetRepositorySnapshotHash(GitPreparer gitPreparer)
         {
-            var repositorySnapshot = gitPreparer.WithRepository(repo => string.Join(":", repo.Head.CanonicalName, repo.Head.Tip.Sha));
+            var repositorySnapshot = gitPreparer.WithRepository(repo => {
+                var head = repo.Head;
+                if (head.Tip == null)
+                {
+                    return head.CanonicalName;
+                }
+                var hash = string.Join(":", head.CanonicalName, head.Tip.Sha);
+                return hash;
+            });
             return GetHash(repositorySnapshot);
         }
 
