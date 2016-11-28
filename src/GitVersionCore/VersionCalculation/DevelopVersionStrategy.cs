@@ -66,7 +66,7 @@ namespace GitVersion.VersionCalculation
                         // Need to drop branch overrides and give a bit more context about
                         // where this version came from
                         var source1 = "Release branch exists -> " + baseVersion.Source;
-                        return new BaseVersion(context, 
+                        return new BaseVersion(context,
                             source1,
                             baseVersion.ShouldIncrement,
                             baseVersion.SemanticVersion,
@@ -84,7 +84,7 @@ namespace GitVersion.VersionCalculation
             var repository = context.Repository;
 
             // Find the commit where the child branch was created.
-            var baseSource = releaseBranch.FindMergeBase(context.CurrentBranch, repository);
+            var baseSource = context.RepositoryMetadataProvider.FindMergeBase(releaseBranch, context.CurrentBranch);
             if (baseSource == context.CurrentCommit)
             {
                 // Ignore the branch if it has no commits.

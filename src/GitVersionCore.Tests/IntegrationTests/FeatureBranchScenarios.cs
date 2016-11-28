@@ -514,9 +514,8 @@ public class FeatureBranchScenarios
             fixture.AssertFullSemver(config, "0.10.1-pre.1+1");
 
             // create a feature branch from master and verify the version
-            // TODO this will pass once default becomes inherit
-            //fixture.BranchTo("MyFeatureD");
-            //fixture.AssertFullSemver(config, "0.10.1-MyFeatureD.1+1");
+            fixture.BranchTo("MyFeatureD");
+            fixture.AssertFullSemver(config, "0.10.1-MyFeatureD.1+1");
         }
     }
 }
