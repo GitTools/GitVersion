@@ -17,7 +17,7 @@
         public GitVersionContext(IRepository repository, Branch currentBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
         {
             Repository = repository;
-            RepostioryMetadataProvider = new GitRepoMetadataProvider(repository);
+            RepositoryMetadataProvider = new GitRepoMetadataProvider(repository);
             FullConfiguration = configuration;
             OnlyEvaluateTrackedBranches = onlyEvaluateTrackedBranches;
 
@@ -47,7 +47,7 @@
 
             if (currentBranch.IsDetachedHead())
             {
-                CurrentBranch = RepostioryMetadataProvider.GetBranchesContainingCommit(CurrentCommit, repository, repository.Branches.ToList(), OnlyEvaluateTrackedBranches).OnlyOrDefault() ?? currentBranch;
+                CurrentBranch = RepositoryMetadataProvider.GetBranchesContainingCommit(CurrentCommit, repository.Branches.ToList(), OnlyEvaluateTrackedBranches).OnlyOrDefault() ?? currentBranch;
             }
             else
             {
@@ -79,7 +79,7 @@
         public Branch CurrentBranch { get; private set; }
         public Commit CurrentCommit { get; private set; }
         public bool IsCurrentCommitTagged { get; private set; }
-        public GitRepoMetadataProvider RepostioryMetadataProvider { get; private set; }
+        public GitRepoMetadataProvider RepositoryMetadataProvider { get; private set; }
 
         void CalculateEffectiveConfiguration()
         {

@@ -11,19 +11,18 @@ namespace GitVersion
         private Dictionary<Branch, List<BranchCommit>> mergeBaseCommitsCache;
         private Dictionary<Tuple<Branch, Branch>, MergeBaseData> mergeBaseCache;
         private Dictionary<Branch, List<SemanticVersion>> semanticVersionTagsOnBranchCache;
-        private IRepository repository;
+        private IRepository Repository { get; set; }
         const string missingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
-
 
         public GitRepoMetadataProvider(IRepository repository)
         {
             mergeBaseCache = new Dictionary<Tuple<Branch, Branch>, MergeBaseData>();
             mergeBaseCommitsCache = new Dictionary<Branch, List<BranchCommit>>();
             semanticVersionTagsOnBranchCache = new Dictionary<Branch, List<SemanticVersion>>();
-            this.repository = repository;
+            this.Repository = repository;
         }
 
-        public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(Branch branch, IRepository repository, string tagPrefixRegex)
+        public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(Branch branch, string tagPrefixRegex)
         {
             if (semanticVersionTagsOnBranchCache.ContainsKey(branch))
             {
@@ -33,9 +32,9 @@ namespace GitVersion
 
             using (Logger.IndentLog(string.Format("Getting version tags from branch '{0}'.", branch.CanonicalName)))
             {
-                var tags = repository.Tags.Select(t => t).ToList();
+                var tags = this.Repository.Tags.Select(t => t).ToList();
 
-                var versionTags = repository.Commits.QueryBy(new CommitFilter
+                var versionTags = this.Repository.Commits.QueryBy(new CommitFilter
                 {
                     IncludeReachableFrom = branch.Tip
                 })
@@ -53,13 +52,13 @@ namespace GitVersion
         }
 
         // TODO Should we cache this?
-        public IEnumerable<Branch> GetBranchesContainingCommit([NotNull] Commit commit, IRepository repository, IList<Branch> branches, bool onlyTrackedBranches)
+        public IEnumerable<Branch> GetBranchesContainingCommit([NotNull] Commit commit, IList<Branch> branches, bool onlyTrackedBranches)
         {
             if (commit == null)
             {
                 throw new ArgumentNullException("commit");
             }
-            Logger.WriteDebug("Heh");
+
             using (Logger.IndentLog(string.Format("Getting branches containing the commit '{0}'.", commit.Id)))
             {
                 var directBranchHasBeenFound = false;
@@ -87,7 +86,7 @@ namespace GitVersion
                 {
                     Logger.WriteInfo(string.Format("Searching for commits reachable from '{0}'.", branch.FriendlyName));
 
-                    var commits = repository.Commits.QueryBy(new CommitFilter
+                    var commits = this.Repository.Commits.QueryBy(new CommitFilter
                     {
                         IncludeReachableFrom = branch
                     }).Where(c => c.Sha == commit.Sha);
@@ -107,7 +106,7 @@ namespace GitVersion
         /// <summary>
         /// Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
         /// </summary>
-        public Commit FindMergeBase(Branch branch, Branch otherBranch, IRepository repository)
+        public Commit FindMergeBase(Branch branch, Branch otherBranch)
         {
             var key = Tuple.Create(branch, otherBranch);
 
@@ -129,7 +128,7 @@ namespace GitVersion
                     commitToFindCommonBase = otherBranch.Tip.Parents.First();
                 }
 
-                var findMergeBase = repository.ObjectDatabase.FindMergeBase(commit, commitToFindCommonBase);
+                var findMergeBase = this.Repository.ObjectDatabase.FindMergeBase(commit, commitToFindCommonBase);
                 if (findMergeBase != null)
                 {
                     Logger.WriteInfo(string.Format("Found merge base of {0}", findMergeBase.Sha));
@@ -145,7 +144,7 @@ namespace GitVersion
                         if (mergeBaseWasForwardMerge)
                         {
                             var second = commitToFindCommonBase.Parents.First();
-                            var mergeBase = repository.ObjectDatabase.FindMergeBase(commit, second);
+                            var mergeBase = this.Repository.ObjectDatabase.FindMergeBase(commit, second);
                             if (mergeBase == findMergeBase)
                             {
                                 break;
@@ -157,7 +156,7 @@ namespace GitVersion
                 }
 
                 // Store in cache.
-                mergeBaseCache.Add(key, new MergeBaseData(branch, otherBranch, repository, findMergeBase));
+                mergeBaseCache.Add(key, new MergeBaseData(branch, otherBranch, this.Repository, findMergeBase));
 
                 return findMergeBase;
             }
@@ -167,7 +166,7 @@ namespace GitVersion
         /// Find the commit where the given branch was branched from another branch.
         /// If there are multiple such commits and branches, returns the newest commit.
         /// </summary>
-        public BranchCommit FindCommitBranchWasBranchedFrom([NotNull] Branch branch, IRepository repository, params Branch[] excludedBranches)
+        public BranchCommit FindCommitBranchWasBranchedFrom([NotNull] Branch branch, params Branch[] excludedBranches)
         {
             if (branch == null)
             {
@@ -186,7 +185,6 @@ namespace GitVersion
             }
         }
 
-
         List<BranchCommit> GetMergeCommitsForBranch(Branch branch)
         {
             if (mergeBaseCommitsCache.ContainsKey(branch))
@@ -197,7 +195,7 @@ namespace GitVersion
                 return mergeBaseCommitsCache[branch];
             }
 
-            var branchMergeBases = repository.Branches.Select(otherBranch =>
+            var branchMergeBases = Repository.Branches.Select(otherBranch =>
             {
                 if (otherBranch.Tip == null)
                 {
@@ -205,7 +203,7 @@ namespace GitVersion
                     return BranchCommit.Empty;
                 }
 
-                var findMergeBase = FindMergeBase(branch, otherBranch, repository);
+                var findMergeBase = FindMergeBase(branch, otherBranch);
                 return new BranchCommit(findMergeBase, otherBranch);
             }).Where(b => b.Commit != null).OrderByDescending(b => b.Commit.Committer.When).ToList();
             mergeBaseCommitsCache.Add(branch, branchMergeBases);

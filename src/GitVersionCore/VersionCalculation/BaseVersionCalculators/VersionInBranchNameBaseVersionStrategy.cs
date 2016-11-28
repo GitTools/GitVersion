@@ -25,7 +25,7 @@
             var versionInBranch = GetVersionInBranch(branchName, tagPrefixRegex);
             if (versionInBranch != null)
             {
-                var commitBranchWasBranchedFrom = context.RepostioryMetadataProvider.FindCommitBranchWasBranchedFrom(currentBranch, repository);
+                var commitBranchWasBranchedFrom = context.RepositoryMetadataProvider.FindCommitBranchWasBranchedFrom(currentBranch);
                 var branchNameOverride = branchName.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
                 yield return new BaseVersion(context, "Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom.Commit, branchNameOverride);
             }

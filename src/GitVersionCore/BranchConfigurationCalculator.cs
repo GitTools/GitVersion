@@ -92,12 +92,12 @@ namespace GitVersion
                 }
                 var branchesToEvaluate = repository.Branches.Except(excludedInheritBranches).ToList();
 
-                var branchPoint = context.RepostioryMetadataProvider
-                    .FindCommitBranchWasBranchedFrom(targetBranch, repository, excludedInheritBranches.ToArray());
+                var branchPoint = context.RepositoryMetadataProvider
+                    .FindCommitBranchWasBranchedFrom(targetBranch, excludedInheritBranches.ToArray());
                 List<Branch> possibleParents;
                 if (branchPoint == BranchCommit.Empty)
                 {
-                    possibleParents = context.RepostioryMetadataProvider.GetBranchesContainingCommit(context.CurrentCommit, repository, branchesToEvaluate, true)
+                    possibleParents = context.RepositoryMetadataProvider.GetBranchesContainingCommit(context.CurrentCommit, branchesToEvaluate, true)
                         // It fails to inherit Increment branch configuration if more than 1 parent;
                         // therefore no point to get more than 2 parents
                         .Take(2)
@@ -105,12 +105,12 @@ namespace GitVersion
                 }
                 else
                 {
-                    var branches = context.RepostioryMetadataProvider
-                        .GetBranchesContainingCommit(branchPoint.Commit, repository, branchesToEvaluate, true).ToList();
+                    var branches = context.RepositoryMetadataProvider
+                        .GetBranchesContainingCommit(branchPoint.Commit, branchesToEvaluate, true).ToList();
                     if (branches.Count > 1)
                     {
-                        var currentTipBranches = context.RepostioryMetadataProvider
-                            .GetBranchesContainingCommit(context.CurrentCommit, repository, branchesToEvaluate, true).ToList();
+                        var currentTipBranches = context.RepositoryMetadataProvider
+                            .GetBranchesContainingCommit(context.CurrentCommit, branchesToEvaluate, true).ToList();
                         possibleParents = branches.Except(currentTipBranches).ToList();
                     }
                     else
@@ -154,7 +154,7 @@ namespace GitVersion
                 Logger.WriteWarning(errorMessage + Environment.NewLine + Environment.NewLine + "Falling back to " + branchName + " branch config");
 
                 // To prevent infinite loops, make sure that a new branch was chosen.
-                if (LibGitExtensions.IsSameBranch(targetBranch, chosenBranch))
+                if (targetBranch.IsSameBranch(chosenBranch))
                 {
                     Logger.WriteWarning("Fallback branch wants to inherit Increment branch configuration from itself. Using patch increment instead.");
                     return new BranchConfig(branchConfiguration)

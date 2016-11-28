@@ -2,7 +2,6 @@ namespace GitVersion
 {
     using Configuration.Init.Wizard;
     using GitVersion.Helpers;
-    using System;
     using System.IO;
     using System.Linq;
     using System.Text;

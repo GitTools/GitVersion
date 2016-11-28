@@ -322,7 +322,7 @@ branches:
             LegacyConfigNotifier.Notify(new StringReader(text));
         });
 
-        var expecedMessage = string.Format("'is-develop' is deprecated, use 'track-release-branches' instead.");
-        exception.Message.ShouldContain(expecedMessage);
+        const string expectedMessage = @"'is-develop' is deprecated, use 'track-release-branches' instead.";
+        exception.Message.ShouldContain(expectedMessage);
     }
 }
