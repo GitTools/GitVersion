@@ -2,6 +2,7 @@
 using LibGit2Sharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace GitVersion
@@ -9,17 +10,17 @@ namespace GitVersion
     public class GitRepoMetadataProvider
     {
         private Dictionary<Branch, List<BranchCommit>> mergeBaseCommitsCache;
-        private Dictionary<Tuple<Branch, Branch>, MergeBaseData> mergeBaseCache;
+        private Dictionary<MergeBaseKey, Commit> mergeBaseCache;
         private Dictionary<Branch, List<SemanticVersion>> semanticVersionTagsOnBranchCache;
         private IRepository Repository { get; set; }
         const string missingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
 
         public GitRepoMetadataProvider(IRepository repository)
         {
-            mergeBaseCache = new Dictionary<Tuple<Branch, Branch>, MergeBaseData>();
+            mergeBaseCache = new Dictionary<MergeBaseKey, Commit>();
             mergeBaseCommitsCache = new Dictionary<Branch, List<BranchCommit>>();
             semanticVersionTagsOnBranchCache = new Dictionary<Branch, List<SemanticVersion>>();
-            this.Repository = repository;
+            Repository = repository;
         }
 
         public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(Branch branch, string tagPrefixRegex)
@@ -32,9 +33,9 @@ namespace GitVersion
 
             using (Logger.IndentLog(string.Format("Getting version tags from branch '{0}'.", branch.CanonicalName)))
             {
-                var tags = this.Repository.Tags.Select(t => t).ToList();
+                var tags = Repository.Tags.Select(t => t).ToList();
 
-                var versionTags = this.Repository.Commits.QueryBy(new CommitFilter
+                var versionTags = Repository.Commits.QueryBy(new CommitFilter
                 {
                     IncludeReachableFrom = branch.Tip
                 })
@@ -86,7 +87,7 @@ namespace GitVersion
                 {
                     Logger.WriteInfo(string.Format("Searching for commits reachable from '{0}'.", branch.FriendlyName));
 
-                    var commits = this.Repository.Commits.QueryBy(new CommitFilter
+                    var commits = Repository.Commits.QueryBy(new CommitFilter
                     {
                         IncludeReachableFrom = branch
                     }).Where(c => c.Sha == commit.Sha);
@@ -105,17 +106,26 @@ namespace GitVersion
 
         /// <summary>
         /// Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
+        /// Note that a local branch and a remote branch tracked by it (or when untracked, has the same name) are considered the same.
         /// </summary>
         public Commit FindMergeBase(Branch branch, Branch otherBranch)
         {
-            var key = Tuple.Create(branch, otherBranch);
+            if (branch.IsSameBranch(otherBranch))
+            {
+                Logger.WriteDebug(string.Format(
+                    "The branches '{0}' and '{1}' are considered equal.",
+                    branch.FriendlyName, otherBranch.FriendlyName));
+                return null;
+            }
 
-            if (mergeBaseCache.ContainsKey(key))
+            Commit mergeBase;
+            var key = new MergeBaseKey(branch, otherBranch);
+            if (mergeBaseCache.TryGetValue(key, out mergeBase))
             {
                 Logger.WriteDebug(string.Format(
                     "Cache hit for merge base between '{0}' and '{1}'.",
                     branch.FriendlyName, otherBranch.FriendlyName));
-                return mergeBaseCache[key].MergeBase;
+                return mergeBase;
             }
 
             using (Logger.IndentLog(string.Format("Finding merge base between '{0}' and '{1}'.", branch.FriendlyName, otherBranch.FriendlyName)))
@@ -128,10 +138,10 @@ namespace GitVersion
                     commitToFindCommonBase = otherBranch.Tip.Parents.First();
                 }
 
-                var findMergeBase = this.Repository.ObjectDatabase.FindMergeBase(commit, commitToFindCommonBase);
-                if (findMergeBase != null)
+                mergeBase = Repository.ObjectDatabase.FindMergeBase(commit, commitToFindCommonBase);
+                if (mergeBase != null)
                 {
-                    Logger.WriteInfo(string.Format("Found merge base of {0}", findMergeBase.Sha));
+                    Logger.WriteInfo(string.Format("Found merge base of {0}", mergeBase.Sha));
                     // We do not want to include merge base commits which got forward merged into the other branch
                     bool mergeBaseWasForwardMerge;
                     do
@@ -139,26 +149,26 @@ namespace GitVersion
                         // Now make sure that the merge base is not a forward merge
                         mergeBaseWasForwardMerge = otherBranch.Commits
                             .SkipWhile(c => c != commitToFindCommonBase)
-                            .TakeWhile(c => c != findMergeBase)
-                            .Any(c => c.Parents.Contains(findMergeBase));
+                            .TakeWhile(c => c != mergeBase)
+                            .Any(c => c.Parents.Contains(mergeBase));
                         if (mergeBaseWasForwardMerge)
                         {
-                            var second = commitToFindCommonBase.Parents.First();
-                            var mergeBase = this.Repository.ObjectDatabase.FindMergeBase(commit, second);
-                            if (mergeBase == findMergeBase)
+                            var secondParent = commitToFindCommonBase.Parents.First();
+                            var forwardMergeBase = Repository.ObjectDatabase.FindMergeBase(commit, secondParent);
+                            if (forwardMergeBase == mergeBase)
                             {
                                 break;
                             }
-                            findMergeBase = mergeBase;
-                            Logger.WriteInfo(string.Format("Merge base was due to a forward merge, next merge base is {0}", findMergeBase));
+                            mergeBase = forwardMergeBase;
+                            Logger.WriteInfo(string.Format("Merge base was due to a forward merge, next merge base is {0}", mergeBase));
                         }
                     } while (mergeBaseWasForwardMerge);
                 }
 
                 // Store in cache.
-                mergeBaseCache.Add(key, new MergeBaseData(branch, otherBranch, this.Repository, findMergeBase));
+                mergeBaseCache.Add(key, mergeBase);
 
-                return findMergeBase;
+                return mergeBase;
             }
         }
 
@@ -195,7 +205,9 @@ namespace GitVersion
                 return mergeBaseCommitsCache[branch];
             }
 
-            var branchMergeBases = Repository.Branches.Select(otherBranch =>
+            // Since local and remote branches are considered equal, make sure that local branches are considered first.
+            var branchesSortedLocalFirst = Repository.Branches.Where(b => !b.IsRemote).Concat(Repository.Branches.Where(b => b.IsRemote));
+            var branchMergeBases = branchesSortedLocalFirst.Select(otherBranch =>
             {
                 if (otherBranch.Tip == null)
                 {
@@ -211,20 +223,49 @@ namespace GitVersion
             return branchMergeBases;
         }
 
-        private class MergeBaseData
+        /// <summary>
+        /// The key for the merge base data.
+        /// Note that the merge base of two branches is symmetric,
+        /// i.e. the merge base of 'branchA' and 'branchB' is the same as 'branchB' and 'branchA'.
+        /// </summary>
+        [DebuggerDisplay("A: {BranchA.CanonicalName}; B: {BranchB.CanonicalName}")]
+        private struct MergeBaseKey : IEquatable<MergeBaseKey>
         {
-            public Branch Branch { get; private set; }
-            public Branch OtherBranch { get; private set; }
-            public IRepository Repository { get; private set; }
+            private Branch BranchA { get; set; }
+            private Branch BranchB { get; set; }
 
-            public Commit MergeBase { get; private set; }
-
-            public MergeBaseData(Branch branch, Branch otherBranch, IRepository repository, Commit mergeBase)
+            public MergeBaseKey(Branch branchA, Branch branchB) : this()
             {
-                Branch = branch;
-                OtherBranch = otherBranch;
-                Repository = repository;
-                MergeBase = mergeBase;
+                BranchA = branchA;
+                BranchB = branchB;
+            }
+
+            public bool Equals(MergeBaseKey other)
+            {
+                return (BranchA.IsSameBranch(other.BranchA) && BranchB.IsSameBranch(other.BranchB)) ||
+                       (BranchB.IsSameBranch(other.BranchA) && BranchA.IsSameBranch(other.BranchB));
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj))
+                    return false;
+                return obj is MergeBaseKey && Equals((MergeBaseKey)obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return BranchA.GetComparisonBranchName().GetHashCode() ^ BranchB.GetComparisonBranchName().GetHashCode();
+            }
+
+            public static bool operator ==(MergeBaseKey left, MergeBaseKey right)
+            {
+                return left.Equals(right);
+            }
+
+            public static bool operator !=(MergeBaseKey left, MergeBaseKey right)
+            {
+                return !left.Equals(right);
             }
         }
     }
