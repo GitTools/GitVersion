@@ -133,6 +133,7 @@
     <Compile Include="Helpers\ServiceMessageEscapeHelper.cs" />
     <Compile Include="Helpers\ThreadSleep.cs" />
     <Compile Include="IncrementStrategyFinder.cs" />
+    <Compile Include="LoggerWrapper.cs" />
     <Compile Include="OutputVariables\VersionVariables.cs" />
     <Compile Include="SemanticVersionExtensions.cs" />
     <Compile Include="SemanticVersionFormatValues.cs" />

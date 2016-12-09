@@ -4,6 +4,7 @@ namespace GitVersion
     using System.IO;
     using System.Linq;
     using GitTools.Git;
+    using GitTools.Logging;
     using LibGit2Sharp;
 
     public class GitPreparer
@@ -28,6 +29,9 @@ namespace GitVersion
                 };
             this.noFetch = noFetch;
             this.targetPath = targetPath.TrimEnd('/', '\\');
+
+            // GitTools has its own logging. So that it actually outputs something, it needs to be initialized.
+            LogProvider.SetCurrentLogProvider(new LoggerWrapper());
         }
 
         public string WorkingDirectory
