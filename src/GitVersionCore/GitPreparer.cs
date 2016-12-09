@@ -48,7 +48,10 @@ namespace GitVersion
             {
                 if (normaliseGitDirectory)
                 {
-                    GitRepositoryHelper.NormalizeGitDirectory(GetDotGitDirectory(), authentication, noFetch, currentBranch);
+                    using (Logger.IndentLog(string.Format("Normalizing git directory for branch '{0}'", currentBranch)))
+                    {
+                        GitRepositoryHelper.NormalizeGitDirectory(GetDotGitDirectory(), authentication, noFetch, currentBranch);
+                    }
                 }
                 return;
             }
@@ -144,23 +147,31 @@ namespace GitVersion
             {
                 throw new Exception("Dynamic Git repositories must have a target branch (/b)");
             }
-            Logger.WriteInfo(string.Format("Creating dynamic repository at '{0}'", targetPath));
 
-            var gitDirectory = Path.Combine(targetPath, ".git");
-            if (Directory.Exists(targetPath))
+            using (Logger.IndentLog(string.Format("Creating dynamic repository at '{0}'", targetPath)))
             {
-                Logger.WriteInfo("Git repository already exists");
-                GitRepositoryHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch, targetBranch);
+                var gitDirectory = Path.Combine(targetPath, ".git");
+                if (Directory.Exists(targetPath))
+                {
+                    Logger.WriteInfo("Git repository already exists");
+                    using (Logger.IndentLog(string.Format("Normalizing git directory for branch '{0}'", targetBranch)))
+                    {
+                        GitRepositoryHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch, targetBranch);
+                    }
+
+                    return gitDirectory;
+                }
+
+                CloneRepository(repositoryUrl, gitDirectory, authentication);
+
+                using (Logger.IndentLog(string.Format("Normalizing git directory for branch '{0}'", targetBranch)))
+                {
+                    // Normalize (download branches) before using the branch
+                    GitRepositoryHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch, targetBranch);
+                }
 
                 return gitDirectory;
             }
-
-            CloneRepository(repositoryUrl, gitDirectory, authentication);
-
-            // Normalize (download branches) before using the branch
-            GitRepositoryHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch, targetBranch);
-
-            return gitDirectory;
         }
 
         static void CloneRepository(string repositoryUrl, string gitDirectory, AuthenticationInfo authentication)
@@ -177,17 +188,20 @@ namespace GitVersion
                 };
             }
 
-            Logger.WriteInfo(string.Format("Retrieving git info from url '{0}'", repositoryUrl));
 
             try
             {
-                var cloneOptions = new CloneOptions
+                using (Logger.IndentLog(string.Format("Cloning repository from url '{0}'", repositoryUrl)))
                 {
-                    Checkout = false,
-                    CredentialsProvider = (url, usernameFromUrl, types) => credentials
-                };
-                var returnedPath = Repository.Clone(repositoryUrl, gitDirectory, cloneOptions);
-                Logger.WriteInfo(string.Format("Returned path after repository clone: {0}", returnedPath));
+                    var cloneOptions = new CloneOptions
+                    {
+                        Checkout = false,
+                        CredentialsProvider = (url, usernameFromUrl, types) => credentials
+                    };
+
+                    var returnedPath = Repository.Clone(repositoryUrl, gitDirectory, cloneOptions);
+                    Logger.WriteInfo(string.Format("Returned path after repository clone: {0}", returnedPath));
+                }
             }
             catch (LibGit2SharpException ex)
             {
