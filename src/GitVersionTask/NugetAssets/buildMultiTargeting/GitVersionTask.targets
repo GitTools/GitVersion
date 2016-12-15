@@ -2,19 +2,15 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)\..\</SolutionDir>
-    <IntermediateOutputPath Condition="$(IntermediateOutputPath) == '' Or $(IntermediateOutputPath) == '*Undefined*'">$(MSBuildProjectDirectory)\obj\$(Configuration)\</IntermediateOutputPath>
     <GitVersion_NoFetchEnabled Condition="$(GitVersion_NoFetchEnabled) == ''">false</GitVersion_NoFetchEnabled>
 
     <!-- Property that enables WriteVersionInfoToBuildLog -->
     <WriteVersionInfoToBuildLog Condition=" '$(WriteVersionInfoToBuildLog)' == '' ">true</WriteVersionInfoToBuildLog>
 
-    <!-- Property that enables UpdateAssemblyInfo -->
-    <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
-
     <!-- Property that enables GetVersion -->
     <GetVersion Condition=" '$(GetVersion)' == '' ">true</GetVersion>
 
-    <GitVersionTaskLibrary>$(MSBuildThisFileDirectory)</GitVersionTaskLibrary>
+    <GitVersionTaskLibrary>$(MSBuildThisFileDirectory)..\build\</GitVersionTaskLibrary>
   </PropertyGroup>
 
   <UsingTask
@@ -27,29 +23,11 @@
       TaskName="GitVersionTask.WriteVersionInfoToBuildLog"
       AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll" />
 
-  <Target Name="WriteVersionInfoToBuildLog" BeforeTargets="CoreCompile" Condition="$(WriteVersionInfoToBuildLog) == 'true'">
+  <Target Name="WriteVersionInfoToBuildLog" BeforeTargets="DispatchToInnerBuilds" Condition="$(WriteVersionInfoToBuildLog) == 'true'">
     <WriteVersionInfoToBuildLog SolutionDirectory="$(SolutionDir)" NoFetch="$(GitVersion_NoFetchEnabled)"/>
   </Target>
   
-  <Target Name="UpdateAssemblyInfo" BeforeTargets="CoreCompile" Condition="$(UpdateAssemblyInfo) == 'true'">
-    <UpdateAssemblyInfo
-    SolutionDirectory="$(SolutionDir)"
-    NoFetch="$(GitVersion_NoFetchEnabled)"
-    ProjectFile="$(MSBuildProjectFullPath)"
-    IntermediateOutputPath="$(IntermediateOutputPath)"
-    RootNamespace="$(RootNamespace)"
-    CompileFiles ="@(Compile)">
-      <Output
-        TaskParameter="AssemblyInfoTempFilePath"
-        PropertyName="AssemblyInfoTempFilePath" />
-    </UpdateAssemblyInfo>
-
-    <ItemGroup>
-      <Compile Include="$(AssemblyInfoTempFilePath)" />
-    </ItemGroup>
-  </Target>
-  
-  <Target Name="GetVersion" BeforeTargets="CoreCompile" Condition="$(GetVersion) == 'true'">
+  <Target Name="GetVersion" BeforeTargets="DispatchToInnerBuilds" Condition="$(GetVersion) == 'true'">
 
     <GetVersion SolutionDirectory="$(SolutionDir)" NoFetch="$(GitVersion_NoFetchEnabled)">
       <Output TaskParameter="Major" PropertyName="GitVersion_Major" />
@@ -79,20 +57,6 @@
     </GetVersion>
 
   </Target>
-
-  <!--Support for ncrunch-->
-  <ItemGroup Condition=" $(NCrunch) != '' ">
-    <None Include="$(GitVersionTaskDir)GitVersionTask.dll">
-      <Visible>False</Visible>
-    </None>
-    <None Include="$(GitVersionTaskDir)GitVersionTask.pdb">
-      <Visible>False</Visible>
-    </None>
-    <None Include="$(GitVersionTaskDir)NativeBinaries\**\*">
-      <Visible>False</Visible>
-    </None>
-  </ItemGroup>
-
 </Project>
 
 

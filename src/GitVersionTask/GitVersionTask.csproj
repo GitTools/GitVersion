@@ -79,9 +79,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="NugetAssets\GitVersionTask.targets">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="NugetAssets\buildMultiTargeting\GitVersionTask.targets" />
+    <None Include="NugetAssets\build\GitVersionTask.targets" />
     <None Include="NugetAssets\GitVersionTask.nuspec">
       <SubType>Designer</SubType>
     </None>
@@ -127,7 +126,9 @@
     <Copy SourceFiles="$(TargetDir)ILMergeTemp\GitVersionTask.dll" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)ILMergeTemp\GitVersionTask.dll')" />
     <Copy SourceFiles="$(TargetDir)GitVersionTask.pdb" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)GitVersionTask.pdb')" />
     <Copy SourceFiles="$(TargetDir)GitVersionTask.dll.mdb" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)GitVersionTask.dll.mdb')" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\build\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\buildMultiTargeting\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\buildMultiTargeting" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\buildMultiTargeting\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\buildCrossTargeting" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.nuspec" DestinationFolder="$(BuildDir)NuGetTaskBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetTaskBuild" MetadataAssembly="$(ILMergeTemp)GitVersionTask.dll" Version="$(GitVersion_NuGetVersion)" />
     <Delete Files="@(TempFiles)" />
