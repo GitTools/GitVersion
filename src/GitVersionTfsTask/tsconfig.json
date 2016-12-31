@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "target": "es6",
+        "sourceMap": false,
+        "inlineSourceMap": true,
+        "declaration": true
+    },
+    "filesGlob": [
+        "./Tasks/*.ts",
+        "./Tests/*.ts",
+        "./typings/index.d.ts",
+        "./Commom/Node/*.d.ts"
+    ],
+    "exclude":[
+        "node_modules",
+        "Tasks/GitVersion/node_modules",
+        "Common",
+        "BuildScripts/node_modules",
+        ".BuildOutput"
+    ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "git-version-tfs-task",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "clean": "node ./BuildScripts/clean.js",
+    "pullsubmodules": "git submodule foreach git pull origin master",
+    "postinstall": "node ./BuildScripts/install.js",
+    "prebuild": "node ./BuildScripts/prebuild.js",
+    "build": "tsc",
+    "build:test": "run-s build test",
+    "package": "node ./BuildScripts/package.js",
+    "test": "jasmine JASMINE_CONFIG_PATH=./Tests/Node/jasmine.json",
+    "test:chutzpah": "chutzpah.console ./tests/"
+  },
+  "devDependencies": {
+    "async": "^2.0.1",
+    "npm-run-all": "2.3.0"
+  }
+}

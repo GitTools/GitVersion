@@ -102,3 +102,17 @@ site/
 ####################
 
 .vscode
+
+###################
+# VSTS Task
+###################
+src/GitVersionTfsTask/Tests/**/*.js
+src/GitVersionTfsTask/Tests/**/*.js.map
+src/GitVersionTfsTask/Tests/**/*.d.ts
+src/GitVersionTfsTask/Tasks/**/*.js
+src/GitVersionTfsTask/Tasks/**/*.js.map
+src/GitVersionTfsTask/Tasks/**/*.d.ts
+src/GitVersionTfsTask/Tasks/*/common/**/*.*
+
+src/GitVersionTfsTask/.BuildOutput
+src/GitVersionTfsTask/**/node_modules

@@ -60,7 +60,12 @@
     ],
     "execution": {
         "PowerShell": {
-            "target": "$(currentDirectory)\\GitVersion.ps1",
+            "target": "GitVersion.ps1",
+            "argumentFormat": "",
+            "workingDirectory": ""
+        },
+        "Node": {
+            "target": "GitVersion.js",
             "argumentFormat": "",
             "workingDirectory": ""
         }

@@ -1,0 +1,24 @@
+{
+    "environments": [
+        {
+            "Name": "production",
+            "VssExtensionIdSuffix": "",
+            "VssExtensionGalleryFlags": [
+                "Public"
+            ],
+            "DisplayNamesSuffix": "",
+            "TaskIds": {
+                "GitVersion" : "e5983830-3f75-11e5-82ed-81492570a08e"
+            }
+        },
+        {
+            "Name": "dev",
+            "VssExtensionIdSuffix": "-dev",
+            "VssExtensionGalleryFlags": [],        
+            "DisplayNamesSuffix": " (Development)",
+            "TaskIds": {
+                "GitVersion" : "e5983830-3f75-11e5-82ed-81492570a08e"
+            }
+        } 
+    ]
+}
