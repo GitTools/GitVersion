@@ -59,11 +59,6 @@
         }
     ],
     "execution": {
-        "PowerShell": {
-            "target": "GitVersion.ps1",
-            "argumentFormat": "",
-            "workingDirectory": ""
-        },
         "Node": {
             "target": "GitVersion.js",
             "argumentFormat": "",
