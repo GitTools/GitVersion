@@ -18,6 +18,9 @@
         [YamlMember(Alias = "assembly-versioning-scheme")]
         public AssemblyVersioningScheme? AssemblyVersioningScheme { get; set; }
 
+		[YamlMember(Alias = "assembly-file-versioning-scheme")]
+		public AssemblyFileVersioningScheme? AssemblyFileVersioningScheme { get; set; }
+
         [YamlMember(Alias = "assembly-informational-format")]
         public string AssemblyInformationalFormat { get; set; }
 

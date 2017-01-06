@@ -34,6 +34,7 @@ NotInheritable Class GitVersionInformation
         Public Shared LegacySemVer As String = "1.2.3-unstable4"
         Public Shared LegacySemVerPadded As String = "1.2.3-unstable0004"
         Public Shared AssemblySemVer As String = "1.2.3.0"
+        Public Shared AssemblySemFileVer As String = "1.2.3.0"
         Public Shared FullSemVer As String = "1.2.3-unstable.4+5"
         Public Shared InformationalVersion As String = "1.2.3-unstable.4+5.Branch.feature1.Sha.commitSha"
         Public Shared BranchName As String = "feature1"

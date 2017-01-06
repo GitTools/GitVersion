@@ -30,6 +30,7 @@ The global configuration look like this:
 ```yaml
 next-version: 1.0
 assembly-versioning-scheme: MajorMinorPatch
+assembly-file-versioning-scheme: MajorMinorPatchTag
 assembly-informational-format: '{InformationalVersion}'
 mode: ContinuousDelivery
 increment: Inherit
@@ -59,6 +60,12 @@ When updating assembly info, `assembly-versioning-scheme` tells GitVersion how
 to treat the `AssemblyVersion` attribute. Useful to lock the major when using
 Strong Naming. Note: you can use `None` to skip updating the `AssemblyVersion`
 while still updating the `AssemblyFileVersion` and `AssemblyInformationVersion`
+attributes.
+
+### assembly-file-versioning-scheme
+When updating assembly info, `assembly-file-versioning-scheme` tells GitVersion how
+to treat the `AssemblyFileVersion` attribute. Note: you can use `None` to skip updating the `AssemblyFileVersion`
+while still updating the `AssemblyVersion` and `AssemblyInformationVersion`
 attributes.
 
 ### assembly-informational-format

@@ -165,12 +165,14 @@ branches:
     {
         const string text = @"
 assembly-versioning-scheme: MajorMinor
+assembly-file-versioning-scheme: MajorMinorPatch
 assembly-informational-format: '{NugetVersion}'";
 
         SetupConfigFileContent(text);
 
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
+		config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
         config.AssemblyInformationalFormat.ShouldBe("{NugetVersion}");
     }
 
@@ -179,12 +181,14 @@ assembly-informational-format: '{NugetVersion}'";
     {
         const string text = @"
 assembly-versioning-scheme: MajorMinor
+assembly-file-versioning-scheme: MajorMinorPatch
 assembly-informational-format: '{Major}.{Minor}.{Patch}'";
 
         SetupConfigFileContent(text);
 
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
+		config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
         config.AssemblyInformationalFormat.ShouldBe("{Major}.{Minor}.{Patch}");
     }
 
@@ -193,6 +197,7 @@ assembly-informational-format: '{Major}.{Minor}.{Patch}'";
     public void CanUpdateAssemblyInformationalVersioningSchemeWithFullSemVer()
     {
         const string text = @"assembly-versioning-scheme: MajorMinorPatch
+assembly-file-versioning-scheme: MajorMinorPatch
 assembly-informational-format: '{FullSemVer}'
 mode: ContinuousDelivery
 next-version: 5.3.0
@@ -202,6 +207,7 @@ branches: {}";
 
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
+		config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
         config.AssemblyInformationalFormat.ShouldBe("{FullSemVer}");
     }
 
@@ -212,6 +218,7 @@ branches: {}";
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
+		config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
         config.AssemblyInformationalFormat.ShouldBe(null);
         config.Branches["develop"].Tag.ShouldBe("alpha");
         config.Branches["release"].Tag.ShouldBe("beta");

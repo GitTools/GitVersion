@@ -87,6 +87,10 @@
         {
             get { return _semver.GetAssemblyVersion(_config.AssemblyVersioningScheme); }
         }
+		public string AssemblyFileSemVer
+		{
+			get { return _semver.GetAssemblyFileVersion(_config.AssemblyFileVersioningScheme); }
+		}
 
         public string FullSemVer
         {

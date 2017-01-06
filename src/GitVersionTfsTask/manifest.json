@@ -20,9 +20,11 @@
     "categories": [
         "Build and release"
     ],
-    "icons": {
-        "default": "extension-icon.png"
-    },
+    "icons": [
+	    {
+		    "default": "extension-icon.png"
+	    }
+    ],
     "tags": [
         "semver",
         "git",
