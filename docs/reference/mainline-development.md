@@ -22,7 +22,7 @@ and the version number which will be deployed are often different.
 This mode is great if you do not want to tag each release because you simply
 deploy every commit to master. The behaviour of this mode is as follows:
 
-1. Calclate a base version (likely a tag in this mode)
+1. Calculate a base version (likely a tag in this mode)
 2. Walk all commits from the base version commit
 3. When a merge commit is found:
     - Calculate increments for each direct commit on master
