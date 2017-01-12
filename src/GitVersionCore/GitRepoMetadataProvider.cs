@@ -143,13 +143,9 @@ namespace GitVersion
                             .Any(c => c.Parents.Contains(findMergeBase));
                         if (mergeBaseWasForwardMerge)
                         {
-                            var second = commitToFindCommonBase.Parents.First();
-                            var mergeBase = this.Repository.ObjectDatabase.FindMergeBase(commit, second);
-                            if (mergeBase == findMergeBase)
-                            {
-                                break;
-                            }
-                            findMergeBase = mergeBase;
+                            commitToFindCommonBase = commitToFindCommonBase.Parents.First();
+                            findMergeBase = this.Repository.ObjectDatabase.FindMergeBase(commit, commitToFindCommonBase);
+                            
                             Logger.WriteInfo(string.Format("Merge base was due to a forward merge, next merge base is {0}", findMergeBase));
                         }
                     } while (mergeBaseWasForwardMerge);

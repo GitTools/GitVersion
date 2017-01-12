@@ -225,7 +225,7 @@ public class ReleaseBranchScenarios
             Commands.Checkout(fixture.Repository, "develop");
             fixture.Repository.MergeNoFF("release-1.0.0", Generate.SignatureNow());
 
-            fixture.AssertFullSemver("2.1.0-alpha.6");
+            fixture.AssertFullSemver("2.1.0-alpha.11");
         }
     }
 
