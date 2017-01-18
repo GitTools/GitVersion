@@ -1,4 +1,7 @@
-﻿using GitTools.Testing;
+﻿using System;
+using System.Diagnostics;
+using GitTools;
+using GitTools.Testing;
 using GitVersion;
 using GitVersionCore.Tests;
 using LibGit2Sharp;
@@ -368,6 +371,7 @@ public class ReleaseBranchScenarios
         {
             fixture.Repository.MakeATaggedCommit("1.0");
             fixture.Repository.MakeACommit("+semver:major");
+            fixture.Repository.MakeACommit();
 
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("release/2.0"));
 
