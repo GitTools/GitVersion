@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using GitTools;
 using GitTools.Testing;
@@ -375,7 +376,7 @@ public class ReleaseBranchScenarios
 
             Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("release/2.0"));
 
-            fixture.AssertFullSemver("2.0.0-beta.1+0");
+            fixture.AssertFullSemver("2.0.0-beta.1+2");
         }
     }
 }
