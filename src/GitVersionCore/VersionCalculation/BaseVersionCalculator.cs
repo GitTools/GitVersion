@@ -23,14 +23,14 @@
                     {
                         if (v == null) return false;
 
-                        Logger.WriteInfo(v.ToString());
+                        if (Logger.IsInfoEnabled) Logger.WriteInfo(v.ToString());
 
                         foreach (var filter in context.Configuration.VersionFilters)
                         {
                             string reason;
                             if (filter.Exclude(v, out reason))
                             {
-                                Logger.WriteInfo(reason);
+                                if (Logger.IsInfoEnabled) Logger.WriteInfo(reason);
                                 return false;
                             }
                         }
@@ -52,7 +52,7 @@
                 if (matchingVersionsOnceIncremented.Any())
                 {
                     baseVersionWithOldestSource = matchingVersionsOnceIncremented.Aggregate((v1, v2) => v1.Version.BaseVersionSource.Committer.When < v2.Version.BaseVersionSource.Committer.When ? v1 : v2).Version;
-                    Logger.WriteInfo(string.Format(
+                    if (Logger.IsInfoEnabled) Logger.WriteInfo(string.Format(
                         "Found multiple base versions which will produce the same SemVer ({0}), taking oldest source for commit counting ({1})",
                         maxVersion.IncrementedVersion,
                         baseVersionWithOldestSource.Source));
@@ -74,7 +74,7 @@
                     context, maxVersion.Version.Source, maxVersion.Version.ShouldIncrement, maxVersion.Version.SemanticVersion,
                     baseVersionWithOldestSource.BaseVersionSource, maxVersion.Version.BranchNameOverride);
 
-                Logger.WriteInfo(string.Format("Base version used: {0}", calculatedBase));
+                if (Logger.IsInfoEnabled) Logger.WriteInfo(string.Format("Base version used: {0}", calculatedBase));
 
                 return calculatedBase;
             }

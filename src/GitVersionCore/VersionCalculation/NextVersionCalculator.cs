@@ -286,7 +286,7 @@
             }
             if (tagToUse.Contains("{BranchName}"))
             {
-                Logger.WriteInfo("Using branch name to calculate version tag");
+                if (Logger.IsInfoEnabled) Logger.WriteInfo("Using branch name to calculate version tag");
 
                 var branchName = branchNameOverride ?? branchFriendlyName;
                 if (!string.IsNullOrWhiteSpace(configuration.BranchPrefixToTrim))

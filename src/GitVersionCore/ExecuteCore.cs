@@ -42,8 +42,11 @@ namespace GitVersion
             //    },
             //    Directory = workingDirectory
             //});
-            Logger.WriteInfo(string.Format("Project root is: {0}", projectRoot));
-            Logger.WriteInfo(string.Format("DotGit directory is: {0}", dotGitDirectory));
+            if (Logger.IsInfoEnabled)
+            {
+                Logger.WriteInfo(string.Format("Project root is: {0}", projectRoot));
+                Logger.WriteInfo(string.Format("DotGit directory is: {0}", dotGitDirectory));
+            }
             if (string.IsNullOrEmpty(dotGitDirectory) || string.IsNullOrEmpty(projectRoot))
             {
                 // TODO Link to wiki article

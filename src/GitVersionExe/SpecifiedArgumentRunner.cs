@@ -14,7 +14,7 @@ namespace GitVersion
 
         public static void Run(Arguments arguments, IFileSystem fileSystem)
         {
-            Logger.WriteInfo(string.Format("Running on {0}.", runningOnMono ? "Mono" : "Windows"));
+            if (Logger.IsInfoEnabled) Logger.WriteInfo(string.Format("Running on {0}.", runningOnMono ? "Mono" : "Windows"));
 
             var noFetch = arguments.NoFetch;
             var authentication = arguments.Authentication;

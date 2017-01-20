@@ -41,7 +41,7 @@
 
             if (CurrentCommit == null)
             {
-                Logger.WriteInfo("Using latest commit on specified branch");
+                if (Logger.IsInfoEnabled) Logger.WriteInfo("Using latest commit on specified branch");
                 CurrentCommit = currentBranch.Tip;
             }
 

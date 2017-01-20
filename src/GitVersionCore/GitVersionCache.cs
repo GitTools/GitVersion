@@ -74,7 +74,7 @@ namespace GitVersion
                 var cacheFileName = GetCacheFileName(key, cacheDir);
                 if (!fileSystem.Exists(cacheFileName))
                 {
-                    Logger.WriteInfo("Cache file " + cacheFileName + " not found.");
+                    if (Logger.IsInfoEnabled) Logger.WriteInfo("Cache file " + cacheFileName + " not found.");
                     return null;
                 }
 

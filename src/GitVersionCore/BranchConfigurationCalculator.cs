@@ -32,9 +32,9 @@ namespace GitVersion
             }
             else
             {
-                Logger.WriteInfo(string.Format(
-                    "No branch configuration found for branch {0}, falling back to default configuration",
-                    targetBranch.FriendlyName));
+                if (Logger.IsInfoEnabled) Logger.WriteInfo(string.Format(
+                                                    "No branch configuration found for branch {0}, falling back to default configuration",
+                                                    targetBranch.FriendlyName));
 
                 branchConfiguration = new BranchConfig { Name = string.Empty };
                 ConfigurationProvider.ApplyBranchDefaults(context.FullConfiguration, branchConfiguration, "");
@@ -119,7 +119,7 @@ namespace GitVersion
                     }
                 }
 
-                Logger.WriteInfo("Found possible parent branches: " + string.Join(", ", possibleParents.Select(p => p.FriendlyName)));
+                if (Logger.IsInfoEnabled) Logger.WriteInfo("Found possible parent branches: " + string.Join(", ", possibleParents.Select(p => p.FriendlyName)));
 
                 if (possibleParents.Count == 1)
                 {
