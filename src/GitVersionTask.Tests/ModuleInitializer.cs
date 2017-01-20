@@ -10,7 +10,7 @@ public static class ModuleInitializer
     /// </summary>
     public static void Initialize()
     {
-        Logger.SetLoggers(
+        Logger.SetLoggers(VerbosityLevel.Debug,
             s => System.Console.WriteLine(s),
             s => System.Console.WriteLine(s),
             s => System.Console.WriteLine(s),

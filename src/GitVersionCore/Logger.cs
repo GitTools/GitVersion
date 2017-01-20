@@ -14,6 +14,11 @@ namespace GitVersion
             Reset();
         }
 
+        public static bool IsDebugEnabled;
+        public static bool IsInfoEnabled;
+        public static bool IsWarningEnabled;
+        public static bool IsErrorEnabled;
+
         public static Action<string> WriteDebug { get; private set; }
         public static Action<string> WriteInfo { get; private set; }
         public static Action<string> WriteWarning { get; private set; }
@@ -21,6 +26,7 @@ namespace GitVersion
 
         public static IDisposable IndentLog(string operationDescription)
         {
+            if (!IsInfoEnabled) return new ActionDisposable(() => { });
             var start = DateTime.Now;
             WriteInfo("Begin: " + operationDescription);
             indent = indent + "  ";
@@ -41,17 +47,47 @@ namespace GitVersion
             return logAction;
         }
 
-        public static void SetLoggers(Action<string> debug, Action<string> info, Action<string> warn, Action<string> error)
+        public static void SetLoggers(VerbosityLevel verbosity, Action<string> debug, Action<string> info, Action<string> warn, Action<string> error)
         {
-            if (debug == null) throw new ArgumentNullException("debug");
-            if (info == null) throw new ArgumentNullException("info");
-            if (warn == null) throw new ArgumentNullException("warn");
-            if (error == null) throw new ArgumentNullException("error");
-
-            WriteDebug = LogMessage(ObscurePassword(debug), "DEBUG");
-            WriteInfo = LogMessage(ObscurePassword(info), "INFO");
-            WriteWarning = LogMessage(ObscurePassword(warn), "WARN");
-            WriteError = LogMessage(ObscurePassword(error), "ERROR");
+            if (verbosity >= VerbosityLevel.Debug)
+            {
+                if (debug == null) throw new ArgumentNullException("debug");
+                IsDebugEnabled = true;
+                WriteDebug = LogMessage(ObscurePassword(debug), "DEBUG");
+            }
+            else {
+                WriteDebug = (m) => { };
+            }
+            if (verbosity >= VerbosityLevel.Info)
+            {
+                if (info == null) throw new ArgumentNullException("Info");
+                IsInfoEnabled = true;
+                WriteInfo = LogMessage(ObscurePassword(info), "INFO");
+            }
+            else
+            {
+                WriteInfo = (m) => { };
+            }
+            if (verbosity >= VerbosityLevel.Warn)
+            {
+                if (warn == null) throw new ArgumentNullException("Warn");
+                IsWarningEnabled = true;
+                WriteWarning = LogMessage(ObscurePassword(warn), "WARN");
+            }
+            else
+            {
+                WriteWarning = (m) => { };
+            }
+            if (verbosity >= VerbosityLevel.Error)
+            {
+                if (error == null) throw new ArgumentNullException("Error");
+                IsErrorEnabled = true;
+                WriteError = LogMessage(ObscurePassword(error), "ERROR");
+            }
+            else
+            {
+                WriteError = (m) => { };
+            }
         }
 
         public static IDisposable AddLoggersTemporarily(Action<string> debug, Action<string> info, Action<string> warn, Action<string> error)
@@ -60,7 +96,7 @@ namespace GitVersion
             var currentInfo = WriteInfo;
             var currentWarn = WriteWarning;
             var currentError = WriteError;
-            SetLoggers(s =>
+            SetLoggers(VerbosityLevel.Debug, s =>
             {
                 debug(s);
                 currentDebug(s);
