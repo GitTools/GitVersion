@@ -133,22 +133,23 @@ namespace GitVersion
                 {
                     Logger.WriteInfo(string.Format("Found merge base of {0}", findMergeBase.Sha));
                     // We do not want to include merge base commits which got forward merged into the other branch
-                    bool mergeBaseWasForwardMerge;
+                    Commit mergeBaseAsForwardMerge;
                     do
                     {
                         // Now make sure that the merge base is not a forward merge
-                        mergeBaseWasForwardMerge = otherBranch.Commits
+                        mergeBaseAsForwardMerge = otherBranch.Commits
                             .SkipWhile(c => c != commitToFindCommonBase)
                             .TakeWhile(c => c != findMergeBase)
-                            .Any(c => c.Parents.Contains(findMergeBase));
-                        if (mergeBaseWasForwardMerge)
+                            .FirstOrDefault(c => c.Parents.Contains(findMergeBase));
+
+                        if (mergeBaseAsForwardMerge != null)
                         {
-                            commitToFindCommonBase = commitToFindCommonBase.Parents.First();
+                            commitToFindCommonBase = mergeBaseAsForwardMerge.Parents.First();
                             findMergeBase = this.Repository.ObjectDatabase.FindMergeBase(commit, commitToFindCommonBase);
-                            
+
                             Logger.WriteInfo(string.Format("Merge base was due to a forward merge, next merge base is {0}", findMergeBase));
                         }
-                    } while (mergeBaseWasForwardMerge);
+                    } while (mergeBaseAsForwardMerge != null);
                 }
 
                 // Store in cache.
