@@ -379,4 +379,35 @@ public class ReleaseBranchScenarios
             fixture.AssertFullSemver("2.0.0-beta.1+2");
         }
     }
+
+    [Test]
+    public void ReleaseBranchWithACommitShouldUseBranchNameVersionDespiteBumpInPreviousCommit()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeATaggedCommit("1.0");
+            fixture.Repository.MakeACommit("+semver:major");
+            fixture.Repository.MakeACommit();
+
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("release/2.0"));
+
+            fixture.Repository.MakeACommit();
+
+            fixture.AssertFullSemver("2.0.0-beta.1+3");
+        }
+    }
+
+    [Test]
+    public void ReleaseBranchedAtCommitWithSemverMessageShouldUseBranchNameVersion()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeATaggedCommit("1.0");
+            fixture.Repository.MakeACommit("+semver:major");
+
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("release/2.0"));
+
+            fixture.AssertFullSemver("2.0.0-beta.1+1");
+        }
+    }
 }
