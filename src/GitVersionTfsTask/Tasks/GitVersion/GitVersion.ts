@@ -1,8 +1,6 @@
 import tl = require('vsts-task-lib/task');
 import path = require('path');
-import fs = require('fs-extra');
 import q = require('q');
-import XRegExp = require('xregexp');
 
 var variables = [
     "GitVersion_Major",
@@ -44,7 +42,9 @@ var sourcesDirectory = tl.getVariable("Build.SourcesDirectory")
 
 if (!gitVersionPath) {
     gitVersionPath = tl.which("GitVersion.exe");
-    gitVersionPath = path.join(currentDirectory, "GitVersion.exe");
+    if (!gitVersionPath) {
+        gitVersionPath = path.join(currentDirectory, "GitVersion.exe");
+    }
 }
 
 (async function execute() {
@@ -58,7 +58,6 @@ if (!gitVersionPath) {
             "/nofetch"
         ]);
 
-
         if (updateAssemblyInfo) {
             toolRunner.arg("/updateassemblyinfo")
             if (updateAssemblyInfoFilename) {
@@ -67,6 +66,7 @@ if (!gitVersionPath) {
                 toolRunner.arg("true");
             }
         }
+
         if (additionalArguments) {
             toolRunner.arg(additionalArguments);
         }
@@ -75,8 +75,7 @@ if (!gitVersionPath) {
         if (result) {
             tl.setResult(tl.TaskResult.Failed, "An error occured during GitVersion execution")
         } else {
-
-            // workaround gitversion to make sure variable are availabel in all vsts build contexts
+            // workaround gitversion to make sure variable are available in all vsts build contexts
             for(var i = 0; i < variables.length; i++) {
                 var variableName = variables[i];
 

@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fs-extra": "0.30.0",
     "vsts-task-lib": "0.9.20",
     "q" : "1.4.1"
   }

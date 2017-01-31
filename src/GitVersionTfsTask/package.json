@@ -5,7 +5,7 @@
   "private": true,
   "main": "index.js",
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "scripts": {
     "clean": "node ./BuildScripts/clean.js",
     "pullsubmodules": "git submodule foreach git pull origin master",
