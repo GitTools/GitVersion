@@ -2,6 +2,7 @@ namespace GitVersion.Helpers
 {
     using System.Collections.Generic;
     using System.IO;
+    using System.Text;
 
     public interface IFileSystem
     {
@@ -11,6 +12,7 @@ namespace GitVersion.Helpers
         void Delete(string path);
         string ReadAllText(string path);
         void WriteAllText(string file, string fileContents);
+        void WriteAllText(string file, string fileContents, Encoding encoding);
         IEnumerable<string> DirectoryGetFiles(string directory, string searchPattern, SearchOption searchOption);
         Stream OpenWrite(string path);
         Stream OpenRead(string path);

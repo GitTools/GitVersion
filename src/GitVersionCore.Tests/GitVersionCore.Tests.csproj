@@ -125,6 +125,7 @@
     <Compile Include="ConfigProviderTests.cs" />
     <Compile Include="GitVersionContextTests.cs" />
     <Compile Include="Helpers\DirectoryHelper.cs" />
+    <Compile Include="IntegrationTests\FileSystemTests.cs" />
     <Compile Include="IntegrationTests\MainlineDevelopmentMode.cs" />
     <Compile Include="LogMessages.cs" />
     <Compile Include="Mocks\MockThreadSleep.cs" />
