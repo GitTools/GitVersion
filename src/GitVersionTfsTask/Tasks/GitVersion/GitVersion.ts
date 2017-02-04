@@ -39,7 +39,7 @@ if (!gitVersionPath) {
         }
 
         if (additionalArguments) {
-            toolRunner.arg(additionalArguments);
+            toolRunner.line(additionalArguments);
         }
 
         var result = await toolRunner.exec();
