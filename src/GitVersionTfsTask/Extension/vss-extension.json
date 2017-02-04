@@ -1,9 +1,8 @@
 {
     "manifestVersion": 1,
-    "id": "gitversion",
+    "id": "gl-gitversion",
     "name": "GitVersion",
-    "publisher": "gittools",
-    "public": true,
+    "publisher": "geeklearningio",
     "author": "GitVersion Contributors",
     "version": "$version$",
     "description": "Build task for easy semantic versioning for projects using Git.",
@@ -14,7 +13,7 @@
     ],
     "files": [
         {
-            "path": "GitVersionTask"
+            "path": "Tasks"
         }
     ],
     "categories": [
@@ -46,27 +45,15 @@
     },
     "screenshots": [
         {
-            "path": "img/builds.png"
+            "path": "builds.png"
         },
         {
-            "path": "img/build-task.png"
+            "path": "build-task.png"
         }
     ],
     "content": {
         "details": {
             "path": "overview.md"
         }
-    },
-    "contributions": [
-        {
-            "id": "gitversion-task",
-            "type": "ms.vss-distributed-task.task",
-            "targets": [
-                "ms.vss-distributed-task.tasks"
-            ],
-            "properties": {
-                "name": "GitVersionTask"
-            }
-        }
-    ]
+    }
 }

@@ -1,3 +1,0 @@
-[submodule "src/GitVersionTfsTask/BuildScripts"]
-	path = src/GitVersionTfsTask/BuildScripts
-	url = https://github.com/geeklearningio/gl-vsts-tasks-build-scripts
