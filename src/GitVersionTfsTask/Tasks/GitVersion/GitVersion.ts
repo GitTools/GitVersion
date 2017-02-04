@@ -6,6 +6,7 @@ var updateAssemblyInfo = tl.getBoolInput('updateAssemblyInfo');
 var updateAssemblyInfoFilename = tl.getInput('updateAssemblyInfoFilename');
 var additionalArguments = tl.getInput('additionalArguments');
 var gitVersionPath = tl.getInput('gitVersionPath');
+var preferBundledVersion = tl.getBoolInput('preferBundledVersion');
 
 var currentDirectory = __dirname;
 
@@ -13,7 +14,7 @@ var sourcesDirectory = tl.getVariable("Build.SourcesDirectory")
 
 if (!gitVersionPath) {
     gitVersionPath = tl.which("GitVersion.exe");
-    if (!gitVersionPath) {
+    if (preferBundledVersion || !gitVersionPath) {
         gitVersionPath = path.join(currentDirectory, "GitVersion.exe");
     }
 }
@@ -54,9 +55,3 @@ if (!gitVersionPath) {
         tl.setResult(tl.TaskResult.Failed, err);
     }
 })();
-
-
-
-
-
-

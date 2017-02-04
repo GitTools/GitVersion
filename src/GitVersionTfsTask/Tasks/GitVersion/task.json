@@ -56,6 +56,14 @@
             "required": false,
             "helpMarkDown": "Optionally supply the path to GitVersion.exe",
             "groupName": "additional"
+        },
+        {
+            "name": "preferBundledVersion",
+            "type": "boolean",
+            "label": "Prefer bundled GiVersion.exe",
+            "required": false,
+            "helpMarkDown": "If checked it will prefer the bundled version over a version found in path",
+            "groupName": "additional"
         }
     ],
     "execution": {
