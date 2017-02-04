@@ -16,6 +16,6 @@
   "devDependencies": {
     "async": "^2.0.1",
     "npm-run-all": "2.3.0",
-    "gl-vsts-tasks-build-scripts" : "^0.0.0"
+    "gl-vsts-tasks-build-scripts" : "0.1.1"
   }
 }
