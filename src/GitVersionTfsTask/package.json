@@ -14,8 +14,11 @@
     "package": "vsts-build-tools-package"
   },
   "devDependencies": {
+    "@types/minimatch": "^2.0.29",
+    "@types/node": "^7.0.5",
+    "@types/q": "0.0.32",
     "async": "^2.0.1",
-    "npm-run-all": "2.3.0",
-    "gl-vsts-tasks-build-scripts" : "0.2.0-alpha.5"
+    "gl-vsts-tasks-build-scripts": "0.2.0-alpha.5",
+    "npm-run-all": "2.3.0"
   }
 }
