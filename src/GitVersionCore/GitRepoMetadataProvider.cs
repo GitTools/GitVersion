@@ -140,7 +140,7 @@ namespace GitVersion
                         mergeBaseAsForwardMerge = otherBranch.Commits
                             .SkipWhile(c => c != commitToFindCommonBase)
                             .TakeWhile(c => c != findMergeBase)
-                            .FirstOrDefault(c => c.Parents.Contains(findMergeBase));
+                            .LastOrDefault(c => c.Parents.Contains(findMergeBase));
 
                         if (mergeBaseAsForwardMerge != null)
                         {
