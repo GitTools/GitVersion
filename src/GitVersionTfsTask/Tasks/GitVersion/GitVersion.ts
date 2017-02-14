@@ -42,7 +42,7 @@ if (!gitVersionPath) {
             toolRunner = tl.tool(gitVersionPath);
         } else {
             toolRunner = tl.tool("mono");
-            toolRunner.arg("GitVersion.exe");
+            toolRunner.arg(gitVersionPath);
         }
 
         toolRunner.arg([
