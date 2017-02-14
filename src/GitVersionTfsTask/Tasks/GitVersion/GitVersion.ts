@@ -1,6 +1,8 @@
 import tl = require('vsts-task-lib/task');
+import { IExecOptions, ToolRunner } from 'vsts-task-lib/toolrunner';
 import path = require('path');
 import q = require('q');
+import os = require('os');
 
 var updateAssemblyInfo = tl.getBoolInput('updateAssemblyInfo');
 var updateAssemblyInfoFilename = tl.getInput('updateAssemblyInfoFilename');
@@ -21,7 +23,27 @@ if (!gitVersionPath) {
 
 (async function execute() {
     try {
-        var toolRunner = tl.tool(gitVersionPath);
+
+        var execOptions: IExecOptions = {
+            cwd: undefined,
+            env: undefined,
+            silent: undefined,
+            failOnStdErr: undefined,
+            ignoreReturnCode: undefined,
+            errStream: undefined,
+            outStream: undefined
+        };
+
+        var toolRunner: ToolRunner;
+
+        var isWin32 = os.platform() == "win32";
+
+        if (isWin32) {
+            toolRunner = tl.tool(gitVersionPath);
+        } else {
+            toolRunner = tl.tool("mono");
+            toolRunner.arg("GitVersion.exe");
+        }
 
         toolRunner.arg([
             sourcesDirectory,
@@ -43,7 +65,7 @@ if (!gitVersionPath) {
             toolRunner.line(additionalArguments);
         }
 
-        var result = await toolRunner.exec();
+        var result = await toolRunner.exec(execOptions);
         if (result) {
             tl.setResult(tl.TaskResult.Failed, "An error occured during GitVersion execution")
         } else {
