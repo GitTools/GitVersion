@@ -57,6 +57,12 @@ namespace GitVersion
                     return 1;
                 }
 
+                if (arguments.IsVersion)
+                {
+                    VersionWriter.Write();
+                    return 0;
+                }
+
                 if (arguments.IsHelp)
                 {
                     HelpWriter.Write();

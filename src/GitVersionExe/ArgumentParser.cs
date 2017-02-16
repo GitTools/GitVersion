@@ -65,6 +65,13 @@ namespace GitVersion
                 var values = switchesAndValues.GetValues(name);
                 var value = values != null ? values.FirstOrDefault() : null;
 
+                if (name.IsSwitch("version"))
+                {
+                    EnsureArgumentValueCount(values);
+                    arguments.IsVersion = true;
+                    continue;
+                }
+
                 if (name.IsSwitch("l"))
                 {
                     EnsureArgumentValueCount(values);
