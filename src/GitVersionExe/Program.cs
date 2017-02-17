@@ -7,6 +7,7 @@ namespace GitVersion
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
     using System.Text;
 
     class Program
@@ -59,7 +60,8 @@ namespace GitVersion
 
                 if (arguments.IsVersion)
                 {
-                    VersionWriter.Write();
+                    var assembly = Assembly.GetExecutingAssembly();
+                    VersionWriter.Write(assembly);
                     return 0;
                 }
 

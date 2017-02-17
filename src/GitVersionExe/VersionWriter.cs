@@ -6,42 +6,29 @@
 
     class VersionWriter
     {
-        /// <summary>
-        /// Gets the xss version
-        /// </summary>
-        private static Version Version
+        public static void Write(Assembly assembly)
         {
-            get { return Assembly.GetExecutingAssembly().GetName().Version; }
+            WriteTo(assembly, Console.WriteLine);
         }
 
-        /// <summary>
-        /// Gets the AssemblyInformationalVersion
-        /// </summary>
-        private static string InformationalVersion
+        public static void WriteTo(Assembly assembly, Action<string> writeAction)
         {
-            get
-            {
-                var attribute = Assembly.GetExecutingAssembly()
+            var version = GetAssemblyVersion(assembly);
+            writeAction(version);
+        }
+
+        private static string GetAssemblyVersion(Assembly assembly)
+        {
+            var attribute = assembly
                     .GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false)
                     .FirstOrDefault() as AssemblyInformationalVersionAttribute;
 
-                if (attribute != null)
-                {
-                    return attribute.InformationalVersion;
-                }
-
-                return Version.ToString();
+            if (attribute != null)
+            {
+                return attribute.InformationalVersion;
             }
-        }
 
-        public static void Write()
-        {
-            WriteTo(Console.WriteLine);
-        }
-
-        public static void WriteTo(Action<string> writeAction)
-        {
-            writeAction(InformationalVersion);
+            return assembly.GetName().Version.ToString();
         }
     }
 }

@@ -1,6 +1,7 @@
 namespace GitVersion
 {
     using System;
+    using System.Reflection;
 
     class HelpWriter
     {
@@ -12,7 +13,8 @@ namespace GitVersion
         public static void WriteTo(Action<string> writeAction)
         {
             string version = string.Empty;
-            VersionWriter.WriteTo(v => version = v);
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            VersionWriter.WriteTo(assembly, v => version = v);
 
             string message = "GitVersion " + version + @"
 Use convention to derive a SemVer product version from a GitFlow or GitHub based repository.
