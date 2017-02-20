@@ -128,7 +128,6 @@
     <Copy SourceFiles="$(TargetDir)GitVersionTask.dll.mdb" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)GitVersionTask.dll.mdb')" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\build\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\buildMultiTargeting\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\buildMultiTargeting" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\buildMultiTargeting\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\buildCrossTargeting" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.nuspec" DestinationFolder="$(BuildDir)NuGetTaskBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetTaskBuild" MetadataAssembly="$(ILMergeTemp)GitVersionTask.dll" Version="$(GitVersion_NuGetVersion)" />
     <Delete Files="@(TempFiles)" />
