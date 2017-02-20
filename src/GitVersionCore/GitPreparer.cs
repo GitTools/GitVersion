@@ -166,15 +166,19 @@ namespace GitVersion
         static void CloneRepository(string repositoryUrl, string gitDirectory, AuthenticationInfo authentication)
         {
             Credentials credentials = null;
-            if (!string.IsNullOrWhiteSpace(authentication.Username) && !string.IsNullOrWhiteSpace(authentication.Password))
-            {
-                Logger.WriteInfo(string.Format("Setting up credentials using name '{0}'", authentication.Username));
 
-                credentials = new UsernamePasswordCredentials
+            if (authentication != null)
+            {
+                if (!string.IsNullOrWhiteSpace(authentication.Username) && !string.IsNullOrWhiteSpace(authentication.Password))
                 {
-                    Username = authentication.Username,
-                    Password = authentication.Password
-                };
+                    Logger.WriteInfo(string.Format("Setting up credentials using name '{0}'", authentication.Username));
+
+                    credentials = new UsernamePasswordCredentials
+                    {
+                        Username = authentication.Username,
+                        Password = authentication.Password
+                    };
+                }
             }
 
             Logger.WriteInfo(string.Format("Retrieving git info from url '{0}'", repositoryUrl));
