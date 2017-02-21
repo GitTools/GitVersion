@@ -12,8 +12,7 @@
     <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
 
     <GetVersion Condition=" '$(GetVersion)' == '' ">true</GetVersion>
-    
-    
+       
     <!-- Property that enables setting of Version -->
     <UpdateVersionProperties Condition=" '$(UpdateVersionProperties)' == '' ">true</UpdateVersionProperties>
     <UseFullSemVerForNuGet Condition=" '$(UseFullSemVerForNuGet)' == '' ">false</UseFullSemVerForNuGet>
