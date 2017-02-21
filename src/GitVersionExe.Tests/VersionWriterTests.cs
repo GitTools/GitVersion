@@ -6,8 +6,11 @@
     using GitVersion;
     using NUnit.Framework;
 
+    [TestFixture]
     public class VersionWriterTests
     {
+        [Category("NoMono")]
+        [Description("Won't run on Mono because generating an assembly at runtime does not work on mono")]
         [Test]
         public void WriteVersion_ShouldWriteFileVersion_WithNoPrereleaseTag()
         {
@@ -20,6 +23,8 @@
             Assert.AreEqual("1.0.0", version);
         }
 
+        [Category("NoMono")]
+        [Description("Won't run on Mono because generating an assembly at runtime does not work on mono")]
         [Test]
         public void WriteVersion_ShouldWriteFileVersion_WithPrereleaseTag()
         {
