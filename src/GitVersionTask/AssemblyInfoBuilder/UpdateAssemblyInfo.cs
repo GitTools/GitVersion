@@ -20,7 +20,7 @@
             {
             };
             logger = new TaskLogger(this);
-            Logger.SetLoggers(this.LogDebug, this.LogInfo, this.LogWarning, s => this.LogError(s));
+            Logger.SetLoggers(VerbosityLevel.Debug, this.LogDebug, this.LogInfo, this.LogWarning, s => this.LogError(s));
         }
 
         [Required]

@@ -16,7 +16,7 @@
 
             var commitLog = context.Repository.Commits.QueryBy(qf);
             var commitsSinceTag = commitLog.Count();
-            Logger.WriteInfo(string.Format("{0} commits found between {1} and {2}", commitsSinceTag, baseVersionSource.Sha, context.CurrentCommit.Sha));
+            if (Logger.IsInfoEnabled) Logger.WriteInfo(string.Format("{0} commits found between {1} and {2}", commitsSinceTag, baseVersionSource.Sha, context.CurrentCommit.Sha));
 
             return new SemanticVersionBuildMetaData(
                 commitsSinceTag,

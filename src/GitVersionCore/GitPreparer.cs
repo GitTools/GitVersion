@@ -125,7 +125,7 @@ namespace GitVersion
 
         public string GetProjectRootDirectory()
         {
-            Logger.WriteInfo(string.Format("IsDynamicGitRepository: {0}", IsDynamicGitRepository));
+            if(Logger.IsInfoEnabled) Logger.WriteInfo(string.Format("IsDynamicGitRepository: {0}", IsDynamicGitRepository));
             if (IsDynamicGitRepository)
             {
                 Logger.WriteInfo(string.Format("Returning Project Root as {0}", targetPath));
@@ -134,7 +134,7 @@ namespace GitVersion
 
             var dotGetGitDirectory = GetDotGitDirectory();
             var result = Directory.GetParent(dotGetGitDirectory).FullName;
-            Logger.WriteInfo(string.Format("Returning Project Root from DotGitDirectory: {0} - {1}", dotGetGitDirectory, result));
+            if (Logger.IsInfoEnabled) Logger.WriteInfo(string.Format("Returning Project Root from DotGitDirectory: {0} - {1}", dotGetGitDirectory, result));
             return result;
         }
 

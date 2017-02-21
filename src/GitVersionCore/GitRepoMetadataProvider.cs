@@ -62,7 +62,7 @@ namespace GitVersion
             using (Logger.IndentLog(string.Format("Getting branches containing the commit '{0}'.", commit.Id)))
             {
                 var directBranchHasBeenFound = false;
-                Logger.WriteInfo("Trying to find direct branches.");
+                if (Logger.IsInfoEnabled) Logger.WriteInfo("Trying to find direct branches.");
                 // TODO: It looks wasteful looping through the branches twice. Can't these loops be merged somehow? @asbjornu
                 foreach (var branch in branches)
                 {
@@ -81,10 +81,10 @@ namespace GitVersion
                     yield break;
                 }
 
-                Logger.WriteInfo(string.Format("No direct branches found, searching through {0} branches.", onlyTrackedBranches ? "tracked" : "all"));
+                if (Logger.IsInfoEnabled) Logger.WriteInfo(string.Format("No direct branches found, searching through {0} branches.", onlyTrackedBranches ? "tracked" : "all"));
                 foreach (var branch in branches.Where(b => onlyTrackedBranches && !b.IsTracking))
                 {
-                    Logger.WriteInfo(string.Format("Searching for commits reachable from '{0}'.", branch.FriendlyName));
+                    if (Logger.IsInfoEnabled) Logger.WriteInfo(string.Format("Searching for commits reachable from '{0}'.", branch.FriendlyName));
 
                     var commits = this.Repository.Commits.QueryBy(new CommitFilter
                     {
@@ -93,11 +93,11 @@ namespace GitVersion
 
                     if (!commits.Any())
                     {
-                        Logger.WriteInfo(string.Format("The branch '{0}' has no matching commits.", branch.FriendlyName));
+                        if (Logger.IsInfoEnabled) Logger.WriteInfo(string.Format("The branch '{0}' has no matching commits.", branch.FriendlyName));
                         continue;
                     }
 
-                    Logger.WriteInfo(string.Format("The branch '{0}' has a matching commit.", branch.FriendlyName));
+                    if (Logger.IsInfoEnabled) Logger.WriteInfo(string.Format("The branch '{0}' has a matching commit.", branch.FriendlyName));
                     yield return branch;
                 }
             }
@@ -131,7 +131,7 @@ namespace GitVersion
                 var findMergeBase = this.Repository.ObjectDatabase.FindMergeBase(commit, commitToFindCommonBase);
                 if (findMergeBase != null)
                 {
-                    Logger.WriteInfo(string.Format("Found merge base of {0}", findMergeBase.Sha));
+                    if (Logger.IsInfoEnabled) Logger.WriteInfo(string.Format("Found merge base of {0}", findMergeBase.Sha));
                     // We do not want to include merge base commits which got forward merged into the other branch
                     bool mergeBaseWasForwardMerge;
                     do
@@ -150,7 +150,7 @@ namespace GitVersion
                                 break;
                             }
                             findMergeBase = mergeBase;
-                            Logger.WriteInfo(string.Format("Merge base was due to a forward merge, next merge base is {0}", findMergeBase));
+                            if (Logger.IsInfoEnabled) Logger.WriteInfo(string.Format("Merge base was due to a forward merge, next merge base is {0}", findMergeBase));
                         }
                     } while (mergeBaseWasForwardMerge);
                 }
