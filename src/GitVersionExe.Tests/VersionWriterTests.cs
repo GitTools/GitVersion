@@ -1,16 +1,15 @@
 ﻿namespace GitVersionExe.Tests
 {
     using System;
-    using System.CodeDom.Compiler;
+    using System.IO;
     using System.Reflection;
     using GitVersion;
+    using Mono.Cecil;
     using NUnit.Framework;
 
     [TestFixture]
     public class VersionWriterTests
     {
-        [Category("NoMono")]
-        [Description("Won't run on Mono because generating an assembly at runtime does not work on mono")]
         [Test]
         public void WriteVersion_ShouldWriteFileVersion_WithNoPrereleaseTag()
         {
@@ -23,8 +22,6 @@
             Assert.AreEqual("1.0.0", version);
         }
 
-        [Category("NoMono")]
-        [Description("Won't run on Mono because generating an assembly at runtime does not work on mono")]
         [Test]
         public void WriteVersion_ShouldWriteFileVersion_WithPrereleaseTag()
         {
@@ -39,30 +36,21 @@
 
         private Assembly GenerateAssembly(Version fileVersion, string prereleaseInfo)
         {
-            var source = string.Format(@"
-using System.Reflection;
-using System.Runtime.CompilerServices;
-[assembly: AssemblyTitle(""GitVersion.DynamicUnitTests"")]
-[assembly: AssemblyProduct(""GitVersion"")]
-[assembly: AssemblyVersion(""{0}"")]
-[assembly: AssemblyFileVersion(""{0}"")]
-[assembly: AssemblyInformationalVersion(""{0}{1}"")]
+            var definition = new AssemblyNameDefinition("test-asm", fileVersion);
 
-public class B
-{{
-    public static int k=7;
-}}
-", fileVersion, prereleaseInfo);
+            var asmDef = AssemblyDefinition.CreateAssembly(definition, "test-asm", ModuleKind.Dll);
+            var constructor = typeof(AssemblyInformationalVersionAttribute).GetConstructor(new[] { typeof(string) });
+            var methodReference = asmDef.MainModule.Import(constructor);
+            var customAttribute = new CustomAttribute(methodReference);
+            customAttribute.ConstructorArguments.Add(new CustomAttributeArgument(asmDef.MainModule.TypeSystem.String, fileVersion + prereleaseInfo));
+            asmDef.CustomAttributes.Add(customAttribute);
 
-            CompilerParameters parameters = new CompilerParameters
+            using (var memoryStream = new MemoryStream())
             {
-                GenerateInMemory = true,
-                GenerateExecutable = false,
-                OutputAssembly = "GitVersion.DynamicUnitTests.dll"
-            };
+                asmDef.Write(memoryStream);
 
-            var r = CodeDomProvider.CreateProvider("CSharp").CompileAssemblyFromSource(parameters, source);
-            return r.CompiledAssembly;
+                return Assembly.Load(memoryStream.ToArray());
+            }
         }
     }
 }
