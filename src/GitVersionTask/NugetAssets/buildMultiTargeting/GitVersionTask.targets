@@ -2,19 +2,22 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)\..\</SolutionDir>
-    <IntermediateOutputPath Condition="$(IntermediateOutputPath) == '' Or $(IntermediateOutputPath) == '*Undefined*'">$(MSBuildProjectDirectory)\obj\$(Configuration)\</IntermediateOutputPath>
     <GitVersion_NoFetchEnabled Condition="$(GitVersion_NoFetchEnabled) == ''">false</GitVersion_NoFetchEnabled>
 
     <!-- Property that enables WriteVersionInfoToBuildLog -->
     <WriteVersionInfoToBuildLog Condition=" '$(WriteVersionInfoToBuildLog)' == '' ">true</WriteVersionInfoToBuildLog>
 
-    <!-- Property that enables UpdateAssemblyInfo -->
+    <!-- Property that enables UpdateAssemblyInfo. Default to off for SDK builds -->
+    <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' and '$(TargetFramework)' != '' ">false</UpdateAssemblyInfo>
     <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
 
-    <!-- Property that enables GetVersion -->
     <GetVersion Condition=" '$(GetVersion)' == '' ">true</GetVersion>
+       
+    <!-- Property that enables setting of Version -->
+    <UpdateVersionProperties Condition=" '$(UpdateVersionProperties)' == '' ">true</UpdateVersionProperties>
+    <UseFullSemVerForNuGet Condition=" '$(UseFullSemVerForNuGet)' == '' ">false</UseFullSemVerForNuGet>
 
-    <GitVersionTaskLibrary>$(MSBuildThisFileDirectory)</GitVersionTaskLibrary>
+    <GitVersionTaskLibrary>$(MSBuildThisFileDirectory)..\build\</GitVersionTaskLibrary>
   </PropertyGroup>
 
   <UsingTask
@@ -27,29 +30,11 @@
       TaskName="GitVersionTask.WriteVersionInfoToBuildLog"
       AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll" />
 
-  <Target Name="WriteVersionInfoToBuildLog" BeforeTargets="CoreCompile" Condition="$(WriteVersionInfoToBuildLog) == 'true'">
+  <Target Name="WriteVersionInfoToBuildLog" BeforeTargets="DispatchToInnerBuilds;GenerateNuspec" Condition="$(WriteVersionInfoToBuildLog) == 'true'">
     <WriteVersionInfoToBuildLog SolutionDirectory="$(SolutionDir)" NoFetch="$(GitVersion_NoFetchEnabled)"/>
   </Target>
   
-  <Target Name="UpdateAssemblyInfo" BeforeTargets="CoreCompile" Condition="$(UpdateAssemblyInfo) == 'true'">
-    <UpdateAssemblyInfo
-    SolutionDirectory="$(SolutionDir)"
-    NoFetch="$(GitVersion_NoFetchEnabled)"
-    ProjectFile="$(MSBuildProjectFullPath)"
-    IntermediateOutputPath="$(IntermediateOutputPath)"
-    RootNamespace="$(RootNamespace)"
-    CompileFiles ="@(Compile)">
-      <Output
-        TaskParameter="AssemblyInfoTempFilePath"
-        PropertyName="AssemblyInfoTempFilePath" />
-    </UpdateAssemblyInfo>
-
-    <ItemGroup>
-      <Compile Include="$(AssemblyInfoTempFilePath)" />
-    </ItemGroup>
-  </Target>
-  
-  <Target Name="GetVersion" BeforeTargets="CoreCompile" Condition="$(GetVersion) == 'true'">
+  <Target Name="GetVersion" BeforeTargets="DispatchToInnerBuilds;GenerateNuspec" Condition="$(GetVersion) == 'true'">
 
     <GetVersion SolutionDirectory="$(SolutionDir)" NoFetch="$(GitVersion_NoFetchEnabled)">
       <Output TaskParameter="Major" PropertyName="GitVersion_Major" />
@@ -77,22 +62,18 @@
       <Output TaskParameter="CommitsSinceVersionSource" PropertyName="GitVersion_CommitsSinceVersionSource" />
       <Output TaskParameter="CommitsSinceVersionSourcePadded" PropertyName="GitVersion_CommitsSinceVersionSourcePadded" />
     </GetVersion>
+    
+    <PropertyGroup Condition=" '$(UpdateVersionProperties)' == 'true' ">
+      <Version>$(GitVersion_FullSemVer)</Version>
+      <VersionPrefix>$(GitVersion_MajorMinorPatch)</VersionPrefix>
+      <VersionSuffix Condition=" '$(UseFullSemVerForNuGet)' == 'false' ">$(GitVersion_NuGetPreReleaseTag)</VersionSuffix>
+      <VersionSuffix Condition=" '$(UseFullSemVerForNuGet)' == 'true' ">$(GitVersion_PreReleaseTag)</VersionSuffix>
+      <PackageVersion Condition=" '$(UseFullSemVerForNuGet)' == 'false' ">$(GitVersion_NuGetVersion)</PackageVersion>
+      <PackageVersion Condition=" '$(UseFullSemVerForNuGet)' == 'true' ">$(GitVersion_FullSemVer)</PackageVersion>
+      <InformationalVersion Condition=" '$(InformationalVersion)' == '' ">$(GitVersion_InformationalVersion)</InformationalVersion>
+      <AssemblyVersion Condition=" '$(AssemblyVersion)' == '' ">$(GitVersion_AssemblySemVer)</AssemblyVersion>
+      <FileVersion Condition=" '$(FileVersion)' == '' ">$(GitVersion_MajorMinorPatch).$(GitVersion_CommitsSinceVersionSource)</FileVersion>
+    </PropertyGroup>
 
   </Target>
-
-  <!--Support for ncrunch-->
-  <ItemGroup Condition=" $(NCrunch) != '' ">
-    <None Include="$(GitVersionTaskDir)GitVersionTask.dll">
-      <Visible>False</Visible>
-    </None>
-    <None Include="$(GitVersionTaskDir)GitVersionTask.pdb">
-      <Visible>False</Visible>
-    </None>
-    <None Include="$(GitVersionTaskDir)NativeBinaries\**\*">
-      <Visible>False</Visible>
-    </None>
-  </ItemGroup>
-
 </Project>
-
-
