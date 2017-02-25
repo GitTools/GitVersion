@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using GitTools;
-using GitTools.Testing;
+﻿using GitTools.Testing;
 using GitVersion;
 using GitVersionCore.Tests;
 using LibGit2Sharp;

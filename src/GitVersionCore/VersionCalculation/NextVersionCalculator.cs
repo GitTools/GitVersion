@@ -52,7 +52,10 @@
                 semver.BuildMetaData = metaDataCalculator.Create(baseVersion.BaseVersionSource, context);
             }
 
-            if (!semver.PreReleaseTag.HasTag() && !string.IsNullOrEmpty(context.Configuration.Tag))
+            var hasPreReleaseTag = semver.PreReleaseTag.HasTag();
+            var branchConfigHasPreReleaseTagConfigured = !string.IsNullOrEmpty(context.Configuration.Tag);
+            var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured && semver.PreReleaseTag.Name != context.Configuration.Tag;
+            if (!semver.PreReleaseTag.HasTag() && branchConfigHasPreReleaseTagConfigured || preReleaseTagDoesNotMatchConfiguration)
             {
                 UpdatePreReleaseTag(context, semver, baseVersion.BranchNameOverride);
             }
