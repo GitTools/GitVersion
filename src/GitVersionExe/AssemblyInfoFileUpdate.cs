@@ -22,17 +22,17 @@ namespace GitVersion
                 Logger.WriteInfo("Updating assembly info files");
 
             var assemblyInfoFiles = GetAssemblyInfoFiles(workingDirectory, args, fileSystem).ToList();
-            Logger.WriteInfo(string.Format("Found {0} files", assemblyInfoFiles.Count));
+            Logger.WriteInfo($"Found {assemblyInfoFiles.Count} files");
 
             var assemblyVersion = variables.AssemblySemVer;
             var assemblyVersionRegex = new Regex(@"AssemblyVersion(Attribute)?\s*\(\s*""[^""]*""\s*\)");
-            var assemblyVersionString = !string.IsNullOrWhiteSpace(assemblyVersion) ? string.Format("AssemblyVersion(\"{0}\")", assemblyVersion) : null;
+            var assemblyVersionString = !string.IsNullOrWhiteSpace(assemblyVersion) ? $"AssemblyVersion(\"{assemblyVersion}\")" : null;
             var assemblyInfoVersion = variables.InformationalVersion;
             var assemblyInfoVersionRegex = new Regex(@"AssemblyInformationalVersion(Attribute)?\s*\(\s*""[^""]*""\s*\)");
-            var assemblyInfoVersionString = string.Format("AssemblyInformationalVersion(\"{0}\")", assemblyInfoVersion);
+            var assemblyInfoVersionString = $"AssemblyInformationalVersion(\"{assemblyInfoVersion}\")";
             var assemblyFileVersion = variables.MajorMinorPatch + ".0";
             var assemblyFileVersionRegex = new Regex(@"AssemblyFileVersion(Attribute)?\s*\(\s*""[^""]*""\s*\)");
-            var assemblyFileVersionString = string.Format("AssemblyFileVersion(\"{0}\")", assemblyFileVersion);
+            var assemblyFileVersionString = $"AssemblyFileVersion(\"{assemblyFileVersion}\")";
 
             foreach (var assemblyInfoFile in assemblyInfoFiles)
             {
@@ -47,7 +47,8 @@ namespace GitVersion
                 });
                 cleanupBackupTasks.Add(() => fileSystem.Delete(backupAssemblyInfo));
 
-                var fileContents = fileSystem.ReadAllText(assemblyInfoFile.FullName);
+                var originalFileContents = fileSystem.ReadAllText(assemblyInfoFile.FullName);
+                var fileContents = originalFileContents;
                 var appendedAttributes = false;
                 if (!string.IsNullOrWhiteSpace(assemblyVersion))
                 {
@@ -61,7 +62,10 @@ namespace GitVersion
                     // If we appended any attributes, put a new line after them
                     fileContents += Environment.NewLine;
                 }
-                fileSystem.WriteAllText(assemblyInfoFile.FullName, fileContents);
+                if (originalFileContents != fileContents)
+                {
+                    fileSystem.WriteAllText(assemblyInfoFile.FullName, fileContents);
+                }
             }
         }
 
@@ -126,7 +130,7 @@ namespace GitVersion
                 fileSystem.WriteAllText(fullPath, assemblyInfoSource);
                 return true;
             }
-            Logger.WriteWarning(string.Format("No version assembly info template available to create source file '{0}'", arguments.UpdateAssemblyInfoFileName));
+            Logger.WriteWarning($"No version assembly info template available to create source file '{arguments.UpdateAssemblyInfoFileName}'");
             return false;
         }
 
