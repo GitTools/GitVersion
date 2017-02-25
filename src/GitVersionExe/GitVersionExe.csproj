@@ -11,7 +11,7 @@
     <RootNamespace>GitVersion</RootNamespace>
     <AssemblyName>GitVersion</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <LangVersion>5</LangVersion>
+    <LangVersion>6</LangVersion>
     <FileAlignment>512</FileAlignment>
     <BuildDir>$(SolutionDir)..\build\</BuildDir>
     <NuGetPackageImportStamp>

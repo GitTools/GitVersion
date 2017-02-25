@@ -12,7 +12,7 @@
     <RootNamespace>GitVersionTask.Tests</RootNamespace>
     <AssemblyName>GitVersionTask.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <LangVersion>5</LangVersion>
+    <LangVersion>6</LangVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
