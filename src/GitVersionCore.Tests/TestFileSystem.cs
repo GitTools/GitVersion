@@ -7,7 +7,7 @@ using GitVersion.Helpers;
 
 public class TestFileSystem : IFileSystem
 {
-    Dictionary<string, string> fileSystem = new Dictionary<string, string>();
+    Dictionary<string, byte[]> fileSystem = new Dictionary<string, byte[]>();
 
     public void Copy(string @from, string to, bool overwrite)
     {
@@ -19,7 +19,7 @@ public class TestFileSystem : IFileSystem
                 throw new IOException("File already exists");
         }
 
-        string source;
+        byte[] source;
         if (!fileSystem.TryGetValue(from, out source))
             throw new FileNotFoundException(string.Format("The source file '{0}' was not found", from), from);
 
@@ -44,19 +44,25 @@ public class TestFileSystem : IFileSystem
 
     public string ReadAllText(string path)
     {
-        return fileSystem[path];
+        byte[] content;
+        if (!fileSystem.TryGetValue(path, out content))
+            throw new FileNotFoundException(string.Format("The file '{0}' was not found", path), path);
+
+        var encoding = EncodingHelper.DetectEncoding(content) ?? Encoding.UTF8;
+        return encoding.GetString(content);
     }
 
     public void WriteAllText(string file, string fileContents)
     {
-        if (fileSystem.ContainsKey(file))
-        {
-            fileSystem[file] = fileContents;
-        }
-        else
-        {
-            fileSystem.Add(file, fileContents);
-        }
+        var encoding = fileSystem.ContainsKey(file)
+                           ? EncodingHelper.DetectEncoding(fileSystem[file]) ?? Encoding.UTF8
+                           : Encoding.UTF8;
+        WriteAllText(file, fileContents, encoding);
+    }
+
+    public void WriteAllText(string file, string fileContents, Encoding encoding)
+    {
+        fileSystem[file] = encoding.GetBytes(fileContents);
     }
 
     public IEnumerable<string> DirectoryGetFiles(string directory, string searchPattern, SearchOption searchOption)
@@ -74,7 +80,7 @@ public class TestFileSystem : IFileSystem
         if (fileSystem.ContainsKey(path))
         {
             var content = fileSystem[path];
-            return new MemoryStream(Encoding.UTF8.GetBytes(content));
+            return new MemoryStream(content);
         }
 
         throw new FileNotFoundException("File not found.", path);
@@ -84,11 +90,11 @@ public class TestFileSystem : IFileSystem
     {
         if (fileSystem.ContainsKey(path))
         {
-            fileSystem[path] = "";
+            fileSystem[path] = new byte[0];
         }
         else
         {
-            fileSystem.Add(path, "");
+            fileSystem.Add(path, new byte[0]);
         }
     }
 

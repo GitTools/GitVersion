@@ -143,26 +143,23 @@ namespace GitVersion
                 {
                     Logger.WriteInfo(string.Format("Found merge base of {0}", mergeBase.Sha));
                     // We do not want to include merge base commits which got forward merged into the other branch
-                    bool mergeBaseWasForwardMerge;
+                    Commit mergeBaseAsForwardMerge;
                     do
                     {
                         // Now make sure that the merge base is not a forward merge
-                        mergeBaseWasForwardMerge = otherBranch.Commits
+                        mergeBaseAsForwardMerge = otherBranch.Commits
                             .SkipWhile(c => c != commitToFindCommonBase)
                             .TakeWhile(c => c != mergeBase)
-                            .Any(c => c.Parents.Contains(mergeBase));
-                        if (mergeBaseWasForwardMerge)
+                            .LastOrDefault(c => c.Parents.Contains(mergeBase));
+
+                        if (mergeBaseAsForwardMerge != null)
                         {
-                            var secondParent = commitToFindCommonBase.Parents.First();
-                            var forwardMergeBase = Repository.ObjectDatabase.FindMergeBase(commit, secondParent);
-                            if (forwardMergeBase == mergeBase)
-                            {
-                                break;
-                            }
-                            mergeBase = forwardMergeBase;
+                            commitToFindCommonBase = mergeBaseAsForwardMerge.Parents.First();
+                            mergeBase = this.Repository.ObjectDatabase.FindMergeBase(commit, commitToFindCommonBase);
+
                             Logger.WriteInfo(string.Format("Merge base was due to a forward merge, next merge base is {0}", mergeBase));
                         }
-                    } while (mergeBaseWasForwardMerge);
+                    } while (mergeBaseAsForwardMerge != null);
                 }
 
                 // Store in cache.

@@ -1,6 +1,7 @@
 namespace GitVersion
 {
     using System;
+    using System.Reflection;
 
     class HelpWriter
     {
@@ -11,12 +12,18 @@ namespace GitVersion
 
         public static void WriteTo(Action<string> writeAction)
         {
-            const string message = @"Use convention to derive a SemVer product version from a GitFlow or GitHub based repository.
+            string version = string.Empty;
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            VersionWriter.WriteTo(assembly, v => version = v);
+
+            string message = "GitVersion " + version + @"
+Use convention to derive a SemVer product version from a GitFlow or GitHub based repository.
 
 GitVersion [path]
 
     path            The directory containing .git. If not defined current directory is used. (Must be first argument)
     init            Configuration utility for gitversion
+    /version        Displays the version of GitVersion
     /diag           Runs GitVersion with additional diagnostic information (requires git.exe to be installed)
     /h or /?        Shows Help
 
