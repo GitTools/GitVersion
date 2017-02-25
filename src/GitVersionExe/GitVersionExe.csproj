@@ -72,6 +72,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="AssemblyInfoFileUpdate.cs" />
     <Compile Include="SpecifiedArgumentRunner.cs" />
+    <Compile Include="VersionWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
