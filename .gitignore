@@ -34,6 +34,7 @@
 *.dotCover
 *.orig
 *~
+*.vspx
 
 ##  If you have NuGet Package Restore enabled, uncomment this
 packages/
