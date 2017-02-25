@@ -126,6 +126,7 @@
     <Compile Include="GitVersionCache.cs" />
     <Compile Include="GitVersionCacheKey.cs" />
     <Compile Include="GitVersionCacheKeyFactory.cs" />
+    <Compile Include="Helpers\EncodingHelper.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\IFileSystem.cs" />
     <Compile Include="Helpers\IThreadSleep.cs" />
