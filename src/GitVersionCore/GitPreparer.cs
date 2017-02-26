@@ -34,6 +34,11 @@ namespace GitVersion
             LogProvider.SetCurrentLogProvider(new LoggerWrapper());
         }
 
+        public string TargetUrl
+        {
+            get { return targetUrl; }
+        }
+
         public string WorkingDirectory
         {
             get { return targetPath; }
