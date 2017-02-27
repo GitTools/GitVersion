@@ -11,7 +11,7 @@
     <RootNamespace>GitVersionTask</RootNamespace>
     <AssemblyName>GitVersionTask</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <LangVersion>5</LangVersion>
+    <LangVersion>6</LangVersion>
     <FileAlignment>512</FileAlignment>
     <BuildDir>$(SolutionDir)..\build\</BuildDir>
     <NuGetPackageImportStamp>
@@ -79,9 +79,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="NugetAssets\GitVersionTask.targets">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="NugetAssets\buildMultiTargeting\GitVersionTask.targets" />
+    <None Include="NugetAssets\build\GitVersionTask.targets" />
     <None Include="NugetAssets\GitVersionTask.nuspec">
       <SubType>Designer</SubType>
     </None>
@@ -114,7 +113,7 @@
     </PropertyGroup>
     <!-- Copy target file so that our temporary file gets the correct permissions -->
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(TargetDir)ILMergeTemp\" />
-    <Exec Command="$(Runtime) &quot;$(SolutionDir)packages\ILRepack.2.0.10\tools\ILRepack.exe&quot; /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)GitTools.Core.dll&quot; &quot;$(TargetDir)LibGit2Sharp.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:library /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
+    <Exec Command="$(Runtime) &quot;$(SolutionDir)packages\ILRepack.2.0.12\tools\ILRepack.exe&quot; /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)GitTools.Core.dll&quot; &quot;$(TargetDir)LibGit2Sharp.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:library /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
     <ItemGroup>
       <TempFiles Include="$(TargetDir)ILMergeTemp\*.*" />
     </ItemGroup>
@@ -127,7 +126,8 @@
     <Copy SourceFiles="$(TargetDir)ILMergeTemp\GitVersionTask.dll" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)ILMergeTemp\GitVersionTask.dll')" />
     <Copy SourceFiles="$(TargetDir)GitVersionTask.pdb" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)GitVersionTask.pdb')" />
     <Copy SourceFiles="$(TargetDir)GitVersionTask.dll.mdb" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)GitVersionTask.dll.mdb')" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\build\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\buildMultiTargeting\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\buildMultiTargeting" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.nuspec" DestinationFolder="$(BuildDir)NuGetTaskBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetTaskBuild" MetadataAssembly="$(ILMergeTemp)GitVersionTask.dll" Version="$(GitVersion_NuGetVersion)" />
     <Delete Files="@(TempFiles)" />
