@@ -172,7 +172,7 @@ assembly-informational-format: '{NugetVersion}'";
 
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
-		config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
+        config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
         config.AssemblyInformationalFormat.ShouldBe("{NugetVersion}");
     }
 
@@ -188,7 +188,7 @@ assembly-informational-format: '{Major}.{Minor}.{Patch}'";
 
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
-		config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
+        config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
         config.AssemblyInformationalFormat.ShouldBe("{Major}.{Minor}.{Patch}");
     }
 
@@ -207,7 +207,7 @@ branches: {}";
 
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
-		config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
+        config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
         config.AssemblyInformationalFormat.ShouldBe("{FullSemVer}");
     }
 
@@ -218,7 +218,7 @@ branches: {}";
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
-		config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
+        config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
         config.AssemblyInformationalFormat.ShouldBe(null);
         config.Branches["develop"].Tag.ShouldBe("alpha");
         config.Branches["release"].Tag.ShouldBe("beta");

@@ -8,9 +8,9 @@ namespace GitVersionCore.Tests
     public class TestEffectiveConfiguration : EffectiveConfiguration
     {
         public TestEffectiveConfiguration(
-			AssemblyVersioningScheme assemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
-			AssemblyFileVersioningScheme assemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
-			string assemblyInformationalFormat = null,
+            AssemblyVersioningScheme assemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
+            AssemblyFileVersioningScheme assemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
+            string assemblyInformationalFormat = null,
             VersioningMode versioningMode = VersioningMode.ContinuousDelivery,
             string gitTagPrefix = "v",
             string tag = "",

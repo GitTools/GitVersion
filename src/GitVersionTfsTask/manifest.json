@@ -21,9 +21,9 @@
         "Build and release"
     ],
     "icons": [
-	    {
-		    "default": "extension-icon.png"
-	    }
+        {
+            "default": "extension-icon.png"
+        }
     ],
     "tags": [
         "semver",

@@ -269,7 +269,7 @@ public class AssemblyInfoBuilderTests
         Assert.IsTrue(emitResult.Success, string.Join(Environment.NewLine, emitResult.Diagnostics.Select(x => x.Descriptor)));
     }
 
-	static void VerifyGitVersionInformationAttribute(Assembly assembly, VersionVariables versionVariables)
+    static void VerifyGitVersionInformationAttribute(Assembly assembly, VersionVariables versionVariables)
     {
         var gitVersionInformation = assembly.GetType("Fake.GitVersionInformation");
         var fields = gitVersionInformation.GetFields(BindingFlags.Static | BindingFlags.Public);

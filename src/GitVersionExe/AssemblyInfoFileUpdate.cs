@@ -49,15 +49,15 @@ namespace GitVersion
 
                 var fileContents = fileSystem.ReadAllText(assemblyInfoFile.FullName);
                 var appendedAttributes = false;
-				if (!string.IsNullOrWhiteSpace(assemblyVersion))
-				{
-					fileContents = ReplaceOrAppend(assemblyVersionRegex, fileContents, assemblyVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
-				}
-				if (!string.IsNullOrWhiteSpace(assemblyFileVersion))
-				{
-					fileContents = ReplaceOrAppend(assemblyFileVersionRegex, fileContents, assemblyFileVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
-				}
-				fileContents = ReplaceOrAppend(assemblyInfoVersionRegex, fileContents, assemblyInfoVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
+                if (!string.IsNullOrWhiteSpace(assemblyVersion))
+                {
+                    fileContents = ReplaceOrAppend(assemblyVersionRegex, fileContents, assemblyVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
+                }
+                if (!string.IsNullOrWhiteSpace(assemblyFileVersion))
+                {
+                    fileContents = ReplaceOrAppend(assemblyFileVersionRegex, fileContents, assemblyFileVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
+                }
+                fileContents = ReplaceOrAppend(assemblyInfoVersionRegex, fileContents, assemblyInfoVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
 
                 if (appendedAttributes)
                 {

@@ -25,7 +25,7 @@
                                 string legacySemVerPadded,
                                 string fullSemVer,
                                 string assemblySemVer,
-								string assemblySemFileVer,
+                                string assemblySemFileVer,
                                 string preReleaseTag,
                                 string preReleaseTagWithDash,
                                 string preReleaseLabel,
@@ -53,7 +53,7 @@
             LegacySemVerPadded = legacySemVerPadded;
             FullSemVer = fullSemVer;
             AssemblySemVer = assemblySemVer;
-			AssemblySemFileVer = assemblySemFileVer;
+            AssemblySemFileVer = assemblySemFileVer;
             PreReleaseTag = preReleaseTag;
             PreReleaseTagWithDash = preReleaseTagWithDash;
             PreReleaseLabel = preReleaseLabel;
@@ -83,7 +83,7 @@
         public string LegacySemVer { get; private set; }
         public string LegacySemVerPadded { get; private set; }
         public string AssemblySemVer { get; private set; }
-		public string AssemblySemFileVer { get; private set; }
+        public string AssemblySemFileVer { get; private set; }
         public string FullSemVer { get; private set; }
         public string InformationalVersion { get; private set; }
         public string BranchName { get; private set; }

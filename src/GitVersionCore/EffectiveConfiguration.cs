@@ -10,7 +10,7 @@ namespace GitVersion
     {
         public EffectiveConfiguration(
             AssemblyVersioningScheme assemblyVersioningScheme,
-			AssemblyFileVersioningScheme assemblyFileVersioningScheme,
+            AssemblyFileVersioningScheme assemblyFileVersioningScheme,
             string assemblyInformationalFormat,
             VersioningMode versioningMode, string gitTagPrefix,
             string tag, string nextVersion, IncrementStrategy increment,
@@ -32,7 +32,7 @@ namespace GitVersion
             bool isCurrentBranchRelease)
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
-	        AssemblyFileVersioningScheme = assemblyFileVersioningScheme;
+            AssemblyFileVersioningScheme = assemblyFileVersioningScheme;
             AssemblyInformationalFormat = assemblyInformationalFormat;
             VersioningMode = versioningMode;
             GitTagPrefix = gitTagPrefix;
@@ -53,8 +53,8 @@ namespace GitVersion
             BuildMetaDataPadding = buildMetaDataPadding;
             CommitsSinceVersionSourcePadding = commitsSinceVersionSourcePadding;
             VersionFilters = versionFilters;
-			TracksReleaseBranches = tracksReleaseBranches;
-			IsCurrentBranchRelease = isCurrentBranchRelease;
+            TracksReleaseBranches = tracksReleaseBranches;
+            IsCurrentBranchRelease = isCurrentBranchRelease;
         }
 
         public bool TracksReleaseBranches { get; private set; }
@@ -63,7 +63,7 @@ namespace GitVersion
         public VersioningMode VersioningMode { get; private set; }
 
         public AssemblyVersioningScheme AssemblyVersioningScheme { get; private set; }
-		public AssemblyFileVersioningScheme AssemblyFileVersioningScheme { get; private set; }
+        public AssemblyFileVersioningScheme AssemblyFileVersioningScheme { get; private set; }
         public string AssemblyInformationalFormat { get; private set; }
 
         /// <summary>
