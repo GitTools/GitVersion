@@ -85,7 +85,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
         public static void ApplyDefaultsTo(Config config)
         {
             config.AssemblyVersioningScheme = config.AssemblyVersioningScheme ?? AssemblyVersioningScheme.MajorMinorPatch;
-			config.AssemblyFileVersioningScheme = config.AssemblyFileVersioningScheme ?? AssemblyFileVersioningScheme.MajorMinorPatch;
+            config.AssemblyFileVersioningScheme = config.AssemblyFileVersioningScheme ?? AssemblyFileVersioningScheme.MajorMinorPatch;
             config.AssemblyInformationalFormat = config.AssemblyInformationalFormat;
             config.TagPrefix = config.TagPrefix ?? DefaultTagPrefix;
             config.VersioningMode = config.VersioningMode ?? VersioningMode.ContinuousDelivery;

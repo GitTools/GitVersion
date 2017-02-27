@@ -111,6 +111,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyFileVersionTests.cs" />
     <Compile Include="BuildServers\BuildServerBaseTests.cs" />
     <Compile Include="BuildServers\ContinuaCiTests.cs" />
     <Compile Include="BuildServers\EnvironmentVariableJenkinsTests.cs" />
