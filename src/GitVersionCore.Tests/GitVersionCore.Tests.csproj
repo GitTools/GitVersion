@@ -93,6 +93,7 @@
     <Compile Include="BuildServers\TeamCityTests.cs" />
     <Compile Include="Configuration\IgnoreConfigTests.cs" />
     <Compile Include="DynamicRepositoryTests.cs" />
+    <Compile Include="GitRepoMetadataProviderTests.cs" />
     <Compile Include="GitToolsTestingExtensions.cs" />
     <Compile Include="DocumentationTests.cs" />
     <Compile Include="ConfigProviderTests.cs" />
