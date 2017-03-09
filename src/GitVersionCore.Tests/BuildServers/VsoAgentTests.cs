@@ -8,6 +8,7 @@ using Shouldly;
 public class VsoAgentTests
 {
     string key = "BUILD_BUILDNUMBER";
+    string tfsKey = "TF_BUILD_BUILDNUMBER";
 
     [SetUp]
     public void SetEnvironmentVariableForTest()
@@ -27,6 +28,11 @@ public class VsoAgentTests
         var versionBuilder = new VsoAgent();
         var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Unstable4");
         var vsVersion = versionBuilder.GenerateSetVersionMessage(vars);
+
+        vsVersion.ShouldBe("##vso[build.updatebuildnumber]Some Build_Value 0.0.0-Unstable4 20151310.3 $(UnknownVar) Release");
+
+        ClearEnvironmentVariableForTest();
+        Environment.SetEnvironmentVariable(tfsKey, "Some Build_Value $(GitVersion_FullSemVer) 20151310.3 $(UnknownVar) Release", EnvironmentVariableTarget.Process);
 
         vsVersion.ShouldBe("##vso[build.updatebuildnumber]Some Build_Value 0.0.0-Unstable4 20151310.3 $(UnknownVar) Release");
     }
