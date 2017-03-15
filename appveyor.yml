@@ -10,6 +10,13 @@ configuration:
 build_script:
   - cmd: nuget restore src/GitVersion.sln
   - cmd: npm i -g tfx-cli
+  - cmd: npm i -g typescript
+
+  - cmd: mkdir src\GitVersionTfsTask\node_modules
+  - cmd: cd src\GitVersionTfsTask
+  - cmd: npm install
+  - cmd: cd ..\..
+  - cmd: tsc -p src/GitVersionTfsTask
 
   - cmd: msbuild src/GitVersion.sln "/p:Configuration=%CONFIGURATION%;Platform=%PLATFORM%"
   - ps: .\build\NuGetCommandLineBuild\tools\GitVersion.exe /l console /output buildserver /updateAssemblyInfo
