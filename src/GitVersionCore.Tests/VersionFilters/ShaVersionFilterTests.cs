@@ -2,7 +2,6 @@
 using GitVersion;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
 using GitVersion.VersionFilters;
-using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
 
@@ -31,7 +30,8 @@ namespace GitVersionCore.Tests.VersionFilters
         public void WhenShaMatchShouldExcludeWithReason()
         {
             var commit = new MockCommit();
-            var version = new BaseVersion("dummy", false, new SemanticVersion(1), commit, string.Empty);
+            var context = new GitVersionContextBuilder().Build();
+            var version = new BaseVersion(context, "dummy", false, new SemanticVersion(1), commit, string.Empty);
             var sut = new ShaVersionFilter(new[] { commit.Sha });
 
             string reason;
@@ -43,7 +43,8 @@ namespace GitVersionCore.Tests.VersionFilters
         public void WhenShaMismatchShouldNotExclude()
         {
             var commit = new MockCommit();
-            var version = new BaseVersion("dummy", false, new SemanticVersion(1), commit, string.Empty);
+            var context = new GitVersionContextBuilder().Build();
+            var version = new BaseVersion(context, "dummy", false, new SemanticVersion(1), commit, string.Empty);
             var sut = new ShaVersionFilter(new[] { "mismatched" });
 
             string reason;
@@ -54,8 +55,8 @@ namespace GitVersionCore.Tests.VersionFilters
         [Test]
         public void ExcludeShouldAcceptVersionWithNullCommit()
         {
-            Commit nullCommit = null;
-            var version = new BaseVersion("dummy", false, new SemanticVersion(1), nullCommit, string.Empty);
+            var context = new GitVersionContextBuilder().Build();
+            var version = new BaseVersion(context, "dummy", false, new SemanticVersion(1), null, string.Empty);
             var sut = new ShaVersionFilter(new[] { "mismatched" });
 
             string reason;

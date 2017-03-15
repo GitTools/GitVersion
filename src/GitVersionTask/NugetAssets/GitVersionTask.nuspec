@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Stamps an assembly with git information based on SemVer.</description>
     <language>en-AU</language>
-    <tags>Git, Versioning, GitVersion, GitFlowVersion, GitFlow, GitHubFlow, SemVer</tags>
+    <tags>Git Versioning GitVersion GitFlowVersion GitFlow GitHubFlow SemVer</tags>
     <developmentDependency>true</developmentDependency>
     <releaseNotes>https://github.com/GitTools/GitVersion/releases</releaseNotes>
   </metadata>

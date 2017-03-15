@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Text;
+using GitTools;
 using GitTools.Testing;
 using GitVersion;
 using NUnit.Framework;
@@ -16,18 +18,18 @@ public class ExecCmdLineArgumentTest
             fixture.MakeATaggedCommit("1.2.3");
             fixture.MakeACommit();
 
-            var buildFile = Path.Combine(fixture.RepositoryPath, "RunExecViaCommandLine.proj");
+            var buildFile = Path.Combine(fixture.RepositoryPath, "RunExecViaCommandLine.csproj");
             File.Delete(buildFile);
             const string buildFileContent = @"<?xml version=""1.0"" encoding=""utf-8""?>
-<Project xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
+<Project ToolsVersion=""4.0"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
   <Target Name=""OutputResults"">
     <Message Text=""GitVersion_FullSemVer: $(GitVersion_FullSemVer)""/>
   </Target>
 </Project>";
             File.WriteAllText(buildFile, buildFileContent);
-            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, SpecifiedArgumentRunner.BuildTool, "RunExecViaCommandLine.proj /target:OutputResults");
+            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, SpecifiedArgumentRunner.BuildTool, "RunExecViaCommandLine.csproj /target:OutputResults");
 
-            result.ExitCode.ShouldBe(0);
+            result.ExitCode.ShouldBe(0, result.Log);
             result.Log.ShouldContain("GitVersion_FullSemVer: 1.2.4+1");
         }
     }
@@ -60,10 +62,49 @@ public class ExecCmdLineArgumentTest
         }
     }
 
+    [Theory]
+    [TestCase("", "INFO [")]
+    [TestCase("-verbosity Info", "INFO [")]
+    [TestCase("-verbosity Error", "")]
+    public void CheckBuildServerVerbosityConsole(string verbosityArg, string expectedOutput)
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.MakeATaggedCommit("1.2.3");
+            fixture.MakeACommit();
+
+            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: String.Format( @" {0} -output buildserver /l ""/some/path""", verbosityArg), logToFile: false);
+
+            result.ExitCode.ShouldBe(0);
+            result.Output.ShouldContain(expectedOutput);
+        }
+    }
+
     [Test]
     public void WorkingDirectoryWithoutGitFolderCrashesWithInformativeMessage()
     {
         var results = GitVersionHelper.ExecuteIn(Environment.SystemDirectory, null, isTeamCity: false, logToFile: false);
         results.Output.ShouldContain("Can't find the .git directory in");
+    }
+
+    [Test]
+    [Category("NoMono")]
+    [Description("Doesn't work on Mono/Unix because of the path heuristics that needs to be done there in order to figure out whether the first argument actually is a path.")]
+    public void WorkingDirectoryDoesNotExistCrashesWithInformativeMessage()
+    {
+        var workingDirectory = Path.Combine(PathHelper.GetCurrentDirectory(), Guid.NewGuid().ToString("N"));
+        var gitVersion = Path.Combine(PathHelper.GetCurrentDirectory(), "GitVersion.exe");
+        var output = new StringBuilder();
+        var exitCode = ProcessHelper.Run(
+            s => output.AppendLine(s),
+            s => output.AppendLine(s),
+            null,
+            gitVersion,
+            workingDirectory,
+            PathHelper.GetCurrentDirectory());
+
+        exitCode.ShouldNotBe(0);
+        var outputString = output.ToString();
+        outputString.ShouldContain(string.Format("The working directory '{0}' does not exist.", workingDirectory), () => outputString);
     }
 }

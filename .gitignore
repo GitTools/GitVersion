@@ -103,6 +103,16 @@ site/
 
 .vscode
 
+####################
+# Cake
+####################
+/tools
+/*.zip
+GitVersion.CommandLine/*/
+
+####################
+# Node and Typescript
+####################
 src/GitVersionTfsTask/node_modules/
 src/GitVersionTfsTask/*.d.ts
 src/GitVersionTfsTask/*.js

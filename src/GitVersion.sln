@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersionExe", "GitVersionExe\GitVersionExe.csproj", "{C3578A7B-09A6-4444-9383-0DEAFA4958BD}"
 EndProject
@@ -18,8 +18,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\.travis.yml = ..\.travis.yml
 		..\appveyor.yml = ..\appveyor.yml
 		..\BREAKING CHANGES.md = ..\BREAKING CHANGES.md
-		..\Build.cmd = ..\Build.cmd
+		..\build.cake = ..\build.cake
+		..\build.ps1 = ..\build.ps1
+		..\build.sh = ..\build.sh
 		..\CONTRIBUTING.md = ..\CONTRIBUTING.md
+		..\deploy.cake = ..\deploy.cake
 		..\GitVersion.yml = ..\GitVersion.yml
 		..\LICENSE = ..\LICENSE
 		..\mkdocs.yml = ..\mkdocs.yml
@@ -33,9 +36,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TfsTask", "TfsTask", "{A0ED1410-E970-45E8-A357-05605E2B7BFF}"
 	ProjectSection(SolutionItems) = preProject
 		GitVersionTfsTask\Create-Vsix.ps1 = GitVersionTfsTask\Create-Vsix.ps1
+		GitVersionTfsTask\extension-icon.png = GitVersionTfsTask\extension-icon.png
 		GitVersionTfsTask\GitVersion.ps1 = GitVersionTfsTask\GitVersion.ps1
 		GitVersionTfsTask\icon.png = GitVersionTfsTask\icon.png
-		GitVersionTfsTask\extension-icon.png = GitVersionTfsTask\extension-icon.png
 		GitVersionTfsTask\manifest.json = GitVersionTfsTask\manifest.json
 		GitVersionTfsTask\overview.md = GitVersionTfsTask\overview.md
 		GitVersionTfsTask\task.json = GitVersionTfsTask\task.json

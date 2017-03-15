@@ -28,8 +28,12 @@
                     config.VersioningMode = VersioningMode.ContinuousDeployment;
                     steps.Enqueue(returnToStep);
                     return StepResult.Ok();
-                case "0":
                 case "3":
+                    config.VersioningMode = VersioningMode.Mainline;
+                    steps.Enqueue(returnToStep);
+                    return StepResult.Ok();
+                case "0":
+                case "4":
                     steps.Enqueue(returnToStep);
                     return StepResult.Ok();
             }
@@ -43,14 +47,15 @@
 {0}
 1) Follow SemVer and only increment when a release has been tagged (continuous delivery mode)
 2) Increment based on branch config every commit (continuous deployment mode)
+3) Each merged branch against master will increment the version (mainline mode)
 {1}", 
 !isPartOfWizard ? "0) Go Back" : string.Empty,
-isPartOfWizard ? "3) Skip" : string.Empty);
+isPartOfWizard ? "4) Skip" : string.Empty);
         }
 
         protected override string DefaultResult
         {
-            get { return "3"; }
+            get { return "4"; }
         }
     }
 }

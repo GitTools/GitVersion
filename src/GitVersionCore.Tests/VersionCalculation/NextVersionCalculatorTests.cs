@@ -52,51 +52,67 @@
 
             var version = sut.FindVersion(context);
 
-            version.ToString("f").ShouldBe("1.0.0-unstable.1+2");
+            version.ToString("f").ShouldBe("1.0.0-alpha.1+2");
         }
 
         [Test]
         public void PreReleaseTagCanUseBranchName()
         {
-            var baseCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit());
-            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(2, "develop", "b1a34e", DateTimeOffset.Now);
-            var sut = new NextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
-            var config = new Config();
-            config.Branches.Add("custom/", new BranchConfig
+            var config = new Config
             {
-                Tag = "useBranchName"
-            });
-            var context = new GitVersionContextBuilder()
-                .WithConfig(config)
-                .WithDevelopBranch()
-                .AddBranch("custom/foo")
-                .Build();
+                NextVersion = "1.0.0",
+                Branches = new Dictionary<string, BranchConfig>
+                {
+                    {
+                        "custom", new BranchConfig
+                        {
+                            Regex = "custom/",
+                            Tag = "useBranchName"
+                        }
+                    }
+                }
+            };
 
-            var version = sut.FindVersion(context);
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.MakeACommit();
+                fixture.BranchTo("develop");
+                fixture.MakeACommit();
+                fixture.BranchTo("custom/foo");
+                fixture.MakeACommit();
 
-            version.ToString("f").ShouldBe("1.0.0-foo.1+2");
+                fixture.AssertFullSemver(config, "1.0.0-foo.1+2");
+            }
         }
 
         [Test]
         public void PreReleaseTagCanUseBranchNameVariable()
         {
-            var baseCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit());
-            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(2, "develop", "b1a34e", DateTimeOffset.Now);
-            var sut = new NextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
-            var config = new Config();
-            config.Branches.Add("custom/", new BranchConfig
+            var config = new Config
             {
-                Tag = "alpha.{BranchName}"
-            });
-            var context = new GitVersionContextBuilder()
-                .WithConfig(config)
-                .WithDevelopBranch()
-                .AddBranch("custom/foo")
-                .Build();
+                NextVersion = "1.0.0",
+                Branches = new Dictionary<string, BranchConfig>
+                {
+                    {
+                        "custom", new BranchConfig
+                        {
+                            Regex = "custom/",
+                            Tag = "alpha.{BranchName}"
+                        }
+                    }
+                }
+            };
 
-            var version = sut.FindVersion(context);
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.MakeACommit();
+                fixture.BranchTo("develop");
+                fixture.MakeACommit();
+                fixture.BranchTo("custom/foo");
+                fixture.MakeACommit();
 
-            version.ToString("f").ShouldBe("1.0.0-alpha.foo.1+2");
+                fixture.AssertFullSemver(config, "1.0.0-alpha.foo.1+2");
+            }
         }
 
         [Test]
@@ -121,13 +137,13 @@
                 fixture.Repository.MakeACommit();
 
                 fixture.Repository.CreateBranch("feature/test");
-                fixture.Repository.Checkout("feature/test");
+                Commands.Checkout(fixture.Repository, "feature/test");
                 fixture.Repository.MakeATaggedCommit("0.1.0-test.1");
                 fixture.Repository.MakeACommit();
 
                 fixture.AssertFullSemver(config, "0.1.0-test.2+2");
 
-                fixture.Repository.Checkout("master");
+                Commands.Checkout(fixture.Repository, "master");
                 fixture.Repository.Merge(fixture.Repository.FindBranch("feature/test"), Generate.SignatureNow());
 
                 fixture.AssertFullSemver(config, "0.1.0-beta.1+2");

@@ -1,11 +1,15 @@
 namespace GitVersion.Helpers
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Text;
 
     public class FileSystem : IFileSystem
     {
+        private static readonly bool runningOnMono = Type.GetType("Mono.Runtime") != null;
+
         public void Copy(string @from, string to, bool overwrite)
         {
             File.Copy(from, to, overwrite);
@@ -33,7 +37,15 @@ namespace GitVersion.Helpers
 
         public void WriteAllText(string file, string fileContents)
         {
-            File.WriteAllText(file, fileContents);
+            // Opinionated decision to use UTF8 with BOM when creating new files or when the existing
+            // encoding was not easily detected due to the file not having an encoding preamble.
+            var encoding = EncodingHelper.DetectEncoding(file) ?? Encoding.UTF8;
+            WriteAllText(file, fileContents, encoding);
+        }
+
+        public void WriteAllText(string file, string fileContents, Encoding encoding)
+        {
+            File.WriteAllText(file, fileContents, encoding);
         }
 
         public IEnumerable<string> DirectoryGetFiles(string directory, string searchPattern, SearchOption searchOption)
@@ -69,6 +81,18 @@ namespace GitVersion.Helpers
                 .DefaultIfEmpty()
                 .Max()
                 .Ticks;
+        }
+
+        public bool PathsEqual(string path, string otherPath)
+        {
+            var comparison = runningOnMono
+                ? StringComparison.InvariantCulture
+                : StringComparison.InvariantCultureIgnoreCase;
+
+            return string.Equals(
+                Path.GetFullPath(path).TrimEnd('\\').TrimEnd('/'),
+                Path.GetFullPath(otherPath).TrimEnd('\\').TrimEnd('/'),
+                comparison);
         }
     }
 }

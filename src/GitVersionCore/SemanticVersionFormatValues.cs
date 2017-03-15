@@ -120,6 +120,16 @@
             get { return NuGetVersionV2; }
         }
 
+        public string NuGetPreReleaseTagV2
+        {
+            get { return _semver.PreReleaseTag.HasTag() ? _semver.PreReleaseTag.ToString("lp").ToLower() : null; }
+        }
+
+        public string NuGetPreReleaseTag
+        {
+            get { return NuGetPreReleaseTagV2; }
+        }
+
         public string DefaultInformationalVersion
         {
             get { return _semver.ToString("i"); }

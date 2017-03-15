@@ -4,6 +4,8 @@ The MSBuild Task for GitVersion — **GitVersionTask** — is a simple solution 
 you want to version your assemblies without writing any command line scripts or
 modifying your build process.
 
+It currently works with desktop `MSBuild`. Support for CoreCLR with `dotnet build` is coming soon.
+
 ## TL;DR
 
 ### Install the MSTask targets
@@ -14,6 +16,14 @@ Package into the project you want to be versioned by GitVersion.
 From the Package Manager Console:
 ```shell
 Install-Package GitVersionTask
+```
+
+If you're using `PackageReference` style NuGet dependencies (VS 2017+), add `<PrivateAssets>all</PrivateAssets>` to prevent the task from becoming a dependency of your package:
+
+``` xml
+<PackageReference Include="GitVersionTask" Version="4.0.0-beta*">
+  <PrivateAssets>All</PrivateAssets>
+</PackageReference>
 ```
 
 ### Remove AssemblyInfo attributes
@@ -115,6 +125,17 @@ However at MSBuild time these properties are mapped to MSBuild properties that
 are prefixed with `GitVersion_`. This prevents conflicts with other properties
 in the pipeline.
 
+In addition, the following MSBuild properties are set when `UpdateVersionProperties` is true (the default):
+`Version`, `VersionPrefix`, `VersionSuffix`, `PackageVersion`, `InformationalVersion`, `AssemblyVersion` and `FileVersion`. These are used by the built-in tasks for generating AssemblyInfo's and NuGet package versions.
+
+
+### NuGet packages
+The new SDK-style projects available for .NET Standard libraries (and multi-targeting), have the ability
+to create NuGet packages directly by using the `pack` target: `msbuild /t:pack`. The version is controled by the MSBuild properties described above. 
+
+GitVersionTask has the option to generate SemVer 2.0 compliant NuGet package versions by setting `UseFullSemVerForNuGet` to true in your project (this is off by default for compatibility). Some hosts, like MyGet, support SemVer 2.0 package versions but older NuGet clients and nuget.org do not.
+
+
 #### Accessing variables in MSBuild
 
 Once `GitVersionTask.GetVersion` has been executed, the MSBuild properties can be
@@ -136,7 +157,7 @@ Build Server log in a format that the current Build Server can consume. See
 
 ## Conditional control tasks
 
-Properties `WriteVersionInfoToBuildLog`, `UpdateAssemblyInfo` and `GetVersion`
+Properties `WriteVersionInfoToBuildLog`, `UpdateAssemblyInfo`, `UseFullSemVerForNuGet`, `UpdateVersionProperties` and `GetVersion`
 are checked before running these tasks.
 
 You can disable `GitVersionTask.UpdateAssemblyInfo` by setting
@@ -150,6 +171,7 @@ this:
   ...
 </PropertyGroup>
 ```
+For SDK-style projects, `UpdateVersionProperties` controls setting the default variables: `Version`, `VersionPrefix`, `VersionSuffix`, `PackageVersion`, `InformationalVersion`, `AssemblyVersion` and `FileVersion`.
 
 ## My Git repository requires authentication. What should I do?
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -6,9 +7,11 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using GitVersion;
 using GitVersionCore.Tests;
+using Microsoft.Build.Framework;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.VisualBasic;
+using NSubstitute;
 using NUnit.Framework;
 using Shouldly;
 
@@ -210,6 +213,36 @@ public class AssemblyInfoBuilderTests
     public void VerifyAssemblyVersion_MajorMinorPatchTag_NugetAssemblyInfo([ValueSource("compilers")]ICompiler compiler)
     {
         VerifyAssemblyVersion(compiler, AssemblyVersioningScheme.MajorMinorPatchTag, "{NugetVersion}");
+    }
+
+    [Test]
+    public void GetAssemblyInfoBuilder_Empty_ThrowsWarningException()
+    {
+        var taskItems = Substitute.For<IEnumerable<ITaskItem>>();
+        var exception = Assert.Throws<GitTools.WarningException>(() => AssemblyInfoBuilder.GetAssemblyInfoBuilder(taskItems));
+        exception.Message.ShouldBe("Unable to determine which AssemblyBuilder required to generate GitVersion assembly information");
+    }
+
+    [Test]
+    public void GetAssemblyInfoBuilder_Null_ThrowsArgumentNullException()
+    {
+        var exception = Assert.Throws<ArgumentNullException>(() => AssemblyInfoBuilder.GetAssemblyInfoBuilder(null));
+        exception.ParamName.ShouldBe("compileFiles");
+    }
+
+    [TestCase("Class1.cs", typeof(CSharpAssemblyInfoBuilder))]
+    [TestCase("Class1.vb", typeof(VisualBasicAssemblyInfoBuilder))]
+    [TestCase("AssemblyInfo.cs", typeof(CSharpAssemblyInfoBuilder))]
+    [TestCase("AssemblyInfo.vb", typeof(VisualBasicAssemblyInfoBuilder))]
+    public void GetAssemblyInfoBuilder_ShouldReturnAppropriateAssemblyInfoBuilder(string fileName, Type assemblyInfoBuilderType)
+    {
+        var taskItem = Substitute.For<ITaskItem>();
+        taskItem.ItemSpec.Returns(fileName);
+
+        var assemblyInfoBuilder = AssemblyInfoBuilder.GetAssemblyInfoBuilder(new[] { taskItem });
+
+        assemblyInfoBuilder.ShouldNotBeNull();
+        assemblyInfoBuilder.ShouldBeOfType(assemblyInfoBuilderType);
     }
 
     static void VerifyAssemblyVersion(ICompiler compiler, AssemblyVersioningScheme avs, string assemblyInformationalFormat = null)

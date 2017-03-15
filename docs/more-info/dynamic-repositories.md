@@ -23,7 +23,7 @@ To tell GitVersion.exe to obtain the repository on the fly, you need to call `Gi
 * /b [branch name]
 * /c [commit id]
 
-Please note that these arguments (and their usage) are described [here.](https://github.com/ParticularLabs/GitVersion/wiki/Command-Line-Tool)
+Please note that these arguments are described when calling `GitVersion.exe /?`.
 
 Also, be aware that if you don't specify the `/b` argument (branch name) then GitVersion will currently fallback to targeting whatever the default branch name happens to be for the repo. This could lead to incorrect results, so for that reason it's recommended to always explicitly specify the branch name.
 

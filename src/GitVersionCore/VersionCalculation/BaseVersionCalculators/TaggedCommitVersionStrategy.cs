@@ -1,23 +1,30 @@
 ﻿namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using LibGit2Sharp;
 
+    /// <summary>
+    /// Version is extracted from all tags on the branch which are valid, and not newer than the current commit.
+    /// BaseVersionSource is the tag's commit.
+    /// Increments if the tag is not the current commit.
+    /// </summary>
     public class TaggedCommitVersionStrategy : BaseVersionStrategy
     {
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
-            var olderThan = context.CurrentCommit.When();
+            return GetTaggedVersions(context, context.CurrentBranch, context.CurrentCommit.When());
+        }
+
+        public IEnumerable<BaseVersion> GetTaggedVersions(GitVersionContext context, Branch currentBranch, DateTimeOffset? olderThan)
+        {
             var allTags = context.Repository.Tags
-                .Where(tag => ((Commit)tag.PeeledTarget()).When() <= olderThan)
+                .Where(tag => !olderThan.HasValue || ((Commit) tag.PeeledTarget()).When() <= olderThan.Value)
                 .ToList();
-            var tagsOnBranch = context.CurrentBranch
+            var tagsOnBranch = currentBranch
                 .Commits
-                .SelectMany(commit =>
-                {
-                    return allTags.Where(t => IsValidTag(t, commit));
-                })
+                .SelectMany(commit => { return allTags.Where(t => IsValidTag(t, commit)); })
                 .Select(t =>
                 {
                     SemanticVersion version;
@@ -38,7 +45,7 @@
         BaseVersion CreateBaseVersion(GitVersionContext context, VersionTaggedCommit version)
         {
             var shouldUpdateVersion = version.Commit.Sha != context.CurrentCommit.Sha;
-            var baseVersion = new BaseVersion(FormatSource(version), shouldUpdateVersion, version.SemVer, version.Commit, null);
+            var baseVersion = new BaseVersion(context, FormatSource(version), shouldUpdateVersion, version.SemVer, version.Commit, null);
             return baseVersion;
         }
 

@@ -35,7 +35,7 @@ public class RemoteRepositoryScenarios
                 repo.CreateBranch("develop");
                 repo.CreateBranch("release-1.0");
 
-                repo.Checkout("release-1.0");
+                Commands.Checkout(repo, "release-1.0");
                 repo.MakeCommits(5);
 
                 return repo;
@@ -68,7 +68,9 @@ public class RemoteRepositoryScenarios
 
         using (var fixture = new RemoteRepositoryFixture())
         {
-            fixture.LocalRepositoryFixture.Repository.Checkout(fixture.LocalRepositoryFixture.Repository.Head.Tip);
+            Commands.Checkout(
+                fixture.LocalRepositoryFixture.Repository,
+                fixture.LocalRepositoryFixture.Repository.Head.Tip);
 
             Should.Throw<WarningException>(() => fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepositoryFixture.Repository, isForTrackedBranchOnly: false),
                 string.Format("It looks like the branch being examined is a detached Head pointing to commit '{0}'. Without a proper branch name GitVersion cannot determine the build version.",
@@ -81,7 +83,7 @@ public class RemoteRepositoryScenarios
     {
         using (var fixture = new RemoteRepositoryFixture())
         {
-            fixture.LocalRepositoryFixture.Repository.Checkout(fixture.LocalRepositoryFixture.Repository.Head.Tip);
+            Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Head.Tip);
 
             fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepositoryFixture.Repository);
         }

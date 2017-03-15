@@ -18,7 +18,7 @@
                     steps.Enqueue(new EditConfigStep(Console, FileSystem));
                     return StepResult.Ok();
                 case "1":
-                    steps.Enqueue(new AppVeyorSetup(Console, FileSystem));
+                    steps.Enqueue(new AppveyorPublicPrivate(Console, FileSystem));
                     return StepResult.Ok();
             }
             return StepResult.Ok();

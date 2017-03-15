@@ -1,13 +1,14 @@
 namespace GitVersion
 {
+    using GitVersion.Helpers;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
     using System.Text;
-    using GitVersion.Helpers;
 
     class Program
     {
@@ -57,13 +58,41 @@ namespace GitVersion
                     return 1;
                 }
 
+                if (arguments.IsVersion)
+                {
+                    var assembly = Assembly.GetExecutingAssembly();
+                    VersionWriter.Write(assembly);
+                    return 0;
+                }
+
                 if (arguments.IsHelp)
                 {
                     HelpWriter.Write();
                     return 0;
                 }
+                if (arguments.Diag)
+                {
+                    arguments.NoCache = true;
+                    arguments.Output = OutputType.BuildServer;
+                } 
 
                 ConfigureLogging(arguments);
+
+                if (arguments.Diag)
+                {
+                    Logger.WriteInfo("Dumping commit graph: ");
+                    GitTools.LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
+                }
+                if (!Directory.Exists(arguments.TargetPath))
+                {
+                    Logger.WriteWarning(string.Format("The working directory '{0}' does not exist.", arguments.TargetPath));
+                }
+                else
+                {
+                    Logger.WriteInfo("Working directory: " + arguments.TargetPath);
+                }
+                VerifyConfiguration(arguments, fileSystem);
+
                 if (arguments.Init)
                 {
                     ConfigurationProvider.Init(arguments.TargetPath, fileSystem, new ConsoleAdapter());
@@ -79,8 +108,6 @@ namespace GitVersion
                 {
                     arguments.Output = OutputType.BuildServer;
                 }
-
-                Logger.WriteInfo("Working directory: " + arguments.TargetPath);
 
                 SpecifiedArgumentRunner.Run(arguments, fileSystem);
             }
@@ -98,9 +125,17 @@ namespace GitVersion
                 if (arguments != null)
                 {
                     Logger.WriteInfo(string.Empty);
-                    Logger.WriteInfo("Here is the current git graph (please include in issue): ");
+                    Logger.WriteInfo("Attempting to show the current git graph (please include in issue): ");
                     Logger.WriteInfo("Showing max of 100 commits");
-                    GitTools.LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
+
+                    try
+                    {
+                        GitTools.LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
+                    }
+                    catch (Exception dumpGraphException)
+                    {
+                        Logger.WriteError("Couldn't dump the git graph due to the following error: " + dumpGraphException);
+                    }
                 }
                 return 1;
             }
@@ -108,6 +143,11 @@ namespace GitVersion
             return 0;
         }
 
+        static void VerifyConfiguration(Arguments arguments, IFileSystem fileSystem)
+        {
+            var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.NoFetch, arguments.TargetPath);
+            ConfigurationProvider.Verify(gitPreparer, fileSystem);
+        }
 
         static void ConfigureLogging(Arguments arguments)
         {
@@ -148,9 +188,10 @@ namespace GitVersion
             }
 
             Logger.SetLoggers(
-                s => writeActions.ForEach(a => a(s)),
-                s => writeActions.ForEach(a => a(s)),
-                s => writeActions.ForEach(a => a(s)));
+                s => writeActions.ForEach(a => { if (arguments.Verbosity >= VerbosityLevel.Debug) a(s); }),
+                s => writeActions.ForEach(a => { if (arguments.Verbosity >= VerbosityLevel.Info) a(s); }),
+                s => writeActions.ForEach(a => { if (arguments.Verbosity >= VerbosityLevel.Warn) a(s); }),
+                s => writeActions.ForEach(a => { if (arguments.Verbosity >= VerbosityLevel.Error) a(s); }));
 
             if (exception != null)
                 Logger.WriteError(string.Format("Failed to configure logging for '{0}': {1}", arguments.LogFilePath, exception.Message));
@@ -158,7 +199,7 @@ namespace GitVersion
 
         static void WriteLogEntry(Arguments arguments, string s)
         {
-            var contents = string.Format("{0}\t\t{1}\r\n", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), s);
+            var contents = string.Format("{0:yyyy-MM-dd HH:mm:ss}\t\t{1}\r\n", DateTime.Now, s);
             File.AppendAllText(arguments.LogFilePath, contents);
         }
 

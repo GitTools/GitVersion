@@ -16,36 +16,36 @@ public class SupportBranchScenarios
             fixture.Repository.ApplyTag("1.1.0");
 
             // Create 2.0.0 release
-            fixture.Repository.Checkout(fixture.Repository.CreateBranch("release-2.0.0"));
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("release-2.0.0"));
             fixture.Repository.MakeCommits(2);
 
             // Merge into develop and master
-            fixture.Repository.Checkout("master");
+            Commands.Checkout(fixture.Repository, "master");
             fixture.Repository.MergeNoFF("release-2.0.0");
             fixture.Repository.ApplyTag("2.0.0");
             fixture.AssertFullSemver("2.0.0");
 
             // Now lets support 1.x release
-            fixture.Repository.Checkout("1.1.0");
-            fixture.Repository.Checkout(fixture.Repository.CreateBranch("support/1.0.0"));
+            Commands.Checkout(fixture.Repository, "1.1.0");
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("support/1.0.0"));
             fixture.AssertFullSemver("1.1.0");
 
             // Create release branch from support branch
-            fixture.Repository.Checkout(fixture.Repository.CreateBranch("release/1.2.0"));
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("release/1.2.0"));
             fixture.Repository.MakeACommit();
             fixture.AssertFullSemver("1.2.0-beta.1+1");
 
             // Create 1.2.0 release
-            fixture.Repository.Checkout("support/1.0.0");
+            Commands.Checkout(fixture.Repository, "support/1.0.0");
             fixture.Repository.MergeNoFF("release/1.2.0");
             fixture.AssertFullSemver("1.2.0+0");
             fixture.Repository.ApplyTag("1.2.0");
 
             // Create 1.2.1 hotfix
-            fixture.Repository.Checkout(fixture.Repository.CreateBranch("hotfix/1.2.1"));
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("hotfix/1.2.1"));
             fixture.Repository.MakeACommit();
             fixture.AssertFullSemver("1.2.1-beta.1+1");
-            fixture.Repository.Checkout("support/1.0.0");
+            Commands.Checkout(fixture.Repository, "support/1.0.0");
             fixture.Repository.MergeNoFF("hotfix/1.2.1");
             fixture.AssertFullSemver("1.2.1+2");
         }
@@ -58,12 +58,12 @@ public class SupportBranchScenarios
         {
             fixture.Repository.MakeACommit();
             fixture.Repository.CreateBranch("Support-1.2.0");
-            fixture.Repository.Checkout("Support-1.2.0");
+            Commands.Checkout(fixture.Repository, "Support-1.2.0");
             fixture.Repository.MakeACommit();
             fixture.Repository.ApplyTag("1.2.0");
 
             fixture.Repository.CreateBranch("Support-1.3.0");
-            fixture.Repository.Checkout("Support-1.3.0");
+            Commands.Checkout(fixture.Repository, "Support-1.3.0");
             fixture.Repository.ApplyTag("1.3.0");
 
             //Move On

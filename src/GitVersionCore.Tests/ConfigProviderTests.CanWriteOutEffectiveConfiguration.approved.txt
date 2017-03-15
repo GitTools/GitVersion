@@ -5,6 +5,7 @@ continuous-delivery-fallback-tag: ci
 major-version-bump-message: '\+semver:\s?(breaking|major)'
 minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
+no-bump-message: '\+semver:\s?(none|skip)'
 legacy-semver-padding: 4
 build-metadata-padding: 4
 commits-since-version-source-padding: 4
@@ -16,42 +17,70 @@ branches:
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-  releases?[/-]:
+    regex: master
+    tracks-release-branches: false
+    is-release-branch: false
+    is-mainline: true
+  release:
     mode: ContinuousDelivery
     tag: beta
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-  features?[/-]:
+    regex: releases?[/-]
+    tracks-release-branches: false
+    is-release-branch: true
+    is-mainline: false
+  feature:
     mode: ContinuousDelivery
     tag: useBranchName
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
-  (pull|pull\-requests|pr)[/-]:
+    regex: features?[/-]
+    tracks-release-branches: false
+    is-release-branch: false
+    is-mainline: false
+  pull-request:
     mode: ContinuousDelivery
     tag: PullRequest
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     tag-number-pattern: '[/-](?<number>\d+)[-/]'
     track-merge-target: false
-  hotfix(es)?[/-]:
+    regex: (pull|pull\-requests|pr)[/-]
+    tracks-release-branches: false
+    is-release-branch: false
+    is-mainline: false
+  hotfix:
     mode: ContinuousDelivery
     tag: beta
     increment: Patch
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
-  support[/-]:
+    regex: hotfix(es)?[/-]
+    tracks-release-branches: false
+    is-release-branch: false
+    is-mainline: false
+  support:
     mode: ContinuousDelivery
     tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-  dev(elop)?(ment)?$:
+    regex: support[/-]
+    tracks-release-branches: false
+    is-release-branch: false
+    is-mainline: true
+  develop:
     mode: ContinuousDeployment
-    tag: unstable
+    tag: alpha
     increment: Minor
     prevent-increment-of-merged-branch-version: false
     track-merge-target: true
+    regex: dev(elop)?(ment)?$
+    tracks-release-branches: true
+    is-release-branch: false
+    is-mainline: false
 ignore:
   sha: []

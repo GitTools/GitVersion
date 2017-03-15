@@ -8,6 +8,9 @@
         {
         }
 
+        /// <summary>
+        /// Creates a clone of the given <paramref name="branchConfiguration"/>.
+        /// </summary>
         public BranchConfig(BranchConfig branchConfiguration)
         {
             VersioningMode = branchConfiguration.VersioningMode;
@@ -17,6 +20,11 @@
             TagNumberPattern = branchConfiguration.TagNumberPattern;
             TrackMergeTarget = branchConfiguration.TrackMergeTarget;
             CommitMessageIncrementing = branchConfiguration.CommitMessageIncrementing;
+            TracksReleaseBranches = branchConfiguration.TracksReleaseBranches;
+            Regex = branchConfiguration.Regex;
+            IsReleaseBranch = branchConfiguration.IsReleaseBranch;
+            IsMainline = branchConfiguration.IsMainline;
+            Name = branchConfiguration.Name;
         }
 
         [YamlMember(Alias = "mode")]
@@ -39,8 +47,26 @@
 
         [YamlMember(Alias = "track-merge-target")]
         public bool? TrackMergeTarget { get; set; }
-        
+
         [YamlMember(Alias = "commit-message-incrementing")]
         public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
+
+        [YamlMember(Alias = "regex")]
+        public string Regex { get; set; }
+
+        [YamlMember(Alias = "tracks-release-branches")]
+        public bool? TracksReleaseBranches { get; set; }
+
+        [YamlMember(Alias = "is-release-branch")]
+        public bool? IsReleaseBranch { get; set; }
+
+        [YamlMember(Alias = "is-mainline")]
+        public bool? IsMainline { get; set; }
+
+        /// <summary>
+        /// The name given to this configuration in the config file.
+        /// </summary>
+        [YamlIgnore]
+        public string Name { get; set; }
     }
 }

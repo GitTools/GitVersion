@@ -13,7 +13,7 @@
         public GetVersion()
         {
             logger = new TaskLogger(this);
-            Logger.SetLoggers(this.LogInfo, this.LogWarning, s => this.LogError(s));
+            Logger.SetLoggers(this.LogDebug, this.LogInfo, this.LogWarning, s => this.LogError(s));
         }
 
         [Required]
@@ -83,6 +83,12 @@
 
         [Output]
         public string NuGetVersion { get; set; }
+
+        [Output]
+        public string NuGetPreReleaseTagV2 { get; set; }
+
+        [Output]
+        public string NuGetPreReleaseTag { get; set; }
 
         [Output]
         public string CommitDate { get; set; }

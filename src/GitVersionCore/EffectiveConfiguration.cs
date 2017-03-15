@@ -21,12 +21,14 @@ namespace GitVersion
             string majorVersionBumpMessage,
             string minorVersionBumpMessage,
             string patchVersionBumpMessage,
+            string noBumpMessage,
             CommitMessageIncrementMode commitMessageIncrementing,
             int legacySemVerPaddding,
             int buildMetaDataPadding,
             int commitsSinceVersionSourcePadding,
-            IEnumerable<IVersionFilter> versionFilters
-            )
+            IEnumerable<IVersionFilter> versionFilters,
+            bool tracksReleaseBranches,
+            bool isCurrentBranchRelease)
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
             AssemblyInformationalFormat = assemblyInformationalFormat;
@@ -43,12 +45,18 @@ namespace GitVersion
             MajorVersionBumpMessage = majorVersionBumpMessage;
             MinorVersionBumpMessage = minorVersionBumpMessage;
             PatchVersionBumpMessage = patchVersionBumpMessage;
+            NoBumpMessage = noBumpMessage;
             CommitMessageIncrementing = commitMessageIncrementing;
             LegacySemVerPadding = legacySemVerPaddding;
             BuildMetaDataPadding = buildMetaDataPadding;
             CommitsSinceVersionSourcePadding = commitsSinceVersionSourcePadding;
             VersionFilters = versionFilters;
+            TracksReleaseBranches = tracksReleaseBranches;
+            IsCurrentBranchRelease = isCurrentBranchRelease;
         }
+
+        public bool TracksReleaseBranches { get; private set; }
+        public bool IsCurrentBranchRelease { get; private set; }
 
         public VersioningMode VersioningMode { get; private set; }
 
@@ -85,6 +93,7 @@ namespace GitVersion
 
         public string PatchVersionBumpMessage { get; private set; }
 
+        public string NoBumpMessage { get; private set; }
         public int LegacySemVerPadding { get; private set; }
         public int BuildMetaDataPadding { get; private set; }
 

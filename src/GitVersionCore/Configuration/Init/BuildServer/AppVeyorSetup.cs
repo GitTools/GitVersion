@@ -7,10 +7,19 @@ namespace GitVersion.Configuration.Init.BuildServer
     using GitVersion.Configuration.Init.Wizard;
     using GitVersion.Helpers;
 
+    enum ProjectVisibility
+    {
+        Public = 0,
+        Private = 1
+    }
+
     class AppVeyorSetup : ConfigInitWizardStep
     {
-        public AppVeyorSetup(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)
+        private ProjectVisibility _projectVisibility;
+
+        public AppVeyorSetup(IConsole console, IFileSystem fileSystem, ProjectVisibility visibility) : base(console, fileSystem)
         {
+            _projectVisibility = visibility;
         }
 
         protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
@@ -32,22 +41,37 @@ namespace GitVersion.Configuration.Init.BuildServer
             return StepResult.InvalidResponseSelected();
         }
 
+        static private string GetGVCommand(ProjectVisibility visibility)
+        {
+            switch (visibility)
+            {
+                case ProjectVisibility.Public:
+                    return "  - ps: gitversion /l console /output buildserver /updateAssemblyInfo";
+                case ProjectVisibility.Private:
+                    return "  - ps: gitversion $env:APPVEYOR_BUILD_FOLDER /l console /output buildserver /updateAssemblyInfo /nofetch /b $env:APPVEYOR_REPO_BRANCH";
+                default:
+                    return "";
+            }
+        } 
+
         void GenerateBasicConfig(string workingDirectory)
         {
-            WriteConfig(workingDirectory, FileSystem, @"install:
+            WriteConfig(workingDirectory, FileSystem, String.Format(@"install:
   - choco install gitversion.portable -pre -y
 
 before_build:
   - nuget restore
-  - ps: gitversion /l console /output buildserver /updateAssemblyInfo
+{0}
 
 build:
-  project: <your sln file>");
+  project: <your sln file>",
+                GetGVCommand(_projectVisibility)
+            ));
         }
 
         void GenerateNuGetConfig(string workingDirectory)
         {
-            WriteConfig(workingDirectory, FileSystem, @"install:
+            WriteConfig(workingDirectory, FileSystem, String.Format(@"install:
   - choco install gitversion.portable -pre -y
 
 assembly_info:
@@ -55,7 +79,7 @@ assembly_info:
 
 before_build:
   - nuget restore
-  - ps: gitversion /l console /output buildserver /updateAssemblyInfo
+{0}
 
 build:
   project: <your sln file>
@@ -63,7 +87,9 @@ build:
 after_build:
   - cmd: ECHO nuget pack <Project>\<NuSpec>.nuspec -version ""%GitVersion_NuGetVersion%"" -prop ""target=%CONFIGURATION%""
   - cmd: nuget pack <Project>\<NuSpec>.nuspec -version ""%GitVersion_NuGetVersion%"" -prop ""target=%CONFIGURATION%""
-  - cmd: appveyor PushArtifact ""<NuSpec>.%GitVersion_NuGetVersion%.nupkg""");
+  - cmd: appveyor PushArtifact ""<NuSpec>.%GitVersion_NuGetVersion%.nupkg""",
+                GetGVCommand(_projectVisibility)
+            ));
         }
 
         void WriteConfig(string workingDirectory, IFileSystem fileSystem, string configContents)

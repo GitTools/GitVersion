@@ -61,6 +61,7 @@ public class GitVersionTaskDirectoryTests
         }
         catch (Exception ex)
         {
+            // TODO I think this test is wrong.. It throws a different exception
             // `RepositoryNotFoundException` means that it couldn't find the .git directory,
             // any other exception means that the .git was found but there was some other issue that this test doesn't care about.
             Assert.IsNotAssignableFrom<RepositoryNotFoundException>(ex);

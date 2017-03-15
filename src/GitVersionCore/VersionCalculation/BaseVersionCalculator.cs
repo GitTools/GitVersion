@@ -46,12 +46,14 @@
 
                 var maxVersion = baseVersions.Aggregate((v1, v2) => v1.IncrementedVersion > v2.IncrementedVersion ? v1 : v2);
                 var matchingVersionsOnceIncremented = baseVersions
-                    .Where(b => b != maxVersion && b.Version.BaseVersionSource != null && b.IncrementedVersion == maxVersion.IncrementedVersion)
+                    .Where(b => b.Version.BaseVersionSource != null && b.IncrementedVersion == maxVersion.IncrementedVersion)
                     .ToList();
                 BaseVersion baseVersionWithOldestSource;
                 if (matchingVersionsOnceIncremented.Any())
                 {
-                    baseVersionWithOldestSource = matchingVersionsOnceIncremented.Aggregate((v1, v2) => v1.Version.BaseVersionSource.Committer.When < v2.Version.BaseVersionSource.Committer.When ? v1 : v2).Version;
+                    var oldest = matchingVersionsOnceIncremented.Aggregate((v1, v2) => v1.Version.BaseVersionSource.Committer.When < v2.Version.BaseVersionSource.Committer.When ? v1 : v2);
+                    baseVersionWithOldestSource = oldest.Version;
+                    maxVersion = oldest;
                     Logger.WriteInfo(string.Format(
                         "Found multiple base versions which will produce the same SemVer ({0}), taking oldest source for commit counting ({1})",
                         maxVersion.IncrementedVersion,
@@ -71,7 +73,7 @@
                     throw new Exception("Base version should not be null");
 
                 var calculatedBase = new BaseVersion(
-                    maxVersion.Version.Source, maxVersion.Version.ShouldIncrement, maxVersion.Version.SemanticVersion,
+                    context, maxVersion.Version.Source, maxVersion.Version.ShouldIncrement, maxVersion.Version.SemanticVersion,
                     baseVersionWithOldestSource.BaseVersionSource, maxVersion.Version.BranchNameOverride);
 
                 Logger.WriteInfo(string.Format("Base version used: {0}", calculatedBase));
@@ -80,7 +82,7 @@
             }
         }
 
-        static SemanticVersion MaybeIncrement(GitVersionContext context, BaseVersion version)
+        public static SemanticVersion MaybeIncrement(GitVersionContext context, BaseVersion version)
         {
             var increment = IncrementStrategyFinder.DetermineIncrementedField(context, version);
             if (increment != null)

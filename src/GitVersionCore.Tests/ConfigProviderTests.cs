@@ -1,55 +1,31 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using GitVersion;
 using GitVersion.Helpers;
 using NUnit.Framework;
 using Shouldly;
+using System;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using YamlDotNet.Serialization;
 
 [TestFixture]
 public class ConfigProviderTests
 {
+    private const string DefaultRepoPath = "c:\\MyGitRepo";
+    private const string DefaultWorkingPath = "c:\\MyGitRepo\\Working";
+
     string repoPath;
+    string workingPath;
     IFileSystem fileSystem;
 
     [SetUp]
     public void Setup()
     {
         fileSystem = new TestFileSystem();
-        repoPath = "c:\\MyGitRepo";
-    }
-
-    [Test]
-    public void CanReadDocumentAndMigrate()
-    {
-        const string text = @"
-assembly-versioning-scheme: MajorMinor
-next-version: 2.0.0
-tag-prefix: '[vV|version-]'
-mode: ContinuousDelivery
-branches:
-    develop:
-        mode: ContinuousDeployment
-        tag: dev
-    release[/-]:
-       mode: continuousDeployment
-       tag: rc 
-";
-        SetupConfigFileContent(text);
-
-        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
-        config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
-        config.AssemblyInformationalFormat.ShouldBe(null);
-        config.NextVersion.ShouldBe("2.0.0");
-        config.TagPrefix.ShouldBe("[vV|version-]");
-        config.VersioningMode.ShouldBe(VersioningMode.ContinuousDelivery);
-        config.Branches["dev(elop)?(ment)?$"].Tag.ShouldBe("dev");
-        config.Branches["releases?[/-]"].Tag.ShouldBe("rc");
-        config.Branches["releases?[/-]"].VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
-        config.Branches["dev(elop)?(ment)?$"].VersioningMode.ShouldBe(VersioningMode.ContinuousDeployment);
+        repoPath = DefaultRepoPath;
+        workingPath = DefaultWorkingPath;
     }
 
     [Test]
@@ -59,10 +35,22 @@ branches:
 assemblyVersioningScheme: MajorMinor
 develop-branch-tag: alpha
 release-branch-tag: rc
+branches:
+    master:
+        mode: ContinuousDeployment
+    dev(elop)?(ment)?$:
+        mode: ContinuousDeployment
+        tag: dev
+    release[/-]:
+       mode: continuousDeployment
+       tag: rc
 ";
         SetupConfigFileContent(text);
         var error = Should.Throw<OldConfigurationException>(() => ConfigurationProvider.Provide(repoPath, fileSystem));
         error.Message.ShouldContainWithoutWhitespace(@"GitVersion configuration file contains old configuration, please fix the following errors:
+GitVersion branch configs no longer are keyed by regexes, update:
+    dev(elop)?(ment)?$  -> develop
+    release[/-]         -> release
 assemblyVersioningScheme has been replaced by assembly-versioning-scheme
 develop-branch-tag has been replaced by branch specific configuration.See http://gitversion.readthedocs.org/en/latest/configuration/#branch-configuration
 release-branch-tag has been replaced by branch specific configuration.See http://gitversion.readthedocs.org/en/latest/configuration/#branch-configuration");
@@ -75,16 +63,16 @@ release-branch-tag has been replaced by branch specific configuration.See http:/
         const string text = @"
 next-version: 2.0.0
 branches:
-    dev(elop)?(ment)?$:
+    develop:
         mode: ContinuousDeployment
         tag: dev";
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
 
         config.NextVersion.ShouldBe("2.0.0");
-        config.Branches["dev(elop)?(ment)?$"].Increment.ShouldBe(defaultConfig.Branches["dev(elop)?(ment)?$"].Increment);
-        config.Branches["dev(elop)?(ment)?$"].VersioningMode.ShouldBe(defaultConfig.Branches["dev(elop)?(ment)?$"].VersioningMode);
-        config.Branches["dev(elop)?(ment)?$"].Tag.ShouldBe("dev");
+        config.Branches["develop"].Increment.ShouldBe(defaultConfig.Branches["develop"].Increment);
+        config.Branches["develop"].VersioningMode.ShouldBe(defaultConfig.Branches["develop"].VersioningMode);
+        config.Branches["develop"].Tag.ShouldBe("dev");
     }
 
     [Test]
@@ -93,13 +81,26 @@ branches:
         const string text = @"
 next-version: 2.0.0
 branches:
-    releases?[/-]:
+    release:
         tag: """"";
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
 
         config.NextVersion.ShouldBe("2.0.0");
-        config.Branches["releases?[/-]"].Tag.ShouldBe(string.Empty);
+        config.Branches["release"].Tag.ShouldBe(string.Empty);
+    }
+
+    [Test]
+    public void RegexIsRequired()
+    {
+        const string text = @"
+next-version: 2.0.0
+branches:
+    bug:
+        tag: bugfix";
+        SetupConfigFileContent(text);
+        var ex = Should.Throw<GitVersionConfigurationException>(() => ConfigurationProvider.Provide(repoPath, fileSystem));
+        ex.Message.ShouldBe("Branch configuration 'bug' is missing required configuration 'regex'");
     }
 
     [Test]
@@ -108,12 +109,14 @@ branches:
         const string text = @"
 next-version: 2.0.0
 branches:
-    bug[/-]:
+    bug:
+        regex: 'bug[/-]'
         tag: bugfix";
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
-        
-        config.Branches["bug[/-]"].Tag.ShouldBe("bugfix");
+
+        config.Branches["bug"].Regex.ShouldBe("bug[/-]");
+        config.Branches["bug"].Tag.ShouldBe("bugfix");
     }
 
     [Test]
@@ -145,10 +148,10 @@ branches:
 
         config.NextVersion.ShouldBe("2.12.654651698");
     }
-    
+
     [Test]
-    [Category("NoMono")]
-    [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+    [NUnit.Framework.Category("NoMono")]
+    [NUnit.Framework.Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public void CanWriteOutEffectiveConfiguration()
     {
@@ -210,8 +213,8 @@ branches: {}";
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
         config.AssemblyInformationalFormat.ShouldBe(null);
-        config.Branches["dev(elop)?(ment)?$"].Tag.ShouldBe("unstable");
-        config.Branches["releases?[/-]"].Tag.ShouldBe("beta");
+        config.Branches["develop"].Tag.ShouldBe("alpha");
+        config.Branches["release"].Tag.ShouldBe("beta");
         config.TagPrefix.ShouldBe(ConfigurationProvider.DefaultTagPrefix);
         config.NextVersion.ShouldBe(null);
     }
@@ -228,18 +231,53 @@ branches: {}";
         propertiesMissingAlias.ShouldBeEmpty();
     }
 
-    [Test]
-    public void WarnOnExistingGitVersionConfigYamlFile()
+    [TestCase(DefaultRepoPath)]
+    [TestCase(DefaultWorkingPath)]
+    public void WarnOnExistingGitVersionConfigYamlFile(string path)
     {
-        SetupConfigFileContent(string.Empty, "GitVersionConfig.yaml");
+        SetupConfigFileContent(string.Empty, ConfigurationProvider.ObsoleteConfigFileName, path);
 
-        var s = string.Empty;
-        Action<string> action = info => { s = info; };
-        Logger.SetLoggers(action, action, action);
+        var logOutput = string.Empty;
+        Action<string> action = info => { logOutput = info; };
+        using (Logger.AddLoggersTemporarily(action, action, action, action))
+        {
+            ConfigurationProvider.Verify(workingPath, repoPath, fileSystem);
+        }
+        var configFileDeprecatedWarning = string.Format("{0}' is deprecated, use '{1}' instead", ConfigurationProvider.ObsoleteConfigFileName, ConfigurationProvider.DefaultConfigFileName);
+        logOutput.Contains(configFileDeprecatedWarning).ShouldBe(true);
+    }
 
-        ConfigurationProvider.Provide(repoPath, fileSystem);
+    [TestCase(DefaultRepoPath)]
+    [TestCase(DefaultWorkingPath)]
+    public void WarnOnAmbiguousConfigFilesAtTheSameProjectRootDirectory(string path)
+    {
+        SetupConfigFileContent(string.Empty, ConfigurationProvider.ObsoleteConfigFileName, path);
+        SetupConfigFileContent(string.Empty, ConfigurationProvider.DefaultConfigFileName, path);
 
-        s.Contains("'GitVersionConfig.yaml' is deprecated, use 'GitVersion.yml' instead.").ShouldBe(true);
+        var logOutput = string.Empty;
+        Action<string> action = info => { logOutput = info; };
+        using (Logger.AddLoggersTemporarily(action, action, action, action))
+        {
+            ConfigurationProvider.Verify(workingPath, repoPath, fileSystem);
+        }
+
+        var configFileDeprecatedWarning = string.Format("Ambiguous config files at '{0}'", path);
+        logOutput.Contains(configFileDeprecatedWarning).ShouldBe(true);
+    }
+
+    [TestCase(ConfigurationProvider.DefaultConfigFileName, ConfigurationProvider.DefaultConfigFileName)]
+    [TestCase(ConfigurationProvider.DefaultConfigFileName, ConfigurationProvider.ObsoleteConfigFileName)]
+    [TestCase(ConfigurationProvider.ObsoleteConfigFileName, ConfigurationProvider.DefaultConfigFileName)]
+    [TestCase(ConfigurationProvider.ObsoleteConfigFileName, ConfigurationProvider.ObsoleteConfigFileName)]
+    public void ThrowsExceptionOnAmbiguousConfigFileLocation(string repoConfigFile, string workingConfigFile)
+    {
+        var repositoryConfigFilePath = SetupConfigFileContent(string.Empty, repoConfigFile, repoPath);
+        var workingDirectoryConfigFilePath = SetupConfigFileContent(string.Empty, workingConfigFile, workingPath);
+
+        WarningException exception = Should.Throw<WarningException>(() => { ConfigurationProvider.Verify(workingPath, repoPath, fileSystem); });
+
+        var expecedMessage = string.Format("Ambiguous config file selection from '{0}' and '{1}'", workingDirectoryConfigFilePath, repositoryConfigFilePath);
+        exception.Message.ShouldBe(expecedMessage);
     }
 
     [Test]
@@ -249,15 +287,42 @@ branches: {}";
 
         var s = string.Empty;
         Action<string> action = info => { s = info; };
-        Logger.SetLoggers(action, action, action);
-
-        ConfigurationProvider.Provide(repoPath, fileSystem);
-
+        using (Logger.AddLoggersTemporarily(action, action, action, action))
+        {
+            ConfigurationProvider.Provide(repoPath, fileSystem);
+        }
         s.Length.ShouldBe(0);
     }
 
-    void SetupConfigFileContent(string text, string fileName = "GitVersion.yml")
+    string SetupConfigFileContent(string text, string fileName = ConfigurationProvider.DefaultConfigFileName)
     {
-        fileSystem.WriteAllText(Path.Combine(repoPath, fileName), text);
+        return SetupConfigFileContent(text, fileName, repoPath);
+    }
+
+    string SetupConfigFileContent(string text, string fileName, string path)
+    {
+        var fullPath = Path.Combine(path, fileName);
+        fileSystem.WriteAllText(fullPath, text);
+
+        return fullPath;
+    }
+
+    [Test]
+    public void WarnOnObsoleteIsDevelopBranchConfigurationSetting()
+    {
+        const string text = @"
+assembly-versioning-scheme: MajorMinorPatch
+branches:
+  master:
+    tag: beta
+    is-develop: true";
+
+        OldConfigurationException exception = Should.Throw<OldConfigurationException>(() =>
+        {
+            LegacyConfigNotifier.Notify(new StringReader(text));
+        });
+
+        const string expectedMessage = @"'is-develop' is deprecated, use 'tracks-release-branches' instead.";
+        exception.Message.ShouldContain(expectedMessage);
     }
 }

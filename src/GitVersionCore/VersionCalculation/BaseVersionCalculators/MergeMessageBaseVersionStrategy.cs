@@ -6,6 +6,11 @@
     using System.Text.RegularExpressions;
     using LibGit2Sharp;
 
+    /// <summary>
+    /// Version is extracted from older commits's merge messages.
+    /// BaseVersionSource is the commit where the message was found.
+    /// Increments if PreventIncrementForMergedBranchVersion (from the branch config) is false.
+    /// </summary>
     public class MergeMessageBaseVersionStrategy : BaseVersionStrategy
     {
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
@@ -21,7 +26,7 @@
                         var shouldIncrement = !context.Configuration.PreventIncrementForMergedBranchVersion;
                         return new[]
                         {
-                            new BaseVersion(string.Format("Merge message '{0}'", c.Message.Trim()), shouldIncrement, semanticVersion, c, null)
+                            new BaseVersion(context, string.Format("Merge message '{0}'", c.Message.Trim()), shouldIncrement, semanticVersion, c, null)
                         };
                     }
                     return Enumerable.Empty<BaseVersion>();
@@ -35,7 +40,7 @@
             return semanticVersion != null;
         }
 
-        private static SemanticVersion Inner(Commit mergeCommit, EffectiveConfiguration configuration)
+        static SemanticVersion Inner(Commit mergeCommit, EffectiveConfiguration configuration)
         {
             if (mergeCommit.Parents.Count() < 2)
             {

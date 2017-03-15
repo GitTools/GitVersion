@@ -1,6 +1,7 @@
 namespace GitVersion
 {
     using System;
+    using System.Reflection;
 
     class HelpWriter
     {
@@ -11,12 +12,19 @@ namespace GitVersion
 
         public static void WriteTo(Action<string> writeAction)
         {
-            const string message = @"Use convention to derive a SemVer product version from a GitFlow or GitHub based repository.
+            string version = string.Empty;
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            VersionWriter.WriteTo(assembly, v => version = v);
+
+            string message = "GitVersion " + version + @"
+Use convention to derive a SemVer product version from a GitFlow or GitHub based repository.
 
 GitVersion [path]
 
     path            The directory containing .git. If not defined current directory is used. (Must be first argument)
     init            Configuration utility for gitversion
+    /version        Displays the version of GitVersion
+    /diag           Runs GitVersion with additional diagnostic information (requires git.exe to be installed)
     /h or /?        Shows Help
 
     /targetpath     Same as 'path', but not positional
@@ -24,9 +32,10 @@ GitVersion [path]
     /showvariable   Used in conjuntion with /output json, will output just a particular variable. 
                     eg /output json /showvariable SemVer - will output `1.2.3+beta.4`
     /l              Path to logfile.
-    /showconfig     Outputs the effective GitVersion config (defaults + custom from GitVersion.yaml) in yaml format
-    /overrideconfig Overrides GitVersion config values inline (semicolon-separated key value pairs e.g. /overrideconfig:tag-prefix=Foo)
+    /showconfig     Outputs the effective GitVersion config (defaults + custom from GitVersion.yml) in yaml format
+    /overrideconfig Overrides GitVersion config values inline (semicolon-separated key value pairs e.g. /overrideconfig tag-prefix=Foo)
                     Currently supported config overrides: tag-prefix
+    /nocache        Bypasses the cache, result will not be written to the cache.
 
     # AssemblyInfo updating
     /updateassemblyinfo
@@ -35,7 +44,7 @@ GitVersion [path]
                     Specify name of AssemblyInfo file. Can also /updateAssemblyInfo GlobalAssemblyInfo.cs as a shorthand
     /ensureassemblyinfo
                     If the assembly info file specified with /updateassemblyinfo or /updateassemblyinfofilename is not found, 
-                    it be created with these attributes: AssemblyFileVersion, FileVersion and AssemblyInformationalVersion
+                    it be created with these attributes: AssemblyFileVersion, AssemblyVersion and AssemblyInformationalVersion
                     ---        
                     Supports writing version info for: C#, F#, VB    
     # Remote repository args
@@ -53,6 +62,7 @@ GitVersion [path]
     /execargs       Arguments for the executable specified by /exec
     /proj           Build a msbuild file, GitVersion variables will be passed as msbuild properties
     /projargs       Additional arguments to pass to msbuild
+    /verbosity      Set Verbosity level (debug, info, warn, error, none). Default is info
 
 
 gitversion init     Configuration utility for gitversion

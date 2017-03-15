@@ -5,6 +5,7 @@ using GitVersion;
 using GitVersionCore.Tests;
 using NUnit.Framework;
 using Shouldly;
+using System.Reflection;
 
 [TestFixture]
 public class GitLabCiMessageGenerationTests
@@ -29,8 +30,8 @@ public class GitLabCiMessageGenerationTests
     [Test]
     public void WriteAllVariablesToTheTextWriter()
     {
-        // this test method writes to disc, hence marked explicit
-        var f = "this_file_should_be_deleted.properties";
+        var assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        var f = Path.Combine(assemblyLocation, "this_file_should_be_deleted.properties");
 
         try
         {

@@ -4,13 +4,16 @@
 
     public class BaseVersion
     {
-        public BaseVersion(string source, bool shouldIncrement, SemanticVersion semanticVersion, Commit baseVersionSource, string branchNameOverride)
+        GitVersionContext _context;
+
+        public BaseVersion(GitVersionContext context, string source, bool shouldIncrement, SemanticVersion semanticVersion, Commit baseVersionSource, string branchNameOverride)
         {
             Source = source;
             ShouldIncrement = shouldIncrement;
             SemanticVersion = semanticVersion;
             BaseVersionSource = baseVersionSource;
             BranchNameOverride = branchNameOverride;
+            _context = context;
         }
 
         public string Source { get; private set; }
@@ -25,7 +28,11 @@
 
         public override string ToString()
         {
-            return string.Format("{0}: {1} with commit count source {2}", Source, SemanticVersion.ToString("f"), BaseVersionSource == null ? "External Source" : BaseVersionSource.Sha);
+            return string.Format(
+                "{0}: {1} with commit count source {2} (Incremented: {3})",
+                Source, SemanticVersion.ToString("f"),
+                BaseVersionSource == null ? "External Source" : BaseVersionSource.Sha,
+                ShouldIncrement ? BaseVersionCalculator.MaybeIncrement(_context, this).ToString("t") : "None");
         }
     }
 }

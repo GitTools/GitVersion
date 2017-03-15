@@ -1,6 +1,9 @@
 # Auto detect text files and perform LF normalization
 * text=auto eol=crlf
 
+# Declare files that will always have LF line endings on checkout.
+*.sh text eol=lf
+
 # Don't check these into the repo as LF to work around TeamCity bug
 *.xml     -text 
 *.targets -text

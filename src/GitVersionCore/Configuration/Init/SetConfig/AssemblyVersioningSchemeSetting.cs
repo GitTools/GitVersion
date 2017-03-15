@@ -33,6 +33,10 @@ namespace GitVersion.Configuration.Init.SetConfig
                     config.AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag;
                     steps.Enqueue(new EditConfigStep(Console, FileSystem));
                     return StepResult.Ok();
+                case "5":
+                    config.AssemblyVersioningScheme = AssemblyVersioningScheme.None;
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
+                    return StepResult.Ok();
             }
 
             return StepResult.InvalidResponseSelected();
@@ -46,7 +50,9 @@ namespace GitVersion.Configuration.Init.SetConfig
 1) Major.0.0.0
 2) Major.Minor.0.0
 3) Major.Minor.Patch.0   (default)
-4) Major.Minor.Patch.TagCount (Allows different pre-release tags to cause assembly version to change)";
+4) Major.Minor.Patch.TagCount (Allows different pre-release tags to cause assembly version to change)
+5) None (skip's updating AssemblyVersion)";
+
         }
 
         protected override string DefaultResult

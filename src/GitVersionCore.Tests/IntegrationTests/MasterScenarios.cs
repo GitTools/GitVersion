@@ -96,7 +96,7 @@ public class MasterScenarios
 
             var commit = fixture.Repository.Head.Tip;
             fixture.Repository.MakeACommit();
-            fixture.Repository.Checkout(commit);
+            Commands.Checkout(fixture.Repository, commit);
 
             // When
             fixture.AssertFullSemver("0.1.0+2");

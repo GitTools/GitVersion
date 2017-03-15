@@ -33,11 +33,11 @@
         [YamlMember(Alias = "next-version")]
         public string NextVersion
         {
-            get { return this.nextVersion; }
+            get { return nextVersion; }
             set
             {
                 int major;
-                this.nextVersion = int.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out major)
+                nextVersion = int.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out major)
                     ? string.Format("{0}.0", major)
                     : value;
             }
@@ -51,6 +51,9 @@
 
         [YamlMember(Alias = "patch-version-bump-message")]
         public string PatchVersionBumpMessage { get; set; }
+
+        [YamlMember(Alias = "no-bump-message")]
+        public string NoBumpMessage { get; set; }
 
         [YamlMember(Alias = "legacy-semver-padding")]
         public int? LegacySemVerPadding { get; set; }
@@ -76,14 +79,14 @@
                 value.ToList().ForEach(_ =>
                 {
                     if (!branches.ContainsKey(_.Key))
-                        branches.Add(_.Key, new BranchConfig());
+                        branches.Add(_.Key, new BranchConfig {Name = _.Key});
 
                     branches[_.Key] = MergeObjects(branches[_.Key], _.Value);
                 });
             }
         }
 
-        private T MergeObjects<T>(T target, T source)
+        T MergeObjects<T>(T target, T source)
         {
             typeof(T).GetProperties()
                 .Where(prop => prop.CanRead && prop.CanWrite)
@@ -96,5 +99,8 @@
 
         [YamlMember(Alias = "ignore")]
         public IgnoreConfig Ignore { get; set; }
+
+        [YamlMember(Alias = "increment")]
+        public IncrementStrategy? Increment { get; set; }
     }
 }

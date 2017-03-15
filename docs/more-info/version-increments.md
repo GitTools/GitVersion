@@ -12,9 +12,9 @@ This causes problems for people as NuGet and other package managers do not suppo
 There are a few ways to handle this problem depending on what your requirements are:
 
 ### 1. GitFlow
-If you are using GitFlow then builds off the `develop` branch will actually *increment on every commit*. This is known in GitVersion as *continuous deployment mode*. By default `develop` builds are tagged with the `unstable` pre-release tag. This is so they are sorted higher than release branches.
+If you are using GitFlow then builds off the `develop` branch will actually *increment on every commit*. This is known in GitVersion as *continuous deployment mode*. By default `develop` builds are tagged with the `alpha` pre-release tag. This is so they are sorted higher than release branches.
 
-If you need to consume packages built from develop, we recommend publishing these packages to a separate NuGet feed as an alpha channel. That way you can publish beta/release candidate builds and only people who opt into the alpha feed will see the unstable packages.
+If you need to consume packages built from develop, we recommend publishing these packages to a separate NuGet feed as an alpha channel. That way you can publish beta/release candidate builds and only people who opt into the alpha feed will see the alpha packages.
 
 ### 2. Octopus deploy
 See [Octopus deploy](../build-server-support/build-server/octopus-deploy.md)
@@ -23,7 +23,7 @@ See [Octopus deploy](../build-server-support/build-server/octopus-deploy.md)
 With v3 there are multiple approaches.
 
 ### Commit messages
-Adding `+semver: breaking` or `+semver: major` will cause the major version to be increased, `+semver: feature` or `+semver:minor` will bump minor and `+semver:patch` or `+semver:fix` will bump the patch.
+Adding `+semver: breaking` or `+semver: major` will cause the major version to be increased, `+semver: feature` or `+semver: minor` will bump minor and `+semver: patch` or `+semver: fix` will bump the patch.
 
 #### Configuration
 The feature is enabled by default but can be disabled via configuration, the regex we use can be changed:
