@@ -11,8 +11,8 @@ public abstract class AssemblyInfoBuilder
     private static readonly Dictionary<string, Type> assemblyInfoBuilders = new Dictionary<string, Type>
     {
         {".cs", typeof(CSharpAssemblyInfoBuilder)},
-        {".vb", typeof(VisualBasicAssemblyInfoBuilder)}
-        // TODO: Missing FSharpAssemblyInfoBuilder
+        {".vb", typeof(VisualBasicAssemblyInfoBuilder)},
+        {".fs", typeof(FSharpAssemblyInfoBuilder)},
     };
 
     public abstract string AssemblyInfoExtension { get; }
