@@ -12,12 +12,15 @@
     <GitVersion_NoFetchEnabled Condition="$(GitVersion_NoFetchEnabled) == ''">false</GitVersion_NoFetchEnabled>
 
     <!-- Property that enables WriteVersionInfoToBuildLog -->
+    <WriteVersionInfoToBuildLog Condition=" '$(WriteVersionInfoToBuildLog)' == '' and '$(NCrunch)' != '' ">false</WriteVersionInfoToBuildLog>
     <WriteVersionInfoToBuildLog Condition=" '$(WriteVersionInfoToBuildLog)' == '' ">true</WriteVersionInfoToBuildLog>
 
     <!-- Property that enables UpdateAssemblyInfo. Default to off for SDK builds -->
     <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' and '$(TargetFramework)' != '' ">false</UpdateAssemblyInfo>
+    <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' and '$(NCrunch)' != '' ">false</UpdateAssemblyInfo>
     <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
 
+    <GetVersion Condition=" '$(GetVersion)' == '' and '$(NCrunch)' != '' ">false</GetVersion>
     <GetVersion Condition=" '$(GetVersion)' == '' ">true</GetVersion>
        
     <!-- Property that enables setting of Version -->
