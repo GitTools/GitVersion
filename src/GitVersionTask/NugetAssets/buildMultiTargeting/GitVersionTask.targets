@@ -42,7 +42,7 @@
 
   <Import Project="$(GitVersionCustomizeTargetFile)" Condition="'$(GitVersionCustomizeTargetFile)' != '' and Exists($(GitVersionCustomizeTargetFile))" />
 
-  <Target Name="WriteVersionInfoToBuildLog" BeforeTargets="DispatchToInnerBuilds;GenerateNuspec" Condition="$(WriteVersionInfoToBuildLog) == 'true'">
+  <Target Name="WriteVersionInfoToBuildLog" BeforeTargets="DispatchToInnerBuilds;GenerateNuspec;_GenerateRestoreProjectSpec" Condition="$(WriteVersionInfoToBuildLog) == 'true'">
     <WriteVersionInfoToBuildLog SolutionDirectory="$(GitVersionPath)" NoFetch="$(GitVersion_NoFetchEnabled)"/>
   </Target>
   
