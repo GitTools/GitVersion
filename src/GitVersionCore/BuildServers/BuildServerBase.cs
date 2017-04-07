@@ -33,5 +33,10 @@
                 writer(buildParameter);
             }
         }
+
+        public virtual bool ShouldCleanUpRemotes()
+        {
+            return false;
+        }
     }
 }
