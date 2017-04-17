@@ -29,7 +29,7 @@ You likely need to install `libcurl3`. Run `sudo get-get install libcurl3`
 
 ## Quick Links
  - [Documentation][docs]
-   [Contributing][contribute]
+ - [Contributing][contribute]
  - [Why GitVersion][why]
  - [Usage][usage]
  - [How it works][how]
