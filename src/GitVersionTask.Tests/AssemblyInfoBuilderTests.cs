@@ -232,8 +232,10 @@ public class AssemblyInfoBuilderTests
 
     [TestCase("Class1.cs", typeof(CSharpAssemblyInfoBuilder))]
     [TestCase("Class1.vb", typeof(VisualBasicAssemblyInfoBuilder))]
+    [TestCase("Class1.fs", typeof(FSharpAssemblyInfoBuilder))]
     [TestCase("AssemblyInfo.cs", typeof(CSharpAssemblyInfoBuilder))]
     [TestCase("AssemblyInfo.vb", typeof(VisualBasicAssemblyInfoBuilder))]
+    [TestCase("AssemblyInfo.fs", typeof(FSharpAssemblyInfoBuilder))]
     public void GetAssemblyInfoBuilder_ShouldReturnAppropriateAssemblyInfoBuilder(string fileName, Type assemblyInfoBuilderType)
     {
         var taskItem = Substitute.For<ITaskItem>();
