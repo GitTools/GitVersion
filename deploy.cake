@@ -71,6 +71,7 @@ Task("DownloadGitHubReleaseArtifacts")
         if (!artifactLookup.ContainsKey("NuGetExeBuild")) { throw new Exception("NuGetExeBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("GemBuild")) { throw new Exception("GemBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("GitVersionTfsTaskBuild")) { throw new Exception("GitVersionTfsTaskBuild artifact missing"); }
+        if (!artifactLookup.ContainsKey("zip")) { throw new Exception("zip artifact missing"); }
     });
 
 Task("Publish-NuGetPackage")
@@ -174,6 +175,22 @@ Task("Publish-VstsTask")
     }
 });
 
+
+Task("Publish-DockerImage")
+    .IsDependentOn("DownloadGitHubReleaseArtifacts")
+    .Does(() =>
+{
+    var returnCode = StartProcess("docker", new ProcessSettings
+    {
+        Arguments = "docker build . --build-arg GitVersionZip=" + artifactLookup["zip"] + " --tag latest --tag " + tag
+    });
+
+    if (returnCode != 0) {
+        Information("Publish-DockerImage Task failed, but continuing with next Task...");
+        publishingError = true;
+    }
+});
+
 Task("Deploy")
   .IsDependentOn("Publish-NuGetPackage")
   .IsDependentOn("Publish-NuGetCommandLine")
@@ -181,6 +198,7 @@ Task("Deploy")
   .IsDependentOn("Publish-Chocolatey")
 //  .IsDependentOn("Publish-Gem")
   .IsDependentOn("Publish-VstsTask")
+  .IsDependentOn("Publish-DockerImage")
   .Finally(() =>
 {
     if(publishingError)
