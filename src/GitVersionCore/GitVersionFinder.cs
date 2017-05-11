@@ -12,6 +12,11 @@ namespace GitVersion
                 "Running against branch: {0} ({1})",
                 context.CurrentBranch.FriendlyName,
                 context.CurrentCommit == null ? "-" : context.CurrentCommit.Sha));
+            if (context.IsCurrentCommitTagged)
+            {
+                Logger.WriteInfo($"Current commit is tagged with version {context.CurrentCommitTaggedVersion}, " +
+                                 "version calcuation is for metadata only.");
+            }
             EnsureMainTopologyConstraints(context);
 
             var filePath = Path.Combine(context.Repository.GetRepositoryDirectory(), "NextVersion.txt");

@@ -69,6 +69,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyFileVersioningScheme.cs" />
     <Compile Include="AssemblyVersioningScheme.cs" />
     <Compile Include="AssemblyVersionsGenerator.cs" />
     <Compile Include="Authentication.cs" />

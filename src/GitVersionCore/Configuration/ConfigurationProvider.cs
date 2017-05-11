@@ -85,6 +85,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
         public static void ApplyDefaultsTo(Config config)
         {
             config.AssemblyVersioningScheme = config.AssemblyVersioningScheme ?? AssemblyVersioningScheme.MajorMinorPatch;
+            config.AssemblyFileVersioningScheme = config.AssemblyFileVersioningScheme ?? AssemblyFileVersioningScheme.MajorMinorPatch;
             config.AssemblyInformationalFormat = config.AssemblyInformationalFormat;
             config.TagPrefix = config.TagPrefix ?? DefaultTagPrefix;
             config.VersioningMode = config.VersioningMode ?? VersioningMode.ContinuousDelivery;
@@ -229,6 +230,13 @@ If the docs do not help you decide on the mode open an issue to discuss what you
 
         public static void Verify(GitPreparer gitPreparer, IFileSystem fileSystem)
         {
+            if (!string.IsNullOrWhiteSpace(gitPreparer.TargetUrl))
+            {
+                // Assuming this is a dynamic repository. At this stage it's unsure whether we have 
+                // any .git info so we need to skip verification
+                return;
+            }
+
             var workingDirectory = gitPreparer.WorkingDirectory;
             var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
 
