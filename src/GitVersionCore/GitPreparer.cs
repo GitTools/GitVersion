@@ -51,7 +51,7 @@ namespace GitVersion
 
         public string DynamicGitRepositoryPath { get; private set; }
 
-        public void Initialise(bool normaliseGitDirectory, string currentBranch)
+        public void Initialise(bool normaliseGitDirectory, string currentBranch, bool shouldCleanUpRemotes = false)
         {
             if (string.IsNullOrWhiteSpace(targetUrl))
             {
@@ -59,6 +59,10 @@ namespace GitVersion
                 {
                     using (Logger.IndentLog(string.Format("Normalizing git directory for branch '{0}'", currentBranch)))
                     {
+                        if (shouldCleanUpRemotes)
+                        {
+                            CleanupDuplicateOrigin();
+                        }
                         GitRepositoryHelper.NormalizeGitDirectory(GetDotGitDirectory(), authentication, noFetch, currentBranch);
                     }
                 }
@@ -68,6 +72,15 @@ namespace GitVersion
             var tempRepositoryPath = CalculateTemporaryRepositoryPath(targetUrl, dynamicRepositoryLocation);
 
             DynamicGitRepositoryPath = CreateDynamicRepository(tempRepositoryPath, authentication, targetUrl, currentBranch, noFetch);
+        }
+
+        private void CleanupDuplicateOrigin()
+        {
+            var repo = new Repository(GetDotGitDirectory());
+            if (repo.Network.Remotes.Any(remote => remote.Name == "origin1"))
+            {
+                repo.Network.Remotes.Remove("origin1");
+            }
         }
 
         public TResult WithRepository<TResult>(Func<IRepository, TResult> action)

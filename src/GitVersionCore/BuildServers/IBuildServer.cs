@@ -13,5 +13,6 @@
         /// If the build server should not try and fetch
         /// </summary>
         bool PreventFetch();
+        bool ShouldCleanUpRemotes();
     }
 }

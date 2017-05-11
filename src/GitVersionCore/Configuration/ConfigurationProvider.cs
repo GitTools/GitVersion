@@ -122,7 +122,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
                 GetOrCreateBranchDefaults(config, PullRequestBranchKey),
                 PullRequestRegex,
                 defaultTag: "PullRequest",
-                defaultTagNumberPattern: @"[/-](?<number>\d+)[-/]",
+                defaultTagNumberPattern: @"[/-](?<number>\d+)",
                 defaultIncrementStrategy: IncrementStrategy.Inherit);
             ApplyBranchDefaults(config,
                 GetOrCreateBranchDefaults(config, HotfixBranchKey),

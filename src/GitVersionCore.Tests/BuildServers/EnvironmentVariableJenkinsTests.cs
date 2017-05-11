@@ -9,6 +9,7 @@ public class EnvironmentVariableJenkinsTests
     string key = "JENKINS_URL";
     string branch = "GIT_BRANCH";
     string localBranch = "GIT_LOCAL_BRANCH";
+    string pipelineBranch = "BRANCH_NAME";
 
     private void SetEnvironmentVariableForDetection()
     {
@@ -59,5 +60,29 @@ public class EnvironmentVariableJenkinsTests
         // Restore environment variables
         Environment.SetEnvironmentVariable(branch, branchOrig);
         Environment.SetEnvironmentVariable(localBranch, localBranchOrig);
+    }
+
+    [Test]
+    public void JenkinsTakesBranchNameInPipelineAsCode()
+    {
+        // Save original values so they can be restored
+        string branchOrig = Environment.GetEnvironmentVariable(branch);
+        string localBranchOrig = Environment.GetEnvironmentVariable(localBranch);
+        string pipelineBranchOrig = Environment.GetEnvironmentVariable(pipelineBranch);
+
+        // Set BRANCH_NAME in pipeline mode
+        Environment.SetEnvironmentVariable(pipelineBranch, "master");
+        // When Jenkins uses a Pipeline, GIT_BRANCH and GIT_LOCAL_BRANCH are not set:
+        Environment.SetEnvironmentVariable(branch, null);
+        Environment.SetEnvironmentVariable(localBranch, null);
+
+        // Test Jenkins GetCurrentBranch method now returns BRANCH_NAME
+        var j = new Jenkins();
+        j.GetCurrentBranch(true).ShouldBe("master");
+
+        // Restore environment variables
+        Environment.SetEnvironmentVariable(branch, branchOrig);
+        Environment.SetEnvironmentVariable(localBranch, localBranchOrig);
+        Environment.SetEnvironmentVariable(pipelineBranch, pipelineBranchOrig);
     }
 }
