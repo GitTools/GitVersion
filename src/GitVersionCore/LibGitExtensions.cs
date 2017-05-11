@@ -16,19 +16,40 @@ namespace GitVersion
         }
 
         /// <summary>
-        /// Checks if the two branch objects refer to the same branch (have the same friendly name).
+        /// Checks if the two branch objects refer to the same branch.
+        /// If the two branches are the local and (tracking) remote, they are also considered the same.
         /// </summary>
         public static bool IsSameBranch(this Branch branch, Branch otherBranch)
         {
-            // For each branch, fixup the friendly name if the branch is remote.
-            var otherBranchFriendlyName = otherBranch.IsRemote ?
-                otherBranch.FriendlyName.Substring(otherBranch.FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1) :
-                otherBranch.FriendlyName;
-            var branchFriendlyName = branch.IsRemote ?
-                branch.FriendlyName.Substring(branch.FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1) :
-                branch.FriendlyName;
+            return branch.GetComparisonBranchName() == otherBranch.GetComparisonBranchName();
+        }
 
-            return otherBranchFriendlyName == branchFriendlyName;
+        /// <summary>
+        /// For comparison, find the "best" branch name,
+        /// either the name of the remote (tracked) branch, or the local branch name.
+        /// </summary>
+        public static string GetComparisonBranchName(this Branch branch)
+        {
+            // There are several possibilities of the state of a branch:
+            //   1. local branch, tracks a remote branch with same name
+            //   2. local branch, tracks a remote branch with *different* name
+            //   3. local branch, without a remote branch
+            //   4. remote branch, for which a local tracking branch exists
+            //   5. remote branch, for which no local tracking branch exists
+            // branch.UpstreamBranchCanonicalName - Cases 1,2,4,5: 'refs/heads/[remote-branch-name]'; Case 3: null
+            // branch.FriendlyName - Cases 1-3: '[local-branch-name]'; Cases 4,5: '{branch.RemoteName}/[remote-branch-name]'
+            //
+            // We want the the branch name itself, and the remote name should win over the local name,
+            // since the local and remote version of the branch should be the same.
+            // Thus, we'll use UpstreamBranchCanonicalName, stripping the /refs/heads/ prefix.
+            // If that is null, we use FriendlyName instead.
+            var upstreamName = branch.UpstreamBranchCanonicalName;
+            if (upstreamName == null)
+            {
+                return branch.FriendlyName;
+            }
+
+            return upstreamName.Substring("refs/heads/".Length);
         }
 
         /// <summary>
