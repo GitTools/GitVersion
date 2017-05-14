@@ -49,12 +49,12 @@ namespace GitVersion
         {
             if (config == null)
             {
-                throw new ArgumentNullException("config");
+                throw new ArgumentNullException(nameof(config));
             }
 
             if (currentBranch == null)
             {
-                throw new ArgumentNullException("currentBranch");
+                throw new ArgumentNullException(nameof(currentBranch));
             }
 
             return config.Branches.Where(b => Regex.IsMatch(currentBranch.FriendlyName, "^" + b.Value.Regex, RegexOptions.IgnoreCase)).Select(kvp => kvp.Value);
