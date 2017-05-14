@@ -52,7 +52,10 @@
                 semver.BuildMetaData = metaDataCalculator.Create(baseVersion.BaseVersionSource, context);
             }
 
-            if (!semver.PreReleaseTag.HasTag() && !string.IsNullOrEmpty(context.Configuration.Tag))
+            var hasPreReleaseTag = semver.PreReleaseTag.HasTag();
+            var branchConfigHasPreReleaseTagConfigured = !string.IsNullOrEmpty(context.Configuration.Tag);
+            var preReleaseTagDoesNotMatchConfiguration = hasPreReleaseTag && branchConfigHasPreReleaseTagConfigured && semver.PreReleaseTag.Name != context.Configuration.Tag;
+            if (!semver.PreReleaseTag.HasTag() && branchConfigHasPreReleaseTagConfigured || preReleaseTagDoesNotMatchConfiguration)
             {
                 UpdatePreReleaseTag(context, semver, baseVersion.BranchNameOverride);
             }
@@ -95,13 +98,25 @@
                 //         / |
                 // master *  *
                 // 
+
+                var mainlineTip = GetMainlineTip(context);
+                var commitsNotOnMainline = context.Repository.Commits.QueryBy(new CommitFilter
+                {
+                    IncludeReachableFrom = context.CurrentBranch,
+                    ExcludeReachableFrom = mainlineTip,
+                    SortBy = CommitSortStrategies.Reverse,
+                    FirstParentOnly = true
+                }).Where(c => c.Sha != baseVersion.BaseVersionSource.Sha && c.Parents.Count() == 1).ToList();
                 var commitLog = context.Repository.Commits.QueryBy(new CommitFilter
                 {
                     IncludeReachableFrom = context.CurrentBranch,
                     ExcludeReachableFrom = baseVersion.BaseVersionSource,
                     SortBy = CommitSortStrategies.Reverse,
                     FirstParentOnly = true
-                }).Where(c => c.Sha != baseVersion.BaseVersionSource.Sha).ToList();
+                })
+                .Where(c => c.Sha != baseVersion.BaseVersionSource.Sha)
+                .Except(commitsNotOnMainline)
+                .ToList();
 
                 var directCommits = new List<Commit>();
 
@@ -118,7 +133,6 @@
                 if (context.CurrentBranch.FriendlyName != "master")
                 {
                     var mergedHead = context.CurrentCommit;
-                    var mainlineTip = GetMainlineTip(context);
                     var findMergeBase = context.Repository.ObjectDatabase.FindMergeBase(context.CurrentCommit, mainlineTip);
                     Logger.WriteInfo(string.Format("Current branch ({0}) was branch from {1}", context.CurrentBranch.FriendlyName, findMergeBase));
 
@@ -126,8 +140,9 @@
                     // This will increment for any direct commits on master
                     mainlineVersion = IncrementForEachCommit(context, directCommits, mainlineVersion);
                     mainlineVersion.BuildMetaData = metaDataCalculator.Create(findMergeBase, context);
-                    // Only increment if head is not a merge commit, ensures PR's and forward merges end up correct.
-                    if (mergedHead.Parents.Count() == 1)
+                    // Don't increment if the merge commit is a merge into mainline
+                    // this ensures PR's and forward merges end up correct.
+                    if (mergedHead.Parents.Count() == 1 || mergedHead.Parents.First() != mainlineTip)
                     {
                         Logger.WriteInfo(string.Format("Performing {0} increment for current branch ", branchIncrement));
                         mainlineVersion = mainlineVersion.IncrementVersion(branchIncrement);

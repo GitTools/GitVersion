@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using GitVersion;
 
-public class CSharpAssemblyInfoBuilder : AssemblyInfoBuilder
+public class FSharpAssemblyInfoBuilder : AssemblyInfoBuilder
 {
-    public override string AssemblyInfoExtension { get { return "cs"; } }
+    public override string AssemblyInfoExtension { get { return "fs"; } }
 
     public override string GetAssemblyInfoText(VersionVariables vars, string rootNamespace)
     {
@@ -23,26 +23,25 @@ public class CSharpAssemblyInfoBuilder : AssemblyInfoBuilder
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Reflection;
-
-[assembly: AssemblyVersion(""{0}"")]
-[assembly: AssemblyFileVersion(""{1}"")]
-[assembly: AssemblyInformationalVersion(""{2}"")]
-
 namespace {4}
-{{
 
-    [global::System.Runtime.CompilerServices.CompilerGenerated]
-    static class GitVersionInformation
-    {{
+open System
+open System.Reflection
+
+[<assembly: AssemblyVersion(""{0}"")>]
+[<assembly: AssemblyFileVersion(""{1}"")>]
+[<assembly: AssemblyInformationalVersion(""{2}"")>]
+
+do
+    ()
+
+[<AbstractClass; Sealed>]
+[<global.System.Runtime.CompilerServices.CompilerGenerated>]
+module GitVersionInformation =
 {3}
-    }}
-
-}}
 ",
         vars.AssemblySemVer,
-        vars.AssemblySemFileVer,
+        vars.MajorMinorPatch + ".0",
         vars.InformationalVersion,
         GenerateStaticVariableMembers(v),
         rootNamespace);
@@ -52,7 +51,7 @@ namespace {4}
 
     static string GenerateStaticVariableMembers(IList<KeyValuePair<string, string>> vars)
     {
-        return GenerateMembers(vars, "        public static string {0} = \"{1}\";");
+        return GenerateMembers(vars, "    let {0} = \"{1}\"");
     }
 
 

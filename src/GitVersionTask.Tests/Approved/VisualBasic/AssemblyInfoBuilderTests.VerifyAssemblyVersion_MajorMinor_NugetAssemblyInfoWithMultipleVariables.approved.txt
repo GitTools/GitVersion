@@ -34,6 +34,7 @@ NotInheritable Class GitVersionInformation
         Public Shared LegacySemVer As String = "2.3.4-beta5"
         Public Shared LegacySemVerPadded As String = "2.3.4-beta0005"
         Public Shared AssemblySemVer As String = "2.3.0.0"
+        Public Shared AssemblySemFileVer As String = "2.3.4.0"
         Public Shared FullSemVer As String = "2.3.4-beta.5+6"
         Public Shared InformationalVersion As String = "master-2.3.4-commitSha"
         Public Shared BranchName As String = "master"

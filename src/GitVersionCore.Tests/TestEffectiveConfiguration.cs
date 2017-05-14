@@ -9,6 +9,7 @@ namespace GitVersionCore.Tests
     {
         public TestEffectiveConfiguration(
             AssemblyVersioningScheme assemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
+            AssemblyFileVersioningScheme assemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
             string assemblyInformationalFormat = null,
             VersioningMode versioningMode = VersioningMode.ContinuousDelivery,
             string gitTagPrefix = "v",
@@ -30,7 +31,7 @@ namespace GitVersionCore.Tests
             IEnumerable<IVersionFilter> versionFilters = null,
             bool tracksReleaseBranches = false,
             bool isRelease = false) :
-            base(assemblyVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch,
+            base(assemblyVersioningScheme, assemblyFileVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch,
                     branchPrefixToTrim, preventIncrementForMergedBranchVersion, tagNumberPattern, continuousDeploymentFallbackTag,
                     trackMergeTarget,
                     majorMessage, minorMessage, patchMessage, noBumpMessage,

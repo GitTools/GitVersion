@@ -114,6 +114,7 @@
     <Compile Include="HelpWriterTests.cs" />
     <Compile Include="JsonOutputOnBuildServer.cs" />
     <Compile Include="MsBuildProjectArgTest.cs" />
+    <Compile Include="PullRequestInJenkinsPipelineTest.cs" />
     <Compile Include="PullRequestInTeamCityTest.cs" />
     <Compile Include="AssemblyInfoFileUpdateTests.cs" />
     <Compile Include="VersionWriterTests.cs" />

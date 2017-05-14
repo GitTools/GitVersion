@@ -124,7 +124,7 @@ Task("Create-Release-Notes")
     .WithCriteria(() => IsMainGitVersionRepo && IsMainGitVersionBranch && !IsPullRequest)
     .Does(() =>
 {
-	var githubToken = EnvironmentVariable("GitHubToken");
+    var githubToken = EnvironmentVariable("GitHubToken");
 
     if(!string.IsNullOrWhiteSpace(githubToken))
     {

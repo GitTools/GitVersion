@@ -1,4 +1,4 @@
-﻿{
+{
   "Major":1,
   "Minor":2,
   "Patch":0,
@@ -14,6 +14,7 @@
   "LegacySemVer":"1.2.0-unstable4",
   "LegacySemVerPadded":"1.2.0-unstable0004",
   "AssemblySemVer":"1.2.0.0",
+  "AssemblySemFileVer":"1.2.0.0",
   "FullSemVer":"1.2.0-unstable.4+5",
   "InformationalVersion":"1.2.0-unstable.4+5.Branch.feature1.Sha.commitSha",
   "BranchName":"feature1",

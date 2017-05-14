@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using LibGit2Sharp;
+﻿using LibGit2Sharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,7 +51,7 @@ namespace GitVersion
         }
 
         // TODO Should we cache this?
-        public IEnumerable<Branch> GetBranchesContainingCommit([NotNull] Commit commit, IList<Branch> branches, bool onlyTrackedBranches)
+        public IEnumerable<Branch> GetBranchesContainingCommit(Commit commit, IList<Branch> branches, bool onlyTrackedBranches)
         {
             if (commit == null)
             {
@@ -112,13 +111,11 @@ namespace GitVersion
 
             if (mergeBaseCache.ContainsKey(key))
             {
-                Logger.WriteDebug(string.Format(
-                    "Cache hit for merge base between '{0}' and '{1}'.",
-                    branch.FriendlyName, otherBranch.FriendlyName));
+                Logger.WriteDebug($"Cache hit for merge base between '{branch.FriendlyName}' and '{otherBranch.FriendlyName}'.");
                 return mergeBaseCache[key].MergeBase;
             }
 
-            using (Logger.IndentLog(string.Format("Finding merge base between '{0}' and '{1}'.", branch.FriendlyName, otherBranch.FriendlyName)))
+            using (Logger.IndentLog($"Finding merge base between '{branch.FriendlyName}' and '{otherBranch.FriendlyName}'."))
             {
                 // Otherbranch tip is a forward merge
                 var commitToFindCommonBase = otherBranch.Tip;
@@ -128,33 +125,46 @@ namespace GitVersion
                     commitToFindCommonBase = otherBranch.Tip.Parents.First();
                 }
 
-                var findMergeBase = this.Repository.ObjectDatabase.FindMergeBase(commit, commitToFindCommonBase);
+                var findMergeBase = Repository.ObjectDatabase.FindMergeBase(commit, commitToFindCommonBase);
                 if (findMergeBase != null)
                 {
-                    Logger.WriteInfo(string.Format("Found merge base of {0}", findMergeBase.Sha));
+                    Logger.WriteInfo($"Found merge base of {findMergeBase.Sha}");
                     // We do not want to include merge base commits which got forward merged into the other branch
-                    Commit mergeBaseAsForwardMerge;
+                    Commit forwardMerge;
                     do
                     {
                         // Now make sure that the merge base is not a forward merge
-                        mergeBaseAsForwardMerge = otherBranch.Commits
-                            .SkipWhile(c => c != commitToFindCommonBase)
-                            .TakeWhile(c => c != findMergeBase)
-                            .LastOrDefault(c => c.Parents.Contains(findMergeBase));
+                        forwardMerge = Repository.Commits
+                            .QueryBy(new CommitFilter
+                            {
+                                IncludeReachableFrom = commitToFindCommonBase,
+                                ExcludeReachableFrom = findMergeBase
+                            })
+                            .FirstOrDefault(c => c.Parents.Contains(findMergeBase));
 
-                        if (mergeBaseAsForwardMerge != null)
+                        if (forwardMerge != null)
                         {
-                            commitToFindCommonBase = mergeBaseAsForwardMerge.Parents.First();
-                            findMergeBase = this.Repository.ObjectDatabase.FindMergeBase(commit, commitToFindCommonBase);
+                            var second = forwardMerge.Parents.First();
+                            Logger.WriteDebug("Second " + second.Sha);
+                            var mergeBase = Repository.ObjectDatabase.FindMergeBase(commit, second);
+                            Logger.WriteDebug("New Merge base " + mergeBase.Sha);
 
-                            Logger.WriteInfo(string.Format("Merge base was due to a forward merge, next merge base is {0}", findMergeBase));
+                            if (mergeBase == findMergeBase)
+                            {
+                                Logger.WriteDebug("Breaking");
+                                break;
+                            }
+                            findMergeBase = mergeBase;
+                            commitToFindCommonBase = second;
+                            Logger.WriteInfo($"Merge base was due to a forward merge, next merge base is {findMergeBase}");
                         }
-                    } while (mergeBaseAsForwardMerge != null);
+                    } while (forwardMerge != null);
                 }
 
                 // Store in cache.
-                mergeBaseCache.Add(key, new MergeBaseData(branch, otherBranch, this.Repository, findMergeBase));
+                mergeBaseCache.Add(key, new MergeBaseData(branch, otherBranch, Repository, findMergeBase));
 
+                Logger.WriteInfo($"Merge base of {branch.FriendlyName}' and '{otherBranch.FriendlyName} is {findMergeBase}");
                 return findMergeBase;
             }
         }
@@ -163,7 +173,7 @@ namespace GitVersion
         /// Find the commit where the given branch was branched from another branch.
         /// If there are multiple such commits and branches, returns the newest commit.
         /// </summary>
-        public BranchCommit FindCommitBranchWasBranchedFrom([NotNull] Branch branch, params Branch[] excludedBranches)
+        public BranchCommit FindCommitBranchWasBranchedFrom(Branch branch, params Branch[] excludedBranches)
         {
             if (branch == null)
             {
