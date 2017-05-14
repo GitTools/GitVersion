@@ -143,7 +143,7 @@
       <LibGit2SharpFiles Include="$(TargetDir)LibGit2Sharp.*" Exclude="$(TargetDir)LibGit2Sharp.xml" />
     </ItemGroup>
     <!-- Repack without LibGit2Sharp for NugetCommandLineBuild -->
-    <Exec Command="$(Runtime) &quot;$(SolutionDir)packages\ILRepack.2.0.12\tools\ILRepack.exe&quot; /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)GitTools.Core.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:exe /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
+    <Exec Command="$(Runtime) &quot;$(SolutionDir)packages\ILRepack.2.0.13\tools\ILRepack.exe&quot; /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)GitTools.Core.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:exe /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
     <!-- NugetCommandLineBuild -->
     <MakeDir Directories="$(BuildDir)NuGetCommandLineBuild" />
     <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)NuGetCommandLineBuild\tools\lib\%(RecursiveDir)%(Filename)%(Extension)')" />
@@ -154,7 +154,7 @@
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.CommandLine.nuspec" DestinationFolder="$(BuildDir)NuGetCommandLineBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetCommandLineBuild" MetadataAssembly="$(OutputPath)ILMergeTemp\GitVersion.exe" Version="$(GitVersion_NuGetVersion)" />
     <!-- Repack with LibGit2Sharp for NugetCommandLineBuild -->
-    <Exec Command="$(Runtime) &quot;$(SolutionDir)packages\ILRepack.2.0.12\tools\ILRepack.exe&quot; /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)GitTools.Core.dll&quot; &quot;$(TargetDir)LibGit2Sharp.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:exe /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
+    <Exec Command="$(Runtime) &quot;$(SolutionDir)packages\ILRepack.2.0.13\tools\ILRepack.exe&quot; /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)GitTools.Core.dll&quot; &quot;$(TargetDir)LibGit2Sharp.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:exe /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
     <!-- NugetExeBuild -->
     <MakeDir Directories="$(BuildDir)NuGetExeBuild" />
     <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)NuGetExeBuild\tools\lib\%(RecursiveDir)%(Filename)%(Extension)')" />
