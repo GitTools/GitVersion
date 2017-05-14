@@ -43,10 +43,6 @@
       <HintPath>..\packages\GitTools.Core.1.2.1-beta0001\lib\net4\GitTools.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="JetBrains.Annotations, Version=10.1.5.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrainsAnnotations.Fody.1.0.5.0\lib\JetBrains.Annotations.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="LibGit2Sharp, Version=0.23.0.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
       <HintPath>..\packages\LibGit2Sharp.0.23.0-pre20160922233542\lib\net40\LibGit2Sharp.dll</HintPath>
       <Private>True</Private>

@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using LibGit2Sharp;
+﻿using LibGit2Sharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,7 +51,7 @@ namespace GitVersion
         }
 
         // TODO Should we cache this?
-        public IEnumerable<Branch> GetBranchesContainingCommit([NotNull] Commit commit, IList<Branch> branches, bool onlyTrackedBranches)
+        public IEnumerable<Branch> GetBranchesContainingCommit(Commit commit, IList<Branch> branches, bool onlyTrackedBranches)
         {
             if (commit == null)
             {
@@ -174,7 +173,7 @@ namespace GitVersion
         /// Find the commit where the given branch was branched from another branch.
         /// If there are multiple such commits and branches, returns the newest commit.
         /// </summary>
-        public BranchCommit FindCommitBranchWasBranchedFrom([NotNull] Branch branch, params Branch[] excludedBranches)
+        public BranchCommit FindCommitBranchWasBranchedFrom(Branch branch, params Branch[] excludedBranches)
         {
             if (branch == null)
             {

@@ -4,11 +4,9 @@ namespace GitVersion
     using System.Collections.Generic;
     using System.Text;
     using System.Text.RegularExpressions;
-    using JetBrains.Annotations;
 
     static class ExtensionMethods
     {
-        [StringFormatMethod("format")]
         public static void AppendLineFormat(this StringBuilder stringBuilder, string format, params object[] args)
         {
             stringBuilder.AppendFormat(format, args);

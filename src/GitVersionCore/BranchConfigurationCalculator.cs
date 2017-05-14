@@ -1,6 +1,5 @@
 namespace GitVersion
 {
-    using JetBrains.Annotations;
     using LibGit2Sharp;
     using System;
     using System.Collections.Generic;
@@ -45,7 +44,7 @@ namespace GitVersion
                 branchConfiguration;
         }
 
-        static IEnumerable<BranchConfig> LookupBranchConfiguration([NotNull] Config config, [NotNull] Branch currentBranch)
+        static IEnumerable<BranchConfig> LookupBranchConfiguration(Config config, Branch currentBranch)
         {
             if (config == null)
             {
