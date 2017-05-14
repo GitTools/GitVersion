@@ -8,15 +8,15 @@ works out the [semantic version][semver] of the commit being built.
 [![Build status][appveyor-badge]][appveyor]
 [![Build Status][travis-badge]][travis]
 
-|                            |                Stable               |                 Pre-release               |
-| -------------------------: | :---------------------------------: | :---------------------------------------: |
-|                  **Docs**  |     [![Docs][docs-badge]][docs]     |    [![Docs][docs-pre-badge]][docs-pre]    |
-|        **GitHub Release**  |                 -                   | [![GitHub release][gh-rel-badge]][gh-rel] |
-|   **GitVersion.Portable**  | [![Chocolatey][choco-badge]][choco] |   [![Chocolatey][choco-pre-badge]][choco] |
-|        **GitVersionTask**  |     [![NuGet][gvt-badge]][gvt]      |       [![NuGet][gvt-pre-badge]][gvt]      |
-| **GitVersion.CommandLine** |     [![NuGet][gvc-badge]][gvc]      |       [![NuGet][gvc-pre-badge]][gvc]      |
-|                    **Gem** |       [![Gem][gem-badge]][gem]      |                      -                    |
-|               **Homebrew** |   [![homebrew][brew-badge]][brew]   |                      -                    |
+|                            |                Stable                     |                 Pre-release               |
+| -------------------------: | :---------------------------------------: | :---------------------------------------: |
+|                  **Docs**  |     [![Docs][docs-badge]][docs]           |    [![Docs][docs-pre-badge]][docs-pre]    |
+|        **GitHub Release**  | [![GitHub release][gh-rel-badge]][gh-rel] |                      -                    |
+|   **GitVersion.Portable**  | [![Chocolatey][choco-badge]][choco]       |   [![Chocolatey][choco-pre-badge]][choco] |
+|        **GitVersionTask**  |     [![NuGet][gvt-badge]][gvt]            |       [![NuGet][gvt-pre-badge]][gvt]      |
+| **GitVersion.CommandLine** |     [![NuGet][gvc-badge]][gvc]            |       [![NuGet][gvc-pre-badge]][gvc]      |
+|                    **Gem** |       [![Gem][gem-badge]][gem]            |                      -                    |
+|               **Homebrew** |   [![homebrew][brew-badge]][brew]         |                      -                    |
 
 ## Compatibility
 GitVersion works on Mac, Linux with Mono and Windows.
@@ -29,7 +29,7 @@ You likely need to install `libcurl3`. Run `sudo get-get install libcurl3`
 
 ## Quick Links
  - [Documentation][docs]
-   [Contributing][contribute]
+ - [Contributing][contribute]
  - [Why GitVersion][why]
  - [Usage][usage]
  - [How it works][how]

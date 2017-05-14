@@ -47,7 +47,7 @@ branches:
     tag: PullRequest
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
-    tag-number-pattern: '[/-](?<number>\d+)[-/]'
+    tag-number-pattern: '[/-](?<number>\d+)'
     track-merge-target: false
     regex: (pull|pull\-requests|pr)[/-]
     tracks-release-branches: false

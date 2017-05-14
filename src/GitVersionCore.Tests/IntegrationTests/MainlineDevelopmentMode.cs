@@ -96,6 +96,7 @@ public class MainlineDevelopmentMode
             fixture.AssertFullSemver(config, "1.0.1");
 
             fixture.BranchTo("feature/foo", "foo");
+            fixture.AssertFullSemver(config, "1.0.2-foo.0");
             fixture.MakeACommit();
             fixture.MakeACommit();
             fixture.Repository.CreatePullRequestRef("feature/foo", "master", normalise: true, prNumber: 8);
@@ -149,6 +150,7 @@ public class MainlineDevelopmentMode
 
             fixture.BranchTo("feature/foo", "foo");
             fixture.MakeACommit();
+            fixture.AssertFullSemver(config, "1.0.2-foo.1");
             fixture.MakeACommit();
             fixture.AssertFullSemver(config, "1.0.2-foo.2");
 
@@ -156,8 +158,12 @@ public class MainlineDevelopmentMode
             fixture.MakeACommit();
             fixture.AssertFullSemver(config, "1.0.2");
             fixture.Checkout("feature/foo");
+            // This may seem surprising, but this happens because we branched off mainline
+            // and incremented. Mainline has then moved on. We do not follow mainline
+            // in feature branches, you need to merge mainline in to get the mainline version
+            fixture.AssertFullSemver(config, "1.0.2-foo.2");
             fixture.MergeNoFF("master");
-            fixture.AssertFullSemver(config, "1.0.4-foo.3");
+            fixture.AssertFullSemver(config, "1.0.3-foo.3");
         }
     }
 
@@ -237,6 +243,31 @@ public class MainlineDevelopmentMode
             fixture.Checkout("master");
             fixture.MergeNoFF("feature/foo");
             fixture.AssertFullSemver(config, "1.0.2");
+        }
+    }
+
+    [Test]
+    public void VerifyIssue1154_CanForwardMergeMasterToFeatureBranch()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.MakeACommit();
+            fixture.BranchTo("feature/branch2");
+            fixture.BranchTo("feature/branch1");
+            fixture.MakeACommit();
+            fixture.MakeACommit();
+
+            fixture.Checkout("master");
+            fixture.MergeNoFF("feature/branch1");
+            fixture.AssertFullSemver(config, "0.1.1");
+
+            fixture.Checkout("feature/branch2");
+            fixture.MakeACommit();
+            fixture.MakeACommit();
+            fixture.MakeACommit();
+            fixture.MergeNoFF("master");
+
+            fixture.AssertFullSemver(config, "0.1.2-branch2.4");
         }
     }
 
