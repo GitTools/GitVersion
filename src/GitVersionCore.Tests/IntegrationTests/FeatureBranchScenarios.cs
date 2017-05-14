@@ -175,6 +175,31 @@ public class FeatureBranchScenarios
         }
     }
 
+    [Test]
+    public void CanUseBranchNameOffAReleaseBranch()
+    {
+        var config = new Config
+        {
+            Branches =
+            {
+                { "release", new BranchConfig { Tag = "build" } },
+                { "feature", new BranchConfig { Tag = "useBranchName" } }
+            }
+        };
+
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.MakeACommit();
+            fixture.BranchTo("release/0.3.0");
+            fixture.MakeATaggedCommit("v0.3.0-build.1");
+            fixture.MakeACommit();
+            fixture.BranchTo("feature/PROJ-1");
+            fixture.MakeACommit();
+
+            fixture.AssertFullSemver(config, "0.3.0-PROJ-1.1+2");
+        }
+    }
+
     [TestCase("alpha", "JIRA-123", "alpha")]
     [TestCase("useBranchName", "JIRA-123", "JIRA-123")]
     [TestCase("alpha.{BranchName}", "JIRA-123", "alpha.JIRA-123")]
@@ -191,12 +216,12 @@ public class FeatureBranchScenarios
         using (var fixture = new EmptyRepositoryFixture())
         {
             fixture.Repository.MakeATaggedCommit("1.0.0");
-            var featureBranchName = string.Format("feature/{0}", featureName);
+            var featureBranchName = $"feature/{featureName}";
             fixture.Repository.CreateBranch(featureBranchName);
             Commands.Checkout(fixture.Repository, featureBranchName);
             fixture.Repository.MakeCommits(5);
 
-            var expectedFullSemVer = string.Format("1.0.1-{0}.1+5", preReleaseTagName);
+            var expectedFullSemVer = $"1.0.1-{preReleaseTagName}.1+5";
             fixture.AssertFullSemver(config, expectedFullSemVer);
         }
     }
