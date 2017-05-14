@@ -54,7 +54,7 @@ public class OtherBranchScenarios
             fixture.Repository.MakeACommit();
 
             var version = fixture.GetVersion();
-            version.SemVer.ShouldBe("1.0.0-unstable.1");
+            version.SemVer.ShouldBe("1.0.0-alpha.1");
         }
     }
 }

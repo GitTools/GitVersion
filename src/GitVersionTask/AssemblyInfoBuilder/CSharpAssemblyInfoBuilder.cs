@@ -42,7 +42,7 @@ namespace {4}
 }}
 ",
         vars.AssemblySemVer,
-        vars.MajorMinorPatch + ".0",
+        vars.AssemblySemFileVer,
         vars.InformationalVersion,
         GenerateStaticVariableMembers(v),
         rootNamespace);

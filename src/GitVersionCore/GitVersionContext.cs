@@ -100,6 +100,8 @@
 
             if (!FullConfiguration.AssemblyVersioningScheme.HasValue)
                 throw new Exception("Configuration value for 'AssemblyVersioningScheme' has no value. (this should not happen, please report an issue)");
+            if (!FullConfiguration.AssemblyFileVersioningScheme.HasValue)
+                throw new Exception("Configuration value for 'AssemblyFileVersioningScheme' has no value. (this should not happen, please report an issue)");
             if (!FullConfiguration.CommitMessageIncrementing.HasValue)
                 throw new Exception("Configuration value for 'CommitMessageIncrementing' has no value. (this should not happen, please report an issue)");
             if (!FullConfiguration.LegacySemVerPadding.HasValue)
@@ -118,6 +120,7 @@
 
             var nextVersion = FullConfiguration.NextVersion;
             var assemblyVersioningScheme = FullConfiguration.AssemblyVersioningScheme.Value;
+            var assemblyFileVersioningScheme = FullConfiguration.AssemblyFileVersioningScheme.Value;
             var assemblyInformationalFormat = FullConfiguration.AssemblyInformationalFormat;
             var gitTagPrefix = FullConfiguration.TagPrefix;
             var majorMessage = FullConfiguration.MajorVersionBumpMessage;
@@ -128,7 +131,7 @@
             var commitMessageVersionBump = currentBranchConfig.CommitMessageIncrementing ?? FullConfiguration.CommitMessageIncrementing.Value;
 
             Configuration = new EffectiveConfiguration(
-                assemblyVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix,
+                assemblyVersioningScheme, assemblyFileVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix,
                 tag, nextVersion, incrementStrategy,
                 currentBranchConfig.Regex,
                 preventIncrementForMergedBranchVersion,

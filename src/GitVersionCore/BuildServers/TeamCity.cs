@@ -4,11 +4,11 @@
 
     public class TeamCity : BuildServerBase
     {
-		public const string EnvironmentVariableName = "TEAMCITY_VERSION";
+        public const string EnvironmentVariableName = "TEAMCITY_VERSION";
 
-		public override bool CanApplyToCurrentContext()
+        public override bool CanApplyToCurrentContext()
         {
-			return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(EnvironmentVariableName));
+            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(EnvironmentVariableName));
         }
 
         public override string GetCurrentBranch(bool usingDynamicRepos)

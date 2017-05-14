@@ -65,7 +65,6 @@ public class RemoteRepositoryScenarios
     [Test]
     public void GivenARemoteGitRepositoryWhenCheckingOutDetachedhead_UsingExistingImplementationThrowsException()
     {
-
         using (var fixture = new RemoteRepositoryFixture())
         {
             Commands.Checkout(

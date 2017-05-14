@@ -56,6 +56,7 @@ SemVer: 4.10.3-test.19
 LegacySemVer: 4.10.3-test19
 LegacySemVerPadded: 4.10.3-test0019
 AssemblySemVer: 4.10.3.0
+AssemblySemFileVer: 4.10.3.0
 FullSemVer: 4.10.3-test.19
 InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 BranchName: feature/test
@@ -101,6 +102,7 @@ SemVer: 4.10.3-test.19
 LegacySemVer: 4.10.3-test19
 LegacySemVerPadded: 4.10.3-test0019
 AssemblySemVer: 4.10.3.0
+AssemblySemFileVer: 4.10.3.0
 FullSemVer: 4.10.3-test.19
 InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 BranchName: feature/test
@@ -163,6 +165,7 @@ SemVer: 4.10.3-test.19
 LegacySemVer: 4.10.3-test19
 LegacySemVerPadded: 4.10.3-test0019
 AssemblySemVer: 4.10.3.0
+AssemblySemFileVer: 4.10.3.0
 FullSemVer: 4.10.3-test.19
 InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 BranchName: feature/test
@@ -211,6 +214,7 @@ SemVer: 4.10.3-test.19
 LegacySemVer: 4.10.3-test19
 LegacySemVerPadded: 4.10.3-test0019
 AssemblySemVer: 4.10.3.0
+AssemblySemFileVer: 4.10.3.0
 FullSemVer: 4.10.3-test.19
 InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 BranchName: feature/test

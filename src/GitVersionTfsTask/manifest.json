@@ -20,7 +20,8 @@
     "categories": [
         "Build and release"
     ],
-    "icons": {
+    "icons":
+    {
         "default": "extension-icon.png"
     },
     "tags": [

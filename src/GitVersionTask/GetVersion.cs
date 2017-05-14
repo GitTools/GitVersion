@@ -67,6 +67,9 @@
         public string AssemblySemVer { get; set; }
 
         [Output]
+        public string AssemblySemFileVer { get; private set; }
+
+        [Output]
         public string FullSemVer { get; set; }
 
         [Output]

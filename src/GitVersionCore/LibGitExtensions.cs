@@ -4,7 +4,6 @@ namespace GitVersion
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using JetBrains.Annotations;
 
     using LibGit2Sharp;
 
@@ -34,7 +33,7 @@ namespace GitVersion
         /// <summary>
         /// Exclude the given branches (by value equality according to friendly name).
         /// </summary>
-        public static IEnumerable<BranchCommit> ExcludingBranches([NotNull] this IEnumerable<BranchCommit> branches, [NotNull] IEnumerable<Branch> branchesToExclude)
+        public static IEnumerable<BranchCommit> ExcludingBranches(this IEnumerable<BranchCommit> branches, IEnumerable<Branch> branchesToExclude)
         {
             return branches.Where(b => branchesToExclude.All(bte => !IsSameBranch(b.Branch, bte)));
         }
@@ -42,7 +41,7 @@ namespace GitVersion
         /// <summary>
         /// Exclude the given branches (by value equality according to friendly name).
         /// </summary>
-        public static IEnumerable<Branch> ExcludingBranches([NotNull] this IEnumerable<Branch> branches, [NotNull] IEnumerable<Branch> branchesToExclude)
+        public static IEnumerable<Branch> ExcludingBranches( this IEnumerable<Branch> branches, IEnumerable<Branch> branchesToExclude)
         {
             return branches.Where(b => branchesToExclude.All(bte => !IsSameBranch(b, bte)));
         }
