@@ -49,7 +49,7 @@ namespace GitVersion
                         string part;
                         if (!variables.TryGetValue(arguments.ShowVariable, out part))
                         {
-                            throw new WarningException(string.Format("'{0}' variable does not exist", arguments.ShowVariable));
+                            throw new WarningException($"'{arguments.ShowVariable}' variable does not exist");
                         }
                         Console.WriteLine(part);
                         break;

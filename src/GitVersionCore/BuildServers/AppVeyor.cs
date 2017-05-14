@@ -6,11 +6,11 @@
 
     public class AppVeyor : BuildServerBase
     {
-		public const string EnvironmentVariableName = "APPVEYOR";
+        public const string EnvironmentVariableName = "APPVEYOR";
 
-		public override bool CanApplyToCurrentContext()
+        public override bool CanApplyToCurrentContext()
         {
-			return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(EnvironmentVariableName));
+            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(EnvironmentVariableName));
         }
 
         public override string GenerateSetVersionMessage(VersionVariables variables)

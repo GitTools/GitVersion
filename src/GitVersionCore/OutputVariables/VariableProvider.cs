@@ -76,6 +76,7 @@
                 semverFormatValues.LegacySemVerPadded,
                 semverFormatValues.FullSemVer,
                 semverFormatValues.AssemblySemVer,
+                semverFormatValues.AssemblyFileSemVer,
                 semverFormatValues.PreReleaseTag,
                 semverFormatValues.PreReleaseTagWithDash,
                 semverFormatValues.PreReleaseLabel,

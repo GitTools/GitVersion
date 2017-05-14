@@ -9,15 +9,19 @@
     <GitVersionPath Condition="'$(GitVersionPath)' == ''">$(MSBuildProjectDirectory)</GitVersionPath>
     <GitVersionCustomizeTargetFile Condition="'$(GitVersionCustomizeTargetFile)' == '' And Exists('$(MSBuildProjectDirectory)\GitVersionTask.targets')">$(SolutionDir)\GitVersionTask.targets</GitVersionCustomizeTargetFile>
     <GitVersionCustomizeTargetFile Condition="'$(GitVersionCustomizeTargetFile)' == '' And '$(SolutionDir)' != '' And Exists('$(SolutionDir)\GitVersionTask.targets')">$(SolutionDir)\GitVersionTask.targets</GitVersionCustomizeTargetFile>
+    <GitVersionCustomizeTargetFile Condition="'$(GitVersionCustomizeTargetFile)' == ''"></GitVersionCustomizeTargetFile>
     <GitVersion_NoFetchEnabled Condition="$(GitVersion_NoFetchEnabled) == ''">false</GitVersion_NoFetchEnabled>
 
     <!-- Property that enables WriteVersionInfoToBuildLog -->
+    <WriteVersionInfoToBuildLog Condition=" '$(WriteVersionInfoToBuildLog)' == '' and '$(NCrunch)' != '' ">false</WriteVersionInfoToBuildLog>
     <WriteVersionInfoToBuildLog Condition=" '$(WriteVersionInfoToBuildLog)' == '' ">true</WriteVersionInfoToBuildLog>
 
     <!-- Property that enables UpdateAssemblyInfo. Default to off for SDK builds -->
     <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' and '$(TargetFramework)' != '' ">false</UpdateAssemblyInfo>
+    <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' and '$(NCrunch)' != '' ">false</UpdateAssemblyInfo>
     <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
 
+    <GetVersion Condition=" '$(GetVersion)' == '' and '$(NCrunch)' != '' ">false</GetVersion>
     <GetVersion Condition=" '$(GetVersion)' == '' ">true</GetVersion>
        
     <!-- Property that enables setting of Version -->
@@ -37,9 +41,9 @@
       TaskName="GitVersionTask.WriteVersionInfoToBuildLog"
       AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll" />
 
-  <Import Project="$(GitVersionCustomizeTargetFile)" Condition="'$(GitVersionCustomizeTargetFile)' != '' and Exists($(GitVersionCustomizeTargetFile))" />
+  <Import Project="$(GitVersionCustomizeTargetFile)" Condition="'$(GitVersionCustomizeTargetFile)' != '' and Exists('$(GitVersionCustomizeTargetFile)')" />
 
-  <Target Name="WriteVersionInfoToBuildLog" BeforeTargets="DispatchToInnerBuilds;GenerateNuspec" Condition="$(WriteVersionInfoToBuildLog) == 'true'">
+  <Target Name="WriteVersionInfoToBuildLog" BeforeTargets="DispatchToInnerBuilds;GenerateNuspec;_GenerateRestoreProjectSpec" Condition="$(WriteVersionInfoToBuildLog) == 'true'">
     <WriteVersionInfoToBuildLog SolutionDirectory="$(GitVersionPath)" NoFetch="$(GitVersion_NoFetchEnabled)"/>
   </Target>
   

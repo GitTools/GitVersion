@@ -38,7 +38,7 @@ NotInheritable Class GitVersionInformation
 End Class
 ",
         vars.AssemblySemVer,
-        vars.MajorMinorPatch + ".0",
+        vars.AssemblySemFileVer,
         vars.InformationalVersion,
         GenerateStaticVariableMembers(v));
 

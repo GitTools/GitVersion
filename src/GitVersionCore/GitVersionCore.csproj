@@ -43,10 +43,6 @@
       <HintPath>..\packages\GitTools.Core.1.2.1-beta0001\lib\net4\GitTools.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="JetBrains.Annotations, Version=10.1.5.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrainsAnnotations.Fody.1.0.5.0\lib\JetBrains.Annotations.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="LibGit2Sharp, Version=0.23.0.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
       <HintPath>..\packages\LibGit2Sharp.0.23.0-pre20160922233542\lib\net40\LibGit2Sharp.dll</HintPath>
       <Private>True</Private>
@@ -59,16 +55,13 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Visualize, Version=0.4.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Visualize.Fody.0.4.5.0\lib\portable-net4+sl4+wp7+win8+MonoAndroid16+MonoTouch40\Visualize.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="YamlDotNet, Version=3.8.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\YamlDotNet.3.8.0\lib\net35\YamlDotNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyFileVersioningScheme.cs" />
     <Compile Include="AssemblyVersioningScheme.cs" />
     <Compile Include="AssemblyVersionsGenerator.cs" />
     <Compile Include="Authentication.cs" />
@@ -182,9 +175,9 @@
     <Compile Include="BuildServers\TravisCI.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="FodyWeavers.xml">
+    <None Include="FodyWeavers.xml">
       <SubType>Designer</SubType>
-    </Content>
+    </None>
     <EmbeddedResource Include="VersionAssemblyInfoResources\VersionAssemblyInfo.vb" />
     <EmbeddedResource Include="VersionAssemblyInfoResources\VersionAssemblyInfo.fs" />
   </ItemGroup>
@@ -195,15 +188,14 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets'))" />
-    <Error Condition="!Exists('..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
     <Error Condition="!Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.160\build\LibGit2Sharp.NativeBinaries.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.NativeBinaries.1.0.160\build\LibGit2Sharp.NativeBinaries.props'))" />
+    <Error Condition="!Exists('..\packages\Fody.2.0.8\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.2.0.8\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent>
@@ -226,5 +218,5 @@
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetRefBuild" MetadataAssembly="$(OutputPath)GitVersionCore.dll" Version="$(GitVersion_NuGetVersion)" />
   </Target>
   <Import Project="..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" />
-  <Import Project="..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
+  <Import Project="..\packages\Fody.2.0.8\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.2.0.8\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
 </Project>
