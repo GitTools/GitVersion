@@ -9,6 +9,13 @@ configuration:
 
 build_script:
   - ps: .\build.ps1
+  - cmd: npm i -g typescript
+
+  - cmd: mkdir src\GitVersionTfsTask\node_modules
+  - cmd: cd src\GitVersionTfsTask
+  - cmd: npm install
+  - cmd: cd ..\..
+  - cmd: tsc -p src/GitVersionTfsTask
 
 test: off
 skip_tags: true

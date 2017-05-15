@@ -1,0 +1,21 @@
+{
+  "name": "gitversion",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "vsts-task-lib": "1.1.0",
+    "q" : "1.4.1"
+  },
+  "devDependencies" :{
+    "@types/minimatch": "^2.0.29",
+    "@types/node": "^7.0.5",
+    "@types/q": "0.0.32"
+  }
+}
