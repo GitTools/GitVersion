@@ -11,11 +11,12 @@
   "license": "MIT",
   "dependencies": {
     "vsts-task-lib": "1.1.0",
-    "q" : "1.4.1"
+    "q": "1.4.1"
   },
-  "devDependencies" :{
+  "devDependencies": {
     "@types/minimatch": "^2.0.29",
     "@types/node": "^7.0.5",
-    "@types/q": "0.0.32"
+    "@types/q": "0.0.32",
+    "typescript": "^2.3.2"
   }
 }
