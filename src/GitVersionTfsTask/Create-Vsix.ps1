@@ -5,8 +5,6 @@ param (
 Push-Location $taskFolder
 Try
 {
-    & npm install
-    & tsc
     & tfx extension create --manifest-globs manifest.json
 }
 Finally
