@@ -1,5 +1,5 @@
 install:
-  npm i -g tfx-cli typescript
+  npm i -g tfx-cli
 
 assembly_info:
   patch: false

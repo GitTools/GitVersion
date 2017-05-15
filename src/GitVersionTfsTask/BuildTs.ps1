@@ -1,6 +1,5 @@
 param (
 )
-Set-PSDebug -Trace 1
 
 $scriptpath = $MyInvocation.MyCommand.Path
 $dir = Split-Path $scriptpath
@@ -9,7 +8,7 @@ Write-Host $dir
 Try
 {
     & npm install
-    & tsc
+    & node_modules/.bin/tsc
 }
 Finally
 {
