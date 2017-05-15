@@ -8,6 +8,6 @@
         "target": "es6",
         "sourceMap": false,
         "inlineSourceMap": true,
-        "declaration": true
+        "declaration": false
     }
 }
