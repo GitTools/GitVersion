@@ -6,7 +6,6 @@ ARG GitVersionZip
 # Add GitVersion
 
 ADD ./releaseArtifacts/$GitVersionZip .
-RUN apt-get install unzip
 RUN unzip -d /usr/lib/GitVersion/ $GitVersionZip
 RUN rm $GitVersionZip
 WORKDIR /usr/lib/GitVersion/

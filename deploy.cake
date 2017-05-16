@@ -182,11 +182,40 @@ Task("Publish-DockerImage")
 {
     var returnCode = StartProcess("docker", new ProcessSettings
     {
-        Arguments = "docker build . --build-arg GitVersionZip=" + artifactLookup["zip"] + " --tag latest --tag " + tag
+        Arguments = "build . --build-arg GitVersionZip=" + artifactLookup["zip"] + " --tag gittools/gitversion"
     });
-
     if (returnCode != 0) {
-        Information("Publish-DockerImage Task failed, but continuing with next Task...");
+        Information("Publish-DockerImage Task failed to build image, but continuing with next Task...");
+        publishingError = true;
+    }
+    
+    // Login to dockerhub
+    returnCode = StartProcess("docker", new ProcessSettings
+    {
+        Arguments = "login -u=\"" + EnvironmentVariable("DOCKER_USERNAME") +"\" -p=\"" + EnvironmentVariable("DOCKER_PASSWORD") +"\""
+    });
+    if (returnCode != 0) {
+        Information("Publish-DockerImage Task failed to login, but continuing with next Task...");
+        publishingError = true;
+    }
+
+    // Publish Tag
+    returnCode = StartProcess("docker", new ProcessSettings
+    {
+        Arguments = "push gittools/gitversion:" + tag
+    });
+    if (returnCode != 0) {
+        Information("Publish-DockerImage Task failed push version tag, but continuing with next Task...");
+        publishingError = true;
+    }
+
+    // Publish latest
+    returnCode = StartProcess("docker", new ProcessSettings
+    {
+        Arguments = "push gittools/gitversion:latest"
+    });
+    if (returnCode != 0) {
+        Information("Publish-DockerImage Task failed latest tag, but continuing with next Task...");
         publishingError = true;
     }
 });
