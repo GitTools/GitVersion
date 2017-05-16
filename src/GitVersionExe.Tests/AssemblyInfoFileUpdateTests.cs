@@ -445,6 +445,61 @@ public class AssemblyInfoFileUpdateTests
         });
     }
 
+    [TestCase("cs", "[assembly: AssemblyVersion (AssemblyInfo.Version) ]\r\n[assembly: AssemblyInformationalVersion(AssemblyInfo.InformationalVersion)]\r\n[assembly: AssemblyFileVersion(AssemblyInfo.FileVersion)]")]
+    [TestCase("fs", "[<assembly: AssemblyVersion (AssemblyInfo.Version)>]\r\n[<assembly: AssemblyInformationalVersion(AssemblyInfo.InformationalVersion)>]\r\n[<assembly: AssemblyFileVersion(AssemblyInfo.FileVersion)>]")]
+    [TestCase("vb", "<Assembly: AssemblyVersion (AssemblyInfo.Version)>\r\n<Assembly: AssemblyInformationalVersion(AssemblyInfo.InformationalVersion)>\r\n<Assembly: AssemblyFileVersion(AssemblyInfo.FileVersion)>")]
+    public void ShouldReplaceAssemblyVersionInRelativePathWithVariables(string fileExtension, string assemblyFileContent)
+    {
+        var workingDir = Path.GetTempPath();
+        var fileName = Path.Combine(workingDir, "Project", "src", "Properties", "AssemblyInfo." + fileExtension);
+
+        VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
+        {
+            var args = new Arguments
+            {
+                UpdateAssemblyInfo = true,
+                UpdateAssemblyInfoFileName = new HashSet<string>
+                {
+                    Path.Combine("Project", "src", "Properties", "AssemblyInfo." + fileExtension)
+                }
+            };
+            using (new AssemblyInfoFileUpdate(args, workingDir, variables, fileSystem))
+            {
+                fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
+                    s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
+                    s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
+                    s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
+            }
+        });
+    }
+
+    [TestCase("cs", "[assembly: AssemblyVersion (  AssemblyInfo.VersionInfo  ) ]\r\n[assembly: AssemblyInformationalVersion\t(\tAssemblyInfo.InformationalVersion\t)]\r\n[assembly: AssemblyFileVersion\r\n(\r\nAssemblyInfo.FileVersion\r\n)]")]
+    [TestCase("fs", "[<assembly: AssemblyVersion ( AssemblyInfo.VersionInfo )>]\r\n[<assembly: AssemblyInformationalVersion\t(\tAssemblyInfo.InformationalVersion\t)>]\r\n[<assembly: AssemblyFileVersion\r\n(\r\nAssemblyInfo.FileVersion\r\n)>]")]
+    [TestCase("vb", "<Assembly: AssemblyVersion ( AssemblyInfo.VersionInfo )>\r\n<Assembly: AssemblyInformationalVersion\t(\tAssemblyInfo.InformationalVersion\t)>\r\n<Assembly: AssemblyFileVersion\r\n(\r\nAssemblyInfo.FileVersion\r\n)>")]
+    public void ShouldReplaceAssemblyVersionInRelativePathWithVariablesAndWhiteSpace(string fileExtension, string assemblyFileContent)
+    {
+        var workingDir = Path.GetTempPath();
+        var fileName = Path.Combine(workingDir, "Project", "src", "Properties", "AssemblyInfo." + fileExtension);
+
+        VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
+        {
+            var args = new Arguments
+            {
+                UpdateAssemblyInfo = true,
+                UpdateAssemblyInfoFileName = new HashSet<string>
+                {
+                    Path.Combine("Project", "src", "Properties", "AssemblyInfo." + fileExtension)
+                }
+            };
+            using (new AssemblyInfoFileUpdate(args, workingDir, variables, fileSystem))
+            {
+                fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
+                    s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
+                    s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
+                    s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
+            }
+        });
+    }
 
     [TestCase("cs", "[assembly: AssemblyVersion(\"1.0.0.0\")]\r\n[assembly: AssemblyFileVersion(\"1.0.0.0\")]")]
     [TestCase("fs", "[<assembly: AssemblyVersion(\"1.0.0.0\")>]\r\n[<assembly: AssemblyFileVersion(\"1.0.0.0\")>]")]
