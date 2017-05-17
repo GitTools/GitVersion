@@ -6,8 +6,7 @@ ARG GitVersionZip
 # Add GitVersion
 
 ADD ./releaseArtifacts/$GitVersionZip .
-RUN unzip -d /usr/lib/GitVersion/ $GitVersionZip
-RUN rm $GitVersionZip
+RUN unzip -d /usr/lib/GitVersion/ $GitVersionZip && rm $GitVersionZip
 WORKDIR /usr/lib/GitVersion/
 
 # Libgit2 can't resolve relative paths, patch to absolute path
