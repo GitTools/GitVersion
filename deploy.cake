@@ -71,6 +71,7 @@ Task("DownloadGitHubReleaseArtifacts")
         if (!artifactLookup.ContainsKey("NuGetExeBuild")) { throw new Exception("NuGetExeBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("GemBuild")) { throw new Exception("GemBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("GitVersionTfsTaskBuild")) { throw new Exception("GitVersionTfsTaskBuild artifact missing"); }
+        if (!artifactLookup.ContainsKey("zip")) { throw new Exception("zip artifact missing"); }
     });
 
 Task("Publish-NuGetPackage")
@@ -174,6 +175,51 @@ Task("Publish-VstsTask")
     }
 });
 
+
+Task("Publish-DockerImage")
+    .IsDependentOn("DownloadGitHubReleaseArtifacts")
+    .Does(() =>
+{
+    var returnCode = StartProcess("docker", new ProcessSettings
+    {
+        Arguments = "build . --build-arg GitVersionZip=" + artifactLookup["zip"] + " --tag gittools/gitversion"
+    });
+    if (returnCode != 0) {
+        Information("Publish-DockerImage Task failed to build image, but continuing with next Task...");
+        publishingError = true;
+    }
+    
+    // Login to dockerhub
+    returnCode = StartProcess("docker", new ProcessSettings
+    {
+        Arguments = "login -u=\"" + EnvironmentVariable("DOCKER_USERNAME") +"\" -p=\"" + EnvironmentVariable("DOCKER_PASSWORD") +"\""
+    });
+    if (returnCode != 0) {
+        Information("Publish-DockerImage Task failed to login, but continuing with next Task...");
+        publishingError = true;
+    }
+
+    // Publish Tag
+    returnCode = StartProcess("docker", new ProcessSettings
+    {
+        Arguments = "push gittools/gitversion:" + tag
+    });
+    if (returnCode != 0) {
+        Information("Publish-DockerImage Task failed push version tag, but continuing with next Task...");
+        publishingError = true;
+    }
+
+    // Publish latest
+    returnCode = StartProcess("docker", new ProcessSettings
+    {
+        Arguments = "push gittools/gitversion:latest"
+    });
+    if (returnCode != 0) {
+        Information("Publish-DockerImage Task failed latest tag, but continuing with next Task...");
+        publishingError = true;
+    }
+});
+
 Task("Deploy")
   .IsDependentOn("Publish-NuGetPackage")
   .IsDependentOn("Publish-NuGetCommandLine")
@@ -181,6 +227,7 @@ Task("Deploy")
   .IsDependentOn("Publish-Chocolatey")
 //  .IsDependentOn("Publish-Gem")
   .IsDependentOn("Publish-VstsTask")
+  .IsDependentOn("Publish-DockerImage")
   .Finally(() =>
 {
     if(publishingError)

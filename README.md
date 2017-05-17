@@ -17,6 +17,7 @@ works out the [semantic version][semver] of the commit being built.
 | **GitVersion.CommandLine** |     [![NuGet][gvc-badge]][gvc]            |       [![NuGet][gvc-pre-badge]][gvc]      |
 |                    **Gem** |       [![Gem][gem-badge]][gem]            |                      -                    |
 |               **Homebrew** |   [![homebrew][brew-badge]][brew]         |                      -                    |
+|               **Docker**   |   [gittools/gitversion][dockerhub]        |                      -                    |
 
 ## Compatibility
 GitVersion works on Mac, Linux with Mono and Windows.
@@ -84,3 +85,4 @@ from The Noun Project
 [faq]:             http://gitversion.readthedocs.org/en/latest/faq/
 [who]:             http://gitversion.readthedocs.org/en/latest/who/
 [gv-in-action]:    https://raw.github.com/GitTools/GitVersion/master/docs/img/README.png
+[dockerhub]:       https://hub.docker.com/r/gittools/gitversion/
