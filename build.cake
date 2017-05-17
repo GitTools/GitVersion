@@ -128,14 +128,23 @@ Task("Create-Release-Notes")
 
     if(!string.IsNullOrWhiteSpace(githubToken))
     {
+        IEnumerable<string> redirectedOutput;
         var releaseNotesExitCode = StartProcess(
                 @"tools\GitReleaseNotes\tools\gitreleasenotes.exe",
-                new ProcessSettings { Arguments = ". /o build/releasenotes.md /repoToken " + githubToken });
+                new ProcessSettings {
+                    Arguments = ". /o build/releasenotes.md /repoToken " + githubToken,
+                    RedirectStandardOutput = true
+                },
+                out redirectedOutput);
+
         if (!System.IO.File.Exists("./build/releasenotes.md") || string.IsNullOrEmpty(System.IO.File.ReadAllText("./build/releasenotes.md"))) {
             System.IO.File.WriteAllText("./build/releasenotes.md", "No issues closed since last release");
         }
 
-        if (releaseNotesExitCode != 0) throw new Exception("Failed to generate release notes");
+        if (releaseNotesExitCode != 0) {
+            throw new Exception("Failed to generate release notes:" +
+                string.Join("\n", redirectedOutput));
+        }
     }
     else
     {
