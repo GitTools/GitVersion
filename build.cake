@@ -136,14 +136,10 @@ Task("Create-Release-Notes")
                     RedirectStandardOutput = true
                 },
                 out redirectedOutput);
+        Information(string.Join("\n"m redirectedOutput));
 
         if (!System.IO.File.Exists("./build/releasenotes.md") || string.IsNullOrEmpty(System.IO.File.ReadAllText("./build/releasenotes.md"))) {
             System.IO.File.WriteAllText("./build/releasenotes.md", "No issues closed since last release");
-        }
-
-        if (releaseNotesExitCode != 0) {
-            throw new Exception("Failed to generate release notes:" +
-                string.Join("\n", redirectedOutput));
         }
     }
     else
