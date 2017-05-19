@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using GitTools.Testing;
@@ -301,6 +302,40 @@ public class MainlineDevelopmentMode
             fixture.MergeNoFF("feature/foo");
             fixture.MergeNoFF("feature/bar");
             fixture.AssertFullSemver(config, "1.0.2");
+        }
+    }
+
+    [Test]
+    public void MergingFeatureBranchThatIncrementsMinorNumberIncrementsMinorVersionOfMaster()
+    {
+        var currentConfig = new Config
+        {
+            VersioningMode = VersioningMode.Mainline,
+            Branches = new Dictionary<string, BranchConfig>
+            {
+                { "feature", new BranchConfig
+                    {
+                        VersioningMode = VersioningMode.ContinuousDeployment,
+                        Increment = IncrementStrategy.Minor
+                    }
+                }
+            }
+        };
+
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.MakeACommit("first in master");
+            fixture.MakeATaggedCommit("1.0.0");
+            fixture.AssertFullSemver(currentConfig, "1.0.0");
+
+            fixture.BranchTo("feature/foo", "foo");
+            fixture.MakeACommit("first in foo");
+            fixture.MakeACommit("second in foo");
+            fixture.AssertFullSemver(currentConfig, "1.1.0-foo.2");
+
+            fixture.Checkout("master");
+            fixture.MergeNoFF("feature/foo");
+            fixture.AssertFullSemver(currentConfig, "1.1.0");
         }
     }
 }
