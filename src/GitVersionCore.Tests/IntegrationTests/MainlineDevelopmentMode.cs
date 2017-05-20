@@ -303,6 +303,28 @@ public class MainlineDevelopmentMode
             fixture.AssertFullSemver(config, "1.0.2");
         }
     }
+
+    [Test]
+    public void VerifyPullRequestVersionAfterBranchingFromTaggedMergeCommit()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.MakeACommit("first in master");
+
+            fixture.BranchTo("feature/foo", "foo");
+            fixture.MakeACommit("first in foo");
+
+            fixture.Checkout("master");
+            fixture.MergeNoFF("feature/foo");
+            fixture.ApplyTag("1.0.0");
+            
+            fixture.BranchTo("feature/bar", "bar");
+            fixture.MakeACommit("first in bar");
+            fixture.AssertFullSemver("1.0.1-bar.1+1");
+            fixture.Repository.CreatePullRequestRef("feature/bar", "master", normalise: false);
+            fixture.AssertFullSemver(config, "1.0.1-PullRequest0002.2");
+        }
+    }
 }
 
 static class CommitExtensions
