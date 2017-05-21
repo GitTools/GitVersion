@@ -192,12 +192,23 @@ namespace GitVersion.VersionCalculation
                 new[] { mergeCommit }.Union(context.Repository.Commits.QueryBy(filter)).ToList();
             commitLog.RemoveAll(c => commits.Any(c1 => c1.Sha == c.Sha));
             return IncrementStrategyFinder.GetIncrementForCommits(context, commits)
-                ?? TryFindIncrementFromMergeMessage(mergeCommit);
+                ?? TryFindIncrementFromMergeMessage(mergeCommit, context);
         }
 
-        private static VersionField TryFindIncrementFromMergeMessage(Commit mergeCommit)
+        private static VersionField TryFindIncrementFromMergeMessage(Commit mergeCommit, GitVersionContext context)
         {
-
+            if (mergeCommit != null)
+            {
+                var mergeMessage = new MergeMessage(mergeCommit.Message, context.FullConfiguration);
+                if (mergeMessage.MergedBranch != null)
+                {
+                    var config = context.FullConfiguration.GetConfigForBranch(mergeMessage.MergedBranch);
+                    if (config != null && config.Increment.HasValue && config.Increment != IncrementStrategy.Inherit)
+                    {
+                        return config.Increment.Value.ToVersionField();
+                    }
+                }
+            }
 
             // Fallback to patch
             return VersionField.Patch;
