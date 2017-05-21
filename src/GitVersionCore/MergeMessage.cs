@@ -31,7 +31,7 @@ namespace GitVersion
             }
 
             MergedBranch = ParseBranch();
-            
+
             // Remove remotes and branch prefixes like release/ feature/ hotfix/ etc
             var toMatch = Regex.Replace(MergedBranch, @"^(\w+[-/])*", "", RegexOptions.IgnoreCase);
             toMatch = Regex.Replace(toMatch, $"^{config.TagPrefix}", "");
