@@ -51,15 +51,7 @@
                 BaseVersion baseVersionWithOldestSource;
                 if (matchingVersionsOnceIncremented.Any())
                 {
-                    var oldest = matchingVersionsOnceIncremented.Aggregate((v1, v2) => {
-                        var picked = v1.Version.BaseVersionSource.Committer.When < v2.Version.BaseVersionSource.Committer.When
-                        ? v1 : v2;
-                        Logger.WriteInfo(
-                            $"{v1.Version.BaseVersionSource.Sha} @ {v1.Version.BaseVersionSource.Committer.When}\n" +
-                            $"{v2.Version.BaseVersionSource.Sha} @ {v2.Version.BaseVersionSource.Committer.When}\n" +
-                            picked);
-                        return picked;
-                    });
+                    var oldest = matchingVersionsOnceIncremented.Aggregate((v1, v2) => v1.Version.BaseVersionSource.Committer.When < v2.Version.BaseVersionSource.Committer.When ? v1 : v2);
                     baseVersionWithOldestSource = oldest.Version;
                     maxVersion = oldest;
                     Logger.WriteInfo(string.Format(
