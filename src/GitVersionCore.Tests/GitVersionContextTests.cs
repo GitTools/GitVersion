@@ -5,6 +5,7 @@
     using LibGit2Sharp;
     using NUnit.Framework;
     using Shouldly;
+    using System.Collections.Generic;
 
     public class GitVersionContextTests
     {
@@ -98,8 +99,8 @@
                 VersioningMode = VersioningMode.ContinuousDelivery,
                 Branches =
                 {
-                    { "release/latest", new BranchConfig { Increment = IncrementStrategy.None, Regex = "release/latest", SourceBranches = new string[0] } },
-                    { "release", new BranchConfig { Increment = IncrementStrategy.Patch, Regex = "releases?[/-]", SourceBranches = new string[0] } }
+                    { "release/latest", new BranchConfig { Increment = IncrementStrategy.None, Regex = "release/latest", SourceBranches = new List<string>() } },
+                    { "release", new BranchConfig { Increment = IncrementStrategy.Patch, Regex = "releases?[/-]", SourceBranches = new List<string>() } }
                 }
             }.ApplyDefaults();
 

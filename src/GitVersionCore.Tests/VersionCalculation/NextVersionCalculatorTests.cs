@@ -68,7 +68,7 @@
                         {
                             Regex = "custom/",
                             Tag = "useBranchName",
-                            SourceBranches = new string[0]
+                            SourceBranches = new List<string>()
                         }
                     }
                 }
@@ -99,7 +99,7 @@
                         {
                             Regex = "custom/",
                             Tag = "alpha.{BranchName}",
-                            SourceBranches = new string[0]
+                            SourceBranches = new List<string>()
                         }
                     }
                 }

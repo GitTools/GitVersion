@@ -277,6 +277,10 @@ To resolve this issue we give GitVersion a hint to how we normally do our branch
 
 This means that we will never bother to evaluate pull requests as merge base options, being explicit like this helps GitVersion be much faster too.
 
+### is-source-branch-for
+The reverse of the above setting. This property was introduced to keep it easy to extend GitVersion's config.
+
+When you add a new branch type this allows you to specify both source-branches for the new branch, and also add the new branch to existing branch configurations. For example if you create a new branch called `unstable` you could set a value of `['release', 'master', 'feature']` etc. 
 
 ### branches
 The header for all the individual branch configuration.

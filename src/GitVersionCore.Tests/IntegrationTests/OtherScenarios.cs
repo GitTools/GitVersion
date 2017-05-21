@@ -5,6 +5,7 @@
     using GitVersion;
     using LibGit2Sharp;
     using NUnit.Framework;
+    using System.Collections.Generic;
 
     [TestFixture]
     public class OtherScenarios
@@ -57,7 +58,7 @@
                 Increment = IncrementStrategy.Patch,
                 PreventIncrementOfMergedBranchVersion = true,
                 TrackMergeTarget = false,
-                SourceBranches = new string[0]
+                SourceBranches = new List<string>()
             });
 
             using (var fixture = new EmptyRepositoryFixture())

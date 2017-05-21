@@ -42,9 +42,16 @@ public class FeatureBranchScenarios
         {
             Branches =
             {
-                { "unstable", new BranchConfig {
-                    Increment = IncrementStrategy.Minor, Regex = "unstable", SourceBranches = new string[0]
-                } }
+                {
+                    "unstable",
+                    new BranchConfig
+                    {
+                        Increment = IncrementStrategy.Minor,
+                        Regex = "unstable",
+                        SourceBranches = new List<string>(),
+                        IsSourceBranchFor = new [] { "feature" }
+                    }
+                }
             }
         };
 

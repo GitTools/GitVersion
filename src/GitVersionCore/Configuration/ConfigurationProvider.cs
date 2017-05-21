@@ -2,6 +2,7 @@ namespace GitVersion
 {
     using Configuration.Init.Wizard;
     using GitVersion.Helpers;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -104,7 +105,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             ApplyBranchDefaults(config,
                 GetOrCreateBranchDefaults(config, DevelopBranchKey),
                 DevelopBranchRegex,
-                new string[0],
+                new List<string>(),
                 defaultTag: "alpha",
                 defaultIncrementStrategy: IncrementStrategy.Minor,
                 defaultVersioningMode: VersioningMode.ContinuousDeployment,
@@ -113,7 +114,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             ApplyBranchDefaults(config,
                 GetOrCreateBranchDefaults(config, MasterBranchKey),
                 MasterBranchRegex,
-                new string[] { "develop", "release" },
+                new List<string> { "develop", "release" },
                 defaultTag: string.Empty,
                 defaultPreventIncrement: true,
                 defaultIncrementStrategy: IncrementStrategy.Patch,
@@ -121,7 +122,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             ApplyBranchDefaults(config,
                 GetOrCreateBranchDefaults(config, ReleaseBranchKey),
                 ReleaseBranchRegex,
-                new string[] { "develop", "master" },
+                new List<string> { "develop", "master", "support", "release" },
                 defaultTag: "beta",
                 defaultPreventIncrement: true,
                 defaultIncrementStrategy: IncrementStrategy.Patch,
@@ -129,25 +130,25 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             ApplyBranchDefaults(config,
                 GetOrCreateBranchDefaults(config, FeatureBranchKey),
                 FeatureBranchRegex,
-                new string[] { "develop", "master", "release", "feature", "support", "hotfix" },
+                new List<string> { "develop", "master", "release", "feature", "support", "hotfix" },
                 defaultIncrementStrategy: IncrementStrategy.Inherit);
             ApplyBranchDefaults(config,
                 GetOrCreateBranchDefaults(config, PullRequestBranchKey),
                 PullRequestRegex,
-                new string[] { "develop", "master", "release", "feature", "support", "hotfix" },
+                new List<string> { "develop", "master", "release", "feature", "support", "hotfix" },
                 defaultTag: "PullRequest",
                 defaultTagNumberPattern: @"[/-](?<number>\d+)",
                 defaultIncrementStrategy: IncrementStrategy.Inherit);
             ApplyBranchDefaults(config,
                 GetOrCreateBranchDefaults(config, HotfixBranchKey),
                 HotfixBranchRegex,
-                new string[] { "develop", "master" },
+                new List<string> { "develop", "master", "support" },
                 defaultTag: "beta",
                 defaultIncrementStrategy: IncrementStrategy.Patch);
             ApplyBranchDefaults(config,
                 GetOrCreateBranchDefaults(config, SupportBranchKey),
                 SupportBranchRegex,
-                new string[] { "master" },
+                new List<string> { "master" },
                 defaultTag: string.Empty,
                 defaultPreventIncrement: true,
                 defaultIncrementStrategy: IncrementStrategy.Patch,
@@ -171,6 +172,16 @@ If the docs do not help you decide on the mode open an issue to discuss what you
 
                 ApplyBranchDefaults(config, branchConfig.Value, regex, sourceBranches);
             }
+
+            // This is a second pass to add additional sources, it has to be another pass to prevent ordering issues
+            foreach (var branchConfig in configBranches)
+            {
+                if (branchConfig.Value.IsSourceBranchFor == null) continue;
+                foreach (var isSourceBranch in branchConfig.Value.IsSourceBranchFor)
+                {
+                    config.Branches[isSourceBranch].SourceBranches.Add(branchConfig.Key);
+                }
+            }
         }
 
         static void ApplyOverridesTo(Config config, Config overrideConfig)
@@ -193,7 +204,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
         public static void ApplyBranchDefaults(Config config,
             BranchConfig branchConfig,
             string branchRegex,
-            string[] sourceBranches,
+            List<string> sourceBranches,
             string defaultTag = "useBranchName",
             IncrementStrategy? defaultIncrementStrategy = null, // Looked up from main config
             bool defaultPreventIncrement = false,

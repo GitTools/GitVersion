@@ -46,6 +46,8 @@ branches:
     source-branches:
     - develop
     - master
+    - support
+    - release
     tracks-release-branches: false
     is-release-branch: true
     is-mainline: false
@@ -94,6 +96,7 @@ branches:
     source-branches:
     - develop
     - master
+    - support
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
