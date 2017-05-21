@@ -54,6 +54,9 @@
         [YamlMember(Alias = "regex")]
         public string Regex { get; set; }
 
+        [YamlMember(Alias = "source-branches")]
+        public string[] SourceBranches { get; set; }
+
         [YamlMember(Alias = "tracks-release-branches")]
         public bool? TracksReleaseBranches { get; set; }
 

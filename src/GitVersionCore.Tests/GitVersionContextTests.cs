@@ -98,8 +98,8 @@
                 VersioningMode = VersioningMode.ContinuousDelivery,
                 Branches =
                 {
-                    { "release/latest", new BranchConfig { Increment = IncrementStrategy.None, Regex = "release/latest" } },
-                    { "release", new BranchConfig { Increment = IncrementStrategy.Patch, Regex = "releases?[/-]" } }
+                    { "release/latest", new BranchConfig { Increment = IncrementStrategy.None, Regex = "release/latest", SourceBranches = new string[0] } },
+                    { "release", new BranchConfig { Increment = IncrementStrategy.Patch, Regex = "releases?[/-]", SourceBranches = new string[0] } }
                 }
             }.ApplyDefaults();
 

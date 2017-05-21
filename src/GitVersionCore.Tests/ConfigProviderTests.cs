@@ -111,7 +111,8 @@ next-version: 2.0.0
 branches:
     bug:
         regex: 'bug[/-]'
-        tag: bugfix";
+        tag: bugfix
+        source-branches: []";
         SetupConfigFileContent(text);
         var config = ConfigurationProvider.Provide(repoPath, fileSystem);
 

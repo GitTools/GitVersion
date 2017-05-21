@@ -243,6 +243,41 @@ values, but here they are if you need to:
 ### regex
 This is the regex which is used to match the current branch to the correct branch configuration.
 
+### source-branches
+Because git is a directed graph GitVersion sometimes cannot tell which branch the current branch was branched from.
+
+Take this graph
+
+```
+  *   feature/foo
+* |   release/1.0.0
+|/
+*
+*
+* (master)
+```
+
+By looking at this graph, you cannot tell which of these scenarios happened
+
+1. feature/foo branches off release/1.0.0
+   - Branch release/1.0.0 from master
+   - Branch feature/foo from release/1.0.0
+   - Add a commit to both release/1.0.0 and feature/foo
+   - release/1.0.0 is the base for feature/foo
+
+2. release/1.0.0 branches off feature/foo
+   - Branch feature/foo from master
+   - Branch release/1.0.0 from feature/foo 
+   - Add a commit to both release/1.0.0 and feature/foo
+   - feature/foo is the base for release/1.0.0
+
+To resolve this issue we give GitVersion a hint to how we normally do our branching, feature branches have a value of:
+
+`sourceBranches: ['master', 'develop', 'feature', 'hotfix', 'support']`
+
+This means that we will never bother to evaluate pull requests as merge base options, being explicit like this helps GitVersion be much faster too.
+
+
 ### branches
 The header for all the individual branch configuration.
 

@@ -22,7 +22,7 @@ namespace GitVersion
                     targetBranch.FriendlyName));
 
                 matchingBranches = new BranchConfig { Name = string.Empty };
-                ConfigurationProvider.ApplyBranchDefaults(context.FullConfiguration, matchingBranches, "");
+                ConfigurationProvider.ApplyBranchDefaults(context.FullConfiguration, matchingBranches, "", new string[0]);
             }
 
             return matchingBranches.Increment == IncrementStrategy.Inherit ?

@@ -102,8 +102,18 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             var configBranches = config.Branches.ToList();
 
             ApplyBranchDefaults(config,
+                GetOrCreateBranchDefaults(config, DevelopBranchKey),
+                DevelopBranchRegex,
+                new string[0],
+                defaultTag: "alpha",
+                defaultIncrementStrategy: IncrementStrategy.Minor,
+                defaultVersioningMode: VersioningMode.ContinuousDeployment,
+                defaultTrackMergeTarget: true,
+                tracksReleaseBranches: true);
+            ApplyBranchDefaults(config,
                 GetOrCreateBranchDefaults(config, MasterBranchKey),
                 MasterBranchRegex,
+                new string[] { "develop", "release" },
                 defaultTag: string.Empty,
                 defaultPreventIncrement: true,
                 defaultIncrementStrategy: IncrementStrategy.Patch,
@@ -111,6 +121,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             ApplyBranchDefaults(config,
                 GetOrCreateBranchDefaults(config, ReleaseBranchKey),
                 ReleaseBranchRegex,
+                new string[] { "develop", "master" },
                 defaultTag: "beta",
                 defaultPreventIncrement: true,
                 defaultIncrementStrategy: IncrementStrategy.Patch,
@@ -118,33 +129,29 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             ApplyBranchDefaults(config,
                 GetOrCreateBranchDefaults(config, FeatureBranchKey),
                 FeatureBranchRegex,
+                new string[] { "develop", "master", "release", "feature", "support", "hotfix" },
                 defaultIncrementStrategy: IncrementStrategy.Inherit);
             ApplyBranchDefaults(config,
                 GetOrCreateBranchDefaults(config, PullRequestBranchKey),
                 PullRequestRegex,
+                new string[] { "develop", "master", "release", "feature", "support", "hotfix" },
                 defaultTag: "PullRequest",
                 defaultTagNumberPattern: @"[/-](?<number>\d+)",
                 defaultIncrementStrategy: IncrementStrategy.Inherit);
             ApplyBranchDefaults(config,
                 GetOrCreateBranchDefaults(config, HotfixBranchKey),
                 HotfixBranchRegex,
+                new string[] { "develop", "master" },
                 defaultTag: "beta",
                 defaultIncrementStrategy: IncrementStrategy.Patch);
             ApplyBranchDefaults(config,
                 GetOrCreateBranchDefaults(config, SupportBranchKey),
                 SupportBranchRegex,
+                new string[] { "master" },
                 defaultTag: string.Empty,
                 defaultPreventIncrement: true,
                 defaultIncrementStrategy: IncrementStrategy.Patch,
                 isMainline: true);
-            ApplyBranchDefaults(config,
-                GetOrCreateBranchDefaults(config, DevelopBranchKey),
-                DevelopBranchRegex,
-                defaultTag: "alpha",
-                defaultIncrementStrategy: IncrementStrategy.Minor,
-                defaultVersioningMode: VersioningMode.ContinuousDeployment,
-                defaultTrackMergeTarget: true,
-                tracksReleaseBranches: true);
 
             // Any user defined branches should have other values defaulted after known branches filled in.
             // This allows users to override any of the value.
@@ -153,10 +160,16 @@ If the docs do not help you decide on the mode open an issue to discuss what you
                 var regex = branchConfig.Value.Regex;
                 if (regex == null)
                 {
-                    throw new GitVersionConfigurationException(string.Format("Branch configuration '{0}' is missing required configuration 'regex'", branchConfig.Key));
+                    throw new GitVersionConfigurationException($"Branch configuration '{branchConfig.Key}' is missing required configuration 'regex'");
                 }
 
-                ApplyBranchDefaults(config, branchConfig.Value, regex);
+                var sourceBranches = branchConfig.Value.SourceBranches;
+                if (sourceBranches == null)
+                {
+                    throw new GitVersionConfigurationException($"Branch configuration '{branchConfig.Key}' is missing required configuration 'source-branches'");
+                }
+
+                ApplyBranchDefaults(config, branchConfig.Value, regex, sourceBranches);
             }
         }
 
@@ -180,6 +193,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
         public static void ApplyBranchDefaults(Config config,
             BranchConfig branchConfig,
             string branchRegex,
+            string[] sourceBranches,
             string defaultTag = "useBranchName",
             IncrementStrategy? defaultIncrementStrategy = null, // Looked up from main config
             bool defaultPreventIncrement = false,
@@ -191,6 +205,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             bool isMainline = false)
         {
             branchConfig.Regex = string.IsNullOrEmpty(branchConfig.Regex) ? branchRegex : branchConfig.Regex;
+            branchConfig.SourceBranches = sourceBranches;
             branchConfig.Tag = branchConfig.Tag ?? defaultTag;
             branchConfig.TagNumberPattern = branchConfig.TagNumberPattern ?? defaultTagNumberPattern;
             branchConfig.Increment = branchConfig.Increment ?? defaultIncrementStrategy ?? config.Increment ?? DefaultIncrementStrategy;

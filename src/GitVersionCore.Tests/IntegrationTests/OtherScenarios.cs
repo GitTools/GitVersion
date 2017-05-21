@@ -56,7 +56,8 @@
                 Tag = "useBranchName",
                 Increment = IncrementStrategy.Patch,
                 PreventIncrementOfMergedBranchVersion = true,
-                TrackMergeTarget = false
+                TrackMergeTarget = false,
+                SourceBranches = new string[0]
             });
 
             using (var fixture = new EmptyRepositoryFixture())

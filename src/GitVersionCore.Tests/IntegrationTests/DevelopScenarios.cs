@@ -64,7 +64,8 @@ public class DevelopScenarios
                 {
                     "develop", new BranchConfig
                     {
-                        Tag = "alpha"
+                        Tag = "alpha",
+                        SourceBranches = new string[0]
                     }
                 }
             }

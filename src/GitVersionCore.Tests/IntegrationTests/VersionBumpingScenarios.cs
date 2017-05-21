@@ -13,7 +13,13 @@ public class VersionBumpingScenarios
         {
             Branches =
             {
-                { "master", new BranchConfig { Tag = "pre" } }
+                {
+                    "master", new BranchConfig
+                    {
+                        Tag = "pre",
+                        SourceBranches = new string[0]
+                    }
+                }
             }
         };
         using (var fixture = new EmptyRepositoryFixture())
