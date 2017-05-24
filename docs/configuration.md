@@ -249,15 +249,15 @@ Because git is a directed graph GitVersion sometimes cannot tell which branch th
 Take this graph
 
 ```
-  *   feature/foo
-* |   release/1.0.0
+* release/1.0.0   * feature/foo
+| ________________/
 |/
 *
 *
 * (master)
 ```
 
-By looking at this graph, you cannot tell which of these scenarios happened
+By looking at this graph, you cannot tell which of these scenarios happened:
 
 1. feature/foo branches off release/1.0.0
    - Branch release/1.0.0 from master
@@ -270,6 +270,8 @@ By looking at this graph, you cannot tell which of these scenarios happened
    - Branch release/1.0.0 from feature/foo 
    - Add a commit to both release/1.0.0 and feature/foo
    - feature/foo is the base for release/1.0.0
+
+Or put more simply, what branch was created first, `release/1.0.0` or `feature/foo`.
 
 To resolve this issue we give GitVersion a hint to how we normally do our branching, feature branches have a value of:
 
