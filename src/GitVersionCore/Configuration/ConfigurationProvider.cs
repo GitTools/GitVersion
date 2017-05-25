@@ -161,13 +161,15 @@ If the docs do not help you decide on the mode open an issue to discuss what you
                 var regex = branchConfig.Value.Regex;
                 if (regex == null)
                 {
-                    throw new GitVersionConfigurationException($"Branch configuration '{branchConfig.Key}' is missing required configuration 'regex'");
+                    throw new GitVersionConfigurationException($"Branch configuration '{branchConfig.Key}' is missing required configuration 'regex'\n\n" +
+                        "See http://gitversion.readthedocs.io/en/latest/configuration/ for more info");
                 }
 
                 var sourceBranches = branchConfig.Value.SourceBranches;
                 if (sourceBranches == null)
                 {
-                    throw new GitVersionConfigurationException($"Branch configuration '{branchConfig.Key}' is missing required configuration 'source-branches'");
+                    throw new GitVersionConfigurationException($"Branch configuration '{branchConfig.Key}' is missing required configuration 'source-branches'\n\n" +
+                        "See http://gitversion.readthedocs.io/en/latest/configuration/ for more info");
                 }
 
                 ApplyBranchDefaults(config, branchConfig.Value, regex, sourceBranches);

@@ -100,7 +100,23 @@ branches:
         tag: bugfix";
         SetupConfigFileContent(text);
         var ex = Should.Throw<GitVersionConfigurationException>(() => ConfigurationProvider.Provide(repoPath, fileSystem));
-        ex.Message.ShouldBe("Branch configuration 'bug' is missing required configuration 'regex'");
+        ex.Message.ShouldBe("Branch configuration 'bug' is missing required configuration 'regex'\n\n" +
+            "See http://gitversion.readthedocs.io/en/latest/configuration/ for more info");
+    }
+
+    [Test]
+    public void SourceBranchIsRequired()
+    {
+        const string text = @"
+next-version: 2.0.0
+branches:
+    bug:
+        regex: 'bug[/-]'
+        tag: bugfix";
+        SetupConfigFileContent(text);
+        var ex = Should.Throw<GitVersionConfigurationException>(() => ConfigurationProvider.Provide(repoPath, fileSystem));
+        ex.Message.ShouldBe("Branch configuration 'bug' is missing required configuration 'source-branches'\n\n" +
+            "See http://gitversion.readthedocs.io/en/latest/configuration/ for more info");
     }
 
     [Test]
