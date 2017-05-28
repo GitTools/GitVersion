@@ -273,11 +273,11 @@ By looking at this graph, you cannot tell which of these scenarios happened:
 
 Or put more simply, what branch was created first, `release/1.0.0` or `feature/foo`.
 
-To resolve this issue we give GitVersion a hint to how we normally do our branching, feature branches have a value of:
+To resolve this issue, we give GitVersion a hint to our branching workflows by telling it what types of branches it can be created from. For example feature branches are by default configured to have the following source branches:
 
 `sourceBranches: ['master', 'develop', 'feature', 'hotfix', 'support']`
 
-This means that we will never bother to evaluate pull requests as merge base options, being explicit like this helps GitVersion be much faster too.
+This means that we will never bother to evaluate pull request branches as merge base options, being explicit like this helps GitVersion be much faster too.
 
 ### is-source-branch-for
 The reverse of the above setting. This property was introduced to keep it easy to extend GitVersion's config.
