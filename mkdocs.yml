@@ -55,5 +55,5 @@ pages:
   - Versioning modes:
     - Versioning modes: reference/versioning-mode.md
     - Mainline development: reference/mainline-development.md
-    - Continous delivery: reference/continuous-delivery.md
+    - Continuous delivery: reference/continuous-delivery.md
     - Continuous deployment: reference/continuous-deployment.md
