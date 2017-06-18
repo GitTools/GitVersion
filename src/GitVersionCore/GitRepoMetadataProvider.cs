@@ -147,8 +147,14 @@ namespace GitVersion
                             var second = forwardMerge.Parents.First();
                             Logger.WriteDebug("Second " + second.Sha);
                             var mergeBase = Repository.ObjectDatabase.FindMergeBase(commit, second);
-                            Logger.WriteDebug("New Merge base " + mergeBase.Sha);
-
+                            if (mergeBase == null)
+                            {
+                                Logger.WriteWarning("Could not find mergbase for " + commit);
+                            }
+                            else
+                            {
+                                Logger.WriteDebug("New Merge base " + mergeBase.Sha);
+                            }
                             if (mergeBase == findMergeBase)
                             {
                                 Logger.WriteDebug("Breaking");
