@@ -418,7 +418,7 @@ public class ReleaseBranchScenarios
             fixture.AssertFullSemver(config, "2.0.0-beta.5");
         }
     }
-  
+
     public void ReleaseBranchShouldUseBranchNameVersionDespiteBumpInPreviousCommit()
     {
         using (var fixture = new EmptyRepositoryFixture())
@@ -461,6 +461,55 @@ public class ReleaseBranchScenarios
             fixture.BranchTo("release/2.0");
 
             fixture.AssertFullSemver("2.0.0-beta.1+1");
+        }
+    }
+
+    [Test]
+    public void FeatureFromReleaseBranch_ShouldNotResetCount()
+    {
+        var config = new Config
+        {
+            VersioningMode = VersioningMode.ContinuousDeployment
+        };
+
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeACommit("initial");
+            fixture.Repository.CreateBranch("develop");
+            Commands.Checkout(fixture.Repository, "develop");
+            fixture.Repository.CreateBranch("release-2.0.0");
+            Commands.Checkout(fixture.Repository, "release-2.0.0");
+            fixture.AssertFullSemver(config, "2.0.0-beta.0");
+
+            // Make some commits on release
+            fixture.Repository.MakeCommits(10);
+            fixture.AssertFullSemver(config, "2.0.0-beta.10");
+
+            // Create feature from release
+            fixture.BranchTo("feature/xxx");
+            fixture.Repository.MakeACommit("feature 1");
+            fixture.Repository.MakeACommit("feature 2");
+
+            // Check version on release
+            Commands.Checkout(fixture.Repository, "release-2.0.0");
+            fixture.AssertFullSemver(config, "2.0.0-beta.10");
+            fixture.Repository.MakeACommit("release 11");
+            fixture.AssertFullSemver(config, "2.0.0-beta.11");
+
+            // Make new commit on feature
+            Commands.Checkout(fixture.Repository, "feature/xxx");
+            fixture.Repository.MakeACommit("feature 3");
+
+            // Checkout to release (no new commits) 
+            Commands.Checkout(fixture.Repository, "release-2.0.0");
+            fixture.AssertFullSemver(config, "2.0.0-beta.11");
+
+            // Merge feature to release
+            fixture.Repository.MergeNoFF("feature/xxx", Generate.SignatureNow());
+            fixture.AssertFullSemver(config, "2.0.0-beta.15");
+
+            fixture.Repository.MakeACommit("release 13 - after feature merge");
+            fixture.AssertFullSemver(config, "2.0.0-beta.16");
         }
     }
 }

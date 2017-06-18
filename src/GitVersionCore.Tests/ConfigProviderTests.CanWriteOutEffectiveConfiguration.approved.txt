@@ -12,6 +12,17 @@ build-metadata-padding: 4
 commits-since-version-source-padding: 4
 commit-message-incrementing: Enabled
 branches:
+  develop:
+    mode: ContinuousDeployment
+    tag: alpha
+    increment: Minor
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: true
+    regex: dev(elop)?(ment)?$
+    source-branches: []
+    tracks-release-branches: true
+    is-release-branch: false
+    is-mainline: false
   master:
     mode: ContinuousDelivery
     tag: ''
@@ -19,6 +30,9 @@ branches:
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
     regex: master
+    source-branches:
+    - develop
+    - release
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: true
@@ -29,6 +43,11 @@ branches:
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
     regex: releases?[/-]
+    source-branches:
+    - develop
+    - master
+    - support
+    - release
     tracks-release-branches: false
     is-release-branch: true
     is-mainline: false
@@ -39,6 +58,13 @@ branches:
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
     regex: features?[/-]
+    source-branches:
+    - develop
+    - master
+    - release
+    - feature
+    - support
+    - hotfix
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
@@ -50,6 +76,13 @@ branches:
     tag-number-pattern: '[/-](?<number>\d+)'
     track-merge-target: false
     regex: (pull|pull\-requests|pr)[/-]
+    source-branches:
+    - develop
+    - master
+    - release
+    - feature
+    - support
+    - hotfix
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
@@ -60,6 +93,10 @@ branches:
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
     regex: hotfix(es)?[/-]
+    source-branches:
+    - develop
+    - master
+    - support
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
@@ -70,18 +107,10 @@ branches:
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
     regex: support[/-]
+    source-branches:
+    - master
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: true
-  develop:
-    mode: ContinuousDeployment
-    tag: alpha
-    increment: Minor
-    prevent-increment-of-merged-branch-version: false
-    track-merge-target: true
-    regex: dev(elop)?(ment)?$
-    tracks-release-branches: true
-    is-release-branch: false
-    is-mainline: false
 ignore:
   sha: []

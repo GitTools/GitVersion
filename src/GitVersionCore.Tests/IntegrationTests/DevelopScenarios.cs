@@ -3,6 +3,7 @@ using GitVersion;
 using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 [TestFixture]
 public class DevelopScenarios
@@ -64,7 +65,8 @@ public class DevelopScenarios
                 {
                     "develop", new BranchConfig
                     {
-                        Tag = "alpha"
+                        Tag = "alpha",
+                        SourceBranches = new List<string>()
                     }
                 }
             }
