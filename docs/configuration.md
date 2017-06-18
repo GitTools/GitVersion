@@ -244,9 +244,9 @@ values, but here they are if you need to:
 This is the regex which is used to match the current branch to the correct branch configuration.
 
 ### source-branches
-Because git is a directed graph GitVersion sometimes cannot tell which branch the current branch was branched from.
+Because git commits only refer to parent commits (not branches) GitVersion sometimes cannot tell which branch the current branch was branched from.
 
-Take this graph
+Take this commit graph
 
 ```
 * release/1.0.0   * feature/foo
@@ -271,18 +271,41 @@ By looking at this graph, you cannot tell which of these scenarios happened:
    - Add a commit to both release/1.0.0 and feature/foo
    - feature/foo is the base for release/1.0.0
 
-Or put more simply, what branch was created first, `release/1.0.0` or `feature/foo`.
+Or put more simply, you cannot tell which branch was created first, `release/1.0.0` or `feature/foo`.
 
-To resolve this issue, we give GitVersion a hint to our branching workflows by telling it what types of branches it can be created from. For example feature branches are by default configured to have the following source branches:
+To resolve this issue, we give GitVersion a hint about our branching workflows by telling it what types of branches a branch can be created from. For example, feature branches are, by default, configured to have the following source branches:
 
-`sourceBranches: ['master', 'develop', 'feature', 'hotfix', 'support']`
+`source-branches: ['master', 'develop', 'feature', 'hotfix', 'support']`
 
-This means that we will never bother to evaluate pull request branches as merge base options, being explicit like this helps GitVersion be much faster too.
+This means that we will never bother to evaluate pull request branches as merge base options and being explicit in this way also improves the performance of GitVersion.
 
 ### is-source-branch-for
-The reverse of the above setting. This property was introduced to keep it easy to extend GitVersion's config.
+The reverse of `source-branches`. This property was introduced to keep it easy to extend GitVersion's config.
 
-When you add a new branch type this allows you to specify both source-branches for the new branch, and also add the new branch to existing branch configurations. For example if you create a new branch called `unstable` you could set a value of `['release', 'master', 'feature']` etc. 
+It exists to make it easier to extend GitVersion's configuration. If only `source-branches` exists and you add a new branch type, for instance `unstable/`, you then need to re-define the `source-branches` configuration value for existing branches (like feature/) to now include the new unstable branch.
+
+A complete example:
+
+```
+branches:
+  unstable:
+    regex: ...
+    is-source-branch-for: ['master', 'develop', 'feature', 'hotfix', 'support']
+```
+
+Without this configuration value you would have to do:
+
+
+```
+branches:
+  unstable:
+    regex: ...
+  feature:
+    source-branches: ['unstable', 'develop', 'feature', 'hotfix', 'support']
+  release:
+    source-branches: ['unstable', 'develop']
+  etc...
+```
 
 ### branches
 The header for all the individual branch configuration.
