@@ -6,6 +6,7 @@
     using LibGit2Sharp;
     using NUnit.Framework;
     using System.Collections.Generic;
+    using System;
 
     [TestFixture]
     public class OtherScenarios
@@ -89,6 +90,29 @@
                 fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
                 fixture.InitialiseRepo();
                 fixture.AssertFullSemver("1.1.0-alpha.1");
+            }
+        }
+
+        [Test]
+        public void AllowUnrelatedBranchesInRepo()
+        {
+            // This test unsures we handle when GitVersion cannot find mergebases etc
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.Repository.MakeACommit();
+                fixture.Repository.MakeACommit();
+
+                // Create a new root commit and then a branch pointing at that commit
+                var treeDefinition = new TreeDefinition();
+                var tree = fixture.Repository.ObjectDatabase.CreateTree(treeDefinition);
+                var commit = fixture.Repository.ObjectDatabase.CreateCommit(
+                    new Signature("name", "mail", DateTimeOffset.Now),
+                    new Signature("name", "mail", DateTimeOffset.Now),
+                    "Create new empty branch",
+                    tree, new Commit[0], false);
+                fixture.Repository.Branches.Add("gh-pages", commit);
+
+                fixture.AssertFullSemver("0.1.0+1");
             }
         }
     }

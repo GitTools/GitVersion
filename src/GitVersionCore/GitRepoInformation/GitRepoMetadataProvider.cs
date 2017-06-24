@@ -127,7 +127,9 @@ namespace GitVersion
             if (mergeBaseCache.ContainsKey(key))
             {
                 Logger.WriteDebug($"Cache hit for merge base between '{sha1Name}' and '{sha2Name}'.");
-                return Repository.Lookup<Commit>(mergeBaseCache[key].MergeBase);
+                var mergeBase = mergeBaseCache[key].MergeBase;
+                if (mergeBase == null) { return null; }
+                return Repository.Lookup<Commit>(mergeBase);
             }
 
             using (Logger.IndentLog($"Finding merge base between '{sha1Name}' and '{sha2Name}'."))
@@ -184,7 +186,7 @@ namespace GitVersion
                 }
 
                 // Store in cache.
-                mergeBaseCache.Add(key, new MergeBaseData(sha1, sha2, findMergeBase.Sha));
+                mergeBaseCache.Add(key, new MergeBaseData(sha1, sha2, findMergeBase == null ? null : findMergeBase.Sha));
 
                 Logger.WriteInfo($"Merge base of {sha1Name}' and '{sha2Name} is {findMergeBase}");
                 return findMergeBase;
