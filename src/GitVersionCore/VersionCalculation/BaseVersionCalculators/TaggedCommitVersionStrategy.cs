@@ -15,14 +15,12 @@
     {
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
-            return GetTaggedVersions(context, context.CurrentBranch, context.CurrentCommit.When());
+            return GetTaggedVersions(context, context.RepositoryMetadata.CurrentBranch);
         }
 
-        public IEnumerable<BaseVersion> GetTaggedVersions(GitVersionContext context, Branch currentBranch, DateTimeOffset? olderThan)
+        public IEnumerable<BaseVersion> GetTaggedVersions(GitVersionContext context, MBranch currentBranch)
         {
-            return context
-                .RepositoryMetadata
-                .CurrentBranch
+            return currentBranch
                 .Tags
                 .Where(t => t.Version != null)
                 .Select(t => CreateBaseVersion(context, t));

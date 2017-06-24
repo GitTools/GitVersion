@@ -10,6 +10,7 @@ public class MockRepository : IRepository
     {
         Tags = new MockTagCollection();
         Refs = new MockReferenceCollection();
+        ObjectDatabase = new MockObjectDatabase();
     }
 
     public void Dispose()

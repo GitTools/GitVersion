@@ -104,6 +104,7 @@
     <Compile Include="IntegrationTests\FileSystemTests.cs" />
     <Compile Include="IntegrationTests\MainlineDevelopmentMode.cs" />
     <Compile Include="LogMessages.cs" />
+    <Compile Include="MockObjectDatabase.cs" />
     <Compile Include="Mocks\MockThreadSleep.cs" />
     <Compile Include="OperationWithExponentialBackoffTests.cs" />
     <Compile Include="Init\InitScenarios.cs" />

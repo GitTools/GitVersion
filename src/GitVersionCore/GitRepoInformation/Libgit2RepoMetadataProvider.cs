@@ -1,7 +1,8 @@
 ﻿using LibGit2Sharp;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System;
+using System.Text.RegularExpressions;
 
 namespace GitVersion.GitRepoInformation
 {
@@ -10,9 +11,28 @@ namespace GitVersion.GitRepoInformation
         public static GitRepoMetadata ReadMetadata(GitVersionContext context)
         {
             var tags = ReadRepoTags(context);
+            var currentBranchInfo = ReadBranchInfo(context, context.CurrentBranch, context.CurrentCommit, tags);
+            var releaseBranches = ReadReleaseBranches(context, tags);
+            var masterBranch = context.Repository.Branches["master"];
+            var masterBranchInfo = masterBranch != null ? ReadBranchInfo(context, masterBranch, masterBranch.Tip, tags) : null;
             return new GitRepoMetadata(
                 tags,
-                ReadCurrentBranchInfo(context, tags));
+                currentBranchInfo,
+                masterBranchInfo,
+                releaseBranches);
+        }
+
+        private static List<MBranch> ReadReleaseBranches(GitVersionContext context, List<MTag> allTags)
+        {
+            var releaseBranchConfig = context.FullConfiguration.Branches
+                .Where(b => b.Value.IsReleaseBranch == true)
+                .ToList();
+
+            return context.Repository
+                .Branches
+                .Where(b => releaseBranchConfig.Any(c => Regex.IsMatch(b.FriendlyName, c.Key)))
+                .Select(b => ReadBranchInfo(context, b, b.Tip, allTags))
+                .ToList();
         }
 
         private static List<MTag> ReadRepoTags(GitVersionContext context)
@@ -23,21 +43,24 @@ namespace GitVersion.GitRepoInformation
                 .Where(tag =>
                 {
                     var commit = tag.PeeledTarget() as Commit;
-                    if (commit != null)
-                    {
-                        return commit.When() <= olderThan;
-                    }
-                    return false;
+                    return commit != null;
                 })
-                .Select(gitTag => new MTag(gitTag.Target.Sha, gitTag.FriendlyName, context.FullConfiguration))
+                .Select(gitTag =>
+                {
+                    var commit = gitTag.PeeledTarget() as Commit;
+                    if (commit == null) return null;
+
+                    return new MTag(gitTag.Target.Sha, gitTag.FriendlyName, context.FullConfiguration, commit.When() > olderThan);
+                })
+                .Where(t => t != null)
                 .ToList();
         }
 
-        private static MCurrentBranch ReadCurrentBranchInfo(GitVersionContext context, List<MTag> tags)
+        private static MBranch ReadBranchInfo(GitVersionContext context, Branch branch, Commit at, List<MTag> allTags)
         {
             var filter = new CommitFilter
             {
-                IncludeReachableFrom = context.CurrentCommit
+                IncludeReachableFrom = at ?? branch.Tip
             };
 
             var mergeMessages = new List<MergeMessage>();
@@ -51,10 +74,14 @@ namespace GitVersion.GitRepoInformation
                 }
 
                 // Adding range because the same commit may have two tags
-                branchTags.AddRange(tags.Where(t => t.Sha == branchCommit.Sha));
+                branchTags.AddRange(allTags.Where(t => t.Sha == branchCommit.Sha));
             }
 
-            return new MCurrentBranch(mergeMessages, branchTags);
+            var parentCommit = context.RepositoryMetadataProvider.FindCommitBranchWasBranchedFrom(branch);
+            var parent = parentCommit == null || parentCommit.Commit == null
+                ? null
+                : new MParent(parentCommit.Commit.Sha);
+            return new MBranch(branch.FriendlyName, at.Sha, parent, branchTags, mergeMessages);
         }
     }
 }
