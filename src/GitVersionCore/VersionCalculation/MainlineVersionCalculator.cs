@@ -199,7 +199,7 @@ namespace GitVersion.VersionCalculation
         {
             if (mergeCommit != null)
             {
-                var mergeMessage = new MergeMessage(mergeCommit.Message, context.FullConfiguration);
+                var mergeMessage = new MergeMessage(mergeCommit.Message, mergeCommit.Sha, context.FullConfiguration);
                 if (mergeMessage.MergedBranch != null)
                 {
                     var config = context.FullConfiguration.GetConfigForBranch(mergeMessage.MergedBranch);

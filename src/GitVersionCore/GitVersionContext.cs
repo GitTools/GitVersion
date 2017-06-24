@@ -1,5 +1,6 @@
 ﻿namespace GitVersion
 {
+    using GitVersion.GitRepoInformation;
     using LibGit2Sharp;
     using System;
     using System.Linq;
@@ -66,6 +67,7 @@
                 })
                 .Max();
             IsCurrentCommitTagged = CurrentCommitTaggedVersion != null;
+            RepositoryMetadata = Libgit2RepoMetadataProvider.ReadMetadata(this);
         }
 
         /// <summary>
@@ -80,6 +82,13 @@
         public Commit CurrentCommit { get; private set; }
         public bool IsCurrentCommitTagged { get; private set; }
         public GitRepoMetadataProvider RepositoryMetadataProvider { get; private set; }
+        /// <summary>
+        /// This is a new concept which is static metadata
+        /// It has no runtime dependencies on libgit2 and all information is pre-calculated.
+        /// We should move to use this, that way libgit2 is used when bootstrapping
+        /// this will be far easier to optimise then all the logic for gitversion will be entirely in memory
+        /// </summary>
+        public GitRepoMetadata RepositoryMetadata { get; private set; }
 
         void CalculateEffectiveConfiguration()
         {
