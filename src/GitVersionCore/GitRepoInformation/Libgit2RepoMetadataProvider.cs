@@ -1,6 +1,6 @@
-﻿using System;
-using LibGit2Sharp;
-using GitVersion.VersionCalculation.BaseVersionCalculators;
+﻿using LibGit2Sharp;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GitVersion.GitRepoInformation
@@ -9,32 +9,52 @@ namespace GitVersion.GitRepoInformation
     {
         public static GitRepoMetadata ReadMetadata(GitVersionContext context)
         {
+            var tags = ReadRepoTags(context);
             return new GitRepoMetadata(
-                ReadCurrentBranchInfo(context));
+                tags,
+                ReadCurrentBranchInfo(context, tags));
         }
 
-        private static MCurrentBranch ReadCurrentBranchInfo(GitVersionContext context)
+        private static List<MTag> ReadRepoTags(GitVersionContext context)
         {
-            var branchCommits = context.CurrentBranch.CommitsPriorToThan(context.CurrentCommit.When());
-            if (branchCommits.First() != context.CurrentCommit)
-            {
-                throw new Exception("Doesn't include first commit");
-            }
-            var mergeMessages = branchCommits
-                .SelectMany(c =>
+            var olderThan = context.CurrentCommit.When();
+            return context.Repository
+                .Tags
+                .Where(tag =>
                 {
-                    if (c.Parents.Count() < 2)
+                    var commit = tag.PeeledTarget() as Commit;
+                    if (commit != null)
                     {
-                        return Enumerable.Empty<MergeMessage>();
+                        return commit.When() <= olderThan;
                     }
+                    return false;
+                })
+                .Select(gitTag => new MTag(gitTag.Target.Sha, gitTag.FriendlyName, context.FullConfiguration))
+                .ToList();
+        }
 
-                    return new[]
-                    {
-                        new MergeMessage(c.Message, c.Sha, context.FullConfiguration)
-                    };
-                }).ToList();
+        private static MCurrentBranch ReadCurrentBranchInfo(GitVersionContext context, List<MTag> tags)
+        {
+            var filter = new CommitFilter
+            {
+                IncludeReachableFrom = context.CurrentCommit
+            };
 
-            return new MCurrentBranch(mergeMessages);
+            var mergeMessages = new List<MergeMessage>();
+            var branchTags = new List<MTag>();
+            var commits = context.Repository.Commits.QueryBy(filter);
+            foreach (var branchCommit in commits)
+            {
+                if (branchCommit.Parents.Count() >= 2)
+                {
+                    mergeMessages.Add(new MergeMessage(branchCommit.Message, branchCommit.Sha, context.FullConfiguration));
+                }
+
+                // Adding range because the same commit may have two tags
+                branchTags.AddRange(tags.Where(t => t.Sha == branchCommit.Sha));
+            }
+
+            return new MCurrentBranch(mergeMessages, branchTags);
         }
     }
 }
