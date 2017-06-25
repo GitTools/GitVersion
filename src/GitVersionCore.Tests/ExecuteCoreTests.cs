@@ -1,6 +1,7 @@
 ﻿using GitTools.Testing;
 using GitVersion;
 using GitVersion.Helpers;
+using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
 using System;
@@ -189,6 +190,8 @@ CommitDate: 2015-11-10
 
             var configPath = Path.Combine(fixture.RepositoryPath, "GitVersionConfig.yaml");
             fileSystem.WriteAllText(configPath, "next-version: 5.0");
+            Commands.Stage(fixture.Repository, configPath);
+            fixture.Repository.Commit("Added config", Generate.SignatureNow(), Generate.SignatureNow());
 
             vv = versionAndBranchFinder.ExecuteGitVersion(null, null, null, null, false, fixture.RepositoryPath, null);
             vv.AssemblySemVer.ShouldBe("5.0.0.0");

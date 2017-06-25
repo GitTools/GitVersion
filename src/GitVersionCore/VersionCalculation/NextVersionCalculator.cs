@@ -29,7 +29,7 @@
             if (context.IsCurrentCommitTagged)
             {
                 // Will always be 0, don't bother with the +0 on tags
-                var semanticVersionBuildMetaData = metaDataCalculator.Create(context.CurrentCommit, context);
+                var semanticVersionBuildMetaData = metaDataCalculator.Create(0, context);
                 semanticVersionBuildMetaData.CommitsSinceTag = null;
 
                 var semanticVersion = new SemanticVersion(context.CurrentCommitTaggedVersion)
@@ -49,7 +49,7 @@
             else
             {
                 semver = PerformIncrement(context, baseVersion);
-                semver.BuildMetaData = metaDataCalculator.Create(baseVersion.BaseVersionSource, context);
+                semver.BuildMetaData = metaDataCalculator.Create(baseVersion.Source.Commit.DistanceFromTip, context);
             }
 
             var hasPreReleaseTag = semver.PreReleaseTag.HasTag();

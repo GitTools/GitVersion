@@ -62,7 +62,12 @@ namespace GitVersion.VersionCalculation
             var master = context.RepositoryMetadata.MasterBranch;
             if (master != null)
             {
-                return taggedCommitVersionStrategy.GetTaggedVersions(context, master);
+                return taggedCommitVersionStrategy
+                    .GetTaggedVersions(context, master)
+                    .Select(b => new BaseVersion(
+                        context, b.ShouldIncrement, b.SemanticVersion,
+                        new BaseVersionSource(b.Source.Commit, $"Tag on master: {b.Source.Description}"),
+                        b.BranchNameOverride));
             }
 
             return new BaseVersion[0];
@@ -78,12 +83,11 @@ namespace GitVersion.VersionCalculation
                 {
                     // Need to drop branch overrides and give a bit more context about
                     // where this version came from
-                    var source1 = "Release branch exists -> " + baseVersion.Source;
+                    var source1 = "Release branch exists -> " + baseVersion.Source.Description;
                     return new BaseVersion(context,
-                        source1,
                         baseVersion.ShouldIncrement,
                         baseVersion.SemanticVersion,
-                        baseVersion.BaseVersionSource,
+                        new BaseVersionSource(baseVersion.Source.Commit, source1),
                         null);
                 })
                 .ToList();
@@ -95,16 +99,26 @@ namespace GitVersion.VersionCalculation
             var repository = context.Repository;
 
             // Find the commit where the child branch was created.
-            var baseSource = context.RepositoryMetadataProvider.FindMergeBase(releaseBranch.TipSha, context.CurrentCommit.Sha);
+            var baseSource = context.RepositoryMetadataProvider.FindMergeBase(releaseBranch.Tip.Sha, context.CurrentCommit.Sha);
             if (baseSource == context.CurrentCommit)
             {
                 // Ignore the branch if it has no commits.
                 return new BaseVersion[0];
             }
-
+            
             return releaseVersionStrategy
                 .GetVersions(context, tagPrefixRegex, releaseBranch, repository)
-                .Select(b => new BaseVersion(context, b.Source, true, b.SemanticVersion, baseSource, b.BranchNameOverride));
+                .Select(b =>
+                {
+                    var source = new BaseVersionSource(
+                        new MCommit(
+                            baseSource.Sha,
+                            baseSource.When().DateTime,
+                            baseSource.Message,
+                            context.RepositoryMetadataProvider.GetCommitCount(context.CurrentCommit, baseSource)),
+                        $"Tracked release branch version: {b.Source.Description}");
+                    return new BaseVersion(context, true, b.SemanticVersion, source, b.BranchNameOverride);
+                });
         }
     }
 }

@@ -22,14 +22,15 @@
         {
             return currentBranch
                 .Tags
-                .Where(t => t.Version != null)
+                .Where(t => t.Tag.Version != null)
                 .Select(t => CreateBaseVersion(context, t));
         }
 
-        BaseVersion CreateBaseVersion(GitVersionContext context, MTag tag)
+        BaseVersion CreateBaseVersion(GitVersionContext context, MBranchTag tag)
         {
-            var shouldUpdateVersion = tag.Sha != context.CurrentCommit.Sha;
-            return new BaseVersion(context, $"Git tag '{tag.Name}'", shouldUpdateVersion, tag.Version, context.Repository.Lookup<Commit>(tag.Sha), null);
+            var shouldUpdateVersion = tag.Tag.Commit.Sha != context.CurrentCommit.Sha;
+            var source = new BaseVersionSource(tag.Tag.Commit, $"Git tag '{tag.Tag.Name}'");
+            return new BaseVersion(context, shouldUpdateVersion, tag.Tag.Version, source, null);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GitVersion.GitRepoInformation;
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -17,17 +18,16 @@ namespace GitVersion
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private Config config;
 
-        public MergeMessage(string mergeMessage, string sourceCommitSha, Config config)
+        public MergeMessage(MCommit sourceCommit, Config config)
         {
-            Message = mergeMessage;
-            SourceCommitSha = sourceCommitSha;
+            SourceCommit = sourceCommit;
             this.config = config;
 
-            var lastIndexOf = mergeMessage.LastIndexOf("into", StringComparison.OrdinalIgnoreCase);
+            var lastIndexOf = SourceCommit.Message.LastIndexOf("into", StringComparison.OrdinalIgnoreCase);
             if (lastIndexOf != -1)
             {
                 // If we have into in the merge message the rest should be the target branch
-                TargetBranch = mergeMessage.Substring(lastIndexOf + 5);
+                TargetBranch = SourceCommit.Message.Substring(lastIndexOf + 5);
             }
 
             MergedBranch = ParseBranch();
@@ -51,19 +51,19 @@ namespace GitVersion
 
         private string ParseBranch()
         {
-            var match = parseMergeMessage.Match(Message);
+            var match = parseMergeMessage.Match(SourceCommit.Message);
             if (match.Success)
             {
                 return match.Groups["Branch"].Value;
             }
 
-            match = smartGitMergeMessage.Match(Message);
+            match = smartGitMergeMessage.Match(SourceCommit.Message);
             if (match.Success)
             {
                 return match.Groups["Branch"].Value;
             }
 
-            match = parseGitHubPullMergeMessage.Match(Message);
+            match = parseGitHubPullMergeMessage.Match(SourceCommit.Message);
             if (match.Success)
             {
                 IsMergedPullRequest = true;
@@ -80,12 +80,11 @@ namespace GitVersion
             return "";
         }
 
-        public string Message { get; }
         public string TargetBranch { get; }
         public string MergedBranch { get; }
         public bool IsMergedPullRequest { get; private set; }
         public int? PullRequestNumber { get; private set; }
         public SemanticVersion Version { get; }
-        public string SourceCommitSha { get; private set; }
+        public MCommit SourceCommit { get; }
     }
 }

@@ -136,7 +136,7 @@
     <Compile Include="SemanticVersionFormatValues.cs" />
     <Compile Include="VerbosityLevel.cs" />
     <Compile Include="VersionCalculation\MainlineVersionCalculator.cs" />
-    <Compile Include="VersionCalculation\TrackReleaseBranchesVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\TrackReleaseBranchesVersionStrategy.cs" />
     <Compile Include="VersionFilters\MinDateVersionFilter.cs" />
     <Compile Include="VersionFilters\IVersionFilter.cs" />
     <Compile Include="VersionFilters\ShaVersionFilter.cs" />
@@ -150,7 +150,7 @@
     <Compile Include="VersionCalculation\BaseVersionCalculators\MergeMessageBaseVersionStrategy.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\VersionInBranchNameBaseVersionStrategy.cs" />
     <Compile Include="VersionCalculation\BaseVersionStrategy.cs" />
-    <Compile Include="VersionCalculation\FallbackBaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\FallbackBaseVersionStrategy.cs" />
     <Compile Include="VersionCalculation\IBaseVersionCalculator.cs" />
     <Compile Include="VersionCalculation\IMetaDataCalculator.cs" />
     <Compile Include="VersionCalculation\MetaDataCalculator.cs" />

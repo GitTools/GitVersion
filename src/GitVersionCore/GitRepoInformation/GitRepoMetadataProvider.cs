@@ -186,7 +186,7 @@ namespace GitVersion
                 }
 
                 // Store in cache.
-                mergeBaseCache.Add(key, new MergeBaseData(sha1, sha2, findMergeBase == null ? null : findMergeBase.Sha));
+                mergeBaseCache.Add(key, new MergeBaseData(sha1, sha2, findMergeBase?.Sha));
 
                 Logger.WriteInfo($"Merge base of {sha1Name}' and '{sha2Name} is {findMergeBase}");
                 return findMergeBase;
@@ -228,6 +228,22 @@ namespace GitVersion
 
                 return possibleBranches.SingleOrDefault();
             }
+        }
+
+        public int GetCommitCount(Commit tip, Commit since)
+        {
+            var qf = new CommitFilter
+            {
+                IncludeReachableFrom = tip,
+                ExcludeReachableFrom = since,
+                SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
+            };
+
+            var commitLog = Repository.Commits.QueryBy(qf);
+            var commitsSinceTag = commitLog.Count();
+            Logger.WriteInfo(string.Format("{0} commits found between {1} and {2}", commitsSinceTag, since.Sha, tip.Sha));
+
+            return commitsSinceTag;
         }
 
         List<BranchCommit> GetMergeBasesForBranch(Branch branch)

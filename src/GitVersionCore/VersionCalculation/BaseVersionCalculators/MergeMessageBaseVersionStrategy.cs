@@ -21,7 +21,8 @@
                 .Select(m =>
                 {
                     var shouldIncrement = !context.Configuration.PreventIncrementForMergedBranchVersion;
-                    return new BaseVersion(context, string.Format("Merge message '{0}'", m.Message.Trim()), shouldIncrement, m.Version, context.Repository.Lookup<Commit>(m.SourceCommitSha), null);
+                    var source = new BaseVersionSource(m.SourceCommit, $"Merge message '{m.SourceCommit.Message.Trim()}' @ {m.SourceCommit.Sha}");
+                    return new BaseVersion(context, shouldIncrement, m.Version, source, null);
                 });
         }
     }

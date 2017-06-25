@@ -17,6 +17,9 @@
             Ignore = new IgnoreConfig();
         }
 
+        [YamlIgnore]
+        public string Filename { get; set; }
+
         [YamlMember(Alias = "assembly-versioning-scheme")]
         public AssemblyVersioningScheme? AssemblyVersioningScheme { get; set; }
 

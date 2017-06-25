@@ -147,7 +147,6 @@
     <Compile Include="TestStream.cs" />
     <Compile Include="VariableProviderTests.cs" />
     <Compile Include="ExecuteCoreTests.cs" />
-    <Compile Include="VersionCalculation\BaseVersionCalculatorTests.cs" />
     <Compile Include="VersionCalculation\NextVersionCalculatorTests.cs" />
     <Compile Include="VersionCalculation\Strategies\ConfigNextVersionBaseVersionStrategyTests.cs" />
     <Compile Include="GitVersionContextBuilder.cs" />

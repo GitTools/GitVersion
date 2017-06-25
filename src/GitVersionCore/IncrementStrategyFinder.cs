@@ -55,7 +55,9 @@
                 return null;
             }
 
-            var commits = GetIntermediateCommits(context.Repository, baseVersion.BaseVersionSource, context.CurrentCommit);
+            var commits = GetIntermediateCommits(context.Repository,
+                context.Repository.Lookup<Commit>(baseVersion.Source.Commit.Sha),
+                context.CurrentCommit);
 
             if (context.Configuration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
             {

@@ -1,4 +1,5 @@
-﻿using GitVersion.VersionCalculation.BaseVersionCalculators;
+﻿using GitVersion.GitRepoInformation;
+using GitVersion.VersionCalculation.BaseVersionCalculators;
 using LibGit2Sharp;
 using System;
 using System.Collections.Generic;
@@ -41,15 +42,15 @@ namespace GitVersion.VersionCalculation
                     ExcludeReachableFrom = mainlineTip,
                     SortBy = CommitSortStrategies.Reverse,
                     FirstParentOnly = true
-                }).Where(c => c.Sha != baseVersion.BaseVersionSource.Sha && c.Parents.Count() == 1).ToList();
+                }).Where(c => c.Sha != baseVersion.Source.Commit.Sha && c.Parents.Count() == 1).ToList();
                 var commitLog = context.Repository.Commits.QueryBy(new CommitFilter
                 {
                     IncludeReachableFrom = context.CurrentBranch,
-                    ExcludeReachableFrom = baseVersion.BaseVersionSource,
+                    ExcludeReachableFrom = context.Repository.Lookup<Commit>(baseVersion.Source.Commit.Sha),
                     SortBy = CommitSortStrategies.Reverse,
                     FirstParentOnly = true
                 })
-                .Where(c => c.Sha != baseVersion.BaseVersionSource.Sha)
+                .Where(c => c.Sha != baseVersion.Source.Commit.Sha)
                 .Except(commitsNotOnMainline)
                 .ToList();
 
@@ -74,7 +75,7 @@ namespace GitVersion.VersionCalculation
                     var branchIncrement = FindMessageIncrement(context, null, mergedHead, findMergeBase, directCommits);
                     // This will increment for any direct commits on master
                     mainlineVersion = IncrementForEachCommit(context, directCommits, mainlineVersion);
-                    mainlineVersion.BuildMetaData = metaDataCalculator.Create(findMergeBase, context);
+                    mainlineVersion.BuildMetaData = metaDataCalculator.Create(context.RepositoryMetadataProvider.GetCommitCount(context.CurrentCommit, findMergeBase), context);
                     // Don't increment if the merge commit is a merge into mainline
                     // this ensures PR's and forward merges end up correct.
                     if (mergedHead.Parents.Count() == 1 || mergedHead.Parents.First() != mainlineTip)
@@ -87,7 +88,7 @@ namespace GitVersion.VersionCalculation
                 {
                     // If we are on master, make sure no commits get left behind
                     mainlineVersion = IncrementForEachCommit(context, directCommits, mainlineVersion);
-                    mainlineVersion.BuildMetaData = metaDataCalculator.Create(baseVersion.BaseVersionSource, context);
+                    mainlineVersion.BuildMetaData = metaDataCalculator.Create(baseVersion.Source.Commit.DistanceFromTip, context);
                 }
 
                 return mainlineVersion;
@@ -199,7 +200,9 @@ namespace GitVersion.VersionCalculation
         {
             if (mergeCommit != null)
             {
-                var mergeMessage = new MergeMessage(mergeCommit.Message, mergeCommit.Sha, context.FullConfiguration);
+                var distance = context.RepositoryMetadataProvider.GetCommitCount(context.CurrentCommit, mergeCommit);
+                var mCommit = new MCommit(mergeCommit.Sha, mergeCommit.Committer.When.DateTime, mergeCommit.Message, distance);
+                var mergeMessage = new MergeMessage(mCommit, context.FullConfiguration);
                 if (mergeMessage.MergedBranch != null)
                 {
                     var config = context.FullConfiguration.GetConfigForBranch(mergeMessage.MergedBranch);

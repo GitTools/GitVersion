@@ -28,7 +28,7 @@
                         foreach (var filter in context.Configuration.VersionFilters)
                         {
                             string reason;
-                            if (filter.Exclude(v, out reason))
+                            if (filter.Exclude(v, context.Repository, out reason))
                             {
                                 Logger.WriteInfo(reason);
                                 return false;
@@ -46,35 +46,31 @@
 
                 var maxVersion = baseVersions.Aggregate((v1, v2) => v1.IncrementedVersion > v2.IncrementedVersion ? v1 : v2);
                 var matchingVersionsOnceIncremented = baseVersions
-                    .Where(b => b.Version.BaseVersionSource != null && b.IncrementedVersion == maxVersion.IncrementedVersion)
+                    .Where(b => b.IncrementedVersion == maxVersion.IncrementedVersion)
                     .ToList();
                 BaseVersion baseVersionWithOldestSource;
-                if (matchingVersionsOnceIncremented.Any())
+                if (matchingVersionsOnceIncremented.Any(b => b != maxVersion))
                 {
-                    var oldest = matchingVersionsOnceIncremented.Aggregate((v1, v2) => v1.Version.BaseVersionSource.Committer.When < v2.Version.BaseVersionSource.Committer.When ? v1 : v2);
+                    var oldest = matchingVersionsOnceIncremented.Aggregate((v1, v2) => v1.Version.Source.Commit.DistanceFromTip > v2.Version.Source.Commit.DistanceFromTip ? v1 : v2);
                     baseVersionWithOldestSource = oldest.Version;
                     maxVersion = oldest;
                     Logger.WriteInfo(string.Format(
-                        "Found multiple base versions which will produce the same SemVer ({0}), taking oldest source for commit counting ({1})",
+                        "Found multiple base versions which will produce the same SemVer ({0}), taking source with largest distance from tip ({1})",
                         maxVersion.IncrementedVersion,
-                        baseVersionWithOldestSource.Source));
+                        baseVersionWithOldestSource.Source.Description));
                 }
                 else
                 {
                     baseVersionWithOldestSource = baseVersions
-                        .Where(v => v.Version.BaseVersionSource != null)
                         .OrderByDescending(v => v.IncrementedVersion)
-                        .ThenByDescending(v => v.Version.BaseVersionSource.Committer.When)
+                        .ThenByDescending(v => v.Version.Source.Commit.When)
                         .First()
                         .Version;
                 }
 
-                if (baseVersionWithOldestSource.BaseVersionSource == null)
-                    throw new Exception("Base version should not be null");
-
                 var calculatedBase = new BaseVersion(
-                    context, maxVersion.Version.Source, maxVersion.Version.ShouldIncrement, maxVersion.Version.SemanticVersion,
-                    baseVersionWithOldestSource.BaseVersionSource, maxVersion.Version.BranchNameOverride);
+                    context, maxVersion.Version.ShouldIncrement, maxVersion.Version.SemanticVersion,
+                    baseVersionWithOldestSource.Source, maxVersion.Version.BranchNameOverride);
 
                 Logger.WriteInfo(string.Format("Base version used: {0}", calculatedBase));
 

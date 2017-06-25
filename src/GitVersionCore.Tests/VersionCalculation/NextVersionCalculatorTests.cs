@@ -9,13 +9,15 @@
     using LibGit2Sharp;
     using NUnit.Framework;
     using Shouldly;
+    using GitVersion.VersionCalculation.BaseVersionCalculators;
+    using GitVersion.GitRepoInformation;
 
     public class NextVersionCalculatorTests
     {
         [Test]
         public void ShouldIncrementVersionBasedOnConfig()
         {
-            var baseCalculator = new TestBaseVersionCalculator(true, new SemanticVersion(1), new MockCommit());
+            var baseCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), new BaseVersionSource(new MCommit(new MockCommit(), 0), "dummy"));
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(1, "master", "b1a34e", DateTimeOffset.Now);
             var sut = new NextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
             var config = new Config();
@@ -29,7 +31,7 @@
         [Test]
         public void DoesNotIncrementWhenBaseVersionSaysNotTo()
         {
-            var baseCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit());
+            var baseCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), new BaseVersionSource(new MCommit(new MockCommit(), 0), "dummy"));
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(1, "master", "b1a34e", DateTimeOffset.Now);
             var sut = new NextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
             var config = new Config();
@@ -43,7 +45,7 @@
         [Test]
         public void AppliesBranchPreReleaseTag()
         {
-            var baseCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit());
+            var baseCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), new BaseVersionSource(new MCommit(new MockCommit(), 0), "dummy"));
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(2, "develop", "b1a34e", DateTimeOffset.Now);
             var sut = new NextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
             var context = new GitVersionContextBuilder()

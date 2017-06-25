@@ -27,8 +27,8 @@
             if (versionInBranch != null)
             {
                 var branchNameOverride = branchName.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
-                var baseCommit = repository.Lookup<Commit>(currentBranch.Parent.MergeBase);
-                yield return new BaseVersion(context, "Version in branch name", false, versionInBranch.Item2, baseCommit, branchNameOverride);
+                var source = new BaseVersionSource(currentBranch.Parent.MergeBase, $"Version in branch name with origin commit of {currentBranch.Parent.MergeBase.Sha}");
+                yield return new BaseVersion(context, false, versionInBranch.Item2, source, branchNameOverride);
             }
         }
 
