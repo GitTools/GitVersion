@@ -21,7 +21,7 @@
     <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' and '$(TargetFramework)' != '' ">false</UpdateAssemblyInfo>
     <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' and '$(NCrunch)' != '' ">false</UpdateAssemblyInfo>
     <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
-    
+
     <!-- Property that enables setting of Version -->
     <UpdateVersionProperties Condition=" '$(UpdateVersionProperties)' == '' ">true</UpdateVersionProperties>
     <UseFullSemVerForNuGet Condition=" '$(UseFullSemVerForNuGet)' == '' ">false</UseFullSemVerForNuGet>
@@ -48,7 +48,7 @@
   <Target Name="WriteVersionInfoToBuildLog" BeforeTargets="CoreCompile;GetAssemblyVersion;GenerateNuspec" Condition="$(WriteVersionInfoToBuildLog) == 'true'">
     <WriteVersionInfoToBuildLog SolutionDirectory="$(GitVersionPath)" NoFetch="$(GitVersion_NoFetchEnabled)"/>
   </Target>
-  
+
   <Target Name="UpdateAssemblyInfo" BeforeTargets="CoreCompile" Condition="$(UpdateAssemblyInfo) == 'true'">
     <UpdateAssemblyInfo
     SolutionDirectory="$(GitVersionPath)"
@@ -66,7 +66,7 @@
       <Compile Include="$(AssemblyInfoTempFilePath)" />
     </ItemGroup>
   </Target>
-  
+
   <Target Name="GetVersion" BeforeTargets="CoreCompile;GetAssemblyVersion;GenerateNuspec;_GenerateRestoreProjectSpec;EnsureWixToolsetInstalled" Condition="$(GetVersion) == 'true'">
 
     <GetVersion SolutionDirectory="$(GitVersionPath)" NoFetch="$(GitVersion_NoFetchEnabled)">
@@ -95,7 +95,7 @@
       <Output TaskParameter="CommitsSinceVersionSource" PropertyName="GitVersion_CommitsSinceVersionSource" />
       <Output TaskParameter="CommitsSinceVersionSourcePadded" PropertyName="GitVersion_CommitsSinceVersionSourcePadded" />
     </GetVersion>
-    
+
     <PropertyGroup Condition=" '$(UpdateVersionProperties)' == 'true' ">
       <Version>$(GitVersion_FullSemVer)</Version>
       <VersionPrefix>$(GitVersion_MajorMinorPatch)</VersionPrefix>

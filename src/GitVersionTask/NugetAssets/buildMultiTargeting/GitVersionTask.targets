@@ -23,7 +23,7 @@
 
     <GetVersion Condition=" '$(GetVersion)' == '' and '$(NCrunch)' != '' ">false</GetVersion>
     <GetVersion Condition=" '$(GetVersion)' == '' ">true</GetVersion>
-       
+
     <!-- Property that enables setting of Version -->
     <UpdateVersionProperties Condition=" '$(UpdateVersionProperties)' == '' ">true</UpdateVersionProperties>
     <UseFullSemVerForNuGet Condition=" '$(UseFullSemVerForNuGet)' == '' ">false</UseFullSemVerForNuGet>
@@ -46,7 +46,7 @@
   <Target Name="WriteVersionInfoToBuildLog" BeforeTargets="DispatchToInnerBuilds;GenerateNuspec;_GenerateRestoreProjectSpec" Condition="$(WriteVersionInfoToBuildLog) == 'true'">
     <WriteVersionInfoToBuildLog SolutionDirectory="$(GitVersionPath)" NoFetch="$(GitVersion_NoFetchEnabled)"/>
   </Target>
-  
+
   <Target Name="GetVersion" BeforeTargets="DispatchToInnerBuilds;GenerateNuspec" Condition="$(GetVersion) == 'true'">
 
     <GetVersion SolutionDirectory="$(GitVersionPath)" NoFetch="$(GitVersion_NoFetchEnabled)">
@@ -75,7 +75,7 @@
       <Output TaskParameter="CommitsSinceVersionSource" PropertyName="GitVersion_CommitsSinceVersionSource" />
       <Output TaskParameter="CommitsSinceVersionSourcePadded" PropertyName="GitVersion_CommitsSinceVersionSourcePadded" />
     </GetVersion>
-    
+
     <PropertyGroup Condition=" '$(UpdateVersionProperties)' == 'true' ">
       <Version>$(GitVersion_FullSemVer)</Version>
       <VersionPrefix>$(GitVersion_MajorMinorPatch)</VersionPrefix>
