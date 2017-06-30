@@ -88,7 +88,7 @@
       <PackageVersion Condition=" '$(UseFullSemVerForNuGet)' == 'true' ">$(GitVersion_FullSemVer)</PackageVersion>
       <InformationalVersion Condition=" '$(InformationalVersion)' == '' ">$(GitVersion_InformationalVersion)</InformationalVersion>
       <AssemblyVersion Condition=" '$(AssemblyVersion)' == '' ">$(GitVersion_AssemblySemVer)</AssemblyVersion>
-      <FileVersion Condition=" '$(FileVersion)' == '' ">$(GitVersion_MajorMinorPatch).$(GitVersion_CommitsSinceVersionSource)</FileVersion>
+      <FileVersion Condition=" '$(FileVersion)' == '' ">$(GitVersion_AssemblySemFileVer)</FileVersion>
     </PropertyGroup>
 
   </Target>
