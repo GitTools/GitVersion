@@ -65,11 +65,14 @@
       <Output TaskParameter="LegacySemVer" PropertyName="GitVersion_LegacySemVer" />
       <Output TaskParameter="LegacySemVerPadded" PropertyName="GitVersion_LegacySemVerPadded" />
       <Output TaskParameter="AssemblySemVer" PropertyName="GitVersion_AssemblySemVer" />
+      <Output TaskParameter="AssemblySemFileVer" PropertyName="GitVersion_AssemblySemFileVer" />
       <Output TaskParameter="FullSemVer" PropertyName="GitVersion_FullSemVer" />
       <Output TaskParameter="InformationalVersion" PropertyName="GitVersion_InformationalVersion" />
       <Output TaskParameter="BranchName" PropertyName="GitVersion_BranchName" />
       <Output TaskParameter="Sha" PropertyName="GitVersion_Sha" />
+      <Output TaskParameter="NuGetVersionV2" PropertyName="GitVersion_NuGetVersionV2" />
       <Output TaskParameter="NuGetVersion" PropertyName="GitVersion_NuGetVersion" />
+      <Output TaskParameter="NuGetPreReleaseTagV2" PropertyName="GitVersion_NuGetPreReleaseTagV2" />
       <Output TaskParameter="NuGetPreReleaseTag" PropertyName="GitVersion_NuGetPreReleaseTag" />
       <Output TaskParameter="CommitDate" PropertyName="GitVersion_CommitDate" />
       <Output TaskParameter="CommitsSinceVersionSource" PropertyName="GitVersion_CommitsSinceVersionSource" />
