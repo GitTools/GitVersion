@@ -56,7 +56,7 @@ namespace GitVersion
                 }
             }
 
-            using (var assemblyInfoUpdater = new AssemblyInfoFileUpdate(arguments.UpdateAssemblyInfoFileName, targetPath, variables, fileSystem, arguments.EnsureAssemblyInfo))
+            using (var assemblyInfoUpdater = new AssemblyInfoFileUpdater(arguments.UpdateAssemblyInfoFileName, targetPath, variables, fileSystem, arguments.EnsureAssemblyInfo))
             {
                 if (arguments.UpdateAssemblyInfo)
                 {

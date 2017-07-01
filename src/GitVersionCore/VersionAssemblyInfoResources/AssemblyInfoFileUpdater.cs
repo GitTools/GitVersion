@@ -9,7 +9,7 @@ namespace GitVersion
     using GitVersion.VersionAssemblyInfoResources;
 
     // TODO: Consolidate this with GitVersionTask.UpdateAssemblyInfo. @asbjornu
-    class AssemblyInfoFileUpdate : IDisposable
+    class AssemblyInfoFileUpdater : IDisposable
     {
         List<Action> restoreBackupTasks = new List<Action>();
         List<Action> cleanupBackupTasks = new List<Action>();
@@ -20,7 +20,7 @@ namespace GitVersion
         IFileSystem fileSystem;
         bool ensureAssemblyInfo;
 
-        public AssemblyInfoFileUpdate(ISet<string> updateAssemblyInfoFileName, string workingDirectory, VersionVariables variables, IFileSystem fileSystem, bool ensureAssemblyInfo)
+        public AssemblyInfoFileUpdater(ISet<string> updateAssemblyInfoFileName, string workingDirectory, VersionVariables variables, IFileSystem fileSystem, bool ensureAssemblyInfo)
         {
             this.updateAssemblyInfoFileName = updateAssemblyInfoFileName;
             this.workingDirectory = workingDirectory;

@@ -133,7 +133,7 @@
     <Compile Include="SemanticVersionExtensions.cs" />
     <Compile Include="SemanticVersionFormatValues.cs" />
     <Compile Include="VerbosityLevel.cs" />
-    <Compile Include="VersionAssemblyInfoResources\AssemblyInfoFileUpdate.cs" />
+    <Compile Include="VersionAssemblyInfoResources\AssemblyInfoFileUpdater.cs" />
     <Compile Include="VersionCalculation\MainlineVersionCalculator.cs" />
     <Compile Include="VersionFilters\MinDateVersionFilter.cs" />
     <Compile Include="VersionFilters\IVersionFilter.cs" />

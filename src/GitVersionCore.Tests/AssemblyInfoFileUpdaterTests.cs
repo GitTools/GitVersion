@@ -10,7 +10,7 @@ using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class AssemblyInfoFileUpdateTests
+public class AssemblyInfoFileUpdaterTests
 {
     [SetUp]
     public void SetLoggers()
@@ -34,7 +34,7 @@ public class AssemblyInfoFileUpdateTests
         var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, true))
+        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, true))
         {
             assemblyInfoFileUpdater.Update();
 
@@ -58,7 +58,7 @@ public class AssemblyInfoFileUpdateTests
         var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, true))
+        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, true))
         {
             assemblyInfoFileUpdater.Update();
 
@@ -82,7 +82,7 @@ public class AssemblyInfoFileUpdateTests
         };
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, true))
+        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, true))
         {
             assemblyInfoFileUpdater.Update();
 
@@ -108,7 +108,7 @@ public class AssemblyInfoFileUpdateTests
         var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
+        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
         {
             assemblyInfoFileUpdater.Update();
 
@@ -128,7 +128,7 @@ public class AssemblyInfoFileUpdateTests
         var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, true))
+        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, true))
         {
             assemblyInfoFileUpdater.Update();
 
@@ -144,7 +144,7 @@ public class AssemblyInfoFileUpdateTests
         var assemblyInfoFile = new HashSet<string>();
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
+        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
         {
             assemblyInfoFileUpdater.Update();
 
@@ -168,7 +168,7 @@ public class AssemblyInfoFileUpdateTests
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
                 assemblyInfoFileUpdater.Update();
 
@@ -196,7 +196,7 @@ public class AssemblyInfoFileUpdateTests
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.None, verify: (fileSystem, variables) =>
         {
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
                 assemblyInfoFileUpdater.Update();
 
@@ -222,7 +222,7 @@ public class AssemblyInfoFileUpdateTests
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
                 assemblyInfoFileUpdater.Update();
 
@@ -248,7 +248,7 @@ public class AssemblyInfoFileUpdateTests
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
                 assemblyInfoFileUpdater.Update();
 
@@ -276,7 +276,7 @@ public class AssemblyInfoFileUpdateTests
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
                 assemblyInfoFileUpdater.Update();
 
@@ -304,7 +304,7 @@ public class AssemblyInfoFileUpdateTests
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
         {
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
                 assemblyInfoFileUpdater.Update();
 
@@ -333,7 +333,7 @@ public class AssemblyInfoFileUpdateTests
 
         VerifyAssemblyInfoFile("", fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
                 assemblyInfoFileUpdater.Update();
 
@@ -361,7 +361,7 @@ public class AssemblyInfoFileUpdateTests
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
                 assemblyInfoFileUpdater.Update();
 
@@ -389,7 +389,7 @@ public class AssemblyInfoFileUpdateTests
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
         {
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
                 assemblyInfoFileUpdater.Update();
 
@@ -415,7 +415,7 @@ public class AssemblyInfoFileUpdateTests
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
                 assemblyInfoFileUpdater.Update();
 
@@ -441,7 +441,7 @@ public class AssemblyInfoFileUpdateTests
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
                 assemblyInfoFileUpdater.Update();
 
@@ -469,7 +469,7 @@ public class AssemblyInfoFileUpdateTests
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
         {
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
                 assemblyInfoFileUpdater.Update();
 
@@ -495,7 +495,7 @@ public class AssemblyInfoFileUpdateTests
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.None, verify: (fileSystem, variables) =>
         {
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
                 assemblyInfoFileUpdater.Update();
 
