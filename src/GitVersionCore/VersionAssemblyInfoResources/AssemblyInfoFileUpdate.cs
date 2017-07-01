@@ -14,14 +14,26 @@ namespace GitVersion
         List<Action> restoreBackupTasks = new List<Action>();
         List<Action> cleanupBackupTasks = new List<Action>();
 
-        public AssemblyInfoFileUpdate(Arguments args, string workingDirectory, VersionVariables variables, IFileSystem fileSystem)
+        ISet<string> updateAssemblyInfoFileName;
+        string workingDirectory;
+        VersionVariables variables;
+        IFileSystem fileSystem;
+        bool ensureAssemblyInfo;
+
+        public AssemblyInfoFileUpdate(ISet<string> updateAssemblyInfoFileName, string workingDirectory, VersionVariables variables, IFileSystem fileSystem, bool ensureAssemblyInfo)
         {
-            if (!args.UpdateAssemblyInfo) return;
+            this.updateAssemblyInfoFileName = updateAssemblyInfoFileName;
+            this.workingDirectory = workingDirectory;
+            this.variables = variables;
+            this.fileSystem = fileSystem;
+            this.ensureAssemblyInfo = ensureAssemblyInfo;
+        }
 
-            if (args.Output != OutputType.Json)
-                Logger.WriteInfo("Updating assembly info files");
+        public void Update()
+        {
+            Logger.WriteInfo("Updating assembly info files");
 
-            var assemblyInfoFiles = GetAssemblyInfoFiles(workingDirectory, args, fileSystem).ToList();
+            var assemblyInfoFiles = GetAssemblyInfoFiles(workingDirectory, updateAssemblyInfoFileName, fileSystem, ensureAssemblyInfo).ToList();
             Logger.WriteInfo($"Found {assemblyInfoFiles.Count} files");
 
             var assemblyVersion = variables.AssemblySemVer;
@@ -90,15 +102,15 @@ namespace GitVersion
         }
 
 
-        static IEnumerable<FileInfo> GetAssemblyInfoFiles(string workingDirectory, Arguments args, IFileSystem fileSystem)
+        static IEnumerable<FileInfo> GetAssemblyInfoFiles(string workingDirectory, ISet<string> updateAssemblyInfoFileName, IFileSystem fileSystem, bool ensureAssemblyInfo)
         {
-            if (args.UpdateAssemblyInfoFileName != null && args.UpdateAssemblyInfoFileName.Any(x => !string.IsNullOrWhiteSpace(x)))
+            if (updateAssemblyInfoFileName != null && updateAssemblyInfoFileName.Any(x => !string.IsNullOrWhiteSpace(x)))
             {
-                foreach (var item in args.UpdateAssemblyInfoFileName)
+                foreach (var item in updateAssemblyInfoFileName)
                 {
                     var fullPath = Path.Combine(workingDirectory, item);
 
-                    if (EnsureVersionAssemblyInfoFile(args, fileSystem, fullPath))
+                    if (EnsureVersionAssemblyInfoFile(ensureAssemblyInfo, fileSystem, fullPath, updateAssemblyInfoFileName))
                     {
                         yield return new FileInfo(fullPath);
                     }
@@ -116,11 +128,11 @@ namespace GitVersion
             }
         }
 
-        static bool EnsureVersionAssemblyInfoFile(Arguments arguments, IFileSystem fileSystem, string fullPath)
+        static bool EnsureVersionAssemblyInfoFile(bool ensureAssemblyInfo, IFileSystem fileSystem, string fullPath, ISet<string> updateAssemblyInfoFileName)
         {
             if (fileSystem.Exists(fullPath)) return true;
 
-            if (!arguments.EnsureAssemblyInfo) return false;
+            if (!ensureAssemblyInfo) return false;
 
             var assemblyInfoSource = AssemblyVersionInfoTemplates.GetAssemblyInfoTemplateFor(fullPath);
             if (!string.IsNullOrWhiteSpace(assemblyInfoSource))
@@ -133,7 +145,7 @@ namespace GitVersion
                 fileSystem.WriteAllText(fullPath, assemblyInfoSource);
                 return true;
             }
-            Logger.WriteWarning($"No version assembly info template available to create source file '{arguments.UpdateAssemblyInfoFileName}'");
+            Logger.WriteWarning($"No version assembly info template available to create source file '{updateAssemblyInfoFileName}'");
             return false;
         }
 

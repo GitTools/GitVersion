@@ -56,13 +56,18 @@ namespace GitVersion
                 }
             }
 
-            using (var assemblyInfoUpdate = new AssemblyInfoFileUpdate(arguments, targetPath, variables, fileSystem))
+            using (var assemblyInfoUpdater = new AssemblyInfoFileUpdate(arguments.UpdateAssemblyInfoFileName, targetPath, variables, fileSystem, arguments.EnsureAssemblyInfo))
             {
+                if (arguments.UpdateAssemblyInfo)
+                {
+                    assemblyInfoUpdater.Update();
+                }
+
                 var execRun = RunExecCommandIfNeeded(arguments, targetPath, variables);
                 var msbuildRun = RunMsBuildIfNeeded(arguments, targetPath, variables);
                 if (!execRun && !msbuildRun)
                 {
-                    assemblyInfoUpdate.DoNotRestoreAssemblyInfo();
+                    assemblyInfoUpdater.DoNotRestoreAssemblyInfo();
                     //TODO Put warning back
                     //if (!context.CurrentBuildServer.IsRunningInBuildAgent())
                     //{
