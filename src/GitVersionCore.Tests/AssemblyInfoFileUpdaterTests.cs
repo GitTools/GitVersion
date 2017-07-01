@@ -27,11 +27,8 @@ public class AssemblyInfoFileUpdaterTests
     {
         var fileSystem = new TestFileSystem();
         var workingDir = Path.GetTempPath();
-        var assemblyInfoFile = new HashSet<string>
-        {
-            "VersionAssemblyInfo." + fileExtension
-        };
-        var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
+        var assemblyInfoFile = "VersionAssemblyInfo." + fileExtension;
+        var fullPath = Path.Combine(workingDir, assemblyInfoFile);
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
         using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, true))
@@ -51,11 +48,8 @@ public class AssemblyInfoFileUpdaterTests
     {
         var fileSystem = new TestFileSystem();
         var workingDir = Path.GetTempPath();
-        var assemblyInfoFile = new HashSet<string>
-        {
-            Path.Combine("src", "Project", "Properties", "VersionAssemblyInfo." + fileExtension)
-        };
-        var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
+        var assemblyInfoFile = Path.Combine("src", "Project", "Properties", "VersionAssemblyInfo." + fileExtension);
+        var fullPath = Path.Combine(workingDir, assemblyInfoFile);
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
         using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, true))
@@ -75,18 +69,18 @@ public class AssemblyInfoFileUpdaterTests
     {
         var fileSystem = new TestFileSystem();
         var workingDir = Path.GetTempPath();
-        var assemblyInfoFile = new HashSet<string>
+        var assemblyInfoFiles = new HashSet<string>
         {
             "AssemblyInfo." + fileExtension,
             Path.Combine("src", "Project", "Properties", "VersionAssemblyInfo." + fileExtension)
         };
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, true))
+        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFiles, workingDir, variables, fileSystem, true))
         {
             assemblyInfoFileUpdater.Update();
 
-            foreach (var item in assemblyInfoFile)
+            foreach (var item in assemblyInfoFiles)
             {
                 var fullPath = Path.Combine(workingDir, item);
                 fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
@@ -101,11 +95,8 @@ public class AssemblyInfoFileUpdaterTests
     {
         var fileSystem = new TestFileSystem();
         var workingDir = Path.GetTempPath();
-        var assemblyInfoFile = new HashSet<string>
-        {
-            "VersionAssemblyInfo." + fileExtension
-        };
-        var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
+        var assemblyInfoFile = "VersionAssemblyInfo." + fileExtension;
+        var fullPath = Path.Combine(workingDir, assemblyInfoFile);
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
         using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
@@ -121,11 +112,8 @@ public class AssemblyInfoFileUpdaterTests
     {
         var fileSystem = Substitute.For<IFileSystem>();
         var workingDir = Path.GetTempPath();
-        var assemblyInfoFile = new HashSet<string>
-        {
-            "VersionAssemblyInfo.js"
-        };
-        var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
+        var assemblyInfoFile = "VersionAssemblyInfo.js";
+        var fullPath = Path.Combine(workingDir, assemblyInfoFile);
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
         using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, true))
@@ -141,10 +129,10 @@ public class AssemblyInfoFileUpdaterTests
     {
         var fileSystem = Substitute.For<IFileSystem>();
         var workingDir = Path.GetTempPath();
-        var assemblyInfoFile = new HashSet<string>();
+        var assemblyInfoFiles = new HashSet<string>();
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
+        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFiles, workingDir, variables, fileSystem, false))
         {
             assemblyInfoFileUpdater.Update();
 
@@ -160,11 +148,8 @@ public class AssemblyInfoFileUpdaterTests
     public void ShouldReplaceAssemblyVersion(string fileExtension, string assemblyFileContent)
     {
         var workingDir = Path.GetTempPath();
-        var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
-        var assemblyInfoFile = new HashSet<string>
-        {
-            "AssemblyInfo." + fileExtension
-        };
+        var assemblyInfoFile = "AssemblyInfo." + fileExtension;
+        var fileName = Path.Combine(workingDir, assemblyInfoFile);
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
@@ -188,11 +173,8 @@ public class AssemblyInfoFileUpdaterTests
     public void ShouldNotReplaceAssemblyVersionWhenVersionSchemeIsNone(string fileExtension, string assemblyFileContent)
     {
         var workingDir = Path.GetTempPath();
-        var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
-        var assemblyInfoFile = new HashSet<string>
-        {
-            "AssemblyInfo." + fileExtension
-        };
+        var assemblyInfoFile = "AssemblyInfo." + fileExtension;
+        var fileName = Path.Combine(workingDir, assemblyInfoFile);
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.None, verify: (fileSystem, variables) =>
         {
@@ -214,11 +196,8 @@ public class AssemblyInfoFileUpdaterTests
     public void ShouldReplaceAssemblyVersionInRelativePath(string fileExtension, string assemblyFileContent)
     {
         var workingDir = Path.GetTempPath();
-        var fileName = Path.Combine(workingDir, "Project", "src", "Properties", "AssemblyInfo." + fileExtension);
-        var assemblyInfoFile = new HashSet<string>
-        {
-            Path.Combine("Project", "src", "Properties", "AssemblyInfo." + fileExtension)
-        };
+        var assemblyInfoFile = Path.Combine("Project", "src", "Properties", "AssemblyInfo." + fileExtension);
+        var fileName = Path.Combine(workingDir, assemblyInfoFile);
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
@@ -240,11 +219,8 @@ public class AssemblyInfoFileUpdaterTests
     public void ShouldReplaceAssemblyVersionInRelativePathWithWhiteSpace(string fileExtension, string assemblyFileContent)
     {
         var workingDir = Path.GetTempPath();
-        var fileName = Path.Combine(workingDir, "Project", "src", "Properties", "AssemblyInfo." + fileExtension);
-        var assemblyInfoFile = new HashSet<string>
-        {
-            Path.Combine("Project", "src", "Properties", "AssemblyInfo." + fileExtension)
-        };
+        var assemblyInfoFile = Path.Combine("Project", "src", "Properties", "AssemblyInfo." + fileExtension);
+        var fileName = Path.Combine(workingDir, assemblyInfoFile);
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
@@ -268,11 +244,8 @@ public class AssemblyInfoFileUpdaterTests
     public void ShouldReplaceAssemblyVersionWithStar(string fileExtension, string assemblyFileContent)
     {
         var workingDir = Path.GetTempPath();
-        var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
-        var assemblyInfoFile = new HashSet<string>
-        {
-            "AssemblyInfo." + fileExtension
-        };
+        var assemblyInfoFile = "AssemblyInfo." + fileExtension;
+        var fileName = Path.Combine(workingDir, assemblyInfoFile);
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
@@ -296,11 +269,8 @@ public class AssemblyInfoFileUpdaterTests
     public void ShouldReplaceAssemblyVersionWithAtttributeSuffix(string fileExtension, string assemblyFileContent)
     {
         var workingDir = Path.GetTempPath();
-        var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
-        var assemblyInfoFile = new HashSet<string>
-        {
-            "AssemblyInfo." + fileExtension
-        };
+        var assemblyInfoFile = "AssemblyInfo." + fileExtension;
+        var fileName = Path.Combine(workingDir, assemblyInfoFile);
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
         {
@@ -325,11 +295,8 @@ public class AssemblyInfoFileUpdaterTests
     public void ShouldAddAssemblyVersionIfMissingFromInfoFile(string fileExtension)
     {
         var workingDir = Path.GetTempPath();
-        var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
-        var assemblyInfoFile = new HashSet<string>
-        {
-            "AssemblyInfo." + fileExtension
-        };
+        var assemblyInfoFile = "AssemblyInfo." + fileExtension;
+        var fileName = Path.Combine(workingDir, assemblyInfoFile);
 
         VerifyAssemblyInfoFile("", fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
@@ -353,11 +320,8 @@ public class AssemblyInfoFileUpdaterTests
     public void ShouldReplaceAlreadySubstitutedValues(string fileExtension, string assemblyFileContent)
     {
         var workingDir = Path.GetTempPath();
-        var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
-        var assemblyInfoFile = new HashSet<string>
-        {
-            "AssemblyInfo." + fileExtension
-        };
+        var assemblyInfoFile = "AssemblyInfo." + fileExtension;
+        var fileName = Path.Combine(workingDir, assemblyInfoFile);
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
@@ -381,11 +345,8 @@ public class AssemblyInfoFileUpdaterTests
     public void ShouldReplaceAssemblyVersionWhenCreatingAssemblyVersionFileAndEnsureAssemblyInfo(string fileExtension, string assemblyFileContent)
     {
         var workingDir = Path.GetTempPath();
-        var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
-        var assemblyInfoFile = new HashSet<string>
-        {
-            "AssemblyInfo." + fileExtension
-        };
+        var assemblyInfoFile = "AssemblyInfo." + fileExtension;
+        var fileName = Path.Combine(workingDir, assemblyInfoFile);
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
         {
@@ -407,11 +368,8 @@ public class AssemblyInfoFileUpdaterTests
     public void ShouldReplaceAssemblyVersionInRelativePathWithVariables(string fileExtension, string assemblyFileContent)
     {
         var workingDir = Path.GetTempPath();
-        var fileName = Path.Combine(workingDir, "Project", "src", "Properties", "AssemblyInfo." + fileExtension);
-        var assemblyInfoFile = new HashSet<string>
-        {
-            Path.Combine("Project", "src", "Properties", "AssemblyInfo." + fileExtension)
-        };
+        var assemblyInfoFile = Path.Combine("Project", "src", "Properties", "AssemblyInfo." + fileExtension);
+        var fileName = Path.Combine(workingDir, assemblyInfoFile);
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
@@ -433,11 +391,8 @@ public class AssemblyInfoFileUpdaterTests
     public void ShouldReplaceAssemblyVersionInRelativePathWithVariablesAndWhiteSpace(string fileExtension, string assemblyFileContent)
     {
         var workingDir = Path.GetTempPath();
-        var fileName = Path.Combine(workingDir, "Project", "src", "Properties", "AssemblyInfo." + fileExtension);
-        var assemblyInfoFile = new HashSet<string>
-        {
-            Path.Combine("Project", "src", "Properties", "AssemblyInfo." + fileExtension)
-        };
+        var assemblyInfoFile = Path.Combine("Project", "src", "Properties", "AssemblyInfo." + fileExtension);
+        var fileName = Path.Combine(workingDir, assemblyInfoFile);
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
@@ -461,11 +416,8 @@ public class AssemblyInfoFileUpdaterTests
     public void ShouldAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFile(string fileExtension, string assemblyFileContent)
     {
         var workingDir = Path.GetTempPath();
-        var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
-        var assemblyInfoFile = new HashSet<string>
-        {
-            "AssemblyInfo." + fileExtension
-        };
+        var assemblyInfoFile = "AssemblyInfo." + fileExtension;
+        var fileName = Path.Combine(workingDir, assemblyInfoFile);
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
         {
@@ -487,11 +439,8 @@ public class AssemblyInfoFileUpdaterTests
     public void ShouldNotAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFileWhenVersionSchemeIsNone(string fileExtension, string assemblyFileContent)
     {
         var workingDir = Path.GetTempPath();
-        var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
-        var assemblyInfoFile = new HashSet<string>
-        {
-            "AssemblyInfo." + fileExtension
-        };
+        var assemblyInfoFile = "AssemblyInfo." + fileExtension;
+        var fileName = Path.Combine(workingDir, assemblyInfoFile);
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.None, verify: (fileSystem, variables) =>
         {
