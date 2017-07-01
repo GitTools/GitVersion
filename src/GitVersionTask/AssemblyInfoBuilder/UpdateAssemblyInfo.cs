@@ -96,7 +96,7 @@
             using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFileName, workingDirectory, versionVariables, new FileSystem(), true))
             {
                 assemblyInfoFileUpdater.Update();
-                assemblyInfoFileUpdater.DoNotRestoreAssemblyInfo();
+                assemblyInfoFileUpdater.CommitChanges();
             }
         }
 

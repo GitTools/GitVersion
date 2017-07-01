@@ -67,7 +67,7 @@ namespace GitVersion
                 var msbuildRun = RunMsBuildIfNeeded(arguments, targetPath, variables);
                 if (!execRun && !msbuildRun)
                 {
-                    assemblyInfoUpdater.DoNotRestoreAssemblyInfo();
+                    assemblyInfoUpdater.CommitChanges();
                     //TODO Put warning back
                     //if (!context.CurrentBuildServer.IsRunningInBuildAgent())
                     //{

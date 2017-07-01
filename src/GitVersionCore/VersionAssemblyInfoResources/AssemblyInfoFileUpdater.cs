@@ -185,7 +185,7 @@ namespace GitVersion
             restoreBackupTasks.Clear();
         }
 
-        public void DoNotRestoreAssemblyInfo()
+        public void CommitChanges()
         {
             foreach (var cleanupBackupTask in cleanupBackupTasks)
             {
