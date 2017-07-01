@@ -14,9 +14,6 @@
 
         public UpdateAssemblyInfo()
         {
-            CompileFiles = new ITaskItem[]
-            {
-            };
             logger = new TaskLogger(this);
             Logger.SetLoggers(this.LogDebug, this.LogInfo, this.LogWarning, s => this.LogError(s));
         }
