@@ -55,7 +55,7 @@
     NoFetch="$(GitVersion_NoFetchEnabled)"
     ProjectFile="$(MSBuildProjectFullPath)"
     IntermediateOutputPath="$(IntermediateOutputPath)"
-    RootNamespace="$(RootNamespace)"
+    Language="$(Language)"
     CompileFiles ="@(Compile)">
       <Output
         TaskParameter="AssemblyInfoTempFilePath"

@@ -1,16 +1,13 @@
 ﻿namespace GitVersionTask
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.IO;
-    using System.Text;
-
     using GitVersion;
     using GitVersion.Helpers;
-
     using Microsoft.Build.Framework;
 
-    // TODO: Consolidate this with GitVersion.AssemblyInfoFileUpdate in GitVersionExe. @asbjornu
     public class UpdateAssemblyInfo : GitVersionTaskBase
     {
         TaskLogger logger;
@@ -37,7 +34,7 @@
         public ITaskItem[] CompileFiles { get; set; }
 
         [Required]
-        public string RootNamespace { get; set; }
+        public string Language { get; set; }
 
         [Output]
         public string AssemblyInfoTempFilePath { get; set; }
@@ -78,45 +75,47 @@
             {
                 return;
             }
+
             CreateTempAssemblyInfo(versionVariables);
         }
 
         void CreateTempAssemblyInfo(VersionVariables versionVariables)
         {
-            var assemblyInfoBuilder = AssemblyInfoBuilder.GetAssemblyInfoBuilder(CompileFiles);
+            var fileExtension = GetFileExtension();
+            var assemblyInfoFileName = $"GitVersionTaskAssemblyInfo.g.{fileExtension}";
 
             if (IntermediateOutputPath == null)
             {
-                var tempFileName = string.Format("AssemblyInfo_{0}_{1}.g.{2}", Path.GetFileNameWithoutExtension(ProjectFile), Path.GetRandomFileName(), assemblyInfoBuilder.AssemblyInfoExtension);
-                AssemblyInfoTempFilePath = Path.Combine(TempFileTracker.TempPath, tempFileName);
-            }
-            else
-            {
-                AssemblyInfoTempFilePath = Path.Combine(IntermediateOutputPath, string.Format("GitVersionTaskAssemblyInfo.g.{0}", assemblyInfoBuilder.AssemblyInfoExtension));
+                assemblyInfoFileName = $"AssemblyInfo_{Path.GetFileNameWithoutExtension(ProjectFile)}_{Path.GetRandomFileName()}.g.{fileExtension}";
             }
 
-            var assemblyInfo = assemblyInfoBuilder.GetAssemblyInfoText(versionVariables, RootNamespace).Trim();
-            var encoding = EncodingHelper.DetectEncoding(AssemblyInfoTempFilePath) ?? Encoding.UTF8;
+            var workingDirectory = IntermediateOutputPath ?? TempFileTracker.TempPath;
 
-            // We need to try to read the existing text first if the file exists and see if it's the same
-            // This is to avoid writing when there's no differences and causing a rebuild
-            try
-            {
-                if (File.Exists(AssemblyInfoTempFilePath))
-                {
-                    var content = File.ReadAllText(AssemblyInfoTempFilePath, encoding).Trim();
-                    if (string.Equals(assemblyInfo, content, StringComparison.Ordinal))
-                    {
-                        return; // nothign to do as the file matches what we'd create
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                // Something happened reading the file, try to overwrite anyway
-            }
+            AssemblyInfoTempFilePath = Path.Combine(workingDirectory, assemblyInfoFileName);
 
-            File.WriteAllText(AssemblyInfoTempFilePath, assemblyInfo, encoding);
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFileName, workingDirectory, versionVariables, new FileSystem(), true))
+            {
+                assemblyInfoFileUpdater.Update();
+                assemblyInfoFileUpdater.DoNotRestoreAssemblyInfo();
+            }
+        }
+
+        string GetFileExtension()
+        {
+            switch(Language)
+            {
+                case "C#":
+                    return "cs";
+
+                case "F#":
+                    return "fs";
+
+                case "VB":
+                    return "vb";
+
+                default:
+                    throw new Exception($"Unknown language detected: '{Language}'");
+            }
         }
     }
 }

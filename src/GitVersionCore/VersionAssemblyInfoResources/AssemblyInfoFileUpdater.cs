@@ -8,7 +8,7 @@ namespace GitVersion
     using System.Text.RegularExpressions;
     using GitVersion.VersionAssemblyInfoResources;
 
-    class AssemblyInfoFileUpdater : IDisposable
+    public class AssemblyInfoFileUpdater : IDisposable
     {
         readonly List<Action> restoreBackupTasks = new List<Action>();
         readonly List<Action> cleanupBackupTasks = new List<Action>();
