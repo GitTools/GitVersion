@@ -33,15 +33,11 @@ public class AssemblyInfoFileUpdateTests
         };
         var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
-        var arguments = new Arguments
-        {
-            EnsureAssemblyInfo = true,
-            UpdateAssemblyInfo = true,
-            UpdateAssemblyInfoFileName = assemblyInfoFile
-        };
 
-        using (new AssemblyInfoFileUpdate(arguments, workingDir, variables, fileSystem))
+        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, true))
         {
+            assemblyInfoFileUpdater.Update();
+
             fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
         }
     }
@@ -61,15 +57,11 @@ public class AssemblyInfoFileUpdateTests
         };
         var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
-        var arguments = new Arguments
-        {
-            EnsureAssemblyInfo = true,
-            UpdateAssemblyInfo = true,
-            UpdateAssemblyInfoFileName = assemblyInfoFile
-        };
 
-        using (new AssemblyInfoFileUpdate(arguments, workingDir, variables, fileSystem))
+        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, true))
         {
+            assemblyInfoFileUpdater.Update();
+
             fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
         }
     }
@@ -89,15 +81,11 @@ public class AssemblyInfoFileUpdateTests
             Path.Combine("src", "Project", "Properties", "VersionAssemblyInfo." + fileExtension)
         };
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
-        var arguments = new Arguments
-        {
-            EnsureAssemblyInfo = true,
-            UpdateAssemblyInfo = true,
-            UpdateAssemblyInfoFileName = assemblyInfoFile
-        };
 
-        using (new AssemblyInfoFileUpdate(arguments, workingDir, variables, fileSystem))
+        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, true))
         {
+            assemblyInfoFileUpdater.Update();
+
             foreach (var item in assemblyInfoFile)
             {
                 var fullPath = Path.Combine(workingDir, item);
@@ -119,18 +107,14 @@ public class AssemblyInfoFileUpdateTests
         };
         var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
-        var arguments = new Arguments
-        {
-            UpdateAssemblyInfo = true,
-            UpdateAssemblyInfoFileName = assemblyInfoFile
-        };
 
-        using (new AssemblyInfoFileUpdate(arguments, workingDir, variables, fileSystem))
+        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
         {
+            assemblyInfoFileUpdater.Update();
+
             fileSystem.Exists(fullPath).ShouldBeFalse();
         }
     }
-
 
     [Test]
     public void ShouldNotCreateAssemblyInfoFileForUnknownSourceCodeAndEnsureAssemblyInfo()
@@ -143,15 +127,11 @@ public class AssemblyInfoFileUpdateTests
         };
         var fullPath = Path.Combine(workingDir, assemblyInfoFile.First());
         var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
-        var arguments = new Arguments
-        {
-            EnsureAssemblyInfo = true,
-            UpdateAssemblyInfo = true,
-            UpdateAssemblyInfoFileName = assemblyInfoFile
-        };
 
-        using (new AssemblyInfoFileUpdate(arguments, workingDir, variables, fileSystem))
+        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, true))
         {
+            assemblyInfoFileUpdater.Update();
+
             fileSystem.Received(0).WriteAllText(fullPath, Arg.Any<string>());
         }
     }
@@ -161,15 +141,13 @@ public class AssemblyInfoFileUpdateTests
     {
         var fileSystem = Substitute.For<IFileSystem>();
         var workingDir = Path.GetTempPath();
+        var assemblyInfoFile = new HashSet<string>();
+        var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-        var config = new TestEffectiveConfiguration();
-        var variables = VariableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), config, false);
-        var arguments = new Arguments
+        using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
         {
-            UpdateAssemblyInfo = true
-        };
-        using (new AssemblyInfoFileUpdate(arguments, workingDir, variables, fileSystem))
-        {
+            assemblyInfoFileUpdater.Update();
+
             fileSystem.Received().DirectoryGetFiles(Arg.Is(workingDir), Arg.Any<string>(), Arg.Any<SearchOption>());
         }
     }
@@ -183,19 +161,17 @@ public class AssemblyInfoFileUpdateTests
     {
         var workingDir = Path.GetTempPath();
         var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
+        var assemblyInfoFile = new HashSet<string>
+        {
+            "AssemblyInfo." + fileExtension
+        };
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
-            var args = new Arguments
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
-                UpdateAssemblyInfo = true,
-                UpdateAssemblyInfoFileName = new HashSet<string>
-                {
-                    "AssemblyInfo." + fileExtension
-                }
-            };
-            using (new AssemblyInfoFileUpdate(args, workingDir, variables, fileSystem))
-            {
+                assemblyInfoFileUpdater.Update();
+
                 fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
                     s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
                     s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
@@ -203,7 +179,6 @@ public class AssemblyInfoFileUpdateTests
             }
         });
     }
-
 
     [TestCase("cs", "[assembly: AssemblyFileVersion(\"1.0.0.0\")]")]
     [TestCase("fs", "[<assembly: AssemblyFileVersion(\"1.0.0.0\")>]")]
@@ -214,20 +189,17 @@ public class AssemblyInfoFileUpdateTests
     {
         var workingDir = Path.GetTempPath();
         var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
+        var assemblyInfoFile = new HashSet<string>
+        {
+            "AssemblyInfo." + fileExtension
+        };
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.None, verify: (fileSystem, variables) =>
         {
-            var args = new Arguments
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
-                UpdateAssemblyInfo = true,
-                UpdateAssemblyInfoFileName = new HashSet<string>
-                {
-                    "AssemblyInfo." + fileExtension
-                }
-            };
+                assemblyInfoFileUpdater.Update();
 
-            using (new AssemblyInfoFileUpdate(args, workingDir, variables, fileSystem))
-            {
                 assemblyFileContent = fileSystem.ReadAllText(fileName);
                 assemblyFileContent.ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
             }
@@ -243,19 +215,17 @@ public class AssemblyInfoFileUpdateTests
     {
         var workingDir = Path.GetTempPath();
         var fileName = Path.Combine(workingDir, "Project", "src", "Properties", "AssemblyInfo." + fileExtension);
+        var assemblyInfoFile = new HashSet<string>
+        {
+            Path.Combine("Project", "src", "Properties", "AssemblyInfo." + fileExtension)
+        };
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
-            var args = new Arguments
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
-                UpdateAssemblyInfo = true,
-                UpdateAssemblyInfoFileName = new HashSet<string>
-                {
-                    Path.Combine("Project", "src", "Properties", "AssemblyInfo." + fileExtension)
-                }
-            };
-            using (new AssemblyInfoFileUpdate(args, workingDir, variables, fileSystem))
-            {
+                assemblyInfoFileUpdater.Update();
+
                 fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
                     s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
                     s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
@@ -271,19 +241,17 @@ public class AssemblyInfoFileUpdateTests
     {
         var workingDir = Path.GetTempPath();
         var fileName = Path.Combine(workingDir, "Project", "src", "Properties", "AssemblyInfo." + fileExtension);
+        var assemblyInfoFile = new HashSet<string>
+        {
+            Path.Combine("Project", "src", "Properties", "AssemblyInfo." + fileExtension)
+        };
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
-            var args = new Arguments
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
-                UpdateAssemblyInfo = true,
-                UpdateAssemblyInfoFileName = new HashSet<string>
-                {
-                    Path.Combine("Project", "src", "Properties", "AssemblyInfo." + fileExtension)
-                }
-            };
-            using (new AssemblyInfoFileUpdate(args, workingDir, variables, fileSystem))
-            {
+                assemblyInfoFileUpdater.Update();
+
                 fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
                     s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
                     s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
@@ -301,19 +269,17 @@ public class AssemblyInfoFileUpdateTests
     {
         var workingDir = Path.GetTempPath();
         var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
+        var assemblyInfoFile = new HashSet<string>
+        {
+            "AssemblyInfo." + fileExtension
+        };
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
-            var args = new Arguments
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
-                UpdateAssemblyInfo = true,
-                UpdateAssemblyInfoFileName = new HashSet<string>
-                {
-                    "AssemblyInfo." + fileExtension
-                }
-            };
-            using (new AssemblyInfoFileUpdate(args, workingDir, variables, fileSystem))
-            {
+                assemblyInfoFileUpdater.Update();
+
                 fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
                     s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
                     s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
@@ -331,25 +297,23 @@ public class AssemblyInfoFileUpdateTests
     {
         var workingDir = Path.GetTempPath();
         var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
+        var assemblyInfoFile = new HashSet<string>
+        {
+            "AssemblyInfo." + fileExtension
+        };
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
         {
-            var args = new Arguments
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
-                UpdateAssemblyInfo = true,
-                UpdateAssemblyInfoFileName = new HashSet<string>
-                {
-                    "AssemblyInfo." + fileExtension
-                }
-            };
-            using (new AssemblyInfoFileUpdate(args, workingDir, variables, fileSystem))
-            {
+                assemblyInfoFileUpdater.Update();
+
                 fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
                     !s.Contains(@"AssemblyVersionAttribute(""1.0.0.0"")") &&
                     !s.Contains(@"AssemblyInformationalVersionAttribute(""1.0.0.0"")") &&
                     !s.Contains(@"AssemblyFileVersionAttribute(""1.0.0.0"")") &&
-                    s.Contains(@"AssemblyVersion(""2.3.1.0"")") && 
-                    s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") && 
+                    s.Contains(@"AssemblyVersion(""2.3.1.0"")") &&
+                    s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
                     s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
             }
         });
@@ -362,19 +326,17 @@ public class AssemblyInfoFileUpdateTests
     {
         var workingDir = Path.GetTempPath();
         var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
+        var assemblyInfoFile = new HashSet<string>
+        {
+            "AssemblyInfo." + fileExtension
+        };
 
         VerifyAssemblyInfoFile("", fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
-            var args = new Arguments
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
-                UpdateAssemblyInfo = true,
-                UpdateAssemblyInfoFileName = new HashSet<string>
-                {
-                    "AssemblyInfo." + fileExtension
-                }
-            };
-            using (new AssemblyInfoFileUpdate(args, workingDir, variables, fileSystem))
-            {
+                assemblyInfoFileUpdater.Update();
+
                 fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
                     s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
                     s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
@@ -392,19 +354,17 @@ public class AssemblyInfoFileUpdateTests
     {
         var workingDir = Path.GetTempPath();
         var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
+        var assemblyInfoFile = new HashSet<string>
+        {
+            "AssemblyInfo." + fileExtension
+        };
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
-            var args = new Arguments
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
-                UpdateAssemblyInfo = true,
-                UpdateAssemblyInfoFileName = new HashSet<string>
-                {
-                    "AssemblyInfo." + fileExtension
-                }
-            };
-            using (new AssemblyInfoFileUpdate(args, workingDir, variables, fileSystem))
-            {
+                assemblyInfoFileUpdater.Update();
+
                 fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
                     s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
                     s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
@@ -412,7 +372,6 @@ public class AssemblyInfoFileUpdateTests
             }
         });
     }
-
 
     [TestCase("cs", "[assembly: AssemblyVersion(\"1.0.0.0\")]\r\n[assembly: AssemblyInformationalVersion(\"1.0.0.0\")]\r\n[assembly: AssemblyFileVersion(\"1.0.0.0\")]")]
     [TestCase("fs", "[<assembly: AssemblyVersion(\"1.0.0.0\")>]\r\n[<assembly: AssemblyInformationalVersion(\"1.0.0.0\")>]\r\n[<assembly: AssemblyFileVersion(\"1.0.0.0\")>]")]
@@ -423,20 +382,17 @@ public class AssemblyInfoFileUpdateTests
     {
         var workingDir = Path.GetTempPath();
         var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
+        var assemblyInfoFile = new HashSet<string>
+        {
+            "AssemblyInfo." + fileExtension
+        };
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
         {
-            var args = new Arguments
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
-                EnsureAssemblyInfo = true,
-                UpdateAssemblyInfo = true,
-                UpdateAssemblyInfoFileName = new HashSet<string>
-                {
-                    "AssemblyInfo." + fileExtension
-                }
-            };
-            using (new AssemblyInfoFileUpdate(args, workingDir, variables, fileSystem))
-            {
+                assemblyInfoFileUpdater.Update();
+
                 fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
                     s.Contains(@"AssemblyVersion(""2.3.1.0"")") &&
                     s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
@@ -452,19 +408,17 @@ public class AssemblyInfoFileUpdateTests
     {
         var workingDir = Path.GetTempPath();
         var fileName = Path.Combine(workingDir, "Project", "src", "Properties", "AssemblyInfo." + fileExtension);
+        var assemblyInfoFile = new HashSet<string>
+        {
+            Path.Combine("Project", "src", "Properties", "AssemblyInfo." + fileExtension)
+        };
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
-            var args = new Arguments
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
-                UpdateAssemblyInfo = true,
-                UpdateAssemblyInfoFileName = new HashSet<string>
-                {
-                    Path.Combine("Project", "src", "Properties", "AssemblyInfo." + fileExtension)
-                }
-            };
-            using (new AssemblyInfoFileUpdate(args, workingDir, variables, fileSystem))
-            {
+                assemblyInfoFileUpdater.Update();
+
                 fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
                     s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
                     s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
@@ -480,19 +434,17 @@ public class AssemblyInfoFileUpdateTests
     {
         var workingDir = Path.GetTempPath();
         var fileName = Path.Combine(workingDir, "Project", "src", "Properties", "AssemblyInfo." + fileExtension);
+        var assemblyInfoFile = new HashSet<string>
+        {
+            Path.Combine("Project", "src", "Properties", "AssemblyInfo." + fileExtension)
+        };
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
         {
-            var args = new Arguments
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
-                UpdateAssemblyInfo = true,
-                UpdateAssemblyInfoFileName = new HashSet<string>
-                {
-                    Path.Combine("Project", "src", "Properties", "AssemblyInfo." + fileExtension)
-                }
-            };
-            using (new AssemblyInfoFileUpdate(args, workingDir, variables, fileSystem))
-            {
+                assemblyInfoFileUpdater.Update();
+
                 fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
                     s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
                     s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
@@ -510,26 +462,22 @@ public class AssemblyInfoFileUpdateTests
     {
         var workingDir = Path.GetTempPath();
         var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
+        var assemblyInfoFile = new HashSet<string>
+        {
+            "AssemblyInfo." + fileExtension
+        };
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
         {
-            var args = new Arguments
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
-                UpdateAssemblyInfo = true,
-                UpdateAssemblyInfoFileName = new HashSet<string>
-                {
-                    "AssemblyInfo." + fileExtension
-                }
-            };
+                assemblyInfoFileUpdater.Update();
 
-            using (new AssemblyInfoFileUpdate(args, workingDir, variables, fileSystem))
-            {
                 assemblyFileContent = fileSystem.ReadAllText(fileName);
                 assemblyFileContent.ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
             }
         });
     }
-
 
     [TestCase("cs", "[assembly: AssemblyFileVersion(\"1.0.0.0\")]")]
     [TestCase("fs", "[<assembly: AssemblyFileVersion(\"1.0.0.0\")>]")]
@@ -540,20 +488,17 @@ public class AssemblyInfoFileUpdateTests
     {
         var workingDir = Path.GetTempPath();
         var fileName = Path.Combine(workingDir, "AssemblyInfo." + fileExtension);
+        var assemblyInfoFile = new HashSet<string>
+        {
+            "AssemblyInfo." + fileExtension
+        };
 
         VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.None, verify: (fileSystem, variables) =>
         {
-            var args = new Arguments
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdate(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
-                UpdateAssemblyInfo = true,
-                UpdateAssemblyInfoFileName = new HashSet<string>
-                {
-                    "AssemblyInfo." + fileExtension
-                }
-            };
+                assemblyInfoFileUpdater.Update();
 
-            using (new AssemblyInfoFileUpdate(args, workingDir, variables, fileSystem))
-            {
                 assemblyFileContent = fileSystem.ReadAllText(fileName);
                 assemblyFileContent.ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
             }
