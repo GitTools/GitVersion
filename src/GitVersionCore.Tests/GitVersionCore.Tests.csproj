@@ -84,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyFileVersionTests.cs" />
+    <Compile Include="AssemblyInfoFileUpdateTests.cs" />
     <Compile Include="BuildServers\BuildServerBaseTests.cs" />
     <Compile Include="BuildServers\ContinuaCiTests.cs" />
     <Compile Include="BuildServers\EnvironmentVariableJenkinsTests.cs" />
@@ -168,7 +169,25 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Approved\vb\AssemblyInfoFileUpdateTests.ShouldAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFile.approved.txt" />
+    <Content Include="Approved\vb\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\vb\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\vb\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\vb\AssemblyInfoFileUpdateTests.ShouldNotAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFileWhenVersionSchemeIsNone.approved.txt" />
+    <Content Include="Approved\vb\AssemblyInfoFileUpdateTests.ShouldNotReplaceAssemblyVersionWhenVersionSchemeIsNone.approved.txt" />
     <None Include="FodyWeavers.xml" />
+    <Content Include="Approved\cs\AssemblyInfoFileUpdateTests.ShouldAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFile.approved.txt" />
+    <Content Include="Approved\cs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\cs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\cs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\cs\AssemblyInfoFileUpdateTests.ShouldNotAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFileWhenVersionSchemeIsNone.approved.txt" />
+    <Content Include="Approved\cs\AssemblyInfoFileUpdateTests.ShouldNotReplaceAssemblyVersionWhenVersionSchemeIsNone.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFile.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldCreateAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldNotAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFileWhenVersionSchemeIsNone.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdateTests.ShouldNotReplaceAssemblyVersionWhenVersionSchemeIsNone.approved.txt" />
     <Content Include="Approved\JsonVersionBuilderTests.Json.approved.txt" />
     <Content Include="Approved\VariableProviderTests.ProvidesVariablesInContinuousDeliveryModeForPreRelease.approved.txt" />
     <Content Include="Approved\VariableProviderTests.ProvidesVariablesInContinuousDeliveryModeForPreReleaseWithPadding.approved.txt" />
