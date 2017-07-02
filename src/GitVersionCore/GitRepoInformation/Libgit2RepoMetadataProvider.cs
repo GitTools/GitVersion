@@ -77,7 +77,11 @@ namespace GitVersion.GitRepoInformation
         static MBranch ReadMasterBranch(GitVersionContext context, MBranch currentBranch, List<Tag> tags)
         {
             var masterBranch = context.Repository.Branches["master"];
-            var masterBranchInfo = masterBranch != null ? ReadBranchInfo(context, masterBranch, masterBranch.Tip, tags) : null;
+            if (masterBranch == null)
+            {
+                return null;
+            }
+            var masterBranchInfo = ReadBranchInfo(context, masterBranch, masterBranch.Tip, tags);
             // Do commit counting for tags without commit counts
             var tagsWithCommitCounts = masterBranchInfo.Tags
                 .Select(masterBranchTag =>
