@@ -84,7 +84,7 @@
                 fixture.BranchTo("custom/foo");
                 fixture.MakeACommit();
 
-                fixture.AssertFullSemver(config, "1.0.0-foo.1+2");
+                fixture.AssertFullSemver(config, "1.0.0-foo.1+0");
             }
         }
 
@@ -115,7 +115,7 @@
                 fixture.BranchTo("custom/foo");
                 fixture.MakeACommit();
 
-                fixture.AssertFullSemver(config, "1.0.0-alpha.foo.1+2");
+                fixture.AssertFullSemver(config, "1.0.0-alpha.foo.1+0");
             }
         }
 
