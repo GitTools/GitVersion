@@ -17,7 +17,7 @@
         [Test]
         public void ShouldIncrementVersionBasedOnConfig()
         {
-            var baseCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), new BaseVersionSource(new MCommit(new MockCommit(), 0), "dummy"));
+            var baseCalculator = new TestBaseVersionCalculator(true, new SemanticVersion(1), new BaseVersionSource(new MCommit(new MockCommit(), 0), "dummy"));
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(1, "master", "b1a34e", DateTimeOffset.Now);
             var sut = new NextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
             var config = new Config();

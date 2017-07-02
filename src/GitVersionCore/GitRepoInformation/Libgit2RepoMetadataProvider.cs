@@ -23,7 +23,7 @@ namespace GitVersion.GitRepoInformation
                 var tags = ReadRepoTags(context);
                 var currentBranchInfo = ReadBranchInfo(context, context.CurrentBranch, context.CurrentCommit, tags);
                 var releaseBranches = ReadReleaseBranches(context, tags, currentBranchInfo);
-                var masterBranch = ReadMasterBranch(context, currentBranchInfo, tags);
+                var masterBranch = ReadMasterBranch(context, tags);
 
                 return new GitRepoMetadata(
                     currentBranchInfo,
@@ -32,7 +32,7 @@ namespace GitVersion.GitRepoInformation
             }
         }
 
-        private static List<MBranch> ReadReleaseBranches(GitVersionContext context, List<Tag> allTags, MBranch currentBranch)
+        private static List<MBranch> ReadReleaseBranches(GitVersionContext context, List<MTag> allTags, MBranch currentBranch)
         {
             using (Logger.IndentLog("Building information about release branches"))
             {
@@ -61,56 +61,39 @@ namespace GitVersion.GitRepoInformation
             }
         }
 
-        private static List<Tag> ReadRepoTags(GitVersionContext context)
+        private static List<MTag> ReadRepoTags(GitVersionContext context)
         {
             var olderThan = context.CurrentCommit.When();
             return context.Repository
                 .Tags
-                .Where(tag =>
+                .Select(tag =>
                 {
-                    var commit = tag.PeeledTarget() as Commit;
-                    return commit != null;
+                    var commit = tag.PeeledTarget as Commit;
+                    if (commit == null)
+                    {
+                        return null;
+                    }
+                    var tagDistance = context.RepositoryMetadataProvider.GetCommitCount(
+                        context.CurrentCommit,
+                        context.Repository.Lookup<Commit>(tag.PeeledTarget.Sha));
+
+                    return new MTag(tag.FriendlyName, new MCommit(commit, tagDistance), context.FullConfiguration);
                 })
+                .Where(t => t != null)
                 .ToList();
         }
 
-        static MBranch ReadMasterBranch(GitVersionContext context, MBranch currentBranch, List<Tag> tags)
+        static MBranch ReadMasterBranch(GitVersionContext context, List<MTag> tags)
         {
             var masterBranch = context.Repository.Branches["master"];
             if (masterBranch == null)
             {
                 return null;
             }
-            var masterBranchInfo = ReadBranchInfo(context, masterBranch, masterBranch.Tip, tags);
-            // Do commit counting for tags without commit counts
-            var tagsWithCommitCounts = masterBranchInfo.Tags
-                .Select(masterBranchTag =>
-                {
-                    // We don't need to count if the tag was reachable by current branch (it will already have distance)
-                    var masterTag = masterBranchTag.Tag;
-                    var tagOnCurrent = currentBranch.Tags.FirstOrDefault(t => t.Tag.Commit.Sha == masterTag.Commit.Sha);
-                    if (tagOnCurrent != null)
-                    {
-                        return tagOnCurrent;
-                    }
-
-                    var masterTagDistance = context.RepositoryMetadataProvider.GetCommitCount(
-                        context.CurrentCommit,
-                        context.Repository.Lookup<Commit>(masterTag.Commit.Sha));
-
-                    return new MBranchTag(
-                        masterBranchTag.Branch,
-                        new MTag(masterTag, masterTagDistance));
-                })
-                .ToList();
-
-            masterBranchInfo.Tags.Clear();
-            masterBranchInfo.Tags.AddRange(tagsWithCommitCounts);
-
-            return masterBranchInfo;
+            return ReadBranchInfo(context, masterBranch, masterBranch.Tip, tags);
         }
 
-        private static MBranch ReadBranchInfo(GitVersionContext context, Branch branch, Commit at, List<Tag> allTags)
+        private static MBranch ReadBranchInfo(GitVersionContext context, Branch branch, Commit at, List<MTag> allTags)
         {
             using (Logger.IndentLog($"Calculating branch information for {branch.FriendlyName}"))
             {
@@ -145,9 +128,7 @@ namespace GitVersion.GitRepoInformation
                     }
 
                     // Adding range because the same commit may have two tags
-                    branchTags.AddRange(allTags
-                        .Where(t => t.PeeledTarget.Sha == branchCommit.Sha)
-                        .Select(t => new MTag(t.FriendlyName, new MCommit((Commit)t.PeeledTarget, commitCount), context.FullConfiguration)));
+                    branchTags.AddRange(allTags.Where(t => t.Commit.Sha == branchCommit.Sha));
                     commitCount++;
                 }
 

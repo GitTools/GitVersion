@@ -81,12 +81,7 @@
         public static SemanticVersion MaybeIncrement(GitVersionContext context, BaseVersion version)
         {
             var increment = IncrementStrategyFinder.DetermineIncrementedField(context, version);
-            if (increment != null)
-            {
-                return version.SemanticVersion.IncrementVersion(increment.Value);
-            }
-
-            return version.SemanticVersion;
+            return version.SemanticVersion.IncrementVersion(increment);
         }
     }
 }

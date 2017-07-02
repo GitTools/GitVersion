@@ -72,14 +72,8 @@
 
         private static SemanticVersion PerformIncrement(GitVersionContext context, BaseVersion baseVersion)
         {
-            var semver = baseVersion.SemanticVersion;
             var increment = IncrementStrategyFinder.DetermineIncrementedField(context, baseVersion);
-            if (increment != null)
-            {
-                semver = semver.IncrementVersion(increment.Value);
-            }
-            else Logger.WriteInfo("Skipping version increment");
-            return semver;
+            return baseVersion.SemanticVersion.IncrementVersion(increment);
         }
 
         void UpdatePreReleaseTag(GitVersionContext context, SemanticVersion semanticVersion, string branchNameOverride)

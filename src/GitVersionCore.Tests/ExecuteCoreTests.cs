@@ -303,10 +303,7 @@ CommitDate: 2015-11-10
             vv.AssemblySemVer.ShouldBe("0.1.0.0");
             vv.FileName.ShouldNotBeNullOrEmpty();
 
-            if (fixtureAction != null)
-            {
-                fixtureAction(fixture, vv);
-            }
+            fixtureAction?.Invoke(fixture, vv);
         }
 
         return new LogMessages
