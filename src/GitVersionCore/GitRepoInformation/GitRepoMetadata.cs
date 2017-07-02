@@ -46,6 +46,13 @@ namespace GitVersion.GitRepoInformation
             }
         }
 
+        public MTag(MTag tag, int newDistance)
+        {
+            Name = tag.Name;
+            Commit = new MCommit(tag.Commit.Sha, tag.Commit.When, tag.Commit.Message, newDistance);
+            Version = tag.Version;
+        }
+
         public string Name { get; }
         public MCommit Commit { get; }
         public SemanticVersion Version { get; }

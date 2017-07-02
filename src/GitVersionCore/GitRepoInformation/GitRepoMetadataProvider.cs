@@ -145,7 +145,7 @@ namespace GitVersion
                 var findMergeBase = Repository.ObjectDatabase.FindMergeBase(commit, commitToFindCommonBase);
                 if (findMergeBase != null)
                 {
-                    Logger.WriteInfo($"Found merge base of {findMergeBase.Sha}");
+                    Logger.WriteDebug($"Found possible merge base of {findMergeBase.Sha}, ensuring is not a forward merge");
                     // We do not want to include merge base commits which got forward merged into the other branch
                     Commit forwardMerge;
                     do
@@ -163,19 +163,19 @@ namespace GitVersion
                         {
                             // TODO Fix the logging up in this section
                             var second = forwardMerge.Parents.First();
-                            Logger.WriteDebug("Second " + second.Sha);
+                            Logger.WriteDebug($"It looks like the found merge base was a forward merge, finding next merge base '{sha1Name}' and '{second.Sha}'");
                             var mergeBase = Repository.ObjectDatabase.FindMergeBase(commit, second);
                             if (mergeBase == null)
                             {
-                                Logger.WriteWarning("Could not find mergbase for " + commit);
+                                Logger.WriteWarning($"Could not find mergbase for '{sha1Name}' and '{second.Sha}'");
                             }
                             else
                             {
-                                Logger.WriteDebug("New Merge base " + mergeBase.Sha);
+                                Logger.WriteDebug("Next possible merge base is " + mergeBase.Sha);
                             }
                             if (mergeBase == findMergeBase)
                             {
-                                Logger.WriteDebug("Breaking");
+                                Logger.WriteDebug("Original merge base and forward merge merge base was the same, using original result");
                                 break;
                             }
                             findMergeBase = mergeBase;
