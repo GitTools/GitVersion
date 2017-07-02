@@ -357,7 +357,7 @@ public class ReleaseBranchScenarios
             fixture.AssertFullSemver(config, "2.0.0-beta.1");
 
             fixture.Repository.MergeNoFF("release/2.0.0-xxx");
-            fixture.AssertFullSemver(config, "2.0.0-beta.2");
+            fixture.AssertFullSemver(config, "2.0.0-beta.3");
         }
     }
 
