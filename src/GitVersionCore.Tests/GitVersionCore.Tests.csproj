@@ -101,6 +101,7 @@
     <Compile Include="DocumentationTests.cs" />
     <Compile Include="ConfigProviderTests.cs" />
     <Compile Include="GitVersionContextTests.cs" />
+    <Compile Include="GitVersionInformationGeneratorTests.cs" />
     <Compile Include="Helpers\DirectoryHelper.cs" />
     <Compile Include="IntegrationTests\FileSystemTests.cs" />
     <Compile Include="IntegrationTests\MainlineDevelopmentMode.cs" />

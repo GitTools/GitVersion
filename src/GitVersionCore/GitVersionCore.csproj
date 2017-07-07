@@ -119,6 +119,9 @@
     <Compile Include="GitVersionCacheKey.cs" />
     <Compile Include="GitVersionCacheKeyFactory.cs" />
     <Compile Include="GitVersionException.cs" />
+    <EmbeddedResource Include="GitVersionInformationResources\Templates\GitVersionInformation.cs" />
+    <EmbeddedResource Include="GitVersionInformationResources\AddFormats\GitVersionInformation.cs" />
+    <Compile Include="GitVersionInformationResources\GitVersionInformationGenerator.cs" />
     <Compile Include="Helpers\EncodingHelper.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\IFileSystem.cs" />
@@ -188,6 +191,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <EmbeddedResource Include="GitVersionInformationResources\Templates\GitVersionInformation.fs" />
+    <EmbeddedResource Include="GitVersionInformationResources\AddFormats\GitVersionInformation.fs" />
     <None Include="NugetAssets\GitVersion.nuspec">
       <SubType>Designer</SubType>
     </None>
@@ -196,6 +201,12 @@
   <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="VersionAssemblyInfoResources\AddFormats\VersionAssemblyInfo.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="GitVersionInformationResources\Templates\GitVersionInformation.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="GitVersionInformationResources\AddFormats\GitVersionInformation.vb" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
