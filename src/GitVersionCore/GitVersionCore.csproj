@@ -133,14 +133,15 @@
     <Compile Include="SemanticVersionExtensions.cs" />
     <Compile Include="SemanticVersionFormatValues.cs" />
     <Compile Include="VerbosityLevel.cs" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\AddFormats\VersionAssemblyInfo.cs" />
     <Compile Include="VersionAssemblyInfoResources\AssemblyInfoFileUpdater.cs" />
+    <Compile Include="TemplateManager.cs" />
     <Compile Include="VersionCalculation\MainlineVersionCalculator.cs" />
     <Compile Include="VersionFilters\MinDateVersionFilter.cs" />
     <Compile Include="VersionFilters\IVersionFilter.cs" />
     <Compile Include="VersionFilters\ShaVersionFilter.cs" />
     <Compile Include="StringFormatWith.cs" />
-    <Compile Include="VersionAssemblyInfoResources\AssemblyVersionInfoTemplates.cs" />
-    <EmbeddedResource Include="VersionAssemblyInfoResources\VersionAssemblyInfo.cs" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\Templates\VersionAssemblyInfo.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculator.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\BaseVersion.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\ConfigNextVersionBaseVersionStrategy.cs" />
@@ -181,8 +182,9 @@
     <None Include="FodyWeavers.xml">
       <SubType>Designer</SubType>
     </None>
-    <EmbeddedResource Include="VersionAssemblyInfoResources\VersionAssemblyInfo.vb" />
-    <EmbeddedResource Include="VersionAssemblyInfoResources\VersionAssemblyInfo.fs" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\Templates\VersionAssemblyInfo.vb" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\Templates\VersionAssemblyInfo.fs" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\AddFormats\VersionAssemblyInfo.fs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -190,6 +192,10 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="VersionAssemblyInfoResources\AddFormats\VersionAssemblyInfo.vb" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

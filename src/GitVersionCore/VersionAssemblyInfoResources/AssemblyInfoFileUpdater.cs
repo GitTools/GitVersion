@@ -6,7 +6,6 @@ namespace GitVersion
     using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
-    using GitVersion.VersionAssemblyInfoResources;
 
     public class AssemblyInfoFileUpdater : IDisposable
     {
@@ -18,6 +17,7 @@ namespace GitVersion
         VersionVariables variables;
         IFileSystem fileSystem;
         bool ensureAssemblyInfo;
+        TemplateManager templateManager;
 
         public AssemblyInfoFileUpdater(string assemblyInfoFileName, string workingDirectory, VersionVariables variables, IFileSystem fileSystem, bool ensureAssemblyInfo) :
             this(new HashSet<string> { assemblyInfoFileName }, workingDirectory, variables, fileSystem, ensureAssemblyInfo)
@@ -30,6 +30,8 @@ namespace GitVersion
             this.variables = variables;
             this.fileSystem = fileSystem;
             this.ensureAssemblyInfo = ensureAssemblyInfo;
+
+            templateManager = new TemplateManager(TemplateType.VersionAssemblyInfoResources);
         }
 
         public void Update()
@@ -98,9 +100,9 @@ namespace GitVersion
             }
         }
 
-        static string ReplaceOrAppend(Regex replaceRegex, string inputString, string replaceString, string fileExtension, ref bool appendedAttributes)
+        string ReplaceOrAppend(Regex replaceRegex, string inputString, string replaceString, string fileExtension, ref bool appendedAttributes)
         {
-            var assemblyAddFormat = AssemblyVersionInfoTemplates.GetAssemblyInfoAddFormatFor(fileExtension);
+            var assemblyAddFormat = templateManager.GetAddFormatFor(fileExtension);
 
             if (replaceRegex.IsMatch(inputString))
             {
@@ -115,7 +117,7 @@ namespace GitVersion
             return inputString;
         }
 
-        static IEnumerable<FileInfo> GetAssemblyInfoFiles(string workingDirectory, ISet<string> assemblyInfoFileNames, IFileSystem fileSystem, bool ensureAssemblyInfo)
+        IEnumerable<FileInfo> GetAssemblyInfoFiles(string workingDirectory, ISet<string> assemblyInfoFileNames, IFileSystem fileSystem, bool ensureAssemblyInfo)
         {
             if (assemblyInfoFileNames != null && assemblyInfoFileNames.Any(x => !string.IsNullOrWhiteSpace(x)))
             {
@@ -135,7 +137,7 @@ namespace GitVersion
                 {
                     var assemblyInfoFile = new FileInfo(item);
 
-                    if (AssemblyVersionInfoTemplates.IsSupported(assemblyInfoFile.Extension))
+                    if (templateManager.IsSupported(assemblyInfoFile.Extension))
                     {
                         yield return assemblyInfoFile;
                     }
@@ -143,7 +145,7 @@ namespace GitVersion
             }
         }
 
-        static bool EnsureVersionAssemblyInfoFile(bool ensureAssemblyInfo, IFileSystem fileSystem, string fullPath)
+        bool EnsureVersionAssemblyInfoFile(bool ensureAssemblyInfo, IFileSystem fileSystem, string fullPath)
         {
             if (fileSystem.Exists(fullPath))
             {
@@ -155,7 +157,7 @@ namespace GitVersion
                 return false;
             }
 
-            var assemblyInfoSource = AssemblyVersionInfoTemplates.GetAssemblyInfoTemplateFor(fullPath);
+            var assemblyInfoSource = templateManager.GetTemplateFor(fullPath);
 
             if (!string.IsNullOrWhiteSpace(assemblyInfoSource))
             {
