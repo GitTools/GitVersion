@@ -6,7 +6,7 @@ It solves:
  - Rebuilding tags always produces the same version
  - Not having to rebuild to increment versions
  - Not duplicating version information in multiple places (branch release/2.0.0 already has the version in it, why do I need to change something else)
- - Each branch calculates it's SemVer and versions flow between branches when they are merged
+ - Each branch calculates its SemVer and versions flow between branches when they are merged
  - Pull requests produce unique pre-release version numbers
  - NuGet semver issues
  - Build server integration
