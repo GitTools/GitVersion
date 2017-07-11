@@ -90,6 +90,7 @@
     <Compile Include="BuildServers\GitLabCiMessageGenerationTest.cs" />
     <Compile Include="BuildServers\JenkinsMessageGenerationTests.cs" />
     <Compile Include="BuildServers\MyGetTests.cs" />
+    <Compile Include="BuildServers\VsoAgentBuildNumberTests.cs" />
     <Compile Include="BuildServers\VsoAgentTests.cs" />
     <Compile Include="BuildServers\TeamCityTests.cs" />
     <Compile Include="Configuration\IgnoreConfigTests.cs" />
