@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace GitVersion
 {
@@ -12,13 +13,15 @@ namespace GitVersion
         private Dictionary<Branch, List<SemanticVersion>> semanticVersionTagsOnBranchCache;
         private IRepository Repository { get; set; }
         const string missingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
+        private Config configuration;
 
-        public GitRepoMetadataProvider(IRepository repository)
+        public GitRepoMetadataProvider(IRepository repository, Config configuration)
         {
             mergeBaseCache = new Dictionary<Tuple<Branch, Branch>, MergeBaseData>();
             mergeBaseCommitsCache = new Dictionary<Branch, List<BranchCommit>>();
             semanticVersionTagsOnBranchCache = new Dictionary<Branch, List<SemanticVersion>>();
-            this.Repository = repository;
+            Repository = repository;
+            this.configuration = configuration;
         }
 
         public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(Branch branch, string tagPrefixRegex)
@@ -144,11 +147,18 @@ namespace GitVersion
 
                         if (forwardMerge != null)
                         {
+                            // TODO Fix the logging up in this section
                             var second = forwardMerge.Parents.First();
                             Logger.WriteDebug("Second " + second.Sha);
                             var mergeBase = Repository.ObjectDatabase.FindMergeBase(commit, second);
-                            Logger.WriteDebug("New Merge base " + mergeBase.Sha);
-
+                            if (mergeBase == null)
+                            {
+                                Logger.WriteWarning("Could not find mergbase for " + commit);
+                            }
+                            else
+                            {
+                                Logger.WriteDebug("New Merge base " + mergeBase.Sha);
+                            }
                             if (mergeBase == findMergeBase)
                             {
                                 Logger.WriteDebug("Breaking");
@@ -171,7 +181,7 @@ namespace GitVersion
 
         /// <summary>
         /// Find the commit where the given branch was branched from another branch.
-        /// If there are multiple such commits and branches, returns the newest commit.
+        /// If there are multiple such commits and branches, tries to guess based on commit histories.
         /// </summary>
         public BranchCommit FindCommitBranchWasBranchedFrom(Branch branch, params Branch[] excludedBranches)
         {
@@ -188,7 +198,21 @@ namespace GitVersion
                     return BranchCommit.Empty;
                 }
 
-                return GetMergeCommitsForBranch(branch).ExcludingBranches(excludedBranches).FirstOrDefault(b => !branch.IsSameBranch(b.Branch));
+                var possibleBranches = GetMergeCommitsForBranch(branch)
+                    .ExcludingBranches(excludedBranches)
+                    .Where(b => !branch.IsSameBranch(b.Branch))
+                    .ToList();
+
+                if (possibleBranches.Count > 1)
+                {
+                    var first = possibleBranches.First();
+                    Logger.WriteInfo($"Multiple source branches have been found, picking the first one ({first.Branch.FriendlyName}).\n" +
+                        "This may result in incorrect commit counting.\nOptions were:\n " +
+                        string.Join(", ", possibleBranches.Select(b => b.Branch.FriendlyName)));
+                    return first;
+                }
+
+                return possibleBranches.SingleOrDefault();
             }
         }
 
@@ -202,17 +226,32 @@ namespace GitVersion
                 return mergeBaseCommitsCache[branch];
             }
 
-            var branchMergeBases = Repository.Branches.Select(otherBranch =>
-            {
-                if (otherBranch.Tip == null)
+            var currentBranchConfig = configuration.GetConfigForBranch(branch.FriendlyName);
+            var regexesToCheck = currentBranchConfig == null
+                ? new [] { ".*" } // Match anything if we can't find a branch config
+                : currentBranchConfig.SourceBranches.Select(sb => configuration.Branches[sb].Regex);
+            var branchMergeBases = Repository.Branches
+                .Where(b =>
                 {
-                    Logger.WriteWarning(string.Format(missingTipFormat, otherBranch.FriendlyName));
-                    return BranchCommit.Empty;
-                }
+                    if (b == branch) return false;
+                    var branchCanBeMergeBase = regexesToCheck.Any(regex => Regex.IsMatch(b.FriendlyName, regex));
 
-                var findMergeBase = FindMergeBase(branch, otherBranch);
-                return new BranchCommit(findMergeBase, otherBranch);
-            }).Where(b => b.Commit != null).OrderByDescending(b => b.Commit.Committer.When).ToList();
+                    return branchCanBeMergeBase;
+                })
+                .Select(otherBranch =>
+                {
+                    if (otherBranch.Tip == null)
+                    {
+                        Logger.WriteWarning(string.Format(missingTipFormat, otherBranch.FriendlyName));
+                        return BranchCommit.Empty;
+                    }
+
+                    var findMergeBase = FindMergeBase(branch, otherBranch);
+                    return new BranchCommit(findMergeBase, otherBranch);
+                })
+                .Where(b => b.Commit != null)
+                .OrderByDescending(b => b.Commit.Committer.When)
+                .ToList();
             mergeBaseCommitsCache.Add(branch, branchMergeBases);
 
             return branchMergeBases;

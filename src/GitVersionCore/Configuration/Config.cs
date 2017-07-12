@@ -1,8 +1,10 @@
 ﻿namespace GitVersion
 {
+    using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using YamlDotNet.Serialization;
 
     public class Config
@@ -86,6 +88,33 @@
 
                     branches[_.Key] = MergeObjects(branches[_.Key], _.Value);
                 });
+            }
+        }
+
+        public BranchConfig GetConfigForBranch(string branchName)
+        {
+            if (branchName == null) throw new ArgumentNullException(nameof(branchName));
+            var matches = Branches
+                .Where(b => Regex.IsMatch(branchName, "^" + b.Value.Regex, RegexOptions.IgnoreCase));
+
+            try
+            {
+                return matches
+                    .Select(kvp => kvp.Value)
+                    .SingleOrDefault();
+            }
+            catch (InvalidOperationException)
+            {
+                var matchingConfigs = string.Join("\n - ", matches.Select(m => m.Key));
+                var picked = matches
+                    .Select(kvp => kvp.Value)
+                    .First();
+
+                Logger.WriteWarning(
+                    $"Multiple branch configurations match the current branch branchName of '{branchName}'. " +
+                    $"Using the first matching configuration, '{picked}'. Matching configurations include: '{matchingConfigs}'");
+
+                return picked;
             }
         }
 

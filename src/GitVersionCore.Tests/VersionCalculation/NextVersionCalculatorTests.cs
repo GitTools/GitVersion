@@ -67,7 +67,8 @@
                         "custom", new BranchConfig
                         {
                             Regex = "custom/",
-                            Tag = "useBranchName"
+                            Tag = "useBranchName",
+                            SourceBranches = new List<string>()
                         }
                     }
                 }
@@ -97,7 +98,8 @@
                         "custom", new BranchConfig
                         {
                             Regex = "custom/",
-                            Tag = "alpha.{BranchName}"
+                            Tag = "alpha.{BranchName}",
+                            SourceBranches = new List<string>()
                         }
                     }
                 }

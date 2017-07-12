@@ -8,6 +8,7 @@ v4.0.0
     - The default keys are: master, develop, feature, release, pull-request, hotfix, support
     - Just run GitVersion.exe in your project directory and it will tell you what to change your config keys to
     - For example, `dev(elop)?(ment)?$` is now just `develop`, we suggest not overring regex's unless you really want to use a different convention.
+ - source-branches added as a configuration option for branches, it helps GitVersion pick the correct source branch
 
 v3.0.0
  - NextVersion.txt has been deprecated, only GitVersionConfig.yaml is supported
