@@ -406,4 +406,36 @@ public class MainScenarios : TestBase
         // ✅ succeeds as expected
         fixture.AssertFullSemver(expectedSemanticVersion, configuration);
     }
+
+    [Test]
+    public void Bug1255()
+    {
+        var config = new Config
+        {
+            NextVersion = "5.0",
+            Branches =
+            {
+                {
+                    "master", new BranchConfig
+                    {
+                        Regex = "master",
+                        Tag = "beta",
+                        Increment = IncrementStrategy.Patch,
+                        VersioningMode = VersioningMode.ContinuousDeployment
+                    }
+                }
+            }
+        };
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver(config, "5.0.0-beta.0"); // why not "5.0.0-beta.1"?
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver(config, "5.0.0-beta.1");
+            fixture.Repository.MakeATaggedCommit("v5.0.0-rc.1");
+            fixture.AssertFullSemver(config, "5.0.0-rc.1");
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver(config, "5.0.1-beta.1"); // test fails here, it generates "5.0.0-beta.1" which is not unique and lower than "5.0.0-rc.1"
+        }
+    }
 }
