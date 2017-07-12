@@ -17,7 +17,7 @@
         public GitVersionContext(IRepository repository, Branch currentBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
         {
             Repository = repository;
-            RepositoryMetadataProvider = new GitRepoMetadataProvider(repository);
+            RepositoryMetadataProvider = new GitRepoMetadataProvider(repository, configuration);
             FullConfiguration = configuration;
             OnlyEvaluateTrackedBranches = onlyEvaluateTrackedBranches;
 

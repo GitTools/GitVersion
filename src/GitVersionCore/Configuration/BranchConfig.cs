@@ -1,5 +1,6 @@
 ﻿namespace GitVersion
 {
+    using System.Collections.Generic;
     using YamlDotNet.Serialization;
 
     public class BranchConfig
@@ -25,6 +26,8 @@
             IsReleaseBranch = branchConfiguration.IsReleaseBranch;
             IsMainline = branchConfiguration.IsMainline;
             Name = branchConfiguration.Name;
+            SourceBranches = branchConfiguration.SourceBranches;
+            IsSourceBranchFor = branchConfiguration.IsSourceBranchFor;
         }
 
         [YamlMember(Alias = "mode")]
@@ -53,6 +56,12 @@
 
         [YamlMember(Alias = "regex")]
         public string Regex { get; set; }
+
+        [YamlMember(Alias = "source-branches")]
+        public List<string> SourceBranches { get; set; }
+
+        [YamlMember(Alias = "is-source-branch-for")]
+        public string[] IsSourceBranchFor { get; set; }
 
         [YamlMember(Alias = "tracks-release-branches")]
         public bool? TracksReleaseBranches { get; set; }

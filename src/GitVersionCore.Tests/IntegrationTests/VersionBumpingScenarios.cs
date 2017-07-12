@@ -2,6 +2,7 @@
 using GitVersion;
 using GitVersionCore.Tests;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 [TestFixture]
 public class VersionBumpingScenarios
@@ -13,7 +14,13 @@ public class VersionBumpingScenarios
         {
             Branches =
             {
-                { "master", new BranchConfig { Tag = "pre" } }
+                {
+                    "master", new BranchConfig
+                    {
+                        Tag = "pre",
+                        SourceBranches = new List<string>()
+                    }
+                }
             }
         };
         using (var fixture = new EmptyRepositoryFixture())

@@ -52,10 +52,10 @@
 
                 var develop = fixture.Repository.FindBranch("develop");
                 var release = fixture.Repository.FindBranch("release-2.0.0");
-                var releaseBranchMergeBase = new GitRepoMetadataProvider(fixture.Repository)
+                var releaseBranchMergeBase = new GitRepoMetadataProvider(fixture.Repository, new Config())
                     .FindMergeBase(release, develop);
 
-                var developMergeBase = new GitRepoMetadataProvider(fixture.Repository)
+                var developMergeBase = new GitRepoMetadataProvider(fixture.Repository, new Config())
                     .FindMergeBase(develop, release);
 
                 fixture.Repository.DumpGraph(Console.WriteLine);
@@ -109,10 +109,10 @@
 
                 var develop = fixture.Repository.FindBranch("develop");
                 var release = fixture.Repository.FindBranch("release-2.0.0");
-                var releaseBranchMergeBase = new GitRepoMetadataProvider(fixture.Repository)
+                var releaseBranchMergeBase = new GitRepoMetadataProvider(fixture.Repository, new Config())
                     .FindMergeBase(release, develop);
 
-                var developMergeBase = new GitRepoMetadataProvider(fixture.Repository)
+                var developMergeBase = new GitRepoMetadataProvider(fixture.Repository, new Config())
                     .FindMergeBase(develop, release);
 
                 fixture.Repository.DumpGraph(Console.WriteLine);
@@ -184,10 +184,10 @@
 
                 var develop = fixture.Repository.FindBranch("develop");
                 var release = fixture.Repository.FindBranch("release-2.0.0");
-                var releaseBranchMergeBase = new GitRepoMetadataProvider(fixture.Repository)
+                var releaseBranchMergeBase = new GitRepoMetadataProvider(fixture.Repository, new Config())
                     .FindMergeBase(release, develop);
 
-                var developMergeBase = new GitRepoMetadataProvider(fixture.Repository)
+                var developMergeBase = new GitRepoMetadataProvider(fixture.Repository, new Config())
                     .FindMergeBase(develop, release);
 
                 fixture.Repository.DumpGraph(Console.WriteLine);
