@@ -11,11 +11,6 @@ public class VsoAgentBuildNumberTests
     string logPrefix = "##vso[build.updatebuildnumber]";
     VsoAgent versionBuilder = new VsoAgent();
 
-    [SetUp]
-    public void SetUpVsoAgentBuildNumberTest()
-    {
-    }
-
     [TearDown]
     public void TearDownVsoAgentBuildNumberTest()
     {
