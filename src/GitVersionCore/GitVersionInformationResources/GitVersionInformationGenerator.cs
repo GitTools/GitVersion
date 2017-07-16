@@ -35,8 +35,9 @@
                 originalFileContents = fileSystem.ReadAllText(filePath);
             }
 
-            var template = templateManager.GetTemplateFor(fileName);
-            var addFormat = templateManager.GetAddFormatFor(Path.GetExtension(fileName));
+            var fileExtension = Path.GetExtension(filePath);
+            var template = templateManager.GetTemplateFor(fileExtension);
+            var addFormat = templateManager.GetAddFormatFor(fileExtension);
 
             var members = string.Join(Environment.NewLine, variables.Select(v => string.Format("    " + addFormat, v.Key, v.Value)));
 

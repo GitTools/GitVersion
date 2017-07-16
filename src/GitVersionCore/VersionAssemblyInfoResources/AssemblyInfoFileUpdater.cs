@@ -157,7 +157,7 @@ namespace GitVersion
                 return false;
             }
 
-            var assemblyInfoSource = templateManager.GetTemplateFor(fullPath);
+            var assemblyInfoSource = templateManager.GetTemplateFor(Path.GetExtension(fullPath));
 
             if (!string.IsNullOrWhiteSpace(assemblyInfoSource))
             {

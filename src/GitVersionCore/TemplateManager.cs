@@ -23,10 +23,9 @@
             addFormats = GetEmbeddedTemplates(templateType, "AddFormats").ToDictionary(k => Path.GetExtension(k), v => v);
         }
 
-        public string GetTemplateFor(string file)
+        public string GetTemplateFor(string fileExtension)
         {
             string result = null;
-            var fileExtension = Path.GetExtension(file);
             string template;
 
             if (templates.TryGetValue(fileExtension, out template) && template != null)
