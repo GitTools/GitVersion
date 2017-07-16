@@ -19,8 +19,8 @@
 
         public TemplateManager(TemplateType templateType)
         {
-            templates = GetEmbeddedTemplates(templateType, "Templates").ToDictionary(k => Path.GetExtension(k), v => v);
-            addFormats = GetEmbeddedTemplates(templateType, "AddFormats").ToDictionary(k => Path.GetExtension(k), v => v);
+            templates = GetEmbeddedTemplates(templateType, "Templates").ToDictionary(k => Path.GetExtension(k), v => v, StringComparer.OrdinalIgnoreCase);
+            addFormats = GetEmbeddedTemplates(templateType, "AddFormats").ToDictionary(k => Path.GetExtension(k), v => v, StringComparer.OrdinalIgnoreCase);
         }
 
         public string GetTemplateFor(string fileExtension)
@@ -56,7 +56,7 @@
                 throw new ArgumentNullException(nameof(fileExtension));
             }
 
-            return addFormats.Keys.Contains(fileExtension, StringComparer.OrdinalIgnoreCase);
+            return templates.ContainsKey(fileExtension);
         }
 
         static IEnumerable<string> GetEmbeddedTemplates(TemplateType templateType, string templateCategory)
