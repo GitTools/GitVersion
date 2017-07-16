@@ -59,11 +59,11 @@
             return addFormats.Keys.Contains(fileExtension, StringComparer.OrdinalIgnoreCase);
         }
 
-        static IEnumerable<string> GetEmbeddedTemplates(TemplateType templateType, string blah)
+        static IEnumerable<string> GetEmbeddedTemplates(TemplateType templateType, string templateCategory)
         {
             foreach (var name in typeof(TemplateManager).Assembly.GetManifestResourceNames())
             {
-                if (name.Contains(templateType.ToString()) && name.Contains(blah))
+                if (name.Contains(templateType.ToString()) && name.Contains(templateCategory))
                 {
                     yield return name;
                 }
