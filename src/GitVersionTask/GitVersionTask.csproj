@@ -75,7 +75,7 @@
     <Compile Include="InvalidFileChecker.cs" />
     <Compile Include="TaskLogger.cs" />
     <Compile Include="TempFileTracker.cs" />
-    <Compile Include="AssemblyInfoBuilder\UpdateAssemblyInfo.cs" />
+    <Compile Include="UpdateAssemblyInfo.cs" />
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
