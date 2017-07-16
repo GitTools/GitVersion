@@ -25,6 +25,11 @@
 
         public string GetTemplateFor(string fileExtension)
         {
+            if (fileExtension == null)
+            {
+                throw new ArgumentNullException(nameof(fileExtension));
+            }
+
             string result = null;
             string template;
 
@@ -38,6 +43,11 @@
 
         public string GetAddFormatFor(string fileExtension)
         {
+            if (fileExtension == null)
+            {
+                throw new ArgumentNullException(nameof(fileExtension));
+            }
+
             string result = null;
             string addFormat;
 
