@@ -30,7 +30,7 @@
 
             if (templates.TryGetValue(fileExtension, out template) && template != null)
             {
-                result =  template.ReadAsStringFromEmbeddedResource<TemplateManager>();
+                result = template.ReadAsStringFromEmbeddedResource<TemplateManager>();
             }
 
             return result;
@@ -41,7 +41,7 @@
             string result = null;
             string addFormat;
 
-            if(addFormats.TryGetValue(fileExtension, out addFormat) && addFormat != null)
+            if (addFormats.TryGetValue(fileExtension, out addFormat) && addFormat != null)
             {
                 result = addFormat.ReadAsStringFromEmbeddedResource<TemplateManager>();
             }
