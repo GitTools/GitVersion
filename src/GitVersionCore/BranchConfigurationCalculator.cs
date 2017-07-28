@@ -109,8 +109,11 @@ namespace GitVersion
                 else
                     errorMessage = "Failed to inherit Increment branch configuration, ended up with: " + string.Join(", ", possibleParents.Select(p => p.FriendlyName));
 
-                var chosenBranch = repository.Branches.FirstOrDefault(b => Regex.IsMatch(b.FriendlyName, "^develop", RegexOptions.IgnoreCase)
-                                                                           || Regex.IsMatch(b.FriendlyName, "master$", RegexOptions.IgnoreCase));
+                var developBranchRegex = config.Branches[ConfigurationProvider.DevelopBranchKey].Regex;
+                var masterBranchRegex = config.Branches[ConfigurationProvider.MasterBranchKey].Regex;
+
+                var chosenBranch = repository.Branches.FirstOrDefault(b => Regex.IsMatch(b.FriendlyName, developBranchRegex, RegexOptions.IgnoreCase)
+                                                                           || Regex.IsMatch(b.FriendlyName, masterBranchRegex, RegexOptions.IgnoreCase));
                 if (chosenBranch == null)
                 {
                     // TODO We should call the build server to generate this exception, each build server works differently
