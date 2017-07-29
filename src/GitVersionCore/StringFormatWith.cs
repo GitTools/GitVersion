@@ -17,6 +17,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 #endregion
 
+#if NETDESKTOP
+
 // Originally appeared in http://haacked.com/archive/2009/01/14/named-formats-redux.aspx
 // Authored by Henri Wiechers
 // Ported to NETFx by Daniel Cazzulino
@@ -50,7 +52,7 @@ namespace GitVersion
                 throw new ArgumentNullException("format");
             }
 
-            var result = new StringBuilder(format.Length*2);
+            var result = new StringBuilder(format.Length * 2);
 
             using (var reader = new StringReader(format))
             {
@@ -76,7 +78,7 @@ namespace GitVersion
                                     state = State.OnCloseBracket;
                                     break;
                                 default:
-                                    result.Append((char) @char);
+                                    result.Append((char)@char);
                                     break;
                             }
                             break;
@@ -91,7 +93,7 @@ namespace GitVersion
                                     state = State.OutsideExpression;
                                     break;
                                 default:
-                                    expression.Append((char) @char);
+                                    expression.Append((char)@char);
                                     state = State.InsideExpression;
                                     break;
                             }
@@ -108,7 +110,7 @@ namespace GitVersion
                                     state = State.OutsideExpression;
                                     break;
                                 default:
-                                    expression.Append((char) @char);
+                                    expression.Append((char)@char);
                                     break;
                             }
                             break;
@@ -168,3 +170,5 @@ namespace GitVersion
         }
     }
 }
+
+#endif

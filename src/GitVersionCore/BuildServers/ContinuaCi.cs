@@ -1,5 +1,6 @@
 ﻿namespace GitVersion
 {
+#if NETDESKTOP
     using Microsoft.Win32;
 
     public class ContinuaCi : BuildServerBase
@@ -42,4 +43,7 @@
             return localKey != null;
         }
     }
+
+#endif
+
 }

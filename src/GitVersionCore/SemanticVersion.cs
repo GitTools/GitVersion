@@ -1,5 +1,6 @@
 namespace GitVersion
 {
+    using GitTools;
     using System;
     using System.ComponentModel;
     using System.Text.RegularExpressions;

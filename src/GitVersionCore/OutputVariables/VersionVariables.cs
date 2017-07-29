@@ -6,6 +6,8 @@
     using System.IO;
     using System.Linq;
     using GitVersion.Helpers;
+    using System.Reflection;
+ 
 
     using YamlDotNet.Serialization;
 
@@ -116,7 +118,20 @@
         [ReflectionIgnore]
         public string this[string variable]
         {
-            get { return (string)typeof(VersionVariables).GetProperty(variable).GetValue(this, null); }
+
+
+            get
+            {
+#if NETDESKTOP
+                return typeof(VersionVariables).GetProperty(variable).GetValue(this, null) as string;
+#else
+                throw new NotImplementedException();
+                //  return typeof(VersionVariables).GetTypeInfo().GetProperty(variable).GetValue(this, null) as string;
+#endif
+
+
+
+            }
         }
 
         public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
@@ -137,7 +152,9 @@
         public static VersionVariables FromDictionary(IEnumerable<KeyValuePair<string, string>> properties)
         {
             var type = typeof(VersionVariables);
-            var ctor = type.GetConstructors().Single();
+            var constructors = type.GetConstructors();
+
+            var ctor = constructors.Single();
             var ctorArgs = ctor.GetParameters()
                 .Select(p => properties.Single(v => string.Equals(v.Key, p.Name, StringComparison.CurrentCultureIgnoreCase)).Value)
                 .Cast<object>()
@@ -173,7 +190,12 @@
 
         public bool ContainsKey(string variable)
         {
+#if NETDESKTOP
             return typeof(VersionVariables).GetProperty(variable) != null;
+#else
+            throw new NotImplementedException();
+            // return typeof(VersionVariables).GetTypeInfo().GetProperty(variable) != null;
+#endif
         }
 
         sealed class ReflectionIgnoreAttribute : Attribute

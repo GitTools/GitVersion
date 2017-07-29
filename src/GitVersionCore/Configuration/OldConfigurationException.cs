@@ -10,10 +10,12 @@ namespace GitVersion
         {
         }
 
+#if NETDESKTOP
         protected OldConfigurationException(
             SerializationInfo info,
             StreamingContext context) : base(info, context)
         {
         }
+#endif
     }
 }

@@ -73,6 +73,7 @@
         /// <returns>An ordered list of encodings and corresponding preambles.</returns>
         private static void ScanEncodings()
         {
+            // Might be out of luck finding a replacement for GetEncodings for netcore 1: https://stackoverflow.com/questions/44351507/what-is-net-core-equivalent-of-encoding-getencodings
             EncodingsWithPreambles = (from info in Encoding.GetEncodings()
                                           let encoding = info.GetEncoding()
                                           let preamble = encoding.GetPreamble()

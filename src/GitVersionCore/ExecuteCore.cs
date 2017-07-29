@@ -1,5 +1,6 @@
 namespace GitVersion
 {
+    using GitTools;
     using GitVersion.Helpers;
     using LibGit2Sharp;
     using System;
