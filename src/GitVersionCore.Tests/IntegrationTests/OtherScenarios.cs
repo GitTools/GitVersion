@@ -47,6 +47,20 @@
         }
 
         [Test]
+        public void AllowHavingVariantsStartingWithMaster()
+        {
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.Repository.MakeACommit();
+                fixture.Repository.MakeATaggedCommit("1.0.0");
+                fixture.Repository.MakeACommit();
+                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("masterfix"));
+
+                fixture.AssertFullSemver("1.0.1-masterfix.1+1");
+            }
+        }
+
+        [Test]
         public void AllowHavingMainInsteadOfMaster()
         {
             var config = new Config();
