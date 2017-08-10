@@ -4,6 +4,7 @@ Various people are actively using GitVersion, and taking advantage of the automa
  * [Catel](https://github.com/catel/catel)
  * [ChocolateyGUI](https://github.com/chocolatey/ChocolateyGUI)
  * [GitLink](https://github.com/GitTools/GitLink)
+ * [OctopusDeploy](https://github.com/OctopusDeploy)
  * [Orc.* packages](https://github.com/wildgums?query=orc)
  * [Orchestra](https://github.com/wildgums/orchestra)
  * [Pomona](http://pomona.io/)
