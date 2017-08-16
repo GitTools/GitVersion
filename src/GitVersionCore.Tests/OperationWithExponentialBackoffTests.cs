@@ -3,6 +3,7 @@ using System.IO;
 using GitVersion.Helpers;
 using NUnit.Framework;
 using Shouldly;
+using System.Threading.Tasks;
 
 [TestFixture]
 public class OperationWithExponentialBackoffTests
@@ -74,7 +75,7 @@ public class OperationWithExponentialBackoffTests
     }
 
     [Test]
-    public void OperationDelayDoublesBetweenRetries()
+    public async Task OperationDelayDoublesBetweenRetries()
     {
         const int numberOfRetries = 3;
         var expectedSleepMSec = 500;
@@ -85,22 +86,28 @@ public class OperationWithExponentialBackoffTests
             throw new IOException();
         };
 
-        Action<int> validator = u =>
+        Func<int, Task> validator = (u) =>
         {
-            sleepCount++;
-            u.ShouldBe(expectedSleepMSec);
-            expectedSleepMSec *= 2;
+            return Task.Run(() =>
+                               {
+                                   sleepCount++;
+                                   u.ShouldBe(expectedSleepMSec);
+                                   expectedSleepMSec *= 2;
+                               });
+
         };
 
         var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(validator), operation, numberOfRetries);
-        Action action = () => retryOperation.ExecuteAsync();
-        action.ShouldThrow<AggregateException>();
+        Task action = retryOperation.ExecuteAsync();
+        await action.ShouldThrowAsync<AggregateException>();
+
+        // action.ShouldThrow<AggregateException>();
 
         sleepCount.ShouldBe(numberOfRetries);
     }
 
     [Test]
-    public void TotalSleepTimeForSixRetriesIsAboutThirtySeconds()
+    public async Task TotalSleepTimeForSixRetriesIsAboutThirtySecondsAsync()
     {
         const int numberOfRetries = 6;
         int totalSleep = 0;
@@ -110,14 +117,21 @@ public class OperationWithExponentialBackoffTests
             throw new IOException();
         };
 
-        Action<int> validator = u =>
+        Func<int, Task> validator = (u) =>
         {
-            totalSleep += u;
+            return Task.Run(() =>
+            {
+                totalSleep += u;
+            });
+
         };
 
         var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(validator), operation, numberOfRetries);
-        Action action = () => retryOperation.ExecuteAsync();
-        action.ShouldThrow<AggregateException>();
+
+        Task action = retryOperation.ExecuteAsync();
+        await action.ShouldThrowAsync<AggregateException>();
+        // Action action = () => retryOperation.ExecuteAsync();
+        // action.ShouldThrow<AggregateException>();
 
         // Exact number is 31,5 seconds
         totalSleep.ShouldBe(31500);
