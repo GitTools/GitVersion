@@ -29,7 +29,7 @@ branches:
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-    regex: master
+    regex: master$
     source-branches:
     - develop
     - release
