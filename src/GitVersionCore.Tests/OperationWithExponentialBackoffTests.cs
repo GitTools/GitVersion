@@ -23,7 +23,7 @@ public class OperationWithExponentialBackoffTests
     }
 
     [Test]
-    public void OperationIsNotRetriedOnInvalidException()
+    public async Task OperationIsNotRetriedOnInvalidException()
     {
         Action operation = () =>
         {
@@ -31,12 +31,12 @@ public class OperationWithExponentialBackoffTests
         };
 
         var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), operation);
-        Action action = () => retryOperation.ExecuteAsync();
-        action.ShouldThrow<Exception>();
+        Task action = retryOperation.ExecuteAsync();
+        await action.ShouldThrowAsync<Exception>();
     }
 
     [Test]
-    public void OperationIsRetriedOnIOException()
+    public async Task OperationIsRetriedOnIOException()
     {
         var operationCount = 0;
 
@@ -50,13 +50,13 @@ public class OperationWithExponentialBackoffTests
         };
 
         var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), operation);
-        retryOperation.ExecuteAsync();
+        await retryOperation.ExecuteAsync();
 
         operationCount.ShouldBe(2);
     }
 
     [Test]
-    public void OperationIsRetriedAMaximumNumberOfTimes()
+    public async Task OperationIsRetriedAMaximumNumberOfTimesAsync()
     {
         const int numberOfRetries = 3;
         var operationCount = 0;
@@ -68,8 +68,8 @@ public class OperationWithExponentialBackoffTests
         };
 
         var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), operation, numberOfRetries);
-        Action action = () => retryOperation.ExecuteAsync();
-        action.ShouldThrow<AggregateException>();
+        Task action = retryOperation.ExecuteAsync();
+        await action.ShouldThrowAsync<AggregateException>();
 
         operationCount.ShouldBe(numberOfRetries + 1);
     }
