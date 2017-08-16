@@ -5,6 +5,7 @@ namespace GitVersion
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
     using YamlDotNet.Serialization;
 
     public class GitVersionCache
@@ -16,7 +17,7 @@ namespace GitVersion
             this.fileSystem = fileSystem;
         }
 
-        public void WriteVariablesToDiskCache(GitPreparer gitPreparer, GitVersionCacheKey cacheKey, VersionVariables variablesFromCache)
+        public async Task WriteVariablesToDiskCacheAsync(GitPreparer gitPreparer, GitVersionCacheKey cacheKey, VersionVariables variablesFromCache)
         {
             var cacheDir = PrepareCacheDirectory(gitPreparer);
             var cacheFileName = GetCacheFileName(cacheKey, cacheDir);
@@ -45,7 +46,7 @@ namespace GitVersion
             };
 
             var retryOperation = new OperationWithExponentialBackoff<IOException>(new ThreadSleep(), writeCacheOperation, maxRetries: 6);
-            retryOperation.Execute();
+            await retryOperation.ExecuteAsync();
         }
 
         public static string GetCacheDirectory(GitPreparer gitPreparer)

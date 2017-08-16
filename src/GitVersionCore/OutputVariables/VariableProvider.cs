@@ -53,7 +53,10 @@
             {
                 try
                 {
+#if NETDESKTOP
                     informationalVersion = config.AssemblyInformationalFormat.FormatWith(semverFormatValues);
+#endif
+                    throw new NotImplementedException();
                 }
                 catch (FormatException formex)
                 {

@@ -30,7 +30,7 @@ public class OperationWithExponentialBackoffTests
         };
 
         var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), operation);
-        Action action = () => retryOperation.Execute();
+        Action action = () => retryOperation.ExecuteAsync();
         action.ShouldThrow<Exception>();
     }
 
@@ -49,7 +49,7 @@ public class OperationWithExponentialBackoffTests
         };
 
         var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), operation);
-        retryOperation.Execute();
+        retryOperation.ExecuteAsync();
 
         operationCount.ShouldBe(2);
     }
@@ -67,7 +67,7 @@ public class OperationWithExponentialBackoffTests
         };
 
         var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), operation, numberOfRetries);
-        Action action = () => retryOperation.Execute();
+        Action action = () => retryOperation.ExecuteAsync();
         action.ShouldThrow<AggregateException>();
 
         operationCount.ShouldBe(numberOfRetries + 1);
@@ -93,7 +93,7 @@ public class OperationWithExponentialBackoffTests
         };
 
         var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(validator), operation, numberOfRetries);
-        Action action = () => retryOperation.Execute();
+        Action action = () => retryOperation.ExecuteAsync();
         action.ShouldThrow<AggregateException>();
 
         sleepCount.ShouldBe(numberOfRetries);
@@ -116,7 +116,7 @@ public class OperationWithExponentialBackoffTests
         };
 
         var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(validator), operation, numberOfRetries);
-        Action action = () => retryOperation.Execute();
+        Action action = () => retryOperation.ExecuteAsync();
         action.ShouldThrow<AggregateException>();
 
         // Exact number is 31,5 seconds
