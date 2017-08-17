@@ -1,11 +1,11 @@
 ﻿using System;
-using System.ComponentModel;
 using GitTools.Git;
 using GitTools.Testing;
 using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
+using GitTools;
 
 [TestFixture]
 public class RemoteRepositoryScenarios

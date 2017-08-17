@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -14,6 +13,7 @@ using Microsoft.CodeAnalysis.VisualBasic;
 using NSubstitute;
 using NUnit.Framework;
 using Shouldly;
+using GitTools;
 
 [TestFixture]
 public class AssemblyInfoBuilderTests

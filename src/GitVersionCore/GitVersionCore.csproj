@@ -81,9 +81,7 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.UI" />
+    <Reference Include="System.Xml" />   
 
     <PackageReference Condition="'$(TargetFramework)' == 'net40'" Include="AsyncBridge" Version="0.1.1" />
     <!--<PackageReference Include="Microsoft.Bcl.Async" Version="1.0.168" />-->

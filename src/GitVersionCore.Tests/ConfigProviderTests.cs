@@ -1,9 +1,9 @@
+using GitTools;
 using GitVersion;
 using GitVersion.Helpers;
 using NUnit.Framework;
 using Shouldly;
 using System;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
