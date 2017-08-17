@@ -53,9 +53,9 @@
             {
                 try
                 {
-                    informationalVersion = config.AssemblyInformationalFormat.FormatWith(semverFormatValues);
+                    informationalVersion = config.AssemblyInformationalFormat.FormatWith<SemanticVersionFormatValues>(semverFormatValues);
                 }
-                catch (FormatException formex)
+                catch (ArgumentException formex)
                 {
                     throw new WarningException(string.Format("Unable to format AssemblyInformationalVersion.  Check your format string: {0}", formex.Message));
                 }
