@@ -1,20 +1,21 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props" Condition="Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5A86453B-96FB-4B6E-A283-225BB9F753D3}</ProjectGuid>
+
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+
     <RootNamespace>GitVersionTask.Tests</RootNamespace>
     <AssemblyName>GitVersionTask.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <LangVersion>6</LangVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFramework>net45</TargetFramework>
+
+    <GenerateAssemblyFileVersionAttribute Condition="'$(GenerateAssemblyFileVersionAttribute)' == ''">false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute Condition="'$(GenerateAssemblyInformationalVersionAttribute)' == ''">false</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyProductAttribute Condition="'$(GenerateAssemblyProductAttribute)' == ''">false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyTitleAttribute Condition="'$(GenerateAssemblyTitleAttribute)' == ''">false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyVersionAttribute Condition="'$(GenerateAssemblyVersionAttribute)' == ''">false</GenerateAssemblyVersionAttribute>
+    <GenerateNeutralResourcesLanguageAttribute Condition="'$(GenerateNeutralResourcesLanguageAttribute)' == ''">true</GenerateNeutralResourcesLanguageAttribute>
+
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -40,159 +41,62 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ApprovalTests, Version=3.0.0.0, Culture=neutral, PublicKeyToken=11bd7d124fc62e0f, processorArchitecture=MSIL">
-      <HintPath>..\packages\ApprovalTests.3.0.11\lib\net40\ApprovalTests.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ApprovalUtilities, Version=3.0.0.0, Culture=neutral, PublicKeyToken=11bd7d124fc62e0f, processorArchitecture=MSIL">
-      <HintPath>..\packages\ApprovalUtilities.3.0.11\lib\net45\ApprovalUtilities.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ApprovalUtilities.Net45, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ApprovalUtilities.3.0.11\lib\net45\ApprovalUtilities.Net45.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FluentDateTime, Version=1.13.0.0, Culture=neutral, PublicKeyToken=6ccbc613702e6c71, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentDateTime.1.13.0\lib\NET35\FluentDateTime.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="GitTools.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\GitTools.Core.1.3.0\lib\net45\GitTools.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
-    </Reference>
-    <Reference Include="LibGit2Sharp, Version=0.24.0.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
-      <HintPath>..\packages\LibGit2Sharp.0.24.0\lib\net40\LibGit2Sharp.dll</HintPath>
-    </Reference>
+    <PackageReference Include="ApprovalTests" Version="3.0.11"></PackageReference>
+    <PackageReference Include="ApprovalUtilities" Version="3.0.11"></PackageReference>    
+    <PackageReference Include="FluentDateTime" Version="1.13.0"></PackageReference>
+    <PackageReference Include="GitTools.Core" Version="1.3.0"></PackageReference>
+    <PackageReference Include="JetBrains.Annotations" Version="10.4.0"></PackageReference>
+    <PackageReference Include="Fody" Version="2.0.8"></PackageReference>
+    <PackageReference Include=" ModuleInit.Fody" Version="1.6.0"></PackageReference>   
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="1.3.2"></PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="1.3.2"></PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="1.3.2"></PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="8.0.3"></PackageReference>
+    <PackageReference Include="NSubstitute" Version="1.10.0"></PackageReference>
+    <PackageReference Include="NUnit" Version="3.6.0"></PackageReference>
+    <PackageReference Include="ObjectApproval" Version="1.3.0"></PackageReference>
+    <PackageReference Include="Shouldly" Version="2.7.0"></PackageReference>
+    <PackageReference Include="System.Reflection.Metadata" Version="1.4.2"></PackageReference>
+    <PackageReference Include="System.Collections.Immutable" Version="1.3.1"></PackageReference>
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
-    <Reference Include="Microsoft.CodeAnalysis, Version=1.3.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.1.3.2\lib\net45\Microsoft.CodeAnalysis.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=1.3.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.1.3.2\lib\net45\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.VisualBasic, Version=1.3.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.VisualBasic.1.3.2\lib\net45\Microsoft.CodeAnalysis.VisualBasic.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="NSubstitute, Version=1.10.0.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
-      <HintPath>..\packages\NSubstitute.1.10.0.0\lib\net45\NSubstitute.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="nunit.framework, Version=3.6.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.6.0\lib\net45\nunit.framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ObjectApproval, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ObjectApproval.1.3.0\lib\NET40\ObjectApproval.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Shouldly, Version=2.7.0.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shouldly.2.7.0\lib\net40\Shouldly.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Reflection.Metadata, Version=1.4.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reflection.Metadata.1.4.2\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AssemblyInfoBuilderTests.cs" />
-    <Compile Include="AssemblyLocation.cs" />
-    <Compile Include="GitVersionTaskDirectoryTests.cs" />
-    <Compile Include="InvalidFileCheckerTests.cs" />
-    <Compile Include="Mocks\MockBuildEngine.cs" />
-    <Compile Include="GetVersionTaskTests.cs" />
-    <Compile Include="Helpers\IPostTestDirectoryRemover.cs" />
-    <Compile Include="Helpers\Scrubbers.cs" />
-    <Compile Include="Helpers\SelfCleaningDirectory.cs" />
-    <Compile Include="Mocks\MockTaskItem.cs" />
-    <Compile Include="ModuleInitializer.cs" />
-  </ItemGroup>
+
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyAssemblyVersion_Major.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatch.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatchTag.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatchTag_NugetAssemblyInfo.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatch_NugetAssemblyInfo.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfo.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfoWithMultipleVariables.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyAssemblyVersion_Major_NugetAssemblyInfo.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyCreatedCode.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyCreatedCode_NoNamespaceConflict.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyAssemblyVersion_Major.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatch.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatchTag.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatchTag_NugetAssemblyInfo.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatch_NugetAssemblyInfo.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfo.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfoWithMultipleVariables.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyAssemblyVersion_Major_NugetAssemblyInfo.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyCreatedCode.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyCreatedCode_NoNamespaceConflict.approved.txt" />
+    <Content Include="Approved\**\*.txt" />
+    <None Remove="packages.config" />
     <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GitVersionCore.Tests\GitVersionCore.Tests.csproj">
-      <Project>{BF905F84-382C-440D-92F5-C61108626D8D}</Project>
-      <Name>GitVersionCore.Tests</Name>
     </ProjectReference>
     <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj">
-      <Project>{F9741A0D-B9D7-4557-9A1C-A7252C1071F5}</Project>
-      <Name>GitVersionCore</Name>
     </ProjectReference>
     <ProjectReference Include="..\GitVersionTask\GitVersionTask.csproj">
-      <Project>{f7ac0e71-3e9a-4f6d-b986-e004825a48e1}</Project>
-      <Name>GitVersionTask</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  
+
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Fody.2.0.8\build\dotnet\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.2.0.8\build\dotnet\Fody.targets'))" />
-    <Error Condition="!Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props'))" />
-  </Target>
-  <Import Project="..\packages\Fody.2.0.8\build\dotnet\Fody.targets" Condition="Exists('..\packages\Fody.2.0.8\build\dotnet\Fody.targets')" />
+
 </Project>
