@@ -1,19 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props" Condition="Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GitVersionTask</RootNamespace>
     <AssemblyName>GitVersionTask</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <LangVersion>6</LangVersion>
-    <FileAlignment>512</FileAlignment>
-    <BuildDir>$(SolutionDir)..\build\</BuildDir>
+    <TargetFrameworks>net40</TargetFrameworks>
+    <PackageVersion>0.0.1</PackageVersion>
+    <!--Start of Nuspec metadata-->
+    <NuspecFile>NugetAssets\GitVersionTask.nuspec</NuspecFile>
+    <NuspecProperties>version=$(PackageVersion);configuration=$(Configuration)</NuspecProperties>    
+    <Authors>GitTools and Contributors</Authors>    
+    <!--Additional assembly info -->
+    <Company>$(Authors)</Company>
+    <Product>$(AssemblyName)</Product>
+    
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -21,33 +23,41 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GitTools.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\GitTools.Core.1.3.0\lib\net40\GitTools.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
-    </Reference>
-    <Reference Include="LibGit2Sharp, Version=0.24.0.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
-      <HintPath>..\packages\LibGit2Sharp.0.24.0\lib\net40\LibGit2Sharp.dll</HintPath>
-    </Reference>
+    <!--Todo: the git tools package reference needs to be swapped out from my manually uploaded version to one from the official build
+     See
+     -->
+    <PackageReference Include="Caseless.Fody" Version="1.5.0">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Costura.Fody" Version="1.6.2">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="GitTools.Core" Version="1.3.0">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="LibGit2Sharp" Version="0.25.0-preview-0033">
+      <PrivateAssets>all</PrivateAssets>      
+    </PackageReference>
+    <PackageReference Include="YamlDotNet" Version="4.2.1">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Fody" Version="2.0.8">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
     <Reference Include="Microsoft.Build" />
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Tasks.v4.0" />
@@ -59,30 +69,27 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="YamlDotNet, Version=3.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\YamlDotNet.3.8.0\lib\net35\YamlDotNet.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfoBuilder\AssemblyInfoBuilder.cs" />
-    <Compile Include="AssemblyInfoBuilder\FSharpAssemblyInfoBuilder.cs" />
-    <Compile Include="AssemblyInfoBuilder\VisualBasicAssemblyInfoBuilder.cs" />
-    <Compile Include="AssemblyInfoBuilder\CSharpAssemblyInfoBuilder.cs" />
-    <Compile Include="BuildLogger.cs" />
-    <Compile Include="GitVersionTaskBase.cs" />
-    <Compile Include="WriteVersionInfoToBuildLog.cs" />
-    <Compile Include="GetVersion.cs" />
-    <Compile Include="InvalidFileChecker.cs" />
-    <Compile Include="TaskLogger.cs" />
-    <Compile Include="TempFileTracker.cs" />
-    <Compile Include="AssemblyInfoBuilder\UpdateAssemblyInfo.cs" />
-    <Compile Include="AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="bin\$(Configuration)\net40\lib\**\*.*">
+      <Pack>true</Pack>
+      <PackagePath>build\lib\</PackagePath>
+    </None>
+    <None Include="bin\$(Configuration)\net40\GitVersionTask.*">
+      <Pack>true</Pack>
+      <PackagePath>build\</PackagePath>
+    </None>
     <None Include="app.config" />
-    <None Include="NugetAssets\buildMultiTargeting\GitVersionTask.targets" />
-    <None Include="NugetAssets\build\GitVersionTask.targets" />
+    <None Include="key.snk" />
+    <None Include="NugetAssets\buildMultiTargeting\GitVersionTask.targets">
+      <Pack>true</Pack>
+      <PackagePath>buildMultiTargeting\GitVersionTask.targets</PackagePath>
+    </None>
+    <None Include="NugetAssets\build\GitVersionTask.targets">
+      <Pack>true</Pack>
+      <PackagePath>build\GitVersionTask.targets</PackagePath>
+    </None>  
+
     <None Include="NugetAssets\GitVersionTask.nuspec">
       <SubType>Designer</SubType>
     </None>
@@ -90,65 +97,25 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+
   <ItemGroup>
     <None Include="FodyWeavers.xml">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj">
-      <Project>{f9741a0d-b9d7-4557-9a1c-a7252c1071f5}</Project>
-      <Name>GitVersionCore</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="Clean">
-    <ItemGroup>
-      <FilesToDelete Include="$(BuildDir)NuGetTaskBuild\**\*.*" />
-    </ItemGroup>
-    <Delete Files="@(FilesToDelete)" />
-  </Target>
-  <Target Name="AfterBuild" DependsOnTargets="Clean" Condition="$(NCrunch)=='' And '$(OS)' != 'Unix'">
-    <MakeDir Directories="$(TargetDir)ILMergeTemp\" />
-    <PropertyGroup>
-      <Runtime Condition="'$(OS)'=='Unix'">mono</Runtime>
-    </PropertyGroup>
-    <!-- Copy target file so that our temporary file gets the correct permissions -->
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(TargetDir)ILMergeTemp\" />
-    <Exec Command="$(Runtime) &quot;$(SolutionDir)packages\ILRepack.2.0.13\tools\ILRepack.exe&quot; /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)GitTools.Core.dll&quot; &quot;$(TargetDir)LibGit2Sharp.dll&quot;  &quot;$(TargetDir)YamlDotNet.dll&quot; /target:library /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
-    <ItemGroup>
-      <TempFiles Include="$(TargetDir)ILMergeTemp\*.*" />
-    </ItemGroup>
-    <MakeDir Directories="$(BuildDir)NuGetTaskBuild" />
-    <ItemGroup>
-      <NativeBinaries Include="$(TargetDir)lib\**\*.*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)NuGetTaskBuild\build\lib\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="$(TargetDir)LibGit2Sharp.dll.config" DestinationFiles="$(BuildDir)NuGetTaskBuild\build\GitVersionTask.dll.config" />
-    <Copy SourceFiles="$(TargetDir)ILMergeTemp\GitVersionTask.dll" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)ILMergeTemp\GitVersionTask.dll')" />
-    <Copy SourceFiles="$(TargetDir)GitVersionTask.pdb" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)GitVersionTask.pdb')" />
-    <Copy SourceFiles="$(TargetDir)GitVersionTask.dll.mdb" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)GitVersionTask.dll.mdb')" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\build\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\buildMultiTargeting\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\buildMultiTargeting" />
-    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.nuspec" DestinationFolder="$(BuildDir)NuGetTaskBuild" />
-    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetTaskBuild" MetadataAssembly="$(ILMergeTemp)GitVersionTask.dll" Version="$(GitVersion_NuGetVersion)" />
-    <Delete Files="@(TempFiles)" />
-    <RemoveDir Directories="$(TargetDir)ILMergeTemp\" />
-  </Target>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets'))" />
-    <Error Condition="!Exists('..\packages\Fody.2.0.8\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.2.0.8\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
-    <Error Condition="!Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props'))" />
-  </Target>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>f7ac0e71-3e9a-4f6d-b986-e004825a48e1</ProjectGuid>
+  </PropertyGroup>
+ 
   <PropertyGroup>
     <PostBuildEvent>
+
+      <!--<Target>
+        <Message Importance="High" Text="Hi"></Message>
+      </Target>-->
     </PostBuildEvent>
   </PropertyGroup>
-  <Target Name="ILMerge" BeforeTargets="AfterCompile">
-  </Target>
-  <Import Project="..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" />
-  <Import Project="..\packages\Fody.2.0.8\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.2.0.8\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
 </Project>

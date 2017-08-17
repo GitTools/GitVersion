@@ -84,7 +84,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.UI" />
-    <Reference Include="System.Threading.Tasks" />
 
     <PackageReference Condition="'$(TargetFramework)' == 'net40'" Include="AsyncBridge" Version="0.1.1" />
     <!--<PackageReference Include="Microsoft.Bcl.Async" Version="1.0.168" />-->

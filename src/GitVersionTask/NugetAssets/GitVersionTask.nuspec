@@ -15,5 +15,12 @@
     <tags>Git Versioning GitVersion GitFlowVersion GitFlow GitHubFlow SemVer</tags>
     <developmentDependency>true</developmentDependency>
     <releaseNotes>https://github.com/GitTools/GitVersion/releases</releaseNotes>
+   
   </metadata>
+  <files>
+    <file src="..\bin\$configuration$\net40\lib\**\*.*" target="build\lib\" />
+    <file src="..\bin\$configuration$\net40\GitVersionTask*.*" target="build\" />
+    <file src="**\*.*" target="\" />
+    <!--<file src="\build\GitVersionTask.targets" target="build\" />-->
+  </files>
 </package>

@@ -170,10 +170,6 @@
       <Project>{F9741A0D-B9D7-4557-9A1C-A7252C1071F5}</Project>
       <Name>GitVersionCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GitVersionTask\GitVersionTask.csproj">
-      <Project>{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}</Project>
-      <Name>GitVersionTask</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
