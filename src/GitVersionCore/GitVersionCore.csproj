@@ -63,6 +63,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="VersionAssemblyInfoResources\VersionAssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!--Todo: the git tools package reference needs to be swapped out from my manually uploaded version to one from the official build
      See
      -->
