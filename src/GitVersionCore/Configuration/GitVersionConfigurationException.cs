@@ -2,9 +2,11 @@ namespace GitVersion
 {
     using System;
 
-    public class GitVersionConfigurationException : Exception
+    [Serializable]
+    public class GitVersionConfigurationException : GitVersionException
     {
-        public GitVersionConfigurationException(string msg) : base(msg)
+        public GitVersionConfigurationException(string msg)
+            : base(msg)
         {
         }
     }

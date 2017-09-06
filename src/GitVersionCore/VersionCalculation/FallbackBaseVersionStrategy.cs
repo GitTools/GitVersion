@@ -14,11 +14,22 @@
     {
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
-            var baseVersionSource = context.Repository.Commits.QueryBy(new CommitFilter
+            Commit baseVersionSource;
+            var currentBranchTip = context.CurrentBranch.Tip;
+
+            try
             {
-                IncludeReachableFrom = context.CurrentBranch.Tip
-            }).First(c => !c.Parents.Any());
-            yield return new BaseVersion(context, "Fallback base version", false, new SemanticVersion(minor: 1), baseVersionSource, null);
+                baseVersionSource = context.Repository.Commits.QueryBy(new CommitFilter
+                {
+                    IncludeReachableFrom = currentBranchTip
+                }).First(c => !c.Parents.Any());
+            }
+            catch (NotFoundException exception)
+            {
+                throw new GitVersionException($"Can't find commit {currentBranchTip.Sha}. Please ensure that the repository is an unshallow clone with `git fetch --unshallow`.", exception);
+            }
+
+            yield return new BaseVersion(context, "Fallback base version", false, new SemanticVersion(minor : 1), baseVersionSource, null);
         }
     }
 }
