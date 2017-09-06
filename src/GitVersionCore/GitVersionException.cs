@@ -1,16 +1,12 @@
 ﻿namespace GitVersion
 {
     using System;
-    using System.Runtime.Serialization;
+
+    using GitTools;
 
     [Serializable]
-    public class GitVersionException : ApplicationException
+    public class GitVersionException : GitToolsException
     {
-        public GitVersionException()
-        {
-        }
-
-
         public GitVersionException(string message)
             : base(message)
         {
@@ -19,12 +15,6 @@
 
         public GitVersionException(string message, Exception innerException)
             : base(message, innerException)
-        {
-        }
-
-
-        protected GitVersionException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
         {
         }
     }
