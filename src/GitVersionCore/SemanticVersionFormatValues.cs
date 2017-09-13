@@ -45,7 +45,7 @@
 
         public string PreReleaseNumber
         {
-            get { return _semver.PreReleaseTag.HasTag() ? _semver.PreReleaseTag.Number.ToString() : null; }
+            get { return _semver.PreReleaseTag.HasTag() ? _semver.PreReleaseTag.Number.ToString() : "0"; }
         }
 
         public string BuildMetaData
