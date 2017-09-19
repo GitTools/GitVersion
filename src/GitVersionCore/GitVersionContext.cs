@@ -9,11 +9,6 @@
     /// </summary>
     public class GitVersionContext
     {
-        public GitVersionContext(IRepository repository, Config configuration, bool isForTrackingBranchOnly = true, string commitId = null)
-            : this(repository, repository.Head, configuration, isForTrackingBranchOnly, commitId)
-        {
-        }
-
         public GitVersionContext(IRepository repository, string targetBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
              : this(repository, repository.Branches.SingleOrDefault(b => b.CanonicalName == targetBranch || b.FriendlyName == targetBranch) ?? repository.Head, configuration, onlyEvaluateTrackedBranches, commitId)
         {
