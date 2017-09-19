@@ -108,18 +108,7 @@ namespace GitVersion
 
             return gitPreparer.WithRepository(repo =>
             {
-                // By default, we assume HEAD is pointing to the desired branch
-                var currentBranch = repo.Head;
-
-                // There are some edge cases where HEAD is not pointing to the desired branch.
-                // Therefore it's important to verify if 'currentBranch' is indeed the desired branch
-                if (currentBranch.CanonicalName != targetBranch)
-                {
-                    // In the case where HEAD is not the desired branch, try to find the branch with matching name
-                    currentBranch = repo.Branches.SingleOrDefault(b => b.CanonicalName == targetBranch) ?? repo.Head;
-                }
-
-                var gitVersionContext = new GitVersionContext(repo, currentBranch, configuration, commitId: commitId);
+                var gitVersionContext = new GitVersionContext(repo, targetBranch, configuration, commitId: commitId);
                 var semanticVersion = versionFinder.FindVersion(gitVersionContext);
 
                 return VariableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);

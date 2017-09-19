@@ -14,6 +14,11 @@
         {
         }
 
+        public GitVersionContext(IRepository repository, string targetBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
+             : this(repository, repository.Branches.SingleOrDefault(b => b.CanonicalName == targetBranch || b.FriendlyName == targetBranch) ?? repository.Head, configuration, onlyEvaluateTrackedBranches, commitId)
+        {
+        }
+
         public GitVersionContext(IRepository repository, Branch currentBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
         {
             Repository = repository;
