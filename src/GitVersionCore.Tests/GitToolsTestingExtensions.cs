@@ -15,14 +15,14 @@
             return config;
         }
 
-        public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Config configuration = null, IRepository repository = null, string commitId = null, bool isForTrackedBranchOnly = true)
+        public static VersionVariables GetVersion(this RepositoryFixtureBase fixture, Config configuration = null, IRepository repository = null, string commitId = null, bool isForTrackedBranchOnly = true, string targetBranch = null)
         {
             if (configuration == null)
             {
                 configuration = new Config();
                 ConfigurationProvider.ApplyDefaultsTo(configuration);
             }
-            var gitVersionContext = new GitVersionContext(repository ?? fixture.Repository, configuration, isForTrackedBranchOnly, commitId);
+            var gitVersionContext = new GitVersionContext(repository ?? fixture.Repository, targetBranch, configuration, isForTrackedBranchOnly, commitId);
             var executeGitVersion = ExecuteGitVersion(gitVersionContext);
             var variables = VariableProvider.GetVariablesFor(executeGitVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
             try
@@ -37,19 +37,19 @@
             }
         }
 
-        public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver, IRepository repository = null, string commitId = null, bool isForTrackedBranchOnly = true)
+        public static void AssertFullSemver(this RepositoryFixtureBase fixture, string fullSemver, IRepository repository = null, string commitId = null, bool isForTrackedBranchOnly = true, string targetBranch = null)
         {
-            fixture.AssertFullSemver(new Config(), fullSemver, repository, commitId, isForTrackedBranchOnly);
+            fixture.AssertFullSemver(new Config(), fullSemver, repository, commitId, isForTrackedBranchOnly, targetBranch);
         }
 
-        public static void AssertFullSemver(this RepositoryFixtureBase fixture, Config configuration, string fullSemver, IRepository repository = null, string commitId = null, bool isForTrackedBranchOnly = true)
+        public static void AssertFullSemver(this RepositoryFixtureBase fixture, Config configuration, string fullSemver, IRepository repository = null, string commitId = null, bool isForTrackedBranchOnly = true, string targetBranch = null)
         {
             ConfigurationProvider.ApplyDefaultsTo(configuration);
             Console.WriteLine("---------");
 
             try
             {
-                var variables = fixture.GetVersion(configuration, repository, commitId, isForTrackedBranchOnly);
+                var variables = fixture.GetVersion(configuration, repository, commitId, isForTrackedBranchOnly, targetBranch);
                 variables.FullSemVer.ShouldBe(fullSemver);
             }
             catch (Exception)

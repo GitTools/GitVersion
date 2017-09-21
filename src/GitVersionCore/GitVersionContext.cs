@@ -9,8 +9,8 @@
     /// </summary>
     public class GitVersionContext
     {
-        public GitVersionContext(IRepository repository, Config configuration, bool isForTrackingBranchOnly = true, string commitId = null)
-            : this(repository, repository.Head, configuration, isForTrackingBranchOnly, commitId)
+        public GitVersionContext(IRepository repository, string targetBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
+             : this(repository, GitVersionContext.GetTargetBranch(repository, targetBranch), configuration, onlyEvaluateTrackedBranches, commitId)
         {
         }
 
@@ -145,6 +145,32 @@
                 FullConfiguration.Ignore.ToFilters(),
                 currentBranchConfig.TracksReleaseBranches.Value,
                 currentBranchConfig.IsReleaseBranch.Value);
+        }
+
+        private static Branch GetTargetBranch(IRepository repository, string targetBranch)
+        {
+            // By default, we assume HEAD is pointing to the desired branch
+            var desiredBranch = repository.Head;
+
+            // Make sure the desired branch has been specified
+            if (!string.IsNullOrEmpty(targetBranch))
+            {
+                // There are some edge cases where HEAD is not pointing to the desired branch.
+                // Therefore it's important to verify if 'currentBranch' is indeed the desired branch.
+                if (desiredBranch.CanonicalName != targetBranch)
+                {
+                    // In the case where HEAD is not the desired branch, try to find the branch with matching name
+                    desiredBranch = repository?.Branches?
+                        .SingleOrDefault(b =>
+                            b.CanonicalName == targetBranch ||
+                            b.FriendlyName == targetBranch);
+
+                    // Failsafe in case the specified branch is invalid
+                    desiredBranch = desiredBranch ?? repository.Head;
+                }
+            }
+
+            return desiredBranch;
         }
     }
 }
