@@ -1,202 +1,76 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props" Condition="Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BF905F84-382C-440D-92F5-C61108626D8D}</ProjectGuid>
+    <TargetFramework>net461</TargetFramework>
+    <!--<TargetFramework>net40</TargetFramework>-->
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GitVersionCore.Tests</RootNamespace>
     <AssemblyName>GitVersionCore.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <LangVersion>6</LangVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <!--<GenerateAssemblyCompanyAttribute Condition="'$(GenerateAssemblyCompanyAttribute)' == ''">true</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyConfigurationAttribute Condition="'$(GenerateAssemblyConfigurationAttribute)' == ''">true</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCopyrightAttribute Condition="'$(GenerateAssemblyCopyrightAttribute)' == ''">true</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyDescriptionAttribute Condition="'$(GenerateAssemblyDescriptionAttribute)' == ''">true</GenerateAssemblyDescriptionAttribute>-->
+    <GenerateAssemblyFileVersionAttribute Condition="'$(GenerateAssemblyFileVersionAttribute)' == ''">false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute Condition="'$(GenerateAssemblyInformationalVersionAttribute)' == ''">false</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyProductAttribute Condition="'$(GenerateAssemblyProductAttribute)' == ''">false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyTitleAttribute Condition="'$(GenerateAssemblyTitleAttribute)' == ''">false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyVersionAttribute Condition="'$(GenerateAssemblyVersionAttribute)' == ''">false</GenerateAssemblyVersionAttribute>
+    <GenerateNeutralResourcesLanguageAttribute Condition="'$(GenerateNeutralResourcesLanguageAttribute)' == ''">true</GenerateNeutralResourcesLanguageAttribute>
   </PropertyGroup>
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FluentDateTime, Version=1.13.0.0, Culture=neutral, PublicKeyToken=6ccbc613702e6c71, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentDateTime.1.13.0\lib\NET35\FluentDateTime.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="GitTools.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\GitTools.Core.1.3.0\lib\net45\GitTools.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="GitTools.Testing, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\GitTools.Testing.1.1.1-beta0001\lib\net4\GitTools.Testing.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
-      <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
-    </Reference>
-    <Reference Include="LibGit2Sharp, Version=0.24.0.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
-      <HintPath>..\packages\LibGit2Sharp.0.24.0\lib\net40\LibGit2Sharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="NSubstitute, Version=1.10.0.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
-      <HintPath>..\packages\NSubstitute.1.10.0.0\lib\net45\NSubstitute.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="nunit.framework, Version=3.6.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.6.0\lib\net45\nunit.framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Shouldly, Version=2.7.0.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shouldly.2.7.0\lib\net40\Shouldly.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
+    <PackageReference Include="FluentDateTime" Version="1.13.0" />
+    <PackageReference Include="GitTools.Core" Version="1.3.1" />
+    <PackageReference Include="GitTools.Testing" Version="1.2.0" />
+    <PackageReference Include="JetBrains.Annotations" Version="10.4.0" />
+    <PackageReference Include="NSubstitute" Version="1.10.0.0" />
+    <PackageReference Include="NUnit" Version="3.8.1" />
+    <PackageReference Include="Shouldly" Version="2.7.0" />
+    <PackageReference Include="TestStack.ConventionTests" Version="3.0.0" />
+    <PackageReference Include="YamlDotNet" Version="4.2.1" />
+    
+    <!--<PackageReference Include="Microsoft.CSharp" Version="4.4.0" />-->
+  </ItemGroup>
+  <!--<Reference Include="Microsoft.CSharp" />-->
+  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TestStack.ConventionTests, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TestStack.ConventionTests.3.0.0\lib\net40\TestStack.ConventionTests.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="YamlDotNet, Version=4.2.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\YamlDotNet.4.2.1\lib\net35\YamlDotNet.dll</HintPath>
-    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+   
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AssemblyFileVersionTests.cs" />
-    <Compile Include="BuildServers\BuildServerBaseTests.cs" />
-    <Compile Include="BuildServers\ContinuaCiTests.cs" />
-    <Compile Include="BuildServers\EnvironmentVariableJenkinsTests.cs" />
-    <Compile Include="BuildServers\GitLabCiMessageGenerationTest.cs" />
-    <Compile Include="BuildServers\JenkinsMessageGenerationTests.cs" />
-    <Compile Include="BuildServers\MyGetTests.cs" />
-    <Compile Include="BuildServers\VsoAgentBuildNumberTests.cs" />
-    <Compile Include="BuildServers\VsoAgentTests.cs" />
-    <Compile Include="BuildServers\TeamCityTests.cs" />
-    <Compile Include="Configuration\IgnoreConfigTests.cs" />
-    <Compile Include="DynamicRepositoryTests.cs" />
-    <Compile Include="GitRepoMetadataProviderTests.cs" />
-    <Compile Include="GitToolsTestingExtensions.cs" />
-    <Compile Include="DocumentationTests.cs" />
-    <Compile Include="ConfigProviderTests.cs" />
-    <Compile Include="GitVersionContextTests.cs" />
-    <Compile Include="Helpers\DirectoryHelper.cs" />
-    <Compile Include="IntegrationTests\FileSystemTests.cs" />
-    <Compile Include="IntegrationTests\MainlineDevelopmentMode.cs" />
-    <Compile Include="LogMessages.cs" />
-    <Compile Include="Mocks\MockThreadSleep.cs" />
-    <Compile Include="OperationWithExponentialBackoffTests.cs" />
-    <Compile Include="Init\InitScenarios.cs" />
-    <Compile Include="Init\InitStepsDefaultResponsesDoNotThrow.cs" />
-    <Compile Include="Init\TestConsole.cs" />
-    <Compile Include="IntegrationTests\OtherScenarios.cs" />
-    <Compile Include="IntegrationTests\PullRequestScenarios.cs" />
-    <Compile Include="IntegrationTests\RemoteRepositoryScenarios.cs" />
-    <Compile Include="IntegrationTests\DevelopScenarios.cs" />
-    <Compile Include="IntegrationTests\FeatureBranchScenarios.cs" />
-    <Compile Include="IntegrationTests\SupportBranchScenarios.cs" />
-    <Compile Include="IntegrationTests\HotfixBranchScenarios.cs" />
-    <Compile Include="IntegrationTests\ReleaseBranchScenarios.cs" />
-    <Compile Include="IntegrationTests\SwitchingToGitFlowScenarios.cs" />
-    <Compile Include="IntegrationTests\VersionBumpingScenarios.cs" />
-    <Compile Include="IntegrationTests\DocumentationSamples.cs" />
-    <Compile Include="IntegrationTests\OtherBranchScenarios.cs" />
-    <Compile Include="InformationalVersionBuilderTests.cs" />
-    <Compile Include="JsonVersionBuilderTests.cs" />
-    <Compile Include="LoggerTest.cs" />
-    <Compile Include="Mocks\MockBranch.cs" />
-    <Compile Include="Mocks\MockBranchCollection.cs" />
-    <Compile Include="Mocks\MockCommit.cs" />
-    <Compile Include="Mocks\MockCommitLog.cs" />
-    <Compile Include="Mocks\MockMergeCommit.cs" />
-    <Compile Include="Mocks\MockQueryableCommitLog.cs" />
-    <Compile Include="Mocks\MockReferenceCollection.cs" />
-    <Compile Include="Mocks\MockReflogCollection.cs" />
-    <Compile Include="Mocks\MockRepository.cs" />
-    <Compile Include="Mocks\MockTag.cs" />
-    <Compile Include="Mocks\MockTagAnnotation.cs" />
-    <Compile Include="Mocks\MockTagCollection.cs" />
-    <Compile Include="ModuleInitializer.cs" />
-    <Compile Include="Helpers\PathHelper.cs" />
-    <Compile Include="IntegrationTests\MasterScenarios.cs" />
-    <Compile Include="SemanticVersionTests.cs" />
-    <Compile Include="TestableVersionVariables.cs" />
-    <Compile Include="TestEffectiveConfiguration.cs" />
-    <Compile Include="TestFileSystem.cs" />
-    <Compile Include="TestStream.cs" />
-    <Compile Include="VariableProviderTests.cs" />
-    <Compile Include="ExecuteCoreTests.cs" />
-    <Compile Include="VersionCalculation\BaseVersionCalculatorTests.cs" />
-    <Compile Include="VersionCalculation\NextVersionCalculatorTests.cs" />
-    <Compile Include="VersionCalculation\Strategies\ConfigNextVersionBaseVersionStrategyTests.cs" />
-    <Compile Include="GitVersionContextBuilder.cs" />
-    <Compile Include="VersionCalculation\Strategies\MergeMessageBaseVersionStrategyTests.cs" />
-    <Compile Include="VersionCalculation\Strategies\VersionInBranchNameBaseVersionStrategyTests.cs" />
-    <Compile Include="VersionCalculation\TestBaseVersionCalculator.cs" />
-    <Compile Include="VersionCalculation\TestMetaDataCalculator.cs" />
-    <Compile Include="VersionFilters\MinDateVersionFilterTests.cs" />
-    <Compile Include="VersionFilters\ShaVersionFilterTests.cs" />
-  </ItemGroup>
+
   <ItemGroup>
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj">
-      <Project>{f9741a0d-b9d7-4557-9a1c-a7252c1071f5}</Project>
-      <Name>GitVersionCore</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="FodyWeavers.xml" />
-    <Content Include="Approved\JsonVersionBuilderTests.Json.approved.txt" />
-    <Content Include="Approved\VariableProviderTests.ProvidesVariablesInContinuousDeliveryModeForPreRelease.approved.txt" />
-    <Content Include="Approved\VariableProviderTests.ProvidesVariablesInContinuousDeliveryModeForPreReleaseWithPadding.approved.txt" />
-    <Content Include="Approved\VariableProviderTests.ProvidesVariablesInContinuousDeliveryModeForStable.approved.txt" />
-    <Content Include="Approved\VariableProviderTests.ProvidesVariablesInContinuousDeploymentModeForPreRelease.approved.txt" />
-    <Content Include="Approved\VariableProviderTests.ProvidesVariablesInContinuousDeploymentModeForStable.approved.txt" />
-    <Content Include="Approved\VariableProviderTests.ProvidesVariablesInContinuousDeploymentModeForStableWhenCurrentCommitIsTagged.approved.txt" />
+    <Content Include="Approved\**\*.approved.txt" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Fody.2.0.8\build\dotnet\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.2.0.8\build\dotnet\Fody.targets'))" />
-    <Error Condition="!Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.NativeBinaries.1.0.185\build\LibGit2Sharp.NativeBinaries.props'))" />
-  </Target>
-  <Import Project="..\packages\Fody.2.0.8\build\dotnet\Fody.targets" Condition="Exists('..\packages\Fody.2.0.8\build\dotnet\Fody.targets')" />
+
 </Project>
