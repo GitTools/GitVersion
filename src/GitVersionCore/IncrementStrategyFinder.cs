@@ -126,5 +126,17 @@
         {
             return new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
         }
+
+        public static VersionField FindDefaultIncrementForBranch( GitVersionContext context, string branch = null )
+        {
+            var config = context.FullConfiguration.GetConfigForBranch(branch ?? context.CurrentBranch.FriendlyName);
+            if ( config?.Increment != null && config.Increment != IncrementStrategy.Inherit )
+            {
+                return config.Increment.Value.ToVersionField();
+            }
+
+            // Fallback to patch
+            return VersionField.Patch;
+        }
     }
 }
