@@ -60,13 +60,15 @@ When updating assembly info, `assembly-versioning-scheme` tells GitVersion how
 to treat the `AssemblyVersion` attribute. Useful to lock the major when using
 Strong Naming. Note: you can use `None` to skip updating the `AssemblyVersion`
 while still updating the `AssemblyFileVersion` and `AssemblyInformationVersion`
-attributes.
+attributes. Valid values: `MajorMinorPatchTag`, `MajorMinorPatch`, `MajorMinor`,
+`Major`, `None`.
 
 ### assembly-file-versioning-scheme
 When updating assembly info, `assembly-file-versioning-scheme` tells GitVersion how
 to treat the `AssemblyFileVersion` attribute. Note: you can use `None` to skip updating the `AssemblyFileVersion`
 while still updating the `AssemblyVersion` and `AssemblyInformationVersion`
-attributes.
+attributes. Valid values: `MajorMinorPatchTag`, `MajorMinorPatch`, `MajorMinor`,
+`Major`, `None`.
 
 ### assembly-informational-format
 Set this to any of the available [variables](/more-info/variables) to change the
