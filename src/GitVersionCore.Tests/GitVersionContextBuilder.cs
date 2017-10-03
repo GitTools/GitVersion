@@ -75,7 +75,8 @@
                     mockBranch
                 },
                 Tags = new MockTagCollection(),
-                Head = mockBranch
+                Head = mockBranch,
+                ObjectDatabase = new MockObjectDatabase()
             };
 
             return mockRepository;

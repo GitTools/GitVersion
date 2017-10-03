@@ -6,6 +6,8 @@ namespace GitVersion.VersionCalculation
     using BaseVersionCalculators;
     using GitTools;
     using LibGit2Sharp;
+    using System;
+    using GitVersion.GitRepoInformation;
 
     /// <summary>
     /// Active only when the branch is marked as IsDevelop.
@@ -27,11 +29,28 @@ namespace GitVersion.VersionCalculation
     {
         VersionInBranchNameBaseVersionStrategy releaseVersionStrategy = new VersionInBranchNameBaseVersionStrategy();
         TaggedCommitVersionStrategy taggedCommitVersionStrategy = new TaggedCommitVersionStrategy();
+        Func<IBaseVersionCalculator> getBaseVersionCalculator;
+
+        public TrackReleaseBranchesVersionStrategy(Func<IBaseVersionCalculator> getBaseVersionCalculator)
+        {
+            this.getBaseVersionCalculator = getBaseVersionCalculator;
+        }
 
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
             if (context.Configuration.TracksReleaseBranches)
             {
+
+
+                // I feel this is actually a recursive path for GitVersion and rather than
+                // having all this logic in here, we should just run it for each release branch and master
+
+                // Something like this, but will need to refactor BaseVersionStrategy
+                //var baseVersionCalculator = getBaseVersionCalculator();
+                //context.RepositoryMetadata.ReleaseBranches
+                //    .Select(r => baseVersionCalculator.GetBaseVersion()
+
+
                 return ReleaseBranchBaseVersions(context).Union(MasterTagsVersions(context));
             }
 
@@ -40,10 +59,10 @@ namespace GitVersion.VersionCalculation
 
         private IEnumerable<BaseVersion> MasterTagsVersions(GitVersionContext context)
         {
-            var master = context.Repository.FindBranch("master");
+            var master = context.RepositoryMetadata.MasterBranch;
             if (master != null)
             {
-                return taggedCommitVersionStrategy.GetTaggedVersions(context, master, null);
+                return taggedCommitVersionStrategy.GetTaggedVersions(context, master);
             }
 
             return new BaseVersion[0];
@@ -51,40 +70,32 @@ namespace GitVersion.VersionCalculation
 
         private IEnumerable<BaseVersion> ReleaseBranchBaseVersions(GitVersionContext context)
         {
-            var releaseBranchConfig = context.FullConfiguration.Branches
-                .Where(b => b.Value.IsReleaseBranch == true)
+            return context
+                .RepositoryMetadata
+                .ReleaseBranches
+                .SelectMany(b => GetReleaseVersion(context, b))
+                .Select(baseVersion =>
+                {
+                    // Need to drop branch overrides and give a bit more context about
+                    // where this version came from
+                    var source1 = "Release branch exists -> " + baseVersion.Source;
+                    return new BaseVersion(context,
+                        source1,
+                        baseVersion.ShouldIncrement,
+                        baseVersion.SemanticVersion,
+                        baseVersion.BaseVersionSource,
+                        null);
+                })
                 .ToList();
-            if (releaseBranchConfig.Any())
-            {
-                var releaseBranches = context.Repository.Branches
-                    .Where(b => releaseBranchConfig.Any(c => Regex.IsMatch(b.FriendlyName, c.Key)));
-
-                return releaseBranches
-                    .SelectMany(b => GetReleaseVersion(context, b))
-                    .Select(baseVersion =>
-                    {
-                        // Need to drop branch overrides and give a bit more context about
-                        // where this version came from
-                        var source1 = "Release branch exists -> " + baseVersion.Source;
-                        return new BaseVersion(context,
-                            source1,
-                            baseVersion.ShouldIncrement,
-                            baseVersion.SemanticVersion,
-                            baseVersion.BaseVersionSource,
-                            null);
-                    })
-                    .ToList();
-            }
-            return new BaseVersion[0];
         }
 
-        IEnumerable<BaseVersion> GetReleaseVersion(GitVersionContext context, Branch releaseBranch)
+        IEnumerable<BaseVersion> GetReleaseVersion(GitVersionContext context, MBranch releaseBranch)
         {
             var tagPrefixRegex = context.Configuration.GitTagPrefix;
             var repository = context.Repository;
 
             // Find the commit where the child branch was created.
-            var baseSource = context.RepositoryMetadataProvider.FindMergeBase(releaseBranch, context.CurrentBranch);
+            var baseSource = context.RepositoryMetadataProvider.FindMergeBase(releaseBranch.TipSha, context.CurrentCommit.Sha);
             if (baseSource == context.CurrentCommit)
             {
                 // Ignore the branch if it has no commits.

@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace GitVersion
 {
-    class MergeMessage
+    public class MergeMessage
     {
         static Regex parseMergeMessage = new Regex(
             @"^Merge (branch|tag) '(?<Branch>[^']*)'",
@@ -15,12 +15,12 @@ namespace GitVersion
         static Regex smartGitMergeMessage = new Regex(
             @"^Finish (?<Branch>.*)",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        private string mergeMessage;
         private Config config;
 
-        public MergeMessage(string mergeMessage, Config config)
+        public MergeMessage(string mergeMessage, string sourceCommitSha, Config config)
         {
-            this.mergeMessage = mergeMessage;
+            Message = mergeMessage;
+            SourceCommitSha = sourceCommitSha;
             this.config = config;
 
             var lastIndexOf = mergeMessage.LastIndexOf("into", StringComparison.OrdinalIgnoreCase);
@@ -51,19 +51,19 @@ namespace GitVersion
 
         private string ParseBranch()
         {
-            var match = parseMergeMessage.Match(mergeMessage);
+            var match = parseMergeMessage.Match(Message);
             if (match.Success)
             {
                 return match.Groups["Branch"].Value;
             }
 
-            match = smartGitMergeMessage.Match(mergeMessage);
+            match = smartGitMergeMessage.Match(Message);
             if (match.Success)
             {
                 return match.Groups["Branch"].Value;
             }
 
-            match = parseGitHubPullMergeMessage.Match(mergeMessage);
+            match = parseGitHubPullMergeMessage.Match(Message);
             if (match.Success)
             {
                 IsMergedPullRequest = true;
@@ -80,10 +80,12 @@ namespace GitVersion
             return "";
         }
 
+        public string Message { get; }
         public string TargetBranch { get; }
         public string MergedBranch { get; }
         public bool IsMergedPullRequest { get; private set; }
         public int? PullRequestNumber { get; private set; }
         public SemanticVersion Version { get; }
+        public string SourceCommitSha { get; private set; }
     }
 }

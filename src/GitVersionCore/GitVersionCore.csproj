@@ -114,7 +114,9 @@
     <Compile Include="ExecuteCore.cs" />
     <Compile Include="Extensions\ReadEmbeddedResourceExtensions.cs" />
     <Compile Include="GitPreparer.cs" />
-    <Compile Include="GitRepoMetadataProvider.cs" />
+    <Compile Include="GitRepoInformation\GitRepoMetadata.cs" />
+    <Compile Include="GitRepoInformation\GitRepoMetadataProvider.cs" />
+    <Compile Include="GitRepoInformation\Libgit2RepoMetadataProvider.cs" />
     <Compile Include="GitVersionCache.cs" />
     <Compile Include="GitVersionCacheKey.cs" />
     <Compile Include="GitVersionCacheKeyFactory.cs" />
@@ -134,6 +136,7 @@
     <Compile Include="SemanticVersionFormatValues.cs" />
     <Compile Include="VerbosityLevel.cs" />
     <Compile Include="VersionCalculation\MainlineVersionCalculator.cs" />
+    <Compile Include="VersionCalculation\TrackReleaseBranchesVersionStrategy.cs" />
     <Compile Include="VersionFilters\MinDateVersionFilter.cs" />
     <Compile Include="VersionFilters\IVersionFilter.cs" />
     <Compile Include="VersionFilters\ShaVersionFilter.cs" />
@@ -147,7 +150,6 @@
     <Compile Include="VersionCalculation\BaseVersionCalculators\MergeMessageBaseVersionStrategy.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\VersionInBranchNameBaseVersionStrategy.cs" />
     <Compile Include="VersionCalculation\BaseVersionStrategy.cs" />
-    <Compile Include="VersionCalculation\DevelopVersionStrategy.cs" />
     <Compile Include="VersionCalculation\FallbackBaseVersionStrategy.cs" />
     <Compile Include="VersionCalculation\IBaseVersionCalculator.cs" />
     <Compile Include="VersionCalculation\IMetaDataCalculator.cs" />
