@@ -437,6 +437,35 @@ public class MainlineDevelopmentMode
             Console.WriteLine(fixture.SequenceDiagram.GetDiagram());
         }
     }
+
+    [Test]
+    public void ReleaseWithIncrementedPatchMergedIntoMaster()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            string release02 = "release/0.2";
+            string featureMyFeature = "feature/my-feature";
+
+            fixture.Repository.MakeACommit("initial master commit");
+
+            fixture.Repository.CreateBranch(release02);
+            fixture.Checkout(release02);
+            fixture.Repository.MakeACommit("initial release commit");
+
+            fixture.Repository.CreateBranch(featureMyFeature);
+            fixture.Checkout(featureMyFeature);
+            fixture.Repository.MakeACommit("initial feature commit");
+            fixture.Repository.MakeACommit("second feature commit");
+
+            fixture.Checkout(release02);
+            fixture.Repository.MergeNoFF(featureMyFeature);
+            //fixture.AssertFullSemver(config, "0.2.2-beta.4");
+
+            fixture.Checkout("master");
+            fixture.MergeNoFF(release02);
+            fixture.AssertFullSemver(config, "0.2.2");
+        }
+    }
 }
 
 static class CommitExtensions
