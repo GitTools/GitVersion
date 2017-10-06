@@ -127,6 +127,7 @@
             var minorMessage = FullConfiguration.MinorVersionBumpMessage;
             var patchMessage = FullConfiguration.PatchVersionBumpMessage;
             var noBumpMessage = FullConfiguration.NoBumpMessage;
+            var commitDateFormat = FullConfiguration.CommitDateFormat;
 
             var commitMessageVersionBump = currentBranchConfig.CommitMessageIncrementing ?? FullConfiguration.CommitMessageIncrementing.Value;
 
@@ -144,7 +145,8 @@
                 FullConfiguration.CommitsSinceVersionSourcePadding.Value,
                 FullConfiguration.Ignore.ToFilters(),
                 currentBranchConfig.TracksReleaseBranches.Value,
-                currentBranchConfig.IsReleaseBranch.Value);
+                currentBranchConfig.IsReleaseBranch.Value,
+                commitDateFormat);
         }
 
         private static Branch GetTargetBranch(IRepository repository, string targetBranch)

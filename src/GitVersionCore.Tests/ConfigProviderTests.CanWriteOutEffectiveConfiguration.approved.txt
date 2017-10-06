@@ -114,3 +114,4 @@ branches:
     is-mainline: true
 ignore:
   sha: []
+commit-date-format: yyyy-MM-dd
