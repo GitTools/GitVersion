@@ -119,8 +119,6 @@
     <Compile Include="GitVersionCacheKey.cs" />
     <Compile Include="GitVersionCacheKeyFactory.cs" />
     <Compile Include="GitVersionException.cs" />
-    <EmbeddedResource Include="GitVersionInformationResources\Templates\GitVersionInformation.cs" />
-    <EmbeddedResource Include="GitVersionInformationResources\AddFormats\GitVersionInformation.cs" />
     <Compile Include="GitVersionInformationResources\GitVersionInformationGenerator.cs" />
     <Compile Include="Helpers\EncodingHelper.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
