@@ -66,18 +66,6 @@
     </Reference>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
-    <Reference Include="Microsoft.CodeAnalysis, Version=1.3.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.1.3.2\lib\net45\Microsoft.CodeAnalysis.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=1.3.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.1.3.2\lib\net45\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.VisualBasic, Version=1.3.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.VisualBasic.1.3.2\lib\net45\Microsoft.CodeAnalysis.VisualBasic.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -100,23 +88,14 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Reflection.Metadata, Version=1.4.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reflection.Metadata.1.4.2\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfoBuilderTests.cs" />
     <Compile Include="AssemblyLocation.cs" />
     <Compile Include="GitVersionTaskDirectoryTests.cs" />
     <Compile Include="InvalidFileCheckerTests.cs" />
@@ -135,28 +114,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyAssemblyVersion_Major.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatch.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatchTag.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatchTag_NugetAssemblyInfo.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatch_NugetAssemblyInfo.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfo.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfoWithMultipleVariables.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyAssemblyVersion_Major_NugetAssemblyInfo.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyCreatedCode.approved.txt" />
-    <Content Include="Approved\CSharp\AssemblyInfoBuilderTests.VerifyCreatedCode_NoNamespaceConflict.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyAssemblyVersion_Major.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatch.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatchTag.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatchTag_NugetAssemblyInfo.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinorPatch_NugetAssemblyInfo.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfo.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyAssemblyVersion_MajorMinor_NugetAssemblyInfoWithMultipleVariables.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyAssemblyVersion_Major_NugetAssemblyInfo.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyCreatedCode.approved.txt" />
-    <Content Include="Approved\VisualBasic\AssemblyInfoBuilderTests.VerifyCreatedCode_NoNamespaceConflict.approved.txt" />
     <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -175,10 +132,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
