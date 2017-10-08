@@ -5,6 +5,7 @@
 // You can modify this code as we will not overwrite it when re-executing GitVersion
 // </auto-generated> 
 //------------------------------------------------------------------------------
+namespace GitVersionAssemblyInfoFile
 
 open System.Reflection
 

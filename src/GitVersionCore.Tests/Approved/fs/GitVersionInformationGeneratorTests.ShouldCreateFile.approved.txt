@@ -10,7 +10,7 @@
 
 [<AbstractClass; Sealed>]
 [<global.System.Runtime.CompilerServices.CompilerGenerated>]
-module GitVersionInformation =
+module GitVersionInformation
     let Major = "1"
     let Minor = "2"
     let Patch = "3"

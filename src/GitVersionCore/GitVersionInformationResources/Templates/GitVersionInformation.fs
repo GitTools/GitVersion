@@ -10,5 +10,5 @@
 
 [<AbstractClass; Sealed>]
 [<global.System.Runtime.CompilerServices.CompilerGenerated>]
-module GitVersionInformation =
+module GitVersionInformation
 {0}
