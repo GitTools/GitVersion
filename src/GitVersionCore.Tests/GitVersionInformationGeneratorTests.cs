@@ -14,7 +14,7 @@ namespace GitVersionCore.Tests
     public class GitVersionInformationGeneratorTests
     {
         [SetUp]
-        public void SetLoggers()
+        public void Setup()
         {
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestCaseAttribute>();
         }

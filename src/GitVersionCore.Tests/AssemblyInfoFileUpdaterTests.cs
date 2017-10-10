@@ -13,7 +13,7 @@ using Shouldly;
 public class AssemblyInfoFileUpdaterTests
 {
     [SetUp]
-    public void SetLoggers()
+    public void Setup()
     {
         ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestCaseAttribute>();
     }
