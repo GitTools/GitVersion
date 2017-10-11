@@ -46,7 +46,7 @@ namespace GitVersion.VersionCalculation
                     IncludeReachableFrom = context.CurrentBranch,
                     ExcludeReachableFrom = baseVersion.BaseVersionSource,
                     SortBy = CommitSortStrategies.Reverse,
-                    FirstParentOnly = true
+                    FirstParentOnly = false
                 })
                 .Where(c => c.Sha != baseVersion.BaseVersionSource.Sha)
                 .Except(commitsNotOnMainline)
