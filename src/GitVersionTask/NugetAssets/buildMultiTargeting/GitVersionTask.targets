@@ -21,6 +21,10 @@
     <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' and '$(NCrunch)' != '' ">false</UpdateAssemblyInfo>
     <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
 
+    <!-- Property that enables GenerateGitVersionInformation -->
+    <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' and '$(NCrunch)' != '' ">false</GenerateGitVersionInformation>
+    <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' ">true</GenerateGitVersionInformation>
+
     <GetVersion Condition=" '$(GetVersion)' == '' and '$(NCrunch)' != '' ">false</GetVersion>
     <GetVersion Condition=" '$(GetVersion)' == '' ">true</GetVersion>
 
@@ -33,6 +37,9 @@
 
   <UsingTask
       TaskName="GitVersionTask.UpdateAssemblyInfo"
+      AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll" />
+  <UsingTask
+      TaskName="GitVersionTask.GenerateGitVersionInformation"
       AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll" />
   <UsingTask
     TaskName="GitVersionTask.GetVersion"

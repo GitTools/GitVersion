@@ -22,6 +22,10 @@
     <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' and '$(NCrunch)' != '' ">false</UpdateAssemblyInfo>
     <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
 
+    <!-- Property that enables GenerateGitVersionInformation -->
+    <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' and '$(NCrunch)' != '' ">false</GenerateGitVersionInformation>
+    <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' ">true</GenerateGitVersionInformation>
+
     <!-- Property that enables setting of Version -->
     <UpdateVersionProperties Condition=" '$(UpdateVersionProperties)' == '' ">true</UpdateVersionProperties>
     <UseFullSemVerForNuGet Condition=" '$(UseFullSemVerForNuGet)' == '' ">false</UseFullSemVerForNuGet>
@@ -36,6 +40,9 @@
   <UsingTask
       TaskName="GitVersionTask.UpdateAssemblyInfo"
       AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll" />
+  <UsingTask
+     TaskName="GitVersionTask.GenerateGitVersionInformation"
+     AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll" />
   <UsingTask
     TaskName="GitVersionTask.GetVersion"
     AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll"  />
@@ -55,7 +62,7 @@
     NoFetch="$(GitVersion_NoFetchEnabled)"
     ProjectFile="$(MSBuildProjectFullPath)"
     IntermediateOutputPath="$(IntermediateOutputPath)"
-    RootNamespace="$(RootNamespace)"
+    Language="$(Language)"
     CompileFiles ="@(Compile)">
       <Output
         TaskParameter="AssemblyInfoTempFilePath"
@@ -64,6 +71,24 @@
 
     <ItemGroup>
       <Compile Include="$(AssemblyInfoTempFilePath)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GenerateGitVersionInformation" BeforeTargets="CoreCompile" Condition="$(GenerateGitVersionInformation) == 'true'">
+    <GenerateGitVersionInformation
+    SolutionDirectory="$(GitVersionPath)"
+    NoFetch="$(GitVersion_NoFetchEnabled)"
+    ProjectFile="$(MSBuildProjectFullPath)"
+    IntermediateOutputPath="$(IntermediateOutputPath)"
+    Language="$(Language)">
+      <Output
+        TaskParameter="GitVersionInformationFilePath"
+        PropertyName="GitVersionInformationFilePath" />
+    </GenerateGitVersionInformation>
+
+    <ItemGroup>
+      <Compile Include="$(GitVersionInformationFilePath)" />
+      <FileWrites Include="$(GitVersionInformationFilePath)" />
     </ItemGroup>
   </Target>
 

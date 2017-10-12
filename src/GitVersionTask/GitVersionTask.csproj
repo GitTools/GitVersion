@@ -64,18 +64,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfoBuilder\AssemblyInfoBuilder.cs" />
-    <Compile Include="AssemblyInfoBuilder\FSharpAssemblyInfoBuilder.cs" />
-    <Compile Include="AssemblyInfoBuilder\VisualBasicAssemblyInfoBuilder.cs" />
-    <Compile Include="AssemblyInfoBuilder\CSharpAssemblyInfoBuilder.cs" />
     <Compile Include="BuildLogger.cs" />
+    <Compile Include="GenerateGitVersionInformation.cs" />
     <Compile Include="GitVersionTaskBase.cs" />
     <Compile Include="WriteVersionInfoToBuildLog.cs" />
     <Compile Include="GetVersion.cs" />
     <Compile Include="InvalidFileChecker.cs" />
     <Compile Include="TaskLogger.cs" />
     <Compile Include="TempFileTracker.cs" />
-    <Compile Include="AssemblyInfoBuilder\UpdateAssemblyInfo.cs" />
+    <Compile Include="UpdateAssemblyInfo.cs" />
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

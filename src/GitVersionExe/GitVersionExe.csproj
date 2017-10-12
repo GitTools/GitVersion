@@ -62,7 +62,6 @@
     <Compile Include="HelpWriter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="AssemblyInfoFileUpdate.cs" />
     <Compile Include="SpecifiedArgumentRunner.cs" />
     <Compile Include="VersionWriter.cs" />
   </ItemGroup>
