@@ -11,29 +11,15 @@ namespace GitVersionCore.Tests
     [TestFixture]
     public class CommitDateTests
     {
-        public static IEnumerable<TestCaseData> CommitDateFormatTestCases
-        {
-            get
-            {
-                var date = new DateTime(2017, 10, 6);
-
-                var testCasesFormats = new[]
-                {
-                    "yyyy-MM-dd",
-                    "dd.MM.yyyy",
-                    "yyyyMMdd",
-                    "yyyy-MM"
-                };
-
-                foreach (var format in testCasesFormats)
-                    yield return new TestCaseData(date, format, date.ToString(format));
-            }
-        }
-
         [Test]
-        [TestCaseSource(nameof(CommitDateFormatTestCases))]
-        public void CommitDateFormatTest(DateTime date, string format, string expectedOutcome)
+        [TestCase("yyyy-MM-dd", "2017-10-06")]
+        [TestCase("dd.MM.yyyy", "06.10.2017")]
+        [TestCase("yyyyMMdd", "20171006")]
+        [TestCase("yyyy-MM", "2017-10")]
+        public void CommitDateFormatTest(string format, string expectedOutcome)
         {
+            var date = new DateTime(2017, 10, 6);
+
             var formatValues = new SemanticVersionFormatValues(
                                     new SemanticVersion
                                     {
