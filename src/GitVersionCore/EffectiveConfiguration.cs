@@ -29,7 +29,8 @@ namespace GitVersion
             int commitsSinceVersionSourcePadding,
             IEnumerable<IVersionFilter> versionFilters,
             bool tracksReleaseBranches,
-            bool isCurrentBranchRelease)
+            bool isCurrentBranchRelease,
+            string commitDateFormat)
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
             AssemblyFileVersioningScheme = assemblyFileVersioningScheme;
@@ -55,6 +56,7 @@ namespace GitVersion
             VersionFilters = versionFilters;
             TracksReleaseBranches = tracksReleaseBranches;
             IsCurrentBranchRelease = isCurrentBranchRelease;
+            CommitDateFormat = commitDateFormat;
         }
 
         public bool TracksReleaseBranches { get; private set; }
@@ -105,5 +107,7 @@ namespace GitVersion
         public CommitMessageIncrementMode CommitMessageIncrementing { get; private set; }
 
         public IEnumerable<IVersionFilter> VersionFilters { get; private set; }
+
+        public string CommitDateFormat { get; private set; }
     }
 }

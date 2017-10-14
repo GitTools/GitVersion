@@ -44,6 +44,7 @@ legacy-semver-padding: 4
 build-metadata-padding: 4
 commits-since-version-source-padding: 4
 commit-message-incrementing: Enabled
+commit-date-format: 'yyyy-MM-dd'
 ignore:
   sha: []
   commits-before: yyyy-MM-ddTHH:mm:ss
@@ -135,6 +136,9 @@ set to `4`, which will pad the `CommitsSinceVersionSource` value of `1` to
 Sets whether it should be possible to increment the version with special syntax
 in the commit message. See the `*-version-bump-message` options above for
 details on the syntax. Default set to `Enabled`; set to `Disabled` to disable.
+
+### commit-date-format
+Sets the format which will be used to format the `CommitDate` output variable.
 
 ### ignore
 The header for ignore configuration.

@@ -94,6 +94,7 @@
     <Compile Include="BuildServers\VsoAgentBuildNumberTests.cs" />
     <Compile Include="BuildServers\VsoAgentTests.cs" />
     <Compile Include="BuildServers\TeamCityTests.cs" />
+    <Compile Include="CommitDateTests.cs" />
     <Compile Include="Configuration\IgnoreConfigTests.cs" />
     <Compile Include="DynamicRepositoryTests.cs" />
     <Compile Include="GitRepoMetadataProviderTests.cs" />
