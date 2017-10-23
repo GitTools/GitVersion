@@ -86,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyFileVersionTests.cs" />
+    <Compile Include="AssemblyInfoFileUpdaterTests.cs" />
     <Compile Include="BuildServers\BuildServerBaseTests.cs" />
     <Compile Include="BuildServers\ContinuaCiTests.cs" />
     <Compile Include="BuildServers\EnvironmentVariableJenkinsTests.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="BuildServers\VsoAgentBuildNumberTests.cs" />
     <Compile Include="BuildServers\VsoAgentTests.cs" />
     <Compile Include="BuildServers\TeamCityTests.cs" />
+    <Compile Include="CommitDateTests.cs" />
     <Compile Include="Configuration\IgnoreConfigTests.cs" />
     <Compile Include="DynamicRepositoryTests.cs" />
     <Compile Include="GitRepoMetadataProviderTests.cs" />
@@ -102,6 +104,7 @@
     <Compile Include="DocumentationTests.cs" />
     <Compile Include="ConfigProviderTests.cs" />
     <Compile Include="GitVersionContextTests.cs" />
+    <Compile Include="GitVersionInformationGeneratorTests.cs" />
     <Compile Include="Helpers\DirectoryHelper.cs" />
     <Compile Include="IntegrationTests\FileSystemTests.cs" />
     <Compile Include="IntegrationTests\MainlineDevelopmentMode.cs" />
@@ -175,6 +178,27 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="FodyWeavers.xml" />
+    <Content Include="Approved\cs\AssemblyInfoFileUpdaterTests.ShouldAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFile.approved.txt" />
+    <Content Include="Approved\cs\AssemblyInfoFileUpdaterTests.ShouldCreateAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\cs\AssemblyInfoFileUpdaterTests.ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\cs\AssemblyInfoFileUpdaterTests.ShouldCreateAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\cs\AssemblyInfoFileUpdaterTests.ShouldNotAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFileWhenVersionSchemeIsNone.approved.txt" />
+    <Content Include="Approved\cs\AssemblyInfoFileUpdaterTests.ShouldNotReplaceAssemblyVersionWhenVersionSchemeIsNone.approved.txt" />
+    <Content Include="Approved\cs\GitVersionInformationGeneratorTests.ShouldCreateFile.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdaterTests.ShouldAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFile.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdaterTests.ShouldCreateAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdaterTests.ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdaterTests.ShouldCreateAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdaterTests.ShouldNotAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFileWhenVersionSchemeIsNone.approved.txt" />
+    <Content Include="Approved\fs\AssemblyInfoFileUpdaterTests.ShouldNotReplaceAssemblyVersionWhenVersionSchemeIsNone.approved.txt" />
+    <Content Include="Approved\fs\GitVersionInformationGeneratorTests.ShouldCreateFile.approved.txt" />
+    <Content Include="Approved\vb\AssemblyInfoFileUpdaterTests.ShouldAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFile.approved.txt" />
+    <Content Include="Approved\vb\AssemblyInfoFileUpdaterTests.ShouldCreateAssemblyInfoFileAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\vb\AssemblyInfoFileUpdaterTests.ShouldCreateAssemblyInfoFilesAtPathWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\vb\AssemblyInfoFileUpdaterTests.ShouldCreateAssemblyInfoFileWhenNotExistsAndEnsureAssemblyInfo.approved.txt" />
+    <Content Include="Approved\vb\AssemblyInfoFileUpdaterTests.ShouldNotAddAssemblyInformationalVersionWhenUpdatingAssemblyVersionFileWhenVersionSchemeIsNone.approved.txt" />
+    <Content Include="Approved\vb\AssemblyInfoFileUpdaterTests.ShouldNotReplaceAssemblyVersionWhenVersionSchemeIsNone.approved.txt" />
+    <Content Include="Approved\vb\GitVersionInformationGeneratorTests.ShouldCreateFile.approved.txt" />
     <Content Include="Approved\JsonVersionBuilderTests.Json.approved.txt" />
     <Content Include="Approved\VariableProviderTests.ProvidesVariablesInContinuousDeliveryModeForPreRelease.approved.txt" />
     <Content Include="Approved\VariableProviderTests.ProvidesVariablesInContinuousDeliveryModeForPreReleaseWithPadding.approved.txt" />

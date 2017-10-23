@@ -110,6 +110,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="GitVersionInformationResources\AddFormats\GitVersionInformation.cs" />
+    <EmbeddedResource Include="GitVersionInformationResources\AddFormats\GitVersionInformation.fs" />
+    <EmbeddedResource Include="GitVersionInformationResources\AddFormats\GitVersionInformation.vb" />
+    <EmbeddedResource Include="GitVersionInformationResources\Templates\GitVersionInformation.cs" />
+    <EmbeddedResource Include="GitVersionInformationResources\Templates\GitVersionInformation.fs" />
+    <EmbeddedResource Include="GitVersionInformationResources\Templates\GitVersionInformation.vb" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\AddFormats\VersionAssemblyInfo.cs" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\AddFormats\VersionAssemblyInfo.fs" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\AddFormats\VersionAssemblyInfo.vb" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\Templates\VersionAssemblyInfo.cs" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\Templates\VersionAssemblyInfo.fs" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\Templates\VersionAssemblyInfo.vb" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="FodyWeavers.xml">
       <SubType>Designer</SubType>
     </None>

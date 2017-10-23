@@ -109,7 +109,7 @@ namespace GitVersion
 
             return gitPreparer.WithRepository(repo =>
             {
-                var gitVersionContext = new GitVersionContext(repo, configuration, commitId: commitId);
+                var gitVersionContext = new GitVersionContext(repo, targetBranch, configuration, commitId: commitId);
                 var semanticVersion = versionFinder.FindVersion(gitVersionContext);
 
                 return VariableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);

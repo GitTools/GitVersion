@@ -144,7 +144,7 @@
                 Commands.Checkout(repo.Repository, featureBranch);
                 repo.Repository.MakeACommit();
 
-                var context = new GitVersionContext(repo.Repository, config);
+                var context = new GitVersionContext(repo.Repository, repo.Repository.Head, config);
                 context.Configuration.Increment.ShouldBe(IncrementStrategy.Major);
             }
         }
