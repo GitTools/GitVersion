@@ -9,6 +9,5 @@ namespace GitVersion
             : base(message)
         {
         }
-#endif
     }
 }

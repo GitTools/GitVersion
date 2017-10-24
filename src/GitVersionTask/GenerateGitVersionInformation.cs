@@ -6,6 +6,7 @@
     using GitVersion;
     using GitVersion.Helpers;
     using Microsoft.Build.Framework;
+    using GitTools;
 
     public class GenerateGitVersionInformation : GitVersionTaskBase
     {
@@ -41,7 +42,7 @@
                 InnerExecute();
                 return true;
             }
-            catch (WarningException errorException)
+            catch (GitTools.WarningException errorException)
             {
                 logger.LogWarning(errorException.Message);
                 return true;

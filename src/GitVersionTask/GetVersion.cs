@@ -1,10 +1,11 @@
 ﻿namespace GitVersionTask
 {
     using System;
-    using System.ComponentModel;
     using GitVersion;
 
     using Microsoft.Build.Framework;
+    using GitTools;
+    using System.Reflection;
 
     public class GetVersion : GitVersionTaskBase
     {

@@ -2,12 +2,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-
     <OutputType>Library</OutputType>
-
     <RootNamespace>GitVersionTask.Tests</RootNamespace>
     <AssemblyName>GitVersionTask.Tests</AssemblyName>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFramework>net461</TargetFramework>
 
     <GenerateAssemblyFileVersionAttribute Condition="'$(GenerateAssemblyFileVersionAttribute)' == ''">false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInformationalVersionAttribute Condition="'$(GenerateAssemblyInformationalVersionAttribute)' == ''">false</GenerateAssemblyInformationalVersionAttribute>
@@ -15,9 +13,7 @@
     <GenerateAssemblyTitleAttribute Condition="'$(GenerateAssemblyTitleAttribute)' == ''">false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyVersionAttribute Condition="'$(GenerateAssemblyVersionAttribute)' == ''">false</GenerateAssemblyVersionAttribute>
     <GenerateNeutralResourcesLanguageAttribute Condition="'$(GenerateNeutralResourcesLanguageAttribute)' == ''">true</GenerateNeutralResourcesLanguageAttribute>
-
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+   
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,10 +37,11 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
     <PackageReference Include="ApprovalTests" Version="3.0.11"></PackageReference>
     <PackageReference Include="ApprovalUtilities" Version="3.0.11"></PackageReference>    
     <PackageReference Include="FluentDateTime" Version="1.13.0"></PackageReference>
-    <PackageReference Include="GitTools.Core" Version="1.3.0"></PackageReference>
+    <PackageReference Include="GitTools.Core" Version="1.3.1"></PackageReference>
     <PackageReference Include="JetBrains.Annotations" Version="10.4.0"></PackageReference>
     <PackageReference Include="Fody" Version="2.0.8"></PackageReference>
     <PackageReference Include="ModuleInit.Fody" Version="1.6.0"></PackageReference>   
@@ -53,15 +50,13 @@
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="1.3.2"></PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="8.0.3"></PackageReference>
     <PackageReference Include="NSubstitute" Version="1.10.0"></PackageReference>
-    <PackageReference Include="NUnit" Version="3.6.0"></PackageReference>
+    <PackageReference Include="NUnit" Version="3.8.1"></PackageReference>
     <PackageReference Include="ObjectApproval" Version="1.3.0"></PackageReference>
     <PackageReference Include="Shouldly" Version="2.7.0"></PackageReference>
     <PackageReference Include="System.Reflection.Metadata" Version="1.4.2"></PackageReference>
     <PackageReference Include="System.Collections.Immutable" Version="1.3.1"></PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.Build.Framework" />
-    <Reference Include="Microsoft.Build.Utilities.v4.0" />
+  <ItemGroup>  
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -81,19 +76,13 @@
     <None Remove="packages.config" />
     <None Include="FodyWeavers.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GitVersionCore.Tests\GitVersionCore.Tests.csproj">
-    </ProjectReference>
-    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj">
-    </ProjectReference>
+  <ItemGroup>     
     <ProjectReference Include="..\GitVersionTask\GitVersionTask.csproj">
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-  </ItemGroup>
-  
-
+  </ItemGroup> 
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>

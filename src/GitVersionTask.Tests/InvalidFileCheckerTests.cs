@@ -1,9 +1,9 @@
 ﻿using System;
-using System.ComponentModel;
 using System.IO;
 using GitVersionTask.Tests.Mocks;
 using Microsoft.Build.Framework;
 using NUnit.Framework;
+using GitTools;
 
 [TestFixture]
 public class InvalidFileCheckerTests

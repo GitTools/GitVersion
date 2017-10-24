@@ -1,14 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.3;net40</TargetFrameworks>
-     <TargetFramework>net40</TargetFramework>
+    <TargetFrameworks>netstandard1.3;net40</TargetFrameworks>    
     <OutputType>Library</OutputType>
     <RootNamespace>GitVersion</RootNamespace>
     <AssemblyName>GitVersionCore</AssemblyName>
     <BuildDir>$(SolutionDir)..\build\</BuildDir>
     <!--Start of Nuspec metadata-->
-    <PackageId>GitVersion</PackageId>
+    <PackageId>GitVersionCore</PackageId>
     <Title>GitVersion</Title>
     <Authors>GitTools and Contributors</Authors>
     <PackageProjectUrl>https://github.com/GitTools/GitVersion</PackageProjectUrl>
@@ -22,11 +21,6 @@
     <!--Additional assembly info -->
     <Company>$(Authors)</Company>
     <Product>$(AssemblyName)</Product>
-
-    <!--<GenerateAssemblyCompanyAttribute Condition="'$(GenerateAssemblyCompanyAttribute)' == ''">true</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyConfigurationAttribute Condition="'$(GenerateAssemblyConfigurationAttribute)' == ''">true</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCopyrightAttribute Condition="'$(GenerateAssemblyCopyrightAttribute)' == ''">true</GenerateAssemblyCopyrightAttribute>
-    <GenerateAssemblyDescriptionAttribute Condition="'$(GenerateAssemblyDescriptionAttribute)' == ''">true</GenerateAssemblyDescriptionAttribute>-->
     <GenerateAssemblyFileVersionAttribute Condition="'$(GenerateAssemblyFileVersionAttribute)' == ''">false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInformationalVersionAttribute Condition="'$(GenerateAssemblyInformationalVersionAttribute)' == ''">false</GenerateAssemblyInformationalVersionAttribute>
     <GenerateAssemblyProductAttribute Condition="'$(GenerateAssemblyProductAttribute)' == ''">false</GenerateAssemblyProductAttribute>
@@ -34,10 +28,7 @@
     <GenerateAssemblyVersionAttribute Condition="'$(GenerateAssemblyVersionAttribute)' == ''">false</GenerateAssemblyVersionAttribute>
     <GenerateNeutralResourcesLanguageAttribute Condition="'$(GenerateNeutralResourcesLanguageAttribute)' == ''">true</GenerateNeutralResourcesLanguageAttribute>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net45'">
-    <DefineConstants>TRACE;NET45;NETDESKTOP</DefineConstants>
-  </PropertyGroup>
+ 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net40'">
     <DefineConstants>TRACE;NET40;NETDESKTOP</DefineConstants>
   </PropertyGroup>
@@ -60,39 +51,34 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <DocumentationFile>bin\Release\GitVersionCore.xml</DocumentationFile>
-  </PropertyGroup>
+  </PropertyGroup> 
 
-  <ItemGroup>
-    <Compile Remove="VersionAssemblyInfoResources\VersionAssemblyInfo.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!--Todo: the git tools package reference needs to be swapped out from my manually uploaded version to one from the official build
-     See
-     -->
-    <PackageReference Include="Caseless.Fody" Version="1.5.0" />
-    <PackageReference Include="GitTools.Core" Version="1.3.0" />
+  <ItemGroup>     
+    <PackageReference Include="GitTools.Core" Version="1.3.1" />
     <PackageReference Include="YamlDotNet" Version="4.2.1" />
-    <PackageReference Include="Fody" Version="2.0.8">
-      <PrivateAssets>All</PrivateAssets>
-    </PackageReference>
-
+    <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="[1.0.185]" PrivateAssets="contentFiles" />  
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net40' OR '$(TargetFramework)' == 'net45' ">
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net40' ">
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />   
-
-    <PackageReference Condition="'$(TargetFramework)' == 'net40'" Include="AsyncBridge" Version="0.1.1" />
-    <!--<PackageReference Include="Microsoft.Bcl.Async" Version="1.0.168" />-->
-
+    <Reference Include="System.Xml" />
+    
+    <PackageReference Include="Fody" Version="2.0.8">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>   
+    <None Include="FodyWeavers.xml">
+      <SubType>Designer</SubType>
+    </None>    
+    <PackageReference Include="AsyncBridge" Version="0.1.1">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
   
-
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
     <PackageReference Include="System.Net.Requests" Version="4.3.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.2" />
@@ -101,34 +87,21 @@
     <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
     <PackageReference Include="System.Text.Encoding.Extensions" Version="4.3.0" />
-    <PackageReference Include="System.Threading" Version="4.3.0" />
-    <!--<PackageReference Include="Microsoft.AspNet.WebApi.Client"></PackageReference>-->
+    <PackageReference Include="System.Threading" Version="4.3.0" />  
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="VersionAssemblyInfoResources\VersionAssemblyInfo.cs" />
+    <Compile Remove="GitVersionInformationResources\AddFormats\**\*.*" />
+    <Compile Remove="GitVersionInformationResources\Templates\**\*.*" />
+    <Compile Remove="VersionAssemblyInfoResources\AddFormats\**\*.*" />
+    <Compile Remove="VersionAssemblyInfoResources\Templates\**\*.*" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <EmbeddedResource Include="GitVersionInformationResources\AddFormats\GitVersionInformation.cs" />
-    <EmbeddedResource Include="GitVersionInformationResources\AddFormats\GitVersionInformation.fs" />
-    <EmbeddedResource Include="GitVersionInformationResources\AddFormats\GitVersionInformation.vb" />
-    <EmbeddedResource Include="GitVersionInformationResources\Templates\GitVersionInformation.cs" />
-    <EmbeddedResource Include="GitVersionInformationResources\Templates\GitVersionInformation.fs" />
-    <EmbeddedResource Include="GitVersionInformationResources\Templates\GitVersionInformation.vb" />
-    <EmbeddedResource Include="VersionAssemblyInfoResources\AddFormats\VersionAssemblyInfo.cs" />
-    <EmbeddedResource Include="VersionAssemblyInfoResources\AddFormats\VersionAssemblyInfo.fs" />
-    <EmbeddedResource Include="VersionAssemblyInfoResources\AddFormats\VersionAssemblyInfo.vb" />
-    <EmbeddedResource Include="VersionAssemblyInfoResources\Templates\VersionAssemblyInfo.cs" />
-    <EmbeddedResource Include="VersionAssemblyInfoResources\Templates\VersionAssemblyInfo.fs" />
-    <EmbeddedResource Include="VersionAssemblyInfoResources\Templates\VersionAssemblyInfo.vb" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="FodyWeavers.xml">
-      <SubType>Designer</SubType>
-    </None>
-    <EmbeddedResource Include="VersionAssemblyInfoResources\VersionAssemblyInfo.vb" />
-    <EmbeddedResource Include="VersionAssemblyInfoResources\VersionAssemblyInfo.fs" />
+    <EmbeddedResource Include="GitVersionInformationResources\AddFormats\**\*.*" />
+    <EmbeddedResource Include="GitVersionInformationResources\Templates\**\*.*" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\AddFormats\**\*.*" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\Templates\**\*.*" />
   </ItemGroup>
 
   <ItemGroup>
@@ -136,7 +109,6 @@
     <None Include="NugetAssets\GitVersion.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
 
 </Project>

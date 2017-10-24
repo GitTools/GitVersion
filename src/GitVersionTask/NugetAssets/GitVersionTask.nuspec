@@ -15,7 +15,17 @@
     <tags>Git Versioning GitVersion GitFlowVersion GitFlow GitHubFlow SemVer</tags>
     <developmentDependency>true</developmentDependency>
     <releaseNotes>https://github.com/GitTools/GitVersion/releases</releaseNotes>
-   
+    <group targetFramework=".NETStandard1.5">
+      <dependency id="UtilPack.NuGet.MSBuild" version="2.0.0" exclude="Analyzers" />
+      <dependency id="Microsoft.Build.Utilities.Core" version="15.1.548" exclude="Build,Analyzers" />
+      <dependency id="Microsoft.Build.Framework" version="15.1.548" exclude="Build,Analyzers" />     
+      <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />   
+    </group>
+    <group targetFramework=".NETFramework4.6.1">
+      <dependency id="UtilPack.NuGet.MSBuild" version="2.0.0" exclude="Analyzers" />   
+      <dependency id="Microsoft.Build.Framework" version="15.1.548" exclude="Build,Analyzers" />
+      <dependency id="Microsoft.Build.Utilities.Core" version="15.1.548" exclude="Build,Analyzers" />
+    </group>
   </metadata>
   <files>
     <file src="..\bin\$configuration$\net40\lib\**\*.*" target="build\lib\" />
