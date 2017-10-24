@@ -22,7 +22,12 @@
     <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
     <DevelopmentDependency>true</DevelopmentDependency>
     <BuildOutputTargetFolder>build</BuildOutputTargetFolder>   
-    <Authors>GitTools and Contributors</Authors>       
+    <Authors>GitTools and Contributors</Authors>   
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <NuspecFile>NugetAssets\GitVersionTask.nuspec</NuspecFile>
+    <PackageVersion Condition="$(PackageVersion) == '' Or $(PackageVersion) == '*Undefined*'">0.0.1-alpha-0001</PackageVersion>
+    <NuspecProperties>version=$(PackageVersion);configuration=$(Configuration)</NuspecProperties>
+  
 
     <!--Additional assembly info -->
     <Company>$(Authors)</Company>
@@ -56,8 +61,12 @@
     <None Remove="bin\**" />
   </ItemGroup>
   <ItemGroup>   
-    <PackageReference Include="GitTools.Core" Version="1.3.1"></PackageReference>   
-    <PackageReference Include="YamlDotNet" Version="4.2.1"></PackageReference>
+    <PackageReference Include="GitTools.Core" Version="1.3.1">
+       <PrivateAssets>All</PrivateAssets>   
+    </PackageReference>   
+    <PackageReference Include="YamlDotNet" Version="4.2.1">
+        <PrivateAssets>All</PrivateAssets>   
+    </PackageReference>
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.1.548" />
     <PackageReference Include="Microsoft.Build.Framework" Version="15.1.548" />
     <PackageReference Include="UtilPack.NuGet.MSBuild" Version="2.0.0" />
@@ -90,20 +99,7 @@
     <None Include="app.config" />
     <None Include="key.snk" />
   </ItemGroup>
-
-  <ItemGroup>
-     <None Include="NugetAssets\build\**">
-      <Pack>true</Pack>
-      <PackagePath>build\%(RecursiveDir)%(FileName)%(Extension)</PackagePath>
-    </None>
-    
-     <None Include="NugetAssets\build\GitVersionTask.targets">
-      <Pack>true</Pack>
-      <PackagePath>buildMultiTargeting\GitVersionTask.targets</PackagePath>
-    </None>    
-   
-  </ItemGroup>
- 
+  
   <ItemGroup>
     <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
   </ItemGroup>

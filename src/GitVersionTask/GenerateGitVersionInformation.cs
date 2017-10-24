@@ -8,6 +8,8 @@
     using Microsoft.Build.Framework;
     using GitTools;
 
+   
+
     public class GenerateGitVersionInformation : GitVersionTaskBase
     {
         TaskLogger logger;
