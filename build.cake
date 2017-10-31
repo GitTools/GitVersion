@@ -31,7 +31,7 @@ void Build(string configuration, string nugetVersion, string semVersion, string 
             .SetConfiguration(configuration)
             .SetPlatformTarget(PlatformTarget.MSIL)
             .WithProperty("Windows", "True")
-            .UseToolVersion(MSBuildToolVersion.VS2015)
+            .UseToolVersion(MSBuildToolVersion.VS2017)
             .SetVerbosity(Verbosity.Minimal)
             .SetNodeReuse(false);
 
