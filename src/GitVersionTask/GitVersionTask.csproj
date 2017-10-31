@@ -23,7 +23,7 @@
     <DevelopmentDependency>true</DevelopmentDependency>
     <BuildOutputTargetFolder>build</BuildOutputTargetFolder>   
     <Authors>GitTools and Contributors</Authors>   
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
     <NuspecFile>NugetAssets\GitVersionTask.nuspec</NuspecFile>
     <PackageVersion Condition="$(PackageVersion) == '' Or $(PackageVersion) == '*Undefined*'">0.0.1-alpha-0001</PackageVersion>
     <NuspecProperties>version=$(PackageVersion);configuration=$(Configuration)</NuspecProperties>
@@ -69,7 +69,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.1.548" />
     <PackageReference Include="Microsoft.Build.Framework" Version="15.1.548" />
-    <PackageReference Include="UtilPack.NuGet.MSBuild" Version="2.0.0" />
+    <PackageReference Include="UtilPack.NuGet.MSBuild" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.5'">      
   </ItemGroup>  
