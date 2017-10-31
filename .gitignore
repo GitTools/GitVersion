@@ -110,7 +110,8 @@ src/GitVersionTfsTask/*.js
 ####################
 # Cake
 ####################
-/tools
+tools/*
+!tools/packages.config
 /*.zip
 GitVersion.CommandLine/*/
 
