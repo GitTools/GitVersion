@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)\..\</SolutionDir>
+    <GitVersionPath Condition="'$(GitVersionPath)' == '' And '$(GitVersionUseSolutionDir)' == 'true'">$(SolutionDir)</GitVersionPath>
+    <GitVersionPath Condition="'$(GitVersionPath)' == ''">$(MSBuildProjectDirectory)</GitVersionPath>
+    <GitVersionCustomizeTargetFile Condition="'$(GitVersionCustomizeTargetFile)' == '' And Exists('$(MSBuildProjectDirectory)\GitVersionTask.targets')">$(SolutionDir)\GitVersionTask.targets</GitVersionCustomizeTargetFile>
+    <GitVersionCustomizeTargetFile Condition="'$(GitVersionCustomizeTargetFile)' == '' And '$(SolutionDir)' != '' And Exists('$(SolutionDir)\GitVersionTask.targets')">$(SolutionDir)\GitVersionTask.targets</GitVersionCustomizeTargetFile>
+    <GitVersionCustomizeTargetFile Condition="'$(GitVersionCustomizeTargetFile)' == ''"></GitVersionCustomizeTargetFile>
+    <GitVersion_NoFetchEnabled Condition="$(GitVersion_NoFetchEnabled) == ''">false</GitVersion_NoFetchEnabled>
+    <IntermediateOutputPath Condition="$(IntermediateOutputPath) == '' Or $(IntermediateOutputPath) == '*Undefined*'">$(MSBuildProjectDirectory)\obj\$(Configuration)\</IntermediateOutputPath>
+
+    <!-- Property that enables WriteVersionInfoToBuildLog -->
+    <WriteVersionInfoToBuildLog Condition=" '$(WriteVersionInfoToBuildLog)' == '' and '$(NCrunch)' != '' ">false</WriteVersionInfoToBuildLog>
+    <WriteVersionInfoToBuildLog Condition=" '$(WriteVersionInfoToBuildLog)' == '' ">true</WriteVersionInfoToBuildLog>
+
+    <!-- Property that enables UpdateAssemblyInfo. Default to off for SDK builds -->
+    <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' and '$(TargetFramework)' != '' ">false</UpdateAssemblyInfo>
+    <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' and '$(NCrunch)' != '' ">false</UpdateAssemblyInfo>
+    <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
+
+    <!-- Property that enables GenerateGitVersionInformation -->
+    <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' and '$(NCrunch)' != '' ">false</GenerateGitVersionInformation>
+    <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' ">true</GenerateGitVersionInformation>
+
+    <GetVersion Condition=" '$(GetVersion)' == '' and '$(NCrunch)' != '' ">false</GetVersion>
+    <GetVersion Condition=" '$(GetVersion)' == '' ">true</GetVersion>
+
+    <!-- Property that enables setting of Version -->
+    <UpdateVersionProperties Condition=" '$(UpdateVersionProperties)' == '' ">true</UpdateVersionProperties>
+    <UseFullSemVerForNuGet Condition=" '$(UseFullSemVerForNuGet)' == '' ">false</UseFullSemVerForNuGet>
+
+  </PropertyGroup>
+  <UsingTask
+    Condition=" '$(UtilPackNuGetMSBuildAssemblyPath)' != '' "
+    TaskFactory="UtilPack.NuGet.MSBuild.NuGetTaskRunnerFactory"
+    AssemblyFile="$(UtilPackNuGetMSBuildAssemblyPath)"
+    TaskName="GitVersionTask.UpdateAssemblyInfo">
+    <Task>
+      <NuGetTaskInfo>$(UtilPackTaskFactoryParametersXML)</NuGetTaskInfo>
+    </Task>
+  </UsingTask>
+  <UsingTask
+      Condition=" '$(UtilPackNuGetMSBuildAssemblyPath)' != '' "
+      TaskFactory="UtilPack.NuGet.MSBuild.NuGetTaskRunnerFactory"
+      AssemblyFile="$(UtilPackNuGetMSBuildAssemblyPath)"
+      TaskName="GitVersionTask.GenerateGitVersionInformation">
+    <Task>
+      <NuGetTaskInfo>$(UtilPackTaskFactoryParametersXML)</NuGetTaskInfo>
+    </Task>
+  </UsingTask>
+  <UsingTask
+      Condition=" '$(UtilPackNuGetMSBuildAssemblyPath)' != '' "
+      TaskFactory="UtilPack.NuGet.MSBuild.NuGetTaskRunnerFactory"
+      AssemblyFile="$(UtilPackNuGetMSBuildAssemblyPath)"
+      TaskName="GitVersionTask.GetVersion">
+    <Task>
+      <NuGetTaskInfo>$(UtilPackTaskFactoryParametersXML)</NuGetTaskInfo>
+    </Task>
+  </UsingTask>
+  <UsingTask
+      Condition=" '$(UtilPackNuGetMSBuildAssemblyPath)' != '' "
+      TaskFactory="UtilPack.NuGet.MSBuild.NuGetTaskRunnerFactory"
+      AssemblyFile="$(UtilPackNuGetMSBuildAssemblyPath)"
+      TaskName="GitVersionTask.WriteVersionInfoToBuildLog">
+    <Task>
+      <NuGetTaskInfo>$(UtilPackTaskFactoryParametersXML)</NuGetTaskInfo>
+    </Task>
+  </UsingTask>
+  <PropertyGroup>
+    <GitVersion_Task_targets_Imported>True</GitVersion_Task_targets_Imported>
+  </PropertyGroup>
+  <Import Project="$(GitVersionCustomizeTargetFile)" Condition="'$(GitVersionCustomizeTargetFile)' != '' and Exists('$(GitVersionCustomizeTargetFile)')" />
+</Project>
