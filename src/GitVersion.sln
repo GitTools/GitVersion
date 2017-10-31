@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersionExe", "GitVersionExe\GitVersionExe.csproj", "{C3578A7B-09A6-4444-9383-0DEAFA4958BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionExe", "GitVersionExe\GitVersionExe.csproj", "{C3578A7B-09A6-4444-9383-0DEAFA4958BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersionTask.Tests", "GitVersionTask.Tests\GitVersionTask.Tests.csproj", "{5A86453B-96FB-4B6E-A283-225BB9F753D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionTask.Tests", "GitVersionTask.Tests\GitVersionTask.Tests.csproj", "{5A86453B-96FB-4B6E-A283-225BB9F753D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersionCore.Tests", "GitVersionCore.Tests\GitVersionCore.Tests.csproj", "{BF905F84-382C-440D-92F5-C61108626D8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionCore.Tests", "GitVersionCore.Tests\GitVersionCore.Tests.csproj", "{BF905F84-382C-440D-92F5-C61108626D8D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3EFFC5D6-88D0-49D9-BB53-E1B7EB49DD45}"
 	ProjectSection(SolutionItems) = preProject
@@ -30,7 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionCore", "GitVersionCore\GitVersionCore.csproj", "{F9741A0D-B9D7-4557-9A1C-A7252C1071F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersionExe.Tests", "GitVersionExe.Tests\GitVersionExe.Tests.csproj", "{75C2BE85-1DAF-4E34-8305-B17AFAA982A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionExe.Tests", "GitVersionExe.Tests\GitVersionExe.Tests.csproj", "{75C2BE85-1DAF-4E34-8305-B17AFAA982A6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TfsTask", "TfsTask", "{A0ED1410-E970-45E8-A357-05605E2B7BFF}"
 	ProjectSection(SolutionItems) = preProject
@@ -79,5 +79,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0C1C310E-7A4D-4032-878B-6DC375894C49}
 	EndGlobalSection
 EndGlobal
