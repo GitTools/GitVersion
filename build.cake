@@ -63,12 +63,12 @@ Task("Version")
         UpdateAssemblyInfo = true,
         LogFilePath = "console",
         OutputType = GitVersionOutput.BuildServer,
-        ToolPath = @"src\GitVersionExe\bin\Release\GitVersion.exe"
+        ToolPath = @"src\GitVersionExe\bin\Release\net40\GitVersion.exe"
     });
     GitVersion assertedVersions = GitVersion(new GitVersionSettings
     {
         OutputType = GitVersionOutput.Json,
-        ToolPath = @"src\GitVersionExe\bin\Release\GitVersion.exe"
+        ToolPath = @"src\GitVersionExe\bin\Release\net40\GitVersion.exe"
     });
 
     version = assertedVersions.MajorMinorPatch;
@@ -101,9 +101,9 @@ Task("Run-NUnit-Tests")
         settings.Where = "cat != NoMono";
     }
     NUnit3(new [] {
-        "src/GitVersionCore.Tests/bin/" + configuration + "/GitVersionCore.Tests.dll",
-        "src/GitVersionExe.Tests/bin/" + configuration + "/GitVersionExe.Tests.dll",
-        "src/GitVersionTask.Tests/bin/" + configuration + "/GitVersionTask.Tests.dll" },
+        "src/GitVersionCore.Tests/bin/" + configuration + "/net461/GitVersionCore.Tests.dll",
+        "src/GitVersionExe.Tests/bin/" + configuration + "/net452/GitVersionExe.Tests.dll",
+        "src/GitVersionTask.Tests/bin/" + configuration + "/net461/GitVersionTask.Tests.dll" },
         settings);
     if (AppVeyor.IsRunningOnAppVeyor)
     {
