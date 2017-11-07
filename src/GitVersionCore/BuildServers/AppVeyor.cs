@@ -94,8 +94,8 @@
             }
             var bytesLength = bytes.Length;
             // No property for content-length - and no Add() method on header collection? WHAAAAT
-            // request.ContentLength = bytes.Length;
-            request.Headers["Content-Length"] = bytesLength.ToString();                
+            // request.ContentLength = bytes.Length;            
+            //request.Headers["Content-Length"] = bytesLength.ToString();                
 
             using (var writeStream = request.GetRequestStreamAsync().Result)
             {
@@ -126,7 +126,7 @@
                 request.Headers = new WebHeaderCollection();
             }
             var bytesLength = bytes.Length;
-            request.Headers["Content-Length"] = bytesLength.ToString();
+            // request.Headers["Content-Length"] = bytesLength.ToString();
 
             // request.ContentLength = bytes.Length;
             request.ContentType = "application/json";
