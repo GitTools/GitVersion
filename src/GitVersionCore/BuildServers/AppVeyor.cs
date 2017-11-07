@@ -39,9 +39,9 @@
             {
                 request.Headers = new WebHeaderCollection();
             }
+            
             var bytesLength = bytes.Length;
-            request.Headers["Content-Length"] = bytesLength.ToString();
-
+            //request.Headers["Content-Length"] = bytesLength.ToString();
             // request.ContentLength = bytes.Length;
             request.ContentType = "application/json";
 
