@@ -44,6 +44,7 @@
     <PackageReference Include="Mono.Cecil" Version="0.9.6.4"></PackageReference>
     <PackageReference Include="NSubstitute" Version="1.10.0"></PackageReference>
     <PackageReference Include="NUnit" Version="3.8.1"></PackageReference>
+    <packagereference Include="NUnit3TestAdapter" Version="3.9.0"></packagereference>
     <PackageReference Include="Shouldly" Version="2.7.0"></PackageReference>
   </ItemGroup>
 

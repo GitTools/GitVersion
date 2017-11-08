@@ -51,6 +51,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="8.0.3"></PackageReference>
     <PackageReference Include="NSubstitute" Version="1.10.0"></PackageReference>
     <PackageReference Include="NUnit" Version="3.8.1"></PackageReference>
+    <packagereference Include="NUnit3TestAdapter" Version="3.9.0"></packagereference>
     <PackageReference Include="ObjectApproval" Version="1.3.0"></PackageReference>
     <PackageReference Include="Shouldly" Version="2.7.0"></PackageReference>
     <PackageReference Include="System.Reflection.Metadata" Version="1.4.2"></PackageReference>

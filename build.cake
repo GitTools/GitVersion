@@ -26,11 +26,13 @@ void Build(string configuration, string nugetVersion, string semVersion, string 
             .SetVerbosity(Verbosity.Minimal));
     }
     else
-    {
+    {	
+
         var msBuildSettings = new MSBuildSettings()
-            .SetConfiguration(configuration)
+            .SetConfiguration(configuration)		
             .SetPlatformTarget(PlatformTarget.MSIL)
-            .WithProperty("Windows", "True")
+		   // .WithProperty("Platform", "Any CPU")
+           // .WithProperty("Windows", "True")
             .UseToolVersion(MSBuildToolVersion.VS2017)
             .SetVerbosity(Verbosity.Minimal)
             .SetNodeReuse(false);
@@ -95,21 +97,17 @@ Task("Run-NUnit-Tests")
     .IsDependentOn("Build")
     .Does(() =>
 {
-    var settings = new NUnit3Settings();
-    if(IsRunningOnUnix())
-    {
-        settings.Where = "cat != NoMono";
-    }
-    NUnit3(new [] {
-        "src/GitVersionCore.Tests/bin/" + configuration + "/net461/GitVersionCore.Tests.dll",
-        "src/GitVersionExe.Tests/bin/" + configuration + "/net452/GitVersionExe.Tests.dll",
-        "src/GitVersionTask.Tests/bin/" + configuration + "/net461/GitVersionTask.Tests.dll" },
-        settings);
-    if (AppVeyor.IsRunningOnAppVeyor)
-    {
-        Information("Uploading test results");
-        AppVeyor.UploadTestResults("TestResult.xml", AppVeyorTestResultsType.NUnit3);
-    }
+
+     var settings = new DotNetCoreTestSettings
+     {
+         Configuration = "Release",
+		 NoBuild = true
+     };
+
+     DotNetCoreTest("./src/GitVersionCore.Tests/GitVersionCore.Tests.csproj", settings);
+	 DotNetCoreTest("./src/GitVersionExe.Tests/GitVersionExe.Tests.csproj", settings);
+	 DotNetCoreTest("./src/GitVersionTask.Tests/GitVersionTask.Tests.csproj", settings);
+    
 });
 
 Task("Zip-Files")
