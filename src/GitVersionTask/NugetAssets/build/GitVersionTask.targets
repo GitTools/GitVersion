@@ -49,6 +49,9 @@
   <UsingTask
       TaskName="GitVersionTask.WriteVersionInfoToBuildLog"
       AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll" />
+  <UsingTask
+      TaskName="GitVersionTask.UpdateVsixManifest"
+      AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll" />
 
   <Import Project="$(GitVersionCustomizeTargetFile)" Condition="'$(GitVersionCustomizeTargetFile)' != '' and Exists('$(GitVersionCustomizeTargetFile)')" />
 
@@ -136,6 +139,14 @@
       <FileVersion Condition=" '$(FileVersion)' == '' ">$(GitVersion_AssemblySemFileVer)</FileVersion>
     </PropertyGroup>
 
+  </Target>
+
+  <!-- Support for VSIX files -->
+  <Target Name="UpdateVsixManifest" BeforeTargets="CreateVsixContainer" Condition=" '$(CreateVsixContainer)' == 'true' ">
+    <UpdateVsixManifest
+      NoFetch="$(GitVersion_NoFetchEnabled)"
+      VsixManifest="$(IntermediateVsixManifest)"
+      SolutionDirectory="$(GitVersionPath)" />
   </Target>
 
   <!--Support for ncrunch-->
