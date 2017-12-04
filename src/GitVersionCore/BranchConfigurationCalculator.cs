@@ -65,7 +65,7 @@ namespace GitVersion
                 List<Branch> possibleParents;
                 if (branchPoint == BranchCommit.Empty)
                 {
-                    possibleParents = context.RepositoryMetadataProvider.GetBranchesContainingCommit(context.CurrentCommit, branchesToEvaluate, true)
+                    possibleParents = context.RepositoryMetadataProvider.GetBranchesContainingCommit(targetBranch.Tip, branchesToEvaluate, true)
                         // It fails to inherit Increment branch configuration if more than 1 parent;
                         // therefore no point to get more than 2 parents
                         .Take(2)
