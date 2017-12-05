@@ -36,7 +36,7 @@
             var buildNum = Environment.GetEnvironmentVariable("BUILD_BUILDNUMBER");
 
             var newBuildNum = variables.Aggregate(buildNum, (current, kvp) =>
-                current.RegexReplace(string.Format(@"\$\(GITVERSION_{0}\)", kvp.Key), kvp.Value ?? string.Empty, RegexOptions.IgnoreCase));
+                current.RegexReplace(string.Format(@"\$\(GITVERSION[_\.]{0}\)", kvp.Key), kvp.Value ?? string.Empty, RegexOptions.IgnoreCase));
 
             // If no variable substitution has happened, use FullSemVer
             if (buildNum == newBuildNum)

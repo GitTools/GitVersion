@@ -21,7 +21,7 @@ namespace GitVersion
         public const string HotfixBranchRegex = "hotfix(es)?[/-]";
         public const string SupportBranchRegex = "support[/-]";
         public const string DevelopBranchRegex = "dev(elop)?(ment)?$";
-        public const string MasterBranchRegex = "master";
+        public const string MasterBranchRegex = "master$";
         public const string MasterBranchKey = "master";
         public const string ReleaseBranchKey = "release";
         public const string FeatureBranchKey = "feature";
@@ -99,6 +99,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             config.LegacySemVerPadding = config.LegacySemVerPadding ?? 4;
             config.BuildMetaDataPadding = config.BuildMetaDataPadding ?? 4;
             config.CommitsSinceVersionSourcePadding = config.CommitsSinceVersionSourcePadding ?? 4;
+            config.CommitDateFormat = config.CommitDateFormat ?? "yyyy-MM-dd";
 
             var configBranches = config.Branches.ToList();
 
@@ -262,7 +263,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
         {
             if (!string.IsNullOrWhiteSpace(gitPreparer.TargetUrl))
             {
-                // Assuming this is a dynamic repository. At this stage it's unsure whether we have 
+                // Assuming this is a dynamic repository. At this stage it's unsure whether we have
                 // any .git info so we need to skip verification
                 return;
             }

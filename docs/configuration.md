@@ -44,6 +44,7 @@ legacy-semver-padding: 4
 build-metadata-padding: 4
 commits-since-version-source-padding: 4
 commit-message-incrementing: Enabled
+commit-date-format: 'yyyy-MM-dd'
 ignore:
   sha: []
   commits-before: yyyy-MM-ddTHH:mm:ss
@@ -60,19 +61,21 @@ When updating assembly info, `assembly-versioning-scheme` tells GitVersion how
 to treat the `AssemblyVersion` attribute. Useful to lock the major when using
 Strong Naming. Note: you can use `None` to skip updating the `AssemblyVersion`
 while still updating the `AssemblyFileVersion` and `AssemblyInformationVersion`
-attributes.
+attributes. Valid values: `MajorMinorPatchTag`, `MajorMinorPatch`, `MajorMinor`,
+`Major`, `None`.
 
 ### assembly-file-versioning-scheme
 When updating assembly info, `assembly-file-versioning-scheme` tells GitVersion how
 to treat the `AssemblyFileVersion` attribute. Note: you can use `None` to skip updating the `AssemblyFileVersion`
 while still updating the `AssemblyVersion` and `AssemblyInformationVersion`
-attributes.
+attributes. Valid values: `MajorMinorPatchTag`, `MajorMinorPatch`, `MajorMinor`,
+`Major`, `None`.
 
 ### assembly-informational-format
 Set this to any of the available [variables](/more-info/variables) to change the
 value of the `AssemblyInformationalVersion` attribute. Default set to
 `{InformationalVersion}`. It also supports string interpolation
-(`{MajorMinorPatch}+{Branch}`)
+(`{MajorMinorPatch}+{BranchName}`)
 
 ### mode
 Sets the `mode` of how GitVersion should create a new version. Read more at
@@ -133,6 +136,9 @@ set to `4`, which will pad the `CommitsSinceVersionSource` value of `1` to
 Sets whether it should be possible to increment the version with special syntax
 in the commit message. See the `*-version-bump-message` options above for
 details on the syntax. Default set to `Enabled`; set to `Disabled` to disable.
+
+### commit-date-format
+Sets the format which will be used to format the `CommitDate` output variable.
 
 ### ignore
 The header for ignore configuration.

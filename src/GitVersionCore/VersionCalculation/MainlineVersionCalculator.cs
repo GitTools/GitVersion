@@ -4,7 +4,6 @@ using LibGit2Sharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace GitVersion.VersionCalculation
@@ -74,7 +73,7 @@ namespace GitVersion.VersionCalculation
 
                     var branchIncrement = FindMessageIncrement(context, null, mergedHead, findMergeBase, directCommits);
                     // This will increment for any direct commits on master
-                    mainlineVersion = IncrementForEachCommit(context, directCommits, mainlineVersion);
+                    mainlineVersion = IncrementForEachCommit(context, directCommits, mainlineVersion, "master");
                     mainlineVersion.BuildMetaData = metaDataCalculator.Create(context.RepositoryMetadataProvider.GetCommitCount(context.CurrentCommit, findMergeBase), context);
                     // Don't increment if the merge commit is a merge into mainline
                     // this ensures PR's and forward merges end up correct.
@@ -165,14 +164,14 @@ namespace GitVersion.VersionCalculation
             return chosenMainline.Tip;
         }
 
-        private static SemanticVersion IncrementForEachCommit(GitVersionContext context, List<Commit> directCommits, SemanticVersion mainlineVersion)
+        private static SemanticVersion IncrementForEachCommit(GitVersionContext context, List<Commit> directCommits, SemanticVersion mainlineVersion, string branch = null)
         {
             foreach (var directCommit in directCommits)
             {
                 var directCommitIncrement = IncrementStrategyFinder.GetIncrementForCommits(context, new[]
                                             {
                                                 directCommit
-                                            }) ?? VersionField.Patch;
+                                            }) ?? IncrementStrategyFinder.FindDefaultIncrementForBranch(context, branch);
                 mainlineVersion = mainlineVersion.IncrementVersion(directCommitIncrement);
                 Logger.WriteInfo(string.Format("Direct commit on master {0} incremented base versions {1}, now {2}",
                     directCommit.Sha, directCommitIncrement, mainlineVersion));
@@ -213,8 +212,8 @@ namespace GitVersion.VersionCalculation
                 }
             }
 
-            // Fallback to patch
-            return VersionField.Patch;
+            // Fallback to config increment value
+            return IncrementStrategyFinder.FindDefaultIncrementForBranch(context);
         }
 
         private Commit GetMergedHead(Commit mergeCommit)

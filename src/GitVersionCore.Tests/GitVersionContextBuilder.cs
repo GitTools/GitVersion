@@ -61,7 +61,8 @@
         {
             var configuration = config ?? new Config();
             ConfigurationProvider.ApplyDefaultsTo(configuration);
-            return new GitVersionContext(repository ?? CreateRepository(), configuration);
+            var repo = repository ?? CreateRepository();
+            return new GitVersionContext(repo, repo.Head, configuration);
         }
 
         IRepository CreateRepository()
