@@ -8,6 +8,8 @@ namespace GitVersion
 
     public class BranchConfigurationCalculator
     {
+        public static string FallbackConfigName = "Fallback";
+
         /// <summary>
         /// Gets the <see cref="BranchConfig"/> for the current commit.
         /// </summary>
@@ -21,7 +23,7 @@ namespace GitVersion
                     "No branch configuration found for branch {0}, falling back to default configuration",
                     targetBranch.FriendlyName));
 
-                matchingBranches = new BranchConfig { Name = string.Empty };
+                matchingBranches = new BranchConfig { Name = FallbackConfigName };
                 ConfigurationProvider.ApplyBranchDefaults(context.FullConfiguration, matchingBranches, "", new List<string>());
             }
 
@@ -65,7 +67,7 @@ namespace GitVersion
                 List<Branch> possibleParents;
                 if (branchPoint == BranchCommit.Empty)
                 {
-                    possibleParents = context.RepositoryMetadataProvider.GetBranchesContainingCommit(context.CurrentCommit, branchesToEvaluate, true)
+                    possibleParents = context.RepositoryMetadataProvider.GetBranchesContainingCommit(targetBranch.Tip, branchesToEvaluate, true)
                         // It fails to inherit Increment branch configuration if more than 1 parent;
                         // therefore no point to get more than 2 parents
                         .Take(2)
@@ -135,9 +137,15 @@ namespace GitVersion
                 }
 
                 var inheritingBranchConfig = GetBranchConfiguration(context, chosenBranch, excludedInheritBranches);
+                var configIncrement = inheritingBranchConfig.Increment;
+                if (inheritingBranchConfig.Name == FallbackConfigName && configIncrement == IncrementStrategy.Inherit)
+                {
+                    Logger.WriteWarning("Fallback config inherits by default, dropping to patch increment");
+                    configIncrement = IncrementStrategy.Patch;
+                }
                 return new BranchConfig(branchConfiguration)
                 {
-                    Increment = inheritingBranchConfig.Increment,
+                    Increment = configIncrement,
                     PreventIncrementOfMergedBranchVersion = inheritingBranchConfig.PreventIncrementOfMergedBranchVersion,
                     // If we are inheriting from develop then we should behave like develop
                     TracksReleaseBranches = inheritingBranchConfig.TracksReleaseBranches
