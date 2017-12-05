@@ -25,7 +25,9 @@ public class QueryRequirements
 
             fixture.Repository.DumpGraph();
 
-            var metadata = Libgit2RepoMetadataProvider.ReadMetadata(new GitVersionContext(fixture.Repository, config));
+            var metadata = Libgit2RepoMetadataProvider.ReadMetadata(
+                new GitVersionContext(fixture.Repository, fixture.Repository.FindBranch("master"), config)
+            );
 
             metadata.CurrentBranch.MergeMessages.Count.ShouldBe(1);
         }
