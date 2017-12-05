@@ -30,7 +30,7 @@ namespace GitVersion
         public const string SupportBranchKey = "support";
         public const string DevelopBranchKey = "develop";
 
-        private const IncrementStrategy DefaultIncrementStrategy = IncrementStrategy.Patch;
+        private const IncrementStrategy DefaultIncrementStrategy = IncrementStrategy.Inherit;
 
         public static Config Provide(GitPreparer gitPreparer, IFileSystem fileSystem, bool applyDefaults = true, Config overrideConfig = null)
         {
