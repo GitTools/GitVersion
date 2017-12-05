@@ -26,6 +26,8 @@ public class ConfigProviderTests
         fileSystem = new TestFileSystem();
         repoPath = DefaultRepoPath;
         workingPath = DefaultWorkingPath;
+
+        ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
     }
 
     [Test]

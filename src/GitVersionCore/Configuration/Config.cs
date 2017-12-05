@@ -134,5 +134,8 @@
 
         [YamlMember(Alias = "increment")]
         public IncrementStrategy? Increment { get; set; }
+
+        [YamlMember(Alias = "commit-date-format")]
+        public string CommitDateFormat { get; set; }
     }
 }

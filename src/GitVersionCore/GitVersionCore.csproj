@@ -49,7 +49,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -119,6 +118,8 @@
     <Compile Include="GitVersionCache.cs" />
     <Compile Include="GitVersionCacheKey.cs" />
     <Compile Include="GitVersionCacheKeyFactory.cs" />
+    <Compile Include="GitVersionException.cs" />
+    <Compile Include="GitVersionInformationResources\GitVersionInformationGenerator.cs" />
     <Compile Include="Helpers\EncodingHelper.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\IFileSystem.cs" />
@@ -133,13 +134,13 @@
     <Compile Include="SemanticVersionExtensions.cs" />
     <Compile Include="SemanticVersionFormatValues.cs" />
     <Compile Include="VerbosityLevel.cs" />
+    <Compile Include="VersionAssemblyInfoResources\AssemblyInfoFileUpdater.cs" />
+    <Compile Include="TemplateManager.cs" />
     <Compile Include="VersionCalculation\MainlineVersionCalculator.cs" />
     <Compile Include="VersionFilters\MinDateVersionFilter.cs" />
     <Compile Include="VersionFilters\IVersionFilter.cs" />
     <Compile Include="VersionFilters\ShaVersionFilter.cs" />
     <Compile Include="StringFormatWith.cs" />
-    <Compile Include="VersionAssemblyInfoResources\AssemblyVersionInfoTemplates.cs" />
-    <EmbeddedResource Include="VersionAssemblyInfoResources\VersionAssemblyInfo.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculator.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\BaseVersion.cs" />
     <Compile Include="VersionCalculation\BaseVersionCalculators\ConfigNextVersionBaseVersionStrategy.cs" />
@@ -177,13 +178,23 @@
     <Compile Include="BuildServers\TravisCI.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="GitVersionInformationResources\AddFormats\GitVersionInformation.cs" />
+    <EmbeddedResource Include="GitVersionInformationResources\AddFormats\GitVersionInformation.fs" />
+    <EmbeddedResource Include="GitVersionInformationResources\AddFormats\GitVersionInformation.vb" />
+    <EmbeddedResource Include="GitVersionInformationResources\Templates\GitVersionInformation.cs" />
+    <EmbeddedResource Include="GitVersionInformationResources\Templates\GitVersionInformation.fs" />
+    <EmbeddedResource Include="GitVersionInformationResources\Templates\GitVersionInformation.vb" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\AddFormats\VersionAssemblyInfo.cs" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\AddFormats\VersionAssemblyInfo.fs" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\AddFormats\VersionAssemblyInfo.vb" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\Templates\VersionAssemblyInfo.cs" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\Templates\VersionAssemblyInfo.fs" />
+    <EmbeddedResource Include="VersionAssemblyInfoResources\Templates\VersionAssemblyInfo.vb" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="FodyWeavers.xml">
       <SubType>Designer</SubType>
     </None>
-    <EmbeddedResource Include="VersionAssemblyInfoResources\VersionAssemblyInfo.vb" />
-    <EmbeddedResource Include="VersionAssemblyInfoResources\VersionAssemblyInfo.fs" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
     <None Include="NugetAssets\GitVersion.nuspec">
       <SubType>Designer</SubType>

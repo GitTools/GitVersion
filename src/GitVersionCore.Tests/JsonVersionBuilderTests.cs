@@ -7,6 +7,12 @@ using Shouldly;
 [TestFixture]
 public class JsonVersionBuilderTests
 {
+    [SetUp]
+    public void Setup()
+    {
+        ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
+    }
+
     [Test]
     [Category("NoMono")]
     [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
