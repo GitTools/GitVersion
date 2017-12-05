@@ -174,7 +174,6 @@ Task("Publish-Gem")
 
 Task("Publish-VstsTask")
     .IsDependentOn("DownloadGitHubReleaseArtifacts")
-    .WithCriteria(() => !tag.Contains("-")) // Do not release pre-release to VSTS
     .Does(() =>
 {
     var returnCode = StartProcess("cmd", new ProcessSettings
