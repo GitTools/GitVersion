@@ -115,7 +115,7 @@ namespace GitVersion.VersionCalculation
                             baseSource.Sha,
                             baseSource.When().DateTime,
                             baseSource.Message,
-                            context.RepositoryMetadataProvider.GetCommitCount(context.CurrentCommit, baseSource)),
+                            new Lazy<int>(() => context.RepositoryMetadataProvider.GetCommitCount(context.CurrentCommit, baseSource))),
                         $"Tracked release branch version: {b.Source.Description}");
                     return new BaseVersion(context, true, b.SemanticVersion, source, b.BranchNameOverride);
                 });

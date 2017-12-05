@@ -2,6 +2,7 @@
 {
     using GitVersion.GitRepoInformation;
     using LibGit2Sharp;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -26,12 +27,10 @@
             var sourceCommit = configHistory == null
                 ? context.RepositoryMetadata.CurrentBranch.Tip
                 : new MCommit(
-                    configHistory.Commit.Sha,
-                    configHistory.Commit.Committer.When.DateTime,
-                    configHistory.Commit.Message,
-                    context.RepositoryMetadataProvider.GetCommitCount(
+                    configHistory.Commit,
+                    new Lazy<int>(() => context.RepositoryMetadataProvider.GetCommitCount(
                         context.CurrentCommit,
-                        context.Repository.Lookup<Commit>(configHistory.Commit.Sha)));
+                        context.Repository.Lookup<Commit>(configHistory.Commit.Sha))));
             var source = new BaseVersionSource(
                 sourceCommit,
                 "NextVersion in GitVersion configuration file");

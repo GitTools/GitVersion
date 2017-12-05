@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using System.Text.RegularExpressions;
+using GitTools;
+using System.IO;
 
 namespace GitVersion.GitRepoInformation
 {
@@ -73,11 +75,8 @@ namespace GitVersion.GitRepoInformation
                     {
                         return null;
                     }
-                    var tagDistance = context.RepositoryMetadataProvider.GetCommitCount(
-                        context.CurrentCommit,
-                        context.Repository.Lookup<Commit>(tag.PeeledTarget.Sha));
 
-                    return new MTag(tag.FriendlyName, new MCommit(commit, tagDistance), context.FullConfiguration);
+                    return new MTag(tag.FriendlyName, CreateCommit(commit, context), context.FullConfiguration);
                 })
                 .Where(t => t != null)
                 .ToList();
@@ -93,6 +92,14 @@ namespace GitVersion.GitRepoInformation
             return ReadBranchInfo(context, masterBranch, masterBranch.Tip, tags);
         }
 
+        static MCommit CreateCommit(Commit commit, GitVersionContext context)
+        {
+            var commitCount = new Lazy<int>(() =>
+                context.RepositoryMetadataProvider.GetCommitCount(context.CurrentCommit, commit));
+
+            return new MCommit(commit, commitCount);
+        }
+
         private static MBranch ReadBranchInfo(GitVersionContext context, Branch branch, Commit at, List<MTag> allTags)
         {
             using (Logger.IndentLog($"Calculating branch information for {branch.FriendlyName}"))
@@ -100,39 +107,46 @@ namespace GitVersion.GitRepoInformation
                 var filter = new CommitFilter
                 {
                     IncludeReachableFrom = at ?? branch.Tip,
-                    SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
+                    SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time,
                 };
 
-                var commitCount = 0;
                 var mergeMessages = new List<MergeMessage>();
                 var branchTags = new List<MTag>();
                 var commits = context.Repository.Commits.QueryBy(filter);
                 var parent = context.RepositoryMetadataProvider.FindCommitBranchWasBranchedFrom(branch);
-                MCommit tipCommit = null;
-                MCommit lastCommit = null;
-                MCommit parentMCommit = null;
+                Commit tipCommit = null;
+                Commit lastCommit = null;
+                Commit parentMCommit = null;
+                
                 foreach (var branchCommit in commits)
                 {
                     if (tipCommit == null)
                     {
-                        tipCommit = new MCommit(branchCommit, commitCount);
+                        tipCommit = branchCommit;
                     }
-                    lastCommit = new MCommit(branchCommit, commitCount);
+                    lastCommit = branchCommit;
                     if (branchCommit.Parents.Count() >= 2)
                     {
-                        mergeMessages.Add(new MergeMessage(lastCommit, context.FullConfiguration));
+                        mergeMessages.Add(new MergeMessage(
+                            CreateCommit(branchCommit, context),
+                            context.FullConfiguration));
                     }
                     if (parent != BranchCommit.Empty && branchCommit.Sha == parent.Commit.Sha)
                     {
-                        parentMCommit = new MCommit(parent.Commit, commitCount);
+                        parentMCommit = parent.Commit;
                     }
 
                     // Adding range because the same commit may have two tags
                     branchTags.AddRange(allTags.Where(t => t.Commit.Sha == branchCommit.Sha));
-                    commitCount++;
                 }
 
-                var mbranch = new MBranch(branch.FriendlyName, tipCommit, lastCommit, new MParent(parentMCommit), new List<MBranchTag>(), mergeMessages);
+                var mbranch = new MBranch(
+                    branch.FriendlyName,
+                    CreateCommit(tipCommit, context),
+                    CreateCommit(lastCommit, context),
+                    parentMCommit != null ? new MParent(CreateCommit(parentMCommit, context)) : null,
+                    new List<MBranchTag>(),
+                    mergeMessages);
                 mbranch.Tags.AddRange(branchTags.Select(t => new MBranchTag(mbranch, t)));
                 return mbranch;
             }

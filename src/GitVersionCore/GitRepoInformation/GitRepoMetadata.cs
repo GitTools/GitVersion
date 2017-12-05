@@ -46,7 +46,7 @@ namespace GitVersion.GitRepoInformation
             }
         }
 
-        public MTag(MTag tag, int newDistance)
+        public MTag(MTag tag, Lazy<int> newDistance)
         {
             Name = tag.Name;
             Commit = new MCommit(tag.Commit.Sha, tag.Commit.When, tag.Commit.Message, newDistance);
@@ -86,23 +86,25 @@ namespace GitVersion.GitRepoInformation
 
     public class MCommit
     {
-        public MCommit(Commit commit, int distanceFromTip) : this(
+        Lazy<int> distanceFromTip;
+
+        public MCommit(Commit commit, Lazy<int> distanceFromTip) : this(
             commit.Sha, commit.When().DateTime, commit.Message, distanceFromTip)
         {
         }
 
-        public MCommit(string sha, DateTime when, string message, int distanceFromTip)
+        public MCommit(string sha, DateTime when, string message, Lazy<int> distanceFromTip)
         {
             Sha = sha;
             When = when;
             Message = message;
-            DistanceFromTip = distanceFromTip;
+            this.distanceFromTip = distanceFromTip;
         }
 
         public string Sha { get; }
         public string Message { get; }
         public DateTime When { get; }
-        public int DistanceFromTip { get; }
+        public int DistanceFromTip { get { return distanceFromTip.Value; } }
     }
 
     public class MParent

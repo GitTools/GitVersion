@@ -201,7 +201,7 @@ namespace GitVersion.VersionCalculation
             if (mergeCommit != null)
             {
                 var distance = context.RepositoryMetadataProvider.GetCommitCount(context.CurrentCommit, mergeCommit);
-                var mCommit = new MCommit(mergeCommit.Sha, mergeCommit.Committer.When.DateTime, mergeCommit.Message, distance);
+                var mCommit = new MCommit(mergeCommit.Sha, mergeCommit.Committer.When.DateTime, mergeCommit.Message, new Lazy<int>(() => distance));
                 var mergeMessage = new MergeMessage(mCommit, context.FullConfiguration);
                 if (mergeMessage.MergedBranch != null)
                 {

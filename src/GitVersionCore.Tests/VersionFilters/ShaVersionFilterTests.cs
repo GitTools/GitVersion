@@ -32,7 +32,7 @@ namespace GitVersionCore.Tests.VersionFilters
         {
             var commit = new MockCommit();
             var context = new GitVersionContextBuilder().Build();
-            var version = new BaseVersion(context, false, new SemanticVersion(1), new BaseVersionSource(new MCommit(commit, 0), "dummy"), string.Empty);
+            var version = new BaseVersion(context, false, new SemanticVersion(1), new BaseVersionSource(new MCommit(commit, new Lazy<int>(0)), "dummy"), string.Empty);
             var sut = new ShaVersionFilter(new[] { commit.Sha });
 
             string reason;
@@ -45,7 +45,7 @@ namespace GitVersionCore.Tests.VersionFilters
         {
             var commit = new MockCommit();
             var context = new GitVersionContextBuilder().Build();
-            var version = new BaseVersion(context, false, new SemanticVersion(1), new BaseVersionSource(new MCommit(commit, 0), "dummy"), string.Empty);
+            var version = new BaseVersion(context, false, new SemanticVersion(1), new BaseVersionSource(new MCommit(commit, new Lazy<int>(0)), "dummy"), string.Empty);
             var sut = new ShaVersionFilter(new[] { "mismatched" });
 
             string reason;
