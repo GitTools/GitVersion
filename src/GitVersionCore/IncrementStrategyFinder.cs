@@ -21,7 +21,7 @@
         public const string DefaultPatchPattern = @"\+semver:\s?(fix|patch)";
         public const string DefaultNoBumpPattern = @"\+semver:\s?(none|skip)";
 
-        public static VersionField? DetermineIncrementedField(GitVersionContext context, BaseVersion baseVersion)
+        public static VersionField DetermineIncrementedField(GitVersionContext context, BaseVersion baseVersion)
         {
             var commitMessageIncrement = FindCommitMessageIncrement(context, baseVersion);
             var defaultIncrement = context.Configuration.Increment.ToVersionField();
@@ -29,7 +29,13 @@
             // use the default branch config increment strategy if there are no commit message overrides
             if (commitMessageIncrement == null)
             {
-                return baseVersion.ShouldIncrement ? defaultIncrement : (VersionField?)null;
+                if (baseVersion.ShouldIncrement)
+                {
+                    return defaultIncrement;
+                }
+
+                Logger.WriteInfo($"Source {baseVersion.Source.Description} specifies no version increment, skipping increment");
+                return VersionField.None;
             }
 
             // cap the commit message severity to minor for alpha versions
@@ -45,7 +51,7 @@
                 return defaultIncrement;
             }
 
-            return commitMessageIncrement;
+            return commitMessageIncrement.Value;
         }
 
         private static VersionField? FindCommitMessageIncrement(GitVersionContext context, BaseVersion baseVersion)
@@ -55,7 +61,9 @@
                 return null;
             }
 
-            var commits = GetIntermediateCommits(context.Repository, baseVersion.BaseVersionSource, context.CurrentCommit);
+            var commits = GetIntermediateCommits(context.Repository,
+                context.Repository.Lookup<Commit>(baseVersion.Source.Commit.Sha),
+                context.CurrentCommit);
 
             if (context.Configuration.CommitMessageIncrementing == CommitMessageIncrementMode.MergeMessageOnly)
             {

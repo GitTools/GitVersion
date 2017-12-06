@@ -114,7 +114,10 @@ public class MasterScenarios
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
             fixture.Repository.MakeCommits(5);
 
-            fixture.AssertFullSemver(config, "1.1.0+5");
+            // GitVersion uses commit count from where the config file was updated
+            // because we didn't check this change into the test repo
+            // it's 0
+            fixture.AssertFullSemver(config, "1.1.0+0");
         }
     }
 

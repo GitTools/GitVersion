@@ -1,10 +1,11 @@
-﻿using System;
+﻿using GitVersion.GitRepoInformation;
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace GitVersion
 {
-    class MergeMessage
+    public class MergeMessage
     {
         static Regex parseMergeMessage = new Regex(
             @"^Merge (branch|tag) '(?<Branch>[^']*)'",
@@ -15,19 +16,18 @@ namespace GitVersion
         static Regex smartGitMergeMessage = new Regex(
             @"^Finish (?<Branch>.*)",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        private string mergeMessage;
         private Config config;
 
-        public MergeMessage(string mergeMessage, Config config)
+        public MergeMessage(MCommit sourceCommit, Config config)
         {
-            this.mergeMessage = mergeMessage;
+            SourceCommit = sourceCommit;
             this.config = config;
 
-            var lastIndexOf = mergeMessage.LastIndexOf("into", StringComparison.OrdinalIgnoreCase);
+            var lastIndexOf = SourceCommit.Message.LastIndexOf("into", StringComparison.OrdinalIgnoreCase);
             if (lastIndexOf != -1)
             {
                 // If we have into in the merge message the rest should be the target branch
-                TargetBranch = mergeMessage.Substring(lastIndexOf + 5);
+                TargetBranch = SourceCommit.Message.Substring(lastIndexOf + 5);
             }
 
             MergedBranch = ParseBranch();
@@ -51,19 +51,19 @@ namespace GitVersion
 
         private string ParseBranch()
         {
-            var match = parseMergeMessage.Match(mergeMessage);
+            var match = parseMergeMessage.Match(SourceCommit.Message);
             if (match.Success)
             {
                 return match.Groups["Branch"].Value;
             }
 
-            match = smartGitMergeMessage.Match(mergeMessage);
+            match = smartGitMergeMessage.Match(SourceCommit.Message);
             if (match.Success)
             {
                 return match.Groups["Branch"].Value;
             }
 
-            match = parseGitHubPullMergeMessage.Match(mergeMessage);
+            match = parseGitHubPullMergeMessage.Match(SourceCommit.Message);
             if (match.Success)
             {
                 IsMergedPullRequest = true;
@@ -85,5 +85,6 @@ namespace GitVersion
         public bool IsMergedPullRequest { get; private set; }
         public int? PullRequestNumber { get; private set; }
         public SemanticVersion Version { get; }
+        public MCommit SourceCommit { get; }
     }
 }

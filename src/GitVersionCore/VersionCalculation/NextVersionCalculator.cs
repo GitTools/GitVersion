@@ -19,7 +19,7 @@
                     new TaggedCommitVersionStrategy(),
                     new MergeMessageBaseVersionStrategy(),
                     new VersionInBranchNameBaseVersionStrategy(),
-                    new TrackReleaseBranchesVersionStrategy());
+                    new TrackReleaseBranchesVersionStrategy(() => baseVersionFinder));
         }
 
         public SemanticVersion FindVersion(GitVersionContext context)
@@ -29,7 +29,7 @@
             if (context.IsCurrentCommitTagged)
             {
                 // Will always be 0, don't bother with the +0 on tags
-                var semanticVersionBuildMetaData = metaDataCalculator.Create(context.CurrentCommit, context);
+                var semanticVersionBuildMetaData = metaDataCalculator.Create(0, context);
                 semanticVersionBuildMetaData.CommitsSinceTag = null;
 
                 var semanticVersion = new SemanticVersion(context.CurrentCommitTaggedVersion)
@@ -49,7 +49,7 @@
             else
             {
                 semver = PerformIncrement(context, baseVersion);
-                semver.BuildMetaData = metaDataCalculator.Create(baseVersion.BaseVersionSource, context);
+                semver.BuildMetaData = metaDataCalculator.Create(baseVersion.Source.Commit.DistanceFromTip, context);
             }
 
             var hasPreReleaseTag = semver.PreReleaseTag.HasTag();
@@ -72,14 +72,8 @@
 
         private static SemanticVersion PerformIncrement(GitVersionContext context, BaseVersion baseVersion)
         {
-            var semver = baseVersion.SemanticVersion;
             var increment = IncrementStrategyFinder.DetermineIncrementedField(context, baseVersion);
-            if (increment != null)
-            {
-                semver = semver.IncrementVersion(increment.Value);
-            }
-            else Logger.WriteInfo("Skipping version increment");
-            return semver;
+            return baseVersion.SemanticVersion.IncrementVersion(increment);
         }
 
         void UpdatePreReleaseTag(GitVersionContext context, SemanticVersion semanticVersion, string branchNameOverride)

@@ -17,11 +17,15 @@
             // So we shouldn't bump the version
             var context = new GitVersionContextBuilder().WithRepository(new MockRepository
             {
-                Head = new MockBranch("master") { new MockCommit
+                Head = new MockBranch("master")
                 {
-                    MessageEx = "Merge branch 'hotfix-0.1.5'",
-                    ParentsEx = GetParents(true)
-                } }
+                    new MockCommit
+                    {
+                        MessageEx = "Merge branch 'hotfix-0.1.5'",
+                        ParentsEx = GetParents(true)
+                    }
+                },
+                Branches = new MockBranchCollection()
             }).Build();
             var sut = new MergeMessageBaseVersionStrategy();
 
@@ -108,7 +112,8 @@
                     {
                         commit,
                         new MockCommit()
-                    }
+                    },
+                    Branches = new MockBranchCollection()
                 })
                 .Build();
             var sut = new MergeMessageBaseVersionStrategy();

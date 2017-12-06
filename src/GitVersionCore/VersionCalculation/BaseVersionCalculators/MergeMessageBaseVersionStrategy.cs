@@ -13,40 +13,17 @@
     {
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
-            var commitsPriorToThan = context.CurrentBranch
-                .CommitsPriorToThan(context.CurrentCommit.When());
-            var baseVersions = commitsPriorToThan
-                .SelectMany(c =>
+            return context
+                .RepositoryMetadata
+                .CurrentBranch
+                .MergeMessages
+                .Where(m => m.Version != null)
+                .Select(m =>
                 {
-                    SemanticVersion semanticVersion;
-                    if (TryParse(c, context, out semanticVersion))
-                    {
-                        var shouldIncrement = !context.Configuration.PreventIncrementForMergedBranchVersion;
-                        return new[]
-                        {
-                            new BaseVersion(context, string.Format("Merge message '{0}'", c.Message.Trim()), shouldIncrement, semanticVersion, c, null)
-                        };
-                    }
-                    return Enumerable.Empty<BaseVersion>();
-                }).ToList();
-            return baseVersions;
-        }
-
-        static bool TryParse(Commit mergeCommit, GitVersionContext context, out SemanticVersion semanticVersion)
-        {
-            semanticVersion = Inner(mergeCommit, context);
-            return semanticVersion != null;
-        }
-
-        static SemanticVersion Inner(Commit mergeCommit, GitVersionContext context)
-        {
-            if (mergeCommit.Parents.Count() < 2)
-            {
-                return null;
-            }
-
-            var mergeMessage = new MergeMessage(mergeCommit.Message, context.FullConfiguration);
-            return mergeMessage.Version;
+                    var shouldIncrement = !context.Configuration.PreventIncrementForMergedBranchVersion;
+                    var source = new BaseVersionSource(m.SourceCommit, $"Merge message '{m.SourceCommit.Message.Trim()}' @ {m.SourceCommit.Sha}");
+                    return new BaseVersion(context, shouldIncrement, m.Version, source, null);
+                });
         }
     }
 }

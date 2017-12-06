@@ -22,6 +22,7 @@
             var mockBranch = new MockBranch("master") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
             var mockRepository = new MockRepository
             {
+                Head = mockBranch,
                 Branches = new MockBranchCollection
                 {
                     mockBranch
@@ -81,6 +82,7 @@
             var develop = new MockBranch("develop") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
             var mockRepository = new MockRepository
             {
+                Head = develop,
                 Branches = new MockBranchCollection
                 {
                     new MockBranch("master") { new MockCommit { CommitterEx = Generate.SignatureNow() } },
@@ -109,6 +111,7 @@
 
             var mockRepository = new MockRepository
             {
+                Head = releaseLatestBranch,
                 Branches = new MockBranchCollection
                 {
                     releaseLatestBranch,

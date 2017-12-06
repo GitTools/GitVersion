@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using LibGit2Sharp;
+    using GitVersion.GitRepoInformation;
 
     /// <summary>
     /// Version is extracted from the name of the branch.
@@ -13,21 +14,21 @@
     {
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
-            var currentBranch = context.CurrentBranch;
+            var currentBranch = context.RepositoryMetadata.CurrentBranch;
             var tagPrefixRegex = context.Configuration.GitTagPrefix;
             var repository = context.Repository;
             return GetVersions(context, tagPrefixRegex, currentBranch, repository);
         }
 
-        public IEnumerable<BaseVersion> GetVersions(GitVersionContext context, string tagPrefixRegex, Branch currentBranch, IRepository repository)
+        public IEnumerable<BaseVersion> GetVersions(GitVersionContext context, string tagPrefixRegex, MBranch currentBranch, IRepository repository)
         {
-            var branchName = currentBranch.FriendlyName;
+            var branchName = currentBranch.Name;
             var versionInBranch = GetVersionInBranch(branchName, tagPrefixRegex);
             if (versionInBranch != null)
             {
-                var commitBranchWasBranchedFrom = context.RepositoryMetadataProvider.FindCommitBranchWasBranchedFrom(currentBranch);
                 var branchNameOverride = branchName.RegexReplace("[-/]" + versionInBranch.Item1, string.Empty);
-                yield return new BaseVersion(context, "Version in branch name", false, versionInBranch.Item2, commitBranchWasBranchedFrom.Commit, branchNameOverride);
+                var source = new BaseVersionSource(currentBranch.Parent.MergeBase, $"Version in branch name with origin commit of {currentBranch.Parent.MergeBase.Sha}");
+                yield return new BaseVersion(context, false, versionInBranch.Item2, source, branchNameOverride);
             }
         }
 

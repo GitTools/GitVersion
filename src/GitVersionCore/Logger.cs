@@ -2,6 +2,7 @@ namespace GitVersion
 {
     using System;
     using System.Globalization;
+    using System.Linq;
     using System.Text.RegularExpressions;
 
     public static class Logger
@@ -89,7 +90,20 @@ namespace GitVersion
 
         static Action<string> LogMessage(Action<string> logAction, string level)
         {
-            return s => logAction(string.Format(CultureInfo.InvariantCulture, "{0}{1} [{2:MM/dd/yy H:mm:ss:ff}] {3}", indent, level, DateTime.Now, s));
+            return s => {
+                var logPrefix = string.Format(CultureInfo.InvariantCulture,
+                    "{0}{1} [{2:MM/dd/yy H:mm:ss:ff}]",
+                    indent, level, DateTime.Now);
+
+                logAction($"{logPrefix} {IndentMultilineLogs(s, new String(' ', logPrefix.Length))}");
+             };
+        }
+
+        static Regex splitMultiline = new Regex(@"\r?\n", RegexOptions.Compiled);
+        private static string IndentMultilineLogs(string logMessage, string indent)
+        {
+            return string.Join(Environment.NewLine, splitMultiline.Split(logMessage)
+                .Select((line, index) => index > 0 ? string.Concat(indent, line) : line));
         }
 
         public static void Reset()

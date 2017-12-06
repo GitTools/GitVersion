@@ -123,7 +123,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             ApplyBranchDefaults(config,
                 GetOrCreateBranchDefaults(config, ReleaseBranchKey),
                 ReleaseBranchRegex,
-                new List<string> { "develop", "master", "support", "release" },
+                new List<string> { "develop", "master", "support" },
                 defaultTag: "beta",
                 defaultPreventIncrement: true,
                 defaultIncrementStrategy: IncrementStrategy.Patch,
@@ -239,7 +239,9 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             {
                 var readAllText = fileSystem.ReadAllText(configFilePath);
                 LegacyConfigNotifier.Notify(new StringReader(readAllText));
-                return ConfigSerialiser.Read(new StringReader(readAllText));
+                var config = ConfigSerialiser.Read(new StringReader(readAllText));
+                config.Filename = configFilePath.Replace(workingDirectory, "").TrimStart('/', '\\');
+                return config;
             }
 
             return new Config();

@@ -9,7 +9,7 @@ namespace GitVersion
     public class GitRepoMetadataProvider
     {
         private Dictionary<Branch, List<BranchCommit>> mergeBaseCommitsCache;
-        private Dictionary<Tuple<Branch, Branch>, MergeBaseData> mergeBaseCache;
+        private Dictionary<Tuple<string, string>, MergeBaseData> mergeBaseCache;
         private Dictionary<Branch, List<SemanticVersion>> semanticVersionTagsOnBranchCache;
         private IRepository Repository { get; set; }
         const string missingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
@@ -17,7 +17,7 @@ namespace GitVersion
 
         public GitRepoMetadataProvider(IRepository repository, Config configuration)
         {
-            mergeBaseCache = new Dictionary<Tuple<Branch, Branch>, MergeBaseData>();
+            mergeBaseCache = new Dictionary<Tuple<string, string>, MergeBaseData>();
             mergeBaseCommitsCache = new Dictionary<Branch, List<BranchCommit>>();
             semanticVersionTagsOnBranchCache = new Dictionary<Branch, List<SemanticVersion>>();
             Repository = repository;
@@ -110,28 +110,42 @@ namespace GitVersion
         /// </summary>
         public Commit FindMergeBase(Branch branch, Branch otherBranch)
         {
-            var key = Tuple.Create(branch, otherBranch);
+            return FindMergeBase(branch.Tip.Sha, otherBranch.Tip.Sha, branch.FriendlyName, otherBranch.FriendlyName);
+        }
+
+        /// <summary>
+        /// Find the merge base of the two branches, i.e. the best common ancestor of the two branches' tips.
+        /// </summary>
+        public Commit FindMergeBase(string sha1, string sha2, string sha1Desc = null, string sha2Desc = null)
+        {
+            var key = Tuple.Create(sha1, sha2);
+            var source1 = Repository.Lookup<Commit>(sha1);
+            var source2 = Repository.Lookup<Commit>(sha2);
+            var sha1Name = sha1Desc ?? sha1;
+            var sha2Name = sha2Desc ?? sha2;
 
             if (mergeBaseCache.ContainsKey(key))
             {
-                Logger.WriteDebug($"Cache hit for merge base between '{branch.FriendlyName}' and '{otherBranch.FriendlyName}'.");
-                return mergeBaseCache[key].MergeBase;
+                Logger.WriteDebug($"Cache hit for merge base between '{sha1Name}' and '{sha2Name}'.");
+                var mergeBase = mergeBaseCache[key].MergeBase;
+                if (mergeBase == null) { return null; }
+                return Repository.Lookup<Commit>(mergeBase);
             }
 
-            using (Logger.IndentLog($"Finding merge base between '{branch.FriendlyName}' and '{otherBranch.FriendlyName}'."))
+            using (Logger.IndentLog($"Finding merge base between '{sha1Name}' and '{sha2Name}'."))
             {
-                // Otherbranch tip is a forward merge
-                var commitToFindCommonBase = otherBranch.Tip;
-                var commit = branch.Tip;
-                if (otherBranch.Tip.Parents.Contains(commit))
+                // source2 is a forward merge (Jake: I have no idea what this means right now....)
+                var commitToFindCommonBase = source2;
+                var commit = source1;
+                if (source2.Parents.Contains(commit))
                 {
-                    commitToFindCommonBase = otherBranch.Tip.Parents.First();
+                    commitToFindCommonBase = source2.Parents.First();
                 }
 
                 var findMergeBase = Repository.ObjectDatabase.FindMergeBase(commit, commitToFindCommonBase);
                 if (findMergeBase != null)
                 {
-                    Logger.WriteInfo($"Found merge base of {findMergeBase.Sha}");
+                    Logger.WriteDebug($"Found possible merge base of {findMergeBase.Sha}, ensuring is not a forward merge");
                     // We do not want to include merge base commits which got forward merged into the other branch
                     Commit forwardMerge;
                     do
@@ -149,19 +163,19 @@ namespace GitVersion
                         {
                             // TODO Fix the logging up in this section
                             var second = forwardMerge.Parents.First();
-                            Logger.WriteDebug("Second " + second.Sha);
+                            Logger.WriteDebug($"It looks like the found merge base was a forward merge, finding next merge base '{sha1Name}' and '{second.Sha}'");
                             var mergeBase = Repository.ObjectDatabase.FindMergeBase(commit, second);
                             if (mergeBase == null)
                             {
-                                Logger.WriteWarning("Could not find mergbase for " + commit);
+                                Logger.WriteWarning($"Could not find mergbase for '{sha1Name}' and '{second.Sha}'");
                             }
                             else
                             {
-                                Logger.WriteDebug("New Merge base " + mergeBase.Sha);
+                                Logger.WriteDebug("Next possible merge base is " + mergeBase.Sha);
                             }
                             if (mergeBase == findMergeBase)
                             {
-                                Logger.WriteDebug("Breaking");
+                                Logger.WriteDebug("Original merge base and forward merge merge base was the same, using original result");
                                 break;
                             }
                             findMergeBase = mergeBase;
@@ -172,9 +186,9 @@ namespace GitVersion
                 }
 
                 // Store in cache.
-                mergeBaseCache.Add(key, new MergeBaseData(branch, otherBranch, Repository, findMergeBase));
+                mergeBaseCache.Add(key, new MergeBaseData(sha1, sha2, findMergeBase?.Sha));
 
-                Logger.WriteInfo($"Merge base of {branch.FriendlyName}' and '{otherBranch.FriendlyName} is {findMergeBase}");
+                Logger.WriteInfo($"Merge base of {sha1Name}' and '{sha2Name} is {findMergeBase}");
                 return findMergeBase;
             }
         }
@@ -198,7 +212,7 @@ namespace GitVersion
                     return BranchCommit.Empty;
                 }
 
-                var possibleBranches = GetMergeCommitsForBranch(branch)
+                var possibleBranches = GetMergeBasesForBranch(branch)
                     .ExcludingBranches(excludedBranches)
                     .Where(b => !branch.IsSameBranch(b.Branch))
                     .ToList();
@@ -216,7 +230,23 @@ namespace GitVersion
             }
         }
 
-        List<BranchCommit> GetMergeCommitsForBranch(Branch branch)
+        public int GetCommitCount(Commit tip, Commit since)
+        {
+            var qf = new CommitFilter
+            {
+                IncludeReachableFrom = tip,
+                ExcludeReachableFrom = since,
+                SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time
+            };
+
+            var commitLog = Repository.Commits.QueryBy(qf);
+            var commitsSinceTag = commitLog.Count();
+            Logger.WriteInfo(string.Format("{0} commits found between {1} and {2}", commitsSinceTag, since.Sha, tip.Sha));
+
+            return commitsSinceTag;
+        }
+
+        List<BranchCommit> GetMergeBasesForBranch(Branch branch)
         {
             if (mergeBaseCommitsCache.ContainsKey(branch))
             {
@@ -259,17 +289,15 @@ namespace GitVersion
 
         private class MergeBaseData
         {
-            public Branch Branch { get; private set; }
-            public Branch OtherBranch { get; private set; }
-            public IRepository Repository { get; private set; }
+            public string Sha1 { get; private set; }
+            public string Sha2 { get; private set; }
 
-            public Commit MergeBase { get; private set; }
+            public string MergeBase { get; private set; }
 
-            public MergeBaseData(Branch branch, Branch otherBranch, IRepository repository, Commit mergeBase)
+            public MergeBaseData(string sha1, string sha2, string mergeBase)
             {
-                Branch = branch;
-                OtherBranch = otherBranch;
-                Repository = repository;
+                Sha1 = sha1;
+                Sha2 = sha2;
                 MergeBase = mergeBase;
             }
         }

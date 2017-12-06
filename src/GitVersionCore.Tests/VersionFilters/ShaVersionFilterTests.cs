@@ -4,6 +4,7 @@ using GitVersion.VersionCalculation.BaseVersionCalculators;
 using GitVersion.VersionFilters;
 using NUnit.Framework;
 using Shouldly;
+using GitVersion.GitRepoInformation;
 
 namespace GitVersionCore.Tests.VersionFilters
 {
@@ -23,7 +24,7 @@ namespace GitVersionCore.Tests.VersionFilters
             var sut = new ShaVersionFilter(new[] { commit.Sha });
 
             string reason;
-            Should.Throw<ArgumentNullException>(() => sut.Exclude(null, out reason));
+            Should.Throw<ArgumentNullException>(() => sut.Exclude(null, new MockRepository(), out reason));
         }
 
         [Test]
@@ -31,11 +32,11 @@ namespace GitVersionCore.Tests.VersionFilters
         {
             var commit = new MockCommit();
             var context = new GitVersionContextBuilder().Build();
-            var version = new BaseVersion(context, "dummy", false, new SemanticVersion(1), commit, string.Empty);
+            var version = new BaseVersion(context, false, new SemanticVersion(1), new BaseVersionSource(new MCommit(commit, new Lazy<int>(0)), "dummy"), string.Empty);
             var sut = new ShaVersionFilter(new[] { commit.Sha });
 
             string reason;
-            sut.Exclude(version, out reason).ShouldBeTrue();
+            sut.Exclude(version, context.Repository, out reason).ShouldBeTrue();
             reason.ShouldNotBeNullOrWhiteSpace();
         }
 
@@ -44,23 +45,11 @@ namespace GitVersionCore.Tests.VersionFilters
         {
             var commit = new MockCommit();
             var context = new GitVersionContextBuilder().Build();
-            var version = new BaseVersion(context, "dummy", false, new SemanticVersion(1), commit, string.Empty);
+            var version = new BaseVersion(context, false, new SemanticVersion(1), new BaseVersionSource(new MCommit(commit, new Lazy<int>(0)), "dummy"), string.Empty);
             var sut = new ShaVersionFilter(new[] { "mismatched" });
 
             string reason;
-            sut.Exclude(version, out reason).ShouldBeFalse();
-            reason.ShouldBeNull();
-        }
-
-        [Test]
-        public void ExcludeShouldAcceptVersionWithNullCommit()
-        {
-            var context = new GitVersionContextBuilder().Build();
-            var version = new BaseVersion(context, "dummy", false, new SemanticVersion(1), null, string.Empty);
-            var sut = new ShaVersionFilter(new[] { "mismatched" });
-
-            string reason;
-            sut.Exclude(version, out reason).ShouldBeFalse();
+            sut.Exclude(version, context.Repository, out reason).ShouldBeFalse();
             reason.ShouldBeNull();
         }
     }

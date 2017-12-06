@@ -13,7 +13,7 @@
             this.metaData = metaData;
         }
 
-        public SemanticVersionBuildMetaData Create(Commit baseVersionSource, GitVersionContext context)
+        public SemanticVersionBuildMetaData Create(int commitCount, GitVersionContext context)
         {
             return metaData;
         }

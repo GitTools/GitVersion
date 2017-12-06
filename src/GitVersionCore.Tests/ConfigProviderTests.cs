@@ -251,6 +251,7 @@ branches: {}";
         var config = typeof(Config);
         var propertiesMissingAlias = config.GetProperties()
             .Where(p => p.GetCustomAttribute<ObsoleteAttribute>() == null)
+            .Where(p => p.GetCustomAttribute<YamlIgnoreAttribute>() == null)
             .Where(p => p.GetCustomAttribute(typeof(YamlMemberAttribute)) == null)
             .Select(p => p.Name);
 

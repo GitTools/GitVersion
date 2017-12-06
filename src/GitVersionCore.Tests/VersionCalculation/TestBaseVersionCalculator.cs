@@ -9,9 +9,9 @@ namespace GitVersionCore.Tests.VersionCalculation
     {
         readonly SemanticVersion semanticVersion;
         bool shouldIncrement;
-        Commit source;
+        BaseVersionSource source;
 
-        public TestBaseVersionCalculator(bool shouldIncrement, SemanticVersion semanticVersion, Commit source)
+        public TestBaseVersionCalculator(bool shouldIncrement, SemanticVersion semanticVersion, BaseVersionSource source)
         {
             this.semanticVersion = semanticVersion;
             this.source = source;
@@ -20,7 +20,7 @@ namespace GitVersionCore.Tests.VersionCalculation
 
         public BaseVersion GetBaseVersion(GitVersionContext context)
         {
-            return new BaseVersion(context, "Test source", shouldIncrement, semanticVersion, source, null);
+            return new BaseVersion(context, shouldIncrement, semanticVersion, source, null);
         }
     }
 }

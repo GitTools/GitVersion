@@ -34,7 +34,7 @@ public class MockQueryableCommitLog : IQueryableCommitLog
 
     public IEnumerable<LogEntry> QueryBy(string path)
     {
-        throw new NotImplementedException();
+        return new[] { new LogEntry () };
     }
 
 #pragma warning disable CS0618 // Type or member is obsolete
