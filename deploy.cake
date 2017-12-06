@@ -1,5 +1,5 @@
-#addin "Cake.Json"
-#addin "Cake.Docker"
+#addin "nuget:https://www.nuget.org/api/v2?package=Cake.Json&version=1.0.2.13"
+#addin "nuget:https://www.nuget.org/api/v2?package=Cake.Docker&version=0.7.7"
 
 var target = Argument("target", "Deploy");
 var tagOverride = Argument("TagOverride", "");
@@ -219,7 +219,7 @@ Task("Publish-DockerImage")
         publishingError = true;
         return;
     }
-    
+
     // Login to dockerhub
     returnCode = StartProcess("docker", new ProcessSettings
     {
