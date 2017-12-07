@@ -77,7 +77,7 @@ We use Cake for our build and deployment process. The way the build / release pr
 1) Login to AppVeyor
 1) Deploy the latest master build
 ![docs/img/release-1-deploy.png](docs/img/release-1-deploy.png)
-1) Choose GitVersion release, when you press deploy it will create a GitHub release (but it *will not* publish it)
+1) Choose GitVersion release, when you press deploy it will create a *non-released* GitHub release, this *will not* create a Git tag. This step is so we can validate the release and release notes before pushing the button.
 ![docs/img/release-2-deploy.png](docs/img/release-2-deploy.png)
 1) All the artifacts should upload nicely
 ![docs/img/release-3-deploy.png](docs/img/release-3-deploy.png)
@@ -91,4 +91,6 @@ We use Cake for our build and deployment process. The way the build / release pr
 1) Publishing tags (a git tag) the release commit, this will trigger another appveyor build which only builds tags, this build uses deploy.cake. It downloads the artifacts from that GitHub release, then performs the release
 
 ## Docker
-docker build . --build-arg GitVersionZip=build/GitVersion_<VERSION>.zip --tag gittools/gitversion
+It is a manual release step after the release now, first download the appropriate ZIP and put into a `releaseArtifacts` folder in the GitVersion repository, then run:
+
+`docker build . --build-arg GitVersionZip=GitVersion_<VERSION>.zip --tag gittools/gitversion`
