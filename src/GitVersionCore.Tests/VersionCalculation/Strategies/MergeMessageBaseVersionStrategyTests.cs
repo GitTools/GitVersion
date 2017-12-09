@@ -58,6 +58,7 @@
         [TestCase("Finish 0.14.1", true, "0.14.1")] //Support Syntevo SmartGit/Hg's Gitflow merge commit messages for finishing a 'Hotfix' branch
         [TestCase("Merge branch 'Release-v0.2.0'", true, "0.2.0")]
         [TestCase("Merge branch 'Release-v2.2'", true, "2.2.0")]
+        [TestCase("Merge remote-tracking branch 'origin/release/0.8.0' into develop/master", true, "0.8.0")]
         public void AssertMergeMessage(string message, bool isMergeCommit, string expectedVersion)
         {
             var parents = GetParents(isMergeCommit);
@@ -121,6 +122,7 @@
             }
             else
             {
+                baseVersion.ShouldNotBeNull();
                 baseVersion.SemanticVersion.ToString().ShouldBe(expectedVersion);
             }
         }

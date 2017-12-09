@@ -15,6 +15,10 @@ namespace GitVersion
         static Regex smartGitMergeMessage = new Regex(
             @"^Finish (?<Branch>.*)",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        static Regex parseRemoteTrackingMergeMessage = new Regex(
+            @"^Merge remote-tracking branch '(?<SourceBranch>.*)' into (?<TargetBranch>.*)",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
         private string mergeMessage;
         private Config config;
 
@@ -73,7 +77,14 @@ namespace GitVersion
                     PullRequestNumber = pullNumber;
                 }
                 var from = match.Groups["Source"].Value;
-                // We could remove/separate the remote name at this point?
+                // TODO We could remove/separate the remote name at this point?
+                return from;
+            }
+
+            match = parseRemoteTrackingMergeMessage.Match(mergeMessage);
+            if (match.Success) {
+                var from = match.Groups["SourceBranch"].Value;
+                // TODO We could remove/separate the remote name at this point?
                 return from;
             }
 

@@ -15,7 +15,7 @@ namespace GitVersion
         /// </summary>
         public static BranchConfig GetBranchConfiguration(GitVersionContext context, Branch targetBranch, IList<Branch> excludedInheritBranches = null)
         {
-            var matchingBranches = context.FullConfiguration.GetConfigForBranch(targetBranch.FriendlyName);
+            var matchingBranches = context.FullConfiguration.GetConfigForBranch(targetBranch.NameWithoutRemote());
             
             if (matchingBranches == null)
             {
@@ -27,11 +27,20 @@ namespace GitVersion
                 ConfigurationProvider.ApplyBranchDefaults(context.FullConfiguration, matchingBranches, "", new List<string>());
             }
 
-            return matchingBranches.Increment == IncrementStrategy.Inherit ?
-                InheritBranchConfiguration(context, targetBranch, matchingBranches, excludedInheritBranches) :
-                matchingBranches;
+            if (matchingBranches.Increment == IncrementStrategy.Inherit)
+            {
+                matchingBranches = InheritBranchConfiguration(context, targetBranch, matchingBranches, excludedInheritBranches);
+                if (matchingBranches.Name == FallbackConfigName && matchingBranches.Increment == IncrementStrategy.Inherit)
+                {
+                    // We tried, and failed to inherit, just fall back to patch
+                    matchingBranches.Increment = IncrementStrategy.Patch;
+                }
+            }
+
+            return matchingBranches;
         }
 
+        // TODO I think we need to take a fresh approach to this.. it's getting really complex with heaps of edge cases
         static BranchConfig InheritBranchConfiguration(GitVersionContext context, Branch targetBranch, BranchConfig branchConfiguration, IList<Branch> excludedInheritBranches)
         {
             var repository = context.Repository;
@@ -50,9 +59,9 @@ namespace GitVersion
                 {
                     excludedInheritBranches = repository.Branches.Where(b =>
                     {
-                        var branchConfig = config.GetConfigForBranch(b.FriendlyName);
+                        var branchConfig = config.GetConfigForBranch(b.NameWithoutRemote());
 
-                        return branchConfig != null && branchConfig.Increment == IncrementStrategy.Inherit;
+                        return branchConfig == null || branchConfig.Increment == IncrementStrategy.Inherit;
                     }).ToList();
                 }
                 // Add new excluded branches.
@@ -60,7 +69,7 @@ namespace GitVersion
                 {
                     excludedInheritBranches.Add(excludedBranch);
                 }
-                var branchesToEvaluate = repository.Branches.Except(excludedInheritBranches).ToList();
+                var branchesToEvaluate = repository.Branches.ExcludingBranches(excludedInheritBranches).ToList();
 
                 var branchPoint = context.RepositoryMetadataProvider
                     .FindCommitBranchWasBranchedFrom(targetBranch, excludedInheritBranches.ToArray());
@@ -94,13 +103,17 @@ namespace GitVersion
                 if (possibleParents.Count == 1)
                 {
                     var branchConfig = GetBranchConfiguration(context, possibleParents[0], excludedInheritBranches);
-                    return new BranchConfig(branchConfiguration)
+                    // If we have resolved a fallback config we should not return that we have got config
+                    if (branchConfig.Name != FallbackConfigName)
                     {
-                        Increment = branchConfig.Increment,
-                        PreventIncrementOfMergedBranchVersion = branchConfig.PreventIncrementOfMergedBranchVersion,
-                        // If we are inheriting from develop then we should behave like develop
-                        TracksReleaseBranches = branchConfig.TracksReleaseBranches
-                    };
+                        return new BranchConfig(branchConfiguration)
+                        {
+                            Increment = branchConfig.Increment,
+                            PreventIncrementOfMergedBranchVersion = branchConfig.PreventIncrementOfMergedBranchVersion,
+                            // If we are inheriting from develop then we should behave like develop
+                            TracksReleaseBranches = branchConfig.TracksReleaseBranches
+                        };
+                    }
                 }
 
                 // If we fail to inherit it is probably because the branch has been merged and we can't do much. So we will fall back to develop's config
