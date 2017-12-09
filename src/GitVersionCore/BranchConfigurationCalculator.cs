@@ -59,9 +59,9 @@ namespace GitVersion
                 {
                     excludedInheritBranches = repository.Branches.Where(b =>
                     {
-                        var branchConfig = config.GetConfigForBranch(b.FriendlyName);
+                        var branchConfig = config.GetConfigForBranch(b.NameWithoutRemote());
 
-                        return branchConfig != null && branchConfig.Increment == IncrementStrategy.Inherit;
+                        return branchConfig == null || branchConfig.Increment == IncrementStrategy.Inherit;
                     }).ToList();
                 }
                 // Add new excluded branches.
@@ -69,7 +69,7 @@ namespace GitVersion
                 {
                     excludedInheritBranches.Add(excludedBranch);
                 }
-                var branchesToEvaluate = repository.Branches.Except(excludedInheritBranches).ToList();
+                var branchesToEvaluate = repository.Branches.ExcludingBranches(excludedInheritBranches).ToList();
 
                 var branchPoint = context.RepositoryMetadataProvider
                     .FindCommitBranchWasBranchedFrom(targetBranch, excludedInheritBranches.ToArray());
@@ -113,25 +113,6 @@ namespace GitVersion
                             // If we are inheriting from develop then we should behave like develop
                             TracksReleaseBranches = branchConfig.TracksReleaseBranches
                         };
-                    }
-                }
-
-                if (possibleParents.Count > 1)
-                {
-                    // Lets try and get the branch config for each possible parent, the first may not have config
-                    foreach (var possibleParent in possibleParents)
-                    {
-                        var branchConfig = GetBranchConfiguration(context, possibleParent, excludedInheritBranches);
-                        if (branchConfig.Name != FallbackConfigName)
-                        {
-                            return new BranchConfig(branchConfiguration)
-                            {
-                                Increment = branchConfig.Increment,
-                                PreventIncrementOfMergedBranchVersion = branchConfig.PreventIncrementOfMergedBranchVersion,
-                                // If we are inheriting from develop then we should behave like develop
-                                TracksReleaseBranches = branchConfig.TracksReleaseBranches
-                            };
-                        }
                     }
                 }
 
