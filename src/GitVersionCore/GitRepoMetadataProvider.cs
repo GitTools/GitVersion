@@ -225,7 +225,7 @@ namespace GitVersion
                 return mergeBaseCommitsCache[branch];
             }
 
-            var currentBranchConfig = configuration.GetConfigForBranch(branch.FriendlyName);
+            var currentBranchConfig = configuration.GetConfigForBranch(branch.NameWithoutRemote());
             var regexesToCheck = currentBranchConfig == null
                 ? new [] { ".*" } // Match anything if we can't find a branch config
                 : currentBranchConfig.SourceBranches.Select(sb => configuration.Branches[sb].Regex);

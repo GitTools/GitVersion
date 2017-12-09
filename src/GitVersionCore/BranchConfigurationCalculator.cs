@@ -15,7 +15,7 @@ namespace GitVersion
         /// </summary>
         public static BranchConfig GetBranchConfiguration(GitVersionContext context, Branch targetBranch, IList<Branch> excludedInheritBranches = null)
         {
-            var matchingBranches = context.FullConfiguration.GetConfigForBranch(targetBranch.FriendlyName);
+            var matchingBranches = context.FullConfiguration.GetConfigForBranch(targetBranch.NameWithoutRemote());
             
             if (matchingBranches == null)
             {
