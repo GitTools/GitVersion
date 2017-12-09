@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="BuildLogger.cs" />
     <Compile Include="GenerateGitVersionInformation.cs" />
+    <Compile Include="UpdateVsixManifest.cs" />
     <Compile Include="GitVersionTaskBase.cs" />
     <Compile Include="WriteVersionInfoToBuildLog.cs" />
     <Compile Include="GetVersion.cs" />
