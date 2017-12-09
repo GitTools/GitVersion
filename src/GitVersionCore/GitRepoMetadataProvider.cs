@@ -198,8 +198,7 @@ namespace GitVersion
                     return BranchCommit.Empty;
                 }
 
-                var possibleBranches = GetMergeCommitsForBranch(branch)
-                    .ExcludingBranches(excludedBranches)
+                var possibleBranches = GetMergeCommitsForBranch(branch, excludedBranches)
                     .Where(b => !branch.IsSameBranch(b.Branch))
                     .ToList();
 
@@ -216,7 +215,7 @@ namespace GitVersion
             }
         }
 
-        List<BranchCommit> GetMergeCommitsForBranch(Branch branch)
+        List<BranchCommit> GetMergeCommitsForBranch(Branch branch, Branch[] excludedBranches)
         {
             if (mergeBaseCommitsCache.ContainsKey(branch))
             {
@@ -231,6 +230,7 @@ namespace GitVersion
                 ? new [] { ".*" } // Match anything if we can't find a branch config
                 : currentBranchConfig.SourceBranches.Select(sb => configuration.Branches[sb].Regex);
             var branchMergeBases = Repository.Branches
+                .ExcludingBranches(excludedBranches)
                 .Where(b =>
                 {
                     if (b == branch) return false;
