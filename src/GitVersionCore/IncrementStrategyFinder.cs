@@ -129,7 +129,7 @@
 
         public static VersionField FindDefaultIncrementForBranch( GitVersionContext context, string branch = null )
         {
-            var config = context.FullConfiguration.GetConfigForBranch(branch ?? context.CurrentBranch.FriendlyName);
+            var config = context.FullConfiguration.GetConfigForBranch(branch ?? context.CurrentBranch.NameWithoutRemote());
             if ( config?.Increment != null && config.Increment != IncrementStrategy.Inherit )
             {
                 return config.Increment.Value.ToVersionField();

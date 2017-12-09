@@ -47,6 +47,7 @@ void Build(string configuration, string nugetVersion, string semVersion, string 
     }
 }
 
+// This build task can be run to just build
 Task("DogfoodBuild")
     .IsDependentOn("NuGet-Package-Restore")
     .Does(() =>
@@ -92,7 +93,7 @@ Task("Build")
 });
 
 Task("Run-NUnit-Tests")
-    .IsDependentOn("Build")
+    .IsDependentOn("DogfoodBuild")
     .Does(() =>
 {
     var settings = new NUnit3Settings();
@@ -113,6 +114,7 @@ Task("Run-NUnit-Tests")
 });
 
 Task("Zip-Files")
+    .IsDependentOn("Build")
     .IsDependentOn("Run-NUnit-Tests")
     .Does(() =>
 {

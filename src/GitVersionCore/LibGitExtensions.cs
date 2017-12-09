@@ -17,15 +17,21 @@ namespace GitVersion
         /// <summary>
         /// Checks if the two branch objects refer to the same branch (have the same friendly name).
         /// </summary>
+        public static string NameWithoutRemote(this Branch branch)
+        {
+            return branch.IsRemote ?
+                branch.FriendlyName.Substring(branch.FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1) :
+                branch.FriendlyName;
+        }
+
+        /// <summary>
+        /// Checks if the two branch objects refer to the same branch (have the same friendly name).
+        /// </summary>
         public static bool IsSameBranch(this Branch branch, Branch otherBranch)
         {
             // For each branch, fixup the friendly name if the branch is remote.
-            var otherBranchFriendlyName = otherBranch.IsRemote ?
-                otherBranch.FriendlyName.Substring(otherBranch.FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1) :
-                otherBranch.FriendlyName;
-            var branchFriendlyName = branch.IsRemote ?
-                branch.FriendlyName.Substring(branch.FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1) :
-                branch.FriendlyName;
+            var otherBranchFriendlyName = otherBranch.NameWithoutRemote();
+            var branchFriendlyName = branch.NameWithoutRemote();
 
             return otherBranchFriendlyName == branchFriendlyName;
         }
