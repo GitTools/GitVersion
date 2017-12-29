@@ -23,7 +23,7 @@ void Build(string configuration, string nugetVersion, string semVersion, string 
         XBuild("./src/GitVersion.sln",  new XBuildSettings()
             .SetConfiguration(configuration)
             .WithProperty("POSIX", "True")
-            .SetVerbosity(Verbosity.Minimal));
+            .SetVerbosity(Verbosity.Verbose));
     }
     else
     {	
