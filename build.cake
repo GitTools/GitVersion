@@ -34,7 +34,7 @@ void Build(string configuration, string nugetVersion, string semVersion, string 
 		   // .WithProperty("Platform", "Any CPU")
            // .WithProperty("Windows", "True")
             .UseToolVersion(MSBuildToolVersion.VS2017)
-            .SetVerbosity(Verbosity.Minimal)
+            .SetVerbosity(Verbosity.Detailed)
             .SetNodeReuse(false);
 
         if (BuildSystem.AppVeyor.IsRunningOnAppVeyor)
