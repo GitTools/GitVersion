@@ -23,7 +23,7 @@ void Build(string configuration, string nugetVersion, string semVersion, string 
         XBuild("./src/GitVersion.sln",  new XBuildSettings()
             .SetConfiguration(configuration)
             .WithProperty("POSIX", "True")
-            .SetVerbosity(Verbosity.Verbose));
+            .SetVerbosity(Verbosity.Minimal));
     }
     else
     {	
@@ -34,7 +34,7 @@ void Build(string configuration, string nugetVersion, string semVersion, string 
 		   // .WithProperty("Platform", "Any CPU")
            // .WithProperty("Windows", "True")
             .UseToolVersion(MSBuildToolVersion.VS2017)
-            .SetVerbosity(Verbosity.Detailed)
+            .SetVerbosity(Verbosity.Diagnostic)
             .SetNodeReuse(false);
 
         if (BuildSystem.AppVeyor.IsRunningOnAppVeyor)
