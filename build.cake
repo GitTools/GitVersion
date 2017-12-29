@@ -43,7 +43,7 @@ void Build(string configuration, string nugetVersion, string semVersion, string 
 			{
 				msBuildSettings.WithProperty("GitVersion_NuGetVersion", nugetVersion);
 			}
-			if (!string.IsNullOrWhiteSpace(semVersion
+			if (!string.IsNullOrWhiteSpace(semVersion))
 			{
 				msBuildSettings.WithProperty("GitVersion_SemVer", semVersion);
 			}
@@ -56,7 +56,6 @@ void Build(string configuration, string nugetVersion, string semVersion, string 
 			if (!string.IsNullOrWhiteSpace(preReleaseTag))
 			{
 				msBuildSettings.WithProperty("GitVersion_PreReleaseTag", preReleaseTag);
-
 			}
         }
 
