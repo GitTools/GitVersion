@@ -38,13 +38,28 @@ void Build(string configuration, string nugetVersion, string semVersion, string 
             .SetNodeReuse(false);
 
         if (BuildSystem.AppVeyor.IsRunningOnAppVeyor)
-        {
-            msBuildSettings = msBuildSettings
-                .WithProperty("GitVersion_NuGetVersion", nugetVersion)
-                .WithProperty("GitVersion_SemVer", semVersion)
-                .WithProperty("GitVersion_MajorMinorPatch", version)
-                .WithProperty("GitVersion_PreReleaseTag", preReleaseTag);
+		{
+			if (!string.IsNullOrWhiteSpace(nugetVersion))
+			{
+				msBuildSettings.WithProperty("GitVersion_NuGetVersion", nugetVersion);
+			}
+			if (!string.IsNullOrWhiteSpace(semVersion
+			{
+				msBuildSettings.WithProperty("GitVersion_SemVer", semVersion);
+			}
+
+			if (!string.IsNullOrWhiteSpace(version))
+			{
+				msBuildSettings.WithProperty("GitVersion_MajorMinorPatch", version);
+			}
+
+			if (!string.IsNullOrWhiteSpace(preReleaseTag))
+			{
+				msBuildSettings.WithProperty("GitVersion_PreReleaseTag", preReleaseTag);
+
+			}
         }
+
         MSBuild("./src/GitVersion.sln", msBuildSettings);
     }
 }
