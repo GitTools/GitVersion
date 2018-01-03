@@ -1,5 +1,5 @@
-#tool "nuget:?package=NUnit.ConsoleRunner"
-#tool "nuget:?package=GitReleaseNotes"
+#tool "nuget:https://www.nuget.org/api/v2?package=NUnit.ConsoleRunner&version=3.7.0"
+#tool "nuget:https://www.nuget.org/api/v2?package=GitReleaseNotes&version=0.7.0"
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
