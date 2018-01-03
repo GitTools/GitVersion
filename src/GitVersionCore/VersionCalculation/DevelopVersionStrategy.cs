@@ -57,7 +57,7 @@ namespace GitVersion.VersionCalculation
             if (releaseBranchConfig.Any())
             {
                 var releaseBranches = context.Repository.Branches
-                    .Where(b => releaseBranchConfig.Any(c => Regex.IsMatch(b.FriendlyName, c.Key)));
+                    .Where(b => releaseBranchConfig.Any(c => Regex.IsMatch(b.FriendlyName, c.Value.Regex)));
 
                 return releaseBranches
                     .SelectMany(b => GetReleaseVersion(context, b))
