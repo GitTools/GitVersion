@@ -10,4 +10,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("GitVersionCore.Tests")]
 [assembly: InternalsVisibleTo("GitVersionExe.Tests")]
 
-[assembly: AssemblyInformationalVersion("4.0.0-beta.12+1291.Branch.master.Sha.bc74ac2247d8a58053a33316334ada6b771a8455")]
+[assembly: AssemblyInformationalVersion("4.0.0-netstandard.1+1493.Branch.feature/netstandard.Sha.95e3d0958cde9d5c59abfaad9a6e7502840d5cfa")]

@@ -7,7 +7,7 @@
 
     <RootNamespace>GitVersionExe.Tests</RootNamespace>
     <AssemblyName>GitVersionExe.Tests</AssemblyName>
-    <TargetFramework>net452</TargetFramework>
+    <TargetFramework>net461</TargetFramework>
 
     <GenerateAssemblyFileVersionAttribute Condition="'$(GenerateAssemblyFileVersionAttribute)' == ''">false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInformationalVersionAttribute Condition="'$(GenerateAssemblyInformationalVersionAttribute)' == ''">false</GenerateAssemblyInformationalVersionAttribute>
@@ -37,18 +37,18 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
     <PackageReference Include="GitTools.Core" Version="1.3.1"></PackageReference>
     <PackageReference Include="GitTools.Testing" Version="1.2.0"></PackageReference>
     <PackageReference Include="JetBrains.Annotations" Version="10.4.0"></PackageReference>
     <PackageReference Include="Mono.Cecil" Version="0.9.6.4"></PackageReference>
     <PackageReference Include="NSubstitute" Version="1.10.0"></PackageReference>
-    <PackageReference Include="NUnit" Version="3.8.1"></PackageReference>
+    <PackageReference Include="NUnit" Version="3.9.0"></PackageReference>
     <packagereference Include="NUnit3TestAdapter" Version="3.9.0"></packagereference>
     <PackageReference Include="Shouldly" Version="2.7.0"></PackageReference>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net452'">
+  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />

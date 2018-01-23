@@ -424,7 +424,7 @@ public class AssemblyInfoFileUpdaterTests
             using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
                 assemblyInfoFileUpdater.Update();
-
+               
                 assemblyFileContent = fileSystem.ReadAllText(fileName);
                 assemblyFileContent.ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
             }

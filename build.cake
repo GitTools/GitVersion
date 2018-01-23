@@ -108,14 +108,37 @@ Task("Build")
     Build(configuration, nugetVersion, semVersion, version, preReleaseTag);
 });
 
-Task("Run-NUnit-Tests")
+Task("Run-Tests-In-NUnitConsole")
+    .IsDependentOn("DogfoodBuild")
+    .Does(() =>
+{
+    var settings = new NUnit3Settings();
+	var targetFramework = "net461";
+    if(IsRunningOnUnix())
+    {
+        settings.Where = "cat != NoMono";
+    }
+    NUnit3(new [] {
+        "src/GitVersionCore.Tests/bin/" + configuration + "/" + targetFramework + "/GitVersionCore.Tests.dll",
+        "src/GitVersionExe.Tests/bin/" + configuration + "/" + targetFramework + "/GitVersionExe.Tests.dll",
+        "src/GitVersionTask.Tests/bin/" + configuration + "/" + targetFramework + "/GitVersionTask.Tests.dll" },
+        settings);
+    if (AppVeyor.IsRunningOnAppVeyor)
+    {
+        Information("Uploading test results");
+        AppVeyor.UploadTestResults("TestResult.xml", AppVeyorTestResultsType.NUnit3);
+    }
+});
+
+
+Task("Run-Tests")
     .IsDependentOn("DogfoodBuild")
     .Does(() =>
 {
 
      var settings = new DotNetCoreTestSettings
      {
-         Configuration = "Release",
+         Configuration = configuration,
 		 NoBuild = true
      };
 
@@ -127,7 +150,8 @@ Task("Run-NUnit-Tests")
 
 Task("Zip-Files")
     .IsDependentOn("Build")
-    .IsDependentOn("Run-NUnit-Tests")
+	.IsDependentOn("Run-Tests-In-NUnitConsole")
+   // .IsDependentOn("Run-Tests")
     .Does(() =>
 {
     Zip("./build/NuGetCommandLineBuild/Tools/", "build/GitVersion_" + nugetVersion + ".zip");
@@ -205,7 +229,7 @@ Task("Upload-AppVeyor-Artifacts")
 
 
 Task("Travis")
-  .IsDependentOn("Run-NUnit-Tests");
+  .IsDependentOn("Run-Tests");
 
 Task("Default")
   .IsDependentOn("Upload-AppVeyor-Artifacts");
