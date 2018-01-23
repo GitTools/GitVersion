@@ -1,5 +1,5 @@
-#tool "nuget:?package=NUnit.ConsoleRunner"
-#tool "nuget:?package=GitReleaseNotes"
+#tool "nuget:https://www.nuget.org/api/v2?package=NUnit.ConsoleRunner&version=3.7.0"
+#tool "nuget:https://www.nuget.org/api/v2?package=GitReleaseNotes&version=0.7.0"
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
@@ -63,6 +63,7 @@ void Build(string configuration, string nugetVersion, string semVersion, string 
     }
 }
 
+// This build task can be run to just build
 Task("DogfoodBuild")
     .IsDependentOn("NuGet-Package-Restore")
     .Does(() =>
@@ -108,7 +109,7 @@ Task("Build")
 });
 
 Task("Run-NUnit-Tests")
-    .IsDependentOn("Build")
+    .IsDependentOn("DogfoodBuild")
     .Does(() =>
 {
 
@@ -125,6 +126,7 @@ Task("Run-NUnit-Tests")
 });
 
 Task("Zip-Files")
+    .IsDependentOn("Build")
     .IsDependentOn("Run-NUnit-Tests")
     .Does(() =>
 {
