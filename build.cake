@@ -286,7 +286,7 @@ Task("GitVersionCore-Package")
 
 	 var msBuildSettings = new DotNetCoreMSBuildSettings();
 	 msBuildSettings.SetVersion(nugetVersion);
-	// msBuildSettings.Properties.Add("PackageVersion", nugetVersion);
+     msBuildSettings.Properties["PackageVersion"] = new string[]{ nugetVersion };
      var settings = new DotNetCorePackSettings
      {
          Configuration = configuration,
@@ -313,7 +313,8 @@ Task("GitVersionTaskPackage")
 
 	 var msBuildSettings = new DotNetCoreMSBuildSettings();
 	 msBuildSettings.SetVersion(nugetVersion);
-	// msBuildSettings.Properties.Add("PackageVersion", nugetVersion);
+	
+	 msBuildSettings.Properties["PackageVersion"] = new string[]{ nugetVersion };
      var settings = new DotNetCorePackSettings
      {
          Configuration = configuration,
