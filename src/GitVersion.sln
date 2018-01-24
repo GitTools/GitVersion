@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionExe", "GitVersionExe\GitVersionExe.csproj", "{C3578A7B-09A6-4444-9383-0DEAFA4958BD}"
 EndProject
@@ -34,6 +34,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionExe.Tests", "GitV
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TfsTask", "TfsTask", "{A0ED1410-E970-45E8-A357-05605E2B7BFF}"
 	ProjectSection(SolutionItems) = preProject
+		GitVersionTfsTask\BuildTs.ps1 = GitVersionTfsTask\BuildTs.ps1
 		GitVersionTfsTask\Create-Vsix.ps1 = GitVersionTfsTask\Create-Vsix.ps1
 		GitVersionTfsTask\extension-icon.png = GitVersionTfsTask\extension-icon.png
 		GitVersionTfsTask\GitVersion.ts = GitVersionTfsTask\GitVersion.ts

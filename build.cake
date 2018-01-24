@@ -302,13 +302,41 @@ Task("GitVersionCore-Package")
 	Error(exception.Dump());    
 });
 
+
+Task("GitVersionTaskPackage")
+    .Description("Produces the nuget package for GitVersionTask")
+    .Does(() =>
+{
+
+	 var outputDir = buildDir + "NuGetTaskBuild";
+	 CreateDirectory(outputDir);
+
+	 var msBuildSettings = new DotNetCoreMSBuildSettings();
+	 msBuildSettings.SetVersion(nugetVersion);
+	// msBuildSettings.Properties.Add("PackageVersion", nugetVersion);
+     var settings = new DotNetCorePackSettings
+     {
+         Configuration = configuration,
+         OutputDirectory = outputDir,
+		 NoBuild = true,
+		 MSBuildSettings = msBuildSettings
+     };
+
+     DotNetCorePack("./src/GitVersionTask", settings);
+	
+})
+.ReportError(exception =>
+{  
+	Error(exception.Dump());    
+});
+
 Task("Zip-Files")
     .IsDependentOn("Build")
 	.IsDependentOn("Commandline-Package")	
 	.IsDependentOn("Portable-Package")	
 	.IsDependentOn("GitVersionCore-Package")	
+	.IsDependentOn("GitVersionTaskPackage")	
 	.IsDependentOn("Run-Tests-In-NUnitConsole")
-   // .IsDependentOn("Run-Tests")
     .Does(() =>
 {
     Zip("./build/NuGetCommandLineBuild/Tools/", "build/GitVersion_" + nugetVersion + ".zip");
@@ -316,7 +344,6 @@ Task("Zip-Files")
 .ReportError(exception =>
 {  
 	Error(exception.Dump());
-    // Report the error.
 });
 
 
@@ -347,7 +374,12 @@ Task("Create-Release-Notes")
     {
         Information("Create-Release-Notes is being skipped, as GitHub Token is not present.");
     }
+})
+.ReportError(exception =>
+{  
+	Error(exception.Dump());
 });
+
 
 Task("Package")
     .IsDependentOn("Create-Release-Notes")
@@ -366,18 +398,18 @@ Task("Upload-AppVeyor-Artifacts")
         "NuGetExeBuild:GitVersion.Portable." + nugetVersion +".nupkg",
         "NuGetCommandLineBuild:GitVersion.CommandLine." + nugetVersion +".nupkg",
         "NuGetRefBuild:GitVersion." + nugetVersion +".nupkg",
-        "NuGetTaskBuild:GitVersionTask." + nugetVersion +".nupkg",
-        "GitVersionTfsTaskBuild:gittools.gitversion-" + semVersion +".vsix",
-        "GemBuild:" + gem,
-        "zip:GitVersion_" + nugetVersion + ".zip"
+        "NuGetTaskBuild:GitVersionTask." + nugetVersion +".nupkg",      
+        "zip:GitVersion_" + nugetVersion + ".zip",
+		"GitVersionTfsTaskBuild:gittools.gitversion-" + semVersion +".vsix",
+        "GemBuild:" + gem
     });
 
     AppVeyor.UploadArtifact("build/NuGetExeBuild/GitVersion.Portable." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/NuGetCommandLineBuild/GitVersion.CommandLine." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/NuGetRefBuild/GitVersionCore." + nugetVersion +".nupkg");
-    AppVeyor.UploadArtifact("build/NuGetTaskBuild/GitVersionTask." + nugetVersion +".nupkg");
-    AppVeyor.UploadArtifact("build/GitVersionTfsTaskBuild/gittools.gitversion-" + semVersion + ".vsix");
+    AppVeyor.UploadArtifact("build/NuGetTaskBuild/GitVersionTask." + nugetVersion +".nupkg");   
     AppVeyor.UploadArtifact("build/GitVersion_" + nugetVersion + ".zip");
+	AppVeyor.UploadArtifact("build/GitVersionTfsTaskBuild/gittools.gitversion-" + semVersion + ".vsix");
     AppVeyor.UploadArtifact("build/GemBuild/" + gem);
     AppVeyor.UploadArtifact("build/artifacts");
 
@@ -388,7 +420,12 @@ Task("Upload-AppVeyor-Artifacts")
             AppVeyor.UploadArtifact("build/releasenotes.md");
         }
     }
+})
+.ReportError(exception =>
+{  
+	Error(exception.Dump());
 });
+
 
 
 Task("Travis")
