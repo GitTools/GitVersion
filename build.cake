@@ -339,7 +339,7 @@ Task("Zip-Files")
 	.IsDependentOn("Run-Tests-In-NUnitConsole")
     .Does(() =>
 {
-    Zip("./build/NuGetCommandLineBuild/Tools/", "build/GitVersion_" + nugetVersion + ".zip");
+    Zip("./build/NuGetCommandLineBuild/tools/", "build/GitVersion_" + nugetVersion + ".zip");
 })
 .ReportError(exception =>
 {  
