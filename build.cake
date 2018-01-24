@@ -18,6 +18,8 @@ bool IsMainGitVersionRepo = StringComparer.OrdinalIgnoreCase.Equals("gittools/gi
 bool IsPullRequest = BuildSystem.AppVeyor.Environment.PullRequest.IsPullRequest;
 bool IsMainGitVersionBranch = StringComparer.OrdinalIgnoreCase.Equals("master", BuildSystem.AppVeyor.Environment.Repository.Branch);
 
+string buildDir = "./build/";
+
 void Build(string configuration, string nugetVersion, string semVersion, string version, string preReleaseTag)
 {
     if(IsRunningOnUnix())
@@ -150,11 +152,11 @@ Task("Run-Tests")
     .IsDependentOn("DogfoodBuild")
     .Does(() =>
 {
-
+	
      var settings = new DotNetCoreTestSettings
      {
          Configuration = configuration,
-		 NoBuild = true
+		 NoBuild = true,		
      };
 
      DotNetCoreTest("./src/GitVersionCore.Tests/GitVersionCore.Tests.csproj", settings);
@@ -192,8 +194,7 @@ Task("Commandline-Package")
 {   
 
 	 ILRepackGitVersionExe(false);  
-
-     var buildDir = "./build/";
+    
 	 var outputDir = buildDir + "NuGetCommandLineBuild";
 	 var toolsDir = outputDir + "/tools";
 	 var libDir = toolsDir + "/lib";
@@ -222,16 +223,8 @@ Task("Commandline-Package")
 	CopyDirectory(targetDir + "lib/", outputDir + "/tools/lib/"); 	
 
 	Information("Creating Nuget Package..");	
-	var nuGetPackSettings  = new NuGetPackSettings {  Version = nugetVersion, BasePath  = outputDir, OutputDirectory = outputDir };
-	
-	try
-	{
-		NuGetPack(outputDir + "/GitVersion.CommandLine.nuspec", nuGetPackSettings);		
-	}
-	catch(Exception e)
-	{
-		Error(e.Dump());
-	}
+	var nuGetPackSettings  = new NuGetPackSettings {  Version = nugetVersion, BasePath  = outputDir, OutputDirectory = outputDir };	
+	NuGetPack(outputDir + "/GitVersion.CommandLine.nuspec", nuGetPackSettings);			
 	
 })
 .ReportError(exception =>
@@ -247,8 +240,7 @@ Task("Portable-Package")
 {   
 
 	 ILRepackGitVersionExe(true);  
-
-     var buildDir = "./build/";
+   
 	 var outputDir = buildDir + "NuGetExeBuild";
 	 var toolsDir = outputDir + "/tools";
 	 var libDir = toolsDir + "/lib";
@@ -269,9 +261,6 @@ Task("Portable-Package")
 	CopyFiles("./ILMergeTemp/GitVersion.exe", outputDir + "/tools/");
 
 	Information("Copying nuget assets..");
-//	<Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyInstall.ps1" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
-  //  <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyUninstall.ps1" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
-    //<Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.Portable.nuspec" DestinationFolder="$(BuildDir)NuGetExeBuild" />
 	CopyFiles(nugetAssetsPath + "*.ps1", outputDir + "/tools/");
 	CopyFiles(nugetAssetsPath + "GitVersion.Portable.nuspec", outputDir);
 
@@ -281,19 +270,55 @@ Task("Portable-Package")
 	var nuGetPackSettings  = new NuGetPackSettings {  Version = nugetVersion, BasePath  = outputDir, OutputDirectory = outputDir };
     NuGetPack(outputDir + "/GitVersion.Portable.nuspec", nuGetPackSettings);
 
+})
+.ReportError(exception =>
+{  
+	Error(exception.Dump());
 });
 
+
+Task("GitVersionCore-Package")
+    .IsDependentOn("Build") 
+    .Does(() =>
+{
+     var outputDir = buildDir + "NuGetRefBuild";
+	 CreateDirectory(outputDir);
+
+	 var msBuildSettings = new DotNetCoreMSBuildSettings();
+	 msBuildSettings.SetVersion(nugetVersion);
+	// msBuildSettings.Properties.Add("PackageVersion", nugetVersion);
+     var settings = new DotNetCorePackSettings
+     {
+         Configuration = configuration,
+         OutputDirectory = outputDir,
+		 NoBuild = true,
+		 MSBuildSettings = msBuildSettings
+     };
+
+     DotNetCorePack("./src/GitVersionCore", settings);
+})
+.ReportError(exception =>
+{  
+	Error(exception.Dump());    
+});
 
 Task("Zip-Files")
     .IsDependentOn("Build")
 	.IsDependentOn("Commandline-Package")	
 	.IsDependentOn("Portable-Package")	
+	.IsDependentOn("GitVersionCore-Package")	
 	.IsDependentOn("Run-Tests-In-NUnitConsole")
    // .IsDependentOn("Run-Tests")
     .Does(() =>
 {
     Zip("./build/NuGetCommandLineBuild/Tools/", "build/GitVersion_" + nugetVersion + ".zip");
+})
+.ReportError(exception =>
+{  
+	Error(exception.Dump());
+    // Report the error.
 });
+
 
 Task("Create-Release-Notes")
     .IsDependentOn("Build")
@@ -349,7 +374,7 @@ Task("Upload-AppVeyor-Artifacts")
 
     AppVeyor.UploadArtifact("build/NuGetExeBuild/GitVersion.Portable." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/NuGetCommandLineBuild/GitVersion.CommandLine." + nugetVersion +".nupkg");
-    AppVeyor.UploadArtifact("build/NuGetRefBuild/GitVersion." + nugetVersion +".nupkg");
+    AppVeyor.UploadArtifact("build/NuGetRefBuild/GitVersionCore." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/NuGetTaskBuild/GitVersionTask." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/GitVersionTfsTaskBuild/gittools.gitversion-" + semVersion + ".vsix");
     AppVeyor.UploadArtifact("build/GitVersion_" + nugetVersion + ".zip");
