@@ -1,5 +1,7 @@
 #tool "nuget:https://www.nuget.org/api/v2?package=NUnit.ConsoleRunner&version=3.7.0"
 #tool "nuget:https://www.nuget.org/api/v2?package=GitReleaseNotes&version=0.7.0"
+#tool "nuget:https://www.nuget.org/api/v2?package=ILRepack&version=2.0.15"
+#addin "nuget:?package=Cake.Incubator"
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
@@ -65,6 +67,7 @@ void Build(string configuration, string nugetVersion, string semVersion, string 
 
 // This build task can be run to just build
 Task("DogfoodBuild")
+    .IsDependentOn("Clean")
     .IsDependentOn("NuGet-Package-Restore")
     .Does(() =>
 {
@@ -97,10 +100,22 @@ Task("Version")
 Task("NuGet-Package-Restore")
     .Does(() =>
 {
-    NuGetRestore("./src/GitVersion.sln");
+	DotNetCoreRestore("./src/GitVersion.sln");
+    //NuGetRestore("./src/GitVersion.sln");
+});
+
+Task("Clean")   
+    .Does(() =>
+{
+	CleanDirectories("./build");    
+	CleanDirectories("./**/obj"); 
+	
+	var binDirs = GetDirectories("./**/bin") - GetDirectories("**/GemAssets/bin");
+	CleanDirectories(binDirs);  
 });
 
 Task("Build")
+    .IsDependentOn("Clean")
     .IsDependentOn("Version")
     .IsDependentOn("NuGet-Package-Restore")
     .Does(() =>
@@ -148,8 +163,131 @@ Task("Run-Tests")
     
 });
 
+void ILRepackGitVersionExe(bool includeLibGit2Sharp)
+{
+	 var tempMergeDir = "ILMergeTemp";
+	 var exeName = "GitVersion.exe";
+	 var keyFilePath = "./src/key.snk";
+	 var targetDir = "./src/GitVersionExe/bin/" + configuration + "/net40/";
+	 var targetPath = targetDir + exeName;
+
+     CreateDirectory(tempMergeDir);
+	 string outFilePath = "./" + tempMergeDir + "/" + exeName;	
+
+	 var sourcePattern = targetDir + "*.dll";
+	 var sourceFiles = GetFiles(sourcePattern);
+	 if(!includeLibGit2Sharp)
+	 {
+	   	 var excludePattern = "**/LibGit2Sharp.dll";
+	     sourceFiles = sourceFiles - GetFiles(excludePattern);	
+	 }
+	 var settings = new ILRepackSettings { AllowDup = "", Keyfile = keyFilePath, Internalize = true, NDebug = true, TargetKind = TargetKind.Exe, TargetPlatform  = TargetPlatformVersion.v4, XmlDocs = false };
+	 ILRepack(outFilePath, targetPath, sourceFiles, settings);   
+}
+
+
+Task("Commandline-Package")
+    .IsDependentOn("Build")   
+    .Does(() =>
+{   
+
+	 ILRepackGitVersionExe(false);  
+
+     var buildDir = "./build/";
+	 var outputDir = buildDir + "NuGetCommandLineBuild";
+	 var toolsDir = outputDir + "/tools";
+	 var libDir = toolsDir + "/lib";
+
+	 CreateDirectory(outputDir);
+	 CreateDirectory(toolsDir);
+	 CreateDirectory(libDir);
+	 
+	 var targetDir = "./src/GitVersionExe/bin/" + configuration + "/net40/";	
+
+	var libGitFiles = GetFiles(targetDir + "LibGit2Sharp.dll*");    
+	var nugetAssetsPath = "./src/GitVersionExe/NugetAssets/";	
+	Information("Copying files to packaging direcory..");
+	
+	CopyFiles(targetDir + "GitVersion.pdb", outputDir + "/tools/");
+	CopyFiles(targetDir + "GitVersion.exe.mdb", outputDir + "/tools/");
+
+	Information("Copying IL Merged exe file..");
+	CopyFiles("./ILMergeTemp/GitVersion.exe", outputDir + "/tools/");
+
+	Information("Copying nuget assets..");	
+	CopyFiles(nugetAssetsPath + "GitVersion.CommandLine.nuspec", outputDir);
+
+	Information("Copying libgit2sharp files..");	
+	CopyFiles(libGitFiles, outputDir + "/tools/"); 
+	CopyDirectory(targetDir + "lib/", outputDir + "/tools/lib/"); 	
+
+	Information("Creating Nuget Package..");	
+	var nuGetPackSettings  = new NuGetPackSettings {  Version = nugetVersion, BasePath  = outputDir, OutputDirectory = outputDir };
+	
+	try
+	{
+		NuGetPack(outputDir + "/GitVersion.CommandLine.nuspec", nuGetPackSettings);		
+	}
+	catch(Exception e)
+	{
+		Error(e.Dump());
+	}
+	
+})
+.ReportError(exception =>
+{  
+	Error(exception.Dump());
+    // Report the error.
+});
+
+
+Task("Portable-Package")
+    .IsDependentOn("Build")
+    .Does(() =>
+{   
+
+	 ILRepackGitVersionExe(true);  
+
+     var buildDir = "./build/";
+	 var outputDir = buildDir + "NuGetExeBuild";
+	 var toolsDir = outputDir + "/tools";
+	 var libDir = toolsDir + "/lib";
+
+	 CreateDirectory(outputDir);
+	 CreateDirectory(toolsDir);
+	 CreateDirectory(libDir);
+	 
+	 var targetDir = "./src/GitVersionExe/bin/" + configuration + "/net40/";	
+	
+	var nugetAssetsPath = "./src/GitVersionExe/NugetAssets/";	
+	Information("Copying files to packaging direcory..");
+	
+	CopyFiles(targetDir + "GitVersion.pdb", outputDir + "/tools/");
+	CopyFiles(targetDir + "GitVersion.exe.mdb", outputDir + "/tools/");
+
+	Information("Copying IL Merged exe file..");
+	CopyFiles("./ILMergeTemp/GitVersion.exe", outputDir + "/tools/");
+
+	Information("Copying nuget assets..");
+//	<Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyInstall.ps1" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
+  //  <Copy SourceFiles="$(ProjectDir)NugetAssets\chocolateyUninstall.ps1" DestinationFolder="$(BuildDir)NuGetExeBuild\tools" />
+    //<Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.Portable.nuspec" DestinationFolder="$(BuildDir)NuGetExeBuild" />
+	CopyFiles(nugetAssetsPath + "*.ps1", outputDir + "/tools/");
+	CopyFiles(nugetAssetsPath + "GitVersion.Portable.nuspec", outputDir);
+
+	Information("Copying libgit2sharp files..");		
+	CopyDirectory(targetDir + "lib/", outputDir + "/tools/lib/"); 
+
+	var nuGetPackSettings  = new NuGetPackSettings {  Version = nugetVersion, BasePath  = outputDir, OutputDirectory = outputDir };
+    NuGetPack(outputDir + "/GitVersion.Portable.nuspec", nuGetPackSettings);
+
+});
+
+
 Task("Zip-Files")
     .IsDependentOn("Build")
+	.IsDependentOn("Commandline-Package")	
+	.IsDependentOn("Portable-Package")	
 	.IsDependentOn("Run-Tests-In-NUnitConsole")
    // .IsDependentOn("Run-Tests")
     .Does(() =>

@@ -116,3 +116,4 @@ tools/*
 GitVersion.CommandLine/*/
 
 releaseArtifacts
+/ILMergeTemp
