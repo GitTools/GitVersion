@@ -69,7 +69,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.1.548" />
     <PackageReference Include="Microsoft.Build.Framework" Version="15.1.548" />
-    <PackageReference Include="UtilPack.NuGet.MSBuild" Version="2.2.0" />
+    <PackageReference Include="UtilPack.NuGet.MSBuild" Version="2.3.0" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.5'">      
   </ItemGroup>  
