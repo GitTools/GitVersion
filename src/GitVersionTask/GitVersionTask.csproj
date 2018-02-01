@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\ILRepack.2.0.13\build\ILRepack.props" Condition="Exists('..\packages\ILRepack.2.0.13\build\ILRepack.props')" />
   <Import Project="..\packages\LibGit2Sharp.NativeBinaries.1.0.160\build\LibGit2Sharp.NativeBinaries.props" Condition="Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.160\build\LibGit2Sharp.NativeBinaries.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -89,9 +88,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions">
-      <EmbedAssembly>true</EmbedAssembly>
-    </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -142,31 +139,28 @@
     <Delete Files="@(FilesToDelete)" />
   </Target>
   <Target Name="AfterBuild" DependsOnTargets="Clean" Condition="$(NCrunch)=='' And '$(OS)' != 'Unix'">
-    <MakeDir Directories="$(TargetDir)ILMergeTemp\" />
     <PropertyGroup>
       <Runtime Condition="'$(OS)'=='Unix'">mono</Runtime>
     </PropertyGroup>
-    <!-- Copy target file so that our temporary file gets the correct permissions -->
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(TargetDir)ILMergeTemp\" />
-    <Exec Command="$(Runtime) &quot;$(SolutionDir)packages\ILRepack.2.0.13\tools\ILRepack.exe&quot; /allowDup /keyfile:&quot;$(SolutionDir)key.snk&quot; /out:&quot;$(TargetDir)ILMergeTemp\$(TargetFileName)&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)GitVersionCore.dll&quot;  &quot;$(TargetDir)GitTools.Core.dll&quot;  &quot;$(TargetDir)LibGit2Sharp.dll&quot;      &quot;$(TargetDir)Microsoft.Build.Utilities.Core.dll&quot;    &quot;$(TargetDir)Microsoft.Build.Tasks.Core.dll&quot;  &quot;$(TargetDir)Microsoft.Build.Framework.dll&quot;   &quot;$(TargetDir)Microsoft.Build.dll&quot;    &quot;$(TargetDir)YamlDotNet.dll&quot; /target:library /targetplatform:&quot;v4,$(FrameworkPathOverride)&quot; /ndebug /internalize " />
-    <ItemGroup>
-      <TempFiles Include="$(TargetDir)ILMergeTemp\*.*" />
-    </ItemGroup>
     <MakeDir Directories="$(BuildDir)NuGetTaskBuild" />
     <ItemGroup>
       <NativeBinaries Include="$(TargetDir)lib\**\*.*" />
     </ItemGroup>
     <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)NuGetTaskBuild\build\lib\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="$(TargetDir)LibGit2Sharp.dll.config" DestinationFiles="$(BuildDir)NuGetTaskBuild\build\GitVersionTask.dll.config" />
-    <Copy SourceFiles="$(TargetDir)ILMergeTemp\GitVersionTask.dll" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)ILMergeTemp\GitVersionTask.dll')" />
+    <Copy SourceFiles="$(TargetDir)GitVersionTask.dll.config" DestinationFiles="$(BuildDir)NuGetTaskBuild\build\GitVersionTask.dll.config" />
+    <Copy SourceFiles="$(TargetDir)GitVersionTask.dll" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)GitVersionTask.dll')" />
+	<Copy SourceFiles="$(TargetDir)GitTools.Core.dll" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)GitTools.Core.dll')" />
+	<Copy SourceFiles="$(TargetDir)GitVersionCore.dll" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)GitVersionCore.dll')" />
+	<Copy SourceFiles="$(TargetDir)LibGit2Sharp.dll" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)LibGit2Sharp.dll')" />
+	<Copy SourceFiles="$(TargetDir)YamlDotNet.dll" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)YamlDotNet.dll')" />
+	<Copy SourceFiles="$(TargetDir)LibGit2Sharp.dll.config" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)LibGit2Sharp.dll.config')" />
+	<Copy SourceFiles="$(TargetDir)GitVersionCore.dll.config" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)GitVersionCore.dll.config')" />
     <Copy SourceFiles="$(TargetDir)GitVersionTask.pdb" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)GitVersionTask.pdb')" />
     <Copy SourceFiles="$(TargetDir)GitVersionTask.dll.mdb" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" Condition="Exists('$(TargetDir)GitVersionTask.dll.mdb')" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\build\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\build" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\buildMultiTargeting\GitVersionTask.targets" DestinationFolder="$(BuildDir)NuGetTaskBuild\buildMultiTargeting" />
     <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersionTask.nuspec" DestinationFolder="$(BuildDir)NuGetTaskBuild" />
-    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetTaskBuild" MetadataAssembly="$(ILMergeTemp)GitVersionTask.dll" Version="$(GitVersion_NuGetVersion)" />
-    <Delete Files="@(TempFiles)" />
-    <RemoveDir Directories="$(TargetDir)ILMergeTemp\" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetTaskBuild" MetadataAssembly="GitVersionTask.dll" Version="$(GitVersion_NuGetVersion)" />
   </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -180,8 +174,6 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <Target Name="ILMerge" BeforeTargets="AfterCompile">
-  </Target>
   <Import Project="..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" />
   <Import Project="..\packages\Fody.2.0.8\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.2.0.8\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
 </Project>
