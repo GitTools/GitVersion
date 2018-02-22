@@ -78,6 +78,17 @@ branches:
     }
 
     [Test]
+    public void AllBranchesModeWhenUsingMainline()
+    {
+        var defaultConfig = ConfigurationProvider.Provide(repoPath, fileSystem);
+        const string text = @"mode: Mainline";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        var branches = config.Branches.Select(x => x.Value);
+        branches.All(branch => branch.VersioningMode == VersioningMode.Mainline).ShouldBe(true);
+    }
+
+    [Test]
     public void CanRemoveTag()
     {
         const string text = @"
