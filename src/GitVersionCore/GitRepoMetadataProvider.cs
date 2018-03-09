@@ -34,19 +34,17 @@ namespace GitVersion
 
             using (Logger.IndentLog(string.Format("Getting version tags from branch '{0}'.", branch.CanonicalName)))
             {
-                var tags = this.Repository.Tags.Select(t => t).ToList();
-
-                var versionTags = this.Repository.Commits.QueryBy(new CommitFilter
-                {
-                    IncludeReachableFrom = branch.Tip
-                })
-                .SelectMany(c => tags.Where(t => c.Sha == t.Target.Sha).SelectMany(t =>
+                var tags = new List<Tuple<Tag, SemanticVersion>>();
+                foreach(var t in this.Repository.Tags)
                 {
                     SemanticVersion semver;
                     if (SemanticVersion.TryParse(t.FriendlyName, tagPrefixRegex, out semver))
-                        return new[] { semver };
-                    return new SemanticVersion[0];
-                })).ToList();
+                    {
+                        tags.Add(Tuple.Create(t, semver));
+                    }
+                }
+
+                var versionTags = branch.Commits.SelectMany(c => tags.Where(t => c.Sha == t.Item1.Target.Sha).Select(t => t.Item2)).ToList();
 
                 semanticVersionTagsOnBranchCache.Add(branch, versionTags);
                 return versionTags;
