@@ -12,6 +12,9 @@ namespace GitVersion
         static Regex parseGitHubPullMergeMessage = new Regex(
             @"^Merge pull request #(?<PullRequestNumber>\d*) (from|in) (?<Source>.*)",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        static Regex parseBitBucketPullMergeMessage = new Regex(
+            @"^Merge pull request #(?<PullRequestNumber>\d*) (from|in) (?<Source>.*) from (?<SourceBranch>.*) to (?<TargetBranch>.*)",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
         static Regex smartGitMergeMessage = new Regex(
             @"^Finish (?<Branch>.*)",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -67,15 +70,19 @@ namespace GitVersion
                 return match.Groups["Branch"].Value;
             }
 
+            match = parseBitBucketPullMergeMessage.Match(mergeMessage);
+            if (match.Success)
+            {
+                IsMergedPullRequest = true;
+                PullRequestNumber = GetPullRequestNumber(match);
+                return match.Groups["SourceBranch"].Value;
+            }
+
             match = parseGitHubPullMergeMessage.Match(mergeMessage);
             if (match.Success)
             {
                 IsMergedPullRequest = true;
-                int pullNumber;
-                if (int.TryParse(match.Groups["PullRequestNumber"].Value, out pullNumber))
-                {
-                    PullRequestNumber = pullNumber;
-                }
+                PullRequestNumber = GetPullRequestNumber(match);
                 var from = match.Groups["Source"].Value;
                 // TODO We could remove/separate the remote name at this point?
                 return from;
@@ -89,6 +96,16 @@ namespace GitVersion
             }
 
             return "";
+        }
+
+        private int GetPullRequestNumber(Match match)
+        {
+            int pullNumber;
+            if (int.TryParse(match.Groups["PullRequestNumber"].Value, out pullNumber))
+            {
+                PullRequestNumber = pullNumber;
+            }
+            return pullNumber;
         }
 
         public string TargetBranch { get; }
