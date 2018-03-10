@@ -109,7 +109,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
                 new List<string>(),
                 defaultTag: "alpha",
                 defaultIncrementStrategy: IncrementStrategy.Minor,
-                defaultVersioningMode: VersioningMode.ContinuousDeployment,
+                defaultVersioningMode: config.VersioningMode == VersioningMode.Mainline? VersioningMode.Mainline : VersioningMode.ContinuousDeployment,
                 defaultTrackMergeTarget: true,
                 tracksReleaseBranches: true);
             ApplyBranchDefaults(config,
