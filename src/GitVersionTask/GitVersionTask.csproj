@@ -29,7 +29,7 @@
     <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
     <NuspecFile>NugetAssets\GitVersionTask.nuspec</NuspecFile>
     <PackageVersion Condition="$(PackageVersion) == '' Or $(PackageVersion) == '*Undefined*'">0.0.1-alpha-0001</PackageVersion>
-    <NuspecProperties>version=$(PackageVersion);configuration=$(Configuration)</NuspecProperties>
+    <NuspecProperties>version=$(PackageVersion);configuration=$(Configuration);utilpackversion=$(PackageVersion_UtilPackNuGetMSBuild);gittoolscoreversion=$(PackageVersion_GitToolsCore)</NuspecProperties>
   
 
     <!--Additional assembly info -->
