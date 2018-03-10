@@ -401,8 +401,8 @@ Task("Upload-AppVeyor-Artifacts")
         "NuGetRefBuild:GitVersion." + nugetVersion +".nupkg",
         "NuGetTaskBuild:GitVersionTask." + nugetVersion +".nupkg",      
         "zip:GitVersion_" + nugetVersion + ".zip",
-		"GitVersionTfsTaskBuild:gittools.gitversion-" + semVersion +".vsix",
-        "GemBuild:" + gem
+		// "GitVersionTfsTaskBuild:gittools.gitversion-" + semVersion +".vsix",
+        // "GemBuild:" + gem
     });
 
     AppVeyor.UploadArtifact("build/NuGetExeBuild/GitVersion.Portable." + nugetVersion +".nupkg");
@@ -410,8 +410,8 @@ Task("Upload-AppVeyor-Artifacts")
     AppVeyor.UploadArtifact("build/NuGetRefBuild/GitVersionCore." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/NuGetTaskBuild/GitVersionTask." + nugetVersion +".nupkg");   
     AppVeyor.UploadArtifact("build/GitVersion_" + nugetVersion + ".zip");
-	AppVeyor.UploadArtifact("build/GitVersionTfsTaskBuild/gittools.gitversion-" + semVersion + ".vsix");
-    AppVeyor.UploadArtifact("build/GemBuild/" + gem);
+	// AppVeyor.UploadArtifact("build/GitVersionTfsTaskBuild/gittools.gitversion-" + semVersion + ".vsix");
+    // AppVeyor.UploadArtifact("build/GemBuild/" + gem);
     AppVeyor.UploadArtifact("build/artifacts");
 
     if(IsMainGitVersionRepo && IsMainGitVersionBranch && !IsPullRequest)
