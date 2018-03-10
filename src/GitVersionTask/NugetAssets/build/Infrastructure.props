@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(UtilPackNuGetMSBuildAssemblyPath)' == ''">
-    <UtilPackNuGetMSBuildPropsPath Condition=" '$(UtilPackNuGetMSBuildPropsPath)' == ''">$(MSBuildThisFileDirectory)../../../utilpack.nuget.msbuild/2.2.0/build/UtilPack.NuGet.MSBuild.props</UtilPackNuGetMSBuildPropsPath>
+    <UtilPackNuGetMSBuildPropsPath Condition=" '$(UtilPackNuGetMSBuildPropsPath)' == ''">$(MSBuildThisFileDirectory)../../../utilpack.nuget.msbuild/2.3.0/build/UtilPack.NuGet.MSBuild.props</UtilPackNuGetMSBuildPropsPath>
     <UtilPackNuGetMSBuildPropsAbsolutePath>$([System.IO.Path]::GetFullPath('$(UtilPackNuGetMSBuildPropsPath)'))</UtilPackNuGetMSBuildPropsAbsolutePath>
     <!-- Set absolute path to empty string if automatic deduction failed. -->
     <UtilPackNuGetMSBuildPropsAbsolutePath Condition=" '$(UtilPackNuGetMSBuildPropsAbsolutePath)' == '' or !Exists('$(UtilPackNuGetMSBuildPropsAbsolutePath)') "></UtilPackNuGetMSBuildPropsAbsolutePath>
