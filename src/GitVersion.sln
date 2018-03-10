@@ -21,6 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\build.sh = ..\build.sh
 		..\CONTRIBUTING.md = ..\CONTRIBUTING.md
 		..\deploy.cake = ..\deploy.cake
+		Directory.Build.props = Directory.Build.props
 		..\GitVersion.yml = ..\GitVersion.yml
 		..\LICENSE = ..\LICENSE
 		..\mkdocs.yml = ..\mkdocs.yml

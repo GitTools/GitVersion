@@ -1,4 +1,5 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildThisFileDirectory)\UtilPack.Version.props" Condition="exists('$(MSBuildThisFileDirectory)\UtilPack.Version.props')" />
 
   <!-- Properties containing paths to functionality files and directories. -->
   <PropertyGroup>
@@ -9,7 +10,8 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(UtilPackNuGetMSBuildAssemblyPath)' == ''">
-    <UtilPackNuGetMSBuildPropsPath Condition=" '$(UtilPackNuGetMSBuildPropsPath)' == ''">$(MSBuildThisFileDirectory)../../../utilpack.nuget.msbuild/2.3.0/build/UtilPack.NuGet.MSBuild.props</UtilPackNuGetMSBuildPropsPath>
+    <UtilPackVersion>$(PackageVersion_UtilPackNuGetMSBuild)</UtilPackVersion>
+    <UtilPackNuGetMSBuildPropsPath Condition=" '$(UtilPackNuGetMSBuildPropsPath)' == ''">$(MSBuildThisFileDirectory)../../../utilpack.nuget.msbuild/$(UtilPackVersion)/build/UtilPack.NuGet.MSBuild.props</UtilPackNuGetMSBuildPropsPath>
     <UtilPackNuGetMSBuildPropsAbsolutePath>$([System.IO.Path]::GetFullPath('$(UtilPackNuGetMSBuildPropsPath)'))</UtilPackNuGetMSBuildPropsAbsolutePath>
     <!-- Set absolute path to empty string if automatic deduction failed. -->
     <UtilPackNuGetMSBuildPropsAbsolutePath Condition=" '$(UtilPackNuGetMSBuildPropsAbsolutePath)' == '' or !Exists('$(UtilPackNuGetMSBuildPropsAbsolutePath)') "></UtilPackNuGetMSBuildPropsAbsolutePath>
