@@ -35,11 +35,11 @@
     <!--Additional assembly info -->
     <Company>$(Authors)</Company>
     <Product>$(AssemblyName)</Product>
-    <GenerateAssemblyFileVersionAttribute Condition="'$(GenerateAssemblyFileVersionAttribute)' == ''">false</GenerateAssemblyFileVersionAttribute>
+    <!--<GenerateAssemblyFileVersionAttribute Condition="'$(GenerateAssemblyFileVersionAttribute)' == ''">false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInformationalVersionAttribute Condition="'$(GenerateAssemblyInformationalVersionAttribute)' == ''">false</GenerateAssemblyInformationalVersionAttribute>
     <GenerateAssemblyProductAttribute Condition="'$(GenerateAssemblyProductAttribute)' == ''">false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyTitleAttribute Condition="'$(GenerateAssemblyTitleAttribute)' == ''">false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyVersionAttribute Condition="'$(GenerateAssemblyVersionAttribute)' == ''">false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyVersionAttribute Condition="'$(GenerateAssemblyVersionAttribute)' == ''">false</GenerateAssemblyVersionAttribute>-->
     <GenerateNeutralResourcesLanguageAttribute Condition="'$(GenerateNeutralResourcesLanguageAttribute)' == ''">true</GenerateNeutralResourcesLanguageAttribute>
 
   </PropertyGroup>
@@ -71,6 +71,7 @@
       <PackagePath>build\</PackagePath>
     </Content>
   </ItemGroup>
+  
   <ItemGroup>   
     <PackageReference Include="GitTools.Core" Version="$(PackageVersion_GitToolsCore)">
        <PrivateAssets>All</PrivateAssets>   
@@ -81,9 +82,8 @@
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.1.548" />
     <PackageReference Include="Microsoft.Build.Framework" Version="15.1.548" />
     <PackageReference Include="UtilPack.NuGet.MSBuild" Version="$(PackageVersion_UtilPackNuGetMSBuild)" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.5'">      
-  </ItemGroup>  
+  </ItemGroup> 
+  
   <ItemGroup Condition="'$(TargetFramework)' == 'net461'">   
     <PackageReference Include="Caseless.Fody" Version="1.5.0">
       <PrivateAssets>All</PrivateAssets>
@@ -95,13 +95,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)'=='net40'">
-    <None Include="FodyWeavers.xml">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
+  </ItemGroup> 
   
   <ItemGroup>
     <None Include="app.config" />
