@@ -6,6 +6,7 @@ namespace GitVersion
     using System;
     using System.ComponentModel;
     using System.Linq;
+    using System.Threading.Tasks;
 
     public class ExecuteCore
     {
@@ -62,7 +63,7 @@ namespace GitVersion
                 {
                     try
                     {
-                        gitVersionCache.WriteVariablesToDiskCacheAsync(gitPreparer, cacheKey, versionVariables);
+                      gitVersionCache.WriteVariablesToDiskCache(gitPreparer, cacheKey, versionVariables);
                     }
                     catch (AggregateException e)
                     {

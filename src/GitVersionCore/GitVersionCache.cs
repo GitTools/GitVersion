@@ -17,7 +17,7 @@ namespace GitVersion
             this.fileSystem = fileSystem;
         }
 
-        public async Task WriteVariablesToDiskCacheAsync(GitPreparer gitPreparer, GitVersionCacheKey cacheKey, VersionVariables variablesFromCache)
+        public void WriteVariablesToDiskCache(GitPreparer gitPreparer, GitVersionCacheKey cacheKey, VersionVariables variablesFromCache)
         {
             var cacheDir = PrepareCacheDirectory(gitPreparer);
             var cacheFileName = GetCacheFileName(cacheKey, cacheDir);
@@ -46,7 +46,7 @@ namespace GitVersion
             };
 
             var retryOperation = new OperationWithExponentialBackoff<IOException>(new ThreadSleep(), writeCacheOperation, maxRetries: 6);
-            await retryOperation.ExecuteAsync();
+            retryOperation.ExecuteAsync().Wait();
         }
 
         public static string GetCacheDirectory(GitPreparer gitPreparer)
