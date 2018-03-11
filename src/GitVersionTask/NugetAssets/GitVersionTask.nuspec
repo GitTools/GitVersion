@@ -18,7 +18,8 @@
     <dependencies>
       <group targetFramework=".NETStandard1.5">
          <dependency id="UtilPack.NuGet.MSBuild" version="$utilpackversion$" exclude="Build,Analyzers" />
-         <dependency id="GitTools.Core" version="$gittoolscoreversion$" exclude="Build,Analyzers" />        
+         <dependency id="GitTools.Core" version="$gittoolscoreversion$" exclude="Build,Analyzers" />
+         <dependency id="YamlDotNet" version="$yamldotnetversion$" exclude="Build,Analyzers" />        
       </group>
       <group targetFramework=".NETFramework4.6.1">
          <dependency id="UtilPack.NuGet.MSBuild" version="$utilpackversion$" exclude="Build,Analyzers" />      
