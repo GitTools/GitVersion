@@ -76,6 +76,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyParallelizable.cs" />
     <Compile Include="AssemblyLocation.cs" />
     <Compile Include="GitVersionTaskDirectoryTests.cs" />
     <Compile Include="InvalidFileCheckerTests.cs" />

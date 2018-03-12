@@ -11,6 +11,7 @@ using Shouldly;
 namespace GitVersionCore.Tests
 {
     [TestFixture]
+    [Parallelizable(ParallelScope.None)]
     public class GitVersionInformationGeneratorTests
     {
         [SetUp]

@@ -108,6 +108,7 @@
   <ItemGroup>
     <Compile Include="ArgumentBuilder.cs" />
     <Compile Include="ArgumentParserTests.cs" />
+    <Compile Include="AssemblyParallelizable.cs" />
     <Compile Include="ExecCmdLineArgumentTest.cs" />
     <Compile Include="ExecutionResults.cs" />
     <Compile Include="GitVersionHelper.cs" />

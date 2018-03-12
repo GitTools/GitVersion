@@ -83,6 +83,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyParallelizable.cs" />
     <Compile Include="AssemblyFileVersionTests.cs" />
     <Compile Include="AssemblyInfoFileUpdaterTests.cs" />
     <Compile Include="BuildServers\BuildServerBaseTests.cs" />
