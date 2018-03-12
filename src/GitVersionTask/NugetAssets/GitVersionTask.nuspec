@@ -16,6 +16,9 @@
     <copyright>Copyright GitTools 2015.</copyright>
     <tags>Git Versioning GitVersion GitFlowVersion GitFlow GitHubFlow SemVer</tags>
     <dependencies>
+      <group>
+        <dependency id="UtilPack.NuGet.MSBuild" version="$utilpackversion$" />
+      </group>
       <group targetFramework=".NETStandard1.5">
          <dependency id="UtilPack.NuGet.MSBuild" version="$utilpackversion$" exclude="Build,Analyzers" />
          <dependency id="GitTools.Core" version="$gittoolscoreversion$" exclude="Build,Analyzers" />
