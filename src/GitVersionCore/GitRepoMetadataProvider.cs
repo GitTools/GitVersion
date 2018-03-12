@@ -24,6 +24,25 @@ namespace GitVersion
             this.configuration = configuration;
         }
 
+        public static IEnumerable<Tuple<Tag, SemanticVersion>> GetValidVersionTags(IRepository repository, string tagPrefixRegex, DateTimeOffset? olderThan = null)
+        {
+            var tags = new List<Tuple<Tag, SemanticVersion>>();
+
+            foreach (var tag in repository.Tags)
+            {
+                if (olderThan.HasValue && ((Commit)tag.PeeledTarget()).When() > olderThan.Value)
+                    continue;
+
+                SemanticVersion semver;
+                if (SemanticVersion.TryParse(tag.FriendlyName, tagPrefixRegex, out semver))
+                {
+                    tags.Add(Tuple.Create(tag, semver));
+                }
+            }
+
+            return tags;
+        }
+
         public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(Branch branch, string tagPrefixRegex)
         {
             if (semanticVersionTagsOnBranchCache.ContainsKey(branch))
@@ -34,15 +53,7 @@ namespace GitVersion
 
             using (Logger.IndentLog(string.Format("Getting version tags from branch '{0}'.", branch.CanonicalName)))
             {
-                var tags = new List<Tuple<Tag, SemanticVersion>>();
-                foreach (var t in this.Repository.Tags)
-                {
-                    SemanticVersion semver;
-                    if (SemanticVersion.TryParse(t.FriendlyName, tagPrefixRegex, out semver))
-                    {
-                        tags.Add(Tuple.Create(t, semver));
-                    }
-                }
+                var tags = GetValidVersionTags(this.Repository, tagPrefixRegex);
 
                 var versionTags = branch.Commits.SelectMany(c => tags.Where(t => c.Sha == t.Item1.Target.Sha).Select(t => t.Item2)).ToList();
 
