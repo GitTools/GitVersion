@@ -20,7 +20,7 @@
         public IEnumerable<BaseVersion> GetTaggedVersions(GitVersionContext context, Branch currentBranch, DateTimeOffset? olderThan)
         {
             var allTags = new List<Tuple<Tag, SemanticVersion>>();
-            foreach(var tag in context.Repository.Tags)
+            foreach (var tag in context.Repository.Tags)
             {
                 if (olderThan.HasValue && ((Commit)tag.PeeledTarget()).When() > olderThan.Value)
                     continue;

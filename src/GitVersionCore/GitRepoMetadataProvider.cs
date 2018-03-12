@@ -35,7 +35,7 @@ namespace GitVersion
             using (Logger.IndentLog(string.Format("Getting version tags from branch '{0}'.", branch.CanonicalName)))
             {
                 var tags = new List<Tuple<Tag, SemanticVersion>>();
-                foreach(var t in this.Repository.Tags)
+                foreach (var t in this.Repository.Tags)
                 {
                     SemanticVersion semver;
                     if (SemanticVersion.TryParse(t.FriendlyName, tagPrefixRegex, out semver))
@@ -225,7 +225,7 @@ namespace GitVersion
 
             var currentBranchConfig = configuration.GetConfigForBranch(branch.NameWithoutRemote());
             var regexesToCheck = currentBranchConfig == null
-                ? new [] { ".*" } // Match anything if we can't find a branch config
+                ? new[] { ".*" } // Match anything if we can't find a branch config
                 : currentBranchConfig.SourceBranches.Select(sb => configuration.Branches[sb].Regex);
             var branchMergeBases = Repository.Branches
                 .ExcludingBranches(excludedBranches)
