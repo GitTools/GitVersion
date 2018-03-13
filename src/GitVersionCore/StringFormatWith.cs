@@ -8,7 +8,7 @@ namespace GitVersion
 
     static class StringFormatWithExtension
     {
-        private static readonly Regex TokensRegex = new Regex(@"{\w+}", RegexOptions.Compiled);
+        private static readonly Regex TokensRegex = new Regex(@"{\$??\w+(\?\?\w+)??}", RegexOptions.Compiled);
 
         /// <summary>
         ///     Formats a string template with the given source object.
@@ -30,13 +30,39 @@ namespace GitVersion
             foreach (Match match in TokensRegex.Matches(template))
             {
                 var memberAccessExpression = TrimBraces(match.Value);
-                Func<object, string> expression = CompileDataBinder(objType, memberAccessExpression);
-                string propertyValue = expression(source);
+                string propertyValue = null;
+
+                // Support evaluation of environment variables in the format string
+                // For example: {$JENKINS_BUILD_NUMBER??fall-back-string}
+                if (memberAccessExpression.StartsWith("$"))
+                {
+                    memberAccessExpression = memberAccessExpression.TrimStart('$').TrimEnd('$');
+                    string envVar = memberAccessExpression, fallback = null;
+                    string[] components = (memberAccessExpression.Contains("??")) ? memberAccessExpression.Split(new string[] { "??" }, StringSplitOptions.None) : null;
+                    if (components != null)
+                    {
+                        envVar = components[0];
+                        fallback = components[1];
+                    }
+
+                    propertyValue = Helpers.EnvironmentHelper.GetEnvironmentVariableForProcess(envVar);
+                    if (propertyValue == null)
+                    {
+                        if (fallback != null)
+                            propertyValue = fallback;
+                        else
+                            throw new ArgumentException(string.Format("Environment variable {0} not found and no fallback string provided", envVar));
+                    }
+                }
+                else
+                {
+                    Func<object, string> expression = CompileDataBinder(objType, memberAccessExpression);
+                    propertyValue = expression(source);
+                }
                 template = template.Replace(match.Value, propertyValue);
             }
 
             return template;
-
         }
 
 
@@ -73,6 +99,5 @@ namespace GitVersion
 
             return Expression.Lambda<Func<object, string>>(body, param).Compile();
         }
-
     }
 }

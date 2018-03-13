@@ -12,6 +12,7 @@ namespace GitVersion
             AssemblyVersioningScheme assemblyVersioningScheme,
             AssemblyFileVersioningScheme assemblyFileVersioningScheme,
             string assemblyInformationalFormat,
+            string assemblyFileVersioningFormat,
             VersioningMode versioningMode, string gitTagPrefix,
             string tag, string nextVersion, IncrementStrategy increment,
             string branchPrefixToTrim,
@@ -35,6 +36,7 @@ namespace GitVersion
             AssemblyVersioningScheme = assemblyVersioningScheme;
             AssemblyFileVersioningScheme = assemblyFileVersioningScheme;
             AssemblyInformationalFormat = assemblyInformationalFormat;
+            AssemblyFileVersioningFormat = assemblyFileVersioningFormat;
             VersioningMode = versioningMode;
             GitTagPrefix = gitTagPrefix;
             Tag = tag;
@@ -67,6 +69,7 @@ namespace GitVersion
         public AssemblyVersioningScheme AssemblyVersioningScheme { get; private set; }
         public AssemblyFileVersioningScheme AssemblyFileVersioningScheme { get; private set; }
         public string AssemblyInformationalFormat { get; private set; }
+        public string AssemblyFileVersioningFormat { get; private set; }
 
         /// <summary>
         /// Git tag prefix

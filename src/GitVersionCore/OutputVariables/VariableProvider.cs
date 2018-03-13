@@ -61,6 +61,27 @@
                 }
             }
 
+            string assemblyFileVersioningFormat;
+            string assemblyFileSemVer;
+
+            if (!(string.IsNullOrEmpty(config.AssemblyFileVersioningFormat)))
+            {
+                //assembly-file-versioning-format value if provided in the config, overwrites the exisiting AssemblyFileSemVer
+                try
+                {
+                    assemblyFileVersioningFormat = config.AssemblyFileVersioningFormat.FormatWith<SemanticVersionFormatValues>(semverFormatValues);
+                    assemblyFileSemVer = assemblyFileVersioningFormat;
+                }
+                catch (ArgumentException formex)
+                {
+                    throw new WarningException(string.Format("Unable to format AssemblyFileVersioningFormat.  Check your format string: {0}", formex.Message));
+                }
+            }
+            else
+            {
+                assemblyFileSemVer = semverFormatValues.AssemblyFileSemVer;
+            }
+
             var variables = new VersionVariables(
                 semverFormatValues.Major,
                 semverFormatValues.Minor,
@@ -76,7 +97,7 @@
                 semverFormatValues.LegacySemVerPadded,
                 semverFormatValues.FullSemVer,
                 semverFormatValues.AssemblySemVer,
-                semverFormatValues.AssemblyFileSemVer,
+                assemblyFileSemVer,
                 semverFormatValues.PreReleaseTag,
                 semverFormatValues.PreReleaseTagWithDash,
                 semverFormatValues.PreReleaseLabel,

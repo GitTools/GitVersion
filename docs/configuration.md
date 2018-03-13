@@ -71,6 +71,16 @@ while still updating the `AssemblyVersion` and `AssemblyInformationVersion`
 attributes. Valid values: `MajorMinorPatchTag`, `MajorMinorPatch`, `MajorMinor`,
 `Major`, `None`.
 
+### assembly-file-versioning-format
+Set this to any of the available [variables](/more-info/variables) in combination (but not necessary) with
+a process scoped environment variable. It overwrites the value of `assembly-file-versioning-scheme`. To reference
+an environment variable, use `$`
+Example Syntax #1: `'{Major}.{Minor}.{Patch}.{$JENKINS_BUILD_NUMBER??fallback_string}'`. Uses `JENKINS_BUILD_NUMBER`
+if available in the environment otherwise the `fallback_string`
+Example Syntax #2: `'{Major}.{Minor}.{Patch}.{$JENKINS_BUILD_NUMBER}'`.  Uses `JENKINS_BUILD_NUMBER`
+if available in the environment otherwise the parsing fails.
+String interpolation is supported as in `assembly-informational-format`
+
 ### assembly-informational-format
 Set this to any of the available [variables](/more-info/variables) to change the
 value of the `AssemblyInformationalVersion` attribute. Default set to
