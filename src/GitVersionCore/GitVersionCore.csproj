@@ -24,11 +24,132 @@
     <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)"></PackageReference>
     <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
   </ItemGroup>
+<<<<<<< HEAD
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.Net.Requests" Version="4.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.5.1" />
+=======
+  <ItemGroup>
+    <Compile Include="AssemblyFileVersioningScheme.cs" />
+    <Compile Include="AssemblyVersioningScheme.cs" />
+    <Compile Include="AssemblyVersionsGenerator.cs" />
+    <Compile Include="Authentication.cs" />
+    <Compile Include="BranchCommit.cs" />
+    <Compile Include="BranchConfigurationCalculator.cs" />
+    <Compile Include="BuildServers\AppVeyor.cs" />
+    <Compile Include="BuildServers\BuildServerBase.cs" />
+    <Compile Include="BuildServers\BuildServerList.cs" />
+    <Compile Include="BuildServers\ContinuaCi.cs" />
+    <Compile Include="BuildServers\GitLabCi.cs" />
+    <Compile Include="BuildServers\IBuildServer.cs" />
+    <Compile Include="BuildServers\Jenkins.cs" />
+    <Compile Include="BuildServers\MyGet.cs" />
+    <Compile Include="BuildServers\TeamCity.cs" />
+    <Compile Include="BuildServers\VsoAgent.cs" />
+    <Compile Include="Configuration\BranchConfig.cs" />
+    <Compile Include="Configuration\Config.cs" />
+    <Compile Include="Configuration\ConsoleAdapter.cs" />
+    <Compile Include="Configuration\GitVersionConfigurationException.cs" />
+    <Compile Include="Configuration\IConsole.cs" />
+    <Compile Include="Configuration\IgnoreConfig.cs" />
+    <Compile Include="Configuration\Init\BuildServer\AppveyorPublicPrivate.cs" />
+    <Compile Include="Configuration\Init\BuildServer\AppVeyorSetup.cs" />
+    <Compile Include="Configuration\Init\BuildServer\SetupBuildScripts.cs" />
+    <Compile Include="Configuration\Init\SetConfig\AssemblyVersioningSchemeSetting.cs" />
+    <Compile Include="Configuration\Init\SetNextVersion.cs" />
+    <Compile Include="Configuration\Init\Wizard\ConfigInitWizard.cs" />
+    <Compile Include="Configuration\ConfigSerialiser.cs" />
+    <Compile Include="Configuration\ConfigurationProvider.cs" />
+    <Compile Include="Configuration\IncrementStrategy.cs" />
+    <Compile Include="Configuration\LegacyBranchConfig.cs" />
+    <Compile Include="Configuration\LegacyConfig.cs" />
+    <Compile Include="Configuration\LegacyConfigNotifier.cs" />
+    <Compile Include="Configuration\OldConfigurationException.cs" />
+    <Compile Include="Configuration\Init\Wizard\ConfigInitWizardStep.cs" />
+    <Compile Include="Configuration\Init\SetConfig\ConfigureBranch.cs" />
+    <Compile Include="Configuration\Init\SetConfig\ConfigureBranches.cs" />
+    <Compile Include="Configuration\Init\EditConfigStep.cs" />
+    <Compile Include="Configuration\Init\Wizard\FinishedSetupStep.cs" />
+    <Compile Include="Configuration\Init\Wizard\GitFlowSetupStep.cs" />
+    <Compile Include="Configuration\Init\Wizard\GitHubFlowStep.cs" />
+    <Compile Include="Configuration\Init\Wizard\PickBranchingStrategy2Step.cs" />
+    <Compile Include="Configuration\Init\Wizard\PickBranchingStrategy3Step.cs" />
+    <Compile Include="Configuration\Init\Wizard\PickBranchingStrategy1Step.cs" />
+    <Compile Include="Configuration\Init\SetConfig\SetBranchIncrementMode.cs" />
+    <Compile Include="Configuration\Init\SetConfig\SetBranchTag.cs" />
+    <Compile Include="Configuration\Init\SetConfig\GlobalModeSetting.cs" />
+    <Compile Include="Configuration\Init\Wizard\PickBranchingStrategyStep.cs" />
+    <Compile Include="Configuration\Init\StepResult.cs" />
+    <Compile Include="EffectiveConfiguration.cs" />
+    <Compile Include="ExecuteCore.cs" />
+    <Compile Include="Extensions\ReadEmbeddedResourceExtensions.cs" />
+    <Compile Include="GitPreparer.cs" />
+    <Compile Include="GitRepoMetadataProvider.cs" />
+    <Compile Include="GitVersionCache.cs" />
+    <Compile Include="GitVersionCacheKey.cs" />
+    <Compile Include="GitVersionCacheKeyFactory.cs" />
+    <Compile Include="GitVersionException.cs" />
+    <Compile Include="GitVersionInformationResources\GitVersionInformationGenerator.cs" />
+    <Compile Include="Helpers\EncodingHelper.cs" />
+    <Compile Include="Helpers\FileSystem.cs" />
+    <Compile Include="Helpers\IFileSystem.cs" />
+    <Compile Include="Helpers\IThreadSleep.cs" />
+    <Compile Include="Helpers\OperationWithExponentialBackoff.cs" />
+    <Compile Include="Helpers\ServiceMessageEscapeHelper.cs" />
+    <Compile Include="Helpers\ThreadSleep.cs" />
+    <Compile Include="IncrementStrategyFinder.cs" />
+    <Compile Include="LoggerWrapper.cs" />
+    <Compile Include="MergeMessage.cs" />
+    <Compile Include="OutputVariables\VersionVariables.cs" />
+    <Compile Include="SemanticVersionExtensions.cs" />
+    <Compile Include="SemanticVersionFormatValues.cs" />
+    <Compile Include="VerbosityLevel.cs" />
+    <Compile Include="VersionAssemblyInfoResources\AssemblyInfoFileUpdater.cs" />
+    <Compile Include="TemplateManager.cs" />
+    <Compile Include="VersionCalculation\MainlineVersionCalculator.cs" />
+    <Compile Include="VersionFilters\MinDateVersionFilter.cs" />
+    <Compile Include="VersionFilters\IVersionFilter.cs" />
+    <Compile Include="VersionFilters\ShaVersionFilter.cs" />
+    <Compile Include="StringFormatWith.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculator.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\BaseVersion.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\ConfigNextVersionBaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\TaggedCommitVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\MergeMessageBaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\BaseVersionCalculators\VersionInBranchNameBaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\BaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\DevelopVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\FallbackBaseVersionStrategy.cs" />
+    <Compile Include="VersionCalculation\IBaseVersionCalculator.cs" />
+    <Compile Include="VersionCalculation\IMetaDataCalculator.cs" />
+    <Compile Include="VersionCalculation\MetaDataCalculator.cs" />
+    <Compile Include="VersionCalculation\NextVersionCalculator.cs" />
+    <Compile Include="VersioningModes\ContinuousDeliveryMode.cs" />
+    <Compile Include="VersioningModes\ContinuousDeploymentMode.cs" />
+    <Compile Include="VersioningModes\VersioningMode.cs" />
+    <Compile Include="VersioningModes\VersioningModeBase.cs" />
+    <Compile Include="VersioningModes\VersioningModeExtension.cs" />
+    <Compile Include="Extensions\ExtensionMethods.cs" />
+    <Compile Include="GitVersionContext.cs" />
+    <Compile Include="GitVersionFinder.cs" />
+    <Compile Include="Helpers\DeleteHelper.cs" />
+    <Compile Include="LambdaEqualityHelper.cs" />
+    <Compile Include="LibGitExtensions.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="OutputFormatters\BuildOutputFormatter.cs" />
+    <Compile Include="OutputFormatters\JsonOutputFormatter.cs" />
+    <Compile Include="OutputType.cs" />
+    <Compile Include="OutputVariables\VariableProvider.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="SearchPath.cs" />
+    <Compile Include="SemanticVersion.cs" />
+    <Compile Include="SemanticVersionBuildMetaData.cs" />
+    <Compile Include="SemanticVersionPreReleaseTag.cs" />
+    <Compile Include="BuildServers\TravisCI.cs" />
+    <Compile Include="WixVersionFileUpdater.cs" />
+>>>>>>> Adding support to generate Wix version files
   </ItemGroup>
 
   <ItemGroup>
@@ -44,5 +165,40 @@
     <EmbeddedResource Include="VersionAssemblyInfoResources\AddFormats\**\*.*" />
     <EmbeddedResource Include="VersionAssemblyInfoResources\Templates\**\*.*" />
   </ItemGroup>
+<<<<<<< HEAD
 
 </Project>
+=======
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets'))" />
+    <Error Condition="!Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.160\build\LibGit2Sharp.NativeBinaries.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.NativeBinaries.1.0.160\build\LibGit2Sharp.NativeBinaries.props'))" />
+    <Error Condition="!Exists('..\packages\Fody.2.0.8\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.2.0.8\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
+  </Target>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <Target Name="Clean">
+    <ItemGroup>
+      <RefFilesToDelete Include="$(BuildDir)NuGetRefBuild\**\*.*" />
+    </ItemGroup>
+    <Delete Files="@(RefFilesToDelete)" />
+  </Target>
+  <Target Name="AfterBuild" DependsOnTargets="Clean">
+    <!-- NugetRefBuild -->
+    <MakeDir Directories="$(SolutionDir)NuGetRefBuild\lib\Net45" />
+    <Copy SourceFiles="$(OutputPath)GitVersionCore.dll" DestinationFolder="$(BuildDir)NuGetRefBuild\lib\Net45" />
+    <Copy SourceFiles="$(OutputPath)GitVersionCore.pdb" DestinationFolder="$(BuildDir)NuGetRefBuild\lib\Net45" Condition="Exists('$(OutputPath)GitVersionCore.pdb')" />
+    <Copy SourceFiles="$(OutputPath)GitVersionCore.dll.mdb" DestinationFolder="$(BuildDir)NuGetRefBuild\lib\Net45" Condition="Exists('$(OutputPath)GitVersionCore.dll.mdb')" />
+    <Copy SourceFiles="$(OutputPath)GitVersionCore.xml" DestinationFolder="$(BuildDir)NuGetRefBuild\lib\Net45" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.nuspec" DestinationFolder="$(BuildDir)NuGetRefBuild" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetRefBuild" MetadataAssembly="$(OutputPath)GitVersionCore.dll" Version="$(GitVersion_NuGetVersion)" />
+  </Target>
+  <Import Project="..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" />
+  <Import Project="..\packages\Fody.2.0.8\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.2.0.8\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
+</Project>
+>>>>>>> Adding support to generate Wix version files
