@@ -56,6 +56,14 @@ namespace GitVersion
                 }
             }
 
+            if (arguments.UpdateWixVersionFile)
+            {
+                using (var wixVersionFileUpdater = new WixVersionFileUpdater(targetPath, variables, fileSystem))
+                {
+                    wixVersionFileUpdater.Update();
+                }
+            }
+
             using (var assemblyInfoUpdater = new AssemblyInfoFileUpdater(arguments.UpdateAssemblyInfoFileName, targetPath, variables, fileSystem, arguments.EnsureAssemblyInfo))
             {
                 if (arguments.UpdateAssemblyInfo)

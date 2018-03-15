@@ -47,6 +47,12 @@ GitVersion [path]
                     it be created with these attributes: AssemblyFileVersion, AssemblyVersion and AssemblyInformationalVersion
                     ---        
                     Supports writing version info for: C#, F#, VB    
+
+    # Create or update Wix version file
+    /updatewixversionfile
+                   All the GitVersion variables are written to 'GitVersion_WixVersion.wxi'.
+                   The variables can then be referenced in other WiX project files for versioning.
+
     # Remote repository args
     /url            Url to remote git repository.
     /b              Name of the branch to use on the remote repository, must be used in combination with /url.
