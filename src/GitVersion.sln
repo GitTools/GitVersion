@@ -48,6 +48,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TfsTask", "TfsTask", "{A0ED
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionTask", "GitVersionTask\GitVersionTask.csproj", "{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{98C7108A-09FD-436D-8CA5-DF19E0FC5F8D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DockerBase-Mono", "DockerBase-Mono", "{BD9DA3C6-39E1-4E40-811E-FB59853D5DDA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mono", "Mono", "{6A6E0584-5392-4F03-8C14-799D400941AC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DotnetCore", "DotnetCore", "{E78ADE9E-5573-48E2-890C-EF59CB1BA7ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +89,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BD9DA3C6-39E1-4E40-811E-FB59853D5DDA} = {98C7108A-09FD-436D-8CA5-DF19E0FC5F8D}
+		{6A6E0584-5392-4F03-8C14-799D400941AC} = {98C7108A-09FD-436D-8CA5-DF19E0FC5F8D}
+		{E78ADE9E-5573-48E2-890C-EF59CB1BA7ED} = {98C7108A-09FD-436D-8CA5-DF19E0FC5F8D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0C1C310E-7A4D-4032-878B-6DC375894C49}
