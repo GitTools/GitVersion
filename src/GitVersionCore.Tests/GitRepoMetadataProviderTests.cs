@@ -8,7 +8,7 @@
     using Shouldly;
 
     [TestFixture]
-    public class GitRepoMetadataProviderTests
+    public class GitRepoMetadataProviderTests : TestBase
     {
         [Test]
         public void FindsCorrectMergeBaseForForwardMerge()

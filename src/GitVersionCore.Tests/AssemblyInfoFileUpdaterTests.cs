@@ -10,7 +10,7 @@ using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class AssemblyInfoFileUpdaterTests
+public class AssemblyInfoFileUpdaterTests : TestBase
 {
     [SetUp]
     public void Setup()

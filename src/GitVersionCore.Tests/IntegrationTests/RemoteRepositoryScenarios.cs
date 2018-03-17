@@ -8,7 +8,7 @@ using Shouldly;
 using GitTools;
 
 [TestFixture]
-public class RemoteRepositoryScenarios
+public class RemoteRepositoryScenarios : TestBase
 {
     [Test]
     public void GivenARemoteGitRepositoryWithCommits_ThenClonedLocalShouldMatchRemoteVersion()

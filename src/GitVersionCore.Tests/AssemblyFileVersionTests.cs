@@ -6,7 +6,7 @@ namespace GitVersionCore.Tests
     using Shouldly;
 
     [TestFixture]
-    public class AssemblyFileVersionTests
+    public class AssemblyFileVersionTests : TestBase
     {
         [TestCase(AssemblyFileVersioningScheme.None, 1, 2, 3, 4, null)]
         [TestCase(AssemblyFileVersioningScheme.Major, 1, 2, 3, 4, "1.0.0.0")]

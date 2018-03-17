@@ -4,9 +4,10 @@ using GitVersion.Helpers;
 using NUnit.Framework;
 using Shouldly;
 using System.Threading.Tasks;
+using GitVersionCore.Tests;
 
 [TestFixture]
-public class OperationWithExponentialBackoffTests
+public class OperationWithExponentialBackoffTests : TestBase
 {
     [Test]
     public void RetryOperationThrowsWhenNegativeMaxRetries()
