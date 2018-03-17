@@ -289,6 +289,60 @@ Task("GitVersionCore-Package")
 	Error(exception.Dump());    
 });
 
+Task("GitVersion-DotNet-Package")
+    .IsDependentOn("Build") 
+    .Does(() =>
+{
+   
+    // var publishDir = buildDir + "Published";
+	// CreateDirectory(outputDir);
+
+	 var outputDir = buildDir + "NuGetExeDotNetCoreBuild"; 
+	 var toolsDir = outputDir + "/tools";
+	 var libDir = toolsDir + "/lib";
+
+	 CreateDirectory(outputDir);
+	 CreateDirectory(toolsDir);
+	 CreateDirectory(libDir);
+
+
+	 var msBuildSettings = new DotNetCoreMSBuildSettings();
+	 msBuildSettings.SetVersion(nugetVersion);
+     msBuildSettings.Properties["PackageVersion"] = new string[]{ nugetVersion };
+
+	 var framework = "netcoreapp20";
+
+	 var settings = new DotNetCorePublishSettings
+     {
+         Framework = framework,
+         Configuration = configuration,
+         OutputDirectory = toolsDir,
+		 MSBuildSettings = msBuildSettings
+     };
+
+     DotNetCorePublish("./src/GitVersionExe", settings);  	 
+
+	
+	 
+	 // var targetDir = "./src/GitVersionExe/bin/" + configuration + "/" + framework + "/";	
+	
+	var nugetAssetsPath = "./src/GitVersionExe/NugetAssets/";	
+	Information("Copying files to packaging direcory..");
+
+	Information("Copying nuget assets..");	
+	CopyFiles(nugetAssetsPath + "GitVersion.CommandLine.DotNetCore.nuspec", outputDir);
+
+	//Information("Copying libgit2sharp files..");		
+	//CopyDirectory(targetDir + "lib/", outputDir + "/tools/lib/"); 
+
+	var nuGetPackSettings  = new NuGetPackSettings {  Version = nugetVersion, BasePath  = outputDir, OutputDirectory = outputDir };
+    NuGetPack(outputDir + "/GitVersion.CommandLine.DotNetCore.nuspec", nuGetPackSettings);	
+})
+.ReportError(exception =>
+{  
+	Error(exception.Dump());    
+});
+
 
 Task("GitVersionTaskPackage")
     .Description("Produces the nuget package for GitVersionTask")
@@ -324,6 +378,7 @@ Task("Zip-Files")
 	.IsDependentOn("Portable-Package")	
 	.IsDependentOn("GitVersionCore-Package")	
 	.IsDependentOn("GitVersionTaskPackage")	
+	.IsDependentOn("GitVersion-DotNet-Package")		
 	.IsDependentOn("Run-Tests-In-NUnitConsole")
     .Does(() =>
 {
@@ -385,8 +440,9 @@ Task("Upload-AppVeyor-Artifacts")
     System.IO.File.WriteAllLines("build/artifacts", new[]{
         "NuGetExeBuild:GitVersion.Portable." + nugetVersion +".nupkg",
         "NuGetCommandLineBuild:GitVersion.CommandLine." + nugetVersion +".nupkg",
+		"NuGetExeDotNetCoreBuild:GitVersion.CommandLine.DotNetCore." + nugetVersion +".nupkg",
         "NuGetRefBuild:GitVersion." + nugetVersion +".nupkg",
-        "NuGetTaskBuild:GitVersionTask." + nugetVersion +".nupkg",      
+        "NuGetTaskBuild:GitVersionTask." + nugetVersion +".nupkg",   
         "zip:GitVersion_" + nugetVersion + ".zip",
 		// "GitVersionTfsTaskBuild:gittools.gitversion-" + semVersion +".vsix",
         // "GemBuild:" + gem
@@ -394,6 +450,7 @@ Task("Upload-AppVeyor-Artifacts")
 
     AppVeyor.UploadArtifact("build/NuGetExeBuild/GitVersion.Portable." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/NuGetCommandLineBuild/GitVersion.CommandLine." + nugetVersion +".nupkg");
+	AppVeyor.UploadArtifact("build/NuGetExeDotNetCoreBuild/GitVersion.CommandLine.DotNetCore." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/NuGetRefBuild/GitVersionCore." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/NuGetTaskBuild/GitVersionTask." + nugetVersion +".nupkg");   
     AppVeyor.UploadArtifact("build/GitVersion_" + nugetVersion + ".zip");
