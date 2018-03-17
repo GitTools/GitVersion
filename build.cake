@@ -22,49 +22,36 @@ string buildDir = "./build/";
 
 void Build(string configuration, string nugetVersion, string semVersion, string version, string preReleaseTag)
 {
-    if(IsRunningOnUnix())
-    {
-        XBuild("./src/GitVersion.sln",  new XBuildSettings()
-            .SetConfiguration(configuration)
-            .WithProperty("POSIX", "True")
-            .SetVerbosity(Verbosity.Minimal));
-    }
-    else
-    {	
 
-        var msBuildSettings = new MSBuildSettings()
-            .SetConfiguration(configuration)		
-            .SetPlatformTarget(PlatformTarget.MSIL)
-		   // .WithProperty("Platform", "Any CPU")
-           // .WithProperty("Windows", "True")
-            .UseToolVersion(MSBuildToolVersion.VS2017)
-            .SetVerbosity(Verbosity.Normal)
-            .SetNodeReuse(false);
-
-        if (BuildSystem.AppVeyor.IsRunningOnAppVeyor)
+    DotNetBuild("./src/GitVersion.sln", settings =>
+	{
+	 settings.SetConfiguration(configuration)
+        .SetVerbosity(Verbosity.Minimal)
+        .WithTarget("Build")
+        .WithProperty("POSIX",IsRunningOnUnix().ToString());
+		
+		if (BuildSystem.AppVeyor.IsRunningOnAppVeyor)
 		{
 			if (!string.IsNullOrWhiteSpace(nugetVersion))
 			{
-				msBuildSettings.WithProperty("GitVersion_NuGetVersion", nugetVersion);
+				settings.WithProperty("GitVersion_NuGetVersion", nugetVersion);
 			}
 			if (!string.IsNullOrWhiteSpace(semVersion))
 			{
-				msBuildSettings.WithProperty("GitVersion_SemVer", semVersion);
+				settings.WithProperty("GitVersion_SemVer", semVersion);
 			}
 
 			if (!string.IsNullOrWhiteSpace(version))
 			{
-				msBuildSettings.WithProperty("GitVersion_MajorMinorPatch", version);
+				settings.WithProperty("GitVersion_MajorMinorPatch", version);
 			}
 
 			if (!string.IsNullOrWhiteSpace(preReleaseTag))
 			{
-				msBuildSettings.WithProperty("GitVersion_PreReleaseTag", preReleaseTag);
+				settings.WithProperty("GitVersion_PreReleaseTag", preReleaseTag);
 			}
-        }
-
-        MSBuild("./src/GitVersion.sln", msBuildSettings);
-    }
+        }		
+	}); 
 }
 
 // This build task can be run to just build
