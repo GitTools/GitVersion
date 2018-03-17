@@ -43,18 +43,8 @@
     <packagereference Include="NUnit3TestAdapter" Version="3.9.0"></packagereference>
     <PackageReference Include="Shouldly" Version="2.8.3" />
     <PackageReference Include="TestStack.ConventionTests" Version="3.0.0" />
-    <PackageReference Include="YamlDotNet" Version="4.2.1" />
-    <!--<PackageReference Include="Fody" Version="2.0.8">
-      <PrivateAssets>All</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Caseless.Fody" Version="1.5.0" />-->
-    <None Include="FodyWeavers.xml">
-      <SubType>Designer</SubType>
-    </None>
-    <PackageReference Include="ModuleInit.Fody" Version="1.6.0"></PackageReference>
-    <!--<PackageReference Include="Microsoft.CSharp" Version="4.4.0" />-->
+    <PackageReference Include="YamlDotNet" Version="4.2.1" />  
   </ItemGroup>
-  <!--<Reference Include="Microsoft.CSharp" />-->
   <ItemGroup Condition="'$(TargetFramework)'=='net461'">
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -63,8 +53,7 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-   
+    <Reference Include="Microsoft.CSharp" />   
   </ItemGroup>
 
   <ItemGroup>
@@ -76,7 +65,6 @@
     <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="FodyWeavers.xml" />
     <Content Include="Approved\**\*.approved.txt" />
   </ItemGroup>
   <ItemGroup>
