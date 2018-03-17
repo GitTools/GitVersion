@@ -6,7 +6,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>GitVersion</RootNamespace>
     <AssemblyName>GitVersion</AssemblyName>
-    <TargetFrameworks>net40;netstandard2</TargetFrameworks>
+    <TargetFrameworks>net40;netcoreapp20</TargetFrameworks>
     <BuildDir>$(SolutionDir)..\build\</BuildDir>
     
     <GenerateAssemblyFileVersionAttribute Condition="'$(GenerateAssemblyFileVersionAttribute)' == ''">false</GenerateAssemblyFileVersionAttribute>

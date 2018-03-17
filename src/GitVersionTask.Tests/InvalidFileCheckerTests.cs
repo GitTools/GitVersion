@@ -6,7 +6,7 @@ using NUnit.Framework;
 using GitTools;
 
 [TestFixture]
-public class InvalidFileCheckerTests
+public class InvalidFileCheckerTests : TestBase
 {
     string projectDirectory;
     string projectFile;
