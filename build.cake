@@ -383,6 +383,7 @@ Task("Zip-Files")
     .Does(() =>
 {
     Zip("./build/NuGetCommandLineBuild/tools/", "build/GitVersion_" + nugetVersion + ".zip");
+	Zip("./build/NuGetExeDotNetCoreBuild/tools/", "build/GitVersionDotNetCore_" + nugetVersion + ".zip");
 })
 .ReportError(exception =>
 {  
@@ -444,6 +445,7 @@ Task("Upload-AppVeyor-Artifacts")
         "NuGetRefBuild:GitVersion." + nugetVersion +".nupkg",
         "NuGetTaskBuild:GitVersionTask." + nugetVersion +".nupkg",   
         "zip:GitVersion_" + nugetVersion + ".zip",
+		"zip-dotnetcore:GitVersionDotNetCore_" + nugetVersion + ".zip"
 		// "GitVersionTfsTaskBuild:gittools.gitversion-" + semVersion +".vsix",
         // "GemBuild:" + gem
     });
@@ -454,6 +456,7 @@ Task("Upload-AppVeyor-Artifacts")
     AppVeyor.UploadArtifact("build/NuGetRefBuild/GitVersionCore." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/NuGetTaskBuild/GitVersionTask." + nugetVersion +".nupkg");   
     AppVeyor.UploadArtifact("build/GitVersion_" + nugetVersion + ".zip");
+	AppVeyor.UploadArtifact("build/GitVersionDotNetCore_" + nugetVersion + ".zip");
 	// AppVeyor.UploadArtifact("build/GitVersionTfsTaskBuild/gittools.gitversion-" + semVersion + ".vsix");
     // AppVeyor.UploadArtifact("build/GemBuild/" + gem);
     AppVeyor.UploadArtifact("build/artifacts");
