@@ -81,6 +81,9 @@ Example Syntax #2: `'{Major}.{Minor}.{Patch}.{$JENKINS_BUILD_NUMBER}'`.  Uses `J
 if available in the environment otherwise the parsing fails.
 String interpolation is supported as in `assembly-informational-format`
 
+### assembly-versioning-format
+Follows the same semantics as `assembly-file-versioning-format` and overwrites the value of `assembly-versioning-scheme`.
+
 ### assembly-informational-format
 Set this to any of the available [variables](/more-info/variables) to change the
 value of the `AssemblyInformationalVersion` attribute. Default set to

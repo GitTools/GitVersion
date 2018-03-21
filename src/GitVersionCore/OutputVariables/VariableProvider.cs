@@ -44,43 +44,16 @@
             var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, config);
 
             string informationalVersion;
+            CheckAndFormatString(config.AssemblyInformationalFormat, semverFormatValues, semverFormatValues.DefaultInformationalVersion,
+                "AssemblyInformationalVersion", out informationalVersion);
 
-            if (string.IsNullOrEmpty(config.AssemblyInformationalFormat))
-            {
-                informationalVersion = semverFormatValues.DefaultInformationalVersion;
-            }
-            else
-            {
-                try
-                {
-                    informationalVersion = config.AssemblyInformationalFormat.FormatWith<SemanticVersionFormatValues>(semverFormatValues);
-                }
-                catch (ArgumentException formex)
-                {
-                    throw new WarningException(string.Format("Unable to format AssemblyInformationalVersion.  Check your format string: {0}", formex.Message));
-                }
-            }
-
-            string assemblyFileVersioningFormat;
             string assemblyFileSemVer;
+            CheckAndFormatString(config.AssemblyFileVersioningFormat, semverFormatValues, semverFormatValues.AssemblyFileSemVer,
+                "AssemblyFileVersioningFormat", out assemblyFileSemVer);
 
-            if (!(string.IsNullOrEmpty(config.AssemblyFileVersioningFormat)))
-            {
-                //assembly-file-versioning-format value if provided in the config, overwrites the exisiting AssemblyFileSemVer
-                try
-                {
-                    assemblyFileVersioningFormat = config.AssemblyFileVersioningFormat.FormatWith<SemanticVersionFormatValues>(semverFormatValues);
-                    assemblyFileSemVer = assemblyFileVersioningFormat;
-                }
-                catch (ArgumentException formex)
-                {
-                    throw new WarningException(string.Format("Unable to format AssemblyFileVersioningFormat.  Check your format string: {0}", formex.Message));
-                }
-            }
-            else
-            {
-                assemblyFileSemVer = semverFormatValues.AssemblyFileSemVer;
-            }
+            string assemblySemVer;
+            CheckAndFormatString(config.AssemblyVersioningFormat, semverFormatValues, semverFormatValues.AssemblySemVer,
+                "AssemblyVersioningFormat", out assemblySemVer);
 
             var variables = new VersionVariables(
                 semverFormatValues.Major,
@@ -96,7 +69,7 @@
                 semverFormatValues.LegacySemVer,
                 semverFormatValues.LegacySemVerPadded,
                 semverFormatValues.FullSemVer,
-                semverFormatValues.AssemblySemVer,
+                assemblySemVer,
                 assemblyFileSemVer,
                 semverFormatValues.PreReleaseTag,
                 semverFormatValues.PreReleaseTagWithDash,
@@ -120,6 +93,25 @@
             semanticVersion.PreReleaseTag.Number = semanticVersion.BuildMetaData.CommitsSinceTag;
             semanticVersion.BuildMetaData.CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag ?? 0;
             semanticVersion.BuildMetaData.CommitsSinceTag = null;
+        }
+
+        static void CheckAndFormatString<T>(string formatString, T source,  string defaultValue, string formatVarName, out string formattedString)
+        {
+            if (string.IsNullOrEmpty(formatString))
+            {
+                formattedString = defaultValue;
+            }
+            else
+            {
+                try
+                {
+                    formattedString = formatString.FormatWith(source);
+                }
+                catch (ArgumentException formex)
+                {
+                    throw new WarningException(string.Format("Unable to format {0}.  Check your format string: {1}", formatVarName, formex.Message));
+                }
+            }
         }
     }
 }
