@@ -8,7 +8,7 @@ namespace GitVersion
 
     static class StringFormatWithExtension
     {
-        private static readonly Regex TokensRegex = new Regex(@"{\$??\w+(\?\?\w+)??}", RegexOptions.Compiled);
+        private static readonly Regex TokensRegex = new Regex(@"{(env:)??\w+(\?\?\w+)??}", RegexOptions.Compiled);
 
         /// <summary>
         ///     Formats a string template with the given source object.
@@ -27,16 +27,18 @@ namespace GitVersion
 
             // {MajorMinorPatch}+{Branch}
             var objType = source.GetType();
+            const string ENV_VAR_INDICATOR = "env:";
             foreach (Match match in TokensRegex.Matches(template))
             {
                 var memberAccessExpression = TrimBraces(match.Value);
                 string propertyValue = null;
 
                 // Support evaluation of environment variables in the format string
-                // For example: {$JENKINS_BUILD_NUMBER??fall-back-string}
-                if (memberAccessExpression.StartsWith("$"))
+                // For example: {env:JENKINS_BUILD_NUMBER??fall-back-string}
+
+                if (memberAccessExpression.StartsWith(ENV_VAR_INDICATOR))
                 {
-                    memberAccessExpression = memberAccessExpression.TrimStart('$').TrimEnd('$');
+                    memberAccessExpression = memberAccessExpression.TrimStart(ENV_VAR_INDICATOR.ToCharArray()).TrimEnd(ENV_VAR_INDICATOR.ToCharArray());
                     string envVar = memberAccessExpression, fallback = null;
                     string[] components = (memberAccessExpression.Contains("??")) ? memberAccessExpression.Split(new string[] { "??" }, StringSplitOptions.None) : null;
                     if (components != null)

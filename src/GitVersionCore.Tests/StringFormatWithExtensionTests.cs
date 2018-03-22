@@ -44,7 +44,7 @@ namespace GitVersionCore.Tests
         {
             Environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR", "Env Var Value");
             var propertyObject = new { };
-            var target = "{$GIT_VERSION_TEST_VAR}";
+            var target = "{env:GIT_VERSION_TEST_VAR}";
             var expected = "Env Var Value";
             var actual = target.FormatWith(propertyObject);
             Assert.AreEqual(expected, actual);
@@ -55,7 +55,7 @@ namespace GitVersionCore.Tests
         {
             Environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR", "Env Var Value");
             var propertyObject = new { };
-            var target = "{$GIT_VERSION_TEST_VAR??fallback}";
+            var target = "{env:GIT_VERSION_TEST_VAR??fallback}";
             var expected = "Env Var Value";
             var actual = target.FormatWith(propertyObject);
             Assert.AreEqual(expected, actual);
@@ -66,7 +66,7 @@ namespace GitVersionCore.Tests
         {
             Environment.SetEnvironmentVariable("GIT_VERSION_UNSET_TEST_VAR", null);
             var propertyObject = new { };
-            var target = "{$GIT_VERSION_UNSET_TEST_VAR??fallback}";
+            var target = "{env:GIT_VERSION_UNSET_TEST_VAR??fallback}";
             var expected = "fallback";
             var actual = target.FormatWith(propertyObject);
             Assert.AreEqual(expected, actual);
@@ -78,7 +78,7 @@ namespace GitVersionCore.Tests
             Environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR_1", "Val-1");
             Environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR_2", "Val-2");
             var propertyObject = new { };
-            var target = "{$GIT_VERSION_TEST_VAR_1} and {$GIT_VERSION_TEST_VAR_2}";
+            var target = "{env:GIT_VERSION_TEST_VAR_1} and {env:GIT_VERSION_TEST_VAR_2}";
             var expected = "Val-1 and Val-2";
             var actual = target.FormatWith(propertyObject);
             Assert.AreEqual(expected, actual);
@@ -88,9 +88,9 @@ namespace GitVersionCore.Tests
         public void FormatWith_MultipleEnvChars()
         {
             var propertyObject = new { };
-            //Test the greediness of the regex in matching $ char
-            var target = "{$$GIT_VERSION_TEST_VAR_1} and {$DUMMY_VAR??fallback}";
-            var expected = "{$$GIT_VERSION_TEST_VAR_1} and fallback";
+            //Test the greediness of the regex in matching env: char
+            var target = "{env:env:GIT_VERSION_TEST_VAR_1} and {env:DUMMY_VAR??fallback}";
+            var expected = "{env:env:GIT_VERSION_TEST_VAR_1} and fallback";
             var actual = target.FormatWith(propertyObject);
             Assert.AreEqual(expected, actual);
         }
@@ -99,8 +99,8 @@ namespace GitVersionCore.Tests
         public void FormatWith_MultipleFallbackChars()
         {
             var propertyObject = new { };
-            //Test the greediness of the regex in matching $ and ?? chars
-            var target = "{$$GIT_VERSION_TEST_VAR_1} and {$DUMMY_VAR???fallback}";
+            //Test the greediness of the regex in matching env: and ?? chars
+            var target = "{env:env:GIT_VERSION_TEST_VAR_1} and {env:DUMMY_VAR???fallback}";
             var actual = target.FormatWith(propertyObject);
             Assert.AreEqual(target, actual);
         }
@@ -108,9 +108,10 @@ namespace GitVersionCore.Tests
         [Test]
         public void FormatWith_SingleFallbackChar()
         {
+            Environment.SetEnvironmentVariable("DUMMY_ENV_VAR", "Dummy-Val");
             var propertyObject = new { };
             //Test the sanity of the regex when there is a grammar mismatch
-            var target = "SomeNumbers and {$DUMMY_VAR?fallback}";
+            var target = "{en:DUMMY_ENV_VAR} and {env:DUMMY_ENV_VAR?fallback}";
             var actual = target.FormatWith(propertyObject);
             Assert.AreEqual(target, actual);
         }
