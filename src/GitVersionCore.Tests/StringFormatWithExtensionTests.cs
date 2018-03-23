@@ -55,7 +55,7 @@ namespace GitVersionCore.Tests
         {
             Environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR", "Env Var Value");
             var propertyObject = new { };
-            var target = "{env:GIT_VERSION_TEST_VAR??fallback}";
+            var target = "{env:GIT_VERSION_TEST_VAR ?? fallback}";
             var expected = "Env Var Value";
             var actual = target.FormatWith(propertyObject);
             Assert.AreEqual(expected, actual);
@@ -66,7 +66,7 @@ namespace GitVersionCore.Tests
         {
             Environment.SetEnvironmentVariable("GIT_VERSION_UNSET_TEST_VAR", null);
             var propertyObject = new { };
-            var target = "{env:GIT_VERSION_UNSET_TEST_VAR??fallback}";
+            var target = "{env:GIT_VERSION_UNSET_TEST_VAR ?? fallback}";
             var expected = "fallback";
             var actual = target.FormatWith(propertyObject);
             Assert.AreEqual(expected, actual);
@@ -89,7 +89,7 @@ namespace GitVersionCore.Tests
         {
             var propertyObject = new { };
             //Test the greediness of the regex in matching env: char
-            var target = "{env:env:GIT_VERSION_TEST_VAR_1} and {env:DUMMY_VAR??fallback}";
+            var target = "{env:env:GIT_VERSION_TEST_VAR_1} and {env:DUMMY_VAR ?? fallback}";
             var expected = "{env:env:GIT_VERSION_TEST_VAR_1} and fallback";
             var actual = target.FormatWith(propertyObject);
             Assert.AreEqual(expected, actual);
@@ -100,7 +100,7 @@ namespace GitVersionCore.Tests
         {
             var propertyObject = new { };
             //Test the greediness of the regex in matching env: and ?? chars
-            var target = "{env:env:GIT_VERSION_TEST_VAR_1} and {env:DUMMY_VAR???fallback}";
+            var target = "{env:env:GIT_VERSION_TEST_VAR_1} and {env:DUMMY_VAR ??? fallback}";
             var actual = target.FormatWith(propertyObject);
             Assert.AreEqual(target, actual);
         }
@@ -111,9 +111,19 @@ namespace GitVersionCore.Tests
             Environment.SetEnvironmentVariable("DUMMY_ENV_VAR", "Dummy-Val");
             var propertyObject = new { };
             //Test the sanity of the regex when there is a grammar mismatch
-            var target = "{en:DUMMY_ENV_VAR} and {env:DUMMY_ENV_VAR?fallback}";
+            var target = "{en:DUMMY_ENV_VAR} and {env:DUMMY_ENV_VAR??fallback}";
             var actual = target.FormatWith(propertyObject);
             Assert.AreEqual(target, actual);
+        }
+
+        [Test]
+        public void FormatWIth_NullPropagationWithMultipleSpaces()
+        {
+            var propertyObject = new { SomeProperty = "Some Value" };
+            var target = "{SomeProperty} and {env:DUMMY_ENV_VAR  ??  fallback}";
+            var expected = "Some Value and fallback";
+            var actual = target.FormatWith(propertyObject);
+            Assert.AreEqual(expected, actual);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace GitVersion
 
     static class StringFormatWithExtension
     {
-        private static readonly Regex TokensRegex = new Regex(@"{(env:)??\w+(\?\?\w+)??}", RegexOptions.Compiled);
+        private static readonly Regex TokensRegex = new Regex(@"{(env:)??\w+(\s+(\?\?)??\s+\w+)??}", RegexOptions.Compiled);
 
         /// <summary>
         ///     Formats a string template with the given source object.
@@ -43,8 +43,8 @@ namespace GitVersion
                     string[] components = (memberAccessExpression.Contains("??")) ? memberAccessExpression.Split(new string[] { "??" }, StringSplitOptions.None) : null;
                     if (components != null)
                     {
-                        envVar = components[0];
-                        fallback = components[1];
+                        envVar = components[0].Trim();
+                        fallback = components[1].Trim();
                     }
 
                     propertyValue = Helpers.EnvironmentHelper.GetEnvironmentVariableForProcess(envVar);
