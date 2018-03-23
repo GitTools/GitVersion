@@ -116,6 +116,7 @@
     <Compile Include="MsBuildProjectArgTest.cs" />
     <Compile Include="PullRequestInJenkinsPipelineTest.cs" />
     <Compile Include="PullRequestInTeamCityTest.cs" />
+    <Compile Include="UpdateWixVersionFileTests.cs" />
     <Compile Include="VersionWriterTests.cs" />
   </ItemGroup>
   <ItemGroup>
