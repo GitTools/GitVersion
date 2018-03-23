@@ -20,6 +20,11 @@
             this.fileSystem = fileSystem;
         }
                 
+        public static string GetWixVersionFileName()
+        {
+            return WIX_VERSION_FILE;
+        }
+
         public void Update()
         {
             Logger.WriteInfo("Updating GitVersion_WixVersion.wxi");
