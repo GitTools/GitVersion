@@ -109,4 +109,19 @@ public class PullRequestScenarios
             fixture.AssertFullSemver("2.0.0-PullRequest0002.0");
         }
     }
+
+    [Test]
+    public void CalculatesCorrectVersionForPullRequestFromReleaseToMasterInGitFlowBranchingModel()
+    {
+        using (var fixture = new BaseGitFlowRepositoryFixture("1.0.0"))
+        {
+            fixture.MakeACommit();
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("release/2.0.0"));
+            fixture.MakeACommit();
+
+            fixture.Repository.CreatePullRequestRef("release/2.0.0", "master", normalise: true);
+
+            fixture.AssertFullSemver("2.0.0-PullRequest0002.0");
+        }
+    }
 }
