@@ -43,17 +43,14 @@
 
             var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, config);
 
-            string informationalVersion;
-            CheckAndFormatString(config.AssemblyInformationalFormat, semverFormatValues, semverFormatValues.DefaultInformationalVersion,
-                "AssemblyInformationalVersion", out informationalVersion);
+            string informationalVersion = CheckAndFormatString(config.AssemblyInformationalFormat, semverFormatValues,
+                semverFormatValues.DefaultInformationalVersion, "AssemblyInformationalVersion");
 
-            string assemblyFileSemVer;
-            CheckAndFormatString(config.AssemblyFileVersioningFormat, semverFormatValues, semverFormatValues.AssemblyFileSemVer,
-                "AssemblyFileVersioningFormat", out assemblyFileSemVer);
+            string assemblyFileSemVer = CheckAndFormatString(config.AssemblyFileVersioningFormat, semverFormatValues,
+                semverFormatValues.AssemblyFileSemVer, "AssemblyFileVersioningFormat");
 
-            string assemblySemVer;
-            CheckAndFormatString(config.AssemblyVersioningFormat, semverFormatValues, semverFormatValues.AssemblySemVer,
-                "AssemblyVersioningFormat", out assemblySemVer);
+            string assemblySemVer = CheckAndFormatString(config.AssemblyVersioningFormat, semverFormatValues,
+                semverFormatValues.AssemblySemVer, "AssemblyVersioningFormat");
 
             var variables = new VersionVariables(
                 semverFormatValues.Major,
@@ -95,8 +92,10 @@
             semanticVersion.BuildMetaData.CommitsSinceTag = null;
         }
 
-        static void CheckAndFormatString<T>(string formatString, T source,  string defaultValue, string formatVarName, out string formattedString)
+        static string CheckAndFormatString<T>(string formatString, T source,  string defaultValue, string formatVarName)
         {
+            string formattedString;
+
             if (string.IsNullOrEmpty(formatString))
             {
                 formattedString = defaultValue;
@@ -112,6 +111,8 @@
                     throw new WarningException(string.Format("Unable to format {0}.  Check your format string: {1}", formatVarName, formex.Message));
                 }
             }
+
+            return formattedString;
         }
     }
 }
