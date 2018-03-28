@@ -143,6 +143,7 @@
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="IntegrationTests\MasterScenarios.cs" />
     <Compile Include="SemanticVersionTests.cs" />
+    <Compile Include="StringFormatWithExtensionTests.cs" />
     <Compile Include="TestableVersionVariables.cs" />
     <Compile Include="TestEffectiveConfiguration.cs" />
     <Compile Include="TestFileSystem.cs" />

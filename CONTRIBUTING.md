@@ -4,7 +4,7 @@ We love contributions to get started contributing you might need:
  - [Get started with git](http://rogerdudler.github.io/git-guide)
  - [How to create a pull request](https://help.github.com/articles/using-pull-requests)
  - [An issue to work on](https://github.com/GitTools/GitVersion/labels/up-for-grabs) - We are on [Up for grabs](http://up-for-grabs.net/), our up for grabs issues are tagged `up-for-grabs`
- - An understanding of our [http://gitversion.readthedocs.org/en/latest/more-info/how-it-works/#architecture](#architecture) and how [we write tests](#writing-tests)
+ - An understanding of our [architecture](http://gitversion.readthedocs.org/en/latest/more-info/how-it-works/#architecture) and how [we write tests](#writing-tests)
 
 Once you know how to create a pull request and have an issue to work on, just post a comment saying you will work on it.
 If you end up not being able to complete the task, please post another comment so others can pick it up.

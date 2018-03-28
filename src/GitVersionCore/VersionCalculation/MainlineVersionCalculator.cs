@@ -120,7 +120,7 @@ namespace GitVersion.VersionCalculation
             var mainlineBranches = context.Repository.Branches
                 .Where(b =>
                 {
-                    return mainlineBranchConfigs.Any(c => Regex.IsMatch(b.FriendlyName, c.Key));
+                    return mainlineBranchConfigs.Any(c => Regex.IsMatch(b.FriendlyName, c.Value.Regex));
                 })
                 .Where(b =>
                 {
