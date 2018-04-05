@@ -112,14 +112,17 @@ Task("Build")
     Build(configuration, nugetVersion, semVersion, version, preReleaseTag);
 });
 
-Task("Run-Tests-In-NUnitConsole")
-    .WithCriteria(IsRunningOnWindows())
+Task("Run-Tests-In-NUnitConsole")   
     .IsDependentOn("DogfoodBuild")
     .Does(() =>
 {
     var settings = new NUnit3Settings();
 	var targetFramework = "net461";  
-    
+    if(IsRunningOnUnix())
+    {
+        settings.Where = "cat != NoMono";
+    }
+
     NUnit3(new [] {
         "src/GitVersionCore.Tests/bin/" + configuration + "/" + targetFramework + "/GitVersionCore.Tests.dll",
         "src/GitVersionExe.Tests/bin/" + configuration + "/" + targetFramework + "/GitVersionExe.Tests.dll",
@@ -132,9 +135,8 @@ Task("Run-Tests-In-NUnitConsole")
     }
 });
 
-
-Task("Run-Tests")
-    .WithCriteria(IsRunningOnUnix())
+// Note: this task is not used for time being as unable to produce sensible test results output file via dotnet cli.. so using nunit console runner above instead.
+Task("Run-Tests")  
     .IsDependentOn("DogfoodBuild")
     .Does(() =>
 {	
@@ -378,7 +380,6 @@ Task("Zip-Files")
 	.IsDependentOn("GitVersionTaskPackage")	
 	.IsDependentOn("GitVersion-DotNet-Package")		
 	.IsDependentOn("Run-Tests-In-NUnitConsole")
-	.IsDependentOn("Run-Tests")
     .Does(() =>
 {
     Zip("./build/NuGetCommandLineBuild/tools/", "build/GitVersion_" + nugetVersion + ".zip");
