@@ -10,6 +10,8 @@ namespace GitVersionExe.Tests
         public TestEffectiveConfiguration(
             AssemblyVersioningScheme assemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
             AssemblyFileVersioningScheme assemblyFileVersioningScheme = AssemblyFileVersioningScheme.MajorMinorPatch,
+            string assemblyVersioningFormat = null,
+            string assemblyFileVersioningFormat = null,
             string assemblyInformationalFormat = null,
             VersioningMode versioningMode = VersioningMode.ContinuousDelivery,
             string gitTagPrefix = "v",
@@ -32,13 +34,14 @@ namespace GitVersionExe.Tests
             bool tracksReleaseBranches = false,
             bool isRelease = false,
             string commitDateFormat = "yyyy-MM-dd") :
-            base(assemblyVersioningScheme, assemblyFileVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch,
+             base(assemblyVersioningScheme, assemblyFileVersioningScheme, assemblyInformationalFormat, assemblyVersioningFormat, assemblyFileVersioningFormat, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch,
                     branchPrefixToTrim, preventIncrementForMergedBranchVersion, tagNumberPattern, continuousDeploymentFallbackTag,
                     trackMergeTarget,
                     majorMessage, minorMessage, patchMessage, noBumpMessage,
                     commitMessageMode, legacySemVerPadding, buildMetaDataPadding, commitsSinceVersionSourcePadding,
                     versionFilters ?? Enumerable.Empty<IVersionFilter>(),
                     tracksReleaseBranches, isRelease, commitDateFormat)
+
         {
         }
     }

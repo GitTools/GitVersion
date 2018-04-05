@@ -27,6 +27,12 @@
         [YamlMember(Alias = "assembly-informational-format")]
         public string AssemblyInformationalFormat { get; set; }
 
+        [YamlMember(Alias = "assembly-versioning-format")]
+        public string AssemblyVersioningFormat { get; set; }
+
+        [YamlMember(Alias = "assembly-file-versioning-format")]
+        public string AssemblyFileVersioningFormat { get; set; }
+
         [YamlMember(Alias = "mode")]
         public VersioningMode? VersioningMode { get; set; }
 
