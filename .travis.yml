@@ -3,7 +3,7 @@ sudo: required
 dist: trusty
 dotnet: 2.1.4
 mono:
-  - 5.4
+  - 5.4.0.201
 os:
   - linux
   - osx
