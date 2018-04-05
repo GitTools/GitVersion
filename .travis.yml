@@ -1,12 +1,14 @@
 language: csharp
-sudo: false
+sudo: required
+dist: trusty
+dotnet: 2.0.0
 mono:
   - latest
 os:
   - linux
   - osx
 before_install:
-  - git fetch --unshallow # Travis always does a shallow clone, but GitVersion needs the full history including branches and tags
+  - git fetch --unshallow # Travis always does a shallow clone, but GitVersion needs the full history including branches and tags 
 script:
   - ./build.sh
 cache:
