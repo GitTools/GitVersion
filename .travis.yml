@@ -5,6 +5,7 @@ dotnet: 2.0.3
 mono:
   - 5.2.0
   - 5.4.1
+  - 5.4.0
   - latest
 os:
   - linux
