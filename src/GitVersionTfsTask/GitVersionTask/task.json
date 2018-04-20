@@ -55,6 +55,15 @@
             "groupName": "additional"
         },
         {
+            "name": "targetPath",
+            "type": "string",
+            "label": "Working directory path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optionally supply the path to the working directory",
+            "groupName": "additional"
+        },
+        {
             "name": "preferBundledVersion",
             "type": "boolean",
             "label": "Prefer bundled GitVersion.exe",
