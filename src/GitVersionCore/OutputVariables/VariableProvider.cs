@@ -61,6 +61,7 @@
                 semverFormatValues.FullBuildMetaData,
                 semverFormatValues.BranchName,
                 semverFormatValues.Sha,
+                semverFormatValues.ShortSha,
                 semverFormatValues.MajorMinorPatch,
                 semverFormatValues.SemVer,
                 semverFormatValues.LegacySemVer,

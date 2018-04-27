@@ -83,6 +83,9 @@
         public string Sha { get; set; }
 
         [Output]
+        public string ShortSha { get; set; }
+
+        [Output]
         public string NuGetVersionV2 { get; set; }
 
         [Output]
