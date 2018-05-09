@@ -43,7 +43,7 @@
     <packagereference Include="NUnit3TestAdapter" Version="3.9.0"></packagereference>
     <PackageReference Include="Shouldly" Version="2.8.3" />
     <PackageReference Include="TestStack.ConventionTests" Version="3.0.0" />
-    <PackageReference Include="YamlDotNet" Version="4.2.1" />  
+    <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />  
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net461'">
     <Reference Include="System" />
