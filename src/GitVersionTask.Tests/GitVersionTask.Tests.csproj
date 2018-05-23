@@ -51,7 +51,7 @@
     <PackageReference Include="NUnit" Version="3.9.0"></PackageReference>
     <packagereference Include="NUnit3TestAdapter" Version="3.9.0"></packagereference>
     <PackageReference Include="ObjectApproval" Version="1.3.0"></PackageReference>
-    <PackageReference Include="Shouldly" Version="2.7.0"></PackageReference>
+    <PackageReference Include="Shouldly" Version="3.0.0"></PackageReference>
     <PackageReference Include="System.Reflection.Metadata" Version="1.4.2"></PackageReference>
     <PackageReference Include="System.Collections.Immutable" Version="1.3.1"></PackageReference>
   </ItemGroup>
