@@ -23,7 +23,7 @@ string buildDir = "./build/";
 void Build(string configuration, string nugetVersion, string semVersion, string version, string preReleaseTag)
 {
 
-    DotNetBuild("./src/GitVersion.sln", settings =>
+    MSBuild("./src/GitVersion.sln", settings =>
 	{
 	 settings.SetConfiguration(configuration)
         .SetVerbosity(Verbosity.Minimal)
@@ -477,7 +477,7 @@ Task("Upload-AppVeyor-Artifacts")
 
 
 Task("Travis")
-  .IsDependentOn("Run-Tests");
+  .IsDependentOn("Run-Tests-In-NUnitConsole");
 
 Task("Default")
   .IsDependentOn("Upload-AppVeyor-Artifacts");
