@@ -148,40 +148,50 @@ namespace GitVersion
 
         public static bool TryParse(string version, string tagPrefixRegex, out SemanticVersion semanticVersion)
         {
-            var match = Regex.Match(version, string.Format("^({0})?(?<version>.*)$", tagPrefixRegex));
-
-            if (!match.Success)
+            try
             {
+                var match = Regex.Match(version, string.Format("^({0})?(?<version>.*)$", tagPrefixRegex));
+
+                if (!match.Success)
+                {
+                    semanticVersion = null;
+                    return false;
+                }
+
+                version = match.Groups["version"].Value;
+                var parsed = ParseSemVer.Match(version);
+
+                if (!parsed.Success)
+                {
+                    semanticVersion = null;
+                    return false;
+                }
+
+                var semanticVersionBuildMetaData = SemanticVersionBuildMetaData.Parse(parsed.Groups["BuildMetaData"].Value);
+                var fourthPart = parsed.Groups["FourthPart"];
+                if (fourthPart.Success && semanticVersionBuildMetaData.CommitsSinceTag == null)
+                {
+                    semanticVersionBuildMetaData.CommitsSinceTag = int.Parse(fourthPart.Value);
+                }
+
+                semanticVersion = new SemanticVersion
+                {
+                    Major = int.Parse(parsed.Groups["Major"].Value),
+                    Minor = parsed.Groups["Minor"].Success ? int.Parse(parsed.Groups["Minor"].Value) : 0,
+                    Patch = parsed.Groups["Patch"].Success ? int.Parse(parsed.Groups["Patch"].Value) : 0,
+                    PreReleaseTag = SemanticVersionPreReleaseTag.Parse(parsed.Groups["Tag"].Value),
+                    BuildMetaData = semanticVersionBuildMetaData
+                };
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{version} did not match a known SemVer format.");
+                Console.WriteLine(e);
                 semanticVersion = null;
                 return false;
             }
-            
-            version = match.Groups["version"].Value;
-            var parsed = ParseSemVer.Match(version);
-
-            if (!parsed.Success)
-            {
-                semanticVersion = null;
-                return false;
-            }
-
-            var semanticVersionBuildMetaData = SemanticVersionBuildMetaData.Parse(parsed.Groups["BuildMetaData"].Value);
-            var fourthPart = parsed.Groups["FourthPart"];
-            if (fourthPart.Success && semanticVersionBuildMetaData.CommitsSinceTag == null)
-            {
-                semanticVersionBuildMetaData.CommitsSinceTag = int.Parse(fourthPart.Value);
-            }
-
-            semanticVersion = new SemanticVersion
-            {
-                Major = int.Parse(parsed.Groups["Major"].Value),
-                Minor = parsed.Groups["Minor"].Success ? int.Parse(parsed.Groups["Minor"].Value) : 0,
-                Patch = parsed.Groups["Patch"].Success ? int.Parse(parsed.Groups["Patch"].Value) : 0,
-                PreReleaseTag = SemanticVersionPreReleaseTag.Parse(parsed.Groups["Tag"].Value),
-                BuildMetaData = semanticVersionBuildMetaData
-            };
-
-            return true;
         }
 
         public int CompareTo(SemanticVersion value)
