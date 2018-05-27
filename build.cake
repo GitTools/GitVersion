@@ -23,7 +23,7 @@ string buildDir = "./build/";
 void Build(string configuration, string nugetVersion, string semVersion, string version, string preReleaseTag)
 {
 
-    DotNetBuild("./src/GitVersion.sln", settings =>
+    MSBuild("./src/GitVersion.sln", settings =>
 	{
 	 settings.SetConfiguration(configuration)
         .SetVerbosity(Verbosity.Minimal)
@@ -142,8 +142,9 @@ Task("Run-Tests")
 {	
      var settings = new DotNetCoreTestSettings
      {
-         Configuration = configuration,
-		 NoBuild = true,		
+        Configuration = configuration,
+        NoBuild = true,
+        Filter = "TestCategory!=NoMono"		
      };
 
      DotNetCoreTest("./src/GitVersionCore.Tests/GitVersionCore.Tests.csproj", settings);
@@ -473,8 +474,6 @@ Task("Upload-AppVeyor-Artifacts")
 {  
 	Error(exception.Dump());
 });
-
-
 
 Task("Travis")
   .IsDependentOn("Run-Tests");

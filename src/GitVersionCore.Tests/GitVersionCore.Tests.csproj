@@ -41,7 +41,7 @@
     <PackageReference Include="NSubstitute" Version="1.10.0.0" />
     <PackageReference Include="NUnit" Version="3.9.0" />
     <packagereference Include="NUnit3TestAdapter" Version="3.9.0"></packagereference>
-    <PackageReference Include="Shouldly" Version="2.8.3" />
+    <PackageReference Include="Shouldly" Version="3.0.0" />
     <PackageReference Include="TestStack.ConventionTests" Version="3.0.0" />
     <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />  
   </ItemGroup>
