@@ -52,10 +52,22 @@ public class SemanticVersionTests
 
     [TestCase("someText")]
     [TestCase("some-T-ext")]
+    [TestCase(null)]
     public void ValidateInvalidVersionParsing(string versionString)
     {
         SemanticVersion version;
         Assert.IsFalse(SemanticVersion.TryParse(versionString, null, out version), "TryParse Result");
+    }
+
+    [TestCase("2.0.15.123626262626262626262")]
+    public void ValidateSalvagedVersionParsing(string versionString)
+    {
+        SemanticVersion version;
+        SemanticVersion expected = new SemanticVersion(2, 0, 15);
+        Assert.IsTrue(SemanticVersion.TryParse(versionString, null, out version), "TryParse Result");
+        Assert.AreEqual(expected.Major, version.Major);
+        Assert.AreEqual(expected.Minor, version.Minor);
+        Assert.AreEqual(expected.Patch, version.Patch);
     }
 
     [Test]

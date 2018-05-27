@@ -171,14 +171,24 @@ namespace GitVersion
                 var fourthPart = parsed.Groups["FourthPart"];
                 if (fourthPart.Success && semanticVersionBuildMetaData.CommitsSinceTag == null)
                 {
-                    semanticVersionBuildMetaData.CommitsSinceTag = int.Parse(fourthPart.Value);
+                    int commitsSinceTag;
+                    int.TryParse(fourthPart.Value, out commitsSinceTag);
+
+                    semanticVersionBuildMetaData.CommitsSinceTag = commitsSinceTag;
                 }
+
+                int major;
+                int minor;
+                int patch;
+                int.TryParse(parsed.Groups["Major"].Value, out major);
+                int.TryParse(parsed.Groups["Minor"].Value, out minor);
+                int.TryParse(parsed.Groups["Patch"].Value, out patch);
 
                 semanticVersion = new SemanticVersion
                 {
-                    Major = int.Parse(parsed.Groups["Major"].Value),
-                    Minor = parsed.Groups["Minor"].Success ? int.Parse(parsed.Groups["Minor"].Value) : 0,
-                    Patch = parsed.Groups["Patch"].Success ? int.Parse(parsed.Groups["Patch"].Value) : 0,
+                    Major = major,
+                    Minor = parsed.Groups["Minor"].Success ? minor : 0,
+                    Patch = parsed.Groups["Patch"].Success ? patch : 0,
                     PreReleaseTag = SemanticVersionPreReleaseTag.Parse(parsed.Groups["Tag"].Value),
                     BuildMetaData = semanticVersionBuildMetaData
                 };
