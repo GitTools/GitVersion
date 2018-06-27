@@ -85,14 +85,17 @@
         {
             switch (Language)
             {
-                case "C#":
-                    return "cs";
+                case SupportedLanguageConstants.CSHARP:
+                    return SupportedLanguageConstants.FILEEXTENSION_CSHARP;
 
-                case "F#":
-                    return "fs";
+                case SupportedLanguageConstants.FSHARP:
+                    return SupportedLanguageConstants.FILEEXTENSION_FSHARP;
 
-                case "VB":
-                    return "vb";
+                case SupportedLanguageConstants.VBDOTNET:
+                    return SupportedLanguageConstants.FILEEXTENSION_VBDOTNET;
+
+                case SupportedLanguageConstants.CPLUSPLUS:
+                    return SupportedLanguageConstants.FILEEXTENSION_CPLUSPLUS;
 
                 default:
                     throw new Exception($"Unknown language detected: '{Language}'");

@@ -67,6 +67,8 @@
     <Compile Include="BuildLogger.cs" />
     <Compile Include="GenerateGitVersionInformation.cs" />
     <Compile Include="GitVersionTaskBase.cs" />
+    <Compile Include="SupportedLanguageConstants.cs" />
+    <Compile Include="UpdateNativeVersionHeader.cs" />
     <Compile Include="WriteVersionInfoToBuildLog.cs" />
     <Compile Include="GetVersion.cs" />
     <Compile Include="InvalidFileChecker.cs" />

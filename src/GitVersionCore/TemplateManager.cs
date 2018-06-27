@@ -6,13 +6,14 @@
     using System.Linq;
     using GitVersionCore.Extensions;
 
-    enum TemplateType
+    public enum TemplateType
     {
         VersionAssemblyInfoResources,
-        GitVersionInformationResources
+        GitVersionInformationResources,
+        NativeHeader,
     }
 
-    class TemplateManager
+    public class TemplateManager
     {
         readonly Dictionary<string, string> templates;
         readonly Dictionary<string, string> addFormats;

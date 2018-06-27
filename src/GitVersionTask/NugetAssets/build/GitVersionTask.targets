@@ -3,6 +3,10 @@
   <PropertyGroup>
     <GitVersion_Task_targets_Imported>True</GitVersion_Task_targets_Imported>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(MSBuildProjectExtension)' == '.vcxproj' ">
+    <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">false</UpdateAssemblyInfo>
+    <UpdateNativeHeader Condition=" '$(UpdateNativeHeader)' == '' ">true</UpdateNativeHeader>
+  </PropertyGroup>
   <PropertyGroup>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)\..\</SolutionDir>
     <GitVersionPath Condition="'$(GitVersionPath)' == '' And '$(GitVersionUseSolutionDir)' == 'true'">$(SolutionDir)</GitVersionPath>
@@ -21,6 +25,8 @@
     <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' and '$(TargetFramework)' != '' ">false</UpdateAssemblyInfo>
     <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' and '$(NCrunch)' != '' ">false</UpdateAssemblyInfo>
     <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
+
+    <UpdateNativeHeader Condition=" '$(UpdateNativeHeader)' == '' ">false</UpdateNativeHeader>
 
     <!-- Property that enables GenerateGitVersionInformation -->
     <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' and '$(NCrunch)' != '' ">false</GenerateGitVersionInformation>
@@ -41,6 +47,9 @@
 
   <UsingTask
       TaskName="GitVersionTask.UpdateAssemblyInfo"
+      AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll" />
+  <UsingTask
+      TaskName="GitVersionTask.UpdateNativeVersionHeader"
       AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll" />
   <UsingTask
      TaskName="GitVersionTask.GenerateGitVersionInformation"
@@ -76,7 +85,25 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="GenerateGitVersionInformation" BeforeTargets="CoreCompile" Condition="$(GenerateGitVersionInformation) == 'true'">
+  <Target Name="UpdateNativeHeader" BeforeTargets="CoreCompile;ClCompile" Condition="$(UpdateNativeHeader) == 'true'">
+    <UpdateNativeVersionHeader
+      SolutionDirectory="$(GitVersionPath)"
+      NoFetch="$(GitVersion_NoFetchEnabled)"
+      ProjectFile="$(MSBuildProjectFullPath)"
+      IntermediateOutputPath="$(ProjectDir)"
+      Language="$(Language)"
+      CompileFiles ="@(Compile)">
+      <Output
+        TaskParameter="HeaderTempFilePath"
+        PropertyName="HeaderTempFilePath" />
+    </UpdateNativeVersionHeader>
+
+    <ItemGroup>
+      <Compile Include="$(AssemblyInfoTempFilePath)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GenerateGitVersionInformation" BeforeTargets="CoreCompile;ClCompile" Condition="$(GenerateGitVersionInformation) == 'true'">
     <GenerateGitVersionInformation
     SolutionDirectory="$(GitVersionPath)"
     NoFetch="$(GitVersion_NoFetchEnabled)"
@@ -94,7 +121,7 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="GetVersion" BeforeTargets="CoreCompile;GetAssemblyVersion;GenerateNuspec;_GenerateRestoreProjectSpec;EnsureWixToolsetInstalled" Condition="$(GetVersion) == 'true'">
+  <Target Name="GetVersion" BeforeTargets="ClCompile;CoreCompile;GetAssemblyVersion;GenerateNuspec;_GenerateRestoreProjectSpec;EnsureWixToolsetInstalled" Condition="$(GetVersion) == 'true'">
 
     <GetVersion SolutionDirectory="$(GitVersionPath)" NoFetch="$(GitVersion_NoFetchEnabled)">
       <Output TaskParameter="Major" PropertyName="GitVersion_Major" />
