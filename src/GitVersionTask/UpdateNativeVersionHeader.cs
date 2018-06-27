@@ -17,12 +17,14 @@ namespace GitVersionTask
 
         public UpdateNativeVersionHeader()
         {
-#if DEBUG
+/*
+ #if DEBUG
             if (!System.Diagnostics.Debugger.IsAttached)
             {
                 System.Diagnostics.Debugger.Launch();
             }
 #endif
+*/
 
             logger = new TaskLogger(this);
             Logger.SetLoggers(this.LogDebug, this.LogInfo, this.LogWarning, s => this.LogError(s));
