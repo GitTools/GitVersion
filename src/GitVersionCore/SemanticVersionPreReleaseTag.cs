@@ -1,10 +1,11 @@
+using System;
+using System.Linq;
+using System.Text.RegularExpressions;
+
 namespace GitVersion
 {
-    using System;
-    using System.Linq;
-    using System.Text.RegularExpressions;
 
-    public class SemanticVersionPreReleaseTag : 
+    public class SemanticVersionPreReleaseTag :
         IFormattable, IComparable<SemanticVersionPreReleaseTag>, IEquatable<SemanticVersionPreReleaseTag>
     {
         static LambdaEqualityHelper<SemanticVersionPreReleaseTag> equalityHelper =
@@ -71,7 +72,7 @@ namespace GitVersion
 
         public static bool operator <=(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)
         {
-            return StringComparer.InvariantCultureIgnoreCase.Compare(left.Name, right.Name) != 1;
+            return StringComparerUtils.IngoreCaseComparer.Compare(left.Name, right.Name) != 1;
         }
 
         public static implicit operator string(SemanticVersionPreReleaseTag preReleaseTag)
@@ -99,7 +100,7 @@ namespace GitVersion
             }
 
             var value = match.Groups["name"].Value;
-            var number = match.Groups["number"].Success ? int.Parse(match.Groups["number"].Value) : (int?) null;
+            var number = match.Groups["number"].Success ? int.Parse(match.Groups["number"].Value) : (int?)null;
             if (value.EndsWith("-"))
                 return new SemanticVersionPreReleaseTag(preReleaseTag, null);
 
@@ -117,7 +118,8 @@ namespace GitVersion
                 return -1;
             }
 
-            var nameComparison = StringComparer.InvariantCultureIgnoreCase.Compare(Name, other.Name);
+
+            var nameComparison = StringComparerUtils.IngoreCaseComparer.Compare(Name, other.Name);
             if (nameComparison != 0)
                 return nameComparison;
 

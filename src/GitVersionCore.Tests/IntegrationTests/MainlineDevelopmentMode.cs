@@ -8,7 +8,7 @@ using LibGit2Sharp;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-public class MainlineDevelopmentMode
+public class MainlineDevelopmentMode : TestBase
 {
     private Config config = new Config
     {

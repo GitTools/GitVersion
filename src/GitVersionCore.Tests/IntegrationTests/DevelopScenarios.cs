@@ -6,7 +6,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 
 [TestFixture]
-public class DevelopScenarios
+public class DevelopScenarios : TestBase
 {
     [Test]
     public void WhenDevelopHasMultipleCommits_SpecifyExistingCommitId()

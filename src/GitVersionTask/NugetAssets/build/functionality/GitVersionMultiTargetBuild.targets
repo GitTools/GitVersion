@@ -1,63 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <GitVersion_Task_targets_Imported>True</GitVersion_Task_targets_Imported>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)\..\</SolutionDir>
-    <GitVersionPath Condition="'$(GitVersionPath)' == '' And '$(GitVersionUseSolutionDir)' == 'true'">$(SolutionDir)</GitVersionPath>
-    <GitVersionPath Condition="'$(GitVersionPath)' == ''">$(MSBuildProjectDirectory)</GitVersionPath>
-    <GitVersionCustomizeTargetFile Condition="'$(GitVersionCustomizeTargetFile)' == '' And Exists('$(MSBuildProjectDirectory)\GitVersionTask.targets')">$(SolutionDir)\GitVersionTask.targets</GitVersionCustomizeTargetFile>
-    <GitVersionCustomizeTargetFile Condition="'$(GitVersionCustomizeTargetFile)' == '' And '$(SolutionDir)' != '' And Exists('$(SolutionDir)\GitVersionTask.targets')">$(SolutionDir)\GitVersionTask.targets</GitVersionCustomizeTargetFile>
-    <GitVersionCustomizeTargetFile Condition="'$(GitVersionCustomizeTargetFile)' == ''"></GitVersionCustomizeTargetFile>
-    <GitVersion_NoFetchEnabled Condition="$(GitVersion_NoFetchEnabled) == ''">false</GitVersion_NoFetchEnabled>
-
-    <!-- Property that enables WriteVersionInfoToBuildLog -->
-    <WriteVersionInfoToBuildLog Condition=" '$(WriteVersionInfoToBuildLog)' == '' and '$(NCrunch)' != '' ">false</WriteVersionInfoToBuildLog>
-    <WriteVersionInfoToBuildLog Condition=" '$(WriteVersionInfoToBuildLog)' == '' ">true</WriteVersionInfoToBuildLog>
-
-    <!-- Property that enables UpdateAssemblyInfo. Default to off for SDK builds -->
-    <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' and '$(TargetFramework)' != '' ">false</UpdateAssemblyInfo>
-    <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' and '$(NCrunch)' != '' ">false</UpdateAssemblyInfo>
-    <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
-
-    <!-- Property that enables GenerateGitVersionInformation -->
-    <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' and '$(NCrunch)' != '' ">false</GenerateGitVersionInformation>
-    <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' ">true</GenerateGitVersionInformation>
-
-    <GetVersion Condition=" '$(GetVersion)' == '' and '$(NCrunch)' != '' ">false</GetVersion>
-    <GetVersion Condition=" '$(GetVersion)' == '' ">true</GetVersion>
-
-    <GetPackageVersionDependsOn>$(GetPackageVersionDependsOn);GetVersion</GetPackageVersionDependsOn>
-
-    <!-- Property that enables setting of Version -->
-    <UpdateVersionProperties Condition=" '$(UpdateVersionProperties)' == '' ">true</UpdateVersionProperties>
-    <UseFullSemVerForNuGet Condition=" '$(UseFullSemVerForNuGet)' == '' ">false</UseFullSemVerForNuGet>
-
-    <GitVersionTaskLibrary>$(MSBuildThisFileDirectory)..\build\</GitVersionTaskLibrary>
-  </PropertyGroup>
-
-  <UsingTask
-      TaskName="GitVersionTask.UpdateAssemblyInfo"
-      AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll" />
-  <UsingTask
-      TaskName="GitVersionTask.GenerateGitVersionInformation"
-      AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll" />
-  <UsingTask
-    TaskName="GitVersionTask.GetVersion"
-    AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll"  />
-  <UsingTask
-      TaskName="GitVersionTask.WriteVersionInfoToBuildLog"
-      AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll" />
-
-  <Import Project="$(GitVersionCustomizeTargetFile)" Condition="'$(GitVersionCustomizeTargetFile)' != '' and Exists('$(GitVersionCustomizeTargetFile)')" />
+  <Import Project="$(MSBuildThisFileDirectory)GitVersionCommon.props"/>  
 
   <Target Name="WriteVersionInfoToBuildLog" BeforeTargets="DispatchToInnerBuilds;GenerateNuspec;_GenerateRestoreProjectSpec" Condition="$(WriteVersionInfoToBuildLog) == 'true'">
     <WriteVersionInfoToBuildLog SolutionDirectory="$(GitVersionPath)" NoFetch="$(GitVersion_NoFetchEnabled)"/>
   </Target>
 
   <Target Name="GetVersion" BeforeTargets="DispatchToInnerBuilds;GenerateNuspec" Condition="$(GetVersion) == 'true'">
-
     <GetVersion SolutionDirectory="$(GitVersionPath)" NoFetch="$(GitVersion_NoFetchEnabled)">
       <Output TaskParameter="Major" PropertyName="GitVersion_Major" />
       <Output TaskParameter="Minor" PropertyName="GitVersion_Minor" />

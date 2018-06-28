@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 
 using GitVersion;
-
+using GitVersionCore.Tests;
 using NUnit.Framework;
 
 using Shouldly;
@@ -12,7 +12,7 @@ using Shouldly;
 using YamlDotNet.Serialization;
 
 [TestFixture]
-public class DocumentationTests
+public class DocumentationTests : TestBase
 {
     private DirectoryInfo docsDirectory;
 

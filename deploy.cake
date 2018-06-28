@@ -80,11 +80,13 @@ Task("DownloadGitHubReleaseArtifacts")
         // Have had missing artifacts before, lets fail early in that scenario
         if (!artifactLookup.ContainsKey("NuGetRefBuild")) { throw new Exception("NuGetRefBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("NuGetCommandLineBuild")) { throw new Exception("NuGetCommandLineBuild artifact missing"); }
+		if (!artifactLookup.ContainsKey("NuGetExeDotNetCoreBuild")) { throw new Exception("NuGetExeDotNetCoreBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("NuGetTaskBuild")) { throw new Exception("NuGetTaskBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("NuGetExeBuild")) { throw new Exception("NuGetExeBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("GemBuild")) { throw new Exception("GemBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("GitVersionTfsTaskBuild")) { throw new Exception("GitVersionTfsTaskBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("zip")) { throw new Exception("zip artifact missing"); }
+		if (!artifactLookup.ContainsKey("zip-dotnetcore")) { throw new Exception("zip-dotnetcore artifact missing"); }		
     });
 
 Task("Publish-NuGetPackage")
@@ -110,6 +112,23 @@ Task("Publish-NuGetCommandLine")
 {
     NuGetPush(
         "./releaseArtifacts/" + artifactLookup["NuGetCommandLineBuild"],
+        new NuGetPushSettings {
+            ApiKey = EnvironmentVariable("NuGetApiKey"),
+            Source = "https://www.nuget.org/api/v2/package"
+        });
+})
+.OnError(exception =>
+{
+    Information("Publish-NuGet Task failed, but continuing with next Task...");
+    publishingError = true;
+});
+
+Task("Publish-NuGetExeDotNetCore")
+    .IsDependentOn("DownloadGitHubReleaseArtifacts")
+    .Does(() =>
+{
+    NuGetPush(
+        "./releaseArtifacts/" + artifactLookup["NuGetExeDotNetCoreBuild"],
         new NuGetPushSettings {
             ApiKey = EnvironmentVariable("NuGetApiKey"),
             Source = "https://www.nuget.org/api/v2/package"
@@ -187,37 +206,61 @@ Task("Publish-VstsTask")
     }
 });
 
-
-Task("Publish-DockerImage")
-    .IsDependentOn("DownloadGitHubReleaseArtifacts")
-    .Does(() =>
+// PublishDocker("gittools/gitversion", tag, "content.zip", "/some/path/DockerFile");	
+bool PublishDocker(string name, tagName, contentZip, dockerFilePath, containerVolume)
 {
+    Information("Starting Docker Build for Image: " + name);
+
     var username = EnvironmentVariable("DOCKER_USERNAME");
     var password = EnvironmentVariable("DOCKER_PASSWORD");
-    if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+
+	if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
     {
         Warning("Skipping docker publish due to missing credentials");
-        return;
+        return false;
     }
 
-    var returnCode = StartProcess("docker", new ProcessSettings
+	// copy the docker file to a build directory, along with the contents of the specified content.zip.
+	// This directory should then contain all we need for the docker build.
+	var dockerBuildFolder = "./build/Docker/";
+	CreateDirectory(dockerBuildFolder);
+
+	//var folderName = name.Replace("/", "-");
+	var dockerFileBuildFolder = dockerBuildFolder + name;
+	CreateDirectory(dockerFileBuildFolder);
+	
+	Information("Copying docker file to " + dockerFileBuildFolder);	
+	CopyFiles(dockerFilePath, dockerFileBuildFolder);
+
+	var contentPath = "/content";
+	var contentFolder = dockerFileBuildFolder + contentPath;
+
+	Information("Extracting docker image content to " + contentFolder);
+	Unzip(contentZip, contentFolder);		
+
+	var dockerFilePathForBuild = dockerFileBuildFolder + "/DockerFile";
+	Information("Beginning Docker Build command for " + dockerFilePathForBuild);
+
+	var returnCode = StartProcess("docker", new ProcessSettings
     {
-        Arguments = "build . --build-arg GitVersionZip=" + artifactLookup["zip"] + " --tag gittools/gitversion:" + tag
+        Arguments = "build -f " + dockerFilePathForBuild + " " + dockerFileBuildFolder + " --build-arg contentFolder=" + contentPath + " --tag " + name + ":" + tagName
     });
+
     if (returnCode != 0) {
         Information("Publish-DockerImage Task failed to build image, but continuing with next Task...");
         publishingError = true;
-        return;
+        return false;
     }
 
     returnCode = StartProcess("docker", new ProcessSettings
     {
-        Arguments = "run -v " + System.IO.Directory.GetCurrentDirectory() + ":/repo gittools/gitversion:" + tag
+        Arguments = "run -v " + System.IO.Directory.GetCurrentDirectory() + ":" + containerVolume + " " + name + ":" + tag
     });
+
     if (returnCode != 0) {
         Information("Publish-DockerImage Task failed to run built image, but continuing with next Task...");
         publishingError = true;
-        return;
+        return false;
     }
 
     // Login to dockerhub
@@ -228,38 +271,50 @@ Task("Publish-DockerImage")
     if (returnCode != 0) {
         Information("Publish-DockerImage Task failed to login, but continuing with next Task...");
         publishingError = true;
-        return;
+        return false;
     }
 
     // Publish Tag
     returnCode = StartProcess("docker", new ProcessSettings
     {
-        Arguments = "push gittools/gitversion:" + tag
+        Arguments = "push " + name + ":" + tag
     });
     if (returnCode != 0) {
         Information("Publish-DockerImage Task failed push version tag, but continuing with next Task...");
         publishingError = true;
-        return;
+        return false;
     }
 
     // Publish latest
     returnCode = StartProcess("docker", new ProcessSettings
     {
-        Arguments = "tag gittools/gitversion:" + tag + " gittools/gitversion:latest"
+        Arguments = "tag " + name + ":" + tag + " " + name + ":latest"
     });
     if (returnCode != 0) {
         Information("Publish-DockerImage Task failed latest tag, but continuing with next Task...");
-        publishingError = true;
+        publishingError = true;		
     }
+
     returnCode = StartProcess("docker", new ProcessSettings
     {
-        Arguments = "push gittools/gitversion:latest"
+        Arguments = "push " + name + ":latest"
     });
     if (returnCode != 0) {
         Information("Publish-DockerImage Task failed latest tag, but continuing with next Task...");
         publishingError = true;
+		return false;
     }
+
+}
+
+Task("Publish-DockerImage")
+    .IsDependentOn("DownloadGitHubReleaseArtifacts")
+    .Does(() =>
+{            
+   	PublishDocker("gittools/gitversion", tag, artifactLookup["zip"], "src/Docker/Mono/DockerFile", "/repo");	
+	PublishDocker("gittools/gitversion-dotnetcore", tag, artifactLookup["zip-dotnetcore"], "src/Docker/DotNetCore/DockerFile", "c:/repo");	    
 });
+
 
 Task("Deploy")
   .IsDependentOn("Publish-NuGetPackage")

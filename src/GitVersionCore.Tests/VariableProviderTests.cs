@@ -5,8 +5,9 @@ using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class VariableProviderTests
-{
+public class VariableProviderTests : TestBase
+{   
+
     [SetUp]
     public void Setup()
     {

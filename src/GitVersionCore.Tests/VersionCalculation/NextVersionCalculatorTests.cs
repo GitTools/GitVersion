@@ -10,7 +10,7 @@
     using NUnit.Framework;
     using Shouldly;
 
-    public class NextVersionCalculatorTests
+    public class NextVersionCalculatorTests : TestBase
     {
         [Test]
         public void ShouldIncrementVersionBasedOnConfig()

@@ -36,14 +36,7 @@ public class MockQueryableCommitLog : IQueryableCommitLog
     {
         throw new NotImplementedException();
     }
-
-#pragma warning disable CS0618 // Type or member is obsolete
-    public IEnumerable<LogEntry> QueryBy(string path, FollowFilter filter)
-#pragma warning restore CS0618 // Type or member is obsolete
-    {
-        throw new NotImplementedException();
-    }
-
+    
     public Commit FindMergeBase(Commit first, Commit second)
     {
         return null;

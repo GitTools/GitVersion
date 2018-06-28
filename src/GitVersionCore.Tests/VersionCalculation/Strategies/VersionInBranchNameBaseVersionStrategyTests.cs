@@ -9,7 +9,7 @@
     using Shouldly;
 
     [TestFixture]
-    public class VersionInBranchNameBaseVersionStrategyTests
+    public class VersionInBranchNameBaseVersionStrategyTests : TestBase
     {
         [Test]
         [TestCase("release-2.0.0", "2.0.0")]
