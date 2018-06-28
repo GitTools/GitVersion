@@ -1,15 +1,17 @@
 language: csharp
-sudo: false
+sudo: required
+dist: trusty
+dotnet: 2.1.105
 mono:
   - latest
 os:
   - linux
   - osx
 before_install:
-  - git fetch --unshallow # Travis always does a shallow clone, but GitVersion needs the full history including branches and tags
+  - git fetch --unshallow # Travis always does a shallow clone, but GitVersion needs the full history including branches and tags 
 script:
-  - ./build.sh
-cache:
-  directories:
-    - src/packages
-    - tools
+  - ./build.sh -v Diagnostic
+env:
+  global:
+    - DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true

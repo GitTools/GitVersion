@@ -1,6 +1,7 @@
 ﻿using GitTools.Testing;
 using GitVersion;
 using GitVersion.Helpers;
+using GitVersionCore.Tests;
 using NUnit.Framework;
 using Shouldly;
 using System;
@@ -8,7 +9,7 @@ using System.IO;
 using System.Text;
 
 [TestFixture]
-public class ExecuteCoreTests
+public class ExecuteCoreTests : TestBase
 {
     IFileSystem fileSystem;
 

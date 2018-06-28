@@ -1,12 +1,10 @@
 FROM gittools/libgit2sharp-mono
 
 MAINTAINER GitTools Maintainers <jake@ginnivan.net>
-ARG GitVersionZip
+ARG contentFolder
 
-# Add GitVersion
-
-ADD ./releaseArtifacts/$GitVersionZip .
-RUN unzip -d /usr/lib/GitVersion/ $GitVersionZip && rm $GitVersionZip
+# Copy GitVersion
+COPY $contentFolder /usr/lib/GitVersion/
 WORKDIR /usr/lib/GitVersion/
 
 # Libgit2 can't resolve relative paths, patch to absolute path

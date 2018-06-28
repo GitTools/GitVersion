@@ -8,7 +8,7 @@
     using Shouldly;
 
     [TestFixture]
-    public class MergeMessageBaseVersionStrategyTests
+    public class MergeMessageBaseVersionStrategyTests : TestBase
     {
         [Test]
         public void ShouldNotAllowIncrementOfVersion()
