@@ -402,8 +402,9 @@ Task("Create-Release-Notes")
     if(!string.IsNullOrWhiteSpace(githubToken))
     {
         IEnumerable<string> redirectedOutput;
+		var gitReleasNotesExePath = Context.Tools.Resolve("GitReleaseNotes.exe");
         var releaseNotesExitCode = StartProcess(
-                @"tools\GitReleaseNotes\GitReleaseNotes\tools\gitreleasenotes.exe",
+                gitReleasNotesExePath,
                 new ProcessSettings {
                     Arguments = ". /o build/releasenotes.md /repoToken " + githubToken,
                     RedirectStandardOutput = true
