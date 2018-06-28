@@ -231,6 +231,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             branchConfig.TracksReleaseBranches = branchConfig.TracksReleaseBranches ?? tracksReleaseBranches;
             branchConfig.IsReleaseBranch = branchConfig.IsReleaseBranch ?? isReleaseBranch;
             branchConfig.IsMainline = branchConfig.IsMainline ?? isMainline;
+            branchConfig.PreReleaseWeight = branchConfig.PreReleaseWeight ?? 0;
         }
 
         static Config ReadConfig(string workingDirectory, IFileSystem fileSystem)

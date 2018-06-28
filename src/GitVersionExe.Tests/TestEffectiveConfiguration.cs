@@ -40,7 +40,7 @@ namespace GitVersionExe.Tests
                     majorMessage, minorMessage, patchMessage, noBumpMessage,
                     commitMessageMode, legacySemVerPadding, buildMetaDataPadding, commitsSinceVersionSourcePadding,
                     versionFilters ?? Enumerable.Empty<IVersionFilter>(),
-                    tracksReleaseBranches, isRelease, commitDateFormat)
+                    tracksReleaseBranches, isRelease, commitDateFormat, 0)
 
         {
         }

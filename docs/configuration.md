@@ -206,6 +206,7 @@ branches:
     track-merge-target: false
     tracks-release-branches: false
     is-release-branch: true
+    pre-release-weight: 1000
   feature:
     regex: ^features?[/-]
     mode: ContinuousDelivery
@@ -385,3 +386,6 @@ Indicates this branch config represents a release branch in GitFlow.
 
 ### is-mainline
 When using Mainline mode, this indicates that this branch is a mainline. By default support/ and master are mainlines.
+
+### pre-release-weight
+Provides a way to translate the `PreReleaseLabel` ([variables](/more-info/variables)) to a numeric value in order to avoid version collisions across different branches. For example, a release branch created after "1.2.3-alpha.55" results in "1.2.3-beta.1" and thus e.g. "1.2.3-alpha.4" and "1.2.3-beta.4" would have the same file version: "1.2.3.4". Related Issues [1145](https://github.com/GitTools/GitVersion/issues/1145), [1366](https://github.com/GitTools/GitVersion/issues/1366)

@@ -623,4 +623,31 @@ public class ReleaseBranchScenarios : TestBase
             fixture.AssertFullSemver(config, "4.5.0-beta.2");
         }
     }
+    
+    [Test]
+    public void AssemblySemFileVerShouldBeWeightedByPreReleaseWeight()
+    {
+        var config = new Config
+        {
+            AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
+            Branches =
+            {
+                { "release", new BranchConfig
+                    {
+                        PreReleaseWeight = 1000
+                    }
+                }
+            }
+        };
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.3");
+            fixture.Repository.MakeCommits(5);
+            fixture.Repository.CreateBranch("release-2.0.0");
+            fixture.Checkout("release-2.0.0");
+            ConfigurationProvider.ApplyDefaultsTo(config);
+            var variables = fixture.GetVersion(config);
+            Assert.AreEqual(variables.AssemblySemFileVer, "2.0.0.1001");
+        }
+    }
 }
