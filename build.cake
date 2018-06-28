@@ -403,7 +403,7 @@ Task("Create-Release-Notes")
     {
         IEnumerable<string> redirectedOutput;
         var releaseNotesExitCode = StartProcess(
-                @"tools\GitReleaseNotes\tools\gitreleasenotes.exe",
+                @"tools\GitReleaseNotes\GitReleaseNotes\tools\gitreleasenotes.exe",
                 new ProcessSettings {
                     Arguments = ". /o build/releasenotes.md /repoToken " + githubToken,
                     RedirectStandardOutput = true
