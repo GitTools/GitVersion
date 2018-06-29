@@ -105,5 +105,39 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-
+  <ItemGroup>
+    <EmbeddedResource Include="GitVersionInformationResources\AddFormats\GitVersionInformation.h" />
+    <EmbeddedResource Include="GitVersionInformationResources\Templates\GitVersionInformation.h" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets'))" />
+    <Error Condition="!Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.160\build\LibGit2Sharp.NativeBinaries.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.NativeBinaries.1.0.160\build\LibGit2Sharp.NativeBinaries.props'))" />
+    <Error Condition="!Exists('..\packages\Fody.2.0.8\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.2.0.8\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
+  </Target>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <Target Name="Clean">
+    <ItemGroup>
+      <RefFilesToDelete Include="$(BuildDir)NuGetRefBuild\**\*.*" />
+    </ItemGroup>
+    <Delete Files="@(RefFilesToDelete)" />
+  </Target>
+  <Target Name="AfterBuild" DependsOnTargets="Clean">
+    <!-- NugetRefBuild -->
+    <MakeDir Directories="$(SolutionDir)NuGetRefBuild\lib\Net45" />
+    <Copy SourceFiles="$(OutputPath)GitVersionCore.dll" DestinationFolder="$(BuildDir)NuGetRefBuild\lib\Net45" />
+    <Copy SourceFiles="$(OutputPath)GitVersionCore.pdb" DestinationFolder="$(BuildDir)NuGetRefBuild\lib\Net45" Condition="Exists('$(OutputPath)GitVersionCore.pdb')" />
+    <Copy SourceFiles="$(OutputPath)GitVersionCore.dll.mdb" DestinationFolder="$(BuildDir)NuGetRefBuild\lib\Net45" Condition="Exists('$(OutputPath)GitVersionCore.dll.mdb')" />
+    <Copy SourceFiles="$(OutputPath)GitVersionCore.xml" DestinationFolder="$(BuildDir)NuGetRefBuild\lib\Net45" />
+    <Copy SourceFiles="$(ProjectDir)NugetAssets\GitVersion.nuspec" DestinationFolder="$(BuildDir)NuGetRefBuild" />
+    <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(BuildDir)NuGetRefBuild" MetadataAssembly="$(OutputPath)GitVersionCore.dll" Version="$(GitVersion_NuGetVersion)" />
+  </Target>
+  <Import Project="..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets" Condition="Exists('..\packages\PepitaPackage.1.21.4\build\PepitaPackage.targets')" />
+  <Import Project="..\packages\Fody.2.0.8\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.2.0.8\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
 </Project>

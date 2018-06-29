@@ -92,8 +92,26 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-  </ItemGroup> 
-  
+    <Reference Include="YamlDotNet, Version=3.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YamlDotNet.3.8.0\lib\net35\YamlDotNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BuildLogger.cs" />
+    <Compile Include="GenerateGitVersionInformation.cs" />
+    <Compile Include="GitVersionTaskBase.cs" />
+    <Compile Include="SupportedLanguageConstants.cs" />
+    <Compile Include="UpdateNativeVersionHeader.cs" />
+    <Compile Include="WriteVersionInfoToBuildLog.cs" />
+    <Compile Include="GetVersion.cs" />
+    <Compile Include="InvalidFileChecker.cs" />
+    <Compile Include="TaskLogger.cs" />
+    <Compile Include="TempFileTracker.cs" />
+    <Compile Include="UpdateAssemblyInfo.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+  </ItemGroup>
+
   <ItemGroup>
     <None Include="app.config" />
     <None Include="key.snk" />
