@@ -73,12 +73,7 @@
         static IEnumerable<string> GetEmbeddedTemplates(TemplateType templateType, string templateCategory)
         {
 
-            Assembly assy = null;
-#if NETDESKTOP
-            assy = typeof(TemplateManager).Assembly;
-#else
-            assy = typeof(TemplateManager).GetTypeInfo().Assembly;
-#endif
+            Assembly assy = LoadPlatformSpecificTemplateManagerAssembly();
 
             foreach (var name in assy.GetManifestResourceNames())
             {
@@ -87,6 +82,15 @@
                     yield return name;
                 }
             }
+        }
+
+        static Assembly LoadPlatformSpecificTemplateManagerAssembly()
+        {
+#if NETDESKTOP
+            return typeof(TemplateManager).Assembly;
+#else
+            return typeof(TemplateManager).GetTypeInfo().Assembly;
+#endif
         }
     }
 }
