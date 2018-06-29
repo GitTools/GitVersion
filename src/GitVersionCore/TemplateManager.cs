@@ -7,13 +7,13 @@
     using GitVersionCore.Extensions;
     using System.Reflection;
 
-    enum TemplateType
+    public enum TemplateType
     {
         VersionAssemblyInfoResources,
-        GitVersionInformationResources
+        GitVersionInformationResources,
     }
 
-    class TemplateManager
+    public class TemplateManager
     {
         readonly Dictionary<string, string> templates;
         readonly Dictionary<string, string> addFormats;
