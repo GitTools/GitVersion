@@ -5,7 +5,7 @@ using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
-public class ReleaseBranchScenarios
+public class ReleaseBranchScenarios : TestBase
 {
     [Test]
     public void NoMergeBacksToDevelopInCaseThereAreNoChangesInReleaseBranch()

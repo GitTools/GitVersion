@@ -7,7 +7,9 @@
     {
         static List<IBuildServer> BuildServers = new List<IBuildServer>
         {
+#if NETDESKTOP
             new ContinuaCi(),
+#endif
             new TeamCity(),
             new AppVeyor(),
             new MyGet(),

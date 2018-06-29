@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace GitVersionCore.Tests
 {
     [TestFixture]
-    public class CommitDateTests
+    public class CommitDateTests : TestBase
     {
         [Test]
         [TestCase("yyyy-MM-dd", "2017-10-06")]

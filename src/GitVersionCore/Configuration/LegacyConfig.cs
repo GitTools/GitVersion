@@ -3,6 +3,7 @@ namespace GitVersion
     using System.Collections.Generic;
     using System.Linq;
     using YamlDotNet.Serialization;
+    using System.Reflection;
 
     /// <summary>
     /// Obsolete properties are added to this, so we can check to see if they are used and provide good error messages for migration
@@ -42,7 +43,9 @@ namespace GitVersion
 
         private T MergeObjects<T>(T target, T source)
         {
-            typeof(T).GetProperties()
+            
+            var typeInfo = typeof(T);
+            typeInfo.GetProperties()
                 .Where(prop => prop.CanRead && prop.CanWrite)
                 .Select(_ => new
                 {

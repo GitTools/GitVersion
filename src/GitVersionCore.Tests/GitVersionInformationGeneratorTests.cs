@@ -11,7 +11,7 @@ using Shouldly;
 namespace GitVersionCore.Tests
 {
     [TestFixture]
-    public class GitVersionInformationGeneratorTests
+    public class GitVersionInformationGeneratorTests : TestBase
     {
         [SetUp]
         public void Setup()

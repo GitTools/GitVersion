@@ -4,7 +4,7 @@ using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
-public class SwitchingToGitFlowScenarios
+public class SwitchingToGitFlowScenarios : TestBase
 {
     [Test]
     public void WhenDevelopBranchedFromMasterWithLegacyVersionTags_DevelopCanUseReachableTag()

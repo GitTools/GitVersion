@@ -3,10 +3,12 @@
   <PropertyGroup>
     <GitVersion_Task_targets_Imported>True</GitVersion_Task_targets_Imported>
   </PropertyGroup>
+  
   <PropertyGroup Condition=" '$(MSBuildProjectExtension)' == '.vcxproj' ">
     <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">false</UpdateAssemblyInfo>
     <UpdateNativeHeader Condition=" '$(UpdateNativeHeader)' == '' ">true</UpdateNativeHeader>
   </PropertyGroup>
+  
   <PropertyGroup>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)\..\</SolutionDir>
     <GitVersionPath Condition="'$(GitVersionPath)' == '' And '$(GitVersionUseSolutionDir)' == 'true'">$(SolutionDir)</GitVersionPath>
@@ -31,20 +33,17 @@
     <!-- Property that enables GenerateGitVersionInformation -->
     <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' and '$(NCrunch)' != '' ">false</GenerateGitVersionInformation>
     <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' ">true</GenerateGitVersionInformation>
-
-    <!-- Property that enables setting of Version -->
-    <UpdateVersionProperties Condition=" '$(UpdateVersionProperties)' == '' ">true</UpdateVersionProperties>
-    <UseFullSemVerForNuGet Condition=" '$(UseFullSemVerForNuGet)' == '' ">false</UseFullSemVerForNuGet>
-
-    <!-- Property that enables GetVersion -->
-    <GetVersion Condition=" '$(GetVersion)' == '' and '$(NCrunch)' != '' ">false</GetVersion>
-    <GetVersion Condition=" '$(GetVersion)' == '' ">true</GetVersion>
-
-    <GetPackageVersionDependsOn>$(GetPackageVersionDependsOn);GetVersion</GetPackageVersionDependsOn>
-
-    <GitVersionTaskLibrary>$(MSBuildThisFileDirectory)</GitVersionTaskLibrary>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <PathSeparators Include="/"/>
+    <PathSeparators Include="\"/>
+  </ItemGroup>
 
+  <PropertyGroup>
+    <GitVersionTaskBuildTools_IsMultiTargeting>false</GitVersionTaskBuildTools_IsMultiTargeting>
+    <GitVersionTaskBuildTools_IsMultiTargeting Condition="$(MSBuildThisFileDirectory.Substring($(MSBuildThisFileDirectory.LastIndexOfAny(@(PathSeparators)))).Substring(1).Contains('buildMultiTargeting'))">true</GitVersionTaskBuildTools_IsMultiTargeting>
+  </PropertyGroup>
   <UsingTask
       TaskName="GitVersionTask.UpdateAssemblyInfo"
       AssemblyFile="$(GitVersionTaskLibrary)GitVersionTask.dll" />
@@ -121,7 +120,7 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="GetVersion" BeforeTargets="ClCompile;CoreCompile;GetAssemblyVersion;GenerateNuspec;_GenerateRestoreProjectSpec;EnsureWixToolsetInstalled" Condition="$(GetVersion) == 'true'">
+  <Target Name="GetVersion" BeforeTargets="ClCompile;CoreCompile;GetAssemblyVersion;GenerateNuspec;_GenerateRestoreProjectSpec;EnsureWixToolsetInstalled;UpdateNativeHeader" Condition="$(GetVersion) == 'true'">
 
     <GetVersion SolutionDirectory="$(GitVersionPath)" NoFetch="$(GitVersion_NoFetchEnabled)">
       <Output TaskParameter="Major" PropertyName="GitVersion_Major" />
@@ -180,4 +179,8 @@
     </None>
   </ItemGroup>
 
+  <!-- Import infrastructure props for util pack. -->
+  <ImportGroup>
+    <Import Project="$(MSBuildThisFileDirectory)..\build\Infrastructure.props"/>
+  </ImportGroup>
 </Project>

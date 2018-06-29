@@ -1,9 +1,10 @@
 using System;
 using GitVersion;
+using GitVersionCore.Tests;
 using NUnit.Framework;
 
 [TestFixture]
-public class InformationalVersionBuilderTests
+public class InformationalVersionBuilderTests : TestBase
 {
     [TestCase("feature1", "a682956dc1a2752aa24597a0f5cd939f93614509", 1, 2, 3, "unstable", 1, "1.2.3-unstable+1.Branch.feature1.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]
     [TestCase("develop", "a682956dc1a2752aa24597a0f5cd939f93614509", 1, 2, 3, "alpha645", null, "1.2.3-alpha.645+Branch.develop.Sha.a682956dc1a2752aa24597a0f5cd939f93614509")]

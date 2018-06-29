@@ -10,7 +10,7 @@ using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class AssemblyInfoFileUpdaterTests
+public class AssemblyInfoFileUpdaterTests : TestBase
 {
     [SetUp]
     public void Setup()
@@ -424,7 +424,7 @@ public class AssemblyInfoFileUpdaterTests
             using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
                 assemblyInfoFileUpdater.Update();
-
+               
                 assemblyFileContent = fileSystem.ReadAllText(fileName);
                 assemblyFileContent.ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
             }

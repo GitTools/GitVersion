@@ -1,11 +1,13 @@
 ﻿namespace GitVersionTask
 {
     using System;
-    using System.ComponentModel;
     using System.IO;
+    using System.Text;
+
     using GitVersion;
     using GitVersion.Helpers;
     using Microsoft.Build.Framework;
+    using GitTools;
 
     public class UpdateAssemblyInfo : GitVersionTaskBase
     {
