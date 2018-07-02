@@ -23,6 +23,7 @@ branches:
     tracks-release-branches: true
     is-release-branch: false
     is-mainline: false
+    pre-release-weight: 0
   master:
     mode: ContinuousDelivery
     tag: ''
@@ -36,6 +37,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: true
+    pre-release-weight: 0
   release:
     mode: ContinuousDelivery
     tag: beta
@@ -51,6 +53,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: true
     is-mainline: false
+    pre-release-weight: 0
   feature:
     mode: ContinuousDelivery
     tag: useBranchName
@@ -68,6 +71,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
+    pre-release-weight: 0
   pull-request:
     mode: ContinuousDelivery
     tag: PullRequest
@@ -86,6 +90,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
+    pre-release-weight: 0
   hotfix:
     mode: ContinuousDelivery
     tag: beta
@@ -100,6 +105,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
+    pre-release-weight: 0
   support:
     mode: ContinuousDelivery
     tag: ''
@@ -112,6 +118,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: true
+    pre-release-weight: 0
 ignore:
   sha: []
 commit-date-format: yyyy-MM-dd
