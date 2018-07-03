@@ -1,5 +1,5 @@
 #tool "nuget:https://www.nuget.org/api/v2?package=NUnit.ConsoleRunner&version=3.7.0"
-#tool "nuget:https://www.nuget.org/api/v2?package=GitReleaseNotes&version=0.7.0"
+#tool "nuget:https://www.nuget.org/api/v2?package=GitReleaseNotes&version=0.7.1"
 #tool "nuget:https://www.nuget.org/api/v2?package=ILRepack&version=2.0.15"
 #addin "nuget:?package=Cake.Incubator"
 
