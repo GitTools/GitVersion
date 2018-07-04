@@ -403,6 +403,7 @@ Task("Create-Release-Notes")
     {
         IEnumerable<string> redirectedOutput;
 		var gitReleasNotesExePath = Context.Tools.Resolve("GitReleaseNotes.exe");
+        CreateDirectory(buildDir); 
         var releaseNotesExitCode = StartProcess(
                 gitReleasNotesExePath,
                 new ProcessSettings {
