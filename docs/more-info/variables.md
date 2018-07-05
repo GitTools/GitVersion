@@ -11,7 +11,7 @@ For the `release/3.0.0` branch of GitVersion it shows:
   "PreReleaseTagWithDash":"-beta.1",
   "PreReleaseLabel":"beta",
   "PreReleaseNumber":1,
-  "WeightedPreReleaseNumber":1001
+  "WeightedPreReleaseNumber":1001,
   "BuildMetaData":1,
   "BuildMetaDataPadded": "0001",
   "FullBuildMetaData":"1.Branch.release/3.0.0.Sha.28c853159a46b5a87e6cc9c4f6e940c59d6bc68a",
