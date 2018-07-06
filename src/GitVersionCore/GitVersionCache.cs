@@ -5,6 +5,7 @@ namespace GitVersion
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
     using YamlDotNet.Serialization;
 
     public class GitVersionCache
@@ -45,7 +46,7 @@ namespace GitVersion
             };
 
             var retryOperation = new OperationWithExponentialBackoff<IOException>(new ThreadSleep(), writeCacheOperation, maxRetries: 6);
-            retryOperation.Execute();
+            retryOperation.ExecuteAsync().Wait();
         }
 
         public static string GetCacheDirectory(GitPreparer gitPreparer)

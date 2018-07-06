@@ -1,9 +1,10 @@
+using GitTools;
 using GitVersion;
 using GitVersion.Helpers;
+using GitVersionCore.Tests;
 using NUnit.Framework;
 using Shouldly;
 using System;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -11,7 +12,7 @@ using System.Runtime.CompilerServices;
 using YamlDotNet.Serialization;
 
 [TestFixture]
-public class ConfigProviderTests
+public class ConfigProviderTests : TestBase
 {
     private const string DefaultRepoPath = "c:\\MyGitRepo";
     private const string DefaultWorkingPath = "c:\\MyGitRepo\\Working";
@@ -75,6 +76,17 @@ branches:
         config.Branches["develop"].Increment.ShouldBe(defaultConfig.Branches["develop"].Increment);
         config.Branches["develop"].VersioningMode.ShouldBe(defaultConfig.Branches["develop"].VersioningMode);
         config.Branches["develop"].Tag.ShouldBe("dev");
+    }
+
+    [Test]
+    public void AllBranchesModeWhenUsingMainline()
+    {
+        var defaultConfig = ConfigurationProvider.Provide(repoPath, fileSystem);
+        const string text = @"mode: Mainline";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        var branches = config.Branches.Select(x => x.Value);
+        branches.All(branch => branch.VersioningMode == VersioningMode.Mainline).ShouldBe(true);
     }
 
     [Test]

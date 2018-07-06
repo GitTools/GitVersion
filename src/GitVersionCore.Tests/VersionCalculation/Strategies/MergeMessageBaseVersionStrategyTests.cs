@@ -8,7 +8,7 @@
     using Shouldly;
 
     [TestFixture]
-    public class MergeMessageBaseVersionStrategyTests
+    public class MergeMessageBaseVersionStrategyTests : TestBase
     {
         [Test]
         public void ShouldNotAllowIncrementOfVersion()
@@ -54,10 +54,13 @@
         [TestCase("Merge pull request #95 in Particular/issue-94", true, null)]
         [TestCase("Merge pull request #95 in Particular/issue-94", false, null)]
         [TestCase("Merge pull request #64 from arledesma/feature-VS2013_3rd_party_test_framework_support", true, null)]
+        [TestCase("Merge pull request #500 in FOO/bar from Particular/release-1.0.0 to develop)", true, "1.0.0")]
+        [TestCase("Merge pull request #500 in FOO/bar from feature/new-service to develop)", true, null)]
         [TestCase("Finish Release-0.12.0", true, "0.12.0")] //Support Syntevo SmartGit/Hg's Gitflow merge commit messages for finishing a 'Release' branch
         [TestCase("Finish 0.14.1", true, "0.14.1")] //Support Syntevo SmartGit/Hg's Gitflow merge commit messages for finishing a 'Hotfix' branch
         [TestCase("Merge branch 'Release-v0.2.0'", true, "0.2.0")]
         [TestCase("Merge branch 'Release-v2.2'", true, "2.2.0")]
+        [TestCase("Merge remote-tracking branch 'origin/release/0.8.0' into develop/master", true, "0.8.0")]
         public void AssertMergeMessage(string message, bool isMergeCommit, string expectedVersion)
         {
             var parents = GetParents(isMergeCommit);
@@ -121,6 +124,7 @@
             }
             else
             {
+                baseVersion.ShouldNotBeNull();
                 baseVersion.SemanticVersion.ToString().ShouldBe(expectedVersion);
             }
         }

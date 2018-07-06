@@ -1,5 +1,6 @@
 namespace GitVersion
 {
+    using GitTools;
     using System;
     using System.ComponentModel;
     using System.Text.RegularExpressions;
@@ -141,7 +142,7 @@ namespace GitVersion
         {
             SemanticVersion semanticVersion;
             if (!TryParse(version, tagPrefixRegex, out semanticVersion))
-                throw new WarningException(string.Format("Failed to parse {0} into a Semantic Version", version));
+                throw new GitTools.WarningException(string.Format("Failed to parse {0} into a Semantic Version", version));
 
             return semanticVersion;
         }

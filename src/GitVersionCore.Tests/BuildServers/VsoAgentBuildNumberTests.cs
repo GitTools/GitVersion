@@ -5,7 +5,7 @@ using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class VsoAgentBuildNumberTests
+public class VsoAgentBuildNumberTests : TestBase
 {
     string key = "BUILD_BUILDNUMBER";
     string logPrefix = "##vso[build.updatebuildnumber]";

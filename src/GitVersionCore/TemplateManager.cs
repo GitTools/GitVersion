@@ -5,6 +5,7 @@
     using System.IO;
     using System.Linq;
     using GitVersionCore.Extensions;
+    using System.Reflection;
 
     enum TemplateType
     {
@@ -71,7 +72,15 @@
 
         static IEnumerable<string> GetEmbeddedTemplates(TemplateType templateType, string templateCategory)
         {
-            foreach (var name in typeof(TemplateManager).Assembly.GetManifestResourceNames())
+
+            Assembly assy = null;
+#if NETDESKTOP
+            assy = typeof(TemplateManager).Assembly;
+#else
+            assy = typeof(TemplateManager).GetTypeInfo().Assembly;
+#endif
+
+            foreach (var name in assy.GetManifestResourceNames())
             {
                 if (name.Contains(templateType.ToString()) && name.Contains(templateCategory))
                 {

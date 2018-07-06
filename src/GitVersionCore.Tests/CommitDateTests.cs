@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace GitVersionCore.Tests
 {
     [TestFixture]
-    public class CommitDateTests
+    public class CommitDateTests : TestBase
     {
         [Test]
         [TestCase("yyyy-MM-dd", "2017-10-06")]
@@ -27,7 +27,7 @@ namespace GitVersionCore.Tests
 
                                     },
                                     new EffectiveConfiguration(
-                                        AssemblyVersioningScheme.MajorMinorPatch, AssemblyFileVersioningScheme.MajorMinorPatch, "", VersioningMode.ContinuousDelivery, "", "", "", IncrementStrategy.Inherit,
+                                        AssemblyVersioningScheme.MajorMinorPatch, AssemblyFileVersioningScheme.MajorMinorPatch, "", "", "", VersioningMode.ContinuousDelivery, "", "", "", IncrementStrategy.Inherit,
                                         "", true, "", "", false, "", "", "", "", CommitMessageIncrementMode.Enabled, 4, 4, 4, Enumerable.Empty<IVersionFilter>(), false, true, format)
                                 );
 

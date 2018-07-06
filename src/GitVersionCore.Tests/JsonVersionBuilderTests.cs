@@ -5,7 +5,7 @@ using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class JsonVersionBuilderTests
+public class JsonVersionBuilderTests : TestBase
 {
     [SetUp]
     public void Setup()

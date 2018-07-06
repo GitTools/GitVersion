@@ -5,7 +5,7 @@ using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class OtherBranchScenarios
+public class OtherBranchScenarios : TestBase
 {
     [Test]
     public void CanTakeVersionFromReleaseBranch()

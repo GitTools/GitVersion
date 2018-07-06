@@ -8,7 +8,7 @@ using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
-public class GitVersionTaskDirectoryTests
+public class GitVersionTaskDirectoryTests : TestBase
 {
     ExecuteCore executeCore;
     string gitDirectory;

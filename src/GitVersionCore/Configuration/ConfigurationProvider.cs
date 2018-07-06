@@ -6,7 +6,7 @@ namespace GitVersion
     using System.IO;
     using System.Linq;
     using System.Text;
-    using WarningException = System.ComponentModel.WarningException;
+    using WarningException = GitTools.WarningException;
 
     public class ConfigurationProvider
     {
@@ -88,6 +88,8 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             config.AssemblyVersioningScheme = config.AssemblyVersioningScheme ?? AssemblyVersioningScheme.MajorMinorPatch;
             config.AssemblyFileVersioningScheme = config.AssemblyFileVersioningScheme ?? AssemblyFileVersioningScheme.MajorMinorPatch;
             config.AssemblyInformationalFormat = config.AssemblyInformationalFormat;
+            config.AssemblyVersioningFormat = config.AssemblyVersioningFormat;
+            config.AssemblyFileVersioningFormat = config.AssemblyFileVersioningFormat;
             config.TagPrefix = config.TagPrefix ?? DefaultTagPrefix;
             config.VersioningMode = config.VersioningMode ?? VersioningMode.ContinuousDelivery;
             config.ContinuousDeploymentFallbackTag = config.ContinuousDeploymentFallbackTag ?? "ci";
@@ -109,7 +111,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
                 new List<string>(),
                 defaultTag: "alpha",
                 defaultIncrementStrategy: IncrementStrategy.Minor,
-                defaultVersioningMode: VersioningMode.ContinuousDeployment,
+                defaultVersioningMode: config.VersioningMode == VersioningMode.Mainline? VersioningMode.Mainline : VersioningMode.ContinuousDeployment,
                 defaultTrackMergeTarget: true,
                 tracksReleaseBranches: true);
             ApplyBranchDefaults(config,
