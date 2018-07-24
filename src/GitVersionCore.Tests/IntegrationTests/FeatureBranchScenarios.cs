@@ -576,7 +576,6 @@ public class FeatureBranchScenarios : TestBase
                 {
                     "feature", new BranchConfig()
                     {
-                        PreventIncrementOfMergedBranchVersion = true,
                         Tag = "feat-{BranchName}"
                     }
                 }
