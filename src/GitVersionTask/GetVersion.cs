@@ -1,11 +1,10 @@
 ﻿namespace GitVersionTask
 {
     using System;
-    using GitVersion;
-
-    using Microsoft.Build.Framework;
-    using GitTools;
     using System.Reflection;
+    using GitTools;
+    using GitVersion;
+    using Microsoft.Build.Framework;
 
     public class GetVersion : GitVersionTaskBase
     {
@@ -81,6 +80,9 @@
 
         [Output]
         public string Sha { get; set; }
+
+        [Output]
+        public string ShaShort { get; set; }
 
         [Output]
         public string NuGetVersionV2 { get; set; }

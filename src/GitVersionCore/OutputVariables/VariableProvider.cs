@@ -79,7 +79,8 @@
                 semverFormatValues.NuGetPreReleaseTag,
                 semverFormatValues.NuGetPreReleaseTagV2,
                 semverFormatValues.CommitsSinceVersionSource,
-                semverFormatValues.CommitsSinceVersionSourcePadded);
+                semverFormatValues.CommitsSinceVersionSourcePadded,
+                semverFormatValues.ShaShort);
 
             return variables;
         }

@@ -148,5 +148,17 @@
         {
             get { return _semver.BuildMetaData.CommitsSinceVersionSource.ToString(CultureInfo.InvariantCulture).PadLeft(_config.CommitsSinceVersionSourcePadding, '0'); }
         }
+
+        public string ShaShort
+        {
+            get
+            {
+                if (_config.CommitShaShortlength >= 4 && _config.CommitShaShortlength < _semver.BuildMetaData.Sha?.Length)
+                {
+                    return _semver.BuildMetaData.Sha.Substring(0, _config.CommitShaShortlength);
+                }
+                return _semver.BuildMetaData.Sha;
+            }
+        }
     }
 }

@@ -5,10 +5,8 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using GitVersion.Helpers;
     using System.Reflection;
- 
-
+    using GitVersion.Helpers;
     using YamlDotNet.Serialization;
 
     public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
@@ -39,7 +37,8 @@
                                 string nugetPreReleaseTag,
                                 string nugetPreReleaseTagV2,
                                 string commitsSinceVersionSource,
-                                string commitsSinceVersionSourcePadded)
+                                string commitsSinceVersionSourcePadded,
+                                string shaShort)
         {
             Major = major;
             Minor = minor;
@@ -68,6 +67,7 @@
             NuGetPreReleaseTagV2 = nugetPreReleaseTagV2;
             CommitsSinceVersionSource = commitsSinceVersionSource;
             CommitsSinceVersionSourcePadded = commitsSinceVersionSourcePadded;
+            ShaShort = shaShort;
         }
 
         public string Major { get; private set; }
@@ -90,6 +90,7 @@
         public string InformationalVersion { get; private set; }
         public string BranchName { get; private set; }
         public string Sha { get; private set; }
+        public string ShaShort { get; private set; }
         public string NuGetVersionV2 { get; private set; }
         public string NuGetVersion { get; private set; }
         public string NuGetPreReleaseTagV2 { get; private set; }

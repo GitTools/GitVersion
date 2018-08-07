@@ -153,6 +153,10 @@ details on the syntax. Default set to `Enabled`; set to `Disabled` to disable.
 ### commit-date-format
 Sets the format which will be used to format the `CommitDate` output variable.
 
+### commit-sha-shortlength
+
+Sets the length of the `ShaShort`. Is default is set to `6`. If value set to 3 or less, the `ShaShort` will be the unshorten SHA. 
+
 ### ignore
 The header for ignore configuration.
 

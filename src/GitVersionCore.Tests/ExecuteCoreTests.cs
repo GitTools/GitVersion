@@ -1,12 +1,12 @@
-﻿using GitTools.Testing;
+﻿using System;
+using System.IO;
+using System.Text;
+using GitTools.Testing;
 using GitVersion;
 using GitVersion.Helpers;
 using GitVersionCore.Tests;
 using NUnit.Framework;
 using Shouldly;
-using System;
-using System.IO;
-using System.Text;
 
 [TestFixture]
 public class ExecuteCoreTests : TestBase
@@ -62,6 +62,7 @@ FullSemVer: 4.10.3-test.19
 InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 BranchName: feature/test
 Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+ShaShort: dd2a29
 NuGetVersionV2: 4.10.3-test0019
 NuGetVersion: 4.10.3-test0019
 NuGetPreReleaseTagV2: test0019
@@ -108,6 +109,7 @@ FullSemVer: 4.10.3-test.19
 InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 BranchName: feature/test
 Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+ShaShort: dd2a29
 NuGetVersionV2: 4.10.3-test0019
 NuGetVersion: 4.10.3-test0019
 NuGetPreReleaseTagV2: test0019
@@ -171,6 +173,7 @@ FullSemVer: 4.10.3-test.19
 InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 BranchName: feature/test
 Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+ShaShort: dd2a29
 NuGetVersionV2: 4.10.3-test0019
 NuGetVersion: 4.10.3-test0019
 NuGetPreReleaseTagV2: test0019
@@ -220,6 +223,7 @@ FullSemVer: 4.10.3-test.19
 InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 BranchName: feature/test
 Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+ShaShort: dd2a29
 NuGetVersionV2: 4.10.3-test0019
 NuGetVersion: 4.10.3-test0019
 NuGetPreReleaseTagV2: test0019

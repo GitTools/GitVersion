@@ -1,11 +1,11 @@
 namespace GitVersion
 {
-    using Configuration.Init.Wizard;
-    using GitVersion.Helpers;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
+    using Configuration.Init.Wizard;
+    using GitVersion.Helpers;
     using WarningException = GitTools.WarningException;
 
     public class ConfigurationProvider
@@ -102,6 +102,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             config.BuildMetaDataPadding = config.BuildMetaDataPadding ?? 4;
             config.CommitsSinceVersionSourcePadding = config.CommitsSinceVersionSourcePadding ?? 4;
             config.CommitDateFormat = config.CommitDateFormat ?? "yyyy-MM-dd";
+            config.CommitShaShortlength = config.CommitShaShortlength ?? 6;
 
             var configBranches = config.Branches.ToList();
 
@@ -192,6 +193,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
         static void ApplyOverridesTo(Config config, Config overrideConfig)
         {
             config.TagPrefix = string.IsNullOrWhiteSpace(overrideConfig.TagPrefix) ? config.TagPrefix : overrideConfig.TagPrefix;
+            config.CommitShaShortlength = overrideConfig.CommitShaShortlength;
         }
 
         static BranchConfig GetOrCreateBranchDefaults(Config config, string branchKey)

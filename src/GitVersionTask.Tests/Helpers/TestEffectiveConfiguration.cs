@@ -1,9 +1,9 @@
 namespace GitVersionCore.Tests
 {
-    using GitVersion;
-    using GitVersion.VersionFilters;
     using System.Collections.Generic;
     using System.Linq;
+    using GitVersion;
+    using GitVersion.VersionFilters;
 
     public class TestEffectiveConfiguration : EffectiveConfiguration
     {
@@ -33,14 +33,15 @@ namespace GitVersionCore.Tests
             IEnumerable<IVersionFilter> versionFilters = null,
             bool tracksReleaseBranches = false,
             bool isRelease = false,
-            string commitDateFormat = "yyyy-MM-dd") :
+            string commitDateFormat = "yyyy-MM-dd",
+            int commitShaShortlength = 0) :
             base(assemblyVersioningScheme, assemblyFileVersioningScheme, assemblyInformationalFormat, assemblyVersioningFormat, assemblyFileVersioningFormat, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch,
                     branchPrefixToTrim, preventIncrementForMergedBranchVersion, tagNumberPattern, continuousDeploymentFallbackTag,
                     trackMergeTarget,
                     majorMessage, minorMessage, patchMessage, noBumpMessage,
                     commitMessageMode, legacySemVerPadding, buildMetaDataPadding, commitsSinceVersionSourcePadding,
                     versionFilters ?? Enumerable.Empty<IVersionFilter>(),
-                    tracksReleaseBranches, isRelease, commitDateFormat)
+                    tracksReleaseBranches, isRelease, commitDateFormat, commitShaShortlength)
         {
         }
     }

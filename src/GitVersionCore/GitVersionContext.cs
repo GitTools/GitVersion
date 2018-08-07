@@ -1,8 +1,8 @@
 ﻿namespace GitVersion
 {
-    using LibGit2Sharp;
     using System;
     using System.Linq;
+    using LibGit2Sharp;
 
     /// <summary>
     /// Contextual information about where GitVersion is being run
@@ -130,6 +130,7 @@
             var patchMessage = FullConfiguration.PatchVersionBumpMessage;
             var noBumpMessage = FullConfiguration.NoBumpMessage;
             var commitDateFormat = FullConfiguration.CommitDateFormat;
+            var commitShaShortlength = FullConfiguration.CommitShaShortlength ?? 0;
 
             var commitMessageVersionBump = currentBranchConfig.CommitMessageIncrementing ?? FullConfiguration.CommitMessageIncrementing.Value;
 
@@ -148,7 +149,8 @@
                 FullConfiguration.Ignore.ToFilters(),
                 currentBranchConfig.TracksReleaseBranches.Value,
                 currentBranchConfig.IsReleaseBranch.Value,
-                commitDateFormat);
+                commitDateFormat,
+                commitShaShortlength);
         }
 
         private static Branch GetTargetBranch(IRepository repository, string targetBranch)

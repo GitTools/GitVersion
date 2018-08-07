@@ -308,9 +308,9 @@ namespace GitVersion
                     foreach (var keyValueOption in keyValueOptions)
                     {
                         var keyAndValue = keyValueOption.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
-                        if (keyAndValue.Length != 2)
+                        if (keyAndValue.Length %2 != 0)
                         {
-                            throw new WarningException(string.Format("Could not parse /overrideconfig option: {0}. Ensure it is in format 'key=value'", keyValueOption));
+                            throw new WarningException($"Could not parse /overrideconfig option: {keyValueOption}. Ensure it is in format 'key=value'");
                         }
 
                         var optionKey = keyAndValue[0].ToLowerInvariant();
@@ -319,8 +319,14 @@ namespace GitVersion
                             case "tag-prefix":
                                 arguments.OverrideConfig.TagPrefix = keyAndValue[1];
                                 break;
+                            case "commit-sha-shortlength":
+                                if (int.TryParse(keyAndValue[1], out var overrideCommitShaShortlength))
+                                {
+                                    arguments.OverrideConfig.CommitShaShortlength = overrideCommitShaShortlength;
+                                }
+                                break;
                             default:
-                                throw new WarningException(string.Format("Could not parse /overrideconfig option: {0}. Currently supported only 'tag-prefix' option", optionKey));
+                                throw new WarningException($"Could not parse /overrideconfig option: '{optionKey}'. Currently supported only 'tag-prefix' and 'commit-sha-shortlength' option");
                         }
                     }
 

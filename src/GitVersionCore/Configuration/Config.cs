@@ -144,5 +144,9 @@
 
         [YamlMember(Alias = "commit-date-format")]
         public string CommitDateFormat { get; set; }
+
+        [YamlMember(Alias = "commit-sha-shortlength")]
+        public int? CommitShaShortlength { get; set; }
+
     }
 }
