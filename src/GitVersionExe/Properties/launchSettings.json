@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "GitVersionExe": {
-      "commandName": "Project",
-      "commandLineArgs": "/overrideconfig commit-sha-shortlength=10"
-    }
-  }
-}
