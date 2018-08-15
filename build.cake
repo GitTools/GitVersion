@@ -24,34 +24,34 @@ void Build(string configuration, string nugetVersion, string semVersion, string 
 {
 
     MSBuild("./src/GitVersion.sln", settings =>
-	{
-	 settings.SetConfiguration(configuration)
+    {
+     settings.SetConfiguration(configuration)
         .SetVerbosity(Verbosity.Minimal)
         .WithTarget("Build")
         .WithProperty("POSIX",IsRunningOnUnix().ToString());
-		
-		if (BuildSystem.AppVeyor.IsRunningOnAppVeyor)
-		{
-			if (!string.IsNullOrWhiteSpace(nugetVersion))
-			{
-				settings.WithProperty("GitVersion_NuGetVersion", nugetVersion);
-			}
-			if (!string.IsNullOrWhiteSpace(semVersion))
-			{
-				settings.WithProperty("GitVersion_SemVer", semVersion);
-			}
 
-			if (!string.IsNullOrWhiteSpace(version))
-			{
-				settings.WithProperty("GitVersion_MajorMinorPatch", version);
-			}
+        if (BuildSystem.AppVeyor.IsRunningOnAppVeyor)
+        {
+            if (!string.IsNullOrWhiteSpace(nugetVersion))
+            {
+                settings.WithProperty("GitVersion_NuGetVersion", nugetVersion);
+            }
+            if (!string.IsNullOrWhiteSpace(semVersion))
+            {
+                settings.WithProperty("GitVersion_SemVer", semVersion);
+            }
 
-			if (!string.IsNullOrWhiteSpace(preReleaseTag))
-			{
-				settings.WithProperty("GitVersion_PreReleaseTag", preReleaseTag);
-			}
-        }		
-	}); 
+            if (!string.IsNullOrWhiteSpace(version))
+            {
+                settings.WithProperty("GitVersion_MajorMinorPatch", version);
+            }
+
+            if (!string.IsNullOrWhiteSpace(preReleaseTag))
+            {
+                settings.WithProperty("GitVersion_PreReleaseTag", preReleaseTag);
+            }
+        }
+    });
 }
 
 // This build task can be run to just build
@@ -89,18 +89,18 @@ Task("Version")
 Task("NuGet-Package-Restore")
     .Does(() =>
 {
-	DotNetCoreRestore("./src/GitVersion.sln");
+    DotNetCoreRestore("./src/GitVersion.sln");
     //NuGetRestore("./src/GitVersion.sln");
 });
 
-Task("Clean")   
+Task("Clean")
     .Does(() =>
 {
-	CleanDirectories("./build");    
-	CleanDirectories("./**/obj"); 
-	
-	var binDirs = GetDirectories("./**/bin") - GetDirectories("**/GemAssets/bin");
-	CleanDirectories(binDirs);  
+    CleanDirectories("./build");
+    CleanDirectories("./**/obj");
+
+    var binDirs = GetDirectories("./**/bin") - GetDirectories("**/GemAssets/bin");
+    CleanDirectories(binDirs);
 });
 
 Task("Build")
@@ -112,12 +112,12 @@ Task("Build")
     Build(configuration, nugetVersion, semVersion, version, preReleaseTag);
 });
 
-Task("Run-Tests-In-NUnitConsole")   
+Task("Run-Tests-In-NUnitConsole")
     .IsDependentOn("DogfoodBuild")
     .Does(() =>
 {
     var settings = new NUnit3Settings();
-	var targetFramework = "net461";  
+    var targetFramework = "net461";
     if(IsRunningOnUnix())
     {
         settings.Where = "cat != NoMono";
@@ -136,88 +136,88 @@ Task("Run-Tests-In-NUnitConsole")
 });
 
 // Note: this task is not used for time being as unable to produce sensible test results output file via dotnet cli.. so using nunit console runner above instead.
-Task("Run-Tests")  
+Task("Run-Tests")
     .IsDependentOn("DogfoodBuild")
     .Does(() =>
-{	
+{
      var settings = new DotNetCoreTestSettings
      {
         Configuration = configuration,
         NoBuild = true,
-        Filter = "TestCategory!=NoMono"		
+        Filter = "TestCategory!=NoMono"
      };
 
      DotNetCoreTest("./src/GitVersionCore.Tests/GitVersionCore.Tests.csproj", settings);
-	 DotNetCoreTest("./src/GitVersionExe.Tests/GitVersionExe.Tests.csproj", settings);
-	 DotNetCoreTest("./src/GitVersionTask.Tests/GitVersionTask.Tests.csproj", settings);
-    
+     DotNetCoreTest("./src/GitVersionExe.Tests/GitVersionExe.Tests.csproj", settings);
+     DotNetCoreTest("./src/GitVersionTask.Tests/GitVersionTask.Tests.csproj", settings);
+
 });
 
 void ILRepackGitVersionExe(bool includeLibGit2Sharp)
 {
-	 var tempMergeDir = "ILMergeTemp";
-	 var exeName = "GitVersion.exe";
-	 var keyFilePath = "./src/key.snk";
-	 var targetDir = "./src/GitVersionExe/bin/" + configuration + "/net40/";
-	 var targetPath = targetDir + exeName;
+     var tempMergeDir = "ILMergeTemp";
+     var exeName = "GitVersion.exe";
+     var keyFilePath = "./src/key.snk";
+     var targetDir = "./src/GitVersionExe/bin/" + configuration + "/net40/";
+     var targetPath = targetDir + exeName;
 
      CreateDirectory(tempMergeDir);
-	 string outFilePath = "./" + tempMergeDir + "/" + exeName;	
+     string outFilePath = "./" + tempMergeDir + "/" + exeName;
 
-	 var sourcePattern = targetDir + "*.dll";
-	 var sourceFiles = GetFiles(sourcePattern);
-	 if(!includeLibGit2Sharp)
-	 {
-	   	 var excludePattern = "**/LibGit2Sharp.dll";
-	     sourceFiles = sourceFiles - GetFiles(excludePattern);	
-	 }
-	 var settings = new ILRepackSettings { AllowDup = "", Keyfile = keyFilePath, Internalize = true, NDebug = true, TargetKind = TargetKind.Exe, TargetPlatform  = TargetPlatformVersion.v4, XmlDocs = false };
-	 ILRepack(outFilePath, targetPath, sourceFiles, settings);   
+     var sourcePattern = targetDir + "*.dll";
+     var sourceFiles = GetFiles(sourcePattern);
+     if(!includeLibGit2Sharp)
+     {
+            var excludePattern = "**/LibGit2Sharp.dll";
+         sourceFiles = sourceFiles - GetFiles(excludePattern);
+     }
+     var settings = new ILRepackSettings { AllowDup = "", Keyfile = keyFilePath, Internalize = true, NDebug = true, TargetKind = TargetKind.Exe, TargetPlatform  = TargetPlatformVersion.v4, XmlDocs = false };
+     ILRepack(outFilePath, targetPath, sourceFiles, settings);
 }
 
 
 Task("Commandline-Package")
-    .IsDependentOn("Build")   
+    .IsDependentOn("Build")
     .Does(() =>
-{   
+{
 
-	 ILRepackGitVersionExe(false);  
-    
-	 var outputDir = buildDir + "NuGetCommandLineBuild";
-	 var toolsDir = outputDir + "/tools";
-	 var libDir = toolsDir + "/lib";
+     ILRepackGitVersionExe(false);
 
-	 CreateDirectory(outputDir);
-	 CreateDirectory(toolsDir);
-	 CreateDirectory(libDir);
-	 
-	 var targetDir = "./src/GitVersionExe/bin/" + configuration + "/net40/";	
+     var outputDir = buildDir + "NuGetCommandLineBuild";
+     var toolsDir = outputDir + "/tools";
+     var libDir = toolsDir + "/lib";
 
-	var libGitFiles = GetFiles(targetDir + "LibGit2Sharp.dll*");    
-	var nugetAssetsPath = "./src/GitVersionExe/NugetAssets/";	
-	Information("Copying files to packaging direcory..");
-	
-	CopyFiles(targetDir + "GitVersion.pdb", outputDir + "/tools/");
-	CopyFiles(targetDir + "GitVersion.exe.mdb", outputDir + "/tools/");
+     CreateDirectory(outputDir);
+     CreateDirectory(toolsDir);
+     CreateDirectory(libDir);
 
-	Information("Copying IL Merged exe file..");
-	CopyFiles("./ILMergeTemp/GitVersion.exe", outputDir + "/tools/");
+     var targetDir = "./src/GitVersionExe/bin/" + configuration + "/net40/";
 
-	Information("Copying nuget assets..");	
-	CopyFiles(nugetAssetsPath + "GitVersion.CommandLine.nuspec", outputDir);
+    var libGitFiles = GetFiles(targetDir + "LibGit2Sharp.dll*");
+    var nugetAssetsPath = "./src/GitVersionExe/NugetAssets/";
+    Information("Copying files to packaging direcory..");
 
-	Information("Copying libgit2sharp files..");	
-	CopyFiles(libGitFiles, outputDir + "/tools/"); 
-	CopyDirectory(targetDir + "lib/", outputDir + "/tools/lib/"); 	
+    CopyFiles(targetDir + "GitVersion.pdb", outputDir + "/tools/");
+    CopyFiles(targetDir + "GitVersion.exe.mdb", outputDir + "/tools/");
 
-	Information("Creating Nuget Package..");	
-	var nuGetPackSettings  = new NuGetPackSettings {  Version = nugetVersion, BasePath  = outputDir, OutputDirectory = outputDir };	
-	NuGetPack(outputDir + "/GitVersion.CommandLine.nuspec", nuGetPackSettings);			
-	
+    Information("Copying IL Merged exe file..");
+    CopyFiles("./ILMergeTemp/GitVersion.exe", outputDir + "/tools/");
+
+    Information("Copying nuget assets..");
+    CopyFiles(nugetAssetsPath + "GitVersion.CommandLine.nuspec", outputDir);
+
+    Information("Copying libgit2sharp files..");
+    CopyFiles(libGitFiles, outputDir + "/tools/");
+    CopyDirectory(targetDir + "lib/", outputDir + "/tools/lib/");
+
+    Information("Creating Nuget Package..");
+    var nuGetPackSettings  = new NuGetPackSettings {  Version = nugetVersion, BasePath  = outputDir, OutputDirectory = outputDir };
+    NuGetPack(outputDir + "/GitVersion.CommandLine.nuspec", nuGetPackSettings);
+
 })
 .ReportError(exception =>
-{  
-	Error(exception.Dump());
+{
+    Error(exception.Dump());
     // Report the error.
 });
 
@@ -225,123 +225,123 @@ Task("Commandline-Package")
 Task("Portable-Package")
     .IsDependentOn("Build")
     .Does(() =>
-{   
+{
 
-	 ILRepackGitVersionExe(true);  
-   
-	 var outputDir = buildDir + "NuGetExeBuild";
-	 var toolsDir = outputDir + "/tools";
-	 var libDir = toolsDir + "/lib";
+     ILRepackGitVersionExe(true);
 
-	 CreateDirectory(outputDir);
-	 CreateDirectory(toolsDir);
-	 CreateDirectory(libDir);
-	 
-	 var targetDir = "./src/GitVersionExe/bin/" + configuration + "/net40/";	
-	
-	var nugetAssetsPath = "./src/GitVersionExe/NugetAssets/";	
-	Information("Copying files to packaging direcory..");
-	
-	CopyFiles(targetDir + "GitVersion.pdb", outputDir + "/tools/");
-	CopyFiles(targetDir + "GitVersion.exe.mdb", outputDir + "/tools/");
+     var outputDir = buildDir + "NuGetExeBuild";
+     var toolsDir = outputDir + "/tools";
+     var libDir = toolsDir + "/lib";
 
-	Information("Copying IL Merged exe file..");
-	CopyFiles("./ILMergeTemp/GitVersion.exe", outputDir + "/tools/");
+     CreateDirectory(outputDir);
+     CreateDirectory(toolsDir);
+     CreateDirectory(libDir);
 
-	Information("Copying nuget assets..");
-	CopyFiles(nugetAssetsPath + "*.ps1", outputDir + "/tools/");
-	CopyFiles(nugetAssetsPath + "GitVersion.Portable.nuspec", outputDir);
+     var targetDir = "./src/GitVersionExe/bin/" + configuration + "/net40/";
 
-	Information("Copying libgit2sharp files..");		
-	CopyDirectory(targetDir + "lib/", outputDir + "/tools/lib/"); 
+    var nugetAssetsPath = "./src/GitVersionExe/NugetAssets/";
+    Information("Copying files to packaging direcory..");
 
-	var nuGetPackSettings  = new NuGetPackSettings {  Version = nugetVersion, BasePath  = outputDir, OutputDirectory = outputDir };
+    CopyFiles(targetDir + "GitVersion.pdb", outputDir + "/tools/");
+    CopyFiles(targetDir + "GitVersion.exe.mdb", outputDir + "/tools/");
+
+    Information("Copying IL Merged exe file..");
+    CopyFiles("./ILMergeTemp/GitVersion.exe", outputDir + "/tools/");
+
+    Information("Copying nuget assets..");
+    CopyFiles(nugetAssetsPath + "*.ps1", outputDir + "/tools/");
+    CopyFiles(nugetAssetsPath + "GitVersion.Portable.nuspec", outputDir);
+
+    Information("Copying libgit2sharp files..");
+    CopyDirectory(targetDir + "lib/", outputDir + "/tools/lib/");
+
+    var nuGetPackSettings  = new NuGetPackSettings {  Version = nugetVersion, BasePath  = outputDir, OutputDirectory = outputDir };
     NuGetPack(outputDir + "/GitVersion.Portable.nuspec", nuGetPackSettings);
 
 })
 .ReportError(exception =>
-{  
-	Error(exception.Dump());
+{
+    Error(exception.Dump());
 });
 
 
 Task("GitVersionCore-Package")
-    .IsDependentOn("Build") 
+    .IsDependentOn("Build")
     .Does(() =>
 {
      var outputDir = buildDir + "NuGetRefBuild";
-	 CreateDirectory(outputDir);
+     CreateDirectory(outputDir);
 
-	 var msBuildSettings = new DotNetCoreMSBuildSettings();
-	 msBuildSettings.SetVersion(nugetVersion);
+     var msBuildSettings = new DotNetCoreMSBuildSettings();
+     msBuildSettings.SetVersion(nugetVersion);
      msBuildSettings.Properties["PackageVersion"] = new string[]{ nugetVersion };
      var settings = new DotNetCorePackSettings
      {
          Configuration = configuration,
          OutputDirectory = outputDir,
-		 NoBuild = true,
-		 MSBuildSettings = msBuildSettings
+         NoBuild = true,
+         MSBuildSettings = msBuildSettings
      };
 
      DotNetCorePack("./src/GitVersionCore", settings);
 })
 .ReportError(exception =>
-{  
-	Error(exception.Dump());    
+{
+    Error(exception.Dump());
 });
 
 Task("GitVersion-DotNet-Package")
-    .IsDependentOn("Build") 
+    .IsDependentOn("Build")
     .Does(() =>
 {
-   
+
     // var publishDir = buildDir + "Published";
-	// CreateDirectory(outputDir);
+    // CreateDirectory(outputDir);
 
-	 var outputDir = buildDir + "NuGetExeDotNetCoreBuild"; 
-	 var toolsDir = outputDir + "/tools";
-	 var libDir = toolsDir + "/lib";
+     var outputDir = buildDir + "NuGetExeDotNetCoreBuild";
+     var toolsDir = outputDir + "/tools";
+     var libDir = toolsDir + "/lib";
 
-	 CreateDirectory(outputDir);
-	 CreateDirectory(toolsDir);
-	 CreateDirectory(libDir);
+     CreateDirectory(outputDir);
+     CreateDirectory(toolsDir);
+     CreateDirectory(libDir);
 
 
-	 var msBuildSettings = new DotNetCoreMSBuildSettings();
-	 msBuildSettings.SetVersion(nugetVersion);
+     var msBuildSettings = new DotNetCoreMSBuildSettings();
+     msBuildSettings.SetVersion(nugetVersion);
      msBuildSettings.Properties["PackageVersion"] = new string[]{ nugetVersion };
 
-	 var framework = "netcoreapp20";
+     var framework = "netcoreapp20";
 
-	 var settings = new DotNetCorePublishSettings
+     var settings = new DotNetCorePublishSettings
      {
          Framework = framework,
          Configuration = configuration,
          OutputDirectory = toolsDir,
-		 MSBuildSettings = msBuildSettings
+         MSBuildSettings = msBuildSettings
      };
 
-     DotNetCorePublish("./src/GitVersionExe", settings);  	 
+     DotNetCorePublish("./src/GitVersionExe", settings);
 
-	
-	 
-	 // var targetDir = "./src/GitVersionExe/bin/" + configuration + "/" + framework + "/";	
-	
-	var nugetAssetsPath = "./src/GitVersionExe/NugetAssets/";	
-	Information("Copying files to packaging direcory..");
 
-	Information("Copying nuget assets..");	
-	CopyFiles(nugetAssetsPath + "GitVersion.CommandLine.DotNetCore.nuspec", outputDir);
 
-	//Information("Copying libgit2sharp files..");		
-	//CopyDirectory(targetDir + "lib/", outputDir + "/tools/lib/"); 
+     // var targetDir = "./src/GitVersionExe/bin/" + configuration + "/" + framework + "/";
 
-	var nuGetPackSettings  = new NuGetPackSettings {  Version = nugetVersion, BasePath  = outputDir, OutputDirectory = outputDir };
-    NuGetPack(outputDir + "/GitVersion.CommandLine.DotNetCore.nuspec", nuGetPackSettings);	
+    var nugetAssetsPath = "./src/GitVersionExe/NugetAssets/";
+    Information("Copying files to packaging direcory..");
+
+    Information("Copying nuget assets..");
+    CopyFiles(nugetAssetsPath + "GitVersion.CommandLine.DotNetCore.nuspec", outputDir);
+
+    //Information("Copying libgit2sharp files..");
+    //CopyDirectory(targetDir + "lib/", outputDir + "/tools/lib/");
+
+    var nuGetPackSettings  = new NuGetPackSettings {  Version = nugetVersion, BasePath  = outputDir, OutputDirectory = outputDir };
+    NuGetPack(outputDir + "/GitVersion.CommandLine.DotNetCore.nuspec", nuGetPackSettings);
 })
 .ReportError(exception =>
-{  
-	Error(exception.Dump());    
+{
+    Error(exception.Dump());
 });
 
 
@@ -350,45 +350,45 @@ Task("GitVersionTaskPackage")
     .Does(() =>
 {
 
-	 var outputDir = buildDir + "NuGetTaskBuild";
-	 CreateDirectory(outputDir);
+     var outputDir = buildDir + "NuGetTaskBuild";
+     CreateDirectory(outputDir);
 
-	 var msBuildSettings = new DotNetCoreMSBuildSettings();
-	 msBuildSettings.SetVersion(nugetVersion);
-	
-	 msBuildSettings.Properties["PackageVersion"] = new string[]{ nugetVersion };
+     var msBuildSettings = new DotNetCoreMSBuildSettings();
+     msBuildSettings.SetVersion(nugetVersion);
+
+     msBuildSettings.Properties["PackageVersion"] = new string[]{ nugetVersion };
      var settings = new DotNetCorePackSettings
      {
          Configuration = configuration,
          OutputDirectory = outputDir,
-		 NoBuild = true,
-		 MSBuildSettings = msBuildSettings
+         NoBuild = true,
+         MSBuildSettings = msBuildSettings
      };
 
      DotNetCorePack("./src/GitVersionTask", settings);
-	
+
 })
 .ReportError(exception =>
-{  
-	Error(exception.Dump());    
+{
+    Error(exception.Dump());
 });
 
 Task("Zip-Files")
     .IsDependentOn("Build")
-	.IsDependentOn("Commandline-Package")	
-	.IsDependentOn("Portable-Package")	
-	.IsDependentOn("GitVersionCore-Package")	
-	.IsDependentOn("GitVersionTaskPackage")	
-	.IsDependentOn("GitVersion-DotNet-Package")		
-	.IsDependentOn("Run-Tests-In-NUnitConsole")
+    .IsDependentOn("Commandline-Package")
+    .IsDependentOn("Portable-Package")
+    .IsDependentOn("GitVersionCore-Package")
+    .IsDependentOn("GitVersionTaskPackage")
+    .IsDependentOn("GitVersion-DotNet-Package")
+    .IsDependentOn("Run-Tests-In-NUnitConsole")
     .Does(() =>
 {
     Zip("./build/NuGetCommandLineBuild/tools/", "build/GitVersion_" + nugetVersion + ".zip");
-	Zip("./build/NuGetExeDotNetCoreBuild/tools/", "build/GitVersionDotNetCore_" + nugetVersion + ".zip");
+    Zip("./build/NuGetExeDotNetCoreBuild/tools/", "build/GitVersionDotNetCore_" + nugetVersion + ".zip");
 })
 .ReportError(exception =>
-{  
-	Error(exception.Dump());
+{
+    Error(exception.Dump());
 });
 
 
@@ -402,8 +402,8 @@ Task("Create-Release-Notes")
     if(!string.IsNullOrWhiteSpace(githubToken))
     {
         IEnumerable<string> redirectedOutput;
-		var gitReleasNotesExePath = Context.Tools.Resolve("GitReleaseNotes.exe");
-        EnsureDirectoryExists(buildDir); 
+        var gitReleasNotesExePath = Context.Tools.Resolve("GitReleaseNotes.exe");
+        EnsureDirectoryExists(buildDir);
         var releaseNotesExitCode = StartProcess(
                 gitReleasNotesExePath,
                 new ProcessSettings {
@@ -423,8 +423,8 @@ Task("Create-Release-Notes")
     }
 })
 .ReportError(exception =>
-{  
-	Error(exception.Dump());
+{
+    Error(exception.Dump());
 });
 
 
@@ -444,23 +444,23 @@ Task("Upload-AppVeyor-Artifacts")
     System.IO.File.WriteAllLines("build/artifacts", new[]{
         "NuGetExeBuild:GitVersion.Portable." + nugetVersion +".nupkg",
         "NuGetCommandLineBuild:GitVersion.CommandLine." + nugetVersion +".nupkg",
-		"NuGetExeDotNetCoreBuild:GitVersion.CommandLine.DotNetCore." + nugetVersion +".nupkg",
+        "NuGetExeDotNetCoreBuild:GitVersion.CommandLine.DotNetCore." + nugetVersion +".nupkg",
         "NuGetRefBuild:GitVersion." + nugetVersion +".nupkg",
-        "NuGetTaskBuild:GitVersionTask." + nugetVersion +".nupkg",   
+        "NuGetTaskBuild:GitVersionTask." + nugetVersion +".nupkg",
         "zip:GitVersion_" + nugetVersion + ".zip",
-		"zip-dotnetcore:GitVersionDotNetCore_" + nugetVersion + ".zip"
-		// "GitVersionTfsTaskBuild:gittools.gitversion-" + semVersion +".vsix",
+        "zip-dotnetcore:GitVersionDotNetCore_" + nugetVersion + ".zip"
+        // "GitVersionTfsTaskBuild:gittools.gitversion-" + semVersion +".vsix",
         // "GemBuild:" + gem
     });
 
     AppVeyor.UploadArtifact("build/NuGetExeBuild/GitVersion.Portable." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/NuGetCommandLineBuild/GitVersion.CommandLine." + nugetVersion +".nupkg");
-	AppVeyor.UploadArtifact("build/NuGetExeDotNetCoreBuild/GitVersion.CommandLine.DotNetCore." + nugetVersion +".nupkg");
+    AppVeyor.UploadArtifact("build/NuGetExeDotNetCoreBuild/GitVersion.CommandLine.DotNetCore." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/NuGetRefBuild/GitVersionCore." + nugetVersion +".nupkg");
-    AppVeyor.UploadArtifact("build/NuGetTaskBuild/GitVersionTask." + nugetVersion +".nupkg");   
+    AppVeyor.UploadArtifact("build/NuGetTaskBuild/GitVersionTask." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/GitVersion_" + nugetVersion + ".zip");
-	AppVeyor.UploadArtifact("build/GitVersionDotNetCore_" + nugetVersion + ".zip");
-	// AppVeyor.UploadArtifact("build/GitVersionTfsTaskBuild/gittools.gitversion-" + semVersion + ".vsix");
+    AppVeyor.UploadArtifact("build/GitVersionDotNetCore_" + nugetVersion + ".zip");
+    // AppVeyor.UploadArtifact("build/GitVersionTfsTaskBuild/gittools.gitversion-" + semVersion + ".vsix");
     // AppVeyor.UploadArtifact("build/GemBuild/" + gem);
     AppVeyor.UploadArtifact("build/artifacts");
 
@@ -473,8 +473,8 @@ Task("Upload-AppVeyor-Artifacts")
     }
 })
 .ReportError(exception =>
-{  
-	Error(exception.Dump());
+{
+    Error(exception.Dump());
 });
 
 Task("Travis")
