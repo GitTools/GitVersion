@@ -319,12 +319,12 @@ Task("Publish-DockerImage")
 
 
 Task("Deploy")
-    .IsDependentOn("Publish-NuGetPackage")
+    // .IsDependentOn("Publish-NuGetPackage")
     .IsDependentOn("Publish-NuGetCommandLine")
     .IsDependentOn("Publish-MsBuildTask")
-    .IsDependentOn("Publish-Chocolatey")
-    //  .IsDependentOn("Publish-Gem")
-    .IsDependentOn("Publish-VstsTask")
+    // .IsDependentOn("Publish-Chocolatey")
+    // .IsDependentOn("Publish-Gem")
+    // .IsDependentOn("Publish-VstsTask")
     .IsDependentOn("Publish-DockerImage")
     .Finally(() =>
 {
