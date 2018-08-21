@@ -1,4 +1,5 @@
 #addin "nuget:https://www.nuget.org/api/v2?package=Cake.Json&version=3.0.1"
+#addin nuget:?package=Newtonsoft.Json&version=9.0.1
 #addin "nuget:https://www.nuget.org/api/v2?package=Cake.Docker&version=0.9.5"
 
 var target = Argument("target", "Deploy");
@@ -207,7 +208,7 @@ Task("Publish-VstsTask")
 });
 
 // PublishDocker("gittools/gitversion", tag, "content.zip", "/some/path/DockerFile");
-bool PublishDocker(string name, tagName, contentZip, dockerFilePath, containerVolume)
+bool PublishDocker(string name, string tagName, string contentZip, string dockerFilePath, string containerVolume)
 {
     Information("Starting Docker Build for Image: " + name);
 
@@ -311,20 +312,20 @@ Task("Publish-DockerImage")
     .IsDependentOn("DownloadGitHubReleaseArtifacts")
     .Does(() =>
 {
-       PublishDocker("gittools/gitversion", tag, artifactLookup["zip"], "src/Docker/Mono/DockerFile", "/repo");
+    PublishDocker("gittools/gitversion", tag, artifactLookup["zip"], "src/Docker/Mono/DockerFile", "/repo");
     PublishDocker("gittools/gitversion-dotnetcore", tag, artifactLookup["zip-dotnetcore"], "src/Docker/DotNetCore/DockerFile", "c:/repo");
 });
 
 
 Task("Deploy")
-  .IsDependentOn("Publish-NuGetPackage")
-  .IsDependentOn("Publish-NuGetCommandLine")
-  .IsDependentOn("Publish-MsBuildTask")
-  .IsDependentOn("Publish-Chocolatey")
-//  .IsDependentOn("Publish-Gem")
-  .IsDependentOn("Publish-VstsTask")
-  .IsDependentOn("Publish-DockerImage")
-  .Finally(() =>
+    .IsDependentOn("Publish-NuGetPackage")
+    .IsDependentOn("Publish-NuGetCommandLine")
+    .IsDependentOn("Publish-MsBuildTask")
+    .IsDependentOn("Publish-Chocolatey")
+    //  .IsDependentOn("Publish-Gem")
+    .IsDependentOn("Publish-VstsTask")
+    .IsDependentOn("Publish-DockerImage")
+    .Finally(() =>
 {
     if(publishingError)
     {
