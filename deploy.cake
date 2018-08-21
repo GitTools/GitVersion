@@ -1,4 +1,4 @@
-#addin "nuget:https://www.nuget.org/api/v2?package=Cake.Json&version=1.0.2.13"
+#addin "nuget:https://www.nuget.org/api/v2?package=Cake.Json&version=3.0.1"
 #addin "nuget:https://www.nuget.org/api/v2?package=Cake.Docker&version=0.7.7"
 
 var target = Argument("target", "Deploy");
