@@ -84,8 +84,8 @@ Task("DownloadGitHubReleaseArtifacts")
         if (!artifactLookup.ContainsKey("NuGetExeDotNetCoreBuild")) { throw new Exception("NuGetExeDotNetCoreBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("NuGetTaskBuild")) { throw new Exception("NuGetTaskBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("NuGetExeBuild")) { throw new Exception("NuGetExeBuild artifact missing"); }
-        if (!artifactLookup.ContainsKey("GemBuild")) { throw new Exception("GemBuild artifact missing"); }
-        if (!artifactLookup.ContainsKey("GitVersionTfsTaskBuild")) { throw new Exception("GitVersionTfsTaskBuild artifact missing"); }
+        // if (!artifactLookup.ContainsKey("GemBuild")) { throw new Exception("GemBuild artifact missing"); }
+        // if (!artifactLookup.ContainsKey("GitVersionTfsTaskBuild")) { throw new Exception("GitVersionTfsTaskBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("zip")) { throw new Exception("zip artifact missing"); }
         if (!artifactLookup.ContainsKey("zip-dotnetcore")) { throw new Exception("zip-dotnetcore artifact missing"); }
     });
