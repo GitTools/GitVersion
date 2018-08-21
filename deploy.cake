@@ -306,7 +306,7 @@ bool PublishDocker(string name, string tagName, string contentZip, string docker
         return false;
     }
 
-    return true
+    return true;
 }
 
 Task("Publish-DockerImage")
