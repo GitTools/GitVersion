@@ -80,13 +80,13 @@ Task("DownloadGitHubReleaseArtifacts")
         // Have had missing artifacts before, lets fail early in that scenario
         if (!artifactLookup.ContainsKey("NuGetRefBuild")) { throw new Exception("NuGetRefBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("NuGetCommandLineBuild")) { throw new Exception("NuGetCommandLineBuild artifact missing"); }
-		if (!artifactLookup.ContainsKey("NuGetExeDotNetCoreBuild")) { throw new Exception("NuGetExeDotNetCoreBuild artifact missing"); }
+        if (!artifactLookup.ContainsKey("NuGetExeDotNetCoreBuild")) { throw new Exception("NuGetExeDotNetCoreBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("NuGetTaskBuild")) { throw new Exception("NuGetTaskBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("NuGetExeBuild")) { throw new Exception("NuGetExeBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("GemBuild")) { throw new Exception("GemBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("GitVersionTfsTaskBuild")) { throw new Exception("GitVersionTfsTaskBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("zip")) { throw new Exception("zip artifact missing"); }
-		if (!artifactLookup.ContainsKey("zip-dotnetcore")) { throw new Exception("zip-dotnetcore artifact missing"); }		
+        if (!artifactLookup.ContainsKey("zip-dotnetcore")) { throw new Exception("zip-dotnetcore artifact missing"); }
     });
 
 Task("Publish-NuGetPackage")
@@ -206,7 +206,7 @@ Task("Publish-VstsTask")
     }
 });
 
-// PublishDocker("gittools/gitversion", tag, "content.zip", "/some/path/DockerFile");	
+// PublishDocker("gittools/gitversion", tag, "content.zip", "/some/path/DockerFile");
 bool PublishDocker(string name, tagName, contentZip, dockerFilePath, containerVolume)
 {
     Information("Starting Docker Build for Image: " + name);
@@ -214,34 +214,34 @@ bool PublishDocker(string name, tagName, contentZip, dockerFilePath, containerVo
     var username = EnvironmentVariable("DOCKER_USERNAME");
     var password = EnvironmentVariable("DOCKER_PASSWORD");
 
-	if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+    if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
     {
         Warning("Skipping docker publish due to missing credentials");
         return false;
     }
 
-	// copy the docker file to a build directory, along with the contents of the specified content.zip.
-	// This directory should then contain all we need for the docker build.
-	var dockerBuildFolder = "./build/Docker/";
-	CreateDirectory(dockerBuildFolder);
+    // copy the docker file to a build directory, along with the contents of the specified content.zip.
+    // This directory should then contain all we need for the docker build.
+    var dockerBuildFolder = "./build/Docker/";
+    CreateDirectory(dockerBuildFolder);
 
-	//var folderName = name.Replace("/", "-");
-	var dockerFileBuildFolder = dockerBuildFolder + name;
-	CreateDirectory(dockerFileBuildFolder);
-	
-	Information("Copying docker file to " + dockerFileBuildFolder);	
-	CopyFiles(dockerFilePath, dockerFileBuildFolder);
+    //var folderName = name.Replace("/", "-");
+    var dockerFileBuildFolder = dockerBuildFolder + name;
+    CreateDirectory(dockerFileBuildFolder);
 
-	var contentPath = "/content";
-	var contentFolder = dockerFileBuildFolder + contentPath;
+    Information("Copying docker file to " + dockerFileBuildFolder);
+    CopyFiles(dockerFilePath, dockerFileBuildFolder);
 
-	Information("Extracting docker image content to " + contentFolder);
-	Unzip(contentZip, contentFolder);		
+    var contentPath = "/content";
+    var contentFolder = dockerFileBuildFolder + contentPath;
 
-	var dockerFilePathForBuild = dockerFileBuildFolder + "/DockerFile";
-	Information("Beginning Docker Build command for " + dockerFilePathForBuild);
+    Information("Extracting docker image content to " + contentFolder);
+    Unzip(contentZip, contentFolder);
 
-	var returnCode = StartProcess("docker", new ProcessSettings
+    var dockerFilePathForBuild = dockerFileBuildFolder + "/DockerFile";
+    Information("Beginning Docker Build command for " + dockerFilePathForBuild);
+
+    var returnCode = StartProcess("docker", new ProcessSettings
     {
         Arguments = "build -f " + dockerFilePathForBuild + " " + dockerFileBuildFolder + " --build-arg contentFolder=" + contentPath + " --tag " + name + ":" + tagName
     });
@@ -292,7 +292,7 @@ bool PublishDocker(string name, tagName, contentZip, dockerFilePath, containerVo
     });
     if (returnCode != 0) {
         Information("Publish-DockerImage Task failed latest tag, but continuing with next Task...");
-        publishingError = true;		
+        publishingError = true;
     }
 
     returnCode = StartProcess("docker", new ProcessSettings
@@ -302,7 +302,7 @@ bool PublishDocker(string name, tagName, contentZip, dockerFilePath, containerVo
     if (returnCode != 0) {
         Information("Publish-DockerImage Task failed latest tag, but continuing with next Task...");
         publishingError = true;
-		return false;
+        return false;
     }
 
 }
@@ -310,9 +310,9 @@ bool PublishDocker(string name, tagName, contentZip, dockerFilePath, containerVo
 Task("Publish-DockerImage")
     .IsDependentOn("DownloadGitHubReleaseArtifacts")
     .Does(() =>
-{            
-   	PublishDocker("gittools/gitversion", tag, artifactLookup["zip"], "src/Docker/Mono/DockerFile", "/repo");	
-	PublishDocker("gittools/gitversion-dotnetcore", tag, artifactLookup["zip-dotnetcore"], "src/Docker/DotNetCore/DockerFile", "c:/repo");	    
+{
+       PublishDocker("gittools/gitversion", tag, artifactLookup["zip"], "src/Docker/Mono/DockerFile", "/repo");
+    PublishDocker("gittools/gitversion-dotnetcore", tag, artifactLookup["zip-dotnetcore"], "src/Docker/DotNetCore/DockerFile", "c:/repo");
 });
 
 
