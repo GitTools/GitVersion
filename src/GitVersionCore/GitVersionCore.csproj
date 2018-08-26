@@ -7,7 +7,7 @@
     <AssemblyName>GitVersionCore</AssemblyName>
     <BuildDir>$(SolutionDir)..\build\</BuildDir>
     <!--Start of Nuspec metadata-->
-    <PackageId>GitVersion</PackageId>
+    <PackageId>GitVersionCore</PackageId>
     <Title>GitVersion</Title>
     <Authors>GitTools and Contributors</Authors>
     <PackageProjectUrl>https://github.com/GitTools/GitVersion</PackageProjectUrl>
