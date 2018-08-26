@@ -1,5 +1,6 @@
-#addin "nuget:https://www.nuget.org/api/v2?package=Cake.Json&version=1.0.2.13"
-#addin "nuget:https://www.nuget.org/api/v2?package=Cake.Docker&version=0.7.7"
+#addin "nuget:https://www.nuget.org/api/v2?package=Cake.Json&version=3.0.1"
+#addin nuget:?package=Newtonsoft.Json&version=9.0.1
+#addin "nuget:https://www.nuget.org/api/v2?package=Cake.Docker&version=0.9.5"
 
 var target = Argument("target", "Deploy");
 var tagOverride = Argument("TagOverride", "");
@@ -80,13 +81,13 @@ Task("DownloadGitHubReleaseArtifacts")
         // Have had missing artifacts before, lets fail early in that scenario
         if (!artifactLookup.ContainsKey("NuGetRefBuild")) { throw new Exception("NuGetRefBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("NuGetCommandLineBuild")) { throw new Exception("NuGetCommandLineBuild artifact missing"); }
-		if (!artifactLookup.ContainsKey("NuGetExeDotNetCoreBuild")) { throw new Exception("NuGetExeDotNetCoreBuild artifact missing"); }
+        if (!artifactLookup.ContainsKey("NuGetExeDotNetCoreBuild")) { throw new Exception("NuGetExeDotNetCoreBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("NuGetTaskBuild")) { throw new Exception("NuGetTaskBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("NuGetExeBuild")) { throw new Exception("NuGetExeBuild artifact missing"); }
-        if (!artifactLookup.ContainsKey("GemBuild")) { throw new Exception("GemBuild artifact missing"); }
-        if (!artifactLookup.ContainsKey("GitVersionTfsTaskBuild")) { throw new Exception("GitVersionTfsTaskBuild artifact missing"); }
+        // if (!artifactLookup.ContainsKey("GemBuild")) { throw new Exception("GemBuild artifact missing"); }
+        // if (!artifactLookup.ContainsKey("GitVersionTfsTaskBuild")) { throw new Exception("GitVersionTfsTaskBuild artifact missing"); }
         if (!artifactLookup.ContainsKey("zip")) { throw new Exception("zip artifact missing"); }
-		if (!artifactLookup.ContainsKey("zip-dotnetcore")) { throw new Exception("zip-dotnetcore artifact missing"); }		
+        if (!artifactLookup.ContainsKey("zip-dotnetcore")) { throw new Exception("zip-dotnetcore artifact missing"); }
     });
 
 Task("Publish-NuGetPackage")
@@ -206,42 +207,42 @@ Task("Publish-VstsTask")
     }
 });
 
-// PublishDocker("gittools/gitversion", tag, "content.zip", "/some/path/DockerFile");	
-bool PublishDocker(string name, tagName, contentZip, dockerFilePath, containerVolume)
+// PublishDocker("gittools/gitversion", tag, "content.zip", "/some/path/DockerFile");
+bool PublishDocker(string name, string tagName, string contentZip, string dockerFilePath, string containerVolume)
 {
     Information("Starting Docker Build for Image: " + name);
 
     var username = EnvironmentVariable("DOCKER_USERNAME");
     var password = EnvironmentVariable("DOCKER_PASSWORD");
 
-	if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+    if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
     {
         Warning("Skipping docker publish due to missing credentials");
         return false;
     }
 
-	// copy the docker file to a build directory, along with the contents of the specified content.zip.
-	// This directory should then contain all we need for the docker build.
-	var dockerBuildFolder = "./build/Docker/";
-	CreateDirectory(dockerBuildFolder);
+    // copy the docker file to a build directory, along with the contents of the specified content.zip.
+    // This directory should then contain all we need for the docker build.
+    var dockerBuildFolder = "./build/Docker/";
+    CreateDirectory(dockerBuildFolder);
 
-	//var folderName = name.Replace("/", "-");
-	var dockerFileBuildFolder = dockerBuildFolder + name;
-	CreateDirectory(dockerFileBuildFolder);
-	
-	Information("Copying docker file to " + dockerFileBuildFolder);	
-	CopyFiles(dockerFilePath, dockerFileBuildFolder);
+    //var folderName = name.Replace("/", "-");
+    var dockerFileBuildFolder = dockerBuildFolder + name;
+    CreateDirectory(dockerFileBuildFolder);
 
-	var contentPath = "/content";
-	var contentFolder = dockerFileBuildFolder + contentPath;
+    Information("Copying docker file to " + dockerFileBuildFolder);
+    CopyFiles(dockerFilePath, dockerFileBuildFolder);
 
-	Information("Extracting docker image content to " + contentFolder);
-	Unzip(contentZip, contentFolder);		
+    var contentPath = "/content";
+    var contentFolder = dockerFileBuildFolder + contentPath;
 
-	var dockerFilePathForBuild = dockerFileBuildFolder + "/DockerFile";
-	Information("Beginning Docker Build command for " + dockerFilePathForBuild);
+    Information("Extracting docker image content to " + contentFolder);
+    Unzip(contentZip, contentFolder);
 
-	var returnCode = StartProcess("docker", new ProcessSettings
+    var dockerFilePathForBuild = dockerFileBuildFolder + "/DockerFile";
+    Information("Beginning Docker Build command for " + dockerFilePathForBuild);
+
+    var returnCode = StartProcess("docker", new ProcessSettings
     {
         Arguments = "build -f " + dockerFilePathForBuild + " " + dockerFileBuildFolder + " --build-arg contentFolder=" + contentPath + " --tag " + name + ":" + tagName
     });
@@ -292,7 +293,7 @@ bool PublishDocker(string name, tagName, contentZip, dockerFilePath, containerVo
     });
     if (returnCode != 0) {
         Information("Publish-DockerImage Task failed latest tag, but continuing with next Task...");
-        publishingError = true;		
+        publishingError = true;
     }
 
     returnCode = StartProcess("docker", new ProcessSettings
@@ -302,29 +303,30 @@ bool PublishDocker(string name, tagName, contentZip, dockerFilePath, containerVo
     if (returnCode != 0) {
         Information("Publish-DockerImage Task failed latest tag, but continuing with next Task...");
         publishingError = true;
-		return false;
+        return false;
     }
 
+    return true;
 }
 
 Task("Publish-DockerImage")
     .IsDependentOn("DownloadGitHubReleaseArtifacts")
     .Does(() =>
-{            
-   	PublishDocker("gittools/gitversion", tag, artifactLookup["zip"], "src/Docker/Mono/DockerFile", "/repo");	
-	PublishDocker("gittools/gitversion-dotnetcore", tag, artifactLookup["zip-dotnetcore"], "src/Docker/DotNetCore/DockerFile", "c:/repo");	    
+{
+    PublishDocker("gittools/gitversion", tag, artifactLookup["zip"], "src/Docker/Mono/DockerFile", "/repo");
+    PublishDocker("gittools/gitversion-dotnetcore", tag, artifactLookup["zip-dotnetcore"], "src/Docker/DotNetCore/DockerFile", "c:/repo");
 });
 
 
 Task("Deploy")
-  .IsDependentOn("Publish-NuGetPackage")
-  .IsDependentOn("Publish-NuGetCommandLine")
-  .IsDependentOn("Publish-MsBuildTask")
-  .IsDependentOn("Publish-Chocolatey")
-//  .IsDependentOn("Publish-Gem")
-  .IsDependentOn("Publish-VstsTask")
-  .IsDependentOn("Publish-DockerImage")
-  .Finally(() =>
+    // .IsDependentOn("Publish-NuGetPackage")
+    .IsDependentOn("Publish-NuGetCommandLine")
+    .IsDependentOn("Publish-MsBuildTask")
+    // .IsDependentOn("Publish-Chocolatey")
+    // .IsDependentOn("Publish-Gem")
+    // .IsDependentOn("Publish-VstsTask")
+    .IsDependentOn("Publish-DockerImage")
+    .Finally(() =>
 {
     if(publishingError)
     {
