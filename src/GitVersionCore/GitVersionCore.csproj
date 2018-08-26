@@ -1,19 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.3;net40</TargetFrameworks>    
+    <TargetFrameworks>netstandard1.3;net40</TargetFrameworks>
     <OutputType>Library</OutputType>
     <RootNamespace>GitVersion</RootNamespace>
     <AssemblyName>GitVersionCore</AssemblyName>
     <BuildDir>$(SolutionDir)..\build\</BuildDir>
     <!--Start of Nuspec metadata-->
-    <PackageId>GitVersionCore</PackageId>
+    <PackageId>GitVersion</PackageId>
     <Title>GitVersion</Title>
     <Authors>GitTools and Contributors</Authors>
     <PackageProjectUrl>https://github.com/GitTools/GitVersion</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>Git;Versioning;GitVersion;GitFlowVersion;GitFlow;GitHubFlow;SemVer</PackageTags>
-    <Description>Derives SemVer information from a repository following GitFlow or GitHubFlow.</Description>
+    <Description>Derives SemVer information from a repository following GitFlow or GitHubFlow. This is the Core library which both GitVersion cli and Task use allowing programatic usage of GitVersion.</Description>
     <Copyright>Copyright GitTools 2015.</Copyright>
     <PackageLicenseUrl>http://www.opensource.org/licenses/mit-license.php</PackageLicenseUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/img/package_icon.png</PackageIconUrl>
@@ -28,7 +28,7 @@
     <GenerateAssemblyVersionAttribute Condition="'$(GenerateAssemblyVersionAttribute)' == ''">false</GenerateAssemblyVersionAttribute>
     <GenerateNeutralResourcesLanguageAttribute Condition="'$(GenerateNeutralResourcesLanguageAttribute)' == ''">true</GenerateNeutralResourcesLanguageAttribute>
   </PropertyGroup>
- 
+
   <PropertyGroup Condition="'$(TargetFramework)' == 'net40'">
     <DefineConstants>TRACE;NET40;NETDESKTOP</DefineConstants>
   </PropertyGroup>
@@ -51,12 +51,12 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <DocumentationFile>bin\Release\GitVersionCore.xml</DocumentationFile>
-  </PropertyGroup> 
+  </PropertyGroup>
 
-  <ItemGroup>     
+  <ItemGroup>
     <PackageReference Include="GitTools.Core" Version="$(PackageVersion_GitToolsCore)" />
     <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
-    <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2SharpNativeBinaries)" PrivateAssets="contentFiles" />  
+    <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2SharpNativeBinaries)" PrivateAssets="contentFiles" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net40' ">
@@ -67,13 +67,13 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    
-    
+
+
     <PackageReference Include="AsyncBridge" Version="0.1.1">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
   </ItemGroup>
-  
+
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
     <PackageReference Include="System.Net.Requests" Version="4.3.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.2" />
@@ -82,7 +82,7 @@
     <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
     <PackageReference Include="System.Text.Encoding.Extensions" Version="4.3.0" />
-    <PackageReference Include="System.Threading" Version="4.3.0" />  
+    <PackageReference Include="System.Threading" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -91,7 +91,7 @@
     <Compile Remove="VersionAssemblyInfoResources\AddFormats\**\*.*" />
     <Compile Remove="VersionAssemblyInfoResources\Templates\**\*.*" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <EmbeddedResource Include="GitVersionInformationResources\AddFormats\**\*.*" />
     <EmbeddedResource Include="GitVersionInformationResources\Templates\**\*.*" />

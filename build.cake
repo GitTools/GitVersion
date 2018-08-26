@@ -456,7 +456,7 @@ Task("Upload-AppVeyor-Artifacts")
     AppVeyor.UploadArtifact("build/NuGetExeBuild/GitVersion.Portable." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/NuGetCommandLineBuild/GitVersion.CommandLine." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/NuGetExeDotNetCoreBuild/GitVersion.CommandLine.DotNetCore." + nugetVersion +".nupkg");
-    AppVeyor.UploadArtifact("build/NuGetRefBuild/GitVersionCore." + nugetVersion +".nupkg");
+    AppVeyor.UploadArtifact("build/NuGetRefBuild/GitVersion." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/NuGetTaskBuild/GitVersionTask." + nugetVersion +".nupkg");
     AppVeyor.UploadArtifact("build/GitVersion_" + nugetVersion + ".zip");
     AppVeyor.UploadArtifact("build/GitVersionDotNetCore_" + nugetVersion + ".zip");
