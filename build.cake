@@ -445,7 +445,7 @@ Task("Upload-AppVeyor-Artifacts")
         "NuGetExeBuild:GitVersion.Portable." + nugetVersion +".nupkg",
         "NuGetCommandLineBuild:GitVersion.CommandLine." + nugetVersion +".nupkg",
         "NuGetExeDotNetCoreBuild:GitVersion.CommandLine.DotNetCore." + nugetVersion +".nupkg",
-        "NuGetRefBuild:GitVersion." + nugetVersion +".nupkg",
+        "NuGetRefBuild:GitVersionCore." + nugetVersion +".nupkg",
         "NuGetTaskBuild:GitVersionTask." + nugetVersion +".nupkg",
         "zip:GitVersion_" + nugetVersion + ".zip",
         "zip-dotnetcore:GitVersionDotNetCore_" + nugetVersion + ".zip"
