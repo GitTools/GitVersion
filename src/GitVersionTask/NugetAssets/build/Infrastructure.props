@@ -4,8 +4,8 @@
   <!-- Properties containing paths to functionality files and directories. -->
   <PropertyGroup>
     <GitVersionTaskBuildTools_FunctionalityDir>$(MSBuildThisFileDirectory)functionality/</GitVersionTaskBuildTools_FunctionalityDir>
-    <GitVersionTaskBuildTools_FunctionalityFile Condition="'$(GitVersion_IsMultiTargeting)'!= 'true'">$(GitVersionTaskBuildTools_FunctionalityDir)GitVersionBuild.targets</GitVersionTaskBuildTools_FunctionalityFile>
-    <GitVersionTaskBuildTools_FunctionalityFile Condition="'$(GitVersion_IsMultiTargeting)'== 'true'">$(GitVersionTaskBuildTools_FunctionalityDir)GitVersionMultiTargetBuild.targets</GitVersionTaskBuildTools_FunctionalityFile>
+    <GitVersionTaskBuildTools_FunctionalityFile Condition="'$(GitVersionTaskBuildTools_IsMultiTargeting)'!= 'true'">$(GitVersionTaskBuildTools_FunctionalityDir)GitVersionBuild.targets</GitVersionTaskBuildTools_FunctionalityFile>
+    <GitVersionTaskBuildTools_FunctionalityFile Condition="'$(GitVersionTaskBuildTools_IsMultiTargeting)'== 'true'">$(GitVersionTaskBuildTools_FunctionalityDir)GitVersionMultiTargetBuild.targets</GitVersionTaskBuildTools_FunctionalityFile>
     <GitVersionTaskBuildTools_FunctionalityObjFolder>$(GitVersionTaskBuildTools_FunctionalityDir)obj/</GitVersionTaskBuildTools_FunctionalityObjFolder>
   </PropertyGroup>
 

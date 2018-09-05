@@ -97,7 +97,7 @@ Sets the `mode` of how GitVersion should create a new version. Read more at
 ### increment
 The part of the SemVer to increment when GitVersion detects it needs to be increased, such as for commits after a tag: `Major`, `Minor`, `Patch`, `None`.
 
-The special value `Inherit` means that GitVersion should find the parent branch (i.e. the branch where the current branch was branched from), and use its values for [increment](#increment), [prevent-increment-of-merged-branch-version](#prevent-increment-of-merged-branch-version) and [is-develop](#is-develop).
+The special value `Inherit` means that GitVersion should find the parent branch (i.e. the branch where the current branch was branched from), and use its values for [increment](#increment), [prevent-increment-of-merged-branch-version](#prevent-increment-of-merged-branch-version) and [tracks-release-branches](#tracks-release-branches).
 
 ### continuous-delivery-fallback-tag
 When using `mode: ContinuousDeployment`, the value specified in
