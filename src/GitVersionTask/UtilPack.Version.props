@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <PackageVersion_UtilPackNuGetMSBuild>2.6.0</PackageVersion_UtilPackNuGetMSBuild>
+    <PackageVersion_UtilPackNuGetMSBuild>2.7.0</PackageVersion_UtilPackNuGetMSBuild>
   </PropertyGroup>
 </Project>
 

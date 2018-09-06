@@ -79,8 +79,9 @@
     <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)">
         <PrivateAssets>All</PrivateAssets>   
     </PackageReference>
-    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.1.548" />
-    <PackageReference Include="Microsoft.Build.Framework" Version="15.1.548" />
+    <!--See https://github.com/Microsoft/msbuild/issues/3671 for reason for the ExcludeAssets against msbuild packagerefernces -->
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.1.548" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Framework" Version="15.1.548" ExcludeAssets="runtime" />
     <PackageReference Include="UtilPack.NuGet.MSBuild" Version="$(PackageVersion_UtilPackNuGetMSBuild)" />
   </ItemGroup> 
   
