@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -54,6 +54,10 @@
     <PackageReference Include="Shouldly" Version="3.0.0"></PackageReference>
     <PackageReference Include="System.Reflection.Metadata" Version="1.4.2"></PackageReference>
     <PackageReference Include="System.Collections.Immutable" Version="1.3.1"></PackageReference>
+      <!--See https://github.com/Microsoft/msbuild/issues/3671 for reason for the ExcludeAssets against msbuild packagerefernces -->
+      <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.1.548" />
+      <PackageReference Include="Microsoft.Build.Framework" Version="15.1.548" />
+
   </ItemGroup>
   <ItemGroup>  
     <Reference Include="Microsoft.CSharp" />
