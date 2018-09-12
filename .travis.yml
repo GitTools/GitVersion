@@ -11,7 +11,7 @@ before_install:
   - git fetch --unshallow # Travis always does a shallow clone, but GitVersion needs the full history including branches and tags
   - bash <(wget -O - https://raw.githubusercontent.com/PowerShell/PowerShell/master/tools/install-powershell.sh)
 script:
-  - pwsh ./run.ps1 -script build.cake -target Travis
+  - pwsh ./run.ps1 -script build.cake -target Unix
 env:
   global:
     - DOTNET_CLI_TELEMETRY_OPTOUT: 1

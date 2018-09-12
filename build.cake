@@ -477,7 +477,7 @@ Task("Upload-AppVeyor-Artifacts")
     Error(exception.Dump());
 });
 
-Task("Travis")
+Task("Unix")
   .IsDependentOn("Run-Tests");
 
 Task("Default")
