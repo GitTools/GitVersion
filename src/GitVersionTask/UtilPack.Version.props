@@ -1,4 +1,4 @@
-<Project>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <PackageVersion_UtilPackNuGetMSBuild>2.7.0</PackageVersion_UtilPackNuGetMSBuild>
   </PropertyGroup>
