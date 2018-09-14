@@ -1,4 +1,4 @@
-﻿using GitTools.Testing;
+using GitTools.Testing;
 using GitVersion;
 using GitVersion.Helpers;
 using GitVersionCore.Tests;
@@ -270,6 +270,7 @@ CommitDate: 2015-11-10
         // Make sure GitVersion doesn't trigger build server mode when we are running the tests
         Environment.SetEnvironmentVariable(AppVeyor.EnvironmentVariableName, null);
         Environment.SetEnvironmentVariable(TravisCI.EnvironmentVariableName, null);
+        Environment.SetEnvironmentVariable(VsoAgent.EnvironmentVariableName, null);
         var debugBuilder = new StringBuilder();
         Action<string> debugLogger = s =>
         {
