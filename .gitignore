@@ -117,3 +117,5 @@ GitVersion.CommandLine/*/
 
 releaseArtifacts
 /ILMergeTemp
+.dotnet
+.cake

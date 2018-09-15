@@ -1,6 +1,6 @@
 image: Visual Studio 2017
 install:
-  npm i -g tfx-cli
+  - npm i -g tfx-cli
 
 assembly_info:
   patch: false
@@ -9,7 +9,7 @@ configuration:
   - Debug
 
 build_script:
-  - ps: .\build.ps1
+  - pwsh: ./run.ps1 -script build.cake
 
 test: off
 skip_tags: true
