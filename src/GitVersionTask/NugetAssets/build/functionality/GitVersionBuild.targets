@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildThisFileDirectory)GitVersionCommon.props"/>  
 
@@ -57,6 +57,7 @@
       <Output TaskParameter="FullBuildMetaData" PropertyName="GitVersion_FullBuildMetaData" />
       <Output TaskParameter="MajorMinorPatch" PropertyName="GitVersion_MajorMinorPatch" />
       <Output TaskParameter="SemVer" PropertyName="GitVersion_SemVer" />
+      <Output TaskParameter="GitSemVer" PropertyName="GitVersion_GitSemVer" />
       <Output TaskParameter="LegacySemVer" PropertyName="GitVersion_LegacySemVer" />
       <Output TaskParameter="LegacySemVerPadded" PropertyName="GitVersion_LegacySemVerPadded" />
       <Output TaskParameter="AssemblySemVer" PropertyName="GitVersion_AssemblySemVer" />

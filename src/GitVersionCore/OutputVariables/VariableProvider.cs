@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
     using System.Text.RegularExpressions;
@@ -63,6 +63,7 @@
                 semverFormatValues.Sha,
                 semverFormatValues.MajorMinorPatch,
                 semverFormatValues.SemVer,
+                semverFormatValues.GitSemVer,
                 semverFormatValues.LegacySemVer,
                 semverFormatValues.LegacySemVerPadded,
                 semverFormatValues.FullSemVer,

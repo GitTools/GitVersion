@@ -11,6 +11,7 @@
   "FullBuildMetaData":"5.Sha.commitSha",
   "MajorMinorPatch":"1.2.3",
   "SemVer":"1.2.3",
+  "GitSemVer":"1.2.3",
   "LegacySemVer":"1.2.3",
   "LegacySemVerPadded":"1.2.3",
   "AssemblySemVer":"1.2.3.0",

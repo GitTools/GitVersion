@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System.Globalization;
 
@@ -71,6 +71,11 @@
         public string SemVer
         {
             get { return _semver.ToString(); }
+        }
+
+        public string GitSemVer
+        {
+            get { return _semver.ToString("g"); }
         }
 
         public string LegacySemVer

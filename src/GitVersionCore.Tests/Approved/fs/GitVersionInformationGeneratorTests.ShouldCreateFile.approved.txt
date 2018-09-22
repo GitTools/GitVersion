@@ -23,6 +23,7 @@ module GitVersionInformation
     let FullBuildMetaData = "5.Branch.feature1.Sha.commitSha"
     let MajorMinorPatch = "1.2.3"
     let SemVer = "1.2.3-unstable.4"
+    let GitSemVer = "1.2.3-unstable+gcommitSh"
     let LegacySemVer = "1.2.3-unstable4"
     let LegacySemVerPadded = "1.2.3-unstable0004"
     let AssemblySemVer = "1.2.3.0"

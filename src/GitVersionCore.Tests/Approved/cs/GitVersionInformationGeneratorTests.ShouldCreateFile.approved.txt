@@ -23,6 +23,7 @@ static class GitVersionInformation
     public static string FullBuildMetaData = "5.Branch.feature1.Sha.commitSha";
     public static string MajorMinorPatch = "1.2.3";
     public static string SemVer = "1.2.3-unstable.4";
+    public static string GitSemVer = "1.2.3-unstable+gcommitSh";
     public static string LegacySemVer = "1.2.3-unstable4";
     public static string LegacySemVerPadded = "1.2.3-unstable0004";
     public static string AssemblySemVer = "1.2.3.0";

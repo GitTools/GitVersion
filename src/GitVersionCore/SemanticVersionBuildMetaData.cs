@@ -106,6 +106,8 @@ namespace GitVersion
                     return CommitsSinceTag.ToString();
                 case "s":
                     return string.Format("{0}{1}", CommitsSinceTag, string.IsNullOrEmpty(Sha) ? null : ".Sha." + Sha).TrimStart('.');
+                case "g":
+                    return string.Format("g{0}", Sha.Substring(0, 8));
                 case "f":
                     return string.Format(
                         "{0}{1}{2}{3}",

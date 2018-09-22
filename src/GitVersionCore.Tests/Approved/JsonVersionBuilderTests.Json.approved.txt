@@ -11,6 +11,7 @@
   "FullBuildMetaData":"5.Branch.feature1.Sha.commitSha",
   "MajorMinorPatch":"1.2.0",
   "SemVer":"1.2.0-unstable.4",
+  "GitSemVer":"1.2.0-unstable+gcommitSh",
   "LegacySemVer":"1.2.0-unstable4",
   "LegacySemVerPadded":"1.2.0-unstable0004",
   "AssemblySemVer":"1.2.0.0",

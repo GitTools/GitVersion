@@ -1,4 +1,4 @@
-﻿namespace GitVersionTask
+namespace GitVersionTask
 {
     using System;
     using GitVersion;
@@ -57,6 +57,9 @@
 
         [Output]
         public string SemVer { get; set; }
+
+        [Output]
+        public string GitSemVer { get; set; }
 
         [Output]
         public string LegacySemVer { get; set; }

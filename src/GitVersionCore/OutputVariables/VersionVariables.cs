@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
     using System.Collections;
@@ -23,6 +23,7 @@
                                 string sha,
                                 string majorMinorPatch,
                                 string semVer,
+                                string gitSemVer,
                                 string legacySemVer,
                                 string legacySemVerPadded,
                                 string fullSemVer,
@@ -51,6 +52,7 @@
             Sha = sha;
             MajorMinorPatch = majorMinorPatch;
             SemVer = semVer;
+            GitSemVer = gitSemVer;
             LegacySemVer = legacySemVer;
             LegacySemVerPadded = legacySemVerPadded;
             FullSemVer = fullSemVer;
@@ -82,6 +84,7 @@
         public string FullBuildMetaData { get; private set; }
         public string MajorMinorPatch { get; private set; }
         public string SemVer { get; private set; }
+        public string GitSemVer { get; private set; }
         public string LegacySemVer { get; private set; }
         public string LegacySemVerPadded { get; private set; }
         public string AssemblySemVer { get; private set; }

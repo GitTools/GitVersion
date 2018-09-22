@@ -1,4 +1,4 @@
-﻿using GitTools.Testing;
+using GitTools.Testing;
 using GitVersion;
 using GitVersion.Helpers;
 using GitVersionCore.Tests;
@@ -54,6 +54,7 @@ BuildMetaDataPadded:
 FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 MajorMinorPatch: 4.10.3
 SemVer: 4.10.3-test.19
+GitSemVer: 4.10.3-test+gdd2a29af
 LegacySemVer: 4.10.3-test19
 LegacySemVerPadded: 4.10.3-test0019
 AssemblySemVer: 4.10.3.0
@@ -100,6 +101,7 @@ BuildMetaDataPadded:
 FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 MajorMinorPatch: 4.10.3
 SemVer: 4.10.3-test.19
+GitSemVer: 4.10.3-test+gdd2a29af
 LegacySemVer: 4.10.3-test19
 LegacySemVerPadded: 4.10.3-test0019
 AssemblySemVer: 4.10.3.0
@@ -163,6 +165,7 @@ BuildMetaDataPadded:
 FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 MajorMinorPatch: 4.10.3
 SemVer: 4.10.3-test.19
+GitSemVer: 4.10.3-test+gdd2a29af
 LegacySemVer: 4.10.3-test19
 LegacySemVerPadded: 4.10.3-test0019
 AssemblySemVer: 4.10.3.0
@@ -212,6 +215,7 @@ BuildMetaDataPadded:
 FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 MajorMinorPatch: 4.10.3
 SemVer: 4.10.3-test.19
+GitSemVer: 4.10.3-test+gdd2a29af
 LegacySemVer: 4.10.3-test19
 LegacySemVerPadded: 4.10.3-test0019
 AssemblySemVer: 4.10.3.0

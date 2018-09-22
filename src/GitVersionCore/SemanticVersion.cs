@@ -268,6 +268,8 @@ namespace GitVersion
                     return string.Format("{0}.{1}.{2}", Major, Minor, Patch);
                 case "s":
                     return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag) : ToString("j");
+                case "g":
+                    return PreReleaseTag.HasTag() ? string.Format("{0}-{1}+{2}", ToString("j"), PreReleaseTag.ToString("g"), BuildMetaData.ToString("g")) : ToString("j");
                 case "t":
                     return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag.ToString("t")) : ToString("j");
                 case "l":
