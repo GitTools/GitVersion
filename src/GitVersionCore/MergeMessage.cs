@@ -1,117 +1,86 @@
-﻿using System;
-using System.Linq;
+using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace GitVersion
 {
     class MergeMessage
     {
-        static Regex parseMergeMessage = new Regex(
-            @"^Merge (branch|tag) '(?<Branch>[^']*)'",
-            RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        static Regex parseGitHubPullMergeMessage = new Regex(
-            @"^Merge pull request #(?<PullRequestNumber>\d*) (from|in) (?<Source>.*)",
-            RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        static Regex parseBitBucketPullMergeMessage = new Regex(
-            @"^Merge pull request #(?<PullRequestNumber>\d*) (from|in) (?<Source>.*) from (?<SourceBranch>.*) to (?<TargetBranch>.*)",
-            RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        static Regex smartGitMergeMessage = new Regex(
-            @"^Finish (?<Branch>.*)",
-            RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        static Regex parseRemoteTrackingMergeMessage = new Regex(
-            @"^Merge remote-tracking branch '(?<SourceBranch>.*)' into (?<TargetBranch>.*)",
-            RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-        private string mergeMessage;
-        private Config config;
+        private static readonly IList<MergeMessagePattern> Patterns = new List<MergeMessagePattern>
+        {
+            new MergeMessagePattern("Default", @"^Merge (branch|tag) '(?<SourceBranch>[^']*)'(?: into (?<TargetBranch>[^\s]*))*"),
+            new MergeMessagePattern("SmartGit",  @"^Finish (?<SourceBranch>[^\s]*)(?: into (?<TargetBranch>[^\s]*))*"),
+            new MergeMessagePattern("BitBucketPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?<Source>.*) from (?<SourceBranch>[^\s]*) to (?<TargetBranch>[^\s]*)"),
+            new MergeMessagePattern("GitHubPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?:(?<SourceBranch>[^\s]*))(?: into (?<TargetBranch>[^\s]*))*"),
+            new MergeMessagePattern("RemoteTracking", @"^Merge remote-tracking branch '(?<SourceBranch>[^\s]*)'(?: into (?<TargetBranch>[^\s]*))*")
+        };
 
         public MergeMessage(string mergeMessage, Config config)
         {
-            this.mergeMessage = mergeMessage;
-            this.config = config;
+            if (mergeMessage == null)
+                throw new NullReferenceException();
 
-            var lastIndexOf = mergeMessage.LastIndexOf("into", StringComparison.OrdinalIgnoreCase);
-            if (lastIndexOf != -1)
+            foreach (var pattern in Patterns)
             {
-                // If we have into in the merge message the rest should be the target branch
-                TargetBranch = mergeMessage.Substring(lastIndexOf + 5);
-            }
-
-            MergedBranch = ParseBranch();
-
-            // Remove remotes and branch prefixes like release/ feature/ hotfix/ etc
-            var toMatch = Regex.Replace(MergedBranch, @"^(\w+[-/])*", "", RegexOptions.IgnoreCase);
-            toMatch = Regex.Replace(toMatch, $"^{config.TagPrefix}", "");
-            // We don't match if the version is likely an ip (i.e starts with http://)
-            var versionMatch = new Regex(@"^(?<!://)\d+\.\d+(\.*\d+)*");
-            var version = versionMatch.Match(toMatch);
-
-            if (version.Success)
-            {
-                SemanticVersion val;
-                if (SemanticVersion.TryParse(version.Value, config.TagPrefix, out val))
+                var match = pattern.Format.Match(mergeMessage);
+                if (match.Success)
                 {
-                    Version = val;
+                    MatchDefinition = pattern.Name;
+                    MergedBranch = match.Groups["SourceBranch"].Value;
+
+                    if (match.Groups["TargetBranch"].Success)
+                    {
+                        TargetBranch = match.Groups["TargetBranch"].Value;
+                    }
+
+                    if (int.TryParse(match.Groups["PullRequestNumber"].Value, out var pullNumber))
+                    {
+                        PullRequestNumber = pullNumber;
+                    }
+
+                    Version = ParseVersion(MergedBranch, config.TagPrefix);
+
+                    break;
                 }
             }
         }
 
-        private string ParseBranch()
-        {
-            var match = parseMergeMessage.Match(mergeMessage);
-            if (match.Success)
-            {
-                return match.Groups["Branch"].Value;
-            }
-
-            match = smartGitMergeMessage.Match(mergeMessage);
-            if (match.Success)
-            {
-                return match.Groups["Branch"].Value;
-            }
-
-            match = parseBitBucketPullMergeMessage.Match(mergeMessage);
-            if (match.Success)
-            {
-                IsMergedPullRequest = true;
-                PullRequestNumber = GetPullRequestNumber(match);
-                return match.Groups["SourceBranch"].Value;
-            }
-
-            match = parseGitHubPullMergeMessage.Match(mergeMessage);
-            if (match.Success)
-            {
-                IsMergedPullRequest = true;
-                PullRequestNumber = GetPullRequestNumber(match);
-                var from = match.Groups["Source"].Value;
-                // TODO We could remove/separate the remote name at this point?
-                return from;
-            }
-
-            match = parseRemoteTrackingMergeMessage.Match(mergeMessage);
-            if (match.Success) {
-                var from = match.Groups["SourceBranch"].Value;
-                // TODO We could remove/separate the remote name at this point?
-                return from;
-            }
-
-            return "";
-        }
-
-        private int GetPullRequestNumber(Match match)
-        {
-            int pullNumber;
-            if (int.TryParse(match.Groups["PullRequestNumber"].Value, out pullNumber))
-            {
-                PullRequestNumber = pullNumber;
-            }
-            return pullNumber;
-        }
-
+        public string MatchDefinition { get; }
         public string TargetBranch { get; }
-        public string MergedBranch { get; }
-        public bool IsMergedPullRequest { get; private set; }
-        public int? PullRequestNumber { get; private set; }
+        public string MergedBranch { get; } = "";
+        public bool IsMergedPullRequest => PullRequestNumber != null;
+        public int? PullRequestNumber { get; }
         public SemanticVersion Version { get; }
+
+
+        private SemanticVersion ParseVersion(string branchName, string tagPrefix)
+        {
+            // Remove remotes and branch prefixes like release/ feature/ hotfix/ etc
+            var toMatch = Regex.Replace(MergedBranch, @"^(\w+[-/])*", "", RegexOptions.IgnoreCase);
+            toMatch = Regex.Replace(toMatch, $"^{tagPrefix}", "");
+            // We don't match if the version is likely an ip (i.e starts with http://)
+            var versionMatch = new Regex(@"^(?<!://)\d+\.\d+(\.*\d+)*");
+            var version = versionMatch.Match(toMatch);
+
+            if (version.Success && SemanticVersion.TryParse(version.Value, tagPrefix, out var val))
+            {
+                return val;
+            }
+
+            return null;
+        }
+
+        private class MergeMessagePattern
+        {
+            public MergeMessagePattern(string name, string format)
+            {
+                Name = name;
+                Format = new Regex(format, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            }
+
+            public string Name { get; }
+
+            public Regex Format { get; }
+        }
     }
 }
