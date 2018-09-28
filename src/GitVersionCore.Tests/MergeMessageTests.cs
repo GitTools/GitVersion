@@ -59,7 +59,9 @@ namespace GitVersionCore.Tests
             new object[] { "Merge tag 'v4.0.0' into master", "v4.0.0", "master", new SemanticVersion(4) },
             new object[] { "Merge tag 'V4.0.0' into master", "V4.0.0", "master", new SemanticVersion(4) },
             new object[] { "Merge branch 'feature/4.1/one'", "feature/4.1/one", null, new SemanticVersion(4, 1) },
-            new object[] { "Merge branch 'origin/4.1/feature/one'", "origin/4.1/feature/one", null, new SemanticVersion(4, 1) }
+            new object[] { "Merge branch 'origin/4.1/feature/one'", "origin/4.1/feature/one", null, new SemanticVersion(4, 1) },
+            new object[] { "Merge tag 'v://10.10.10.10' into master", "v://10.10.10.10", "master", null }
+
         };
 
         [TestCaseSource(nameof(MergeMessages))]
@@ -88,6 +90,7 @@ namespace GitVersionCore.Tests
             new object[] { "Merge pull request #1234 in V4.0.0", "V4.0.0", null, new SemanticVersion(4), 1234  },
             new object[] { "Merge pull request #1234 from origin/feature/one", "origin/feature/one", null, null, 1234  },
             new object[] { "Merge pull request #1234 in feature/4.1/one", "feature/4.1/one", null, new SemanticVersion(4,1), 1234  },
+            new object[] { "Merge pull request #1234 in V://10.10.10.10", "V://10.10.10.10", null, null, 1234 },
             
 
             //TODO: Investigate successful github merge messages that may be invalid
@@ -125,7 +128,7 @@ namespace GitVersionCore.Tests
             new object[] { "Merge pull request #1234 from origin/feature/one from origin/feature/4.2/two to dev", "origin/feature/4.2/two", null, new SemanticVersion(4,2), 1234  },
             new object[] { "Merge pull request #1234 in feature/4.1/one from feature/4.2/two to dev", "feature/4.2/two", null, new SemanticVersion(4,2), 1234  },
             new object[] { "Merge pull request #1234 in feature/4.1/one from feature/4.2/two to dev into master", "feature/4.2/two", "master", new SemanticVersion(4,2), 1234  },
-
+            new object[] { "Merge pull request #1234 in V4.1.0 from V://10.10.10.10 to dev", "V://10.10.10.10", null, null, 1234 },
             //TODO: Investigate successful bitbucket merge messages that may be invalid
             // Regex has double 'from/in from' section.  Is that correct?
             new object[] { "Merge pull request #1234 in feature/4.1/one from feature/4.2/two to dev", "feature/4.2/two", null, new SemanticVersion(4,2), 1234  },
@@ -162,6 +165,7 @@ namespace GitVersionCore.Tests
             new object[] { "Finish v4.0.0", "v4.0.0", null, new SemanticVersion(4) },
             new object[] { "Finish feature/4.1/one", "feature/4.1/one", null, new SemanticVersion(4, 1) },
             new object[] { "Finish origin/4.1/feature/one", "origin/4.1/feature/one", null, new SemanticVersion(4, 1) },
+            new object[] { "Finish V://10.10.10.10", "V://10.10.10.10", null, null },
 
             //TODO: Investigate successful smart git merge messages that may be invalid
             // The branch name appears to be incorrect
@@ -193,7 +197,8 @@ namespace GitVersionCore.Tests
             new object[] { "Merge remote-tracking branch 'v4.0.0' into master", "v4.0.0", "master", new SemanticVersion(4) },
             new object[] { "Merge remote-tracking branch 'V4.0.0' into master", "V4.0.0", "master", new SemanticVersion(4) },
             new object[] { "Merge remote-tracking branch 'feature/4.1/one' into dev", "feature/4.1/one", "dev", new SemanticVersion(4, 1) },
-            new object[] { "Merge remote-tracking branch 'origin/4.1/feature/one' into master", "origin/4.1/feature/one", "master", new SemanticVersion(4, 1) }
+            new object[] { "Merge remote-tracking branch 'origin/4.1/feature/one' into master", "origin/4.1/feature/one", "master", new SemanticVersion(4, 1) },
+            new object[] { "Merge remote-tracking branch 'v://10.10.10.10' into master", "v://10.10.10.10", "master", null }
         };
 
         [TestCaseSource(nameof(RemoteTrackingMergeMessages))]
