@@ -12,7 +12,7 @@ var preferBundledVersion = tl.getBoolInput('preferBundledVersion');
 
 var currentDirectory = __dirname;
 
-var sourcesDirectory = tl.getVariable("Build.SourcesDirectory")
+var sourcesDirectory = tl.getVariable("Build.SourcesDirectory") || ".";
 
 if (!gitVersionPath) {
     gitVersionPath = tl.which("GitVersion.exe");

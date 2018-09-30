@@ -1,0 +1,1 @@
+Generate-BinFile "gfv" "$packageFolder\Tools\GitVersion.exe"

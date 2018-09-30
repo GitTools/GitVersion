@@ -6,9 +6,9 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>GitVersion</RootNamespace>
     <AssemblyName>GitVersion</AssemblyName>
-    <TargetFrameworks>net40;netcoreapp20</TargetFrameworks>
+    <TargetFrameworks>net40;netcoreapp2.0</TargetFrameworks>
     <BuildDir>$(SolutionDir)..\build\</BuildDir>
-    
+
     <GenerateAssemblyFileVersionAttribute Condition="'$(GenerateAssemblyFileVersionAttribute)' == ''">false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInformationalVersionAttribute Condition="'$(GenerateAssemblyInformationalVersionAttribute)' == ''">false</GenerateAssemblyInformationalVersionAttribute>
     <GenerateAssemblyProductAttribute Condition="'$(GenerateAssemblyProductAttribute)' == ''">false</GenerateAssemblyProductAttribute>
@@ -16,14 +16,14 @@
     <GenerateAssemblyVersionAttribute Condition="'$(GenerateAssemblyVersionAttribute)' == ''">false</GenerateAssemblyVersionAttribute>
     <GenerateNeutralResourcesLanguageAttribute Condition="'$(GenerateNeutralResourcesLanguageAttribute)' == ''">true</GenerateNeutralResourcesLanguageAttribute>
   </PropertyGroup>
-  
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-  
+
     <DocumentationFile>bin\Debug\GitVersion.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
@@ -32,7 +32,7 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    
+
     <DocumentationFile>bin\Release\GitVersion.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -41,12 +41,12 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'net40'">
     <DefineConstants>NET40;NETDESKTOP</DefineConstants>
   </PropertyGroup>
-  
-  <ItemGroup Condition="'$(TargetFramework)'=='net40'">  
-    
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net40'">
+
     <PackageReference Include="GitTools.Core" Version="1.3.1"></PackageReference>
-    <PackageReference Include="JetBrains.Annotations" Version="10.4.0"></PackageReference>    
-   
+    <PackageReference Include="JetBrains.Annotations" Version="10.4.0"></PackageReference>
+
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -79,13 +79,13 @@
     <None Include="NugetAssets\GitVersion.Portable.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="GemAssets\.gitignore" />   
-  </ItemGroup> 
-  
-  <ItemGroup>
-    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />     
+    <Content Include="GemAssets\.gitignore" />
   </ItemGroup>
- 
+
+  <ItemGroup>
+    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
+  </ItemGroup>
+
   <Target Name="Clean">
     <ItemGroup>
       <ExeFilesToDelete Include="$(BuildDir)NuGetExeBuild\**\*.*;$(BuildDir)NuGetCommandLineBuild\**\*.*;$(BuildDir)GemBuild\**\*.*" />
@@ -124,7 +124,7 @@
       <WindowsBinaries Include="$(TargetDir)lib\**\*.dll" />
       <LibGit2SharpFiles Include="$(TargetDir)LibGit2Sharp.*" Exclude="$(TargetDir)LibGit2Sharp.xml" />
     </ItemGroup>
-  
+
     <!-- TfsBuildTask -->
     <Exec Command="powershell -ExecutionPolicy RemoteSigned -NoProfile &quot;$(SolutionDir)GitVersionTfsTask\BuildTs.ps1&quot;" Condition="'$(GitVersion_SemVer)' != ''" />
     <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask\lib\%(RecursiveDir)%(Filename)%(Extension)')" Condition="'$(GitVersion_SemVer)' != ''" />
@@ -167,5 +167,5 @@
     <!-- Cleanup -->
     <RemoveDir Directories="$(TargetDir)ILMergeTemp\" />
   </Target>
- 
+
 </Project>

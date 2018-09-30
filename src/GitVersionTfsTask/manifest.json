@@ -7,21 +7,23 @@
     "author": "GitVersion Contributors",
     "version": "$version$",
     "description": "Build task for easy semantic versioning for projects using Git.",
-    "targets": [
+    "targets": [{
+        "id": "Microsoft.VisualStudio.Services"
+    }],
+    "files": [{
+            "path": "GitVersion.exe"
+        },
         {
-            "id": "Microsoft.VisualStudio.Services"
-        }
-    ],
-    "files": [
+            "path": "LibGit2Sharp.dll.config"
+        },
         {
-            "path": "GitVersionTask"
+            "path": "lib"
         }
     ],
     "categories": [
         "Build and release"
     ],
-    "icons":
-    {
+    "icons": {
         "default": "extension-icon.png"
     },
     "tags": [
@@ -45,8 +47,7 @@
             "uri": "https://github.com/GitTools/GitVersion/issues"
         }
     },
-    "screenshots": [
-        {
+    "screenshots": [{
             "path": "img/builds.png"
         },
         {
@@ -58,16 +59,14 @@
             "path": "overview.md"
         }
     },
-    "contributions": [
-        {
-            "id": "gitversion-task",
-            "type": "ms.vss-distributed-task.task",
-            "targets": [
-                "ms.vss-distributed-task.tasks"
-            ],
-            "properties": {
-                "name": "GitVersionTask"
-            }
+    "contributions": [{
+        "id": "gitversion-task",
+        "type": "ms.vss-distributed-task.task",
+        "targets": [
+            "ms.vss-distributed-task.tasks"
+        ],
+        "properties": {
+            "name": "GitVersionTask"
         }
-    ]
+    }]
 }

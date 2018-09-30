@@ -1,22 +1,25 @@
 {
-  "name": "gitversion",
-  "version": "1.0.0",
-  "private": true,
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "vsts-task-lib": "1.1.0",
-    "q": "1.4.1"
-  },
-  "devDependencies": {
-    "@types/minimatch": "^2.0.29",
-    "@types/node": "^7.0.5",
-    "@types/q": "0.0.32",
-    "typescript": "^2.3.2"
-  }
+    "name": "gitversion",
+    "version": "1.0.0",
+    "private": true,
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "build": "tsc",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "package": "tfx extension create --manifest-globs manifest.json"
+    },
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "q": "1.5.1",
+        "vsts-task-lib": "2.6.1"
+    },
+    "devDependencies": {
+        "@types/minimatch": "3.0.3",
+        "@types/node": "10.11.0",
+        "@types/q": "1.5.1",
+        "tfx-cli": "^0.6.1",
+        "typescript": "^3.0.3"
+    }
 }

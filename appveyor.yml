@@ -1,18 +1,15 @@
 image: Visual Studio 2017
-install:
-  - npm i -g tfx-cli
 
 assembly_info:
   patch: false
 
 configuration:
   - Debug
+install:
+  - set PATH=C:\Ruby25-x64\bin;%PATH%
 
 build_script:
-  - pwsh: ./run.ps1 -script build.cake
+  - pwsh: ./run.ps1 -script run.cake -target Default
 
 test: off
 skip_tags: true
-
-cache:
-  - src\packages -> **\packages.config  # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified

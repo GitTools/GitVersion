@@ -119,3 +119,13 @@ releaseArtifacts
 /ILMergeTemp
 .dotnet
 .cake
+artifacts
+/src/Docker/**/content
+/src/GitVersionTfsTask/lib
+/src/GitVersionTfsTask/GitVersion.exe
+/src/GitVersionTfsTask/LibGit2Sharp.dll.config
+/src/GitVersionTfsTask/*.vsix
+/src/GitVersionRubyGem/*.gem
+/src/GitVersionRubyGem/bin/lib
+/src/GitVersionRubyGem/bin/GitVersion.exe
+/src/GitVersionRubyGem/bin/LibGit2Sharp.dll.config

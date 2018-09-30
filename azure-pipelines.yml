@@ -7,7 +7,7 @@ jobs:
     displayName: 'Use .NET Core sdk 2.1.401'
     inputs:
       version: 2.1.401
-  - powershell: ./run.ps1 -script build.cake -target Unix
+  - powershell: ./run.ps1 -script run.cake -target Default
     displayName: 'Cake build'
 - job: Linux
   pool:
@@ -17,7 +17,10 @@ jobs:
     displayName: 'Use .NET Core sdk 2.1.401'
     inputs:
       version: 2.1.401
-  - powershell: ./run.ps1 -script build.cake -target Unix
+  - task: UseRubyVersion@0
+    inputs:
+      addToPath: true # Optional
+  - powershell: ./run.ps1 -script run.cake -target Default
     displayName: 'Cake build'
 - job: Windows
   pool:
@@ -27,5 +30,8 @@ jobs:
     displayName: 'Use .NET Core sdk 2.1.401'
     inputs:
       version: 2.1.401
-  - powershell: ./run.ps1 -script build.cake
+  - task: UseRubyVersion@0
+    inputs:
+      addToPath: true # Optional
+  - powershell: ./run.ps1 -script run.cake -target Default
     displayName: 'Cake build'
