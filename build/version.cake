@@ -24,7 +24,7 @@ public class BuildVersion
             NuGetVersion = gitVersion.NuGetVersion,
             DotNetAsterix = semVersion.Substring(version.Length).TrimStart('-'),
             PreReleaseTag = preReleaseTag,
-            GemVersion = gemVersion
+            GemVersion = gemVersion.TrimEnd('.')
         };
     }
 }
