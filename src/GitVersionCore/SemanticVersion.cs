@@ -254,7 +254,7 @@ namespace GitVersion
                     return formatter.Format(format, this, formatProvider);
             }
 
-            // Check for lp first because the param can varry
+            // Check for lp first because the param can vary
             format = format.ToLower();
             if (format.StartsWith("lp", StringComparison.Ordinal))
             {
@@ -269,7 +269,7 @@ namespace GitVersion
                 case "s":
                     return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag) : ToString("j");
                 case "g":
-                    return PreReleaseTag.HasTag() ? string.Format("{0}-{1}+{2}", ToString("j"), PreReleaseTag.ToString("g"), BuildMetaData.ToString("g")) : ToString("j");
+                    return PreReleaseTag.HasTag() ? string.Format("{0}-{1}+{2}", ToString("j"), PreReleaseTag, BuildMetaData.ToString("g")) : ToString("j");
                 case "t":
                     return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag.ToString("t")) : ToString("j");
                 case "l":
