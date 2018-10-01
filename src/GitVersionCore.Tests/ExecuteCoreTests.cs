@@ -39,6 +39,20 @@ public class ExecuteCoreTests : TestBase
     }
 
     [Test]
+    public void GitFolderIsDriveLetter()
+    {
+        var versionAndBranchFinder = new ExecuteCore(fileSystem);
+
+        RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
+        {
+            var targetBranch = "refs/head/master";
+            var gitPreparer = new GitPreparer("C:\\");
+            //gitPreparer.Initialise(true, targetBranch);
+            gitPreparer.GetDotGitDirectory();
+        });
+    }
+
+    [Test]
     public void CacheFileExistsOnDisk()
     {
         const string versionCacheFileContent = @"

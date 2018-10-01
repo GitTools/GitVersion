@@ -30,7 +30,12 @@ namespace GitVersion
                     Password = authentication.Password
                 };
             this.noFetch = noFetch;
-            this.targetPath = targetPath.TrimEnd('/', '\\');
+
+            if (Path.GetPathRoot(targetPath) == targetPath) {
+                this.targetPath = targetPath;
+            } else {
+                this.targetPath = targetPath.TrimEnd('/', '\\');
+            }
 
             // GitTools has its own logging. So that it actually outputs something, it needs to be initialized.
             LogProvider.SetCurrentLogProvider(new LoggerWrapper());
