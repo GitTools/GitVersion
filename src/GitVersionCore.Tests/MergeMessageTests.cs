@@ -115,7 +115,7 @@ namespace GitVersionCore.Tests
             sut.PullRequestNumber.ShouldBe(expectedPullRequestNumber);
             sut.Version.ShouldBe(expectedVersion);
         }
-        
+
         private static readonly object[] BitBucketPullMergeMessages =
         {
             new object[] { "Merge pull request #1234 from feature/one from feature/two to dev", "feature/two", "dev", null, 1234  },
@@ -243,7 +243,7 @@ namespace GitVersionCore.Tests
             sut.Version.ShouldBe(expectedVersion);
         }
 
-        
+
         [Test]
         public void MatchesSingleCustomMessage()
         {
@@ -316,7 +316,32 @@ namespace GitVersionCore.Tests
             sut.MergedBranch.ShouldBe(source);
             sut.IsMergedPullRequest.ShouldBeTrue();
             sut.PullRequestNumber.ShouldBe(pr);
-            sut.Version.ShouldBe(new SemanticVersion(2,0));
+            sut.Version.ShouldBe(new SemanticVersion(2, 0));
+        }
+
+        [Test]
+        public void ReturnsAfterFirstMatchingPattern()
+        {
+            // Arrange
+            var format = @"^Merge (branch|tag) '(?<SourceBranch>[^']*)'(?: into (?<TargetBranch>[^\s]*))*";
+            var definition = "Mycustom";
+            _config.MergeMessageFormats = new Dictionary<string, string>
+            {
+                [definition] = format,
+                ["Default2"] = format,
+                ["Default3"] = format
+            };
+
+            // Act
+            var sut = new MergeMessage("Merge branch 'this'", _config);
+
+            // Assert
+            sut.MatchDefinition.ShouldBe(definition);
+            sut.TargetBranch.ShouldBeNull();
+            sut.MergedBranch.ShouldBe("this");
+            sut.IsMergedPullRequest.ShouldBeFalse();
+            sut.PullRequestNumber.ShouldBeNull();
+            sut.Version.ShouldBeNull();
         }
     }
 }

@@ -25,7 +25,7 @@ namespace GitVersion
                 var pattern = Pattern(entry.Key, entry.Value);
                 if (ApplyPattern(mergeMessage, config.TagPrefix, pattern))
                 {
-                    break;
+                    return;
                 }
             }
 
@@ -33,7 +33,7 @@ namespace GitVersion
             {
                 if (ApplyPattern(mergeMessage, config.TagPrefix, pattern))
                 {
-                    break;
+                    return;
                 }
             }
         }
