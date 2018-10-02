@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
     using System.Collections.Generic;
@@ -144,5 +144,8 @@
 
         [YamlMember(Alias = "commit-date-format")]
         public string CommitDateFormat { get; set; }
+
+        [YamlMember(Alias = "merge-messages")]
+        public Dictionary<string, string> MergeMessageFormats { get; set; } = new Dictionary<string, string>();
     }
 }

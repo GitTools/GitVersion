@@ -2,6 +2,7 @@ using GitVersion;
 using NUnit.Framework;
 using Shouldly;
 using System;
+using System.Collections.Generic;
 
 namespace GitVersionCore.Tests
 {
@@ -240,6 +241,82 @@ namespace GitVersionCore.Tests
             sut.IsMergedPullRequest.ShouldBeFalse();
             sut.PullRequestNumber.ShouldBe(expectedPullRequestNumber);
             sut.Version.ShouldBe(expectedVersion);
+        }
+
+        
+        [Test]
+        public void MatchesSingleCustomMessage()
+        {
+            // Arrange
+            var message = "My custom message";
+            var definition = "Mycustom";
+            _config.MergeMessageFormats = new Dictionary<string, string>
+            {
+                [definition] = message
+            };
+
+            // Act
+            var sut = new MergeMessage(message, _config);
+
+            // Assert
+            sut.MatchDefinition.ShouldBe(definition);
+            sut.TargetBranch.ShouldBeNull();
+            sut.MergedBranch.ShouldBeEmpty();
+            sut.IsMergedPullRequest.ShouldBeFalse();
+            sut.PullRequestNumber.ShouldBeNull();
+            sut.Version.ShouldBeNull();
+        }
+
+        [Test]
+        public void MatchesMultipleCustomMessages()
+        {
+            // Arrange
+            var format = "My custom message";
+            var definition = "Mycustom";
+            _config.MergeMessageFormats = new Dictionary<string, string>
+            {
+                ["Default2"] = "some example",
+                ["Default3"] = "another example",
+                [definition] = format
+            };
+
+            // Act
+            var sut = new MergeMessage(format, _config);
+
+            // Assert
+            sut.MatchDefinition.ShouldBe(definition);
+            sut.TargetBranch.ShouldBeNull();
+            sut.MergedBranch.ShouldBeEmpty();
+            sut.IsMergedPullRequest.ShouldBeFalse();
+            sut.PullRequestNumber.ShouldBeNull();
+            sut.Version.ShouldBeNull();
+        }
+
+        [Test]
+        public void MatchesCaptureGroupsFromCustomMessages()
+        {
+            // Arrange
+            var format = @"^Merged PR #(?<PullRequestNumber>\d+) into (?<TargetBranch>[^\s]*) from (?:(?<SourceBranch>[^\s]*))";
+            var definition = "Mycustom";
+            _config.MergeMessageFormats = new Dictionary<string, string>
+            {
+                [definition] = format
+            };
+            var pr = 1234;
+            var target = "master";
+            var source = "feature/2.0/example";
+
+
+            // Act
+            var sut = new MergeMessage($"Merged PR #{pr} into {target} from {source}", _config);
+
+            // Assert
+            sut.MatchDefinition.ShouldBe(definition);
+            sut.TargetBranch.ShouldBe(target);
+            sut.MergedBranch.ShouldBe(source);
+            sut.IsMergedPullRequest.ShouldBeTrue();
+            sut.PullRequestNumber.ShouldBe(pr);
+            sut.Version.ShouldBe(new SemanticVersion(2,0));
         }
     }
 }

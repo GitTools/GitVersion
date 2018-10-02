@@ -4,15 +4,15 @@ using System.Text.RegularExpressions;
 
 namespace GitVersion
 {
-    class MergeMessage
+    internal class MergeMessage
     {
-        private static readonly IList<MergeMessagePattern> Patterns = new List<MergeMessagePattern>
+        private static readonly IList<KeyValuePair<string, Regex>> DefaultPatterns = new List<KeyValuePair<string, Regex>>
         {
-            new MergeMessagePattern("Default", @"^Merge (branch|tag) '(?<SourceBranch>[^']*)'(?: into (?<TargetBranch>[^\s]*))*"),
-            new MergeMessagePattern("SmartGit",  @"^Finish (?<SourceBranch>[^\s]*)(?: into (?<TargetBranch>[^\s]*))*"),
-            new MergeMessagePattern("BitBucketPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?<Source>.*) from (?<SourceBranch>[^\s]*) to (?<TargetBranch>[^\s]*)"),
-            new MergeMessagePattern("GitHubPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?:(?<SourceBranch>[^\s]*))(?: into (?<TargetBranch>[^\s]*))*"),
-            new MergeMessagePattern("RemoteTracking", @"^Merge remote-tracking branch '(?<SourceBranch>[^\s]*)'(?: into (?<TargetBranch>[^\s]*))*")
+            Pattern("Default", @"^Merge (branch|tag) '(?<SourceBranch>[^']*)'(?: into (?<TargetBranch>[^\s]*))*"),
+            Pattern("SmartGit",  @"^Finish (?<SourceBranch>[^\s]*)(?: into (?<TargetBranch>[^\s]*))*"),
+            Pattern("BitBucketPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?<Source>.*) from (?<SourceBranch>[^\s]*) to (?<TargetBranch>[^\s]*)"),
+            Pattern("GitHubPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?:(?<SourceBranch>[^\s]*))(?: into (?<TargetBranch>[^\s]*))*"),
+            Pattern("RemoteTracking", @"^Merge remote-tracking branch '(?<SourceBranch>[^\s]*)'(?: into (?<TargetBranch>[^\s]*))*")
         };
 
         public MergeMessage(string mergeMessage, Config config)
@@ -20,38 +20,56 @@ namespace GitVersion
             if (mergeMessage == null)
                 throw new NullReferenceException();
 
-            foreach (var pattern in Patterns)
+            foreach(var entry in config.MergeMessageFormats)
             {
-                var match = pattern.Format.Match(mergeMessage);
-                if (match.Success)
+                var pattern = Pattern(entry.Key, entry.Value);
+                if (ApplyPattern(mergeMessage, config.TagPrefix, pattern))
                 {
-                    MatchDefinition = pattern.Name;
-                    MergedBranch = match.Groups["SourceBranch"].Value;
+                    break;
+                }
+            }
 
-                    if (match.Groups["TargetBranch"].Success)
-                    {
-                        TargetBranch = match.Groups["TargetBranch"].Value;
-                    }
-
-                    if (int.TryParse(match.Groups["PullRequestNumber"].Value, out var pullNumber))
-                    {
-                        PullRequestNumber = pullNumber;
-                    }
-
-                    Version = ParseVersion(MergedBranch, config.TagPrefix);
-
+            foreach (var pattern in DefaultPatterns)
+            {
+                if (ApplyPattern(mergeMessage, config.TagPrefix, pattern))
+                {
                     break;
                 }
             }
         }
 
-        public string MatchDefinition { get; }
-        public string TargetBranch { get; }
-        public string MergedBranch { get; } = "";
+        public string MatchDefinition { get; private set; }
+        public string TargetBranch { get; private set; }
+        public string MergedBranch { get; private set; } = "";
         public bool IsMergedPullRequest => PullRequestNumber != null;
-        public int? PullRequestNumber { get; }
-        public SemanticVersion Version { get; }
+        public int? PullRequestNumber { get; private set; }
+        public SemanticVersion Version { get; private set; }
 
+        private bool ApplyPattern(string mergeMessage, string tagPrefix, KeyValuePair<string, Regex> pattern)
+        {
+            var match = pattern.Value.Match(mergeMessage);
+            if (match.Success)
+            {
+                MatchDefinition = pattern.Key;
+                MergedBranch = match.Groups["SourceBranch"].Value;
+
+                if (match.Groups["TargetBranch"].Success)
+                {
+                    TargetBranch = match.Groups["TargetBranch"].Value;
+                }
+
+                if (int.TryParse(match.Groups["PullRequestNumber"].Value, out var pullNumber))
+                {
+                    PullRequestNumber = pullNumber;
+                }
+
+                Version = ParseVersion(MergedBranch, tagPrefix);
+
+                return true;
+            }
+
+            return false;
+        }
 
         private SemanticVersion ParseVersion(string branchName, string tagPrefix)
         {
@@ -70,17 +88,7 @@ namespace GitVersion
             return null;
         }
 
-        private class MergeMessagePattern
-        {
-            public MergeMessagePattern(string name, string format)
-            {
-                Name = name;
-                Format = new Regex(format, RegexOptions.IgnoreCase | RegexOptions.Compiled);
-            }
-
-            public string Name { get; }
-
-            public Regex Format { get; }
-        }
+        private static KeyValuePair<string, Regex> Pattern(string name, string format)
+            => new KeyValuePair<string, Regex>(name, new Regex(format, RegexOptions.IgnoreCase | RegexOptions.Compiled));
     }
 }
