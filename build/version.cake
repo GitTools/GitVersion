@@ -5,26 +5,24 @@ public class BuildVersion
     public string NuGetVersion { get; private set; }
     public string DotNetAsterix { get; private set; }
     public string PreReleaseTag { get; private set; }
-    public string GemVersion { get; private set; }
 
     public static BuildVersion Calculate(ICakeContext context, BuildParameters parameters, GitVersion gitVersion)
     {
-        var semVersion = gitVersion.LegacySemVerPadded;
         var version = gitVersion.MajorMinorPatch;
         var preReleaseTag = gitVersion.PreReleaseTag;
+        var semVersion = gitVersion.LegacySemVerPadded;
 
-        var gemVersion = string.IsNullOrEmpty(preReleaseTag)
-                        ? version
-                        : version + "." + preReleaseTag + "." + gitVersion.BuildMetaDataPadded;
+        if (!string.IsNullOrWhiteSpace(gitVersion.BuildMetaDataPadded)) {
+            semVersion += "." + gitVersion.BuildMetaDataPadded;
+        }
 
         return new BuildVersion
         {
-            Version = version,
-            SemVersion = semVersion,
-            NuGetVersion = gitVersion.NuGetVersion,
+            Version       = version,
+            SemVersion    = semVersion,
+            NuGetVersion  = gitVersion.NuGetVersion,
             DotNetAsterix = semVersion.Substring(version.Length).TrimStart('-'),
-            PreReleaseTag = preReleaseTag,
-            GemVersion = gemVersion.TrimEnd('.')
+            PreReleaseTag = preReleaseTag
         };
     }
 }

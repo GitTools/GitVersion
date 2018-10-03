@@ -39,10 +39,10 @@ public class BuildPaths
 
         var testCoverageOutputFilePath = buildArtifactDir.CombineWithFilePath("TestResult.xml");
         var releaseNotesOutputFilePath = buildArtifactDir.CombineWithFilePath("releasenotes.md");
-        var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-" + version.Version + ".vsix");
+        var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-" + semVersion + ".vsix");
 
-        var gemVersion = version.GemVersion.Replace("-", ".pre.");
-        var gemOutputFilePath  = buildArtifactDir.CombineWithFilePath("testgw-" + gemVersion + ".gem");
+        var gemVersion = version.SemVersion.Replace("-", ".pre.");
+        var gemOutputFilePath  = buildArtifactDir.CombineWithFilePath("gitversion-" + gemVersion + ".gem");
 
         // Directories
         var buildDirectories = new BuildDirectories(

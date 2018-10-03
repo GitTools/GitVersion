@@ -149,9 +149,8 @@ void PublishILRepackedGitVersionExe(bool includeLibGit2Sharp, DirectoryPath targ
     CopyFileToDirectory("./src/GitVersionExe/bin/" + configuration + "/" + dotnetVersion + "/GitVersion.xml", outputDir);
 }
 
-void DockerBuild(GitVersion version, string platform, string variant)
+void DockerBuild(GitVersion gitVersion, string platform, string variant, bool isStableRelease = false)
 {
-    var name = $"gittools/gitversion-{variant}";
     var workDir = DirectoryPath.FromString($"./src/Docker/{platform}/{variant}");
 
     DirectoryPath sourceDir;
@@ -162,26 +161,47 @@ void DockerBuild(GitVersion version, string platform, string variant)
     }
     CopyDirectory(sourceDir, workDir.Combine("content"));
 
+    var tags = GetDockerTags(gitVersion, platform, variant, isStableRelease);
+
     var buildSettings = new DockerImageBuildSettings
     {
         Rm = true,
-        Tag = new []{ $"{name}:{platform}-{version.MajorMinorPatch}" },
+        Tag = tags,
         File = $"{workDir}/Dockerfile",
         BuildArg = new []{ $"contentFolder=/content" },
-        Pull = true,
+        // Pull = true,
         // Platform = platform // TODO this one is not supported on docker versions < 18.02
     };
 
     DockerBuild(buildSettings, workDir.ToString());
 }
 
-void DockerPush(GitVersion version, string platform, string variant)
+void DockerPush(GitVersion gitVersion, string platform, string variant, bool isStableRelease = false)
 {
-    var name = $"gittools/gitversion-{variant}";
-    var tag = $"{name}:{platform}-{version.MajorMinorPatch}";
+    var tags = GetDockerTags(gitVersion, platform, variant, isStableRelease);
 
-    Information("Tag Name {0}", tag);
-    DockerPush(tag);
+    foreach (var tag in tags)
+    {
+        DockerPush(tag);
+    }
+}
+
+string[] GetDockerTags(GitVersion gitVersion, string platform, string variant, bool isStableRelease = false) {
+    var name = $"gittools/gitversion-{variant}";
+
+    var tags = new List<string> {
+        $"{name}:{platform}-{gitVersion.LegacySemVerPadded}"
+    };
+
+    if (!string.IsNullOrWhiteSpace(gitVersion.BuildMetaDataPadded)) {
+        tags.Add($"{name}:{platform}-{gitVersion.LegacySemVerPadded}.{gitVersion.BuildMetaDataPadded}");
+    }
+
+    if (variant == "dotnetcore" && isStableRelease) {
+        tags.Add($"{name}:latest");
+    }
+
+    return tags.ToArray();
 }
 
 void GetReleaseNotes(FilePath outputPath, DirectoryPath workDir, string repoToken)

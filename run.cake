@@ -50,16 +50,18 @@ Setup(context =>
         parameters.Configuration,
         parameters.Target);
 
-    Information("Repository info : IsMainRepo {0}, IsMainBranch {1}, IsTagged: {2}",
+    Information("Repository info : IsMainRepo {0}, IsMainBranch {1}, IsTagged: {2}, IsPullRequest: {3}",
         parameters.IsMainRepo,
         parameters.IsMainBranch,
-        parameters.IsTagged);
+        parameters.IsTagged,
+        parameters.IsPullRequest);
 
     msBuildSettings = new DotNetCoreMSBuildSettings()
                             .WithProperty("Version", parameters.Version.SemVersion)
                             .WithProperty("AssemblyVersion", parameters.Version.Version)
                             .WithProperty("PackageVersion", parameters.Version.NuGetVersion)
                             .WithProperty("FileVersion", parameters.Version.Version);
+
     if(!parameters.IsRunningOnWindows)
     {
         var frameworkPathOverride = new FilePath(typeof(object).Assembly.Location).GetDirectory().FullPath + "/";
@@ -115,6 +117,9 @@ Task("Clean")
 
     CleanDirectories("./src/**/bin/" + parameters.Configuration);
     CleanDirectories("./src/**/obj");
+
+    DeleteFiles("src/GitVersionRubyGem/*.gem");
+
     CleanDirectories(parameters.Paths.Directories.ToClean);
 });
 
@@ -138,7 +143,7 @@ Task("Build")
 #region Tests
 
 Task("Test")
-    .WithCriteria(() => !parameters.DisableUnitTests, "Skip unit tests.")
+    .WithCriteria(() => parameters.EnabledUnitTests, "Unit tests were disabled.")
     .IsDependentOn("Build")
     .Does(() =>
 {
@@ -245,7 +250,7 @@ Task("Pack-Tfs")
     var workDir = "./src/GitVersionTfsTask";
 
     // update version number
-    ReplaceTextInFile(new FilePath(workDir + "/manifest.json"), "$version$", gitVersion.MajorMinorPatch);
+    ReplaceTextInFile(new FilePath(workDir + "/manifest.json"), "$version$", parameters.Version.SemVersion);
 
     var taskJson = ParseJsonFromFile(workDir + "/task.json");
     taskJson["version"]["Major"] = gitVersion.Major.ToString();
@@ -275,7 +280,7 @@ Task("Pack-Gem")
 
     var gemspecFile = new FilePath(workDir + "/gitversion.gemspec");
     // update version number
-    ReplaceTextInFile(gemspecFile, "$version$", parameters.Version.GemVersion);
+    ReplaceTextInFile(gemspecFile, "$version$", parameters.Version.SemVersion);
 
     var toolPath = FindToolInPath(IsRunningOnWindows() ? "gem.cmd" : "gem");
     GemBuild(gemspecFile, new Cake.Gem.Build.GemBuildSettings()
@@ -359,19 +364,20 @@ Task("Zip-Files")
 
 Task("Docker-Build")
     .WithCriteria(() => !parameters.IsRunningOnMacOS, "Docker can be built only on Windows or Linux agents.")
-    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease(), "Docker-Build works only for releases.")
+    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease() || parameters.EnabledPullRequestPublish, "Docker-Build works only for releases.")
     .IsDependentOn("Copy-Files")
     .Does(() =>
 {
+    var version = gitVersion;
     if (parameters.IsRunningOnWindows)
     {
-        DockerBuild(gitVersion, "windows", "dotnetcore");
-        DockerBuild(gitVersion, "windows", "fullfx");
+        DockerBuild(version, "windows", "dotnetcore", parameters.IsStableRelease());
+        DockerBuild(version, "windows", "fullfx");
     }
     else if (parameters.IsRunningOnLinux)
     {
-        DockerBuild(gitVersion, "linux", "dotnetcore");
-        DockerBuild(gitVersion, "linux", "fullfx");
+        DockerBuild(version, "linux", "dotnetcore", parameters.IsStableRelease());
+        DockerBuild(version, "linux", "fullfx");
     }
 });
 
@@ -391,9 +397,9 @@ Task("Pack")
 #region Publish
 
 Task("Release-Notes")
-    .WithCriteria(() => parameters.IsRunningOnWindows, "Release notes are generated only on Windows agents.")
+    .WithCriteria(() => parameters.IsRunningOnWindows,  "Release notes are generated only on Windows agents.")
     .WithCriteria(() => parameters.IsRunningOnAppVeyor, "Release notes are generated only on release agents.")
-    .WithCriteria(() => parameters.IsStableRelease(), "Release notes are generated only for stable releases.")
+    .WithCriteria(() => parameters.IsStableRelease(),   "Release notes are generated only for stable releases.")
     .IsDependentOn("Clean")
     .Does(() =>
 {
@@ -409,7 +415,6 @@ Task("Release-Notes")
 Task("Publish-AppVeyor")
     .WithCriteria(() => parameters.IsRunningOnWindows, "Publish-AppVeyor works only on Windows agents.")
     .WithCriteria(() => parameters.IsRunningOnAppVeyor, "Publish-AppVeyor works only on AppVeyor.")
-    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-AppVeyor works only for releases.")
     .IsDependentOn("Pack")
     .IsDependentOn("Release-Notes")
     .Does(() =>
@@ -427,13 +432,13 @@ Task("Publish-AppVeyor")
 .OnError(exception =>
 {
     Information("Publish-AppVeyor Task failed, but continuing with next Task...");
+    Error(exception.Dump());
     publishingError = true;
 });
 
 Task("Publish-AzurePipeline")
-    .WithCriteria(() => parameters.IsRunningOnWindows,  "Publish-AzurePipeline works only on Windows agents.")
+    .WithCriteria(() => parameters.IsRunningOnWindows, "Publish-AzurePipeline works only on Windows agents.")
     .WithCriteria(() => parameters.IsRunningOnAzurePipeline, "Publish-AzurePipeline works only on AzurePipeline.")
-    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-AzurePipeline works only for releases.")
     .IsDependentOn("Pack")
     .IsDependentOn("Release-Notes")
     .Does(() =>
@@ -450,14 +455,15 @@ Task("Publish-AzurePipeline")
 .OnError(exception =>
 {
     Information("Publish-AzurePipeline Task failed, but continuing with next Task...");
+    Error(exception.Dump());
     publishingError = true;
 });
 
 Task("Publish-Tfs")
-    .WithCriteria(() => !parameters.DisablePublishTfs, "Skip publish Tfs.")
+    .WithCriteria(() => parameters.EnabledPublishTfs,   "Publish-Tfs was disabled.")
     .WithCriteria(() => parameters.IsRunningOnWindows,  "Publish-Tfs works only on Windows agents.")
     .WithCriteria(() => parameters.IsRunningOnAppVeyor, "Publish-Tfs works only on AppVeyor.")
-    .WithCriteria(() => parameters.IsStableRelease(),   "Publish-Tfs works only for stable releases.")
+    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease() || parameters.EnabledPullRequestPublish, "Publish-Tfs works only for releases.")
     .IsDependentOn("Pack-Tfs")
     .Does(() =>
 {
@@ -479,14 +485,15 @@ Task("Publish-Tfs")
 .OnError(exception =>
 {
     Information("Publish-Tfs Task failed, but continuing with next Task...");
+    Error(exception.Dump());
     publishingError = true;
 });
 
 Task("Publish-Gem")
-    .WithCriteria(() => !parameters.DisablePublishGem, "Skip publish Gem.")
+    .WithCriteria(() => parameters.EnabledPublishGem,   "Publish-Gem was disabled.")
     .WithCriteria(() => parameters.IsRunningOnWindows,  "Publish-Gem works only on Windows agents.")
     .WithCriteria(() => parameters.IsRunningOnAppVeyor, "Publish-Gem works only on AppVeyor.")
-    .WithCriteria(() => parameters.IsStableRelease(),   "Publish-Gem works only for stable releases.")
+    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease() || parameters.EnabledPullRequestPublish, "Publish-Gem works only for releases.")
     .IsDependentOn("Pack-Gem")
     .Does(() =>
 {
@@ -506,14 +513,15 @@ Task("Publish-Gem")
 .OnError(exception =>
 {
     Information("Publish-Gem Task failed, but continuing with next Task...");
+    Error(exception.Dump());
     publishingError = true;
 });
 
 Task("Publish-DockerHub")
-    .WithCriteria(() => !parameters.DisablePublishDocker, "Skip publish Docker.")
-    .WithCriteria(() => !parameters.IsRunningOnMacOS, "Publish-DockerHub works only on Windows and Linux agents.")
+    .WithCriteria(() => parameters.EnabledPublishDocker, "Publish-DockerHub was disabled.")
+    .WithCriteria(() => !parameters.IsRunningOnMacOS,    "Publish-DockerHub works only on Windows and Linux agents.")
     .WithCriteria(() => parameters.IsRunningOnAppVeyor || (parameters.IsRunningOnTravis && !parameters.IsRunningOnMacOS), "Publish-DockerHub works only on AppVeyor or Travis.")
-    .WithCriteria(() => parameters.IsStableRelease(), "Publish-DockerHub works only for releases.")
+    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease() || parameters.EnabledPullRequestPublish, "Publish-DockerHub works only for releases.")
     .IsDependentOn("Docker-Build")
     .Does(() =>
 {
@@ -527,17 +535,18 @@ Task("Publish-DockerHub")
         throw new InvalidOperationException("Could not resolve Docker password.");
     }
 
+    var version = gitVersion;
     DockerLogin(parameters.Credentials.Docker.UserName, parameters.Credentials.Docker.Password);
 
     if (parameters.IsRunningOnWindows)
     {
-        DockerPush(gitVersion, "windows", "dotnetcore");
-        DockerPush(gitVersion, "windows", "fullfx");
+        DockerPush(version, "windows", "dotnetcore", parameters.IsStableRelease());
+        DockerPush(version, "windows", "fullfx");
     }
     else if (parameters.IsRunningOnLinux)
     {
-        DockerPush(gitVersion, "linux", "dotnetcore");
-        DockerPush(gitVersion, "linux", "fullfx");
+        DockerPush(version, "linux", "dotnetcore", parameters.IsStableRelease());
+        DockerPush(version, "linux", "fullfx");
     }
 
     DockerLogout();
@@ -545,14 +554,15 @@ Task("Publish-DockerHub")
 .OnError(exception =>
 {
     Information("Publish-DockerHub Task failed, but continuing with next Task...");
+    Error(exception.Dump());
     publishingError = true;
 });
 
 Task("Publish-NuGet")
-    .WithCriteria(() => !parameters.DisablePublishNuget, "Skip publish Nuget.")
+    .WithCriteria(() => parameters.EnabledPublishNuget, "Publish-NuGet was disabled.")
     .WithCriteria(() => parameters.IsRunningOnWindows,  "Publish-NuGet works only on Windows agents.")
     .WithCriteria(() => parameters.IsRunningOnAppVeyor, "Publish-NuGet works only on AppVeyor.")
-    .WithCriteria(() => parameters.IsStableRelease(),   "Publish-NuGet works only for stable releases.")
+    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease() || parameters.EnabledPullRequestPublish, "Publish-NuGet works only for releases.")
     .IsDependentOn("Pack-NuGet")
     .Does(() =>
 {
@@ -582,14 +592,15 @@ Task("Publish-NuGet")
 .OnError(exception =>
 {
     Information("Publish-NuGet Task failed, but continuing with next Task...");
+    Error(exception.Dump());
     publishingError = true;
 });
 
 Task("Publish-Chocolatey")
-    .WithCriteria(() => !parameters.DisablePublishChocolatey, "Skip publish Chocolatey.")
-    .WithCriteria(() => parameters.IsRunningOnWindows,  "Publish-Chocolatey works only on Windows agents.")
-    .WithCriteria(() => parameters.IsRunningOnAppVeyor, "Publish-Chocolatey works only on AppVeyor.")
-    .WithCriteria(() => parameters.IsStableRelease(),   "Publish-Chocolatey works only for stable releases.")
+    .WithCriteria(() => parameters.EnabledPublishChocolatey, "Publish-Chocolatey was disabled.")
+    .WithCriteria(() => parameters.IsRunningOnWindows,       "Publish-Chocolatey works only on Windows agents.")
+    .WithCriteria(() => parameters.IsRunningOnAppVeyor,      "Publish-Chocolatey works only on AppVeyor.")
+    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease() || parameters.EnabledPullRequestPublish, "Publish-Chocolatey works only for releases.")
     .IsDependentOn("Pack-Chocolatey")
     .Does(() =>
 {
@@ -620,6 +631,7 @@ Task("Publish-Chocolatey")
 .OnError(exception =>
 {
     Information("Publish-Chocolatey Task failed, but continuing with next Task...");
+    Error(exception.Dump());
     publishingError = true;
 });
 

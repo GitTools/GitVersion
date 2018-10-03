@@ -8,12 +8,13 @@ public class BuildParameters
     public string Target { get; private set; }
     public string Configuration { get; private set; }
 
-    public bool DisableUnitTests { get; private set; }
-    public bool DisablePublishGem { get; private set; }
-    public bool DisablePublishTfs { get; private set; }
-    public bool DisablePublishNuget { get; private set; }
-    public bool DisablePublishChocolatey { get; private set; }
-    public bool DisablePublishDocker { get; private set; }
+    public bool EnabledUnitTests { get; private set; }
+    public bool EnabledPublishGem { get; private set; }
+    public bool EnabledPublishTfs { get; private set; }
+    public bool EnabledPublishNuget { get; private set; }
+    public bool EnabledPublishChocolatey { get; private set; }
+    public bool EnabledPublishDocker { get; private set; }
+    public bool EnabledPullRequestPublish { get; private set; }
 
     public bool IsRunningOnUnix { get; private set; }
     public bool IsRunningOnWindows { get; private set; }
@@ -28,6 +29,7 @@ public class BuildParameters
     public bool IsMainRepo { get; private set; }
     public bool IsMainBranch { get; private set; }
     public bool IsTagged { get; private set; }
+    public bool IsPullRequest { get; private set; }
 
     public BuildCredentials Credentials { get; private set; }
     public BuildVersion Version { get; private set; }
@@ -36,8 +38,8 @@ public class BuildParameters
     public BuildArtifacts Artifacts { get; private set; }
     public Dictionary<string, DirectoryPath> PackagesBuildMap { get; private set; }
 
-    public bool IsStableRelease() => !IsLocalBuild && IsMainRepo && IsMainBranch && IsTagged;
-    public bool IsPreRelease()    => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsTagged;
+    public bool IsStableRelease() => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsPullRequest && IsTagged;
+    public bool IsPreRelease()    => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsPullRequest && !IsTagged;
 
     public bool CanPostToGitter => !string.IsNullOrWhiteSpace(Credentials.Gitter.Token) && !string.IsNullOrWhiteSpace(Credentials.Gitter.RoomId);
 
@@ -55,12 +57,13 @@ public class BuildParameters
             Target        = target,
             Configuration = context.Argument("configuration", "Release"),
 
-            DisableUnitTests            = IsDisabled(context, "DISABLE_UNIT_TESTS"),
-            DisablePublishGem           = IsDisabled(context, "DISABLE_PUBLISH_GEM"),
-            DisablePublishTfs           = IsDisabled(context, "DISABLE_PUBLISH_TFS"),
-            DisablePublishNuget         = IsDisabled(context, "DISABLE_PUBLISH_NUGET"),
-            DisablePublishChocolatey    = IsDisabled(context, "DISABLE_PUBLISH_CHOCOLATEY"),
-            DisablePublishDocker        = IsDisabled(context, "DISABLE_PUBLISH_DOCKER"),
+            EnabledUnitTests          = IsEnabled(context, "ENABLED_UNIT_TESTS"),
+            EnabledPublishGem         = IsEnabled(context, "ENABLED_PUBLISH_GEM"),
+            EnabledPublishTfs         = IsEnabled(context, "ENABLED_PUBLISH_TFS"),
+            EnabledPublishNuget       = IsEnabled(context, "ENABLED_PUBLISH_NUGET"),
+            EnabledPublishChocolatey  = IsEnabled(context, "ENABLED_PUBLISH_CHOCOLATEY"),
+            EnabledPublishDocker      = IsEnabled(context, "ENABLED_PUBLISH_DOCKER"),
+            EnabledPullRequestPublish = IsEnabled(context, "ENABLED_PULL_REQUEST_PUBLISH", false),
 
             IsRunningOnUnix    = context.IsRunningOnUnix(),
             IsRunningOnWindows = context.IsRunningOnWindows(),
@@ -105,9 +108,10 @@ public class BuildParameters
 
         Credentials = BuildCredentials.GetCredentials(context);
 
-        IsMainRepo   = IsOnMainRepo(context);
-        IsMainBranch = IsOnMainBranch(context);
-        IsTagged     = IsBuildTagged(context, gitVersion);
+        IsMainRepo    = IsOnMainRepo(context);
+        IsMainBranch  = IsOnMainBranch(context);
+        IsPullRequest = IsPullRequestBuild(context);
+        IsTagged      = IsBuildTagged(context, gitVersion);
     }
 
     private static bool IsOnMainRepo(ICakeContext context)
@@ -154,6 +158,25 @@ public class BuildParameters
         return !string.IsNullOrWhiteSpace(repositoryBranch) && StringComparer.OrdinalIgnoreCase.Equals("master", repositoryBranch);
     }
 
+    private static bool IsPullRequestBuild(ICakeContext context)
+    {
+        var buildSystem = context.BuildSystem();
+        if (buildSystem.IsRunningOnAppVeyor)
+        {
+            return buildSystem.AppVeyor.Environment.PullRequest.IsPullRequest;
+        }
+        if (buildSystem.IsRunningOnTravisCI)
+        {
+            return !string.IsNullOrWhiteSpace(buildSystem.TravisCI.Environment.Repository.PullRequest)
+                       && !string.Equals(buildSystem.TravisCI.Environment.Repository.PullRequest, false.ToString(), StringComparison.InvariantCultureIgnoreCase);
+        }
+        else if (buildSystem.IsRunningOnVSTS)
+        {
+            return false; // need a way to check if it is from a PR on azure pipelines
+        }
+        return false;
+    }
+
     private static bool IsBuildTagged(ICakeContext context, GitVersion gitVersion)
     {
         var gitPath = context.Tools.Resolve(context.IsRunningOnWindows() ? "git.exe" : "git");
@@ -162,10 +185,10 @@ public class BuildParameters
         return redirectedOutput.Any();
     }
 
-    private static bool IsDisabled(ICakeContext context, string envVar)
+    private static bool IsEnabled(ICakeContext context, string envVar, bool nullOrEmptyAsEnabled = true)
     {
         var value = context.EnvironmentVariable(envVar);
 
-        return !string.IsNullOrWhiteSpace(value) && bool.Parse(value);
+        return string.IsNullOrWhiteSpace(value) ? nullOrEmptyAsEnabled : bool.Parse(value);
     }
 }
