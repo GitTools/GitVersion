@@ -58,8 +58,8 @@ from The Noun Project
 [gitter-badge]:         https://badges.gitter.im/Join+Chat.svg
 [appveyor]:             https://ci.appveyor.com/project/GitTools/gitversion/branch/master
 [appveyor-badge]:       https://ci.appveyor.com/api/projects/status/sxje0wht0cscmn7w/branch/master?svg=true
-[azure-pipeline]:       https://dev.azure.com/arturcic/OSS/_build/latest?definitionId=2
-[azure-pipeline-badge]: https://dev.azure.com/arturcic/OSS/_apis/build/status/GitVersion
+<!-- [azure-pipeline]:       https://dev.azure.com/arturcic/OSS/_build/latest?definitionId=2 -->
+<!-- [azure-pipeline-badge]: https://dev.azure.com/arturcic/OSS/_apis/build/status/GitVersion -->
 [travis]:               https://travis-ci.org/GitTools/GitVersion
 [travis-badge]:         https://travis-ci.org/GitTools/GitVersion.svg?branch=master
 [docs]:                 http://gitversion.readthedocs.org/en/stable/
