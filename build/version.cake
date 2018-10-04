@@ -14,10 +14,8 @@ public class BuildVersion
         var semVersion = gitVersion.LegacySemVerPadded;
         var dotnetVersion = version;
 
-        if (!string.IsNullOrWhiteSpace(gitVersion.BuildMetaDataPadded)) {
-            semVersion += "." + gitVersion.BuildMetaDataPadded;
-            dotnetVersion += "." + gitVersion.BuildMetaDataPadded;
-        }
+        semVersion += "." + gitVersion.CommitsSinceVersionSource;
+        dotnetVersion += "." + gitVersion.CommitsSinceVersionSource;
 
         return new BuildVersion
         {
