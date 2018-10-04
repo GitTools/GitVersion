@@ -36,10 +36,11 @@ public class BuildPaths
 
         var zipArtifactPathCoreClr = artifactsDir.CombineWithFilePath("GitVersion-bin-coreclr-v" + semVersion + ".zip");
         var zipArtifactPathDesktop = artifactsDir.CombineWithFilePath("GitVersion-bin-net40-v" + semVersion + ".zip");
-
         var testCoverageOutputFilePath = buildArtifactDir.CombineWithFilePath("TestResult.xml");
         var releaseNotesOutputFilePath = buildArtifactDir.CombineWithFilePath("releasenotes.md");
-        var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-" + semVersion + ".vsix");
+
+        var vsixVersion = version.DotNetVersion;
+        var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-" + vsixVersion + ".vsix");
 
         var gemVersion = version.SemVersion.Replace("-", ".pre.");
         var gemOutputFilePath  = buildArtifactDir.CombineWithFilePath("gitversion-" + gemVersion + ".gem");

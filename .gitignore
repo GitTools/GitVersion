@@ -121,9 +121,7 @@ releaseArtifacts
 .cake
 artifacts
 /src/Docker/**/content
-/src/GitVersionTfsTask/lib
-/src/GitVersionTfsTask/GitVersion.exe
-/src/GitVersionTfsTask/LibGit2Sharp.dll.config
+/src/GitVersionTfsTask/scripts
 /src/GitVersionTfsTask/*.vsix
 /src/GitVersionRubyGem/*.gem
 /src/GitVersionRubyGem/bin/lib

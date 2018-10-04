@@ -117,7 +117,9 @@ Task("Clean")
 
     CleanDirectories("./src/**/bin/" + parameters.Configuration);
     CleanDirectories("./src/**/obj");
+    CleanDirectories("./src/GitVersionTfsTask/scripts/**");
 
+    DeleteFiles("src/GitVersionTfsTask/*.vsix");
     DeleteFiles("src/GitVersionRubyGem/*.gem");
 
     CleanDirectories(parameters.Paths.Directories.ToClean);
@@ -231,13 +233,15 @@ Task("Copy-Files")
     PublishILRepackedGitVersionExe(false, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergDir, cmdlineDir, parameters.Configuration, dotnetVersion);
 
     // Vsix
-    var tfsPath = new DirectoryPath("./src/GitVersionTfsTask");
+    var tfsPath = new DirectoryPath("./src/GitVersionTfsTask/scripts");
+    EnsureDirectoryExists(tfsPath);
     CopyFileToDirectory(portableDir + "/" + "LibGit2Sharp.dll.config", tfsPath);
     CopyFileToDirectory(portableDir + "/" + "GitVersion.exe", tfsPath);
     CopyDirectory(portableDir.Combine("lib"), tfsPath.Combine("lib"));
 
     // Ruby Gem
     var gemPath = new DirectoryPath("./src/GitVersionRubyGem/bin");
+    EnsureDirectoryExists(gemPath);
     CopyFileToDirectory(portableDir + "/" + "LibGit2Sharp.dll.config", gemPath);
     CopyFileToDirectory(portableDir + "/" + "GitVersion.exe", gemPath);
     CopyDirectory(portableDir.Combine("lib"), gemPath.Combine("lib"));
@@ -250,13 +254,14 @@ Task("Pack-Tfs")
     var workDir = "./src/GitVersionTfsTask";
 
     // update version number
-    ReplaceTextInFile(new FilePath(workDir + "/manifest.json"), "$version$", parameters.Version.SemVersion);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$version$", parameters.Version.DotNetVersion);
 
-    var taskJson = ParseJsonFromFile(workDir + "/task.json");
+    var taskJsonFile = new FilePath(workDir + "/GitVersionTask/task.json");
+    var taskJson = ParseJsonFromFile(taskJsonFile);
     taskJson["version"]["Major"] = gitVersion.Major.ToString();
     taskJson["version"]["Minor"] = gitVersion.Minor.ToString();
     taskJson["version"]["Patch"] = gitVersion.Patch.ToString();
-    SerializeJsonToPrettyFile(workDir + "/task.json", taskJson);
+    SerializeJsonToPrettyFile(taskJsonFile, taskJson);
 
     // build and pack
     NpmSet("progress", "false");
@@ -267,7 +272,7 @@ Task("Pack-Tfs")
     {
         ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
         WorkingDirectory = workDir,
-        ManifestGlobs = new List<string>(){ "manifest.json" },
+        ManifestGlobs = new List<string>(){ "vss-extension.json" },
         OutputPath = parameters.Paths.Directories.BuildArtifact
     });
 });
@@ -467,8 +472,6 @@ Task("Publish-Tfs")
     .IsDependentOn("Pack-Tfs")
     .Does(() =>
 {
-    Information("Publish-Tfs");
-    return;
     var token = parameters.Credentials.Tfx.Token;
     if(string.IsNullOrEmpty(token)) {
         throw new InvalidOperationException("Could not resolve Tfx token.");

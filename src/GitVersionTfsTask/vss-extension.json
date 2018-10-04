@@ -11,20 +11,17 @@
         "id": "Microsoft.VisualStudio.Services"
     }],
     "files": [{
-            "path": "GitVersion.exe"
+            "path": "scripts"
         },
         {
-            "path": "LibGit2Sharp.dll.config"
-        },
-        {
-            "path": "lib"
+            "path": "GitVersionTask"
         }
     ],
     "categories": [
         "Build and release"
     ],
     "icons": {
-        "default": "extension-icon.png"
+        "default": "images/extension-icon.png"
     },
     "tags": [
         "semver",
@@ -43,15 +40,18 @@
         "license": {
             "uri": "https://github.com/GitTools/GitVersion/blob/master/LICENSE"
         },
+        "repository": {
+            "uri": "https://github.com/GitTools/GitVersion"
+        },
         "support": {
             "uri": "https://github.com/GitTools/GitVersion/issues"
         }
     },
     "screenshots": [{
-            "path": "img/builds.png"
+            "path": "images/builds.png"
         },
         {
-            "path": "img/build-task.png"
+            "path": "images/build-task.png"
         }
     ],
     "content": {
