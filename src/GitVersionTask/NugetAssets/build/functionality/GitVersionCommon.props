@@ -26,6 +26,12 @@
     <GetVersion Condition=" '$(GetVersion)' == '' and '$(NCrunch)' != '' ">false</GetVersion>
     <GetVersion Condition=" '$(GetVersion)' == '' ">true</GetVersion>
 
+    <!--
+      Ensure GetVersion runs prior to XAML's Markup Compiler in order to have the assembly version available.
+      Otherwise the generated resource URI's are ambiguous when multiple versions are loaded simultaneously (i.e. in plugins)
+    -->
+    <MarkupCompilePass1DependsOn>$(MarkupCompilePass1DependsOn);GetVersion</MarkupCompilePass1DependsOn>
+
     <GetPackageVersionDependsOn>$(GetPackageVersionDependsOn);GetVersion</GetPackageVersionDependsOn>
     
     <!-- Property that enables setting of Version -->
