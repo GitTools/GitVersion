@@ -8,6 +8,7 @@
         "target": "es6",
         "sourceMap": false,
         "inlineSourceMap": true,
-        "declaration": false
+        "declaration": false,
+        "outDir": "scripts"
     }
 }

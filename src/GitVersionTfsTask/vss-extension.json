@@ -7,12 +7,12 @@
     "author": "GitVersion Contributors",
     "version": "$version$",
     "description": "Build task for easy semantic versioning for projects using Git.",
-    "targets": [
-        {
-            "id": "Microsoft.VisualStudio.Services"
-        }
-    ],
-    "files": [
+    "targets": [{
+        "id": "Microsoft.VisualStudio.Services"
+    }],
+    "files": [{
+            "path": "scripts"
+        },
         {
             "path": "GitVersionTask"
         }
@@ -20,9 +20,8 @@
     "categories": [
         "Build and release"
     ],
-    "icons":
-    {
-        "default": "extension-icon.png"
+    "icons": {
+        "default": "images/extension-icon.png"
     },
     "tags": [
         "semver",
@@ -41,16 +40,18 @@
         "license": {
             "uri": "https://github.com/GitTools/GitVersion/blob/master/LICENSE"
         },
+        "repository": {
+            "uri": "https://github.com/GitTools/GitVersion"
+        },
         "support": {
             "uri": "https://github.com/GitTools/GitVersion/issues"
         }
     },
-    "screenshots": [
-        {
-            "path": "img/builds.png"
+    "screenshots": [{
+            "path": "images/builds.png"
         },
         {
-            "path": "img/build-task.png"
+            "path": "images/build-task.png"
         }
     ],
     "content": {
@@ -58,16 +59,14 @@
             "path": "overview.md"
         }
     },
-    "contributions": [
-        {
-            "id": "gitversion-task",
-            "type": "ms.vss-distributed-task.task",
-            "targets": [
-                "ms.vss-distributed-task.tasks"
-            ],
-            "properties": {
-                "name": "GitVersionTask"
-            }
+    "contributions": [{
+        "id": "gitversion-task",
+        "type": "ms.vss-distributed-task.task",
+        "targets": [
+            "ms.vss-distributed-task.tasks"
+        ],
+        "properties": {
+            "name": "GitVersionTask"
         }
-    ]
+    }]
 }

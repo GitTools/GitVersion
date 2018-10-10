@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
     using System.Linq;
@@ -6,9 +6,11 @@
 
     public class VsoAgent : BuildServerBase
     {
+        public const string EnvironmentVariableName = "TF_BUILD";
+
         public override bool CanApplyToCurrentContext()
         {
-            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("TF_BUILD"));
+            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(EnvironmentVariableName));
         }
 
         public override string[] GenerateSetParameterMessage(string name, string value)
