@@ -1,0 +1,221 @@
+
+FilePath FindToolInPath(string tool)
+{
+    var pathEnv = EnvironmentVariable("PATH");
+    if (string.IsNullOrEmpty(pathEnv) || string.IsNullOrEmpty(tool))
+    {
+        return tool;
+    }
+    var paths = pathEnv.Split(new []{ IsRunningOnUnix() ? ':' : ';'},  StringSplitOptions.RemoveEmptyEntries);
+    return paths.Select(path => new DirectoryPath(path).CombineWithFilePath(tool)).FirstOrDefault(filePath => FileExists(filePath.FullPath));
+}
+
+void FixForMono(Cake.Core.Tooling.ToolSettings toolSettings, string toolExe)
+{
+    if (IsRunningOnUnix())
+    {
+        var toolPath = Context.Tools.Resolve(toolExe);
+        toolSettings.ToolPath = FindToolInPath("mono");
+        toolSettings.ArgumentCustomization = args => toolPath.FullPath + " " + args.Render();
+    }
+}
+
+DirectoryPath HomePath()
+{
+    if(IsRunningOnWindows()) {
+        return new DirectoryPath(EnvironmentVariable("HOMEDRIVE") +  EnvironmentVariable("HOMEPATH"));
+    } else {
+        return new DirectoryPath(EnvironmentVariable("HOME"));
+    }
+}
+
+void ReplaceTextInFile(FilePath filePath, string oldValue, string newValue, bool encrypt = false)
+{
+    Information("Replacing {0} with {1} in {2}", oldValue, !encrypt ? newValue : "******", filePath);
+    var file = filePath.FullPath.ToString();
+    System.IO.File.WriteAllText(file, System.IO.File.ReadAllText(file).Replace(oldValue, newValue));
+}
+
+void SetRubyGemPushApiKey(string apiKey)
+{
+    // it's a hack, creating a credentials file to be able to push the gem
+    var workDir = "./src/GitVersionRubyGem";
+    var gemHomeDir = HomePath().Combine(".gem");
+    var credentialFile = new FilePath(workDir + "/credentials");
+    EnsureDirectoryExists(gemHomeDir);
+    ReplaceTextInFile(credentialFile, "$api_key$", apiKey, true);
+    CopyFileToDirectory(credentialFile, gemHomeDir);
+}
+
+GitVersion GetVersion(string dotnetVersion)
+{
+    var dllFile = GetFiles("**/netcoreapp2.0/GitVersion.dll").FirstOrDefault();
+    var settings = new GitVersionSettings
+    {
+        OutputType = GitVersionOutput.Json,
+        ToolPath = FindToolInPath(IsRunningOnUnix() ? "dotnet" : "dotnet.exe"),
+        ArgumentCustomization = args => dllFile + " " + args.Render()
+    };
+
+    var gitVersion = GitVersion(settings);
+
+    settings.UpdateAssemblyInfo = true;
+    settings.LogFilePath = "console";
+    settings.OutputType = GitVersionOutput.BuildServer;
+
+    GitVersion(settings);
+
+    return gitVersion;
+}
+
+void Build(string configuration, GitVersion gitVersion)
+{
+    DotNetCoreRestore("./src/GitVersion.sln");
+
+    MSBuild("./src/GitVersion.sln", settings =>
+    {
+        settings.SetConfiguration(configuration)
+            .SetVerbosity(Verbosity.Minimal)
+            .WithTarget("Build")
+            .WithProperty("POSIX", IsRunningOnUnix().ToString());
+
+        if (gitVersion != null) {
+            Information("Building version {0} of GitVersion", gitVersion.LegacySemVerPadded);
+
+            if (!string.IsNullOrWhiteSpace(gitVersion.NuGetVersion)) {
+                settings.WithProperty("GitVersion_NuGetVersion", gitVersion.NuGetVersion);
+            }
+            if (!string.IsNullOrWhiteSpace(gitVersion.LegacySemVerPadded)) {
+                settings.WithProperty("GitVersion_SemVer", gitVersion.LegacySemVerPadded);
+            }
+            if (!string.IsNullOrWhiteSpace(gitVersion.MajorMinorPatch)) {
+                settings.WithProperty("GitVersion_MajorMinorPatch", gitVersion.MajorMinorPatch);
+            }
+            if (!string.IsNullOrWhiteSpace(gitVersion.PreReleaseTag)) {
+                settings.WithProperty("GitVersion_PreReleaseTag", gitVersion.PreReleaseTag);
+            }
+        }
+    });
+}
+
+void ILRepackGitVersionExe(bool includeLibGit2Sharp, DirectoryPath target, DirectoryPath ilMerge)
+{
+    var exeName = "GitVersion.exe";
+    var keyFilePath = "./src/key.snk";
+
+    var targetDir = target + "/";
+    var ilMergeDir = ilMerge + "/";
+    var targetPath     = targetDir + exeName;
+    string outFilePath = ilMergeDir + exeName;
+
+    CleanDirectory(ilMergeDir);
+    CreateDirectory(ilMergeDir);
+
+    var sourcePattern = targetDir + "*.dll";
+    var sourceFiles = GetFiles(sourcePattern);
+
+    if (!includeLibGit2Sharp)
+    {
+        var excludePattern = "**/LibGit2Sharp.dll";
+        sourceFiles = sourceFiles - GetFiles(excludePattern);
+    }
+    var settings = new ILRepackSettings { AllowDup = "", Keyfile = keyFilePath, Internalize = true, NDebug = true, TargetKind = TargetKind.Exe, TargetPlatform  = TargetPlatformVersion.v4, XmlDocs = false };
+    FixForMono(settings, "ILRepack.exe");
+    ILRepack(outFilePath, targetPath, sourceFiles, settings);
+
+    CopyFileToDirectory("./LICENSE", ilMergeDir);
+    CopyFileToDirectory(targetDir + "GitVersion.pdb", ilMergeDir);
+
+    Information("Copying libgit2sharp files..");
+
+    if (!includeLibGit2Sharp) {
+        CopyFileToDirectory(targetDir + "LibGit2Sharp.dll", ilMergeDir);
+    }
+    CopyFileToDirectory(targetDir + "LibGit2Sharp.dll.config", ilMergeDir);
+    CopyDirectory(targetDir + "/lib/", ilMergeDir + "/lib/");
+}
+
+void PublishILRepackedGitVersionExe(bool includeLibGit2Sharp, DirectoryPath targetDir, DirectoryPath ilMergDir, DirectoryPath outputDir, string configuration, string dotnetVersion)
+{
+    ILRepackGitVersionExe(includeLibGit2Sharp, targetDir, ilMergDir);
+    CopyDirectory(ilMergDir, outputDir);
+
+    if (includeLibGit2Sharp) {
+        CopyFiles("./src/GitVersionExe/NugetAssets/*.ps1", outputDir);
+    }
+
+    // Copy license & Copy GitVersion.XML (since publish does not do this anymore)
+    CopyFileToDirectory("./LICENSE", outputDir);
+    CopyFileToDirectory("./src/GitVersionExe/bin/" + configuration + "/" + dotnetVersion + "/GitVersion.xml", outputDir);
+}
+
+void DockerBuild(GitVersion gitVersion, string platform, string variant, bool isStableRelease = false)
+{
+    var workDir = DirectoryPath.FromString($"./src/Docker/{platform}/{variant}");
+
+    DirectoryPath sourceDir;
+    if (variant == "dotnetcore") {
+        sourceDir = parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools");
+    } else {
+        sourceDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
+    }
+    CopyDirectory(sourceDir, workDir.Combine("content"));
+
+    var tags = GetDockerTags(gitVersion, platform, variant, isStableRelease);
+
+    var buildSettings = new DockerImageBuildSettings
+    {
+        Rm = true,
+        Tag = tags,
+        File = $"{workDir}/Dockerfile",
+        BuildArg = new []{ $"contentFolder=/content" },
+        // Pull = true,
+        // Platform = platform // TODO this one is not supported on docker versions < 18.02
+    };
+
+    DockerBuild(buildSettings, workDir.ToString());
+}
+
+void DockerPush(GitVersion gitVersion, string platform, string variant, bool isStableRelease = false)
+{
+    var tags = GetDockerTags(gitVersion, platform, variant, isStableRelease);
+
+    foreach (var tag in tags)
+    {
+        DockerPush(tag);
+    }
+}
+
+string[] GetDockerTags(GitVersion gitVersion, string platform, string variant, bool isStableRelease = false) {
+    var name = $"gittools/gitversion-{variant}";
+
+    var tags = new List<string> {
+        $"{name}:{platform}-{gitVersion.LegacySemVerPadded}"
+    };
+
+    if (!string.IsNullOrWhiteSpace(gitVersion.BuildMetaDataPadded)) {
+        tags.Add($"{name}:{platform}-{gitVersion.LegacySemVerPadded}.{gitVersion.BuildMetaDataPadded}");
+    }
+
+    if (variant == "dotnetcore" && isStableRelease) {
+        tags.Add($"{name}:latest");
+    }
+
+    return tags.ToArray();
+}
+
+void GetReleaseNotes(FilePath outputPath, DirectoryPath workDir, string repoToken)
+{
+    var toolPath = Context.Tools.Resolve("GitReleaseNotes.exe");
+
+    var arguments = new ProcessArgumentBuilder()
+                .Append(workDir.ToString())
+                .Append("/OutputFile")
+                .Append(outputPath.ToString())
+                .Append("/RepoToken")
+                .Append(repoToken);
+
+    StartProcess(toolPath, new ProcessSettings { Arguments = arguments, RedirectStandardOutput = true }, out var redirectedOutput);
+
+    Information(string.Join("\n", redirectedOutput));
+}
