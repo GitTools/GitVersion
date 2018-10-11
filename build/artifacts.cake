@@ -24,13 +24,13 @@ public class BuildPackages
 
     private static Func<string, BuildPackage> BuildPackage(
         DirectoryPath nugetRooPath,
-        string semVersion,
+        string version,
         bool isChocolateyPackage = false)
     {
         return package => new BuildPackage(
             id: package,
             nuspecPath: string.Concat("./nuspec/", package, ".nuspec"),
-            packagePath: nugetRooPath.CombineWithFilePath(string.Concat(package, ".", semVersion, ".nupkg")),
+            packagePath: nugetRooPath.CombineWithFilePath(string.Concat(package, ".", version, ".nupkg")),
             isChocolateyPackage: isChocolateyPackage);
     }
 }

@@ -193,9 +193,7 @@ string[] GetDockerTags(GitVersion gitVersion, string platform, string variant, b
         $"{name}:{platform}-{gitVersion.LegacySemVerPadded}"
     };
 
-    if (!string.IsNullOrWhiteSpace(gitVersion.BuildMetaDataPadded)) {
-        tags.Add($"{name}:{platform}-{gitVersion.LegacySemVerPadded}.{gitVersion.BuildMetaDataPadded}");
-    }
+    tags.Add($"{name}:{platform}-{gitVersion.LegacySemVerPadded}-{gitVersion.CommitsSinceVersionSource}");
 
     if (variant == "dotnetcore" && isStableRelease) {
         tags.Add($"{name}:latest");

@@ -59,7 +59,7 @@ Setup(context =>
     msBuildSettings = new DotNetCoreMSBuildSettings()
                             .WithProperty("Version", parameters.Version.SemVersion)
                             .WithProperty("AssemblyVersion", parameters.Version.Version)
-                            .WithProperty("PackageVersion", parameters.Version.NuGetVersion)
+                            .WithProperty("PackageVersion", parameters.Version.SemVersion)
                             .WithProperty("FileVersion", parameters.Version.Version);
 
     if(!parameters.IsRunningOnWindows)
@@ -285,7 +285,7 @@ Task("Pack-Gem")
 
     var gemspecFile = new FilePath(workDir + "/gitversion.gemspec");
     // update version number
-    ReplaceTextInFile(gemspecFile, "$version$", parameters.Version.SemVersion);
+    ReplaceTextInFile(gemspecFile, "$version$", parameters.Version.SemVersion.Replace("-", "."));
 
     var toolPath = FindToolInPath(IsRunningOnWindows() ? "gem.cmd" : "gem");
     GemBuild(gemspecFile, new Cake.Gem.Build.GemBuildSettings()
@@ -306,7 +306,7 @@ Task("Pack-Nuget")
         if (FileExists(package.NuspecPath)) {
             var nugetSettings = new NuGetPackSettings
             {
-                Version = parameters.Version.NuGetVersion,
+                Version = parameters.Version.SemVersion,
                 BasePath = parameters.PackagesBuildMap[package.Id],
                 OutputDirectory = parameters.Paths.Directories.NugetRoot,
             };
@@ -342,7 +342,7 @@ Task("Pack-Chocolatey")
 
             ChocolateyPack(package.NuspecPath, new ChocolateyPackSettings {
                 Verbose = true,
-                Version = parameters.Version.NuGetVersion,
+                Version = parameters.Version.SemVersion,
                 OutputDirectory = parameters.Paths.Directories.NugetRoot,
                 Files = GetFiles(artifactPath + "/**/*.*")
                         .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
@@ -392,6 +392,19 @@ Task("Pack")
     .IsDependentOn("Pack-Nuget")
     .IsDependentOn("Pack-Chocolatey")
     .IsDependentOn("Zip-Files")
+    .Does(() =>
+{
+    Information("The build artifacts: \n");
+    foreach(var artifact in parameters.Artifacts.All)
+    {
+        if (FileExists(artifact.ArtifactPath)) { Information("Artifact: {0}", artifact.ArtifactPath); }
+    }
+
+    foreach(var package in parameters.Packages.All)
+    {
+        if (FileExists(package.PackagePath)) { Information("Artifact: {0}", package.PackagePath); }
+    }
+})
     .ReportError(exception =>
 {
     Error(exception.Dump());

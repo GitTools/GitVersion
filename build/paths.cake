@@ -42,7 +42,7 @@ public class BuildPaths
         var vsixVersion = version.DotNetVersion;
         var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-" + vsixVersion + ".vsix");
 
-        var gemVersion = version.SemVersion.Replace("-", ".pre.");
+        var gemVersion = version.SemVersion.Replace("-", ".");
         var gemOutputFilePath  = buildArtifactDir.CombineWithFilePath("gitversion-" + gemVersion + ".gem");
 
         // Directories
