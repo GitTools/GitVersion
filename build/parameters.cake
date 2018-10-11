@@ -63,7 +63,6 @@ public class BuildParameters
             EnabledPublishNuget       = IsEnabled(context, "ENABLED_PUBLISH_NUGET"),
             EnabledPublishChocolatey  = IsEnabled(context, "ENABLED_PUBLISH_CHOCOLATEY"),
             EnabledPublishDocker      = IsEnabled(context, "ENABLED_PUBLISH_DOCKER"),
-            EnabledPullRequestPublish = IsEnabled(context, "ENABLED_PULL_REQUEST_PUBLISH", false),
 
             IsRunningOnUnix    = context.IsRunningOnUnix(),
             IsRunningOnWindows = context.IsRunningOnWindows(),

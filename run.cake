@@ -168,7 +168,7 @@ Task("Test")
             settings.Filter = "TestCategory!=NoMono";
         }
 
-        DotNetCoreTest(project.ToString(), settings);
+        DotNetCoreTest(project.FullPath, settings);
     }
 
     // run using NUnit
@@ -369,7 +369,7 @@ Task("Zip-Files")
 
 Task("Docker-Build")
     .WithCriteria(() => !parameters.IsRunningOnMacOS, "Docker can be built only on Windows or Linux agents.")
-    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease() || parameters.EnabledPullRequestPublish, "Docker-Build works only for releases.")
+    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease(), "Docker-Build works only for releases.")
     .IsDependentOn("Copy-Files")
     .Does(() =>
 {
@@ -468,7 +468,7 @@ Task("Publish-Tfs")
     .WithCriteria(() => parameters.EnabledPublishTfs,   "Publish-Tfs was disabled.")
     .WithCriteria(() => parameters.IsRunningOnWindows,  "Publish-Tfs works only on Windows agents.")
     .WithCriteria(() => parameters.IsRunningOnAppVeyor, "Publish-Tfs works only on AppVeyor.")
-    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease() || parameters.EnabledPullRequestPublish, "Publish-Tfs works only for releases.")
+    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Tfs works only for releases.")
     .IsDependentOn("Pack-Tfs")
     .Does(() =>
 {
@@ -496,7 +496,7 @@ Task("Publish-Gem")
     .WithCriteria(() => parameters.EnabledPublishGem,   "Publish-Gem was disabled.")
     .WithCriteria(() => parameters.IsRunningOnWindows,  "Publish-Gem works only on Windows agents.")
     .WithCriteria(() => parameters.IsRunningOnAppVeyor, "Publish-Gem works only on AppVeyor.")
-    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease() || parameters.EnabledPullRequestPublish, "Publish-Gem works only for releases.")
+    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Gem works only for releases.")
     .IsDependentOn("Pack-Gem")
     .Does(() =>
 {
@@ -524,7 +524,7 @@ Task("Publish-DockerHub")
     .WithCriteria(() => parameters.EnabledPublishDocker, "Publish-DockerHub was disabled.")
     .WithCriteria(() => !parameters.IsRunningOnMacOS,    "Publish-DockerHub works only on Windows and Linux agents.")
     .WithCriteria(() => parameters.IsRunningOnAppVeyor || (parameters.IsRunningOnTravis && !parameters.IsRunningOnMacOS), "Publish-DockerHub works only on AppVeyor or Travis.")
-    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease() || parameters.EnabledPullRequestPublish, "Publish-DockerHub works only for releases.")
+    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-DockerHub works only for releases.")
     .IsDependentOn("Docker-Build")
     .Does(() =>
 {
@@ -565,7 +565,7 @@ Task("Publish-NuGet")
     .WithCriteria(() => parameters.EnabledPublishNuget, "Publish-NuGet was disabled.")
     .WithCriteria(() => parameters.IsRunningOnWindows,  "Publish-NuGet works only on Windows agents.")
     .WithCriteria(() => parameters.IsRunningOnAppVeyor, "Publish-NuGet works only on AppVeyor.")
-    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease() || parameters.EnabledPullRequestPublish, "Publish-NuGet works only for releases.")
+    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-NuGet works only for releases.")
     .IsDependentOn("Pack-NuGet")
     .Does(() =>
 {
@@ -603,7 +603,7 @@ Task("Publish-Chocolatey")
     .WithCriteria(() => parameters.EnabledPublishChocolatey, "Publish-Chocolatey was disabled.")
     .WithCriteria(() => parameters.IsRunningOnWindows,       "Publish-Chocolatey works only on Windows agents.")
     .WithCriteria(() => parameters.IsRunningOnAppVeyor,      "Publish-Chocolatey works only on AppVeyor.")
-    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease() || parameters.EnabledPullRequestPublish, "Publish-Chocolatey works only for releases.")
+    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Chocolatey works only for releases.")
     .IsDependentOn("Pack-Chocolatey")
     .Does(() =>
 {

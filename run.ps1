@@ -33,7 +33,7 @@ https://cakebuild.net
 
 [CmdletBinding()]
 Param(
-    [string]$Script = "build.cake",
+    [string]$Script = "run.cake",
     [string]$Target = "Default",
     [string]$Configuration = "Release",
     [ValidateSet("Quiet", "Minimal", "Normal", "Verbose", "Diagnostic")]
@@ -45,6 +45,8 @@ Param(
 )
 
 Write-Host "Preparing to run build script..."
+
+if ($PSEdition -eq "Desktop") { $IsWindows = $true }
 
 $CakeVersion = "0.30.0"
 
@@ -150,6 +152,7 @@ $Arguments = @{
     configuration=$Configuration;
     verbosity=$Verbosity;
     dryrun=$WhatIf;
+    nuget_useinprocessclient=$true;
 }.GetEnumerator() | ForEach-Object { "--{0}=`"{1}`"" -f $_.key, $_.value };
 
 # Start Cake
