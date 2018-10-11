@@ -18,10 +18,12 @@
             var commitsSinceTag = commitLog.Count();
             Logger.WriteInfo(string.Format("{0} commits found between {1} and {2}", commitsSinceTag, baseVersionSource.Sha, context.CurrentCommit.Sha));
 
+            var shortSha = context.Repository.ObjectDatabase.ShortenObjectId(context.CurrentCommit);
             return new SemanticVersionBuildMetaData(
                 commitsSinceTag,
                 context.CurrentBranch.FriendlyName,
                 context.CurrentCommit.Sha,
+                shortSha,
                 context.CurrentCommit.When());
         }
     }

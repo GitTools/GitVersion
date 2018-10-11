@@ -19,6 +19,7 @@
   "InformationalVersion":"1.2.3-unstable.4+5.Branch.develop.Sha.commitSha",
   "BranchName":"develop",
   "Sha":"commitSha",
+  "ShortSha":"commitShortSha",
   "NuGetVersionV2":"1.2.3-unstable00004",
   "NuGetVersion":"1.2.3-unstable00004",
   "NuGetPreReleaseTagV2":"unstable0004",

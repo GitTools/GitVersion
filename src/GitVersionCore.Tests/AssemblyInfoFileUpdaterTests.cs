@@ -463,7 +463,7 @@ public class AssemblyInfoFileUpdaterTests : TestBase
         var fileSystem = Substitute.For<IFileSystem>();
         var version = new SemanticVersion
         {
-            BuildMetaData = new SemanticVersionBuildMetaData(3, "foo", "hash", DateTimeOffset.Now),
+            BuildMetaData = new SemanticVersionBuildMetaData(3, "foo", "hash", "shortHash", DateTimeOffset.Now),
             Major = 2,
             Minor = 3,
             Patch = 1

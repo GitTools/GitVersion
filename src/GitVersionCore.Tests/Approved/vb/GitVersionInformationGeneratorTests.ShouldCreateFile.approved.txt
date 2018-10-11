@@ -32,6 +32,7 @@ NotInheritable Class GitVersionInformation
     Public Shared InformationalVersion As String = "1.2.3-unstable.4+5.Branch.feature1.Sha.commitSha"
     Public Shared BranchName As String = "feature1"
     Public Shared Sha As String = "commitSha"
+    Public Shared ShortSha As String = "commitShortSha"
     Public Shared NuGetVersionV2 As String = "1.2.3-unstable0004"
     Public Shared NuGetVersion As String = "1.2.3-unstable0004"
     Public Shared NuGetPreReleaseTagV2 As String = "unstable0004"
