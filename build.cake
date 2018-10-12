@@ -343,13 +343,16 @@ Task("Pack-Chocolatey")
         if (FileExists(package.NuspecPath)) {
             var artifactPath = MakeAbsolute(parameters.PackagesBuildMap[package.Id]).FullPath;
 
+            var files = GetFiles(artifactPath + "/**/*.*")
+                        .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") });
+            var txtFiles = GetFiles("./nuspec/*.txt")
+                        .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.GetFilename().ToString() });
+
             ChocolateyPack(package.NuspecPath, new ChocolateyPackSettings {
                 Verbose = true,
                 Version = parameters.Version.SemVersion,
                 OutputDirectory = parameters.Paths.Directories.NugetRoot,
-                Files = GetFiles(artifactPath + "/**/*.*")
-                        .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
-                        .ToArray()
+                Files = files.Concat(txtFiles).ToArray()
             });
         }
     }
@@ -417,9 +420,9 @@ Task("Pack")
 #region Publish
 
 Task("Release-Notes")
-    .WithCriteria(() => parameters.IsRunningOnWindows,  "Release notes are generated only on Windows agents.")
-    .WithCriteria(() => parameters.IsRunningOnAppVeyor, "Release notes are generated only on release agents.")
-    .WithCriteria(() => parameters.IsStableRelease(),   "Release notes are generated only for stable releases.")
+    // .WithCriteria(() => parameters.IsRunningOnWindows,  "Release notes are generated only on Windows agents.")
+    // .WithCriteria(() => parameters.IsRunningOnAppVeyor, "Release notes are generated only on release agents.")
+    // .WithCriteria(() => parameters.IsStableRelease(),   "Release notes are generated only for stable releases.")
     .IsDependentOn("Clean")
     .Does(() =>
 {
