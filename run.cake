@@ -217,7 +217,6 @@ Task("Copy-Files")
         Framework = dotnetVersion,
         NoBuild = true,
         NoRestore = true,
-        VersionSuffix = parameters.Version.DotNetAsterix,
         Configuration = parameters.Configuration,
         OutputDirectory = parameters.Paths.Directories.ArtifactsBinFullFx,
         MSBuildSettings = msBuildSettings
@@ -254,7 +253,7 @@ Task("Pack-Tfs")
     var workDir = "./src/GitVersionTfsTask";
 
     // update version number
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$version$", parameters.Version.DotNetVersion);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$version$", parameters.Version.SemVersion);
 
     var taskJsonFile = new FilePath(workDir + "/GitVersionTask/task.json");
     var taskJson = ParseJsonFromFile(taskJsonFile);
@@ -285,7 +284,7 @@ Task("Pack-Gem")
 
     var gemspecFile = new FilePath(workDir + "/gitversion.gemspec");
     // update version number
-    ReplaceTextInFile(gemspecFile, "$version$", parameters.Version.SemVersion.Replace("-", "."));
+    ReplaceTextInFile(gemspecFile, "$version$", parameters.Version.GemVersion);
 
     var toolPath = FindToolInPath(IsRunningOnWindows() ? "gem.cmd" : "gem");
     GemBuild(gemspecFile, new Cake.Gem.Build.GemBuildSettings()
@@ -304,11 +303,15 @@ Task("Pack-Nuget")
     foreach(var package in parameters.Packages.Nuget)
     {
         if (FileExists(package.NuspecPath)) {
+            var artifactPath = MakeAbsolute(parameters.PackagesBuildMap[package.Id]).FullPath;
+
             var nugetSettings = new NuGetPackSettings
             {
                 Version = parameters.Version.SemVersion,
-                BasePath = parameters.PackagesBuildMap[package.Id],
                 OutputDirectory = parameters.Paths.Directories.NugetRoot,
+                Files = GetFiles(artifactPath + "/**/*.*")
+                        .Select(file => new NuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
+                        .ToArray()
             };
 
             FixForMono(nugetSettings, "nuget.exe");
@@ -373,16 +376,15 @@ Task("Docker-Build")
     .IsDependentOn("Copy-Files")
     .Does(() =>
 {
-    var version = gitVersion;
     if (parameters.IsRunningOnWindows)
     {
-        DockerBuild(version, "windows", "dotnetcore", parameters.IsStableRelease());
-        DockerBuild(version, "windows", "fullfx");
+        DockerBuild("windows", "dotnetcore", parameters);
+        DockerBuild("windows", "fullfx", parameters);
     }
     else if (parameters.IsRunningOnLinux)
     {
-        DockerBuild(version, "linux", "dotnetcore", parameters.IsStableRelease());
-        DockerBuild(version, "linux", "fullfx");
+        DockerBuild("linux", "dotnetcore", parameters);
+        DockerBuild("linux", "fullfx", parameters);
     }
 });
 
@@ -481,7 +483,7 @@ Task("Publish-Tfs")
     .WithCriteria(() => parameters.EnabledPublishTfs,   "Publish-Tfs was disabled.")
     .WithCriteria(() => parameters.IsRunningOnWindows,  "Publish-Tfs works only on Windows agents.")
     .WithCriteria(() => parameters.IsRunningOnAppVeyor, "Publish-Tfs works only on AppVeyor.")
-    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Tfs works only for releases.")
+    .WithCriteria(() => parameters.IsStableRelease(), "Publish-Tfs works only for releases.")
     .IsDependentOn("Pack-Tfs")
     .Does(() =>
 {
@@ -551,18 +553,17 @@ Task("Publish-DockerHub")
         throw new InvalidOperationException("Could not resolve Docker password.");
     }
 
-    var version = gitVersion;
     DockerLogin(parameters.Credentials.Docker.UserName, parameters.Credentials.Docker.Password);
 
     if (parameters.IsRunningOnWindows)
     {
-        DockerPush(version, "windows", "dotnetcore", parameters.IsStableRelease());
-        DockerPush(version, "windows", "fullfx");
+        DockerPush("windows", "dotnetcore", parameters);
+        DockerPush("windows", "fullfx", parameters);
     }
     else if (parameters.IsRunningOnLinux)
     {
-        DockerPush(version, "linux", "dotnetcore", parameters.IsStableRelease());
-        DockerPush(version, "linux", "fullfx");
+        DockerPush("linux", "dotnetcore", parameters);
+        DockerPush("linux", "fullfx", parameters);
     }
 
     DockerLogout();

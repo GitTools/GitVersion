@@ -161,4 +161,7 @@ Write-Host "Running build script..."
 $Cmd = "$CakeInstallPath/dotnet-cake $Script $Arguments"
 Invoke-Expression "& $Cmd"
 
+if ($env:APPVEYOR) {
+    $host.SetShouldExit($LASTEXITCODE)
+}
 exit $LASTEXITCODE

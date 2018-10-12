@@ -72,7 +72,12 @@ public class BuildParameters
             IsLocalBuild             = buildSystem.IsLocalBuild,
             IsRunningOnAppVeyor      = buildSystem.IsRunningOnAppVeyor,
             IsRunningOnTravis        = buildSystem.IsRunningOnTravisCI,
-            IsRunningOnAzurePipeline = buildSystem.IsRunningOnVSTS
+            IsRunningOnAzurePipeline = buildSystem.IsRunningOnVSTS,
+
+            IsMainRepo    = IsOnMainRepo(context),
+            IsMainBranch  = IsOnMainBranch(context),
+            IsPullRequest = IsPullRequestBuild(context),
+            IsTagged      = IsBuildTagged(context),
         };
     }
 
@@ -106,11 +111,6 @@ public class BuildParameters
         };
 
         Credentials = BuildCredentials.GetCredentials(context);
-
-        IsMainRepo    = IsOnMainRepo(context);
-        IsMainBranch  = IsOnMainBranch(context);
-        IsPullRequest = IsPullRequestBuild(context);
-        IsTagged      = IsBuildTagged(context, gitVersion);
     }
 
     private static bool IsOnMainRepo(ICakeContext context)
@@ -176,10 +176,11 @@ public class BuildParameters
         return false;
     }
 
-    private static bool IsBuildTagged(ICakeContext context, GitVersion gitVersion)
+    private static bool IsBuildTagged(ICakeContext context)
     {
         var gitPath = context.Tools.Resolve(context.IsRunningOnWindows() ? "git.exe" : "git");
-        context.StartProcess(gitPath, new ProcessSettings { Arguments = "tag --points-at " + gitVersion.Sha, RedirectStandardOutput = true }, out var redirectedOutput);
+        context.StartProcess(gitPath, new ProcessSettings { Arguments = "rev-parse --verify HEAD", RedirectStandardOutput = true }, out var sha);
+        context.StartProcess(gitPath, new ProcessSettings { Arguments = "tag --points-at " + sha.Single(), RedirectStandardOutput = true }, out var redirectedOutput);
 
         return redirectedOutput.Any();
     }

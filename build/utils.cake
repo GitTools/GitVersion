@@ -78,23 +78,6 @@ void Build(string configuration, GitVersion gitVersion)
             .SetVerbosity(Verbosity.Minimal)
             .WithTarget("Build")
             .WithProperty("POSIX", IsRunningOnUnix().ToString());
-
-        if (gitVersion != null) {
-            Information("Building version {0} of GitVersion", gitVersion.LegacySemVerPadded);
-
-            if (!string.IsNullOrWhiteSpace(gitVersion.NuGetVersion)) {
-                settings.WithProperty("GitVersion_NuGetVersion", gitVersion.NuGetVersion);
-            }
-            if (!string.IsNullOrWhiteSpace(gitVersion.LegacySemVerPadded)) {
-                settings.WithProperty("GitVersion_SemVer", gitVersion.LegacySemVerPadded);
-            }
-            if (!string.IsNullOrWhiteSpace(gitVersion.MajorMinorPatch)) {
-                settings.WithProperty("GitVersion_MajorMinorPatch", gitVersion.MajorMinorPatch);
-            }
-            if (!string.IsNullOrWhiteSpace(gitVersion.PreReleaseTag)) {
-                settings.WithProperty("GitVersion_PreReleaseTag", gitVersion.PreReleaseTag);
-            }
-        }
     });
 }
 
@@ -149,7 +132,7 @@ void PublishILRepackedGitVersionExe(bool includeLibGit2Sharp, DirectoryPath targ
     CopyFileToDirectory("./src/GitVersionExe/bin/" + configuration + "/" + dotnetVersion + "/GitVersion.xml", outputDir);
 }
 
-void DockerBuild(GitVersion gitVersion, string platform, string variant, bool isStableRelease = false)
+void DockerBuild(string platform, string variant, BuildParameters parameters)
 {
     var workDir = DirectoryPath.FromString($"./src/Docker/{platform}/{variant}");
 
@@ -161,7 +144,7 @@ void DockerBuild(GitVersion gitVersion, string platform, string variant, bool is
     }
     CopyDirectory(sourceDir, workDir.Combine("content"));
 
-    var tags = GetDockerTags(gitVersion, platform, variant, isStableRelease);
+    var tags = GetDockerTags(platform, variant, parameters);
 
     var buildSettings = new DockerImageBuildSettings
     {
@@ -176,9 +159,9 @@ void DockerBuild(GitVersion gitVersion, string platform, string variant, bool is
     DockerBuild(buildSettings, workDir.ToString());
 }
 
-void DockerPush(GitVersion gitVersion, string platform, string variant, bool isStableRelease = false)
+void DockerPush(string platform, string variant, BuildParameters parameters)
 {
-    var tags = GetDockerTags(gitVersion, platform, variant, isStableRelease);
+    var tags = GetDockerTags(platform, variant, parameters);
 
     foreach (var tag in tags)
     {
@@ -186,16 +169,16 @@ void DockerPush(GitVersion gitVersion, string platform, string variant, bool isS
     }
 }
 
-string[] GetDockerTags(GitVersion gitVersion, string platform, string variant, bool isStableRelease = false) {
+string[] GetDockerTags(string platform, string variant, BuildParameters parameters) {
     var name = $"gittools/gitversion-{variant}";
 
     var tags = new List<string> {
-        $"{name}:{platform}-{gitVersion.LegacySemVerPadded}"
+        $"{name}:{platform}-{parameters.Version.Version}"
     };
 
-    tags.Add($"{name}:{platform}-{gitVersion.LegacySemVerPadded}-{gitVersion.CommitsSinceVersionSource}");
+    tags.Add($"{name}:{platform}-{parameters.Version.SemVersion}");
 
-    if (variant == "dotnetcore" && isStableRelease) {
+    if (variant == "dotnetcore" && parameters.IsStableRelease()) {
         tags.Add($"{name}:latest");
     }
 
