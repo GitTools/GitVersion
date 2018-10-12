@@ -1,6 +1,7 @@
 ![Icon][icon]
 
-#GitVersion
+# GitVersion
+
 Versioning when using git, solved. GitVersion looks at your git history and
 works out the [semantic version][semver] of the commit being built.
 
