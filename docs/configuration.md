@@ -45,6 +45,7 @@ build-metadata-padding: 4
 commits-since-version-source-padding: 4
 commit-message-incrementing: Enabled
 commit-date-format: 'yyyy-MM-dd'
+use-merge-message-version: true
 ignore:
   sha: []
   commits-before: yyyy-MM-ddTHH:mm:ss
@@ -179,6 +180,10 @@ Date and time in the format `yyyy-MM-ddTHH:mm:ss` (eg `commits-before:
 2015-10-23T12:23:15`) to setup an exclusion range. Effectively any commit before
 `commits-before` will be ignored.
 
+#### use-merge-message-version
+This configuration can be used to disable merge message version detection, where the version
+is infered from the commit message.
+
 ## Branch configuration
 Then we have branch specific configuration, which looks something like this:
 
@@ -286,7 +291,7 @@ By looking at this graph, you cannot tell which of these scenarios happened:
 
 2. release/1.0.0 branches off feature/foo
    - Branch feature/foo from master
-   - Branch release/1.0.0 from feature/foo 
+   - Branch release/1.0.0 from feature/foo
    - Add a commit to both release/1.0.0 and feature/foo
    - feature/foo is the base for release/1.0.0
 

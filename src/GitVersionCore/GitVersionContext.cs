@@ -134,7 +134,7 @@ namespace GitVersion
             var commitDateFormat = FullConfiguration.CommitDateFormat;
 
             var commitMessageVersionBump = currentBranchConfig.CommitMessageIncrementing ?? FullConfiguration.CommitMessageIncrementing.Value;
-            var useMergeMessageVersion = currentBranchConfig.UseMergeMessageVersion ?? FullConfiguration.UseMergeMessageVersion.Value;
+            var useMergeMessageVersion = FullConfiguration.UseMergeMessageVersion.Value;
 
             Configuration = new EffectiveConfiguration(
                 assemblyVersioningScheme, assemblyFileVersioningScheme, assemblyInformationalFormat, assemblyVersioningFormat, assemblyFileVersioningFormat, versioningMode, gitTagPrefix,

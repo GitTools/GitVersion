@@ -72,9 +72,6 @@ namespace GitVersion
         [YamlMember(Alias = "is-mainline")]
         public bool? IsMainline { get; set; }
 
-        [YamlMember(Alias = "use-merge-message-version")]
-        public bool? UseMergeMessageVersion { get; set; }
-
         /// <summary>
         /// The name given to this configuration in the config file.
         /// </summary>
