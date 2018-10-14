@@ -1,4 +1,4 @@
-﻿namespace GitVersion.VersionCalculation
+namespace GitVersion.VersionCalculation
 {
     using System;
     using System.Linq;

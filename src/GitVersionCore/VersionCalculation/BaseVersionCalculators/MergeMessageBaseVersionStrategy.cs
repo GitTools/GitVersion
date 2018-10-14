@@ -1,4 +1,4 @@
-﻿namespace GitVersion.VersionCalculation.BaseVersionCalculators
+namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -13,6 +13,11 @@
     {
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
+            if (!context.Configuration.UseMergeMessageVersion)
+            {
+                return Enumerable.Empty<BaseVersion>();
+            }
+
             var commitsPriorToThan = context.CurrentBranch
                 .CommitsPriorToThan(context.CurrentCommit.When());
             var baseVersions = commitsPriorToThan

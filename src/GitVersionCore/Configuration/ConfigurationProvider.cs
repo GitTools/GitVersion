@@ -102,6 +102,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             config.BuildMetaDataPadding = config.BuildMetaDataPadding ?? 4;
             config.CommitsSinceVersionSourcePadding = config.CommitsSinceVersionSourcePadding ?? 4;
             config.CommitDateFormat = config.CommitDateFormat ?? "yyyy-MM-dd";
+            config.UseMergeMessageVersion = config.UseMergeMessageVersion ?? false;
 
             var configBranches = config.Branches.ToList();
 

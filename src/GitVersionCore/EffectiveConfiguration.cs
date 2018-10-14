@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using GitVersion.VersionFilters;
 
 namespace GitVersion
@@ -32,7 +32,8 @@ namespace GitVersion
             IEnumerable<IVersionFilter> versionFilters,
             bool tracksReleaseBranches,
             bool isCurrentBranchRelease,
-            string commitDateFormat)
+            string commitDateFormat,
+            bool useMergeMessageVersion)
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
             AssemblyFileVersioningScheme = assemblyFileVersioningScheme;
@@ -61,6 +62,7 @@ namespace GitVersion
             TracksReleaseBranches = tracksReleaseBranches;
             IsCurrentBranchRelease = isCurrentBranchRelease;
             CommitDateFormat = commitDateFormat;
+            UseMergeMessageVersion = useMergeMessageVersion;
         }
 
         public bool TracksReleaseBranches { get; private set; }
@@ -115,5 +117,6 @@ namespace GitVersion
         public IEnumerable<IVersionFilter> VersionFilters { get; private set; }
 
         public string CommitDateFormat { get; private set; }
+        public bool UseMergeMessageVersion { get; private set; }
     }
 }

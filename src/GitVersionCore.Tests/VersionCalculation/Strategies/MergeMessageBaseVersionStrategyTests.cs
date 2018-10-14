@@ -1,7 +1,8 @@
-﻿namespace GitVersionCore.Tests.VersionCalculation.Strategies
+namespace GitVersionCore.Tests.VersionCalculation.Strategies
 {
     using System.Collections.Generic;
     using System.Linq;
+    using GitVersion;
     using GitVersion.VersionCalculation.BaseVersionCalculators;
     using LibGit2Sharp;
     using NUnit.Framework;
@@ -15,14 +16,16 @@
         {
             // When a branch is merged in you want to start building stable packages of that version
             // So we shouldn't bump the version
-            var context = new GitVersionContextBuilder().WithRepository(new MockRepository
-            {
-                Head = new MockBranch("master") { new MockCommit
+            var context = new GitVersionContextBuilder()
+                .WithRepository(new MockRepository
+                {
+                    Head = new MockBranch("master") { new MockCommit
                 {
                     MessageEx = "Merge branch 'hotfix-0.1.5'",
                     ParentsEx = GetParents(true)
                 } }
-            }).Build();
+                }).Build();
+
             var sut = new MergeMessageBaseVersionStrategy();
 
             var baseVersion = sut.GetVersions(context).Single();
@@ -94,7 +97,7 @@
             var parents = GetParents(true);
 
             AssertMergeMessage(commitMessage, null, parents);
-        } 
+        }
 
         static void AssertMergeMessage(string message, string expectedVersion, List<Commit> parents)
         {
@@ -105,6 +108,10 @@
             };
 
             var context = new GitVersionContextBuilder()
+                .WithConfig(new Config()
+                {
+                    UseMergeMessageVersion = true
+                })
                 .WithRepository(new MockRepository
                 {
                     Head = new MockBranch("master")
