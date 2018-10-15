@@ -121,7 +121,8 @@ releaseArtifacts
 .cake
 artifacts
 /src/Docker/**/content
-/src/GitVersionTfsTask/scripts
+/src/GitVersionTfsTask/GitVersionTask
+!src/GitVersionTfsTask/GitVersionTask/task.json
 /src/GitVersionTfsTask/*.vsix
 /src/GitVersionRubyGem/*.gem
 /src/GitVersionRubyGem/bin/lib

@@ -9,6 +9,6 @@
         "sourceMap": false,
         "inlineSourceMap": true,
         "declaration": false,
-        "outDir": "scripts"
+        "outDir": "GitVersionTask"
     }
 }

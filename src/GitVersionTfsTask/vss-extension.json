@@ -11,12 +11,8 @@
         "id": "Microsoft.VisualStudio.Services"
     }],
     "files": [{
-            "path": "scripts"
-        },
-        {
             "path": "GitVersionTask"
-        }
-    ],
+    }],
     "categories": [
         "Build and release"
     ],
