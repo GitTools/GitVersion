@@ -420,9 +420,9 @@ Task("Pack")
 #region Publish
 
 Task("Release-Notes")
-    // .WithCriteria(() => parameters.IsRunningOnWindows,  "Release notes are generated only on Windows agents.")
-    // .WithCriteria(() => parameters.IsRunningOnAppVeyor, "Release notes are generated only on release agents.")
-    // .WithCriteria(() => parameters.IsStableRelease(),   "Release notes are generated only for stable releases.")
+    .WithCriteria(() => parameters.IsRunningOnWindows,  "Release notes are generated only on Windows agents.")
+    .WithCriteria(() => parameters.IsRunningOnAppVeyor, "Release notes are generated only on release agents.")
+    .WithCriteria(() => parameters.IsStableRelease(),   "Release notes are generated only for stable releases.")
     .IsDependentOn("Clean")
     .Does(() =>
 {
