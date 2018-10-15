@@ -232,7 +232,7 @@ Task("Copy-Files")
     PublishILRepackedGitVersionExe(false, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergDir, cmdlineDir, parameters.Configuration, dotnetVersion);
 
     // Vsix
-    var tfsPath = new DirectoryPath("./src/GitVersionTfsTask/scripts");
+    var tfsPath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionTask");
     EnsureDirectoryExists(tfsPath);
     CopyFileToDirectory(portableDir + "/" + "LibGit2Sharp.dll.config", tfsPath);
     CopyFileToDirectory(portableDir + "/" + "GitVersion.exe", tfsPath);
