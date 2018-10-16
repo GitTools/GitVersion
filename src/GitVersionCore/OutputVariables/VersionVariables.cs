@@ -125,15 +125,7 @@
 
             get
             {
-#if NETDESKTOP
                 return typeof(VersionVariables).GetProperty(variable).GetValue(this, null) as string;
-#else
-                throw new NotImplementedException();
-                //  return typeof(VersionVariables).GetTypeInfo().GetProperty(variable).GetValue(this, null) as string;
-#endif
-
-
-
             }
         }
 
@@ -193,12 +185,7 @@
 
         public bool ContainsKey(string variable)
         {
-#if NETDESKTOP
             return typeof(VersionVariables).GetProperty(variable) != null;
-#else
-            throw new NotImplementedException();
-            // return typeof(VersionVariables).GetTypeInfo().GetProperty(variable) != null;
-#endif
         }
 
         sealed class ReflectionIgnoreAttribute : Attribute
