@@ -57,6 +57,8 @@ $DotNetVersion = (Get-Content ./src/global.json | ConvertFrom-Json).sdk.version;
 
 $NugetUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
 
+$PathSplitter = if ($IsWindows) { ';' } else { ':' }
+
 # SSL FIX
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
 
@@ -74,14 +76,14 @@ if (!(Test-Path $ToolPath)) {
 function Remove-PathVariable([string]$VariableToRemove) {
     $path = [Environment]::GetEnvironmentVariable("PATH", "User")
     if ($path -ne $null) {
-        $newItems = $path.Split(';', [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { "$($_)" -inotlike $VariableToRemove }
-        [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join(';', $newItems), "User")
+        $newItems = $path.Split($PathSplitter, [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { "$($_)" -inotlike $VariableToRemove }
+        [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join($PathSplitter, $newItems), "User")
     }
 
     $path = [Environment]::GetEnvironmentVariable("PATH", "Process")
     if ($path -ne $null) {
-        $newItems = $path.Split(';', [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { "$($_)" -inotlike $VariableToRemove }
-        [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join(';', $newItems), "Process")
+        $newItems = $path.Split($PathSplitter, [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { "$($_)" -inotlike $VariableToRemove }
+        [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join($PathSplitter, $newItems), "Process")
     }
 }
 
@@ -108,10 +110,12 @@ if($FoundDotNetCliVersion -ne $DotNetVersion) {
         $Cmd = "$InstallPath/$DotNetInstaller -Channel $DotNetChannel -Version $DotNetVersion -InstallDir $InstallPath -NoPath"
         if (!$IsWindows) { $Cmd = "bash $Cmd" }
         Invoke-Expression "& $Cmd"
-
-        Remove-PathVariable "$InstallPath"
-        $env:PATH = "$InstallPath;$env:PATH"
     }
+
+    # Ensure the installed .NET Core CLI is always used but putting it on the front of the path.
+    Remove-PathVariable "$InstallPath"
+    $env:PATH = "$InstallPath$PathSplitter$env:PATH"
+    $env:DOTNET_ROOT="$InstallPath"
 }
 
 # Temporarily skip verification of addins.

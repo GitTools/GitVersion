@@ -179,7 +179,7 @@ Task("Test")
     };
 
     if(IsRunningOnUnix()) {
-        nunitSettings.Where = "cat != NoMono";
+        nunitSettings.Where = "cat!=NoMono";
         nunitSettings.Agents = 1;
     }
 
