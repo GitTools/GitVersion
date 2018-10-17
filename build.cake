@@ -466,6 +466,7 @@ Task("Publish-AppVeyor")
 Task("Publish-AzurePipeline")
     .WithCriteria(() => parameters.IsRunningOnWindows, "Publish-AzurePipeline works only on Windows agents.")
     .WithCriteria(() => parameters.IsRunningOnAzurePipeline, "Publish-AzurePipeline works only on AzurePipeline.")
+    .WithCriteria(() => !parameters.IsPullRequest, "Publish-AzurePipeline works only for non-PR commits.")
     .IsDependentOn("Pack")
     .IsDependentOn("Release-Notes")
     .Does(() =>

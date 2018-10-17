@@ -12,7 +12,6 @@ public class BuildParameters
     public string FullFxVersion { get; private set; } = "net40";
 
     public bool EnabledUnitTests { get; private set; }
-    public bool EnabledSetVersion { get; private set; }
     public bool EnabledPublishGem { get; private set; }
     public bool EnabledPublishTfs { get; private set; }
     public bool EnabledPublishNuget { get; private set; }
@@ -61,7 +60,6 @@ public class BuildParameters
             Configuration = context.Argument("configuration", "Release"),
 
             EnabledUnitTests          = IsEnabled(context, "ENABLED_UNIT_TESTS"),
-            EnabledSetVersion         = IsEnabled(context, "ENABLED_SET_VERSION"),
             EnabledPublishGem         = IsEnabled(context, "ENABLED_PUBLISH_GEM"),
             EnabledPublishTfs         = IsEnabled(context, "ENABLED_PUBLISH_TFS"),
             EnabledPublishNuget       = IsEnabled(context, "ENABLED_PUBLISH_NUGET"),
@@ -170,12 +168,13 @@ public class BuildParameters
         }
         if (buildSystem.IsRunningOnTravisCI)
         {
-            return !string.IsNullOrWhiteSpace(buildSystem.TravisCI.Environment.Repository.PullRequest)
-                       && !string.Equals(buildSystem.TravisCI.Environment.Repository.PullRequest, false.ToString(), StringComparison.InvariantCultureIgnoreCase);
+            var value = buildSystem.TravisCI.Environment.Repository.PullRequest;
+            return !string.IsNullOrWhiteSpace(value) && !string.Equals(value, false.ToString(), StringComparison.InvariantCultureIgnoreCase);
         }
         else if (buildSystem.IsRunningOnVSTS)
         {
-            return false; // need a way to check if it is from a PR on azure pipelines
+            var value = context.EnvironmentVariable("SYSTEM_PULLREQUEST_ISFORK");
+            return !string.IsNullOrWhiteSpace(value) && !string.Equals(value, false.ToString(), StringComparison.InvariantCultureIgnoreCase);
         }
         return false;
     }
