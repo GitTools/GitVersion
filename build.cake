@@ -25,8 +25,6 @@
 BuildParameters parameters = BuildParameters.GetParameters(Context);
 bool publishingError = false;
 DotNetCoreMSBuildSettings msBuildSettings = null;
-
-string dotnetVersion = "net40";
 GitVersion gitVersion = null;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -36,7 +34,7 @@ GitVersion gitVersion = null;
 Setup(context =>
 {
     Build(parameters.Configuration, null);
-    gitVersion = GetVersion(dotnetVersion);
+    gitVersion = GetVersion(parameters);
     parameters.Initialize(context, gitVersion);
 
     // Increase verbosity?
@@ -76,6 +74,12 @@ Teardown(context =>
 {
     Information("Starting Teardown...");
 
+    Information("Repository info : IsMainRepo {0}, IsMainBranch {1}, IsTagged: {2}, IsPullRequest: {3}",
+        parameters.IsMainRepo,
+        parameters.IsMainBranch,
+        parameters.IsTagged,
+        parameters.IsPullRequest);
+
     if(context.Successful)
     {
         // if(parameters.ShouldPublish)
@@ -113,7 +117,7 @@ Teardown(context =>
 Task("Clean")
     .Does(() =>
 {
-    Information("Cleaning direcories..");
+    Information("Cleaning directories..");
 
     CleanDirectories("./src/**/bin/" + parameters.Configuration);
     CleanDirectories("./src/**/obj");
@@ -200,7 +204,7 @@ Task("Copy-Files")
     // .NET Core
     DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
     {
-        Framework = "netcoreapp2.0",
+        Framework = parameters.NetCoreVersion,
         NoRestore = true,
         Configuration = parameters.Configuration,
         OutputDirectory = netCoreDir,
@@ -209,12 +213,12 @@ Task("Copy-Files")
 
     // Copy license & Copy GitVersion.XML (since publish does not do this anymore)
     CopyFileToDirectory("./LICENSE", netCoreDir);
-    CopyFileToDirectory("./src/GitVersionExe/bin/" + parameters.Configuration + "/netcoreapp2.0/GitVersion.xml", netCoreDir);
+    CopyFileToDirectory($"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.NetCoreVersion}/GitVersion.xml", netCoreDir);
 
     // .NET 4.0
     DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
     {
-        Framework = dotnetVersion,
+        Framework = parameters.FullFxVersion,
         NoBuild = true,
         NoRestore = true,
         Configuration = parameters.Configuration,
@@ -227,9 +231,9 @@ Task("Copy-Files")
     var cmdlineDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
 
     // Portable
-    PublishILRepackedGitVersionExe(true, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergDir, portableDir, parameters.Configuration, dotnetVersion);
+    PublishILRepackedGitVersionExe(true, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergDir, portableDir, parameters.Configuration, parameters.FullFxVersion);
     // Commandline
-    PublishILRepackedGitVersionExe(false, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergDir, cmdlineDir, parameters.Configuration, dotnetVersion);
+    PublishILRepackedGitVersionExe(false, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergDir, cmdlineDir, parameters.Configuration, parameters.FullFxVersion);
 
     // Vsix
     var tfsPath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionTask");

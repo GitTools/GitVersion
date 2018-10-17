@@ -8,13 +8,16 @@ public class BuildParameters
     public string Target { get; private set; }
     public string Configuration { get; private set; }
 
+    public string NetCoreVersion { get; private set; } = "netcoreapp2.0";
+    public string FullFxVersion { get; private set; } = "net40";
+
     public bool EnabledUnitTests { get; private set; }
+    public bool EnabledSetVersion { get; private set; }
     public bool EnabledPublishGem { get; private set; }
     public bool EnabledPublishTfs { get; private set; }
     public bool EnabledPublishNuget { get; private set; }
     public bool EnabledPublishChocolatey { get; private set; }
     public bool EnabledPublishDocker { get; private set; }
-    public bool EnabledPullRequestPublish { get; private set; }
 
     public bool IsRunningOnUnix { get; private set; }
     public bool IsRunningOnWindows { get; private set; }
@@ -58,6 +61,7 @@ public class BuildParameters
             Configuration = context.Argument("configuration", "Release"),
 
             EnabledUnitTests          = IsEnabled(context, "ENABLED_UNIT_TESTS"),
+            EnabledSetVersion         = IsEnabled(context, "ENABLED_SET_VERSION"),
             EnabledPublishGem         = IsEnabled(context, "ENABLED_PUBLISH_GEM"),
             EnabledPublishTfs         = IsEnabled(context, "ENABLED_PUBLISH_TFS"),
             EnabledPublishNuget       = IsEnabled(context, "ENABLED_PUBLISH_NUGET"),

@@ -47,9 +47,9 @@ void SetRubyGemPushApiKey(string apiKey)
     CopyFileToDirectory(credentialFile, gemHomeDir);
 }
 
-GitVersion GetVersion(string dotnetVersion)
+GitVersion GetVersion(BuildParameters parameters)
 {
-    var dllFile = GetFiles("**/netcoreapp2.0/GitVersion.dll").FirstOrDefault();
+    var dllFile = GetFiles($"**/{parameters.NetCoreVersion}/GitVersion.dll").FirstOrDefault();
     var settings = new GitVersionSettings
     {
         OutputType = GitVersionOutput.Json,
@@ -59,12 +59,14 @@ GitVersion GetVersion(string dotnetVersion)
 
     var gitVersion = GitVersion(settings);
 
-    settings.UpdateAssemblyInfo = true;
-    settings.LogFilePath = "console";
-    settings.OutputType = GitVersionOutput.BuildServer;
+    if (parameters.EnabledSetVersion)
+    {
+        settings.UpdateAssemblyInfo = true;
+        settings.LogFilePath = "console";
+        settings.OutputType = GitVersionOutput.BuildServer;
 
-    GitVersion(settings);
-
+        GitVersion(settings);
+    }
     return gitVersion;
 }
 
