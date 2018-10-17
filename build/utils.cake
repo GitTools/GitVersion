@@ -175,6 +175,7 @@ string[] GetDockerTags(string platform, string variant, BuildParameters paramete
     var name = $"gittools/gitversion-{variant}";
 
     var tags = new List<string> {
+        $"{name}:{platform}",
         $"{name}:{platform}-{parameters.Version.Version}"
     };
 
