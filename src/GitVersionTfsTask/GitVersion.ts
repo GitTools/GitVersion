@@ -1,7 +1,6 @@
 import tl = require('vsts-task-lib/task');
 import { IExecOptions, ToolRunner } from 'vsts-task-lib/toolrunner';
 import path = require('path');
-import q = require('q');
 import os = require('os');
 
 var updateAssemblyInfo = tl.getBoolInput('updateAssemblyInfo');
