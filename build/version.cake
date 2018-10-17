@@ -7,10 +7,10 @@ public class BuildVersion
     public static BuildVersion Calculate(ICakeContext context, BuildParameters parameters, GitVersion gitVersion)
     {
         var version = gitVersion.MajorMinorPatch;
-        var semVersion = gitVersion.LegacySemVerPadded;
+        var semVersion = gitVersion.LegacySemVer;
 
-        if (!string.IsNullOrWhiteSpace(gitVersion.BuildMetaDataPadded)) {
-            semVersion += "-" + gitVersion.BuildMetaDataPadded;
+        if (!string.IsNullOrWhiteSpace(gitVersion.BuildMetaData)) {
+            semVersion += "-" + gitVersion.BuildMetaData;
         }
 
         return new BuildVersion
