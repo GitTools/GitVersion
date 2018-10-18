@@ -2,10 +2,8 @@
 FilePath FindToolInPath(string tool)
 {
     var pathEnv = EnvironmentVariable("PATH");
-    if (string.IsNullOrEmpty(pathEnv) || string.IsNullOrEmpty(tool))
-    {
-        return tool;
-    }
+    if (string.IsNullOrEmpty(pathEnv) || string.IsNullOrEmpty(tool)) return tool;
+
     var paths = pathEnv.Split(new []{ IsRunningOnUnix() ? ':' : ';'},  StringSplitOptions.RemoveEmptyEntries);
     return paths.Select(path => new DirectoryPath(path).CombineWithFilePath(tool)).FirstOrDefault(filePath => FileExists(filePath.FullPath));
 }
@@ -22,11 +20,9 @@ void FixForMono(Cake.Core.Tooling.ToolSettings toolSettings, string toolExe)
 
 DirectoryPath HomePath()
 {
-    if(IsRunningOnWindows()) {
-        return new DirectoryPath(EnvironmentVariable("HOMEDRIVE") +  EnvironmentVariable("HOMEPATH"));
-    } else {
-        return new DirectoryPath(EnvironmentVariable("HOME"));
-    }
+    return IsRunningOnWindows()
+        ? new DirectoryPath(EnvironmentVariable("HOMEDRIVE") +  EnvironmentVariable("HOMEPATH"))
+        : new DirectoryPath(EnvironmentVariable("HOME"));
 }
 
 void ReplaceTextInFile(FilePath filePath, string oldValue, string newValue, bool encrypt = false)
@@ -73,7 +69,6 @@ GitVersion GetVersion(BuildParameters parameters)
 void Build(string configuration)
 {
     DotNetCoreRestore("./src/GitVersion.sln");
-
     MSBuild("./src/GitVersion.sln", settings =>
     {
         settings.SetConfiguration(configuration)
@@ -138,12 +133,10 @@ void DockerBuild(string platform, string variant, BuildParameters parameters)
 {
     var workDir = DirectoryPath.FromString($"./src/Docker/{platform}/{variant}");
 
-    DirectoryPath sourceDir;
-    if (variant == "dotnetcore") {
-        sourceDir = parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools");
-    } else {
-        sourceDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
-    }
+    var sourceDir =  variant == "dotnetcore"
+        ? parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools")
+        : parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
+
     CopyDirectory(sourceDir, workDir.Combine("content"));
 
     var tags = GetDockerTags(platform, variant, parameters);
