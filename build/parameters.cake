@@ -33,6 +33,8 @@ public class BuildParameters
     public bool IsTagged { get; private set; }
     public bool IsPullRequest { get; private set; }
 
+    public DotNetCoreMSBuildSettings MSBuildSettings { get; private set; }
+
     public BuildCredentials Credentials { get; private set; }
     public BuildVersion Version { get; private set; }
     public BuildPaths Paths { get; private set; }
@@ -113,6 +115,28 @@ public class BuildParameters
         };
 
         Credentials = BuildCredentials.GetCredentials(context);
+
+        MSBuildSettings = GetMsBuildSettings(context, Version);
+    }
+
+    private DotNetCoreMSBuildSettings GetMsBuildSettings(ICakeContext context, BuildVersion version)
+    {
+        var msBuildSettings = new DotNetCoreMSBuildSettings()
+                                .WithProperty("Version", version.SemVersion)
+                                .WithProperty("AssemblyVersion", version.Version)
+                                .WithProperty("PackageVersion", version.SemVersion)
+                                .WithProperty("FileVersion", version.Version);
+
+        if(!IsRunningOnWindows)
+        {
+            var frameworkPathOverride = new FilePath(typeof(object).Assembly.Location).GetDirectory().FullPath + "/";
+
+            // Use FrameworkPathOverride when not running on Windows.
+            context.Information("Build will use FrameworkPathOverride={0} since not building on Windows.", frameworkPathOverride);
+            msBuildSettings.WithProperty("FrameworkPathOverride", frameworkPathOverride);
+        }
+
+        return msBuildSettings;
     }
 
     private static bool IsOnMainRepo(ICakeContext context)

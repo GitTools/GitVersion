@@ -24,7 +24,6 @@
 
 BuildParameters parameters = BuildParameters.GetParameters(Context);
 bool publishingError = false;
-DotNetCoreMSBuildSettings msBuildSettings = null;
 GitVersion gitVersion = null;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -33,7 +32,7 @@ GitVersion gitVersion = null;
 
 Setup(context =>
 {
-    Build(parameters.Configuration, null);
+    Build(parameters.Configuration);
     gitVersion = GetVersion(parameters);
     parameters.Initialize(context, gitVersion);
 
@@ -53,21 +52,6 @@ Setup(context =>
         parameters.IsMainBranch,
         parameters.IsTagged,
         parameters.IsPullRequest);
-
-    msBuildSettings = new DotNetCoreMSBuildSettings()
-                            .WithProperty("Version", parameters.Version.SemVersion)
-                            .WithProperty("AssemblyVersion", parameters.Version.Version)
-                            .WithProperty("PackageVersion", parameters.Version.SemVersion)
-                            .WithProperty("FileVersion", parameters.Version.Version);
-
-    if(!parameters.IsRunningOnWindows)
-    {
-        var frameworkPathOverride = new FilePath(typeof(object).Assembly.Location).GetDirectory().FullPath + "/";
-
-        // Use FrameworkPathOverride when not running on Windows.
-        Information("Build will use FrameworkPathOverride={0} since not building on Windows.", frameworkPathOverride);
-        msBuildSettings.WithProperty("FrameworkPathOverride", frameworkPathOverride);
-    }
 });
 
 Teardown(context =>
@@ -134,14 +118,14 @@ Task("DogfoodBuild")
     .IsDependentOn("Clean")
     .Does(() =>
 {
-    Build(parameters.Configuration, gitVersion);
+    Build(parameters.Configuration);
 });
 
 Task("Build")
     .IsDependentOn("Clean")
     .Does(() =>
 {
-    Build(parameters.Configuration, gitVersion);
+    Build(parameters.Configuration);
 });
 
 #endregion
@@ -208,7 +192,7 @@ Task("Copy-Files")
         NoRestore = true,
         Configuration = parameters.Configuration,
         OutputDirectory = netCoreDir,
-        MSBuildSettings = msBuildSettings
+        MSBuildSettings = parameters.MSBuildSettings
     });
 
     // Copy license & Copy GitVersion.XML (since publish does not do this anymore)
@@ -223,7 +207,7 @@ Task("Copy-Files")
         NoRestore = true,
         Configuration = parameters.Configuration,
         OutputDirectory = parameters.Paths.Directories.ArtifactsBinFullFx,
-        MSBuildSettings = msBuildSettings
+        MSBuildSettings = parameters.MSBuildSettings
     });
 
     var ilMergDir = parameters.Paths.Directories.ArtifactsBinFullFxILMerge;
@@ -329,7 +313,7 @@ Task("Pack-Nuget")
         OutputDirectory = parameters.Paths.Directories.NugetRoot,
         NoBuild = true,
         NoRestore = true,
-        MSBuildSettings = msBuildSettings
+        MSBuildSettings = parameters.MSBuildSettings
     };
 
     // GitVersionCore & GitVersionTask

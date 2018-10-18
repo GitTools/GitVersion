@@ -70,7 +70,7 @@ GitVersion GetVersion(BuildParameters parameters)
     return gitVersion;
 }
 
-void Build(string configuration, GitVersion gitVersion)
+void Build(string configuration)
 {
     DotNetCoreRestore("./src/GitVersion.sln");
 
