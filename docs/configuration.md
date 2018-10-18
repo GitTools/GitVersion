@@ -48,6 +48,7 @@ commit-date-format: 'yyyy-MM-dd'
 ignore:
   sha: []
   commits-before: yyyy-MM-ddTHH:mm:ss
+  regex: 'irgnoreMatch'
 ```
 
 And the description of the available options are:
@@ -178,6 +179,10 @@ ignore:
 Date and time in the format `yyyy-MM-ddTHH:mm:ss` (eg `commits-before:
 2015-10-23T12:23:15`) to setup an exclusion range. Effectively any commit before
 `commits-before` will be ignored.
+
+#### regex
+The regex to match commit messages that will be ignored. Usefull to exlude for example
+pull request from an automatic nuget updater.
 
 ## Branch configuration
 Then we have branch specific configuration, which looks something like this:
