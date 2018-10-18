@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
     using System.Collections.Generic;
@@ -19,10 +19,14 @@
         [YamlMember(Alias = "sha")]
         public IEnumerable<string> SHAs { get; set; }
 
+        [YamlMember(Alias = "regex")]
+        public string Regex { get; set; }
+
         public virtual IEnumerable<IVersionFilter> ToFilters()
         {
             if (SHAs.Any()) yield return new ShaVersionFilter(SHAs);
             if (Before.HasValue) yield return new MinDateVersionFilter(Before.Value);
+            if (!string.IsNullOrWhiteSpace(Regex)) yield return new MessageFilter(Regex);
         }
     }
 }
