@@ -24,7 +24,6 @@
 
 BuildParameters parameters = BuildParameters.GetParameters(Context);
 bool publishingError = false;
-GitVersion gitVersion = null;
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
@@ -33,7 +32,7 @@ GitVersion gitVersion = null;
 Setup(context =>
 {
     Build(parameters.Configuration);
-    gitVersion = GetVersion(parameters);
+    var gitVersion = GetVersion(parameters);
     parameters.Initialize(context, gitVersion);
 
     // Increase verbosity?
@@ -245,6 +244,7 @@ Task("Pack-Tfs")
 
     var taskJsonFile = new FilePath(workDir + "/GitVersionTask/task.json");
     var taskJson = ParseJsonFromFile(taskJsonFile);
+    var gitVersion = parameters.Version.GitVersion;
     taskJson["version"]["Major"] = gitVersion.Major.ToString();
     taskJson["version"]["Minor"] = gitVersion.Minor.ToString();
     taskJson["version"]["Patch"] = gitVersion.Patch.ToString();
