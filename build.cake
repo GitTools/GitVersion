@@ -324,6 +324,7 @@ Task("Pack-Nuget")
 
 Task("Pack-Chocolatey")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Pack-Chocolatey works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsMainBranch, "Pack-Chocolatey works only for main branch.")
     .IsDependentOn("Copy-Files")
     .Does<BuildParameters>((parameters) =>
 {
