@@ -6,7 +6,7 @@ using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class DocumentationSamples
+public class DocumentationSamples : TestBase
 {
     [Test]
     public void GitFlowFeatureBranch()

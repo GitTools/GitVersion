@@ -83,14 +83,14 @@ namespace GitVersion
             var repo = new Repository(GetDotGitDirectory());
 
             // check that we have a remote that matches defaultRemoteName if not take the first remote
-            if (!repo.Network.Remotes.Any(remote => remote.Name.Equals(defaultRemoteName, StringComparison.InvariantCultureIgnoreCase)))
+            if (!repo.Network.Remotes.Any(remote => remote.Name.Equals(defaultRemoteName, StringComparerUtils.IngoreCaseComparison)))
             {
                 remoteToKeep = repo.Network.Remotes.First().Name;
             }
 
             var duplicateRepos = repo.Network
                                      .Remotes
-                                     .Where(remote => !remote.Name.Equals(remoteToKeep, StringComparison.InvariantCultureIgnoreCase))
+                                     .Where(remote => !remote.Name.Equals(remoteToKeep, StringComparerUtils.IngoreCaseComparison))
                                      .Select(remote => remote.Name);
 
             // remove all remotes that are considered duplicates

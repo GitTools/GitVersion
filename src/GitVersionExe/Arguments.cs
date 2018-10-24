@@ -26,20 +26,21 @@ namespace GitVersion
         public string DynamicRepositoryLocation;
 
         public bool Init;
+#if NETDESKTOP
         public bool Diag;
-
+#endif
         public bool IsVersion;
         public bool IsHelp;
         public string LogFilePath;
         public string ShowVariable;
 
         public OutputType Output;
-
+#if NETDESKTOP
         public string Proj;
         public string ProjArgs;
         public string Exec;
         public string ExecArgs;
-
+#endif
         public bool UpdateAssemblyInfo;
         public ISet<string> UpdateAssemblyInfoFileName;
         public bool EnsureAssemblyInfo;

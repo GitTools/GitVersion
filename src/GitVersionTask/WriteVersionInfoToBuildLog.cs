@@ -2,11 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
-
     using GitVersion;
-
     using Microsoft.Build.Framework;
+    using GitTools;
 
     public class WriteVersionInfoToBuildLog : GitVersionTaskBase
     {

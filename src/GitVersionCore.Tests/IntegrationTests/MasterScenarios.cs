@@ -5,7 +5,7 @@ using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
-public class MasterScenarios
+public class MasterScenarios : TestBase
 {
     [Test]
     public void CanHandleContinuousDelivery()

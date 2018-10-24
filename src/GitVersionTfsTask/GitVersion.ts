@@ -1,7 +1,6 @@
 import tl = require('vsts-task-lib/task');
 import { IExecOptions, ToolRunner } from 'vsts-task-lib/toolrunner';
 import path = require('path');
-import q = require('q');
 import os = require('os');
 
 var updateAssemblyInfo = tl.getBoolInput('updateAssemblyInfo');
@@ -12,7 +11,7 @@ var preferBundledVersion = tl.getBoolInput('preferBundledVersion');
 
 var currentDirectory = __dirname;
 
-var sourcesDirectory = tl.getVariable("Build.SourcesDirectory")
+var sourcesDirectory = tl.getVariable("Build.SourcesDirectory") || ".";
 
 if (!gitVersionPath) {
     gitVersionPath = tl.which("GitVersion.exe");

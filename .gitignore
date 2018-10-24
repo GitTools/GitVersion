@@ -110,8 +110,21 @@ src/GitVersionTfsTask/*.js
 ####################
 # Cake
 ####################
-/tools
+tools/*
+!tools/packages.config
 /*.zip
 GitVersion.CommandLine/*/
 
 releaseArtifacts
+/ILMergeTemp
+.dotnet
+.cake
+artifacts
+/src/Docker/**/content
+/src/GitVersionTfsTask/GitVersionTask
+!src/GitVersionTfsTask/GitVersionTask/task.json
+/src/GitVersionTfsTask/*.vsix
+/src/GitVersionRubyGem/*.gem
+/src/GitVersionRubyGem/bin/lib
+/src/GitVersionRubyGem/bin/GitVersion.exe
+/src/GitVersionRubyGem/bin/LibGit2Sharp.dll.config

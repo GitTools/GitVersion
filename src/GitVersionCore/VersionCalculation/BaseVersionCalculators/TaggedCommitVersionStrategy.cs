@@ -19,22 +19,8 @@
 
         public IEnumerable<BaseVersion> GetTaggedVersions(GitVersionContext context, Branch currentBranch, DateTimeOffset? olderThan)
         {
-            var allTags = new List<Tuple<Tag, SemanticVersion>>();
-            foreach(var tag in context.Repository.Tags)
-            {
-                if (olderThan.HasValue && ((Commit)tag.PeeledTarget()).When() > olderThan.Value)
-                    continue;
-
-                SemanticVersion version;
-
-                if (!SemanticVersion.TryParse(tag.FriendlyName, context.Configuration.GitTagPrefix, out version))
-                {
-                    continue;
-                }
-
-                allTags.Add(Tuple.Create(tag, version));
-            }
-
+            var allTags = GitRepoMetadataProvider.GetValidVersionTags(context.Repository, context.Configuration.GitTagPrefix, olderThan); 
+                
             var tagsOnBranch = currentBranch
                 .Commits
                 .SelectMany(commit => { return allTags.Where(t => IsValidTag(t.Item1, commit)); })
