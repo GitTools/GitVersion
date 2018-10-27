@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using LibGit2Sharp;
     using System;
@@ -110,6 +110,8 @@
                 throw new Exception("Configuration value for 'BuildMetaDataPadding' has no value. (this should not happen, please report an issue)");
             if (!FullConfiguration.CommitsSinceVersionSourcePadding.HasValue)
                 throw new Exception("Configuration value for 'CommitsSinceVersionSourcePadding' has no value. (this should not happen, please report an issue)");
+            if (!FullConfiguration.UseMergeMessageVersion.HasValue)
+                throw new Exception("Configuration value for 'UseMergeMessageVersion' has no value. (this should not happen, please report an issue)");
 
             var versioningMode = currentBranchConfig.VersioningMode.Value;
             var tag = currentBranchConfig.Tag;
@@ -130,7 +132,7 @@
             var patchMessage = FullConfiguration.PatchVersionBumpMessage;
             var noBumpMessage = FullConfiguration.NoBumpMessage;
             var commitDateFormat = FullConfiguration.CommitDateFormat;
-
+            var useMergeMessageVersion = FullConfiguration.UseMergeMessageVersion.Value;
             var commitMessageVersionBump = currentBranchConfig.CommitMessageIncrementing ?? FullConfiguration.CommitMessageIncrementing.Value;
 
             Configuration = new EffectiveConfiguration(
@@ -148,7 +150,8 @@
                 FullConfiguration.Ignore.ToFilters(),
                 currentBranchConfig.TracksReleaseBranches.Value,
                 currentBranchConfig.IsReleaseBranch.Value,
-                commitDateFormat);
+                commitDateFormat,
+                useMergeMessageVersion);
         }
 
         private static Branch GetTargetBranch(IRepository repository, string targetBranch)

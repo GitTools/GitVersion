@@ -45,6 +45,8 @@ build-metadata-padding: 4
 commits-since-version-source-padding: 4
 commit-message-incrementing: Enabled
 commit-date-format: 'yyyy-MM-dd'
+use-merge-message-version: true
+
 ignore:
   sha: []
   commits-before: yyyy-MM-ddTHH:mm:ss
@@ -153,6 +155,10 @@ details on the syntax. Default set to `Enabled`; set to `Disabled` to disable.
 
 ### commit-date-format
 Sets the format which will be used to format the `CommitDate` output variable.
+
+#### use-merge-message-version
+This configuration can be used to disable merge message version detection, where the version
+is infered from the commit message.
 
 ### ignore
 The header for ignore configuration.
