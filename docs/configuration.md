@@ -50,7 +50,7 @@ use-merge-message-version: true
 ignore:
   sha: []
   commits-before: yyyy-MM-ddTHH:mm:ss
-  regex: 'irgnoreMatch'
+  regex: 'ignoreMatch'
 ```
 
 And the description of the available options are:
@@ -187,7 +187,7 @@ Date and time in the format `yyyy-MM-ddTHH:mm:ss` (eg `commits-before:
 `commits-before` will be ignored.
 
 #### regex
-The regex to match commit messages that will be ignored. Usefull to exlude for example
+The regex to match commit messages that will be ignored. Useful to exclude for example
 pull request from an automatic nuget updater.
 
 ## Branch configuration
