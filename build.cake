@@ -184,8 +184,8 @@ Task("Copy-Files")
     .IsDependentOn("Test")
     .Does<BuildParameters>((parameters) =>
 {
-    var netCoreDir = parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools");
     // .NET Core
+    var netCoreDir = parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools");
     DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
     {
         Framework = parameters.NetCoreVersion,
@@ -226,6 +226,11 @@ Task("Copy-Files")
     CopyFileToDirectory(portableDir + "/" + "GitVersion.exe", tfsPath);
     CopyDirectory(portableDir.Combine("lib"), tfsPath.Combine("lib"));
 
+    // Vsix dotnet core
+    var tfsNetCorePath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionNetCoreTask");
+    EnsureDirectoryExists(tfsNetCorePath);
+    CopyDirectory(netCoreDir, tfsNetCorePath.Combine("netcore"));
+
     // Ruby Gem
     var gemPath = new DirectoryPath("./src/GitVersionRubyGem/bin");
     EnsureDirectoryExists(gemPath);
@@ -241,15 +246,10 @@ Task("Pack-Tfs")
     var workDir = "./src/GitVersionTfsTask";
 
     // update version number
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$version$", parameters.Version.SemVersion);
-
-    var taskJsonFile = new FilePath(workDir + "/GitVersionTask/task.json");
-    var taskJson = ParseJsonFromFile(taskJsonFile);
-    var gitVersion = parameters.Version.GitVersion;
-    taskJson["version"]["Major"] = gitVersion.Major.ToString();
-    taskJson["version"]["Minor"] = gitVersion.Minor.ToString();
-    taskJson["version"]["Patch"] = gitVersion.Patch.ToString();
-    SerializeJsonToPrettyFile(taskJsonFile, taskJson);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$version$", parameters.Version.SemVersion);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$version$", parameters.Version.SemVersion);
+    UpdateTaskVersion(new FilePath(workDir + "/GitVersionTask/task.json"), parameters.Version.GitVersion);
+    UpdateTaskVersion(new FilePath(workDir + "/GitVersionNetCoreTask/task.json"), parameters.Version.GitVersion);
 
     // build and pack
     NpmSet("progress", "false");
@@ -260,7 +260,15 @@ Task("Pack-Tfs")
     {
         ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
         WorkingDirectory = workDir,
-        ManifestGlobs = new List<string>(){ "vss-extension.json" },
+        ManifestGlobs = new List<string>(){ "vss-extension.mono.json" },
+        OutputPath = parameters.Paths.Directories.BuildArtifact
+    });
+
+    TfxExtensionCreate(new TfxExtensionCreateSettings
+    {
+        ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
+        WorkingDirectory = workDir,
+        ManifestGlobs = new List<string>(){ "vss-extension.netcore.json" },
         OutputPath = parameters.Paths.Directories.BuildArtifact
     });
 });
@@ -490,6 +498,14 @@ Task("Publish-Tfs")
     TfxExtensionPublish(parameters.Paths.Files.VsixOutputFilePath, new TfxExtensionPublishSettings
     {
         ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
+        AuthType = TfxAuthType.Pat,
+        Token = token
+    });
+
+    var netCoreWorkDir = "./src/GitVersionTfsTask.NetCore";
+    TfxExtensionPublish(parameters.Paths.Files.VsixNetCoreOutputFilePath, new TfxExtensionPublishSettings
+    {
+        ToolPath = netCoreWorkDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
         AuthType = TfxAuthType.Pat,
         Token = token
     });

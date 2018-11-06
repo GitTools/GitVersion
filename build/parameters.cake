@@ -104,6 +104,7 @@ public class BuildParameters
             files.TestCoverageOutputFilePath,
             files.ReleaseNotesOutputFilePath,
             files.VsixOutputFilePath,
+            files.VsixNetCoreOutputFilePath,
             files.GemOutputFilePath
         });
 
