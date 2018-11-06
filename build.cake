@@ -21,22 +21,17 @@
 //////////////////////////////////////////////////////////////////////
 // PARAMETERS
 //////////////////////////////////////////////////////////////////////
-
-BuildParameters parameters = BuildParameters.GetParameters(Context);
 bool publishingError = false;
-DotNetCoreMSBuildSettings msBuildSettings = null;
-
-string dotnetVersion = "net40";
-GitVersion gitVersion = null;
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
 ///////////////////////////////////////////////////////////////////////////////
 
-Setup(context =>
+Setup<BuildParameters>(context =>
 {
-    Build(parameters.Configuration, null);
-    gitVersion = GetVersion(dotnetVersion);
+    var parameters = BuildParameters.GetParameters(Context);
+    Build(parameters.Configuration);
+    var gitVersion = GetVersion(parameters);
     parameters.Initialize(context, gitVersion);
 
     // Increase verbosity?
@@ -56,25 +51,18 @@ Setup(context =>
         parameters.IsTagged,
         parameters.IsPullRequest);
 
-    msBuildSettings = new DotNetCoreMSBuildSettings()
-                            .WithProperty("Version", parameters.Version.SemVersion)
-                            .WithProperty("AssemblyVersion", parameters.Version.Version)
-                            .WithProperty("PackageVersion", parameters.Version.SemVersion)
-                            .WithProperty("FileVersion", parameters.Version.Version);
-
-    if(!parameters.IsRunningOnWindows)
-    {
-        var frameworkPathOverride = new FilePath(typeof(object).Assembly.Location).GetDirectory().FullPath + "/";
-
-        // Use FrameworkPathOverride when not running on Windows.
-        Information("Build will use FrameworkPathOverride={0} since not building on Windows.", frameworkPathOverride);
-        msBuildSettings.WithProperty("FrameworkPathOverride", frameworkPathOverride);
-    }
+    return parameters;
 });
 
-Teardown(context =>
+Teardown<BuildParameters>((context, parameters) =>
 {
     Information("Starting Teardown...");
+
+    Information("Repository info : IsMainRepo {0}, IsMainBranch {1}, IsTagged: {2}, IsPullRequest: {3}",
+        parameters.IsMainRepo,
+        parameters.IsMainBranch,
+        parameters.IsTagged,
+        parameters.IsPullRequest);
 
     if(context.Successful)
     {
@@ -111,9 +99,9 @@ Teardown(context =>
 #region Build
 
 Task("Clean")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
-    Information("Cleaning direcories..");
+    Information("Cleaning directories..");
 
     CleanDirectories("./src/**/bin/" + parameters.Configuration);
     CleanDirectories("./src/**/obj");
@@ -128,16 +116,16 @@ Task("Clean")
 // This build task can be run to just build
 Task("DogfoodBuild")
     .IsDependentOn("Clean")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
-    Build(parameters.Configuration, gitVersion);
+    Build(parameters.Configuration);
 });
 
 Task("Build")
     .IsDependentOn("Clean")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
-    Build(parameters.Configuration, gitVersion);
+    Build(parameters.Configuration);
 });
 
 #endregion
@@ -145,9 +133,9 @@ Task("Build")
 #region Tests
 
 Task("Test")
-    .WithCriteria(() => parameters.EnabledUnitTests, "Unit tests were disabled.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledUnitTests, "Unit tests were disabled.")
     .IsDependentOn("Build")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
     var framework = "net461";
 
@@ -194,32 +182,32 @@ Task("Test")
 
 Task("Copy-Files")
     .IsDependentOn("Test")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
-    var netCoreDir = parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools");
     // .NET Core
+    var netCoreDir = parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools");
     DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
     {
-        Framework = "netcoreapp2.0",
+        Framework = parameters.NetCoreVersion,
         NoRestore = true,
         Configuration = parameters.Configuration,
         OutputDirectory = netCoreDir,
-        MSBuildSettings = msBuildSettings
+        MSBuildSettings = parameters.MSBuildSettings
     });
 
     // Copy license & Copy GitVersion.XML (since publish does not do this anymore)
     CopyFileToDirectory("./LICENSE", netCoreDir);
-    CopyFileToDirectory("./src/GitVersionExe/bin/" + parameters.Configuration + "/netcoreapp2.0/GitVersion.xml", netCoreDir);
+    CopyFileToDirectory($"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.NetCoreVersion}/GitVersion.xml", netCoreDir);
 
     // .NET 4.0
     DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
     {
-        Framework = dotnetVersion,
+        Framework = parameters.FullFxVersion,
         NoBuild = true,
         NoRestore = true,
         Configuration = parameters.Configuration,
         OutputDirectory = parameters.Paths.Directories.ArtifactsBinFullFx,
-        MSBuildSettings = msBuildSettings
+        MSBuildSettings = parameters.MSBuildSettings
     });
 
     var ilMergDir = parameters.Paths.Directories.ArtifactsBinFullFxILMerge;
@@ -227,9 +215,9 @@ Task("Copy-Files")
     var cmdlineDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
 
     // Portable
-    PublishILRepackedGitVersionExe(true, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergDir, portableDir, parameters.Configuration, dotnetVersion);
+    PublishILRepackedGitVersionExe(true, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergDir, portableDir, parameters.Configuration, parameters.FullFxVersion);
     // Commandline
-    PublishILRepackedGitVersionExe(false, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergDir, cmdlineDir, parameters.Configuration, dotnetVersion);
+    PublishILRepackedGitVersionExe(false, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergDir, cmdlineDir, parameters.Configuration, parameters.FullFxVersion);
 
     // Vsix
     var tfsPath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionTask");
@@ -237,6 +225,11 @@ Task("Copy-Files")
     CopyFileToDirectory(portableDir + "/" + "LibGit2Sharp.dll.config", tfsPath);
     CopyFileToDirectory(portableDir + "/" + "GitVersion.exe", tfsPath);
     CopyDirectory(portableDir.Combine("lib"), tfsPath.Combine("lib"));
+
+    // Vsix dotnet core
+    var tfsNetCorePath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionNetCoreTask");
+    EnsureDirectoryExists(tfsNetCorePath);
+    CopyDirectory(netCoreDir, tfsNetCorePath.Combine("netcore"));
 
     // Ruby Gem
     var gemPath = new DirectoryPath("./src/GitVersionRubyGem/bin");
@@ -248,19 +241,15 @@ Task("Copy-Files")
 
 Task("Pack-Tfs")
     .IsDependentOn("Copy-Files")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
     var workDir = "./src/GitVersionTfsTask";
 
     // update version number
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$version$", parameters.Version.SemVersion);
-
-    var taskJsonFile = new FilePath(workDir + "/GitVersionTask/task.json");
-    var taskJson = ParseJsonFromFile(taskJsonFile);
-    taskJson["version"]["Major"] = gitVersion.Major.ToString();
-    taskJson["version"]["Minor"] = gitVersion.Minor.ToString();
-    taskJson["version"]["Patch"] = gitVersion.Patch.ToString();
-    SerializeJsonToPrettyFile(taskJsonFile, taskJson);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$version$", parameters.Version.SemVersion);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$version$", parameters.Version.SemVersion);
+    UpdateTaskVersion(new FilePath(workDir + "/GitVersionTask/task.json"), parameters.Version.GitVersion);
+    UpdateTaskVersion(new FilePath(workDir + "/GitVersionNetCoreTask/task.json"), parameters.Version.GitVersion);
 
     // build and pack
     NpmSet("progress", "false");
@@ -271,14 +260,22 @@ Task("Pack-Tfs")
     {
         ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
         WorkingDirectory = workDir,
-        ManifestGlobs = new List<string>(){ "vss-extension.json" },
+        ManifestGlobs = new List<string>(){ "vss-extension.mono.json" },
+        OutputPath = parameters.Paths.Directories.BuildArtifact
+    });
+
+    TfxExtensionCreate(new TfxExtensionCreateSettings
+    {
+        ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
+        WorkingDirectory = workDir,
+        ManifestGlobs = new List<string>(){ "vss-extension.netcore.json" },
         OutputPath = parameters.Paths.Directories.BuildArtifact
     });
 });
 
 Task("Pack-Gem")
     .IsDependentOn("Copy-Files")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
     var workDir = "./src/GitVersionRubyGem";
 
@@ -298,7 +295,7 @@ Task("Pack-Gem")
 
 Task("Pack-Nuget")
     .IsDependentOn("Copy-Files")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
     foreach(var package in parameters.Packages.Nuget)
     {
@@ -325,7 +322,7 @@ Task("Pack-Nuget")
         OutputDirectory = parameters.Paths.Directories.NugetRoot,
         NoBuild = true,
         NoRestore = true,
-        MSBuildSettings = msBuildSettings
+        MSBuildSettings = parameters.MSBuildSettings
     };
 
     // GitVersionCore & GitVersionTask
@@ -334,9 +331,10 @@ Task("Pack-Nuget")
 });
 
 Task("Pack-Chocolatey")
-    .WithCriteria(() => parameters.IsRunningOnWindows,  "Pack-Chocolatey works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Pack-Chocolatey works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsMainBranch, "Pack-Chocolatey works only for main branch.")
     .IsDependentOn("Copy-Files")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
     foreach(var package in parameters.Packages.Chocolatey)
     {
@@ -360,7 +358,7 @@ Task("Pack-Chocolatey")
 
 Task("Zip-Files")
     .IsDependentOn("Copy-Files")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
     // .NET 4.0
     var cmdlineDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
@@ -374,10 +372,10 @@ Task("Zip-Files")
 });
 
 Task("Docker-Build")
-    .WithCriteria(() => !parameters.IsRunningOnMacOS, "Docker can be built only on Windows or Linux agents.")
-    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease(), "Docker-Build works only for releases.")
+    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Docker can be built only on Windows or Linux agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Docker-Build works only for releases.")
     .IsDependentOn("Copy-Files")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
     if (parameters.IsRunningOnWindows)
     {
@@ -397,7 +395,7 @@ Task("Pack")
     .IsDependentOn("Pack-Nuget")
     .IsDependentOn("Pack-Chocolatey")
     .IsDependentOn("Zip-Files")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
     Information("The build artifacts: \n");
     foreach(var artifact in parameters.Artifacts.All)
@@ -420,11 +418,11 @@ Task("Pack")
 #region Publish
 
 Task("Release-Notes")
-    .WithCriteria(() => parameters.IsRunningOnWindows,  "Release notes are generated only on Windows agents.")
-    .WithCriteria(() => parameters.IsRunningOnAppVeyor, "Release notes are generated only on release agents.")
-    .WithCriteria(() => parameters.IsStableRelease(),   "Release notes are generated only for stable releases.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Release notes are generated only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAppVeyor, "Release notes are generated only on release agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease(),   "Release notes are generated only for stable releases.")
     .IsDependentOn("Clean")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
     var outputFile = parameters.Paths.Files.ReleaseNotesOutputFilePath;
     var githubToken = parameters.Credentials.GitHub.Token;
@@ -436,11 +434,11 @@ Task("Release-Notes")
 });
 
 Task("Publish-AppVeyor")
-    .WithCriteria(() => parameters.IsRunningOnWindows, "Publish-AppVeyor works only on Windows agents.")
-    .WithCriteria(() => parameters.IsRunningOnAppVeyor, "Publish-AppVeyor works only on AppVeyor.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Publish-AppVeyor works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAppVeyor, "Publish-AppVeyor works only on AppVeyor.")
     .IsDependentOn("Pack")
     .IsDependentOn("Release-Notes")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
     foreach(var artifact in parameters.Artifacts.All)
     {
@@ -460,11 +458,12 @@ Task("Publish-AppVeyor")
 });
 
 Task("Publish-AzurePipeline")
-    .WithCriteria(() => parameters.IsRunningOnWindows, "Publish-AzurePipeline works only on Windows agents.")
-    .WithCriteria(() => parameters.IsRunningOnAzurePipeline, "Publish-AzurePipeline works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Publish-AzurePipeline works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-AzurePipeline works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsPullRequest, "Publish-AzurePipeline works only for non-PR commits.")
     .IsDependentOn("Pack")
     .IsDependentOn("Release-Notes")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
     foreach(var artifact in parameters.Artifacts.All)
     {
@@ -483,12 +482,12 @@ Task("Publish-AzurePipeline")
 });
 
 Task("Publish-Tfs")
-    .WithCriteria(() => parameters.EnabledPublishTfs,   "Publish-Tfs was disabled.")
-    .WithCriteria(() => parameters.IsRunningOnWindows,  "Publish-Tfs works only on Windows agents.")
-    .WithCriteria(() => parameters.IsRunningOnAppVeyor, "Publish-Tfs works only on AppVeyor.")
-    .WithCriteria(() => parameters.IsStableRelease(), "Publish-Tfs works only for releases.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishTfs,   "Publish-Tfs was disabled.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Publish-Tfs works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAppVeyor, "Publish-Tfs works only on AppVeyor.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease(), "Publish-Tfs works only for releases.")
     .IsDependentOn("Pack-Tfs")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
     var token = parameters.Credentials.Tfx.Token;
     if(string.IsNullOrEmpty(token)) {
@@ -502,6 +501,14 @@ Task("Publish-Tfs")
         AuthType = TfxAuthType.Pat,
         Token = token
     });
+
+    var netCoreWorkDir = "./src/GitVersionTfsTask.NetCore";
+    TfxExtensionPublish(parameters.Paths.Files.VsixNetCoreOutputFilePath, new TfxExtensionPublishSettings
+    {
+        ToolPath = netCoreWorkDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
+        AuthType = TfxAuthType.Pat,
+        Token = token
+    });
 })
 .OnError(exception =>
 {
@@ -511,12 +518,12 @@ Task("Publish-Tfs")
 });
 
 Task("Publish-Gem")
-    .WithCriteria(() => parameters.EnabledPublishGem,   "Publish-Gem was disabled.")
-    .WithCriteria(() => parameters.IsRunningOnWindows,  "Publish-Gem works only on Windows agents.")
-    .WithCriteria(() => parameters.IsRunningOnAppVeyor, "Publish-Gem works only on AppVeyor.")
-    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Gem works only for releases.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishGem,   "Publish-Gem was disabled.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Publish-Gem works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAppVeyor, "Publish-Gem works only on AppVeyor.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Gem works only for releases.")
     .IsDependentOn("Pack-Gem")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
     var apiKey = parameters.Credentials.RubyGem.ApiKey;
     if(string.IsNullOrEmpty(apiKey)) {
@@ -539,12 +546,12 @@ Task("Publish-Gem")
 });
 
 Task("Publish-DockerHub")
-    .WithCriteria(() => parameters.EnabledPublishDocker, "Publish-DockerHub was disabled.")
-    .WithCriteria(() => !parameters.IsRunningOnMacOS,    "Publish-DockerHub works only on Windows and Linux agents.")
-    .WithCriteria(() => parameters.IsRunningOnAppVeyor || (parameters.IsRunningOnTravis && !parameters.IsRunningOnMacOS), "Publish-DockerHub works only on AppVeyor or Travis.")
-    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-DockerHub works only for releases.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishDocker, "Publish-DockerHub was disabled.")
+    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS,    "Publish-DockerHub works only on Windows and Linux agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAppVeyor || (parameters.IsRunningOnTravis && !parameters.IsRunningOnMacOS), "Publish-DockerHub works only on AppVeyor or Travis.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-DockerHub works only for releases.")
     .IsDependentOn("Docker-Build")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
     var username = parameters.Credentials.Docker.UserName;
     if (string.IsNullOrEmpty(username)) {
@@ -579,12 +586,12 @@ Task("Publish-DockerHub")
 });
 
 Task("Publish-NuGet")
-    .WithCriteria(() => parameters.EnabledPublishNuget, "Publish-NuGet was disabled.")
-    .WithCriteria(() => parameters.IsRunningOnWindows,  "Publish-NuGet works only on Windows agents.")
-    .WithCriteria(() => parameters.IsRunningOnAppVeyor, "Publish-NuGet works only on AppVeyor.")
-    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-NuGet works only for releases.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishNuget, "Publish-NuGet was disabled.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Publish-NuGet works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAppVeyor, "Publish-NuGet works only on AppVeyor.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-NuGet works only for releases.")
     .IsDependentOn("Pack-NuGet")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
     var apiKey = parameters.Credentials.Nuget.ApiKey;
     if(string.IsNullOrEmpty(apiKey)) {
@@ -617,12 +624,12 @@ Task("Publish-NuGet")
 });
 
 Task("Publish-Chocolatey")
-    .WithCriteria(() => parameters.EnabledPublishChocolatey, "Publish-Chocolatey was disabled.")
-    .WithCriteria(() => parameters.IsRunningOnWindows,       "Publish-Chocolatey works only on Windows agents.")
-    .WithCriteria(() => parameters.IsRunningOnAppVeyor,      "Publish-Chocolatey works only on AppVeyor.")
-    .WithCriteria(() => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Chocolatey works only for releases.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishChocolatey, "Publish-Chocolatey was disabled.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Chocolatey works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAppVeyor,      "Publish-Chocolatey works only on AppVeyor.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Chocolatey works only for releases.")
     .IsDependentOn("Pack-Chocolatey")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
     var apiKey = parameters.Credentials.Chocolatey.ApiKey;
     if(string.IsNullOrEmpty(apiKey)) {
@@ -679,4 +686,5 @@ Task("Default")
 // EXECUTION
 //////////////////////////////////////////////////////////////////////
 
-RunTarget(parameters.Target);
+var target = Argument("target", "Default");
+RunTarget(target);

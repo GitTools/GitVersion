@@ -24,8 +24,8 @@ works out the [semantic version][semver] of the commit being built.
 |                 **Docker DotnetCore** |   [Dotnetcore][dockerhub-dotnetcore]      |                      -                    |
 |                     **Docker FullFX** |   [FullFX][dockerhub-fullfx]              |                      -                    |
 
-
 ## Compatibility
+
 GitVersion works on Mac, Linux with Mono and Windows.
 
 Tip: If you get `System.TypeInitializationException: The type initializer for
@@ -35,23 +35,26 @@ System.DllNotFoundException: lib/linux/x86_64/libgit2-baa87df.so`
 You likely need to install `libcurl3`. Run `sudo apt-get install libcurl3`
 
 ## Quick Links
- - [Documentation][docs]
- - [Contributing][contribute]
- - [Why GitVersion][why]
- - [Usage][usage]
- - [How it works][how]
- - [FAQ][faq]
- - [Who is using GitVersion][who]
+
+- [Documentation][docs]
+- [Contributing][contribute]
+- [Why GitVersion][why]
+- [Usage][usage]
+- [How it works][how]
+- [FAQ][faq]
+- [Who is using GitVersion][who]
 
 ## GitVersion in action!
+
 ![README][gv-in-action]
 
 You are seeing:
 
- - Pull requests being built as pre-release builds
- - A branch called `release-1.0.0` producing beta v1 packages
+- Pull requests being built as pre-release builds
+- A branch called `release-1.0.0` producing beta v1 packages
 
 ## Icon
+
 <a href="http://thenounproject.com/noun/tree/#icon-No13389"
 target="_blank">Tree</a> designed by <a
 href="http://thenounproject.com/david.chapman" target="_blank">David Chapman</a>

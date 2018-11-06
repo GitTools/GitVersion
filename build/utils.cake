@@ -2,10 +2,8 @@
 FilePath FindToolInPath(string tool)
 {
     var pathEnv = EnvironmentVariable("PATH");
-    if (string.IsNullOrEmpty(pathEnv) || string.IsNullOrEmpty(tool))
-    {
-        return tool;
-    }
+    if (string.IsNullOrEmpty(pathEnv) || string.IsNullOrEmpty(tool)) return tool;
+
     var paths = pathEnv.Split(new []{ IsRunningOnUnix() ? ':' : ';'},  StringSplitOptions.RemoveEmptyEntries);
     return paths.Select(path => new DirectoryPath(path).CombineWithFilePath(tool)).FirstOrDefault(filePath => FileExists(filePath.FullPath));
 }
@@ -22,11 +20,9 @@ void FixForMono(Cake.Core.Tooling.ToolSettings toolSettings, string toolExe)
 
 DirectoryPath HomePath()
 {
-    if(IsRunningOnWindows()) {
-        return new DirectoryPath(EnvironmentVariable("HOMEDRIVE") +  EnvironmentVariable("HOMEPATH"));
-    } else {
-        return new DirectoryPath(EnvironmentVariable("HOME"));
-    }
+    return IsRunningOnWindows()
+        ? new DirectoryPath(EnvironmentVariable("HOMEDRIVE") +  EnvironmentVariable("HOMEPATH"))
+        : new DirectoryPath(EnvironmentVariable("HOME"));
 }
 
 void ReplaceTextInFile(FilePath filePath, string oldValue, string newValue, bool encrypt = false)
@@ -47,9 +43,9 @@ void SetRubyGemPushApiKey(string apiKey)
     CopyFileToDirectory(credentialFile, gemHomeDir);
 }
 
-GitVersion GetVersion(string dotnetVersion)
+GitVersion GetVersion(BuildParameters parameters)
 {
-    var dllFile = GetFiles("**/netcoreapp2.0/GitVersion.dll").FirstOrDefault();
+    var dllFile = GetFiles($"**/{parameters.NetCoreVersion}/GitVersion.dll").FirstOrDefault();
     var settings = new GitVersionSettings
     {
         OutputType = GitVersionOutput.Json,
@@ -59,19 +55,20 @@ GitVersion GetVersion(string dotnetVersion)
 
     var gitVersion = GitVersion(settings);
 
-    settings.UpdateAssemblyInfo = true;
-    settings.LogFilePath = "console";
-    settings.OutputType = GitVersionOutput.BuildServer;
+    if (!(parameters.IsRunningOnAzurePipeline && parameters.IsPullRequest))
+    {
+        settings.UpdateAssemblyInfo = true;
+        settings.LogFilePath = "console";
+        settings.OutputType = GitVersionOutput.BuildServer;
 
-    GitVersion(settings);
-
+        GitVersion(settings);
+    }
     return gitVersion;
 }
 
-void Build(string configuration, GitVersion gitVersion)
+void Build(string configuration)
 {
     DotNetCoreRestore("./src/GitVersion.sln");
-
     MSBuild("./src/GitVersion.sln", settings =>
     {
         settings.SetConfiguration(configuration)
@@ -136,12 +133,10 @@ void DockerBuild(string platform, string variant, BuildParameters parameters)
 {
     var workDir = DirectoryPath.FromString($"./src/Docker/{platform}/{variant}");
 
-    DirectoryPath sourceDir;
-    if (variant == "dotnetcore") {
-        sourceDir = parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools");
-    } else {
-        sourceDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
-    }
+    var sourceDir =  variant == "dotnetcore"
+        ? parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools")
+        : parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
+
     CopyDirectory(sourceDir, workDir.Combine("content"));
 
     var tags = GetDockerTags(platform, variant, parameters);
@@ -173,6 +168,7 @@ string[] GetDockerTags(string platform, string variant, BuildParameters paramete
     var name = $"gittools/gitversion-{variant}";
 
     var tags = new List<string> {
+        $"{name}:{platform}",
         $"{name}:{platform}-{parameters.Version.Version}"
     };
 
@@ -199,4 +195,13 @@ void GetReleaseNotes(FilePath outputPath, DirectoryPath workDir, string repoToke
     StartProcess(toolPath, new ProcessSettings { Arguments = arguments, RedirectStandardOutput = true }, out var redirectedOutput);
 
     Information(string.Join("\n", redirectedOutput));
+}
+
+void UpdateTaskVersion(FilePath taskJsonPath, GitVersion gitVersion)
+{
+    var taskJson = ParseJsonFromFile(taskJsonPath);
+    taskJson["version"]["Major"] = gitVersion.Major.ToString();
+    taskJson["version"]["Minor"] = gitVersion.Minor.ToString();
+    taskJson["version"]["Patch"] = gitVersion.Patch.ToString();
+    SerializeJsonToPrettyFile(taskJsonPath, taskJson);
 }

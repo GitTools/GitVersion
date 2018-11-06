@@ -40,6 +40,7 @@ public class BuildPaths
         var releaseNotesOutputFilePath = buildArtifactDir.CombineWithFilePath("releasenotes.md");
 
         var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-" + semVersion + ".vsix");
+        var vsixNetCoreOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-netcore-" + semVersion + ".vsix");
         var gemOutputFilePath  = buildArtifactDir.CombineWithFilePath("gitversion-" + version.GemVersion + ".gem");
 
         // Directories
@@ -62,6 +63,7 @@ public class BuildPaths
             testCoverageOutputFilePath,
             releaseNotesOutputFilePath,
             vsixOutputFilePath,
+            vsixNetCoreOutputFilePath,
             gemOutputFilePath);
 
         return new BuildPaths
@@ -79,6 +81,7 @@ public class BuildFiles
     public FilePath TestCoverageOutputFilePath { get; private set; }
     public FilePath ReleaseNotesOutputFilePath { get; private set; }
     public FilePath VsixOutputFilePath { get; private set; }
+    public FilePath VsixNetCoreOutputFilePath { get; private set; }
     public FilePath GemOutputFilePath { get; private set; }
 
     public BuildFiles(
@@ -88,6 +91,7 @@ public class BuildFiles
         FilePath testCoverageOutputFilePath,
         FilePath releaseNotesOutputFilePath,
         FilePath vsixOutputFilePath,
+        FilePath vsixNetCoreOutputFilePath,
         FilePath gemOutputFilePath
         )
     {
@@ -96,6 +100,7 @@ public class BuildFiles
         TestCoverageOutputFilePath = testCoverageOutputFilePath;
         ReleaseNotesOutputFilePath = releaseNotesOutputFilePath;
         VsixOutputFilePath = vsixOutputFilePath;
+        VsixNetCoreOutputFilePath = vsixNetCoreOutputFilePath;
         GemOutputFilePath = gemOutputFilePath;
     }
 }
