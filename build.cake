@@ -449,6 +449,10 @@ Task("Publish-AppVeyor")
     {
         if (FileExists(package.PackagePath)) { AppVeyor.UploadArtifact(package.PackagePath); }
     }
+
+    if (FileExists(parameters.Paths.Files.TestCoverageOutputFilePath)) {
+        AppVeyor.UploadTestResults(parameters.Paths.Files.TestCoverageOutputFilePath, AppVeyorTestResultsType.NUnit3);
+    }
 })
 .OnError(exception =>
 {
@@ -472,6 +476,14 @@ Task("Publish-AzurePipeline")
     foreach(var package in parameters.Packages.All)
     {
         if (FileExists(package.PackagePath)) { TFBuild.Commands.UploadArtifact("packages", package.PackagePath, package.PackageName); }
+    }
+
+    if (FileExists(parameters.Paths.Files.TestCoverageOutputFilePath)) {
+        var data = new TFBuildPublishTestResultsData {
+            TestResultsFiles = new[] { parameters.Paths.Files.TestCoverageOutputFilePath.ToString() },
+            TestRunner = TFTestRunnerType.NUnit
+        };
+        TFBuild.Commands.PublishTestResults(data);
     }
 })
 .OnError(exception =>
