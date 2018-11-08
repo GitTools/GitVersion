@@ -164,7 +164,7 @@ Task("Test")
 
     var nunitSettings = new NUnit3Settings
     {
-        OutputFile = parameters.Paths.Files.TestCoverageOutputFilePath
+        Results = new List<NUnit3Result> { new NUnit3Result { FileName = parameters.Paths.Files.TestCoverageOutputFilePath } }
     };
 
     if(IsRunningOnUnix()) {
