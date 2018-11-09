@@ -148,6 +148,7 @@ public class BuildDirectories
         ToClean = new[] {
             Artifacts,
             BuildArtifact,
+            TestCoverageOutput,
             NugetRoot,
             ArtifactsBin,
             ArtifactsBinFullFx,
