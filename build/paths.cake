@@ -33,20 +33,23 @@ public class BuildPaths
         var artifactsBinNetCoreDir        = artifactsBinDir.Combine("netcoreapp2.0");
         var nugetRootDir                  = artifactsDir.Combine("nuget");
         var buildArtifactDir              = artifactsDir.Combine("build-artifact");
+        var testCoverageOutputDir         = artifactsDir.Combine("code-coverage");
 
         var zipArtifactPathCoreClr = artifactsDir.CombineWithFilePath("GitVersion-bin-coreclr-v" + semVersion + ".zip");
         var zipArtifactPathDesktop = artifactsDir.CombineWithFilePath("GitVersion-bin-net40-v" + semVersion + ".zip");
-        var testCoverageOutputFilePath = buildArtifactDir.CombineWithFilePath("TestResult.xml");
-        var releaseNotesOutputFilePath = buildArtifactDir.CombineWithFilePath("releasenotes.md");
 
+        var testCoverageOutputFilePath = testCoverageOutputDir.CombineWithFilePath("TestResult.xml");
+
+        var releaseNotesOutputFilePath = buildArtifactDir.CombineWithFilePath("releasenotes.md");
+        var gemOutputFilePath  = buildArtifactDir.CombineWithFilePath("gitversion-" + version.GemVersion + ".gem");
         var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-" + semVersion + ".vsix");
         var vsixNetCoreOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-netcore-" + semVersion + ".vsix");
-        var gemOutputFilePath  = buildArtifactDir.CombineWithFilePath("gitversion-" + version.GemVersion + ".gem");
 
         // Directories
         var buildDirectories = new BuildDirectories(
             artifactsDir,
             buildArtifactDir,
+            testCoverageOutputDir,
             nugetRootDir,
             artifactsBinDir,
             artifactsBinFullFxDir,
@@ -110,6 +113,7 @@ public class BuildDirectories
     public DirectoryPath Artifacts { get; private set; }
     public DirectoryPath NugetRoot { get; private set; }
     public DirectoryPath BuildArtifact { get; private set; }
+    public DirectoryPath TestCoverageOutput { get; private set; }
     public DirectoryPath ArtifactsBin { get; private set; }
     public DirectoryPath ArtifactsBinFullFx { get; private set; }
     public DirectoryPath ArtifactsBinFullFxPortable { get; private set; }
@@ -121,6 +125,7 @@ public class BuildDirectories
     public BuildDirectories(
         DirectoryPath artifactsDir,
         DirectoryPath buildArtifactDir,
+        DirectoryPath testCoverageOutputDir,
         DirectoryPath nugetRootDir,
         DirectoryPath artifactsBinDir,
         DirectoryPath artifactsBinFullFxDir,
@@ -132,6 +137,7 @@ public class BuildDirectories
     {
         Artifacts = artifactsDir;
         BuildArtifact = buildArtifactDir;
+        TestCoverageOutput = testCoverageOutputDir;
         NugetRoot = nugetRootDir;
         ArtifactsBin = artifactsBinDir;
         ArtifactsBinFullFx = artifactsBinFullFxDir;

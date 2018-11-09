@@ -15,9 +15,9 @@
     <GenerateAssemblyTitleAttribute Condition="'$(GenerateAssemblyTitleAttribute)' == ''">false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyVersionAttribute Condition="'$(GenerateAssemblyVersionAttribute)' == ''">false</GenerateAssemblyVersionAttribute>
     <GenerateNeutralResourcesLanguageAttribute Condition="'$(GenerateNeutralResourcesLanguageAttribute)' == ''">true</GenerateNeutralResourcesLanguageAttribute>
-   
+
   </PropertyGroup>
-  
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -43,6 +43,7 @@
     <PackageReference Include="JetBrains.Annotations" Version="10.4.0"></PackageReference>
     <PackageReference Include="Mono.Cecil" Version="0.9.6.4"></PackageReference>
     <PackageReference Include="NSubstitute" Version="1.10.0"></PackageReference>
+    <PackageReference Include="coverlet.msbuild" Version="2.1.1" />
     <PackageReference Include="NUnit" Version="3.9.0"></PackageReference>
     <packagereference Include="NUnit3TestAdapter" Version="3.9.0"></packagereference>
     <PackageReference Include="Shouldly" Version="3.0.0"></PackageReference>
@@ -59,9 +60,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup>    
-    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />    
-    <ProjectReference Include="..\GitVersionExe\GitVersionExe.csproj" />    
+  <ItemGroup>
+    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
+    <ProjectReference Include="..\GitVersionExe\GitVersionExe.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -72,6 +73,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Approved\**\*.approved.txt" />
-  </ItemGroup> 
-  
+  </ItemGroup>
+
 </Project>

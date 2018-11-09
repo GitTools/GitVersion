@@ -7,6 +7,7 @@ public class BuildCredentials
     public ChocolateyCredentials Chocolatey { get; private set; }
     public TfxCredentials Tfx { get; private set; }
     public RubyGemCredentials RubyGem { get; private set; }
+    public CodeCovCredentials CodeCov { get; private set; }
 
     public static BuildCredentials GetCredentials(ICakeContext context)
     {
@@ -19,6 +20,7 @@ public class BuildCredentials
             Chocolatey = ChocolateyCredentials.GetChocolateyCredentials(context),
             Tfx        = TfxCredentials.GetTfxCredentials(context),
             RubyGem    = RubyGemCredentials.GetRubyGemCredentials(context),
+            CodeCov    = CodeCovCredentials.GetCodeCovCredentials(context),
         };
     }
 }
@@ -149,5 +151,20 @@ public class RubyGemCredentials
     public static RubyGemCredentials GetRubyGemCredentials(ICakeContext context)
     {
         return new RubyGemCredentials(context.EnvironmentVariable("RUBY_GEM_API_KEY"));
+    }
+}
+
+public class CodeCovCredentials
+{
+    public string Token { get; private set; }
+
+    public CodeCovCredentials(string token)
+    {
+        Token = token;
+    }
+
+    public static CodeCovCredentials GetCodeCovCredentials(ICakeContext context)
+    {
+        return new CodeCovCredentials(context.EnvironmentVariable("CODECOV_TOKEN"));
     }
 }

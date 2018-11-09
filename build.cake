@@ -7,12 +7,15 @@
 #addin "nuget:?package=Cake.Json&version=3.0.0"
 #addin "nuget:?package=Cake.Tfx&version=0.8.0"
 #addin "nuget:?package=Cake.Gem&version=0.7.0"
+#addin "nuget:?package=Cake.Coverlet&version=1.3.2"
+#addin "nuget:?package=Cake.Codecov&version=0.4.0"
 #addin "nuget:?package=Newtonsoft.Json&version=9.0.1"
 
 // Install tools.
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.9.0"
 #tool "nuget:?package=GitReleaseNotes&version=0.7.1"
 #tool "nuget:?package=ILRepack&version=2.0.16"
+#tool "nuget:?package=Codecov&version=1.1.0"
 
 // Load other scripts.
 #load "./build/parameters.cake"
@@ -151,12 +154,19 @@ Task("Test")
             Configuration = parameters.Configuration
         };
 
+        var coveletSettings = new CoverletSettings {
+            CollectCoverage = true,
+            CoverletOutputFormat = CoverletOutputFormat.opencover,
+            CoverletOutputDirectory = parameters.Paths.Directories.TestCoverageOutput + "/",
+            CoverletOutputName = $"{project.GetFilenameWithoutExtension()}.coverage.xml"
+        };
+
         if (IsRunningOnUnix())
         {
             settings.Filter = "TestCategory!=NoMono";
         }
 
-        DotNetCoreTest(project.FullPath, settings);
+        DotNetCoreTest(project.FullPath, settings, coveletSettings);
     }
 
     // run using NUnit
@@ -433,6 +443,29 @@ Task("Release-Notes")
     Error(exception.Dump());
 });
 
+Task("Publish-Coverage")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Publish-Coverage works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAppVeyor, "Publish-Coverage works only on AppVeyor.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Coverage works only for releases.")
+    .IsDependentOn("Test")
+    .Does<BuildParameters>((parameters) =>
+{
+    var coverageFiles = GetFiles(parameters.Paths.Directories.TestCoverageOutput + "/*.coverage.xml");
+
+    var token = parameters.Credentials.CodeCov.Token;
+    if(string.IsNullOrEmpty(token)) {
+        throw new InvalidOperationException("Could not resolve CodeCov token.");
+    }
+
+    foreach (var coverageFile in coverageFiles) {
+        // Upload a coverage report using the CodecovSettings.
+        Codecov(new CodecovSettings {
+            Files = new [] { coverageFile.ToString() },
+            Token = token
+        });
+    }
+});
+
 Task("Publish-AppVeyor")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Publish-AppVeyor works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAppVeyor, "Publish-AppVeyor works only on AppVeyor.")
@@ -677,6 +710,7 @@ Task("Publish-Chocolatey")
 Task("Publish")
     .IsDependentOn("Publish-AppVeyor")
     .IsDependentOn("Publish-AzurePipeline")
+    .IsDependentOn("Publish-Coverage")
     .IsDependentOn("Publish-NuGet")
     .IsDependentOn("Publish-Chocolatey")
     .IsDependentOn("Publish-Tfs")

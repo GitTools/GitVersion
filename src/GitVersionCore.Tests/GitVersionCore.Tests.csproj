@@ -30,8 +30,8 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>  
-  
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
     <PackageReference Include="FluentDateTime" Version="1.13.0" />
@@ -39,11 +39,12 @@
     <PackageReference Include="GitTools.Testing" Version="1.2.0" />
     <PackageReference Include="JetBrains.Annotations" Version="10.4.0" />
     <PackageReference Include="NSubstitute" Version="1.10.0.0" />
+    <PackageReference Include="coverlet.msbuild" Version="2.1.1" />
     <PackageReference Include="NUnit" Version="3.9.0" />
     <packagereference Include="NUnit3TestAdapter" Version="3.9.0"></packagereference>
     <PackageReference Include="Shouldly" Version="3.0.0" />
     <PackageReference Include="TestStack.ConventionTests" Version="3.0.0" />
-    <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />  
+    <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net461'">
     <Reference Include="System" />
@@ -53,7 +54,7 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />   
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
   <ItemGroup>
