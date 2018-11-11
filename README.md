@@ -20,6 +20,7 @@ works out the [semantic version][semver] of the commit being built.
 |                    **GitVersionTask** |     [![NuGet][gvt-badge]][gvt]            |       [![NuGet][gvt-pre-badge]][gvt]      |
 |            **GitVersion.CommandLine** |     [![NuGet][gvcl-badge]][gvcl]          |       [![NuGet][gvcl-pre-badge]][gvcl]    |
 | **GitVersion.CommandLine.DotNetCore** |     [![NuGet][gvcd-badge]][gvcd]          |       [![NuGet][gvcd-pre-badge]][gvcd]    |
+|                   **GitVersion.Tool** |     [![NuGet][gvgt-badge]][gvgt]          |       [![NuGet][gvgt-pre-badge]][gvgt]    |
 |                               **Gem** |       [![Gem][gem-badge]][gem]            |                      -                    |
 |                          **Homebrew** |   [![homebrew][brew-badge]][brew]         |                      -                    |
 |                 **Docker DotnetCore** |   [Dotnetcore][dockerhub-dotnetcore]      |                      -                    |
@@ -94,6 +95,9 @@ from The Noun Project
 [gvcd]:                 https://www.nuget.org/packages/GitVersion.CommandLine.DotNetCore
 [gvcd-badge]:           https://img.shields.io/nuget/v/GitVersion.CommandLine.DotNetCore.svg
 [gvcd-pre-badge]:       https://img.shields.io/nuget/vpre/GitVersion.CommandLine.DotNetCore.svg
+[gvgt]:                 https://www.nuget.org/packages/GitVersion.Tool
+[gvgt-badge]:           https://img.shields.io/nuget/v/GitVersion.Tool.svg
+[gvgt-pre-badge]:       https://img.shields.io/nuget/vpre/GitVersion.Tool.svg
 [gem-badge]:            https://img.shields.io/gem/v/gitversion.svg
 [gem]:                  https://rubygems.org/gems/gitversion
 [brew]:                 http://brew.sh/
