@@ -4,9 +4,9 @@ jobs:
     vmImage: 'macOS 10.13'
   steps:
   - task: DotNetCoreInstaller@0
-    displayName: 'Use .NET Core sdk 2.1.401'
+    displayName: 'Use .NET Core sdk 2.1.403'
     inputs:
-      version: 2.1.401
+      version: 2.1.403
   - powershell: ./build.ps1 -script build.cake -target Default
     displayName: 'Cake build'
 - job: Linux
@@ -14,9 +14,9 @@ jobs:
     vmImage: 'Ubuntu 16.04'
   steps:
   - task: DotNetCoreInstaller@0
-    displayName: 'Use .NET Core sdk 2.1.401'
+    displayName: 'Use .NET Core sdk 2.1.403'
     inputs:
-      version: 2.1.401
+      version: 2.1.403
   - task: UseRubyVersion@0
     inputs:
       addToPath: true # Optional
@@ -27,9 +27,9 @@ jobs:
     vmImage: 'VS2017-Win2016'
   steps:
   - task: DotNetCoreInstaller@0
-    displayName: 'Use .NET Core sdk 2.1.401'
+    displayName: 'Use .NET Core sdk 2.1.403'
     inputs:
-      version: 2.1.401
+      version: 2.1.403
   - task: UseRubyVersion@0
     inputs:
       addToPath: true # Optional
