@@ -1,5 +1,4 @@
 <Project>
-  <Import Project="GitVersionExe.csproj" />
 
   <PropertyGroup>
     <PackAsTool>true</PackAsTool>
@@ -7,5 +6,6 @@
     <ToolCommandName>dotnet-gitversion</ToolCommandName>
     <PackageId>GitVersion.Tool</PackageId>
   </PropertyGroup>
+  <Import Project="GitVersionExe.csproj" />
 
 </Project>
