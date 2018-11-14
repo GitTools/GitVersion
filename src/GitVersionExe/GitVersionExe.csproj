@@ -4,23 +4,23 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>GitVersion</RootNamespace>
     <AssemblyName>GitVersion</AssemblyName>
-    <TargetFrameworks Condition=" '$(TargetFrameworks)' == '' ">net40;netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(TargetFrameworks)' == '' ">net461;netcoreapp2.1</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\$(Configuration)\GitVersion.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net40'">
+  <PropertyGroup Condition="'$(TargetFramework)'=='net461'">
     <DefineConstants>NETDESKTOP</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net40'">
-    <PackageReference Include="GitTools.Core" Version="1.3.1"></PackageReference>
+  <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2018.2.1"></PackageReference>
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GitTools.Core\GitTools.Core.csproj" />
     <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
   </ItemGroup>
 </Project>

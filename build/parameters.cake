@@ -8,8 +8,8 @@ public class BuildParameters
     public string Target { get; private set; }
     public string Configuration { get; private set; }
 
-    public string NetCoreVersion { get; private set; } = "netcoreapp2.0";
-    public string FullFxVersion { get; private set; } = "net40";
+    public string NetCoreVersion { get; private set; } = "netcoreapp2.1";
+    public string FullFxVersion { get; private set; } = "net461";
 
     public bool EnabledUnitTests { get; private set; }
     public bool EnabledPublishGem { get; private set; }
