@@ -36,7 +36,7 @@ public class BuildPaths
         var testCoverageOutputDir         = artifactsDir.Combine("code-coverage");
 
         var zipArtifactPathCoreClr = artifactsDir.CombineWithFilePath("GitVersion-bin-coreclr-v" + semVersion + ".zip");
-        var zipArtifactPathDesktop = artifactsDir.CombineWithFilePath("GitVersion-bin-net40-v" + semVersion + ".zip");
+        var zipArtifactPathDesktop = artifactsDir.CombineWithFilePath("GitVersion-bin-fullfx-v" + semVersion + ".zip");
 
         var testCoverageOutputFilePath = testCoverageOutputDir.CombineWithFilePath("TestResult.xml");
 
