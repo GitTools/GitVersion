@@ -5,6 +5,17 @@
     <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
     <ToolCommandName>dotnet-gitversion</ToolCommandName>
     <PackageId>GitVersion.Tool</PackageId>
+
+    <Title>GitVersion Tool</Title>
+    <Authors>GitTools and Contributors</Authors>
+    <PackageProjectUrl>https://github.com/GitTools/GitVersion</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageTags>Git;Versioning;GitVersion;GitFlowVersion;GitFlow;GitHubFlow;SemVer</PackageTags>
+    <Description>Derives SemVer information from a repository following GitFlow or GitHubFlow. This is the .NET Core Golbal Tool allowing usage of GitVersion from command line.</Description>
+    <Copyright>Copyright GitTools 2018.</Copyright>
+    <PackageLicenseUrl>http://www.opensource.org/licenses/mit-license.php</PackageLicenseUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/img/package_icon.png</PackageIconUrl>
+    <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
   </PropertyGroup>
   <Import Project="GitVersionExe.csproj" />
 
