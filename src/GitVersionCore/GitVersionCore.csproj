@@ -100,7 +100,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="NugetAssets\GitVersion.nuspec">
       <SubType>Designer</SubType>
     </None>

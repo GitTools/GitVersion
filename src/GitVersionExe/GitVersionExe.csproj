@@ -51,10 +51,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
   </ItemGroup>
 </Project>

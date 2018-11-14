@@ -65,7 +65,6 @@
     <ProjectReference Include="..\GitVersionExe\GitVersionExe.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="TestBuildFile.proj" />
   </ItemGroup>
   <ItemGroup>

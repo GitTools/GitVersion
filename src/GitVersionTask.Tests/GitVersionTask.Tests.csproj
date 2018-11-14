@@ -71,10 +71,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
   <ItemGroup>
     <Content Include="Approved\**\*.txt" />
     <None Remove="packages.config" />
