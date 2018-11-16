@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard1.3;net40</TargetFrameworks>
-    <OutputType>Library</OutputType>
     <RootNamespace>GitVersion</RootNamespace>
-    <AssemblyName>GitVersionCore</AssemblyName>
-    <BuildDir>$(SolutionDir)..\build\</BuildDir>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <DocumentationFile>bin\$(Configuration)\GitVersionCore.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
     <!--Start of Nuspec metadata-->
     <PackageId>GitVersionCore</PackageId>
     <Title>GitVersion</Title>
@@ -21,36 +21,11 @@
     <!--Additional assembly info -->
     <Company>$(Authors)</Company>
     <Product>$(AssemblyName)</Product>
-    <GenerateAssemblyFileVersionAttribute Condition="'$(GenerateAssemblyFileVersionAttribute)' == ''">false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInformationalVersionAttribute Condition="'$(GenerateAssemblyInformationalVersionAttribute)' == ''">false</GenerateAssemblyInformationalVersionAttribute>
-    <GenerateAssemblyProductAttribute Condition="'$(GenerateAssemblyProductAttribute)' == ''">false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyTitleAttribute Condition="'$(GenerateAssemblyTitleAttribute)' == ''">false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyVersionAttribute Condition="'$(GenerateAssemblyVersionAttribute)' == ''">false</GenerateAssemblyVersionAttribute>
-    <GenerateNeutralResourcesLanguageAttribute Condition="'$(GenerateNeutralResourcesLanguageAttribute)' == ''">true</GenerateNeutralResourcesLanguageAttribute>
+
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net40'">
-    <DefineConstants>TRACE;NET40;NETDESKTOP</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
-    <DefineConstants>TRACE;NETSTANDARD1_3;</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Any CPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DocumentationFile>bin\Debug\GitVersionCore.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Any CPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>bin\Release\GitVersionCore.xml</DocumentationFile>
+    <DefineConstants>NETDESKTOP</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -60,15 +35,6 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net40' ">
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-
-
     <PackageReference Include="AsyncBridge" Version="0.1.1">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>

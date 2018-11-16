@@ -1,35 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
-    <!--<TargetFramework>net40</TargetFramework>-->
-    <OutputType>Library</OutputType>
-    <RootNamespace>GitVersionCore.Tests</RootNamespace>
-    <AssemblyName>GitVersionCore.Tests</AssemblyName>
-    <!--<GenerateAssemblyCompanyAttribute Condition="'$(GenerateAssemblyCompanyAttribute)' == ''">true</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyConfigurationAttribute Condition="'$(GenerateAssemblyConfigurationAttribute)' == ''">true</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCopyrightAttribute Condition="'$(GenerateAssemblyCopyrightAttribute)' == ''">true</GenerateAssemblyCopyrightAttribute>
-    <GenerateAssemblyDescriptionAttribute Condition="'$(GenerateAssemblyDescriptionAttribute)' == ''">true</GenerateAssemblyDescriptionAttribute>-->
-    <GenerateAssemblyFileVersionAttribute Condition="'$(GenerateAssemblyFileVersionAttribute)' == ''">false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInformationalVersionAttribute Condition="'$(GenerateAssemblyInformationalVersionAttribute)' == ''">false</GenerateAssemblyInformationalVersionAttribute>
-    <GenerateAssemblyProductAttribute Condition="'$(GenerateAssemblyProductAttribute)' == ''">false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyTitleAttribute Condition="'$(GenerateAssemblyTitleAttribute)' == ''">false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyVersionAttribute Condition="'$(GenerateAssemblyVersionAttribute)' == ''">false</GenerateAssemblyVersionAttribute>
-    <GenerateNeutralResourcesLanguageAttribute Condition="'$(GenerateNeutralResourcesLanguageAttribute)' == ''">true</GenerateNeutralResourcesLanguageAttribute>
-  </PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
     <DebugSymbols>true</DebugSymbols>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <ItemGroup>
@@ -45,16 +23,6 @@
     <PackageReference Include="Shouldly" Version="3.0.0" />
     <PackageReference Include="TestStack.ConventionTests" Version="3.0.0" />
     <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
