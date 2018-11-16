@@ -1,4 +1,4 @@
-﻿using GitTools.Testing;
+using GitTools.Testing;
 using GitVersion;
 using GitVersionCore.Tests;
 using LibGit2Sharp;
@@ -181,6 +181,47 @@ public class DevelopScenarios : TestBase
             fixture.BranchTo("feature/MyFeature");
             fixture.MakeACommit();
             fixture.AssertFullSemver("2.1.0-MyFeature.1+5");
+        }
+    }
+
+
+
+    [Test]
+    public void CommitsSinceVersionSourceGoesDownWhenDeletingAReleaseBranch()
+    {
+        var config = new Config
+        {
+            VersioningMode = VersioningMode.ContinuousDeployment
+        };
+
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.MakeACommit();
+            fixture.ApplyTag("1.1.0");
+            fixture.BranchTo("develop");
+            fixture.MakeACommit("commit in develop");
+            fixture.BranchTo("feature/featureA");
+            fixture.MakeACommit("commit in featureA");
+            fixture.MakeACommit("commit in featureA");
+            fixture.Checkout("develop");
+            fixture.MakeACommit("commit in develop");
+            fixture.MakeACommit("commit in develop");
+            fixture.BranchTo("release/1.2.0");
+            fixture.MakeACommit("commit in release/1.2.0");
+            fixture.Checkout("feature/featureA");
+            fixture.MergeNoFF("develop");
+            fixture.Checkout("develop");
+            fixture.MergeNoFF("feature/featureA");
+            fixture.Checkout("master");
+            fixture.MergeNoFF("release/1.2.0");
+            fixture.ApplyTag("1.2.0");
+            fixture.Checkout("develop");
+            fixture.MergeNoFF("release/1.2.0");
+            fixture.SequenceDiagram.Destroy("release/1.2.0");
+            fixture.Repository.Branches.Remove("release/1.2.0");
+
+            var expectedFullSemVer = "1.3.0-alpha.6";
+            fixture.AssertFullSemver(config, expectedFullSemVer);
         }
     }
 }
