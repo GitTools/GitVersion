@@ -155,7 +155,7 @@ Task("Test")
             Configuration = parameters.Configuration
         };
 
-        var coveletSettings = new CoverletSettings {
+        var coverletSettings = new CoverletSettings {
             CollectCoverage = true,
             CoverletOutputFormat = CoverletOutputFormat.opencover,
             CoverletOutputDirectory = parameters.Paths.Directories.TestCoverageOutput + "/",
@@ -167,7 +167,7 @@ Task("Test")
             settings.Filter = "TestCategory!=NoMono";
         }
 
-        DotNetCoreTest(project.FullPath, settings, coveletSettings);
+        DotNetCoreTest(project.FullPath, settings, coverletSettings);
     }
 
     // run using NUnit
