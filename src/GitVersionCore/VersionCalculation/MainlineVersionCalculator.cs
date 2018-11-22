@@ -34,7 +34,7 @@ namespace GitVersion.VersionCalculation
                 // 
 
                 var mergeBase = baseVersion.BaseVersionSource;
-                var mainline = GetMainline(context);
+                var mainline = GetMainline(context, baseVersion.BaseVersionSource);
                 var mainlineTip = mainline.Tip;
 
                 // when the current branch is not mainline, find the effective mainline tip for versioning the branch
@@ -101,24 +101,13 @@ namespace GitVersion.VersionCalculation
             return mainlineVersion;
         }
 
-        static Branch GetMainline(GitVersionContext context)
+        static Branch GetMainline(GitVersionContext context, Commit baseVersionSource)
         {
             var mainlineBranchConfigs = context.FullConfiguration.Branches.Where(b => b.Value.IsMainline == true).ToList();
-            var seenMainlineTips = new List<string>();
             var mainlineBranches = context.Repository.Branches
                 .Where(b =>
                 {
                     return mainlineBranchConfigs.Any(c => Regex.IsMatch(b.FriendlyName, c.Value.Regex));
-                })
-                .Where(b =>
-                {
-                    if (seenMainlineTips.Contains(b.Tip.Sha))
-                    {
-                        Logger.WriteInfo("Multiple possible mainlines pointing at the same commit, dropping " + b.FriendlyName);
-                        return false;
-                    }
-                    seenMainlineTips.Add(b.Tip.Sha);
-                    return true;
                 })
                 .Select(b => new
                 {
@@ -141,6 +130,38 @@ namespace GitVersion.VersionCalculation
                 var mainlineBranch = possibleMainlineBranches[0];
                 Logger.WriteInfo("Mainline for current branch is " + mainlineBranch.FriendlyName);
                 return mainlineBranch;
+            }
+
+            // prefer current branch, if it is a mainline branch
+            if (possibleMainlineBranches.Any(context.CurrentBranch.IsSameBranch))
+            {
+                Logger.WriteInfo(string.Format("Choosing {0} as mainline because it is the current branch", context.CurrentBranch.FriendlyName));
+                return context.CurrentBranch;
+            }
+
+            // prefer a branch on which the merge base was a direct commit, if there is such a branch
+            var firstMatchingCommitBranch = possibleMainlineBranches
+                .FirstOrDefault(b =>
+                {
+                    var filter = new CommitFilter
+                    {
+                        IncludeReachableFrom = b,
+                        ExcludeReachableFrom = baseVersionSource,
+                        FirstParentOnly = true,
+                    };
+                    var query = context.Repository.Commits.QueryBy(filter);
+
+                    return query.Contains(firstMatchingCommit);
+                });
+            if (firstMatchingCommitBranch != null)
+            {
+                var message = string.Format(
+                    "Choosing {0} as mainline because {1}'s merge base was a direct commit to {0}",
+                    firstMatchingCommitBranch.FriendlyName,
+                    context.CurrentBranch.FriendlyName);
+                Logger.WriteInfo(message);
+
+                return firstMatchingCommitBranch;
             }
 
             var chosenMainline = possibleMainlineBranches[0];
