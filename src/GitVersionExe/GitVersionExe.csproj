@@ -17,7 +17,7 @@
 
   <ItemGroup Condition="'$(TargetFramework)'=='net40'">
     <PackageReference Include="GitTools.Core" Version="1.3.1"></PackageReference>
-    <PackageReference Include="JetBrains.Annotations" Version="10.4.0"></PackageReference>
+    <PackageReference Include="JetBrains.Annotations" Version="2018.2.1"></PackageReference>
   </ItemGroup>
 
   <ItemGroup>
