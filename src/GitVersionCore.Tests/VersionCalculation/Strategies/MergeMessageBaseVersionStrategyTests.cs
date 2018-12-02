@@ -1,7 +1,9 @@
-﻿namespace GitVersionCore.Tests.VersionCalculation.Strategies
+namespace GitVersionCore.Tests.VersionCalculation.Strategies
 {
     using System.Collections.Generic;
     using System.Linq;
+
+    using GitVersion;
     using GitVersion.VersionCalculation.BaseVersionCalculators;
     using LibGit2Sharp;
     using NUnit.Framework;
@@ -96,7 +98,36 @@
             AssertMergeMessage(commitMessage, null, parents);
         } 
 
-        static void AssertMergeMessage(string message, string expectedVersion, List<Commit> parents)
+        [TestCase("Merge branch 'hotfix-4.2.2' into support-4.2", null)]
+        [TestCase("Merge branch '4.0.3'", null)]
+        [TestCase("Merge branch 'alpha-0.1.5'", null)]
+        [TestCase("Merge pull request #165 in Particular/release-1.0.0", null)]
+        [TestCase("Finish 0.14.1", null)]
+        [TestCase("Merge branch 'release/0.2.0'", "0.2.0")]
+        [TestCase("Merge branch 'Release-v0.2.0'", "0.2.0")]
+        [TestCase("Finish Release-0.12.0", "0.12.0")]
+        public void CanIgnoreMergesOfNonReleaseBranches(string message, string expectedVersion)
+        {
+            var config = new Config { Ignore = new IgnoreConfig { NonReleaseBranches = true } };
+            var parents = GetParents(true);
+
+            AssertMergeMessage(message, expectedVersion, parents, config);
+        }
+
+        [TestCase("Merge branch 'support/0.2.0'", "support", "0.2.0")]
+        [TestCase("Merge branch 'support/0.2.0'", null, null)]
+        [TestCase("Merge branch 'release/2.0.0'", null, "2.0.0")]
+        public void TakesVersionFromMergesOfConfiguredReleaseBranches(string message, string releaseBranch, string expectedVersion)
+        {
+            var config = new Config { Ignore = new IgnoreConfig { NonReleaseBranches = true} };
+            if (releaseBranch != null)
+                config.Branches = new Dictionary<string, BranchConfig> { { releaseBranch, new BranchConfig { IsReleaseBranch = true } } };
+            var parents = GetParents(true);
+
+            AssertMergeMessage(message, expectedVersion, parents, config);
+        }
+
+        static void AssertMergeMessage(string message, string expectedVersion, List<Commit> parents, Config config = null)
         {
             var commit = new MockCommit
             {
@@ -105,6 +136,7 @@
             };
 
             var context = new GitVersionContextBuilder()
+                .WithConfig(config ?? new Config())
                 .WithRepository(new MockRepository
                 {
                     Head = new MockBranch("master")

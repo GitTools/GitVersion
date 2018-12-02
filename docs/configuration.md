@@ -179,6 +179,11 @@ Date and time in the format `yyyy-MM-ddTHH:mm:ss` (eg `commits-before:
 2015-10-23T12:23:15`) to setup an exclusion range. Effectively any commit before
 `commits-before` will be ignored.
 
+#### non-release-branches
+By default all branches that have a semantic version in their name will be used
+to calculate the version. This can be restricted to [release branches](#is-release-branch)
+by setting this flag to `true`. Default is `false`.
+
 ## Branch configuration
 Then we have branch specific configuration, which looks something like this:
 
