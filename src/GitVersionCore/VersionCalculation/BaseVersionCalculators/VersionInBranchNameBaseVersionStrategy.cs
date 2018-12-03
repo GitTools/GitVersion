@@ -23,7 +23,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
         {
             var branchName = currentBranch.FriendlyName;
 
-            if (!BranchIsVersionSource(branchName, context.FullConfiguration))
+            if (!context.FullConfiguration.IsBranchVersionSource(branchName))
             {
                 yield break;
             }
@@ -50,16 +50,6 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
             }
 
             return null;
-        }
-
-        private static bool BranchIsVersionSource(string branchName, Config config)
-        {
-            if (config.Ignore.NonReleaseBranches ?? false)
-            {
-                return config.GetConfigForBranch(branchName)?.IsReleaseBranch ?? false;
-            }
-
-            return true;
         }
     }
 }

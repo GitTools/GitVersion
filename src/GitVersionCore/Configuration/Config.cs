@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
     using System.Collections.Generic;
@@ -134,6 +134,16 @@
                 .ToList()
                 .ForEach(_ => _.prop.SetValue(target, _.value, null));
             return target;
+        }
+
+        public bool IsBranchVersionSource(string branchName)
+        {
+            if (Ignore.NonReleaseBranches ?? false)
+            {
+                return GetConfigForBranch(branchName)?.IsReleaseBranch ?? false;
+            }
+
+            return true;
         }
 
         [YamlMember(Alias = "ignore")]

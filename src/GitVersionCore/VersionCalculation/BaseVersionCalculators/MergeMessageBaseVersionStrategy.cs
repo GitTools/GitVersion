@@ -21,7 +21,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
                 {
                     if (TryParse(c, context, out var mergeMessage) &&
                         mergeMessage.Version != null &&
-                        BranchIsVersionSource(mergeMessage.MergedBranch, context.FullConfiguration))
+                        context.FullConfiguration.IsBranchVersionSource(mergeMessage.MergedBranch))
                     {
                         var shouldIncrement = !context.Configuration.PreventIncrementForMergedBranchVersion;
                         return new[]
@@ -49,16 +49,6 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
 
             var mergeMessage = new MergeMessage(mergeCommit.Message, context.FullConfiguration);
             return mergeMessage;
-        }
-
-        private static bool BranchIsVersionSource(string branchName, Config config)
-        {
-            if (config.Ignore.NonReleaseBranches ?? false)
-            {
-                return config.GetConfigForBranch(branchName)?.IsReleaseBranch ?? false;
-            }
-
-            return true;
         }
     }
 }
