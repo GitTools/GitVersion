@@ -12,6 +12,7 @@
 #addin "nuget:?package=Newtonsoft.Json&version=9.0.1"
 
 // Install tools.
+#tool "nuget:?package=GitReleaseManager&version=0.7.1"
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.9.0"
 #tool "nuget:?package=GitReleaseNotes&version=0.7.1"
 #tool "nuget:?package=ILRepack&version=2.0.16"
