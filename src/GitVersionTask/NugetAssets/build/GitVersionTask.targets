@@ -1,13 +1,8 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <ItemGroup>
-    <PathSeparators Include="/"/>
-    <PathSeparators Include="\"/>
-  </ItemGroup>
-
   <PropertyGroup>
     <GitVersionTaskBuildTools_IsMultiTargeting>false</GitVersionTaskBuildTools_IsMultiTargeting>
-    <GitVersionTaskBuildTools_IsMultiTargeting Condition="$(MSBuildThisFileDirectory.Substring($(MSBuildThisFileDirectory.LastIndexOfAny(@(PathSeparators)))).Substring(1).Contains('buildMultiTargeting'))">true</GitVersionTaskBuildTools_IsMultiTargeting>
+    <GitVersionTaskBuildTools_IsMultiTargeting Condition="$(MSBuildThisFileDirectory.TrimEnd('\').TrimEnd('/').EndsWith('buildMultiTargeting'))">true</GitVersionTaskBuildTools_IsMultiTargeting>
   </PropertyGroup>
 
   <!-- Import infrastructure props for util pack. -->

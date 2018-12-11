@@ -1,4 +1,4 @@
-﻿using GitTools.Testing;
+using GitTools.Testing;
 using GitVersion;
 using GitVersion.Helpers;
 using GitVersionCore.Tests;
@@ -62,6 +62,7 @@ FullSemVer: 4.10.3-test.19
 InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 BranchName: feature/test
 Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+ShortSha: dd2a29af
 NuGetVersionV2: 4.10.3-test0019
 NuGetVersion: 4.10.3-test0019
 NuGetPreReleaseTagV2: test0019
@@ -108,6 +109,7 @@ FullSemVer: 4.10.3-test.19
 InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 BranchName: feature/test
 Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+ShortSha: dd2a29af
 NuGetVersionV2: 4.10.3-test0019
 NuGetVersion: 4.10.3-test0019
 NuGetPreReleaseTagV2: test0019
@@ -171,6 +173,7 @@ FullSemVer: 4.10.3-test.19
 InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 BranchName: feature/test
 Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+ShortSha: dd2a29af
 NuGetVersionV2: 4.10.3-test0019
 NuGetVersion: 4.10.3-test0019
 NuGetPreReleaseTagV2: test0019
@@ -220,6 +223,7 @@ FullSemVer: 4.10.3-test.19
 InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 BranchName: feature/test
 Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+ShortSha: dd2a29af
 NuGetVersionV2: 4.10.3-test0019
 NuGetVersion: 4.10.3-test0019
 NuGetPreReleaseTagV2: test0019
@@ -270,6 +274,7 @@ CommitDate: 2015-11-10
         // Make sure GitVersion doesn't trigger build server mode when we are running the tests
         Environment.SetEnvironmentVariable(AppVeyor.EnvironmentVariableName, null);
         Environment.SetEnvironmentVariable(TravisCI.EnvironmentVariableName, null);
+        Environment.SetEnvironmentVariable(VsoAgent.EnvironmentVariableName, null);
         var debugBuilder = new StringBuilder();
         Action<string> debugLogger = s =>
         {

@@ -1,6 +1,0 @@
-# Docker Base
-We need a custom docker base image because mono is too old to support libgit2sharp
-
-## To build/publish
-docker build . --tag gittools/libgit2sharp-mono
-docker push gittools/libgit2sharp-mono

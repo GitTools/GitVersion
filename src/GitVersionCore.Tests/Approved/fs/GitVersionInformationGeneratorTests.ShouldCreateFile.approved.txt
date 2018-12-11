@@ -31,6 +31,7 @@ module GitVersionInformation
     let InformationalVersion = "1.2.3-unstable.4+5.Branch.feature1.Sha.commitSha"
     let BranchName = "feature1"
     let Sha = "commitSha"
+    let ShortSha = "commitShortSha"
     let NuGetVersionV2 = "1.2.3-unstable0004"
     let NuGetVersion = "1.2.3-unstable0004"
     let NuGetPreReleaseTagV2 = "unstable0004"

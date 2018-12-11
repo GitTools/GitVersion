@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+﻿﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle("GitVersion")]
@@ -9,4 +9,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("AcceptanceTests")]
 [assembly: InternalsVisibleTo("GitVersionExe.Tests")]
 
-[assembly: AssemblyInformationalVersion("4.0.0-netstandard.1+1538.Branch.feature/netstandard.Sha.91536c107ba91f755f14904fc69965a9ad70fcb0")]
+[assembly: AssemblyInformationalVersion("4.0.0+Branch.master.Sha.e715eb5dd515037d90a257f527e62442cae8c1c5")]
