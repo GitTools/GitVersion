@@ -1,7 +1,6 @@
 ﻿namespace GitVersionCore.Extensions
 {
     using System.IO;
-    using System.Reflection;
 
     public static class ReadEmbeddedResourceExtensions
     {
@@ -24,11 +23,8 @@
 
         public static Stream ReadFromEmbeddedResource<T>(this string resourceName)
         {
-#if NETDESKTOP
             var assembly = typeof(T).Assembly;
-#else
-            var assembly = typeof(T).GetTypeInfo().Assembly;
-#endif
+
             return assembly.GetManifestResourceStream(resourceName);
         }
     }

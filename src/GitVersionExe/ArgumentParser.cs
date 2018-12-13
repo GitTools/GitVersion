@@ -128,7 +128,6 @@ namespace GitVersion
                     continue;
                 }
 
-#if NETDESKTOP
                 if (name.IsSwitch("exec"))
                 {
                     EnsureArgumentValueCount(values);
@@ -167,9 +166,6 @@ namespace GitVersion
                     }
                     continue;
                 }
-
-#endif
-
 
                 if (name.IsSwitch("updateAssemblyInfo"))
                 {

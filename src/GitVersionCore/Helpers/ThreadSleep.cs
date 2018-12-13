@@ -6,7 +6,7 @@
     {
         public async Task SleepAsync(int milliseconds)
         {
-            await TaskHelper.Delay(milliseconds);
+            await Task.Delay(milliseconds);
         }
     }
 }

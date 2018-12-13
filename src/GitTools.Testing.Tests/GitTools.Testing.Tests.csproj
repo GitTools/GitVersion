@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">Any CPU</Platform>
+    <OutputType>Library</OutputType>
+    <TargetFrameworks>net461;netcoreapp2.1</TargetFrameworks>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <!-- NuGet properties for creating a NuGet package.
+    More information: https://docs.microsoft.com/en-us/nuget/schema/msbuild-targets -->
+  <PropertyGroup>
+    <Title>GitTools.Testing</Title>
+    <Authors>GitTools Contributors</Authors>
+    <Description>Makes it easy to automate git for testing libraries which interact with git</Description>
+    <PackageTags>git tools testing</PackageTags>
+    <Copyright>Copyright GitTools 2015</Copyright>
+    <PackageProjectUrl>https://github.com/GitTools/GitTools.Core</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/GitTools/GitTools.Core/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageIconUrl>https://raw.github.com/GitTools/GitTools.Core/master/GitTools_logo.png</PackageIconUrl>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="15.9.0" />
+    <PackageReference Include="NUnit" Version="3.11.0" />
+    <PackageReference Include="NUnit.ConsoleRunner" Version="3.8.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GitTools.Testing\GitTools.Testing.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+</Project>
