@@ -73,8 +73,6 @@
         /// <returns>An ordered list of encodings and corresponding preambles.</returns>
         private static void ScanEncodings()
         {
-            // Might be out of luck finding a replacement for GetEncodings for netcore 1: https://stackoverflow.com/questions/44351507/what-is-net-core-equivalent-of-encoding-getencodings
-#if NETDESKTOP
             var encodings = (Encoding.GetEncodings());
             EncodingsWithPreambles = (from info in encodings
                                       let encoding = info.GetEncoding()
@@ -82,20 +80,6 @@
                                       where preamble.Length > 0
                                       orderby preamble.Length descending
                                       select encoding).ToList();
-
-#else
-            // GetEncodings not available on netstandard, so just manually adding some common ones.
-            var encodings = new List<Encoding>() { Encoding.ASCII, Encoding.Unicode, Encoding.UTF32, Encoding.UTF7, Encoding.UTF8 };
-            EncodingsWithPreambles = (from info in encodings
-                                      let preamble = info.GetPreamble()
-                                      where preamble.Length > 0
-                                      orderby preamble.Length descending
-                                      select info).ToList();
-#endif
-
-
-
-
 
             var encodingWithLongestPreamble = EncodingsWithPreambles.FirstOrDefault();
             MaxPreambleLength = encodingWithLongestPreamble == null ? 0 : encodingWithLongestPreamble.GetPreamble().Length;

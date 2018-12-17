@@ -45,7 +45,7 @@ void SetRubyGemPushApiKey(string apiKey)
 
 GitVersion GetVersion(BuildParameters parameters)
 {
-    var dllFile = GetFiles($"**/{parameters.NetCoreVersion}/GitVersion.dll").FirstOrDefault();
+    var dllFile = GetFiles($"**/GitVersionExe/bin/{parameters.Configuration}/{parameters.NetCoreVersion}/GitVersion.dll").FirstOrDefault();
     var settings = new GitVersionSettings
     {
         OutputType = GitVersionOutput.Json,
@@ -78,7 +78,7 @@ void Build(string configuration)
     });
 }
 
-void ILRepackGitVersionExe(bool includeLibGit2Sharp, DirectoryPath target, DirectoryPath ilMerge)
+void ILRepackGitVersionExe(bool includeLibGit2Sharp, DirectoryPath target, DirectoryPath ilMerge, string configuration, string dotnetVersion)
 {
     var exeName = "GitVersion.exe";
     var keyFilePath = "./src/key.snk";
@@ -100,6 +100,13 @@ void ILRepackGitVersionExe(bool includeLibGit2Sharp, DirectoryPath target, Direc
         sourceFiles = sourceFiles - GetFiles(excludePattern);
     }
     var settings = new ILRepackSettings { AllowDup = "", Keyfile = keyFilePath, Internalize = true, NDebug = true, TargetKind = TargetKind.Exe, TargetPlatform  = TargetPlatformVersion.v4, XmlDocs = false };
+
+    if (IsRunningOnUnix())
+    {
+        var libFolder = GetDirectories($"**/GitVersionExe/bin/{configuration}/{dotnetVersion}").FirstOrDefault();
+        settings.Libs = new List<DirectoryPath> { libFolder };
+    }
+
     FixForMono(settings, "ILRepack.exe");
     ILRepack(outFilePath, targetPath, sourceFiles, settings);
 
@@ -117,7 +124,7 @@ void ILRepackGitVersionExe(bool includeLibGit2Sharp, DirectoryPath target, Direc
 
 void PublishILRepackedGitVersionExe(bool includeLibGit2Sharp, DirectoryPath targetDir, DirectoryPath ilMergDir, DirectoryPath outputDir, string configuration, string dotnetVersion)
 {
-    ILRepackGitVersionExe(includeLibGit2Sharp, targetDir, ilMergDir);
+    ILRepackGitVersionExe(includeLibGit2Sharp, targetDir, ilMergDir, configuration, dotnetVersion);
     CopyDirectory(ilMergDir, outputDir);
 
     if (includeLibGit2Sharp) {
@@ -195,4 +202,13 @@ void GetReleaseNotes(FilePath outputPath, DirectoryPath workDir, string repoToke
     StartProcess(toolPath, new ProcessSettings { Arguments = arguments, RedirectStandardOutput = true }, out var redirectedOutput);
 
     Information(string.Join("\n", redirectedOutput));
+}
+
+void UpdateTaskVersion(FilePath taskJsonPath, GitVersion gitVersion)
+{
+    var taskJson = ParseJsonFromFile(taskJsonPath);
+    taskJson["version"]["Major"] = gitVersion.Major.ToString();
+    taskJson["version"]["Minor"] = gitVersion.Minor.ToString();
+    taskJson["version"]["Patch"] = gitVersion.Patch.ToString();
+    SerializeJsonToPrettyFile(taskJsonPath, taskJson);
 }

@@ -7,12 +7,16 @@
 #addin "nuget:?package=Cake.Json&version=3.0.0"
 #addin "nuget:?package=Cake.Tfx&version=0.8.0"
 #addin "nuget:?package=Cake.Gem&version=0.7.0"
+#addin "nuget:?package=Cake.Coverlet&version=1.3.2"
+#addin "nuget:?package=Cake.Codecov&version=0.4.0"
 #addin "nuget:?package=Newtonsoft.Json&version=9.0.1"
 
 // Install tools.
+#tool "nuget:?package=GitReleaseManager&version=0.7.1"
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.9.0"
 #tool "nuget:?package=GitReleaseNotes&version=0.7.1"
 #tool "nuget:?package=ILRepack&version=2.0.16"
+#tool "nuget:?package=Codecov&version=1.1.0"
 
 // Load other scripts.
 #load "./build/parameters.cake"
@@ -22,6 +26,7 @@
 // PARAMETERS
 //////////////////////////////////////////////////////////////////////
 bool publishingError = false;
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
@@ -151,12 +156,19 @@ Task("Test")
             Configuration = parameters.Configuration
         };
 
+        var coverletSettings = new CoverletSettings {
+            CollectCoverage = true,
+            CoverletOutputFormat = CoverletOutputFormat.opencover,
+            CoverletOutputDirectory = parameters.Paths.Directories.TestCoverageOutput + "/",
+            CoverletOutputName = $"{project.GetFilenameWithoutExtension()}.coverage.xml"
+        };
+
         if (IsRunningOnUnix())
         {
             settings.Filter = "TestCategory!=NoMono";
         }
 
-        DotNetCoreTest(project.FullPath, settings);
+        DotNetCoreTest(project.FullPath, settings, coverletSettings);
     }
 
     // run using NUnit
@@ -164,11 +176,11 @@ Task("Test")
 
     var nunitSettings = new NUnit3Settings
     {
-        OutputFile = parameters.Paths.Files.TestCoverageOutputFilePath
+        Results = new List<NUnit3Result> { new NUnit3Result { FileName = parameters.Paths.Files.TestCoverageOutputFilePath } }
     };
 
     if(IsRunningOnUnix()) {
-        nunitSettings.Where = "cat != NoMono";
+        nunitSettings.Where = "cat!=NoMono";
         nunitSettings.Agents = 1;
     }
 
@@ -184,8 +196,8 @@ Task("Copy-Files")
     .IsDependentOn("Test")
     .Does<BuildParameters>((parameters) =>
 {
-    var netCoreDir = parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools");
     // .NET Core
+    var netCoreDir = parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools");
     DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
     {
         Framework = parameters.NetCoreVersion,
@@ -226,6 +238,11 @@ Task("Copy-Files")
     CopyFileToDirectory(portableDir + "/" + "GitVersion.exe", tfsPath);
     CopyDirectory(portableDir.Combine("lib"), tfsPath.Combine("lib"));
 
+    // Vsix dotnet core
+    var tfsNetCorePath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionNetCoreTask");
+    EnsureDirectoryExists(tfsNetCorePath);
+    CopyDirectory(netCoreDir, tfsNetCorePath.Combine("netcore"));
+
     // Ruby Gem
     var gemPath = new DirectoryPath("./src/GitVersionRubyGem/bin");
     EnsureDirectoryExists(gemPath);
@@ -241,15 +258,10 @@ Task("Pack-Tfs")
     var workDir = "./src/GitVersionTfsTask";
 
     // update version number
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$version$", parameters.Version.SemVersion);
-
-    var taskJsonFile = new FilePath(workDir + "/GitVersionTask/task.json");
-    var taskJson = ParseJsonFromFile(taskJsonFile);
-    var gitVersion = parameters.Version.GitVersion;
-    taskJson["version"]["Major"] = gitVersion.Major.ToString();
-    taskJson["version"]["Minor"] = gitVersion.Minor.ToString();
-    taskJson["version"]["Patch"] = gitVersion.Patch.ToString();
-    SerializeJsonToPrettyFile(taskJsonFile, taskJson);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$version$", parameters.Version.SemVersion);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$version$", parameters.Version.SemVersion);
+    UpdateTaskVersion(new FilePath(workDir + "/GitVersionTask/task.json"), parameters.Version.GitVersion);
+    UpdateTaskVersion(new FilePath(workDir + "/GitVersionNetCoreTask/task.json"), parameters.Version.GitVersion);
 
     // build and pack
     NpmSet("progress", "false");
@@ -260,7 +272,15 @@ Task("Pack-Tfs")
     {
         ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
         WorkingDirectory = workDir,
-        ManifestGlobs = new List<string>(){ "vss-extension.json" },
+        ManifestGlobs = new List<string>(){ "vss-extension.mono.json" },
+        OutputPath = parameters.Paths.Directories.BuildArtifact
+    });
+
+    TfxExtensionCreate(new TfxExtensionCreateSettings
+    {
+        ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
+        WorkingDirectory = workDir,
+        ManifestGlobs = new List<string>(){ "vss-extension.netcore.json" },
         OutputPath = parameters.Paths.Directories.BuildArtifact
     });
 });
@@ -317,13 +337,15 @@ Task("Pack-Nuget")
         MSBuildSettings = parameters.MSBuildSettings
     };
 
-    // GitVersionCore & GitVersionTask
+    // GitVersionCore, GitVersionTask, & global tool
     DotNetCorePack("./src/GitVersionCore", settings);
     DotNetCorePack("./src/GitVersionTask", settings);
+    DotNetCorePack("./src/GitVersionExe/GitVersion.Tool.csproj", settings);
 });
 
 Task("Pack-Chocolatey")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Pack-Chocolatey works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsMainBranch, "Pack-Chocolatey works only for main branch.")
     .IsDependentOn("Copy-Files")
     .Does<BuildParameters>((parameters) =>
 {
@@ -424,6 +446,29 @@ Task("Release-Notes")
     Error(exception.Dump());
 });
 
+Task("Publish-Coverage")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Publish-Coverage works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAppVeyor, "Publish-Coverage works only on AppVeyor.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Coverage works only for releases.")
+    .IsDependentOn("Test")
+    .Does<BuildParameters>((parameters) =>
+{
+    var coverageFiles = GetFiles(parameters.Paths.Directories.TestCoverageOutput + "/*.coverage.xml");
+
+    var token = parameters.Credentials.CodeCov.Token;
+    if(string.IsNullOrEmpty(token)) {
+        throw new InvalidOperationException("Could not resolve CodeCov token.");
+    }
+
+    foreach (var coverageFile in coverageFiles) {
+        // Upload a coverage report using the CodecovSettings.
+        Codecov(new CodecovSettings {
+            Files = new [] { coverageFile.ToString() },
+            Token = token
+        });
+    }
+});
+
 Task("Publish-AppVeyor")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Publish-AppVeyor works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAppVeyor, "Publish-AppVeyor works only on AppVeyor.")
@@ -439,6 +484,10 @@ Task("Publish-AppVeyor")
     foreach(var package in parameters.Packages.All)
     {
         if (FileExists(package.PackagePath)) { AppVeyor.UploadArtifact(package.PackagePath); }
+    }
+
+    if (FileExists(parameters.Paths.Files.TestCoverageOutputFilePath)) {
+        AppVeyor.UploadTestResults(parameters.Paths.Files.TestCoverageOutputFilePath, AppVeyorTestResultsType.NUnit3);
     }
 })
 .OnError(exception =>
@@ -463,6 +512,14 @@ Task("Publish-AzurePipeline")
     foreach(var package in parameters.Packages.All)
     {
         if (FileExists(package.PackagePath)) { TFBuild.Commands.UploadArtifact("packages", package.PackagePath, package.PackageName); }
+    }
+
+    if (FileExists(parameters.Paths.Files.TestCoverageOutputFilePath)) {
+        var data = new TFBuildPublishTestResultsData {
+            TestResultsFiles = new[] { parameters.Paths.Files.TestCoverageOutputFilePath.ToString() },
+            TestRunner = TFTestRunnerType.NUnit
+        };
+        TFBuild.Commands.PublishTestResults(data);
     }
 })
 .OnError(exception =>
@@ -489,6 +546,14 @@ Task("Publish-Tfs")
     TfxExtensionPublish(parameters.Paths.Files.VsixOutputFilePath, new TfxExtensionPublishSettings
     {
         ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
+        AuthType = TfxAuthType.Pat,
+        Token = token
+    });
+
+    var netCoreWorkDir = "./src/GitVersionTfsTask.NetCore";
+    TfxExtensionPublish(parameters.Paths.Files.VsixNetCoreOutputFilePath, new TfxExtensionPublishSettings
+    {
+        ToolPath = netCoreWorkDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
         AuthType = TfxAuthType.Pat,
         Token = token
     });
@@ -648,6 +713,7 @@ Task("Publish-Chocolatey")
 Task("Publish")
     .IsDependentOn("Publish-AppVeyor")
     .IsDependentOn("Publish-AzurePipeline")
+    .IsDependentOn("Publish-Coverage")
     .IsDependentOn("Publish-NuGet")
     .IsDependentOn("Publish-Chocolatey")
     .IsDependentOn("Publish-Tfs")
