@@ -26,7 +26,7 @@ public class BuildPaths
 
         var artifactsDir                  = (DirectoryPath)(context.Directory("./artifacts") + context.Directory("v" + semVersion));
         var artifactsBinDir               = artifactsDir.Combine("bin");
-        var artifactsBinFullFxDir         = artifactsBinDir.Combine("net40");
+        var artifactsBinFullFxDir         = artifactsBinDir.Combine("net461");
         var artifactsBinFullFxILMergeDir  = artifactsBinFullFxDir.Combine("il-merge");
         var artifactsBinFullFxPortableDir = artifactsBinFullFxDir.Combine("portable");
         var artifactsBinFullFxCmdlineDir  = artifactsBinFullFxDir.Combine("cmdline");

@@ -64,10 +64,10 @@ namespace GitVersion
                 }
                 var execRun = false;
                 var msbuildRun = false;
-#if NETDESKTOP
+
                 execRun = RunExecCommandIfNeeded(arguments, targetPath, variables);
                 msbuildRun = RunMsBuildIfNeeded(arguments, targetPath, variables);
-#endif
+
                 if (!execRun && !msbuildRun)
                 {
                     assemblyInfoUpdater.CommitChanges();
@@ -82,7 +82,6 @@ namespace GitVersion
             }
         }
 
-#if NETDESKTOP
         static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
         {
 
@@ -117,8 +116,6 @@ namespace GitVersion
 
             return true;
         }
-
-#endif
 
         static KeyValuePair<string, string>[] GetEnvironmentalVariables(VersionVariables variables)
         {

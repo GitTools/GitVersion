@@ -121,8 +121,6 @@
         [ReflectionIgnore]
         public string this[string variable]
         {
-
-
             get
             {
                 return typeof(VersionVariables).GetProperty(variable).GetValue(this, null) as string;
