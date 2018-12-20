@@ -1,4 +1,4 @@
-namespace GitVersion
+﻿namespace GitVersion
 {
     using System;
     using System.Collections.Generic;
@@ -18,9 +18,6 @@ namespace GitVersion
 
         [YamlMember(Alias = "sha")]
         public IEnumerable<string> SHAs { get; set; }
-
-        [YamlMember(Alias = "non-release-branches")]
-        public bool? NonReleaseBranches { get; set; }
 
         public virtual IEnumerable<IVersionFilter> ToFilters()
         {

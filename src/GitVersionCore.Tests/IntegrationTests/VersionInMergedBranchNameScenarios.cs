@@ -1,6 +1,7 @@
 namespace GitVersionCore.Tests.IntegrationTests
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     using GitTools.Testing;
 
@@ -8,34 +9,33 @@ namespace GitVersionCore.Tests.IntegrationTests
 
     using GitVersionCore.Tests;
 
+    using LibGit2Sharp;
+
     using NUnit.Framework;
 
     [TestFixture]
-    public class VersionsInMergedBranchNamesScenarios : TestBase
+    public class VersionInMergedBranchNameScenarios : TestBase
     {
         [Test]
-        public void TakesVersionFromNameOfAnyBranchByDefault()
+        public void TakesVersionFromNameOfReleaseBranch()
         {
             using (var fixture = new BaseGitFlowRepositoryFixture("1.0.0"))
             {
-                fixture.CreateAndMergeBranchIntoDevelop("feature/upgrade-power-level-to-9000.0.1");
+                fixture.CreateAndMergeBranchIntoDevelop("release/2.0.0");
 
-                fixture.AssertFullSemver("9000.1.0-alpha.0");
+                fixture.AssertFullSemver("2.1.0-alpha.2");
             }
         }
 
         [Test]
-        public void TakesVersionOnlyFromNameOfReleaseBranchByConfig()
+        public void DoesNotTakeVersionFromNameOfNonReleaseBranch()
         {
-            var config = new Config { Ignore = new IgnoreConfig { NonReleaseBranches = true } };
-
             using (var fixture = new BaseGitFlowRepositoryFixture("1.0.0"))
             {
                 fixture.CreateAndMergeBranchIntoDevelop("pull-request/improved-by-upgrading-some-lib-to-4.5.6");
-                fixture.CreateAndMergeBranchIntoDevelop("release/2.0.0");
                 fixture.CreateAndMergeBranchIntoDevelop("hotfix/downgrade-some-lib-to-3.2.1-to-avoid-breaking-changes");
 
-                fixture.AssertFullSemver(config, "2.1.0-alpha.4");
+                fixture.AssertFullSemver("1.1.0-alpha.5");
             }
         }
 
@@ -44,7 +44,6 @@ namespace GitVersionCore.Tests.IntegrationTests
         {
             var config = new Config
             {
-                Ignore = new IgnoreConfig { NonReleaseBranches = true },
                 Branches = new Dictionary<string, BranchConfig> { { "support", new BranchConfig { IsReleaseBranch = true } } }
             };
 
@@ -53,6 +52,21 @@ namespace GitVersionCore.Tests.IntegrationTests
                 fixture.CreateAndMergeBranchIntoDevelop("support/2.0.0");
 
                 fixture.AssertFullSemver(config, "2.1.0-alpha.2");
+            }
+        }
+
+        [Test]
+        public void TakesVersionFromNameOfRemoteReleaseBranch()
+        {
+            using (var fixture = new RemoteRepositoryFixture())
+            {
+                fixture.BranchTo("release/2.0.0");
+                fixture.MakeACommit();
+                Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
+
+                fixture.LocalRepositoryFixture.MergeNoFF("origin/release/2.0.0");
+
+                fixture.LocalRepositoryFixture.AssertFullSemver("2.0.0+0");
             }
         }
     }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using GitVersion;
 using NUnit.Framework;
@@ -17,7 +17,6 @@ namespace GitVersionCore.Tests.Configuration
 ignore:
     sha: [b6c0c9fda88830ebcd563e500a5a7da5a1658e98]
     commits-before: 2015-10-23T12:23:15
-    non-release-branches: true
 ";
 
             using (var reader = new StringReader(yaml))
@@ -28,7 +27,6 @@ ignore:
                 config.Ignore.SHAs.ShouldNotBeEmpty();
                 config.Ignore.SHAs.ShouldBe(new[] { "b6c0c9fda88830ebcd563e500a5a7da5a1658e98" });
                 config.Ignore.Before.ShouldBe(DateTimeOffset.Parse("2015-10-23T12:23:15"));
-                config.Ignore.NonReleaseBranches.ShouldBe(true);
             }
         }
 
@@ -66,7 +64,6 @@ next-version: 1.0
                 config.Ignore.ShouldNotBeNull();
                 config.Ignore.SHAs.ShouldBeEmpty();
                 config.Ignore.Before.ShouldBeNull();
-                config.Ignore.NonReleaseBranches.ShouldBeNull();
             }
         }
 

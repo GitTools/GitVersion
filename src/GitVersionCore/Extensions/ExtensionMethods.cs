@@ -2,6 +2,7 @@ namespace GitVersion
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
 
@@ -37,6 +38,19 @@ namespace GitVersion
             }
 
             return default(T);
+        }
+
+        public static string AsBranchNameWithoutRemote(this string branchName, GitVersionContext context)
+        {
+            branchName = branchName.RegexReplace("^refs/remotes/", string.Empty, RegexOptions.IgnoreCase);
+
+            var remote = context.Repository.Network.Remotes
+                .Select(r => $"{r.Name}/")
+                .SingleOrDefault(r => branchName.StartsWith(r, StringComparison.OrdinalIgnoreCase));
+
+            return remote != null
+                ? branchName.RegexReplace($"^{remote}", string.Empty, RegexOptions.IgnoreCase)
+                : branchName;
         }
     }
 }

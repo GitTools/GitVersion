@@ -21,13 +21,12 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
 
         public IEnumerable<BaseVersion> GetVersions(GitVersionContext context, string tagPrefixRegex, Branch currentBranch)
         {
-            var branchName = currentBranch.FriendlyName;
-
-            if (!context.FullConfiguration.IsBranchVersionSource(branchName))
+            if (!context.FullConfiguration.IsReleaseBranch(currentBranch.NameWithoutRemote()))
             {
                 yield break;
             }
 
+            var branchName = currentBranch.FriendlyName;
             var versionInBranch = GetVersionInBranch(branchName, tagPrefixRegex);
             if (versionInBranch != null)
             {

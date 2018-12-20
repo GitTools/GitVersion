@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+
+using GitVersionCore.Tests.Mocks;
+
 using LibGit2Sharp;
 
 public class MockRepository : IRepository
@@ -10,6 +13,7 @@ public class MockRepository : IRepository
     {
         Tags = new MockTagCollection();
         Refs = new MockReferenceCollection();
+        Network = new MockNetwork(new[] { new MockRemote("origin") });
     }
 
     public void Dispose()

@@ -1,5 +1,6 @@
 namespace GitVersionCore.Tests.VersionCalculation.Strategies
 {
+    using System.Collections.Generic;
     using System.Linq;
     using GitTools.Testing;
     using GitVersion;
@@ -12,12 +13,8 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
     public class VersionInBranchNameBaseVersionStrategyTests : TestBase
     {
         [TestCase("release-2.0.0", "2.0.0")]
-        [TestCase("release/2.0.0", "2.0.0")]
-        [TestCase("hotfix-2.0.0", "2.0.0")]
-        [TestCase("hotfix/2.0.0", "2.0.0")]
-        [TestCase("custom/JIRA-123", null)]
-        [TestCase("hotfix/downgrade-to-gitversion-3.6.5-to-fix-miscalculated-version", "3.6.5")]
-        public void CanTakeVersionFromBranchName(string branchName, string expectedBaseVersion)
+        [TestCase("release/3.0.0", "3.0.0")]
+        public void CanTakeVersionFromNameOfReleaseBranch(string branchName, string expectedBaseVersion)
         {
             using (var fixture = new EmptyRepositoryFixture())
             {
@@ -26,21 +23,17 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                 var sut = new VersionInBranchNameBaseVersionStrategy();
 
                 var gitVersionContext = new GitVersionContext(fixture.Repository, branch, new Config().ApplyDefaults());
-                var baseVersion = sut.GetVersions(gitVersionContext).SingleOrDefault();
+                var baseVersion = sut.GetVersions(gitVersionContext).Single();
 
-                if (expectedBaseVersion == null)
-                    baseVersion.ShouldBe(null);
-                else
-                    baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
+                baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
             }
         }
 
-        [TestCase("feature/upgrade-to-gitversion-4.0.0", null)]
-        [TestCase("hotfix/downgrade-to-gitversion-3.6.5-to-fix-miscalculated-version", null)]
-        [TestCase("hotfix/2.0.0", null)]
-        [TestCase("custom/JIRA-123", null)]
-        [TestCase("release/2.0.0", "2.0.0")]
-        public void ShouldNotTakeVersionFromNameOfIgnoredBranches(string branchName, string expectedBaseVersion)
+        [TestCase("hotfix-2.0.0")]
+        [TestCase("hotfix/2.0.0")]
+        [TestCase("custom/JIRA-123")]
+        [TestCase("hotfix/downgrade-to-gitversion-3.6.5-to-fix-miscalculated-version")]
+        public void ShouldNotTakeVersionFromNameOfNonReleaseBranch(string branchName)
         {
             using (var fixture = new EmptyRepositoryFixture())
             {
@@ -48,14 +41,50 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                 var branch = fixture.Repository.CreateBranch(branchName);
                 var sut = new VersionInBranchNameBaseVersionStrategy();
 
-                var config = new Config { Ignore = new IgnoreConfig { NonReleaseBranches = true } }.ApplyDefaults();
-                var gitVersionContext = new GitVersionContext(fixture.Repository, branch, config);
-                var baseVersion = sut.GetVersions(gitVersionContext).SingleOrDefault();
+                var gitVersionContext = new GitVersionContext(fixture.Repository, branch, new Config().ApplyDefaults());
+                var baseVersions = sut.GetVersions(gitVersionContext);
 
-                if (expectedBaseVersion == null)
-                    baseVersion.ShouldBe(null);
-                else
-                    baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
+                baseVersions.ShouldBeEmpty();
+            }
+        }
+
+        [TestCase("support/lts-2.0.0", "2.0.0")]
+        [TestCase("support-3.0.0-lts", "3.0.0")]
+        public void CanTakeVersionFromNameOfConfiguredReleaseBranch(string branchName, string expectedBaseVersion)
+        {
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.Repository.MakeACommit();
+                var branch = fixture.Repository.CreateBranch(branchName);
+                var sut = new VersionInBranchNameBaseVersionStrategy();
+                var branchConfigs = new Dictionary<string, BranchConfig> { { "support", new BranchConfig { IsReleaseBranch = true } } };
+                var config = new Config { Branches = branchConfigs }.ApplyDefaults();
+
+                var gitVersionContext = new GitVersionContext(fixture.Repository, branch, config);
+                var baseVersion = sut.GetVersions(gitVersionContext).Single();
+
+                baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
+            }
+        }
+
+        [TestCase("release-2.0.0", "2.0.0")]
+        [TestCase("release/3.0.0", "3.0.0")]
+        public void CanTakeVersionFromNameOfRemoteReleaseBranch(string branchName, string expectedBaseVersion)
+        {
+            using (var fixture = new RemoteRepositoryFixture())
+            {
+                var branch = fixture.Repository.CreateBranch(branchName);
+                Commands.Checkout(fixture.Repository, branch);
+                fixture.MakeACommit();
+
+                Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
+                fixture.LocalRepositoryFixture.Checkout($"origin/{branchName}");
+
+                var sut = new VersionInBranchNameBaseVersionStrategy();
+                var gitVersionContext = new GitVersionContext(fixture.Repository, branch, new Config().ApplyDefaults());
+                var baseVersion = sut.GetVersions(gitVersionContext).Single();
+
+                baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
             }
         }
     }

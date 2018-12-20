@@ -21,7 +21,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
                 {
                     if (TryParse(c, context, out var mergeMessage) &&
                         mergeMessage.Version != null &&
-                        context.FullConfiguration.IsBranchVersionSource(mergeMessage.MergedBranch))
+                        context.FullConfiguration.IsReleaseBranch(mergeMessage.MergedBranch.AsBranchNameWithoutRemote(context)))
                     {
                         var shouldIncrement = !context.Configuration.PreventIncrementForMergedBranchVersion;
                         return new[]
