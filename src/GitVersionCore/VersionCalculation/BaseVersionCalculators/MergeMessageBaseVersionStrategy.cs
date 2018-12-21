@@ -2,7 +2,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
     using System.Collections.Generic;
     using System.Linq;
-
+    using System.Text.RegularExpressions;
     using LibGit2Sharp;
 
     /// <summary>
@@ -21,7 +21,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
                 {
                     if (TryParse(c, context, out var mergeMessage) &&
                         mergeMessage.Version != null &&
-                        context.FullConfiguration.IsReleaseBranch(mergeMessage.MergedBranch.AsBranchNameWithoutRemote(context)))
+                        context.FullConfiguration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
                     {
                         var shouldIncrement = !context.Configuration.PreventIncrementForMergedBranchVersion;
                         return new[]
@@ -50,5 +50,9 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
             var mergeMessage = new MergeMessage(mergeCommit.Message, context.FullConfiguration);
             return mergeMessage;
         }
+
+        static string TrimRemote(string branchName) => branchName
+            .RegexReplace("^refs/remotes/", string.Empty, RegexOptions.IgnoreCase)
+            .RegexReplace("^origin/", string.Empty, RegexOptions.IgnoreCase);
     }
 }

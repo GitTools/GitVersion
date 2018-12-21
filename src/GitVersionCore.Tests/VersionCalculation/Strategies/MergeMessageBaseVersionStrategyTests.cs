@@ -42,9 +42,6 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
         [TestCase("Merge branch 'release-4.6.6' into support-4.6", true, "4.6.6")]
         [TestCase("Merge branch 'release-10.10.50'", true, "10.10.50")]
         [TestCase("Merge branch 'release-0.1.5'\n\nRelates to: TicketId", true, "0.1.5")]
-        [TestCase("Merge pull request #165 from Particular/release-1.0.0", true, "1.0.0")]
-        [TestCase("Merge pull request #165 in Particular/release-1.0.0", true, "1.0.0")]
-        [TestCase("Merge pull request #500 in FOO/bar from Particular/release-1.0.0 to develop)", true, "1.0.0")]
         [TestCase("Finish Release-0.12.0", true, "0.12.0")] //Support Syntevo SmartGit/Hg's Gitflow merge commit messages for finishing a 'Release' branch
         [TestCase("Merge branch 'Release-v0.2.0'", true, "0.2.0")]
         [TestCase("Merge branch 'Release-v2.2'", true, "2.2.0")]
@@ -85,6 +82,22 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
         [TestCase("Merge pull request #500 in FOO/bar from feature/new-service to develop)", true)]
         [TestCase("Finish 0.14.1", true)] // Don't support Syntevo SmartGit/Hg's Gitflow merge commit messages for finishing a 'Hotfix' branch
         public void ShouldNotTakeVersionFromMergeOfNonReleaseBranch(string message, bool isMergeCommit)
+        {
+            var parents = GetParents(isMergeCommit);
+            AssertMergeMessage(message, null, parents);
+            AssertMergeMessage(message + " ", null, parents);
+            AssertMergeMessage(message + "\r ", null, parents);
+            AssertMergeMessage(message + "\r", null, parents);
+            AssertMergeMessage(message + "\r\n", null, parents);
+            AssertMergeMessage(message + "\r\n ", null, parents);
+            AssertMergeMessage(message + "\n", null, parents);
+            AssertMergeMessage(message + "\n ", null, parents);
+        }
+
+        [TestCase("Merge pull request #165 from Particular/release-1.0.0", true)]
+        [TestCase("Merge pull request #165 in Particular/release-1.0.0", true)]
+        [TestCase("Merge pull request #500 in FOO/bar from Particular/release-1.0.0 to develop)", true)]
+        public void ShouldNotTakeVersionFromMergeOfReleaseBranchWithRemoteOtherThanOrigin(string message, bool isMergeCommit)
         {
             var parents = GetParents(isMergeCommit);
             AssertMergeMessage(message, null, parents);
