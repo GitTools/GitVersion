@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="$(MSBuildThisFileDirectory)\UtilPack.Version.props" Condition="exists('$(MSBuildThisFileDirectory)\UtilPack.Version.props')" />
@@ -24,7 +24,7 @@
     <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
     <NuspecFile>NugetAssets\GitVersionTask.nuspec</NuspecFile>
     <PackageVersion Condition="$(PackageVersion) == '' Or $(PackageVersion) == '*Undefined*'">0.0.1-alpha-0001</PackageVersion>
-    <NuspecProperties>version=$(PackageVersion);configuration=$(Configuration);utilpackversion=$(PackageVersion_UtilPackNuGetMSBuild);yamldotnetversion=$(PackageVersion_YamlDotNet)</NuspecProperties>
+    <NuspecProperties>version=$(PackageVersion);configuration=$(Configuration);utilpackversion=$(PackageVersion_UtilPackNuGetMSBuild);yamldotnetversion=$(PackageVersion_YamlDotNet);libgit2sharpversion=$(PackageVersion_LibGit2Sharp)</NuspecProperties>
 
     <!--Additional assembly info -->
     <Company>$(Authors)</Company>

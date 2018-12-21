@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>GitVersionTask</id>
@@ -21,10 +21,11 @@
       </group>
       <group targetFramework=".NETStandard2.0">
          <dependency id="UtilPack.NuGet.MSBuild" version="$utilpackversion$" exclude="Build,Analyzers" />
-         <dependency id="YamlDotNet" version="$yamldotnetversion$" exclude="Build,Analyzers" />        
+         <dependency id="YamlDotNet" version="$yamldotnetversion$" exclude="Build,Analyzers" />
+         <dependency id="LibGit2Sharp" version="$libgit2sharpversion$" exclude="Build,Analyzers" />
       </group>
       <group targetFramework=".NETFramework4.6.1">
-         <dependency id="UtilPack.NuGet.MSBuild" version="$utilpackversion$" exclude="Build,Analyzers" />      
+         <dependency id="UtilPack.NuGet.MSBuild" version="$utilpackversion$" exclude="Build,Analyzers" />
       </group>
     </dependencies>
   </metadata>
