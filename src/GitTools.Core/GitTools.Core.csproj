@@ -12,7 +12,7 @@
     <PackageTags>git tools</PackageTags>
     <Description>Core library for GitTools</Description>
     <Copyright>Copyright GitTools 2018.</Copyright>
-    <PackageLicenseUrl>https://github.com/GitTools/GitTools.Core/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>https://raw.github.com/GitTools/GitTools.Core/master/GitTools_logo.png</PackageIconUrl>
     <DefineConstants>TRACE;LIBLOG_PORTABLE;</DefineConstants>
   </PropertyGroup>

@@ -16,7 +16,7 @@
     <PackageTags>Git Versioning GitVersion GitFlowVersion GitFlow GitHubFlow SemVer</PackageTags>
     <Description>Stamps an assembly with git information based on SemVer.</Description>
     <Copyright>Copyright GitTools 2018.</Copyright>
-    <PackageLicenseUrl>http://www.opensource.org/licenses/mit-license.php</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/img/package_icon.png</PackageIconUrl>
     <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
     <DevelopmentDependency>true</DevelopmentDependency>
@@ -24,7 +24,7 @@
     <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
     <NuspecFile>NugetAssets\GitVersionTask.nuspec</NuspecFile>
     <PackageVersion Condition="$(PackageVersion) == '' Or $(PackageVersion) == '*Undefined*'">0.0.1-alpha-0001</PackageVersion>
-    <NuspecProperties>version=$(PackageVersion);configuration=$(Configuration);utilpackversion=$(PackageVersion_UtilPackNuGetMSBuild);yamldotnetversion=$(PackageVersion_YamlDotNet)</NuspecProperties>
+    <NuspecProperties>version=$(PackageVersion);configuration=$(Configuration);utilpackversion=$(PackageVersion_UtilPackNuGetMSBuild);yamldotnetversion=$(PackageVersion_YamlDotNet);libgit2sharpversion=$(PackageVersion_LibGit2Sharp)</NuspecProperties>
 
     <!--Additional assembly info -->
     <Company>$(Authors)</Company>

@@ -19,7 +19,7 @@
     <PackageTags>git tools testing</PackageTags>
     <Copyright>Copyright GitTools 2015</Copyright>
     <PackageProjectUrl>https://github.com/GitTools/GitTools.Core</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/GitTools/GitTools.Core/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>https://raw.github.com/GitTools/GitTools.Core/master/GitTools_logo.png</PackageIconUrl>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
