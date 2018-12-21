@@ -356,7 +356,7 @@ Task("Pack-Chocolatey")
 
             var files = GetFiles(artifactPath + "/**/*.*")
                         .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") });
-            var txtFiles = GetFiles("./nuspec/*.txt")
+            var txtFiles = (GetFiles("./nuspec/*.txt") + GetFiles("./nuspec/*.ps1"))
                         .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.GetFilename().ToString() });
 
             ChocolateyPack(package.NuspecPath, new ChocolateyPackSettings {
