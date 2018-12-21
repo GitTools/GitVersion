@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>GitVersionTask</id>
@@ -8,7 +8,7 @@
     <owners>GitTools and Contributors</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <developmentDependency>true</developmentDependency>
-    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/GitTools/GitVersion</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/img/package_icon.png</iconUrl>
     <description>Stamps an assembly with git information based on SemVer.</description>

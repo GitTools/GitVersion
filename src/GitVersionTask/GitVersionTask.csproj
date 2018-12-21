@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="$(MSBuildThisFileDirectory)\UtilPack.Version.props" Condition="exists('$(MSBuildThisFileDirectory)\UtilPack.Version.props')" />
@@ -16,7 +16,7 @@
     <PackageTags>Git Versioning GitVersion GitFlowVersion GitFlow GitHubFlow SemVer</PackageTags>
     <Description>Stamps an assembly with git information based on SemVer.</Description>
     <Copyright>Copyright GitTools 2018.</Copyright>
-    <PackageLicenseUrl>http://www.opensource.org/licenses/mit-license.php</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/img/package_icon.png</PackageIconUrl>
     <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
     <DevelopmentDependency>true</DevelopmentDependency>
