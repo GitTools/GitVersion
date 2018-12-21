@@ -21,7 +21,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
 
         public IEnumerable<BaseVersion> GetVersions(GitVersionContext context, string tagPrefixRegex, Branch currentBranch)
         {
-            if (!context.FullConfiguration.IsReleaseBranch(currentBranch.NameWithoutRemote()))
+            if (!context.FullConfiguration.IsReleaseBranch(currentBranch.NameWithoutOrigin()))
             {
                 yield break;
             }
