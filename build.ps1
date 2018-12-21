@@ -48,7 +48,7 @@ Write-Host "Preparing to run build script..."
 
 if ($PSEdition -eq "Desktop") { $IsWindows = $true }
 
-$CakeVersion = "0.30.0"
+$CakeVersion = "0.31.0"
 
 $DotNetChannel = "Current";
 $DotNetInstaller = if ($IsWindows) { "dotnet-install.ps1" } else { "dotnet-install.sh" }
