@@ -56,7 +56,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
-        public void TakesVersionFromNameOfRemoteReleaseBranch()
+        public void TakesVersionFromNameOfRemoteReleaseBranchInOrigin()
         {
             using (var fixture = new RemoteRepositoryFixture())
             {
@@ -67,6 +67,22 @@ namespace GitVersionCore.Tests.IntegrationTests
                 fixture.LocalRepositoryFixture.MergeNoFF("origin/release/2.0.0");
 
                 fixture.LocalRepositoryFixture.AssertFullSemver("2.0.0+0");
+            }
+        }
+
+        [Test]
+        public void DoesNotTakeVersionFromNameOfRemoteReleaseBranchInCustomRemote()
+        {
+            using (var fixture = new RemoteRepositoryFixture())
+            {
+                fixture.LocalRepositoryFixture.Repository.Network.Remotes.Rename("origin", "upstream");
+                fixture.BranchTo("release/2.0.0");
+                fixture.MakeACommit();
+                Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
+
+                fixture.LocalRepositoryFixture.MergeNoFF("upstream/release/2.0.0");
+
+                fixture.LocalRepositoryFixture.AssertFullSemver("0.1.0+6");
             }
         }
     }
