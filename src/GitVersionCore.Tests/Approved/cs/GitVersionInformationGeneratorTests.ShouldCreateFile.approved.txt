@@ -31,6 +31,7 @@ static class GitVersionInformation
     public static string InformationalVersion = "1.2.3-unstable.4+5.Branch.feature1.Sha.commitSha";
     public static string BranchName = "feature1";
     public static string Sha = "commitSha";
+    public static string ShortSha = "commitShortSha";
     public static string NuGetVersionV2 = "1.2.3-unstable0004";
     public static string NuGetVersion = "1.2.3-unstable0004";
     public static string NuGetPreReleaseTagV2 = "unstable0004";

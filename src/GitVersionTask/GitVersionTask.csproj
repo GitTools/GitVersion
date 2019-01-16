@@ -2,14 +2,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="$(MSBuildThisFileDirectory)\UtilPack.Version.props" Condition="exists('$(MSBuildThisFileDirectory)\UtilPack.Version.props')" />
-  
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <OutputType>Library</OutputType>
-    <RootNamespace>GitVersionTask</RootNamespace>
-    <AssemblyName>GitVersionTask</AssemblyName>
-    <TargetFrameworks>net461;netstandard1.5</TargetFrameworks>
+    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 
     <!--Start of Nuspec metadata-->
     <PackageId>GitVersionTask</PackageId>
@@ -19,44 +15,21 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>Git Versioning GitVersion GitFlowVersion GitFlow GitHubFlow SemVer</PackageTags>
     <Description>Stamps an assembly with git information based on SemVer.</Description>
-    <Copyright>Copyright GitTools 2015.</Copyright>
-    <PackageLicenseUrl>http://www.opensource.org/licenses/mit-license.php</PackageLicenseUrl>
+    <Copyright>Copyright GitTools 2018.</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/img/package_icon.png</PackageIconUrl>
     <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
     <DevelopmentDependency>true</DevelopmentDependency>
-    <BuildOutputTargetFolder>build</BuildOutputTargetFolder>   
-    <Authors>GitTools and Contributors</Authors>   
+    <BuildOutputTargetFolder>build</BuildOutputTargetFolder>
     <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
     <NuspecFile>NugetAssets\GitVersionTask.nuspec</NuspecFile>
     <PackageVersion Condition="$(PackageVersion) == '' Or $(PackageVersion) == '*Undefined*'">0.0.1-alpha-0001</PackageVersion>
-    <NuspecProperties>version=$(PackageVersion);configuration=$(Configuration);utilpackversion=$(PackageVersion_UtilPackNuGetMSBuild);gittoolscoreversion=$(PackageVersion_GitToolsCore);yamldotnetversion=$(PackageVersion_YamlDotNet)</NuspecProperties>
-  
+    <NuspecProperties>version=$(PackageVersion);configuration=$(Configuration);utilpackversion=$(PackageVersion_UtilPackNuGetMSBuild);yamldotnetversion=$(PackageVersion_YamlDotNet);libgit2sharpversion=$(PackageVersion_LibGit2Sharp)</NuspecProperties>
 
     <!--Additional assembly info -->
     <Company>$(Authors)</Company>
     <Product>$(AssemblyName)</Product>
-    <!--<GenerateAssemblyFileVersionAttribute Condition="'$(GenerateAssemblyFileVersionAttribute)' == ''">false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInformationalVersionAttribute Condition="'$(GenerateAssemblyInformationalVersionAttribute)' == ''">false</GenerateAssemblyInformationalVersionAttribute>
-    <GenerateAssemblyProductAttribute Condition="'$(GenerateAssemblyProductAttribute)' == ''">false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyTitleAttribute Condition="'$(GenerateAssemblyTitleAttribute)' == ''">false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyVersionAttribute Condition="'$(GenerateAssemblyVersionAttribute)' == ''">false</GenerateAssemblyVersionAttribute>-->
-    <GenerateNeutralResourcesLanguageAttribute Condition="'$(GenerateNeutralResourcesLanguageAttribute)' == ''">true</GenerateNeutralResourcesLanguageAttribute>
 
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <NoWarn>1591</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="bin\**" />
@@ -71,43 +44,28 @@
       <PackagePath>build\</PackagePath>
     </Content>
   </ItemGroup>
-  
-  <ItemGroup>   
-    <PackageReference Include="GitTools.Core" Version="$(PackageVersion_GitToolsCore)">
-       <PrivateAssets>All</PrivateAssets>   
-    </PackageReference>   
-    <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)">
-        <PrivateAssets>All</PrivateAssets>   
-    </PackageReference>
-    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.1.548" />
-    <PackageReference Include="Microsoft.Build.Framework" Version="15.1.548" />
-    <PackageReference Include="UtilPack.NuGet.MSBuild" Version="$(PackageVersion_UtilPackNuGetMSBuild)" />
-  </ItemGroup> 
-  
-  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">      
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup> 
-  
+
   <ItemGroup>
-    <None Include="app.config" />
+    <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)">
+        <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <!--See https://github.com/Microsoft/msbuild/issues/3671 for reason for the ExcludeAssets against msbuild packagerefernces -->
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.6.85" ExcludeAssets="runtime" />
+    <PackageReference Include="UtilPack.NuGet.MSBuild" Version="$(PackageVersion_UtilPackNuGetMSBuild)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="key.snk" />
   </ItemGroup>
-  
+
   <ItemGroup>
+    <ProjectReference Include="..\GitTools.Core\GitTools.Core.csproj" />
     <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>f7ac0e71-3e9a-4f6d-b986-e004825a48e1</ProjectGuid>
-  </PropertyGroup>
- 
-  <PropertyGroup>
-    <PostBuildEvent>    
-    </PostBuildEvent>
   </PropertyGroup>
 </Project>

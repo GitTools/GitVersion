@@ -21,6 +21,7 @@
                                 string fullBuildMetaData,
                                 string branchName,
                                 string sha,
+                                string shortSha,
                                 string majorMinorPatch,
                                 string semVer,
                                 string legacySemVer,
@@ -49,6 +50,7 @@
             FullBuildMetaData = fullBuildMetaData;
             BranchName = branchName;
             Sha = sha;
+            ShortSha = shortSha;
             MajorMinorPatch = majorMinorPatch;
             SemVer = semVer;
             LegacySemVer = legacySemVer;
@@ -90,6 +92,7 @@
         public string InformationalVersion { get; private set; }
         public string BranchName { get; private set; }
         public string Sha { get; private set; }
+        public string ShortSha { get; private set; }
         public string NuGetVersionV2 { get; private set; }
         public string NuGetVersion { get; private set; }
         public string NuGetPreReleaseTagV2 { get; private set; }
@@ -118,19 +121,9 @@
         [ReflectionIgnore]
         public string this[string variable]
         {
-
-
             get
             {
-#if NETDESKTOP
                 return typeof(VersionVariables).GetProperty(variable).GetValue(this, null) as string;
-#else
-                throw new NotImplementedException();
-                //  return typeof(VersionVariables).GetTypeInfo().GetProperty(variable).GetValue(this, null) as string;
-#endif
-
-
-
             }
         }
 
@@ -190,12 +183,7 @@
 
         public bool ContainsKey(string variable)
         {
-#if NETDESKTOP
             return typeof(VersionVariables).GetProperty(variable) != null;
-#else
-            throw new NotImplementedException();
-            // return typeof(VersionVariables).GetTypeInfo().GetProperty(variable) != null;
-#endif
         }
 
         sealed class ReflectionIgnoreAttribute : Attribute

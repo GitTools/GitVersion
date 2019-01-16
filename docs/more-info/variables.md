@@ -24,6 +24,7 @@ For the `release/3.0.0` branch of GitVersion it shows:
   "InformationalVersion":"3.0.0-beta.1+1.Branch.release/3.0.0.Sha.28c853159a46b5a87e6cc9c4f6e940c59d6bc68a",
   "BranchName":"release/3.0.0",
   "Sha":"28c853159a46b5a87e6cc9c4f6e940c59d6bc68a",
+  "ShortSha":"28c8531",
   "NuGetVersionV2":"3.0.0-beta0001",
   "NuGetVersion":"3.0.0-beta0001",
   "NuGetPreReleaseTagV2":"beta0001",

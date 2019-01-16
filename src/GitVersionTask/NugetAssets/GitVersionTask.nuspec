@@ -8,7 +8,7 @@
     <owners>GitTools and Contributors</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <developmentDependency>true</developmentDependency>
-    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/GitTools/GitVersion</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/img/package_icon.png</iconUrl>
     <description>Stamps an assembly with git information based on SemVer.</description>
@@ -19,13 +19,13 @@
       <group>
         <dependency id="UtilPack.NuGet.MSBuild" version="$utilpackversion$" exclude="Build,Analyzers" />
       </group>
-      <group targetFramework=".NETStandard1.5">
+      <group targetFramework=".NETStandard2.0">
          <dependency id="UtilPack.NuGet.MSBuild" version="$utilpackversion$" exclude="Build,Analyzers" />
-         <dependency id="GitTools.Core" version="$gittoolscoreversion$" exclude="Build,Analyzers" />
-         <dependency id="YamlDotNet" version="$yamldotnetversion$" exclude="Build,Analyzers" />        
+         <dependency id="YamlDotNet" version="$yamldotnetversion$" exclude="Build,Analyzers" />
+         <dependency id="LibGit2Sharp" version="$libgit2sharpversion$" exclude="Build,Analyzers" />
       </group>
       <group targetFramework=".NETFramework4.6.1">
-         <dependency id="UtilPack.NuGet.MSBuild" version="$utilpackversion$" exclude="Build,Analyzers" />      
+         <dependency id="UtilPack.NuGet.MSBuild" version="$utilpackversion$" exclude="Build,Analyzers" />
       </group>
     </dependencies>
   </metadata>

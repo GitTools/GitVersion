@@ -1,171 +1,27 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 
     <OutputType>Exe</OutputType>
     <RootNamespace>GitVersion</RootNamespace>
     <AssemblyName>GitVersion</AssemblyName>
-    <TargetFrameworks>net40;netcoreapp20</TargetFrameworks>
-    <BuildDir>$(SolutionDir)..\build\</BuildDir>
-    
-    <GenerateAssemblyFileVersionAttribute Condition="'$(GenerateAssemblyFileVersionAttribute)' == ''">false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInformationalVersionAttribute Condition="'$(GenerateAssemblyInformationalVersionAttribute)' == ''">false</GenerateAssemblyInformationalVersionAttribute>
-    <GenerateAssemblyProductAttribute Condition="'$(GenerateAssemblyProductAttribute)' == ''">false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyTitleAttribute Condition="'$(GenerateAssemblyTitleAttribute)' == ''">false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyVersionAttribute Condition="'$(GenerateAssemblyVersionAttribute)' == ''">false</GenerateAssemblyVersionAttribute>
-    <GenerateNeutralResourcesLanguageAttribute Condition="'$(GenerateNeutralResourcesLanguageAttribute)' == ''">true</GenerateNeutralResourcesLanguageAttribute>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-  
-    <DocumentationFile>bin\Debug\GitVersion.xml</DocumentationFile>
-    <NoWarn>1591</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    
-    <DocumentationFile>bin\Release\GitVersion.xml</DocumentationFile>
-    <NoWarn>1591</NoWarn>
+    <TargetFrameworks Condition=" '$(TargetFrameworks)' == '' ">net461;netcoreapp2.1</TargetFrameworks>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <DocumentationFile>bin\$(Configuration)\GitVersion.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net40'">
-    <DefineConstants>NET40;NETDESKTOP</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net461'">
+    <DefineConstants>NETDESKTOP</DefineConstants>
   </PropertyGroup>
-  
-  <ItemGroup Condition="'$(TargetFramework)'=='net40'">  
-    
-    <PackageReference Include="GitTools.Core" Version="1.3.1"></PackageReference>
-    <PackageReference Include="JetBrains.Annotations" Version="10.4.0"></PackageReference>    
-   
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
+
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="2018.2.1"></PackageReference>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="GemAssets\.rspec" />
-    <None Include="GemAssets\bin\gitversion" />
-    <None Include="GemAssets\Gemfile" />
-    <None Include="GemAssets\gitversion.gemspec" />
-    <None Include="GemAssets\Guardfile" />
-    <None Include="GemAssets\lib\git_version.rb" />
-    <None Include="GemAssets\lib\git_version\parser.rb" />
-    <None Include="GemAssets\spec\lib\git_version\parser_spec.rb" />
-    <None Include="GemAssets\spec\lib\git_version_spec.rb" />
-    <None Include="GemAssets\spec\spec_helper.rb" />
-    <None Include="NugetAssets\chocolateyInstall.ps1">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="NugetAssets\chocolateyUninstall.ps1">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="NugetAssets\GitVersion.CommandLine.nuspec" />
-    <None Include="NugetAssets\GitVersion.Portable.nuspec" />
+    <ProjectReference Include="..\GitTools.Core\GitTools.Core.csproj" />
+    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="GemAssets\.gitignore" />   
-  </ItemGroup> 
-  
-  <ItemGroup>
-    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />     
-  </ItemGroup>
- 
-  <Target Name="Clean">
-    <ItemGroup>
-      <ExeFilesToDelete Include="$(BuildDir)NuGetExeBuild\**\*.*;$(BuildDir)NuGetCommandLineBuild\**\*.*;$(BuildDir)GemBuild\**\*.*" />
-    </ItemGroup>
-    <Delete Files="@(ExeFilesToDelete)" />
-  </Target>
-  <UsingTask TaskName="ReplaceFileText" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
-    <ParameterGroup>
-      <InputFilename ParameterType="System.String" Required="true" />
-      <OutputFilename ParameterType="System.String" Required="true" />
-      <MatchExpression ParameterType="System.String" Required="true" />
-      <ReplacementText ParameterType="System.String" Required="true" />
-    </ParameterGroup>
-    <Task>
-      <Reference Include="System.Core" />
-      <Using Namespace="System" />
-      <Using Namespace="System.IO" />
-      <Using Namespace="System.Text.RegularExpressions" />
-      <Code Type="Fragment" Language="cs"><![CDATA[
-            File.WriteAllText(
-                OutputFilename,
-                Regex.Replace(File.ReadAllText(InputFilename), MatchExpression, ReplacementText)
-                );
-          ]]></Code>
-    </Task>
-  </UsingTask>
-  <Target Name="AfterBuild" DependsOnTargets="Clean" Condition="$(NCrunch)==''">
-    <PropertyGroup>
-      <Runtime Condition="'$(OS)'=='Unix'">mono</Runtime>
-    </PropertyGroup>
-    <!-- Copy target file so that our temporary file gets the correct permissions -->
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(TargetDir)ILMergeTemp\" />
-    <ItemGroup>
-      <TempFiles Include="$(TargetDir)ILMergeTemp\*.*" />
-      <NativeBinaries Include="$(TargetDir)lib\**\*.*" />
-      <WindowsBinaries Include="$(TargetDir)lib\**\*.dll" />
-      <LibGit2SharpFiles Include="$(TargetDir)LibGit2Sharp.*" Exclude="$(TargetDir)LibGit2Sharp.xml" />
-    </ItemGroup>
-  
-    <!-- TfsBuildTask -->
-    <Exec Command="powershell -ExecutionPolicy RemoteSigned -NoProfile &quot;$(SolutionDir)GitVersionTfsTask\BuildTs.ps1&quot;" Condition="'$(GitVersion_SemVer)' != ''" />
-    <Copy SourceFiles="@(NativeBinaries)" DestinationFiles="@(NativeBinaries->'$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask\lib\%(RecursiveDir)%(Filename)%(Extension)')" Condition="'$(GitVersion_SemVer)' != ''" />
-    <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\extension-icon.png" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" Condition="'$(GitVersion_SemVer)' != ''" />
-    <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\manifest.json" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" Condition="'$(GitVersion_SemVer)' != ''" />
-    <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\overview.md" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild" Condition="'$(GitVersion_SemVer)' != ''" />
-    <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\builds.png" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\img" Condition="'$(GitVersion_SemVer)' != ''" />
-    <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\build-task.png" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\img" Condition="'$(GitVersion_SemVer)' != ''" />
-    <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask" Condition="'$(GitVersion_SemVer)' != ''" />
-    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask" Condition="Exists('$(OutputPath)GitVersion.pdb') And '$(GitVersion_SemVer)' != ''" />
-    <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\icon.png" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask" Condition="'$(GitVersion_SemVer)' != ''" />
-    <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\task.json" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask" Condition="'$(GitVersion_SemVer)' != ''" />
-    <Copy SourceFiles="$(SolutionDir)GitVersionTfsTask\GitVersion.js" DestinationFolder="$(BuildDir)GitVersionTfsTaskBuild\GitVersionTask" Condition="'$(GitVersion_SemVer)' != ''" />
-    <ReplaceFileText InputFilename="$(BuildDir)GitVersionTfsTaskBuild\manifest.json" OutputFilename="$(BuildDir)GitVersionTfsTaskBuild\manifest.json" MatchExpression="\$version\$" ReplacementText="$(GitVersion_SemVer)" Condition="'$(GitVersion_SemVer)' != ''" />
-    <Exec Command="powershell -ExecutionPolicy RemoteSigned -NoProfile &quot;$(SolutionDir)GitVersionTfsTask\Update-GitVersionTfsTaskVersion.ps1 $(BuildDir)GitVersionTfsTaskBuild\GitVersionTask\task.json $(GitVersion_MajorMinorPatch)&quot;" WorkingDirectory="$(BuildDir)" Condition="'$(GitVersion_MajorMinorPatch)' != ''" />
-    <Exec Command="powershell -ExecutionPolicy RemoteSigned -NoProfile &quot;$(SolutionDir)GitVersionTfsTask\Create-Vsix.ps1 $(BuildDir)GitVersionTfsTaskBuild&quot;" Condition="'$(GitVersion_SemVer)' != ''" />
-    <!-- Gem -->
-    <MakeDir Directories="$(BuildDir)GemBuild" />
-    <!-- Gem can only treat files it knows about, so it throws an error for .so and .dylib files when building on Windows -->
-    <Copy SourceFiles="@(WindowsBinaries)" DestinationFiles="@(WindowsBinaries->'$(BuildDir)GemBuild\bin\lib\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="$(OutputPath)GitVersion.pdb" DestinationFolder="$(BuildDir)GemBuild\bin" Condition="Exists('$(OutputPath)GitVersion.pdb')" />
-    <Copy SourceFiles="$(OutputPath)GitVersion.exe.mdb" DestinationFolder="$(BuildDir)GemBuild\bin" Condition="Exists('$(OutputPath)GitVersion.exe.mdb')" />
-    <Copy SourceFiles="$(OutputPath)ILMergeTemp\GitVersion.exe" DestinationFolder="$(BuildDir)GemBuild\bin" />
-    <ItemGroup>
-      <GemFiles Include="$(ProjectDir)GemAssets\bin*\**\*.*" />
-      <GemFiles Include="$(ProjectDir)GemAssets\lib*\**\*.*" />
-      <GemFiles Include="$(ProjectDir)GemAssets\spec*\**\*.*" />
-      <GemFiles Include="$(ProjectDir)GemAssets\*.gemspec" />
-      <GemFiles Include="$(ProjectDir)GemAssets\.rspec" />
-      <GemFiles Include="$(ProjectDir)GemAssets\Guardfile" />
-      <GemFiles Include="$(ProjectDir)GemAssets\Gemfile" />
-    </ItemGroup>
-    <Copy SourceFiles="@(GemFiles)" DestinationFiles="@(GemFiles->'$(BuildDir)GemBuild\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <PropertyGroup>
-      <GemVersion Condition="'$(GitVersion_PreReleaseTag)' == ''">$(GitVersion_MajorMinorPatch)</GemVersion>
-      <GemVersion Condition="'$(GitVersion_PreReleaseTag)' != ''">$(GitVersion_MajorMinorPatch).$(GitVersion_PreReleaseTag)</GemVersion>
-    </PropertyGroup>
-    <ReplaceFileText InputFilename="$(BuildDir)GemBuild\gitversion.gemspec" OutputFilename="$(BuildDir)GemBuild\gitversion.gemspec" MatchExpression="\$version\$" ReplacementText="$(GemVersion)" Condition="'$(GitVersion_SemVer)' != ''" />
-    <Exec Command="gem build gitversion.gemspec" ContinueOnError="True" WorkingDirectory="$(BuildDir)GemBuild" Condition="'$(GitVersion_SemVer)' != ''" />
-    <!-- Cleanup -->
-    <RemoveDir Directories="$(TargetDir)ILMergeTemp\" />
-  </Target>
- 
 </Project>

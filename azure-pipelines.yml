@@ -1,0 +1,37 @@
+jobs:
+- job: macOS
+  pool:
+    vmImage: 'macOS 10.13'
+  steps:
+  - task: DotNetCoreInstaller@0
+    displayName: 'Use .NET Core sdk 2.1.500'
+    inputs:
+      version: 2.1.500
+  - powershell: ./build.ps1 -script build.cake -target Default
+    displayName: 'Cake build'
+- job: Linux
+  pool:
+    vmImage: 'Ubuntu 16.04'
+  steps:
+  - task: DotNetCoreInstaller@0
+    displayName: 'Use .NET Core sdk 2.1.500'
+    inputs:
+      version: 2.1.500
+  - task: UseRubyVersion@0
+    inputs:
+      addToPath: true # Optional
+  - powershell: ./build.ps1 -script build.cake -target Default
+    displayName: 'Cake build'
+- job: Windows
+  pool:
+    vmImage: 'VS2017-Win2016'
+  steps:
+  - task: DotNetCoreInstaller@0
+    displayName: 'Use .NET Core sdk 2.1.500'
+    inputs:
+      version: 2.1.500
+  - task: UseRubyVersion@0
+    inputs:
+      addToPath: true # Optional
+  - powershell: ./build.ps1 -script build.cake -target Default
+    displayName: 'Cake build'

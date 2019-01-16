@@ -1,7 +1,7 @@
 <Project>
  <PropertyGroup>
-   <PackageVersion_GitToolsCore>1.3.1</PackageVersion_GitToolsCore>
-   <PackageVersion_YamlDotNet>4.2.3</PackageVersion_YamlDotNet>
-   <PackageVersion_LibGit2SharpNativeBinaries>[1.0.185]</PackageVersion_LibGit2SharpNativeBinaries>
+   <PackageVersion_YamlDotNet>5.2.1</PackageVersion_YamlDotNet>
+   <PackageVersion_LibGit2Sharp>0.26.0-preview-0070</PackageVersion_LibGit2Sharp>
+   <PackageVersion_LibGit2SharpNativeBinaries>[1.0.258]</PackageVersion_LibGit2SharpNativeBinaries>
  </PropertyGroup>
 </Project>
