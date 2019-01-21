@@ -399,6 +399,7 @@ Task("Docker-Build")
     {
         DockerBuild("linux", "dotnetcore", parameters);
         DockerBuild("linux", "fullfx", parameters);
+        DockerBuild("linux", "centos", parameters);
     }
 });
 
@@ -622,6 +623,7 @@ Task("Publish-DockerHub")
     {
         DockerPush("linux", "dotnetcore", parameters);
         DockerPush("linux", "fullfx", parameters);
+        DockerPush("linux", "centos", parameters);
     }
 
     DockerLogout();
