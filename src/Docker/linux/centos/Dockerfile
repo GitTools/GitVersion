@@ -1,7 +1,7 @@
 FROM centos:7
 LABEL maintainers="GitTools Maintainers"
 
-ENV DOTNET_VERSION='2.2' 
+ENV DOTNET_VERSION='2.1' 
 ARG contentFolder
 
 # https://dotnet.microsoft.com/download/linux-package-manager/rhel/sdk-current
