@@ -28,10 +28,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
-    <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2SharpNativeBinaries)" PrivateAssets="contentFiles" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="GitTools.Core" Version="$(PackageVersion_GitToolsCore)" />
     <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
+    <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2SharpNativeBinaries)" PrivateAssets="contentFiles" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Net.Requests" Version="4.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,10 +57,6 @@
     <None Include="NugetAssets\GitVersion.nuspec">
       <SubType>Designer</SubType>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\GitTools.Core\GitTools.Core.csproj" />
   </ItemGroup>
 
 </Project>
