@@ -1,4 +1,4 @@
-FROM mono:5.14
+FROM mono:5.18
 LABEL maintainers="GitTools Maintainers"
 ARG contentFolder
 

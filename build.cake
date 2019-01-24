@@ -403,13 +403,13 @@ Task("Docker-Build")
 {
     if (parameters.IsRunningOnWindows)
     {
-        DockerBuild("windows", "dotnetcore", parameters);
-        DockerBuild("windows", "fullfx", parameters);
+        DockerBuild("windows", "nano", "netcoreapp2.1", parameters);
+        DockerBuild("windows", "windowservercore", "net472", parameters);
     }
     else if (parameters.IsRunningOnLinux)
     {
-        DockerBuild("linux", "dotnetcore", parameters);
-        DockerBuild("linux", "fullfx", parameters);
+        DockerBuild("linux", "debian", "netcoreapp2.1", parameters);
+        DockerBuild("linux", "debian", "net472", parameters);
     }
 });
 
@@ -626,13 +626,13 @@ Task("Publish-DockerHub")
 
     if (parameters.IsRunningOnWindows)
     {
-        DockerPush("windows", "dotnetcore", parameters);
-        DockerPush("windows", "fullfx", parameters);
+        DockerPush("windows", "nano", "netcoreapp2.1", parameters);
+        DockerPush("windows", "windowservercore", "net472", parameters);
     }
     else if (parameters.IsRunningOnLinux)
     {
-        DockerPush("linux", "dotnetcore", parameters);
-        DockerPush("linux", "fullfx", parameters);
+        DockerPush("linux", "debian", "netcoreapp2.1", parameters);
+        DockerPush("linux", "debian", "net472", parameters);
     }
 
     DockerLogout();
