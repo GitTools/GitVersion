@@ -7,24 +7,23 @@ works out the [semantic version][semver] of the commit being built.
 
 [![Gitter][gitter-badge]][gitter]
 [![Build status][appveyor-badge]][appveyor]
-[![Build Status][travis-badge]][travis]
+<!-- [![Build Status][travis-badge]][travis] -->
 [![Build Status][azure-pipeline-badge]][azure-pipeline]
 [![codecov][codecov-badge]][codecov]
 
-|                                       |                Stable                     |                 Pre-release               |
-| ------------------------------------: | :---------------------------------------: | :---------------------------------------: |
-|                              **Docs** |     [![Docs][docs-badge]][docs]           |    [![Docs][docs-pre-badge]][docs-pre]    |
-|                    **GitHub Release** | [![GitHub release][gh-rel-badge]][gh-rel] |                      -                    |
-|               **GitVersion.Portable** | [![Chocolatey][choco-badge]][choco]       |   [![Chocolatey][choco-pre-badge]][choco] |
-|                    **GitVersionCore** |     [![NuGet][gvc-badge]][gvc]            |       [![NuGet][gvc-pre-badge]][gvc]      |
-|                    **GitVersionTask** |     [![NuGet][gvt-badge]][gvt]            |       [![NuGet][gvt-pre-badge]][gvt]      |
-|            **GitVersion.CommandLine** |     [![NuGet][gvcl-badge]][gvcl]          |       [![NuGet][gvcl-pre-badge]][gvcl]    |
-| **GitVersion.CommandLine.DotNetCore** |     [![NuGet][gvcd-badge]][gvcd]          |       [![NuGet][gvcd-pre-badge]][gvcd]    |
-|                   **GitVersion.Tool** |     [![NuGet][gvgt-badge]][gvgt]          |       [![NuGet][gvgt-pre-badge]][gvgt]    |
-|                               **Gem** |       [![Gem][gem-badge]][gem]            |                      -                    |
-|                          **Homebrew** |   [![homebrew][brew-badge]][brew]         |                      -                    |
-|                 **Docker DotnetCore** |   [Dotnetcore][dockerhub-dotnetcore]      |                      -                    |
-|                     **Docker FullFX** |   [FullFX][dockerhub-fullfx]              |                      -                    |
+|                                       |                Stable                         |                 Pre-release               |
+| ------------------------------------: | :-------------------------------------------: | :---------------------------------------: |
+|                              **Docs** |       [![Docs][docs-badge]][docs]             |    [![Docs][docs-pre-badge]][docs-pre]    |
+|                    **GitHub Release** |   [![GitHub release][gh-rel-badge]][gh-rel]   |                      -                    |
+|               **GitVersion.Portable** |   [![Chocolatey][choco-badge]][choco]         |   [![Chocolatey][choco-pre-badge]][choco] |
+|                    **GitVersionCore** |       [![NuGet][gvc-badge]][gvc]              |       [![NuGet][gvc-pre-badge]][gvc]      |
+|                    **GitVersionTask** |       [![NuGet][gvt-badge]][gvt]              |       [![NuGet][gvt-pre-badge]][gvt]      |
+|            **GitVersion.CommandLine** |       [![NuGet][gvcl-badge]][gvcl]            |       [![NuGet][gvcl-pre-badge]][gvcl]    |
+| **GitVersion.CommandLine.DotNetCore** |       [![NuGet][gvcd-badge]][gvcd]            |       [![NuGet][gvcd-pre-badge]][gvcd]    |
+|                   **GitVersion.Tool** |       [![NuGet][gvgt-badge]][gvgt]            |       [![NuGet][gvgt-pre-badge]][gvgt]    |
+|                               **Gem** |         [![Gem][gem-badge]][gem]              |                      -                    |
+|                          **Homebrew** |     [![homebrew][brew-badge]][brew]           |                      -                    |
+|                            **Docker** | [![Docker Pulls][dockerhub-badge]][dockerhub] |                      -
 
 ## Compatibility
 GitVersion works Windows, Linux, and Mac.
@@ -108,5 +107,5 @@ from The Noun Project
 [faq]:                  http://gitversion.readthedocs.org/en/latest/faq/
 [who]:                  http://gitversion.readthedocs.org/en/latest/who/
 [gv-in-action]:         https://raw.github.com/GitTools/GitVersion/master/docs/img/README.png
-[dockerhub-fullfx]:     https://hub.docker.com/r/gittools/gitversion-fullfx/
-[dockerhub-dotnetcore]: https://hub.docker.com/r/gittools/gitversion-dotnetcore/
+[dockerhub]:            https://hub.docker.com/r/gittools/gitversion/
+[dockerhub-badge]:      https://img.shields.io/docker/pulls/gittools/gitversion.svg
