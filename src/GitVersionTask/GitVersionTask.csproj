@@ -7,35 +7,21 @@
     <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 
-    <!--Start of Nuspec metadata-->
     <PackageId>GitVersionTask</PackageId>
     <Title>GitVersionTask</Title>
-    <Authors>GitTools and Contributors</Authors>
-    <PackageProjectUrl>https://github.com/GitTools/GitVersion</PackageProjectUrl>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>Git Versioning GitVersion GitFlowVersion GitFlow GitHubFlow SemVer</PackageTags>
+
     <Description>Stamps an assembly with git information based on SemVer.</Description>
-    <Copyright>Copyright GitTools 2018.</Copyright>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIconUrl>https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/img/package_icon.png</PackageIconUrl>
-    <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
+
     <DevelopmentDependency>true</DevelopmentDependency>
     <BuildOutputTargetFolder>build</BuildOutputTargetFolder>
-    <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
+
     <NuspecFile>NugetAssets\GitVersionTask.nuspec</NuspecFile>
     <PackageVersion Condition="$(PackageVersion) == '' Or $(PackageVersion) == '*Undefined*'">0.0.1-alpha-0001</PackageVersion>
     <NuspecProperties>version=$(PackageVersion);configuration=$(Configuration);utilpackversion=$(PackageVersion_UtilPackNuGetMSBuild);gittoolscoreversion=$(PackageVersion_GitToolsCore);yamldotnetversion=$(PackageVersion_YamlDotNet)</NuspecProperties>
 
-    <!--Additional assembly info -->
-    <Company>$(Authors)</Company>
     <Product>$(AssemblyName)</Product>
 
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="bin\**" />
-    <EmbeddedResource Remove="bin\**" />
-    <None Remove="bin\**" />
-  </ItemGroup>
   <ItemGroup>
     <None Remove="UtilPack.Version.props" />
   </ItemGroup>
@@ -67,7 +53,4 @@
   <ItemGroup>
     <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
   </ItemGroup>
-  <PropertyGroup Label="Globals">
-    <ProjectGuid>f7ac0e71-3e9a-4f6d-b986-e004825a48e1</ProjectGuid>
-  </PropertyGroup>
 </Project>

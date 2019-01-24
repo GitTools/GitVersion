@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
@@ -6,20 +6,11 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <DocumentationFile>bin\$(Configuration)\GitVersionCore.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
-    <!--Start of Nuspec metadata-->
+
     <PackageId>GitVersionCore</PackageId>
     <Title>GitVersion</Title>
-    <Authors>GitTools and Contributors</Authors>
-    <PackageProjectUrl>https://github.com/GitTools/GitVersion</PackageProjectUrl>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>Git;Versioning;GitVersion;GitFlowVersion;GitFlow;GitHubFlow;SemVer</PackageTags>
     <Description>Derives SemVer information from a repository following GitFlow or GitHubFlow. This is the Core library which both GitVersion cli and Task use allowing programatic usage of GitVersion.</Description>
-    <Copyright>Copyright GitTools 2018.</Copyright>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIconUrl>https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/img/package_icon.png</PackageIconUrl>
-    <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
-    <!--Additional assembly info -->
-    <Company>$(Authors)</Company>
+
     <Product>$(AssemblyName)</Product>
   </PropertyGroup>
 
@@ -51,12 +42,6 @@
     <EmbeddedResource Include="GitVersionInformationResources\Templates\**\*.*" />
     <EmbeddedResource Include="VersionAssemblyInfoResources\AddFormats\**\*.*" />
     <EmbeddedResource Include="VersionAssemblyInfoResources\Templates\**\*.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="NugetAssets\GitVersion.nuspec">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,3 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2024
@@ -14,16 +13,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\.gitattributes = ..\.gitattributes
 		..\.gitignore = ..\.gitignore
 		..\.travis.yml = ..\.travis.yml
-		..\appveyor.deploy.yml = ..\appveyor.deploy.yml
 		..\appveyor.yml = ..\appveyor.yml
 		..\azure-pipelines.yml = ..\azure-pipelines.yml
 		..\BREAKING CHANGES.md = ..\BREAKING CHANGES.md
 		..\build.cake = ..\build.cake
 		..\build.ps1 = ..\build.ps1
-		..\build.sh = ..\build.sh
 		..\CONTRIBUTING.md = ..\CONTRIBUTING.md
-		..\deploy.cake = ..\deploy.cake
-		..\deploy.ps1 = ..\deploy.ps1
 		Directory.Build.props = Directory.Build.props
 		..\GitVersion.yml = ..\GitVersion.yml
 		..\LICENSE = ..\LICENSE
@@ -35,40 +30,38 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionCore", "GitVersio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionExe.Tests", "GitVersionExe.Tests\GitVersionExe.Tests.csproj", "{75C2BE85-1DAF-4E34-8305-B17AFAA982A6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TfsTask", "TfsTask", "{A0ED1410-E970-45E8-A357-05605E2B7BFF}"
-	ProjectSection(SolutionItems) = preProject
-		GitVersionTfsTask\BuildTs.ps1 = GitVersionTfsTask\BuildTs.ps1
-		GitVersionTfsTask\Create-Vsix.ps1 = GitVersionTfsTask\Create-Vsix.ps1
-		GitVersionTfsTask\extension-icon.png = GitVersionTfsTask\extension-icon.png
-		GitVersionTfsTask\GitVersion.ts = GitVersionTfsTask\GitVersion.ts
-		GitVersionTfsTask\icon.png = GitVersionTfsTask\icon.png
-		GitVersionTfsTask\manifest.json = GitVersionTfsTask\manifest.json
-		GitVersionTfsTask\overview.md = GitVersionTfsTask\overview.md
-		GitVersionTfsTask\task.json = GitVersionTfsTask\task.json
-		GitVersionTfsTask\Update-GitVersionTfsTaskVersion.ps1 = GitVersionTfsTask\Update-GitVersionTfsTaskVersion.ps1
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionTask", "GitVersionTask\GitVersionTask.csproj", "{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{98C7108A-09FD-436D-8CA5-DF19E0FC5F8D}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mono", "Mono", "{6A6E0584-5392-4F03-8C14-799D400941AC}"
-	ProjectSection(SolutionItems) = preProject
-		Docker\Mono\Dockerfile = Docker\Mono\Dockerfile
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DotnetCore", "DotnetCore", "{E78ADE9E-5573-48E2-890C-EF59CB1BA7ED}"
-	ProjectSection(SolutionItems) = preProject
-		Docker\DotNetCore\Dockerfile = Docker\DotNetCore\Dockerfile
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DockerBase", "DockerBase", "{C4479215-01B1-4EC0-A33D-C90D1579BD13}"
-	ProjectSection(SolutionItems) = preProject
-		Docker\Mono\DockerBase\Dockerfile = Docker\Mono\DockerBase\Dockerfile
-		Docker\Mono\DockerBase\readme = Docker\Mono\DockerBase\readme
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.Tool", "GitVersionExe\GitVersion.Tool.csproj", "{929263FD-5CD2-42E1-BF3D-E0C1B0320DA4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{E13041A1-70D2-4474-AB8C-87ACE9410DD9}"
+	ProjectSection(SolutionItems) = preProject
+		Docker\Readme.md = Docker\Readme.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "linux", "linux", "{3E72E4A8-B979-4D76-8F4B-F0318C4337D0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "windows", "windows", "{942A9D37-53AD-4F3C-8141-03EC5F48BADA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnetcore", "dotnetcore", "{F910CAFC-A81D-4F2A-AE66-F3FAF4DA4291}"
+	ProjectSection(SolutionItems) = preProject
+		Docker\linux\dotnetcore\Dockerfile = Docker\linux\dotnetcore\Dockerfile
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "fullfx", "fullfx", "{D82A526A-C5E6-4039-A904-A8F66472DDC6}"
+	ProjectSection(SolutionItems) = preProject
+		Docker\linux\fullfx\Dockerfile = Docker\linux\fullfx\Dockerfile
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnetcore", "dotnetcore", "{D52A3B57-C914-4B28-90C8-53B6F1664C61}"
+	ProjectSection(SolutionItems) = preProject
+		Docker\windows\dotnetcore\Dockerfile = Docker\windows\dotnetcore\Dockerfile
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "fullfx", "fullfx", "{61529CF9-DC9E-4BEC-88EC-C111E90D0D95}"
+	ProjectSection(SolutionItems) = preProject
+		Docker\windows\fullfx\Dockerfile = Docker\windows\fullfx\Dockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -109,9 +102,12 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{6A6E0584-5392-4F03-8C14-799D400941AC} = {98C7108A-09FD-436D-8CA5-DF19E0FC5F8D}
-		{E78ADE9E-5573-48E2-890C-EF59CB1BA7ED} = {98C7108A-09FD-436D-8CA5-DF19E0FC5F8D}
-		{C4479215-01B1-4EC0-A33D-C90D1579BD13} = {6A6E0584-5392-4F03-8C14-799D400941AC}
+		{3E72E4A8-B979-4D76-8F4B-F0318C4337D0} = {E13041A1-70D2-4474-AB8C-87ACE9410DD9}
+		{942A9D37-53AD-4F3C-8141-03EC5F48BADA} = {E13041A1-70D2-4474-AB8C-87ACE9410DD9}
+		{F910CAFC-A81D-4F2A-AE66-F3FAF4DA4291} = {3E72E4A8-B979-4D76-8F4B-F0318C4337D0}
+		{D82A526A-C5E6-4039-A904-A8F66472DDC6} = {3E72E4A8-B979-4D76-8F4B-F0318C4337D0}
+		{D52A3B57-C914-4B28-90C8-53B6F1664C61} = {942A9D37-53AD-4F3C-8141-03EC5F48BADA}
+		{61529CF9-DC9E-4BEC-88EC-C111E90D0D95} = {942A9D37-53AD-4F3C-8141-03EC5F48BADA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0C1C310E-7A4D-4032-878B-6DC375894C49}
