@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2024
@@ -26,7 +26,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\deploy.ps1 = ..\deploy.ps1
 		Directory.Build.props = Directory.Build.props
 		..\GitVersion.yml = ..\GitVersion.yml
-		global.json = global.json
 		..\LICENSE = ..\LICENSE
 		..\mkdocs.yml = ..\mkdocs.yml
 		..\README.md = ..\README.md
@@ -71,14 +70,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DockerBase", "DockerBase", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.Tool", "GitVersionExe\GitVersion.Tool.csproj", "{929263FD-5CD2-42E1-BF3D-E0C1B0320DA4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitTools.Testing", "GitTools.Testing\GitTools.Testing.csproj", "{88BBF57C-AB63-49DF-B9D0-4E59C04F40FF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitTools.Testing.Tests", "GitTools.Testing.Tests\GitTools.Testing.Tests.csproj", "{17FBDB23-4E6D-4BFF-8562-EF4663493675}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitTools.Core", "GitTools.Core\GitTools.Core.csproj", "{CF9522CC-A6DA-4815-ABA7-3D0FC062D4AD}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitTools.Core.Tests", "GitTools.Core.Tests\GitTools.Core.Tests.csproj", "{7BA346F4-6D8A-4AB8-9D7A-B3920EF4647F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -113,22 +104,6 @@ Global
 		{929263FD-5CD2-42E1-BF3D-E0C1B0320DA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{929263FD-5CD2-42E1-BF3D-E0C1B0320DA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{929263FD-5CD2-42E1-BF3D-E0C1B0320DA4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{88BBF57C-AB63-49DF-B9D0-4E59C04F40FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{88BBF57C-AB63-49DF-B9D0-4E59C04F40FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{88BBF57C-AB63-49DF-B9D0-4E59C04F40FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{88BBF57C-AB63-49DF-B9D0-4E59C04F40FF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{17FBDB23-4E6D-4BFF-8562-EF4663493675}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{17FBDB23-4E6D-4BFF-8562-EF4663493675}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{17FBDB23-4E6D-4BFF-8562-EF4663493675}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{17FBDB23-4E6D-4BFF-8562-EF4663493675}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CF9522CC-A6DA-4815-ABA7-3D0FC062D4AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF9522CC-A6DA-4815-ABA7-3D0FC062D4AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF9522CC-A6DA-4815-ABA7-3D0FC062D4AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF9522CC-A6DA-4815-ABA7-3D0FC062D4AD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7BA346F4-6D8A-4AB8-9D7A-B3920EF4647F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7BA346F4-6D8A-4AB8-9D7A-B3920EF4647F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7BA346F4-6D8A-4AB8-9D7A-B3920EF4647F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7BA346F4-6D8A-4AB8-9D7A-B3920EF4647F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

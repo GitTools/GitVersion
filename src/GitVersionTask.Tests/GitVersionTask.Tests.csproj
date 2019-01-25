@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="FluentDateTime" Version="1.15.0"></PackageReference>
+    <PackageReference Include="GitTools.Core" Version="$(PackageVersion_GitToolsCore)"></PackageReference>
     <PackageReference Include="JetBrains.Annotations" Version="2018.2.1"></PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="2.8.2"></PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="2.8.2"></PackageReference>
