@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="GitTools.Core" Version="$(PackageVersion_GitToolsCore)" />
+    <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)"></PackageReference>
     <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2SharpNativeBinaries)" PrivateAssets="contentFiles" />
   </ItemGroup>

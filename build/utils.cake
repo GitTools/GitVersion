@@ -45,7 +45,7 @@ GitVersion GetVersion(BuildParameters parameters)
 
     var gitVersion = GitVersion(settings);
 
-    if (!(parameters.IsRunningOnAzurePipeline && parameters.IsPullRequest))
+    if (!parameters.IsLocalBuild && !(parameters.IsRunningOnAzurePipeline && parameters.IsPullRequest))
     {
         settings.UpdateAssemblyInfo = true;
         settings.LogFilePath = "console";
