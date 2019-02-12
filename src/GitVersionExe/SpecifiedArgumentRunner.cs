@@ -1,11 +1,9 @@
 namespace GitVersion
 {
-    using GitTools;
     using GitVersion.Helpers;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using WarningException = System.ComponentModel.WarningException;
 
     class SpecifiedArgumentRunner
     {

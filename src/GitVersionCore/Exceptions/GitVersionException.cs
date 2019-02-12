@@ -1,8 +1,6 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
-
-    using GitTools;
 
     [Serializable]
     public class GitVersionException : GitToolsException

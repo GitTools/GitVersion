@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+using System;
 using System.Text.RegularExpressions;
 
 namespace GitVersion
