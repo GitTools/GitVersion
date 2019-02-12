@@ -9,8 +9,8 @@
 #addin "nuget:?package=Cake.Json&version=3.0.0"
 #addin "nuget:?package=Cake.Tfx&version=0.8.0"
 #addin "nuget:?package=Cake.Gem&version=0.7.0"
-#addin "nuget:?package=Cake.Coverlet&version=1.3.2"
-#addin "nuget:?package=Cake.Codecov&version=0.4.0"
+#addin "nuget:?package=Cake.Coverlet&version=2.2.1"
+#addin "nuget:?package=Cake.Codecov&version=0.5.0"
 #addin "nuget:?package=Newtonsoft.Json&version=9.0.1"
 
 // Install tools.

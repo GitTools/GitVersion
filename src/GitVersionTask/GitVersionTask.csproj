@@ -39,7 +39,7 @@
         <PrivateAssets>All</PrivateAssets>
     </PackageReference>
     <!--See https://github.com/Microsoft/msbuild/issues/3671 for reason for the ExcludeAssets against msbuild packagerefernces -->
-    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.6.85" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.7.179" ExcludeAssets="runtime" />
     <PackageReference Include="UtilPack.NuGet.MSBuild" Version="$(PackageVersion_UtilPackNuGetMSBuild)">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
