@@ -1,4 +1,4 @@
-﻿namespace GitVersion.Helpers
+namespace GitVersion.Helpers
 {
     using System.Threading.Tasks;
 

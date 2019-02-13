@@ -4,10 +4,11 @@ namespace GitVersion
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-
+    using System.Text;
+    using GitVersion.Helpers;
     using LibGit2Sharp;
 
-    static class LibGitExtensions
+    public static class LibGitExtensions
     {
         public static DateTimeOffset When(this Commit commit)
         {
@@ -125,6 +126,58 @@ namespace GitVersion
                 {
                     Logger.WriteWarning(string.Format("  An error occurred while checking out '{0}': '{1}'", fileName, ex.Message));
                 }
+            }
+        }
+
+        public static Branch FindBranch(this IRepository repository, string branchName)
+        {
+            var exact = repository.Branches.FirstOrDefault(x => x.FriendlyName == branchName);
+            if (exact != null)
+            {
+                return exact;
+            }
+
+            return repository.Branches.FirstOrDefault(x => x.FriendlyName == "origin/" + branchName);
+        }
+
+        public static void DumpGraph(this IRepository repository, Action<string> writer = null, int? maxCommits = null)
+        {
+            DumpGraph(repository.Info.Path, writer, maxCommits);
+        }
+
+
+        public static void DumpGraph(string workingDirectory, Action<string> writer = null, int? maxCommits = null)
+        {
+            var output = new StringBuilder();
+
+            try
+            {
+                ProcessHelper.Run(
+                    o => output.AppendLine(o),
+                    e => output.AppendLineFormat("ERROR: {0}", e),
+                    null,
+                    "git",
+                    GitRepositoryHelper.CreateGitLogArgs(maxCommits),
+                    workingDirectory);
+            }
+            catch (FileNotFoundException exception)
+            {
+                if (exception.FileName != "git")
+                {
+                    throw;
+                }
+
+                output.AppendLine("Could not execute 'git log' due to the following error:");
+                output.AppendLine(exception.ToString());
+            }
+
+            if (writer != null)
+            {
+                writer(output.ToString());
+            }
+            else
+            {
+                Console.Write(output.ToString());
             }
         }
     }

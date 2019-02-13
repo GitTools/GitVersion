@@ -1,11 +1,9 @@
-﻿namespace GitVersionTask
+namespace GitVersionTask
 {
     using System;
     using GitVersion;
 
     using Microsoft.Build.Framework;
-    using GitTools;
-    using System.Reflection;
 
     public class GetVersion : GitVersionTaskBase
     {

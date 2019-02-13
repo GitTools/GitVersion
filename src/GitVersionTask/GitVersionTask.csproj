@@ -17,7 +17,7 @@
 
     <NuspecFile>NugetAssets\GitVersionTask.nuspec</NuspecFile>
     <PackageVersion Condition="$(PackageVersion) == '' Or $(PackageVersion) == '*Undefined*'">0.0.1-alpha-0001</PackageVersion>
-    <NuspecProperties>version=$(PackageVersion);configuration=$(Configuration);utilpackversion=$(PackageVersion_UtilPackNuGetMSBuild);gittoolscoreversion=$(PackageVersion_GitToolsCore);yamldotnetversion=$(PackageVersion_YamlDotNet)</NuspecProperties>
+    <NuspecProperties>version=$(PackageVersion);configuration=$(Configuration);utilpackversion=$(PackageVersion_UtilPackNuGetMSBuild);libgit2sharpversion=$(PackageVersion_LibGit2Sharp);yamldotnetversion=$(PackageVersion_YamlDotNet)</NuspecProperties>
 
     <Product>$(AssemblyName)</Product>
 
@@ -32,9 +32,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GitTools.Core" Version="$(PackageVersion_GitToolsCore)">
-       <PrivateAssets>All</PrivateAssets>
-    </PackageReference>
+    <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
+    <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2SharpNativeBinaries)" PrivateAssets="contentFiles" />
     <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)">
         <PrivateAssets>All</PrivateAssets>
     </PackageReference>
