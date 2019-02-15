@@ -1,11 +1,11 @@
-﻿using GitTools.Testing;
+using GitTools.Testing;
 using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class OtherBranchScenarios
+public class OtherBranchScenarios : TestBase
 {
     [Test]
     public void CanTakeVersionFromReleaseBranch()
@@ -15,10 +15,10 @@ public class OtherBranchScenarios
             const string TaggedVersion = "1.0.3";
             fixture.Repository.MakeATaggedCommit(TaggedVersion);
             fixture.Repository.MakeCommits(5);
-            fixture.Repository.CreateBranch("alpha-2.0.0");
-            Commands.Checkout(fixture.Repository, "alpha-2.0.0");
+            fixture.Repository.CreateBranch("release/beta-2.0.0");
+            Commands.Checkout(fixture.Repository, "release/beta-2.0.0");
 
-            fixture.AssertFullSemver("2.0.0-alpha.1+0");
+            fixture.AssertFullSemver("2.0.0-beta.1+0");
         }
     }
 

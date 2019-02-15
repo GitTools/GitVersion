@@ -8,7 +8,7 @@ using Shouldly;
 using System.Reflection;
 
 [TestFixture]
-public class GitLabCiMessageGenerationTests
+public class GitLabCiMessageGenerationTests : TestBase
 {
     [Test]
     public void GenerateSetVersionMessageReturnsVersionAsIs_AlthoughThisIsNotUsedByJenkins()

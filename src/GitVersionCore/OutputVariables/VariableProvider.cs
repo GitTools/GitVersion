@@ -1,7 +1,6 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
-    using System.ComponentModel;
     using System.Text.RegularExpressions;
     using GitVersion.VersionCalculation;
 
@@ -61,6 +60,7 @@
                 semverFormatValues.FullBuildMetaData,
                 semverFormatValues.BranchName,
                 semverFormatValues.Sha,
+                semverFormatValues.ShortSha,
                 semverFormatValues.MajorMinorPatch,
                 semverFormatValues.SemVer,
                 semverFormatValues.LegacySemVer,

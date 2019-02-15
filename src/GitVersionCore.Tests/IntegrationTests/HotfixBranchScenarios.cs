@@ -5,7 +5,7 @@ using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
-public class HotfixBranchScenarios
+public class HotfixBranchScenarios : TestBase
 {
     [Test]
     // This test actually validates #465 as well

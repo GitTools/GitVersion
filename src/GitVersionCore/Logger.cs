@@ -33,12 +33,13 @@ namespace GitVersion
 
         static Action<string> ObscurePassword(Action<string> info)
         {
-            Action<string> logAction = s =>
+            void LogAction(string s)
             {
                 s = ObscurePasswordRegex.Replace(s, "$1$2:*******@");
                 info(s);
-            };
-            return logAction;
+            }
+
+            return LogAction;
         }
 
         public static void SetLoggers(Action<string> debug, Action<string> info, Action<string> warn, Action<string> error)

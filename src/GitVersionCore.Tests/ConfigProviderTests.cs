@@ -1,9 +1,9 @@
 using GitVersion;
 using GitVersion.Helpers;
+using GitVersionCore.Tests;
 using NUnit.Framework;
 using Shouldly;
 using System;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 using YamlDotNet.Serialization;
 
 [TestFixture]
-public class ConfigProviderTests
+public class ConfigProviderTests : TestBase
 {
     private const string DefaultRepoPath = "c:\\MyGitRepo";
     private const string DefaultWorkingPath = "c:\\MyGitRepo\\Working";

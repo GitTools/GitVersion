@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using GitTools;
 using GitVersion;
+using GitVersion.Helpers;
 
 public static class GitVersionHelper
 {
@@ -40,6 +40,7 @@ public static class GitVersionHelper
                 new KeyValuePair<string, string>(TeamCity.EnvironmentVariableName, arguments.IsTeamCity ? "8.0.0" : null),
                 new KeyValuePair<string, string>(AppVeyor.EnvironmentVariableName, null),
                 new KeyValuePair<string, string>(TravisCI.EnvironmentVariableName, null),
+                new KeyValuePair<string, string>(VsoAgent.EnvironmentVariableName, null),
             };
 
         var exitCode = -1;

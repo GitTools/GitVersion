@@ -8,7 +8,7 @@
     using System.Collections.Generic;
 
     [TestFixture]
-    public class OtherScenarios
+    public class OtherScenarios : TestBase
     {
         // This is an attempt to automatically resolve the issue where you cannot build
         // when multiple branches point at the same commit

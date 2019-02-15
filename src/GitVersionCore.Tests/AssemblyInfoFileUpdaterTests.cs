@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using GitVersion;
 using GitVersion.Helpers;
 using GitVersionCore.Tests;
@@ -10,7 +9,7 @@ using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class AssemblyInfoFileUpdaterTests
+public class AssemblyInfoFileUpdaterTests : TestBase
 {
     [SetUp]
     public void Setup()
@@ -424,7 +423,7 @@ public class AssemblyInfoFileUpdaterTests
             using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
             {
                 assemblyInfoFileUpdater.Update();
-
+               
                 assemblyFileContent = fileSystem.ReadAllText(fileName);
                 assemblyFileContent.ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
             }
@@ -463,7 +462,7 @@ public class AssemblyInfoFileUpdaterTests
         var fileSystem = Substitute.For<IFileSystem>();
         var version = new SemanticVersion
         {
-            BuildMetaData = new SemanticVersionBuildMetaData(3, "foo", "hash", DateTimeOffset.Now),
+            BuildMetaData = new SemanticVersionBuildMetaData(3, "foo", "hash", "shortHash", DateTimeOffset.Now),
             Major = 2,
             Minor = 3,
             Patch = 1

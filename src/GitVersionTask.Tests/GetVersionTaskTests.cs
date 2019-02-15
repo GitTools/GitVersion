@@ -6,7 +6,7 @@ using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class GetVersionTaskTests
+public class GetVersionTaskTests : TestBase
 {
     [Test]
     public void OutputsShouldMatchVariableProvider()

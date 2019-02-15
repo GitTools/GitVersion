@@ -3,7 +3,6 @@ namespace GitVersion
     using GitVersion.Helpers;
     using LibGit2Sharp;
     using System;
-    using System.ComponentModel;
     using System.Linq;
 
     public class ExecuteCore
@@ -61,7 +60,7 @@ namespace GitVersion
                 {
                     try
                     {
-                        gitVersionCache.WriteVariablesToDiskCache(gitPreparer, cacheKey, versionVariables);
+                      gitVersionCache.WriteVariablesToDiskCache(gitPreparer, cacheKey, versionVariables);
                     }
                     catch (AggregateException e)
                     {
