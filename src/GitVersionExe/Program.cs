@@ -3,7 +3,6 @@ namespace GitVersion
     using GitVersion.Helpers;
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
@@ -82,7 +81,7 @@ namespace GitVersion
                 if (arguments.Diag)
                 {
                     Logger.WriteInfo("Dumping commit graph: ");
-                    GitTools.LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
+                    LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
                 }
 #endif
                 if (!Directory.Exists(arguments.TargetPath))
@@ -133,7 +132,7 @@ namespace GitVersion
                     try
                     {
 #if NETDESKTOP
-                        GitTools.LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
+                        LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
 #endif
                     }
                     catch (Exception dumpGraphException)

@@ -1,7 +1,8 @@
-﻿namespace GitVersion.VersionCalculation.BaseVersionCalculators
+namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
     using System;
     using System.Collections.Generic;
+
     using LibGit2Sharp;
 
     /// <summary>
@@ -15,12 +16,16 @@
         {
             var currentBranch = context.CurrentBranch;
             var tagPrefixRegex = context.Configuration.GitTagPrefix;
-            var repository = context.Repository;
-            return GetVersions(context, tagPrefixRegex, currentBranch, repository);
+            return GetVersions(context, tagPrefixRegex, currentBranch);
         }
 
-        public IEnumerable<BaseVersion> GetVersions(GitVersionContext context, string tagPrefixRegex, Branch currentBranch, IRepository repository)
+        public IEnumerable<BaseVersion> GetVersions(GitVersionContext context, string tagPrefixRegex, Branch currentBranch)
         {
+            if (!context.FullConfiguration.IsReleaseBranch(currentBranch.NameWithoutOrigin()))
+            {
+                yield break;
+            }
+
             var branchName = currentBranch.FriendlyName;
             var versionInBranch = GetVersionInBranch(branchName, tagPrefixRegex);
             if (versionInBranch != null)
