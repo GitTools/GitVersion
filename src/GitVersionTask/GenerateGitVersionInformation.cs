@@ -1,14 +1,10 @@
-﻿namespace GitVersionTask
+namespace GitVersionTask
 {
     using System;
-    using System.ComponentModel;
     using System.IO;
     using GitVersion;
     using GitVersion.Helpers;
     using Microsoft.Build.Framework;
-    using GitTools;
-
-   
 
     public class GenerateGitVersionInformation : GitVersionTaskBase
     {
@@ -44,7 +40,7 @@
                 InnerExecute();
                 return true;
             }
-            catch (GitTools.WarningException errorException)
+            catch (WarningException errorException)
             {
                 logger.LogWarning(errorException.Message);
                 return true;

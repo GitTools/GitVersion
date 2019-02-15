@@ -5,26 +5,19 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
-    <PackageReference Include="ApprovalTests" Version="3.0.13"></PackageReference>
-    <PackageReference Include="ApprovalUtilities" Version="3.0.13"></PackageReference>
-    <PackageReference Include="FluentDateTime" Version="1.13.0"></PackageReference>
-    <PackageReference Include="GitTools.Core" Version="$(PackageVersion_GitToolsCore)"></PackageReference>
-    <PackageReference Include="JetBrains.Annotations" Version="10.4.0"></PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="1.3.2"></PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="1.3.2"></PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="1.3.2"></PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3"></PackageReference>
-    <PackageReference Include="NSubstitute" Version="1.10.0"></PackageReference>
-    <PackageReference Include="coverlet.msbuild" Version="2.1.1" />
-    <PackageReference Include="NUnit" Version="3.9.0"></PackageReference>
-    <packagereference Include="NUnit3TestAdapter" Version="3.9.0"></packagereference>
-    <PackageReference Include="ObjectApproval" Version="2.1.0"></PackageReference>
-    <PackageReference Include="Shouldly" Version="3.0.0"></PackageReference>
-    <PackageReference Include="System.Reflection.Metadata" Version="1.4.2"></PackageReference>
-    <PackageReference Include="System.Collections.Immutable" Version="1.3.1"></PackageReference>
-    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.1.548" />
-    <PackageReference Include="Microsoft.Build.Framework" Version="15.1.548" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="FluentDateTime" Version="1.15.0"></PackageReference>
+    <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)"></PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1"></PackageReference>
+    <PackageReference Include="NSubstitute" Version="4.0.0"></PackageReference>
+    <PackageReference Include="coverlet.msbuild" Version="2.5.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NUnit" Version="3.11.0"></PackageReference>
+    <packagereference Include="NUnit3TestAdapter" Version="3.12.0"></packagereference>
+    <PackageReference Include="Shouldly" Version="3.0.2"></PackageReference>
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.7.179" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Approved\**\*.txt" />

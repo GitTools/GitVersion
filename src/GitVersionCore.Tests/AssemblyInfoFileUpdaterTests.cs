@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using GitVersion;
 using GitVersion.Helpers;
 using GitVersionCore.Tests;

@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using GitTools;
 using GitVersion;
+using GitVersion.Helpers;
 
 public static class GitVersionHelper
 {

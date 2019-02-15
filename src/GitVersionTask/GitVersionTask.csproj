@@ -4,38 +4,24 @@
   <Import Project="$(MSBuildThisFileDirectory)\UtilPack.Version.props" Condition="exists('$(MSBuildThisFileDirectory)\UtilPack.Version.props')" />
 
   <PropertyGroup>
-    <TargetFrameworks>net461;netstandard1.5</TargetFrameworks>
+    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 
-    <!--Start of Nuspec metadata-->
     <PackageId>GitVersionTask</PackageId>
     <Title>GitVersionTask</Title>
-    <Authors>GitTools and Contributors</Authors>
-    <PackageProjectUrl>https://github.com/GitTools/GitVersion</PackageProjectUrl>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>Git Versioning GitVersion GitFlowVersion GitFlow GitHubFlow SemVer</PackageTags>
+
     <Description>Stamps an assembly with git information based on SemVer.</Description>
-    <Copyright>Copyright GitTools 2018.</Copyright>
-    <PackageLicenseUrl>http://www.opensource.org/licenses/mit-license.php</PackageLicenseUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/img/package_icon.png</PackageIconUrl>
-    <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
+
     <DevelopmentDependency>true</DevelopmentDependency>
     <BuildOutputTargetFolder>build</BuildOutputTargetFolder>
-    <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
+
     <NuspecFile>NugetAssets\GitVersionTask.nuspec</NuspecFile>
     <PackageVersion Condition="$(PackageVersion) == '' Or $(PackageVersion) == '*Undefined*'">0.0.1-alpha-0001</PackageVersion>
-    <NuspecProperties>version=$(PackageVersion);configuration=$(Configuration);utilpackversion=$(PackageVersion_UtilPackNuGetMSBuild);gittoolscoreversion=$(PackageVersion_GitToolsCore);yamldotnetversion=$(PackageVersion_YamlDotNet)</NuspecProperties>
+    <NuspecProperties>version=$(PackageVersion);configuration=$(Configuration);utilpackversion=$(PackageVersion_UtilPackNuGetMSBuild);libgit2sharpversion=$(PackageVersion_LibGit2Sharp);yamldotnetversion=$(PackageVersion_YamlDotNet)</NuspecProperties>
 
-    <!--Additional assembly info -->
-    <Company>$(Authors)</Company>
     <Product>$(AssemblyName)</Product>
 
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="bin\**" />
-    <EmbeddedResource Remove="bin\**" />
-    <None Remove="bin\**" />
-  </ItemGroup>
   <ItemGroup>
     <None Remove="UtilPack.Version.props" />
   </ItemGroup>
@@ -46,16 +32,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GitTools.Core" Version="$(PackageVersion_GitToolsCore)">
-       <PrivateAssets>All</PrivateAssets>
-    </PackageReference>
+    <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
+    <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2SharpNativeBinaries)" PrivateAssets="contentFiles" />
     <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)">
         <PrivateAssets>All</PrivateAssets>
     </PackageReference>
     <!--See https://github.com/Microsoft/msbuild/issues/3671 for reason for the ExcludeAssets against msbuild packagerefernces -->
-    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.1.548" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.Build.Framework" Version="15.1.548" ExcludeAssets="runtime" />
-    <PackageReference Include="UtilPack.NuGet.MSBuild" Version="$(PackageVersion_UtilPackNuGetMSBuild)" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.7.179" ExcludeAssets="runtime" />
+    <PackageReference Include="UtilPack.NuGet.MSBuild" Version="$(PackageVersion_UtilPackNuGetMSBuild)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -65,7 +52,4 @@
   <ItemGroup>
     <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
   </ItemGroup>
-  <PropertyGroup Label="Globals">
-    <ProjectGuid>f7ac0e71-3e9a-4f6d-b986-e004825a48e1</ProjectGuid>
-  </PropertyGroup>
 </Project>
