@@ -1,12 +1,12 @@
-namespace GitTools
-{  
+﻿namespace GitVersion.Helpers
+{
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics;
     using System.IO;
+    using System.Runtime.InteropServices;
     using System.Threading;
-    
 
     public static class ProcessHelper
     {
@@ -182,14 +182,31 @@ namespace GitTools
 
             public ChangeErrorMode(ErrorModes mode)
             {
-                Environment.ExitCode = oldMode = (int) mode;
+                try
+                {
+                    oldMode = SetErrorMode((int)mode);
+                }
+                catch (EntryPointNotFoundException)
+                {
+                    oldMode = (int)mode;
+                }
             }
 
 
             void IDisposable.Dispose()
             {
-                Environment.ExitCode = oldMode;
+                try
+                {
+                    SetErrorMode(oldMode);
+                }
+                catch (EntryPointNotFoundException)
+                {
+                    // NOTE: Mono doesn't support DllImport("kernel32.dll") and its SetErrorMode method, obviously. @asbjornu
+                }
             }
+
+            [DllImport("kernel32.dll")]
+            static extern int SetErrorMode(int newMode);
         }
     }
 }

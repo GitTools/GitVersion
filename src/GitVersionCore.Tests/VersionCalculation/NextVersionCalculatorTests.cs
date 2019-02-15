@@ -1,8 +1,7 @@
-﻿namespace GitVersionCore.Tests.VersionCalculation
+namespace GitVersionCore.Tests.VersionCalculation
 {
     using System;
     using System.Collections.Generic;
-    using GitTools;
     using GitTools.Testing;
     using GitVersion;
     using GitVersion.VersionCalculation;

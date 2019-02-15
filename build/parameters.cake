@@ -131,7 +131,16 @@ public class BuildParameters
 
         if(!IsRunningOnWindows)
         {
-            var frameworkPathOverride = new FilePath(typeof(object).Assembly.Location).GetDirectory().FullPath + "/";
+            var frameworkPathOverride = context.Environment.Runtime.IsCoreClr
+                                        ?   new []{
+                                                new DirectoryPath("/Library/Frameworks/Mono.framework/Versions/Current/lib/mono"),
+                                                new DirectoryPath("/usr/lib/mono"),
+                                                new DirectoryPath("/usr/local/lib/mono")
+                                            }
+                                            .Select(directory =>directory.Combine("4.5"))
+                                            .FirstOrDefault(directory => context.DirectoryExists(directory))
+                                            ?.FullPath + "/"
+                                        : new FilePath(typeof(object).Assembly.Location).GetDirectory().FullPath + "/";
 
             // Use FrameworkPathOverride when not running on Windows.
             context.Information("Build will use FrameworkPathOverride={0} since not building on Windows.", frameworkPathOverride);

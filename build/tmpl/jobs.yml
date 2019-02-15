@@ -1,0 +1,21 @@
+parameters:
+  name: ''  # defaults for any parameters that aren't specified
+  vmImage: ''
+  installRuby: 'true'
+jobs:
+- job: ${{ parameters.name }}
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+  steps:
+  - task: DotNetCoreInstaller@0
+    displayName: 'Use .NET Core sdk $(DOTNET_SDK_VERSION)'
+    inputs:
+      version: $(DOTNET_SDK_VERSION)
+      packageType: $(DOTNET_PACKAGE_TYPE)
+  - ${{ if eq(parameters.installRuby, 'true') }}:
+    - task: UseRubyVersion@0
+      inputs:
+        versionSpec: $(RUBY_VERSION)
+        addToPath: true # Optional
+  - powershell: ./build.ps1 -script build.cake -target Default
+    displayName: 'Cake build'

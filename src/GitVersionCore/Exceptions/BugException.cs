@@ -1,4 +1,4 @@
-﻿namespace GitTools.Git
+namespace GitVersion
 {
     using System;
 

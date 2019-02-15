@@ -4,7 +4,6 @@ namespace GitVersion.VersionCalculation
     using System.Linq;
     using System.Text.RegularExpressions;
     using BaseVersionCalculators;
-    using GitTools;
     using LibGit2Sharp;
 
     /// <summary>
