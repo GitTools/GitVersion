@@ -2,64 +2,29 @@
 
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
-    <!--<TargetFramework>net40</TargetFramework>-->
-    <OutputType>Library</OutputType>
-    <RootNamespace>GitVersionCore.Tests</RootNamespace>
-    <AssemblyName>GitVersionCore.Tests</AssemblyName>
-    <!--<GenerateAssemblyCompanyAttribute Condition="'$(GenerateAssemblyCompanyAttribute)' == ''">true</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyConfigurationAttribute Condition="'$(GenerateAssemblyConfigurationAttribute)' == ''">true</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCopyrightAttribute Condition="'$(GenerateAssemblyCopyrightAttribute)' == ''">true</GenerateAssemblyCopyrightAttribute>
-    <GenerateAssemblyDescriptionAttribute Condition="'$(GenerateAssemblyDescriptionAttribute)' == ''">true</GenerateAssemblyDescriptionAttribute>-->
-    <GenerateAssemblyFileVersionAttribute Condition="'$(GenerateAssemblyFileVersionAttribute)' == ''">false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInformationalVersionAttribute Condition="'$(GenerateAssemblyInformationalVersionAttribute)' == ''">false</GenerateAssemblyInformationalVersionAttribute>
-    <GenerateAssemblyProductAttribute Condition="'$(GenerateAssemblyProductAttribute)' == ''">false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyTitleAttribute Condition="'$(GenerateAssemblyTitleAttribute)' == ''">false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyVersionAttribute Condition="'$(GenerateAssemblyVersionAttribute)' == ''">false</GenerateAssemblyVersionAttribute>
-    <GenerateNeutralResourcesLanguageAttribute Condition="'$(GenerateNeutralResourcesLanguageAttribute)' == ''">true</GenerateNeutralResourcesLanguageAttribute>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DebugSymbols>true</DebugSymbols>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>  
-  
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
-    <PackageReference Include="FluentDateTime" Version="1.13.0" />
-    <PackageReference Include="GitTools.Core" Version="$(PackageVersion_GitToolsCore)" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="FluentDateTime" Version="1.15.0" />
     <PackageReference Include="GitTools.Testing" Version="1.2.0" />
-    <PackageReference Include="JetBrains.Annotations" Version="10.4.0" />
-    <PackageReference Include="NSubstitute" Version="1.10.0.0" />
-    <PackageReference Include="NUnit" Version="3.9.0" />
-    <packagereference Include="NUnit3TestAdapter" Version="3.9.0"></packagereference>
-    <PackageReference Include="Shouldly" Version="3.0.0" />
-    <PackageReference Include="TestStack.ConventionTests" Version="3.0.0" />
-    <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />  
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />   
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="app.config">
-      <SubType>Designer</SubType>
-    </None>
+    <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)"></PackageReference>
+    <PackageReference Include="NSubstitute" Version="4.0.0" />
+    <PackageReference Include="coverlet.msbuild" Version="2.5.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NUnit" Version="3.11.0" />
+    <packagereference Include="NUnit3TestAdapter" Version="3.12.0"></packagereference>
+    <PackageReference Include="Shouldly" Version="3.0.2" />
+    <PackageReference Include="TestStack.ConventionTests" Version="3.0.1" />
+    <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />

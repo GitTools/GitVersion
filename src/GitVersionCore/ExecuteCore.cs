@@ -1,12 +1,9 @@
 namespace GitVersion
 {
-    using GitTools;
     using GitVersion.Helpers;
     using LibGit2Sharp;
     using System;
-    using System.ComponentModel;
     using System.Linq;
-    using System.Threading.Tasks;
 
     public class ExecuteCore
     {
@@ -126,7 +123,7 @@ namespace GitVersion
                 var branch = repository.Head;
                 if (branch.Tip == null)
                 {
-                    throw new GitTools.WarningException("No Tip found. Has repo been initialized?");
+                    throw new WarningException("No Tip found. Has repo been initialized?");
                 }
                 return repository;
             }
@@ -134,7 +131,7 @@ namespace GitVersion
             {
                 if (exception.Message.Contains("LibGit2Sharp.Core.NativeMethods") || exception.Message.Contains("FilePathMarshaler"))
                 {
-                    throw new GitTools.WarningException("Restart of the process may be required to load an updated version of LibGit2Sharp.");
+                    throw new WarningException("Restart of the process may be required to load an updated version of LibGit2Sharp.");
                 }
                 throw;
             }

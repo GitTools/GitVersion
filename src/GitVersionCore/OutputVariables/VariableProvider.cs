@@ -1,9 +1,8 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
     using System.Text.RegularExpressions;
     using GitVersion.VersionCalculation;
-    using WarningException = GitTools.WarningException;
 
     public static class VariableProvider
     {
@@ -61,6 +60,7 @@
                 semverFormatValues.FullBuildMetaData,
                 semverFormatValues.BranchName,
                 semverFormatValues.Sha,
+                semverFormatValues.ShortSha,
                 semverFormatValues.MajorMinorPatch,
                 semverFormatValues.SemVer,
                 semverFormatValues.LegacySemVer,
