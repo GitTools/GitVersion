@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
     using System.Collections;
@@ -6,7 +6,6 @@
     using System.IO;
     using System.Linq;
     using GitVersion.Helpers;
-    using System.Reflection;
  
 
     using YamlDotNet.Serialization;

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
@@ -6,20 +6,11 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <DocumentationFile>bin\$(Configuration)\GitVersionCore.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
-    <!--Start of Nuspec metadata-->
+
     <PackageId>GitVersionCore</PackageId>
     <Title>GitVersion</Title>
-    <Authors>GitTools and Contributors</Authors>
-    <PackageProjectUrl>https://github.com/GitTools/GitVersion</PackageProjectUrl>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>Git;Versioning;GitVersion;GitFlowVersion;GitFlow;GitHubFlow;SemVer</PackageTags>
     <Description>Derives SemVer information from a repository following GitFlow or GitHubFlow. This is the Core library which both GitVersion cli and Task use allowing programatic usage of GitVersion.</Description>
-    <Copyright>Copyright GitTools 2018.</Copyright>
-    <PackageLicenseUrl>http://www.opensource.org/licenses/mit-license.php</PackageLicenseUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/img/package_icon.png</PackageIconUrl>
-    <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
-    <!--Additional assembly info -->
-    <Company>$(Authors)</Company>
+
     <Product>$(AssemblyName)</Product>
   </PropertyGroup>
 
@@ -30,8 +21,14 @@
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2SharpNativeBinaries)" PrivateAssets="contentFiles" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)"></PackageReference>
     <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Net.Requests" Version="4.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.5.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,16 +43,6 @@
     <EmbeddedResource Include="GitVersionInformationResources\Templates\**\*.*" />
     <EmbeddedResource Include="VersionAssemblyInfoResources\AddFormats\**\*.*" />
     <EmbeddedResource Include="VersionAssemblyInfoResources\Templates\**\*.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="NugetAssets\GitVersion.nuspec">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\GitTools.Core\GitTools.Core.csproj" />
   </ItemGroup>
 
 </Project>

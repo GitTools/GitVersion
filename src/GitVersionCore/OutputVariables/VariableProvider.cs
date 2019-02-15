@@ -1,9 +1,8 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
     using System.Text.RegularExpressions;
     using GitVersion.VersionCalculation;
-    using WarningException = GitTools.WarningException;
 
     public static class VariableProvider
     {
