@@ -15,14 +15,18 @@ namespace GitVersion
             return commit.Committer.When;
         }
 
-        /// <summary>
-        /// Checks if the two branch objects refer to the same branch (have the same friendly name).
-        /// </summary>
         public static string NameWithoutRemote(this Branch branch)
         {
-            return branch.IsRemote ?
-                branch.FriendlyName.Substring(branch.FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1) :
-                branch.FriendlyName;
+            return branch.IsRemote
+                ? branch.FriendlyName.Substring(branch.FriendlyName.IndexOf("/", StringComparison.Ordinal) + 1)
+                : branch.FriendlyName;
+        }
+
+        public static string NameWithoutOrigin(this Branch branch)
+        {
+            return branch.IsRemote && branch.FriendlyName.StartsWith("origin/")
+                ? branch.FriendlyName.Substring("origin/".Length)
+                : branch.FriendlyName;
         }
 
         /// <summary>

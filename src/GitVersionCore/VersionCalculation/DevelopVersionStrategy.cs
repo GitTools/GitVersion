@@ -91,7 +91,7 @@ namespace GitVersion.VersionCalculation
             }
 
             return releaseVersionStrategy
-                .GetVersions(context, tagPrefixRegex, releaseBranch, repository)
+                .GetVersions(context, tagPrefixRegex, releaseBranch)
                 .Select(b => new BaseVersion(context, b.Source, true, b.SemanticVersion, baseSource, b.BranchNameOverride));
         }
     }

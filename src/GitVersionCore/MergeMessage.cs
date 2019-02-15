@@ -18,16 +18,14 @@ namespace GitVersion
             @"^Finish (?<Branch>.*)",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
         static Regex parseRemoteTrackingMergeMessage = new Regex(
-            @"^Merge remote-tracking branch '(?<SourceBranch>.*)' into (?<TargetBranch>.*)",
+            @"^Merge remote-tracking branch '(?<SourceBranch>.*)'( into (?<TargetBranch>.*))?",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         private string mergeMessage;
-        private Config config;
 
         public MergeMessage(string mergeMessage, Config config)
         {
             this.mergeMessage = mergeMessage;
-            this.config = config;
 
             var lastIndexOf = mergeMessage.LastIndexOf("into", StringComparison.OrdinalIgnoreCase);
             if (lastIndexOf != -1)

@@ -135,6 +135,8 @@ namespace GitVersion
             return target;
         }
 
+        public bool IsReleaseBranch(string branchName) => GetConfigForBranch(branchName)?.IsReleaseBranch ?? false;
+
         [YamlMember(Alias = "ignore")]
         public IgnoreConfig Ignore { get; set; }
 
