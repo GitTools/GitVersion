@@ -17,7 +17,7 @@
     <PackageReference Include="NUnit" Version="3.11.0"></PackageReference>
     <packagereference Include="NUnit3TestAdapter" Version="3.12.0"></packagereference>
     <PackageReference Include="Shouldly" Version="3.0.2"></PackageReference>
-    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.7.179" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.9.20" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Approved\**\*.txt" />
