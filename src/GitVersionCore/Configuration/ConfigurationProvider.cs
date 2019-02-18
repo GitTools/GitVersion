@@ -220,7 +220,8 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             bool isMainline = false)
         {
             branchConfig.Regex = string.IsNullOrEmpty(branchConfig.Regex) ? branchRegex : branchConfig.Regex;
-            branchConfig.SourceBranches = sourceBranches;
+            branchConfig.SourceBranches = branchConfig.SourceBranches == null || !branchConfig.SourceBranches.Any()
+                ? sourceBranches : branchConfig.SourceBranches;
             branchConfig.Tag = branchConfig.Tag ?? defaultTag;
             branchConfig.TagNumberPattern = branchConfig.TagNumberPattern ?? defaultTagNumberPattern;
             branchConfig.Increment = branchConfig.Increment ?? defaultIncrementStrategy ?? config.Increment ?? DefaultIncrementStrategy;
