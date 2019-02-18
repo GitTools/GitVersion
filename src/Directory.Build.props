@@ -17,6 +17,6 @@
     <PackageVersion_LibGit2Sharp>0.25.0-preview-0033</PackageVersion_LibGit2Sharp>
     <PackageVersion_LibGit2SharpNativeBinaries>[1.0.185]</PackageVersion_LibGit2SharpNativeBinaries>
     <PackageVersion_JetBrainsAnnotations>2018.3.0</PackageVersion_JetBrainsAnnotations>
-    <PackageVersion_YamlDotNet>5.3.0</PackageVersion_YamlDotNet>
+    <PackageVersion_YamlDotNet>5.4.0</PackageVersion_YamlDotNet>
  </PropertyGroup>
 </Project>
