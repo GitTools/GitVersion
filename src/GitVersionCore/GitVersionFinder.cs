@@ -2,7 +2,6 @@ namespace GitVersion
 {
     using System.IO;
     using GitVersion.VersionCalculation;
-    using GitTools;
 
     public class GitVersionFinder
     {
@@ -22,7 +21,7 @@ namespace GitVersion
             var filePath = Path.Combine(context.Repository.GetRepositoryDirectory(), "NextVersion.txt");
             if (File.Exists(filePath))
             {            
-                throw new GitTools.WarningException("NextVersion.txt has been deprecated. See http://gitversion.readthedocs.org/en/latest/configuration/ for replacement");
+                throw new WarningException("NextVersion.txt has been deprecated. See http://gitversion.readthedocs.org/en/latest/configuration/ for replacement");
             }
 
             return new NextVersionCalculator().FindVersion(context);

@@ -1,70 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-
-    <OutputType>Library</OutputType>
-
-    <RootNamespace>GitVersionExe.Tests</RootNamespace>
-    <AssemblyName>GitVersionExe.Tests</AssemblyName>
     <TargetFramework>net461</TargetFramework>
-
-    <GenerateAssemblyFileVersionAttribute Condition="'$(GenerateAssemblyFileVersionAttribute)' == ''">false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInformationalVersionAttribute Condition="'$(GenerateAssemblyInformationalVersionAttribute)' == ''">false</GenerateAssemblyInformationalVersionAttribute>
-    <GenerateAssemblyProductAttribute Condition="'$(GenerateAssemblyProductAttribute)' == ''">false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyTitleAttribute Condition="'$(GenerateAssemblyTitleAttribute)' == ''">false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyVersionAttribute Condition="'$(GenerateAssemblyVersionAttribute)' == ''">false</GenerateAssemblyVersionAttribute>
-    <GenerateNeutralResourcesLanguageAttribute Condition="'$(GenerateNeutralResourcesLanguageAttribute)' == ''">true</GenerateNeutralResourcesLanguageAttribute>
-   
-  </PropertyGroup>
-  
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DebugSymbols>true</DebugSymbols>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
-    <PackageReference Include="GitTools.Core" Version="$(PackageVersion_GitToolsCore)"></PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="GitTools.Testing" Version="1.2.0"></PackageReference>
-    <PackageReference Include="JetBrains.Annotations" Version="10.4.0"></PackageReference>
-    <PackageReference Include="Mono.Cecil" Version="0.9.6.4"></PackageReference>
-    <PackageReference Include="NSubstitute" Version="1.10.0"></PackageReference>
-    <PackageReference Include="NUnit" Version="3.9.0"></PackageReference>
-    <packagereference Include="NUnit3TestAdapter" Version="3.9.0"></packagereference>
-    <PackageReference Include="Shouldly" Version="3.0.0"></PackageReference>
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>    
-    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />    
-    <ProjectReference Include="..\GitVersionExe\GitVersionExe.csproj" />    
+    <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)"></PackageReference>
+    <PackageReference Include="Mono.Cecil" Version="0.10.3"></PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="NSubstitute" Version="4.0.0"></PackageReference>
+    <PackageReference Include="coverlet.msbuild" Version="2.5.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NUnit" Version="3.11.0"></PackageReference>
+    <packagereference Include="NUnit3TestAdapter" Version="3.12.0"></packagereference>
+    <PackageReference Include="Shouldly" Version="3.0.2"></PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
+    <ProjectReference Include="..\GitVersionExe\GitVersionExe.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="TestBuildFile.proj" />
   </ItemGroup>
   <ItemGroup>
@@ -72,6 +31,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Approved\**\*.approved.txt" />
-  </ItemGroup> 
-  
+  </ItemGroup>
+
 </Project>

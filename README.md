@@ -1,13 +1,15 @@
 ![Icon][icon]
 
-#GitVersion
+# GitVersion
+
 Versioning when using git, solved. GitVersion looks at your git history and
 works out the [semantic version][semver] of the commit being built.
 
 [![Gitter][gitter-badge]][gitter]
 [![Build status][appveyor-badge]][appveyor]
 [![Build Status][travis-badge]][travis]
-<!-- [![Build Status][azure-pipeline-badge]][azure-pipeline] -->
+[![Build Status][azure-pipeline-badge]][azure-pipeline]
+[![codecov][codecov-badge]][codecov]
 
 |                                       |                Stable                     |                 Pre-release               |
 | ------------------------------------: | :---------------------------------------: | :---------------------------------------: |
@@ -18,14 +20,14 @@ works out the [semantic version][semver] of the commit being built.
 |                    **GitVersionTask** |     [![NuGet][gvt-badge]][gvt]            |       [![NuGet][gvt-pre-badge]][gvt]      |
 |            **GitVersion.CommandLine** |     [![NuGet][gvcl-badge]][gvcl]          |       [![NuGet][gvcl-pre-badge]][gvcl]    |
 | **GitVersion.CommandLine.DotNetCore** |     [![NuGet][gvcd-badge]][gvcd]          |       [![NuGet][gvcd-pre-badge]][gvcd]    |
+|                   **GitVersion.Tool** |     [![NuGet][gvgt-badge]][gvgt]          |       [![NuGet][gvgt-pre-badge]][gvgt]    |
 |                               **Gem** |       [![Gem][gem-badge]][gem]            |                      -                    |
 |                          **Homebrew** |   [![homebrew][brew-badge]][brew]         |                      -                    |
 |                 **Docker DotnetCore** |   [Dotnetcore][dockerhub-dotnetcore]      |                      -                    |
 |                     **Docker FullFX** |   [FullFX][dockerhub-fullfx]              |                      -                    |
 
-
 ## Compatibility
-GitVersion works on Mac, Linux with Mono and Windows.
+GitVersion works Windows, Linux, and Mac.
 
 Tip: If you get `System.TypeInitializationException: The type initializer for
 'LibGit2Sharp.Core.NativeMethods' threw an exception. --->
@@ -34,23 +36,26 @@ System.DllNotFoundException: lib/linux/x86_64/libgit2-baa87df.so`
 You likely need to install `libcurl3`. Run `sudo apt-get install libcurl3`
 
 ## Quick Links
- - [Documentation][docs]
- - [Contributing][contribute]
- - [Why GitVersion][why]
- - [Usage][usage]
- - [How it works][how]
- - [FAQ][faq]
- - [Who is using GitVersion][who]
+
+- [Documentation][docs]
+- [Contributing][contribute]
+- [Why GitVersion][why]
+- [Usage][usage]
+- [How it works][how]
+- [FAQ][faq]
+- [Who is using GitVersion][who]
 
 ## GitVersion in action!
+
 ![README][gv-in-action]
 
 You are seeing:
 
- - Pull requests being built as pre-release builds
- - A branch called `release-1.0.0` producing beta v1 packages
+- Pull requests being built as pre-release builds
+- A branch called `release-1.0.0` producing beta v1 packages
 
 ## Icon
+
 <a href="http://thenounproject.com/noun/tree/#icon-No13389"
 target="_blank">Tree</a> designed by <a
 href="http://thenounproject.com/david.chapman" target="_blank">David Chapman</a>
@@ -62,10 +67,12 @@ from The Noun Project
 [gitter-badge]:         https://badges.gitter.im/Join+Chat.svg
 [appveyor]:             https://ci.appveyor.com/project/GitTools/gitversion/branch/master
 [appveyor-badge]:       https://ci.appveyor.com/api/projects/status/sxje0wht0cscmn7w/branch/master?svg=true
-<!-- [azure-pipeline]:       https://dev.azure.com/arturcic/OSS/_build/latest?definitionId=2 -->
-<!-- [azure-pipeline-badge]: https://dev.azure.com/arturcic/OSS/_apis/build/status/GitVersion -->
+[azure-pipeline]:       https://dev.azure.com/GitTools/GitVersion/_build/latest?definitionId=1
+[azure-pipeline-badge]: https://dev.azure.com/GitTools/GitVersion/_apis/build/status/GitTools.GitVersion
 [travis]:               https://travis-ci.org/GitTools/GitVersion
 [travis-badge]:         https://travis-ci.org/GitTools/GitVersion.svg?branch=master
+[codecov]:              https://codecov.io/gh/GitTools/GitVersion
+[codecov-badge]:        https://codecov.io/gh/GitTools/GitVersion/branch/master/graph/badge.svg
 [docs]:                 http://gitversion.readthedocs.org/en/stable/
 [docs-badge]:           https://readthedocs.org/projects/gitversion/badge/?version=stable
 [docs-pre]:             http://gitversion.readthedocs.org/en/latest/
@@ -87,6 +94,9 @@ from The Noun Project
 [gvcd]:                 https://www.nuget.org/packages/GitVersion.CommandLine.DotNetCore
 [gvcd-badge]:           https://img.shields.io/nuget/v/GitVersion.CommandLine.DotNetCore.svg
 [gvcd-pre-badge]:       https://img.shields.io/nuget/vpre/GitVersion.CommandLine.DotNetCore.svg
+[gvgt]:                 https://www.nuget.org/packages/GitVersion.Tool
+[gvgt-badge]:           https://img.shields.io/nuget/v/GitVersion.Tool.svg
+[gvgt-pre-badge]:       https://img.shields.io/nuget/vpre/GitVersion.Tool.svg
 [gem-badge]:            https://img.shields.io/gem/v/gitversion.svg
 [gem]:                  https://rubygems.org/gems/gitversion
 [brew]:                 http://brew.sh/

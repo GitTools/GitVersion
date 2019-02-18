@@ -7,9 +7,7 @@
     {
         static List<IBuildServer> BuildServers = new List<IBuildServer>
         {
-#if NETDESKTOP
             new ContinuaCi(),
-#endif
             new TeamCity(),
             new AppVeyor(),
             new MyGet(),
@@ -17,6 +15,7 @@
             new GitLabCi(),
             new VsoAgent(),
             new TravisCI(),
+            new EnvRun(),
         };
 
         public static IEnumerable<IBuildServer> GetApplicableBuildServers()

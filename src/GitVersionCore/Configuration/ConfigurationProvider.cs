@@ -6,7 +6,6 @@ namespace GitVersion
     using System.IO;
     using System.Linq;
     using System.Text;
-    using WarningException = GitTools.WarningException;
 
     public class ConfigurationProvider
     {

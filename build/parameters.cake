@@ -8,13 +8,15 @@ public class BuildParameters
     public string Target { get; private set; }
     public string Configuration { get; private set; }
 
+    public string NetCoreVersion { get; private set; } = "netcoreapp2.1";
+    public string FullFxVersion { get; private set; } = "net461";
+
     public bool EnabledUnitTests { get; private set; }
     public bool EnabledPublishGem { get; private set; }
     public bool EnabledPublishTfs { get; private set; }
     public bool EnabledPublishNuget { get; private set; }
     public bool EnabledPublishChocolatey { get; private set; }
     public bool EnabledPublishDocker { get; private set; }
-    public bool EnabledPullRequestPublish { get; private set; }
 
     public bool IsRunningOnUnix { get; private set; }
     public bool IsRunningOnWindows { get; private set; }
@@ -30,6 +32,8 @@ public class BuildParameters
     public bool IsMainBranch { get; private set; }
     public bool IsTagged { get; private set; }
     public bool IsPullRequest { get; private set; }
+
+    public DotNetCoreMSBuildSettings MSBuildSettings { get; private set; }
 
     public BuildCredentials Credentials { get; private set; }
     public BuildVersion Version { get; private set; }
@@ -90,7 +94,7 @@ public class BuildParameters
         Packages = BuildPackages.GetPackages(
             Paths.Directories.NugetRoot,
             Version.SemVersion,
-            new [] { "GitVersion.CommandLine.DotNetCore", "GitVersion.CommandLine", "GitVersionCore", "GitVersionTask" },
+            new [] { "GitVersion.CommandLine.DotNetCore", "GitVersion.CommandLine", "GitVersionCore", "GitVersionTask", "GitVersion.Tool" },
             new [] { "GitVersion.Portable" });
 
         var files = Paths.Files;
@@ -100,6 +104,7 @@ public class BuildParameters
             files.TestCoverageOutputFilePath,
             files.ReleaseNotesOutputFilePath,
             files.VsixOutputFilePath,
+            files.VsixNetCoreOutputFilePath,
             files.GemOutputFilePath
         });
 
@@ -108,9 +113,41 @@ public class BuildParameters
             ["GitVersion.CommandLine.DotNetCore"] = Paths.Directories.ArtifactsBinNetCore,
             ["GitVersion.CommandLine"] = Paths.Directories.ArtifactsBinFullFxCmdline,
             ["GitVersion.Portable"] = Paths.Directories.ArtifactsBinFullFxPortable,
+            ["GitVersion.Tool"] = Paths.Directories.ArtifactsBinNetCore,
         };
 
         Credentials = BuildCredentials.GetCredentials(context);
+
+        MSBuildSettings = GetMsBuildSettings(context, Version);
+    }
+
+    private DotNetCoreMSBuildSettings GetMsBuildSettings(ICakeContext context, BuildVersion version)
+    {
+        var msBuildSettings = new DotNetCoreMSBuildSettings()
+                                .WithProperty("Version", version.SemVersion)
+                                .WithProperty("AssemblyVersion", version.Version)
+                                .WithProperty("PackageVersion", version.SemVersion)
+                                .WithProperty("FileVersion", version.Version);
+
+        if(!IsRunningOnWindows)
+        {
+            var frameworkPathOverride = context.Environment.Runtime.IsCoreClr
+                                        ?   new []{
+                                                new DirectoryPath("/Library/Frameworks/Mono.framework/Versions/Current/lib/mono"),
+                                                new DirectoryPath("/usr/lib/mono"),
+                                                new DirectoryPath("/usr/local/lib/mono")
+                                            }
+                                            .Select(directory =>directory.Combine("4.5"))
+                                            .FirstOrDefault(directory => context.DirectoryExists(directory))
+                                            ?.FullPath + "/"
+                                        : new FilePath(typeof(object).Assembly.Location).GetDirectory().FullPath + "/";
+
+            // Use FrameworkPathOverride when not running on Windows.
+            context.Information("Build will use FrameworkPathOverride={0} since not building on Windows.", frameworkPathOverride);
+            msBuildSettings.WithProperty("FrameworkPathOverride", frameworkPathOverride);
+        }
+
+        return msBuildSettings;
     }
 
     private static bool IsOnMainRepo(ICakeContext context)
@@ -166,12 +203,13 @@ public class BuildParameters
         }
         if (buildSystem.IsRunningOnTravisCI)
         {
-            return !string.IsNullOrWhiteSpace(buildSystem.TravisCI.Environment.Repository.PullRequest)
-                       && !string.Equals(buildSystem.TravisCI.Environment.Repository.PullRequest, false.ToString(), StringComparison.InvariantCultureIgnoreCase);
+            var value = buildSystem.TravisCI.Environment.Repository.PullRequest;
+            return !string.IsNullOrWhiteSpace(value) && !string.Equals(value, false.ToString(), StringComparison.InvariantCultureIgnoreCase);
         }
         else if (buildSystem.IsRunningOnVSTS)
         {
-            return false; // need a way to check if it is from a PR on azure pipelines
+            var value = context.EnvironmentVariable("SYSTEM_PULLREQUEST_ISFORK");
+            return !string.IsNullOrWhiteSpace(value) && !string.Equals(value, false.ToString(), StringComparison.InvariantCultureIgnoreCase);
         }
         return false;
     }

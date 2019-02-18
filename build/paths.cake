@@ -26,26 +26,30 @@ public class BuildPaths
 
         var artifactsDir                  = (DirectoryPath)(context.Directory("./artifacts") + context.Directory("v" + semVersion));
         var artifactsBinDir               = artifactsDir.Combine("bin");
-        var artifactsBinFullFxDir         = artifactsBinDir.Combine("net40");
+        var artifactsBinFullFxDir         = artifactsBinDir.Combine("net461");
         var artifactsBinFullFxILMergeDir  = artifactsBinFullFxDir.Combine("il-merge");
         var artifactsBinFullFxPortableDir = artifactsBinFullFxDir.Combine("portable");
         var artifactsBinFullFxCmdlineDir  = artifactsBinFullFxDir.Combine("cmdline");
         var artifactsBinNetCoreDir        = artifactsBinDir.Combine("netcoreapp2.0");
         var nugetRootDir                  = artifactsDir.Combine("nuget");
         var buildArtifactDir              = artifactsDir.Combine("build-artifact");
+        var testCoverageOutputDir         = artifactsDir.Combine("code-coverage");
 
         var zipArtifactPathCoreClr = artifactsDir.CombineWithFilePath("GitVersion-bin-coreclr-v" + semVersion + ".zip");
-        var zipArtifactPathDesktop = artifactsDir.CombineWithFilePath("GitVersion-bin-net40-v" + semVersion + ".zip");
-        var testCoverageOutputFilePath = buildArtifactDir.CombineWithFilePath("TestResult.xml");
-        var releaseNotesOutputFilePath = buildArtifactDir.CombineWithFilePath("releasenotes.md");
+        var zipArtifactPathDesktop = artifactsDir.CombineWithFilePath("GitVersion-bin-fullfx-v" + semVersion + ".zip");
 
-        var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-" + semVersion + ".vsix");
+        var testCoverageOutputFilePath = testCoverageOutputDir.CombineWithFilePath("TestResult.xml");
+
+        var releaseNotesOutputFilePath = buildArtifactDir.CombineWithFilePath("releasenotes.md");
         var gemOutputFilePath  = buildArtifactDir.CombineWithFilePath("gitversion-" + version.GemVersion + ".gem");
+        var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-" + semVersion + ".vsix");
+        var vsixNetCoreOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-netcore-" + semVersion + ".vsix");
 
         // Directories
         var buildDirectories = new BuildDirectories(
             artifactsDir,
             buildArtifactDir,
+            testCoverageOutputDir,
             nugetRootDir,
             artifactsBinDir,
             artifactsBinFullFxDir,
@@ -62,6 +66,7 @@ public class BuildPaths
             testCoverageOutputFilePath,
             releaseNotesOutputFilePath,
             vsixOutputFilePath,
+            vsixNetCoreOutputFilePath,
             gemOutputFilePath);
 
         return new BuildPaths
@@ -79,6 +84,7 @@ public class BuildFiles
     public FilePath TestCoverageOutputFilePath { get; private set; }
     public FilePath ReleaseNotesOutputFilePath { get; private set; }
     public FilePath VsixOutputFilePath { get; private set; }
+    public FilePath VsixNetCoreOutputFilePath { get; private set; }
     public FilePath GemOutputFilePath { get; private set; }
 
     public BuildFiles(
@@ -88,6 +94,7 @@ public class BuildFiles
         FilePath testCoverageOutputFilePath,
         FilePath releaseNotesOutputFilePath,
         FilePath vsixOutputFilePath,
+        FilePath vsixNetCoreOutputFilePath,
         FilePath gemOutputFilePath
         )
     {
@@ -96,6 +103,7 @@ public class BuildFiles
         TestCoverageOutputFilePath = testCoverageOutputFilePath;
         ReleaseNotesOutputFilePath = releaseNotesOutputFilePath;
         VsixOutputFilePath = vsixOutputFilePath;
+        VsixNetCoreOutputFilePath = vsixNetCoreOutputFilePath;
         GemOutputFilePath = gemOutputFilePath;
     }
 }
@@ -105,6 +113,7 @@ public class BuildDirectories
     public DirectoryPath Artifacts { get; private set; }
     public DirectoryPath NugetRoot { get; private set; }
     public DirectoryPath BuildArtifact { get; private set; }
+    public DirectoryPath TestCoverageOutput { get; private set; }
     public DirectoryPath ArtifactsBin { get; private set; }
     public DirectoryPath ArtifactsBinFullFx { get; private set; }
     public DirectoryPath ArtifactsBinFullFxPortable { get; private set; }
@@ -116,6 +125,7 @@ public class BuildDirectories
     public BuildDirectories(
         DirectoryPath artifactsDir,
         DirectoryPath buildArtifactDir,
+        DirectoryPath testCoverageOutputDir,
         DirectoryPath nugetRootDir,
         DirectoryPath artifactsBinDir,
         DirectoryPath artifactsBinFullFxDir,
@@ -127,6 +137,7 @@ public class BuildDirectories
     {
         Artifacts = artifactsDir;
         BuildArtifact = buildArtifactDir;
+        TestCoverageOutput = testCoverageOutputDir;
         NugetRoot = nugetRootDir;
         ArtifactsBin = artifactsBinDir;
         ArtifactsBinFullFx = artifactsBinFullFxDir;
@@ -137,6 +148,7 @@ public class BuildDirectories
         ToClean = new[] {
             Artifacts,
             BuildArtifact,
+            TestCoverageOutput,
             NugetRoot,
             ArtifactsBin,
             ArtifactsBinFullFx,
