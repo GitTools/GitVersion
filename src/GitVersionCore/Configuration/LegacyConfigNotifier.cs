@@ -17,7 +17,8 @@ namespace GitVersion
             {ConfigurationProvider.ReleaseBranchRegex, ConfigurationProvider.ReleaseBranchKey},
             {ConfigurationProvider.SupportBranchRegex, ConfigurationProvider.SupportBranchKey},
             {ConfigurationProvider.PullRequestRegex, ConfigurationProvider.PullRequestBranchKey},
-            {"release[/-]", ConfigurationProvider.ReleaseBranchKey},
+            {"dev(elop)?(ment)?$", ConfigurationProvider.DevelopBranchKey },
+            {"release[/-]", ConfigurationProvider.ReleaseBranchKey },
             {"hotfix[/-]", ConfigurationProvider.HotfixBranchKey },
             {"feature(s)?[/-]", ConfigurationProvider.FeatureBranchKey },
             {"feature[/-]", ConfigurationProvider.FeatureBranchKey }
