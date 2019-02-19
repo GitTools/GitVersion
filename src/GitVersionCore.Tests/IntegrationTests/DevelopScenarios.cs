@@ -1,4 +1,4 @@
-﻿using GitTools.Testing;
+using GitTools.Testing;
 using GitVersion;
 using GitVersionCore.Tests;
 using LibGit2Sharp;
@@ -181,6 +181,27 @@ public class DevelopScenarios : TestBase
             fixture.BranchTo("feature/MyFeature");
             fixture.MakeACommit();
             fixture.AssertFullSemver("2.1.0-MyFeature.1+5");
+        }
+    }
+
+    [Test]
+    public void WhenMultipleDevelopBranchesExistAndCurrentBranchHasIncrementInheritPolicyAndCurrentCommitIsAMerge()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.CreateBranch("bob_develop");
+            fixture.Repository.CreateBranch("develop");
+            fixture.Repository.CreateBranch("feature/x");
+
+            Commands.Checkout(fixture.Repository, "develop");
+            fixture.Repository.MakeACommit();
+
+            Commands.Checkout(fixture.Repository, "feature/x");
+            fixture.Repository.MakeACommit();
+            fixture.Repository.MergeNoFF("develop");
+
+            fixture.AssertFullSemver("1.0.1-x.1+3");
         }
     }
 }

@@ -14,13 +14,13 @@ namespace GitVersion
         public const string DefaultConfigFileName = "GitVersion.yml";
         public const string ObsoleteConfigFileName = "GitVersionConfig.yaml";
 
-        public const string ReleaseBranchRegex = "releases?[/-]";
-        public const string FeatureBranchRegex = "features?[/-]";
-        public const string PullRequestRegex = @"(pull|pull\-requests|pr)[/-]";
-        public const string HotfixBranchRegex = "hotfix(es)?[/-]";
-        public const string SupportBranchRegex = "support[/-]";
-        public const string DevelopBranchRegex = "dev(elop)?(ment)?$";
-        public const string MasterBranchRegex = "master$";
+        public const string ReleaseBranchRegex = "^releases?[/-]";
+        public const string FeatureBranchRegex = "^features?[/-]";
+        public const string PullRequestRegex = @"^(pull|pull\-requests|pr)[/-]";
+        public const string HotfixBranchRegex = "^hotfix(es)?[/-]";
+        public const string SupportBranchRegex = "^support[/-]";
+        public const string DevelopBranchRegex = "^dev(elop)?(ment)?$";
+        public const string MasterBranchRegex = "^master$";
         public const string MasterBranchKey = "master";
         public const string ReleaseBranchKey = "release";
         public const string FeatureBranchKey = "feature";
