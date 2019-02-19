@@ -47,6 +47,8 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
         [TestCase("Merge branch 'Release-v2.2'", true, "2.2.0")]
         [TestCase("Merge remote-tracking branch 'origin/release/0.8.0' into develop/master", true, "0.8.0")]
         [TestCase("Merge remote-tracking branch 'refs/remotes/origin/release/2.0.0'", true, "2.0.0")]
+        [TestCase("Merge release/5.1.0 to master", true, "5.1.0")] // Team Foundation Server 2017 default merge message (en-US)
+        [TestCase("Zusammengeführter PR \"9\": release/5.1.0 mit master mergen", true, "5.1.0")] // Team Foundation Server 2017 default merge message (de-DE)
         public void TakesVersionFromMergeOfReleaseBranch(string message, bool isMergeCommit, string expectedVersion)
         {
             var parents = GetParents(isMergeCommit);
