@@ -550,4 +550,77 @@ public class ReleaseBranchScenarios : TestBase
             fixture.AssertFullSemver(config, "2.0.0-beta.16");
         }
     }
+
+    /// <summary>
+    /// Create a feature branch from a release branch, and merge back, then delete it
+    /// </summary>
+    [Test]
+    public void FeatureOnRelease_FeatureBranchDeleted()
+    {
+        var config = new Config
+        {
+            AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
+            VersioningMode = VersioningMode.ContinuousDeployment
+        };
+
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            var release450 = "release/4.5.0";
+            var featureBranch = "feature/some-bug-fix";
+
+            fixture.Repository.MakeACommit("initial");
+            fixture.Repository.CreateBranch("develop");
+            Commands.Checkout(fixture.Repository, "develop");
+
+            // begin the release branch
+            fixture.Repository.CreateBranch(release450);
+            Commands.Checkout(fixture.Repository, release450);
+            fixture.AssertFullSemver(config, "4.5.0-beta.0");
+
+            fixture.Repository.CreateBranch(featureBranch);
+            Commands.Checkout(fixture.Repository, featureBranch);
+            fixture.Repository.MakeACommit("blabla"); // commit 1
+            Commands.Checkout(fixture.Repository, release450);
+            fixture.Repository.MergeNoFF(featureBranch, Generate.SignatureNow()); // commit 2
+            fixture.Repository.Branches.Remove(featureBranch);
+
+            fixture.AssertFullSemver(config, "4.5.0-beta.2");
+        }
+    }
+
+    /// <summary>
+    /// Create a feature branch from a release branch, and merge back, but don't delete it
+    /// </summary>
+    [Test]
+    public void FeatureOnRelease_FeatureBranchNotDeleted()
+    {
+        var config = new Config
+        {
+            AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
+            VersioningMode = VersioningMode.ContinuousDeployment
+        };
+
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            var release450 = "release/4.5.0";
+            var featureBranch = "feature/some-bug-fix";
+
+            fixture.Repository.MakeACommit("initial");
+            fixture.Repository.CreateBranch("develop");
+            Commands.Checkout(fixture.Repository, "develop");
+
+            // begin the release branch
+            fixture.Repository.CreateBranch(release450);
+            Commands.Checkout(fixture.Repository, release450);
+            fixture.AssertFullSemver(config, "4.5.0-beta.0");
+
+            fixture.Repository.CreateBranch(featureBranch);
+            Commands.Checkout(fixture.Repository, featureBranch);
+            fixture.Repository.MakeACommit("blabla"); // commit 1
+            Commands.Checkout(fixture.Repository, release450);
+            fixture.Repository.MergeNoFF(featureBranch, Generate.SignatureNow()); // commit 2
+
+            fixture.AssertFullSemver(config, "4.5.0-beta.2");
+        }
+    }
 }
