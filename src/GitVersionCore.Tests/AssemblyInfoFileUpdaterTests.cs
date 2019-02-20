@@ -9,7 +9,8 @@ using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class AssemblyInfoFileUpdaterTests : TestBase
+[Parallelizable(ParallelScope.None)]
+public class AssemblyInfoFileUpdaterTests
 {
     [SetUp]
     public void Setup()
