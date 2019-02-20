@@ -1,12 +1,12 @@
-﻿using System;
-using GitTools;
+using System;
 using GitTools.Testing;
+using GitVersion;
 using GitVersionCore.Tests;
 using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class DocumentationSamples
+public class DocumentationSamples : TestBase
 {
     [Test]
     public void GitFlowFeatureBranch()

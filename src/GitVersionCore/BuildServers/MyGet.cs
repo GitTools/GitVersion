@@ -10,7 +10,7 @@
             var buildRunner = Environment.GetEnvironmentVariable("BuildRunner");
 
             return !string.IsNullOrEmpty(buildRunner)
-                && buildRunner.Equals("MyGet", StringComparison.InvariantCultureIgnoreCase);
+                && buildRunner.Equals("MyGet", StringComparerUtils.IngoreCaseComparison);
         }
 
         public override string[] GenerateSetParameterMessage(string name, string value)
@@ -20,7 +20,7 @@
                 string.Format("##myget[setParameter name='GitVersion.{0}' value='{1}']", name, ServiceMessageEscapeHelper.EscapeValue(value))
             };
 
-            if (string.Equals(name, "LegacySemVerPadded", StringComparison.InvariantCultureIgnoreCase))
+            if (string.Equals(name, "LegacySemVerPadded", StringComparerUtils.IngoreCaseComparison))
             {
                 messages.Add(string.Format("##myget[buildNumber '{0}']", ServiceMessageEscapeHelper.EscapeValue(value)));
             }

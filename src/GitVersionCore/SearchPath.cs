@@ -22,11 +22,7 @@
 
         static string GetProcessorArchitecture()
         {
-            if (Environment.Is64BitProcess)
-            {
-                return "amd64";
-            }
-            return "x86";
+            return Environment.Is64BitProcess ? "amd64" : "x86";
         }
     }
 }

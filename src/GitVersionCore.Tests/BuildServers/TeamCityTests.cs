@@ -3,7 +3,7 @@ using GitVersionCore.Tests;
 using NUnit.Framework;
 
 [TestFixture]
-public class TeamCityTests
+public class TeamCityTests : TestBase
 {
     [Test]
     public void Develop_branch()
