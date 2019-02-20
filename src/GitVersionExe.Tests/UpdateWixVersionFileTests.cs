@@ -1,4 +1,4 @@
-﻿namespace GitVersionExe.Tests
+namespace GitVersionExe.Tests
 {
     using System.IO;
     using System.Linq;
@@ -10,6 +10,7 @@
     using System.Xml;
 
     [TestFixture]
+    [Parallelizable(ParallelScope.None)]
     class UpdateWixVersionFileTests
     {
         private string WixVersionFileName;
