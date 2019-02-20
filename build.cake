@@ -66,40 +66,47 @@ Setup<BuildParameters>(context =>
 
 Teardown<BuildParameters>((context, parameters) =>
 {
-    Information("Starting Teardown...");
-
-    Information("Repository info : IsMainRepo {0}, IsMainBranch {1}, IsTagged: {2}, IsPullRequest: {3}",
-        parameters.IsMainRepo,
-        parameters.IsMainBranch,
-        parameters.IsTagged,
-        parameters.IsPullRequest);
-
-    if(context.Successful)
+    try
     {
-        // if(parameters.ShouldPublish)
-        // {
-        //     if(parameters.CanPostToGitter)
-        //     {
-        //         var message = "@/all Version " + parameters.Version.SemVersion + " of the GitVersion has just been released, https://www.nuget.org/packages/GitVersion.";
+        Information("Starting Teardown...");
 
-        //         var postMessageResult = Gitter.Chat.PostMessage(
-        //             message: message,
-        //             messageSettings: new GitterChatMessageSettings { Token = parameters.Gitter.Token, RoomId = parameters.Gitter.RoomId}
-        //         );
+        Information("Repository info : IsMainRepo {0}, IsMainBranch {1}, IsTagged: {2}, IsPullRequest: {3}",
+            parameters.IsMainRepo,
+            parameters.IsMainBranch,
+            parameters.IsTagged,
+            parameters.IsPullRequest);
 
-        //         if (postMessageResult.Ok)
-        //         {
-        //             Information("Message {0} succcessfully sent", postMessageResult.TimeStamp);
-        //         }
-        //         else
-        //         {
-        //             Error("Failed to send message: {0}", postMessageResult.Error);
-        //         }
-        //     }
-        // }
+        if(context.Successful)
+        {
+            // if(parameters.ShouldPublish)
+            // {
+            //     if(parameters.CanPostToGitter)
+            //     {
+            //         var message = "@/all Version " + parameters.Version.SemVersion + " of the GitVersion has just been released, https://www.nuget.org/packages/GitVersion.";
+
+            //         var postMessageResult = Gitter.Chat.PostMessage(
+            //             message: message,
+            //             messageSettings: new GitterChatMessageSettings { Token = parameters.Gitter.Token, RoomId = parameters.Gitter.RoomId}
+            //         );
+
+            //         if (postMessageResult.Ok)
+            //         {
+            //             Information("Message {0} succcessfully sent", postMessageResult.TimeStamp);
+            //         }
+            //         else
+            //         {
+            //             Error("Failed to send message: {0}", postMessageResult.Error);
+            //         }
+            //     }
+            // }
+        }
+
+        Information("Finished running tasks.");
     }
-
-    Information("Finished running tasks.");
+    catch (Exception exception)
+    {
+        Error(exception.Dump());
+    }
 });
 
 //////////////////////////////////////////////////////////////////////
