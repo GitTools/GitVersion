@@ -85,12 +85,12 @@ namespace GitVersion
             {
                 body = Expression.PropertyOrField(body, members[i]);
             }
-            var method = typeof(Convert).GetMethod("ToString", BindingFlags.Static | BindingFlags.Public,
-                null, new Type[] { body.Type }, null);
+
+            var staticOrPublic = BindingFlags.Static | BindingFlags.Public;
+            var method = GetMethodInfo("ToString", staticOrPublic, new Type[] { body.Type });
             if (method == null)
             {
-                method = typeof(Convert).GetMethod("ToString", BindingFlags.Static | BindingFlags.Public,
-                    null, new Type[] { typeof(object) }, null);
+                method = GetMethodInfo("ToString", staticOrPublic, new Type[] { typeof(object) });
                 body = Expression.Call(method, Expression.Convert(body, typeof(object)));
             }
             else
@@ -99,6 +99,12 @@ namespace GitVersion
             }
 
             return Expression.Lambda<Func<object, string>>(body, param).Compile();
+        }
+
+        private static MethodInfo GetMethodInfo(string name, BindingFlags bindingFlags, Type[] types)
+        {
+            var methodInfo = typeof(Convert).GetMethod(name, bindingFlags, null, types, null);
+            return methodInfo;
         }
     }
 }

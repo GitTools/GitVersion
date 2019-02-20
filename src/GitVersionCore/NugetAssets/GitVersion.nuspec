@@ -6,7 +6,7 @@
     <title>GitVersion</title>
     <authors>GitTools and Contributors</authors>
     <owners>GitTools and Contributors</owners>
-    <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/GitTools/GitVersion</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/img/package_icon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

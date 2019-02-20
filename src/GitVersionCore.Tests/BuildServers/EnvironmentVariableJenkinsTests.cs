@@ -1,10 +1,11 @@
 ﻿using System;
 using GitVersion;
+using GitVersionCore.Tests;
 using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class EnvironmentVariableJenkinsTests
+public class EnvironmentVariableJenkinsTests : TestBase
 {
     string key = "JENKINS_URL";
     string branch = "GIT_BRANCH";

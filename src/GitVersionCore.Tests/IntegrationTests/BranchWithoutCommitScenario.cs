@@ -4,7 +4,7 @@ using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
-public class BranchWithoutCommitScenario
+public class BranchWithoutCommitScenario : TestBase
 {
     [Test]
     public void CanTakeVersionFromReleaseBranch()

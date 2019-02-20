@@ -1,0 +1,21 @@
+variables:
+  DOTNET_SDK_VERSION: '2.1.503'
+  DOTNET_PACKAGE_TYPE: 'sdk'
+  RUBY_VERSION: '2.5'
+
+jobs:
+- template: build/tmpl/jobs.yml
+  parameters:
+    name: macOS
+    vmImage: 'macOS 10.13'
+    installRuby: 'false'
+
+- template: build/tmpl/jobs.yml
+  parameters:
+    name: Linux
+    vmImage: 'Ubuntu 16.04'
+
+- template: build/tmpl/jobs.yml
+  parameters:
+    name: Windows
+    vmImage: 'VS2017-Win2016'
