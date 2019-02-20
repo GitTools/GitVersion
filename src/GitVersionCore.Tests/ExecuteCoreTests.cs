@@ -9,6 +9,7 @@ using System.IO;
 using System.Text;
 
 [TestFixture]
+[Parallelizable(ParallelScope.None)]
 public class ExecuteCoreTests : TestBase
 {
     IFileSystem fileSystem;

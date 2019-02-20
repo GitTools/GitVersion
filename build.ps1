@@ -45,45 +45,62 @@ Param(
 )
 
 Write-Host "Preparing to run build script..."
+$DotNetInstallerUri = 'https://dot.net/v1/dotnet-install.ps1';
+$DotNetUnixInstallerUri = 'https://dot.net/v1/dotnet-install.sh'
+$DotNetChannel = 'LTS'
+$PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
 
-if ($PSEdition -eq "Desktop") { $IsWindows = $true }
+[string] $CakeVersion = ''
+[string] $DotNetVersion= ''
+foreach($line in Get-Content "$PSScriptRoot\build.config")
+{
+  if ($line -like 'CAKE_VERSION=*') {
+      $CakeVersion = $line.SubString(13)
+  }
+  elseif ($line -like 'DOTNET_VERSION=*') {
+      $DotNetVersion =$line.SubString(15)
+  }
+}
 
-$CakeVersion = "0.30.0"
 
-$DotNetChannel = "Current";
-$DotNetInstaller = if ($IsWindows) { "dotnet-install.ps1" } else { "dotnet-install.sh" }
-$DotNetInstallerUri = "https://dot.net/v1/$DotNetInstaller";
-$DotNetVersion = (Get-Content ./src/global.json | ConvertFrom-Json).sdk.version;
+if ([string]::IsNullOrEmpty($CakeVersion) -or [string]::IsNullOrEmpty($DotNetVersion)) {
+    'Failed to parse Cake / .NET Core SDK Version'
+    exit 1
+}
 
-$NugetUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
-
-$PathSplitter = if ($IsWindows) { ';' } else { ':' }
+# Make sure tools folder exists
+$ToolPath = Join-Path $PSScriptRoot "tools"
+if (!(Test-Path $ToolPath)) {
+    Write-Verbose "Creating tools directory..."
+    New-Item -Path $ToolPath -Type Directory -Force | out-null
+}
 
 # SSL FIX
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
 
-# Make sure tools folder exists
-$PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
-$ToolPath = Join-Path $PSScriptRoot "tools"
-if (!(Test-Path $ToolPath)) {
-    Write-Verbose "Creating tools directory..."
-    New-Item -Path $ToolPath -Type directory | out-null
-}
-
 ###########################################################################
 # INSTALL .NET CORE CLI
 ###########################################################################
-function Remove-PathVariable([string]$VariableToRemove) {
+
+Function Remove-PathVariable([string]$VariableToRemove)
+{
+    $SplitChar = ';'
+    if ($IsMacOS -or $IsLinux) {
+        $SplitChar = ':'
+    }
+
     $path = [Environment]::GetEnvironmentVariable("PATH", "User")
-    if ($path -ne $null) {
-        $newItems = $path.Split($PathSplitter, [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { "$($_)" -inotlike $VariableToRemove }
-        [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join($PathSplitter, $newItems), "User")
+    if ($path -ne $null)
+    {
+        $newItems = $path.Split($SplitChar, [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { "$($_)" -inotlike $VariableToRemove }
+        [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join($SplitChar, $newItems), "User")
     }
 
     $path = [Environment]::GetEnvironmentVariable("PATH", "Process")
-    if ($path -ne $null) {
-        $newItems = $path.Split($PathSplitter, [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { "$($_)" -inotlike $VariableToRemove }
-        [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join($PathSplitter, $newItems), "Process")
+    if ($path -ne $null)
+    {
+        $newItems = $path.Split($SplitChar, [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { "$($_)" -inotlike $VariableToRemove }
+        [Environment]::SetEnvironmentVariable("PATH", [System.String]::Join($SplitChar, $newItems), "Process")
     }
 }
 
@@ -95,55 +112,59 @@ if (Get-Command dotnet -ErrorAction SilentlyContinue) {
 
 if($FoundDotNetCliVersion -ne $DotNetVersion) {
     $InstallPath = Join-Path $PSScriptRoot ".dotnet"
-
     if (!(Test-Path $InstallPath)) {
-        New-Item -ItemType Directory $InstallPath | Out-Null;
+        New-Item -Path $InstallPath -ItemType Directory -Force | Out-Null;
     }
 
-    [string] $InstalledDotNetVersion = Get-ChildItem -Path ./.dotnet -File `
-                                        | Where-Object { $_.Name -eq 'dotnet' -or $_.Name -eq 'dotnet.exe' } `
-                                        | ForEach-Object { &$_.FullName --version }
-
-    if ($InstalledDotNetVersion -ne $DotNetVersion)
-    {
-        (New-Object System.Net.WebClient).DownloadFile($DotNetInstallerUri, "$InstallPath/$DotNetInstaller");
-        $Cmd = "$InstallPath/$DotNetInstaller -Channel $DotNetChannel -Version $DotNetVersion -InstallDir $InstallPath -NoPath"
-        if (!$IsWindows) { $Cmd = "bash $Cmd" }
-        Invoke-Expression "& $Cmd"
+    if ($IsMacOS -or $IsLinux) {
+        (New-Object System.Net.WebClient).DownloadFile($DotNetUnixInstallerUri, "$InstallPath\dotnet-install.sh");
+        & bash $InstallPath\dotnet-install.sh --version "$DotNetVersion" --install-dir "$InstallPath" --channel "$DotNetChannel" --no-path
+    }
+    else {
+        (New-Object System.Net.WebClient).DownloadFile($DotNetInstallerUri, "$InstallPath\dotnet-install.ps1");
+        & $InstallPath\dotnet-install.ps1 -Channel $DotNetChannel -Version $DotNetVersion -InstallDir $InstallPath;
     }
 
-    # Ensure the installed .NET Core CLI is always used but putting it on the front of the path.
     Remove-PathVariable "$InstallPath"
-    $env:PATH = "$InstallPath$PathSplitter$env:PATH"
-    $env:DOTNET_ROOT="$InstallPath"
+    $env:PATH = "$InstallPath;$env:PATH"
 }
 
-# Temporarily skip verification of addins.
-$env:CAKE_SETTINGS_SKIPVERIFICATION='true'
 $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
 $env:DOTNET_CLI_TELEMETRY_OPTOUT=1
 
-###########################################################################
-# INSTALL NUGET
-###########################################################################
-
-# Make sure nuget.exe exists.
-$NugetPath = Join-Path $ToolPath "nuget.exe"
-if (!(Test-Path $NugetPath)) {
-    Write-Host "Downloading NuGet.exe..."
-    (New-Object System.Net.WebClient).DownloadFile($NugetUrl, $NugetPath);
-}
 
 ###########################################################################
 # INSTALL CAKE
 ###########################################################################
 
 # Make sure Cake has been installed.
-Write-Host "Installing Cake..."
-$CakeInstallPath = Join-Path $PSScriptRoot ".cake"
-if (!(Test-Path $CakeInstallPath)) {
-    New-Item -ItemType Directory $CakeInstallPath | Out-Null;
-    Invoke-Expression "& dotnet tool install Cake.Tool --version $CakeVersion --tool-path $CakeInstallPath"
+[string] $CakeExePath = ''
+[string] $CakeInstalledVersion = Get-Command dotnet-cake -ErrorAction SilentlyContinue  | % {&$_.Source --version}
+
+if ($CakeInstalledVersion -eq $CakeVersion) {
+    # Cake found locally
+    $CakeExePath = (Get-Command dotnet-cake).Source
+}
+else {
+    $CakePath = Join-Path $ToolPath ".store\cake.tool\$CakeVersion"
+    $CakeExePath = (Get-ChildItem -Path $ToolPath -Filter "dotnet-cake*" -File| ForEach-Object FullName | Select-Object -First 1)
+
+
+    if ((!(Test-Path -Path $CakePath -PathType Container)) -or (!(Test-Path $CakeExePath -PathType Leaf))) {
+
+        if ((![string]::IsNullOrEmpty($CakeExePath)) -and (Test-Path $CakeExePath -PathType Leaf))
+        {
+            & dotnet tool uninstall --tool-path $ToolPath Cake.Tool
+        }
+
+        & dotnet tool install --tool-path $ToolPath --version $CakeVersion Cake.Tool
+        if ($LASTEXITCODE -ne 0)
+        {
+            'Failed to install cake'
+            exit 1
+        }
+        $CakeExePath = (Get-ChildItem -Path $ToolPath -Filter "dotnet-cake*" -File| ForEach-Object FullName | Select-Object -First 1)
+    }
 }
 
 # ###########################################################################
@@ -162,8 +183,11 @@ $Arguments = @{
 # Start Cake
 Write-Host "Running build script..."
 
-$Cmd = "$CakeInstallPath/dotnet-cake $Script $Arguments"
-Invoke-Expression "& $Cmd"
+& "$CakeExePath" $Script --bootstrap
+if ($LASTEXITCODE -eq 0)
+{
+    & "$CakeExePath" $Script $Arguments
+}
 
 if ($env:APPVEYOR) {
     $host.SetShouldExit($LASTEXITCODE)

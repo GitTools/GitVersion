@@ -3,7 +3,6 @@ namespace GitVersion
     using GitVersion.Helpers;
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
@@ -70,21 +69,19 @@ namespace GitVersion
                     HelpWriter.Write();
                     return 0;
                 }
-#if NETDESKTOP
+
                 if (arguments.Diag)
                 {
                     arguments.NoCache = true;
                     arguments.Output = OutputType.BuildServer;
                 }
-#endif
 
                 ConfigureLogging(arguments);
-
 #if NETDESKTOP
                 if (arguments.Diag)
                 {
                     Logger.WriteInfo("Dumping commit graph: ");
-                    GitTools.LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
+                    LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
                 }
 #endif
                 if (!Directory.Exists(arguments.TargetPath))
@@ -108,12 +105,11 @@ namespace GitVersion
                     return 0;
                 }
 
-#if NETDESKTOP
                 if (!string.IsNullOrEmpty(arguments.Proj) || !string.IsNullOrEmpty(arguments.Exec))
                 {
                     arguments.Output = OutputType.BuildServer;
                 }
-#endif
+
                 SpecifiedArgumentRunner.Run(arguments, fileSystem);
             }
             catch (WarningException exception)
@@ -136,7 +132,7 @@ namespace GitVersion
                     try
                     {
 #if NETDESKTOP
-                        GitTools.LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
+                        LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
 #endif
                     }
                     catch (Exception dumpGraphException)

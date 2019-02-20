@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
     using System.Collections;
@@ -6,7 +6,6 @@
     using System.IO;
     using System.Linq;
     using GitVersion.Helpers;
-    using System.Reflection;
  
 
     using YamlDotNet.Serialization;
@@ -121,8 +120,6 @@
         [ReflectionIgnore]
         public string this[string variable]
         {
-
-
             get
             {
                 return typeof(VersionVariables).GetProperty(variable).GetValue(this, null) as string;

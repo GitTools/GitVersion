@@ -199,6 +199,94 @@ public class MainlineDevelopmentMode : TestBase
     }
 
     [Test]
+    public void VerifyDevelopTracksMasterVersion()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeACommit("1");
+            fixture.MakeATaggedCommit("1.0.0");
+            fixture.MakeACommit();
+
+            // branching increments the version
+            fixture.BranchTo("develop");
+            fixture.AssertFullSemver(config, "1.1.0-alpha.0");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver(config, "1.1.0-alpha.1");
+
+            // merging develop into master increments minor version on master
+            fixture.Checkout("master");
+            fixture.MergeNoFF("develop");
+            fixture.AssertFullSemver(config, "1.1.0");
+
+            // a commit on develop before the merge still has the same version number
+            fixture.Checkout("develop");
+            fixture.AssertFullSemver(config, "1.1.0-alpha.1");
+
+            // moving on to further work on develop tracks master's version from the merge
+            fixture.MakeACommit();
+            fixture.AssertFullSemver(config, "1.2.0-alpha.1");
+
+            // adding a commit to master increments patch
+            fixture.Checkout("master");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver(config, "1.1.1");
+
+            // adding a commit to master doesn't change develop's version
+            fixture.Checkout("develop");
+            fixture.AssertFullSemver(config, "1.2.0-alpha.1");
+        }
+    }
+
+    [Test]
+    public void VerifyDevelopFeatureTracksMasterVersion()
+    {
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeACommit("1");
+            fixture.MakeATaggedCommit("1.0.0");
+            fixture.MakeACommit();
+
+            // branching increments the version
+            fixture.BranchTo("develop");
+            fixture.AssertFullSemver(config, "1.1.0-alpha.0");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver(config, "1.1.0-alpha.1");
+
+            // merging develop into master increments minor version on master
+            fixture.Checkout("master");
+            fixture.MergeNoFF("develop");
+            fixture.AssertFullSemver(config, "1.1.0");
+
+            // a commit on develop before the merge still has the same version number
+            fixture.Checkout("develop");
+            fixture.AssertFullSemver(config, "1.1.0-alpha.1");
+
+            // a branch from develop before the merge tracks the pre-merge version from master
+            // (note: the commit on develop looks like a commit to this branch, thus the .1)
+            fixture.BranchTo("feature/foo");
+            fixture.AssertFullSemver(config, "1.0.2-foo.1");
+
+            // further work on the branch tracks the merged version from master
+            fixture.MakeACommit();
+            fixture.AssertFullSemver(config, "1.1.1-foo.1");
+
+            // adding a commit to master increments patch
+            fixture.Checkout("master");
+            fixture.MakeACommit();
+            fixture.AssertFullSemver(config, "1.1.1");
+
+            // adding a commit to master doesn't change the feature's version
+            fixture.Checkout("feature/foo");
+            fixture.AssertFullSemver(config, "1.1.1-foo.1");
+
+            // merging the feature to develop increments develop
+            fixture.Checkout("develop");
+            fixture.MergeNoFF("feature/foo");
+            fixture.AssertFullSemver(config, "1.2.0-alpha.2");
+        }
+    }
+
+    [Test]
     public void VerifyMergingMasterToFeatureDoesNotCauseBranchCommitsToIncrementVersion()
     {
         using (var fixture = new EmptyRepositoryFixture())

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+using System;
 using System.Text.RegularExpressions;
 
 namespace GitVersion
@@ -19,16 +18,21 @@ namespace GitVersion
             @"^Finish (?<Branch>.*)",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
         static Regex parseRemoteTrackingMergeMessage = new Regex(
-            @"^Merge remote-tracking branch '(?<SourceBranch>.*)' into (?<TargetBranch>.*)",
+            @"^Merge remote-tracking branch '(?<SourceBranch>.*)'( into (?<TargetBranch>.*))?",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        static Regex parseTfsMergeMessageEnglishUS = new Regex(
+            @"^Merge (?<SourceBranch>.*) to (?<TargetBranch>.*)",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        // Zusammengeführter PR \"9\": release/5.0.1 mit master mergen
+        static Regex parseTfsMergeMessageGermanDE = new Regex(
+            @"^Zusammengeführter PR ""(?<PullRequestNumber>\d*)""\: (?<SourceBranch>.*) mit (?<TargetBranch>.*) mergen",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         private string mergeMessage;
-        private Config config;
 
         public MergeMessage(string mergeMessage, Config config)
         {
             this.mergeMessage = mergeMessage;
-            this.config = config;
 
             var lastIndexOf = mergeMessage.LastIndexOf("into", StringComparison.OrdinalIgnoreCase);
             if (lastIndexOf != -1)
@@ -89,9 +93,26 @@ namespace GitVersion
             }
 
             match = parseRemoteTrackingMergeMessage.Match(mergeMessage);
-            if (match.Success) {
+            if (match.Success)
+            {
                 var from = match.Groups["SourceBranch"].Value;
                 // TODO We could remove/separate the remote name at this point?
+                return from;
+            }
+
+            match = parseTfsMergeMessageEnglishUS.Match(mergeMessage);
+            if (match.Success)
+            {
+                IsMergedPullRequest = true;
+                var from = match.Groups["SourceBranch"].Value;
+                return from;
+            }
+
+            match = parseTfsMergeMessageGermanDE.Match(mergeMessage);
+            if (match.Success)
+            {
+                IsMergedPullRequest = true;
+                var from = match.Groups["SourceBranch"].Value;
                 return from;
             }
 
