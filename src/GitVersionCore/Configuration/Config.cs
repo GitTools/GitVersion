@@ -1,10 +1,9 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using System.Reflection;
     using System.Text.RegularExpressions;
     using YamlDotNet.Serialization;
 
@@ -102,7 +101,7 @@
         {
             if (branchName == null) throw new ArgumentNullException(nameof(branchName));
             var matches = Branches
-                .Where(b => Regex.IsMatch(branchName, "^" + b.Value.Regex, RegexOptions.IgnoreCase));
+                .Where(b => Regex.IsMatch(branchName, b.Value.Regex, RegexOptions.IgnoreCase));
 
             try
             {
@@ -135,6 +134,8 @@
                 .ForEach(_ => _.prop.SetValue(target, _.value, null));
             return target;
         }
+
+        public bool IsReleaseBranch(string branchName) => GetConfigForBranch(branchName)?.IsReleaseBranch ?? false;
 
         [YamlMember(Alias = "ignore")]
         public IgnoreConfig Ignore { get; set; }

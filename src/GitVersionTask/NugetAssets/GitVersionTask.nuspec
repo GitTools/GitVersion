@@ -13,7 +13,7 @@
     <iconUrl>https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/img/package_icon.png</iconUrl>
     <description>Stamps an assembly with git information based on SemVer.</description>
     <releaseNotes>https://github.com/GitTools/GitVersion/releases</releaseNotes>
-    <copyright>Copyright GitTools 2015.</copyright>
+    <copyright>Copyright GitTools 2019.</copyright>
     <tags>Git Versioning GitVersion GitFlowVersion GitFlow GitHubFlow SemVer</tags>
     <dependencies>
       <group>
@@ -21,8 +21,8 @@
       </group>
       <group targetFramework=".NETStandard2.0">
          <dependency id="UtilPack.NuGet.MSBuild" version="$utilpackversion$" exclude="Build,Analyzers" />
-         <dependency id="YamlDotNet" version="$yamldotnetversion$" exclude="Build,Analyzers" />
          <dependency id="LibGit2Sharp" version="$libgit2sharpversion$" exclude="Build,Analyzers" />
+         <dependency id="YamlDotNet" version="$yamldotnetversion$" exclude="Build,Analyzers" />
       </group>
       <group targetFramework=".NETFramework4.6.1">
          <dependency id="UtilPack.NuGet.MSBuild" version="$utilpackversion$" exclude="Build,Analyzers" />

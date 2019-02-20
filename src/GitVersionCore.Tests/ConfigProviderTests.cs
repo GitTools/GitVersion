@@ -1,10 +1,10 @@
-using GitTools;
 using GitVersion;
 using GitVersion.Helpers;
 using GitVersionCore.Tests;
 using NUnit.Framework;
 using Shouldly;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -362,5 +362,72 @@ branches:
 
         const string expectedMessage = @"'is-develop' is deprecated, use 'tracks-release-branches' instead.";
         exception.Message.ShouldContain(expectedMessage);
+    }
+
+    [Test]
+    public void ShouldUseSpecifiedSourceBranchesForDevelop()
+    {
+        var defaultConfig = ConfigurationProvider.Provide(repoPath, fileSystem);
+        const string text = @"
+next-version: 2.0.0
+branches:
+    develop:
+        mode: ContinuousDeployment
+        source-branches: ['develop']
+        tag: dev";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+
+        config.Branches["develop"].SourceBranches.ShouldBe(new List<string> { "develop" });
+    }
+
+    [Test]
+    public void ShouldUseDefaultSourceBranchesWhenNotSpecifiedForDevelop()
+    {
+        var defaultConfig = ConfigurationProvider.Provide(repoPath, fileSystem);
+        const string text = @"
+next-version: 2.0.0
+branches:
+    develop:
+        mode: ContinuousDeployment
+        tag: dev";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+
+        config.Branches["develop"].SourceBranches.ShouldBe(new List<string>());
+    }
+
+    [Test]
+    public void ShouldUseSpecifiedSourceBranchesForFeature()
+    {
+        var defaultConfig = ConfigurationProvider.Provide(repoPath, fileSystem);
+        const string text = @"
+next-version: 2.0.0
+branches:
+    feature:
+        mode: ContinuousDeployment
+        source-branches: ['develop', 'release']
+        tag: dev";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+
+        config.Branches["feature"].SourceBranches.ShouldBe(new List<string> { "develop", "release" });
+    }
+
+    [Test]
+    public void ShouldUseDefaultSourceBranchesWhenNotSpecifiedForFeature()
+    {
+        var defaultConfig = ConfigurationProvider.Provide(repoPath, fileSystem);
+        const string text = @"
+next-version: 2.0.0
+branches:
+    feature:
+        mode: ContinuousDeployment
+        tag: dev";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+
+        config.Branches["feature"].SourceBranches.ShouldBe(
+            new List<string> { "develop", "master", "release", "feature", "support", "hotfix" });
     }
 }

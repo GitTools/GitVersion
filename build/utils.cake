@@ -8,16 +8,6 @@ FilePath FindToolInPath(string tool)
     return paths.Select(path => new DirectoryPath(path).CombineWithFilePath(tool)).FirstOrDefault(filePath => FileExists(filePath.FullPath));
 }
 
-void FixForMono(Cake.Core.Tooling.ToolSettings toolSettings, string toolExe)
-{
-    if (IsRunningOnUnix())
-    {
-        var toolPath = Context.Tools.Resolve(toolExe);
-        toolSettings.ToolPath = FindToolInPath("mono");
-        toolSettings.ArgumentCustomization = args => toolPath.FullPath + " " + args.Render();
-    }
-}
-
 DirectoryPath HomePath()
 {
     return IsRunningOnWindows()
@@ -55,7 +45,7 @@ GitVersion GetVersion(BuildParameters parameters)
 
     var gitVersion = GitVersion(settings);
 
-    if (!(parameters.IsRunningOnAzurePipeline && parameters.IsPullRequest))
+    if (!parameters.IsLocalBuild && !(parameters.IsRunningOnAzurePipeline && parameters.IsPullRequest))
     {
         settings.UpdateAssemblyInfo = true;
         settings.LogFilePath = "console";
@@ -107,7 +97,6 @@ void ILRepackGitVersionExe(bool includeLibGit2Sharp, DirectoryPath target, Direc
         settings.Libs = new List<DirectoryPath> { libFolder };
     }
 
-    FixForMono(settings, "ILRepack.exe");
     ILRepack(outFilePath, targetPath, sourceFiles, settings);
 
     CopyFileToDirectory("./LICENSE", ilMergeDir);

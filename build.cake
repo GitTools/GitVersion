@@ -1,3 +1,5 @@
+// Install modules
+#module nuget:?package=Cake.DotNetTool.Module&version=0.1.0
 
 // Install addins.
 #addin "nuget:?package=Cake.Gitter&version=0.9.0"
@@ -7,8 +9,8 @@
 #addin "nuget:?package=Cake.Json&version=3.0.0"
 #addin "nuget:?package=Cake.Tfx&version=0.8.0"
 #addin "nuget:?package=Cake.Gem&version=0.7.0"
-#addin "nuget:?package=Cake.Coverlet&version=1.3.2"
-#addin "nuget:?package=Cake.Codecov&version=0.4.0"
+#addin "nuget:?package=Cake.Coverlet&version=2.2.1"
+#addin "nuget:?package=Cake.Codecov&version=0.5.0"
 #addin "nuget:?package=Newtonsoft.Json&version=9.0.1"
 
 // Install tools.
@@ -17,6 +19,10 @@
 #tool "nuget:?package=GitReleaseNotes&version=0.7.1"
 #tool "nuget:?package=ILRepack&version=2.0.16"
 #tool "nuget:?package=Codecov&version=1.1.0"
+#tool "nuget:?package=nuget.commandline&version=4.9.2"
+
+// Install .NET Core Global tools.
+#tool "dotnet:?package=GitReleaseManager.Tool&version=0.8.0"
 
 // Load other scripts.
 #load "./build/parameters.cake"
@@ -26,7 +32,6 @@
 // PARAMETERS
 //////////////////////////////////////////////////////////////////////
 bool publishingError = false;
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
@@ -168,7 +173,8 @@ Task("Test")
             settings.Filter = "TestCategory!=NoMono";
         }
 
-        DotNetCoreTest(project.FullPath, settings, coverletSettings);
+        // DotNetCoreTest(project.FullPath, settings, coverletSettings);
+        DotNetCoreTest(project.FullPath, settings);
     }
 
     // run using NUnit
@@ -184,7 +190,6 @@ Task("Test")
         nunitSettings.Agents = 1;
     }
 
-    FixForMono(nunitSettings, "nunit3-console.exe");
     NUnit3(testAssemblies, nunitSettings);
 });
 
@@ -323,7 +328,6 @@ Task("Pack-Nuget")
                         .ToArray()
             };
 
-            FixForMono(nugetSettings, "nuget.exe");
             NuGetPack(package.NuspecPath, nugetSettings);
         }
     }
@@ -517,7 +521,7 @@ Task("Publish-AzurePipeline")
 
     if (FileExists(parameters.Paths.Files.TestCoverageOutputFilePath)) {
         var data = new TFBuildPublishTestResultsData {
-            TestResultsFiles = new[] { parameters.Paths.Files.TestCoverageOutputFilePath.ToString() },
+            TestResultsFiles = new[] { parameters.Paths.Files.TestCoverageOutputFilePath },
             TestRunner = TFTestRunnerType.NUnit
         };
         TFBuild.Commands.PublishTestResults(data);
@@ -534,7 +538,7 @@ Task("Publish-Tfs")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishTfs,   "Publish-Tfs was disabled.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Publish-Tfs works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAppVeyor, "Publish-Tfs works only on AppVeyor.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease(), "Publish-Tfs works only for releases.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease(),   "Publish-Tfs works only for releases.")
     .IsDependentOn("Pack-Tfs")
     .Does<BuildParameters>((parameters) =>
 {

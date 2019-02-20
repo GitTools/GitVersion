@@ -16,12 +16,11 @@
     <DefineConstants>NETDESKTOP</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2018.2.1"></PackageReference>
+  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
+    <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)"></PackageReference>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GitTools.Core\GitTools.Core.csproj" />
     <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
   </ItemGroup>
 </Project>

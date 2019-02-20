@@ -6,7 +6,6 @@ namespace GitVersion
     using System.IO;
     using System.Linq;
     using System.Text;
-    using WarningException = GitTools.WarningException;
 
     public class ConfigurationProvider
     {
@@ -15,13 +14,13 @@ namespace GitVersion
         public const string DefaultConfigFileName = "GitVersion.yml";
         public const string ObsoleteConfigFileName = "GitVersionConfig.yaml";
 
-        public const string ReleaseBranchRegex = "releases?[/-]";
-        public const string FeatureBranchRegex = "features?[/-]";
-        public const string PullRequestRegex = @"(pull|pull\-requests|pr)[/-]";
-        public const string HotfixBranchRegex = "hotfix(es)?[/-]";
-        public const string SupportBranchRegex = "support[/-]";
-        public const string DevelopBranchRegex = "dev(elop)?(ment)?$";
-        public const string MasterBranchRegex = "master$";
+        public const string ReleaseBranchRegex = "^releases?[/-]";
+        public const string FeatureBranchRegex = "^features?[/-]";
+        public const string PullRequestRegex = @"^(pull|pull\-requests|pr)[/-]";
+        public const string HotfixBranchRegex = "^hotfix(es)?[/-]";
+        public const string SupportBranchRegex = "^support[/-]";
+        public const string DevelopBranchRegex = "^dev(elop)?(ment)?$";
+        public const string MasterBranchRegex = "^master$";
         public const string MasterBranchKey = "master";
         public const string ReleaseBranchKey = "release";
         public const string FeatureBranchKey = "feature";
@@ -221,7 +220,8 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             bool isMainline = false)
         {
             branchConfig.Regex = string.IsNullOrEmpty(branchConfig.Regex) ? branchRegex : branchConfig.Regex;
-            branchConfig.SourceBranches = sourceBranches;
+            branchConfig.SourceBranches = branchConfig.SourceBranches == null || !branchConfig.SourceBranches.Any()
+                ? sourceBranches : branchConfig.SourceBranches;
             branchConfig.Tag = branchConfig.Tag ?? defaultTag;
             branchConfig.TagNumberPattern = branchConfig.TagNumberPattern ?? defaultTagNumberPattern;
             branchConfig.Increment = branchConfig.Increment ?? defaultIncrementStrategy ?? config.Increment ?? DefaultIncrementStrategy;
