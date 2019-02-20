@@ -419,6 +419,44 @@ public class ReleaseBranchScenarios : TestBase
         }
     }
 
+    [Test]
+    public void CommitBeetweenMergeReleaseToDevelop_ShouldNotResetCount()
+    {
+        var config = new Config
+        {
+            VersioningMode = VersioningMode.ContinuousDeployment
+        };
+
+        using(var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeACommit("initial");
+            fixture.Repository.CreateBranch("develop");
+            Commands.Checkout(fixture.Repository, "develop");
+            fixture.Repository.CreateBranch("release-2.0.0");
+            Commands.Checkout(fixture.Repository, "release-2.0.0");
+            fixture.AssertFullSemver(config, "2.0.0-beta.0");
+
+            // Make some commits on release
+            var commit1 = fixture.Repository.MakeACommit();
+            var commit2 = fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver(config, "2.0.0-beta.2");
+
+            // Merge release to develop - emulate commit beetween other person release commit push and this commit merge to develop
+            Commands.Checkout(fixture.Repository, "develop");
+            fixture.Repository.Merge(commit1, Generate.SignatureNow(), new MergeOptions { FastForwardStrategy = FastForwardStrategy.NoFastForward });
+            fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
+
+            // Check version on release after merge to develop
+            Commands.Checkout(fixture.Repository, "release-2.0.0");
+            fixture.AssertFullSemver(config, "2.0.0-beta.2");
+
+            // Check version on release after making some new commits
+            fixture.Repository.MakeACommit();
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver(config, "2.0.0-beta.4");
+        }
+    }
+
     public void ReleaseBranchShouldUseBranchNameVersionDespiteBumpInPreviousCommit()
     {
         using (var fixture = new EmptyRepositoryFixture())
