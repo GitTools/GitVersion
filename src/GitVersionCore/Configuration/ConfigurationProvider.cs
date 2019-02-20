@@ -28,6 +28,17 @@ namespace GitVersion
         public const string HotfixBranchKey = "hotfix";
         public const string SupportBranchKey = "support";
         public const string DevelopBranchKey = "develop";
+        public static Dictionary<string, int> DefaultPreReleaseWeight =
+            new Dictionary<string, int>
+            {
+                { DevelopBranchRegex, 0 },
+                { HotfixBranchRegex, 30000 },
+                { ReleaseBranchRegex, 30000 },
+                { FeatureBranchRegex, 30000 },
+                { PullRequestRegex, 30000 },
+                { SupportBranchRegex, 60000 },
+                { MasterBranchRegex, 60000 }
+            };
 
         private const IncrementStrategy DefaultIncrementStrategy = IncrementStrategy.Inherit;
 
@@ -231,7 +242,9 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             branchConfig.TracksReleaseBranches = branchConfig.TracksReleaseBranches ?? tracksReleaseBranches;
             branchConfig.IsReleaseBranch = branchConfig.IsReleaseBranch ?? isReleaseBranch;
             branchConfig.IsMainline = branchConfig.IsMainline ?? isMainline;
-            branchConfig.PreReleaseWeight = branchConfig.PreReleaseWeight ?? 0;
+            int defaultPreReleaseNumber = 0;
+            DefaultPreReleaseWeight.TryGetValue(branchRegex, out defaultPreReleaseNumber);
+            branchConfig.PreReleaseWeight = branchConfig.PreReleaseWeight ?? defaultPreReleaseNumber;
         }
 
         static Config ReadConfig(string workingDirectory, IFileSystem fileSystem)

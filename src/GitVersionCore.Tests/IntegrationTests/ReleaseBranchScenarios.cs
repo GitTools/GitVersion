@@ -1,4 +1,4 @@
-﻿using GitTools.Testing;
+using GitTools.Testing;
 using GitVersion;
 using GitVersionCore.Tests;
 using LibGit2Sharp;
@@ -548,6 +548,54 @@ public class ReleaseBranchScenarios : TestBase
 
             fixture.Repository.MakeACommit("release 13 - after feature merge");
             fixture.AssertFullSemver(config, "2.0.0-beta.16");
+        }
+    }
+
+<<<<<<< HEAD
+=======
+    [Test]
+    public void AssemblySemFileVerShouldBeWeightedByPreReleaseWeight()
+    {
+        var config = new Config
+        {
+            AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
+            Branches =
+            {
+                { "release", new BranchConfig
+                    {
+                        PreReleaseWeight = 1000
+                    }
+                }
+            }
+        };
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.3");
+            fixture.Repository.MakeCommits(5);
+            fixture.Repository.CreateBranch("release-2.0.0");
+            fixture.Checkout("release-2.0.0");
+            ConfigurationProvider.ApplyDefaultsTo(config);
+            var variables = fixture.GetVersion(config);
+            Assert.AreEqual(variables.AssemblySemFileVer, "2.0.0.1001");
+        }
+    }
+
+    [Test]
+    public void AssemblySemFileVerShouldBeWeightedByDefaultPreReleaseWeight()
+    {
+        var config = new Config
+        {
+            AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
+        };
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.3");
+            fixture.Repository.MakeCommits(5);
+            fixture.Repository.CreateBranch("release-2.0.0");
+            fixture.Checkout("release-2.0.0");
+            ConfigurationProvider.ApplyDefaultsTo(config);
+            var variables = fixture.GetVersion(config);
+            Assert.AreEqual(variables.AssemblySemFileVer, "2.0.0.30001");
         }
     }
 
