@@ -5,8 +5,15 @@ using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class VariableProviderTests
-{
+public class VariableProviderTests : TestBase
+{   
+
+    [SetUp]
+    public void Setup()
+    {
+        ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
+    }
+
     [Test]
     [Category("NoMono")]
     [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
@@ -22,6 +29,7 @@ public class VariableProviderTests
         };
 
         semVer.BuildMetaData.Sha = "commitSha";
+        semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
 
@@ -47,6 +55,7 @@ public class VariableProviderTests
         };
 
         semVer.BuildMetaData.Sha = "commitSha";
+        semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
 
@@ -72,6 +81,7 @@ public class VariableProviderTests
         };
 
         semVer.BuildMetaData.Sha = "commitSha";
+        semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
         var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
@@ -95,6 +105,7 @@ public class VariableProviderTests
         };
 
         semVer.BuildMetaData.Sha = "commitSha";
+        semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
         var config = new TestEffectiveConfiguration();
@@ -118,6 +129,7 @@ public class VariableProviderTests
         };
 
         semVer.BuildMetaData.Sha = "commitSha";
+        semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
         var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
@@ -142,6 +154,7 @@ public class VariableProviderTests
                 CommitsSinceTag = 5,
                 CommitsSinceVersionSource = 5,
                 Sha = "commitSha",
+                ShortSha = "commitShortSha",
                 CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
             }
         };
@@ -167,6 +180,7 @@ public class VariableProviderTests
 
         semVer.BuildMetaData.Branch = "pull/2/merge";
         semVer.BuildMetaData.Sha = "commitSha";
+        semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
         var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, tagNumberPattern: @"[/-](?<number>\d+)[-/]");
@@ -188,6 +202,7 @@ public class VariableProviderTests
 
         semVer.BuildMetaData.Branch = "feature";
         semVer.BuildMetaData.Sha = "commitSha";
+        semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
         var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, tag: "useBranchName");

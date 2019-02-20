@@ -8,7 +8,7 @@ GitVersion works on Mac, Linux with Mono and Windows.
 
 Tip: If you get `System.TypeInitializationException: The type initializer for 'LibGit2Sharp.Core.NativeMethods' threw an exception. ---> System.DllNotFoundException: lib/linux/x86_64/libgit2-baa87df.so`
 
-You likely need to install `libcurl3`. Run `sudo get-get install libcurl3`
+You likely need to install `libcurl3`. Run `sudo apt-get install libcurl3`
 
 ## Assumptions/Rules
 ### Tags override other rules
@@ -36,7 +36,7 @@ GitVersion v3 was rewritten to be very configuration driven rather than hardcodi
 Read more about [configuration](configuration.md)
 
 ## Output Variables
-We recognise that a single formatted version number does not work for all cases. A simple example is NuGet, it doesn't support SemVer 2.0 meaning that the SemVer of `1.3.5-beta.10+500` needs to be formatted as `1.3.5-beta0010` so it will sort properly.
+We recognise that a single formatted version number does not work for all cases. A simple example is NuGet, prior to version 4.3.0 it doesn't support SemVer 2.0 meaning that the SemVer of `1.3.5-beta.10+500` needs to be formatted as `1.3.5-beta0010` so it will sort properly.
 
 You can just run `GitVersion.exe` in your repository to see what variables are available (by default a json object is returned).
 

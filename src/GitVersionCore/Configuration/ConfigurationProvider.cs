@@ -6,7 +6,6 @@ namespace GitVersion
     using System.IO;
     using System.Linq;
     using System.Text;
-    using WarningException = System.ComponentModel.WarningException;
 
     public class ConfigurationProvider
     {
@@ -15,13 +14,13 @@ namespace GitVersion
         public const string DefaultConfigFileName = "GitVersion.yml";
         public const string ObsoleteConfigFileName = "GitVersionConfig.yaml";
 
-        public const string ReleaseBranchRegex = "releases?[/-]";
-        public const string FeatureBranchRegex = "features?[/-]";
-        public const string PullRequestRegex = @"(pull|pull\-requests|pr)[/-]";
-        public const string HotfixBranchRegex = "hotfix(es)?[/-]";
-        public const string SupportBranchRegex = "support[/-]";
-        public const string DevelopBranchRegex = "dev(elop)?(ment)?$";
-        public const string MasterBranchRegex = "master$";
+        public const string ReleaseBranchRegex = "^releases?[/-]";
+        public const string FeatureBranchRegex = "^features?[/-]";
+        public const string PullRequestRegex = @"^(pull|pull\-requests|pr)[/-]";
+        public const string HotfixBranchRegex = "^hotfix(es)?[/-]";
+        public const string SupportBranchRegex = "^support[/-]";
+        public const string DevelopBranchRegex = "^dev(elop)?(ment)?$";
+        public const string MasterBranchRegex = "^master$";
         public const string MasterBranchKey = "master";
         public const string ReleaseBranchKey = "release";
         public const string FeatureBranchKey = "feature";
@@ -88,6 +87,8 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             config.AssemblyVersioningScheme = config.AssemblyVersioningScheme ?? AssemblyVersioningScheme.MajorMinorPatch;
             config.AssemblyFileVersioningScheme = config.AssemblyFileVersioningScheme ?? AssemblyFileVersioningScheme.MajorMinorPatch;
             config.AssemblyInformationalFormat = config.AssemblyInformationalFormat;
+            config.AssemblyVersioningFormat = config.AssemblyVersioningFormat;
+            config.AssemblyFileVersioningFormat = config.AssemblyFileVersioningFormat;
             config.TagPrefix = config.TagPrefix ?? DefaultTagPrefix;
             config.VersioningMode = config.VersioningMode ?? VersioningMode.ContinuousDelivery;
             config.ContinuousDeploymentFallbackTag = config.ContinuousDeploymentFallbackTag ?? "ci";
@@ -99,6 +100,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             config.LegacySemVerPadding = config.LegacySemVerPadding ?? 4;
             config.BuildMetaDataPadding = config.BuildMetaDataPadding ?? 4;
             config.CommitsSinceVersionSourcePadding = config.CommitsSinceVersionSourcePadding ?? 4;
+            config.CommitDateFormat = config.CommitDateFormat ?? "yyyy-MM-dd";
 
             var configBranches = config.Branches.ToList();
 
@@ -108,7 +110,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
                 new List<string>(),
                 defaultTag: "alpha",
                 defaultIncrementStrategy: IncrementStrategy.Minor,
-                defaultVersioningMode: VersioningMode.ContinuousDeployment,
+                defaultVersioningMode: config.VersioningMode == VersioningMode.Mainline? VersioningMode.Mainline : VersioningMode.ContinuousDeployment,
                 defaultTrackMergeTarget: true,
                 tracksReleaseBranches: true);
             ApplyBranchDefaults(config,
@@ -218,7 +220,8 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             bool isMainline = false)
         {
             branchConfig.Regex = string.IsNullOrEmpty(branchConfig.Regex) ? branchRegex : branchConfig.Regex;
-            branchConfig.SourceBranches = sourceBranches;
+            branchConfig.SourceBranches = branchConfig.SourceBranches == null || !branchConfig.SourceBranches.Any()
+                ? sourceBranches : branchConfig.SourceBranches;
             branchConfig.Tag = branchConfig.Tag ?? defaultTag;
             branchConfig.TagNumberPattern = branchConfig.TagNumberPattern ?? defaultTagNumberPattern;
             branchConfig.Increment = branchConfig.Increment ?? defaultIncrementStrategy ?? config.Increment ?? DefaultIncrementStrategy;
@@ -260,7 +263,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
         {
             if (!string.IsNullOrWhiteSpace(gitPreparer.TargetUrl))
             {
-                // Assuming this is a dynamic repository. At this stage it's unsure whether we have 
+                // Assuming this is a dynamic repository. At this stage it's unsure whether we have
                 // any .git info so we need to skip verification
                 return;
             }

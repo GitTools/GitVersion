@@ -27,7 +27,6 @@ namespace GitVersion
 
         public bool Init;
         public bool Diag;
-
         public bool IsVersion;
         public bool IsHelp;
         public string LogFilePath;

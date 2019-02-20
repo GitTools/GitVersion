@@ -24,6 +24,25 @@ namespace GitVersion
             this.configuration = configuration;
         }
 
+        public static IEnumerable<Tuple<Tag, SemanticVersion>> GetValidVersionTags(IRepository repository, string tagPrefixRegex, DateTimeOffset? olderThan = null)
+        {
+            var tags = new List<Tuple<Tag, SemanticVersion>>();
+
+            foreach (var tag in repository.Tags)
+            {
+                if (olderThan.HasValue && ((Commit)tag.PeeledTarget()).When() > olderThan.Value)
+                    continue;
+
+                SemanticVersion semver;
+                if (SemanticVersion.TryParse(tag.FriendlyName, tagPrefixRegex, out semver))
+                {
+                    tags.Add(Tuple.Create(tag, semver));
+                }
+            }
+
+            return tags;
+        }
+
         public IEnumerable<SemanticVersion> GetVersionTagsOnBranch(Branch branch, string tagPrefixRegex)
         {
             if (semanticVersionTagsOnBranchCache.ContainsKey(branch))
@@ -34,19 +53,9 @@ namespace GitVersion
 
             using (Logger.IndentLog(string.Format("Getting version tags from branch '{0}'.", branch.CanonicalName)))
             {
-                var tags = this.Repository.Tags.Select(t => t).ToList();
+                var tags = GetValidVersionTags(this.Repository, tagPrefixRegex);
 
-                var versionTags = this.Repository.Commits.QueryBy(new CommitFilter
-                {
-                    IncludeReachableFrom = branch.Tip
-                })
-                .SelectMany(c => tags.Where(t => c.Sha == t.Target.Sha).SelectMany(t =>
-                {
-                    SemanticVersion semver;
-                    if (SemanticVersion.TryParse(t.FriendlyName, tagPrefixRegex, out semver))
-                        return new[] { semver };
-                    return new SemanticVersion[0];
-                })).ToList();
+                var versionTags = branch.Commits.SelectMany(c => tags.Where(t => c.Sha == t.Item1.Target.Sha).Select(t => t.Item2)).ToList();
 
                 semanticVersionTagsOnBranchCache.Add(branch, versionTags);
                 return versionTags;
@@ -198,8 +207,7 @@ namespace GitVersion
                     return BranchCommit.Empty;
                 }
 
-                var possibleBranches = GetMergeCommitsForBranch(branch)
-                    .ExcludingBranches(excludedBranches)
+                var possibleBranches = GetMergeCommitsForBranch(branch, excludedBranches)
                     .Where(b => !branch.IsSameBranch(b.Branch))
                     .ToList();
 
@@ -216,7 +224,7 @@ namespace GitVersion
             }
         }
 
-        List<BranchCommit> GetMergeCommitsForBranch(Branch branch)
+        List<BranchCommit> GetMergeCommitsForBranch(Branch branch, Branch[] excludedBranches)
         {
             if (mergeBaseCommitsCache.ContainsKey(branch))
             {
@@ -226,11 +234,12 @@ namespace GitVersion
                 return mergeBaseCommitsCache[branch];
             }
 
-            var currentBranchConfig = configuration.GetConfigForBranch(branch.FriendlyName);
+            var currentBranchConfig = configuration.GetConfigForBranch(branch.NameWithoutRemote());
             var regexesToCheck = currentBranchConfig == null
-                ? new [] { ".*" } // Match anything if we can't find a branch config
+                ? new[] { ".*" } // Match anything if we can't find a branch config
                 : currentBranchConfig.SourceBranches.Select(sb => configuration.Branches[sb].Regex);
             var branchMergeBases = Repository.Branches
+                .ExcludingBranches(excludedBranches)
                 .Where(b =>
                 {
                     if (b == branch) return false;

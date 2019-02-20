@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+using System;
 using System.Text.RegularExpressions;
 
 namespace GitVersion
@@ -12,16 +11,28 @@ namespace GitVersion
         static Regex parseGitHubPullMergeMessage = new Regex(
             @"^Merge pull request #(?<PullRequestNumber>\d*) (from|in) (?<Source>.*)",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        static Regex parseBitBucketPullMergeMessage = new Regex(
+            @"^Merge pull request #(?<PullRequestNumber>\d*) (from|in) (?<Source>.*) from (?<SourceBranch>.*) to (?<TargetBranch>.*)",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
         static Regex smartGitMergeMessage = new Regex(
             @"^Finish (?<Branch>.*)",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        static Regex parseRemoteTrackingMergeMessage = new Regex(
+            @"^Merge remote-tracking branch '(?<SourceBranch>.*)'( into (?<TargetBranch>.*))?",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        static Regex parseTfsMergeMessageEnglishUS = new Regex(
+            @"^Merge (?<SourceBranch>.*) to (?<TargetBranch>.*)",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        // Zusammengeführter PR \"9\": release/5.0.1 mit master mergen
+        static Regex parseTfsMergeMessageGermanDE = new Regex(
+            @"^Zusammengeführter PR ""(?<PullRequestNumber>\d*)""\: (?<SourceBranch>.*) mit (?<TargetBranch>.*) mergen",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
         private string mergeMessage;
-        private Config config;
 
         public MergeMessage(string mergeMessage, Config config)
         {
             this.mergeMessage = mergeMessage;
-            this.config = config;
 
             var lastIndexOf = mergeMessage.LastIndexOf("into", StringComparison.OrdinalIgnoreCase);
             if (lastIndexOf != -1)
@@ -63,21 +74,59 @@ namespace GitVersion
                 return match.Groups["Branch"].Value;
             }
 
+            match = parseBitBucketPullMergeMessage.Match(mergeMessage);
+            if (match.Success)
+            {
+                IsMergedPullRequest = true;
+                PullRequestNumber = GetPullRequestNumber(match);
+                return match.Groups["SourceBranch"].Value;
+            }
+
             match = parseGitHubPullMergeMessage.Match(mergeMessage);
             if (match.Success)
             {
                 IsMergedPullRequest = true;
-                int pullNumber;
-                if (int.TryParse(match.Groups["PullRequestNumber"].Value, out pullNumber))
-                {
-                    PullRequestNumber = pullNumber;
-                }
+                PullRequestNumber = GetPullRequestNumber(match);
                 var from = match.Groups["Source"].Value;
-                // We could remove/separate the remote name at this point?
+                // TODO We could remove/separate the remote name at this point?
+                return from;
+            }
+
+            match = parseRemoteTrackingMergeMessage.Match(mergeMessage);
+            if (match.Success)
+            {
+                var from = match.Groups["SourceBranch"].Value;
+                // TODO We could remove/separate the remote name at this point?
+                return from;
+            }
+
+            match = parseTfsMergeMessageEnglishUS.Match(mergeMessage);
+            if (match.Success)
+            {
+                IsMergedPullRequest = true;
+                var from = match.Groups["SourceBranch"].Value;
+                return from;
+            }
+
+            match = parseTfsMergeMessageGermanDE.Match(mergeMessage);
+            if (match.Success)
+            {
+                IsMergedPullRequest = true;
+                var from = match.Groups["SourceBranch"].Value;
                 return from;
             }
 
             return "";
+        }
+
+        private int GetPullRequestNumber(Match match)
+        {
+            int pullNumber;
+            if (int.TryParse(match.Groups["PullRequestNumber"].Value, out pullNumber))
+            {
+                PullRequestNumber = pullNumber;
+            }
+            return pullNumber;
         }
 
         public string TargetBranch { get; }

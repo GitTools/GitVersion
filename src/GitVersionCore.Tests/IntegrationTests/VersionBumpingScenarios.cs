@@ -5,7 +5,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 
 [TestFixture]
-public class VersionBumpingScenarios
+public class VersionBumpingScenarios : TestBase
 {
     [Test]
     public void AppliedPrereleaseTagCausesBump()

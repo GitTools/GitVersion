@@ -44,6 +44,7 @@ legacy-semver-padding: 4
 build-metadata-padding: 4
 commits-since-version-source-padding: 4
 commit-message-incrementing: Enabled
+commit-date-format: 'yyyy-MM-dd'
 ignore:
   sha: []
   commits-before: yyyy-MM-ddTHH:mm:ss
@@ -70,6 +71,19 @@ while still updating the `AssemblyVersion` and `AssemblyInformationVersion`
 attributes. Valid values: `MajorMinorPatchTag`, `MajorMinorPatch`, `MajorMinor`,
 `Major`, `None`.
 
+### assembly-file-versioning-format
+Set this to any of the available [variables](/more-info/variables) in combination (but not necessary) with
+a process scoped environment variable. It overwrites the value of `assembly-file-versioning-scheme`. To reference
+an environment variable, use `env:`
+Example Syntax #1: `'{Major}.{Minor}.{Patch}.{env:JENKINS_BUILD_NUMBER ?? fallback_string}'`. Uses `JENKINS_BUILD_NUMBER`
+if available in the environment otherwise the `fallback_string`
+Example Syntax #2: `'{Major}.{Minor}.{Patch}.{env:JENKINS_BUILD_NUMBER}'`.  Uses `JENKINS_BUILD_NUMBER`
+if available in the environment otherwise the parsing fails.
+String interpolation is supported as in `assembly-informational-format`
+
+### assembly-versioning-format
+Follows the same semantics as `assembly-file-versioning-format` and overwrites the value of `assembly-versioning-scheme`.
+
 ### assembly-informational-format
 Set this to any of the available [variables](/more-info/variables) to change the
 value of the `AssemblyInformationalVersion` attribute. Default set to
@@ -83,7 +97,7 @@ Sets the `mode` of how GitVersion should create a new version. Read more at
 ### increment
 The part of the SemVer to increment when GitVersion detects it needs to be increased, such as for commits after a tag: `Major`, `Minor`, `Patch`, `None`.
 
-The special value `Inherit` means that GitVersion should find the parent branch (i.e. the branch where the current branch was branched from), and use its values for [increment](#increment), [prevent-increment-of-merged-branch-version](#prevent-increment-of-merged-branch-version) and [is-develop](#is-develop).
+The special value `Inherit` means that GitVersion should find the parent branch (i.e. the branch where the current branch was branched from), and use its values for [increment](#increment), [prevent-increment-of-merged-branch-version](#prevent-increment-of-merged-branch-version) and [tracks-release-branches](#tracks-release-branches).
 
 ### continuous-delivery-fallback-tag
 When using `mode: ContinuousDeployment`, the value specified in
@@ -136,6 +150,9 @@ Sets whether it should be possible to increment the version with special syntax
 in the commit message. See the `*-version-bump-message` options above for
 details on the syntax. Default set to `Enabled`; set to `Disabled` to disable.
 
+### commit-date-format
+Sets the format which will be used to format the `CommitDate` output variable.
+
 ### ignore
 The header for ignore configuration.
 
@@ -172,7 +189,7 @@ If you have branch specific configuration upgrading to v4 will force you to upgr
 ```yaml
 branches:
   master:
-    regex: master
+    regex: ^master
     mode: ContinuousDelivery
     tag: ''
     increment: Patch
@@ -181,7 +198,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
   release:
-    regex: releases?[/-]
+    regex: ^releases?[/-]
     mode: ContinuousDelivery
     tag: beta
     increment: Patch
@@ -190,7 +207,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: true
   feature:
-    regex: features?[/-]
+    regex: ^features?[/-]
     mode: ContinuousDelivery
     tag: useBranchName
     increment: Inherit
@@ -199,7 +216,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
   pull-request:
-    regex: (pull|pull\-requests|pr)[/-]
+    regex: ^(pull|pull\-requests|pr)[/-]
     mode: ContinuousDelivery
     tag: PullRequest
     increment: Inherit
@@ -209,7 +226,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
   hotfix:
-    regex: hotfix(es)?[/-]
+    regex: ^hotfix(es)?[/-]
     mode: ContinuousDelivery
     tag: beta
     increment: Patch
@@ -218,7 +235,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
   support:
-    regex: support[/-]
+    regex: ^support[/-]
     mode: ContinuousDelivery
     tag: ''
     increment: Patch
@@ -227,7 +244,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
   develop:
-    regex: dev(elop)?(ment)?$
+    regex: ^dev(elop)?(ment)?$
     mode: ContinuousDeployment
     tag: unstable
     increment: Minor

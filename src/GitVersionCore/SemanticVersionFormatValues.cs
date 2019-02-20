@@ -107,9 +107,14 @@
             get { return _semver.BuildMetaData.Sha; }
         }
 
+        public string ShortSha
+        {
+            get { return _semver.BuildMetaData.ShortSha; }
+        }
+
         public string CommitDate
         {
-            get { return _semver.BuildMetaData.CommitDate.UtcDateTime.ToString("yyyy-MM-dd"); }
+            get { return _semver.BuildMetaData.CommitDate.UtcDateTime.ToString(_config.CommitDateFormat, CultureInfo.InvariantCulture); }
         }
 
         // TODO When NuGet 3 is released: public string NuGetVersionV3 { get { return ??; } }

@@ -4,7 +4,6 @@ namespace GitVersion.VersionCalculation
     using System.Linq;
     using System.Text.RegularExpressions;
     using BaseVersionCalculators;
-    using GitTools;
     using LibGit2Sharp;
 
     /// <summary>
@@ -57,7 +56,7 @@ namespace GitVersion.VersionCalculation
             if (releaseBranchConfig.Any())
             {
                 var releaseBranches = context.Repository.Branches
-                    .Where(b => releaseBranchConfig.Any(c => Regex.IsMatch(b.FriendlyName, c.Key)));
+                    .Where(b => releaseBranchConfig.Any(c => Regex.IsMatch(b.FriendlyName, c.Value.Regex)));
 
                 return releaseBranches
                     .SelectMany(b => GetReleaseVersion(context, b))
@@ -92,7 +91,7 @@ namespace GitVersion.VersionCalculation
             }
 
             return releaseVersionStrategy
-                .GetVersions(context, tagPrefixRegex, releaseBranch, repository)
+                .GetVersions(context, tagPrefixRegex, releaseBranch)
                 .Select(b => new BaseVersion(context, b.Source, true, b.SemanticVersion, baseSource, b.BranchNameOverride));
         }
     }

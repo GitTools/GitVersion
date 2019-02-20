@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+﻿﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle("GitVersionCore")]
@@ -10,4 +10,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("GitVersionCore.Tests")]
 [assembly: InternalsVisibleTo("GitVersionExe.Tests")]
 
-[assembly: AssemblyInformationalVersion("4.0.0-beta.12+1291.Branch.master.Sha.bc74ac2247d8a58053a33316334ada6b771a8455")]
+[assembly: AssemblyInformationalVersion("4.0.0+Branch.master.Sha.e715eb5dd515037d90a257f527e62442cae8c1c5")]

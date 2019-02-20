@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
     using System.Collections.Generic;
@@ -25,6 +25,12 @@
 
         [YamlMember(Alias = "assembly-informational-format")]
         public string AssemblyInformationalFormat { get; set; }
+
+        [YamlMember(Alias = "assembly-versioning-format")]
+        public string AssemblyVersioningFormat { get; set; }
+
+        [YamlMember(Alias = "assembly-file-versioning-format")]
+        public string AssemblyFileVersioningFormat { get; set; }
 
         [YamlMember(Alias = "mode")]
         public VersioningMode? VersioningMode { get; set; }
@@ -95,7 +101,7 @@
         {
             if (branchName == null) throw new ArgumentNullException(nameof(branchName));
             var matches = Branches
-                .Where(b => Regex.IsMatch(branchName, "^" + b.Value.Regex, RegexOptions.IgnoreCase));
+                .Where(b => Regex.IsMatch(branchName, b.Value.Regex, RegexOptions.IgnoreCase));
 
             try
             {
@@ -129,10 +135,15 @@
             return target;
         }
 
+        public bool IsReleaseBranch(string branchName) => GetConfigForBranch(branchName)?.IsReleaseBranch ?? false;
+
         [YamlMember(Alias = "ignore")]
         public IgnoreConfig Ignore { get; set; }
 
         [YamlMember(Alias = "increment")]
         public IncrementStrategy? Increment { get; set; }
+
+        [YamlMember(Alias = "commit-date-format")]
+        public string CommitDateFormat { get; set; }
     }
 }

@@ -1,14 +1,13 @@
-﻿using System;
-using System.ComponentModel;
-using GitTools.Git;
+using System;
 using GitTools.Testing;
+using GitVersion;
 using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class RemoteRepositoryScenarios
+public class RemoteRepositoryScenarios : TestBase
 {
     [Test]
     public void GivenARemoteGitRepositoryWithCommits_ThenClonedLocalShouldMatchRemoteVersion()

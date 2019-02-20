@@ -122,16 +122,19 @@
             var assemblyVersioningScheme = FullConfiguration.AssemblyVersioningScheme.Value;
             var assemblyFileVersioningScheme = FullConfiguration.AssemblyFileVersioningScheme.Value;
             var assemblyInformationalFormat = FullConfiguration.AssemblyInformationalFormat;
+            var assemblyVersioningFormat = FullConfiguration.AssemblyVersioningFormat;
+            var assemblyFileVersioningFormat = FullConfiguration.AssemblyFileVersioningFormat;
             var gitTagPrefix = FullConfiguration.TagPrefix;
             var majorMessage = FullConfiguration.MajorVersionBumpMessage;
             var minorMessage = FullConfiguration.MinorVersionBumpMessage;
             var patchMessage = FullConfiguration.PatchVersionBumpMessage;
             var noBumpMessage = FullConfiguration.NoBumpMessage;
+            var commitDateFormat = FullConfiguration.CommitDateFormat;
 
             var commitMessageVersionBump = currentBranchConfig.CommitMessageIncrementing ?? FullConfiguration.CommitMessageIncrementing.Value;
 
             Configuration = new EffectiveConfiguration(
-                assemblyVersioningScheme, assemblyFileVersioningScheme, assemblyInformationalFormat, versioningMode, gitTagPrefix,
+                assemblyVersioningScheme, assemblyFileVersioningScheme, assemblyInformationalFormat, assemblyVersioningFormat, assemblyFileVersioningFormat, versioningMode, gitTagPrefix,
                 tag, nextVersion, incrementStrategy,
                 currentBranchConfig.Regex,
                 preventIncrementForMergedBranchVersion,
@@ -144,7 +147,8 @@
                 FullConfiguration.CommitsSinceVersionSourcePadding.Value,
                 FullConfiguration.Ignore.ToFilters(),
                 currentBranchConfig.TracksReleaseBranches.Value,
-                currentBranchConfig.IsReleaseBranch.Value);
+                currentBranchConfig.IsReleaseBranch.Value,
+                commitDateFormat);
         }
 
         private static Branch GetTargetBranch(IRepository repository, string targetBranch)

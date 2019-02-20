@@ -73,13 +73,14 @@
         /// <returns>An ordered list of encodings and corresponding preambles.</returns>
         private static void ScanEncodings()
         {
-            EncodingsWithPreambles = (from info in Encoding.GetEncodings()
-                                          let encoding = info.GetEncoding()
-                                          let preamble = encoding.GetPreamble()
-                                          where preamble.Length > 0
-                                          orderby preamble.Length descending
-                                          select encoding).ToList();
-            
+            var encodings = (Encoding.GetEncodings());
+            EncodingsWithPreambles = (from info in encodings
+                                      let encoding = info.GetEncoding()
+                                      let preamble = encoding.GetPreamble()
+                                      where preamble.Length > 0
+                                      orderby preamble.Length descending
+                                      select encoding).ToList();
+
             var encodingWithLongestPreamble = EncodingsWithPreambles.FirstOrDefault();
             MaxPreambleLength = encodingWithLongestPreamble == null ? 0 : encodingWithLongestPreamble.GetPreamble().Length;
         }

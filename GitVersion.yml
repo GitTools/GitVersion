@@ -3,4 +3,6 @@ branches:
   master:
     tag: beta
 ignore:
-  sha: []
+  sha: 
+    - 0e77e2e16a136a1cd0f0474fe5710f617d508d81
+    - af73f6a349456f146a8d0a413de1331eddf61bc2

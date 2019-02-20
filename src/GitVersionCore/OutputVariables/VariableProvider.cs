@@ -1,7 +1,6 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
-    using System.ComponentModel;
     using System.Text.RegularExpressions;
     using GitVersion.VersionCalculation;
 
@@ -43,23 +42,14 @@
 
             var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, config);
 
-            string informationalVersion;
+            string informationalVersion = CheckAndFormatString(config.AssemblyInformationalFormat, semverFormatValues,
+                semverFormatValues.DefaultInformationalVersion, "AssemblyInformationalVersion");
 
-            if (string.IsNullOrEmpty(config.AssemblyInformationalFormat))
-            {
-                informationalVersion = semverFormatValues.DefaultInformationalVersion;
-            }
-            else
-            {
-                try
-                {
-                    informationalVersion = config.AssemblyInformationalFormat.FormatWith<SemanticVersionFormatValues>(semverFormatValues);
-                }
-                catch (ArgumentException formex)
-                {
-                    throw new WarningException(string.Format("Unable to format AssemblyInformationalVersion.  Check your format string: {0}", formex.Message));
-                }
-            }
+            string assemblyFileSemVer = CheckAndFormatString(config.AssemblyFileVersioningFormat, semverFormatValues,
+                semverFormatValues.AssemblyFileSemVer, "AssemblyFileVersioningFormat");
+
+            string assemblySemVer = CheckAndFormatString(config.AssemblyVersioningFormat, semverFormatValues,
+                semverFormatValues.AssemblySemVer, "AssemblyVersioningFormat");
 
             var variables = new VersionVariables(
                 semverFormatValues.Major,
@@ -70,13 +60,14 @@
                 semverFormatValues.FullBuildMetaData,
                 semverFormatValues.BranchName,
                 semverFormatValues.Sha,
+                semverFormatValues.ShortSha,
                 semverFormatValues.MajorMinorPatch,
                 semverFormatValues.SemVer,
                 semverFormatValues.LegacySemVer,
                 semverFormatValues.LegacySemVerPadded,
                 semverFormatValues.FullSemVer,
-                semverFormatValues.AssemblySemVer,
-                semverFormatValues.AssemblyFileSemVer,
+                assemblySemVer,
+                assemblyFileSemVer,
                 semverFormatValues.PreReleaseTag,
                 semverFormatValues.PreReleaseTagWithDash,
                 semverFormatValues.PreReleaseLabel,
@@ -99,6 +90,29 @@
             semanticVersion.PreReleaseTag.Number = semanticVersion.BuildMetaData.CommitsSinceTag;
             semanticVersion.BuildMetaData.CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag ?? 0;
             semanticVersion.BuildMetaData.CommitsSinceTag = null;
+        }
+
+        static string CheckAndFormatString<T>(string formatString, T source,  string defaultValue, string formatVarName)
+        {
+            string formattedString;
+
+            if (string.IsNullOrEmpty(formatString))
+            {
+                formattedString = defaultValue;
+            }
+            else
+            {
+                try
+                {
+                    formattedString = formatString.FormatWith(source);
+                }
+                catch (ArgumentException formex)
+                {
+                    throw new WarningException(string.Format("Unable to format {0}.  Check your format string: {1}", formatVarName, formex.Message));
+                }
+            }
+
+            return formattedString;
         }
     }
 }

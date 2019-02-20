@@ -3,8 +3,6 @@ namespace GitVersion
     using System;
     using System.IO;
     using System.Linq;
-    using GitTools.Git;
-    using GitTools.Logging;
     using LibGit2Sharp;
 
     public class GitPreparer
@@ -14,6 +12,8 @@ namespace GitVersion
         AuthenticationInfo authentication;
         bool noFetch;
         string targetPath;
+
+        const string defaultRemoteName = "origin";
 
         public GitPreparer(string targetPath) : this(null, null, null, false, targetPath) { }
         public GitPreparer(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, bool noFetch, string targetPath)
@@ -29,9 +29,6 @@ namespace GitVersion
                 };
             this.noFetch = noFetch;
             this.targetPath = targetPath.TrimEnd('/', '\\');
-
-            // GitTools has its own logging. So that it actually outputs something, it needs to be initialized.
-            LogProvider.SetCurrentLogProvider(new LoggerWrapper());
         }
 
         public string TargetUrl
@@ -76,10 +73,25 @@ namespace GitVersion
 
         private void CleanupDuplicateOrigin()
         {
+            var remoteToKeep = defaultRemoteName;
+
             var repo = new Repository(GetDotGitDirectory());
-            if (repo.Network.Remotes.Any(remote => remote.Name == "origin1"))
+
+            // check that we have a remote that matches defaultRemoteName if not take the first remote
+            if (!repo.Network.Remotes.Any(remote => remote.Name.Equals(defaultRemoteName, StringComparerUtils.IngoreCaseComparison)))
             {
-                repo.Network.Remotes.Remove("origin1");
+                remoteToKeep = repo.Network.Remotes.First().Name;
+            }
+
+            var duplicateRepos = repo.Network
+                                     .Remotes
+                                     .Where(remote => !remote.Name.Equals(remoteToKeep, StringComparerUtils.IngoreCaseComparison))
+                                     .Select(remote => remote.Name);
+
+            // remove all remotes that are considered duplicates
+            foreach (var repoName in duplicateRepos)
+            {
+                repo.Network.Remotes.Remove(repoName);
             }
         }
 

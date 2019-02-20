@@ -1,9 +1,10 @@
 using GitVersion;
 using GitVersion.Helpers;
+using GitVersionCore.Tests;
 using NUnit.Framework;
 using Shouldly;
 using System;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -11,7 +12,7 @@ using System.Runtime.CompilerServices;
 using YamlDotNet.Serialization;
 
 [TestFixture]
-public class ConfigProviderTests
+public class ConfigProviderTests : TestBase
 {
     private const string DefaultRepoPath = "c:\\MyGitRepo";
     private const string DefaultWorkingPath = "c:\\MyGitRepo\\Working";
@@ -26,6 +27,8 @@ public class ConfigProviderTests
         fileSystem = new TestFileSystem();
         repoPath = DefaultRepoPath;
         workingPath = DefaultWorkingPath;
+
+        ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
     }
 
     [Test]
@@ -73,6 +76,17 @@ branches:
         config.Branches["develop"].Increment.ShouldBe(defaultConfig.Branches["develop"].Increment);
         config.Branches["develop"].VersioningMode.ShouldBe(defaultConfig.Branches["develop"].VersioningMode);
         config.Branches["develop"].Tag.ShouldBe("dev");
+    }
+
+    [Test]
+    public void AllBranchesModeWhenUsingMainline()
+    {
+        var defaultConfig = ConfigurationProvider.Provide(repoPath, fileSystem);
+        const string text = @"mode: Mainline";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        var branches = config.Branches.Select(x => x.Value);
+        branches.All(branch => branch.VersioningMode == VersioningMode.Mainline).ShouldBe(true);
     }
 
     [Test]
@@ -348,5 +362,72 @@ branches:
 
         const string expectedMessage = @"'is-develop' is deprecated, use 'tracks-release-branches' instead.";
         exception.Message.ShouldContain(expectedMessage);
+    }
+
+    [Test]
+    public void ShouldUseSpecifiedSourceBranchesForDevelop()
+    {
+        var defaultConfig = ConfigurationProvider.Provide(repoPath, fileSystem);
+        const string text = @"
+next-version: 2.0.0
+branches:
+    develop:
+        mode: ContinuousDeployment
+        source-branches: ['develop']
+        tag: dev";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+
+        config.Branches["develop"].SourceBranches.ShouldBe(new List<string> { "develop" });
+    }
+
+    [Test]
+    public void ShouldUseDefaultSourceBranchesWhenNotSpecifiedForDevelop()
+    {
+        var defaultConfig = ConfigurationProvider.Provide(repoPath, fileSystem);
+        const string text = @"
+next-version: 2.0.0
+branches:
+    develop:
+        mode: ContinuousDeployment
+        tag: dev";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+
+        config.Branches["develop"].SourceBranches.ShouldBe(new List<string>());
+    }
+
+    [Test]
+    public void ShouldUseSpecifiedSourceBranchesForFeature()
+    {
+        var defaultConfig = ConfigurationProvider.Provide(repoPath, fileSystem);
+        const string text = @"
+next-version: 2.0.0
+branches:
+    feature:
+        mode: ContinuousDeployment
+        source-branches: ['develop', 'release']
+        tag: dev";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+
+        config.Branches["feature"].SourceBranches.ShouldBe(new List<string> { "develop", "release" });
+    }
+
+    [Test]
+    public void ShouldUseDefaultSourceBranchesWhenNotSpecifiedForFeature()
+    {
+        var defaultConfig = ConfigurationProvider.Provide(repoPath, fileSystem);
+        const string text = @"
+next-version: 2.0.0
+branches:
+    feature:
+        mode: ContinuousDeployment
+        tag: dev";
+        SetupConfigFileContent(text);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+
+        config.Branches["feature"].SourceBranches.ShouldBe(
+            new List<string> { "develop", "master", "release", "feature", "support", "hotfix" });
     }
 }
