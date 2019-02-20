@@ -1,9 +1,7 @@
-﻿using System.Threading.Tasks;
-
-namespace GitVersion.Helpers
+﻿namespace GitVersion.Helpers
 {
     public interface IThreadSleep
     {
-        Task SleepAsync(int milliseconds);
+        void Sleep(int milliseconds);
     }
 }

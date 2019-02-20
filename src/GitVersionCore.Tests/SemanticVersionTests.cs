@@ -1,10 +1,9 @@
 using GitVersion;
-using GitVersionCore.Tests;
 using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class SemanticVersionTests : TestBase
+public class SemanticVersionTests
 {
 
     [TestCase("1.2.3", 1, 2, 3, null, null, null, null, null, null, null, null)]

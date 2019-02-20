@@ -1,6 +1,7 @@
-namespace GitVersionCore.Tests
+﻿namespace GitVersionCore.Tests
 {
     using System;
+    using GitTools;
     using GitTools.Testing;
     using GitVersion;
     using LibGit2Sharp;

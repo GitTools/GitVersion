@@ -2,13 +2,13 @@
 using System.Text;
 
 using GitVersion.Helpers;
-using GitVersionCore.Tests;
+
 using NUnit.Framework;
 
 using Shouldly;
 
 [TestFixture]
-public class FileSystemTests : TestBase
+public class FileSystemTests
 {
     public string TempFilePath { get; set; }
 

@@ -1,4 +1,4 @@
-namespace GitVersionExe.Tests
+﻿namespace GitVersionExe.Tests
 {
     using System;
     using System.IO;
@@ -42,7 +42,7 @@ namespace GitVersionExe.Tests
 
             var asmDef = AssemblyDefinition.CreateAssembly(definition, "test-asm", ModuleKind.Dll);
             var constructor = typeof(AssemblyInformationalVersionAttribute).GetConstructor(new[] { typeof(string) });
-            var methodReference = asmDef.MainModule.ImportReference(constructor);
+            var methodReference = asmDef.MainModule.Import(constructor);
             var customAttribute = new CustomAttribute(methodReference);
             customAttribute.ConstructorArguments.Add(new CustomAttributeArgument(asmDef.MainModule.TypeSystem.String, fileVersion + prereleaseInfo));
             asmDef.CustomAttributes.Add(customAttribute);

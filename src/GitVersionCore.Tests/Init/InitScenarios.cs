@@ -9,7 +9,7 @@
     using TestStack.ConventionTests.ConventionData;
 
     [TestFixture]
-    public class InitScenarios : TestBase
+    public class InitScenarios
     {
         [SetUp]
         public void Setup()

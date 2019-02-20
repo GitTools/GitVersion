@@ -6,7 +6,7 @@ using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-public class BuildServerBaseTests  : TestBase
+public class BuildServerBaseTests 
 {
     [Test]
     public void BuildNumberIsFullSemVer()

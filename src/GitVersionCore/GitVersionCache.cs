@@ -45,7 +45,7 @@ namespace GitVersion
             };
 
             var retryOperation = new OperationWithExponentialBackoff<IOException>(new ThreadSleep(), writeCacheOperation, maxRetries: 6);
-            retryOperation.ExecuteAsync().Wait();
+            retryOperation.Execute();
         }
 
         public static string GetCacheDirectory(GitPreparer gitPreparer)

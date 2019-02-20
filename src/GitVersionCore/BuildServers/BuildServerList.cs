@@ -15,7 +15,6 @@
             new GitLabCi(),
             new VsoAgent(),
             new TravisCI(),
-            new EnvRun(),
         };
 
         public static IEnumerable<IBuildServer> GetApplicableBuildServers()

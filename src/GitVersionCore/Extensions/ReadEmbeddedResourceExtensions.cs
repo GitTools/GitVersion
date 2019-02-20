@@ -24,7 +24,6 @@
         public static Stream ReadFromEmbeddedResource<T>(this string resourceName)
         {
             var assembly = typeof(T).Assembly;
-
             return assembly.GetManifestResourceStream(resourceName);
         }
     }

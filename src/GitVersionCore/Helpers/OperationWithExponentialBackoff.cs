@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace GitVersion.Helpers
 {
@@ -22,7 +21,7 @@ namespace GitVersion.Helpers
             this.MaxRetries = maxRetries;
         }
 
-        public async Task ExecuteAsync()
+        public void Execute()
         {
             var exceptions = new List<Exception>();
 
@@ -48,8 +47,7 @@ namespace GitVersion.Helpers
                 }
 
                 Logger.WriteInfo(string.Format("Operation failed, retrying in {0} milliseconds.", sleepMSec));
-                await ThreadSleep.SleepAsync(sleepMSec);
-
+                ThreadSleep.Sleep(sleepMSec);
                 sleepMSec *= 2;
             }
         }

@@ -3,7 +3,7 @@ using GitVersionCore.Tests;
 using NUnit.Framework;
 
 [TestFixture]
-public class ContinuaCiTests : TestBase
+public class ContinuaCiTests
 {
 
     [Test]

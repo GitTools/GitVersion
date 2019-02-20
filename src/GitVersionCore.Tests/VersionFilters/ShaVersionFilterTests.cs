@@ -8,7 +8,7 @@ using Shouldly;
 namespace GitVersionCore.Tests.VersionFilters
 {
     [TestFixture]
-    public class ShaVersionFilterTests : TestBase
+    public class ShaVersionFilterTests
     {
         [Test]
         public void VerifyNullGuard()

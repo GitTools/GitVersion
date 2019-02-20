@@ -8,7 +8,7 @@ using YamlDotNet.Core;
 namespace GitVersionCore.Tests.Configuration
 {
     [TestFixture]
-    public class IgnoreConfigTests : TestBase
+    public class IgnoreConfigTests
     {
         [Test]
         public void CanDeserialize()

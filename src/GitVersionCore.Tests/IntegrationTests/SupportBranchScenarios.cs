@@ -4,7 +4,7 @@ using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
-public class SupportBranchScenarios : TestBase
+public class SupportBranchScenarios
 {
     [Test]
     public void SupportIsCalculatedCorrectly()

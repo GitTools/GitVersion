@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using GitVersion;
 using GitVersion.Helpers;
 using GitVersionCore.Tests;
@@ -9,7 +10,6 @@ using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-[Parallelizable(ParallelScope.None)]
 public class AssemblyInfoFileUpdaterTests
 {
     [SetUp]
@@ -431,29 +431,6 @@ public class AssemblyInfoFileUpdaterTests
         });
     }
 
-    [TestCase("cs", "[assembly: AssemblyVersion(\"1.0.0.0\")]\r\n[assembly: AssemblyFileVersion(\"1.0.0.0\")]\r\n// comment\r\n")]
-    [TestCase("fs", "[<assembly: AssemblyVersion(\"1.0.0.0\")>]\r\n[<assembly: AssemblyFileVersion(\"1.0.0.0\")>]\r\ndo\r\n()\r\n")]
-    [TestCase("vb", "<Assembly: AssemblyVersion(\"1.0.0.0\")>\r\n<Assembly: AssemblyFileVersion(\"1.0.0.0\")>\r\n' comment\r\n")]
-    [Category("NoMono")]
-    [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
-    public void Issue1183_ShouldAddFSharpAssemblyInformationalVersionBesideOtherAttributes(string fileExtension, string assemblyFileContent)
-    {
-        var workingDir = Path.GetTempPath();
-        var assemblyInfoFile = "AssemblyInfo." + fileExtension;
-        var fileName = Path.Combine(workingDir, assemblyInfoFile);
-
-        VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
-        {
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
-            {
-                assemblyInfoFileUpdater.Update();
-
-                assemblyFileContent = fileSystem.ReadAllText(fileName);
-                assemblyFileContent.ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
-            }
-        });
-    }
-
     [TestCase("cs", "[assembly: AssemblyFileVersion(\"1.0.0.0\")]")]
     [TestCase("fs", "[<assembly: AssemblyFileVersion(\"1.0.0.0\")>]")]
     [TestCase("vb", "<Assembly: AssemblyFileVersion(\"1.0.0.0\")>")]
@@ -486,7 +463,7 @@ public class AssemblyInfoFileUpdaterTests
         var fileSystem = Substitute.For<IFileSystem>();
         var version = new SemanticVersion
         {
-            BuildMetaData = new SemanticVersionBuildMetaData(3, "foo", "hash", "shortHash", DateTimeOffset.Now),
+            BuildMetaData = new SemanticVersionBuildMetaData(3, "foo", "hash", DateTimeOffset.Now),
             Major = 2,
             Minor = 3,
             Patch = 1

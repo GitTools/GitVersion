@@ -8,7 +8,7 @@ using Shouldly;
 using System.Reflection;
 
 [TestFixture]
-public class JenkinsMessageGenerationTests : TestBase
+public class JenkinsMessageGenerationTests
 {
     [Test]
     public void GenerateSetVersionMessageReturnsVersionAsIs_AlthoughThisIsNotUsedByJenkins()

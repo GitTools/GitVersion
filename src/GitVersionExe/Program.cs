@@ -3,6 +3,7 @@ namespace GitVersion
     using GitVersion.Helpers;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
@@ -69,21 +70,19 @@ namespace GitVersion
                     HelpWriter.Write();
                     return 0;
                 }
-
                 if (arguments.Diag)
                 {
                     arguments.NoCache = true;
                     arguments.Output = OutputType.BuildServer;
-                }
+                } 
 
                 ConfigureLogging(arguments);
-#if NETDESKTOP
+
                 if (arguments.Diag)
                 {
                     Logger.WriteInfo("Dumping commit graph: ");
-                    LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
+                    GitTools.LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
                 }
-#endif
                 if (!Directory.Exists(arguments.TargetPath))
                 {
                     Logger.WriteWarning(string.Format("The working directory '{0}' does not exist.", arguments.TargetPath));
@@ -131,9 +130,7 @@ namespace GitVersion
 
                     try
                     {
-#if NETDESKTOP
-                        LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
-#endif
+                        GitTools.LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
                     }
                     catch (Exception dumpGraphException)
                     {

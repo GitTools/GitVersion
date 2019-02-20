@@ -19,7 +19,6 @@
   "InformationalVersion":"1.2.3+5.Sha.commitSha",
   "BranchName":"",
   "Sha":"commitSha",
-  "ShortSha":"commitShortSha",
   "NuGetVersionV2":"1.2.3",
   "NuGetVersion":"1.2.3",
   "NuGetPreReleaseTagV2":"",

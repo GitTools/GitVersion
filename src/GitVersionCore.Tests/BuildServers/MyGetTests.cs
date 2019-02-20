@@ -3,7 +3,7 @@ using GitVersionCore.Tests;
 using NUnit.Framework;
 
 [TestFixture]
-public class MyGetTests : TestBase
+public class MyGetTests
 {
     [Test]
     public void Develop_branch()

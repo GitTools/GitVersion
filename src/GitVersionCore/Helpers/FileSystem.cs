@@ -86,8 +86,8 @@ namespace GitVersion.Helpers
         public bool PathsEqual(string path, string otherPath)
         {
             var comparison = runningOnMono
-             ? StringComparerUtils.CaseSensitiveComparison
-             : StringComparerUtils.IngoreCaseComparison;
+                ? StringComparison.InvariantCulture
+                : StringComparison.InvariantCultureIgnoreCase;
 
             return string.Equals(
                 Path.GetFullPath(path).TrimEnd('\\').TrimEnd('/'),

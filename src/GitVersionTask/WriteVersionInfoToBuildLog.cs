@@ -1,8 +1,11 @@
-namespace GitVersionTask
+﻿namespace GitVersionTask
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
+
     using GitVersion;
+
     using Microsoft.Build.Framework;
 
     public class WriteVersionInfoToBuildLog : GitVersionTaskBase

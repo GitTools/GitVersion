@@ -1,8 +1,7 @@
-namespace GitVersion.VersionCalculation.BaseVersionCalculators
+﻿namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text.RegularExpressions;
     using LibGit2Sharp;
 
     /// <summary>
@@ -19,14 +18,13 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
             var baseVersions = commitsPriorToThan
                 .SelectMany(c =>
                 {
-                    if (TryParse(c, context, out var mergeMessage) &&
-                        mergeMessage.Version != null &&
-                        context.FullConfiguration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
+                    SemanticVersion semanticVersion;
+                    if (TryParse(c, context, out semanticVersion))
                     {
                         var shouldIncrement = !context.Configuration.PreventIncrementForMergedBranchVersion;
                         return new[]
                         {
-                            new BaseVersion(context, $"Merge message '{c.Message.Trim()}'", shouldIncrement, mergeMessage.Version, c, null)
+                            new BaseVersion(context, string.Format("Merge message '{0}'", c.Message.Trim()), shouldIncrement, semanticVersion, c, null)
                         };
                     }
                     return Enumerable.Empty<BaseVersion>();
@@ -34,13 +32,13 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
             return baseVersions;
         }
 
-        static bool TryParse(Commit mergeCommit, GitVersionContext context, out MergeMessage mergeMessage)
+        static bool TryParse(Commit mergeCommit, GitVersionContext context, out SemanticVersion semanticVersion)
         {
-            mergeMessage = Inner(mergeCommit, context);
-            return mergeMessage != null;
+            semanticVersion = Inner(mergeCommit, context);
+            return semanticVersion != null;
         }
 
-        static MergeMessage Inner(Commit mergeCommit, GitVersionContext context)
+        static SemanticVersion Inner(Commit mergeCommit, GitVersionContext context)
         {
             if (mergeCommit.Parents.Count() < 2)
             {
@@ -48,11 +46,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
             }
 
             var mergeMessage = new MergeMessage(mergeCommit.Message, context.FullConfiguration);
-            return mergeMessage;
+            return mergeMessage.Version;
         }
-
-        static string TrimRemote(string branchName) => branchName
-            .RegexReplace("^refs/remotes/", string.Empty, RegexOptions.IgnoreCase)
-            .RegexReplace("^origin/", string.Empty, RegexOptions.IgnoreCase);
     }
 }

@@ -7,7 +7,7 @@
     using Shouldly;
     using System.Collections.Generic;
 
-    public class GitVersionContextTests : TestBase
+    public class GitVersionContextTests
     {
         [Test]
         [Theory]

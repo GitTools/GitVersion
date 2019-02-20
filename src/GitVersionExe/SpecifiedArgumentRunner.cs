@@ -1,9 +1,11 @@
 namespace GitVersion
 {
+    using GitTools;
     using GitVersion.Helpers;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using WarningException = System.ComponentModel.WarningException;
 
     class SpecifiedArgumentRunner
     {
@@ -68,13 +70,9 @@ namespace GitVersion
                 {
                     assemblyInfoUpdater.Update();
                 }
-                var execRun = false;
-                var msbuildRun = false;
-#if NETDESKTOP
-                execRun = RunExecCommandIfNeeded(arguments, targetPath, variables);
-                msbuildRun = RunMsBuildIfNeeded(arguments, targetPath, variables);
-#endif
 
+                var execRun = RunExecCommandIfNeeded(arguments, targetPath, variables);
+                var msbuildRun = RunMsBuildIfNeeded(arguments, targetPath, variables);
                 if (!execRun && !msbuildRun)
                 {
                     assemblyInfoUpdater.CommitChanges();
@@ -88,11 +86,9 @@ namespace GitVersion
                 }
             }
         }
-#if NETDESKTOP
+
         static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
         {
-
-
             if (string.IsNullOrEmpty(args.Proj)) return false;
 
             Logger.WriteInfo(string.Format("Launching build tool {0} \"{1}\" {2}", BuildTool, args.Proj, args.ProjArgs));
@@ -106,7 +102,6 @@ namespace GitVersion
 
             return true;
         }
-
 
         static bool RunExecCommandIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
         {
@@ -123,7 +118,7 @@ namespace GitVersion
 
             return true;
         }
-#endif
+
         static KeyValuePair<string, string>[] GetEnvironmentalVariables(VersionVariables variables)
         {
             return variables

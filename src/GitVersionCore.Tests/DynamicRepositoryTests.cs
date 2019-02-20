@@ -1,10 +1,9 @@
 ﻿using System.IO;
 using GitVersion;
-using GitVersionCore.Tests;
 using NUnit.Framework;
 
 [TestFixture]
-public class DynamicRepositoryTests : TestBase
+public class DynamicRepositoryTests
 {
     string workDirectory;
 

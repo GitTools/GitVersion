@@ -1,4 +1,4 @@
-namespace GitVersion
+﻿namespace GitVersion
 {
     using System.IO;
 

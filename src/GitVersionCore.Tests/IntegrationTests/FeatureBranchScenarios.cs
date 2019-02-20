@@ -6,7 +6,7 @@ using LibGit2Sharp;
 using NUnit.Framework;
 
 [TestFixture]
-public class FeatureBranchScenarios : TestBase
+public class FeatureBranchScenarios
 {
     [Test]
     public void ShouldInheritIncrementCorrectlyWithMultiplePossibleParentsAndWeirdlyNamedDevelopBranch()

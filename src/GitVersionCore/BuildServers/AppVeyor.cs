@@ -23,14 +23,7 @@
 
             var data = string.Format("{{ \"version\": \"{0}.build.{1}\" }}", variables.FullSemVer, buildNumber);
             var bytes = Encoding.UTF8.GetBytes(data);
-            if (request.Headers == null)
-            {
-                request.Headers = new WebHeaderCollection();
-            }
-            var bytesLength = bytes.Length;
-            // request.Headers["Content-Length"] = bytesLength.ToString();
-
-            // request.ContentLength = bytes.Length;
+            request.ContentLength = bytes.Length;
             request.ContentType = "application/json";
 
             using (var writeStream = request.GetRequestStream())
@@ -67,6 +60,5 @@
                 string.Format("Adding Environment Variable. name='GitVersion_{0}' value='{1}']", name, value)
             };
         }
-
     }
 }

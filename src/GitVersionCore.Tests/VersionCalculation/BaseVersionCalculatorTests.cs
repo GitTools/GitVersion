@@ -12,7 +12,7 @@
     using Shouldly;
 
     [TestFixture]
-    public class BaseVersionCalculatorTests : TestBase
+    public class BaseVersionCalculatorTests
     {
         [Test]
         public void ChoosesHighestVersionReturnedFromStrategies()

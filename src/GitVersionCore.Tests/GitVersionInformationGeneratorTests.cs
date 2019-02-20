@@ -1,5 +1,9 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using GitVersion;
 using NUnit.Framework;
 using Shouldly;
@@ -7,7 +11,6 @@ using Shouldly;
 namespace GitVersionCore.Tests
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.None)]
     public class GitVersionInformationGeneratorTests
     {
         [SetUp]
@@ -35,7 +38,7 @@ namespace GitVersionCore.Tests
                 Patch = 3,
                 PreReleaseTag = "unstable4",
                 BuildMetaData = new SemanticVersionBuildMetaData(5,
-                    "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
+                    "feature1", "commitSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
             };
 
             var variables = VariableProvider.GetVariablesFor(semanticVersion, new TestEffectiveConfiguration(), false);

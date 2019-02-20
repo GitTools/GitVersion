@@ -1,12 +1,12 @@
-namespace GitVersion.Helpers
+﻿namespace GitVersion.Helpers
 {
-    using System.Threading.Tasks;
+    using System.Threading;
 
     internal class ThreadSleep : IThreadSleep
     {
-        public async Task SleepAsync(int milliseconds)
+        public void Sleep(int milliseconds)
         {
-            await Task.Delay(milliseconds);
+            Thread.Sleep(milliseconds);
         }
     }
 }

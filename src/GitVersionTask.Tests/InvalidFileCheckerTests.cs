@@ -1,12 +1,12 @@
-using System;
+﻿using System;
+using System.ComponentModel;
 using System.IO;
-using GitVersion;
 using GitVersionTask.Tests.Mocks;
 using Microsoft.Build.Framework;
 using NUnit.Framework;
 
 [TestFixture]
-public class InvalidFileCheckerTests : TestBase
+public class InvalidFileCheckerTests
 {
     string projectDirectory;
     string projectFile;

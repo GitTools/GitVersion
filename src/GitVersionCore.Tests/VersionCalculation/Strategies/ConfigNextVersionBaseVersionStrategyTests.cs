@@ -7,7 +7,7 @@
     using Shouldly;
 
     [TestFixture]
-    public class ConfigNextVersionBaseVersionStrategyTests : TestBase
+    public class ConfigNextVersionBaseVersionStrategyTests
     {
         [Test]
         public void ShouldNotBeIncremented()

@@ -12,13 +12,6 @@ namespace GitVersion
         readonly List<Action> restoreBackupTasks = new List<Action>();
         readonly List<Action> cleanupBackupTasks = new List<Action>();
 
-        readonly IDictionary<string, Regex> assemblyAttributeRegexes = new Dictionary<string, Regex>
-        {
-            {".cs", new Regex( @"(\s*\[\s*assembly:\s*(?:.*)\s*\]\s*$(\r?\n)?)", RegexOptions.Multiline) },
-            {".fs", new Regex( @"(\s*\[\s*\<assembly:\s*(?:.*)\>\s*\]\s*$(\r?\n)?)", RegexOptions.Multiline) },
-            {".vb", new Regex( @"(\s*\<Assembly:\s*(?:.*)\>\s*$(\r?\n)?)", RegexOptions.Multiline) },
-        };
-
         ISet<string> assemblyInfoFileNames;
         string workingDirectory;
         VersionVariables variables;
@@ -27,7 +20,7 @@ namespace GitVersion
         TemplateManager templateManager;
 
         public AssemblyInfoFileUpdater(string assemblyInfoFileName, string workingDirectory, VersionVariables variables, IFileSystem fileSystem, bool ensureAssemblyInfo) :
-                this(new HashSet<string> { assemblyInfoFileName }, workingDirectory, variables, fileSystem, ensureAssemblyInfo)
+            this(new HashSet<string> { assemblyInfoFileName }, workingDirectory, variables, fileSystem, ensureAssemblyInfo)
         { }
 
         public AssemblyInfoFileUpdater(ISet<string> assemblyInfoFileNames, string workingDirectory, VersionVariables variables, IFileSystem fileSystem, bool ensureAssemblyInfo)
@@ -84,15 +77,15 @@ namespace GitVersion
 
                 if (!string.IsNullOrWhiteSpace(assemblyVersion))
                 {
-                    fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(assemblyVersionRegex, fileContents, assemblyVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
+                    fileContents = ReplaceOrAppend(assemblyVersionRegex, fileContents, assemblyVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
                 }
 
                 if (!string.IsNullOrWhiteSpace(assemblyFileVersion))
                 {
-                    fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(assemblyFileVersionRegex, fileContents, assemblyFileVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
+                    fileContents = ReplaceOrAppend(assemblyFileVersionRegex, fileContents, assemblyFileVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
                 }
 
-                fileContents = ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(assemblyInfoVersionRegex, fileContents, assemblyInfoVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
+                fileContents = ReplaceOrAppend(assemblyInfoVersionRegex, fileContents, assemblyInfoVersionString, assemblyInfoFile.Extension, ref appendedAttributes);
 
                 if (appendedAttributes)
                 {
@@ -107,32 +100,20 @@ namespace GitVersion
             }
         }
 
-        string ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(Regex replaceRegex, string inputString, string replaceString, string fileExtension, ref bool appendedAttributes)
+        string ReplaceOrAppend(Regex replaceRegex, string inputString, string replaceString, string fileExtension, ref bool appendedAttributes)
         {
             var assemblyAddFormat = templateManager.GetAddFormatFor(fileExtension);
 
             if (replaceRegex.IsMatch(inputString))
             {
-                return replaceRegex.Replace(inputString, replaceString);
+                inputString = replaceRegex.Replace(inputString, replaceString);
+            }
+            else
+            {
+                inputString += Environment.NewLine + string.Format(assemblyAddFormat, replaceString);
+                appendedAttributes = true;
             }
 
-            Regex assemblyRegex;
-            if (assemblyAttributeRegexes.TryGetValue(fileExtension, out assemblyRegex))
-            {
-                var assemblyMatches = assemblyRegex.Matches(inputString);
-                if (assemblyMatches.Count > 0)
-                {
-                    var lastMatch = assemblyMatches[assemblyMatches.Count - 1];
-                    var replacementString = lastMatch.Value;
-                    if (!lastMatch.Value.EndsWith(Environment.NewLine)) replacementString += Environment.NewLine;
-                    replacementString += string.Format(assemblyAddFormat, replaceString);
-                    replacementString += Environment.NewLine;
-                    return inputString.Replace(lastMatch.Value, replacementString);
-                }
-            }
-			
-            inputString += Environment.NewLine + string.Format(assemblyAddFormat, replaceString);
-            appendedAttributes = true;
             return inputString;
         }
 

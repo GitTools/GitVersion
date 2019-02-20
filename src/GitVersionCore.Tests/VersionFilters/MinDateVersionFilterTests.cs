@@ -8,7 +8,7 @@ using System;
 namespace GitVersionCore.Tests.VersionFilters
 {
     [TestFixture]
-    public class MinDateVersionFilterTests : TestBase
+    public class MinDateVersionFilterTests
     {
         [Test]
         public void VerifyNullGuard()

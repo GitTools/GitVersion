@@ -3,6 +3,7 @@ namespace GitVersion
     using System;
     using System.Collections.Generic;
     using System.Collections.Specialized;
+    using System.ComponentModel;
     using System.IO;
     using System.Linq;
 
@@ -134,7 +135,6 @@ namespace GitVersion
                     continue;
                 }
 
-
                 if (name.IsSwitch("execargs"))
                 {
                     EnsureArgumentValueCount(values);
@@ -165,6 +165,7 @@ namespace GitVersion
                     }
                     continue;
                 }
+
 
                 if (name.IsSwitch("updateAssemblyInfo"))
                 {

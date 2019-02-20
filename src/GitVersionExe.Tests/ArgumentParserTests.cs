@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Shouldly;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 [TestFixture]
 public class ArgumentParserTests

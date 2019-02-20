@@ -1,6 +1,7 @@
-namespace GitVersionTask
+﻿namespace GitVersionTask
 {
     using System;
+    using System.ComponentModel;
     using GitVersion;
 
     using Microsoft.Build.Framework;
@@ -79,9 +80,6 @@ namespace GitVersionTask
 
         [Output]
         public string Sha { get; set; }
-
-        [Output]
-        public string ShortSha { get; set; }
 
         [Output]
         public string NuGetVersionV2 { get; set; }

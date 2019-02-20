@@ -1,14 +1,13 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
+using GitTools;
 using GitTools.Testing;
 using GitVersion;
-using GitVersion.Helpers;
 using NUnit.Framework;
 using Shouldly;
 
 [TestFixture]
-[Parallelizable(ParallelScope.None)]
 public class ExecCmdLineArgumentTest
 {
     [Test]

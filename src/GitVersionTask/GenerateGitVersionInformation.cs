@@ -1,6 +1,7 @@
-namespace GitVersionTask
+﻿namespace GitVersionTask
 {
     using System;
+    using System.ComponentModel;
     using System.IO;
     using GitVersion;
     using GitVersion.Helpers;

@@ -1,13 +1,14 @@
-namespace GitVersionCore.Tests
+﻿namespace GitVersionCore.Tests
 {
     using System;
+    using GitTools;
     using GitTools.Testing;
     using GitVersion;
     using NUnit.Framework;
     using Shouldly;
 
     [TestFixture]
-    public class GitRepoMetadataProviderTests : TestBase
+    public class GitRepoMetadataProviderTests
     {
         [Test]
         public void FindsCorrectMergeBaseForForwardMerge()

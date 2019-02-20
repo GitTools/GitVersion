@@ -6,7 +6,7 @@ using Shouldly;
 namespace GitVersionCore.Tests
 {
     [TestFixture]
-    public class LoggerTest : TestBase
+    public class LoggerTest
     {
         [Test]
         [TestCase("http")]

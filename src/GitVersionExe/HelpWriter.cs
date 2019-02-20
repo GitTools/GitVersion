@@ -16,7 +16,6 @@ namespace GitVersion
             Assembly assembly = Assembly.GetExecutingAssembly();
             VersionWriter.WriteTo(assembly, v => version = v);
 
-
             string message = "GitVersion " + version + @"
 Use convention to derive a SemVer product version from a GitFlow or GitHub based repository.
 
@@ -38,7 +37,7 @@ GitVersion [path]
                     Currently supported config overrides: tag-prefix
     /nocache        Bypasses the cache, result will not be written to the cache.
 
- # AssemblyInfo updating
+    # AssemblyInfo updating
     /updateassemblyinfo
                     Will recursively search for all 'AssemblyInfo.cs' files in the git repo and update them
     /updateassemblyinfofilename
@@ -54,9 +53,7 @@ GitVersion [path]
                    All the GitVersion variables are written to 'GitVersion_WixVersion.wxi'.
                    The variables can then be referenced in other WiX project files for versioning.
 
-   
-
-# Remote repository args
+    # Remote repository args
     /url            Url to remote git repository.
     /b              Name of the branch to use on the remote repository, must be used in combination with /url.
     /u              Username in case authentication is required.
@@ -66,7 +63,7 @@ GitVersion [path]
                     By default dynamic repositories will be cloned to %tmp%. Use this switch to override
     /nofetch        Disables 'git fetch' during version calculation. Might cause GitVersion to not calculate your version as expected.
     
-# Execute build args
+    # Execute build args
     /exec           Executes target executable making GitVersion variables available as environmental variables
     /execargs       Arguments for the executable specified by /exec
     /proj           Build a msbuild file, GitVersion variables will be passed as msbuild properties
@@ -76,7 +73,6 @@ GitVersion [path]
 
 gitversion init     Configuration utility for gitversion
 ";
-
 
             writeAction(message);
         }

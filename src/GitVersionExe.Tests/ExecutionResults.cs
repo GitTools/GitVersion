@@ -1,6 +1,6 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Web.Script.Serialization;
 using GitVersion;
-using Newtonsoft.Json;
 
 public class ExecutionResults
 {
@@ -19,7 +19,7 @@ public class ExecutionResults
     {
         get
         {
-            var outputVariables = JsonConvert.DeserializeObject<Dictionary<string, string>>(Output);
+            var outputVariables = new JavaScriptSerializer().Deserialize<Dictionary<string, string>>(Output);
             return VersionVariables.FromDictionary(outputVariables);
         }
     }
