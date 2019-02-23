@@ -14,7 +14,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
     {
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
-            if (!context.Configuration.UseMergeMessageVersion)
+            if (!context.Configuration.MergeMessageVersion)
             {
                 return Enumerable.Empty<BaseVersion>();
             }
