@@ -1,6 +1,6 @@
-# Team Foundation Build (vNext) Setup
+# TFS Build or Azure DevOps Pipeline Setup
 ## Basic Usage
-In Team Foundation Build (the web based build system) you can call GitVersion either using the Command Line build step or install an extension / custom build step. The custom build step requires a one-time setup to import the GitVersion task into your TFS or VSTS instance.
+In Azure DevOps Pipeline (the web based build system) you can call GitVersion either using the Command Line build step or install an extension / custom build step. The custom build step requires a one-time setup to import the GitVersion task into your TFS or Azure DevOps Pipeline instance.
 
 ## Executing GitVersion
 ### Using GitVersion with the MSBuild Task NuGet Package
@@ -14,7 +14,7 @@ See [MSBuild Task](/usage/msbuild-task) for further instructions how to use the 
 3. Set the Tool parameter to `<pathToGitVersion>\GitVersion.exe`.
 4. Set the Arguments parameter to `/output buildserver /nofetch`.
 5. If you want the GitVersionTask to update AssemblyInfo files add `updateAssemblyInfo true` to the Arguments parameter.
-6. If you want to update the build number you need to send a [logging command](https://github.com/Microsoft/vso-agent-tasks/blob/master/docs/authoring/commands.md) to TFS.
+6. If you want to update the build number you need to send a [logging command](https://github.com/Microsoft/azure-pipelines-tasks/blob/master/docs/authoring/commands.md) to TFS.
 
 ### Using the custom GitVersion build step
 #### Installing
@@ -36,7 +36,7 @@ From a TFS build definition, select "Add a Step" and then in the Build category,
 
 If you want the GitVersionTask to update AssemblyInfo files, check the box in the task configuration. For advanced usage, you can pass additional options to the GitVersion exe in the Additional arguments section.
 
-The VSO build step can update your build number with GitVersion variables. See below for details.
+The Azure DevOps Pipeline build step can update your build number with GitVersion variables. See below for details.
 
 
 ## Running inside TFS
@@ -68,6 +68,6 @@ Just checking the `Clean Repository` check box in the build definition settings 
 You can force deletion of the whole folder and a re-clone containing all tags by settings the variable `Build.Clean` to `all`.
 This will take more time during build but makes sure that all tags are fetched.
 In the future it is planned to allow using `git.exe` instead of current `libgit2sharp` for syncing the repos which might allow other possibilities to solve this issue.
-For details see this [GitHub issue](https://github.com/Microsoft/vso-agent-tasks/issues/1218).
+For details see this [GitHub issue](https://github.com/Microsoft/azure-pipelines-tasks/issues/1218).
 * If running a build for a certain commit (through passing the commit SHA while queueing the build) all tags from the repository will be fetched, even the ones newer than the commit.
 This can lead to different version numbers while re-running historical builds.

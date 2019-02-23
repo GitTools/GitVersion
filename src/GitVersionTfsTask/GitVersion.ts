@@ -12,10 +12,13 @@ export class GitVersionTask {
             const updateAssemblyInfo = tl.getBoolInput('updateAssemblyInfo');
             const updateAssemblyInfoFilename = tl.getInput('updateAssemblyInfoFilename');
             const additionalArguments = tl.getInput('additionalArguments');
+            const targetPath = tl.getInput('targetPath');
             const preferBundledVersion = tl.getBoolInput('preferBundledVersion');
 
             const currentDirectory = __dirname;
-            const sourcesDirectory = tl.getVariable("Build.SourcesDirectory") || ".";
+            const workingDirectory = !targetPath
+                    ? tl.getVariable("Build.SourcesDirectory")
+                    : path.join(tl.getVariable("Build.SourcesDirectory"), targetPath);
 
             let gitVersionPath = tl.getInput('gitVersionPath');
             if (!gitVersionPath) {
@@ -69,7 +72,7 @@ export class GitVersionTask {
             }
 
             toolRunner.arg([
-                sourcesDirectory,
+                workingDirectory,
                 "/output",
                 "buildserver",
                 "/nofetch"]);

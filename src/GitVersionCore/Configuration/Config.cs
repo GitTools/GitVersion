@@ -104,7 +104,7 @@ namespace GitVersion
         {
             if (branchName == null) throw new ArgumentNullException(nameof(branchName));
             var matches = Branches
-                .Where(b => Regex.IsMatch(branchName, "^" + b.Value.Regex, RegexOptions.IgnoreCase));
+                .Where(b => Regex.IsMatch(branchName, b.Value.Regex, RegexOptions.IgnoreCase));
 
             try
             {

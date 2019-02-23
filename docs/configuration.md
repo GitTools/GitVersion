@@ -200,7 +200,7 @@ If you have branch specific configuration upgrading to v4 will force you to upgr
 ```yaml
 branches:
   master:
-    regex: master
+    regex: ^master
     mode: ContinuousDelivery
     tag: ''
     increment: Patch
@@ -209,7 +209,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
   release:
-    regex: releases?[/-]
+    regex: ^releases?[/-]
     mode: ContinuousDelivery
     tag: beta
     increment: Patch
@@ -218,7 +218,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: true
   feature:
-    regex: features?[/-]
+    regex: ^features?[/-]
     mode: ContinuousDelivery
     tag: useBranchName
     increment: Inherit
@@ -227,7 +227,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
   pull-request:
-    regex: (pull|pull\-requests|pr)[/-]
+    regex: ^(pull|pull\-requests|pr)[/-]
     mode: ContinuousDelivery
     tag: PullRequest
     increment: Inherit
@@ -237,7 +237,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
   hotfix:
-    regex: hotfix(es)?[/-]
+    regex: ^hotfix(es)?[/-]
     mode: ContinuousDelivery
     tag: beta
     increment: Patch
@@ -246,7 +246,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
   support:
-    regex: support[/-]
+    regex: ^support[/-]
     mode: ContinuousDelivery
     tag: ''
     increment: Patch
@@ -255,7 +255,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
   develop:
-    regex: dev(elop)?(ment)?$
+    regex: ^dev(elop)?(ment)?$
     mode: ContinuousDeployment
     tag: unstable
     increment: Minor
