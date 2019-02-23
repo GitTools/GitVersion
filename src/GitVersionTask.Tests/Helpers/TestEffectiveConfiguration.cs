@@ -34,7 +34,7 @@ namespace GitVersionCore.Tests
             bool tracksReleaseBranches = false,
             bool isRelease = false,
             string commitDateFormat = "yyyy-MM-dd",
-            bool useMergeMessageVersion = true) :
+            bool mergeMessageVersion = true) :
             base(assemblyVersioningScheme, assemblyFileVersioningScheme, assemblyInformationalFormat, assemblyVersioningFormat, assemblyFileVersioningFormat, versioningMode, gitTagPrefix, tag, nextVersion, IncrementStrategy.Patch,
                     branchPrefixToTrim, preventIncrementForMergedBranchVersion, tagNumberPattern, continuousDeploymentFallbackTag,
                     trackMergeTarget,

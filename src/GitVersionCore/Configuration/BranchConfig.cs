@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System.Collections.Generic;
     using YamlDotNet.Serialization;
@@ -54,8 +54,8 @@
         [YamlMember(Alias = "commit-message-incrementing")]
         public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
 
-        [YamlMember(Alias = "regex")]
-        public string Regex { get; set; }
+        [YamlMember(Alias = "merge-message")]
+        public string MergeMessage { get; set; }
 
         [YamlMember(Alias = "source-branches")]
         public List<string> SourceBranches { get; set; }

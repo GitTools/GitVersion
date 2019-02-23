@@ -11,7 +11,7 @@ legacy-semver-padding: 4
 build-metadata-padding: 4
 commits-since-version-source-padding: 4
 commit-message-incrementing: Enabled
-use-merge-message-version: true
+merge-message-version: Enabled
 branches:
   develop:
     mode: ContinuousDeployment
