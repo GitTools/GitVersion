@@ -9,6 +9,7 @@ works out the [semantic version][semver] of the commit being built.
 [![Build status][appveyor-badge]][appveyor]
 [![Build Status][travis-badge]][travis]
 [![Build Status][azure-pipeline-badge]][azure-pipeline]
+[![codecov][codecov-badge]][codecov]
 
 |                                       |                Stable                     |                 Pre-release               |
 | ------------------------------------: | :---------------------------------------: | :---------------------------------------: |
@@ -19,14 +20,14 @@ works out the [semantic version][semver] of the commit being built.
 |                    **GitVersionTask** |     [![NuGet][gvt-badge]][gvt]            |       [![NuGet][gvt-pre-badge]][gvt]      |
 |            **GitVersion.CommandLine** |     [![NuGet][gvcl-badge]][gvcl]          |       [![NuGet][gvcl-pre-badge]][gvcl]    |
 | **GitVersion.CommandLine.DotNetCore** |     [![NuGet][gvcd-badge]][gvcd]          |       [![NuGet][gvcd-pre-badge]][gvcd]    |
+|                   **GitVersion.Tool** |     [![NuGet][gvgt-badge]][gvgt]          |       [![NuGet][gvgt-pre-badge]][gvgt]    |
 |                               **Gem** |       [![Gem][gem-badge]][gem]            |                      -                    |
 |                          **Homebrew** |   [![homebrew][brew-badge]][brew]         |                      -                    |
 |                 **Docker DotnetCore** |   [Dotnetcore][dockerhub-dotnetcore]      |                      -                    |
 |                     **Docker FullFX** |   [FullFX][dockerhub-fullfx]              |                      -                    |
 
 ## Compatibility
-
-GitVersion works on Mac, Linux with Mono and Windows.
+GitVersion works Windows, Linux, and Mac.
 
 Tip: If you get `System.TypeInitializationException: The type initializer for
 'LibGit2Sharp.Core.NativeMethods' threw an exception. --->
@@ -70,6 +71,8 @@ from The Noun Project
 [azure-pipeline-badge]: https://dev.azure.com/GitTools/GitVersion/_apis/build/status/GitTools.GitVersion
 [travis]:               https://travis-ci.org/GitTools/GitVersion
 [travis-badge]:         https://travis-ci.org/GitTools/GitVersion.svg?branch=master
+[codecov]:              https://codecov.io/gh/GitTools/GitVersion
+[codecov-badge]:        https://codecov.io/gh/GitTools/GitVersion/branch/master/graph/badge.svg
 [docs]:                 http://gitversion.readthedocs.org/en/stable/
 [docs-badge]:           https://readthedocs.org/projects/gitversion/badge/?version=stable
 [docs-pre]:             http://gitversion.readthedocs.org/en/latest/
@@ -91,6 +94,9 @@ from The Noun Project
 [gvcd]:                 https://www.nuget.org/packages/GitVersion.CommandLine.DotNetCore
 [gvcd-badge]:           https://img.shields.io/nuget/v/GitVersion.CommandLine.DotNetCore.svg
 [gvcd-pre-badge]:       https://img.shields.io/nuget/vpre/GitVersion.CommandLine.DotNetCore.svg
+[gvgt]:                 https://www.nuget.org/packages/GitVersion.Tool
+[gvgt-badge]:           https://img.shields.io/nuget/v/GitVersion.Tool.svg
+[gvgt-pre-badge]:       https://img.shields.io/nuget/vpre/GitVersion.Tool.svg
 [gem-badge]:            https://img.shields.io/gem/v/gitversion.svg
 [gem]:                  https://rubygems.org/gems/gitversion
 [brew]:                 http://brew.sh/

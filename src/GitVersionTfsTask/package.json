@@ -5,7 +5,9 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "build": "tsc && copy-node-modules . GitVersionTask",
+        "build": "npm run build:mono && npm run build:netcore",
+        "build:mono": "tsc -p ./tsconfig.mono.json && copy-node-modules . GitVersionTask",
+        "build:netcore": "tsc -p ./tsconfig.netcore.json && copy-node-modules . GitVersionNetCoreTask",
         "test": "echo \"Error: no test specified\" && exit 1",
         "package": "tfx extension create --manifest-globs vss-extension.json"
     },
@@ -13,12 +15,14 @@
     "license": "MIT",
     "dependencies": {
         "q": "1.5.1",
-        "vsts-task-lib": "2.6.1"
+        "azure-pipelines-task-lib": "2.7.1"
     },
     "devDependencies": {
+        "@types/argparse": "^1.0.35",
         "@types/minimatch": "3.0.3",
         "@types/node": "10.11.0",
         "@types/q": "1.5.1",
+        "argparse": "^1.0.10",
         "copy-node-modules": "^1.0.8",
         "tfx-cli": "^0.6.1",
         "typescript": "^3.0.3"

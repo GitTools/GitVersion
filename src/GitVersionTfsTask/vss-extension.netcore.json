@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
-    "id": "gitversion",
-    "name": "GitVersion",
+    "id": "gitversion-netcore",
+    "name": "GitVersion (.NET Core)",
     "publisher": "gittools",
     "public": true,
     "author": "GitVersion Contributors",
@@ -10,9 +10,9 @@
     "targets": [{
         "id": "Microsoft.VisualStudio.Services"
     }],
-    "files": [{
-            "path": "GitVersionTask"
-    }],
+    "files": [
+        { "path": "GitVersionNetCoreTask" }
+    ],
     "categories": [
         "Build and release"
     ],
@@ -55,14 +55,15 @@
             "path": "overview.md"
         }
     },
-    "contributions": [{
-        "id": "gitversion-task",
-        "type": "ms.vss-distributed-task.task",
-        "targets": [
-            "ms.vss-distributed-task.tasks"
-        ],
-        "properties": {
-            "name": "GitVersionTask"
-        }
-    }]
+    "contributions": [
+        {
+            "id": "gitversion-netcore-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "GitVersionNetCoreTask"
+            }
+        }]
 }

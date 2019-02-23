@@ -23,7 +23,7 @@ pages:
       - Octopus Deploy: build-server-support/build-server/octopus-deploy.md
       - TeamCity: build-server-support/build-server/teamcity.md
       - Team Build (TFS): build-server-support/build-server/teambuild.md
-      - TFS Build vNext: build-server-support/build-server/tfs-build-vnext.md
+      - TFS Build vNext: build-server-support/build-server/azure-devops.md
 - Examples: examples.md
 - FAQ: faq.md
 - Why?: why.md

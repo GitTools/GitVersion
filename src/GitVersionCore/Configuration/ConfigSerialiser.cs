@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System.IO;
     using YamlDotNet.Serialization;
@@ -8,7 +8,7 @@
     {
         public static Config Read(TextReader reader)
         {
-            var deserializer = new Deserializer(null, new HyphenatedNamingConvention());
+            var deserializer = new DeserializerBuilder().WithNamingConvention(new HyphenatedNamingConvention()).Build();
             var deserialize = deserializer.Deserialize<Config>(reader);
             if (deserialize == null)
             {
@@ -19,7 +19,7 @@
 
         public static void Write(Config config, TextWriter writer)
         {
-            var serializer = new Serializer(SerializationOptions.None, new HyphenatedNamingConvention());
+            var serializer = new SerializerBuilder().WithNamingConvention(new HyphenatedNamingConvention()).Build();
             serializer.Serialize(writer, config);
         }
     }
