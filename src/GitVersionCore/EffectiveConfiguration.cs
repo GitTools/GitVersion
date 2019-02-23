@@ -33,7 +33,7 @@ namespace GitVersion
             bool tracksReleaseBranches,
             bool isCurrentBranchRelease,
             string commitDateFormat,
-            bool useMergeMessageVersion)
+            bool mergeMessageVersion)
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
             AssemblyFileVersioningScheme = assemblyFileVersioningScheme;
@@ -62,7 +62,7 @@ namespace GitVersion
             TracksReleaseBranches = tracksReleaseBranches;
             IsCurrentBranchRelease = isCurrentBranchRelease;
             CommitDateFormat = commitDateFormat;
-            mergeMessageVersion = useMergeMessageVersion;
+            MergeMessageVersion = mergeMessageVersion;
     }
 
         public bool TracksReleaseBranches { get; private set; }
