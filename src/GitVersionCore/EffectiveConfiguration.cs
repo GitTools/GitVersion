@@ -62,7 +62,7 @@ namespace GitVersion
             TracksReleaseBranches = tracksReleaseBranches;
             IsCurrentBranchRelease = isCurrentBranchRelease;
             CommitDateFormat = commitDateFormat;
-            UseMergeMessageVersion = useMergeMessageVersion;
+            mergeMessageVersion = useMergeMessageVersion;
     }
 
         public bool TracksReleaseBranches { get; private set; }
@@ -118,6 +118,6 @@ namespace GitVersion
 
         public string CommitDateFormat { get; private set; }
 
-        public bool UseMergeMessageVersion { get; private set; }
+        public bool MergeMessageVersion { get; private set; }
     }
 }

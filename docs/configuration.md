@@ -45,12 +45,12 @@ build-metadata-padding: 4
 commits-since-version-source-padding: 4
 commit-message-incrementing: Enabled
 commit-date-format: 'yyyy-MM-dd'
-use-merge-message-version: true
+merge-message-version: Enabled
 
 ignore:
   sha: []
   commits-before: yyyy-MM-ddTHH:mm:ss
-  regex: 'ignoreMatch'
+  merge-message: '<message regex>'
 ```
 
 And the description of the available options are:
@@ -156,7 +156,7 @@ details on the syntax. Default set to `Enabled`; set to `Disabled` to disable.
 ### commit-date-format
 Sets the format which will be used to format the `CommitDate` output variable.
 
-#### use-merge-message-version
+#### merge-message-version
 This configuration can be used to disable merge message version detection, where the version
 is infered from the commit message.
 
@@ -186,7 +186,7 @@ Date and time in the format `yyyy-MM-ddTHH:mm:ss` (eg `commits-before:
 2015-10-23T12:23:15`) to setup an exclusion range. Effectively any commit before
 `commits-before` will be ignored.
 
-#### regex
+#### merge-message
 The regex to match commit messages that will be ignored. Useful to exclude for example
 pull request from an automatic nuget updater.
 

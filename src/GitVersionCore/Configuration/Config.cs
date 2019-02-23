@@ -78,8 +78,8 @@ namespace GitVersion
         [YamlMember(Alias = "commit-message-incrementing")]
         public CommitMessageIncrementMode? CommitMessageIncrementing { get; set; }
 
-        [YamlMember(Alias = "use-merge-message-version")]
-        public bool? UseMergeMessageVersion { get; set; }
+        [YamlMember(Alias = "merge-message-version")]
+        public bool? MergeMessageVersion { get; set; }
 
         [YamlMember(Alias = "branches")]
         public Dictionary<string, BranchConfig> Branches

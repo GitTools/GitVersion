@@ -132,7 +132,7 @@ namespace GitVersion
             var patchMessage = FullConfiguration.PatchVersionBumpMessage;
             var noBumpMessage = FullConfiguration.NoBumpMessage;
             var commitDateFormat = FullConfiguration.CommitDateFormat;
-            var useMergeMessageVersion = FullConfiguration.UseMergeMessageVersion.Value;
+            var mergeMessageVersion = FullConfiguration.UseMergeMessageVersion.Value;
             var commitMessageVersionBump = currentBranchConfig.CommitMessageIncrementing ?? FullConfiguration.CommitMessageIncrementing.Value;
 
             Configuration = new EffectiveConfiguration(
