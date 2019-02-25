@@ -552,4 +552,49 @@ public class FeatureBranchScenarios : TestBase
             fixture.AssertFullSemver(config, "0.10.1-MyFeatureD.1+1");
         }
     }
+
+    [Test]
+    public void ShouldHaveAGreaterSemVerAfterDevelopIsMergedIntoFeature()
+    {
+        var config = new Config()
+        {
+            VersioningMode = VersioningMode.ContinuousDeployment,
+            AssemblyVersioningScheme = AssemblyVersioningScheme.Major,
+            AssemblyFileVersioningFormat = "{MajorMinorPatch}.{env:WeightedPreReleaseNumber ?? 0}",
+            LegacySemVerPadding = 4,
+            BuildMetaDataPadding = 4,
+            CommitsSinceVersionSourcePadding = 4,
+            CommitMessageIncrementing = CommitMessageIncrementMode.Disabled,
+            Branches = new Dictionary<string, BranchConfig>
+            {
+                {
+                    "develop", new BranchConfig()
+                    {
+                        PreventIncrementOfMergedBranchVersion = true
+                    }
+                },
+                {
+                    "feature", new BranchConfig()
+                    {
+                        Tag = "feat-{BranchName}"
+                    }
+                }
+            }
+        };
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.MakeACommit();
+            fixture.BranchTo("develop");
+            fixture.MakeACommit();
+            fixture.ApplyTag("16.23.0");
+            fixture.MakeACommit();
+            fixture.BranchTo("feature/featX");
+            fixture.MakeACommit();
+            fixture.Checkout("develop");
+            fixture.MakeACommit();
+            fixture.Checkout("feature/featX");
+            fixture.MergeNoFF("develop");
+            fixture.AssertFullSemver(config, "16.24.0-feat-featX.4");
+        }
+    }
 }
