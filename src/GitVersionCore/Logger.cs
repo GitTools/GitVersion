@@ -26,7 +26,8 @@ namespace GitVersion
             indent = indent + "  ";
             return new ActionDisposable(() =>
             {
-                indent = indent.Substring(0, indent.Length - 2);
+                var length = indent.Length - 2;
+                indent = length > 0 ? indent.Substring(0, length) : indent;
                 WriteInfo(string.Format(CultureInfo.InvariantCulture, "End: {0} (Took: {1:N}ms)", operationDescription, DateTime.Now.Subtract(start).TotalMilliseconds));
             });
         }

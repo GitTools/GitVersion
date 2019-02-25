@@ -7,7 +7,8 @@ using Shouldly;
 namespace GitVersionCore.Tests
 {
     [TestFixture]
-    public class GitVersionInformationGeneratorTests : TestBase
+    [Parallelizable(ParallelScope.None)]
+    public class GitVersionInformationGeneratorTests
     {
         [SetUp]
         public void Setup()
