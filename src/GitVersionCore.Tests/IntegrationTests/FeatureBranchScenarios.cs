@@ -588,10 +588,8 @@ public class FeatureBranchScenarios : TestBase
             fixture.MakeACommit();
             fixture.ApplyTag("16.23.0");
             fixture.MakeACommit();
-            fixture.AssertFullSemver(config, "16.24.0-alpha.1");
             fixture.BranchTo("feature/featX");
             fixture.MakeACommit();
-            fixture.AssertFullSemver(config, "16.24.0-feat-featX.2");
             fixture.Checkout("develop");
             fixture.MakeACommit();
             fixture.Checkout("feature/featX");
