@@ -201,7 +201,7 @@ public class DevelopScenarios : TestBase
             fixture.Repository.MakeACommit();
             fixture.Repository.MergeNoFF("develop");
 
-            fixture.AssertFullSemver("1.0.1-x.1+3");
+            fixture.AssertFullSemver("1.1.0-x.1+3");
         }
     }
 }
