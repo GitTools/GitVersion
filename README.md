@@ -7,7 +7,6 @@ works out the [semantic version][semver] of the commit being built.
 
 [![Gitter][gitter-badge]][gitter]
 [![Build status][appveyor-badge]][appveyor]
-<!-- [![Build Status][travis-badge]][travis] -->
 [![Build Status][azure-pipeline-badge]][azure-pipeline]
 [![codecov][codecov-badge]][codecov]
 
@@ -26,6 +25,7 @@ works out the [semantic version][semver] of the commit being built.
 |                            **Docker** | [![Docker Pulls][dockerhub-badge]][dockerhub] |                      -
 
 ## Compatibility
+
 GitVersion works Windows, Linux, and Mac.
 
 Tip: If you get `System.TypeInitializationException: The type initializer for

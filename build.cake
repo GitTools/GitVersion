@@ -404,7 +404,7 @@ Task("Docker-Build")
     if (parameters.IsRunningOnWindows)
     {
         DockerBuild("windows", "nano", "netcoreapp2.1", parameters);
-        DockerBuild("windows", "windowservercore", "net472", parameters);
+        DockerBuild("windows", "windowsservercore", "net472", parameters);
     }
     else if (parameters.IsRunningOnLinux)
     {
@@ -627,7 +627,7 @@ Task("Publish-DockerHub")
     if (parameters.IsRunningOnWindows)
     {
         DockerPush("windows", "nano", "netcoreapp2.1", parameters);
-        DockerPush("windows", "windowservercore", "net472", parameters);
+        DockerPush("windows", "windowsservercore", "net472", parameters);
     }
     else if (parameters.IsRunningOnLinux)
     {
