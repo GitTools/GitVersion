@@ -89,7 +89,7 @@ public class BuildParameters
     {
         Version = BuildVersion.Calculate(context, this, gitVersion);
 
-        Paths = BuildPaths.GetPaths(context, Configuration, Version);
+        Paths = BuildPaths.GetPaths(context, this, Configuration, Version);
 
         Packages = BuildPackages.GetPackages(
             Paths.Directories.NugetRoot,

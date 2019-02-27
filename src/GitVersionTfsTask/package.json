@@ -15,16 +15,16 @@
     "license": "MIT",
     "dependencies": {
         "q": "1.5.1",
-        "azure-pipelines-task-lib": "2.7.1"
+        "azure-pipelines-task-lib": "2.7.7"
     },
     "devDependencies": {
-        "@types/argparse": "^1.0.35",
+        "@types/argparse": "^1.0.36",
         "@types/minimatch": "3.0.3",
-        "@types/node": "10.11.0",
+        "@types/node": "11.9.5",
         "@types/q": "1.5.1",
         "argparse": "^1.0.10",
-        "copy-node-modules": "^1.0.8",
-        "tfx-cli": "^0.6.1",
-        "typescript": "^3.0.3"
+        "copy-node-modules": "^1.1.1",
+        "tfx-cli": "^0.6.4",
+        "typescript": "^3.3.3333"
     }
 }

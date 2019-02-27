@@ -280,8 +280,8 @@ Task("Pack-Tfs")
     ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$visibility$", visibility);
 
     // update version number
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$version$", parameters.Version.SemVersion);
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$version$", parameters.Version.SemVersion);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$version$", parameters.Version.TfxVersion);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$version$", parameters.Version.TfxVersion);
     UpdateTaskVersion(new FilePath(workDir + "/GitVersionTask/task.json"), parameters.Version.GitVersion);
     UpdateTaskVersion(new FilePath(workDir + "/GitVersionNetCoreTask/task.json"), parameters.Version.GitVersion);
 
@@ -290,21 +290,18 @@ Task("Pack-Tfs")
     NpmInstall(new NpmInstallSettings { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent });
     NpmRunScript(new NpmRunScriptSettings { WorkingDirectory = workDir, ScriptName = "build", LogLevel = NpmLogLevel.Silent });
 
-    TfxExtensionCreate(new TfxExtensionCreateSettings
+    var settings = new TfxExtensionCreateSettings
     {
         ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
         WorkingDirectory = workDir,
-        ManifestGlobs = new List<string>(){ "vss-extension.mono.json" },
         OutputPath = parameters.Paths.Directories.BuildArtifact
-    });
+    };
 
-    TfxExtensionCreate(new TfxExtensionCreateSettings
-    {
-        ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
-        WorkingDirectory = workDir,
-        ManifestGlobs = new List<string>(){ "vss-extension.netcore.json" },
-        OutputPath = parameters.Paths.Directories.BuildArtifact
-    });
+    settings.ManifestGlobs = new List<string>(){ "vss-extension.mono.json" };
+    TfxExtensionCreate(settings);
+
+    settings.ManifestGlobs = new List<string>(){ "vss-extension.netcore.json" };
+    TfxExtensionCreate(settings);
 });
 
 Task("Pack-Gem")
@@ -564,20 +561,15 @@ Task("Publish-Tfs")
     }
 
     var workDir = "./src/GitVersionTfsTask";
-    TfxExtensionPublish(parameters.Paths.Files.VsixOutputFilePath, new TfxExtensionPublishSettings
+    var settings = new TfxExtensionPublishSettings
     {
         ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
         AuthType = TfxAuthType.Pat,
         Token = token
-    });
+    };
 
-    var netCoreWorkDir = "./src/GitVersionTfsTask.NetCore";
-    TfxExtensionPublish(parameters.Paths.Files.VsixNetCoreOutputFilePath, new TfxExtensionPublishSettings
-    {
-        ToolPath = netCoreWorkDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
-        AuthType = TfxAuthType.Pat,
-        Token = token
-    });
+    TfxExtensionPublish(parameters.Paths.Files.VsixOutputFilePath, settings);
+    TfxExtensionPublish(parameters.Paths.Files.VsixNetCoreOutputFilePath, settings);
 })
 .OnError(exception =>
 {
