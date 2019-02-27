@@ -5,6 +5,7 @@ public class BuildPaths
 
     public static BuildPaths GetPaths(
         ICakeContext context,
+        BuildParameters parameters,
         string configuration,
         BuildVersion version
         )
@@ -42,8 +43,10 @@ public class BuildPaths
 
         var releaseNotesOutputFilePath = buildArtifactDir.CombineWithFilePath("releasenotes.md");
         var gemOutputFilePath  = buildArtifactDir.CombineWithFilePath("gitversion-" + version.GemVersion + ".gem");
-        var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-" + semVersion + ".vsix");
-        var vsixNetCoreOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-netcore-" + semVersion + ".vsix");
+
+        var tfsSuffix = parameters.IsStableRelease() ? "" : "preview-";
+        var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-" + tfsSuffix + version.TfxVersion + ".vsix");
+        var vsixNetCoreOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-netcore-" + tfsSuffix + version.TfxVersion + ".vsix");
 
         // Directories
         var buildDirectories = new BuildDirectories(

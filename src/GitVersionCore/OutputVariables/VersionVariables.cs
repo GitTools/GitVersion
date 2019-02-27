@@ -32,6 +32,7 @@ namespace GitVersion
                                 string preReleaseTagWithDash,
                                 string preReleaseLabel,
                                 string preReleaseNumber,
+                                string weightedPreReleaseNumber,
                                 string informationalVersion,
                                 string commitDate,
                                 string nugetVersion,
@@ -61,6 +62,7 @@ namespace GitVersion
             PreReleaseTagWithDash = preReleaseTagWithDash;
             PreReleaseLabel = preReleaseLabel;
             PreReleaseNumber = preReleaseNumber;
+            WeightedPreReleaseNumber = weightedPreReleaseNumber;
             InformationalVersion = informationalVersion;
             CommitDate = commitDate;
             NuGetVersion = nugetVersion;
@@ -78,6 +80,7 @@ namespace GitVersion
         public string PreReleaseTagWithDash { get; private set; }
         public string PreReleaseLabel { get; private set; }
         public string PreReleaseNumber { get; private set; }
+        public string WeightedPreReleaseNumber { get; private set; }
         public string BuildMetaData { get; private set; }
         public string BuildMetaDataPadded { get; private set; }
         public string FullBuildMetaData { get; private set; }

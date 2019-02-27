@@ -43,6 +43,8 @@ namespace GitVersion
         public ISet<string> UpdateAssemblyInfoFileName;
         public bool EnsureAssemblyInfo;
 
+        public bool UpdateWixVersionFile;
+
         public bool ShowConfig;
         public bool NoFetch;
         public bool NoCache;

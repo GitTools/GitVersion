@@ -19,6 +19,7 @@ NotInheritable Class GitVersionInformation
     Public Shared PreReleaseTagWithDash As String = "-unstable.4"
     Public Shared PreReleaseLabel As String = "unstable"
     Public Shared PreReleaseNumber As String = "4"
+    Public Shared WeightedPreReleaseNumber As String = "4"
     Public Shared BuildMetaData As String = "5"
     Public Shared BuildMetaDataPadded As String = "0005"
     Public Shared FullBuildMetaData As String = "5.Branch.feature1.Sha.commitSha"
