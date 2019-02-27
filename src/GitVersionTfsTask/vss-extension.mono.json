@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
-    "id": "gitversion",
-    "name": "GitVersion",
+    "id": "gitversion$idSuffix$",
+    "name": "GitVersion$titleSuffix$",
     "publisher": "gittools",
     "public": true,
     "author": "GitVersion Contributors",
@@ -15,6 +15,9 @@
     ],
     "categories": [
         "Build and release"
+    ],
+    "galleryFlags": [
+        "$visibility$"
     ],
     "icons": {
         "default": "images/extension-icon.png"
@@ -55,15 +58,14 @@
             "path": "overview.md"
         }
     },
-    "contributions": [
-        {
-            "id": "gitversion-task",
-            "type": "ms.vss-distributed-task.task",
-            "targets": [
-                "ms.vss-distributed-task.tasks"
-            ],
-            "properties": {
-                "name": "GitVersionTask"
-            }
-        }]
+    "contributions": [{
+        "id": "gitversion-task",
+        "type": "ms.vss-distributed-task.task",
+        "targets": [
+            "ms.vss-distributed-task.tasks"
+        ],
+        "properties": {
+            "name": "GitVersionTask"
+        }
+    }]
 }

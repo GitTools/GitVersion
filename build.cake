@@ -268,6 +268,16 @@ Task("Pack-Tfs")
     .Does<BuildParameters>((parameters) =>
 {
     var workDir = "./src/GitVersionTfsTask";
+    var idSuffix = parameters.IsStableRelease() ? "" : "-preview";
+    var titleSuffix = parameters.IsStableRelease() ? "" : "(Preview)";
+    var visibility = parameters.IsStableRelease() ? "Public" : "Preview";
+
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$idSuffix$", idSuffix);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$idSuffix$", idSuffix);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$titleSuffix$", titleSuffix);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$titleSuffix$", titleSuffix);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$visibility$", visibility);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$visibility$", visibility);
 
     // update version number
     ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$version$", parameters.Version.SemVersion);
@@ -278,7 +288,7 @@ Task("Pack-Tfs")
     // build and pack
     NpmSet("progress", "false");
     NpmInstall(new NpmInstallSettings { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent });
-    NpmRunScript(new NpmRunScriptSettings { WorkingDirectory = workDir, ScriptName = "build", LogLevel = NpmLogLevel.Silent  });
+    NpmRunScript(new NpmRunScriptSettings { WorkingDirectory = workDir, ScriptName = "build", LogLevel = NpmLogLevel.Silent });
 
     TfxExtensionCreate(new TfxExtensionCreateSettings
     {
@@ -544,7 +554,7 @@ Task("Publish-Tfs")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishTfs,        "Publish-Tfs was disabled.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Tfs works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Tfs works only on AzurePipeline.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease(),   "Publish-Tfs works only for releases.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Tfs works only for releases.")
     .IsDependentOn("Pack-Tfs")
     .Does<BuildParameters>((parameters) =>
 {
