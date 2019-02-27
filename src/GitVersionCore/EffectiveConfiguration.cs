@@ -32,7 +32,8 @@ namespace GitVersion
             IEnumerable<IVersionFilter> versionFilters,
             bool tracksReleaseBranches,
             bool isCurrentBranchRelease,
-            string commitDateFormat)
+            string commitDateFormat,
+            int preReleaseWeight)
         {
             AssemblyVersioningScheme = assemblyVersioningScheme;
             AssemblyFileVersioningScheme = assemblyFileVersioningScheme;
@@ -61,6 +62,7 @@ namespace GitVersion
             TracksReleaseBranches = tracksReleaseBranches;
             IsCurrentBranchRelease = isCurrentBranchRelease;
             CommitDateFormat = commitDateFormat;
+            PreReleaseWeight = preReleaseWeight;
         }
 
         public bool TracksReleaseBranches { get; private set; }
@@ -115,5 +117,7 @@ namespace GitVersion
         public IEnumerable<IVersionFilter> VersionFilters { get; private set; }
 
         public string CommitDateFormat { get; private set; }
+
+        public int PreReleaseWeight { get; private set; }
     }
 }

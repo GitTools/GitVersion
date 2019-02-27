@@ -18,6 +18,7 @@ module GitVersionInformation
     let PreReleaseTagWithDash = "-unstable.4"
     let PreReleaseLabel = "unstable"
     let PreReleaseNumber = "4"
+    let WeightedPreReleaseNumber = "4"
     let BuildMetaData = "5"
     let BuildMetaDataPadded = "0005"
     let FullBuildMetaData = "5.Branch.feature1.Sha.commitSha"

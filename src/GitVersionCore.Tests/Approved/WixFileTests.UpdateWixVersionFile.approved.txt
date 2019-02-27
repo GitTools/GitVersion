@@ -28,4 +28,5 @@
   <?define SemVer="1.2.3"?>
   <?define Sha="commitSha"?>
   <?define ShortSha="commitShortSha"?>
+  <?define WeightedPreReleaseNumber=""?>
 </Include>

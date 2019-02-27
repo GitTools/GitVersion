@@ -26,7 +26,7 @@ namespace GitVersionCore.Tests
                                     },
                                     new EffectiveConfiguration(
                                         AssemblyVersioningScheme.MajorMinorPatch, AssemblyFileVersioningScheme.MajorMinorPatch, "", "", "", VersioningMode.ContinuousDelivery, "", "", "", IncrementStrategy.Inherit,
-                                        "", true, "", "", false, "", "", "", "", CommitMessageIncrementMode.Enabled, 4, 4, 4, Enumerable.Empty<IVersionFilter>(), false, true, format)
+                                        "", true, "", "", false, "", "", "", "", CommitMessageIncrementMode.Enabled, 4, 4, 4, Enumerable.Empty<IVersionFilter>(), false, true, format, 0)
                                 );
 
             Assert.That(formatValues.CommitDate, Is.EqualTo(expectedOutcome));

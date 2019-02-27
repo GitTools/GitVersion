@@ -6,6 +6,7 @@
   "PreReleaseTagWithDash":"-unstable.5",
   "PreReleaseLabel":"unstable",
   "PreReleaseNumber":5,
+  "WeightedPreReleaseNumber":5,
   "BuildMetaData":"",
   "BuildMetaDataPadded":"",
   "FullBuildMetaData":"Branch.develop.Sha.commitSha",

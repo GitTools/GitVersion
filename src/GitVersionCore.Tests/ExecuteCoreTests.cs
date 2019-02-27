@@ -50,6 +50,7 @@ PreReleaseTag: test.19
 PreReleaseTagWithDash: -test.19
 PreReleaseLabel: test
 PreReleaseNumber: 19
+WeightedPreReleaseNumber: 19
 BuildMetaData: 
 BuildMetaDataPadded: 
 FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
@@ -161,6 +162,7 @@ PreReleaseTag: test.19
 PreReleaseTagWithDash: -test.19
 PreReleaseLabel: test
 PreReleaseNumber: 19
+WeightedPreReleaseNumber: 19
 BuildMetaData: 
 BuildMetaDataPadded: 
 FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
@@ -211,6 +213,7 @@ PreReleaseTag: test.19
 PreReleaseTagWithDash: -test.19
 PreReleaseLabel: test
 PreReleaseNumber: 19
+WeightedPreReleaseNumber: 19
 BuildMetaData: 
 BuildMetaDataPadded: 
 FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f

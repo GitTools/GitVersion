@@ -72,6 +72,7 @@ namespace GitVersion
                 semverFormatValues.PreReleaseTagWithDash,
                 semverFormatValues.PreReleaseLabel,
                 semverFormatValues.PreReleaseNumber,
+                semverFormatValues.WeightedPreReleaseNumber,
                 informationalVersion,
                 semverFormatValues.CommitDate,
                 semverFormatValues.NuGetVersion,
