@@ -211,9 +211,10 @@ void GetReleaseNotes(FilePath outputPath, DirectoryPath workDir, string repoToke
     Information(string.Join("\n", redirectedOutput));
 }
 
-void UpdateTaskVersion(FilePath taskJsonPath, GitVersion gitVersion)
+void UpdateTaskVersion(FilePath taskJsonPath, string taskId, GitVersion gitVersion)
 {
     var taskJson = ParseJsonFromFile(taskJsonPath);
+    taskJson["id"] = taskId;
     taskJson["version"]["Major"] = gitVersion.Major.ToString();
     taskJson["version"]["Minor"] = gitVersion.Minor.ToString();
     taskJson["version"]["Patch"] = gitVersion.Patch.ToString();

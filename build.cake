@@ -269,8 +269,10 @@ Task("Pack-Tfs")
 {
     var workDir = "./src/GitVersionTfsTask";
     var idSuffix = parameters.IsStableRelease() ? "" : "-preview";
-    var titleSuffix = parameters.IsStableRelease() ? "" : "(Preview)";
+    var titleSuffix = parameters.IsStableRelease() ? "" : " (Preview)";
     var visibility = parameters.IsStableRelease() ? "Public" : "Preview";
+    var taskIdFullFx = parameters.IsStableRelease() ? "e5983830-3f75-11e5-82ed-81492570a08e" : "25b46667-d5a9-4665-97f7-e23de366ecdf";
+    var taskIdCoreFx = parameters.IsStableRelease() ? "ce526674-dbd1-4023-ad6d-2a6b9742ee31" : "edf331e1-d1c0-413a-9735-fce0b22a46f5";
 
     ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$idSuffix$", idSuffix);
     ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$idSuffix$", idSuffix);
@@ -282,8 +284,8 @@ Task("Pack-Tfs")
     // update version number
     ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$version$", parameters.Version.TfxVersion);
     ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$version$", parameters.Version.TfxVersion);
-    UpdateTaskVersion(new FilePath(workDir + "/GitVersionTask/task.json"), parameters.Version.GitVersion);
-    UpdateTaskVersion(new FilePath(workDir + "/GitVersionNetCoreTask/task.json"), parameters.Version.GitVersion);
+    UpdateTaskVersion(new FilePath(workDir + "/GitVersionTask/task.json"), taskIdFullFx, parameters.Version.GitVersion);
+    UpdateTaskVersion(new FilePath(workDir + "/GitVersionNetCoreTask/task.json"), taskIdCoreFx, parameters.Version.GitVersion);
 
     // build and pack
     NpmSet("progress", "false");
