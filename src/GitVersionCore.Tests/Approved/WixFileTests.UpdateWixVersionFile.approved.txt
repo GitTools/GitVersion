@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define AssemblySemFileVer="1.2.3.0"?>
+  <?define AssemblySemVer="1.2.3.0"?>
+  <?define BranchName="develop"?>
+  <?define BuildMetaData="5"?>
+  <?define BuildMetaDataPadded="05"?>
+  <?define CommitDate="2019-02-20"?>
+  <?define CommitsSinceVersionSource="5"?>
+  <?define CommitsSinceVersionSourcePadded="0005"?>
+  <?define FullBuildMetaData="5.Branch.develop.Sha.commitSha"?>
+  <?define FullSemVer="1.2.3+5"?>
+  <?define InformationalVersion="1.2.3+5.Branch.develop.Sha.commitSha"?>
+  <?define LegacySemVer="1.2.3"?>
+  <?define LegacySemVerPadded="1.2.3"?>
+  <?define Major="1"?>
+  <?define MajorMinorPatch="1.2.3"?>
+  <?define Minor="2"?>
+  <?define NuGetPreReleaseTag=""?>
+  <?define NuGetPreReleaseTagV2=""?>
+  <?define NuGetVersion="1.2.3"?>
+  <?define NuGetVersionV2="1.2.3"?>
+  <?define Patch="3"?>
+  <?define PreReleaseLabel=""?>
+  <?define PreReleaseNumber=""?>
+  <?define PreReleaseTag=""?>
+  <?define PreReleaseTagWithDash=""?>
+  <?define SemVer="1.2.3"?>
+  <?define Sha="commitSha"?>
+  <?define ShortSha="commitShortSha"?>
+</Include>

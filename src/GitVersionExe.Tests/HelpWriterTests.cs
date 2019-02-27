@@ -17,7 +17,8 @@ public class HelpWriterTests
             { "LogFilePath" , "/l" },
             { "DynamicRepositoryLocation" , "/dynamicRepoLocation" },
             { "IsHelp", "/?" },
-            { "IsVersion", "/version" }
+            { "IsVersion", "/version" },
+            { "UpdateWixVersionFile", "/updatewixversionfile" }
         };
         string helpText = null;
 
