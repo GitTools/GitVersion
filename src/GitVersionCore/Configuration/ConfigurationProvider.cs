@@ -36,8 +36,8 @@ namespace GitVersion
                 { ReleaseBranchRegex, 30000 },
                 { FeatureBranchRegex, 30000 },
                 { PullRequestRegex, 30000 },
-                { SupportBranchRegex, 60000 },
-                { MasterBranchRegex, 60000 }
+                { SupportBranchRegex, 55000 },
+                { MasterBranchRegex, 55000 }
             };
 
         private const IncrementStrategy DefaultIncrementStrategy = IncrementStrategy.Inherit;

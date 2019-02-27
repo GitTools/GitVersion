@@ -37,7 +37,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: true
-    pre-release-weight: 60000
+    pre-release-weight: 55000
   release:
     mode: ContinuousDelivery
     tag: beta
@@ -118,7 +118,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: true
-    pre-release-weight: 60000
+    pre-release-weight: 55000
 ignore:
   sha: []
 commit-date-format: yyyy-MM-dd
