@@ -14,7 +14,7 @@ public class BuildVersion
 
         if (!string.IsNullOrWhiteSpace(gitVersion.BuildMetaData)) {
             semVersion += "-" + gitVersion.BuildMetaData;
-            tfxVersion += "." + gitVersion.BuildMetaData;
+            tfxVersion += "." + DateTime.UtcNow.ToString("yyMMddHH");
         }
 
         return new BuildVersion
