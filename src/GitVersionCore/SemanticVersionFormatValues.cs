@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System.Globalization;
 
@@ -147,6 +147,11 @@
         public string DefaultInformationalVersion
         {
             get { return _semver.ToString("i"); }
+        }
+
+        public string VersionSourceSha
+        {
+            get { return _semver.BuildMetaData.VersionSourceSha; }
         }
 
         public string CommitsSinceVersionSource

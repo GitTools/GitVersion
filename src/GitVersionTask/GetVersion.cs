@@ -102,6 +102,9 @@ namespace GitVersionTask
         public string CommitDate { get; set; }
 
         [Output]
+        public string VersionSourceSha { get; set; }
+
+        [Output]
         public string CommitsSinceVersionSource { get; set; }
 
         [Output]

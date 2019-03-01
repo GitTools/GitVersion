@@ -79,6 +79,7 @@ namespace GitVersion
                 semverFormatValues.NuGetVersionV2,
                 semverFormatValues.NuGetPreReleaseTag,
                 semverFormatValues.NuGetPreReleaseTagV2,
+                semverFormatValues.VersionSourceSha,
                 semverFormatValues.CommitsSinceVersionSource,
                 semverFormatValues.CommitsSinceVersionSourcePadded);
 

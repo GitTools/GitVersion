@@ -6,7 +6,7 @@ using Shouldly;
 
 [TestFixture]
 public class VariableProviderTests : TestBase
-{   
+{
 
     [SetUp]
     public void Setup()
@@ -28,6 +28,7 @@ public class VariableProviderTests : TestBase
             BuildMetaData = "5.Branch.develop"
         };
 
+        semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
         semVer.BuildMetaData.Sha = "commitSha";
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
@@ -54,6 +55,7 @@ public class VariableProviderTests : TestBase
             BuildMetaData = "5.Branch.develop"
         };
 
+        semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
         semVer.BuildMetaData.Sha = "commitSha";
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
@@ -80,6 +82,7 @@ public class VariableProviderTests : TestBase
             BuildMetaData = "5.Branch.develop"
         };
 
+        semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
         semVer.BuildMetaData.Sha = "commitSha";
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
@@ -104,6 +107,7 @@ public class VariableProviderTests : TestBase
             BuildMetaData = "5.Branch.develop"
         };
 
+        semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
         semVer.BuildMetaData.Sha = "commitSha";
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
@@ -128,6 +132,7 @@ public class VariableProviderTests : TestBase
             BuildMetaData = "5.Branch.develop"
         };
 
+        semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
         semVer.BuildMetaData.Sha = "commitSha";
         semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
@@ -151,6 +156,7 @@ public class VariableProviderTests : TestBase
             Patch = 3,
             BuildMetaData =
             {
+                VersionSourceSha = "versionSourceSha",
                 CommitsSinceTag = 5,
                 CommitsSinceVersionSource = 5,
                 Sha = "commitSha",

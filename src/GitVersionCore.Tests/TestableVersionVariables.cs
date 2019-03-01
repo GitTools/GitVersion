@@ -1,4 +1,4 @@
-﻿namespace GitVersionCore.Tests
+namespace GitVersionCore.Tests
 {
     using GitVersion;
 
@@ -13,13 +13,13 @@
             string preReleaseTagWithDash = "", string preReleaseLabel = "", string preReleaseNumber = "",
             string weightedPreReleaseNumber = "", string informationalVersion = "", string commitDate = "", 
             string nugetVersion = "", string nugetVersionV2 = "", string nugetPreReleaseTag = "", 
-            string nugetPreReleaseTagV2 = "", string commitsSinceVersionSource = "",
+            string nugetPreReleaseTagV2 = "", string versionSourceSha = "", string commitsSinceVersionSource = "",
             string commitsSinceVersionSourcePadded = "") : base(
                 major, minor, patch, buildMetaData, buildMetaDataPadded, fullBuildMetaData, branchName, 
                 sha, shortSha, majorMinorPatch, semVer, legacySemVer, legacySemVerPadded, fullSemVer, 
                 assemblySemVer, assemblySemFileVer, preReleaseTag, weightedPreReleaseNumber, preReleaseTagWithDash, 
                 preReleaseLabel, preReleaseNumber, informationalVersion, commitDate, nugetVersion, nugetVersionV2, 
-                nugetPreReleaseTag, nugetPreReleaseTagV2, commitsSinceVersionSource, commitsSinceVersionSourcePadded)
+                nugetPreReleaseTag, nugetPreReleaseTagV2, versionSourceSha, commitsSinceVersionSource, commitsSinceVersionSourcePadded)
         {
         }
     }
