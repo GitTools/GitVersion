@@ -204,4 +204,22 @@ public class DevelopScenarios : TestBase
             fixture.AssertFullSemver("1.1.0-x.1+3");
         }
     }
+
+    [Test]
+    public void TagOnHotfixShouldNotAffectDevelop()
+    {
+        using(var fixture = new BaseGitFlowRepositoryFixture("1.2.0"))
+        {
+            Commands.Checkout(fixture.Repository, "master");
+            var hotfix = fixture.Repository.CreateBranch("hotfix-1.2.1");
+            Commands.Checkout(fixture.Repository, hotfix);
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver("1.2.1-beta.1+1");
+            fixture.Repository.ApplyTag("1.2.1-beta.1");
+            fixture.AssertFullSemver("1.2.1-beta.1");
+            Commands.Checkout(fixture.Repository, "develop");
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver("1.3.0-alpha.2");
+        }
+    }
 }
