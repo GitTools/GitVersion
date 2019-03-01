@@ -169,7 +169,8 @@
                     desiredBranch = repository?.Branches?
                         .SingleOrDefault(b =>
                             b.CanonicalName == targetBranch ||
-                            b.FriendlyName == targetBranch);
+                            b.FriendlyName == targetBranch ||
+                            b.NameWithoutRemote() == targetBranch);
 
                     // Failsafe in case the specified branch is invalid
                     desiredBranch = desiredBranch ?? repository.Head;

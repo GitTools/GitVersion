@@ -192,14 +192,14 @@ namespace GitVersion
             }
             else if (branches.Count > 1)
             {
-                currentBranch = branches.FirstOrDefault(b => b.FriendlyName == "master") ?? branches.First();
+                currentBranch = branches.FirstOrDefault(b => b.NameWithoutRemote() == "master") ?? branches.First();
             }
             else
             {
                 var possibleTargetBranches = repository.Branches.Where(b => !b.IsRemote && b.Tip == parents[0]).ToList();
                 if (possibleTargetBranches.Count > 1)
                 {
-                    currentBranch = possibleTargetBranches.FirstOrDefault(b => b.FriendlyName == "master") ?? possibleTargetBranches.First();
+                    currentBranch = possibleTargetBranches.FirstOrDefault(b => b.NameWithoutRemote() == "master") ?? possibleTargetBranches.First();
                 }
                 else
                 {
