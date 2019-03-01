@@ -45,8 +45,8 @@ export class GitVersionTask {
             parser.addArgument(
                 [ '-r', '--runtime'],
                 {
-                    help: '[mono|netcore]',
-                    defaultValue: 'mono'
+                    help: '[full|netcore]',
+                    defaultValue: 'full'
                 }
             );
 
@@ -58,7 +58,7 @@ export class GitVersionTask {
                     toolRunner.arg(gitVersionPath);
                     break;
 
-                case 'mono':
+                case 'full':
                 default:
                     const isWin32 = os.platform() == "win32";
                     if (isWin32) {
