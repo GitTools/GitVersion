@@ -219,7 +219,7 @@ public class DevelopScenarios : TestBase
             fixture.AssertFullSemver("1.2.1-beta.1");
             Commands.Checkout(fixture.Repository, "develop");
             fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver("1.3.0-unstable.1"); // fails, gets 1.3.0-beta.1
+            fixture.AssertFullSemver("1.3.0-alpha.2");
         }
     }
 }
