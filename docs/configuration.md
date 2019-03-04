@@ -370,7 +370,7 @@ branches:
     tag: PullRequest
     increment: Inherit
     track-merge-target: true
-    tag-name-pattern: '[/-](?<number>\d+)[-/]'
+    tag-number-pattern: '[/-](?<number>\d+)[-/]'
 ```
 
 ### track-merge-target
