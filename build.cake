@@ -419,7 +419,8 @@ Task("Docker-Build")
     {
         DockerBuild("linux", "debian", "netcoreapp2.1", parameters);
         DockerBuild("linux", "debian", "net472", parameters);
-        DockerBuild("linux", "centos", "netcoreapp2.1", parameters);
+        DockerBuild("linux", "centos7", "netcoreapp2.1", parameters);
+        DockerBuild("linux", "fedora27", "netcoreapp2.1", parameters);
     }
 });
 
@@ -638,7 +639,8 @@ Task("Publish-DockerHub")
     {
         DockerPush("linux", "debian", "netcoreapp2.1", parameters);
         DockerPush("linux", "debian", "net472", parameters);
-        DockerPush("linux", "centos", "netcoreapp2.1", parameters);
+        DockerPush("linux", "centos7", "netcoreapp2.1", parameters);
+        DockerPush("linux", "fedora27", "netcoreapp2.1", parameters);
     }
 
     DockerLogout();
