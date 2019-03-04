@@ -80,5 +80,8 @@ It will not change config file 'GitVersion.yml'.
 ### Example: How to override configuration option 'tag-prefix' to use prefix 'custom'
 `GitVersion.exe /output json /overrideconfig tag-prefix=custom`
 
+## Writing version metadata in WiX format
+To support integration with WiX projects, use `GitVersion.exe /updatewixversionfile`. All the [variables](../more-info/variables.md) are written to `GitVersion_WixVersion.wxi` under the current working directory and can be referenced in the WiX project files.
+
 ## Mono
 To use on mac or linux, install `mono-complete` then just run `mono GitVersion.exe`

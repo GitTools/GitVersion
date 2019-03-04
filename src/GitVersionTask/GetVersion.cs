@@ -42,6 +42,9 @@ namespace GitVersionTask
         public string PreReleaseNumber { get; set; }
 
         [Output]
+        public string WeightedPreReleaseNumber { get; set; }
+
+        [Output]
         public string BuildMetaData { get; set; }
 
         [Output]

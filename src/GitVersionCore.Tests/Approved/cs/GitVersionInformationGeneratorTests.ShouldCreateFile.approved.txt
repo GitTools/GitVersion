@@ -18,6 +18,7 @@ static class GitVersionInformation
     public static string PreReleaseTagWithDash = "-unstable.4";
     public static string PreReleaseLabel = "unstable";
     public static string PreReleaseNumber = "4";
+    public static string WeightedPreReleaseNumber = "4";
     public static string BuildMetaData = "5";
     public static string BuildMetaDataPadded = "0005";
     public static string FullBuildMetaData = "5.Branch.feature1.Sha.commitSha";
