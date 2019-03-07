@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:2.1-runtime
+FROM mcr.microsoft.com/dotnet/core/runtime:2.1
 LABEL maintainers="GitTools Maintainers"
 ARG contentFolder
 
