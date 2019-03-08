@@ -2,6 +2,7 @@ public class BuildVersion
 {
     public GitVersion GitVersion { get; private set; }
     public string Version { get; private set; }
+    public string Milestone { get; private set; }
     public string SemVersion { get; private set; }
     public string GemVersion { get; private set; }
     public string TfxVersion { get; private set; }
@@ -20,6 +21,7 @@ public class BuildVersion
         return new BuildVersion
         {
             GitVersion = gitVersion,
+            Milestone  = version,
             Version    = version,
             SemVersion = semVersion,
             GemVersion = semVersion.Replace("-", "."),
