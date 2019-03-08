@@ -4,98 +4,96 @@ namespace GitVersionTask
     using System.IO;
     using GitVersion;
     using GitVersion.Helpers;
-    using Microsoft.Build.Framework;
 
-    public class GenerateGitVersionInformation : GitVersionTaskBase
+    public static class GenerateGitVersionInformation
     {
-        TaskLogger logger;
-
-        public GenerateGitVersionInformation()
+        public static Output Execute(
+            Input input
+            )
         {
-            logger = new TaskLogger(this);
-            Logger.SetLoggers(this.LogDebug, this.LogInfo, this.LogWarning, s => this.LogError(s));
-        }
+            if ( !input.ValidateInput() )
+            {
+                throw new Exception( "Invalid input." );
+            }
 
-        [Required]
-        public string SolutionDirectory { get; set; }
+            var logger = new TaskLogger();
+            Logger.SetLoggers( logger.LogInfo, logger.LogInfo, logger.LogWarning, s => logger.LogError( s ) );
+            
 
-        [Required]
-        public string ProjectFile { get; set; }
-
-        [Required]
-        public string IntermediateOutputPath { get; set; }
-
-        [Required]
-        public string Language { get; set; }
-
-        [Output]
-        public string GitVersionInformationFilePath { get; set; }
-
-        public bool NoFetch { get; set; }
-
-        public override bool Execute()
-        {
+            Output output = null;
             try
             {
-                InnerExecute();
-                return true;
+                output = InnerExecute(input );
             }
             catch (WarningException errorException)
             {
                 logger.LogWarning(errorException.Message);
-                return true;
+                output = new Output();
             }
             catch (Exception exception)
             {
                 logger.LogError("Error occurred: " + exception);
-                return false;
+                throw;
             }
             finally
             {
                 Logger.Reset();
             }
+
+            return output;
         }
 
-        void InnerExecute()
+        private static Output InnerExecute( Input input )
         {
-            VersionVariables versionVariables;
-            if (!ExecuteCore.TryGetVersion(SolutionDirectory, out versionVariables, NoFetch, new Authentication()))
+            var execute = GitVersionTaskBase.CreateExecuteCore();
+            if (!execute.TryGetVersion(input.SolutionDirectory, out var versionVariables, input.NoFetch, new Authentication()))
             {
-                return;
+                return null;
             }
 
-            var fileExtension = GetFileExtension();
-            var fileName = $"GitVersionInformation.g.{fileExtension}";
+            var fileWriteInfo = input.IntermediateOutputPath.GetWorkingDirectoryAndFileNameAndExtension(
+                input.Language,
+                input.ProjectFile,
+                ( pf, ext ) => $"GitVersionInformation.g.{ext}",
+                ( pf, ext ) => $"GitVersionInformation_{Path.GetFileNameWithoutExtension( pf )}_{Path.GetRandomFileName()}.g.{ext}"
+                );
 
-            if (IntermediateOutputPath == null)
+            var output = new Output()
             {
-                fileName = $"GitVersionInformation_{Path.GetFileNameWithoutExtension(ProjectFile)}_{Path.GetRandomFileName()}.g.{fileExtension}";
-            }
-
-            var workingDirectory = IntermediateOutputPath ?? TempFileTracker.TempPath;
-
-            GitVersionInformationFilePath = Path.Combine(workingDirectory, fileName);
-
-            var generator = new GitVersionInformationGenerator(fileName, workingDirectory, versionVariables, new FileSystem());
+                GitVersionInformationFilePath = Path.Combine( fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName )
+            };
+            var generator = new GitVersionInformationGenerator( fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, new FileSystem());
             generator.Generate();
+
+            return output;
         }
 
-        string GetFileExtension()
+        public sealed class Input
         {
-            switch (Language)
-            {
-                case "C#":
-                    return "cs";
+            public string SolutionDirectory { get; set; }
 
-                case "F#":
-                    return "fs";
+            public string ProjectFile { get; set; }
 
-                case "VB":
-                    return "vb";
+            public string IntermediateOutputPath { get; set; }
 
-                default:
-                    throw new Exception($"Unknown language detected: '{Language}'");
-            }
+            public string Language { get; set; }
+
+            public bool NoFetch { get; set; }
+        }
+
+        private static Boolean ValidateInput( this Input input )
+        {
+            return input != null
+                && !String.IsNullOrEmpty( input.SolutionDirectory )
+                && !String.IsNullOrEmpty(input.ProjectFile)
+                // && !String.IsNullOrEmpty(input.IntermediateOutputPath) // This was marked as [Required] but it InnerExecute still seems to allow it to be null... ?
+                && !String.IsNullOrEmpty(input.Language)
+                ;
+        }
+
+        public sealed class Output
+        {
+            public string GitVersionInformationFilePath { get; set; }
         }
     }
 }

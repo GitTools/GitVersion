@@ -1,26 +1,32 @@
-﻿using Microsoft.Build.Framework;
+using System;
+using System.IO;
 
 class TaskLogger
 {
-    ITask task;
+    private readonly TextWriter stdout;
+    private readonly TextWriter stderr;
 
-    public TaskLogger(ITask task)
+    public TaskLogger(
+        TextWriter paramStdout = null,
+        TextWriter paramStderr = null
+        )
     {
-        this.task = task;
+        this.stdout = paramStdout ?? Console.Out;
+        this.stderr = paramStderr ?? Console.Error;
     }
 
     public void LogWarning(string message)
     {
-        task.BuildEngine.LogWarningEvent(new BuildWarningEventArgs(string.Empty, string.Empty, null, 0, 0, 0, 0, message, string.Empty, "GitVersionTask"));
+        this.stdout.WriteLine( message );
     }
 
     public void LogInfo(string message)
     {
-        task.BuildEngine.LogMessageEvent(new BuildMessageEventArgs(message, string.Empty, "GitVersionTask", MessageImportance.Normal));
+        this.stdout.WriteLine( message );
     }
 
-    public void LogError(string message, string file = null)
+    public void LogError(string message)
     {
-        task.BuildEngine.LogErrorEvent(new BuildErrorEventArgs(string.Empty, string.Empty, file, 0, 0, 0, 0, message, string.Empty, "GitVersionTask"));
+        this.stderr.WriteLine( message );
     }
 }

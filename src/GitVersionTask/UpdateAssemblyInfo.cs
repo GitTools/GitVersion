@@ -5,113 +5,112 @@ namespace GitVersionTask
 
     using GitVersion;
     using GitVersion.Helpers;
-    using Microsoft.Build.Framework;
 
-    public class UpdateAssemblyInfo : GitVersionTaskBase
+    public static class UpdateAssemblyInfo
     {
-        TaskLogger logger;
-
-        public UpdateAssemblyInfo()
+        public static Output Execute(
+            Input input
+            )
         {
-            logger = new TaskLogger(this);
-            Logger.SetLoggers(this.LogDebug, this.LogInfo, this.LogWarning, s => this.LogError(s));
-        }
+            if ( !input.ValidateInput() )
+            {
+                throw new Exception( "Invalid input." );
+            }
 
-        [Required]
-        public string SolutionDirectory { get; set; }
+            var logger = new TaskLogger();
+            Logger.SetLoggers( logger.LogInfo, logger.LogInfo, logger.LogWarning, s => logger.LogError( s ) );
 
-        [Required]
-        public string ProjectFile { get; set; }
-
-        [Required]
-        public string IntermediateOutputPath { get; set; }
-
-        [Required]
-        public ITaskItem[] CompileFiles { get; set; }
-
-        [Required]
-        public string Language { get; set; }
-
-        [Output]
-        public string AssemblyInfoTempFilePath { get; set; }
-
-        public bool NoFetch { get; set; }
-
-        public override bool Execute()
-        {
+            Output output = null;
             try
             {
-                InnerExecute();
-                return true;
+                output = InnerExecute( input );
             }
             catch (WarningException errorException)
             {
                 logger.LogWarning(errorException.Message);
-                return true;
+                output = new Output();
             }
             catch (Exception exception)
             {
                 logger.LogError("Error occurred: " + exception);
-                return false;
+                throw;
             }
             finally
             {
                 Logger.Reset();
             }
+
+            return output;
         }
 
-        void InnerExecute()
+        private static Output InnerExecute( Input input )
         {
+            var execute = GitVersionTaskBase.CreateExecuteCore();
+
             TempFileTracker.DeleteTempFiles();
 
-            InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
+            InvalidFileChecker.CheckForInvalidFiles(input.CompileFiles, input.ProjectFile);
 
-            VersionVariables versionVariables;
-            if (!ExecuteCore.TryGetVersion(SolutionDirectory, out versionVariables, NoFetch, new Authentication()))
+            if (!execute.TryGetVersion( input.SolutionDirectory, out var versionVariables, input.NoFetch, new Authentication()))
             {
-                return;
+                return null;
             }
 
-            CreateTempAssemblyInfo(versionVariables);
+            return CreateTempAssemblyInfo(input, versionVariables);
         }
 
-        void CreateTempAssemblyInfo(VersionVariables versionVariables)
+        private static Output CreateTempAssemblyInfo( Input input, VersionVariables versionVariables)
         {
-            var fileExtension = GetFileExtension();
-            var assemblyInfoFileName = $"GitVersionTaskAssemblyInfo.g.{fileExtension}";
+            var fileWriteInfo = input.IntermediateOutputPath.GetWorkingDirectoryAndFileNameAndExtension(
+                input.Language,
+                input.ProjectFile,
+                ( pf, ext ) => $"GitVersionTaskAssemblyInfo.g.{ext}",
+                ( pf, ext ) => $"AssemblyInfo_{Path.GetFileNameWithoutExtension( pf )}_{Path.GetRandomFileName()}.g.{ext}"
+                );
 
-            if (IntermediateOutputPath == null)
+            var output = new Output()
             {
-                assemblyInfoFileName = $"AssemblyInfo_{Path.GetFileNameWithoutExtension(ProjectFile)}_{Path.GetRandomFileName()}.g.{fileExtension}";
-            }
+                AssemblyInfoTempFilePath = Path.Combine( fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName )
+            };
 
-            var workingDirectory = IntermediateOutputPath ?? TempFileTracker.TempPath;
-
-            AssemblyInfoTempFilePath = Path.Combine(workingDirectory, assemblyInfoFileName);
-
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFileName, workingDirectory, versionVariables, new FileSystem(), true))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater( fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, new FileSystem(), true))
             {
                 assemblyInfoFileUpdater.Update();
                 assemblyInfoFileUpdater.CommitChanges();
             }
+
+            return output;
         }
 
-        string GetFileExtension()
+        public sealed class Input
         {
-            switch(Language)
-            {
-                case "C#":
-                    return "cs";
+            public string SolutionDirectory { get; set; }
 
-                case "F#":
-                    return "fs";
+            public string ProjectFile { get; set; }
 
-                case "VB":
-                    return "vb";
+            public string IntermediateOutputPath { get; set; }
 
-                default:
-                    throw new Exception($"Unknown language detected: '{Language}'");
-            }
+            public String[] CompileFiles { get; set; }
+
+            public string Language { get; set; }
+
+            public bool NoFetch { get; set; }
+        }
+
+        private static Boolean ValidateInput(this Input input)
+        {
+            return input != null
+                && !String.IsNullOrEmpty( input.SolutionDirectory )
+                && !String.IsNullOrEmpty( input.ProjectFile )
+                && !String.IsNullOrEmpty( input.IntermediateOutputPath )
+                && input.CompileFiles != null
+                && !String.IsNullOrEmpty( input.Language )
+                ;
+        }
+
+        public sealed class Output
+        {
+            public string AssemblyInfoTempFilePath { get; set; }
         }
     }
 }
