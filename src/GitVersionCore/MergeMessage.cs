@@ -12,7 +12,9 @@ namespace GitVersion
             new MergeMessagePattern("SmartGit",  @"^Finish (?<SourceBranch>[^\s]*)(?: into (?<TargetBranch>[^\s]*))*"),
             new MergeMessagePattern("BitBucketPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?<Source>.*) from (?<SourceBranch>[^\s]*) to (?<TargetBranch>[^\s]*)"),
             new MergeMessagePattern("GitHubPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?:(?<SourceBranch>[^\s]*))(?: into (?<TargetBranch>[^\s]*))*"),
-            new MergeMessagePattern("RemoteTracking", @"^Merge remote-tracking branch '(?<SourceBranch>[^\s]*)'(?: into (?<TargetBranch>[^\s]*))*")
+            new MergeMessagePattern("RemoteTracking", @"^Merge remote-tracking branch '(?<SourceBranch>[^\s]*)'(?: into (?<TargetBranch>[^\s]*))*"),
+            new MergeMessagePattern("TfsMergeMessageEnglishUS", @"^Merge (?<SourceBranch>[^\s]*) to (?<TargetBranch>[^\s]*)"),
+            new MergeMessagePattern("TfsMergeMessageGermanDE",@"^Zusammengeführter PR ""(?<PullRequestNumber>\d+)""\: (?<SourceBranch>.*) mit (?<TargetBranch>.*) mergen")
         };
 
         public MergeMessage(string mergeMessage, Config config)
