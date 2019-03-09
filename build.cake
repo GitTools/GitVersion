@@ -416,10 +416,13 @@ Task("Docker-Build")
     }
     else if (parameters.IsRunningOnLinux)
     {
-        DockerBuild("linux", "debian", "netcoreapp2.1", parameters);
         DockerBuild("linux", "debian", "net472", parameters);
+        DockerBuild("linux", "debian", "netcoreapp2.1", parameters);
         DockerBuild("linux", "centos7", "netcoreapp2.1", parameters);
         DockerBuild("linux", "fedora27", "netcoreapp2.1", parameters);
+        DockerBuild("linux", "debian", "netcoreapp2.2", parameters);
+        DockerBuild("linux", "centos7", "netcoreapp2.2", parameters);
+        DockerBuild("linux", "fedora27", "netcoreapp2.2", parameters);
     }
 });
 
@@ -649,10 +652,13 @@ Task("Publish-DockerHub")
     }
     else if (parameters.IsRunningOnLinux)
     {
-        DockerPush("linux", "debian", "netcoreapp2.1", parameters);
         DockerPush("linux", "debian", "net472", parameters);
+        DockerPush("linux", "debian", "netcoreapp2.1", parameters);
         DockerPush("linux", "centos7", "netcoreapp2.1", parameters);
         DockerPush("linux", "fedora27", "netcoreapp2.1", parameters);
+        DockerPush("linux", "debian", "netcoreapp2.2", parameters);
+        DockerPush("linux", "centos7", "netcoreapp2.2", parameters);
+        DockerPush("linux", "fedora27", "netcoreapp2.2", parameters);
     }
 
     DockerLogout();
