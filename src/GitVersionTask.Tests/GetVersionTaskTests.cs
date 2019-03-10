@@ -1,7 +1,6 @@
-﻿using System.Linq;
+using System.Linq;
 using GitVersion;
 using GitVersionTask;
-using Microsoft.Build.Framework;
 using NUnit.Framework;
 using Shouldly;
 
@@ -11,9 +10,8 @@ public class GetVersionTaskTests : TestBase
     [Test]
     public void OutputsShouldMatchVariableProvider()
     {
-        var taskProperties = typeof(GetVersion)
+        var taskProperties = typeof(GetVersion.Output)
             .GetProperties()
-            .Where(p => p.GetCustomAttributes(typeof(OutputAttribute), false).Any())
             .Select(p => p.Name);
 
         var variablesProperties = VersionVariables.AvailableVariables;
