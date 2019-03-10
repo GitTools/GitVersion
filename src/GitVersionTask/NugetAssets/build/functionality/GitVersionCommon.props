@@ -41,7 +41,7 @@
   </PropertyGroup>
   <UsingTask
     Condition=" '$(NuGetUtilsMSBuildExecAssemblyPath)' != '' "
-    TaskFactory="UtilPack.NuGet.MSBuild.NuGetTaskRunnerFactory"
+    TaskFactory="NuGetUtils.MSBuild.Exec.NuGetExecutionTaskFactory"
     AssemblyFile="$(NuGetUtilsMSBuildExecAssemblyPath)"
     TaskName="GitVersionTask.UpdateAssemblyInfo">
     <Task>
@@ -53,7 +53,7 @@
   </UsingTask>
   <UsingTask
       Condition=" '$(NuGetUtilsMSBuildExecAssemblyPath)' != '' "
-      TaskFactory="UtilPack.NuGet.MSBuild.NuGetTaskRunnerFactory"
+      TaskFactory="NuGetUtils.MSBuild.Exec.NuGetExecutionTaskFactory"
       AssemblyFile="$(NuGetUtilsMSBuildExecAssemblyPath)"
       TaskName="GitVersionTask.GenerateGitVersionInformation">
     <Task>
@@ -65,7 +65,7 @@
   </UsingTask>
   <UsingTask
       Condition=" '$(NuGetUtilsMSBuildExecAssemblyPath)' != '' "
-      TaskFactory="UtilPack.NuGet.MSBuild.NuGetTaskRunnerFactory"
+      TaskFactory="NuGetUtils.MSBuild.Exec.NuGetExecutionTaskFactory"
       AssemblyFile="$(NuGetUtilsMSBuildExecAssemblyPath)"
       TaskName="GitVersionTask.GetVersion">
     <Task>
@@ -77,7 +77,7 @@
   </UsingTask>
   <UsingTask
       Condition=" '$(NuGetUtilsMSBuildExecAssemblyPath)' != '' "
-      TaskFactory="UtilPack.NuGet.MSBuild.NuGetTaskRunnerFactory"
+      TaskFactory="NuGetUtils.MSBuild.Exec.NuGetExecutionTaskFactory"
       AssemblyFile="$(NuGetUtilsMSBuildExecAssemblyPath)"
       TaskName="GitVersionTask.WriteVersionInfoToBuildLog">
     <Task>
