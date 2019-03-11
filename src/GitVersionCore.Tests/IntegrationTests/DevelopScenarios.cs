@@ -223,6 +223,7 @@ public class DevelopScenarios : TestBase
         }
     }
 
+    [Test]
     public void CommitsSinceVersionSourceShouldNotGoDownUponGitFlowReleaseFinish()
     {
         var config = new Config

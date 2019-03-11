@@ -1,7 +1,9 @@
-﻿namespace GitVersion.VersionCalculation
+namespace GitVersion.VersionCalculation
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using GitVersion.VersionCalculation.BaseVersionCalculators;
 
     public class BaseVersionCalculator : IBaseVersionCalculator
@@ -37,13 +39,15 @@
 
                         return true;
                     })
-                    .Select(v => new
+                    .Select(v => new Versions
                     {
                         IncrementedVersion = MaybeIncrement(context, v),
                         Version = v
                     })
                     .ToList();
 
+                FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted
+                    (context, baseVersions);
                 var maxVersion = baseVersions.Aggregate((v1, v2) => v1.IncrementedVersion > v2.IncrementedVersion ? v1 : v2);
                 var matchingVersionsOnceIncremented = baseVersions
                     .Where(b => b.Version.BaseVersionSource != null && b.IncrementedVersion == maxVersion.IncrementedVersion)
@@ -91,6 +95,46 @@
             }
 
             return version.SemanticVersion;
+        }
+
+        private void FixTheBaseVersionSourceOfMergeMessageStrategyIfReleaseBranchWasMergedAndDeleted(
+            GitVersionContext context, List<Versions> baseVersions)
+        {
+            if (!ReleaseBranchExistsInRepo(context))
+            {
+                foreach (var baseVersion in baseVersions)
+                {
+                    if (baseVersion.Version.Source.Contains("Merge message")
+                        && baseVersion.Version.Source.Contains("Merge branch")
+                        && baseVersion.Version.Source.Contains("release"))
+                    {
+                        var parents = baseVersion.Version.BaseVersionSource.Parents.ToList();
+                        baseVersion.Version = new BaseVersion(
+                            context,
+                            baseVersion.Version.Source,
+                            baseVersion.Version.ShouldIncrement,
+                            baseVersion.Version.SemanticVersion,
+                            context.Repository.ObjectDatabase.FindMergeBase(parents[0], parents[1]),
+                            baseVersion.Version.BranchNameOverride);
+                    }
+                }
+            }
+        }
+
+        private bool ReleaseBranchExistsInRepo(GitVersionContext context)
+        {
+            var releaseBranchConfig = context.FullConfiguration.Branches
+                .Where(b => b.Value.IsReleaseBranch == true)
+                .ToList();
+            var releaseBranches = context.Repository.Branches
+                    .Where(b => releaseBranchConfig.Any(c => Regex.IsMatch(b.FriendlyName, c.Value.Regex)));
+            return releaseBranches.Any();
+        }
+
+        private class Versions
+        {
+            public SemanticVersion IncrementedVersion { get; set; }
+            public BaseVersion Version { get; set; }
         }
     }
 }
