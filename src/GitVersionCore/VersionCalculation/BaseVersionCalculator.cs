@@ -104,7 +104,8 @@ namespace GitVersion.VersionCalculation
             {
                 foreach (var baseVersion in baseVersions)
                 {
-                    if (baseVersion.Version.Source.Contains("Merge message")
+                    if (baseVersion.Version.Source.Contains(
+                        MergeMessageBaseVersionStrategy.MergeMessageStrategyPrefix)
                         && baseVersion.Version.Source.Contains("Merge branch")
                         && baseVersion.Version.Source.Contains("release"))
                     {

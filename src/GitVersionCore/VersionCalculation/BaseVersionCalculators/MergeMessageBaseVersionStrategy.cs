@@ -26,13 +26,15 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
                         var shouldIncrement = !context.Configuration.PreventIncrementForMergedBranchVersion;
                         return new[]
                         {
-                            new BaseVersion(context, $"Merge message '{c.Message.Trim()}'", shouldIncrement, mergeMessage.Version, c, null)
+                            new BaseVersion(context, $"{MergeMessageStrategyPrefix} '{c.Message.Trim()}'", shouldIncrement, mergeMessage.Version, c, null)
                         };
                     }
                     return Enumerable.Empty<BaseVersion>();
                 }).ToList();
             return baseVersions;
         }
+
+        public static readonly string MergeMessageStrategyPrefix = "Merge message";
 
         static bool TryParse(Commit mergeCommit, GitVersionContext context, out MergeMessage mergeMessage)
         {
