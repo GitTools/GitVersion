@@ -30,6 +30,7 @@ For the `release/3.0.0` branch of GitVersion it shows:
   "NuGetVersion":"3.0.0-beta0001",
   "NuGetPreReleaseTagV2":"beta0001",
   "NuGetPreReleaseTag":"beta0001",
+  "VersionSourceSha":"950d2f830f5a2af12a6779a48d20dcbb02351f25",
   "CommitsSinceVersionSource":1,
   "CommitsSinceVersionSourcePadded":"0001",
   "CommitDate":"2014-03-06"

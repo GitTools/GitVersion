@@ -37,6 +37,7 @@ module GitVersionInformation
     let NuGetVersion = "1.2.3-unstable0004"
     let NuGetPreReleaseTagV2 = "unstable0004"
     let NuGetPreReleaseTag = "unstable0004"
+    let VersionSourceSha = "versionSourceSha"
     let CommitsSinceVersionSource = "5"
     let CommitsSinceVersionSourcePadded = "0005"
     let CommitDate = "2014-03-06"

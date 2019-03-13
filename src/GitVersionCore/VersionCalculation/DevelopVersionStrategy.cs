@@ -80,7 +80,6 @@ namespace GitVersion.VersionCalculation
         IEnumerable<BaseVersion> GetReleaseVersion(GitVersionContext context, Branch releaseBranch)
         {
             var tagPrefixRegex = context.Configuration.GitTagPrefix;
-            var repository = context.Repository;
 
             // Find the commit where the child branch was created.
             var baseSource = context.RepositoryMetadataProvider.FindMergeBase(releaseBranch, context.CurrentBranch);

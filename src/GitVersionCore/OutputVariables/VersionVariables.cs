@@ -39,6 +39,7 @@ namespace GitVersion
                                 string nugetVersionV2,
                                 string nugetPreReleaseTag,
                                 string nugetPreReleaseTagV2,
+                                string versionSourceSha,
                                 string commitsSinceVersionSource,
                                 string commitsSinceVersionSourcePadded)
         {
@@ -69,6 +70,7 @@ namespace GitVersion
             NuGetVersionV2 = nugetVersionV2;
             NuGetPreReleaseTag = nugetPreReleaseTag;
             NuGetPreReleaseTagV2 = nugetPreReleaseTagV2;
+            VersionSourceSha = versionSourceSha;
             CommitsSinceVersionSource = commitsSinceVersionSource;
             CommitsSinceVersionSourcePadded = commitsSinceVersionSourcePadded;
         }
@@ -99,6 +101,7 @@ namespace GitVersion
         public string NuGetVersion { get; private set; }
         public string NuGetPreReleaseTagV2 { get; private set; }
         public string NuGetPreReleaseTag { get; private set; }
+        public string VersionSourceSha { get; private set; }
         public string CommitsSinceVersionSource { get; private set; }
         public string CommitsSinceVersionSourcePadded { get; private set; }
 

@@ -21,7 +21,7 @@ namespace GitVersionCore.Tests
             var formatValues = new SemanticVersionFormatValues(
                                     new SemanticVersion
                                     {
-                                        BuildMetaData = new SemanticVersionBuildMetaData(0, "master", "3139d4eeb044f46057693473eacc2655b3b27e7d", "3139d4eeb", new DateTimeOffset(date, TimeSpan.Zero)), // assume time zone is UTC
+                                        BuildMetaData = new SemanticVersionBuildMetaData("950d2f830f5a2af12a6779a48d20dcbb02351f25", 0, "master", "3139d4eeb044f46057693473eacc2655b3b27e7d", "3139d4eeb", new DateTimeOffset(date, TimeSpan.Zero)), // assume time zone is UTC
 
                                     },
                                     new EffectiveConfiguration(

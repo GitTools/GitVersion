@@ -110,6 +110,8 @@ namespace GitVersionTask
             public string NuGetVersionV2 { get; set; }
 
             public string NuGetVersion { get; set; }
+    
+            public string VersionSourceSha { get; set; }
 
             public string NuGetPreReleaseTagV2 { get; set; }
 
