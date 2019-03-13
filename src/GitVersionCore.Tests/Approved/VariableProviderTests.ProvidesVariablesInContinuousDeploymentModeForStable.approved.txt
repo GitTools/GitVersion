@@ -25,6 +25,7 @@
   "NuGetVersion":"1.2.3-ci0005",
   "NuGetPreReleaseTagV2":"ci0005",
   "NuGetPreReleaseTag":"ci0005",
+  "VersionSourceSha":"versionSourceSha",
   "CommitsSinceVersionSource":5,
   "CommitsSinceVersionSourcePadded":"0005",
   "CommitDate":"2014-03-06"

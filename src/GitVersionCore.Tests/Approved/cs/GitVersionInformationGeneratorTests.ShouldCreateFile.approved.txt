@@ -37,6 +37,7 @@ static class GitVersionInformation
     public static string NuGetVersion = "1.2.3-unstable0004";
     public static string NuGetPreReleaseTagV2 = "unstable0004";
     public static string NuGetPreReleaseTag = "unstable0004";
+    public static string VersionSourceSha = "versionSourceSha";
     public static string CommitsSinceVersionSource = "5";
     public static string CommitsSinceVersionSourcePadded = "0005";
     public static string CommitDate = "2014-03-06";
