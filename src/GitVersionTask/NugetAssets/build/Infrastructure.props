@@ -23,8 +23,7 @@
 
   <PropertyGroup>
     <UtilPackTaskFactoryParametersXML Condition=" '$(MSBuildRuntimeType)' != 'Core' ">
-      <NuGetFramework>.NETFramework</NuGetFramework>
-      <NuGetFrameworkVersion>4.6.1</NuGetFrameworkVersion>
+      <NuGetFramework>net461</NuGetFramework>
     </UtilPackTaskFactoryParametersXML>
     <UtilPackTaskFactoryParametersXML>
       $(UtilPackTaskFactoryParametersXML)
