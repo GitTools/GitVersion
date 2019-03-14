@@ -51,7 +51,7 @@ public class ReleaseBranchScenarios : TestBase
             fixture.Repository.MakeACommit();
             fixture.Repository.Branches.Remove("release/1.0.0");
 
-            fixture.AssertFullSemver("1.1.0-alpha.2");
+            fixture.AssertFullSemver("1.1.0-alpha.3");
         }
     }
 
