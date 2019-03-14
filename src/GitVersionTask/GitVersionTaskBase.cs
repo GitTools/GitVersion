@@ -60,7 +60,7 @@ namespace GitVersionTask
             String fileExtension
             )
         {
-            this.WorkingDirectory = this.WorkingDirectory;
+            this.WorkingDirectory = workingDirectory;
             this.FileName = fileName;
             this.FileExtension = fileExtension;
         }
