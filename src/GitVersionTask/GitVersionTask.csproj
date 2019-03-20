@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="$(MSBuildThisFileDirectory)\UtilPack.Version.props" Condition="exists('$(MSBuildThisFileDirectory)\UtilPack.Version.props')" />
+  <Import Project="$(MSBuildThisFileDirectory)\NuGetUtils.MSBuild.Exec.Version.props" Condition="exists('$(MSBuildThisFileDirectory)\NuGetUtils.MSBuild.Exec.Version.props')" />
 
   <PropertyGroup>
     <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
@@ -24,10 +24,10 @@
 
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="UtilPack.Version.props" />
+    <None Remove="NuGetUtils.MSBuild.Exec.Version.props" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="UtilPack.Version.props">
+    <Content Include="NuGetUtils.MSBuild.Exec.Version.props">
       <PackagePath>build\</PackagePath>
     </Content>
   </ItemGroup>
@@ -38,7 +38,7 @@
     <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)">
         <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="NuGetUtils.MSBuild.Exec" Version="$(PackageVersion_UtilPackNuGetMSBuild)">
+    <PackageReference Include="NuGetUtils.MSBuild.Exec" Version="$(PackageVersion_NuGetUtilsMSBuildExec)">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
