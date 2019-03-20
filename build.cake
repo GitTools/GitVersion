@@ -405,7 +405,7 @@ Task("Zip-Files")
 
 Task("Docker-Build")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Docker can be built only on Windows or Linux agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Docker can be built only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Docker-Build works only for releases.")
     .IsDependentOn("Copy-Files")
     .Does<BuildParameters>((parameters) =>
 {

@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/runtime:2.1
+FROM mcr.microsoft.com/dotnet/core/runtime:2.1-nanoserver-sac2016
 LABEL maintainers="GitTools Maintainers"
 ARG contentFolder
 
