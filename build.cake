@@ -411,17 +411,22 @@ Task("Docker-Build")
 {
     if (parameters.IsRunningOnWindows)
     {
-        DockerBuild("windows", "nano", "netcoreapp2.1", parameters);
         DockerBuild("windows", "windowsservercore", "net472", parameters);
+
+        DockerBuild("windows", "nano", "netcoreapp2.1", parameters);
+
+        DockerBuild("windows", "nano", "netcoreapp2.2", parameters);
     }
     else if (parameters.IsRunningOnLinux)
     {
-        DockerBuild("linux", "debian", "net472", parameters);
-        DockerBuild("linux", "debian", "netcoreapp2.1", parameters);
-        DockerBuild("linux", "centos7", "netcoreapp2.1", parameters);
+        DockerBuild("linux", "debian",   "net472", parameters);
+
+        DockerBuild("linux", "debian",   "netcoreapp2.1", parameters);
+        DockerBuild("linux", "centos7",  "netcoreapp2.1", parameters);
         DockerBuild("linux", "fedora27", "netcoreapp2.1", parameters);
-        DockerBuild("linux", "debian", "netcoreapp2.2", parameters);
-        DockerBuild("linux", "centos7", "netcoreapp2.2", parameters);
+
+        DockerBuild("linux", "debian",   "netcoreapp2.2", parameters);
+        DockerBuild("linux", "centos7",  "netcoreapp2.2", parameters);
         DockerBuild("linux", "fedora27", "netcoreapp2.2", parameters);
     }
 });
