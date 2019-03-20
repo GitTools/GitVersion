@@ -1,5 +1,5 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildThisFileDirectory)\UtilPack.Version.props" Condition="exists('$(MSBuildThisFileDirectory)\UtilPack.Version.props')" />
+  <Import Project="$(MSBuildThisFileDirectory)\NuGetUtils.MSBuild.Exec.Version.props" Condition="exists('$(MSBuildThisFileDirectory)\NuGetUtils.MSBuild.Exec.Version.props')" />
 
   <!-- Properties containing paths to functionality files and directories. -->
   <PropertyGroup>
@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(NuGetUtilsMSBuildExecAssemblyPath)' == ''">
-    <UtilPackVersion>$(PackageVersion_UtilPackNuGetMSBuild)</UtilPackVersion>
+    <UtilPackVersion>$(PackageVersion_NuGetUtilsMSBuildExec)</UtilPackVersion>
     <UtilPackNuGetMSBuildPropsPath Condition=" '$(UtilPackNuGetMSBuildPropsPath)' == ''">$(MSBuildThisFileDirectory)../../../nugetutils.msbuild.exec/$(UtilPackVersion)/build/NuGetUtils.MSBuild.Exec.props</UtilPackNuGetMSBuildPropsPath>
     <UtilPackNuGetMSBuildPropsAbsolutePath>$([System.IO.Path]::GetFullPath('$(UtilPackNuGetMSBuildPropsPath)'))</UtilPackNuGetMSBuildPropsAbsolutePath>
     <!-- Set absolute path to empty string if automatic deduction failed. -->
