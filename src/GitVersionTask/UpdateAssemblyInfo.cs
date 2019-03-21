@@ -54,10 +54,6 @@ namespace GitVersionTask
                 logger.LogError("Error occurred: " + exception);
                 return false;
             }
-            finally
-            {
-                Logger.Reset();
-            }
         }
 
         void InnerExecute()
