@@ -7,12 +7,8 @@ namespace GitVersionTask
 
     public class WriteVersionInfoToBuildLog : GitVersionTaskBase
     {
-        readonly TaskLogger logger;
-
         public WriteVersionInfoToBuildLog()
         {
-            logger = new TaskLogger(this);
-            Logger.SetLoggers(this.LogDebug, this.LogInfo, this.LogWarning, s => this.LogError(s));
         }
 
         [Required]
@@ -29,12 +25,12 @@ namespace GitVersionTask
             }
             catch (WarningException errorException)
             {
-                logger.LogWarning(errorException.Message);
+                this.LogWarning(errorException.Message);
                 return true;
             }
             catch (Exception exception)
             {
-                logger.LogError("Error occurred: " + exception);
+                this.LogError("Error occurred: " + exception);
                 return false;
             }
         }
@@ -54,12 +50,12 @@ namespace GitVersionTask
         {
             foreach (var buildServer in applicableBuildServers)
             {
-                logger.LogInfo(string.Format("Executing GenerateSetVersionMessage for '{0}'.", buildServer.GetType().Name));
-                logger.LogInfo(buildServer.GenerateSetVersionMessage(variables));
-                logger.LogInfo(string.Format("Executing GenerateBuildLogOutput for '{0}'.", buildServer.GetType().Name));
+                this.LogInfo(string.Format("Executing GenerateSetVersionMessage for '{0}'.", buildServer.GetType().Name));
+                this.LogInfo(buildServer.GenerateSetVersionMessage(variables));
+                this.LogInfo(string.Format("Executing GenerateBuildLogOutput for '{0}'.", buildServer.GetType().Name));
                 foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(buildServer, variables))
                 {
-                    logger.LogInfo(buildParameter);
+                    this.LogInfo(buildParameter);
                 }
             }
         }

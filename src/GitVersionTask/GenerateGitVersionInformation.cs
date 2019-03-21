@@ -8,12 +8,8 @@ namespace GitVersionTask
 
     public class GenerateGitVersionInformation : GitVersionTaskBase
     {
-        TaskLogger logger;
-
         public GenerateGitVersionInformation()
         {
-            logger = new TaskLogger(this);
-            Logger.SetLoggers(this.LogDebug, this.LogInfo, this.LogWarning, s => this.LogError(s));
         }
 
         [Required]
@@ -42,12 +38,12 @@ namespace GitVersionTask
             }
             catch (WarningException errorException)
             {
-                logger.LogWarning(errorException.Message);
+                this.LogWarning(errorException.Message);
                 return true;
             }
             catch (Exception exception)
             {
-                logger.LogError("Error occurred: " + exception);
+                this.LogError("Error occurred: " + exception);
                 return false;
             }
         }
