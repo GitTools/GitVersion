@@ -26,6 +26,9 @@
     <GetVersion Condition=" '$(GetVersion)' == '' and '$(NCrunch)' != '' ">false</GetVersion>
     <GetVersion Condition=" '$(GetVersion)' == '' ">true</GetVersion>
 
+    <GenerateGitVersionWixDefines Condition=" '$(GenerateGitVersionWixDefines)' == '' and '$(NCrunch)' != '' ">false</GenerateGitVersionWixDefines>
+    <GenerateGitVersionWixDefines Condition=" '$(GenerateGitVersionWixDefines)' == '' ">true</GenerateGitVersionWixDefines>
+
     <!--
       Ensure GetVersion runs prior to XAML's Markup Compiler in order to have the assembly version available.
       Otherwise the generated resource URI's are ambiguous when multiple versions are loaded simultaneously (i.e. in plugins)
