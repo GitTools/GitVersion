@@ -1,5 +1,9 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<<<<<<< HEAD
   <Import Project="$(MSBuildThisFileDirectory)\UtilPack.Version.props" Condition="exists('$(MSBuildThisFileDirectory)\UtilPack.Version.props')" />
+=======
+  <Import Project="$(MSBuildThisFileDirectory)\NuGetUtils.MSBuild.Exec.Version.props" Condition="exists('$(MSBuildThisFileDirectory)\NuGetUtils.MSBuild.Exec.Version.props')" />
+>>>>>>> 854f16b6753d84214c78af52224f90500da7ac11
 
   <!-- Properties containing paths to functionality files and directories. -->
   <PropertyGroup>
@@ -10,7 +14,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(NuGetUtilsMSBuildExecAssemblyPath)' == ''">
+<<<<<<< HEAD
     <UtilPackVersion>$(PackageVersion_UtilPackNuGetMSBuild)</UtilPackVersion>
+=======
+    <UtilPackVersion>$(PackageVersion_NuGetUtilsMSBuildExec)</UtilPackVersion>
+>>>>>>> 854f16b6753d84214c78af52224f90500da7ac11
     <UtilPackNuGetMSBuildPropsPath Condition=" '$(UtilPackNuGetMSBuildPropsPath)' == ''">$(MSBuildThisFileDirectory)../../../nugetutils.msbuild.exec/$(UtilPackVersion)/build/NuGetUtils.MSBuild.Exec.props</UtilPackNuGetMSBuildPropsPath>
     <UtilPackNuGetMSBuildPropsAbsolutePath>$([System.IO.Path]::GetFullPath('$(UtilPackNuGetMSBuildPropsPath)'))</UtilPackNuGetMSBuildPropsAbsolutePath>
     <!-- Set absolute path to empty string if automatic deduction failed. -->
@@ -23,8 +31,7 @@
 
   <PropertyGroup>
     <UtilPackTaskFactoryParametersXML Condition=" '$(MSBuildRuntimeType)' != 'Core' ">
-      <NuGetFramework>.NETFramework</NuGetFramework>
-      <NuGetFrameworkVersion>4.6.1</NuGetFrameworkVersion>
+      <NuGetFramework>net461</NuGetFramework>
     </UtilPackTaskFactoryParametersXML>
     <UtilPackTaskFactoryParametersXML>
       $(UtilPackTaskFactoryParametersXML)

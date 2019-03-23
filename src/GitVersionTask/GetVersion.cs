@@ -45,8 +45,12 @@ namespace GitVersionTask
             {
                 Logger.Reset();
             }
-
             return output;
+        }
+
+        private static Boolean ValidateInput(this Input input)
+        {
+            return !String.IsNullOrEmpty( input?.SolutionDirectory );
         }
 
         public sealed class Input
@@ -54,11 +58,6 @@ namespace GitVersionTask
             public string SolutionDirectory { get; set; }
 
             public bool NoFetch { get; set; }
-        }
-
-        private static Boolean ValidateInput(this Input input)
-        {
-            return !String.IsNullOrEmpty( input?.SolutionDirectory );
         }
 
         public sealed class Output
@@ -109,17 +108,17 @@ namespace GitVersionTask
 
             public string NuGetVersionV2 { get; set; }
 
-            public string VersionSourceSha { get; set; }
-
-            public string CommitsSinceVersionSource { get; set; }
-
             public string NuGetVersion { get; set; }
+    
+            public string VersionSourceSha { get; set; }
 
             public string NuGetPreReleaseTagV2 { get; set; }
 
             public string NuGetPreReleaseTag { get; set; }
 
             public string CommitDate { get; set; }
+
+            public string CommitsSinceVersionSource { get; set; }
 
             public string CommitsSinceVersionSourcePadded { get; set; }
         }

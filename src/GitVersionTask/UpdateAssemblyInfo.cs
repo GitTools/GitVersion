@@ -8,7 +8,6 @@ namespace GitVersionTask
 
     public static class UpdateAssemblyInfo
     {
-
         public static Output Execute(
             Input input
             )
