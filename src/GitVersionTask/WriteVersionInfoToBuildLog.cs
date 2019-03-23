@@ -3,61 +3,91 @@ namespace GitVersionTask
     using System;
     using System.Collections.Generic;
     using GitVersion;
-    using Microsoft.Build.Framework;
 
-    public class WriteVersionInfoToBuildLog : GitVersionTaskBase
+    public static class WriteVersionInfoToBuildLog
     {
-        public WriteVersionInfoToBuildLog()
+
+        public static Output Execute(
+            Input input
+            )
         {
-        }
+            if ( !input.ValidateInput() )
+            {
+                throw new Exception( "Invalid input." );
+            }
 
-        [Required]
-        public string SolutionDirectory { get; set; }
+            var logger = new TaskLogger();
+            Logger.SetLoggers( logger.LogInfo, logger.LogInfo, logger.LogWarning, s => logger.LogError( s ) );
 
-        public bool NoFetch { get; set; }
 
-        public override bool Execute()
-        {
+            Output output = null;
             try
             {
-                InnerExecute();
-                return true;
+                output = InnerExecute(logger, input);
             }
             catch (WarningException errorException)
             {
-                this.LogWarning(errorException.Message);
-                return true;
+                logger.LogWarning(errorException.Message);
+                output = new Output();
             }
             catch (Exception exception)
             {
-                this.LogError("Error occurred: " + exception);
-                return false;
+                logger.LogError("Error occurred: " + exception);
+                throw;
             }
-        }
-
-        void InnerExecute()
-        {
-            VersionVariables result;
-            if (!ExecuteCore.TryGetVersion(SolutionDirectory, out result, NoFetch, new Authentication()))
+            finally
             {
-                return;
+                Logger.Reset();
             }
 
-            WriteIntegrationParameters(BuildServerList.GetApplicableBuildServers(), result);
+            return output;
         }
 
-        void WriteIntegrationParameters(IEnumerable<IBuildServer> applicableBuildServers, VersionVariables variables)
+        private static Output InnerExecute(
+            TaskLogger logger,
+            Input input
+            )
+        {
+            var execute = GitVersionTaskBase.CreateExecuteCore();
+            if (!execute.TryGetVersion(input.SolutionDirectory, out var result, input.NoFetch, new Authentication()))
+            {
+                return null;
+            }
+
+            WriteIntegrationParameters(logger, BuildServerList.GetApplicableBuildServers(), result);
+
+            return new Output();
+        }
+
+        private static void WriteIntegrationParameters(TaskLogger logger, IEnumerable<IBuildServer> applicableBuildServers, VersionVariables variables)
         {
             foreach (var buildServer in applicableBuildServers)
             {
-                this.LogInfo(string.Format("Executing GenerateSetVersionMessage for '{0}'.", buildServer.GetType().Name));
-                this.LogInfo(buildServer.GenerateSetVersionMessage(variables));
-                this.LogInfo(string.Format("Executing GenerateBuildLogOutput for '{0}'.", buildServer.GetType().Name));
+                logger.LogInfo(string.Format("Executing GenerateSetVersionMessage for '{0}'.", buildServer.GetType().Name));
+                logger.LogInfo(buildServer.GenerateSetVersionMessage(variables));
+                logger.LogInfo(string.Format("Executing GenerateBuildLogOutput for '{0}'.", buildServer.GetType().Name));
                 foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(buildServer, variables))
                 {
-                    this.LogInfo(buildParameter);
+                    logger.LogInfo(buildParameter);
                 }
             }
+        }
+
+        public sealed class Input
+        {
+            public string SolutionDirectory { get; set; }
+
+            public bool NoFetch { get; set; }
+        }
+
+        public static Boolean ValidateInput(this Input input)
+        {
+            return !String.IsNullOrEmpty( input?.SolutionDirectory );
+        }
+
+        public sealed class Output
+        {
+            // No output for this task
         }
     }
 }
