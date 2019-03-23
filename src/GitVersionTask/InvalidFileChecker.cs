@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion;
-using Microsoft.Build.Framework;
 
 public static class InvalidFileChecker
 {
@@ -14,7 +13,7 @@ public static class InvalidFileChecker
         { ".vb", VisualBasicFileContainsVersionAttribute }
     };
 
-    public static void CheckForInvalidFiles(IEnumerable<ITaskItem> compileFiles, string projectFile)
+    public static void CheckForInvalidFiles(IEnumerable<String> compileFiles, string projectFile)
     {
         foreach (var compileFile in GetInvalidFiles(compileFiles, projectFile))
         {
@@ -98,9 +97,9 @@ Assembly(File|Informational)?Version    # The attribute AssemblyVersion, Assembl
 \s*\(\s*\)\s*\>                         # End brackets ()>");
     }
 
-    static IEnumerable<string> GetInvalidFiles(IEnumerable<ITaskItem> compileFiles, string projectFile)
+    static IEnumerable<string> GetInvalidFiles(IEnumerable<String> compileFiles, string projectFile)
     {
-        return compileFiles.Select(x => x.ItemSpec)
+        return compileFiles
             .Where(compileFile => compileFile.Contains("AssemblyInfo"))
             .Where(s => FileContainsVersionAttribute(s, projectFile));
     }

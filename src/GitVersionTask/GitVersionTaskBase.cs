@@ -1,72 +1,72 @@
 namespace GitVersionTask
 {
-    using System;
     using GitVersion;
     using GitVersion.Helpers;
+    using System;
+    using System.IO;
 
-    using Microsoft.Build.Framework;
-    using Microsoft.Build.Utilities;
-
-    public abstract class GitVersionTaskBase : Task
+    public static class GitVersionTaskBase
     {
-        protected GitVersionTaskBase()
-        {
-            var fileSystem = new FileSystem();
-            ExecuteCore = new ExecuteCore(fileSystem);
-            GitVersion.Logger.SetLoggers(LogDebug, LogInfo, LogWarning, s => LogError(s));
-        }
+        public static ExecuteCore CreateExecuteCore()
+            => new ExecuteCore( new FileSystem() );
 
-        public override bool Execute()
+        private static string GetFileExtension( this String language )
         {
-            try
+            switch ( language )
             {
-                InnerExecute();
-                return true;
-            }
-            catch (WarningException errorException)
-            {
-                LogWarning(errorException.Message);
-                return true;
-            }
-            catch (Exception exception)
-            {
-                LogError("Error occurred: " + exception);
-                return false;
+                case "C#":
+                    return "cs";
+
+                case "F#":
+                    return "fs";
+
+                case "VB":
+                    return "vb";
+
+                default:
+                    throw new Exception( $"Unknown language detected: '{language}'" );
             }
         }
 
-        protected abstract void InnerExecute();
-
-        protected ExecuteCore ExecuteCore { get; }
-
-        [Required]
-        public string SolutionDirectory { get; set; }
-
-        public bool NoFetch { get; set; }
-
-        public void LogDebug(string message)
+        public static FileWriteInfo GetWorkingDirectoryAndFileNameAndExtension(
+            this String intermediateOutputPath,
+            String language,
+            String projectFile,
+            Func<String, String, String> fileNameWithIntermediatePath,
+            Func<String, String, String> fileNameNoIntermediatePath
+            )
         {
-            BuildEngine.LogMessageEvent(new BuildMessageEventArgs(message, string.Empty, "GitVersionTask", MessageImportance.Low));
+            var fileExtension = language.GetFileExtension();
+            String workingDirectory, fileName;
+            if ( intermediateOutputPath == null )
+            {
+                fileName = fileNameWithIntermediatePath(projectFile, fileExtension);
+                workingDirectory = TempFileTracker.TempPath;
+            }
+            else
+            {
+                workingDirectory = intermediateOutputPath;
+                fileName = fileNameNoIntermediatePath(projectFile, fileExtension);
+            }
+            return new FileWriteInfo(workingDirectory, fileName, fileExtension);
+        }
+    }
+
+    public sealed class FileWriteInfo
+    {
+        public FileWriteInfo(
+            String workingDirectory,
+            String fileName,
+            String fileExtension
+            )
+        {
+            this.WorkingDirectory = this.WorkingDirectory;
+            this.FileName = fileName;
+            this.FileExtension = fileExtension;
         }
 
-        public void LogWarning(string message)
-        {
-            BuildEngine.LogWarningEvent(new BuildWarningEventArgs(string.Empty, string.Empty, null, 0, 0, 0, 0, message, string.Empty, "GitVersionTask"));
-        }
-
-        public void LogInfo(string message)
-        {
-            BuildEngine.LogMessageEvent(new BuildMessageEventArgs(message, string.Empty, "GitVersionTask", MessageImportance.Normal));
-        }
-
-        public void LogError(string message, string file = null)
-        {
-            BuildEngine.LogErrorEvent(new BuildErrorEventArgs(string.Empty, string.Empty, file, 0, 0, 0, 0, message, string.Empty, "GitVersionTask"));
-        }
-
-        protected bool GetVersionVariables(out VersionVariables versionVariables)
-        {
-            return !ExecuteCore.TryGetVersion(SolutionDirectory, out versionVariables, NoFetch, new Authentication());
-        }
+        public String WorkingDirectory { get; }
+        public String FileName { get; }
+        public String FileExtension { get; }
     }
 }
