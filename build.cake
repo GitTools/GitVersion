@@ -208,19 +208,19 @@ Task("Copy-Files")
     .Does<BuildParameters>((parameters) =>
 {
     // .NET Core
-    var netCoreDir = parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools");
+    var coreFxDir = parameters.Paths.Directories.ArtifactsBinCoreFx.Combine("tools");
     DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
     {
-        Framework = parameters.NetCoreVersion,
+        Framework = parameters.CoreFxVersion,
         NoRestore = true,
         Configuration = parameters.Configuration,
-        OutputDirectory = netCoreDir,
+        OutputDirectory = coreFxDir,
         MSBuildSettings = parameters.MSBuildSettings
     });
 
     // Copy license & Copy GitVersion.XML (since publish does not do this anymore)
-    CopyFileToDirectory("./LICENSE", netCoreDir);
-    CopyFileToDirectory($"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.NetCoreVersion}/GitVersion.xml", netCoreDir);
+    CopyFileToDirectory("./LICENSE", coreFxDir);
+    CopyFileToDirectory($"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion}/GitVersion.xml", coreFxDir);
 
     // .NET 4.0
     DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
@@ -233,14 +233,14 @@ Task("Copy-Files")
         MSBuildSettings = parameters.MSBuildSettings
     });
 
-    var ilMergDir = parameters.Paths.Directories.ArtifactsBinFullFxILMerge;
+    var ilMergeDir = parameters.Paths.Directories.ArtifactsBinFullFxILMerge;
     var portableDir = parameters.Paths.Directories.ArtifactsBinFullFxPortable.Combine("tools");
     var cmdlineDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
 
     // Portable
-    PublishILRepackedGitVersionExe(true, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergDir, portableDir, parameters.Configuration, parameters.FullFxVersion);
+    PublishILRepackedGitVersionExe(true, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergeDir, portableDir, parameters.Configuration, parameters.FullFxVersion);
     // Commandline
-    PublishILRepackedGitVersionExe(false, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergDir, cmdlineDir, parameters.Configuration, parameters.FullFxVersion);
+    PublishILRepackedGitVersionExe(false, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergeDir, cmdlineDir, parameters.Configuration, parameters.FullFxVersion);
 
     // Vsix
     var tfsPath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionTask");
@@ -250,9 +250,9 @@ Task("Copy-Files")
     CopyDirectory(portableDir.Combine("lib"), tfsPath.Combine("lib"));
 
     // Vsix dotnet core
-    var tfsNetCorePath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionNetCoreTask");
-    EnsureDirectoryExists(tfsNetCorePath);
-    CopyDirectory(netCoreDir, tfsNetCorePath.Combine("netcore"));
+    var tfsCoreFxPath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionNetCoreTask");
+    EnsureDirectoryExists(tfsCoreFxPath);
+    CopyDirectory(coreFxDir, tfsCoreFxPath.Combine("netcore"));
 
     // Ruby Gem
     var gemPath = new DirectoryPath("./src/GitVersionRubyGem/bin");
@@ -398,9 +398,9 @@ Task("Zip-Files")
     Zip(cmdlineDir, parameters.Paths.Files.ZipArtifactPathDesktop, fullFxFiles);
 
     // .NET Core
-    var netCoreDir = parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools");
-    var coreclrFiles = GetFiles(netCoreDir.FullPath + "/**/*");
-    Zip(netCoreDir, parameters.Paths.Files.ZipArtifactPathCoreClr, coreclrFiles);
+    var coreFxDir = parameters.Paths.Directories.ArtifactsBinCoreFx.Combine("tools");
+    var coreclrFiles = GetFiles(coreFxDir.FullPath + "/**/*");
+    Zip(coreFxDir, parameters.Paths.Files.ZipArtifactPathCoreClr, coreclrFiles);
 });
 
 Task("Docker-Build")
@@ -593,7 +593,7 @@ Task("Publish-Tfs")
     };
 
     TfxExtensionPublish(parameters.Paths.Files.VsixOutputFilePath, settings);
-    TfxExtensionPublish(parameters.Paths.Files.VsixNetCoreOutputFilePath, settings);
+    TfxExtensionPublish(parameters.Paths.Files.VsixCoreFxOutputFilePath, settings);
 })
 .OnError(exception =>
 {

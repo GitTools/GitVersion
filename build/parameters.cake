@@ -8,7 +8,7 @@ public class BuildParameters
     public string Target { get; private set; }
     public string Configuration { get; private set; }
 
-    public string NetCoreVersion { get; private set; } = "netcoreapp2.1";
+    public string CoreFxVersion { get; private set; } = "netcoreapp2.1";
     public string FullFxVersion { get; private set; } = "net461";
 
     public bool EnabledUnitTests { get; private set; }
@@ -104,16 +104,16 @@ public class BuildParameters
             files.TestCoverageOutputFilePath,
             files.ReleaseNotesOutputFilePath,
             files.VsixOutputFilePath,
-            files.VsixNetCoreOutputFilePath,
+            files.VsixCoreFxOutputFilePath,
             files.GemOutputFilePath
         });
 
         PackagesBuildMap = new Dictionary<string, DirectoryPath>
         {
-            ["GitVersion.CommandLine.DotNetCore"] = Paths.Directories.ArtifactsBinNetCore,
+            ["GitVersion.CommandLine.DotNetCore"] = Paths.Directories.ArtifactsBinCoreFx,
             ["GitVersion.CommandLine"] = Paths.Directories.ArtifactsBinFullFxCmdline,
             ["GitVersion.Portable"] = Paths.Directories.ArtifactsBinFullFxPortable,
-            ["GitVersion.Tool"] = Paths.Directories.ArtifactsBinNetCore,
+            ["GitVersion.Tool"] = Paths.Directories.ArtifactsBinCoreFx,
         };
 
         Credentials = BuildCredentials.GetCredentials(context);

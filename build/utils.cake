@@ -35,7 +35,7 @@ void SetRubyGemPushApiKey(string apiKey)
 
 GitVersion GetVersion(BuildParameters parameters)
 {
-    var dllFile = GetFiles($"**/GitVersionExe/bin/{parameters.Configuration}/{parameters.NetCoreVersion}/GitVersion.dll").FirstOrDefault();
+    var dllFile = GetFiles($"**/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion}/GitVersion.dll").FirstOrDefault();
     var settings = new GitVersionSettings
     {
         OutputType = GitVersionOutput.Json,
@@ -130,7 +130,7 @@ void DockerBuild(string os, string distro, string targetframework, BuildParamete
     var workDir = DirectoryPath.FromString($"./src/Docker/{os}/{distro}/{targetframework}");
 
     var sourceDir = targetframework.StartsWith("netcoreapp")
-        ? parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools")
+        ? parameters.Paths.Directories.ArtifactsBinCoreFx.Combine("tools")
         : parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
 
     CopyDirectory(sourceDir, workDir.Combine("content"));
