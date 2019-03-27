@@ -125,8 +125,9 @@ void PublishILRepackedGitVersionExe(bool includeLibGit2Sharp, DirectoryPath targ
     CopyFileToDirectory("./src/GitVersionExe/bin/" + configuration + "/" + dotnetVersion + "/GitVersion.xml", outputDir);
 }
 
-void DockerBuild(string os, string distro, string targetframework, BuildParameters parameters)
+void DockerBuild(DockerImage dockerImage, BuildParameters parameters)
 {
+    var (os, distro, targetframework) = dockerImage;
     var workDir = DirectoryPath.FromString($"./src/Docker/{os}/{distro}/{targetframework}");
 
     var sourceDir = targetframework.StartsWith("netcoreapp")
@@ -135,7 +136,7 @@ void DockerBuild(string os, string distro, string targetframework, BuildParamete
 
     CopyDirectory(sourceDir, workDir.Combine("content"));
 
-    var tags = GetDockerTags(os, distro, targetframework, parameters);
+    var tags = GetDockerTags(dockerImage, parameters);
 
     var buildSettings = new DockerImageBuildSettings
     {
@@ -150,9 +151,9 @@ void DockerBuild(string os, string distro, string targetframework, BuildParamete
     DockerBuild(buildSettings, workDir.ToString());
 }
 
-void DockerPush(string os, string distro, string targetframework, BuildParameters parameters)
+void DockerPush(DockerImage dockerImage, BuildParameters parameters)
 {
-    var tags = GetDockerTags(os, distro, targetframework, parameters);
+    var tags = GetDockerTags(dockerImage, parameters);
 
     foreach (var tag in tags)
     {
@@ -160,8 +161,9 @@ void DockerPush(string os, string distro, string targetframework, BuildParameter
     }
 }
 
-string[] GetDockerTags(string os, string distro, string targetframework, BuildParameters parameters) {
+string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
     var name = $"gittools/gitversion";
+    var (os, distro, targetframework) = dockerImage;
 
     var tags = new List<string> {
         $"{name}:{parameters.Version.Version}-{os}-{distro}-{targetframework}",

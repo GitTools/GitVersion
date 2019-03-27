@@ -40,6 +40,7 @@ public class BuildParameters
     public BuildPaths Paths { get; private set; }
     public BuildPackages Packages { get; private set; }
     public BuildArtifacts Artifacts { get; private set; }
+    public DockerImages Docker { get; private set; }
     public Dictionary<string, DirectoryPath> PackagesBuildMap { get; private set; }
 
     public bool IsStableRelease() => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsPullRequest && IsTagged;
@@ -90,6 +91,9 @@ public class BuildParameters
         Version = BuildVersion.Calculate(context, this, gitVersion);
 
         Paths = BuildPaths.GetPaths(context, this, Configuration, Version);
+
+        var dockerFiles = context.GetFiles("./src/**/Dockerfile").ToArray();
+        Docker = DockerImages.GetDockerImages(context, dockerFiles);
 
         Packages = BuildPackages.GetPackages(
             Paths.Directories.NugetRoot,

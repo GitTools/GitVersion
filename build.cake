@@ -409,25 +409,15 @@ Task("Docker-Build")
     .IsDependentOn("Copy-Files")
     .Does<BuildParameters>((parameters) =>
 {
-    if (parameters.IsRunningOnWindows)
+    var images = parameters.IsRunningOnWindows
+            ? parameters.Docker.Windows
+            : parameters.IsRunningOnLinux
+                ? parameters.Docker.Linux
+                : Array.Empty<DockerImage>();
+
+    foreach(var dockerImage in images)
     {
-        DockerBuild("windows", "windowsservercore", "net472", parameters);
-
-        DockerBuild("windows", "nano", "netcoreapp2.1", parameters);
-
-        DockerBuild("windows", "nano", "netcoreapp2.2", parameters);
-    }
-    else if (parameters.IsRunningOnLinux)
-    {
-        DockerBuild("linux", "debian",   "net472", parameters);
-
-        DockerBuild("linux", "debian",   "netcoreapp2.1", parameters);
-        DockerBuild("linux", "centos7",  "netcoreapp2.1", parameters);
-        DockerBuild("linux", "fedora27", "netcoreapp2.1", parameters);
-
-        DockerBuild("linux", "debian",   "netcoreapp2.2", parameters);
-        DockerBuild("linux", "centos7",  "netcoreapp2.2", parameters);
-        DockerBuild("linux", "fedora27", "netcoreapp2.2", parameters);
+        DockerBuild(dockerImage, parameters);
     }
 });
 
@@ -650,20 +640,15 @@ Task("Publish-DockerHub")
 
     DockerLogin(parameters.Credentials.Docker.UserName, parameters.Credentials.Docker.Password);
 
-    if (parameters.IsRunningOnWindows)
+    var images = parameters.IsRunningOnWindows
+            ? parameters.Docker.Windows
+            : parameters.IsRunningOnLinux
+                ? parameters.Docker.Linux
+                : Array.Empty<DockerImage>();
+
+    foreach(var dockerImage in images)
     {
-        DockerPush("windows", "nano", "netcoreapp2.1", parameters);
-        DockerPush("windows", "windowsservercore", "net472", parameters);
-    }
-    else if (parameters.IsRunningOnLinux)
-    {
-        DockerPush("linux", "debian", "net472", parameters);
-        DockerPush("linux", "debian", "netcoreapp2.1", parameters);
-        DockerPush("linux", "centos7", "netcoreapp2.1", parameters);
-        DockerPush("linux", "fedora27", "netcoreapp2.1", parameters);
-        DockerPush("linux", "debian", "netcoreapp2.2", parameters);
-        DockerPush("linux", "centos7", "netcoreapp2.2", parameters);
-        DockerPush("linux", "fedora27", "netcoreapp2.2", parameters);
+        DockerPush(dockerImage, parameters);
     }
 
     DockerLogout();
