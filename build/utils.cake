@@ -161,6 +161,33 @@ void DockerPush(DockerImage dockerImage, BuildParameters parameters)
     }
 }
 
+string DockerRunImage(DockerContainerRunSettings settings, string image, string command, params string[] args)
+{
+    if (string.IsNullOrEmpty(image))
+    {
+        throw new ArgumentNullException("image");
+    }
+    var runner = new GenericDockerRunner<DockerContainerRunSettings>(Context.FileSystem, Context.Environment, Context.ProcessRunner, Context.Tools);
+    List<string> arguments = new List<string> { image };
+    if (!string.IsNullOrEmpty(command))
+    {
+        arguments.Add(command);
+        if (args.Length > 0)
+        {
+            arguments.AddRange(args);
+        }
+    }
+
+    var result = runner.RunWithResult("run", settings ?? new DockerContainerRunSettings(), r => r.ToArray(), arguments.ToArray());
+    return string.Join("\n", result);
+}
+
+GitVersion DockerTestRun(DockerContainerRunSettings settings, string image, string command, params string[] args)
+{
+    var output = DockerRunImage(settings, image, command, args);
+    return DeserializeJson<GitVersion>(output);
+}
+
 string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
     var name = $"gittools/gitversion";
     var (os, distro, targetframework) = dockerImage;

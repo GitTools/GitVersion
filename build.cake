@@ -421,6 +421,37 @@ Task("Docker-Build")
     }
 });
 
+Task("Docker-Test")
+    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Docker can be tested only on Windows or Linux agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Docker-Test works only for releases.")
+    .IsDependentOn("Docker-Build")
+    .Does<BuildParameters>((parameters) =>
+{
+    var currentDir = MakeAbsolute(Directory("."));
+    var containerDir = parameters.IsRunningOnWindows ? "c:/repo" : "/repo";
+    var settings = new DockerContainerRunSettings
+    {
+        Rm = true,
+        Volume = new[] { $"{currentDir}:{containerDir}" }
+    };
+
+    var images = parameters.IsRunningOnWindows
+            ? parameters.Docker.Windows
+            : parameters.IsRunningOnLinux
+                ? parameters.Docker.Linux
+                : Array.Empty<DockerImage>();
+
+    foreach(var dockerImage in images)
+    {
+        var tags = GetDockerTags(dockerImage, parameters);
+        foreach (var tag in tags)
+        {
+            var gitversion = DockerTestRun(settings, tag, containerDir);
+            Information($"Output: Image {tag}, Version {gitversion.FullSemVer}");
+        }
+    }
+});
+
 Task("Pack")
     .IsDependentOn("Pack-Tfs")
     .IsDependentOn("Pack-Gem")
@@ -626,6 +657,7 @@ Task("Publish-DockerHub")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-DockerHub works only on AzurePipeline.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-DockerHub works only for releases.")
     .IsDependentOn("Docker-Build")
+    .IsDependentOn("Docker-Test")
     .Does<BuildParameters>((parameters) =>
 {
     var username = parameters.Credentials.Docker.UserName;
