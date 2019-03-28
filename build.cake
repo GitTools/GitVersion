@@ -12,6 +12,7 @@
 #addin "nuget:?package=Cake.Coverlet&version=2.2.1"
 #addin "nuget:?package=Cake.Codecov&version=0.5.0"
 #addin "nuget:?package=Newtonsoft.Json&version=9.0.1"
+#addin "nuget:?package=xunit.assert&version=2.4.1"
 
 // Install tools.
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.9.0"
@@ -27,6 +28,7 @@
 #load "./build/parameters.cake"
 #load "./build/utils.cake"
 
+using Xunit;
 //////////////////////////////////////////////////////////////////////
 // PARAMETERS
 //////////////////////////////////////////////////////////////////////
@@ -446,8 +448,7 @@ Task("Docker-Test")
         var tags = GetDockerTags(dockerImage, parameters);
         foreach (var tag in tags)
         {
-            var gitversion = DockerTestRun(settings, tag, containerDir);
-            Information($"Output: Image {tag}, Version {gitversion.FullSemVer}");
+            DockerTestRun(settings, parameters, tag, containerDir);
         }
     }
 });
