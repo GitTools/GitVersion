@@ -1,4 +1,4 @@
-FROM mono:5.14
+FROM mcr.microsoft.com/dotnet/core/runtime:2.2
 LABEL maintainers="GitTools Maintainers"
 ARG contentFolder
 
@@ -9,4 +9,4 @@ RUN apt-get update && \
 WORKDIR /app
 COPY $contentFolder/ ./
 
-ENTRYPOINT ["mono", "GitVersion.exe"]
+ENTRYPOINT ["dotnet", "GitVersion.dll"]

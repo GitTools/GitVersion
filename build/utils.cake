@@ -35,7 +35,7 @@ void SetRubyGemPushApiKey(string apiKey)
 
 GitVersion GetVersion(BuildParameters parameters)
 {
-    var dllFile = GetFiles($"**/GitVersionExe/bin/{parameters.Configuration}/{parameters.NetCoreVersion}/GitVersion.dll").FirstOrDefault();
+    var dllFile = GetFiles($"**/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion}/GitVersion.dll").FirstOrDefault();
     var settings = new GitVersionSettings
     {
         OutputType = GitVersionOutput.Json,
@@ -125,17 +125,18 @@ void PublishILRepackedGitVersionExe(bool includeLibGit2Sharp, DirectoryPath targ
     CopyFileToDirectory("./src/GitVersionExe/bin/" + configuration + "/" + dotnetVersion + "/GitVersion.xml", outputDir);
 }
 
-void DockerBuild(string platform, string variant, BuildParameters parameters)
+void DockerBuild(DockerImage dockerImage, BuildParameters parameters)
 {
-    var workDir = DirectoryPath.FromString($"./src/Docker/{platform}/{variant}");
+    var (os, distro, targetframework) = dockerImage;
+    var workDir = DirectoryPath.FromString($"./src/Docker/{os}/{distro}/{targetframework}");
 
-    var sourceDir =  variant == "dotnetcore"
-        ? parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools")
+    var sourceDir = targetframework.StartsWith("netcoreapp")
+        ? parameters.Paths.Directories.ArtifactsBinCoreFx.Combine("tools")
         : parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
 
     CopyDirectory(sourceDir, workDir.Combine("content"));
 
-    var tags = GetDockerTags(platform, variant, parameters);
+    var tags = GetDockerTags(dockerImage, parameters);
 
     var buildSettings = new DockerImageBuildSettings
     {
@@ -150,9 +151,9 @@ void DockerBuild(string platform, string variant, BuildParameters parameters)
     DockerBuild(buildSettings, workDir.ToString());
 }
 
-void DockerPush(string platform, string variant, BuildParameters parameters)
+void DockerPush(DockerImage dockerImage, BuildParameters parameters)
 {
-    var tags = GetDockerTags(platform, variant, parameters);
+    var tags = GetDockerTags(dockerImage, parameters);
 
     foreach (var tag in tags)
     {
@@ -160,18 +161,68 @@ void DockerPush(string platform, string variant, BuildParameters parameters)
     }
 }
 
-string[] GetDockerTags(string platform, string variant, BuildParameters parameters) {
-    var name = $"gittools/gitversion-{variant}";
+string DockerRunImage(DockerContainerRunSettings settings, string image, string command, params string[] args)
+{
+    if (string.IsNullOrEmpty(image))
+    {
+        throw new ArgumentNullException("image");
+    }
+    var runner = new GenericDockerRunner<DockerContainerRunSettings>(Context.FileSystem, Context.Environment, Context.ProcessRunner, Context.Tools);
+    List<string> arguments = new List<string> { image };
+    if (!string.IsNullOrEmpty(command))
+    {
+        arguments.Add(command);
+        if (args.Length > 0)
+        {
+            arguments.AddRange(args);
+        }
+    }
+
+    var result = runner.RunWithResult("run", settings ?? new DockerContainerRunSettings(), r => r.ToArray(), arguments.ToArray());
+    return string.Join("\n", result);
+}
+
+void DockerTestRun(DockerContainerRunSettings settings, BuildParameters parameters, string image, string command, params string[] args)
+{
+    Information($"Testing image: {image}");
+    var output = DockerRunImage(settings, image, command, args);
+
+    var version = DeserializeJson<GitVersion>(output);
+
+    Assert.Equal(parameters.Version.GitVersion.FullSemVer, version.FullSemVer);
+}
+
+string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
+    var name = $"gittools/gitversion";
+    var (os, distro, targetframework) = dockerImage;
 
     var tags = new List<string> {
-        $"{name}:{platform}",
-        $"{name}:{platform}-{parameters.Version.Version}"
+        $"{name}:{parameters.Version.Version}-{os}-{distro}-{targetframework}",
+        $"{name}:{parameters.Version.SemVersion}-{os}-{distro}-{targetframework}",
     };
 
-    tags.Add($"{name}:{platform}-{parameters.Version.SemVersion}");
+    if (distro == "debian" && targetframework == "netcoreapp2.1" || distro == "nano") {
+        tags.AddRange(new[] {
+            $"{name}:{parameters.Version.Version}-{os}",
+            $"{name}:{parameters.Version.SemVersion}-{os}",
 
-    if (variant == "dotnetcore" && parameters.IsStableRelease()) {
-        tags.Add($"{name}:latest");
+            $"{name}:{parameters.Version.Version}-{targetframework}",
+            $"{name}:{parameters.Version.SemVersion}-{targetframework}",
+
+            $"{name}:{parameters.Version.Version}-{os}-{targetframework}",
+            $"{name}:{parameters.Version.SemVersion}-{os}-{targetframework}",
+        });
+
+        if (parameters.IsStableRelease())
+        {
+            tags.AddRange(new[] {
+                $"{name}:latest",
+                $"{name}:latest-{os}",
+                $"{name}:latest-{targetframework}",
+                $"{name}:latest-{os}-{targetframework}",
+                $"{name}:latest-{os}-{distro}-{targetframework}",
+            });
+        }
     }
 
     return tags.ToArray();
@@ -193,9 +244,10 @@ void GetReleaseNotes(FilePath outputPath, DirectoryPath workDir, string repoToke
     Information(string.Join("\n", redirectedOutput));
 }
 
-void UpdateTaskVersion(FilePath taskJsonPath, GitVersion gitVersion)
+void UpdateTaskVersion(FilePath taskJsonPath, string taskId, GitVersion gitVersion)
 {
     var taskJson = ParseJsonFromFile(taskJsonPath);
+    taskJson["id"] = taskId;
     taskJson["version"]["Major"] = gitVersion.Major.ToString();
     taskJson["version"]["Minor"] = gitVersion.Minor.ToString();
     taskJson["version"]["Patch"] = gitVersion.Patch.ToString();

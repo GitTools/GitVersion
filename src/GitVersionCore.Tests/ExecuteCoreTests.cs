@@ -36,7 +36,7 @@ public class ExecuteCoreTests : TestBase
             var cacheKey2 = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, null);
 
             cacheKey2.Value.ShouldBe(cacheKey1.Value);
-        });        
+        });
     }
 
     [Test]
@@ -50,8 +50,9 @@ PreReleaseTag: test.19
 PreReleaseTagWithDash: -test.19
 PreReleaseLabel: test
 PreReleaseNumber: 19
-BuildMetaData: 
-BuildMetaDataPadded: 
+WeightedPreReleaseNumber: 19
+BuildMetaData:
+BuildMetaDataPadded:
 FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 MajorMinorPatch: 4.10.3
 SemVer: 4.10.3-test.19
@@ -68,6 +69,7 @@ NuGetVersionV2: 4.10.3-test0019
 NuGetVersion: 4.10.3-test0019
 NuGetPreReleaseTagV2: test0019
 NuGetPreReleaseTag: test0019
+VersionSourceSha: 4.10.2
 CommitsSinceVersionSource: 19
 CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
@@ -97,8 +99,8 @@ PreReleaseTag: test.19
 PreReleaseTagWithDash: -test.19
 PreReleaseLabel: test
 PreReleaseNumber: 19
-BuildMetaData: 
-BuildMetaDataPadded: 
+BuildMetaData:
+BuildMetaDataPadded:
 FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 MajorMinorPatch: 4.10.3
 SemVer: 4.10.3-test.19
@@ -161,8 +163,9 @@ PreReleaseTag: test.19
 PreReleaseTagWithDash: -test.19
 PreReleaseLabel: test
 PreReleaseNumber: 19
-BuildMetaData: 
-BuildMetaDataPadded: 
+WeightedPreReleaseNumber: 19
+BuildMetaData:
+BuildMetaDataPadded:
 FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 MajorMinorPatch: 4.10.3
 SemVer: 4.10.3-test.19
@@ -179,6 +182,7 @@ NuGetVersionV2: 4.10.3-test0019
 NuGetVersion: 4.10.3-test0019
 NuGetPreReleaseTagV2: test0019
 NuGetPreReleaseTag: test0019
+VersionSourceSha: 4.10.2
 CommitsSinceVersionSource: 19
 CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
@@ -211,8 +215,9 @@ PreReleaseTag: test.19
 PreReleaseTagWithDash: -test.19
 PreReleaseLabel: test
 PreReleaseNumber: 19
-BuildMetaData: 
-BuildMetaDataPadded: 
+WeightedPreReleaseNumber: 19
+BuildMetaData:
+BuildMetaDataPadded:
 FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 MajorMinorPatch: 4.10.3
 SemVer: 4.10.3-test.19
@@ -229,6 +234,7 @@ NuGetVersionV2: 4.10.3-test0019
 NuGetVersion: 4.10.3-test0019
 NuGetPreReleaseTagV2: test0019
 NuGetPreReleaseTag: test0019
+VersionSourceSha: 4.10.2
 CommitsSinceVersionSource: 19
 CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10

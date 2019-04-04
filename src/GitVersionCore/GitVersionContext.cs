@@ -117,6 +117,7 @@
             var incrementStrategy = currentBranchConfig.Increment.Value;
             var preventIncrementForMergedBranchVersion = currentBranchConfig.PreventIncrementOfMergedBranchVersion.Value;
             var trackMergeTarget = currentBranchConfig.TrackMergeTarget.Value;
+            var preReleaseWeight = currentBranchConfig.PreReleaseWeight ?? 0;
 
             var nextVersion = FullConfiguration.NextVersion;
             var assemblyVersioningScheme = FullConfiguration.AssemblyVersioningScheme.Value;
@@ -148,7 +149,8 @@
                 FullConfiguration.Ignore.ToFilters(),
                 currentBranchConfig.TracksReleaseBranches.Value,
                 currentBranchConfig.IsReleaseBranch.Value,
-                commitDateFormat);
+                commitDateFormat,
+                preReleaseWeight);
         }
 
         private static Branch GetTargetBranch(IRepository repository, string targetBranch)
@@ -167,7 +169,8 @@
                     desiredBranch = repository?.Branches?
                         .SingleOrDefault(b =>
                             b.CanonicalName == targetBranch ||
-                            b.FriendlyName == targetBranch);
+                            b.FriendlyName == targetBranch ||
+                            b.NameWithoutRemote() == targetBranch);
 
                     // Failsafe in case the specified branch is invalid
                     desiredBranch = desiredBranch ?? repository.Head;

@@ -1,6 +1,7 @@
 namespace GitVersion
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
 
@@ -35,19 +36,30 @@ namespace GitVersion
         {
             // For VSO, we'll get the Build Number and insert GitVersion variables where
             // specified
-            var buildNum = Environment.GetEnvironmentVariable("BUILD_BUILDNUMBER");
+            var buildNumberEnv = Environment.GetEnvironmentVariable("BUILD_BUILDNUMBER");
+            if (String.IsNullOrWhiteSpace(buildNumberEnv))
+                return variables.FullSemVer;
 
-            var newBuildNum = variables.Aggregate(buildNum, (current, kvp) =>
-                current.RegexReplace(string.Format(@"\$\(GITVERSION[_\.]{0}\)", kvp.Key), kvp.Value ?? string.Empty, RegexOptions.IgnoreCase));
+            var newBuildNumber = variables.Aggregate(buildNumberEnv, ReplaceVariables);
 
             // If no variable substitution has happened, use FullSemVer
-            if (buildNum == newBuildNum)
+            if (buildNumberEnv == newBuildNumber)
             {
-                var buildNumber = variables.FullSemVer.EndsWith("+0") ? variables.FullSemVer.Substring(0, variables.FullSemVer.Length - 2) : variables.FullSemVer;
-                return string.Format("##vso[build.updatebuildnumber]{0}", buildNumber);
+                var buildNumber = variables.FullSemVer.EndsWith("+0")
+                                ? variables.FullSemVer.Substring(0, variables.FullSemVer.Length - 2)
+                                : variables.FullSemVer;
+                
+                return $"##vso[build.updatebuildnumber]{buildNumber}";
             }
 
-            return string.Format("##vso[build.updatebuildnumber]{0}", newBuildNum);
+            return $"##vso[build.updatebuildnumber]{newBuildNumber}";
+        }
+
+        private static string ReplaceVariables(string buildNumberEnv, KeyValuePair<string, string> variable)
+        {
+            var pattern = $@"\$\(GITVERSION[_\.]{variable.Key}\)";
+            var replacement = variable.Value ?? string.Empty;
+            return buildNumberEnv.RegexReplace(pattern, replacement, RegexOptions.IgnoreCase);
         }
     }
 }

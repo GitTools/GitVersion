@@ -6,6 +6,7 @@
   "PreReleaseTagWithDash":"-unstable.5",
   "PreReleaseLabel":"unstable",
   "PreReleaseNumber":5,
+  "WeightedPreReleaseNumber":5,
   "BuildMetaData":"",
   "BuildMetaDataPadded":"",
   "FullBuildMetaData":"Branch.develop.Sha.commitSha",
@@ -24,6 +25,7 @@
   "NuGetVersion":"1.2.3-unstable0005",
   "NuGetPreReleaseTagV2":"unstable0005",
   "NuGetPreReleaseTag":"unstable0005",
+  "VersionSourceSha":"versionSourceSha",
   "CommitsSinceVersionSource":5,
   "CommitsSinceVersionSourcePadded":"0005",
   "CommitDate":"2014-03-06"

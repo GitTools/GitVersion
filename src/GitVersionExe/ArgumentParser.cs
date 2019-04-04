@@ -337,6 +337,12 @@ namespace GitVersion
                     continue;
                 }
 
+                if (name.IsSwitch("updatewixversionfile"))
+                {
+                    arguments.UpdateWixVersionFile = true;
+                    continue;
+                }
+
                 var couldNotParseMessage = string.Format("Could not parse command line parameter '{0}'.", name);
 
                 // If we've reached through all argument switches without a match, we can relatively safely assume that the first argument isn't a switch, but the target path.

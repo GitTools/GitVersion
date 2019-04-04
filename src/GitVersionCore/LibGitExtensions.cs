@@ -135,13 +135,7 @@ namespace GitVersion
 
         public static Branch FindBranch(this IRepository repository, string branchName)
         {
-            var exact = repository.Branches.FirstOrDefault(x => x.FriendlyName == branchName);
-            if (exact != null)
-            {
-                return exact;
-            }
-
-            return repository.Branches.FirstOrDefault(x => x.FriendlyName == "origin/" + branchName);
+            return repository.Branches.FirstOrDefault(x => x.NameWithoutRemote() == branchName);
         }
 
         public static void DumpGraph(this IRepository repository, Action<string> writer = null, int? maxCommits = null)

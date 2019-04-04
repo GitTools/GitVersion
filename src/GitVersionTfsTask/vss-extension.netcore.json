@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
-    "id": "gitversion-netcore",
-    "name": "GitVersion (.NET Core)",
+    "id": "gitversion-netcore$idSuffix$",
+    "name": "GitVersion .NET Core$titleSuffix$",
     "publisher": "gittools",
     "public": true,
     "author": "GitVersion Contributors",
@@ -14,11 +14,14 @@
         { "path": "GitVersionNetCoreTask" }
     ],
     "categories": [
-        "Build and release"
+        "Azure Pipelines"
     ],
     "icons": {
         "default": "images/extension-icon.png"
     },
+    "galleryFlags": [
+        "$visibility$"
+    ],
     "tags": [
         "semver",
         "git",
@@ -55,15 +58,14 @@
             "path": "overview.md"
         }
     },
-    "contributions": [
-        {
-            "id": "gitversion-netcore-task",
-            "type": "ms.vss-distributed-task.task",
-            "targets": [
-                "ms.vss-distributed-task.tasks"
-            ],
-            "properties": {
-                "name": "GitVersionNetCoreTask"
-            }
-        }]
+    "contributions": [{
+        "id": "gitversion-netcore-task",
+        "type": "ms.vss-distributed-task.task",
+        "targets": [
+            "ms.vss-distributed-task.tasks"
+        ],
+        "properties": {
+            "name": "GitVersionNetCoreTask"
+        }
+    }]
 }

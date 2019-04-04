@@ -12,9 +12,9 @@
 #addin "nuget:?package=Cake.Coverlet&version=2.2.1"
 #addin "nuget:?package=Cake.Codecov&version=0.5.0"
 #addin "nuget:?package=Newtonsoft.Json&version=9.0.1"
+#addin "nuget:?package=xunit.assert&version=2.4.1"
 
 // Install tools.
-#tool "nuget:?package=GitReleaseManager&version=0.7.1"
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.9.0"
 #tool "nuget:?package=GitReleaseNotes&version=0.7.1"
 #tool "nuget:?package=ILRepack&version=2.0.16"
@@ -28,6 +28,7 @@
 #load "./build/parameters.cake"
 #load "./build/utils.cake"
 
+using Xunit;
 //////////////////////////////////////////////////////////////////////
 // PARAMETERS
 //////////////////////////////////////////////////////////////////////
@@ -209,19 +210,19 @@ Task("Copy-Files")
     .Does<BuildParameters>((parameters) =>
 {
     // .NET Core
-    var netCoreDir = parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools");
+    var coreFxDir = parameters.Paths.Directories.ArtifactsBinCoreFx.Combine("tools");
     DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
     {
-        Framework = parameters.NetCoreVersion,
+        Framework = parameters.CoreFxVersion,
         NoRestore = true,
         Configuration = parameters.Configuration,
-        OutputDirectory = netCoreDir,
+        OutputDirectory = coreFxDir,
         MSBuildSettings = parameters.MSBuildSettings
     });
 
     // Copy license & Copy GitVersion.XML (since publish does not do this anymore)
-    CopyFileToDirectory("./LICENSE", netCoreDir);
-    CopyFileToDirectory($"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.NetCoreVersion}/GitVersion.xml", netCoreDir);
+    CopyFileToDirectory("./LICENSE", coreFxDir);
+    CopyFileToDirectory($"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion}/GitVersion.xml", coreFxDir);
 
     // .NET 4.0
     DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
@@ -234,14 +235,14 @@ Task("Copy-Files")
         MSBuildSettings = parameters.MSBuildSettings
     });
 
-    var ilMergDir = parameters.Paths.Directories.ArtifactsBinFullFxILMerge;
+    var ilMergeDir = parameters.Paths.Directories.ArtifactsBinFullFxILMerge;
     var portableDir = parameters.Paths.Directories.ArtifactsBinFullFxPortable.Combine("tools");
     var cmdlineDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
 
     // Portable
-    PublishILRepackedGitVersionExe(true, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergDir, portableDir, parameters.Configuration, parameters.FullFxVersion);
+    PublishILRepackedGitVersionExe(true, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergeDir, portableDir, parameters.Configuration, parameters.FullFxVersion);
     // Commandline
-    PublishILRepackedGitVersionExe(false, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergDir, cmdlineDir, parameters.Configuration, parameters.FullFxVersion);
+    PublishILRepackedGitVersionExe(false, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergeDir, cmdlineDir, parameters.Configuration, parameters.FullFxVersion);
 
     // Vsix
     var tfsPath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionTask");
@@ -251,9 +252,9 @@ Task("Copy-Files")
     CopyDirectory(portableDir.Combine("lib"), tfsPath.Combine("lib"));
 
     // Vsix dotnet core
-    var tfsNetCorePath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionNetCoreTask");
-    EnsureDirectoryExists(tfsNetCorePath);
-    CopyDirectory(netCoreDir, tfsNetCorePath.Combine("netcore"));
+    var tfsCoreFxPath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionNetCoreTask");
+    EnsureDirectoryExists(tfsCoreFxPath);
+    CopyDirectory(coreFxDir, tfsCoreFxPath.Combine("netcore"));
 
     // Ruby Gem
     var gemPath = new DirectoryPath("./src/GitVersionRubyGem/bin");
@@ -268,33 +269,42 @@ Task("Pack-Tfs")
     .Does<BuildParameters>((parameters) =>
 {
     var workDir = "./src/GitVersionTfsTask";
+    var idSuffix = parameters.IsStableRelease() ? "" : "-preview";
+    var titleSuffix = parameters.IsStableRelease() ? "" : " (Preview)";
+    var visibility = parameters.IsStableRelease() ? "Public" : "Preview";
+    var taskIdFullFx = parameters.IsStableRelease() ? "e5983830-3f75-11e5-82ed-81492570a08e" : "25b46667-d5a9-4665-97f7-e23de366ecdf";
+    var taskIdCoreFx = parameters.IsStableRelease() ? "ce526674-dbd1-4023-ad6d-2a6b9742ee31" : "edf331e1-d1c0-413a-9735-fce0b22a46f5";
+
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$idSuffix$", idSuffix);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$idSuffix$", idSuffix);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$titleSuffix$", titleSuffix);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$titleSuffix$", titleSuffix);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$visibility$", visibility);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$visibility$", visibility);
 
     // update version number
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$version$", parameters.Version.SemVersion);
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$version$", parameters.Version.SemVersion);
-    UpdateTaskVersion(new FilePath(workDir + "/GitVersionTask/task.json"), parameters.Version.GitVersion);
-    UpdateTaskVersion(new FilePath(workDir + "/GitVersionNetCoreTask/task.json"), parameters.Version.GitVersion);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$version$", parameters.Version.TfxVersion);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$version$", parameters.Version.TfxVersion);
+    UpdateTaskVersion(new FilePath(workDir + "/GitVersionTask/task.json"), taskIdFullFx, parameters.Version.GitVersion);
+    UpdateTaskVersion(new FilePath(workDir + "/GitVersionNetCoreTask/task.json"), taskIdCoreFx, parameters.Version.GitVersion);
 
     // build and pack
     NpmSet("progress", "false");
     NpmInstall(new NpmInstallSettings { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent });
-    NpmRunScript(new NpmRunScriptSettings { WorkingDirectory = workDir, ScriptName = "build", LogLevel = NpmLogLevel.Silent  });
+    NpmRunScript(new NpmRunScriptSettings { WorkingDirectory = workDir, ScriptName = "build", LogLevel = NpmLogLevel.Silent });
 
-    TfxExtensionCreate(new TfxExtensionCreateSettings
+    var settings = new TfxExtensionCreateSettings
     {
         ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
         WorkingDirectory = workDir,
-        ManifestGlobs = new List<string>(){ "vss-extension.mono.json" },
         OutputPath = parameters.Paths.Directories.BuildArtifact
-    });
+    };
 
-    TfxExtensionCreate(new TfxExtensionCreateSettings
-    {
-        ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
-        WorkingDirectory = workDir,
-        ManifestGlobs = new List<string>(){ "vss-extension.netcore.json" },
-        OutputPath = parameters.Paths.Directories.BuildArtifact
-    });
+    settings.ManifestGlobs = new List<string>(){ "vss-extension.mono.json" };
+    TfxExtensionCreate(settings);
+
+    settings.ManifestGlobs = new List<string>(){ "vss-extension.netcore.json" };
+    TfxExtensionCreate(settings);
 });
 
 Task("Pack-Gem")
@@ -390,9 +400,9 @@ Task("Zip-Files")
     Zip(cmdlineDir, parameters.Paths.Files.ZipArtifactPathDesktop, fullFxFiles);
 
     // .NET Core
-    var netCoreDir = parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools");
-    var coreclrFiles = GetFiles(netCoreDir.FullPath + "/**/*");
-    Zip(netCoreDir, parameters.Paths.Files.ZipArtifactPathCoreClr, coreclrFiles);
+    var coreFxDir = parameters.Paths.Directories.ArtifactsBinCoreFx.Combine("tools");
+    var coreclrFiles = GetFiles(coreFxDir.FullPath + "/**/*");
+    Zip(coreFxDir, parameters.Paths.Files.ZipArtifactPathCoreClr, coreclrFiles);
 });
 
 Task("Docker-Build")
@@ -401,15 +411,45 @@ Task("Docker-Build")
     .IsDependentOn("Copy-Files")
     .Does<BuildParameters>((parameters) =>
 {
-    if (parameters.IsRunningOnWindows)
+    var images = parameters.IsRunningOnWindows
+            ? parameters.Docker.Windows
+            : parameters.IsRunningOnLinux
+                ? parameters.Docker.Linux
+                : Array.Empty<DockerImage>();
+
+    foreach(var dockerImage in images)
     {
-        DockerBuild("windows", "dotnetcore", parameters);
-        DockerBuild("windows", "fullfx", parameters);
+        DockerBuild(dockerImage, parameters);
     }
-    else if (parameters.IsRunningOnLinux)
+});
+
+Task("Docker-Test")
+    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Docker can be tested only on Windows or Linux agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Docker-Test works only for releases.")
+    .IsDependentOn("Docker-Build")
+    .Does<BuildParameters>((parameters) =>
+{
+    var currentDir = MakeAbsolute(Directory("."));
+    var containerDir = parameters.IsRunningOnWindows ? "c:/repo" : "/repo";
+    var settings = new DockerContainerRunSettings
     {
-        DockerBuild("linux", "dotnetcore", parameters);
-        DockerBuild("linux", "fullfx", parameters);
+        Rm = true,
+        Volume = new[] { $"{currentDir}:{containerDir}" }
+    };
+
+    var images = parameters.IsRunningOnWindows
+            ? parameters.Docker.Windows
+            : parameters.IsRunningOnLinux
+                ? parameters.Docker.Linux
+                : Array.Empty<DockerImage>();
+
+    foreach(var dockerImage in images)
+    {
+        var tags = GetDockerTags(dockerImage, parameters);
+        foreach (var tag in tags)
+        {
+            DockerTestRun(settings, parameters, tag, containerDir);
+        }
     }
 });
 
@@ -445,13 +485,26 @@ Task("Release-Notes")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Release notes are generated only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Release notes are generated only on AzurePipeline.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease(),        "Release notes are generated only for stable releases.")
-    .IsDependentOn("Clean")
     .Does<BuildParameters>((parameters) =>
 {
-    var outputFile = parameters.Paths.Files.ReleaseNotesOutputFilePath;
-    var githubToken = parameters.Credentials.GitHub.Token;
+    var token = parameters.Credentials.GitHub.Token;
+    if(string.IsNullOrEmpty(token)) {
+        throw new InvalidOperationException("Could not resolve Github token.");
+    }
 
-    GetReleaseNotes(outputFile, ".", githubToken);
+    var repoOwner = "gittools";
+    var repository = "gitversion";
+    GitReleaseManagerCreate(token, repoOwner, repository, new GitReleaseManagerCreateSettings {
+        Milestone         = parameters.Version.Milestone,
+        Name              = parameters.Version.Milestone,
+        Prerelease        = true,
+        TargetCommitish   = "master"
+    });
+
+    GitReleaseManagerAddAssets(token, repoOwner, repository, parameters.Version.Milestone, parameters.Paths.Files.ZipArtifactPathDesktop.ToString());
+    GitReleaseManagerAddAssets(token, repoOwner, repository, parameters.Version.Milestone, parameters.Paths.Files.ZipArtifactPathCoreClr.ToString());
+    GitReleaseManagerClose(token, repoOwner, repository, parameters.Version.Milestone);
+
 }).ReportError(exception =>
 {
     Error(exception.Dump());
@@ -544,7 +597,7 @@ Task("Publish-Tfs")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishTfs,        "Publish-Tfs was disabled.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Tfs works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Tfs works only on AzurePipeline.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease(),   "Publish-Tfs works only for releases.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Tfs works only for releases.")
     .IsDependentOn("Pack-Tfs")
     .Does<BuildParameters>((parameters) =>
 {
@@ -554,20 +607,15 @@ Task("Publish-Tfs")
     }
 
     var workDir = "./src/GitVersionTfsTask";
-    TfxExtensionPublish(parameters.Paths.Files.VsixOutputFilePath, new TfxExtensionPublishSettings
+    var settings = new TfxExtensionPublishSettings
     {
         ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
         AuthType = TfxAuthType.Pat,
         Token = token
-    });
+    };
 
-    var netCoreWorkDir = "./src/GitVersionTfsTask.NetCore";
-    TfxExtensionPublish(parameters.Paths.Files.VsixNetCoreOutputFilePath, new TfxExtensionPublishSettings
-    {
-        ToolPath = netCoreWorkDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
-        AuthType = TfxAuthType.Pat,
-        Token = token
-    });
+    TfxExtensionPublish(parameters.Paths.Files.VsixOutputFilePath, settings);
+    TfxExtensionPublish(parameters.Paths.Files.VsixCoreFxOutputFilePath, settings);
 })
 .OnError(exception =>
 {
@@ -610,6 +658,7 @@ Task("Publish-DockerHub")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-DockerHub works only on AzurePipeline.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-DockerHub works only for releases.")
     .IsDependentOn("Docker-Build")
+    .IsDependentOn("Docker-Test")
     .Does<BuildParameters>((parameters) =>
 {
     var username = parameters.Credentials.Docker.UserName;
@@ -624,15 +673,15 @@ Task("Publish-DockerHub")
 
     DockerLogin(parameters.Credentials.Docker.UserName, parameters.Credentials.Docker.Password);
 
-    if (parameters.IsRunningOnWindows)
+    var images = parameters.IsRunningOnWindows
+            ? parameters.Docker.Windows
+            : parameters.IsRunningOnLinux
+                ? parameters.Docker.Linux
+                : Array.Empty<DockerImage>();
+
+    foreach(var dockerImage in images)
     {
-        DockerPush("windows", "dotnetcore", parameters);
-        DockerPush("windows", "fullfx", parameters);
-    }
-    else if (parameters.IsRunningOnLinux)
-    {
-        DockerPush("linux", "dotnetcore", parameters);
-        DockerPush("linux", "fullfx", parameters);
+        DockerPush(dockerImage, parameters);
     }
 
     DockerLogout();

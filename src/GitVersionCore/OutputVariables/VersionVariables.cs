@@ -32,12 +32,14 @@ namespace GitVersion
                                 string preReleaseTagWithDash,
                                 string preReleaseLabel,
                                 string preReleaseNumber,
+                                string weightedPreReleaseNumber,
                                 string informationalVersion,
                                 string commitDate,
                                 string nugetVersion,
                                 string nugetVersionV2,
                                 string nugetPreReleaseTag,
                                 string nugetPreReleaseTagV2,
+                                string versionSourceSha,
                                 string commitsSinceVersionSource,
                                 string commitsSinceVersionSourcePadded)
         {
@@ -61,12 +63,14 @@ namespace GitVersion
             PreReleaseTagWithDash = preReleaseTagWithDash;
             PreReleaseLabel = preReleaseLabel;
             PreReleaseNumber = preReleaseNumber;
+            WeightedPreReleaseNumber = weightedPreReleaseNumber;
             InformationalVersion = informationalVersion;
             CommitDate = commitDate;
             NuGetVersion = nugetVersion;
             NuGetVersionV2 = nugetVersionV2;
             NuGetPreReleaseTag = nugetPreReleaseTag;
             NuGetPreReleaseTagV2 = nugetPreReleaseTagV2;
+            VersionSourceSha = versionSourceSha;
             CommitsSinceVersionSource = commitsSinceVersionSource;
             CommitsSinceVersionSourcePadded = commitsSinceVersionSourcePadded;
         }
@@ -78,6 +82,7 @@ namespace GitVersion
         public string PreReleaseTagWithDash { get; private set; }
         public string PreReleaseLabel { get; private set; }
         public string PreReleaseNumber { get; private set; }
+        public string WeightedPreReleaseNumber { get; private set; }
         public string BuildMetaData { get; private set; }
         public string BuildMetaDataPadded { get; private set; }
         public string FullBuildMetaData { get; private set; }
@@ -96,6 +101,7 @@ namespace GitVersion
         public string NuGetVersion { get; private set; }
         public string NuGetPreReleaseTagV2 { get; private set; }
         public string NuGetPreReleaseTag { get; private set; }
+        public string VersionSourceSha { get; private set; }
         public string CommitsSinceVersionSource { get; private set; }
         public string CommitsSinceVersionSourcePadded { get; private set; }
 
