@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
     using System.Collections.Generic;
@@ -16,6 +16,7 @@
             new VsoAgent(),
             new TravisCI(),
             new EnvRun(),
+            new Drone()
         };
 
         public static IEnumerable<IBuildServer> GetApplicableBuildServers()
