@@ -1,11 +1,11 @@
 // Install modules
-#module nuget:?package=Cake.DotNetTool.Module&version=0.1.0
+#module nuget:?package=Cake.DotNetTool.Module&version=0.2.0
 
 // Install addins.
 #addin "nuget:?package=Cake.Gitter&version=0.9.0"
-#addin "nuget:?package=Cake.Docker&version=0.9.6"
-#addin "nuget:?package=Cake.Npm&version=0.15.0"
-#addin "nuget:?package=Cake.Incubator&version=3.0.0"
+#addin "nuget:?package=Cake.Docker&version=0.9.9"
+#addin "nuget:?package=Cake.Npm&version=0.16.0"
+#addin "nuget:?package=Cake.Incubator&version=4.0.2"
 #addin "nuget:?package=Cake.Json&version=3.0.0"
 #addin "nuget:?package=Cake.Tfx&version=0.8.0"
 #addin "nuget:?package=Cake.Gem&version=0.7.0"
@@ -15,11 +15,10 @@
 #addin "nuget:?package=xunit.assert&version=2.4.1"
 
 // Install tools.
-#tool "nuget:?package=NUnit.ConsoleRunner&version=3.9.0"
-#tool "nuget:?package=GitReleaseNotes&version=0.7.1"
+#tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
 #tool "nuget:?package=ILRepack&version=2.0.16"
-#tool "nuget:?package=Codecov&version=1.1.0"
-#tool "nuget:?package=nuget.commandline&version=4.9.2"
+#tool "nuget:?package=Codecov&version=1.4.0"
+#tool "nuget:?package=nuget.commandline&version=4.9.4"
 
 // Install .NET Core Global tools.
 #tool "dotnet:?package=GitReleaseManager.Tool&version=0.8.0"
