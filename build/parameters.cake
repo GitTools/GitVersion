@@ -77,7 +77,7 @@ public class BuildParameters
             IsLocalBuild             = buildSystem.IsLocalBuild,
             IsRunningOnAppVeyor      = buildSystem.IsRunningOnAppVeyor,
             IsRunningOnTravis        = buildSystem.IsRunningOnTravisCI,
-            IsRunningOnAzurePipeline = buildSystem.IsRunningOnAzurePipelines,
+            IsRunningOnAzurePipeline = buildSystem.IsRunningOnAzurePipelinesHosted,
 
             IsPullRequest = buildSystem.IsPullRequest,
             IsMainRepo    = IsOnMainRepo(context),
@@ -166,7 +166,7 @@ public class BuildParameters
         {
             repositoryName = buildSystem.TravisCI.Environment.Repository.Slug;
         }
-        else if (buildSystem.IsRunningOnAzurePipelines)
+        else if (buildSystem.IsRunningOnAzurePipelinesHosted)
         {
             repositoryName = buildSystem.TFBuild.Environment.Repository.RepoName;
         }
@@ -188,7 +188,7 @@ public class BuildParameters
         {
             repositoryBranch = buildSystem.TravisCI.Environment.Build.Branch;
         }
-        else if (buildSystem.IsRunningOnAzurePipelines)
+        else if (buildSystem.IsRunningOnAzurePipelinesHosted)
         {
             repositoryBranch = buildSystem.TFBuild.Environment.Repository.Branch;
         }

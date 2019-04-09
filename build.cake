@@ -2,7 +2,7 @@
 #module nuget:?package=Cake.DotNetTool.Module&version=0.2.0
 
 // Install addins.
-#addin "nuget:?package=Cake.Gitter&version=0.9.0"
+#addin "nuget:?package=Cake.Gitter&version=0.10.0"
 #addin "nuget:?package=Cake.Docker&version=0.9.9"
 #addin "nuget:?package=Cake.Npm&version=0.16.0"
 #addin "nuget:?package=Cake.Incubator&version=4.0.2"
