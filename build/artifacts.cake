@@ -93,3 +93,60 @@ public class BuildArtifact
         ArtifactName = ArtifactPath.GetFilename().ToString();
     }
 }
+
+public class DockerImages
+{
+    public ICollection<DockerImage> Windows { get; private set; }
+    public ICollection<DockerImage> Linux { get; private set; }
+
+    public static DockerImages GetDockerImages(ICakeContext context, FilePath[] dockerfiles)
+    {
+        foreach (var file in dockerfiles)
+        {
+            var segments = file.Segments.Reverse().ToArray();
+            var targetFramework = segments[1];
+            var distro = segments[2];
+            var os = segments[3];
+            context.Information($"{os}-{distro}-{targetFramework}");
+        }
+        var toDockerImage = DockerImage();
+        var dockerImages = dockerfiles.Select(toDockerImage).ToArray();
+
+        return new DockerImages {
+            Windows = dockerImages.Where(x => x.OS == "windows").ToArray(),
+            Linux = dockerImages.Where(x => x.OS == "linux").ToArray(),
+        };
+    }
+
+    private static Func<FilePath, DockerImage> DockerImage()
+    {
+        return dockerFile => {
+            var segments = dockerFile.Segments.Reverse().ToArray();
+            var targetFramework = segments[1];
+            var distro = segments[2];
+            var os = segments[3];
+            return new DockerImage(os: os, distro: distro, targetFramework: targetFramework);
+        };
+    }
+}
+
+public class DockerImage
+{
+    public string OS { get; private set; }
+    public string Distro { get; private set; }
+    public string TargetFramework { get; private set; }
+
+    public DockerImage(string os, string distro, string targetFramework)
+    {
+        OS = os;
+        Distro = distro;
+        TargetFramework = targetFramework;
+    }
+
+    public void Deconstruct(out string os, out string distro, out string targetFramework)
+    {
+        os = OS;
+        distro = Distro;
+        targetFramework = TargetFramework;
+    }
+}

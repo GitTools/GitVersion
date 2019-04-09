@@ -222,4 +222,81 @@ public class DevelopScenarios : TestBase
             fixture.AssertFullSemver("1.3.0-alpha.2");
         }
     }
+
+    [Test]
+    public void CommitsSinceVersionSourceShouldNotGoDownUponGitFlowReleaseFinish()
+    {
+        var config = new Config
+        {
+            VersioningMode = VersioningMode.ContinuousDeployment
+        };
+
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.MakeACommit();
+            fixture.ApplyTag("1.1.0");
+            fixture.BranchTo("develop");
+            fixture.MakeACommit("commit in develop - 1");
+            fixture.AssertFullSemver("1.2.0-alpha.1");
+            fixture.BranchTo("release/1.2.0");
+            fixture.AssertFullSemver("1.2.0-beta.1+0");
+            fixture.Checkout("develop");
+            fixture.MakeACommit("commit in develop - 2");
+            fixture.MakeACommit("commit in develop - 3");
+            fixture.MakeACommit("commit in develop - 4");
+            fixture.MakeACommit("commit in develop - 5");
+            fixture.AssertFullSemver("1.3.0-alpha.4");
+            fixture.Checkout("release/1.2.0");
+            fixture.MakeACommit("commit in release/1.2.0 - 1");
+            fixture.MakeACommit("commit in release/1.2.0 - 2");
+            fixture.MakeACommit("commit in release/1.2.0 - 3");
+            fixture.AssertFullSemver("1.2.0-beta.1+3");
+            fixture.Checkout("master");
+            fixture.MergeNoFF("release/1.2.0");
+            fixture.ApplyTag("1.2.0");
+            fixture.Checkout("develop");
+            fixture.MergeNoFF("release/1.2.0");
+            fixture.MakeACommit("commit in develop - 6");
+            fixture.AssertFullSemver("1.3.0-alpha.9");
+            fixture.SequenceDiagram.Destroy("release/1.2.0");
+            fixture.Repository.Branches.Remove("release/1.2.0");
+
+            var expectedFullSemVer = "1.3.0-alpha.9";
+            fixture.AssertFullSemver(config, expectedFullSemVer);
+        }
+    }
+
+    [Test]
+    public void CommitsSinceVersionSourceShouldNotGoDownUponMergingFeatureOnlyToDevelop()
+    {
+        var config = new Config
+        {
+            VersioningMode = VersioningMode.ContinuousDeployment
+        };
+
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.MakeACommit("commit in master - 1");
+            fixture.ApplyTag("1.1.0");
+            fixture.BranchTo("develop");
+            fixture.MakeACommit("commit in develop - 1");
+            fixture.AssertFullSemver("1.2.0-alpha.1");
+            fixture.BranchTo("release/1.2.0");
+            fixture.MakeACommit("commit in release - 1");
+            fixture.MakeACommit("commit in release - 2");
+            fixture.MakeACommit("commit in release - 3");
+            fixture.AssertFullSemver("1.2.0-beta.1+3");
+            fixture.ApplyTag("1.2.0");
+            fixture.Checkout("develop");
+            fixture.MakeACommit("commit in develop - 2");
+            fixture.AssertFullSemver("1.3.0-alpha.1");
+            fixture.MergeNoFF("release/1.2.0");
+            fixture.AssertFullSemver("1.3.0-alpha.5");
+            fixture.SequenceDiagram.Destroy("release/1.2.0");
+            fixture.Repository.Branches.Remove("release/1.2.0");
+
+            var expectedFullSemVer = "1.3.0-alpha.5";
+            fixture.AssertFullSemver(config, expectedFullSemVer);
+        }
+    }
 }

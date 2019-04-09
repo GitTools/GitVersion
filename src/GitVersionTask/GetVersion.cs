@@ -7,12 +7,8 @@ namespace GitVersionTask
 
     public class GetVersion : GitVersionTaskBase
     {
-        TaskLogger logger;
-
         public GetVersion()
         {
-            logger = new TaskLogger(this);
-            Logger.SetLoggers(this.LogDebug, this.LogInfo, this.LogWarning, s => this.LogError(s));
         }
 
         [Required]
@@ -102,6 +98,9 @@ namespace GitVersionTask
         public string CommitDate { get; set; }
 
         [Output]
+        public string VersionSourceSha { get; set; }
+
+        [Output]
         public string CommitsSinceVersionSource { get; set; }
 
         [Output]
@@ -125,17 +124,13 @@ namespace GitVersionTask
             }
             catch (WarningException errorException)
             {
-                logger.LogWarning(errorException.Message);
+                this.LogWarning(errorException.Message);
                 return true;
             }
             catch (Exception exception)
             {
-                logger.LogError("Error occurred: " + exception);
+                this.LogError("Error occurred: " + exception);
                 return false;
-            }
-            finally
-            {
-                Logger.Reset();
             }
         }
     }

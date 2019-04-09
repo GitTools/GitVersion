@@ -1,24 +1,24 @@
 // Install modules
-#module nuget:?package=Cake.DotNetTool.Module&version=0.1.0
+#module nuget:?package=Cake.DotNetTool.Module&version=0.2.0
 
 // Install addins.
-#addin "nuget:?package=Cake.Gitter&version=0.9.0"
-#addin "nuget:?package=Cake.Docker&version=0.9.6"
-#addin "nuget:?package=Cake.Npm&version=0.15.0"
-#addin "nuget:?package=Cake.Incubator&version=3.0.0"
+#addin "nuget:?package=Cake.Gitter&version=0.10.0"
+#addin "nuget:?package=Cake.Docker&version=0.9.9"
+#addin "nuget:?package=Cake.Npm&version=0.16.0"
+#addin "nuget:?package=Cake.Incubator&version=4.0.2"
 #addin "nuget:?package=Cake.Json&version=3.0.0"
 #addin "nuget:?package=Cake.Tfx&version=0.8.0"
 #addin "nuget:?package=Cake.Gem&version=0.7.0"
 #addin "nuget:?package=Cake.Coverlet&version=2.2.1"
 #addin "nuget:?package=Cake.Codecov&version=0.5.0"
 #addin "nuget:?package=Newtonsoft.Json&version=9.0.1"
+#addin "nuget:?package=xunit.assert&version=2.4.1"
 
 // Install tools.
-#tool "nuget:?package=NUnit.ConsoleRunner&version=3.9.0"
-#tool "nuget:?package=GitReleaseNotes&version=0.7.1"
+#tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
 #tool "nuget:?package=ILRepack&version=2.0.16"
-#tool "nuget:?package=Codecov&version=1.1.0"
-#tool "nuget:?package=nuget.commandline&version=4.9.2"
+#tool "nuget:?package=Codecov&version=1.4.0"
+#tool "nuget:?package=nuget.commandline&version=4.9.4"
 
 // Install .NET Core Global tools.
 #tool "dotnet:?package=GitReleaseManager.Tool&version=0.8.0"
@@ -27,6 +27,7 @@
 #load "./build/parameters.cake"
 #load "./build/utils.cake"
 
+using Xunit;
 //////////////////////////////////////////////////////////////////////
 // PARAMETERS
 //////////////////////////////////////////////////////////////////////
@@ -208,19 +209,19 @@ Task("Copy-Files")
     .Does<BuildParameters>((parameters) =>
 {
     // .NET Core
-    var netCoreDir = parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools");
+    var coreFxDir = parameters.Paths.Directories.ArtifactsBinCoreFx.Combine("tools");
     DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
     {
-        Framework = parameters.NetCoreVersion,
+        Framework = parameters.CoreFxVersion,
         NoRestore = true,
         Configuration = parameters.Configuration,
-        OutputDirectory = netCoreDir,
+        OutputDirectory = coreFxDir,
         MSBuildSettings = parameters.MSBuildSettings
     });
 
     // Copy license & Copy GitVersion.XML (since publish does not do this anymore)
-    CopyFileToDirectory("./LICENSE", netCoreDir);
-    CopyFileToDirectory($"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.NetCoreVersion}/GitVersion.xml", netCoreDir);
+    CopyFileToDirectory("./LICENSE", coreFxDir);
+    CopyFileToDirectory($"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion}/GitVersion.xml", coreFxDir);
 
     // .NET 4.0
     DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
@@ -233,14 +234,14 @@ Task("Copy-Files")
         MSBuildSettings = parameters.MSBuildSettings
     });
 
-    var ilMergDir = parameters.Paths.Directories.ArtifactsBinFullFxILMerge;
+    var ilMergeDir = parameters.Paths.Directories.ArtifactsBinFullFxILMerge;
     var portableDir = parameters.Paths.Directories.ArtifactsBinFullFxPortable.Combine("tools");
     var cmdlineDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
 
     // Portable
-    PublishILRepackedGitVersionExe(true, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergDir, portableDir, parameters.Configuration, parameters.FullFxVersion);
+    PublishILRepackedGitVersionExe(true, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergeDir, portableDir, parameters.Configuration, parameters.FullFxVersion);
     // Commandline
-    PublishILRepackedGitVersionExe(false, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergDir, cmdlineDir, parameters.Configuration, parameters.FullFxVersion);
+    PublishILRepackedGitVersionExe(false, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergeDir, cmdlineDir, parameters.Configuration, parameters.FullFxVersion);
 
     // Vsix
     var tfsPath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionTask");
@@ -250,9 +251,9 @@ Task("Copy-Files")
     CopyDirectory(portableDir.Combine("lib"), tfsPath.Combine("lib"));
 
     // Vsix dotnet core
-    var tfsNetCorePath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionNetCoreTask");
-    EnsureDirectoryExists(tfsNetCorePath);
-    CopyDirectory(netCoreDir, tfsNetCorePath.Combine("netcore"));
+    var tfsCoreFxPath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionNetCoreTask");
+    EnsureDirectoryExists(tfsCoreFxPath);
+    CopyDirectory(coreFxDir, tfsCoreFxPath.Combine("netcore"));
 
     // Ruby Gem
     var gemPath = new DirectoryPath("./src/GitVersionRubyGem/bin");
@@ -398,9 +399,9 @@ Task("Zip-Files")
     Zip(cmdlineDir, parameters.Paths.Files.ZipArtifactPathDesktop, fullFxFiles);
 
     // .NET Core
-    var netCoreDir = parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools");
-    var coreclrFiles = GetFiles(netCoreDir.FullPath + "/**/*");
-    Zip(netCoreDir, parameters.Paths.Files.ZipArtifactPathCoreClr, coreclrFiles);
+    var coreFxDir = parameters.Paths.Directories.ArtifactsBinCoreFx.Combine("tools");
+    var coreclrFiles = GetFiles(coreFxDir.FullPath + "/**/*");
+    Zip(coreFxDir, parameters.Paths.Files.ZipArtifactPathCoreClr, coreclrFiles);
 });
 
 Task("Docker-Build")
@@ -409,17 +410,45 @@ Task("Docker-Build")
     .IsDependentOn("Copy-Files")
     .Does<BuildParameters>((parameters) =>
 {
-    if (parameters.IsRunningOnWindows)
+    var images = parameters.IsRunningOnWindows
+            ? parameters.Docker.Windows
+            : parameters.IsRunningOnLinux
+                ? parameters.Docker.Linux
+                : Array.Empty<DockerImage>();
+
+    foreach(var dockerImage in images)
     {
-        DockerBuild("windows", "nano", "netcoreapp2.1", parameters);
-        DockerBuild("windows", "windowsservercore", "net472", parameters);
+        DockerBuild(dockerImage, parameters);
     }
-    else if (parameters.IsRunningOnLinux)
+});
+
+Task("Docker-Test")
+    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Docker can be tested only on Windows or Linux agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Docker-Test works only for releases.")
+    .IsDependentOn("Docker-Build")
+    .Does<BuildParameters>((parameters) =>
+{
+    var currentDir = MakeAbsolute(Directory("."));
+    var containerDir = parameters.IsRunningOnWindows ? "c:/repo" : "/repo";
+    var settings = new DockerContainerRunSettings
     {
-        DockerBuild("linux", "debian", "netcoreapp2.1", parameters);
-        DockerBuild("linux", "debian", "net472", parameters);
-        DockerBuild("linux", "centos7", "netcoreapp2.1", parameters);
-        DockerBuild("linux", "fedora27", "netcoreapp2.1", parameters);
+        Rm = true,
+        Volume = new[] { $"{currentDir}:{containerDir}" }
+    };
+
+    var images = parameters.IsRunningOnWindows
+            ? parameters.Docker.Windows
+            : parameters.IsRunningOnLinux
+                ? parameters.Docker.Linux
+                : Array.Empty<DockerImage>();
+
+    foreach(var dockerImage in images)
+    {
+        var tags = GetDockerTags(dockerImage, parameters);
+        foreach (var tag in tags)
+        {
+            DockerTestRun(settings, parameters, tag, containerDir);
+        }
     }
 });
 
@@ -585,7 +614,7 @@ Task("Publish-Tfs")
     };
 
     TfxExtensionPublish(parameters.Paths.Files.VsixOutputFilePath, settings);
-    TfxExtensionPublish(parameters.Paths.Files.VsixNetCoreOutputFilePath, settings);
+    TfxExtensionPublish(parameters.Paths.Files.VsixCoreFxOutputFilePath, settings);
 })
 .OnError(exception =>
 {
@@ -628,6 +657,7 @@ Task("Publish-DockerHub")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-DockerHub works only on AzurePipeline.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-DockerHub works only for releases.")
     .IsDependentOn("Docker-Build")
+    .IsDependentOn("Docker-Test")
     .Does<BuildParameters>((parameters) =>
 {
     var username = parameters.Credentials.Docker.UserName;
@@ -642,17 +672,15 @@ Task("Publish-DockerHub")
 
     DockerLogin(parameters.Credentials.Docker.UserName, parameters.Credentials.Docker.Password);
 
-    if (parameters.IsRunningOnWindows)
+    var images = parameters.IsRunningOnWindows
+            ? parameters.Docker.Windows
+            : parameters.IsRunningOnLinux
+                ? parameters.Docker.Linux
+                : Array.Empty<DockerImage>();
+
+    foreach(var dockerImage in images)
     {
-        DockerPush("windows", "nano", "netcoreapp2.1", parameters);
-        DockerPush("windows", "windowsservercore", "net472", parameters);
-    }
-    else if (parameters.IsRunningOnLinux)
-    {
-        DockerPush("linux", "debian", "netcoreapp2.1", parameters);
-        DockerPush("linux", "debian", "net472", parameters);
-        DockerPush("linux", "centos7", "netcoreapp2.1", parameters);
-        DockerPush("linux", "fedora27", "netcoreapp2.1", parameters);
+        DockerPush(dockerImage, parameters);
     }
 
     DockerLogout();

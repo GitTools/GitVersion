@@ -35,7 +35,7 @@ void SetRubyGemPushApiKey(string apiKey)
 
 GitVersion GetVersion(BuildParameters parameters)
 {
-    var dllFile = GetFiles($"**/GitVersionExe/bin/{parameters.Configuration}/{parameters.NetCoreVersion}/GitVersion.dll").FirstOrDefault();
+    var dllFile = GetFiles($"**/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion}/GitVersion.dll").FirstOrDefault();
     var settings = new GitVersionSettings
     {
         OutputType = GitVersionOutput.Json,
@@ -125,17 +125,18 @@ void PublishILRepackedGitVersionExe(bool includeLibGit2Sharp, DirectoryPath targ
     CopyFileToDirectory("./src/GitVersionExe/bin/" + configuration + "/" + dotnetVersion + "/GitVersion.xml", outputDir);
 }
 
-void DockerBuild(string os, string distro, string targetframework, BuildParameters parameters)
+void DockerBuild(DockerImage dockerImage, BuildParameters parameters)
 {
+    var (os, distro, targetframework) = dockerImage;
     var workDir = DirectoryPath.FromString($"./src/Docker/{os}/{distro}/{targetframework}");
 
     var sourceDir = targetframework.StartsWith("netcoreapp")
-        ? parameters.Paths.Directories.ArtifactsBinNetCore.Combine("tools")
+        ? parameters.Paths.Directories.ArtifactsBinCoreFx.Combine("tools")
         : parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
 
     CopyDirectory(sourceDir, workDir.Combine("content"));
 
-    var tags = GetDockerTags(os, distro, targetframework, parameters);
+    var tags = GetDockerTags(dockerImage, parameters);
 
     var buildSettings = new DockerImageBuildSettings
     {
@@ -150,9 +151,9 @@ void DockerBuild(string os, string distro, string targetframework, BuildParamete
     DockerBuild(buildSettings, workDir.ToString());
 }
 
-void DockerPush(string os, string distro, string targetframework, BuildParameters parameters)
+void DockerPush(DockerImage dockerImage, BuildParameters parameters)
 {
-    var tags = GetDockerTags(os, distro, targetframework, parameters);
+    var tags = GetDockerTags(dockerImage, parameters);
 
     foreach (var tag in tags)
     {
@@ -160,8 +161,40 @@ void DockerPush(string os, string distro, string targetframework, BuildParameter
     }
 }
 
-string[] GetDockerTags(string os, string distro, string targetframework, BuildParameters parameters) {
+string DockerRunImage(DockerContainerRunSettings settings, string image, string command, params string[] args)
+{
+    if (string.IsNullOrEmpty(image))
+    {
+        throw new ArgumentNullException("image");
+    }
+    var runner = new GenericDockerRunner<DockerContainerRunSettings>(Context.FileSystem, Context.Environment, Context.ProcessRunner, Context.Tools);
+    List<string> arguments = new List<string> { image };
+    if (!string.IsNullOrEmpty(command))
+    {
+        arguments.Add(command);
+        if (args.Length > 0)
+        {
+            arguments.AddRange(args);
+        }
+    }
+
+    var result = runner.RunWithResult("run", settings ?? new DockerContainerRunSettings(), r => r.ToArray(), arguments.ToArray());
+    return string.Join("\n", result);
+}
+
+void DockerTestRun(DockerContainerRunSettings settings, BuildParameters parameters, string image, string command, params string[] args)
+{
+    Information($"Testing image: {image}");
+    var output = DockerRunImage(settings, image, command, args);
+
+    var version = DeserializeJson<GitVersion>(output);
+
+    Assert.Equal(parameters.Version.GitVersion.FullSemVer, version.FullSemVer);
+}
+
+string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
     var name = $"gittools/gitversion";
+    var (os, distro, targetframework) = dockerImage;
 
     var tags = new List<string> {
         $"{name}:{parameters.Version.Version}-{os}-{distro}-{targetframework}",

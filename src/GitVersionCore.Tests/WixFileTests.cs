@@ -32,6 +32,7 @@ namespace GitVersionCore.Tests
                 BuildMetaData = "5.Branch.develop"
             };
 
+            semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
             semVer.BuildMetaData.Sha = "commitSha";
             semVer.BuildMetaData.ShortSha = "commitShortSha";
             semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2019-02-20 23:59:59Z");
@@ -46,7 +47,7 @@ namespace GitVersionCore.Tests
             {
                 wixVersionFileUpdater.Update();
             }
-            
+
             fileSystem.ReadAllText(WixVersionFileUpdater.GetWixVersionFileName()).
                 ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved")));
         }
