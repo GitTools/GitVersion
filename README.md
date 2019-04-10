@@ -1,4 +1,4 @@
-![Icon][icon]
+![GitVersion icon][icon | width=100]
 
 # GitVersion
 
@@ -60,7 +60,7 @@ target="_blank">Tree</a> designed by <a
 href="http://thenounproject.com/david.chapman" target="_blank">David Chapman</a>
 from The Noun Project
 
-[icon]:                 https://raw.github.com/GitTools/GitVersion/master/docs/img/package_icon.png
+[icon]:                 docs/img/package_icon.svg
 [semver]:               http://semver.org
 [gitter]:               https://gitter.im/GitTools/GitVersion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 [gitter-badge]:         https://badges.gitter.im/Join+Chat.svg
