@@ -1,6 +1,7 @@
-![GitVersion icon](docs/img/package_icon.svg | width=100)
-
-# GitVersion
+<h1>
+    <img src="docs/img/package_icon.svg" height="100">
+    GitVersion
+</h1>
 
 Versioning when using git, solved. GitVersion looks at your git history and
 works out the [semantic version][semver] of the commit being built.
@@ -60,7 +61,6 @@ target="_blank">Tree</a> designed by <a
 href="http://thenounproject.com/david.chapman" target="_blank">David Chapman</a>
 from The Noun Project
 
-[icon]:                 docs/img/package_icon.svg
 [semver]:               http://semver.org
 [gitter]:               https://gitter.im/GitTools/GitVersion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 [gitter-badge]:         https://badges.gitter.im/Join+Chat.svg
