@@ -56,10 +56,9 @@ You are seeing:
 
 ## Icon
 
-<a href="http://thenounproject.com/noun/tree/#icon-No13389"
-target="_blank">Tree</a> designed by <a
-href="http://thenounproject.com/david.chapman" target="_blank">David Chapman</a>
-from The Noun Project
+<a href="https://thenounproject.com/term/tree/13389/" target="_blank">Tree</a>
+designed by <a href="http://thenounproject.com/david.chapman" target="_blank">David Chapman</a>
+from The Noun Project.
 
 [semver]:               http://semver.org
 [gitter]:               https://gitter.im/GitTools/GitVersion?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
