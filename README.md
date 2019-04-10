@@ -1,5 +1,5 @@
 <h1>
-    <img src="docs/img/package_icon.svg" height="100">
+    <img src="docs/img/package_icon.svg" alt="Tree" height="100">
     GitVersion
 </h1>
 
