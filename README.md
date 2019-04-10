@@ -1,4 +1,4 @@
-![GitVersion icon][icon | width=100]
+![GitVersion icon](docs/img/package_icon.svg | width=100)
 
 # GitVersion
 
