@@ -11,6 +11,7 @@ For the `release/3.0.0` branch of GitVersion it shows:
   "PreReleaseTagWithDash":"-beta.1",
   "PreReleaseLabel":"beta",
   "PreReleaseNumber":1,
+  "WeightedPreReleaseNumber":1001,
   "BuildMetaData":1,
   "BuildMetaDataPadded": "0001",
   "FullBuildMetaData":"1.Branch.release/3.0.0.Sha.28c853159a46b5a87e6cc9c4f6e940c59d6bc68a",
@@ -24,10 +25,12 @@ For the `release/3.0.0` branch of GitVersion it shows:
   "InformationalVersion":"3.0.0-beta.1+1.Branch.release/3.0.0.Sha.28c853159a46b5a87e6cc9c4f6e940c59d6bc68a",
   "BranchName":"release/3.0.0",
   "Sha":"28c853159a46b5a87e6cc9c4f6e940c59d6bc68a",
+  "ShortSha":"28c8531",
   "NuGetVersionV2":"3.0.0-beta0001",
   "NuGetVersion":"3.0.0-beta0001",
   "NuGetPreReleaseTagV2":"beta0001",
   "NuGetPreReleaseTag":"beta0001",
+  "VersionSourceSha":"950d2f830f5a2af12a6779a48d20dcbb02351f25",
   "CommitsSinceVersionSource":1,
   "CommitsSinceVersionSourcePadded":"0001",
   "CommitDate":"2014-03-06"
@@ -39,3 +42,6 @@ For the `release/3.0.0` branch of GitVersion it shows:
 
 This is a common approach that gives you the ability to roll out hot fixes to your assembly without breaking existing applications that may be referencing it. You are still able to get the full version number if you need to by looking at its file version number.
 
+#### What is WeightedPreReleaseNumber?
+
+It is a summation of branch specific `pre-release-weight` and the `PreReleaseNumber`. It can be used to obtain a monotonically increasing version number across the branches.

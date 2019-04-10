@@ -1,0 +1,38 @@
+parameters:
+  name: ''  # defaults for any parameters that aren't specified
+  vmImage: ''
+  installRuby: 'true'
+jobs:
+- job: ${{ parameters.name }}
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+  steps:
+  - task: DotNetCoreInstaller@0
+    displayName: 'Use .NET Core sdk $(DOTNET_SDK_VERSION)'
+    inputs:
+      version: $(DOTNET_SDK_VERSION)
+      packageType: $(DOTNET_PACKAGE_TYPE)
+  - ${{ if eq(parameters.installRuby, 'true') }}:
+    - task: UseRubyVersion@0
+      inputs:
+        versionSpec: $(RUBY_VERSION)
+        addToPath: true # Optional
+  - powershell: ./build.ps1 -script build.cake -target Default
+    displayName: 'Cake build'
+    env:
+      GITHUB_TOKEN: $(GITHUB_TOKEN)
+      DOCKER_USERNAME: $(DOCKER_USERNAME)
+      DOCKER_PASSWORD: $(DOCKER_PASSWORD)
+      NUGET_API_KEY: $(NUGET_API_KEY)
+      NUGET_API_URL: $(NUGET_API_URL)
+      CHOCOLATEY_API_KEY: $(CHOCOLATEY_API_KEY)
+      CHOCOLATEY_API_URL: $(CHOCOLATEY_API_URL)
+      RUBY_GEM_API_KEY: $(RUBY_GEM_API_KEY)
+      TFX_TOKEN: $(TFX_TOKEN)
+      CODECOV_TOKEN: $(CODECOV_TOKEN)
+      ENABLED_UNIT_TESTS: $(ENABLED_UNIT_TESTS)
+      ENABLED_PUBLISH_GEM: $(ENABLED_PUBLISH_GEM)
+      ENABLED_PUBLISH_TFS: $(ENABLED_PUBLISH_TFS)
+      ENABLED_PUBLISH_NUGET: $(ENABLED_PUBLISH_NUGET)
+      ENABLED_PUBLISH_CHOCOLATEY: $(ENABLED_PUBLISH_CHOCOLATEY)
+      ENABLED_PUBLISH_DOCKER: $(ENABLED_PUBLISH_DOCKER)

@@ -1,23 +1,15 @@
-﻿namespace GitVersionTask
+namespace GitVersionTask
 {
     using System;
-    using System.ComponentModel;
     using System.IO;
     using GitVersion;
     using GitVersion.Helpers;
     using Microsoft.Build.Framework;
-    using GitTools;
-
-   
 
     public class GenerateGitVersionInformation : GitVersionTaskBase
     {
-        TaskLogger logger;
-
         public GenerateGitVersionInformation()
         {
-            logger = new TaskLogger(this);
-            Logger.SetLoggers(this.LogDebug, this.LogInfo, this.LogWarning, s => this.LogError(s));
         }
 
         [Required]
@@ -44,19 +36,15 @@
                 InnerExecute();
                 return true;
             }
-            catch (GitTools.WarningException errorException)
+            catch (WarningException errorException)
             {
-                logger.LogWarning(errorException.Message);
+                this.LogWarning(errorException.Message);
                 return true;
             }
             catch (Exception exception)
             {
-                logger.LogError("Error occurred: " + exception);
+                this.LogError("Error occurred: " + exception);
                 return false;
-            }
-            finally
-            {
-                Logger.Reset();
             }
         }
 

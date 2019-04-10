@@ -103,15 +103,8 @@ namespace GitVersion
 
         private static MethodInfo GetMethodInfo(string name, BindingFlags bindingFlags, Type[] types)
         {
-#if NETDESKTOP
             var methodInfo = typeof(Convert).GetMethod(name, bindingFlags, null, types, null);
             return methodInfo;
-#else
-            var type = typeof(Convert);
-            var methodInfo = typeof(Convert).GetMethod(name, types);
-             return methodInfo;
-#endif
-            //throw new NotImplementedException();
         }
     }
 }

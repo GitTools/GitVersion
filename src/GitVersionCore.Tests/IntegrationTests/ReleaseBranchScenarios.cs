@@ -1,4 +1,4 @@
-﻿using GitTools.Testing;
+using GitTools.Testing;
 using GitVersion;
 using GitVersionCore.Tests;
 using LibGit2Sharp;
@@ -51,7 +51,7 @@ public class ReleaseBranchScenarios : TestBase
             fixture.Repository.MakeACommit();
             fixture.Repository.Branches.Remove("release/1.0.0");
 
-            fixture.AssertFullSemver("1.1.0-alpha.2");
+            fixture.AssertFullSemver("1.1.0-alpha.3");
         }
     }
 
@@ -394,13 +394,13 @@ public class ReleaseBranchScenarios : TestBase
 
             // Make new commit on develop
             fixture.Checkout("develop");
-            // Checkout to release (no new commits) 
+            // Checkout to release (no new commits)
             fixture.Checkout("release-2.0.0");
             fixture.AssertFullSemver(config, "2.0.0-beta.3");
             fixture.Checkout("develop");
             fixture.Repository.MakeACommit("develop after merge");
 
-            // Checkout to release (no new commits) 
+            // Checkout to release (no new commits)
             fixture.Checkout("release-2.0.0");
             fixture.AssertFullSemver(config, "2.0.0-beta.3");
 
@@ -413,9 +413,47 @@ public class ReleaseBranchScenarios : TestBase
             fixture.Checkout("develop");
             fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
-            // Checkout to release (no new commits) 
+            // Checkout to release (no new commits)
             fixture.Checkout("release-2.0.0");
             fixture.AssertFullSemver(config, "2.0.0-beta.5");
+        }
+    }
+
+    [Test]
+    public void CommitBeetweenMergeReleaseToDevelop_ShouldNotResetCount()
+    {
+        var config = new Config
+        {
+            VersioningMode = VersioningMode.ContinuousDeployment
+        };
+
+        using(var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeACommit("initial");
+            fixture.Repository.CreateBranch("develop");
+            Commands.Checkout(fixture.Repository, "develop");
+            fixture.Repository.CreateBranch("release-2.0.0");
+            Commands.Checkout(fixture.Repository, "release-2.0.0");
+            fixture.AssertFullSemver(config, "2.0.0-beta.0");
+
+            // Make some commits on release
+            var commit1 = fixture.Repository.MakeACommit();
+            var commit2 = fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver(config, "2.0.0-beta.2");
+
+            // Merge release to develop - emulate commit beetween other person release commit push and this commit merge to develop
+            Commands.Checkout(fixture.Repository, "develop");
+            fixture.Repository.Merge(commit1, Generate.SignatureNow(), new MergeOptions { FastForwardStrategy = FastForwardStrategy.NoFastForward });
+            fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
+
+            // Check version on release after merge to develop
+            Commands.Checkout(fixture.Repository, "release-2.0.0");
+            fixture.AssertFullSemver(config, "2.0.0-beta.2");
+
+            // Check version on release after making some new commits
+            fixture.Repository.MakeACommit();
+            fixture.Repository.MakeACommit();
+            fixture.AssertFullSemver(config, "2.0.0-beta.4");
         }
     }
 
@@ -500,7 +538,7 @@ public class ReleaseBranchScenarios : TestBase
             Commands.Checkout(fixture.Repository, "feature/xxx");
             fixture.Repository.MakeACommit("feature 3");
 
-            // Checkout to release (no new commits) 
+            // Checkout to release (no new commits)
             Commands.Checkout(fixture.Repository, "release-2.0.0");
             fixture.AssertFullSemver(config, "2.0.0-beta.11");
 
@@ -510,6 +548,125 @@ public class ReleaseBranchScenarios : TestBase
 
             fixture.Repository.MakeACommit("release 13 - after feature merge");
             fixture.AssertFullSemver(config, "2.0.0-beta.16");
+        }
+    }
+
+    [Test]
+    public void AssemblySemFileVerShouldBeWeightedByPreReleaseWeight()
+    {
+        var config = new Config
+        {
+            AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
+            Branches =
+            {
+                { "release", new BranchConfig
+                    {
+                        PreReleaseWeight = 1000
+                    }
+                }
+            }
+        };
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.3");
+            fixture.Repository.MakeCommits(5);
+            fixture.Repository.CreateBranch("release-2.0.0");
+            fixture.Checkout("release-2.0.0");
+            ConfigurationProvider.ApplyDefaultsTo(config);
+            var variables = fixture.GetVersion(config);
+            Assert.AreEqual(variables.AssemblySemFileVer, "2.0.0.1001");
+        }
+    }
+
+    [Test]
+    public void AssemblySemFileVerShouldBeWeightedByDefaultPreReleaseWeight()
+    {
+        var config = new Config
+        {
+            AssemblyFileVersioningFormat = "{Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}",
+        };
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            fixture.Repository.MakeATaggedCommit("1.0.3");
+            fixture.Repository.MakeCommits(5);
+            fixture.Repository.CreateBranch("release-2.0.0");
+            fixture.Checkout("release-2.0.0");
+            ConfigurationProvider.ApplyDefaultsTo(config);
+            var variables = fixture.GetVersion(config);
+            Assert.AreEqual(variables.AssemblySemFileVer, "2.0.0.30001");
+        }
+    }
+
+    /// <summary>
+    /// Create a feature branch from a release branch, and merge back, then delete it
+    /// </summary>
+    [Test]
+    public void FeatureOnRelease_FeatureBranchDeleted()
+    {
+        var config = new Config
+        {
+            AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
+            VersioningMode = VersioningMode.ContinuousDeployment
+        };
+
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            var release450 = "release/4.5.0";
+            var featureBranch = "feature/some-bug-fix";
+
+            fixture.Repository.MakeACommit("initial");
+            fixture.Repository.CreateBranch("develop");
+            Commands.Checkout(fixture.Repository, "develop");
+
+            // begin the release branch
+            fixture.Repository.CreateBranch(release450);
+            Commands.Checkout(fixture.Repository, release450);
+            fixture.AssertFullSemver(config, "4.5.0-beta.0");
+
+            fixture.Repository.CreateBranch(featureBranch);
+            Commands.Checkout(fixture.Repository, featureBranch);
+            fixture.Repository.MakeACommit("blabla"); // commit 1
+            Commands.Checkout(fixture.Repository, release450);
+            fixture.Repository.MergeNoFF(featureBranch, Generate.SignatureNow()); // commit 2
+            fixture.Repository.Branches.Remove(featureBranch);
+
+            fixture.AssertFullSemver(config, "4.5.0-beta.2");
+        }
+    }
+
+    /// <summary>
+    /// Create a feature branch from a release branch, and merge back, but don't delete it
+    /// </summary>
+    [Test]
+    public void FeatureOnRelease_FeatureBranchNotDeleted()
+    {
+        var config = new Config
+        {
+            AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag,
+            VersioningMode = VersioningMode.ContinuousDeployment
+        };
+
+        using (var fixture = new EmptyRepositoryFixture())
+        {
+            var release450 = "release/4.5.0";
+            var featureBranch = "feature/some-bug-fix";
+
+            fixture.Repository.MakeACommit("initial");
+            fixture.Repository.CreateBranch("develop");
+            Commands.Checkout(fixture.Repository, "develop");
+
+            // begin the release branch
+            fixture.Repository.CreateBranch(release450);
+            Commands.Checkout(fixture.Repository, release450);
+            fixture.AssertFullSemver(config, "4.5.0-beta.0");
+
+            fixture.Repository.CreateBranch(featureBranch);
+            Commands.Checkout(fixture.Repository, featureBranch);
+            fixture.Repository.MakeACommit("blabla"); // commit 1
+            Commands.Checkout(fixture.Repository, release450);
+            fixture.Repository.MergeNoFF(featureBranch, Generate.SignatureNow()); // commit 2
+
+            fixture.AssertFullSemver(config, "4.5.0-beta.2");
         }
     }
 }

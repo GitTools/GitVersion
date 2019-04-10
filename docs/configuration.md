@@ -208,7 +208,7 @@ If you have branch specific configuration upgrading to v4 will force you to upgr
 ```yaml
 branches:
   master:
-    regex: master
+    regex: ^master
     mode: ContinuousDelivery
     tag: ''
     increment: Patch
@@ -217,7 +217,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
   release:
-    regex: releases?[/-]
+    regex: ^releases?[/-]
     mode: ContinuousDelivery
     tag: beta
     increment: Patch
@@ -225,8 +225,9 @@ branches:
     track-merge-target: false
     tracks-release-branches: false
     is-release-branch: true
+    pre-release-weight: 1000
   feature:
-    regex: features?[/-]
+    regex: ^features?[/-]
     mode: ContinuousDelivery
     tag: useBranchName
     increment: Inherit
@@ -235,7 +236,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
   pull-request:
-    regex: (pull|pull\-requests|pr)[/-]
+    regex: ^(pull|pull\-requests|pr)[/-]
     mode: ContinuousDelivery
     tag: PullRequest
     increment: Inherit
@@ -245,7 +246,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
   hotfix:
-    regex: hotfix(es)?[/-]
+    regex: ^hotfix(es)?[/-]
     mode: ContinuousDelivery
     tag: beta
     increment: Patch
@@ -254,7 +255,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
   support:
-    regex: support[/-]
+    regex: ^support[/-]
     mode: ContinuousDelivery
     tag: ''
     increment: Patch
@@ -263,7 +264,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
   develop:
-    regex: dev(elop)?(ment)?$
+    regex: ^dev(elop)?(ment)?$
     mode: ContinuousDeployment
     tag: unstable
     increment: Minor
@@ -388,7 +389,7 @@ branches:
     tag: PullRequest
     increment: Inherit
     track-merge-target: true
-    tag-name-pattern: '[/-](?<number>\d+)[-/]'
+    tag-number-pattern: '[/-](?<number>\d+)[-/]'
 ```
 
 ### track-merge-target
@@ -404,3 +405,6 @@ Indicates this branch config represents a release branch in GitFlow.
 
 ### is-mainline
 When using Mainline mode, this indicates that this branch is a mainline. By default support/ and master are mainlines.
+
+### pre-release-weight
+Provides a way to translate the `PreReleaseLabel` ([variables](/more-info/variables)) to a numeric value in order to avoid version collisions across different branches. For example, a release branch created after "1.2.3-alpha.55" results in "1.2.3-beta.1" and thus e.g. "1.2.3-alpha.4" and "1.2.3-beta.4" would have the same file version: "1.2.3.4". One of the ways to use this value is to set `assembly-file-versioning-format: {Major}.{Minor}.{Patch}.{WeightedPreReleaseNumber}`. If the `pre-release-weight` is set, it would be added to the `PreReleaseNumber` to get a final `AssemblySemFileVer`, otherwise a branch specific default for `pre-release-weight` will be used in the calculation. Related Issues [1145](https://github.com/GitTools/GitVersion/issues/1145), [1366](https://github.com/GitTools/GitVersion/issues/1366)

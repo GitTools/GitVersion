@@ -1,11 +1,10 @@
-﻿using System;
-using GitTools.Git;
+using System;
 using GitTools.Testing;
+using GitVersion;
 using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
-using GitTools;
 
 [TestFixture]
 public class RemoteRepositoryScenarios : TestBase

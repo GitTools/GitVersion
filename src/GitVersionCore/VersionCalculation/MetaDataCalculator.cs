@@ -1,4 +1,4 @@
-﻿namespace GitVersion.VersionCalculation
+namespace GitVersion.VersionCalculation
 {
     using System.Linq;
     using LibGit2Sharp;
@@ -16,12 +16,15 @@
 
             var commitLog = context.Repository.Commits.QueryBy(qf);
             var commitsSinceTag = commitLog.Count();
-            Logger.WriteInfo(string.Format("{0} commits found between {1} and {2}", commitsSinceTag, baseVersionSource.Sha, context.CurrentCommit.Sha));
+            Logger.WriteInfo($"{commitsSinceTag} commits found between {baseVersionSource.Sha} and {context.CurrentCommit.Sha}");
 
+            var shortSha = context.Repository.ObjectDatabase.ShortenObjectId(context.CurrentCommit);
             return new SemanticVersionBuildMetaData(
+                baseVersionSource.Sha,
                 commitsSinceTag,
                 context.CurrentBranch.FriendlyName,
                 context.CurrentCommit.Sha,
+                shortSha,
                 context.CurrentCommit.When());
         }
     }

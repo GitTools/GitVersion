@@ -26,19 +26,21 @@ namespace GitVersion
             indent = indent + "  ";
             return new ActionDisposable(() =>
             {
-                indent = indent.Substring(0, indent.Length - 2);
+                var length = indent.Length - 2;
+                indent = length > 0 ? indent.Substring(0, length) : indent;
                 WriteInfo(string.Format(CultureInfo.InvariantCulture, "End: {0} (Took: {1:N}ms)", operationDescription, DateTime.Now.Subtract(start).TotalMilliseconds));
             });
         }
 
         static Action<string> ObscurePassword(Action<string> info)
         {
-            Action<string> logAction = s =>
+            void LogAction(string s)
             {
                 s = ObscurePasswordRegex.Replace(s, "$1$2:*******@");
                 info(s);
-            };
-            return logAction;
+            }
+
+            return LogAction;
         }
 
         public static void SetLoggers(Action<string> debug, Action<string> info, Action<string> warn, Action<string> error)

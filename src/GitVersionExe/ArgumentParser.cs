@@ -3,7 +3,6 @@ namespace GitVersion
     using System;
     using System.Collections.Generic;
     using System.Collections.Specialized;
-    using System.ComponentModel;
     using System.IO;
     using System.Linq;
 
@@ -128,7 +127,6 @@ namespace GitVersion
                     continue;
                 }
 
-#if NETDESKTOP
                 if (name.IsSwitch("exec"))
                 {
                     EnsureArgumentValueCount(values);
@@ -167,9 +165,6 @@ namespace GitVersion
                     }
                     continue;
                 }
-
-#endif
-
 
                 if (name.IsSwitch("updateAssemblyInfo"))
                 {
@@ -339,6 +334,12 @@ namespace GitVersion
                     {
                         throw new WarningException(String.Format("Could not parse Verbosity value '{0}'", value));
                     }
+                    continue;
+                }
+
+                if (name.IsSwitch("updatewixversionfile"))
+                {
+                    arguments.UpdateWixVersionFile = true;
                     continue;
                 }
 

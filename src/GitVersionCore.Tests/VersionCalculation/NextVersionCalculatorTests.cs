@@ -1,8 +1,7 @@
-﻿namespace GitVersionCore.Tests.VersionCalculation
+namespace GitVersionCore.Tests.VersionCalculation
 {
     using System;
     using System.Collections.Generic;
-    using GitTools;
     using GitTools.Testing;
     using GitVersion;
     using GitVersion.VersionCalculation;
@@ -16,7 +15,7 @@
         public void ShouldIncrementVersionBasedOnConfig()
         {
             var baseCalculator = new TestBaseVersionCalculator(true, new SemanticVersion(1), new MockCommit());
-            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(1, "master", "b1a34e", DateTimeOffset.Now);
+            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, "master", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now);
             var sut = new NextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
             var config = new Config();
             var context = new GitVersionContextBuilder().WithConfig(config).Build();
@@ -30,7 +29,7 @@
         public void DoesNotIncrementWhenBaseVersionSaysNotTo()
         {
             var baseCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit());
-            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(1, "master", "b1a34e", DateTimeOffset.Now);
+            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, "master", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now);
             var sut = new NextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
             var config = new Config();
             var context = new GitVersionContextBuilder().WithConfig(config).Build();
@@ -44,7 +43,7 @@
         public void AppliesBranchPreReleaseTag()
         {
             var baseCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit());
-            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData(2, "develop", "b1a34e", DateTimeOffset.Now);
+            var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 2, "develop", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now);
             var sut = new NextVersionCalculator(baseCalculator, new TestMetaDataCalculator(semanticVersionBuildMetaData));
             var context = new GitVersionContextBuilder()
                 .WithDevelopBranch()

@@ -18,6 +18,7 @@ static class GitVersionInformation
     public static string PreReleaseTagWithDash = "-unstable.4";
     public static string PreReleaseLabel = "unstable";
     public static string PreReleaseNumber = "4";
+    public static string WeightedPreReleaseNumber = "4";
     public static string BuildMetaData = "5";
     public static string BuildMetaDataPadded = "0005";
     public static string FullBuildMetaData = "5.Branch.feature1.Sha.commitSha";
@@ -31,10 +32,12 @@ static class GitVersionInformation
     public static string InformationalVersion = "1.2.3-unstable.4+5.Branch.feature1.Sha.commitSha";
     public static string BranchName = "feature1";
     public static string Sha = "commitSha";
+    public static string ShortSha = "commitShortSha";
     public static string NuGetVersionV2 = "1.2.3-unstable0004";
     public static string NuGetVersion = "1.2.3-unstable0004";
     public static string NuGetPreReleaseTagV2 = "unstable0004";
     public static string NuGetPreReleaseTag = "unstable0004";
+    public static string VersionSourceSha = "versionSourceSha";
     public static string CommitsSinceVersionSource = "5";
     public static string CommitsSinceVersionSourcePadded = "0005";
     public static string CommitDate = "2014-03-06";

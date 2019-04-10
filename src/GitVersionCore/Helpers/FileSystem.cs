@@ -87,7 +87,7 @@ namespace GitVersion.Helpers
         {
             var comparison = runningOnMono
              ? StringComparerUtils.CaseSensitiveComparison
-             : StringComparerUtils.IngoreCaseComparison;
+             : StringComparerUtils.IgnoreCaseComparison;
 
             return string.Equals(
                 Path.GetFullPath(path).TrimEnd('\\').TrimEnd('/'),

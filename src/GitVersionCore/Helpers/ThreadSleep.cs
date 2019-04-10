@@ -1,4 +1,4 @@
-﻿namespace GitVersion.Helpers
+namespace GitVersion.Helpers
 {
     using System.Threading.Tasks;
 
@@ -6,7 +6,7 @@
     {
         public async Task SleepAsync(int milliseconds)
         {
-            await TaskHelper.Delay(milliseconds);
+            await Task.Delay(milliseconds);
         }
     }
 }

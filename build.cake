@@ -1,486 +1,798 @@
-#tool "nuget:https://www.nuget.org/api/v2?package=NUnit.ConsoleRunner&version=3.7.0"
-#tool "nuget:https://www.nuget.org/api/v2?package=GitReleaseNotes&version=0.7.1"
-#tool "nuget:https://www.nuget.org/api/v2?package=ILRepack&version=2.0.15"
-#addin "nuget:?package=Cake.Incubator"
+// Install modules
+#module nuget:?package=Cake.DotNetTool.Module&version=0.2.0
 
-var target = Argument("target", "Default");
-var configuration = Argument("configuration", "Release");
+// Install addins.
+#addin "nuget:?package=Cake.Gitter&version=0.10.0"
+#addin "nuget:?package=Cake.Docker&version=0.9.9"
+#addin "nuget:?package=Cake.Npm&version=0.16.0"
+#addin "nuget:?package=Cake.Incubator&version=4.0.2"
+#addin "nuget:?package=Cake.Json&version=3.0.0"
+#addin "nuget:?package=Cake.Tfx&version=0.8.0"
+#addin "nuget:?package=Cake.Gem&version=0.7.0"
+#addin "nuget:?package=Cake.Coverlet&version=2.2.1"
+#addin "nuget:?package=Cake.Codecov&version=0.5.0"
+#addin "nuget:?package=Newtonsoft.Json&version=9.0.1"
+#addin "nuget:?package=xunit.assert&version=2.4.1"
 
-string version = null;
-string nugetVersion = null;
-string preReleaseTag = null;
-string semVersion = null;
-string milestone = null;
+// Install tools.
+#tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
+#tool "nuget:?package=ILRepack&version=2.0.16"
+#tool "nuget:?package=Codecov&version=1.4.0"
+#tool "nuget:?package=nuget.commandline&version=4.9.4"
+
+// Install .NET Core Global tools.
+#tool "dotnet:?package=GitReleaseManager.Tool&version=0.8.0"
+
+// Load other scripts.
+#load "./build/parameters.cake"
+#load "./build/utils.cake"
+
+using Xunit;
+//////////////////////////////////////////////////////////////////////
+// PARAMETERS
+//////////////////////////////////////////////////////////////////////
 bool publishingError = false;
-bool IsTagged = (BuildSystem.AppVeyor.Environment.Repository.Tag.IsTag &&
-                !string.IsNullOrWhiteSpace(BuildSystem.AppVeyor.Environment.Repository.Tag.Name));
-bool IsMainGitVersionRepo = StringComparer.OrdinalIgnoreCase.Equals("gittools/gitversion", BuildSystem.AppVeyor.Environment.Repository.Name);
-bool IsPullRequest = BuildSystem.AppVeyor.Environment.PullRequest.IsPullRequest;
-bool IsMainGitVersionBranch = StringComparer.OrdinalIgnoreCase.Equals("master", BuildSystem.AppVeyor.Environment.Repository.Branch);
 
-string buildDir = "./build/";
+///////////////////////////////////////////////////////////////////////////////
+// SETUP / TEARDOWN
+///////////////////////////////////////////////////////////////////////////////
 
-void Build(string configuration, string nugetVersion, string semVersion, string version, string preReleaseTag)
+Setup<BuildParameters>(context =>
 {
+    var parameters = BuildParameters.GetParameters(Context);
+    Build(parameters.Configuration);
+    var gitVersion = GetVersion(parameters);
+    parameters.Initialize(context, gitVersion);
 
-    MSBuild("./src/GitVersion.sln", settings =>
+    // Increase verbosity?
+    if (parameters.IsMainBranch && (context.Log.Verbosity != Verbosity.Diagnostic)) {
+        Information("Increasing verbosity to diagnostic.");
+        context.Log.Verbosity = Verbosity.Diagnostic;
+    }
+
+    Information("Building version {0} of GitVersion ({1}, {2})",
+        parameters.Version.SemVersion,
+        parameters.Configuration,
+        parameters.Target);
+
+    Information("Repository info : IsMainRepo {0}, IsMainBranch {1}, IsTagged: {2}, IsPullRequest: {3}",
+        parameters.IsMainRepo,
+        parameters.IsMainBranch,
+        parameters.IsTagged,
+        parameters.IsPullRequest);
+
+    return parameters;
+});
+
+Teardown<BuildParameters>((context, parameters) =>
+{
+    try
     {
-     settings.SetConfiguration(configuration)
-        .SetVerbosity(Verbosity.Minimal)
-        .WithTarget("Build")
-        .WithProperty("POSIX",IsRunningOnUnix().ToString());
+        Information("Starting Teardown...");
 
-        if (BuildSystem.AppVeyor.IsRunningOnAppVeyor)
+        Information("Repository info : IsMainRepo {0}, IsMainBranch {1}, IsTagged: {2}, IsPullRequest: {3}",
+            parameters.IsMainRepo,
+            parameters.IsMainBranch,
+            parameters.IsTagged,
+            parameters.IsPullRequest);
+
+        if(context.Successful)
         {
-            if (!string.IsNullOrWhiteSpace(nugetVersion))
-            {
-                settings.WithProperty("GitVersion_NuGetVersion", nugetVersion);
-            }
-            if (!string.IsNullOrWhiteSpace(semVersion))
-            {
-                settings.WithProperty("GitVersion_SemVer", semVersion);
-            }
+            // if(parameters.ShouldPublish)
+            // {
+            //     if(parameters.CanPostToGitter)
+            //     {
+            //         var message = "@/all Version " + parameters.Version.SemVersion + " of the GitVersion has just been released, https://www.nuget.org/packages/GitVersion.";
 
-            if (!string.IsNullOrWhiteSpace(version))
-            {
-                settings.WithProperty("GitVersion_MajorMinorPatch", version);
-            }
+            //         var postMessageResult = Gitter.Chat.PostMessage(
+            //             message: message,
+            //             messageSettings: new GitterChatMessageSettings { Token = parameters.Gitter.Token, RoomId = parameters.Gitter.RoomId}
+            //         );
 
-            if (!string.IsNullOrWhiteSpace(preReleaseTag))
-            {
-                settings.WithProperty("GitVersion_PreReleaseTag", preReleaseTag);
-            }
+            //         if (postMessageResult.Ok)
+            //         {
+            //             Information("Message {0} succcessfully sent", postMessageResult.TimeStamp);
+            //         }
+            //         else
+            //         {
+            //             Error("Failed to send message: {0}", postMessageResult.Error);
+            //         }
+            //     }
+            // }
         }
-    });
-}
+
+        Information("Finished running tasks.");
+    }
+    catch (Exception exception)
+    {
+        Error(exception.Dump());
+    }
+});
+
+//////////////////////////////////////////////////////////////////////
+// TASKS
+//////////////////////////////////////////////////////////////////////
+
+#region Build
+
+Task("Clean")
+    .Does<BuildParameters>((parameters) =>
+{
+    Information("Cleaning directories..");
+
+    CleanDirectories("./src/**/bin/" + parameters.Configuration);
+    CleanDirectories("./src/**/obj");
+    CleanDirectories("./src/GitVersionTfsTask/scripts/**");
+
+    DeleteFiles("src/GitVersionTfsTask/*.vsix");
+    DeleteFiles("src/GitVersionRubyGem/*.gem");
+
+    CleanDirectories(parameters.Paths.Directories.ToClean);
+});
 
 // This build task can be run to just build
 Task("DogfoodBuild")
     .IsDependentOn("Clean")
-    .IsDependentOn("NuGet-Package-Restore")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
-    Build(configuration, nugetVersion, semVersion, version, preReleaseTag);
-});
-
-Task("Version")
-    .IsDependentOn("DogfoodBuild")
-    .Does(() =>
-{
-    GitVersion(new GitVersionSettings
-    {
-        UpdateAssemblyInfo = true,
-        LogFilePath = "console",
-        OutputType = GitVersionOutput.BuildServer,
-        ToolPath = @"src\GitVersionExe\bin\Release\net40\GitVersion.exe"
-    });
-    GitVersion assertedVersions = GitVersion(new GitVersionSettings
-    {
-        OutputType = GitVersionOutput.Json,
-        ToolPath = @"src\GitVersionExe\bin\Release\net40\GitVersion.exe"
-    });
-
-    version = assertedVersions.MajorMinorPatch;
-    nugetVersion = assertedVersions.NuGetVersion;
-    preReleaseTag = assertedVersions.PreReleaseTag;
-    semVersion = assertedVersions.LegacySemVerPadded;
-});
-
-Task("NuGet-Package-Restore")
-    .Does(() =>
-{
-    DotNetCoreRestore("./src/GitVersion.sln");
-    //NuGetRestore("./src/GitVersion.sln");
-});
-
-Task("Clean")
-    .Does(() =>
-{
-    CleanDirectories("./build");
-    CleanDirectories("./**/obj");
-
-    var binDirs = GetDirectories("./**/bin") - GetDirectories("**/GemAssets/bin");
-    CleanDirectories(binDirs);
+    Build(parameters.Configuration);
 });
 
 Task("Build")
     .IsDependentOn("Clean")
-    .IsDependentOn("Version")
-    .IsDependentOn("NuGet-Package-Restore")
-    .Does(() =>
+    .Does<BuildParameters>((parameters) =>
 {
-    Build(configuration, nugetVersion, semVersion, version, preReleaseTag);
+    Build(parameters.Configuration);
 });
 
-Task("Run-Tests-In-NUnitConsole")
-    .IsDependentOn("DogfoodBuild")
-    .Does(() =>
+#endregion
+
+#region Tests
+
+Task("Test")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledUnitTests, "Unit tests were disabled.")
+    .IsDependentOn("Build")
+    .Does<BuildParameters>((parameters) =>
 {
-    var settings = new NUnit3Settings();
-    var targetFramework = "net461";
-    if(IsRunningOnUnix())
+    var framework = "net461";
+
+    // run using dotnet test
+    var projects = GetFiles("./src/**/*.Tests.csproj");
+    foreach(var project in projects)
     {
-        settings.Where = "cat != NoMono";
+        var settings = new DotNetCoreTestSettings
+        {
+            Framework = framework,
+            NoBuild = true,
+            NoRestore = true,
+            Configuration = parameters.Configuration
+        };
+
+        var coverletSettings = new CoverletSettings {
+            CollectCoverage = true,
+            CoverletOutputFormat = CoverletOutputFormat.opencover,
+            CoverletOutputDirectory = parameters.Paths.Directories.TestCoverageOutput + "/",
+            CoverletOutputName = $"{project.GetFilenameWithoutExtension()}.coverage.xml"
+        };
+
+        if (IsRunningOnUnix())
+        {
+            settings.Filter = "TestCategory!=NoMono";
+        }
+
+        // DotNetCoreTest(project.FullPath, settings, coverletSettings);
+        DotNetCoreTest(project.FullPath, settings);
     }
 
-    NUnit3(new [] {
-        "src/GitVersionCore.Tests/bin/" + configuration + "/" + targetFramework + "/GitVersionCore.Tests.dll",
-        "src/GitVersionExe.Tests/bin/" + configuration + "/" + targetFramework + "/GitVersionExe.Tests.dll",
-        "src/GitVersionTask.Tests/bin/" + configuration + "/" + targetFramework + "/GitVersionTask.Tests.dll" },
-        settings);
-    if (AppVeyor.IsRunningOnAppVeyor)
+    // run using NUnit
+    var testAssemblies = GetFiles("./src/**/bin/" + parameters.Configuration + "/" + framework + "/*.Tests.dll");
+
+    var nunitSettings = new NUnit3Settings
     {
-        Information("Uploading test results");
-        AppVeyor.UploadTestResults("TestResult.xml", AppVeyorTestResultsType.NUnit3);
+        Results = new List<NUnit3Result> { new NUnit3Result { FileName = parameters.Paths.Files.TestCoverageOutputFilePath } }
+    };
+
+    if(IsRunningOnUnix()) {
+        nunitSettings.Where = "cat!=NoMono";
+        nunitSettings.Agents = 1;
     }
+
+    NUnit3(testAssemblies, nunitSettings);
 });
 
-// Note: this task is not used for time being as unable to produce sensible test results output file via dotnet cli.. so using nunit console runner above instead.
-Task("Run-Tests")
-    .IsDependentOn("DogfoodBuild")
-    .Does(() =>
+#endregion
+
+#region Package
+
+Task("Copy-Files")
+    .IsDependentOn("Test")
+    .Does<BuildParameters>((parameters) =>
 {
-     var settings = new DotNetCoreTestSettings
-     {
-        Configuration = configuration,
+    // .NET Core
+    var coreFxDir = parameters.Paths.Directories.ArtifactsBinCoreFx.Combine("tools");
+    DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
+    {
+        Framework = parameters.CoreFxVersion,
+        NoRestore = true,
+        Configuration = parameters.Configuration,
+        OutputDirectory = coreFxDir,
+        MSBuildSettings = parameters.MSBuildSettings
+    });
+
+    // Copy license & Copy GitVersion.XML (since publish does not do this anymore)
+    CopyFileToDirectory("./LICENSE", coreFxDir);
+    CopyFileToDirectory($"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion}/GitVersion.xml", coreFxDir);
+
+    // .NET 4.0
+    DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
+    {
+        Framework = parameters.FullFxVersion,
         NoBuild = true,
-        Filter = "TestCategory!=NoMono"
-     };
+        NoRestore = true,
+        Configuration = parameters.Configuration,
+        OutputDirectory = parameters.Paths.Directories.ArtifactsBinFullFx,
+        MSBuildSettings = parameters.MSBuildSettings
+    });
 
-     DotNetCoreTest("./src/GitVersionCore.Tests/GitVersionCore.Tests.csproj", settings);
-     DotNetCoreTest("./src/GitVersionExe.Tests/GitVersionExe.Tests.csproj", settings);
-     DotNetCoreTest("./src/GitVersionTask.Tests/GitVersionTask.Tests.csproj", settings);
+    var ilMergeDir = parameters.Paths.Directories.ArtifactsBinFullFxILMerge;
+    var portableDir = parameters.Paths.Directories.ArtifactsBinFullFxPortable.Combine("tools");
+    var cmdlineDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
 
+    // Portable
+    PublishILRepackedGitVersionExe(true, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergeDir, portableDir, parameters.Configuration, parameters.FullFxVersion);
+    // Commandline
+    PublishILRepackedGitVersionExe(false, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergeDir, cmdlineDir, parameters.Configuration, parameters.FullFxVersion);
+
+    // Vsix
+    var tfsPath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionTask");
+    EnsureDirectoryExists(tfsPath);
+    CopyFileToDirectory(portableDir + "/" + "LibGit2Sharp.dll.config", tfsPath);
+    CopyFileToDirectory(portableDir + "/" + "GitVersion.exe", tfsPath);
+    CopyDirectory(portableDir.Combine("lib"), tfsPath.Combine("lib"));
+
+    // Vsix dotnet core
+    var tfsCoreFxPath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionNetCoreTask");
+    EnsureDirectoryExists(tfsCoreFxPath);
+    CopyDirectory(coreFxDir, tfsCoreFxPath.Combine("netcore"));
+
+    // Ruby Gem
+    var gemPath = new DirectoryPath("./src/GitVersionRubyGem/bin");
+    EnsureDirectoryExists(gemPath);
+    CopyFileToDirectory(portableDir + "/" + "LibGit2Sharp.dll.config", gemPath);
+    CopyFileToDirectory(portableDir + "/" + "GitVersion.exe", gemPath);
+    CopyDirectory(portableDir.Combine("lib"), gemPath.Combine("lib"));
 });
 
-void ILRepackGitVersionExe(bool includeLibGit2Sharp)
+Task("Pack-Tfs")
+    .IsDependentOn("Copy-Files")
+    .Does<BuildParameters>((parameters) =>
 {
-     var tempMergeDir = "ILMergeTemp";
-     var exeName = "GitVersion.exe";
-     var keyFilePath = "./src/key.snk";
-     var targetDir = "./src/GitVersionExe/bin/" + configuration + "/net40/";
-     var targetPath = targetDir + exeName;
+    var workDir = "./src/GitVersionTfsTask";
+    var idSuffix = parameters.IsStableRelease() ? "" : "-preview";
+    var titleSuffix = parameters.IsStableRelease() ? "" : " (Preview)";
+    var visibility = parameters.IsStableRelease() ? "Public" : "Preview";
+    var taskIdFullFx = parameters.IsStableRelease() ? "e5983830-3f75-11e5-82ed-81492570a08e" : "25b46667-d5a9-4665-97f7-e23de366ecdf";
+    var taskIdCoreFx = parameters.IsStableRelease() ? "ce526674-dbd1-4023-ad6d-2a6b9742ee31" : "edf331e1-d1c0-413a-9735-fce0b22a46f5";
 
-     CreateDirectory(tempMergeDir);
-     string outFilePath = "./" + tempMergeDir + "/" + exeName;
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$idSuffix$", idSuffix);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$idSuffix$", idSuffix);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$titleSuffix$", titleSuffix);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$titleSuffix$", titleSuffix);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$visibility$", visibility);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$visibility$", visibility);
 
-     var sourcePattern = targetDir + "*.dll";
-     var sourceFiles = GetFiles(sourcePattern);
-     if(!includeLibGit2Sharp)
-     {
-            var excludePattern = "**/LibGit2Sharp.dll";
-         sourceFiles = sourceFiles - GetFiles(excludePattern);
-     }
-     var settings = new ILRepackSettings { AllowDup = "", Keyfile = keyFilePath, Internalize = true, NDebug = true, TargetKind = TargetKind.Exe, TargetPlatform  = TargetPlatformVersion.v4, XmlDocs = false };
-     ILRepack(outFilePath, targetPath, sourceFiles, settings);
-}
+    // update version number
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$version$", parameters.Version.TfxVersion);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$version$", parameters.Version.TfxVersion);
+    UpdateTaskVersion(new FilePath(workDir + "/GitVersionTask/task.json"), taskIdFullFx, parameters.Version.GitVersion);
+    UpdateTaskVersion(new FilePath(workDir + "/GitVersionNetCoreTask/task.json"), taskIdCoreFx, parameters.Version.GitVersion);
 
+    // build and pack
+    NpmSet("progress", "false");
+    NpmInstall(new NpmInstallSettings { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent });
+    NpmRunScript(new NpmRunScriptSettings { WorkingDirectory = workDir, ScriptName = "build", LogLevel = NpmLogLevel.Silent });
 
-Task("Commandline-Package")
-    .IsDependentOn("Build")
-    .Does(() =>
-{
+    var settings = new TfxExtensionCreateSettings
+    {
+        ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
+        WorkingDirectory = workDir,
+        OutputPath = parameters.Paths.Directories.BuildArtifact
+    };
 
-     ILRepackGitVersionExe(false);
+    settings.ManifestGlobs = new List<string>(){ "vss-extension.mono.json" };
+    TfxExtensionCreate(settings);
 
-     var outputDir = buildDir + "NuGetCommandLineBuild";
-     var toolsDir = outputDir + "/tools";
-     var libDir = toolsDir + "/lib";
-
-     CreateDirectory(outputDir);
-     CreateDirectory(toolsDir);
-     CreateDirectory(libDir);
-
-     var targetDir = "./src/GitVersionExe/bin/" + configuration + "/net40/";
-
-    var libGitFiles = GetFiles(targetDir + "LibGit2Sharp.dll*");
-    var nugetAssetsPath = "./src/GitVersionExe/NugetAssets/";
-    Information("Copying files to packaging direcory..");
-
-    CopyFiles(targetDir + "GitVersion.pdb", outputDir + "/tools/");
-    CopyFiles(targetDir + "GitVersion.exe.mdb", outputDir + "/tools/");
-
-    Information("Copying IL Merged exe file..");
-    CopyFiles("./ILMergeTemp/GitVersion.exe", outputDir + "/tools/");
-
-    Information("Copying nuget assets..");
-    CopyFiles(nugetAssetsPath + "GitVersion.CommandLine.nuspec", outputDir);
-
-    Information("Copying libgit2sharp files..");
-    CopyFiles(libGitFiles, outputDir + "/tools/");
-    CopyDirectory(targetDir + "lib/", outputDir + "/tools/lib/");
-
-    Information("Creating Nuget Package..");
-    var nuGetPackSettings  = new NuGetPackSettings {  Version = nugetVersion, BasePath  = outputDir, OutputDirectory = outputDir };
-    NuGetPack(outputDir + "/GitVersion.CommandLine.nuspec", nuGetPackSettings);
-
-})
-.ReportError(exception =>
-{
-    Error(exception.Dump());
-    // Report the error.
+    settings.ManifestGlobs = new List<string>(){ "vss-extension.netcore.json" };
+    TfxExtensionCreate(settings);
 });
 
-
-Task("Portable-Package")
-    .IsDependentOn("Build")
-    .Does(() =>
+Task("Pack-Gem")
+    .IsDependentOn("Copy-Files")
+    .Does<BuildParameters>((parameters) =>
 {
+    var workDir = "./src/GitVersionRubyGem";
 
-     ILRepackGitVersionExe(true);
+    var gemspecFile = new FilePath(workDir + "/gitversion.gemspec");
+    // update version number
+    ReplaceTextInFile(gemspecFile, "$version$", parameters.Version.GemVersion);
 
-     var outputDir = buildDir + "NuGetExeBuild";
-     var toolsDir = outputDir + "/tools";
-     var libDir = toolsDir + "/lib";
+    var toolPath = FindToolInPath(IsRunningOnWindows() ? "gem.cmd" : "gem");
+    GemBuild(gemspecFile, new Cake.Gem.Build.GemBuildSettings()
+    {
+        WorkingDirectory = workDir,
+        ToolPath = toolPath
+    });
 
-     CreateDirectory(outputDir);
-     CreateDirectory(toolsDir);
-     CreateDirectory(libDir);
-
-     var targetDir = "./src/GitVersionExe/bin/" + configuration + "/net40/";
-
-    var nugetAssetsPath = "./src/GitVersionExe/NugetAssets/";
-    Information("Copying files to packaging direcory..");
-
-    CopyFiles(targetDir + "GitVersion.pdb", outputDir + "/tools/");
-    CopyFiles(targetDir + "GitVersion.exe.mdb", outputDir + "/tools/");
-
-    Information("Copying IL Merged exe file..");
-    CopyFiles("./ILMergeTemp/GitVersion.exe", outputDir + "/tools/");
-
-    Information("Copying nuget assets..");
-    CopyFiles(nugetAssetsPath + "*.ps1", outputDir + "/tools/");
-    CopyFiles(nugetAssetsPath + "GitVersion.Portable.nuspec", outputDir);
-
-    Information("Copying libgit2sharp files..");
-    CopyDirectory(targetDir + "lib/", outputDir + "/tools/lib/");
-
-    var nuGetPackSettings  = new NuGetPackSettings {  Version = nugetVersion, BasePath  = outputDir, OutputDirectory = outputDir };
-    NuGetPack(outputDir + "/GitVersion.Portable.nuspec", nuGetPackSettings);
-
-})
-.ReportError(exception =>
-{
-    Error(exception.Dump());
+    CopyFiles(workDir + "/*.gem", parameters.Paths.Directories.BuildArtifact);
 });
 
-
-Task("GitVersionCore-Package")
-    .IsDependentOn("Build")
-    .Does(() =>
+Task("Pack-Nuget")
+    .IsDependentOn("Copy-Files")
+    .Does<BuildParameters>((parameters) =>
 {
-     var outputDir = buildDir + "NuGetRefBuild";
-     CreateDirectory(outputDir);
+    foreach(var package in parameters.Packages.Nuget)
+    {
+        if (FileExists(package.NuspecPath)) {
+            var artifactPath = MakeAbsolute(parameters.PackagesBuildMap[package.Id]).FullPath;
 
-     var msBuildSettings = new DotNetCoreMSBuildSettings();
-     msBuildSettings.SetVersion(nugetVersion);
-     msBuildSettings.Properties["PackageVersion"] = new string[]{ nugetVersion };
-     var settings = new DotNetCorePackSettings
-     {
-         Configuration = configuration,
-         OutputDirectory = outputDir,
-         NoBuild = true,
-         MSBuildSettings = msBuildSettings
-     };
+            var nugetSettings = new NuGetPackSettings
+            {
+                Version = parameters.Version.SemVersion,
+                OutputDirectory = parameters.Paths.Directories.NugetRoot,
+                Files = GetFiles(artifactPath + "/**/*.*")
+                        .Select(file => new NuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
+                        .ToArray()
+            };
 
-     DotNetCorePack("./src/GitVersionCore", settings);
-})
-.ReportError(exception =>
-{
-    Error(exception.Dump());
+            NuGetPack(package.NuspecPath, nugetSettings);
+        }
+    }
+
+    var settings = new DotNetCorePackSettings
+    {
+        Configuration = parameters.Configuration,
+        OutputDirectory = parameters.Paths.Directories.NugetRoot,
+        NoBuild = true,
+        NoRestore = true,
+        MSBuildSettings = parameters.MSBuildSettings
+    };
+
+    // GitVersionCore, GitVersionTask, & global tool
+    DotNetCorePack("./src/GitVersionCore", settings);
+    DotNetCorePack("./src/GitVersionTask", settings);
+    DotNetCorePack("./src/GitVersionExe/GitVersion.Tool.csproj", settings);
 });
 
-Task("GitVersion-DotNet-Package")
-    .IsDependentOn("Build")
-    .Does(() =>
+Task("Pack-Chocolatey")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Pack-Chocolatey works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsMainBranch, "Pack-Chocolatey works only for main branch.")
+    .IsDependentOn("Copy-Files")
+    .Does<BuildParameters>((parameters) =>
 {
+    foreach(var package in parameters.Packages.Chocolatey)
+    {
+        if (FileExists(package.NuspecPath)) {
+            var artifactPath = MakeAbsolute(parameters.PackagesBuildMap[package.Id]).FullPath;
 
-    // var publishDir = buildDir + "Published";
-    // CreateDirectory(outputDir);
+            var files = GetFiles(artifactPath + "/**/*.*")
+                        .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") });
+            var txtFiles = (GetFiles("./nuspec/*.txt") + GetFiles("./nuspec/*.ps1"))
+                        .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.GetFilename().ToString() });
 
-     var outputDir = buildDir + "NuGetExeDotNetCoreBuild";
-     var toolsDir = outputDir + "/tools";
-     var libDir = toolsDir + "/lib";
-
-     CreateDirectory(outputDir);
-     CreateDirectory(toolsDir);
-     CreateDirectory(libDir);
-
-
-     var msBuildSettings = new DotNetCoreMSBuildSettings();
-     msBuildSettings.SetVersion(nugetVersion);
-     msBuildSettings.Properties["PackageVersion"] = new string[]{ nugetVersion };
-
-     var framework = "netcoreapp20";
-
-     var settings = new DotNetCorePublishSettings
-     {
-         Framework = framework,
-         Configuration = configuration,
-         OutputDirectory = toolsDir,
-         MSBuildSettings = msBuildSettings
-     };
-
-     DotNetCorePublish("./src/GitVersionExe", settings);
-
-
-
-     // var targetDir = "./src/GitVersionExe/bin/" + configuration + "/" + framework + "/";
-
-    var nugetAssetsPath = "./src/GitVersionExe/NugetAssets/";
-    Information("Copying files to packaging direcory..");
-
-    Information("Copying nuget assets..");
-    CopyFiles(nugetAssetsPath + "GitVersion.CommandLine.DotNetCore.nuspec", outputDir);
-
-    //Information("Copying libgit2sharp files..");
-    //CopyDirectory(targetDir + "lib/", outputDir + "/tools/lib/");
-
-    var nuGetPackSettings  = new NuGetPackSettings {  Version = nugetVersion, BasePath  = outputDir, OutputDirectory = outputDir };
-    NuGetPack(outputDir + "/GitVersion.CommandLine.DotNetCore.nuspec", nuGetPackSettings);
-})
-.ReportError(exception =>
-{
-    Error(exception.Dump());
-});
-
-
-Task("GitVersionTaskPackage")
-    .Description("Produces the nuget package for GitVersionTask")
-    .Does(() =>
-{
-
-     var outputDir = buildDir + "NuGetTaskBuild";
-     CreateDirectory(outputDir);
-
-     var msBuildSettings = new DotNetCoreMSBuildSettings();
-     msBuildSettings.SetVersion(nugetVersion);
-
-     msBuildSettings.Properties["PackageVersion"] = new string[]{ nugetVersion };
-     var settings = new DotNetCorePackSettings
-     {
-         Configuration = configuration,
-         OutputDirectory = outputDir,
-         NoBuild = true,
-         MSBuildSettings = msBuildSettings
-     };
-
-     DotNetCorePack("./src/GitVersionTask", settings);
-
-})
-.ReportError(exception =>
-{
-    Error(exception.Dump());
+            ChocolateyPack(package.NuspecPath, new ChocolateyPackSettings {
+                Verbose = true,
+                Version = parameters.Version.SemVersion,
+                OutputDirectory = parameters.Paths.Directories.NugetRoot,
+                Files = files.Concat(txtFiles).ToArray()
+            });
+        }
+    }
 });
 
 Task("Zip-Files")
-    .IsDependentOn("Build")
-    .IsDependentOn("Commandline-Package")
-    .IsDependentOn("Portable-Package")
-    .IsDependentOn("GitVersionCore-Package")
-    .IsDependentOn("GitVersionTaskPackage")
-    .IsDependentOn("GitVersion-DotNet-Package")
-    .IsDependentOn("Run-Tests-In-NUnitConsole")
-    .Does(() =>
+    .IsDependentOn("Copy-Files")
+    .Does<BuildParameters>((parameters) =>
 {
-    Zip("./build/NuGetCommandLineBuild/tools/", "build/GitVersion_" + nugetVersion + ".zip");
-    Zip("./build/NuGetExeDotNetCoreBuild/tools/", "build/GitVersionDotNetCore_" + nugetVersion + ".zip");
-})
-.ReportError(exception =>
-{
-    Error(exception.Dump());
+    // .NET 4.0
+    var cmdlineDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
+    var fullFxFiles = GetFiles(cmdlineDir.FullPath + "/**/*");
+    Zip(cmdlineDir, parameters.Paths.Files.ZipArtifactPathDesktop, fullFxFiles);
+
+    // .NET Core
+    var coreFxDir = parameters.Paths.Directories.ArtifactsBinCoreFx.Combine("tools");
+    var coreclrFiles = GetFiles(coreFxDir.FullPath + "/**/*");
+    Zip(coreFxDir, parameters.Paths.Files.ZipArtifactPathCoreClr, coreclrFiles);
 });
 
-
-Task("Create-Release-Notes")
-    .IsDependentOn("Build")
-    .WithCriteria(() => IsMainGitVersionRepo && IsMainGitVersionBranch && !IsPullRequest)
-    .Does(() =>
+Task("Docker-Build")
+    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Docker can be built only on Windows or Linux agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Docker-Build works only for releases.")
+    .IsDependentOn("Copy-Files")
+    .Does<BuildParameters>((parameters) =>
 {
-    var githubToken = EnvironmentVariable("GitHubToken");
+    var images = parameters.IsRunningOnWindows
+            ? parameters.Docker.Windows
+            : parameters.IsRunningOnLinux
+                ? parameters.Docker.Linux
+                : Array.Empty<DockerImage>();
 
-    if(!string.IsNullOrWhiteSpace(githubToken))
+    foreach(var dockerImage in images)
     {
-        IEnumerable<string> redirectedOutput;
-        var gitReleasNotesExePath = Context.Tools.Resolve("GitReleaseNotes.exe");
-        EnsureDirectoryExists(buildDir);
-        var releaseNotesExitCode = StartProcess(
-                gitReleasNotesExePath,
-                new ProcessSettings {
-                    Arguments = ". /o build/releasenotes.md /repoToken " + githubToken,
-                    RedirectStandardOutput = true
-                },
-                out redirectedOutput);
-        Information(string.Join("\n", redirectedOutput));
+        DockerBuild(dockerImage, parameters);
+    }
+});
 
-        if (!System.IO.File.Exists("./build/releasenotes.md") || string.IsNullOrEmpty(System.IO.File.ReadAllText("./build/releasenotes.md"))) {
-            System.IO.File.WriteAllText("./build/releasenotes.md", "No issues closed since last release");
+Task("Docker-Test")
+    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Docker can be tested only on Windows or Linux agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Docker-Test works only for releases.")
+    .IsDependentOn("Docker-Build")
+    .Does<BuildParameters>((parameters) =>
+{
+    var currentDir = MakeAbsolute(Directory("."));
+    var containerDir = parameters.IsRunningOnWindows ? "c:/repo" : "/repo";
+    var settings = new DockerContainerRunSettings
+    {
+        Rm = true,
+        Volume = new[] { $"{currentDir}:{containerDir}" }
+    };
+
+    var images = parameters.IsRunningOnWindows
+            ? parameters.Docker.Windows
+            : parameters.IsRunningOnLinux
+                ? parameters.Docker.Linux
+                : Array.Empty<DockerImage>();
+
+    foreach(var dockerImage in images)
+    {
+        var tags = GetDockerTags(dockerImage, parameters);
+        foreach (var tag in tags)
+        {
+            DockerTestRun(settings, parameters, tag, containerDir);
         }
     }
-    else
+});
+
+Task("Pack")
+    .IsDependentOn("Pack-Tfs")
+    .IsDependentOn("Pack-Gem")
+    .IsDependentOn("Pack-Nuget")
+    .IsDependentOn("Pack-Chocolatey")
+    .IsDependentOn("Zip-Files")
+    .Does<BuildParameters>((parameters) =>
+{
+    Information("The build artifacts: \n");
+    foreach(var artifact in parameters.Artifacts.All)
     {
-        Information("Create-Release-Notes is being skipped, as GitHub Token is not present.");
+        if (FileExists(artifact.ArtifactPath)) { Information("Artifact: {0}", artifact.ArtifactPath); }
+    }
+
+    foreach(var package in parameters.Packages.All)
+    {
+        if (FileExists(package.PackagePath)) { Information("Artifact: {0}", package.PackagePath); }
     }
 })
-.ReportError(exception =>
+    .ReportError(exception =>
 {
     Error(exception.Dump());
 });
 
+#endregion
 
-Task("Package")
-    .IsDependentOn("Create-Release-Notes")
-    .IsDependentOn("Zip-Files");
+#region Publish
 
-Task("Upload-AppVeyor-Artifacts")
-    .IsDependentOn("Package")
-    .WithCriteria(() => AppVeyor.IsRunningOnAppVeyor)
-    .Does(() =>
+Task("Release-Notes")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Release notes are generated only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Release notes are generated only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease(),        "Release notes are generated only for stable releases.")
+    .Does<BuildParameters>((parameters) =>
 {
-    var gem = string.IsNullOrEmpty(preReleaseTag) ?
-        "gitversion-" + version + ".gem" :
-        "gitversion-" + version + "." + preReleaseTag + ".gem";
+    var token = parameters.Credentials.GitHub.Token;
+    if(string.IsNullOrEmpty(token)) {
+        throw new InvalidOperationException("Could not resolve Github token.");
+    }
 
-    System.IO.File.WriteAllLines("build/artifacts", new[]{
-        "NuGetExeBuild:GitVersion.Portable." + nugetVersion +".nupkg",
-        "NuGetCommandLineBuild:GitVersion.CommandLine." + nugetVersion +".nupkg",
-        "NuGetExeDotNetCoreBuild:GitVersion.CommandLine.DotNetCore." + nugetVersion +".nupkg",
-        "NuGetRefBuild:GitVersionCore." + nugetVersion +".nupkg",
-        "NuGetTaskBuild:GitVersionTask." + nugetVersion +".nupkg",
-        "zip:GitVersion_" + nugetVersion + ".zip",
-        "zip-dotnetcore:GitVersionDotNetCore_" + nugetVersion + ".zip"
-        // "GitVersionTfsTaskBuild:gittools.gitversion-" + semVersion +".vsix",
-        // "GemBuild:" + gem
+    var repoOwner = "gittools";
+    var repository = "gitversion";
+    GitReleaseManagerCreate(token, repoOwner, repository, new GitReleaseManagerCreateSettings {
+        Milestone         = parameters.Version.Milestone,
+        Name              = parameters.Version.Milestone,
+        Prerelease        = true,
+        TargetCommitish   = "master"
     });
 
-    AppVeyor.UploadArtifact("build/NuGetExeBuild/GitVersion.Portable." + nugetVersion +".nupkg");
-    AppVeyor.UploadArtifact("build/NuGetCommandLineBuild/GitVersion.CommandLine." + nugetVersion +".nupkg");
-    AppVeyor.UploadArtifact("build/NuGetExeDotNetCoreBuild/GitVersion.CommandLine.DotNetCore." + nugetVersion +".nupkg");
-    AppVeyor.UploadArtifact("build/NuGetRefBuild/GitVersionCore." + nugetVersion +".nupkg");
-    AppVeyor.UploadArtifact("build/NuGetTaskBuild/GitVersionTask." + nugetVersion +".nupkg");
-    AppVeyor.UploadArtifact("build/GitVersion_" + nugetVersion + ".zip");
-    AppVeyor.UploadArtifact("build/GitVersionDotNetCore_" + nugetVersion + ".zip");
-    // AppVeyor.UploadArtifact("build/GitVersionTfsTaskBuild/gittools.gitversion-" + semVersion + ".vsix");
-    // AppVeyor.UploadArtifact("build/GemBuild/" + gem);
-    AppVeyor.UploadArtifact("build/artifacts");
+    GitReleaseManagerAddAssets(token, repoOwner, repository, parameters.Version.Milestone, parameters.Paths.Files.ZipArtifactPathDesktop.ToString());
+    GitReleaseManagerAddAssets(token, repoOwner, repository, parameters.Version.Milestone, parameters.Paths.Files.ZipArtifactPathCoreClr.ToString());
+    GitReleaseManagerClose(token, repoOwner, repository, parameters.Version.Milestone);
 
-    if(IsMainGitVersionRepo && IsMainGitVersionBranch && !IsPullRequest)
-    {
-        if(FileExists("build/releasenotes.md"))
-        {
-            AppVeyor.UploadArtifact("build/releasenotes.md");
-        }
-    }
-})
-.ReportError(exception =>
+}).ReportError(exception =>
 {
     Error(exception.Dump());
 });
 
-Task("Travis")
-  .IsDependentOn("Run-Tests");
+Task("Publish-Coverage")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Coverage works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Coverage works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Coverage works only for releases.")
+    .IsDependentOn("Test")
+    .Does<BuildParameters>((parameters) =>
+{
+    var coverageFiles = GetFiles(parameters.Paths.Directories.TestCoverageOutput + "/*.coverage.xml");
 
+    var token = parameters.Credentials.CodeCov.Token;
+    if(string.IsNullOrEmpty(token)) {
+        throw new InvalidOperationException("Could not resolve CodeCov token.");
+    }
+
+    foreach (var coverageFile in coverageFiles) {
+        // Upload a coverage report using the CodecovSettings.
+        Codecov(new CodecovSettings {
+            Files = new [] { coverageFile.ToString() },
+            Token = token
+        });
+    }
+});
+
+Task("Publish-AppVeyor")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Publish-AppVeyor works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAppVeyor, "Publish-AppVeyor works only on AppVeyor.")
+    .IsDependentOn("Pack")
+    .IsDependentOn("Release-Notes")
+    .Does<BuildParameters>((parameters) =>
+{
+    foreach(var artifact in parameters.Artifacts.All)
+    {
+        if (FileExists(artifact.ArtifactPath)) { AppVeyor.UploadArtifact(artifact.ArtifactPath); }
+    }
+
+    foreach(var package in parameters.Packages.All)
+    {
+        if (FileExists(package.PackagePath)) { AppVeyor.UploadArtifact(package.PackagePath); }
+    }
+
+    if (FileExists(parameters.Paths.Files.TestCoverageOutputFilePath)) {
+        AppVeyor.UploadTestResults(parameters.Paths.Files.TestCoverageOutputFilePath, AppVeyorTestResultsType.NUnit3);
+    }
+})
+.OnError(exception =>
+{
+    Information("Publish-AppVeyor Task failed, but continuing with next Task...");
+    Error(exception.Dump());
+    publishingError = true;
+});
+
+Task("Publish-AzurePipeline")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-AzurePipeline works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-AzurePipeline works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsPullRequest,           "Publish-AzurePipeline works only for non-PR commits.")
+    .IsDependentOn("Pack")
+    .IsDependentOn("Release-Notes")
+    .Does<BuildParameters>((parameters) =>
+{
+    foreach(var artifact in parameters.Artifacts.All)
+    {
+        if (FileExists(artifact.ArtifactPath)) { TFBuild.Commands.UploadArtifact(artifact.ContainerName, artifact.ArtifactPath, artifact.ArtifactName); }
+    }
+    foreach(var package in parameters.Packages.All)
+    {
+        if (FileExists(package.PackagePath)) { TFBuild.Commands.UploadArtifact("packages", package.PackagePath, package.PackageName); }
+    }
+
+    if (FileExists(parameters.Paths.Files.TestCoverageOutputFilePath)) {
+        var data = new TFBuildPublishTestResultsData {
+            TestResultsFiles = new[] { parameters.Paths.Files.TestCoverageOutputFilePath },
+            TestRunner = TFTestRunnerType.NUnit
+        };
+        TFBuild.Commands.PublishTestResults(data);
+    }
+})
+.OnError(exception =>
+{
+    Information("Publish-AzurePipeline Task failed, but continuing with next Task...");
+    Error(exception.Dump());
+    publishingError = true;
+});
+
+Task("Publish-Tfs")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishTfs,        "Publish-Tfs was disabled.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Tfs works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Tfs works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Tfs works only for releases.")
+    .IsDependentOn("Pack-Tfs")
+    .Does<BuildParameters>((parameters) =>
+{
+    var token = parameters.Credentials.Tfx.Token;
+    if(string.IsNullOrEmpty(token)) {
+        throw new InvalidOperationException("Could not resolve Tfx token.");
+    }
+
+    var workDir = "./src/GitVersionTfsTask";
+    var settings = new TfxExtensionPublishSettings
+    {
+        ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
+        AuthType = TfxAuthType.Pat,
+        Token = token
+    };
+
+    TfxExtensionPublish(parameters.Paths.Files.VsixOutputFilePath, settings);
+    TfxExtensionPublish(parameters.Paths.Files.VsixCoreFxOutputFilePath, settings);
+})
+.OnError(exception =>
+{
+    Information("Publish-Tfs Task failed, but continuing with next Task...");
+    Error(exception.Dump());
+    publishingError = true;
+});
+
+Task("Publish-Gem")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishGem,        "Publish-Gem was disabled.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Gem works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Gem works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Gem works only for releases.")
+    .IsDependentOn("Pack-Gem")
+    .Does<BuildParameters>((parameters) =>
+{
+    var apiKey = parameters.Credentials.RubyGem.ApiKey;
+    if(string.IsNullOrEmpty(apiKey)) {
+        throw new InvalidOperationException("Could not resolve Ruby Gem Api key.");
+    }
+
+    SetRubyGemPushApiKey(apiKey);
+
+    var toolPath = FindToolInPath(IsRunningOnWindows() ? "gem.cmd" : "gem");
+    GemPush(parameters.Paths.Files.GemOutputFilePath, new Cake.Gem.Push.GemPushSettings()
+    {
+        ToolPath = toolPath,
+    });
+})
+.OnError(exception =>
+{
+    Information("Publish-Gem Task failed, but continuing with next Task...");
+    Error(exception.Dump());
+    publishingError = true;
+});
+
+Task("Publish-DockerHub")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishDocker,     "Publish-DockerHub was disabled.")
+    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS,        "Publish-DockerHub works only on Windows and Linux agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-DockerHub works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-DockerHub works only for releases.")
+    .IsDependentOn("Docker-Build")
+    .IsDependentOn("Docker-Test")
+    .Does<BuildParameters>((parameters) =>
+{
+    var username = parameters.Credentials.Docker.UserName;
+    if (string.IsNullOrEmpty(username)) {
+        throw new InvalidOperationException("Could not resolve Docker user name.");
+    }
+
+    var password = parameters.Credentials.Docker.Password;
+    if (string.IsNullOrEmpty(password)) {
+        throw new InvalidOperationException("Could not resolve Docker password.");
+    }
+
+    DockerLogin(parameters.Credentials.Docker.UserName, parameters.Credentials.Docker.Password);
+
+    var images = parameters.IsRunningOnWindows
+            ? parameters.Docker.Windows
+            : parameters.IsRunningOnLinux
+                ? parameters.Docker.Linux
+                : Array.Empty<DockerImage>();
+
+    foreach(var dockerImage in images)
+    {
+        DockerPush(dockerImage, parameters);
+    }
+
+    DockerLogout();
+})
+.OnError(exception =>
+{
+    Information("Publish-DockerHub Task failed, but continuing with next Task...");
+    Error(exception.Dump());
+    publishingError = true;
+});
+
+Task("Publish-NuGet")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishNuget,      "Publish-NuGet was disabled.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-NuGet works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-NuGet works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-NuGet works only for releases.")
+    .IsDependentOn("Pack-NuGet")
+    .Does<BuildParameters>((parameters) =>
+{
+    var apiKey = parameters.Credentials.Nuget.ApiKey;
+    if(string.IsNullOrEmpty(apiKey)) {
+        throw new InvalidOperationException("Could not resolve NuGet API key.");
+    }
+
+    var apiUrl = parameters.Credentials.Nuget.ApiUrl;
+    if(string.IsNullOrEmpty(apiUrl)) {
+        throw new InvalidOperationException("Could not resolve NuGet API url.");
+    }
+
+    foreach(var package in parameters.Packages.Nuget)
+    {
+        if (FileExists(package.PackagePath))
+        {
+            // Push the package.
+            NuGetPush(package.PackagePath, new NuGetPushSettings
+            {
+                ApiKey = apiKey,
+                Source = apiUrl
+            });
+        }
+    }
+})
+.OnError(exception =>
+{
+    Information("Publish-NuGet Task failed, but continuing with next Task...");
+    Error(exception.Dump());
+    publishingError = true;
+});
+
+Task("Publish-Chocolatey")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishChocolatey, "Publish-Chocolatey was disabled.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Chocolatey works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Chocolatey works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Chocolatey works only for releases.")
+    .IsDependentOn("Pack-Chocolatey")
+    .Does<BuildParameters>((parameters) =>
+{
+    var apiKey = parameters.Credentials.Chocolatey.ApiKey;
+    if(string.IsNullOrEmpty(apiKey)) {
+        throw new InvalidOperationException("Could not resolve Chocolatey API key.");
+    }
+
+    var apiUrl = parameters.Credentials.Chocolatey.ApiUrl;
+    if(string.IsNullOrEmpty(apiUrl)) {
+        throw new InvalidOperationException("Could not resolve Chocolatey API url.");
+    }
+
+    foreach(var package in parameters.Packages.Chocolatey)
+    {
+        if (FileExists(package.PackagePath))
+        {
+            // Push the package.
+            ChocolateyPush(package.PackagePath, new ChocolateyPushSettings
+            {
+                ApiKey = apiKey,
+                Source = apiUrl,
+                Force = true
+            });
+        }
+    }
+})
+.OnError(exception =>
+{
+    Information("Publish-Chocolatey Task failed, but continuing with next Task...");
+    Error(exception.Dump());
+    publishingError = true;
+});
+
+Task("Publish")
+    .IsDependentOn("Publish-AppVeyor")
+    .IsDependentOn("Publish-AzurePipeline")
+    .IsDependentOn("Publish-Coverage")
+    .IsDependentOn("Publish-NuGet")
+    .IsDependentOn("Publish-Chocolatey")
+    .IsDependentOn("Publish-Tfs")
+    .IsDependentOn("Publish-Gem")
+    .IsDependentOn("Publish-DockerHub")
+    .Finally(() =>
+{
+    if (publishingError)
+    {
+        throw new Exception("An error occurred during the publishing of GitVersion. All publishing tasks have been attempted.");
+    }
+});
+
+#endregion
 Task("Default")
-  .IsDependentOn("Upload-AppVeyor-Artifacts");
+    .IsDependentOn("Publish");
 
+//////////////////////////////////////////////////////////////////////
+// EXECUTION
+//////////////////////////////////////////////////////////////////////
+
+var target = Argument("target", "Default");
 RunTarget(target);

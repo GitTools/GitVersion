@@ -6,7 +6,7 @@ using Shouldly;
 
 [TestFixture]
 public class VariableProviderTests : TestBase
-{   
+{
 
     [SetUp]
     public void Setup()
@@ -28,7 +28,9 @@ public class VariableProviderTests : TestBase
             BuildMetaData = "5.Branch.develop"
         };
 
+        semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
         semVer.BuildMetaData.Sha = "commitSha";
+        semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
 
@@ -53,7 +55,9 @@ public class VariableProviderTests : TestBase
             BuildMetaData = "5.Branch.develop"
         };
 
+        semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
         semVer.BuildMetaData.Sha = "commitSha";
+        semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
 
@@ -78,7 +82,9 @@ public class VariableProviderTests : TestBase
             BuildMetaData = "5.Branch.develop"
         };
 
+        semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
         semVer.BuildMetaData.Sha = "commitSha";
+        semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
         var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
@@ -101,7 +107,9 @@ public class VariableProviderTests : TestBase
             BuildMetaData = "5.Branch.develop"
         };
 
+        semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
         semVer.BuildMetaData.Sha = "commitSha";
+        semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
         var config = new TestEffectiveConfiguration();
@@ -124,7 +132,9 @@ public class VariableProviderTests : TestBase
             BuildMetaData = "5.Branch.develop"
         };
 
+        semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
         semVer.BuildMetaData.Sha = "commitSha";
+        semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
         var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
@@ -146,9 +156,11 @@ public class VariableProviderTests : TestBase
             Patch = 3,
             BuildMetaData =
             {
+                VersionSourceSha = "versionSourceSha",
                 CommitsSinceTag = 5,
                 CommitsSinceVersionSource = 5,
                 Sha = "commitSha",
+                ShortSha = "commitShortSha",
                 CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z")
             }
         };
@@ -174,6 +186,7 @@ public class VariableProviderTests : TestBase
 
         semVer.BuildMetaData.Branch = "pull/2/merge";
         semVer.BuildMetaData.Sha = "commitSha";
+        semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
         var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, tagNumberPattern: @"[/-](?<number>\d+)[-/]");
@@ -195,6 +208,7 @@ public class VariableProviderTests : TestBase
 
         semVer.BuildMetaData.Branch = "feature";
         semVer.BuildMetaData.Sha = "commitSha";
+        semVer.BuildMetaData.ShortSha = "commitShortSha";
         semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
         var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, tag: "useBranchName");

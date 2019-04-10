@@ -1,11 +1,9 @@
 namespace GitVersion
 {
-    using GitTools;
     using GitVersion.Helpers;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using WarningException = System.ComponentModel.WarningException;
 
     class SpecifiedArgumentRunner
     {
@@ -56,6 +54,14 @@ namespace GitVersion
                 }
             }
 
+            if (arguments.UpdateWixVersionFile)
+            {
+                using (var wixVersionFileUpdater = new WixVersionFileUpdater(targetPath, variables, fileSystem))
+                {
+                    wixVersionFileUpdater.Update();
+                }
+            }
+
             using (var assemblyInfoUpdater = new AssemblyInfoFileUpdater(arguments.UpdateAssemblyInfoFileName, targetPath, variables, fileSystem, arguments.EnsureAssemblyInfo))
             {
                 if (arguments.UpdateAssemblyInfo)
@@ -68,6 +74,7 @@ namespace GitVersion
                 execRun = RunExecCommandIfNeeded(arguments, targetPath, variables);
                 msbuildRun = RunMsBuildIfNeeded(arguments, targetPath, variables);
 #endif
+
                 if (!execRun && !msbuildRun)
                 {
                     assemblyInfoUpdater.CommitChanges();
@@ -81,7 +88,6 @@ namespace GitVersion
                 }
             }
         }
-
 #if NETDESKTOP
         static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
         {
@@ -117,9 +123,7 @@ namespace GitVersion
 
             return true;
         }
-
 #endif
-
         static KeyValuePair<string, string>[] GetEnvironmentalVariables(VersionVariables variables)
         {
             return variables

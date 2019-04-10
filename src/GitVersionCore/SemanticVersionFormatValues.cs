@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System.Globalization;
 
@@ -46,6 +46,11 @@
         public string PreReleaseNumber
         {
             get { return _semver.PreReleaseTag.HasTag() ? _semver.PreReleaseTag.Number.ToString() : null; }
+        }
+
+        public string WeightedPreReleaseNumber
+        {
+            get { return _semver.PreReleaseTag.HasTag() ? (_semver.PreReleaseTag.Number + _config.PreReleaseWeight).ToString() : null; }
         }
 
         public string BuildMetaData
@@ -107,6 +112,11 @@
             get { return _semver.BuildMetaData.Sha; }
         }
 
+        public string ShortSha
+        {
+            get { return _semver.BuildMetaData.ShortSha; }
+        }
+
         public string CommitDate
         {
             get { return _semver.BuildMetaData.CommitDate.UtcDateTime.ToString(_config.CommitDateFormat, CultureInfo.InvariantCulture); }
@@ -137,6 +147,11 @@
         public string DefaultInformationalVersion
         {
             get { return _semver.ToString("i"); }
+        }
+
+        public string VersionSourceSha
+        {
+            get { return _semver.BuildMetaData.VersionSourceSha; }
         }
 
         public string CommitsSinceVersionSource

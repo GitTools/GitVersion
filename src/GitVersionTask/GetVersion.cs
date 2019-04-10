@@ -1,20 +1,14 @@
-﻿namespace GitVersionTask
+namespace GitVersionTask
 {
     using System;
     using GitVersion;
 
     using Microsoft.Build.Framework;
-    using GitTools;
-    using System.Reflection;
 
     public class GetVersion : GitVersionTaskBase
     {
-        TaskLogger logger;
-
         public GetVersion()
         {
-            logger = new TaskLogger(this);
-            Logger.SetLoggers(this.LogDebug, this.LogInfo, this.LogWarning, s => this.LogError(s));
         }
 
         [Required]
@@ -42,6 +36,9 @@
 
         [Output]
         public string PreReleaseNumber { get; set; }
+
+        [Output]
+        public string WeightedPreReleaseNumber { get; set; }
 
         [Output]
         public string BuildMetaData { get; set; }
@@ -83,6 +80,9 @@
         public string Sha { get; set; }
 
         [Output]
+        public string ShortSha { get; set; }
+
+        [Output]
         public string NuGetVersionV2 { get; set; }
 
         [Output]
@@ -96,6 +96,9 @@
 
         [Output]
         public string CommitDate { get; set; }
+
+        [Output]
+        public string VersionSourceSha { get; set; }
 
         [Output]
         public string CommitsSinceVersionSource { get; set; }
@@ -121,17 +124,13 @@
             }
             catch (WarningException errorException)
             {
-                logger.LogWarning(errorException.Message);
+                this.LogWarning(errorException.Message);
                 return true;
             }
             catch (Exception exception)
             {
-                logger.LogError("Error occurred: " + exception);
+                this.LogError("Error occurred: " + exception);
                 return false;
-            }
-            finally
-            {
-                Logger.Reset();
             }
         }
     }

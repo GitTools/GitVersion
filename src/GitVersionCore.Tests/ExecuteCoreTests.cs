@@ -1,4 +1,4 @@
-﻿using GitTools.Testing;
+using GitTools.Testing;
 using GitVersion;
 using GitVersion.Helpers;
 using GitVersionCore.Tests;
@@ -9,6 +9,7 @@ using System.IO;
 using System.Text;
 
 [TestFixture]
+[Parallelizable(ParallelScope.None)]
 public class ExecuteCoreTests : TestBase
 {
     IFileSystem fileSystem;
@@ -35,7 +36,7 @@ public class ExecuteCoreTests : TestBase
             var cacheKey2 = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, null);
 
             cacheKey2.Value.ShouldBe(cacheKey1.Value);
-        });        
+        });
     }
 
     [Test]
@@ -49,8 +50,9 @@ PreReleaseTag: test.19
 PreReleaseTagWithDash: -test.19
 PreReleaseLabel: test
 PreReleaseNumber: 19
-BuildMetaData: 
-BuildMetaDataPadded: 
+WeightedPreReleaseNumber: 19
+BuildMetaData:
+BuildMetaDataPadded:
 FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 MajorMinorPatch: 4.10.3
 SemVer: 4.10.3-test.19
@@ -62,10 +64,12 @@ FullSemVer: 4.10.3-test.19
 InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 BranchName: feature/test
 Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+ShortSha: dd2a29af
 NuGetVersionV2: 4.10.3-test0019
 NuGetVersion: 4.10.3-test0019
 NuGetPreReleaseTagV2: test0019
 NuGetPreReleaseTag: test0019
+VersionSourceSha: 4.10.2
 CommitsSinceVersionSource: 19
 CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
@@ -95,8 +99,8 @@ PreReleaseTag: test.19
 PreReleaseTagWithDash: -test.19
 PreReleaseLabel: test
 PreReleaseNumber: 19
-BuildMetaData: 
-BuildMetaDataPadded: 
+BuildMetaData:
+BuildMetaDataPadded:
 FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 MajorMinorPatch: 4.10.3
 SemVer: 4.10.3-test.19
@@ -108,6 +112,7 @@ FullSemVer: 4.10.3-test.19
 InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 BranchName: feature/test
 Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+ShortSha: dd2a29af
 NuGetVersionV2: 4.10.3-test0019
 NuGetVersion: 4.10.3-test0019
 NuGetPreReleaseTagV2: test0019
@@ -158,8 +163,9 @@ PreReleaseTag: test.19
 PreReleaseTagWithDash: -test.19
 PreReleaseLabel: test
 PreReleaseNumber: 19
-BuildMetaData: 
-BuildMetaDataPadded: 
+WeightedPreReleaseNumber: 19
+BuildMetaData:
+BuildMetaDataPadded:
 FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 MajorMinorPatch: 4.10.3
 SemVer: 4.10.3-test.19
@@ -171,10 +177,12 @@ FullSemVer: 4.10.3-test.19
 InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 BranchName: feature/test
 Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+ShortSha: dd2a29af
 NuGetVersionV2: 4.10.3-test0019
 NuGetVersion: 4.10.3-test0019
 NuGetPreReleaseTagV2: test0019
 NuGetPreReleaseTag: test0019
+VersionSourceSha: 4.10.2
 CommitsSinceVersionSource: 19
 CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
@@ -207,8 +215,9 @@ PreReleaseTag: test.19
 PreReleaseTagWithDash: -test.19
 PreReleaseLabel: test
 PreReleaseNumber: 19
-BuildMetaData: 
-BuildMetaDataPadded: 
+WeightedPreReleaseNumber: 19
+BuildMetaData:
+BuildMetaDataPadded:
 FullBuildMetaData: Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 MajorMinorPatch: 4.10.3
 SemVer: 4.10.3-test.19
@@ -220,10 +229,12 @@ FullSemVer: 4.10.3-test.19
 InformationalVersion: 4.10.3-test.19+Branch.feature/test.Sha.dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
 BranchName: feature/test
 Sha: dd2a29aff0c948e1bdf3dabbe13e1576e70d5f9f
+ShortSha: dd2a29af
 NuGetVersionV2: 4.10.3-test0019
 NuGetVersion: 4.10.3-test0019
 NuGetPreReleaseTagV2: test0019
 NuGetPreReleaseTag: test0019
+VersionSourceSha: 4.10.2
 CommitsSinceVersionSource: 19
 CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
@@ -270,6 +281,7 @@ CommitDate: 2015-11-10
         // Make sure GitVersion doesn't trigger build server mode when we are running the tests
         Environment.SetEnvironmentVariable(AppVeyor.EnvironmentVariableName, null);
         Environment.SetEnvironmentVariable(TravisCI.EnvironmentVariableName, null);
+        Environment.SetEnvironmentVariable(VsoAgent.EnvironmentVariableName, null);
         var debugBuilder = new StringBuilder();
         Action<string> debugLogger = s =>
         {

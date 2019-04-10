@@ -1,16 +1,19 @@
 language: csharp
 sudo: required
 dist: trusty
-dotnet: 2.1.105
+dotnet: 2.1.505
 mono:
   - latest
 os:
   - linux
   - osx
 before_install:
-  - git fetch --unshallow # Travis always does a shallow clone, but GitVersion needs the full history including branches and tags 
+  - git fetch --unshallow # Travis always does a shallow clone, but GitVersion needs the full history including branches and tags
+  - git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+  - git fetch origin
+  - bash <(wget -O - https://raw.githubusercontent.com/PowerShell/PowerShell/master/tools/install-powershell.sh)
 script:
-  - ./build.sh -v Diagnostic
+  - pwsh ./build.ps1 -script build.cake -target Default
 env:
   global:
     - DOTNET_CLI_TELEMETRY_OPTOUT: 1

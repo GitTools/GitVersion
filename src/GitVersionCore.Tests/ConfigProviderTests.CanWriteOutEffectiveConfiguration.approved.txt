@@ -18,31 +18,33 @@ branches:
     increment: Minor
     prevent-increment-of-merged-branch-version: false
     track-merge-target: true
-    regex: dev(elop)?(ment)?$
+    regex: ^dev(elop)?(ment)?$
     source-branches: []
     tracks-release-branches: true
     is-release-branch: false
     is-mainline: false
+    pre-release-weight: 0
   master:
     mode: ContinuousDelivery
     tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-    regex: master$
+    regex: ^master$
     source-branches:
     - develop
     - release
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: true
+    pre-release-weight: 55000
   release:
     mode: ContinuousDelivery
     tag: beta
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-    regex: releases?[/-]
+    regex: ^releases?[/-]
     source-branches:
     - develop
     - master
@@ -51,13 +53,14 @@ branches:
     tracks-release-branches: false
     is-release-branch: true
     is-mainline: false
+    pre-release-weight: 30000
   feature:
     mode: ContinuousDelivery
     tag: useBranchName
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
-    regex: features?[/-]
+    regex: ^features?[/-]
     source-branches:
     - develop
     - master
@@ -68,6 +71,7 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
+    pre-release-weight: 30000
   pull-request:
     mode: ContinuousDelivery
     tag: PullRequest
@@ -75,7 +79,7 @@ branches:
     prevent-increment-of-merged-branch-version: false
     tag-number-pattern: '[/-](?<number>\d+)'
     track-merge-target: false
-    regex: (pull|pull\-requests|pr)[/-]
+    regex: ^(pull|pull\-requests|pr)[/-]
     source-branches:
     - develop
     - master
@@ -86,13 +90,14 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
+    pre-release-weight: 30000
   hotfix:
     mode: ContinuousDelivery
     tag: beta
     increment: Patch
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
-    regex: hotfix(es)?[/-]
+    regex: ^hotfix(es)?[/-]
     source-branches:
     - develop
     - master
@@ -100,18 +105,20 @@ branches:
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
+    pre-release-weight: 30000
   support:
     mode: ContinuousDelivery
     tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-    regex: support[/-]
+    regex: ^support[/-]
     source-branches:
     - master
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: true
+    pre-release-weight: 55000
 ignore:
   sha: []
 commit-date-format: yyyy-MM-dd

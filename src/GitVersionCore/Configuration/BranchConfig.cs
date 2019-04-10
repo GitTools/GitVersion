@@ -28,6 +28,7 @@
             Name = branchConfiguration.Name;
             SourceBranches = branchConfiguration.SourceBranches;
             IsSourceBranchFor = branchConfiguration.IsSourceBranchFor;
+            PreReleaseWeight = branchConfiguration.PreReleaseWeight;
         }
 
         [YamlMember(Alias = "mode")]
@@ -71,6 +72,9 @@
 
         [YamlMember(Alias = "is-mainline")]
         public bool? IsMainline { get; set; }
+
+        [YamlMember(Alias = "pre-release-weight")]
+        public int? PreReleaseWeight { get; set; }
 
         /// <summary>
         /// The name given to this configuration in the config file.
