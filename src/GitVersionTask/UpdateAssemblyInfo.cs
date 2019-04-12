@@ -9,13 +9,6 @@ namespace GitVersionTask
 
     public class UpdateAssemblyInfo : GitVersionTaskBase
     {
-        public UpdateAssemblyInfo()
-        {
-        }
-
-        [Required]
-        public string SolutionDirectory { get; set; }
-
         [Required]
         public string ProjectFile { get; set; }
 
@@ -31,35 +24,13 @@ namespace GitVersionTask
         [Output]
         public string AssemblyInfoTempFilePath { get; set; }
 
-        public bool NoFetch { get; set; }
-
-        public override bool Execute()
-        {
-            try
-            {
-                InnerExecute();
-                return true;
-            }
-            catch (WarningException errorException)
-            {
-                this.LogWarning(errorException.Message);
-                return true;
-            }
-            catch (Exception exception)
-            {
-                this.LogError("Error occurred: " + exception);
-                return false;
-            }
-        }
-
-        void InnerExecute()
+        protected override void InnerExecute()
         {
             TempFileTracker.DeleteTempFiles();
 
             InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
 
-            VersionVariables versionVariables;
-            if (!ExecuteCore.TryGetVersion(SolutionDirectory, out versionVariables, NoFetch, new Authentication()))
+            if (!ExecuteCore.TryGetVersion(SolutionDirectory, out var versionVariables, NoFetch, new Authentication()))
             {
                 return;
             }

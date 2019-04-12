@@ -1,61 +1,30 @@
 namespace GitVersionTask
 {
-    using System;
     using System.Collections.Generic;
     using GitVersion;
-    using Microsoft.Build.Framework;
 
     public class WriteVersionInfoToBuildLog : GitVersionTaskBase
     {
-        public WriteVersionInfoToBuildLog()
+        protected override void InnerExecute()
         {
-        }
-
-        [Required]
-        public string SolutionDirectory { get; set; }
-
-        public bool NoFetch { get; set; }
-
-        public override bool Execute()
-        {
-            try
-            {
-                InnerExecute();
-                return true;
-            }
-            catch (WarningException errorException)
-            {
-                this.LogWarning(errorException.Message);
-                return true;
-            }
-            catch (Exception exception)
-            {
-                this.LogError("Error occurred: " + exception);
-                return false;
-            }
-        }
-
-        void InnerExecute()
-        {
-            VersionVariables result;
-            if (!ExecuteCore.TryGetVersion(SolutionDirectory, out result, NoFetch, new Authentication()))
+            if (!ExecuteCore.TryGetVersion(SolutionDirectory, out var versionVariables, NoFetch, new Authentication()))
             {
                 return;
             }
 
-            WriteIntegrationParameters(BuildServerList.GetApplicableBuildServers(), result);
+            WriteIntegrationParameters(BuildServerList.GetApplicableBuildServers(), versionVariables);
         }
 
-        void WriteIntegrationParameters(IEnumerable<IBuildServer> applicableBuildServers, VersionVariables variables)
+        void WriteIntegrationParameters(IEnumerable<IBuildServer> applicableBuildServers, VersionVariables versionVariables)
         {
             foreach (var buildServer in applicableBuildServers)
             {
-                this.LogInfo(string.Format("Executing GenerateSetVersionMessage for '{0}'.", buildServer.GetType().Name));
-                this.LogInfo(buildServer.GenerateSetVersionMessage(variables));
-                this.LogInfo(string.Format("Executing GenerateBuildLogOutput for '{0}'.", buildServer.GetType().Name));
-                foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(buildServer, variables))
+                LogInfo($"Executing GenerateSetVersionMessage for '{buildServer.GetType().Name}'.");
+                LogInfo(buildServer.GenerateSetVersionMessage(versionVariables));
+                LogInfo($"Executing GenerateBuildLogOutput for '{buildServer.GetType().Name}'.");
+                foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(buildServer, versionVariables))
                 {
-                    this.LogInfo(buildParameter);
+                    LogInfo(buildParameter);
                 }
             }
         }

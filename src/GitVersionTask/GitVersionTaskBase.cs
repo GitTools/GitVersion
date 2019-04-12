@@ -1,5 +1,6 @@
-﻿namespace GitVersionTask
+namespace GitVersionTask
 {
+    using System;
     using GitVersion;
     using GitVersion.Helpers;
 
@@ -8,38 +9,59 @@
 
     public abstract class GitVersionTaskBase : Task
     {
-        readonly ExecuteCore executeCore;
-
         protected GitVersionTaskBase()
         {
             var fileSystem = new FileSystem();
-            executeCore = new ExecuteCore(fileSystem);
-            GitVersion.Logger.SetLoggers(this.LogDebug, this.LogInfo, this.LogWarning, s => this.LogError(s));
+            ExecuteCore = new ExecuteCore(fileSystem);
+            GitVersion.Logger.SetLoggers(LogDebug, LogInfo, LogWarning, s => LogError(s));
         }
 
-        protected ExecuteCore ExecuteCore
+        public override bool Execute()
         {
-            get { return executeCore; }
+            try
+            {
+                InnerExecute();
+                return true;
+            }
+            catch (WarningException errorException)
+            {
+                LogWarning(errorException.Message);
+                return true;
+            }
+            catch (Exception exception)
+            {
+                LogError("Error occurred: " + exception);
+                return false;
+            }
         }
+
+        protected abstract void InnerExecute();
+
+        protected ExecuteCore ExecuteCore { get; }
+
+        [Required]
+        public string SolutionDirectory { get; set; }
+
+        public bool NoFetch { get; set; }
 
         public void LogDebug(string message)
         {
-            this.BuildEngine.LogMessageEvent(new BuildMessageEventArgs(message, string.Empty, "GitVersionTask", MessageImportance.Low));
+            BuildEngine.LogMessageEvent(new BuildMessageEventArgs(message, string.Empty, "GitVersionTask", MessageImportance.Low));
         }
 
         public void LogWarning(string message)
         {
-            this.BuildEngine.LogWarningEvent(new BuildWarningEventArgs(string.Empty, string.Empty, null, 0, 0, 0, 0, message, string.Empty, "GitVersionTask"));
+            BuildEngine.LogWarningEvent(new BuildWarningEventArgs(string.Empty, string.Empty, null, 0, 0, 0, 0, message, string.Empty, "GitVersionTask"));
         }
 
         public void LogInfo(string message)
         {
-            this.BuildEngine.LogMessageEvent(new BuildMessageEventArgs(message, string.Empty, "GitVersionTask", MessageImportance.Normal));
+            BuildEngine.LogMessageEvent(new BuildMessageEventArgs(message, string.Empty, "GitVersionTask", MessageImportance.Normal));
         }
 
         public void LogError(string message, string file = null)
         {
-            this.BuildEngine.LogErrorEvent(new BuildErrorEventArgs(string.Empty, string.Empty, file, 0, 0, 0, 0, message, string.Empty, "GitVersionTask"));
+            BuildEngine.LogErrorEvent(new BuildErrorEventArgs(string.Empty, string.Empty, file, 0, 0, 0, 0, message, string.Empty, "GitVersionTask"));
         }
     }
 }
