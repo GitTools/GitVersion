@@ -180,14 +180,14 @@ Date and time in the format `yyyy-MM-ddTHH:mm:ss` (eg `commits-before:
 2015-10-23T12:23:15`) to setup an exclusion range. Effectively any commit before
 `commits-before` will be ignored.
 
-### merge-messages
+### merge-message-formats
 Custom merge message formats to enable identification of merge messages that do not
 follow the built-in conventions.  Entries should be added as key-value pairs where
 the value is a regular expression.
 e.g.
 
 ```
-merge-messages:
+merge-message-formats:
     tfs: ^Merged (?:PR (?<PullRequestNumber>\d+)): Merge (?<SourceBranch>.+) to (?<TargetBranch>.+)
 ```
 
