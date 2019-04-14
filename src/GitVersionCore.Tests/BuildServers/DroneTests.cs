@@ -8,11 +8,22 @@ namespace GitVersionCore.Tests.BuildServers
     [TestFixture]
     public class DroneTests : TestBase
     {
+        [SetUp]
+        public void SetUp()
+        {
+            Environment.SetEnvironmentVariable("DRONE", "true");
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            Environment.SetEnvironmentVariable("DRONE", null);
+        }
+
         [Test]
         public void CanApplyToCurrentContext_ShouldBeTrue_WhenEnvironmentVariableIsSet()
         {
             // Arrange
-            Environment.SetEnvironmentVariable("DRONE", "true");
             var buildServer = new Drone();
 
             // Act
