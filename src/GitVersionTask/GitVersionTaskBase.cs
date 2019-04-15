@@ -63,5 +63,10 @@ namespace GitVersionTask
         {
             BuildEngine.LogErrorEvent(new BuildErrorEventArgs(string.Empty, string.Empty, file, 0, 0, 0, 0, message, string.Empty, "GitVersionTask"));
         }
+
+        protected bool GetVersionVariables(out VersionVariables versionVariables)
+        {
+            return !ExecuteCore.TryGetVersion(SolutionDirectory, out versionVariables, NoFetch, new Authentication());
+        }
     }
 }

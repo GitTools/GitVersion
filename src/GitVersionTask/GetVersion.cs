@@ -1,7 +1,5 @@
 namespace GitVersionTask
 {
-    using GitVersion;
-
     using Microsoft.Build.Framework;
 
     public class GetVersion : GitVersionTaskBase
@@ -98,13 +96,12 @@ namespace GitVersionTask
 
         protected override void InnerExecute()
         {
-            if (ExecuteCore.TryGetVersion(SolutionDirectory, out var versionVariables, NoFetch, new Authentication()))
+            if (GetVersionVariables(out var versionVariables)) return;
+            
+            var thisType = typeof(GetVersion);
+            foreach (var variable in versionVariables)
             {
-                var thisType = typeof(GetVersion);
-                foreach (var variable in versionVariables)
-                {
-                    thisType.GetProperty(variable.Key).SetValue(this, variable.Value, null);
-                }
+                thisType.GetProperty(variable.Key)?.SetValue(this, variable.Value, null);
             }
         }
     }

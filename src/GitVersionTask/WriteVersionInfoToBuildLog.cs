@@ -7,15 +7,12 @@ namespace GitVersionTask
     {
         protected override void InnerExecute()
         {
-            if (!ExecuteCore.TryGetVersion(SolutionDirectory, out var versionVariables, NoFetch, new Authentication()))
-            {
-                return;
-            }
+            if (GetVersionVariables(out var versionVariables)) return;
 
             WriteIntegrationParameters(BuildServerList.GetApplicableBuildServers(), versionVariables);
         }
 
-        void WriteIntegrationParameters(IEnumerable<IBuildServer> applicableBuildServers, VersionVariables versionVariables)
+        private void WriteIntegrationParameters(IEnumerable<IBuildServer> applicableBuildServers, VersionVariables versionVariables)
         {
             foreach (var buildServer in applicableBuildServers)
             {

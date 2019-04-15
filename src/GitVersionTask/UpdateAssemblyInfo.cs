@@ -1,6 +1,5 @@
 namespace GitVersionTask
 {
-    using System;
     using System.IO;
 
     using GitVersion;
@@ -30,17 +29,14 @@ namespace GitVersionTask
 
             InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
 
-            if (!ExecuteCore.TryGetVersion(SolutionDirectory, out var versionVariables, NoFetch, new Authentication()))
-            {
-                return;
-            }
+            if (GetVersionVariables(out var versionVariables)) return;
 
             CreateTempAssemblyInfo(versionVariables);
         }
 
-        void CreateTempAssemblyInfo(VersionVariables versionVariables)
+        private void CreateTempAssemblyInfo(VersionVariables versionVariables)
         {
-            var fileExtension = GetFileExtension();
+            var fileExtension = TaskUtils.GetFileExtension(Language);
             var assemblyInfoFileName = $"GitVersionTaskAssemblyInfo.g.{fileExtension}";
 
             if (IntermediateOutputPath == null)
@@ -56,24 +52,6 @@ namespace GitVersionTask
             {
                 assemblyInfoFileUpdater.Update();
                 assemblyInfoFileUpdater.CommitChanges();
-            }
-        }
-
-        string GetFileExtension()
-        {
-            switch(Language)
-            {
-                case "C#":
-                    return "cs";
-
-                case "F#":
-                    return "fs";
-
-                case "VB":
-                    return "vb";
-
-                default:
-                    throw new Exception($"Unknown language detected: '{Language}'");
             }
         }
     }

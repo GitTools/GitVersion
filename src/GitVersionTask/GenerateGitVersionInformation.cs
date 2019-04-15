@@ -1,6 +1,5 @@
 namespace GitVersionTask
 {
-    using System;
     using System.IO;
     using GitVersion;
     using GitVersion.Helpers;
@@ -22,12 +21,9 @@ namespace GitVersionTask
 
         protected override void InnerExecute()
         {
-            if (!ExecuteCore.TryGetVersion(SolutionDirectory, out var versionVariables, NoFetch, new Authentication()))
-            {
-                return;
-            }
+            if (GetVersionVariables(out var versionVariables)) return;
 
-            var fileExtension = GetFileExtension();
+            var fileExtension = TaskUtils.GetFileExtension(Language);
             var fileName = $"GitVersionInformation.g.{fileExtension}";
 
             if (IntermediateOutputPath == null)
@@ -41,24 +37,6 @@ namespace GitVersionTask
 
             var generator = new GitVersionInformationGenerator(fileName, workingDirectory, versionVariables, new FileSystem());
             generator.Generate();
-        }
-
-        string GetFileExtension()
-        {
-            switch (Language)
-            {
-                case "C#":
-                    return "cs";
-
-                case "F#":
-                    return "fs";
-
-                case "VB":
-                    return "vb";
-
-                default:
-                    throw new Exception($"Unknown language detected: '{Language}'");
-            }
         }
     }
 }
