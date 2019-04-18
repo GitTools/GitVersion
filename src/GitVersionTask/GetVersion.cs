@@ -94,15 +94,6 @@ namespace GitVersionTask
         [Output]
         public string CommitsSinceVersionSourcePadded { get; set; }
 
-        protected override void InnerExecute()
-        {
-            if (GetVersionVariables(out var versionVariables)) return;
-            
-            var thisType = typeof(GetVersion);
-            foreach (var variable in versionVariables)
-            {
-                thisType.GetProperty(variable.Key)?.SetValue(this, variable.Value, null);
-            }
-        }
+        public override bool Execute() => GitVersionTasks.GetVersion(this);
     }
 }

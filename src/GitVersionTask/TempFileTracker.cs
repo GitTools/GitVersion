@@ -1,37 +1,40 @@
-﻿using System;
+using System;
 using System.IO;
 
-public static class TempFileTracker
+namespace GitVersionTask
 {
-    public static string TempPath;
-
-    static TempFileTracker()
+    public static class TempFileTracker
     {
-        TempPath = Path.Combine(Path.GetTempPath(), "GitVersionTask");
-        Directory.CreateDirectory(TempPath);
-    }
+        public static string TempPath;
 
-    public static void DeleteTempFiles()
-    {
-        if (!Directory.Exists(TempPath))
+        static TempFileTracker()
         {
-            return;
+            TempPath = Path.Combine(Path.GetTempPath(), "GitVersionTask");
+            Directory.CreateDirectory(TempPath);
         }
 
-        foreach (var file in Directory.GetFiles(TempPath))
+        public static void DeleteTempFiles()
         {
-            if (File.GetLastWriteTime(file) < DateTime.Now.AddDays(-1))
+            if (!Directory.Exists(TempPath))
             {
-                try
+                return;
+            }
+
+            foreach (var file in Directory.GetFiles(TempPath))
+            {
+                if (File.GetLastWriteTime(file) < DateTime.Now.AddDays(-1))
                 {
-                    File.Delete(file);
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    //ignore contention
+                    try
+                    {
+                        File.Delete(file);
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        //ignore contention
+                    }
                 }
             }
         }
-    }
 
+    }
 }
