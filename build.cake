@@ -234,6 +234,25 @@ Task("Copy-Files")
         MSBuildSettings = parameters.MSBuildSettings
     });
 
+	DotNetCorePublish("./src/GitVersion.MsBuild/GitVersion.MsBuild.csproj", new DotNetCorePublishSettings
+    {
+        Framework = parameters.FullFxVersion,
+        NoBuild = true,
+        NoRestore = true,
+        Configuration = parameters.Configuration,
+        MSBuildSettings = parameters.MSBuildSettings
+    });
+
+    // .NET Core
+    DotNetCorePublish("./src/GitVersion.MsBuild/GitVersion.MsBuild.csproj", new DotNetCorePublishSettings
+    {
+        Framework = parameters.CoreFxVersion,
+        NoBuild = true,
+        NoRestore = true,
+        Configuration = parameters.Configuration,
+        MSBuildSettings = parameters.MSBuildSettings
+    });
+
     var ilMergeDir = parameters.Paths.Directories.ArtifactsBinFullFxILMerge;
     var portableDir = parameters.Paths.Directories.ArtifactsBinFullFxPortable.Combine("tools");
     var cmdlineDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
@@ -357,9 +376,9 @@ Task("Pack-Nuget")
         MSBuildSettings = parameters.MSBuildSettings
     };
 
-    // GitVersionCore, GitVersionTask, & global tool
+    // GitVersionCore, GitVersion.MsBuild, & global tool
     DotNetCorePack("./src/GitVersionCore", settings);
-    DotNetCorePack("./src/GitVersionTask", settings);
+    DotNetCorePack("./src/GitVersion.MsBuild", settings);
     DotNetCorePack("./src/GitVersionExe/GitVersion.Tool.csproj", settings);
 });
 
