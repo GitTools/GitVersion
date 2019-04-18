@@ -1,4 +1,4 @@
-namespace GitVersionTask
+namespace GitVersionTask.Task
 {
     using Microsoft.Build.Framework;
 
@@ -94,6 +94,6 @@ namespace GitVersionTask
         [Output]
         public string CommitsSinceVersionSourcePadded { get; set; }
 
-        public override bool Execute() => GitVersionTasks.GetVersion(this);
+        public override bool Execute() => TaskProxy.GetVersion(this);
     }
 }

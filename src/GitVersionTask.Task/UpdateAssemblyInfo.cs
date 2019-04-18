@@ -1,4 +1,4 @@
-namespace GitVersionTask
+namespace GitVersionTask.Task
 {
     using Microsoft.Build.Framework;
 
@@ -19,6 +19,6 @@ namespace GitVersionTask
         [Output]
         public string AssemblyInfoTempFilePath { get; set; }
 
-        public override bool Execute() => GitVersionTasks.UpdateAssemblyInfo(this);
+        public override bool Execute() => TaskProxy.UpdateAssemblyInfo(this);
     }
 }

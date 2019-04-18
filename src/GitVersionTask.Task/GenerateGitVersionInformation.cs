@@ -1,4 +1,4 @@
-namespace GitVersionTask
+namespace GitVersionTask.Task
 {
     using Microsoft.Build.Framework;
 
@@ -16,6 +16,6 @@ namespace GitVersionTask
         [Output]
         public string GitVersionInformationFilePath { get; set; }
 
-        public override bool Execute() => GitVersionTasks.GenerateGitVersionInformation(this);
+        public override bool Execute() => TaskProxy.GenerateGitVersionInformation(this);
     }
 }
