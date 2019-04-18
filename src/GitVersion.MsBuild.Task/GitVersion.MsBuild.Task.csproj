@@ -1,5 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
     </PropertyGroup>
@@ -11,12 +11,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="GitVersionTask" />
+        <InternalsVisibleTo Include="GitVersion.MsBuild" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
     </ItemGroup>
-
 
 </Project>

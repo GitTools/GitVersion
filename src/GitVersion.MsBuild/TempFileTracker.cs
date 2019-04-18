@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.IO;
 
-namespace GitVersionTask
+namespace GitVersion.MsBuild
 {
     public static class TempFileTracker
     {

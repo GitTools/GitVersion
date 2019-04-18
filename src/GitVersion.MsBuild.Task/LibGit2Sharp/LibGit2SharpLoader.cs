@@ -1,6 +1,6 @@
 // This code originally copied and adapted from https://raw.githubusercontent.com/dotnet/sourcelink/master/src/Microsoft.Build.Tasks.Git/TaskImplementation.cs
 
-namespace GitVersionTask.Task.LibGit2Sharp
+namespace GitVersion.MsBuild.Task.LibGit2Sharp
 {
     using System;
     using System.Collections.Generic;

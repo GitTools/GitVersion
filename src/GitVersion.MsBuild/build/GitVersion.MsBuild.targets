@@ -13,7 +13,12 @@
 
     <Target Name="UpdateAssemblyInfo" BeforeTargets="CoreCompile" Condition="$(UpdateAssemblyInfo) == 'true'">
 
-        <UpdateAssemblyInfo SolutionDirectory="$(GitVersionPath)" NoFetch="$(GitVersion_NoFetchEnabled)" ProjectFile="$(MSBuildProjectFullPath)" IntermediateOutputPath="$(IntermediateOutputPath)" Language="$(Language)"
+        <UpdateAssemblyInfo
+            SolutionDirectory="$(GitVersionPath)"
+            NoFetch="$(GitVersion_NoFetchEnabled)"
+            ProjectFile="$(MSBuildProjectFullPath)"
+            IntermediateOutputPath="$(IntermediateOutputPath)"
+            Language="$(Language)"
             CompileFiles ="@(Compile)">
 
             <Output TaskParameter="AssemblyInfoTempFilePath" PropertyName="AssemblyInfoTempFilePath" />
@@ -27,7 +32,12 @@
 
     <Target Name="GenerateGitVersionInformation" BeforeTargets="CoreCompile" Condition="$(GenerateGitVersionInformation) == 'true'">
 
-        <GenerateGitVersionInformation SolutionDirectory="$(GitVersionPath)" NoFetch="$(GitVersion_NoFetchEnabled)" ProjectFile="$(MSBuildProjectFullPath)" IntermediateOutputPath="$(IntermediateOutputPath)" Language="$(Language)">
+        <GenerateGitVersionInformation
+            SolutionDirectory="$(GitVersionPath)"
+            NoFetch="$(GitVersion_NoFetchEnabled)"
+            ProjectFile="$(MSBuildProjectFullPath)"
+            IntermediateOutputPath="$(IntermediateOutputPath)"
+            Language="$(Language)">
 
             <Output TaskParameter="GitVersionInformationFilePath" PropertyName="GitVersionInformationFilePath" />
         </GenerateGitVersionInformation>

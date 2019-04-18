@@ -1,6 +1,7 @@
-using System.Linq;
+﻿using System.Linq;
 using GitVersion;
-using GitVersionTask.Task;
+using GitVersion.MsBuild.Task;
+using GitVersionTask;
 using Microsoft.Build.Framework;
 using NUnit.Framework;
 using Shouldly;

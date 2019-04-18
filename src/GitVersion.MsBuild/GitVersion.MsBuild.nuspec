@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
-        <id>GitVersionTask</id>
+        <id>GitVersion.MsBuild</id>
         <version>1.0.0</version>
-        <title>GitVersionTask</title>
+        <title>GitVersion.MsBuild</title>
         <authors>GitTools and Contributors</authors>
         <owners>GitTools and Contributors</owners>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>

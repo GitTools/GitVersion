@@ -4,11 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Build.Framework;
-using GitVersion;
 
-namespace GitVersionTask
+namespace GitVersion.MsBuild
 {
-
     public static class InvalidFileChecker
     {
         private static readonly Dictionary<string, Func<string, string, bool>> versionAttributeFinders = new Dictionary<string, Func<string, string, bool>>()

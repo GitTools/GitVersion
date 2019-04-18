@@ -1,6 +1,6 @@
 // This code originally copied from https://raw.githubusercontent.com/dotnet/sourcelink/master/src/Microsoft.Build.Tasks.Git/GitLoaderContext.cs
 #if !NET461
-namespace GitVersionTask.Task.LibGit2Sharp
+namespace GitVersion.MsBuild.Task.LibGit2Sharp
 {
     using System;
     using System.IO;

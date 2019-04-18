@@ -1,4 +1,4 @@
-namespace GitVersionTask.Task
+namespace GitVersion.MsBuild.Task
 {
     using Microsoft.Build.Framework;
 

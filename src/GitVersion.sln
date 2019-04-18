@@ -2,12 +2,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28714.193
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionExe", "GitVersionExe\GitVersionExe.csproj", "{C3578A7B-09A6-4444-9383-0DEAFA4958BD}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionTask.Tests", "GitVersionTask.Tests\GitVersionTask.Tests.csproj", "{5A86453B-96FB-4B6E-A283-225BB9F753D3}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionCore.Tests", "GitVersionCore.Tests\GitVersionCore.Tests.csproj", "{BF905F84-382C-440D-92F5-C61108626D8D}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3EFFC5D6-88D0-49D9-BB53-E1B7EB49DD45}"
 	ProjectSection(SolutionItems) = preProject
 		..\.gitattributes = ..\.gitattributes
@@ -26,15 +20,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionExe", "GitVersionExe\GitVersionExe.csproj", "{C3578A7B-09A6-4444-9383-0DEAFA4958BD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionCore.Tests", "GitVersionCore.Tests\GitVersionCore.Tests.csproj", "{BF905F84-382C-440D-92F5-C61108626D8D}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionCore", "GitVersionCore\GitVersionCore.csproj", "{F9741A0D-B9D7-4557-9A1C-A7252C1071F5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionExe.Tests", "GitVersionExe.Tests\GitVersionExe.Tests.csproj", "{75C2BE85-1DAF-4E34-8305-B17AFAA982A6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionTask", "GitVersionTask\GitVersionTask.csproj", "{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.Tool", "GitVersionExe\GitVersion.Tool.csproj", "{929263FD-5CD2-42E1-BF3D-E0C1B0320DA4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersionTask.Task", "GitVersionTask.Task\GitVersionTask.Task.csproj", "{F34414D6-903D-45FB-8F56-4F11A4DB41F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.MsBuild", "GitVersion.MsBuild\GitVersion.MsBuild.csproj", "{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersion.MsBuild.Task", "GitVersion.MsBuild.Task\GitVersion.MsBuild.Task.csproj", "{F34414D6-903D-45FB-8F56-4F11A4DB41F1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.MsBuild.Task.Tests", "GitVersion.MsBuild.Task.Tests\GitVersion.MsBuild.Task.Tests.csproj", "{5A86453B-96FB-4B6E-A283-225BB9F753D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
