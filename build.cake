@@ -154,7 +154,7 @@ Task("Test")
     .IsDependentOn("Build")
     .Does<BuildParameters>((parameters) =>
 {
-    var framework = "net461";
+    var framework = parameters.FullFxVersion;
 
     // run using dotnet test
     var projects = GetFiles("./src/**/*.Tests.csproj");
