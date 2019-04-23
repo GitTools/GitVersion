@@ -11,5 +11,13 @@
 
   </PropertyGroup>
   <Import Project="GitVersionExe.csproj" />
+  <ItemGroup>
+    <None Remove="GitVersionExe.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="GitVersionExe.manifest">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
 </Project>
