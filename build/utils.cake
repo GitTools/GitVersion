@@ -201,7 +201,7 @@ string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
         $"{name}:{parameters.Version.SemVersion}-{os}-{distro}-{targetframework}",
     };
 
-    if (distro == "debian" && targetframework == "netcoreapp2.1" || distro == "nano") {
+    if (distro == "debian" && targetframework == parameters.CoreFxVersion || distro == "nano") {
         tags.AddRange(new[] {
             $"{name}:{parameters.Version.Version}-{os}",
             $"{name}:{parameters.Version.SemVersion}-{os}",

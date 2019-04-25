@@ -1,6 +1,5 @@
 namespace GitVersionTask
 {
-    using System;
     using System.IO;
 
     using GitVersion;
@@ -9,13 +8,6 @@ namespace GitVersionTask
 
     public class UpdateAssemblyInfo : GitVersionTaskBase
     {
-        public UpdateAssemblyInfo()
-        {
-        }
-
-        [Required]
-        public string SolutionDirectory { get; set; }
-
         [Required]
         public string ProjectFile { get; set; }
 
@@ -31,45 +23,20 @@ namespace GitVersionTask
         [Output]
         public string AssemblyInfoTempFilePath { get; set; }
 
-        public bool NoFetch { get; set; }
-
-        public override bool Execute()
-        {
-            try
-            {
-                InnerExecute();
-                return true;
-            }
-            catch (WarningException errorException)
-            {
-                this.LogWarning(errorException.Message);
-                return true;
-            }
-            catch (Exception exception)
-            {
-                this.LogError("Error occurred: " + exception);
-                return false;
-            }
-        }
-
-        void InnerExecute()
+        protected override void InnerExecute()
         {
             TempFileTracker.DeleteTempFiles();
 
             InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
 
-            VersionVariables versionVariables;
-            if (!ExecuteCore.TryGetVersion(SolutionDirectory, out versionVariables, NoFetch, new Authentication()))
-            {
-                return;
-            }
+            if (GetVersionVariables(out var versionVariables)) return;
 
             CreateTempAssemblyInfo(versionVariables);
         }
 
-        void CreateTempAssemblyInfo(VersionVariables versionVariables)
+        private void CreateTempAssemblyInfo(VersionVariables versionVariables)
         {
-            var fileExtension = GetFileExtension();
+            var fileExtension = TaskUtils.GetFileExtension(Language);
             var assemblyInfoFileName = $"GitVersionTaskAssemblyInfo.g.{fileExtension}";
 
             if (IntermediateOutputPath == null)
@@ -85,24 +52,6 @@ namespace GitVersionTask
             {
                 assemblyInfoFileUpdater.Update();
                 assemblyInfoFileUpdater.CommitChanges();
-            }
-        }
-
-        string GetFileExtension()
-        {
-            switch(Language)
-            {
-                case "C#":
-                    return "cs";
-
-                case "F#":
-                    return "fs";
-
-                case "VB":
-                    return "vb";
-
-                default:
-                    throw new Exception($"Unknown language detected: '{Language}'");
             }
         }
     }

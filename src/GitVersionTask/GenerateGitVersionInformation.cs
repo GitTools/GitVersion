@@ -1,6 +1,5 @@
 namespace GitVersionTask
 {
-    using System;
     using System.IO;
     using GitVersion;
     using GitVersion.Helpers;
@@ -8,13 +7,6 @@ namespace GitVersionTask
 
     public class GenerateGitVersionInformation : GitVersionTaskBase
     {
-        public GenerateGitVersionInformation()
-        {
-        }
-
-        [Required]
-        public string SolutionDirectory { get; set; }
-
         [Required]
         public string ProjectFile { get; set; }
 
@@ -27,36 +19,11 @@ namespace GitVersionTask
         [Output]
         public string GitVersionInformationFilePath { get; set; }
 
-        public bool NoFetch { get; set; }
-
-        public override bool Execute()
+        protected override void InnerExecute()
         {
-            try
-            {
-                InnerExecute();
-                return true;
-            }
-            catch (WarningException errorException)
-            {
-                this.LogWarning(errorException.Message);
-                return true;
-            }
-            catch (Exception exception)
-            {
-                this.LogError("Error occurred: " + exception);
-                return false;
-            }
-        }
+            if (GetVersionVariables(out var versionVariables)) return;
 
-        void InnerExecute()
-        {
-            VersionVariables versionVariables;
-            if (!ExecuteCore.TryGetVersion(SolutionDirectory, out versionVariables, NoFetch, new Authentication()))
-            {
-                return;
-            }
-
-            var fileExtension = GetFileExtension();
+            var fileExtension = TaskUtils.GetFileExtension(Language);
             var fileName = $"GitVersionInformation.g.{fileExtension}";
 
             if (IntermediateOutputPath == null)
@@ -70,24 +37,6 @@ namespace GitVersionTask
 
             var generator = new GitVersionInformationGenerator(fileName, workingDirectory, versionVariables, new FileSystem());
             generator.Generate();
-        }
-
-        string GetFileExtension()
-        {
-            switch (Language)
-            {
-                case "C#":
-                    return "cs";
-
-                case "F#":
-                    return "fs";
-
-                case "VB":
-                    return "vb";
-
-                default:
-                    throw new Exception($"Unknown language detected: '{Language}'");
-            }
         }
     }
 }
