@@ -23,6 +23,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
                         mergeMessage.Version != null &&
                         context.FullConfiguration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
                     {
+                        Logger.WriteInfo($"Found commit [{context.CurrentCommit.Sha}] matching merge message format: {mergeMessage.MatchDefinition}");
                         var shouldIncrement = !context.Configuration.PreventIncrementForMergedBranchVersion;
                         return new[]
                         {
