@@ -104,9 +104,9 @@ public class DockerImages
         foreach (var file in dockerfiles)
         {
             var segments = file.Segments.Reverse().ToArray();
-            var targetFramework = segments[1];
-            var distro = segments[2];
-            var os = segments[3];
+            var distro = segments[1];
+            var os = segments[2];
+            var targetFramework = segments[3];
             context.Information($"{os}-{distro}-{targetFramework}");
         }
         var toDockerImage = DockerImage();
@@ -122,9 +122,9 @@ public class DockerImages
     {
         return dockerFile => {
             var segments = dockerFile.Segments.Reverse().ToArray();
-            var targetFramework = segments[1];
-            var distro = segments[2];
-            var os = segments[3];
+            var distro = segments[1];
+            var os = segments[2];
+            var targetFramework = segments[3];
             return new DockerImage(os: os, distro: distro, targetFramework: targetFramework);
         };
     }
