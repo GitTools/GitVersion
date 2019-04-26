@@ -48,7 +48,7 @@ commit-date-format: 'yyyy-MM-dd'
 ignore:
   sha: []
   commits-before: yyyy-MM-ddTHH:mm:ss
-merge-messages: {}
+merge-message-formats: {}
 ```
 
 And the description of the available options are:
