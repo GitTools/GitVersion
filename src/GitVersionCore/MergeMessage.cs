@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace GitVersion
@@ -22,56 +23,43 @@ namespace GitVersion
             if (mergeMessage == null)
                 throw new NullReferenceException();
 
-            foreach(var entry in config.MergeMessageFormats)
-            {
-                var pattern = Pattern(entry.Key, entry.Value);
-                if (ApplyPattern(mergeMessage, config.TagPrefix, pattern))
-                {
-                    return;
-                }
-            }
+            // Concat config messages with the defaults.
+            // Ensure configs are processed first.
+            var allPatterns = config.MergeMessageFormats
+                .Select(x => Pattern(x.Key, x.Value))
+                .Concat(DefaultPatterns);
 
-            foreach (var pattern in DefaultPatterns)
+            foreach (var pattern in allPatterns)
             {
-                if (ApplyPattern(mergeMessage, config.TagPrefix, pattern))
+                var match = pattern.Value.Match(mergeMessage);
+                if (match.Success)
                 {
-                    return;
+                    MatchDefinition = pattern.Key;
+                    MergedBranch = match.Groups["SourceBranch"].Value;
+
+                    if (match.Groups["TargetBranch"].Success)
+                    {
+                        TargetBranch = match.Groups["TargetBranch"].Value;
+                    }
+
+                    if (int.TryParse(match.Groups["PullRequestNumber"].Value, out var pullNumber))
+                    {
+                        PullRequestNumber = pullNumber;
+                    }
+
+                    Version = ParseVersion(MergedBranch, config.TagPrefix);
+
+                    break;
                 }
             }
         }
 
-        public string MatchDefinition { get; private set; }
-        public string TargetBranch { get; private set; }
-        public string MergedBranch { get; private set; } = "";
+        public string MatchDefinition { get; }
+        public string TargetBranch { get; }
+        public string MergedBranch { get; } = "";
         public bool IsMergedPullRequest => PullRequestNumber != null;
-        public int? PullRequestNumber { get; private set; }
-        public SemanticVersion Version { get; private set; }
-
-        private bool ApplyPattern(string mergeMessage, string tagPrefix, KeyValuePair<string, Regex> pattern)
-        {
-            var match = pattern.Value.Match(mergeMessage);
-            if (match.Success)
-            {
-                MatchDefinition = pattern.Key;
-                MergedBranch = match.Groups["SourceBranch"].Value;
-
-                if (match.Groups["TargetBranch"].Success)
-                {
-                    TargetBranch = match.Groups["TargetBranch"].Value;
-                }
-
-                if (int.TryParse(match.Groups["PullRequestNumber"].Value, out var pullNumber))
-                {
-                    PullRequestNumber = pullNumber;
-                }
-
-                Version = ParseVersion(MergedBranch, tagPrefix);
-
-                return true;
-            }
-
-            return false;
-        }
+        public int? PullRequestNumber { get; }
+        public SemanticVersion Version { get; }
 
         private SemanticVersion ParseVersion(string branchName, string tagPrefix)
         {
