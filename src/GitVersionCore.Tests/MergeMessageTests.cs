@@ -209,63 +209,6 @@ namespace GitVersionCore.Tests
             sut.Version.ShouldBe(expectedVersion);
         }
 
-        private static readonly object[] ParsesTfsEnglishUSMergeMessages =
-        {
-            new object[] { "Merge feature/one to master", "feature/one", "master", null },
-            new object[] { "Merge v://10.10.10.10 to master", "v://10.10.10.10", "master", null },
-            new object[] { "Merge feature/one to v://10.10.10.10", "feature/one", "v://10.10.10.10", null },
-            new object[] { "Merge V4.0.0 to master", "V4.0.0", "master", new SemanticVersion(4) },
-            new object[] { "Merge feature/4.1/one to master", "feature/4.1/one", "master", new SemanticVersion(4, 1) }
-         };
-
-        [TestCaseSource(nameof(ParsesTfsEnglishUSMergeMessages))]
-        public void ParsesTfsEnglishUSMessage(
-            string message,
-            string expectedMergedBranch,
-            string expectedTargetBranch,
-            SemanticVersion expectedVersion)
-        {
-            // Act
-            var sut = new MergeMessage(message, _config);
-
-            // Assert
-            sut.MatchDefinition.ShouldBe("TfsMergeMessageEnglishUS");
-            sut.TargetBranch.ShouldBe(expectedTargetBranch);
-            sut.MergedBranch.ShouldBe(expectedMergedBranch);
-            sut.IsMergedPullRequest.ShouldBeFalse();
-            sut.PullRequestNumber.ShouldBeNull();
-            sut.Version.ShouldBe(expectedVersion);
-        }
-
-        private static readonly object[] ParsesTfsGermanDEMergeMessages =
-        {
-            new object[] { "Zusammengeführter PR \"1234\": feature/one mit master mergen", "feature/one", "master", null, 1234 },
-            new object[] { "Zusammengeführter PR \"1234\": v://10.10.10.10 mit master mergen", "v://10.10.10.10", "master", null, 1234 },
-            new object[] { "Zusammengeführter PR \"1234\": feature/one mit v://10.10.10.10 mergen", "feature/one", "v://10.10.10.10", null, 1234 },
-            new object[] { "Zusammengeführter PR \"1234\": V4.0.0 mit master mergen", "V4.0.0", "master", new SemanticVersion(4), 1234 },
-            new object[] { "Zusammengeführter PR \"1234\": feature/4.1/one mit master mergen", "feature/4.1/one", "master", new SemanticVersion(4, 1), 1234 }
-        };
-
-        [TestCaseSource(nameof(ParsesTfsGermanDEMergeMessages))]
-        public void ParseTfsGermanDEMessage(
-            string message,
-            string expectedMergedBranch,
-            string expectedTargetBranch,
-            SemanticVersion expectedVersion,
-            int? expectedPullRequestNumber)
-        {
-            // Act
-            var sut = new MergeMessage(message, _config);
-
-            // Assert
-            sut.MatchDefinition.ShouldBe("TfsMergeMessageGermanDE");
-            sut.TargetBranch.ShouldBe(expectedTargetBranch);
-            sut.MergedBranch.ShouldBe(expectedMergedBranch);
-            sut.IsMergedPullRequest.ShouldBeTrue();
-            sut.PullRequestNumber.ShouldBe(expectedPullRequestNumber);
-            sut.Version.ShouldBe(expectedVersion);
-        }
-
         private static readonly object[] InvalidMergeMessages =
         {
             new object[] { "Merge pull request # from feature/one", "", null, null, null },

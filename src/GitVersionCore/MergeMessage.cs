@@ -13,9 +13,7 @@ namespace GitVersion
             Pattern("SmartGit",  @"^Finish (?<SourceBranch>[^\s]*)(?: into (?<TargetBranch>[^\s]*))*"),
             Pattern("BitBucketPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?<Source>.*) from (?<SourceBranch>[^\s]*) to (?<TargetBranch>[^\s]*)"),
             Pattern("GitHubPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?:(?<SourceBranch>[^\s]*))(?: into (?<TargetBranch>[^\s]*))*"),
-            Pattern("RemoteTracking", @"^Merge remote-tracking branch '(?<SourceBranch>[^\s]*)'(?: into (?<TargetBranch>[^\s]*))*"),
-            Pattern("TfsMergeMessageEnglishUS", @"^Merge (?<SourceBranch>[^\s]*) to (?<TargetBranch>[^\s]*)"),
-            Pattern("TfsMergeMessageGermanDE",@"^Zusammengeführter PR ""(?<PullRequestNumber>\d+)""\: (?<SourceBranch>.*) mit (?<TargetBranch>.*) mergen")
+            Pattern("RemoteTracking", @"^Merge remote-tracking branch '(?<SourceBranch>[^\s]*)'(?: into (?<TargetBranch>[^\s]*))*")
         };
 
         public MergeMessage(string mergeMessage, Config config)
