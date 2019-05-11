@@ -7,13 +7,13 @@ namespace GitVersion
 {
     public class MergeMessage
     {
-        private static readonly IList<KeyValuePair<string, Regex>> DefaultPatterns = new List<KeyValuePair<string, Regex>>
+        private static readonly IList<MergeMessagePattern> DefaultPatterns = new List<MergeMessagePattern>
         {
-            Pattern("Default", @"^Merge (branch|tag) '(?<SourceBranch>[^']*)'(?: into (?<TargetBranch>[^\s]*))*"),
-            Pattern("SmartGit",  @"^Finish (?<SourceBranch>[^\s]*)(?: into (?<TargetBranch>[^\s]*))*"),
-            Pattern("BitBucketPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?<Source>.*) from (?<SourceBranch>[^\s]*) to (?<TargetBranch>[^\s]*)"),
-            Pattern("GitHubPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?:(?<SourceBranch>[^\s]*))(?: into (?<TargetBranch>[^\s]*))*"),
-            Pattern("RemoteTracking", @"^Merge remote-tracking branch '(?<SourceBranch>[^\s]*)'(?: into (?<TargetBranch>[^\s]*))*")
+            new MergeMessagePattern("Default", @"^Merge (branch|tag) '(?<SourceBranch>[^']*)'(?: into (?<TargetBranch>[^\s]*))*"),
+            new MergeMessagePattern("SmartGit",  @"^Finish (?<SourceBranch>[^\s]*)(?: into (?<TargetBranch>[^\s]*))*"),
+            new MergeMessagePattern("BitBucketPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?<Source>.*) from (?<SourceBranch>[^\s]*) to (?<TargetBranch>[^\s]*)"),
+            new MergeMessagePattern("GitHubPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?:(?<SourceBranch>[^\s]*))(?: into (?<TargetBranch>[^\s]*))*"),
+            new MergeMessagePattern("RemoteTracking", @"^Merge remote-tracking branch '(?<SourceBranch>[^\s]*)'(?: into (?<TargetBranch>[^\s]*))*")
         };
 
         public MergeMessage(string mergeMessage, Config config)
@@ -24,15 +24,15 @@ namespace GitVersion
             // Concat config messages with the defaults.
             // Ensure configs are processed first.
             var allPatterns = config.MergeMessageFormats
-                .Select(x => Pattern(x.Key, x.Value))
+                .Select(x => new MergeMessagePattern(x.Key, x.Value))
                 .Concat(DefaultPatterns);
 
             foreach (var pattern in allPatterns)
             {
-                var match = pattern.Value.Match(mergeMessage);
+                var match = pattern.Format.Match(mergeMessage);
                 if (match.Success)
                 {
-                    MatchDefinition = pattern.Key;
+                    MatchDefinition = pattern.DefinitionName;
                     MergedBranch = match.Groups["SourceBranch"].Value;
 
                     if (match.Groups["TargetBranch"].Success)
@@ -76,7 +76,17 @@ namespace GitVersion
             return null;
         }
 
-        private static KeyValuePair<string, Regex> Pattern(string name, string format)
-            => new KeyValuePair<string, Regex>(name, new Regex(format, RegexOptions.IgnoreCase | RegexOptions.Compiled));
+        private class MergeMessagePattern
+        {
+            public MergeMessagePattern(string name, string format)
+            {
+                DefinitionName = name;
+                Format = new Regex(format, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            }
+
+            public string DefinitionName { get; }
+
+            public Regex Format { get; }
+        }
     }
 }
