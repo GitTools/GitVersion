@@ -7,13 +7,13 @@ namespace GitVersion
 {
     public class MergeMessage
     {
-        private static readonly IList<MergeMessagePattern> DefaultPatterns = new List<MergeMessagePattern>
+        private static readonly IList<MergeMessageFormat> DefaultFormats = new List<MergeMessageFormat>
         {
-            new MergeMessagePattern("Default", @"^Merge (branch|tag) '(?<SourceBranch>[^']*)'(?: into (?<TargetBranch>[^\s]*))*"),
-            new MergeMessagePattern("SmartGit",  @"^Finish (?<SourceBranch>[^\s]*)(?: into (?<TargetBranch>[^\s]*))*"),
-            new MergeMessagePattern("BitBucketPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?<Source>.*) from (?<SourceBranch>[^\s]*) to (?<TargetBranch>[^\s]*)"),
-            new MergeMessagePattern("GitHubPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?:(?<SourceBranch>[^\s]*))(?: into (?<TargetBranch>[^\s]*))*"),
-            new MergeMessagePattern("RemoteTracking", @"^Merge remote-tracking branch '(?<SourceBranch>[^\s]*)'(?: into (?<TargetBranch>[^\s]*))*")
+            new MergeMessageFormat("Default", @"^Merge (branch|tag) '(?<SourceBranch>[^']*)'(?: into (?<TargetBranch>[^\s]*))*"),
+            new MergeMessageFormat("SmartGit",  @"^Finish (?<SourceBranch>[^\s]*)(?: into (?<TargetBranch>[^\s]*))*"),
+            new MergeMessageFormat("BitBucketPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?<Source>.*) from (?<SourceBranch>[^\s]*) to (?<TargetBranch>[^\s]*)"),
+            new MergeMessageFormat("GitHubPull", @"^Merge pull request #(?<PullRequestNumber>\d+) (from|in) (?:(?<SourceBranch>[^\s]*))(?: into (?<TargetBranch>[^\s]*))*"),
+            new MergeMessageFormat("RemoteTracking", @"^Merge remote-tracking branch '(?<SourceBranch>[^\s]*)'(?: into (?<TargetBranch>[^\s]*))*")
         };
 
         public MergeMessage(string mergeMessage, Config config)
@@ -21,18 +21,18 @@ namespace GitVersion
             if (mergeMessage == null)
                 throw new NullReferenceException();
 
-            // Concat config messages with the defaults.
+            // Concat config formats with the defaults.
             // Ensure configs are processed first.
-            var allPatterns = config.MergeMessageFormats
-                .Select(x => new MergeMessagePattern(x.Key, x.Value))
-                .Concat(DefaultPatterns);
+            var allFormats = config.MergeMessageFormats
+                .Select(x => new MergeMessageFormat(x.Key, x.Value))
+                .Concat(DefaultFormats);
 
-            foreach (var pattern in allPatterns)
+            foreach (var format in allFormats)
             {
-                var match = pattern.Format.Match(mergeMessage);
+                var match = format.Pattern.Match(mergeMessage);
                 if (match.Success)
                 {
-                    MatchDefinition = pattern.DefinitionName;
+                    FormatName = format.Name;
                     MergedBranch = match.Groups["SourceBranch"].Value;
 
                     if (match.Groups["TargetBranch"].Success)
@@ -45,21 +45,21 @@ namespace GitVersion
                         PullRequestNumber = pullNumber;
                     }
 
-                    Version = ParseVersion(MergedBranch, config.TagPrefix);
+                    Version = ParseVersion(config.TagPrefix);
 
                     break;
                 }
             }
         }
 
-        public string MatchDefinition { get; }
+        public string FormatName { get; }
         public string TargetBranch { get; }
         public string MergedBranch { get; } = "";
         public bool IsMergedPullRequest => PullRequestNumber != null;
         public int? PullRequestNumber { get; }
         public SemanticVersion Version { get; }
 
-        private SemanticVersion ParseVersion(string branchName, string tagPrefix)
+        private SemanticVersion ParseVersion(string tagPrefix)
         {
             // Remove remotes and branch prefixes like release/ feature/ hotfix/ etc
             var toMatch = Regex.Replace(MergedBranch, @"^(\w+[-/])*", "", RegexOptions.IgnoreCase);
@@ -76,17 +76,17 @@ namespace GitVersion
             return null;
         }
 
-        private class MergeMessagePattern
+        private class MergeMessageFormat
         {
-            public MergeMessagePattern(string name, string format)
+            public MergeMessageFormat(string name, string pattern)
             {
-                DefinitionName = name;
-                Format = new Regex(format, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                Name = name;
+                Pattern = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
             }
 
-            public string DefinitionName { get; }
+            public string Name { get; }
 
-            public Regex Format { get; }
+            public Regex Pattern { get; }
         }
     }
 }

@@ -75,7 +75,7 @@ namespace GitVersionCore.Tests
             var sut = new MergeMessage(message, _config);
 
             // Assert
-            sut.MatchDefinition.ShouldBe("Default");
+            sut.FormatName.ShouldBe("Default");
             sut.TargetBranch.ShouldBe(expectedTargetBranch);
             sut.MergedBranch.ShouldBe(expectedMergedBranch);
             sut.IsMergedPullRequest.ShouldBeFalse();
@@ -106,7 +106,7 @@ namespace GitVersionCore.Tests
             var sut = new MergeMessage(message, _config);
 
             // Assert
-            sut.MatchDefinition.ShouldBe("GitHubPull");
+            sut.FormatName.ShouldBe("GitHubPull");
             sut.TargetBranch.ShouldBe(expectedTargetBranch);
             sut.MergedBranch.ShouldBe(expectedMergedBranch);
             sut.IsMergedPullRequest.ShouldBeTrue();
@@ -140,7 +140,7 @@ namespace GitVersionCore.Tests
             var sut = new MergeMessage(message, _config);
 
             // Assert
-            sut.MatchDefinition.ShouldBe("BitBucketPull");
+            sut.FormatName.ShouldBe("BitBucketPull");
             sut.TargetBranch.ShouldBe(expectedTargetBranch);
             sut.MergedBranch.ShouldBe(expectedMergedBranch);
             sut.IsMergedPullRequest.ShouldBeTrue();
@@ -171,7 +171,7 @@ namespace GitVersionCore.Tests
             var sut = new MergeMessage(message, _config);
 
             // Assert
-            sut.MatchDefinition.ShouldBe("SmartGit");
+            sut.FormatName.ShouldBe("SmartGit");
             sut.TargetBranch.ShouldBe(expectedTargetBranch);
             sut.MergedBranch.ShouldBe(expectedMergedBranch);
             sut.IsMergedPullRequest.ShouldBeFalse();
@@ -201,7 +201,7 @@ namespace GitVersionCore.Tests
             var sut = new MergeMessage(message, _config);
 
             // Assert
-            sut.MatchDefinition.ShouldBe("RemoteTracking");
+            sut.FormatName.ShouldBe("RemoteTracking");
             sut.TargetBranch.ShouldBe(expectedTargetBranch);
             sut.MergedBranch.ShouldBe(expectedMergedBranch);
             sut.IsMergedPullRequest.ShouldBeFalse();
@@ -228,7 +228,7 @@ namespace GitVersionCore.Tests
             var sut = new MergeMessage(message, _config);
 
             // Assert
-            sut.MatchDefinition.ShouldBeNull();
+            sut.FormatName.ShouldBeNull();
             sut.TargetBranch.ShouldBe(expectedTargetBranch);
             sut.MergedBranch.ShouldBe(expectedMergedBranch);
             sut.IsMergedPullRequest.ShouldBeFalse();
@@ -251,7 +251,7 @@ namespace GitVersionCore.Tests
             var sut = new MergeMessage(message, _config);
 
             // Assert
-            sut.MatchDefinition.ShouldBe(definition);
+            sut.FormatName.ShouldBe(definition);
             sut.TargetBranch.ShouldBeNull();
             sut.MergedBranch.ShouldBeEmpty();
             sut.IsMergedPullRequest.ShouldBeFalse();
@@ -276,7 +276,7 @@ namespace GitVersionCore.Tests
             var sut = new MergeMessage(format, _config);
 
             // Assert
-            sut.MatchDefinition.ShouldBe(definition);
+            sut.FormatName.ShouldBe(definition);
             sut.TargetBranch.ShouldBeNull();
             sut.MergedBranch.ShouldBeEmpty();
             sut.IsMergedPullRequest.ShouldBeFalse();
@@ -303,7 +303,7 @@ namespace GitVersionCore.Tests
             var sut = new MergeMessage($"Merged PR #{pr} into {target} from {source}", _config);
 
             // Assert
-            sut.MatchDefinition.ShouldBe(definition);
+            sut.FormatName.ShouldBe(definition);
             sut.TargetBranch.ShouldBe(target);
             sut.MergedBranch.ShouldBe(source);
             sut.IsMergedPullRequest.ShouldBeTrue();
@@ -328,7 +328,7 @@ namespace GitVersionCore.Tests
             var sut = new MergeMessage("Merge branch 'this'", _config);
 
             // Assert
-            sut.MatchDefinition.ShouldBe(definition);
+            sut.FormatName.ShouldBe(definition);
             sut.TargetBranch.ShouldBeNull();
             sut.MergedBranch.ShouldBe("this");
             sut.IsMergedPullRequest.ShouldBeFalse();
