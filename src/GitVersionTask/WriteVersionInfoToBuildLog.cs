@@ -49,9 +49,9 @@ namespace GitVersionTask
         {
             foreach (var buildServer in applicableBuildServers)
             {
-                logger.LogInfo(string.Format("Executing GenerateSetVersionMessage for '{0}'.", buildServer.GetType().Name));
+                logger.LogInfo($"Executing GenerateSetVersionMessage for '{ buildServer.GetType().Name }'.");
                 logger.LogInfo(buildServer.GenerateSetVersionMessage(versionVariables));
-                logger.LogInfo(string.Format("Executing GenerateBuildLogOutput for '{0}'.", buildServer.GetType().Name));
+                logger.LogInfo($"Executing GenerateBuildLogOutput for '{ buildServer.GetType().Name }'.");
                 foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(buildServer, versionVariables))
                 {
                     logger.LogInfo(buildParameter);
