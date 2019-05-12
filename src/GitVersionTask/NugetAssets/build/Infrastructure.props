@@ -1,5 +1,5 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildThisFileDirectory)\UtilPack.Version.props" Condition="exists('$(MSBuildThisFileDirectory)\UtilPack.Version.props')" />
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildThisFileDirectory)\NuGetUtils.MSBuild.Exec.Version.props" Condition="exists('$(MSBuildThisFileDirectory)\NuGetUtils.MSBuild.Exec.Version.props')" />
 
   <!-- Properties containing paths to functionality files and directories. -->
   <PropertyGroup>
@@ -9,22 +9,21 @@
     <GitVersionTaskBuildTools_FunctionalityObjFolder>$(GitVersionTaskBuildTools_FunctionalityDir)obj/</GitVersionTaskBuildTools_FunctionalityObjFolder>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(UtilPackNuGetMSBuildAssemblyPath)' == ''">
-    <UtilPackVersion>$(PackageVersion_UtilPackNuGetMSBuild)</UtilPackVersion>
-    <UtilPackNuGetMSBuildPropsPath Condition=" '$(UtilPackNuGetMSBuildPropsPath)' == ''">$(MSBuildThisFileDirectory)../../../utilpack.nuget.msbuild/$(UtilPackVersion)/build/UtilPack.NuGet.MSBuild.props</UtilPackNuGetMSBuildPropsPath>
+  <PropertyGroup Condition=" '$(NuGetUtilsMSBuildExecAssemblyPath)' == ''">
+    <UtilPackVersion>$(PackageVersion_NuGetUtilsMSBuildExec)</UtilPackVersion>
+    <UtilPackNuGetMSBuildPropsPath Condition=" '$(UtilPackNuGetMSBuildPropsPath)' == ''">$(MSBuildThisFileDirectory)../../../nugetutils.msbuild.exec/$(UtilPackVersion)/build/NuGetUtils.MSBuild.Exec.props</UtilPackNuGetMSBuildPropsPath>
     <UtilPackNuGetMSBuildPropsAbsolutePath>$([System.IO.Path]::GetFullPath('$(UtilPackNuGetMSBuildPropsPath)'))</UtilPackNuGetMSBuildPropsAbsolutePath>
     <!-- Set absolute path to empty string if automatic deduction failed. -->
     <UtilPackNuGetMSBuildPropsAbsolutePath Condition=" '$(UtilPackNuGetMSBuildPropsAbsolutePath)' == '' or !Exists('$(UtilPackNuGetMSBuildPropsAbsolutePath)') "></UtilPackNuGetMSBuildPropsAbsolutePath>
   </PropertyGroup>
 
   <PropertyGroup>
-    <GitVersionTaskBuildTools_CanCallDirectly Condition=" '$(UtilPackNuGetMSBuildAssemblyPath)' != '' or '$(UtilPackNuGetMSBuildPropsAbsolutePath)' != '' ">true</GitVersionTaskBuildTools_CanCallDirectly>
+    <GitVersionTaskBuildTools_CanCallDirectly Condition=" '$(NuGetUtilsMSBuildExecAssemblyPath)' != '' or '$(UtilPackNuGetMSBuildPropsAbsolutePath)' != '' ">true</GitVersionTaskBuildTools_CanCallDirectly>
   </PropertyGroup>
 
   <PropertyGroup>
     <UtilPackTaskFactoryParametersXML Condition=" '$(MSBuildRuntimeType)' != 'Core' ">
-      <NuGetFramework>.NETFramework</NuGetFramework>
-      <NuGetFrameworkVersion>4.6.1</NuGetFrameworkVersion>
+      <NuGetFramework>net461</NuGetFramework>
     </UtilPackTaskFactoryParametersXML>
     <UtilPackTaskFactoryParametersXML>
       $(UtilPackTaskFactoryParametersXML)
@@ -35,7 +34,7 @@
 
   <!-- Import the UtilPack.NuGet.MSBuild props file directly, if we managed to deduce it. -->
   <ImportGroup>
-    <Import Condition=" '$(UtilPackNuGetMSBuildAssemblyPath)' == '' and '$(UtilPackNuGetMSBuildPropsAbsolutePath)' != '' " Project="$(UtilPackNuGetMSBuildPropsAbsolutePath)" />
+    <Import Condition=" '$(NuGetUtilsMSBuildExecAssemblyPath)' == '' and '$(UtilPackNuGetMSBuildPropsAbsolutePath)' != '' " Project="$(UtilPackNuGetMSBuildPropsAbsolutePath)" />
     <Import Condition=" '$(GitVersionTaskBuildTools_CanCallDirectly)' == 'true' " Project="$(GitVersionTaskBuildTools_FunctionalityFile)"/>
   </ImportGroup>  
 
