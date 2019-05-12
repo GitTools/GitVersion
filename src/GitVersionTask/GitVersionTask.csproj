@@ -17,7 +17,7 @@
 
     <NuspecFile>NugetAssets\GitVersionTask.nuspec</NuspecFile>
     <PackageVersion Condition="$(PackageVersion) == '' Or $(PackageVersion) == '*Undefined*'">0.0.1-alpha-0001</PackageVersion>
-    <NuspecProperties>version=$(PackageVersion);configuration=$(Configuration);utilpackversion=$(PackageVersion_UtilPackNuGetMSBuild);libgit2sharpversion=$(PackageVersion_LibGit2Sharp);yamldotnetversion=$(PackageVersion_YamlDotNet)</NuspecProperties>
+    <NuspecProperties>version=$(PackageVersion);configuration=$(Configuration);utilpackversion=$(PackageVersion_NuGetUtilsMSBuildExec);libgit2sharpversion=$(PackageVersion_LibGit2Sharp);yamldotnetversion=$(PackageVersion_YamlDotNet)</NuspecProperties>
 
     <Product>$(AssemblyName)</Product>
 
