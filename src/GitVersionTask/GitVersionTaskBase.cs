@@ -1,72 +1,141 @@
 namespace GitVersionTask
 {
-    using System;
     using GitVersion;
     using GitVersion.Helpers;
+    using System;
+    using System.IO;
 
-    using Microsoft.Build.Framework;
-    using Microsoft.Build.Utilities;
-
-    public abstract class GitVersionTaskBase : Task
+    public static class GitVersionTaskBase
     {
-        protected GitVersionTaskBase()
+        internal static TOutput ExecuteGitVersionTask<TInput, TOutput>(
+            TInput input,
+            Func<TInput, TaskLogger, TOutput> execute
+            )
+            where TInput : AbstractInput
+            where TOutput : class, new()
         {
-            var fileSystem = new FileSystem();
-            ExecuteCore = new ExecuteCore(fileSystem);
-            GitVersion.Logger.SetLoggers(LogDebug, LogInfo, LogWarning, s => LogError(s));
-        }
+            if (!input.ValidateInput())
+            {
+                throw new Exception("Invalid input.");
+            }
 
-        public override bool Execute()
-        {
+            var logger = new TaskLogger();
+            Logger.SetLoggers(logger.LogInfo, logger.LogInfo, logger.LogWarning, s => logger.LogError(s));
+
+
+            TOutput output = null;
             try
             {
-                InnerExecute();
-                return true;
+                output = execute(input, logger);
             }
             catch (WarningException errorException)
             {
-                LogWarning(errorException.Message);
-                return true;
+                logger.LogWarning(errorException.Message);
+                output = new TOutput();
             }
             catch (Exception exception)
             {
-                LogError("Error occurred: " + exception);
-                return false;
+                logger.LogError("Error occurred: " + exception);
+                throw;
+            }
+            finally
+            {
+                Logger.Reset();
+            }
+
+            return output;
+        }
+
+
+        public static ExecuteCore CreateExecuteCore()
+            => new ExecuteCore(new FileSystem());
+
+        private static string GetFileExtension(this String language)
+        {
+            switch (language)
+            {
+                case "C#":
+                    return "cs";
+
+                case "F#":
+                    return "fs";
+
+                case "VB":
+                    return "vb";
+
+                default:
+                    throw new Exception($"Unknown language detected: '{language}'");
             }
         }
 
-        protected abstract void InnerExecute();
-
-        protected ExecuteCore ExecuteCore { get; }
-
-        [Required]
-        public string SolutionDirectory { get; set; }
-
-        public bool NoFetch { get; set; }
-
-        public void LogDebug(string message)
+        public static FileWriteInfo GetWorkingDirectoryAndFileNameAndExtension(
+            this String intermediateOutputPath,
+            String language,
+            String projectFile,
+            Func<String, String, String> fileNameWithIntermediatePath,
+            Func<String, String, String> fileNameNoIntermediatePath
+            )
         {
-            BuildEngine.LogMessageEvent(new BuildMessageEventArgs(message, string.Empty, "GitVersionTask", MessageImportance.Low));
+            var fileExtension = language.GetFileExtension();
+            String workingDirectory, fileName;
+            if (intermediateOutputPath == null)
+            {
+                fileName = fileNameWithIntermediatePath(projectFile, fileExtension);
+                workingDirectory = TempFileTracker.TempPath;
+            }
+            else
+            {
+                workingDirectory = intermediateOutputPath;
+                fileName = fileNameNoIntermediatePath(projectFile, fileExtension);
+            }
+            return new FileWriteInfo(workingDirectory, fileName, fileExtension);
         }
 
-        public void LogWarning(string message)
+        public abstract class AbstractInput
         {
-            BuildEngine.LogWarningEvent(new BuildWarningEventArgs(string.Empty, string.Empty, null, 0, 0, 0, 0, message, string.Empty, "GitVersionTask"));
+            public String SolutionDirectory { get; set; }
+
+            public Boolean NoFetch { get; set; }
+
+            public virtual Boolean ValidateInput()
+            {
+                return !String.IsNullOrEmpty(this.SolutionDirectory);
+            }
         }
 
-        public void LogInfo(string message)
+        public abstract class InputWithCommonAdditionalProperties : AbstractInput
         {
-            BuildEngine.LogMessageEvent(new BuildMessageEventArgs(message, string.Empty, "GitVersionTask", MessageImportance.Normal));
+            public String ProjectFile { get; set; }
+
+            public String IntermediateOutputPath { get; set; }
+
+            public String Language { get; set; }
+
+            public override Boolean ValidateInput()
+            {
+                return base.ValidateInput()
+                    && !String.IsNullOrEmpty(this.ProjectFile)
+                    && !String.IsNullOrEmpty(this.IntermediateOutputPath)
+                    && !String.IsNullOrEmpty(this.Language);
+            }
+        }
+    }
+
+    public sealed class FileWriteInfo
+    {
+        public FileWriteInfo(
+            String workingDirectory,
+            String fileName,
+            String fileExtension
+            )
+        {
+            this.WorkingDirectory = workingDirectory;
+            this.FileName = fileName;
+            this.FileExtension = fileExtension;
         }
 
-        public void LogError(string message, string file = null)
-        {
-            BuildEngine.LogErrorEvent(new BuildErrorEventArgs(string.Empty, string.Empty, file, 0, 0, 0, 0, message, string.Empty, "GitVersionTask"));
-        }
-
-        protected bool GetVersionVariables(out VersionVariables versionVariables)
-        {
-            return !ExecuteCore.TryGetVersion(SolutionDirectory, out versionVariables, NoFetch, new Authentication());
-        }
+        public String WorkingDirectory { get; }
+        public String FileName { get; }
+        public String FileExtension { get; }
     }
 }

@@ -1,58 +1,80 @@
 namespace GitVersionTask
 {
+    using System;
     using System.IO;
 
     using GitVersion;
     using GitVersion.Helpers;
-    using Microsoft.Build.Framework;
 
-    public class UpdateAssemblyInfo : GitVersionTaskBase
+    public static class UpdateAssemblyInfo
     {
-        [Required]
-        public string ProjectFile { get; set; }
-
-        [Required]
-        public string IntermediateOutputPath { get; set; }
-
-        [Required]
-        public ITaskItem[] CompileFiles { get; set; }
-
-        [Required]
-        public string Language { get; set; }
-
-        [Output]
-        public string AssemblyInfoTempFilePath { get; set; }
-
-        protected override void InnerExecute()
+        public static Output Execute(
+            Input input
+            )
         {
-            TempFileTracker.DeleteTempFiles();
-
-            InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
-
-            if (GetVersionVariables(out var versionVariables)) return;
-
-            CreateTempAssemblyInfo(versionVariables);
+            return GitVersionTaskBase.ExecuteGitVersionTask(
+                input,
+                InnerExecute
+                );
         }
 
-        private void CreateTempAssemblyInfo(VersionVariables versionVariables)
+        private static Output InnerExecute(
+            Input input,
+            TaskLogger logger
+            )
         {
-            var fileExtension = TaskUtils.GetFileExtension(Language);
-            var assemblyInfoFileName = $"GitVersionTaskAssemblyInfo.g.{fileExtension}";
+            var execute = GitVersionTaskBase.CreateExecuteCore();
 
-            if (IntermediateOutputPath == null)
+            TempFileTracker.DeleteTempFiles();
+
+            InvalidFileChecker.CheckForInvalidFiles(input.CompileFiles, input.ProjectFile);
+
+            if (!execute.TryGetVersion(input.SolutionDirectory, out var versionVariables, input.NoFetch, new Authentication()))
             {
-                assemblyInfoFileName = $"AssemblyInfo_{Path.GetFileNameWithoutExtension(ProjectFile)}_{Path.GetRandomFileName()}.g.{fileExtension}";
+                return null;
             }
 
-            var workingDirectory = IntermediateOutputPath ?? TempFileTracker.TempPath;
+            return CreateTempAssemblyInfo(input, versionVariables);
+        }
 
-            AssemblyInfoTempFilePath = Path.Combine(workingDirectory, assemblyInfoFileName);
+        private static Output CreateTempAssemblyInfo(Input input, VersionVariables versionVariables)
+        {
+            var fileWriteInfo = input.IntermediateOutputPath.GetWorkingDirectoryAndFileNameAndExtension(
+                input.Language,
+                input.ProjectFile,
+                (pf, ext) => $"GitVersionTaskAssemblyInfo.g.{ext}",
+                (pf, ext) => $"AssemblyInfo_{Path.GetFileNameWithoutExtension(pf)}_{Path.GetRandomFileName()}.g.{ext}"
+                );
 
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFileName, workingDirectory, versionVariables, new FileSystem(), true))
+            var output = new Output()
+            {
+                AssemblyInfoTempFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName)
+            };
+
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, new FileSystem(), true))
             {
                 assemblyInfoFileUpdater.Update();
                 assemblyInfoFileUpdater.CommitChanges();
             }
+
+            return output;
+        }
+
+        public sealed class Input : GitVersionTaskBase.InputWithCommonAdditionalProperties
+        {
+            public String[] CompileFiles { get; set; }
+
+            public override Boolean ValidateInput()
+            {
+                return base.ValidateInput()
+                    && this.CompileFiles != null;
+            }
+
+        }
+
+        public sealed class Output
+        {
+            public string AssemblyInfoTempFilePath { get; set; }
         }
     }
 }
