@@ -59,7 +59,7 @@ namespace GitVersionTask
                     return "vb";
 
                 default:
-                    throw new Exception($"Unknown language detected: '{language}'");
+                    throw new ArgumentException($"Unknown language detected: '{language}'");
             }
         }
 
