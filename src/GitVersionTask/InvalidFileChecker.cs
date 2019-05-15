@@ -13,7 +13,7 @@ public static class InvalidFileChecker
         { ".vb", VisualBasicFileContainsVersionAttribute }
     };
 
-    public static void CheckForInvalidFiles(IEnumerable<String> compileFiles, string projectFile)
+    public static void CheckForInvalidFiles(IEnumerable<string> compileFiles, string projectFile)
     {
         foreach (var compileFile in GetInvalidFiles(compileFiles, projectFile))
         {
@@ -97,7 +97,7 @@ Assembly(File|Informational)?Version    # The attribute AssemblyVersion, Assembl
 \s*\(\s*\)\s*\>                         # End brackets ()>");
     }
 
-    static IEnumerable<string> GetInvalidFiles(IEnumerable<String> compileFiles, string projectFile)
+    static IEnumerable<string> GetInvalidFiles(IEnumerable<string> compileFiles, string projectFile)
     {
         return compileFiles
             .Where(compileFile => compileFile.Contains("AssemblyInfo"))

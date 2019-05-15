@@ -6,10 +6,7 @@ class TaskLogger
     private readonly TextWriter stdout;
     private readonly TextWriter stderr;
 
-    public TaskLogger(
-        TextWriter paramStdout = null,
-        TextWriter paramStderr = null
-        )
+    public TaskLogger(TextWriter paramStdout = null, TextWriter paramStderr = null)
     {
         this.stdout = paramStdout ?? Console.Out;
         this.stderr = paramStderr ?? Console.Error;

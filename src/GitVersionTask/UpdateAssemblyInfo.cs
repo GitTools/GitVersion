@@ -8,22 +8,14 @@ namespace GitVersionTask
 
     public static class UpdateAssemblyInfo
     {
-        public static Output Execute(
-            Input input
-            )
+        public static Output Execute(Input input)
         {
-            return GitVersionTaskBase.ExecuteGitVersionTask(
-                input,
-                InnerExecute
-                );
+            return GitVersionTaskCommonFunctionality.ExecuteGitVersionTask(input, InnerExecute);
         }
 
-        private static Output InnerExecute(
-            Input input,
-            TaskLogger logger
-            )
+        private static Output InnerExecute(Input input, TaskLogger logger)
         {
-            var execute = GitVersionTaskBase.CreateExecuteCore();
+            var execute = GitVersionTaskCommonFunctionality.CreateExecuteCore();
 
             TempFileTracker.DeleteTempFiles();
 
@@ -39,7 +31,7 @@ namespace GitVersionTask
 
         private static Output CreateTempAssemblyInfo(Input input, VersionVariables versionVariables)
         {
-            var fileWriteInfo = input.IntermediateOutputPath.GetWorkingDirectoryAndFileNameAndExtension(
+            var fileWriteInfo = input.IntermediateOutputPath.GetFileWriteInfo(
                 input.Language,
                 input.ProjectFile,
                 (pf, ext) => $"GitVersionTaskAssemblyInfo.g.{ext}",
@@ -60,11 +52,11 @@ namespace GitVersionTask
             return output;
         }
 
-        public sealed class Input : GitVersionTaskBase.InputWithCommonAdditionalProperties
+        public sealed class Input : InputWithCommonAdditionalProperties
         {
-            public String[] CompileFiles { get; set; }
+            public string[] CompileFiles { get; set; }
 
-            public override Boolean ValidateInput()
+            protected override Boolean ValidateInput()
             {
                 return base.ValidateInput()
                     && this.CompileFiles != null;

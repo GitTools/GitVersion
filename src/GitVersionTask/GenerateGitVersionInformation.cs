@@ -7,28 +7,21 @@ namespace GitVersionTask
 
     public static class GenerateGitVersionInformation
     {
-        public static Output Execute(
-            Input input
-            )
+        // This method is entrypoint for the task declared in .props file
+        public static Output Execute(Input input)
         {
-            return GitVersionTaskBase.ExecuteGitVersionTask(
-                input,
-                InnerExecute
-                );
+            return GitVersionTaskCommonFunctionality.ExecuteGitVersionTask(input, InnerExecute);
         }
 
-        private static Output InnerExecute(
-            Input input,
-            TaskLogger logger
-            )
+        private static Output InnerExecute(Input input, TaskLogger logger)
         {
-            var execute = GitVersionTaskBase.CreateExecuteCore();
+            var execute = GitVersionTaskCommonFunctionality.CreateExecuteCore();
             if (!execute.TryGetVersion(input.SolutionDirectory, out var versionVariables, input.NoFetch, new Authentication()))
             {
                 return null;
             }
 
-            var fileWriteInfo = input.IntermediateOutputPath.GetWorkingDirectoryAndFileNameAndExtension(
+            var fileWriteInfo = input.IntermediateOutputPath.GetFileWriteInfo(
                 input.Language,
                 input.ProjectFile,
                 (pf, ext) => $"GitVersionInformation.g.{ext}",
@@ -46,7 +39,7 @@ namespace GitVersionTask
         }
 
 
-        public sealed class Input : GitVersionTaskBase.InputWithCommonAdditionalProperties
+        public sealed class Input : InputWithCommonAdditionalProperties
         {
         }
 

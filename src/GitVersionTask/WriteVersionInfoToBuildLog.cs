@@ -5,17 +5,12 @@ namespace GitVersionTask
 
     public class WriteVersionInfoToBuildLog
     {
-        public static Output Execute(
-            Input input
-            )
+        public static Output Execute(Input input)
         {
-            return GitVersionTaskBase.ExecuteGitVersionTask(
-                input,
-                InnerExecute
-                );
+            return GitVersionTaskCommonFunctionality.ExecuteGitVersionTask(input, InnerExecute);
         }
 
-        public sealed class Input : GitVersionTaskBase.AbstractInput
+        public sealed class Input : InputBase
         {
             // No additional inputs for this task
         }
@@ -25,12 +20,9 @@ namespace GitVersionTask
             // No output for this task
         }
 
-        private static Output InnerExecute(
-            Input input,
-            TaskLogger logger
-            )
+        private static Output InnerExecute(Input input, TaskLogger logger)
         {
-            var execute = GitVersionTaskBase.CreateExecuteCore();
+            var execute = GitVersionTaskCommonFunctionality.CreateExecuteCore();
             if (!execute.TryGetVersion(input.SolutionDirectory, out var result, input.NoFetch, new Authentication()))
             {
                 return null;
@@ -41,11 +33,7 @@ namespace GitVersionTask
             return new Output();
         }
 
-        private static void WriteIntegrationParameters(
-            TaskLogger logger,
-            IEnumerable<IBuildServer> applicableBuildServers,
-            VersionVariables versionVariables
-            )
+        private static void WriteIntegrationParameters(TaskLogger logger, IEnumerable<IBuildServer> applicableBuildServers, VersionVariables versionVariables)
         {
             foreach (var buildServer in applicableBuildServers)
             {

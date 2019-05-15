@@ -5,22 +5,14 @@ namespace GitVersionTask
     public static class GetVersion
     {
 
-        public static Output Execute(
-            Input input
-            )
+        public static Output Execute(Input input)
         {
-            return GitVersionTaskBase.ExecuteGitVersionTask(
-                input,
-                InnerExecute
-                );
+            return GitVersionTaskCommonFunctionality.ExecuteGitVersionTask(input, InnerExecute);
         }
 
-        private static Output InnerExecute(
-            Input input,
-            TaskLogger logger
-            )
+        private static Output InnerExecute(Input input, TaskLogger logger)
         {
-            if (!GitVersionTaskBase.CreateExecuteCore().TryGetVersion(input.SolutionDirectory, out var versionVariables, input.NoFetch, new GitVersion.Authentication()))
+            if (!GitVersionTaskCommonFunctionality.CreateExecuteCore().TryGetVersion(input.SolutionDirectory, out var versionVariables, input.NoFetch, new GitVersion.Authentication()))
             {
                 return null;
             }
@@ -35,72 +27,72 @@ namespace GitVersionTask
             return output;
         }
 
-        public sealed class Input : GitVersionTaskBase.AbstractInput
+        public sealed class Input : InputBase
         {
 
         }
 
         public sealed class Output
         {
-            public String Major { get; set; }
+            public string Major { get; set; }
 
-            public String Minor { get; set; }
+            public string Minor { get; set; }
 
-            public String Patch { get; set; }
+            public string Patch { get; set; }
 
-            public String PreReleaseTag { get; set; }
+            public string PreReleaseTag { get; set; }
 
-            public String PreReleaseTagWithDash { get; set; }
+            public string PreReleaseTagWithDash { get; set; }
 
-            public String PreReleaseLabel { get; set; }
+            public string PreReleaseLabel { get; set; }
 
-            public String PreReleaseNumber { get; set; }
+            public string PreReleaseNumber { get; set; }
 
-            public String WeightedPreReleaseNumber { get; set; }
+            public string WeightedPreReleaseNumber { get; set; }
 
-            public String BuildMetaData { get; set; }
+            public string BuildMetaData { get; set; }
 
-            public String BuildMetaDataPadded { get; set; }
+            public string BuildMetaDataPadded { get; set; }
 
-            public String FullBuildMetaData { get; set; }
+            public string FullBuildMetaData { get; set; }
 
-            public String MajorMinorPatch { get; set; }
+            public string MajorMinorPatch { get; set; }
 
-            public String SemVer { get; set; }
+            public string SemVer { get; set; }
 
-            public String LegacySemVer { get; set; }
+            public string LegacySemVer { get; set; }
 
-            public String LegacySemVerPadded { get; set; }
+            public string LegacySemVerPadded { get; set; }
 
-            public String AssemblySemVer { get; set; }
+            public string AssemblySemVer { get; set; }
 
-            public String AssemblySemFileVer { get; set; }
+            public string AssemblySemFileVer { get; set; }
 
-            public String FullSemVer { get; set; }
+            public string FullSemVer { get; set; }
 
-            public String InformationalVersion { get; set; }
+            public string InformationalVersion { get; set; }
 
-            public String BranchName { get; set; }
+            public string BranchName { get; set; }
 
-            public String Sha { get; set; }
+            public string Sha { get; set; }
 
-            public String ShortSha { get; set; }
+            public string ShortSha { get; set; }
 
-            public String NuGetVersionV2 { get; set; }
+            public string NuGetVersionV2 { get; set; }
 
-            public String NuGetVersion { get; set; }
+            public string NuGetVersion { get; set; }
 
-            public String NuGetPreReleaseTagV2 { get; set; }
+            public string NuGetPreReleaseTagV2 { get; set; }
 
-            public String NuGetPreReleaseTag { get; set; }
+            public string NuGetPreReleaseTag { get; set; }
 
-            public String CommitDate { get; set; }
+            public string CommitDate { get; set; }
 
-            public String VersionSourceSha { get; set; }
+            public string VersionSourceSha { get; set; }
 
-            public String CommitsSinceVersionSource { get; set; }
+            public string CommitsSinceVersionSource { get; set; }
 
-            public String CommitsSinceVersionSourcePadded { get; set; }
+            public string CommitsSinceVersionSourcePadded { get; set; }
         }
 
     }

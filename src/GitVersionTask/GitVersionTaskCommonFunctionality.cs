@@ -5,19 +5,17 @@ namespace GitVersionTask
     using System;
     using System.IO;
 
-    public static class GitVersionTaskBase
+    public static class GitVersionTaskCommonFunctionality
     {
         internal static TOutput ExecuteGitVersionTask<TInput, TOutput>(
             TInput input,
             Func<TInput, TaskLogger, TOutput> execute
             )
-            where TInput : AbstractInput
+            where TInput : InputBase
             where TOutput : class, new()
         {
-            if (!input.ValidateInput())
-            {
-                throw new Exception("Invalid input.");
-            }
+
+            input.ValidateInputOrThrowException();
 
             var logger = new TaskLogger();
             Logger.SetLoggers(logger.LogInfo, logger.LogInfo, logger.LogWarning, s => logger.LogError(s));
@@ -50,7 +48,7 @@ namespace GitVersionTask
         public static ExecuteCore CreateExecuteCore()
             => new ExecuteCore(new FileSystem());
 
-        private static string GetFileExtension(this String language)
+        private static string GetFileExtension(this string language)
         {
             switch (language)
             {
@@ -68,16 +66,16 @@ namespace GitVersionTask
             }
         }
 
-        public static FileWriteInfo GetWorkingDirectoryAndFileNameAndExtension(
-            this String intermediateOutputPath,
-            String language,
-            String projectFile,
-            Func<String, String, String> fileNameWithIntermediatePath,
-            Func<String, String, String> fileNameNoIntermediatePath
+        public static FileWriteInfo GetFileWriteInfo(
+            this string intermediateOutputPath,
+            string language,
+            string projectFile,
+            Func<string, string, string> fileNameWithIntermediatePath,
+            Func<string, string, string> fileNameNoIntermediatePath
             )
         {
             var fileExtension = language.GetFileExtension();
-            String workingDirectory, fileName;
+            string workingDirectory, fileName;
             if (intermediateOutputPath == null)
             {
                 fileName = fileNameWithIntermediatePath(projectFile, fileExtension);
@@ -91,51 +89,66 @@ namespace GitVersionTask
             return new FileWriteInfo(workingDirectory, fileName, fileExtension);
         }
 
-        public abstract class AbstractInput
+    }
+
+    public abstract class InputBase
+    {
+        public string SolutionDirectory { get; set; }
+
+        public Boolean NoFetch { get; set; }
+
+        public void ValidateInputOrThrowException()
         {
-            public String SolutionDirectory { get; set; }
-
-            public Boolean NoFetch { get; set; }
-
-            public virtual Boolean ValidateInput()
+            if (!this.ValidateInput())
             {
-                return !String.IsNullOrEmpty(this.SolutionDirectory);
+                throw new InputValidationException($"Invalid input for {this.GetType()}.");
             }
         }
 
-        public abstract class InputWithCommonAdditionalProperties : AbstractInput
+        protected virtual Boolean ValidateInput()
         {
-            public String ProjectFile { get; set; }
+            return !String.IsNullOrEmpty(this.SolutionDirectory);
+        }
+    }
 
-            public String IntermediateOutputPath { get; set; }
+    public abstract class InputWithCommonAdditionalProperties : InputBase
+    {
+        public string ProjectFile { get; set; }
 
-            public String Language { get; set; }
+        public string IntermediateOutputPath { get; set; }
 
-            public override Boolean ValidateInput()
-            {
-                return base.ValidateInput()
-                    && !String.IsNullOrEmpty(this.ProjectFile)
-                    && !String.IsNullOrEmpty(this.IntermediateOutputPath)
-                    && !String.IsNullOrEmpty(this.Language);
-            }
+        public string Language { get; set; }
+
+        protected override Boolean ValidateInput()
+        {
+            return base.ValidateInput()
+                && !String.IsNullOrEmpty(this.ProjectFile)
+                && !String.IsNullOrEmpty(this.IntermediateOutputPath)
+                && !String.IsNullOrEmpty(this.Language);
+        }
+    }
+
+    public sealed class InputValidationException : Exception
+    {
+        public InputValidationException(string msg, Exception inner = null)
+            : base(msg, inner)
+        {
+
         }
     }
 
     public sealed class FileWriteInfo
     {
-        public FileWriteInfo(
-            String workingDirectory,
-            String fileName,
-            String fileExtension
-            )
+        public FileWriteInfo(string workingDirectory, string fileName, string fileExtension)
         {
             this.WorkingDirectory = workingDirectory;
             this.FileName = fileName;
             this.FileExtension = fileExtension;
         }
 
-        public String WorkingDirectory { get; }
-        public String FileName { get; }
-        public String FileExtension { get; }
+        public string WorkingDirectory { get; }
+        public string FileName { get; }
+        public string FileExtension { get; }
     }
+
 }
