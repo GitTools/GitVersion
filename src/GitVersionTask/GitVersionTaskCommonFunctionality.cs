@@ -7,10 +7,7 @@ namespace GitVersionTask
 
     public static class GitVersionTaskCommonFunctionality
     {
-        internal static TOutput ExecuteGitVersionTask<TInput, TOutput>(
-            TInput input,
-            Func<TInput, TaskLogger, TOutput> execute
-            )
+        internal static TOutput ExecuteGitVersionTask<TInput, TOutput>(TInput input, Func<TInput, TaskLogger, TOutput> execute)
             where TInput : InputBase
             where TOutput : class, new()
         {
