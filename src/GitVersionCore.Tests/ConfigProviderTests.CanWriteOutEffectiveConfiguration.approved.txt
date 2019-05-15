@@ -122,3 +122,4 @@ branches:
 ignore:
   sha: []
 commit-date-format: yyyy-MM-dd
+merge-message-formats: {}

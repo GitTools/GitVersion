@@ -11,16 +11,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.0" />
     <PackageReference Include="FluentDateTime" Version="1.15.0" />
     <PackageReference Include="GitTools.Testing" Version="1.2.0" />
     <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)"></PackageReference>
-    <PackageReference Include="NSubstitute" Version="4.0.0" />
-    <PackageReference Include="coverlet.msbuild" Version="2.6.0">
+    <PackageReference Include="NSubstitute" Version="4.1.0" />
+    <PackageReference Include="coverlet.msbuild" Version="2.6.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="NUnit" Version="3.11.0" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
     <packagereference Include="NUnit3TestAdapter" Version="3.13.0"></packagereference>
     <PackageReference Include="Shouldly" Version="3.0.2" />
     <PackageReference Include="TestStack.ConventionTests" Version="3.0.1" />
