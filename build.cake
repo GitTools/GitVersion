@@ -223,7 +223,7 @@ Task("Copy-Files")
     CopyFileToDirectory("./LICENSE", coreFxDir);
     CopyFileToDirectory($"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion}/GitVersion.xml", coreFxDir);
 
-    // .NET 4.0
+    // .NET Framework
     DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
     {
         Framework = parameters.FullFxVersion,
@@ -393,7 +393,7 @@ Task("Zip-Files")
     .IsDependentOn("Copy-Files")
     .Does<BuildParameters>((parameters) =>
 {
-    // .NET 4.0
+    // .NET Framework
     var cmdlineDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
     var fullFxFiles = GetFiles(cmdlineDir.FullPath + "/**/*");
     Zip(cmdlineDir, parameters.Paths.Files.ZipArtifactPathDesktop, fullFxFiles);
