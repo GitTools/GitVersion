@@ -86,6 +86,36 @@
       <FileVersion Condition=" '$(FileVersion)' == '' ">$(GitVersion_AssemblySemFileVer)</FileVersion>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(WixTargetsImported)' == 'true' And '$(GenerateGitVersionWixDefines)' == 'true' ">
+      <DefineConstants Condition=" '$(GitVersion_Major)' != '' ">GitVersion_Major=$(GitVersion_Major);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_Minor)' != '' ">GitVersion_Minor=$(GitVersion_Minor);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_Patch)' != '' ">GitVersion_Patch=$(GitVersion_Patch);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_PreReleaseTag)' != '' ">GitVersion_PreReleaseTag=$(GitVersion_PreReleaseTag);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_PreReleaseTagWithDash)' != '' ">GitVersion_PreReleaseTagWithDash=$(GitVersion_PreReleaseTagWithDash);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_PreReleaseLabel)' != '' ">GitVersion_PreReleaseLabel=$(GitVersion_PreReleaseLabel);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_PreReleaseNumber)' != '' ">GitVersion_PreReleaseNumber=$(GitVersion_PreReleaseNumber);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_BuildMetaData)' != '' ">GitVersion_BuildMetaData=$(GitVersion_BuildMetaData);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_BuildMetaDataPadded)' != '' ">GitVersion_BuildMetaDataPadded=$(GitVersion_BuildMetaDataPadded);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_FullBuildMetaData)' != '' ">GitVersion_FullBuildMetaData=$(GitVersion_FullBuildMetaData);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_MajorMinorPatch)' != '' ">GitVersion_MajorMinorPatch=$(GitVersion_MajorMinorPatch);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_SemVer)' != '' ">GitVersion_SemVer=$(GitVersion_SemVer);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_LegacySemVer)' != '' ">GitVersion_LegacySemVer=$(GitVersion_LegacySemVer);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_LegacySemVerPadded)' != '' ">GitVersion_LegacySemVerPadded=$(GitVersion_LegacySemVerPadded);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_AssemblySemVer)' != '' ">GitVersion_AssemblySemVer=$(GitVersion_AssemblySemVer);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_AssemblySemFileVer)' != '' ">GitVersion_AssemblySemFileVer=$(GitVersion_AssemblySemFileVer);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_FullSemVer)' != '' ">GitVersion_FullSemVer=$(GitVersion_FullSemVer);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_InformationalVersion)' != '' ">GitVersion_InformationalVersion=$(GitVersion_InformationalVersion);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_BranchName)' != '' ">GitVersion_BranchName=$(GitVersion_BranchName);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_Sha)' != '' ">GitVersion_Sha=$(GitVersion_Sha);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_NuGetVersionV2)' != '' ">GitVersion_NuGetVersionV2=$(GitVersion_NuGetVersionV2);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_NuGetVersion)' != '' ">GitVersion_NuGetVersion=$(GitVersion_NuGetVersion);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_NuGetPreReleaseTagV2)' != '' ">GitVersion_NuGetPreReleaseTagV2=$(GitVersion_NuGetPreReleaseTagV2);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_NuGetPreReleaseTag)' != '' ">GitVersion_NuGetPreReleaseTag=$(GitVersion_NuGetPreReleaseTag);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_CommitDate)' != '' ">GitVersion_CommitDate=$(GitVersion_CommitDate);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_CommitsSinceVersionSource)' != '' ">GitVersion_CommitsSinceVersionSource=$(GitVersion_CommitsSinceVersionSource);$(DefineConstants)</DefineConstants>
+      <DefineConstants Condition=" '$(GitVersion_CommitsSinceVersionSourcePadded)' != '' ">GitVersion_CommitsSinceVersionSourcePadded=$(GitVersion_CommitsSinceVersionSourcePadded);$(DefineConstants)</DefineConstants>
+    </PropertyGroup>
+
   </Target>
 
   <!--Support for ncrunch-->
