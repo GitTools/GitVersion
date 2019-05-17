@@ -252,7 +252,7 @@ namespace GitVersion
                     return formatter.Format(format, this, formatProvider);
             }
 
-            // Check for lp first because the param can varry
+            // Check for lp first because the param can vary
             format = format.ToLower();
             if (format.StartsWith("lp", StringComparison.Ordinal))
             {
