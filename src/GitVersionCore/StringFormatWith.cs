@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -30,7 +30,7 @@ namespace GitVersion
             foreach (Match match in TokensRegex.Matches(template))
             {
                 var memberAccessExpression = TrimBraces(match.Value);
-                string propertyValue = null;
+                string propertyValue;
 
                 // Support evaluation of environment variables in the format string
                 // For example: {env:JENKINS_BUILD_NUMBER ?? fall-back-string}
