@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
     using System.Net;
@@ -23,11 +23,7 @@
 
             var data = string.Format("{{ \"version\": \"{0}.build.{1}\" }}", variables.FullSemVer, buildNumber);
             var bytes = Encoding.UTF8.GetBytes(data);
-            if (request.Headers == null)
-            {
-                request.Headers = new WebHeaderCollection();
-            }
-            var bytesLength = bytes.Length;
+            //var bytesLength = bytes.Length;
             // request.Headers["Content-Length"] = bytesLength.ToString();
 
             // request.ContentLength = bytes.Length;
