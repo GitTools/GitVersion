@@ -10,31 +10,31 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(NuGetUtilsMSBuildExecAssemblyPath)' == ''">
-    <UtilPackVersion>$(PackageVersion_NuGetUtilsMSBuildExec)</UtilPackVersion>
-    <UtilPackNuGetMSBuildPropsPath Condition=" '$(UtilPackNuGetMSBuildPropsPath)' == ''">$(MSBuildThisFileDirectory)../../../nugetutils.msbuild.exec/$(UtilPackVersion)/build/NuGetUtils.MSBuild.Exec.props</UtilPackNuGetMSBuildPropsPath>
-    <UtilPackNuGetMSBuildPropsAbsolutePath>$([System.IO.Path]::GetFullPath('$(UtilPackNuGetMSBuildPropsPath)'))</UtilPackNuGetMSBuildPropsAbsolutePath>
+    <NuGetUtilsVersion>$(PackageVersion_NuGetUtilsMSBuildExec)</NuGetUtilsVersion>
+    <NuGetUtilsMSBuildPropsPath Condition=" '$(NuGetUtilsMSBuildPropsPath)' == ''">$(MSBuildThisFileDirectory)../../../nugetutils.msbuild.exec/$(NuGetUtilsVersion)/build/NuGetUtils.MSBuild.Exec.props</NuGetUtilsMSBuildPropsPath>
+    <NuGetUtilsMSBuildPropsAbsolutePath>$([System.IO.Path]::GetFullPath('$(NuGetUtilsMSBuildPropsPath)'))</NuGetUtilsMSBuildPropsAbsolutePath>
     <!-- Set absolute path to empty string if automatic deduction failed. -->
-    <UtilPackNuGetMSBuildPropsAbsolutePath Condition=" '$(UtilPackNuGetMSBuildPropsAbsolutePath)' == '' or !Exists('$(UtilPackNuGetMSBuildPropsAbsolutePath)') "></UtilPackNuGetMSBuildPropsAbsolutePath>
+    <NuGetUtilsMSBuildPropsAbsolutePath Condition=" '$(NuGetUtilsMSBuildPropsAbsolutePath)' == '' or !Exists('$(NuGetUtilsMSBuildPropsAbsolutePath)') "></NuGetUtilsMSBuildPropsAbsolutePath>
   </PropertyGroup>
 
   <PropertyGroup>
-    <GitVersionTaskBuildTools_CanCallDirectly Condition=" '$(NuGetUtilsMSBuildExecAssemblyPath)' != '' or '$(UtilPackNuGetMSBuildPropsAbsolutePath)' != '' ">true</GitVersionTaskBuildTools_CanCallDirectly>
+    <GitVersionTaskBuildTools_CanCallDirectly Condition=" '$(NuGetUtilsMSBuildExecAssemblyPath)' != '' or '$(NuGetUtilsMSBuildPropsAbsolutePath)' != '' ">true</GitVersionTaskBuildTools_CanCallDirectly>
   </PropertyGroup>
 
   <PropertyGroup>
-    <UtilPackTaskFactoryParametersXML Condition=" '$(MSBuildRuntimeType)' != 'Core' ">
+    <NuGetUtilsTaskFactoryParametersXML Condition=" '$(MSBuildRuntimeType)' != 'Core' ">
       <NuGetFramework>net461</NuGetFramework>
-    </UtilPackTaskFactoryParametersXML>
-    <UtilPackTaskFactoryParametersXML>
-      $(UtilPackTaskFactoryParametersXML)
+    </NuGetUtilsTaskFactoryParametersXML>
+    <NuGetUtilsTaskFactoryParametersXML>
+      $(NuGetUtilsTaskFactoryParametersXML)
       <PackageIDIsSelf>true</PackageIDIsSelf>
       <AssemblyPath>GitVersionTask.dll</AssemblyPath>
-    </UtilPackTaskFactoryParametersXML>
+    </NuGetUtilsTaskFactoryParametersXML>
   </PropertyGroup>
 
-  <!-- Import the UtilPack.NuGet.MSBuild props file directly, if we managed to deduce it. -->
+  <!-- Import the NuGetUtils props file directly, if we managed to deduce it. -->
   <ImportGroup>
-    <Import Condition=" '$(NuGetUtilsMSBuildExecAssemblyPath)' == '' and '$(UtilPackNuGetMSBuildPropsAbsolutePath)' != '' " Project="$(UtilPackNuGetMSBuildPropsAbsolutePath)" />
+    <Import Condition=" '$(NuGetUtilsMSBuildExecAssemblyPath)' == '' and '$(NuGetUtilsMSBuildPropsAbsolutePath)' != '' " Project="$(NuGetUtilsMSBuildPropsAbsolutePath)" />
     <Import Condition=" '$(GitVersionTaskBuildTools_CanCallDirectly)' == 'true' " Project="$(GitVersionTaskBuildTools_FunctionalityFile)"/>
   </ImportGroup>  
 

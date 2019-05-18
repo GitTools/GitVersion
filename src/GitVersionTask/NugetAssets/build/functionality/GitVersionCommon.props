@@ -49,7 +49,7 @@
     TaskName="GitVersionTask.UpdateAssemblyInfo">
     <Task>
       <NuGetTaskInfo>
-        $(UtilPackTaskFactoryParametersXML)
+        $(NuGetUtilsTaskFactoryParametersXML)
         <EntryPointMethodName>Execute</EntryPointMethodName>
       </NuGetTaskInfo>
     </Task>
@@ -61,7 +61,7 @@
       TaskName="GitVersionTask.GenerateGitVersionInformation">
     <Task>
       <NuGetTaskInfo>
-        $(UtilPackTaskFactoryParametersXML)
+        $(NuGetUtilsTaskFactoryParametersXML)
         <EntryPointMethodName>Execute</EntryPointMethodName>
       </NuGetTaskInfo>
     </Task>
@@ -73,7 +73,7 @@
       TaskName="GitVersionTask.GetVersion">
     <Task>
       <NuGetTaskInfo>
-        $(UtilPackTaskFactoryParametersXML)
+        $(NuGetUtilsTaskFactoryParametersXML)
         <EntryPointMethodName>Execute</EntryPointMethodName>
       </NuGetTaskInfo>
     </Task>
@@ -85,7 +85,7 @@
       TaskName="GitVersionTask.WriteVersionInfoToBuildLog">
     <Task>
       <NuGetTaskInfo>
-        $(UtilPackTaskFactoryParametersXML)
+        $(NuGetUtilsTaskFactoryParametersXML)
         <EntryPointMethodName>Execute</EntryPointMethodName>
       </NuGetTaskInfo>
     </Task>

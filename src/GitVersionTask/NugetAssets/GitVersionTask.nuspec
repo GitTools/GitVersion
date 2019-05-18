@@ -17,15 +17,15 @@
     <tags>Git Versioning GitVersion GitFlowVersion GitFlow GitHubFlow SemVer</tags>
     <dependencies>
       <group>
-        <dependency id="NuGetUtils.MSBuild.Exec" version="$utilpackversion$" exclude="Build,Analyzers" />
+        <dependency id="NuGetUtils.MSBuild.Exec" version="$nugetutilsversion$" exclude="Build,Analyzers" />
       </group>
       <group targetFramework=".NETStandard2.0">
-         <dependency id="NuGetUtils.MSBuild.Exec" version="$utilpackversion$" exclude="Build,Analyzers" />
+         <dependency id="NuGetUtils.MSBuild.Exec" version="$nugetutilsversion$" exclude="Build,Analyzers" />
          <dependency id="LibGit2Sharp" version="$libgit2sharpversion$" exclude="Build,Analyzers" />
          <dependency id="YamlDotNet" version="$yamldotnetversion$" exclude="Build,Analyzers" />
       </group>
       <group targetFramework=".NETFramework4.6.1">
-         <dependency id="NuGetUtils.MSBuild.Exec" version="$utilpackversion$" exclude="Build,Analyzers" />
+         <dependency id="NuGetUtils.MSBuild.Exec" version="$nugetutilsversion$" exclude="Build,Analyzers" />
       </group>
     </dependencies>
   </metadata>
