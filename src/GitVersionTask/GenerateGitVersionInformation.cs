@@ -1,42 +1,52 @@
 namespace GitVersionTask
 {
+    using System;
     using System.IO;
     using GitVersion;
     using GitVersion.Helpers;
-    using Microsoft.Build.Framework;
 
-    public class GenerateGitVersionInformation : GitVersionTaskBase
+    public static class GenerateGitVersionInformation
     {
-        [Required]
-        public string ProjectFile { get; set; }
-
-        [Required]
-        public string IntermediateOutputPath { get; set; }
-
-        [Required]
-        public string Language { get; set; }
-
-        [Output]
-        public string GitVersionInformationFilePath { get; set; }
-
-        protected override void InnerExecute()
+        // This method is entrypoint for the task declared in .props file
+        public static Output Execute(Input input)
         {
-            if (GetVersionVariables(out var versionVariables)) return;
+            return GitVersionTaskCommonFunctionality.ExecuteGitVersionTask(input, InnerExecute);
+        }
 
-            var fileExtension = TaskUtils.GetFileExtension(Language);
-            var fileName = $"GitVersionInformation.g.{fileExtension}";
-
-            if (IntermediateOutputPath == null)
+        private static Output InnerExecute(Input input, TaskLogger logger)
+        {
+            var execute = GitVersionTaskCommonFunctionality.CreateExecuteCore();
+            if (!execute.TryGetVersion(input.SolutionDirectory, out var versionVariables, input.NoFetch, new Authentication()))
             {
-                fileName = $"GitVersionInformation_{Path.GetFileNameWithoutExtension(ProjectFile)}_{Path.GetRandomFileName()}.g.{fileExtension}";
+                return null;
             }
 
-            var workingDirectory = IntermediateOutputPath ?? TempFileTracker.TempPath;
+            var fileWriteInfo = input.IntermediateOutputPath.GetFileWriteInfo(
+                input.Language,
+                input.ProjectFile,
+                (pf, ext) => $"GitVersionInformation.g.{ext}",
+                (pf, ext) => $"GitVersionInformation_{Path.GetFileNameWithoutExtension(pf)}_{Path.GetRandomFileName()}.g.{ext}"
+                );
 
-            GitVersionInformationFilePath = Path.Combine(workingDirectory, fileName);
-
-            var generator = new GitVersionInformationGenerator(fileName, workingDirectory, versionVariables, new FileSystem());
+            var output = new Output()
+            {
+                GitVersionInformationFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName)
+            };
+            var generator = new GitVersionInformationGenerator(fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, new FileSystem());
             generator.Generate();
+
+            return output;
         }
+
+
+        public sealed class Input : InputWithCommonAdditionalProperties
+        {
+        }
+
+        public sealed class Output
+        {
+            public string GitVersionInformationFilePath { get; set; }
+        }
+
     }
 }
