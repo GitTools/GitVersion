@@ -15,6 +15,7 @@
 #addin "nuget:?package=xunit.assert&version=2.4.1"
 
 // Install tools.
+#tool "nuget:?package=vswhere"
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
 #tool "nuget:?package=ILRepack&version=2.0.16"
 #tool "nuget:?package=Codecov&version=1.4.0"
