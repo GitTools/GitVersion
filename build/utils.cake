@@ -65,6 +65,10 @@ void Build(string configuration)
             .SetVerbosity(Verbosity.Minimal)
             .WithTarget("Build")
             .WithProperty("POSIX", IsRunningOnUnix().ToString());
+
+        if (IsRunningOnWindows()) {
+            settings.ToolPath = GetFiles(VSWhereLatest() + "/MSBuild/**/Bin/MSBuild.exe").First();
+        }
     });
 }
 
