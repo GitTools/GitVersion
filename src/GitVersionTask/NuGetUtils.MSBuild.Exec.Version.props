@@ -1,6 +1,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <PackageVersion_UtilPackNuGetMSBuild>2.9.1</PackageVersion_UtilPackNuGetMSBuild>
+    <PackageVersion_NuGetUtilsMSBuildExec>2.0.5</PackageVersion_NuGetUtilsMSBuildExec>
   </PropertyGroup>
 </Project>
 
