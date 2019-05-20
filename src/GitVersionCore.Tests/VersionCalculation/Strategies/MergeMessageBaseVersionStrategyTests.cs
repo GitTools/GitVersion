@@ -40,7 +40,6 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
         [TestCase("Merge branch 'Releases-0.2.0'", true, "0.2.0")]
         [TestCase("Merge branch 'Releases/0.2.0'", true, "0.2.0")]
         [TestCase("Merge branch 'release-4.6.6' into support-4.6", true, "4.6.6")]
-        [TestCase("Merge branch 'release-10.10.50'", true, "10.10.50")]
         [TestCase("Merge branch 'release-0.1.5'\n\nRelates to: TicketId", true, "0.1.5")]
         [TestCase("Finish Release-0.12.0", true, "0.12.0")] //Support Syntevo SmartGit/Hg's Gitflow merge commit messages for finishing a 'Release' branch
         [TestCase("Merge branch 'Release-v0.2.0'", true, "0.2.0")]

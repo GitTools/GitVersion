@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using Helpers;
 
@@ -49,7 +49,7 @@
             var availableVariables = VersionVariables.AvailableVariables;
             foreach (var variable in availableVariables)
             {
-                string value = null;
+                string value;
                 variables.TryGetValue(variable, out value);
                 builder.Append(string.Format("\t<?define {0}=\"{1}\"?>\n", variable, value));
             }

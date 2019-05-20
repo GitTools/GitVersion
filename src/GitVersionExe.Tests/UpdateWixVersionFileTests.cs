@@ -79,7 +79,7 @@ namespace GitVersionExe.Tests
 
                 foreach (var variable in gitVersionVars)
                 {
-                    string value = null;
+                    string value;
                     vars.TryGetValue(variable, out value);
                     //Make sure the variable is present in the Wix file
                     Assert.IsTrue(gitVersionVarsInWix.ContainsKey(variable));

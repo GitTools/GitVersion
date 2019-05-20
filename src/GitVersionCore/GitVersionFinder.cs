@@ -14,7 +14,7 @@ namespace GitVersion
             if (context.IsCurrentCommitTagged)
             {
                 Logger.WriteInfo($"Current commit is tagged with version {context.CurrentCommitTaggedVersion}, " +
-                                 "version calcuation is for metadata only.");
+                                 "version calculation is for metadata only.");
             }
             EnsureMainTopologyConstraints(context);
 

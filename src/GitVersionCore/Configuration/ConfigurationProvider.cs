@@ -242,7 +242,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             branchConfig.TracksReleaseBranches = branchConfig.TracksReleaseBranches ?? tracksReleaseBranches;
             branchConfig.IsReleaseBranch = branchConfig.IsReleaseBranch ?? isReleaseBranch;
             branchConfig.IsMainline = branchConfig.IsMainline ?? isMainline;
-            int defaultPreReleaseNumber = 0;
+            int defaultPreReleaseNumber;
             DefaultPreReleaseWeight.TryGetValue(branchRegex, out defaultPreReleaseNumber);
             branchConfig.PreReleaseWeight = branchConfig.PreReleaseWeight ?? defaultPreReleaseNumber;
         }
