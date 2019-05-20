@@ -4,90 +4,49 @@ namespace GitVersionTask
     using System.IO;
     using GitVersion;
     using GitVersion.Helpers;
-    using Microsoft.Build.Framework;
 
-    public class GenerateGitVersionInformation : GitVersionTaskBase
+    public static class GenerateGitVersionInformation
     {
-        public GenerateGitVersionInformation()
+        // This method is entrypoint for the task declared in .props file
+        public static Output Execute(Input input)
         {
+            return GitVersionTaskCommonFunctionality.ExecuteGitVersionTask(input, InnerExecute);
         }
 
-        [Required]
-        public string SolutionDirectory { get; set; }
-
-        [Required]
-        public string ProjectFile { get; set; }
-
-        [Required]
-        public string IntermediateOutputPath { get; set; }
-
-        [Required]
-        public string Language { get; set; }
-
-        [Output]
-        public string GitVersionInformationFilePath { get; set; }
-
-        public bool NoFetch { get; set; }
-
-        public override bool Execute()
+        private static Output InnerExecute(Input input, TaskLogger logger)
         {
-            try
+            var execute = GitVersionTaskCommonFunctionality.CreateExecuteCore();
+            if (!execute.TryGetVersion(input.SolutionDirectory, out var versionVariables, input.NoFetch, new Authentication()))
             {
-                InnerExecute();
-                return true;
-            }
-            catch (WarningException errorException)
-            {
-                this.LogWarning(errorException.Message);
-                return true;
-            }
-            catch (Exception exception)
-            {
-                this.LogError("Error occurred: " + exception);
-                return false;
-            }
-        }
-
-        void InnerExecute()
-        {
-            VersionVariables versionVariables;
-            if (!ExecuteCore.TryGetVersion(SolutionDirectory, out versionVariables, NoFetch, new Authentication()))
-            {
-                return;
+                return null;
             }
 
-            var fileExtension = GetFileExtension();
-            var fileName = $"GitVersionInformation.g.{fileExtension}";
+            var fileWriteInfo = input.IntermediateOutputPath.GetFileWriteInfo(
+                input.Language,
+                input.ProjectFile,
+                (pf, ext) => $"GitVersionInformation.g.{ext}",
+                (pf, ext) => $"GitVersionInformation_{Path.GetFileNameWithoutExtension(pf)}_{Path.GetRandomFileName()}.g.{ext}"
+                );
 
-            if (IntermediateOutputPath == null)
+            var output = new Output()
             {
-                fileName = $"GitVersionInformation_{Path.GetFileNameWithoutExtension(ProjectFile)}_{Path.GetRandomFileName()}.g.{fileExtension}";
-            }
-
-            var workingDirectory = IntermediateOutputPath ?? TempFileTracker.TempPath;
-
-            GitVersionInformationFilePath = Path.Combine(workingDirectory, fileName);
-
-            var generator = new GitVersionInformationGenerator(fileName, workingDirectory, versionVariables, new FileSystem());
+                GitVersionInformationFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName)
+            };
+            var generator = new GitVersionInformationGenerator(fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, new FileSystem());
             generator.Generate();
+
+            return output;
         }
 
-        string GetFileExtension()
+
+        public sealed class Input : InputWithCommonAdditionalProperties
         {
-            switch (Language)
-            {
-                case "C#":
-                    return "cs";
-
-                case "F#":
-                    return "fs";
-
-                case "VB":
-                    return "vb";
-
-                default:
-                    throw new Exception($"Unknown language detected: '{Language}'");
-            }
         }
+
+        public sealed class Output
+        {
+            public string GitVersionInformationFilePath { get; set; }
+        }
+
     }
 }

@@ -27,11 +27,11 @@ public class BuildPaths
 
         var artifactsDir                  = (DirectoryPath)(context.Directory("./artifacts") + context.Directory("v" + semVersion));
         var artifactsBinDir               = artifactsDir.Combine("bin");
-        var artifactsBinFullFxDir         = artifactsBinDir.Combine("net461");
+        var artifactsBinFullFxDir         = artifactsBinDir.Combine(parameters.FullFxVersion);
         var artifactsBinFullFxILMergeDir  = artifactsBinFullFxDir.Combine("il-merge");
         var artifactsBinFullFxPortableDir = artifactsBinFullFxDir.Combine("portable");
         var artifactsBinFullFxCmdlineDir  = artifactsBinFullFxDir.Combine("cmdline");
-        var artifactsBinCoreFxDir         = artifactsBinDir.Combine("netcoreapp2.0");
+        var artifactsBinCoreFxDir         = artifactsBinDir.Combine(parameters.CoreFxVersion);
         var nugetRootDir                  = artifactsDir.Combine("nuget");
         var buildArtifactDir              = artifactsDir.Combine("build-artifact");
         var testCoverageOutputDir         = artifactsDir.Combine("code-coverage");

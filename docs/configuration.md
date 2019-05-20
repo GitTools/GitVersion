@@ -48,6 +48,7 @@ commit-date-format: 'yyyy-MM-dd'
 ignore:
   sha: []
   commits-before: yyyy-MM-ddTHH:mm:ss
+merge-message-formats: {}
 ```
 
 And the description of the available options are:
@@ -178,6 +179,24 @@ ignore:
 Date and time in the format `yyyy-MM-ddTHH:mm:ss` (eg `commits-before:
 2015-10-23T12:23:15`) to setup an exclusion range. Effectively any commit before
 `commits-before` will be ignored.
+
+### merge-message-formats
+Custom merge message formats to enable identification of merge messages that do not
+follow the built-in conventions.  Entries should be added as key-value pairs where
+the value is a regular expression.
+e.g.
+
+```
+merge-message-formats:
+    tfs: ^Merged (?:PR (?<PullRequestNumber>\d+)): Merge (?<SourceBranch>.+) to (?<TargetBranch>.+)
+```
+
+The regular expression should contain the following capture groups:
++ SourceBranch - Identifies the source branch of the merge
++ TargetBranch - Identifies the target of the merge
++ PullRequestNumber - Captures the pull-request number
+
+Custom merge message formats are evalauted _before_ any built in formats.
 
 ## Branch configuration
 Then we have branch specific configuration, which looks something like this:

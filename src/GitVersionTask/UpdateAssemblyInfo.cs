@@ -5,105 +5,68 @@ namespace GitVersionTask
 
     using GitVersion;
     using GitVersion.Helpers;
-    using Microsoft.Build.Framework;
 
-    public class UpdateAssemblyInfo : GitVersionTaskBase
+    public static class UpdateAssemblyInfo
     {
-        public UpdateAssemblyInfo()
+        public static Output Execute(Input input)
         {
+            return GitVersionTaskCommonFunctionality.ExecuteGitVersionTask(input, InnerExecute);
         }
 
-        [Required]
-        public string SolutionDirectory { get; set; }
-
-        [Required]
-        public string ProjectFile { get; set; }
-
-        [Required]
-        public string IntermediateOutputPath { get; set; }
-
-        [Required]
-        public ITaskItem[] CompileFiles { get; set; }
-
-        [Required]
-        public string Language { get; set; }
-
-        [Output]
-        public string AssemblyInfoTempFilePath { get; set; }
-
-        public bool NoFetch { get; set; }
-
-        public override bool Execute()
+        private static Output InnerExecute(Input input, TaskLogger logger)
         {
-            try
-            {
-                InnerExecute();
-                return true;
-            }
-            catch (WarningException errorException)
-            {
-                this.LogWarning(errorException.Message);
-                return true;
-            }
-            catch (Exception exception)
-            {
-                this.LogError("Error occurred: " + exception);
-                return false;
-            }
-        }
+            var execute = GitVersionTaskCommonFunctionality.CreateExecuteCore();
 
-        void InnerExecute()
-        {
             TempFileTracker.DeleteTempFiles();
 
-            InvalidFileChecker.CheckForInvalidFiles(CompileFiles, ProjectFile);
+            InvalidFileChecker.CheckForInvalidFiles(input.CompileFiles, input.ProjectFile);
 
-            VersionVariables versionVariables;
-            if (!ExecuteCore.TryGetVersion(SolutionDirectory, out versionVariables, NoFetch, new Authentication()))
+            if (!execute.TryGetVersion(input.SolutionDirectory, out var versionVariables, input.NoFetch, new Authentication()))
             {
-                return;
+                return null;
             }
 
-            CreateTempAssemblyInfo(versionVariables);
+            return CreateTempAssemblyInfo(input, versionVariables);
         }
 
-        void CreateTempAssemblyInfo(VersionVariables versionVariables)
+        private static Output CreateTempAssemblyInfo(Input input, VersionVariables versionVariables)
         {
-            var fileExtension = GetFileExtension();
-            var assemblyInfoFileName = $"GitVersionTaskAssemblyInfo.g.{fileExtension}";
+            var fileWriteInfo = input.IntermediateOutputPath.GetFileWriteInfo(
+                input.Language,
+                input.ProjectFile,
+                (pf, ext) => $"GitVersionTaskAssemblyInfo.g.{ext}",
+                (pf, ext) => $"AssemblyInfo_{Path.GetFileNameWithoutExtension(pf)}_{Path.GetRandomFileName()}.g.{ext}"
+                );
 
-            if (IntermediateOutputPath == null)
+            var output = new Output()
             {
-                assemblyInfoFileName = $"AssemblyInfo_{Path.GetFileNameWithoutExtension(ProjectFile)}_{Path.GetRandomFileName()}.g.{fileExtension}";
-            }
+                AssemblyInfoTempFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName)
+            };
 
-            var workingDirectory = IntermediateOutputPath ?? TempFileTracker.TempPath;
-
-            AssemblyInfoTempFilePath = Path.Combine(workingDirectory, assemblyInfoFileName);
-
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFileName, workingDirectory, versionVariables, new FileSystem(), true))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, new FileSystem(), true))
             {
                 assemblyInfoFileUpdater.Update();
                 assemblyInfoFileUpdater.CommitChanges();
             }
+
+            return output;
         }
 
-        string GetFileExtension()
+        public sealed class Input : InputWithCommonAdditionalProperties
         {
-            switch(Language)
+            public string[] CompileFiles { get; set; }
+
+            protected override Boolean ValidateInput()
             {
-                case "C#":
-                    return "cs";
-
-                case "F#":
-                    return "fs";
-
-                case "VB":
-                    return "vb";
-
-                default:
-                    throw new Exception($"Unknown language detected: '{Language}'");
+                return base.ValidateInput()
+                    && this.CompileFiles != null;
             }
+
+        }
+
+        public sealed class Output
+        {
+            public string AssemblyInfoTempFilePath { get; set; }
         }
     }
 }

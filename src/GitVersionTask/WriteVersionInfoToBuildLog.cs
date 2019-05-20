@@ -1,61 +1,48 @@
 namespace GitVersionTask
 {
-    using System;
     using System.Collections.Generic;
     using GitVersion;
-    using Microsoft.Build.Framework;
 
-    public class WriteVersionInfoToBuildLog : GitVersionTaskBase
+    public class WriteVersionInfoToBuildLog
     {
-        public WriteVersionInfoToBuildLog()
+        public static Output Execute(Input input)
         {
+            return GitVersionTaskCommonFunctionality.ExecuteGitVersionTask(input, InnerExecute);
         }
 
-        [Required]
-        public string SolutionDirectory { get; set; }
-
-        public bool NoFetch { get; set; }
-
-        public override bool Execute()
+        public sealed class Input : InputBase
         {
-            try
-            {
-                InnerExecute();
-                return true;
-            }
-            catch (WarningException errorException)
-            {
-                this.LogWarning(errorException.Message);
-                return true;
-            }
-            catch (Exception exception)
-            {
-                this.LogError("Error occurred: " + exception);
-                return false;
-            }
+            // No additional inputs for this task
         }
 
-        void InnerExecute()
+        public sealed class Output
         {
-            VersionVariables result;
-            if (!ExecuteCore.TryGetVersion(SolutionDirectory, out result, NoFetch, new Authentication()))
-            {
-                return;
-            }
-
-            WriteIntegrationParameters(BuildServerList.GetApplicableBuildServers(), result);
+            // No output for this task
         }
 
-        void WriteIntegrationParameters(IEnumerable<IBuildServer> applicableBuildServers, VersionVariables variables)
+        private static Output InnerExecute(Input input, TaskLogger logger)
+        {
+            var execute = GitVersionTaskCommonFunctionality.CreateExecuteCore();
+            if (!execute.TryGetVersion(input.SolutionDirectory, out var result, input.NoFetch, new Authentication()))
+            {
+                return null;
+            }
+
+            WriteIntegrationParameters(logger, BuildServerList.GetApplicableBuildServers(), result);
+
+            return new Output();
+        }
+
+        private static void WriteIntegrationParameters(TaskLogger logger, IEnumerable<IBuildServer> applicableBuildServers, VersionVariables versionVariables)
         {
             foreach (var buildServer in applicableBuildServers)
             {
-                this.LogInfo(string.Format("Executing GenerateSetVersionMessage for '{0}'.", buildServer.GetType().Name));
-                this.LogInfo(buildServer.GenerateSetVersionMessage(variables));
-                this.LogInfo(string.Format("Executing GenerateBuildLogOutput for '{0}'.", buildServer.GetType().Name));
-                foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(buildServer, variables))
+                logger.LogInfo($"Executing GenerateSetVersionMessage for '{ buildServer.GetType().Name }'.");
+                logger.LogInfo(buildServer.GenerateSetVersionMessage(versionVariables));
+                logger.LogInfo($"Executing GenerateBuildLogOutput for '{ buildServer.GetType().Name }'.");
+                foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(buildServer, versionVariables))
                 {
-                    this.LogInfo(buildParameter);
+                    logger.LogInfo(buildParameter);
                 }
             }
         }

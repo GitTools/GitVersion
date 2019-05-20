@@ -2,6 +2,7 @@ using GitVersion;
 using NUnit.Framework;
 using Shouldly;
 using System;
+using System.Collections.Generic;
 
 namespace GitVersionCore.Tests
 {
@@ -61,8 +62,7 @@ namespace GitVersionCore.Tests
             new object[] { "Merge branch 'feature/4.1/one'", "feature/4.1/one", null, new SemanticVersion(4, 1) },
             new object[] { "Merge branch 'origin/4.1/feature/one'", "origin/4.1/feature/one", null, new SemanticVersion(4, 1) },
             new object[] { "Merge tag 'v://10.10.10.10' into master", "v://10.10.10.10", "master", null }
-
-        };
+         };
 
         [TestCaseSource(nameof(MergeMessages))]
         public void ParsesMergeMessage(
@@ -75,6 +75,7 @@ namespace GitVersionCore.Tests
             var sut = new MergeMessage(message, _config);
 
             // Assert
+            sut.FormatName.ShouldBe("Default");
             sut.TargetBranch.ShouldBe(expectedTargetBranch);
             sut.MergedBranch.ShouldBe(expectedMergedBranch);
             sut.IsMergedPullRequest.ShouldBeFalse();
@@ -87,18 +88,11 @@ namespace GitVersionCore.Tests
             new object[] { "Merge pull request #1234 from feature/one", "feature/one", null, null, 1234 },
             new object[] { "Merge pull request #1234 in feature/one", "feature/one", null, null, 1234  },
             new object[] { "Merge pull request #1234 in v4.0.0", "v4.0.0", null, new SemanticVersion(4), 1234  },
-            new object[] { "Merge pull request #1234 in V4.0.0", "V4.0.0", null, new SemanticVersion(4), 1234  },
             new object[] { "Merge pull request #1234 from origin/feature/one", "origin/feature/one", null, null, 1234  },
             new object[] { "Merge pull request #1234 in feature/4.1/one", "feature/4.1/one", null, new SemanticVersion(4,1), 1234  },
             new object[] { "Merge pull request #1234 in V://10.10.10.10", "V://10.10.10.10", null, null, 1234 },
-            
-
-            //TODO: Investigate successful github merge messages that may be invalid
-            // Should an empty PR number be valid?
-            new object[] { "Merge pull request # from feature/one", "feature/one", null, null, 0  },
-            // The branch name appears to be incorrect
-            new object[] { "Merge pull request #1234 from feature/one into dev", "feature/one into dev", "dev", null, 1234  },
-        };
+            new object[] { "Merge pull request #1234 from feature/one into dev", "feature/one", "dev", null, 1234  }
+         };
 
         [TestCaseSource(nameof(GitHubPullPullMergeMessages))]
         public void ParsesGitHubPullMergeMessage(
@@ -112,6 +106,7 @@ namespace GitVersionCore.Tests
             var sut = new MergeMessage(message, _config);
 
             // Assert
+            sut.FormatName.ShouldBe("GitHubPull");
             sut.TargetBranch.ShouldBe(expectedTargetBranch);
             sut.MergedBranch.ShouldBe(expectedMergedBranch);
             sut.IsMergedPullRequest.ShouldBeTrue();
@@ -121,23 +116,17 @@ namespace GitVersionCore.Tests
 
         private static readonly object[] BitBucketPullMergeMessages =
         {
-            new object[] { "Merge pull request #1234 from feature/one from feature/two to dev", "feature/two", null, null, 1234  },
-            new object[] { "Merge pull request #1234 in feature/one from feature/two to dev", "feature/two", null, null, 1234 },
-            new object[] { "Merge pull request #1234 in v4.0.0 from v4.1.0 to dev", "v4.1.0", null, new SemanticVersion(4,1), 1234  },
-            new object[] { "Merge pull request #1234 in V4.0.0 from V4.1.0 to dev", "V4.1.0", null, new SemanticVersion(4,1), 1234  },
-            new object[] { "Merge pull request #1234 from origin/feature/one from origin/feature/4.2/two to dev", "origin/feature/4.2/two", null, new SemanticVersion(4,2), 1234  },
-            new object[] { "Merge pull request #1234 in feature/4.1/one from feature/4.2/two to dev", "feature/4.2/two", null, new SemanticVersion(4,2), 1234  },
-            new object[] { "Merge pull request #1234 in feature/4.1/one from feature/4.2/two to dev into master", "feature/4.2/two", "master", new SemanticVersion(4,2), 1234  },
-            new object[] { "Merge pull request #1234 in V4.1.0 from V://10.10.10.10 to dev", "V://10.10.10.10", null, null, 1234 },
+            new object[] { "Merge pull request #1234 from feature/one from feature/two to dev", "feature/two", "dev", null, 1234  },
+            new object[] { "Merge pull request #1234 in feature/one from feature/two to dev", "feature/two", "dev", null, 1234 },
+            new object[] { "Merge pull request #1234 in v4.0.0 from v4.1.0 to dev", "v4.1.0", "dev", new SemanticVersion(4,1), 1234  },
+            new object[] { "Merge pull request #1234 from origin/feature/one from origin/feature/4.2/two to dev", "origin/feature/4.2/two", "dev", new SemanticVersion(4,2), 1234  },
+            new object[] { "Merge pull request #1234 in feature/4.1/one from feature/4.2/two to dev", "feature/4.2/two", "dev", new SemanticVersion(4,2), 1234  },
+            new object[] { "Merge pull request #1234 from feature/one from feature/two to master" , "feature/two", "master", null, 1234 },
+            new object[] { "Merge pull request #1234 in V4.1.0 from V://10.10.10.10 to dev", "V://10.10.10.10", "dev", null, 1234 },
             //TODO: Investigate successful bitbucket merge messages that may be invalid
             // Regex has double 'from/in from' section.  Is that correct?
-            new object[] { "Merge pull request #1234 in feature/4.1/one from feature/4.2/two to dev", "feature/4.2/two", null, new SemanticVersion(4,2), 1234  },
-            new object[] { "Merge pull request #1234 from feature/one from v4.0.0 to master", "v4.0.0", null, new SemanticVersion(4), 1234  },
-            // target branch is not resolved from targetbranch group
-            new object[] { "Merge pull request #1234 from feature/one from feature/two to master" , "feature/two", null, null, 1234 },
-            // Should an empty PR number be valid?
-            new object[] { "Merge pull request # in feature/one from feature/two to master" , "feature/two", null, null, 0 }
-        };
+            new object[] { "Merge pull request #1234 from feature/one from v4.0.0 to master", "v4.0.0", "master", new SemanticVersion(4), 1234  }
+         };
 
         [TestCaseSource(nameof(BitBucketPullMergeMessages))]
         public void ParsesBitBucketPullMergeMessage(
@@ -151,12 +140,14 @@ namespace GitVersionCore.Tests
             var sut = new MergeMessage(message, _config);
 
             // Assert
+            sut.FormatName.ShouldBe("BitBucketPull");
             sut.TargetBranch.ShouldBe(expectedTargetBranch);
             sut.MergedBranch.ShouldBe(expectedMergedBranch);
             sut.IsMergedPullRequest.ShouldBeTrue();
             sut.PullRequestNumber.ShouldBe(expectedPullRequestNumber);
             sut.Version.ShouldBe(expectedVersion);
         }
+
 
         private static readonly object[] SmartGitMergeMessages =
         {
@@ -166,23 +157,21 @@ namespace GitVersionCore.Tests
             new object[] { "Finish feature/4.1/one", "feature/4.1/one", null, new SemanticVersion(4, 1) },
             new object[] { "Finish origin/4.1/feature/one", "origin/4.1/feature/one", null, new SemanticVersion(4, 1) },
             new object[] { "Finish V://10.10.10.10", "V://10.10.10.10", null, null },
-
-            //TODO: Investigate successful smart git merge messages that may be invalid
-            // The branch name appears to be incorrect
-            new object[] { "Finish V4.0.0 into master", "V4.0.0 into master", "master", new SemanticVersion(4) }
-        };
+            new object[] { "Finish V4.0.0 into master", "V4.0.0", "master", new SemanticVersion(4) }
+         };
 
         [TestCaseSource(nameof(SmartGitMergeMessages))]
         public void ParsesSmartGitMergeMessage(
-           string message,
-           string expectedMergedBranch,
-           string expectedTargetBranch,
-           SemanticVersion expectedVersion)
+            string message,
+            string expectedMergedBranch,
+            string expectedTargetBranch,
+            SemanticVersion expectedVersion)
         {
             // Act
             var sut = new MergeMessage(message, _config);
 
             // Assert
+            sut.FormatName.ShouldBe("SmartGit");
             sut.TargetBranch.ShouldBe(expectedTargetBranch);
             sut.MergedBranch.ShouldBe(expectedMergedBranch);
             sut.IsMergedPullRequest.ShouldBeFalse();
@@ -199,24 +188,152 @@ namespace GitVersionCore.Tests
             new object[] { "Merge remote-tracking branch 'feature/4.1/one' into dev", "feature/4.1/one", "dev", new SemanticVersion(4, 1) },
             new object[] { "Merge remote-tracking branch 'origin/4.1/feature/one' into master", "origin/4.1/feature/one", "master", new SemanticVersion(4, 1) },
             new object[] { "Merge remote-tracking branch 'v://10.10.10.10' into master", "v://10.10.10.10", "master", null }
-        };
+         };
 
         [TestCaseSource(nameof(RemoteTrackingMergeMessages))]
         public void ParsesRemoteTrackingMergeMessage(
-           string message,
-           string expectedMergedBranch,
-           string expectedTargetBranch,
-           SemanticVersion expectedVersion)
+            string message,
+            string expectedMergedBranch,
+            string expectedTargetBranch,
+            SemanticVersion expectedVersion)
         {
             // Act
             var sut = new MergeMessage(message, _config);
 
             // Assert
+            sut.FormatName.ShouldBe("RemoteTracking");
             sut.TargetBranch.ShouldBe(expectedTargetBranch);
             sut.MergedBranch.ShouldBe(expectedMergedBranch);
             sut.IsMergedPullRequest.ShouldBeFalse();
             sut.PullRequestNumber.ShouldBeNull();
             sut.Version.ShouldBe(expectedVersion);
+        }
+
+        private static readonly object[] InvalidMergeMessages =
+        {
+            new object[] { "Merge pull request # from feature/one", "", null, null, null },
+            new object[] { "Merge pull request # in feature/one from feature/two to master" , "", null, null, null },
+            new object[] { "Zusammengeführter PR : feature/one mit master mergen", "", null, null, null }
+        };
+
+        [TestCaseSource(nameof(InvalidMergeMessages))]
+        public void ParsesInvalidMergeMessage(
+            string message,
+            string expectedMergedBranch,
+            string expectedTargetBranch,
+            SemanticVersion expectedVersion,
+            int? expectedPullRequestNumber)
+        {
+            // Act
+            var sut = new MergeMessage(message, _config);
+
+            // Assert
+            sut.FormatName.ShouldBeNull();
+            sut.TargetBranch.ShouldBe(expectedTargetBranch);
+            sut.MergedBranch.ShouldBe(expectedMergedBranch);
+            sut.IsMergedPullRequest.ShouldBeFalse();
+            sut.PullRequestNumber.ShouldBe(expectedPullRequestNumber);
+            sut.Version.ShouldBe(expectedVersion);
+        }
+
+        [Test]
+        public void MatchesSingleCustomMessage()
+        {
+            // Arrange
+            var message = "My custom message";
+            var definition = "Mycustom";
+            _config.MergeMessageFormats = new Dictionary<string, string>
+            {
+                [definition] = message
+            };
+
+            // Act
+            var sut = new MergeMessage(message, _config);
+
+            // Assert
+            sut.FormatName.ShouldBe(definition);
+            sut.TargetBranch.ShouldBeNull();
+            sut.MergedBranch.ShouldBeEmpty();
+            sut.IsMergedPullRequest.ShouldBeFalse();
+            sut.PullRequestNumber.ShouldBeNull();
+            sut.Version.ShouldBeNull();
+        }
+
+        [Test]
+        public void MatchesMultipleCustomMessages()
+        {
+            // Arrange
+            var format = "My custom message";
+            var definition = "Mycustom";
+            _config.MergeMessageFormats = new Dictionary<string, string>
+            {
+                ["Default2"] = "some example",
+                ["Default3"] = "another example",
+                [definition] = format
+            };
+
+            // Act
+            var sut = new MergeMessage(format, _config);
+
+            // Assert
+            sut.FormatName.ShouldBe(definition);
+            sut.TargetBranch.ShouldBeNull();
+            sut.MergedBranch.ShouldBeEmpty();
+            sut.IsMergedPullRequest.ShouldBeFalse();
+            sut.PullRequestNumber.ShouldBeNull();
+            sut.Version.ShouldBeNull();
+        }
+
+        [Test]
+        public void MatchesCaptureGroupsFromCustomMessages()
+        {
+            // Arrange
+            var format = @"^Merged PR #(?<PullRequestNumber>\d+) into (?<TargetBranch>[^\s]*) from (?:(?<SourceBranch>[^\s]*))";
+            var definition = "Mycustom";
+            _config.MergeMessageFormats = new Dictionary<string, string>
+            {
+                [definition] = format
+            };
+            var pr = 1234;
+            var target = "master";
+            var source = "feature/2.0/example";
+
+
+            // Act
+            var sut = new MergeMessage($"Merged PR #{pr} into {target} from {source}", _config);
+
+            // Assert
+            sut.FormatName.ShouldBe(definition);
+            sut.TargetBranch.ShouldBe(target);
+            sut.MergedBranch.ShouldBe(source);
+            sut.IsMergedPullRequest.ShouldBeTrue();
+            sut.PullRequestNumber.ShouldBe(pr);
+            sut.Version.ShouldBe(new SemanticVersion(2, 0));
+        }
+
+        [Test]
+        public void ReturnsAfterFirstMatchingPattern()
+        {
+            // Arrange
+            var format = @"^Merge (branch|tag) '(?<SourceBranch>[^']*)'(?: into (?<TargetBranch>[^\s]*))*";
+            var definition = "Mycustom";
+            _config.MergeMessageFormats = new Dictionary<string, string>
+            {
+                [definition] = format,
+                ["Default2"] = format,
+                ["Default3"] = format
+            };
+
+            // Act
+            var sut = new MergeMessage("Merge branch 'this'", _config);
+
+            // Assert
+            sut.FormatName.ShouldBe(definition);
+            sut.TargetBranch.ShouldBeNull();
+            sut.MergedBranch.ShouldBe("this");
+            sut.IsMergedPullRequest.ShouldBeFalse();
+            sut.PullRequestNumber.ShouldBeNull();
+            sut.Version.ShouldBeNull();
         }
     }
 }

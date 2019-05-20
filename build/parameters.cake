@@ -77,11 +77,11 @@ public class BuildParameters
             IsLocalBuild             = buildSystem.IsLocalBuild,
             IsRunningOnAppVeyor      = buildSystem.IsRunningOnAppVeyor,
             IsRunningOnTravis        = buildSystem.IsRunningOnTravisCI,
-            IsRunningOnAzurePipeline = buildSystem.IsRunningOnVSTS,
+            IsRunningOnAzurePipeline = buildSystem.IsRunningOnAzurePipelinesHosted,
 
+            IsPullRequest = buildSystem.IsPullRequest,
             IsMainRepo    = IsOnMainRepo(context),
             IsMainBranch  = IsOnMainBranch(context),
-            IsPullRequest = IsPullRequestBuild(context),
             IsTagged      = IsBuildTagged(context),
         };
     }
@@ -166,7 +166,7 @@ public class BuildParameters
         {
             repositoryName = buildSystem.TravisCI.Environment.Repository.Slug;
         }
-        else if (buildSystem.IsRunningOnVSTS)
+        else if (buildSystem.IsRunningOnAzurePipelinesHosted)
         {
             repositoryName = buildSystem.TFBuild.Environment.Repository.RepoName;
         }
@@ -188,7 +188,7 @@ public class BuildParameters
         {
             repositoryBranch = buildSystem.TravisCI.Environment.Build.Branch;
         }
-        else if (buildSystem.IsRunningOnVSTS)
+        else if (buildSystem.IsRunningOnAzurePipelinesHosted)
         {
             repositoryBranch = buildSystem.TFBuild.Environment.Repository.Branch;
         }
@@ -196,26 +196,6 @@ public class BuildParameters
         context.Information("Repository Branch: {0}" , repositoryBranch);
 
         return !string.IsNullOrWhiteSpace(repositoryBranch) && StringComparer.OrdinalIgnoreCase.Equals("master", repositoryBranch);
-    }
-
-    private static bool IsPullRequestBuild(ICakeContext context)
-    {
-        var buildSystem = context.BuildSystem();
-        if (buildSystem.IsRunningOnAppVeyor)
-        {
-            return buildSystem.AppVeyor.Environment.PullRequest.IsPullRequest;
-        }
-        if (buildSystem.IsRunningOnTravisCI)
-        {
-            var value = buildSystem.TravisCI.Environment.Repository.PullRequest;
-            return !string.IsNullOrWhiteSpace(value) && !string.Equals(value, false.ToString(), StringComparison.InvariantCultureIgnoreCase);
-        }
-        else if (buildSystem.IsRunningOnVSTS)
-        {
-            var value = context.EnvironmentVariable("SYSTEM_PULLREQUEST_ISFORK");
-            return !string.IsNullOrWhiteSpace(value) && !string.Equals(value, false.ToString(), StringComparison.InvariantCultureIgnoreCase);
-        }
-        return false;
     }
 
     private static bool IsBuildTagged(ICakeContext context)

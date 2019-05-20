@@ -1,11 +1,11 @@
 // Install modules
-#module nuget:?package=Cake.DotNetTool.Module&version=0.1.0
+#module nuget:?package=Cake.DotNetTool.Module&version=0.2.0
 
 // Install addins.
-#addin "nuget:?package=Cake.Gitter&version=0.9.0"
-#addin "nuget:?package=Cake.Docker&version=0.9.6"
-#addin "nuget:?package=Cake.Npm&version=0.15.0"
-#addin "nuget:?package=Cake.Incubator&version=3.0.0"
+#addin "nuget:?package=Cake.Gitter&version=0.10.0"
+#addin "nuget:?package=Cake.Docker&version=0.10.0"
+#addin "nuget:?package=Cake.Npm&version=0.16.0"
+#addin "nuget:?package=Cake.Incubator&version=5.0.1"
 #addin "nuget:?package=Cake.Json&version=3.0.0"
 #addin "nuget:?package=Cake.Tfx&version=0.8.0"
 #addin "nuget:?package=Cake.Gem&version=0.7.0"
@@ -15,11 +15,10 @@
 #addin "nuget:?package=xunit.assert&version=2.4.1"
 
 // Install tools.
-#tool "nuget:?package=NUnit.ConsoleRunner&version=3.9.0"
-#tool "nuget:?package=GitReleaseNotes&version=0.7.1"
+#tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
 #tool "nuget:?package=ILRepack&version=2.0.16"
-#tool "nuget:?package=Codecov&version=1.1.0"
-#tool "nuget:?package=nuget.commandline&version=4.9.2"
+#tool "nuget:?package=Codecov&version=1.4.0"
+#tool "nuget:?package=nuget.commandline&version=4.9.4"
 
 // Install .NET Core Global tools.
 #tool "dotnet:?package=GitReleaseManager.Tool&version=0.8.0"
@@ -155,7 +154,7 @@ Task("Test")
     .IsDependentOn("Build")
     .Does<BuildParameters>((parameters) =>
 {
-    var framework = "net461";
+    var framework = parameters.FullFxVersion;
 
     // run using dotnet test
     var projects = GetFiles("./src/**/*.Tests.csproj");
@@ -224,7 +223,7 @@ Task("Copy-Files")
     CopyFileToDirectory("./LICENSE", coreFxDir);
     CopyFileToDirectory($"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion}/GitVersion.xml", coreFxDir);
 
-    // .NET 4.0
+    // .NET Framework
     DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
     {
         Framework = parameters.FullFxVersion,
@@ -394,7 +393,7 @@ Task("Zip-Files")
     .IsDependentOn("Copy-Files")
     .Does<BuildParameters>((parameters) =>
 {
-    // .NET 4.0
+    // .NET Framework
     var cmdlineDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
     var fullFxFiles = GetFiles(cmdlineDir.FullPath + "/**/*");
     Zip(cmdlineDir, parameters.Paths.Files.ZipArtifactPathDesktop, fullFxFiles);

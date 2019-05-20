@@ -128,7 +128,7 @@ void PublishILRepackedGitVersionExe(bool includeLibGit2Sharp, DirectoryPath targ
 void DockerBuild(DockerImage dockerImage, BuildParameters parameters)
 {
     var (os, distro, targetframework) = dockerImage;
-    var workDir = DirectoryPath.FromString($"./src/Docker/{os}/{distro}/{targetframework}");
+    var workDir = DirectoryPath.FromString($"./src/Docker/{targetframework}/{os}/{distro}");
 
     var sourceDir = targetframework.StartsWith("netcoreapp")
         ? parameters.Paths.Directories.ArtifactsBinCoreFx.Combine("tools")
@@ -201,7 +201,7 @@ string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
         $"{name}:{parameters.Version.SemVersion}-{os}-{distro}-{targetframework}",
     };
 
-    if (distro == "debian" && targetframework == "netcoreapp2.1" || distro == "nano") {
+    if (distro == "debian" && targetframework == parameters.CoreFxVersion || distro == "nano") {
         tags.AddRange(new[] {
             $"{name}:{parameters.Version.Version}-{os}",
             $"{name}:{parameters.Version.SemVersion}-{os}",
