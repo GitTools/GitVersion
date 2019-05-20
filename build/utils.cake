@@ -66,7 +66,9 @@ void Build(string configuration)
             .WithTarget("Build")
             .WithProperty("POSIX", IsRunningOnUnix().ToString());
 
-        settings.ToolPath = GetFiles(VSWhereLatest() + "/MSBuild/**/Bin/MSBuild.exe").First();
+        if (IsRunningOnWindows()) {
+            settings.ToolPath = GetFiles(VSWhereLatest() + "/MSBuild/**/Bin/MSBuild.exe").First();
+        }
     });
 }
 
