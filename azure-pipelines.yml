@@ -1,15 +1,8 @@
-variables:
-  DOTNET_SDK_VERSION: '2.2.107'
-  DOTNET_PACKAGE_TYPE: 'sdk'
-  RUBY_VERSION: '2.5'
-
 jobs:
 - template: build/tmpl/jobs.yml
   parameters:
     name: macOS
-    vmImage: 'macOS 10.13'
-    installRuby: 'false'
-    installDotNet: 'true'
+    vmImage: 'macOS-latest'
 
 - template: build/tmpl/jobs.yml
   parameters:
