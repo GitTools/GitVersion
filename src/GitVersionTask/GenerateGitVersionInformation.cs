@@ -1,6 +1,5 @@
 namespace GitVersionTask
 {
-    using System;
     using System.IO;
     using GitVersion;
     using GitVersion.Helpers;

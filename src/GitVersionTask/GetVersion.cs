@@ -1,7 +1,5 @@
 namespace GitVersionTask
 {
-    using System;
-
     public static class GetVersion
     {
 

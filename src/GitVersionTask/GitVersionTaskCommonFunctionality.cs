@@ -3,7 +3,6 @@ namespace GitVersionTask
     using GitVersion;
     using GitVersion.Helpers;
     using System;
-    using System.IO;
 
     public static class GitVersionTaskCommonFunctionality
     {
@@ -18,7 +17,7 @@ namespace GitVersionTask
             Logger.SetLoggers(logger.LogInfo, logger.LogInfo, logger.LogWarning, s => logger.LogError(s));
 
 
-            TOutput output = null;
+            TOutput output;
             try
             {
                 output = execute(input, logger);
@@ -92,19 +91,19 @@ namespace GitVersionTask
     {
         public string SolutionDirectory { get; set; }
 
-        public Boolean NoFetch { get; set; }
+        public bool NoFetch { get; set; }
 
         public void ValidateInputOrThrowException()
         {
-            if (!this.ValidateInput())
+            if (!ValidateInput())
             {
-                throw new InputValidationException($"Invalid input for {this.GetType()}.");
+                throw new InputValidationException($"Invalid input for {GetType()}.");
             }
         }
 
-        protected virtual Boolean ValidateInput()
+        protected virtual bool ValidateInput()
         {
-            return !String.IsNullOrEmpty(this.SolutionDirectory);
+            return !string.IsNullOrEmpty(SolutionDirectory);
         }
     }
 
@@ -116,12 +115,12 @@ namespace GitVersionTask
 
         public string Language { get; set; }
 
-        protected override Boolean ValidateInput()
+        protected override bool ValidateInput()
         {
             return base.ValidateInput()
-                && !String.IsNullOrEmpty(this.ProjectFile)
-                && !String.IsNullOrEmpty(this.IntermediateOutputPath)
-                && !String.IsNullOrEmpty(this.Language);
+                && !string.IsNullOrEmpty(ProjectFile)
+                && !string.IsNullOrEmpty(IntermediateOutputPath)
+                && !string.IsNullOrEmpty(Language);
         }
     }
 
@@ -138,9 +137,9 @@ namespace GitVersionTask
     {
         public FileWriteInfo(string workingDirectory, string fileName, string fileExtension)
         {
-            this.WorkingDirectory = workingDirectory;
-            this.FileName = fileName;
-            this.FileExtension = fileExtension;
+            WorkingDirectory = workingDirectory;
+            FileName = fileName;
+            FileExtension = fileExtension;
         }
 
         public string WorkingDirectory { get; }

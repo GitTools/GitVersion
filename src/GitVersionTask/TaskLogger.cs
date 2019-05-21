@@ -8,22 +8,22 @@ class TaskLogger
 
     public TaskLogger(TextWriter paramStdout = null, TextWriter paramStderr = null)
     {
-        this.stdout = paramStdout ?? Console.Out;
-        this.stderr = paramStderr ?? Console.Error;
+        stdout = paramStdout ?? Console.Out;
+        stderr = paramStderr ?? Console.Error;
     }
 
     public void LogWarning(string message)
     {
-        this.stdout.WriteLine(message);
+        stdout.WriteLine(message);
     }
 
     public void LogInfo(string message)
     {
-        this.stdout.WriteLine(message);
+        stdout.WriteLine(message);
     }
 
     public void LogError(string message)
     {
-        this.stderr.WriteLine(message);
+        stderr.WriteLine(message);
     }
 }

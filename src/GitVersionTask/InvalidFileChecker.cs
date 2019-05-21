@@ -23,11 +23,9 @@ public static class InvalidFileChecker
 
     static bool FileContainsVersionAttribute(string compileFile, string projectFile)
     {
-        Func<string, string, bool> languageSpecificFileContainsVersionAttribute;
-
         var compileFileExtension = Path.GetExtension(compileFile);
 
-        if (versionAttributeFinders.TryGetValue(compileFileExtension, out languageSpecificFileContainsVersionAttribute))
+        if (versionAttributeFinders.TryGetValue(compileFileExtension, out var languageSpecificFileContainsVersionAttribute))
         {
             return languageSpecificFileContainsVersionAttribute(compileFile, projectFile);
         }

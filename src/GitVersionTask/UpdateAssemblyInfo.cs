@@ -1,6 +1,5 @@
 namespace GitVersionTask
 {
-    using System;
     using System.IO;
 
     using GitVersion;
@@ -56,10 +55,10 @@ namespace GitVersionTask
         {
             public string[] CompileFiles { get; set; }
 
-            protected override Boolean ValidateInput()
+            protected override bool ValidateInput()
             {
                 return base.ValidateInput()
-                    && this.CompileFiles != null;
+                    && CompileFiles != null;
             }
 
         }
