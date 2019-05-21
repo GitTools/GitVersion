@@ -2,15 +2,17 @@
 #module nuget:?package=Cake.DotNetTool.Module&version=0.2.0
 
 // Install addins.
-#addin "nuget:?package=Cake.Gitter&version=0.11.0"
+#addin "nuget:?package=Cake.Codecov&version=0.6.0"
+#addin "nuget:?package=Cake.Coverlet&version=2.2.1"
 #addin "nuget:?package=Cake.Docker&version=0.10.0"
-#addin "nuget:?package=Cake.Npm&version=0.17.0"
+#addin "nuget:?package=Cake.Gem&version=0.8.0"
+#addin "nuget:?package=Cake.Gitter&version=0.11.0"
 #addin "nuget:?package=Cake.Incubator&version=5.0.1"
 #addin "nuget:?package=Cake.Json&version=3.0.0"
+#addin "nuget:?package=Cake.Npm&version=0.17.0"
 #addin "nuget:?package=Cake.Tfx&version=0.9.0"
 #addin "nuget:?package=Cake.Gem&version=0.8.0"
-#addin "nuget:?package=Cake.Coverlet&version=2.2.1"
-#addin "nuget:?package=Cake.Codecov&version=0.6.0"
+
 #addin "nuget:?package=Newtonsoft.Json&version=9.0.1"
 #addin "nuget:?package=xunit.assert&version=2.4.1"
 
@@ -289,9 +291,9 @@ Task("Pack-Tfs")
     UpdateTaskVersion(new FilePath(workDir + "/GitVersionNetCoreTask/task.json"), taskIdCoreFx, parameters.Version.GitVersion);
 
     // build and pack
-    NpmSet("progress", "false");
-    NpmInstall(new NpmInstallSettings { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent });
-    NpmRunScript(new NpmRunScriptSettings { WorkingDirectory = workDir, ScriptName = "build", LogLevel = NpmLogLevel.Silent });
+    NpmSet(new NpmSetSettings             { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, Key = "progress", Value = "false" });
+    NpmInstall(new NpmInstallSettings     { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent });
+    NpmRunScript(new NpmRunScriptSettings { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, ScriptName = "build" });
 
     var settings = new TfxExtensionCreateSettings
     {

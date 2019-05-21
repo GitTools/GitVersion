@@ -18,4 +18,4 @@ jobs:
 - template: build/tmpl/jobs.yml
   parameters:
     name: Windows
-    vmImage: 'VS2017-Win2016'
+    vmImage: 'windows-2019'
