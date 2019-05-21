@@ -2,16 +2,18 @@ parameters:
   name: ''  # defaults for any parameters that aren't specified
   vmImage: ''
   installRuby: 'true'
+  installDotNet: 'false'
 jobs:
 - job: ${{ parameters.name }}
   pool:
     vmImage: ${{ parameters.vmImage }}
   steps:
-  - task: DotNetCoreInstaller@0
-    displayName: 'Use .NET Core sdk $(DOTNET_SDK_VERSION)'
-    inputs:
-      version: $(DOTNET_SDK_VERSION)
-      packageType: $(DOTNET_PACKAGE_TYPE)
+  - ${{ if eq(parameters.installDotNet, 'true') }}:
+    - task: DotNetCoreInstaller@0
+      displayName: 'Use .NET Core sdk $(DOTNET_SDK_VERSION)'
+      inputs:
+        version: $(DOTNET_SDK_VERSION)
+        packageType: $(DOTNET_PACKAGE_TYPE)
   - ${{ if eq(parameters.installRuby, 'true') }}:
     - task: UseRubyVersion@0
       inputs:

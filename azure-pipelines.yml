@@ -9,6 +9,7 @@ jobs:
     name: macOS
     vmImage: 'macOS 10.13'
     installRuby: 'false'
+    installDotNet: 'true'
 
 - template: build/tmpl/jobs.yml
   parameters:
