@@ -7,20 +7,15 @@ namespace GitVersionTask
 
     public static class UpdateAssemblyInfo
     {
-        public static Output Execute(Input input)
-        {
-            return GitVersionTaskCommonFunctionality.ExecuteGitVersionTask(input, InnerExecute);
-        }
+        public static Output Execute(Input input) => GitVersionTaskUtils.ExecuteGitVersionTask(input, InnerExecute);
 
         private static Output InnerExecute(Input input, TaskLogger logger)
         {
-            var execute = GitVersionTaskCommonFunctionality.CreateExecuteCore();
-
             TempFileTracker.DeleteTempFiles();
 
             InvalidFileChecker.CheckForInvalidFiles(input.CompileFiles, input.ProjectFile);
 
-            if (!execute.TryGetVersion(input.SolutionDirectory, out var versionVariables, input.NoFetch, new Authentication()))
+            if (!GitVersionTaskUtils.GetVersionVariables(input, out var versionVariables))
             {
                 return null;
             }
@@ -60,7 +55,6 @@ namespace GitVersionTask
                 return base.ValidateInput()
                     && CompileFiles != null;
             }
-
         }
 
         public sealed class Output

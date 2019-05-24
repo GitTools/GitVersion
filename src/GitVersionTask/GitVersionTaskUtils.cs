@@ -4,18 +4,16 @@ namespace GitVersionTask
     using GitVersion.Helpers;
     using System;
 
-    public static class GitVersionTaskCommonFunctionality
+    public static class GitVersionTaskUtils
     {
         internal static TOutput ExecuteGitVersionTask<TInput, TOutput>(TInput input, Func<TInput, TaskLogger, TOutput> execute)
             where TInput : InputBase
             where TOutput : class, new()
         {
-
             input.ValidateInputOrThrowException();
 
             var logger = new TaskLogger();
             Logger.SetLoggers(logger.LogInfo, logger.LogInfo, logger.LogWarning, s => logger.LogError(s));
-
 
             TOutput output;
             try
@@ -40,9 +38,8 @@ namespace GitVersionTask
             return output;
         }
 
-
-        public static ExecuteCore CreateExecuteCore()
-            => new ExecuteCore(new FileSystem());
+        public static bool GetVersionVariables(InputBase input, out VersionVariables versionVariables)
+            => new ExecuteCore(new FileSystem()).TryGetVersion(input.SolutionDirectory, out versionVariables, input.NoFetch, new Authentication());
 
         private static string GetFileExtension(this string language)
         {
@@ -84,7 +81,6 @@ namespace GitVersionTask
             }
             return new FileWriteInfo(workingDirectory, fileName, fileExtension);
         }
-
     }
 
     public abstract class InputBase
@@ -146,5 +142,4 @@ namespace GitVersionTask
         public string FileName { get; }
         public string FileExtension { get; }
     }
-
 }

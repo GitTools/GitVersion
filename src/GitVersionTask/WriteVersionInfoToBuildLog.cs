@@ -5,10 +5,7 @@ namespace GitVersionTask
 
     public class WriteVersionInfoToBuildLog
     {
-        public static Output Execute(Input input)
-        {
-            return GitVersionTaskCommonFunctionality.ExecuteGitVersionTask(input, InnerExecute);
-        }
+        public static Output Execute(Input input) => GitVersionTaskUtils.ExecuteGitVersionTask(input, InnerExecute);
 
         public sealed class Input : InputBase
         {
@@ -22,13 +19,12 @@ namespace GitVersionTask
 
         private static Output InnerExecute(Input input, TaskLogger logger)
         {
-            var execute = GitVersionTaskCommonFunctionality.CreateExecuteCore();
-            if (!execute.TryGetVersion(input.SolutionDirectory, out var result, input.NoFetch, new Authentication()))
+            if (!GitVersionTaskUtils.GetVersionVariables(input, out var versionVariables))
             {
                 return null;
             }
 
-            WriteIntegrationParameters(logger, BuildServerList.GetApplicableBuildServers(), result);
+            WriteIntegrationParameters(logger, BuildServerList.GetApplicableBuildServers(), versionVariables);
 
             return new Output();
         }

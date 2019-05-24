@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using GitVersion;
-using Microsoft.Build.Framework;
 using NUnit.Framework;
 
 [TestFixture]

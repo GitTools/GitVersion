@@ -2,15 +2,11 @@ namespace GitVersionTask
 {
     public static class GetVersion
     {
-
-        public static Output Execute(Input input)
-        {
-            return GitVersionTaskCommonFunctionality.ExecuteGitVersionTask(input, InnerExecute);
-        }
+        public static Output Execute(Input input) => GitVersionTaskUtils.ExecuteGitVersionTask(input, InnerExecute);
 
         private static Output InnerExecute(Input input, TaskLogger logger)
         {
-            if (!GitVersionTaskCommonFunctionality.CreateExecuteCore().TryGetVersion(input.SolutionDirectory, out var versionVariables, input.NoFetch, new GitVersion.Authentication()))
+            if (!GitVersionTaskUtils.GetVersionVariables(input, out var versionVariables))
             {
                 return null;
             }
@@ -92,6 +88,5 @@ namespace GitVersionTask
 
             public string CommitsSinceVersionSourcePadded { get; set; }
         }
-
     }
 }
