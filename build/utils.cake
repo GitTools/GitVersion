@@ -140,6 +140,7 @@ void DockerStdinLogin(string username, string password)
     var processStartInfo = new ProcessStartInfo(toolPath.ToString(), args.Render())
     {
         RedirectStandardInput = true,
+        RedirectStandardError = true,
         UseShellExecute = false
     };
 
