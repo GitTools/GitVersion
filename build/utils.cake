@@ -129,6 +129,30 @@ void PublishILRepackedGitVersionExe(bool includeLibGit2Sharp, DirectoryPath targ
     CopyFileToDirectory("./src/GitVersionExe/bin/" + configuration + "/" + dotnetVersion + "/GitVersion.xml", outputDir);
 }
 
+void DockerStdinLogin(string username, string password)
+{
+    var toolPath = FindToolInPath(IsRunningOnUnix() ? "docker" : "docker.exe");
+    var args = new ProcessArgumentBuilder()
+        .Append("login")
+        .Append("--username").AppendQuoted(username)
+        .Append("--password-stdin");
+
+    var processStartInfo = new ProcessStartInfo(toolPath.ToString(), args.Render())
+    {
+        RedirectStandardInput = true,
+        UseShellExecute = false
+    };
+
+    using (var process = new Process { StartInfo = processStartInfo })
+    {
+        process.Start();
+        process.StandardInput.WriteLine(password);
+        process.StandardInput.Close();
+        process.WaitForExit();
+        if (process.ExitCode != 0) throw new Exception(toolPath.GetFilename() + " returned exit code " + process.ExitCode + ".");
+    }
+}
+
 void DockerBuild(DockerImage dockerImage, BuildParameters parameters)
 {
     var (os, distro, targetframework) = dockerImage;

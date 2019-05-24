@@ -31,6 +31,7 @@
 #load "./build/utils.cake"
 
 using Xunit;
+using System.Diagnostics;
 //////////////////////////////////////////////////////////////////////
 // PARAMETERS
 //////////////////////////////////////////////////////////////////////
@@ -673,7 +674,7 @@ Task("Publish-DockerHub")
         throw new InvalidOperationException("Could not resolve Docker password.");
     }
 
-    DockerLogin(parameters.Credentials.Docker.UserName, parameters.Credentials.Docker.Password);
+    DockerStdinLogin(username, password);
 
     var images = parameters.IsRunningOnWindows
             ? parameters.Docker.Windows

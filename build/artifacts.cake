@@ -101,14 +101,6 @@ public class DockerImages
 
     public static DockerImages GetDockerImages(ICakeContext context, FilePath[] dockerfiles)
     {
-        foreach (var file in dockerfiles)
-        {
-            var segments = file.Segments.Reverse().ToArray();
-            var distro = segments[1];
-            var os = segments[2];
-            var targetFramework = segments[3];
-            context.Information($"{os}-{distro}-{targetFramework}");
-        }
         var toDockerImage = DockerImage();
         var dockerImages = dockerfiles.Select(toDockerImage).ToArray();
 
