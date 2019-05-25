@@ -32,7 +32,7 @@ namespace GitVersionTask
                 (pf, ext) => $"AssemblyInfo_{Path.GetFileNameWithoutExtension(pf)}_{Path.GetRandomFileName()}.g.{ext}"
                 );
 
-            var output = new Output()
+            var output = new Output
             {
                 AssemblyInfoTempFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName)
             };

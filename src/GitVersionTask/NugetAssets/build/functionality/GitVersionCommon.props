@@ -11,22 +11,18 @@
     <IntermediateOutputPath Condition="$(IntermediateOutputPath) == '' Or $(IntermediateOutputPath) == '*Undefined*'">$(MSBuildProjectDirectory)\obj\$(Configuration)\</IntermediateOutputPath>
 
     <!-- Property that enables WriteVersionInfoToBuildLog -->
-    <WriteVersionInfoToBuildLog Condition=" '$(WriteVersionInfoToBuildLog)' == '' and '$(NCrunch)' != '' ">false</WriteVersionInfoToBuildLog>
     <WriteVersionInfoToBuildLog Condition=" '$(WriteVersionInfoToBuildLog)' == '' ">true</WriteVersionInfoToBuildLog>
 
     <!-- Property that enables UpdateAssemblyInfo. Default to off for SDK builds -->
     <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' and '$(TargetFramework)' != '' ">false</UpdateAssemblyInfo>
-    <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' and '$(NCrunch)' != '' ">false</UpdateAssemblyInfo>
     <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
 
     <!-- Property that enables GenerateGitVersionInformation -->
-    <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' and '$(NCrunch)' != '' ">false</GenerateGitVersionInformation>
     <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' ">true</GenerateGitVersionInformation>
 
-    <GetVersion Condition=" '$(GetVersion)' == '' and '$(NCrunch)' != '' ">false</GetVersion>
+    <!-- Property that enables GetVersion -->
     <GetVersion Condition=" '$(GetVersion)' == '' ">true</GetVersion>
 
-    <GenerateGitVersionWixDefines Condition=" '$(GenerateGitVersionWixDefines)' == '' and '$(NCrunch)' != '' ">false</GenerateGitVersionWixDefines>
     <GenerateGitVersionWixDefines Condition=" '$(GenerateGitVersionWixDefines)' == '' ">true</GenerateGitVersionWixDefines>
 
     <!--

@@ -16,14 +16,19 @@ namespace GitVersionTask
                 return null;
             }
 
+            return CreateGitVersionInfo(input, versionVariables);
+        }
+
+        private static Output CreateGitVersionInfo(Input input, VersionVariables versionVariables)
+        {
             var fileWriteInfo = input.IntermediateOutputPath.GetFileWriteInfo(
                 input.Language,
                 input.ProjectFile,
                 (pf, ext) => $"GitVersionInformation.g.{ext}",
                 (pf, ext) => $"GitVersionInformation_{Path.GetFileNameWithoutExtension(pf)}_{Path.GetRandomFileName()}.g.{ext}"
-                );
+            );
 
-            var output = new Output()
+            var output = new Output
             {
                 GitVersionInformationFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName)
             };

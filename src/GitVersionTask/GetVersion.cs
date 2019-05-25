@@ -15,7 +15,7 @@ namespace GitVersionTask
             var output = new Output();
             foreach (var variable in versionVariables)
             {
-                outputType.GetProperty(variable.Key).SetValue(output, variable.Value, null);
+                outputType.GetProperty(variable.Key)?.SetValue(output, variable.Value, null);
             }
 
             return output;
@@ -23,7 +23,6 @@ namespace GitVersionTask
 
         public sealed class Input : InputBase
         {
-
         }
 
         public sealed class Output

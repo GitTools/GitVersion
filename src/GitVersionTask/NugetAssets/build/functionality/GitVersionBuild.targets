@@ -118,17 +118,4 @@
 
   </Target>
 
-  <!--Support for ncrunch-->
-  <ItemGroup Condition=" $(NCrunch) != '' ">
-    <None Include="$(GitVersionTaskDir)GitVersionTask.dll">
-      <Visible>False</Visible>
-    </None>
-    <None Include="$(GitVersionTaskDir)GitVersionTask.pdb">
-      <Visible>False</Visible>
-    </None>
-    <None Include="$(GitVersionTaskDir)NativeBinaries\**\*">
-      <Visible>False</Visible>
-    </None>
-  </ItemGroup>
-
 </Project>
