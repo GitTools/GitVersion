@@ -14,12 +14,12 @@ namespace GitVersion
     {
         private readonly ILog log;
 
-        public GitVersionContext(IRepository repository, ILog log, string targetBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
+        public GitVersionContext(IRepository repository, ILog log, string targetBranch, Config configuration, bool onlyEvaluateTrackedBranches = false, string commitId = null)
              : this(repository, log, GetTargetBranch(repository, targetBranch), configuration, onlyEvaluateTrackedBranches, commitId)
         {
         }
 
-        public GitVersionContext(IRepository repository, ILog log, Branch currentBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
+        public GitVersionContext(IRepository repository, ILog log, Branch currentBranch, Config configuration, bool onlyEvaluateTrackedBranches = false, string commitId = null)
         {
             this.log = log;
             Repository = repository;
