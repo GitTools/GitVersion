@@ -15,7 +15,6 @@
  </PropertyGroup>
  <PropertyGroup>
     <PackageVersion_LibGit2Sharp>0.25.0-preview-0033</PackageVersion_LibGit2Sharp>
-    <PackageVersion_LibGit2SharpNativeBinaries>[1.0.185]</PackageVersion_LibGit2SharpNativeBinaries>
     <PackageVersion_JetBrainsAnnotations>2019.1.1</PackageVersion_JetBrainsAnnotations>
     <PackageVersion_YamlDotNet>6.1.1</PackageVersion_YamlDotNet>
  </PropertyGroup>

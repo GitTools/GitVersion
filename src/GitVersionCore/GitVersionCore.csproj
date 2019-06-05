@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
-    <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2SharpNativeBinaries)" PrivateAssets="contentFiles" />
     <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)"></PackageReference>
     <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
   </ItemGroup>
