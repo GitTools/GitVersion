@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-class TaskLogger
+public class TaskLogger
 {
     private readonly TextWriter stdout;
     private readonly TextWriter stderr;

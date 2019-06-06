@@ -2,24 +2,7 @@ namespace GitVersionTask
 {
     public static class GetVersion
     {
-        public static Output Execute(Input input) => GitVersionTaskUtils.ExecuteGitVersionTask(input, InnerExecute);
-
-        private static Output InnerExecute(Input input, TaskLogger logger)
-        {
-            if (!GitVersionTaskUtils.GetVersionVariables(input, out var versionVariables))
-            {
-                return null;
-            }
-
-            var outputType = typeof(Output);
-            var output = new Output();
-            foreach (var variable in versionVariables)
-            {
-                outputType.GetProperty(variable.Key)?.SetValue(output, variable.Value, null);
-            }
-
-            return output;
-        }
+        public static Output Execute(Input input) => GitVersionTaskUtils.ExecuteGitVersionTask(input, GitVersionTasks.GetVersion);
 
         public sealed class Input : InputBase
         {
