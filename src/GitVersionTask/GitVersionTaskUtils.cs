@@ -72,7 +72,7 @@ namespace GitVersionTask
             if (intermediateOutputPath == null)
             {
                 fileName = fileNameWithIntermediatePath(projectFile, fileExtension);
-                workingDirectory = TempFileTracker.TempPath;
+                workingDirectory = FileHelper.TempPath;
             }
             else
             {

@@ -11,9 +11,9 @@ namespace GitVersionTask
 
         private static Output InnerExecute(Input input, TaskLogger logger)
         {
-            TempFileTracker.DeleteTempFiles();
+            FileHelper.DeleteTempFiles();
 
-            InvalidFileChecker.CheckForInvalidFiles(input.CompileFiles, input.ProjectFile);
+            FileHelper.CheckForInvalidFiles(input.CompileFiles, input.ProjectFile);
 
             if (!GitVersionTaskUtils.GetVersionVariables(input, out var versionVariables))
             {

@@ -5,13 +5,44 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion;
 
-public static class InvalidFileChecker
+public static class FileHelper
 {
     private static readonly Dictionary<string, Func<string, string, bool>> versionAttributeFinders = new Dictionary<string, Func<string, string, bool>>()
     {
         { ".cs", CSharpFileContainsVersionAttribute },
         { ".vb", VisualBasicFileContainsVersionAttribute }
     };
+
+    public static string TempPath;
+
+    static FileHelper()
+    {
+        TempPath = Path.Combine(Path.GetTempPath(), "GitVersionTask");
+        Directory.CreateDirectory(TempPath);
+    }
+
+    public static void DeleteTempFiles()
+    {
+        if (!Directory.Exists(TempPath))
+        {
+            return;
+        }
+
+        foreach (var file in Directory.GetFiles(TempPath))
+        {
+            if (File.GetLastWriteTime(file) < DateTime.Now.AddDays(-1))
+            {
+                try
+                {
+                    File.Delete(file);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    //ignore contention
+                }
+            }
+        }
+    }
 
     public static void CheckForInvalidFiles(IEnumerable<string> compileFiles, string projectFile)
     {
