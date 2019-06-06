@@ -2,7 +2,7 @@ namespace GitVersionTask
 {
     public class WriteVersionInfoToBuildLog
     {
-        public static Output Execute(Input input) => GitVersionTaskUtils.ExecuteGitVersionTask(input, GitVersionTasks.WriteVersionInfoToBuildLog);
+        public static Output Execute(Input input) => GitVersionTasks.WriteVersionInfoToBuildLog(input);
 
         public sealed class Input : InputBase
         {

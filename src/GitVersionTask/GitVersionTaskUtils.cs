@@ -6,38 +6,6 @@ namespace GitVersionTask
 
     public static class GitVersionTaskUtils
     {
-        internal static TOutput ExecuteGitVersionTask<TInput, TOutput>(TInput input, Func<TInput, TaskLogger, TOutput> execute)
-            where TInput : InputBase
-            where TOutput : class, new()
-        {
-            input.ValidateInputOrThrowException();
-
-            var logger = new TaskLogger();
-            Logger.SetLoggers(logger.LogInfo, logger.LogInfo, logger.LogWarning, s => logger.LogError(s));
-
-            TOutput output;
-            try
-            {
-                output = execute(input, logger);
-            }
-            catch (WarningException errorException)
-            {
-                logger.LogWarning(errorException.Message);
-                output = new TOutput();
-            }
-            catch (Exception exception)
-            {
-                logger.LogError("Error occurred: " + exception);
-                throw;
-            }
-            finally
-            {
-                Logger.Reset();
-            }
-
-            return output;
-        }
-
         public static bool GetVersionVariables(InputBase input, out VersionVariables versionVariables)
             => new ExecuteCore(new FileSystem()).TryGetVersion(input.SolutionDirectory, out versionVariables, input.NoFetch, new Authentication());
 

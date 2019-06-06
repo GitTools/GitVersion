@@ -2,7 +2,7 @@ namespace GitVersionTask
 {
     public static class UpdateAssemblyInfo
     {
-        public static Output Execute(Input input) => GitVersionTaskUtils.ExecuteGitVersionTask(input, GitVersionTasks.UpdateAssemblyInfo);
+        public static Output Execute(Input input) => GitVersionTasks.UpdateAssemblyInfo(input);
 
         public sealed class Input : InputWithCommonAdditionalProperties
         {

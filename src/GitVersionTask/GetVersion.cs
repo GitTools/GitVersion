@@ -2,7 +2,7 @@ namespace GitVersionTask
 {
     public static class GetVersion
     {
-        public static Output Execute(Input input) => GitVersionTaskUtils.ExecuteGitVersionTask(input, GitVersionTasks.GetVersion);
+        public static Output Execute(Input input) => GitVersionTasks.GetVersion(input);
 
         public sealed class Input : InputBase
         {
