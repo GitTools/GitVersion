@@ -44,6 +44,21 @@ public static class FileHelper
         }
     }
 
+    public static string GetFileExtension(string language)
+    {
+        switch (language)
+        {
+            case "C#":
+                return "cs";
+            case "F#":
+                return "fs";
+            case "VB":
+                return "vb";
+            default:
+                throw new ArgumentException($"Unknown language detected: '{language}'");
+        }
+    }
+
     public static void CheckForInvalidFiles(IEnumerable<string> compileFiles, string projectFile)
     {
         foreach (var compileFile in GetInvalidFiles(compileFiles, projectFile))

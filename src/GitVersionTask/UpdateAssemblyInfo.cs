@@ -28,7 +28,7 @@ namespace GitVersionTask
             var fileWriteInfo = input.IntermediateOutputPath.GetFileWriteInfo(
                 input.Language,
                 input.ProjectFile,
-                (pf, ext) => $"GitVersionTaskAssemblyInfo.g.{ext}",
+                (pf, ext) => $"AssemblyInfo.g.{ext}",
                 (pf, ext) => $"AssemblyInfo_{Path.GetFileNameWithoutExtension(pf)}_{Path.GetRandomFileName()}.g.{ext}"
                 );
 

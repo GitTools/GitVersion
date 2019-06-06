@@ -41,24 +41,6 @@ namespace GitVersionTask
         public static bool GetVersionVariables(InputBase input, out VersionVariables versionVariables)
             => new ExecuteCore(new FileSystem()).TryGetVersion(input.SolutionDirectory, out versionVariables, input.NoFetch, new Authentication());
 
-        private static string GetFileExtension(this string language)
-        {
-            switch (language)
-            {
-                case "C#":
-                    return "cs";
-
-                case "F#":
-                    return "fs";
-
-                case "VB":
-                    return "vb";
-
-                default:
-                    throw new ArgumentException($"Unknown language detected: '{language}'");
-            }
-        }
-
         public static FileWriteInfo GetFileWriteInfo(
             this string intermediateOutputPath,
             string language,
@@ -67,7 +49,7 @@ namespace GitVersionTask
             Func<string, string, string> fileNameNoIntermediatePath
             )
         {
-            var fileExtension = language.GetFileExtension();
+            var fileExtension = FileHelper.GetFileExtension(language);
             string workingDirectory, fileName;
             if (intermediateOutputPath == null)
             {
