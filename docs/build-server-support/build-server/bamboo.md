@@ -1,8 +1,20 @@
 # Bamboo
-If you use Bamboo then you can install *GitVersion for Bamboo* which gives you a GitVersion task in Bamboo.
+If you use Bamboo then you will have to use GitVersion from the command line, as there is no actively supported app.
+You can use the "Inject Bamboo Variables" task to read the GitVersion output back into Bamboo.
+Below is a Linux example using the [.NET Core GitVersion global tool](https://www.nuget.org/packages/GitVersion.Tool/).
 
- - [Blog Post](http://carolynvanslyck.com/blog/2015/03/gitversion-for-bamboo)
- - [Project link](http://carolynvanslyck.com/projects/gitversion)
- - [Download](https://marketplace.atlassian.com/plugins/com.carolynvs.gitversion)
- - [Source](http://carolynvanslyck.com/projects/gitversion)
- - [Issues](http://jira.carolynvanslyck.com/browse/GITVER)
+## Example
+
+### Task: Script 
+
+**Script body**
+```bash
+~/.dotnet/tools/dotnet-gitversion > gitversion.txt
+sed -i '1d;26d;s/  //;s/"//g;s/,//;s/:/=/' gitversion.txt
+```
+
+### Task: Inject Bamboo variables Configuration
+**Required Properties**
+- __Path to properties file__: gitversion.txt
+- __Namespace__: GitVersion
+- __Scope of the Variables__: Result
