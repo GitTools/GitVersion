@@ -4,6 +4,8 @@ namespace GitVersionTask
     using System.IO;
     using GitVersion;
     using GitVersion.Helpers;
+    using GitVersionTask.MsBuild;
+    using GitVersionTask.MsBuild.Tasks;
     using Microsoft.Build.Framework;
 
     public static class GitVersionTasks
