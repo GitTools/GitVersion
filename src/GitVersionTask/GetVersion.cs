@@ -1,74 +1,99 @@
 namespace GitVersionTask
 {
-    public class GetVersion
+    using Microsoft.Build.Framework;
+
+    public class GetVersion : GitVersionTaskBase
     {
-        public static Output Execute(Input input) => GitVersionTasks.GetVersion(input);
+        [Output]
+        public string Major { get; set; }
 
-        public sealed class Input : InputBase
-        {
-        }
+        [Output]
+        public string Minor { get; set; }
 
-        public sealed class Output
-        {
-            public string Major { get; set; }
+        [Output]
+        public string Patch { get; set; }
 
-            public string Minor { get; set; }
+        [Output]
+        public string PreReleaseTag { get; set; }
 
-            public string Patch { get; set; }
+        [Output]
+        public string PreReleaseTagWithDash { get; set; }
 
-            public string PreReleaseTag { get; set; }
+        [Output]
+        public string PreReleaseLabel { get; set; }
 
-            public string PreReleaseTagWithDash { get; set; }
+        [Output]
+        public string PreReleaseNumber { get; set; }
 
-            public string PreReleaseLabel { get; set; }
+        [Output]
+        public string WeightedPreReleaseNumber { get; set; }
 
-            public string PreReleaseNumber { get; set; }
+        [Output]
+        public string BuildMetaData { get; set; }
 
-            public string WeightedPreReleaseNumber { get; set; }
+        [Output]
+        public string BuildMetaDataPadded { get; set; }
 
-            public string BuildMetaData { get; set; }
+        [Output]
+        public string FullBuildMetaData { get; set; }
 
-            public string BuildMetaDataPadded { get; set; }
+        [Output]
+        public string MajorMinorPatch { get; set; }
 
-            public string FullBuildMetaData { get; set; }
+        [Output]
+        public string SemVer { get; set; }
 
-            public string MajorMinorPatch { get; set; }
+        [Output]
+        public string LegacySemVer { get; set; }
 
-            public string SemVer { get; set; }
+        [Output]
+        public string LegacySemVerPadded { get; set; }
 
-            public string LegacySemVer { get; set; }
+        [Output]
+        public string AssemblySemVer { get; set; }
 
-            public string LegacySemVerPadded { get; set; }
+        [Output]
+        public string AssemblySemFileVer { get; set; }
 
-            public string AssemblySemVer { get; set; }
+        [Output]
+        public string FullSemVer { get; set; }
 
-            public string AssemblySemFileVer { get; set; }
+        [Output]
+        public string InformationalVersion { get; set; }
 
-            public string FullSemVer { get; set; }
+        [Output]
+        public string BranchName { get; set; }
 
-            public string InformationalVersion { get; set; }
+        [Output]
+        public string Sha { get; set; }
 
-            public string BranchName { get; set; }
+        [Output]
+        public string ShortSha { get; set; }
 
-            public string Sha { get; set; }
+        [Output]
+        public string NuGetVersionV2 { get; set; }
 
-            public string ShortSha { get; set; }
+        [Output]
+        public string NuGetVersion { get; set; }
 
-            public string NuGetVersionV2 { get; set; }
+        [Output]
+        public string NuGetPreReleaseTagV2 { get; set; }
 
-            public string NuGetVersion { get; set; }
+        [Output]
+        public string NuGetPreReleaseTag { get; set; }
 
-            public string NuGetPreReleaseTagV2 { get; set; }
+        [Output]
+        public string CommitDate { get; set; }
 
-            public string NuGetPreReleaseTag { get; set; }
+        [Output]
+        public string VersionSourceSha { get; set; }
 
-            public string CommitDate { get; set; }
+        [Output]
+        public string CommitsSinceVersionSource { get; set; }
 
-            public string VersionSourceSha { get; set; }
+        [Output]
+        public string CommitsSinceVersionSourcePadded { get; set; }
 
-            public string CommitsSinceVersionSource { get; set; }
-
-            public string CommitsSinceVersionSourcePadded { get; set; }
-        }
+        public override bool Execute() => TaskProxy.GetVersion(this);
     }
 }

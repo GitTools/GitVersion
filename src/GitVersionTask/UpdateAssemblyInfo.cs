@@ -1,23 +1,24 @@
 namespace GitVersionTask
 {
-    public class UpdateAssemblyInfo
+    using Microsoft.Build.Framework;
+
+    public class UpdateAssemblyInfo : GitVersionTaskBase
     {
-        public static Output Execute(Input input) => GitVersionTasks.UpdateAssemblyInfo(input);
+        [Required]
+        public string ProjectFile { get; set; }
 
-        public sealed class Input : InputWithCommonAdditionalProperties
-        {
-            public string[] CompileFiles { get; set; }
+        [Required]
+        public string IntermediateOutputPath { get; set; }
 
-            protected override bool ValidateInput()
-            {
-                return base.ValidateInput()
-                    && CompileFiles != null;
-            }
-        }
+        [Required]
+        public ITaskItem[] CompileFiles { get; set; }
 
-        public sealed class Output
-        {
-            public string AssemblyInfoTempFilePath { get; set; }
-        }
+        [Required]
+        public string Language { get; set; }
+
+        [Output]
+        public string AssemblyInfoTempFilePath { get; set; }
+
+        public override bool Execute() => TaskProxy.UpdateAssemblyInfo(this);
     }
 }

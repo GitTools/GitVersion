@@ -1,17 +1,21 @@
 namespace GitVersionTask
 {
-    public class GenerateGitVersionInformation
+    using Microsoft.Build.Framework;
+
+    public class GenerateGitVersionInformation : GitVersionTaskBase
     {
-        // This method is entrypoint for the task declared in .props file
-        public static Output Execute(Input input) => GitVersionTasks.GenerateGitVersionInformation(input);
+        [Required]
+        public string ProjectFile { get; set; }
 
-        public sealed class Input : InputWithCommonAdditionalProperties
-        {
-        }
+        [Required]
+        public string IntermediateOutputPath { get; set; }
 
-        public sealed class Output
-        {
-            public string GitVersionInformationFilePath { get; set; }
-        }
+        [Required]
+        public string Language { get; set; }
+
+        [Output]
+        public string GitVersionInformationFilePath { get; set; }
+
+        public override bool Execute() => TaskProxy.GenerateGitVersionInformation(this);
     }
 }

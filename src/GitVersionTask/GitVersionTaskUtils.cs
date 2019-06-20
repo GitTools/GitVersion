@@ -6,8 +6,8 @@ namespace GitVersionTask
 
     public static class GitVersionTaskUtils
     {
-        public static bool GetVersionVariables(InputBase input, out VersionVariables versionVariables)
-            => new ExecuteCore(new FileSystem()).TryGetVersion(input.SolutionDirectory, out versionVariables, input.NoFetch, new Authentication());
+        public static bool GetVersionVariables(GitVersionTaskBase task, out VersionVariables versionVariables)
+            => new ExecuteCore(new FileSystem()).TryGetVersion(task.SolutionDirectory, out versionVariables, task.NoFetch, new Authentication());
 
         public static FileWriteInfo GetFileWriteInfo(
             this string intermediateOutputPath,
