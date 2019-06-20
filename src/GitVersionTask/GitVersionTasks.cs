@@ -1,7 +1,6 @@
 namespace GitVersionTask
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using GitVersion;
     using GitVersion.Helpers;
@@ -13,7 +12,7 @@ namespace GitVersionTask
         {
             return ExecuteGitVersionTask(task, t =>
             {
-                if (!GitVersionTaskUtils.GetVersionVariables(t, out var versionVariables)) return;
+                if (!GetVersionVariables(t, out var versionVariables)) return;
 
                 var outputType = typeof(GetVersion);
                 foreach (var variable in versionVariables)
@@ -30,19 +29,17 @@ namespace GitVersionTask
                 FileHelper.DeleteTempFiles();
                 FileHelper.CheckForInvalidFiles(t.CompileFiles, t.ProjectFile);
 
-                if (!GitVersionTaskUtils.GetVersionVariables(t, out var versionVariables)) return;
+                if (!GetVersionVariables(t, out var versionVariables)) return;
 
-                CreateTempAssemblyInfo(t, versionVariables);
-            });
-        }
+                var fileWriteInfo = t.IntermediateOutputPath.GetFileWriteInfo(t.Language, t.ProjectFile, "AssemblyInfo");
 
-        public static bool WriteVersionInfoToBuildLog(WriteVersionInfoToBuildLog task)
-        {
-            return ExecuteGitVersionTask(task, t =>
-            {
-                if (!GitVersionTaskUtils.GetVersionVariables(task, out var versionVariables)) return;
+                t.AssemblyInfoTempFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
-                WriteIntegrationParameters(t, BuildServerList.GetApplicableBuildServers(), versionVariables);
+                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, new FileSystem(), true))
+                {
+                    assemblyInfoFileUpdater.Update();
+                    assemblyInfoFileUpdater.CommitChanges();
+                }
             });
         }
 
@@ -50,57 +47,34 @@ namespace GitVersionTask
         {
             return ExecuteGitVersionTask(task, t =>
             {
-                if (!GitVersionTaskUtils.GetVersionVariables(t, out var versionVariables)) return;
+                if (!GetVersionVariables(t, out var versionVariables)) return;
 
-                CreateGitVersionInfo(t, versionVariables);
+                var fileWriteInfo = t.IntermediateOutputPath.GetFileWriteInfo(t.Language, t.ProjectFile, "GitVersionInformation");
+
+                t.GitVersionInformationFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
+                var generator = new GitVersionInformationGenerator(fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, new FileSystem());
+                generator.Generate();
             });
         }
 
-        private static void CreateTempAssemblyInfo(UpdateAssemblyInfo task, VersionVariables versionVariables)
+        public static bool WriteVersionInfoToBuildLog(WriteVersionInfoToBuildLog task)
         {
-            var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(
-                task.Language,
-                task.ProjectFile,
-                (pf, ext) => $"AssemblyInfo.g.{ext}",
-                (pf, ext) => $"AssemblyInfo_{Path.GetFileNameWithoutExtension(pf)}_{Path.GetRandomFileName()}.g.{ext}"
-            );
-
-            task.AssemblyInfoTempFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
-
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, new FileSystem(), true))
+            return ExecuteGitVersionTask(task, t =>
             {
-                assemblyInfoFileUpdater.Update();
-                assemblyInfoFileUpdater.CommitChanges();
-            }
-        }
+                if (!GetVersionVariables(task, out var versionVariables)) return;
 
-        private static void WriteIntegrationParameters(WriteVersionInfoToBuildLog task, IEnumerable<IBuildServer> applicableBuildServers, VersionVariables versionVariables)
-        {
-            var logger = task.Log;
-            foreach (var buildServer in applicableBuildServers)
-            {
-                logger.LogMessage($"Executing GenerateSetVersionMessage for '{ buildServer.GetType().Name }'.");
-                logger.LogMessage(buildServer.GenerateSetVersionMessage(versionVariables));
-                logger.LogMessage($"Executing GenerateBuildLogOutput for '{ buildServer.GetType().Name }'.");
-                foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(buildServer, versionVariables))
+                var logger = t.Log;
+                foreach (var buildServer in BuildServerList.GetApplicableBuildServers())
                 {
-                    logger.LogMessage(buildParameter);
+                    logger.LogMessage($"Executing GenerateSetVersionMessage for '{ buildServer.GetType().Name }'.");
+                    logger.LogMessage(buildServer.GenerateSetVersionMessage(versionVariables));
+                    logger.LogMessage($"Executing GenerateBuildLogOutput for '{ buildServer.GetType().Name }'.");
+                    foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(buildServer, versionVariables))
+                    {
+                        logger.LogMessage(buildParameter);
+                    }
                 }
-            }
-        }
-
-        private static void CreateGitVersionInfo(GenerateGitVersionInformation task, VersionVariables versionVariables)
-        {
-            var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(
-                task.Language,
-                task.ProjectFile,
-                (pf, ext) => $"GitVersionInformation.g.{ext}",
-                (pf, ext) => $"GitVersionInformation_{Path.GetFileNameWithoutExtension(pf)}_{Path.GetRandomFileName()}.g.{ext}"
-            );
-
-            task.GitVersionInformationFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
-            var generator = new GitVersionInformationGenerator(fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, new FileSystem());
-            generator.Generate();
+            });
         }
 
         private static bool ExecuteGitVersionTask<T>(T task, Action<T> action)
@@ -130,5 +104,8 @@ namespace GitVersionTask
 
             return !log.HasLoggedErrors;
         }
+
+        private static bool GetVersionVariables(GitVersionTaskBase task, out VersionVariables versionVariables)
+            => new ExecuteCore(new FileSystem()).TryGetVersion(task.SolutionDirectory, out versionVariables, task.NoFetch, new Authentication());
     }
 }
