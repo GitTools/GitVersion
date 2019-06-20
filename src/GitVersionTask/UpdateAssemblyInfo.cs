@@ -1,6 +1,6 @@
 namespace GitVersionTask
 {
-    public static class UpdateAssemblyInfo
+    public class UpdateAssemblyInfo
     {
         public static Output Execute(Input input) => GitVersionTasks.UpdateAssemblyInfo(input);
 
