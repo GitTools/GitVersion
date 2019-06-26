@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.1" />
-    <PackageReference Include="FluentDateTime" Version="1.15.0" />
+    <PackageReference Include="FluentDateTime" Version="1.16.0" />
     <PackageReference Include="GitTools.Testing" Version="1.2.0" />
     <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)"></PackageReference>
     <PackageReference Include="NSubstitute" Version="4.2.0" />
