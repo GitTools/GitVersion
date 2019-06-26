@@ -238,6 +238,24 @@ Task("Copy-Files")
         MSBuildSettings = parameters.MSBuildSettings
     });
 
+    DotNetCorePublish("./src/GitVersionTask/GitVersionTask.csproj", new DotNetCorePublishSettings
+    {
+        Framework = parameters.FullFxVersion,
+        NoBuild = true,
+        NoRestore = true,
+        Configuration = parameters.Configuration,
+        MSBuildSettings = parameters.MSBuildSettings
+    });
+
+    // .NET Core
+    DotNetCorePublish("./src/GitVersionTask/GitVersionTask.csproj", new DotNetCorePublishSettings
+    {
+        Framework = parameters.CoreFxVersion,
+        NoBuild = true,
+        NoRestore = true,
+        Configuration = parameters.Configuration,
+        MSBuildSettings = parameters.MSBuildSettings
+    });
     var ilMergeDir = parameters.Paths.Directories.ArtifactsBinFullFxILMerge;
     var portableDir = parameters.Paths.Directories.ArtifactsBinFullFxPortable.Combine("tools");
     var cmdlineDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");

@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>GitVersionTask</id>
+        <version>1.0.0</version>
+        <title>GitVersionTask</title>
+        <authors>GitTools and Contributors</authors>
+        <owners>GitTools and Contributors</owners>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <developmentDependency>true</developmentDependency>
+        <license type="expression">MIT</license>
+        <projectUrl>https://github.com/GitTools/GitVersion</projectUrl>
+        <iconUrl>https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/img/package_icon.png</iconUrl>
+        <description>Stamps an assembly with git information based on SemVer.</description>
+        <releaseNotes>https://github.com/GitTools/GitVersion/releases</releaseNotes>
+        <copyright>Copyright GitTools 2019.</copyright>
+        <tags>Git Versioning GitVersion GitFlowVersion GitFlow GitHubFlow SemVer</tags>
+    </metadata>
+    <files>
+        <!-- 
+          List platforms explicitly. If a new platform is supported by libgit2 update RuntimeIdMap method to handle it.
+        -->
+        <file src="netcoreapp2.1\publish\runtimes\**\*.so"              target="tools\netstandard2.0\runtimes" />
+        <file src="netcoreapp2.1\publish\runtimes\**\*.dylib"           target="tools\netstandard2.0\runtimes" />
+        <file src="netcoreapp2.1\publish\runtimes\win-x86\native\*.dll" target="tools\netstandard2.0\runtimes\win-x86\native" />
+        <file src="netcoreapp2.1\publish\runtimes\win-x64\native\*.dll" target="tools\netstandard2.0\runtimes\win-x64\native" />
+
+        <file src="netcoreapp2.1\publish\LibGit2Sharp.dll"    target="tools\netstandard2.0" />
+        <file src="netcoreapp2.1\publish\Newtonsoft.Json.dll" target="tools\netstandard2.0" />
+        <file src="netcoreapp2.1\publish\YamlDotNet.dll"      target="tools\netstandard2.0" />
+        <file src="netcoreapp2.1\publish\GitVersion*"         target="tools\netstandard2.0" />
+
+        <file src="net461\GitVersion*"    target="tools\net461" />
+        <file src="net461\LibGit2Sharp.*" target="tools\net461" />
+        <file src="net461\YamlDotNet.*"   target="tools\net461" />
+
+        <file src="net461\lib\linux-x64\*.so" target="tools\net461\lib\linux-x64" />
+        <file src="net461\lib\osx\*.dylib"    target="tools\net461\lib\osx" />
+        <file src="net461\lib\win32\**\*.dll" target="tools\net461\lib\win32" />
+
+        <file src="..\..\build\*.*" target="build" />
+        <file src="..\..\buildMultiTargeting\*.*" target="buildMultiTargeting" />
+
+    </files>
+</package>
