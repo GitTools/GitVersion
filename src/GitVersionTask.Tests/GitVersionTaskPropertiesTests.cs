@@ -21,6 +21,7 @@ namespace GitVersionTask.Tests
             <TargetFramework>net461</TargetFramework>
             <Configuration>Debug</Configuration>
             <GitVersionTaskRoot>..\GitVersionTask\build\</GitVersionTaskRoot>
+            <GitVersionTaskRoot Condition=""!Exists('$(GitVersionTaskRoot)GitVersionTask.props')"">.\src\GitVersionTask\build\</GitVersionTaskRoot>
             <GitVersionAssemblyFile>..\..\GitVersionTask.MsBuild\bin\$(Configuration)\$(TargetFramework)\GitVersionTask.MsBuild.dll</GitVersionAssemblyFile>
 </PropertyGroup>
             <Import Project='$(GitVersionTaskRoot)GitVersionTask.props'/>
