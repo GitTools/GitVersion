@@ -56,6 +56,7 @@ namespace GitVersionTask.Tests
         }
 
         [Test]
+        [Category("NoMono")]
         public void Zero_properties_should_fail_the_build_because()
         {
             var result = CallMsBuild(new Dictionary<string, string>());
@@ -63,6 +64,7 @@ namespace GitVersionTask.Tests
         }
 
         [Test]
+        [Category("NoMono")]
         public void With_DisableGitVersionTask_the_build_should_work()
         {
             var globalProperties = new Dictionary<string, string>
@@ -74,6 +76,7 @@ namespace GitVersionTask.Tests
         }
 
         [Test]
+        [Category("NoMono")]
         public void With_Enabled_GetVersionTask_the_Build_properties_should_be_initialized()
         {
             var result = CallMsBuild(new Dictionary<string, string>());
@@ -88,6 +91,7 @@ namespace GitVersionTask.Tests
 
 
         [Test]
+        [Category("NoMono")]
         public void With_DisabledGetVersionTask_the_WriteVersionInfoToBuildLog_should_be_false()
         {
             var globalProperties = new Dictionary<string, string>
@@ -100,6 +104,7 @@ namespace GitVersionTask.Tests
         }
 
         [Test]
+        [Category("NoMono")]
         public void With_DisabledGetVersionTask_the_UpdateAssemblyInfo_should_be_false()
         {
             var globalProperties = new Dictionary<string, string>
@@ -111,6 +116,7 @@ namespace GitVersionTask.Tests
         }
 
         [Test]
+        [Category("NoMono")]
         public void With_DisabledGetVersionTask_the_GenerateGitVersionInformation_should_be_false()
         {
             var globalProperties = new Dictionary<string, string>
@@ -122,6 +128,7 @@ namespace GitVersionTask.Tests
         }
 
         [Test]
+        [Category("NoMono")]
         public void With_DisabledGetVersionTask_the_GetVersion_should_be_false()
         {
             var globalProperties = new Dictionary<string, string>
@@ -133,6 +140,7 @@ namespace GitVersionTask.Tests
         }
 
         [Test]
+        [Category("NoMono")]
         public void With_DisabledGetVersionTask_the_UpdateVersionProperties_should_be_false()
         {
             var globalProperties = new Dictionary<string, string>
