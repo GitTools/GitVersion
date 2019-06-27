@@ -225,6 +225,7 @@ public class MockRepository : IRepository
     public ObjectDatabase ObjectDatabase { get; set; }
     public NoteCollection Notes { get; set; }
     public SubmoduleCollection Submodules { get; set; }
+    public WorktreeCollection Worktrees { get; set; }
     public Rebase Rebase { get; private set; }
 
     public Ignore Ignore

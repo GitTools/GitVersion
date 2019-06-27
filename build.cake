@@ -238,6 +238,24 @@ Task("Copy-Files")
         MSBuildSettings = parameters.MSBuildSettings
     });
 
+    DotNetCorePublish("./src/GitVersionTask/GitVersionTask.csproj", new DotNetCorePublishSettings
+    {
+        Framework = parameters.FullFxVersion,
+        NoBuild = true,
+        NoRestore = true,
+        Configuration = parameters.Configuration,
+        MSBuildSettings = parameters.MSBuildSettings
+    });
+
+    // .NET Core
+    DotNetCorePublish("./src/GitVersionTask/GitVersionTask.csproj", new DotNetCorePublishSettings
+    {
+        Framework = parameters.CoreFxVersion,
+        NoBuild = true,
+        NoRestore = true,
+        Configuration = parameters.Configuration,
+        MSBuildSettings = parameters.MSBuildSettings
+    });
     var ilMergeDir = parameters.Paths.Directories.ArtifactsBinFullFxILMerge;
     var portableDir = parameters.Paths.Directories.ArtifactsBinFullFxPortable.Combine("tools");
     var cmdlineDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
@@ -414,13 +432,7 @@ Task("Docker-Build")
     .IsDependentOn("Copy-Files")
     .Does<BuildParameters>((parameters) =>
 {
-    var images = parameters.IsRunningOnWindows
-            ? parameters.Docker.Windows
-            : parameters.IsRunningOnLinux
-                ? parameters.Docker.Linux
-                : Array.Empty<DockerImage>();
-
-    foreach(var dockerImage in images)
+    foreach(var dockerImage in parameters.Docker.Images)
     {
         DockerBuild(dockerImage, parameters);
     }
@@ -440,13 +452,7 @@ Task("Docker-Test")
         Volume = new[] { $"{currentDir}:{containerDir}" }
     };
 
-    var images = parameters.IsRunningOnWindows
-            ? parameters.Docker.Windows
-            : parameters.IsRunningOnLinux
-                ? parameters.Docker.Linux
-                : Array.Empty<DockerImage>();
-
-    foreach(var dockerImage in images)
+    foreach(var dockerImage in parameters.Docker.Images)
     {
         var tags = GetDockerTags(dockerImage, parameters);
         foreach (var tag in tags)
@@ -676,13 +682,7 @@ Task("Publish-DockerHub")
 
     DockerStdinLogin(username, password);
 
-    var images = parameters.IsRunningOnWindows
-            ? parameters.Docker.Windows
-            : parameters.IsRunningOnLinux
-                ? parameters.Docker.Linux
-                : Array.Empty<DockerImage>();
-
-    foreach(var dockerImage in images)
+    foreach(var dockerImage in parameters.Docker.Images)
     {
         DockerPush(dockerImage, parameters);
     }
