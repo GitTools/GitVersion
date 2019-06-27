@@ -93,7 +93,7 @@ public class BuildParameters
         Paths = BuildPaths.GetPaths(context, this, Configuration, Version);
 
         var dockerFiles = context.GetFiles("./src/**/Dockerfile").ToArray();
-        Docker = DockerImages.GetDockerImages(context, dockerFiles);
+        Docker = DockerImages.GetDockerImages(this, dockerFiles);
 
         Packages = BuildPackages.GetPackages(
             Paths.Directories.NugetRoot,

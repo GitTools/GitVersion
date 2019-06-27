@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Build" Version="15.9.20" />
+        <PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.0.461" />
+        <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="2.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="GitVersionTask" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
+    </ItemGroup>
+
+</Project>
