@@ -432,13 +432,7 @@ Task("Docker-Build")
     .IsDependentOn("Copy-Files")
     .Does<BuildParameters>((parameters) =>
 {
-    var images = parameters.IsRunningOnWindows
-            ? parameters.Docker.Windows
-            : parameters.IsRunningOnLinux
-                ? parameters.Docker.Linux
-                : Array.Empty<DockerImage>();
-
-    foreach(var dockerImage in images)
+    foreach(var dockerImage in parameters.Docker.Images)
     {
         DockerBuild(dockerImage, parameters);
     }
@@ -458,13 +452,7 @@ Task("Docker-Test")
         Volume = new[] { $"{currentDir}:{containerDir}" }
     };
 
-    var images = parameters.IsRunningOnWindows
-            ? parameters.Docker.Windows
-            : parameters.IsRunningOnLinux
-                ? parameters.Docker.Linux
-                : Array.Empty<DockerImage>();
-
-    foreach(var dockerImage in images)
+    foreach(var dockerImage in parameters.Docker.Images)
     {
         var tags = GetDockerTags(dockerImage, parameters);
         foreach (var tag in tags)
@@ -694,13 +682,7 @@ Task("Publish-DockerHub")
 
     DockerStdinLogin(username, password);
 
-    var images = parameters.IsRunningOnWindows
-            ? parameters.Docker.Windows
-            : parameters.IsRunningOnLinux
-                ? parameters.Docker.Linux
-                : Array.Empty<DockerImage>();
-
-    foreach(var dockerImage in images)
+    foreach(var dockerImage in parameters.Docker.Images)
     {
         DockerPush(dockerImage, parameters);
     }
