@@ -10,18 +10,25 @@
 
         <GitVersion_NoFetchEnabled Condition="$(GitVersion_NoFetchEnabled) == ''">false</GitVersion_NoFetchEnabled>
 
+        <DisableGitVersionTask Condition=" '$(DisableGitVersionTask)' == '' ">false</DisableGitVersionTask>
+
         <!-- Property that enables WriteVersionInfoToBuildLog -->
+        <WriteVersionInfoToBuildLog Condition=" '$(DisableGitVersionTask)' == 'true' ">false</WriteVersionInfoToBuildLog>
         <WriteVersionInfoToBuildLog Condition=" '$(WriteVersionInfoToBuildLog)' == '' ">true</WriteVersionInfoToBuildLog>
 
         <!-- Property that enables UpdateAssemblyInfo. Default to off for SDK builds -->
+        <UpdateAssemblyInfo Condition=" '$(DisableGitVersionTask)' == 'true' ">false</UpdateAssemblyInfo>
         <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
 
         <!-- Property that enables GenerateGitVersionInformation -->
+        <GenerateGitVersionInformation Condition=" '$(DisableGitVersionTask)' == 'true' ">false</GenerateGitVersionInformation>
         <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' ">true</GenerateGitVersionInformation>
 
         <!-- Property that enables GetVersion -->
+        <GetVersion Condition=" '$(DisableGitVersionTask)' == 'true' ">false</GetVersion>
         <GetVersion Condition=" '$(GetVersion)' == '' ">true</GetVersion>
 
+        <GenerateGitVersionWixDefines Condition=" '$(DisableGitVersionTask)' == 'true' ">false</GenerateGitVersionWixDefines>
         <GenerateGitVersionWixDefines Condition=" '$(GenerateGitVersionWixDefines)' == '' ">true</GenerateGitVersionWixDefines>
         <!--
           Ensure GetVersion runs prior to XAML's Markup Compiler in order to have the assembly version available.
@@ -31,7 +38,9 @@
         <GetPackageVersionDependsOn>$(GetPackageVersionDependsOn);GetVersion</GetPackageVersionDependsOn>
 
         <!-- Property that enables setting of Version -->
+        <UpdateVersionProperties Condition=" '$(DisableGitVersionTask)' == 'true' ">false</UpdateVersionProperties>
         <UpdateVersionProperties Condition=" '$(UpdateVersionProperties)' == '' ">true</UpdateVersionProperties>
+        <UseFullSemVerForNuGet Condition=" '$(DisableGitVersionTask)' == 'true' ">false</UseFullSemVerForNuGet>
         <UseFullSemVerForNuGet Condition=" '$(UseFullSemVerForNuGet)' == '' ">false</UseFullSemVerForNuGet>
     </PropertyGroup>
 </Project>
