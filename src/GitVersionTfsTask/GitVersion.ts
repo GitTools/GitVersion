@@ -1,96 +1,75 @@
 import tl = require('azure-pipelines-task-lib/task');
-import { IExecOptions, ToolRunner } from 'azure-pipelines-task-lib/toolrunner';
+import tr = require('azure-pipelines-task-lib/toolrunner');
 import path = require('path');
 import os = require('os');
-import { ArgumentParser } from 'argparse';
 
 export class GitVersionTask {
+    execOptions: tr.IExecOptions;
 
-    public static async execute() {
+    preferBundledVersion: boolean;
+    updateAssemblyInfo: boolean;
+
+    updateAssemblyInfoFilename: string;
+    additionalArguments: string;
+    targetPath: string;
+    sourcesDirectory: string;
+    currentDirectory: string;
+    workingDirectory: string;
+    gitVersionPath: string;
+    runtime: string;
+
+    constructor() {
+        this.preferBundledVersion       = tl.getBoolInput('preferBundledVersion') || true;
+        this.updateAssemblyInfo         = tl.getBoolInput('updateAssemblyInfo');
+
+        this.updateAssemblyInfoFilename = tl.getInput('updateAssemblyInfoFilename');
+        this.additionalArguments        = tl.getInput('additionalArguments');
+        this.targetPath                 = tl.getInput('targetPath');
+        this.runtime                    = tl.getInput('runtime') || "core";
+        this.gitVersionPath             = tl.getInput('gitVersionPath');
+
+        this.sourcesDirectory           = tl.getVariable("Build.SourcesDirectory");
+
+        this.currentDirectory = __dirname;
+        this.workingDirectory = !this.targetPath
+                ? this.sourcesDirectory
+                : path.join(this.sourcesDirectory, this.targetPath);
+
+        this.execOptions = {
+            cwd: undefined,
+            env: undefined,
+            silent: undefined,
+            failOnStdErr: undefined,
+            ignoreReturnCode: undefined,
+            errStream: undefined,
+            outStream: undefined,
+            windowsVerbatimArguments: undefined
+        };
+    }
+
+    public async execute() {
         try {
-
-            const updateAssemblyInfo = tl.getBoolInput('updateAssemblyInfo');
-            const updateAssemblyInfoFilename = tl.getInput('updateAssemblyInfoFilename');
-            const additionalArguments = tl.getInput('additionalArguments');
-            const targetPath = tl.getInput('targetPath');
-            const preferBundledVersion = tl.getBoolInput('preferBundledVersion');
-
-            const currentDirectory = __dirname;
-            const workingDirectory = !targetPath
-                    ? tl.getVariable("Build.SourcesDirectory")
-                    : path.join(tl.getVariable("Build.SourcesDirectory"), targetPath);
-
-            let gitVersionPath = tl.getInput('gitVersionPath');
-            if (!gitVersionPath) {
-                gitVersionPath = tl.which("GitVersion.exe");
-                if (preferBundledVersion || !gitVersionPath) {
-                    gitVersionPath = path.join(currentDirectory, "GitVersion.exe");
-                }
-            }
-
-            const execOptions: IExecOptions = {
-                cwd: undefined,
-                env: undefined,
-                silent: undefined,
-                failOnStdErr: undefined,
-                ignoreReturnCode: undefined,
-                errStream: undefined,
-                outStream: undefined,
-                windowsVerbatimArguments: undefined
-            };
-
-            let toolRunner: ToolRunner;
-
-            const parser = new ArgumentParser();
-            parser.addArgument(
-                [ '-r', '--runtime'],
-                {
-                    help: '[full|netcore]',
-                    defaultValue: 'full'
-                }
-            );
-
-            const args = parser.parseArgs();
-            switch (args.runtime) {
-                case 'netcore':
-                    gitVersionPath = path.join(currentDirectory, "netcore", "GitVersion.dll");
-                    toolRunner = tl.tool("dotnet");
-                    toolRunner.arg(gitVersionPath);
-                    break;
-
-                case 'full':
-                default:
-                    const isWin32 = os.platform() == "win32";
-                    if (isWin32) {
-                        toolRunner = tl.tool(gitVersionPath);
-                    } else {
-                        toolRunner = tl.tool("mono");
-                        toolRunner.arg(gitVersionPath);
-                    }
-
-                    break;
-            }
-
-            toolRunner.arg([
-                workingDirectory,
+            let exe = this.getExecutable();
+            exe.arg([
+                this.workingDirectory,
                 "/output",
                 "buildserver",
                 "/nofetch"]);
 
-            if (updateAssemblyInfo) {
-                toolRunner.arg("/updateassemblyinfo");
-                if (updateAssemblyInfoFilename) {
-                    toolRunner.arg(updateAssemblyInfoFilename);
+            if (this.updateAssemblyInfo) {
+                exe.arg("/updateassemblyinfo");
+                if (this.updateAssemblyInfoFilename) {
+                    exe.arg(this.updateAssemblyInfoFilename);
                 } else {
-                    toolRunner.arg("true");
+                    exe.arg("true");
                 }
             }
 
-            if (additionalArguments) {
-                toolRunner.line(additionalArguments);
+            if (this.additionalArguments) {
+                exe.line(this.additionalArguments);
             }
 
-            const result = await toolRunner.exec(execOptions);
+            const result = await exe.exec(this.execOptions);
             if (result) {
                 tl.setResult(tl.TaskResult.Failed, "An error occured during GitVersion execution")
             } else {
@@ -102,6 +81,40 @@ export class GitVersionTask {
             tl.setResult(tl.TaskResult.Failed, err);
         }
     }
+
+    public getExecutable(){
+        let exe: tr.ToolRunner;
+
+        switch (this.runtime) {
+            case "full":
+                const isWin32 = os.platform() == "win32";
+                let exePath = this.getExecutablePath("GitVersion.exe") || tl.which("GitVersion.exe", true);
+                if (isWin32) {
+                    exe = tl.tool(exePath);
+                } else {
+                    exe = tl.tool("mono");
+                    exe.arg(exePath);
+                }
+                break;
+            case "core":
+                let assemblyPath = this.getExecutablePath("GitVersion.dll");
+                let dotnetPath = tl.which("dotnet", true);
+                exe = tl.tool(dotnetPath);
+                exe.arg(assemblyPath);
+                break;
+        }
+
+        return exe;
+    }
+
+    public getExecutablePath(exeName:string) {
+        if (this.gitVersionPath){
+            return this.gitVersionPath;
+        } else if (this.preferBundledVersion) {
+            return path.join(this.currentDirectory, this.runtime, exeName);
+        }
+    }
 }
 
-GitVersionTask.execute();
+var exe = new GitVersionTask();
+exe.execute().catch((reason) => tl.setResult(tl.TaskResult.Failed, reason));

@@ -267,15 +267,17 @@ Task("Copy-Files")
 
     // Vsix
     var vsixPath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionTask");
-    EnsureDirectoryExists(vsixPath);
-    CopyFileToDirectory(portableDir + "/" + "LibGit2Sharp.dll.config", vsixPath);
-    CopyFileToDirectory(portableDir + "/" + "GitVersion.exe", vsixPath);
-    CopyDirectory(portableDir.Combine("lib"), vsixPath.Combine("lib"));
+
+    var vsixPathFull = vsixPath.Combine("full");
+    EnsureDirectoryExists(vsixPathFull);
+    CopyFileToDirectory(portableDir + "/" + "LibGit2Sharp.dll.config", vsixPathFull);
+    CopyFileToDirectory(portableDir + "/" + "GitVersion.exe", vsixPathFull);
+    CopyDirectory(portableDir.Combine("lib"), vsixPathFull.Combine("lib"));
 
     // Vsix dotnet core
-    var vsixCoreFxPath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionNetCoreTask");
-    EnsureDirectoryExists(vsixCoreFxPath);
-    CopyDirectory(coreFxDir, vsixCoreFxPath.Combine("netcore"));
+    var vsixPathCore = vsixPath.Combine("core");
+    EnsureDirectoryExists(vsixPathCore);
+    CopyDirectory(coreFxDir, vsixPathCore);
 
     // Ruby Gem
     var gemPath = new DirectoryPath("./src/GitVersionRubyGem/bin");
@@ -293,21 +295,15 @@ Task("Pack-Vsix")
     var idSuffix = parameters.IsStableRelease() ? "" : "-preview";
     var titleSuffix = parameters.IsStableRelease() ? "" : " (Preview)";
     var visibility = parameters.IsStableRelease() ? "Public" : "Preview";
-    var taskIdFullFx = parameters.IsStableRelease() ? "e5983830-3f75-11e5-82ed-81492570a08e" : "25b46667-d5a9-4665-97f7-e23de366ecdf";
-    var taskIdCoreFx = parameters.IsStableRelease() ? "ce526674-dbd1-4023-ad6d-2a6b9742ee31" : "edf331e1-d1c0-413a-9735-fce0b22a46f5";
+    var taskId = parameters.IsStableRelease() ? "bfb2f1f8-b852-4db1-ae50-35c79c9161e0" : "761ce478-068a-441a-8f2b-aae0987e7d88";
 
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$idSuffix$", idSuffix);
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$idSuffix$", idSuffix);
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$titleSuffix$", titleSuffix);
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$titleSuffix$", titleSuffix);
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$visibility$", visibility);
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$visibility$", visibility);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$idSuffix$", idSuffix);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$titleSuffix$", titleSuffix);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$visibility$", visibility);
 
     // update version number
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$version$", parameters.Version.VsixVersion);
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$version$", parameters.Version.VsixVersion);
-    UpdateTaskVersion(new FilePath(workDir + "/GitVersionTask/task.json"), taskIdFullFx, parameters.Version.GitVersion);
-    UpdateTaskVersion(new FilePath(workDir + "/GitVersionNetCoreTask/task.json"), taskIdCoreFx, parameters.Version.GitVersion);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$version$", parameters.Version.VsixVersion);
+    UpdateTaskVersion(new FilePath(workDir + "/GitVersionTask/task.json"), taskId, parameters.Version.GitVersion);
 
     // build and pack
     NpmSet(new NpmSetSettings             { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, Key = "progress", Value = "false" });
@@ -321,10 +317,7 @@ Task("Pack-Vsix")
         OutputPath = parameters.Paths.Directories.BuildArtifact
     };
 
-    settings.ManifestGlobs = new List<string>(){ "vss-extension.mono.json" };
-    TfxExtensionCreate(settings);
-
-    settings.ManifestGlobs = new List<string>(){ "vss-extension.netcore.json" };
+    settings.ManifestGlobs = new List<string>(){ "vss-extension.json" };
     TfxExtensionCreate(settings);
 });
 
@@ -620,11 +613,11 @@ Task("Publish-Vsix")
     {
         ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
         AuthType = TfxAuthType.Pat,
-        Token = token
+        Token = token,
+        ArgumentCustomization = args => args.Render() + " --no-wait-validation"
     };
 
     TfxExtensionPublish(parameters.Paths.Files.VsixOutputFilePath, settings);
-    TfxExtensionPublish(parameters.Paths.Files.VsixCoreFxOutputFilePath, settings);
 })
 .OnError(exception =>
 {
