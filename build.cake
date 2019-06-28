@@ -266,16 +266,16 @@ Task("Copy-Files")
     PublishILRepackedGitVersionExe(false, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergeDir, cmdlineDir, parameters.Configuration, parameters.FullFxVersion);
 
     // Vsix
-    var tfsPath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionTask");
-    EnsureDirectoryExists(tfsPath);
-    CopyFileToDirectory(portableDir + "/" + "LibGit2Sharp.dll.config", tfsPath);
-    CopyFileToDirectory(portableDir + "/" + "GitVersion.exe", tfsPath);
-    CopyDirectory(portableDir.Combine("lib"), tfsPath.Combine("lib"));
+    var vsixPath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionTask");
+    EnsureDirectoryExists(vsixPath);
+    CopyFileToDirectory(portableDir + "/" + "LibGit2Sharp.dll.config", vsixPath);
+    CopyFileToDirectory(portableDir + "/" + "GitVersion.exe", vsixPath);
+    CopyDirectory(portableDir.Combine("lib"), vsixPath.Combine("lib"));
 
     // Vsix dotnet core
-    var tfsCoreFxPath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionNetCoreTask");
-    EnsureDirectoryExists(tfsCoreFxPath);
-    CopyDirectory(coreFxDir, tfsCoreFxPath.Combine("netcore"));
+    var vsixCoreFxPath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionNetCoreTask");
+    EnsureDirectoryExists(vsixCoreFxPath);
+    CopyDirectory(coreFxDir, vsixCoreFxPath.Combine("netcore"));
 
     // Ruby Gem
     var gemPath = new DirectoryPath("./src/GitVersionRubyGem/bin");
@@ -285,7 +285,7 @@ Task("Copy-Files")
     CopyDirectory(portableDir.Combine("lib"), gemPath.Combine("lib"));
 });
 
-Task("Pack-Tfs")
+Task("Pack-Vsix")
     .IsDependentOn("Copy-Files")
     .Does<BuildParameters>((parameters) =>
 {
@@ -304,8 +304,8 @@ Task("Pack-Tfs")
     ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$visibility$", visibility);
 
     // update version number
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$version$", parameters.Version.TfxVersion);
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$version$", parameters.Version.TfxVersion);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.mono.json"), "$version$", parameters.Version.VsixVersion);
+    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.netcore.json"), "$version$", parameters.Version.VsixVersion);
     UpdateTaskVersion(new FilePath(workDir + "/GitVersionTask/task.json"), taskIdFullFx, parameters.Version.GitVersion);
     UpdateTaskVersion(new FilePath(workDir + "/GitVersionNetCoreTask/task.json"), taskIdCoreFx, parameters.Version.GitVersion);
 
@@ -463,7 +463,7 @@ Task("Docker-Test")
 });
 
 Task("Pack")
-    .IsDependentOn("Pack-Tfs")
+    .IsDependentOn("Pack-Vsix")
     .IsDependentOn("Pack-Gem")
     .IsDependentOn("Pack-Nuget")
     .IsDependentOn("Pack-Chocolatey")
@@ -602,12 +602,12 @@ Task("Publish-AzurePipeline")
     publishingError = true;
 });
 
-Task("Publish-Tfs")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishTfs,        "Publish-Tfs was disabled.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Tfs works only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Tfs works only on AzurePipeline.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Tfs works only for releases.")
-    .IsDependentOn("Pack-Tfs")
+Task("Publish-Vsix")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishVsix,       "Publish-Vsix was disabled.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Vsix works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Vsix works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Vsix works only for releases.")
+    .IsDependentOn("Pack-Vsix")
     .Does<BuildParameters>((parameters) =>
 {
     var token = parameters.Credentials.Tfx.Token;
@@ -628,7 +628,7 @@ Task("Publish-Tfs")
 })
 .OnError(exception =>
 {
-    Information("Publish-Tfs Task failed, but continuing with next Task...");
+    Information("Publish-Vsix Task failed, but continuing with next Task...");
     Error(exception.Dump());
     publishingError = true;
 });
@@ -779,7 +779,7 @@ Task("Publish")
     .IsDependentOn("Publish-Coverage")
     .IsDependentOn("Publish-NuGet")
     .IsDependentOn("Publish-Chocolatey")
-    .IsDependentOn("Publish-Tfs")
+    .IsDependentOn("Publish-Vsix")
     .IsDependentOn("Publish-Gem")
     .IsDependentOn("Publish-DockerHub")
     .Finally(() =>

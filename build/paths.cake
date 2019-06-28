@@ -44,9 +44,9 @@ public class BuildPaths
         var releaseNotesOutputFilePath = buildArtifactDir.CombineWithFilePath("releasenotes.md");
         var gemOutputFilePath  = buildArtifactDir.CombineWithFilePath("gitversion-" + version.GemVersion + ".gem");
 
-        var tfsSuffix = parameters.IsStableRelease() ? "" : "preview-";
-        var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-" + tfsSuffix + version.TfxVersion + ".vsix");
-        var vsixCoreFxOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-netcore-" + tfsSuffix + version.TfxVersion + ".vsix");
+        var vsixSuffix = parameters.IsStableRelease() ? "" : "preview-";
+        var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-" + vsixSuffix + version.VsixVersion + ".vsix");
+        var vsixCoreFxOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-netcore-" + vsixSuffix + version.VsixVersion + ".vsix");
 
         // Directories
         var buildDirectories = new BuildDirectories(

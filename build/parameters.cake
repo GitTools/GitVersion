@@ -13,7 +13,7 @@ public class BuildParameters
 
     public bool EnabledUnitTests { get; private set; }
     public bool EnabledPublishGem { get; private set; }
-    public bool EnabledPublishTfs { get; private set; }
+    public bool EnabledPublishVsix { get; private set; }
     public bool EnabledPublishNuget { get; private set; }
     public bool EnabledPublishChocolatey { get; private set; }
     public bool EnabledPublishDocker { get; private set; }
@@ -64,7 +64,7 @@ public class BuildParameters
 
             EnabledUnitTests          = IsEnabled(context, "ENABLED_UNIT_TESTS"),
             EnabledPublishGem         = IsEnabled(context, "ENABLED_PUBLISH_GEM"),
-            EnabledPublishTfs         = IsEnabled(context, "ENABLED_PUBLISH_TFS"),
+            EnabledPublishVsix        = IsEnabled(context, "ENABLED_PUBLISH_VSIX"),
             EnabledPublishNuget       = IsEnabled(context, "ENABLED_PUBLISH_NUGET"),
             EnabledPublishChocolatey  = IsEnabled(context, "ENABLED_PUBLISH_CHOCOLATEY"),
             EnabledPublishDocker      = IsEnabled(context, "ENABLED_PUBLISH_DOCKER"),
