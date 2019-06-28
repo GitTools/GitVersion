@@ -15,22 +15,27 @@ namespace GitVersionTask.Tests
     [TestFixture]
     public class GitVersionTaskPropertiesTests
     {
-        const string projectXml =
-            @"<Project xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
-<PropertyGroup>
-            <TargetFramework>net461</TargetFramework>
-            <Configuration>Debug</Configuration>
-            <GitVersionTaskRoot>..\GitVersionTask\build\</GitVersionTaskRoot>
-            <GitVersionTaskRoot Condition=""!Exists('$(GitVersionTaskRoot)GitVersionTask.props')"">.\src\GitVersionTask\build\</GitVersionTaskRoot>
-            <GitVersionAssemblyFile>..\..\GitVersionTask.MsBuild\bin\$(Configuration)\$(TargetFramework)\GitVersionTask.MsBuild.dll</GitVersionAssemblyFile>
-</PropertyGroup>
-            <Import Project='$(GitVersionTaskRoot)GitVersionTask.props'/>
-            <Import Project='$(GitVersionTaskRoot)GitVersionTask.targets'/>
+
+
+        static string CreateProjectXml()
+        {
+            var currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            return $@"
+            <Project xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
+                <PropertyGroup>
+                    <TargetFramework>net461</TargetFramework>
+                    <Configuration>Debug</Configuration>
+                    <GitVersionTaskRoot>{currentDirectory}\..\..\..\..\GitVersionTask\build\</GitVersionTaskRoot>
+                    <GitVersionAssemblyFile>{currentDirectory}\..\..\GitVersionTask.MsBuild\bin\$(Configuration)\$(TargetFramework)\GitVersionTask.MsBuild.dll</GitVersionAssemblyFile>
+                </PropertyGroup>
+                <Import Project='$(GitVersionTaskRoot)GitVersionTask.props'/>
+                <Import Project='$(GitVersionTaskRoot)GitVersionTask.targets'/>
             </Project>";
+        }
 
         (bool failed, Project project) CallMsBuild(IDictionary<string, string> globalProperties)
         {
-            using (var stringReader = new StringReader(projectXml))
+            using (var stringReader = new StringReader(CreateProjectXml()))
             {
                 StringBuilder builder;
                 Project project;
@@ -48,8 +53,11 @@ namespace GitVersionTask.Tests
                     collection.UnregisterAllLoggers();
                 }
 
-                var consoleOutput = builder.ToString();
-                Console.WriteLine(consoleOutput);
+                if (!result)
+                {
+                    var consoleOutput = builder.ToString();
+                    TestContext.Error.Write(consoleOutput);
+                }
 
                 return (!result, project);
             }
