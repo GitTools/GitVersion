@@ -78,6 +78,13 @@ namespace GitVersion
                     continue;
                 }
 
+                if (name.IsSwitch("config"))
+                {
+                    EnsureArgumentValueCount(values);
+                    arguments.ConfigFileLocator = new NamedConfigFileLocator(value);
+                    continue;
+                }
+
                 if (name.IsSwitch("targetpath"))
                 {
                     EnsureArgumentValueCount(values);

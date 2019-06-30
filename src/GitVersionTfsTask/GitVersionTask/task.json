@@ -43,6 +43,13 @@
         "required": false,
         "helpMarkDown": "If checked it will prefer the bundled version over a version found in path"
     }, {
+        "name": "configFilePath",
+        "type": "filePath",
+        "label": "Config file",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "Optional path to config file (defaults to GitVersion.yml)"
+    }, {
         "name": "updateAssemblyInfo",
         "type": "boolean",
         "label": "Update AssemblyInfo files",

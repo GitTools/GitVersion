@@ -4,7 +4,7 @@
     <UsingTask TaskName="WriteVersionInfoToBuildLog" AssemblyFile="$(GitVersionAssemblyFile)" />
 
     <Target Name="WriteVersionInfoToBuildLog" BeforeTargets="CoreCompile;GetAssemblyVersion;GenerateNuspec" Condition="$(WriteVersionInfoToBuildLog) == 'true'">
-        <WriteVersionInfoToBuildLog SolutionDirectory="$(GitVersionPath)" NoFetch="$(GitVersion_NoFetchEnabled)"/>
+        <WriteVersionInfoToBuildLog SolutionDirectory="$(GitVersionPath)" ConfigFilePath="$(GitVersionConfig)" NoFetch="$(GitVersion_NoFetchEnabled)"/>
     </Target>
 
     <Target Name="UpdateAssemblyInfo" DependsOnTargets="_UpdateAssemblyInfo;DispatchToInnerBuilds" />
@@ -22,7 +22,7 @@
     </Target>
 
     <Target Name="GetVersion" BeforeTargets="CoreCompile;GetAssemblyVersion;GenerateNuspec;_GenerateRestoreProjectSpec;EnsureWixToolsetInstalled" Condition="$(GetVersion) == 'true'">
-        <GetVersion SolutionDirectory="$(GitVersionPath)" NoFetch="$(GitVersion_NoFetchEnabled)">
+        <GetVersion SolutionDirectory="$(GitVersionPath)" ConfigFilePath="$(GitVersionConfig)" NoFetch="$(GitVersion_NoFetchEnabled)">
             <Output TaskParameter="Major" PropertyName="GitVersion_Major" />
             <Output TaskParameter="Minor" PropertyName="GitVersion_Minor" />
             <Output TaskParameter="Patch" PropertyName="GitVersion_Patch" />

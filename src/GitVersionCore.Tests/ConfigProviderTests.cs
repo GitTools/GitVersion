@@ -14,19 +14,18 @@ using YamlDotNet.Serialization;
 [TestFixture]
 public class ConfigProviderTests : TestBase
 {
-    private const string DefaultRepoPath = "c:\\MyGitRepo";
-    private const string DefaultWorkingPath = "c:\\MyGitRepo\\Working";
+    private const string DefaultRepoPath = @"c:\MyGitRepo";
 
     string repoPath;
-    string workingPath;
     IFileSystem fileSystem;
+    ConfigFileLocator configFileLocator;
 
     [SetUp]
     public void Setup()
     {
         fileSystem = new TestFileSystem();
+        configFileLocator = new DefaultConfigFileLocator();
         repoPath = DefaultRepoPath;
-        workingPath = DefaultWorkingPath;
 
         ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
     }
@@ -49,7 +48,7 @@ branches:
        tag: rc
 ";
         SetupConfigFileContent(text);
-        var error = Should.Throw<OldConfigurationException>(() => ConfigurationProvider.Provide(repoPath, fileSystem));
+        var error = Should.Throw<OldConfigurationException>(() => ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator));
         error.Message.ShouldContainWithoutWhitespace(@"GitVersion configuration file contains old configuration, please fix the following errors:
 GitVersion branch configs no longer are keyed by regexes, update:
     dev(elop)?(ment)?$  -> develop
@@ -62,7 +61,7 @@ release-branch-tag has been replaced by branch specific configuration.See http:/
     [Test]
     public void OverwritesDefaultsWithProvidedConfig()
     {
-        var defaultConfig = ConfigurationProvider.Provide(repoPath, fileSystem);
+        var defaultConfig = ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
         const string text = @"
 next-version: 2.0.0
 branches:
@@ -70,7 +69,7 @@ branches:
         mode: ContinuousDeployment
         tag: dev";
         SetupConfigFileContent(text);
-        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
 
         config.NextVersion.ShouldBe("2.0.0");
         config.Branches["develop"].Increment.ShouldBe(defaultConfig.Branches["develop"].Increment);
@@ -81,10 +80,9 @@ branches:
     [Test]
     public void AllBranchesModeWhenUsingMainline()
     {
-        var defaultConfig = ConfigurationProvider.Provide(repoPath, fileSystem);
         const string text = @"mode: Mainline";
         SetupConfigFileContent(text);
-        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
         var branches = config.Branches.Select(x => x.Value);
         branches.All(branch => branch.VersioningMode == VersioningMode.Mainline).ShouldBe(true);
     }
@@ -98,7 +96,7 @@ branches:
     release:
         tag: """"";
         SetupConfigFileContent(text);
-        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
 
         config.NextVersion.ShouldBe("2.0.0");
         config.Branches["release"].Tag.ShouldBe(string.Empty);
@@ -113,7 +111,7 @@ branches:
     bug:
         tag: bugfix";
         SetupConfigFileContent(text);
-        var ex = Should.Throw<GitVersionConfigurationException>(() => ConfigurationProvider.Provide(repoPath, fileSystem));
+        var ex = Should.Throw<GitVersionConfigurationException>(() => ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator));
         ex.Message.ShouldBe("Branch configuration 'bug' is missing required configuration 'regex'\n\n" +
             "See http://gitversion.readthedocs.io/en/latest/configuration/ for more info");
     }
@@ -128,7 +126,7 @@ branches:
         regex: 'bug[/-]'
         tag: bugfix";
         SetupConfigFileContent(text);
-        var ex = Should.Throw<GitVersionConfigurationException>(() => ConfigurationProvider.Provide(repoPath, fileSystem));
+        var ex = Should.Throw<GitVersionConfigurationException>(() => ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator));
         ex.Message.ShouldBe("Branch configuration 'bug' is missing required configuration 'source-branches'\n\n" +
             "See http://gitversion.readthedocs.io/en/latest/configuration/ for more info");
     }
@@ -144,7 +142,7 @@ branches:
         tag: bugfix
         source-branches: []";
         SetupConfigFileContent(text);
-        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
 
         config.Branches["bug"].Regex.ShouldBe("bug[/-]");
         config.Branches["bug"].Tag.ShouldBe("bugfix");
@@ -155,7 +153,7 @@ branches:
     {
         const string text = "next-version: 2";
         SetupConfigFileContent(text);
-        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
 
         config.NextVersion.ShouldBe("2.0");
     }
@@ -165,7 +163,7 @@ branches:
     {
         const string text = "next-version: 2.118998723";
         SetupConfigFileContent(text);
-        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
 
         config.NextVersion.ShouldBe("2.118998723");
     }
@@ -175,7 +173,7 @@ branches:
     {
         const string text = "next-version: 2.12.654651698";
         SetupConfigFileContent(text);
-        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
 
         config.NextVersion.ShouldBe("2.12.654651698");
     }
@@ -186,7 +184,7 @@ branches:
     [MethodImpl(MethodImplOptions.NoInlining)]
     public void CanWriteOutEffectiveConfiguration()
     {
-        var config = ConfigurationProvider.GetEffectiveConfigAsString(repoPath, fileSystem);
+        var config = ConfigurationProvider.GetEffectiveConfigAsString(repoPath, fileSystem, configFileLocator);
 
         config.ShouldMatchApproved();
     }
@@ -201,7 +199,7 @@ assembly-informational-format: '{NugetVersion}'";
 
         SetupConfigFileContent(text);
 
-        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
         config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
         config.AssemblyInformationalFormat.ShouldBe("{NugetVersion}");
@@ -217,7 +215,7 @@ assembly-informational-format: '{Major}.{Minor}.{Patch}'";
 
         SetupConfigFileContent(text);
 
-        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinor);
         config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
         config.AssemblyInformationalFormat.ShouldBe("{Major}.{Minor}.{Patch}");
@@ -236,7 +234,7 @@ branches: {}";
 
         SetupConfigFileContent(text);
 
-        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
         config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
         config.AssemblyInformationalFormat.ShouldBe("{FullSemVer}");
@@ -247,7 +245,7 @@ branches: {}";
     {
         const string text = "";
         SetupConfigFileContent(text);
-        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
         config.AssemblyVersioningScheme.ShouldBe(AssemblyVersioningScheme.MajorMinorPatch);
         config.AssemblyFileVersioningScheme.ShouldBe(AssemblyFileVersioningScheme.MajorMinorPatch);
         config.AssemblyInformationalFormat.ShouldBe(null);
@@ -269,55 +267,6 @@ branches: {}";
         propertiesMissingAlias.ShouldBeEmpty();
     }
 
-    [TestCase(DefaultRepoPath)]
-    [TestCase(DefaultWorkingPath)]
-    public void WarnOnExistingGitVersionConfigYamlFile(string path)
-    {
-        SetupConfigFileContent(string.Empty, ConfigurationProvider.ObsoleteConfigFileName, path);
-
-        var logOutput = string.Empty;
-        Action<string> action = info => { logOutput = info; };
-        using (Logger.AddLoggersTemporarily(action, action, action, action))
-        {
-            ConfigurationProvider.Verify(workingPath, repoPath, fileSystem);
-        }
-        var configFileDeprecatedWarning = string.Format("{0}' is deprecated, use '{1}' instead", ConfigurationProvider.ObsoleteConfigFileName, ConfigurationProvider.DefaultConfigFileName);
-        logOutput.Contains(configFileDeprecatedWarning).ShouldBe(true);
-    }
-
-    [TestCase(DefaultRepoPath)]
-    [TestCase(DefaultWorkingPath)]
-    public void WarnOnAmbiguousConfigFilesAtTheSameProjectRootDirectory(string path)
-    {
-        SetupConfigFileContent(string.Empty, ConfigurationProvider.ObsoleteConfigFileName, path);
-        SetupConfigFileContent(string.Empty, ConfigurationProvider.DefaultConfigFileName, path);
-
-        var logOutput = string.Empty;
-        Action<string> action = info => { logOutput = info; };
-        using (Logger.AddLoggersTemporarily(action, action, action, action))
-        {
-            ConfigurationProvider.Verify(workingPath, repoPath, fileSystem);
-        }
-
-        var configFileDeprecatedWarning = string.Format("Ambiguous config files at '{0}'", path);
-        logOutput.Contains(configFileDeprecatedWarning).ShouldBe(true);
-    }
-
-    [TestCase(ConfigurationProvider.DefaultConfigFileName, ConfigurationProvider.DefaultConfigFileName)]
-    [TestCase(ConfigurationProvider.DefaultConfigFileName, ConfigurationProvider.ObsoleteConfigFileName)]
-    [TestCase(ConfigurationProvider.ObsoleteConfigFileName, ConfigurationProvider.DefaultConfigFileName)]
-    [TestCase(ConfigurationProvider.ObsoleteConfigFileName, ConfigurationProvider.ObsoleteConfigFileName)]
-    public void ThrowsExceptionOnAmbiguousConfigFileLocation(string repoConfigFile, string workingConfigFile)
-    {
-        var repositoryConfigFilePath = SetupConfigFileContent(string.Empty, repoConfigFile, repoPath);
-        var workingDirectoryConfigFilePath = SetupConfigFileContent(string.Empty, workingConfigFile, workingPath);
-
-        WarningException exception = Should.Throw<WarningException>(() => { ConfigurationProvider.Verify(workingPath, repoPath, fileSystem); });
-
-        var expecedMessage = string.Format("Ambiguous config file selection from '{0}' and '{1}'", workingDirectoryConfigFilePath, repositoryConfigFilePath);
-        exception.Message.ShouldBe(expecedMessage);
-    }
-
     [Test]
     public void NoWarnOnGitVersionYmlFile()
     {
@@ -327,12 +276,12 @@ branches: {}";
         Action<string> action = info => { s = info; };
         using (Logger.AddLoggersTemporarily(action, action, action, action))
         {
-            ConfigurationProvider.Provide(repoPath, fileSystem);
+            ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
         }
         s.Length.ShouldBe(0);
     }
 
-    string SetupConfigFileContent(string text, string fileName = ConfigurationProvider.DefaultConfigFileName)
+    string SetupConfigFileContent(string text, string fileName = DefaultConfigFileLocator.DefaultFileName)
     {
         return SetupConfigFileContent(text, fileName, repoPath);
     }
@@ -346,28 +295,8 @@ branches: {}";
     }
 
     [Test]
-    public void WarnOnObsoleteIsDevelopBranchConfigurationSetting()
-    {
-        const string text = @"
-assembly-versioning-scheme: MajorMinorPatch
-branches:
-  master:
-    tag: beta
-    is-develop: true";
-
-        OldConfigurationException exception = Should.Throw<OldConfigurationException>(() =>
-        {
-            LegacyConfigNotifier.Notify(new StringReader(text));
-        });
-
-        const string expectedMessage = @"'is-develop' is deprecated, use 'tracks-release-branches' instead.";
-        exception.Message.ShouldContain(expectedMessage);
-    }
-
-    [Test]
     public void ShouldUseSpecifiedSourceBranchesForDevelop()
     {
-        var defaultConfig = ConfigurationProvider.Provide(repoPath, fileSystem);
         const string text = @"
 next-version: 2.0.0
 branches:
@@ -376,7 +305,7 @@ branches:
         source-branches: ['develop']
         tag: dev";
         SetupConfigFileContent(text);
-        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
 
         config.Branches["develop"].SourceBranches.ShouldBe(new List<string> { "develop" });
     }
@@ -384,7 +313,6 @@ branches:
     [Test]
     public void ShouldUseDefaultSourceBranchesWhenNotSpecifiedForDevelop()
     {
-        var defaultConfig = ConfigurationProvider.Provide(repoPath, fileSystem);
         const string text = @"
 next-version: 2.0.0
 branches:
@@ -392,7 +320,7 @@ branches:
         mode: ContinuousDeployment
         tag: dev";
         SetupConfigFileContent(text);
-        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
 
         config.Branches["develop"].SourceBranches.ShouldBe(new List<string>());
     }
@@ -400,7 +328,6 @@ branches:
     [Test]
     public void ShouldUseSpecifiedSourceBranchesForFeature()
     {
-        var defaultConfig = ConfigurationProvider.Provide(repoPath, fileSystem);
         const string text = @"
 next-version: 2.0.0
 branches:
@@ -409,7 +336,7 @@ branches:
         source-branches: ['develop', 'release']
         tag: dev";
         SetupConfigFileContent(text);
-        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
 
         config.Branches["feature"].SourceBranches.ShouldBe(new List<string> { "develop", "release" });
     }
@@ -417,7 +344,6 @@ branches:
     [Test]
     public void ShouldUseDefaultSourceBranchesWhenNotSpecifiedForFeature()
     {
-        var defaultConfig = ConfigurationProvider.Provide(repoPath, fileSystem);
         const string text = @"
 next-version: 2.0.0
 branches:
@@ -425,7 +351,7 @@ branches:
         mode: ContinuousDeployment
         tag: dev";
         SetupConfigFileContent(text);
-        var config = ConfigurationProvider.Provide(repoPath, fileSystem);
+        var config = ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
 
         config.Branches["feature"].SourceBranches.ShouldBe(
             new List<string> { "develop", "master", "release", "feature", "support", "hotfix" });

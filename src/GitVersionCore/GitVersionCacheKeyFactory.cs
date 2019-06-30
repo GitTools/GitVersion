@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using Helpers;
     using System;
@@ -10,10 +10,10 @@
 
     class GitVersionCacheKeyFactory
     {
-        public static GitVersionCacheKey Create(IFileSystem fileSystem, GitPreparer gitPreparer, Config overrideConfig)
+        public static GitVersionCacheKey Create(IFileSystem fileSystem, GitPreparer gitPreparer, Config overrideConfig, ConfigFileLocator configFileLocator)
         {
             var gitSystemHash = GetGitSystemHash(gitPreparer);
-            var configFileHash = GetConfigFileHash(fileSystem, gitPreparer);
+            var configFileHash = GetConfigFileHash(fileSystem, gitPreparer, configFileLocator);
             var repositorySnapshotHash = GetRepositorySnapshotHash(gitPreparer);
             var overrideConfigHash = GetOverrideConfigHash(overrideConfig);
 
@@ -155,11 +155,11 @@
             return GetHash(configContent);
         }
 
-        private static string GetConfigFileHash(IFileSystem fileSystem, GitPreparer gitPreparer)
+        private static string GetConfigFileHash(IFileSystem fileSystem, GitPreparer gitPreparer, ConfigFileLocator configFileLocator)
         {
             // will return the same hash even when config file will be moved 
             // from workingDirectory to rootProjectDirectory. It's OK. Config essentially is the same.
-            var configFilePath = ConfigurationProvider.SelectConfigFilePath(gitPreparer, fileSystem);
+            var configFilePath = configFileLocator.SelectConfigFilePath(gitPreparer, fileSystem);
             if (!fileSystem.Exists(configFilePath))
             {
                 return string.Empty;

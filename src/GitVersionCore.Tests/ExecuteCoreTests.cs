@@ -30,10 +30,11 @@ public class ExecuteCoreTests : TestBase
             var targetUrl = "https://github.com/GitTools/GitVersion.git";
             var targetBranch = "refs/head/master";
             var gitPreparer = new GitPreparer(targetUrl, null, new Authentication(), false, fixture.RepositoryPath);
+            var configFileLocator = new DefaultConfigFileLocator();
             gitPreparer.Initialise(true, targetBranch);
-            var cacheKey1 = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, null);
+            var cacheKey1 = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, null, configFileLocator);
             gitPreparer.Initialise(true, targetBranch);
-            var cacheKey2 = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, null);
+            var cacheKey2 = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, null, configFileLocator);
 
             cacheKey2.Value.ShouldBe(cacheKey1.Value);
         });

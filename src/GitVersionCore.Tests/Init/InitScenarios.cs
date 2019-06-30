@@ -1,4 +1,4 @@
-﻿namespace GitVersionCore.Tests.Init
+namespace GitVersionCore.Tests.Init
 {
     using GitVersion;
     using GitVersion.Configuration.Init;
@@ -24,7 +24,8 @@
         {
             var testFileSystem = new TestFileSystem();
             var testConsole = new TestConsole("3", "2.0.0", "0");
-            ConfigurationProvider.Init("c:\\proj", testFileSystem, testConsole);
+            var configFileLocator = new DefaultConfigFileLocator();
+            ConfigurationProvider.Init("c:\\proj", testFileSystem, testConsole, configFileLocator);
 
             testFileSystem.ReadAllText("c:\\proj\\GitVersion.yml").ShouldMatchApproved();
         }

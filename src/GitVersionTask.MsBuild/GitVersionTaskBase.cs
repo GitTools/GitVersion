@@ -8,6 +8,8 @@ namespace GitVersionTask.MsBuild
         [Required]
         public string SolutionDirectory { get; set; }
 
+        public string ConfigFilePath { get; set; }
+
         public bool NoFetch { get; set; }
     }
 }

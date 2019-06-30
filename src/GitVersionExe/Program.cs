@@ -96,12 +96,12 @@ namespace GitVersion
 
                 if (arguments.Init)
                 {
-                    ConfigurationProvider.Init(arguments.TargetPath, fileSystem, new ConsoleAdapter());
+                    ConfigurationProvider.Init(arguments.TargetPath, fileSystem, new ConsoleAdapter(), arguments.ConfigFileLocator);
                     return 0;
                 }
                 if (arguments.ShowConfig)
                 {
-                    Console.WriteLine(ConfigurationProvider.GetEffectiveConfigAsString(arguments.TargetPath, fileSystem));
+                    Console.WriteLine(ConfigurationProvider.GetEffectiveConfigAsString(arguments.TargetPath, fileSystem, arguments.ConfigFileLocator));
                     return 0;
                 }
 
@@ -149,7 +149,7 @@ namespace GitVersion
         static void VerifyConfiguration(Arguments arguments, IFileSystem fileSystem)
         {
             var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.NoFetch, arguments.TargetPath);
-            ConfigurationProvider.Verify(gitPreparer, fileSystem);
+            arguments.ConfigFileLocator.Verify(gitPreparer, fileSystem);
         }
 
         static void ConfigureLogging(Arguments arguments)
