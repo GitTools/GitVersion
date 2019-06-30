@@ -7,6 +7,7 @@ export class GitVersionTask {
     execOptions: tr.IExecOptions;
 
     preferBundledVersion: boolean;
+    configFilePath: string;
     updateAssemblyInfo: boolean;
 
     updateAssemblyInfoFilename: string;
@@ -20,6 +21,7 @@ export class GitVersionTask {
 
     constructor() {
         this.preferBundledVersion       = tl.getBoolInput('preferBundledVersion') || true;
+        this.configFilePath             = tl.getPathInput('configFilePath');
         this.updateAssemblyInfo         = tl.getBoolInput('updateAssemblyInfo');
 
         this.updateAssemblyInfoFilename = tl.getInput('updateAssemblyInfoFilename');
@@ -55,6 +57,10 @@ export class GitVersionTask {
                 "/output",
                 "buildserver",
                 "/nofetch"]);
+
+            if (this.configFilePath) {
+                exe.arg(["/config", this.configFilePath]);
+            }
 
             if (this.updateAssemblyInfo) {
                 exe.arg("/updateassemblyinfo");

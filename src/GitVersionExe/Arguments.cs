@@ -17,6 +17,7 @@ namespace GitVersion
 
         public Config OverrideConfig;
         public bool HasOverrideConfig { get; set; }
+        public ConfigFileLocator ConfigFileLocator { get; set; } = ConfigFileLocator.GetLocator();
 
         public string TargetPath;
 

@@ -11,9 +11,6 @@ namespace GitVersion
     {
         internal const string DefaultTagPrefix = "[vV]";
 
-        public const string DefaultConfigFileName = "GitVersion.yml";
-        public const string ObsoleteConfigFileName = "GitVersionConfig.yaml";
-
         public const string ReleaseBranchRegex = "^releases?[/-]";
         public const string FeatureBranchRegex = "^features?[/-]";
         public const string PullRequestRegex = @"^(pull|pull\-requests|pr)[/-]";
@@ -42,35 +39,22 @@ namespace GitVersion
 
         private const IncrementStrategy DefaultIncrementStrategy = IncrementStrategy.Inherit;
 
-        public static Config Provide(GitPreparer gitPreparer, IFileSystem fileSystem, bool applyDefaults = true, Config overrideConfig = null)
+        public static Config Provide(GitPreparer gitPreparer, IFileSystem fileSystem, ConfigFileLocator configFileLocator, bool applyDefaults = true, Config overrideConfig = null, string configFilePath = null)
         {
             var workingDirectory = gitPreparer.WorkingDirectory;
             var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
 
-            if (HasConfigFileAt(workingDirectory, fileSystem))
+            if (configFileLocator.HasConfigFileAt(workingDirectory, fileSystem))
             {
-                return Provide(workingDirectory, fileSystem, applyDefaults, overrideConfig);
+                return Provide(workingDirectory, fileSystem, configFileLocator, applyDefaults, overrideConfig);
             }
 
-            return Provide(projectRootDirectory, fileSystem, applyDefaults, overrideConfig);
+            return Provide(projectRootDirectory, fileSystem, configFileLocator, applyDefaults, overrideConfig);
         }
 
-        public static string SelectConfigFilePath(GitPreparer gitPreparer, IFileSystem fileSystem)
+        public static Config Provide(string workingDirectory, IFileSystem fileSystem, ConfigFileLocator configFileLocator, bool applyDefaults = true, Config overrideConfig = null)
         {
-            var workingDirectory = gitPreparer.WorkingDirectory;
-            var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
-
-            if (HasConfigFileAt(workingDirectory, fileSystem))
-            {
-                return GetConfigFilePath(workingDirectory, fileSystem);
-            }
-
-            return GetConfigFilePath(projectRootDirectory, fileSystem);
-        }
-
-        public static Config Provide(string workingDirectory, IFileSystem fileSystem, bool applyDefaults = true, Config overrideConfig = null)
-        {
-            var readConfig = ReadConfig(workingDirectory, fileSystem);
+            var readConfig = configFileLocator.ReadConfig(workingDirectory, fileSystem);
             VerifyConfiguration(readConfig);
 
             if (applyDefaults)
@@ -121,7 +105,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
                 new List<string>(),
                 defaultTag: "alpha",
                 defaultIncrementStrategy: IncrementStrategy.Minor,
-                defaultVersioningMode: config.VersioningMode == VersioningMode.Mainline? VersioningMode.Mainline : VersioningMode.ContinuousDeployment,
+                defaultVersioningMode: config.VersioningMode == VersioningMode.Mainline ? VersioningMode.Mainline : VersioningMode.ContinuousDeployment,
                 defaultTrackMergeTarget: true,
                 tracksReleaseBranches: true);
             ApplyBranchDefaults(config,
@@ -208,7 +192,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
         {
             if (!config.Branches.ContainsKey(branchKey))
             {
-                var branchConfig = new BranchConfig {Name = branchKey};
+                var branchConfig = new BranchConfig { Name = branchKey };
                 config.Branches.Add(branchKey, branchConfig);
                 return branchConfig;
             }
@@ -247,23 +231,9 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             branchConfig.PreReleaseWeight = branchConfig.PreReleaseWeight ?? defaultPreReleaseNumber;
         }
 
-        static Config ReadConfig(string workingDirectory, IFileSystem fileSystem)
+        public static string GetEffectiveConfigAsString(string workingDirectory, IFileSystem fileSystem, ConfigFileLocator configFileLocator)
         {
-            var configFilePath = GetConfigFilePath(workingDirectory, fileSystem);
-
-            if (fileSystem.Exists(configFilePath))
-            {
-                var readAllText = fileSystem.ReadAllText(configFilePath);
-                LegacyConfigNotifier.Notify(new StringReader(readAllText));
-                return ConfigSerialiser.Read(new StringReader(readAllText));
-            }
-
-            return new Config();
-        }
-
-        public static string GetEffectiveConfigAsString(string workingDirectory, IFileSystem fileSystem)
-        {
-            var config = Provide(workingDirectory, fileSystem);
+            var config = Provide(workingDirectory, fileSystem, configFileLocator);
             var stringBuilder = new StringBuilder();
             using (var stream = new StringWriter(stringBuilder))
             {
@@ -273,104 +243,10 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             return stringBuilder.ToString();
         }
 
-        public static void Verify(GitPreparer gitPreparer, IFileSystem fileSystem)
+        public static void Init(string workingDirectory, IFileSystem fileSystem, IConsole console, ConfigFileLocator configFileLocator)
         {
-            if (!string.IsNullOrWhiteSpace(gitPreparer.TargetUrl))
-            {
-                // Assuming this is a dynamic repository. At this stage it's unsure whether we have
-                // any .git info so we need to skip verification
-                return;
-            }
-
-            var workingDirectory = gitPreparer.WorkingDirectory;
-            var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
-
-            Verify(workingDirectory, projectRootDirectory, fileSystem);
-        }
-
-        public static void Verify(string workingDirectory, string projectRootDirectory, IFileSystem fileSystem)
-        {
-            if (fileSystem.PathsEqual(workingDirectory, projectRootDirectory))
-            {
-                WarnAboutObsoleteConfigFile(workingDirectory, fileSystem);
-                return;
-            }
-
-            WarnAboutObsoleteConfigFile(workingDirectory, fileSystem);
-            WarnAboutObsoleteConfigFile(projectRootDirectory, fileSystem);
-
-            WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory, fileSystem);
-        }
-
-        static void WarnAboutAmbiguousConfigFileSelection(string workingDirectory, string projectRootDirectory, IFileSystem fileSystem)
-        {
-            var workingConfigFile = GetConfigFilePath(workingDirectory, fileSystem);
-            var projectRootConfigFile = GetConfigFilePath(projectRootDirectory, fileSystem);
-
-            bool hasConfigInWorkingDirectory = fileSystem.Exists(workingConfigFile);
-            bool hasConfigInProjectRootDirectory = fileSystem.Exists(projectRootConfigFile);
-            if (hasConfigInProjectRootDirectory && hasConfigInWorkingDirectory)
-            {
-                throw new WarningException(string.Format("Ambiguous config file selection from '{0}' and '{1}'", workingConfigFile, projectRootConfigFile));
-            }
-        }
-
-        static string GetConfigFilePath(string workingDirectory, IFileSystem fileSystem)
-        {
-            var ymlPath = Path.Combine(workingDirectory, DefaultConfigFileName);
-            if (fileSystem.Exists(ymlPath))
-            {
-                return ymlPath;
-            }
-
-            var deprecatedPath = Path.Combine(workingDirectory, ObsoleteConfigFileName);
-            if (fileSystem.Exists(deprecatedPath))
-            {
-                return deprecatedPath;
-            }
-
-            return ymlPath;
-        }
-
-        static bool HasConfigFileAt(string workingDirectory, IFileSystem fileSystem)
-        {
-            var defaultConfigFilePath = Path.Combine(workingDirectory, DefaultConfigFileName);
-            if (fileSystem.Exists(defaultConfigFilePath))
-            {
-                return true;
-            }
-
-            var deprecatedConfigFilePath = Path.Combine(workingDirectory, ObsoleteConfigFileName);
-            if (fileSystem.Exists(deprecatedConfigFilePath))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        static void WarnAboutObsoleteConfigFile(string workingDirectory, IFileSystem fileSystem)
-        {
-            var deprecatedConfigFilePath = Path.Combine(workingDirectory, ObsoleteConfigFileName);
-            if (!fileSystem.Exists(deprecatedConfigFilePath))
-            {
-                return;
-            }
-
-            var defaultConfigFilePath = Path.Combine(workingDirectory, DefaultConfigFileName);
-            if (fileSystem.Exists(defaultConfigFilePath))
-            {
-                Logger.WriteWarning(string.Format("Ambiguous config files at '{0}': '{1}' (deprecated) and '{2}'. Will be used '{2}'", workingDirectory, ObsoleteConfigFileName, DefaultConfigFileName));
-                return;
-            }
-
-            Logger.WriteWarning(string.Format("'{0}' is deprecated, use '{1}' instead.", deprecatedConfigFilePath, DefaultConfigFileName));
-        }
-
-        public static void Init(string workingDirectory, IFileSystem fileSystem, IConsole console)
-        {
-            var configFilePath = GetConfigFilePath(workingDirectory, fileSystem);
-            var currentConfiguration = Provide(workingDirectory, fileSystem, applyDefaults: false);
+            var configFilePath = configFileLocator.GetConfigFilePath(workingDirectory, fileSystem);
+            var currentConfiguration = Provide(workingDirectory, fileSystem, applyDefaults: false, configFileLocator: configFileLocator);
             var config = new ConfigInitWizard(console, fileSystem).Run(currentConfiguration, workingDirectory);
             if (config == null) return;
 

@@ -8,13 +8,13 @@ namespace GitVersion
     public class ExecuteCore
     {
         readonly IFileSystem fileSystem;
+        readonly ConfigFileLocator configFileLocator;
         readonly GitVersionCache gitVersionCache;
 
-        public ExecuteCore(IFileSystem fileSystem)
+        public ExecuteCore(IFileSystem fileSystem, ConfigFileLocator configFileLocator = null)
         {
-            if (fileSystem == null) throw new ArgumentNullException("fileSystem");
-
-            this.fileSystem = fileSystem;
+            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            this.configFileLocator = configFileLocator ?? ConfigFileLocator.Default;
             gitVersionCache = new GitVersionCache(fileSystem);
         }
 
@@ -50,7 +50,7 @@ namespace GitVersion
                 throw new Exception(string.Format("Failed to prepare or find the .git directory in path '{0}'.", workingDirectory));
             }
 
-            var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, overrideConfig);
+            var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, overrideConfig, configFileLocator);
             var versionVariables = noCache ? default(VersionVariables) : gitVersionCache.LoadVersionVariablesFromDiskCache(gitPreparer, cacheKey);
             if (versionVariables == null)
             {
@@ -103,7 +103,7 @@ namespace GitVersion
         VersionVariables ExecuteInternal(string targetBranch, string commitId, GitPreparer gitPreparer, IBuildServer buildServer, Config overrideConfig = null)
         {
             var versionFinder = new GitVersionFinder();
-            var configuration = ConfigurationProvider.Provide(gitPreparer, fileSystem, overrideConfig: overrideConfig);
+            var configuration = ConfigurationProvider.Provide(gitPreparer, fileSystem, overrideConfig: overrideConfig, configFileLocator: configFileLocator);
 
             return gitPreparer.WithRepository(repo =>
             {
