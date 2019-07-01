@@ -27,7 +27,7 @@
     <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
+    <ProjectReference Include="..\..\GitVersionCore\GitVersionCore.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Approved\**\*.approved.txt" />

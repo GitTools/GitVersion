@@ -20,8 +20,8 @@
     <PackageReference Include="Shouldly" Version="3.0.2"></PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
-    <ProjectReference Include="..\GitVersionExe\GitVersionExe.csproj" />
+    <ProjectReference Include="..\..\GitVersionCore\GitVersionCore.csproj" />
+    <ProjectReference Include="..\..\GitVersionExe\GitVersionExe.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestBuildFile.proj" />
