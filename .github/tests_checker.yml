@@ -1,0 +1,2 @@
+fileExtensions: ['.php', '.ts', '.js', '.c', '.cs', '.cpp', '.rb', '.java']
+testDir: 'src/tests'
