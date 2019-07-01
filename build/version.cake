@@ -14,7 +14,7 @@ public class BuildVersion
         var vsixVersion = gitVersion.MajorMinorPatch;
 
         if (!string.IsNullOrWhiteSpace(gitVersion.BuildMetaData)) {
-            semVersion += "." + gitVersion.BuildMetaData;
+            semVersion += "-" + gitVersion.BuildMetaData;
             vsixVersion += "." + DateTime.UtcNow.ToString("yyMMddHH");
         }
 
