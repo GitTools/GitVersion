@@ -1,5 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/runtime:2.2-nanoserver-1809
-LABEL maintainers="GitTools Maintainers"
+FROM gittools/build-images:nanoserver-1809-runtime-2.2
 ARG contentFolder
 
 WORKDIR /app

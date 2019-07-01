@@ -1,5 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/runtime:2.1
-LABEL maintainers="GitTools Maintainers"
+FROM gittools/build-images:debian-9-runtime-2.1
 ARG contentFolder
 
 WORKDIR /app
