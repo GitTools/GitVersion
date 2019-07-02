@@ -60,7 +60,7 @@ public class BuildParameters
 
         var target = context.Argument("target", "Default");
         var buildSystem = context.BuildSystem();
-        var dockerCliPlatform = GetDockerCliPlatform(context);
+        var dockerCliPlatform = context.Environment.Platform.Family != PlatformFamily.OSX ? GetDockerCliPlatform(context) : "";
 
         return new BuildParameters {
             Target        = target,
