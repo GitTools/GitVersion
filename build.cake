@@ -3,7 +3,7 @@
 
 // Install addins.
 #addin "nuget:?package=Cake.Codecov&version=0.6.0"
-#addin "nuget:?package=Cake.Coverlet&version=2.2.1"
+#addin "nuget:?package=Cake.Coverlet&version=2.3.4"
 #addin "nuget:?package=Cake.Docker&version=0.10.0"
 #addin "nuget:?package=Cake.Gem&version=0.8.0"
 #addin "nuget:?package=Cake.Gitter&version=0.11.0"
@@ -17,7 +17,7 @@
 #addin "nuget:?package=xunit.assert&version=2.4.1"
 
 // Install tools.
-#tool "nuget:?package=vswhere"
+#tool "nuget:?package=vswhere&version=2.6.13-ga6d40ba5f4"
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
 #tool "nuget:?package=ILRepack&version=2.0.16"
 #tool "nuget:?package=Codecov&version=1.5.0"
@@ -438,7 +438,7 @@ Task("Docker-Test")
     .Does<BuildParameters>((parameters) =>
 {
     var currentDir = MakeAbsolute(Directory("."));
-    var containerDir = parameters.IsRunningOnWindows ? "c:/repo" : "/repo";
+    var containerDir = parameters.IsDockerForWindows ? "c:/repo" : "/repo";
     var settings = new DockerContainerRunSettings
     {
         Rm = true,

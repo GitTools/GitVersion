@@ -106,9 +106,9 @@ public class DockerImages
         var windowsImages = dockerImages.Where(x => x.OS == "windows").ToArray();
         var linuxImages = dockerImages.Where(x => x.OS == "linux").ToArray();
 
-        var images = parameters.IsRunningOnWindows
+        var images = parameters.IsDockerForWindows
             ? windowsImages
-            : parameters.IsRunningOnLinux
+            : parameters.IsDockerForLinux
                 ? linuxImages
                 : Array.Empty<DockerImage>();
 
