@@ -292,10 +292,10 @@ Task("Pack-Vsix")
     .Does<BuildParameters>((parameters) =>
 {
     var workDir = "./src/GitVersionTfsTask";
-    var idSuffix = parameters.IsStableRelease() ? "" : "-preview";
+    var idSuffix    = parameters.IsStableRelease() ? "" : "-preview";
     var titleSuffix = parameters.IsStableRelease() ? "" : " (Preview)";
-    var visibility = parameters.IsStableRelease() ? "Public" : "Preview";
-    var taskId = parameters.IsStableRelease() ? "bfb2f1f8-b852-4db1-ae50-35c79c9161e0" : "761ce478-068a-441a-8f2b-aae0987e7d88";
+    var visibility  = parameters.IsStableRelease() ? "Public" : "Preview";
+    var taskId      = parameters.IsStableRelease() ? "bfb2f1f8-b852-4db1-ae50-35c79c9161e0" : "761ce478-068a-441a-8f2b-aae0987e7d88";
 
     ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$idSuffix$", idSuffix);
     ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$titleSuffix$", titleSuffix);

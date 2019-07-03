@@ -8,7 +8,7 @@ jobs:
   steps:
   - task: DotNetCoreInstaller@0
     condition: eq( variables['Agent.OS'], 'Darwin' )
-    displayName: 'Use .NET Core sdk 2.x)'
+    displayName: 'Use .NET Core sdk 2.x'
     inputs:
       version: '2.2.107'
       packageType: sdk
@@ -37,3 +37,5 @@ jobs:
       ENABLED_PUBLISH_NUGET: $(ENABLED_PUBLISH_NUGET)
       ENABLED_PUBLISH_CHOCOLATEY: $(ENABLED_PUBLISH_CHOCOLATEY)
       ENABLED_PUBLISH_DOCKER: $(ENABLED_PUBLISH_DOCKER)
+  - publish: $(System.DefaultWorkingDirectory)/artifacts
+    artifact: artifacts
