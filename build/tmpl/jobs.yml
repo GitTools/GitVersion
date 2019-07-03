@@ -38,4 +38,5 @@ jobs:
       ENABLED_PUBLISH_CHOCOLATEY: $(ENABLED_PUBLISH_CHOCOLATEY)
       ENABLED_PUBLISH_DOCKER: $(ENABLED_PUBLISH_DOCKER)
   - publish: $(System.DefaultWorkingDirectory)/artifacts
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
     artifact: artifacts
