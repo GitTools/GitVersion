@@ -16,6 +16,10 @@
         <!-- Property that enables UpdateAssemblyInfo. Default to off for SDK builds -->
         <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
 
+        <GenerateAssemblyFileVersionAttribute Condition=" '$(UpdateAssemblyInfo)' == 'true' ">false</GenerateAssemblyFileVersionAttribute>
+        <GenerateAssemblyVersionAttribute Condition=" '$(UpdateAssemblyInfo)' == 'true' ">false</GenerateAssemblyVersionAttribute>
+        <GenerateAssemblyInformationalVersionAttribute Condition=" '$(UpdateAssemblyInfo)' == 'true' ">false</GenerateAssemblyInformationalVersionAttribute>
+
         <!-- Property that enables GenerateGitVersionInformation -->
         <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' ">true</GenerateGitVersionInformation>
 
