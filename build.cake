@@ -184,8 +184,7 @@ Task("Test")
             settings.Filter = "TestCategory!=NoMono";
         }
 
-        // DotNetCoreTest(project.FullPath, settings, coverletSettings);
-        DotNetCoreTest(project.FullPath, settings);
+        DotNetCoreTest(project.FullPath, settings, coverletSettings);
     }
 
     // run using NUnit
