@@ -352,7 +352,8 @@ Task("Pack-Nuget")
 
             var nugetSettings = new NuGetPackSettings
             {
-                Version = parameters.Version.SemVersion,
+                Version = parameters.Version.NugetVersion,
+                NoPackageAnalysis = true,
                 OutputDirectory = parameters.Paths.Directories.NugetRoot,
                 Files = GetFiles(artifactPath + "/**/*.*")
                         .Select(file => new NuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })

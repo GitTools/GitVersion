@@ -6,12 +6,12 @@ public class BuildPackages
 
     public static BuildPackages GetPackages(
         DirectoryPath nugetRooPath,
-        string semVersion,
+        BuildVersion version,
         string[] packageIds,
         string[] chocolateyPackageIds)
     {
-        var toNugetPackage = BuildPackage(nugetRooPath, semVersion);
-        var toChocolateyPackage = BuildPackage(nugetRooPath, semVersion, isChocolateyPackage: true);
+        var toNugetPackage = BuildPackage(nugetRooPath, version.NugetVersion);
+        var toChocolateyPackage = BuildPackage(nugetRooPath, version.SemVersion, isChocolateyPackage: true);
         var nugetPackages = packageIds.Select(toNugetPackage).ToArray();
         var chocolateyPackages = chocolateyPackageIds.Select(toChocolateyPackage).ToArray();
 

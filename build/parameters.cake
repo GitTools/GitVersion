@@ -107,7 +107,7 @@ public class BuildParameters
 
         Packages = BuildPackages.GetPackages(
             Paths.Directories.NugetRoot,
-            Version.SemVersion,
+            Version,
             new [] { "GitVersion.CommandLine.DotNetCore", "GitVersion.CommandLine", "GitVersionCore", "GitVersionTask", "GitVersion.Tool" },
             new [] { "GitVersion.Portable" });
 
@@ -139,8 +139,9 @@ public class BuildParameters
         var msBuildSettings = new DotNetCoreMSBuildSettings()
                                 .WithProperty("Version", version.SemVersion)
                                 .WithProperty("AssemblyVersion", version.Version)
-                                .WithProperty("PackageVersion", version.SemVersion)
-                                .WithProperty("FileVersion", version.Version);
+                                .WithProperty("PackageVersion", version.NugetVersion)
+                                .WithProperty("FileVersion", version.Version)
+                                .WithProperty("NoPackageAnalysis", "true");
 
         if(!IsRunningOnWindows)
         {
