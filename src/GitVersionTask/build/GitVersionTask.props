@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
     <PropertyGroup>
-        <GitVersionAssemblyFile Condition="'$(MSBuildRuntimeType)' != 'Core'">$(MSBuildThisFileDirectory)..\tools\net461\GitVersionTask.MsBuild.dll</GitVersionAssemblyFile>
-        <GitVersionAssemblyFile Condition="'$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)..\tools\netstandard2.0\GitVersionTask.MsBuild.dll</GitVersionAssemblyFile>
+        <GitVersionAssemblyFile Condition="$(GitVersionAssemblyFile) == '' And '$(MSBuildRuntimeType)' != 'Core'">$(MSBuildThisFileDirectory)..\tools\net461\GitVersionTask.MsBuild.dll</GitVersionAssemblyFile>
+        <GitVersionAssemblyFile Condition="$(GitVersionAssemblyFile) == '' And '$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)..\tools\netstandard2.0\GitVersionTask.MsBuild.dll</GitVersionAssemblyFile>
 
         <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)\..\</SolutionDir>
         <GitVersionPath Condition="'$(GitVersionPath)' == '' And '$(GitVersionUseSolutionDir)' == 'true'">$(SolutionDir)</GitVersionPath>
@@ -10,22 +10,30 @@
 
         <GitVersion_NoFetchEnabled Condition="$(GitVersion_NoFetchEnabled) == ''">false</GitVersion_NoFetchEnabled>
 
+        <DisableGitVersionTask Condition=" '$(DisableGitVersionTask)' == '' ">false</DisableGitVersionTask>
+
         <!-- Property that enables WriteVersionInfoToBuildLog -->
+        <WriteVersionInfoToBuildLog Condition=" '$(DisableGitVersionTask)' == 'true' ">false</WriteVersionInfoToBuildLog>
         <WriteVersionInfoToBuildLog Condition=" '$(WriteVersionInfoToBuildLog)' == '' ">true</WriteVersionInfoToBuildLog>
 
         <!-- Property that enables UpdateAssemblyInfo. Default to off for SDK builds -->
+        <UpdateAssemblyInfo Condition=" '$(DisableGitVersionTask)' == 'true' ">false</UpdateAssemblyInfo>
         <UpdateAssemblyInfo Condition=" '$(UpdateAssemblyInfo)' == '' ">true</UpdateAssemblyInfo>
 
         <GenerateAssemblyFileVersionAttribute Condition=" '$(UpdateAssemblyInfo)' == 'true' ">false</GenerateAssemblyFileVersionAttribute>
         <GenerateAssemblyVersionAttribute Condition=" '$(UpdateAssemblyInfo)' == 'true' ">false</GenerateAssemblyVersionAttribute>
         <GenerateAssemblyInformationalVersionAttribute Condition=" '$(UpdateAssemblyInfo)' == 'true' ">false</GenerateAssemblyInformationalVersionAttribute>
 
+
         <!-- Property that enables GenerateGitVersionInformation -->
+        <GenerateGitVersionInformation Condition=" '$(DisableGitVersionTask)' == 'true' ">false</GenerateGitVersionInformation>
         <GenerateGitVersionInformation Condition=" '$(GenerateGitVersionInformation)' == '' ">true</GenerateGitVersionInformation>
 
         <!-- Property that enables GetVersion -->
+        <GetVersion Condition=" '$(DisableGitVersionTask)' == 'true' ">false</GetVersion>
         <GetVersion Condition=" '$(GetVersion)' == '' ">true</GetVersion>
 
+        <GenerateGitVersionWixDefines Condition=" '$(DisableGitVersionTask)' == 'true' ">false</GenerateGitVersionWixDefines>
         <GenerateGitVersionWixDefines Condition=" '$(GenerateGitVersionWixDefines)' == '' ">true</GenerateGitVersionWixDefines>
         <!--
           Ensure GetVersion runs prior to XAML's Markup Compiler in order to have the assembly version available.
@@ -35,6 +43,7 @@
         <GetPackageVersionDependsOn>$(GetPackageVersionDependsOn);GetVersion</GetPackageVersionDependsOn>
 
         <!-- Property that enables setting of Version -->
+        <UpdateVersionProperties Condition=" '$(DisableGitVersionTask)' == 'true' ">false</UpdateVersionProperties>
         <UpdateVersionProperties Condition=" '$(UpdateVersionProperties)' == '' ">true</UpdateVersionProperties>
         <UseFullSemVerForNuGet Condition=" '$(UseFullSemVerForNuGet)' == '' ">false</UseFullSemVerForNuGet>
     </PropertyGroup>
