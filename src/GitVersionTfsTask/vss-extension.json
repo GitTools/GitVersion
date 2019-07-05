@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "gitversion$idSuffix$",
     "name": "GitVersion$titleSuffix$",
-    "publisher": "GitVersion",
+    "publisher": "gittools",
     "public": true,
     "author": "GitVersion Contributors",
     "version": "$version$",
