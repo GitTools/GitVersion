@@ -6,6 +6,12 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
   steps:
+  - task: DotNetCoreInstaller@0
+    condition: eq( variables['Agent.OS'], 'Darwin' )
+    displayName: 'Use .NET Core sdk 2.x'
+    inputs:
+      version: '2.2.107'
+      packageType: sdk
   - task: UseRubyVersion@0
     condition: ne( variables['Agent.OS'], 'Darwin' )
     displayName: 'Use .Ruby >= 2.5'
