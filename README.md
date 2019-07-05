@@ -21,10 +21,10 @@ works out the [semantic version][semver] of the commit being built.
 |            **GitVersion.CommandLine** |       [![NuGet][gvcl-badge]][gvcl]                                 |                      [![NuGet][gvcl-pre-badge]][gvcl]                      |
 | **GitVersion.CommandLine.DotNetCore** |       [![NuGet][gvcd-badge]][gvcd]                                 |                      [![NuGet][gvcd-pre-badge]][gvcd]                      |
 |                   **GitVersion.Tool** |                                -                                   |                      [![NuGet][gvgt-pre-badge]][gvgt]                      |
+|               **Azure Pipeline Task** | [![Azure Pipeline Task][az-pipeline-task-badge]][az-pipeline-task] | [![Azure Pipeline Task][az-pipeline-task-pre-badge]][az-pipeline-task-pre] |
 |                               **Gem** |         [![Gem][gem-badge]][gem]                                   |                                     -                                      |
 |                          **Homebrew** |     [![homebrew][brew-badge]][brew]                                |                                     -                                      |
 |                            **Docker** | [![Docker Pulls][dockerhub-badge]][dockerhub]                      |                                     -                                      |
-|               **Azure Pipeline Task** |                                -                                   | [![Azure Pipeline Task][az-pipeline-task-pre-badge]][az-pipeline-task-pre] |
 
 ## Compatibility
 
@@ -109,7 +109,7 @@ from The Noun Project.
 [gv-in-action]:                    https://raw.github.com/GitTools/GitVersion/master/docs/img/README.png
 [dockerhub]:                       https://hub.docker.com/r/gittools/gitversion/
 [dockerhub-badge]:                 https://img.shields.io/docker/pulls/gittools/gitversion.svg
-[az-pipeline-task]:                https://marketplace.visualstudio.com/items?itemName=GitVersion.gitversion-preview
-[az-pipeline-task-badge]:          https://img.shields.io/visual-studio-marketplace/v/Gitversion.gitversion-preview.svg?label=vsix
-[az-pipeline-task-pre]:            https://marketplace.visualstudio.com/items?itemName=GitVersion.gitversion-preview
-[az-pipeline-task-pre-badge]:      https://img.shields.io/visual-studio-marketplace/v/Gitversion.gitversion-preview.svg?label=vsix
+[az-pipeline-task]:                https://marketplace.visualstudio.com/items?itemName=GitTools.gitversion
+[az-pipeline-task-badge]:          https://img.shields.io/visual-studio-marketplace/v/GitTools.gitversion.svg?label=vsix
+[az-pipeline-task-pre]:            https://marketplace.visualstudio.com/items?itemName=GitTools.gitversion-preview
+[az-pipeline-task-pre-badge]:      https://img.shields.io/visual-studio-marketplace/v/GitTools.gitversion-preview.svg?label=vsix
