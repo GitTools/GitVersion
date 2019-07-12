@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
     using System.IO;
@@ -37,7 +37,7 @@
 
         public override string GetCurrentBranch(bool usingDynamicRepos)
         {
-            return Environment.GetEnvironmentVariable("CI_BUILD_REF_NAME");
+            return Environment.GetEnvironmentVariable("CI_COMMIT_REF_NAME");
         }
 
         public override bool PreventFetch()
