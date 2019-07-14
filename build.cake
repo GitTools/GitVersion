@@ -146,6 +146,7 @@ Task("Pack")
 });
 
 Task("Publish")
+    .IsDependentOn("Release-Notes")
     .IsDependentOn("Publish-AppVeyor")
     .IsDependentOn("Publish-AzurePipeline")
     .IsDependentOn("Publish-Coverage")
