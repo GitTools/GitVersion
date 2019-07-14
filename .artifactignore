@@ -1,0 +1,7 @@
+**/*
+!**/*.cake
+!**/Dockerfile
+!build.ps1
+!build.config
+!*.yml
+!*.yaml

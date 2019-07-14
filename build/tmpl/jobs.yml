@@ -1,42 +1,35 @@
-parameters:
-  name: ''  # defaults for any parameters that aren't specified
-  vmImage: ''
-jobs:
-- job: ${{ parameters.name }}
-  pool:
-    vmImage: ${{ parameters.vmImage }}
-  steps:
-  - task: DotNetCoreInstaller@0
-    condition: eq( variables['Agent.OS'], 'Darwin' )
-    displayName: 'Use .NET Core sdk 2.x'
-    inputs:
-      version: '2.2.107'
-      packageType: sdk
-  - task: UseRubyVersion@0
-    condition: ne( variables['Agent.OS'], 'Darwin' )
-    displayName: 'Use .Ruby >= 2.5'
-    inputs:
-      versionSpec: '>= 2.5'
-      addToPath: true # Optional
-  - powershell: ./build.ps1 -script build.cake -target Default
-    displayName: 'Cake build'
-    env:
-      GITHUB_TOKEN: $(GITHUB_TOKEN)
-      DOCKER_USERNAME: $(DOCKER_USERNAME)
-      DOCKER_PASSWORD: $(DOCKER_PASSWORD)
-      NUGET_API_KEY: $(NUGET_API_KEY)
-      NUGET_API_URL: $(NUGET_API_URL)
-      CHOCOLATEY_API_KEY: $(CHOCOLATEY_API_KEY)
-      CHOCOLATEY_API_URL: $(CHOCOLATEY_API_URL)
-      RUBY_GEM_API_KEY: $(RUBY_GEM_API_KEY)
-      TFX_TOKEN: $(TFX_TOKEN)
-      CODECOV_TOKEN: $(CODECOV_TOKEN)
-      ENABLED_UNIT_TESTS: $(ENABLED_UNIT_TESTS)
-      ENABLED_PUBLISH_GEM: $(ENABLED_PUBLISH_GEM)
-      ENABLED_PUBLISH_TFS: $(ENABLED_PUBLISH_TFS)
-      ENABLED_PUBLISH_NUGET: $(ENABLED_PUBLISH_NUGET)
-      ENABLED_PUBLISH_CHOCOLATEY: $(ENABLED_PUBLISH_CHOCOLATEY)
-      ENABLED_PUBLISH_DOCKER: $(ENABLED_PUBLISH_DOCKER)
-  - publish: $(System.DefaultWorkingDirectory)/artifacts
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    artifact: artifacts
+steps:
+- task: DotNetCoreInstaller@0
+  condition: eq( variables['Agent.OS'], 'Darwin' )
+  displayName: 'Use .NET Core sdk 2.x'
+  inputs:
+    version: '2.2.107'
+    packageType: sdk
+- task: UseRubyVersion@0
+  condition: ne( variables['Agent.OS'], 'Darwin' )
+  displayName: 'Use .Ruby >= 2.5'
+  inputs:
+    versionSpec: '>= 2.5'
+    addToPath: true # Optional
+- powershell: ./build.ps1 -script build.cake -target Pack
+  displayName: 'Cake build'
+  env:
+    GITHUB_TOKEN: $(GITHUB_TOKEN)
+    DOCKER_USERNAME: $(DOCKER_USERNAME)
+    DOCKER_PASSWORD: $(DOCKER_PASSWORD)
+    NUGET_API_KEY: $(NUGET_API_KEY)
+    NUGET_API_URL: $(NUGET_API_URL)
+    CHOCOLATEY_API_KEY: $(CHOCOLATEY_API_KEY)
+    CHOCOLATEY_API_URL: $(CHOCOLATEY_API_URL)
+    RUBY_GEM_API_KEY: $(RUBY_GEM_API_KEY)
+    TFX_TOKEN: $(TFX_TOKEN)
+    CODECOV_TOKEN: $(CODECOV_TOKEN)
+    ENABLED_UNIT_TESTS: $(ENABLED_UNIT_TESTS)
+    ENABLED_PUBLISH_GEM: $(ENABLED_PUBLISH_GEM)
+    ENABLED_PUBLISH_TFS: $(ENABLED_PUBLISH_TFS)
+    ENABLED_PUBLISH_NUGET: $(ENABLED_PUBLISH_NUGET)
+    ENABLED_PUBLISH_CHOCOLATEY: $(ENABLED_PUBLISH_CHOCOLATEY)
+    ENABLED_PUBLISH_DOCKER: $(ENABLED_PUBLISH_DOCKER)
+- publish: $(System.DefaultWorkingDirectory)
+  condition: eq( variables['Agent.OS'], 'Windows_NT' )
+  artifact: artifacts

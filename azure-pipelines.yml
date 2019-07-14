@@ -1,15 +1,38 @@
-jobs:
-- template: build/tmpl/jobs.yml
-  parameters:
-    name: macOS
-    vmImage: 'macOS-latest'
+stages:
+- stage: Package
+  jobs:
+  - job: Package
+    strategy:
+      matrix:
+        'Windows':
+          VM_IMAGE: 'windows-2019'
+        'Linux':
+          VM_IMAGE: 'Ubuntu 16.04'
+        'macOS':
+          VM_IMAGE: 'macOS-latest'
+    pool:
+      vmImage: $(VM_IMAGE)
+    steps:
+    - template: build/tmpl/jobs.yml
 
-- template: build/tmpl/jobs.yml
-  parameters:
-    name: Linux
-    vmImage: 'Ubuntu 16.04'
-
-- template: build/tmpl/jobs.yml
-  parameters:
-    name: Windows
-    vmImage: 'windows-2019'
+- stage: Dir
+  condition: succeeded()
+  jobs:
+  - job: Dir
+    strategy:
+      matrix:
+        'Windows':
+          VM_IMAGE: 'windows-2019'
+        'Linux':
+          VM_IMAGE: 'Ubuntu 16.04'
+    pool:
+      vmImage: $(VM_IMAGE)
+    steps:
+    - checkout: none
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        source: current
+        path: $(Build.SourcesDirectory)
+        artifact: artifacts
+    - powershell: dir $(Build.SourcesDirectory); dir $(Build.SourcesDirectory)/build;
+      displayName: 'Dir build'
