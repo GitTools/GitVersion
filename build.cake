@@ -39,7 +39,7 @@ using System.Diagnostics;
 // PARAMETERS
 //////////////////////////////////////////////////////////////////////
 bool publishingError = false;
-bool singleStageRun = false;
+bool singleStageRun = true;
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
 ///////////////////////////////////////////////////////////////////////////////
@@ -50,8 +50,6 @@ Setup<BuildParameters>(context =>
     Build(parameters.Configuration);
     var gitVersion = GetVersion(parameters);
     parameters.Initialize(context, gitVersion);
-
-    singleStageRun = !parameters.EnabledMultiStageBuild;
 
     // Increase verbosity?
     if (parameters.IsMainBranch && (context.Log.Verbosity != Verbosity.Diagnostic)) {

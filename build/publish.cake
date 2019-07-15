@@ -1,3 +1,5 @@
+singleStageRun = !IsEnabled(Context, "ENABLED_MULTI_STAGE_BUILD", false);
+
 #region Publish
 
 Task("Release-Notes")

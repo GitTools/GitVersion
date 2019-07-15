@@ -168,3 +168,10 @@ public static CakeTaskBuilder IsDependentOnWhen(this CakeTaskBuilder builder, st
     }
     return builder;
 }
+
+public static bool IsEnabled(ICakeContext context, string envVar, bool nullOrEmptyAsEnabled = true)
+{
+    var value = context.EnvironmentVariable(envVar);
+
+    return string.IsNullOrWhiteSpace(value) ? nullOrEmptyAsEnabled : bool.Parse(value);
+}

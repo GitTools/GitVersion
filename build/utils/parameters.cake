@@ -17,7 +17,6 @@ public class BuildParameters
     public bool EnabledPublishNuget { get; private set; }
     public bool EnabledPublishChocolatey { get; private set; }
     public bool EnabledPublishDocker { get; private set; }
-    public bool EnabledMultiStageBuild { get; private set; }
 
     public bool IsRunningOnUnix { get; private set; }
     public bool IsRunningOnWindows { get; private set; }
@@ -76,7 +75,6 @@ public class BuildParameters
             EnabledPublishNuget       = IsEnabled(context, "ENABLED_PUBLISH_NUGET"),
             EnabledPublishChocolatey  = IsEnabled(context, "ENABLED_PUBLISH_CHOCOLATEY"),
             EnabledPublishDocker      = IsEnabled(context, "ENABLED_PUBLISH_DOCKER"),
-            EnabledMultiStageBuild    = IsEnabled(context, "ENABLED_MULTI_STAGE_BUILD", false),
 
             IsRunningOnUnix    = context.IsRunningOnUnix(),
             IsRunningOnWindows = context.IsRunningOnWindows(),
@@ -217,12 +215,5 @@ public class BuildParameters
         context.StartProcess(gitPath, new ProcessSettings { Arguments = "tag --points-at " + sha.Single(), RedirectStandardOutput = true }, out var redirectedOutput);
 
         return redirectedOutput.Any();
-    }
-
-    private static bool IsEnabled(ICakeContext context, string envVar, bool nullOrEmptyAsEnabled = true)
-    {
-        var value = context.EnvironmentVariable(envVar);
-
-        return string.IsNullOrWhiteSpace(value) ? nullOrEmptyAsEnabled : bool.Parse(value);
     }
 }
