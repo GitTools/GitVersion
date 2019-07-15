@@ -1,6 +1,7 @@
-var dockerBuild = Task("Docker-Build")
+Task("Docker-Build")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Docker can be built only on Windows or Linux agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Docker-Build works only on AzurePipeline.")
+    .IsDependentOnWhen("Copy-Files", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
     foreach(var dockerImage in parameters.Docker.Images)
@@ -8,9 +9,6 @@ var dockerBuild = Task("Docker-Build")
         DockerBuild(dockerImage, parameters);
     }
 });
-
-dockerBuild
-    .IsDependentOn("Copy-Files");
 
 Task("Docker-Test")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Docker can be tested only on Windows or Linux agents.")

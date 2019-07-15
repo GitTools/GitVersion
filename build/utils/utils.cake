@@ -155,3 +155,16 @@ void UpdateTaskVersion(FilePath taskJsonPath, string taskId, GitVersion gitVersi
     taskJson["version"]["Patch"] = gitVersion.Patch.ToString();
     SerializeJsonToPrettyFile(taskJsonPath, taskJson);
 }
+
+public static CakeTaskBuilder IsDependentOnWhen(this CakeTaskBuilder builder, string name, bool condition)
+{
+    if (builder == null)
+    {
+        throw new ArgumentNullException(nameof(builder));
+    }
+    if (condition)
+    {
+        builder.IsDependentOn(name);
+    }
+    return builder;
+}

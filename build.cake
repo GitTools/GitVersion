@@ -1,5 +1,5 @@
 // Install modules
-#module nuget:?package=Cake.DotNetTool.Module&version=0.2.0
+#module nuget:?package=Cake.DotNetTool.Module&version=0.3.0
 
 // Install addins.
 #addin "nuget:?package=Cake.Codecov&version=0.6.0"
@@ -11,7 +11,6 @@
 #addin "nuget:?package=Cake.Json&version=3.0.0"
 #addin "nuget:?package=Cake.Npm&version=0.17.0"
 #addin "nuget:?package=Cake.Tfx&version=0.9.0"
-#addin "nuget:?package=Cake.Gem&version=0.8.0"
 
 #addin "nuget:?package=Newtonsoft.Json&version=9.0.1"
 #addin "nuget:?package=xunit.assert&version=2.4.1"
@@ -19,8 +18,8 @@
 // Install tools.
 #tool "nuget:?package=vswhere&version=2.6.13-ga6d40ba5f4"
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
-#tool "nuget:?package=ILRepack&version=2.0.16"
-#tool "nuget:?package=Codecov&version=1.5.0"
+#tool "nuget:?package=ILRepack&version=2.0.17"
+#tool "nuget:?package=Codecov&version=1.6.0"
 #tool "nuget:?package=nuget.commandline&version=5.0.2"
 
 // Install .NET Core Global tools.
@@ -40,17 +39,19 @@ using System.Diagnostics;
 // PARAMETERS
 //////////////////////////////////////////////////////////////////////
 bool publishingError = false;
-
+bool singleStageRun = false;
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
 ///////////////////////////////////////////////////////////////////////////////
 
 Setup<BuildParameters>(context =>
 {
-    var parameters = BuildParameters.GetParameters(Context);
+    var parameters = BuildParameters.GetParameters(context);
     Build(parameters.Configuration);
     var gitVersion = GetVersion(parameters);
     parameters.Initialize(context, gitVersion);
+
+    singleStageRun = !parameters.EnabledMultiStageBuild;
 
     // Increase verbosity?
     if (parameters.IsMainBranch && (context.Log.Verbosity != Verbosity.Diagnostic)) {
