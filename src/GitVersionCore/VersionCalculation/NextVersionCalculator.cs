@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+
 using GitVersion.VersionCalculation.BaseVersionCalculators;
 using GitVersion.VersioningModes;
 using GitVersion.Configuration;
@@ -28,7 +29,7 @@ namespace GitVersion.VersionCalculation
         public SemanticVersion FindVersion(GitVersionContext context)
         {
             SemanticVersion taggedSemanticVersion = null;
-            // If current commit is tagged, don't do anything except add build metadata
+
             if (context.IsCurrentCommitTagged)
             {
                 // Will always be 0, don't bother with the +0 on tags
@@ -62,11 +63,20 @@ namespace GitVersion.VersionCalculation
                 UpdatePreReleaseTag(context, semver, baseVersion.BranchNameOverride);
             }
 
-
             if (taggedSemanticVersion != null)
             {
-                // set the commit count on the tagged ver
-                taggedSemanticVersion.BuildMetaData.CommitsSinceVersionSource = semver.BuildMetaData.CommitsSinceVersionSource;
+                // replace calculated version with tagged version only if tagged version greater or equal to calculated version
+                if (semver.Major > taggedSemanticVersion.Major ||
+                        (semver.Major == taggedSemanticVersion.Major && semver.Minor > taggedSemanticVersion.Minor) ||
+                        (semver.Major == taggedSemanticVersion.Major && semver.Minor == taggedSemanticVersion.Minor && semver.Patch > taggedSemanticVersion.Patch))
+                {
+                    taggedSemanticVersion = null;
+                }
+                else
+                {
+                    // set the commit count on the tagged ver
+                    taggedSemanticVersion.BuildMetaData.CommitsSinceVersionSource = semver.BuildMetaData.CommitsSinceVersionSource;
+                }
             }
 
             return taggedSemanticVersion ?? semver;
