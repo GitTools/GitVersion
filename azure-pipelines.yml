@@ -1,15 +1,31 @@
-jobs:
-- template: build/tmpl/jobs.yml
-  parameters:
-    name: macOS
-    vmImage: 'macOS-latest'
+stages:
+- stage: Pack
+  jobs:
+  - job: Pack
+    strategy:
+      matrix:
+        'Windows':
+          VM_IMAGE: 'windows-2019'
+        'Linux':
+          VM_IMAGE: 'Ubuntu 16.04'
+        'macOS':
+          VM_IMAGE: 'macOS-latest'
+    pool:
+      vmImage: $(VM_IMAGE)
+    steps:
+    - template: build/stages/pack.yml
 
-- template: build/tmpl/jobs.yml
-  parameters:
-    name: Linux
-    vmImage: 'Ubuntu 16.04'
-
-- template: build/tmpl/jobs.yml
-  parameters:
-    name: Windows
-    vmImage: 'windows-2019'
+- stage: Docker
+  condition: succeeded()
+  jobs:
+  - job: Docker
+    strategy:
+      matrix:
+        'Windows':
+          VM_IMAGE: 'windows-2019'
+        'Linux':
+          VM_IMAGE: 'Ubuntu 16.04'
+    pool:
+      vmImage: $(VM_IMAGE)
+    steps:
+    - template: build/stages/docker.yml
