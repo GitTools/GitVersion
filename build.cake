@@ -19,7 +19,7 @@
 #tool "nuget:?package=vswhere&version=2.6.13-ga6d40ba5f4"
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
 #tool "nuget:?package=ILRepack&version=2.0.17"
-#tool "nuget:?package=Codecov&version=1.6.0"
+#tool "nuget:?package=Codecov&version=1.5.0"
 #tool "nuget:?package=nuget.commandline&version=5.0.2"
 
 // Install .NET Core Global tools.
