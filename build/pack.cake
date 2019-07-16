@@ -42,46 +42,43 @@ Task("Test")
     var framework = parameters.FullFxVersion;
 
     // run using dotnet test
+    var actions = new List<Action>();
     var projects = GetFiles("./src/**/*.Tests.csproj");
     foreach(var project in projects)
     {
-        var settings = new DotNetCoreTestSettings
+        actions.Add(() =>
         {
-            Framework = framework,
-            NoBuild = true,
-            NoRestore = true,
-            Configuration = parameters.Configuration
-        };
+            var settings = new DotNetCoreTestSettings
+            {
+                Framework = framework,
+                NoBuild = true,
+                NoRestore = true,
+                Configuration = parameters.Configuration
+            };
 
-        var coverletSettings = new CoverletSettings {
-            CollectCoverage = true,
-            CoverletOutputFormat = CoverletOutputFormat.opencover,
-            CoverletOutputDirectory = parameters.Paths.Directories.TestCoverageOutput + "/",
-            CoverletOutputName = $"{project.GetFilenameWithoutExtension()}.coverage.xml"
-        };
+            var coverletSettings = new CoverletSettings {
+                CollectCoverage = true,
+                CoverletOutputFormat = CoverletOutputFormat.opencover,
+                CoverletOutputDirectory = parameters.Paths.Directories.TestCoverageOutput + "/",
+                CoverletOutputName = $"{project.GetFilenameWithoutExtension()}.coverage.xml"
+            };
 
-        if (IsRunningOnUnix())
-        {
-            settings.Filter = "TestCategory!=NoMono";
-        }
+            if (IsRunningOnUnix())
+            {
+                settings.Filter = "TestCategory!=NoMono";
+            }
 
-        DotNetCoreTest(project.FullPath, settings, coverletSettings);
+            DotNetCoreTest(project.FullPath, settings, coverletSettings);
+        });
     }
 
-    // run using NUnit
-    var testAssemblies = GetFiles("./src/**/bin/" + parameters.Configuration + "/" + framework + "/*.Tests.dll");
-
-    var nunitSettings = new NUnit3Settings
+    var options = new ParallelOptions
     {
-        Results = new List<NUnit3Result> { new NUnit3Result { FileName = parameters.Paths.Files.TestCoverageOutputFilePath } }
+        MaxDegreeOfParallelism = -1,
+        CancellationToken = default
     };
 
-    if(IsRunningOnUnix()) {
-        nunitSettings.Where = "cat!=NoMono";
-        nunitSettings.Agents = 1;
-    }
-
-    //NUnit3(testAssemblies, nunitSettings);
+    Parallel.Invoke(options, actions.ToArray());
 });
 
 #endregion
