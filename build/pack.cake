@@ -81,7 +81,7 @@ Task("Test")
         nunitSettings.Agents = 1;
     }
 
-    NUnit3(testAssemblies, nunitSettings);
+    //NUnit3(testAssemblies, nunitSettings);
 });
 
 #endregion
