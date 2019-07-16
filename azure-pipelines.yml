@@ -1,7 +1,7 @@
 stages:
-- stage: Package
+- stage: Pack
   jobs:
-  - job: Package
+  - job: Pack
     strategy:
       matrix:
         'Windows':
@@ -13,12 +13,12 @@ stages:
     pool:
       vmImage: $(VM_IMAGE)
     steps:
-    - template: build/tmpl/jobs.yml
+    - template: build/stages/pack.yml
 
-- stage: Dir
+- stage: Docker
   condition: succeeded()
   jobs:
-  - job: Dir
+  - job: Docker
     strategy:
       matrix:
         'Windows':
@@ -28,11 +28,4 @@ stages:
     pool:
       vmImage: $(VM_IMAGE)
     steps:
-    - checkout: none
-    - task: DownloadPipelineArtifact@2
-      inputs:
-        source: current
-        path: $(Build.SourcesDirectory)
-        artifact: artifacts
-    - powershell: dir $(Build.SourcesDirectory); dir $(Build.SourcesDirectory)/build;
-      displayName: 'Dir build'
+    - template: build/stages/docker.yml

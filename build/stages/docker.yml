@@ -1,0 +1,12 @@
+steps:
+- task: DownloadPipelineArtifact@2
+  inputs:
+    source: current
+    path: $(Build.SourcesDirectory)
+    artifact: artifacts
+- powershell: ./build.ps1 -script build.cake -target Docker-Test
+  displayName: 'Docker build'
+  env:
+    DOCKER_USERNAME: $(DOCKER_USERNAME)
+    DOCKER_PASSWORD: $(DOCKER_PASSWORD)
+    ENABLED_PUBLISH_DOCKER: $(ENABLED_PUBLISH_DOCKER)

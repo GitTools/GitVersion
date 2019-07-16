@@ -83,7 +83,7 @@ Task("Test")
 
 #endregion
 
-#region Package
+#region Pack
 
 Task("Copy-Files")
     .IsDependentOn("Test")

@@ -12,11 +12,9 @@ steps:
     versionSpec: '>= 2.5'
     addToPath: true # Optional
 - powershell: ./build.ps1 -script build.cake -target Pack
-  displayName: 'Cake build'
+  displayName: 'Cake build and Package'
   env:
     GITHUB_TOKEN: $(GITHUB_TOKEN)
-    DOCKER_USERNAME: $(DOCKER_USERNAME)
-    DOCKER_PASSWORD: $(DOCKER_PASSWORD)
     NUGET_API_KEY: $(NUGET_API_KEY)
     NUGET_API_URL: $(NUGET_API_URL)
     CHOCOLATEY_API_KEY: $(CHOCOLATEY_API_KEY)
@@ -29,7 +27,6 @@ steps:
     ENABLED_PUBLISH_TFS: $(ENABLED_PUBLISH_TFS)
     ENABLED_PUBLISH_NUGET: $(ENABLED_PUBLISH_NUGET)
     ENABLED_PUBLISH_CHOCOLATEY: $(ENABLED_PUBLISH_CHOCOLATEY)
-    ENABLED_PUBLISH_DOCKER: $(ENABLED_PUBLISH_DOCKER)
 - publish: $(System.DefaultWorkingDirectory)
   condition: eq( variables['Agent.OS'], 'Windows_NT' )
   artifact: artifacts
