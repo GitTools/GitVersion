@@ -153,7 +153,6 @@ Task("Publish")
     .IsDependentOn("Publish-Chocolatey")
     .IsDependentOn("Publish-Vsix")
     .IsDependentOn("Publish-Gem")
-    .IsDependentOn("Publish-DockerHub")
     .Finally(() =>
 {
     if (publishingError)
@@ -163,7 +162,8 @@ Task("Publish")
 });
 
 Task("Default")
-    .IsDependentOn("Publish");
+    .IsDependentOn("Publish")
+    .IsDependentOn("Publish-DockerHub");
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION
