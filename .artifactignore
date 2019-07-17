@@ -1,2 +1,4 @@
 **/*
 !artifacts
+!tools
+!.dotnet
