@@ -66,10 +66,6 @@ void Build(string configuration)
             .SetVerbosity(Verbosity.Minimal)
             .WithTarget("Build")
             .WithProperty("POSIX", IsRunningOnUnix().ToString());
-
-        if (IsRunningOnWindows()) {
-            settings.ToolPath = GetFiles(VSWhereLatest() + "/MSBuild/**/Bin/MSBuild.exe").First();
-        }
     });
 }
 
@@ -128,22 +124,6 @@ void PublishILRepackedGitVersionExe(bool includeLibGit2Sharp, DirectoryPath targ
     // Copy license & Copy GitVersion.XML (since publish does not do this anymore)
     CopyFileToDirectory("./LICENSE", outputDir);
     CopyFileToDirectory("./src/GitVersionExe/bin/" + configuration + "/" + dotnetVersion + "/GitVersion.xml", outputDir);
-}
-
-void GetReleaseNotes(FilePath outputPath, DirectoryPath workDir, string repoToken)
-{
-    var toolPath = Context.Tools.Resolve("GitReleaseNotes.exe");
-
-    var arguments = new ProcessArgumentBuilder()
-                .Append(workDir.ToString())
-                .Append("/OutputFile")
-                .Append(outputPath.ToString())
-                .Append("/RepoToken")
-                .Append(repoToken);
-
-    StartProcess(toolPath, new ProcessSettings { Arguments = arguments, RedirectStandardOutput = true }, out var redirectedOutput);
-
-    Information(string.Join("\n", redirectedOutput));
 }
 
 void UpdateTaskVersion(FilePath taskJsonPath, string taskId, GitVersion gitVersion)
