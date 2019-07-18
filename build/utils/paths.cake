@@ -46,6 +46,9 @@ public class BuildPaths
 
         var vsixSuffix = parameters.IsStableRelease() ? "" : "preview-";
         var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-" + vsixSuffix + version.VsixVersion + ".vsix");
+        if (vsixOutputFilePath == null) {
+            vsixOutputFilePath = context.GetFiles(buildArtifactDir + "/*.vsix").First();
+        }
 
         // Directories
         var buildDirectories = new BuildDirectories(
