@@ -15,14 +15,6 @@ Task("Clean")
     CleanDirectories(parameters.Paths.Directories.ToClean);
 });
 
-// This build task can be run to just build
-Task("DogfoodBuild")
-    .IsDependentOn("Clean")
-    .Does<BuildParameters>((parameters) =>
-{
-    Build(parameters.Configuration);
-});
-
 Task("Build")
     .IsDependentOn("Clean")
     .Does<BuildParameters>((parameters) =>
