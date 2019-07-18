@@ -36,36 +36,23 @@ void SetRubyGemPushApiKey(string apiKey)
 
 GitVersion GetVersion(BuildParameters parameters)
 {
-    GitVersion gitVersion;
-    var gitVersionFile = ((DirectoryPath)Directory("./artifacts")).CombineWithFilePath("GitVersion.json");
-    if (FileExists(gitVersionFile)) {
-        Warning("Using GitVersion information from {0}", gitVersionFile);
-        gitVersion = DeserializeJsonFromFile<GitVersion>(gitVersionFile);
-    }
-    else {
-        Warning("Dogfood GitVersion to get information");
+    var dllFile = GetFiles($"**/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion}/GitVersion.dll").FirstOrDefault();
+    var settings = new GitVersionSettings
+    {
+        OutputType = GitVersionOutput.Json,
+        ToolPath = FindToolInPath(IsRunningOnUnix() ? "dotnet" : "dotnet.exe"),
+        ArgumentCustomization = args => dllFile + " " + args.Render()
+    };
 
-        Build(parameters.Configuration);
-        var dllFile = GetFiles($"**/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion}/GitVersion.dll").FirstOrDefault();
-        
-        var settings = new GitVersionSettings
-        {
-            OutputType = GitVersionOutput.Json,
-            ToolPath = FindToolInPath(IsRunningOnUnix() ? "dotnet" : "dotnet.exe"),
-            ArgumentCustomization = args => dllFile + " " + args.Render()
-        };
+    var gitVersion = GitVersion(settings);
 
-        gitVersion = GitVersion(settings);
-        SerializeJsonToPrettyFile(gitVersionFile, gitVersion);
+    if (!parameters.IsLocalBuild && !(parameters.IsRunningOnAzurePipeline && parameters.IsPullRequest))
+    {
+        settings.UpdateAssemblyInfo = true;
+        settings.LogFilePath = "console";
+        settings.OutputType = GitVersionOutput.BuildServer;
 
-        if (!parameters.IsLocalBuild && !(parameters.IsRunningOnAzurePipeline && parameters.IsPullRequest))
-        {
-            settings.UpdateAssemblyInfo = true;
-            settings.LogFilePath = "console";
-            settings.OutputType = GitVersionOutput.BuildServer;
-
-            GitVersion(settings);
-        }
+        GitVersion(settings);
     }
     return gitVersion;
 }

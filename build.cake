@@ -45,8 +45,8 @@ bool singleStageRun = true;
 
 Setup<BuildParameters>(context =>
 {
-    EnsureDirectoryExists("artifacts");
     var parameters = BuildParameters.GetParameters(context);
+    Build(parameters.Configuration);
     var gitVersion = GetVersion(parameters);
     parameters.Initialize(context, gitVersion);
 
