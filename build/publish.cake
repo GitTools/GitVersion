@@ -136,7 +136,12 @@ Task("Publish-Vsix")
 
     NpmSet(new NpmSetSettings             { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, Key = "progress", Value = "false" });
     NpmInstall(new NpmInstallSettings     { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent });
-    TfxExtensionPublish(parameters.Paths.Files.VsixOutputFilePath, settings);
+
+    var vsixFilePath = parameters.Paths.Files.VsixOutputFilePath;
+    if (!FileExists(vsixFilePath)) {
+        vsixFilePath = context.GetFiles(parameters.Paths.Directories.BuildArtifact + "/*.vsix").First();
+    }
+    TfxExtensionPublish(vsixFilePath, settings);
 })
 .OnError(exception =>
 {
