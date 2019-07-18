@@ -18,6 +18,7 @@ stages:
     - template: build/stages/build.yml
 
 - stage: Docker
+  dependsOn: Build
   condition: succeeded()
   jobs:
   - job: Docker
@@ -33,6 +34,7 @@ stages:
     - template: build/stages/docker.yml
 
 - stage: Publish
+  dependsOn: Build
   condition: succeeded()
   jobs:
   - job: Publish
