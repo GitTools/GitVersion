@@ -6,7 +6,7 @@ steps:
     source: current
     path: $(Build.SourcesDirectory)
     artifact: artifacts
-- script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Copy-Files
+- script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Publish-DockerHub
   displayName: 'Docker build'
   env:
     DOCKER_USERNAME: $(DOCKER_USERNAME)

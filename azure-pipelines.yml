@@ -29,3 +29,16 @@ stages:
       vmImage: $(VM_IMAGE)
     steps:
     - template: build/stages/docker.yml
+
+- stage: Publish
+  condition: succeeded()
+  jobs:
+  - job: Publish
+    strategy:
+      matrix:
+        'Windows':
+          VM_IMAGE: 'windows-2019'
+    pool:
+      vmImage: $(VM_IMAGE)
+    steps:
+    - template: build/stages/publish.yml    

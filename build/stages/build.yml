@@ -6,22 +6,10 @@ steps:
   inputs:
     versionSpec: '>= 2.5'
     addToPath: true
-- script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Copy-Files
-  displayName: 'Cake build'
+- script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Pack
+  displayName: 'Cake build & pack'
   env:
-    GITHUB_TOKEN: $(GITHUB_TOKEN)
-    NUGET_API_KEY: $(NUGET_API_KEY)
-    NUGET_API_URL: $(NUGET_API_URL)
-    CHOCOLATEY_API_KEY: $(CHOCOLATEY_API_KEY)
-    CHOCOLATEY_API_URL: $(CHOCOLATEY_API_URL)
-    RUBY_GEM_API_KEY: $(RUBY_GEM_API_KEY)
-    TFX_TOKEN: $(TFX_TOKEN)
-    CODECOV_TOKEN: $(CODECOV_TOKEN)
     ENABLED_UNIT_TESTS: $(ENABLED_UNIT_TESTS)
-    ENABLED_PUBLISH_GEM: $(ENABLED_PUBLISH_GEM)
-    ENABLED_PUBLISH_TFS: $(ENABLED_PUBLISH_TFS)
-    ENABLED_PUBLISH_NUGET: $(ENABLED_PUBLISH_NUGET)
-    ENABLED_PUBLISH_CHOCOLATEY: $(ENABLED_PUBLISH_CHOCOLATEY)
 - publish: $(System.DefaultWorkingDirectory)
   displayName: 'Upload pipeline artifacts'
   condition: eq( variables['Agent.OS'], 'Windows_NT' )
