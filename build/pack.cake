@@ -79,6 +79,11 @@ Task("Test")
     };
 
     Parallel.Invoke(options, actions.ToArray());
+})
+.ReportError(exception =>
+{
+    var error = (exception as AggregateException).InnerExceptions[0];
+    Error(error.Dump());
 });
 
 #endregion
