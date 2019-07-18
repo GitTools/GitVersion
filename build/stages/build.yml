@@ -1,18 +1,13 @@
 steps:
-- task: DotNetCoreInstaller@0
-  condition: eq( variables['Agent.OS'], 'Darwin' )
-  displayName: 'Use .NET Core sdk 2.x'
-  inputs:
-    version: '2.2.107'
-    packageType: sdk
+- template: common-steps.yml
 - task: UseRubyVersion@0
   condition: ne( variables['Agent.OS'], 'Darwin' )
   displayName: 'Use .Ruby >= 2.5'
   inputs:
     versionSpec: '>= 2.5'
-    addToPath: true # Optional
-- powershell: ./build.ps1 -script build.cake -target Pack
-  displayName: 'Cake build and Package'
+    addToPath: true
+- script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Copy-Files
+  displayName: 'Cake build'
   env:
     GITHUB_TOKEN: $(GITHUB_TOKEN)
     NUGET_API_KEY: $(NUGET_API_KEY)
@@ -28,5 +23,6 @@ steps:
     ENABLED_PUBLISH_NUGET: $(ENABLED_PUBLISH_NUGET)
     ENABLED_PUBLISH_CHOCOLATEY: $(ENABLED_PUBLISH_CHOCOLATEY)
 - publish: $(System.DefaultWorkingDirectory)
+  displayName: 'Upload pipeline artifacts'
   condition: eq( variables['Agent.OS'], 'Windows_NT' )
   artifact: artifacts

@@ -1,0 +1,9 @@
+steps:
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk'
+  inputs:
+    packageType: sdk
+    version: 2.2.107
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+- script: dotnet tool install --global Cake.Tool
+  displayName: 'Install Cake tool'
