@@ -34,11 +34,7 @@ stages:
   condition: succeeded()
   jobs:
   - job: Publish
-    strategy:
-      matrix:
-        'Windows':
-          VM_IMAGE: 'windows-2019'
     pool:
-      vmImage: $(VM_IMAGE)
+      vmImage: windows-2019
     steps:
     - template: build/stages/publish.yml    

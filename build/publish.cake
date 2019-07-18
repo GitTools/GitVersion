@@ -134,6 +134,8 @@ Task("Publish-Vsix")
         ArgumentCustomization = args => args.Render() + " --no-wait-validation"
     };
 
+    NpmSet(new NpmSetSettings             { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, Key = "progress", Value = "false" });
+    NpmInstall(new NpmInstallSettings     { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent });
     TfxExtensionPublish(parameters.Paths.Files.VsixOutputFilePath, settings);
 })
 .OnError(exception =>

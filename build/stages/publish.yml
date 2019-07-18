@@ -1,5 +1,11 @@
 steps:
 - template: common-steps.yml
+- task: UseRubyVersion@0
+  condition: ne( variables['Agent.OS'], 'Darwin' )
+  displayName: 'Use .Ruby >= 2.5'
+  inputs:
+    versionSpec: '>= 2.5'
+    addToPath: true
 - task: DownloadPipelineArtifact@2
   displayName: 'Download pipeline artifacts'
   inputs:
@@ -7,7 +13,7 @@ steps:
     path: $(Build.SourcesDirectory)
     artifact: artifacts
 - script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Publish
-  displayName: 'Docker build'
+  displayName: 'Publish'
   env:
     GITHUB_TOKEN: $(GITHUB_TOKEN)
     NUGET_API_KEY: $(NUGET_API_KEY)
