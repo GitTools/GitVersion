@@ -46,7 +46,7 @@ public class BuildPaths
 
         var vsixSuffix = parameters.IsStableRelease() ? "" : "preview-";
         var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-" + vsixSuffix + version.VsixVersion + ".vsix");
-        if (vsixOutputFilePath == null) {
+        if (context.FileExists(vsixOutputFilePath)) {
             vsixOutputFilePath = context.GetFiles(buildArtifactDir + "/*.vsix").First();
         }
 
