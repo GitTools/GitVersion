@@ -139,7 +139,7 @@ Task("Publish-Vsix")
 
     var vsixFilePath = parameters.Paths.Files.VsixOutputFilePath;
     if (!FileExists(vsixFilePath)) {
-        vsixFilePath = context.GetFiles(parameters.Paths.Directories.BuildArtifact + "/*.vsix").First();
+        vsixFilePath = GetFiles(parameters.Paths.Directories.BuildArtifact + "/*.vsix").First();
     }
     TfxExtensionPublish(vsixFilePath, settings);
 })
