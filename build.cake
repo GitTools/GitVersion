@@ -160,6 +160,16 @@ Task("Publish")
     }
 });
 
+Task("Publish-DockerHub")
+    .IsDependentOn("Docker-Publish")
+    .Finally(() =>
+{
+    if (publishingError)
+    {
+        throw new Exception("An error occurred during the publishing of GitVersion. All publishing tasks have been attempted.");
+    }
+});
+
 Task("Default")
     .IsDependentOn("Publish")
     .IsDependentOn("Publish-DockerHub");
