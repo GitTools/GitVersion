@@ -36,8 +36,16 @@ void SetRubyGemPushApiKey(string apiKey)
 
 GitVersion GetVersion(BuildParameters parameters)
 {
-    Build(parameters.Configuration);
-    var dllFile = GetFiles($"**/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion}/GitVersion.dll").FirstOrDefault();
+    var dllFilePath = $"./artifacts/*/bin/{parameters.CoreFxVersion}/tools/GitVersion.dll";
+    var dllFile = GetFiles(dllFilePath).FirstOrDefault();
+    if (dllFile == null)
+    {
+        Warning("Dogfood GitVersion to get information");
+        Build(parameters.Configuration);
+        dllFilePath = $"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion}/GitVersion.dll";
+        dllFile = GetFiles(dllFilePath).FirstOrDefault();
+    }
+
     var settings = new GitVersionSettings
     {
         OutputType = GitVersionOutput.Json,
