@@ -98,10 +98,21 @@ public class DockerImages
 {
     public ICollection<DockerImage> Images { get; private set; }
 
-    public static DockerImages GetDockerImages(BuildParameters parameters, FilePath[] dockerfiles)
+    public static DockerImages GetDockerImages(ICakeContext context, BuildParameters parameters)
     {
-        var toDockerImage = DockerImage();
-        var dockerImages = dockerfiles.Select(toDockerImage).ToArray();
+        var dockerJson = context.ParseJsonFromFile("./src/Docker/docker.json");
+
+        var dockerImages = new List<DockerImage>();
+        foreach (var osItem in dockerJson.Properties())
+        {
+            foreach (var targetFramework in ((JObject)osItem.Value).Properties())
+            {
+                foreach (var distro in ((JArray)targetFramework.Value))
+                {
+                    dockerImages.Add(new DockerImage(os: osItem.Name, distro: distro.ToString(), targetFramework: $"netcoreapp{targetFramework.Name}"));
+                }
+            }
+        }
 
         var windowsImages = dockerImages.Where(x => x.OS == "windows").ToArray();
         var linuxImages = dockerImages.Where(x => x.OS == "linux").ToArray();
@@ -114,17 +125,6 @@ public class DockerImages
 
         return new DockerImages {
             Images = images
-        };
-    }
-
-    private static Func<FilePath, DockerImage> DockerImage()
-    {
-        return dockerFile => {
-            var segments = dockerFile.Segments.Reverse().ToArray();
-            var distro = segments[1];
-            var os = segments[2];
-            var targetFramework = segments[3];
-            return new DockerImage(os: os, distro: distro, targetFramework: targetFramework);
         };
     }
 }

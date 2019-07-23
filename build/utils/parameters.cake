@@ -61,8 +61,9 @@ public class BuildParameters
         var target = context.Argument("target", "Default");
         var buildSystem = context.BuildSystem();
 
-        var dockerCliPlatform = buildSystem.IsRunningOnAzurePipelinesHosted
-                                && context.Environment.Platform.Family != PlatformFamily.OSX
+        var dockerCliPlatform = (buildSystem.IsRunningOnAzurePipelinesHosted
+                                && context.Environment.Platform.Family != PlatformFamily.OSX)
+                                || buildSystem.IsLocalBuild
                                 ? GetDockerCliPlatform(context) : "";
 
         return new BuildParameters {
@@ -102,8 +103,7 @@ public class BuildParameters
 
         Paths = BuildPaths.GetPaths(context, this, Configuration, Version);
 
-        var dockerFiles = context.GetFiles("./src/**/Dockerfile").ToArray();
-        Docker = DockerImages.GetDockerImages(this, dockerFiles);
+        Docker = DockerImages.GetDockerImages(context, this);
 
         Packages = BuildPackages.GetPackages(
             Paths.Directories.NugetRoot,

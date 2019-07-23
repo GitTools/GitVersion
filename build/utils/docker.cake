@@ -26,7 +26,7 @@ void DockerStdinLogin(string username, string password)
 void DockerBuild(DockerImage dockerImage, BuildParameters parameters)
 {
     var (os, distro, targetframework) = dockerImage;
-    var workDir = DirectoryPath.FromString($"./src/Docker/{targetframework}/{os}/{distro}");
+    var workDir = DirectoryPath.FromString($"./src/Docker");
 
     var sourceDir = targetframework.StartsWith("netcoreapp")
         ? parameters.Paths.Directories.ArtifactsBinCoreFx.Combine("tools")
@@ -41,7 +41,7 @@ void DockerBuild(DockerImage dockerImage, BuildParameters parameters)
         Rm = true,
         Tag = tags,
         File = $"{workDir}/Dockerfile",
-        BuildArg = new []{ $"contentFolder=/content" },
+        BuildArg = new []{ $"contentFolder=/content", "DOTNET_VARIANT=runtime", $"DOTNET_VERSION={targetframework.Replace("netcoreapp", "")}", $"DISTRO={distro}" },
         // Pull = true,
         // Platform = platform // TODO this one is not supported on docker versions < 18.02
     };
@@ -99,7 +99,7 @@ string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
         $"{name}:{parameters.Version.SemVersion}-{os}-{distro}-{targetframework}",
     };
 
-    if (distro == "debian" && targetframework == parameters.CoreFxVersion || distro == "nano") {
+    if (distro == "debian-9" && targetframework == parameters.CoreFxVersion || distro == "nanoserver-1809") {
         tags.AddRange(new[] {
             $"{name}:{parameters.Version.Version}-{os}",
             $"{name}:{parameters.Version.SemVersion}-{os}",
