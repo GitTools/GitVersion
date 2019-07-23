@@ -114,6 +114,14 @@ public class DockerImages
             }
         }
 
+        if (!string.IsNullOrEmpty(parameters.DockerDistro)) {
+            dockerImages = dockerImages.Where(x => x.Distro == parameters.DockerDistro).ToList();
+        }
+
+        if (!string.IsNullOrEmpty(parameters.DockerDotnetVersion)) {
+            dockerImages = dockerImages.Where(x => x.TargetFramework == $"netcoreapp{parameters.DockerDotnetVersion}").ToList();
+        }
+
         var windowsImages = dockerImages.Where(x => x.OS == "windows").ToArray();
         var linuxImages = dockerImages.Where(x => x.OS == "linux").ToArray();
 

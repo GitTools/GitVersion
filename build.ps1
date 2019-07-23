@@ -19,6 +19,10 @@ The build script to execute.
 The build script target to run.
 .PARAMETER Configuration
 The build configuration to use.
+.PARAMETER DockerDistro
+The docker ditro to use.
+.PARAMETER DockerDotnetVersion
+The dotnet version for docker to use.
 .PARAMETER Verbosity
 Specifies the amount of information to be displayed.
 .PARAMETER WhatIf
@@ -36,6 +40,8 @@ Param(
     [string]$Script = "build.cake",
     [string]$Target = "Default",
     [string]$Configuration = "Release",
+    [string]$DockerDistro = "",
+    [string]$DockerDotnetVersion = "",
     [ValidateSet("Quiet", "Minimal", "Normal", "Verbose", "Diagnostic")]
     [string]$Verbosity = "Verbose",
     [Alias("DryRun","Noop")]
@@ -184,6 +190,8 @@ $Arguments = @{
     verbosity=$Verbosity;
     dryrun=$WhatIf;
     nuget_useinprocessclient=$true;
+    docker_distro=$DockerDistro;
+    docker_dotnetversion=$DockerDotnetVersion;
 }.GetEnumerator() | ForEach-Object { "--{0}=`"{1}`"" -f $_.key, $_.value };
 
 # Start Cake

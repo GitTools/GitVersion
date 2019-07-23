@@ -41,7 +41,13 @@ void DockerBuild(DockerImage dockerImage, BuildParameters parameters)
         Rm = true,
         Tag = tags,
         File = $"{workDir}/Dockerfile",
-        BuildArg = new []{ $"contentFolder=/content", "DOTNET_VARIANT=runtime", $"DOTNET_VERSION={targetframework.Replace("netcoreapp", "")}", $"DISTRO={distro}" },
+        BuildArg = new []
+        {
+            $"contentFolder=/content",
+            "DOTNET_VARIANT=runtime",
+            $"DOTNET_VERSION={targetframework.Replace("netcoreapp", "")}",
+            $"DISTRO={distro}"
+        },
         // Pull = true,
         // Platform = platform // TODO this one is not supported on docker versions < 18.02
     };

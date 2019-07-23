@@ -11,6 +11,9 @@ public class BuildParameters
     public string CoreFxVersion { get; private set; } = "netcoreapp2.1";
     public string FullFxVersion { get; private set; } = "net461";
 
+    public string DockerDistro { get; private set; }
+    public string DockerDotnetVersion { get; private set; }
+
     public bool EnabledUnitTests { get; private set; }
     public bool EnabledPublishGem { get; private set; }
     public bool EnabledPublishVsix { get; private set; }
@@ -69,6 +72,9 @@ public class BuildParameters
         return new BuildParameters {
             Target        = target,
             Configuration = context.Argument("configuration", "Release"),
+
+            DockerDistro        = context.Argument("docker_distro", ""),
+            DockerDotnetVersion = context.Argument("docker_dotnetversion", ""),
 
             EnabledUnitTests          = IsEnabled(context, "ENABLED_UNIT_TESTS"),
             EnabledPublishGem         = IsEnabled(context, "ENABLED_PUBLISH_GEM"),
