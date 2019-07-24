@@ -21,17 +21,24 @@ stages:
   dependsOn: Build
   condition: succeeded()
   jobs:
-  - job: Docker
-    strategy:
-      matrix:
-        'Windows':
-          VM_IMAGE: 'windows-2019'
-        'Linux':
-          VM_IMAGE: 'Ubuntu 16.04'
+  - job: Generator
+    displayName: 'Generate Docker jobs'
     pool:
-      vmImage: $(VM_IMAGE)
+      vmImage: windows-2019
     steps:
-    - template: build/stages/docker.yml
+    - pwsh: ./src/Docker/docker.ps1 -os windows -variant runtime
+      name: matrix_Windows
+    - pwsh: ./src/Docker/docker.ps1 -os linux -variant runtime
+      name: matrix_Linux
+  
+  - template: build/stages/docker.yml
+    parameters:
+      name: Linux
+      vmImage: 'Ubuntu 16.04'
+  - template: build/stages/docker.yml
+    parameters:
+      name: Windows
+      vmImage: 'windows-2019'
 
 - stage: Publish
   dependsOn: Build
@@ -41,4 +48,4 @@ stages:
     pool:
       vmImage: windows-2019
     steps:
-    - template: build/stages/publish.yml    
+    - template: build/stages/publish.yml

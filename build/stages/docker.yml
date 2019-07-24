@@ -1,14 +1,26 @@
-steps:
-- template: common-steps.yml
-- task: DownloadPipelineArtifact@2
-  displayName: 'Download pipeline artifacts'
-  inputs:
-    source: current
-    path: $(Build.SourcesDirectory)
-    artifact: artifacts
-- script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Publish-DockerHub
-  displayName: 'Docker build'
-  env:
-    DOCKER_USERNAME: $(DOCKER_USERNAME)
-    DOCKER_PASSWORD: $(DOCKER_PASSWORD)
-    ENABLED_PUBLISH_DOCKER: $(ENABLED_PUBLISH_DOCKER)
+parameters:
+  name: ''
+  vmImage: ''
+
+jobs:
+- job: Docker_${{ parameters.name }}
+  displayName: 'Docker ${{ parameters.name }}'
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+  dependsOn: Generator
+  strategy:
+    matrix: $[ dependencies['Generator'].outputs['matrix_${{ parameters.name }}.dockerConfigs'] ]
+  steps:
+  - template: common-steps.yml
+  - task: DownloadPipelineArtifact@2
+    displayName: 'Download pipeline artifacts'
+    inputs:
+      source: current
+      path: $(Build.SourcesDirectory)
+      artifact: artifacts
+  - script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Publish-DockerHub --docker_distro=$(DISTRO) --docker_dotnetversion=$(DOTNET_VERSION)
+    displayName: 'Docker build'
+    env:
+      DOCKER_USERNAME: $(DOCKER_USERNAME)
+      DOCKER_PASSWORD: $(DOCKER_PASSWORD)
+      ENABLED_PUBLISH_DOCKER: $(ENABLED_PUBLISH_DOCKER)
