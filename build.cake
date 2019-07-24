@@ -8,11 +8,11 @@
 #addin "nuget:?package=Cake.Gem&version=0.8.0"
 #addin "nuget:?package=Cake.Gitter&version=0.11.0"
 #addin "nuget:?package=Cake.Incubator&version=5.0.1"
-#addin "nuget:?package=Cake.Json&version=3.0.0"
+#addin "nuget:?package=Cake.Json&version=4.0.0"
 #addin "nuget:?package=Cake.Npm&version=0.17.0"
 #addin "nuget:?package=Cake.Tfx&version=0.9.0"
 
-#addin "nuget:?package=Newtonsoft.Json&version=9.0.1"
+#addin "nuget:?package=Newtonsoft.Json&version=11.0.2"
 #addin "nuget:?package=xunit.assert&version=2.4.1"
 
 // Install tools.
