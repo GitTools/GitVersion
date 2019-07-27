@@ -31,7 +31,7 @@ Task("Docker-Test")
         var tags = GetDockerTags(dockerImage, parameters);
         foreach (var tag in tags)
         {
-            DockerTestRun(settings, parameters, tag, containerDir);
+            DockerTestRun(settings, parameters, tag, containerDir, "/showvariable", "FullSemver");
         }
     }
 });

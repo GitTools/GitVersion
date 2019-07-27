@@ -19,7 +19,7 @@
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
 #tool "nuget:?package=ILRepack&version=2.0.17"
 #tool "nuget:?package=Codecov&version=1.5.0"
-#tool "nuget:?package=nuget.commandline&version=5.0.2"
+#tool "nuget:?package=nuget.commandline&version=5.1.0"
 
 // Install .NET Core Global tools.
 #tool "dotnet:?package=GitReleaseManager.Tool&version=0.8.0"

@@ -89,11 +89,9 @@ string DockerRunImage(DockerContainerRunSettings settings, string image, string 
 void DockerTestRun(DockerContainerRunSettings settings, BuildParameters parameters, string image, string command, params string[] args)
 {
     Information($"Testing image: {image}");
-    var output = DockerRunImage(settings, image, command, args);
+    var output = DockerRun(settings, image, command, args);
 
-    var version = DeserializeJson<GitVersion>(output);
-
-    Assert.Equal(parameters.Version.GitVersion.FullSemVer, version.FullSemVer);
+    Assert.Equal(parameters.Version.GitVersion.FullSemVer, output);
 }
 
 string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
