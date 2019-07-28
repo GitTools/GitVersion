@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using LibGit2Sharp;
     using System;
@@ -163,7 +163,9 @@
             {
                 // There are some edge cases where HEAD is not pointing to the desired branch.
                 // Therefore it's important to verify if 'currentBranch' is indeed the desired branch.
-                if (desiredBranch.CanonicalName != targetBranch)
+
+                // CanonicalName can be "refs/heads/develop", so we need to check for "/{TargetBranch}" as well
+                if (!desiredBranch.CanonicalName.IsBranch(targetBranch))
                 {
                     // In the case where HEAD is not the desired branch, try to find the branch with matching name
                     desiredBranch = repository?.Branches?
