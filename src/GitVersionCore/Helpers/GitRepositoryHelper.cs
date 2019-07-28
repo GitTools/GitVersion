@@ -15,8 +15,10 @@ namespace GitVersion
         {
             using (var repo = new Repository(gitDirectory))
             {
-                // Need to unsure the HEAD does not move, this is essentially a BugCheck
+                // Need to ensure the HEAD does not move, this is essentially a BugCheck
                 var expectedSha = repo.Head.Tip.Sha;
+                var expectedBranchName = repo.Head.CanonicalName;
+
                 try
                 {
                     var remote = EnsureOnlyOneRemoteIsDefined(repo);
@@ -35,6 +37,20 @@ namespace GitVersion
 
                     EnsureLocalBranchExistsForCurrentBranch(repo, remote, currentBranch);
                     CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(repo, remote.Name);
+
+                    // Bug fix for https://github.com/GitTools/GitVersion/issues/1754, head maybe have been changed
+                    // if this is a dynamic repository. But only allow this in case the branches are different (branch switch)
+                    if (expectedSha != repo.Head.Tip.Sha &&
+                        !expectedBranchName.IsBranch(currentBranch))
+                    {
+                        var newExpectedSha = repo.Head.Tip.Sha;
+                        var newExpectedBranchName = repo.Head.CanonicalName;
+
+                        Logger.WriteInfo($"Head has moved from '{expectedBranchName} | {expectedSha}' => '{newExpectedBranchName} | {newExpectedSha}', allowed since this is a dynamic repository");
+
+                        expectedSha = newExpectedSha;
+                        expectedBranchName = newExpectedBranchName;
+                    }
 
                     var headSha = repo.Refs.Head.TargetIdentifier;
 

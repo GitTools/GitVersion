@@ -7,6 +7,23 @@ namespace GitVersion
 
     static class ExtensionMethods
     {
+        public static bool IsBranch(this string branchName, string branchNameToCompareAgainst)
+        {
+            // "develop" == "develop"
+            if (string.Equals(branchName, branchNameToCompareAgainst, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            // "refs/head/develop" == "develop"
+            if (branchName.EndsWith($"/{branchNameToCompareAgainst}", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public static void AppendLineFormat(this StringBuilder stringBuilder, string format, params object[] args)
         {
             stringBuilder.AppendFormat(format, args);
