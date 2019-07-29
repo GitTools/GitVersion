@@ -29,6 +29,7 @@
 #load "./build/utils/utils.cake"
 
 #load "./build/pack.cake"
+#load "./build/artifacts-test.cake"
 #load "./build/docker.cake"
 #load "./build/publish.cake"
 
