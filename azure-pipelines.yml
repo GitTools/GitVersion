@@ -55,3 +55,15 @@ stages:
       vmImage: windows-2019
     steps:
     - template: build/stages/publish.yml
+
+- stage: Release
+  dependsOn: 
+  - Docker
+  - Publish
+  condition: succeeded()
+  jobs:
+  - job: Release
+    pool:
+      vmImage: windows-2019
+    steps:
+    - template: build/stages/release.yml

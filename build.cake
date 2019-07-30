@@ -145,7 +145,6 @@ Task("Pack")
 });
 
 Task("Publish")
-    .IsDependentOn("Release-Notes")
     .IsDependentOn("Publish-AppVeyor")
     .IsDependentOn("Publish-AzurePipeline")
     .IsDependentOn("Publish-Coverage")
@@ -171,9 +170,16 @@ Task("Publish-DockerHub")
     }
 });
 
+Task("Release")
+    .IsDependentOn("Release-Notes")
+    .Finally(() =>
+{
+});
+
 Task("Default")
     .IsDependentOn("Publish")
-    .IsDependentOn("Publish-DockerHub");
+    .IsDependentOn("Publish-DockerHub")
+    .IsDependentOn("Release");
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION
