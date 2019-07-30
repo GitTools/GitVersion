@@ -18,20 +18,14 @@ Task("Docker-Test")
     .IsDependentOn("Docker-Build")
     .Does<BuildParameters>((parameters) =>
 {
-    var currentDir = MakeAbsolute(Directory("."));
-    var containerDir = parameters.IsDockerForWindows ? "c:/repo" : "/repo";
-    var settings = new DockerContainerRunSettings
-    {
-        Rm = true,
-        Volume = new[] { $"{currentDir}:{containerDir}" }
-    };
+    var settings = GetDockerRunSettings(parameters);
 
     foreach(var dockerImage in parameters.Docker.Images)
     {
         var tags = GetDockerTags(dockerImage, parameters);
         foreach (var tag in tags)
         {
-            DockerTestRun(settings, parameters, tag, containerDir, "/showvariable", "FullSemver");
+            DockerTestRun(settings, parameters, tag, $"{parameters.DockerRootPrefix}/repo", "/showvariable", "FullSemver");
         }
     }
 });

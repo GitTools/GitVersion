@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>TestRepo</AssemblyName>
+    <RootNamespace>TestRepo</RootNamespace>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GitVersionTaskVersion Condition=" '$(GitVersionTaskVersion)' == '' ">5.0.0-beta5.53</GitVersionTaskVersion>
+	<OutputPath>.\build\corefx\</OutputPath>
+  </PropertyGroup>
+
+  <Target Name="Git" DependsOnTargets="GetVersion">
+    <Message Text="Repo sha: $(GitVersion_Sha)" Importance="high" />
+	<Message Text="Repo version: $(GitVersion_FullSemVer)" Importance="high" />
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Include="GitVersionTask" Version="$(GitVersionTaskVersion)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

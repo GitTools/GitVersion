@@ -94,6 +94,33 @@ void DockerTestRun(DockerContainerRunSettings settings, BuildParameters paramete
     Assert.Equal(parameters.Version.GitVersion.FullSemVer, output);
 }
 
+void DockerTestArtifact(DockerImage dockerImage, BuildParameters parameters, string cmd)
+{
+    var settings = GetDockerRunSettings(parameters);
+    var (os, distro, targetframework) = dockerImage;
+    var tag = $"gittools/build-images:{distro}-sdk-{targetframework.Replace("netcoreapp", "")}";
+    Information("Docker tag: {0}", tag);
+    Information("Docker cmd: {0}", cmd);
+
+    DockerTestRun(settings, parameters, tag, "pwsh", cmd);
+}
+
+DockerContainerRunSettings GetDockerRunSettings(BuildParameters parameters)
+{
+    var currentDir = MakeAbsolute(Directory("."));
+    var settings = new DockerContainerRunSettings
+    {
+        Rm = true,
+        Volume = new[]
+        {
+            $"{currentDir}:{parameters.DockerRootPrefix}/repo",
+            $"{currentDir}/artifacts/v{parameters.Version.SemVersion}/nuget:{parameters.DockerRootPrefix}/nuget"
+        }
+    };
+
+    return settings;
+}
+
 string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
     var name = $"gittools/gitversion";
     var (os, distro, targetframework) = dockerImage;

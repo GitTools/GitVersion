@@ -28,6 +28,7 @@ public class BuildParameters
 
     public bool IsDockerForWindows { get; private set; }
     public bool IsDockerForLinux { get; private set; }
+    public string DockerRootPrefix { get; private set; }
 
     public bool IsLocalBuild { get; private set; }
     public bool IsRunningOnAppVeyor { get; private set; }
@@ -95,6 +96,7 @@ public class BuildParameters
 
             IsDockerForWindows = dockerCliPlatform == "windows",
             IsDockerForLinux   = dockerCliPlatform == "linux",
+            DockerRootPrefix   = dockerCliPlatform == "windows" ? "c:" : "",
 
             IsPullRequest = buildSystem.IsPullRequest,
             IsMainRepo    = IsOnMainRepo(context),
