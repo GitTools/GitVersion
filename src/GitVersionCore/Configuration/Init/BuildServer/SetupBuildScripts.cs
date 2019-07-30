@@ -34,9 +34,6 @@ Want to see more? Contribute a pull request!
 1) AppVeyor";
         }
 
-        protected override string DefaultResult
-        {
-            get { return "0"; }
-        }
+        protected override string DefaultResult => "0";
     }
 }

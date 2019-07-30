@@ -21,7 +21,7 @@ namespace GitVersion
             var request = (HttpWebRequest)WebRequest.Create(restBase + "api/build");
             request.Method = "PUT";
 
-            var data = string.Format("{{ \"version\": \"{0}.build.{1}\" }}", variables.FullSemVer, buildNumber);
+            var data = $"{{ \"version\": \"{variables.FullSemVer}.build.{buildNumber}\" }}";
             var bytes = Encoding.UTF8.GetBytes(data);
             //var bytesLength = bytes.Length;
             // request.Headers["Content-Length"] = bytesLength.ToString();
@@ -38,12 +38,12 @@ namespace GitVersion
             {
                 if (response.StatusCode != HttpStatusCode.OK && response.StatusCode != HttpStatusCode.NoContent)
                 {
-                    var message = string.Format("Request failed. Received HTTP {0}", response.StatusCode);
+                    var message = $"Request failed. Received HTTP {response.StatusCode}";
                     return message;
                 }
             }
 
-            return string.Format("Set AppVeyor build number to '{0}'.", variables.FullSemVer);
+            return $"Set AppVeyor build number to '{variables.FullSemVer}'.";
         }
 
         public override string[] GenerateSetParameterMessage(string name, string value)
@@ -54,13 +54,13 @@ namespace GitVersion
                 wc.Headers["Accept"] = "application/json";
                 wc.Headers["Content-type"] = "application/json";
 
-                var body = string.Format("{{ \"name\": \"GitVersion_{0}\", \"value\": \"{1}\" }}", name, value);
+                var body = $"{{ \"name\": \"GitVersion_{name}\", \"value\": \"{value}\" }}";
                 wc.UploadData("api/build/variables", "POST", Encoding.UTF8.GetBytes(body));
             }
 
             return new[]
             {
-                string.Format("Adding Environment Variable. name='GitVersion_{0}' value='{1}']", name, value)
+                $"Adding Environment Variable. name='GitVersion_{name}' value='{value}']"
             };
         }
 

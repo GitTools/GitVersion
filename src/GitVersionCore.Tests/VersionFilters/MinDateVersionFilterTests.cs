@@ -1,4 +1,4 @@
-﻿using GitVersion;
+using GitVersion;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
 using GitVersion.VersionFilters;
 using NUnit.Framework;
@@ -16,8 +16,7 @@ namespace GitVersionCore.Tests.VersionFilters
             var dummy = DateTimeOffset.UtcNow.AddSeconds(1.0);
             var sut = new MinDateVersionFilter(dummy);
 
-            string reason;
-            Should.Throw<ArgumentNullException>(() => sut.Exclude(null, out reason));
+            Should.Throw<ArgumentNullException>(() => sut.Exclude(null, out _));
         }
 
         [Test]
@@ -29,8 +28,7 @@ namespace GitVersionCore.Tests.VersionFilters
             var futureDate = DateTimeOffset.UtcNow.AddYears(1);
             var sut = new MinDateVersionFilter(futureDate);
 
-            string reason;
-            sut.Exclude(version, out reason).ShouldBeTrue();
+            sut.Exclude(version, out var reason).ShouldBeTrue();
             reason.ShouldNotBeNullOrWhiteSpace();
         }
 
@@ -43,8 +41,7 @@ namespace GitVersionCore.Tests.VersionFilters
             var pastDate = DateTimeOffset.UtcNow.AddYears(-1);
             var sut = new MinDateVersionFilter(pastDate);
 
-            string reason;
-            sut.Exclude(version, out reason).ShouldBeFalse();
+            sut.Exclude(version, out var reason).ShouldBeFalse();
             reason.ShouldBeNull();
         }
 
@@ -56,8 +53,7 @@ namespace GitVersionCore.Tests.VersionFilters
             var futureDate = DateTimeOffset.UtcNow.AddYears(1);
             var sut = new MinDateVersionFilter(futureDate);
 
-            string reason;
-            sut.Exclude(version, out reason).ShouldBeFalse();
+            sut.Exclude(version, out var reason).ShouldBeFalse();
             reason.ShouldBeNull();
         }
     }

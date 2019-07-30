@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using GitVersion.Helpers;
 using System.Threading.Tasks;
 
@@ -8,7 +8,7 @@ public class MockThreadSleep : IThreadSleep
 
     public MockThreadSleep(Func<int, Task> validator = null)
     {
-        this.Validator = validator;
+        Validator = validator;
     }
 
     public async Task SleepAsync(int milliseconds)

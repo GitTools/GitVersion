@@ -40,7 +40,7 @@ public class DefaultConfigFileLocatorTests : TestBase
         {
             configFileLocator.Verify(workingPath, repoPath, fileSystem);
         }
-        var configFileDeprecatedWarning = string.Format("{0}' is deprecated, use '{1}' instead", DefaultConfigFileLocator.ObsoleteFileName, DefaultConfigFileLocator.DefaultFileName);
+        var configFileDeprecatedWarning = $"{DefaultConfigFileLocator.ObsoleteFileName}' is deprecated, use '{DefaultConfigFileLocator.DefaultFileName}' instead";
         logOutput.Contains(configFileDeprecatedWarning).ShouldBe(true);
     }
 
@@ -58,7 +58,7 @@ public class DefaultConfigFileLocatorTests : TestBase
             configFileLocator.Verify(workingPath, repoPath, fileSystem);
         }
 
-        var configFileDeprecatedWarning = string.Format("Ambiguous config files at '{0}'", path);
+        var configFileDeprecatedWarning = $"Ambiguous config files at '{path}'";
         logOutput.Contains(configFileDeprecatedWarning).ShouldBe(true);
     }
 
@@ -73,7 +73,7 @@ public class DefaultConfigFileLocatorTests : TestBase
 
         WarningException exception = Should.Throw<WarningException>(() => { configFileLocator.Verify(workingPath, repoPath, fileSystem); });
 
-        var expecedMessage = string.Format("Ambiguous config file selection from '{0}' and '{1}'", workingDirectoryConfigFilePath, repositoryConfigFilePath);
+        var expecedMessage = $"Ambiguous config file selection from '{workingDirectoryConfigFilePath}' and '{repositoryConfigFilePath}'";
         exception.Message.ShouldBe(expecedMessage);
     }
 

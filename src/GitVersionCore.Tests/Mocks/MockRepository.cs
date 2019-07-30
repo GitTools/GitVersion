@@ -214,8 +214,8 @@ public class MockRepository : IRepository
 
     public IQueryableCommitLog Commits
     {
-        get { return commits ?? new MockQueryableCommitLog(Head.Commits); }
-        set { commits = value; }
+        get => commits ?? new MockQueryableCommitLog(Head.Commits);
+        set => commits = value;
     }
 
     public BranchCollection Branches { get; set; }
@@ -228,15 +228,9 @@ public class MockRepository : IRepository
     public WorktreeCollection Worktrees { get; set; }
     public Rebase Rebase { get; private set; }
 
-    public Ignore Ignore
-    {
-        get { throw new NotImplementedException(); }
-    }
+    public Ignore Ignore => throw new NotImplementedException();
 
     public Network Network { get; set; }
 
-    public StashCollection Stashes
-    {
-        get { throw new NotImplementedException(); }
-    }
+    public StashCollection Stashes => throw new NotImplementedException();
 }

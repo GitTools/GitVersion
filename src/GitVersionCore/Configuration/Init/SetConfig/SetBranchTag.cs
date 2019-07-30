@@ -49,9 +49,6 @@ namespace GitVersion.Configuration.Init.SetConfig
 Anything else will be used as the tag";
         }
 
-        protected override string DefaultResult
-        {
-            get { return "0"; }
-        }
+        protected override string DefaultResult => "0";
     }
 }

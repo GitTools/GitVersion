@@ -10,7 +10,7 @@ namespace GitVersion
     public class GitVersionContext
     {
         public GitVersionContext(IRepository repository, string targetBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
-             : this(repository, GitVersionContext.GetTargetBranch(repository, targetBranch), configuration, onlyEvaluateTrackedBranches, commitId)
+             : this(repository, GetTargetBranch(repository, targetBranch), configuration, onlyEvaluateTrackedBranches, commitId)
         {
         }
 
@@ -26,7 +26,7 @@ namespace GitVersion
 
             if (!string.IsNullOrWhiteSpace(commitId))
             {
-                Logger.WriteInfo(string.Format("Searching for specific commit '{0}'", commitId));
+                Logger.WriteInfo($"Searching for specific commit '{commitId}'");
 
                 var commit = repository.Commits.FirstOrDefault(c => string.Equals(c.Sha, commitId, StringComparison.OrdinalIgnoreCase));
                 if (commit != null)
@@ -35,7 +35,7 @@ namespace GitVersion
                 }
                 else
                 {
-                    Logger.WriteWarning(string.Format("Commit '{0}' specified but not found", commitId));
+                    Logger.WriteWarning($"Commit '{commitId}' specified but not found");
                 }
             }
 
@@ -59,8 +59,7 @@ namespace GitVersion
             CurrentCommitTaggedVersion = repository.Tags
                 .SelectMany(t =>
                 {
-                    SemanticVersion version;
-                    if (t.PeeledTarget() == CurrentCommit && SemanticVersion.TryParse(t.FriendlyName, Configuration.GitTagPrefix, out version))
+                    if (t.PeeledTarget() == CurrentCommit && SemanticVersion.TryParse(t.FriendlyName, Configuration.GitTagPrefix, out var version))
                         return new[] { version };
                     return new SemanticVersion[0];
                 })
@@ -86,17 +85,17 @@ namespace GitVersion
             var currentBranchConfig = BranchConfigurationCalculator.GetBranchConfiguration(this, CurrentBranch);
 
             if (!currentBranchConfig.VersioningMode.HasValue)
-                throw new Exception(string.Format("Configuration value for 'Versioning mode' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));
+                throw new Exception($"Configuration value for 'Versioning mode' for branch {currentBranchConfig.Name} has no value. (this should not happen, please report an issue)");
             if (!currentBranchConfig.Increment.HasValue)
-                throw new Exception(string.Format("Configuration value for 'Increment' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));
+                throw new Exception($"Configuration value for 'Increment' for branch {currentBranchConfig.Name} has no value. (this should not happen, please report an issue)");
             if (!currentBranchConfig.PreventIncrementOfMergedBranchVersion.HasValue)
-                throw new Exception(string.Format("Configuration value for 'PreventIncrementOfMergedBranchVersion' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));
+                throw new Exception($"Configuration value for 'PreventIncrementOfMergedBranchVersion' for branch {currentBranchConfig.Name} has no value. (this should not happen, please report an issue)");
             if (!currentBranchConfig.TrackMergeTarget.HasValue)
-                throw new Exception(string.Format("Configuration value for 'TrackMergeTarget' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));
+                throw new Exception($"Configuration value for 'TrackMergeTarget' for branch {currentBranchConfig.Name} has no value. (this should not happen, please report an issue)");
             if (!currentBranchConfig.TracksReleaseBranches.HasValue)
-                throw new Exception(string.Format("Configuration value for 'TracksReleaseBranches' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));
+                throw new Exception($"Configuration value for 'TracksReleaseBranches' for branch {currentBranchConfig.Name} has no value. (this should not happen, please report an issue)");
             if (!currentBranchConfig.IsReleaseBranch.HasValue)
-                throw new Exception(string.Format("Configuration value for 'IsReleaseBranch' for branch {0} has no value. (this should not happen, please report an issue)", currentBranchConfig.Name));
+                throw new Exception($"Configuration value for 'IsReleaseBranch' for branch {currentBranchConfig.Name} has no value. (this should not happen, please report an issue)");
 
             if (!FullConfiguration.AssemblyVersioningScheme.HasValue)
                 throw new Exception("Configuration value for 'AssemblyVersioningScheme' has no value. (this should not happen, please report an issue)");

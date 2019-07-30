@@ -7,7 +7,7 @@ public class SelfCleaningDirectory
     {
         if (Directory.Exists(path))
         {
-            throw new InvalidOperationException(string.Format("Directory '{0}' already exists.", path));
+            throw new InvalidOperationException($"Directory '{path}' already exists.");
         }
 
         DirectoryPath = path;

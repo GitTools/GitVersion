@@ -19,7 +19,7 @@ namespace GitVersion
         {
             return new[]
             {
-                string.Format("GitVersion_{0}={1}", name, value)
+                $"GitVersion_{name}={value}"
             };
         }
 

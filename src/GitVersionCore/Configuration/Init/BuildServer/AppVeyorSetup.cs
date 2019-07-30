@@ -56,22 +56,20 @@ namespace GitVersion.Configuration.Init.BuildServer
 
         void GenerateBasicConfig(string workingDirectory)
         {
-            WriteConfig(workingDirectory, FileSystem, String.Format(@"install:
+            WriteConfig(workingDirectory, FileSystem, $@"install:
   - choco install gitversion.portable -pre -y
 
 before_build:
   - nuget restore
-{0}
+{GetGVCommand(_projectVisibility)}
 
 build:
-  project: <your sln file>",
-                GetGVCommand(_projectVisibility)
-            ));
+  project: <your sln file>");
         }
 
         void GenerateNuGetConfig(string workingDirectory)
         {
-            WriteConfig(workingDirectory, FileSystem, String.Format(@"install:
+            WriteConfig(workingDirectory, FileSystem, $@"install:
   - choco install gitversion.portable -pre -y
 
 assembly_info:
@@ -79,7 +77,7 @@ assembly_info:
 
 before_build:
   - nuget restore
-{0}
+{GetGVCommand(_projectVisibility)}
 
 build:
   project: <your sln file>
@@ -87,16 +85,14 @@ build:
 after_build:
   - cmd: ECHO nuget pack <Project>\<NuSpec>.nuspec -version ""%GitVersion_NuGetVersion%"" -prop ""target=%CONFIGURATION%""
   - cmd: nuget pack <Project>\<NuSpec>.nuspec -version ""%GitVersion_NuGetVersion%"" -prop ""target=%CONFIGURATION%""
-  - cmd: appveyor PushArtifact ""<NuSpec>.%GitVersion_NuGetVersion%.nupkg""",
-                GetGVCommand(_projectVisibility)
-            ));
+  - cmd: appveyor PushArtifact ""<NuSpec>.%GitVersion_NuGetVersion%.nupkg""");
         }
 
         void WriteConfig(string workingDirectory, IFileSystem fileSystem, string configContents)
         {
             var outputFilename = GetOutputFilename(workingDirectory, fileSystem);
             fileSystem.WriteAllText(outputFilename, configContents);
-            Logger.WriteInfo(string.Format("AppVeyor sample config file written to {0}", outputFilename));
+            Logger.WriteInfo($"AppVeyor sample config file written to {outputFilename}");
         }
 
         protected override string GetPrompt(Config config, string workingDirectory)
@@ -124,7 +120,7 @@ after_build:
                 var count = 0;
                 do
                 {
-                    var path = Path.Combine(workingDirectory, string.Format("appveyor.gitversion{0}.yml", count == 0 ? string.Empty : "." + count));
+                    var path = Path.Combine(workingDirectory, $"appveyor.gitversion{(count == 0 ? string.Empty : "." + count)}.yml");
 
                     if (!fileSystem.Exists(path))
                     {
@@ -144,9 +140,6 @@ after_build:
             return fileSystem.Exists(Path.Combine(workingDirectory, "appveyor.yml"));
         }
 
-        protected override string DefaultResult
-        {
-            get { return "0"; }
-        }
+        protected override string DefaultResult => "0";
     }
 }

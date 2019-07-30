@@ -46,8 +46,7 @@ public static class DirectoryHelper
         if (!Directory.Exists(directoryPath))
         {
             Trace.WriteLine(
-                string.Format("Directory '{0}' is missing and can't be removed.",
-                    directoryPath));
+                $"Directory '{directoryPath}' is missing and can't be removed.");
 
             return;
         }

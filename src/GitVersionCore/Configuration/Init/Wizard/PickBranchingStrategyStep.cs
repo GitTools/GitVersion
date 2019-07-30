@@ -38,9 +38,6 @@ namespace GitVersion.Configuration.Init.Wizard
 3) Unsure, tell me more";
         }
 
-        protected override string DefaultResult
-        {
-            get { return null; }
-        }
+        protected override string DefaultResult => null;
     }
 }

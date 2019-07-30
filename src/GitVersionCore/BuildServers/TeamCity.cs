@@ -48,14 +48,14 @@ See http://gitversion.readthedocs.org/en/latest/build-server-support/build-serve
         {
             return new[]
             {
-                string.Format("##teamcity[setParameter name='GitVersion.{0}' value='{1}']", name, ServiceMessageEscapeHelper.EscapeValue(value)),
-                string.Format("##teamcity[setParameter name='system.GitVersion.{0}' value='{1}']", name, ServiceMessageEscapeHelper.EscapeValue(value))
+                $"##teamcity[setParameter name='GitVersion.{name}' value='{ServiceMessageEscapeHelper.EscapeValue(value)}']",
+                $"##teamcity[setParameter name='system.GitVersion.{name}' value='{ServiceMessageEscapeHelper.EscapeValue(value)}']"
             };
         }
 
         public override string GenerateSetVersionMessage(VersionVariables variables)
         {
-            return string.Format("##teamcity[buildNumber '{0}']", ServiceMessageEscapeHelper.EscapeValue(variables.FullSemVer));
+            return $"##teamcity[buildNumber '{ServiceMessageEscapeHelper.EscapeValue(variables.FullSemVer)}']";
         }
     }
 }

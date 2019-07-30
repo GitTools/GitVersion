@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using GitVersion.Helpers;
 using NUnit.Framework;
@@ -82,12 +82,9 @@ public class OperationWithExponentialBackoffTests : TestBase
         var expectedSleepMSec = 500;
         var sleepCount = 0;
 
-        Action operation = () =>
-        {
-            throw new IOException();
-        };
+        Action operation = () => throw new IOException();
 
-        Func<int, Task> validator = (u) =>
+        Func<int, Task> validator = u =>
         {
             return Task.Run(() =>
                                {
@@ -118,7 +115,7 @@ public class OperationWithExponentialBackoffTests : TestBase
             throw new IOException();
         };
 
-        Func<int, Task> validator = (u) =>
+        Func<int, Task> validator = u =>
         {
             return Task.Run(() =>
             {

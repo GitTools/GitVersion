@@ -239,14 +239,14 @@ public class ArgumentParserTests
     [TestCase("tag-prefix=sample;param2=other")]
     public void Overrideconfig_with_several_options(string options)
     {
-        var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments(string.Format("/overrideconfig {0}", options)));
+        var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments($"/overrideconfig {options}"));
         exception.Message.ShouldContain("Can't specify multiple /overrideconfig options");
     }
 
     [TestCase("tag-prefix=sample=asdf")]
     public void Overrideconfig_with_invalid_option(string options)
     {
-        var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments(string.Format("/overrideconfig {0}", options)));
+        var exception = Assert.Throws<WarningException>(() => ArgumentParser.ParseArguments($"/overrideconfig {options}"));
         exception.Message.ShouldContain("Could not parse /overrideconfig option");
     }
 

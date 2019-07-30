@@ -36,9 +36,6 @@ namespace GitVersion.Configuration.Init.Wizard
             return "Do you need to build nightlies or consume packages the CI build creates without releasing those versions? (y/n)";
         }
 
-        protected override string DefaultResult
-        {
-            get { return null; }
-        }
+        protected override string DefaultResult => null;
     }
 }

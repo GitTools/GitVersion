@@ -79,9 +79,7 @@ namespace GitVersion
         {
             if (formatProvider != null)
             {
-                var formatter = formatProvider.GetFormat(GetType()) as ICustomFormatter;
-
-                if (formatter != null)
+                if (formatProvider.GetFormat(GetType()) is ICustomFormatter formatter)
                     return formatter.Format(format, this, formatProvider);
             }
 
@@ -97,8 +95,7 @@ namespace GitVersion
                 if (format.Length > 1)
                 {
                     // try to parse
-                    int p;
-                    if (int.TryParse(format.Substring(1), out p))
+                    if (int.TryParse(format.Substring(1), out var p))
                     {
                         padding = p;
                     }
@@ -112,17 +109,12 @@ namespace GitVersion
                 case "b":
                     return CommitsSinceTag.ToString();
                 case "s":
-                    return string.Format("{0}{1}", CommitsSinceTag, string.IsNullOrEmpty(Sha) ? null : ".Sha." + Sha).TrimStart('.');
+                    return $"{CommitsSinceTag}{(string.IsNullOrEmpty(Sha) ? null : ".Sha." + Sha)}".TrimStart('.');
                 case "f":
-                    return string.Format(
-                        "{0}{1}{2}{3}",
-                        CommitsSinceTag, 
-                        string.IsNullOrEmpty(Branch) ? null : ".Branch." + FormatMetaDataPart(Branch),
-                        string.IsNullOrEmpty(Sha) ? null : ".Sha." + Sha,
-                        string.IsNullOrEmpty(OtherMetaData) ? null : "." + FormatMetaDataPart(OtherMetaData))
+                    return $"{CommitsSinceTag}{(string.IsNullOrEmpty(Branch) ? null : ".Branch." + FormatMetaDataPart(Branch))}{(string.IsNullOrEmpty(Sha) ? null : ".Sha." + Sha)}{(string.IsNullOrEmpty(OtherMetaData) ? null : "." + FormatMetaDataPart(OtherMetaData))}"
                         .TrimStart('.');
                 default:
-                    throw new ArgumentException("Unrecognised format", "format");
+                    throw new ArgumentException("Unrecognised format", nameof(format));
             }
         }
 

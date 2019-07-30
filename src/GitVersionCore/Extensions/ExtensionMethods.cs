@@ -37,11 +37,9 @@ namespace GitVersion
 
         public static T OnlyOrDefault<T>(this IEnumerable<T> source)
         {
-            if (source == null) throw new ArgumentNullException("source");
+            if (source == null) throw new ArgumentNullException(nameof(source));
 
-            var list = source as IList<T>;
-
-            if (list != null && list.Count == 1)
+            if (source is IList<T> list && list.Count == 1)
             {
                 return list[0];
             }

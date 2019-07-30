@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,14 +12,12 @@ namespace GitVersion.Helpers
 
         public OperationWithExponentialBackoff(IThreadSleep threadSleep, Action operation, int maxRetries = 5)
         {
-            if (threadSleep == null)
-                throw new ArgumentNullException("threadSleep");
             if (maxRetries < 0)
-                throw new ArgumentOutOfRangeException("maxRetries");
+                throw new ArgumentOutOfRangeException(nameof(maxRetries));
 
-            this.ThreadSleep = threadSleep;
-            this.Operation = operation;
-            this.MaxRetries = maxRetries;
+            ThreadSleep = threadSleep ?? throw new ArgumentNullException(nameof(threadSleep));
+            Operation = operation;
+            MaxRetries = maxRetries;
         }
 
         public async Task ExecuteAsync()
@@ -47,7 +45,7 @@ namespace GitVersion.Helpers
                     }
                 }
 
-                Logger.WriteInfo(string.Format("Operation failed, retrying in {0} milliseconds.", sleepMSec));
+                Logger.WriteInfo($"Operation failed, retrying in {sleepMSec} milliseconds.");
                 await ThreadSleep.SleepAsync(sleepMSec);
 
                 sleepMSec *= 2;

@@ -18,7 +18,7 @@ namespace GitVersion
         {
             return new[]
             {
-                string.Format("##vso[task.setvariable variable=GitVersion.{0};]{1}", name, value)
+                $"##vso[task.setvariable variable=GitVersion.{name};]{value}"
             };
         }
 

@@ -30,7 +30,7 @@
         {
             return new[]
             {
-                string.Format("GitVersion_{0}={1}", name, value)
+                $"GitVersion_{name}={value}"
             };
         }
 
@@ -64,7 +64,7 @@
         public override void WriteIntegration(Action<string> writer, VersionVariables variables)
         {
             base.WriteIntegration(writer, variables);
-            writer(string.Format("Outputting variables to '{0}' ... ", _file));
+            writer($"Outputting variables to '{_file}' ... ");
             WriteVariablesFile(variables);
         }
 

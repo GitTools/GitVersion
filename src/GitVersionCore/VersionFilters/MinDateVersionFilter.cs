@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
 
 namespace GitVersion.VersionFilters
@@ -14,7 +14,7 @@ namespace GitVersion.VersionFilters
 
         public bool Exclude(BaseVersion version, out string reason)
         {
-            if (version == null) throw new ArgumentNullException("version");
+            if (version == null) throw new ArgumentNullException(nameof(version));
 
             reason = null;
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using LibGit2Sharp;
 
-[DebuggerDisplay("{DebuggerDisplay}")]
+[DebuggerDisplay("{" + nameof(DebuggerDisplay) + "}")]
 public class MockCommit : Commit
 {
     static int commitCount = 1;
@@ -20,28 +20,19 @@ public class MockCommit : Commit
     }
 
     public string MessageEx;
-    public override string Message { get { return MessageEx; } }
+    public override string Message => MessageEx;
 
     public Signature CommitterEx;
-    public override Signature Committer { get { return CommitterEx; } }
+    public override Signature Committer => CommitterEx;
 
     ObjectId idEx;
-    public override ObjectId Id { get { return idEx; } }
+    public override ObjectId Id => idEx;
 
-    public override string Sha { get { return idEx.Sha; } }
+    public override string Sha => idEx.Sha;
 
     public IList<Commit> ParentsEx;
-    public override IEnumerable<Commit> Parents
-    {
-        get { return ParentsEx; }
-    }
+    public override IEnumerable<Commit> Parents => ParentsEx;
 
     // ReSharper disable once UnusedMember.Local
-    string DebuggerDisplay
-    {
-        get
-        {
-            return MessageEx;
-        }
-    }
+    string DebuggerDisplay => MessageEx;
 }

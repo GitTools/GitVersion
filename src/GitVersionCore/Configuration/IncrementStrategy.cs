@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
 
@@ -30,7 +30,7 @@
                 case IncrementStrategy.Patch:
                     return VersionField.Patch;
                 default:
-                    throw new ArgumentOutOfRangeException("strategy", strategy, null);
+                    throw new ArgumentOutOfRangeException(nameof(strategy), strategy, null);
             }
         }
     }

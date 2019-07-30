@@ -106,7 +106,7 @@ namespace GitVersion
             {
                 try
                 {
-                    Logger.WriteInfo(string.Format("  Trying to check out '{0}'", fileName));
+                    Logger.WriteInfo($"  Trying to check out '{fileName}'");
 
                     var headBranch = repository.Head;
                     var tip = headBranch.Tip;
@@ -128,7 +128,7 @@ namespace GitVersion
                 }
                 catch (Exception ex)
                 {
-                    Logger.WriteWarning(string.Format("  An error occurred while checking out '{0}': '{1}'", fileName, ex.Message));
+                    Logger.WriteWarning($"  An error occurred while checking out '{fileName}': '{ex.Message}'");
                 }
             }
         }

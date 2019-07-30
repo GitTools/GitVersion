@@ -45,10 +45,10 @@ namespace GitVersion
 
         public static void SetLoggers(Action<string> debug, Action<string> info, Action<string> warn, Action<string> error)
         {
-            if (debug == null) throw new ArgumentNullException("debug");
-            if (info == null) throw new ArgumentNullException("info");
-            if (warn == null) throw new ArgumentNullException("warn");
-            if (error == null) throw new ArgumentNullException("error");
+            if (debug == null) throw new ArgumentNullException(nameof(debug));
+            if (info == null) throw new ArgumentNullException(nameof(info));
+            if (warn == null) throw new ArgumentNullException(nameof(warn));
+            if (error == null) throw new ArgumentNullException(nameof(error));
 
             WriteDebug = LogMessage(ObscurePassword(debug), "DEBUG");
             WriteInfo = LogMessage(ObscurePassword(info), "INFO");

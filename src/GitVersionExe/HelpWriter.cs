@@ -10,7 +10,7 @@ namespace GitVersion
             WriteTo(Console.WriteLine);
         }
 
-        public static void WriteTo(Action<string> writeAction)
+        internal static void WriteTo(Action<string> writeAction)
         {
             string version = string.Empty;
             Assembly assembly = Assembly.GetExecutingAssembly();

@@ -40,7 +40,7 @@ public class DocumentationTests : TestBase
 
         foreach (var configProperty in configProperties)
         {
-            var formattedConfigProperty = string.Format("### {0}", configProperty);
+            var formattedConfigProperty = $"### {configProperty}";
             configurationDocumentationFile.ShouldContain(formattedConfigProperty,
                                                          Environment.NewLine + configurationDocumentationFile);
         }
@@ -85,7 +85,7 @@ public class DocumentationTests : TestBase
                 continue;
             }
 
-            documentationIndexFile.ShouldContain(relativePath, () => string.Format("The file '{0}' is not listed in 'mkdocs.yml'.", relativePath));
+            documentationIndexFile.ShouldContain(relativePath, () => $"The file '{relativePath}' is not listed in 'mkdocs.yml'.");
         }
     }
 
@@ -97,7 +97,7 @@ public class DocumentationTests : TestBase
 
         if (!File.Exists(documentationFilePath))
         {
-            throw new FileNotFoundException(string.Format("The documentation file '{0}' couldn't be found.", documentationFilePath), documentationFilePath);
+            throw new FileNotFoundException($"The documentation file '{documentationFilePath}' couldn't be found.", documentationFilePath);
         }
 
         return File.ReadAllText(documentationFilePath);

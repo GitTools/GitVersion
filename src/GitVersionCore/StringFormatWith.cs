@@ -22,7 +22,7 @@ namespace GitVersion
         {
             if (template == null)
             {
-                throw new ArgumentNullException("template");
+                throw new ArgumentNullException(nameof(template));
             }
 
             // {MajorMinorPatch}+{Branch}
@@ -39,7 +39,7 @@ namespace GitVersion
                 {
                     memberAccessExpression = memberAccessExpression.Substring(memberAccessExpression.IndexOf(':') + 1);
                     string envVar = memberAccessExpression, fallback = null;
-                    string[] components = (memberAccessExpression.Contains("??")) ? memberAccessExpression.Split(new string[] { "??" }, StringSplitOptions.None) : null;
+                    string[] components = (memberAccessExpression.Contains("??")) ? memberAccessExpression.Split(new[] { "??" }, StringSplitOptions.None) : null;
                     if (components != null)
                     {
                         envVar = components[0].Trim();
@@ -52,7 +52,7 @@ namespace GitVersion
                         if (fallback != null)
                             propertyValue = fallback;
                         else
-                            throw new ArgumentException(string.Format("Environment variable {0} not found and no fallback string provided", envVar));
+                            throw new ArgumentException($"Environment variable {envVar} not found and no fallback string provided");
                     }
                 }
                 else
@@ -87,10 +87,10 @@ namespace GitVersion
             }
 
             var staticOrPublic = BindingFlags.Static | BindingFlags.Public;
-            var method = GetMethodInfo("ToString", staticOrPublic, new Type[] { body.Type });
+            var method = GetMethodInfo("ToString", staticOrPublic, new[] { body.Type });
             if (method == null)
             {
-                method = GetMethodInfo("ToString", staticOrPublic, new Type[] { typeof(object) });
+                method = GetMethodInfo("ToString", staticOrPublic, new[] { typeof(object) });
                 body = Expression.Call(method, Expression.Convert(body, typeof(object)));
             }
             else

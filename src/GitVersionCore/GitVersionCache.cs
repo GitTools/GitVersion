@@ -95,7 +95,7 @@ namespace GitVersion
                         }
                         catch (Exception deleteEx)
                         {
-                            Logger.WriteWarning(string.Format("Unable to delete corrupted version cache file {0}. Got {1} exception.", cacheFileName, deleteEx.GetType().FullName));
+                            Logger.WriteWarning($"Unable to delete corrupted version cache file {cacheFileName}. Got {deleteEx.GetType().FullName} exception.");
                         }
 
                         return null;

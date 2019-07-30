@@ -21,7 +21,7 @@ namespace GitVersion
         {
             if (values != null && values.Length > maxArguments)
             {
-                throw new WarningException(string.Format("Could not parse command line parameter '{0}'.", values[1]));
+                throw new WarningException($"Could not parse command line parameter '{values[1]}'.");
             }
         }
 
@@ -55,14 +55,13 @@ namespace GitVersion
             }
 
             var arguments = new Arguments();
-            bool firstArgumentIsSwitch;
-            var switchesAndValues = CollectSwitchesAndValuesFromArguments(commandLineArguments, out firstArgumentIsSwitch);
+            var switchesAndValues = CollectSwitchesAndValuesFromArguments(commandLineArguments, out var firstArgumentIsSwitch);
 
             for (var i = 0; i < switchesAndValues.AllKeys.Length; i++)
             {
                 var name = switchesAndValues.AllKeys[i];
                 var values = switchesAndValues.GetValues(name);
-                var value = values != null ? values.FirstOrDefault() : null;
+                var value = values?.FirstOrDefault();
 
                 if (name.IsSwitch("version"))
                 {
@@ -253,10 +252,9 @@ namespace GitVersion
 
                 if (name.IsSwitch("output"))
                 {
-                    OutputType outputType;
-                    if (!Enum.TryParse(value, true, out outputType))
+                    if (!Enum.TryParse(value, true, out OutputType outputType))
                     {
-                        throw new WarningException(string.Format("Value '{0}' cannot be parsed as output type, please use 'json' or 'buildserver'", value));
+                        throw new WarningException($"Value '{value}' cannot be parsed as output type, please use 'json' or 'buildserver'");
                     }
 
                     arguments.Output = outputType;
@@ -312,7 +310,7 @@ namespace GitVersion
                         var keyAndValue = keyValueOption.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
                         if (keyAndValue.Length != 2)
                         {
-                            throw new WarningException(string.Format("Could not parse /overrideconfig option: {0}. Ensure it is in format 'key=value'", keyValueOption));
+                            throw new WarningException($"Could not parse /overrideconfig option: {keyValueOption}. Ensure it is in format 'key=value'");
                         }
 
                         var optionKey = keyAndValue[0].ToLowerInvariant();
@@ -322,7 +320,7 @@ namespace GitVersion
                                 arguments.OverrideConfig.TagPrefix = keyAndValue[1];
                                 break;
                             default:
-                                throw new WarningException(string.Format("Could not parse /overrideconfig option: {0}. Currently supported only 'tag-prefix' option", optionKey));
+                                throw new WarningException($"Could not parse /overrideconfig option: {optionKey}. Currently supported only 'tag-prefix' option");
                         }
                     }
 
@@ -339,7 +337,7 @@ namespace GitVersion
                 {
                     if (!Enum.TryParse(value, true, out arguments.Verbosity))
                     {
-                        throw new WarningException(String.Format("Could not parse Verbosity value '{0}'", value));
+                        throw new WarningException($"Could not parse Verbosity value '{value}'");
                     }
                     continue;
                 }
@@ -350,7 +348,7 @@ namespace GitVersion
                     continue;
                 }
 
-                var couldNotParseMessage = string.Format("Could not parse command line parameter '{0}'.", name);
+                var couldNotParseMessage = $"Could not parse command line parameter '{name}'.";
 
                 // If we've reached through all argument switches without a match, we can relatively safely assume that the first argument isn't a switch, but the target path.
                 if (i == 0)

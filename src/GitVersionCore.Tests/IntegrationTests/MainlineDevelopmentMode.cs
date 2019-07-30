@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using System.Text;
 using GitTools.Testing;
@@ -534,10 +534,10 @@ static class CommitExtensions
         fixture.Repository.MakeACommit(commitMsg);
         var diagramBuilder = (StringBuilder)typeof(SequenceDiagram)
             .GetField("_diagramBuilder", BindingFlags.Instance | BindingFlags.NonPublic)
-            .GetValue(fixture.SequenceDiagram);
+            ?.GetValue(fixture.SequenceDiagram);
         Func<string, string> getParticipant = participant => (string)typeof(SequenceDiagram)
             .GetMethod("GetParticipant", BindingFlags.Instance | BindingFlags.NonPublic)
-            .Invoke(fixture.SequenceDiagram, new object[]
+            ?.Invoke(fixture.SequenceDiagram, new object[]
             {
                     participant
             });

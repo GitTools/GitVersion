@@ -19,9 +19,7 @@ namespace GitVersion
             
             if (matchingBranches == null)
             {
-                Logger.WriteInfo(string.Format(
-                    "No branch configuration found for branch {0}, falling back to default configuration",
-                    targetBranch.FriendlyName));
+                Logger.WriteInfo($"No branch configuration found for branch {targetBranch.FriendlyName}, falling back to default configuration");
 
                 matchingBranches = new BranchConfig { Name = FallbackConfigName };
                 ConfigurationProvider.ApplyBranchDefaults(context.FullConfiguration, matchingBranches, "", new List<string>());

@@ -32,9 +32,8 @@
             }
 
             string result = null;
-            string template;
 
-            if (templates.TryGetValue(fileExtension, out template) && template != null)
+            if (templates.TryGetValue(fileExtension, out var template) && template != null)
             {
                 result = template.ReadAsStringFromEmbeddedResource<TemplateManager>();
             }
@@ -50,9 +49,8 @@
             }
 
             string result = null;
-            string addFormat;
 
-            if (addFormats.TryGetValue(fileExtension, out addFormat) && addFormat != null)
+            if (addFormats.TryGetValue(fileExtension, out var addFormat) && addFormat != null)
             {
                 result = addFormat.ReadAsStringFromEmbeddedResource<TemplateManager>();
             }

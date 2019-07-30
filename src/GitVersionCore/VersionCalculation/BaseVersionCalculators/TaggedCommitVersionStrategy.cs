@@ -47,7 +47,7 @@
 
         protected virtual string FormatSource(VersionTaggedCommit version)
         {
-            return string.Format("Git tag '{0}'", version.Tag);
+            return $"Git tag '{version.Tag}'";
         }
 
         protected virtual bool IsValidTag(Tag tag, Commit commit)

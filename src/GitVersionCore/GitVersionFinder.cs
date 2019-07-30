@@ -7,10 +7,7 @@ namespace GitVersion
     {
         public SemanticVersion FindVersion(GitVersionContext context)
         {
-            Logger.WriteInfo(string.Format(
-                "Running against branch: {0} ({1})",
-                context.CurrentBranch.FriendlyName,
-                context.CurrentCommit == null ? "-" : context.CurrentCommit.Sha));
+            Logger.WriteInfo($"Running against branch: {context.CurrentBranch.FriendlyName} ({(context.CurrentCommit == null ? "-" : context.CurrentCommit.Sha)})");
             if (context.IsCurrentCommitTagged)
             {
                 Logger.WriteInfo($"Current commit is tagged with version {context.CurrentCommitTaggedVersion}, " +

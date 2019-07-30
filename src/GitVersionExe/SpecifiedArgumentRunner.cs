@@ -12,7 +12,7 @@ namespace GitVersion
 
         public static void Run(Arguments arguments, IFileSystem fileSystem)
         {
-            Logger.WriteInfo(string.Format("Running on {0}.", runningOnMono ? "Mono" : "Windows"));
+            Logger.WriteInfo($"Running on {(runningOnMono ? "Mono" : "Windows")}.");
 
             var noFetch = arguments.NoFetch;
             var authentication = arguments.Authentication;
@@ -44,8 +44,7 @@ namespace GitVersion
                         break;
 
                     default:
-                        string part;
-                        if (!variables.TryGetValue(arguments.ShowVariable, out part))
+                        if (!variables.TryGetValue(arguments.ShowVariable, out var part))
                         {
                             throw new WarningException($"'{arguments.ShowVariable}' variable does not exist");
                         }

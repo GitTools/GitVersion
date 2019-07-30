@@ -35,9 +35,6 @@ namespace GitVersion.Configuration.Init.Wizard
             return "Do you stabilise releases while continuing work on the next version? (y/n)";
         }
 
-        protected override string DefaultResult
-        {
-            get { return null; }
-        }
+        protected override string DefaultResult => null;
     }
 }

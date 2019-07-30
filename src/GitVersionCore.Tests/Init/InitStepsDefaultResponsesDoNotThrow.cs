@@ -21,7 +21,7 @@ namespace GitVersionCore.Tests.Init
                     var instance = Activator.CreateInstance(t, ctorArguments);
                     try
                     {
-                        resultProperty.GetValue(instance);
+                        if (resultProperty != null) resultProperty.GetValue(instance);
                     }
                     catch (Exception)
                     {
@@ -31,6 +31,6 @@ namespace GitVersionCore.Tests.Init
                 }));
         }
 
-        public string ConventionReason { get { return "So things do not blow up"; } }
+        public string ConventionReason => "So things do not blow up";
     }
 }

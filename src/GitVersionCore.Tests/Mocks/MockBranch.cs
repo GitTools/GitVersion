@@ -8,7 +8,7 @@ public class MockBranch : Branch, ICollection<Commit>
     public MockBranch(string friendlyName)
     {
         this.friendlyName = friendlyName;
-        this.canonicalName = friendlyName;
+        canonicalName = friendlyName;
     }
     public MockBranch(string friendlyName, string canonicalName)
     {
@@ -23,19 +23,16 @@ public class MockBranch : Branch, ICollection<Commit>
     MockCommitLog commits = new MockCommitLog();
     string friendlyName;
     string canonicalName;
-    public override string FriendlyName { get { return friendlyName; } }
-    public override ICommitLog Commits { get { return commits; } }
-    public override Commit Tip { get { return commits.First(); } }
-    public override bool IsTracking { get { return true; } }
+    public override string FriendlyName => friendlyName;
+    public override ICommitLog Commits => commits;
+    public override Commit Tip => commits.First();
+    public override bool IsTracking => true;
 
-    public override string CanonicalName
-    {
-        get { return canonicalName; }
-    }
+    public override string CanonicalName => canonicalName;
 
     public override int GetHashCode()
     {
-        return this.friendlyName.GetHashCode();
+        return friendlyName.GetHashCode();
     }
 
     public override bool Equals(object obj)
@@ -78,7 +75,7 @@ public class MockBranch : Branch, ICollection<Commit>
         return commits.Remove(item);
     }
 
-    public int Count { get { return commits.Count; } }
+    public int Count => commits.Count;
 
-    public bool IsReadOnly { get { return false; } }
+    public bool IsReadOnly => false;
 }

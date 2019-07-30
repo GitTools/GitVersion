@@ -17,12 +17,12 @@
         {
             var messages = new List<string>
             {
-                string.Format("##myget[setParameter name='GitVersion.{0}' value='{1}']", name, ServiceMessageEscapeHelper.EscapeValue(value))
+                $"##myget[setParameter name='GitVersion.{name}' value='{ServiceMessageEscapeHelper.EscapeValue(value)}']"
             };
 
             if (string.Equals(name, "LegacySemVerPadded", StringComparerUtils.IgnoreCaseComparison))
             {
-                messages.Add(string.Format("##myget[buildNumber '{0}']", ServiceMessageEscapeHelper.EscapeValue(value)));
+                messages.Add($"##myget[buildNumber '{ServiceMessageEscapeHelper.EscapeValue(value)}']");
             }
 
             return messages.ToArray();

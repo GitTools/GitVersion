@@ -50,13 +50,7 @@ public class MockReferenceCollection : ReferenceCollection, ICollection<Commit>
         return Commits.Remove(item);
     }
 
-    public int Count
-    {
-        get { return Commits.Count; }
-    }
+    public int Count => Commits.Count;
 
-    public bool IsReadOnly
-    {
-        get { return false; }
-    }
+    public bool IsReadOnly => false;
 }

@@ -44,14 +44,11 @@ namespace GitVersion
         [YamlMember(Alias = "next-version")]
         public string NextVersion
         {
-            get { return nextVersion; }
-            set
-            {
-                int major;
-                nextVersion = int.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out major)
-                    ? string.Format("{0}.0", major)
+            get => nextVersion;
+            set =>
+                nextVersion = int.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var major)
+                    ? $"{major}.0"
                     : value;
-            }
         }
 
         [YamlMember(Alias = "major-version-bump-message")]
@@ -81,10 +78,7 @@ namespace GitVersion
         [YamlMember(Alias = "branches")]
         public Dictionary<string, BranchConfig> Branches
         {
-            get
-            {
-                return branches;
-            }
+            get => branches;
             set
             {
                 value.ToList().ForEach(_ =>

@@ -38,11 +38,10 @@ namespace GitVersion
             if (oldConfigs.Any())
             {
                 var max = oldConfigs.Max(c => c.Length);
-                var oldBranchConfigs = oldConfigs.Select(c => string.Format("{0} -> {1}", c.PadRight(max), OldConfigKnownRegexes[c]));
+                var oldBranchConfigs = oldConfigs.Select(c => $"{c.PadRight(max)} -> {OldConfigKnownRegexes[c]}");
                 var branchErrors = string.Join("\r\n    ", oldBranchConfigs);
-                issues.Add(string.Format(
-@"GitVersion branch configs no longer are keyed by regexes, update:
-    {0}", branchErrors));
+                issues.Add($@"GitVersion branch configs no longer are keyed by regexes, update:
+    {branchErrors}");
             }
 
             if (legacyConfig.assemblyVersioningScheme != null)

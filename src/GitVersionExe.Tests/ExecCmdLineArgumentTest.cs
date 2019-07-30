@@ -74,7 +74,7 @@ public class ExecCmdLineArgumentTest
             fixture.MakeATaggedCommit("1.2.3");
             fixture.MakeACommit();
 
-            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: String.Format( @" {0} -output buildserver /l ""/some/path""", verbosityArg), logToFile: false);
+            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: $@" {verbosityArg} -output buildserver /l ""/some/path""", logToFile: false);
 
             result.ExitCode.ShouldBe(0);
             result.Output.ShouldContain(expectedOutput);
@@ -106,6 +106,6 @@ public class ExecCmdLineArgumentTest
 
         exitCode.ShouldNotBe(0);
         var outputString = output.ToString();
-        outputString.ShouldContain(string.Format("The working directory '{0}' does not exist.", workingDirectory), () => outputString);
+        outputString.ShouldContain($"The working directory '{workingDirectory}' does not exist.", () => outputString);
     }
 }

@@ -155,13 +155,13 @@ Assembly(File|Informational)?Version    # The attribute AssemblyVersion, Assembl
 
         public static FileWriteInfo GetFileWriteInfo(this string intermediateOutputPath, string language, string projectFile, string outputFileName)
         {
-            var fileExtension = FileHelper.GetFileExtension(language);
+            var fileExtension = GetFileExtension(language);
             string workingDirectory, fileName;
 
             if (intermediateOutputPath == null)
             {
                 fileName = $"{outputFileName}.g.{fileExtension}";
-                workingDirectory = FileHelper.TempPath;
+                workingDirectory = TempPath;
             }
             else
             {

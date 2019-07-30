@@ -1,4 +1,4 @@
-﻿using LibGit2Sharp;
+using LibGit2Sharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,8 +33,7 @@ namespace GitVersion
                 if (olderThan.HasValue && ((Commit)tag.PeeledTarget()).When() > olderThan.Value)
                     continue;
 
-                SemanticVersion semver;
-                if (SemanticVersion.TryParse(tag.FriendlyName, tagPrefixRegex, out semver))
+                if (SemanticVersion.TryParse(tag.FriendlyName, tagPrefixRegex, out var semver))
                 {
                     tags.Add(Tuple.Create(tag, semver));
                 }
@@ -47,13 +46,13 @@ namespace GitVersion
         {
             if (semanticVersionTagsOnBranchCache.ContainsKey(branch))
             {
-                Logger.WriteDebug(string.Format("Cache hit for version tags on branch '{0}", branch.CanonicalName));
+                Logger.WriteDebug($"Cache hit for version tags on branch '{branch.CanonicalName}");
                 return semanticVersionTagsOnBranchCache[branch];
             }
 
-            using (Logger.IndentLog(string.Format("Getting version tags from branch '{0}'.", branch.CanonicalName)))
+            using (Logger.IndentLog($"Getting version tags from branch '{branch.CanonicalName}'."))
             {
-                var tags = GetValidVersionTags(this.Repository, tagPrefixRegex);
+                var tags = GetValidVersionTags(Repository, tagPrefixRegex);
 
                 var versionTags = branch.Commits.SelectMany(c => tags.Where(t => c.Sha == t.Item1.Target.Sha).Select(t => t.Item2)).ToList();
 
@@ -67,10 +66,10 @@ namespace GitVersion
         {
             if (commit == null)
             {
-                throw new ArgumentNullException("commit");
+                throw new ArgumentNullException(nameof(commit));
             }
 
-            using (Logger.IndentLog(string.Format("Getting branches containing the commit '{0}'.", commit.Id)))
+            using (Logger.IndentLog($"Getting branches containing the commit '{commit.Id}'."))
             {
                 var directBranchHasBeenFound = false;
                 Logger.WriteInfo("Trying to find direct branches.");
@@ -83,7 +82,7 @@ namespace GitVersion
                     }
 
                     directBranchHasBeenFound = true;
-                    Logger.WriteInfo(string.Format("Direct branch found: '{0}'.", branch.FriendlyName));
+                    Logger.WriteInfo($"Direct branch found: '{branch.FriendlyName}'.");
                     yield return branch;
                 }
 
@@ -92,23 +91,23 @@ namespace GitVersion
                     yield break;
                 }
 
-                Logger.WriteInfo(string.Format("No direct branches found, searching through {0} branches.", onlyTrackedBranches ? "tracked" : "all"));
+                Logger.WriteInfo($"No direct branches found, searching through {(onlyTrackedBranches ? "tracked" : "all")} branches.");
                 foreach (var branch in branches.Where(b => onlyTrackedBranches && !b.IsTracking))
                 {
-                    Logger.WriteInfo(string.Format("Searching for commits reachable from '{0}'.", branch.FriendlyName));
+                    Logger.WriteInfo($"Searching for commits reachable from '{branch.FriendlyName}'.");
 
-                    var commits = this.Repository.Commits.QueryBy(new CommitFilter
+                    var commits = Repository.Commits.QueryBy(new CommitFilter
                     {
                         IncludeReachableFrom = branch
                     }).Where(c => c.Sha == commit.Sha);
 
                     if (!commits.Any())
                     {
-                        Logger.WriteInfo(string.Format("The branch '{0}' has no matching commits.", branch.FriendlyName));
+                        Logger.WriteInfo($"The branch '{branch.FriendlyName}' has no matching commits.");
                         continue;
                     }
 
-                    Logger.WriteInfo(string.Format("The branch '{0}' has a matching commit.", branch.FriendlyName));
+                    Logger.WriteInfo($"The branch '{branch.FriendlyName}' has a matching commit.");
                     yield return branch;
                 }
             }
@@ -196,10 +195,10 @@ namespace GitVersion
         {
             if (branch == null)
             {
-                throw new ArgumentNullException("branch");
+                throw new ArgumentNullException(nameof(branch));
             }
 
-            using (Logger.IndentLog(string.Format("Finding branch source of '{0}'", branch.FriendlyName)))
+            using (Logger.IndentLog($"Finding branch source of '{branch.FriendlyName}'"))
             {
                 if (branch.Tip == null)
                 {
@@ -228,9 +227,7 @@ namespace GitVersion
         {
             if (mergeBaseCommitsCache.ContainsKey(branch))
             {
-                Logger.WriteDebug(string.Format(
-                    "Cache hit for getting merge commits for branch {0}.",
-                    branch.CanonicalName));
+                Logger.WriteDebug($"Cache hit for getting merge commits for branch {branch.CanonicalName}.");
                 return mergeBaseCommitsCache[branch];
             }
 

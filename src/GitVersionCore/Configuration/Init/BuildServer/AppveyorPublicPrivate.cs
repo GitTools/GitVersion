@@ -1,4 +1,4 @@
-﻿namespace GitVersion.Configuration.Init.BuildServer
+namespace GitVersion.Configuration.Init.BuildServer
 {
     using System.Collections.Generic;
     using GitVersion.Configuration.Init.Wizard;
@@ -38,9 +38,6 @@ That is ... does it require authentication to clone/pull?
 2) Private";
         }
 
-        protected override string DefaultResult
-        {
-            get { return "0"; }
-        }
+        protected override string DefaultResult => "0";
     }
 }

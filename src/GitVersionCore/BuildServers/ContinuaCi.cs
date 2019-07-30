@@ -17,13 +17,13 @@
         {
             return new[]
             {
-                string.Format("@@continua[setVariable name='GitVersion_{0}' value='{1}' skipIfNotDefined='true']", name, value)
+                $"@@continua[setVariable name='GitVersion_{name}' value='{value}' skipIfNotDefined='true']"
             };
         }
 
         public override string GenerateSetVersionMessage(VersionVariables variables)
         {
-            return string.Format("@@continua[setBuildVersion value='{0}']", variables.FullSemVer);
+            return $"@@continua[setBuildVersion value='{variables.FullSemVer}']";
         }    
     }
 }

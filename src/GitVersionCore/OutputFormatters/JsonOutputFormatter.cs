@@ -14,9 +14,8 @@
             foreach (var variable in variables)
             {
                 var isLast = (variable.Key == last);
-                int value;
                 // preserve leading zeros for padding
-                if (int.TryParse(variable.Value, out value) && NotAPaddedNumber(variable))
+                if (int.TryParse(variable.Value, out var value) && NotAPaddedNumber(variable))
                     builder.AppendLineFormat("  \"{0}\":{1}{2}", variable.Key, value, isLast ? string.Empty : ",");
                 else
                     builder.AppendLineFormat("  \"{0}\":\"{1}\"{2}", variable.Key, variable.Value, isLast ? string.Empty : ",");

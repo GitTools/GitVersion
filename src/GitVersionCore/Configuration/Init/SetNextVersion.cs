@@ -18,8 +18,7 @@ namespace GitVersion.Configuration.Init
                 return StepResult.Ok();
             }
 
-            SemanticVersion semVer;
-            if (!SemanticVersion.TryParse(result, string.Empty, out semVer))
+            if (!SemanticVersion.TryParse(result, string.Empty, out var semVer))
                 return StepResult.InvalidResponseSelected();
 
             config.NextVersion = semVer.ToString("t");
@@ -32,9 +31,6 @@ namespace GitVersion.Configuration.Init
             return @"What would you like to set the next version to (enter nothing to cancel)?";
         }
 
-        protected override string DefaultResult
-        {
-            get { return null; }
-        }
+        protected override string DefaultResult => null;
     }
 }
