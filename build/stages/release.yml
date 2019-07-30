@@ -8,3 +8,5 @@ steps:
     artifact: artifacts
 - script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Release
   displayName: 'Release'
+  env:
+    GITHUB_TOKEN: $(GITHUB_TOKEN)
