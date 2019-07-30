@@ -81,7 +81,7 @@ namespace GitVersion.Helpers
         // http://csharptest.net/532/using-processstart-to-capture-console-output/
         public static int Run(Action<string> output, Action<string> errorOutput, TextReader input, string exe, string args, string workingDirectory, params KeyValuePair<string, string>[] environmentalVariables)
         {
-            if (String.IsNullOrEmpty(exe))
+            if (string.IsNullOrEmpty(exe))
                 throw new ArgumentNullException(nameof(exe));
             if (output == null)
                 throw new ArgumentNullException(nameof(output));

@@ -141,7 +141,7 @@ namespace GitVersion
 
             var dotGitDirectory = Repository.Discover(targetPath);
 
-            if (String.IsNullOrEmpty(dotGitDirectory))
+            if (string.IsNullOrEmpty(dotGitDirectory))
                 throw new DirectoryNotFoundException("Can't find the .git directory in " + targetPath);
 
             dotGitDirectory = dotGitDirectory.TrimEnd('/', '\\');
