@@ -69,7 +69,7 @@ namespace GitVersion
                 }
                 var execRun = false;
                 var msbuildRun = false;
-#if NETDESKTOP
+#if NET461
                 execRun = RunExecCommandIfNeeded(arguments, targetPath, variables);
                 msbuildRun = RunMsBuildIfNeeded(arguments, targetPath, variables);
 #endif
@@ -87,7 +87,7 @@ namespace GitVersion
                 }
             }
         }
-#if NETDESKTOP
+#if NET461
         static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
         {
 

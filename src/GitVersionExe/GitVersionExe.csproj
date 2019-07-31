@@ -12,10 +12,6 @@
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='net461'">
-    <DefineConstants>NETDESKTOP</DefineConstants>
-  </PropertyGroup>
-
   <ItemGroup Condition="'$(TargetFramework)'=='net461'">
     <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)"></PackageReference>
   </ItemGroup>

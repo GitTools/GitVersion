@@ -77,7 +77,7 @@ namespace GitVersion
                 }
 
                 ConfigureLogging(arguments);
-#if NETDESKTOP
+#if NET461
                 if (arguments.Diag)
                 {
                     Logger.WriteInfo("Dumping commit graph: ");
@@ -131,7 +131,7 @@ namespace GitVersion
 
                     try
                     {
-#if NETDESKTOP
+#if NET461
                         LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
 #endif
                     }
