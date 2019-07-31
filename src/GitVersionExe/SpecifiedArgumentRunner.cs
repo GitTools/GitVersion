@@ -67,12 +67,9 @@ namespace GitVersion
                 {
                     assemblyInfoUpdater.Update();
                 }
-                var execRun = false;
-                var msbuildRun = false;
-#if NET472
-                execRun = RunExecCommandIfNeeded(arguments, targetPath, variables);
-                msbuildRun = RunMsBuildIfNeeded(arguments, targetPath, variables);
-#endif
+
+                var execRun = RunExecCommandIfNeeded(arguments, targetPath, variables);
+                var msbuildRun = RunMsBuildIfNeeded(arguments, targetPath, variables);
 
                 if (!execRun && !msbuildRun)
                 {
@@ -87,11 +84,8 @@ namespace GitVersion
                 }
             }
         }
-#if NET472
         static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
         {
-
-
             if (string.IsNullOrEmpty(args.Proj)) return false;
 
             Logger.WriteInfo($"Launching build tool {BuildTool} \"{args.Proj}\" {args.ProjArgs}");
@@ -105,8 +99,6 @@ namespace GitVersion
 
             return true;
         }
-
-
         static bool RunExecCommandIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
         {
             if (string.IsNullOrEmpty(args.Exec)) return false;
@@ -122,7 +114,6 @@ namespace GitVersion
 
             return true;
         }
-#endif
         static KeyValuePair<string, string>[] GetEnvironmentalVariables(VersionVariables variables)
         {
             return variables

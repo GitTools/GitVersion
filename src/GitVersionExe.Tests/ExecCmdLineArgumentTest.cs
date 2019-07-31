@@ -94,14 +94,17 @@ public class ExecCmdLineArgumentTest
     public void WorkingDirectoryDoesNotExistCrashesWithInformativeMessage()
     {
         var workingDirectory = Path.Combine(PathHelper.GetCurrentDirectory(), Guid.NewGuid().ToString("N"));
-        var gitVersion = Path.Combine(PathHelper.GetCurrentDirectory(), "GitVersion.exe");
+        var executable = PathHelper.GetExecutable();
+
         var output = new StringBuilder();
+        var args = PathHelper.GetExecutableArgs(workingDirectory);
+
         var exitCode = ProcessHelper.Run(
             s => output.AppendLine(s),
             s => output.AppendLine(s),
             null,
-            gitVersion,
-            workingDirectory,
+            executable,
+            args,
             PathHelper.GetCurrentDirectory());
 
         exitCode.ShouldNotBe(0);

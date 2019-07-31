@@ -4,6 +4,7 @@ namespace GitVersion
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Runtime.InteropServices;
     using System.Text;
     using GitVersion.Helpers;
     using LibGit2Sharp;
@@ -61,9 +62,9 @@ namespace GitVersion
         {
             var target = tag.Target;
 
-            while (target is TagAnnotation)
+            while (target is TagAnnotation annotation)
             {
-                target = ((TagAnnotation)(target)).Target;
+                target = annotation.Target;
             }
             return target;
         }
@@ -143,11 +144,11 @@ namespace GitVersion
             DumpGraph(repository.Info.Path, writer, maxCommits);
         }
 
-
         public static void DumpGraph(string workingDirectory, Action<string> writer = null, int? maxCommits = null)
         {
-            var output = new StringBuilder();
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return;
 
+            var output = new StringBuilder();
             try
             {
                 ProcessHelper.Run(

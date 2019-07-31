@@ -77,13 +77,11 @@ namespace GitVersion
                 }
 
                 ConfigureLogging(arguments);
-#if NET472
                 if (arguments.Diag)
                 {
                     Logger.WriteInfo("Dumping commit graph: ");
                     LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
                 }
-#endif
                 if (!Directory.Exists(arguments.TargetPath))
                 {
                     Logger.WriteWarning($"The working directory '{arguments.TargetPath}' does not exist.");
@@ -131,9 +129,7 @@ namespace GitVersion
 
                     try
                     {
-#if NET472
                         LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
-#endif
                     }
                     catch (Exception dumpGraphException)
                     {
@@ -173,10 +169,7 @@ namespace GitVersion
                     var logFile = new FileInfo(logFileFullPath);
 
                     // NOTE: logFile.Directory will be null if the path is i.e. C:\logfile.log. @asbjornu
-                    if (logFile.Directory != null)
-                    {
-                        logFile.Directory.Create();
-                    }
+                    logFile.Directory?.Create();
 
                     using (logFile.CreateText())
                     {
