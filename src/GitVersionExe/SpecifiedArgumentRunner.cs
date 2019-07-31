@@ -94,14 +94,14 @@ namespace GitVersion
 
             if (string.IsNullOrEmpty(args.Proj)) return false;
 
-            Logger.WriteInfo(string.Format("Launching build tool {0} \"{1}\" {2}", BuildTool, args.Proj, args.ProjArgs));
+            Logger.WriteInfo($"Launching build tool {BuildTool} \"{args.Proj}\" {args.ProjArgs}");
             var results = ProcessHelper.Run(
                 Logger.WriteInfo, Logger.WriteError,
-                null, BuildTool, string.Format("\"{0}\" {1}", args.Proj, args.ProjArgs), workingDirectory,
+                null, BuildTool, $"\"{args.Proj}\" {args.ProjArgs}", workingDirectory,
                 GetEnvironmentalVariables(variables));
 
             if (results != 0)
-                throw new WarningException(string.Format("{0} execution failed, non-zero return code", runningOnMono ? "XBuild" : "MSBuild"));
+                throw new WarningException($"{(runningOnMono ? "XBuild" : "MSBuild")} execution failed, non-zero return code");
 
             return true;
         }
@@ -111,14 +111,14 @@ namespace GitVersion
         {
             if (string.IsNullOrEmpty(args.Exec)) return false;
 
-            Logger.WriteInfo(string.Format("Launching {0} {1}", args.Exec, args.ExecArgs));
+            Logger.WriteInfo($"Launching {args.Exec} {args.ExecArgs}");
             var results = ProcessHelper.Run(
                 Logger.WriteInfo, Logger.WriteError,
                 null, args.Exec, args.ExecArgs, workingDirectory,
                 GetEnvironmentalVariables(variables));
 
             if (results != 0)
-                throw new WarningException(string.Format("Execution of {0} failed, non-zero return code", args.Exec));
+                throw new WarningException($"Execution of {args.Exec} failed, non-zero return code");
 
             return true;
         }
