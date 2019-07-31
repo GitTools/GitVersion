@@ -42,7 +42,7 @@ namespace GitVersion
 
             if (!Directory.Exists(root))
             {
-                throw new ArgumentException();
+                throw new ArgumentException($"Root directory does not exist: {root}");
             }
 
             dirs.Push(root);
