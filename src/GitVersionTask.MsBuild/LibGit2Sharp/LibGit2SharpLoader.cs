@@ -34,7 +34,6 @@ namespace GitVersionTask.MsBuild.LibGit2Sharp
 #endif
         }
 
-        
 #if NET472
 
         private static Version nullVersion;

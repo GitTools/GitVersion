@@ -31,46 +31,49 @@ Task("Test")
     .IsDependentOn("Build")
     .Does<BuildParameters>((parameters) =>
 {
-    var framework = parameters.FullFxVersion;
+    var frameworks = new[] { parameters.CoreFxVersion, parameters.FullFxVersion };
 
-    // run using dotnet test
-    var actions = new List<Action>();
-    var projects = GetFiles("./src/**/*.Tests.csproj");
-    foreach(var project in projects)
+    foreach(var framework in frameworks)
     {
-        actions.Add(() =>
+        // run using dotnet test
+        var actions = new List<Action>();
+        var projects = GetFiles("./src/**/*.Tests.csproj");
+        foreach(var project in projects)
         {
-            var settings = new DotNetCoreTestSettings
+            actions.Add(() =>
             {
-                Framework = framework,
-                NoBuild = true,
-                NoRestore = true,
-                Configuration = parameters.Configuration
-            };
+                var settings = new DotNetCoreTestSettings
+                {
+                    Framework = framework,
+                    NoBuild = true,
+                    NoRestore = true,
+                    Configuration = parameters.Configuration
+                };
 
-            var coverletSettings = new CoverletSettings {
-                CollectCoverage = true,
-                CoverletOutputFormat = CoverletOutputFormat.opencover,
-                CoverletOutputDirectory = parameters.Paths.Directories.TestCoverageOutput + "/",
-                CoverletOutputName = $"{project.GetFilenameWithoutExtension()}.{framework}.coverage.xml"
-            };
+                var coverletSettings = new CoverletSettings {
+                    CollectCoverage = true,
+                    CoverletOutputFormat = CoverletOutputFormat.opencover,
+                    CoverletOutputDirectory = parameters.Paths.Directories.TestCoverageOutput + "/",
+                    CoverletOutputName = $"{project.GetFilenameWithoutExtension()}.{framework}.coverage.xml"
+                };
 
-            if (IsRunningOnUnix())
-            {
-                settings.Filter = "TestCategory!=NoMono";
-            }
+                if (IsRunningOnUnix())
+                {
+                    settings.Filter = "TestCategory!=NoMono";
+                }
 
-            DotNetCoreTest(project.FullPath, settings, coverletSettings);
-        });
+                DotNetCoreTest(project.FullPath, settings, coverletSettings);
+            });
+        }
+
+        var options = new ParallelOptions
+        {
+            MaxDegreeOfParallelism = -1,
+            CancellationToken = default
+        };
+
+        Parallel.Invoke(options, actions.ToArray());
     }
-
-    var options = new ParallelOptions
-    {
-        MaxDegreeOfParallelism = -1,
-        CancellationToken = default
-    };
-
-    Parallel.Invoke(options, actions.ToArray());
 })
 .ReportError(exception =>
 {

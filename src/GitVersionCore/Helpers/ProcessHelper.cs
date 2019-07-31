@@ -184,7 +184,7 @@ namespace GitVersion.Helpers
                 {
                     oldMode = SetErrorMode((int)mode);
                 }
-                catch (EntryPointNotFoundException)
+                catch (Exception ex) when (ex is EntryPointNotFoundException || ex is DllNotFoundException)
                 {
                     oldMode = (int)mode;
                 }
@@ -197,7 +197,7 @@ namespace GitVersion.Helpers
                 {
                     SetErrorMode(oldMode);
                 }
-                catch (EntryPointNotFoundException)
+                catch (Exception ex) when (ex is EntryPointNotFoundException || ex is DllNotFoundException)
                 {
                     // NOTE: Mono doesn't support DllImport("kernel32.dll") and its SetErrorMode method, obviously. @asbjornu
                 }

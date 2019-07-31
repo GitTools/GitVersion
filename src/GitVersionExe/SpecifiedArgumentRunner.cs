@@ -4,15 +4,33 @@ namespace GitVersion
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.InteropServices;
 
     class SpecifiedArgumentRunner
     {
-        private static readonly bool runningOnMono = Type.GetType("Mono.Runtime") != null;
-        public static readonly string BuildTool = runningOnMono ? "xbuild" : @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
+        private static readonly bool runningOnUnix = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        public static readonly string BuildTool = GetMsBuildToolPath();
+
+        private static string GetMsBuildToolPath()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
+            }
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                return "/usr/bin/msbuild";
+            }
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                return "/Library/Frameworks/Mono.framework/Versions/Current/Commands/msbuild";
+            }
+            throw new Exception("MsBuild not found");
+        }
 
         public static void Run(Arguments arguments, IFileSystem fileSystem)
         {
-            Logger.WriteInfo($"Running on {(runningOnMono ? "Mono" : "Windows")}.");
+            Logger.WriteInfo($"Running on {(runningOnUnix ? "Unix" : "Windows")}.");
 
             var noFetch = arguments.NoFetch;
             var authentication = arguments.Authentication;
@@ -95,7 +113,7 @@ namespace GitVersion
                 GetEnvironmentalVariables(variables));
 
             if (results != 0)
-                throw new WarningException($"{(runningOnMono ? "XBuild" : "MSBuild")} execution failed, non-zero return code");
+                throw new WarningException("MSBuild execution failed, non-zero return code");
 
             return true;
         }
