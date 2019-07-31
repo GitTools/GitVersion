@@ -9,7 +9,7 @@ public class BuildParameters
     public string Configuration { get; private set; }
 
     public string CoreFxVersion { get; private set; } = "netcoreapp2.1";
-    public string FullFxVersion { get; private set; } = "net461";
+    public string FullFxVersion { get; private set; } = "net472";
 
     public string DockerDistro { get; private set; }
     public string DockerDotnetVersion { get; private set; }

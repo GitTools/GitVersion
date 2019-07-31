@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
     <PropertyGroup>
-        <GitVersionAssemblyFile Condition="$(GitVersionAssemblyFile) == '' And '$(MSBuildRuntimeType)' != 'Core'">$(MSBuildThisFileDirectory)..\tools\net461\GitVersionTask.MsBuild.dll</GitVersionAssemblyFile>
+        <GitVersionAssemblyFile Condition="$(GitVersionAssemblyFile) == '' And '$(MSBuildRuntimeType)' != 'Core'">$(MSBuildThisFileDirectory)..\tools\net472\GitVersionTask.MsBuild.dll</GitVersionAssemblyFile>
         <GitVersionAssemblyFile Condition="$(GitVersionAssemblyFile) == '' And '$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)..\tools\netstandard2.0\GitVersionTask.MsBuild.dll</GitVersionAssemblyFile>
 
         <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)\..\</SolutionDir>

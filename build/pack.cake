@@ -52,7 +52,7 @@ Task("Test")
                 CollectCoverage = true,
                 CoverletOutputFormat = CoverletOutputFormat.opencover,
                 CoverletOutputDirectory = parameters.Paths.Directories.TestCoverageOutput + "/",
-                CoverletOutputName = $"{project.GetFilenameWithoutExtension()}.coverage.xml"
+                CoverletOutputName = $"{project.GetFilenameWithoutExtension()}.{framework}.coverage.xml"
             };
 
             if (IsRunningOnUnix())

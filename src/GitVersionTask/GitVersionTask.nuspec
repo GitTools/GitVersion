@@ -30,13 +30,13 @@
         <file src="netcoreapp2.1\publish\YamlDotNet.dll"      target="tools\netstandard2.0" />
         <file src="netcoreapp2.1\publish\GitVersion*"         target="tools\netstandard2.0" />
 
-        <file src="net461\GitVersion*"    target="tools\net461" />
-        <file src="net461\LibGit2Sharp.*" target="tools\net461" />
-        <file src="net461\YamlDotNet.*"   target="tools\net461" />
+        <file src="net472\GitVersion*"    target="tools\net472" />
+        <file src="net472\LibGit2Sharp.*" target="tools\net472" />
+        <file src="net472\YamlDotNet.*"   target="tools\net472" />
 
-        <file src="net461\lib\linux-x64\*.so" target="tools\net461\lib\linux-x64" />
-        <file src="net461\lib\osx\*.dylib"    target="tools\net461\lib\osx" />
-        <file src="net461\lib\win32\**\*.dll" target="tools\net461\lib\win32" />
+        <file src="net472\lib\linux-x64\*.so" target="tools\net472\lib\linux-x64" />
+        <file src="net472\lib\osx\*.dylib"    target="tools\net472\lib\osx" />
+        <file src="net472\lib\win32\**\*.dll" target="tools\net472\lib\win32" />
 
         <file src="..\..\build\*.*" target="build" />
         <file src="..\..\buildMultiTargeting\*.*" target="buildMultiTargeting" />
