@@ -28,7 +28,7 @@ public class BuildVersion
             Version      = version,
             SemVersion   = semVersion,
             GemVersion   = semVersion.Replace("-", "."),
-            NugetVersion = nugetVersion,
+            NugetVersion = nugetVersion.ToLowerInvariant(),
             VsixVersion  = vsixVersion,
         };
     }
