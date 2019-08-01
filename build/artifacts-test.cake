@@ -11,7 +11,7 @@ Task("Artifacts-DotnetTool-Test")
 
     foreach(var dockerImage in parameters.Docker.Images)
     {
-        var cmd = $"dotnet tool install GitVersion.Tool --version {version} --tool-path {rootPrefix}/gitversion --add-source {rootPrefix}/nuget | out-null; ";
+        var cmd = $"dotnet tool install GitVersion.Tool --version {version.ToLowerInvariant()} --tool-path {rootPrefix}/gitversion --add-source {rootPrefix}/nuget | out-null; ";
         cmd += $"{rootPrefix}/gitversion/dotnet-gitversion {rootPrefix}/repo /showvariable FullSemver;";
         
         DockerTestArtifact(dockerImage, parameters, cmd);
@@ -30,7 +30,7 @@ Task("Artifacts-MsBuild-Test")
     foreach(var dockerImage in parameters.Docker.Images)
     {
         var (os, distro, targetframework) = dockerImage;
-        var cmd = $"dotnet build {rootPrefix}/repo/test --source {rootPrefix}/nuget --source https://api.nuget.org/v3/index.json -p:GitVersionTaskVersion={version} -p:TargetFramework={targetframework} | out-null; ";
+        var cmd = $"dotnet build {rootPrefix}/repo/test --source {rootPrefix}/nuget --source https://api.nuget.org/v3/index.json -p:GitVersionTaskVersion={version.ToLowerInvariant()} -p:TargetFramework={targetframework} | out-null; ";
         cmd += $"dotnet {rootPrefix}/repo/test/build/corefx/{targetframework}/TestRepo.dll;";
         
         DockerTestArtifact(dockerImage, parameters, cmd);
