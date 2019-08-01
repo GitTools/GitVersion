@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net472;netcoreapp2.1</TargetFrameworks>
@@ -23,7 +23,6 @@
     <PackageReference Include="NUnit" Version="3.12.0" />
     <packagereference Include="NUnit3TestAdapter" Version="3.13.0"></packagereference>
     <PackageReference Include="Shouldly" Version="4.0.0-beta0002" />
-    <PackageReference Include="TestStack.ConventionTests" Version="3.0.1" />
     <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
   </ItemGroup>
   <ItemGroup>
