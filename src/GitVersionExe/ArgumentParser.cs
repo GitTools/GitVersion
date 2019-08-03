@@ -267,6 +267,12 @@ namespace GitVersion
                     continue;
                 }
 
+                if (name.IsSwitch("noNormalize"))
+                {
+                    arguments.NoNormalize = true;
+                    continue;
+                }
+
                 if (name.IsSwitch("ensureassemblyinfo"))
                 {
                     if (value.IsTrue())
