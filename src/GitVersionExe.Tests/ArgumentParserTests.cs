@@ -303,7 +303,7 @@ public class ArgumentParserTests
     [Test]
     public void Nonormilize_true_when_defined()
     {
-        var arguments = ArgumentParser.ParseArguments("-noNormalize");
+        var arguments = ArgumentParser.ParseArguments("-nonormalize");
         arguments.NoNormalize.ShouldBe(true);
     }
 

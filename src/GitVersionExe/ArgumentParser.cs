@@ -267,7 +267,7 @@ namespace GitVersion
                     continue;
                 }
 
-                if (name.IsSwitch("noNormalize"))
+                if (name.IsSwitch("nonormalize"))
                 {
                     arguments.NoNormalize = true;
                     continue;
