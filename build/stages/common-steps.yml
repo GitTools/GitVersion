@@ -3,7 +3,7 @@ steps:
   displayName: 'Use .NET Core sdk'
   inputs:
     packageType: sdk
-    version: 2.2.107
+    version: 2.2.401
     installationPath: $(Agent.ToolsDirectory)/dotnet
 - task: CmdLine@2
   condition: eq( variables['Agent.OS'], 'Darwin' )
