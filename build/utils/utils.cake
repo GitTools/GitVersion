@@ -1,4 +1,5 @@
 #load "./docker.cake"
+
 FilePath FindToolInPath(string tool)
 {
     var pathEnv = EnvironmentVariable("PATH");
@@ -35,7 +36,16 @@ void SetRubyGemPushApiKey(string apiKey)
 
 GitVersion GetVersion(BuildParameters parameters)
 {
-    var dllFile = GetFiles($"**/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion}/GitVersion.dll").FirstOrDefault();
+    var dllFilePath = $"./artifacts/*/bin/{parameters.CoreFxVersion}/tools/GitVersion.dll";
+    var dllFile = GetFiles(dllFilePath).FirstOrDefault();
+    if (dllFile == null)
+    {
+        Warning("Dogfood GitVersion to get information");
+        Build(parameters.Configuration);
+        dllFilePath = $"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion}/GitVersion.dll";
+        dllFile = GetFiles(dllFilePath).FirstOrDefault();
+    }
+
     var settings = new GitVersionSettings
     {
         OutputType = GitVersionOutput.Json,
@@ -65,10 +75,6 @@ void Build(string configuration)
             .SetVerbosity(Verbosity.Minimal)
             .WithTarget("Build")
             .WithProperty("POSIX", IsRunningOnUnix().ToString());
-
-        if (IsRunningOnWindows()) {
-            settings.ToolPath = GetFiles(VSWhereLatest() + "/MSBuild/**/Bin/MSBuild.exe").First();
-        }
     });
 }
 
@@ -129,22 +135,6 @@ void PublishILRepackedGitVersionExe(bool includeLibGit2Sharp, DirectoryPath targ
     CopyFileToDirectory("./src/GitVersionExe/bin/" + configuration + "/" + dotnetVersion + "/GitVersion.xml", outputDir);
 }
 
-void GetReleaseNotes(FilePath outputPath, DirectoryPath workDir, string repoToken)
-{
-    var toolPath = Context.Tools.Resolve("GitReleaseNotes.exe");
-
-    var arguments = new ProcessArgumentBuilder()
-                .Append(workDir.ToString())
-                .Append("/OutputFile")
-                .Append(outputPath.ToString())
-                .Append("/RepoToken")
-                .Append(repoToken);
-
-    StartProcess(toolPath, new ProcessSettings { Arguments = arguments, RedirectStandardOutput = true }, out var redirectedOutput);
-
-    Information(string.Join("\n", redirectedOutput));
-}
-
 void UpdateTaskVersion(FilePath taskJsonPath, string taskId, GitVersion gitVersion)
 {
     var taskJson = ParseJsonFromFile(taskJsonPath);
@@ -153,4 +143,24 @@ void UpdateTaskVersion(FilePath taskJsonPath, string taskId, GitVersion gitVersi
     taskJson["version"]["Minor"] = gitVersion.Minor.ToString();
     taskJson["version"]["Patch"] = gitVersion.Patch.ToString();
     SerializeJsonToPrettyFile(taskJsonPath, taskJson);
+}
+
+public static CakeTaskBuilder IsDependentOnWhen(this CakeTaskBuilder builder, string name, bool condition)
+{
+    if (builder == null)
+    {
+        throw new ArgumentNullException(nameof(builder));
+    }
+    if (condition)
+    {
+        builder.IsDependentOn(name);
+    }
+    return builder;
+}
+
+public static bool IsEnabled(ICakeContext context, string envVar, bool nullOrEmptyAsEnabled = true)
+{
+    var value = context.EnvironmentVariable(envVar);
+
+    return string.IsNullOrWhiteSpace(value) ? nullOrEmptyAsEnabled : bool.Parse(value);
 }

@@ -101,27 +101,27 @@ namespace GitVersion
         public static bool operator >(SemanticVersion v1, SemanticVersion v2)
         {
             if (v1 == null)
-                throw new ArgumentNullException("v1");
+                throw new ArgumentNullException(nameof(v1));
             if (v2 == null)
-                throw new ArgumentNullException("v2");
+                throw new ArgumentNullException(nameof(v2));
             return v1.CompareTo(v2) > 0;
         }
 
         public static bool operator >=(SemanticVersion v1, SemanticVersion v2)
         {
             if (v1 == null)
-                throw new ArgumentNullException("v1");
+                throw new ArgumentNullException(nameof(v1));
             if (v2 == null)
-                throw new ArgumentNullException("v2");
+                throw new ArgumentNullException(nameof(v2));
             return v1.CompareTo(v2) >= 0;
         }
 
         public static bool operator <=(SemanticVersion v1, SemanticVersion v2)
         {
             if (v1 == null)
-                throw new ArgumentNullException("v1");
+                throw new ArgumentNullException(nameof(v1));
             if (v2 == null)
-                throw new ArgumentNullException("v2");
+                throw new ArgumentNullException(nameof(v2));
 
             return v1.CompareTo(v2) <= 0;
         }
@@ -129,25 +129,24 @@ namespace GitVersion
         public static bool operator <(SemanticVersion v1, SemanticVersion v2)
         {
             if (v1 == null)
-                throw new ArgumentNullException("v1");
+                throw new ArgumentNullException(nameof(v1));
             if (v2 == null)
-                throw new ArgumentNullException("v2");
+                throw new ArgumentNullException(nameof(v2));
 
             return v1.CompareTo(v2) < 0;
         }
 
         public static SemanticVersion Parse(string version, string tagPrefixRegex)
         {
-            SemanticVersion semanticVersion;
-            if (!TryParse(version, tagPrefixRegex, out semanticVersion))
-                throw new WarningException(string.Format("Failed to parse {0} into a Semantic Version", version));
+            if (!TryParse(version, tagPrefixRegex, out var semanticVersion))
+                throw new WarningException($"Failed to parse {version} into a Semantic Version");
 
             return semanticVersion;
         }
 
         public static bool TryParse(string version, string tagPrefixRegex, out SemanticVersion semanticVersion)
         {
-            var match = Regex.Match(version, string.Format("^({0})?(?<version>.*)$", tagPrefixRegex));
+            var match = Regex.Match(version, $"^({tagPrefixRegex})?(?<version>.*)$");
 
             if (!match.Success)
             {
@@ -246,9 +245,7 @@ namespace GitVersion
 
             if (formatProvider != null)
             {
-                var formatter = formatProvider.GetFormat(GetType()) as ICustomFormatter;
-
-                if (formatter != null)
+                if (formatProvider.GetFormat(GetType()) is ICustomFormatter formatter)
                     return formatter.Format(format, this, formatProvider);
             }
 
@@ -257,33 +254,33 @@ namespace GitVersion
             if (format.StartsWith("lp", StringComparison.Ordinal))
             {
                 // handle the padding
-                return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag.ToString(format)) : ToString("j");
+                return PreReleaseTag.HasTag() ? $"{ToString("j")}-{PreReleaseTag.ToString(format)}" : ToString("j");
             }
 
             switch (format)
             {
                 case "j":
-                    return string.Format("{0}.{1}.{2}", Major, Minor, Patch);
+                    return $"{Major}.{Minor}.{Patch}";
                 case "s":
-                    return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag) : ToString("j");
+                    return PreReleaseTag.HasTag() ? $"{ToString("j")}-{PreReleaseTag}" : ToString("j");
                 case "t":
-                    return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag.ToString("t")) : ToString("j");
+                    return PreReleaseTag.HasTag() ? $"{ToString("j")}-{PreReleaseTag.ToString("t")}" : ToString("j");
                 case "l":
-                    return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag.ToString("l")) : ToString("j");
+                    return PreReleaseTag.HasTag() ? $"{ToString("j")}-{PreReleaseTag.ToString("l")}" : ToString("j");
                 case "f":
                     {
                         var buildMetadata = BuildMetaData.ToString();
 
-                        return !string.IsNullOrEmpty(buildMetadata) ? string.Format("{0}+{1}", ToString("s"), buildMetadata) : ToString("s");
+                        return !string.IsNullOrEmpty(buildMetadata) ? $"{ToString("s")}+{buildMetadata}" : ToString("s");
                     }
                 case "i":
                     {
                         var buildMetadata = BuildMetaData.ToString("f");
 
-                        return !string.IsNullOrEmpty(buildMetadata) ? string.Format("{0}+{1}", ToString("s"), buildMetadata) : ToString("s");
+                        return !string.IsNullOrEmpty(buildMetadata) ? $"{ToString("s")}+{buildMetadata}" : ToString("s");
                     }
                 default:
-                    throw new ArgumentException(string.Format("Unrecognised format '{0}'", format), "format");
+                    throw new ArgumentException($"Unrecognised format '{format}'", nameof(format));
             }
         }
 

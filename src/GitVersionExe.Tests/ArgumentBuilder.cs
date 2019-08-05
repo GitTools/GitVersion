@@ -28,21 +28,12 @@ public class ArgumentBuilder
     }
 
 
-    public string WorkingDirectory
-    {
-        get { return workingDirectory; }
-    }
+    public string WorkingDirectory => workingDirectory;
 
 
-    public string LogFile
-    {
-        get { return logFile; }
-    }
+    public string LogFile => logFile;
 
-    public bool IsTeamCity
-    {
-        get { return isTeamCity; }
-    }
+    public bool IsTeamCity => isTeamCity;
 
 
     public override string ToString()

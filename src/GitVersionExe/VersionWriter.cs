@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
     using System.Linq;
@@ -19,11 +19,9 @@
 
         private static string GetAssemblyVersion(Assembly assembly)
         {
-            var attribute = assembly
-                    .GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false)
-                    .FirstOrDefault() as AssemblyInformationalVersionAttribute;
-
-            if (attribute != null)
+            if (assembly
+                .GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false)
+                .FirstOrDefault() is AssemblyInformationalVersionAttribute attribute)
             {
                 return attribute.InformationalVersion;
             }

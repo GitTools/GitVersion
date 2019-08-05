@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+namespace GitVersion
 {
     using System;
 
@@ -11,17 +11,17 @@
             switch (scheme)
             {
                 case AssemblyVersioningScheme.Major:
-                    return string.Format("{0}.0.0.0", sv.Major);
+                    return $"{sv.Major}.0.0.0";
                 case AssemblyVersioningScheme.MajorMinor:
-                    return string.Format("{0}.{1}.0.0", sv.Major, sv.Minor);
+                    return $"{sv.Major}.{sv.Minor}.0.0";
                 case AssemblyVersioningScheme.MajorMinorPatch:
-                    return string.Format("{0}.{1}.{2}.0", sv.Major, sv.Minor, sv.Patch);
+                    return $"{sv.Major}.{sv.Minor}.{sv.Patch}.0";
                 case AssemblyVersioningScheme.MajorMinorPatchTag:
-                    return string.Format("{0}.{1}.{2}.{3}", sv.Major, sv.Minor, sv.Patch, sv.PreReleaseTag.Number ?? 0);
+                    return $"{sv.Major}.{sv.Minor}.{sv.Patch}.{sv.PreReleaseTag.Number ?? 0}";
                 case AssemblyVersioningScheme.None:
                     return null;
                 default:
-                    throw new ArgumentException(string.Format("Unexpected value ({0}).", scheme), "scheme");
+                    throw new ArgumentException($"Unexpected value ({scheme}).", nameof(scheme));
             }
         }
 
@@ -32,17 +32,17 @@
             switch (scheme)
             {
                 case AssemblyFileVersioningScheme.Major:
-                    return string.Format("{0}.0.0.0", sv.Major);
+                    return $"{sv.Major}.0.0.0";
                 case AssemblyFileVersioningScheme.MajorMinor:
-                    return string.Format("{0}.{1}.0.0", sv.Major, sv.Minor);
+                    return $"{sv.Major}.{sv.Minor}.0.0";
                 case AssemblyFileVersioningScheme.MajorMinorPatch:
-                    return string.Format("{0}.{1}.{2}.0", sv.Major, sv.Minor, sv.Patch);
+                    return $"{sv.Major}.{sv.Minor}.{sv.Patch}.0";
                 case AssemblyFileVersioningScheme.MajorMinorPatchTag:
-                    return string.Format("{0}.{1}.{2}.{3}", sv.Major, sv.Minor, sv.Patch, sv.PreReleaseTag.Number ?? 0);
+                    return $"{sv.Major}.{sv.Minor}.{sv.Patch}.{sv.PreReleaseTag.Number ?? 0}";
                 case AssemblyFileVersioningScheme.None:
                     return null;
                 default:
-                    throw new ArgumentException(string.Format("Unexpected value ({0}).", scheme), "scheme");
+                    throw new ArgumentException($"Unexpected value ({scheme}).", nameof(scheme));
             }
         }
     }

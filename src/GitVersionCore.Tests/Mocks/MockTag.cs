@@ -4,16 +4,10 @@ public class MockTag : Tag
 {
 
     public string NameEx;
-    public override string FriendlyName
-    {
-        get { return NameEx; }
-    }
+    public override string FriendlyName => NameEx;
 
     public GitObject TargetEx;
-    public override GitObject Target
-    {
-        get { return TargetEx; }
-    }
+    public override GitObject Target => TargetEx;
     public TagAnnotation AnnotationEx;
 
     public MockTag() { }
@@ -24,9 +18,5 @@ public class MockTag : Tag
         TargetEx = target;
     }
 
-    public override TagAnnotation Annotation
-    {
-        get { return AnnotationEx; }
-    }
-
+    public override TagAnnotation Annotation => AnnotationEx;
 }

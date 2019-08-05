@@ -1,5 +1,5 @@
 // This code originally copied from https://raw.githubusercontent.com/dotnet/sourcelink/master/src/Microsoft.Build.Tasks.Git/RuntimeIdMap.cs
-#if !NET461
+#if !NET472
 
 namespace GitVersionTask.MsBuild.LibGit2Sharp
 {

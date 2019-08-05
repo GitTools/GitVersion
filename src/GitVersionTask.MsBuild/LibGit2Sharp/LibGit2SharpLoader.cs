@@ -19,7 +19,7 @@ namespace GitVersionTask.MsBuild.LibGit2Sharp
         private LibGit2SharpLoader(string tasksAssembly)
         {
             taskDirectory = Path.GetDirectoryName(typeof(LibGit2SharpLoader).Assembly.Location);
-#if NET461
+#if NET472
             nullVersion = new Version(0, 0, 0, 0);
             loaderLog = new List<string>();
 
@@ -34,8 +34,7 @@ namespace GitVersionTask.MsBuild.LibGit2Sharp
 #endif
         }
 
-        
-#if NET461
+#if NET472
 
         private static Version nullVersion;
 

@@ -51,6 +51,6 @@ public class MockTagCollection : TagCollection, ICollection<Tag>
         return Tags.Remove(item);
     }
 
-    public int Count { get { return Tags.Count; } }
-    public bool IsReadOnly { get { return false; } }
+    public int Count => Tags.Count;
+    public bool IsReadOnly => false;
 }

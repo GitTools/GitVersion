@@ -47,7 +47,7 @@ namespace GitVersion.Configuration.Init
 
         protected override string GetPrompt(Config config, string workingDirectory)
         {
-            return string.Format(@"Which would you like to change?
+            return $@"Which would you like to change?
 
 0) Save changes and exit
 1) Exit without saving
@@ -56,14 +56,11 @@ namespace GitVersion.Configuration.Init
 
 3) Set next version number
 4) Branch specific configuration
-5) Branch Increment mode (per commit/after tag) (Current: {0})
-6) Assembly versioning scheme (Current: {1})
-7) Setup build scripts", config.VersioningMode, config.AssemblyVersioningScheme);
+5) Branch Increment mode (per commit/after tag) (Current: {config.VersioningMode})
+6) Assembly versioning scheme (Current: {config.AssemblyVersioningScheme})
+7) Setup build scripts";
         }
 
-        protected override string DefaultResult
-        {
-            get { return null; }
-        }
+        protected override string DefaultResult => null;
     }
 }

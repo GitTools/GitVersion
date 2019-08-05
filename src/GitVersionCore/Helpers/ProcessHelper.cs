@@ -1,4 +1,4 @@
-﻿namespace GitVersion.Helpers
+namespace GitVersion.Helpers
 {
     using System;
     using System.Collections.Generic;
@@ -34,14 +34,12 @@
                                 break;
 
                             case NativeErrorCode.FileNotFound:
-                                throw new FileNotFoundException(string.Format("The executable file '{0}' could not be found.",
-                                        startInfo.FileName),
+                                throw new FileNotFoundException($"The executable file '{startInfo.FileName}' could not be found.",
                                     startInfo.FileName,
                                     exception);
 
                             case NativeErrorCode.PathNotFound:
-                                throw new DirectoryNotFoundException(string.Format("The path to the executable file '{0}' could not be found.",
-                                        startInfo.FileName),
+                                throw new DirectoryNotFoundException($"The path to the executable file '{startInfo.FileName}' could not be found.",
                                     exception);
                         }
 
@@ -83,10 +81,10 @@
         // http://csharptest.net/532/using-processstart-to-capture-console-output/
         public static int Run(Action<string> output, Action<string> errorOutput, TextReader input, string exe, string args, string workingDirectory, params KeyValuePair<string, string>[] environmentalVariables)
         {
-            if (String.IsNullOrEmpty(exe))
-                throw new ArgumentNullException("exe");
+            if (string.IsNullOrEmpty(exe))
+                throw new ArgumentNullException(nameof(exe));
             if (output == null)
-                throw new ArgumentNullException("output");
+                throw new ArgumentNullException(nameof(output));
 
             workingDirectory = workingDirectory ?? Environment.CurrentDirectory;
 
@@ -186,7 +184,7 @@
                 {
                     oldMode = SetErrorMode((int)mode);
                 }
-                catch (EntryPointNotFoundException)
+                catch (Exception ex) when (ex is EntryPointNotFoundException || ex is DllNotFoundException)
                 {
                     oldMode = (int)mode;
                 }
@@ -199,7 +197,7 @@
                 {
                     SetErrorMode(oldMode);
                 }
-                catch (EntryPointNotFoundException)
+                catch (Exception ex) when (ex is EntryPointNotFoundException || ex is DllNotFoundException)
                 {
                     // NOTE: Mono doesn't support DllImport("kernel32.dll") and its SetErrorMode method, obviously. @asbjornu
                 }

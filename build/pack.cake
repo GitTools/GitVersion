@@ -15,14 +15,6 @@ Task("Clean")
     CleanDirectories(parameters.Paths.Directories.ToClean);
 });
 
-// This build task can be run to just build
-Task("DogfoodBuild")
-    .IsDependentOn("Clean")
-    .Does<BuildParameters>((parameters) =>
-{
-    Build(parameters.Configuration);
-});
-
 Task("Build")
     .IsDependentOn("Clean")
     .Does<BuildParameters>((parameters) =>
@@ -39,54 +31,59 @@ Task("Test")
     .IsDependentOn("Build")
     .Does<BuildParameters>((parameters) =>
 {
-    var framework = parameters.FullFxVersion;
+    var frameworks = new[] { parameters.CoreFxVersion, parameters.FullFxVersion };
 
-    // run using dotnet test
-    var projects = GetFiles("./src/**/*.Tests.csproj");
-    foreach(var project in projects)
+    foreach(var framework in frameworks)
     {
-        var settings = new DotNetCoreTestSettings
+        // run using dotnet test
+        var actions = new List<Action>();
+        var projects = GetFiles("./src/**/*.Tests.csproj");
+        foreach(var project in projects)
         {
-            Framework = framework,
-            NoBuild = true,
-            NoRestore = true,
-            Configuration = parameters.Configuration
-        };
+            actions.Add(() =>
+            {
+                var settings = new DotNetCoreTestSettings
+                {
+                    Framework = framework,
+                    NoBuild = true,
+                    NoRestore = true,
+                    Configuration = parameters.Configuration
+                };
 
-        var coverletSettings = new CoverletSettings {
-            CollectCoverage = true,
-            CoverletOutputFormat = CoverletOutputFormat.opencover,
-            CoverletOutputDirectory = parameters.Paths.Directories.TestCoverageOutput + "/",
-            CoverletOutputName = $"{project.GetFilenameWithoutExtension()}.coverage.xml"
-        };
+                var coverletSettings = new CoverletSettings {
+                    CollectCoverage = true,
+                    CoverletOutputFormat = CoverletOutputFormat.opencover,
+                    CoverletOutputDirectory = parameters.Paths.Directories.TestCoverageOutput + "/",
+                    CoverletOutputName = $"{project.GetFilenameWithoutExtension()}.{framework}.coverage.xml"
+                };
 
-        if (IsRunningOnUnix())
-        {
-            settings.Filter = "TestCategory!=NoMono";
+                if (IsRunningOnUnix())
+                {
+                    settings.Filter = "TestCategory!=NoMono";
+                }
+
+                DotNetCoreTest(project.FullPath, settings, coverletSettings);
+            });
         }
 
-        DotNetCoreTest(project.FullPath, settings, coverletSettings);
+        var options = new ParallelOptions
+        {
+            MaxDegreeOfParallelism = -1,
+            CancellationToken = default
+        };
+
+        Parallel.Invoke(options, actions.ToArray());
     }
-
-    // run using NUnit
-    var testAssemblies = GetFiles("./src/**/bin/" + parameters.Configuration + "/" + framework + "/*.Tests.dll");
-
-    var nunitSettings = new NUnit3Settings
-    {
-        Results = new List<NUnit3Result> { new NUnit3Result { FileName = parameters.Paths.Files.TestCoverageOutputFilePath } }
-    };
-
-    if(IsRunningOnUnix()) {
-        nunitSettings.Where = "cat!=NoMono";
-        nunitSettings.Agents = 1;
-    }
-
-    NUnit3(testAssemblies, nunitSettings);
+})
+.ReportError(exception =>
+{
+    var error = (exception as AggregateException).InnerExceptions[0];
+    Error(error.Dump());
 });
 
 #endregion
 
-#region Package
+#region Pack
 
 Task("Copy-Files")
     .IsDependentOn("Test")

@@ -77,16 +77,14 @@ namespace GitVersion
                 }
 
                 ConfigureLogging(arguments);
-#if NETDESKTOP
                 if (arguments.Diag)
                 {
                     Logger.WriteInfo("Dumping commit graph: ");
                     LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
                 }
-#endif
                 if (!Directory.Exists(arguments.TargetPath))
                 {
-                    Logger.WriteWarning(string.Format("The working directory '{0}' does not exist.", arguments.TargetPath));
+                    Logger.WriteWarning($"The working directory '{arguments.TargetPath}' does not exist.");
                 }
                 else
                 {
@@ -114,13 +112,13 @@ namespace GitVersion
             }
             catch (WarningException exception)
             {
-                var error = string.Format("An error occurred:\r\n{0}", exception.Message);
+                var error = $"An error occurred:\r\n{exception.Message}";
                 Logger.WriteWarning(error);
                 return 1;
             }
             catch (Exception exception)
             {
-                var error = string.Format("An unexpected error occurred:\r\n{0}", exception);
+                var error = $"An unexpected error occurred:\r\n{exception}";
                 Logger.WriteError(error);
 
                 if (arguments != null)
@@ -131,9 +129,7 @@ namespace GitVersion
 
                     try
                     {
-#if NETDESKTOP
                         LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
-#endif
                     }
                     catch (Exception dumpGraphException)
                     {
@@ -173,10 +169,7 @@ namespace GitVersion
                     var logFile = new FileInfo(logFileFullPath);
 
                     // NOTE: logFile.Directory will be null if the path is i.e. C:\logfile.log. @asbjornu
-                    if (logFile.Directory != null)
-                    {
-                        logFile.Directory.Create();
-                    }
+                    logFile.Directory?.Create();
 
                     using (logFile.CreateText())
                     {
@@ -197,12 +190,12 @@ namespace GitVersion
                 s => writeActions.ForEach(a => { if (arguments.Verbosity >= VerbosityLevel.Error) a(s); }));
 
             if (exception != null)
-                Logger.WriteError(string.Format("Failed to configure logging for '{0}': {1}", arguments.LogFilePath, exception.Message));
+                Logger.WriteError($"Failed to configure logging for '{arguments.LogFilePath}': {exception.Message}");
         }
 
         static void WriteLogEntry(Arguments arguments, string s)
         {
-            var contents = string.Format("{0:yyyy-MM-dd HH:mm:ss}\t\t{1}\r\n", DateTime.Now, s);
+            var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{s}\r\n";
             File.AppendAllText(arguments.LogFilePath, contents);
         }
 

@@ -71,8 +71,7 @@ public class RemoteRepositoryScenarios : TestBase
                 fixture.LocalRepositoryFixture.Repository.Head.Tip);
 
             Should.Throw<WarningException>(() => fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepositoryFixture.Repository, isForTrackedBranchOnly: false),
-                string.Format("It looks like the branch being examined is a detached Head pointing to commit '{0}'. Without a proper branch name GitVersion cannot determine the build version.",
-                fixture.LocalRepositoryFixture.Repository.Head.Tip.Id.ToString(7)));
+                $"It looks like the branch being examined is a detached Head pointing to commit '{fixture.LocalRepositoryFixture.Repository.Head.Tip.Id.ToString(7)}'. Without a proper branch name GitVersion cannot determine the build version.");
         }
     }
 

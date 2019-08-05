@@ -18,7 +18,7 @@ namespace GitVersionCore.Tests
             var s = string.Empty;
             Action<string> action = info => { s = info; };
             using (Logger.AddLoggersTemporarily(action, action, action, action))
-                Logger.WriteInfo(string.Format("{0}://{1}:{2}@workspace.visualstudio.com/DefaultCollection/_git/CAS",protocol,username,password));
+                Logger.WriteInfo($"{protocol}://{username}:{password}@workspace.visualstudio.com/DefaultCollection/_git/CAS");
 
             s.Contains(password).ShouldBe(false);
         }

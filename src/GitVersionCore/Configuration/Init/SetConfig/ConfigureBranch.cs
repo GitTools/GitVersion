@@ -36,16 +36,13 @@ namespace GitVersion.Configuration.Init.SetConfig
 
         protected override string GetPrompt(Config config, string workingDirectory)
         {
-            return string.Format(@"What would you like to change for '{0}':
+            return $@"What would you like to change for '{name}':
 
 0) Go Back
-1) Branch Pre-release tag (Current: {1})
-2) Branch Increment mode (per commit/after tag) (Current: {2})", name, branchConfig.Tag, branchConfig.VersioningMode);
+1) Branch Pre-release tag (Current: {branchConfig.Tag})
+2) Branch Increment mode (per commit/after tag) (Current: {branchConfig.VersioningMode})";
         }
 
-        protected override string DefaultResult
-        {
-            get { return "0"; }
-        }
+        protected override string DefaultResult => "0";
     }
 }

@@ -49,9 +49,8 @@ namespace GitVersion
             var availableVariables = VersionVariables.AvailableVariables;
             foreach (var variable in availableVariables)
             {
-                string value;
-                variables.TryGetValue(variable, out value);
-                builder.Append(string.Format("\t<?define {0}=\"{1}\"?>\n", variable, value));
+                variables.TryGetValue(variable, out var value);
+                builder.Append($"\t<?define {variable}=\"{value}\"?>\n");
             }
             builder.Append("</Include>\n");
             return builder.ToString();
@@ -59,7 +58,7 @@ namespace GitVersion
 
         public void Dispose()
         {
-            Logger.WriteInfo(string.Format("Done writing {0}", WIX_VERSION_FILE));
+            Logger.WriteInfo($"Done writing {WIX_VERSION_FILE}");
         }
     }
 }

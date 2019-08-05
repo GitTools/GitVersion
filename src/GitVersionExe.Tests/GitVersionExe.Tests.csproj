@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFrameworks>net472;netcoreapp2.1</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
@@ -10,14 +10,14 @@
     <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)"></PackageReference>
     <PackageReference Include="Mono.Cecil" Version="0.10.4"></PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="NSubstitute" Version="4.2.0"></PackageReference>
+    <PackageReference Include="NSubstitute" Version="4.2.1"></PackageReference>
     <PackageReference Include="coverlet.msbuild" Version="2.6.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="NUnit" Version="3.12.0"></PackageReference>
     <packagereference Include="NUnit3TestAdapter" Version="3.13.0"></packagereference>
-    <PackageReference Include="Shouldly" Version="3.0.2"></PackageReference>
+    <PackageReference Include="Shouldly" Version="4.0.0-beta0002"></PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />

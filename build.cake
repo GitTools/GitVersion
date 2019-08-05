@@ -1,5 +1,5 @@
 // Install modules
-#module nuget:?package=Cake.DotNetTool.Module&version=0.2.0
+#module nuget:?package=Cake.DotNetTool.Module&version=0.3.0
 
 // Install addins.
 #addin "nuget:?package=Cake.Codecov&version=0.6.0"
@@ -8,20 +8,18 @@
 #addin "nuget:?package=Cake.Gem&version=0.8.0"
 #addin "nuget:?package=Cake.Gitter&version=0.11.0"
 #addin "nuget:?package=Cake.Incubator&version=5.0.1"
-#addin "nuget:?package=Cake.Json&version=3.0.0"
+#addin "nuget:?package=Cake.Json&version=4.0.0"
 #addin "nuget:?package=Cake.Npm&version=0.17.0"
 #addin "nuget:?package=Cake.Tfx&version=0.9.0"
-#addin "nuget:?package=Cake.Gem&version=0.8.0"
 
-#addin "nuget:?package=Newtonsoft.Json&version=9.0.1"
+#addin "nuget:?package=Newtonsoft.Json&version=11.0.2"
 #addin "nuget:?package=xunit.assert&version=2.4.1"
 
 // Install tools.
-#tool "nuget:?package=vswhere&version=2.6.13-ga6d40ba5f4"
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
-#tool "nuget:?package=ILRepack&version=2.0.16"
+#tool "nuget:?package=ILRepack&version=2.0.17"
 #tool "nuget:?package=Codecov&version=1.5.0"
-#tool "nuget:?package=nuget.commandline&version=5.0.2"
+#tool "nuget:?package=nuget.commandline&version=5.1.0"
 
 // Install .NET Core Global tools.
 #tool "dotnet:?package=GitReleaseManager.Tool&version=0.8.0"
@@ -31,6 +29,7 @@
 #load "./build/utils/utils.cake"
 
 #load "./build/pack.cake"
+#load "./build/artifacts-test.cake"
 #load "./build/docker.cake"
 #load "./build/publish.cake"
 
@@ -40,15 +39,15 @@ using System.Diagnostics;
 // PARAMETERS
 //////////////////////////////////////////////////////////////////////
 bool publishingError = false;
-
+bool singleStageRun = true;
 ///////////////////////////////////////////////////////////////////////////////
 // SETUP / TEARDOWN
 ///////////////////////////////////////////////////////////////////////////////
 
 Setup<BuildParameters>(context =>
 {
-    var parameters = BuildParameters.GetParameters(Context);
-    Build(parameters.Configuration);
+    EnsureDirectoryExists("artifacts");
+    var parameters = BuildParameters.GetParameters(context);
     var gitVersion = GetVersion(parameters);
     parameters.Initialize(context, gitVersion);
 
@@ -153,7 +152,6 @@ Task("Publish")
     .IsDependentOn("Publish-Chocolatey")
     .IsDependentOn("Publish-Vsix")
     .IsDependentOn("Publish-Gem")
-    .IsDependentOn("Publish-DockerHub")
     .Finally(() =>
 {
     if (publishingError)
@@ -162,8 +160,26 @@ Task("Publish")
     }
 });
 
+Task("Publish-DockerHub")
+    .IsDependentOn("Docker-Publish")
+    .Finally(() =>
+{
+    if (publishingError)
+    {
+        throw new Exception("An error occurred during the publishing of GitVersion. All publishing tasks have been attempted.");
+    }
+});
+
+Task("Release")
+    .IsDependentOn("Release-Notes")
+    .Finally(() =>
+{
+});
+
 Task("Default")
-    .IsDependentOn("Publish");
+    .IsDependentOn("Publish")
+    .IsDependentOn("Publish-DockerHub")
+    .IsDependentOn("Release");
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION

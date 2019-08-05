@@ -48,7 +48,7 @@ namespace GitVersionExe.Tests
                 fixture.MakeACommit();
 
                 var gitVersionExecutionResults = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: null);
-                VersionVariables vars = gitVersionExecutionResults.OutputVariables;
+                var vars = gitVersionExecutionResults.OutputVariables;
 
                 GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " -updatewixversionfile");
 
@@ -79,8 +79,7 @@ namespace GitVersionExe.Tests
 
                 foreach (var variable in gitVersionVars)
                 {
-                    string value;
-                    vars.TryGetValue(variable, out value);
+                    vars.TryGetValue(variable, out string value);
                     //Make sure the variable is present in the Wix file
                     Assert.IsTrue(gitVersionVarsInWix.ContainsKey(variable));
                     //Make sure the values are equal

@@ -18,7 +18,7 @@ namespace GitVersion
         {
             return new[]
             {
-                string.Format("##vso[task.setvariable variable=GitVersion.{0};]{1}", name, value)
+                $"##vso[task.setvariable variable=GitVersion.{name};]{value}"
             };
         }
 
@@ -37,7 +37,7 @@ namespace GitVersion
             // For VSO, we'll get the Build Number and insert GitVersion variables where
             // specified
             var buildNumberEnv = Environment.GetEnvironmentVariable("BUILD_BUILDNUMBER");
-            if (String.IsNullOrWhiteSpace(buildNumberEnv))
+            if (string.IsNullOrWhiteSpace(buildNumberEnv))
                 return variables.FullSemVer;
 
             var newBuildNumber = variables.Aggregate(buildNumberEnv, ReplaceVariables);

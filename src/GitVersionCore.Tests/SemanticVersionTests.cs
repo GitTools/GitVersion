@@ -37,8 +37,7 @@ public class SemanticVersionTests : TestBase
     {
         fullFormattedVersionString = fullFormattedVersionString ?? versionString;
 
-        SemanticVersion version;
-        SemanticVersion.TryParse(versionString, tagPrefixRegex, out version).ShouldBe(true, versionString);
+        SemanticVersion.TryParse(versionString, tagPrefixRegex, out var version).ShouldBe(true, versionString);
         Assert.AreEqual(major, version.Major);
         Assert.AreEqual(minor, version.Minor);
         Assert.AreEqual(patch, version.Patch);
@@ -55,8 +54,7 @@ public class SemanticVersionTests : TestBase
     [TestCase("some-T-ext")]
     public void ValidateInvalidVersionParsing(string versionString)
     {
-        SemanticVersion version;
-        Assert.IsFalse(SemanticVersion.TryParse(versionString, null, out version), "TryParse Result");
+        Assert.IsFalse(SemanticVersion.TryParse(versionString, null, out _), "TryParse Result");
     }
 
     [Test]

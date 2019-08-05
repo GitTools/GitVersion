@@ -1,7 +1,9 @@
+singleStageRun = !IsEnabled(Context, "ENABLED_MULTI_STAGE_BUILD", false);
+
 Task("Docker-Build")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Docker can be built only on Windows or Linux agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Docker-Build works only on AzurePipeline.")
-    .IsDependentOn("Copy-Files")
+    .IsDependentOnWhen("Copy-Files", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
     foreach(var dockerImage in parameters.Docker.Images)
@@ -16,30 +18,23 @@ Task("Docker-Test")
     .IsDependentOn("Docker-Build")
     .Does<BuildParameters>((parameters) =>
 {
-    var currentDir = MakeAbsolute(Directory("."));
-    var containerDir = parameters.IsDockerForWindows ? "c:/repo" : "/repo";
-    var settings = new DockerContainerRunSettings
-    {
-        Rm = true,
-        Volume = new[] { $"{currentDir}:{containerDir}" }
-    };
+    var settings = GetDockerRunSettings(parameters);
 
     foreach(var dockerImage in parameters.Docker.Images)
     {
         var tags = GetDockerTags(dockerImage, parameters);
         foreach (var tag in tags)
         {
-            DockerTestRun(settings, parameters, tag, containerDir);
+            DockerTestRun(settings, parameters, tag, $"{parameters.DockerRootPrefix}/repo", "/showvariable", "FullSemver");
         }
     }
 });
 
-Task("Publish-DockerHub")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishDocker,     "Publish-DockerHub was disabled.")
-    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS,        "Publish-DockerHub works only on Windows and Linux agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-DockerHub works only on AzurePipeline.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-DockerHub works only for releases.")
-    .IsDependentOn("Docker-Build")
+Task("Docker-Publish")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishDocker,     "Docker-Publish was disabled.")
+    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS,        "Docker-Publish works only on Windows and Linux agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Docker-Publish works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Docker-Publish works only for releases.")
     .IsDependentOn("Docker-Test")
     .Does<BuildParameters>((parameters) =>
 {

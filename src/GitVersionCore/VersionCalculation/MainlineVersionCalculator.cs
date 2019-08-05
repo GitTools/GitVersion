@@ -41,7 +41,7 @@ namespace GitVersion.VersionCalculation
                 if (!context.CurrentBranch.IsSameBranch(mainline))
                 {
                     mergeBase = FindMergeBaseBeforeForwardMerge(context, baseVersion.BaseVersionSource, mainline, out mainlineTip);
-                    Logger.WriteInfo(string.Format("Current branch ({0}) was branch from {1}", context.CurrentBranch.FriendlyName, mergeBase));
+                    Logger.WriteInfo($"Current branch ({context.CurrentBranch.FriendlyName}) was branch from {mergeBase}");
                 }
 
                 var mainlineCommitLog = context.Repository.Commits.QueryBy(new CommitFilter
@@ -72,7 +72,7 @@ namespace GitVersion.VersionCalculation
                 if (context.CurrentBranch.FriendlyName != "master")
                 {
                     var branchIncrement = FindMessageIncrement(context, null, context.CurrentCommit, mergeBase, mainlineCommitLog);
-                    Logger.WriteInfo(string.Format("Performing {0} increment for current branch ", branchIncrement));
+                    Logger.WriteInfo($"Performing {branchIncrement} increment for current branch ");
 
                     mainlineVersion = mainlineVersion.IncrementVersion(branchIncrement);
                 }
@@ -96,8 +96,7 @@ namespace GitVersion.VersionCalculation
 
             // Finally increment for the branch
             mainlineVersion = mainlineVersion.IncrementVersion(findMessageIncrement);
-            Logger.WriteInfo(string.Format("Merge commit {0} incremented base versions {1}, now {2}",
-                mergeCommit.Sha, findMessageIncrement, mainlineVersion));
+            Logger.WriteInfo($"Merge commit {mergeCommit.Sha} incremented base versions {findMessageIncrement}, now {mainlineVersion}");
             return mainlineVersion;
         }
 
@@ -135,7 +134,7 @@ namespace GitVersion.VersionCalculation
             // prefer current branch, if it is a mainline branch
             if (possibleMainlineBranches.Any(context.CurrentBranch.IsSameBranch))
             {
-                Logger.WriteInfo(string.Format("Choosing {0} as mainline because it is the current branch", context.CurrentBranch.FriendlyName));
+                Logger.WriteInfo($"Choosing {context.CurrentBranch.FriendlyName} as mainline because it is the current branch");
                 return context.CurrentBranch;
             }
 
@@ -165,10 +164,7 @@ namespace GitVersion.VersionCalculation
             }
 
             var chosenMainline = possibleMainlineBranches[0];
-            Logger.WriteInfo(string.Format(
-                "Multiple mainlines ({0}) have the same merge base for the current branch, choosing {1} because we found that branch first...",
-                string.Join(", ", possibleMainlineBranches.Select(b => b.FriendlyName)),
-                chosenMainline.FriendlyName));
+            Logger.WriteInfo($"Multiple mainlines ({string.Join(", ", possibleMainlineBranches.Select(b => b.FriendlyName))}) have the same merge base for the current branch, choosing {chosenMainline.FriendlyName} because we found that branch first...");
             return chosenMainline;
         }
 
@@ -189,7 +185,7 @@ namespace GitVersion.VersionCalculation
             {
                 if (commit == mergeBase || commit.Parents.Contains(mergeBase))
                 {
-                    Logger.WriteInfo(string.Format("Found branch merge point; choosing {0} as effective mainline tip", commit));
+                    Logger.WriteInfo($"Found branch merge point; choosing {commit} as effective mainline tip");
                     return commit;
                 }
             }
@@ -225,10 +221,7 @@ namespace GitVersion.VersionCalculation
             if (mergeBase == context.CurrentCommit && !mainlineCommitLog.Contains(mergeBase))
             {
                 var mainlineTipPrevious = mainlineTip.Parents.First();
-                var message = string.Format(
-                    "Detected forward merge at {0}; rewinding mainline to previous commit {1}",
-                    mainlineTip,
-                    mainlineTipPrevious);
+                var message = $"Detected forward merge at {mainlineTip}; rewinding mainline to previous commit {mainlineTipPrevious}";
 
                 Logger.WriteInfo(message);
 
@@ -249,8 +242,7 @@ namespace GitVersion.VersionCalculation
                                                 directCommit
                                             }) ?? IncrementStrategyFinder.FindDefaultIncrementForBranch(context, mainline.FriendlyName);
                 mainlineVersion = mainlineVersion.IncrementVersion(directCommitIncrement);
-                Logger.WriteInfo(string.Format("Direct commit on master {0} incremented base versions {1}, now {2}",
-                    directCommit.Sha, directCommitIncrement, mainlineVersion));
+                Logger.WriteInfo($"Direct commit on master {directCommit.Sha} incremented base versions {directCommitIncrement}, now {mainlineVersion}");
             }
             return mainlineVersion;
         }

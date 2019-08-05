@@ -67,7 +67,7 @@ namespace GitVersion
             bool hasConfigInProjectRootDirectory = fileSystem.Exists(projectRootConfigFile);
             if (hasConfigInProjectRootDirectory && hasConfigInWorkingDirectory)
             {
-                throw new WarningException(string.Format("Ambiguous config file selection from '{0}' and '{1}'", workingConfigFile, projectRootConfigFile));
+                throw new WarningException($"Ambiguous config file selection from '{workingConfigFile}' and '{projectRootConfigFile}'");
             }
         }
 
@@ -86,7 +86,7 @@ namespace GitVersion
                 return;
             }
 
-            Logger.WriteWarning(string.Format("'{0}' is deprecated, use '{1}' instead.", deprecatedConfigFilePath, DefaultFileName));
+            Logger.WriteWarning($"'{deprecatedConfigFilePath}' is deprecated, use '{DefaultFileName}' instead.");
         }
 
     }

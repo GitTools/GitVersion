@@ -1,12 +1,8 @@
 namespace GitVersionCore.Tests.Init
 {
     using GitVersion;
-    using GitVersion.Configuration.Init;
-    using GitVersion.Configuration.Init.Wizard;
     using NUnit.Framework;
     using Shouldly;
-    using TestStack.ConventionTests;
-    using TestStack.ConventionTests.ConventionData;
 
     [TestFixture]
     public class InitScenarios : TestBase
@@ -28,13 +24,6 @@ namespace GitVersionCore.Tests.Init
             ConfigurationProvider.Init("c:\\proj", testFileSystem, testConsole, configFileLocator);
 
             testFileSystem.ReadAllText("c:\\proj\\GitVersion.yml").ShouldMatchApproved();
-        }
-
-        [Test]
-        public void DefaultResponsesDoNotThrow()
-        {
-            var steps = Types.InAssemblyOf<EditConfigStep>(t => t.IsSubclassOf(typeof(ConfigInitWizardStep)) && t.IsConcreteClass());
-            Convention.Is(new InitStepsDefaultResponsesDoNotThrow(), steps);
         }
     }
 }

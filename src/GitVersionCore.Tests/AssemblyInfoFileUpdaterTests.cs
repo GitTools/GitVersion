@@ -503,6 +503,6 @@ public class AssemblyInfoFileUpdaterTests
         var config = new TestEffectiveConfiguration(assemblyVersioningScheme: versioningScheme);
         var variables = VariableProvider.GetVariablesFor(version, config, false);
 
-        verify(fileSystem, variables);
+        verify?.Invoke(fileSystem, variables);
     }
 }

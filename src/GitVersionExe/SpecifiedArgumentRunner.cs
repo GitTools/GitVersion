@@ -4,15 +4,33 @@ namespace GitVersion
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.InteropServices;
 
     class SpecifiedArgumentRunner
     {
-        private static readonly bool runningOnMono = Type.GetType("Mono.Runtime") != null;
-        public static readonly string BuildTool = runningOnMono ? "xbuild" : @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
+        private static readonly bool runningOnUnix = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        public static readonly string BuildTool = GetMsBuildToolPath();
+
+        private static string GetMsBuildToolPath()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
+            }
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                return "/usr/bin/msbuild";
+            }
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                return "/usr/local/bin/msbuild";
+            }
+            throw new Exception("MsBuild not found");
+        }
 
         public static void Run(Arguments arguments, IFileSystem fileSystem)
         {
-            Logger.WriteInfo(string.Format("Running on {0}.", runningOnMono ? "Mono" : "Windows"));
+            Logger.WriteInfo($"Running on {(runningOnUnix ? "Unix" : "Windows")}.");
 
             var noFetch = arguments.NoFetch;
             var authentication = arguments.Authentication;
@@ -44,8 +62,7 @@ namespace GitVersion
                         break;
 
                     default:
-                        string part;
-                        if (!variables.TryGetValue(arguments.ShowVariable, out part))
+                        if (!variables.TryGetValue(arguments.ShowVariable, out var part))
                         {
                             throw new WarningException($"'{arguments.ShowVariable}' variable does not exist");
                         }
@@ -68,12 +85,9 @@ namespace GitVersion
                 {
                     assemblyInfoUpdater.Update();
                 }
-                var execRun = false;
-                var msbuildRun = false;
-#if NETDESKTOP
-                execRun = RunExecCommandIfNeeded(arguments, targetPath, variables);
-                msbuildRun = RunMsBuildIfNeeded(arguments, targetPath, variables);
-#endif
+
+                var execRun = RunExecCommandIfNeeded(arguments, targetPath, variables);
+                var msbuildRun = RunMsBuildIfNeeded(arguments, targetPath, variables);
 
                 if (!execRun && !msbuildRun)
                 {
@@ -88,42 +102,36 @@ namespace GitVersion
                 }
             }
         }
-#if NETDESKTOP
         static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
         {
-
-
             if (string.IsNullOrEmpty(args.Proj)) return false;
 
-            Logger.WriteInfo(string.Format("Launching build tool {0} \"{1}\" {2}", BuildTool, args.Proj, args.ProjArgs));
+            Logger.WriteInfo($"Launching build tool {BuildTool} \"{args.Proj}\" {args.ProjArgs}");
             var results = ProcessHelper.Run(
                 Logger.WriteInfo, Logger.WriteError,
-                null, BuildTool, string.Format("\"{0}\" {1}", args.Proj, args.ProjArgs), workingDirectory,
+                null, BuildTool, $"\"{args.Proj}\" {args.ProjArgs}", workingDirectory,
                 GetEnvironmentalVariables(variables));
 
             if (results != 0)
-                throw new WarningException(string.Format("{0} execution failed, non-zero return code", runningOnMono ? "XBuild" : "MSBuild"));
+                throw new WarningException("MSBuild execution failed, non-zero return code");
 
             return true;
         }
-
-
         static bool RunExecCommandIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
         {
             if (string.IsNullOrEmpty(args.Exec)) return false;
 
-            Logger.WriteInfo(string.Format("Launching {0} {1}", args.Exec, args.ExecArgs));
+            Logger.WriteInfo($"Launching {args.Exec} {args.ExecArgs}");
             var results = ProcessHelper.Run(
                 Logger.WriteInfo, Logger.WriteError,
                 null, args.Exec, args.ExecArgs, workingDirectory,
                 GetEnvironmentalVariables(variables));
 
             if (results != 0)
-                throw new WarningException(string.Format("Execution of {0} failed, non-zero return code", args.Exec));
+                throw new WarningException($"Execution of {args.Exec} failed, non-zero return code");
 
             return true;
         }
-#endif
         static KeyValuePair<string, string>[] GetEnvironmentalVariables(VersionVariables variables)
         {
             return variables

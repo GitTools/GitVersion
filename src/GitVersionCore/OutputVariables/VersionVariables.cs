@@ -124,13 +124,7 @@ namespace GitVersion
         public string FileName { get; set; }
 
         [ReflectionIgnore]
-        public string this[string variable]
-        {
-            get
-            {
-                return typeof(VersionVariables).GetProperty(variable).GetValue(this, null) as string;
-            }
-        }
+        public string this[string variable] => typeof(VersionVariables).GetProperty(variable)?.GetValue(this, null) as string;
 
         public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
         {

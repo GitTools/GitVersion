@@ -116,8 +116,7 @@ namespace GitVersion
                 return replaceRegex.Replace(inputString, replaceString);
             }
 
-            Regex assemblyRegex;
-            if (assemblyAttributeRegexes.TryGetValue(fileExtension, out assemblyRegex))
+            if (assemblyAttributeRegexes.TryGetValue(fileExtension, out var assemblyRegex))
             {
                 var assemblyMatches = assemblyRegex.Matches(inputString);
                 if (assemblyMatches.Count > 0)
@@ -182,7 +181,7 @@ namespace GitVersion
             {
                 var fileInfo = new FileInfo(fullPath);
 
-                if (!fileSystem.DirectoryExists(fileInfo.Directory.FullName))
+                if (fileInfo.Directory != null && !fileSystem.DirectoryExists(fileInfo.Directory.FullName))
                 {
                     fileSystem.CreateDirectory(fileInfo.Directory.FullName);
                 }

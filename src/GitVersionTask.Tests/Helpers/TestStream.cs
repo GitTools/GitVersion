@@ -63,14 +63,14 @@ public class TestStream : Stream
         return base.WriteAsync(buffer, offset, count, cancellationToken);
     }
 
-    public override bool CanRead { get { return underlying.CanRead; } }
-    public override bool CanSeek { get { return underlying.CanSeek; } }
-    public override bool CanWrite { get { return underlying.CanWrite; } }
-    public override long Length { get { return underlying.Length; } }
+    public override bool CanRead => underlying.CanRead;
+    public override bool CanSeek => underlying.CanSeek;
+    public override bool CanWrite => underlying.CanWrite;
+    public override long Length => underlying.Length;
 
     public override long Position
     {
-        get { return underlying.Position; }
-        set { underlying.Position = value; }
+        get => underlying.Position;
+        set => underlying.Position = value;
     }
 }

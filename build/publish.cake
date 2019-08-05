@@ -1,3 +1,5 @@
+singleStageRun = !IsEnabled(Context, "ENABLED_MULTI_STAGE_BUILD", false);
+
 #region Publish
 
 Task("Release-Notes")
@@ -33,7 +35,7 @@ Task("Publish-Coverage")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Coverage works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Coverage works only on AzurePipeline.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Coverage works only for releases.")
-    .IsDependentOn("Test")
+    .IsDependentOnWhen("Test", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
     var coverageFiles = GetFiles(parameters.Paths.Directories.TestCoverageOutput + "/*.coverage.xml");
@@ -55,8 +57,7 @@ Task("Publish-Coverage")
 Task("Publish-AppVeyor")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Publish-AppVeyor works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAppVeyor, "Publish-AppVeyor works only on AppVeyor.")
-    .IsDependentOn("Pack")
-    .IsDependentOn("Release-Notes")
+    .IsDependentOnWhen("Pack", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
     foreach(var artifact in parameters.Artifacts.All)
@@ -84,8 +85,7 @@ Task("Publish-AzurePipeline")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-AzurePipeline works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-AzurePipeline works only on AzurePipeline.")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsPullRequest,           "Publish-AzurePipeline works only for non-PR commits.")
-    .IsDependentOn("Pack")
-    .IsDependentOn("Release-Notes")
+    .IsDependentOnWhen("Pack", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
     foreach(var artifact in parameters.Artifacts.All)
@@ -117,7 +117,7 @@ Task("Publish-Vsix")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Vsix works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Vsix works only on AzurePipeline.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Vsix works only for releases.")
-    .IsDependentOn("Pack-Vsix")
+    .IsDependentOnWhen("Pack-Vsix", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
     var token = parameters.Credentials.Tfx.Token;
@@ -134,7 +134,14 @@ Task("Publish-Vsix")
         ArgumentCustomization = args => args.Render() + " --no-wait-validation"
     };
 
-    TfxExtensionPublish(parameters.Paths.Files.VsixOutputFilePath, settings);
+    NpmSet(new NpmSetSettings             { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, Key = "progress", Value = "false" });
+    NpmInstall(new NpmInstallSettings     { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent });
+
+    var vsixFilePath = parameters.Paths.Files.VsixOutputFilePath;
+    if (!FileExists(vsixFilePath)) {
+        vsixFilePath = GetFiles(parameters.Paths.Directories.BuildArtifact + "/*.vsix").First();
+    }
+    TfxExtensionPublish(vsixFilePath, settings);
 })
 .OnError(exception =>
 {
@@ -148,7 +155,7 @@ Task("Publish-Gem")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Gem works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Gem works only on AzurePipeline.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Gem works only for releases.")
-    .IsDependentOn("Pack-Gem")
+    .IsDependentOnWhen("Pack-Gem", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
     var apiKey = parameters.Credentials.RubyGem.ApiKey;
@@ -176,7 +183,7 @@ Task("Publish-NuGet")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-NuGet works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-NuGet works only on AzurePipeline.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-NuGet works only for releases.")
-    .IsDependentOn("Pack-NuGet")
+    .IsDependentOnWhen("Pack-NuGet", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
     var apiKey = parameters.Credentials.Nuget.ApiKey;
@@ -214,7 +221,7 @@ Task("Publish-Chocolatey")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Chocolatey works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Chocolatey works only on AzurePipeline.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Chocolatey works only for releases.")
-    .IsDependentOn("Pack-Chocolatey")
+    .IsDependentOnWhen("Pack-Chocolatey", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
     var apiKey = parameters.Credentials.Chocolatey.ApiKey;

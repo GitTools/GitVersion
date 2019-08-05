@@ -12,7 +12,7 @@
             {
                 if (!File.Exists(envRunDatabasePath))
                 {
-                    Logger.WriteError(string.Format("The database file of EnvRun.exe was not found at {0}.", envRunDatabasePath));
+                    Logger.WriteError($"The database file of EnvRun.exe was not found at {envRunDatabasePath}.");
                     return false;
                 }
 
@@ -31,7 +31,7 @@
         {
             return new[]
             {
-                string.Format("@@envrun[set name='GitVersion_{0}' value='{1}']", name, value)
+                $"@@envrun[set name='GitVersion_{name}' value='{value}']"
             };
         }
 

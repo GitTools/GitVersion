@@ -28,11 +28,7 @@
 
         public override string ToString()
         {
-            return string.Format(
-                "{0}: {1} with commit count source {2} (Incremented: {3})",
-                Source, SemanticVersion.ToString("f"),
-                BaseVersionSource == null ? "External Source" : BaseVersionSource.Sha,
-                ShouldIncrement ? BaseVersionCalculator.MaybeIncrement(_context, this).ToString("t") : "None");
+            return $"{Source}: {SemanticVersion.ToString("f")} with commit count source {(BaseVersionSource == null ? "External Source" : BaseVersionSource.Sha)} (Incremented: {(ShouldIncrement ? BaseVersionCalculator.MaybeIncrement(_context, this).ToString("t") : "None")})";
         }
     }
 }

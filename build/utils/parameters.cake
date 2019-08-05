@@ -9,7 +9,10 @@ public class BuildParameters
     public string Configuration { get; private set; }
 
     public string CoreFxVersion { get; private set; } = "netcoreapp2.1";
-    public string FullFxVersion { get; private set; } = "net461";
+    public string FullFxVersion { get; private set; } = "net472";
+
+    public string DockerDistro { get; private set; }
+    public string DockerDotnetVersion { get; private set; }
 
     public bool EnabledUnitTests { get; private set; }
     public bool EnabledPublishGem { get; private set; }
@@ -25,6 +28,7 @@ public class BuildParameters
 
     public bool IsDockerForWindows { get; private set; }
     public bool IsDockerForLinux { get; private set; }
+    public string DockerRootPrefix { get; private set; }
 
     public bool IsLocalBuild { get; private set; }
     public bool IsRunningOnAppVeyor { get; private set; }
@@ -61,13 +65,17 @@ public class BuildParameters
         var target = context.Argument("target", "Default");
         var buildSystem = context.BuildSystem();
 
-        var dockerCliPlatform = buildSystem.IsRunningOnAzurePipelinesHosted
-                                && context.Environment.Platform.Family != PlatformFamily.OSX
+        var dockerCliPlatform = (buildSystem.IsRunningOnAzurePipelinesHosted
+                                && context.Environment.Platform.Family != PlatformFamily.OSX)
+                                || buildSystem.IsLocalBuild
                                 ? GetDockerCliPlatform(context) : "";
 
         return new BuildParameters {
             Target        = target,
             Configuration = context.Argument("configuration", "Release"),
+
+            DockerDistro        = context.Argument("docker_distro", ""),
+            DockerDotnetVersion = context.Argument("docker_dotnetversion", ""),
 
             EnabledUnitTests          = IsEnabled(context, "ENABLED_UNIT_TESTS"),
             EnabledPublishGem         = IsEnabled(context, "ENABLED_PUBLISH_GEM"),
@@ -88,6 +96,7 @@ public class BuildParameters
 
             IsDockerForWindows = dockerCliPlatform == "windows",
             IsDockerForLinux   = dockerCliPlatform == "linux",
+            DockerRootPrefix   = dockerCliPlatform == "windows" ? "c:" : "",
 
             IsPullRequest = buildSystem.IsPullRequest,
             IsMainRepo    = IsOnMainRepo(context),
@@ -102,8 +111,7 @@ public class BuildParameters
 
         Paths = BuildPaths.GetPaths(context, this, Configuration, Version);
 
-        var dockerFiles = context.GetFiles("./src/**/Dockerfile").ToArray();
-        Docker = DockerImages.GetDockerImages(this, dockerFiles);
+        Docker = DockerImages.GetDockerImages(context, this);
 
         Packages = BuildPackages.GetPackages(
             Paths.Directories.NugetRoot,
@@ -215,12 +223,5 @@ public class BuildParameters
         context.StartProcess(gitPath, new ProcessSettings { Arguments = "tag --points-at " + sha.Single(), RedirectStandardOutput = true }, out var redirectedOutput);
 
         return redirectedOutput.Any();
-    }
-
-    private static bool IsEnabled(ICakeContext context, string envVar, bool nullOrEmptyAsEnabled = true)
-    {
-        var value = context.EnvironmentVariable(envVar);
-
-        return string.IsNullOrWhiteSpace(value) ? nullOrEmptyAsEnabled : bool.Parse(value);
     }
 }

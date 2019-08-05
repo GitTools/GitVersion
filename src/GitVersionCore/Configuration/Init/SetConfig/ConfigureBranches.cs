@@ -14,8 +14,7 @@ namespace GitVersion.Configuration.Init.SetConfig
 
         protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
-            int parsed;
-            if (int.TryParse(result, out parsed))
+            if (int.TryParse(result, out var parsed))
             {
                 if (parsed == 0)
                 {
@@ -47,7 +46,7 @@ namespace GitVersion.Configuration.Init.SetConfig
             return @"Which branch would you like to configure:
 
 0) Go Back
-" + string.Join("\r\n", OrderedBranches(config).Select((c, i) => string.Format("{0}) {1}", i + 1, c.Key)));
+" + string.Join("\r\n", OrderedBranches(config).Select((c, i) => $"{i + 1}) {c.Key}"));
         }
 
         static IOrderedEnumerable<KeyValuePair<string, BranchConfig>> OrderedBranches(Config config)
@@ -61,9 +60,6 @@ namespace GitVersion.Configuration.Init.SetConfig
             return config.Branches.Union(defaultConfigurationBranches).OrderBy(b => b.Key);
         }
 
-        protected override string DefaultResult
-        {
-            get { return "0"; }
-        }
+        protected override string DefaultResult => "0";
     }
 }

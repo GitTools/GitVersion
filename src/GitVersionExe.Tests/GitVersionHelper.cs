@@ -29,10 +29,10 @@ public static class GitVersionHelper
 
     static ExecutionResults ExecuteIn(ArgumentBuilder arguments)
     {
-        var gitVersion = Path.Combine(PathHelper.GetCurrentDirectory(), "GitVersion.exe");
+        var executable = PathHelper.GetExecutable();
         var output = new StringBuilder();
 
-        Console.WriteLine("Executing: {0} {1}", gitVersion, arguments);
+        Console.WriteLine("Executing: {0} {1}", executable, arguments);
         Console.WriteLine();
         var environmentalVariables =
             new[]
@@ -47,9 +47,11 @@ public static class GitVersionHelper
 
         try
         {
+            var args = PathHelper.GetExecutableArgs(arguments.ToString());
+
             exitCode = ProcessHelper.Run(
                 s => output.AppendLine(s), s => output.AppendLine(s), null,
-                gitVersion, arguments.ToString(), arguments.WorkingDirectory,
+                executable, args, arguments.WorkingDirectory,
                 environmentalVariables);
         }
         catch (Exception exception)

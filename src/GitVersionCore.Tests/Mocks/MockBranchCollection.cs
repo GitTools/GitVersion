@@ -45,12 +45,6 @@ public class MockBranchCollection : BranchCollection, ICollection<Branch>
         return Branches.Remove(item);
     }
 
-    public int Count
-    {
-        get
-        {
-            return Branches.Count;
-        }
-    }
-    public bool IsReadOnly { get { return false; } }
+    public int Count => Branches.Count;
+    public bool IsReadOnly => false;
 }

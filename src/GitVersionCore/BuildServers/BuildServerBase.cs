@@ -25,9 +25,9 @@
                 return;
             }
 
-            writer(string.Format("Executing GenerateSetVersionMessage for '{0}'.", GetType().Name));
+            writer($"Executing GenerateSetVersionMessage for '{GetType().Name}'.");
             writer(GenerateSetVersionMessage(variables));
-            writer(string.Format("Executing GenerateBuildLogOutput for '{0}'.", GetType().Name));
+            writer($"Executing GenerateBuildLogOutput for '{GetType().Name}'.");
             foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(this, variables))
             {
                 writer(buildParameter);

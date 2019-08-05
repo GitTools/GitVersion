@@ -24,10 +24,7 @@ namespace GitVersion
         [YamlMember(Alias = "branches")]
         public Dictionary<string, LegacyBranchConfig> Branches
         {
-            get
-            {
-                return branches;
-            }
+            get => branches;
             set
             {
                 value.ToList().ForEach(_ =>

@@ -95,7 +95,7 @@ namespace GitVersion
             var match = Regex.Match(preReleaseTag, @"(?<name>.*?)\.?(?<number>\d+)?$");
             if (!match.Success)
             {
-                Logger.WriteWarning(string.Format("Unable to successfully parse semver tag {0}", preReleaseTag));
+                Logger.WriteWarning($"Unable to successfully parse semver tag {preReleaseTag}");
                 return new SemanticVersionPreReleaseTag();
             }
 
@@ -141,9 +141,7 @@ namespace GitVersion
         {
             if (formatProvider != null)
             {
-                var formatter = formatProvider.GetFormat(GetType()) as ICustomFormatter;
-
-                if (formatter != null)
+                if (formatProvider.GetFormat(GetType()) is ICustomFormatter formatter)
                     return formatter.Format(format, this, formatProvider);
             }
 
@@ -158,8 +156,7 @@ namespace GitVersion
                 if (format.Length > 2)
                 {
                     // try to parse
-                    int p;
-                    if (int.TryParse(format.Substring(2), out p))
+                    if (int.TryParse(format.Substring(2), out var p))
                     {
                         padding = p;
                     }
@@ -172,11 +169,11 @@ namespace GitVersion
             switch (format)
             {
                 case "t":
-                    return Number.HasValue ? string.Format("{0}.{1}", Name, Number) : Name;
+                    return Number.HasValue ? $"{Name}.{Number}" : Name;
                 case "l":
                     return Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString()) : FormatLegacy(GetLegacyName());
                 default:
-                    throw new ArgumentException("Unknown format", "format");
+                    throw new ArgumentException("Unknown format", nameof(format));
             }
         }
 
@@ -187,9 +184,9 @@ namespace GitVersion
                 number = "-" + number;
 
             if (tag.Length + number.Length > 20)
-                return string.Format("{0}{1}", tag.Substring(0, 20 - number.Length), number);
+                return $"{tag.Substring(0, 20 - number.Length)}{number}";
 
-            return string.Format("{0}{1}", tag, number);
+            return $"{tag}{number}";
         }
 
         string GetLegacyName()

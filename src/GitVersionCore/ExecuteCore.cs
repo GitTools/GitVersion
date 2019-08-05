@@ -42,12 +42,12 @@ namespace GitVersion
             //    },
             //    Directory = workingDirectory
             //});
-            Logger.WriteInfo(string.Format("Project root is: {0}", projectRoot));
-            Logger.WriteInfo(string.Format("DotGit directory is: {0}", dotGitDirectory));
+            Logger.WriteInfo($"Project root is: {projectRoot}");
+            Logger.WriteInfo($"DotGit directory is: {dotGitDirectory}");
             if (string.IsNullOrEmpty(dotGitDirectory) || string.IsNullOrEmpty(projectRoot))
             {
                 // TODO Link to wiki article
-                throw new Exception(string.Format("Failed to prepare or find the .git directory in path '{0}'.", workingDirectory));
+                throw new Exception($"Failed to prepare or find the .git directory in path '{workingDirectory}'.");
             }
 
             var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, overrideConfig, configFileLocator);
@@ -64,7 +64,7 @@ namespace GitVersion
                     }
                     catch (AggregateException e)
                     {
-                        Logger.WriteWarning(string.Format("One or more exceptions during cache write:{0}{1}", Environment.NewLine, e));
+                        Logger.WriteWarning($"One or more exceptions during cache write:{Environment.NewLine}{e}");
                     }
                 }
             }

@@ -34,9 +34,6 @@ GitFlow allows you to have new development happening on the 'develop' branch, pa
 Do you need to maintain multiple versions of your application simultaneously in production? (y/n)";
         }
 
-        protected override string DefaultResult
-        {
-            get { return null; }
-        }
+        protected override string DefaultResult => null;
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace GitVersion.Helpers
+namespace GitVersion.Helpers
 {
     using System.Collections.Generic;
     using System.IO;
@@ -82,7 +82,7 @@
                                       select encoding).ToList();
 
             var encodingWithLongestPreamble = EncodingsWithPreambles.FirstOrDefault();
-            MaxPreambleLength = encodingWithLongestPreamble == null ? 0 : encodingWithLongestPreamble.GetPreamble().Length;
+            MaxPreambleLength = encodingWithLongestPreamble?.GetPreamble().Length ?? 0;
         }
 
         /// <summary>

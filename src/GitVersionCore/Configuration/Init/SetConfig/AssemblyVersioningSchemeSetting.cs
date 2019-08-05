@@ -55,9 +55,6 @@ namespace GitVersion.Configuration.Init.SetConfig
 
         }
 
-        protected override string DefaultResult
-        {
-            get { return "0"; }
-        }
+        protected override string DefaultResult => "0";
     }
 }

@@ -47,9 +47,7 @@ public class MockCommitLog : ICommitLog, ICollection<Commit>
         return Commits.Remove(item);
     }
 
-    public int Count { get { return Commits.Count; } }
-    public bool IsReadOnly
-    {
-        get { return false; }
-    }
+    public int Count => Commits.Count;
+
+    public bool IsReadOnly => false;
 }

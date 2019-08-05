@@ -26,7 +26,7 @@ void DockerStdinLogin(string username, string password)
 void DockerBuild(DockerImage dockerImage, BuildParameters parameters)
 {
     var (os, distro, targetframework) = dockerImage;
-    var workDir = DirectoryPath.FromString($"./src/Docker/{targetframework}/{os}/{distro}");
+    var workDir = DirectoryPath.FromString($"./src/Docker");
 
     var sourceDir = targetframework.StartsWith("netcoreapp")
         ? parameters.Paths.Directories.ArtifactsBinCoreFx.Combine("tools")
@@ -41,7 +41,13 @@ void DockerBuild(DockerImage dockerImage, BuildParameters parameters)
         Rm = true,
         Tag = tags,
         File = $"{workDir}/Dockerfile",
-        BuildArg = new []{ $"contentFolder=/content" },
+        BuildArg = new []
+        {
+            $"contentFolder=/content",
+            "DOTNET_VARIANT=runtime",
+            $"DOTNET_VERSION={targetframework.Replace("netcoreapp", "")}",
+            $"DISTRO={distro}"
+        },
         // Pull = true,
         // Platform = platform // TODO this one is not supported on docker versions < 18.02
     };
@@ -83,11 +89,36 @@ string DockerRunImage(DockerContainerRunSettings settings, string image, string 
 void DockerTestRun(DockerContainerRunSettings settings, BuildParameters parameters, string image, string command, params string[] args)
 {
     Information($"Testing image: {image}");
-    var output = DockerRunImage(settings, image, command, args);
+    var output = DockerRun(settings, image, command, args);
 
-    var version = DeserializeJson<GitVersion>(output);
+    Assert.Equal(parameters.Version.GitVersion.FullSemVer, output);
+}
 
-    Assert.Equal(parameters.Version.GitVersion.FullSemVer, version.FullSemVer);
+void DockerTestArtifact(DockerImage dockerImage, BuildParameters parameters, string cmd)
+{
+    var settings = GetDockerRunSettings(parameters);
+    var (os, distro, targetframework) = dockerImage;
+    var tag = $"gittools/build-images:{distro}-sdk-{targetframework.Replace("netcoreapp", "")}";
+    Information("Docker tag: {0}", tag);
+    Information("Docker cmd: {0}", cmd);
+
+    DockerTestRun(settings, parameters, tag, "pwsh", cmd);
+}
+
+DockerContainerRunSettings GetDockerRunSettings(BuildParameters parameters)
+{
+    var currentDir = MakeAbsolute(Directory("."));
+    var settings = new DockerContainerRunSettings
+    {
+        Rm = true,
+        Volume = new[]
+        {
+            $"{currentDir}:{parameters.DockerRootPrefix}/repo",
+            $"{currentDir}/artifacts/v{parameters.Version.SemVersion}/nuget:{parameters.DockerRootPrefix}/nuget"
+        }
+    };
+
+    return settings;
 }
 
 string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
@@ -99,7 +130,7 @@ string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
         $"{name}:{parameters.Version.SemVersion}-{os}-{distro}-{targetframework}",
     };
 
-    if (distro == "debian" && targetframework == parameters.CoreFxVersion || distro == "nano") {
+    if (distro == "debian-9" && targetframework == parameters.CoreFxVersion || distro == "nanoserver-1809") {
         tags.AddRange(new[] {
             $"{name}:{parameters.Version.Version}-{os}",
             $"{name}:{parameters.Version.SemVersion}-{os}",

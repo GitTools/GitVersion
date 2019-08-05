@@ -22,10 +22,7 @@ public class MockQueryableCommitLog : IQueryableCommitLog
         return GetEnumerator();
     }
 
-    public CommitSortStrategies SortedBy
-    {
-        get { throw new NotImplementedException(); }
-    }
+    public CommitSortStrategies SortedBy => throw new NotImplementedException();
 
     public ICommitLog QueryBy(CommitFilter filter)
     {

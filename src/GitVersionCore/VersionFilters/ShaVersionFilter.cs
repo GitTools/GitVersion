@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
@@ -11,13 +11,12 @@ namespace GitVersion.VersionFilters
 
         public ShaVersionFilter(IEnumerable<string> shas)
         {
-            if (shas == null) throw new ArgumentNullException("shas");
-            this.shas = shas;
+            this.shas = shas ?? throw new ArgumentNullException(nameof(shas));
         }
 
         public bool Exclude(BaseVersion version, out string reason)
         {
-            if (version == null) throw new ArgumentNullException("version");
+            if (version == null) throw new ArgumentNullException(nameof(version));
 
             reason = null;
 

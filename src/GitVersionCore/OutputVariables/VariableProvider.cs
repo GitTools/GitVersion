@@ -110,7 +110,7 @@ namespace GitVersion
                 }
                 catch (ArgumentException formex)
                 {
-                    throw new WarningException(string.Format("Unable to format {0}.  Check your format string: {1}", formatVarName, formex.Message));
+                    throw new WarningException($"Unable to format {formatVarName}.  Check your format string: {formex.Message}");
                 }
             }
 

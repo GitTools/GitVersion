@@ -19,9 +19,8 @@ public class TestFileSystem : IFileSystem
                 throw new IOException("File already exists");
         }
 
-        byte[] source;
-        if (!fileSystem.TryGetValue(from, out source))
-            throw new FileNotFoundException(string.Format("The source file '{0}' was not found", from), from);
+        if (!fileSystem.TryGetValue(from, out var source))
+            throw new FileNotFoundException($"The source file '{@from}' was not found", from);
 
         fileSystem.Add(to, source);
     }
@@ -44,9 +43,8 @@ public class TestFileSystem : IFileSystem
 
     public string ReadAllText(string path)
     {
-        byte[] content;
-        if (!fileSystem.TryGetValue(path, out content))
-            throw new FileNotFoundException(string.Format("The file '{0}' was not found", path), path);
+        if (!fileSystem.TryGetValue(path, out var content))
+            throw new FileNotFoundException($"The file '{path}' was not found", path);
 
         var encoding = EncodingHelper.DetectEncoding(content) ?? Encoding.UTF8;
         return encoding.GetString(content);

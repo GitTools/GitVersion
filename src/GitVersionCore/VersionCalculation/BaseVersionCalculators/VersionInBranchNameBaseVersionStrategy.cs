@@ -41,8 +41,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
             var branchParts = branchName.Split('/', '-');
             foreach (var part in branchParts)
             {
-                SemanticVersion semanticVersion;
-                if (SemanticVersion.TryParse(part, tagPrefixRegex, out semanticVersion))
+                if (SemanticVersion.TryParse(part, tagPrefixRegex, out var semanticVersion))
                 {
                     return Tuple.Create(part, semanticVersion);
                 }
