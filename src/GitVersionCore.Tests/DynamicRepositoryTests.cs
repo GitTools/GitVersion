@@ -17,7 +17,12 @@ public class DynamicRepositoryTests : TestBase
         workDirectory = Path.Combine(Path.GetTempPath(), "GV");
 
         // Clean directory upfront, some build agents are having troubles
-        Directory.Delete(workDirectory, true);
+        if (Directory.Exists(workDirectory))
+        {
+            Directory.Delete(workDirectory, true);
+        }
+
+        Directory.CreateDirectory(workDirectory);
     }
 
 
