@@ -14,7 +14,7 @@ public class DynamicRepositoryTests : TestBase
     public void CreateTemporaryRepository()
     {
         // Note: we can't use guid because paths will be too long
-        workDirectory = Path.Combine(Path.GetTempPath(), "DynRepoTests");
+        workDirectory = Path.Combine(Path.GetTempPath(), "GV");
     }
 
 
@@ -35,8 +35,8 @@ public class DynamicRepositoryTests : TestBase
     public void FindsVersionInDynamicRepo(string name, string url, string targetBranch, string commitId, string expectedFullSemVer)
     {
         var root = Path.Combine(workDirectory, name);
-        var dynamicDirectory = Path.Combine(root, "dynamic");
-        var workingDirectory = Path.Combine(root, "working");
+        var dynamicDirectory = Path.Combine(root, "D"); // dynamic, keeping directory as short as possible
+        var workingDirectory = Path.Combine(root, "W"); // working, keeping directory as short as possible
 
         //// Clear upfront
         //if (Directory.Exists(root))
