@@ -40,19 +40,13 @@ public class DynamicRepositoryTests : TestBase
     [TestCase("Ctl_develop", "https://github.com/Catel/Catel", "develop", "0e2b6c125a730d2fa5e24394ef64abe62c98e9e9", "5.12.0-alpha.188")]
     [TestCase("Ctl_develop", "https://github.com/Catel/Catel", "develop", "71e71359f37581784e18c94e7a45eee72cbeeb30", "5.12.0-alpha.192")]
     [TestCase("Ctl_master", "https://github.com/Catel/Catel", "master", "f5de8964c35180a5f8607f5954007d5828aa849f", "5.10.0")]
-    [TestCase("CtlA_develop", "https://github.com/Catel/Catel.Analyzers", "develop", "0e2b6c125a730d2fa5e24394ef64abe62c98e9e9", "5.12.0-alpha.188")]
-    [TestCase("CtlA_develop", "https://github.com/Catel/Catel.Analyzers", "develop", "be0aa94642d6ff1df6209e2180a7fe0de9aab384", "5.12.0-alpha.192")]
+    [TestCase("CtlA_develop", "https://github.com/Catel/Catel.Analyzers", "develop", "0e2b6c125a730d2fa5e24394ef64abe62c98e9e9", "0.1.0-alpha.21")]
+    [TestCase("CtlA_develop", "https://github.com/Catel/Catel.Analyzers", "develop", "be0aa94642d6ff1df6209e2180a7fe0de9aab384", "0.1.0-alpha.23")]
     public void FindsVersionInDynamicRepo(string name, string url, string targetBranch, string commitId, string expectedFullSemVer)
     {
         var root = Path.Combine(workDirectory, name);
         var dynamicDirectory = Path.Combine(root, "D"); // dynamic, keeping directory as short as possible
         var workingDirectory = Path.Combine(root, "W"); // working, keeping directory as short as possible
-
-        //// Clear upfront
-        //if (Directory.Exists(root))
-        //{
-        //    Directory.Delete(root, true);
-        //}
 
         Directory.CreateDirectory(dynamicDirectory);
         Directory.CreateDirectory(workingDirectory);
