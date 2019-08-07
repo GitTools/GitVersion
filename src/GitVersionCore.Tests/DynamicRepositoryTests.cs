@@ -15,13 +15,16 @@ public class DynamicRepositoryTests : TestBase
     {
         // Note: we can't use guid because paths will be too long
         workDirectory = Path.Combine(Path.GetTempPath(), "GV");
+
+        // Clean directory upfront, some build agents are having troubles
+        Directory.Delete(workDirectory, true);
     }
 
 
     [OneTimeTearDown]
     public void Cleanup()
     {
-        Directory.Delete(workDirectory, true);
+
     }
 
     //[Ignore("These tests are slow and fail on the second run in Test Explorer and need to be re-written")]
