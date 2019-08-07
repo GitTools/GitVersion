@@ -33,9 +33,8 @@ public class DynamicRepositoryTests : TestBase
     }
 
     // Note: use same name twice to see if changing commits works on same (cached) repository
-    //[Ignore("These tests are slow and fail on the second run in Test Explorer and need to be re-written")]
+    [Ignore("These tests are slow and fail on the second run in Test Explorer and need to be re-written")]
     [NonParallelizable]
-    [Explicit]
     [TestCase("GV_master", "https://github.com/GitTools/GitVersion", "master", "4783d325521463cd6cf1b61074352da84451f25d", "4.0.0+1086")]
     [TestCase("GV_master", "https://github.com/GitTools/GitVersion", "master", "3bdcd899530b4e9b37d13639f317da04a749e728", "4.0.0+1092")]
     [TestCase("Ctl_develop", "https://github.com/Catel/Catel", "develop", "0e2b6c125a730d2fa5e24394ef64abe62c98e9e9", "5.12.0-alpha.188")]
