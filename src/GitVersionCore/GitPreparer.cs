@@ -20,12 +20,11 @@ namespace GitVersion
         {
             this.targetUrl = targetUrl;
             this.dynamicRepositoryLocation = dynamicRepositoryLocation;
-            this.authentication = authentication == null ?
-                null :
+            this.authentication =
                 new AuthenticationInfo
                 {
-                    Username = authentication.Username,
-                    Password = authentication.Password
+                    Username = authentication?.Username,
+                    Password = authentication?.Password
                 };
             this.noFetch = noFetch;
             this.targetPath = targetPath.TrimEnd('/', '\\');
