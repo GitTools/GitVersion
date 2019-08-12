@@ -123,7 +123,6 @@ public class BuildParameters
         Artifacts = BuildArtifacts.GetArtifacts(new[] {
             files.ZipArtifactPathDesktop,
             files.ZipArtifactPathCoreClr,
-            files.TestCoverageOutputFilePath,
             files.ReleaseNotesOutputFilePath,
             files.VsixOutputFilePath,
             files.GemOutputFilePath
