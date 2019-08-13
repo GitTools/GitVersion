@@ -23,7 +23,7 @@ export class GitVersionTask {
     constructor() {
         this.preferBundledVersion       = tl.getBoolInput('preferBundledVersion') || true;
         this.configFilePathSupplied     = tl.filePathSupplied('configFilePath');
-        this.configFilePath             = tl.getPathInput('configFilePath');
+        this.configFilePath             = tl.getPathInput('configFilePath', false, true);
         this.updateAssemblyInfo         = tl.getBoolInput('updateAssemblyInfo');
 
         this.updateAssemblyInfoFilename = tl.getInput('updateAssemblyInfoFilename');
