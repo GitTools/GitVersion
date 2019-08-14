@@ -11,7 +11,8 @@ namespace GitVersion
         /// Normalisation of a git directory turns all remote branches into local branches, turns pull request refs into a real branch and a few other things. This is designed to be run *only on the build server* which checks out repositories in different ways.
         /// It is not recommended to run normalisation against a local repository
         /// </summary>
-        public static void NormalizeGitDirectory(string gitDirectory, AuthenticationInfo authentication, bool noFetch, string currentBranch)
+        public static void NormalizeGitDirectory(string gitDirectory, AuthenticationInfo authentication,
+            bool noFetch, string currentBranch, bool isDynamicRepository)
         {
             using (var repo = new Repository(gitDirectory))
             {
@@ -41,7 +42,7 @@ namespace GitVersion
                     // Bug fix for https://github.com/GitTools/GitVersion/issues/1754, head maybe have been changed
                     // if this is a dynamic repository. But only allow this in case the branches are different (branch switch)
                     if (expectedSha != repo.Head.Tip.Sha &&
-                        !expectedBranchName.IsBranch(currentBranch))
+                        (isDynamicRepository || !expectedBranchName.IsBranch(currentBranch)))
                     {
                         var newExpectedSha = repo.Head.Tip.Sha;
                         var newExpectedBranchName = repo.Head.CanonicalName;

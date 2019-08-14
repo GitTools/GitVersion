@@ -42,19 +42,25 @@ Task("Test")
         {
             actions.Add(() =>
             {
-                var settings = new DotNetCoreTestSettings
-                {
+                var testResultsPath = parameters.Paths.Directories.TestResultsOutput + "/";
+                var projectName = $"{project.GetFilenameWithoutExtension()}.{framework}";
+                var settings = new DotNetCoreTestSettings {
                     Framework = framework,
                     NoBuild = true,
                     NoRestore = true,
-                    Configuration = parameters.Configuration
+                    Configuration = parameters.Configuration,
                 };
+
+                if (!parameters.IsRunningOnMacOS) {
+                    settings.TestAdapterPath = new DirectoryPath(".");
+                    settings.Logger = $"nunit;LogFilePath={MakeAbsolute(new FilePath($"{testResultsPath}{projectName}.results.xml"))}";
+                }
 
                 var coverletSettings = new CoverletSettings {
                     CollectCoverage = true,
                     CoverletOutputFormat = CoverletOutputFormat.opencover,
-                    CoverletOutputDirectory = parameters.Paths.Directories.TestCoverageOutput + "/",
-                    CoverletOutputName = $"{project.GetFilenameWithoutExtension()}.{framework}.coverage.xml"
+                    CoverletOutputDirectory = testResultsPath,
+                    CoverletOutputName = $"{projectName}.coverage.xml"
                 };
 
                 if (IsRunningOnUnix())
@@ -79,6 +85,21 @@ Task("Test")
 {
     var error = (exception as AggregateException).InnerExceptions[0];
     Error(error.Dump());
+})
+.Finally(() =>
+{
+    var parameters = Context.Data.Get<BuildParameters>();
+    var testResultsFiles = GetFiles(parameters.Paths.Directories.TestResultsOutput + "/*.results.xml");
+    if (parameters.IsRunningOnAzurePipeline)
+    {
+        if (testResultsFiles.Any()) {
+            var data = new TFBuildPublishTestResultsData {
+                TestResultsFiles = testResultsFiles.ToArray(),
+                TestRunner = TFTestRunnerType.NUnit
+            };
+            TFBuild.Commands.PublishTestResults(data);
+        }
+    }
 });
 
 #endregion

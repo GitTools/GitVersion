@@ -34,24 +34,22 @@ public class BuildPaths
         var artifactsBinCoreFxDir         = artifactsBinDir.Combine(parameters.CoreFxVersion);
         var nugetRootDir                  = artifactsDir.Combine("nuget");
         var buildArtifactDir              = artifactsDir.Combine("build-artifact");
-        var testCoverageOutputDir         = artifactsDir.Combine("code-coverage");
+        var testResultsOutputDir         = artifactsDir.Combine("test-results");
 
         var zipArtifactPathCoreClr = artifactsDir.CombineWithFilePath("GitVersion-bin-corefx-v" + semVersion + ".zip");
         var zipArtifactPathDesktop = artifactsDir.CombineWithFilePath("GitVersion-bin-fullfx-v" + semVersion + ".zip");
-
-        var testCoverageOutputFilePath = testCoverageOutputDir.CombineWithFilePath("TestResult.xml");
 
         var releaseNotesOutputFilePath = buildArtifactDir.CombineWithFilePath("releasenotes.md");
         var gemOutputFilePath  = buildArtifactDir.CombineWithFilePath("gitversion-" + version.GemVersion + ".gem");
 
         var vsixSuffix = parameters.IsStableRelease() ? "" : "preview-";
-        var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-" + vsixSuffix + version.VsixVersion + ".vsix");        
+        var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-" + vsixSuffix + version.VsixVersion + ".vsix");
 
         // Directories
         var buildDirectories = new BuildDirectories(
             artifactsDir,
             buildArtifactDir,
-            testCoverageOutputDir,
+            testResultsOutputDir,
             nugetRootDir,
             artifactsBinDir,
             artifactsBinFullFxDir,
@@ -65,7 +63,6 @@ public class BuildPaths
             context,
             zipArtifactPathCoreClr,
             zipArtifactPathDesktop,
-            testCoverageOutputFilePath,
             releaseNotesOutputFilePath,
             vsixOutputFilePath,
             gemOutputFilePath);
@@ -82,7 +79,6 @@ public class BuildFiles
 {
     public FilePath ZipArtifactPathCoreClr { get; private set; }
     public FilePath ZipArtifactPathDesktop { get; private set; }
-    public FilePath TestCoverageOutputFilePath { get; private set; }
     public FilePath ReleaseNotesOutputFilePath { get; private set; }
     public FilePath VsixOutputFilePath { get; private set; }
     public FilePath GemOutputFilePath { get; private set; }
@@ -91,7 +87,6 @@ public class BuildFiles
         ICakeContext context,
         FilePath zipArtifactPathCoreClr,
         FilePath zipArtifactPathDesktop,
-        FilePath testCoverageOutputFilePath,
         FilePath releaseNotesOutputFilePath,
         FilePath vsixOutputFilePath,
         FilePath gemOutputFilePath
@@ -99,7 +94,6 @@ public class BuildFiles
     {
         ZipArtifactPathCoreClr = zipArtifactPathCoreClr;
         ZipArtifactPathDesktop = zipArtifactPathDesktop;
-        TestCoverageOutputFilePath = testCoverageOutputFilePath;
         ReleaseNotesOutputFilePath = releaseNotesOutputFilePath;
         VsixOutputFilePath = vsixOutputFilePath;
         GemOutputFilePath = gemOutputFilePath;
@@ -111,7 +105,7 @@ public class BuildDirectories
     public DirectoryPath Artifacts { get; private set; }
     public DirectoryPath NugetRoot { get; private set; }
     public DirectoryPath BuildArtifact { get; private set; }
-    public DirectoryPath TestCoverageOutput { get; private set; }
+    public DirectoryPath TestResultsOutput { get; private set; }
     public DirectoryPath ArtifactsBin { get; private set; }
     public DirectoryPath ArtifactsBinFullFx { get; private set; }
     public DirectoryPath ArtifactsBinFullFxPortable { get; private set; }
@@ -123,7 +117,7 @@ public class BuildDirectories
     public BuildDirectories(
         DirectoryPath artifactsDir,
         DirectoryPath buildArtifactDir,
-        DirectoryPath testCoverageOutputDir,
+        DirectoryPath testResultsOutputDir,
         DirectoryPath nugetRootDir,
         DirectoryPath artifactsBinDir,
         DirectoryPath artifactsBinFullFxDir,
@@ -135,7 +129,7 @@ public class BuildDirectories
     {
         Artifacts = artifactsDir;
         BuildArtifact = buildArtifactDir;
-        TestCoverageOutput = testCoverageOutputDir;
+        TestResultsOutput = testResultsOutputDir;
         NugetRoot = nugetRootDir;
         ArtifactsBin = artifactsBinDir;
         ArtifactsBinFullFx = artifactsBinFullFxDir;
@@ -146,7 +140,7 @@ public class BuildDirectories
         ToClean = new[] {
             Artifacts,
             BuildArtifact,
-            TestCoverageOutput,
+            TestResultsOutput,
             NugetRoot,
             ArtifactsBin,
             ArtifactsBinFullFx,
