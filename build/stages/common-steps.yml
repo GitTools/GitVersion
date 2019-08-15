@@ -5,6 +5,11 @@ steps:
     packageType: sdk
     version: 2.2.401
     installationPath: $(Agent.ToolsDirectory)/dotnet
+- task: Bash@3
+  displayName: 'Env Vars'
+  inputs:
+    targetType: 'inline'
+    script: 'env | sort'
 - task: CmdLine@2
   condition: eq( variables['Agent.OS'], 'Darwin' )
   displayName: 'Use mono'

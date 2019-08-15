@@ -92,7 +92,7 @@ public class BuildParameters
             IsLocalBuild             = buildSystem.IsLocalBuild,
             IsRunningOnAppVeyor      = buildSystem.IsRunningOnAppVeyor,
             IsRunningOnTravis        = buildSystem.IsRunningOnTravisCI,
-            IsRunningOnAzurePipeline = buildSystem.IsRunningOnAzurePipelinesHosted,
+            IsRunningOnAzurePipeline = buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted,
 
             IsDockerForWindows = dockerCliPlatform == "windows",
             IsDockerForLinux   = dockerCliPlatform == "linux",
