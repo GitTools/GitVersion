@@ -2,7 +2,7 @@
   - job: Generator
     displayName: 'Generate Docker jobs'
     pool:
-      vmImage: windows-2019
+      vmImage: windows-latest
     steps:
     - pwsh: ./src/Docker/docker.ps1 -os windows -variant runtime
       name: Map_Windows
