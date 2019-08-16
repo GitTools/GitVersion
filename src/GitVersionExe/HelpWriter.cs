@@ -38,6 +38,7 @@ GitVersion [path]
     /overrideconfig Overrides GitVersion config values inline (semicolon-separated key value pairs e.g. /overrideconfig tag-prefix=Foo)
                     Currently supported config overrides: tag-prefix
     /nocache        Bypasses the cache, result will not be written to the cache.
+    /nonormalize    Disables normalize step on a build server. 
 
  # AssemblyInfo updating
     /updateassemblyinfo

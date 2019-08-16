@@ -49,6 +49,7 @@ namespace GitVersion
         public bool ShowConfig;
         public bool NoFetch;
         public bool NoCache;
+        public bool NoNormalize;
 
         public VerbosityLevel Verbosity;
 

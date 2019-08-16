@@ -301,6 +301,13 @@ public class ArgumentParserTests
     }
 
     [Test]
+    public void Nonormilize_true_when_defined()
+    {
+        var arguments = ArgumentParser.ParseArguments("-nonormalize");
+        arguments.NoNormalize.ShouldBe(true);
+    }
+
+    [Test]
     public void Other_arguments_can_be_parsed_before_nofetch()
     {
         var arguments = ArgumentParser.ParseArguments("targetpath -nofetch ");

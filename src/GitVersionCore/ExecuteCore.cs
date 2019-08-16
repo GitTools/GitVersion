@@ -18,15 +18,17 @@ namespace GitVersion
             gitVersionCache = new GitVersionCache(fileSystem);
         }
 
-        public VersionVariables ExecuteGitVersion(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId, Config overrideConfig = null, bool noCache = false)
+        public VersionVariables ExecuteGitVersion(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId, Config overrideConfig = null, bool noCache = false, bool noNormalize = false)
         {
             // Normalise if we are running on build server
             var applicableBuildServers = BuildServerList.GetApplicableBuildServers();
             var buildServer = applicableBuildServers.FirstOrDefault();
+            bool normaliseGitDirectory = !noNormalize && (buildServer != null);
             var fetch = noFetch || (buildServer != null && buildServer.PreventFetch());
             var shouldCleanUpRemotes = buildServer != null && buildServer.ShouldCleanUpRemotes();
             var gitPreparer = new GitPreparer(targetUrl, dynamicRepositoryLocation, authentication, fetch, workingDirectory);
-            gitPreparer.Initialise(buildServer != null, ResolveCurrentBranch(buildServer, targetBranch, !string.IsNullOrWhiteSpace(dynamicRepositoryLocation)), shouldCleanUpRemotes);
+
+            gitPreparer.Initialise(normaliseGitDirectory, ResolveCurrentBranch(buildServer, targetBranch, !string.IsNullOrWhiteSpace(dynamicRepositoryLocation)), shouldCleanUpRemotes);
             var dotGitDirectory = gitPreparer.GetDotGitDirectory();
             var projectRoot = gitPreparer.GetProjectRootDirectory();
 
