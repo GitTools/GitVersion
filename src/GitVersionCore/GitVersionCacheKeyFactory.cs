@@ -25,10 +25,28 @@ namespace GitVersion
         {
             var dotGitDirectory = gitPreparer.GetDotGitDirectory();
 
+            // get repo .git directory -- not the worktree gitdir
+            dotGitDirectory = GetWorktreeParentDotGetDirectory(dotGitDirectory);
+
             // traverse the directory and get a list of files, use that for GetHash
             var contents = CalculateDirectoryContents(Path.Combine(dotGitDirectory, "refs"));
 
             return GetHash(contents.ToArray());
+        }
+
+        static string GetWorktreeParentDotGetDirectory(string path)
+        {
+            if (string.IsNullOrEmpty(path)) return path;
+
+            var parentPath = Path.GetDirectoryName(path);
+            if (string.IsNullOrEmpty(parentPath)) return path;
+
+            var worktreesPath = Path.Combine(".git", "worktrees");
+
+            if (!parentPath.EndsWith(worktreesPath, StringComparison.Ordinal))
+                return path;
+
+            return parentPath.Substring(0, parentPath.Length - 10);
         }
 
         // based on https://msdn.microsoft.com/en-us/library/bb513869.aspx
