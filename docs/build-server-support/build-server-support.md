@@ -17,4 +17,4 @@ For instance if you are running in TeamCity after you run `GitVersion /output bu
 
 When running in MSBuild either from the [MSBuild Task](/usage/msbuild-task) or by using the `/proj myproject.sln` parameter, GitVersion will make the MSBuild variables available in the format `$(GitVersion_SemVer)`.
 
-Standard GitVersion.exe normalize the branches if there is a build server detected. This behavior can be disabled with the /nonormalize option.
+Standard GitVersion.exe normalize the branches if there is a build server detected. This behavior can be disabled with the `/nonormalize` option.
