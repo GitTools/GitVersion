@@ -8,6 +8,8 @@ using System;
 using System.IO;
 using System.Text;
 
+using LibGit2Sharp;
+
 [TestFixture]
 [Parallelizable(ParallelScope.None)]
 public class ExecuteCoreTests : TestBase
@@ -37,6 +39,34 @@ public class ExecuteCoreTests : TestBase
             var cacheKey2 = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, null, configFileLocator);
 
             cacheKey2.Value.ShouldBe(cacheKey1.Value);
+        });
+    }
+
+    [Test]
+    [Category("NoMono")]
+    [Description("LibGit2Sharp fails here when running under Mono")]
+    public void CacheKeyForWorktree() {
+        var versionAndBranchFinder = new ExecuteCore(fileSystem);
+
+        RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
+        {
+            var worktreePath = Path.Combine(Path.GetTempPath(), "TestRepositories", Guid.NewGuid().ToString());
+            try
+            {
+                // create a branch and a new worktree for it
+                var repo = new Repository(fixture.RepositoryPath);
+                repo.Worktrees.Add("worktree", worktreePath, false);
+
+                var targetUrl = "https://github.com/GitTools/GitVersion.git";
+                var gitPreparer = new GitPreparer(targetUrl, null, new Authentication(), false, worktreePath);
+                var configFileLocator = new DefaultConfigFileLocator();
+                var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, null, configFileLocator);
+                cacheKey.Value.ShouldNotBeEmpty();
+            }
+            finally
+            {
+                DirectoryHelper.DeleteDirectory(worktreePath);
+            }
         });
     }
 
