@@ -63,10 +63,17 @@ Task("Test")
                     CoverletOutputName = $"{projectName}.coverage.xml"
                 };
 
+                var filters = new List<string>();
+
                 if (IsRunningOnUnix())
                 {
-                    settings.Filter = "TestCategory!=NoMono";
+                    filters.Add("TestCategory!=NoUnix");
+                    if (string.Equals(framework, parameters.FullFxVersion))
+                        filters.Add("TestCategory!=NoMono");
                 }
+
+                if (filters.Any())
+                    settings.Filter = string.Join(" & ", filters);
 
                 DotNetCoreTest(project.FullPath, settings, coverletSettings);
             });
