@@ -116,7 +116,7 @@ public class BuildParameters
         Packages = BuildPackages.GetPackages(
             Paths.Directories.NugetRoot,
             Version,
-            new [] { "GitVersion.CommandLine.DotNetCore", "GitVersion.CommandLine", "GitVersionCore", "GitVersionTask", "GitVersion.Tool" },
+            new [] { "GitVersion.CommandLine.DotNetCore", "GitVersion.CommandLine", "GitVersionTask", "GitVersion.Tool" },
             new [] { "GitVersion.Portable" });
 
         var files = Paths.Files;
@@ -133,7 +133,6 @@ public class BuildParameters
             ["GitVersion.CommandLine.DotNetCore"] = Paths.Directories.ArtifactsBinCoreFx,
             ["GitVersion.CommandLine"] = Paths.Directories.ArtifactsBinFullFxCmdline,
             ["GitVersion.Portable"] = Paths.Directories.ArtifactsBinFullFxPortable,
-            ["GitVersion.Tool"] = Paths.Directories.ArtifactsBinCoreFx,
         };
 
         Credentials = BuildCredentials.GetCredentials(context);
