@@ -5,9 +5,10 @@
 
         <IsPackable>true</IsPackable>
 
+        <PackageVersion Condition="$(PackageVersion) == '' Or $(PackageVersion) == '*Undefined*'">0.0.1-alpha-0001</PackageVersion>
+
         <NuspecFile>GitVersionTask.nuspec</NuspecFile>
         <NuspecBasePath>bin\$(Configuration)</NuspecBasePath>
-        <PackageVersion Condition="$(PackageVersion) == '' Or $(PackageVersion) == '*Undefined*'">0.0.1-alpha-0001</PackageVersion>
         <NuspecProperties>version=$(PackageVersion)</NuspecProperties>
 
         <DevelopmentDependency>true</DevelopmentDependency>

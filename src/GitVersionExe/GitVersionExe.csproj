@@ -4,12 +4,19 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>GitVersion</RootNamespace>
     <AssemblyName>GitVersion</AssemblyName>
-    <TargetFrameworks Condition=" '$(TargetFrameworks)' == '' ">net472;netcoreapp2.1</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(PackAsTool)' != 'true' ">net472;netcoreapp2.1</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <DocumentationFile>bin\$(Configuration)\GitVersion.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(PackAsTool)' == 'true' ">
+    <ToolCommandName>dotnet-gitversion</ToolCommandName>
+    <PackageId>GitVersion.Tool</PackageId>
+    <PackageDescription>Derives SemVer information from a repository following GitFlow or GitHubFlow. This is the .NET Core Global Tool allowing usage of GitVersion from command line.</PackageDescription>
+    <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net472'">

@@ -271,10 +271,11 @@ Task("Pack-Nuget")
         MSBuildSettings = parameters.MSBuildSettings
     };
 
-    // GitVersionCore, GitVersionTask, & global tool
-    DotNetCorePack("./src/GitVersionCore", settings);
+    // GitVersionTask, & global tool
     DotNetCorePack("./src/GitVersionTask", settings);
-    DotNetCorePack("./src/GitVersionExe/GitVersion.Tool.csproj", settings);
+
+    settings.ArgumentCustomization = arg => arg.Append("/p:PackAsTool=true");
+    DotNetCorePack("./src/GitVersionExe/GitVersionExe.csproj", settings);
 });
 
 Task("Pack-Chocolatey")

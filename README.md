@@ -16,7 +16,6 @@ works out the [semantic version][semver] of the commit being built.
 |                              **Docs** |       [![Docs][docs-badge]][docs]                                  |                   [![Docs][docs-pre-badge]][docs-pre]                      |
 |                    **GitHub Release** |   [![GitHub release][gh-rel-badge]][gh-rel]                        |                                     -                                      |
 |               **GitVersion.Portable** |   [![Chocolatey][choco-badge]][choco]                              |                  [![Chocolatey][choco-pre-badge]][choco]                   |
-|                    **GitVersionCore** |       [![NuGet][gvc-badge]][gvc]                                   |                      [![NuGet][gvc-pre-badge]][gvc]                        |
 |                    **GitVersionTask** |       [![NuGet][gvt-badge]][gvt]                                   |                      [![NuGet][gvt-pre-badge]][gvt]                        |
 |            **GitVersion.CommandLine** |       [![NuGet][gvcl-badge]][gvcl]                                 |                      [![NuGet][gvcl-pre-badge]][gvcl]                      |
 | **GitVersion.CommandLine.DotNetCore** |       [![NuGet][gvcd-badge]][gvcd]                                 |                      [![NuGet][gvcd-pre-badge]][gvcd]                      |
@@ -81,9 +80,6 @@ from The Noun Project.
 [choco]:                           https://chocolatey.org/packages/GitVersion.Portable
 [choco-badge]:                     https://img.shields.io/chocolatey/v/gitversion.portable.svg
 [choco-pre-badge]:                 https://img.shields.io/chocolatey/vpre/gitversion.portable.svg
-[gvc]:                             https://www.nuget.org/packages/GitVersionCore
-[gvc-badge]:                       https://img.shields.io/nuget/v/GitVersionCore.svg
-[gvc-pre-badge]:                   https://img.shields.io/nuget/vpre/GitVersionCore.svg
 [gvt]:                             https://www.nuget.org/packages/GitVersionTask
 [gvt-badge]:                       https://img.shields.io/nuget/v/GitVersionTask.svg
 [gvt-pre-badge]:                   https://img.shields.io/nuget/vpre/GitVersionTask.svg

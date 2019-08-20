@@ -32,8 +32,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionExe.Tests", "GitV
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersionTask", "GitVersionTask\GitVersionTask.csproj", "{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitVersion.Tool", "GitVersionExe\GitVersion.Tool.csproj", "{929263FD-5CD2-42E1-BF3D-E0C1B0320DA4}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitVersionTask.MsBuild", "GitVersionTask.MsBuild\GitVersionTask.MsBuild.csproj", "{0F1AEC4E-E81D-4F84-B2E8-3415A1A4DBF4}"
 EndProject
 Global
@@ -66,10 +64,6 @@ Global
 		{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7AC0E71-3E9A-4F6D-B986-E004825A48E1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{929263FD-5CD2-42E1-BF3D-E0C1B0320DA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{929263FD-5CD2-42E1-BF3D-E0C1B0320DA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{929263FD-5CD2-42E1-BF3D-E0C1B0320DA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{929263FD-5CD2-42E1-BF3D-E0C1B0320DA4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0F1AEC4E-E81D-4F84-B2E8-3415A1A4DBF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0F1AEC4E-E81D-4F84-B2E8-3415A1A4DBF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F1AEC4E-E81D-4F84-B2E8-3415A1A4DBF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
