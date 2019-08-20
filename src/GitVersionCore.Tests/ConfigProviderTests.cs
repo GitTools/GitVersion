@@ -278,7 +278,7 @@ branches: {}";
         {
             ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
         }
-        s.Length.ShouldBe(0);
+        s.ShouldBeEmpty();
     }
 
     string SetupConfigFileContent(string text, string fileName = DefaultConfigFileLocator.DefaultFileName)

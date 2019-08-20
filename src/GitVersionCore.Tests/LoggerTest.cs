@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using System;
 using GitVersion;
 using Shouldly;
@@ -20,7 +20,7 @@ namespace GitVersionCore.Tests
             using (Logger.AddLoggersTemporarily(action, action, action, action))
                 Logger.WriteInfo($"{protocol}://{username}:{password}@workspace.visualstudio.com/DefaultCollection/_git/CAS");
 
-            s.Contains(password).ShouldBe(false);
+            s.ShouldNotContain(password);
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace GitVersionCore.Tests
             using (Logger.AddLoggersTemporarily(action, action, action, action))
                 Logger.WriteInfo(repoUrl);
 
-            s.Contains(repoUrl).ShouldBe(true);
+            s.ShouldContain(repoUrl);
         }
     }
 }
