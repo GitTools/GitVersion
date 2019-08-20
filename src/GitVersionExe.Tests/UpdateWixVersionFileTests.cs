@@ -22,7 +22,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        [Category("NoMono")]
+        [Category("NoUnix")]
         [Description("Doesn't work on Mono/Unix because of the path heuristics that needs to be done there in order to figure out whether the first argument actually is a path.")]
         public void WixVersionFileCreationTest()
         {
@@ -37,7 +37,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        [Category("NoMono")]
+        [Category("NoUnix")]
         [Description("Doesn't work on Mono/Unix because of the path heuristics that needs to be done there in order to figure out whether the first argument actually is a path.")]
         public void WixVersionFileVarCountTest()
         {
@@ -60,7 +60,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        [Category("NoMono")]
+        [Category("NoUnix")]
         [Description("Doesn't work on Mono/Unix because of the path heuristics that needs to be done there in order to figure out whether the first argument actually is a path.")]
         public void WixVersionFileContentTest()
         {

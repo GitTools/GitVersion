@@ -14,7 +14,7 @@ namespace GitVersionCore.Tests.Init
         }
 
         [Test]
-        [Category("NoMono")]
+        [Category("NoUnix")]
         [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
         public void CanSetNextVersion()
         {
