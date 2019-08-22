@@ -179,9 +179,9 @@ branches:
     }
 
     [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     [Category("NoMono")]
     [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
-    [MethodImpl(MethodImplOptions.NoInlining)]
     public void CanWriteOutEffectiveConfiguration()
     {
         var config = ConfigurationProvider.GetEffectiveConfigAsString(repoPath, fileSystem, configFileLocator);

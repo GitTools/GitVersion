@@ -3,26 +3,22 @@ namespace GitVersion
     using Helpers;
 
     using System;
+    using System.IO;
     using System.Text;
     using System.Xml;
 
     public class WixVersionFileUpdater : IDisposable
     {
-        string workingDirectory;
         VersionVariables variables;
         IFileSystem fileSystem;
-        private const string WIX_VERSION_FILE = "GitVersion_WixVersion.wxi ";
+        public string WixVersionFile { get; }
+        public const string WIX_VERSION_FILE = "GitVersion_WixVersion.wxi";
 
         public WixVersionFileUpdater(string workingDirectory, VersionVariables variables, IFileSystem fileSystem)
         {
-            this.workingDirectory = workingDirectory;
             this.variables = variables;
             this.fileSystem = fileSystem;
-        }
-                
-        public static string GetWixVersionFileName()
-        {
-            return WIX_VERSION_FILE;
+            this.WixVersionFile = Path.Combine(workingDirectory, WIX_VERSION_FILE);
         }
 
         public void Update()
@@ -36,7 +32,7 @@ namespace GitVersion
             XmlElement root = doc.DocumentElement;
             doc.InsertBefore(xmlDecl, root);
 
-            using (var fs = fileSystem.OpenWrite(WIX_VERSION_FILE))
+            using (var fs = fileSystem.OpenWrite(WixVersionFile))
             {
                 doc.Save(fs);
             }
@@ -58,7 +54,7 @@ namespace GitVersion
 
         public void Dispose()
         {
-            Logger.WriteInfo($"Done writing {WIX_VERSION_FILE}");
+            Logger.WriteInfo($"Done writing {WixVersionFile}");
         }
     }
 }

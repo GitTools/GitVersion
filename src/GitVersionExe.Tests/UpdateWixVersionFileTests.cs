@@ -18,12 +18,10 @@ namespace GitVersionExe.Tests
         [SetUp]
         public void Setup()
         {
-            WixVersionFileName = WixVersionFileUpdater.GetWixVersionFileName();
+            WixVersionFileName = WixVersionFileUpdater.WIX_VERSION_FILE;
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Doesn't work on Mono/Unix because of the path heuristics that needs to be done there in order to figure out whether the first argument actually is a path.")]
         public void WixVersionFileCreationTest()
         {
             using (var fixture = new EmptyRepositoryFixture())
@@ -31,14 +29,12 @@ namespace GitVersionExe.Tests
                 fixture.MakeATaggedCommit("1.2.3");
                 fixture.MakeACommit();
 
-                GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " -updatewixversionfile");
+                GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
                 Assert.IsTrue(File.Exists(Path.Combine(fixture.RepositoryPath, WixVersionFileName)));
             }
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Doesn't work on Mono/Unix because of the path heuristics that needs to be done there in order to figure out whether the first argument actually is a path.")]
         public void WixVersionFileVarCountTest()
         {
             //Make sure we have captured all the version variables by count in the Wix version file
@@ -50,7 +46,7 @@ namespace GitVersionExe.Tests
                 var gitVersionExecutionResults = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: null);
                 var vars = gitVersionExecutionResults.OutputVariables;
 
-                GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " -updatewixversionfile");
+                GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
 
                 var gitVersionVarsInWix = GetGitVersionVarsInWixFile(Path.Combine(fixture.RepositoryPath, WixVersionFileName));
                 var gitVersionVars = VersionVariables.AvailableVariables;
@@ -60,8 +56,6 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Doesn't work on Mono/Unix because of the path heuristics that needs to be done there in order to figure out whether the first argument actually is a path.")]
         public void WixVersionFileContentTest()
         {
             using (var fixture = new EmptyRepositoryFixture())
@@ -72,7 +66,7 @@ namespace GitVersionExe.Tests
                 var gitVersionExecutionResults = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: null);
                 VersionVariables vars = gitVersionExecutionResults.OutputVariables;
 
-                GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " -updatewixversionfile");
+                GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
 
                 var gitVersionVarsInWix = GetGitVersionVarsInWixFile(Path.Combine(fixture.RepositoryPath, WixVersionFileName));
                 var gitVersionVars = VersionVariables.AvailableVariables;

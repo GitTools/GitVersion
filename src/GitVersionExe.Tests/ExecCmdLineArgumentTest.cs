@@ -89,15 +89,16 @@ public class ExecCmdLineArgumentTest
     }
 
     [Test]
-    [Category("NoMono")]
-    [Description("Doesn't work on Mono/Unix because of the path heuristics that needs to be done there in order to figure out whether the first argument actually is a path.")]
     public void WorkingDirectoryDoesNotExistCrashesWithInformativeMessage()
     {
         var workingDirectory = Path.Combine(PathHelper.GetCurrentDirectory(), Guid.NewGuid().ToString("N"));
         var executable = PathHelper.GetExecutable();
 
         var output = new StringBuilder();
-        var args = PathHelper.GetExecutableArgs(workingDirectory);
+        var args = PathHelper.GetExecutableArgs($" /targetpath {workingDirectory} ");
+
+        Console.WriteLine("Executing: {0} {1}", executable, args);
+        Console.WriteLine();
 
         var exitCode = ProcessHelper.Run(
             s => output.AppendLine(s),

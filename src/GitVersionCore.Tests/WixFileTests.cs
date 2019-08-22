@@ -46,10 +46,9 @@ namespace GitVersionCore.Tests
             using (var wixVersionFileUpdater = new WixVersionFileUpdater(workingDir, vars, fileSystem))
             {
                 wixVersionFileUpdater.Update();
+                fileSystem.ReadAllText(wixVersionFileUpdater.WixVersionFile).
+                    ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved")));
             }
-
-            fileSystem.ReadAllText(WixVersionFileUpdater.GetWixVersionFileName()).
-                ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved")));
         }
     }
 }

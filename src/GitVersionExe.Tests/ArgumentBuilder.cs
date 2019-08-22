@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 
 public class ArgumentBuilder
 {
@@ -40,7 +40,7 @@ public class ArgumentBuilder
     {
         var arguments = new StringBuilder();
 
-        arguments.AppendFormat("\"{0}\"", workingDirectory);
+        arguments.AppendFormat(" /targetpath \"{0}\"", workingDirectory);
 
         if (!string.IsNullOrWhiteSpace(exec))
         {
@@ -62,12 +62,12 @@ public class ArgumentBuilder
             arguments.AppendFormat(" /projargs \"{0}\"", projectArgs);
         }
 
-        arguments.Append(additionalArguments);
-
         if (!string.IsNullOrWhiteSpace(logFile))
         {
             arguments.AppendFormat(" /l \"{0}\"", logFile);
         }
+
+        arguments.Append(additionalArguments);
 
         return arguments.ToString();
     }

@@ -1,5 +1,7 @@
 namespace GitVersionCore.Tests.Init
 {
+    using System.IO;
+    using System.Runtime.InteropServices;
     using GitVersion;
     using NUnit.Framework;
     using Shouldly;
@@ -21,9 +23,10 @@ namespace GitVersionCore.Tests.Init
             var testFileSystem = new TestFileSystem();
             var testConsole = new TestConsole("3", "2.0.0", "0");
             var configFileLocator = new DefaultConfigFileLocator();
-            ConfigurationProvider.Init("c:\\proj", testFileSystem, testConsole, configFileLocator);
+            var workingDirectory = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "c:\\proj" : "/proj";
+            ConfigurationProvider.Init(workingDirectory, testFileSystem, testConsole, configFileLocator);
 
-            testFileSystem.ReadAllText("c:\\proj\\GitVersion.yml").ShouldMatchApproved();
+            testFileSystem.ReadAllText(Path.Combine(workingDirectory, "GitVersion.yml")).ShouldMatchApproved();
         }
     }
 }

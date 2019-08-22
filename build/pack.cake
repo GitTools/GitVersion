@@ -63,7 +63,7 @@ Task("Test")
                     CoverletOutputName = $"{projectName}.coverage.xml"
                 };
 
-                if (IsRunningOnUnix())
+                if (IsRunningOnUnix() && string.Equals(framework, parameters.FullFxVersion))
                 {
                     settings.Filter = "TestCategory!=NoMono";
                 }

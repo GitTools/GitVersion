@@ -23,8 +23,6 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Seems assembly info is slightly different on mono, this test fails with no pre-release info.")]
         public void WriteVersion_ShouldWriteFileVersion_WithPrereleaseTag()
         {
             var asm = GenerateAssembly(new Version(1, 0, 0), "-beta0004");

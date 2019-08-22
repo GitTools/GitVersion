@@ -32,8 +32,6 @@ public static class GitVersionHelper
         var executable = PathHelper.GetExecutable();
         var output = new StringBuilder();
 
-        Console.WriteLine("Executing: {0} {1}", executable, arguments);
-        Console.WriteLine();
         var environmentalVariables =
             new[]
             {
@@ -49,9 +47,16 @@ public static class GitVersionHelper
         {
             var args = PathHelper.GetExecutableArgs(arguments.ToString());
 
+            Console.WriteLine("Executing: {0} {1}", executable, args);
+            Console.WriteLine();
+
             exitCode = ProcessHelper.Run(
-                s => output.AppendLine(s), s => output.AppendLine(s), null,
-                executable, args, arguments.WorkingDirectory,
+                s => output.AppendLine(s),
+                s => output.AppendLine(s),
+                null,
+                executable,
+                args,
+                arguments.WorkingDirectory,
                 environmentalVariables);
         }
         catch (Exception exception)

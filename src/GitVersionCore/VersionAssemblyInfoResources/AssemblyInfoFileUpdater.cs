@@ -19,6 +19,8 @@ namespace GitVersion
             {".vb", new Regex( @"(\s*\<Assembly:\s*(?:.*)\>\s*$(\r?\n)?)", RegexOptions.Multiline) },
         };
 
+        private const string NewLine = "\r\n";
+
         ISet<string> assemblyInfoFileNames;
         string workingDirectory;
         VersionVariables variables;
@@ -62,9 +64,9 @@ namespace GitVersion
 
             foreach (var assemblyInfoFile in assemblyInfoFiles)
             {
-                var backupAssemblyInfo = assemblyInfoFile.FullName + ".bak";
                 var localAssemblyInfo = assemblyInfoFile.FullName;
-                fileSystem.Copy(assemblyInfoFile.FullName, backupAssemblyInfo, true);
+                var backupAssemblyInfo = localAssemblyInfo + ".bak";
+                fileSystem.Copy(localAssemblyInfo, backupAssemblyInfo, true);
 
                 restoreBackupTasks.Add(() =>
                 {
@@ -78,7 +80,7 @@ namespace GitVersion
 
                 cleanupBackupTasks.Add(() => fileSystem.Delete(backupAssemblyInfo));
 
-                var originalFileContents = fileSystem.ReadAllText(assemblyInfoFile.FullName);
+                var originalFileContents = fileSystem.ReadAllText(localAssemblyInfo);
                 var fileContents = originalFileContents;
                 var appendedAttributes = false;
 
@@ -97,12 +99,12 @@ namespace GitVersion
                 if (appendedAttributes)
                 {
                     // If we appended any attributes, put a new line after them
-                    fileContents += Environment.NewLine;
+                    fileContents += NewLine;
                 }
 
                 if (originalFileContents != fileContents)
                 {
-                    fileSystem.WriteAllText(assemblyInfoFile.FullName, fileContents);
+                    fileSystem.WriteAllText(localAssemblyInfo, fileContents);
                 }
             }
         }
@@ -123,14 +125,14 @@ namespace GitVersion
                 {
                     var lastMatch = assemblyMatches[assemblyMatches.Count - 1];
                     var replacementString = lastMatch.Value;
-                    if (!lastMatch.Value.EndsWith(Environment.NewLine)) replacementString += Environment.NewLine;
+                    if (!lastMatch.Value.EndsWith(NewLine)) replacementString += NewLine;
                     replacementString += string.Format(assemblyAddFormat, replaceString);
-                    replacementString += Environment.NewLine;
+                    replacementString += NewLine;
                     return inputString.Replace(lastMatch.Value, replacementString);
                 }
             }
 			
-            inputString += Environment.NewLine + string.Format(assemblyAddFormat, replaceString);
+            inputString += NewLine + string.Format(assemblyAddFormat, replaceString);
             appendedAttributes = true;
             return inputString;
         }
