@@ -7,7 +7,7 @@ export class GitVersionTask {
     execOptions: tr.IExecOptions;
 
     preferBundledVersion: boolean;
-    configFilePathSupplied: boolean;
+    useConfigFile: boolean;
     configFilePath: string;
     updateAssemblyInfo: boolean;
 
@@ -22,11 +22,13 @@ export class GitVersionTask {
 
     constructor() {
         this.preferBundledVersion       = tl.getBoolInput('preferBundledVersion') || true;
-        this.configFilePathSupplied     = tl.filePathSupplied('configFilePath');
-        this.configFilePath             = tl.getPathInput('configFilePath', false, true);
-        this.updateAssemblyInfo         = tl.getBoolInput('updateAssemblyInfo');
 
+        this.useConfigFile              = tl.getBoolInput('useConfigFile');
+        this.configFilePath             = tl.getInput('configFilePath');
+
+        this.updateAssemblyInfo         = tl.getBoolInput('updateAssemblyInfo');
         this.updateAssemblyInfoFilename = tl.getInput('updateAssemblyInfoFilename');
+
         this.additionalArguments        = tl.getInput('additionalArguments');
         this.targetPath                 = tl.getInput('targetPath');
         this.runtime                    = tl.getInput('runtime') || "core";
@@ -60,16 +62,22 @@ export class GitVersionTask {
                 "buildserver",
                 "/nofetch"]);
 
-            if (this.configFilePathSupplied && this.configFilePath) {
-                exe.arg(["/config", this.configFilePath]);
+            if (this.useConfigFile) {
+                if (tl.filePathSupplied('configFilePath') && tl.exist(this.configFilePath) && tl.stats(this.configFilePath).isFile()) {
+                    exe.arg(["/config", this.configFilePath]);
+                }
+                else {
+                    throw 'GitVersion configuration file not found at ' + this.configFilePath;
+                }
             }
 
             if (this.updateAssemblyInfo) {
                 exe.arg("/updateassemblyinfo");
-                if (this.updateAssemblyInfoFilename) {
+                if (tl.filePathSupplied('updateAssemblyInfoFilename') && tl.exist(this.updateAssemblyInfoFilename) && tl.stats(this.updateAssemblyInfoFilename).isFile()) {
                     exe.arg(this.updateAssemblyInfoFilename);
-                } else {
-                    exe.arg("true");
+                }
+                else {
+                    throw 'AssemblyInfoFilename file not found at ' + this.updateAssemblyInfoFilename;
                 }
             }
 

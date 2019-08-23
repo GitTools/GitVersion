@@ -43,12 +43,20 @@
         "required": false,
         "helpMarkDown": "If checked it will prefer the bundled version over a version found in path"
     }, {
+        "name": "useConfigFile",
+        "type": "boolean",
+        "label": "Specify Configuration file",
+        "defaultValue": "false",
+        "required": false,
+        "helpMarkDown": "Whether to use a custom configuration file"
+    }, {
         "name": "configFilePath",
         "type": "filePath",
-        "label": "Config file",
+        "label": "Configuration file",
         "defaultValue": "",
         "required": false,
-        "helpMarkDown": "Optional path to config file (defaults to GitVersion.yml)"
+        "helpMarkDown": "Optional path to config file (defaults to GitVersion.yml)",
+        "visibleRule": "useConfigFile = true"
     }, {
         "name": "updateAssemblyInfo",
         "type": "boolean",
@@ -83,10 +91,10 @@
     }, {
         "name": "additionalArguments",
         "type": "string",
-        "label": "Additional GitVersion.exe arguments",
+        "label": "Additional GitVersion arguments",
         "defaultValue": "",
         "required": false,
-        "helpMarkDown": "Additional arguments to send to GitVersion.exe",
+        "helpMarkDown": "Additional arguments to send to GitVersion",
         "groupName": "additional"
     }],
     "execution": {
