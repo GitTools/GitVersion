@@ -65,7 +65,7 @@ public class BuildParameters
         var target = context.Argument("target", "Default");
         var buildSystem = context.BuildSystem();
 
-        var dockerCliPlatform = (buildSystem.IsRunningOnAzurePipelinesHosted
+        var dockerCliPlatform = ((buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
                                 && context.Environment.Platform.Family != PlatformFamily.OSX)
                                 || buildSystem.IsLocalBuild
                                 ? GetDockerCliPlatform(context) : "";
@@ -182,7 +182,7 @@ public class BuildParameters
         {
             repositoryName = buildSystem.TravisCI.Environment.Repository.Slug;
         }
-        else if (buildSystem.IsRunningOnAzurePipelinesHosted)
+        else if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
         {
             repositoryName = buildSystem.TFBuild.Environment.Repository.RepoName;
         }
@@ -204,7 +204,7 @@ public class BuildParameters
         {
             repositoryBranch = buildSystem.TravisCI.Environment.Build.Branch;
         }
-        else if (buildSystem.IsRunningOnAzurePipelinesHosted)
+        else if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
         {
             repositoryBranch = buildSystem.TFBuild.Environment.Repository.Branch;
         }
