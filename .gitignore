@@ -103,10 +103,6 @@ site/
 
 .vscode
 
-src/GitVersionTfsTask/node_modules/
-src/GitVersionTfsTask/*.d.ts
-src/GitVersionTfsTask/*.js
-
 ####################
 # Cake
 ####################
@@ -121,11 +117,15 @@ releaseArtifacts
 .cake
 artifacts
 /src/Docker/**/content
-/src/GitVersionTfsTask/GitVersionTask
-!src/GitVersionTfsTask/GitVersionTask/task.json
-/src/GitVersionTfsTask/GitVersionNetCoreTask
-!src/GitVersionTfsTask/GitVersionNetCoreTask/task.json
-/src/GitVersionTfsTask/*.vsix
+src/GitVersionVsixTask/node_modules/
+src/GitVersionVsixTask/*.d.ts
+src/GitVersionVsixTask/*.js
+src/GitVersionVsixTask/tests/*.js
+/src/GitVersionVsixTask/GitVersionTask
+!src/GitVersionVsixTask/GitVersionTask/task.json
+/src/GitVersionVsixTask/GitVersionNetCoreTask
+!src/GitVersionVsixTask/GitVersionNetCoreTask/task.json
+/src/GitVersionVsixTask/*.vsix
 /src/GitVersionRubyGem/*.gem
 /src/GitVersionRubyGem/bin/lib
 /src/GitVersionRubyGem/bin/GitVersion.exe
