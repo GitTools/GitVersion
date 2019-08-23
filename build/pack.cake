@@ -7,9 +7,9 @@ Task("Clean")
 
     CleanDirectories("./src/**/bin/" + parameters.Configuration);
     CleanDirectories("./src/**/obj");
-    CleanDirectories("./src/GitVersionTfsTask/scripts/**");
+    CleanDirectories("./src/GitVersionVsixTask/scripts/**");
 
-    DeleteFiles("src/GitVersionTfsTask/*.vsix");
+    DeleteFiles("src/GitVersionVsixTask/*.vsix");
     DeleteFiles("src/GitVersionRubyGem/*.gem");
 
     CleanDirectories(parameters.Paths.Directories.ToClean);
@@ -164,7 +164,7 @@ Task("Copy-Files")
     PublishILRepackedGitVersionExe(false, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergeDir, cmdlineDir, parameters.Configuration, parameters.FullFxVersion);
 
     // Vsix
-    var vsixPath = new DirectoryPath("./src/GitVersionTfsTask/GitVersionTask");
+    var vsixPath = new DirectoryPath("./src/GitVersionVsixTask/GitVersionTask");
 
     var vsixPathFull = vsixPath.Combine("full");
     EnsureDirectoryExists(vsixPathFull);
@@ -189,7 +189,7 @@ Task("Pack-Vsix")
     .IsDependentOn("Copy-Files")
     .Does<BuildParameters>((parameters) =>
 {
-    var workDir = "./src/GitVersionTfsTask";
+    var workDir = "./src/GitVersionVsixTask";
     var idSuffix    = parameters.IsStableRelease() ? "" : "-preview";
     var titleSuffix = parameters.IsStableRelease() ? "" : " (Preview)";
     var visibility  = parameters.IsStableRelease() ? "Public" : "Preview";
