@@ -113,7 +113,7 @@ Task("Publish-Vsix")
         throw new InvalidOperationException("Could not resolve Tfx token.");
     }
 
-    var workDir = "./src/GitVersionTfsTask";
+    var workDir = "./src/GitVersionVsixTask";
     var settings = new TfxExtensionPublishSettings
     {
         ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
