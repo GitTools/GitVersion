@@ -8,8 +8,6 @@
         "target": "es6",
         "sourceMap": false,
         "inlineSourceMap": true,
-        "declaration": false,
-        "outDir": "GitVersionTask"
-    },
-    "exclude": ["tests"]
+        "declaration": false
+    }
 }

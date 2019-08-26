@@ -19,7 +19,14 @@ Task("Build")
     .IsDependentOn("Clean")
     .Does<BuildParameters>((parameters) =>
 {
+    // build .Net code
     Build(parameters.Configuration);
+
+    var workDir = "./src/GitVersionVsixTask";
+    // build typescript code
+    NpmSet(new NpmSetSettings             { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, Key = "progress", Value = "false" });
+    NpmInstall(new NpmInstallSettings     { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent });
+    NpmRunScript(new NpmRunScriptSettings { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, ScriptName = "build" });
 });
 
 #endregion
@@ -32,6 +39,7 @@ Task("Test")
     .Does<BuildParameters>((parameters) =>
 {
     var frameworks = new[] { parameters.CoreFxVersion, parameters.FullFxVersion };
+    var testResultsPath = parameters.Paths.Directories.TestResultsOutput + "/";
 
     foreach(var framework in frameworks)
     {
@@ -42,7 +50,6 @@ Task("Test")
         {
             actions.Add(() =>
             {
-                var testResultsPath = parameters.Paths.Directories.TestResultsOutput + "/";
                 var projectName = $"{project.GetFilenameWithoutExtension()}.{framework}";
                 var settings = new DotNetCoreTestSettings {
                     Framework = framework,
@@ -79,6 +86,11 @@ Task("Test")
         };
 
         Parallel.Invoke(options, actions.ToArray());
+
+        var workDir = "./src/GitVersionVsixTask";
+        var npmSettings = new NpmRunScriptSettings { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, ScriptName = "test" };
+        npmSettings.Arguments.Add($"--reporter-options mochaFile={MakeAbsolute(new FilePath($"{testResultsPath}vsix.results.xml"))}");
+        NpmRunScript(npmSettings);
     }
 })
 .ReportError(exception =>
@@ -204,9 +216,6 @@ Task("Pack-Vsix")
     UpdateTaskVersion(new FilePath(workDir + "/GitVersionTask/task.json"), taskId, parameters.Version.GitVersion);
 
     // build and pack
-    NpmSet(new NpmSetSettings             { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, Key = "progress", Value = "false" });
-    NpmInstall(new NpmInstallSettings     { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent });
-    NpmRunScript(new NpmRunScriptSettings { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, ScriptName = "build" });
 
     var settings = new TfxExtensionCreateSettings
     {

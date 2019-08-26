@@ -5,23 +5,23 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "build": "npm run build:ts",
-        "build:ts": "tsc && copy-node-modules . GitVersionTask",
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "tsc && tsc --p tests/tsconfig.json && copy-node-modules . GitVersionTask",
+        "test": "mocha tests/_suite.js --reporter mocha-junit-reporter",
         "package": "tfx extension create --manifest-globs vss-extension.json"
     },
     "author": "",
     "license": "MIT",
     "dependencies": {
-        "q": "1.5.1",
         "azure-pipelines-task-lib": "2.8.0"
     },
     "devDependencies": {
-        "@types/minimatch": "3.0.3",
-        "@types/node": "12.0.10",
+        "@types/mocha": "^5.2.7",
+        "@types/node": "12.7.2",
         "@types/q": "1.5.2",
         "copy-node-modules": "^1.1.1",
+        "mocha": "^6.2.0",
+        "mocha-junit-reporter": "^1.23.1",
         "tfx-cli": "0.6.3",
-        "typescript": "^3.5.2"
+        "typescript": "^3.5.3"
     }
 }
