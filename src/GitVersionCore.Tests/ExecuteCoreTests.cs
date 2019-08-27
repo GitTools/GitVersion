@@ -7,6 +7,7 @@ using Shouldly;
 using System;
 using System.IO;
 using System.Text;
+using LibGit2Sharp;
 
 [TestFixture]
 [Parallelizable(ParallelScope.None)]
@@ -263,6 +264,33 @@ CommitDate: 2015-11-10
         {
             var exception = Assert.Throws<DirectoryNotFoundException>(() => versionAndBranchFinder.ExecuteGitVersion(null, null, null, null, false, Environment.SystemDirectory, null));
             exception.Message.ShouldContain("Can't find the .git directory in");
+        });
+    }
+
+    [Test]
+    [Category("NoMono")]
+    [Description("LibGit2Sharp fails when running under Mono")]
+    public void WorkingDirectoryWithWorktree()
+    {
+        var versionAndBranchFinder = new ExecuteCore(fileSystem);
+
+        RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
+        {
+            var worktreePath = Path.Combine(Directory.GetParent(fixture.RepositoryPath).FullName, Guid.NewGuid().ToString());
+            try
+            {
+                // create a branch and a new worktree for it
+                var repo = new Repository(fixture.RepositoryPath);
+                repo.Worktrees.Add("worktree", worktreePath, false);
+
+                var targetUrl = "https://github.com/GitTools/GitVersion.git";
+                var gitPreparer = new GitPreparer(targetUrl, null, new Authentication(), false, worktreePath);
+                gitPreparer.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(worktreePath);
+            }
+            finally
+            {
+                DirectoryHelper.DeleteDirectory(worktreePath);
+            }
         });
     }
 
