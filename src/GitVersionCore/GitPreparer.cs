@@ -160,9 +160,12 @@ namespace GitVersion
             }
 
             var dotGetGitDirectory = GetDotGitDirectory();
-            var result = Directory.GetParent(dotGetGitDirectory).FullName;
-            Logger.WriteInfo($"Returning Project Root from DotGitDirectory: {dotGetGitDirectory} - {result}");
-            return result;
+            using (var repo = new Repository(dotGetGitDirectory))
+            {
+                var result = repo.Info.WorkingDirectory;
+                Logger.WriteInfo($"Returning Project Root from DotGitDirectory: {dotGetGitDirectory} - {result}");
+                return result;
+            }
         }
 
         static string CreateDynamicRepository(string targetPath, AuthenticationInfo authentication, string repositoryUrl, string targetBranch, bool noFetch)
