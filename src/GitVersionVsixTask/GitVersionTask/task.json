@@ -25,78 +25,80 @@
     }],
     "instanceNameFormat": "GitVersion",
     "inputs": [{
-        "name": "runtime",
-        "type": "radio",
-        "label": "Runtime",
-        "defaultValue": "core",
-        "required": true,
-        "options": {
-            "core": "dotnet core",
-            "full": "dotnet fullframework (or mono)"
+            "name": "runtime",
+            "type": "radio",
+            "label": "Runtime",
+            "defaultValue": "core",
+            "required": true,
+            "options": {
+                "core": "dotnet core",
+                "full": "dotnet fullframework (or mono)"
+            },
+            "helpMarkDown": "Specify the runtime used for running the tool"
+        }, {
+            "name": "preferBundledVersion",
+            "type": "boolean",
+            "label": "Prefer bundled GitVersion",
+            "defaultValue": "true",
+            "required": false,
+            "helpMarkDown": "If checked it will prefer the bundled version over a version found in path"
+        }, {
+            "name": "gitVersionPath",
+            "type": "string",
+            "label": "Path to GitVersion",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optionally supply the path to GitVersion",
+            "visibleRule": "preferBundledVersion = true"
         },
-        "helpMarkDown": "Specify the runtime used for running the tool"
-    }, {
-        "name": "preferBundledVersion",
-        "type": "boolean",
-        "label": "Prefer bundled GitVersion",
-        "defaultValue": "true",
-        "required": false,
-        "helpMarkDown": "If checked it will prefer the bundled version over a version found in path"
-    }, {
-        "name": "useConfigFile",
-        "type": "boolean",
-        "label": "Specify Configuration file",
-        "defaultValue": "false",
-        "required": false,
-        "helpMarkDown": "Whether to use a custom configuration file"
-    }, {
-        "name": "configFilePath",
-        "type": "filePath",
-        "label": "Configuration file",
-        "defaultValue": "",
-        "required": false,
-        "helpMarkDown": "Optional path to config file (defaults to GitVersion.yml)",
-        "visibleRule": "useConfigFile = true"
-    }, {
-        "name": "updateAssemblyInfo",
-        "type": "boolean",
-        "label": "Update AssemblyInfo files",
-        "defaultValue": "false",
-        "required": false,
-        "helpMarkDown": "Whether to update versions in the AssemblyInfo files"
-    }, {
-        "name": "updateAssemblyInfoFilename",
-        "type": "string",
-        "label": "Update Assembly File",
-        "defaultValue": "",
-        "required": false,
-        "helpMarkDown": "Update versions in specified file",
-        "visibleRule": "updateAssemblyInfo = true"
-    }, {
-        "name": "gitVersionPath",
-        "type": "string",
-        "label": "Path to GitVersion",
-        "defaultValue": "",
-        "required": false,
-        "helpMarkDown": "Optionally supply the path to GitVersion",
-        "groupName": "gitversionDetails"
-    }, {
-        "name": "targetPath",
-        "type": "string",
-        "label": "Working directory path",
-        "defaultValue": "",
-        "required": false,
-        "helpMarkDown": "Optionally supply the path to the working directory",
-        "groupName": "gitversionDetails"
-    }, {
-        "name": "additionalArguments",
-        "type": "string",
-        "label": "Additional GitVersion arguments",
-        "defaultValue": "",
-        "required": false,
-        "helpMarkDown": "Additional arguments to send to GitVersion",
-        "groupName": "additional"
-    }],
+        {
+            "name": "useConfigFile",
+            "type": "boolean",
+            "label": "Specify Configuration file",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Whether to use a custom configuration file"
+        }, {
+            "name": "configFilePath",
+            "type": "filePath",
+            "label": "Configuration file",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional path to config file (defaults to GitVersion.yml)",
+            "visibleRule": "useConfigFile = true"
+        }, {
+            "name": "updateAssemblyInfo",
+            "type": "boolean",
+            "label": "Update AssemblyInfo files",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Whether to update versions in the AssemblyInfo files"
+        }, {
+            "name": "updateAssemblyInfoFilename",
+            "type": "string",
+            "label": "Update Assembly File",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Update versions in specified file",
+            "visibleRule": "updateAssemblyInfo = true"
+        }, {
+            "name": "targetPath",
+            "type": "string",
+            "label": "Working directory path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optionally supply the path to the working directory",
+            "groupName": "gitversionDetails"
+        }, {
+            "name": "additionalArguments",
+            "type": "string",
+            "label": "Additional GitVersion arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Additional arguments to send to GitVersion",
+            "groupName": "additional"
+        }
+    ],
     "execution": {
         "Node": {
             "target": "GitVersion.js",

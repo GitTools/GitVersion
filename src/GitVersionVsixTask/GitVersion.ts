@@ -1,7 +1,8 @@
-import tl = require('azure-pipelines-task-lib/task');
-import tr = require('azure-pipelines-task-lib/toolrunner');
-import path = require('path');
-import os = require('os');
+import * as path from 'path';
+import * as os from 'os';
+
+import * as tl from 'azure-pipelines-task-lib/task';
+import * as tr from 'azure-pipelines-task-lib/toolrunner';
 
 export class GitVersionTask {
     execOptions: tr.IExecOptions;
@@ -15,13 +16,12 @@ export class GitVersionTask {
     additionalArguments: string;
     targetPath: string;
     sourcesDirectory: string;
-    currentDirectory: string;
-    workingDirectory: string;
     gitVersionPath: string;
     runtime: string;
 
     constructor() {
-        this.preferBundledVersion       = tl.getBoolInput('preferBundledVersion') || true;
+
+        this.targetPath                 = tl.getInput('targetPath');
 
         this.useConfigFile              = tl.getBoolInput('useConfigFile');
         this.configFilePath             = tl.getInput('configFilePath');
@@ -29,17 +29,13 @@ export class GitVersionTask {
         this.updateAssemblyInfo         = tl.getBoolInput('updateAssemblyInfo');
         this.updateAssemblyInfoFilename = tl.getInput('updateAssemblyInfoFilename');
 
-        this.additionalArguments        = tl.getInput('additionalArguments');
-        this.targetPath                 = tl.getInput('targetPath');
-        this.runtime                    = tl.getInput('runtime') || "core";
+        this.preferBundledVersion       = tl.getBoolInput('preferBundledVersion');
+        this.runtime                    = tl.getInput('runtime') || 'core';
         this.gitVersionPath             = tl.getInput('gitVersionPath');
 
-        this.sourcesDirectory           = tl.getVariable("Build.SourcesDirectory");
+        this.additionalArguments        = tl.getInput('additionalArguments');
 
-        this.currentDirectory = __dirname;
-        this.workingDirectory = !this.targetPath
-                ? this.sourcesDirectory
-                : path.join(this.sourcesDirectory, this.targetPath);
+        this.sourcesDirectory           = tl.getVariable('Build.SourcesDirectory').replace(/\\/g, '/');
 
         this.execOptions = {
             cwd: undefined,
@@ -55,9 +51,10 @@ export class GitVersionTask {
 
     public async execute() {
         try {
+            let workingDirectory = this.getWorkingDirectory(this.targetPath);
             let exe = this.getExecutable();
             exe.arg([
-                this.workingDirectory,
+                workingDirectory,
                 "/output",
                 "buildserver",
                 "/nofetch"]);
@@ -67,7 +64,7 @@ export class GitVersionTask {
                     exe.arg(["/config", this.configFilePath]);
                 }
                 else {
-                    throw 'GitVersion configuration file not found at ' + this.configFilePath;
+                    throw new Error('GitVersion configuration file not found at ' + this.configFilePath);
                 }
             }
 
@@ -77,7 +74,7 @@ export class GitVersionTask {
                     exe.arg(this.updateAssemblyInfoFilename);
                 }
                 else {
-                    throw 'AssemblyInfoFilename file not found at ' + this.updateAssemblyInfoFilename;
+                    throw new Error('AssemblyInfoFilename file not found at ' + this.updateAssemblyInfoFilename);
                 }
             }
 
@@ -87,14 +84,14 @@ export class GitVersionTask {
 
             const result = await exe.exec(this.execOptions);
             if (result) {
-                tl.setResult(tl.TaskResult.Failed, "An error occured during GitVersion execution")
+                tl.setResult(tl.TaskResult.Failed, "An error occured during GitVersion execution");
             } else {
-                tl.setResult(tl.TaskResult.Succeeded, "GitVersion executed successfully")
+                tl.setResult(tl.TaskResult.Succeeded, "GitVersion executed successfully");
             }
         }
         catch (err) {
             tl.debug(err.stack);
-            tl.setResult(tl.TaskResult.Failed, err);
+            tl.setResult(tl.TaskResult.Failed, err, true);
         }
     }
 
@@ -124,13 +121,37 @@ export class GitVersionTask {
     }
 
     public getExecutablePath(exeName:string) {
-        if (this.gitVersionPath){
-            return this.gitVersionPath;
-        } else if (this.preferBundledVersion) {
-            return path.join(this.currentDirectory, this.runtime, exeName);
+        let exePath;
+        if (this.preferBundledVersion) {
+            let currentDirectory = __dirname;
+            exePath = path.join(currentDirectory, this.runtime, exeName);
+        } else {
+            if (tl.filePathSupplied('gitVersionPath') && tl.exist(this.gitVersionPath) && tl.stats(this.gitVersionPath).isFile()) {
+                exePath = this.gitVersionPath;
+            } else{
+                throw new Error('GitVersion executable not found at ' + this.gitVersionPath);
+            }
         }
+
+        return exePath.replace(/\\/g, '/');
+    }
+
+    public getWorkingDirectory(targetPath: string) {
+        let workDir;
+
+        if (!targetPath){
+            workDir = this.sourcesDirectory;
+        } else {
+            if (tl.exist(targetPath) && tl.stats(targetPath).isDirectory()) {
+                workDir = path.join(this.sourcesDirectory, targetPath);
+            }
+            else {
+                throw new Error('Directory not found at ' + targetPath);
+            }
+        }
+        return workDir.replace(/\\/g, '/');
     }
 }
 
-var exe = new GitVersionTask();
-exe.execute().catch((reason) => tl.setResult(tl.TaskResult.Failed, reason));
+var task = new GitVersionTask();
+task.execute().catch((reason) => tl.setResult(tl.TaskResult.Failed, reason));
