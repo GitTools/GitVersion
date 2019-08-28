@@ -6,7 +6,7 @@
     "main": "index.js",
     "scripts": {
         "build": "tsc && tsc --p tests/tsconfig.json && copy-node-modules . GitVersionTask",
-        "test": "mocha tests/_suite.js --reporter mocha-junit-reporter",
+        "test": "mocha tests/test-suite.js",
         "package": "tfx extension create --manifest-globs vss-extension.json"
     },
     "author": "",

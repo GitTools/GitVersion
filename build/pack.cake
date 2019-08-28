@@ -86,12 +86,12 @@ Task("Test")
         };
 
         Parallel.Invoke(options, actions.ToArray());
-
-        var workDir = "./src/GitVersionVsixTask";
-        var npmSettings = new NpmRunScriptSettings { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, ScriptName = "test" };
-        npmSettings.Arguments.Add($"--reporter-options mochaFile={MakeAbsolute(new FilePath($"{testResultsPath}vsix.results.xml"))}");
-        NpmRunScript(npmSettings);
     }
+
+    var workDir = "./src/GitVersionVsixTask";
+    var npmSettings = new NpmRunScriptSettings { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, ScriptName = "test" };
+    npmSettings.Arguments.Add($"--reporter-options mochaFile={MakeAbsolute(new FilePath($"{testResultsPath}vsix.results.xml"))}");
+    NpmRunScript(npmSettings);
 })
 .ReportError(exception =>
 {
