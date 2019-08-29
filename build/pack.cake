@@ -92,7 +92,7 @@ Task("Test")
     var workDir = "./src/GitVersionVsixTask";
     var npmSettings = new NpmRunScriptSettings { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, ScriptName = "test" };
     var vsixResultsPath = MakeAbsolute(testResultsPath.CombineWithFilePath("vsix.results.xml"));
-    npmSettings.Arguments.Add($"--reporter-options mochaFile={vsixResultsPath}");
+    // npmSettings.Arguments.Add($"--reporter-options mochaFile={vsixResultsPath}");
     NpmRunScript(npmSettings);
 })
 .ReportError(exception =>
