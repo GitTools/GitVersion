@@ -60,7 +60,7 @@ Task("Test")
 
                 if (!parameters.IsRunningOnMacOS) {
                     settings.TestAdapterPath = new DirectoryPath(".");
-                    var resultsPath = MakeAbsolute(new FilePath($"{testResultsPath}/{projectName}.results.xml"));
+                    var resultsPath = MakeAbsolute(testResultsPath.CombineWithFilePath($"{projectName}.results.xml"));
                     settings.Logger = $"nunit;LogFilePath={resultsPath}";
                 }
 
@@ -91,7 +91,7 @@ Task("Test")
 
     var workDir = "./src/GitVersionVsixTask";
     var npmSettings = new NpmRunScriptSettings { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, ScriptName = "test" };
-    var vsixResultsPath = MakeAbsolute(new FilePath($"{testResultsPath}/vsix.results.xml"));
+    var vsixResultsPath = MakeAbsolute(testResultsPath.CombineWithFilePath("vsix.results.xml"));
     npmSettings.Arguments.Add($"--reporter-options mochaFile={vsixResultsPath}");
     NpmRunScript(npmSettings);
 })
