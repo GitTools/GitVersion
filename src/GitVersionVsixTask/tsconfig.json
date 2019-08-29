@@ -11,5 +11,5 @@
         "declaration": true,
         "outDir": "GitVersionTask"
     },
-    "exclude": ["tests"]
+    "exclude": ["tests", "GitVersionTask"]
 }
