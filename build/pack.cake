@@ -39,7 +39,7 @@ Task("Test")
     .Does<BuildParameters>((parameters) =>
 {
     var frameworks = new[] { parameters.CoreFxVersion, parameters.FullFxVersion };
-    var testResultsPath = parameters.Paths.Directories.TestResultsOutput + "/";
+    var testResultsPath = parameters.Paths.Directories.TestResultsOutput;
 
     foreach(var framework in frameworks)
     {
@@ -60,7 +60,8 @@ Task("Test")
 
                 if (!parameters.IsRunningOnMacOS) {
                     settings.TestAdapterPath = new DirectoryPath(".");
-                    settings.Logger = $"nunit;LogFilePath={MakeAbsolute(new FilePath($"{testResultsPath}{projectName}.results.xml"))}";
+                    var resultsPath = MakeAbsolute(new FilePath($"{testResultsPath}/{projectName}.results.xml"));
+                    settings.Logger = $"nunit;LogFilePath={resultsPath}";
                 }
 
                 var coverletSettings = new CoverletSettings {
@@ -90,7 +91,8 @@ Task("Test")
 
     var workDir = "./src/GitVersionVsixTask";
     var npmSettings = new NpmRunScriptSettings { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, ScriptName = "test" };
-    npmSettings.Arguments.Add($"--reporter-options mochaFile={MakeAbsolute(new FilePath($"{testResultsPath}vsix.results.xml"))}");
+    var vsixResultsPath = MakeAbsolute(new FilePath($"{testResultsPath}/vsix.results.xml"));
+    npmSettings.Arguments.Add($"--reporter-options mochaFile={vsixResultsPath}");
     NpmRunScript(npmSettings);
 })
 .ReportError(exception =>
