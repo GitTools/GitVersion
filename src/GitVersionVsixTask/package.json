@@ -6,7 +6,7 @@
     "main": "index.js",
     "scripts": {
         "build": "tsc && tsc --p tests/tsconfig.json && copy-node-modules . GitVersionTask",
-        "test": "mocha tests/test-suite.js --reporter mocha-junit-reporter",
+        "test": "mocha tests/test-suite.js --reporter mocha-xunit-reporter",
         "package": "tfx extension create --manifest-globs vss-extension.json"
     },
     "author": "",
@@ -20,7 +20,7 @@
         "@types/q": "1.5.2",
         "copy-node-modules": "^1.1.1",
         "mocha": "^6.2.0",
-        "mocha-junit-reporter": "^1.23.1",
+        "mocha-xunit-reporter": "^1.1.0",
         "tfx-cli": "0.6.3",
         "typescript": "^3.5.3"
     }
