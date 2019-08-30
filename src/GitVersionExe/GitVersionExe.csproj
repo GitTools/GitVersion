@@ -1,29 +1,29 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
+    <PropertyGroup>
 
-    <OutputType>Exe</OutputType>
-    <RootNamespace>GitVersion</RootNamespace>
-    <AssemblyName>GitVersion</AssemblyName>
-    <TargetFrameworks Condition=" '$(PackAsTool)' != 'true' ">net472;netcoreapp2.1</TargetFrameworks>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <DocumentationFile>bin\$(Configuration)\GitVersion.xml</DocumentationFile>
-    <NoWarn>1591</NoWarn>
-  </PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>GitVersion</RootNamespace>
+        <AssemblyName>GitVersion</AssemblyName>
+        <TargetFrameworks Condition=" '$(PackAsTool)' != 'true' ">net472;netcoreapp2.1</TargetFrameworks>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <DocumentationFile>bin\$(Configuration)\GitVersion.xml</DocumentationFile>
+        <NoWarn>1591</NoWarn>
+    </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(PackAsTool)' == 'true' ">
-    <ToolCommandName>dotnet-gitversion</ToolCommandName>
-    <PackageId>GitVersion.Tool</PackageId>
-    <PackageDescription>Derives SemVer information from a repository following GitFlow or GitHubFlow. This is the .NET Core Global Tool allowing usage of GitVersion from command line.</PackageDescription>
-    <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
-  </PropertyGroup>
+    <PropertyGroup Condition=" '$(PackAsTool)' == 'true' ">
+        <ToolCommandName>dotnet-gitversion</ToolCommandName>
+        <PackageId>GitVersion.Tool</PackageId>
+        <PackageDescription>Derives SemVer information from a repository following GitFlow or GitHubFlow. This is the .NET Core Global Tool allowing usage of GitVersion from command line.</PackageDescription>
+        <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
+    </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net472'">
-    <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)"></PackageReference>
-  </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)'=='net472'">
+        <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)"></PackageReference>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
+    </ItemGroup>
 </Project>

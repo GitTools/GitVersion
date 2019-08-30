@@ -1,32 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>net472;netcoreapp2.1</TargetFrameworks>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
-    <PackageReference Include="FluentDateTime" Version="1.16.0"></PackageReference>
-    <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)"></PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2"></PackageReference>
-    <PackageReference Include="NSubstitute" Version="4.2.1"></PackageReference>
-    <PackageReference Include="coverlet.msbuild" Version="2.6.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="NUnit" Version="3.12.0"></PackageReference>
-    <packagereference Include="NUnit3TestAdapter" Version="3.15.0"></packagereference>
-    <PackageReference Include="NunitXml.TestLogger" Version="2.1.41" />
-    <PackageReference Include="Shouldly" Version="4.0.0-beta0002"></PackageReference>
-    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.0.461" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Approved\**\*.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GitVersionTask\GitVersionTask.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFrameworks>net472;netcoreapp2.1</TargetFrameworks>
+    </PropertyGroup>
+
+    <Import Project="..\test.msbuild" />
+    <ItemGroup>
+        <PackageReference Include="FluentDateTime" Version="1.16.0"></PackageReference>
+        <PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.0.461" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="Approved\**\*.txt" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\GitVersionTask\GitVersionTask.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+    </ItemGroup>
 
 </Project>
