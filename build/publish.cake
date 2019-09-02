@@ -46,7 +46,6 @@ Task("Publish-Coverage")
     }
 
     foreach (var coverageFile in coverageFiles) {
-        // Upload a coverage report using the CodecovSettings.
         Codecov(new CodecovSettings {
             Files = new [] { coverageFile.ToString() },
             Token = token
