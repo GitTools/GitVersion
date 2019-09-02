@@ -102,6 +102,8 @@ public class BuildParameters
             IsMainRepo    = IsOnMainRepo(context),
             IsMainBranch  = IsOnMainBranch(context),
             IsTagged      = IsBuildTagged(context),
+
+            MSBuildSettings = GetMsBuildSettings(context)
         };
     }
 
@@ -136,20 +138,13 @@ public class BuildParameters
         };
 
         Credentials = BuildCredentials.GetCredentials(context);
-
-        MSBuildSettings = GetMsBuildSettings(context, Version);
+        SetMSBuildSettingsVersion(MSBuildSettings, Version);
     }
 
-    private DotNetCoreMSBuildSettings GetMsBuildSettings(ICakeContext context, BuildVersion version)
+    private static DotNetCoreMSBuildSettings GetMsBuildSettings(ICakeContext context)
     {
-        var msBuildSettings = new DotNetCoreMSBuildSettings()
-                                .WithProperty("Version", version.SemVersion)
-                                .WithProperty("AssemblyVersion", version.Version)
-                                .WithProperty("PackageVersion", version.NugetVersion)
-                                .WithProperty("FileVersion", version.Version)
-                                .WithProperty("NoPackageAnalysis", "true");
-
-        if(!IsRunningOnWindows)
+        var msBuildSettings = new DotNetCoreMSBuildSettings();
+        if(!context.IsRunningOnWindows())
         {
             var frameworkPathOverride = context.Environment.Runtime.IsCoreClr
                                         ?   new []{
@@ -165,9 +160,19 @@ public class BuildParameters
             // Use FrameworkPathOverride when not running on Windows.
             context.Information("Build will use FrameworkPathOverride={0} since not building on Windows.", frameworkPathOverride);
             msBuildSettings.WithProperty("FrameworkPathOverride", frameworkPathOverride);
+            msBuildSettings.WithProperty("POSIX", "true");
         }
 
         return msBuildSettings;
+    }
+
+    private void SetMSBuildSettingsVersion(DotNetCoreMSBuildSettings msBuildSettings, BuildVersion version)
+    {
+        msBuildSettings.WithProperty("Version", version.SemVersion);
+        msBuildSettings.WithProperty("AssemblyVersion", version.Version);
+        msBuildSettings.WithProperty("PackageVersion", version.NugetVersion);
+        msBuildSettings.WithProperty("FileVersion", version.Version);
+        msBuildSettings.WithProperty("NoPackageAnalysis", "true");
     }
 
     private static bool IsOnMainRepo(ICakeContext context)

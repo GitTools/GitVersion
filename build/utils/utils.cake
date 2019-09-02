@@ -41,7 +41,7 @@ GitVersion GetVersion(BuildParameters parameters)
     if (dllFile == null)
     {
         Warning("Dogfood GitVersion to get information");
-        Build(parameters.Configuration);
+        Build(parameters);
         dllFilePath = $"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion}/GitVersion.dll";
         dllFile = GetFiles(dllFilePath).FirstOrDefault();
     }
@@ -66,15 +66,23 @@ GitVersion GetVersion(BuildParameters parameters)
     return gitVersion;
 }
 
-void Build(string configuration)
+void Build(BuildParameters parameters)
 {
-    DotNetCoreRestore("./src/GitVersion.sln");
-    MSBuild("./src/GitVersion.sln", settings =>
+    var sln = "./src/GitVersion.sln";
+    DotNetCoreRestore(sln, new DotNetCoreRestoreSettings
     {
-        settings.SetConfiguration(configuration)
-            .SetVerbosity(Verbosity.Minimal)
-            .WithTarget("Build")
-            .WithProperty("POSIX", IsRunningOnUnix().ToString());
+        Verbosity = DotNetCoreVerbosity.Minimal,
+        Sources = new [] { "https://api.nuget.org/v3/index.json" },
+        MSBuildSettings = parameters.MSBuildSettings
+    });
+
+    var slnPath = MakeAbsolute(new DirectoryPath(sln));
+    DotNetCoreBuild(slnPath.FullPath, new DotNetCoreBuildSettings
+    {
+        Verbosity = DotNetCoreVerbosity.Minimal,
+        Configuration = parameters.Configuration,
+        NoRestore = true,
+        MSBuildSettings = parameters.MSBuildSettings
     });
 }
 

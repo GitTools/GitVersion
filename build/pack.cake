@@ -20,7 +20,7 @@ Task("Build")
     .Does<BuildParameters>((parameters) =>
 {
     // build .Net code
-    Build(parameters.Configuration);
+    Build(parameters);
 
     var workDir = "./src/GitVersionVsixTask";
     // build typescript code
