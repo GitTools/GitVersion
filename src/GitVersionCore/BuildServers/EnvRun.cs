@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using GitVersion.OutputVariables;
 
@@ -6,9 +6,11 @@ namespace GitVersion.BuildServers
 {
     public class EnvRun : BuildServerBase
     {
+        public const string EnvironmentVariableName = "ENVRUN_DATABASE";
+        protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
         public override bool CanApplyToCurrentContext()
         {
-            string envRunDatabasePath = Environment.GetEnvironmentVariable("ENVRUN_DATABASE");
+            string envRunDatabasePath = Environment.GetEnvironmentVariable(EnvironmentVariableName);
             if (!string.IsNullOrEmpty(envRunDatabasePath))
             {
                 if (!File.Exists(envRunDatabasePath))
@@ -35,11 +37,6 @@ namespace GitVersion.BuildServers
                 $"@@envrun[set name='GitVersion_{name}' value='{value}']"
             };
         }
-
-        public override bool PreventFetch()
-        {
-            return true;
-        }
-
+        public override bool PreventFetch() => true;
     }
 }

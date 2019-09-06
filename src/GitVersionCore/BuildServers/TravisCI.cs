@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.BuildServers
@@ -6,10 +6,11 @@ namespace GitVersion.BuildServers
     public class TravisCI : BuildServerBase
     {
         public const string EnvironmentVariableName = "TRAVIS";
+        protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
         public override bool CanApplyToCurrentContext ()
         {
-            return "true".Equals(Environment.GetEnvironmentVariable(EnvironmentVariableName)) && "true".Equals(Environment.GetEnvironmentVariable("CI"));
+            return "true".Equals(Environment.GetEnvironmentVariable(EnvironmentVariable)) && "true".Equals(Environment.GetEnvironmentVariable("CI"));
         }
 
         public override string GenerateSetVersionMessage(VersionVariables variables)
@@ -25,10 +26,7 @@ namespace GitVersion.BuildServers
             };
         }
 
-        public override bool PreventFetch ()
-        {
-            return true;
-        }
+        public override bool PreventFetch () => true;
     }
 }
 

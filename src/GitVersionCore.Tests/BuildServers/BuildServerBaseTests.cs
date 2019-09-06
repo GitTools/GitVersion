@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using GitVersion;
 using NUnit.Framework;
@@ -37,6 +37,8 @@ namespace GitVersionCore.Tests.BuildServers
 
         class BuildServer : BuildServerBase
         {
+            protected override string EnvironmentVariable { get; }
+
             public override bool CanApplyToCurrentContext()
             {
                 throw new NotImplementedException();

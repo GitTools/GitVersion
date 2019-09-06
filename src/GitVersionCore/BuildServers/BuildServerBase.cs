@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 
@@ -6,7 +6,13 @@ namespace GitVersion.BuildServers
 {
     public abstract class BuildServerBase : IBuildServer
     {
-        public abstract bool CanApplyToCurrentContext();
+        protected abstract string EnvironmentVariable { get; }
+
+        public virtual bool CanApplyToCurrentContext()
+        {
+            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(EnvironmentVariable));
+        }
+
         public abstract string GenerateSetVersionMessage(VersionVariables variables);
         public abstract string[] GenerateSetParameterMessage(string name, string value);
 
@@ -15,10 +21,7 @@ namespace GitVersion.BuildServers
             return null;
         }
 
-        public virtual bool PreventFetch()
-        {
-            return false;
-        }
+        public virtual bool PreventFetch() => true;
 
         public virtual void WriteIntegration(Action<string> writer, VersionVariables variables)
         {

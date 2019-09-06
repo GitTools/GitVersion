@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
@@ -7,7 +7,9 @@ namespace GitVersion.BuildServers
 {
     public class Jenkins : BuildServerBase
     {
+        public const string EnvironmentVariableName = "JENKINS_URL";
         string _file;
+        protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
         public Jenkins() : this("gitversion.properties")
         {
@@ -16,11 +18,6 @@ namespace GitVersion.BuildServers
         public Jenkins(string propertiesFileName)
         {
             _file = propertiesFileName;
-        }
-
-        public override bool CanApplyToCurrentContext()
-        {
-            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("JENKINS_URL"));
         }
 
         public override string GenerateSetVersionMessage(VersionVariables variables)
@@ -48,10 +45,7 @@ namespace GitVersion.BuildServers
             return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("BRANCH_NAME"));
         }
 
-        public override bool PreventFetch()
-        {
-            return true;
-        }
+        public override bool PreventFetch() => true;
 
         /// <summary>
         /// When Jenkins uses pipeline-as-code, it creates two remotes: "origin" and "origin1".

@@ -9,10 +9,7 @@ namespace GitVersion.BuildServers
     {
         public const string EnvironmentVariableName = "APPVEYOR";
 
-        public override bool CanApplyToCurrentContext()
-        {
-            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(EnvironmentVariableName));
-        }
+        protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
         public override string GenerateSetVersionMessage(VersionVariables variables)
         {
@@ -64,6 +61,6 @@ namespace GitVersion.BuildServers
                 $"Adding Environment Variable. name='GitVersion_{name}' value='{value}']"
             };
         }
-
+        public override bool PreventFetch() => false;
     }
 }
