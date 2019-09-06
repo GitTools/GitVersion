@@ -7,6 +7,7 @@ using Shouldly;
 using System;
 using System.IO;
 using System.Text;
+using LibGit2Sharp;
 
 [TestFixture]
 [Parallelizable(ParallelScope.None)]
@@ -37,6 +38,35 @@ public class ExecuteCoreTests : TestBase
             var cacheKey2 = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, null, configFileLocator);
 
             cacheKey2.Value.ShouldBe(cacheKey1.Value);
+        });
+    }
+
+    [Test]
+    [Category("NoMono")]
+    [Description("LibGit2Sharp fails here when running under Mono")]
+    public void CacheKeyForWorktree()
+    {
+        var versionAndBranchFinder = new ExecuteCore(fileSystem);
+
+        RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
+        {
+            var worktreePath = Path.Combine(Directory.GetParent(fixture.RepositoryPath).FullName, Guid.NewGuid().ToString());
+            try
+            {
+                // create a branch and a new worktree for it
+                var repo = new Repository(fixture.RepositoryPath);
+                repo.Worktrees.Add("worktree", worktreePath, false);
+
+                var targetUrl = "https://github.com/GitTools/GitVersion.git";
+                var gitPreparer = new GitPreparer(targetUrl, null, new Authentication(), false, worktreePath);
+                var configFileLocator = new DefaultConfigFileLocator();
+                var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, null, configFileLocator);
+                cacheKey.Value.ShouldNotBeEmpty();
+            }
+            finally
+            {
+                DirectoryHelper.DeleteDirectory(worktreePath);
+            }
         });
     }
 
@@ -267,6 +297,47 @@ CommitDate: 2015-11-10
     }
 
     [Test]
+    [Category("NoMono")]
+    [Description("LibGit2Sharp fails when running under Mono")]
+    public void GetProjectRootDirectory_WorkingDirectoryWithWorktree()
+    {
+        var versionAndBranchFinder = new ExecuteCore(fileSystem);
+
+        RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
+        {
+            var worktreePath = Path.Combine(Directory.GetParent(fixture.RepositoryPath).FullName, Guid.NewGuid().ToString());
+            try
+            {
+                // create a branch and a new worktree for it
+                var repo = new Repository(fixture.RepositoryPath);
+                repo.Worktrees.Add("worktree", worktreePath, false);
+
+                var targetUrl = "https://github.com/GitTools/GitVersion.git";
+                var gitPreparer = new GitPreparer(targetUrl, null, new Authentication(), false, worktreePath);
+                gitPreparer.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(worktreePath);
+            }
+            finally
+            {
+                DirectoryHelper.DeleteDirectory(worktreePath);
+            }
+        });
+    }
+
+    [Test]
+    public void GetProjectRootDirectory_NoWorktree()
+    {
+        var versionAndBranchFinder = new ExecuteCore(fileSystem);
+
+        RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
+        {
+            var targetUrl = "https://github.com/GitTools/GitVersion.git";
+            var gitPreparer = new GitPreparer(targetUrl, null, new Authentication(), false, fixture.RepositoryPath);
+            var expectedPath = fixture.RepositoryPath.TrimEnd('/', '\\');
+            gitPreparer.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(expectedPath);
+        });
+    }
+
+    [Test]
     public void DynamicRepositoriesShouldNotErrorWithFailedToFindGitDirectory()
     {
         var versionAndBranchFinder = new ExecuteCore(fileSystem);
@@ -274,6 +345,48 @@ CommitDate: 2015-11-10
         RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
         {
             versionAndBranchFinder.ExecuteGitVersion("https://github.com/GitTools/GitVersion.git", null, new Authentication(), "refs/head/master", false, fixture.RepositoryPath, null);
+        });
+    }
+
+    [Test]
+    public void GetDotGitDirectory_NoWorktree()
+    {
+        var versionAndBranchFinder = new ExecuteCore(fileSystem);
+
+        RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
+        {
+            var targetUrl = "https://github.com/GitTools/GitVersion.git";
+            var gitPreparer = new GitPreparer(targetUrl, null, new Authentication(), false, fixture.RepositoryPath);
+            var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
+            gitPreparer.GetDotGitDirectory().ShouldBe(expectedPath);
+        });
+    }
+
+    [Test]
+    [Category("NoMono")]
+    [Description("LibGit2Sharp fails when running under Mono")]
+    public void GetDotGitDirectory_Worktree()
+    {
+        var versionAndBranchFinder = new ExecuteCore(fileSystem);
+
+        RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
+        {
+            var worktreePath = Path.Combine(Directory.GetParent(fixture.RepositoryPath).FullName, Guid.NewGuid().ToString());
+            try
+            {
+                // create a branch and a new worktree for it
+                var repo = new Repository(fixture.RepositoryPath);
+                repo.Worktrees.Add("worktree", worktreePath, false);
+
+                var targetUrl = "https://github.com/GitTools/GitVersion.git";
+                var gitPreparer = new GitPreparer(targetUrl, null, new Authentication(), false, worktreePath);
+                var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
+                gitPreparer.GetDotGitDirectory().ShouldBe(expectedPath);
+            }
+            finally
+            {
+                DirectoryHelper.DeleteDirectory(worktreePath);
+            }
         });
     }
 

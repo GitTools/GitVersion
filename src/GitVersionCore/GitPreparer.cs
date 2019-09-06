@@ -135,17 +135,14 @@ namespace GitVersion
 
         public string GetDotGitDirectory()
         {
-            if (IsDynamicGitRepository)
-                return DynamicGitRepositoryPath;
+            var dotGitDirectory = IsDynamicGitRepository ? DynamicGitRepositoryPath : Repository.Discover(targetPath);
 
-            var dotGitDirectory = Repository.Discover(targetPath);
-
+            dotGitDirectory = dotGitDirectory?.TrimEnd('/', '\\');
             if (string.IsNullOrEmpty(dotGitDirectory))
                 throw new DirectoryNotFoundException("Can't find the .git directory in " + targetPath);
 
-            dotGitDirectory = dotGitDirectory.TrimEnd('/', '\\');
-            if (string.IsNullOrEmpty(dotGitDirectory))
-                throw new DirectoryNotFoundException("Can't find the .git directory in " + targetPath);
+            if (dotGitDirectory.Contains(Path.Combine(".git", "worktrees")))
+                return Directory.GetParent(Directory.GetParent(dotGitDirectory).FullName).FullName;
 
             return dotGitDirectory;
         }
@@ -159,10 +156,17 @@ namespace GitVersion
                 return targetPath;
             }
 
-            var dotGetGitDirectory = GetDotGitDirectory();
-            var result = Directory.GetParent(dotGetGitDirectory).FullName;
-            Logger.WriteInfo($"Returning Project Root from DotGitDirectory: {dotGetGitDirectory} - {result}");
-            return result;
+            var dotGitDirectory = Repository.Discover(targetPath);
+
+            if (string.IsNullOrEmpty(dotGitDirectory))
+                throw new DirectoryNotFoundException($"Can't find the .git directory in {targetPath}");
+
+            using (var repo = new Repository(dotGitDirectory))
+            {
+                var result = repo.Info.WorkingDirectory;
+                Logger.WriteInfo($"Returning Project Root from DotGitDirectory: {dotGitDirectory} - {result}");
+                return result;
+            }
         }
 
         static string CreateDynamicRepository(string targetPath, AuthenticationInfo authentication, string repositoryUrl, string targetBranch, bool noFetch)
