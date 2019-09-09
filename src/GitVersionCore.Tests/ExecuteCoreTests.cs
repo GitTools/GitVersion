@@ -12,6 +12,7 @@ using GitVersion.OutputVariables;
 using GitVersion.Cache;
 using LibGit2Sharp;
 using GitVersionCore.Tests.Helpers;
+using GitVersion.Common;
 
 namespace GitVersionCore.Tests
 {

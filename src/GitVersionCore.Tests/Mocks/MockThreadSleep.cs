@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using GitVersion.Helpers;
+using GitVersion.Common;
 
 namespace GitVersionCore.Tests.Mocks
 {

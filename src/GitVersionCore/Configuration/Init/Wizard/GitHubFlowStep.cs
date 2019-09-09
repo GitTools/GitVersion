@@ -1,5 +1,5 @@
 using GitVersion.Configuration.Init.SetConfig;
-using GitVersion.Helpers;
+using GitVersion.Common;
 
 namespace GitVersion.Configuration.Init.Wizard
 {

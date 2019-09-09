@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using GitVersion.Helpers;
+using GitVersion.Common;
 
 namespace GitVersion.Configuration.Init.Wizard
 {

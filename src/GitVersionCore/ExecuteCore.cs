@@ -5,6 +5,7 @@ using GitVersion.BuildServers;
 using GitVersion.Configuration;
 using GitVersion.OutputVariables;
 using GitVersion.Cache;
+using GitVersion.Common;
 
 namespace GitVersion
 {

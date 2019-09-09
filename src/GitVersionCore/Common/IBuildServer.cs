@@ -1,7 +1,7 @@
 ﻿using System;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.BuildServers
+namespace GitVersion.Common
 {
     public interface IBuildServer
     {

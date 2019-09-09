@@ -2,7 +2,7 @@ using System;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.BuildServers
+namespace GitVersion.Common
 {
     public abstract class BuildServerBase : IBuildServer
     {

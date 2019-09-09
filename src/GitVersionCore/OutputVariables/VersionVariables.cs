@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using GitVersion.Helpers;
 using YamlDotNet.Serialization;
+using GitVersion.Common;
 
 namespace GitVersion.OutputVariables
 {

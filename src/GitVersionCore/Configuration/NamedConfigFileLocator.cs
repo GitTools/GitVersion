@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using GitVersion.Exceptions;
-using GitVersion.Helpers;
+using GitVersion.Common;
 
 namespace GitVersion.Configuration
 {

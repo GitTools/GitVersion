@@ -9,6 +9,7 @@ using System.Text;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
 using GitVersion.OutputFormatters;
+using GitVersion.Common;
 
 namespace GitVersion
 {

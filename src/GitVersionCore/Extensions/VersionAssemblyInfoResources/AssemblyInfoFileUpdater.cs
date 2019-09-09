@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion.Helpers;
 using GitVersion.OutputVariables;
+using GitVersion.Common;
 
 namespace GitVersion.Extensions.VersionAssemblyInfoResources
 {

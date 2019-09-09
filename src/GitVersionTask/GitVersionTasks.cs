@@ -12,6 +12,7 @@ using GitVersionTask.MsBuild.Tasks;
 using Microsoft.Build.Framework;
 using GitVersion.Extensions.GitVersionInformationResources;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
+using GitVersion.Common;
 
 namespace GitVersionTask
 {

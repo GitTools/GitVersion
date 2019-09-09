@@ -5,6 +5,7 @@ using Shouldly;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
 using GitVersion.Helpers;
+using GitVersion.Common;
 
 namespace GitVersionCore.Tests
 {

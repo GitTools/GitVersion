@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Helpers;
+using GitVersion.Common;
 
 namespace GitVersion.Configuration.Init.BuildServer
 {

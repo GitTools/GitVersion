@@ -5,6 +5,7 @@ using System.Linq;
 using GitVersion.Helpers;
 using GitVersion.OutputVariables;
 using YamlDotNet.Serialization;
+using GitVersion.Common;
 
 namespace GitVersion.Cache
 {

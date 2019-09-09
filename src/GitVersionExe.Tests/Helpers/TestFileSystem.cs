@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using GitVersion.Helpers;
+using GitVersion.Common;
 
 namespace GitVersionExe.Tests.Helpers
 {

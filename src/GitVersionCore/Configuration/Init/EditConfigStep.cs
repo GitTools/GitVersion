@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using GitVersion.Configuration.Init.BuildServer;
 using GitVersion.Configuration.Init.SetConfig;
 using GitVersion.Configuration.Init.Wizard;
-using GitVersion.Helpers;
+using GitVersion.Common;
 
 namespace GitVersion.Configuration.Init
 {

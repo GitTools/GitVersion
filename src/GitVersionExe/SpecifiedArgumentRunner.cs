@@ -9,6 +9,7 @@ using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 using GitVersion.Extensions;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
+using GitVersion.Common;
 
 namespace GitVersion
 {

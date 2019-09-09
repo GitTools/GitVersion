@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using GitVersion;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.BuildServers;
 using GitVersion.OutputVariables;
+using GitVersion.Common;
 
 namespace GitVersionCore.Tests.BuildServers
 {
