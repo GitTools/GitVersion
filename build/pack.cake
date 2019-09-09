@@ -48,34 +48,45 @@ Task("Test")
         var projects = GetFiles("./src/**/*.Tests.csproj");
         foreach(var project in projects)
         {
-            var projectName = $"{project.GetFilenameWithoutExtension()}.{framework}";
-            var settings = new DotNetCoreTestSettings {
-                Framework = framework,
-                NoBuild = true,
-                NoRestore = true,
-                Configuration = parameters.Configuration,
-            };
-
-            if (!parameters.IsRunningOnMacOS) {
-                settings.TestAdapterPath = new DirectoryPath(".");
-                var resultsPath = MakeAbsolute(testResultsPath.CombineWithFilePath($"{projectName}.results.xml"));
-                settings.Logger = $"nunit;LogFilePath={resultsPath}";
-            }
-
-            var coverletSettings = new CoverletSettings {
-                CollectCoverage = true,
-                CoverletOutputFormat = CoverletOutputFormat.opencover,
-                CoverletOutputDirectory = testResultsPath,
-                CoverletOutputName = $"{projectName}.coverage.xml"
-            };
-
-            if (IsRunningOnUnix() && string.Equals(framework, parameters.FullFxVersion))
+            actions.Add(() =>
             {
-                settings.Filter = "TestCategory!=NoMono";
-            }
+                var projectName = $"{project.GetFilenameWithoutExtension()}.{framework}";
+                var settings = new DotNetCoreTestSettings {
+                    Framework = framework,
+                    NoBuild = true,
+                    NoRestore = true,
+                    Configuration = parameters.Configuration,
+                };
 
-            DotNetCoreTest(project.FullPath, settings, coverletSettings);
+                if (!parameters.IsRunningOnMacOS) {
+                    settings.TestAdapterPath = new DirectoryPath(".");
+                    var resultsPath = MakeAbsolute(testResultsPath.CombineWithFilePath($"{projectName}.results.xml"));
+                    settings.Logger = $"nunit;LogFilePath={resultsPath}";
+                }
+
+                var coverletSettings = new CoverletSettings {
+                    CollectCoverage = true,
+                    CoverletOutputFormat = CoverletOutputFormat.opencover,
+                    CoverletOutputDirectory = testResultsPath,
+                    CoverletOutputName = $"{projectName}.coverage.xml"
+                };
+
+                if (IsRunningOnUnix() && string.Equals(framework, parameters.FullFxVersion))
+                {
+                    settings.Filter = "TestCategory!=NoMono";
+                }
+
+                DotNetCoreTest(project.FullPath, settings, coverletSettings);
+            });
         }
+
+        var options = new ParallelOptions
+        {
+            MaxDegreeOfParallelism = -1,
+            CancellationToken = default
+        };
+
+        Parallel.Invoke(options, actions.ToArray());
     }
 
     var workDir = "./src/GitVersionVsixTask";
