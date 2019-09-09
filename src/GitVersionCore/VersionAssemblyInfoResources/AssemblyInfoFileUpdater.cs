@@ -1,12 +1,13 @@
-namespace GitVersion
-{
-    using Helpers;
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Text.RegularExpressions;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using GitVersion.Helpers;
+using GitVersion.OutputVariables;
 
+namespace GitVersion.VersionAssemblyInfoResources
+{
     public class AssemblyInfoFileUpdater : IDisposable
     {
         readonly List<Action> restoreBackupTasks = new List<Action>();

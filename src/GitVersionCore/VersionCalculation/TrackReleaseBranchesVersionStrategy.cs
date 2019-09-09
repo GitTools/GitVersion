@@ -1,11 +1,11 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using GitVersion.VersionCalculation.BaseVersionCalculators;
+using LibGit2Sharp;
+
 namespace GitVersion.VersionCalculation
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-    using BaseVersionCalculators;
-    using LibGit2Sharp;
-
     /// <summary>
     /// Active only when the branch is marked as IsDevelop.
     /// Two different algorithms (results are merged):

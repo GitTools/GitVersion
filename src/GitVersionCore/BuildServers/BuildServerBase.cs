@@ -1,7 +1,9 @@
-﻿namespace GitVersion
-{
-    using System;
+﻿using System;
+using GitVersion.OutputFormatters;
+using GitVersion.OutputVariables;
 
+namespace GitVersion.BuildServers
+{
     public abstract class BuildServerBase : IBuildServer
     {
         public abstract bool CanApplyToCurrentContext();

@@ -1,52 +1,55 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using GitVersion;
-using GitVersionCore.Tests;
 using NUnit.Framework;
 using Shouldly;
-using System.Reflection;
+using GitVersion.BuildServers;
+using GitVersion.OutputVariables;
 
-[TestFixture]
-public class JenkinsMessageGenerationTests : TestBase
+namespace GitVersionCore.Tests.BuildServers
 {
-    [Test]
-    public void GenerateSetVersionMessageReturnsVersionAsIs_AlthoughThisIsNotUsedByJenkins()
+    [TestFixture]
+    public class JenkinsMessageGenerationTests : TestBase
     {
-        var j = new Jenkins();
-        var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Beta4.7");
-        j.GenerateSetVersionMessage(vars).ShouldBe("0.0.0-Beta4.7");
-    }
-
-    [Test]
-    public void GenerateMessageTest()
-    {
-        var j = new Jenkins();
-        var generatedParameterMessages = j.GenerateSetParameterMessage("name", "value");
-        generatedParameterMessages.Length.ShouldBe(1);
-        generatedParameterMessages[0].ShouldBe("GitVersion_name=value");
-    }
-
-    [Test]
-    public void WriteAllVariablesToTheTextWriter()
-    {
-        var assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        var f = Path.Combine(assemblyLocation, "this_file_should_be_deleted.properties");
-
-        try
+        [Test]
+        public void GenerateSetVersionMessageReturnsVersionAsIs_AlthoughThisIsNotUsedByJenkins()
         {
-            AssertVariablesAreWrittenToFile(f);
+            var j = new Jenkins();
+            var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Beta4.7");
+            j.GenerateSetVersionMessage(vars).ShouldBe("0.0.0-Beta4.7");
         }
-        finally
-        {
-            File.Delete(f);
-        }
-    }
 
-    static void AssertVariablesAreWrittenToFile(string f)
-    {
-        var writes = new List<string>();
-        var semanticVersion = new SemanticVersion
+        [Test]
+        public void GenerateMessageTest()
+        {
+            var j = new Jenkins();
+            var generatedParameterMessages = j.GenerateSetParameterMessage("name", "value");
+            generatedParameterMessages.Length.ShouldBe(1);
+            generatedParameterMessages[0].ShouldBe("GitVersion_name=value");
+        }
+
+        [Test]
+        public void WriteAllVariablesToTheTextWriter()
+        {
+            var assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var f = Path.Combine(assemblyLocation, "gitlab_this_file_should_be_deleted.properties");
+
+            try
+            {
+                AssertVariablesAreWrittenToFile(f);
+            }
+            finally
+            {
+                File.Delete(f);
+            }
+        }
+
+        static void AssertVariablesAreWrittenToFile(string f)
+        {
+            var writes = new List<string>();
+            var semanticVersion = new SemanticVersion
             {
                 Major = 1,
                 Minor = 2,
@@ -55,24 +58,25 @@ public class JenkinsMessageGenerationTests : TestBase
                 BuildMetaData = "5"
             };
 
-        semanticVersion.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
-        semanticVersion.BuildMetaData.Sha = "commitSha";
+            semanticVersion.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
+            semanticVersion.BuildMetaData.Sha = "commitSha";
 
-        var config = new TestEffectiveConfiguration();
+            var config = new TestEffectiveConfiguration();
 
-        var variables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
+            var variables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
 
-        var j = new Jenkins(f);
+            var j = new Jenkins(f);
 
-        j.WriteIntegration(writes.Add, variables);
+            j.WriteIntegration(writes.Add, variables);
 
-        writes[1].ShouldBe("1.2.3-beta.1+5");
+            writes[1].ShouldBe("1.2.3-beta.1+5");
 
-        File.Exists(f).ShouldBe(true);
+            File.Exists(f).ShouldBe(true);
 
-        var props = File.ReadAllText(f);
+            var props = File.ReadAllText(f);
 
-        props.ShouldContain("GitVersion_Major=1");
-        props.ShouldContain("GitVersion_Minor=2");
+            props.ShouldContain("GitVersion_Major=1");
+            props.ShouldContain("GitVersion_Minor=2");
+        }
     }
 }

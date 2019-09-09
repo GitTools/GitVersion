@@ -1,9 +1,9 @@
-namespace GitVersion
-{
-    using System.IO;
-    using YamlDotNet.Serialization;
-    using YamlDotNet.Serialization.NamingConventions;
+using System.IO;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
+namespace GitVersion.Configuration
+{
     public class ConfigSerialiser
     {
         public static Config Read(TextReader reader)

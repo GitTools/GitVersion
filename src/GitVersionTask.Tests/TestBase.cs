@@ -1,9 +1,12 @@
-﻿public class TestBase
+﻿namespace GitVersionTask.Tests
 {
-    static TestBase()
+    public class TestBase
     {
-        ModuleInitializer.Initialize();
-    }
+        static TestBase()
+        {
+            ModuleInitializer.Initialize();
+        }
 
+    }
 }
 

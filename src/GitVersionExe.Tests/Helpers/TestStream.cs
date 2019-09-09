@@ -3,74 +3,77 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-public class TestStream : Stream
+namespace GitVersionExe.Tests.Helpers
 {
-    readonly string path;
-    readonly TestFileSystem testFileSystem;
-    MemoryStream underlying = new MemoryStream();
-
-    public TestStream(string path, TestFileSystem testFileSystem)
+    public class TestStream : Stream
     {
-        this.path = path;
-        this.testFileSystem = testFileSystem;
-    }
+        readonly string path;
+        readonly TestFileSystem testFileSystem;
+        MemoryStream underlying = new MemoryStream();
 
-    protected override void Dispose(bool disposing)
-    {
-        Flush();
-        base.Dispose(disposing);
-    }
+        public TestStream(string path, TestFileSystem testFileSystem)
+        {
+            this.path = path;
+            this.testFileSystem = testFileSystem;
+        }
 
-    public override void Flush()
-    {
-        underlying.Position = 0;
-        var readToEnd = new StreamReader(underlying).ReadToEnd();
-        testFileSystem.WriteAllText(path, readToEnd);
-    }
+        protected override void Dispose(bool disposing)
+        {
+            Flush();
+            base.Dispose(disposing);
+        }
 
-    public override long Seek(long offset, SeekOrigin origin)
-    {
-        return underlying.Seek(offset, origin);
-    }
+        public override void Flush()
+        {
+            underlying.Position = 0;
+            var readToEnd = new StreamReader(underlying).ReadToEnd();
+            testFileSystem.WriteAllText(path, readToEnd);
+        }
 
-    public override void SetLength(long value)
-    {
-        underlying.SetLength(value);
-    }
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            return underlying.Seek(offset, origin);
+        }
 
-    public override int Read(byte[] buffer, int offset, int count)
-    {
-        return underlying.Read(buffer, offset, count);
-    }
+        public override void SetLength(long value)
+        {
+            underlying.SetLength(value);
+        }
 
-    public override void Write(byte[] buffer, int offset, int count)
-    {
-        underlying.Write(buffer, offset, count);
-    }
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            return underlying.Read(buffer, offset, count);
+        }
 
-    public override void WriteByte(byte value)
-    {
-        base.WriteByte(value);
-    }
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            underlying.Write(buffer, offset, count);
+        }
 
-    public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
-    {
-        return base.BeginWrite(buffer, offset, count, callback, state);
-    }
+        public override void WriteByte(byte value)
+        {
+            base.WriteByte(value);
+        }
 
-    public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-    {
-        return base.WriteAsync(buffer, offset, count, cancellationToken);
-    }
+        public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+        {
+            return base.BeginWrite(buffer, offset, count, callback, state);
+        }
 
-    public override bool CanRead => underlying.CanRead;
-    public override bool CanSeek => underlying.CanSeek;
-    public override bool CanWrite => underlying.CanWrite;
-    public override long Length => underlying.Length;
+        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            return base.WriteAsync(buffer, offset, count, cancellationToken);
+        }
 
-    public override long Position
-    {
-        get => underlying.Position;
-        set => underlying.Position = value;
+        public override bool CanRead => underlying.CanRead;
+        public override bool CanSeek => underlying.CanSeek;
+        public override bool CanWrite => underlying.CanWrite;
+        public override long Length => underlying.Length;
+
+        public override long Position
+        {
+            get => underlying.Position;
+            set => underlying.Position = value;
+        }
     }
 }

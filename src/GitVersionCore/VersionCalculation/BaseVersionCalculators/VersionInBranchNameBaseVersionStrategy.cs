@@ -1,10 +1,10 @@
+using System;
+using System.Collections.Generic;
+using GitVersion.Extensions;
+using LibGit2Sharp;
+
 namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
-    using System;
-    using System.Collections.Generic;
-
-    using LibGit2Sharp;
-
     /// <summary>
     /// Version is extracted from the name of the branch.
     /// BaseVersionSource is the commit where the branch was branched from its parent.

@@ -1,7 +1,7 @@
-namespace GitVersion
-{
-    using System;
+using System;
 
+namespace GitVersion.Configuration
+{
     public interface IConsole
     {
         void WriteLine(string msg);

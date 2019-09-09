@@ -1,7 +1,9 @@
-﻿namespace GitVersion
-{
-    using System;
+﻿using System;
+using GitVersion.Helpers;
+using GitVersion.OutputVariables;
 
+namespace GitVersion.BuildServers
+{
     public class TeamCity : BuildServerBase
     {
         public const string EnvironmentVariableName = "TEAMCITY_VERSION";

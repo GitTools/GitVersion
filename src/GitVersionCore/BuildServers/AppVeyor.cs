@@ -1,9 +1,10 @@
-namespace GitVersion
-{
-    using System;
-    using System.Net;
-    using System.Text;
+using System;
+using System.Net;
+using System.Text;
+using GitVersion.OutputVariables;
 
+namespace GitVersion.BuildServers
+{
     public class AppVeyor : BuildServerBase
     {
         public const string EnvironmentVariableName = "APPVEYOR";

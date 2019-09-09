@@ -2,38 +2,41 @@ using System;
 using System.IO;
 using System.Reflection;
 
-public static class PathHelper
+namespace GitVersionExe.Tests.Helpers
 {
-    public static string GetCurrentDirectory()
+    public static class PathHelper
     {
-        return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-    }
+        public static string GetCurrentDirectory()
+        {
+            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        }
 
-    public static string GetExecutable()
-    {
+        public static string GetExecutable()
+        {
 #if NET472
-        var executable = Path.Combine(GetExeDirectory(), "GitVersion.exe");
+            var executable = Path.Combine(GetExeDirectory(), "GitVersion.exe");
 #else
         var executable = "dotnet";
 #endif
-        return executable;
-    }
+            return executable;
+        }
 
-    public static string GetExecutableArgs(string args)
-    {
+        public static string GetExecutableArgs(string args)
+        {
 #if !NET472
         args = $"{Path.Combine(GetExeDirectory(), "GitVersion.dll")} {args}";
 #endif
-        return args;
-    }
+            return args;
+        }
 
-    public static string GetTempPath()
-    {
-        return Path.Combine(GetCurrentDirectory(), "TestRepositories", Guid.NewGuid().ToString());
-    }
+        public static string GetTempPath()
+        {
+            return Path.Combine(GetCurrentDirectory(), "TestRepositories", Guid.NewGuid().ToString());
+        }
 
-    private static string GetExeDirectory()
-    {
-        return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)?.Replace("GitVersionExe.Tests", "GitVersionExe");
+        private static string GetExeDirectory()
+        {
+            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)?.Replace("GitVersionExe.Tests", "GitVersionExe");
+        }
     }
 }

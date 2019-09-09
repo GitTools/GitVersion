@@ -1,14 +1,16 @@
+using GitVersion.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using GitVersion.Configuration;
+using GitVersion.Exceptions;
+
 namespace GitVersion
 {
-    using GitVersion.Helpers;
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Linq;
-    using System.Reflection;
-    using System.Text;
-
     class Program
     {
         static StringBuilder log = new StringBuilder();

@@ -1,9 +1,9 @@
+using System;
+using System.Linq;
+using System.Reflection;
+
 namespace GitVersion
 {
-    using System;
-    using System.Linq;
-    using System.Reflection;
-
     class VersionWriter
     {
         public static void Write(Assembly assembly)

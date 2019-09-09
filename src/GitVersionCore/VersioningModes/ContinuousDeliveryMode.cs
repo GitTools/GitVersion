@@ -1,9 +1,9 @@
-﻿namespace GitVersion.VersioningModes
-{
-    using System.Collections.Generic;
-    using System.Linq;
-    using LibGit2Sharp;
+﻿using System.Collections.Generic;
+using System.Linq;
+using LibGit2Sharp;
 
+namespace GitVersion.VersioningModes
+{
     public class ContinuousDeliveryMode : VersioningModeBase
     {
         public override SemanticVersionPreReleaseTag GetPreReleaseTag(GitVersionContext context, List<Tag> possibleCommits, int numberOfCommits)

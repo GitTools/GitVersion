@@ -1,12 +1,13 @@
+using GitVersion.Helpers;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using GitVersion.OutputVariables;
+using YamlDotNet.Serialization;
+
 namespace GitVersion
 {
-    using GitVersion.Helpers;
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using YamlDotNet.Serialization;
-
     public class GitVersionCache
     {
         readonly IFileSystem fileSystem;

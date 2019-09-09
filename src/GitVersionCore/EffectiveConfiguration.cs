@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using GitVersion.VersionFilters;
+using GitVersion.Configuration;
+using GitVersion.VersioningModes;
 
 namespace GitVersion
 {

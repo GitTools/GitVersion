@@ -1,14 +1,15 @@
+using System.IO;
+using System.Linq;
+using NUnit.Framework;
+
+using GitVersion;
+using GitTools.Testing;
+using System.Collections.Generic;
+using System.Xml;
+using GitVersion.OutputVariables;
+
 namespace GitVersionExe.Tests
 {
-    using System.IO;
-    using System.Linq;
-    using NUnit.Framework;
-
-    using GitVersion;
-    using GitTools.Testing;
-    using System.Collections.Generic;
-    using System.Xml;
-
     [TestFixture]
     [Parallelizable(ParallelScope.None)]
     class UpdateWixVersionFileTests

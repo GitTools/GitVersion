@@ -1,11 +1,16 @@
+using GitVersion.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using GitVersion.BuildServers;
+using GitVersion.Exceptions;
+using GitVersion.OutputFormatters;
+using GitVersion.OutputVariables;
+using GitVersion.VersionAssemblyInfoResources;
+
 namespace GitVersion
 {
-    using GitVersion.Helpers;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Runtime.InteropServices;
-
     class SpecifiedArgumentRunner
     {
         private static readonly bool runningOnUnix = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);

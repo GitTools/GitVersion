@@ -1,4 +1,7 @@
-﻿public interface IPostTestDirectoryRemover
+﻿namespace GitVersionTask.Tests.Helpers
 {
-    void Register(string directoryPath);
+    public interface IPostTestDirectoryRemover
+    {
+        void Register(string directoryPath);
+    }
 }

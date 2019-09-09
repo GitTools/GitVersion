@@ -1,9 +1,10 @@
-﻿namespace GitVersionCore.Tests.Init
-{
-    using System;
-    using System.Collections.Generic;
-    using GitVersion;
+﻿using System;
+using System.Collections.Generic;
+using GitVersion;
+using GitVersion.Configuration;
 
+namespace GitVersionCore.Tests.Init
+{
     public class TestConsole : IConsole
     {
         readonly Queue<string> responses;

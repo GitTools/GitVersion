@@ -1,8 +1,9 @@
+using System;
+using System.Text.RegularExpressions;
+using GitVersion.Exceptions;
+
 namespace GitVersion
 {
-    using System;
-    using System.Text.RegularExpressions;
-
     public class SemanticVersion : IFormattable, IComparable<SemanticVersion>
     {
         public static SemanticVersion Empty = new SemanticVersion();

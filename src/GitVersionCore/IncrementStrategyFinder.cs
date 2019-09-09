@@ -1,11 +1,12 @@
-﻿namespace GitVersion
-{
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-    using VersionCalculation.BaseVersionCalculators;
-    using LibGit2Sharp;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using GitVersion.Configuration;
+using GitVersion.VersionCalculation.BaseVersionCalculators;
+using LibGit2Sharp;
 
+namespace GitVersion
+{
     public enum CommitMessageIncrementMode
     {
         Enabled,

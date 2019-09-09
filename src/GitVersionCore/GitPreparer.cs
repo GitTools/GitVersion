@@ -1,10 +1,11 @@
+using System;
+using System.IO;
+using System.Linq;
+using GitVersion.Helpers;
+using LibGit2Sharp;
+
 namespace GitVersion
 {
-    using System;
-    using System.IO;
-    using System.Linq;
-    using LibGit2Sharp;
-
     public class GitPreparer
     {
         string targetUrl;

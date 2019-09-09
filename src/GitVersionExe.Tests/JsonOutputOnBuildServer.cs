@@ -1,9 +1,9 @@
-﻿namespace GitVersionExe.Tests
-{
-    using GitTools.Testing;
-    using NUnit.Framework;
-    using Shouldly;
+﻿using GitTools.Testing;
+using NUnit.Framework;
+using Shouldly;
 
+namespace GitVersionExe.Tests
+{
     public class JsonOutputOnBuildServer
     {
         [Test]

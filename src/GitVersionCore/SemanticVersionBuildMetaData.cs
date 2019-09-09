@@ -1,8 +1,8 @@
+using System;
+using System.Text.RegularExpressions;
+
 namespace GitVersion
 {
-    using System;
-    using System.Text.RegularExpressions;
-
     public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVersionBuildMetaData>
     {
         static Regex ParseRegex = new Regex(

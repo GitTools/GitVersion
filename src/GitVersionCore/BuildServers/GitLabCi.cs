@@ -1,8 +1,10 @@
-namespace GitVersion
-{
-    using System;
-    using System.IO;
+using System;
+using System.IO;
+using GitVersion.OutputFormatters;
+using GitVersion.OutputVariables;
 
+namespace GitVersion.BuildServers
+{
     public class GitLabCi : BuildServerBase
     {
         string _file;

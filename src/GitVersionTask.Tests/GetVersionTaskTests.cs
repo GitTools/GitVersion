@@ -1,23 +1,26 @@
 using System.Linq;
-using GitVersion;
 using GitVersionTask.MsBuild.Tasks;
 using Microsoft.Build.Framework;
 using NUnit.Framework;
 using Shouldly;
+using GitVersion.OutputVariables;
 
-[TestFixture]
-public class GetVersionTaskTests : TestBase
+namespace GitVersionTask.Tests
 {
-    [Test]
-    public void OutputsShouldMatchVariableProvider()
+    [TestFixture]
+    public class GetVersionTaskTests : TestBase
     {
-        var taskProperties = typeof(GetVersion)
-            .GetProperties()
-            .Where(p => p.GetCustomAttributes(typeof(OutputAttribute), false).Any())
-            .Select(p => p.Name);
+        [Test]
+        public void OutputsShouldMatchVariableProvider()
+        {
+            var taskProperties = typeof(GetVersion)
+                .GetProperties()
+                .Where(p => p.GetCustomAttributes(typeof(OutputAttribute), false).Any())
+                .Select(p => p.Name);
 
-        var variablesProperties = VersionVariables.AvailableVariables;
+            var variablesProperties = VersionVariables.AvailableVariables;
 
-        taskProperties.ShouldBe(variablesProperties, ignoreOrder: true);
+            taskProperties.ShouldBe(variablesProperties, ignoreOrder: true);
+        }
     }
 }

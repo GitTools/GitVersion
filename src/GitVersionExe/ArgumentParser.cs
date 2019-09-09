@@ -1,11 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.IO;
+using System.Linq;
+using GitVersion.Configuration;
+using GitVersion.Exceptions;
+using GitVersion.OutputVariables;
+
 namespace GitVersion
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Specialized;
-    using System.IO;
-    using System.Linq;
-
     public class ArgumentParser
     {
         public static Arguments ParseArguments(string commandLineArguments)

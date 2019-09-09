@@ -1,14 +1,17 @@
+using System;
+using System.Collections.Generic;
+using GitTools.Testing;
+using GitVersion;
+using GitVersion.Configuration;
+using GitVersion.VersionCalculation;
+using GitVersion.VersioningModes;
+using GitVersionCore.Tests.Mocks;
+using LibGit2Sharp;
+using NUnit.Framework;
+using Shouldly;
+
 namespace GitVersionCore.Tests.VersionCalculation
 {
-    using System;
-    using System.Collections.Generic;
-    using GitTools.Testing;
-    using GitVersion;
-    using GitVersion.VersionCalculation;
-    using LibGit2Sharp;
-    using NUnit.Framework;
-    using Shouldly;
-
     public class NextVersionCalculatorTests : TestBase
     {
         [Test]

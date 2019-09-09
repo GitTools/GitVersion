@@ -1,8 +1,9 @@
-﻿namespace GitVersion
-{
-    using System.Collections.Generic;
-    using YamlDotNet.Serialization;
+﻿using System.Collections.Generic;
+using GitVersion.VersioningModes;
+using YamlDotNet.Serialization;
 
+namespace GitVersion.Configuration
+{
     public class BranchConfig
     {
         public BranchConfig()

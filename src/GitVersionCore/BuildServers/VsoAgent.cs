@@ -1,10 +1,12 @@
-namespace GitVersion
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.RegularExpressions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using GitVersion.Extensions;
+using GitVersion.OutputVariables;
 
+namespace GitVersion.BuildServers
+{
     public class VsoAgent : BuildServerBase
     {
         public const string EnvironmentVariableName = "TF_BUILD";

@@ -1,12 +1,13 @@
+using GitVersion.Helpers;
+
+using System;
+using System.IO;
+using System.Text;
+using System.Xml;
+using GitVersion.OutputVariables;
+
 namespace GitVersion
 {
-    using Helpers;
-
-    using System;
-    using System.IO;
-    using System.Text;
-    using System.Xml;
-
     public class WixVersionFileUpdater : IDisposable
     {
         VersionVariables variables;

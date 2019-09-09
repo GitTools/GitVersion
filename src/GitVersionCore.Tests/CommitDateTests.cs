@@ -3,6 +3,8 @@ using System.Linq;
 using GitVersion;
 using GitVersion.VersionFilters;
 using NUnit.Framework;
+using GitVersion.Configuration;
+using GitVersion.VersioningModes;
 
 namespace GitVersionCore.Tests
 {

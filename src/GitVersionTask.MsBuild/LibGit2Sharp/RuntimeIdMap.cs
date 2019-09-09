@@ -1,11 +1,10 @@
 // This code originally copied from https://raw.githubusercontent.com/dotnet/sourcelink/master/src/Microsoft.Build.Tasks.Git/RuntimeIdMap.cs
 #if !NET472
+using System;
+using System.Diagnostics;
 
 namespace GitVersionTask.MsBuild.LibGit2Sharp
 {
-    using System;
-    using System.Diagnostics;
-
     internal static class RuntimeIdMap
     {
         // This functionality needs to be provided as .NET Core API.

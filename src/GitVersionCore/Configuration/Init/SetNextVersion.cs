@@ -1,9 +1,9 @@
+using System.Collections.Generic;
+using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Helpers;
+
 namespace GitVersion.Configuration.Init
 {
-    using System.Collections.Generic;
-    using GitVersion.Configuration.Init.Wizard;
-    using GitVersion.Helpers;
-
     public class SetNextVersion : ConfigInitWizardStep
     {
         public SetNextVersion(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)

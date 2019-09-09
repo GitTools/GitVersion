@@ -1,8 +1,9 @@
+using System.IO;
+using GitVersion.Exceptions;
+using GitVersion.VersionCalculation;
+
 namespace GitVersion
 {
-    using System.IO;
-    using GitVersion.VersionCalculation;
-
     public class GitVersionFinder
     {
         public SemanticVersion FindVersion(GitVersionContext context)

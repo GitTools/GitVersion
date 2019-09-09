@@ -1,7 +1,7 @@
-﻿namespace GitVersion
-{
-    using LibGit2Sharp;
+﻿using LibGit2Sharp;
 
+namespace GitVersion
+{
     /// <summary>
     /// A commit, together with the branch to which the commit belongs.
     /// </summary>

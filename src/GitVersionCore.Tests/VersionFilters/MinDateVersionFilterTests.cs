@@ -4,6 +4,7 @@ using GitVersion.VersionFilters;
 using NUnit.Framework;
 using Shouldly;
 using System;
+using GitVersionCore.Tests.Mocks;
 
 namespace GitVersionCore.Tests.VersionFilters
 {

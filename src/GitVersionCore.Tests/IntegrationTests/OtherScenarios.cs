@@ -1,12 +1,13 @@
-﻿namespace GitVersionCore.Tests.IntegrationTests
-{
-    using System.Linq;
-    using GitTools.Testing;
-    using GitVersion;
-    using LibGit2Sharp;
-    using NUnit.Framework;
-    using System.Collections.Generic;
+using System.Linq;
+using GitTools.Testing;
+using LibGit2Sharp;
+using NUnit.Framework;
+using System.Collections.Generic;
+using GitVersion.Configuration;
+using GitVersion.VersioningModes;
 
+namespace GitVersionCore.Tests.IntegrationTests
+{
     [TestFixture]
     public class OtherScenarios : TestBase
     {

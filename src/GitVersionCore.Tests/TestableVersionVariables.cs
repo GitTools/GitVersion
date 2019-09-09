@@ -1,7 +1,7 @@
+using GitVersion.OutputVariables;
+
 namespace GitVersionCore.Tests
 {
-    using GitVersion;
-
     class TestableVersionVariables : VersionVariables
     {
         public TestableVersionVariables(

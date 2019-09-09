@@ -1,9 +1,9 @@
-﻿namespace GitVersionCore.Tests.VersionCalculation
-{
-    using GitVersion;
-    using GitVersion.VersionCalculation;
-    using LibGit2Sharp;
+﻿using GitVersion;
+using GitVersion.VersionCalculation;
+using LibGit2Sharp;
 
+namespace GitVersionCore.Tests.VersionCalculation
+{
     public class TestMetaDataCalculator : IMetaDataCalculator
     {
         SemanticVersionBuildMetaData metaData;

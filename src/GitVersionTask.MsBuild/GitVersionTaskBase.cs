@@ -1,8 +1,8 @@
+using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
+
 namespace GitVersionTask.MsBuild
 {
-    using Microsoft.Build.Framework;
-    using Microsoft.Build.Utilities;
-
     public abstract class GitVersionTaskBase : Task
     {
         [Required]

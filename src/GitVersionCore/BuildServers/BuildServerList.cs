@@ -1,8 +1,8 @@
-namespace GitVersion
-{
-    using System;
-    using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 
+namespace GitVersion.BuildServers
+{
     public static class BuildServerList
     {
         static List<IBuildServer> BuildServers = new List<IBuildServer>

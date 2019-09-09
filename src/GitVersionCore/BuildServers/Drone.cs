@@ -1,7 +1,8 @@
-namespace GitVersion
-{
-    using System;
+using System;
+using GitVersion.OutputVariables;
 
+namespace GitVersion.BuildServers
+{
     public class Drone : BuildServerBase
     {
         public override bool CanApplyToCurrentContext()

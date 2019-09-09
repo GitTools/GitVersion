@@ -1,8 +1,8 @@
-﻿namespace GitVersion.VersionCalculation
-{
-    using System.Collections.Generic;
-    using BaseVersionCalculators;
+﻿using System.Collections.Generic;
+using GitVersion.VersionCalculation.BaseVersionCalculators;
 
+namespace GitVersion.VersionCalculation
+{
     public abstract class BaseVersionStrategy
     {
         /// <summary>

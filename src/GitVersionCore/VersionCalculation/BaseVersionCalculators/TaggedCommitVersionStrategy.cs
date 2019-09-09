@@ -1,10 +1,10 @@
-﻿namespace GitVersion.VersionCalculation.BaseVersionCalculators
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using LibGit2Sharp;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using LibGit2Sharp;
 
+namespace GitVersion.VersionCalculation.BaseVersionCalculators
+{
     /// <summary>
     /// Version is extracted from all tags on the branch which are valid, and not newer than the current commit.
     /// BaseVersionSource is the tag's commit.

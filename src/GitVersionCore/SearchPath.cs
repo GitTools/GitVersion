@@ -1,8 +1,8 @@
-﻿namespace GitVersion
-{
-    using System;
-    using System.IO;
+﻿using System;
+using System.IO;
 
+namespace GitVersion
+{
     class SearchPath
     {
         static bool isPathSet;

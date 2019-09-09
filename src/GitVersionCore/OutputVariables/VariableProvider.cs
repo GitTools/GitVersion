@@ -1,9 +1,11 @@
-namespace GitVersion
-{
-    using System;
-    using System.Text.RegularExpressions;
-    using GitVersion.VersionCalculation;
+using System;
+using System.Text.RegularExpressions;
+using GitVersion.Exceptions;
+using GitVersion.VersionCalculation;
+using GitVersion.VersioningModes;
 
+namespace GitVersion.OutputVariables
+{
     public static class VariableProvider
     {
         public static VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)

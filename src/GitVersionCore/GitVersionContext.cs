@@ -1,9 +1,11 @@
+using LibGit2Sharp;
+using System;
+using System.Linq;
+using GitVersion.Configuration;
+using GitVersion.Extensions;
+
 namespace GitVersion
 {
-    using LibGit2Sharp;
-    using System;
-    using System.Linq;
-
     /// <summary>
     /// Contextual information about where GitVersion is being run
     /// </summary>

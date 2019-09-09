@@ -1,11 +1,14 @@
 using LibGit2Sharp;
 
-public class MockTagAnnotation : TagAnnotation
+namespace GitVersionCore.Tests.Mocks
 {
+    public class MockTagAnnotation : TagAnnotation
+    {
 
-    public Signature TaggerEx;
-    public override Signature Tagger => TaggerEx;
+        public Signature TaggerEx;
+        public override Signature Tagger => TaggerEx;
 
-    public GitObject TargetEx;
-    public override GitObject Target => TargetEx;
+        public GitObject TargetEx;
+        public override GitObject Target => TargetEx;
+    }
 }

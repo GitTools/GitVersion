@@ -1,11 +1,13 @@
+using System;
+using GitTools.Testing;
+using GitVersion;
+using GitVersion.Configuration;
+using GitVersionCore.Tests.IntegrationTests;
+using NUnit.Framework;
+using Shouldly;
+
 namespace GitVersionCore.Tests
 {
-    using System;
-    using GitTools.Testing;
-    using GitVersion;
-    using NUnit.Framework;
-    using Shouldly;
-
     [TestFixture]
     public class GitRepoMetadataProviderTests : TestBase
     {

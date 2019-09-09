@@ -1,11 +1,11 @@
-﻿namespace GitVersionCore.Tests.VersionCalculation.Strategies
-{
-    using System.Linq;
-    using GitVersion;
-    using GitVersion.VersionCalculation.BaseVersionCalculators;
-    using NUnit.Framework;
-    using Shouldly;
+using System.Linq;
+using GitVersion.Configuration;
+using GitVersion.VersionCalculation.BaseVersionCalculators;
+using NUnit.Framework;
+using Shouldly;
 
+namespace GitVersionCore.Tests.VersionCalculation.Strategies
+{
     [TestFixture]
     public class ConfigNextVersionBaseVersionStrategyTests : TestBase
     {

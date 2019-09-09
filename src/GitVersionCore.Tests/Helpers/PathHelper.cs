@@ -2,15 +2,18 @@
 using System.IO;
 using System.Reflection;
 
-public static class PathHelper
+namespace GitVersionCore.Tests.Helpers
 {
-    public static string GetCurrentDirectory()
+    public static class PathHelper
     {
-        return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-    }
+        public static string GetCurrentDirectory()
+        {
+            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        }
 
-    public static string GetTempPath()
-    {
-        return Path.Combine(GetCurrentDirectory(), "TestRepositories", Guid.NewGuid().ToString());
+        public static string GetTempPath()
+        {
+            return Path.Combine(GetCurrentDirectory(), "TestRepositories", Guid.NewGuid().ToString());
+        }
     }
 }

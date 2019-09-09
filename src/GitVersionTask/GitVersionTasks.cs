@@ -1,13 +1,20 @@
+using System;
+using System.IO;
+using GitVersion;
+using GitVersion.BuildServers;
+using GitVersion.Configuration;
+using GitVersion.Exceptions;
+using GitVersion.GitVersionInformationResources;
+using GitVersion.Helpers;
+using GitVersion.OutputFormatters;
+using GitVersion.OutputVariables;
+using GitVersion.VersionAssemblyInfoResources;
+using GitVersionTask.MsBuild;
+using GitVersionTask.MsBuild.Tasks;
+using Microsoft.Build.Framework;
+
 namespace GitVersionTask
 {
-    using System;
-    using System.IO;
-    using GitVersion;
-    using GitVersion.Helpers;
-    using GitVersionTask.MsBuild;
-    using GitVersionTask.MsBuild.Tasks;
-    using Microsoft.Build.Framework;
-
     public static class GitVersionTasks
     {
         public static bool GetVersion(GetVersion task)

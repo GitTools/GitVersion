@@ -1,7 +1,8 @@
-namespace GitVersion
-{
-    using System;
+using System;
+using GitVersion.Exceptions;
 
+namespace GitVersion.Configuration
+{
     [Serializable]
     public class OldConfigurationException : GitVersionException
     {

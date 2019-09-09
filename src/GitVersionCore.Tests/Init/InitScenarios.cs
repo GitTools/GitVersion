@@ -1,11 +1,11 @@
+using System.IO;
+using System.Runtime.InteropServices;
+using GitVersion.Configuration;
+using NUnit.Framework;
+using Shouldly;
+
 namespace GitVersionCore.Tests.Init
 {
-    using System.IO;
-    using System.Runtime.InteropServices;
-    using GitVersion;
-    using NUnit.Framework;
-    using Shouldly;
-
     [TestFixture]
     public class InitScenarios : TestBase
     {

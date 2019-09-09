@@ -1,8 +1,8 @@
+using System.Collections.Generic;
+using GitVersion.Helpers;
+
 namespace GitVersion.Configuration.Init.Wizard
 {
-    using System.Collections.Generic;
-    using GitVersion.Helpers;
-
     public class PickBranchingStrategy2Step : ConfigInitWizardStep
     {
         public PickBranchingStrategy2Step(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)

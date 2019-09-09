@@ -1,8 +1,10 @@
-﻿namespace GitVersion
-{
-    using System;
-    using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using GitVersion.Helpers;
+using GitVersion.OutputVariables;
 
+namespace GitVersion.BuildServers
+{
     public class MyGet : BuildServerBase
     {
         public override bool CanApplyToCurrentContext()

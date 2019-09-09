@@ -1,18 +1,21 @@
 ﻿using System;
 using System.IO;
 
-public class SelfCleaningDirectory
+namespace GitVersionTask.Tests.Helpers
 {
-    public SelfCleaningDirectory(IPostTestDirectoryRemover directoryRemover, string path)
+    public class SelfCleaningDirectory
     {
-        if (Directory.Exists(path))
+        public SelfCleaningDirectory(IPostTestDirectoryRemover directoryRemover, string path)
         {
-            throw new InvalidOperationException($"Directory '{path}' already exists.");
+            if (Directory.Exists(path))
+            {
+                throw new InvalidOperationException($"Directory '{path}' already exists.");
+            }
+
+            DirectoryPath = path;
+            directoryRemover.Register(DirectoryPath);
         }
 
-        DirectoryPath = path;
-        directoryRemover.Register(DirectoryPath);
+        public string DirectoryPath;
     }
-
-    public string DirectoryPath;
 }

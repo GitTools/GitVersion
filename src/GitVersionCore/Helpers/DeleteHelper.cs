@@ -1,7 +1,7 @@
-namespace GitVersion
-{
-    using System.IO;
+using System.IO;
 
+namespace GitVersion.Helpers
+{
     public static class DeleteHelper
     {
         public static void DeleteGitRepository(string directory)

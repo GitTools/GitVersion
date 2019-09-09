@@ -1,12 +1,13 @@
+using GitTools.Testing;
+using GitVersion;
+using GitVersion.Configuration;
+using GitVersion.VersionCalculation;
+using LibGit2Sharp;
+using NUnit.Framework;
+using Shouldly;
+
 namespace GitVersionCore.Tests
 {
-    using GitTools.Testing;
-    using GitVersion;
-    using GitVersion.VersionCalculation;
-    using LibGit2Sharp;
-    using NUnit.Framework;
-    using Shouldly;
-
     [TestFixture]
     public class VersionSourceTests : TestBase
     {

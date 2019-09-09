@@ -1,4 +1,4 @@
-namespace GitVersion
+namespace GitVersion.Helpers
 {
     public static class ServiceMessageEscapeHelper
     {

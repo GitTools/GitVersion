@@ -1,9 +1,9 @@
+using System.Collections.Generic;
+using GitVersion.Helpers;
+using GitVersion.Configuration.Init.Wizard;
+
 namespace GitVersion.Configuration.Init.SetConfig
 {
-    using System.Collections.Generic;
-    using GitVersion.Helpers;
-    using Wizard;
-
     public class AssemblyVersioningSchemeSetting : ConfigInitWizardStep
     {
         public AssemblyVersioningSchemeSetting(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)

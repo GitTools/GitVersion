@@ -1,20 +1,23 @@
 ﻿using GitVersion;
 
-/// <summary>
-/// Used by the ModuleInit. All code inside the Initialize method is ran as soon as the assembly is loaded.
-/// </summary>
-public static class ModuleInitializer
+namespace GitVersionTask.Tests
 {
     /// <summary>
-    /// Initializes the module.
+    /// Used by the ModuleInit. All code inside the Initialize method is ran as soon as the assembly is loaded.
     /// </summary>
-    public static void Initialize()
+    public static class ModuleInitializer
     {
-        Logger.SetLoggers(
-            s => System.Console.WriteLine(s),
-            s => System.Console.WriteLine(s),
-            s => System.Console.WriteLine(s),
-            s => System.Console.WriteLine(s));
-    }
+        /// <summary>
+        /// Initializes the module.
+        /// </summary>
+        public static void Initialize()
+        {
+            Logger.SetLoggers(
+                s => System.Console.WriteLine(s),
+                s => System.Console.WriteLine(s),
+                s => System.Console.WriteLine(s),
+                s => System.Console.WriteLine(s));
+        }
 
+    }
 }

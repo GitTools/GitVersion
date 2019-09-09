@@ -1,8 +1,9 @@
-﻿namespace GitVersion
-{
-    using System;
-    using System.IO;
+﻿using System;
+using System.IO;
+using GitVersion.OutputVariables;
 
+namespace GitVersion.BuildServers
+{
     public class EnvRun : BuildServerBase
     {
         public override bool CanApplyToCurrentContext()

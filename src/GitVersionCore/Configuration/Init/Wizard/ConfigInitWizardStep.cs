@@ -1,9 +1,9 @@
+using System;
+using System.Collections.Generic;
+using GitVersion.Helpers;
+
 namespace GitVersion.Configuration.Init.Wizard
 {
-    using System;
-    using System.Collections.Generic;
-    using GitVersion.Helpers;
-
     public abstract class ConfigInitWizardStep
     {
         protected ConfigInitWizardStep(IConsole console, IFileSystem fileSystem)

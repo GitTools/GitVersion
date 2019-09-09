@@ -1,7 +1,7 @@
-﻿namespace GitVersionCore.Extensions
-{
-    using System.IO;
+﻿using System.IO;
 
+namespace GitVersion.Extensions
+{
     public static class ReadEmbeddedResourceExtensions
     {
         /// <summary>

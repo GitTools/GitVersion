@@ -1,16 +1,18 @@
-﻿namespace GitVersionCore.Tests.VersionCalculation
-{
-    using System;
-    using System.Collections.Generic;
-    using GitTools.Testing;
-    using GitVersion;
-    using GitVersion.VersionCalculation;
-    using GitVersion.VersionCalculation.BaseVersionCalculators;
-    using GitVersion.VersionFilters;
-    using LibGit2Sharp;
-    using NUnit.Framework;
-    using Shouldly;
+﻿using System;
+using System.Collections.Generic;
+using GitTools.Testing;
+using GitVersion;
+using GitVersion.Configuration;
+using GitVersion.VersionCalculation;
+using GitVersion.VersionCalculation.BaseVersionCalculators;
+using GitVersion.VersionFilters;
+using GitVersionCore.Tests.Mocks;
+using LibGit2Sharp;
+using NUnit.Framework;
+using Shouldly;
 
+namespace GitVersionCore.Tests.VersionCalculation
+{
     [TestFixture]
     public class BaseVersionCalculatorTests : TestBase
     {

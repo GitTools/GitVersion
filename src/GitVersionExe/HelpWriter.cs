@@ -1,8 +1,8 @@
+using System;
+using System.Reflection;
+
 namespace GitVersion
 {
-    using System;
-    using System.Reflection;
-
     class HelpWriter
     {
         public static void Write()

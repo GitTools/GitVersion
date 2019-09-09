@@ -1,11 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Helpers;
+
 namespace GitVersion.Configuration.Init.SetConfig
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Wizard;
-    using GitVersion.Helpers;
-
     public class ConfigureBranches : ConfigInitWizardStep
     {
         public ConfigureBranches(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)

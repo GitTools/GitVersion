@@ -1,11 +1,11 @@
+using System.Collections.Generic;
+using GitVersion.Configuration.Init.BuildServer;
+using GitVersion.Configuration.Init.SetConfig;
+using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Helpers;
+
 namespace GitVersion.Configuration.Init
 {
-    using System.Collections.Generic;
-    using GitVersion.Configuration.Init.BuildServer;
-    using GitVersion.Configuration.Init.SetConfig;
-    using GitVersion.Configuration.Init.Wizard;
-    using GitVersion.Helpers;
-
     public class EditConfigStep : ConfigInitWizardStep
     {
         public EditConfigStep(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)

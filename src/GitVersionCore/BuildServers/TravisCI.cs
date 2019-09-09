@@ -1,5 +1,7 @@
 ﻿using System;
-namespace GitVersion
+using GitVersion.OutputVariables;
+
+namespace GitVersion.BuildServers
 {
     public class TravisCI : BuildServerBase
     {

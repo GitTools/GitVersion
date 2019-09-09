@@ -1,12 +1,12 @@
-﻿namespace GitVersion
-{
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using GitVersionCore.Extensions;
-    using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using GitVersion.Extensions;
 
+namespace GitVersion
+{
     enum TemplateType
     {
         VersionAssemblyInfoResources,

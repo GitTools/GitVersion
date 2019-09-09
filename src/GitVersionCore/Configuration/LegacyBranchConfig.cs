@@ -1,7 +1,7 @@
-namespace GitVersion
-{
-    using YamlDotNet.Serialization;
+using YamlDotNet.Serialization;
 
+namespace GitVersion.Configuration
+{
     /// <summary>
     /// Obsolete properties are added to this, so we can check to see if they are used and provide good error messages for migration
     /// </summary>

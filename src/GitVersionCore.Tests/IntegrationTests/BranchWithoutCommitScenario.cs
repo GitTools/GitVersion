@@ -1,22 +1,24 @@
 ﻿using GitTools.Testing;
-using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
 
-[TestFixture]
-public class BranchWithoutCommitScenario : TestBase
+namespace GitVersionCore.Tests.IntegrationTests
 {
-    [Test]
-    public void CanTakeVersionFromReleaseBranch()
+    [TestFixture]
+    public class BranchWithoutCommitScenario : TestBase
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        [Test]
+        public void CanTakeVersionFromReleaseBranch()
         {
-            fixture.Repository.MakeATaggedCommit("1.0.3");
-            var commit = fixture.Repository.MakeACommit();
-            fixture.Repository.CreateBranch("release-4.0.123");
-            fixture.Checkout(commit.Sha);
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.Repository.MakeATaggedCommit("1.0.3");
+                var commit = fixture.Repository.MakeACommit();
+                fixture.Repository.CreateBranch("release-4.0.123");
+                fixture.Checkout(commit.Sha);
 
-            fixture.AssertFullSemver("4.0.123-beta.1+0", fixture.Repository, commit.Sha, false, "release-4.0.123");
+                fixture.AssertFullSemver("4.0.123-beta.1+0", fixture.Repository, commit.Sha, false, "release-4.0.123");
+            }
         }
     }
 }

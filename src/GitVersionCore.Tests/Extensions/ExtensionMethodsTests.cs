@@ -1,7 +1,7 @@
-using GitVersion;
+using GitVersion.Extensions;
 using NUnit.Framework;
 
-namespace GitVersionCore.Tests
+namespace GitVersionCore.Tests.Extensions
 {
     [TestFixture]
     public class ExtensionMethodsTests

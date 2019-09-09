@@ -1,10 +1,14 @@
+using GitVersion.Helpers;
+using LibGit2Sharp;
+using System;
+using System.Linq;
+using GitVersion.BuildServers;
+using GitVersion.Configuration;
+using GitVersion.Exceptions;
+using GitVersion.OutputVariables;
+
 namespace GitVersion
 {
-    using GitVersion.Helpers;
-    using LibGit2Sharp;
-    using System;
-    using System.Linq;
-
     public class ExecuteCore
     {
         readonly IFileSystem fileSystem;

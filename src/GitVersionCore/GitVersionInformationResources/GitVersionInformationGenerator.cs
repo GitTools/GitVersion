@@ -1,10 +1,11 @@
-﻿namespace GitVersion
-{
-    using System;
-    using System.IO;
-    using System.Linq;
-    using Helpers;
+﻿using System;
+using System.IO;
+using System.Linq;
+using GitVersion.Helpers;
+using GitVersion.OutputVariables;
 
+namespace GitVersion.GitVersionInformationResources
+{
     public class GitVersionInformationGenerator
     {
         string fileName;

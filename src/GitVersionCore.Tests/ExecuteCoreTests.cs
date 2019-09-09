@@ -1,14 +1,18 @@
-using GitTools.Testing;
-using GitVersion;
-using GitVersion.Helpers;
-using GitVersionCore.Tests;
-using NUnit.Framework;
-using Shouldly;
 using System;
 using System.IO;
 using System.Text;
+using GitTools.Testing;
+using GitVersion;
+using NUnit.Framework;
+using Shouldly;
+using GitVersion.BuildServers;
+using GitVersion.Configuration;
+using GitVersion.Helpers;
+using GitVersion.OutputVariables;
 using LibGit2Sharp;
 
+namespace GitVersionCore.Tests
+{
 [TestFixture]
 [Parallelizable(ParallelScope.None)]
 public class ExecuteCoreTests : TestBase
@@ -441,4 +445,5 @@ CommitDate: 2015-11-10
             Error = errorBuilder.ToString()
         };
     }
+}
 }

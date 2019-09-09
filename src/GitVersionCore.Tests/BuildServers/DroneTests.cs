@@ -1,10 +1,10 @@
+using System;
+using GitVersion.BuildServers;
+using NUnit.Framework;
+using Shouldly;
+
 namespace GitVersionCore.Tests.BuildServers
 {
-    using System;
-    using GitVersion;
-    using NUnit.Framework;
-    using Shouldly;
-
     [TestFixture]
     public class DroneTests : TestBase
     {

@@ -1,7 +1,8 @@
+using System.Collections.Generic;
+using GitVersion.Configuration;
+
 namespace GitVersion
 {
-    using System.Collections.Generic;
-
     public class Arguments
     {
         public Arguments()

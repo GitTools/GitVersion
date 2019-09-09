@@ -1,8 +1,9 @@
-namespace GitVersion
-{
-    using GitVersion.Helpers;
-    using System.IO;
+using System.IO;
+using GitVersion.Exceptions;
+using GitVersion.Helpers;
 
+namespace GitVersion.Configuration
+{
     public class DefaultConfigFileLocator : ConfigFileLocator
     {
 
