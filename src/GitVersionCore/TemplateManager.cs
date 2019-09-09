@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,8 +20,8 @@ namespace GitVersion
 
         public TemplateManager(TemplateType templateType)
         {
-            templates = GetEmbeddedTemplates(templateType, "Templates").ToDictionary(k => Path.GetExtension(k), v => v, StringComparer.OrdinalIgnoreCase);
-            addFormats = GetEmbeddedTemplates(templateType, "AddFormats").ToDictionary(k => Path.GetExtension(k), v => v, StringComparer.OrdinalIgnoreCase);
+            templates = GetEmbeddedTemplates(templateType, "Templates").ToDictionary(Path.GetExtension, v => v, StringComparer.OrdinalIgnoreCase);
+            addFormats = GetEmbeddedTemplates(templateType, "AddFormats").ToDictionary(Path.GetExtension, v => v, StringComparer.OrdinalIgnoreCase);
         }
 
         public string GetTemplateFor(string fileExtension)

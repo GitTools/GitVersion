@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace GitVersion
 {
+    using System.Linq;
 
     static class StringFormatWithExtension
     {
@@ -67,7 +68,7 @@ namespace GitVersion
         }
 
 
-        static string TrimBraces(string originalExpression)
+        private static string TrimBraces(string originalExpression)
         {
             if (!string.IsNullOrWhiteSpace(originalExpression))
             {
@@ -76,15 +77,12 @@ namespace GitVersion
             return originalExpression;
         }
 
-        static Func<object, string> CompileDataBinder(Type type, string expr)
+        private static Func<object, string> CompileDataBinder(Type type, string expr)
         {
             var param = Expression.Parameter(typeof(object));
             Expression body = Expression.Convert(param, type);
             var members = expr.Split('.');
-            for (int i = 0; i < members.Length; i++)
-            {
-                body = Expression.PropertyOrField(body, members[i]);
-            }
+            body = members.Aggregate(body, Expression.PropertyOrField);
 
             var staticOrPublic = BindingFlags.Static | BindingFlags.Public;
             var method = GetMethodInfo("ToString", staticOrPublic, new[] { body.Type });

@@ -14,7 +14,7 @@ namespace GitVersion.BuildServers
             var buildRunner = Environment.GetEnvironmentVariable(EnvironmentVariable);
 
             return !string.IsNullOrEmpty(buildRunner)
-                && buildRunner.Equals("MyGet", StringComparerUtils.IgnoreCaseComparison);
+                && buildRunner.Equals("MyGet", StringComparison.InvariantCultureIgnoreCase);
         }
 
         public override string[] GenerateSetParameterMessage(string name, string value)
@@ -24,7 +24,7 @@ namespace GitVersion.BuildServers
                 $"##myget[setParameter name='GitVersion.{name}' value='{ServiceMessageEscapeHelper.EscapeValue(value)}']"
             };
 
-            if (string.Equals(name, "LegacySemVerPadded", StringComparerUtils.IgnoreCaseComparison))
+            if (string.Equals(name, "LegacySemVerPadded", StringComparison.InvariantCultureIgnoreCase))
             {
                 messages.Add($"##myget[buildNumber '{ServiceMessageEscapeHelper.EscapeValue(value)}']");
             }

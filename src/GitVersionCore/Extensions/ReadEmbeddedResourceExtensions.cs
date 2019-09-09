@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 
 namespace GitVersion.Extensions
 {
@@ -21,7 +21,7 @@ namespace GitVersion.Extensions
             }
         }
 
-        public static Stream ReadFromEmbeddedResource<T>(this string resourceName)
+        private static Stream ReadFromEmbeddedResource<T>(this string resourceName)
         {
             var assembly = typeof(T).Assembly;
 

@@ -46,35 +46,41 @@ namespace GitVersion
             var commitId = arguments.CommitId;
             var overrideConfig = arguments.HasOverrideConfig ? arguments.OverrideConfig : null;
             var noCache = arguments.NoCache;
-            bool noNormalize = arguments.NoNormalize;
+            var noNormalize = arguments.NoNormalize;
 
             var executeCore = new ExecuteCore(fileSystem, arguments.ConfigFileLocator);
             var variables = executeCore.ExecuteGitVersion(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId, overrideConfig, noCache, noNormalize);
 
-            if (arguments.Output == OutputType.BuildServer)
+            switch (arguments.Output)
             {
-                foreach (var buildServer in BuildServerList.GetApplicableBuildServers())
+                case OutputType.BuildServer:
                 {
-                    buildServer.WriteIntegration(Console.WriteLine, variables);
-                }
-            }
+                    foreach (var buildServer in BuildServerList.GetApplicableBuildServers())
+                    {
+                        buildServer.WriteIntegration(Console.WriteLine, variables);
+                    }
 
-            if (arguments.Output == OutputType.Json)
-            {
-                switch (arguments.ShowVariable)
-                {
-                    case null:
-                        Console.WriteLine(JsonOutputFormatter.ToJson(variables));
-                        break;
-
-                    default:
-                        if (!variables.TryGetValue(arguments.ShowVariable, out var part))
-                        {
-                            throw new WarningException($"'{arguments.ShowVariable}' variable does not exist");
-                        }
-                        Console.WriteLine(part);
-                        break;
+                    break;
                 }
+                case OutputType.Json:
+                    switch (arguments.ShowVariable)
+                    {
+                        case null:
+                            Console.WriteLine(JsonOutputFormatter.ToJson(variables));
+                            break;
+
+                        default:
+                            if (!variables.TryGetValue(arguments.ShowVariable, out var part))
+                            {
+                                throw new WarningException($"'{arguments.ShowVariable}' variable does not exist");
+                            }
+                            Console.WriteLine(part);
+                            break;
+                    }
+
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             if (arguments.UpdateWixVersionFile)
@@ -108,7 +114,8 @@ namespace GitVersion
                 }
             }
         }
-        static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
+
+        private static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
         {
             if (string.IsNullOrEmpty(args.Proj)) return false;
 
@@ -123,7 +130,8 @@ namespace GitVersion
 
             return true;
         }
-        static bool RunExecCommandIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
+
+        private static bool RunExecCommandIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
         {
             if (string.IsNullOrEmpty(args.Exec)) return false;
 

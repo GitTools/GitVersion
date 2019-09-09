@@ -46,12 +46,12 @@ namespace GitVersion.Extensions
 
             using (var e = source.GetEnumerator())
             {
-                if (!e.MoveNext()) return default(T);
+                if (!e.MoveNext()) return default;
                 var result = e.Current;
                 if (!e.MoveNext()) return result;
             }
 
-            return default(T);
+            return default;
         }
     }
 }
