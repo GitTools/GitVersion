@@ -3,8 +3,8 @@ using System.IO;
 using GitVersion;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.GitVersionInformationResources;
 using GitVersion.OutputVariables;
+using GitVersion.Extensions.GitVersionInformationResources;
 
 namespace GitVersionCore.Tests
 {

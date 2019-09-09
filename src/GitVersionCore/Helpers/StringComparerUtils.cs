@@ -1,6 +1,6 @@
 using System;
 
-namespace GitVersion
+namespace GitVersion.Helpers
 {
     public static class StringComparerUtils
     {

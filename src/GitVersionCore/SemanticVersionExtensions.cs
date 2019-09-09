@@ -1,4 +1,5 @@
 ﻿using LibGit2Sharp;
+using GitVersion.Configuration;
 
 namespace GitVersion
 {

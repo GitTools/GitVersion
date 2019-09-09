@@ -6,6 +6,7 @@ using System.Linq;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
 using GitVersion.OutputVariables;
+using GitVersion.OutputFormatters;
 
 namespace GitVersion
 {

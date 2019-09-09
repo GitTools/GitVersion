@@ -3,6 +3,8 @@ using System.Text.RegularExpressions;
 using GitVersion.Exceptions;
 using GitVersion.VersionCalculation;
 using GitVersion.VersioningModes;
+using GitVersion.Configuration;
+using GitVersion.Helpers;
 
 namespace GitVersion.OutputVariables
 {

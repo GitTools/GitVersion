@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion.VersioningModes;
 using YamlDotNet.Serialization;
+using GitVersion.Extensions;
+using GitVersion.Helpers;
 
 namespace GitVersion.Configuration
 {

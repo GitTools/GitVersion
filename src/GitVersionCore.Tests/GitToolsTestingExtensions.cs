@@ -5,6 +5,7 @@ using GitVersion.Configuration;
 using GitVersion.OutputVariables;
 using LibGit2Sharp;
 using Shouldly;
+using GitVersion.Helpers;
 
 namespace GitVersionCore.Tests
 {

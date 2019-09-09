@@ -10,6 +10,7 @@ using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
+using GitVersion.Helpers;
 
 namespace GitVersionCore.Tests.VersionCalculation
 {

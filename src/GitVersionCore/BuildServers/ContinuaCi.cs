@@ -1,4 +1,3 @@
-using System;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.BuildServers

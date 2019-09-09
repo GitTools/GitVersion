@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GitVersion.Configuration;
 using GitVersion.VersioningModes;
+using GitVersion.Extensions;
 
 namespace GitVersionCore.Tests
 {

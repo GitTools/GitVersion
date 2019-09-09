@@ -1,7 +1,7 @@
 using GitTools.Testing;
-using GitVersion;
 using LibGit2Sharp;
 using NUnit.Framework;
+using GitVersion.Helpers;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {

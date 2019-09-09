@@ -4,13 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using GitVersion;
 using NUnit.Framework;
 using Shouldly;
 using YamlDotNet.Serialization;
 using GitVersion.Configuration;
 using GitVersion.Helpers;
 using GitVersion.VersioningModes;
+using GitVersion.Extensions;
 
 namespace GitVersionCore.Tests
 {

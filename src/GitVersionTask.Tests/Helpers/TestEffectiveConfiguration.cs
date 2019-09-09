@@ -4,6 +4,7 @@ using GitVersion;
 using GitVersion.Configuration;
 using GitVersion.VersionFilters;
 using GitVersion.VersioningModes;
+using GitVersion.Extensions;
 
 namespace GitVersionTask.Tests.Helpers
 {

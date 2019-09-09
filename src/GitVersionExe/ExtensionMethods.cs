@@ -1,17 +1,17 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace GitVersion
 {
-    public static class Extensions
+    public static class ExtensionMethods
     {
         private static string[] trues;
         private static string[] falses;
 
 
-        static Extensions()
+        static ExtensionMethods()
         {
             trues = new[]
             {

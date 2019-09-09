@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace GitVersion.Extensions
+namespace GitVersion.Helpers
 {
     public static class ReadEmbeddedResourceExtensions
     {

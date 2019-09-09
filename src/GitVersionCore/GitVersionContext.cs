@@ -2,7 +2,7 @@ using LibGit2Sharp;
 using System;
 using System.Linq;
 using GitVersion.Configuration;
-using GitVersion.Extensions;
+using GitVersion.Helpers;
 
 namespace GitVersion
 {

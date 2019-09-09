@@ -1,4 +1,4 @@
-﻿using GitVersion;
+using GitVersion.Helpers;
 
 namespace GitVersionTask.Tests
 {

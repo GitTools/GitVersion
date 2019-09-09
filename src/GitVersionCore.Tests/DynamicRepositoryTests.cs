@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.IO;
 using GitVersion;
 using NUnit.Framework;
+using GitVersion.Helpers;
 
 namespace GitVersionCore.Tests
 {

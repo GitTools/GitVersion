@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GitVersion.Extensions;
 using GitVersion.OutputVariables;
+using GitVersion.Helpers;
 
 namespace GitVersion.OutputFormatters
 {

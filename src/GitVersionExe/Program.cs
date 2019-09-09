@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
+using GitVersion.OutputFormatters;
 
 namespace GitVersion
 {

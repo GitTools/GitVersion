@@ -1,8 +1,8 @@
 using System;
 using GitTools.Testing;
-using GitVersion;
 using NUnit.Framework;
 using Shouldly;
+using GitVersion.Helpers;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {

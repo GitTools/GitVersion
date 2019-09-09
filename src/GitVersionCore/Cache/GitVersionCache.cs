@@ -1,12 +1,12 @@
-using GitVersion.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using GitVersion.Helpers;
 using GitVersion.OutputVariables;
 using YamlDotNet.Serialization;
 
-namespace GitVersion
+namespace GitVersion.Cache
 {
     public class GitVersionCache
     {
@@ -30,7 +30,7 @@ namespace GitVersion
                 dictionary = variablesFromCache.ToDictionary(x => x.Key, x => x.Value);
             }
 
-            Action writeCacheOperation = () =>
+            void WriteCacheOperation()
             {
                 using (var stream = fileSystem.OpenWrite(cacheFileName))
                 {
@@ -43,9 +43,9 @@ namespace GitVersion
                         }
                     }
                 }
-            };
+            }
 
-            var retryOperation = new OperationWithExponentialBackoff<IOException>(new ThreadSleep(), writeCacheOperation, maxRetries: 6);
+            var retryOperation = new OperationWithExponentialBackoff<IOException>(new ThreadSleep(), WriteCacheOperation, maxRetries: 6);
             retryOperation.ExecuteAsync().Wait();
         }
 

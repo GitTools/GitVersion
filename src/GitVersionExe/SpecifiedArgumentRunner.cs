@@ -7,7 +7,8 @@ using GitVersion.BuildServers;
 using GitVersion.Exceptions;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
-using GitVersion.VersionAssemblyInfoResources;
+using GitVersion.Extensions;
+using GitVersion.Extensions.VersionAssemblyInfoResources;
 
 namespace GitVersion
 {

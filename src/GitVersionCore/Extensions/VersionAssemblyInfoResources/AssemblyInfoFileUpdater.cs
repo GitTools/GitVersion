@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using GitVersion.Helpers;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.VersionAssemblyInfoResources
+namespace GitVersion.Extensions.VersionAssemblyInfoResources
 {
     public class AssemblyInfoFileUpdater : IDisposable
     {

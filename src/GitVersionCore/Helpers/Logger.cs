@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace GitVersion
+namespace GitVersion.Helpers
 {
     public static class Logger
     {

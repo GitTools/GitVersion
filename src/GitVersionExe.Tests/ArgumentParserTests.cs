@@ -4,6 +4,8 @@ using GitVersion;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.Exceptions;
+using GitVersion.Helpers;
+using GitVersion.OutputFormatters;
 
 namespace GitVersionExe.Tests
 {

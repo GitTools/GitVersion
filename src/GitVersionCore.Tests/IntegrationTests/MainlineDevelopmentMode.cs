@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Text;
 using GitTools.Testing;
 using GitVersion.Configuration;
-using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.VersioningModes;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -538,13 +538,15 @@ namespace GitVersionCore.Tests.IntegrationTests
             var diagramBuilder = (StringBuilder)typeof(SequenceDiagram)
                 .GetField("_diagramBuilder", BindingFlags.Instance | BindingFlags.NonPublic)
                 ?.GetValue(fixture.SequenceDiagram);
-            Func<string, string> getParticipant = participant => (string)typeof(SequenceDiagram)
-                .GetMethod("GetParticipant", BindingFlags.Instance | BindingFlags.NonPublic)
-                ?.Invoke(fixture.SequenceDiagram, new object[]
-                {
-                    participant
-                });
-            diagramBuilder.AppendLineFormat("{0} -> {0}: Commit '{1}'", getParticipant(fixture.Repository.Head.FriendlyName),
+
+            string GetParticipant(string participant) =>
+                (string) typeof(SequenceDiagram).GetMethod("GetParticipant", BindingFlags.Instance | BindingFlags.NonPublic)
+                    ?.Invoke(fixture.SequenceDiagram, new object[]
+                    {
+                        participant
+                    });
+
+            diagramBuilder.AppendLineFormat("{0} -> {0}: Commit '{1}'", GetParticipant(fixture.Repository.Head.FriendlyName),
                 commitMsg);
         }
     }

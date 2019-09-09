@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using GitVersion;
 using GitVersion.Configuration;
+using GitVersion.Helpers;
 
 namespace GitVersionCore.Tests.Init
 {

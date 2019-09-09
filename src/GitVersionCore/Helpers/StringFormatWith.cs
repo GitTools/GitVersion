@@ -1,12 +1,11 @@
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace GitVersion
+namespace GitVersion.Helpers
 {
-    using System.Linq;
-
     static class StringFormatWithExtension
     {
         private static readonly Regex TokensRegex = new Regex(@"{(?<env>env:)??\w+(\s+(\?\?)??\s+\w+)??}", RegexOptions.Compiled);

@@ -7,7 +7,8 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.Helpers;
 using GitVersion.OutputVariables;
-using GitVersion.VersionAssemblyInfoResources;
+using GitVersion.Extensions;
+using GitVersion.Extensions.VersionAssemblyInfoResources;
 
 namespace GitVersionCore.Tests
 {

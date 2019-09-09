@@ -1,6 +1,6 @@
 using System;
 
-namespace GitVersion
+namespace GitVersion.Helpers
 {
     // From the LibGit2Sharp project (libgit2sharp.com)
     // MIT License - Copyright (c) 2011-2014 LibGit2Sharp contributors

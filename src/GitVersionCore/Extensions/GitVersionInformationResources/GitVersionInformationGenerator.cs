@@ -4,7 +4,7 @@ using System.Linq;
 using GitVersion.Helpers;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.GitVersionInformationResources
+namespace GitVersion.Extensions.GitVersionInformationResources
 {
     public class GitVersionInformationGenerator
     {

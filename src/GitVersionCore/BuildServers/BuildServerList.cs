@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GitVersion.Helpers;
 
 namespace GitVersion.BuildServers
 {

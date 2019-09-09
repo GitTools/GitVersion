@@ -1,6 +1,7 @@
 using System.IO;
 using GitVersion.Exceptions;
 using GitVersion.VersionCalculation;
+using GitVersion.Helpers;
 
 namespace GitVersion
 {
