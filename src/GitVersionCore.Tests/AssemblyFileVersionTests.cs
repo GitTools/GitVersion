@@ -1,10 +1,10 @@
 ﻿using GitVersion;
 using NUnit.Framework;
+using Shouldly;
+using GitVersion.Extensions;
 
 namespace GitVersionCore.Tests
 {
-    using Shouldly;
-
     [TestFixture]
     public class AssemblyFileVersionTests : TestBase
     {

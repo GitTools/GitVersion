@@ -1,9 +1,12 @@
-﻿namespace GitVersion.VersionCalculation
-{
-    using System.Linq;
-    using System.Text.RegularExpressions;
-    using BaseVersionCalculators;
+using System.Linq;
+using System.Text.RegularExpressions;
+using GitVersion.VersionCalculation.BaseVersionCalculators;
+using GitVersion.VersioningModes;
+using GitVersion.Configuration;
+using GitVersion.Helpers;
 
+namespace GitVersion.VersionCalculation
+{
     public class NextVersionCalculator
     {
         IBaseVersionCalculator baseVersionFinder;

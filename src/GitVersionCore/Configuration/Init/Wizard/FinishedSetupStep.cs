@@ -1,7 +1,7 @@
+using GitVersion.Helpers;
+
 namespace GitVersion.Configuration.Init.Wizard
 {
-    using GitVersion.Helpers;
-
     public class FinishedSetupStep : EditConfigStep
     {
         public FinishedSetupStep(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)

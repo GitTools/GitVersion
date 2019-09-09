@@ -1,7 +1,7 @@
-namespace GitVersion
-{
-    using System;
+using System;
 
+namespace GitVersion.Extensions
+{
     public static class AssemblyVersionsGenerator
     {
         public static string GetAssemblyVersion(

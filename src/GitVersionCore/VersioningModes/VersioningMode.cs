@@ -1,4 +1,4 @@
-﻿namespace GitVersion
+﻿namespace GitVersion.VersioningModes
 {
     public enum VersioningMode
     {

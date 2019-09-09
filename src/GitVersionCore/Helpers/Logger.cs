@@ -1,9 +1,9 @@
-namespace GitVersion
-{
-    using System;
-    using System.Globalization;
-    using System.Text.RegularExpressions;
+using System;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
+namespace GitVersion.Helpers
+{
     public static class Logger
     {
         static readonly Regex ObscurePasswordRegex = new Regex("(https?://)(.+)(:.+@)", RegexOptions.Compiled);

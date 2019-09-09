@@ -1,26 +1,29 @@
 using System.Collections.Generic;
-using GitVersion;
 using Newtonsoft.Json;
+using GitVersion.OutputVariables;
 
-public class ExecutionResults
+namespace GitVersionExe.Tests
 {
-    public ExecutionResults(int exitCode, string output, string logContents)
+    public class ExecutionResults
     {
-        ExitCode = exitCode;
-        Output = output;
-        Log = logContents;
-    }
-
-    public int ExitCode { get; private set; }
-    public string Output { get; private set; }
-    public string Log { get; private set; }
-
-    public virtual VersionVariables OutputVariables
-    {
-        get
+        public ExecutionResults(int exitCode, string output, string logContents)
         {
-            var outputVariables = JsonConvert.DeserializeObject<Dictionary<string, string>>(Output);
-            return VersionVariables.FromDictionary(outputVariables);
+            ExitCode = exitCode;
+            Output = output;
+            Log = logContents;
+        }
+
+        public int ExitCode { get; private set; }
+        public string Output { get; private set; }
+        public string Log { get; private set; }
+
+        public virtual VersionVariables OutputVariables
+        {
+            get
+            {
+                var outputVariables = JsonConvert.DeserializeObject<Dictionary<string, string>>(Output);
+                return VersionVariables.FromDictionary(outputVariables);
+            }
         }
     }
 }

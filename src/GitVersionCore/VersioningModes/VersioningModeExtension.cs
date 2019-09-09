@@ -1,8 +1,7 @@
-﻿namespace GitVersion
-{
-    using System;
-    using GitVersion.VersioningModes;
+﻿using System;
 
+namespace GitVersion.VersioningModes
+{
     public static class VersioningModeExtension
     {
         public static VersioningModeBase GetInstance(this VersioningMode _this)

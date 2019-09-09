@@ -1,21 +1,23 @@
 ﻿using GitTools.Testing;
-using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
 
-[TestFixture]
-public class SwitchingToGitFlowScenarios : TestBase
+namespace GitVersionCore.Tests.IntegrationTests
 {
-    [Test]
-    public void WhenDevelopBranchedFromMasterWithLegacyVersionTags_DevelopCanUseReachableTag()
+    [TestFixture]
+    public class SwitchingToGitFlowScenarios : TestBase
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        [Test]
+        public void WhenDevelopBranchedFromMasterWithLegacyVersionTags_DevelopCanUseReachableTag()
         {
-            fixture.Repository.MakeCommits(5);
-            fixture.Repository.MakeATaggedCommit("1.0.0.0");
-            fixture.Repository.MakeCommits(2);
-            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
-            fixture.AssertFullSemver("1.1.0-alpha.2");
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.Repository.MakeCommits(5);
+                fixture.Repository.MakeATaggedCommit("1.0.0.0");
+                fixture.Repository.MakeCommits(2);
+                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
+                fixture.AssertFullSemver("1.1.0-alpha.2");
+            }
         }
     }
 }

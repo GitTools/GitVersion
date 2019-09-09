@@ -1,9 +1,9 @@
+using System.Collections.Generic;
+using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Helpers;
+
 namespace GitVersion.Configuration.Init.SetConfig
 {
-    using System.Collections.Generic;
-    using GitVersion.Configuration.Init.Wizard;
-    using GitVersion.Helpers;
-
     public class ConfigureBranch : ConfigInitWizardStep
     {
         string name;

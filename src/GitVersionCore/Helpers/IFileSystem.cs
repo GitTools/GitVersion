@@ -1,9 +1,9 @@
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+
 namespace GitVersion.Helpers
 {
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Text;
-
     public interface IFileSystem
     {
         void Copy(string from, string to, bool overwrite);

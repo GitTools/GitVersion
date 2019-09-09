@@ -1,12 +1,12 @@
+using System;
+using System.IO;
+using System.Reflection;
+using GitVersion;
+using Mono.Cecil;
+using NUnit.Framework;
+
 namespace GitVersionExe.Tests
 {
-    using System;
-    using System.IO;
-    using System.Reflection;
-    using GitVersion;
-    using Mono.Cecil;
-    using NUnit.Framework;
-
     [TestFixture]
     public class VersionWriterTests
     {

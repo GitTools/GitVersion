@@ -1,14 +1,17 @@
 ﻿using System;
 using System.IO;
 
-public static class AssemblyLocation
+namespace GitVersionTask.Tests
 {
-    public static string CurrentDirectory()
+    public static class AssemblyLocation
     {
-        var assembly = typeof(AssemblyLocation).Assembly;
-        var uri = new UriBuilder(assembly.CodeBase);
-        var path = Uri.UnescapeDataString(uri.Path);
+        public static string CurrentDirectory()
+        {
+            var assembly = typeof(AssemblyLocation).Assembly;
+            var uri = new UriBuilder(assembly.CodeBase);
+            var path = Uri.UnescapeDataString(uri.Path);
 
-        return Path.GetDirectoryName(path);
+            return Path.GetDirectoryName(path);
+        }
     }
 }

@@ -1,11 +1,10 @@
-namespace GitVersion
+using System;
+using System.IO;
+using GitVersion.Exceptions;
+using GitVersion.Helpers;
+
+namespace GitVersion.Configuration
 {
-
-    using System;
-
-    using GitVersion.Helpers;
-    using System.IO;
-
     public class NamedConfigFileLocator : ConfigFileLocator
     {
 

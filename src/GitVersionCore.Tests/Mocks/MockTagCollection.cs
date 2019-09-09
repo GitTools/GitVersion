@@ -2,55 +2,58 @@ using System.Collections;
 using System.Collections.Generic;
 using LibGit2Sharp;
 
-public class MockTagCollection : TagCollection, ICollection<Tag>
+namespace GitVersionCore.Tests.Mocks
 {
-
-    public List<Tag> Tags = new List<Tag>();
-    public override IEnumerator<Tag> GetEnumerator()
+    public class MockTagCollection : TagCollection, ICollection<Tag>
     {
-        return Tags.GetEnumerator();
-    }
 
-    IEnumerator<Tag> IEnumerable<Tag>.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+        public List<Tag> Tags = new List<Tag>();
+        public override IEnumerator<Tag> GetEnumerator()
+        {
+            return Tags.GetEnumerator();
+        }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+        IEnumerator<Tag> IEnumerable<Tag>.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
-    public void Add(Tag item)
-    {
-        Tags.Add(item);
-    }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
-    public void Clear()
-    {
-        Tags.Clear();
-    }
+        public void Add(Tag item)
+        {
+            Tags.Add(item);
+        }
 
-    public bool Contains(Tag item)
-    {
-        return Tags.Contains(item);
-    }
+        public void Clear()
+        {
+            Tags.Clear();
+        }
 
-    public void CopyTo(Tag[] array, int arrayIndex)
-    {
-        Tags.CopyTo(array, arrayIndex);
-    }
+        public bool Contains(Tag item)
+        {
+            return Tags.Contains(item);
+        }
 
-    public override void Remove(Tag tag)
-    {
-        Tags.Remove(tag);
-    }
+        public void CopyTo(Tag[] array, int arrayIndex)
+        {
+            Tags.CopyTo(array, arrayIndex);
+        }
 
-    bool ICollection<Tag>.Remove(Tag item)
-    {
-        return Tags.Remove(item);
-    }
+        public override void Remove(Tag tag)
+        {
+            Tags.Remove(tag);
+        }
 
-    public int Count => Tags.Count;
-    public bool IsReadOnly => false;
+        bool ICollection<Tag>.Remove(Tag item)
+        {
+            return Tags.Remove(item);
+        }
+
+        public int Count => Tags.Count;
+        public bool IsReadOnly => false;
+    }
 }

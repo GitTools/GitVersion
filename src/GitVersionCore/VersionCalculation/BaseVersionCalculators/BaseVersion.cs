@@ -1,7 +1,7 @@
-﻿namespace GitVersion.VersionCalculation.BaseVersionCalculators
-{
-    using LibGit2Sharp;
+﻿using LibGit2Sharp;
 
+namespace GitVersion.VersionCalculation.BaseVersionCalculators
+{
     public class BaseVersion
     {
         GitVersionContext _context;

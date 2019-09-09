@@ -1,11 +1,11 @@
-﻿namespace GitVersion
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using GitVersion.VersionFilters;
-    using YamlDotNet.Serialization;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using GitVersion.VersionFilters;
+using YamlDotNet.Serialization;
 
+namespace GitVersion.Configuration
+{
     public class IgnoreConfig
     {
         public IgnoreConfig()

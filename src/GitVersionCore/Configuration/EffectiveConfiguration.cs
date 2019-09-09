@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using GitVersion.Extensions;
 using GitVersion.VersionFilters;
+using GitVersion.VersioningModes;
 
-namespace GitVersion
+namespace GitVersion.Configuration
 {
     /// <summary>
     /// Configuration can be applied to different things, effective configuration is the result after applying the appropriate configuration

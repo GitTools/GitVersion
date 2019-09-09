@@ -1,9 +1,11 @@
-﻿namespace GitVersionCore.Tests
-{
-    using GitTools.Testing;
-    using GitVersion;
-    using LibGit2Sharp;
+﻿using GitTools.Testing;
+using GitVersion;
+using GitVersion.Configuration;
+using GitVersionCore.Tests.Mocks;
+using LibGit2Sharp;
 
+namespace GitVersionCore.Tests
+{
     public class GitVersionContextBuilder
     {
         IRepository repository;

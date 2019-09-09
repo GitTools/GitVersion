@@ -3,49 +3,52 @@ using System.Collections;
 using System.Collections.Generic;
 using LibGit2Sharp;
 
-public class MockQueryableCommitLog : IQueryableCommitLog
+namespace GitVersionCore.Tests.Mocks
 {
-    readonly ICommitLog commits;
-
-    public MockQueryableCommitLog(ICommitLog commits)
+    public class MockQueryableCommitLog : IQueryableCommitLog
     {
-        this.commits = commits;
-    }
+        readonly ICommitLog commits;
 
-    public IEnumerator<Commit> GetEnumerator()
-    {
-        return commits.GetEnumerator();
-    }
+        public MockQueryableCommitLog(ICommitLog commits)
+        {
+            this.commits = commits;
+        }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+        public IEnumerator<Commit> GetEnumerator()
+        {
+            return commits.GetEnumerator();
+        }
 
-    public CommitSortStrategies SortedBy => throw new NotImplementedException();
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
-    public ICommitLog QueryBy(CommitFilter filter)
-    {
-        return this;
-    }
+        public CommitSortStrategies SortedBy => throw new NotImplementedException();
 
-    public IEnumerable<LogEntry> QueryBy(string path)
-    {
-        throw new NotImplementedException();
-    }
+        public ICommitLog QueryBy(CommitFilter filter)
+        {
+            return this;
+        }
+
+        public IEnumerable<LogEntry> QueryBy(string path)
+        {
+            throw new NotImplementedException();
+        }
     
-    public Commit FindMergeBase(Commit first, Commit second)
-    {
-        return null;
-    }
+        public Commit FindMergeBase(Commit first, Commit second)
+        {
+            return null;
+        }
 
-    public Commit FindMergeBase(IEnumerable<Commit> commits, MergeBaseFindingStrategy strategy)
-    {
-        throw new NotImplementedException();
-    }
+        public Commit FindMergeBase(IEnumerable<Commit> commits, MergeBaseFindingStrategy strategy)
+        {
+            throw new NotImplementedException();
+        }
 
-    public IEnumerable<LogEntry> QueryBy(string path, CommitFilter filter)
-    {
-        throw new NotImplementedException();
+        public IEnumerable<LogEntry> QueryBy(string path, CommitFilter filter)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

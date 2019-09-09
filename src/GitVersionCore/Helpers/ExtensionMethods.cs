@@ -1,10 +1,10 @@
-namespace GitVersion
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-    using System.Text.RegularExpressions;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.RegularExpressions;
 
+namespace GitVersion.Helpers
+{
     static class ExtensionMethods
     {
         public static bool IsBranch(this string branchName, string branchNameToCompareAgainst)
@@ -46,12 +46,12 @@ namespace GitVersion
 
             using (var e = source.GetEnumerator())
             {
-                if (!e.MoveNext()) return default(T);
+                if (!e.MoveNext()) return default;
                 var result = e.Current;
                 if (!e.MoveNext()) return result;
             }
 
-            return default(T);
+            return default;
         }
     }
 }

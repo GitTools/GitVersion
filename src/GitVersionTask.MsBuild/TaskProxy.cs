@@ -1,10 +1,10 @@
+using System;
+using System.Reflection;
+using GitVersionTask.MsBuild.LibGit2Sharp;
+using GitVersionTask.MsBuild.Tasks;
+
 namespace GitVersionTask.MsBuild
 {
-    using System;
-    using System.Reflection;
-    using GitVersionTask.MsBuild.LibGit2Sharp;
-    using GitVersionTask.MsBuild.Tasks;
-
     public static class TaskProxy
     {
         public static Func<GetVersion, bool> GetVersion;

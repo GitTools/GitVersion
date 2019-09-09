@@ -1,12 +1,15 @@
-namespace GitVersion
-{
-    using System;
+using System;
+using GitVersion.OutputVariables;
 
+namespace GitVersion.BuildServers
+{
     public class Drone : BuildServerBase
     {
+        public const string EnvironmentVariableName = "DRONE";
+        protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
         public override bool CanApplyToCurrentContext()
         {
-            return Environment.GetEnvironmentVariable("DRONE")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
+            return Environment.GetEnvironmentVariable(EnvironmentVariable)?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
         }
 
         public override string GenerateSetVersionMessage(VersionVariables variables)
@@ -51,5 +54,7 @@ namespace GitVersion
 
             return Environment.GetEnvironmentVariable("DRONE_BRANCH");
         }
+
+        public override bool PreventFetch() => false;
     }
 }

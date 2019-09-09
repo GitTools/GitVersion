@@ -1,7 +1,7 @@
-namespace GitVersion
-{
-    using System;
+using System;
 
+namespace GitVersion.Cache
+{
     public class GitVersionCacheKey
     {
         public GitVersionCacheKey(string value)

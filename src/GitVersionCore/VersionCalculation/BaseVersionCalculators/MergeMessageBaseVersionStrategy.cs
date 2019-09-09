@@ -1,10 +1,11 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using LibGit2Sharp;
+using GitVersion.Helpers;
+
 namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-    using LibGit2Sharp;
-
     /// <summary>
     /// Version is extracted from older commits's merge messages.
     /// BaseVersionSource is the commit where the message was found.

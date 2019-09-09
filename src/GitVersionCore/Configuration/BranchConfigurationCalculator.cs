@@ -1,11 +1,12 @@
-namespace GitVersion
-{
-    using LibGit2Sharp;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.RegularExpressions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using GitVersion.Helpers;
+using LibGit2Sharp;
 
+namespace GitVersion.Configuration
+{
     public class BranchConfigurationCalculator
     {
         public static string FallbackConfigName = "Fallback";

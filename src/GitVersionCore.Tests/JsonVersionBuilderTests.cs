@@ -1,24 +1,27 @@
 using System;
 using GitVersion;
-using GitVersionCore.Tests;
 using NUnit.Framework;
 using Shouldly;
+using GitVersion.OutputFormatters;
+using GitVersion.OutputVariables;
 
-[TestFixture]
-public class JsonVersionBuilderTests : TestBase
+namespace GitVersionCore.Tests
 {
-    [SetUp]
-    public void Setup()
+    [TestFixture]
+    public class JsonVersionBuilderTests : TestBase
     {
-        ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
-    }
+        [SetUp]
+        public void Setup()
+        {
+            ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
+        }
 
-    [Test]
-    [Category("NoMono")]
-    [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
-    public void Json()
-    {
-        var semanticVersion = new SemanticVersion
+        [Test]
+        [Category("NoMono")]
+        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        public void Json()
+        {
+            var semanticVersion = new SemanticVersion
             {
                 Major = 1,
                 Minor = 2,
@@ -27,10 +30,11 @@ public class JsonVersionBuilderTests : TestBase
                 BuildMetaData = new SemanticVersionBuildMetaData("versionSourceSha", 5, "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
             };
 
-        var config = new TestEffectiveConfiguration();
+            var config = new TestEffectiveConfiguration();
 
-        var variables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
-        var json = JsonOutputFormatter.ToJson(variables);
-        json.ShouldMatchApproved(c => c.SubFolder("Approved"));
+            var variables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
+            var json = JsonOutputFormatter.ToJson(variables);
+            json.ShouldMatchApproved(c => c.SubFolder("Approved"));
+        }
     }
 }

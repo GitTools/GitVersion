@@ -1,13 +1,14 @@
-namespace GitVersion
-{
-    using Helpers;
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Security.Cryptography;
-    using System.Text;
-    using System.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using GitVersion.Configuration;
+using GitVersion.Helpers;
 
+namespace GitVersion.Cache
+{
     class GitVersionCacheKeyFactory
     {
         public static GitVersionCacheKey Create(IFileSystem fileSystem, GitPreparer gitPreparer, Config overrideConfig, ConfigFileLocator configFileLocator)

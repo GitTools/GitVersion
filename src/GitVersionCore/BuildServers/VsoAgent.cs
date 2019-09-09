@@ -1,18 +1,17 @@
-namespace GitVersion
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.RegularExpressions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using GitVersion.OutputVariables;
+using GitVersion.Helpers;
 
+namespace GitVersion.BuildServers
+{
     public class VsoAgent : BuildServerBase
     {
         public const string EnvironmentVariableName = "TF_BUILD";
 
-        public override bool CanApplyToCurrentContext()
-        {
-            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(EnvironmentVariableName));
-        }
+        protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
         public override string[] GenerateSetParameterMessage(string name, string value)
         {
@@ -27,10 +26,7 @@ namespace GitVersion
             return Environment.GetEnvironmentVariable("BUILD_SOURCEBRANCH");
         }
 
-        public override bool PreventFetch()
-        {
-            return true;
-        }
+        public override bool PreventFetch() => true;
 
         public override string GenerateSetVersionMessage(VersionVariables variables)
         {

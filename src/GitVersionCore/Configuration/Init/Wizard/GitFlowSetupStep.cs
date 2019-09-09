@@ -1,8 +1,8 @@
+using GitVersion.Configuration.Init.SetConfig;
+using GitVersion.Helpers;
+
 namespace GitVersion.Configuration.Init.Wizard
 {
-    using GitVersion.Configuration.Init.SetConfig;
-    using GitVersion.Helpers;
-
     public class GitFlowSetupStep : GlobalModeSetting
     {
         public GitFlowSetupStep(IConsole console, IFileSystem fileSystem) : base(new FinishedSetupStep(console, fileSystem), true, console, fileSystem)

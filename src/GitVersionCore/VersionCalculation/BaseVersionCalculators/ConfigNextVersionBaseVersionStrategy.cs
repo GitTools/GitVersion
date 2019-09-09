@@ -1,7 +1,7 @@
-﻿namespace GitVersion.VersionCalculation.BaseVersionCalculators
-{
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
+namespace GitVersion.VersionCalculation.BaseVersionCalculators
+{
     /// <summary>
     /// Version is from NextVersion (the configuration value), unless the current commit is tagged.
     /// BaseVersionSource is null.

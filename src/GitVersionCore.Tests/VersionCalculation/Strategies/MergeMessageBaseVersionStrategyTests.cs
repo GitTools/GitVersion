@@ -1,14 +1,14 @@
+using System.Collections.Generic;
+using System.Linq;
+using GitVersion.Configuration;
+using GitVersion.VersionCalculation.BaseVersionCalculators;
+using GitVersionCore.Tests.Mocks;
+using LibGit2Sharp;
+using NUnit.Framework;
+using Shouldly;
+
 namespace GitVersionCore.Tests.VersionCalculation.Strategies
 {
-    using System.Collections.Generic;
-    using System.Linq;
-
-    using GitVersion;
-    using GitVersion.VersionCalculation.BaseVersionCalculators;
-    using LibGit2Sharp;
-    using NUnit.Framework;
-    using Shouldly;
-
     [TestFixture]
     public class MergeMessageBaseVersionStrategyTests : TestBase
     {

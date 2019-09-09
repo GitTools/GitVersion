@@ -1,10 +1,13 @@
+using GitVersion.Helpers;
+using System;
+using System.Linq;
+using GitVersion.BuildServers;
+using GitVersion.Configuration;
+using GitVersion.OutputVariables;
+using GitVersion.Cache;
+
 namespace GitVersion
 {
-    using GitVersion.Helpers;
-    using LibGit2Sharp;
-    using System;
-    using System.Linq;
-
     public class ExecuteCore
     {
         readonly IFileSystem fileSystem;
@@ -53,7 +56,7 @@ namespace GitVersion
             }
 
             var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, overrideConfig, configFileLocator);
-            var versionVariables = noCache ? default(VersionVariables) : gitVersionCache.LoadVersionVariablesFromDiskCache(gitPreparer, cacheKey);
+            var versionVariables = noCache ? default : gitVersionCache.LoadVersionVariablesFromDiskCache(gitPreparer, cacheKey);
             if (versionVariables == null)
             {
                 versionVariables = ExecuteInternal(targetBranch, commitId, gitPreparer, buildServer, overrideConfig);
@@ -114,29 +117,6 @@ namespace GitVersion
 
                 return VariableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
             });
-        }
-
-        IRepository GetRepository(string gitDirectory)
-        {
-            try
-            {
-                var repository = new Repository(gitDirectory);
-
-                var branch = repository.Head;
-                if (branch.Tip == null)
-                {
-                    throw new WarningException("No Tip found. Has repo been initialized?");
-                }
-                return repository;
-            }
-            catch (Exception exception)
-            {
-                if (exception.Message.Contains("LibGit2Sharp.Core.NativeMethods") || exception.Message.Contains("FilePathMarshaler"))
-                {
-                    throw new WarningException("Restart of the process may be required to load an updated version of LibGit2Sharp.");
-                }
-                throw;
-            }
         }
     }
 }

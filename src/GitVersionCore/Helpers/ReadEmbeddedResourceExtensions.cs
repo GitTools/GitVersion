@@ -1,7 +1,7 @@
-﻿namespace GitVersionCore.Extensions
-{
-    using System.IO;
+using System.IO;
 
+namespace GitVersion.Helpers
+{
     public static class ReadEmbeddedResourceExtensions
     {
         /// <summary>
@@ -21,7 +21,7 @@
             }
         }
 
-        public static Stream ReadFromEmbeddedResource<T>(this string resourceName)
+        private static Stream ReadFromEmbeddedResource<T>(this string resourceName)
         {
             var assembly = typeof(T).Assembly;
 

@@ -1,10 +1,10 @@
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+
 namespace GitVersion.Helpers
 {
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-
     public class FileSystem : IFileSystem
     {
         public void Copy(string @from, string to, bool overwrite)

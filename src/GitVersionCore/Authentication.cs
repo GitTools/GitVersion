@@ -1,7 +1,7 @@
+using System;
+
 namespace GitVersion
 {
-    using System;
-
     public class Authentication
     {
         public Authentication()

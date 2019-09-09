@@ -1,17 +1,17 @@
-﻿namespace GitVersion
-{
-    using System;
-    using System.IO;
-    using System.Linq;
-    using System.Text.RegularExpressions;
+using System;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 
-    public static class Extensions
+namespace GitVersion
+{
+    public static class ExtensionMethods
     {
         private static string[] trues;
         private static string[] falses;
 
 
-        static Extensions()
+        static ExtensionMethods()
         {
             trues = new[]
             {

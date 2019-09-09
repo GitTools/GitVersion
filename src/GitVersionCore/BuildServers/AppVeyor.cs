@@ -1,17 +1,15 @@
-namespace GitVersion
-{
-    using System;
-    using System.Net;
-    using System.Text;
+using System;
+using System.Net;
+using System.Text;
+using GitVersion.OutputVariables;
 
+namespace GitVersion.BuildServers
+{
     public class AppVeyor : BuildServerBase
     {
         public const string EnvironmentVariableName = "APPVEYOR";
 
-        public override bool CanApplyToCurrentContext()
-        {
-            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(EnvironmentVariableName));
-        }
+        protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
         public override string GenerateSetVersionMessage(VersionVariables variables)
         {
@@ -63,6 +61,6 @@ namespace GitVersion
                 $"Adding Environment Variable. name='GitVersion_{name}' value='{value}']"
             };
         }
-
+        public override bool PreventFetch() => false;
     }
 }

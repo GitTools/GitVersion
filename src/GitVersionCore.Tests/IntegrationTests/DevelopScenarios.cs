@@ -1,302 +1,305 @@
+using System.Collections.Generic;
 using GitTools.Testing;
-using GitVersion;
-using GitVersionCore.Tests;
 using LibGit2Sharp;
 using NUnit.Framework;
-using System.Collections.Generic;
+using GitVersion.Configuration;
+using GitVersion.VersioningModes;
 
-[TestFixture]
-public class DevelopScenarios : TestBase
+namespace GitVersionCore.Tests.IntegrationTests
 {
-    [Test]
-    public void WhenDevelopHasMultipleCommits_SpecifyExistingCommitId()
+    [TestFixture]
+    public class DevelopScenarios : TestBase
     {
-        using (var fixture = new EmptyRepositoryFixture())
+        [Test]
+        public void WhenDevelopHasMultipleCommits_SpecifyExistingCommitId()
         {
-            fixture.Repository.MakeATaggedCommit("1.0.0");
-            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
-
-            fixture.Repository.MakeACommit();
-            fixture.Repository.MakeACommit();
-            var thirdCommit = fixture.Repository.MakeACommit();
-            fixture.Repository.MakeACommit();
-            fixture.Repository.MakeACommit();
-
-            fixture.AssertFullSemver("1.1.0-alpha.3", commitId: thirdCommit.Sha);
-        }
-    }
-
-    [Test]
-    public void WhenDevelopHasMultipleCommits_SpecifyNonExistingCommitId()
-    {
-        using (var fixture = new EmptyRepositoryFixture())
-        {
-            fixture.Repository.MakeATaggedCommit("1.0.0");
-            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
-
-            fixture.Repository.MakeACommit();
-            fixture.Repository.MakeACommit();
-            fixture.Repository.MakeACommit();
-            fixture.Repository.MakeACommit();
-            fixture.Repository.MakeACommit();
-
-            fixture.AssertFullSemver("1.1.0-alpha.5", commitId: "nonexistingcommitid");
-        }
-    }
-
-    [Test]
-    public void WhenDevelopBranchedFromTaggedCommitOnMasterVersionDoesNotChange()
-    {
-        using (var fixture = new EmptyRepositoryFixture())
-        {
-            fixture.Repository.MakeATaggedCommit("1.0.0");
-            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
-            fixture.AssertFullSemver("1.0.0");
-        }
-    }
-
-    [Test]
-    public void CanChangeDevelopTagViaConfig()
-    {
-        var config = new Config
-        {
-            Branches =
+            using (var fixture = new EmptyRepositoryFixture())
             {
+                fixture.Repository.MakeATaggedCommit("1.0.0");
+                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
+
+                fixture.Repository.MakeACommit();
+                fixture.Repository.MakeACommit();
+                var thirdCommit = fixture.Repository.MakeACommit();
+                fixture.Repository.MakeACommit();
+                fixture.Repository.MakeACommit();
+
+                fixture.AssertFullSemver("1.1.0-alpha.3", commitId: thirdCommit.Sha);
+            }
+        }
+
+        [Test]
+        public void WhenDevelopHasMultipleCommits_SpecifyNonExistingCommitId()
+        {
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.Repository.MakeATaggedCommit("1.0.0");
+                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
+
+                fixture.Repository.MakeACommit();
+                fixture.Repository.MakeACommit();
+                fixture.Repository.MakeACommit();
+                fixture.Repository.MakeACommit();
+                fixture.Repository.MakeACommit();
+
+                fixture.AssertFullSemver("1.1.0-alpha.5", commitId: "nonexistingcommitid");
+            }
+        }
+
+        [Test]
+        public void WhenDevelopBranchedFromTaggedCommitOnMasterVersionDoesNotChange()
+        {
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.Repository.MakeATaggedCommit("1.0.0");
+                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
+                fixture.AssertFullSemver("1.0.0");
+            }
+        }
+
+        [Test]
+        public void CanChangeDevelopTagViaConfig()
+        {
+            var config = new Config
+            {
+                Branches =
                 {
-                    "develop", new BranchConfig
                     {
-                        Tag = "alpha",
-                        SourceBranches = new List<string>()
+                        "develop", new BranchConfig
+                        {
+                            Tag = "alpha",
+                            SourceBranches = new List<string>()
+                        }
                     }
                 }
-            }
-        };
-        using (var fixture = new EmptyRepositoryFixture())
-        {
-            fixture.Repository.MakeATaggedCommit("1.0.0");
-            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
-            fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver(config, "1.1.0-alpha.1");
-        }
-    }
-
-    [Test]
-    public void WhenDeveloperBranchExistsDontTreatAsDevelop()
-    {
-        using (var fixture = new EmptyRepositoryFixture())
-        {
-            fixture.Repository.MakeATaggedCommit("1.0.0");
-            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("developer"));
-            fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver("1.0.1-developer.1+1"); // this tag should be the branch name by default, not unstable
-        }
-    }
-
-    [Test]
-    public void WhenDevelopBranchedFromMaster_MinorIsIncreased()
-    {
-        using (var fixture = new EmptyRepositoryFixture())
-        {
-            fixture.Repository.MakeATaggedCommit("1.0.0");
-            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
-            fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver("1.1.0-alpha.1");
-        }
-    }
-
-    [Test]
-    public void MergingReleaseBranchBackIntoDevelopWithMergingToMaster_DoesBumpDevelopVersion()
-    {
-        using (var fixture = new EmptyRepositoryFixture())
-        {
-            fixture.Repository.MakeATaggedCommit("1.0.0");
-            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
-            fixture.Repository.MakeACommit();
-            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("release-2.0.0"));
-            fixture.Repository.MakeACommit();
-            Commands.Checkout(fixture.Repository, "master");
-            fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
-
-            Commands.Checkout(fixture.Repository, "develop");
-            fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
-            fixture.AssertFullSemver("2.1.0-alpha.2");
-        }
-    }
-
-    [Test]
-    public void CanHandleContinuousDelivery()
-    {
-        var config = new Config
-        {
-            Branches =
+            };
+            using (var fixture = new EmptyRepositoryFixture())
             {
-                {"develop", new BranchConfig
-                {
-                    VersioningMode = VersioningMode.ContinuousDelivery
-                }
-                }
+                fixture.Repository.MakeATaggedCommit("1.0.0");
+                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
+                fixture.Repository.MakeACommit();
+                fixture.AssertFullSemver(config, "1.1.0-alpha.1");
             }
-        };
-        using (var fixture = new EmptyRepositoryFixture())
-        {
-            fixture.Repository.MakeATaggedCommit("1.0.0");
-            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
-            fixture.Repository.MakeATaggedCommit("1.1.0-alpha7");
-            fixture.AssertFullSemver(config, "1.1.0-alpha.7");
         }
-    }
 
-    [Test]
-    public void WhenDevelopBranchedFromMasterDetachedHead_MinorIsIncreased()
-    {
-        using (var fixture = new EmptyRepositoryFixture())
+        [Test]
+        public void WhenDeveloperBranchExistsDontTreatAsDevelop()
         {
-            fixture.Repository.MakeATaggedCommit("1.0.0");
-            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
-            fixture.Repository.MakeACommit();
-            var commit = fixture.Repository.Head.Tip;
-            fixture.Repository.MakeACommit();
-            Commands.Checkout(fixture.Repository, commit);
-            fixture.AssertFullSemver("1.1.0-alpha.1");
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.Repository.MakeATaggedCommit("1.0.0");
+                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("developer"));
+                fixture.Repository.MakeACommit();
+                fixture.AssertFullSemver("1.0.1-developer.1+1"); // this tag should be the branch name by default, not unstable
+            }
         }
-    }
 
-    [Test]
-    public void InheritVersionFromReleaseBranch()
-    {
-        using (var fixture = new EmptyRepositoryFixture())
+        [Test]
+        public void WhenDevelopBranchedFromMaster_MinorIsIncreased()
         {
-            fixture.MakeATaggedCommit("1.0.0");
-            fixture.BranchTo("develop");
-            fixture.MakeACommit();
-            fixture.BranchTo("release/2.0.0");
-            fixture.MakeACommit();
-            fixture.MakeACommit();
-            fixture.Checkout("develop");
-            fixture.AssertFullSemver("1.1.0-alpha.1");
-            fixture.MakeACommit();
-            fixture.AssertFullSemver("2.1.0-alpha.1");
-            fixture.MergeNoFF("release/2.0.0");
-            fixture.AssertFullSemver("2.1.0-alpha.4");
-            fixture.BranchTo("feature/MyFeature");
-            fixture.MakeACommit();
-            fixture.AssertFullSemver("2.1.0-MyFeature.1+5");
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.Repository.MakeATaggedCommit("1.0.0");
+                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
+                fixture.Repository.MakeACommit();
+                fixture.AssertFullSemver("1.1.0-alpha.1");
+            }
         }
-    }
 
-    [Test]
-    public void WhenMultipleDevelopBranchesExistAndCurrentBranchHasIncrementInheritPolicyAndCurrentCommitIsAMerge()
-    {
-        using (var fixture = new EmptyRepositoryFixture())
+        [Test]
+        public void MergingReleaseBranchBackIntoDevelopWithMergingToMaster_DoesBumpDevelopVersion()
         {
-            fixture.Repository.MakeATaggedCommit("1.0.0");
-            fixture.Repository.CreateBranch("bob_develop");
-            fixture.Repository.CreateBranch("develop");
-            fixture.Repository.CreateBranch("feature/x");
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.Repository.MakeATaggedCommit("1.0.0");
+                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
+                fixture.Repository.MakeACommit();
+                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("release-2.0.0"));
+                fixture.Repository.MakeACommit();
+                Commands.Checkout(fixture.Repository, "master");
+                fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
 
-            Commands.Checkout(fixture.Repository, "develop");
-            fixture.Repository.MakeACommit();
-
-            Commands.Checkout(fixture.Repository, "feature/x");
-            fixture.Repository.MakeACommit();
-            fixture.Repository.MergeNoFF("develop");
-
-            fixture.AssertFullSemver("1.1.0-x.1+3");
+                Commands.Checkout(fixture.Repository, "develop");
+                fixture.Repository.MergeNoFF("release-2.0.0", Generate.SignatureNow());
+                fixture.AssertFullSemver("2.1.0-alpha.2");
+            }
         }
-    }
 
-    [Test]
-    public void TagOnHotfixShouldNotAffectDevelop()
-    {
-        using(var fixture = new BaseGitFlowRepositoryFixture("1.2.0"))
+        [Test]
+        public void CanHandleContinuousDelivery()
         {
-            Commands.Checkout(fixture.Repository, "master");
-            var hotfix = fixture.Repository.CreateBranch("hotfix-1.2.1");
-            Commands.Checkout(fixture.Repository, hotfix);
-            fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver("1.2.1-beta.1+1");
-            fixture.Repository.ApplyTag("1.2.1-beta.1");
-            fixture.AssertFullSemver("1.2.1-beta.1");
-            Commands.Checkout(fixture.Repository, "develop");
-            fixture.Repository.MakeACommit();
-            fixture.AssertFullSemver("1.3.0-alpha.2");
+            var config = new Config
+            {
+                Branches =
+                {
+                    {"develop", new BranchConfig
+                        {
+                            VersioningMode = VersioningMode.ContinuousDelivery
+                        }
+                    }
+                }
+            };
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.Repository.MakeATaggedCommit("1.0.0");
+                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
+                fixture.Repository.MakeATaggedCommit("1.1.0-alpha7");
+                fixture.AssertFullSemver(config, "1.1.0-alpha.7");
+            }
         }
-    }
 
-    [Test]
-    public void CommitsSinceVersionSourceShouldNotGoDownUponGitFlowReleaseFinish()
-    {
-        var config = new Config
+        [Test]
+        public void WhenDevelopBranchedFromMasterDetachedHead_MinorIsIncreased()
         {
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
-
-        using (var fixture = new EmptyRepositoryFixture())
-        {
-            fixture.MakeACommit();
-            fixture.ApplyTag("1.1.0");
-            fixture.BranchTo("develop");
-            fixture.MakeACommit("commit in develop - 1");
-            fixture.AssertFullSemver("1.2.0-alpha.1");
-            fixture.BranchTo("release/1.2.0");
-            fixture.AssertFullSemver("1.2.0-beta.1+0");
-            fixture.Checkout("develop");
-            fixture.MakeACommit("commit in develop - 2");
-            fixture.MakeACommit("commit in develop - 3");
-            fixture.MakeACommit("commit in develop - 4");
-            fixture.MakeACommit("commit in develop - 5");
-            fixture.AssertFullSemver("1.3.0-alpha.4");
-            fixture.Checkout("release/1.2.0");
-            fixture.MakeACommit("commit in release/1.2.0 - 1");
-            fixture.MakeACommit("commit in release/1.2.0 - 2");
-            fixture.MakeACommit("commit in release/1.2.0 - 3");
-            fixture.AssertFullSemver("1.2.0-beta.1+3");
-            fixture.Checkout("master");
-            fixture.MergeNoFF("release/1.2.0");
-            fixture.ApplyTag("1.2.0");
-            fixture.Checkout("develop");
-            fixture.MergeNoFF("release/1.2.0");
-            fixture.MakeACommit("commit in develop - 6");
-            fixture.AssertFullSemver("1.3.0-alpha.9");
-            fixture.SequenceDiagram.Destroy("release/1.2.0");
-            fixture.Repository.Branches.Remove("release/1.2.0");
-
-            var expectedFullSemVer = "1.3.0-alpha.9";
-            fixture.AssertFullSemver(config, expectedFullSemVer);
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.Repository.MakeATaggedCommit("1.0.0");
+                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
+                fixture.Repository.MakeACommit();
+                var commit = fixture.Repository.Head.Tip;
+                fixture.Repository.MakeACommit();
+                Commands.Checkout(fixture.Repository, commit);
+                fixture.AssertFullSemver("1.1.0-alpha.1");
+            }
         }
-    }
 
-    [Test]
-    public void CommitsSinceVersionSourceShouldNotGoDownUponMergingFeatureOnlyToDevelop()
-    {
-        var config = new Config
+        [Test]
+        public void InheritVersionFromReleaseBranch()
         {
-            VersioningMode = VersioningMode.ContinuousDeployment
-        };
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.MakeATaggedCommit("1.0.0");
+                fixture.BranchTo("develop");
+                fixture.MakeACommit();
+                fixture.BranchTo("release/2.0.0");
+                fixture.MakeACommit();
+                fixture.MakeACommit();
+                fixture.Checkout("develop");
+                fixture.AssertFullSemver("1.1.0-alpha.1");
+                fixture.MakeACommit();
+                fixture.AssertFullSemver("2.1.0-alpha.1");
+                fixture.MergeNoFF("release/2.0.0");
+                fixture.AssertFullSemver("2.1.0-alpha.4");
+                fixture.BranchTo("feature/MyFeature");
+                fixture.MakeACommit();
+                fixture.AssertFullSemver("2.1.0-MyFeature.1+5");
+            }
+        }
 
-        using (var fixture = new EmptyRepositoryFixture())
+        [Test]
+        public void WhenMultipleDevelopBranchesExistAndCurrentBranchHasIncrementInheritPolicyAndCurrentCommitIsAMerge()
         {
-            fixture.MakeACommit("commit in master - 1");
-            fixture.ApplyTag("1.1.0");
-            fixture.BranchTo("develop");
-            fixture.MakeACommit("commit in develop - 1");
-            fixture.AssertFullSemver("1.2.0-alpha.1");
-            fixture.BranchTo("release/1.2.0");
-            fixture.MakeACommit("commit in release - 1");
-            fixture.MakeACommit("commit in release - 2");
-            fixture.MakeACommit("commit in release - 3");
-            fixture.AssertFullSemver("1.2.0-beta.1+3");
-            fixture.ApplyTag("1.2.0");
-            fixture.Checkout("develop");
-            fixture.MakeACommit("commit in develop - 2");
-            fixture.AssertFullSemver("1.3.0-alpha.1");
-            fixture.MergeNoFF("release/1.2.0");
-            fixture.AssertFullSemver("1.3.0-alpha.5");
-            fixture.SequenceDiagram.Destroy("release/1.2.0");
-            fixture.Repository.Branches.Remove("release/1.2.0");
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.Repository.MakeATaggedCommit("1.0.0");
+                fixture.Repository.CreateBranch("bob_develop");
+                fixture.Repository.CreateBranch("develop");
+                fixture.Repository.CreateBranch("feature/x");
 
-            var expectedFullSemVer = "1.3.0-alpha.5";
-            fixture.AssertFullSemver(config, expectedFullSemVer);
+                Commands.Checkout(fixture.Repository, "develop");
+                fixture.Repository.MakeACommit();
+
+                Commands.Checkout(fixture.Repository, "feature/x");
+                fixture.Repository.MakeACommit();
+                fixture.Repository.MergeNoFF("develop");
+
+                fixture.AssertFullSemver("1.1.0-x.1+3");
+            }
+        }
+
+        [Test]
+        public void TagOnHotfixShouldNotAffectDevelop()
+        {
+            using(var fixture = new BaseGitFlowRepositoryFixture("1.2.0"))
+            {
+                Commands.Checkout(fixture.Repository, "master");
+                var hotfix = fixture.Repository.CreateBranch("hotfix-1.2.1");
+                Commands.Checkout(fixture.Repository, hotfix);
+                fixture.Repository.MakeACommit();
+                fixture.AssertFullSemver("1.2.1-beta.1+1");
+                fixture.Repository.ApplyTag("1.2.1-beta.1");
+                fixture.AssertFullSemver("1.2.1-beta.1");
+                Commands.Checkout(fixture.Repository, "develop");
+                fixture.Repository.MakeACommit();
+                fixture.AssertFullSemver("1.3.0-alpha.2");
+            }
+        }
+
+        [Test]
+        public void CommitsSinceVersionSourceShouldNotGoDownUponGitFlowReleaseFinish()
+        {
+            var config = new Config
+            {
+                VersioningMode = VersioningMode.ContinuousDeployment
+            };
+
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.MakeACommit();
+                fixture.ApplyTag("1.1.0");
+                fixture.BranchTo("develop");
+                fixture.MakeACommit("commit in develop - 1");
+                fixture.AssertFullSemver("1.2.0-alpha.1");
+                fixture.BranchTo("release/1.2.0");
+                fixture.AssertFullSemver("1.2.0-beta.1+0");
+                fixture.Checkout("develop");
+                fixture.MakeACommit("commit in develop - 2");
+                fixture.MakeACommit("commit in develop - 3");
+                fixture.MakeACommit("commit in develop - 4");
+                fixture.MakeACommit("commit in develop - 5");
+                fixture.AssertFullSemver("1.3.0-alpha.4");
+                fixture.Checkout("release/1.2.0");
+                fixture.MakeACommit("commit in release/1.2.0 - 1");
+                fixture.MakeACommit("commit in release/1.2.0 - 2");
+                fixture.MakeACommit("commit in release/1.2.0 - 3");
+                fixture.AssertFullSemver("1.2.0-beta.1+3");
+                fixture.Checkout("master");
+                fixture.MergeNoFF("release/1.2.0");
+                fixture.ApplyTag("1.2.0");
+                fixture.Checkout("develop");
+                fixture.MergeNoFF("release/1.2.0");
+                fixture.MakeACommit("commit in develop - 6");
+                fixture.AssertFullSemver("1.3.0-alpha.9");
+                fixture.SequenceDiagram.Destroy("release/1.2.0");
+                fixture.Repository.Branches.Remove("release/1.2.0");
+
+                var expectedFullSemVer = "1.3.0-alpha.9";
+                fixture.AssertFullSemver(config, expectedFullSemVer);
+            }
+        }
+
+        [Test]
+        public void CommitsSinceVersionSourceShouldNotGoDownUponMergingFeatureOnlyToDevelop()
+        {
+            var config = new Config
+            {
+                VersioningMode = VersioningMode.ContinuousDeployment
+            };
+
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.MakeACommit("commit in master - 1");
+                fixture.ApplyTag("1.1.0");
+                fixture.BranchTo("develop");
+                fixture.MakeACommit("commit in develop - 1");
+                fixture.AssertFullSemver("1.2.0-alpha.1");
+                fixture.BranchTo("release/1.2.0");
+                fixture.MakeACommit("commit in release - 1");
+                fixture.MakeACommit("commit in release - 2");
+                fixture.MakeACommit("commit in release - 3");
+                fixture.AssertFullSemver("1.2.0-beta.1+3");
+                fixture.ApplyTag("1.2.0");
+                fixture.Checkout("develop");
+                fixture.MakeACommit("commit in develop - 2");
+                fixture.AssertFullSemver("1.3.0-alpha.1");
+                fixture.MergeNoFF("release/1.2.0");
+                fixture.AssertFullSemver("1.3.0-alpha.5");
+                fixture.SequenceDiagram.Destroy("release/1.2.0");
+                fixture.Repository.Branches.Remove("release/1.2.0");
+
+                var expectedFullSemVer = "1.3.0-alpha.5";
+                fixture.AssertFullSemver(config, expectedFullSemVer);
+            }
         }
     }
 }

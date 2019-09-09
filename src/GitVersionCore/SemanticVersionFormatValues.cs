@@ -1,7 +1,9 @@
+using System.Globalization;
+using GitVersion.Configuration;
+using GitVersion.Extensions;
+
 namespace GitVersion
 {
-    using System.Globalization;
-
     public class SemanticVersionFormatValues
     {
         readonly SemanticVersion _semver;

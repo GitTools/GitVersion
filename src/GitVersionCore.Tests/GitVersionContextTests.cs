@@ -1,12 +1,15 @@
-﻿namespace GitVersionCore.Tests
-{
-    using GitTools.Testing;
-    using GitVersion;
-    using LibGit2Sharp;
-    using NUnit.Framework;
-    using Shouldly;
-    using System.Collections.Generic;
+﻿using GitTools.Testing;
+using GitVersion;
+using LibGit2Sharp;
+using NUnit.Framework;
+using Shouldly;
+using System.Collections.Generic;
+using GitVersion.Configuration;
+using GitVersion.VersioningModes;
+using GitVersionCore.Tests.Mocks;
 
+namespace GitVersionCore.Tests
+{
     public class GitVersionContextTests : TestBase
     {
         [Test]

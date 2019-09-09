@@ -1,10 +1,11 @@
-﻿namespace GitVersion.VersionCalculation
-{
-    using System.Collections.Generic;
-    using System.Linq;
-    using BaseVersionCalculators;
-    using LibGit2Sharp;
+﻿using System.Collections.Generic;
+using System.Linq;
+using GitVersion.VersionCalculation.BaseVersionCalculators;
+using GitVersion.Exceptions;
+using LibGit2Sharp;
 
+namespace GitVersion.VersionCalculation
+{
     /// <summary>
     /// Version is 0.1.0.
     /// BaseVersionSource is the "root" commit reachable from the current commit.

@@ -1,12 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Helpers;
+
 namespace GitVersion.Configuration.Init.BuildServer
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Text;
-    using GitVersion.Configuration.Init.Wizard;
-    using GitVersion.Helpers;
-
     enum ProjectVisibility
     {
         Public = 0,

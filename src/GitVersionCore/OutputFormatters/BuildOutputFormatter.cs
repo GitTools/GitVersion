@@ -1,7 +1,9 @@
-﻿namespace GitVersion
-{
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using GitVersion.BuildServers;
+using GitVersion.OutputVariables;
 
+namespace GitVersion.OutputFormatters
+{
     public static class BuildOutputFormatter
     {
         public static IEnumerable<string> GenerateBuildLogOutput(IBuildServer buildServer, VersionVariables variables)

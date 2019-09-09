@@ -1,9 +1,9 @@
-﻿namespace GitVersion.Configuration.Init.BuildServer
-{
-    using System.Collections.Generic;
-    using GitVersion.Configuration.Init.Wizard;
-    using GitVersion.Helpers;
+﻿using System.Collections.Generic;
+using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Helpers;
 
+namespace GitVersion.Configuration.Init.BuildServer
+{
     class SetupBuildScripts : ConfigInitWizardStep
     {
         public SetupBuildScripts(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)

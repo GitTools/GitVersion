@@ -1,9 +1,9 @@
+using System.Collections.Generic;
+using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Helpers;
+
 namespace GitVersion.Configuration.Init.BuildServer
 {
-    using System.Collections.Generic;
-    using GitVersion.Configuration.Init.Wizard;
-    using GitVersion.Helpers;
-
     class AppveyorPublicPrivate : ConfigInitWizardStep
     {
         public AppveyorPublicPrivate(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)

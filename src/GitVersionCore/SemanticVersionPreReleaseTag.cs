@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using GitVersion.Helpers;
 
 namespace GitVersion
 {
-
     public class SemanticVersionPreReleaseTag :
         IFormattable, IComparable<SemanticVersionPreReleaseTag>, IEquatable<SemanticVersionPreReleaseTag>
     {

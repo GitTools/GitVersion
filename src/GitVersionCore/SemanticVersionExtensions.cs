@@ -1,7 +1,8 @@
-﻿namespace GitVersion
-{
-    using LibGit2Sharp;
+﻿using LibGit2Sharp;
+using GitVersion.Configuration;
 
+namespace GitVersion
+{
     public static class SemanticVersionExtensions
     {
         public static void OverrideVersionManuallyIfNeeded(this SemanticVersion version, IRepository repository, EffectiveConfiguration configuration)

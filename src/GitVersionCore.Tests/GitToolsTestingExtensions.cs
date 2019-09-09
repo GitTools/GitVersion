@@ -1,11 +1,14 @@
+using System;
+using GitTools.Testing;
+using GitVersion;
+using GitVersion.Configuration;
+using GitVersion.OutputVariables;
+using LibGit2Sharp;
+using Shouldly;
+using GitVersion.Helpers;
+
 namespace GitVersionCore.Tests
 {
-    using System;
-    using GitTools.Testing;
-    using GitVersion;
-    using LibGit2Sharp;
-    using Shouldly;
-
     public static class GitToolsTestingExtensions
     {
         public static Config ApplyDefaults(this Config config)

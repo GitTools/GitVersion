@@ -1,11 +1,11 @@
-namespace GitVersion
-{
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using YamlDotNet.Serialization;
-    using YamlDotNet.Serialization.NamingConventions;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
+namespace GitVersion.Configuration
+{
     public class LegacyConfigNotifier
     {
         static readonly Dictionary<string, string> OldConfigKnownRegexes = new Dictionary<string, string>

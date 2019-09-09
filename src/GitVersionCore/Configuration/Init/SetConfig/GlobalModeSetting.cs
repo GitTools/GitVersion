@@ -1,9 +1,10 @@
-﻿namespace GitVersion.Configuration.Init.SetConfig
-{
-    using System.Collections.Generic;
-    using GitVersion.Configuration.Init.Wizard;
-    using GitVersion.Helpers;
+﻿using System.Collections.Generic;
+using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Helpers;
+using GitVersion.VersioningModes;
 
+namespace GitVersion.Configuration.Init.SetConfig
+{
     public class GlobalModeSetting : ConfigInitWizardStep
     {
         readonly ConfigInitWizardStep returnToStep;

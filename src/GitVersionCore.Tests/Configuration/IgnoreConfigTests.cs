@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.IO;
-using GitVersion;
 using NUnit.Framework;
 using Shouldly;
 using YamlDotNet.Core;
+using GitVersion.Configuration;
 
 namespace GitVersionCore.Tests.Configuration
 {

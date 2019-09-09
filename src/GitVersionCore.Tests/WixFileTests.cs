@@ -1,12 +1,15 @@
+using System;
+using System.IO;
+using System.Text;
+using GitVersion;
+using GitVersion.OutputVariables;
+using NUnit.Framework;
+using Shouldly;
+using GitVersion.Extensions;
+using GitVersion.Helpers;
+
 namespace GitVersionCore.Tests
 {
-    using System;
-    using System.IO;
-    using System.Text;
-    using GitVersion;
-    using NUnit.Framework;
-    using Shouldly;
-
     [TestFixture]
     [Parallelizable(ParallelScope.None)]
     class WixFileTests

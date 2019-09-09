@@ -27,17 +27,17 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="GitVersionInformationResources\AddFormats\**\*.*" />
-        <Compile Remove="GitVersionInformationResources\Templates\**\*.*" />
-        <Compile Remove="VersionAssemblyInfoResources\AddFormats\**\*.*" />
-        <Compile Remove="VersionAssemblyInfoResources\Templates\**\*.*" />
+        <Compile Remove="Extensions\GitVersionInformationResources\AddFormats\**\*.*" />
+        <Compile Remove="Extensions\GitVersionInformationResources\Templates\**\*.*" />
+        <Compile Remove="Extensions\VersionAssemblyInfoResources\AddFormats\**\*.*" />
+        <Compile Remove="Extensions\VersionAssemblyInfoResources\Templates\**\*.*" />
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="GitVersionInformationResources\AddFormats\**\*.*" />
-        <EmbeddedResource Include="GitVersionInformationResources\Templates\**\*.*" />
-        <EmbeddedResource Include="VersionAssemblyInfoResources\AddFormats\**\*.*" />
-        <EmbeddedResource Include="VersionAssemblyInfoResources\Templates\**\*.*" />
+        <EmbeddedResource Include="Extensions\GitVersionInformationResources\AddFormats\**\*.*" />
+        <EmbeddedResource Include="Extensions\GitVersionInformationResources\Templates\**\*.*" />
+        <EmbeddedResource Include="Extensions\VersionAssemblyInfoResources\AddFormats\**\*.*" />
+        <EmbeddedResource Include="Extensions\VersionAssemblyInfoResources\Templates\**\*.*" />
     </ItemGroup>
 
 </Project>

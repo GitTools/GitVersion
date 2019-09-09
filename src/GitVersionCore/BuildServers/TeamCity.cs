@@ -1,15 +1,14 @@
-﻿namespace GitVersion
-{
-    using System;
+using System;
+using GitVersion.Helpers;
+using GitVersion.OutputVariables;
 
+namespace GitVersion.BuildServers
+{
     public class TeamCity : BuildServerBase
     {
         public const string EnvironmentVariableName = "TEAMCITY_VERSION";
 
-        public override bool CanApplyToCurrentContext()
-        {
-            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(EnvironmentVariableName));
-        }
+        protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
         public override string GetCurrentBranch(bool usingDynamicRepos)
         {

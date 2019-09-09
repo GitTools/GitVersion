@@ -1,11 +1,15 @@
-namespace GitVersion
-{
-    using System;
-    using System.IO;
+using System;
+using System.IO;
+using GitVersion.OutputFormatters;
+using GitVersion.OutputVariables;
 
+namespace GitVersion.BuildServers
+{
     public class GitLabCi : BuildServerBase
     {
+        public const string EnvironmentVariableName = "GITLAB_CI";
         string _file;
+        protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
         public GitLabCi()
             : this("gitversion.properties")
@@ -15,11 +19,6 @@ namespace GitVersion
         public GitLabCi(string propertiesFileName)
         {
             _file = propertiesFileName;
-        }
-
-        public override bool CanApplyToCurrentContext()
-        {
-            return !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GITLAB_CI"));
         }
 
         public override string GenerateSetVersionMessage(VersionVariables variables)
@@ -40,10 +39,7 @@ namespace GitVersion
             return Environment.GetEnvironmentVariable("CI_COMMIT_REF_NAME");
         }
 
-        public override bool PreventFetch()
-        {
-            return true;
-        }
+        public override bool PreventFetch() => true;
 
         public override void WriteIntegration(Action<string> writer, VersionVariables variables)
         {

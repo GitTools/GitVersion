@@ -1,12 +1,14 @@
-namespace GitVersion
-{
-    using Configuration.Init.Wizard;
-    using GitVersion.Helpers;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Helpers;
+using GitVersion.VersioningModes;
+using GitVersion.Extensions;
 
+namespace GitVersion.Configuration
+{
     public class ConfigurationProvider
     {
         internal const string DefaultTagPrefix = "[vV]";

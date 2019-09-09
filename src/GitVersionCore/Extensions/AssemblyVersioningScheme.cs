@@ -1,6 +1,6 @@
-﻿namespace GitVersion
+﻿namespace GitVersion.Extensions
 {
-    public enum AssemblyFileVersioningScheme
+    public enum AssemblyVersioningScheme
     {
         MajorMinorPatchTag,
         MajorMinorPatch,

@@ -1,7 +1,7 @@
-﻿namespace GitVersion.VersionCalculation
-{
-    using GitVersion.VersionCalculation.BaseVersionCalculators;
+﻿using GitVersion.VersionCalculation.BaseVersionCalculators;
 
+namespace GitVersion.VersionCalculation
+{
     public interface IBaseVersionCalculator
     {
         BaseVersion GetBaseVersion(GitVersionContext context);

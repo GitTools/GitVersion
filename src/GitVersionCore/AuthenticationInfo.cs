@@ -1,7 +1,7 @@
+using LibGit2Sharp;
+
 namespace GitVersion
 {
-    using LibGit2Sharp;
-
     public class AuthenticationInfo
     {
         public string Username { get; set; }

@@ -1,12 +1,12 @@
 // This code originally copied and adapted from https://raw.githubusercontent.com/dotnet/sourcelink/master/src/Microsoft.Build.Tasks.Git/TaskImplementation.cs
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+
 namespace GitVersionTask.MsBuild.LibGit2Sharp
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Reflection;
-
     public class LibGit2SharpLoader
     {
         private static string taskDirectory;

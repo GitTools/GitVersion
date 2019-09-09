@@ -1,14 +1,15 @@
+using System.Collections.Generic;
+using System.Linq;
+using GitTools.Testing;
+using GitVersion;
+using GitVersion.Configuration;
+using GitVersion.VersionCalculation.BaseVersionCalculators;
+using LibGit2Sharp;
+using NUnit.Framework;
+using Shouldly;
+
 namespace GitVersionCore.Tests.VersionCalculation.Strategies
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using GitTools.Testing;
-    using GitVersion;
-    using GitVersion.VersionCalculation.BaseVersionCalculators;
-    using LibGit2Sharp;
-    using NUnit.Framework;
-    using Shouldly;
-
     [TestFixture]
     public class VersionInBranchNameBaseVersionStrategyTests : TestBase
     {

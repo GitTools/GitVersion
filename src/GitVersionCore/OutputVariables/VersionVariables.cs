@@ -1,15 +1,13 @@
-namespace GitVersion
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using GitVersion.Helpers;
+using YamlDotNet.Serialization;
+
+namespace GitVersion.OutputVariables
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using GitVersion.Helpers;
- 
-
-    using YamlDotNet.Serialization;
-
     public class VersionVariables : IEnumerable<KeyValuePair<string, string>>
     {
         public VersionVariables(string major,
