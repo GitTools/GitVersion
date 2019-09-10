@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using GitVersion.OutputVariables;
 
 namespace GitVersion.Common

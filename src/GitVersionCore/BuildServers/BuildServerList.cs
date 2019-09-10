@@ -7,25 +7,13 @@ namespace GitVersion.BuildServers
 {
     public static class BuildServerList
     {
-        static List<IBuildServer> BuildServers = new List<IBuildServer>
-        {
-            new ContinuaCi(),
-            new TeamCity(),
-            new AppVeyor(),
-            new MyGet(),
-            new Jenkins(),
-            new GitLabCi(),
-            new VsoAgent(),
-            new TravisCI(),
-            new EnvRun(),
-            new Drone()
-        };
+        private static List<IBuildServer> supportedBuildServers;
 
         public static IEnumerable<IBuildServer> GetApplicableBuildServers()
         {
             var buildServices = new List<IBuildServer>();
 
-            foreach (var buildServer in BuildServers)
+            foreach (var buildServer in supportedBuildServers)
             {
                 try
                 {
@@ -42,6 +30,23 @@ namespace GitVersion.BuildServers
             }
 
             return buildServices;
+        }
+
+        public static void Init(IEnvironment environment)
+        {
+            supportedBuildServers = new List<IBuildServer>
+            {
+                new ContinuaCi(environment),
+                new TeamCity(environment),
+                new AppVeyor(environment),
+                new MyGet(environment),
+                new Jenkins(environment),
+                new GitLabCi(environment),
+                new VsoAgent(environment),
+                new TravisCI(environment),
+                new EnvRun(environment),
+                new Drone(environment)
+            };
         }
     }
 }

@@ -12,11 +12,7 @@ namespace GitVersion.BuildServers
         string _file;
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
-        public Jenkins() : this("gitversion.properties")
-        {
-        }
-
-        public Jenkins(string propertiesFileName)
+        public Jenkins(IEnvironment environment, string propertiesFileName = "gitversion.properties") : base(environment)
         {
             _file = propertiesFileName;
         }

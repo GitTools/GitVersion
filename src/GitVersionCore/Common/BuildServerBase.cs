@@ -6,6 +6,13 @@ namespace GitVersion.Common
 {
     public abstract class BuildServerBase : IBuildServer
     {
+        protected IEnvironment Environment { get; }
+
+        protected BuildServerBase(IEnvironment environment)
+        {
+            this.Environment = environment;
+        }
+
         protected abstract string EnvironmentVariable { get; }
 
         public virtual bool CanApplyToCurrentContext()

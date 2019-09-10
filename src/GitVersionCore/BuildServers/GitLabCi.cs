@@ -10,17 +10,14 @@ namespace GitVersion.BuildServers
     {
         public const string EnvironmentVariableName = "GITLAB_CI";
         string _file;
-        protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
-        public GitLabCi()
-            : this("gitversion.properties")
-        {
-        }
-
-        public GitLabCi(string propertiesFileName)
+        public GitLabCi(IEnvironment environment, string propertiesFileName = "gitversion.properties") : base(environment)
         {
             _file = propertiesFileName;
         }
+
+        protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
+
 
         public override string GenerateSetVersionMessage(VersionVariables variables)
         {

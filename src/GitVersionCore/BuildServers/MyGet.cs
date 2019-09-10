@@ -8,6 +8,10 @@ namespace GitVersion.BuildServers
 {
     public class MyGet : BuildServerBase
     {
+        public MyGet(IEnvironment environment) : base(environment)
+        {
+        }
+
         public const string EnvironmentVariableName = "BuildRunner";
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
         public override bool CanApplyToCurrentContext()

@@ -13,6 +13,7 @@ using GitVersion.Cache;
 using LibGit2Sharp;
 using GitVersionCore.Tests.Helpers;
 using GitVersion.Common;
+using Environment = System.Environment;
 
 namespace GitVersionCore.Tests
 {
@@ -21,17 +22,18 @@ namespace GitVersionCore.Tests
     public class ExecuteCoreTests : TestBase
     {
         IFileSystem fileSystem;
-
+        private IEnvironment environment;
         [SetUp]
         public void SetUp()
         {
             fileSystem = new FileSystem();
+            environment = new TestEnvironment();
         }
 
         [Test]
         public void CacheKeySameAfterReNormalizing()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -53,15 +55,15 @@ namespace GitVersionCore.Tests
         [Description("LibGit2Sharp fails here when running under Mono")]
         public void CacheKeyForWorktree()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
                 var worktreePath = Path.Combine(Directory.GetParent(fixture.RepositoryPath).FullName, Guid.NewGuid().ToString());
                 try
                 {
-                // create a branch and a new worktree for it
-                var repo = new Repository(fixture.RepositoryPath);
+                    // create a branch and a new worktree for it
+                    var repo = new Repository(fixture.RepositoryPath);
                     repo.Worktrees.Add("worktree", worktreePath, false);
 
                     var targetUrl = "https://github.com/GitTools/GitVersion.git";
@@ -113,7 +115,7 @@ CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
 ";
 
-            var versionAndBranchFinder = new ExecuteCore(fileSystem);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment);
 
             var logs = RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -160,7 +162,7 @@ CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
 ";
 
-            var versionAndBranchFinder = new ExecuteCore(fileSystem);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -226,7 +228,7 @@ CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
 ";
 
-            var versionAndBranchFinder = new ExecuteCore(fileSystem);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -278,7 +280,7 @@ CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
 ";
 
-            var versionAndBranchFinder = new ExecuteCore(fileSystem);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -295,7 +297,7 @@ CommitDate: 2015-11-10
         [Test]
         public void WorkingDirectoryWithoutGit()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -309,15 +311,15 @@ CommitDate: 2015-11-10
         [Description("LibGit2Sharp fails when running under Mono")]
         public void GetProjectRootDirectory_WorkingDirectoryWithWorktree()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
                 var worktreePath = Path.Combine(Directory.GetParent(fixture.RepositoryPath).FullName, Guid.NewGuid().ToString());
                 try
                 {
-                // create a branch and a new worktree for it
-                var repo = new Repository(fixture.RepositoryPath);
+                    // create a branch and a new worktree for it
+                    var repo = new Repository(fixture.RepositoryPath);
                     repo.Worktrees.Add("worktree", worktreePath, false);
 
                     var targetUrl = "https://github.com/GitTools/GitVersion.git";
@@ -334,7 +336,7 @@ CommitDate: 2015-11-10
         [Test]
         public void GetProjectRootDirectory_NoWorktree()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -348,7 +350,7 @@ CommitDate: 2015-11-10
         [Test]
         public void DynamicRepositoriesShouldNotErrorWithFailedToFindGitDirectory()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -359,7 +361,7 @@ CommitDate: 2015-11-10
         [Test]
         public void GetDotGitDirectory_NoWorktree()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -375,15 +377,16 @@ CommitDate: 2015-11-10
         [Description("LibGit2Sharp fails when running under Mono")]
         public void GetDotGitDirectory_Worktree()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
                 var worktreePath = Path.Combine(Directory.GetParent(fixture.RepositoryPath).FullName, Guid.NewGuid().ToString());
                 try
                 {
-                // create a branch and a new worktree for it
-                var repo = new Repository(fixture.RepositoryPath);
+
+                    // create a branch and a new worktree for it
+                    var repo = new Repository(fixture.RepositoryPath);
                     repo.Worktrees.Add("worktree", worktreePath, false);
 
                     var targetUrl = "https://github.com/GitTools/GitVersion.git";
@@ -398,35 +401,31 @@ CommitDate: 2015-11-10
             });
         }
 
-        LogMessages RepositoryScope(ExecuteCore executeCore = null, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
+        private LogMessages RepositoryScope(ExecuteCore executeCore = null, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
         {
             // Make sure GitVersion doesn't trigger build server mode when we are running the tests
-            Environment.SetEnvironmentVariable(AppVeyor.EnvironmentVariableName, null);
-            Environment.SetEnvironmentVariable(TravisCI.EnvironmentVariableName, null);
-            Environment.SetEnvironmentVariable(VsoAgent.EnvironmentVariableName, null);
+            environment.SetEnvironmentVariable(AppVeyor.EnvironmentVariableName, null);
+            environment.SetEnvironmentVariable(TravisCI.EnvironmentVariableName, null);
+            environment.SetEnvironmentVariable(VsoAgent.EnvironmentVariableName, null);
             var debugBuilder = new StringBuilder();
-            Action<string> debugLogger = s =>
-            {
-                debugBuilder.AppendLine(s);
-            };
-            var infoBuilder = new StringBuilder();
-            Action<string> infoLogger = s =>
-            {
-                infoBuilder.AppendLine(s);
-            };
-            var warnBuilder = new StringBuilder();
-            Action<string> warnLogger = s =>
-            {
-                warnBuilder.AppendLine(s);
-            };
-            var errorBuilder = new StringBuilder();
-            Action<string> errorLogger = s =>
-            {
-                errorBuilder.AppendLine(s);
-            };
-            executeCore = executeCore ?? new ExecuteCore(fileSystem);
 
-            using (Logger.AddLoggersTemporarily(debugLogger, infoLogger, warnLogger, errorLogger))
+            void DebugLogger(string s) => debugBuilder.AppendLine(s);
+
+            var infoBuilder = new StringBuilder();
+
+            void InfoLogger(string s) => infoBuilder.AppendLine(s);
+
+            var warnBuilder = new StringBuilder();
+
+            void WarnLogger(string s) => warnBuilder.AppendLine(s);
+
+            var errorBuilder = new StringBuilder();
+
+            void ErrorLogger(string s) => errorBuilder.AppendLine(s);
+
+            executeCore = executeCore ?? new ExecuteCore(fileSystem, environment);
+
+            using (Logger.AddLoggersTemporarily(DebugLogger, InfoLogger, WarnLogger, ErrorLogger))
             using (var fixture = new EmptyRepositoryFixture())
             {
                 fixture.Repository.MakeACommit();
@@ -435,10 +434,7 @@ CommitDate: 2015-11-10
                 vv.AssemblySemVer.ShouldBe("0.1.0.0");
                 vv.FileName.ShouldNotBeNullOrEmpty();
 
-                if (fixtureAction != null)
-                {
-                    fixtureAction(fixture, vv);
-                }
+                fixtureAction?.Invoke(fixture, vv);
             }
 
             return new LogMessages

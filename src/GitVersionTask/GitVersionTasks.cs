@@ -13,6 +13,7 @@ using Microsoft.Build.Framework;
 using GitVersion.Extensions.GitVersionInformationResources;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Common;
+using Environment = GitVersion.Common.Environment;
 
 namespace GitVersionTask
 {
@@ -74,6 +75,7 @@ namespace GitVersionTask
                 if (!GetVersionVariables(task, out var versionVariables)) return;
 
                 var logger = t.Log;
+                BuildServerList.Init(new Environment());
                 foreach (var buildServer in BuildServerList.GetApplicableBuildServers())
                 {
                     logger.LogMessage($"Executing GenerateSetVersionMessage for '{ buildServer.GetType().Name }'.");
@@ -116,6 +118,6 @@ namespace GitVersionTask
         }
 
         private static bool GetVersionVariables(GitVersionTaskBase task, out VersionVariables versionVariables)
-            => new ExecuteCore(new FileSystem(), ConfigFileLocator.GetLocator(task.ConfigFilePath)).TryGetVersion(task.SolutionDirectory, out versionVariables, task.NoFetch, new Authentication());
+            => new ExecuteCore(new FileSystem(), new Environment(), ConfigFileLocator.GetLocator(task.ConfigFilePath)).TryGetVersion(task.SolutionDirectory, out versionVariables, task.NoFetch, new Authentication());
     }
 }

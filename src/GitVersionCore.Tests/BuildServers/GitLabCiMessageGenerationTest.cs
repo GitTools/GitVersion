@@ -6,6 +6,7 @@ using GitVersion;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.BuildServers;
+using GitVersion.Common;
 using GitVersion.OutputVariables;
 
 namespace GitVersionCore.Tests.BuildServers
@@ -13,10 +14,18 @@ namespace GitVersionCore.Tests.BuildServers
     [TestFixture]
     public class GitLabCiMessageGenerationTests : TestBase
     {
+        private IEnvironment environment;
+
+        [SetUp]
+        public void SetUp()
+        {
+            environment = new TestEnvironment();
+        }
+
         [Test]
         public void GenerateSetVersionMessageReturnsVersionAsIs_AlthoughThisIsNotUsedByJenkins()
         {
-            var j = new GitLabCi();
+            var j = new GitLabCi(environment);
             var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Beta4.7");
             j.GenerateSetVersionMessage(vars).ShouldBe("0.0.0-Beta4.7");
         }
@@ -24,7 +33,7 @@ namespace GitVersionCore.Tests.BuildServers
         [Test]
         public void GenerateMessageTest()
         {
-            var j = new GitLabCi();
+            var j = new GitLabCi(environment);
             var generatedParameterMessages = j.GenerateSetParameterMessage("name", "value");
             generatedParameterMessages.Length.ShouldBe(1);
             generatedParameterMessages[0].ShouldBe("GitVersion_name=value");
@@ -46,7 +55,7 @@ namespace GitVersionCore.Tests.BuildServers
             }
         }
 
-        static void AssertVariablesAreWrittenToFile(string f)
+        private void AssertVariablesAreWrittenToFile(string f)
         {
             var writes = new List<string>();
             var semanticVersion = new SemanticVersion
@@ -65,7 +74,7 @@ namespace GitVersionCore.Tests.BuildServers
 
             var variables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
 
-            var j = new GitLabCi(f);
+            var j = new GitLabCi(environment, f);
 
             j.WriteIntegration(writes.Add, variables);
 

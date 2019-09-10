@@ -1,7 +1,7 @@
-﻿using System;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.BuildServers;
+using GitVersion.Common;
 
 namespace GitVersionCore.Tests.BuildServers
 {
@@ -10,22 +10,25 @@ namespace GitVersionCore.Tests.BuildServers
     {
         string key = "BUILD_BUILDNUMBER";
 
+        private IEnvironment environment;
+
         [SetUp]
         public void SetEnvironmentVariableForTest()
         {
-            Environment.SetEnvironmentVariable(key, "Some Build_Value $(GitVersion_FullSemVer) 20151310.3 $(UnknownVar) Release", EnvironmentVariableTarget.Process);
+            environment = new TestEnvironment();
+            environment.SetEnvironmentVariable(key, "Some Build_Value $(GitVersion_FullSemVer) 20151310.3 $(UnknownVar) Release");
         }
 
         [TearDown]
         public void ClearEnvironmentVariableForTest()
         {
-            Environment.SetEnvironmentVariable(key, null, EnvironmentVariableTarget.Process);
+            environment.SetEnvironmentVariable(key, null);
         }
 
         [Test]
         public void Develop_branch()
         {
-            var versionBuilder = new VsoAgent();
+            var versionBuilder = new VsoAgent(environment);
             var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Unstable4");
             var vsVersion = versionBuilder.GenerateSetVersionMessage(vars);
 
@@ -35,7 +38,7 @@ namespace GitVersionCore.Tests.BuildServers
         [Test]
         public void EscapeValues()
         {
-            var versionBuilder = new VsoAgent();
+            var versionBuilder = new VsoAgent(environment);
             var vsVersion = versionBuilder.GenerateSetParameterMessage("Foo", "0.8.0-unstable568 Branch:'develop' Sha:'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb'");
 
             vsVersion[0].ShouldBe("##vso[task.setvariable variable=GitVersion.Foo;]0.8.0-unstable568 Branch:'develop' Sha:'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb'");
@@ -44,9 +47,9 @@ namespace GitVersionCore.Tests.BuildServers
         [Test]
         public void MissingEnvShouldNotBlowUp()
         {
-            Environment.SetEnvironmentVariable(key, null, EnvironmentVariableTarget.Process);
+            environment.SetEnvironmentVariable(key, null);
 
-            var versionBuilder = new VsoAgent();
+            var versionBuilder = new VsoAgent(environment);
             var semver = "0.0.0-Unstable4";
             var vars = new TestableVersionVariables(fullSemVer: semver);
             var vsVersion = versionBuilder.GenerateSetVersionMessage(vars);

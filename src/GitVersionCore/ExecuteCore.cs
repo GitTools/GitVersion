@@ -6,24 +6,28 @@ using GitVersion.Configuration;
 using GitVersion.OutputVariables;
 using GitVersion.Cache;
 using GitVersion.Common;
+using Environment = System.Environment;
 
 namespace GitVersion
 {
     public class ExecuteCore
     {
         readonly IFileSystem fileSystem;
+        private readonly IEnvironment environment;
         readonly ConfigFileLocator configFileLocator;
         readonly GitVersionCache gitVersionCache;
 
-        public ExecuteCore(IFileSystem fileSystem, ConfigFileLocator configFileLocator = null)
+        public ExecuteCore(IFileSystem fileSystem, IEnvironment environment, ConfigFileLocator configFileLocator = null)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            this.environment = environment;
             this.configFileLocator = configFileLocator ?? ConfigFileLocator.Default;
             gitVersionCache = new GitVersionCache(fileSystem);
         }
 
         public VersionVariables ExecuteGitVersion(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId, Config overrideConfig = null, bool noCache = false, bool noNormalize = false)
         {
+            BuildServerList.Init(environment);
             // Normalise if we are running on build server
             var applicableBuildServers = BuildServerList.GetApplicableBuildServers();
             var buildServer = applicableBuildServers.FirstOrDefault();

@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using GitVersion.OutputVariables;
 using GitVersion.Helpers;
@@ -8,6 +7,10 @@ namespace GitVersion.BuildServers
 {
     public class EnvRun : BuildServerBase
     {
+        public EnvRun(IEnvironment environment) : base(environment)
+        {
+        }
+
         public const string EnvironmentVariableName = "ENVRUN_DATABASE";
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
         public override bool CanApplyToCurrentContext()
