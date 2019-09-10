@@ -1,11 +1,15 @@
-using System;
 using GitVersion.Helpers;
 using GitVersion.OutputVariables;
+using GitVersion.Common;
 
 namespace GitVersion.BuildServers
 {
     public class TeamCity : BuildServerBase
     {
+        public TeamCity(IEnvironment environment) : base(environment)
+        {
+        }
+
         public const string EnvironmentVariableName = "TEAMCITY_VERSION";
 
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;

@@ -9,10 +9,11 @@ using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 using GitVersion.Extensions;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
+using GitVersion.Common;
 
 namespace GitVersion
 {
-    class SpecifiedArgumentRunner
+    internal class SpecifiedArgumentRunner
     {
         private static readonly bool runningOnUnix = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
         public static readonly string BuildTool = GetMsBuildToolPath();
@@ -34,7 +35,7 @@ namespace GitVersion
             throw new Exception("MsBuild not found");
         }
 
-        public static void Run(Arguments arguments, IFileSystem fileSystem)
+        public static void Run(Arguments arguments, IFileSystem fileSystem, IEnvironment environment)
         {
             Logger.WriteInfo($"Running on {(runningOnUnix ? "Unix" : "Windows")}.");
 
@@ -49,13 +50,14 @@ namespace GitVersion
             var noCache = arguments.NoCache;
             var noNormalize = arguments.NoNormalize;
 
-            var executeCore = new ExecuteCore(fileSystem, arguments.ConfigFileLocator);
+            var executeCore = new ExecuteCore(fileSystem, environment, arguments.ConfigFileLocator);
             var variables = executeCore.ExecuteGitVersion(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId, overrideConfig, noCache, noNormalize);
 
             switch (arguments.Output)
             {
                 case OutputType.BuildServer:
                 {
+                    BuildServerList.Init(environment);
                     foreach (var buildServer in BuildServerList.GetApplicableBuildServers())
                     {
                         buildServer.WriteIntegration(Console.WriteLine, variables);

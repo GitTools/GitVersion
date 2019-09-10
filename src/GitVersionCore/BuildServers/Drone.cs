@@ -1,10 +1,15 @@
 using System;
 using GitVersion.OutputVariables;
+using GitVersion.Common;
 
 namespace GitVersion.BuildServers
 {
     public class Drone : BuildServerBase
     {
+        public Drone(IEnvironment environment) : base(environment)
+        {
+        }
+
         public const string EnvironmentVariableName = "DRONE";
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
         public override bool CanApplyToCurrentContext()

@@ -1,14 +1,18 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion.OutputVariables;
 using GitVersion.Helpers;
+using GitVersion.Common;
 
 namespace GitVersion.BuildServers
 {
     public class VsoAgent : BuildServerBase
     {
+        public VsoAgent(IEnvironment environment) : base(environment)
+        {
+        }
+
         public const string EnvironmentVariableName = "TF_BUILD";
 
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;

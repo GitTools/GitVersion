@@ -2,11 +2,16 @@ using System;
 using System.Collections.Generic;
 using GitVersion.Helpers;
 using GitVersion.OutputVariables;
+using GitVersion.Common;
 
 namespace GitVersion.BuildServers
 {
     public class MyGet : BuildServerBase
     {
+        public MyGet(IEnvironment environment) : base(environment)
+        {
+        }
+
         public const string EnvironmentVariableName = "BuildRunner";
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
         public override bool CanApplyToCurrentContext()

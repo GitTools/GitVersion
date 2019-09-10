@@ -1,4 +1,4 @@
-using GitVersion.Helpers;
+using GitVersion.Common;
 
 namespace GitVersion.Configuration.Init.Wizard
 {

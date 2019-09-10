@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 
-namespace GitVersion.Helpers
+namespace GitVersion.Common
 {
     public interface IThreadSleep
     {

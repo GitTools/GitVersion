@@ -1,10 +1,14 @@
-using System;
 using GitVersion.OutputVariables;
+using GitVersion.Common;
 
 namespace GitVersion.BuildServers
 {
     public class TravisCI : BuildServerBase
     {
+        public TravisCI(IEnvironment environment) : base(environment)
+        {
+        }
+
         public const string EnvironmentVariableName = "TRAVIS";
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 

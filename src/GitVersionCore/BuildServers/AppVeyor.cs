@@ -1,12 +1,16 @@
-using System;
 using System.Net;
 using System.Text;
 using GitVersion.OutputVariables;
+using GitVersion.Common;
 
 namespace GitVersion.BuildServers
 {
     public class AppVeyor : BuildServerBase
     {
+        public AppVeyor(IEnvironment environment) : base(environment)
+        {
+        }
+
         public const string EnvironmentVariableName = "APPVEYOR";
 
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;

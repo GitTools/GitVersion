@@ -1,9 +1,14 @@
 using GitVersion.OutputVariables;
+using GitVersion.Common;
 
 namespace GitVersion.BuildServers
 {
     public class ContinuaCi : BuildServerBase
     {
+        public ContinuaCi(IEnvironment environment) : base(environment)
+        {
+        }
+
         public const string EnvironmentVariableName = "ContinuaCI.Version";
 
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;

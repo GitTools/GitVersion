@@ -1,7 +1,7 @@
-﻿using System;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.BuildServers;
+using GitVersion.Common;
 
 namespace GitVersionCore.Tests.BuildServers
 {
@@ -10,12 +10,21 @@ namespace GitVersionCore.Tests.BuildServers
     {
         string key = "BUILD_BUILDNUMBER";
         string logPrefix = "##vso[build.updatebuildnumber]";
-        VsoAgent versionBuilder = new VsoAgent();
+        VsoAgent versionBuilder;
+
+        private IEnvironment environment;
+
+        [SetUp]
+        public void SetUp()
+        {
+            environment = new TestEnvironment();
+            versionBuilder = new VsoAgent(environment);
+        }
 
         [TearDown]
         public void TearDownVsoAgentBuildNumberTest()
         {
-            Environment.SetEnvironmentVariable(key, null, EnvironmentVariableTarget.Process);
+            environment.SetEnvironmentVariable(key, null);
         }
 
 
@@ -25,7 +34,7 @@ namespace GitVersionCore.Tests.BuildServers
         [TestCase("$(GITVERSION_FULLSEMVER)-Build.1234", "1.0.0", "1.0.0-Build.1234")]
         public void VsoAgentBuildNumberWithFullSemVer(string buildNumberFormat, string myFullSemVer, string expectedBuildNumber)
         {
-            Environment.SetEnvironmentVariable(key, buildNumberFormat, EnvironmentVariableTarget.Process);
+            environment.SetEnvironmentVariable(key, buildNumberFormat);
             var vars = new TestableVersionVariables(fullSemVer: myFullSemVer);
             var logMessage = versionBuilder.GenerateSetVersionMessage(vars);
             logMessage.ShouldBe(logPrefix + expectedBuildNumber);
@@ -38,7 +47,7 @@ namespace GitVersionCore.Tests.BuildServers
         [TestCase("$(GITVERSION_SEMVER)-Build.1234", "1.0.0", "1.0.0-Build.1234")]
         public void VsoAgentBuildNumberWithSemVer(string buildNumberFormat, string mySemVer, string expectedBuildNumber)
         {
-            Environment.SetEnvironmentVariable(key, buildNumberFormat, EnvironmentVariableTarget.Process);
+            environment.SetEnvironmentVariable(key, buildNumberFormat);
             var vars = new TestableVersionVariables(semVer: mySemVer);
             var logMessage = versionBuilder.GenerateSetVersionMessage(vars);
             logMessage.ShouldBe(logPrefix + expectedBuildNumber);

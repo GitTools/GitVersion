@@ -1,11 +1,10 @@
 using System.IO;
-using GitVersion.Helpers;
+using GitVersion.Common;
 
 namespace GitVersion.Configuration
 {
     public abstract class ConfigFileLocator
     {
-
         public static readonly ConfigFileLocator Default = new DefaultConfigFileLocator();
 
         public static ConfigFileLocator GetLocator(string filePath = null) =>

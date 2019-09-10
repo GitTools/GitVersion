@@ -9,6 +9,8 @@ using System.Text;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
 using GitVersion.OutputFormatters;
+using GitVersion.Common;
+using Environment = GitVersion.Common.Environment;
 
 namespace GitVersion
 {
@@ -31,7 +33,7 @@ namespace GitVersion
                 Console.Write(log.ToString());
             }
 
-            Environment.Exit(exitCode);
+            System.Environment.Exit(exitCode);
         }
 
         static int VerifyArgumentsAndRun()
@@ -40,6 +42,7 @@ namespace GitVersion
             try
             {
                 var fileSystem = new FileSystem();
+                var environment = new Environment();
                 var argumentsWithoutExeName = GetArgumentsWithoutExeName();
 
                 try
@@ -111,7 +114,7 @@ namespace GitVersion
                     arguments.Output = OutputType.BuildServer;
                 }
 
-                SpecifiedArgumentRunner.Run(arguments, fileSystem);
+                SpecifiedArgumentRunner.Run(arguments, fileSystem, environment);
             }
             catch (WarningException exception)
             {
@@ -204,7 +207,7 @@ namespace GitVersion
 
         static List<string> GetArgumentsWithoutExeName()
         {
-            return Environment.GetCommandLineArgs()
+            return System.Environment.GetCommandLineArgs()
                 .Skip(1)
                 .ToList();
         }

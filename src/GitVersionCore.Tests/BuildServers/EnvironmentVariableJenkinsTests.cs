@@ -1,7 +1,7 @@
-﻿using System;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.BuildServers;
+using GitVersion.Common;
 
 namespace GitVersionCore.Tests.BuildServers
 {
@@ -12,30 +12,38 @@ namespace GitVersionCore.Tests.BuildServers
         string branch = "GIT_BRANCH";
         string localBranch = "GIT_LOCAL_BRANCH";
         string pipelineBranch = "BRANCH_NAME";
+        private IEnvironment environment;
+
+        [SetUp]
+        public void SetUp()
+        {
+            environment = new TestEnvironment();
+        }
+
 
         private void SetEnvironmentVariableForDetection()
         {
-            Environment.SetEnvironmentVariable(key, "a value", EnvironmentVariableTarget.Process);
+            environment.SetEnvironmentVariable(key, "a value");
         }
 
-        private void ClearEnvironmentVariableForDetection()
+        private void ClearenvironmentVariableForDetection()
         {
-            Environment.SetEnvironmentVariable(key, null, EnvironmentVariableTarget.Process);
+            environment.SetEnvironmentVariable(key, null);
         }
 
         [Test]
-        public void CanApplyCurrentContextWhenEnvironmentVariableIsSet()
+        public void CanApplyCurrentContextWhenenvironmentVariableIsSet()
         {
             SetEnvironmentVariableForDetection();
-            var j = new Jenkins();
+            var j = new Jenkins(environment);
             j.CanApplyToCurrentContext().ShouldBe(true);
         }
     
         [Test]
-        public void CanNotApplyCurrentContextWhenEnvironmentVariableIsNotSet()
+        public void CanNotApplyCurrentContextWhenenvironmentVariableIsNotSet()
         {
-            ClearEnvironmentVariableForDetection();
-            var j = new Jenkins();
+            ClearenvironmentVariableForDetection();
+            var j = new Jenkins(environment);
             j.CanApplyToCurrentContext().ShouldBe(false);  
         }
 
@@ -43,49 +51,49 @@ namespace GitVersionCore.Tests.BuildServers
         public void JenkinsTakesLocalBranchNameNotRemoteName()
         {
             // Save original values so they can be restored
-            string branchOrig = Environment.GetEnvironmentVariable(branch);
-            string localBranchOrig = Environment.GetEnvironmentVariable(localBranch);
+            string branchOrig = environment.GetEnvironmentVariable(branch);
+            string localBranchOrig = environment.GetEnvironmentVariable(localBranch);
 
             // Set GIT_BRANCH for testing
-            Environment.SetEnvironmentVariable(branch, "origin/master");
+            environment.SetEnvironmentVariable(branch, "origin/master");
 
             // Test Jenkins that GetCurrentBranch falls back to GIT_BRANCH if GIT_LOCAL_BRANCH undefined
-            var j = new Jenkins();
+            var j = new Jenkins(environment);
             j.GetCurrentBranch(true).ShouldBe("origin/master");
 
             // Set GIT_LOCAL_BRANCH
-            Environment.SetEnvironmentVariable(localBranch, "master");
+            environment.SetEnvironmentVariable(localBranch, "master");
 
             // Test Jenkins GetCurrentBranch method now returns GIT_LOCAL_BRANCH
             j.GetCurrentBranch(true).ShouldBe("master");
 
             // Restore environment variables
-            Environment.SetEnvironmentVariable(branch, branchOrig);
-            Environment.SetEnvironmentVariable(localBranch, localBranchOrig);
+            environment.SetEnvironmentVariable(branch, branchOrig);
+            environment.SetEnvironmentVariable(localBranch, localBranchOrig);
         }
 
         [Test]
         public void JenkinsTakesBranchNameInPipelineAsCode()
         {
             // Save original values so they can be restored
-            string branchOrig = Environment.GetEnvironmentVariable(branch);
-            string localBranchOrig = Environment.GetEnvironmentVariable(localBranch);
-            string pipelineBranchOrig = Environment.GetEnvironmentVariable(pipelineBranch);
+            string branchOrig = environment.GetEnvironmentVariable(branch);
+            string localBranchOrig = environment.GetEnvironmentVariable(localBranch);
+            string pipelineBranchOrig = environment.GetEnvironmentVariable(pipelineBranch);
 
             // Set BRANCH_NAME in pipeline mode
-            Environment.SetEnvironmentVariable(pipelineBranch, "master");
+            environment.SetEnvironmentVariable(pipelineBranch, "master");
             // When Jenkins uses a Pipeline, GIT_BRANCH and GIT_LOCAL_BRANCH are not set:
-            Environment.SetEnvironmentVariable(branch, null);
-            Environment.SetEnvironmentVariable(localBranch, null);
+            environment.SetEnvironmentVariable(branch, null);
+            environment.SetEnvironmentVariable(localBranch, null);
 
             // Test Jenkins GetCurrentBranch method now returns BRANCH_NAME
-            var j = new Jenkins();
+            var j = new Jenkins(environment);
             j.GetCurrentBranch(true).ShouldBe("master");
 
             // Restore environment variables
-            Environment.SetEnvironmentVariable(branch, branchOrig);
-            Environment.SetEnvironmentVariable(localBranch, localBranchOrig);
-            Environment.SetEnvironmentVariable(pipelineBranch, pipelineBranchOrig);
+            environment.SetEnvironmentVariable(branch, branchOrig);
+            environment.SetEnvironmentVariable(localBranch, localBranchOrig);
+            environment.SetEnvironmentVariable(pipelineBranch, pipelineBranchOrig);
         }
     }
 }

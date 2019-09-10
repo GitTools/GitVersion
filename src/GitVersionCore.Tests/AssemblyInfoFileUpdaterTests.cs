@@ -5,10 +5,10 @@ using GitVersion;
 using NSubstitute;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.Helpers;
 using GitVersion.OutputVariables;
 using GitVersion.Extensions;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
+using GitVersion.Common;
 
 namespace GitVersionCore.Tests
 {

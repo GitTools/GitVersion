@@ -59,7 +59,7 @@ namespace GitVersionCore.Tests
                 x => Debug.WriteLine($"[WARNING] {x}"),
                 x => Debug.WriteLine($"[ERROR]   {x}"));
 
-            var executeCore = new ExecuteCore(new TestFileSystem());
+            var executeCore = new ExecuteCore(new TestFileSystem(), new TestEnvironment());
 
             var versionVariables = executeCore.ExecuteGitVersion(url, dynamicDirectory, null, targetBranch,
                 false, workingDirectory, commitId);

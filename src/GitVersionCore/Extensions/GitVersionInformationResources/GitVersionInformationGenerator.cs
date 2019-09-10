@@ -1,8 +1,8 @@
-﻿using System;
 using System.IO;
 using System.Linq;
-using GitVersion.Helpers;
 using GitVersion.OutputVariables;
+using GitVersion.Common;
+using Environment = System.Environment;
 
 namespace GitVersion.Extensions.GitVersionInformationResources
 {
