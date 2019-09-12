@@ -52,6 +52,15 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
+        public void DoNotThrowWhenWorkingAndRepoPathsAreSame()
+        {
+            workingPath = DefaultRepoPath;
+            SetupConfigFileContent(string.Empty, path: workingPath);
+
+            Should.NotThrow(() => { configFileLocator.Verify(workingPath, repoPath, fileSystem); });
+        }
+
+        [Test]
         public void NoWarnOnCustomYmlFile()
         {
             SetupConfigFileContent(string.Empty);
