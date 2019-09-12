@@ -9,42 +9,48 @@ namespace GitVersionCore.Tests
 {
     public class TestFileSystem : IFileSystem
     {
-        private readonly Dictionary<string, byte[]> fileSystem = new Dictionary<string, byte[]>();
+        private readonly Dictionary<string, byte[]> fileSystem = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
 
         public void Copy(string @from, string to, bool overwrite)
         {
-            if (fileSystem.ContainsKey(to))
+            var fromPath = Path.GetFullPath(@from);
+            var toPath = Path.GetFullPath(to);
+            if (fileSystem.ContainsKey(toPath))
             {
                 if (overwrite)
-                    fileSystem.Remove(to);
+                    fileSystem.Remove(toPath);
                 else
                     throw new IOException("File already exists");
             }
 
-            if (!fileSystem.TryGetValue(from, out var source))
-                throw new FileNotFoundException($"The source file '{@from}' was not found", from);
+            if (!fileSystem.TryGetValue(fromPath, out var source))
+                throw new FileNotFoundException($"The source file '{fromPath}' was not found", from);
 
-            fileSystem.Add(to, source);
+            fileSystem.Add(toPath, source);
         }
 
         public void Move(string @from, string to)
         {
+            var fromPath = Path.GetFullPath(@from);
             Copy(from, to, false);
-            fileSystem.Remove(from);
+            fileSystem.Remove(fromPath);
         }
 
         public bool Exists(string file)
         {
-            return fileSystem.ContainsKey(file);
+            var path = Path.GetFullPath(file);
+            return fileSystem.ContainsKey(path);
         }
 
         public void Delete(string path)
         {
-            fileSystem.Remove(path);
+            var fullPath = Path.GetFullPath(path);
+            fileSystem.Remove(fullPath);
         }
 
-        public string ReadAllText(string path)
+        public string ReadAllText(string file)
         {
+            var path = Path.GetFullPath(file);
             if (!fileSystem.TryGetValue(path, out var content))
                 throw new FileNotFoundException($"The file '{path}' was not found", path);
 
@@ -54,15 +60,17 @@ namespace GitVersionCore.Tests
 
         public void WriteAllText(string file, string fileContents)
         {
-            var encoding = fileSystem.ContainsKey(file)
-                ? EncodingHelper.DetectEncoding(fileSystem[file]) ?? Encoding.UTF8
+            var path = Path.GetFullPath(file);
+            var encoding = fileSystem.ContainsKey(path)
+                ? EncodingHelper.DetectEncoding(fileSystem[path]) ?? Encoding.UTF8
                 : Encoding.UTF8;
-            WriteAllText(file, fileContents, encoding);
+            WriteAllText(path, fileContents, encoding);
         }
 
         public void WriteAllText(string file, string fileContents, Encoding encoding)
         {
-            fileSystem[file] = encoding.GetBytes(fileContents);
+            var path = Path.GetFullPath(file);
+            fileSystem[path] = encoding.GetBytes(fileContents);
         }
 
         public IEnumerable<string> DirectoryGetFiles(string directory, string searchPattern, SearchOption searchOption)
@@ -75,8 +83,9 @@ namespace GitVersionCore.Tests
             return new TestStream(path, this);
         }
 
-        public Stream OpenRead(string path)
+        public Stream OpenRead(string file)
         {
+            var path = Path.GetFullPath(file);
             if (fileSystem.ContainsKey(path))
             {
                 var content = fileSystem[path];
@@ -86,8 +95,9 @@ namespace GitVersionCore.Tests
             throw new FileNotFoundException("File not found.", path);
         }
 
-        public void CreateDirectory(string path)
+        public void CreateDirectory(string directory)
         {
+            var path = Path.GetFullPath(directory);
             if (fileSystem.ContainsKey(path))
             {
                 fileSystem[path] = new byte[0];
@@ -98,8 +108,9 @@ namespace GitVersionCore.Tests
             }
         }
 
-        public bool DirectoryExists(string path)
+        public bool DirectoryExists(string directory)
         {
+            var path = Path.GetFullPath(directory);
             return fileSystem.ContainsKey(path);
         }
 
