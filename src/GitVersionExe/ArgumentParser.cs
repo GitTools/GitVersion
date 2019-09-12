@@ -10,9 +10,9 @@ using GitVersion.OutputFormatters;
 
 namespace GitVersion
 {
-    public class ArgumentParser
+    public class ArgumentParser : IArgumentParser
     {
-        public static Arguments ParseArguments(string commandLineArguments)
+        public Arguments ParseArguments(string commandLineArguments)
         {
             var arguments = commandLineArguments
                 .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
@@ -21,15 +21,7 @@ namespace GitVersion
             return ParseArguments(arguments);
         }
 
-        static void EnsureArgumentValueCount(string[] values, int maxArguments = 1)
-        {
-            if (values != null && values.Length > maxArguments)
-            {
-                throw new WarningException($"Could not parse command line parameter '{values[1]}'.");
-            }
-        }
-
-        public static Arguments ParseArguments(List<string> commandLineArguments)
+        public Arguments ParseArguments(List<string> commandLineArguments)
         {
             if (commandLineArguments.Count == 0)
             {
@@ -395,7 +387,15 @@ namespace GitVersion
             return arguments;
         }
 
-        static NameValueCollection CollectSwitchesAndValuesFromArguments(IList<string> namedArguments, out bool firstArgumentIsSwitch)
+        private void EnsureArgumentValueCount(string[] values, int maxArguments = 1)
+        {
+            if (values != null && values.Length > maxArguments)
+            {
+                throw new WarningException($"Could not parse command line parameter '{values[1]}'.");
+            }
+        }
+
+        private NameValueCollection CollectSwitchesAndValuesFromArguments(IList<string> namedArguments, out bool firstArgumentIsSwitch)
         {
             firstArgumentIsSwitch = true;
             var switchesAndValues = new NameValueCollection();

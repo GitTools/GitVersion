@@ -47,7 +47,8 @@ namespace GitVersion
 
                 try
                 {
-                    arguments = ArgumentParser.ParseArguments(argumentsWithoutExeName);
+                    var argumentParser = new ArgumentParser();
+                    arguments = argumentParser.ParseArguments(argumentsWithoutExeName);
                 }
                 catch (Exception exception)
                 {
