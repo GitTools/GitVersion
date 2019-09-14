@@ -26,13 +26,13 @@ namespace GitVersion.VersionCalculation
                     {
                         if (v == null) return false;
 
-                        Logger.WriteInfo(v.ToString());
+                        Logger.Info(v.ToString());
 
                         foreach (var filter in context.Configuration.VersionFilters)
                         {
                             if (filter.Exclude(v, out var reason))
                             {
-                                Logger.WriteInfo(reason);
+                                Logger.Info(reason);
                                 return false;
                             }
                         }
@@ -58,7 +58,7 @@ namespace GitVersion.VersionCalculation
                     var oldest = matchingVersionsOnceIncremented.Aggregate((v1, v2) => v1.Version.BaseVersionSource.Committer.When < v2.Version.BaseVersionSource.Committer.When ? v1 : v2);
                     baseVersionWithOldestSource = oldest.Version;
                     maxVersion = oldest;
-                    Logger.WriteInfo($"Found multiple base versions which will produce the same SemVer ({maxVersion.IncrementedVersion}), taking oldest source for commit counting ({baseVersionWithOldestSource.Source})");
+                    Logger.Info($"Found multiple base versions which will produce the same SemVer ({maxVersion.IncrementedVersion}), taking oldest source for commit counting ({baseVersionWithOldestSource.Source})");
                 }
                 else
                 {
@@ -77,7 +77,7 @@ namespace GitVersion.VersionCalculation
                     context, maxVersion.Version.Source, maxVersion.Version.ShouldIncrement, maxVersion.Version.SemanticVersion,
                     baseVersionWithOldestSource.BaseVersionSource, maxVersion.Version.BranchNameOverride);
 
-                Logger.WriteInfo($"Base version used: {calculatedBase}");
+                Logger.Info($"Base version used: {calculatedBase}");
 
                 return calculatedBase;
             }

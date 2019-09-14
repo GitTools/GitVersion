@@ -33,7 +33,7 @@ namespace GitVersion.BuildServers
 
         static void WriteBranchEnvVariableWarning()
         {
-            Logger.WriteWarning(@"TeamCity doesn't make the current branch available through environmental variables.
+            Logger.Warning(@"TeamCity doesn't make the current branch available through environmental variables.
 
 Depending on your authentication and transport setup of your git VCS root things may work. In that case, ignore this warning.
 

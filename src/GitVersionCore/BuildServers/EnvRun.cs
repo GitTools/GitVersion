@@ -20,7 +20,7 @@ namespace GitVersion.BuildServers
             {
                 if (!File.Exists(envRunDatabasePath))
                 {
-                    Logger.WriteError($"The database file of EnvRun.exe was not found at {envRunDatabasePath}.");
+                    Logger.Error($"The database file of EnvRun.exe was not found at {envRunDatabasePath}.");
                     return false;
                 }
 

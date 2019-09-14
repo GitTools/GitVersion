@@ -81,7 +81,7 @@ namespace GitVersion.VersionCalculation
             {
                 semver = semver.IncrementVersion(increment.Value);
             }
-            else Logger.WriteInfo("Skipping version increment");
+            else Logger.Info("Skipping version increment");
             return semver;
         }
 
@@ -119,7 +119,7 @@ namespace GitVersion.VersionCalculation
             }
             if (tagToUse.Contains("{BranchName}"))
             {
-                Logger.WriteInfo("Using branch name to calculate version tag");
+                Logger.Info("Using branch name to calculate version tag");
 
                 var branchName = branchNameOverride ?? branchFriendlyName;
                 if (!string.IsNullOrWhiteSpace(configuration.BranchPrefixToTrim))

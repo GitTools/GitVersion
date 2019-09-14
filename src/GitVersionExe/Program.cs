@@ -86,16 +86,16 @@ namespace GitVersion
                 ConfigureLogging(arguments);
                 if (arguments.Diag)
                 {
-                    Logger.WriteInfo("Dumping commit graph: ");
-                    LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
+                    Logger.Info("Dumping commit graph: ");
+                    LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.Info, 100);
                 }
                 if (!Directory.Exists(arguments.TargetPath))
                 {
-                    Logger.WriteWarning($"The working directory '{arguments.TargetPath}' does not exist.");
+                    Logger.Warning($"The working directory '{arguments.TargetPath}' does not exist.");
                 }
                 else
                 {
-                    Logger.WriteInfo("Working directory: " + arguments.TargetPath);
+                    Logger.Info("Working directory: " + arguments.TargetPath);
                 }
                 VerifyConfiguration(arguments, fileSystem);
 
@@ -120,27 +120,27 @@ namespace GitVersion
             catch (WarningException exception)
             {
                 var error = $"An error occurred:\r\n{exception.Message}";
-                Logger.WriteWarning(error);
+                Logger.Warning(error);
                 return 1;
             }
             catch (Exception exception)
             {
                 var error = $"An unexpected error occurred:\r\n{exception}";
-                Logger.WriteError(error);
+                Logger.Error(error);
 
                 if (arguments != null)
                 {
-                    Logger.WriteInfo(string.Empty);
-                    Logger.WriteInfo("Attempting to show the current git graph (please include in issue): ");
-                    Logger.WriteInfo("Showing max of 100 commits");
+                    Logger.Info(string.Empty);
+                    Logger.Info("Attempting to show the current git graph (please include in issue): ");
+                    Logger.Info("Showing max of 100 commits");
 
                     try
                     {
-                        LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.WriteInfo, 100);
+                        LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.Info, 100);
                     }
                     catch (Exception dumpGraphException)
                     {
-                        Logger.WriteError("Couldn't dump the git graph due to the following error: " + dumpGraphException);
+                        Logger.Error("Couldn't dump the git graph due to the following error: " + dumpGraphException);
                     }
                 }
                 return 1;
@@ -197,7 +197,7 @@ namespace GitVersion
                 s => writeActions.ForEach(a => { if (arguments.Verbosity >= VerbosityLevel.Error) a(s); }));
 
             if (exception != null)
-                Logger.WriteError($"Failed to configure logging for '{arguments.LogFilePath}': {exception.Message}");
+                Logger.Error($"Failed to configure logging for '{arguments.LogFilePath}': {exception.Message}");
         }
 
         static void WriteLogEntry(Arguments arguments, string s)

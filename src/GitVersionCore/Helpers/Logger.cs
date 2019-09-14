@@ -14,21 +14,21 @@ namespace GitVersion.Helpers
             Reset();
         }
 
-        public static Action<string> WriteDebug { get; private set; }
-        public static Action<string> WriteInfo { get; private set; }
-        public static Action<string> WriteWarning { get; private set; }
-        public static Action<string> WriteError { get; private set; }
+        public static Action<string> Debug { get; private set; }
+        public static Action<string> Info { get; private set; }
+        public static Action<string> Warning { get; private set; }
+        public static Action<string> Error { get; private set; }
 
         public static IDisposable IndentLog(string operationDescription)
         {
             var start = DateTime.Now;
-            WriteInfo("Begin: " + operationDescription);
+            Info("Begin: " + operationDescription);
             indent += "  ";
             return new ActionDisposable(() =>
             {
                 var length = indent.Length - 2;
                 indent = length > 0 ? indent.Substring(0, length) : indent;
-                WriteInfo(string.Format(CultureInfo.InvariantCulture, "End: {0} (Took: {1:N}ms)", operationDescription, DateTime.Now.Subtract(start).TotalMilliseconds));
+                Info(string.Format(CultureInfo.InvariantCulture, "End: {0} (Took: {1:N}ms)", operationDescription, DateTime.Now.Subtract(start).TotalMilliseconds));
             });
         }
 
@@ -39,18 +39,18 @@ namespace GitVersion.Helpers
             if (warn == null) throw new ArgumentNullException(nameof(warn));
             if (error == null) throw new ArgumentNullException(nameof(error));
 
-            WriteDebug = LogMessage(ObscurePassword(debug), "DEBUG");
-            WriteInfo = LogMessage(ObscurePassword(info), "INFO");
-            WriteWarning = LogMessage(ObscurePassword(warn), "WARN");
-            WriteError = LogMessage(ObscurePassword(error), "ERROR");
+            Debug = LogMessage(ObscurePassword(debug), "DEBUG");
+            Info = LogMessage(ObscurePassword(info), "INFO");
+            Warning = LogMessage(ObscurePassword(warn), "WARN");
+            Error = LogMessage(ObscurePassword(error), "ERROR");
         }
 
         public static IDisposable AddLoggersTemporarily(Action<string> debug, Action<string> info, Action<string> warn, Action<string> error)
         {
-            var currentDebug = WriteDebug;
-            var currentInfo = WriteInfo;
-            var currentWarn = WriteWarning;
-            var currentError = WriteError;
+            var currentDebug = Debug;
+            var currentInfo = Info;
+            var currentWarn = Warning;
+            var currentError = Error;
             SetLoggers(s =>
             {
                 debug(s);
@@ -71,10 +71,10 @@ namespace GitVersion.Helpers
 
             return new ActionDisposable(() =>
             {
-                WriteDebug = currentDebug;
-                WriteInfo = currentInfo;
-                WriteWarning =  currentWarn;
-                WriteError = currentError;
+                Debug = currentDebug;
+                Info = currentInfo;
+                Warning =  currentWarn;
+                Error = currentError;
             });
         }
 
@@ -96,10 +96,10 @@ namespace GitVersion.Helpers
 
         private static void Reset()
         {
-            WriteDebug = s => throw new Exception("Debug logger not defined. Attempted to log: " + s);
-            WriteInfo = s => throw new Exception("Info logger not defined. Attempted to log: " + s);
-            WriteWarning = s => throw new Exception("Warning logger not defined. Attempted to log: " + s);
-            WriteError = s => throw new Exception("Error logger not defined. Attempted to log: " + s);
+            Debug = s => throw new Exception("Debug logger not defined. Attempted to log: " + s);
+            Info = s => throw new Exception("Info logger not defined. Attempted to log: " + s);
+            Warning = s => throw new Exception("Warning logger not defined. Attempted to log: " + s);
+            Error = s => throw new Exception("Error logger not defined. Attempted to log: " + s);
         }
 
         private class ActionDisposable : IDisposable

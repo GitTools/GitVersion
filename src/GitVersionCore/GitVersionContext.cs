@@ -28,7 +28,7 @@ namespace GitVersion
 
             if (!string.IsNullOrWhiteSpace(commitId))
             {
-                Logger.WriteInfo($"Searching for specific commit '{commitId}'");
+                Logger.Info($"Searching for specific commit '{commitId}'");
 
                 var commit = repository.Commits.FirstOrDefault(c => string.Equals(c.Sha, commitId, StringComparison.OrdinalIgnoreCase));
                 if (commit != null)
@@ -37,13 +37,13 @@ namespace GitVersion
                 }
                 else
                 {
-                    Logger.WriteWarning($"Commit '{commitId}' specified but not found");
+                    Logger.Warning($"Commit '{commitId}' specified but not found");
                 }
             }
 
             if (CurrentCommit == null)
             {
-                Logger.WriteInfo("Using latest commit on specified branch");
+                Logger.Info("Using latest commit on specified branch");
                 CurrentCommit = currentBranch.Tip;
             }
 

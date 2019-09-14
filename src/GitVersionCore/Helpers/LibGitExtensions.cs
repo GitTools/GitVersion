@@ -100,13 +100,13 @@ namespace GitVersion.Helpers
                 return;
             }
 
-            Logger.WriteInfo("Checking out files that might be needed later in dynamic repository");
+            Logger.Info("Checking out files that might be needed later in dynamic repository");
 
             foreach (var fileName in fileNames)
             {
                 try
                 {
-                    Logger.WriteInfo($"  Trying to check out '{fileName}'");
+                    Logger.Info($"  Trying to check out '{fileName}'");
 
                     var headBranch = repository.Head;
                     var tip = headBranch.Tip;
@@ -128,7 +128,7 @@ namespace GitVersion.Helpers
                 }
                 catch (Exception ex)
                 {
-                    Logger.WriteWarning($"  An error occurred while checking out '{fileName}': '{ex.Message}'");
+                    Logger.Warning($"  An error occurred while checking out '{fileName}': '{ex.Message}'");
                 }
             }
         }

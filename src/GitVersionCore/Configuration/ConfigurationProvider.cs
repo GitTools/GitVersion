@@ -255,7 +255,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             using (var stream = fileSystem.OpenWrite(configFilePath))
             using (var writer = new StreamWriter(stream))
             {
-                Logger.WriteInfo("Saving config file");
+                Logger.Info("Saving config file");
                 ConfigSerialiser.Write(config, writer);
                 stream.Flush();
             }

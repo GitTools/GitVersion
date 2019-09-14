@@ -16,17 +16,17 @@ namespace GitVersionCore.Tests.Init
 
         public void WriteLine(string msg)
         {
-            Logger.WriteInfo(msg + Environment.NewLine);
+            Logger.Info(msg + Environment.NewLine);
         }
 
         public void WriteLine()
         {
-            Logger.WriteInfo(Environment.NewLine);
+            Logger.Info(Environment.NewLine);
         }
 
         public void Write(string msg)
         {
-            Logger.WriteInfo(msg);
+            Logger.Info(msg);
         }
 
         public string ReadLine()

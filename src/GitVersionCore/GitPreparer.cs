@@ -150,10 +150,10 @@ namespace GitVersion
 
         public string GetProjectRootDirectory()
         {
-            Logger.WriteInfo($"IsDynamicGitRepository: {IsDynamicGitRepository}");
+            Logger.Info($"IsDynamicGitRepository: {IsDynamicGitRepository}");
             if (IsDynamicGitRepository)
             {
-                Logger.WriteInfo($"Returning Project Root as {targetPath}");
+                Logger.Info($"Returning Project Root as {targetPath}");
                 return targetPath;
             }
 
@@ -165,7 +165,7 @@ namespace GitVersion
             using (var repo = new Repository(dotGitDirectory))
             {
                 var result = repo.Info.WorkingDirectory;
-                Logger.WriteInfo($"Returning Project Root from DotGitDirectory: {dotGitDirectory} - {result}");
+                Logger.Info($"Returning Project Root from DotGitDirectory: {dotGitDirectory} - {result}");
                 return result;
             }
         }
@@ -182,7 +182,7 @@ namespace GitVersion
                 var gitDirectory = Path.Combine(targetPath, ".git");
                 if (Directory.Exists(targetPath))
                 {
-                    Logger.WriteInfo("Git repository already exists");
+                    Logger.Info("Git repository already exists");
                     using (Logger.IndentLog($"Normalizing git directory for branch '{targetBranch}'"))
                     {
                         GitRepositoryHelper.NormalizeGitDirectory(gitDirectory, authentication, noFetch, targetBranch, true);
@@ -211,7 +211,7 @@ namespace GitVersion
             {
                 if (!string.IsNullOrWhiteSpace(authentication.Username) && !string.IsNullOrWhiteSpace(authentication.Password))
                 {
-                    Logger.WriteInfo($"Setting up credentials using name '{authentication.Username}'");
+                    Logger.Info($"Setting up credentials using name '{authentication.Username}'");
 
                     credentials = new UsernamePasswordCredentials
                     {
@@ -233,7 +233,7 @@ namespace GitVersion
                     };
 
                     var returnedPath = Repository.Clone(repositoryUrl, gitDirectory, cloneOptions);
-                    Logger.WriteInfo($"Returned path after repository clone: {returnedPath}");
+                    Logger.Info($"Returned path after repository clone: {returnedPath}");
                 }
             }
             catch (LibGit2SharpException ex)

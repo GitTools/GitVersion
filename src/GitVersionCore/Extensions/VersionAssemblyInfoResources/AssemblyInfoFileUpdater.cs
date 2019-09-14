@@ -47,10 +47,10 @@ namespace GitVersion.Extensions.VersionAssemblyInfoResources
 
         public void Update()
         {
-            Logger.WriteInfo("Updating assembly info files");
+            Logger.Info("Updating assembly info files");
 
             var assemblyInfoFiles = GetAssemblyInfoFiles(workingDirectory, assemblyInfoFileNames, fileSystem, ensureAssemblyInfo).ToList();
-            Logger.WriteInfo($"Found {assemblyInfoFiles.Count} files");
+            Logger.Info($"Found {assemblyInfoFiles.Count} files");
 
             var assemblyVersion = variables.AssemblySemVer;
             var assemblyVersionRegex = new Regex(@"AssemblyVersion(Attribute)?\s*\(.*\)\s*");
@@ -194,7 +194,7 @@ namespace GitVersion.Extensions.VersionAssemblyInfoResources
                 return true;
             }
 
-            Logger.WriteWarning($"No version assembly info template available to create source file '{fullPath}'");
+            Logger.Warning($"No version assembly info template available to create source file '{fullPath}'");
             return false;
         }
 

@@ -9,10 +9,10 @@ namespace GitVersion
     {
         public SemanticVersion FindVersion(GitVersionContext context)
         {
-            Logger.WriteInfo($"Running against branch: {context.CurrentBranch.FriendlyName} ({(context.CurrentCommit == null ? "-" : context.CurrentCommit.Sha)})");
+            Logger.Info($"Running against branch: {context.CurrentBranch.FriendlyName} ({(context.CurrentCommit == null ? "-" : context.CurrentCommit.Sha)})");
             if (context.IsCurrentCommitTagged)
             {
-                Logger.WriteInfo($"Current commit is tagged with version {context.CurrentCommitTaggedVersion}, " +
+                Logger.Info($"Current commit is tagged with version {context.CurrentCommitTaggedVersion}, " +
                                  "version calculation is for metadata only.");
             }
             EnsureMainTopologyConstraints(context);

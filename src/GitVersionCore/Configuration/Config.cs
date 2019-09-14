@@ -114,7 +114,7 @@ namespace GitVersion.Configuration
                     .Select(kvp => kvp.Value)
                     .First();
 
-                Logger.WriteWarning(
+                Logger.Warning(
                     $"Multiple branch configurations match the current branch branchName of '{branchName}'. " +
                     $"Using the first matching configuration, '{picked}'. Matching configurations include: '{matchingConfigs}'");
 

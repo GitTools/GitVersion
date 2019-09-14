@@ -17,7 +17,7 @@ namespace GitVersion.VersionCalculation
 
             var commitLog = context.Repository.Commits.QueryBy(qf);
             var commitsSinceTag = commitLog.Count();
-            Logger.WriteInfo($"{commitsSinceTag} commits found between {baseVersionSource.Sha} and {context.CurrentCommit.Sha}");
+            Logger.Info($"{commitsSinceTag} commits found between {baseVersionSource.Sha} and {context.CurrentCommit.Sha}");
 
             var shortSha = context.Repository.ObjectDatabase.ShortenObjectId(context.CurrentCommit);
             return new SemanticVersionBuildMetaData(

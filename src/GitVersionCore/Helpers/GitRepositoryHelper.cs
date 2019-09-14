@@ -30,7 +30,7 @@ namespace GitVersion.Helpers
                     //If noFetch is enabled, then GitVersion will assume that the git repository is normalized before execution, so that fetching from remotes is not required.
                     if (noFetch)
                     {
-                        Logger.WriteInfo("Skipping fetching, if GitVersion does not calculate your version as expected you might need to allow fetching or use dynamic repositories");
+                        Logger.Info("Skipping fetching, if GitVersion does not calculate your version as expected you might need to allow fetching or use dynamic repositories");
                     }
                     else
                     {
@@ -48,7 +48,7 @@ namespace GitVersion.Helpers
                         var newExpectedSha = repo.Head.Tip.Sha;
                         var newExpectedBranchName = repo.Head.CanonicalName;
 
-                        Logger.WriteInfo($"Head has moved from '{expectedBranchName} | {expectedSha}' => '{newExpectedBranchName} | {newExpectedSha}', allowed since this is a dynamic repository");
+                        Logger.Info($"Head has moved from '{expectedBranchName} | {expectedSha}' => '{newExpectedBranchName} | {newExpectedSha}', allowed since this is a dynamic repository");
 
                         expectedSha = newExpectedSha;
                         expectedBranchName = newExpectedBranchName;
@@ -58,12 +58,12 @@ namespace GitVersion.Helpers
 
                     if (!repo.Info.IsHeadDetached)
                     {
-                        Logger.WriteInfo($"HEAD points at branch '{headSha}'.");
+                        Logger.Info($"HEAD points at branch '{headSha}'.");
                         return;
                     }
 
-                    Logger.WriteInfo($"HEAD is detached and points at commit '{headSha}'.");
-                    Logger.WriteInfo(string.Format("Local Refs:\r\n" + string.Join(Environment.NewLine, repo.Refs.FromGlob("*").Select(r => $"{r.CanonicalName} ({r.TargetIdentifier})"))));
+                    Logger.Info($"HEAD is detached and points at commit '{headSha}'.");
+                    Logger.Info(string.Format("Local Refs:\r\n" + string.Join(Environment.NewLine, repo.Refs.FromGlob("*").Select(r => $"{r.CanonicalName} ({r.TargetIdentifier})"))));
 
                     // In order to decide whether a fake branch is required or not, first check to see if any local branches have the same commit SHA of the head SHA.
                     // If they do, go ahead and checkout that branch
@@ -75,7 +75,7 @@ namespace GitVersion.Helpers
                         : null;
                     if (matchingCurrentBranch != null)
                     {
-                        Logger.WriteInfo($"Checking out local branch '{currentBranch}'.");
+                        Logger.Info($"Checking out local branch '{currentBranch}'.");
                         Commands.Checkout(repo, matchingCurrentBranch);
                     }
                     else if (localBranchesWhereCommitShaIsHead.Count > 1)
@@ -84,11 +84,11 @@ namespace GitVersion.Helpers
                         var csvNames = string.Join(", ", branchNames);
                         const string moveBranchMsg = "Move one of the branches along a commit to remove warning";
 
-                        Logger.WriteWarning($"Found more than one local branch pointing at the commit '{headSha}' ({csvNames}).");
+                        Logger.Warning($"Found more than one local branch pointing at the commit '{headSha}' ({csvNames}).");
                         var master = localBranchesWhereCommitShaIsHead.SingleOrDefault(n => n.FriendlyName == "master");
                         if (master != null)
                         {
-                            Logger.WriteWarning("Because one of the branches is 'master', will build master." + moveBranchMsg);
+                            Logger.Warning("Because one of the branches is 'master', will build master." + moveBranchMsg);
                             Commands.Checkout(repo, master);
                         }
                         else
@@ -97,7 +97,7 @@ namespace GitVersion.Helpers
                             if (branchesWithoutSeparators.Count == 1)
                             {
                                 var branchWithoutSeparator = branchesWithoutSeparators[0];
-                                Logger.WriteWarning($"Choosing {branchWithoutSeparator.CanonicalName} as it is the only branch without / or - in it. " + moveBranchMsg);
+                                Logger.Warning($"Choosing {branchWithoutSeparator.CanonicalName} as it is the only branch without / or - in it. " + moveBranchMsg);
                                 Commands.Checkout(repo, branchWithoutSeparator);
                             }
                             else
@@ -108,12 +108,12 @@ namespace GitVersion.Helpers
                     }
                     else if (localBranchesWhereCommitShaIsHead.Count == 0)
                     {
-                        Logger.WriteInfo($"No local branch pointing at the commit '{headSha}'. Fake branch needs to be created.");
+                        Logger.Info($"No local branch pointing at the commit '{headSha}'. Fake branch needs to be created.");
                         CreateFakeBranchPointingAtThePullRequestTip(repo, authentication);
                     }
                     else
                     {
-                        Logger.WriteInfo($"Checking out local branch 'refs/heads/{localBranchesWhereCommitShaIsHead[0].FriendlyName}'.");
+                        Logger.Info($"Checking out local branch 'refs/heads/{localBranchesWhereCommitShaIsHead[0].FriendlyName}'.");
                         Commands.Checkout(repo, repo.Branches[localBranchesWhereCommitShaIsHead[0].FriendlyName]);
                     }
                 }
@@ -142,7 +142,7 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
 
         public static void Fetch(AuthenticationInfo authentication, Remote remote, Repository repo)
         {
-            Logger.WriteInfo($"Fetching from remote '{remote.Name}' using the following refspecs: {string.Join(", ", remote.FetchRefSpecs.Select(r => r.Specification))}.");
+            Logger.Info($"Fetching from remote '{remote.Name}' using the following refspecs: {string.Join(", ", remote.FetchRefSpecs.Select(r => r.Specification))}.");
             Commands.Fetch(repo, remote.Name, new string[0], authentication.ToFetchOptions(), null);
         }
 
@@ -168,13 +168,13 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
 
             if (repo.Branches.All(b => b.CanonicalName != localCanonicalName))
             {
-                Logger.WriteInfo(isBranch ? $"Creating local branch {localCanonicalName}"
+                Logger.Info(isBranch ? $"Creating local branch {localCanonicalName}"
                     : $"Creating local branch {localCanonicalName} pointing at {repoTipId}");
                 repo.Refs.Add(localCanonicalName, repoTipId);
             }
             else
             {
-                Logger.WriteInfo(isBranch ? $"Updating local branch {localCanonicalName} to point at {repoTip.Sha}"
+                Logger.Info(isBranch ? $"Updating local branch {localCanonicalName} to point at {repoTip.Sha}"
                     : $"Updating local branch {localCanonicalName} to match ref {currentBranch}");
                 repo.Refs.UpdateTarget(repo.Refs[localCanonicalName], repoTipId);
             }
@@ -189,7 +189,7 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
 
             var allBranchesFetchRefSpec = $"+refs/heads/*:refs/remotes/{remote.Name}/*";
 
-            Logger.WriteInfo($"Adding refspec: {allBranchesFetchRefSpec}");
+            Logger.Info($"Adding refspec: {allBranchesFetchRefSpec}");
 
             repo.Network.Remotes.Update(remote.Name,
                 r => r.FetchRefSpecs.Add(allBranchesFetchRefSpec));
@@ -199,13 +199,13 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
         {
             var remote = repo.Network.Remotes.Single();
 
-            Logger.WriteInfo("Fetching remote refs to see if there is a pull request ref");
+            Logger.Info("Fetching remote refs to see if there is a pull request ref");
             var remoteTips = (string.IsNullOrEmpty(authentication.Username) ?
                     GetRemoteTipsForAnonymousUser(repo, remote) :
                     GetRemoteTipsUsingUsernamePasswordCredentials(repo, remote, authentication.Username, authentication.Password))
                 .ToList();
 
-            Logger.WriteInfo("Remote Refs:\r\n" + string.Join(Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
+            Logger.Info("Remote Refs:\r\n" + string.Join(Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
 
             var headTipSha = repo.Head.Tip.Sha;
 
@@ -226,11 +226,11 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
 
             var reference = refs[0];
             var canonicalName = reference.CanonicalName;
-            Logger.WriteInfo($"Found remote tip '{canonicalName}' pointing at the commit '{headTipSha}'.");
+            Logger.Info($"Found remote tip '{canonicalName}' pointing at the commit '{headTipSha}'.");
 
             if (canonicalName.StartsWith("refs/tags"))
             {
-                Logger.WriteInfo($"Checking out tag '{canonicalName}'");
+                Logger.Info($"Checking out tag '{canonicalName}'");
                 Commands.Checkout(repo, reference.Target.Sha);
                 return;
             }
@@ -243,10 +243,10 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
 
             var fakeBranchName = canonicalName.Replace("refs/pull/", "refs/heads/pull/").Replace("refs/pull-requests/", "refs/heads/pull-requests/");
 
-            Logger.WriteInfo($"Creating fake local branch '{fakeBranchName}'.");
+            Logger.Info($"Creating fake local branch '{fakeBranchName}'.");
             repo.Refs.Add(fakeBranchName, new ObjectId(headTipSha));
 
-            Logger.WriteInfo($"Checking local branch '{fakeBranchName}' out.");
+            Logger.Info($"Checking local branch '{fakeBranchName}' out.");
             Commands.Checkout(repo, fakeBranchName);
         }
 
@@ -284,16 +284,16 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
                     var remotedirectReference = remoteTrackingReference.ResolveToDirectReference();
                     if (localRef.ResolveToDirectReference().TargetIdentifier == remotedirectReference.TargetIdentifier)
                     {
-                        Logger.WriteInfo($"Skipping update of '{remoteTrackingReference.CanonicalName}' as it already matches the remote ref.");
+                        Logger.Info($"Skipping update of '{remoteTrackingReference.CanonicalName}' as it already matches the remote ref.");
                         continue;
                     }
                     var remoteRefTipId = remotedirectReference.Target.Id;
-                    Logger.WriteInfo($"Updating local ref '{localRef.CanonicalName}' to point at {remoteRefTipId}.");
+                    Logger.Info($"Updating local ref '{localRef.CanonicalName}' to point at {remoteRefTipId}.");
                     repo.Refs.UpdateTarget(localRef, remoteRefTipId);
                     continue;
                 }
 
-                Logger.WriteInfo($"Creating local branch from remote tracking '{remoteTrackingReference.CanonicalName}'.");
+                Logger.Info($"Creating local branch from remote tracking '{remoteTrackingReference.CanonicalName}'.");
                 repo.Refs.Add(localCanonicalName, new ObjectId(remoteTrackingReference.ResolveToDirectReference().TargetIdentifier), true);
 
                 var branch = repo.Branches[branchName];
@@ -309,7 +309,7 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
             if (howMany == 1)
             {
                 var remote = remotes.Single();
-                Logger.WriteInfo($"One remote found ({remote.Name} -> '{remote.Url}').");
+                Logger.Info($"One remote found ({remote.Name} -> '{remote.Url}').");
                 return remote;
             }
 

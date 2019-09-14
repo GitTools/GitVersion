@@ -72,12 +72,12 @@ namespace GitVersion.Cache
                 // about the systems on which this code will run.
                 catch (UnauthorizedAccessException e)
                 {
-                    Logger.WriteError(e.Message);
+                    Logger.Error(e.Message);
                     continue;
                 }
                 catch (DirectoryNotFoundException e)
                 {
-                    Logger.WriteError(e.Message);
+                    Logger.Error(e.Message);
                     continue;
                 }
 
@@ -88,12 +88,12 @@ namespace GitVersion.Cache
                 }
                 catch (UnauthorizedAccessException e)
                 {
-                    Logger.WriteError(e.Message);
+                    Logger.Error(e.Message);
                     continue;
                 }
                 catch (DirectoryNotFoundException e)
                 {
-                    Logger.WriteError(e.Message);
+                    Logger.Error(e.Message);
                     continue;
                 }
 
@@ -107,7 +107,7 @@ namespace GitVersion.Cache
                     }
                     catch (IOException e)
                     {
-                        Logger.WriteError(e.Message);
+                        Logger.Error(e.Message);
                     }
                 }
 

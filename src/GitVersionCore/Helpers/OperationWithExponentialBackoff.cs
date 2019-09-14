@@ -46,7 +46,7 @@ namespace GitVersion.Helpers
                     }
                 }
 
-                Logger.WriteInfo($"Operation failed, retrying in {sleepMSec} milliseconds.");
+                Logger.Info($"Operation failed, retrying in {sleepMSec} milliseconds.");
                 await ThreadSleep.SleepAsync(sleepMSec);
 
                 sleepMSec *= 2;

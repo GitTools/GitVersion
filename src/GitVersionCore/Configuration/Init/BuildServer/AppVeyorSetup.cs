@@ -93,7 +93,7 @@ after_build:
         {
             var outputFilename = GetOutputFilename(workingDirectory, fileSystem);
             fileSystem.WriteAllText(outputFilename, configContents);
-            Logger.WriteInfo($"AppVeyor sample config file written to {outputFilename}");
+            Logger.Info($"AppVeyor sample config file written to {outputFilename}");
         }
 
         protected override string GetPrompt(Config config, string workingDirectory)

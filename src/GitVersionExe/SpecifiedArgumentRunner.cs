@@ -37,7 +37,7 @@ namespace GitVersion
 
         public static void Run(Arguments arguments, IFileSystem fileSystem, IEnvironment environment)
         {
-            Logger.WriteInfo($"Running on {(runningOnUnix ? "Unix" : "Windows")}.");
+            Logger.Info($"Running on {(runningOnUnix ? "Unix" : "Windows")}.");
 
             var noFetch = arguments.NoFetch;
             var authentication = arguments.Authentication;
@@ -122,9 +122,9 @@ namespace GitVersion
         {
             if (string.IsNullOrEmpty(args.Proj)) return false;
 
-            Logger.WriteInfo($"Launching build tool {BuildTool} \"{args.Proj}\" {args.ProjArgs}");
+            Logger.Info($"Launching build tool {BuildTool} \"{args.Proj}\" {args.ProjArgs}");
             var results = ProcessHelper.Run(
-                Logger.WriteInfo, Logger.WriteError,
+                Logger.Info, Logger.Error,
                 null, BuildTool, $"\"{args.Proj}\" {args.ProjArgs}", workingDirectory,
                 GetEnvironmentalVariables(variables));
 
@@ -138,9 +138,9 @@ namespace GitVersion
         {
             if (string.IsNullOrEmpty(args.Exec)) return false;
 
-            Logger.WriteInfo($"Launching {args.Exec} {args.ExecArgs}");
+            Logger.Info($"Launching {args.Exec} {args.ExecArgs}");
             var results = ProcessHelper.Run(
-                Logger.WriteInfo, Logger.WriteError,
+                Logger.Info, Logger.Error,
                 null, args.Exec, args.ExecArgs, workingDirectory,
                 GetEnvironmentalVariables(variables));
 

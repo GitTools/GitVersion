@@ -24,7 +24,7 @@ namespace GitVersion.Extensions
 
         public void Update()
         {
-            Logger.WriteInfo("Updating GitVersion_WixVersion.wxi");
+            Logger.Info("Updating GitVersion_WixVersion.wxi");
 
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(GetWixFormatFromVersionVariables());
@@ -55,7 +55,7 @@ namespace GitVersion.Extensions
 
         public void Dispose()
         {
-            Logger.WriteInfo($"Done writing {WixVersionFile}");
+            Logger.Info($"Done writing {WixVersionFile}");
         }
     }
 }

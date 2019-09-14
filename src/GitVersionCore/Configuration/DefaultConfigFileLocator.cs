@@ -84,11 +84,11 @@ namespace GitVersion.Configuration
             var defaultConfigFilePath = Path.Combine(workingDirectory, DefaultFileName);
             if (fileSystem.Exists(defaultConfigFilePath))
             {
-                Logger.WriteWarning(string.Format("Ambiguous config files at '{0}': '{1}' (deprecated) and '{2}'. Will be used '{2}'", workingDirectory, ObsoleteFileName, DefaultFileName));
+                Logger.Warning(string.Format("Ambiguous config files at '{0}': '{1}' (deprecated) and '{2}'. Will be used '{2}'", workingDirectory, ObsoleteFileName, DefaultFileName));
                 return;
             }
 
-            Logger.WriteWarning($"'{deprecatedConfigFilePath}' is deprecated, use '{DefaultFileName}' instead.");
+            Logger.Warning($"'{deprecatedConfigFilePath}' is deprecated, use '{DefaultFileName}' instead.");
         }
 
     }

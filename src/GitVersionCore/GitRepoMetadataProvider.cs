@@ -48,7 +48,7 @@ namespace GitVersion
         {
             if (semanticVersionTagsOnBranchCache.ContainsKey(branch))
             {
-                Logger.WriteDebug($"Cache hit for version tags on branch '{branch.CanonicalName}");
+                Logger.Debug($"Cache hit for version tags on branch '{branch.CanonicalName}");
                 return semanticVersionTagsOnBranchCache[branch];
             }
 
@@ -74,7 +74,7 @@ namespace GitVersion
             using (Logger.IndentLog($"Getting branches containing the commit '{commit.Id}'."))
             {
                 var directBranchHasBeenFound = false;
-                Logger.WriteInfo("Trying to find direct branches.");
+                Logger.Info("Trying to find direct branches.");
                 // TODO: It looks wasteful looping through the branches twice. Can't these loops be merged somehow? @asbjornu
                 foreach (var branch in branches)
                 {
@@ -84,7 +84,7 @@ namespace GitVersion
                     }
 
                     directBranchHasBeenFound = true;
-                    Logger.WriteInfo($"Direct branch found: '{branch.FriendlyName}'.");
+                    Logger.Info($"Direct branch found: '{branch.FriendlyName}'.");
                     yield return branch;
                 }
 
@@ -93,10 +93,10 @@ namespace GitVersion
                     yield break;
                 }
 
-                Logger.WriteInfo($"No direct branches found, searching through {(onlyTrackedBranches ? "tracked" : "all")} branches.");
+                Logger.Info($"No direct branches found, searching through {(onlyTrackedBranches ? "tracked" : "all")} branches.");
                 foreach (var branch in branches.Where(b => onlyTrackedBranches && !b.IsTracking))
                 {
-                    Logger.WriteInfo($"Searching for commits reachable from '{branch.FriendlyName}'.");
+                    Logger.Info($"Searching for commits reachable from '{branch.FriendlyName}'.");
 
                     var commits = Repository.Commits.QueryBy(new CommitFilter
                     {
@@ -105,11 +105,11 @@ namespace GitVersion
 
                     if (!commits.Any())
                     {
-                        Logger.WriteInfo($"The branch '{branch.FriendlyName}' has no matching commits.");
+                        Logger.Info($"The branch '{branch.FriendlyName}' has no matching commits.");
                         continue;
                     }
 
-                    Logger.WriteInfo($"The branch '{branch.FriendlyName}' has a matching commit.");
+                    Logger.Info($"The branch '{branch.FriendlyName}' has a matching commit.");
                     yield return branch;
                 }
             }
@@ -124,7 +124,7 @@ namespace GitVersion
 
             if (mergeBaseCache.ContainsKey(key))
             {
-                Logger.WriteDebug($"Cache hit for merge base between '{branch.FriendlyName}' and '{otherBranch.FriendlyName}'.");
+                Logger.Debug($"Cache hit for merge base between '{branch.FriendlyName}' and '{otherBranch.FriendlyName}'.");
                 return mergeBaseCache[key].MergeBase;
             }
 
@@ -141,7 +141,7 @@ namespace GitVersion
                 var findMergeBase = Repository.ObjectDatabase.FindMergeBase(commit, commitToFindCommonBase);
                 if (findMergeBase != null)
                 {
-                    Logger.WriteInfo($"Found merge base of {findMergeBase.Sha}");
+                    Logger.Info($"Found merge base of {findMergeBase.Sha}");
                     // We do not want to include merge base commits which got forward merged into the other branch
                     Commit forwardMerge;
                     do
@@ -159,24 +159,24 @@ namespace GitVersion
                         {
                             // TODO Fix the logging up in this section
                             var second = forwardMerge.Parents.First();
-                            Logger.WriteDebug("Second " + second.Sha);
+                            Logger.Debug("Second " + second.Sha);
                             var mergeBase = Repository.ObjectDatabase.FindMergeBase(commit, second);
                             if (mergeBase == null)
                             {
-                                Logger.WriteWarning("Could not find mergbase for " + commit);
+                                Logger.Warning("Could not find mergbase for " + commit);
                             }
                             else
                             {
-                                Logger.WriteDebug("New Merge base " + mergeBase.Sha);
+                                Logger.Debug("New Merge base " + mergeBase.Sha);
                             }
                             if (mergeBase == findMergeBase)
                             {
-                                Logger.WriteDebug("Breaking");
+                                Logger.Debug("Breaking");
                                 break;
                             }
                             findMergeBase = mergeBase;
                             commitToFindCommonBase = second;
-                            Logger.WriteInfo($"Merge base was due to a forward merge, next merge base is {findMergeBase}");
+                            Logger.Info($"Merge base was due to a forward merge, next merge base is {findMergeBase}");
                         }
                     } while (forwardMerge != null);
                 }
@@ -184,7 +184,7 @@ namespace GitVersion
                 // Store in cache.
                 mergeBaseCache.Add(key, new MergeBaseData(branch, otherBranch, Repository, findMergeBase));
 
-                Logger.WriteInfo($"Merge base of {branch.FriendlyName}' and '{otherBranch.FriendlyName} is {findMergeBase}");
+                Logger.Info($"Merge base of {branch.FriendlyName}' and '{otherBranch.FriendlyName} is {findMergeBase}");
                 return findMergeBase;
             }
         }
@@ -204,7 +204,7 @@ namespace GitVersion
             {
                 if (branch.Tip == null)
                 {
-                    Logger.WriteWarning(string.Format(missingTipFormat, branch.FriendlyName));
+                    Logger.Warning(string.Format(missingTipFormat, branch.FriendlyName));
                     return BranchCommit.Empty;
                 }
 
@@ -215,7 +215,7 @@ namespace GitVersion
                 if (possibleBranches.Count > 1)
                 {
                     var first = possibleBranches.First();
-                    Logger.WriteInfo($"Multiple source branches have been found, picking the first one ({first.Branch.FriendlyName}).\n" +
+                    Logger.Info($"Multiple source branches have been found, picking the first one ({first.Branch.FriendlyName}).\n" +
                         "This may result in incorrect commit counting.\nOptions were:\n " +
                         string.Join(", ", possibleBranches.Select(b => b.Branch.FriendlyName)));
                     return first;
@@ -229,7 +229,7 @@ namespace GitVersion
         {
             if (mergeBaseCommitsCache.ContainsKey(branch))
             {
-                Logger.WriteDebug($"Cache hit for getting merge commits for branch {branch.CanonicalName}.");
+                Logger.Debug($"Cache hit for getting merge commits for branch {branch.CanonicalName}.");
                 return mergeBaseCommitsCache[branch];
             }
 
@@ -250,7 +250,7 @@ namespace GitVersion
                 {
                     if (otherBranch.Tip == null)
                     {
-                        Logger.WriteWarning(string.Format(missingTipFormat, otherBranch.FriendlyName));
+                        Logger.Warning(string.Format(missingTipFormat, otherBranch.FriendlyName));
                         return BranchCommit.Empty;
                     }
 

@@ -19,13 +19,13 @@ namespace GitVersion.BuildServers
                 {
                     if (buildServer.CanApplyToCurrentContext())
                     {
-                        Logger.WriteInfo($"Applicable build agent found: '{buildServer.GetType().Name}'.");
+                        Logger.Info($"Applicable build agent found: '{buildServer.GetType().Name}'.");
                         buildServices.Add(buildServer);
                     }
                 }
                 catch (Exception ex)
                 {
-                    Logger.WriteWarning($"Failed to check build server '{buildServer.GetType().Name}': {ex.Message}");
+                    Logger.Warning($"Failed to check build server '{buildServer.GetType().Name}': {ex.Message}");
                 }
             }
 

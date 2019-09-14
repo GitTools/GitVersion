@@ -52,8 +52,8 @@ namespace GitVersion
             //    },
             //    Directory = workingDirectory
             //});
-            Logger.WriteInfo($"Project root is: {projectRoot}");
-            Logger.WriteInfo($"DotGit directory is: {dotGitDirectory}");
+            Logger.Info($"Project root is: {projectRoot}");
+            Logger.Info($"DotGit directory is: {dotGitDirectory}");
             if (string.IsNullOrEmpty(dotGitDirectory) || string.IsNullOrEmpty(projectRoot))
             {
                 // TODO Link to wiki article
@@ -74,7 +74,7 @@ namespace GitVersion
                     }
                     catch (AggregateException e)
                     {
-                        Logger.WriteWarning($"One or more exceptions during cache write:{Environment.NewLine}{e}");
+                        Logger.Warning($"One or more exceptions during cache write:{Environment.NewLine}{e}");
                     }
                 }
             }
@@ -91,7 +91,7 @@ namespace GitVersion
             }
             catch (Exception ex)
             {
-                Logger.WriteWarning("Could not determine assembly version: " + ex);
+                Logger.Warning("Could not determine assembly version: " + ex);
                 versionVariables = null;
                 return false;
             }
@@ -105,7 +105,7 @@ namespace GitVersion
             }
 
             var currentBranch = buildServer.GetCurrentBranch(isDynamicRepository) ?? targetBranch;
-            Logger.WriteInfo("Branch from build environment: " + currentBranch);
+            Logger.Info("Branch from build environment: " + currentBranch);
 
             return currentBranch;
         }

@@ -76,7 +76,7 @@ namespace GitVersion.Cache
                 var cacheFileName = GetCacheFileName(key, cacheDir);
                 if (!fileSystem.Exists(cacheFileName))
                 {
-                    Logger.WriteInfo("Cache file " + cacheFileName + " not found.");
+                    Logger.Info("Cache file " + cacheFileName + " not found.");
                     return null;
                 }
 
@@ -89,15 +89,15 @@ namespace GitVersion.Cache
                     }
                     catch (Exception ex)
                     {
-                        Logger.WriteWarning("Unable to read cache file " + cacheFileName + ", deleting it.");
-                        Logger.WriteInfo(ex.ToString());
+                        Logger.Warning("Unable to read cache file " + cacheFileName + ", deleting it.");
+                        Logger.Info(ex.ToString());
                         try
                         {
                             fileSystem.Delete(cacheFileName);
                         }
                         catch (Exception deleteEx)
                         {
-                            Logger.WriteWarning($"Unable to delete corrupted version cache file {cacheFileName}. Got {deleteEx.GetType().FullName} exception.");
+                            Logger.Warning($"Unable to delete corrupted version cache file {cacheFileName}. Got {deleteEx.GetType().FullName} exception.");
                         }
 
                         return null;

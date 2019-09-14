@@ -20,7 +20,7 @@ namespace GitVersion.Configuration
             
             if (matchingBranches == null)
             {
-                Logger.WriteInfo($"No branch configuration found for branch {targetBranch.FriendlyName}, falling back to default configuration");
+                Logger.Info($"No branch configuration found for branch {targetBranch.FriendlyName}, falling back to default configuration");
 
                 matchingBranches = new BranchConfig { Name = FallbackConfigName };
                 ConfigurationProvider.ApplyBranchDefaults(context.FullConfiguration, matchingBranches, "", new List<string>());
@@ -97,7 +97,7 @@ namespace GitVersion.Configuration
                     }
                 }
 
-                Logger.WriteInfo("Found possible parent branches: " + string.Join(", ", possibleParents.Select(p => p.FriendlyName)));
+                Logger.Info("Found possible parent branches: " + string.Join(", ", possibleParents.Select(p => p.FriendlyName)));
 
                 if (possibleParents.Count == 1)
                 {
@@ -136,7 +136,7 @@ namespace GitVersion.Configuration
                 }
 
                 var branchName = chosenBranch.FriendlyName;
-                Logger.WriteWarning(errorMessage + Environment.NewLine + Environment.NewLine + "Falling back to " + branchName + " branch config");
+                Logger.Warning(errorMessage + Environment.NewLine + Environment.NewLine + "Falling back to " + branchName + " branch config");
 
                 // To prevent infinite loops, make sure that a new branch was chosen.
                 if (targetBranch.IsSameBranch(chosenBranch))
@@ -150,7 +150,7 @@ namespace GitVersion.Configuration
                     }
                     else
                     {
-                        Logger.WriteWarning("Fallback branch wants to inherit Increment branch configuration from itself. Using patch increment instead.");
+                        Logger.Warning("Fallback branch wants to inherit Increment branch configuration from itself. Using patch increment instead.");
                         return new BranchConfig(branchConfiguration)
                         {
                             Increment = IncrementStrategy.Patch
@@ -162,7 +162,7 @@ namespace GitVersion.Configuration
                 var configIncrement = inheritingBranchConfig.Increment;
                 if (inheritingBranchConfig.Name == FallbackConfigName && configIncrement == IncrementStrategy.Inherit)
                 {
-                    Logger.WriteWarning("Fallback config inherits by default, dropping to patch increment");
+                    Logger.Warning("Fallback config inherits by default, dropping to patch increment");
                     configIncrement = IncrementStrategy.Patch;
                 }
                 return new BranchConfig(branchConfiguration)
@@ -206,7 +206,7 @@ namespace GitVersion.Configuration
                 }
             }
 
-            Logger.WriteInfo("HEAD is merge commit, this is likely a pull request using " + currentBranch.FriendlyName + " as base");
+            Logger.Info("HEAD is merge commit, this is likely a pull request using " + currentBranch.FriendlyName + " as base");
 
             return excludedBranches;
         }
