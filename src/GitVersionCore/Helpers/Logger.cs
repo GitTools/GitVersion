@@ -6,8 +6,8 @@ namespace GitVersion.Helpers
 {
     public static class Logger
     {
-        static readonly Regex ObscurePasswordRegex = new Regex("(https?://)(.+)(:.+@)", RegexOptions.Compiled);
-        static string indent = string.Empty;
+        private static readonly Regex ObscurePasswordRegex = new Regex("(https?://)(.+)(:.+@)", RegexOptions.Compiled);
+        private static string indent = string.Empty;
 
         static Logger()
         {
@@ -23,24 +23,13 @@ namespace GitVersion.Helpers
         {
             var start = DateTime.Now;
             WriteInfo("Begin: " + operationDescription);
-            indent = indent + "  ";
+            indent += "  ";
             return new ActionDisposable(() =>
             {
                 var length = indent.Length - 2;
                 indent = length > 0 ? indent.Substring(0, length) : indent;
                 WriteInfo(string.Format(CultureInfo.InvariantCulture, "End: {0} (Took: {1:N}ms)", operationDescription, DateTime.Now.Subtract(start).TotalMilliseconds));
             });
-        }
-
-        static Action<string> ObscurePassword(Action<string> info)
-        {
-            void LogAction(string s)
-            {
-                s = ObscurePasswordRegex.Replace(s, "$1$2:*******@");
-                info(s);
-            }
-
-            return LogAction;
         }
 
         public static void SetLoggers(Action<string> debug, Action<string> info, Action<string> warn, Action<string> error)
@@ -89,22 +78,33 @@ namespace GitVersion.Helpers
             });
         }
 
-        static Action<string> LogMessage(Action<string> logAction, string level)
+        private static Action<string> ObscurePassword(Action<string> info)
+        {
+            void LogAction(string s)
+            {
+                s = ObscurePasswordRegex.Replace(s, "$1$2:*******@");
+                info(s);
+            }
+
+            return LogAction;
+        }
+
+        private static Action<string> LogMessage(Action<string> logAction, string level)
         {
             return s => logAction(string.Format(CultureInfo.InvariantCulture, "{0}{1} [{2:MM/dd/yy H:mm:ss:ff}] {3}", indent, level, DateTime.Now, s));
         }
 
-        public static void Reset()
+        private static void Reset()
         {
-            WriteDebug = s => { throw new Exception("Debug logger not defined. Attempted to log: " + s); };
-            WriteInfo = s => { throw new Exception("Info logger not defined. Attempted to log: " + s); };
-            WriteWarning = s => { throw new Exception("Warning logger not defined. Attempted to log: " + s); };
-            WriteError = s => { throw new Exception("Error logger not defined. Attempted to log: " + s); };
+            WriteDebug = s => throw new Exception("Debug logger not defined. Attempted to log: " + s);
+            WriteInfo = s => throw new Exception("Info logger not defined. Attempted to log: " + s);
+            WriteWarning = s => throw new Exception("Warning logger not defined. Attempted to log: " + s);
+            WriteError = s => throw new Exception("Error logger not defined. Attempted to log: " + s);
         }
 
-        class ActionDisposable : IDisposable
+        private class ActionDisposable : IDisposable
         {
-            readonly Action action;
+            private readonly Action action;
 
             public ActionDisposable(Action action)
             {

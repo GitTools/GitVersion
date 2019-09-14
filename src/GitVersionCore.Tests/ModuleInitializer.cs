@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using GitVersion.Helpers;
 
 namespace GitVersionCore.Tests
@@ -14,10 +14,10 @@ namespace GitVersionCore.Tests
         public static void Initialize()
         {
             Logger.SetLoggers(
-                s => Console.WriteLine(s),
-                s => Console.WriteLine(s),
-                s => Console.WriteLine(s),
-                s => Console.WriteLine(s));
+                Console.WriteLine,
+                Console.WriteLine,
+                Console.WriteLine,
+                Console.WriteLine);
         }
     }
 }

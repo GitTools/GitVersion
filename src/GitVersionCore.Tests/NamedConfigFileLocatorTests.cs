@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using NUnit.Framework;
 using Shouldly;
@@ -49,8 +48,10 @@ namespace GitVersionCore.Tests
             SetupConfigFileContent(string.Empty);
 
             var s = string.Empty;
-            Action<string> action = info => { s = info; };
-            using (Logger.AddLoggersTemporarily(action, action, action, action))
+
+            void Action(string info) => s = info;
+
+            using (Logger.AddLoggersTemporarily(Action, Action, Action, Action))
             {
                 ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
             }
@@ -63,7 +64,7 @@ namespace GitVersionCore.Tests
             SetupConfigFileContent(string.Empty, path: @"c:\\Unrelated\\path");
 
             var s = string.Empty;
-            Action<string> action = info => { s = info; };
+            void action(string info) => s = info;
             using (Logger.AddLoggersTemporarily(action, action, action, action))
             {
                 ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);

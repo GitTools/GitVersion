@@ -38,8 +38,10 @@ namespace GitVersionCore.Tests
             SetupConfigFileContent(string.Empty, DefaultConfigFileLocator.ObsoleteFileName, path);
 
             var logOutput = string.Empty;
-            Action<string> action = info => { logOutput = info; };
-            using (Logger.AddLoggersTemporarily(action, action, action, action))
+
+            void Action(string info) => logOutput = info;
+
+            using (Logger.AddLoggersTemporarily(Action, Action, Action, Action))
             {
                 configFileLocator.Verify(workingPath, repoPath, fileSystem);
             }
@@ -55,8 +57,10 @@ namespace GitVersionCore.Tests
             SetupConfigFileContent(string.Empty, DefaultConfigFileLocator.DefaultFileName, path);
 
             var logOutput = string.Empty;
-            Action<string> action = info => { logOutput = info; };
-            using (Logger.AddLoggersTemporarily(action, action, action, action))
+
+            void Action(string info) => logOutput = info;
+
+            using (Logger.AddLoggersTemporarily(Action, Action, Action, Action))
             {
                 configFileLocator.Verify(workingPath, repoPath, fileSystem);
             }
@@ -86,8 +90,10 @@ namespace GitVersionCore.Tests
             SetupConfigFileContent(string.Empty);
 
             var s = string.Empty;
-            Action<string> action = info => { s = info; };
-            using (Logger.AddLoggersTemporarily(action, action, action, action))
+
+            void Action(string info) => s = info;
+
+            using (Logger.AddLoggersTemporarily(Action, Action, Action, Action))
             {
                 ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
             }

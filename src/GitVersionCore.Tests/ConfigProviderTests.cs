@@ -277,8 +277,10 @@ branches: {}";
             SetupConfigFileContent(string.Empty);
 
             var s = string.Empty;
-            Action<string> action = info => { s = info; };
-            using (Logger.AddLoggersTemporarily(action, action, action, action))
+
+            void Action(string info) => s = info;
+
+            using (Logger.AddLoggersTemporarily(Action, Action, Action, Action))
             {
                 ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
             }
