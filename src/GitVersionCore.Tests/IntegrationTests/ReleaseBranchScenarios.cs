@@ -441,7 +441,7 @@ namespace GitVersionCore.Tests.IntegrationTests
 
                 // Make some commits on release
                 var commit1 = fixture.Repository.MakeACommit();
-                var commit2 = fixture.Repository.MakeACommit();
+                fixture.Repository.MakeACommit();
                 fixture.AssertFullSemver(config, "2.0.0-beta.2");
 
                 // Merge release to develop - emulate commit beetween other person release commit push and this commit merge to develop

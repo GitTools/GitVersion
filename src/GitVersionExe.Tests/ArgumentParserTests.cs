@@ -358,14 +358,14 @@ namespace GitVersionExe.Tests
             arguments.NoCache.ShouldBe(true);
         }
 
-        [TestCase("-verbosity x", true, VerbosityLevel.None)]
-        [TestCase("-verbosity none", false, VerbosityLevel.None)]
-        [TestCase("-verbosity info", false, VerbosityLevel.Info)]
-        [TestCase("-verbosity debug", false, VerbosityLevel.Debug)]
-        [TestCase("-verbosity INFO", false, VerbosityLevel.Info)]
-        [TestCase("-verbosity warn", false, VerbosityLevel.Warn)]
-        [TestCase("-verbosity error", false, VerbosityLevel.Error)]
-        public void Check_verbosity_parsing(string command, bool shouldThrow, VerbosityLevel expectedVerbosity)
+        [TestCase("-verbosity x", true, LogLevel.None)]
+        [TestCase("-verbosity none", false, LogLevel.None)]
+        [TestCase("-verbosity info", false, LogLevel.Info)]
+        [TestCase("-verbosity debug", false, LogLevel.Debug)]
+        [TestCase("-verbosity INFO", false, LogLevel.Info)]
+        [TestCase("-verbosity warn", false, LogLevel.Warn)]
+        [TestCase("-verbosity error", false, LogLevel.Error)]
+        public void Check_verbosity_parsing(string command, bool shouldThrow, LogLevel expectedLogLevel)
         {
             if (shouldThrow)
             {
@@ -374,7 +374,7 @@ namespace GitVersionExe.Tests
             else
             {
                 var arguments = argumentParser.ParseArguments(command);
-                arguments.Verbosity.ShouldBe(expectedVerbosity);
+                arguments.LogLevel.ShouldBe(expectedLogLevel);
             }
         }
     }

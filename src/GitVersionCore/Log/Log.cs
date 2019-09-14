@@ -8,7 +8,7 @@ namespace GitVersion.Log
 {
     public sealed class Log : ILog
     {
-        private IDictionary<VerbosityLevel, (ConsoleColor, ConsoleColor)> _palettes;
+        private IDictionary<LogLevel, (ConsoleColor, ConsoleColor)> _palettes;
         private readonly object _lock;
         private static readonly Regex ObscurePasswordRegex = new Regex("(https?://)(.+)(:.+@)", RegexOptions.Compiled);
         private string indent = string.Empty;
@@ -18,7 +18,7 @@ namespace GitVersion.Log
             _palettes = CreatePalette();
             _lock = new object();
         }
-        public void Write(VerbosityLevel level, string format, params object[] args)
+        public void Write(LogLevel level, string format, params object[] args)
         {
             lock (_lock)
             {
@@ -31,11 +31,11 @@ namespace GitVersion.Log
 
                     var formattedString = FormatMessage(string.Format(format, args), level.ToString().ToUpperInvariant());
 
-                    if (level == VerbosityLevel.Error)
+                    if (level == LogLevel.Error)
                     {
                         Console.Error.Write(formattedString);
                     }
-                    else if (level != VerbosityLevel.None)
+                    else if (level != LogLevel.None)
                     {
                         Console.Write(formattedString);
                     }
@@ -43,11 +43,11 @@ namespace GitVersion.Log
                 finally
                 {
                     Console.ResetColor();
-                    if (level == VerbosityLevel.Error)
+                    if (level == LogLevel.Error)
                     {
                         Console.Error.WriteLine();
                     }
-                    else if (level != VerbosityLevel.None)
+                    else if (level != LogLevel.None)
                     {
                         Console.WriteLine();
                     }
@@ -58,14 +58,14 @@ namespace GitVersion.Log
         public IDisposable IndentLog(string operationDescription)
         {
             var start = DateTime.Now;
-            Write(VerbosityLevel.Info, $"Begin: {operationDescription}");
+            Write(LogLevel.Info, $"Begin: {operationDescription}");
             indent += "  ";
 
             return Disposable.Create(() =>
             {
                 var length = indent.Length - 2;
                 indent = length > 0 ? indent.Substring(0, length) : indent;
-                Write(VerbosityLevel.Info, string.Format(CultureInfo.InvariantCulture, "End: {0} (Took: {1:N}ms)", operationDescription, DateTime.Now.Subtract(start).TotalMilliseconds));
+                Write(LogLevel.Info, string.Format(CultureInfo.InvariantCulture, "End: {0} (Took: {1:N}ms)", operationDescription, DateTime.Now.Subtract(start).TotalMilliseconds));
             });
         }
 
@@ -75,15 +75,15 @@ namespace GitVersion.Log
             return string.Format(CultureInfo.InvariantCulture, "{0}{1} [{2:MM/dd/yy H:mm:ss:ff}] {3}", indent, level, DateTime.Now, obscuredMessage);
         }
 
-        private IDictionary<VerbosityLevel, (ConsoleColor backgroundColor, ConsoleColor foregroundColor)> CreatePalette()
+        private IDictionary<LogLevel, (ConsoleColor backgroundColor, ConsoleColor foregroundColor)> CreatePalette()
         {
             var background = Console.BackgroundColor;
-            var palette = new Dictionary<VerbosityLevel, (ConsoleColor, ConsoleColor)>
+            var palette = new Dictionary<LogLevel, (ConsoleColor, ConsoleColor)>
             {
-                { VerbosityLevel.Error, (ConsoleColor.DarkRed, ConsoleColor.White) },
-                { VerbosityLevel.Warn, (background, ConsoleColor.Yellow) },
-                { VerbosityLevel.Info, (background, ConsoleColor.White) },
-                { VerbosityLevel.Debug, (background, ConsoleColor.DarkGray) }
+                { LogLevel.Error, (ConsoleColor.DarkRed, ConsoleColor.White) },
+                { LogLevel.Warn, (background, ConsoleColor.Yellow) },
+                { LogLevel.Info, (background, ConsoleColor.White) },
+                { LogLevel.Debug, (background, ConsoleColor.DarkGray) }
             };
             return palette;
         }

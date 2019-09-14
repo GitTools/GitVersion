@@ -43,11 +43,11 @@ namespace GitVersion
             {
                 var fileSystem = new FileSystem();
                 var environment = new Environment();
+                var argumentParser = new ArgumentParser();
                 var argumentsWithoutExeName = GetArgumentsWithoutExeName();
 
                 try
                 {
-                    var argumentParser = new ArgumentParser();
                     arguments = argumentParser.ParseArguments(argumentsWithoutExeName);
                 }
                 catch (Exception exception)
@@ -151,7 +151,7 @@ namespace GitVersion
 
         static void VerifyConfiguration(Arguments arguments, IFileSystem fileSystem)
         {
-            var gitPreparer = new GitPreparer(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.NoFetch, arguments.TargetPath);
+            var gitPreparer = new GitPreparer(arguments);
             arguments.ConfigFileLocator.Verify(gitPreparer, fileSystem);
         }
 
@@ -191,10 +191,10 @@ namespace GitVersion
             }
 
             Logger.SetLoggers(
-                s => writeActions.ForEach(a => { if (arguments.Verbosity >= VerbosityLevel.Debug) a(s); }),
-                s => writeActions.ForEach(a => { if (arguments.Verbosity >= VerbosityLevel.Info) a(s); }),
-                s => writeActions.ForEach(a => { if (arguments.Verbosity >= VerbosityLevel.Warn) a(s); }),
-                s => writeActions.ForEach(a => { if (arguments.Verbosity >= VerbosityLevel.Error) a(s); }));
+                s => writeActions.ForEach(a => { if (arguments.LogLevel >= LogLevel.Debug) a(s); }),
+                s => writeActions.ForEach(a => { if (arguments.LogLevel >= LogLevel.Info) a(s); }),
+                s => writeActions.ForEach(a => { if (arguments.LogLevel >= LogLevel.Warn) a(s); }),
+                s => writeActions.ForEach(a => { if (arguments.LogLevel >= LogLevel.Error) a(s); }));
 
             if (exception != null)
                 Logger.Error($"Failed to configure logging for '{arguments.LogFilePath}': {exception.Message}");

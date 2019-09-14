@@ -8,15 +8,21 @@ namespace GitVersion
 {
     public class GitPreparer
     {
-        string targetUrl;
-        string dynamicRepositoryLocation;
-        AuthenticationInfo authentication;
-        bool noFetch;
-        string targetPath;
+        private string targetUrl;
+        private string dynamicRepositoryLocation;
+        private AuthenticationInfo authentication;
+        private bool noFetch;
+        private string targetPath;
 
-        const string defaultRemoteName = "origin";
+        private const string defaultRemoteName = "origin";
 
         public GitPreparer(string targetPath) : this(null, null, null, false, targetPath) { }
+
+        public GitPreparer(Arguments arguments) : this(arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.NoFetch, arguments.TargetPath)
+        {
+
+        }
+
         public GitPreparer(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, bool noFetch, string targetPath)
         {
             this.targetUrl = targetUrl;
@@ -94,7 +100,7 @@ namespace GitVersion
             }
         }
 
-        static string CalculateTemporaryRepositoryPath(string targetUrl, string dynamicRepositoryLocation)
+        private static string CalculateTemporaryRepositoryPath(string targetUrl, string dynamicRepositoryLocation)
         {
             var userTemp = dynamicRepositoryLocation ?? Path.GetTempPath();
             var repositoryName = targetUrl.Split('/', '\\').Last().Replace(".git", string.Empty);
@@ -119,7 +125,7 @@ namespace GitVersion
             return possiblePath;
         }
 
-        static bool GitRepoHasMatchingRemote(string possiblePath, string targetUrl)
+        private static bool GitRepoHasMatchingRemote(string possiblePath, string targetUrl)
         {
             try
             {
@@ -170,7 +176,7 @@ namespace GitVersion
             }
         }
 
-        static string CreateDynamicRepository(string targetPath, AuthenticationInfo authentication, string repositoryUrl, string targetBranch, bool noFetch)
+        private static string CreateDynamicRepository(string targetPath, AuthenticationInfo authentication, string repositoryUrl, string targetBranch, bool noFetch)
         {
             if (string.IsNullOrWhiteSpace(targetBranch))
             {
@@ -203,7 +209,7 @@ namespace GitVersion
             }
         }
 
-        static void CloneRepository(string repositoryUrl, string gitDirectory, AuthenticationInfo authentication)
+        private static void CloneRepository(string repositoryUrl, string gitDirectory, AuthenticationInfo authentication)
         {
             Credentials credentials = null;
 

@@ -43,8 +43,7 @@ namespace GitVersionExe.Tests
                 fixture.MakeATaggedCommit("1.2.3");
                 fixture.MakeACommit();
 
-                var gitVersionExecutionResults = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: null);
-                var vars = gitVersionExecutionResults.OutputVariables;
+                GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: null);
 
                 GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
 

@@ -51,7 +51,6 @@ namespace GitVersion.Helpers
                         Logger.Info($"Head has moved from '{expectedBranchName} | {expectedSha}' => '{newExpectedBranchName} | {newExpectedSha}', allowed since this is a dynamic repository");
 
                         expectedSha = newExpectedSha;
-                        expectedBranchName = newExpectedBranchName;
                     }
 
                     var headSha = repo.Refs.Head.TargetIdentifier;
@@ -140,7 +139,7 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
             return @"log --graph --format=""%h %cr %d"" --decorate --date=relative --all --remotes=*" + (maxCommits != null ? $" -n {maxCommits}" : null);
         }
 
-        public static void Fetch(AuthenticationInfo authentication, Remote remote, Repository repo)
+        private static void Fetch(AuthenticationInfo authentication, Remote remote, Repository repo)
         {
             Logger.Info($"Fetching from remote '{remote.Name}' using the following refspecs: {string.Join(", ", remote.FetchRefSpecs.Select(r => r.Specification))}.");
             Commands.Fetch(repo, remote.Name, new string[0], authentication.ToFetchOptions(), null);

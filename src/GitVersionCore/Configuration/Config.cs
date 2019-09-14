@@ -122,7 +122,7 @@ namespace GitVersion.Configuration
             }
         }
 
-        T MergeObjects<T>(T target, T source)
+        private static T MergeObjects<T>(T target, T source)
         {
             typeof(T).GetProperties()
                 .Where(prop => prop.CanRead && prop.CanWrite)

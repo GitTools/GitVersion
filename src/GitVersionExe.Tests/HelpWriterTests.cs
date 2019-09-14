@@ -19,6 +19,7 @@ namespace GitVersionExe.Tests
                 { "LogFilePath" , "/l" },
                 { "DynamicRepositoryLocation" , "/dynamicRepoLocation" },
                 { "IsHelp", "/?" },
+                { "LogLevel", "/verbosity" },
                 { "IsVersion", "/version" },
                 { "UpdateWixVersionFile", "/updatewixversionfile" }
             };

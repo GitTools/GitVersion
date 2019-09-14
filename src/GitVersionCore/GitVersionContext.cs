@@ -82,7 +82,7 @@ namespace GitVersion
         public bool IsCurrentCommitTagged { get; private set; }
         public GitRepoMetadataProvider RepositoryMetadataProvider { get; private set; }
 
-        void CalculateEffectiveConfiguration()
+        private void CalculateEffectiveConfiguration()
         {
             var currentBranchConfig = BranchConfigurationCalculator.GetBranchConfiguration(this, CurrentBranch);
 

@@ -6,45 +6,45 @@ namespace GitVersion.Log
     {
         public static void Debug(this ILog log, string format, params object[] args)
         {
-            log?.Write(VerbosityLevel.Debug, format, args);
+            log?.Write(LogLevel.Debug, format, args);
         }
 
         public static void Debug(this ILog log, LogAction logAction)
         {
-            log?.Write(VerbosityLevel.Debug, logAction);
+            log?.Write(LogLevel.Debug, logAction);
         }
 
         public static void Warning(this ILog log, string format, params object[] args)
         {
-            log?.Write(VerbosityLevel.Warn, format, args);
+            log?.Write(LogLevel.Warn, format, args);
         }
 
         public static void Warning(this ILog log, LogAction logAction)
         {
-            log?.Write(VerbosityLevel.Warn, logAction);
+            log?.Write(LogLevel.Warn, logAction);
         }
 
         public static void Info(this ILog log, string format, params object[] args)
         {
-            log?.Write(VerbosityLevel.Info, format, args);
+            log?.Write(LogLevel.Info, format, args);
         }
 
         public static void Info(this ILog log, LogAction logAction)
         {
-            log?.Write(VerbosityLevel.Info, logAction);
+            log?.Write(LogLevel.Info, logAction);
         }
 
         public static void Error(this ILog log, string format, params object[] args)
         {
-            log?.Write(VerbosityLevel.Error, format, args);
+            log?.Write(LogLevel.Error, format, args);
         }
 
         public static void Error(this ILog log, LogAction logAction)
         {
-            log?.Write(VerbosityLevel.Error, logAction);
+            log?.Write(LogLevel.Error, logAction);
         }
 
-        public static void Write(this ILog log, VerbosityLevel level, LogAction logAction)
+        public static void Write(this ILog log, LogLevel level, LogAction logAction)
         {
             if (log == null || logAction == null)
                 return;
