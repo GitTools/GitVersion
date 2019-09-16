@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using GitVersion.Configuration;
@@ -38,28 +37,17 @@ namespace GitVersion
 
         static int VerifyArgumentsAndRun()
         {
+            var log = new Log.Log();
+            var fileSystem = new FileSystem();
+            var environment = new Environment();
+            var argumentParser = new ArgumentParser(log);
             Arguments arguments = null;
             try
             {
-                var fileSystem = new FileSystem();
-                var environment = new Environment();
-                var argumentParser = new ArgumentParser();
-                var argumentsWithoutExeName = GetArgumentsWithoutExeName();
+                arguments = argumentParser.ParseArguments();
 
-                try
+                if (arguments == null)
                 {
-                    arguments = argumentParser.ParseArguments(argumentsWithoutExeName);
-                }
-                catch (Exception exception)
-                {
-                    Console.WriteLine("Failed to parse arguments: {0}", string.Join(" ", argumentsWithoutExeName));
-                    if (!string.IsNullOrWhiteSpace(exception.Message))
-                    {
-                        Console.WriteLine();
-                        Console.WriteLine(exception.Message);
-                        Console.WriteLine();
-                    }
-
                     HelpWriter.Write();
                     return 1;
                 }
@@ -128,20 +116,19 @@ namespace GitVersion
                 var error = $"An unexpected error occurred:\r\n{exception}";
                 Logger.Error(error);
 
-                if (arguments != null)
-                {
-                    Logger.Info(string.Empty);
-                    Logger.Info("Attempting to show the current git graph (please include in issue): ");
-                    Logger.Info("Showing max of 100 commits");
+                if (arguments == null) return 1;
 
-                    try
-                    {
-                        LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.Info, 100);
-                    }
-                    catch (Exception dumpGraphException)
-                    {
-                        Logger.Error("Couldn't dump the git graph due to the following error: " + dumpGraphException);
-                    }
+                Logger.Info(string.Empty);
+                Logger.Info("Attempting to show the current git graph (please include in issue): ");
+                Logger.Info("Showing max of 100 commits");
+
+                try
+                {
+                    LibGitExtensions.DumpGraph(arguments.TargetPath, Logger.Info, 100);
+                }
+                catch (Exception dumpGraphException)
+                {
+                    Logger.Error("Couldn't dump the git graph due to the following error: " + dumpGraphException);
                 }
                 return 1;
             }
@@ -204,13 +191,6 @@ namespace GitVersion
         {
             var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{s}\r\n";
             File.AppendAllText(arguments.LogFilePath, contents);
-        }
-
-        static List<string> GetArgumentsWithoutExeName()
-        {
-            return System.Environment.GetCommandLineArgs()
-                .Skip(1)
-                .ToList();
         }
     }
 }

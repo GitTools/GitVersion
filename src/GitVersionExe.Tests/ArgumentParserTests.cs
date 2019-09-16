@@ -5,6 +5,7 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.Exceptions;
 using GitVersion.Helpers;
+using GitVersion.Log;
 using GitVersion.OutputFormatters;
 
 namespace GitVersionExe.Tests
@@ -17,7 +18,7 @@ namespace GitVersionExe.Tests
         [SetUp]
         public void SetUp()
         {
-            argumentParser = new ArgumentParser();
+            argumentParser = new ArgumentParser(new NullLog());
         }
 
         [Test]

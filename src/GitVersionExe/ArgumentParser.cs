@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
+using GitVersion.Log;
 using GitVersion.OutputVariables;
 using GitVersion.OutputFormatters;
 
@@ -12,6 +13,36 @@ namespace GitVersion
 {
     public class ArgumentParser : IArgumentParser
     {
+        private readonly ILog log;
+
+        public ArgumentParser(ILog log)
+        {
+            this.log = log;
+        }
+
+        public Arguments ParseArguments()
+        {
+            var argumentsWithoutExeName = GetArgumentsWithoutExeName();
+
+            Arguments arguments = null;
+            try
+            {
+                arguments = ParseArguments(argumentsWithoutExeName);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine("Failed to parse arguments: {0}", string.Join(" ", argumentsWithoutExeName));
+                if (!string.IsNullOrWhiteSpace(exception.Message))
+                {
+                    log.Error(exception.Message);
+                }
+
+                return arguments;
+            }
+
+            return arguments;
+        }
+
         public Arguments ParseArguments(string commandLineArguments)
         {
             var arguments = commandLineArguments
@@ -213,7 +244,7 @@ namespace GitVersion
                 {
                     string versionVariable = null;
 
-                    if (!string.IsNullOrWhiteSpace(value))
+                    if (!String.IsNullOrWhiteSpace(value))
                     {
                         versionVariable = VersionVariables.AvailableVariables.SingleOrDefault(av => av.Equals(value.Replace("'", ""), StringComparison.CurrentCultureIgnoreCase));
                     }
@@ -221,7 +252,7 @@ namespace GitVersion
                     if (versionVariable == null)
                     {
                         var messageFormat = "{0} requires a valid version variable.  Available variables are:\n{1}";
-                        var message = string.Format(messageFormat, name, string.Join(", ", VersionVariables.AvailableVariables.Select(x => string.Concat("'", x, "'"))));
+                        var message = String.Format(messageFormat, name, String.Join(", ", VersionVariables.AvailableVariables.Select(x => String.Concat("'", x, "'"))));
                         throw new WarningException(message);
                     }
 
@@ -417,7 +448,7 @@ namespace GitVersion
                 else if (currentKey != null)
                 {
                     // And if the current switch does not have a value yet and the value is not itself a switch, set its value to this argument.
-                    if (string.IsNullOrEmpty(switchesAndValues[currentKey]))
+                    if (String.IsNullOrEmpty(switchesAndValues[currentKey]))
                     {
                         switchesAndValues[currentKey] = arg;
                     }
@@ -437,6 +468,13 @@ namespace GitVersion
             }
 
             return switchesAndValues;
+        }
+
+        private static List<string> GetArgumentsWithoutExeName()
+        {
+            return Environment.GetCommandLineArgs()
+                .Skip(1)
+                .ToList();
         }
     }
 }
