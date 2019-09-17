@@ -10,7 +10,7 @@
 
     <Import Project="..\test.msbuild" />
     <ItemGroup>
-        <PackageReference Include="FluentDateTime" Version="1.16.0" />
+        <PackageReference Include="FluentDateTime" Version="2.0.0" />
         <PackageReference Include="GitTools.Testing" Version="1.2.0" />
         <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
     </ItemGroup>
