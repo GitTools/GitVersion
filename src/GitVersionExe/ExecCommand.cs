@@ -10,34 +10,18 @@ using GitVersion.OutputVariables;
 using GitVersion.Extensions;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Common;
+using GitVersion.Log;
 
 namespace GitVersion
 {
-    internal class SpecifiedArgumentRunner
+    public class ExecCommand
     {
         private static readonly bool runningOnUnix = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
         public static readonly string BuildTool = GetMsBuildToolPath();
 
-        private static string GetMsBuildToolPath()
+        public void Execute(Arguments arguments, IFileSystem fileSystem, IEnvironment environment, ILog log)
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                return @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
-            }
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                return "/usr/bin/msbuild";
-            }
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                return "/usr/local/bin/msbuild";
-            }
-            throw new Exception("MsBuild not found");
-        }
-
-        public static void Run(Arguments arguments, IFileSystem fileSystem, IEnvironment environment)
-        {
-            Logger.Info($"Running on {(runningOnUnix ? "Unix" : "Windows")}.");
+            log.Info($"Running on {(runningOnUnix ? "Unix" : "Windows")}.");
 
             var noFetch = arguments.NoFetch;
             var authentication = arguments.Authentication;
@@ -101,8 +85,8 @@ namespace GitVersion
                     assemblyInfoUpdater.Update();
                 }
 
-                var execRun = RunExecCommandIfNeeded(arguments, targetPath, variables);
-                var msbuildRun = RunMsBuildIfNeeded(arguments, targetPath, variables);
+                var execRun = RunExecCommandIfNeeded(arguments, targetPath, variables, log);
+                var msbuildRun = RunMsBuildIfNeeded(arguments, targetPath, variables, log);
 
                 if (!execRun && !msbuildRun)
                 {
@@ -118,13 +102,30 @@ namespace GitVersion
             }
         }
 
-        private static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
+        private static string GetMsBuildToolPath()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return @"c:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe";
+            }
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                return "/usr/bin/msbuild";
+            }
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                return "/usr/local/bin/msbuild";
+            }
+            throw new Exception("MsBuild not found");
+        }
+
+        private static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, VersionVariables variables, ILog log)
         {
             if (string.IsNullOrEmpty(args.Proj)) return false;
 
-            Logger.Info($"Launching build tool {BuildTool} \"{args.Proj}\" {args.ProjArgs}");
+            log.Info($"Launching build tool {BuildTool} \"{args.Proj}\" {args.ProjArgs}");
             var results = ProcessHelper.Run(
-                Logger.Info, Logger.Error,
+                Logger.Info, Logger.Error, 
                 null, BuildTool, $"\"{args.Proj}\" {args.ProjArgs}", workingDirectory,
                 GetEnvironmentalVariables(variables));
 
@@ -134,13 +135,13 @@ namespace GitVersion
             return true;
         }
 
-        private static bool RunExecCommandIfNeeded(Arguments args, string workingDirectory, VersionVariables variables)
+        private static bool RunExecCommandIfNeeded(Arguments args, string workingDirectory, VersionVariables variables, ILog log)
         {
             if (string.IsNullOrEmpty(args.Exec)) return false;
 
-            Logger.Info($"Launching {args.Exec} {args.ExecArgs}");
+            log.Info($"Launching {args.Exec} {args.ExecArgs}");
             var results = ProcessHelper.Run(
-                Logger.Info, Logger.Error,
+                Logger.Info, Logger.Error, 
                 null, args.Exec, args.ExecArgs, workingDirectory,
                 GetEnvironmentalVariables(variables));
 
@@ -149,7 +150,8 @@ namespace GitVersion
 
             return true;
         }
-        static KeyValuePair<string, string>[] GetEnvironmentalVariables(VersionVariables variables)
+
+        private static KeyValuePair<string, string>[] GetEnvironmentalVariables(VersionVariables variables)
         {
             return variables
                 .Select(v => new KeyValuePair<string, string>("GitVersion_" + v.Key, v.Value))

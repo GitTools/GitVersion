@@ -8,6 +8,14 @@ namespace GitVersionExe.Tests
 {
     public class HelpWriterTests
     {
+        private IHelpWriter helpWriter;
+
+        public HelpWriterTests()
+        {
+            var versionWriter = new VersionWriter();
+            helpWriter = new HelpWriter(versionWriter);
+        }
+
         [Test]
         public void AllArgsAreInHelp()
         {
@@ -19,13 +27,12 @@ namespace GitVersionExe.Tests
                 { "LogFilePath" , "/l" },
                 { "DynamicRepositoryLocation" , "/dynamicRepoLocation" },
                 { "IsHelp", "/?" },
-                { "LogLevel", "/verbosity" },
                 { "IsVersion", "/version" },
                 { "UpdateWixVersionFile", "/updatewixversionfile" }
             };
             string helpText = null;
 
-            HelpWriter.WriteTo(s => helpText = s);
+            helpWriter.WriteTo(s => helpText = s);
 
             typeof(Arguments).GetFields()
                 .Select(p => p.Name)

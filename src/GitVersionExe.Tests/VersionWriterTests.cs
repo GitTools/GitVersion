@@ -10,13 +10,19 @@ namespace GitVersionExe.Tests
     [TestFixture]
     public class VersionWriterTests
     {
+        private IVersionWriter versionWriter;
+
+        public VersionWriterTests()
+        {
+            this.versionWriter = new VersionWriter();
+        }
         [Test]
         public void WriteVersion_ShouldWriteFileVersion_WithNoPrereleaseTag()
         {
             var asm = GenerateAssembly(new Version(1, 0, 0), "");
 
             string version = null;
-            VersionWriter.WriteTo(asm, v => version = v);
+            versionWriter.WriteTo(asm, v => version = v);
 
             Assert.IsNotNull(asm);
             Assert.AreEqual("1.0.0", version);
@@ -28,7 +34,7 @@ namespace GitVersionExe.Tests
             var asm = GenerateAssembly(new Version(1, 0, 0), "-beta0004");
 
             string version = null;
-            VersionWriter.WriteTo(asm, v => version = v);
+            versionWriter.WriteTo(asm, v => version = v);
 
             Assert.IsNotNull(asm);
             Assert.AreEqual("1.0.0-beta0004", version);

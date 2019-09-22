@@ -13,7 +13,7 @@ namespace GitVersion.Helpers
         static volatile object lockObject = new object();
 
         // http://social.msdn.microsoft.com/Forums/en/netfxbcl/thread/f6069441-4ab1-4299-ad6a-b8bb9ed36be3
-        public static Process Start(ProcessStartInfo startInfo)
+        private static Process Start(ProcessStartInfo startInfo)
         {
             Process process;
 
@@ -112,7 +112,9 @@ namespace GitVersion.Helpers
                     psi.EnvironmentVariables.Add(environmentalVariable.Key, environmentalVariable.Value);
                 }
                 if (psi.EnvironmentVariables.ContainsKey(environmentalVariable.Key) && environmentalVariable.Value == null)
+                {
                     psi.EnvironmentVariables.Remove(environmentalVariable.Key);
+                }
             }
 
             using (var process = Start(psi))
@@ -174,7 +176,7 @@ namespace GitVersion.Helpers
             NoOpenFileErrorBox = 0x8000
         }
 
-        public struct ChangeErrorMode : IDisposable
+        private struct ChangeErrorMode : IDisposable
         {
             readonly int oldMode;
 

@@ -1,4 +1,4 @@
-﻿namespace GitVersion.Helpers
+namespace GitVersion.Log
 {
     public enum LogLevel
     {

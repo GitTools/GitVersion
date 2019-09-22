@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using GitTools.Testing;
 using NUnit.Framework;
 using Shouldly;

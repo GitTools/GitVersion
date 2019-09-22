@@ -4,7 +4,6 @@ using GitVersion;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.Exceptions;
-using GitVersion.Helpers;
 using GitVersion.Log;
 using GitVersion.OutputFormatters;
 
@@ -359,14 +358,13 @@ namespace GitVersionExe.Tests
             arguments.NoCache.ShouldBe(true);
         }
 
-        [TestCase("-verbosity x", true, LogLevel.None)]
-        [TestCase("-verbosity none", false, LogLevel.None)]
-        [TestCase("-verbosity info", false, LogLevel.Info)]
-        [TestCase("-verbosity debug", false, LogLevel.Debug)]
-        [TestCase("-verbosity INFO", false, LogLevel.Info)]
-        [TestCase("-verbosity warn", false, LogLevel.Warn)]
-        [TestCase("-verbosity error", false, LogLevel.Error)]
-        public void Check_verbosity_parsing(string command, bool shouldThrow, LogLevel expectedLogLevel)
+        [TestCase("-verbosity x", true, Verbosity.Normal)]
+        [TestCase("-verbosity diagnostic", false, Verbosity.Diagnostic)]
+        [TestCase("-verbosity Minimal", false, Verbosity.Minimal)]
+        [TestCase("-verbosity NORMAL", false, Verbosity.Normal)]
+        [TestCase("-verbosity quiet", false, Verbosity.Quiet)]
+        [TestCase("-verbosity Verbose", false, Verbosity.Verbose)]
+        public void Check_verbosity_parsing(string command, bool shouldThrow, Verbosity expectedVerbosity)
         {
             if (shouldThrow)
             {
@@ -375,7 +373,7 @@ namespace GitVersionExe.Tests
             else
             {
                 var arguments = argumentParser.ParseArguments(command);
-                arguments.LogLevel.ShouldBe(expectedLogLevel);
+                arguments.Verbosity.ShouldBe(expectedVerbosity);
             }
         }
     }

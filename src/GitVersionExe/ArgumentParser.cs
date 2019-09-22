@@ -368,7 +368,7 @@ namespace GitVersion
 
                 if (name.IsSwitch("verbosity"))
                 {
-                    if (!Enum.TryParse(value, true, out arguments.LogLevel))
+                    if (!Enum.TryParse(value, true, out arguments.Verbosity))
                     {
                         throw new WarningException($"Could not parse Verbosity value '{value}'");
                     }

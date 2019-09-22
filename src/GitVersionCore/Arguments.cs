@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using GitVersion.Configuration;
-using GitVersion.Helpers;
+using GitVersion.Log;
 using GitVersion.OutputFormatters;
 
 namespace GitVersion
@@ -13,7 +13,7 @@ namespace GitVersion
             OverrideConfig = new Config();
             Output = OutputType.Json;
             UpdateAssemblyInfoFileName = new HashSet<string>();
-            LogLevel = LogLevel.Info;
+            Verbosity = Verbosity.Normal;
         }
 
         public Authentication Authentication;
@@ -54,7 +54,7 @@ namespace GitVersion
         public bool NoCache;
         public bool NoNormalize;
 
-        public LogLevel LogLevel;
+        public Verbosity Verbosity;
 
         public void AddAssemblyInfoFileName(string fileName)
         {
