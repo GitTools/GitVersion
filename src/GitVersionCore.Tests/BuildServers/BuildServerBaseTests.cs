@@ -15,12 +15,14 @@ namespace GitVersionCore.Tests.BuildServers
 
         private IEnvironment environment;
         private ILog log;
+        private IVariableProvider variableProvider;
 
         [SetUp]
         public void SetUp()
         {
             environment = new TestEnvironment();
             log = new NullLog();
+            variableProvider = new VariableProvider(log);
         }
 
         [Test]
@@ -41,7 +43,7 @@ namespace GitVersionCore.Tests.BuildServers
 
             var config = new TestEffectiveConfiguration();
 
-            var variables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
+            var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
             new BuildServer(environment, log).WriteIntegration(writes.Add, variables);
 
             writes[1].ShouldBe("1.2.3-beta.1+5");

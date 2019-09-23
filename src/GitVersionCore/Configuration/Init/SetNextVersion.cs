@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Common;
+using GitVersion.Log;
 
 namespace GitVersion.Configuration.Init
 {
     public class SetNextVersion : ConfigInitWizardStep
     {
-        public SetNextVersion(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)
+        public SetNextVersion(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
         {
         }
 
@@ -14,7 +15,7 @@ namespace GitVersion.Configuration.Init
         {
             if (string.IsNullOrEmpty(result))
             {
-                steps.Enqueue(new EditConfigStep(Console, FileSystem));
+                steps.Enqueue(new EditConfigStep(Console, FileSystem, Log));
                 return StepResult.Ok();
             }
 
@@ -22,7 +23,7 @@ namespace GitVersion.Configuration.Init
                 return StepResult.InvalidResponseSelected();
 
             config.NextVersion = semVer.ToString("t");
-            steps.Enqueue(new EditConfigStep(Console, FileSystem));
+            steps.Enqueue(new EditConfigStep(Console, FileSystem, Log));
             return StepResult.Ok();
         }
 

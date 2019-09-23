@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.VersioningModes;
 using GitVersion.Common;
+using GitVersion.Log;
 
 namespace GitVersion.Configuration.Init.SetConfig
 {
@@ -10,8 +11,8 @@ namespace GitVersion.Configuration.Init.SetConfig
         readonly ConfigInitWizardStep returnToStep;
         readonly bool isPartOfWizard;
 
-        public GlobalModeSetting(ConfigInitWizardStep returnToStep, bool isPartOfWizard, IConsole console, IFileSystem fileSystem)
-            : base(console, fileSystem)
+        public GlobalModeSetting(ConfigInitWizardStep returnToStep, bool isPartOfWizard, IConsole console, IFileSystem fileSystem, ILog log)
+            : base(console, fileSystem, log)
         {
             this.returnToStep = returnToStep;
             this.isPartOfWizard = isPartOfWizard;

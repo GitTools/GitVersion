@@ -12,6 +12,8 @@ namespace GitVersion
     /// </summary>
     public class GitVersionContext
     {
+        private readonly ILog log;
+
         public GitVersionContext(IRepository repository, ILog log, string targetBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
              : this(repository, log, GetTargetBranch(repository, targetBranch), configuration, onlyEvaluateTrackedBranches, commitId)
         {
@@ -19,6 +21,7 @@ namespace GitVersion
 
         public GitVersionContext(IRepository repository, ILog log, Branch currentBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
         {
+            this.log = log;
             Repository = repository;
             RepositoryMetadataProvider = new GitRepoMetadataProvider(repository, log, configuration);
             FullConfiguration = configuration;
@@ -85,7 +88,8 @@ namespace GitVersion
 
         private void CalculateEffectiveConfiguration()
         {
-            var currentBranchConfig = BranchConfigurationCalculator.GetBranchConfiguration(this, CurrentBranch);
+            IBranchConfigurationCalculator calculator = new BranchConfigurationCalculator(log, this);
+            var currentBranchConfig = calculator.GetBranchConfiguration(CurrentBranch);
 
             if (!currentBranchConfig.VersioningMode.HasValue)
                 throw new Exception($"Configuration value for 'Versioning mode' for branch {currentBranchConfig.Name} has no value. (this should not happen, please report an issue)");

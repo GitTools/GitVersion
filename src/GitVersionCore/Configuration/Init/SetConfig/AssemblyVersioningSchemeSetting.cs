@@ -2,12 +2,13 @@ using System.Collections.Generic;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Extensions;
 using GitVersion.Common;
+using GitVersion.Log;
 
 namespace GitVersion.Configuration.Init.SetConfig
 {
     public class AssemblyVersioningSchemeSetting : ConfigInitWizardStep
     {
-        public AssemblyVersioningSchemeSetting(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)
+        public AssemblyVersioningSchemeSetting(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
         {
         }
 
@@ -16,27 +17,27 @@ namespace GitVersion.Configuration.Init.SetConfig
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem, Log));
                     return StepResult.Ok();
                 case "1":
                     config.AssemblyVersioningScheme = AssemblyVersioningScheme.Major;
-                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem, Log));
                     return StepResult.Ok();
                 case "2":
                     config.AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinor;
-                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem, Log));
                     return StepResult.Ok();
                 case "3":
                     config.AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch;
-                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem, Log));
                     return StepResult.Ok();
                 case "4":
                     config.AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatchTag;
-                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem, Log));
                     return StepResult.Ok();
                 case "5":
                     config.AssemblyVersioningScheme = AssemblyVersioningScheme.None;
-                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem, Log));
                     return StepResult.Ok();
             }
 

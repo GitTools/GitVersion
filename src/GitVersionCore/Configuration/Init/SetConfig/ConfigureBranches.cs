@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Common;
+using GitVersion.Log;
 
 namespace GitVersion.Configuration.Init.SetConfig
 {
     public class ConfigureBranches : ConfigInitWizardStep
     {
-        public ConfigureBranches(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)
+        public ConfigureBranches(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
         {
         }
 
@@ -18,7 +19,7 @@ namespace GitVersion.Configuration.Init.SetConfig
             {
                 if (parsed == 0)
                 {
-                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem, Log));
                     return StepResult.Ok();
                 }
 
@@ -31,7 +32,7 @@ namespace GitVersion.Configuration.Init.SetConfig
                         branchConfig = new BranchConfig {Name = foundBranch.Key};
                         config.Branches.Add(foundBranch.Key, branchConfig);
                     }
-                    steps.Enqueue(new ConfigureBranch(foundBranch.Key, branchConfig, Console, FileSystem));
+                    steps.Enqueue(new ConfigureBranch(foundBranch.Key, branchConfig, Console, FileSystem, Log));
                     return StepResult.Ok();
                 }
                 catch (ArgumentOutOfRangeException)

@@ -96,7 +96,7 @@ namespace GitVersion
 
                 if (arguments.Init)
                 {
-                    ConfigurationProvider.Init(arguments.TargetPath, fileSystem, new ConsoleAdapter(), arguments.ConfigFileLocator);
+                    ConfigurationProvider.Init(arguments.TargetPath, fileSystem, new ConsoleAdapter(), log, arguments.ConfigFileLocator);
                     return 0;
                 }
                 if (arguments.ShowConfig)

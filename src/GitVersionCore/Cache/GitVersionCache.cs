@@ -49,7 +49,7 @@ namespace GitVersion.Cache
                 }
             }
 
-            var retryOperation = new OperationWithExponentialBackoff<IOException>(new ThreadSleep(), WriteCacheOperation, maxRetries: 6);
+            var retryOperation = new OperationWithExponentialBackoff<IOException>(new ThreadSleep(), log, WriteCacheOperation, maxRetries: 6);
             retryOperation.ExecuteAsync().Wait();
         }
 

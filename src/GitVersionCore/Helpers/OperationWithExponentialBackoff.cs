@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GitVersion.Common;
+using GitVersion.Log;
 
 namespace GitVersion.Helpers
 {
@@ -11,7 +12,7 @@ namespace GitVersion.Helpers
         private Action Operation;
         private int MaxRetries;
 
-        public OperationWithExponentialBackoff(IThreadSleep threadSleep, Action operation, int maxRetries = 5)
+        public OperationWithExponentialBackoff(IThreadSleep threadSleep, ILog log, Action operation, int maxRetries = 5)
         {
             if (maxRetries < 0)
                 throw new ArgumentOutOfRangeException(nameof(maxRetries));

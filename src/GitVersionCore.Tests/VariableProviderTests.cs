@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using GitVersion;
+using GitVersion.Log;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.OutputFormatters;
@@ -11,11 +12,14 @@ namespace GitVersionCore.Tests
     [TestFixture]
     public class VariableProviderTests : TestBase
     {
+        private IVariableProvider variableProvider;
 
         [SetUp]
         public void Setup()
         {
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
+            var log = new NullLog();
+            variableProvider = new VariableProvider(log);
         }
 
         [Test]
@@ -40,7 +44,7 @@ namespace GitVersionCore.Tests
 
             var config = new TestEffectiveConfiguration();
 
-            var vars = VariableProvider.GetVariablesFor(semVer, config, false);
+            var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
             JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
@@ -67,7 +71,7 @@ namespace GitVersionCore.Tests
 
             var config = new TestEffectiveConfiguration(buildMetaDataPadding: 2, legacySemVerPadding: 5);
 
-            var vars = VariableProvider.GetVariablesFor(semVer, config, false);
+            var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
             JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
@@ -93,7 +97,7 @@ namespace GitVersionCore.Tests
 
             var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
 
-            var vars = VariableProvider.GetVariablesFor(semVer, config, false);
+            var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
             JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
@@ -118,7 +122,7 @@ namespace GitVersionCore.Tests
 
             var config = new TestEffectiveConfiguration();
 
-            var vars = VariableProvider.GetVariablesFor(semVer, config, false);
+            var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
             JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
@@ -143,7 +147,7 @@ namespace GitVersionCore.Tests
 
             var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
 
-            var vars = VariableProvider.GetVariablesFor(semVer, config, false);
+            var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
             JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
@@ -171,7 +175,7 @@ namespace GitVersionCore.Tests
 
             var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment);
 
-            var vars = VariableProvider.GetVariablesFor(semVer, config, true);
+            var vars = variableProvider.GetVariablesFor(semVer, config, true);
 
             JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
@@ -194,7 +198,7 @@ namespace GitVersionCore.Tests
             semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
             var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, tagNumberPattern: @"[/-](?<number>\d+)[-/]");
-            var vars = VariableProvider.GetVariablesFor(semVer, config, false);
+            var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
             vars.FullSemVer.ShouldBe("1.2.3-PullRequest0002.5");
         }
@@ -216,7 +220,7 @@ namespace GitVersionCore.Tests
             semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
 
             var config = new TestEffectiveConfiguration(versioningMode: VersioningMode.ContinuousDeployment, tag: "useBranchName");
-            var vars = VariableProvider.GetVariablesFor(semVer, config, false);
+            var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
             vars.FullSemVer.ShouldBe("1.2.3-feature.5");
         }

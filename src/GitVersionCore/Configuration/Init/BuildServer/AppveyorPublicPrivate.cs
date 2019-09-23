@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Common;
+using GitVersion.Log;
 
 namespace GitVersion.Configuration.Init.BuildServer
 {
     class AppveyorPublicPrivate : ConfigInitWizardStep
     {
-        public AppveyorPublicPrivate(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)
+
+        public AppveyorPublicPrivate(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
         {
         }
 
@@ -15,13 +17,13 @@ namespace GitVersion.Configuration.Init.BuildServer
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem, Log));
                     return StepResult.Ok();
                 case "1":
-                    steps.Enqueue(new AppVeyorSetup(Console, FileSystem, ProjectVisibility.Public));
+                    steps.Enqueue(new AppVeyorSetup(Console, FileSystem, Log, ProjectVisibility.Public));
                     return StepResult.Ok();
                 case "2":
-                    steps.Enqueue(new AppVeyorSetup(Console, FileSystem, ProjectVisibility.Private));
+                    steps.Enqueue(new AppVeyorSetup(Console, FileSystem, Log, ProjectVisibility.Private));
                     return StepResult.Ok();
             }
             return StepResult.Ok();

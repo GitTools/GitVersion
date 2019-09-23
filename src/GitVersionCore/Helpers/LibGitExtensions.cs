@@ -93,46 +93,6 @@ namespace GitVersion.Helpers
             return gitDirectory;
         }
 
-        public static void CheckoutFilesIfExist(this IRepository repository, params string[] fileNames)
-        {
-            if (fileNames == null || fileNames.Length == 0)
-            {
-                return;
-            }
-
-            Logger.Info("Checking out files that might be needed later in dynamic repository");
-
-            foreach (var fileName in fileNames)
-            {
-                try
-                {
-                    Logger.Info($"  Trying to check out '{fileName}'");
-
-                    var headBranch = repository.Head;
-                    var tip = headBranch.Tip;
-
-                    var treeEntry = tip[fileName];
-                    if (treeEntry == null)
-                    {
-                        continue;
-                    }
-
-                    var fullPath = Path.Combine(repository.GetRepositoryDirectory(), fileName);
-                    using (var stream = ((Blob)treeEntry.Target).GetContentStream())
-                    {
-                        using (var streamReader = new BinaryReader(stream))
-                        {
-                            File.WriteAllBytes(fullPath, streamReader.ReadBytes((int)stream.Length));
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Logger.Warning($"  An error occurred while checking out '{fileName}': '{ex.Message}'");
-                }
-            }
-        }
-
         public static Branch FindBranch(this IRepository repository, string branchName)
         {
             return repository.Branches.FirstOrDefault(x => x.NameWithoutRemote() == branchName);

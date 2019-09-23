@@ -12,6 +12,13 @@ namespace GitVersionCore.Tests
     [TestFixture]
     public class VersionSourceTests : TestBase
     {
+        private ILog log;
+
+        public VersionSourceTests()
+        {
+            log = new NullLog();
+        }
+
         [Test]
         public void VersionSourceSha()
         {
@@ -27,7 +34,7 @@ namespace GitVersionCore.Tests
                 _ = fixture.Repository.MakeACommit();
 
                 var context = new GitVersionContext(fixture.Repository, new NullLog(), fixture.Repository.Head, config);
-                var nextVersionCalculator = new NextVersionCalculator();
+                var nextVersionCalculator = new NextVersionCalculator(log);
                 var version = nextVersionCalculator.FindVersion(context);
 
                 version.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
@@ -45,7 +52,7 @@ namespace GitVersionCore.Tests
                 var initialCommit = fixture.Repository.MakeACommit();
 
                 var context = new GitVersionContext(fixture.Repository, new NullLog(), fixture.Repository.Head, config);
-                var nextVersionCalculator = new NextVersionCalculator();
+                var nextVersionCalculator = new NextVersionCalculator(log);
                 var version = nextVersionCalculator.FindVersion(context);
 
                 version.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
@@ -69,7 +76,7 @@ namespace GitVersionCore.Tests
                 _ = fixture.Repository.MakeACommit();
 
                 var context = new GitVersionContext(fixture.Repository, new NullLog(), fixture.Repository.Head, config);
-                var nextVersionCalculator = new NextVersionCalculator();
+                var nextVersionCalculator = new NextVersionCalculator(log);
                 var version = nextVersionCalculator.FindVersion(context);
 
                 version.BuildMetaData.VersionSourceSha.ShouldBe(secondCommit.Sha);

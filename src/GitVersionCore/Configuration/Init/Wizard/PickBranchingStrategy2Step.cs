@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using GitVersion.Common;
+using GitVersion.Log;
 
 namespace GitVersion.Configuration.Init.Wizard
 {
     public class PickBranchingStrategy2Step : ConfigInitWizardStep
     {
-        public PickBranchingStrategy2Step(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)
+        public PickBranchingStrategy2Step(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
         {
         }
 
@@ -20,10 +21,10 @@ namespace GitVersion.Configuration.Init.Wizard
                     Console.WriteLine("GitHubFlow is designed for a lightweight workflow where master is always " +
                                       "good to deploy to production and feature branches are used to stabilise " +
                                       "features, once stable they are merged to master and made available in the next release");
-                    steps.Enqueue(new PickBranchingStrategyStep(Console, FileSystem));
+                    steps.Enqueue(new PickBranchingStrategyStep(Console, FileSystem, Log));
                     return StepResult.Ok();
                 case "n":
-                    steps.Enqueue(new PickBranchingStrategy3Step(Console, FileSystem));
+                    steps.Enqueue(new PickBranchingStrategy3Step(Console, FileSystem, Log));
                     return StepResult.Ok();
             }
 

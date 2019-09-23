@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.Helpers;
+using GitVersion.Log;
 using GitVersionCore.Tests.Mocks;
 
 namespace GitVersionCore.Tests
@@ -14,26 +15,26 @@ namespace GitVersionCore.Tests
         [Test]
         public void RetryOperationThrowsWhenNegativeMaxRetries()
         {
-            Action action = () => new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), () => { }, -1);
+            Action action = () => new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), new NullLog(), () => { }, -1);
             action.ShouldThrow<ArgumentOutOfRangeException>();
         }
 
         [Test]
         public void RetryOperationThrowsWhenThreadSleepIsNull()
         {
-            Action action = () => new OperationWithExponentialBackoff<IOException>(null, () => { });
+            Action action = () => new OperationWithExponentialBackoff<IOException>(null, new NullLog(), () => { });
             action.ShouldThrow<ArgumentNullException>();
         }
 
         [Test]
         public async Task OperationIsNotRetriedOnInvalidException()
         {
-            Action operation = () =>
+            void Operation()
             {
                 throw new Exception();
-            };
+            }
 
-            var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), operation);
+            var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), new NullLog(), Operation);
             Task action = retryOperation.ExecuteAsync();
             await action.ShouldThrowAsync<Exception>();
         }
@@ -43,16 +44,16 @@ namespace GitVersionCore.Tests
         {
             var operationCount = 0;
 
-            Action operation = () =>
+            void Operation()
             {
                 operationCount++;
                 if (operationCount < 2)
                 {
                     throw new IOException();
                 }
-            };
+            }
 
-            var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), operation);
+            var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), new NullLog(), Operation);
             await retryOperation.ExecuteAsync();
 
             operationCount.ShouldBe(2);
@@ -64,13 +65,13 @@ namespace GitVersionCore.Tests
             const int numberOfRetries = 3;
             var operationCount = 0;
 
-            Action operation = () =>
+            void Operation()
             {
                 operationCount++;
                 throw new IOException();
-            };
+            }
 
-            var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), operation, numberOfRetries);
+            var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), new NullLog(), Operation, numberOfRetries);
             Task action = retryOperation.ExecuteAsync();
             await action.ShouldThrowAsync<AggregateException>();
 
@@ -84,9 +85,9 @@ namespace GitVersionCore.Tests
             var expectedSleepMSec = 500;
             var sleepCount = 0;
 
-            Action operation = () => throw new IOException();
+            void Operation() => throw new IOException();
 
-            Func<int, Task> validator = u =>
+            Task Validator(int u)
             {
                 return Task.Run(() =>
                 {
@@ -94,10 +95,9 @@ namespace GitVersionCore.Tests
                     u.ShouldBe(expectedSleepMSec);
                     expectedSleepMSec *= 2;
                 });
+            }
 
-            };
-
-            var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(validator), operation, numberOfRetries);
+            var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(Validator), new NullLog(), Operation, numberOfRetries);
             Task action = retryOperation.ExecuteAsync();
             await action.ShouldThrowAsync<AggregateException>();
 
@@ -112,21 +112,17 @@ namespace GitVersionCore.Tests
             const int numberOfRetries = 6;
             int totalSleep = 0;
 
-            Action operation = () =>
+            void Operation()
             {
                 throw new IOException();
-            };
+            }
 
-            Func<int, Task> validator = u =>
+            Task Validator(int u)
             {
-                return Task.Run(() =>
-                {
-                    totalSleep += u;
-                });
+                return Task.Run(() => { totalSleep += u; });
+            }
 
-            };
-
-            var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(validator), operation, numberOfRetries);
+            var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(Validator), new NullLog(), Operation, numberOfRetries);
 
             Task action = retryOperation.ExecuteAsync();
             await action.ShouldThrowAsync<AggregateException>();

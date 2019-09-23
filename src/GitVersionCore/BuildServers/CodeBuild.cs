@@ -3,6 +3,7 @@ using System.IO;
 using GitVersion.Common;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
+using GitVersion.Log;
 
 namespace GitVersion.BuildServers
 {
@@ -11,7 +12,7 @@ namespace GitVersion.BuildServers
         public const string HeadRefEnvironmentName = "CODEBUILD_WEBHOOK_HEAD_REF";
         private readonly string propertiesFileName;
 
-        public CodeBuild(IEnvironment environment, string propertiesFileName = "gitversion.properties") : base(environment)
+        public CodeBuild(IEnvironment environment, ILog log, string propertiesFileName = "gitversion.properties") : base(environment, log)
         {
             this.propertiesFileName = propertiesFileName;
         }

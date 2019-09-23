@@ -72,7 +72,7 @@ namespace GitVersion
 
             if (arguments.UpdateWixVersionFile)
             {
-                using (var wixVersionFileUpdater = new WixVersionFileUpdater(targetPath, variables, fileSystem))
+                using (var wixVersionFileUpdater = new WixVersionFileUpdater(targetPath, variables, fileSystem, log))
                 {
                     wixVersionFileUpdater.Update();
                 }

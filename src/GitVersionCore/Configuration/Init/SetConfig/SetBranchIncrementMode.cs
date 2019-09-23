@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.VersioningModes;
 using GitVersion.Common;
+using GitVersion.Log;
 
 namespace GitVersion.Configuration.Init.SetConfig
 {
@@ -10,8 +11,8 @@ namespace GitVersion.Configuration.Init.SetConfig
         readonly string name;
         readonly BranchConfig branchConfig;
 
-        public SetBranchIncrementMode(string name, BranchConfig branchConfig, IConsole console, IFileSystem fileSystem)
-            : base(console, fileSystem)
+        public SetBranchIncrementMode(string name, BranchConfig branchConfig, IConsole console, IFileSystem fileSystem, ILog log)
+            : base(console, fileSystem, log)
         {
             this.name = name;
             this.branchConfig = branchConfig;
@@ -22,15 +23,15 @@ namespace GitVersion.Configuration.Init.SetConfig
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(new ConfigureBranch(name, branchConfig, Console, FileSystem));
+                    steps.Enqueue(new ConfigureBranch(name, branchConfig, Console, FileSystem, Log));
                     return StepResult.Ok();
                 case "1":
                     branchConfig.VersioningMode = VersioningMode.ContinuousDelivery;
-                    steps.Enqueue(new ConfigureBranch(name, branchConfig, Console, FileSystem));
+                    steps.Enqueue(new ConfigureBranch(name, branchConfig, Console, FileSystem, Log));
                     return StepResult.Ok();
                 case "2":
                     branchConfig.VersioningMode = VersioningMode.ContinuousDeployment;
-                    steps.Enqueue(new ConfigureBranch(name, branchConfig, Console, FileSystem));
+                    steps.Enqueue(new ConfigureBranch(name, branchConfig, Console, FileSystem, Log));
                     return StepResult.Ok();
             }
 

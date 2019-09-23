@@ -2,9 +2,9 @@ using System;
 using System.IO;
 using System.Text;
 using System.Xml;
-using GitVersion.Helpers;
 using GitVersion.OutputVariables;
 using GitVersion.Common;
+using GitVersion.Log;
 
 namespace GitVersion.Extensions
 {
@@ -12,19 +12,21 @@ namespace GitVersion.Extensions
     {
         VersionVariables variables;
         IFileSystem fileSystem;
+        private readonly ILog log;
         public string WixVersionFile { get; }
         public const string WIX_VERSION_FILE = "GitVersion_WixVersion.wxi";
 
-        public WixVersionFileUpdater(string workingDirectory, VersionVariables variables, IFileSystem fileSystem)
+        public WixVersionFileUpdater(string workingDirectory, VersionVariables variables, IFileSystem fileSystem, ILog log)
         {
             this.variables = variables;
             this.fileSystem = fileSystem;
+            this.log = log;
             this.WixVersionFile = Path.Combine(workingDirectory, WIX_VERSION_FILE);
         }
 
         public void Update()
         {
-            Logger.Info("Updating GitVersion_WixVersion.wxi");
+            log.Info("Updating GitVersion_WixVersion.wxi");
 
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(GetWixFormatFromVersionVariables());
@@ -55,7 +57,7 @@ namespace GitVersion.Extensions
 
         public void Dispose()
         {
-            Logger.Info($"Done writing {WixVersionFile}");
+            log.Info($"Done writing {WixVersionFile}");
         }
     }
 }

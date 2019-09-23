@@ -6,7 +6,7 @@ using GitVersion.OutputVariables;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.Extensions;
-using GitVersion.Helpers;
+using GitVersion.Log;
 
 namespace GitVersionCore.Tests
 {
@@ -41,12 +41,17 @@ namespace GitVersionCore.Tests
             semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2019-02-20 23:59:59Z");
 
             var config = new TestEffectiveConfiguration(buildMetaDataPadding: 2, legacySemVerPadding: 5);
-            var vars = VariableProvider.GetVariablesFor(semVer, config, false);
 
-            StringBuilder log = new StringBuilder();
-            Action<string> action = s => log.AppendLine(s);
-            Logger.SetLoggers(action, action, action, action);
-            using (var wixVersionFileUpdater = new WixVersionFileUpdater(workingDir, vars, fileSystem))
+            var variableProvider = new VariableProvider(new NullLog());
+            var vars = variableProvider.GetVariablesFor(semVer, config, false);
+
+            var stringBuilder = new StringBuilder();
+            void Action(string s) => stringBuilder.AppendLine(s);
+
+            var logAppender = new TestLogAppender(Action);
+            var log = new Log(logAppender);
+
+            using (var wixVersionFileUpdater = new WixVersionFileUpdater(workingDir, vars, fileSystem, log))
             {
                 wixVersionFileUpdater.Update();
                 fileSystem.ReadAllText(wixVersionFileUpdater.WixVersionFile).

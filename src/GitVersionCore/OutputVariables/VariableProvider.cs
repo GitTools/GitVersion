@@ -5,12 +5,19 @@ using GitVersion.VersionCalculation;
 using GitVersion.VersioningModes;
 using GitVersion.Configuration;
 using GitVersion.Helpers;
+using GitVersion.Log;
 
 namespace GitVersion.OutputVariables
 {
-    public static class VariableProvider
+    public class VariableProvider : IVariableProvider
     {
-        public static VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)
+        private readonly ILog log;
+
+        public VariableProvider(ILog log)
+        {
+            this.log = log;
+        }
+        public VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)
         {
             var isContinuousDeploymentMode = config.VersioningMode == VersioningMode.ContinuousDeployment && !isCurrentCommitTagged;
             if (isContinuousDeploymentMode)
@@ -19,7 +26,8 @@ namespace GitVersion.OutputVariables
                 // Continuous Deployment always requires a pre-release tag unless the commit is tagged
                 if (!semanticVersion.PreReleaseTag.HasTag())
                 {
-                    semanticVersion.PreReleaseTag.Name = NextVersionCalculator.GetBranchSpecificTag(config, semanticVersion.BuildMetaData.Branch, null);
+                    var nextVersionCalculator = new NextVersionCalculator(log);
+                    semanticVersion.PreReleaseTag.Name = nextVersionCalculator.GetBranchSpecificTag(config, semanticVersion.BuildMetaData.Branch, null);
                     if (string.IsNullOrEmpty(semanticVersion.PreReleaseTag.Name))
                     {
                         semanticVersion.PreReleaseTag.Name = config.ContinuousDeploymentFallbackTag;

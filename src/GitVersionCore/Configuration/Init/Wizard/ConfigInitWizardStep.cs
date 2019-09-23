@@ -1,20 +1,24 @@
 using System;
 using System.Collections.Generic;
 using GitVersion.Common;
+using GitVersion.Log;
 
 namespace GitVersion.Configuration.Init.Wizard
 {
     public abstract class ConfigInitWizardStep
     {
-        protected ConfigInitWizardStep(IConsole console, IFileSystem fileSystem)
+
+        protected ConfigInitWizardStep(IConsole console, IFileSystem fileSystem, ILog log)
         {
             Console = console;
             FileSystem = fileSystem;
+            Log = log;
         }
 
         protected IConsole Console { get; private set; }
 
         protected IFileSystem FileSystem { get; private set; }
+        protected ILog Log { get; private set; }
 
         public bool Apply(Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {

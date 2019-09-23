@@ -1,5 +1,6 @@
 using System;
 using GitVersion;
+using GitVersion.Log;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.OutputFormatters;
@@ -32,7 +33,8 @@ namespace GitVersionCore.Tests
 
             var config = new TestEffectiveConfiguration();
 
-            var variables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
+            var variableProvider = new VariableProvider(new NullLog());
+            var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
             var json = JsonOutputFormatter.ToJson(variables);
             json.ShouldMatchApproved(c => c.SubFolder("Approved"));
         }

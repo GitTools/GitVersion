@@ -17,12 +17,14 @@ namespace GitVersionCore.Tests.BuildServers
     {
         private IEnvironment environment;
         private ILog log;
+        private IVariableProvider variableProvider;
 
         [SetUp]
         public void SetUp()
         {
             environment = new TestEnvironment();
             log = new NullLog();
+            variableProvider = new VariableProvider(log);
         }
 
         [Test]
@@ -75,7 +77,7 @@ namespace GitVersionCore.Tests.BuildServers
 
             var config = new TestEffectiveConfiguration();
 
-            var variables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
+            var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
 
             var j = new Jenkins(environment, log, f);
 

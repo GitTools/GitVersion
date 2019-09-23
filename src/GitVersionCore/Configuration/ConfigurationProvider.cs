@@ -7,6 +7,7 @@ using GitVersion.Helpers;
 using GitVersion.VersioningModes;
 using GitVersion.Extensions;
 using GitVersion.Common;
+using GitVersion.Log;
 
 namespace GitVersion.Configuration
 {
@@ -246,11 +247,11 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             return stringBuilder.ToString();
         }
 
-        public static void Init(string workingDirectory, IFileSystem fileSystem, IConsole console, ConfigFileLocator configFileLocator)
+        public static void Init(string workingDirectory, IFileSystem fileSystem, IConsole console, ILog log, ConfigFileLocator configFileLocator)
         {
             var configFilePath = configFileLocator.GetConfigFilePath(workingDirectory, fileSystem);
             var currentConfiguration = Provide(workingDirectory, fileSystem, applyDefaults: false, configFileLocator: configFileLocator);
-            var config = new ConfigInitWizard(console, fileSystem).Run(currentConfiguration, workingDirectory);
+            var config = new ConfigInitWizard(console, fileSystem, log).Run(currentConfiguration, workingDirectory);
             if (config == null) return;
 
             using (var stream = fileSystem.OpenWrite(configFilePath))

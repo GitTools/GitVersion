@@ -14,7 +14,7 @@ namespace GitVersion.Helpers
             Reset();
         }
 
-        public static Action<string> Debug { get; private set; }
+        private static Action<string> Debug { get; set; }
         public static Action<string> Info { get; private set; }
         public static Action<string> Warning { get; private set; }
         public static Action<string> Error { get; private set; }
