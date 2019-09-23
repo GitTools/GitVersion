@@ -9,14 +9,15 @@ namespace GitVersion.Log
     public sealed class Log : ILog
     {
         private readonly IEnumerable<ILogAppender> appenders;
-        private static readonly Regex ObscurePasswordRegex = new Regex("(https?://)(.+)(:.+@)", RegexOptions.Compiled);
+        private readonly Regex ObscurePasswordRegex = new Regex("(https?://)(.+)(:.+@)", RegexOptions.Compiled);
+        private readonly StringBuilder sb;
         private string indent = string.Empty;
-        private StringBuilder sb;
 
         public Log(params ILogAppender[] appenders)
         {
             this.appenders = appenders ?? Array.Empty<ILogAppender>();
             sb = new StringBuilder();
+            Verbosity = Verbosity.Normal;
         }
 
         public Verbosity Verbosity { get; set; }

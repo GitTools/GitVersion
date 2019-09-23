@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.Helpers;
+using GitVersion.Log;
 
 namespace GitVersionCore.Tests
 {
@@ -18,8 +18,10 @@ namespace GitVersionCore.Tests
 
             void Action(string info) => s = info;
 
-            using (Logger.AddLoggersTemporarily(Action, Action, Action, Action))
-                Logger.Info($"{protocol}://{username}:{password}@workspace.visualstudio.com/DefaultCollection/_git/CAS");
+            var logAppender = new TestLogAppender(Action);
+            var log = new Log(logAppender);
+
+            log.Info($"{protocol}://{username}:{password}@workspace.visualstudio.com/DefaultCollection/_git/CAS");
 
             s.Contains(password).ShouldBe(false);
         }
@@ -28,10 +30,15 @@ namespace GitVersionCore.Tests
         public void UsernameWithoutPassword()
         {
             var s = string.Empty;
+
             void Action(string info) => s = info;
+
+            var logAppender = new TestLogAppender(Action);
+            var log = new Log(logAppender);
+
             const string repoUrl = "http://username@workspace.visualstudio.com/DefaultCollection/_git/CAS";
-            using (Logger.AddLoggersTemporarily(Action, Action, Action, Action))
-                Logger.Info(repoUrl);
+
+            log.Info(repoUrl);
 
             s.Contains(repoUrl).ShouldBe(true);
         }
