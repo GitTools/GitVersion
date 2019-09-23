@@ -1,4 +1,4 @@
-﻿namespace GitVersionCore.Tests
+namespace GitVersionCore.Tests
 {
     public class TestBase
     {

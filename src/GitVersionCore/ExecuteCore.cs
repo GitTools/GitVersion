@@ -63,11 +63,11 @@ namespace GitVersion
                 throw new Exception($"Failed to prepare or find the .git directory in path '{workingDirectory}'.");
             }
 
-            var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, gitPreparer, overrideConfig, configFileLocator);
+            var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, log, gitPreparer, overrideConfig, configFileLocator);
             var versionVariables = noCache ? default : gitVersionCache.LoadVersionVariablesFromDiskCache(gitPreparer, cacheKey);
             if (versionVariables == null)
             {
-                versionVariables = ExecuteInternal(targetBranch, commitId, gitPreparer, buildServer, overrideConfig);
+                versionVariables = ExecuteInternal(targetBranch, commitId, gitPreparer, overrideConfig);
 
                 if (!noCache)
                 {
@@ -113,14 +113,14 @@ namespace GitVersion
             return currentBranch;
         }
 
-        VersionVariables ExecuteInternal(string targetBranch, string commitId, GitPreparer gitPreparer, IBuildServer buildServer, Config overrideConfig = null)
+        VersionVariables ExecuteInternal(string targetBranch, string commitId, GitPreparer gitPreparer, Config overrideConfig = null)
         {
             var versionFinder = new GitVersionFinder();
             var configuration = ConfigurationProvider.Provide(gitPreparer, fileSystem, overrideConfig: overrideConfig, configFileLocator: configFileLocator);
 
             return gitPreparer.WithRepository(repo =>
             {
-                var gitVersionContext = new GitVersionContext(repo, targetBranch, configuration, commitId: commitId);
+                var gitVersionContext = new GitVersionContext(repo, log, targetBranch, configuration, commitId: commitId);
                 var semanticVersion = versionFinder.FindVersion(gitVersionContext);
 
                 return VariableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);

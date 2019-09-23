@@ -8,6 +8,7 @@ using GitVersion.Log;
 namespace GitVersionCore.Tests
 {
     [TestFixture]
+    [Ignore("These tests are slow and fail on the second run in Test Explorer and need to be re-written")]
     public class DynamicRepositoryTests : TestBase
     {
         string workDirectory;
@@ -36,7 +37,6 @@ namespace GitVersionCore.Tests
         }
 
         // Note: use same name twice to see if changing commits works on same (cached) repository
-        [Ignore("These tests are slow and fail on the second run in Test Explorer and need to be re-written")]
         [NonParallelizable]
         [TestCase("GV_master", "https://github.com/GitTools/GitVersion", "master", "4783d325521463cd6cf1b61074352da84451f25d", "4.0.0+1086")]
         [TestCase("GV_master", "https://github.com/GitTools/GitVersion", "master", "3bdcd899530b4e9b37d13639f317da04a749e728", "4.0.0+1092")]

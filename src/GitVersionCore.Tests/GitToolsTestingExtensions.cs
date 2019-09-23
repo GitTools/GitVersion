@@ -25,7 +25,7 @@ namespace GitVersionCore.Tests
                 configuration = new Config();
                 ConfigurationProvider.ApplyDefaultsTo(configuration);
             }
-            var gitVersionContext = new GitVersionContext(repository ?? fixture.Repository, targetBranch, configuration, isForTrackedBranchOnly, commitId);
+            var gitVersionContext = new GitVersionContext(repository ?? fixture.Repository, new NullLog(), targetBranch, configuration, isForTrackedBranchOnly, commitId);
             var executeGitVersion = ExecuteGitVersion(gitVersionContext);
             var variables = VariableProvider.GetVariablesFor(executeGitVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
             try

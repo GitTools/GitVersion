@@ -56,7 +56,7 @@ namespace GitVersion
                         {
                             CleanupDuplicateOrigin();
                         }
-                        GitRepositoryHelper.NormalizeGitDirectory(GetDotGitDirectory(), authentication, noFetch, currentBranch, IsDynamicGitRepository);
+                        GitRepositoryHelper.NormalizeGitDirectory(log, GetDotGitDirectory(), authentication, noFetch, currentBranch, IsDynamicGitRepository);
                     }
                 }
                 return;
@@ -190,7 +190,7 @@ namespace GitVersion
                     log.Info("Git repository already exists");
                     using (log.IndentLog($"Normalizing git directory for branch '{targetBranch}'"))
                     {
-                        GitRepositoryHelper.NormalizeGitDirectory(gitDirectory, auth, noFetch, targetBranch, true);
+                        GitRepositoryHelper.NormalizeGitDirectory(log, gitDirectory, auth, noFetch, targetBranch, true);
                     }
 
                     return gitDirectory;
@@ -201,7 +201,7 @@ namespace GitVersion
                 using (log.IndentLog($"Normalizing git directory for branch '{targetBranch}'"))
                 {
                     // Normalize (download branches) before using the branch
-                    GitRepositoryHelper.NormalizeGitDirectory(gitDirectory, auth, noFetch, targetBranch, true);
+                    GitRepositoryHelper.NormalizeGitDirectory(log, gitDirectory, auth, noFetch, targetBranch, true);
                 }
 
                 return gitDirectory;

@@ -22,7 +22,7 @@ namespace GitVersionTask.Tests
             workDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             gitDirectory = Repository.Init(workDirectory)
                 .TrimEnd(Path.DirectorySeparatorChar);
-            executeCore = new ExecuteCore(new TestFileSystem(), new TestEnvironment(), new NullLog());
+            executeCore = new ExecuteCore(new TestFileSystem(), new TestEnvironment(), new Log());
             Assert.NotNull(gitDirectory);
         }
 

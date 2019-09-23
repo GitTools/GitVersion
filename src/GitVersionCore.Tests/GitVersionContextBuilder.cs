@@ -1,6 +1,7 @@
-﻿using GitTools.Testing;
+using GitTools.Testing;
 using GitVersion;
 using GitVersion.Configuration;
+using GitVersion.Log;
 using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
 
@@ -64,7 +65,7 @@ namespace GitVersionCore.Tests
             var configuration = config ?? new Config();
             ConfigurationProvider.ApplyDefaultsTo(configuration);
             var repo = repository ?? CreateRepository();
-            return new GitVersionContext(repo, repo.Head, configuration);
+            return new GitVersionContext(repo, new NullLog(), repo.Head, configuration);
         }
 
         IRepository CreateRepository()

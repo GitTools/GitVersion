@@ -1,4 +1,5 @@
 using GitVersion.Helpers;
+using GitVersion.Log;
 
 namespace GitVersionTask.Tests
 {
@@ -12,11 +13,14 @@ namespace GitVersionTask.Tests
         /// </summary>
         public static void Initialize()
         {
+            var log = new NullLog();
+            void WriteLine(string s) => log.Info(s);
+
             Logger.SetLoggers(
-                s => System.Console.WriteLine(s),
-                s => System.Console.WriteLine(s),
-                s => System.Console.WriteLine(s),
-                s => System.Console.WriteLine(s));
+                WriteLine,
+                WriteLine,
+                WriteLine,
+                WriteLine);
         }
 
     }

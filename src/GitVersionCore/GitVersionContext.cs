@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using GitVersion.Configuration;
 using GitVersion.Helpers;
+using GitVersion.Log;
 
 namespace GitVersion
 {
@@ -11,15 +12,15 @@ namespace GitVersion
     /// </summary>
     public class GitVersionContext
     {
-        public GitVersionContext(IRepository repository, string targetBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
-             : this(repository, GetTargetBranch(repository, targetBranch), configuration, onlyEvaluateTrackedBranches, commitId)
+        public GitVersionContext(IRepository repository, ILog log, string targetBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
+             : this(repository, log, GetTargetBranch(repository, targetBranch), configuration, onlyEvaluateTrackedBranches, commitId)
         {
         }
 
-        public GitVersionContext(IRepository repository, Branch currentBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
+        public GitVersionContext(IRepository repository, ILog log, Branch currentBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
         {
             Repository = repository;
-            RepositoryMetadataProvider = new GitRepoMetadataProvider(repository, configuration);
+            RepositoryMetadataProvider = new GitRepoMetadataProvider(repository, log, configuration);
             FullConfiguration = configuration;
             OnlyEvaluateTrackedBranches = onlyEvaluateTrackedBranches;
 
@@ -28,7 +29,7 @@ namespace GitVersion
 
             if (!string.IsNullOrWhiteSpace(commitId))
             {
-                Logger.Info($"Searching for specific commit '{commitId}'");
+                log.Info($"Searching for specific commit '{commitId}'");
 
                 var commit = repository.Commits.FirstOrDefault(c => string.Equals(c.Sha, commitId, StringComparison.OrdinalIgnoreCase));
                 if (commit != null)
@@ -37,13 +38,13 @@ namespace GitVersion
                 }
                 else
                 {
-                    Logger.Warning($"Commit '{commitId}' specified but not found");
+                    log.Warning($"Commit '{commitId}' specified but not found");
                 }
             }
 
             if (CurrentCommit == null)
             {
-                Logger.Info("Using latest commit on specified branch");
+                log.Info("Using latest commit on specified branch");
                 CurrentCommit = currentBranch.Tip;
             }
 
@@ -72,15 +73,15 @@ namespace GitVersion
         /// <summary>
         /// Contains the raw configuration, use Configuration for specific config based on the current GitVersion context.
         /// </summary>
-        public Config FullConfiguration { get; private set; }
-        public SemanticVersion CurrentCommitTaggedVersion { get; private set; }
-        public bool OnlyEvaluateTrackedBranches { get; private set; }
+        public Config FullConfiguration { get; }
+        public SemanticVersion CurrentCommitTaggedVersion { get; }
+        public bool OnlyEvaluateTrackedBranches { get; }
         public EffectiveConfiguration Configuration { get; private set; }
-        public IRepository Repository { get; private set; }
-        public Branch CurrentBranch { get; private set; }
-        public Commit CurrentCommit { get; private set; }
-        public bool IsCurrentCommitTagged { get; private set; }
-        public GitRepoMetadataProvider RepositoryMetadataProvider { get; private set; }
+        public IRepository Repository { get; }
+        public Branch CurrentBranch { get; }
+        public Commit CurrentCommit { get; }
+        public bool IsCurrentCommitTagged { get; }
+        public GitRepoMetadataProvider RepositoryMetadataProvider { get; }
 
         private void CalculateEffectiveConfiguration()
         {

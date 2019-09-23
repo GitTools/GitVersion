@@ -6,6 +6,7 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.Exceptions;
 using GitVersion.Helpers;
+using GitVersion.Log;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {
@@ -43,7 +44,7 @@ namespace GitVersionCore.Tests.IntegrationTests
                     return repo;
                 }))
             {
-                GitRepositoryHelper.NormalizeGitDirectory(fixture.LocalRepositoryFixture.RepositoryPath, new AuthenticationInfo(), noFetch: false, currentBranch: string.Empty, true);
+                GitRepositoryHelper.NormalizeGitDirectory(new NullLog(), fixture.LocalRepositoryFixture.RepositoryPath, new AuthenticationInfo(), noFetch: false, currentBranch: string.Empty, isDynamicRepository: true);
 
                 fixture.AssertFullSemver("1.0.0-beta.1+5");
                 fixture.AssertFullSemver("1.0.0-beta.1+5", fixture.LocalRepositoryFixture.Repository);

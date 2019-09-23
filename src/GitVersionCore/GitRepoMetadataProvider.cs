@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion.Configuration;
 using GitVersion.Helpers;
+using GitVersion.Log;
 
 namespace GitVersion
 {
@@ -17,7 +18,7 @@ namespace GitVersion
         const string missingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
         private Config configuration;
 
-        public GitRepoMetadataProvider(IRepository repository, Config configuration)
+        public GitRepoMetadataProvider(IRepository repository, ILog log, Config configuration)
         {
             mergeBaseCache = new Dictionary<Tuple<Branch, Branch>, MergeBaseData>();
             mergeBaseCommitsCache = new Dictionary<Branch, List<BranchCommit>>();

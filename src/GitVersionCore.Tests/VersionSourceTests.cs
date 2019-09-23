@@ -1,6 +1,7 @@
 using GitTools.Testing;
 using GitVersion;
 using GitVersion.Configuration;
+using GitVersion.Log;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -25,7 +26,7 @@ namespace GitVersionCore.Tests
                 Commands.Checkout(fixture.Repository, featureBranch);
                 _ = fixture.Repository.MakeACommit();
 
-                var context = new GitVersionContext(fixture.Repository, fixture.Repository.Head, config);
+                var context = new GitVersionContext(fixture.Repository, new NullLog(), fixture.Repository.Head, config);
                 var nextVersionCalculator = new NextVersionCalculator();
                 var version = nextVersionCalculator.FindVersion(context);
 
@@ -43,7 +44,7 @@ namespace GitVersionCore.Tests
             {
                 var initialCommit = fixture.Repository.MakeACommit();
 
-                var context = new GitVersionContext(fixture.Repository, fixture.Repository.Head, config);
+                var context = new GitVersionContext(fixture.Repository, new NullLog(), fixture.Repository.Head, config);
                 var nextVersionCalculator = new NextVersionCalculator();
                 var version = nextVersionCalculator.FindVersion(context);
 
@@ -67,7 +68,7 @@ namespace GitVersionCore.Tests
                 Commands.Checkout(fixture.Repository, featureBranch);
                 _ = fixture.Repository.MakeACommit();
 
-                var context = new GitVersionContext(fixture.Repository, fixture.Repository.Head, config);
+                var context = new GitVersionContext(fixture.Repository, new NullLog(), fixture.Repository.Head, config);
                 var nextVersionCalculator = new NextVersionCalculator();
                 var version = nextVersionCalculator.FindVersion(context);
 
