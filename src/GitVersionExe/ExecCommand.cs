@@ -41,8 +41,8 @@ namespace GitVersion
             {
                 case OutputType.BuildServer:
                 {
-                    BuildServerList.Init(environment);
-                    foreach (var buildServer in BuildServerList.GetApplicableBuildServers())
+                    BuildServerList.Init(environment, log);
+                    foreach (var buildServer in BuildServerList.GetApplicableBuildServers(log))
                     {
                         buildServer.WriteIntegration(Console.WriteLine, variables);
                     }

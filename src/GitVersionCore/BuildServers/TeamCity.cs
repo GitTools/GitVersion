@@ -1,12 +1,13 @@
 using GitVersion.Helpers;
 using GitVersion.OutputVariables;
 using GitVersion.Common;
+using GitVersion.Log;
 
 namespace GitVersion.BuildServers
 {
     public class TeamCity : BuildServerBase
     {
-        public TeamCity(IEnvironment environment) : base(environment)
+        public TeamCity(IEnvironment environment, ILog log) : base(environment, log)
         {
         }
 
@@ -31,9 +32,9 @@ namespace GitVersion.BuildServers
             return branchName;
         }
 
-        static void WriteBranchEnvVariableWarning()
+        private void WriteBranchEnvVariableWarning()
         {
-            Logger.Warning(@"TeamCity doesn't make the current branch available through environmental variables.
+            Log.Warning(@"TeamCity doesn't make the current branch available through environmental variables.
 
 Depending on your authentication and transport setup of your git VCS root things may work. In that case, ignore this warning.
 

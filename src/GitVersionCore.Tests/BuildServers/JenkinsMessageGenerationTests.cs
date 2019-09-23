@@ -7,6 +7,7 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.BuildServers;
 using GitVersion.Common;
+using GitVersion.Log;
 using GitVersion.OutputVariables;
 
 namespace GitVersionCore.Tests.BuildServers
@@ -15,17 +16,19 @@ namespace GitVersionCore.Tests.BuildServers
     public class JenkinsMessageGenerationTests : TestBase
     {
         private IEnvironment environment;
+        private ILog log;
 
         [SetUp]
         public void SetUp()
         {
             environment = new TestEnvironment();
+            log = new NullLog();
         }
 
         [Test]
         public void GenerateSetVersionMessageReturnsVersionAsIs_AlthoughThisIsNotUsedByJenkins()
         {
-            var j = new Jenkins(environment);
+            var j = new Jenkins(environment, log);
             var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Beta4.7");
             j.GenerateSetVersionMessage(vars).ShouldBe("0.0.0-Beta4.7");
         }
@@ -33,7 +36,7 @@ namespace GitVersionCore.Tests.BuildServers
         [Test]
         public void GenerateMessageTest()
         {
-            var j = new Jenkins(environment);
+            var j = new Jenkins(environment, log);
             var generatedParameterMessages = j.GenerateSetParameterMessage("name", "value");
             generatedParameterMessages.Length.ShouldBe(1);
             generatedParameterMessages[0].ShouldBe("GitVersion_name=value");
@@ -74,7 +77,7 @@ namespace GitVersionCore.Tests.BuildServers
 
             var variables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
 
-            var j = new Jenkins(environment, f);
+            var j = new Jenkins(environment, log, f);
 
             j.WriteIntegration(writes.Add, variables);
 

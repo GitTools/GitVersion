@@ -2,6 +2,7 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.BuildServers;
 using GitVersion.Common;
+using GitVersion.Log;
 
 namespace GitVersionCore.Tests.BuildServers
 {
@@ -13,12 +14,14 @@ namespace GitVersionCore.Tests.BuildServers
         VsoAgent versionBuilder;
 
         private IEnvironment environment;
+        private ILog log;
 
         [SetUp]
         public void SetUp()
         {
             environment = new TestEnvironment();
-            versionBuilder = new VsoAgent(environment);
+            log = new NullLog();
+            versionBuilder = new VsoAgent(environment, log);
         }
 
         [TearDown]

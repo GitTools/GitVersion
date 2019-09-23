@@ -20,6 +20,17 @@ namespace GitVersionTask
 {
     public static class GitVersionTasks
     {
+        private static ILog log;
+        private static IEnvironment environment;
+        private static IFileSystem fileSystem;
+
+        static GitVersionTasks()
+        {
+            log = new Log();
+            environment = new Environment();
+            fileSystem = new FileSystem();
+        }
+
         public static bool GetVersion(GetVersion task)
         {
             return ExecuteGitVersionTask(task, t =>
@@ -76,8 +87,8 @@ namespace GitVersionTask
                 if (!GetVersionVariables(task, out var versionVariables)) return;
 
                 var logger = t.Log;
-                BuildServerList.Init(new Environment());
-                foreach (var buildServer in BuildServerList.GetApplicableBuildServers())
+                BuildServerList.Init(environment, log);
+                foreach (var buildServer in BuildServerList.GetApplicableBuildServers(log))
                 {
                     logger.LogMessage($"Executing GenerateSetVersionMessage for '{ buildServer.GetType().Name }'.");
                     logger.LogMessage(buildServer.GenerateSetVersionMessage(versionVariables));
@@ -119,7 +130,7 @@ namespace GitVersionTask
         }
 
         private static bool GetVersionVariables(GitVersionTaskBase task, out VersionVariables versionVariables)
-            => new ExecuteCore(new FileSystem(), new Environment(), new Log(), 
-                ConfigFileLocator.GetLocator(task.ConfigFilePath)).TryGetVersion(task.SolutionDirectory, out versionVariables, task.NoFetch, new Authentication());
+            => new ExecuteCore(fileSystem, environment, log, ConfigFileLocator.GetLocator(task.ConfigFilePath))
+                .TryGetVersion(task.SolutionDirectory, out versionVariables, task.NoFetch, new Authentication());
     }
 }

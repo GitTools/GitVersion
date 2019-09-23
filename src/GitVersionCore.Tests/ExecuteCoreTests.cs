@@ -7,7 +7,6 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.BuildServers;
 using GitVersion.Configuration;
-using GitVersion.Helpers;
 using GitVersion.OutputVariables;
 using GitVersion.Cache;
 using LibGit2Sharp;
@@ -119,16 +118,24 @@ CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
 ";
 
+            var stringBuilder = new StringBuilder();
+            void Action(string s) => stringBuilder.AppendLine(s);
+
+            var logAppender = new TestLogAppender(Action);
+            log = new Log(logAppender);
+
             var versionAndBranchFinder = new ExecuteCore(fileSystem, environment, log);
 
-            var logs = RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
+            RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
                 fileSystem.WriteAllText(vv.FileName, versionCacheFileContent);
                 vv = versionAndBranchFinder.ExecuteGitVersion(null, null, null, null, false, fixture.RepositoryPath, null);
                 vv.AssemblySemVer.ShouldBe("4.10.3.0");
             });
 
-            logs.Info.ShouldContain("Deserializing version variables from cache file", () => logs.Info);
+            var logsMessages = stringBuilder.ToString();
+
+            logsMessages.ShouldContain("Deserializing version variables from cache file", () => logsMessages);
         }
 
 
@@ -191,8 +198,17 @@ CommitDate: 2015-11-10
         [Test]
         public void CacheFileIsMissing()
         {
-            var logsMessages = RepositoryScope();
-            logsMessages.Info.ShouldContain("yml not found", () => logsMessages.Info);
+            var stringBuilder = new StringBuilder();
+            void Action(string s) => stringBuilder.AppendLine(s);
+
+            var logAppender = new TestLogAppender(Action);
+            log = new Log(logAppender);
+
+            var executeCore = new ExecuteCore(fileSystem, environment, log);
+
+            RepositoryScope(executeCore);
+            var logsMessages = stringBuilder.ToString();
+            logsMessages.ShouldContain("yml not found", () => logsMessages);
         }
 
 
@@ -405,31 +421,13 @@ CommitDate: 2015-11-10
             });
         }
 
-        private LogMessages RepositoryScope(ExecuteCore executeCore = null, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
+        private void RepositoryScope(ExecuteCore executeCore, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
         {
             // Make sure GitVersion doesn't trigger build server mode when we are running the tests
             environment.SetEnvironmentVariable(AppVeyor.EnvironmentVariableName, null);
             environment.SetEnvironmentVariable(TravisCI.EnvironmentVariableName, null);
             environment.SetEnvironmentVariable(VsoAgent.EnvironmentVariableName, null);
-            var debugBuilder = new StringBuilder();
 
-            void DebugLogger(string s) => debugBuilder.AppendLine(s);
-
-            var infoBuilder = new StringBuilder();
-
-            void InfoLogger(string s) => infoBuilder.AppendLine(s);
-
-            var warnBuilder = new StringBuilder();
-
-            void WarnLogger(string s) => warnBuilder.AppendLine(s);
-
-            var errorBuilder = new StringBuilder();
-
-            void ErrorLogger(string s) => errorBuilder.AppendLine(s);
-
-            executeCore = executeCore ?? new ExecuteCore(fileSystem, environment, log);
-
-            using (Logger.AddLoggersTemporarily(DebugLogger, InfoLogger, WarnLogger, ErrorLogger))
             using (var fixture = new EmptyRepositoryFixture())
             {
                 fixture.Repository.MakeACommit();
@@ -440,14 +438,6 @@ CommitDate: 2015-11-10
 
                 fixtureAction?.Invoke(fixture, vv);
             }
-
-            return new LogMessages
-            {
-                Debug = debugBuilder.ToString(),
-                Info = infoBuilder.ToString(),
-                Warn = warnBuilder.ToString(),
-                Error = errorBuilder.ToString()
-            };
         }
     }
 }

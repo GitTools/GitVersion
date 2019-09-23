@@ -4,12 +4,13 @@ using System.Text.RegularExpressions;
 using GitVersion.OutputVariables;
 using GitVersion.Helpers;
 using GitVersion.Common;
+using GitVersion.Log;
 
 namespace GitVersion.BuildServers
 {
     public class VsoAgent : BuildServerBase
     {
-        public VsoAgent(IEnvironment environment) : base(environment)
+        public VsoAgent(IEnvironment environment, ILog log) : base(environment, log)
         {
         }
 

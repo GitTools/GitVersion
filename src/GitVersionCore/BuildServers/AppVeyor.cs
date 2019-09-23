@@ -2,12 +2,13 @@ using System.Net;
 using System.Text;
 using GitVersion.OutputVariables;
 using GitVersion.Common;
+using GitVersion.Log;
 
 namespace GitVersion.BuildServers
 {
     public class AppVeyor : BuildServerBase
     {
-        public AppVeyor(IEnvironment environment) : base(environment)
+        public AppVeyor(IEnvironment environment, ILog log) : base(environment, log)
         {
         }
 

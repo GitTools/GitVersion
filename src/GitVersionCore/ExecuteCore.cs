@@ -24,18 +24,18 @@ namespace GitVersion
             this.environment = environment;
             this.log = log;
             this.configFileLocator = configFileLocator ?? ConfigFileLocator.Default;
-            gitVersionCache = new GitVersionCache(fileSystem);
+            gitVersionCache = new GitVersionCache(fileSystem, log);
         }
 
         public VersionVariables ExecuteGitVersion(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId, Config overrideConfig = null, bool noCache = false, bool noNormalize = false)
         {
-            BuildServerList.Init(environment);
+            BuildServerList.Init(environment, log);
 
             // Normalize if we are running on build server
-            var applicableBuildServers = BuildServerList.GetApplicableBuildServers();
+            var applicableBuildServers = BuildServerList.GetApplicableBuildServers(log);
             var buildServer = applicableBuildServers.FirstOrDefault();
-            var normalizeGitDirectory = !noNormalize && (buildServer != null);
-            var fetch = noFetch || (buildServer != null && buildServer.PreventFetch());
+            var normalizeGitDirectory = !noNormalize && buildServer != null;
+            var fetch = noFetch || buildServer != null && buildServer.PreventFetch();
             var shouldCleanUpRemotes = buildServer != null && buildServer.ShouldCleanUpRemotes();
             var gitPreparer = new GitPreparer(log, targetUrl, dynamicRepositoryLocation, authentication, fetch, workingDirectory);
 
