@@ -34,7 +34,7 @@ namespace GitVersion
             var noCache = arguments.NoCache;
             var noNormalize = arguments.NoNormalize;
 
-            var executeCore = new ExecuteCore(fileSystem, environment, arguments.ConfigFileLocator);
+            var executeCore = new ExecuteCore(fileSystem, environment, log, arguments.ConfigFileLocator);
             var variables = executeCore.ExecuteGitVersion(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId, overrideConfig, noCache, noNormalize);
 
             switch (arguments.Output)

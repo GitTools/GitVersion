@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using GitVersion;
+using GitVersion.Log;
 using LibGit2Sharp;
 using NUnit.Framework;
 using GitVersionTask.Tests.Helpers;
@@ -21,7 +22,7 @@ namespace GitVersionTask.Tests
             workDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             gitDirectory = Repository.Init(workDirectory)
                 .TrimEnd(Path.DirectorySeparatorChar);
-            executeCore = new ExecuteCore(new TestFileSystem(), new TestEnvironment());
+            executeCore = new ExecuteCore(new TestFileSystem(), new TestEnvironment(), new NullLog());
             Assert.NotNull(gitDirectory);
         }
 

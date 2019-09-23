@@ -92,7 +92,7 @@ namespace GitVersion
                     log.Info("Working directory: " + arguments.TargetPath);
                 }
 
-                VerifyConfiguration(arguments, fileSystem);
+                VerifyConfiguration(arguments, fileSystem, log);
 
                 if (arguments.Init)
                 {
@@ -142,9 +142,9 @@ namespace GitVersion
             return 0;
         }
 
-        private static void VerifyConfiguration(Arguments arguments, IFileSystem fileSystem)
+        private static void VerifyConfiguration(Arguments arguments, IFileSystem fileSystem, ILog log)
         {
-            var gitPreparer = new GitPreparer(arguments);
+            var gitPreparer = new GitPreparer(log, arguments);
             arguments.ConfigFileLocator.Verify(gitPreparer, fileSystem);
         }
 

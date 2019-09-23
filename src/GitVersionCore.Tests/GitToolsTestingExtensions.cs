@@ -6,6 +6,7 @@ using GitVersion.OutputVariables;
 using LibGit2Sharp;
 using Shouldly;
 using GitVersion.Helpers;
+using GitVersion.Log;
 
 namespace GitVersionCore.Tests
 {
@@ -76,7 +77,7 @@ namespace GitVersionCore.Tests
         /// </summary>
         public static void InitialiseRepo(this RemoteRepositoryFixture fixture)
         {
-            new GitPreparer(null, null, new Authentication(), false, fixture.LocalRepositoryFixture.RepositoryPath).Initialise(true, null);
+            new GitPreparer(new NullLog(), null, null, new Authentication(), false, fixture.LocalRepositoryFixture.RepositoryPath).Initialise(true, null);
         }
     }
 }
