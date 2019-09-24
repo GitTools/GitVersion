@@ -57,14 +57,14 @@ $DotNetChannel = 'LTS'
 $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
 
 [string] $CakeVersion = ''
-[string] $DotNetVersion= ''
+[string[]] $DotNetVersion= ''
 foreach($line in Get-Content (Join-Path $PSScriptRoot 'build.config'))
 {
   if ($line -like 'CAKE_VERSION=*') {
       $CakeVersion = $line.SubString(13)
   }
   elseif ($line -like 'DOTNET_VERSION=*') {
-      $DotNetVersion =$line.SubString(15)
+      $DotNetVersion = $line.SubString(15).Split(',')
   }
 }
 
@@ -110,39 +110,49 @@ Function Remove-PathVariable([string]$VariableToRemove)
     }
 }
 
-# Get .NET Core CLI path if installed.
-$FoundDotNetCliVersion = $null;
-if (Get-Command dotnet -ErrorAction SilentlyContinue) {
-    $FoundDotNetCliVersion = dotnet --version;
-}
-
-if($FoundDotNetCliVersion -ne $DotNetVersion) {
-    $InstallPath = Join-Path $PSScriptRoot ".dotnet"
-    if (!(Test-Path $InstallPath)) {
-        New-Item -Path $InstallPath -ItemType Directory -Force | Out-Null;
+Function Add-PathVariable([string]$PathToAdd)
+{
+    $SplitChar = ';'
+    if ($IsMacOS -or $IsLinux) {
+        $SplitChar = ':'
     }
 
+    $env:PATH = "$($PathToAdd)$($SplitChar)$env:PATH"
+}
+
+Function Install-Dotnet($DotNetVersion)
+{
     if ($IsMacOS -or $IsLinux) {
         $ScriptPath = Join-Path $InstallPath 'dotnet-install.sh'
         (New-Object System.Net.WebClient).DownloadFile($DotNetUnixInstallerUri, $ScriptPath);
+
         & bash $ScriptPath --version "$DotNetVersion" --install-dir "$InstallPath" --channel "$DotNetChannel" --no-path
-        Remove-PathVariable "$InstallPath"
-        $env:PATH = "$($InstallPath):$env:PATH"
     }
     else {
         $ScriptPath = Join-Path $InstallPath 'dotnet-install.ps1'
         (New-Object System.Net.WebClient).DownloadFile($DotNetInstallerUri, $ScriptPath);
-        & $ScriptPath -Channel $DotNetChannel -Version $DotNetVersion -InstallDir $InstallPath;
 
-    Remove-PathVariable "$InstallPath"
-    $env:PATH = "$InstallPath;$env:PATH"
+        & $ScriptPath -Channel $DotNetChannel -Version $DotNetVersion -InstallDir $InstallPath;
     }
-    $env:DOTNET_ROOT=$InstallPath
 }
+
+# Get .NET Core CLI path if installed.
+$InstallPath = Join-Path $PSScriptRoot ".dotnet"
+if (!(Test-Path $InstallPath)) {
+    New-Item -Path $InstallPath -ItemType Directory -Force | Out-Null;
+}
+
+foreach($version in $DotNetVersion)
+{
+    Install-Dotnet $version
+}
+
+Remove-PathVariable "$InstallPath"
+Add-PathVariable "$InstallPath"
+$env:DOTNET_ROOT=$InstallPath
 
 $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
 $env:DOTNET_CLI_TELEMETRY_OPTOUT=1
-
 
 ###########################################################################
 # INSTALL CAKE
