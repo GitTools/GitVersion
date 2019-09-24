@@ -3,14 +3,14 @@
         "2.1": [
             "centos-7",
             "debian-9",
-            "fedora-28",
+            "fedora-30",
             "ubuntu-16.04",
             "ubuntu-18.04"
         ],
-        "2.2": [
+        "3.0": [
             "centos-7",
             "debian-9",
-            "fedora-28",
+            "fedora-30",
             "ubuntu-16.04",
             "ubuntu-18.04"
         ]
@@ -19,7 +19,7 @@
         "2.1": [
             "nanoserver-1809"
         ],
-        "2.2": [
+        "3.0": [
             "nanoserver-1809"
         ]
     }
