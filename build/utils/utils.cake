@@ -36,13 +36,13 @@ void SetRubyGemPushApiKey(string apiKey)
 
 GitVersion GetVersion(BuildParameters parameters)
 {
-    var dllFilePath = $"./artifacts/*/bin/{parameters.CoreFxVersion}/tools/GitVersion.dll";
+    var dllFilePath = $"./artifacts/*/bin/{parameters.CoreFxVersion21}/tools/GitVersion.dll";
     var dllFile = GetFiles(dllFilePath).FirstOrDefault();
     if (dllFile == null)
     {
         Warning("Dogfood GitVersion to get information");
         Build(parameters);
-        dllFilePath = $"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion}/GitVersion.dll";
+        dllFilePath = $"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion21}/GitVersion.dll";
         dllFile = GetFiles(dllFilePath).FirstOrDefault();
     }
 
@@ -171,4 +171,12 @@ public static bool IsEnabled(ICakeContext context, string envVar, bool nullOrEmp
     var value = context.EnvironmentVariable(envVar);
 
     return string.IsNullOrWhiteSpace(value) ? nullOrEmptyAsEnabled : bool.Parse(value);
+}
+
+public static List<string> ExecGitCmd(ICakeContext context, string cmd)
+{
+    var gitPath = context.Tools.Resolve(context.IsRunningOnWindows() ? "git.exe" : "git");
+    context.StartProcess(gitPath, new ProcessSettings { Arguments = cmd, RedirectStandardOutput = true }, out var redirectedOutput);
+
+    return redirectedOutput.ToList();
 }

@@ -31,10 +31,10 @@ public class BuildPaths
         var artifactsBinFullFxILMergeDir  = artifactsBinFullFxDir.Combine("il-merge");
         var artifactsBinFullFxPortableDir = artifactsBinFullFxDir.Combine("portable");
         var artifactsBinFullFxCmdlineDir  = artifactsBinFullFxDir.Combine("cmdline");
-        var artifactsBinCoreFxDir         = artifactsBinDir.Combine(parameters.CoreFxVersion);
+        var artifactsBinCoreFxDir         = artifactsBinDir.Combine(parameters.CoreFxVersion21);
         var nugetRootDir                  = artifactsDir.Combine("nuget");
         var buildArtifactDir              = artifactsDir.Combine("build-artifact");
-        var testResultsOutputDir         = artifactsDir.Combine("test-results");
+        var testResultsOutputDir          = artifactsDir.Combine("test-results");
 
         var zipArtifactPathCoreClr = artifactsDir.CombineWithFilePath("GitVersion-bin-corefx-v" + semVersion + ".zip");
         var zipArtifactPathDesktop = artifactsDir.CombineWithFilePath("GitVersion-bin-fullfx-v" + semVersion + ".zip");
@@ -111,7 +111,7 @@ public class BuildDirectories
     public DirectoryPath ArtifactsBinFullFxPortable { get; private set; }
     public DirectoryPath ArtifactsBinFullFxCmdline { get; private set; }
     public DirectoryPath ArtifactsBinFullFxILMerge { get; private set; }
-    public DirectoryPath ArtifactsBinCoreFx { get; private set; }
+    public DirectoryPath ArtifactsBinCoreFx21 { get; private set; }
     public ICollection<DirectoryPath> ToClean { get; private set; }
 
     public BuildDirectories(
@@ -124,7 +124,7 @@ public class BuildDirectories
         DirectoryPath artifactsBinFullFxPortableDir,
         DirectoryPath artifactsBinFullFxCmdlineDir,
         DirectoryPath artifactsBinFullFxILMergeDir,
-        DirectoryPath artifactsBinCoreFxDir
+        DirectoryPath artifactsBinCoreFx21Dir
         )
     {
         Artifacts = artifactsDir;
@@ -136,7 +136,7 @@ public class BuildDirectories
         ArtifactsBinFullFxPortable = artifactsBinFullFxPortableDir;
         ArtifactsBinFullFxCmdline = artifactsBinFullFxCmdlineDir;
         ArtifactsBinFullFxILMerge = artifactsBinFullFxILMergeDir;
-        ArtifactsBinCoreFx = artifactsBinCoreFxDir;
+        ArtifactsBinCoreFx21 = artifactsBinCoreFx21Dir;
         ToClean = new[] {
             Artifacts,
             BuildArtifact,
@@ -147,7 +147,7 @@ public class BuildDirectories
             ArtifactsBinFullFxPortable,
             ArtifactsBinFullFxCmdline,
             ArtifactsBinFullFxILMerge,
-            ArtifactsBinCoreFx
+            ArtifactsBinCoreFx21
         };
     }
 }

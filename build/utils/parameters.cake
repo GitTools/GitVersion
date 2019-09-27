@@ -8,7 +8,9 @@ public class BuildParameters
     public string Target { get; private set; }
     public string Configuration { get; private set; }
 
-    public string CoreFxVersion { get; private set; } = "netcoreapp2.1";
+    public const string MainRepoOwner = "gittools";
+    public const string MainRepoName = "GitVersion";
+    public string CoreFxVersion21 { get; private set; } = "netcoreapp2.1";
     public string FullFxVersion { get; private set; } = "net472";
 
     public string DockerDistro { get; private set; }
@@ -132,7 +134,7 @@ public class BuildParameters
 
         PackagesBuildMap = new Dictionary<string, DirectoryPath>
         {
-            ["GitVersion.CommandLine.DotNetCore"] = Paths.Directories.ArtifactsBinCoreFx,
+            ["GitVersion.CommandLine.DotNetCore"] = Paths.Directories.ArtifactsBinCoreFx21,
             ["GitVersion.CommandLine"] = Paths.Directories.ArtifactsBinFullFxCmdline,
             ["GitVersion.Portable"] = Paths.Directories.ArtifactsBinFullFxPortable,
         };
@@ -194,13 +196,13 @@ public class BuildParameters
 
         context.Information("Repository Name: {0}" , repositoryName);
 
-        return !string.IsNullOrWhiteSpace(repositoryName) && StringComparer.OrdinalIgnoreCase.Equals("gittools/gitversion", repositoryName);
+        return !string.IsNullOrWhiteSpace(repositoryName) && StringComparer.OrdinalIgnoreCase.Equals($"{BuildParameters.MainRepoOwner}/{BuildParameters.MainRepoName}", repositoryName);
     }
 
     private static bool IsOnMainBranch(ICakeContext context)
     {
         var buildSystem = context.BuildSystem();
-        string repositoryBranch = null;
+        string repositoryBranch = ExecGitCmd(context, "rev-parse --abbrev-ref HEAD").Single();
         if (buildSystem.IsRunningOnAppVeyor)
         {
             repositoryBranch = buildSystem.AppVeyor.Environment.Repository.Branch;
@@ -221,10 +223,9 @@ public class BuildParameters
 
     private static bool IsBuildTagged(ICakeContext context)
     {
-        var gitPath = context.Tools.Resolve(context.IsRunningOnWindows() ? "git.exe" : "git");
-        context.StartProcess(gitPath, new ProcessSettings { Arguments = "rev-parse --verify HEAD", RedirectStandardOutput = true }, out var sha);
-        context.StartProcess(gitPath, new ProcessSettings { Arguments = "tag --points-at " + sha.Single(), RedirectStandardOutput = true }, out var redirectedOutput);
+        var sha = ExecGitCmd(context, "rev-parse --verify HEAD").Single();
+        var isTagged = ExecGitCmd(context, "tag --points-at " + sha).Any();
 
-        return redirectedOutput.Any();
+        return isTagged;
     }
 }

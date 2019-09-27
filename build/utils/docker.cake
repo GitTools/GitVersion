@@ -29,7 +29,7 @@ void DockerBuild(DockerImage dockerImage, BuildParameters parameters)
     var workDir = DirectoryPath.FromString($"./src/Docker");
 
     var sourceDir = targetframework.StartsWith("netcoreapp")
-        ? parameters.Paths.Directories.ArtifactsBinCoreFx.Combine("tools")
+        ? parameters.Paths.Directories.ArtifactsBinCoreFx21.Combine("tools")
         : parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
 
     CopyDirectory(sourceDir, workDir.Combine("content"));
@@ -130,7 +130,7 @@ string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
         $"{name}:{parameters.Version.SemVersion}-{os}-{distro}-{targetframework}",
     };
 
-    if (distro == "debian-9" && targetframework == parameters.CoreFxVersion || distro == "nanoserver-1809") {
+    if (distro == "debian-9" && targetframework == parameters.CoreFxVersion21 || distro == "nanoserver-1809") {
         tags.AddRange(new[] {
             $"{name}:{parameters.Version.Version}-{os}",
             $"{name}:{parameters.Version.SemVersion}-{os}",

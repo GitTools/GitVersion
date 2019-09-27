@@ -38,7 +38,7 @@ Task("Test")
     .IsDependentOn("Build")
     .Does<BuildParameters>((parameters) =>
 {
-    var frameworks = new[] { parameters.CoreFxVersion, parameters.FullFxVersion };
+    var frameworks = new[] { parameters.CoreFxVersion21, parameters.FullFxVersion };
     var testResultsPath = parameters.Paths.Directories.TestResultsOutput;
 
     foreach(var framework in frameworks)
@@ -125,10 +125,10 @@ Task("Copy-Files")
     .Does<BuildParameters>((parameters) =>
 {
     // .NET Core
-    var coreFxDir = parameters.Paths.Directories.ArtifactsBinCoreFx.Combine("tools");
+    var coreFxDir = parameters.Paths.Directories.ArtifactsBinCoreFx21.Combine("tools");
     DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
     {
-        Framework = parameters.CoreFxVersion,
+        Framework = parameters.CoreFxVersion21,
         NoRestore = true,
         Configuration = parameters.Configuration,
         OutputDirectory = coreFxDir,
@@ -137,7 +137,7 @@ Task("Copy-Files")
 
     // Copy license & Copy GitVersion.XML (since publish does not do this anymore)
     CopyFileToDirectory("./LICENSE", coreFxDir);
-    CopyFileToDirectory($"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion}/GitVersion.xml", coreFxDir);
+    CopyFileToDirectory($"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion21}/GitVersion.xml", coreFxDir);
 
     // .NET Framework
     DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
@@ -162,7 +162,7 @@ Task("Copy-Files")
     // .NET Core
     DotNetCorePublish("./src/GitVersionTask/GitVersionTask.csproj", new DotNetCorePublishSettings
     {
-        Framework = parameters.CoreFxVersion,
+        Framework = parameters.CoreFxVersion21,
         NoBuild = true,
         NoRestore = true,
         Configuration = parameters.Configuration,
@@ -325,7 +325,7 @@ Task("Zip-Files")
     Zip(cmdlineDir, parameters.Paths.Files.ZipArtifactPathDesktop, fullFxFiles);
 
     // .NET Core
-    var coreFxDir = parameters.Paths.Directories.ArtifactsBinCoreFx.Combine("tools");
+    var coreFxDir = parameters.Paths.Directories.ArtifactsBinCoreFx21.Combine("tools");
     var coreclrFiles = GetFiles(coreFxDir.FullPath + "/**/*");
     Zip(coreFxDir, parameters.Paths.Files.ZipArtifactPathCoreClr, coreclrFiles);
 });
