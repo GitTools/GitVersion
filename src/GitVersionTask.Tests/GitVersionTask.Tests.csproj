@@ -5,7 +5,7 @@
 
     <Import Project="..\test.msbuild" />
     <ItemGroup>
-        <PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.0.461" />
+        <PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.3.0" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="Approved\**\*.txt" />
