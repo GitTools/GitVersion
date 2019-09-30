@@ -120,7 +120,7 @@ public class BuildParameters
         Packages = BuildPackages.GetPackages(
             Paths.Directories.NugetRoot,
             Version,
-            new [] { "GitVersion.CommandLine.DotNetCore", "GitVersion.CommandLine", "GitVersionTask", "GitVersion.Tool" },
+            new [] { "GitVersion.CommandLine", "GitVersionTask", "GitVersion.Tool" },
             new [] { "GitVersion.Portable" });
 
         var files = Paths.Files;
@@ -134,7 +134,6 @@ public class BuildParameters
 
         PackagesBuildMap = new Dictionary<string, DirectoryPath>
         {
-            ["GitVersion.CommandLine.DotNetCore"] = Paths.Directories.ArtifactsBinCoreFx21,
             ["GitVersion.CommandLine"] = Paths.Directories.ArtifactsBinFullFxCmdline,
             ["GitVersion.Portable"] = Paths.Directories.ArtifactsBinFullFxPortable,
         };
