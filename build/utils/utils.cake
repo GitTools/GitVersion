@@ -129,8 +129,12 @@ void ILRepackGitVersionExe(bool includeLibGit2Sharp, DirectoryPath target, Direc
     CopyDirectory(targetDir + "/lib/", ilMergeDir + "/lib/");
 }
 
-void PublishILRepackedGitVersionExe(bool includeLibGit2Sharp, DirectoryPath targetDir, DirectoryPath ilMergDir, DirectoryPath outputDir, string configuration, string dotnetVersion)
+void PublishILRepackedGitVersionExe(bool includeLibGit2Sharp, DirectoryPath ilMergDir, DirectoryPath outputDir, BuildParameters parameters)
 {
+    var targetDir = parameters.Paths.Directories.ArtifactsBinFullFx;
+    var configuration = parameters.Configuration;
+    var dotnetVersion = parameters.FullFxVersion;
+
     ILRepackGitVersionExe(includeLibGit2Sharp, targetDir, ilMergDir, configuration, dotnetVersion);
     CopyDirectory(ilMergDir, outputDir);
 

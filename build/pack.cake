@@ -173,9 +173,9 @@ Task("Copy-Files")
     var cmdlineDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
 
     // Portable
-    PublishILRepackedGitVersionExe(true, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergeDir, portableDir, parameters.Configuration, parameters.FullFxVersion);
+    PublishILRepackedGitVersionExe(true, ilMergeDir, portableDir, parameters);
     // Commandline
-    PublishILRepackedGitVersionExe(false, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergeDir, cmdlineDir, parameters.Configuration, parameters.FullFxVersion);
+    PublishILRepackedGitVersionExe(false, ilMergeDir, cmdlineDir, parameters);
 
     // Vsix
     var vsixPath = new DirectoryPath("./src/GitVersionVsixTask/GitVersionTask");
