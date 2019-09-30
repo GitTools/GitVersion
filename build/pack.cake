@@ -129,7 +129,7 @@ Task("Copy-Files")
     DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
     {
         Framework = parameters.CoreFxVersion21,
-        NoRestore = true,
+        NoRestore = false,
         Configuration = parameters.Configuration,
         OutputDirectory = coreFxDir,
         MSBuildSettings = parameters.MSBuildSettings
@@ -144,7 +144,7 @@ Task("Copy-Files")
     {
         Framework = parameters.FullFxVersion,
         NoBuild = true,
-        NoRestore = true,
+        NoRestore = false,
         Configuration = parameters.Configuration,
         OutputDirectory = parameters.Paths.Directories.ArtifactsBinFullFx,
         MSBuildSettings = parameters.MSBuildSettings
