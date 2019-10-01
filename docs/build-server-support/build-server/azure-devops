@@ -38,6 +38,18 @@ If you want the GitVersionTask to update AssemblyInfo files, check the box in th
 
 The Azure DevOps Pipeline build step can update your build number with GitVersion variables. See below for details.
 
+#### Using Pipelines yaml
+
+Add the following yaml task to your `azure-pipelines.yml` file:
+
+```yml
+steps:
+- task: gittools.gitversion.gitversion-task.GitVersion@5
+  displayName: gitversion
+  inputs:
+    useConfigFile: true
+    configFilePath: GitVersion.yml
+```
 
 ## Running inside TFS
 ### Using the GitVersion Variables
