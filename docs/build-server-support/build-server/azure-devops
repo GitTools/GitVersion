@@ -40,15 +40,32 @@ The Azure DevOps Pipeline build step can update your build number with GitVersio
 
 #### Using Pipelines yaml
 
-Add the following yaml task to your `azure-pipelines.yml` file:
+Add the following yaml task and variable to your `azure-pipelines.yml` file:
 
 ```yml
+variables:
+  GitVersion.SemVer: ''
+   
 steps:
 - task: gittools.gitversion.gitversion-task.GitVersion@5
   displayName: gitversion
   inputs:
     useConfigFile: true
     configFilePath: GitVersion.yml
+```
+
+You can now use the `GitVersion.SemVer` environment variable in any subsequent tasks to refer to the semantic version number for your build. For example, you can build your dotnet core application with a semantic version number like so:
+
+```yml
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    command: build
+    projects: '$(solution)'
+    configuration: '$(buildConfiguration)'
+    versioningScheme: byEnvVar
+    versionEnvVar: 'GitVersion.SemVer'
+
 ```
 
 ## Running inside TFS
