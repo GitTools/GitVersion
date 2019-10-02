@@ -211,7 +211,7 @@ namespace GitVersionCore.Tests.Mocks
 
         public Branch Head { get; set; }
         public LibGit2Sharp.Configuration Config { get; set; }
-        public Index Index { get; set; }
+        public LibGit2Sharp.Index Index { get; set; }
         public ReferenceCollection Refs { get; set; }
 
         public IQueryableCommitLog Commits
