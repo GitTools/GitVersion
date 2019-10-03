@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFrameworks>net472;netcoreapp2.1</TargetFrameworks>
@@ -12,6 +12,7 @@
     <ItemGroup>
         <PackageReference Include="FluentDateTime" Version="2.0.0" />
         <PackageReference Include="GitTools.Testing" Version="1.2.0" />
+        <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2Sharp_NativeBinaries)" />
         <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
     </ItemGroup>
     <ItemGroup>

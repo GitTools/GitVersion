@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
 
         <OutputType>Exe</OutputType>
@@ -24,6 +24,7 @@
 
     <ItemGroup Condition="'$(TargetFramework)'=='net472'">
         <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)"></PackageReference>
+        <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2Sharp_NativeBinaries)" />
     </ItemGroup>
 
     <ItemGroup>
