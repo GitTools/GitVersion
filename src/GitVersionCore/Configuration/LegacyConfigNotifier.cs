@@ -26,7 +26,7 @@ namespace GitVersion.Configuration
 
         public static void Notify(StringReader reader)
         {
-            var deserializer = new DeserializerBuilder().WithNamingConvention(new NullNamingConvention()).IgnoreUnmatchedProperties().Build();
+            var deserializer = new DeserializerBuilder().WithNamingConvention(NullNamingConvention.Instance).IgnoreUnmatchedProperties().Build();
 
             var legacyConfig = deserializer.Deserialize<LegacyConfig>(reader);
             if (legacyConfig == null)
