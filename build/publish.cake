@@ -85,11 +85,11 @@ Task("Publish-AzurePipeline")
 {
     foreach(var artifact in parameters.Artifacts.All)
     {
-        if (FileExists(artifact.ArtifactPath)) { TFBuild.Commands.UploadArtifact(artifact.ContainerName, artifact.ArtifactPath, artifact.ArtifactName); }
+        if (FileExists(artifact.ArtifactPath)) { TFBuild.Commands.UploadArtifact("", artifact.ArtifactPath, "artifacts"); }
     }
     foreach(var package in parameters.Packages.All)
     {
-        if (FileExists(package.PackagePath)) { TFBuild.Commands.UploadArtifact("packages", package.PackagePath, package.PackageName); }
+        if (FileExists(package.PackagePath)) { TFBuild.Commands.UploadArtifact("", package.PackagePath, "packages"); }
     }
 })
 .OnError(exception =>

@@ -11,7 +11,7 @@ steps:
   inputs:
     source: current
     path: $(Build.SourcesDirectory)
-    artifact: artifacts
+    artifact: storage
 - script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Publish
   displayName: 'Publish'
   env:

@@ -1,4 +1,4 @@
-﻿using LibGit2Sharp;
+using LibGit2Sharp;
 
 namespace GitVersion
 {
@@ -15,8 +15,8 @@ namespace GitVersion
             Commit = commit;
         }
 
-        public Branch Branch { get; private set; }
-        public Commit Commit { get; private set; }
+        public Branch Branch { get; }
+        public Commit Commit { get; }
 
         public bool Equals(BranchCommit other)
         {
@@ -27,7 +27,7 @@ namespace GitVersion
         {
             if (ReferenceEquals(null, obj))
                 return false;
-            return obj is BranchCommit && Equals((BranchCommit)obj);
+            return obj is BranchCommit commit && Equals(commit);
         }
 
         public override int GetHashCode()
