@@ -27,7 +27,7 @@ Just go to your build configuration, Parameters, click Add, Name should be `env.
 For GitVersion to work with any mode requiring other than the currently built branch to calculate the version number, you need to set the configuration parameter [`teamcity.git.fetchAllHeads = true` in TeamCity](https://www.jetbrains.com/help/teamcity/git.html#Git-GeneralSettings), because TeamCity by default fetches only the current branch for building.
 More reference about this #912, #1199, #1234, #1441, #1477 and #1825
 
-Again go to your build configuration, Parameters, click Add, Name should be `teamcity.git.fetchAllHeads`, value should be `true`.
+To add this configuration parameter to your build configuration, go to *Parameters*, click *Add*, *Name* should be `teamcity.git.fetchAllHeads` and the value should be `true`.
 
 ### Dynamic repositories
 To use server side checkout, you must use the dynamic repositories feature of GitVersion. Server side checkout sends just the files to the agent and not the actual .git folder. Dynamic repositories will clone your repo into a temp folder and use it to calculate version information.
