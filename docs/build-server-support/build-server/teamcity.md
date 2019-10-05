@@ -17,12 +17,17 @@ TeamCity has support for meta-runners which allow custom tasks. There is a GitVe
  - [Project Link](https://github.com/JetBrains/meta-runner-power-pack/tree/master/gitversion)
 
 ## Running inside TeamCity
-When running in TeamCIty you have two options, run using **agent checkout** or use dynamic repositories.
+When running in TeamCity you have two options, run using **agent checkout** or use dynamic repositories.
 
 ### Agent checkout
 For GitVersion to pick up pull requests properly you need to promote the `%teamcity.build.vcs.branch.{configurationid}%` variable to an environment variable called `Git_Branch`
 
 Just go to your build configuration, Parameters, click Add, Name should be `env.Git_Branch`, value should be `%teamcity.build.vcs.branch.{vcsid}%` where vcsid is your VCS root id. You should get auto completion for this.
+
+For GitVersion to work with [MainLine mode](../../reference/mainline-development.md) you need to set configuration parameter `teamcity.git.fetchAllHeads = true`, because TeamCity by default fetches only current branch for building, but MainLine mode requires master for calculating version.
+More reference about this #912, #1199, #1234, #1441, #1477 and #1825
+
+Again go to your build configuration, Parameters, click Add, Name should be `teamcity.git.fetchAllHeads`, value should be `true`.
 
 ### Dynamic repositories
 To use server side checkout, you must use the dynamic repositories feature of GitVersion. Server side checkout sends just the files to the agent and not the actual .git folder. Dynamic repositories will clone your repo into a temp folder and use it to calculate version information.
