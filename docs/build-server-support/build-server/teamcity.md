@@ -25,7 +25,6 @@ For GitVersion to pick up pull requests properly you need to promote the `%teamc
 Just go to your build configuration, Parameters, click Add, Name should be `env.Git_Branch`, value should be `%teamcity.build.vcs.branch.{vcsid}%` where vcsid is your VCS root id. You should get auto completion for this.
 
 For GitVersion to work with any mode requiring other than the currently built branch to calculate the version number, you need to set the configuration parameter [`teamcity.git.fetchAllHeads = true` in TeamCity](https://www.jetbrains.com/help/teamcity/git.html#Git-GeneralSettings), because TeamCity by default fetches only the current branch for building.
-More reference about this #912, #1199, #1234, #1441, #1477 and #1825
 
 To add this configuration parameter to your build configuration, go to *Parameters*, click *Add*, *Name* should be `teamcity.git.fetchAllHeads` and the value should be `true`.
 
