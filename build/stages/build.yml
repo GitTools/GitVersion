@@ -13,4 +13,4 @@ steps:
 - publish: $(System.DefaultWorkingDirectory)
   displayName: 'Upload pipeline artifacts'
   condition: eq( variables['Agent.OS'], 'Windows_NT' )
-  artifact: artifacts
+  artifact: storage

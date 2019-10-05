@@ -120,21 +120,20 @@ public class BuildParameters
         Packages = BuildPackages.GetPackages(
             Paths.Directories.NugetRoot,
             Version,
-            new [] { "GitVersion.CommandLine.DotNetCore", "GitVersion.CommandLine", "GitVersionTask", "GitVersion.Tool" },
+            new [] { "GitVersion.CommandLine", "GitVersionTask", "GitVersion.Tool" },
             new [] { "GitVersion.Portable" });
 
         var files = Paths.Files;
-        Artifacts = BuildArtifacts.GetArtifacts(new[] {
-            files.ZipArtifactPathDesktop,
-            files.ZipArtifactPathCoreClr,
-            files.ReleaseNotesOutputFilePath,
-            files.VsixOutputFilePath,
-            files.GemOutputFilePath
-        });
+
+        var buildArtifacts = context.GetFiles(Paths.Directories.BuildArtifact + "/*.*");
+        buildArtifacts += files.ZipArtifactPathDesktop;
+        buildArtifacts += files.ZipArtifactPathCoreClr;
+        buildArtifacts += files.ReleaseNotesOutputFilePath;
+
+        Artifacts = BuildArtifacts.GetArtifacts(buildArtifacts.ToArray());
 
         PackagesBuildMap = new Dictionary<string, DirectoryPath>
         {
-            ["GitVersion.CommandLine.DotNetCore"] = Paths.Directories.ArtifactsBinCoreFx21,
             ["GitVersion.CommandLine"] = Paths.Directories.ArtifactsBinFullFxCmdline,
             ["GitVersion.Portable"] = Paths.Directories.ArtifactsBinFullFxPortable,
         };
