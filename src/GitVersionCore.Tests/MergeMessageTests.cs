@@ -1,9 +1,9 @@
 using GitVersion;
+using GitVersion.Configuration;
 using NUnit.Framework;
 using Shouldly;
 using System;
 using System.Collections.Generic;
-using GitVersion.Configuration;
 
 namespace GitVersionCore.Tests
 {
@@ -148,7 +148,6 @@ namespace GitVersionCore.Tests
             sut.PullRequestNumber.ShouldBe(expectedPullRequestNumber);
             sut.Version.ShouldBe(expectedVersion);
         }
-
 
         private static readonly object[] SmartGitMergeMessages =
         {
@@ -335,6 +334,42 @@ namespace GitVersionCore.Tests
             sut.IsMergedPullRequest.ShouldBeFalse();
             sut.PullRequestNumber.ShouldBeNull();
             sut.Version.ShouldBeNull();
+        }
+
+
+        private static readonly object[] BitBucketCloudCustomPullMergeMessages =
+        {
+            new object[] { "Merged in feature/one (pull request #1234)", "develop", "feature/one", "develop", null, 1234 },
+            new object[] { "Merged in hotfix/0.3.1 (pull request #1234)", "master", "hotfix/0.3.1", "master", new SemanticVersion(0,3,1), 1234 },
+            new object[] { "Merged in master (pull request #1234)", "develop", "master", "develop", null, 1234  }
+        };
+
+        [TestCaseSource(nameof(BitBucketCloudCustomPullMergeMessages))]
+        public void ParsesBitBucketCloudCustomPullMergeMessage(
+            string message,
+            string currentBranch,
+            string expectedMergedBranch,
+            string expectedTargetBranch,
+            SemanticVersion expectedVersion,
+            int? expectedPullRequestNumber)
+        {
+            var format = @"^Merged in (?<SourceBranch>[^']*) \(pull request #(?<PullRequestNumber>\d+)\)*";
+            var definition = "BitBucketCloud";
+            _config.MergeMessageFormats = new Dictionary<string, string>
+            {
+                [definition] = format
+            };
+
+            // Act
+            var sut = new MergeMessage(message, _config, currentBranch);
+
+            // Assert
+            sut.FormatName.ShouldBe("BitBucketCloud");
+            sut.TargetBranch.ShouldBe(expectedTargetBranch);
+            sut.MergedBranch.ShouldBe(expectedMergedBranch);
+            sut.IsMergedPullRequest.ShouldBeTrue();
+            sut.PullRequestNumber.ShouldBe(expectedPullRequestNumber);
+            sut.Version.ShouldBe(expectedVersion);
         }
     }
 }

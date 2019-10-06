@@ -51,7 +51,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
                 return null;
             }
 
-            var mergeMessage = new MergeMessage(mergeCommit.Message, context.FullConfiguration);
+            var mergeMessage = new MergeMessage(mergeCommit.Message, context.FullConfiguration, context.CurrentBranch.FriendlyName);
             return mergeMessage;
         }
 

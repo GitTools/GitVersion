@@ -17,7 +17,7 @@ namespace GitVersion
             new MergeMessageFormat("RemoteTracking", @"^Merge remote-tracking branch '(?<SourceBranch>[^\s]*)'(?: into (?<TargetBranch>[^\s]*))*")
         };
 
-        public MergeMessage(string mergeMessage, Config config)
+        public MergeMessage(string mergeMessage, Config config, string currentBranch = default)
         {
             if (mergeMessage == null)
                 throw new NullReferenceException();
@@ -36,9 +36,14 @@ namespace GitVersion
                     FormatName = format.Name;
                     MergedBranch = match.Groups["SourceBranch"].Value;
 
-                    if (match.Groups["TargetBranch"].Success)
+                    var containsTargetBranchGroup = format.Pattern.GetGroupNames().Contains("TargetBranch");
+                    if (containsTargetBranchGroup && match.Groups["TargetBranch"].Success)
                     {
                         TargetBranch = match.Groups["TargetBranch"].Value;
+                    }
+                    else
+                    {
+                        TargetBranch = currentBranch;
                     }
 
                     if (int.TryParse(match.Groups["PullRequestNumber"].Value, out var pullNumber))
