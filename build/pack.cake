@@ -177,20 +177,6 @@ Task("Copy-Files")
     // Commandline
     PublishILRepackedGitVersionExe(false, ilMergeDir, cmdlineDir, parameters);
 
-    // Vsix
-    var vsixPath = new DirectoryPath("./src/GitVersionVsixTask/GitVersionTask");
-
-    var vsixPathFull = vsixPath.Combine("full");
-    EnsureDirectoryExists(vsixPathFull);
-    CopyFileToDirectory(portableDir + "/" + "LibGit2Sharp.dll.config", vsixPathFull);
-    CopyFileToDirectory(portableDir + "/" + "GitVersion.exe", vsixPathFull);
-    CopyDirectory(portableDir.Combine("lib"), vsixPathFull.Combine("lib"));
-
-    // Vsix dotnet core
-    var vsixPathCore = vsixPath.Combine("core");
-    EnsureDirectoryExists(vsixPathCore);
-    CopyDirectory(coreFxDir, vsixPathCore);
-
     // Ruby Gem
     var gemPath = new DirectoryPath("./src/GitVersionRubyGem/bin");
     EnsureDirectoryExists(gemPath);
@@ -200,7 +186,7 @@ Task("Copy-Files")
 });
 
 Task("Pack-Vsix")
-    .IsDependentOn("Copy-Files")
+    .IsDependentOn("Test")
     .Does<BuildParameters>((parameters) =>
 {
     var workDir = "./src/GitVersionVsixTask";

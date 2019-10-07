@@ -17,20 +17,15 @@ function runValidations(validator: () => void, tr: ttm.MockTestRunner, done: Moc
     }
 }
 
-let taskDir = path.join(__dirname, '..', 'GitVersionTask').replace(/\\/g, '/');
-
 describe('GitVersion Vsix Task tests', function () {
 
     beforeEach(() => {
-        delete process.env[shared.TestEnvVars.preferBundledVersion];
         delete process.env[shared.TestEnvVars.useConfigFile];
         delete process.env[shared.TestEnvVars.configFilePath];
         delete process.env[shared.TestEnvVars.updateAssemblyInfo];
         delete process.env[shared.TestEnvVars.updateAssemblyInfoFilename];
         delete process.env[shared.TestEnvVars.additionalArguments];
         delete process.env[shared.TestEnvVars.targetPath];
-        delete process.env[shared.TestEnvVars.runtime];
-        delete process.env[shared.TestEnvVars.gitVersionPath];
     });
 
     after(() => {
@@ -52,34 +47,9 @@ describe('GitVersion Vsix Task tests', function () {
             assert(tr.errorIssues.length == 0, "should have no errors");
             assert(tr.stderr.length == 0, 'should not have written to stderr');
             assert(tr.invokedToolCount == 1, 'should have invoked tool one time. actual: ' + tr.invokedToolCount);
-            assert(tr.ran("dotnet " + taskDir + "/core/GitVersion.dll /user/build /output buildserver /nofetch"));
+            assert(tr.ran("dotnet-gitversion /user/build /output buildserver /nofetch"));
 
             assert(tr.stdOutContained('GitVersion run successfully with defaults'), "should display 'GitVersion run successfully with defaults'");
-
-        }, tr, done);
-    });
-
-    it('Succeeds: Runs GitVersion default configurations', function (done: MochaDone) {
-        this.timeout(1000);
-        process.env[shared.TestEnvVars.runtime] = 'full';
-
-        let tp = path.join(__dirname, 'test-setup.js');
-        let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
-
-        tr.run();
-
-        runValidations(() => {
-
-            assert(tr.succeeded, 'should have succeeded');
-            assert(tr.warningIssues.length == 0, "should have no warnings");
-            assert(tr.errorIssues.length == 0, "should have no errors");
-            assert(tr.stderr.length == 0, 'should not have written to stderr');
-            assert(tr.invokedToolCount == 1, 'should have invoked tool one time. actual: ' + tr.invokedToolCount);
-
-            var exec = os.platform() != 'win32' ? "mono " : "";
-            assert(tr.ran(exec + taskDir + "/full/GitVersion.exe /user/build /output buildserver /nofetch"));
-
-            assert(tr.stdOutContained('GitVersion.exe run successfully with defaults'), "should display 'GitVersion.exe run successfully with defaults'");
 
         }, tr, done);
     });
@@ -124,7 +94,7 @@ describe('GitVersion Vsix Task tests', function () {
             assert(tr.errorIssues.length == 0, "should have no errors");
             assert(tr.stderr.length == 0, 'should not have written to stderr');
             assert(tr.invokedToolCount == 1, 'should have invoked tool one time. actual: ' + tr.invokedToolCount);
-            assert(tr.ran("dotnet " + taskDir + "/core/GitVersion.dll /user/build/src /output buildserver /nofetch"));
+            assert(tr.ran("dotnet-gitversion /user/build/src /output buildserver /nofetch"));
 
             assert(tr.stdOutContained('GitVersion run successfully with custom targetPath'), "should display 'GitVersion run successfully with custom targetPath'");
 
@@ -196,7 +166,7 @@ describe('GitVersion Vsix Task tests', function () {
             assert(tr.errorIssues.length == 0, "should have no error");
             assert(tr.stderr.length == 0, 'should not have written to stderr');
             assert(tr.invokedToolCount == 1, 'should have invoked tool one time. actual: ' + tr.invokedToolCount);
-            assert(tr.ran("dotnet " + taskDir + "/core/GitVersion.dll /user/build /output buildserver /nofetch /config customConfig.yml"));
+            assert(tr.ran("dotnet-gitversion /user/build /output buildserver /nofetch /config customConfig.yml"));
 
             assert(tr.stdOutContained('GitVersion run successfully with custom config'), "should display 'GitVersion run successfully with custom config'");
 
@@ -268,82 +238,10 @@ describe('GitVersion Vsix Task tests', function () {
             assert(tr.errorIssues.length == 0, "should have no errors");
             assert(tr.stderr.length == 0, 'should not have written to stderr');
             assert(tr.invokedToolCount == 1, 'should have invoked tool one time. actual: ' + tr.invokedToolCount);
-            assert(tr.ran("dotnet " + taskDir + "/core/GitVersion.dll /user/build /output buildserver /nofetch /updateassemblyinfo GlobalAssemblyInfo.cs"));
+            assert(tr.ran("dotnet-gitversion /user/build /output buildserver /nofetch /updateassemblyinfo GlobalAssemblyInfo.cs"));
 
             assert(tr.stdOutContained('GitVersion run successfully with custom assembly info'), "should display 'GitVersion run successfully with custom  assembly info'");
 
         }, tr, done);
     });
-
-    it('Fails: Runs GitVersion with no custom executable', function (done: MochaDone) {
-        this.timeout(1000);
-
-        process.env[shared.TestEnvVars.preferBundledVersion] = 'false';
-
-        let tp = path.join(__dirname, 'test-setup.js');
-        let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
-
-        tr.run();
-
-        runValidations(() => {
-
-            assert(tr.failed, 'should have failed');
-            assert(tr.warningIssues.length == 0, "should have no warnings");
-            assert(tr.errorIssues.length == 1, "should have thrown an error");
-            assert(tr.stderr.length == 0, 'should not have written to stderr');
-            assert(tr.invokedToolCount == 0, 'should not have invoked tool. actual: ' + tr.invokedToolCount);
-
-            assert(tr.stdOutContained('GitVersion executable not found'), "should display 'GitVersion executable not found'");
-
-        }, tr, done);
-    });
-
-    it('Fails: Runs GitVersion with wrong custom executable', function (done: MochaDone) {
-        this.timeout(1000);
-
-        process.env[shared.TestEnvVars.preferBundledVersion] = 'false';
-        process.env[shared.TestEnvVars.gitVersionPath] = 'wrongGitversion.dll';
-
-        let tp = path.join(__dirname, 'test-setup.js');
-        let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
-
-        tr.run();
-
-        runValidations(() => {
-
-            assert(tr.failed, 'should have failed');
-            assert(tr.warningIssues.length == 0, "should have no warnings");
-            assert(tr.errorIssues.length == 1, "should have thrown an error");
-            assert(tr.stderr.length == 0, 'should not have written to stderr');
-            assert(tr.invokedToolCount == 0, 'should not have invoked tool. actual: ' + tr.invokedToolCount);
-
-            assert(tr.stdOutContained('GitVersion executable not found'), "should display 'GitVersion executable not found'");
-
-        }, tr, done);
-    });
-
-    it('Succeeds: Runs GitVersion with correct custom executable', function (done: MochaDone) {
-        this.timeout(1000);
-
-        process.env[shared.TestEnvVars.preferBundledVersion] = 'false';
-        process.env[shared.TestEnvVars.gitVersionPath] = 'TestGitversion.dll';
-
-        let tp = path.join(__dirname, 'test-setup.js');
-        let tr: ttm.MockTestRunner = new ttm.MockTestRunner(tp);
-
-        tr.run();
-
-        runValidations(() => {
-
-            assert(tr.succeeded, 'should have succeeded');
-            assert(tr.warningIssues.length == 0, "should have no warnings");
-            assert(tr.errorIssues.length == 0, "should have no errors");
-            assert(tr.stderr.length == 0, 'should not have written to stderr');
-            assert(tr.invokedToolCount == 1, 'should have invoked tool one time. actual: ' + tr.invokedToolCount);
-            assert(tr.ran("dotnet TestGitversion.dll /user/build /output buildserver /nofetch"));
-
-            assert(tr.stdOutContained('GitVersion run successfully with custom exe'), "should display 'GitVersion run successfully with custom exe'");
-        }, tr, done);
-    });
-
 });
