@@ -43,7 +43,7 @@ public class BuildPaths
         var gemOutputFilePath  = buildArtifactDir.CombineWithFilePath("gitversion-" + version.GemVersion + ".gem");
 
         var vsixSuffix = parameters.IsStableRelease() ? "" : "preview-";
-        var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-" + vsixSuffix + version.VsixVersion + ".vsix");
+        var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.usegitversion-" + vsixSuffix + version.VsixVersion + ".vsix");
 
         // Directories
         var buildDirectories = new BuildDirectories(
