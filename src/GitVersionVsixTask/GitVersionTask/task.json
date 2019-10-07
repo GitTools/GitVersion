@@ -8,48 +8,47 @@
     "category": "Build",
     "demands": [],
     "version": {
-        "Major": "4",
+        "Major": "5",
         "Minor": "0",
-        "Patch": "0"
+        "Patch": "2"
     },
     "minimumAgentVersion": "2.115.0",
     "groups": [{
-        "name": "gitversionDetails",
-        "displayName": "GitVersion details",
-        "isExpanded": true,
-        "visibleRule": "preferBundledVersion = false"
-    }, {
-        "name": "additional",
-        "displayName": "Additional Options",
-        "isExpanded": false
-    }],
+            "name": "gitversionDetails",
+            "displayName": "GitVersion details",
+            "isExpanded": true
+        },
+        {
+            "name": "additional",
+            "displayName": "Additional Options",
+            "isExpanded": false
+        }
+    ],
     "instanceNameFormat": "GitVersion",
     "inputs": [{
-            "name": "runtime",
-            "type": "radio",
-            "label": "Runtime",
-            "defaultValue": "core",
-            "required": true,
-            "options": {
-                "core": "dotnet core",
-                "full": "dotnet fullframework (or mono)"
-            },
-            "helpMarkDown": "Specify the runtime used for running the tool"
-        }, {
-            "name": "preferBundledVersion",
-            "type": "boolean",
-            "label": "Prefer bundled GitVersion",
-            "defaultValue": "true",
-            "required": false,
-            "helpMarkDown": "If checked it will prefer the bundled version over a version found in path"
-        }, {
-            "name": "gitVersionPath",
+            "name": "versionSpec",
             "type": "string",
-            "label": "Path to GitVersion",
+            "label": "The version spec",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Required version in the form of 5.x or exact version like 5.0.0"
+        },
+        {
+            "name": "includePrerelease",
+            "type": "boolean",
+            "label": "Include pre-release versions",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Include pre-release versions when matching a version"
+        },
+        {
+            "name": "targetPath",
+            "type": "string",
+            "label": "Working directory path",
             "defaultValue": "",
             "required": false,
-            "helpMarkDown": "Optionally supply the path to GitVersion",
-            "visibleRule": "preferBundledVersion = true"
+            "helpMarkDown": "Optionally supply the path to the working directory",
+            "groupName": "gitversionDetails"
         },
         {
             "name": "useConfigFile",
@@ -58,7 +57,8 @@
             "defaultValue": "false",
             "required": false,
             "helpMarkDown": "Whether to use a custom configuration file"
-        }, {
+        },
+        {
             "name": "configFilePath",
             "type": "filePath",
             "label": "Configuration file",
@@ -66,14 +66,16 @@
             "required": false,
             "helpMarkDown": "Optional path to config file (defaults to GitVersion.yml)",
             "visibleRule": "useConfigFile = true"
-        }, {
+        },
+        {
             "name": "updateAssemblyInfo",
             "type": "boolean",
             "label": "Update AssemblyInfo files",
             "defaultValue": "false",
             "required": false,
             "helpMarkDown": "Whether to update versions in the AssemblyInfo files"
-        }, {
+        },
+        {
             "name": "updateAssemblyInfoFilename",
             "type": "string",
             "label": "Update Assembly File",
@@ -81,15 +83,8 @@
             "required": false,
             "helpMarkDown": "Update versions in specified file",
             "visibleRule": "updateAssemblyInfo = true"
-        }, {
-            "name": "targetPath",
-            "type": "string",
-            "label": "Working directory path",
-            "defaultValue": "",
-            "required": false,
-            "helpMarkDown": "Optionally supply the path to the working directory",
-            "groupName": "gitversionDetails"
-        }, {
+        },
+        {
             "name": "additionalArguments",
             "type": "string",
             "label": "Additional GitVersion arguments",
