@@ -1,6 +1,6 @@
 {
-    "id": "e5983830-3f75-11e5-82ed-81492570a08e",
-    "name": "GitVersion",
+    "id": "dd065e3b-6aef-46af-845c-520195836b35",
+    "name": "UseGitVersion",
     "friendlyName": "GitVersion Task",
     "description": "Easy Semantic Versioning (http://semver.org) for projects using Git",
     "author": "GitVersion Contributors",
@@ -13,7 +13,8 @@
         "Patch": "2"
     },
     "minimumAgentVersion": "2.115.0",
-    "groups": [{
+    "groups": [
+        {
             "name": "gitversionDetails",
             "displayName": "GitVersion details",
             "isExpanded": true
@@ -25,7 +26,8 @@
         }
     ],
     "instanceNameFormat": "GitVersion",
-    "inputs": [{
+    "inputs": [
+        {
             "name": "versionSpec",
             "type": "string",
             "label": "The version spec",

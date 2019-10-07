@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
-    "id": "gitversion$idSuffix$",
-    "name": "GitVersion$titleSuffix$",
+    "id": "usegitversion$idSuffix$",
+    "name": "UseGitVersion$titleSuffix$",
     "publisher": "gittools",
     "public": true,
     "author": "GitVersion Contributors",
