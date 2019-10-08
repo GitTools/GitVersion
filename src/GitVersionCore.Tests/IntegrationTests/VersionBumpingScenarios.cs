@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using GitTools.Testing;
-using NUnit.Framework;
 using GitVersion.Configuration;
+using GitVersion.VersioningModes;
+using NUnit.Framework;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {
@@ -31,6 +32,33 @@ namespace GitVersionCore.Tests.IntegrationTests
                 fixture.Repository.MakeACommit();
 
                 fixture.AssertFullSemver(configuration, "1.0.0-pre.2+1");
+            }
+        }
+
+        [Test]
+        public void AppliedPrereleaseTagAfterBranchTagCausesVersionBump()
+        {
+            var configuration = new Config
+            {
+                Branches =
+                {
+                    {
+                        "master", new BranchConfig
+                        {
+                            Tag = "pre",
+                            SourceBranches = new List<string>(),
+                            VersioningMode = VersioningMode.ContinuousDeployment,
+                        }
+                    }
+                }
+            };
+            using (var fixture = new EmptyRepositoryFixture())
+            {
+                fixture.Repository.MakeACommit();
+                fixture.Repository.MakeATaggedCommit("1.0.0-rc");
+                fixture.Repository.MakeACommit();
+
+                fixture.AssertFullSemver(configuration, "1.0.1-pre.1");
             }
         }
 
