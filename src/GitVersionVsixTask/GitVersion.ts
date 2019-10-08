@@ -98,7 +98,7 @@ export class GitVersionTask {
         }
     }
 
-    async installTool(version: string, includePrerelease: boolean) : Promise<string> {
+    async installTool(version: string, includePrerelease: boolean): Promise<string> {
         let installTool = tl.getVariable("INSTALL_TOOL");
         if (installTool === null || installTool === undefined || installTool.toUpperCase() == "TRUE") {
             return await new ToolInstaller().downloadAndInstall("GitVersion.Tool", version, false, includePrerelease);
@@ -108,7 +108,7 @@ export class GitVersionTask {
     getWorkingDirectory(targetPath: string) {
         let workDir;
 
-        if (!targetPath){
+        if (!targetPath) {
             workDir = this.sourcesDirectory;
         } else {
             if (tl.exist(targetPath) && tl.stats(targetPath).isDirectory()) {
