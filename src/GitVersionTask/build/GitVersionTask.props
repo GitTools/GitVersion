@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <GitVersionAssemblyFile Condition="$(GitVersionAssemblyFile) == '' And '$(MSBuildRuntimeType)' != 'Core'">$(MSBuildThisFileDirectory)..\tools\net472\GitVersionTask.MsBuild.dll</GitVersionAssemblyFile>
         <GitVersionAssemblyFile Condition="$(GitVersionAssemblyFile) == '' And '$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)..\tools\netstandard2.0\GitVersionTask.MsBuild.dll</GitVersionAssemblyFile>
