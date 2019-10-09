@@ -10,8 +10,9 @@ public class BuildParameters
 
     public const string MainRepoOwner = "gittools";
     public const string MainRepoName = "GitVersion";
-    public string CoreFxVersion21 { get; private set; } = "netcoreapp2.1";
-    public string FullFxVersion { get; private set; } = "net472";
+    public string CoreFxVersion21 { get; private set; }  = "netcoreapp2.1";
+    public string CoreFxVersion30 { get; private set; }  = "netcoreapp3.0";
+    public string FullFxVersion472 { get; private set; } = "net472";
 
     public string DockerDistro { get; private set; }
     public string DockerDotnetVersion { get; private set; }
@@ -51,6 +52,7 @@ public class BuildParameters
     public BuildArtifacts Artifacts { get; private set; }
     public DockerImages Docker { get; private set; }
     public Dictionary<string, DirectoryPath> PackagesBuildMap { get; private set; }
+    public Dictionary<PlatformFamily, string> NativeRuntimes { get; private set; }
 
     public bool IsStableRelease() => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsPullRequest && IsTagged;
     public bool IsPreRelease()    => !IsLocalBuild && IsMainRepo && IsMainBranch && !IsPullRequest && !IsTagged;
@@ -125,17 +127,22 @@ public class BuildParameters
 
         var files = Paths.Files;
 
-        var buildArtifacts = context.GetFiles(Paths.Directories.BuildArtifact + "/*.*");
-        buildArtifacts += files.ZipArtifactPathDesktop;
-        buildArtifacts += files.ZipArtifactPathCoreClr;
+        var buildArtifacts = context.GetFiles(Paths.Directories.BuildArtifact + "/*.*") + context.GetFiles(Paths.Directories.Artifacts + "/*.tar.gz");
         buildArtifacts += files.ReleaseNotesOutputFilePath;
 
         Artifacts = BuildArtifacts.GetArtifacts(buildArtifacts.ToArray());
 
         PackagesBuildMap = new Dictionary<string, DirectoryPath>
         {
-            ["GitVersion.CommandLine"] = Paths.Directories.ArtifactsBinFullFxCmdline,
-            ["GitVersion.Portable"] = Paths.Directories.ArtifactsBinFullFxPortable,
+            ["GitVersion.CommandLine"] = Paths.Directories.ArtifactsBinCmdline,
+            ["GitVersion.Portable"] = Paths.Directories.ArtifactsBinPortable,
+        };
+
+        NativeRuntimes = new Dictionary<PlatformFamily, string>
+        {
+            [PlatformFamily.Windows] = "win-x64",
+            [PlatformFamily.Linux]   = "linux-x64",
+            [PlatformFamily.OSX]     = "osx-x64",
         };
 
         Credentials = BuildCredentials.GetCredentials(context);
