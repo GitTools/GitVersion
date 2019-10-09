@@ -193,8 +193,10 @@ merge-message-formats:
 
 The regular expression should contain the following capture groups:
 + SourceBranch - Identifies the source branch of the merge
-+ TargetBranch - Identifies the target of the merge
++ TargetBranch - Identifies the target of the merge (optional)
 + PullRequestNumber - Captures the pull-request number
+
+If regular expression doesn't contain TargetBranch then for matched messages current branch will be used.
 
 Custom merge message formats are evalauted _before_ any built in formats.
 
