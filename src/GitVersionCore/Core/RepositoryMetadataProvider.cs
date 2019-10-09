@@ -183,10 +183,12 @@ namespace GitVersion
                 {
                     // In the case where HEAD is not the desired branch, try to find the branch with matching name
                     desiredBranch = repository.Branches?
-                        .SingleOrDefault(b =>
+                        .Where(b =>
                             b.CanonicalName.IsEquivalentTo(targetBranch) ||
                             b.FriendlyName.IsEquivalentTo(targetBranch) ||
-                            b.NameWithoutRemote().IsEquivalentTo(targetBranch));
+                            b.NameWithoutRemote().IsEquivalentTo(targetBranch))
+                        .OrderBy(b => b.IsRemote)
+                        .FirstOrDefault();
 
                     // Failsafe in case the specified branch is invalid
                     desiredBranch ??= repository.Head;
