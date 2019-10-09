@@ -3,7 +3,7 @@ singleStageRun = !IsEnabled(Context, "ENABLED_MULTI_STAGE_BUILD", false);
 Task("Docker-Build")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Docker can be built only on Windows or Linux agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Docker-Build works only on AzurePipeline.")
-    .IsDependentOnWhen("Copy-Files", singleStageRun)
+    .IsDependentOnWhen("Pack-Prepare", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
     foreach(var dockerImage in parameters.Docker.Images)

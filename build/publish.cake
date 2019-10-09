@@ -22,8 +22,12 @@ Task("Release-Notes")
         TargetCommitish   = "master"
     });
 
-    GitReleaseManagerAddAssets(token, repoOwner, repository, parameters.Version.Milestone, parameters.Paths.Files.ZipArtifactPathDesktop.ToString());
-    GitReleaseManagerAddAssets(token, repoOwner, repository, parameters.Version.Milestone, parameters.Paths.Files.ZipArtifactPathCoreClr.ToString());
+    var zipFiles = GetFiles(parameters.Paths.Directories.Artifacts + "/*.tar.gz");
+    foreach(var zipFile in zipFiles)
+    {
+        GitReleaseManagerAddAssets(token, repoOwner, repository, parameters.Version.Milestone, zipFile.ToString());
+    }
+
     GitReleaseManagerClose(token, repoOwner, repository, parameters.Version.Milestone);
 
 }).ReportError(exception =>
