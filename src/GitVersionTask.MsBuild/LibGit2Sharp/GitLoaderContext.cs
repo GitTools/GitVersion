@@ -1,5 +1,5 @@
 // This code originally copied from https://raw.githubusercontent.com/dotnet/sourcelink/master/src/Microsoft.Build.Tasks.Git/GitLoaderContext.cs
-#if !NET472
+#if !NETFRAMEWORK
 using System;
 using System.IO;
 using System.Linq;

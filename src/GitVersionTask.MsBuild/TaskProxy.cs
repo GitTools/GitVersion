@@ -14,7 +14,7 @@ namespace GitVersionTask.MsBuild
 
         static TaskProxy()
         {
-#if !NET472
+#if !NETFRAMEWORK
             GitLoaderContext.Init("GitVersionCore", "LibGit2Sharp");
 #endif
             LibGit2SharpLoader.LoadAssembly("GitVersionTask");
