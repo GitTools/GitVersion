@@ -1,5 +1,5 @@
 // This code originally copied from https://raw.githubusercontent.com/dotnet/sourcelink/master/src/Microsoft.Build.Tasks.Git/RuntimeIdMap.cs
-#if !NET472
+#if !NETFRAMEWORK
 using System;
 using System.Diagnostics;
 
@@ -48,14 +48,14 @@ namespace GitVersionTask.MsBuild.LibGit2Sharp
 
                         // Find the highest available version that is lower than or equal to the runtime version
                         // among candidates that have the same qualifiers.
-                        if (candidateQualifiers == runtimeQualifiers && 
-                            CompareVersions(candidateVersion, runtimeVersion) <= 0 && 
+                        if (candidateQualifiers == runtimeQualifiers &&
+                            CompareVersions(candidateVersion, runtimeVersion) <= 0 &&
                             (bestVersion == null || CompareVersions(candidateVersion, bestVersion) > 0))
                         {
                             bestMatchIndex = i;
                             bestVersion = candidateVersion;
                         }
-                        
+
                         i += increment;
                     }
                 }
@@ -105,7 +105,7 @@ namespace GitVersionTask.MsBuild.LibGit2Sharp
 
         internal static void ParseRuntimeId(string runtimeId, out string osName, out string[] version, out string qualifiers)
         {
-            // We use the following convention in all newly-defined RIDs. Some RIDs (win7-x64, win8-x64) predate this convention and don't follow it, but all new RIDs should follow it. 
+            // We use the following convention in all newly-defined RIDs. Some RIDs (win7-x64, win8-x64) predate this convention and don't follow it, but all new RIDs should follow it.
             // [os name].[version]-[architecture]-[additional qualifiers]
             // See https://github.com/dotnet/corefx/blob/master/pkg/Microsoft.NETCore.Platforms/readme.md#naming-convention
 
