@@ -69,13 +69,16 @@ namespace GitVersion
 
         public static VersionField? GetIncrementForCommits(GitVersionContext context, IEnumerable<Commit> commits)
         {
-            var majorRegex = CreateRegex(context.Configuration.MajorVersionBumpMessage ?? DefaultMajorPattern);
-            var minorRegex = CreateRegex(context.Configuration.MinorVersionBumpMessage ?? DefaultMinorPattern);
-            var patchRegex = CreateRegex(context.Configuration.PatchVersionBumpMessage ?? DefaultPatchPattern);
-            var none = CreateRegex(context.Configuration.NoBumpMessage ?? DefaultNoBumpPattern);
+            // More efficient use of Regexes. The static version of Regex.IsMatch caches the compiled regexes.
+            // see:  https://docs.microsoft.com/en-us/dotnet/standard/base-types/best-practices#static-regular-expressions
+
+            var majorRegex = context.Configuration.MajorVersionBumpMessage ?? DefaultMajorPattern;
+            var minorRegex = context.Configuration.MinorVersionBumpMessage ?? DefaultMinorPattern;
+            var patchRegex = context.Configuration.PatchVersionBumpMessage ?? DefaultPatchPattern;
+            var none = context.Configuration.NoBumpMessage ?? DefaultNoBumpPattern;
 
             var increments = commits
-                .Select(c => FindIncrementFromMessage(c.Message, majorRegex, minorRegex, patchRegex, none))
+                .Select(c => GetIncrementFromMessage(c.Message, majorRegex, minorRegex, patchRegex, none))
                 .Where(v => v != null)
                 .Select(v => v.Value)
                 .ToList();
@@ -87,6 +90,8 @@ namespace GitVersion
 
             return null;
         }
+
+
 
         private static IEnumerable<Commit> GetIntermediateCommits(IRepository repo, Commit baseCommit, Commit headCommit)
         {
@@ -114,20 +119,42 @@ namespace GitVersion
             }
         }
 
-        private static VersionField? FindIncrementFromMessage(string message, Regex major, Regex minor, Regex patch, Regex none)
+        private static VersionField? GetIncrementFromMessage(string message, string majorRegex, string minorRegex, string patchRegex, string none)
         {
-            if (major.IsMatch(message)) return VersionField.Major;
-            if (minor.IsMatch(message)) return VersionField.Minor;
-            if (patch.IsMatch(message)) return VersionField.Patch;
-            if (none.IsMatch(message)) return VersionField.None;
+            var key = message.GetHashCode();
 
+            if (!VersionFieldCache.TryGetValue(key, out var version))
+            {
+                version = FindIncrementFromMessage(message, majorRegex, minorRegex, patchRegex, none);
+                VersionFieldCache[key] = version;
+            }
+            return version;
+        }
+
+
+        private static VersionField? FindIncrementFromMessage(string message, string majorRegex, string minorRegex, string patchRegex, string noneRegex)
+        {
+            if(IsMatch(message, majorRegex)) return VersionField.Major;
+            if(IsMatch(message, minorRegex)) return VersionField.Minor;
+            if(IsMatch(message, patchRegex)) return VersionField.Patch;
+            if(IsMatch(message, noneRegex)) return VersionField.None;
             return null;
         }
 
-        private static Regex CreateRegex(string pattern)
+        private static bool IsMatch(string message, string regex)
         {
-            return new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            var key = message.GetHashCode() ^ regex.GetHashCode();
+
+            if (!MatchCache.TryGetValue(key, out var match))
+            {
+                match = Regex.IsMatch(message, regex, RegexOptions.IgnoreCase);
+                MatchCache[key] = match;
+            }
+            return match;
         }
+
+        private static IDictionary<int, bool> MatchCache = new Dictionary<int, bool>();
+        private static IDictionary<int, VersionField?> VersionFieldCache = new Dictionary<int, VersionField?>();
 
         public static VersionField FindDefaultIncrementForBranch( GitVersionContext context, string branch = null )
         {

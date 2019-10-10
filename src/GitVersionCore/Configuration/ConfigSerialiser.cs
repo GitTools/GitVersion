@@ -8,7 +8,7 @@ namespace GitVersion.Configuration
     {
         public static Config Read(TextReader reader)
         {
-            var deserializer = new DeserializerBuilder().WithNamingConvention(new HyphenatedNamingConvention()).Build();
+            var deserializer = new DeserializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
             var deserialize = deserializer.Deserialize<Config>(reader);
             if (deserialize == null)
             {
@@ -19,7 +19,7 @@ namespace GitVersion.Configuration
 
         public static void Write(Config config, TextWriter writer)
         {
-            var serializer = new SerializerBuilder().WithNamingConvention(new HyphenatedNamingConvention()).Build();
+            var serializer = new SerializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
             serializer.Serialize(writer, config);
         }
     }

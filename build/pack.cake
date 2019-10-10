@@ -173,23 +173,9 @@ Task("Copy-Files")
     var cmdlineDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
 
     // Portable
-    PublishILRepackedGitVersionExe(true, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergeDir, portableDir, parameters.Configuration, parameters.FullFxVersion);
+    PublishILRepackedGitVersionExe(true, ilMergeDir, portableDir, parameters);
     // Commandline
-    PublishILRepackedGitVersionExe(false, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergeDir, cmdlineDir, parameters.Configuration, parameters.FullFxVersion);
-
-    // Vsix
-    var vsixPath = new DirectoryPath("./src/GitVersionVsixTask/GitVersionTask");
-
-    var vsixPathFull = vsixPath.Combine("full");
-    EnsureDirectoryExists(vsixPathFull);
-    CopyFileToDirectory(portableDir + "/" + "LibGit2Sharp.dll.config", vsixPathFull);
-    CopyFileToDirectory(portableDir + "/" + "GitVersion.exe", vsixPathFull);
-    CopyDirectory(portableDir.Combine("lib"), vsixPathFull.Combine("lib"));
-
-    // Vsix dotnet core
-    var vsixPathCore = vsixPath.Combine("core");
-    EnsureDirectoryExists(vsixPathCore);
-    CopyDirectory(coreFxDir, vsixPathCore);
+    PublishILRepackedGitVersionExe(false, ilMergeDir, cmdlineDir, parameters);
 
     // Ruby Gem
     var gemPath = new DirectoryPath("./src/GitVersionRubyGem/bin");
@@ -200,14 +186,14 @@ Task("Copy-Files")
 });
 
 Task("Pack-Vsix")
-    .IsDependentOn("Copy-Files")
+    .IsDependentOn("Test")
     .Does<BuildParameters>((parameters) =>
 {
     var workDir = "./src/GitVersionVsixTask";
     var idSuffix    = parameters.IsStableRelease() ? "" : "-preview";
     var titleSuffix = parameters.IsStableRelease() ? "" : " (Preview)";
     var visibility  = parameters.IsStableRelease() ? "Public" : "Preview";
-    var taskId      = parameters.IsStableRelease() ? "e5983830-3f75-11e5-82ed-81492570a08e" : "25b46667-d5a9-4665-97f7-e23de366ecdf";
+    var taskId      = parameters.IsStableRelease() ? "bab30d5c-39f3-49b0-a7db-9a5da6676eaa" : "dd065e3b-6aef-46af-845c-520195836b35";
 
     ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$idSuffix$", idSuffix);
     ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$titleSuffix$", titleSuffix);
