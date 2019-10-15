@@ -45,7 +45,8 @@ namespace GitVersion.BuildServers
                 new VsoAgent(environment),
                 new TravisCI(environment),
                 new EnvRun(environment),
-                new Drone(environment)
+                new Drone(environment),
+                new CodeBuild(environment)
             };
         }
     }
