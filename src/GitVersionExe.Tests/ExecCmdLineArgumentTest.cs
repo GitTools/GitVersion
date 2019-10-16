@@ -59,7 +59,7 @@ namespace GitVersionExe.Tests
                 fixture.MakeATaggedCommit("1.2.3");
                 fixture.MakeACommit();
 
-                var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: @" /l ""/some/path""", logToFile: false);
+                var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: @" /l ""/tmp/path""", logToFile: false);
 
                 result.ExitCode.ShouldBe(0);
                 result.Output.ShouldContain(@"""MajorMinorPatch"":""1.2.4""");
@@ -77,7 +77,7 @@ namespace GitVersionExe.Tests
                 fixture.MakeATaggedCommit("1.2.3");
                 fixture.MakeACommit();
 
-                var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: $@" {verbosityArg} -output buildserver /l ""/some/path""", logToFile: false);
+                var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: $@" {verbosityArg} -output buildserver /l ""/tmp/path""", logToFile: false);
 
                 result.ExitCode.ShouldBe(0);
                 result.Output.ShouldContain(expectedOutput);
