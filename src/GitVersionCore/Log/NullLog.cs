@@ -15,6 +15,10 @@ namespace GitVersion.Log
             return Disposable.Empty;
         }
 
+        public void AddLogAppender(ILogAppender logAppender)
+        {
+        }
+
         public string Indent { get; set; }
     }
 }

@@ -125,7 +125,7 @@ namespace GitVersion
 
             log.Info($"Launching build tool {BuildTool} \"{args.Proj}\" {args.ProjArgs}");
             var results = ProcessHelper.Run(
-                Logger.Info, Logger.Error, 
+                m => log.Info(m), m => log.Error(m),
                 null, BuildTool, $"\"{args.Proj}\" {args.ProjArgs}", workingDirectory,
                 GetEnvironmentalVariables(variables));
 
@@ -141,7 +141,7 @@ namespace GitVersion
 
             log.Info($"Launching {args.Exec} {args.ExecArgs}");
             var results = ProcessHelper.Run(
-                Logger.Info, Logger.Error, 
+                m => log.Info(m), m => log.Error(m),
                 null, args.Exec, args.ExecArgs, workingDirectory,
                 GetEnvironmentalVariables(variables));
 

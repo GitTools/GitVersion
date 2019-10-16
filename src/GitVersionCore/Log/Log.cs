@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -8,7 +9,7 @@ namespace GitVersion.Log
 {
     public sealed class Log : ILog
     {
-        private readonly IEnumerable<ILogAppender> appenders;
+        private IEnumerable<ILogAppender> appenders;
         private readonly Regex ObscurePasswordRegex = new Regex("(https?://)(.+)(:.+@)", RegexOptions.Compiled);
         private readonly StringBuilder sb;
         private string indent = string.Empty;
@@ -50,6 +51,11 @@ namespace GitVersion.Log
                 indent = length > 0 ? indent.Substring(0, length) : indent;
                 Write(Verbosity.Normal, LogLevel.Info, string.Format(CultureInfo.InvariantCulture, "End: {0} (Took: {1:N}ms)", operationDescription, DateTime.Now.Subtract(start).TotalMilliseconds));
             });
+        }
+
+        public void AddLogAppender(ILogAppender logAppender)
+        {
+            appenders = appenders.Concat(new[] { logAppender });
         }
 
         public override string ToString()

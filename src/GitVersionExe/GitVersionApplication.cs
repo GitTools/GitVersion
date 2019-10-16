@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using GitVersion.Common;
@@ -16,8 +15,8 @@ namespace GitVersion
         private readonly IFileSystem fileSystem;
         private readonly IEnvironment environment;
         private readonly ILog log;
-        private IHelpWriter helpWriter;
-        private IVersionWriter versionWriter;
+        private readonly IHelpWriter helpWriter;
+        private readonly IVersionWriter versionWriter;
 
         public GitVersionApplication(IFileSystem fileSystem, IEnvironment environment, ILog log)
         {
@@ -150,53 +149,15 @@ namespace GitVersion
 
         private static void ConfigureLogging(Arguments arguments, ILog log)
         {
-            var writeActions = new List<Action<string>>
-            {
-                s => log.Info(s)
-            };
-
             if (arguments.Output == OutputType.BuildServer || arguments.LogFilePath == "console" || arguments.Init)
             {
-                writeActions.Add(Console.WriteLine);
+                log.AddLogAppender(new ConsoleAppender());
             }
 
-            Exception exception = null;
             if (arguments.LogFilePath != null && arguments.LogFilePath != "console")
             {
-                try
-                {
-                    var logFileFullPath = Path.GetFullPath(arguments.LogFilePath);
-                    var logFile = new FileInfo(logFileFullPath);
-
-                    // NOTE: logFile.Directory will be null if the path is i.e. C:\logfile.log. @asbjornu
-                    logFile.Directory?.Create();
-
-                    using (logFile.CreateText())
-                    {
-                    }
-
-                    writeActions.Add(x => WriteLogEntry(arguments, x));
-                }
-                catch (Exception ex)
-                {
-                    exception = ex;
-                }
+                log.AddLogAppender(new FileAppender(arguments.LogFilePath));
             }
-
-            Logger.SetLoggers(
-                s => writeActions.ForEach(a => { if (arguments.Verbosity >= Verbosity.Diagnostic) a(s); }),
-                s => writeActions.ForEach(a => { if (arguments.Verbosity >= Verbosity.Normal) a(s); }),
-                s => writeActions.ForEach(a => { if (arguments.Verbosity >= Verbosity.Minimal) a(s); }),
-                s => writeActions.ForEach(a => { if (arguments.Verbosity >= Verbosity.Quiet) a(s); }));
-
-            if (exception != null)
-                log.Error($"Failed to configure logging for '{arguments.LogFilePath}': {exception.Message}");
-        }
-
-        private static void WriteLogEntry(Arguments arguments, string s)
-        {
-            var contents = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\t\t{s}\r\n";
-            File.AppendAllText(arguments.LogFilePath, contents);
         }
     }
 }
