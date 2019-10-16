@@ -18,12 +18,13 @@ namespace GitVersionCore.Tests
     public class AssemblyInfoFileUpdaterTests : TestBase
     {
         private IVariableProvider variableProvider;
+        private ILog log;
 
         [SetUp]
         public void Setup()
         {
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestCaseAttribute>();
-            var log = new NullLog();
+            log = new NullLog();
             variableProvider = new VariableProvider(log);
         }
 
@@ -40,7 +41,7 @@ namespace GitVersionCore.Tests
             var fullPath = Path.Combine(workingDir, assemblyInfoFile);
             var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, true))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, true))
             {
                 assemblyInfoFileUpdater.Update();
 
@@ -61,7 +62,7 @@ namespace GitVersionCore.Tests
             var fullPath = Path.Combine(workingDir, assemblyInfoFile);
             var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, true))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, true))
             {
                 assemblyInfoFileUpdater.Update();
 
@@ -85,7 +86,7 @@ namespace GitVersionCore.Tests
             };
             var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFiles, workingDir, variables, fileSystem, true))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFiles, workingDir, variables, fileSystem, log, true))
             {
                 assemblyInfoFileUpdater.Update();
 
@@ -108,7 +109,7 @@ namespace GitVersionCore.Tests
             var fullPath = Path.Combine(workingDir, assemblyInfoFile);
             var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
             {
                 assemblyInfoFileUpdater.Update();
 
@@ -125,7 +126,7 @@ namespace GitVersionCore.Tests
             var fullPath = Path.Combine(workingDir, assemblyInfoFile);
             var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, true))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, true))
             {
                 assemblyInfoFileUpdater.Update();
 
@@ -141,7 +142,7 @@ namespace GitVersionCore.Tests
             var assemblyInfoFiles = new HashSet<string>();
             var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFiles, workingDir, variables, fileSystem, false))
+            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFiles, workingDir, variables, fileSystem, log, false))
             {
                 assemblyInfoFileUpdater.Update();
 
@@ -160,7 +161,7 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
+                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
                 {
                     assemblyInfoFileUpdater.Update();
 
@@ -185,7 +186,7 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.None, verify: (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
+                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
                 {
                     assemblyInfoFileUpdater.Update();
 
@@ -206,7 +207,7 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
+                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
                 {
                     assemblyInfoFileUpdater.Update();
 
@@ -229,7 +230,7 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
+                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
                 {
                     assemblyInfoFileUpdater.Update();
 
@@ -252,7 +253,7 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
+                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
                 {
                     assemblyInfoFileUpdater.Update();
 
@@ -275,7 +276,7 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
+                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
                 {
                     assemblyInfoFileUpdater.Update();
 
@@ -301,7 +302,7 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile("", fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
+                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
                 {
                     assemblyInfoFileUpdater.Update();
 
@@ -324,7 +325,7 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
+                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
                 {
                     assemblyInfoFileUpdater.Update();
 
@@ -347,7 +348,7 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
+                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
                 {
                     assemblyInfoFileUpdater.Update();
 
@@ -370,7 +371,7 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
+                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
                 {
                     assemblyInfoFileUpdater.Update();
 
@@ -393,7 +394,7 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
+                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
                 {
                     assemblyInfoFileUpdater.Update();
 
@@ -418,7 +419,7 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
+                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
                 {
                     assemblyInfoFileUpdater.Update();
 
@@ -441,7 +442,7 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
+                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
                 {
                     assemblyInfoFileUpdater.Update();
 
@@ -464,7 +465,7 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.None, verify: (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, false))
+                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
                 {
                     assemblyInfoFileUpdater.Update();
 
