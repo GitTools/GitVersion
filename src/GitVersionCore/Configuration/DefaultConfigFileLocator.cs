@@ -1,27 +1,31 @@
 using System.IO;
 using GitVersion.Exceptions;
-using GitVersion.Helpers;
 using GitVersion.Common;
+using GitVersion.Log;
 
 namespace GitVersion.Configuration
 {
     public class DefaultConfigFileLocator : ConfigFileLocator
     {
+        public DefaultConfigFileLocator(IFileSystem fileSystem, ILog log) : base(fileSystem, log)
+        {
+            
+        }
 
         public const string DefaultFileName = "GitVersion.yml";
 
         public const string ObsoleteFileName = "GitVersionConfig.yaml";
 
-        public override bool HasConfigFileAt(string workingDirectory, IFileSystem fileSystem)
+        public override bool HasConfigFileAt(string workingDirectory)
         {
             var defaultConfigFilePath = Path.Combine(workingDirectory, DefaultFileName);
-            if (fileSystem.Exists(defaultConfigFilePath))
+            if (FileSystem.Exists(defaultConfigFilePath))
             {
                 return true;
             }
 
             var deprecatedConfigFilePath = Path.Combine(workingDirectory, ObsoleteFileName);
-            if (fileSystem.Exists(deprecatedConfigFilePath))
+            if (FileSystem.Exists(deprecatedConfigFilePath))
             {
                 return true;
             }
@@ -29,16 +33,16 @@ namespace GitVersion.Configuration
             return false;
         }
 
-        public override string GetConfigFilePath(string workingDirectory, IFileSystem fileSystem)
+        public override string GetConfigFilePath(string workingDirectory)
         {
             var ymlPath = Path.Combine(workingDirectory, DefaultFileName);
-            if (fileSystem.Exists(ymlPath))
+            if (FileSystem.Exists(ymlPath))
             {
                 return ymlPath;
             }
 
             var deprecatedPath = Path.Combine(workingDirectory, ObsoleteFileName);
-            if (fileSystem.Exists(deprecatedPath))
+            if (FileSystem.Exists(deprecatedPath))
             {
                 return deprecatedPath;
             }
@@ -46,49 +50,49 @@ namespace GitVersion.Configuration
             return ymlPath;
         }
 
-        public override void Verify(string workingDirectory, string projectRootDirectory, IFileSystem fileSystem)
+        public override void Verify(string workingDirectory, string projectRootDirectory)
         {
-            if (fileSystem.PathsEqual(workingDirectory, projectRootDirectory))
+            if (FileSystem.PathsEqual(workingDirectory, projectRootDirectory))
             {
-                WarnAboutObsoleteConfigFile(workingDirectory, fileSystem);
+                WarnAboutObsoleteConfigFile(workingDirectory);
                 return;
             }
 
-            WarnAboutObsoleteConfigFile(workingDirectory, fileSystem);
-            WarnAboutObsoleteConfigFile(projectRootDirectory, fileSystem);
+            WarnAboutObsoleteConfigFile(workingDirectory);
+            WarnAboutObsoleteConfigFile(projectRootDirectory);
 
-            WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory, fileSystem);
+            WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory);
         }
 
-        private void WarnAboutAmbiguousConfigFileSelection(string workingDirectory, string projectRootDirectory, IFileSystem fileSystem)
+        private void WarnAboutAmbiguousConfigFileSelection(string workingDirectory, string projectRootDirectory)
         {
-            var workingConfigFile = GetConfigFilePath(workingDirectory, fileSystem);
-            var projectRootConfigFile = GetConfigFilePath(projectRootDirectory, fileSystem);
+            var workingConfigFile = GetConfigFilePath(workingDirectory);
+            var projectRootConfigFile = GetConfigFilePath(projectRootDirectory);
 
-            bool hasConfigInWorkingDirectory = fileSystem.Exists(workingConfigFile);
-            bool hasConfigInProjectRootDirectory = fileSystem.Exists(projectRootConfigFile);
+            bool hasConfigInWorkingDirectory = FileSystem.Exists(workingConfigFile);
+            bool hasConfigInProjectRootDirectory = FileSystem.Exists(projectRootConfigFile);
             if (hasConfigInProjectRootDirectory && hasConfigInWorkingDirectory)
             {
                 throw new WarningException($"Ambiguous config file selection from '{workingConfigFile}' and '{projectRootConfigFile}'");
             }
         }
 
-        private void WarnAboutObsoleteConfigFile(string workingDirectory, IFileSystem fileSystem)
+        private void WarnAboutObsoleteConfigFile(string workingDirectory)
         {
             var deprecatedConfigFilePath = Path.Combine(workingDirectory, ObsoleteFileName);
-            if (!fileSystem.Exists(deprecatedConfigFilePath))
+            if (!FileSystem.Exists(deprecatedConfigFilePath))
             {
                 return;
             }
 
             var defaultConfigFilePath = Path.Combine(workingDirectory, DefaultFileName);
-            if (fileSystem.Exists(defaultConfigFilePath))
+            if (FileSystem.Exists(defaultConfigFilePath))
             {
-                Logger.Warning(string.Format("Ambiguous config files at '{0}': '{1}' (deprecated) and '{2}'. Will be used '{2}'", workingDirectory, ObsoleteFileName, DefaultFileName));
+                Log.Warning(string.Format("Ambiguous config files at '{0}': '{1}' (deprecated) and '{2}'. Will be used '{2}'", workingDirectory, ObsoleteFileName, DefaultFileName));
                 return;
             }
 
-            Logger.Warning($"'{deprecatedConfigFilePath}' is deprecated, use '{DefaultFileName}' instead.");
+            Log.Warning($"'{deprecatedConfigFilePath}' is deprecated, use '{DefaultFileName}' instead.");
         }
 
     }

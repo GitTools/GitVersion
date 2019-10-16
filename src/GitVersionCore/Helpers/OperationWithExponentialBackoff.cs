@@ -9,6 +9,7 @@ namespace GitVersion.Helpers
     internal class OperationWithExponentialBackoff<T> where T : Exception
     {
         private IThreadSleep ThreadSleep;
+        private readonly ILog log;
         private Action Operation;
         private int MaxRetries;
 
@@ -18,6 +19,7 @@ namespace GitVersion.Helpers
                 throw new ArgumentOutOfRangeException(nameof(maxRetries));
 
             ThreadSleep = threadSleep ?? throw new ArgumentNullException(nameof(threadSleep));
+            this.log = log;
             Operation = operation;
             MaxRetries = maxRetries;
         }
@@ -47,7 +49,7 @@ namespace GitVersion.Helpers
                     }
                 }
 
-                Logger.Info($"Operation failed, retrying in {sleepMSec} milliseconds.");
+                log.Info($"Operation failed, retrying in {sleepMSec} milliseconds.");
                 await ThreadSleep.SleepAsync(sleepMSec);
 
                 sleepMSec *= 2;

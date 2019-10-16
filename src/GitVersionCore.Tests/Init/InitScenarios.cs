@@ -22,13 +22,13 @@ namespace GitVersionCore.Tests.Init
         public void CanSetNextVersion()
         {
             var log = new NullLog();
-            var testFileSystem = new TestFileSystem();
+            var fileSystem = new TestFileSystem();
             var testConsole = new TestConsole("3", "2.0.0", "0");
-            var configFileLocator = new DefaultConfigFileLocator();
+            var configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
             var workingDirectory = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "c:\\proj" : "/proj";
-            ConfigurationProvider.Init(workingDirectory, testFileSystem, testConsole, log, configFileLocator);
+            ConfigurationProvider.Init(workingDirectory, fileSystem, testConsole, log, configFileLocator);
 
-            testFileSystem.ReadAllText(Path.Combine(workingDirectory, "GitVersion.yml")).ShouldMatchApproved();
+            fileSystem.ReadAllText(Path.Combine(workingDirectory, "GitVersion.yml")).ShouldMatchApproved();
         }
     }
 }

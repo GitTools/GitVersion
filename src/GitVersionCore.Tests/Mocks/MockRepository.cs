@@ -34,21 +34,6 @@ namespace GitVersionCore.Tests.Mocks
             throw new NotImplementedException();
         }
 
-        public Branch Checkout(Branch branch, CheckoutOptions options)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Branch Checkout(string committishOrBranchSpec, CheckoutOptions options)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Branch Checkout(Commit commit, CheckoutOptions options)
-        {
-            throw new NotImplementedException();
-        }
-
         public void CheckoutPaths(string committishOrBranchSpec, IEnumerable<string> paths, CheckoutOptions checkoutOptions = null)
         {
             throw new NotImplementedException();

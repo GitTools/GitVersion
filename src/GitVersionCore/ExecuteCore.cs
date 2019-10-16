@@ -15,15 +15,15 @@ namespace GitVersion
         private readonly IFileSystem fileSystem;
         private readonly IEnvironment environment;
         private readonly ILog log;
-        private readonly ConfigFileLocator configFileLocator;
+        private readonly IConfigFileLocator configFileLocator;
         private readonly GitVersionCache gitVersionCache;
 
-        public ExecuteCore(IFileSystem fileSystem, IEnvironment environment, ILog log, ConfigFileLocator configFileLocator = null)
+        public ExecuteCore(IFileSystem fileSystem, IEnvironment environment, ILog log, IConfigFileLocator configFileLocator = null)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.environment = environment;
             this.log = log;
-            this.configFileLocator = configFileLocator ?? ConfigFileLocator.Default;
+            this.configFileLocator = configFileLocator ?? new DefaultConfigFileLocator(fileSystem, log);
             gitVersionCache = new GitVersionCache(fileSystem, log);
         }
 
@@ -116,7 +116,7 @@ namespace GitVersion
         VersionVariables ExecuteInternal(string targetBranch, string commitId, GitPreparer gitPreparer, Config overrideConfig = null)
         {
             var versionFinder = new GitVersionFinder();
-            var configuration = ConfigurationProvider.Provide(gitPreparer, fileSystem, overrideConfig: overrideConfig, configFileLocator: configFileLocator);
+            var configuration = ConfigurationProvider.Provide(gitPreparer, overrideConfig: overrideConfig, configFileLocator: configFileLocator);
 
             return gitPreparer.WithRepository(repo =>
             {

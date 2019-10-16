@@ -13,8 +13,7 @@ namespace GitVersion
             var log = new Log.Log(/*new ConsoleAppender()*/);
             var fileSystem = new FileSystem();
             var environment = new Environment();
-            var argumentParser = new ArgumentParser(log);
-
+            var argumentParser = new ArgumentParser(fileSystem, log);
             var arguments = argumentParser.ParseArguments();
             log.Verbosity = arguments?.Verbosity ?? Verbosity.Normal;
 

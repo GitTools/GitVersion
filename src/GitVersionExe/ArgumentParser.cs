@@ -3,20 +3,24 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
 using GitVersion.Log;
 using GitVersion.OutputVariables;
 using GitVersion.OutputFormatters;
+using Environment = System.Environment;
 
 namespace GitVersion
 {
     public class ArgumentParser : IArgumentParser
     {
+        private readonly IFileSystem fileSystem;
         private readonly ILog log;
 
-        public ArgumentParser(ILog log)
+        public ArgumentParser(IFileSystem fileSystem, ILog log)
         {
+            this.fileSystem = fileSystem;
             this.log = log;
         }
 
@@ -54,11 +58,13 @@ namespace GitVersion
 
         public Arguments ParseArguments(List<string> commandLineArguments)
         {
+            var configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
             if (commandLineArguments.Count == 0)
             {
                 return new Arguments
                 {
-                    TargetPath = Environment.CurrentDirectory
+                    TargetPath = Environment.CurrentDirectory,
+                    ConfigFileLocator = configFileLocator
                 };
             }
 
@@ -68,7 +74,8 @@ namespace GitVersion
             {
                 return new Arguments
                 {
-                    IsHelp = true
+                    IsHelp = true,
+                    ConfigFileLocator = configFileLocator
                 };
             }
 
@@ -77,11 +84,15 @@ namespace GitVersion
                 return new Arguments
                 {
                     TargetPath = Environment.CurrentDirectory,
-                    Init = true
+                    Init = true,
+                    ConfigFileLocator = configFileLocator
                 };
             }
 
-            var arguments = new Arguments();
+            var arguments = new Arguments
+            {
+                ConfigFileLocator = configFileLocator
+            };
             var switchesAndValues = CollectSwitchesAndValuesFromArguments(commandLineArguments, out var firstArgumentIsSwitch);
 
             for (var i = 0; i < switchesAndValues.AllKeys.Length; i++)
@@ -107,7 +118,7 @@ namespace GitVersion
                 if (name.IsSwitch("config"))
                 {
                     EnsureArgumentValueCount(values);
-                    arguments.ConfigFileLocator = new NamedConfigFileLocator(value);
+                    arguments.ConfigFileLocator = new NamedConfigFileLocator(value, fileSystem, log);
                     continue;
                 }
 
@@ -244,7 +255,7 @@ namespace GitVersion
                 {
                     string versionVariable = null;
 
-                    if (!String.IsNullOrWhiteSpace(value))
+                    if (!string.IsNullOrWhiteSpace(value))
                     {
                         versionVariable = VersionVariables.AvailableVariables.SingleOrDefault(av => av.Equals(value.Replace("'", ""), StringComparison.CurrentCultureIgnoreCase));
                     }
@@ -252,7 +263,7 @@ namespace GitVersion
                     if (versionVariable == null)
                     {
                         var messageFormat = "{0} requires a valid version variable.  Available variables are:\n{1}";
-                        var message = String.Format(messageFormat, name, String.Join(", ", VersionVariables.AvailableVariables.Select(x => String.Concat("'", x, "'"))));
+                        var message = string.Format(messageFormat, name, string.Join(", ", VersionVariables.AvailableVariables.Select(x => string.Concat("'", x, "'"))));
                         throw new WarningException(message);
                     }
 

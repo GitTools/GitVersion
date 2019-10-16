@@ -92,7 +92,7 @@ namespace GitVersion
                     log.Info("Working directory: " + arguments.TargetPath);
                 }
 
-                VerifyConfiguration(arguments, fileSystem, log);
+                VerifyConfiguration(arguments, log);
 
                 if (arguments.Init)
                 {
@@ -101,7 +101,7 @@ namespace GitVersion
                 }
                 if (arguments.ShowConfig)
                 {
-                    Console.WriteLine(ConfigurationProvider.GetEffectiveConfigAsString(arguments.TargetPath, fileSystem, arguments.ConfigFileLocator));
+                    Console.WriteLine(ConfigurationProvider.GetEffectiveConfigAsString(arguments.TargetPath, arguments.ConfigFileLocator));
                     return 0;
                 }
 
@@ -142,10 +142,10 @@ namespace GitVersion
             return 0;
         }
 
-        private static void VerifyConfiguration(Arguments arguments, IFileSystem fileSystem, ILog log)
+        private static void VerifyConfiguration(Arguments arguments, ILog log)
         {
             var gitPreparer = new GitPreparer(log, arguments);
-            arguments.ConfigFileLocator.Verify(gitPreparer, fileSystem);
+            arguments.ConfigFileLocator.Verify(gitPreparer);
         }
 
         private static void ConfigureLogging(Arguments arguments, ILog log)

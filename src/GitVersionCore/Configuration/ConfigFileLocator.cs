@@ -1,41 +1,61 @@
 using System.IO;
 using GitVersion.Common;
+using GitVersion.Log;
 
 namespace GitVersion.Configuration
 {
-    public abstract class ConfigFileLocator
+    public interface IConfigFileLocator
     {
-        public static readonly ConfigFileLocator Default = new DefaultConfigFileLocator();
+        bool HasConfigFileAt(string workingDirectory);
+        string GetConfigFilePath(string workingDirectory);
+        void Verify(string workingDirectory, string projectRootDirectory);
+        string SelectConfigFilePath(GitPreparer gitPreparer);
+        Config ReadConfig(string workingDirectory);
+        void Verify(GitPreparer gitPreparer);
+    }
 
-        public static ConfigFileLocator GetLocator(string filePath = null) =>
-             !string.IsNullOrEmpty(filePath) ? new NamedConfigFileLocator(filePath) : Default;
+    public abstract class ConfigFileLocator : IConfigFileLocator
+    {
+        protected readonly IFileSystem FileSystem;
+        protected readonly ILog Log;
 
-        public abstract bool HasConfigFileAt(string workingDirectory, IFileSystem fileSystem);
+        protected ConfigFileLocator(IFileSystem fileSystem, ILog log)
+        {
+            FileSystem = fileSystem;
+            Log = log;
+        }
 
-        public abstract string GetConfigFilePath(string workingDirectory, IFileSystem fileSystem);
+        public static IConfigFileLocator GetLocator(IFileSystem fileSystem, ILog log, string filePath = null) =>
+            !string.IsNullOrEmpty(filePath)
+                ? (IConfigFileLocator) new NamedConfigFileLocator(filePath, fileSystem, log)
+                : new DefaultConfigFileLocator(fileSystem, log);
 
-        public abstract void Verify(string workingDirectory, string projectRootDirectory, IFileSystem fileSystem);
+        public abstract bool HasConfigFileAt(string workingDirectory);
 
-        public string SelectConfigFilePath(GitPreparer gitPreparer, IFileSystem fileSystem)
+        public abstract string GetConfigFilePath(string workingDirectory);
+
+        public abstract void Verify(string workingDirectory, string projectRootDirectory);
+
+        public string SelectConfigFilePath(GitPreparer gitPreparer)
         {
             var workingDirectory = gitPreparer.WorkingDirectory;
             var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
 
-            if (HasConfigFileAt(workingDirectory, fileSystem))
+            if (HasConfigFileAt(workingDirectory))
             {
-                return GetConfigFilePath(workingDirectory, fileSystem);
+                return GetConfigFilePath(workingDirectory);
             }
 
-            return GetConfigFilePath(projectRootDirectory, fileSystem);
+            return GetConfigFilePath(projectRootDirectory);
         }
 
-        public Config ReadConfig(string workingDirectory, IFileSystem fileSystem)
+        public Config ReadConfig(string workingDirectory)
         {
-            var configFilePath = GetConfigFilePath(workingDirectory, fileSystem);
+            var configFilePath = GetConfigFilePath(workingDirectory);
 
-            if (fileSystem.Exists(configFilePath))
+            if (FileSystem.Exists(configFilePath))
             {
-                var readAllText = fileSystem.ReadAllText(configFilePath);
+                var readAllText = FileSystem.ReadAllText(configFilePath);
                 LegacyConfigNotifier.Notify(new StringReader(readAllText));
                 return ConfigSerialiser.Read(new StringReader(readAllText));
             }
@@ -43,7 +63,7 @@ namespace GitVersion.Configuration
             return new Config();
         }
 
-        public void Verify(GitPreparer gitPreparer, IFileSystem fileSystem)
+        public void Verify(GitPreparer gitPreparer)
         {
             if (!string.IsNullOrWhiteSpace(gitPreparer.TargetUrl))
             {
@@ -55,7 +75,7 @@ namespace GitVersion.Configuration
             var workingDirectory = gitPreparer.WorkingDirectory;
             var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
 
-            Verify(workingDirectory, projectRootDirectory, fileSystem);
+            Verify(workingDirectory, projectRootDirectory);
         }
     }
 }

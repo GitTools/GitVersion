@@ -1,14 +1,14 @@
 using System;
 using System.IO;
-using GitVersion.Exceptions;
 using GitVersion.Common;
+using GitVersion.Exceptions;
+using GitVersion.Log;
 
 namespace GitVersion.Configuration
 {
     public class NamedConfigFileLocator : ConfigFileLocator
     {
-
-        public NamedConfigFileLocator(string filePath)
+        public NamedConfigFileLocator(string filePath, IFileSystem fileSystem, ILog log) : base(fileSystem, log)
         {
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(filePath), "Empty file path provided!");
             FilePath = filePath;
@@ -16,27 +16,27 @@ namespace GitVersion.Configuration
 
         public string FilePath { get; }
 
-        public override bool HasConfigFileAt(string workingDirectory, IFileSystem fileSystem) =>
-            fileSystem.Exists(Path.Combine(workingDirectory, FilePath));
+        public override bool HasConfigFileAt(string workingDirectory) =>
+            FileSystem.Exists(Path.Combine(workingDirectory, FilePath));
 
-        public override string GetConfigFilePath(string workingDirectory, IFileSystem fileSystem) =>
+        public override string GetConfigFilePath(string workingDirectory) =>
             Path.Combine(workingDirectory, FilePath);
 
-        public override void Verify(string workingDirectory, string projectRootDirectory, IFileSystem fileSystem)
+        public override void Verify(string workingDirectory, string projectRootDirectory)
         {
             if (!Path.IsPathRooted(FilePath))
             {
-                WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory, fileSystem);
+                WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory);
             }
         }
 
-        private void WarnAboutAmbiguousConfigFileSelection(string workingDirectory, string projectRootDirectory, IFileSystem fileSystem)
+        private void WarnAboutAmbiguousConfigFileSelection(string workingDirectory, string projectRootDirectory)
         {
-            var workingConfigFile = GetConfigFilePath(workingDirectory, fileSystem);
-            var projectRootConfigFile = GetConfigFilePath(projectRootDirectory, fileSystem);
+            var workingConfigFile = GetConfigFilePath(workingDirectory);
+            var projectRootConfigFile = GetConfigFilePath(projectRootDirectory);
 
-            var hasConfigInWorkingDirectory = fileSystem.Exists(workingConfigFile);
-            var hasConfigInProjectRootDirectory = fileSystem.Exists(projectRootConfigFile);
+            var hasConfigInWorkingDirectory = FileSystem.Exists(workingConfigFile);
+            var hasConfigInProjectRootDirectory = FileSystem.Exists(projectRootConfigFile);
             if (hasConfigInProjectRootDirectory && hasConfigInWorkingDirectory)
             {
                 throw new WarningException($"Ambiguous config file selection from '{workingConfigFile}' and '{projectRootConfigFile}'");

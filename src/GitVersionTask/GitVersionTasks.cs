@@ -130,7 +130,7 @@ namespace GitVersionTask
         }
 
         private static bool GetVersionVariables(GitVersionTaskBase task, out VersionVariables versionVariables)
-            => new ExecuteCore(fileSystem, environment, log, ConfigFileLocator.GetLocator(task.ConfigFilePath))
+            => new ExecuteCore(fileSystem, environment, log, ConfigFileLocator.GetLocator(fileSystem, log, task.ConfigFilePath))
                 .TryGetVersion(task.SolutionDirectory, out versionVariables, task.NoFetch, new Authentication());
     }
 }

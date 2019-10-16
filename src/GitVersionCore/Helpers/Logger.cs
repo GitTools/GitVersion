@@ -19,19 +19,6 @@ namespace GitVersion.Helpers
         public static Action<string> Warning { get; private set; }
         public static Action<string> Error { get; private set; }
 
-        public static IDisposable IndentLog(string operationDescription)
-        {
-            var start = DateTime.Now;
-            Info("Begin: " + operationDescription);
-            indent += "  ";
-            return new ActionDisposable(() =>
-            {
-                var length = indent.Length - 2;
-                indent = length > 0 ? indent.Substring(0, length) : indent;
-                Info(string.Format(CultureInfo.InvariantCulture, "End: {0} (Took: {1:N}ms)", operationDescription, DateTime.Now.Subtract(start).TotalMilliseconds));
-            });
-        }
-
         public static void SetLoggers(Action<string> debug, Action<string> info, Action<string> warn, Action<string> error)
         {
             if (debug == null) throw new ArgumentNullException(nameof(debug));

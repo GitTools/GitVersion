@@ -43,7 +43,7 @@ namespace GitVersionCore.Tests
                 var targetUrl = "https://github.com/GitTools/GitVersion.git";
                 var targetBranch = "refs/head/master";
                 var gitPreparer = new GitPreparer(log, targetUrl, null, new Authentication(), false, fixture.RepositoryPath);
-                var configFileLocator = new DefaultConfigFileLocator();
+                var configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
                 gitPreparer.Initialise(true, targetBranch);
                 var cacheKey1 = GitVersionCacheKeyFactory.Create(fileSystem, log, gitPreparer, null, configFileLocator);
                 gitPreparer.Initialise(true, targetBranch);
@@ -71,7 +71,7 @@ namespace GitVersionCore.Tests
 
                     var targetUrl = "https://github.com/GitTools/GitVersion.git";
                     var gitPreparer = new GitPreparer(log, targetUrl, null, new Authentication(), false, worktreePath);
-                    var configFileLocator = new DefaultConfigFileLocator();
+                    var configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
                     var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, log, gitPreparer, null, configFileLocator);
                     cacheKey.Value.ShouldNotBeEmpty();
                 }

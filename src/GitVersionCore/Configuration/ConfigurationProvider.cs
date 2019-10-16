@@ -44,22 +44,22 @@ namespace GitVersion.Configuration
 
         private const IncrementStrategy DefaultIncrementStrategy = IncrementStrategy.Inherit;
 
-        public static Config Provide(GitPreparer gitPreparer, IFileSystem fileSystem, ConfigFileLocator configFileLocator, bool applyDefaults = true, Config overrideConfig = null, string configFilePath = null)
+        public static Config Provide(GitPreparer gitPreparer, IConfigFileLocator configFileLocator, bool applyDefaults = true, Config overrideConfig = null)
         {
             var workingDirectory = gitPreparer.WorkingDirectory;
             var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
 
-            if (configFileLocator.HasConfigFileAt(workingDirectory, fileSystem))
+            if (configFileLocator.HasConfigFileAt(workingDirectory))
             {
-                return Provide(workingDirectory, fileSystem, configFileLocator, applyDefaults, overrideConfig);
+                return Provide(workingDirectory, configFileLocator, applyDefaults, overrideConfig);
             }
 
-            return Provide(projectRootDirectory, fileSystem, configFileLocator, applyDefaults, overrideConfig);
+            return Provide(projectRootDirectory, configFileLocator, applyDefaults, overrideConfig);
         }
 
-        public static Config Provide(string workingDirectory, IFileSystem fileSystem, ConfigFileLocator configFileLocator, bool applyDefaults = true, Config overrideConfig = null)
+        public static Config Provide(string workingDirectory, IConfigFileLocator configFileLocator, bool applyDefaults = true, Config overrideConfig = null)
         {
-            var readConfig = configFileLocator.ReadConfig(workingDirectory, fileSystem);
+            var readConfig = configFileLocator.ReadConfig(workingDirectory);
             VerifyConfiguration(readConfig);
 
             if (applyDefaults)
@@ -235,9 +235,9 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             branchConfig.PreReleaseWeight = branchConfig.PreReleaseWeight ?? defaultPreReleaseNumber;
         }
 
-        public static string GetEffectiveConfigAsString(string workingDirectory, IFileSystem fileSystem, ConfigFileLocator configFileLocator)
+        public static string GetEffectiveConfigAsString(string workingDirectory, IConfigFileLocator configFileLocator)
         {
-            var config = Provide(workingDirectory, fileSystem, configFileLocator);
+            var config = Provide(workingDirectory, configFileLocator);
             var stringBuilder = new StringBuilder();
             using (var stream = new StringWriter(stringBuilder))
             {
@@ -247,10 +247,10 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             return stringBuilder.ToString();
         }
 
-        public static void Init(string workingDirectory, IFileSystem fileSystem, IConsole console, ILog log, ConfigFileLocator configFileLocator)
+        public static void Init(string workingDirectory, IFileSystem fileSystem, IConsole console, ILog log, IConfigFileLocator configFileLocator)
         {
-            var configFilePath = configFileLocator.GetConfigFilePath(workingDirectory, fileSystem);
-            var currentConfiguration = Provide(workingDirectory, fileSystem, applyDefaults: false, configFileLocator: configFileLocator);
+            var configFilePath = configFileLocator.GetConfigFilePath(workingDirectory);
+            var currentConfiguration = Provide(workingDirectory, applyDefaults: false, configFileLocator: configFileLocator);
             var config = new ConfigInitWizard(console, fileSystem, log).Run(currentConfiguration, workingDirectory);
             if (config == null) return;
 
