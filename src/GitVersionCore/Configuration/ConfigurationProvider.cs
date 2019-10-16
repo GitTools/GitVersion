@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using GitVersion.Configuration.Init.Wizard;
-using GitVersion.Helpers;
 using GitVersion.VersioningModes;
 using GitVersion.Extensions;
 using GitVersion.Common;
@@ -257,7 +256,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             using (var stream = fileSystem.OpenWrite(configFilePath))
             using (var writer = new StreamWriter(stream))
             {
-                Logger.Info("Saving config file");
+                log.Info("Saving config file");
                 ConfigSerialiser.Write(config, writer);
                 stream.Flush();
             }

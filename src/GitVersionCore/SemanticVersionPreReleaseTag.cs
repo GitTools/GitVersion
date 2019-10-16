@@ -95,7 +95,8 @@ namespace GitVersion
             var match = Regex.Match(preReleaseTag, @"(?<name>.*?)\.?(?<number>\d+)?$");
             if (!match.Success)
             {
-                Logger.Warning($"Unable to successfully parse semver tag {preReleaseTag}");
+                // TODO check how to log this
+                Console.WriteLine($"Unable to successfully parse semver tag {preReleaseTag}");
                 return new SemanticVersionPreReleaseTag();
             }
 

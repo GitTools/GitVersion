@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 using GitVersion.VersioningModes;
 using YamlDotNet.Serialization;
 using GitVersion.Extensions;
-using GitVersion.Helpers;
 
 namespace GitVersion.Configuration
 {
@@ -114,7 +113,8 @@ namespace GitVersion.Configuration
                     .Select(kvp => kvp.Value)
                     .First();
 
-                Logger.Warning(
+                // TODO check how to log this
+                Console.WriteLine(
                     $"Multiple branch configurations match the current branch branchName of '{branchName}'. " +
                     $"Using the first matching configuration, '{picked}'. Matching configurations include: '{matchingConfigs}'");
 

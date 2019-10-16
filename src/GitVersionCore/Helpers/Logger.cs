@@ -16,7 +16,7 @@ namespace GitVersion.Helpers
 
         private static Action<string> Debug { get; set; }
         public static Action<string> Info { get; private set; }
-        public static Action<string> Warning { get; private set; }
+        private static Action<string> Warning { get; set; }
         public static Action<string> Error { get; private set; }
 
         public static void SetLoggers(Action<string> debug, Action<string> info, Action<string> warn, Action<string> error)
@@ -30,39 +30,6 @@ namespace GitVersion.Helpers
             Info = LogMessage(ObscurePassword(info), "INFO");
             Warning = LogMessage(ObscurePassword(warn), "WARN");
             Error = LogMessage(ObscurePassword(error), "ERROR");
-        }
-
-        public static IDisposable AddLoggersTemporarily(Action<string> debug, Action<string> info, Action<string> warn, Action<string> error)
-        {
-            var currentDebug = Debug;
-            var currentInfo = Info;
-            var currentWarn = Warning;
-            var currentError = Error;
-            SetLoggers(s =>
-            {
-                debug(s);
-                currentDebug(s);
-            }, s =>
-            {
-                info(s);
-                currentInfo(s);
-            }, s =>
-            {
-                warn(s);
-                currentWarn(s);
-            }, s =>
-            {
-                error(s);
-                currentError(s);
-            });
-
-            return new ActionDisposable(() =>
-            {
-                Debug = currentDebug;
-                Info = currentInfo;
-                Warning =  currentWarn;
-                Error = currentError;
-            });
         }
 
         private static Action<string> ObscurePassword(Action<string> info)
@@ -87,21 +54,6 @@ namespace GitVersion.Helpers
             Info = s => throw new Exception("Info logger not defined. Attempted to log: " + s);
             Warning = s => throw new Exception("Warning logger not defined. Attempted to log: " + s);
             Error = s => throw new Exception("Error logger not defined. Attempted to log: " + s);
-        }
-
-        private class ActionDisposable : IDisposable
-        {
-            private readonly Action action;
-
-            public ActionDisposable(Action action)
-            {
-                this.action = action;
-            }
-
-            public void Dispose()
-            {
-                action();
-            }
         }
     }
 }

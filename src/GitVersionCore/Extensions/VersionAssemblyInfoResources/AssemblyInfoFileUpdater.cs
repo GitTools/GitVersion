@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using GitVersion.Helpers;
 using GitVersion.OutputVariables;
 using GitVersion.Common;
 using GitVersion.Log;
@@ -197,7 +196,7 @@ namespace GitVersion.Extensions.VersionAssemblyInfoResources
                 return true;
             }
 
-            Logger.Warning($"No version assembly info template available to create source file '{fullPath}'");
+            log.Warning($"No version assembly info template available to create source file '{fullPath}'");
             return false;
         }
 
