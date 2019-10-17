@@ -1,6 +1,6 @@
 using GitVersion.Configuration.Init.SetConfig;
 using GitVersion.Common;
-using GitVersion.Log;
+using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.Wizard
 {

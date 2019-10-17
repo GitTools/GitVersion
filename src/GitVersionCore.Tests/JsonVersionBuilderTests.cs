@@ -1,6 +1,6 @@
 using System;
 using GitVersion;
-using GitVersion.Log;
+using GitVersion.Logging;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.OutputFormatters;

@@ -1,6 +1,6 @@
 using System;
 
-namespace GitVersion.Log
+namespace GitVersion.Logging
 {
     public interface ILog
     {

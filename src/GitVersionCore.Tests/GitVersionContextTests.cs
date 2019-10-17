@@ -5,7 +5,7 @@ using NUnit.Framework;
 using Shouldly;
 using System.Collections.Generic;
 using GitVersion.Configuration;
-using GitVersion.Log;
+using GitVersion.Logging;
 using GitVersion.VersioningModes;
 using GitVersionCore.Tests.Mocks;
 

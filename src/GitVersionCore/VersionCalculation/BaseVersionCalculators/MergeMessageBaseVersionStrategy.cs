@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using LibGit2Sharp;
 using GitVersion.Helpers;
-using GitVersion.Log;
+using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {

@@ -5,7 +5,7 @@ using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
 using GitVersion.Helpers;
-using GitVersion.Log;
+using GitVersion.Logging;
 using GitVersion.OutputFormatters;
 
 namespace GitVersion

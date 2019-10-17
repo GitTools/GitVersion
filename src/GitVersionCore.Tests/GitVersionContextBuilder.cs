@@ -1,7 +1,7 @@
 using GitTools.Testing;
 using GitVersion;
 using GitVersion.Configuration;
-using GitVersion.Log;
+using GitVersion.Logging;
 using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
 

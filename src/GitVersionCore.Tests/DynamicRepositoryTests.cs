@@ -1,7 +1,7 @@
 using System.IO;
 using GitVersion;
 using NUnit.Framework;
-using GitVersion.Log;
+using GitVersion.Logging;
 
 namespace GitVersionCore.Tests
 {

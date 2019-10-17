@@ -2,7 +2,7 @@ using System.IO;
 using GitVersion.Exceptions;
 using GitVersion.VersionCalculation;
 using GitVersion.Helpers;
-using GitVersion.Log;
+using GitVersion.Logging;
 
 namespace GitVersion
 {

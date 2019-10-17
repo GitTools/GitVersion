@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace GitVersion.Log
+namespace GitVersion.Logging
 {
     public sealed class Log : ILog
     {

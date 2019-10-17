@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using GitVersion.Configuration;
 using GitVersion.Common;
-using GitVersion.Log;
+using GitVersion.Logging;
 
 namespace GitVersion.Cache
 {

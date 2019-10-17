@@ -11,7 +11,7 @@ using GitVersionTask.MsBuild.Tasks;
 using GitVersion.Extensions.GitVersionInformationResources;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Common;
-using GitVersion.Log;
+using GitVersion.Logging;
 using Environment = GitVersion.Common.Environment;
 
 namespace GitVersionTask

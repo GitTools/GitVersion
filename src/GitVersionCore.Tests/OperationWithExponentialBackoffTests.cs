@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.Helpers;
-using GitVersion.Log;
+using GitVersion.Logging;
 using GitVersionCore.Tests.Mocks;
 
 namespace GitVersionCore.Tests

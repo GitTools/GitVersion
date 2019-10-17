@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.Log;
+using GitVersion.Logging;
 
 namespace GitVersionCore.Tests
 {

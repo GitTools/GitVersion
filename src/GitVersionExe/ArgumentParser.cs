@@ -6,7 +6,7 @@ using System.Linq;
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
-using GitVersion.Log;
+using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.OutputFormatters;
 using Environment = System.Environment;

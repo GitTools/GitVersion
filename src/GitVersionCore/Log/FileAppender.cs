@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Threading;
 
-namespace GitVersion.Log
+namespace GitVersion.Logging
 {
     public class FileAppender : ILogAppender
     {

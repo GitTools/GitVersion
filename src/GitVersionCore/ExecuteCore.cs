@@ -5,7 +5,7 @@ using GitVersion.Configuration;
 using GitVersion.OutputVariables;
 using GitVersion.Cache;
 using GitVersion.Common;
-using GitVersion.Log;
+using GitVersion.Logging;
 using Environment = System.Environment;
 
 namespace GitVersion

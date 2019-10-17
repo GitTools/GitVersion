@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using GitVersion;
-using GitVersion.Log;
+using GitVersion.Logging;
 using LibGit2Sharp;
 using NUnit.Framework;
 using GitVersionTask.Tests.Helpers;

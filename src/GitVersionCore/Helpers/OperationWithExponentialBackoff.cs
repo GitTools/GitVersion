@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GitVersion.Common;
-using GitVersion.Log;
+using GitVersion.Logging;
 
 namespace GitVersion.Helpers
 {

@@ -11,7 +11,7 @@ using GitVersion.Configuration;
 using GitVersion.VersioningModes;
 using GitVersion.Extensions;
 using GitVersion.Common;
-using GitVersion.Log;
+using GitVersion.Logging;
 
 namespace GitVersionCore.Tests
 {

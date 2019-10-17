@@ -1,7 +1,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using GitVersion.Configuration;
-using GitVersion.Log;
+using GitVersion.Logging;
 using NUnit.Framework;
 using Shouldly;
 

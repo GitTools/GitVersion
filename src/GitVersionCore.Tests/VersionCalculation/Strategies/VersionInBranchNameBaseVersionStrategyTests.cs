@@ -3,7 +3,7 @@ using System.Linq;
 using GitTools.Testing;
 using GitVersion;
 using GitVersion.Configuration;
-using GitVersion.Log;
+using GitVersion.Logging;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
 using LibGit2Sharp;
 using NUnit.Framework;

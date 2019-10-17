@@ -12,7 +12,7 @@ using GitVersion.Cache;
 using LibGit2Sharp;
 using GitVersionCore.Tests.Helpers;
 using GitVersion.Common;
-using GitVersion.Log;
+using GitVersion.Logging;
 using Environment = System.Environment;
 
 namespace GitVersionCore.Tests

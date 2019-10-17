@@ -1,4 +1,4 @@
-namespace GitVersion.Log
+namespace GitVersion.Logging
 {
     public enum Verbosity
     {

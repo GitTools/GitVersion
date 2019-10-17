@@ -6,7 +6,7 @@ using GitVersion.Configuration.Init.Wizard;
 using GitVersion.VersioningModes;
 using GitVersion.Extensions;
 using GitVersion.Common;
-using GitVersion.Log;
+using GitVersion.Logging;
 
 namespace GitVersion.Configuration
 {

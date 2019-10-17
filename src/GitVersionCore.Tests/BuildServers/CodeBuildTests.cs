@@ -8,7 +8,7 @@ using Shouldly;
 using GitVersion.BuildServers;
 using GitVersion.Common;
 using GitVersion.OutputVariables;
-using GitVersion.Log;
+using GitVersion.Logging;
 
 namespace GitVersionCore.Tests.BuildServers
 {

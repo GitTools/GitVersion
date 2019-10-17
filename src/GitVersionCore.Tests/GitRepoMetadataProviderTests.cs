@@ -6,7 +6,7 @@ using GitVersionCore.Tests.IntegrationTests;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.Helpers;
-using GitVersion.Log;
+using GitVersion.Logging;
 
 namespace GitVersionCore.Tests
 {

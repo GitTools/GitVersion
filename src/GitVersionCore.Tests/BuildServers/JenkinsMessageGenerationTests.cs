@@ -7,7 +7,7 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.BuildServers;
 using GitVersion.Common;
-using GitVersion.Log;
+using GitVersion.Logging;
 using GitVersion.OutputVariables;
 
 namespace GitVersionCore.Tests.BuildServers

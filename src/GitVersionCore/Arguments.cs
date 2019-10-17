@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using GitVersion.Configuration;
-using GitVersion.Log;
+using GitVersion.Logging;
 using GitVersion.OutputFormatters;
 
 namespace GitVersion

@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 using GitVersion.Common;
-using GitVersion.Log;
+using GitVersion.Logging;
 using Environment = GitVersion.Common.Environment;
 
 namespace GitVersion
@@ -10,7 +10,7 @@ namespace GitVersion
     {
         static void Main()
         {
-            var log = new Log.Log();
+            var log = new Logging.Log();
             var fileSystem = new FileSystem();
             var environment = new Environment();
             var argumentParser = new ArgumentParser(fileSystem, log);

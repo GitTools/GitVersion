@@ -9,7 +9,7 @@ using GitVersion.OutputVariables;
 using GitVersion.Extensions;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Common;
-using GitVersion.Log;
+using GitVersion.Logging;
 
 namespace GitVersionCore.Tests
 {

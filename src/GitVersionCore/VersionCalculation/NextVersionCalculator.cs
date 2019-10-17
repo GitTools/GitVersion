@@ -4,7 +4,7 @@ using GitVersion.VersionCalculation.BaseVersionCalculators;
 using GitVersion.VersioningModes;
 using GitVersion.Configuration;
 using GitVersion.Helpers;
-using GitVersion.Log;
+using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation
 {

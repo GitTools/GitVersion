@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace GitVersion.Log
+namespace GitVersion.Logging
 {
     public class ConsoleAppender : ILogAppender
     {

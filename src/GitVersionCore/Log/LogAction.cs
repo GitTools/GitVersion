@@ -1,4 +1,4 @@
-namespace GitVersion.Log
+namespace GitVersion.Logging
 {
     public delegate void LogAction(LogActionEntry actionEntry);
 

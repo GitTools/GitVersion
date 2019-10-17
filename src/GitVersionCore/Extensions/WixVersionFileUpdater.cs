@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml;
 using GitVersion.OutputVariables;
 using GitVersion.Common;
-using GitVersion.Log;
+using GitVersion.Logging;
 
 namespace GitVersion.Extensions
 {

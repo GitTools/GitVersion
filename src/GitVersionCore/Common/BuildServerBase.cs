@@ -1,5 +1,5 @@
 using System;
-using GitVersion.Log;
+using GitVersion.Logging;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 

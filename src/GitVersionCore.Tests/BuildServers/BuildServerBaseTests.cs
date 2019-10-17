@@ -5,7 +5,7 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.OutputVariables;
 using GitVersion.Common;
-using GitVersion.Log;
+using GitVersion.Logging;
 
 namespace GitVersionCore.Tests.BuildServers
 {

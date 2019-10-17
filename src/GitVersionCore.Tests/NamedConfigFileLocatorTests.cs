@@ -4,7 +4,7 @@ using Shouldly;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
 using GitVersion.Common;
-using GitVersion.Log;
+using GitVersion.Logging;
 
 namespace GitVersionCore.Tests
 {
