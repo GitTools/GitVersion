@@ -31,7 +31,7 @@ namespace GitVersion.Logging
                     WriteLogEntry(filePath, message);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // 
             }

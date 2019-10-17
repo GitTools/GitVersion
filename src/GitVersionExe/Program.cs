@@ -10,7 +10,7 @@ namespace GitVersion
     {
         static void Main()
         {
-            var log = new Logging.Log();
+            var log = new Log();
             var fileSystem = new FileSystem();
             var environment = new Environment();
             var argumentParser = new ArgumentParser(fileSystem, log);

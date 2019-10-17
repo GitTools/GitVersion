@@ -90,7 +90,7 @@ namespace GitVersion.Logging
             if (log == null)
                 return;
 
-            var verbosity = verbosityMaps[level];
+            var verbosity = GetVerbosityForLevel(level);
             if (verbosity > log.Verbosity)
             {
                 return;
@@ -118,7 +118,7 @@ namespace GitVersion.Logging
             if (log == null || logAction == null)
                 return;
 
-            var verbosity = verbosityMaps[level];
+            var verbosity = GetVerbosityForLevel(level);
             if (verbosity > log.Verbosity)
             {
                 return;
@@ -164,7 +164,9 @@ namespace GitVersion.Logging
             return Disposable.Create(() => log.Verbosity = lastVerbosity);
         }
 
-        private static IDictionary<LogLevel, Verbosity> verbosityMaps = new Dictionary<LogLevel, Verbosity>
+        public static Verbosity GetVerbosityForLevel(LogLevel level) => verbosityMaps[level];
+
+        private static readonly IDictionary<LogLevel, Verbosity> verbosityMaps = new Dictionary<LogLevel, Verbosity>
         {
             { LogLevel.Debug, Verbosity.Diagnostic },
             { LogLevel.Info, Verbosity.Normal },

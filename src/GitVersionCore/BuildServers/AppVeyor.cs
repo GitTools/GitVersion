@@ -66,6 +66,17 @@ namespace GitVersion.BuildServers
                 $"Adding Environment Variable. name='GitVersion_{name}' value='{value}']"
             };
         }
+
+        public override string GetCurrentBranch(bool usingDynamicRepos)
+        {
+            var pullRequestBranchName = Environment.GetEnvironmentVariable("APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH");
+            if (!string.IsNullOrWhiteSpace(pullRequestBranchName))
+            {
+                return pullRequestBranchName;
+            }
+            return Environment.GetEnvironmentVariable("APPVEYOR_REPO_BRANCH");
+        }
+
         public override bool PreventFetch() => false;
     }
 }
