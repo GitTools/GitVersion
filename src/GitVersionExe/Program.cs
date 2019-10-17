@@ -1,87 +1,71 @@
 using System;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Logging;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Console = System.Console;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Environment = GitVersion.Common.Environment;
 
 namespace GitVersion
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
-            var arguments = ParseArguments(args);
+            await CreateHostBuilder(args).Build().RunAsync();
+        }
 
-            var exitCode = 1;
-            if (arguments != null)
-            {
-                var services = ConfigureServices(arguments);
-
-                using (var serviceProvider = services.BuildServiceProvider())
+        private static IHostBuilder CreateHostBuilder(string[] args) =>
+            new HostBuilder()
+                .ConfigureAppConfiguration((hostContext, configApp) =>
                 {
-                    try
-                    {
-                        var app = serviceProvider.GetService<IGitVersionRunner>();
-                        exitCode = app.Run(arguments);
-                    }
-                    catch (Exception exception)
-                    {
-                        Console.Error.WriteLine(exception.Message);
-                    }
-                }
-            }
+                    configApp.AddCommandLine(args);
+                })
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddSingleton<IArgumentParser, ArgumentParser>();
+                    services.AddSingleton<IFileSystem, FileSystem>();
+                    services.AddSingleton<IEnvironment, Environment>();
+                    services.AddSingleton<IHelpWriter, HelpWriter>();
+                    services.AddSingleton<IVersionWriter, VersionWriter>();
+                    services.AddSingleton<IGitVersionRunner, GitVersionRunner>();
 
-            if (Debugger.IsAttached)
-            {
-                Console.ReadKey();
-            }
+                    services.AddSingleton(GetLog);
+                    services.AddSingleton(GetConfigFileLocator);
+                    services.AddSingleton(sp => GetArguments(sp, args));
 
-            System.Environment.Exit(exitCode);
-        }
+                    services.AddHostedService<GitVersionApp>();
+                })
+                .UseConsoleLifetime();
 
-        private static IServiceCollection ConfigureServices(Arguments arguments)
+        private static ILog GetLog(IServiceProvider sp)
         {
-            var services = new ServiceCollection();
-
-            services.AddSingleton<IFileSystem, FileSystem>();
-            services.AddSingleton<IEnvironment, Environment>();
-            services.AddSingleton<IHelpWriter, HelpWriter>();
-            services.AddSingleton<IVersionWriter, VersionWriter>();
-            services.AddSingleton<ILog>(new Log { Verbosity = arguments.Verbosity });
-            services.AddSingleton(sp => ConfigFileLocator(sp, arguments));
-            services.AddSingleton<IGitVersionRunner, GitVersionRunner>();
-
-            return services;
+            var arguments = sp.GetService<IOptions<Arguments>>();
+            return new Log { Verbosity = arguments.Value.Verbosity };
         }
 
-        private static IConfigFileLocator ConfigFileLocator(IServiceProvider sp, Arguments arguments)
+        private static IOptions<Arguments> GetArguments(IServiceProvider sp, string[] args)
+        {
+            var argumentParser = sp.GetService<IArgumentParser>();
+            var arguments = argumentParser.ParseArguments(args);
+
+            return Options.Create(arguments);
+        }
+
+        private static IConfigFileLocator GetConfigFileLocator(IServiceProvider sp)
         {
             var fileSystem = sp.GetService<IFileSystem>();
             var log = sp.GetService<ILog>();
+            var arguments = sp.GetService<IOptions<Arguments>>();
 
-            var configFileLocator = string.IsNullOrWhiteSpace(arguments.ConfigFile)
+            var configFileLocator = string.IsNullOrWhiteSpace(arguments.Value.ConfigFile)
                 ? (IConfigFileLocator) new DefaultConfigFileLocator(fileSystem, log)
-                : new NamedConfigFileLocator(arguments.ConfigFile, fileSystem, log);
+                : new NamedConfigFileLocator(arguments.Value.ConfigFile, fileSystem, log);
 
             return configFileLocator;
-        }
-
-        private static Arguments ParseArguments(string[] args)
-        {
-            var argumentParser = new ArgumentParser();
-            Arguments arguments = null;
-            try
-            {
-                arguments = argumentParser.ParseArguments(args);
-            }
-            catch (Exception exception)
-            {
-                Console.Error.WriteLine(exception.Message);
-            }
-            return arguments;
         }
     }
 }
