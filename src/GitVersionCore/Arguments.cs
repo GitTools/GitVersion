@@ -20,9 +20,9 @@ namespace GitVersion
 
         public Config OverrideConfig;
         public bool HasOverrideConfig { get; set; }
-        public IConfigFileLocator ConfigFileLocator { get; set; }
 
         public string TargetPath;
+        public string ConfigFile;
 
         public string TargetUrl;
         public string TargetBranch;

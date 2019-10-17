@@ -10,6 +10,7 @@ using GitVersion.OutputVariables;
 using GitVersion.Extensions;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Common;
+using GitVersion.Configuration;
 using GitVersion.Logging;
 
 namespace GitVersion
@@ -19,7 +20,7 @@ namespace GitVersion
         private static readonly bool runningOnUnix = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
         public static readonly string BuildTool = GetMsBuildToolPath();
 
-        public void Execute(Arguments arguments, IFileSystem fileSystem, IEnvironment environment, ILog log)
+        public void Execute(Arguments arguments, IFileSystem fileSystem, IEnvironment environment, ILog log, IConfigFileLocator configFileLocator)
         {
             log.Info($"Running on {(runningOnUnix ? "Unix" : "Windows")}.");
 
@@ -34,7 +35,7 @@ namespace GitVersion
             var noCache = arguments.NoCache;
             var noNormalize = arguments.NoNormalize;
 
-            var executeCore = new ExecuteCore(fileSystem, environment, log, arguments.ConfigFileLocator);
+            var executeCore = new ExecuteCore(fileSystem, environment, log, configFileLocator);
             var variables = executeCore.ExecuteGitVersion(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId, overrideConfig, noCache, noNormalize);
 
             switch (arguments.Output)

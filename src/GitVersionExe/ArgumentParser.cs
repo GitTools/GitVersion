@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using GitVersion.Common;
-using GitVersion.Configuration;
 using GitVersion.Exceptions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
@@ -15,15 +13,6 @@ namespace GitVersion
 {
     public class ArgumentParser : IArgumentParser
     {
-        private readonly IFileSystem fileSystem;
-        private readonly ILog log;
-
-        public ArgumentParser(IFileSystem fileSystem, ILog log)
-        {
-            this.fileSystem = fileSystem;
-            this.log = log;
-        }
-
         public Arguments ParseArguments()
         {
             var argumentsWithoutExeName = GetArgumentsWithoutExeName();
@@ -38,7 +27,7 @@ namespace GitVersion
                 Console.WriteLine("Failed to parse arguments: {0}", string.Join(" ", argumentsWithoutExeName));
                 if (!string.IsNullOrWhiteSpace(exception.Message))
                 {
-                    log.Error(exception.Message);
+                    Console.WriteLine(exception.Message);
                 }
 
                 return arguments;
@@ -58,13 +47,11 @@ namespace GitVersion
 
         public Arguments ParseArguments(List<string> commandLineArguments)
         {
-            var configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
             if (commandLineArguments.Count == 0)
             {
                 return new Arguments
                 {
                     TargetPath = Environment.CurrentDirectory,
-                    ConfigFileLocator = configFileLocator
                 };
             }
 
@@ -75,7 +62,6 @@ namespace GitVersion
                 return new Arguments
                 {
                     IsHelp = true,
-                    ConfigFileLocator = configFileLocator
                 };
             }
 
@@ -85,14 +71,10 @@ namespace GitVersion
                 {
                     TargetPath = Environment.CurrentDirectory,
                     Init = true,
-                    ConfigFileLocator = configFileLocator
                 };
             }
 
-            var arguments = new Arguments
-            {
-                ConfigFileLocator = configFileLocator
-            };
+            var arguments = new Arguments();
             var switchesAndValues = CollectSwitchesAndValuesFromArguments(commandLineArguments, out var firstArgumentIsSwitch);
 
             for (var i = 0; i < switchesAndValues.AllKeys.Length; i++)
@@ -118,7 +100,7 @@ namespace GitVersion
                 if (name.IsSwitch("config"))
                 {
                     EnsureArgumentValueCount(values);
-                    arguments.ConfigFileLocator = new NamedConfigFileLocator(value, fileSystem, log);
+                    arguments.ConfigFile = value;
                     continue;
                 }
 

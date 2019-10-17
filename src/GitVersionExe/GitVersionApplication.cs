@@ -15,14 +15,16 @@ namespace GitVersion
         private readonly IFileSystem fileSystem;
         private readonly IEnvironment environment;
         private readonly ILog log;
+        private readonly IConfigFileLocator configFileLocator;
         private readonly IHelpWriter helpWriter;
         private readonly IVersionWriter versionWriter;
 
-        public GitVersionApplication(IFileSystem fileSystem, IEnvironment environment, ILog log)
+        public GitVersionApplication(IFileSystem fileSystem, IEnvironment environment, ILog log, IConfigFileLocator configFileLocator)
         {
             this.fileSystem = fileSystem;
             this.environment = environment;
             this.log = log;
+            this.configFileLocator = configFileLocator;
 
             versionWriter = new VersionWriter();
             helpWriter = new HelpWriter(versionWriter);
@@ -91,16 +93,16 @@ namespace GitVersion
                     log.Info("Working directory: " + arguments.TargetPath);
                 }
 
-                VerifyConfiguration(arguments, log);
+                VerifyConfiguration(arguments);
 
                 if (arguments.Init)
                 {
-                    ConfigurationProvider.Init(arguments.TargetPath, fileSystem, new ConsoleAdapter(), log, arguments.ConfigFileLocator);
+                    ConfigurationProvider.Init(arguments.TargetPath, fileSystem, new ConsoleAdapter(), log, configFileLocator);
                     return 0;
                 }
                 if (arguments.ShowConfig)
                 {
-                    Console.WriteLine(ConfigurationProvider.GetEffectiveConfigAsString(arguments.TargetPath, arguments.ConfigFileLocator));
+                    Console.WriteLine(ConfigurationProvider.GetEffectiveConfigAsString(arguments.TargetPath, configFileLocator));
                     return 0;
                 }
 
@@ -108,7 +110,7 @@ namespace GitVersion
 
                 var execCommand = new ExecCommand();
 
-                execCommand.Execute(arguments, fileSystem, environment, log);
+                execCommand.Execute(arguments, fileSystem, environment, log, configFileLocator);
             }
             catch (WarningException exception)
             {
@@ -141,10 +143,10 @@ namespace GitVersion
             return 0;
         }
 
-        private static void VerifyConfiguration(Arguments arguments, ILog log)
+        private void VerifyConfiguration(Arguments arguments)
         {
             var gitPreparer = new GitPreparer(log, arguments);
-            arguments.ConfigFileLocator.Verify(gitPreparer);
+            configFileLocator.Verify(gitPreparer);
         }
 
         private static void ConfigureLogging(Arguments arguments, ILog log)

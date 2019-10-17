@@ -28,7 +28,8 @@ namespace GitVersionExe.Tests
                 { "DynamicRepositoryLocation" , "/dynamicRepoLocation" },
                 { "IsHelp", "/?" },
                 { "IsVersion", "/version" },
-                { "UpdateWixVersionFile", "/updatewixversionfile" }
+                { "UpdateWixVersionFile", "/updatewixversionfile" },
+                { "ConfigFile", "/config" },
             };
             string helpText = null;
 

@@ -6,7 +6,6 @@ using Shouldly;
 using GitVersion.Exceptions;
 using GitVersion.Logging;
 using GitVersion.OutputFormatters;
-using GitVersionExe.Tests.Helpers;
 
 namespace GitVersionExe.Tests
 {
@@ -18,7 +17,7 @@ namespace GitVersionExe.Tests
         [SetUp]
         public void SetUp()
         {
-            argumentParser = new ArgumentParser(new TestFileSystem(), new NullLog());
+            argumentParser = new ArgumentParser();
         }
 
         [Test]

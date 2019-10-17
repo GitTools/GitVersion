@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using GitVersion.Common;
+using GitVersion.Configuration;
 using GitVersion.Logging;
 using Environment = GitVersion.Common.Environment;
 
@@ -10,16 +11,31 @@ namespace GitVersion
     {
         static void Main()
         {
-            var log = new Log();
             var fileSystem = new FileSystem();
             var environment = new Environment();
-            var argumentParser = new ArgumentParser(fileSystem, log);
+            var argumentParser = new ArgumentParser();
             var arguments = argumentParser.ParseArguments();
-            log.Verbosity = arguments?.Verbosity ?? Verbosity.Normal;
 
-            var app = new GitVersionApplication(fileSystem, environment, log);
+            int exitCode;
+            if (arguments != null)
+            {
+                var log = new Log
+                {
+                    Verbosity = arguments.Verbosity
+                };
 
-            var exitCode = app.Run(arguments);
+                var configFileLocator = string.IsNullOrWhiteSpace(arguments.ConfigFile)
+                    ? (IConfigFileLocator) new DefaultConfigFileLocator(fileSystem, log)
+                    : new NamedConfigFileLocator(arguments.ConfigFile, fileSystem, log);
+
+                var app = new GitVersionApplication(fileSystem, environment, log, configFileLocator);
+
+                exitCode = app.Run(arguments);
+            }
+            else
+            {
+                exitCode = 1;
+            }
 
             if (Debugger.IsAttached)
             {
