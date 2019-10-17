@@ -29,6 +29,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
     </ItemGroup>
 </Project>

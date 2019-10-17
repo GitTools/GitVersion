@@ -1,6 +1,6 @@
 namespace GitVersion
 {
-    public interface IGitVersionApplication
+    public interface IGitVersionRunner
     {
         int Run(Arguments arguments);
     }
