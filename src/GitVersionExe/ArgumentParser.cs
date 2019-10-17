@@ -13,41 +13,18 @@ namespace GitVersion
 {
     public class ArgumentParser : IArgumentParser
     {
-        public Arguments ParseArguments()
-        {
-            var argumentsWithoutExeName = GetArgumentsWithoutExeName();
-
-            Arguments arguments = null;
-            try
-            {
-                arguments = ParseArguments(argumentsWithoutExeName);
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine("Failed to parse arguments: {0}", string.Join(" ", argumentsWithoutExeName));
-                if (!string.IsNullOrWhiteSpace(exception.Message))
-                {
-                    Console.WriteLine(exception.Message);
-                }
-
-                return arguments;
-            }
-
-            return arguments;
-        }
-
         public Arguments ParseArguments(string commandLineArguments)
         {
             var arguments = commandLineArguments
                 .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                .ToList();
+                .ToArray();
 
             return ParseArguments(arguments);
         }
 
-        public Arguments ParseArguments(List<string> commandLineArguments)
+        public Arguments ParseArguments(string[] commandLineArguments)
         {
-            if (commandLineArguments.Count == 0)
+            if (commandLineArguments.Length == 0)
             {
                 return new Arguments
                 {
@@ -75,6 +52,7 @@ namespace GitVersion
             }
 
             var arguments = new Arguments();
+
             var switchesAndValues = CollectSwitchesAndValuesFromArguments(commandLineArguments, out var firstArgumentIsSwitch);
 
             for (var i = 0; i < switchesAndValues.AllKeys.Length; i++)
@@ -189,6 +167,7 @@ namespace GitVersion
                     {
                         arguments.Diag = true;
                     }
+
                     continue;
                 }
 
@@ -267,6 +246,7 @@ namespace GitVersion
                     {
                         arguments.ShowConfig = true;
                     }
+
                     continue;
                 }
 
@@ -312,6 +292,7 @@ namespace GitVersion
                     {
                         throw new WarningException("Can't specify multiple assembly info files when using /ensureassemblyinfo switch, either use a single assembly info file or do not specify /ensureassemblyinfo and create assembly info files manually");
                     }
+
                     continue;
                 }
 
@@ -370,6 +351,7 @@ namespace GitVersion
                     {
                         throw new WarningException($"Could not parse Verbosity value '{value}'");
                     }
+
                     continue;
                 }
 
@@ -416,7 +398,7 @@ namespace GitVersion
             return arguments;
         }
 
-        private void EnsureArgumentValueCount(string[] values, int maxArguments = 1)
+        private static void EnsureArgumentValueCount(string[] values, int maxArguments = 1)
         {
             if (values != null && values.Length > maxArguments)
             {
@@ -424,7 +406,7 @@ namespace GitVersion
             }
         }
 
-        private NameValueCollection CollectSwitchesAndValuesFromArguments(IList<string> namedArguments, out bool firstArgumentIsSwitch)
+        private static NameValueCollection CollectSwitchesAndValuesFromArguments(IList<string> namedArguments, out bool firstArgumentIsSwitch)
         {
             firstArgumentIsSwitch = true;
             var switchesAndValues = new NameValueCollection();
@@ -446,7 +428,7 @@ namespace GitVersion
                 else if (currentKey != null)
                 {
                     // And if the current switch does not have a value yet and the value is not itself a switch, set its value to this argument.
-                    if (String.IsNullOrEmpty(switchesAndValues[currentKey]))
+                    if (string.IsNullOrEmpty(switchesAndValues[currentKey]))
                     {
                         switchesAndValues[currentKey] = arg;
                     }
@@ -466,13 +448,6 @@ namespace GitVersion
             }
 
             return switchesAndValues;
-        }
-
-        private static List<string> GetArgumentsWithoutExeName()
-        {
-            return Environment.GetCommandLineArgs()
-                .Skip(1)
-                .ToList();
         }
     }
 }

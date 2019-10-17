@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using GitVersion;
 using NUnit.Framework;
 using Shouldly;
@@ -66,7 +65,7 @@ namespace GitVersionExe.Tests
         [Test]
         public void Exec_with_args()
         {
-            var arguments = argumentParser.ParseArguments(new List<string>
+            var arguments = argumentParser.ParseArguments(new []
             {
                 "-exec",
                 "rake",
@@ -87,7 +86,7 @@ namespace GitVersionExe.Tests
         [Test]
         public void Msbuild_with_args()
         {
-            var arguments = argumentParser.ParseArguments(new List<string>
+            var arguments = argumentParser.ParseArguments(new []
             {
                 "-proj",
                 "msbuild.proj",

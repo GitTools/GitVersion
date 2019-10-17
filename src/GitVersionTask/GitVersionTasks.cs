@@ -18,9 +18,9 @@ namespace GitVersionTask
 {
     public static class GitVersionTasks
     {
-        private static ILog log;
-        private static IEnvironment environment;
-        private static IFileSystem fileSystem;
+        private static readonly ILog log;
+        private static readonly IEnvironment environment;
+        private static readonly IFileSystem fileSystem;
 
         static GitVersionTasks()
         {

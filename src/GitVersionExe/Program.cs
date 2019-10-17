@@ -3,22 +3,23 @@ using System.Diagnostics;
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Logging;
+using Console = System.Console;
 using Environment = GitVersion.Common.Environment;
 
 namespace GitVersion
 {
     class Program
     {
-        static void Main()
+        static void Main(string[] args)
         {
             var fileSystem = new FileSystem();
             var environment = new Environment();
             var argumentParser = new ArgumentParser();
-            var arguments = argumentParser.ParseArguments();
 
             int exitCode;
-            if (arguments != null)
+            try
             {
+                var arguments = argumentParser.ParseArguments(args);
                 var log = new Log
                 {
                     Verbosity = arguments.Verbosity
@@ -32,8 +33,9 @@ namespace GitVersion
 
                 exitCode = app.Run(arguments);
             }
-            else
+            catch (Exception exception)
             {
+                Console.Error.WriteLine(exception.Message);
                 exitCode = 1;
             }
 
