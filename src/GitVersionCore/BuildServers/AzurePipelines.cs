@@ -8,9 +8,9 @@ using GitVersion.Logging;
 
 namespace GitVersion.BuildServers
 {
-    public class VsoAgent : BuildServerBase
+    public class AzurePipelines : BuildServerBase
     {
-        public VsoAgent(IEnvironment environment, ILog log) : base(environment, log)
+        public AzurePipelines(IEnvironment environment, ILog log) : base(environment, log)
         {
         }
 
@@ -28,6 +28,11 @@ namespace GitVersion.BuildServers
 
         public override string GetCurrentBranch(bool usingDynamicRepos)
         {
+            var pullRequestBranchName = Environment.GetEnvironmentVariable("SYSTEM_PULLREQUEST_SOURCEBRANCH");
+            if (!string.IsNullOrWhiteSpace(pullRequestBranchName))
+            {
+                return pullRequestBranchName;
+            }
             return Environment.GetEnvironmentVariable("BUILD_SOURCEBRANCH");
         }
 
@@ -35,7 +40,7 @@ namespace GitVersion.BuildServers
 
         public override string GenerateSetVersionMessage(VersionVariables variables)
         {
-            // For VSO, we'll get the Build Number and insert GitVersion variables where
+            // For AzurePipelines, we'll get the Build Number and insert GitVersion variables where
             // specified
             var buildNumberEnv = Environment.GetEnvironmentVariable("BUILD_BUILDNUMBER");
             if (string.IsNullOrWhiteSpace(buildNumberEnv))

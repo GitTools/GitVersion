@@ -426,7 +426,7 @@ CommitDate: 2015-11-10
             // Make sure GitVersion doesn't trigger build server mode when we are running the tests
             environment.SetEnvironmentVariable(AppVeyor.EnvironmentVariableName, null);
             environment.SetEnvironmentVariable(TravisCI.EnvironmentVariableName, null);
-            environment.SetEnvironmentVariable(VsoAgent.EnvironmentVariableName, null);
+            environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, null);
 
             using (var fixture = new EmptyRepositoryFixture())
             {

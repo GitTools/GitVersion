@@ -42,7 +42,7 @@ namespace GitVersion.BuildServers
                 new MyGet(environment, log),
                 new Jenkins(environment, log),
                 new GitLabCi(environment, log),
-                new VsoAgent(environment, log),
+                new AzurePipelines(environment, log),
                 new TravisCI(environment, log),
                 new EnvRun(environment, log),
                 new Drone(environment, log),
