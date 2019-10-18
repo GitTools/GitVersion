@@ -19,7 +19,7 @@ namespace GitVersion
         public Authentication Authentication;
 
         public Config OverrideConfig;
-        public bool HasOverrideConfig { get; set; }
+        public bool HasOverrideConfig;
 
         public string TargetPath;
         public string ConfigFile;

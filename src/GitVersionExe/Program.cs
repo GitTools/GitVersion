@@ -8,35 +8,34 @@ using Environment = GitVersion.Common.Environment;
 
 namespace GitVersion
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            var fileSystem = new FileSystem();
-            var environment = new Environment();
-            var argumentParser = new ArgumentParser();
+            var arguments = ParseArguments(args);
 
-            int exitCode;
-            try
+            var exitCode = 1;
+            if (arguments != null)
             {
-                var arguments = argumentParser.ParseArguments(args);
-                var log = new Log
+                var fileSystem = new FileSystem();
+                var environment = new Environment();
+
+                try
                 {
-                    Verbosity = arguments.Verbosity
-                };
+                    var log = new Log { Verbosity = arguments.Verbosity };
 
-                var configFileLocator = string.IsNullOrWhiteSpace(arguments.ConfigFile)
-                    ? (IConfigFileLocator) new DefaultConfigFileLocator(fileSystem, log)
-                    : new NamedConfigFileLocator(arguments.ConfigFile, fileSystem, log);
+                    var configFileLocator = string.IsNullOrWhiteSpace(arguments.ConfigFile)
+                        ? (IConfigFileLocator) new DefaultConfigFileLocator(fileSystem, log)
+                        : new NamedConfigFileLocator(arguments.ConfigFile, fileSystem, log);
 
-                var app = new GitVersionApplication(fileSystem, environment, log, configFileLocator);
+                    var app = new GitVersionApplication(fileSystem, environment, log, configFileLocator);
 
-                exitCode = app.Run(arguments);
-            }
-            catch (Exception exception)
-            {
-                Console.Error.WriteLine(exception.Message);
-                exitCode = 1;
+                    exitCode = app.Run(arguments);
+                }
+                catch (Exception exception)
+                {
+                    Console.Error.WriteLine(exception.Message);
+                }
             }
 
             if (Debugger.IsAttached)
@@ -45,6 +44,21 @@ namespace GitVersion
             }
 
             System.Environment.Exit(exitCode);
+        }
+
+        private static Arguments ParseArguments(string[] args)
+        {
+            var argumentParser = new ArgumentParser();
+            Arguments arguments = null;
+            try
+            {
+                arguments = argumentParser.ParseArguments(args);
+            }
+            catch (Exception exception)
+            {
+                Console.Error.WriteLine(exception.Message);
+            }
+            return arguments;
         }
     }
 }

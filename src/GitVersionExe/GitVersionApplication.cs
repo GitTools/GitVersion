@@ -106,8 +106,6 @@ namespace GitVersion
                     return 0;
                 }
 
-                
-
                 var execCommand = new ExecCommand();
 
                 execCommand.Execute(arguments, fileSystem, environment, log, configFileLocator);

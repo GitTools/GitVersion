@@ -38,7 +38,7 @@ namespace GitVersionExe.Tests
             typeof(Arguments).GetFields()
                 .Select(p => p.Name)
                 .Where(p => IsNotInHelp(lookup, p, helpText))
-                .Except(new[] { "Authentication", "CommitId" })
+                .Except(new[] { "Authentication", "CommitId", "HasOverrideConfig" })
                 .ShouldBeEmpty();
         }
 
