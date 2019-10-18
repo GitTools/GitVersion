@@ -21,6 +21,7 @@ namespace GitVersionTask
         private static readonly ILog log;
         private static readonly IEnvironment environment;
         private static readonly IFileSystem fileSystem;
+        private static readonly IConfigFileLocator configFileLocator;
 
         static GitVersionTasks()
         {
@@ -122,7 +123,12 @@ namespace GitVersionTask
         }
 
         private static bool GetVersionVariables(GitVersionTaskBase task, out VersionVariables versionVariables)
-            => new ExecuteCore(fileSystem, environment, log, ConfigFileLocator.GetLocator(fileSystem, log, task.ConfigFilePath))
+            => new ExecuteCore(fileSystem, environment, log, GetLocator(task.ConfigFilePath))
                 .TryGetVersion(task.SolutionDirectory, out versionVariables, task.NoFetch, new Authentication());
+
+        private static IConfigFileLocator GetLocator(string filePath = null) =>
+            !string.IsNullOrEmpty(filePath)
+                ? (IConfigFileLocator) new NamedConfigFileLocator(filePath, fileSystem, log)
+                : new DefaultConfigFileLocator(fileSystem, log);
     }
 }

@@ -15,11 +15,6 @@ namespace GitVersion.Configuration
             Log = log;
         }
 
-        public static IConfigFileLocator GetLocator(IFileSystem fileSystem, ILog log, string filePath = null) =>
-            !string.IsNullOrEmpty(filePath)
-                ? (IConfigFileLocator) new NamedConfigFileLocator(filePath, fileSystem, log)
-                : new DefaultConfigFileLocator(fileSystem, log);
-
         public abstract bool HasConfigFileAt(string workingDirectory);
 
         public abstract string GetConfigFilePath(string workingDirectory);
