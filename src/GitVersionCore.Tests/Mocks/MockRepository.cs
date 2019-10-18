@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using LibGit2Sharp;
 
+using Index = LibGit2Sharp.Index;
 namespace GitVersionCore.Tests.Mocks
 {
     public class MockRepository : IRepository
@@ -30,21 +31,6 @@ namespace GitVersionCore.Tests.Mocks
         }
 
         public Branch Checkout(Commit commit, CheckoutOptions options, Signature signature = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Branch Checkout(Branch branch, CheckoutOptions options)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Branch Checkout(string committishOrBranchSpec, CheckoutOptions options)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Branch Checkout(Commit commit, CheckoutOptions options)
         {
             throw new NotImplementedException();
         }
@@ -211,7 +197,7 @@ namespace GitVersionCore.Tests.Mocks
 
         public Branch Head { get; set; }
         public LibGit2Sharp.Configuration Config { get; set; }
-        public LibGit2Sharp.Index Index { get; set; }
+        public Index Index { get; set; }
         public ReferenceCollection Refs { get; set; }
 
         public IQueryableCommitLog Commits

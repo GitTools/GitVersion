@@ -3,24 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion.Helpers;
+using GitVersion.Logging;
 using LibGit2Sharp;
 
 namespace GitVersion.Configuration
 {
-    public class BranchConfigurationCalculator
+    public class BranchConfigurationCalculator : IBranchConfigurationCalculator
     {
         public static string FallbackConfigName = "Fallback";
+        private GitVersionContext context;
+        private ILog log;
+
+        public BranchConfigurationCalculator(ILog log, GitVersionContext context)
+        {
+            this.log = log;
+            this.context = context;
+        }
 
         /// <summary>
         /// Gets the <see cref="BranchConfig"/> for the current commit.
         /// </summary>
-        public static BranchConfig GetBranchConfiguration(GitVersionContext context, Branch targetBranch, IList<Branch> excludedInheritBranches = null)
+        public BranchConfig GetBranchConfiguration(Branch targetBranch, IList<Branch> excludedInheritBranches = null)
         {
             var matchingBranches = context.FullConfiguration.GetConfigForBranch(targetBranch.NameWithoutRemote());
             
             if (matchingBranches == null)
             {
-                Logger.WriteInfo($"No branch configuration found for branch {targetBranch.FriendlyName}, falling back to default configuration");
+                log.Info($"No branch configuration found for branch {targetBranch.FriendlyName}, falling back to default configuration");
 
                 matchingBranches = new BranchConfig { Name = FallbackConfigName };
                 ConfigurationProvider.ApplyBranchDefaults(context.FullConfiguration, matchingBranches, "", new List<string>());
@@ -28,7 +37,7 @@ namespace GitVersion.Configuration
 
             if (matchingBranches.Increment == IncrementStrategy.Inherit)
             {
-                matchingBranches = InheritBranchConfiguration(context, targetBranch, matchingBranches, excludedInheritBranches);
+                matchingBranches = InheritBranchConfiguration(targetBranch, matchingBranches, excludedInheritBranches);
                 if (matchingBranches.Name == FallbackConfigName && matchingBranches.Increment == IncrementStrategy.Inherit)
                 {
                     // We tried, and failed to inherit, just fall back to patch
@@ -40,11 +49,11 @@ namespace GitVersion.Configuration
         }
 
         // TODO I think we need to take a fresh approach to this.. it's getting really complex with heaps of edge cases
-        static BranchConfig InheritBranchConfiguration(GitVersionContext context, Branch targetBranch, BranchConfig branchConfiguration, IList<Branch> excludedInheritBranches)
+        private BranchConfig InheritBranchConfiguration(Branch targetBranch, BranchConfig branchConfiguration, IList<Branch> excludedInheritBranches)
         {
             var repository = context.Repository;
             var config = context.FullConfiguration;
-            using (Logger.IndentLog("Attempting to inherit branch configuration from parent branch"))
+            using (log.IndentLog("Attempting to inherit branch configuration from parent branch"))
             {
                 var excludedBranches = new[] { targetBranch };
                 // Check if we are a merge commit. If so likely we are a pull request
@@ -97,11 +106,11 @@ namespace GitVersion.Configuration
                     }
                 }
 
-                Logger.WriteInfo("Found possible parent branches: " + string.Join(", ", possibleParents.Select(p => p.FriendlyName)));
+                log.Info("Found possible parent branches: " + string.Join(", ", possibleParents.Select(p => p.FriendlyName)));
 
                 if (possibleParents.Count == 1)
                 {
-                    var branchConfig = GetBranchConfiguration(context, possibleParents[0], excludedInheritBranches);
+                    var branchConfig = GetBranchConfiguration(possibleParents[0], excludedInheritBranches);
                     // If we have resolved a fallback config we should not return that we have got config
                     if (branchConfig.Name != FallbackConfigName)
                     {
@@ -136,7 +145,7 @@ namespace GitVersion.Configuration
                 }
 
                 var branchName = chosenBranch.FriendlyName;
-                Logger.WriteWarning(errorMessage + Environment.NewLine + Environment.NewLine + "Falling back to " + branchName + " branch config");
+                log.Warning(errorMessage + Environment.NewLine + Environment.NewLine + "Falling back to " + branchName + " branch config");
 
                 // To prevent infinite loops, make sure that a new branch was chosen.
                 if (targetBranch.IsSameBranch(chosenBranch))
@@ -150,7 +159,7 @@ namespace GitVersion.Configuration
                     }
                     else
                     {
-                        Logger.WriteWarning("Fallback branch wants to inherit Increment branch configuration from itself. Using patch increment instead.");
+                        log.Warning("Fallback branch wants to inherit Increment branch configuration from itself. Using patch increment instead.");
                         return new BranchConfig(branchConfiguration)
                         {
                             Increment = IncrementStrategy.Patch
@@ -158,11 +167,11 @@ namespace GitVersion.Configuration
                     }
                 }
 
-                var inheritingBranchConfig = GetBranchConfiguration(context, chosenBranch, excludedInheritBranches);
+                var inheritingBranchConfig = GetBranchConfiguration(chosenBranch, excludedInheritBranches);
                 var configIncrement = inheritingBranchConfig.Increment;
                 if (inheritingBranchConfig.Name == FallbackConfigName && configIncrement == IncrementStrategy.Inherit)
                 {
-                    Logger.WriteWarning("Fallback config inherits by default, dropping to patch increment");
+                    log.Warning("Fallback config inherits by default, dropping to patch increment");
                     configIncrement = IncrementStrategy.Patch;
                 }
                 return new BranchConfig(branchConfiguration)
@@ -175,7 +184,7 @@ namespace GitVersion.Configuration
             }
         }
 
-        static Branch[] CalculateWhenMultipleParents(IRepository repository, Commit currentCommit, ref Branch currentBranch, Branch[] excludedBranches)
+        private Branch[] CalculateWhenMultipleParents(IRepository repository, Commit currentCommit, ref Branch currentBranch, Branch[] excludedBranches)
         {
             var parents = currentCommit.Parents.ToArray();
             var branches = repository.Branches.Where(b => !b.IsRemote && b.Tip == parents[1]).ToList();
@@ -206,14 +215,12 @@ namespace GitVersion.Configuration
                 }
             }
 
-            Logger.WriteInfo("HEAD is merge commit, this is likely a pull request using " + currentBranch.FriendlyName + " as base");
+            log.Info("HEAD is merge commit, this is likely a pull request using " + currentBranch.FriendlyName + " as base");
 
             return excludedBranches;
         }
 
-        private static BranchConfig
-            ChooseMasterOrDevelopIncrementStrategyIfTheChosenBranchIsOneOfThem(Branch ChosenBranch,
-                BranchConfig BranchConfiguration, Config config)
+        private static BranchConfig ChooseMasterOrDevelopIncrementStrategyIfTheChosenBranchIsOneOfThem(Branch ChosenBranch, BranchConfig BranchConfiguration, Config config)
         {
             BranchConfig masterOrDevelopConfig = null;
             var developBranchRegex = config.Branches[ConfigurationProvider.DevelopBranchKey].Regex;

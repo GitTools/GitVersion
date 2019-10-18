@@ -1,6 +1,6 @@
-﻿namespace GitVersion.Helpers
+namespace GitVersion.Logging
 {
-    public enum VerbosityLevel
+    public enum LogLevel
     {
         None,
         Error,

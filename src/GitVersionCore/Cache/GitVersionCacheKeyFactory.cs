@@ -5,16 +5,16 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using GitVersion.Configuration;
-using GitVersion.Helpers;
 using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.Cache
 {
     class GitVersionCacheKeyFactory
     {
-        public static GitVersionCacheKey Create(IFileSystem fileSystem, GitPreparer gitPreparer, Config overrideConfig, ConfigFileLocator configFileLocator)
+        public static GitVersionCacheKey Create(IFileSystem fileSystem, ILog log, GitPreparer gitPreparer, Config overrideConfig, IConfigFileLocator configFileLocator)
         {
-            var gitSystemHash = GetGitSystemHash(gitPreparer);
+            var gitSystemHash = GetGitSystemHash(gitPreparer, log);
             var configFileHash = GetConfigFileHash(fileSystem, gitPreparer, configFileLocator);
             var repositorySnapshotHash = GetRepositorySnapshotHash(gitPreparer);
             var overrideConfigHash = GetOverrideConfigHash(overrideConfig);
@@ -23,18 +23,18 @@ namespace GitVersion.Cache
             return new GitVersionCacheKey(compositeHash);
         }
 
-        static string GetGitSystemHash(GitPreparer gitPreparer)
+        static string GetGitSystemHash(GitPreparer gitPreparer, ILog log)
         {
             var dotGitDirectory = gitPreparer.GetDotGitDirectory();
 
             // traverse the directory and get a list of files, use that for GetHash
-            var contents = CalculateDirectoryContents(Path.Combine(dotGitDirectory, "refs"));
+            var contents = CalculateDirectoryContents(log, Path.Combine(dotGitDirectory, "refs"));
 
             return GetHash(contents.ToArray());
         }
 
         // based on https://msdn.microsoft.com/en-us/library/bb513869.aspx
-        static List<string> CalculateDirectoryContents(string root)
+        static List<string> CalculateDirectoryContents(ILog log, string root)
         {
             var result = new List<string>();
 
@@ -72,12 +72,12 @@ namespace GitVersion.Cache
                 // about the systems on which this code will run.
                 catch (UnauthorizedAccessException e)
                 {
-                    Logger.WriteError(e.Message);
+                    log.Error(e.Message);
                     continue;
                 }
                 catch (DirectoryNotFoundException e)
                 {
-                    Logger.WriteError(e.Message);
+                    log.Error(e.Message);
                     continue;
                 }
 
@@ -88,12 +88,12 @@ namespace GitVersion.Cache
                 }
                 catch (UnauthorizedAccessException e)
                 {
-                    Logger.WriteError(e.Message);
+                    log.Error(e.Message);
                     continue;
                 }
                 catch (DirectoryNotFoundException e)
                 {
-                    Logger.WriteError(e.Message);
+                    log.Error(e.Message);
                     continue;
                 }
 
@@ -107,7 +107,7 @@ namespace GitVersion.Cache
                     }
                     catch (IOException e)
                     {
-                        Logger.WriteError(e.Message);
+                        log.Error(e.Message);
                     }
                 }
 
@@ -157,11 +157,11 @@ namespace GitVersion.Cache
             return GetHash(configContent);
         }
 
-        private static string GetConfigFileHash(IFileSystem fileSystem, GitPreparer gitPreparer, ConfigFileLocator configFileLocator)
+        private static string GetConfigFileHash(IFileSystem fileSystem, GitPreparer gitPreparer, IConfigFileLocator configFileLocator)
         {
             // will return the same hash even when config file will be moved 
             // from workingDirectory to rootProjectDirectory. It's OK. Config essentially is the same.
-            var configFilePath = configFileLocator.SelectConfigFilePath(gitPreparer, fileSystem);
+            var configFilePath = configFileLocator.SelectConfigFilePath(gitPreparer);
             if (!fileSystem.Exists(configFilePath))
             {
                 return string.Empty;

@@ -3,6 +3,7 @@ using System.Linq;
 using GitTools.Testing;
 using GitVersion;
 using GitVersion.Configuration;
+using GitVersion.Logging;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -23,7 +24,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                 var branch = fixture.Repository.CreateBranch(branchName);
                 var sut = new VersionInBranchNameBaseVersionStrategy();
 
-                var gitVersionContext = new GitVersionContext(fixture.Repository, branch, new Config().ApplyDefaults());
+                var gitVersionContext = new GitVersionContext(fixture.Repository, new NullLog(), branch, new Config().ApplyDefaults());
                 var baseVersion = sut.GetVersions(gitVersionContext).Single();
 
                 baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
@@ -42,7 +43,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                 var branch = fixture.Repository.CreateBranch(branchName);
                 var sut = new VersionInBranchNameBaseVersionStrategy();
 
-                var gitVersionContext = new GitVersionContext(fixture.Repository, branch, new Config().ApplyDefaults());
+                var gitVersionContext = new GitVersionContext(fixture.Repository, new NullLog(), branch, new Config().ApplyDefaults());
                 var baseVersions = sut.GetVersions(gitVersionContext);
 
                 baseVersions.ShouldBeEmpty();
@@ -61,7 +62,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                 var branchConfigs = new Dictionary<string, BranchConfig> { { "support", new BranchConfig { IsReleaseBranch = true } } };
                 var config = new Config { Branches = branchConfigs }.ApplyDefaults();
 
-                var gitVersionContext = new GitVersionContext(fixture.Repository, branch, config);
+                var gitVersionContext = new GitVersionContext(fixture.Repository, new NullLog(), branch, config);
                 var baseVersion = sut.GetVersions(gitVersionContext).Single();
 
                 baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);
@@ -82,7 +83,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                 fixture.LocalRepositoryFixture.Checkout($"origin/{branchName}");
 
                 var sut = new VersionInBranchNameBaseVersionStrategy();
-                var gitVersionContext = new GitVersionContext(fixture.Repository, branch, new Config().ApplyDefaults());
+                var gitVersionContext = new GitVersionContext(fixture.Repository, new NullLog(), branch, new Config().ApplyDefaults());
                 var baseVersion = sut.GetVersions(gitVersionContext).Single();
 
                 baseVersion.SemanticVersion.ToString().ShouldBe(expectedBaseVersion);

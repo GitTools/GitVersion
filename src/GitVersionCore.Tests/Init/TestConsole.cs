@@ -1,32 +1,34 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using GitVersion.Configuration;
-using GitVersion.Helpers;
+using GitVersion.Logging;
 
 namespace GitVersionCore.Tests.Init
 {
     public class TestConsole : IConsole
     {
         readonly Queue<string> responses;
+        private ILog log;
 
         public TestConsole(params string[] responses)
         {
+            log = new NullLog();
             this.responses = new Queue<string>(responses);
         }
 
         public void WriteLine(string msg)
         {
-            Logger.WriteInfo(msg + Environment.NewLine);
+            log.Info(msg + Environment.NewLine);
         }
 
         public void WriteLine()
         {
-            Logger.WriteInfo(Environment.NewLine);
+            log.Info(Environment.NewLine);
         }
 
         public void Write(string msg)
         {
-            Logger.WriteInfo(msg);
+            log.Info(msg);
         }
 
         public string ReadLine()

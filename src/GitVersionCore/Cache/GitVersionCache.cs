@@ -6,16 +6,19 @@ using GitVersion.Helpers;
 using GitVersion.OutputVariables;
 using YamlDotNet.Serialization;
 using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.Cache
 {
     public class GitVersionCache
     {
-        readonly IFileSystem fileSystem;
+        private readonly IFileSystem fileSystem;
+        private readonly ILog log;
 
-        public GitVersionCache(IFileSystem fileSystem)
+        public GitVersionCache(IFileSystem fileSystem, ILog log)
         {
             this.fileSystem = fileSystem;
+            this.log = log;
         }
 
         public void WriteVariablesToDiskCache(GitPreparer gitPreparer, GitVersionCacheKey cacheKey, VersionVariables variablesFromCache)
@@ -26,7 +29,7 @@ namespace GitVersion.Cache
             variablesFromCache.FileName = cacheFileName;
 
             Dictionary<string, string> dictionary;
-            using (Logger.IndentLog("Creating dictionary"))
+            using (log.IndentLog("Creating dictionary"))
             {
                 dictionary = variablesFromCache.ToDictionary(x => x.Key, x => x.Value);
             }
@@ -37,7 +40,7 @@ namespace GitVersion.Cache
                 {
                     using (var sw = new StreamWriter(stream))
                     {
-                        using (Logger.IndentLog("Storing version variables to cache file " + cacheFileName))
+                        using (log.IndentLog("Storing version variables to cache file " + cacheFileName))
                         {
                             var serializer = new Serializer();
                             serializer.Serialize(sw, dictionary);
@@ -46,7 +49,7 @@ namespace GitVersion.Cache
                 }
             }
 
-            var retryOperation = new OperationWithExponentialBackoff<IOException>(new ThreadSleep(), WriteCacheOperation, maxRetries: 6);
+            var retryOperation = new OperationWithExponentialBackoff<IOException>(new ThreadSleep(), log, WriteCacheOperation, maxRetries: 6);
             retryOperation.ExecuteAsync().Wait();
         }
 
@@ -69,18 +72,18 @@ namespace GitVersion.Cache
 
         public VersionVariables LoadVersionVariablesFromDiskCache(GitPreparer gitPreparer, GitVersionCacheKey key)
         {
-            using (Logger.IndentLog("Loading version variables from disk cache"))
+            using (log.IndentLog("Loading version variables from disk cache"))
             {
                 var cacheDir = PrepareCacheDirectory(gitPreparer);
 
                 var cacheFileName = GetCacheFileName(key, cacheDir);
                 if (!fileSystem.Exists(cacheFileName))
                 {
-                    Logger.WriteInfo("Cache file " + cacheFileName + " not found.");
+                    log.Info("Cache file " + cacheFileName + " not found.");
                     return null;
                 }
 
-                using (Logger.IndentLog("Deserializing version variables from cache file " + cacheFileName))
+                using (log.IndentLog("Deserializing version variables from cache file " + cacheFileName))
                 {
                     try
                     {
@@ -89,15 +92,15 @@ namespace GitVersion.Cache
                     }
                     catch (Exception ex)
                     {
-                        Logger.WriteWarning("Unable to read cache file " + cacheFileName + ", deleting it.");
-                        Logger.WriteInfo(ex.ToString());
+                        log.Warning("Unable to read cache file " + cacheFileName + ", deleting it.");
+                        log.Info(ex.ToString());
                         try
                         {
                             fileSystem.Delete(cacheFileName);
                         }
                         catch (Exception deleteEx)
                         {
-                            Logger.WriteWarning($"Unable to delete corrupted version cache file {cacheFileName}. Got {deleteEx.GetType().FullName} exception.");
+                            log.Warning($"Unable to delete corrupted version cache file {cacheFileName}. Got {deleteEx.GetType().FullName} exception.");
                         }
 
                         return null;

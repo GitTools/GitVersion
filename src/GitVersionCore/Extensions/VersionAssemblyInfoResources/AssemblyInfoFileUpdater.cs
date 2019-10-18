@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using GitVersion.Helpers;
 using GitVersion.OutputVariables;
 using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.Extensions.VersionAssemblyInfoResources
 {
     public class AssemblyInfoFileUpdater : IDisposable
     {
-        readonly List<Action> restoreBackupTasks = new List<Action>();
-        readonly List<Action> cleanupBackupTasks = new List<Action>();
+        private readonly List<Action> restoreBackupTasks = new List<Action>();
+        private readonly List<Action> cleanupBackupTasks = new List<Action>();
 
-        readonly IDictionary<string, Regex> assemblyAttributeRegexes = new Dictionary<string, Regex>
+        private readonly IDictionary<string, Regex> assemblyAttributeRegexes = new Dictionary<string, Regex>
         {
             {".cs", new Regex( @"(\s*\[\s*assembly:\s*(?:.*)\s*\]\s*$(\r?\n)?)", RegexOptions.Multiline) },
             {".fs", new Regex( @"(\s*\[\s*\<assembly:\s*(?:.*)\>\s*\]\s*$(\r?\n)?)", RegexOptions.Multiline) },
@@ -23,23 +23,25 @@ namespace GitVersion.Extensions.VersionAssemblyInfoResources
 
         private const string NewLine = "\r\n";
 
-        ISet<string> assemblyInfoFileNames;
-        string workingDirectory;
-        VersionVariables variables;
-        IFileSystem fileSystem;
-        bool ensureAssemblyInfo;
-        TemplateManager templateManager;
+        private readonly ISet<string> assemblyInfoFileNames;
+        private readonly string workingDirectory;
+        private readonly VersionVariables variables;
+        private readonly IFileSystem fileSystem;
+        private readonly ILog log;
+        private readonly bool ensureAssemblyInfo;
+        private readonly TemplateManager templateManager;
 
-        public AssemblyInfoFileUpdater(string assemblyInfoFileName, string workingDirectory, VersionVariables variables, IFileSystem fileSystem, bool ensureAssemblyInfo) :
-                this(new HashSet<string> { assemblyInfoFileName }, workingDirectory, variables, fileSystem, ensureAssemblyInfo)
+        public AssemblyInfoFileUpdater(string assemblyInfoFileName, string workingDirectory, VersionVariables variables, IFileSystem fileSystem, ILog log, bool ensureAssemblyInfo) :
+                this(new HashSet<string> { assemblyInfoFileName }, workingDirectory, variables, fileSystem, log, ensureAssemblyInfo)
         { }
 
-        public AssemblyInfoFileUpdater(ISet<string> assemblyInfoFileNames, string workingDirectory, VersionVariables variables, IFileSystem fileSystem, bool ensureAssemblyInfo)
+        public AssemblyInfoFileUpdater(ISet<string> assemblyInfoFileNames, string workingDirectory, VersionVariables variables, IFileSystem fileSystem, ILog log, bool ensureAssemblyInfo)
         {
             this.assemblyInfoFileNames = assemblyInfoFileNames;
             this.workingDirectory = workingDirectory;
             this.variables = variables;
             this.fileSystem = fileSystem;
+            this.log = log;
             this.ensureAssemblyInfo = ensureAssemblyInfo;
 
             templateManager = new TemplateManager(TemplateType.VersionAssemblyInfoResources);
@@ -47,10 +49,10 @@ namespace GitVersion.Extensions.VersionAssemblyInfoResources
 
         public void Update()
         {
-            Logger.WriteInfo("Updating assembly info files");
+            log.Info("Updating assembly info files");
 
             var assemblyInfoFiles = GetAssemblyInfoFiles(workingDirectory, assemblyInfoFileNames, fileSystem, ensureAssemblyInfo).ToList();
-            Logger.WriteInfo($"Found {assemblyInfoFiles.Count} files");
+            log.Info($"Found {assemblyInfoFiles.Count} files");
 
             var assemblyVersion = variables.AssemblySemVer;
             var assemblyVersionRegex = new Regex(@"AssemblyVersion(Attribute)?\s*\(.*\)\s*");
@@ -111,7 +113,7 @@ namespace GitVersion.Extensions.VersionAssemblyInfoResources
             }
         }
 
-        string ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(Regex replaceRegex, string inputString, string replaceString, string fileExtension, ref bool appendedAttributes)
+        private string ReplaceOrInsertAfterLastAssemblyAttributeOrAppend(Regex replaceRegex, string inputString, string replaceString, string fileExtension, ref bool appendedAttributes)
         {
             var assemblyAddFormat = templateManager.GetAddFormatFor(fileExtension);
 
@@ -139,7 +141,7 @@ namespace GitVersion.Extensions.VersionAssemblyInfoResources
             return inputString;
         }
 
-        IEnumerable<FileInfo> GetAssemblyInfoFiles(string workingDirectory, ISet<string> assemblyInfoFileNames, IFileSystem fileSystem, bool ensureAssemblyInfo)
+        private IEnumerable<FileInfo> GetAssemblyInfoFiles(string workingDirectory, ISet<string> assemblyInfoFileNames, IFileSystem fileSystem, bool ensureAssemblyInfo)
         {
             if (assemblyInfoFileNames != null && assemblyInfoFileNames.Any(x => !string.IsNullOrWhiteSpace(x)))
             {
@@ -167,7 +169,7 @@ namespace GitVersion.Extensions.VersionAssemblyInfoResources
             }
         }
 
-        bool EnsureVersionAssemblyInfoFile(bool ensureAssemblyInfo, IFileSystem fileSystem, string fullPath)
+        private bool EnsureVersionAssemblyInfoFile(bool ensureAssemblyInfo, IFileSystem fileSystem, string fullPath)
         {
             if (fileSystem.Exists(fullPath))
             {
@@ -194,7 +196,7 @@ namespace GitVersion.Extensions.VersionAssemblyInfoResources
                 return true;
             }
 
-            Logger.WriteWarning($"No version assembly info template available to create source file '{fullPath}'");
+            log.Warning($"No version assembly info template available to create source file '{fullPath}'");
             return false;
         }
 

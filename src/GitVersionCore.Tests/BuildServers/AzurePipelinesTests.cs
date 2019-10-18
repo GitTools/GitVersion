@@ -2,20 +2,23 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.BuildServers;
 using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersionCore.Tests.BuildServers
 {
     [TestFixture]
-    public class VsoAgentTests : TestBase
+    public class AzurePipelinesTests : TestBase
     {
         string key = "BUILD_BUILDNUMBER";
 
         private IEnvironment environment;
+        private ILog log;
 
         [SetUp]
         public void SetEnvironmentVariableForTest()
         {
             environment = new TestEnvironment();
+            log = new NullLog();
             environment.SetEnvironmentVariable(key, "Some Build_Value $(GitVersion_FullSemVer) 20151310.3 $(UnknownVar) Release");
         }
 
@@ -28,7 +31,7 @@ namespace GitVersionCore.Tests.BuildServers
         [Test]
         public void Develop_branch()
         {
-            var versionBuilder = new VsoAgent(environment);
+            var versionBuilder = new AzurePipelines(environment, log);
             var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Unstable4");
             var vsVersion = versionBuilder.GenerateSetVersionMessage(vars);
 
@@ -38,7 +41,7 @@ namespace GitVersionCore.Tests.BuildServers
         [Test]
         public void EscapeValues()
         {
-            var versionBuilder = new VsoAgent(environment);
+            var versionBuilder = new AzurePipelines(environment, log);
             var vsVersion = versionBuilder.GenerateSetParameterMessage("Foo", "0.8.0-unstable568 Branch:'develop' Sha:'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb'");
 
             vsVersion[0].ShouldBe("##vso[task.setvariable variable=GitVersion.Foo;]0.8.0-unstable568 Branch:'develop' Sha:'ee69bff1087ebc95c6b43aa2124bd58f5722e0cb'");
@@ -49,7 +52,7 @@ namespace GitVersionCore.Tests.BuildServers
         {
             environment.SetEnvironmentVariable(key, null);
 
-            var versionBuilder = new VsoAgent(environment);
+            var versionBuilder = new AzurePipelines(environment, log);
             var semver = "0.0.0-Unstable4";
             var vars = new TestableVersionVariables(fullSemVer: semver);
             var vsVersion = versionBuilder.GenerateSetVersionMessage(vars);

@@ -3,6 +3,7 @@ using System.IO;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.BuildServers
 {
@@ -12,7 +13,7 @@ namespace GitVersion.BuildServers
         string _file;
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
-        public Jenkins(IEnvironment environment, string propertiesFileName = "gitversion.properties") : base(environment)
+        public Jenkins(IEnvironment environment, ILog log, string propertiesFileName = "gitversion.properties") : base(environment, log)
         {
             _file = propertiesFileName;
         }
@@ -34,7 +35,7 @@ namespace GitVersion.BuildServers
         {
             return IsPipelineAsCode()
                 ? Environment.GetEnvironmentVariable("BRANCH_NAME")
-                : (Environment.GetEnvironmentVariable("GIT_LOCAL_BRANCH") ?? Environment.GetEnvironmentVariable("GIT_BRANCH"));
+                : Environment.GetEnvironmentVariable("GIT_LOCAL_BRANCH") ?? Environment.GetEnvironmentVariable("GIT_BRANCH");
         }
 
         private bool IsPipelineAsCode()

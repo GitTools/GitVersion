@@ -4,21 +4,32 @@ using GitVersion;
 using GitVersion.BuildServers;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
-using GitVersion.Helpers;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 using GitVersionTask.MsBuild;
 using GitVersionTask.MsBuild.Tasks;
-using Microsoft.Build.Framework;
 using GitVersion.Extensions.GitVersionInformationResources;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Common;
+using GitVersion.Logging;
 using Environment = GitVersion.Common.Environment;
 
 namespace GitVersionTask
 {
     public static class GitVersionTasks
     {
+        private static readonly ILog log;
+        private static readonly IEnvironment environment;
+        private static readonly IFileSystem fileSystem;
+        private static readonly IConfigFileLocator configFileLocator;
+
+        static GitVersionTasks()
+        {
+            log = new Log();
+            environment = new Environment();
+            fileSystem = new FileSystem();
+        }
+
         public static bool GetVersion(GetVersion task)
         {
             return ExecuteGitVersionTask(task, t =>
@@ -46,7 +57,7 @@ namespace GitVersionTask
 
                 t.AssemblyInfoTempFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, new FileSystem(), true))
+                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, new FileSystem(), log, true))
                 {
                     assemblyInfoFileUpdater.Update();
                     assemblyInfoFileUpdater.CommitChanges();
@@ -75,8 +86,8 @@ namespace GitVersionTask
                 if (!GetVersionVariables(task, out var versionVariables)) return;
 
                 var logger = t.Log;
-                BuildServerList.Init(new Environment());
-                foreach (var buildServer in BuildServerList.GetApplicableBuildServers())
+                BuildServerList.Init(environment, log);
+                foreach (var buildServer in BuildServerList.GetApplicableBuildServers(log))
                 {
                     logger.LogMessage($"Executing GenerateSetVersionMessage for '{ buildServer.GetType().Name }'.");
                     logger.LogMessage(buildServer.GenerateSetVersionMessage(versionVariables));
@@ -92,32 +103,32 @@ namespace GitVersionTask
         private static bool ExecuteGitVersionTask<T>(T task, Action<T> action)
             where T : GitVersionTaskBase
         {
-            void LogDebug(string message) => task.Log.LogMessage(MessageImportance.Low, message);
-            void LogInfo(string message) => task.Log.LogMessage(MessageImportance.Normal, message);
-            void LogWarning(string message) => task.Log.LogWarning(message);
-            void LogError(string message) => task.Log.LogError(message);
-
-            Logger.SetLoggers(LogDebug, LogInfo, LogWarning, LogError);
-            var log = task.Log;
+            var taskLog = task.Log;
             try
             {
                 action(task);
             }
             catch (WarningException errorException)
             {
-                log.LogWarningFromException(errorException);
+                taskLog.LogWarningFromException(errorException);
                 return true;
             }
             catch (Exception exception)
             {
-                log.LogErrorFromException(exception);
+                taskLog.LogErrorFromException(exception);
                 return false;
             }
 
-            return !log.HasLoggedErrors;
+            return !taskLog.HasLoggedErrors;
         }
 
         private static bool GetVersionVariables(GitVersionTaskBase task, out VersionVariables versionVariables)
-            => new ExecuteCore(new FileSystem(), new Environment(), ConfigFileLocator.GetLocator(task.ConfigFilePath)).TryGetVersion(task.SolutionDirectory, out versionVariables, task.NoFetch, new Authentication());
+            => new ExecuteCore(fileSystem, environment, log, GetLocator(task.ConfigFilePath))
+                .TryGetVersion(task.SolutionDirectory, out versionVariables, task.NoFetch, new Authentication());
+
+        private static IConfigFileLocator GetLocator(string filePath = null) =>
+            !string.IsNullOrEmpty(filePath)
+                ? (IConfigFileLocator) new NamedConfigFileLocator(filePath, fileSystem, log)
+                : new DefaultConfigFileLocator(fileSystem, log);
     }
 }

@@ -4,19 +4,22 @@ using GitVersion.VersionCalculation.BaseVersionCalculators;
 using GitVersion.VersioningModes;
 using GitVersion.Configuration;
 using GitVersion.Helpers;
+using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation
 {
     public class NextVersionCalculator
     {
+        private readonly ILog log;
         IBaseVersionCalculator baseVersionFinder;
         IMetaDataCalculator metaDataCalculator;
 
-        public NextVersionCalculator(IBaseVersionCalculator baseVersionCalculator = null, IMetaDataCalculator metaDataCalculator = null)
+        public NextVersionCalculator(ILog log, IBaseVersionCalculator baseVersionCalculator = null, IMetaDataCalculator metaDataCalculator = null)
         {
+            this.log = log;
             this.metaDataCalculator = metaDataCalculator ?? new MetaDataCalculator();
             baseVersionFinder = baseVersionCalculator ??
-                new BaseVersionCalculator(
+                new BaseVersionCalculator(log, 
                     new FallbackBaseVersionStrategy(),
                     new ConfigNextVersionBaseVersionStrategy(),
                     new TaggedCommitVersionStrategy(),
@@ -46,7 +49,7 @@ namespace GitVersion.VersionCalculation
             SemanticVersion semver;
             if (context.Configuration.VersioningMode == VersioningMode.Mainline)
             {
-                var mainlineMode = new MainlineVersionCalculator(metaDataCalculator);
+                var mainlineMode = new MainlineVersionCalculator(metaDataCalculator, log);
                 semver = mainlineMode.FindMainlineModeVersion(baseVersion, context);
             }
             else
@@ -73,7 +76,7 @@ namespace GitVersion.VersionCalculation
             return taggedSemanticVersion ?? semver;
         }
 
-        private static SemanticVersion PerformIncrement(GitVersionContext context, BaseVersion baseVersion)
+        private SemanticVersion PerformIncrement(GitVersionContext context, BaseVersion baseVersion)
         {
             var semver = baseVersion.SemanticVersion;
             var increment = IncrementStrategyFinder.DetermineIncrementedField(context, baseVersion);
@@ -81,7 +84,7 @@ namespace GitVersion.VersionCalculation
             {
                 semver = semver.IncrementVersion(increment.Value);
             }
-            else Logger.WriteInfo("Skipping version increment");
+            else log.Info("Skipping version increment");
             return semver;
         }
 
@@ -110,7 +113,7 @@ namespace GitVersion.VersionCalculation
             semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, number);
         }
 
-        public static string GetBranchSpecificTag(EffectiveConfiguration configuration, string branchFriendlyName, string branchNameOverride)
+        public string GetBranchSpecificTag(EffectiveConfiguration configuration, string branchFriendlyName, string branchNameOverride)
         {
             var tagToUse = configuration.Tag;
             if (tagToUse == "useBranchName")
@@ -119,7 +122,7 @@ namespace GitVersion.VersionCalculation
             }
             if (tagToUse.Contains("{BranchName}"))
             {
-                Logger.WriteInfo("Using branch name to calculate version tag");
+                log.Info("Using branch name to calculate version tag");
 
                 var branchName = branchNameOverride ?? branchFriendlyName;
                 if (!string.IsNullOrWhiteSpace(configuration.BranchPrefixToTrim))

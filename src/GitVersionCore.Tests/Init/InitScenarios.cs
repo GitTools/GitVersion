@@ -1,6 +1,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using GitVersion.Configuration;
+using GitVersion.Logging;
 using NUnit.Framework;
 using Shouldly;
 
@@ -20,13 +21,14 @@ namespace GitVersionCore.Tests.Init
         [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
         public void CanSetNextVersion()
         {
-            var testFileSystem = new TestFileSystem();
+            var log = new NullLog();
+            var fileSystem = new TestFileSystem();
             var testConsole = new TestConsole("3", "2.0.0", "0");
-            var configFileLocator = new DefaultConfigFileLocator();
+            var configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
             var workingDirectory = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "c:\\proj" : "/proj";
-            ConfigurationProvider.Init(workingDirectory, testFileSystem, testConsole, configFileLocator);
+            ConfigurationProvider.Init(workingDirectory, fileSystem, testConsole, log, configFileLocator);
 
-            testFileSystem.ReadAllText(Path.Combine(workingDirectory, "GitVersion.yml")).ShouldMatchApproved();
+            fileSystem.ReadAllText(Path.Combine(workingDirectory, "GitVersion.yml")).ShouldMatchApproved();
         }
     }
 }

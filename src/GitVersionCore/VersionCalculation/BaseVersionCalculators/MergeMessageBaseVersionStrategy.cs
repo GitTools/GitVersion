@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using LibGit2Sharp;
 using GitVersion.Helpers;
+using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
@@ -24,7 +25,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
                         mergeMessage.Version != null &&
                         context.FullConfiguration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
                     {
-                        Logger.WriteInfo($"Found commit [{context.CurrentCommit.Sha}] matching merge message format: {mergeMessage.FormatName}");
+                        context.Log.Info($"Found commit [{context.CurrentCommit.Sha}] matching merge message format: {mergeMessage.FormatName}");
                         var shouldIncrement = !context.Configuration.PreventIncrementForMergedBranchVersion;
                         return new[]
                         {

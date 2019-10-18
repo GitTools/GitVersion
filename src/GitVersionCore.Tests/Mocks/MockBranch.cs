@@ -10,12 +10,12 @@ namespace GitVersionCore.Tests.Mocks
         public MockBranch(string friendlyName)
         {
             this.friendlyName = friendlyName;
-            canonicalName = friendlyName;
+            CanonicalName = friendlyName;
         }
         public MockBranch(string friendlyName, string canonicalName)
         {
             this.friendlyName = friendlyName;
-            this.canonicalName = canonicalName;
+            this.CanonicalName = canonicalName;
         }
 
         public MockBranch()
@@ -24,13 +24,12 @@ namespace GitVersionCore.Tests.Mocks
         }
         MockCommitLog commits = new MockCommitLog();
         string friendlyName;
-        string canonicalName;
         public override string FriendlyName => friendlyName;
         public override ICommitLog Commits => commits;
         public override Commit Tip => commits.First();
         public override bool IsTracking => true;
 
-        public override string CanonicalName => canonicalName;
+        public override string CanonicalName { get; }
 
         public override int GetHashCode()
         {

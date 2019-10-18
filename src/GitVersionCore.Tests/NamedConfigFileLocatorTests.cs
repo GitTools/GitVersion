@@ -1,11 +1,10 @@
-using System;
 using System.IO;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
-using GitVersion.Helpers;
 using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersionCore.Tests
 {
@@ -19,12 +18,14 @@ namespace GitVersionCore.Tests
         string workingPath;
         IFileSystem fileSystem;
         NamedConfigFileLocator configFileLocator;
+        private ILog log;
 
         [SetUp]
         public void Setup()
         {
             fileSystem = new TestFileSystem();
-            configFileLocator = new NamedConfigFileLocator("my-config.yaml");
+            log = new NullLog();
+            configFileLocator = new NamedConfigFileLocator("my-config.yaml", fileSystem, log);
             repoPath = DefaultRepoPath;
             workingPath = DefaultWorkingPath;
 
@@ -37,7 +38,7 @@ namespace GitVersionCore.Tests
             var repositoryConfigFilePath = SetupConfigFileContent(string.Empty, path: repoPath);
             var workingDirectoryConfigFilePath = SetupConfigFileContent(string.Empty, path: workingPath);
 
-            var exception = Should.Throw<WarningException>(() => { configFileLocator.Verify(workingPath, repoPath, fileSystem); });
+            var exception = Should.Throw<WarningException>(() => { configFileLocator.Verify(workingPath, repoPath); });
 
             var expectedMessage = $"Ambiguous config file selection from '{workingDirectoryConfigFilePath}' and '{repositoryConfigFilePath}'";
             exception.Message.ShouldBe(expectedMessage);
@@ -48,13 +49,16 @@ namespace GitVersionCore.Tests
         {
             SetupConfigFileContent(string.Empty);
 
-            var s = string.Empty;
-            Action<string> action = info => { s = info; };
-            using (Logger.AddLoggersTemporarily(action, action, action, action))
-            {
-                ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
-            }
-            s.Length.ShouldBe(0);
+            var stringLogger = string.Empty;
+            void Action(string info) => stringLogger = info;
+
+            var logAppender = new TestLogAppender(Action);
+            log = new Log(logAppender);
+
+            configFileLocator = new NamedConfigFileLocator("my-config.yaml", fileSystem, log);
+
+            ConfigurationProvider.Provide(repoPath, configFileLocator);
+            stringLogger.Length.ShouldBe(0);
         }
 
         [Test]
@@ -62,13 +66,16 @@ namespace GitVersionCore.Tests
         {
             SetupConfigFileContent(string.Empty, path: @"c:\\Unrelated\\path");
 
-            var s = string.Empty;
-            Action<string> action = info => { s = info; };
-            using (Logger.AddLoggersTemporarily(action, action, action, action))
-            {
-                ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
-            }
-            s.Length.ShouldBe(0);
+            var stringLogger = string.Empty;
+            void Action(string info) => stringLogger = info;
+
+            var logAppender = new TestLogAppender(Action);
+            log = new Log(logAppender);
+
+            configFileLocator = new NamedConfigFileLocator("my-config.yaml", fileSystem, log);
+
+            ConfigurationProvider.Provide(repoPath, configFileLocator);
+            stringLogger.Length.ShouldBe(0);
         }
 
         string SetupConfigFileContent(string text, string fileName = null, string path = null)

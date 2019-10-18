@@ -2,6 +2,7 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.BuildServers;
 using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersionCore.Tests.BuildServers
 {
@@ -13,11 +14,13 @@ namespace GitVersionCore.Tests.BuildServers
         string localBranch = "GIT_LOCAL_BRANCH";
         string pipelineBranch = "BRANCH_NAME";
         private IEnvironment environment;
+        private ILog log;
 
         [SetUp]
         public void SetUp()
         {
             environment = new TestEnvironment();
+            log = new NullLog();
         }
 
 
@@ -35,7 +38,7 @@ namespace GitVersionCore.Tests.BuildServers
         public void CanApplyCurrentContextWhenenvironmentVariableIsSet()
         {
             SetEnvironmentVariableForDetection();
-            var j = new Jenkins(environment);
+            var j = new Jenkins(environment, log);
             j.CanApplyToCurrentContext().ShouldBe(true);
         }
     
@@ -43,7 +46,7 @@ namespace GitVersionCore.Tests.BuildServers
         public void CanNotApplyCurrentContextWhenenvironmentVariableIsNotSet()
         {
             ClearenvironmentVariableForDetection();
-            var j = new Jenkins(environment);
+            var j = new Jenkins(environment, log);
             j.CanApplyToCurrentContext().ShouldBe(false);  
         }
 
@@ -58,7 +61,7 @@ namespace GitVersionCore.Tests.BuildServers
             environment.SetEnvironmentVariable(branch, "origin/master");
 
             // Test Jenkins that GetCurrentBranch falls back to GIT_BRANCH if GIT_LOCAL_BRANCH undefined
-            var j = new Jenkins(environment);
+            var j = new Jenkins(environment, log);
             j.GetCurrentBranch(true).ShouldBe("origin/master");
 
             // Set GIT_LOCAL_BRANCH
@@ -87,7 +90,7 @@ namespace GitVersionCore.Tests.BuildServers
             environment.SetEnvironmentVariable(localBranch, null);
 
             // Test Jenkins GetCurrentBranch method now returns BRANCH_NAME
-            var j = new Jenkins(environment);
+            var j = new Jenkins(environment, log);
             j.GetCurrentBranch(true).ShouldBe("master");
 
             // Restore environment variables

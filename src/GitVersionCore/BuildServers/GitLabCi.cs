@@ -3,6 +3,7 @@ using System.IO;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.BuildServers
 {
@@ -11,7 +12,7 @@ namespace GitVersion.BuildServers
         public const string EnvironmentVariableName = "GITLAB_CI";
         string _file;
 
-        public GitLabCi(IEnvironment environment, string propertiesFileName = "gitversion.properties") : base(environment)
+        public GitLabCi(IEnvironment environment, ILog log, string propertiesFileName = "gitversion.properties") : base(environment, log)
         {
             _file = propertiesFileName;
         }

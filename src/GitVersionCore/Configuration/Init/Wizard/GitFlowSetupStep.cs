@@ -1,11 +1,12 @@
 using GitVersion.Configuration.Init.SetConfig;
 using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.Wizard
 {
     public class GitFlowSetupStep : GlobalModeSetting
     {
-        public GitFlowSetupStep(IConsole console, IFileSystem fileSystem) : base(new FinishedSetupStep(console, fileSystem), true, console, fileSystem)
+        public GitFlowSetupStep(IConsole console, IFileSystem fileSystem, ILog log) : base(new FinishedSetupStep(console, fileSystem, log), true, console, fileSystem, log)
         {
         }
 

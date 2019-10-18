@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using GitVersion.Configuration;
-using GitVersion.Helpers;
+using GitVersion.Logging;
 using GitVersion.OutputFormatters;
 
 namespace GitVersion
@@ -13,16 +13,16 @@ namespace GitVersion
             OverrideConfig = new Config();
             Output = OutputType.Json;
             UpdateAssemblyInfoFileName = new HashSet<string>();
-            Verbosity = VerbosityLevel.Info;
+            Verbosity = Verbosity.Normal;
         }
 
         public Authentication Authentication;
 
         public Config OverrideConfig;
-        public bool HasOverrideConfig { get; set; }
-        public ConfigFileLocator ConfigFileLocator { get; set; } = ConfigFileLocator.GetLocator();
+        public bool HasOverrideConfig;
 
         public string TargetPath;
+        public string ConfigFile;
 
         public string TargetUrl;
         public string TargetBranch;
@@ -54,7 +54,7 @@ namespace GitVersion
         public bool NoCache;
         public bool NoNormalize;
 
-        public VerbosityLevel Verbosity;
+        public Verbosity Verbosity;
 
         public void AddAssemblyInfoFileName(string fileName)
         {

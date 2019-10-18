@@ -1,6 +1,7 @@
 using GitTools.Testing;
 using GitVersion;
 using GitVersion.Configuration;
+using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -11,6 +12,13 @@ namespace GitVersionCore.Tests
     [TestFixture]
     public class VersionSourceTests : TestBase
     {
+        private ILog log;
+
+        public VersionSourceTests()
+        {
+            log = new NullLog();
+        }
+
         [Test]
         public void VersionSourceSha()
         {
@@ -25,8 +33,8 @@ namespace GitVersionCore.Tests
                 Commands.Checkout(fixture.Repository, featureBranch);
                 _ = fixture.Repository.MakeACommit();
 
-                var context = new GitVersionContext(fixture.Repository, fixture.Repository.Head, config);
-                var nextVersionCalculator = new NextVersionCalculator();
+                var context = new GitVersionContext(fixture.Repository, new NullLog(), fixture.Repository.Head, config);
+                var nextVersionCalculator = new NextVersionCalculator(log);
                 var version = nextVersionCalculator.FindVersion(context);
 
                 version.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
@@ -43,8 +51,8 @@ namespace GitVersionCore.Tests
             {
                 var initialCommit = fixture.Repository.MakeACommit();
 
-                var context = new GitVersionContext(fixture.Repository, fixture.Repository.Head, config);
-                var nextVersionCalculator = new NextVersionCalculator();
+                var context = new GitVersionContext(fixture.Repository, new NullLog(), fixture.Repository.Head, config);
+                var nextVersionCalculator = new NextVersionCalculator(log);
                 var version = nextVersionCalculator.FindVersion(context);
 
                 version.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
@@ -67,8 +75,8 @@ namespace GitVersionCore.Tests
                 Commands.Checkout(fixture.Repository, featureBranch);
                 _ = fixture.Repository.MakeACommit();
 
-                var context = new GitVersionContext(fixture.Repository, fixture.Repository.Head, config);
-                var nextVersionCalculator = new NextVersionCalculator();
+                var context = new GitVersionContext(fixture.Repository, new NullLog(), fixture.Repository.Head, config);
+                var nextVersionCalculator = new NextVersionCalculator(log);
                 var version = nextVersionCalculator.FindVersion(context);
 
                 version.BuildMetaData.VersionSourceSha.ShouldBe(secondCommit.Sha);

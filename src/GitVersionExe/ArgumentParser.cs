@@ -3,39 +3,32 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using GitVersion.Configuration;
 using GitVersion.Exceptions;
+using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.OutputFormatters;
+using Environment = System.Environment;
 
 namespace GitVersion
 {
-    public class ArgumentParser
+    public class ArgumentParser : IArgumentParser
     {
-        public static Arguments ParseArguments(string commandLineArguments)
+        public Arguments ParseArguments(string commandLineArguments)
         {
             var arguments = commandLineArguments
                 .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                .ToList();
+                .ToArray();
 
             return ParseArguments(arguments);
         }
 
-        static void EnsureArgumentValueCount(string[] values, int maxArguments = 1)
+        public Arguments ParseArguments(string[] commandLineArguments)
         {
-            if (values != null && values.Length > maxArguments)
-            {
-                throw new WarningException($"Could not parse command line parameter '{values[1]}'.");
-            }
-        }
-
-        public static Arguments ParseArguments(List<string> commandLineArguments)
-        {
-            if (commandLineArguments.Count == 0)
+            if (commandLineArguments.Length == 0)
             {
                 return new Arguments
                 {
-                    TargetPath = Environment.CurrentDirectory
+                    TargetPath = Environment.CurrentDirectory,
                 };
             }
 
@@ -45,7 +38,7 @@ namespace GitVersion
             {
                 return new Arguments
                 {
-                    IsHelp = true
+                    IsHelp = true,
                 };
             }
 
@@ -54,11 +47,12 @@ namespace GitVersion
                 return new Arguments
                 {
                     TargetPath = Environment.CurrentDirectory,
-                    Init = true
+                    Init = true,
                 };
             }
 
             var arguments = new Arguments();
+
             var switchesAndValues = CollectSwitchesAndValuesFromArguments(commandLineArguments, out var firstArgumentIsSwitch);
 
             for (var i = 0; i < switchesAndValues.AllKeys.Length; i++)
@@ -84,7 +78,7 @@ namespace GitVersion
                 if (name.IsSwitch("config"))
                 {
                     EnsureArgumentValueCount(values);
-                    arguments.ConfigFileLocator = new NamedConfigFileLocator(value);
+                    arguments.ConfigFile = value;
                     continue;
                 }
 
@@ -173,6 +167,7 @@ namespace GitVersion
                     {
                         arguments.Diag = true;
                     }
+
                     continue;
                 }
 
@@ -251,6 +246,7 @@ namespace GitVersion
                     {
                         arguments.ShowConfig = true;
                     }
+
                     continue;
                 }
 
@@ -296,6 +292,7 @@ namespace GitVersion
                     {
                         throw new WarningException("Can't specify multiple assembly info files when using /ensureassemblyinfo switch, either use a single assembly info file or do not specify /ensureassemblyinfo and create assembly info files manually");
                     }
+
                     continue;
                 }
 
@@ -345,10 +342,16 @@ namespace GitVersion
 
                 if (name.IsSwitch("verbosity"))
                 {
-                    if (!Enum.TryParse(value, true, out arguments.Verbosity))
+                    // first try the old version
+                    if (Enum.TryParse(value, true, out LogLevel logLevel))
+                    {
+                        arguments.Verbosity = LogExtensions.GetVerbosityForLevel(logLevel);
+                    }
+                    else if (!Enum.TryParse(value, true, out arguments.Verbosity))
                     {
                         throw new WarningException($"Could not parse Verbosity value '{value}'");
                     }
+
                     continue;
                 }
 
@@ -395,7 +398,15 @@ namespace GitVersion
             return arguments;
         }
 
-        static NameValueCollection CollectSwitchesAndValuesFromArguments(IList<string> namedArguments, out bool firstArgumentIsSwitch)
+        private static void EnsureArgumentValueCount(string[] values, int maxArguments = 1)
+        {
+            if (values != null && values.Length > maxArguments)
+            {
+                throw new WarningException($"Could not parse command line parameter '{values[1]}'.");
+            }
+        }
+
+        private static NameValueCollection CollectSwitchesAndValuesFromArguments(IList<string> namedArguments, out bool firstArgumentIsSwitch)
         {
             firstArgumentIsSwitch = true;
             var switchesAndValues = new NameValueCollection();

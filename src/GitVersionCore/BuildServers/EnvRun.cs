@@ -1,13 +1,13 @@
 using System.IO;
 using GitVersion.OutputVariables;
-using GitVersion.Helpers;
 using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.BuildServers
 {
     public class EnvRun : BuildServerBase
     {
-        public EnvRun(IEnvironment environment) : base(environment)
+        public EnvRun(IEnvironment environment, ILog log) : base(environment, log)
         {
         }
 
@@ -20,7 +20,7 @@ namespace GitVersion.BuildServers
             {
                 if (!File.Exists(envRunDatabasePath))
                 {
-                    Logger.WriteError($"The database file of EnvRun.exe was not found at {envRunDatabasePath}.");
+                    Log.Error($"The database file of EnvRun.exe was not found at {envRunDatabasePath}.");
                     return false;
                 }
 

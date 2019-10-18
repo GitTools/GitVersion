@@ -8,6 +8,14 @@ namespace GitVersionExe.Tests
 {
     public class HelpWriterTests
     {
+        private IHelpWriter helpWriter;
+
+        public HelpWriterTests()
+        {
+            var versionWriter = new VersionWriter();
+            helpWriter = new HelpWriter(versionWriter);
+        }
+
         [Test]
         public void AllArgsAreInHelp()
         {
@@ -20,16 +28,17 @@ namespace GitVersionExe.Tests
                 { "DynamicRepositoryLocation" , "/dynamicRepoLocation" },
                 { "IsHelp", "/?" },
                 { "IsVersion", "/version" },
-                { "UpdateWixVersionFile", "/updatewixversionfile" }
+                { "UpdateWixVersionFile", "/updatewixversionfile" },
+                { "ConfigFile", "/config" },
             };
             string helpText = null;
 
-            HelpWriter.WriteTo(s => helpText = s);
+            helpWriter.WriteTo(s => helpText = s);
 
             typeof(Arguments).GetFields()
                 .Select(p => p.Name)
                 .Where(p => IsNotInHelp(lookup, p, helpText))
-                .Except(new[] { "Authentication", "CommitId" })
+                .Except(new[] { "Authentication", "CommitId", "HasOverrideConfig" })
                 .ShouldBeEmpty();
         }
 

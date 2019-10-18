@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using GitVersion.Configuration.Init.Wizard;
-using GitVersion.Helpers;
 using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.BuildServer
 {
@@ -16,10 +16,12 @@ namespace GitVersion.Configuration.Init.BuildServer
 
     class AppVeyorSetup : ConfigInitWizardStep
     {
+        private readonly ILog log;
         private ProjectVisibility _projectVisibility;
 
-        public AppVeyorSetup(IConsole console, IFileSystem fileSystem, ProjectVisibility visibility) : base(console, fileSystem)
+        public AppVeyorSetup(IConsole console, IFileSystem fileSystem, ILog log,  ProjectVisibility visibility) : base(console, fileSystem, log)
         {
+            this.log = log;
             _projectVisibility = visibility;
         }
 
@@ -28,21 +30,21 @@ namespace GitVersion.Configuration.Init.BuildServer
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem, Log));
                     return StepResult.Ok();
                 case "1":
                     GenerateBasicConfig(workingDirectory);
-                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem, Log));
                     return StepResult.Ok();
                 case "2":
                     GenerateNuGetConfig(workingDirectory);
-                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
+                    steps.Enqueue(new EditConfigStep(Console, FileSystem, Log));
                     return StepResult.Ok();
             }
             return StepResult.InvalidResponseSelected();
         }
 
-        static private string GetGVCommand(ProjectVisibility visibility)
+        private static string GetGVCommand(ProjectVisibility visibility)
         {
             switch (visibility)
             {
@@ -93,7 +95,7 @@ after_build:
         {
             var outputFilename = GetOutputFilename(workingDirectory, fileSystem);
             fileSystem.WriteAllText(outputFilename, configContents);
-            Logger.WriteInfo($"AppVeyor sample config file written to {outputFilename}");
+            log.Info($"AppVeyor sample config file written to {outputFilename}");
         }
 
         protected override string GetPrompt(Config config, string workingDirectory)

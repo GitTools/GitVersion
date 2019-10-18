@@ -2,17 +2,18 @@ using System.IO;
 using GitVersion.Exceptions;
 using GitVersion.VersionCalculation;
 using GitVersion.Helpers;
+using GitVersion.Logging;
 
 namespace GitVersion
 {
     public class GitVersionFinder
     {
-        public SemanticVersion FindVersion(GitVersionContext context)
+        public SemanticVersion FindVersion(ILog log, GitVersionContext context)
         {
-            Logger.WriteInfo($"Running against branch: {context.CurrentBranch.FriendlyName} ({(context.CurrentCommit == null ? "-" : context.CurrentCommit.Sha)})");
+            log.Info($"Running against branch: {context.CurrentBranch.FriendlyName} ({(context.CurrentCommit == null ? "-" : context.CurrentCommit.Sha)})");
             if (context.IsCurrentCommitTagged)
             {
-                Logger.WriteInfo($"Current commit is tagged with version {context.CurrentCommitTaggedVersion}, " +
+                log.Info($"Current commit is tagged with version {context.CurrentCommitTaggedVersion}, " +
                                  "version calculation is for metadata only.");
             }
             EnsureMainTopologyConstraints(context);
@@ -23,7 +24,7 @@ namespace GitVersion
                 throw new WarningException("NextVersion.txt has been deprecated. See http://gitversion.readthedocs.org/en/latest/configuration/ for replacement");
             }
 
-            return new NextVersionCalculator().FindVersion(context);
+            return new NextVersionCalculator(log).FindVersion(context);
         }
 
         void EnsureMainTopologyConstraints(GitVersionContext context)

@@ -31,7 +31,7 @@ namespace GitVersionExe.Tests
   </Target>
 </Project>";
                 File.WriteAllText(buildFile, buildFileContent);
-                var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, SpecifiedArgumentRunner.BuildTool, "RunExecViaCommandLine.csproj /target:OutputResults");
+                var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, ExecCommand.BuildTool, "RunExecViaCommandLine.csproj /target:OutputResults");
 
                 result.ExitCode.ShouldBe(0, result.Log);
                 result.Log.ShouldContain("GitVersion_FullSemVer: 1.2.4+1");
@@ -59,7 +59,7 @@ namespace GitVersionExe.Tests
                 fixture.MakeATaggedCommit("1.2.3");
                 fixture.MakeACommit();
 
-                var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: @" /l ""/some/path""", logToFile: false);
+                var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: @" /l ""/tmp/path""", logToFile: false);
 
                 result.ExitCode.ShouldBe(0);
                 result.Output.ShouldContain(@"""MajorMinorPatch"":""1.2.4""");
@@ -68,8 +68,8 @@ namespace GitVersionExe.Tests
 
         [Theory]
         [TestCase("", "INFO [")]
-        [TestCase("-verbosity Info", "INFO [")]
-        [TestCase("-verbosity Error", "")]
+        [TestCase("-verbosity NORMAL", "INFO [")]
+        [TestCase("-verbosity quiet", "")]
         public void CheckBuildServerVerbosityConsole(string verbosityArg, string expectedOutput)
         {
             using (var fixture = new EmptyRepositoryFixture())
@@ -77,7 +77,7 @@ namespace GitVersionExe.Tests
                 fixture.MakeATaggedCommit("1.2.3");
                 fixture.MakeACommit();
 
-                var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: $@" {verbosityArg} -output buildserver /l ""/some/path""", logToFile: false);
+                var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: $@" {verbosityArg} -output buildserver /l ""/tmp/path""", logToFile: false);
 
                 result.ExitCode.ShouldBe(0);
                 result.Output.ShouldContain(expectedOutput);

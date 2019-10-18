@@ -2,27 +2,30 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.BuildServers;
 using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersionCore.Tests.BuildServers
 {
     [TestFixture]
-    public class VsoAgentBuildNumberTests : TestBase
+    public class AzurePipelinesBuildNumberTests : TestBase
     {
         string key = "BUILD_BUILDNUMBER";
         string logPrefix = "##vso[build.updatebuildnumber]";
-        VsoAgent versionBuilder;
+        AzurePipelines versionBuilder;
 
         private IEnvironment environment;
+        private ILog log;
 
         [SetUp]
         public void SetUp()
         {
             environment = new TestEnvironment();
-            versionBuilder = new VsoAgent(environment);
+            log = new NullLog();
+            versionBuilder = new AzurePipelines(environment, log);
         }
 
         [TearDown]
-        public void TearDownVsoAgentBuildNumberTest()
+        public void TearDownAzurePipelinesBuildNumberTest()
         {
             environment.SetEnvironmentVariable(key, null);
         }
@@ -32,7 +35,7 @@ namespace GitVersionCore.Tests.BuildServers
         [TestCase("$(GITVERSION_FULLSEMVER)", "1.0.0", "1.0.0")]
         [TestCase("$(GitVersion.FullSemVer)-Build.1234", "1.0.0", "1.0.0-Build.1234")]
         [TestCase("$(GITVERSION_FULLSEMVER)-Build.1234", "1.0.0", "1.0.0-Build.1234")]
-        public void VsoAgentBuildNumberWithFullSemVer(string buildNumberFormat, string myFullSemVer, string expectedBuildNumber)
+        public void AzurePipelinesBuildNumberWithFullSemVer(string buildNumberFormat, string myFullSemVer, string expectedBuildNumber)
         {
             environment.SetEnvironmentVariable(key, buildNumberFormat);
             var vars = new TestableVersionVariables(fullSemVer: myFullSemVer);
@@ -45,7 +48,7 @@ namespace GitVersionCore.Tests.BuildServers
         [TestCase("$(GITVERSION_SEMVER)", "1.0.0", "1.0.0")]
         [TestCase("$(GitVersion.SemVer)-Build.1234", "1.0.0", "1.0.0-Build.1234")]
         [TestCase("$(GITVERSION_SEMVER)-Build.1234", "1.0.0", "1.0.0-Build.1234")]
-        public void VsoAgentBuildNumberWithSemVer(string buildNumberFormat, string mySemVer, string expectedBuildNumber)
+        public void AzurePipelinesBuildNumberWithSemVer(string buildNumberFormat, string mySemVer, string expectedBuildNumber)
         {
             environment.SetEnvironmentVariable(key, buildNumberFormat);
             var vars = new TestableVersionVariables(semVer: mySemVer);

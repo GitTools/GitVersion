@@ -6,6 +6,7 @@ using GitVersion.OutputVariables;
 using LibGit2Sharp;
 using Shouldly;
 using GitVersion.Helpers;
+using GitVersion.Logging;
 
 namespace GitVersionCore.Tests
 {
@@ -24,9 +25,12 @@ namespace GitVersionCore.Tests
                 configuration = new Config();
                 ConfigurationProvider.ApplyDefaultsTo(configuration);
             }
-            var gitVersionContext = new GitVersionContext(repository ?? fixture.Repository, targetBranch, configuration, isForTrackedBranchOnly, commitId);
+
+            var log = new NullLog();
+            var variableProvider = new VariableProvider(log);
+            var gitVersionContext = new GitVersionContext(repository ?? fixture.Repository, log, targetBranch, configuration, isForTrackedBranchOnly, commitId);
             var executeGitVersion = ExecuteGitVersion(gitVersionContext);
-            var variables = VariableProvider.GetVariablesFor(executeGitVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
+            var variables = variableProvider.GetVariablesFor(executeGitVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
             try
             {
                 return variables;
@@ -68,7 +72,7 @@ namespace GitVersionCore.Tests
         static SemanticVersion ExecuteGitVersion(GitVersionContext context)
         {
             var vf = new GitVersionFinder();
-            return vf.FindVersion(context);
+            return vf.FindVersion(new NullLog(), context);
         }
 
         /// <summary>
@@ -76,7 +80,7 @@ namespace GitVersionCore.Tests
         /// </summary>
         public static void InitialiseRepo(this RemoteRepositoryFixture fixture)
         {
-            new GitPreparer(null, null, new Authentication(), false, fixture.LocalRepositoryFixture.RepositoryPath).Initialise(true, null);
+            new GitPreparer(new NullLog(), null, null, new Authentication(), false, fixture.LocalRepositoryFixture.RepositoryPath).Initialise(true, null);
         }
     }
 }

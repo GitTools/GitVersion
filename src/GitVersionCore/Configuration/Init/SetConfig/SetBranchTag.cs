@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.SetConfig
 {
@@ -9,8 +10,8 @@ namespace GitVersion.Configuration.Init.SetConfig
         string name;
         readonly BranchConfig branchConfig;
 
-        public SetBranchTag(string name, BranchConfig branchConfig, IConsole console, IFileSystem fileSystem)
-            : base(console, fileSystem)
+        public SetBranchTag(string name, BranchConfig branchConfig, IConsole console, IFileSystem fileSystem, ILog log)
+            : base(console, fileSystem, log)
         {
             this.name = name;
             this.branchConfig = branchConfig;
@@ -26,15 +27,15 @@ namespace GitVersion.Configuration.Init.SetConfig
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(new ConfigureBranch(name, branchConfig, Console, FileSystem));
+                    steps.Enqueue(new ConfigureBranch(name, branchConfig, Console, FileSystem, Log));
                     return StepResult.Ok();
                 case "1":
                     branchConfig.Tag = string.Empty;
-                    steps.Enqueue(new ConfigureBranch(name, branchConfig, Console, FileSystem));
+                    steps.Enqueue(new ConfigureBranch(name, branchConfig, Console, FileSystem, Log));
                     return StepResult.Ok();
                 default:
                     branchConfig.Tag = result;
-                    steps.Enqueue(new ConfigureBranch(name, branchConfig, Console, FileSystem));
+                    steps.Enqueue(new ConfigureBranch(name, branchConfig, Console, FileSystem, Log));
                     return StepResult.Ok();
             }
         }

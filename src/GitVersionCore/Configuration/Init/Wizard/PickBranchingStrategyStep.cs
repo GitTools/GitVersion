@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.Wizard
 {
     public class PickBranchingStrategyStep : ConfigInitWizardStep
     {
-        public PickBranchingStrategyStep(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)
+        public PickBranchingStrategyStep(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
         {
         }
 
@@ -14,13 +15,13 @@ namespace GitVersion.Configuration.Init.Wizard
             switch (result)
             {
                 case "1":
-                    steps.Enqueue(new GitFlowSetupStep(Console, FileSystem));
+                    steps.Enqueue(new GitFlowSetupStep(Console, FileSystem, Log));
                     break;
                 case "2":
-                    steps.Enqueue(new GitHubFlowStep(Console, FileSystem));
+                    steps.Enqueue(new GitHubFlowStep(Console, FileSystem, Log));
                     break;
                 case "3":
-                    steps.Enqueue(new PickBranchingStrategy1Step(Console, FileSystem));
+                    steps.Enqueue(new PickBranchingStrategy1Step(Console, FileSystem, Log));
                     break;
                 default:
                     return StepResult.InvalidResponseSelected();

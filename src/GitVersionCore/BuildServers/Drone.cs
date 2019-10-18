@@ -1,12 +1,13 @@
 using System;
 using GitVersion.OutputVariables;
 using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.BuildServers
 {
     public class Drone : BuildServerBase
     {
-        public Drone(IEnvironment environment) : base(environment)
+        public Drone(IEnvironment environment, ILog log) : base(environment, log)
         {
         }
 
