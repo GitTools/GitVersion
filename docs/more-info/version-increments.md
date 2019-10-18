@@ -39,6 +39,8 @@ The options for `commit-message-incrementing` are `Enabled`, `MergeMessageOnly` 
 
 If the incrementing mode is set to `MergeMessageOnly` you can add this information in when merging a pull request. This prevents commits within a PR bumping the version.
 
+One thing to be aware of: If the current version is an alpha-version (i.e. 0.x.y.), attempting to bump the major version will merely bump the minor (eg from 0.2.0 to 0.3.0 instead of 1.0.0). Once the current version is greater than 1.0.0, bumping the major version works as expected.
+
 ### GitVersion.yml
 The first is by setting the `next-version` property in the GitVersion.yml file. This property only serves as a base version,
 
