@@ -14,6 +14,11 @@ namespace GitVersion.Logging
         private readonly StringBuilder sb;
         private string indent = string.Empty;
 
+        public Log(): this(Array.Empty<ILogAppender>())
+        {
+            
+        }
+
         public Log(params ILogAppender[] appenders)
         {
             this.appenders = appenders ?? Array.Empty<ILogAppender>();
