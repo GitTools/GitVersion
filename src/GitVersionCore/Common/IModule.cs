@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GitVersion
+namespace GitVersion.Common
 {
     public interface IModule
     {

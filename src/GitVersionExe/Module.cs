@@ -16,6 +16,8 @@ namespace GitVersion
             services.AddSingleton<IVersionWriter, VersionWriter>();
             services.AddSingleton<IGitVersionRunner, GitVersionRunner>();
 
+            services.AddTransient<IExecCommand, ExecCommand>();
+
             services.AddSingleton(GetConfigFileLocator);
         }
 

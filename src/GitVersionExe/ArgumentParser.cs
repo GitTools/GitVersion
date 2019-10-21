@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using GitVersion.Configuration;
 using GitVersion.Exceptions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
@@ -113,6 +114,7 @@ namespace GitVersion
                 if (name.IsSwitch("u"))
                 {
                     EnsureArgumentValueCount(values);
+                    if (arguments.Authentication == null) arguments.Authentication = new Authentication();
                     arguments.Authentication.Username = value;
                     continue;
                 }
@@ -120,6 +122,7 @@ namespace GitVersion
                 if (name.IsSwitch("p"))
                 {
                     EnsureArgumentValueCount(values);
+                    if (arguments.Authentication == null) arguments.Authentication = new Authentication();
                     arguments.Authentication.Password = value;
                     continue;
                 }
@@ -305,6 +308,7 @@ namespace GitVersion
                     }
 
                     arguments.HasOverrideConfig = true;
+                    arguments.OverrideConfig = new Config();
 
                     if (keyValueOptions.Length > 1)
                     {

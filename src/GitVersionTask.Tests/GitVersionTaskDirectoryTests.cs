@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using GitVersion;
+using GitVersion.Configuration;
 using GitVersion.Logging;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -11,10 +12,9 @@ namespace GitVersionTask.Tests
     [TestFixture]
     public class GitVersionTaskDirectoryTests : TestBase
     {
-        private ExecuteCore executeCore;
+        private IExecuteCore executeCore;
         private string gitDirectory;
         private string workDirectory;
-
 
         [SetUp]
         public void CreateTemporaryRepository()
@@ -22,7 +22,13 @@ namespace GitVersionTask.Tests
             workDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             gitDirectory = Repository.Init(workDirectory)
                 .TrimEnd(Path.DirectorySeparatorChar);
-            executeCore = new ExecuteCore(new TestFileSystem(), new TestEnvironment(), new Log());
+
+            var testFileSystem = new TestFileSystem();
+            var testEnvironment = new TestEnvironment();
+            var log = new NullLog();
+            var configFileLocator = new DefaultConfigFileLocator(testFileSystem, log);
+
+            executeCore = new ExecuteCore(testFileSystem, testEnvironment, log, configFileLocator);
             Assert.NotNull(gitDirectory);
         }
 
@@ -39,7 +45,9 @@ namespace GitVersionTask.Tests
         {
             try
             {
-                executeCore.ExecuteGitVersion(null, null, null, null, true, workDirectory, null);
+                var arguments = new Arguments { TargetPath = workDirectory, NoFetch = true };
+
+                executeCore.ExecuteGitVersion(arguments);
             }
             catch (Exception ex)
             {
@@ -58,7 +66,8 @@ namespace GitVersionTask.Tests
 
             try
             {
-                executeCore.ExecuteGitVersion(null, null, null, null, true, childDir, null);
+                var arguments = new Arguments { TargetPath = childDir, NoFetch = true };
+                executeCore.ExecuteGitVersion(arguments);
             }
             catch (Exception ex)
             {
