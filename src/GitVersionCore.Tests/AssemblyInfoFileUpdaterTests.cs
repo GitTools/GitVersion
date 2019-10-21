@@ -41,12 +41,10 @@ namespace GitVersionCore.Tests
             var fullPath = Path.Combine(workingDir, assemblyInfoFile);
             var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, true))
-            {
-                assemblyInfoFileUpdater.Update();
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, true);
+            assemblyInfoFileUpdater.Update();
 
-                fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
-            }
+            fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
         }
 
         [TestCase("cs")]
@@ -62,12 +60,10 @@ namespace GitVersionCore.Tests
             var fullPath = Path.Combine(workingDir, assemblyInfoFile);
             var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, true))
-            {
-                assemblyInfoFileUpdater.Update();
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, true);
+            assemblyInfoFileUpdater.Update();
 
-                fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
-            }
+            fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
         }
 
         [TestCase("cs")]
@@ -86,15 +82,13 @@ namespace GitVersionCore.Tests
             };
             var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFiles, workingDir, variables, fileSystem, log, true))
-            {
-                assemblyInfoFileUpdater.Update();
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFiles, workingDir, variables, fileSystem, log, true);
+            assemblyInfoFileUpdater.Update();
 
-                foreach (var item in assemblyInfoFiles)
-                {
-                    var fullPath = Path.Combine(workingDir, item);
-                    fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
-                }
+            foreach (var item in assemblyInfoFiles)
+            {
+                var fullPath = Path.Combine(workingDir, item);
+                fileSystem.ReadAllText(fullPath).ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
             }
         }
 
@@ -109,12 +103,10 @@ namespace GitVersionCore.Tests
             var fullPath = Path.Combine(workingDir, assemblyInfoFile);
             var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
-            {
-                assemblyInfoFileUpdater.Update();
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false);
+            assemblyInfoFileUpdater.Update();
 
-                fileSystem.Exists(fullPath).ShouldBeFalse();
-            }
+            fileSystem.Exists(fullPath).ShouldBeFalse();
         }
 
         [Test]
@@ -126,12 +118,10 @@ namespace GitVersionCore.Tests
             var fullPath = Path.Combine(workingDir, assemblyInfoFile);
             var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, true))
-            {
-                assemblyInfoFileUpdater.Update();
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, true);
+            assemblyInfoFileUpdater.Update();
 
-                fileSystem.Received(0).WriteAllText(fullPath, Arg.Any<string>());
-            }
+            fileSystem.Received(0).WriteAllText(fullPath, Arg.Any<string>());
         }
 
         [Test]
@@ -142,12 +132,10 @@ namespace GitVersionCore.Tests
             var assemblyInfoFiles = new HashSet<string>();
             var variables = variableProvider.GetVariablesFor(SemanticVersion.Parse("1.0.0", "v"), new TestEffectiveConfiguration(), false);
 
-            using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFiles, workingDir, variables, fileSystem, log, false))
-            {
-                assemblyInfoFileUpdater.Update();
+            using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFiles, workingDir, variables, fileSystem, log, false);
+            assemblyInfoFileUpdater.Update();
 
-                fileSystem.Received().DirectoryGetFiles(Arg.Is(workingDir), Arg.Any<string>(), Arg.Any<SearchOption>());
-            }
+            fileSystem.Received().DirectoryGetFiles(Arg.Is(workingDir), Arg.Any<string>(), Arg.Any<SearchOption>());
         }
 
         [TestCase("cs", "[assembly: AssemblyVersion(\"1.0.0.0\")]\r\n[assembly: AssemblyInformationalVersion(\"1.0.0.0\")]\r\n[assembly: AssemblyFileVersion(\"1.0.0.0\")]")]
@@ -161,15 +149,13 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
-                {
-                    assemblyInfoFileUpdater.Update();
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false);
+                assemblyInfoFileUpdater.Update();
 
-                    fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
-                        s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
-                        s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                        s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
-                }
+                fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
+                    s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
+                    s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
+                    s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
             });
         }
 
@@ -186,13 +172,11 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.None, verify: (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
-                {
-                    assemblyInfoFileUpdater.Update();
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false);
+                assemblyInfoFileUpdater.Update();
 
-                    assemblyFileContent = fileSystem.ReadAllText(fileName);
-                    assemblyFileContent.ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
-                }
+                assemblyFileContent = fileSystem.ReadAllText(fileName);
+                assemblyFileContent.ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
             });
         }
 
@@ -207,15 +191,13 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
-                {
-                    assemblyInfoFileUpdater.Update();
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false);
+                assemblyInfoFileUpdater.Update();
 
-                    fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
-                        s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
-                        s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                        s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
-                }
+                fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
+                    s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
+                    s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
+                    s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
             });
         }
 
@@ -230,15 +212,13 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
-                {
-                    assemblyInfoFileUpdater.Update();
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false);
+                assemblyInfoFileUpdater.Update();
 
-                    fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
-                        s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
-                        s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                        s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
-                }
+                fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
+                    s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
+                    s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
+                    s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
             });
         }
 
@@ -253,15 +233,13 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
-                {
-                    assemblyInfoFileUpdater.Update();
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false);
+                assemblyInfoFileUpdater.Update();
 
-                    fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
-                        s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
-                        s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                        s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
-                }
+                fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
+                    s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
+                    s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
+                    s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
             });
         }
 
@@ -276,18 +254,16 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
-                {
-                    assemblyInfoFileUpdater.Update();
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false);
+                assemblyInfoFileUpdater.Update();
 
-                    fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
-                        !s.Contains(@"AssemblyVersionAttribute(""1.0.0.0"")") &&
-                        !s.Contains(@"AssemblyInformationalVersionAttribute(""1.0.0.0"")") &&
-                        !s.Contains(@"AssemblyFileVersionAttribute(""1.0.0.0"")") &&
-                        s.Contains(@"AssemblyVersion(""2.3.1.0"")") &&
-                        s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                        s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
-                }
+                fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
+                    !s.Contains(@"AssemblyVersionAttribute(""1.0.0.0"")") &&
+                    !s.Contains(@"AssemblyInformationalVersionAttribute(""1.0.0.0"")") &&
+                    !s.Contains(@"AssemblyFileVersionAttribute(""1.0.0.0"")") &&
+                    s.Contains(@"AssemblyVersion(""2.3.1.0"")") &&
+                    s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
+                    s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
             });
         }
 
@@ -302,15 +278,13 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile("", fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
-                {
-                    assemblyInfoFileUpdater.Update();
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false);
+                assemblyInfoFileUpdater.Update();
 
-                    fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
-                        s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
-                        s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                        s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
-                }
+                fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
+                    s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
+                    s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
+                    s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
             });
         }
 
@@ -325,15 +299,13 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
-                {
-                    assemblyInfoFileUpdater.Update();
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false);
+                assemblyInfoFileUpdater.Update();
 
-                    fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
-                        s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
-                        s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                        s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
-                }
+                fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
+                    s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
+                    s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
+                    s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
             });
         }
 
@@ -348,15 +320,13 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
-                {
-                    assemblyInfoFileUpdater.Update();
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false);
+                assemblyInfoFileUpdater.Update();
 
-                    fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
-                        s.Contains(@"AssemblyVersion(""2.3.1.0"")") &&
-                        s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                        s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
-                }
+                fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
+                    s.Contains(@"AssemblyVersion(""2.3.1.0"")") &&
+                    s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
+                    s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
             });
         }
 
@@ -371,15 +341,13 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
-                {
-                    assemblyInfoFileUpdater.Update();
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false);
+                assemblyInfoFileUpdater.Update();
 
-                    fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
-                        s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
-                        s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                        s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
-                }
+                fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
+                    s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
+                    s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
+                    s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
             });
         }
 
@@ -394,15 +362,13 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.MajorMinor, (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
-                {
-                    assemblyInfoFileUpdater.Update();
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false);
+                assemblyInfoFileUpdater.Update();
 
-                    fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
-                        s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
-                        s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
-                        s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
-                }
+                fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
+                    s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
+                    s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
+                    s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
             });
         }
 
@@ -419,13 +385,11 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
-                {
-                    assemblyInfoFileUpdater.Update();
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false);
+                assemblyInfoFileUpdater.Update();
 
-                    assemblyFileContent = fileSystem.ReadAllText(fileName);
-                    assemblyFileContent.ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
-                }
+                assemblyFileContent = fileSystem.ReadAllText(fileName);
+                assemblyFileContent.ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
             });
         }
 
@@ -442,13 +406,11 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, verify: (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
-                {
-                    assemblyInfoFileUpdater.Update();
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false);
+                assemblyInfoFileUpdater.Update();
 
-                    assemblyFileContent = fileSystem.ReadAllText(fileName);
-                    assemblyFileContent.ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
-                }
+                assemblyFileContent = fileSystem.ReadAllText(fileName);
+                assemblyFileContent.ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
             });
         }
 
@@ -465,13 +427,11 @@ namespace GitVersionCore.Tests
 
             VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.None, verify: (fileSystem, variables) =>
             {
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
-                {
-                    assemblyInfoFileUpdater.Update();
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false);
+                assemblyInfoFileUpdater.Update();
 
-                    assemblyFileContent = fileSystem.ReadAllText(fileName);
-                    assemblyFileContent.ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
-                }
+                assemblyFileContent = fileSystem.ReadAllText(fileName);
+                assemblyFileContent.ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved", fileExtension)));
             });
         }
 

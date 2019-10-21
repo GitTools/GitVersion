@@ -51,12 +51,10 @@ namespace GitVersionCore.Tests
             var logAppender = new TestLogAppender(Action);
             var log = new Log(logAppender);
 
-            using (var wixVersionFileUpdater = new WixVersionFileUpdater(workingDir, vars, fileSystem, log))
-            {
-                wixVersionFileUpdater.Update();
-                fileSystem.ReadAllText(wixVersionFileUpdater.WixVersionFile).
-                    ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved")));
-            }
+            using var wixVersionFileUpdater = new WixVersionFileUpdater(workingDir, vars, fileSystem, log);
+            wixVersionFileUpdater.Update();
+            fileSystem.ReadAllText(wixVersionFileUpdater.WixVersionFile).
+                ShouldMatchApproved(c => c.SubFolder(Path.Combine("Approved")));
         }
     }
 }

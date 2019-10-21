@@ -6,6 +6,7 @@
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
         <DebugSymbols>true</DebugSymbols>
+        <LangVersion>8.0</LangVersion>
     </PropertyGroup>
 
     <Import Project="..\test.msbuild" />

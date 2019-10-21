@@ -10,6 +10,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <DocumentationFile>bin\$(Configuration)\GitVersion.xml</DocumentationFile>
         <NoWarn>1591</NoWarn>
+        <LangVersion>8.0</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(PackAsTool)' != 'true'">

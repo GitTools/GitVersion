@@ -17,48 +17,42 @@ namespace GitVersionCore.Tests.IntegrationTests
         [Test]
         public void DoNotBlowUpWhenMasterAndDevelopPointAtSameCommit()
         {
-            using (var fixture = new RemoteRepositoryFixture())
-            {
-                fixture.Repository.MakeACommit();
-                fixture.Repository.MakeATaggedCommit("1.0.0");
-                fixture.Repository.MakeACommit();
-                fixture.Repository.CreateBranch("develop");
+            using var fixture = new RemoteRepositoryFixture();
+            fixture.Repository.MakeACommit();
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.MakeACommit();
+            fixture.Repository.CreateBranch("develop");
 
-                Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
-                Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
-                fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
-                fixture.InitialiseRepo();
-                fixture.AssertFullSemver("1.0.1+1");
-            }
+            Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
+            Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
+            fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
+            fixture.InitialiseRepo();
+            fixture.AssertFullSemver("1.0.1+1");
         }
 
         [Test]
         public void AllowNotHavingMaster()
         {
-            using (var fixture = new EmptyRepositoryFixture())
-            {
-                fixture.Repository.MakeACommit();
-                fixture.Repository.MakeATaggedCommit("1.0.0");
-                fixture.Repository.MakeACommit();
-                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
-                fixture.Repository.Branches.Remove(fixture.Repository.Branches["master"]);
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeACommit();
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.MakeACommit();
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
+            fixture.Repository.Branches.Remove(fixture.Repository.Branches["master"]);
 
-                fixture.AssertFullSemver("1.1.0-alpha.1");
-            }
+            fixture.AssertFullSemver("1.1.0-alpha.1");
         }
 
         [Test]
         public void AllowHavingVariantsStartingWithMaster()
         {
-            using (var fixture = new EmptyRepositoryFixture())
-            {
-                fixture.Repository.MakeACommit();
-                fixture.Repository.MakeATaggedCommit("1.0.0");
-                fixture.Repository.MakeACommit();
-                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("masterfix"));
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeACommit();
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.MakeACommit();
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("masterfix"));
 
-                fixture.AssertFullSemver("1.0.1-masterfix.1+1");
-            }
+            fixture.AssertFullSemver("1.0.1-masterfix.1+1");
         }
 
         [Test]
@@ -76,35 +70,31 @@ namespace GitVersionCore.Tests.IntegrationTests
                 SourceBranches = new List<string>()
             });
 
-            using (var fixture = new EmptyRepositoryFixture())
-            {
-                fixture.Repository.MakeACommit();
-                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
-                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("main"));
-                fixture.Repository.Branches.Remove(fixture.Repository.Branches["master"]);
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeACommit();
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("main"));
+            fixture.Repository.Branches.Remove(fixture.Repository.Branches["master"]);
 
-                fixture.AssertFullSemver(config, "0.1.0+0");
-            }
+            fixture.AssertFullSemver(config, "0.1.0+0");
         }
 
         [Test]
         public void DoNotBlowUpWhenDevelopAndFeatureBranchPointAtSameCommit()
         {
-            using (var fixture = new RemoteRepositoryFixture())
-            {
-                fixture.Repository.MakeACommit();
-                Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
-                fixture.Repository.MakeACommit();
-                fixture.Repository.MakeATaggedCommit("1.0.0");
-                fixture.Repository.MakeACommit();
-                fixture.Repository.CreateBranch("feature/someFeature");
+            using var fixture = new RemoteRepositoryFixture();
+            fixture.Repository.MakeACommit();
+            Commands.Checkout(fixture.Repository, fixture.Repository.CreateBranch("develop"));
+            fixture.Repository.MakeACommit();
+            fixture.Repository.MakeATaggedCommit("1.0.0");
+            fixture.Repository.MakeACommit();
+            fixture.Repository.CreateBranch("feature/someFeature");
 
-                Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
-                Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
-                fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
-                fixture.InitialiseRepo();
-                fixture.AssertFullSemver("1.1.0-alpha.1");
-            }
+            Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
+            Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
+            fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
+            fixture.InitialiseRepo();
+            fixture.AssertFullSemver("1.1.0-alpha.1");
         }
     }
 }

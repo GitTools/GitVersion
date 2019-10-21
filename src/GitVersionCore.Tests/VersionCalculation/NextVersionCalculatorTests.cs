@@ -84,16 +84,14 @@ namespace GitVersionCore.Tests.VersionCalculation
                 }
             };
 
-            using (var fixture = new EmptyRepositoryFixture())
-            {
-                fixture.MakeACommit();
-                fixture.BranchTo("develop");
-                fixture.MakeACommit();
-                fixture.BranchTo("custom/foo");
-                fixture.MakeACommit();
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.MakeACommit();
+            fixture.BranchTo("develop");
+            fixture.MakeACommit();
+            fixture.BranchTo("custom/foo");
+            fixture.MakeACommit();
 
-                fixture.AssertFullSemver(config, "1.0.0-foo.1+2");
-            }
+            fixture.AssertFullSemver(config, "1.0.0-foo.1+2");
         }
 
         [Test]
@@ -115,16 +113,14 @@ namespace GitVersionCore.Tests.VersionCalculation
                 }
             };
 
-            using (var fixture = new EmptyRepositoryFixture())
-            {
-                fixture.MakeACommit();
-                fixture.BranchTo("develop");
-                fixture.MakeACommit();
-                fixture.BranchTo("custom/foo");
-                fixture.MakeACommit();
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.MakeACommit();
+            fixture.BranchTo("develop");
+            fixture.MakeACommit();
+            fixture.BranchTo("custom/foo");
+            fixture.MakeACommit();
 
-                fixture.AssertFullSemver(config, "1.0.0-alpha.foo.1+2");
-            }
+            fixture.AssertFullSemver(config, "1.0.0-alpha.foo.1+2");
         }
 
         [Test]
@@ -144,22 +140,20 @@ namespace GitVersionCore.Tests.VersionCalculation
                 }
             };
 
-            using (var fixture = new EmptyRepositoryFixture())
-            {
-                fixture.Repository.MakeACommit();
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeACommit();
 
-                fixture.Repository.CreateBranch("feature/test");
-                Commands.Checkout(fixture.Repository, "feature/test");
-                fixture.Repository.MakeATaggedCommit("0.1.0-test.1");
-                fixture.Repository.MakeACommit();
+            fixture.Repository.CreateBranch("feature/test");
+            Commands.Checkout(fixture.Repository, "feature/test");
+            fixture.Repository.MakeATaggedCommit("0.1.0-test.1");
+            fixture.Repository.MakeACommit();
 
-                fixture.AssertFullSemver(config, "0.1.0-test.2+2");
+            fixture.AssertFullSemver(config, "0.1.0-test.2+2");
 
-                Commands.Checkout(fixture.Repository, "master");
-                fixture.Repository.Merge(fixture.Repository.FindBranch("feature/test"), Generate.SignatureNow());
+            Commands.Checkout(fixture.Repository, "master");
+            fixture.Repository.Merge(fixture.Repository.FindBranch("feature/test"), Generate.SignatureNow());
 
-                fixture.AssertFullSemver(config, "0.1.0-beta.1+2");
-            }
+            fixture.AssertFullSemver(config, "0.1.0-beta.1+2");
         }
     }
 }

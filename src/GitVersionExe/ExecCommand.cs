@@ -73,33 +73,29 @@ namespace GitVersion
 
             if (arguments.UpdateWixVersionFile)
             {
-                using (var wixVersionFileUpdater = new WixVersionFileUpdater(targetPath, variables, fileSystem, log))
-                {
-                    wixVersionFileUpdater.Update();
-                }
+                using var wixVersionFileUpdater = new WixVersionFileUpdater(targetPath, variables, fileSystem, log);
+                wixVersionFileUpdater.Update();
             }
 
-            using (var assemblyInfoUpdater = new AssemblyInfoFileUpdater(arguments.UpdateAssemblyInfoFileName, targetPath, variables, fileSystem, log, arguments.EnsureAssemblyInfo))
+            using var assemblyInfoUpdater = new AssemblyInfoFileUpdater(arguments.UpdateAssemblyInfoFileName, targetPath, variables, fileSystem, log, arguments.EnsureAssemblyInfo);
+            if (arguments.UpdateAssemblyInfo)
             {
-                if (arguments.UpdateAssemblyInfo)
-                {
-                    assemblyInfoUpdater.Update();
-                }
+                assemblyInfoUpdater.Update();
+            }
 
-                var execRun = RunExecCommandIfNeeded(arguments, targetPath, variables, log);
-                var msbuildRun = RunMsBuildIfNeeded(arguments, targetPath, variables, log);
+            var execRun = RunExecCommandIfNeeded(arguments, targetPath, variables, log);
+            var msbuildRun = RunMsBuildIfNeeded(arguments, targetPath, variables, log);
 
-                if (!execRun && !msbuildRun)
-                {
-                    assemblyInfoUpdater.CommitChanges();
-                    //TODO Put warning back
-                    //if (!context.CurrentBuildServer.IsRunningInBuildAgent())
-                    //{
-                    //    Console.WriteLine("WARNING: Not running in build server and /ProjectFile or /Exec arguments not passed");
-                    //    Console.WriteLine();
-                    //    Console.WriteLine("Run GitVersion.exe /? for help");
-                    //}
-                }
+            if (!execRun && !msbuildRun)
+            {
+                assemblyInfoUpdater.CommitChanges();
+                //TODO Put warning back
+                //if (!context.CurrentBuildServer.IsRunningInBuildAgent())
+                //{
+                //    Console.WriteLine("WARNING: Not running in build server and /ProjectFile or /Exec arguments not passed");
+                //    Console.WriteLine();
+                //    Console.WriteLine("Run GitVersion.exe /? for help");
+                //}
             }
         }
 

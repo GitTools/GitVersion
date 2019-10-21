@@ -37,14 +37,12 @@ namespace GitVersionCore.Tests.IntegrationTests
             var fileSystem = new FileSystem();
             fileSystem.WriteAllText(TempFilePath, @"¯\(◉◡◔)/¯");
 
-            using (var stream = File.OpenRead(TempFilePath))
-            {
-                var preamble = encoding.GetPreamble();
-                var bytes = new byte[preamble.Length];
-                stream.Read(bytes, 0, preamble.Length);
+            using var stream = File.OpenRead(TempFilePath);
+            var preamble = encoding.GetPreamble();
+            var bytes = new byte[preamble.Length];
+            stream.Read(bytes, 0, preamble.Length);
 
-                bytes.ShouldBe(preamble);
-            }
+            bytes.ShouldBe(preamble);
         }
 
         [Test]
@@ -55,14 +53,12 @@ namespace GitVersionCore.Tests.IntegrationTests
             var fileSystem = new FileSystem();
             fileSystem.WriteAllText(TempFilePath, "╚(ಠ_ಠ)=┐");
 
-            using (var stream = File.OpenRead(TempFilePath))
-            {
-                var preamble = encoding.GetPreamble();
-                var bytes = new byte[preamble.Length];
-                stream.Read(bytes, 0, preamble.Length);
+            using var stream = File.OpenRead(TempFilePath);
+            var preamble = encoding.GetPreamble();
+            var bytes = new byte[preamble.Length];
+            stream.Read(bytes, 0, preamble.Length);
 
-                bytes.ShouldBe(preamble);
-            }
+            bytes.ShouldBe(preamble);
         }
     }
 }

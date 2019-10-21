@@ -428,16 +428,14 @@ CommitDate: 2015-11-10
             environment.SetEnvironmentVariable(TravisCI.EnvironmentVariableName, null);
             environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, null);
 
-            using (var fixture = new EmptyRepositoryFixture())
-            {
-                fixture.Repository.MakeACommit();
-                var vv = executeCore.ExecuteGitVersion(null, null, null, null, false, fixture.RepositoryPath, null);
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.Repository.MakeACommit();
+            var vv = executeCore.ExecuteGitVersion(null, null, null, null, false, fixture.RepositoryPath, null);
 
-                vv.AssemblySemVer.ShouldBe("0.1.0.0");
-                vv.FileName.ShouldNotBeNullOrEmpty();
+            vv.AssemblySemVer.ShouldBe("0.1.0.0");
+            vv.FileName.ShouldNotBeNullOrEmpty();
 
-                fixtureAction?.Invoke(fixture, vv);
-            }
+            fixtureAction?.Invoke(fixture, vv);
         }
     }
 }

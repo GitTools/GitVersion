@@ -51,12 +51,10 @@ namespace GitVersionExe.Tests
             customAttribute.ConstructorArguments.Add(new CustomAttributeArgument(asmDef.MainModule.TypeSystem.String, fileVersion + prereleaseInfo));
             asmDef.CustomAttributes.Add(customAttribute);
 
-            using (var memoryStream = new MemoryStream())
-            {
-                asmDef.Write(memoryStream);
+            using var memoryStream = new MemoryStream();
+            asmDef.Write(memoryStream);
 
-                return Assembly.Load(memoryStream.ToArray());
-            }
+            return Assembly.Load(memoryStream.ToArray());
         }
     }
 }

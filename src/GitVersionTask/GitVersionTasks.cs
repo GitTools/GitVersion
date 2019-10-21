@@ -21,7 +21,6 @@ namespace GitVersionTask
         private static readonly ILog log;
         private static readonly IEnvironment environment;
         private static readonly IFileSystem fileSystem;
-        private static readonly IConfigFileLocator configFileLocator;
 
         static GitVersionTasks()
         {
@@ -57,11 +56,9 @@ namespace GitVersionTask
 
                 t.AssemblyInfoTempFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
-                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, new FileSystem(), log, true))
-                {
-                    assemblyInfoFileUpdater.Update();
-                    assemblyInfoFileUpdater.CommitChanges();
-                }
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, new FileSystem(), log, true);
+                assemblyInfoFileUpdater.Update();
+                assemblyInfoFileUpdater.CommitChanges();
             });
         }
 
