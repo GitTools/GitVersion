@@ -1,6 +1,4 @@
 using System;
-using System.Linq;
-using GitVersion.BuildServers;
 using GitVersion.Configuration;
 using GitVersion.OutputVariables;
 using GitVersion.Cache;
@@ -13,17 +11,17 @@ namespace GitVersion
     public class ExecuteCore : IExecuteCore
     {
         private readonly IFileSystem fileSystem;
-        private readonly IEnvironment environment;
         private readonly ILog log;
         private readonly IConfigFileLocator configFileLocator;
+        private readonly IBuildServerResolver buildServerResolver;
         private readonly GitVersionCache gitVersionCache;
 
-        public ExecuteCore(IFileSystem fileSystem, IEnvironment environment, ILog log, IConfigFileLocator configFileLocator)
+        public ExecuteCore(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IBuildServerResolver buildServerResolver)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
-            this.environment = environment;
             this.log = log;
             this.configFileLocator = configFileLocator;
+            this.buildServerResolver = buildServerResolver;
             gitVersionCache = new GitVersionCache(fileSystem, log);
         }
 
@@ -52,11 +50,8 @@ namespace GitVersion
 
         private VersionVariables ExecuteGitVersion(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId, Config overrideConfig = null, bool noCache = false, bool noNormalize = false)
         {
-            BuildServerList.Init(environment, log);
-
             // Normalize if we are running on build server
-            var applicableBuildServers = BuildServerList.GetApplicableBuildServers(log);
-            var buildServer = applicableBuildServers.FirstOrDefault();
+            var buildServer = buildServerResolver.GetCurrentBuildServer();
             var normalizeGitDirectory = !noNormalize && buildServer != null;
             var fetch = noFetch || buildServer != null && buildServer.PreventFetch();
             var shouldCleanUpRemotes = buildServer != null && buildServer.ShouldCleanUpRemotes();

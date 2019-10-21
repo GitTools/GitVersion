@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using GitVersion;
-using GitVersion.BuildServers;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
 using GitVersion.OutputFormatters;
@@ -12,21 +11,20 @@ using GitVersion.Extensions.GitVersionInformationResources;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Common;
 using GitVersion.Logging;
-using Environment = GitVersion.Common.Environment;
 
 namespace GitVersionTask
 {
     public static class GitVersionTasks
     {
         private static readonly ILog log;
-        private static readonly IEnvironment environment;
         private static readonly IFileSystem fileSystem;
+        private static readonly IBuildServerResolver buildServerResolver;
 
         static GitVersionTasks()
         {
             log = new Log();
-            environment = new Environment();
             fileSystem = new FileSystem();
+            buildServerResolver = new BuildServerResolver(null, log);
         }
 
         public static bool GetVersion(GetVersion task)
@@ -83,8 +81,9 @@ namespace GitVersionTask
                 if (!GetVersionVariables(task, out var versionVariables)) return;
 
                 var logger = t.Log;
-                BuildServerList.Init(environment, log);
-                foreach (var buildServer in BuildServerList.GetApplicableBuildServers(log))
+
+                var buildServer = buildServerResolver.GetCurrentBuildServer();
+                if (buildServer != null)
                 {
                     logger.LogMessage($"Executing GenerateSetVersionMessage for '{ buildServer.GetType().Name }'.");
                     logger.LogMessage(buildServer.GenerateSetVersionMessage(versionVariables));
@@ -120,10 +119,10 @@ namespace GitVersionTask
         }
 
         private static bool GetVersionVariables(GitVersionTaskBase task, out VersionVariables versionVariables)
-            => new ExecuteCore(fileSystem, environment, log, GetLocator(task.ConfigFilePath))
+            => new ExecuteCore(fileSystem, log, GetConfigFileLocator(task.ConfigFilePath), buildServerResolver)
                 .TryGetVersion(task.SolutionDirectory, out versionVariables, task.NoFetch, new Authentication());
 
-        private static IConfigFileLocator GetLocator(string filePath = null) =>
+        private static IConfigFileLocator GetConfigFileLocator(string filePath = null) =>
             !string.IsNullOrEmpty(filePath)
                 ? (IConfigFileLocator) new NamedConfigFileLocator(filePath, fileSystem, log)
                 : new DefaultConfigFileLocator(fileSystem, log);

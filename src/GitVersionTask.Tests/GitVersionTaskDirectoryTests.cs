@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using GitVersion;
+using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Logging;
 using LibGit2Sharp;
@@ -24,11 +25,10 @@ namespace GitVersionTask.Tests
                 .TrimEnd(Path.DirectorySeparatorChar);
 
             var testFileSystem = new TestFileSystem();
-            var testEnvironment = new TestEnvironment();
             var log = new NullLog();
             var configFileLocator = new DefaultConfigFileLocator(testFileSystem, log);
 
-            executeCore = new ExecuteCore(testFileSystem, testEnvironment, log, configFileLocator);
+            executeCore = new ExecuteCore(testFileSystem, log, configFileLocator, new BuildServerResolver(null, log));
             Assert.NotNull(gitDirectory);
         }
 

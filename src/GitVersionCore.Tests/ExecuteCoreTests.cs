@@ -25,6 +25,7 @@ namespace GitVersionCore.Tests
         private IEnvironment environment;
         private ILog log;
         private IConfigFileLocator configFileLocator;
+        private IBuildServerResolver buildServerResolver;
 
         [SetUp]
         public void SetUp()
@@ -33,12 +34,13 @@ namespace GitVersionCore.Tests
             environment = new TestEnvironment();
             log = new NullLog();
             configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
+            buildServerResolver = new BuildServerResolver(null, log);
         }
 
         [Test]
         public void CacheKeySameAfterReNormalizing()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment, log, configFileLocator);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -60,7 +62,7 @@ namespace GitVersionCore.Tests
         [Description("LibGit2Sharp fails here when running under Mono")]
         public void CacheKeyForWorktree()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment, log, configFileLocator);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -126,7 +128,7 @@ CommitDate: 2015-11-10
             var logAppender = new TestLogAppender(Action);
             log = new Log(logAppender);
 
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment, log, configFileLocator);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -175,7 +177,7 @@ CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
 ";
 
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment, log, configFileLocator);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -206,7 +208,7 @@ CommitDate: 2015-11-10
             var logAppender = new TestLogAppender(Action);
             log = new Log(logAppender);
 
-            var executeCore = new ExecuteCore(fileSystem, environment, log, configFileLocator);
+            var executeCore = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(executeCore);
             var logsMessages = stringBuilder.ToString();
@@ -250,7 +252,7 @@ CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
 ";
 
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment, log, configFileLocator);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -303,7 +305,7 @@ CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
 ";
 
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment, log, configFileLocator);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -323,7 +325,7 @@ CommitDate: 2015-11-10
         [Test]
         public void WorkingDirectoryWithoutGit()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment, log, configFileLocator);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -339,7 +341,7 @@ CommitDate: 2015-11-10
         [Description("LibGit2Sharp fails when running under Mono")]
         public void GetProjectRootDirectory_WorkingDirectoryWithWorktree()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment, log, configFileLocator);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -364,7 +366,7 @@ CommitDate: 2015-11-10
         [Test]
         public void GetProjectRootDirectory_NoWorktree()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment, log, configFileLocator);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -378,7 +380,7 @@ CommitDate: 2015-11-10
         [Test]
         public void DynamicRepositoriesShouldNotErrorWithFailedToFindGitDirectory()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment, log, configFileLocator);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -396,7 +398,7 @@ CommitDate: 2015-11-10
         [Test]
         public void GetDotGitDirectory_NoWorktree()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment, log, configFileLocator);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -412,7 +414,7 @@ CommitDate: 2015-11-10
         [Description("LibGit2Sharp fails when running under Mono")]
         public void GetDotGitDirectory_Worktree()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, environment, log, configFileLocator);
+            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {

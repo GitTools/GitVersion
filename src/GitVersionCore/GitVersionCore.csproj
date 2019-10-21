@@ -12,6 +12,8 @@
         <Description>Derives SemVer information from a repository following GitFlow or GitHubFlow. This is the Core library which both GitVersion cli and Task use allowing programatic usage of GitVersion.</Description>
 
         <Product>$(AssemblyName)</Product>
+
+        <LangVersion>8</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
