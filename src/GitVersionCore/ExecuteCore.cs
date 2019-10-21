@@ -33,11 +33,11 @@ namespace GitVersion
                 arguments.CommitId, arguments.OverrideConfig, arguments.NoCache, arguments.NoNormalize);
         }
 
-        public bool TryGetVersion(string directory, out VersionVariables versionVariables, bool noFetch, Authentication authentication)
+        public bool TryGetVersion(string directory, out VersionVariables versionVariables, bool noFetch)
         {
             try
             {
-                versionVariables = ExecuteGitVersion(null, null, authentication, null, noFetch, directory, null);
+                versionVariables = ExecuteGitVersion(null, null, null, null, noFetch, directory, null);
                 return true;
             }
             catch (Exception ex)

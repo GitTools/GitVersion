@@ -10,9 +10,9 @@ namespace GitVersion
     public class GitPreparer
     {
         private readonly ILog log;
-        private string dynamicRepositoryLocation;
-        private AuthenticationInfo authentication;
-        private bool noFetch;
+        private readonly string dynamicRepositoryLocation;
+        private readonly AuthenticationInfo authentication;
+        private readonly bool noFetch;
 
         private const string defaultRemoteName = "origin";
 
