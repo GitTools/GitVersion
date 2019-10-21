@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using GitVersion.BuildServers;
 using GitVersion.Exceptions;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
@@ -20,16 +19,16 @@ namespace GitVersion
         private static readonly bool runningOnUnix = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
         private readonly IFileSystem fileSystem;
-        private readonly IEnvironment environment;
+        private readonly IBuildServerResolver buildServerResolver;
         private readonly ILog log;
         private readonly IExecuteCore executeCore;
         private readonly Arguments arguments;
         public static readonly string BuildTool = GetMsBuildToolPath();
 
-        public ExecCommand(IFileSystem fileSystem, IEnvironment environment, ILog log, IExecuteCore executeCore, IOptions<Arguments> arguments)
+        public ExecCommand(IFileSystem fileSystem, IBuildServerResolver buildServerResolver, ILog log, IExecuteCore executeCore, IOptions<Arguments> arguments)
         {
             this.fileSystem = fileSystem;
-            this.environment = environment;
+            this.buildServerResolver = buildServerResolver;
             this.log = log;
             this.executeCore = executeCore;
             this.arguments = arguments.Value;
@@ -45,11 +44,8 @@ namespace GitVersion
             {
                 case OutputType.BuildServer:
                 {
-                    BuildServerList.Init(environment, log);
-                    foreach (var buildServer in BuildServerList.GetApplicableBuildServers(log))
-                    {
-                        buildServer.WriteIntegration(Console.WriteLine, variables);
-                    }
+                    var buildServer = buildServerResolver.GetCurrentBuildServer();
+                    buildServer?.WriteIntegration(Console.WriteLine, variables);
 
                     break;
                 }
