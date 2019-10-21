@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace GitVersion.Helpers
 {
-    static class ExtensionMethods
+    internal static class ExtensionMethods
     {
         public static bool IsBranch(this string branchName, string branchNameToCompareAgainst)
         {

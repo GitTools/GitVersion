@@ -9,9 +9,9 @@ namespace GitVersionCore.Tests.BuildServers
     [TestFixture]
     public class AzurePipelinesBuildNumberTests : TestBase
     {
-        string key = "BUILD_BUILDNUMBER";
-        string logPrefix = "##vso[build.updatebuildnumber]";
-        AzurePipelines versionBuilder;
+        private string key = "BUILD_BUILDNUMBER";
+        private string logPrefix = "##vso[build.updatebuildnumber]";
+        private AzurePipelines versionBuilder;
 
         private IEnvironment environment;
         private ILog log;

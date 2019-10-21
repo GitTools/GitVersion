@@ -9,8 +9,8 @@ namespace GitVersionCore.Tests
 {
     public class GitVersionContextBuilder
     {
-        IRepository repository;
-        Config config;
+        private IRepository repository;
+        private Config config;
 
         public GitVersionContextBuilder WithRepository(IRepository repository)
         {
@@ -68,7 +68,7 @@ namespace GitVersionCore.Tests
             return new GitVersionContext(repo, new NullLog(), repo.Head, configuration);
         }
 
-        IRepository CreateRepository()
+        private IRepository CreateRepository()
         {
             var mockBranch = new MockBranch("master") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
             var mockRepository = new MockRepository

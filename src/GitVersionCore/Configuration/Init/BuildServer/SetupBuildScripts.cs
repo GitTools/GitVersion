@@ -5,7 +5,7 @@ using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.BuildServer
 {
-    class SetupBuildScripts : ConfigInitWizardStep
+    internal class SetupBuildScripts : ConfigInitWizardStep
     {
         public SetupBuildScripts(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
         {

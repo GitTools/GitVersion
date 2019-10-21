@@ -183,7 +183,7 @@ namespace GitVersion.OutputVariables
             return typeof(VersionVariables).GetProperty(variable) != null;
         }
 
-        sealed class ReflectionIgnoreAttribute : Attribute
+        private sealed class ReflectionIgnoreAttribute : Attribute
         {
         }
     }

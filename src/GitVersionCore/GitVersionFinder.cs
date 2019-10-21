@@ -27,12 +27,12 @@ namespace GitVersion
             return new NextVersionCalculator(log).FindVersion(context);
         }
 
-        void EnsureMainTopologyConstraints(GitVersionContext context)
+        private void EnsureMainTopologyConstraints(GitVersionContext context)
         {
             EnsureHeadIsNotDetached(context);
         }
 
-        void EnsureHeadIsNotDetached(GitVersionContext context)
+        private void EnsureHeadIsNotDetached(GitVersionContext context)
         {
             if (!context.CurrentBranch.IsDetachedHead())
             {

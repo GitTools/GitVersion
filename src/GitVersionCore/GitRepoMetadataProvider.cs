@@ -15,7 +15,7 @@ namespace GitVersion
         private Dictionary<Tuple<Branch, Branch>, MergeBaseData> mergeBaseCache;
         private Dictionary<Branch, List<SemanticVersion>> semanticVersionTagsOnBranchCache;
         private IRepository Repository { get; set; }
-        const string missingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
+        private const string missingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
         private readonly ILog log;
         private Config configuration;
 
@@ -228,7 +228,7 @@ namespace GitVersion
             }
         }
 
-        List<BranchCommit> GetMergeCommitsForBranch(Branch branch, Branch[] excludedBranches)
+        private List<BranchCommit> GetMergeCommitsForBranch(Branch branch, Branch[] excludedBranches)
         {
             if (mergeBaseCommitsCache.ContainsKey(branch))
             {

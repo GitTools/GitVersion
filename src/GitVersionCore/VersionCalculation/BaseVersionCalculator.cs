@@ -10,7 +10,7 @@ namespace GitVersion.VersionCalculation
     public class BaseVersionCalculator : IBaseVersionCalculator
     {
         private readonly ILog log;
-        readonly BaseVersionStrategy[] strategies;
+        private readonly BaseVersionStrategy[] strategies;
 
         public BaseVersionCalculator(ILog log, params BaseVersionStrategy[] strategies)
         {

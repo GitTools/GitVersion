@@ -12,7 +12,7 @@ namespace GitVersionCore.Tests
 {
     [TestFixture]
     [Parallelizable(ParallelScope.None)]
-    class WixFileTests
+    internal class WixFileTests
     {
         [SetUp]
         public void Setup()

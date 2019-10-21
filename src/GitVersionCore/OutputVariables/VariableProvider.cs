@@ -98,7 +98,7 @@ namespace GitVersion.OutputVariables
             return variables;
         }
 
-        static void PromoteNumberOfCommitsToTagNumber(SemanticVersion semanticVersion)
+        private static void PromoteNumberOfCommitsToTagNumber(SemanticVersion semanticVersion)
         {
             // For continuous deployment the commits since tag gets promoted to the pre-release number
             semanticVersion.PreReleaseTag.Number = semanticVersion.BuildMetaData.CommitsSinceTag;
@@ -106,7 +106,7 @@ namespace GitVersion.OutputVariables
             semanticVersion.BuildMetaData.CommitsSinceTag = null;
         }
 
-        static string CheckAndFormatString<T>(string formatString, T source,  string defaultValue, string formatVarName)
+        private static string CheckAndFormatString<T>(string formatString, T source,  string defaultValue, string formatVarName)
         {
             string formattedString;
 

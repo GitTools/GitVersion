@@ -9,7 +9,7 @@ namespace GitVersionCore.Tests.BuildServers
     [TestFixture]
     public class AzurePipelinesTests : TestBase
     {
-        string key = "BUILD_BUILDNUMBER";
+        private string key = "BUILD_BUILDNUMBER";
 
         private IEnvironment environment;
         private ILog log;

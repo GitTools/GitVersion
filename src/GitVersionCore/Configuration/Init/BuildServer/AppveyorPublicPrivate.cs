@@ -5,7 +5,7 @@ using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.BuildServer
 {
-    class AppveyorPublicPrivate : ConfigInitWizardStep
+    internal class AppveyorPublicPrivate : ConfigInitWizardStep
     {
 
         public AppveyorPublicPrivate(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)

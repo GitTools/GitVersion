@@ -55,7 +55,7 @@ namespace GitVersion.Configuration.Init.Wizard
             return true;
         }
 
-        void InvalidResponse(Queue<ConfigInitWizardStep> steps)
+        private void InvalidResponse(Queue<ConfigInitWizardStep> steps)
         {
             Console.WriteLine();
             using (Console.UseColor(ConsoleColor.Red))

@@ -6,7 +6,7 @@ namespace GitVersionCore.Tests.VersionCalculation
 {
     public class TestMetaDataCalculator : IMetaDataCalculator
     {
-        SemanticVersionBuildMetaData metaData;
+        private SemanticVersionBuildMetaData metaData;
 
         public TestMetaDataCalculator(SemanticVersionBuildMetaData metaData)
         {

@@ -10,7 +10,7 @@ namespace GitVersion.Helpers
 {
     public static class ProcessHelper
     {
-        static volatile object lockObject = new object();
+        private static volatile object lockObject = new object();
 
         // http://social.msdn.microsoft.com/Forums/en/netfxbcl/thread/f6069441-4ab1-4299-ad6a-b8bb9ed36be3
         private static Process Start(ProcessStartInfo startInfo)
@@ -178,7 +178,7 @@ namespace GitVersion.Helpers
 
         private struct ChangeErrorMode : IDisposable
         {
-            readonly int oldMode;
+            private readonly int oldMode;
 
             public ChangeErrorMode(ErrorModes mode)
             {
@@ -206,7 +206,7 @@ namespace GitVersion.Helpers
             }
 
             [DllImport("kernel32.dll")]
-            static extern int SetErrorMode(int newMode);
+            private static extern int SetErrorMode(int newMode);
         }
     }
 }

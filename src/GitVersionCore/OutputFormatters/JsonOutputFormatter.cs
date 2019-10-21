@@ -27,7 +27,7 @@ namespace GitVersion.OutputFormatters
             return builder.ToString();
         }
 
-        static bool NotAPaddedNumber(KeyValuePair<string, string> variable)
+        private static bool NotAPaddedNumber(KeyValuePair<string, string> variable)
         {
             if (variable.Value == "0")
                 return true;

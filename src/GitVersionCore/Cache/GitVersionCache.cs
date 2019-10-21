@@ -109,7 +109,7 @@ namespace GitVersion.Cache
             }
         }
 
-        static string GetCacheFileName(GitVersionCacheKey key, string cacheDir)
+        private static string GetCacheFileName(GitVersionCacheKey key, string cacheDir)
         {
             return Path.Combine(cacheDir, string.Concat(key.Value, ".yml"));
         }

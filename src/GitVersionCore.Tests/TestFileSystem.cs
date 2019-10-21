@@ -9,7 +9,7 @@ namespace GitVersionCore.Tests
 {
     public class TestFileSystem : IFileSystem
     {
-        Dictionary<string, byte[]> fileSystem = new Dictionary<string, byte[]>();
+        private Dictionary<string, byte[]> fileSystem = new Dictionary<string, byte[]>();
 
         public void Copy(string @from, string to, bool overwrite)
         {

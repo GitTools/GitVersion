@@ -11,9 +11,9 @@ namespace GitVersionTask.Tests
     [TestFixture]
     public class GitVersionTaskDirectoryTests : TestBase
     {
-        ExecuteCore executeCore;
-        string gitDirectory;
-        string workDirectory;
+        private ExecuteCore executeCore;
+        private string gitDirectory;
+        private string workDirectory;
 
 
         [SetUp]

@@ -146,7 +146,7 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
             Commands.Fetch(repo, remote.Name, new string[0], authentication.ToFetchOptions(), null);
         }
 
-        static void EnsureLocalBranchExistsForCurrentBranch(ILog log, Repository repo, Remote remote, string currentBranch)
+        private static void EnsureLocalBranchExistsForCurrentBranch(ILog log, Repository repo, Remote remote, string currentBranch)
         {
             if (string.IsNullOrEmpty(currentBranch)) return;
 
@@ -182,7 +182,7 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
             Commands.Checkout(repo, localCanonicalName);
         }
 
-        static void AddMissingRefSpecs(ILog log, Repository repo, Remote remote)
+        private static void AddMissingRefSpecs(ILog log, Repository repo, Remote remote)
         {
             if (remote.FetchRefSpecs.Any(r => r.Source == "refs/heads/*"))
                 return;
@@ -195,7 +195,7 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
                 r => r.FetchRefSpecs.Add(allBranchesFetchRefSpec));
         }
 
-        static void CreateFakeBranchPointingAtThePullRequestTip(ILog log, Repository repo, AuthenticationInfo authentication)
+        private static void CreateFakeBranchPointingAtThePullRequestTip(ILog log, Repository repo, AuthenticationInfo authentication)
         {
             var remote = repo.Network.Remotes.Single();
 
@@ -250,7 +250,7 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
             Commands.Checkout(repo, fakeBranchName);
         }
 
-        static IEnumerable<DirectReference> GetRemoteTipsUsingUsernamePasswordCredentials(Repository repo, Remote remote, string username, string password)
+        private static IEnumerable<DirectReference> GetRemoteTipsUsingUsernamePasswordCredentials(Repository repo, Remote remote, string username, string password)
         {
             return repo.Network.ListReferences(remote, (url, fromUrl, types) => new UsernamePasswordCredentials
             {
@@ -259,12 +259,12 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
             }).Select(r => r.ResolveToDirectReference());
         }
 
-        static IEnumerable<DirectReference> GetRemoteTipsForAnonymousUser(Repository repo, Remote remote)
+        private static IEnumerable<DirectReference> GetRemoteTipsForAnonymousUser(Repository repo, Remote remote)
         {
             return repo.Network.ListReferences(remote).Select(r => r.ResolveToDirectReference());
         }
 
-        static void CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(ILog log, Repository repo, string remoteName)
+        private static void CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(ILog log, Repository repo, string remoteName)
         {
             var prefix = $"refs/remotes/{remoteName}/";
             var remoteHeadCanonicalName = $"{prefix}{"HEAD"}";

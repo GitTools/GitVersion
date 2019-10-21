@@ -6,8 +6,8 @@ namespace GitVersion
 {
     public class SemanticVersionFormatValues
     {
-        readonly SemanticVersion _semver;
-        readonly EffectiveConfiguration _config;
+        private readonly SemanticVersion _semver;
+        private readonly EffectiveConfiguration _config;
 
         public SemanticVersionFormatValues(SemanticVersion semver, EffectiveConfiguration config)
         {

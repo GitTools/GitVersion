@@ -42,7 +42,7 @@ namespace GitVersionExe.Tests
                 .ShouldBeEmpty();
         }
 
-        static bool IsNotInHelp(Dictionary<string, string> lookup, string propertyName, string helpText)
+        private static bool IsNotInHelp(Dictionary<string, string> lookup, string propertyName, string helpText)
         {
             if (lookup.ContainsKey(propertyName))
                 return !helpText.Contains(lookup[propertyName]);

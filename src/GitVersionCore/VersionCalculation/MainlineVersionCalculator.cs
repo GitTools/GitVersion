@@ -10,9 +10,9 @@ using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation
 {
-    class MainlineVersionCalculator : IMainlineVersionCalculator
+    internal class MainlineVersionCalculator : IMainlineVersionCalculator
     {
-        IMetaDataCalculator metaDataCalculator;
+        private IMetaDataCalculator metaDataCalculator;
         private readonly ILog log;
 
         public MainlineVersionCalculator(IMetaDataCalculator metaDataCalculator, ILog log)

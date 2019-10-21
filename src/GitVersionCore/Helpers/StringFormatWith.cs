@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace GitVersion.Helpers
 {
-    static class StringFormatWithExtension
+    internal static class StringFormatWithExtension
     {
         private static readonly Regex TokensRegex = new Regex(@"{(?<env>env:)??\w+(\s+(\?\?)??\s+\w+)??}", RegexOptions.Compiled);
 

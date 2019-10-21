@@ -31,7 +31,7 @@ namespace GitVersionExe.Tests
   </Target>
 </Project>";
                 File.WriteAllText(buildFile, buildFileContent);
-                var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, ExecCommand.BuildTool, "RunExecViaCommandLine.csproj /target:OutputResults");
+                var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, ExternalCommand.BuildTool, "RunExecViaCommandLine.csproj /target:OutputResults");
 
                 result.ExitCode.ShouldBe(0, result.Log);
                 result.Log.ShouldContain("GitVersion_FullSemVer: 1.2.4+1");

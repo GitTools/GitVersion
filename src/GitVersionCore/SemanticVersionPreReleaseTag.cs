@@ -8,7 +8,7 @@ namespace GitVersion
     public class SemanticVersionPreReleaseTag :
         IFormattable, IComparable<SemanticVersionPreReleaseTag>, IEquatable<SemanticVersionPreReleaseTag>
     {
-        static LambdaEqualityHelper<SemanticVersionPreReleaseTag> equalityHelper =
+        private static LambdaEqualityHelper<SemanticVersionPreReleaseTag> equalityHelper =
            new LambdaEqualityHelper<SemanticVersionPreReleaseTag>(x => x.Name, x => x.Number);
 
         public SemanticVersionPreReleaseTag()
@@ -178,7 +178,7 @@ namespace GitVersion
             }
         }
 
-        string FormatLegacy(string tag, string number = "")
+        private string FormatLegacy(string tag, string number = "")
         {
             var tagEndsWithANumber = char.IsNumber(tag.Last());
             if (tagEndsWithANumber && number.Length > 0)
@@ -190,7 +190,7 @@ namespace GitVersion
             return $"{tag}{number}";
         }
 
-        string GetLegacyName()
+        private string GetLegacyName()
         {
             var firstPart = Name.Split('_')[0];
             return firstPart.Replace(".", string.Empty);

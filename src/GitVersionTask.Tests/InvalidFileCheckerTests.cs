@@ -10,8 +10,8 @@ namespace GitVersionTask.Tests
     [TestFixture]
     public class InvalidFileCheckerTests : TestBase
     {
-        string projectDirectory;
-        string projectFile;
+        private string projectDirectory;
+        private string projectFile;
 
         [SetUp]
         public void CreateTemporaryProject()

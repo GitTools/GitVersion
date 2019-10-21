@@ -66,9 +66,9 @@ namespace GitVersionCore.Tests.VersionCalculation
             baseVersion.BaseVersionSource.When().ShouldBe(when);
         }
 
-        class V1Strategy : BaseVersionStrategy
+        private class V1Strategy : BaseVersionStrategy
         {
-            readonly Commit when;
+            private readonly Commit when;
 
             public V1Strategy(DateTimeOffset? when)
             {
@@ -81,9 +81,9 @@ namespace GitVersionCore.Tests.VersionCalculation
             }
         }
 
-        class V2Strategy : BaseVersionStrategy
+        private class V2Strategy : BaseVersionStrategy
         {
-            Commit when;
+            private Commit when;
 
             public V2Strategy(DateTimeOffset? when)
             {
@@ -158,7 +158,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             }
         }
 
-        class TestVersionStrategy : BaseVersionStrategy
+        private class TestVersionStrategy : BaseVersionStrategy
         {
             private readonly IEnumerable<BaseVersion> versions;
 

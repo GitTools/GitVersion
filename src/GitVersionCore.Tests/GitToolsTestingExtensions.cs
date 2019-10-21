@@ -69,7 +69,7 @@ namespace GitVersionCore.Tests
             }
         }
 
-        static SemanticVersion ExecuteGitVersion(GitVersionContext context)
+        private static SemanticVersion ExecuteGitVersion(GitVersionContext context)
         {
             var vf = new GitVersionFinder();
             return vf.FindVersion(new NullLog(), context);

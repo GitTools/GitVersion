@@ -8,8 +8,8 @@ namespace GitVersion.Configuration.Init.SetConfig
 {
     public class SetBranchIncrementMode : ConfigInitWizardStep
     {
-        readonly string name;
-        readonly BranchConfig branchConfig;
+        private readonly string name;
+        private readonly BranchConfig branchConfig;
 
         public SetBranchIncrementMode(string name, BranchConfig branchConfig, IConsole console, IFileSystem fileSystem, ILog log)
             : base(console, fileSystem, log)

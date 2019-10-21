@@ -36,7 +36,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
             }
         }
 
-        Tuple<string, SemanticVersion> GetVersionInBranch(string branchName, string tagPrefixRegex)
+        private Tuple<string, SemanticVersion> GetVersionInBranch(string branchName, string tagPrefixRegex)
         {
             var branchParts = branchName.Split('/', '-');
             foreach (var part in branchParts)

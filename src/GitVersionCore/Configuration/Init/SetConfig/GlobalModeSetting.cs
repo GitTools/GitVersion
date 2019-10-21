@@ -8,8 +8,8 @@ namespace GitVersion.Configuration.Init.SetConfig
 {
     public class GlobalModeSetting : ConfigInitWizardStep
     {
-        readonly ConfigInitWizardStep returnToStep;
-        readonly bool isPartOfWizard;
+        private readonly ConfigInitWizardStep returnToStep;
+        private readonly bool isPartOfWizard;
 
         public GlobalModeSetting(ConfigInitWizardStep returnToStep, bool isPartOfWizard, IConsole console, IFileSystem fileSystem, ILog log)
             : base(console, fileSystem, log)

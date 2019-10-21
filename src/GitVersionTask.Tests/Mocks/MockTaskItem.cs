@@ -4,7 +4,7 @@ using Microsoft.Build.Framework;
 
 namespace GitVersionTask.Tests.Mocks
 {
-    class MockTaskItem : ITaskItem
+    internal class MockTaskItem : ITaskItem
     {
         public string ItemSpec { get; set; }
 

@@ -11,8 +11,8 @@ namespace GitVersion.VersionCalculation
     public class NextVersionCalculator
     {
         private readonly ILog log;
-        IBaseVersionCalculator baseVersionFinder;
-        IMetaDataCalculator metaDataCalculator;
+        private IBaseVersionCalculator baseVersionFinder;
+        private IMetaDataCalculator metaDataCalculator;
 
         public NextVersionCalculator(ILog log, IBaseVersionCalculator baseVersionCalculator = null, IMetaDataCalculator metaDataCalculator = null)
         {
@@ -88,7 +88,7 @@ namespace GitVersion.VersionCalculation
             return semver;
         }
 
-        void UpdatePreReleaseTag(GitVersionContext context, SemanticVersion semanticVersion, string branchNameOverride)
+        private void UpdatePreReleaseTag(GitVersionContext context, SemanticVersion semanticVersion, string branchNameOverride)
         {
             var tagToUse = GetBranchSpecificTag(context.Configuration, context.CurrentBranch.FriendlyName, branchNameOverride);
 
@@ -136,7 +136,7 @@ namespace GitVersion.VersionCalculation
             return tagToUse;
         }
 
-        static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion)
+        private static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion)
         {
             return lastTag.Major == baseVersion.Major &&
                    lastTag.Minor == baseVersion.Minor &&

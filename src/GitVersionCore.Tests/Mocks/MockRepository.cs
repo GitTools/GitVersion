@@ -7,7 +7,7 @@ namespace GitVersionCore.Tests.Mocks
 {
     public class MockRepository : IRepository
     {
-        IQueryableCommitLog commits;
+        private IQueryableCommitLog commits;
 
         public MockRepository()
         {

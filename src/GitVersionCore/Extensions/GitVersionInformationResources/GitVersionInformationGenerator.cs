@@ -8,12 +8,12 @@ namespace GitVersion.Extensions.GitVersionInformationResources
 {
     public class GitVersionInformationGenerator
     {
-        string fileName;
-        string directory;
-        VersionVariables variables;
-        IFileSystem fileSystem;
+        private string fileName;
+        private string directory;
+        private VersionVariables variables;
+        private IFileSystem fileSystem;
 
-        TemplateManager templateManager;
+        private TemplateManager templateManager;
 
         public GitVersionInformationGenerator(string fileName, string directory, VersionVariables variables, IFileSystem fileSystem)
         {

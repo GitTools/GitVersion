@@ -8,7 +8,7 @@ namespace GitVersionCore.Tests
     [TestFixture]
     public class DynamicRepositoryTests : TestBase
     {
-        string workDirectory;
+        private string workDirectory;
 
         private void ClearReadOnly(DirectoryInfo parentDirectory)
         {

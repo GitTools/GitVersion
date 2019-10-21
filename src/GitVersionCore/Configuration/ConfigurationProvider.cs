@@ -68,7 +68,7 @@ namespace GitVersion.Configuration
             return readConfig;
         }
 
-        static void VerifyConfiguration(Config readConfig)
+        private static void VerifyConfiguration(Config readConfig)
         {
             // Verify no branches are set to mainline mode
             if (readConfig.Branches.Any(b => b.Value.VersioningMode == VersioningMode.Mainline))
@@ -187,12 +187,12 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             }
         }
 
-        static void ApplyOverridesTo(Config config, Config overrideConfig)
+        private static void ApplyOverridesTo(Config config, Config overrideConfig)
         {
             config.TagPrefix = string.IsNullOrWhiteSpace(overrideConfig.TagPrefix) ? config.TagPrefix : overrideConfig.TagPrefix;
         }
 
-        static BranchConfig GetOrCreateBranchDefaults(Config config, string branchKey)
+        private static BranchConfig GetOrCreateBranchDefaults(Config config, string branchKey)
         {
             if (!config.Branches.ContainsKey(branchKey))
             {

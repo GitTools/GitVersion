@@ -25,8 +25,8 @@ namespace GitVersion.VersionCalculation
     /// </summary>
     public class TrackReleaseBranchesVersionStrategy : BaseVersionStrategy
     {
-        VersionInBranchNameBaseVersionStrategy releaseVersionStrategy = new VersionInBranchNameBaseVersionStrategy();
-        TaggedCommitVersionStrategy taggedCommitVersionStrategy = new TaggedCommitVersionStrategy();
+        private VersionInBranchNameBaseVersionStrategy releaseVersionStrategy = new VersionInBranchNameBaseVersionStrategy();
+        private TaggedCommitVersionStrategy taggedCommitVersionStrategy = new TaggedCommitVersionStrategy();
 
         public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
@@ -78,7 +78,7 @@ namespace GitVersion.VersionCalculation
             return new BaseVersion[0];
         }
 
-        IEnumerable<BaseVersion> GetReleaseVersion(GitVersionContext context, Branch releaseBranch)
+        private IEnumerable<BaseVersion> GetReleaseVersion(GitVersionContext context, Branch releaseBranch)
         {
             var tagPrefixRegex = context.Configuration.GitTagPrefix;
 

@@ -30,7 +30,7 @@ namespace GitVersionExe.Tests
             return ExecuteIn(args);
         }
 
-        static ExecutionResults ExecuteIn(ArgumentBuilder arguments)
+        private static ExecutionResults ExecuteIn(ArgumentBuilder arguments)
         {
             var executable = PathHelper.GetExecutable();
             var output = new StringBuilder();

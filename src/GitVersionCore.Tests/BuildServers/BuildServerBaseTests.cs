@@ -49,7 +49,7 @@ namespace GitVersionCore.Tests.BuildServers
             writes[1].ShouldBe("1.2.3-beta.1+5");
         }
 
-        class BuildServer : BuildServerBase
+        private class BuildServer : BuildServerBase
         {
             protected override string EnvironmentVariable { get; }
 

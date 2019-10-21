@@ -6,8 +6,8 @@ namespace GitVersion.Configuration.Init.Wizard
 {
     public class ConfigInitWizard
     {
-        readonly IConsole console;
-        readonly IFileSystem fileSystem;
+        private readonly IConsole console;
+        private readonly IFileSystem fileSystem;
         private readonly ILog log;
 
         public ConfigInitWizard(IConsole console, IFileSystem fileSystem, ILog log)

@@ -7,7 +7,7 @@ namespace GitVersionCore.Tests.Mocks
 {
     public class MockQueryableCommitLog : IQueryableCommitLog
     {
-        readonly ICommitLog commits;
+        private readonly ICommitLog commits;
 
         public MockQueryableCommitLog(ICommitLog commits)
         {

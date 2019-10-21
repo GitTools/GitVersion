@@ -530,7 +530,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
     }
 
-    static class CommitExtensions
+    internal static class CommitExtensions
     {
         public static void MakeACommit(this RepositoryFixtureBase fixture, string commitMsg)
         {

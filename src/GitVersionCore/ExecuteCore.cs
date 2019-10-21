@@ -100,7 +100,7 @@ namespace GitVersion
             }
         }
 
-        string ResolveCurrentBranch(IBuildServer buildServer, string targetBranch, bool isDynamicRepository)
+        private string ResolveCurrentBranch(IBuildServer buildServer, string targetBranch, bool isDynamicRepository)
         {
             if (buildServer == null)
             {
@@ -113,7 +113,7 @@ namespace GitVersion
             return currentBranch;
         }
 
-        VersionVariables ExecuteInternal(string targetBranch, string commitId, GitPreparer gitPreparer, Config overrideConfig = null)
+        private VersionVariables ExecuteInternal(string targetBranch, string commitId, GitPreparer gitPreparer, Config overrideConfig = null)
         {
             var versionFinder = new GitVersionFinder();
             var configuration = ConfigurationProvider.Provide(gitPreparer, overrideConfig: overrideConfig, configFileLocator: configFileLocator);

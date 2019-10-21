@@ -20,9 +20,9 @@ namespace GitVersionCore.Tests
     {
         private const string DefaultRepoPath = @"c:\MyGitRepo";
 
-        string repoPath;
-        IFileSystem fileSystem;
-        IConfigFileLocator configFileLocator;
+        private string repoPath;
+        private IFileSystem fileSystem;
+        private IConfigFileLocator configFileLocator;
 
         [SetUp]
         public void Setup()
@@ -290,12 +290,12 @@ branches: {}";
             stringLogger.Length.ShouldBe(0);
         }
 
-        string SetupConfigFileContent(string text, string fileName = DefaultConfigFileLocator.DefaultFileName)
+        private string SetupConfigFileContent(string text, string fileName = DefaultConfigFileLocator.DefaultFileName)
         {
             return SetupConfigFileContent(text, fileName, repoPath);
         }
 
-        string SetupConfigFileContent(string text, string fileName, string path)
+        private string SetupConfigFileContent(string text, string fileName, string path)
         {
             var fullPath = Path.Combine(path, fileName);
             fileSystem.WriteAllText(fullPath, text);

@@ -8,7 +8,7 @@ namespace GitVersion.Configuration
 {
     public class LegacyConfigNotifier
     {
-        static readonly Dictionary<string, string> OldConfigKnownRegexes = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> OldConfigKnownRegexes = new Dictionary<string, string>
         {
             {ConfigurationProvider.MasterBranchRegex, ConfigurationProvider.MasterBranchKey},
             {ConfigurationProvider.DevelopBranchRegex, ConfigurationProvider.DevelopBranchKey},

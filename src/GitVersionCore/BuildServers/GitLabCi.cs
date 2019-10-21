@@ -10,7 +10,7 @@ namespace GitVersion.BuildServers
     public class GitLabCi : BuildServerBase
     {
         public const string EnvironmentVariableName = "GITLAB_CI";
-        string _file;
+        private string _file;
 
         public GitLabCi(IEnvironment environment, ILog log, string propertiesFileName = "gitversion.properties") : base(environment, log)
         {
@@ -47,7 +47,7 @@ namespace GitVersion.BuildServers
             WriteVariablesFile(variables);
         }
 
-        void WriteVariablesFile(VersionVariables variables)
+        private void WriteVariablesFile(VersionVariables variables)
         {
             File.WriteAllLines(_file, BuildOutputFormatter.GenerateBuildLogOutput(this, variables));
         }

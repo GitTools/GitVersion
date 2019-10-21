@@ -39,13 +39,13 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
 
         public static readonly string MergeMessageStrategyPrefix = "Merge message";
 
-        static bool TryParse(Commit mergeCommit, GitVersionContext context, out MergeMessage mergeMessage)
+        private static bool TryParse(Commit mergeCommit, GitVersionContext context, out MergeMessage mergeMessage)
         {
             mergeMessage = Inner(mergeCommit, context);
             return mergeMessage != null;
         }
 
-        static MergeMessage Inner(Commit mergeCommit, GitVersionContext context)
+        private static MergeMessage Inner(Commit mergeCommit, GitVersionContext context)
         {
             if (mergeCommit.Parents.Count() < 2)
             {
@@ -56,7 +56,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
             return mergeMessage;
         }
 
-        static string TrimRemote(string branchName) => branchName
+        private static string TrimRemote(string branchName) => branchName
             .RegexReplace("^refs/remotes/", string.Empty, RegexOptions.IgnoreCase)
             .RegexReplace("^origin/", string.Empty, RegexOptions.IgnoreCase);
     }

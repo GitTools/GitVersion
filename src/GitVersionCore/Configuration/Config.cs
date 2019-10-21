@@ -11,8 +11,8 @@ namespace GitVersion.Configuration
 {
     public class Config
     {
-        Dictionary<string, BranchConfig> branches = new Dictionary<string, BranchConfig>();
-        string nextVersion;
+        private Dictionary<string, BranchConfig> branches = new Dictionary<string, BranchConfig>();
+        private string nextVersion;
 
         public Config()
         {

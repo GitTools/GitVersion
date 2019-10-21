@@ -8,8 +8,8 @@ namespace GitVersionCore.Tests.Mocks
     [DebuggerDisplay("{" + nameof(DebuggerDisplay) + "}")]
     public class MockCommit : Commit
     {
-        static int commitCount = 1;
-        static DateTimeOffset when = DateTimeOffset.Now;
+        private static int commitCount = 1;
+        private static DateTimeOffset when = DateTimeOffset.Now;
 
         public MockCommit(ObjectId id = null)
         {
@@ -27,7 +27,7 @@ namespace GitVersionCore.Tests.Mocks
         public Signature CommitterEx;
         public override Signature Committer => CommitterEx;
 
-        ObjectId idEx;
+        private ObjectId idEx;
         public override ObjectId Id => idEx;
 
         public override string Sha => idEx.Sha;
@@ -36,6 +36,6 @@ namespace GitVersionCore.Tests.Mocks
         public override IEnumerable<Commit> Parents => ParentsEx;
 
         // ReSharper disable once UnusedMember.Local
-        string DebuggerDisplay => MessageEx;
+        private string DebuggerDisplay => MessageEx;
     }
 }

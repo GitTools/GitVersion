@@ -8,13 +8,13 @@ using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.BuildServer
 {
-    enum ProjectVisibility
+    internal enum ProjectVisibility
     {
         Public = 0,
         Private = 1
     }
 
-    class AppVeyorSetup : ConfigInitWizardStep
+    internal class AppVeyorSetup : ConfigInitWizardStep
     {
         private readonly ILog log;
         private ProjectVisibility _projectVisibility;
@@ -55,9 +55,9 @@ namespace GitVersion.Configuration.Init.BuildServer
                 default:
                     return "";
             }
-        } 
+        }
 
-        void GenerateBasicConfig(string workingDirectory)
+        private void GenerateBasicConfig(string workingDirectory)
         {
             WriteConfig(workingDirectory, FileSystem, $@"install:
   - choco install gitversion.portable -pre -y
@@ -70,7 +70,7 @@ build:
   project: <your sln file>");
         }
 
-        void GenerateNuGetConfig(string workingDirectory)
+        private void GenerateNuGetConfig(string workingDirectory)
         {
             WriteConfig(workingDirectory, FileSystem, $@"install:
   - choco install gitversion.portable -pre -y
@@ -91,7 +91,7 @@ after_build:
   - cmd: appveyor PushArtifact ""<NuSpec>.%GitVersion_NuGetVersion%.nupkg""");
         }
 
-        void WriteConfig(string workingDirectory, IFileSystem fileSystem, string configContents)
+        private void WriteConfig(string workingDirectory, IFileSystem fileSystem, string configContents)
         {
             var outputFilename = GetOutputFilename(workingDirectory, fileSystem);
             fileSystem.WriteAllText(outputFilename, configContents);
@@ -116,7 +116,7 @@ after_build:
             return prompt.ToString();
         }
 
-        string GetOutputFilename(string workingDirectory, IFileSystem fileSystem)
+        private string GetOutputFilename(string workingDirectory, IFileSystem fileSystem)
         {
             if (AppVeyorConfigExists(workingDirectory, fileSystem))
             {
@@ -138,7 +138,7 @@ after_build:
             return Path.Combine(workingDirectory, "appveyor.yml");
         }
 
-        static bool AppVeyorConfigExists(string workingDirectory, IFileSystem fileSystem)
+        private static bool AppVeyorConfigExists(string workingDirectory, IFileSystem fileSystem)
         {
             return fileSystem.Exists(Path.Combine(workingDirectory, "appveyor.yml"));
         }

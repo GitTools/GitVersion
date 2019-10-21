@@ -7,9 +7,9 @@ namespace GitVersionCore.Tests.VersionCalculation
 {
     public class TestBaseVersionCalculator : IBaseVersionCalculator
     {
-        readonly SemanticVersion semanticVersion;
-        bool shouldIncrement;
-        Commit source;
+        private readonly SemanticVersion semanticVersion;
+        private bool shouldIncrement;
+        private Commit source;
 
         public TestBaseVersionCalculator(bool shouldIncrement, SemanticVersion semanticVersion, Commit source)
         {

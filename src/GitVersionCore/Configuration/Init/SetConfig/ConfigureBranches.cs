@@ -50,7 +50,7 @@ namespace GitVersion.Configuration.Init.SetConfig
 " + string.Join("\r\n", OrderedBranches(config).Select((c, i) => $"{i + 1}) {c.Key}"));
         }
 
-        static IOrderedEnumerable<KeyValuePair<string, BranchConfig>> OrderedBranches(Config config)
+        private static IOrderedEnumerable<KeyValuePair<string, BranchConfig>> OrderedBranches(Config config)
         {
             var defaultConfig = new Config();
             ConfigurationProvider.ApplyDefaultsTo(defaultConfig);

@@ -15,9 +15,9 @@ namespace GitVersionCore.Tests
         private const string DefaultRepoPath = @"c:\MyGitRepo";
         private const string DefaultWorkingPath = @"c:\MyGitRepo\Working";
 
-        string repoPath;
-        string workingPath;
-        IFileSystem fileSystem;
+        private string repoPath;
+        private string workingPath;
+        private IFileSystem fileSystem;
 
         [SetUp]
         public void Setup()
@@ -94,12 +94,12 @@ namespace GitVersionCore.Tests
             output.Length.ShouldBe(0);
         }
 
-        string SetupConfigFileContent(string text, string fileName = DefaultConfigFileLocator.DefaultFileName)
+        private string SetupConfigFileContent(string text, string fileName = DefaultConfigFileLocator.DefaultFileName)
         {
             return SetupConfigFileContent(text, fileName, repoPath);
         }
 
-        string SetupConfigFileContent(string text, string fileName, string path)
+        private string SetupConfigFileContent(string text, string fileName, string path)
         {
             var fullPath = Path.Combine(path, fileName);
             fileSystem.WriteAllText(fullPath, text);

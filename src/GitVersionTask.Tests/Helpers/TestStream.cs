@@ -4,9 +4,9 @@ namespace GitVersionTask.Tests.Helpers
 {
     public class TestStream : Stream
     {
-        readonly string path;
-        readonly TestFileSystem testFileSystem;
-        MemoryStream underlying = new MemoryStream();
+        private readonly string path;
+        private readonly TestFileSystem testFileSystem;
+        private MemoryStream underlying = new MemoryStream();
 
         public TestStream(string path, TestFileSystem testFileSystem)
         {

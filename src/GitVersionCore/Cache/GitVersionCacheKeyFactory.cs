@@ -10,7 +10,7 @@ using GitVersion.Logging;
 
 namespace GitVersion.Cache
 {
-    class GitVersionCacheKeyFactory
+    internal class GitVersionCacheKeyFactory
     {
         public static GitVersionCacheKey Create(IFileSystem fileSystem, ILog log, GitPreparer gitPreparer, Config overrideConfig, IConfigFileLocator configFileLocator)
         {
@@ -23,7 +23,7 @@ namespace GitVersion.Cache
             return new GitVersionCacheKey(compositeHash);
         }
 
-        static string GetGitSystemHash(GitPreparer gitPreparer, ILog log)
+        private static string GetGitSystemHash(GitPreparer gitPreparer, ILog log)
         {
             var dotGitDirectory = gitPreparer.GetDotGitDirectory();
 
@@ -34,7 +34,7 @@ namespace GitVersion.Cache
         }
 
         // based on https://msdn.microsoft.com/en-us/library/bb513869.aspx
-        static List<string> CalculateDirectoryContents(ILog log, string root)
+        private static List<string> CalculateDirectoryContents(ILog log, string root)
         {
             var result = new List<string>();
 
@@ -171,13 +171,13 @@ namespace GitVersion.Cache
             return GetHash(configFileContent);
         }
 
-        static string GetHash(params string[] textsToHash)
+        private static string GetHash(params string[] textsToHash)
         {
             var textToHash = string.Join(":", textsToHash);
             return GetHash(textToHash);
         }
 
-        static string GetHash(string textToHash)
+        private static string GetHash(string textToHash)
         {
             if (string.IsNullOrEmpty(textToHash))
             {

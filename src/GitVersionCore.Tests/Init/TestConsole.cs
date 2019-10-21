@@ -7,7 +7,7 @@ namespace GitVersionCore.Tests.Init
 {
     public class TestConsole : IConsole
     {
-        readonly Queue<string> responses;
+        private readonly Queue<string> responses;
         private ILog log;
 
         public TestConsole(params string[] responses)
@@ -41,7 +41,7 @@ namespace GitVersionCore.Tests.Init
             return new NoOpDisposable();
         }
 
-        class NoOpDisposable : IDisposable
+        private class NoOpDisposable : IDisposable
         {
             public void Dispose() { }
         }

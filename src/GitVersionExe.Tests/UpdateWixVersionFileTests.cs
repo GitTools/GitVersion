@@ -11,7 +11,7 @@ namespace GitVersionExe.Tests
 {
     [TestFixture]
     [Parallelizable(ParallelScope.None)]
-    class UpdateWixVersionFileTests
+    internal class UpdateWixVersionFileTests
     {
         private string WixVersionFileName;
 
