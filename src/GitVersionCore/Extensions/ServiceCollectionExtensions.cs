@@ -1,3 +1,5 @@
+using GitVersion.Common;
+
 namespace GitVersion.Extensions
 {
     using Microsoft.Extensions.DependencyInjection;

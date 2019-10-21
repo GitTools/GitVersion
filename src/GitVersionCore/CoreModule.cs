@@ -11,6 +11,8 @@ namespace GitVersion
             services.AddSingleton<IFileSystem, FileSystem>();
             services.AddSingleton<IEnvironment, Environment>();
             services.AddSingleton<ILog, Log>();
+
+            services.AddSingleton<IExecuteCore, ExecuteCore>();
         }
     }
 }

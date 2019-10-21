@@ -10,7 +10,7 @@ using Environment = System.Environment;
 
 namespace GitVersion
 {
-    public class ExecuteCore
+    public class ExecuteCore : IExecuteCore
     {
         private readonly IFileSystem fileSystem;
         private readonly IEnvironment environment;
@@ -18,16 +18,39 @@ namespace GitVersion
         private readonly IConfigFileLocator configFileLocator;
         private readonly GitVersionCache gitVersionCache;
 
-        public ExecuteCore(IFileSystem fileSystem, IEnvironment environment, ILog log, IConfigFileLocator configFileLocator = null)
+        public ExecuteCore(IFileSystem fileSystem, IEnvironment environment, ILog log, IConfigFileLocator configFileLocator)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.environment = environment;
             this.log = log;
-            this.configFileLocator = configFileLocator ?? new DefaultConfigFileLocator(fileSystem, log);
+            this.configFileLocator = configFileLocator;
             gitVersionCache = new GitVersionCache(fileSystem, log);
         }
 
-        public VersionVariables ExecuteGitVersion(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId, Config overrideConfig = null, bool noCache = false, bool noNormalize = false)
+        public VersionVariables ExecuteGitVersion(Arguments arguments)
+        {
+            return ExecuteGitVersion(
+                arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication,
+                arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath,
+                arguments.CommitId, arguments.OverrideConfig, arguments.NoCache, arguments.NoNormalize);
+        }
+
+        public bool TryGetVersion(string directory, out VersionVariables versionVariables, bool noFetch, Authentication authentication)
+        {
+            try
+            {
+                versionVariables = ExecuteGitVersion(null, null, authentication, null, noFetch, directory, null);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                log.Warning("Could not determine assembly version: " + ex);
+                versionVariables = null;
+                return false;
+            }
+        }
+
+        private VersionVariables ExecuteGitVersion(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId, Config overrideConfig = null, bool noCache = false, bool noNormalize = false)
         {
             BuildServerList.Init(environment, log);
 
@@ -83,21 +106,6 @@ namespace GitVersion
             }
 
             return versionVariables;
-        }
-
-        public bool TryGetVersion(string directory, out VersionVariables versionVariables, bool noFetch, Authentication authentication)
-        {
-            try
-            {
-                versionVariables = ExecuteGitVersion(null, null, authentication, null, noFetch, directory, null);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                log.Warning("Could not determine assembly version: " + ex);
-                versionVariables = null;
-                return false;
-            }
         }
 
         private string ResolveCurrentBranch(IBuildServer buildServer, string targetBranch, bool isDynamicRepository)

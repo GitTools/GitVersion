@@ -13,20 +13,20 @@ namespace GitVersion
     public class GitVersionRunner : IGitVersionRunner
     {
         private readonly IFileSystem fileSystem;
-        private readonly IEnvironment environment;
         private readonly ILog log;
         private readonly IConfigFileLocator configFileLocator;
         private readonly IHelpWriter helpWriter;
+        private readonly IExecCommand execCommand;
         private readonly IVersionWriter versionWriter;
 
-        public GitVersionRunner(IFileSystem fileSystem, IEnvironment environment, ILog log, IConfigFileLocator configFileLocator, IVersionWriter versionWriter, IHelpWriter helpWriter)
+        public GitVersionRunner(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IVersionWriter versionWriter, IHelpWriter helpWriter, IExecCommand execCommand)
         {
             this.fileSystem = fileSystem;
-            this.environment = environment;
             this.log = log;
             this.configFileLocator = configFileLocator;
             this.versionWriter = versionWriter;
             this.helpWriter = helpWriter;
+            this.execCommand = execCommand;
         }
 
         public int Run(Arguments arguments)
@@ -105,9 +105,7 @@ namespace GitVersion
                     return 0;
                 }
 
-                var execCommand = new ExecCommand();
-
-                execCommand.Execute(arguments, fileSystem, environment, log, configFileLocator);
+                execCommand.Execute();
             }
             catch (WarningException exception)
             {

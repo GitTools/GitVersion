@@ -1,5 +1,6 @@
 using System.IO;
 using GitVersion;
+using GitVersion.Configuration;
 using NUnit.Framework;
 using GitVersion.Logging;
 
@@ -61,14 +62,27 @@ namespace GitVersionCore.Tests
             var root = Path.Combine(workDirectory, name);
             var dynamicDirectory = Path.Combine(root, "D"); // dynamic, keeping directory as short as possible
             var workingDirectory = Path.Combine(root, "W"); // working, keeping directory as short as possible
+            var arguments = new Arguments
+            {
+                TargetUrl = url,
+                DynamicRepositoryLocation = dynamicDirectory,
+                TargetBranch = targetBranch,
+                NoFetch = false,
+                TargetPath = workingDirectory,
+                CommitId = commitId
+            };
 
             Directory.CreateDirectory(dynamicDirectory);
             Directory.CreateDirectory(workingDirectory);
 
-            var executeCore = new ExecuteCore(new TestFileSystem(), new TestEnvironment(), new NullLog());
+            var testFileSystem = new TestFileSystem();
+            var testEnvironment = new TestEnvironment();
+            var log = new NullLog();
+            var configFileLocator = new DefaultConfigFileLocator(testFileSystem, log);
 
-            var versionVariables = executeCore.ExecuteGitVersion(url, dynamicDirectory, null, targetBranch,
-                false, workingDirectory, commitId);
+            var executeCore = new ExecuteCore(testFileSystem, testEnvironment, log, configFileLocator);
+
+            var versionVariables = executeCore.ExecuteGitVersion(arguments);
 
             Assert.AreEqual(expectedFullSemVer, versionVariables.FullSemVer);
         }

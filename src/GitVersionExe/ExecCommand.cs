@@ -10,33 +10,36 @@ using GitVersion.OutputVariables;
 using GitVersion.Extensions;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Common;
-using GitVersion.Configuration;
 using GitVersion.Logging;
+using Microsoft.Extensions.Options;
 
 namespace GitVersion
 {
-    public class ExecCommand
+    public class ExecCommand : IExecCommand
     {
         private static readonly bool runningOnUnix = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+
+        private readonly IFileSystem fileSystem;
+        private readonly IEnvironment environment;
+        private readonly ILog log;
+        private readonly IExecuteCore executeCore;
+        private readonly Arguments arguments;
         public static readonly string BuildTool = GetMsBuildToolPath();
 
-        public void Execute(Arguments arguments, IFileSystem fileSystem, IEnvironment environment, ILog log, IConfigFileLocator configFileLocator)
+        public ExecCommand(IFileSystem fileSystem, IEnvironment environment, ILog log, IExecuteCore executeCore, IOptions<Arguments> arguments)
+        {
+            this.fileSystem = fileSystem;
+            this.environment = environment;
+            this.log = log;
+            this.executeCore = executeCore;
+            this.arguments = arguments.Value;
+        }
+
+        public void Execute()
         {
             log.Info($"Running on {(runningOnUnix ? "Unix" : "Windows")}.");
 
-            var noFetch = arguments.NoFetch;
-            var authentication = arguments.Authentication;
-            var targetPath = arguments.TargetPath;
-            var targetUrl = arguments.TargetUrl;
-            var dynamicRepositoryLocation = arguments.DynamicRepositoryLocation;
-            var targetBranch = arguments.TargetBranch;
-            var commitId = arguments.CommitId;
-            var overrideConfig = arguments.HasOverrideConfig ? arguments.OverrideConfig : null;
-            var noCache = arguments.NoCache;
-            var noNormalize = arguments.NoNormalize;
-
-            var executeCore = new ExecuteCore(fileSystem, environment, log, configFileLocator);
-            var variables = executeCore.ExecuteGitVersion(targetUrl, dynamicRepositoryLocation, authentication, targetBranch, noFetch, targetPath, commitId, overrideConfig, noCache, noNormalize);
+            var variables = executeCore.ExecuteGitVersion(arguments);
 
             switch (arguments.Output)
             {
@@ -73,18 +76,18 @@ namespace GitVersion
 
             if (arguments.UpdateWixVersionFile)
             {
-                using var wixVersionFileUpdater = new WixVersionFileUpdater(targetPath, variables, fileSystem, log);
+                using var wixVersionFileUpdater = new WixVersionFileUpdater(arguments.TargetPath, variables, fileSystem, log);
                 wixVersionFileUpdater.Update();
             }
 
-            using var assemblyInfoUpdater = new AssemblyInfoFileUpdater(arguments.UpdateAssemblyInfoFileName, targetPath, variables, fileSystem, log, arguments.EnsureAssemblyInfo);
+            using var assemblyInfoUpdater = new AssemblyInfoFileUpdater(arguments.UpdateAssemblyInfoFileName, arguments.TargetPath, variables, fileSystem, log, arguments.EnsureAssemblyInfo);
             if (arguments.UpdateAssemblyInfo)
             {
                 assemblyInfoUpdater.Update();
             }
 
-            var execRun = RunExecCommandIfNeeded(arguments, targetPath, variables, log);
-            var msbuildRun = RunMsBuildIfNeeded(arguments, targetPath, variables, log);
+            var execRun = RunExecCommandIfNeeded(arguments, arguments.TargetPath, variables, log);
+            var msbuildRun = RunMsBuildIfNeeded(arguments, arguments.TargetPath, variables, log);
 
             if (!execRun && !msbuildRun)
             {

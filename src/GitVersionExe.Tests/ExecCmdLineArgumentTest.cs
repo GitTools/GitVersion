@@ -43,7 +43,7 @@ namespace GitVersionExe.Tests
             using var fixture = new EmptyRepositoryFixture();
             var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /invalid-argument");
 
-            result.ExitCode.ShouldBe(1);
+            result.ExitCode.ShouldNotBe(0);
             result.Output.ShouldContain("Could not parse command line parameter '/invalid-argument'");
         }
 

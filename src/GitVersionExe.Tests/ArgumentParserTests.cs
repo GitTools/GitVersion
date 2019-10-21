@@ -236,7 +236,7 @@ namespace GitVersionExe.Tests
         {
             var arguments = argumentParser.ParseArguments("/overrideconfig");
             arguments.HasOverrideConfig.ShouldBe(false);
-            arguments.OverrideConfig.ShouldNotBeNull();
+            arguments.OverrideConfig.ShouldBeNull();
         }
 
         [Test]
