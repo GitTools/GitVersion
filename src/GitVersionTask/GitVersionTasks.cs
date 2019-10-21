@@ -120,7 +120,7 @@ namespace GitVersionTask
 
         private static bool GetVersionVariables(GitVersionTaskBase task, out VersionVariables versionVariables)
             => new ExecuteCore(fileSystem, log, GetConfigFileLocator(task.ConfigFilePath), buildServerResolver)
-                .TryGetVersion(task.SolutionDirectory, out versionVariables, task.NoFetch, new Authentication());
+                .TryGetVersion(task.SolutionDirectory, out versionVariables, task.NoFetch);
 
         private static IConfigFileLocator GetConfigFileLocator(string filePath = null) =>
             !string.IsNullOrEmpty(filePath)

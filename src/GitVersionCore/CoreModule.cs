@@ -1,7 +1,11 @@
+using System;
 using GitVersion.BuildServers;
 using Microsoft.Extensions.DependencyInjection;
 using GitVersion.Common;
+using GitVersion.Configuration;
 using GitVersion.Logging;
+using Microsoft.Extensions.Options;
+using Environment = GitVersion.Common.Environment;
 
 namespace GitVersion
 {
@@ -15,6 +19,29 @@ namespace GitVersion
 
             services.AddSingleton<IExecuteCore, ExecuteCore>();
 
+            services.AddSingleton<IBuildServerResolver, BuildServerResolver>();
+            services.AddSingleton(GetConfigFileLocator);
+
+            RegisterBuildServers(services);
+        }
+
+        private static IConfigFileLocator GetConfigFileLocator(IServiceProvider sp)
+        {
+            var fileSystem = sp.GetService<IFileSystem>();
+            var log = sp.GetService<ILog>();
+            var arguments = sp.GetService<IOptions<Arguments>>();
+
+            var configFile = arguments.Value.ConfigFile;
+
+            var configFileLocator = string.IsNullOrWhiteSpace(configFile)
+                ? new DefaultConfigFileLocator(fileSystem, log) as IConfigFileLocator
+                : new NamedConfigFileLocator(configFile, fileSystem, log);
+
+            return configFileLocator;
+        }
+
+        private static void RegisterBuildServers(IServiceCollection services)
+        {
             services.AddSingleton<IBuildServer, ContinuaCi>();
             services.AddSingleton<IBuildServer, TeamCity>();
             services.AddSingleton<IBuildServer, AppVeyor>();
@@ -26,8 +53,6 @@ namespace GitVersion
             services.AddSingleton<IBuildServer, EnvRun>();
             services.AddSingleton<IBuildServer, Drone>();
             services.AddSingleton<IBuildServer, CodeBuild>();
-
-            services.AddSingleton<IBuildServerResolver, BuildServerResolver>();
         }
     }
 }

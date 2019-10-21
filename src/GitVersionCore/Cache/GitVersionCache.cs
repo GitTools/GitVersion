@@ -60,16 +60,6 @@ namespace GitVersion.Cache
             return cacheDir;
         }
 
-        private string PrepareCacheDirectory(GitPreparer gitPreparer)
-        {
-            var cacheDir = GetCacheDirectory(gitPreparer);
-
-            // If the cacheDir already exists, CreateDirectory just won't do anything (it won't fail). @asbjornu
-            fileSystem.CreateDirectory(cacheDir);
-
-            return cacheDir;
-        }
-
         public VersionVariables LoadVersionVariablesFromDiskCache(GitPreparer gitPreparer, GitVersionCacheKey key)
         {
             using (log.IndentLog("Loading version variables from disk cache"))
@@ -107,6 +97,16 @@ namespace GitVersion.Cache
                     }
                 }
             }
+        }
+
+        private string PrepareCacheDirectory(GitPreparer gitPreparer)
+        {
+            var cacheDir = GetCacheDirectory(gitPreparer);
+
+            // If the cacheDir already exists, CreateDirectory just won't do anything (it won't fail). @asbjornu
+            fileSystem.CreateDirectory(cacheDir);
+
+            return cacheDir;
         }
 
         private static string GetCacheFileName(GitVersionCacheKey key, string cacheDir)
