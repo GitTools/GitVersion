@@ -93,10 +93,8 @@ namespace GitVersion
 
         public TResult WithRepository<TResult>(Func<IRepository, TResult> action)
         {
-            using (IRepository repo = new Repository(GetDotGitDirectory()))
-            {
-                return action(repo);
-            }
+            using IRepository repo = new Repository(GetDotGitDirectory());
+            return action(repo);
         }
 
         private static string CalculateTemporaryRepositoryPath(string targetUrl, string dynamicRepositoryLocation)
@@ -128,10 +126,8 @@ namespace GitVersion
         {
             try
             {
-                using (var repository = new Repository(possiblePath))
-                {
-                    return repository.Network.Remotes.Any(r => r.Url == targetUrl);
-                }
+                using var repository = new Repository(possiblePath);
+                return repository.Network.Remotes.Any(r => r.Url == targetUrl);
             }
             catch (Exception)
             {
@@ -167,12 +163,10 @@ namespace GitVersion
             if (string.IsNullOrEmpty(dotGitDirectory))
                 throw new DirectoryNotFoundException($"Can't find the .git directory in {WorkingDirectory}");
 
-            using (var repo = new Repository(dotGitDirectory))
-            {
-                var result = repo.Info.WorkingDirectory;
-                log.Info($"Returning Project Root from DotGitDirectory: {dotGitDirectory} - {result}");
-                return result;
-            }
+            using var repo = new Repository(dotGitDirectory);
+            var result = repo.Info.WorkingDirectory;
+            log.Info($"Returning Project Root from DotGitDirectory: {dotGitDirectory} - {result}");
+            return result;
         }
 
         private string CreateDynamicRepository(string targetPath, AuthenticationInfo auth, string repositoryUrl, string targetBranch, bool noFetch)

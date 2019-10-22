@@ -35,10 +35,8 @@ namespace GitVersion.Extensions
             XmlElement root = doc.DocumentElement;
             doc.InsertBefore(xmlDecl, root);
 
-            using (var fs = fileSystem.OpenWrite(WixVersionFile))
-            {
-                doc.Save(fs);
-            }
+            using var fs = fileSystem.OpenWrite(WixVersionFile);
+            doc.Save(fs);
         }
 
         private string GetWixFormatFromVersionVariables()

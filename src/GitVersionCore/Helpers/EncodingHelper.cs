@@ -28,21 +28,19 @@ namespace GitVersion.Helpers
                 ScanEncodings();
             }
 
-            using (var stream = File.OpenRead(filename))
+            using var stream = File.OpenRead(filename);
+            // No bytes? No encoding!
+            if (stream.Length == 0)
             {
-                // No bytes? No encoding!
-                if (stream.Length == 0)
-                {
-                    return null;
-                }
-
-                // Read the minimum amount necessary.
-                var length = stream.Length > MaxPreambleLength ? MaxPreambleLength : stream.Length;
-
-                var bytes = new byte[length];
-                stream.Read(bytes, 0, (int)length);
-                return DetectEncoding(bytes);
+                return null;
             }
+
+            // Read the minimum amount necessary.
+            var length = stream.Length > MaxPreambleLength ? MaxPreambleLength : stream.Length;
+
+            var bytes = new byte[length];
+            stream.Read(bytes, 0, (int)length);
+            return DetectEncoding(bytes);
         }
 
         /// <summary>

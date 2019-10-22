@@ -154,16 +154,12 @@ namespace GitVersion.OutputVariables
 
         public static VersionVariables FromFile(string filePath, IFileSystem fileSystem)
         {
-            using (var stream = fileSystem.OpenRead(filePath))
-            {
-                using (var reader = new StreamReader(stream))
-                {
-                    var dictionary = new Deserializer().Deserialize<Dictionary<string, string>>(reader);
-                    var versionVariables = FromDictionary(dictionary);
-                    versionVariables.FileName = filePath;
-                    return versionVariables;
-                }
-            }
+            using var stream = fileSystem.OpenRead(filePath);
+            using var reader = new StreamReader(stream);
+            var dictionary = new Deserializer().Deserialize<Dictionary<string, string>>(reader);
+            var versionVariables = FromDictionary(dictionary);
+            versionVariables.FileName = filePath;
+            return versionVariables;
         }
 
         public bool TryGetValue(string variable, out string variableValue)

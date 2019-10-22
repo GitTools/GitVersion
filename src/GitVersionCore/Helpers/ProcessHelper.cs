@@ -117,42 +117,40 @@ namespace GitVersion.Helpers
                 }
             }
 
-            using (var process = Start(psi))
-            using (var mreOut = new ManualResetEvent(false))
-            using (var mreErr = new ManualResetEvent(false))
+            using var process = Start(psi);
+            using var mreOut = new ManualResetEvent(false);
+            using var mreErr = new ManualResetEvent(false);
+            process.EnableRaisingEvents = true;
+            process.OutputDataReceived += (o, e) =>
             {
-                process.EnableRaisingEvents = true;
-                process.OutputDataReceived += (o, e) =>
-                {
-                    // ReSharper disable once AccessToDisposedClosure
-                    if (e.Data == null)
-                        mreOut.Set();
-                    else
-                        output(e.Data);
-                };
-                process.BeginOutputReadLine();
-                process.ErrorDataReceived += (o, e) =>
-                {
-                    // ReSharper disable once AccessToDisposedClosure
-                    if (e.Data == null)
-                        mreErr.Set();
-                    else
-                        errorOutput(e.Data);
-                };
-                process.BeginErrorReadLine();
+                // ReSharper disable once AccessToDisposedClosure
+                if (e.Data == null)
+                    mreOut.Set();
+                else
+                    output(e.Data);
+            };
+            process.BeginOutputReadLine();
+            process.ErrorDataReceived += (o, e) =>
+            {
+                // ReSharper disable once AccessToDisposedClosure
+                if (e.Data == null)
+                    mreErr.Set();
+                else
+                    errorOutput(e.Data);
+            };
+            process.BeginErrorReadLine();
 
-                string line;
-                while (input != null && null != (line = input.ReadLine()))
-                    process.StandardInput.WriteLine(line);
+            string line;
+            while (input != null && null != (line = input.ReadLine()))
+                process.StandardInput.WriteLine(line);
 
-                process.StandardInput.Close();
-                process.WaitForExit();
+            process.StandardInput.Close();
+            process.WaitForExit();
 
-                mreOut.WaitOne();
-                mreErr.WaitOne();
+            mreOut.WaitOne();
+            mreErr.WaitOne();
 
-                return process.ExitCode;
-            }
+            return process.ExitCode;
         }
 
         /// <summary>

@@ -253,13 +253,11 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             var config = new ConfigInitWizard(console, fileSystem, log).Run(currentConfiguration, workingDirectory);
             if (config == null) return;
 
-            using (var stream = fileSystem.OpenWrite(configFilePath))
-            using (var writer = new StreamWriter(stream))
-            {
-                log.Info("Saving config file");
-                ConfigSerialiser.Write(config, writer);
-                stream.Flush();
-            }
+            using var stream = fileSystem.OpenWrite(configFilePath);
+            using var writer = new StreamWriter(stream);
+            log.Info("Saving config file");
+            ConfigSerialiser.Write(config, writer);
+            stream.Flush();
         }
     }
 }

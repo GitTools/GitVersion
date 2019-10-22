@@ -36,16 +36,12 @@ namespace GitVersion.Cache
 
             void WriteCacheOperation()
             {
-                using (var stream = fileSystem.OpenWrite(cacheFileName))
+                using var stream = fileSystem.OpenWrite(cacheFileName);
+                using var sw = new StreamWriter(stream);
+                using (log.IndentLog("Storing version variables to cache file " + cacheFileName))
                 {
-                    using (var sw = new StreamWriter(stream))
-                    {
-                        using (log.IndentLog("Storing version variables to cache file " + cacheFileName))
-                        {
-                            var serializer = new Serializer();
-                            serializer.Serialize(sw, dictionary);
-                        }
-                    }
+                    var serializer = new Serializer();
+                    serializer.Serialize(sw, dictionary);
                 }
             }
 
