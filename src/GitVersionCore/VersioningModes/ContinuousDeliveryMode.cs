@@ -2,6 +2,7 @@
 using System.Linq;
 using LibGit2Sharp;
 using GitVersion.Helpers;
+using GitVersion.SemanticVersioning;
 
 namespace GitVersion.VersioningModes
 {

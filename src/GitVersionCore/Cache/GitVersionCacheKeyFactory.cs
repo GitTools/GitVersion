@@ -12,7 +12,7 @@ namespace GitVersion.Cache
 {
     internal class GitVersionCacheKeyFactory
     {
-        public static GitVersionCacheKey Create(IFileSystem fileSystem, ILog log, IGitPreparer gitPreparer, Config overrideConfig, IConfigFileLocator configFileLocator)
+        public static GitVersionCacheKey Create(IFileSystem fileSystem, ILog log, IGitPreparer gitPreparer, IConfigFileLocator configFileLocator, Config overrideConfig)
         {
             var gitSystemHash = GetGitSystemHash(gitPreparer, log);
             var configFileHash = GetConfigFileHash(fileSystem, gitPreparer, configFileLocator);

@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using GitVersion;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.BuildServers;
 using GitVersion.Common;
 using GitVersion.OutputVariables;
 using GitVersion.Logging;
+using GitVersion.SemanticVersioning;
 
 namespace GitVersionCore.Tests.BuildServers
 {

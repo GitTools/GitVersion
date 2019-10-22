@@ -4,15 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using GitVersion.Configuration;
 using GitVersion.Helpers;
 using GitVersion.Logging;
+using GitVersion.SemanticVersioning;
 
 namespace GitVersion.VersionCalculation
 {
     internal class MainlineVersionCalculator : IMainlineVersionCalculator
     {
-        private IMetaDataCalculator metaDataCalculator;
+        private readonly IMetaDataCalculator metaDataCalculator;
         private readonly ILog log;
 
         public MainlineVersionCalculator(IMetaDataCalculator metaDataCalculator, ILog log)

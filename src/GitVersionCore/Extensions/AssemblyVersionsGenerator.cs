@@ -1,4 +1,5 @@
 using System;
+using GitVersion.SemanticVersioning;
 
 namespace GitVersion.Extensions
 {

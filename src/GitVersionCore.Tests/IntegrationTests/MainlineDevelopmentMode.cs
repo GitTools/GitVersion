@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using GitTools.Testing;
+using GitVersion;
 using GitVersion.Configuration;
 using GitVersion.Helpers;
 using GitVersion.VersioningModes;

@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using LibGit2Sharp;
 using GitVersion.Helpers;
+using GitVersion.SemanticVersioning;
 
 namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
@@ -20,7 +21,8 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
 
         public IEnumerable<BaseVersion> GetTaggedVersions(GitVersionContext context, Branch currentBranch, DateTimeOffset? olderThan)
         {
-            var allTags = GitRepoMetadataProvider.GetValidVersionTags(context.Repository, context.Configuration.GitTagPrefix, olderThan); 
+            var gitRepoMetadataProvider = new GitRepoMetadataProvider(context.Repository, context.Log, context.FullConfiguration);
+            var allTags = gitRepoMetadataProvider.GetValidVersionTags(context.Repository, context.Configuration.GitTagPrefix, olderThan); 
                 
             var tagsOnBranch = currentBranch
                 .Commits

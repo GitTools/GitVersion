@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using GitTools.Testing;
-using GitVersion;
 using GitVersion.Configuration;
 using GitVersion.VersionCalculation;
 using GitVersion.VersioningModes;
@@ -11,6 +10,7 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.Helpers;
 using GitVersion.Logging;
+using GitVersion.SemanticVersioning;
 
 namespace GitVersionCore.Tests.VersionCalculation
 {

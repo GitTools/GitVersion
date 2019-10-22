@@ -1,5 +1,5 @@
 using System;
-using GitVersion;
+using GitVersion.SemanticVersioning;
 using NUnit.Framework;
 
 namespace GitVersionCore.Tests

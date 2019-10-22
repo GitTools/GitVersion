@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Common;
 using GitVersion.Logging;
+using GitVersion.SemanticVersioning;
 
 namespace GitVersion.Configuration.Init
 {

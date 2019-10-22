@@ -1,10 +1,10 @@
 using System;
-using GitVersion;
 using GitVersion.Logging;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
+using GitVersion.SemanticVersioning;
 
 namespace GitVersionCore.Tests
 {
