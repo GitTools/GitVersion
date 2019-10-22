@@ -9,7 +9,7 @@ using Environment = GitVersion.Common.Environment;
 
 namespace GitVersion
 {
-    public class CoreModule : IModule
+    public class GitVersionModule : IModule
     {
         public void RegisterTypes(IServiceCollection services)
         {
@@ -17,7 +17,7 @@ namespace GitVersion
             services.AddSingleton<IEnvironment, Environment>();
             services.AddSingleton<ILog, Log>();
 
-            services.AddSingleton<IExecuteCore, ExecuteCore>();
+            services.AddSingleton<IGitVersionComputer, GitVersionComputer>();
 
             services.AddSingleton<IBuildServerResolver, BuildServerResolver>();
             services.AddSingleton(GetConfigFileLocator);

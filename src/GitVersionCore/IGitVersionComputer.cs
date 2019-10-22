@@ -2,9 +2,9 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion
 {
-    public interface IExecuteCore
+    public interface IGitVersionComputer
     {
-        VersionVariables ExecuteGitVersion(Arguments arguments);
+        VersionVariables ComputeVersionVariables(Arguments arguments);
         bool TryGetVersion(string directory, out VersionVariables versionVariables, bool noFetch);
     }
 }

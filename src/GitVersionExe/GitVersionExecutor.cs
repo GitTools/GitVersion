@@ -10,7 +10,7 @@ using GitVersion.OutputFormatters;
 
 namespace GitVersion
 {
-    public class GitVersionRunner : IGitVersionRunner
+    public class GitVersionExecutor : IGitVersionExecutor
     {
         private readonly IFileSystem fileSystem;
         private readonly ILog log;
@@ -19,7 +19,7 @@ namespace GitVersion
         private readonly IExecCommand execCommand;
         private readonly IVersionWriter versionWriter;
 
-        public GitVersionRunner(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IVersionWriter versionWriter, IHelpWriter helpWriter, IExecCommand execCommand)
+        public GitVersionExecutor(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IVersionWriter versionWriter, IHelpWriter helpWriter, IExecCommand execCommand)
         {
             this.fileSystem = fileSystem;
             this.log = log;
@@ -105,7 +105,7 @@ namespace GitVersion
                     return 0;
                 }
 
-                execCommand.Execute();
+                execCommand.Compute();
             }
             catch (WarningException exception)
             {

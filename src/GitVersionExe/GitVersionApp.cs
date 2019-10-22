@@ -10,14 +10,14 @@ namespace GitVersion
     internal class GitVersionApp : IHostedService
     {
         private readonly IHostApplicationLifetime applicationLifetime;
-        private readonly IGitVersionRunner gitVersionRunner;
+        private readonly IGitVersionExecutor gitVersionExecutor;
         private readonly Arguments arguments;
 
-        public GitVersionApp(IHostApplicationLifetime applicationLifetime, IGitVersionRunner gitVersionRunner, ILog log, IOptions<Arguments> options)
+        public GitVersionApp(IHostApplicationLifetime applicationLifetime, IGitVersionExecutor gitVersionExecutor, ILog log, IOptions<Arguments> options)
         {
             this.arguments = options.Value;
             this.applicationLifetime = applicationLifetime;
-            this.gitVersionRunner = gitVersionRunner;
+            this.gitVersionExecutor = gitVersionExecutor;
 
             log.Verbosity = arguments.Verbosity;
         }
@@ -25,7 +25,7 @@ namespace GitVersion
         {
             try
             {
-                gitVersionRunner.Run(arguments);
+                gitVersionExecutor.Run(arguments);
             }
             catch (Exception exception)
             {

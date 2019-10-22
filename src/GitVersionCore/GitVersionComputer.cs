@@ -8,7 +8,7 @@ using Environment = System.Environment;
 
 namespace GitVersion
 {
-    public class ExecuteCore : IExecuteCore
+    public class GitVersionComputer : IGitVersionComputer
     {
         private readonly IFileSystem fileSystem;
         private readonly ILog log;
@@ -16,7 +16,7 @@ namespace GitVersion
         private readonly IBuildServerResolver buildServerResolver;
         private readonly GitVersionCache gitVersionCache;
 
-        public ExecuteCore(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IBuildServerResolver buildServerResolver)
+        public GitVersionComputer(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IBuildServerResolver buildServerResolver)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log;
@@ -25,9 +25,9 @@ namespace GitVersion
             gitVersionCache = new GitVersionCache(fileSystem, log);
         }
 
-        public VersionVariables ExecuteGitVersion(Arguments arguments)
+        public VersionVariables ComputeVersionVariables(Arguments arguments)
         {
-            return ExecuteGitVersion(
+            return ComputeVersionVariables(
                 arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication,
                 arguments.TargetBranch, arguments.NoFetch, arguments.TargetPath,
                 arguments.CommitId, arguments.OverrideConfig, arguments.NoCache, arguments.NoNormalize);
@@ -37,7 +37,7 @@ namespace GitVersion
         {
             try
             {
-                versionVariables = ExecuteGitVersion(null, null, null, null, noFetch, directory, null);
+                versionVariables = ComputeVersionVariables(null, null, null, null, noFetch, directory, null);
                 return true;
             }
             catch (Exception ex)
@@ -48,7 +48,7 @@ namespace GitVersion
             }
         }
 
-        private VersionVariables ExecuteGitVersion(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId, Config overrideConfig = null, bool noCache = false, bool noNormalize = false)
+        private VersionVariables ComputeVersionVariables(string targetUrl, string dynamicRepositoryLocation, Authentication authentication, string targetBranch, bool noFetch, string workingDirectory, string commitId, Config overrideConfig = null, bool noCache = false, bool noNormalize = false)
         {
             // Normalize if we are running on build server
             var buildServer = buildServerResolver.GetCurrentBuildServer();

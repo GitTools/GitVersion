@@ -22,8 +22,8 @@ namespace GitVersion
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddModule(new CoreModule());
-                    services.AddModule(new Module());
+                    services.AddModule(new GitVersionModule());
+                    services.AddModule(new GitVersionExeModule());
 
                     services.AddSingleton(sp => Options.Create(sp.GetService<IArgumentParser>().ParseArguments(args)));
 
