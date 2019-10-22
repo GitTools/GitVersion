@@ -15,57 +15,57 @@ namespace GitVersion
         private readonly bool noFetch;
 
         private const string defaultRemoteName = "origin";
+        private string dynamicGitRepositoryPath;
 
         public GitPreparer(ILog log, Arguments arguments)
-            : this(log, arguments.TargetUrl, arguments.DynamicRepositoryLocation, arguments.Authentication, arguments.NoFetch, arguments.TargetPath)
-        {
-        }
-
-        public GitPreparer(ILog log, string targetUrl, string dynamicRepositoryLocation, Authentication authentication, bool noFetch, string targetPath)
         {
             this.log = log;
-            TargetUrl = targetUrl;
-            this.dynamicRepositoryLocation = dynamicRepositoryLocation;
-            this.authentication =
-                new AuthenticationInfo
-                {
-                    Username = authentication?.Username,
-                    Password = authentication?.Password
-                };
-            this.noFetch = noFetch;
-            WorkingDirectory = targetPath.TrimEnd('/', '\\');
+
+            TargetUrl = arguments.TargetUrl;
+            WorkingDirectory = arguments.TargetPath.TrimEnd('/', '\\');
+
+            dynamicRepositoryLocation = arguments.DynamicRepositoryLocation;
+            authentication = new AuthenticationInfo
+            {
+                Username = arguments.Authentication?.Username,
+                Password = arguments.Authentication?.Password
+            };
+
+            noFetch = arguments.NoFetch;
         }
 
-        public string TargetUrl { get; }
-
-        public string WorkingDirectory { get; }
-
-        private bool IsDynamicGitRepository => !string.IsNullOrWhiteSpace(DynamicGitRepositoryPath);
-
-        private string DynamicGitRepositoryPath { get; set; }
-
-        public void Initialise(bool normalizeGitDirectory, string currentBranch, bool shouldCleanUpRemotes = false)
+        public void Initialize(bool normalizeGitDirectory, string currentBranch, bool shouldCleanUpRemotes = false)
         {
             if (string.IsNullOrWhiteSpace(TargetUrl))
             {
-                if (normalizeGitDirectory)
+                if (!normalizeGitDirectory) return;
+                using (log.IndentLog($"Normalizing git directory for branch '{currentBranch}'"))
                 {
-                    using (log.IndentLog($"Normalizing git directory for branch '{currentBranch}'"))
+                    if (shouldCleanUpRemotes)
                     {
-                        if (shouldCleanUpRemotes)
-                        {
-                            CleanupDuplicateOrigin();
-                        }
-                        GitRepositoryHelper.NormalizeGitDirectory(log, GetDotGitDirectory(), authentication, noFetch, currentBranch, IsDynamicGitRepository);
+                        CleanupDuplicateOrigin();
                     }
+                    GitRepositoryHelper.NormalizeGitDirectory(log, GetDotGitDirectory(), authentication, noFetch, currentBranch, IsDynamicGitRepository());
                 }
                 return;
             }
 
             var tempRepositoryPath = CalculateTemporaryRepositoryPath(TargetUrl, dynamicRepositoryLocation);
 
-            DynamicGitRepositoryPath = CreateDynamicRepository(tempRepositoryPath, authentication, TargetUrl, currentBranch, noFetch);
+            dynamicGitRepositoryPath = CreateDynamicRepository(tempRepositoryPath, authentication, TargetUrl, currentBranch, noFetch);
         }
+
+        public TResult WithRepository<TResult>(Func<IRepository, TResult> action)
+        {
+            using IRepository repo = new Repository(GetDotGitDirectory());
+            return action(repo);
+        }
+
+        public string TargetUrl { get; }
+
+        public string WorkingDirectory { get; }
+
+        private bool IsDynamicGitRepository() => !string.IsNullOrWhiteSpace(dynamicGitRepositoryPath);
 
         private void CleanupDuplicateOrigin()
         {
@@ -89,12 +89,6 @@ namespace GitVersion
             {
                 repo.Network.Remotes.Remove(repoName);
             }
-        }
-
-        public TResult WithRepository<TResult>(Func<IRepository, TResult> action)
-        {
-            using IRepository repo = new Repository(GetDotGitDirectory());
-            return action(repo);
         }
 
         private static string CalculateTemporaryRepositoryPath(string targetUrl, string dynamicRepositoryLocation)
@@ -137,7 +131,7 @@ namespace GitVersion
 
         public string GetDotGitDirectory()
         {
-            var dotGitDirectory = IsDynamicGitRepository ? DynamicGitRepositoryPath : Repository.Discover(WorkingDirectory);
+            var dotGitDirectory = IsDynamicGitRepository() ? dynamicGitRepositoryPath : Repository.Discover(WorkingDirectory);
 
             dotGitDirectory = dotGitDirectory?.TrimEnd('/', '\\');
             if (string.IsNullOrEmpty(dotGitDirectory))
@@ -151,8 +145,8 @@ namespace GitVersion
 
         public string GetProjectRootDirectory()
         {
-            log.Info($"IsDynamicGitRepository: {IsDynamicGitRepository}");
-            if (IsDynamicGitRepository)
+            log.Info($"IsDynamicGitRepository: {IsDynamicGitRepository()}");
+            if (IsDynamicGitRepository())
             {
                 log.Info($"Returning Project Root as {WorkingDirectory}");
                 return WorkingDirectory;

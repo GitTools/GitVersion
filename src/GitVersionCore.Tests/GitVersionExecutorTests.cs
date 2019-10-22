@@ -46,11 +46,17 @@ namespace GitVersionCore.Tests
             {
                 var targetUrl = "https://github.com/GitTools/GitVersion.git";
                 var targetBranch = "refs/head/master";
-                var gitPreparer = new GitPreparer(log, targetUrl, null, new Authentication(), false, fixture.RepositoryPath);
-                var configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
-                gitPreparer.Initialise(true, targetBranch);
+
+                var arguments = new Arguments
+                {
+                    TargetUrl = targetUrl,
+                    TargetPath = fixture.RepositoryPath
+                };
+                var gitPreparer = new GitPreparer(log, arguments);
+                configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
+                gitPreparer.Initialize(true, targetBranch);
                 var cacheKey1 = GitVersionCacheKeyFactory.Create(fileSystem, log, gitPreparer, null, configFileLocator);
-                gitPreparer.Initialise(true, targetBranch);
+                gitPreparer.Initialize(true, targetBranch);
                 var cacheKey2 = GitVersionCacheKeyFactory.Create(fileSystem, log, gitPreparer, null, configFileLocator);
 
                 cacheKey2.Value.ShouldBe(cacheKey1.Value);
@@ -74,8 +80,15 @@ namespace GitVersionCore.Tests
                     repo.Worktrees.Add("worktree", worktreePath, false);
 
                     var targetUrl = "https://github.com/GitTools/GitVersion.git";
-                    var gitPreparer = new GitPreparer(log, targetUrl, null, new Authentication(), false, worktreePath);
-                    var configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
+
+                    var arguments = new Arguments
+                    {
+                        TargetUrl = targetUrl,
+                        TargetPath = worktreePath
+                    };
+
+                    var gitPreparer = new GitPreparer(log, arguments);
+                    configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
                     var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, log, gitPreparer, null, configFileLocator);
                     cacheKey.Value.ShouldNotBeEmpty();
                 }
@@ -183,7 +196,12 @@ CommitDate: 2015-11-10
             {
                 fileSystem.WriteAllText(vv.FileName, versionCacheFileContent);
 
-                var gitPreparer = new GitPreparer(log, null, null, null, false, fixture.RepositoryPath);
+                var arguments = new Arguments
+                {
+                    TargetPath = fixture.RepositoryPath
+                };
+
+                var gitPreparer = new GitPreparer(log, arguments);
                 var cacheDirectory = GitVersionCache.GetCacheDirectory(gitPreparer);
 
                 var cacheDirectoryTimestamp = fileSystem.GetLastDirectoryWrite(cacheDirectory);
@@ -353,7 +371,14 @@ CommitDate: 2015-11-10
                     repo.Worktrees.Add("worktree", worktreePath, false);
 
                     var targetUrl = "https://github.com/GitTools/GitVersion.git";
-                    var gitPreparer = new GitPreparer(log, targetUrl, null, new Authentication(), false, worktreePath);
+
+                    var arguments = new Arguments
+                    {
+                        TargetUrl = targetUrl,
+                        TargetPath = worktreePath
+                    };
+
+                    var gitPreparer = new GitPreparer(log, arguments);
                     gitPreparer.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(worktreePath);
                 }
                 finally
@@ -371,7 +396,14 @@ CommitDate: 2015-11-10
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
                 var targetUrl = "https://github.com/GitTools/GitVersion.git";
-                var gitPreparer = new GitPreparer(log, targetUrl, null, new Authentication(), false, fixture.RepositoryPath);
+
+                var arguments = new Arguments
+                {
+                    TargetUrl = targetUrl,
+                    TargetPath = fixture.RepositoryPath
+                };
+
+                var gitPreparer = new GitPreparer(log, arguments);
                 var expectedPath = fixture.RepositoryPath.TrimEnd('/', '\\');
                 gitPreparer.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(expectedPath);
             });
@@ -403,7 +435,14 @@ CommitDate: 2015-11-10
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
                 var targetUrl = "https://github.com/GitTools/GitVersion.git";
-                var gitPreparer = new GitPreparer(log, targetUrl, null, new Authentication(), false, fixture.RepositoryPath);
+
+                var arguments = new Arguments
+                {
+                    TargetUrl = targetUrl,
+                    TargetPath = fixture.RepositoryPath
+                };
+
+                var gitPreparer = new GitPreparer(log, arguments);
                 var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
                 gitPreparer.GetDotGitDirectory().ShouldBe(expectedPath);
             });
@@ -427,7 +466,14 @@ CommitDate: 2015-11-10
                     repo.Worktrees.Add("worktree", worktreePath, false);
 
                     var targetUrl = "https://github.com/GitTools/GitVersion.git";
-                    var gitPreparer = new GitPreparer(log, targetUrl, null, new Authentication(), false, worktreePath);
+
+                    var arguments = new Arguments
+                    {
+                        TargetUrl = targetUrl,
+                        TargetPath = worktreePath
+                    };
+
+                    var gitPreparer = new GitPreparer(log, arguments);
                     var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
                     gitPreparer.GetDotGitDirectory().ShouldBe(expectedPath);
                 }
@@ -438,7 +484,7 @@ CommitDate: 2015-11-10
             });
         }
 
-        private void RepositoryScope(GitVersionComputer gitVersionComputer, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
+        private void RepositoryScope(IGitVersionComputer gitVersionComputer, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
         {
             // Make sure GitVersion doesn't trigger build server mode when we are running the tests
             environment.SetEnvironmentVariable(AppVeyor.EnvironmentVariableName, null);
