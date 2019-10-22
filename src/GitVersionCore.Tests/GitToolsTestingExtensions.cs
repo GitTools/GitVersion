@@ -80,7 +80,14 @@ namespace GitVersionCore.Tests
         /// </summary>
         public static void InitialiseRepo(this RemoteRepositoryFixture fixture)
         {
-            new GitPreparer(new NullLog(), null, null, new Authentication(), false, fixture.LocalRepositoryFixture.RepositoryPath).Initialise(true, null);
+            var log = new NullLog();
+
+            var arguments = new Arguments
+            {
+                Authentication = new Authentication(),
+                TargetPath = fixture.LocalRepositoryFixture.RepositoryPath
+            };
+            new GitPreparer(log, arguments).Initialize(true, null);
         }
     }
 }
