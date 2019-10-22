@@ -21,7 +21,7 @@ namespace GitVersion.Configuration
 
         public abstract void Verify(string workingDirectory, string projectRootDirectory);
 
-        public string SelectConfigFilePath(GitPreparer gitPreparer)
+        public string SelectConfigFilePath(IGitPreparer gitPreparer)
         {
             var workingDirectory = gitPreparer.WorkingDirectory;
             var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
@@ -48,7 +48,7 @@ namespace GitVersion.Configuration
             return new Config();
         }
 
-        public void Verify(GitPreparer gitPreparer)
+        public void Verify(IGitPreparer gitPreparer)
         {
             if (!string.IsNullOrWhiteSpace(gitPreparer.TargetUrl))
             {

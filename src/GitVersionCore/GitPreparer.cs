@@ -7,7 +7,7 @@ using LibGit2Sharp;
 
 namespace GitVersion
 {
-    public class GitPreparer
+    public class GitPreparer : IGitPreparer
     {
         private readonly ILog log;
         private readonly string dynamicRepositoryLocation;
@@ -52,13 +52,47 @@ namespace GitVersion
 
             var tempRepositoryPath = CalculateTemporaryRepositoryPath(TargetUrl, dynamicRepositoryLocation);
 
-            dynamicGitRepositoryPath = CreateDynamicRepository(tempRepositoryPath, authentication, TargetUrl, currentBranch, noFetch);
+            dynamicGitRepositoryPath = CreateDynamicRepository(tempRepositoryPath, authentication, TargetUrl, currentBranch);
         }
 
         public TResult WithRepository<TResult>(Func<IRepository, TResult> action)
         {
             using IRepository repo = new Repository(GetDotGitDirectory());
             return action(repo);
+        }
+        
+        public string GetDotGitDirectory()
+        {
+            var dotGitDirectory = IsDynamicGitRepository() ? dynamicGitRepositoryPath : Repository.Discover(WorkingDirectory);
+
+            dotGitDirectory = dotGitDirectory?.TrimEnd('/', '\\');
+            if (string.IsNullOrEmpty(dotGitDirectory))
+                throw new DirectoryNotFoundException("Can't find the .git directory in " + WorkingDirectory);
+
+            if (dotGitDirectory.Contains(Path.Combine(".git", "worktrees")))
+                return Directory.GetParent(Directory.GetParent(dotGitDirectory).FullName).FullName;
+
+            return dotGitDirectory;
+        }
+
+        public string GetProjectRootDirectory()
+        {
+            log.Info($"IsDynamicGitRepository: {IsDynamicGitRepository()}");
+            if (IsDynamicGitRepository())
+            {
+                log.Info($"Returning Project Root as {WorkingDirectory}");
+                return WorkingDirectory;
+            }
+
+            var dotGitDirectory = Repository.Discover(WorkingDirectory);
+
+            if (string.IsNullOrEmpty(dotGitDirectory))
+                throw new DirectoryNotFoundException($"Can't find the .git directory in {WorkingDirectory}");
+
+            using var repo = new Repository(dotGitDirectory);
+            var result = repo.Info.WorkingDirectory;
+            log.Info($"Returning Project Root from DotGitDirectory: {dotGitDirectory} - {result}");
+            return result;
         }
 
         public string TargetUrl { get; }
@@ -129,41 +163,7 @@ namespace GitVersion
             }
         }
 
-        public string GetDotGitDirectory()
-        {
-            var dotGitDirectory = IsDynamicGitRepository() ? dynamicGitRepositoryPath : Repository.Discover(WorkingDirectory);
-
-            dotGitDirectory = dotGitDirectory?.TrimEnd('/', '\\');
-            if (string.IsNullOrEmpty(dotGitDirectory))
-                throw new DirectoryNotFoundException("Can't find the .git directory in " + WorkingDirectory);
-
-            if (dotGitDirectory.Contains(Path.Combine(".git", "worktrees")))
-                return Directory.GetParent(Directory.GetParent(dotGitDirectory).FullName).FullName;
-
-            return dotGitDirectory;
-        }
-
-        public string GetProjectRootDirectory()
-        {
-            log.Info($"IsDynamicGitRepository: {IsDynamicGitRepository()}");
-            if (IsDynamicGitRepository())
-            {
-                log.Info($"Returning Project Root as {WorkingDirectory}");
-                return WorkingDirectory;
-            }
-
-            var dotGitDirectory = Repository.Discover(WorkingDirectory);
-
-            if (string.IsNullOrEmpty(dotGitDirectory))
-                throw new DirectoryNotFoundException($"Can't find the .git directory in {WorkingDirectory}");
-
-            using var repo = new Repository(dotGitDirectory);
-            var result = repo.Info.WorkingDirectory;
-            log.Info($"Returning Project Root from DotGitDirectory: {dotGitDirectory} - {result}");
-            return result;
-        }
-
-        private string CreateDynamicRepository(string targetPath, AuthenticationInfo auth, string repositoryUrl, string targetBranch, bool noFetch)
+        private string CreateDynamicRepository(string targetPath, AuthenticationInfo auth, string repositoryUrl, string targetBranch)
         {
             if (string.IsNullOrWhiteSpace(targetBranch))
             {

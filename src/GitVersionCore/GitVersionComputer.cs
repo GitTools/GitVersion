@@ -87,7 +87,7 @@ namespace GitVersion
             return currentBranch;
         }
 
-        private VersionVariables GetCachedGitVersionInfo(string targetBranch, string commitId, Config overrideConfig, bool noCache, GitPreparer gitPreparer)
+        private VersionVariables GetCachedGitVersionInfo(string targetBranch, string commitId, Config overrideConfig, bool noCache, IGitPreparer gitPreparer)
         {
             var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, log, gitPreparer, overrideConfig, configFileLocator);
             var versionVariables = noCache ? default : gitVersionCache.LoadVersionVariablesFromDiskCache(gitPreparer, cacheKey);
@@ -111,7 +111,7 @@ namespace GitVersion
             return versionVariables;
         }
 
-        private VersionVariables ExecuteInternal(string targetBranch, string commitId, GitPreparer gitPreparer, Config overrideConfig)
+        private VersionVariables ExecuteInternal(string targetBranch, string commitId, IGitPreparer gitPreparer, Config overrideConfig)
         {
             var versionFinder = new GitVersionFinder();
             var configuration = ConfigurationProvider.Provide(gitPreparer, overrideConfig: overrideConfig, configFileLocator: configFileLocator);

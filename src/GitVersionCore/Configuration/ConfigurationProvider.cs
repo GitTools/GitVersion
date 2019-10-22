@@ -43,7 +43,7 @@ namespace GitVersion.Configuration
 
         private const IncrementStrategy DefaultIncrementStrategy = IncrementStrategy.Inherit;
 
-        public static Config Provide(GitPreparer gitPreparer, IConfigFileLocator configFileLocator, bool applyDefaults = true, Config overrideConfig = null)
+        public static Config Provide(IGitPreparer gitPreparer, IConfigFileLocator configFileLocator, bool applyDefaults = true, Config overrideConfig = null)
         {
             var workingDirectory = gitPreparer.WorkingDirectory;
             var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
