@@ -184,13 +184,11 @@ namespace GitVersion.Cache
                 return string.Empty;
             }
 
-            using (var sha1 = SHA1.Create())
-            {
-                var bytes = Encoding.UTF8.GetBytes(textToHash);
-                var hashedBytes = sha1.ComputeHash(bytes);
-                var hashedString = BitConverter.ToString(hashedBytes);
-                return hashedString.Replace("-", "");
-            }
+            using var sha1 = SHA1.Create();
+            var bytes = Encoding.UTF8.GetBytes(textToHash);
+            var hashedBytes = sha1.ComputeHash(bytes);
+            var hashedString = BitConverter.ToString(hashedBytes);
+            return hashedString.Replace("-", "");
         }
     }
 }

@@ -16,120 +16,118 @@ namespace GitVersion.Helpers
         public static void NormalizeGitDirectory(ILog log, string gitDirectory, AuthenticationInfo authentication,
             bool noFetch, string currentBranch, bool isDynamicRepository)
         {
-            using (var repo = new Repository(gitDirectory))
+            using var repo = new Repository(gitDirectory);
+            // Need to ensure the HEAD does not move, this is essentially a BugCheck
+            var expectedSha = repo.Head.Tip.Sha;
+            var expectedBranchName = repo.Head.CanonicalName;
+
+            try
             {
-                // Need to ensure the HEAD does not move, this is essentially a BugCheck
-                var expectedSha = repo.Head.Tip.Sha;
-                var expectedBranchName = repo.Head.CanonicalName;
+                var remote = EnsureOnlyOneRemoteIsDefined(log, repo);
 
-                try
+                AddMissingRefSpecs(log, repo, remote);
+
+                //If noFetch is enabled, then GitVersion will assume that the git repository is normalized before execution, so that fetching from remotes is not required.
+                if (noFetch)
                 {
-                    var remote = EnsureOnlyOneRemoteIsDefined(log, repo);
+                    log.Info("Skipping fetching, if GitVersion does not calculate your version as expected you might need to allow fetching or use dynamic repositories");
+                }
+                else
+                {
+                    Fetch(log, authentication, remote, repo);
+                }
 
-                    AddMissingRefSpecs(log, repo, remote);
+                EnsureLocalBranchExistsForCurrentBranch(log, repo, remote, currentBranch);
+                CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(log, repo, remote.Name);
 
-                    //If noFetch is enabled, then GitVersion will assume that the git repository is normalized before execution, so that fetching from remotes is not required.
-                    if (noFetch)
+                // Bug fix for https://github.com/GitTools/GitVersion/issues/1754, head maybe have been changed
+                // if this is a dynamic repository. But only allow this in case the branches are different (branch switch)
+                if (expectedSha != repo.Head.Tip.Sha &&
+                    (isDynamicRepository || !expectedBranchName.IsBranch(currentBranch)))
+                {
+                    var newExpectedSha = repo.Head.Tip.Sha;
+                    var newExpectedBranchName = repo.Head.CanonicalName;
+
+                    log.Info($"Head has moved from '{expectedBranchName} | {expectedSha}' => '{newExpectedBranchName} | {newExpectedSha}', allowed since this is a dynamic repository");
+
+                    expectedSha = newExpectedSha;
+                }
+
+                var headSha = repo.Refs.Head.TargetIdentifier;
+
+                if (!repo.Info.IsHeadDetached)
+                {
+                    log.Info($"HEAD points at branch '{headSha}'.");
+                    return;
+                }
+
+                log.Info($"HEAD is detached and points at commit '{headSha}'.");
+                log.Info(string.Format("Local Refs:\r\n" + string.Join(Environment.NewLine, repo.Refs.FromGlob("*").Select(r => $"{r.CanonicalName} ({r.TargetIdentifier})"))));
+
+                // In order to decide whether a fake branch is required or not, first check to see if any local branches have the same commit SHA of the head SHA.
+                // If they do, go ahead and checkout that branch
+                // If no, go ahead and check out a new branch, using the known commit SHA as the pointer
+                var localBranchesWhereCommitShaIsHead = repo.Branches.Where(b => !b.IsRemote && b.Tip.Sha == headSha).ToList();
+
+                var matchingCurrentBranch = !string.IsNullOrEmpty(currentBranch)
+                    ? localBranchesWhereCommitShaIsHead.SingleOrDefault(b => b.CanonicalName.Replace("/heads/", "/") == currentBranch.Replace("/heads/", "/"))
+                    : null;
+                if (matchingCurrentBranch != null)
+                {
+                    log.Info($"Checking out local branch '{currentBranch}'.");
+                    Commands.Checkout(repo, matchingCurrentBranch);
+                }
+                else if (localBranchesWhereCommitShaIsHead.Count > 1)
+                {
+                    var branchNames = localBranchesWhereCommitShaIsHead.Select(r => r.CanonicalName);
+                    var csvNames = string.Join(", ", branchNames);
+                    const string moveBranchMsg = "Move one of the branches along a commit to remove warning";
+
+                    log.Warning($"Found more than one local branch pointing at the commit '{headSha}' ({csvNames}).");
+                    var master = localBranchesWhereCommitShaIsHead.SingleOrDefault(n => n.FriendlyName == "master");
+                    if (master != null)
                     {
-                        log.Info("Skipping fetching, if GitVersion does not calculate your version as expected you might need to allow fetching or use dynamic repositories");
+                        log.Warning("Because one of the branches is 'master', will build master." + moveBranchMsg);
+                        Commands.Checkout(repo, master);
                     }
                     else
                     {
-                        Fetch(log, authentication, remote, repo);
-                    }
-
-                    EnsureLocalBranchExistsForCurrentBranch(log, repo, remote, currentBranch);
-                    CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(log, repo, remote.Name);
-
-                    // Bug fix for https://github.com/GitTools/GitVersion/issues/1754, head maybe have been changed
-                    // if this is a dynamic repository. But only allow this in case the branches are different (branch switch)
-                    if (expectedSha != repo.Head.Tip.Sha &&
-                        (isDynamicRepository || !expectedBranchName.IsBranch(currentBranch)))
-                    {
-                        var newExpectedSha = repo.Head.Tip.Sha;
-                        var newExpectedBranchName = repo.Head.CanonicalName;
-
-                        log.Info($"Head has moved from '{expectedBranchName} | {expectedSha}' => '{newExpectedBranchName} | {newExpectedSha}', allowed since this is a dynamic repository");
-
-                        expectedSha = newExpectedSha;
-                    }
-
-                    var headSha = repo.Refs.Head.TargetIdentifier;
-
-                    if (!repo.Info.IsHeadDetached)
-                    {
-                        log.Info($"HEAD points at branch '{headSha}'.");
-                        return;
-                    }
-
-                    log.Info($"HEAD is detached and points at commit '{headSha}'.");
-                    log.Info(string.Format("Local Refs:\r\n" + string.Join(Environment.NewLine, repo.Refs.FromGlob("*").Select(r => $"{r.CanonicalName} ({r.TargetIdentifier})"))));
-
-                    // In order to decide whether a fake branch is required or not, first check to see if any local branches have the same commit SHA of the head SHA.
-                    // If they do, go ahead and checkout that branch
-                    // If no, go ahead and check out a new branch, using the known commit SHA as the pointer
-                    var localBranchesWhereCommitShaIsHead = repo.Branches.Where(b => !b.IsRemote && b.Tip.Sha == headSha).ToList();
-
-                    var matchingCurrentBranch = !string.IsNullOrEmpty(currentBranch)
-                        ? localBranchesWhereCommitShaIsHead.SingleOrDefault(b => b.CanonicalName.Replace("/heads/", "/") == currentBranch.Replace("/heads/", "/"))
-                        : null;
-                    if (matchingCurrentBranch != null)
-                    {
-                        log.Info($"Checking out local branch '{currentBranch}'.");
-                        Commands.Checkout(repo, matchingCurrentBranch);
-                    }
-                    else if (localBranchesWhereCommitShaIsHead.Count > 1)
-                    {
-                        var branchNames = localBranchesWhereCommitShaIsHead.Select(r => r.CanonicalName);
-                        var csvNames = string.Join(", ", branchNames);
-                        const string moveBranchMsg = "Move one of the branches along a commit to remove warning";
-
-                        log.Warning($"Found more than one local branch pointing at the commit '{headSha}' ({csvNames}).");
-                        var master = localBranchesWhereCommitShaIsHead.SingleOrDefault(n => n.FriendlyName == "master");
-                        if (master != null)
+                        var branchesWithoutSeparators = localBranchesWhereCommitShaIsHead.Where(b => !b.FriendlyName.Contains('/') && !b.FriendlyName.Contains('-')).ToList();
+                        if (branchesWithoutSeparators.Count == 1)
                         {
-                            log.Warning("Because one of the branches is 'master', will build master." + moveBranchMsg);
-                            Commands.Checkout(repo, master);
+                            var branchWithoutSeparator = branchesWithoutSeparators[0];
+                            log.Warning($"Choosing {branchWithoutSeparator.CanonicalName} as it is the only branch without / or - in it. " + moveBranchMsg);
+                            Commands.Checkout(repo, branchWithoutSeparator);
                         }
                         else
                         {
-                            var branchesWithoutSeparators = localBranchesWhereCommitShaIsHead.Where(b => !b.FriendlyName.Contains('/') && !b.FriendlyName.Contains('-')).ToList();
-                            if (branchesWithoutSeparators.Count == 1)
-                            {
-                                var branchWithoutSeparator = branchesWithoutSeparators[0];
-                                log.Warning($"Choosing {branchWithoutSeparator.CanonicalName} as it is the only branch without / or - in it. " + moveBranchMsg);
-                                Commands.Checkout(repo, branchWithoutSeparator);
-                            }
-                            else
-                            {
-                                throw new WarningException("Failed to try and guess branch to use. " + moveBranchMsg);
-                            }
+                            throw new WarningException("Failed to try and guess branch to use. " + moveBranchMsg);
                         }
                     }
-                    else if (localBranchesWhereCommitShaIsHead.Count == 0)
-                    {
-                        log.Info($"No local branch pointing at the commit '{headSha}'. Fake branch needs to be created.");
-                        CreateFakeBranchPointingAtThePullRequestTip(log, repo, authentication);
-                    }
-                    else
-                    {
-                        log.Info($"Checking out local branch 'refs/heads/{localBranchesWhereCommitShaIsHead[0].FriendlyName}'.");
-                        Commands.Checkout(repo, repo.Branches[localBranchesWhereCommitShaIsHead[0].FriendlyName]);
-                    }
                 }
-                finally
+                else if (localBranchesWhereCommitShaIsHead.Count == 0)
                 {
-                    if (repo.Head.Tip.Sha != expectedSha)
+                    log.Info($"No local branch pointing at the commit '{headSha}'. Fake branch needs to be created.");
+                    CreateFakeBranchPointingAtThePullRequestTip(log, repo, authentication);
+                }
+                else
+                {
+                    log.Info($"Checking out local branch 'refs/heads/{localBranchesWhereCommitShaIsHead[0].FriendlyName}'.");
+                    Commands.Checkout(repo, repo.Branches[localBranchesWhereCommitShaIsHead[0].FriendlyName]);
+                }
+            }
+            finally
+            {
+                if (repo.Head.Tip.Sha != expectedSha)
+                {
+                    if (Environment.GetEnvironmentVariable("IGNORE_NORMALISATION_GIT_HEAD_MOVE") != "1")
                     {
-                        if (Environment.GetEnvironmentVariable("IGNORE_NORMALISATION_GIT_HEAD_MOVE") != "1")
-                        {
-                            // Whoa, HEAD has moved, it shouldn't have. We need to blow up because there is a bug in normalisation
-                            throw new BugException($@"GitVersion has a bug, your HEAD has moved after repo normalisation.
+                        // Whoa, HEAD has moved, it shouldn't have. We need to blow up because there is a bug in normalisation
+                        throw new BugException($@"GitVersion has a bug, your HEAD has moved after repo normalisation.
 
 To disable this error set an environmental variable called IGNORE_NORMALISATION_GIT_HEAD_MOVE to 1
 
 Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log (with personal info removed) in a new issue at https://github.com/GitTools/GitVersion");
-                        }
                     }
                 }
             }
