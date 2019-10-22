@@ -13,7 +13,7 @@ namespace GitVersionTask.Tests
     [TestFixture]
     public class GitVersionTaskDirectoryTests : TestBase
     {
-        private IExecuteCore executeCore;
+        private IGitVersionComputer gitVersionComputer;
         private string gitDirectory;
         private string workDirectory;
 
@@ -28,7 +28,7 @@ namespace GitVersionTask.Tests
             var log = new NullLog();
             var configFileLocator = new DefaultConfigFileLocator(testFileSystem, log);
 
-            executeCore = new ExecuteCore(testFileSystem, log, configFileLocator, new BuildServerResolver(null, log));
+            gitVersionComputer = new GitVersionComputer(testFileSystem, log, configFileLocator, new BuildServerResolver(null, log));
             Assert.NotNull(gitDirectory);
         }
 
@@ -47,7 +47,7 @@ namespace GitVersionTask.Tests
             {
                 var arguments = new Arguments { TargetPath = workDirectory, NoFetch = true };
 
-                executeCore.ExecuteGitVersion(arguments);
+                gitVersionComputer.ComputeVersionVariables(arguments);
             }
             catch (Exception ex)
             {
@@ -67,7 +67,7 @@ namespace GitVersionTask.Tests
             try
             {
                 var arguments = new Arguments { TargetPath = childDir, NoFetch = true };
-                executeCore.ExecuteGitVersion(arguments);
+                gitVersionComputer.ComputeVersionVariables(arguments);
             }
             catch (Exception ex)
             {

@@ -19,7 +19,7 @@ namespace GitVersionCore.Tests
 {
     [TestFixture]
     [Parallelizable(ParallelScope.None)]
-    public class ExecuteCoreTests : TestBase
+    public class GitVersionExecutorTests : TestBase
     {
         private IFileSystem fileSystem;
         private IEnvironment environment;
@@ -40,7 +40,7 @@ namespace GitVersionCore.Tests
         [Test]
         public void CacheKeySameAfterReNormalizing()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
+            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -62,7 +62,7 @@ namespace GitVersionCore.Tests
         [Description("LibGit2Sharp fails here when running under Mono")]
         public void CacheKeyForWorktree()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
+            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -128,12 +128,12 @@ CommitDate: 2015-11-10
             var logAppender = new TestLogAppender(Action);
             log = new Log(logAppender);
 
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
+            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
                 fileSystem.WriteAllText(vv.FileName, versionCacheFileContent);
-                vv = versionAndBranchFinder.ExecuteGitVersion(new Arguments { TargetPath = fixture.RepositoryPath });
+                vv = versionAndBranchFinder.ComputeVersionVariables(new Arguments { TargetPath = fixture.RepositoryPath });
                 vv.AssemblySemVer.ShouldBe("4.10.3.0");
             });
 
@@ -177,7 +177,7 @@ CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
 ";
 
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
+            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -188,7 +188,7 @@ CommitDate: 2015-11-10
 
                 var cacheDirectoryTimestamp = fileSystem.GetLastDirectoryWrite(cacheDirectory);
 
-                vv = versionAndBranchFinder.ExecuteGitVersion(new Arguments { TargetPath = fixture.RepositoryPath , OverrideConfig = new Config { TagPrefix = "prefix" } });
+                vv = versionAndBranchFinder.ComputeVersionVariables(new Arguments { TargetPath = fixture.RepositoryPath , OverrideConfig = new Config { TagPrefix = "prefix" } });
 
                 vv.AssemblySemVer.ShouldBe("0.1.0.0");
 
@@ -208,7 +208,7 @@ CommitDate: 2015-11-10
             var logAppender = new TestLogAppender(Action);
             log = new Log(logAppender);
 
-            var executeCore = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
+            var executeCore = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(executeCore);
             var logsMessages = stringBuilder.ToString();
@@ -252,19 +252,19 @@ CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
 ";
 
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
+            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
                 fileSystem.WriteAllText(vv.FileName, versionCacheFileContent);
                 var arguments = new Arguments { TargetPath = fixture.RepositoryPath };
-                vv = versionAndBranchFinder.ExecuteGitVersion(arguments);
+                vv = versionAndBranchFinder.ComputeVersionVariables(arguments);
                 vv.AssemblySemVer.ShouldBe("4.10.3.0");
 
                 var configPath = Path.Combine(fixture.RepositoryPath, "GitVersionConfig.yaml");
                 fileSystem.WriteAllText(configPath, "next-version: 5.0");
 
-                vv = versionAndBranchFinder.ExecuteGitVersion(arguments);
+                vv = versionAndBranchFinder.ComputeVersionVariables(arguments);
                 vv.AssemblySemVer.ShouldBe("5.0.0.0");
             });
         }
@@ -305,18 +305,18 @@ CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
 ";
 
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
+            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
                 var arguments = new Arguments { TargetPath = fixture.RepositoryPath };
 
                 fileSystem.WriteAllText(vv.FileName, versionCacheFileContent);
-                vv = versionAndBranchFinder.ExecuteGitVersion(arguments);
+                vv = versionAndBranchFinder.ComputeVersionVariables(arguments);
                 vv.AssemblySemVer.ShouldBe("4.10.3.0");
 
                 arguments.NoCache = true;
-                vv = versionAndBranchFinder.ExecuteGitVersion(arguments);
+                vv = versionAndBranchFinder.ComputeVersionVariables(arguments);
                 vv.AssemblySemVer.ShouldBe("0.1.0.0");
             });
         }
@@ -325,13 +325,13 @@ CommitDate: 2015-11-10
         [Test]
         public void WorkingDirectoryWithoutGit()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
+            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
                 var arguments = new Arguments { TargetPath = Environment.SystemDirectory };
 
-                var exception = Assert.Throws<DirectoryNotFoundException>(() => versionAndBranchFinder.ExecuteGitVersion(arguments));
+                var exception = Assert.Throws<DirectoryNotFoundException>(() => versionAndBranchFinder.ComputeVersionVariables(arguments));
                 exception.Message.ShouldContain("Can't find the .git directory in");
             });
         }
@@ -341,7 +341,7 @@ CommitDate: 2015-11-10
         [Description("LibGit2Sharp fails when running under Mono")]
         public void GetProjectRootDirectory_WorkingDirectoryWithWorktree()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
+            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -366,7 +366,7 @@ CommitDate: 2015-11-10
         [Test]
         public void GetProjectRootDirectory_NoWorktree()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
+            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -380,7 +380,7 @@ CommitDate: 2015-11-10
         [Test]
         public void DynamicRepositoriesShouldNotErrorWithFailedToFindGitDirectory()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
+            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -391,14 +391,14 @@ CommitDate: 2015-11-10
                     TargetBranch = "refs/head/master"
                 };
 
-                versionAndBranchFinder.ExecuteGitVersion(arguments);
+                versionAndBranchFinder.ComputeVersionVariables(arguments);
             });
         }
 
         [Test]
         public void GetDotGitDirectory_NoWorktree()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
+            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -414,7 +414,7 @@ CommitDate: 2015-11-10
         [Description("LibGit2Sharp fails when running under Mono")]
         public void GetDotGitDirectory_Worktree()
         {
-            var versionAndBranchFinder = new ExecuteCore(fileSystem, log, configFileLocator, buildServerResolver);
+            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -438,7 +438,7 @@ CommitDate: 2015-11-10
             });
         }
 
-        private void RepositoryScope(ExecuteCore executeCore, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
+        private void RepositoryScope(GitVersionComputer gitVersionComputer, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
         {
             // Make sure GitVersion doesn't trigger build server mode when we are running the tests
             environment.SetEnvironmentVariable(AppVeyor.EnvironmentVariableName, null);
@@ -449,7 +449,7 @@ CommitDate: 2015-11-10
             using var fixture = new EmptyRepositoryFixture();
             var arguments = new Arguments { TargetPath = fixture.RepositoryPath };
             fixture.Repository.MakeACommit();
-            var vv = executeCore.ExecuteGitVersion(arguments);
+            var vv = gitVersionComputer.ComputeVersionVariables(arguments);
 
             vv.AssemblySemVer.ShouldBe("0.1.0.0");
             vv.FileName.ShouldNotBeNullOrEmpty();

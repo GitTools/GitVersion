@@ -80,9 +80,9 @@ namespace GitVersionCore.Tests
             var log = new NullLog();
             var configFileLocator = new DefaultConfigFileLocator(testFileSystem, log);
 
-            var executeCore = new ExecuteCore(testFileSystem, log, configFileLocator, new BuildServerResolver(null, log));
+            var executeCore = new GitVersionComputer(testFileSystem, log, configFileLocator, new BuildServerResolver(null, log));
 
-            var versionVariables = executeCore.ExecuteGitVersion(arguments);
+            var versionVariables = executeCore.ComputeVersionVariables(arguments);
 
             Assert.AreEqual(expectedFullSemVer, versionVariables.FullSemVer);
         }

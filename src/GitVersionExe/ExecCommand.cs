@@ -21,24 +21,24 @@ namespace GitVersion
         private readonly IFileSystem fileSystem;
         private readonly IBuildServerResolver buildServerResolver;
         private readonly ILog log;
-        private readonly IExecuteCore executeCore;
+        private readonly IGitVersionComputer gitVersionComputer;
         private readonly Arguments arguments;
         public static readonly string BuildTool = GetMsBuildToolPath();
 
-        public ExecCommand(IFileSystem fileSystem, IBuildServerResolver buildServerResolver, ILog log, IExecuteCore executeCore, IOptions<Arguments> arguments)
+        public ExecCommand(IFileSystem fileSystem, IBuildServerResolver buildServerResolver, ILog log, IGitVersionComputer gitVersionComputer, IOptions<Arguments> arguments)
         {
             this.fileSystem = fileSystem;
             this.buildServerResolver = buildServerResolver;
             this.log = log;
-            this.executeCore = executeCore;
+            this.gitVersionComputer = gitVersionComputer;
             this.arguments = arguments.Value;
         }
 
-        public void Execute()
+        public void Compute()
         {
             log.Info($"Running on {(runningOnUnix ? "Unix" : "Windows")}.");
 
-            var variables = executeCore.ExecuteGitVersion(arguments);
+            var variables = gitVersionComputer.ComputeVersionVariables(arguments);
 
             switch (arguments.Output)
             {
