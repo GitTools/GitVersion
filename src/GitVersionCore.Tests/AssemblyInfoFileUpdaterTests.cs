@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using GitVersion;
 using NSubstitute;
 using NUnit.Framework;
 using Shouldly;
@@ -10,6 +9,7 @@ using GitVersion.Extensions;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Common;
 using GitVersion.Logging;
+using GitVersion.SemanticVersioning;
 
 namespace GitVersionCore.Tests
 {

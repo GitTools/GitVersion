@@ -10,7 +10,7 @@ using GitVersion.Logging;
 
 namespace GitVersion.Cache
 {
-    public class GitVersionCache
+    public class GitVersionCache : IGitVersionCache
     {
         private readonly IFileSystem fileSystem;
         private readonly ILog log;
@@ -49,7 +49,7 @@ namespace GitVersion.Cache
             retryOperation.ExecuteAsync().Wait();
         }
 
-        public static string GetCacheDirectory(IGitPreparer gitPreparer)
+        public string GetCacheDirectory(IGitPreparer gitPreparer)
         {
             var gitDir = gitPreparer.GetDotGitDirectory();
             var cacheDir = Path.Combine(gitDir, "gitversion_cache");

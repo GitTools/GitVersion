@@ -3,6 +3,7 @@ using GitVersion.Exceptions;
 using GitVersion.VersionCalculation;
 using GitVersion.Helpers;
 using GitVersion.Logging;
+using GitVersion.SemanticVersioning;
 
 namespace GitVersion
 {

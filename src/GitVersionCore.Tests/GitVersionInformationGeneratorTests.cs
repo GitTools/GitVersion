@@ -1,11 +1,11 @@
 using System;
 using System.IO;
-using GitVersion;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.OutputVariables;
 using GitVersion.Extensions.GitVersionInformationResources;
 using GitVersion.Logging;
+using GitVersion.SemanticVersioning;
 
 namespace GitVersionCore.Tests
 {

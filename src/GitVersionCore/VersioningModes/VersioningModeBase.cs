@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-
+using GitVersion.SemanticVersioning;
 using LibGit2Sharp;
 
 namespace GitVersion.VersioningModes

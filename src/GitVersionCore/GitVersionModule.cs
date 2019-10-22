@@ -1,5 +1,6 @@
 using System;
 using GitVersion.BuildServers;
+using GitVersion.Cache;
 using Microsoft.Extensions.DependencyInjection;
 using GitVersion.Common;
 using GitVersion.Configuration;
@@ -16,6 +17,7 @@ namespace GitVersion
             services.AddSingleton<IFileSystem, FileSystem>();
             services.AddSingleton<IEnvironment, Environment>();
             services.AddSingleton<ILog, Log>();
+            services.AddSingleton<IGitVersionCache, GitVersionCache>();
 
             services.AddSingleton<IGitVersionComputer, GitVersionComputer>();
 

@@ -14,15 +14,15 @@ namespace GitVersion
         private readonly ILog log;
         private readonly IConfigFileLocator configFileLocator;
         private readonly IBuildServerResolver buildServerResolver;
-        private readonly GitVersionCache gitVersionCache;
+        private readonly IGitVersionCache gitVersionCache;
 
-        public GitVersionComputer(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IBuildServerResolver buildServerResolver)
+        public GitVersionComputer(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IBuildServerResolver buildServerResolver, IGitVersionCache gitVersionCache)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log;
             this.configFileLocator = configFileLocator;
             this.buildServerResolver = buildServerResolver;
-            gitVersionCache = new GitVersionCache(fileSystem, log);
+            this.gitVersionCache = gitVersionCache;
         }
 
         public VersionVariables ComputeVersionVariables(Arguments arguments)
@@ -89,7 +89,7 @@ namespace GitVersion
 
         private VersionVariables GetCachedGitVersionInfo(string targetBranch, string commitId, Config overrideConfig, bool noCache, IGitPreparer gitPreparer)
         {
-            var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, log, gitPreparer, overrideConfig, configFileLocator);
+            var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, log, gitPreparer, configFileLocator, overrideConfig);
             var versionVariables = noCache ? default : gitVersionCache.LoadVersionVariablesFromDiskCache(gitPreparer, cacheKey);
             if (versionVariables == null)
             {

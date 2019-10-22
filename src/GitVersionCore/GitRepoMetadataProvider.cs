@@ -6,18 +6,19 @@ using System.Text.RegularExpressions;
 using GitVersion.Configuration;
 using GitVersion.Helpers;
 using GitVersion.Logging;
+using GitVersion.SemanticVersioning;
 
 namespace GitVersion
 {
     public class GitRepoMetadataProvider
     {
-        private Dictionary<Branch, List<BranchCommit>> mergeBaseCommitsCache;
-        private Dictionary<Tuple<Branch, Branch>, MergeBaseData> mergeBaseCache;
-        private Dictionary<Branch, List<SemanticVersion>> semanticVersionTagsOnBranchCache;
-        private IRepository Repository { get; set; }
+        private readonly Dictionary<Branch, List<BranchCommit>> mergeBaseCommitsCache;
+        private readonly Dictionary<Tuple<Branch, Branch>, MergeBaseData> mergeBaseCache;
+        private readonly Dictionary<Branch, List<SemanticVersion>> semanticVersionTagsOnBranchCache;
+        private IRepository Repository { get; }
         private const string missingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
         private readonly ILog log;
-        private Config configuration;
+        private readonly Config configuration;
 
         public GitRepoMetadataProvider(IRepository repository, ILog log, Config configuration)
         {
@@ -29,7 +30,7 @@ namespace GitVersion
             this.configuration = configuration;
         }
 
-        public static IEnumerable<Tuple<Tag, SemanticVersion>> GetValidVersionTags(IRepository repository, string tagPrefixRegex, DateTimeOffset? olderThan = null)
+        public IEnumerable<Tuple<Tag, SemanticVersion>> GetValidVersionTags(IRepository repository, string tagPrefixRegex, DateTimeOffset? olderThan = null)
         {
             var tags = new List<Tuple<Tag, SemanticVersion>>();
 
@@ -270,11 +271,11 @@ namespace GitVersion
 
         private class MergeBaseData
         {
-            public Branch Branch { get; private set; }
-            public Branch OtherBranch { get; private set; }
-            public IRepository Repository { get; private set; }
+            public Branch Branch { get; }
+            public Branch OtherBranch { get; }
+            public IRepository Repository { get; }
 
-            public Commit MergeBase { get; private set; }
+            public Commit MergeBase { get; }
 
             public MergeBaseData(Branch branch, Branch otherBranch, IRepository repository, Commit mergeBase)
             {

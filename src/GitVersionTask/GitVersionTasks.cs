@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using GitVersion;
+using GitVersion.Cache;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
 using GitVersion.OutputFormatters;
@@ -119,7 +120,7 @@ namespace GitVersionTask
         }
 
         private static bool GetVersionVariables(GitVersionTaskBase task, out VersionVariables versionVariables)
-            => new GitVersionComputer(fileSystem, log, GetConfigFileLocator(task.ConfigFilePath), buildServerResolver)
+            => new GitVersionComputer(fileSystem, log, GetConfigFileLocator(task.ConfigFilePath), buildServerResolver, new GitVersionCache(fileSystem, log))
                 .TryGetVersion(task.SolutionDirectory, task.NoFetch, out versionVariables);
 
         private static IConfigFileLocator GetConfigFileLocator(string filePath = null) =>

@@ -1,6 +1,8 @@
 using System;
+using GitVersion.Configuration;
+using GitVersion.SemanticVersioning;
 
-namespace GitVersion.Configuration
+namespace GitVersion
 {
     public enum IncrementStrategy
     {

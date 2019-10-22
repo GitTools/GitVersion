@@ -3,6 +3,7 @@ using GitTools.Testing;
 using LibGit2Sharp;
 using NUnit.Framework;
 using System.Collections.Generic;
+using GitVersion;
 using GitVersion.Configuration;
 using GitVersion.VersioningModes;
 

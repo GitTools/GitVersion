@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using GitVersion;
+using GitVersion.Cache;
 using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Logging;
@@ -27,8 +28,11 @@ namespace GitVersionTask.Tests
             var testFileSystem = new TestFileSystem();
             var log = new NullLog();
             var configFileLocator = new DefaultConfigFileLocator(testFileSystem, log);
+            var gitVersionCache = new GitVersionCache(testFileSystem, log);
 
-            gitVersionComputer = new GitVersionComputer(testFileSystem, log, configFileLocator, new BuildServerResolver(null, log));
+            var buildServerResolver = new BuildServerResolver(null, log);
+
+            gitVersionComputer = new GitVersionComputer(testFileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
             Assert.NotNull(gitDirectory);
         }
 
