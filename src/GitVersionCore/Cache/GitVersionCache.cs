@@ -21,7 +21,7 @@ namespace GitVersion.Cache
             this.log = log;
         }
 
-        public void WriteVariablesToDiskCache(GitPreparer gitPreparer, GitVersionCacheKey cacheKey, VersionVariables variablesFromCache)
+        public void WriteVariablesToDiskCache(IGitPreparer gitPreparer, GitVersionCacheKey cacheKey, VersionVariables variablesFromCache)
         {
             var cacheDir = PrepareCacheDirectory(gitPreparer);
             var cacheFileName = GetCacheFileName(cacheKey, cacheDir);
@@ -49,14 +49,14 @@ namespace GitVersion.Cache
             retryOperation.ExecuteAsync().Wait();
         }
 
-        public static string GetCacheDirectory(GitPreparer gitPreparer)
+        public static string GetCacheDirectory(IGitPreparer gitPreparer)
         {
             var gitDir = gitPreparer.GetDotGitDirectory();
             var cacheDir = Path.Combine(gitDir, "gitversion_cache");
             return cacheDir;
         }
 
-        public VersionVariables LoadVersionVariablesFromDiskCache(GitPreparer gitPreparer, GitVersionCacheKey key)
+        public VersionVariables LoadVersionVariablesFromDiskCache(IGitPreparer gitPreparer, GitVersionCacheKey key)
         {
             using (log.IndentLog("Loading version variables from disk cache"))
             {
@@ -95,7 +95,7 @@ namespace GitVersion.Cache
             }
         }
 
-        private string PrepareCacheDirectory(GitPreparer gitPreparer)
+        private string PrepareCacheDirectory(IGitPreparer gitPreparer)
         {
             var cacheDir = GetCacheDirectory(gitPreparer);
 

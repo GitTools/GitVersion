@@ -12,7 +12,7 @@ namespace GitVersion.Cache
 {
     internal class GitVersionCacheKeyFactory
     {
-        public static GitVersionCacheKey Create(IFileSystem fileSystem, ILog log, GitPreparer gitPreparer, Config overrideConfig, IConfigFileLocator configFileLocator)
+        public static GitVersionCacheKey Create(IFileSystem fileSystem, ILog log, IGitPreparer gitPreparer, Config overrideConfig, IConfigFileLocator configFileLocator)
         {
             var gitSystemHash = GetGitSystemHash(gitPreparer, log);
             var configFileHash = GetConfigFileHash(fileSystem, gitPreparer, configFileLocator);
@@ -23,7 +23,7 @@ namespace GitVersion.Cache
             return new GitVersionCacheKey(compositeHash);
         }
 
-        private static string GetGitSystemHash(GitPreparer gitPreparer, ILog log)
+        private static string GetGitSystemHash(IGitPreparer gitPreparer, ILog log)
         {
             var dotGitDirectory = gitPreparer.GetDotGitDirectory();
 
@@ -123,7 +123,7 @@ namespace GitVersion.Cache
             return result;
         }
 
-        private static string GetRepositorySnapshotHash(GitPreparer gitPreparer)
+        private static string GetRepositorySnapshotHash(IGitPreparer gitPreparer)
         {
             var repositorySnapshot = gitPreparer.WithRepository(repo => {
                 var head = repo.Head;
@@ -157,7 +157,7 @@ namespace GitVersion.Cache
             return GetHash(configContent);
         }
 
-        private static string GetConfigFileHash(IFileSystem fileSystem, GitPreparer gitPreparer, IConfigFileLocator configFileLocator)
+        private static string GetConfigFileHash(IFileSystem fileSystem, IGitPreparer gitPreparer, IConfigFileLocator configFileLocator)
         {
             // will return the same hash even when config file will be moved 
             // from workingDirectory to rootProjectDirectory. It's OK. Config essentially is the same.

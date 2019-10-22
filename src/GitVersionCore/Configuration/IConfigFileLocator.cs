@@ -5,8 +5,8 @@ namespace GitVersion.Configuration
         bool HasConfigFileAt(string workingDirectory);
         string GetConfigFilePath(string workingDirectory);
         void Verify(string workingDirectory, string projectRootDirectory);
-        string SelectConfigFilePath(GitPreparer gitPreparer);
+        string SelectConfigFilePath(IGitPreparer gitPreparer);
         Config ReadConfig(string workingDirectory);
-        void Verify(GitPreparer gitPreparer);
+        void Verify(IGitPreparer gitPreparer);
     }
 }
