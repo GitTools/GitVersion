@@ -7,8 +7,8 @@ namespace GitVersion
 {
     public static class ExtensionMethods
     {
-        private static string[] trues;
-        private static string[] falses;
+        private static readonly string[] trues;
+        private static readonly string[] falses;
 
 
         static ExtensionMethods()

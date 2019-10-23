@@ -6,12 +6,12 @@ namespace GitVersion.Extensions.GitVersionInformationResources
 {
     public class GitVersionInformationGenerator
     {
-        private string fileName;
-        private string directory;
-        private VersionVariables variables;
-        private IFileSystem fileSystem;
+        private readonly string fileName;
+        private readonly string directory;
+        private readonly VersionVariables variables;
+        private readonly IFileSystem fileSystem;
 
-        private TemplateManager templateManager;
+        private readonly TemplateManager templateManager;
 
         public GitVersionInformationGenerator(string fileName, string directory, VersionVariables variables, IFileSystem fileSystem)
         {

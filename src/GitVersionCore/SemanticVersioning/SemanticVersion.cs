@@ -8,7 +8,7 @@ namespace GitVersion.SemanticVersioning
     {
         public static SemanticVersion Empty = new SemanticVersion();
 
-        private static Regex ParseSemVer = new Regex(
+        private static readonly Regex ParseSemVer = new Regex(
             @"^(?<SemVer>(?<Major>\d+)(\.(?<Minor>\d+))(\.(?<Patch>\d+))?)(\.(?<FourthPart>\d+))?(-(?<Tag>[^\+]*))?(\+(?<BuildMetaData>.*))?$",
             RegexOptions.Compiled);
 

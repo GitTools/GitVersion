@@ -14,7 +14,7 @@ namespace GitVersionCore.Tests.IntegrationTests
 {
     public class MainlineDevelopmentMode : TestBase
     {
-        private Config config = new Config
+        private readonly Config config = new Config
         {
             VersioningMode = VersioningMode.Mainline
         };

@@ -7,10 +7,10 @@ namespace GitVersion.Helpers
 {
     internal class OperationWithExponentialBackoff<T> where T : Exception
     {
-        private IThreadSleep ThreadSleep;
+        private readonly IThreadSleep ThreadSleep;
         private readonly ILog log;
-        private Action Operation;
-        private int MaxRetries;
+        private readonly Action Operation;
+        private readonly int MaxRetries;
 
         public OperationWithExponentialBackoff(IThreadSleep threadSleep, ILog log, Action operation, int maxRetries = 5)
         {

@@ -27,7 +27,7 @@ namespace GitVersionCore.Tests.Mocks
         public Signature CommitterEx;
         public override Signature Committer => CommitterEx;
 
-        private ObjectId idEx;
+        private readonly ObjectId idEx;
         public override ObjectId Id => idEx;
 
         public override string Sha => idEx.Sha;

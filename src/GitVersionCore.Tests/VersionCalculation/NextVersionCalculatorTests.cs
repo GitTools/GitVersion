@@ -16,7 +16,7 @@ namespace GitVersionCore.Tests.VersionCalculation
 {
     public class NextVersionCalculatorTests : TestBase
     {
-        private ILog log;
+        private readonly ILog log;
 
         public NextVersionCalculatorTests()
         {

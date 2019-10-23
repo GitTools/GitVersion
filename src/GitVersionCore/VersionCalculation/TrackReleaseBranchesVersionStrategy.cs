@@ -25,8 +25,8 @@ namespace GitVersion.VersionCalculation
     /// </summary>
     public class TrackReleaseBranchesVersionStrategy : IVersionStrategy
     {
-        private VersionInBranchNameVersionStrategy releaseVersionStrategy = new VersionInBranchNameVersionStrategy();
-        private TaggedCommitVersionStrategy taggedCommitVersionStrategy = new TaggedCommitVersionStrategy();
+        private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy = new VersionInBranchNameVersionStrategy();
+        private readonly TaggedCommitVersionStrategy taggedCommitVersionStrategy = new TaggedCommitVersionStrategy();
 
         public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {

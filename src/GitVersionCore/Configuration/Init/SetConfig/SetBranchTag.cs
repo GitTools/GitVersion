@@ -6,7 +6,7 @@ namespace GitVersion.Configuration.Init.SetConfig
 {
     public class SetBranchTag : ConfigInitWizardStep
     {
-        private string name;
+        private readonly string name;
         private readonly BranchConfig branchConfig;
 
         public SetBranchTag(string name, BranchConfig branchConfig, IConsole console, IFileSystem fileSystem, ILog log)

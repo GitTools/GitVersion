@@ -10,7 +10,7 @@ namespace GitVersionExe.Tests
     [TestFixture]
     public class VersionWriterTests
     {
-        private IVersionWriter versionWriter;
+        private readonly IVersionWriter versionWriter;
 
         public VersionWriterTests()
         {

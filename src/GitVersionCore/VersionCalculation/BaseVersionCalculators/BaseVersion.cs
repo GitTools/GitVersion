@@ -5,7 +5,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
     public class BaseVersion
     {
-        private GitVersionContext _context;
+        private readonly GitVersionContext _context;
 
         public BaseVersion(GitVersionContext context, string source, bool shouldIncrement, SemanticVersion semanticVersion, Commit baseVersionSource, string branchNameOverride)
         {

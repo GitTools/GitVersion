@@ -153,8 +153,8 @@ namespace GitVersion
             return match;
         }
 
-        private static IDictionary<int, bool> MatchCache = new Dictionary<int, bool>();
-        private static IDictionary<int, VersionField?> VersionFieldCache = new Dictionary<int, VersionField?>();
+        private static readonly IDictionary<int, bool> MatchCache = new Dictionary<int, bool>();
+        private static readonly IDictionary<int, VersionField?> VersionFieldCache = new Dictionary<int, VersionField?>();
 
         public static VersionField FindDefaultIncrementForBranch( GitVersionContext context, string branch = null )
         {

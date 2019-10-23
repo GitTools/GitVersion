@@ -16,7 +16,7 @@ namespace GitVersion.Configuration.Init.BuildServer
     internal class AppVeyorSetup : ConfigInitWizardStep
     {
         private readonly ILog log;
-        private ProjectVisibility _projectVisibility;
+        private readonly ProjectVisibility _projectVisibility;
 
         public AppVeyorSetup(IConsole console, IFileSystem fileSystem, ILog log,  ProjectVisibility visibility) : base(console, fileSystem, log)
         {

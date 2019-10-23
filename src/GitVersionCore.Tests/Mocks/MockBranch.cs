@@ -23,8 +23,8 @@ namespace GitVersionCore.Tests.Mocks
 
         }
 
-        private MockCommitLog commits = new MockCommitLog();
-        private string friendlyName;
+        private readonly MockCommitLog commits = new MockCommitLog();
+        private readonly string friendlyName;
         public override string FriendlyName => friendlyName;
         public override ICommitLog Commits => commits;
         public override Commit Tip => commits.First();

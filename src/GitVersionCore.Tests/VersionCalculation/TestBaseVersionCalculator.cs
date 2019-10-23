@@ -10,8 +10,8 @@ namespace GitVersionCore.Tests.VersionCalculation
     public class TestBaseVersionCalculator : IBaseVersionCalculator
     {
         private readonly SemanticVersion semanticVersion;
-        private bool shouldIncrement;
-        private Commit source;
+        private readonly bool shouldIncrement;
+        private readonly Commit source;
 
         public TestBaseVersionCalculator(bool shouldIncrement, SemanticVersion semanticVersion, Commit source)
         {
@@ -28,7 +28,7 @@ namespace GitVersionCore.Tests.VersionCalculation
 
     public class TestBaseVersionStrategiesCalculator : BaseVersionCalculator
     {
-        private static IVersionStrategy[] versionStrategies = new IVersionStrategy[]
+        private static readonly IVersionStrategy[] versionStrategies = new IVersionStrategy[]
         {
             new FallbackVersionStrategy(),
             new ConfigNextVersionVersionStrategy(),

@@ -9,10 +9,10 @@ namespace GitVersionCore.Tests.BuildServers
     [TestFixture]
     public class EnvironmentVariableJenkinsTests : TestBase
     {
-        private string key = "JENKINS_URL";
-        private string branch = "GIT_BRANCH";
-        private string localBranch = "GIT_LOCAL_BRANCH";
-        private string pipelineBranch = "BRANCH_NAME";
+        private readonly string key = "JENKINS_URL";
+        private readonly string branch = "GIT_BRANCH";
+        private readonly string localBranch = "GIT_LOCAL_BRANCH";
+        private readonly string pipelineBranch = "BRANCH_NAME";
         private IEnvironment environment;
         private ILog log;
 
