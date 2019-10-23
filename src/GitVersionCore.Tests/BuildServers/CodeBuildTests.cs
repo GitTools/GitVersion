@@ -5,7 +5,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.BuildServers;
-using GitVersion.Common;
+using GitVersion;
 using GitVersion.OutputVariables;
 using GitVersion.Logging;
 using GitVersion.SemanticVersioning;

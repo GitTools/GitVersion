@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Reflection;
-using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
 using GitVersion.Helpers;
@@ -29,7 +28,7 @@ namespace GitVersion
             this.execCommand = execCommand;
         }
 
-        public int Run(Arguments arguments)
+        public int Execute(Arguments arguments)
         {
             var exitCode = VerifyArgumentsAndRun(arguments);
 
@@ -105,7 +104,7 @@ namespace GitVersion
                     return 0;
                 }
 
-                execCommand.Compute();
+                execCommand.Execute();
             }
             catch (WarningException exception)
             {

@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using GitVersion.BuildServers;
-using GitVersion.Common;
+using GitVersion;
 using GitVersion.Logging;
 
 namespace GitVersionCore.Tests.BuildServers

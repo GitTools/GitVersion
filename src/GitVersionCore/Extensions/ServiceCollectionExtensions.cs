@@ -1,14 +1,12 @@
-using GitVersion.Common;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersion.Extensions
 {
-    using Microsoft.Extensions.DependencyInjection;
-
     public static class ServiceCollectionExtensions
     {
-        public static void AddModule(this IServiceCollection serviceCollection, IModule module)
+        public static void AddModule(this IServiceCollection serviceCollection, IGitVersionModule gitVersionModule)
         {
-            module.RegisterTypes(serviceCollection);
+            gitVersionModule.RegisterTypes(serviceCollection);
         }
     }
 }

@@ -1,7 +1,7 @@
-namespace GitVersion.Common
+namespace GitVersion
 {
     public interface IBuildServerResolver
     {
-        IBuildServer GetCurrentBuildServer();
+        IBuildServer Resolve();
     }
 }

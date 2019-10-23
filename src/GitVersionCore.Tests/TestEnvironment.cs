@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using GitVersion.Common;
+using GitVersion;
 
 namespace GitVersionCore.Tests
 {

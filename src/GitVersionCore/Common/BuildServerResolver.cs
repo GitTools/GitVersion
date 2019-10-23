@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using GitVersion.Logging;
 
-namespace GitVersion.Common
+namespace GitVersion
 {
     public class BuildServerResolver : IBuildServerResolver
     {
@@ -14,7 +14,7 @@ namespace GitVersion.Common
             this.buildServers = buildServers ?? Array.Empty<IBuildServer>();
         }
 
-        public IBuildServer GetCurrentBuildServer()
+        public IBuildServer Resolve()
         {
             IBuildServer instance = null;
             foreach (var buildServer in buildServers)

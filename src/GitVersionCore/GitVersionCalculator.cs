@@ -2,13 +2,11 @@ using System;
 using GitVersion.Configuration;
 using GitVersion.OutputVariables;
 using GitVersion.Cache;
-using GitVersion.Common;
 using GitVersion.Logging;
-using Environment = System.Environment;
 
 namespace GitVersion
 {
-    public class GitVersionComputer : IGitVersionComputer
+    public class GitVersionCalculator : IGitVersionCalculator
     {
         private readonly IFileSystem fileSystem;
         private readonly ILog log;
@@ -16,7 +14,7 @@ namespace GitVersion
         private readonly IBuildServerResolver buildServerResolver;
         private readonly IGitVersionCache gitVersionCache;
 
-        public GitVersionComputer(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IBuildServerResolver buildServerResolver, IGitVersionCache gitVersionCache)
+        public GitVersionCalculator(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IBuildServerResolver buildServerResolver, IGitVersionCache gitVersionCache)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log;
@@ -25,9 +23,9 @@ namespace GitVersion
             this.gitVersionCache = gitVersionCache;
         }
 
-        public VersionVariables ComputeVersionVariables(Arguments arguments)
+        public VersionVariables CalculateVersionVariables(Arguments arguments)
         {
-            var buildServer = buildServerResolver.GetCurrentBuildServer();
+            var buildServer = buildServerResolver.Resolve();
 
             // Normalize if we are running on build server
             var normalizeGitDirectory = !arguments.NoNormalize && buildServer != null;
@@ -38,7 +36,7 @@ namespace GitVersion
 
             var currentBranch = ResolveCurrentBranch(buildServer, arguments.TargetBranch, !string.IsNullOrWhiteSpace(arguments.DynamicRepositoryLocation));
 
-            gitPreparer.Initialize(normalizeGitDirectory, currentBranch, shouldCleanUpRemotes);
+            gitPreparer.Prepare(normalizeGitDirectory, currentBranch, shouldCleanUpRemotes);
 
             var dotGitDirectory = gitPreparer.GetDotGitDirectory();
             var projectRoot = gitPreparer.GetProjectRootDirectory();
@@ -54,7 +52,7 @@ namespace GitVersion
             return GetCachedGitVersionInfo(arguments.TargetBranch, arguments.CommitId, arguments.OverrideConfig, arguments.NoCache, gitPreparer);
         }
 
-        public bool TryGetVersion(string directory, bool noFetch, out VersionVariables versionVariables)
+        public bool TryCalculateVersionVariables(string directory, bool noFetch, out VersionVariables versionVariables)
         {
             try
             {
@@ -63,7 +61,7 @@ namespace GitVersion
                     NoFetch = noFetch,
                     TargetPath = directory
                 };
-                versionVariables = ComputeVersionVariables(arguments);
+                versionVariables = CalculateVersionVariables(arguments);
                 return true;
             }
             catch (Exception ex)
@@ -103,7 +101,7 @@ namespace GitVersion
                     }
                     catch (AggregateException e)
                     {
-                        log.Warning($"One or more exceptions during cache write:{Environment.NewLine}{e}");
+                        log.Warning($"One or more exceptions during cache write:{System.Environment.NewLine}{e}");
                     }
                 }
             }

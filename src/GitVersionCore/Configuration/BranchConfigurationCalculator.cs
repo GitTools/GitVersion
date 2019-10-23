@@ -145,7 +145,7 @@ namespace GitVersion.Configuration
                 }
 
                 var branchName = chosenBranch.FriendlyName;
-                log.Warning(errorMessage + Environment.NewLine + Environment.NewLine + "Falling back to " + branchName + " branch config");
+                log.Warning(errorMessage + System.Environment.NewLine + System.Environment.NewLine + "Falling back to " + branchName + " branch config");
 
                 // To prevent infinite loops, make sure that a new branch was chosen.
                 if (targetBranch.IsSameBranch(chosenBranch))

@@ -1,8 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GitVersion.Common
+namespace GitVersion
 {
-    public interface IModule
+    public interface IGitVersionModule
     {
         void RegisterTypes(IServiceCollection services);
     }

@@ -8,7 +8,6 @@ using GitVersion.Exceptions;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.OutputFormatters;
-using Environment = System.Environment;
 
 namespace GitVersion
 {
@@ -29,7 +28,7 @@ namespace GitVersion
             {
                 return new Arguments
                 {
-                    TargetPath = Environment.CurrentDirectory,
+                    TargetPath = System.Environment.CurrentDirectory,
                 };
             }
 
@@ -47,7 +46,7 @@ namespace GitVersion
             {
                 return new Arguments
                 {
-                    TargetPath = Environment.CurrentDirectory,
+                    TargetPath = System.Environment.CurrentDirectory,
                     Init = true,
                 };
             }
@@ -395,7 +394,7 @@ namespace GitVersion
                 // If the first argument is a switch, it should already have been consumed in the above loop,
                 // or else a WarningException should have been thrown and we wouldn't end up here.
                 arguments.TargetPath = firstArgumentIsSwitch
-                    ? Environment.CurrentDirectory
+                    ? System.Environment.CurrentDirectory
                     : firstArgument;
             }
 

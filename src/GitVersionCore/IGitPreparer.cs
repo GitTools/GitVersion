@@ -5,7 +5,7 @@ namespace GitVersion
 {
     public interface IGitPreparer
     {
-        void Initialize(bool normalizeGitDirectory, string currentBranch, bool shouldCleanUpRemotes = false);
+        void Prepare(bool normalizeGitDirectory, string currentBranch, bool shouldCleanUpRemotes = false);
         TResult WithRepository<TResult>(Func<IRepository, TResult> action);
         string GetDotGitDirectory();
         string GetProjectRootDirectory();

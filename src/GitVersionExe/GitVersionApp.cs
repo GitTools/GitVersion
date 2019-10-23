@@ -25,7 +25,7 @@ namespace GitVersion
         {
             try
             {
-                gitVersionExecutor.Run(arguments);
+                gitVersionExecutor.Execute(arguments);
             }
             catch (Exception exception)
             {

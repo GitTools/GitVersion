@@ -3,7 +3,7 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
-using GitVersion.Common;
+using GitVersion;
 using GitVersion.Logging;
 
 namespace GitVersionCore.Tests

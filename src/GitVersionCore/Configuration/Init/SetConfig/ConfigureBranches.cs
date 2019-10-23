@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GitVersion.Configuration.Init.Wizard;
-using GitVersion.Common;
 using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.SetConfig

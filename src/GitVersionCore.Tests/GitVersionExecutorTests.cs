@@ -11,7 +11,6 @@ using GitVersion.OutputVariables;
 using GitVersion.Cache;
 using LibGit2Sharp;
 using GitVersionCore.Tests.Helpers;
-using GitVersion.Common;
 using GitVersion.Logging;
 using Environment = System.Environment;
 
@@ -42,7 +41,7 @@ namespace GitVersionCore.Tests
         [Test]
         public void CacheKeySameAfterReNormalizing()
         {
-            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
+            var versionAndBranchFinder = new GitVersionCalculator(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -56,9 +55,9 @@ namespace GitVersionCore.Tests
                 };
                 var gitPreparer = new GitPreparer(log, arguments);
                 configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
-                gitPreparer.Initialize(true, targetBranch);
+                gitPreparer.Prepare(true, targetBranch);
                 var cacheKey1 = GitVersionCacheKeyFactory.Create(fileSystem, log, gitPreparer, configFileLocator, null);
-                gitPreparer.Initialize(true, targetBranch);
+                gitPreparer.Prepare(true, targetBranch);
                 var cacheKey2 = GitVersionCacheKeyFactory.Create(fileSystem, log, gitPreparer, configFileLocator, null);
 
                 cacheKey2.Value.ShouldBe(cacheKey1.Value);
@@ -70,7 +69,7 @@ namespace GitVersionCore.Tests
         [Description("LibGit2Sharp fails here when running under Mono")]
         public void CacheKeyForWorktree()
         {
-            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
+            var versionAndBranchFinder = new GitVersionCalculator(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -144,12 +143,12 @@ CommitDate: 2015-11-10
             log = new Log(logAppender);
 
             gitVersionCache = new GitVersionCache(fileSystem, log);
-            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
+            var versionAndBranchFinder = new GitVersionCalculator(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
                 fileSystem.WriteAllText(vv.FileName, versionCacheFileContent);
-                vv = versionAndBranchFinder.ComputeVersionVariables(new Arguments { TargetPath = fixture.RepositoryPath });
+                vv = versionAndBranchFinder.CalculateVersionVariables(new Arguments { TargetPath = fixture.RepositoryPath });
                 vv.AssemblySemVer.ShouldBe("4.10.3.0");
             });
 
@@ -193,7 +192,7 @@ CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
 ";
 
-            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
+            var versionAndBranchFinder = new GitVersionCalculator(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -210,7 +209,7 @@ CommitDate: 2015-11-10
 
                 var cacheDirectoryTimestamp = fileSystem.GetLastDirectoryWrite(cacheDirectory);
 
-                vv = versionAndBranchFinder.ComputeVersionVariables(new Arguments { TargetPath = fixture.RepositoryPath , OverrideConfig = new Config { TagPrefix = "prefix" } });
+                vv = versionAndBranchFinder.CalculateVersionVariables(new Arguments { TargetPath = fixture.RepositoryPath , OverrideConfig = new Config { TagPrefix = "prefix" } });
 
                 vv.AssemblySemVer.ShouldBe("0.1.0.0");
 
@@ -231,7 +230,7 @@ CommitDate: 2015-11-10
             log = new Log(logAppender);
             gitVersionCache = new GitVersionCache(fileSystem, log);
 
-            var executeCore = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
+            var executeCore = new GitVersionCalculator(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
 
             RepositoryScope(executeCore);
             var logsMessages = stringBuilder.ToString();
@@ -275,19 +274,19 @@ CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
 ";
 
-            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
+            var versionAndBranchFinder = new GitVersionCalculator(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
                 fileSystem.WriteAllText(vv.FileName, versionCacheFileContent);
                 var arguments = new Arguments { TargetPath = fixture.RepositoryPath };
-                vv = versionAndBranchFinder.ComputeVersionVariables(arguments);
+                vv = versionAndBranchFinder.CalculateVersionVariables(arguments);
                 vv.AssemblySemVer.ShouldBe("4.10.3.0");
 
                 var configPath = Path.Combine(fixture.RepositoryPath, "GitVersionConfig.yaml");
                 fileSystem.WriteAllText(configPath, "next-version: 5.0");
 
-                vv = versionAndBranchFinder.ComputeVersionVariables(arguments);
+                vv = versionAndBranchFinder.CalculateVersionVariables(arguments);
                 vv.AssemblySemVer.ShouldBe("5.0.0.0");
             });
         }
@@ -328,18 +327,18 @@ CommitsSinceVersionSourcePadded: 0019
 CommitDate: 2015-11-10
 ";
 
-            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
+            var versionAndBranchFinder = new GitVersionCalculator(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
                 var arguments = new Arguments { TargetPath = fixture.RepositoryPath };
 
                 fileSystem.WriteAllText(vv.FileName, versionCacheFileContent);
-                vv = versionAndBranchFinder.ComputeVersionVariables(arguments);
+                vv = versionAndBranchFinder.CalculateVersionVariables(arguments);
                 vv.AssemblySemVer.ShouldBe("4.10.3.0");
 
                 arguments.NoCache = true;
-                vv = versionAndBranchFinder.ComputeVersionVariables(arguments);
+                vv = versionAndBranchFinder.CalculateVersionVariables(arguments);
                 vv.AssemblySemVer.ShouldBe("0.1.0.0");
             });
         }
@@ -348,13 +347,13 @@ CommitDate: 2015-11-10
         [Test]
         public void WorkingDirectoryWithoutGit()
         {
-            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
+            var versionAndBranchFinder = new GitVersionCalculator(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
                 var arguments = new Arguments { TargetPath = Environment.SystemDirectory };
 
-                var exception = Assert.Throws<DirectoryNotFoundException>(() => versionAndBranchFinder.ComputeVersionVariables(arguments));
+                var exception = Assert.Throws<DirectoryNotFoundException>(() => versionAndBranchFinder.CalculateVersionVariables(arguments));
                 exception.Message.ShouldContain("Can't find the .git directory in");
             });
         }
@@ -364,7 +363,7 @@ CommitDate: 2015-11-10
         [Description("LibGit2Sharp fails when running under Mono")]
         public void GetProjectRootDirectory_WorkingDirectoryWithWorktree()
         {
-            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
+            var versionAndBranchFinder = new GitVersionCalculator(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -396,7 +395,7 @@ CommitDate: 2015-11-10
         [Test]
         public void GetProjectRootDirectory_NoWorktree()
         {
-            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
+            var versionAndBranchFinder = new GitVersionCalculator(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -417,7 +416,7 @@ CommitDate: 2015-11-10
         [Test]
         public void DynamicRepositoriesShouldNotErrorWithFailedToFindGitDirectory()
         {
-            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
+            var versionAndBranchFinder = new GitVersionCalculator(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -428,14 +427,14 @@ CommitDate: 2015-11-10
                     TargetBranch = "refs/head/master"
                 };
 
-                versionAndBranchFinder.ComputeVersionVariables(arguments);
+                versionAndBranchFinder.CalculateVersionVariables(arguments);
             });
         }
 
         [Test]
         public void GetDotGitDirectory_NoWorktree()
         {
-            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
+            var versionAndBranchFinder = new GitVersionCalculator(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -458,7 +457,7 @@ CommitDate: 2015-11-10
         [Description("LibGit2Sharp fails when running under Mono")]
         public void GetDotGitDirectory_Worktree()
         {
-            var versionAndBranchFinder = new GitVersionComputer(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
+            var versionAndBranchFinder = new GitVersionCalculator(fileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
 
             RepositoryScope(versionAndBranchFinder, (fixture, vv) =>
             {
@@ -489,7 +488,7 @@ CommitDate: 2015-11-10
             });
         }
 
-        private void RepositoryScope(IGitVersionComputer gitVersionComputer, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
+        private void RepositoryScope(IGitVersionCalculator gitVersionCalculator, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
         {
             // Make sure GitVersion doesn't trigger build server mode when we are running the tests
             environment.SetEnvironmentVariable(AppVeyor.EnvironmentVariableName, null);
@@ -500,7 +499,7 @@ CommitDate: 2015-11-10
             using var fixture = new EmptyRepositoryFixture();
             var arguments = new Arguments { TargetPath = fixture.RepositoryPath };
             fixture.Repository.MakeACommit();
-            var vv = gitVersionComputer.ComputeVersionVariables(arguments);
+            var vv = gitVersionCalculator.CalculateVersionVariables(arguments);
 
             vv.AssemblySemVer.ShouldBe("0.1.0.0");
             vv.FileName.ShouldNotBeNullOrEmpty();

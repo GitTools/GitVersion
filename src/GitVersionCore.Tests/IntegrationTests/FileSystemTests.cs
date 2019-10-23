@@ -2,7 +2,7 @@
 using System.Text;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.Common;
+using GitVersion;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {

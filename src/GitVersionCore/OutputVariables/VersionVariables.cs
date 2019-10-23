@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using YamlDotNet.Serialization;
-using GitVersion.Common;
 
 namespace GitVersion.OutputVariables
 {

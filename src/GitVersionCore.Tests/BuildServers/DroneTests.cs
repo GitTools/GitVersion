@@ -1,5 +1,5 @@
 using GitVersion.BuildServers;
-using GitVersion.Common;
+using GitVersion;
 using GitVersion.Logging;
 using NUnit.Framework;
 using Shouldly;

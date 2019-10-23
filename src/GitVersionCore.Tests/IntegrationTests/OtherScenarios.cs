@@ -27,7 +27,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
             Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
             fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
-            fixture.InitialiseRepo();
+            fixture.InitializeRepo();
             fixture.AssertFullSemver("1.0.1+1");
         }
 
@@ -94,7 +94,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
             Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.Repository.Head.Tip);
             fixture.LocalRepositoryFixture.Repository.Branches.Remove("master");
-            fixture.InitialiseRepo();
+            fixture.InitializeRepo();
             fixture.AssertFullSemver("1.1.0-alpha.1");
         }
     }

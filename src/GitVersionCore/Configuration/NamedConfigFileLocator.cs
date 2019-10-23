@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using GitVersion.Common;
 using GitVersion.Exceptions;
 using GitVersion.Logging;
 

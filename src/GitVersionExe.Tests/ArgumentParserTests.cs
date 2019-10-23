@@ -1,4 +1,3 @@
-using System;
 using GitVersion;
 using NUnit.Framework;
 using Shouldly;
@@ -23,7 +22,7 @@ namespace GitVersionExe.Tests
         public void Empty_means_use_current_directory()
         {
             var arguments = argumentParser.ParseArguments("");
-            arguments.TargetPath.ShouldBe(Environment.CurrentDirectory);
+            arguments.TargetPath.ShouldBe(System.Environment.CurrentDirectory);
             arguments.LogFilePath.ShouldBe(null);
             arguments.IsHelp.ShouldBe(false);
         }
@@ -41,7 +40,7 @@ namespace GitVersionExe.Tests
         public void No_path_and_logfile_should_use_current_directory_TargetDirectory()
         {
             var arguments = argumentParser.ParseArguments("-l logFilePath");
-            arguments.TargetPath.ShouldBe(Environment.CurrentDirectory);
+            arguments.TargetPath.ShouldBe(System.Environment.CurrentDirectory);
             arguments.LogFilePath.ShouldBe("logFilePath");
             arguments.IsHelp.ShouldBe(false);
         }
