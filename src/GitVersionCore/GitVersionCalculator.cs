@@ -12,20 +12,27 @@ namespace GitVersion
         private readonly IFileSystem fileSystem;
         private readonly ILog log;
         private readonly IConfigFileLocator configFileLocator;
+        private readonly IConfigurationProvider configurationProvider;
         private readonly IBuildServerResolver buildServerResolver;
         private readonly IGitVersionCache gitVersionCache;
         private readonly IGitVersionFinder gitVersionFinder;
         private readonly IMetaDataCalculator metaDataCalculator;
+        private readonly IGitPreparer gitPreparer;
 
-        public GitVersionCalculator(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IBuildServerResolver buildServerResolver, IGitVersionCache gitVersionCache, IGitVersionFinder gitVersionFinder, IMetaDataCalculator metaDataCalculator)
+        public GitVersionCalculator(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator,
+            IConfigurationProvider configurationProvider,
+            IBuildServerResolver buildServerResolver, IGitVersionCache gitVersionCache,
+            IGitVersionFinder gitVersionFinder, IMetaDataCalculator metaDataCalculator, IGitPreparer gitPreparer)
         {
-            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            this.fileSystem = fileSystem;
             this.log = log;
             this.configFileLocator = configFileLocator;
+            this.configurationProvider = configurationProvider;
             this.buildServerResolver = buildServerResolver;
             this.gitVersionCache = gitVersionCache;
             this.gitVersionFinder = gitVersionFinder;
             this.metaDataCalculator = metaDataCalculator;
+            this.gitPreparer = gitPreparer;
         }
 
         public VersionVariables CalculateVersionVariables(Arguments arguments)
@@ -34,10 +41,7 @@ namespace GitVersion
 
             // Normalize if we are running on build server
             var normalizeGitDirectory = !arguments.NoNormalize && buildServer != null;
-            arguments.NoFetch = arguments.NoFetch || buildServer != null && buildServer.PreventFetch();
             var shouldCleanUpRemotes = buildServer != null && buildServer.ShouldCleanUpRemotes();
-
-            var gitPreparer = new GitPreparer(log, arguments);
 
             var currentBranch = ResolveCurrentBranch(buildServer, arguments.TargetBranch, !string.IsNullOrWhiteSpace(arguments.DynamicRepositoryLocation));
 
@@ -116,7 +120,7 @@ namespace GitVersion
 
         private VersionVariables ExecuteInternal(string targetBranch, string commitId, IGitPreparer gitPreparer, Config overrideConfig)
         {
-            var configuration = ConfigurationProvider.Provide(gitPreparer, overrideConfig: overrideConfig, configFileLocator: configFileLocator);
+            var configuration = configurationProvider.Provide(overrideConfig: overrideConfig);
 
             return gitPreparer.WithRepository(repo =>
             {

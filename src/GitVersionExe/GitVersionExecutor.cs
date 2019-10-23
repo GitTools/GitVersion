@@ -11,21 +11,24 @@ namespace GitVersion
 {
     public class GitVersionExecutor : IGitVersionExecutor
     {
-        private readonly IFileSystem fileSystem;
         private readonly ILog log;
         private readonly IConfigFileLocator configFileLocator;
         private readonly IHelpWriter helpWriter;
         private readonly IExecCommand execCommand;
+        private readonly IConfigurationProvider configurationProvider;
+        private readonly IBuildServerResolver buildServerResolver;
         private readonly IVersionWriter versionWriter;
 
-        public GitVersionExecutor(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IVersionWriter versionWriter, IHelpWriter helpWriter, IExecCommand execCommand)
+        public GitVersionExecutor(ILog log, IConfigFileLocator configFileLocator, IVersionWriter versionWriter, IHelpWriter helpWriter,
+            IExecCommand execCommand, IConfigurationProvider configurationProvider, IBuildServerResolver buildServerResolver)
         {
-            this.fileSystem = fileSystem;
             this.log = log;
             this.configFileLocator = configFileLocator;
             this.versionWriter = versionWriter;
             this.helpWriter = helpWriter;
             this.execCommand = execCommand;
+            this.configurationProvider = configurationProvider;
+            this.buildServerResolver = buildServerResolver;
         }
 
         public int Execute(Arguments arguments)
@@ -75,6 +78,9 @@ namespace GitVersion
                     arguments.Output = OutputType.BuildServer;
                 }
 
+                var buildServer = buildServerResolver.Resolve();
+                arguments.NoFetch = arguments.NoFetch || buildServer != null && buildServer.PreventFetch();
+
                 ConfigureLogging(arguments, log);
 
                 if (arguments.Diag)
@@ -95,12 +101,12 @@ namespace GitVersion
 
                 if (arguments.Init)
                 {
-                    ConfigurationProvider.Init(arguments.TargetPath, fileSystem, new ConsoleAdapter(), log, configFileLocator);
+                    configurationProvider.Init(arguments.TargetPath, new ConsoleAdapter());
                     return 0;
                 }
                 if (arguments.ShowConfig)
                 {
-                    Console.WriteLine(ConfigurationProvider.GetEffectiveConfigAsString(arguments.TargetPath, configFileLocator));
+                    Console.WriteLine(configurationProvider.GetEffectiveConfigAsString(arguments.TargetPath));
                     return 0;
                 }
 

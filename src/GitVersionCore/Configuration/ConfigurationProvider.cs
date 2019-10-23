@@ -9,8 +9,21 @@ using GitVersion.Logging;
 
 namespace GitVersion.Configuration
 {
-    public class ConfigurationProvider
+    public class ConfigurationProvider : IConfigurationProvider
     {
+        private readonly IFileSystem fileSystem;
+        private readonly ILog log;
+        private readonly IConfigFileLocator configFileLocator;
+        private readonly IGitPreparer gitPreparer;
+
+        public ConfigurationProvider(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IGitPreparer gitPreparer)
+        {
+            this.fileSystem = fileSystem;
+            this.log = log;
+            this.configFileLocator = configFileLocator;
+            this.gitPreparer = gitPreparer;
+        }
+
         internal const string DefaultTagPrefix = "[vV]";
 
         public const string ReleaseBranchRegex = "^releases?[/-]";
@@ -42,20 +55,20 @@ namespace GitVersion.Configuration
 
         private const IncrementStrategy DefaultIncrementStrategy = IncrementStrategy.Inherit;
 
-        public static Config Provide(IGitPreparer gitPreparer, IConfigFileLocator configFileLocator, bool applyDefaults = true, Config overrideConfig = null)
+        public Config Provide(bool applyDefaults = true, Config overrideConfig = null)
         {
             var workingDirectory = gitPreparer.WorkingDirectory;
             var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
 
             if (configFileLocator.HasConfigFileAt(workingDirectory))
             {
-                return Provide(workingDirectory, configFileLocator, applyDefaults, overrideConfig);
+                return Provide(workingDirectory, applyDefaults, overrideConfig);
             }
 
-            return Provide(projectRootDirectory, configFileLocator, applyDefaults, overrideConfig);
+            return Provide(projectRootDirectory, applyDefaults, overrideConfig);
         }
 
-        public static Config Provide(string workingDirectory, IConfigFileLocator configFileLocator, bool applyDefaults = true, Config overrideConfig = null)
+        public Config Provide(string workingDirectory, bool applyDefaults = true, Config overrideConfig = null)
         {
             var readConfig = configFileLocator.ReadConfig(workingDirectory);
             VerifyConfiguration(readConfig);
@@ -82,23 +95,23 @@ If the docs do not help you decide on the mode open an issue to discuss what you
 
         public static void ApplyDefaultsTo(Config config)
         {
-            config.AssemblyVersioningScheme = config.AssemblyVersioningScheme ?? AssemblyVersioningScheme.MajorMinorPatch;
-            config.AssemblyFileVersioningScheme = config.AssemblyFileVersioningScheme ?? AssemblyFileVersioningScheme.MajorMinorPatch;
+            config.AssemblyVersioningScheme ??= AssemblyVersioningScheme.MajorMinorPatch;
+            config.AssemblyFileVersioningScheme ??= AssemblyFileVersioningScheme.MajorMinorPatch;
             config.AssemblyInformationalFormat = config.AssemblyInformationalFormat;
             config.AssemblyVersioningFormat = config.AssemblyVersioningFormat;
             config.AssemblyFileVersioningFormat = config.AssemblyFileVersioningFormat;
-            config.TagPrefix = config.TagPrefix ?? DefaultTagPrefix;
-            config.VersioningMode = config.VersioningMode ?? VersioningMode.ContinuousDelivery;
-            config.ContinuousDeploymentFallbackTag = config.ContinuousDeploymentFallbackTag ?? "ci";
-            config.MajorVersionBumpMessage = config.MajorVersionBumpMessage ?? IncrementStrategyFinder.DefaultMajorPattern;
-            config.MinorVersionBumpMessage = config.MinorVersionBumpMessage ?? IncrementStrategyFinder.DefaultMinorPattern;
-            config.PatchVersionBumpMessage = config.PatchVersionBumpMessage ?? IncrementStrategyFinder.DefaultPatchPattern;
-            config.NoBumpMessage = config.NoBumpMessage ?? IncrementStrategyFinder.DefaultNoBumpPattern;
-            config.CommitMessageIncrementing = config.CommitMessageIncrementing ?? CommitMessageIncrementMode.Enabled;
-            config.LegacySemVerPadding = config.LegacySemVerPadding ?? 4;
-            config.BuildMetaDataPadding = config.BuildMetaDataPadding ?? 4;
-            config.CommitsSinceVersionSourcePadding = config.CommitsSinceVersionSourcePadding ?? 4;
-            config.CommitDateFormat = config.CommitDateFormat ?? "yyyy-MM-dd";
+            config.TagPrefix ??= DefaultTagPrefix;
+            config.VersioningMode ??= VersioningMode.ContinuousDelivery;
+            config.ContinuousDeploymentFallbackTag ??= "ci";
+            config.MajorVersionBumpMessage ??= IncrementStrategyFinder.DefaultMajorPattern;
+            config.MinorVersionBumpMessage ??= IncrementStrategyFinder.DefaultMinorPattern;
+            config.PatchVersionBumpMessage ??= IncrementStrategyFinder.DefaultPatchPattern;
+            config.NoBumpMessage ??= IncrementStrategyFinder.DefaultNoBumpPattern;
+            config.CommitMessageIncrementing ??= CommitMessageIncrementMode.Enabled;
+            config.LegacySemVerPadding ??= 4;
+            config.BuildMetaDataPadding ??= 4;
+            config.CommitsSinceVersionSourcePadding ??= 4;
+            config.CommitDateFormat ??= "yyyy-MM-dd";
 
             var configBranches = config.Branches.ToList();
 
@@ -220,22 +233,22 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             branchConfig.Regex = string.IsNullOrEmpty(branchConfig.Regex) ? branchRegex : branchConfig.Regex;
             branchConfig.SourceBranches = branchConfig.SourceBranches == null || !branchConfig.SourceBranches.Any()
                 ? sourceBranches : branchConfig.SourceBranches;
-            branchConfig.Tag = branchConfig.Tag ?? defaultTag;
-            branchConfig.TagNumberPattern = branchConfig.TagNumberPattern ?? defaultTagNumberPattern;
-            branchConfig.Increment = branchConfig.Increment ?? defaultIncrementStrategy ?? config.Increment ?? DefaultIncrementStrategy;
-            branchConfig.PreventIncrementOfMergedBranchVersion = branchConfig.PreventIncrementOfMergedBranchVersion ?? defaultPreventIncrement;
-            branchConfig.TrackMergeTarget = branchConfig.TrackMergeTarget ?? defaultTrackMergeTarget;
-            branchConfig.VersioningMode = branchConfig.VersioningMode ?? defaultVersioningMode ?? config.VersioningMode;
-            branchConfig.TracksReleaseBranches = branchConfig.TracksReleaseBranches ?? tracksReleaseBranches;
-            branchConfig.IsReleaseBranch = branchConfig.IsReleaseBranch ?? isReleaseBranch;
-            branchConfig.IsMainline = branchConfig.IsMainline ?? isMainline;
+            branchConfig.Tag ??= defaultTag;
+            branchConfig.TagNumberPattern ??= defaultTagNumberPattern;
+            branchConfig.Increment ??= defaultIncrementStrategy ?? config.Increment ?? DefaultIncrementStrategy;
+            branchConfig.PreventIncrementOfMergedBranchVersion ??= defaultPreventIncrement;
+            branchConfig.TrackMergeTarget ??= defaultTrackMergeTarget;
+            branchConfig.VersioningMode ??= defaultVersioningMode ?? config.VersioningMode;
+            branchConfig.TracksReleaseBranches ??= tracksReleaseBranches;
+            branchConfig.IsReleaseBranch ??= isReleaseBranch;
+            branchConfig.IsMainline ??= isMainline;
             DefaultPreReleaseWeight.TryGetValue(branchRegex, out var defaultPreReleaseNumber);
-            branchConfig.PreReleaseWeight = branchConfig.PreReleaseWeight ?? defaultPreReleaseNumber;
+            branchConfig.PreReleaseWeight ??= defaultPreReleaseNumber;
         }
 
-        public static string GetEffectiveConfigAsString(string workingDirectory, IConfigFileLocator configFileLocator)
+        public string GetEffectiveConfigAsString(string workingDirectory)
         {
-            var config = Provide(workingDirectory, configFileLocator);
+            var config = Provide(workingDirectory);
             var stringBuilder = new StringBuilder();
             using (var stream = new StringWriter(stringBuilder))
             {
@@ -245,10 +258,10 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             return stringBuilder.ToString();
         }
 
-        public static void Init(string workingDirectory, IFileSystem fileSystem, IConsole console, ILog log, IConfigFileLocator configFileLocator)
+        public void Init(string workingDirectory, IConsole console)
         {
             var configFilePath = configFileLocator.GetConfigFilePath(workingDirectory);
-            var currentConfiguration = Provide(workingDirectory, applyDefaults: false, configFileLocator: configFileLocator);
+            var currentConfiguration = Provide(workingDirectory, false);
             var config = new ConfigInitWizard(console, fileSystem, log).Run(currentConfiguration, workingDirectory);
             if (config == null) return;
 

@@ -88,7 +88,12 @@ namespace GitVersionCore.Tests
 
             var output = WithDefaultConfigFileLocator(configFileLocator =>
             {
-                ConfigurationProvider.Provide(repoPath, configFileLocator); 
+                var log = new NullLog();
+                var defaultConfigFileLocator = new DefaultConfigFileLocator(fileSystem, log);
+                var gitPreparer = new GitPreparer(log, new Arguments { TargetPath = repoPath });
+                var configurationProvider = new ConfigurationProvider(fileSystem, log, defaultConfigFileLocator, gitPreparer);
+
+                configurationProvider.Provide(repoPath); 
             });
 
             output.Length.ShouldBe(0);

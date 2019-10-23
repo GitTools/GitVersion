@@ -85,9 +85,13 @@ namespace GitVersionCore.Tests
 
             var metaDataCalculator = new MetaDataCalculator();
             var gitVersionFinder = new GitVersionFinder(log, metaDataCalculator);
-            var executeCore = new GitVersionCalculator(testFileSystem, log, configFileLocator, buildServerResolver, gitVersionCache, gitVersionFinder, metaDataCalculator);
 
-            var versionVariables = executeCore.CalculateVersionVariables(arguments);
+            var gitPreparer = new GitPreparer(log, arguments);
+            var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer);
+
+            var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, metaDataCalculator, gitPreparer);
+
+            var versionVariables = gitVersionCalculator.CalculateVersionVariables(arguments);
 
             Assert.AreEqual(expectedFullSemVer, versionVariables.FullSemVer);
         }

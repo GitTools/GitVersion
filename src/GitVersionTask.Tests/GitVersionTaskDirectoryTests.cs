@@ -14,9 +14,15 @@ namespace GitVersionTask.Tests
     [TestFixture]
     public class GitVersionTaskDirectoryTests : TestBase
     {
-        private IGitVersionCalculator gitVersionCalculator;
         private string gitDirectory;
         private string workDirectory;
+        private ILog log;
+        private IConfigFileLocator configFileLocator;
+        private IGitVersionCache gitVersionCache;
+        private IBuildServerResolver buildServerResolver;
+        private IMetaDataCalculator metaDataCalculator;
+        private IGitVersionFinder gitVersionFinder;
+        private IFileSystem testFileSystem;
 
         [SetUp]
         public void CreateTemporaryRepository()
@@ -25,17 +31,16 @@ namespace GitVersionTask.Tests
             gitDirectory = Repository.Init(workDirectory)
                 .TrimEnd(Path.DirectorySeparatorChar);
 
-            var testFileSystem = new TestFileSystem();
-            var log = new NullLog();
-            var configFileLocator = new DefaultConfigFileLocator(testFileSystem, log);
-            var gitVersionCache = new GitVersionCache(testFileSystem, log);
+            testFileSystem = new TestFileSystem();
+            log = new NullLog();
+            configFileLocator = new DefaultConfigFileLocator(testFileSystem, log);
+            gitVersionCache = new GitVersionCache(testFileSystem, log);
 
-            var buildServerResolver = new BuildServerResolver(null, log);
+            buildServerResolver = new BuildServerResolver(null, log);
 
-            var metaDataCalculator = new MetaDataCalculator();
-            var gitVersionFinder = new GitVersionFinder(log, metaDataCalculator);
-
-            gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, buildServerResolver, gitVersionCache, gitVersionFinder, metaDataCalculator);
+            metaDataCalculator = new MetaDataCalculator();
+            gitVersionFinder = new GitVersionFinder(log, metaDataCalculator);
+            
             Assert.NotNull(gitDirectory);
         }
 
@@ -53,6 +58,10 @@ namespace GitVersionTask.Tests
             try
             {
                 var arguments = new Arguments { TargetPath = workDirectory, NoFetch = true };
+
+                var gitPreparer = new GitPreparer(log, arguments);
+                var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer);
+                var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, metaDataCalculator, gitPreparer);
 
                 gitVersionCalculator.CalculateVersionVariables(arguments);
             }
@@ -74,6 +83,11 @@ namespace GitVersionTask.Tests
             try
             {
                 var arguments = new Arguments { TargetPath = childDir, NoFetch = true };
+
+                var gitPreparer = new GitPreparer(log, arguments);
+                var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer);
+                var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, metaDataCalculator, gitPreparer);
+
                 gitVersionCalculator.CalculateVersionVariables(arguments);
             }
             catch (Exception ex)
