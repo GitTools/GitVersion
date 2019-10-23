@@ -6,6 +6,7 @@ using GitVersion.OutputVariables;
 using GitVersion.Extensions.GitVersionInformationResources;
 using GitVersion.Logging;
 using GitVersion.SemanticVersioning;
+using GitVersion.VersionCalculation;
 
 namespace GitVersionCore.Tests
 {
@@ -41,7 +42,7 @@ namespace GitVersionCore.Tests
                     "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
             };
 
-            var variableProvider = new VariableProvider(new NullLog());
+            var variableProvider = new VariableProvider(new NullLog(), new MetaDataCalculator());
             var variables = variableProvider.GetVariablesFor(semanticVersion, new TestEffectiveConfiguration(), false);
             var generator = new GitVersionInformationGenerator(fileName, directory, variables, fileSystem);
 

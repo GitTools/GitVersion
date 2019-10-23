@@ -7,9 +7,18 @@ using GitVersion.SemanticVersioning;
 
 namespace GitVersion
 {
-    public class GitVersionFinder
+    public class GitVersionFinder : IGitVersionFinder
     {
-        public SemanticVersion FindVersion(ILog log, GitVersionContext context)
+        private readonly ILog log;
+        private readonly IMetaDataCalculator metaDataCalculator;
+
+        public GitVersionFinder(ILog log, IMetaDataCalculator metaDataCalculator)
+        {
+            this.log = log;
+            this.metaDataCalculator = metaDataCalculator;
+        }
+
+        public SemanticVersion FindVersion(GitVersionContext context)
         {
             log.Info($"Running against branch: {context.CurrentBranch.FriendlyName} ({(context.CurrentCommit == null ? "-" : context.CurrentCommit.Sha)})");
             if (context.IsCurrentCommitTagged)
@@ -25,7 +34,7 @@ namespace GitVersion
                 throw new WarningException("NextVersion.txt has been deprecated. See http://gitversion.readthedocs.org/en/latest/configuration/ for replacement");
             }
 
-            return new NextVersionCalculator(log).FindVersion(context);
+            return new NextVersionCalculator(log, metaDataCalculator).FindVersion(context);
         }
 
         private void EnsureMainTopologyConstraints(GitVersionContext context)

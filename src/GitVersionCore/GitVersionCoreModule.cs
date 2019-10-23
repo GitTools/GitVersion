@@ -4,6 +4,9 @@ using GitVersion.Cache;
 using Microsoft.Extensions.DependencyInjection;
 using GitVersion.Configuration;
 using GitVersion.Logging;
+using GitVersion.OutputVariables;
+using GitVersion.VersionCalculation;
+using GitVersion.VersionCalculation.BaseVersionCalculators;
 using Microsoft.Extensions.Options;
 
 namespace GitVersion
@@ -18,11 +21,16 @@ namespace GitVersion
             services.AddSingleton<IGitVersionCache, GitVersionCache>();
 
             services.AddSingleton<IGitVersionCalculator, GitVersionCalculator>();
+            services.AddSingleton<IMetaDataCalculator, MetaDataCalculator>();
+            services.AddSingleton<IVariableProvider, VariableProvider>();
+            services.AddSingleton<IGitVersionFinder, GitVersionFinder>();
 
             services.AddSingleton<IBuildServerResolver, BuildServerResolver>();
             services.AddSingleton(GetConfigFileLocator);
 
             RegisterBuildServers(services);
+
+            RegisterVersionStrategies(services);
         }
 
         private static IConfigFileLocator GetConfigFileLocator(IServiceProvider sp)
@@ -53,6 +61,16 @@ namespace GitVersion
             services.AddSingleton<IBuildServer, EnvRun>();
             services.AddSingleton<IBuildServer, Drone>();
             services.AddSingleton<IBuildServer, CodeBuild>();
+        }
+
+        private static void RegisterVersionStrategies(IServiceCollection services)
+        {
+            services.AddSingleton<IVersionStrategy, FallbackVersionStrategy>();
+            services.AddSingleton<IVersionStrategy, ConfigNextVersionVersionStrategy>();
+            services.AddSingleton<IVersionStrategy, TaggedCommitVersionStrategy>();
+            services.AddSingleton<IVersionStrategy, MergeMessageVersionStrategy>();
+            services.AddSingleton<IVersionStrategy, VersionInBranchNameVersionStrategy>();
+            services.AddSingleton<IVersionStrategy, TrackReleaseBranchesVersionStrategy>();
         }
     }
 }

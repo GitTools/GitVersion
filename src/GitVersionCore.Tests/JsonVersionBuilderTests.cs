@@ -5,6 +5,7 @@ using Shouldly;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 using GitVersion.SemanticVersioning;
+using GitVersion.VersionCalculation;
 
 namespace GitVersionCore.Tests
 {
@@ -33,7 +34,7 @@ namespace GitVersionCore.Tests
 
             var config = new TestEffectiveConfiguration();
 
-            var variableProvider = new VariableProvider(new NullLog());
+            var variableProvider = new VariableProvider(new NullLog(), new MetaDataCalculator());
             var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
             var json = JsonOutputFormatter.ToJson(variables);
             json.ShouldMatchApproved(c => c.SubFolder("Approved"));

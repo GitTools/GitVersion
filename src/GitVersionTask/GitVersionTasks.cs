@@ -9,6 +9,7 @@ using GitVersion.OutputVariables;
 using GitVersion.Extensions.GitVersionInformationResources;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Logging;
+using GitVersion.VersionCalculation;
 using GitVersionTask.MsBuild;
 using GitVersionTask.MsBuild.Tasks;
 
@@ -119,8 +120,13 @@ namespace GitVersionTask
         }
 
         private static bool GetVersionVariables(GitVersionTaskBase task, out VersionVariables versionVariables)
-            => new GitVersionCalculator(fileSystem, log, GetConfigFileLocator(task.ConfigFilePath), buildServerResolver, new GitVersionCache(fileSystem, log))
+        {
+            var gitVersionCache = new GitVersionCache(fileSystem, log);
+            var metaDataCalculator = new MetaDataCalculator();
+            var gitVersionFinder = new GitVersionFinder(log, metaDataCalculator);
+            return new GitVersionCalculator(fileSystem, log, GetConfigFileLocator(task.ConfigFilePath), buildServerResolver, gitVersionCache, gitVersionFinder, metaDataCalculator)
                 .TryCalculateVersionVariables(task.SolutionDirectory, task.NoFetch, out versionVariables);
+        }
 
         private static IConfigFileLocator GetConfigFileLocator(string filePath = null) =>
             !string.IsNullOrEmpty(filePath)

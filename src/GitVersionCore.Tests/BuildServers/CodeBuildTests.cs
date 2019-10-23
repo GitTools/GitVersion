@@ -9,6 +9,7 @@ using GitVersion;
 using GitVersion.OutputVariables;
 using GitVersion.Logging;
 using GitVersion.SemanticVersioning;
+using GitVersion.VersionCalculation;
 
 namespace GitVersionCore.Tests.BuildServers
 {
@@ -25,7 +26,7 @@ namespace GitVersionCore.Tests.BuildServers
             log = new NullLog();
 
             environment = new TestEnvironment();
-            variableProvider = new VariableProvider(log);
+            variableProvider = new VariableProvider(log, new MetaDataCalculator());
         }
 
         [Test]

@@ -3,6 +3,7 @@ using GitVersion.Configuration;
 using GitVersion.OutputVariables;
 using GitVersion.Cache;
 using GitVersion.Logging;
+using GitVersion.VersionCalculation;
 
 namespace GitVersion
 {
@@ -13,14 +14,18 @@ namespace GitVersion
         private readonly IConfigFileLocator configFileLocator;
         private readonly IBuildServerResolver buildServerResolver;
         private readonly IGitVersionCache gitVersionCache;
+        private readonly IGitVersionFinder gitVersionFinder;
+        private readonly IMetaDataCalculator metaDataCalculator;
 
-        public GitVersionCalculator(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IBuildServerResolver buildServerResolver, IGitVersionCache gitVersionCache)
+        public GitVersionCalculator(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IBuildServerResolver buildServerResolver, IGitVersionCache gitVersionCache, IGitVersionFinder gitVersionFinder, IMetaDataCalculator metaDataCalculator)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log;
             this.configFileLocator = configFileLocator;
             this.buildServerResolver = buildServerResolver;
             this.gitVersionCache = gitVersionCache;
+            this.gitVersionFinder = gitVersionFinder;
+            this.metaDataCalculator = metaDataCalculator;
         }
 
         public VersionVariables CalculateVersionVariables(Arguments arguments)
@@ -111,15 +116,14 @@ namespace GitVersion
 
         private VersionVariables ExecuteInternal(string targetBranch, string commitId, IGitPreparer gitPreparer, Config overrideConfig)
         {
-            var versionFinder = new GitVersionFinder();
             var configuration = ConfigurationProvider.Provide(gitPreparer, overrideConfig: overrideConfig, configFileLocator: configFileLocator);
 
             return gitPreparer.WithRepository(repo =>
             {
                 var gitVersionContext = new GitVersionContext(repo, log, targetBranch, configuration, commitId: commitId);
-                var semanticVersion = versionFinder.FindVersion(log, gitVersionContext);
+                var semanticVersion = gitVersionFinder.FindVersion(gitVersionContext);
 
-                var variableProvider = new VariableProvider(log);
+                var variableProvider = new VariableProvider(log, metaDataCalculator);
                 return variableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
             });
         }

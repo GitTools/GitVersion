@@ -12,21 +12,24 @@ namespace GitVersion.VersionCalculation
     public class NextVersionCalculator
     {
         private readonly ILog log;
-        private IBaseVersionCalculator baseVersionFinder;
-        private IMetaDataCalculator metaDataCalculator;
+        private readonly IBaseVersionCalculator baseVersionFinder;
+        private readonly IMetaDataCalculator metaDataCalculator;
 
-        public NextVersionCalculator(ILog log, IBaseVersionCalculator baseVersionCalculator = null, IMetaDataCalculator metaDataCalculator = null)
+        public NextVersionCalculator(ILog log, IMetaDataCalculator metaDataCalculator, IBaseVersionCalculator baseVersionCalculator = null)
         {
             this.log = log;
             this.metaDataCalculator = metaDataCalculator ?? new MetaDataCalculator();
-            baseVersionFinder = baseVersionCalculator ??
-                new BaseVersionCalculator(log, 
-                    new FallbackBaseVersionStrategy(),
-                    new ConfigNextVersionBaseVersionStrategy(),
-                    new TaggedCommitVersionStrategy(),
-                    new MergeMessageBaseVersionStrategy(),
-                    new VersionInBranchNameBaseVersionStrategy(),
-                    new TrackReleaseBranchesVersionStrategy());
+
+            var versionStrategies = new IVersionStrategy[]
+            {
+                new FallbackVersionStrategy(),
+                new ConfigNextVersionVersionStrategy(),
+                new TaggedCommitVersionStrategy(),
+                new MergeMessageVersionStrategy(),
+                new VersionInBranchNameVersionStrategy(),
+                new TrackReleaseBranchesVersionStrategy()
+            };
+            baseVersionFinder = baseVersionCalculator ?? new BaseVersionCalculator(log, versionStrategies);
         }
 
         public SemanticVersion FindVersion(GitVersionContext context)

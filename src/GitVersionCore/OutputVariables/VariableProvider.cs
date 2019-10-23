@@ -13,11 +13,14 @@ namespace GitVersion.OutputVariables
     public class VariableProvider : IVariableProvider
     {
         private readonly ILog log;
+        private readonly IMetaDataCalculator metaDataCalculator;
 
-        public VariableProvider(ILog log)
+        public VariableProvider(ILog log, IMetaDataCalculator metaDataCalculator)
         {
             this.log = log;
+            this.metaDataCalculator = metaDataCalculator;
         }
+
         public VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)
         {
             var isContinuousDeploymentMode = config.VersioningMode == VersioningMode.ContinuousDeployment && !isCurrentCommitTagged;
@@ -27,7 +30,7 @@ namespace GitVersion.OutputVariables
                 // Continuous Deployment always requires a pre-release tag unless the commit is tagged
                 if (!semanticVersion.PreReleaseTag.HasTag())
                 {
-                    var nextVersionCalculator = new NextVersionCalculator(log);
+                    var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator);
                     semanticVersion.PreReleaseTag.Name = nextVersionCalculator.GetBranchSpecificTag(config, semanticVersion.BuildMetaData.Branch, null);
                     if (string.IsNullOrEmpty(semanticVersion.PreReleaseTag.Name))
                     {

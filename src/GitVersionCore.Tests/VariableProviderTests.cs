@@ -5,6 +5,7 @@ using Shouldly;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 using GitVersion.SemanticVersioning;
+using GitVersion.VersionCalculation;
 using GitVersion.VersioningModes;
 
 namespace GitVersionCore.Tests
@@ -19,7 +20,7 @@ namespace GitVersionCore.Tests
         {
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
             var log = new NullLog();
-            variableProvider = new VariableProvider(log);
+            variableProvider = new VariableProvider(log, new MetaDataCalculator());
         }
 
         [Test]

@@ -25,7 +25,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                     ParentsEx = GetParents(true)
                 } }
             }).Build();
-            var sut = new MergeMessageBaseVersionStrategy();
+            var sut = new MergeMessageVersionStrategy();
 
             var baseVersion = sut.GetVersions(context).Single();
 
@@ -162,7 +162,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                     }
                 })
                 .Build();
-            var sut = new MergeMessageBaseVersionStrategy();
+            var sut = new MergeMessageVersionStrategy();
 
             var baseVersion = sut.GetVersions(context).SingleOrDefault();
 

@@ -4,6 +4,7 @@ using GitVersion.Cache;
 using GitVersion.Configuration;
 using NUnit.Framework;
 using GitVersion.Logging;
+using GitVersion.VersionCalculation;
 
 namespace GitVersionCore.Tests
 {
@@ -81,7 +82,10 @@ namespace GitVersionCore.Tests
             var configFileLocator = new DefaultConfigFileLocator(testFileSystem, log);
             var gitVersionCache = new GitVersionCache(testFileSystem, log);
             var buildServerResolver = new BuildServerResolver(null, log);
-            var executeCore = new GitVersionCalculator(testFileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
+
+            var metaDataCalculator = new MetaDataCalculator();
+            var gitVersionFinder = new GitVersionFinder(log, metaDataCalculator);
+            var executeCore = new GitVersionCalculator(testFileSystem, log, configFileLocator, buildServerResolver, gitVersionCache, gitVersionFinder, metaDataCalculator);
 
             var versionVariables = executeCore.CalculateVersionVariables(arguments);
 
