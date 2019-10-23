@@ -1,5 +1,6 @@
 using System.IO;
 using System.Runtime.InteropServices;
+using GitVersion;
 using GitVersion.Configuration;
 using GitVersion.Logging;
 using NUnit.Framework;
@@ -26,7 +27,11 @@ namespace GitVersionCore.Tests.Init
             var testConsole = new TestConsole("3", "2.0.0", "0");
             var configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
             var workingDirectory = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "c:\\proj" : "/proj";
-            ConfigurationProvider.Init(workingDirectory, fileSystem, testConsole, log, configFileLocator);
+
+            var gitPreparer = new GitPreparer(log, new Arguments { TargetPath = workingDirectory });
+            var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer);
+
+            configurationProvider.Init(workingDirectory, testConsole);
 
             fileSystem.ReadAllText(Path.Combine(workingDirectory, "GitVersion.yml")).ShouldMatchApproved();
         }

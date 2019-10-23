@@ -57,7 +57,10 @@ namespace GitVersionCore.Tests
 
             configFileLocator = new NamedConfigFileLocator("my-config.yaml", fileSystem, log);
 
-            ConfigurationProvider.Provide(repoPath, configFileLocator);
+            var gitPreparer = new GitPreparer(log, new Arguments { TargetPath = repoPath });
+            var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer);
+
+            configurationProvider.Provide(repoPath);
             stringLogger.Length.ShouldBe(0);
         }
 
@@ -73,8 +76,10 @@ namespace GitVersionCore.Tests
             log = new Log(logAppender);
 
             configFileLocator = new NamedConfigFileLocator("my-config.yaml", fileSystem, log);
+            var gitPreparer = new GitPreparer(log, new Arguments { TargetPath = repoPath });
+            var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer);
 
-            ConfigurationProvider.Provide(repoPath, configFileLocator);
+            configurationProvider.Provide(repoPath);
             stringLogger.Length.ShouldBe(0);
         }
 

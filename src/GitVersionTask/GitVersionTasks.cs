@@ -124,7 +124,11 @@ namespace GitVersionTask
             var gitVersionCache = new GitVersionCache(fileSystem, log);
             var metaDataCalculator = new MetaDataCalculator();
             var gitVersionFinder = new GitVersionFinder(log, metaDataCalculator);
-            return new GitVersionCalculator(fileSystem, log, GetConfigFileLocator(task.ConfigFilePath), buildServerResolver, gitVersionCache, gitVersionFinder, metaDataCalculator)
+            var configFileLocator = GetConfigFileLocator(task.ConfigFilePath);
+            var gitPreparer = new GitPreparer(log, new Arguments());
+            var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer);
+
+            return new GitVersionCalculator(fileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, metaDataCalculator, gitPreparer)
                 .TryCalculateVersionVariables(task.SolutionDirectory, task.NoFetch, out versionVariables);
         }
 
