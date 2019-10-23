@@ -1,55 +1,45 @@
 using System;
 using System.IO;
 using GitVersion;
-using GitVersion.Cache;
-using GitVersion.Configuration;
 using GitVersion.Exceptions;
+using GitVersion.Extensions;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 using GitVersion.Extensions.GitVersionInformationResources;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Logging;
-using GitVersion.VersionCalculation;
 using GitVersionTask.MsBuild;
 using GitVersionTask.MsBuild.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace GitVersionTask
 {
     public static class GitVersionTasks
     {
-        private static readonly ILog log;
-        private static readonly IFileSystem fileSystem;
-        private static readonly IBuildServerResolver buildServerResolver;
-
-        static GitVersionTasks()
-        {
-            log = new Log();
-            fileSystem = new FileSystem();
-            buildServerResolver = new BuildServerResolver(null, log);
-        }
-
         public static bool GetVersion(GetVersion task)
         {
-            return ExecuteGitVersionTask(task, t =>
+            return ExecuteGitVersionTask(task, (t, sp) =>
             {
-                if (!GetVersionVariables(t, out var versionVariables)) return;
+                if (!GetVersionVariables(sp, out var versionVariables)) return;
 
                 var outputType = typeof(GetVersion);
                 foreach (var variable in versionVariables)
                 {
-                    outputType.GetProperty(variable.Key)?.SetValue(task, variable.Value, null);
+                    outputType.GetProperty(variable.Key)?.SetValue(t, variable.Value, null);
                 }
             });
         }
 
         public static bool UpdateAssemblyInfo(UpdateAssemblyInfo task)
         {
-            return ExecuteGitVersionTask(task, t =>
+            return ExecuteGitVersionTask(task, (t, sp) =>
             {
+                var log = sp.GetService<ILog>();
                 FileHelper.DeleteTempFiles();
                 FileHelper.CheckForInvalidFiles(t.CompileFiles, t.ProjectFile);
 
-                if (!GetVersionVariables(t, out var versionVariables)) return;
+                if (!GetVersionVariables(sp, out var versionVariables)) return;
 
                 var fileWriteInfo = t.IntermediateOutputPath.GetFileWriteInfo(t.Language, t.ProjectFile, "AssemblyInfo");
 
@@ -63,9 +53,9 @@ namespace GitVersionTask
 
         public static bool GenerateGitVersionInformation(GenerateGitVersionInformation task)
         {
-            return ExecuteGitVersionTask(task, t =>
+            return ExecuteGitVersionTask(task, (t, sp) =>
             {
-                if (!GetVersionVariables(t, out var versionVariables)) return;
+                if (!GetVersionVariables(sp, out var versionVariables)) return;
 
                 var fileWriteInfo = t.IntermediateOutputPath.GetFileWriteInfo(t.Language, t.ProjectFile, "GitVersionInformation");
 
@@ -77,12 +67,13 @@ namespace GitVersionTask
 
         public static bool WriteVersionInfoToBuildLog(WriteVersionInfoToBuildLog task)
         {
-            return ExecuteGitVersionTask(task, t =>
+            return ExecuteGitVersionTask(task, (t, sp) =>
             {
-                if (!GetVersionVariables(task, out var versionVariables)) return;
+                if (!GetVersionVariables(sp, out var versionVariables)) return;
 
                 var logger = t.Log;
 
+                var buildServerResolver = sp.GetService<IBuildServerResolver>();
                 var buildServer = buildServerResolver.Resolve();
                 if (buildServer != null)
                 {
@@ -97,13 +88,14 @@ namespace GitVersionTask
             });
         }
 
-        private static bool ExecuteGitVersionTask<T>(T task, Action<T> action)
+        private static bool ExecuteGitVersionTask<T>(T task, Action<T, IServiceProvider> action)
             where T : GitVersionTaskBase
         {
             var taskLog = task.Log;
             try
             {
-                action(task);
+                var sp = BuildServiceProvider(task);
+                action(task, sp);
             }
             catch (WarningException errorException)
             {
@@ -119,22 +111,29 @@ namespace GitVersionTask
             return !taskLog.HasLoggedErrors;
         }
 
-        private static bool GetVersionVariables(GitVersionTaskBase task, out VersionVariables versionVariables)
+        private static IServiceProvider BuildServiceProvider(GitVersionTaskBase task)
         {
-            var gitVersionCache = new GitVersionCache(fileSystem, log);
-            var metaDataCalculator = new MetaDataCalculator();
-            var gitVersionFinder = new GitVersionFinder(log, metaDataCalculator);
-            var configFileLocator = GetConfigFileLocator(task.ConfigFilePath);
-            var gitPreparer = new GitPreparer(log, new Arguments());
-            var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer);
+            var services = new ServiceCollection();
 
-            return new GitVersionCalculator(fileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, metaDataCalculator, gitPreparer)
-                .TryCalculateVersionVariables(task.SolutionDirectory, task.NoFetch, out versionVariables);
+            var arguments = new Arguments
+            {
+                TargetPath = task.SolutionDirectory,
+                ConfigFile = task.ConfigFilePath,
+                NoFetch = task.NoFetch
+            };
+
+            services.AddSingleton(_ => Options.Create(arguments));
+            services.AddModule(new GitVersionCoreModule());
+
+            var sp = services.BuildServiceProvider();
+            return sp;
         }
 
-        private static IConfigFileLocator GetConfigFileLocator(string filePath = null) =>
-            !string.IsNullOrEmpty(filePath)
-                ? (IConfigFileLocator) new NamedConfigFileLocator(filePath, fileSystem, log)
-                : new DefaultConfigFileLocator(fileSystem, log);
+        private static bool GetVersionVariables(IServiceProvider sp, out VersionVariables versionVariables)
+        {
+            var arguments = sp.GetService<IOptions<Arguments>>().Value;
+            var gitVersionCalculator = sp.GetService<IGitVersionCalculator>();
+            return gitVersionCalculator.TryCalculateVersionVariables(arguments, out versionVariables);
+        }
     }
 }

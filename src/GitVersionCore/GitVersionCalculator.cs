@@ -61,15 +61,10 @@ namespace GitVersion
             return GetCachedGitVersionInfo(arguments.TargetBranch, arguments.CommitId, arguments.OverrideConfig, arguments.NoCache, gitPreparer);
         }
 
-        public bool TryCalculateVersionVariables(string directory, bool noFetch, out VersionVariables versionVariables)
+        public bool TryCalculateVersionVariables(Arguments arguments, out VersionVariables versionVariables)
         {
             try
             {
-                var arguments = new Arguments
-                {
-                    NoFetch = noFetch,
-                    TargetPath = directory
-                };
                 versionVariables = CalculateVersionVariables(arguments);
                 return true;
             }

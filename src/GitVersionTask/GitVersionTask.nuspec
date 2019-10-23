@@ -25,18 +25,20 @@
         <file src="netcoreapp2.1\publish\runtimes\win-x86\native\*.dll" target="tools\netstandard2.0\runtimes\win-x86\native" />
         <file src="netcoreapp2.1\publish\runtimes\win-x64\native\*.dll" target="tools\netstandard2.0\runtimes\win-x64\native" />
 
-        <file src="netcoreapp2.1\publish\LibGit2Sharp.dll"    target="tools\netstandard2.0" />
-        <file src="netcoreapp2.1\publish\Newtonsoft.Json.dll" target="tools\netstandard2.0" />
-        <file src="netcoreapp2.1\publish\YamlDotNet.dll"      target="tools\netstandard2.0" />
-        <file src="netcoreapp2.1\publish\GitVersion*"         target="tools\netstandard2.0" />
+        <file src="netcoreapp2.1\publish\GitVersion*"                   target="tools\netstandard2.0" />
+        <file src="netcoreapp2.1\publish\LibGit2Sharp.dll"              target="tools\netstandard2.0" />
+        <file src="netcoreapp2.1\publish\Newtonsoft.Json.dll"           target="tools\netstandard2.0" />
+        <file src="netcoreapp2.1\publish\YamlDotNet.dll"                target="tools\netstandard2.0" />
+        <file src="netcoreapp2.1\publish\Microsoft.Extensions*"         target="tools\netstandard2.0" />
 
-        <file src="net472\GitVersion*"    target="tools\net472" />
-        <file src="net472\LibGit2Sharp.*" target="tools\net472" />
-        <file src="net472\YamlDotNet.*"   target="tools\net472" />
+        <file src="net472\GitVersion*"              target="tools\net472" />
+        <file src="net472\LibGit2Sharp.*"           target="tools\net472" />
+        <file src="net472\YamlDotNet.*"             target="tools\net472" />
+        <file src="net472\Microsoft.Extensions.*"   target="tools\net472" />
 
-        <file src="net472\lib\linux-x64\*.so" target="tools\net472\lib\linux-x64" />
-        <file src="net472\lib\osx\*.dylib"    target="tools\net472\lib\osx" />
-        <file src="net472\lib\win32\**\*.dll" target="tools\net472\lib\win32" />
+        <file src="net472\lib\linux-x64\*.so"       target="tools\net472\lib\linux-x64" />
+        <file src="net472\lib\osx\*.dylib"          target="tools\net472\lib\osx" />
+        <file src="net472\lib\win32\**\*.dll"       target="tools\net472\lib\win32" />
 
         <file src="..\..\build\*.*" target="build" />
         <file src="..\..\buildMultiTargeting\*.*" target="buildMultiTargeting" />
