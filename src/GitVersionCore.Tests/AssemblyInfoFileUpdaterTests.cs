@@ -26,7 +26,8 @@ namespace GitVersionCore.Tests
         {
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestCaseAttribute>();
             log = new NullLog();
-            variableProvider = new VariableProvider(log, new MetaDataCalculator());
+            var baseVersionCalculator = new BaseVersionCalculator(log, null);
+            variableProvider = new VariableProvider(log, new MetaDataCalculator(), baseVersionCalculator);
         }
 
         [TestCase("cs")]

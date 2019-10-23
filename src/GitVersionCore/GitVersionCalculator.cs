@@ -3,7 +3,6 @@ using GitVersion.Configuration;
 using GitVersion.OutputVariables;
 using GitVersion.Cache;
 using GitVersion.Logging;
-using GitVersion.VersionCalculation;
 
 namespace GitVersion
 {
@@ -16,13 +15,13 @@ namespace GitVersion
         private readonly IBuildServerResolver buildServerResolver;
         private readonly IGitVersionCache gitVersionCache;
         private readonly IGitVersionFinder gitVersionFinder;
-        private readonly IMetaDataCalculator metaDataCalculator;
         private readonly IGitPreparer gitPreparer;
+        private readonly IVariableProvider variableProvider;
 
         public GitVersionCalculator(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator,
             IConfigurationProvider configurationProvider,
             IBuildServerResolver buildServerResolver, IGitVersionCache gitVersionCache,
-            IGitVersionFinder gitVersionFinder, IMetaDataCalculator metaDataCalculator, IGitPreparer gitPreparer)
+            IGitVersionFinder gitVersionFinder, IGitPreparer gitPreparer, IVariableProvider variableProvider)
         {
             this.fileSystem = fileSystem;
             this.log = log;
@@ -31,8 +30,8 @@ namespace GitVersion
             this.buildServerResolver = buildServerResolver;
             this.gitVersionCache = gitVersionCache;
             this.gitVersionFinder = gitVersionFinder;
-            this.metaDataCalculator = metaDataCalculator;
             this.gitPreparer = gitPreparer;
+            this.variableProvider = variableProvider;
         }
 
         public VersionVariables CalculateVersionVariables(Arguments arguments)
@@ -58,7 +57,7 @@ namespace GitVersion
                 throw new Exception($"Failed to prepare or find the .git directory in path '{arguments.TargetPath}'.");
             }
 
-            return GetCachedGitVersionInfo(arguments.TargetBranch, arguments.CommitId, arguments.OverrideConfig, arguments.NoCache, gitPreparer);
+            return GetCachedGitVersionInfo(arguments.TargetBranch, arguments.CommitId, arguments.OverrideConfig, arguments.NoCache);
         }
 
         public bool TryCalculateVersionVariables(Arguments arguments, out VersionVariables versionVariables)
@@ -89,13 +88,13 @@ namespace GitVersion
             return currentBranch;
         }
 
-        private VersionVariables GetCachedGitVersionInfo(string targetBranch, string commitId, Config overrideConfig, bool noCache, IGitPreparer gitPreparer)
+        private VersionVariables GetCachedGitVersionInfo(string targetBranch, string commitId, Config overrideConfig, bool noCache)
         {
             var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, log, gitPreparer, configFileLocator, overrideConfig);
             var versionVariables = noCache ? default : gitVersionCache.LoadVersionVariablesFromDiskCache(gitPreparer, cacheKey);
             if (versionVariables == null)
             {
-                versionVariables = ExecuteInternal(targetBranch, commitId, gitPreparer, overrideConfig);
+                versionVariables = ExecuteInternal(targetBranch, commitId, overrideConfig);
 
                 if (!noCache)
                 {
@@ -113,7 +112,7 @@ namespace GitVersion
             return versionVariables;
         }
 
-        private VersionVariables ExecuteInternal(string targetBranch, string commitId, IGitPreparer gitPreparer, Config overrideConfig)
+        private VersionVariables ExecuteInternal(string targetBranch, string commitId, Config overrideConfig)
         {
             var configuration = configurationProvider.Provide(overrideConfig: overrideConfig);
 
@@ -122,7 +121,6 @@ namespace GitVersion
                 var gitVersionContext = new GitVersionContext(repo, log, targetBranch, configuration, commitId: commitId);
                 var semanticVersion = gitVersionFinder.FindVersion(gitVersionContext);
 
-                var variableProvider = new VariableProvider(log, metaDataCalculator);
                 return variableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
             });
         }

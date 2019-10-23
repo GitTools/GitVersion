@@ -42,7 +42,8 @@ namespace GitVersionCore.Tests
                     "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
             };
 
-            var variableProvider = new VariableProvider(new NullLog(), new MetaDataCalculator());
+            var baseVersionCalculator = new BaseVersionCalculator(new NullLog(), null);
+            var variableProvider = new VariableProvider(new NullLog(), new MetaDataCalculator(), baseVersionCalculator);
             var variables = variableProvider.GetVariablesFor(semanticVersion, new TestEffectiveConfiguration(), false);
             var generator = new GitVersionInformationGenerator(fileName, directory, variables, fileSystem);
 

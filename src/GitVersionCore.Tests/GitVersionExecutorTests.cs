@@ -13,6 +13,7 @@ using LibGit2Sharp;
 using GitVersionCore.Tests.Helpers;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
+using GitVersionCore.Tests.VersionCalculation;
 using Environment = System.Environment;
 
 namespace GitVersionCore.Tests
@@ -40,7 +41,9 @@ namespace GitVersionCore.Tests
             buildServerResolver = new BuildServerResolver(null, log);
             gitVersionCache = new GitVersionCache(fileSystem, log);
             metaDataCalculator = new MetaDataCalculator();
-            gitVersionFinder = new GitVersionFinder(log, metaDataCalculator);
+            var baseVersionCalculator = new TestBaseVersionStrategiesCalculator(log);
+
+            gitVersionFinder = new GitVersionFinder(log, metaDataCalculator, baseVersionCalculator);
         }
 
         [Test]
@@ -518,7 +521,9 @@ namespace GitVersionCore.Tests
 
             var gitPreparer = new GitPreparer(_log, arguments);
             var configurationProvider = new ConfigurationProvider(fileSystem, _log, configFileLocator, gitPreparer);
-            var gitVersionCalculator = new GitVersionCalculator(fileSystem, _log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, metaDataCalculator, gitPreparer);
+            var baseVersionCalculator = new BaseVersionCalculator(log, null);
+            var variableProvider = new VariableProvider(log, new MetaDataCalculator(), baseVersionCalculator);
+            var gitVersionCalculator = new GitVersionCalculator(fileSystem, _log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider);
 
             fixture.Repository.MakeACommit();
             var vv = gitVersionCalculator.CalculateVersionVariables(arguments);
@@ -533,7 +538,9 @@ namespace GitVersionCore.Tests
         {
             var gitPreparer = new GitPreparer(log, arguments);
             var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer);
-            var gitVersionCalculator = new GitVersionCalculator(fileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, metaDataCalculator, gitPreparer);
+            var baseVersionCalculator = new BaseVersionCalculator(log, null);
+            var variableProvider = new VariableProvider(log, new MetaDataCalculator(), baseVersionCalculator);
+            var gitVersionCalculator = new GitVersionCalculator(fileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider);
             return gitVersionCalculator;
         }
     }

@@ -13,10 +13,10 @@ namespace GitVersion.VersionCalculation
         private readonly ILog log;
         private readonly IVersionStrategy[] strategies;
 
-        public BaseVersionCalculator(ILog log, params IVersionStrategy[] strategies)
+        public BaseVersionCalculator(ILog log, IEnumerable<IVersionStrategy> strategies)
         {
             this.log = log;
-            this.strategies = strategies;
+            this.strategies = strategies?.ToArray() ?? Array.Empty<IVersionStrategy>();
         }
 
         public BaseVersion GetBaseVersion(GitVersionContext context)

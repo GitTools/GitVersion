@@ -1,4 +1,5 @@
 using GitVersion;
+using GitVersion.Logging;
 using GitVersion.SemanticVersioning;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
@@ -22,6 +23,22 @@ namespace GitVersionCore.Tests.VersionCalculation
         public BaseVersion GetBaseVersion(GitVersionContext context)
         {
             return new BaseVersion(context, "Test source", shouldIncrement, semanticVersion, source, null);
+        }
+    }
+
+    public class TestBaseVersionStrategiesCalculator : BaseVersionCalculator
+    {
+        private static IVersionStrategy[] versionStrategies = new IVersionStrategy[]
+        {
+            new FallbackVersionStrategy(),
+            new ConfigNextVersionVersionStrategy(),
+            new TaggedCommitVersionStrategy(),
+            new MergeMessageVersionStrategy(),
+            new VersionInBranchNameVersionStrategy(),
+            new TrackReleaseBranchesVersionStrategy()
+        };
+        public TestBaseVersionStrategiesCalculator(ILog log) : base(log, versionStrategies)
+        {
         }
     }
 }
