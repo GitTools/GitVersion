@@ -7,7 +7,7 @@ namespace GitVersionExe.Tests.Helpers
 {
     public static class DirectoryHelper
     {
-        private static Dictionary<string, string> toRename = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> toRename = new Dictionary<string, string>
         {
             {"gitted", ".git"},
             {"gitmodules", ".gitmodules"},

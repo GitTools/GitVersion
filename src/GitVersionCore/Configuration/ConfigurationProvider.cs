@@ -41,7 +41,7 @@ namespace GitVersion.Configuration
         public const string SupportBranchKey = "support";
         public const string DevelopBranchKey = "develop";
 
-        private static Dictionary<string, int> DefaultPreReleaseWeight =
+        private static readonly Dictionary<string, int> DefaultPreReleaseWeight =
             new Dictionary<string, int>
             {
                 { DevelopBranchRegex, 0 },

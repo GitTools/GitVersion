@@ -9,8 +9,8 @@ namespace GitVersion.Extensions
 {
     public class WixVersionFileUpdater : IDisposable
     {
-        private VersionVariables variables;
-        private IFileSystem fileSystem;
+        private readonly VersionVariables variables;
+        private readonly IFileSystem fileSystem;
         private readonly ILog log;
         public string WixVersionFile { get; }
         public const string WIX_VERSION_FILE = "GitVersion_WixVersion.wxi";

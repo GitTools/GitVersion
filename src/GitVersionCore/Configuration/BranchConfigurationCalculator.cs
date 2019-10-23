@@ -11,8 +11,8 @@ namespace GitVersion.Configuration
     public class BranchConfigurationCalculator : IBranchConfigurationCalculator
     {
         public static string FallbackConfigName = "Fallback";
-        private GitVersionContext context;
-        private ILog log;
+        private readonly GitVersionContext context;
+        private readonly ILog log;
 
         public BranchConfigurationCalculator(ILog log, GitVersionContext context)
         {

@@ -19,7 +19,7 @@ namespace GitVersionCore.Tests.VersionCalculation
     [TestFixture]
     public class BaseVersionCalculatorTests : TestBase
     {
-        private ILog log;
+        private readonly ILog log;
 
         public BaseVersionCalculatorTests()
         {
@@ -90,7 +90,7 @@ namespace GitVersionCore.Tests.VersionCalculation
 
         private class V2Strategy : IVersionStrategy
         {
-            private Commit when;
+            private readonly Commit when;
 
             public V2Strategy(DateTimeOffset? when)
             {

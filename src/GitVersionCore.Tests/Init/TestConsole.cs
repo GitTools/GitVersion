@@ -8,7 +8,7 @@ namespace GitVersionCore.Tests.Init
     public class TestConsole : IConsole
     {
         private readonly Queue<string> responses;
-        private ILog log;
+        private readonly ILog log;
 
         public TestConsole(params string[] responses)
         {

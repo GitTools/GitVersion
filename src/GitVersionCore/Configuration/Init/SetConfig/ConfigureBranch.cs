@@ -6,7 +6,7 @@ namespace GitVersion.Configuration.Init.SetConfig
 {
     public class ConfigureBranch : ConfigInitWizardStep
     {
-        private string name;
+        private readonly string name;
         private readonly BranchConfig branchConfig;
 
         public ConfigureBranch(string name, BranchConfig branchConfig, IConsole console, IFileSystem fileSystem, ILog log) 

@@ -8,7 +8,7 @@ namespace GitVersionExe.Tests
 {
     public class HelpWriterTests
     {
-        private IHelpWriter helpWriter;
+        private readonly IHelpWriter helpWriter;
 
         public HelpWriterTests()
         {
