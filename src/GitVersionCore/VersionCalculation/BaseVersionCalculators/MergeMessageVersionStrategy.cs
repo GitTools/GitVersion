@@ -12,9 +12,9 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
     /// BaseVersionSource is the commit where the message was found.
     /// Increments if PreventIncrementForMergedBranchVersion (from the branch config) is false.
     /// </summary>
-    public class MergeMessageBaseVersionStrategy : BaseVersionStrategy
+    public class MergeMessageVersionStrategy : IVersionStrategy
     {
-        public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+        public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
             var commitsPriorToThan = context.CurrentBranch
                 .CommitsPriorToThan(context.CurrentCommit.When());

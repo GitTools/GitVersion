@@ -11,9 +11,9 @@ namespace GitVersion.VersionCalculation
     public class BaseVersionCalculator : IBaseVersionCalculator
     {
         private readonly ILog log;
-        private readonly BaseVersionStrategy[] strategies;
+        private readonly IVersionStrategy[] strategies;
 
-        public BaseVersionCalculator(ILog log, params BaseVersionStrategy[] strategies)
+        public BaseVersionCalculator(ILog log, params IVersionStrategy[] strategies)
         {
             this.log = log;
             this.strategies = strategies;
@@ -105,7 +105,7 @@ namespace GitVersion.VersionCalculation
                 foreach (var baseVersion in baseVersions)
                 {
                     if (baseVersion.Version.Source.Contains(
-                        MergeMessageBaseVersionStrategy.MergeMessageStrategyPrefix)
+                        MergeMessageVersionStrategy.MergeMessageStrategyPrefix)
                         && baseVersion.Version.Source.Contains("Merge branch")
                         && baseVersion.Version.Source.Contains("release"))
                     {

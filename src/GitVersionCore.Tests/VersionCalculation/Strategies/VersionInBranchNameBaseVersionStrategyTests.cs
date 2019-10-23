@@ -21,7 +21,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit();
             var branch = fixture.Repository.CreateBranch(branchName);
-            var sut = new VersionInBranchNameBaseVersionStrategy();
+            var sut = new VersionInBranchNameVersionStrategy();
 
             var gitVersionContext = new GitVersionContext(fixture.Repository, new NullLog(), branch, new Config().ApplyDefaults());
             var baseVersion = sut.GetVersions(gitVersionContext).Single();
@@ -38,7 +38,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit();
             var branch = fixture.Repository.CreateBranch(branchName);
-            var sut = new VersionInBranchNameBaseVersionStrategy();
+            var sut = new VersionInBranchNameVersionStrategy();
 
             var gitVersionContext = new GitVersionContext(fixture.Repository, new NullLog(), branch, new Config().ApplyDefaults());
             var baseVersions = sut.GetVersions(gitVersionContext);
@@ -53,7 +53,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeACommit();
             var branch = fixture.Repository.CreateBranch(branchName);
-            var sut = new VersionInBranchNameBaseVersionStrategy();
+            var sut = new VersionInBranchNameVersionStrategy();
             var branchConfigs = new Dictionary<string, BranchConfig> { { "support", new BranchConfig { IsReleaseBranch = true } } };
             var config = new Config { Branches = branchConfigs }.ApplyDefaults();
 
@@ -75,7 +75,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             Commands.Fetch((Repository)fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Network.Remotes.First().Name, new string[0], new FetchOptions(), null);
             fixture.LocalRepositoryFixture.Checkout($"origin/{branchName}");
 
-            var sut = new VersionInBranchNameBaseVersionStrategy();
+            var sut = new VersionInBranchNameVersionStrategy();
             var gitVersionContext = new GitVersionContext(fixture.Repository, new NullLog(), branch, new Config().ApplyDefaults());
             var baseVersion = sut.GetVersions(gitVersionContext).Single();
 

@@ -8,9 +8,9 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
     /// BaseVersionSource is null.
     /// Does not increment.
     /// </summary>
-    public class ConfigNextVersionBaseVersionStrategy : BaseVersionStrategy
+    public class ConfigNextVersionVersionStrategy : IVersionStrategy
     {
-        public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+        public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
             if (string.IsNullOrEmpty(context.Configuration.NextVersion) || context.IsCurrentCommitTagged)
                 yield break;

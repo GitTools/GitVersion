@@ -4,6 +4,7 @@ using GitVersion;
 using GitVersion.Cache;
 using GitVersion.Configuration;
 using GitVersion.Logging;
+using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using NUnit.Framework;
 using GitVersionTask.Tests.Helpers;
@@ -31,7 +32,10 @@ namespace GitVersionTask.Tests
 
             var buildServerResolver = new BuildServerResolver(null, log);
 
-            gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
+            var metaDataCalculator = new MetaDataCalculator();
+            var gitVersionFinder = new GitVersionFinder(log, metaDataCalculator);
+
+            gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, buildServerResolver, gitVersionCache, gitVersionFinder, metaDataCalculator);
             Assert.NotNull(gitDirectory);
         }
 

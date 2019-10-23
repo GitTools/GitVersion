@@ -7,6 +7,7 @@ using Shouldly;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.SemanticVersioning;
+using GitVersion.VersionCalculation;
 
 namespace GitVersionCore.Tests
 {
@@ -42,7 +43,7 @@ namespace GitVersionCore.Tests
 
             var config = new TestEffectiveConfiguration(buildMetaDataPadding: 2, legacySemVerPadding: 5);
 
-            var variableProvider = new VariableProvider(new NullLog());
+            var variableProvider = new VariableProvider(new NullLog(), new MetaDataCalculator());
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
             var stringBuilder = new StringBuilder();
