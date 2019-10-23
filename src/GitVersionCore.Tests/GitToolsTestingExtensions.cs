@@ -31,7 +31,8 @@ namespace GitVersionCore.Tests
 
             var log = new NullLog();
             var baseVersionCalculator = new TestBaseVersionStrategiesCalculator(log);
-            var variableProvider = new VariableProvider(log, new MetaDataCalculator(), baseVersionCalculator);
+            var nextVersionCalculator = new NextVersionCalculator(log, new MetaDataCalculator(), baseVersionCalculator);
+            var variableProvider = new VariableProvider(nextVersionCalculator);
             var gitVersionContext = new GitVersionContext(repository ?? fixture.Repository, log, targetBranch, configuration, isForTrackedBranchOnly, commitId);
             var executeGitVersion = ExecuteGitVersion(gitVersionContext);
             var variables = variableProvider.GetVariablesFor(executeGitVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);

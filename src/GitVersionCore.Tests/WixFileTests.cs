@@ -50,7 +50,8 @@ namespace GitVersionCore.Tests
             var log = new Log(logAppender);
 
             var baseVersionCalculator = new BaseVersionCalculator(log, null);
-            var variableProvider = new VariableProvider(log, new MetaDataCalculator(), baseVersionCalculator);
+            var nextVersionCalculator = new NextVersionCalculator(log, new MetaDataCalculator(), baseVersionCalculator);
+            var variableProvider = new VariableProvider(nextVersionCalculator);
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
             using var wixVersionFileUpdater = new WixVersionFileUpdater(workingDir, vars, fileSystem, log);
