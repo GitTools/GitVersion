@@ -36,6 +36,7 @@ namespace GitVersionTask
             return ExecuteGitVersionTask(task, (t, sp) =>
             {
                 var log = sp.GetService<ILog>();
+                var fileSystem = sp.GetService<IFileSystem>();
                 FileHelper.DeleteTempFiles();
                 FileHelper.CheckForInvalidFiles(t.CompileFiles, t.ProjectFile);
 
@@ -45,7 +46,7 @@ namespace GitVersionTask
 
                 t.AssemblyInfoTempFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
 
-                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, new FileSystem(), log, true);
+                using var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, fileSystem, log, true);
                 assemblyInfoFileUpdater.Update();
                 assemblyInfoFileUpdater.CommitChanges();
             });
@@ -57,10 +58,11 @@ namespace GitVersionTask
             {
                 if (!GetVersionVariables(sp, out var versionVariables)) return;
 
+                var fileSystem = sp.GetService<IFileSystem>();
                 var fileWriteInfo = t.IntermediateOutputPath.GetFileWriteInfo(t.Language, t.ProjectFile, "GitVersionInformation");
 
                 t.GitVersionInformationFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
-                var generator = new GitVersionInformationGenerator(fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, new FileSystem());
+                var generator = new GitVersionInformationGenerator(fileWriteInfo.FileName, fileWriteInfo.WorkingDirectory, versionVariables, fileSystem);
                 generator.Generate();
             });
         }

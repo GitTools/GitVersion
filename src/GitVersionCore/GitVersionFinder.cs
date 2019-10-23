@@ -11,11 +11,13 @@ namespace GitVersion
     {
         private readonly ILog log;
         private readonly IMetaDataCalculator metaDataCalculator;
+        private readonly IBaseVersionCalculator baseVersionCalculator;
 
-        public GitVersionFinder(ILog log, IMetaDataCalculator metaDataCalculator)
+        public GitVersionFinder(ILog log, IMetaDataCalculator metaDataCalculator, IBaseVersionCalculator baseVersionCalculator)
         {
             this.log = log;
             this.metaDataCalculator = metaDataCalculator;
+            this.baseVersionCalculator = baseVersionCalculator;
         }
 
         public SemanticVersion FindVersion(GitVersionContext context)
@@ -34,7 +36,7 @@ namespace GitVersion
                 throw new WarningException("NextVersion.txt has been deprecated. See http://gitversion.readthedocs.org/en/latest/configuration/ for replacement");
             }
 
-            return new NextVersionCalculator(log, metaDataCalculator).FindVersion(context);
+            return new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator).FindVersion(context);
         }
 
         private void EnsureMainTopologyConstraints(GitVersionContext context)

@@ -43,14 +43,15 @@ namespace GitVersionCore.Tests
 
             var config = new TestEffectiveConfiguration(buildMetaDataPadding: 2, legacySemVerPadding: 5);
 
-            var variableProvider = new VariableProvider(new NullLog(), new MetaDataCalculator());
-            var vars = variableProvider.GetVariablesFor(semVer, config, false);
-
             var stringBuilder = new StringBuilder();
             void Action(string s) => stringBuilder.AppendLine(s);
 
             var logAppender = new TestLogAppender(Action);
             var log = new Log(logAppender);
+
+            var baseVersionCalculator = new BaseVersionCalculator(log, null);
+            var variableProvider = new VariableProvider(log, new MetaDataCalculator(), baseVersionCalculator);
+            var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
             using var wixVersionFileUpdater = new WixVersionFileUpdater(workingDir, vars, fileSystem, log);
             wixVersionFileUpdater.Update();

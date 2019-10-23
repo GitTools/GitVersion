@@ -26,7 +26,9 @@ namespace GitVersionCore.Tests.BuildServers
             log = new NullLog();
 
             environment = new TestEnvironment();
-            variableProvider = new VariableProvider(log, new MetaDataCalculator());
+            var baseVersionCalculator = new BaseVersionCalculator(log, null);
+
+            variableProvider = new VariableProvider(log, new MetaDataCalculator(), baseVersionCalculator);
         }
 
         [Test]

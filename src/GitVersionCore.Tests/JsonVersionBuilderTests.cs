@@ -34,7 +34,9 @@ namespace GitVersionCore.Tests
 
             var config = new TestEffectiveConfiguration();
 
-            var variableProvider = new VariableProvider(new NullLog(), new MetaDataCalculator());
+            var log = new NullLog();
+            var baseVersionCalculator = new BaseVersionCalculator(log, null);
+            var variableProvider = new VariableProvider(log, new MetaDataCalculator(), baseVersionCalculator);
             var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
             var json = JsonOutputFormatter.ToJson(variables);
             json.ShouldMatchApproved(c => c.SubFolder("Approved"));

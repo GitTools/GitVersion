@@ -4,6 +4,7 @@ using GitVersion;
 using GitVersion.Cache;
 using GitVersion.Configuration;
 using GitVersion.Logging;
+using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -39,7 +40,8 @@ namespace GitVersionTask.Tests
             buildServerResolver = new BuildServerResolver(null, log);
 
             metaDataCalculator = new MetaDataCalculator();
-            gitVersionFinder = new GitVersionFinder(log, metaDataCalculator);
+            var baseVersionCalculator = new BaseVersionCalculator(log, null);
+            gitVersionFinder = new GitVersionFinder(log, metaDataCalculator, baseVersionCalculator);
             
             Assert.NotNull(gitDirectory);
         }
@@ -61,7 +63,11 @@ namespace GitVersionTask.Tests
 
                 var gitPreparer = new GitPreparer(log, arguments);
                 var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer);
-                var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, metaDataCalculator, gitPreparer);
+
+                var baseVersionCalculator = new BaseVersionCalculator(log, null);
+                var variableProvider = new VariableProvider(log, new MetaDataCalculator(), baseVersionCalculator);
+
+                var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider);
 
                 gitVersionCalculator.CalculateVersionVariables(arguments);
             }
@@ -86,7 +92,10 @@ namespace GitVersionTask.Tests
 
                 var gitPreparer = new GitPreparer(log, arguments);
                 var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer);
-                var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, metaDataCalculator, gitPreparer);
+                var baseVersionCalculator = new BaseVersionCalculator(log, null);
+                var variableProvider = new VariableProvider(log, new MetaDataCalculator(), baseVersionCalculator);
+
+                var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider);
 
                 gitVersionCalculator.CalculateVersionVariables(arguments);
             }

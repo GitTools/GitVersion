@@ -9,6 +9,7 @@ using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.SemanticVersioning;
 using GitVersion.VersionCalculation;
+using GitVersionCore.Tests.VersionCalculation;
 
 namespace GitVersionCore.Tests
 {
@@ -29,7 +30,8 @@ namespace GitVersionCore.Tests
             }
 
             var log = new NullLog();
-            var variableProvider = new VariableProvider(log, new MetaDataCalculator());
+            var baseVersionCalculator = new TestBaseVersionStrategiesCalculator(log);
+            var variableProvider = new VariableProvider(log, new MetaDataCalculator(), baseVersionCalculator);
             var gitVersionContext = new GitVersionContext(repository ?? fixture.Repository, log, targetBranch, configuration, isForTrackedBranchOnly, commitId);
             var executeGitVersion = ExecuteGitVersion(gitVersionContext);
             var variables = variableProvider.GetVariablesFor(executeGitVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
@@ -73,7 +75,9 @@ namespace GitVersionCore.Tests
 
         private static SemanticVersion ExecuteGitVersion(GitVersionContext context)
         {
-            var vf = new GitVersionFinder(new NullLog(), new MetaDataCalculator());
+            var log = new NullLog();
+            var baseVersionCalculator = new TestBaseVersionStrategiesCalculator(log);
+            var vf = new GitVersionFinder(log, new MetaDataCalculator(), baseVersionCalculator);
             return vf.FindVersion(context);
         }
 

@@ -12,24 +12,15 @@ namespace GitVersion.VersionCalculation
     public class NextVersionCalculator
     {
         private readonly ILog log;
-        private readonly IBaseVersionCalculator baseVersionFinder;
+        private readonly IBaseVersionCalculator baseVersionCalculator;
         private readonly IMetaDataCalculator metaDataCalculator;
 
-        public NextVersionCalculator(ILog log, IMetaDataCalculator metaDataCalculator, IBaseVersionCalculator baseVersionCalculator = null)
+        public NextVersionCalculator(ILog log, IMetaDataCalculator metaDataCalculator, IBaseVersionCalculator baseVersionCalculator)
         {
             this.log = log;
-            this.metaDataCalculator = metaDataCalculator ?? new MetaDataCalculator();
+            this.metaDataCalculator = metaDataCalculator;
 
-            var versionStrategies = new IVersionStrategy[]
-            {
-                new FallbackVersionStrategy(),
-                new ConfigNextVersionVersionStrategy(),
-                new TaggedCommitVersionStrategy(),
-                new MergeMessageVersionStrategy(),
-                new VersionInBranchNameVersionStrategy(),
-                new TrackReleaseBranchesVersionStrategy()
-            };
-            baseVersionFinder = baseVersionCalculator ?? new BaseVersionCalculator(log, versionStrategies);
+            this.baseVersionCalculator = baseVersionCalculator;
         }
 
         public SemanticVersion FindVersion(GitVersionContext context)
@@ -49,7 +40,7 @@ namespace GitVersion.VersionCalculation
                 taggedSemanticVersion = semanticVersion;
             }
 
-            var baseVersion = baseVersionFinder.GetBaseVersion(context);
+            var baseVersion = baseVersionCalculator.GetBaseVersion(context);
             SemanticVersion semver;
             if (context.Configuration.VersioningMode == VersioningMode.Mainline)
             {
