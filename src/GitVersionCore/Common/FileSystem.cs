@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using GitVersion.Helpers;
 
-namespace GitVersion.Common
+namespace GitVersion
 {
     public class FileSystem : IFileSystem
     {

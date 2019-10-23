@@ -8,7 +8,6 @@ using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 using GitVersion.Extensions;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
-using GitVersion.Common;
 using GitVersion.Logging;
 using Microsoft.Extensions.Options;
 
@@ -21,30 +20,30 @@ namespace GitVersion
         private readonly IFileSystem fileSystem;
         private readonly IBuildServerResolver buildServerResolver;
         private readonly ILog log;
-        private readonly IGitVersionComputer gitVersionComputer;
+        private readonly IGitVersionCalculator gitVersionCalculator;
         private readonly Arguments arguments;
         public static readonly string BuildTool = GetMsBuildToolPath();
 
-        public ExecCommand(IFileSystem fileSystem, IBuildServerResolver buildServerResolver, ILog log, IGitVersionComputer gitVersionComputer, IOptions<Arguments> arguments)
+        public ExecCommand(IFileSystem fileSystem, IBuildServerResolver buildServerResolver, ILog log, IGitVersionCalculator gitVersionCalculator, IOptions<Arguments> arguments)
         {
             this.fileSystem = fileSystem;
             this.buildServerResolver = buildServerResolver;
             this.log = log;
-            this.gitVersionComputer = gitVersionComputer;
+            this.gitVersionCalculator = gitVersionCalculator;
             this.arguments = arguments.Value;
         }
 
-        public void Compute()
+        public void Execute()
         {
             log.Info($"Running on {(runningOnUnix ? "Unix" : "Windows")}.");
 
-            var variables = gitVersionComputer.ComputeVersionVariables(arguments);
+            var variables = gitVersionCalculator.CalculateVersionVariables(arguments);
 
             switch (arguments.Output)
             {
                 case OutputType.BuildServer:
                 {
-                    var buildServer = buildServerResolver.GetCurrentBuildServer();
+                    var buildServer = buildServerResolver.Resolve();
                     buildServer?.WriteIntegration(Console.WriteLine, variables);
 
                     break;

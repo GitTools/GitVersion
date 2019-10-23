@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace GitVersion.Helpers
 {
@@ -6,7 +6,7 @@ namespace GitVersion.Helpers
     {
         public static string GetEnvironmentVariableForProcess(string envVar)
         {
-            return Environment.GetEnvironmentVariable(envVar, EnvironmentVariableTarget.Process);
+            return System.Environment.GetEnvironmentVariable(envVar, EnvironmentVariableTarget.Process);
         }
     }
 }

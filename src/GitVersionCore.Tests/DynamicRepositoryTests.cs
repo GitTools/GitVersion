@@ -1,7 +1,6 @@
 using System.IO;
 using GitVersion;
 using GitVersion.Cache;
-using GitVersion.Common;
 using GitVersion.Configuration;
 using NUnit.Framework;
 using GitVersion.Logging;
@@ -82,9 +81,9 @@ namespace GitVersionCore.Tests
             var configFileLocator = new DefaultConfigFileLocator(testFileSystem, log);
             var gitVersionCache = new GitVersionCache(testFileSystem, log);
             var buildServerResolver = new BuildServerResolver(null, log);
-            var executeCore = new GitVersionComputer(testFileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
+            var executeCore = new GitVersionCalculator(testFileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
 
-            var versionVariables = executeCore.ComputeVersionVariables(arguments);
+            var versionVariables = executeCore.CalculateVersionVariables(arguments);
 
             Assert.AreEqual(expectedFullSemVer, versionVariables.FullSemVer);
         }

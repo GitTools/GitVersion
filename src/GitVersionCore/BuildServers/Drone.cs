@@ -1,6 +1,5 @@
 using System;
 using GitVersion.OutputVariables;
-using GitVersion.Common;
 using GitVersion.Logging;
 
 namespace GitVersion.BuildServers

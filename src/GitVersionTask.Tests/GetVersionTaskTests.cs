@@ -1,9 +1,9 @@
 using System.Linq;
-using GitVersionTask.MsBuild.Tasks;
 using Microsoft.Build.Framework;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.OutputVariables;
+using GitVersionTask.MsBuild.Tasks;
 
 namespace GitVersionTask.Tests
 {

@@ -2,15 +2,13 @@ using System;
 using GitVersion.BuildServers;
 using GitVersion.Cache;
 using Microsoft.Extensions.DependencyInjection;
-using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Logging;
 using Microsoft.Extensions.Options;
-using Environment = GitVersion.Common.Environment;
 
 namespace GitVersion
 {
-    public class GitVersionModule : IModule
+    public class GitVersionCoreModule : IGitVersionModule
     {
         public void RegisterTypes(IServiceCollection services)
         {
@@ -19,7 +17,7 @@ namespace GitVersion
             services.AddSingleton<ILog, Log>();
             services.AddSingleton<IGitVersionCache, GitVersionCache>();
 
-            services.AddSingleton<IGitVersionComputer, GitVersionComputer>();
+            services.AddSingleton<IGitVersionCalculator, GitVersionCalculator>();
 
             services.AddSingleton<IBuildServerResolver, BuildServerResolver>();
             services.AddSingleton(GetConfigFileLocator);

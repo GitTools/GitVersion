@@ -1,8 +1,6 @@
 using System.IO;
 using System.Linq;
 using GitVersion.OutputVariables;
-using GitVersion.Common;
-using Environment = System.Environment;
 
 namespace GitVersion.Extensions.GitVersionInformationResources
 {
@@ -40,7 +38,7 @@ namespace GitVersion.Extensions.GitVersionInformationResources
             var template = templateManager.GetTemplateFor(fileExtension);
             var addFormat = templateManager.GetAddFormatFor(fileExtension);
 
-            var members = string.Join(Environment.NewLine, variables.Select(v => string.Format("    " + addFormat, v.Key, v.Value)));
+            var members = string.Join(System.Environment.NewLine, variables.Select(v => string.Format("    " + addFormat, v.Key, v.Value)));
 
             var fileContents = string.Format(template, members);
 

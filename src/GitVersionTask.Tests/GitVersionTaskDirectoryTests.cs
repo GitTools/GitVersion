@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using GitVersion;
 using GitVersion.Cache;
-using GitVersion.Common;
 using GitVersion.Configuration;
 using GitVersion.Logging;
 using LibGit2Sharp;
@@ -14,7 +13,7 @@ namespace GitVersionTask.Tests
     [TestFixture]
     public class GitVersionTaskDirectoryTests : TestBase
     {
-        private IGitVersionComputer gitVersionComputer;
+        private IGitVersionCalculator gitVersionCalculator;
         private string gitDirectory;
         private string workDirectory;
 
@@ -32,7 +31,7 @@ namespace GitVersionTask.Tests
 
             var buildServerResolver = new BuildServerResolver(null, log);
 
-            gitVersionComputer = new GitVersionComputer(testFileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
+            gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, buildServerResolver, gitVersionCache);
             Assert.NotNull(gitDirectory);
         }
 
@@ -51,7 +50,7 @@ namespace GitVersionTask.Tests
             {
                 var arguments = new Arguments { TargetPath = workDirectory, NoFetch = true };
 
-                gitVersionComputer.ComputeVersionVariables(arguments);
+                gitVersionCalculator.CalculateVersionVariables(arguments);
             }
             catch (Exception ex)
             {
@@ -71,7 +70,7 @@ namespace GitVersionTask.Tests
             try
             {
                 var arguments = new Arguments { TargetPath = childDir, NoFetch = true };
-                gitVersionComputer.ComputeVersionVariables(arguments);
+                gitVersionCalculator.CalculateVersionVariables(arguments);
             }
             catch (Exception ex)
             {

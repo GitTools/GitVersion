@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.OutputVariables;
-using GitVersion.Common;
+using GitVersion;
 using GitVersion.Logging;
 using GitVersion.SemanticVersioning;
 

@@ -34,7 +34,7 @@ namespace GitVersion
             noFetch = arguments.NoFetch;
         }
 
-        public void Initialize(bool normalizeGitDirectory, string currentBranch, bool shouldCleanUpRemotes = false)
+        public void Prepare(bool normalizeGitDirectory, string currentBranch, bool shouldCleanUpRemotes = false)
         {
             if (string.IsNullOrWhiteSpace(TargetUrl))
             {

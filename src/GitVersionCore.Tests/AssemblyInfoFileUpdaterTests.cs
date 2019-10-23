@@ -7,7 +7,7 @@ using Shouldly;
 using GitVersion.OutputVariables;
 using GitVersion.Extensions;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
-using GitVersion.Common;
+using GitVersion;
 using GitVersion.Logging;
 using GitVersion.SemanticVersioning;
 

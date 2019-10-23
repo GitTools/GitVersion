@@ -6,12 +6,11 @@ using GitVersion.Configuration;
 using GitVersion.Exceptions;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
-using GitVersionTask.MsBuild;
-using GitVersionTask.MsBuild.Tasks;
 using GitVersion.Extensions.GitVersionInformationResources;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
-using GitVersion.Common;
 using GitVersion.Logging;
+using GitVersionTask.MsBuild;
+using GitVersionTask.MsBuild.Tasks;
 
 namespace GitVersionTask
 {
@@ -83,7 +82,7 @@ namespace GitVersionTask
 
                 var logger = t.Log;
 
-                var buildServer = buildServerResolver.GetCurrentBuildServer();
+                var buildServer = buildServerResolver.Resolve();
                 if (buildServer != null)
                 {
                     logger.LogMessage($"Executing GenerateSetVersionMessage for '{ buildServer.GetType().Name }'.");
@@ -120,8 +119,8 @@ namespace GitVersionTask
         }
 
         private static bool GetVersionVariables(GitVersionTaskBase task, out VersionVariables versionVariables)
-            => new GitVersionComputer(fileSystem, log, GetConfigFileLocator(task.ConfigFilePath), buildServerResolver, new GitVersionCache(fileSystem, log))
-                .TryGetVersion(task.SolutionDirectory, task.NoFetch, out versionVariables);
+            => new GitVersionCalculator(fileSystem, log, GetConfigFileLocator(task.ConfigFilePath), buildServerResolver, new GitVersionCache(fileSystem, log))
+                .TryCalculateVersionVariables(task.SolutionDirectory, task.NoFetch, out versionVariables);
 
         private static IConfigFileLocator GetConfigFileLocator(string filePath = null) =>
             !string.IsNullOrEmpty(filePath)

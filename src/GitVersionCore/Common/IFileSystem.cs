@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace GitVersion.Common
+namespace GitVersion
 {
     public interface IFileSystem
     {

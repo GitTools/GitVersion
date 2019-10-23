@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using GitVersion.Exceptions;
@@ -62,7 +61,7 @@ namespace GitVersion.Helpers
                 }
 
                 log.Info($"HEAD is detached and points at commit '{headSha}'.");
-                log.Info(string.Format("Local Refs:\r\n" + string.Join(Environment.NewLine, repo.Refs.FromGlob("*").Select(r => $"{r.CanonicalName} ({r.TargetIdentifier})"))));
+                log.Info(string.Format("Local Refs:\r\n" + string.Join(System.Environment.NewLine, repo.Refs.FromGlob("*").Select(r => $"{r.CanonicalName} ({r.TargetIdentifier})"))));
 
                 // In order to decide whether a fake branch is required or not, first check to see if any local branches have the same commit SHA of the head SHA.
                 // If they do, go ahead and checkout that branch
@@ -120,7 +119,7 @@ namespace GitVersion.Helpers
             {
                 if (repo.Head.Tip.Sha != expectedSha)
                 {
-                    if (Environment.GetEnvironmentVariable("IGNORE_NORMALISATION_GIT_HEAD_MOVE") != "1")
+                    if (System.Environment.GetEnvironmentVariable("IGNORE_NORMALISATION_GIT_HEAD_MOVE") != "1")
                     {
                         // Whoa, HEAD has moved, it shouldn't have. We need to blow up because there is a bug in normalisation
                         throw new BugException($@"GitVersion has a bug, your HEAD has moved after repo normalisation.
@@ -203,7 +202,7 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
                     GetRemoteTipsUsingUsernamePasswordCredentials(repo, remote, authentication.Username, authentication.Password))
                 .ToList();
 
-            log.Info("Remote Refs:\r\n" + string.Join(Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
+            log.Info("Remote Refs:\r\n" + string.Join(System.Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
 
             var headTipSha = repo.Head.Tip.Sha;
 

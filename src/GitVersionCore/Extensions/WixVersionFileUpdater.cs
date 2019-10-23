@@ -3,7 +3,6 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using GitVersion.OutputVariables;
-using GitVersion.Common;
 using GitVersion.Logging;
 
 namespace GitVersion.Extensions

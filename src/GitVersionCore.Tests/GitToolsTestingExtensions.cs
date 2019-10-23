@@ -79,7 +79,7 @@ namespace GitVersionCore.Tests
         /// <summary>
         /// Simulates running on build server
         /// </summary>
-        public static void InitialiseRepo(this RemoteRepositoryFixture fixture)
+        public static void InitializeRepo(this RemoteRepositoryFixture fixture)
         {
             var log = new NullLog();
 
@@ -88,7 +88,7 @@ namespace GitVersionCore.Tests
                 Authentication = new Authentication(),
                 TargetPath = fixture.LocalRepositoryFixture.RepositoryPath
             };
-            new GitPreparer(log, arguments).Initialize(true, null);
+            new GitPreparer(log, arguments).Prepare(true, null);
         }
     }
 }

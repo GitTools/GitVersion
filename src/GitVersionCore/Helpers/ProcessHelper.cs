@@ -86,7 +86,7 @@ namespace GitVersion.Helpers
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
 
-            workingDirectory = workingDirectory ?? Environment.CurrentDirectory;
+            workingDirectory ??= System.Environment.CurrentDirectory;
 
             var psi = new ProcessStartInfo
             {

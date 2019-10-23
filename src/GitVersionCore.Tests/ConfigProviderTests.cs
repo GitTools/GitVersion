@@ -10,7 +10,7 @@ using YamlDotNet.Serialization;
 using GitVersion.Configuration;
 using GitVersion.VersioningModes;
 using GitVersion.Extensions;
-using GitVersion.Common;
+using GitVersion;
 using GitVersion.Logging;
 
 namespace GitVersionCore.Tests

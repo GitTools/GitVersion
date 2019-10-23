@@ -3,7 +3,7 @@ using GitVersion.Logging;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.Common
+namespace GitVersion
 {
     public abstract class BuildServerBase : IBuildServer
     {

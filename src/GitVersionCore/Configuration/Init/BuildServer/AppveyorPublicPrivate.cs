@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using GitVersion.Configuration.Init.Wizard;
-using GitVersion.Common;
 using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.BuildServer

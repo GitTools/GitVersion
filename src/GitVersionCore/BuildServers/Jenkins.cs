@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
-using GitVersion.Common;
 using GitVersion.Logging;
 
 namespace GitVersion.BuildServers
