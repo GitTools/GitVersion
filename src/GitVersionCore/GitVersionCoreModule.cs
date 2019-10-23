@@ -20,6 +20,7 @@ namespace GitVersion
             services.AddSingleton<ILog, Log>();
             services.AddSingleton<IGitVersionCache, GitVersionCache>();
 
+            services.AddSingleton<INextVersionCalculator, NextVersionCalculator>();
             services.AddSingleton<IBaseVersionCalculator, BaseVersionCalculator>();
 
             services.AddSingleton<IGitVersionCalculator, GitVersionCalculator>();

@@ -9,7 +9,7 @@ using GitVersion.SemanticVersioning;
 
 namespace GitVersion.VersionCalculation
 {
-    public class NextVersionCalculator
+    public class NextVersionCalculator : INextVersionCalculator
     {
         private readonly ILog log;
         private readonly IBaseVersionCalculator baseVersionCalculator;

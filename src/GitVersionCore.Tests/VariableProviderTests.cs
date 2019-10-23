@@ -21,7 +21,8 @@ namespace GitVersionCore.Tests
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
             var log = new NullLog();
             var baseVersionCalculator = new BaseVersionCalculator(log, null);
-            variableProvider = new VariableProvider(log, new MetaDataCalculator(), baseVersionCalculator);
+            var nextVersionCalculator = new NextVersionCalculator(log, new MetaDataCalculator(), baseVersionCalculator);
+            variableProvider = new VariableProvider(nextVersionCalculator);
         }
 
         [Test]

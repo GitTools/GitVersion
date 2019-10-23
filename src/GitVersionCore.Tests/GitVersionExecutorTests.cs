@@ -522,7 +522,8 @@ namespace GitVersionCore.Tests
             var gitPreparer = new GitPreparer(_log, arguments);
             var configurationProvider = new ConfigurationProvider(fileSystem, _log, configFileLocator, gitPreparer);
             var baseVersionCalculator = new BaseVersionCalculator(log, null);
-            var variableProvider = new VariableProvider(log, new MetaDataCalculator(), baseVersionCalculator);
+            var nextVersionCalculator = new NextVersionCalculator(log, new MetaDataCalculator(), baseVersionCalculator);
+            var variableProvider = new VariableProvider(nextVersionCalculator);
             var gitVersionCalculator = new GitVersionCalculator(fileSystem, _log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider);
 
             fixture.Repository.MakeACommit();
@@ -539,7 +540,8 @@ namespace GitVersionCore.Tests
             var gitPreparer = new GitPreparer(log, arguments);
             var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer);
             var baseVersionCalculator = new BaseVersionCalculator(log, null);
-            var variableProvider = new VariableProvider(log, new MetaDataCalculator(), baseVersionCalculator);
+            var nextVersionCalculator = new NextVersionCalculator(log, new MetaDataCalculator(), baseVersionCalculator);
+            var variableProvider = new VariableProvider(nextVersionCalculator);
             var gitVersionCalculator = new GitVersionCalculator(fileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider);
             return gitVersionCalculator;
         }
