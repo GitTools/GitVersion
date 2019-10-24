@@ -32,8 +32,8 @@ namespace GitVersion
             services.AddSingleton<IGitVersionCalculator, GitVersionCalculator>();
 
             services.AddSingleton<IBuildServerResolver, BuildServerResolver>();
+            services.AddSingleton<IGitPreparer, GitPreparer>();
 
-            services.AddSingleton(GetGitPreparer);
             services.AddSingleton(GetConfigFileLocator);
 
             RegisterBuildServers(services);
@@ -54,14 +54,6 @@ namespace GitVersion
                 : new NamedConfigFileLocator(configFile, fileSystem, log);
 
             return configFileLocator;
-        }
-
-        private static IGitPreparer GetGitPreparer(IServiceProvider sp)
-        {
-            var log = sp.GetService<ILog>();
-            var arguments = sp.GetService<IOptions<Arguments>>();
-
-            return new GitPreparer(log, arguments.Value);
         }
 
         private static void RegisterBuildServers(IServiceCollection services)

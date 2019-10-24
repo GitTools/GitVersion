@@ -7,6 +7,7 @@ using GitVersion.Exceptions;
 using GitVersion;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
+using Microsoft.Extensions.Options;
 
 namespace GitVersionCore.Tests
 {
@@ -91,8 +92,8 @@ namespace GitVersionCore.Tests
             {
                 var log = new NullLog();
                 var defaultConfigFileLocator = new DefaultConfigFileLocator(fileSystem, log);
-                var gitPreparer = new GitPreparer(log, new Arguments { TargetPath = repoPath });
-            var stepFactory = new ConfigInitStepFactory();
+                var gitPreparer = new GitPreparer(log, Options.Create(new Arguments { TargetPath = repoPath }));
+                var stepFactory = new ConfigInitStepFactory();
                 var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
 
                 var configurationProvider = new ConfigurationProvider(fileSystem, log, defaultConfigFileLocator, gitPreparer, configInitWizard);

@@ -6,6 +6,7 @@ using GitVersion.Exceptions;
 using GitVersion;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
+using Microsoft.Extensions.Options;
 
 namespace GitVersionCore.Tests
 {
@@ -60,7 +61,7 @@ namespace GitVersionCore.Tests
 
             configFileLocator = new NamedConfigFileLocator("my-config.yaml", fileSystem, log);
 
-            var gitPreparer = new GitPreparer(log, new Arguments { TargetPath = repoPath });
+            var gitPreparer = new GitPreparer(log, Options.Create(new Arguments { TargetPath = repoPath }));
             var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
             var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
 
@@ -80,7 +81,7 @@ namespace GitVersionCore.Tests
             log = new Log(logAppender);
 
             configFileLocator = new NamedConfigFileLocator("my-config.yaml", fileSystem, log);
-            var gitPreparer = new GitPreparer(log, new Arguments { TargetPath = repoPath });
+            var gitPreparer = new GitPreparer(log, Options.Create(new Arguments { TargetPath = repoPath }));
             var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
             var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
 

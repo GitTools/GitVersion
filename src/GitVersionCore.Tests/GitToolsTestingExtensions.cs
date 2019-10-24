@@ -10,6 +10,7 @@ using GitVersion.Logging;
 using GitVersion.SemanticVersioning;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.VersionCalculation;
+using Microsoft.Extensions.Options;
 
 namespace GitVersionCore.Tests
 {
@@ -99,7 +100,7 @@ namespace GitVersionCore.Tests
                 Authentication = new Authentication(),
                 TargetPath = fixture.LocalRepositoryFixture.RepositoryPath
             };
-            new GitPreparer(log, arguments).Prepare(true, null);
+            new GitPreparer(log, Options.Create(arguments)).Prepare(true, null);
         }
     }
 }

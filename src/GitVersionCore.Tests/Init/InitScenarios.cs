@@ -7,6 +7,7 @@ using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using Shouldly;
 
@@ -44,7 +45,7 @@ namespace GitVersionCore.Tests.Init
             var configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
             var workingDirectory = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "c:\\proj" : "/proj";
 
-            var gitPreparer = new GitPreparer(log, new Arguments { TargetPath = workingDirectory });
+            var gitPreparer = new GitPreparer(log, Options.Create(new Arguments { TargetPath = workingDirectory }));
             var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
 
             configurationProvider.Init(workingDirectory);

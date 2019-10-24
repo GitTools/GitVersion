@@ -4,6 +4,7 @@ using System.Linq;
 using GitVersion.Helpers;
 using GitVersion.Logging;
 using LibGit2Sharp;
+using Microsoft.Extensions.Options;
 
 namespace GitVersion
 {
@@ -17,9 +18,10 @@ namespace GitVersion
         private const string defaultRemoteName = "origin";
         private string dynamicGitRepositoryPath;
 
-        public GitPreparer(ILog log, Arguments arguments)
+        public GitPreparer(ILog log, IOptions<Arguments> options)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
+            var arguments = options.Value;
 
             TargetUrl = arguments.TargetUrl;
             WorkingDirectory = arguments.TargetPath.TrimEnd('/', '\\');

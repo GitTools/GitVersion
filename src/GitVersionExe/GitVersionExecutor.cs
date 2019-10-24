@@ -17,10 +17,11 @@ namespace GitVersion
         private readonly IExecCommand execCommand;
         private readonly IConfigurationProvider configurationProvider;
         private readonly IBuildServerResolver buildServerResolver;
+        private readonly IGitPreparer gitPreparer;
         private readonly IVersionWriter versionWriter;
 
         public GitVersionExecutor(ILog log, IConfigFileLocator configFileLocator, IVersionWriter versionWriter, IHelpWriter helpWriter,
-            IExecCommand execCommand, IConfigurationProvider configurationProvider, IBuildServerResolver buildServerResolver)
+            IExecCommand execCommand, IConfigurationProvider configurationProvider, IBuildServerResolver buildServerResolver, IGitPreparer gitPreparer)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.configFileLocator = configFileLocator ?? throw new ArgumentNullException(nameof(configFileLocator));
@@ -29,6 +30,7 @@ namespace GitVersion
             this.execCommand = execCommand ?? throw new ArgumentNullException(nameof(execCommand));
             this.configurationProvider = configurationProvider ?? throw new ArgumentNullException(nameof(configFileLocator));
             this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
+            this.gitPreparer = gitPreparer;
         }
 
         public int Execute(Arguments arguments)
@@ -98,7 +100,7 @@ namespace GitVersion
                     log.Info("Working directory: " + targetPath);
                 }
 
-                VerifyConfiguration(arguments);
+                VerifyConfiguration();
 
                 if (arguments.Init)
                 {
@@ -144,9 +146,8 @@ namespace GitVersion
             return 0;
         }
 
-        private void VerifyConfiguration(Arguments arguments)
+        private void VerifyConfiguration()
         {
-            var gitPreparer = new GitPreparer(log, arguments);
             configFileLocator.Verify(gitPreparer);
         }
 
