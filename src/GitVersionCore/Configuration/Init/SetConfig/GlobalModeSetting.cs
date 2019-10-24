@@ -7,14 +7,18 @@ namespace GitVersion.Configuration.Init.SetConfig
 {
     public class GlobalModeSetting : ConfigInitWizardStep
     {
-        private readonly ConfigInitWizardStep returnToStep;
-        private readonly bool isPartOfWizard;
+        private ConfigInitWizardStep returnToStep;
+        private bool isPartOfWizard;
 
-        public GlobalModeSetting(ConfigInitWizardStep returnToStep, bool isPartOfWizard, IConsole console, IFileSystem fileSystem, ILog log)
-            : base(console, fileSystem, log)
+        public GlobalModeSetting(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
         {
-            this.returnToStep = returnToStep;
-            this.isPartOfWizard = isPartOfWizard;
+        }
+
+        public GlobalModeSetting WithData(ConfigInitWizardStep _returnToStep, bool _isPartOfWizard)
+        {
+            returnToStep = _returnToStep;
+            isPartOfWizard = _isPartOfWizard;
+            return this;
         }
 
         protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)

@@ -7,14 +7,18 @@ namespace GitVersion.Configuration.Init.SetConfig
 {
     public class SetBranchIncrementMode : ConfigInitWizardStep
     {
-        private readonly string name;
-        private readonly BranchConfig branchConfig;
+        private string name;
+        private BranchConfig branchConfig;
 
-        public SetBranchIncrementMode(string name, BranchConfig branchConfig, IConsole console, IFileSystem fileSystem, ILog log)
-            : base(console, fileSystem, log)
+        public SetBranchIncrementMode(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
         {
-            this.name = name;
-            this.branchConfig = branchConfig;
+        }
+
+        public SetBranchIncrementMode WithData(string _name, BranchConfig _branchConfig)
+        {
+            branchConfig = _branchConfig;
+            name = _name;
+            return this;
         }
 
         protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
@@ -22,15 +26,15 @@ namespace GitVersion.Configuration.Init.SetConfig
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(new ConfigureBranch(name, branchConfig, Console, FileSystem, Log));
+                    steps.Enqueue(new ConfigureBranch(Console, FileSystem, Log).WithData(name, branchConfig));
                     return StepResult.Ok();
                 case "1":
                     branchConfig.VersioningMode = VersioningMode.ContinuousDelivery;
-                    steps.Enqueue(new ConfigureBranch(name, branchConfig, Console, FileSystem, Log));
+                    steps.Enqueue(new ConfigureBranch(Console, FileSystem, Log).WithData(name, branchConfig));
                     return StepResult.Ok();
                 case "2":
                     branchConfig.VersioningMode = VersioningMode.ContinuousDeployment;
-                    steps.Enqueue(new ConfigureBranch(name, branchConfig, Console, FileSystem, Log));
+                    steps.Enqueue(new ConfigureBranch(Console, FileSystem, Log).WithData(name, branchConfig));
                     return StepResult.Ok();
             }
 

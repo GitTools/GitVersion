@@ -18,10 +18,10 @@ namespace GitVersion.Configuration.Init.BuildServer
                     steps.Enqueue(new EditConfigStep(Console, FileSystem, Log));
                     return StepResult.Ok();
                 case "1":
-                    steps.Enqueue(new AppVeyorSetup(Console, FileSystem, Log, ProjectVisibility.Public));
+                    steps.Enqueue(new AppVeyorSetup(Console, FileSystem, Log).WithData(ProjectVisibility.Public));
                     return StepResult.Ok();
                 case "2":
-                    steps.Enqueue(new AppVeyorSetup(Console, FileSystem, Log, ProjectVisibility.Private));
+                    steps.Enqueue(new AppVeyorSetup(Console, FileSystem, Log).WithData(ProjectVisibility.Private));
                     return StepResult.Ok();
             }
             return StepResult.Ok();

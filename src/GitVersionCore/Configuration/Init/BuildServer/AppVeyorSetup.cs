@@ -15,11 +15,16 @@ namespace GitVersion.Configuration.Init.BuildServer
 
     internal class AppVeyorSetup : ConfigInitWizardStep
     {
-        private readonly ProjectVisibility _projectVisibility;
+        private ProjectVisibility _projectVisibility;
 
-        public AppVeyorSetup(IConsole console, IFileSystem fileSystem, ILog log, ProjectVisibility visibility) : base(console, fileSystem, log)
+        public AppVeyorSetup(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
+        {
+        }
+
+        public AppVeyorSetup WithData(ProjectVisibility visibility)
         {
             _projectVisibility = visibility;
+            return this;
         }
 
         protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
