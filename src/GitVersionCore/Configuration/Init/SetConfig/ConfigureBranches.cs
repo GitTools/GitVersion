@@ -31,7 +31,7 @@ namespace GitVersion.Configuration.Init.SetConfig
                         branchConfig = new BranchConfig {Name = foundBranch.Key};
                         config.Branches.Add(foundBranch.Key, branchConfig);
                     }
-                    steps.Enqueue(new ConfigureBranch(foundBranch.Key, branchConfig, Console, FileSystem, Log));
+                    steps.Enqueue(new ConfigureBranch(Console, FileSystem, Log).WithData(foundBranch.Key, branchConfig));
                     return StepResult.Ok();
                 }
                 catch (ArgumentOutOfRangeException)

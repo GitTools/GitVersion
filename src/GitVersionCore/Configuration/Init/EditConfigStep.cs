@@ -33,7 +33,8 @@ namespace GitVersion.Configuration.Init
                     steps.Enqueue(new ConfigureBranches(Console, FileSystem, Log));
                     return StepResult.Ok();
                 case "5":
-                    steps.Enqueue(new GlobalModeSetting(new EditConfigStep(Console, FileSystem, Log), false, Console, FileSystem, Log));
+                    var editConfigStep = new EditConfigStep(Console, FileSystem, Log);
+                    steps.Enqueue(new GlobalModeSetting(Console, FileSystem, Log).WithData(editConfigStep, false));
                     return StepResult.Ok();
                 case "6":
                     steps.Enqueue(new AssemblyVersioningSchemeSetting(Console, FileSystem, Log));

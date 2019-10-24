@@ -6,14 +6,18 @@ namespace GitVersion.Configuration.Init.SetConfig
 {
     public class ConfigureBranch : ConfigInitWizardStep
     {
-        private readonly string name;
-        private readonly BranchConfig branchConfig;
+        private string name;
+        private BranchConfig branchConfig;
 
-        public ConfigureBranch(string name, BranchConfig branchConfig, IConsole console, IFileSystem fileSystem, ILog log) 
-            : base(console, fileSystem, log)
+        public ConfigureBranch(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
         {
-            this.branchConfig = branchConfig;
-            this.name = name;
+        }
+
+        public ConfigureBranch WithData(string _name, BranchConfig _branchConfig)
+        {
+            branchConfig = _branchConfig;
+            name = _name;
+            return this;
         }
 
         protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
@@ -24,10 +28,10 @@ namespace GitVersion.Configuration.Init.SetConfig
                     steps.Enqueue(new ConfigureBranches(Console, FileSystem, Log));
                     return StepResult.Ok();
                 case "1":
-                    steps.Enqueue(new SetBranchTag(name, branchConfig, Console, FileSystem, Log));
+                    steps.Enqueue(new SetBranchTag(Console, FileSystem, Log).WithData(name, branchConfig));
                     return StepResult.Ok();
                 case "2":
-                    steps.Enqueue(new SetBranchIncrementMode(name, branchConfig, Console, FileSystem, Log));
+                    steps.Enqueue(new SetBranchIncrementMode(Console, FileSystem, Log).WithData(name, branchConfig));
                     return StepResult.Ok();
             }
 

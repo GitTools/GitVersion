@@ -11,13 +11,14 @@ namespace GitVersion.Configuration.Init.Wizard
 
         protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
+            var returnToStep = new FinishedSetupStep(Console, FileSystem, Log);
             switch (result)
             {
                 case "1":
-                    steps.Enqueue(new GitFlowSetupStep(Console, FileSystem, Log));
+                    steps.Enqueue(new GitFlowSetupStep(Console, FileSystem, Log).WithData(returnToStep, true));
                     break;
                 case "2":
-                    steps.Enqueue(new GitHubFlowStep(Console, FileSystem, Log));
+                    steps.Enqueue(new GitHubFlowStep(Console, FileSystem, Log).WithData(returnToStep, true));
                     break;
                 case "3":
                     steps.Enqueue(new PickBranchingStrategy1Step(Console, FileSystem, Log));
