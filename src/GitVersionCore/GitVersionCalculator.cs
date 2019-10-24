@@ -3,6 +3,7 @@ using GitVersion.Configuration;
 using GitVersion.OutputVariables;
 using GitVersion.Cache;
 using GitVersion.Logging;
+using Microsoft.Extensions.Options;
 
 namespace GitVersion
 {
@@ -17,11 +18,12 @@ namespace GitVersion
         private readonly IGitVersionFinder gitVersionFinder;
         private readonly IGitPreparer gitPreparer;
         private readonly IVariableProvider variableProvider;
+        private readonly Arguments arguments;
 
         public GitVersionCalculator(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator,
             IConfigurationProvider configurationProvider,
             IBuildServerResolver buildServerResolver, IGitVersionCache gitVersionCache,
-            IGitVersionFinder gitVersionFinder, IGitPreparer gitPreparer, IVariableProvider variableProvider)
+            IGitVersionFinder gitVersionFinder, IGitPreparer gitPreparer, IVariableProvider variableProvider, IOptions<Arguments> options)
         {
             this.fileSystem = fileSystem;
             this.log = log;
@@ -32,9 +34,10 @@ namespace GitVersion
             this.gitVersionFinder = gitVersionFinder;
             this.gitPreparer = gitPreparer;
             this.variableProvider = variableProvider;
+            this.arguments = options.Value;
         }
 
-        public VersionVariables CalculateVersionVariables(Arguments arguments)
+        public VersionVariables CalculateVersionVariables()
         {
             var buildServer = buildServerResolver.Resolve();
 
@@ -60,11 +63,11 @@ namespace GitVersion
             return GetCachedGitVersionInfo(arguments.TargetBranch, arguments.CommitId, arguments.OverrideConfig, arguments.NoCache);
         }
 
-        public bool TryCalculateVersionVariables(Arguments arguments, out VersionVariables versionVariables)
+        public bool TryCalculateVersionVariables(out VersionVariables versionVariables)
         {
             try
             {
-                versionVariables = CalculateVersionVariables(arguments);
+                versionVariables = CalculateVersionVariables();
                 return true;
             }
             catch (Exception ex)

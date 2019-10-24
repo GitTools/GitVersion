@@ -14,6 +14,7 @@ using GitVersionCore.Tests.Helpers;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.VersionCalculation;
+using Microsoft.Extensions.Options;
 using Environment = System.Environment;
 
 namespace GitVersionCore.Tests
@@ -156,7 +157,7 @@ namespace GitVersionCore.Tests
                 var arguments = new Arguments { TargetPath = fixture.RepositoryPath };
                 var gitVersionCalculator = GetGitVersionCalculator(arguments);
 
-                vv = gitVersionCalculator.CalculateVersionVariables(arguments);
+                vv = gitVersionCalculator.CalculateVersionVariables();
                 vv.AssemblySemVer.ShouldBe("4.10.3.0");
             });
 
@@ -218,7 +219,7 @@ namespace GitVersionCore.Tests
                 arguments = new Arguments { TargetPath = fixture.RepositoryPath, OverrideConfig = new Config { TagPrefix = "prefix" } };
 
                 var gitVersionCalculator = GetGitVersionCalculator(arguments);
-                vv = gitVersionCalculator.CalculateVersionVariables(arguments);
+                vv = gitVersionCalculator.CalculateVersionVariables();
 
                 vv.AssemblySemVer.ShouldBe("0.1.0.0");
 
@@ -286,13 +287,13 @@ namespace GitVersionCore.Tests
 
                 var gitVersionCalculator = GetGitVersionCalculator(arguments);
 
-                vv = gitVersionCalculator.CalculateVersionVariables(arguments);
+                vv = gitVersionCalculator.CalculateVersionVariables();
                 vv.AssemblySemVer.ShouldBe("4.10.3.0");
 
                 var configPath = Path.Combine(fixture.RepositoryPath, "GitVersionConfig.yaml");
                 fileSystem.WriteAllText(configPath, "next-version: 5.0");
 
-                vv = gitVersionCalculator.CalculateVersionVariables(arguments);
+                vv = gitVersionCalculator.CalculateVersionVariables();
                 vv.AssemblySemVer.ShouldBe("5.0.0.0");
             });
         }
@@ -340,11 +341,11 @@ namespace GitVersionCore.Tests
                 var gitVersionCalculator = GetGitVersionCalculator(arguments);
 
                 fileSystem.WriteAllText(vv.FileName, versionCacheFileContent);
-                vv = gitVersionCalculator.CalculateVersionVariables(arguments);
+                vv = gitVersionCalculator.CalculateVersionVariables();
                 vv.AssemblySemVer.ShouldBe("4.10.3.0");
 
                 arguments.NoCache = true;
-                vv = gitVersionCalculator.CalculateVersionVariables(arguments);
+                vv = gitVersionCalculator.CalculateVersionVariables();
                 vv.AssemblySemVer.ShouldBe("0.1.0.0");
             });
         }
@@ -359,7 +360,7 @@ namespace GitVersionCore.Tests
 
                 var gitVersionCalculator = GetGitVersionCalculator(arguments);
 
-                var exception = Assert.Throws<DirectoryNotFoundException>(() => gitVersionCalculator.CalculateVersionVariables(arguments));
+                var exception = Assert.Throws<DirectoryNotFoundException>(() => gitVersionCalculator.CalculateVersionVariables());
                 exception.Message.ShouldContain("Can't find the .git directory in");
             });
         }
@@ -430,7 +431,7 @@ namespace GitVersionCore.Tests
 
                 var gitVersionCalculator = GetGitVersionCalculator(arguments);
 
-                gitVersionCalculator.CalculateVersionVariables(arguments);
+                gitVersionCalculator.CalculateVersionVariables();
             });
         }
 
@@ -500,7 +501,7 @@ namespace GitVersionCore.Tests
             var gitVersionCalculator = GetGitVersionCalculator(arguments);
 
             fixture.Repository.MakeACommit();
-            var vv = gitVersionCalculator.CalculateVersionVariables(arguments);
+            var vv = gitVersionCalculator.CalculateVersionVariables();
 
             vv.AssemblySemVer.ShouldBe("0.1.0.0");
             vv.FileName.ShouldNotBeNullOrEmpty();
@@ -518,16 +519,17 @@ namespace GitVersionCore.Tests
             using var fixture = new EmptyRepositoryFixture();
 
             var arguments = new Arguments { TargetPath = fixture.RepositoryPath };
+            var options = Options.Create(arguments);
 
             var gitPreparer = new GitPreparer(_log, arguments);
             var configurationProvider = new ConfigurationProvider(fileSystem, _log, configFileLocator, gitPreparer);
             var baseVersionCalculator = new BaseVersionCalculator(log, null);
             var nextVersionCalculator = new NextVersionCalculator(log, new MetaDataCalculator(), baseVersionCalculator);
             var variableProvider = new VariableProvider(nextVersionCalculator);
-            var gitVersionCalculator = new GitVersionCalculator(fileSystem, _log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider);
+            var gitVersionCalculator = new GitVersionCalculator(fileSystem, _log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);
 
             fixture.Repository.MakeACommit();
-            var vv = gitVersionCalculator.CalculateVersionVariables(arguments);
+            var vv = gitVersionCalculator.CalculateVersionVariables();
 
             vv.AssemblySemVer.ShouldBe("0.1.0.0");
             vv.FileName.ShouldNotBeNullOrEmpty();
@@ -537,12 +539,14 @@ namespace GitVersionCore.Tests
 
         private GitVersionCalculator GetGitVersionCalculator(Arguments arguments)
         {
+            var options = Options.Create(arguments);
+
             var gitPreparer = new GitPreparer(log, arguments);
             var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer);
             var baseVersionCalculator = new BaseVersionCalculator(log, null);
             var nextVersionCalculator = new NextVersionCalculator(log, new MetaDataCalculator(), baseVersionCalculator);
             var variableProvider = new VariableProvider(nextVersionCalculator);
-            var gitVersionCalculator = new GitVersionCalculator(fileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider);
+            var gitVersionCalculator = new GitVersionCalculator(fileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);
             return gitVersionCalculator;
         }
     }
