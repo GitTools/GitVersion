@@ -49,8 +49,10 @@ namespace GitVersionCore.Tests
             var logAppender = new TestLogAppender(Action);
             var log = new Log(logAppender);
 
+            var metaDataCalculator = new MetaDataCalculator();
             var baseVersionCalculator = new BaseVersionCalculator(log, null);
-            var nextVersionCalculator = new NextVersionCalculator(log, new MetaDataCalculator(), baseVersionCalculator);
+            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
+            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
             var variableProvider = new VariableProvider(nextVersionCalculator);
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 

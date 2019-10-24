@@ -3,7 +3,7 @@ using GitVersion.VersionCalculation.BaseVersionCalculators;
 
 namespace GitVersion.VersionCalculation
 {
-    internal interface IMainlineVersionCalculator
+    public interface IMainlineVersionCalculator
     {
         SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion, GitVersionContext context);
     }

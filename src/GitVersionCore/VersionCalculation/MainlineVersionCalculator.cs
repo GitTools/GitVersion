@@ -15,7 +15,7 @@ namespace GitVersion.VersionCalculation
         private readonly IMetaDataCalculator metaDataCalculator;
         private readonly ILog log;
 
-        public MainlineVersionCalculator(IMetaDataCalculator metaDataCalculator, ILog log)
+        public MainlineVersionCalculator(ILog log, IMetaDataCalculator metaDataCalculator)
         {
             this.metaDataCalculator = metaDataCalculator;
             this.log = log;

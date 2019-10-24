@@ -42,7 +42,9 @@ namespace GitVersionTask.Tests
 
             metaDataCalculator = new MetaDataCalculator();
             var baseVersionCalculator = new BaseVersionCalculator(log, null);
-            gitVersionFinder = new GitVersionFinder(log, metaDataCalculator, baseVersionCalculator);
+            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
+            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
+            gitVersionFinder = new GitVersionFinder(log, nextVersionCalculator);
             
             Assert.NotNull(gitDirectory);
         }
@@ -67,7 +69,8 @@ namespace GitVersionTask.Tests
                 var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer);
 
                 var baseVersionCalculator = new BaseVersionCalculator(log, null);
-                var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator);
+                var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
+                var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
                 var variableProvider = new VariableProvider(nextVersionCalculator);
 
                 var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);
@@ -97,7 +100,8 @@ namespace GitVersionTask.Tests
                 var gitPreparer = new GitPreparer(log, arguments);
                 var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer);
                 var baseVersionCalculator = new BaseVersionCalculator(log, null);
-                var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator);
+                var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
+                var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
                 var variableProvider = new VariableProvider(nextVersionCalculator);
 
                 var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);

@@ -13,14 +13,16 @@ namespace GitVersion.VersionCalculation
     {
         private readonly ILog log;
         private readonly IBaseVersionCalculator baseVersionCalculator;
+        private readonly IMainlineVersionCalculator mainlineVersionCalculator;
         private readonly IMetaDataCalculator metaDataCalculator;
 
-        public NextVersionCalculator(ILog log, IMetaDataCalculator metaDataCalculator, IBaseVersionCalculator baseVersionCalculator)
+        public NextVersionCalculator(ILog log, IMetaDataCalculator metaDataCalculator, IBaseVersionCalculator baseVersionCalculator, IMainlineVersionCalculator mainlineVersionCalculator)
         {
             this.log = log;
             this.metaDataCalculator = metaDataCalculator;
 
             this.baseVersionCalculator = baseVersionCalculator;
+            this.mainlineVersionCalculator = mainlineVersionCalculator;
         }
 
         public SemanticVersion FindVersion(GitVersionContext context)
@@ -44,8 +46,7 @@ namespace GitVersion.VersionCalculation
             SemanticVersion semver;
             if (context.Configuration.VersioningMode == VersioningMode.Mainline)
             {
-                var mainlineMode = new MainlineVersionCalculator(metaDataCalculator, log);
-                semver = mainlineMode.FindMainlineModeVersion(baseVersion, context);
+                semver = mainlineVersionCalculator.FindMainlineModeVersion(baseVersion, context);
             }
             else
             {
