@@ -45,15 +45,12 @@ namespace GitVersion.Configuration.Init.BuildServer
 
         private static string GetGVCommand(ProjectVisibility visibility)
         {
-            switch (visibility)
+            return visibility switch
             {
-                case ProjectVisibility.Public:
-                    return "  - ps: gitversion /l console /output buildserver /updateAssemblyInfo";
-                case ProjectVisibility.Private:
-                    return "  - ps: gitversion $env:APPVEYOR_BUILD_FOLDER /l console /output buildserver /updateAssemblyInfo /nofetch /b $env:APPVEYOR_REPO_BRANCH";
-                default:
-                    return "";
-            }
+                ProjectVisibility.Public => "  - ps: gitversion /l console /output buildserver /updateAssemblyInfo",
+                ProjectVisibility.Private => "  - ps: gitversion $env:APPVEYOR_BUILD_FOLDER /l console /output buildserver /updateAssemblyInfo /nofetch /b $env:APPVEYOR_REPO_BRANCH",
+                _ => ""
+            };
         }
 
         private void GenerateBasicConfig(string workingDirectory)

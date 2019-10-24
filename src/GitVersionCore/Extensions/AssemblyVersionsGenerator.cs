@@ -9,42 +9,30 @@ namespace GitVersion.Extensions
             this SemanticVersion sv,
             AssemblyVersioningScheme scheme)
         {
-            switch (scheme)
+            return scheme switch
             {
-                case AssemblyVersioningScheme.Major:
-                    return $"{sv.Major}.0.0.0";
-                case AssemblyVersioningScheme.MajorMinor:
-                    return $"{sv.Major}.{sv.Minor}.0.0";
-                case AssemblyVersioningScheme.MajorMinorPatch:
-                    return $"{sv.Major}.{sv.Minor}.{sv.Patch}.0";
-                case AssemblyVersioningScheme.MajorMinorPatchTag:
-                    return $"{sv.Major}.{sv.Minor}.{sv.Patch}.{sv.PreReleaseTag.Number ?? 0}";
-                case AssemblyVersioningScheme.None:
-                    return null;
-                default:
-                    throw new ArgumentException($"Unexpected value ({scheme}).", nameof(scheme));
-            }
+                AssemblyVersioningScheme.Major => $"{sv.Major}.0.0.0",
+                AssemblyVersioningScheme.MajorMinor => $"{sv.Major}.{sv.Minor}.0.0",
+                AssemblyVersioningScheme.MajorMinorPatch => $"{sv.Major}.{sv.Minor}.{sv.Patch}.0",
+                AssemblyVersioningScheme.MajorMinorPatchTag => $"{sv.Major}.{sv.Minor}.{sv.Patch}.{sv.PreReleaseTag.Number ?? 0}",
+                AssemblyVersioningScheme.None => null,
+                _ => throw new ArgumentException($"Unexpected value ({scheme}).", nameof(scheme))
+            };
         }
 
         public static string GetAssemblyFileVersion(
         this SemanticVersion sv,
         AssemblyFileVersioningScheme scheme)
         {
-            switch (scheme)
+            return scheme switch
             {
-                case AssemblyFileVersioningScheme.Major:
-                    return $"{sv.Major}.0.0.0";
-                case AssemblyFileVersioningScheme.MajorMinor:
-                    return $"{sv.Major}.{sv.Minor}.0.0";
-                case AssemblyFileVersioningScheme.MajorMinorPatch:
-                    return $"{sv.Major}.{sv.Minor}.{sv.Patch}.0";
-                case AssemblyFileVersioningScheme.MajorMinorPatchTag:
-                    return $"{sv.Major}.{sv.Minor}.{sv.Patch}.{sv.PreReleaseTag.Number ?? 0}";
-                case AssemblyFileVersioningScheme.None:
-                    return null;
-                default:
-                    throw new ArgumentException($"Unexpected value ({scheme}).", nameof(scheme));
-            }
+                AssemblyFileVersioningScheme.Major => $"{sv.Major}.0.0.0",
+                AssemblyFileVersioningScheme.MajorMinor => $"{sv.Major}.{sv.Minor}.0.0",
+                AssemblyFileVersioningScheme.MajorMinorPatch => $"{sv.Major}.{sv.Minor}.{sv.Patch}.0",
+                AssemblyFileVersioningScheme.MajorMinorPatchTag => $"{sv.Major}.{sv.Minor}.{sv.Patch}.{sv.PreReleaseTag.Number ?? 0}",
+                AssemblyFileVersioningScheme.None => null,
+                _ => throw new ArgumentException($"Unexpected value ({scheme}).", nameof(scheme))
+            };
         }
     }
 }

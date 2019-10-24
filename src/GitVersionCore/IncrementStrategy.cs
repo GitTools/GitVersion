@@ -21,19 +21,14 @@ namespace GitVersion
     {
         public static VersionField ToVersionField(this IncrementStrategy strategy)
         {
-            switch (strategy)
+            return strategy switch
             {
-                case IncrementStrategy.None:
-                    return VersionField.None;
-                case IncrementStrategy.Major:
-                    return VersionField.Major;
-                case IncrementStrategy.Minor:
-                    return VersionField.Minor;
-                case IncrementStrategy.Patch:
-                    return VersionField.Patch;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(strategy), strategy, null);
-            }
+                IncrementStrategy.None => VersionField.None,
+                IncrementStrategy.Major => VersionField.Major,
+                IncrementStrategy.Minor => VersionField.Minor,
+                IncrementStrategy.Patch => VersionField.Patch,
+                _ => throw new ArgumentOutOfRangeException(nameof(strategy), strategy, null)
+            };
         }
     }
 }
