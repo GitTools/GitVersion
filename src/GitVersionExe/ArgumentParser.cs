@@ -325,14 +325,11 @@ namespace GitVersion
                         }
 
                         var optionKey = keyAndValue[0].ToLowerInvariant();
-                        switch (optionKey)
+                        arguments.OverrideConfig.TagPrefix = optionKey switch
                         {
-                            case "tag-prefix":
-                                arguments.OverrideConfig.TagPrefix = keyAndValue[1];
-                                break;
-                            default:
-                                throw new WarningException($"Could not parse /overrideconfig option: {optionKey}. Currently supported only 'tag-prefix' option");
-                        }
+                            "tag-prefix" => keyAndValue[1],
+                            _ => throw new WarningException($"Could not parse /overrideconfig option: {optionKey}. Currently supported only 'tag-prefix' option")
+                        };
                     }
 
                     continue;

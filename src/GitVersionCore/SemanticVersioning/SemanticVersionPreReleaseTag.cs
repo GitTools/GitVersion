@@ -166,16 +166,12 @@ namespace GitVersion.SemanticVersioning
                 return Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString("D" + padding)) : FormatLegacy(GetLegacyName());
             }
 
-
-            switch (format)
+            return format switch
             {
-                case "t":
-                    return Number.HasValue ? $"{Name}.{Number}" : Name;
-                case "l":
-                    return Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString()) : FormatLegacy(GetLegacyName());
-                default:
-                    throw new ArgumentException("Unknown format", nameof(format));
-            }
+                "t" => (Number.HasValue ? $"{Name}.{Number}" : Name),
+                "l" => (Number.HasValue ? FormatLegacy(GetLegacyName(), Number.Value.ToString()) : FormatLegacy(GetLegacyName())),
+                _ => throw new ArgumentException("Unknown format", nameof(format))
+            };
         }
 
         private string FormatLegacy(string tag, string number = "")

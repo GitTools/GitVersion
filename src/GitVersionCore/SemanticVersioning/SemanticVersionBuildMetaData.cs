@@ -104,19 +104,14 @@ namespace GitVersion.SemanticVersioning
 
                 return CommitsSinceTag != null ? CommitsSinceTag.Value.ToString("D" + padding) : string.Empty; 
             }
-            
-            switch (format.ToLower())
+
+            return format.ToLower() switch
             {
-                case "b":
-                    return CommitsSinceTag.ToString();
-                case "s":
-                    return $"{CommitsSinceTag}{(string.IsNullOrEmpty(Sha) ? null : ".Sha." + Sha)}".TrimStart('.');
-                case "f":
-                    return $"{CommitsSinceTag}{(string.IsNullOrEmpty(Branch) ? null : ".Branch." + FormatMetaDataPart(Branch))}{(string.IsNullOrEmpty(Sha) ? null : ".Sha." + Sha)}{(string.IsNullOrEmpty(OtherMetaData) ? null : "." + FormatMetaDataPart(OtherMetaData))}"
-                        .TrimStart('.');
-                default:
-                    throw new ArgumentException("Unrecognised format", nameof(format));
-            }
+                "b" => CommitsSinceTag.ToString(),
+                "s" => $"{CommitsSinceTag}{(string.IsNullOrEmpty(Sha) ? null : ".Sha." + Sha)}".TrimStart('.'),
+                "f" => $"{CommitsSinceTag}{(string.IsNullOrEmpty(Branch) ? null : ".Branch." + FormatMetaDataPart(Branch))}{(string.IsNullOrEmpty(Sha) ? null : ".Sha." + Sha)}{(string.IsNullOrEmpty(OtherMetaData) ? null : "." + FormatMetaDataPart(OtherMetaData))}".TrimStart('.'),
+                _ => throw new ArgumentException("Unrecognised format", nameof(format))
+            };
         }
 
         public static bool operator ==(SemanticVersionBuildMetaData left, SemanticVersionBuildMetaData right)
