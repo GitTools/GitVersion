@@ -37,7 +37,7 @@ namespace GitVersionCore.Tests
             string versionString, int major, int minor, int patch, string tag, int? tagNumber, int? numberOfBuilds,
             string branchName, string sha, string otherMetaData, string fullFormattedVersionString, string tagPrefixRegex)
         {
-            fullFormattedVersionString = fullFormattedVersionString ?? versionString;
+            fullFormattedVersionString ??= versionString;
 
             SemanticVersion.TryParse(versionString, tagPrefixRegex, out var version).ShouldBe(true, versionString);
             Assert.AreEqual(major, version.Major);

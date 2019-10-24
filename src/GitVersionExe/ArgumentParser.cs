@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
+using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.OutputFormatters;
@@ -416,7 +417,7 @@ namespace GitVersion
             string currentKey = null;
             var argumentRequiresValue = false;
 
-            for (var i = 0; i < namedArguments.Count; i = i + 1)
+            for (var i = 0; i < namedArguments.Count; i += 1)
             {
                 var arg = namedArguments[i];
 

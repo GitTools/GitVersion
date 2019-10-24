@@ -1,17 +1,18 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
-namespace GitVersion
+namespace GitVersion.Helpers
 {
-    public static class ExtensionMethods
+    public static class StringExtensions
     {
         private static readonly string[] trues;
         private static readonly string[] falses;
 
 
-        static ExtensionMethods()
+        static StringExtensions()
         {
             trues = new[]
             {
@@ -114,6 +115,17 @@ namespace GitVersion
                 return false;
             
             return argumentMightRequireValue;
+        }
+
+        public static void AppendLineFormat(this StringBuilder stringBuilder, string format, params object[] args)
+        {
+            stringBuilder.AppendFormat(format, args);
+            stringBuilder.AppendLine();
+        }
+
+        public static string RegexReplace(this string input, string pattern, string replace, RegexOptions options = RegexOptions.None)
+        {
+            return Regex.Replace(input, pattern, replace, options);
         }
     }
 }
