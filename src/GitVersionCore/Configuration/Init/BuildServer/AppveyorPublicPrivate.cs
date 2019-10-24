@@ -6,7 +6,6 @@ namespace GitVersion.Configuration.Init.BuildServer
 {
     internal class AppveyorPublicPrivate : ConfigInitWizardStep
     {
-
         public AppveyorPublicPrivate(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
         {
         }

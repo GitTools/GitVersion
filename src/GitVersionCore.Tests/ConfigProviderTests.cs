@@ -11,6 +11,7 @@ using GitVersion.Configuration;
 using GitVersion.VersioningModes;
 using GitVersion.Extensions;
 using GitVersion;
+using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
 
 namespace GitVersionCore.Tests
@@ -24,17 +25,19 @@ namespace GitVersionCore.Tests
         private IFileSystem fileSystem;
         private IConfigFileLocator configFileLocator;
         private IConfigurationProvider configurationProvider;
+        private IConfigInitWizard configInitWizard;
 
         [SetUp]
         public void Setup()
         {
             fileSystem = new TestFileSystem();
             var log = new NullLog();
+            configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), fileSystem, log);
             configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
             repoPath = DefaultRepoPath;
 
             var gitPreparer = new GitPreparer(log, new Arguments { TargetPath = repoPath });
-            configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer);
+            configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
 
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
         }
@@ -290,7 +293,7 @@ branches: {}";
             var defaultConfigFileLocator = new DefaultConfigFileLocator(fileSystem, log);
             var gitPreparer = new GitPreparer(log, new Arguments { TargetPath = repoPath });
 
-            configurationProvider = new ConfigurationProvider(fileSystem, log, defaultConfigFileLocator, gitPreparer);
+            configurationProvider = new ConfigurationProvider(fileSystem, log, defaultConfigFileLocator, gitPreparer, configInitWizard);
 
             configurationProvider.Provide(repoPath);
 

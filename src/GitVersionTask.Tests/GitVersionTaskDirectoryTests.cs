@@ -3,6 +3,7 @@ using System.IO;
 using GitVersion;
 using GitVersion.Cache;
 using GitVersion.Configuration;
+using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
@@ -25,16 +26,17 @@ namespace GitVersionTask.Tests
         private IMetaDataCalculator metaDataCalculator;
         private IGitVersionFinder gitVersionFinder;
         private IFileSystem testFileSystem;
+        private IConfigInitWizard configInitWizard;
 
         [SetUp]
         public void CreateTemporaryRepository()
         {
             workDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            gitDirectory = Repository.Init(workDirectory)
-                .TrimEnd(Path.DirectorySeparatorChar);
+            gitDirectory = Repository.Init(workDirectory).TrimEnd(Path.DirectorySeparatorChar);
 
             testFileSystem = new TestFileSystem();
             log = new NullLog();
+            configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), testFileSystem, log);
             configFileLocator = new DefaultConfigFileLocator(testFileSystem, log);
             gitVersionCache = new GitVersionCache(testFileSystem, log);
 
@@ -66,7 +68,7 @@ namespace GitVersionTask.Tests
                 var options = Options.Create(arguments);
 
                 var gitPreparer = new GitPreparer(log, arguments);
-                var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer);
+                var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer, configInitWizard);
 
                 var baseVersionCalculator = new BaseVersionCalculator(log, null);
                 var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
@@ -98,7 +100,7 @@ namespace GitVersionTask.Tests
                 var options = Options.Create(arguments);
 
                 var gitPreparer = new GitPreparer(log, arguments);
-                var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer);
+                var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer, configInitWizard);
                 var baseVersionCalculator = new BaseVersionCalculator(log, null);
                 var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
                 var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
