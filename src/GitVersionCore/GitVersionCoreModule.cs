@@ -1,4 +1,3 @@
-using System;
 using GitVersion.BuildServers;
 using GitVersion.Cache;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +6,6 @@ using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
-using Microsoft.Extensions.Options;
 using GitVersion.Configuration.Init;
 using GitVersion.Extensions;
 
@@ -35,29 +33,15 @@ namespace GitVersion
 
             services.AddSingleton<IBuildServerResolver, BuildServerResolver>();
             services.AddSingleton<IGitPreparer, GitPreparer>();
+            services.AddSingleton<IConfigFileLocatorFactory, ConfigFileLocatorFactory>();
 
-            services.AddSingleton(GetConfigFileLocator);
+            services.AddSingleton(sp => sp.GetService<IConfigFileLocatorFactory>().Create());
 
             RegisterBuildServers(services);
 
             RegisterVersionStrategies(services);
 
             services.AddModule(new GitVersionInitModule());
-        }
-
-        private static IConfigFileLocator GetConfigFileLocator(IServiceProvider sp)
-        {
-            var fileSystem = sp.GetService<IFileSystem>();
-            var log = sp.GetService<ILog>();
-            var arguments = sp.GetService<IOptions<Arguments>>();
-
-            var configFile = arguments.Value.ConfigFile;
-
-            var configFileLocator = string.IsNullOrWhiteSpace(configFile)
-                ? new DefaultConfigFileLocator(fileSystem, log) as IConfigFileLocator
-                : new NamedConfigFileLocator(configFile, fileSystem, log);
-
-            return configFileLocator;
         }
 
         private static void RegisterBuildServers(IServiceCollection services)
