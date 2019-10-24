@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using GitVersion.Configuration.Init;
 using GitVersion.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,7 @@ namespace GitVersion
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddModule(new GitVersionInitModule());
                     services.AddModule(new GitVersionCoreModule());
                     services.AddModule(new GitVersionExeModule());
 

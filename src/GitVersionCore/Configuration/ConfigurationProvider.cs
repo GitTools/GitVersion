@@ -11,15 +11,16 @@ namespace GitVersion.Configuration
         private readonly ILog log;
         private readonly IConfigFileLocator configFileLocator;
         private readonly IGitPreparer gitPreparer;
+        private readonly IConfigInitWizard configInitWizard;
 
-        public ConfigurationProvider(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IGitPreparer gitPreparer)
+        public ConfigurationProvider(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IGitPreparer gitPreparer, IConfigInitWizard configInitWizard)
         {
             this.fileSystem = fileSystem;
             this.log = log;
             this.configFileLocator = configFileLocator;
             this.gitPreparer = gitPreparer;
+            this.configInitWizard = configInitWizard;
         }
-
 
         public Config Provide(bool applyDefaults = true, Config overrideConfig = null)
         {
@@ -56,11 +57,12 @@ namespace GitVersion.Configuration
             return stringBuilder.ToString();
         }
 
-        public void Init(string workingDirectory, IConsole console)
+        public void Init(string workingDirectory)
         {
             var configFilePath = configFileLocator.GetConfigFilePath(workingDirectory);
             var currentConfiguration = Provide(workingDirectory, false);
-            var config = new ConfigInitWizard(console, fileSystem, log).Run(currentConfiguration, workingDirectory);
+
+            var config = configInitWizard.Run(currentConfiguration, workingDirectory);
             if (config == null) return;
 
             using var stream = fileSystem.OpenWrite(configFilePath);

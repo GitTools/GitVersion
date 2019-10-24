@@ -3,7 +3,7 @@ using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.Wizard
 {
-    public class ConfigInitWizard
+    public class ConfigInitWizard : IConfigInitWizard
     {
         private readonly IConsole console;
         private readonly IFileSystem fileSystem;

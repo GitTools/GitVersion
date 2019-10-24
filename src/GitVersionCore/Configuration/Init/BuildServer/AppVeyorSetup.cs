@@ -15,12 +15,10 @@ namespace GitVersion.Configuration.Init.BuildServer
 
     internal class AppVeyorSetup : ConfigInitWizardStep
     {
-        private readonly ILog log;
         private readonly ProjectVisibility _projectVisibility;
 
-        public AppVeyorSetup(IConsole console, IFileSystem fileSystem, ILog log,  ProjectVisibility visibility) : base(console, fileSystem, log)
+        public AppVeyorSetup(IConsole console, IFileSystem fileSystem, ILog log, ProjectVisibility visibility) : base(console, fileSystem, log)
         {
-            this.log = log;
             _projectVisibility = visibility;
         }
 
@@ -91,7 +89,7 @@ after_build:
         {
             var outputFilename = GetOutputFilename(workingDirectory, fileSystem);
             fileSystem.WriteAllText(outputFilename, configContents);
-            log.Info($"AppVeyor sample config file written to {outputFilename}");
+            Log.Info($"AppVeyor sample config file written to {outputFilename}");
         }
 
         protected override string GetPrompt(Config config, string workingDirectory)

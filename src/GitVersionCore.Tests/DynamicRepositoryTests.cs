@@ -2,6 +2,7 @@ using System.IO;
 using GitVersion;
 using GitVersion.Cache;
 using GitVersion.Configuration;
+using GitVersion.Configuration.Init.Wizard;
 using NUnit.Framework;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
@@ -94,7 +95,9 @@ namespace GitVersionCore.Tests
             var gitVersionFinder = new GitVersionFinder(log, nextVersionCalculator);
 
             var gitPreparer = new GitPreparer(log, arguments);
-            var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer);
+            var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), testFileSystem, log);
+
+            var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer, configInitWizard);
             
             var variableProvider = new VariableProvider(nextVersionCalculator);
             var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);

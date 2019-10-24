@@ -17,11 +17,10 @@ namespace GitVersion
         private readonly IExecCommand execCommand;
         private readonly IConfigurationProvider configurationProvider;
         private readonly IBuildServerResolver buildServerResolver;
-        private readonly IConsole console;
         private readonly IVersionWriter versionWriter;
 
         public GitVersionExecutor(ILog log, IConfigFileLocator configFileLocator, IVersionWriter versionWriter, IHelpWriter helpWriter,
-            IExecCommand execCommand, IConfigurationProvider configurationProvider, IBuildServerResolver buildServerResolver, IConsole console)
+            IExecCommand execCommand, IConfigurationProvider configurationProvider, IBuildServerResolver buildServerResolver)
         {
             this.log = log;
             this.configFileLocator = configFileLocator;
@@ -30,7 +29,6 @@ namespace GitVersion
             this.execCommand = execCommand;
             this.configurationProvider = configurationProvider;
             this.buildServerResolver = buildServerResolver;
-            this.console = console;
         }
 
         public int Execute(Arguments arguments)
@@ -55,6 +53,7 @@ namespace GitVersion
                     helpWriter.Write();
                     return 1;
                 }
+                var targetPath = arguments.TargetPath;
 
                 if (arguments.IsVersion)
                 {
@@ -88,27 +87,27 @@ namespace GitVersion
                 if (arguments.Diag)
                 {
                     log.Info("Dumping commit graph: ");
-                    LibGitExtensions.DumpGraph(arguments.TargetPath, mess => log.Info(mess), 100);
+                    LibGitExtensions.DumpGraph(targetPath, mess => log.Info(mess), 100);
                 }
-                if (!Directory.Exists(arguments.TargetPath))
+                if (!Directory.Exists(targetPath))
                 {
-                    log.Warning($"The working directory '{arguments.TargetPath}' does not exist.");
+                    log.Warning($"The working directory '{targetPath}' does not exist.");
                 }
                 else
                 {
-                    log.Info("Working directory: " + arguments.TargetPath);
+                    log.Info("Working directory: " + targetPath);
                 }
 
                 VerifyConfiguration(arguments);
 
                 if (arguments.Init)
                 {
-                    configurationProvider.Init(arguments.TargetPath, console);
+                    configurationProvider.Init(targetPath);
                     return 0;
                 }
                 if (arguments.ShowConfig)
                 {
-                    Console.WriteLine(configurationProvider.GetEffectiveConfigAsString(arguments.TargetPath));
+                    Console.WriteLine(configurationProvider.GetEffectiveConfigAsString(targetPath));
                     return 0;
                 }
 

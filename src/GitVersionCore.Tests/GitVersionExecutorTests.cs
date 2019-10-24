@@ -9,6 +9,7 @@ using GitVersion.BuildServers;
 using GitVersion.Configuration;
 using GitVersion.OutputVariables;
 using GitVersion.Cache;
+using GitVersion.Configuration.Init.Wizard;
 using LibGit2Sharp;
 using GitVersionCore.Tests.Helpers;
 using GitVersion.Logging;
@@ -524,7 +525,8 @@ namespace GitVersionCore.Tests
             var options = Options.Create(arguments);
 
             var gitPreparer = new GitPreparer(_log, arguments);
-            var configurationProvider = new ConfigurationProvider(fileSystem, _log, configFileLocator, gitPreparer);
+            var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), fileSystem, log);
+            var configurationProvider = new ConfigurationProvider(fileSystem, _log, configFileLocator, gitPreparer, configInitWizard);
             var baseVersionCalculator = new BaseVersionCalculator(log, null);
             var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
             var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
@@ -545,7 +547,8 @@ namespace GitVersionCore.Tests
             var options = Options.Create(arguments);
 
             var gitPreparer = new GitPreparer(log, arguments);
-            var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer);
+            var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), fileSystem, log);
+            var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
             var baseVersionCalculator = new BaseVersionCalculator(log, null);
             var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
             var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);

@@ -4,6 +4,7 @@ using Shouldly;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
 using GitVersion;
+using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
 
 namespace GitVersionCore.Tests
@@ -58,7 +59,8 @@ namespace GitVersionCore.Tests
             configFileLocator = new NamedConfigFileLocator("my-config.yaml", fileSystem, log);
 
             var gitPreparer = new GitPreparer(log, new Arguments { TargetPath = repoPath });
-            var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer);
+            var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), fileSystem, log);
+            var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
 
             configurationProvider.Provide(repoPath);
             stringLogger.Length.ShouldBe(0);
@@ -77,7 +79,8 @@ namespace GitVersionCore.Tests
 
             configFileLocator = new NamedConfigFileLocator("my-config.yaml", fileSystem, log);
             var gitPreparer = new GitPreparer(log, new Arguments { TargetPath = repoPath });
-            var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer);
+            var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), fileSystem, log);
+            var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
 
             configurationProvider.Provide(repoPath);
             stringLogger.Length.ShouldBe(0);

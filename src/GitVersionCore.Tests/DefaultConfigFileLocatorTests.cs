@@ -5,6 +5,7 @@ using Shouldly;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
 using GitVersion;
+using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
 
 namespace GitVersionCore.Tests
@@ -91,7 +92,9 @@ namespace GitVersionCore.Tests
                 var log = new NullLog();
                 var defaultConfigFileLocator = new DefaultConfigFileLocator(fileSystem, log);
                 var gitPreparer = new GitPreparer(log, new Arguments { TargetPath = repoPath });
-                var configurationProvider = new ConfigurationProvider(fileSystem, log, defaultConfigFileLocator, gitPreparer);
+                var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), fileSystem, log);
+
+                var configurationProvider = new ConfigurationProvider(fileSystem, log, defaultConfigFileLocator, gitPreparer, configInitWizard);
 
                 configurationProvider.Provide(repoPath); 
             });

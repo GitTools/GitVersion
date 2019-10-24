@@ -6,6 +6,9 @@ namespace GitVersion.Configuration.Init.Wizard
 {
     public abstract class ConfigInitWizardStep
     {
+        protected readonly IConsole Console;
+        protected readonly IFileSystem FileSystem;
+        protected readonly ILog Log;
 
         protected ConfigInitWizardStep(IConsole console, IFileSystem fileSystem, ILog log)
         {
@@ -13,11 +16,6 @@ namespace GitVersion.Configuration.Init.Wizard
             FileSystem = fileSystem;
             Log = log;
         }
-
-        protected IConsole Console { get; private set; }
-
-        protected IFileSystem FileSystem { get; private set; }
-        protected ILog Log { get; private set; }
 
         public bool Apply(Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
