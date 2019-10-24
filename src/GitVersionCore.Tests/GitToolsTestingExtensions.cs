@@ -30,8 +30,10 @@ namespace GitVersionCore.Tests
             }
 
             var log = new NullLog();
+            var metaDataCalculator = new MetaDataCalculator();
             var baseVersionCalculator = new TestBaseVersionStrategiesCalculator(log);
-            var nextVersionCalculator = new NextVersionCalculator(log, new MetaDataCalculator(), baseVersionCalculator);
+            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
+            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
             var variableProvider = new VariableProvider(nextVersionCalculator);
             var gitVersionContext = new GitVersionContext(repository ?? fixture.Repository, log, targetBranch, configuration, isForTrackedBranchOnly, commitId);
             var executeGitVersion = ExecuteGitVersion(gitVersionContext);
@@ -77,8 +79,11 @@ namespace GitVersionCore.Tests
         private static SemanticVersion ExecuteGitVersion(GitVersionContext context)
         {
             var log = new NullLog();
+            var metadataCalculator = new MetaDataCalculator();
             var baseVersionCalculator = new TestBaseVersionStrategiesCalculator(log);
-            var vf = new GitVersionFinder(log, new MetaDataCalculator(), baseVersionCalculator);
+            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metadataCalculator);
+            var nextVersionCalculator = new NextVersionCalculator(log, metadataCalculator, baseVersionCalculator, mainlineVersionCalculator);
+            var vf = new GitVersionFinder(log, nextVersionCalculator);
             return vf.FindVersion(context);
         }
 

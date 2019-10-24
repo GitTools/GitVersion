@@ -17,10 +17,11 @@ namespace GitVersion
         private readonly IExecCommand execCommand;
         private readonly IConfigurationProvider configurationProvider;
         private readonly IBuildServerResolver buildServerResolver;
+        private readonly IConsole console;
         private readonly IVersionWriter versionWriter;
 
         public GitVersionExecutor(ILog log, IConfigFileLocator configFileLocator, IVersionWriter versionWriter, IHelpWriter helpWriter,
-            IExecCommand execCommand, IConfigurationProvider configurationProvider, IBuildServerResolver buildServerResolver)
+            IExecCommand execCommand, IConfigurationProvider configurationProvider, IBuildServerResolver buildServerResolver, IConsole console)
         {
             this.log = log;
             this.configFileLocator = configFileLocator;
@@ -29,6 +30,7 @@ namespace GitVersion
             this.execCommand = execCommand;
             this.configurationProvider = configurationProvider;
             this.buildServerResolver = buildServerResolver;
+            this.console = console;
         }
 
         public int Execute(Arguments arguments)
@@ -101,7 +103,7 @@ namespace GitVersion
 
                 if (arguments.Init)
                 {
-                    configurationProvider.Init(arguments.TargetPath, new ConsoleAdapter());
+                    configurationProvider.Init(arguments.TargetPath, console);
                     return 0;
                 }
                 if (arguments.ShowConfig)

@@ -18,19 +18,21 @@ namespace GitVersion
             services.AddSingleton<IFileSystem, FileSystem>();
             services.AddSingleton<IEnvironment, Environment>();
             services.AddSingleton<ILog, Log>();
+            services.AddSingleton<IConsole, ConsoleAdapter>();
             services.AddSingleton<IGitVersionCache, GitVersionCache>();
 
-            services.AddSingleton<INextVersionCalculator, NextVersionCalculator>();
-            services.AddSingleton<IBaseVersionCalculator, BaseVersionCalculator>();
-
-            services.AddSingleton<IGitVersionCalculator, GitVersionCalculator>();
-            services.AddSingleton<IMetaDataCalculator, MetaDataCalculator>();
+            services.AddSingleton<IConfigurationProvider, ConfigurationProvider>();
             services.AddSingleton<IVariableProvider, VariableProvider>();
             services.AddSingleton<IGitVersionFinder, GitVersionFinder>();
 
-            services.AddSingleton<IConfigurationProvider, ConfigurationProvider>();
+            services.AddSingleton<IMetaDataCalculator, MetaDataCalculator>();
+            services.AddSingleton<IBaseVersionCalculator, BaseVersionCalculator>();
+            services.AddSingleton<IMainlineVersionCalculator, MainlineVersionCalculator>();
+            services.AddSingleton<INextVersionCalculator, NextVersionCalculator>();
+            services.AddSingleton<IGitVersionCalculator, GitVersionCalculator>();
 
             services.AddSingleton<IBuildServerResolver, BuildServerResolver>();
+
             services.AddSingleton(GetGitPreparer);
             services.AddSingleton(GetConfigFileLocator);
 

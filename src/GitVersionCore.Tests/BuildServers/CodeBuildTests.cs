@@ -26,9 +26,10 @@ namespace GitVersionCore.Tests.BuildServers
             log = new NullLog();
 
             environment = new TestEnvironment();
+            var metaDataCalculator = new MetaDataCalculator();
             var baseVersionCalculator = new BaseVersionCalculator(log, null);
-
-            var nextVersionCalculator = new NextVersionCalculator(log, new MetaDataCalculator(), baseVersionCalculator);
+            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
+            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
             variableProvider = new VariableProvider(nextVersionCalculator);
         }
 

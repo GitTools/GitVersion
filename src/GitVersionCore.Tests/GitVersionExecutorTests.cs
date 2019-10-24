@@ -43,8 +43,10 @@ namespace GitVersionCore.Tests
             gitVersionCache = new GitVersionCache(fileSystem, log);
             metaDataCalculator = new MetaDataCalculator();
             var baseVersionCalculator = new TestBaseVersionStrategiesCalculator(log);
+            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
+            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
 
-            gitVersionFinder = new GitVersionFinder(log, metaDataCalculator, baseVersionCalculator);
+            gitVersionFinder = new GitVersionFinder(log, nextVersionCalculator);
         }
 
         [Test]
@@ -524,7 +526,8 @@ namespace GitVersionCore.Tests
             var gitPreparer = new GitPreparer(_log, arguments);
             var configurationProvider = new ConfigurationProvider(fileSystem, _log, configFileLocator, gitPreparer);
             var baseVersionCalculator = new BaseVersionCalculator(log, null);
-            var nextVersionCalculator = new NextVersionCalculator(log, new MetaDataCalculator(), baseVersionCalculator);
+            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
+            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
             var variableProvider = new VariableProvider(nextVersionCalculator);
             var gitVersionCalculator = new GitVersionCalculator(fileSystem, _log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);
 
@@ -544,7 +547,8 @@ namespace GitVersionCore.Tests
             var gitPreparer = new GitPreparer(log, arguments);
             var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer);
             var baseVersionCalculator = new BaseVersionCalculator(log, null);
-            var nextVersionCalculator = new NextVersionCalculator(log, new MetaDataCalculator(), baseVersionCalculator);
+            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
+            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
             var variableProvider = new VariableProvider(nextVersionCalculator);
             var gitVersionCalculator = new GitVersionCalculator(fileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);
             return gitVersionCalculator;

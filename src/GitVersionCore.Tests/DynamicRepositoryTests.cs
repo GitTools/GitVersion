@@ -87,14 +87,15 @@ namespace GitVersionCore.Tests
             var gitVersionCache = new GitVersionCache(testFileSystem, log);
             var buildServerResolver = new BuildServerResolver(null, log);
 
-            var metaDataCalculator = new MetaDataCalculator();
+            var metadataCalculator = new MetaDataCalculator();
             var baseVersionCalculator = new TestBaseVersionStrategiesCalculator(log);
-            var gitVersionFinder = new GitVersionFinder(log, metaDataCalculator, baseVersionCalculator);
+            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metadataCalculator);
+            var nextVersionCalculator = new NextVersionCalculator(log, metadataCalculator, baseVersionCalculator, mainlineVersionCalculator);
+            var gitVersionFinder = new GitVersionFinder(log, nextVersionCalculator);
 
             var gitPreparer = new GitPreparer(log, arguments);
             var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer);
-
-            var nextVersionCalculator = new NextVersionCalculator(log, new MetaDataCalculator(), baseVersionCalculator);
+            
             var variableProvider = new VariableProvider(nextVersionCalculator);
             var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);
 

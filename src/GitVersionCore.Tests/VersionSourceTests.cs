@@ -16,6 +16,7 @@ namespace GitVersionCore.Tests
         private ILog log;
         private IMetaDataCalculator metaDataCalculator;
         private IBaseVersionCalculator baseVersionCalculator;
+        private IMainlineVersionCalculator mainlineVersionCalculator;
 
         [SetUp]
         public void SetUp()
@@ -23,6 +24,7 @@ namespace GitVersionCore.Tests
             log = new NullLog();
             metaDataCalculator = new MetaDataCalculator();
             baseVersionCalculator = new TestBaseVersionStrategiesCalculator(log);
+            mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
         }
 
         [Test]
@@ -38,8 +40,8 @@ namespace GitVersionCore.Tests
             Commands.Checkout(fixture.Repository, featureBranch);
             _ = fixture.Repository.MakeACommit();
 
-            var context = new GitVersionContext(fixture.Repository, new NullLog(), fixture.Repository.Head, config);
-            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator);
+            var context = new GitVersionContext(fixture.Repository, log, fixture.Repository.Head, config);
+            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
             var version = nextVersionCalculator.FindVersion(context);
 
             version.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
@@ -55,7 +57,7 @@ namespace GitVersionCore.Tests
             var initialCommit = fixture.Repository.MakeACommit();
 
             var context = new GitVersionContext(fixture.Repository, new NullLog(), fixture.Repository.Head, config);
-            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator);
+            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
             var version = nextVersionCalculator.FindVersion(context);
 
             version.BuildMetaData.VersionSourceSha.ShouldBe(initialCommit.Sha);
@@ -77,7 +79,7 @@ namespace GitVersionCore.Tests
             _ = fixture.Repository.MakeACommit();
 
             var context = new GitVersionContext(fixture.Repository, new NullLog(), fixture.Repository.Head, config);
-            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator);
+            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
             var version = nextVersionCalculator.FindVersion(context);
 
             version.BuildMetaData.VersionSourceSha.ShouldBe(secondCommit.Sha);
