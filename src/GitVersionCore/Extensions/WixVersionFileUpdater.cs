@@ -18,8 +18,8 @@ namespace GitVersion.Extensions
         public WixVersionFileUpdater(string workingDirectory, VersionVariables variables, IFileSystem fileSystem, ILog log)
         {
             this.variables = variables;
-            this.fileSystem = fileSystem;
-            this.log = log;
+            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.WixVersionFile = Path.Combine(workingDirectory, WIX_VERSION_FILE);
         }
 

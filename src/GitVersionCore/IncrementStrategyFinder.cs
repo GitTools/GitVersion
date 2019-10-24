@@ -91,8 +91,6 @@ namespace GitVersion
             return null;
         }
 
-
-
         private static IEnumerable<Commit> GetIntermediateCommits(IRepository repo, Commit baseCommit, Commit headCommit)
         {
             if (baseCommit == null) yield break;
@@ -130,7 +128,6 @@ namespace GitVersion
             }
             return version;
         }
-
 
         private static VersionField? FindIncrementFromMessage(string message, string majorRegex, string minorRegex, string patchRegex, string noneRegex)
         {

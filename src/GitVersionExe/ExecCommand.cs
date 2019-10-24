@@ -26,10 +26,10 @@ namespace GitVersion
 
         public ExecCommand(IFileSystem fileSystem, IBuildServerResolver buildServerResolver, ILog log, IGitVersionCalculator gitVersionCalculator, IOptions<Arguments> arguments)
         {
-            this.fileSystem = fileSystem;
-            this.buildServerResolver = buildServerResolver;
-            this.log = log;
-            this.gitVersionCalculator = gitVersionCalculator;
+            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.gitVersionCalculator = gitVersionCalculator ?? throw new ArgumentNullException(nameof(gitVersionCalculator));
             this.arguments = arguments.Value;
         }
 

@@ -19,7 +19,7 @@ namespace GitVersion
 
         public GitPreparer(ILog log, Arguments arguments)
         {
-            this.log = log;
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
 
             TargetUrl = arguments.TargetUrl;
             WorkingDirectory = arguments.TargetPath.TrimEnd('/', '\\');

@@ -25,15 +25,15 @@ namespace GitVersion
             IBuildServerResolver buildServerResolver, IGitVersionCache gitVersionCache,
             IGitVersionFinder gitVersionFinder, IGitPreparer gitPreparer, IVariableProvider variableProvider, IOptions<Arguments> options)
         {
-            this.fileSystem = fileSystem;
-            this.log = log;
-            this.configFileLocator = configFileLocator;
-            this.configurationProvider = configurationProvider;
-            this.buildServerResolver = buildServerResolver;
-            this.gitVersionCache = gitVersionCache;
-            this.gitVersionFinder = gitVersionFinder;
-            this.gitPreparer = gitPreparer;
-            this.variableProvider = variableProvider;
+            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.configFileLocator = configFileLocator ?? throw new ArgumentNullException(nameof(configFileLocator));
+            this.configurationProvider = configurationProvider ?? throw new ArgumentNullException(nameof(configurationProvider));
+            this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
+            this.gitVersionCache = gitVersionCache ?? throw new ArgumentNullException(nameof(gitVersionCache));
+            this.gitVersionFinder = gitVersionFinder ?? throw new ArgumentNullException(nameof(gitVersionFinder));
+            this.gitPreparer = gitPreparer ?? throw new ArgumentNullException(nameof(gitPreparer));
+            this.variableProvider = variableProvider ?? throw new ArgumentNullException(nameof(variableProvider));
             this.arguments = options.Value;
         }
 

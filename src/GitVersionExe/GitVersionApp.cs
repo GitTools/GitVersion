@@ -16,8 +16,8 @@ namespace GitVersion
         public GitVersionApp(IHostApplicationLifetime applicationLifetime, IGitVersionExecutor gitVersionExecutor, ILog log, IOptions<Arguments> options)
         {
             this.arguments = options.Value;
-            this.applicationLifetime = applicationLifetime;
-            this.gitVersionExecutor = gitVersionExecutor;
+            this.applicationLifetime = applicationLifetime ?? throw new ArgumentNullException(nameof(applicationLifetime));
+            this.gitVersionExecutor = gitVersionExecutor ?? throw new ArgumentNullException(nameof(gitVersionExecutor));
 
             log.Verbosity = arguments.Verbosity;
         }

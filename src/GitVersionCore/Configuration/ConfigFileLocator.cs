@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using GitVersion.Logging;
 
@@ -10,8 +11,8 @@ namespace GitVersion.Configuration
 
         protected ConfigFileLocator(IFileSystem fileSystem, ILog log)
         {
-            FileSystem = fileSystem;
-            Log = log;
+            FileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            Log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
         public abstract bool HasConfigFileAt(string workingDirectory);

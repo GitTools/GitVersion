@@ -16,8 +16,8 @@ namespace GitVersion.Cache
 
         public GitVersionCache(IFileSystem fileSystem, ILog log)
         {
-            this.fileSystem = fileSystem;
-            this.log = log;
+            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
         public void WriteVariablesToDiskCache(IGitPreparer gitPreparer, GitVersionCacheKey cacheKey, VersionVariables variablesFromCache)

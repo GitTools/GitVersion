@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Text;
 using GitVersion.Configuration.Init.Wizard;
@@ -15,11 +16,11 @@ namespace GitVersion.Configuration
 
         public ConfigurationProvider(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IGitPreparer gitPreparer, IConfigInitWizard configInitWizard)
         {
-            this.fileSystem = fileSystem;
-            this.log = log;
-            this.configFileLocator = configFileLocator;
-            this.gitPreparer = gitPreparer;
-            this.configInitWizard = configInitWizard;
+            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.configFileLocator = configFileLocator ?? throw new ArgumentNullException(nameof(configFileLocator));
+            this.gitPreparer = gitPreparer ?? throw new ArgumentNullException(nameof(gitPreparer));
+            this.configInitWizard = configInitWizard ?? throw new ArgumentNullException(nameof(this.configInitWizard));
         }
 
         public Config Provide(bool applyDefaults = true, Config overrideConfig = null)

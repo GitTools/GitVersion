@@ -15,7 +15,7 @@ namespace GitVersion.OutputVariables
 
         public VariableProvider(INextVersionCalculator nextVersionCalculator)
         {
-            this.nextVersionCalculator = nextVersionCalculator;
+            this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
         }
 
         public VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)

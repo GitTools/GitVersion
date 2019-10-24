@@ -9,7 +9,7 @@ namespace GitVersion
 
         public HelpWriter(IVersionWriter versionWriter)
         {
-            this.versionWriter = versionWriter;
+            this.versionWriter = versionWriter ?? throw new ArgumentNullException(nameof(versionWriter));
         }
 
         public void Write()
