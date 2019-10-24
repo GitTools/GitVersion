@@ -260,7 +260,7 @@ branches: {}";
             config.AssemblyInformationalFormat.ShouldBe(null);
             config.Branches["develop"].Tag.ShouldBe("alpha");
             config.Branches["release"].Tag.ShouldBe("beta");
-            config.TagPrefix.ShouldBe(ConfigurationProvider.DefaultTagPrefix);
+            config.TagPrefix.ShouldBe(ConfigurationConstants.DefaultTagPrefix);
             config.NextVersion.ShouldBe(null);
         }
 

@@ -29,9 +29,9 @@ namespace GitVersionCore.Tests
         [TestCase("1.2.3+4.Branch.Foo", 1, 2, 3, null, null, 4, "Foo", null, null, null, null)]
         [TestCase("1.2.3+randomMetaData", 1, 2, 3, null, null, null, null, null, "randomMetaData", null, null)]
         [TestCase("1.2.3-beta.1+4.Sha.12234.Othershiz", 1, 2, 3, "beta", 1, 4, null, "12234", "Othershiz", null, null)]
-        [TestCase("1.2.3", 1, 2, 3, null, null, null, null, null, null, null, ConfigurationProvider.DefaultTagPrefix)]
-        [TestCase("v1.2.3", 1, 2, 3, null, null, null, null, null, null, "1.2.3", ConfigurationProvider.DefaultTagPrefix)]
-        [TestCase("V1.2.3", 1, 2, 3, null, null, null, null, null, null, "1.2.3", ConfigurationProvider.DefaultTagPrefix)]
+        [TestCase("1.2.3", 1, 2, 3, null, null, null, null, null, null, null, ConfigurationConstants.DefaultTagPrefix)]
+        [TestCase("v1.2.3", 1, 2, 3, null, null, null, null, null, null, "1.2.3", ConfigurationConstants.DefaultTagPrefix)]
+        [TestCase("V1.2.3", 1, 2, 3, null, null, null, null, null, null, "1.2.3", ConfigurationConstants.DefaultTagPrefix)]
         [TestCase("version-1.2.3", 1, 2, 3, null, null, null, null, null, null, "1.2.3", "version-")]
         public void ValidateVersionParsing(
             string versionString, int major, int minor, int patch, string tag, int? tagNumber, int? numberOfBuilds,
