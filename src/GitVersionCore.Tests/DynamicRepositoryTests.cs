@@ -7,6 +7,7 @@ using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.VersionCalculation;
+using Microsoft.Extensions.Options;
 
 namespace GitVersionCore.Tests
 {
@@ -75,6 +76,7 @@ namespace GitVersionCore.Tests
                 TargetPath = workingDirectory,
                 CommitId = commitId
             };
+            var options = Options.Create(arguments);
 
             Directory.CreateDirectory(dynamicDirectory);
             Directory.CreateDirectory(workingDirectory);
@@ -94,9 +96,9 @@ namespace GitVersionCore.Tests
 
             var nextVersionCalculator = new NextVersionCalculator(log, new MetaDataCalculator(), baseVersionCalculator);
             var variableProvider = new VariableProvider(nextVersionCalculator);
-            var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider);
+            var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);
 
-            var versionVariables = gitVersionCalculator.CalculateVersionVariables(arguments);
+            var versionVariables = gitVersionCalculator.CalculateVersionVariables();
 
             Assert.AreEqual(expectedFullSemVer, versionVariables.FullSemVer);
         }

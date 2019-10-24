@@ -9,6 +9,7 @@ using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using NUnit.Framework;
 using GitVersionTask.Tests.Helpers;
+using Microsoft.Extensions.Options;
 
 namespace GitVersionTask.Tests
 {
@@ -60,6 +61,7 @@ namespace GitVersionTask.Tests
             try
             {
                 var arguments = new Arguments { TargetPath = workDirectory, NoFetch = true };
+                var options = Options.Create(arguments);
 
                 var gitPreparer = new GitPreparer(log, arguments);
                 var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer);
@@ -68,9 +70,9 @@ namespace GitVersionTask.Tests
                 var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator);
                 var variableProvider = new VariableProvider(nextVersionCalculator);
 
-                var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider);
+                var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);
 
-                gitVersionCalculator.CalculateVersionVariables(arguments);
+                gitVersionCalculator.CalculateVersionVariables();
             }
             catch (Exception ex)
             {
@@ -90,6 +92,7 @@ namespace GitVersionTask.Tests
             try
             {
                 var arguments = new Arguments { TargetPath = childDir, NoFetch = true };
+                var options = Options.Create(arguments);
 
                 var gitPreparer = new GitPreparer(log, arguments);
                 var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer);
@@ -97,9 +100,9 @@ namespace GitVersionTask.Tests
                 var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator);
                 var variableProvider = new VariableProvider(nextVersionCalculator);
 
-                var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider);
+                var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);
 
-                gitVersionCalculator.CalculateVersionVariables(arguments);
+                gitVersionCalculator.CalculateVersionVariables();
             }
             catch (Exception ex)
             {

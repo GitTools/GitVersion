@@ -37,7 +37,7 @@ namespace GitVersion
         {
             log.Info($"Running on {(runningOnUnix ? "Unix" : "Windows")}.");
 
-            var variables = gitVersionCalculator.CalculateVersionVariables(arguments);
+            var variables = gitVersionCalculator.CalculateVersionVariables();
 
             switch (arguments.Output)
             {
