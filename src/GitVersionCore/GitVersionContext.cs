@@ -182,7 +182,7 @@ namespace GitVersion
                             b.NameWithoutRemote() == targetBranch);
 
                     // Failsafe in case the specified branch is invalid
-                    desiredBranch = desiredBranch ?? repository.Head;
+                    desiredBranch ??= repository.Head;
                 }
             }
 
