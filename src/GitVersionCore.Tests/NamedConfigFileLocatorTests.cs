@@ -22,13 +22,16 @@ namespace GitVersionCore.Tests
         private NamedConfigFileLocator configFileLocator;
         private ILog log;
         private IConfigInitStepFactory stepFactory;
+        private IOptions<Arguments> options;
 
         [SetUp]
         public void Setup()
         {
             fileSystem = new TestFileSystem();
             log = new NullLog();
-            configFileLocator = new NamedConfigFileLocator("my-config.yaml", fileSystem, log);
+
+            options = Options.Create(new Arguments { ConfigFile = "my-config.yaml" });
+            configFileLocator = new NamedConfigFileLocator(fileSystem, log, options);
             repoPath = DefaultRepoPath;
             workingPath = DefaultWorkingPath;
             stepFactory = new ConfigInitStepFactory();
@@ -59,7 +62,7 @@ namespace GitVersionCore.Tests
             var logAppender = new TestLogAppender(Action);
             log = new Log(logAppender);
 
-            configFileLocator = new NamedConfigFileLocator("my-config.yaml", fileSystem, log);
+            configFileLocator = new NamedConfigFileLocator(fileSystem, log, options);
 
             var gitPreparer = new GitPreparer(log, Options.Create(new Arguments { TargetPath = repoPath }));
             var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
@@ -80,7 +83,7 @@ namespace GitVersionCore.Tests
             var logAppender = new TestLogAppender(Action);
             log = new Log(logAppender);
 
-            configFileLocator = new NamedConfigFileLocator("my-config.yaml", fileSystem, log);
+            configFileLocator = new NamedConfigFileLocator(fileSystem, log, options);
             var gitPreparer = new GitPreparer(log, Options.Create(new Arguments { TargetPath = repoPath }));
             var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
             var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);

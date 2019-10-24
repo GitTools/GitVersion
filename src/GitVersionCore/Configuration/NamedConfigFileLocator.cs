@@ -2,13 +2,16 @@ using System;
 using System.IO;
 using GitVersion.Exceptions;
 using GitVersion.Logging;
+using Microsoft.Extensions.Options;
 
 namespace GitVersion.Configuration
 {
     public class NamedConfigFileLocator : ConfigFileLocator
     {
-        public NamedConfigFileLocator(string filePath, IFileSystem fileSystem, ILog log) : base(fileSystem, log)
+        public NamedConfigFileLocator(IFileSystem fileSystem, ILog log, IOptions<Arguments> options) : base(fileSystem, log)
         {
+            var arguments = options.Value;
+            var filePath = arguments.ConfigFile;
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(filePath), "Empty file path provided!");
             FilePath = filePath;
         }
