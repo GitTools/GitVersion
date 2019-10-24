@@ -8,6 +8,8 @@ using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
 using Microsoft.Extensions.Options;
+using GitVersion.Configuration.Init;
+using GitVersion.Extensions;
 
 namespace GitVersion
 {
@@ -39,6 +41,8 @@ namespace GitVersion
             RegisterBuildServers(services);
 
             RegisterVersionStrategies(services);
+
+            services.AddModule(new GitVersionInitModule());
         }
 
         private static IConfigFileLocator GetConfigFileLocator(IServiceProvider sp)
