@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using GitVersion;
 using GitVersion.Extensions.GitVersionInformationResources;
@@ -17,10 +18,10 @@ namespace GitVersionTask
 
         public GitVersionTaskExecutor(IFileSystem fileSystem, ILog log, IBuildServerResolver buildServerResolver, IGitVersionCalculator gitVersionCalculator)
         {
-            this.fileSystem = fileSystem;
-            this.log = log;
-            this.buildServerResolver = buildServerResolver;
-            this.gitVersionCalculator = gitVersionCalculator;
+            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
+            this.gitVersionCalculator = gitVersionCalculator ?? throw new ArgumentNullException(nameof(gitVersionCalculator));
         }
 
         public void GetVersion(GetVersion task)

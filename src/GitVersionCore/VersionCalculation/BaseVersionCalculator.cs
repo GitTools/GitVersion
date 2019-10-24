@@ -15,7 +15,7 @@ namespace GitVersion.VersionCalculation
 
         public BaseVersionCalculator(ILog log, IEnumerable<IVersionStrategy> strategies)
         {
-            this.log = log;
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.strategies = strategies?.ToArray() ?? Array.Empty<IVersionStrategy>();
         }
 

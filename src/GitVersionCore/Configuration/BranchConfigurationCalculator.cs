@@ -16,7 +16,7 @@ namespace GitVersion.Configuration
 
         public BranchConfigurationCalculator(ILog log, GitVersionContext context)
         {
-            this.log = log;
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.context = context;
         }
 

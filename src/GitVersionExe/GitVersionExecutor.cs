@@ -22,13 +22,13 @@ namespace GitVersion
         public GitVersionExecutor(ILog log, IConfigFileLocator configFileLocator, IVersionWriter versionWriter, IHelpWriter helpWriter,
             IExecCommand execCommand, IConfigurationProvider configurationProvider, IBuildServerResolver buildServerResolver)
         {
-            this.log = log;
-            this.configFileLocator = configFileLocator;
-            this.versionWriter = versionWriter;
-            this.helpWriter = helpWriter;
-            this.execCommand = execCommand;
-            this.configurationProvider = configurationProvider;
-            this.buildServerResolver = buildServerResolver;
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.configFileLocator = configFileLocator ?? throw new ArgumentNullException(nameof(configFileLocator));
+            this.versionWriter = versionWriter ?? throw new ArgumentNullException(nameof(versionWriter));
+            this.helpWriter = helpWriter ?? throw new ArgumentNullException(nameof(helpWriter));
+            this.execCommand = execCommand ?? throw new ArgumentNullException(nameof(execCommand));
+            this.configurationProvider = configurationProvider ?? throw new ArgumentNullException(nameof(configFileLocator));
+            this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
         }
 
         public int Execute(Arguments arguments)

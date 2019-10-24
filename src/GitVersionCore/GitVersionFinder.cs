@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using GitVersion.Exceptions;
 using GitVersion.VersionCalculation;
@@ -14,8 +15,8 @@ namespace GitVersion
 
         public GitVersionFinder(ILog log, INextVersionCalculator nextVersionCalculator)
         {
-            this.log = log;
-            this.nextVersionCalculator = nextVersionCalculator;
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
         }
 
         public SemanticVersion FindVersion(GitVersionContext context)

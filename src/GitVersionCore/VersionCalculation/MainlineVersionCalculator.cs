@@ -17,8 +17,8 @@ namespace GitVersion.VersionCalculation
 
         public MainlineVersionCalculator(ILog log, IMetaDataCalculator metaDataCalculator)
         {
-            this.metaDataCalculator = metaDataCalculator;
-            this.log = log;
+            this.metaDataCalculator = metaDataCalculator ?? throw new ArgumentNullException(nameof(metaDataCalculator));
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
         public SemanticVersion FindMainlineModeVersion(BaseVersion baseVersion, GitVersionContext context)

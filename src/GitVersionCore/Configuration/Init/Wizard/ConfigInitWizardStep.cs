@@ -13,10 +13,10 @@ namespace GitVersion.Configuration.Init.Wizard
 
         protected ConfigInitWizardStep(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory)
         {
-            Console = console;
-            FileSystem = fileSystem;
-            Log = log;
-            StepFactory = stepFactory;
+            Console = console ?? throw new ArgumentNullException(nameof(console));
+            FileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            Log = log ?? throw new ArgumentNullException(nameof(log));
+            StepFactory = stepFactory ?? throw new ArgumentNullException(nameof(stepFactory));
         }
 
         public bool Apply(Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)

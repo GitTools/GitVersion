@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
@@ -18,11 +19,11 @@ namespace GitVersion.VersionCalculation
 
         public NextVersionCalculator(ILog log, IMetaDataCalculator metaDataCalculator, IBaseVersionCalculator baseVersionCalculator, IMainlineVersionCalculator mainlineVersionCalculator)
         {
-            this.log = log;
-            this.metaDataCalculator = metaDataCalculator;
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.metaDataCalculator = metaDataCalculator ?? throw new ArgumentNullException(nameof(metaDataCalculator));
 
-            this.baseVersionCalculator = baseVersionCalculator;
-            this.mainlineVersionCalculator = mainlineVersionCalculator;
+            this.baseVersionCalculator = baseVersionCalculator ?? throw new ArgumentNullException(nameof(baseVersionCalculator));
+            this.mainlineVersionCalculator = mainlineVersionCalculator ?? throw new ArgumentNullException(nameof(mainlineVersionCalculator));
         }
 
         public SemanticVersion FindVersion(GitVersionContext context)

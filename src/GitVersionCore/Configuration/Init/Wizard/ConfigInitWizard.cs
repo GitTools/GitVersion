@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace GitVersion.Configuration.Init.Wizard
@@ -9,8 +10,8 @@ namespace GitVersion.Configuration.Init.Wizard
 
         public ConfigInitWizard(IConsole console, IConfigInitStepFactory stepFactory)
         {
-            this.console = console;
-            this.stepFactory = stepFactory;
+            this.console = console ?? throw new ArgumentNullException(nameof(console));
+            this.stepFactory = stepFactory ?? throw new ArgumentNullException(nameof(stepFactory));
         }
 
         public Config Run(Config config, string workingDirectory)
