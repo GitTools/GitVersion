@@ -32,7 +32,7 @@ namespace GitVersion.Configuration
                 log.Info($"No branch configuration found for branch {targetBranch.FriendlyName}, falling back to default configuration");
 
                 matchingBranches = new BranchConfig { Name = FallbackConfigName };
-                ConfigurationProvider.ApplyBranchDefaults(context.FullConfiguration, matchingBranches, "", new List<string>());
+                ConfigurationUtils.ApplyBranchDefaults(context.FullConfiguration, matchingBranches, "", new List<string>());
             }
 
             if (matchingBranches.Increment == IncrementStrategy.Inherit)
@@ -132,8 +132,8 @@ namespace GitVersion.Configuration
                 else
                     errorMessage = "Failed to inherit Increment branch configuration, ended up with: " + string.Join(", ", possibleParents.Select(p => p.FriendlyName));
 
-                var developBranchRegex = config.Branches[ConfigurationProvider.DevelopBranchKey].Regex;
-                var masterBranchRegex = config.Branches[ConfigurationProvider.MasterBranchKey].Regex;
+                var developBranchRegex = config.Branches[ConfigurationConstants.DevelopBranchKey].Regex;
+                var masterBranchRegex = config.Branches[ConfigurationConstants.MasterBranchKey].Regex;
 
                 var chosenBranch = repository.Branches.FirstOrDefault(b => Regex.IsMatch(b.FriendlyName, developBranchRegex, RegexOptions.IgnoreCase)
                                                                            || Regex.IsMatch(b.FriendlyName, masterBranchRegex, RegexOptions.IgnoreCase));
@@ -223,29 +223,29 @@ namespace GitVersion.Configuration
         private static BranchConfig ChooseMasterOrDevelopIncrementStrategyIfTheChosenBranchIsOneOfThem(Branch ChosenBranch, BranchConfig BranchConfiguration, Config config)
         {
             BranchConfig masterOrDevelopConfig = null;
-            var developBranchRegex = config.Branches[ConfigurationProvider.DevelopBranchKey].Regex;
-            var masterBranchRegex = config.Branches[ConfigurationProvider.MasterBranchKey].Regex;
+            var developBranchRegex = config.Branches[ConfigurationConstants.DevelopBranchKey].Regex;
+            var masterBranchRegex = config.Branches[ConfigurationConstants.MasterBranchKey].Regex;
             if (Regex.IsMatch(ChosenBranch.FriendlyName, developBranchRegex, RegexOptions.IgnoreCase))
             {
                 // Normally we would not expect this to happen but for safety we add a check
-                if (config.Branches[ConfigurationProvider.DevelopBranchKey].Increment !=
+                if (config.Branches[ConfigurationConstants.DevelopBranchKey].Increment !=
                     IncrementStrategy.Inherit)
                 {
                     masterOrDevelopConfig = new BranchConfig(BranchConfiguration)
                     {
-                        Increment = config.Branches[ConfigurationProvider.DevelopBranchKey].Increment
+                        Increment = config.Branches[ConfigurationConstants.DevelopBranchKey].Increment
                     };
                 }
             }
             else if (Regex.IsMatch(ChosenBranch.FriendlyName, masterBranchRegex, RegexOptions.IgnoreCase))
             {
                 // Normally we would not expect this to happen but for safety we add a check
-                if (config.Branches[ConfigurationProvider.MasterBranchKey].Increment !=
+                if (config.Branches[ConfigurationConstants.MasterBranchKey].Increment !=
                     IncrementStrategy.Inherit)
                 {
                     masterOrDevelopConfig = new BranchConfig(BranchConfiguration)
                     {
-                        Increment = config.Branches[ConfigurationProvider.DevelopBranchKey].Increment
+                        Increment = config.Branches[ConfigurationConstants.DevelopBranchKey].Increment
                     };
                 }
             }

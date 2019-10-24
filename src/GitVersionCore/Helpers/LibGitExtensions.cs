@@ -142,7 +142,7 @@ namespace GitVersion.Helpers
         public static bool IsBranch(this string branchName, string branchNameToCompareAgainst)
         {
             // "develop" == "develop"
-            if (String.Equals(branchName, branchNameToCompareAgainst, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(branchName, branchNameToCompareAgainst, StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }

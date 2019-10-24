@@ -10,18 +10,18 @@ namespace GitVersion.Configuration
     {
         private static readonly Dictionary<string, string> OldConfigKnownRegexes = new Dictionary<string, string>
         {
-            {ConfigurationProvider.MasterBranchRegex, ConfigurationProvider.MasterBranchKey},
-            {ConfigurationProvider.DevelopBranchRegex, ConfigurationProvider.DevelopBranchKey},
-            {ConfigurationProvider.FeatureBranchRegex, ConfigurationProvider.FeatureBranchKey},
-            {ConfigurationProvider.HotfixBranchRegex, ConfigurationProvider.HotfixBranchKey},
-            {ConfigurationProvider.ReleaseBranchRegex, ConfigurationProvider.ReleaseBranchKey},
-            {ConfigurationProvider.SupportBranchRegex, ConfigurationProvider.SupportBranchKey},
-            {ConfigurationProvider.PullRequestRegex, ConfigurationProvider.PullRequestBranchKey},
-            {"dev(elop)?(ment)?$", ConfigurationProvider.DevelopBranchKey },
-            {"release[/-]", ConfigurationProvider.ReleaseBranchKey },
-            {"hotfix[/-]", ConfigurationProvider.HotfixBranchKey },
-            {"feature(s)?[/-]", ConfigurationProvider.FeatureBranchKey },
-            {"feature[/-]", ConfigurationProvider.FeatureBranchKey }
+            {ConfigurationConstants.MasterBranchRegex, ConfigurationConstants.MasterBranchKey},
+            {ConfigurationConstants.DevelopBranchRegex, ConfigurationConstants.DevelopBranchKey},
+            {ConfigurationConstants.FeatureBranchRegex, ConfigurationConstants.FeatureBranchKey},
+            {ConfigurationConstants.HotfixBranchRegex, ConfigurationConstants.HotfixBranchKey},
+            {ConfigurationConstants.ReleaseBranchRegex, ConfigurationConstants.ReleaseBranchKey},
+            {ConfigurationConstants.SupportBranchRegex, ConfigurationConstants.SupportBranchKey},
+            {ConfigurationConstants.PullRequestRegex, ConfigurationConstants.PullRequestBranchKey},
+            {"dev(elop)?(ment)?$", ConfigurationConstants.DevelopBranchKey },
+            {"release[/-]", ConfigurationConstants.ReleaseBranchKey },
+            {"hotfix[/-]", ConfigurationConstants.HotfixBranchKey },
+            {"feature(s)?[/-]", ConfigurationConstants.FeatureBranchKey },
+            {"feature[/-]", ConfigurationConstants.FeatureBranchKey }
         };
 
         public static void Notify(StringReader reader)
