@@ -13,7 +13,7 @@ namespace GitVersion
     /// </summary>
     public class GitVersionContext
     {
-        public ILog Log { get; set; }
+        public ILog Log { get; }
 
         public GitVersionContext(IRepository repository, ILog log, string targetBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
              : this(repository, log, GetTargetBranch(repository, targetBranch), configuration, onlyEvaluateTrackedBranches, commitId)

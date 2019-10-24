@@ -94,7 +94,7 @@ namespace GitVersionCore.Tests
             var nextVersionCalculator = new NextVersionCalculator(log, metadataCalculator, baseVersionCalculator, mainlineVersionCalculator);
             var gitVersionFinder = new GitVersionFinder(log, nextVersionCalculator);
 
-            var gitPreparer = new GitPreparer(log, arguments);
+            var gitPreparer = new GitPreparer(log, options);
             var stepFactory = new ConfigInitStepFactory();
             var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
 

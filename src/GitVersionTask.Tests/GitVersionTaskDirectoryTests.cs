@@ -68,7 +68,7 @@ namespace GitVersionTask.Tests
                 var arguments = new Arguments { TargetPath = workDirectory, NoFetch = true };
                 var options = Options.Create(arguments);
 
-                var gitPreparer = new GitPreparer(log, arguments);
+                var gitPreparer = new GitPreparer(log, options);
                 var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer, configInitWizard);
 
                 var baseVersionCalculator = new BaseVersionCalculator(log, null);
@@ -100,7 +100,7 @@ namespace GitVersionTask.Tests
                 var arguments = new Arguments { TargetPath = childDir, NoFetch = true };
                 var options = Options.Create(arguments);
 
-                var gitPreparer = new GitPreparer(log, arguments);
+                var gitPreparer = new GitPreparer(log, options);
                 var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer, configInitWizard);
                 var baseVersionCalculator = new BaseVersionCalculator(log, null);
                 var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);

@@ -13,6 +13,7 @@ using GitVersion.Extensions;
 using GitVersion;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
+using Microsoft.Extensions.Options;
 
 namespace GitVersionCore.Tests
 {
@@ -37,7 +38,7 @@ namespace GitVersionCore.Tests
             configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
             repoPath = DefaultRepoPath;
 
-            var gitPreparer = new GitPreparer(log, new Arguments { TargetPath = repoPath });
+            var gitPreparer = new GitPreparer(log, Options.Create(new Arguments { TargetPath = repoPath }));
             configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
 
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
@@ -292,7 +293,7 @@ branches: {}";
             var log = new Log(logAppender);
 
             var defaultConfigFileLocator = new DefaultConfigFileLocator(fileSystem, log);
-            var gitPreparer = new GitPreparer(log, new Arguments { TargetPath = repoPath });
+            var gitPreparer = new GitPreparer(log, Options.Create(new Arguments { TargetPath = repoPath }));
 
             configurationProvider = new ConfigurationProvider(fileSystem, log, defaultConfigFileLocator, gitPreparer, configInitWizard);
 

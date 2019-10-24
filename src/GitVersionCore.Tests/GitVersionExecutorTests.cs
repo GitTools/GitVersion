@@ -63,7 +63,7 @@ namespace GitVersionCore.Tests
                     TargetUrl = targetUrl,
                     TargetPath = fixture.RepositoryPath
                 };
-                var gitPreparer = new GitPreparer(log, arguments);
+                var gitPreparer = new GitPreparer(log, Options.Create(arguments));
                 configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
 
                 gitPreparer.Prepare(true, targetBranch);
@@ -97,7 +97,7 @@ namespace GitVersionCore.Tests
                         TargetPath = worktreePath
                     };
 
-                    var gitPreparer = new GitPreparer(log, arguments);
+                    var gitPreparer = new GitPreparer(log, Options.Create(arguments));
                     configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
                     var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, log, gitPreparer, configFileLocator, null);
                     cacheKey.Value.ShouldNotBeEmpty();
@@ -212,7 +212,7 @@ namespace GitVersionCore.Tests
                     TargetPath = fixture.RepositoryPath
                 };
 
-                var gitPreparer = new GitPreparer(log, arguments);
+                var gitPreparer = new GitPreparer(log, Options.Create(arguments));
 
                 gitVersionCache = new GitVersionCache(fileSystem, log);
                 var cacheDirectory = gitVersionCache.GetCacheDirectory(gitPreparer);
@@ -390,7 +390,7 @@ namespace GitVersionCore.Tests
                         TargetPath = worktreePath
                     };
 
-                    var gitPreparer = new GitPreparer(log, arguments);
+                    var gitPreparer = new GitPreparer(log, Options.Create(arguments));
 
                     gitPreparer.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(worktreePath);
                 }
@@ -414,7 +414,7 @@ namespace GitVersionCore.Tests
                     TargetPath = fixture.RepositoryPath
                 };
 
-                var gitPreparer = new GitPreparer(log, arguments);
+                var gitPreparer = new GitPreparer(log, Options.Create(arguments));
                 var expectedPath = fixture.RepositoryPath.TrimEnd('/', '\\');
                 gitPreparer.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(expectedPath);
             });
@@ -451,7 +451,7 @@ namespace GitVersionCore.Tests
                     TargetPath = fixture.RepositoryPath
                 };
 
-                var gitPreparer = new GitPreparer(log, arguments);
+                var gitPreparer = new GitPreparer(log, Options.Create(arguments));
                 var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
                 gitPreparer.GetDotGitDirectory().ShouldBe(expectedPath);
             });
@@ -479,7 +479,7 @@ namespace GitVersionCore.Tests
                         TargetPath = worktreePath
                     };
 
-                    var gitPreparer = new GitPreparer(log, arguments);
+                    var gitPreparer = new GitPreparer(log, Options.Create(arguments));
                     var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
                     gitPreparer.GetDotGitDirectory().ShouldBe(expectedPath);
                 }
@@ -524,7 +524,7 @@ namespace GitVersionCore.Tests
             var arguments = new Arguments { TargetPath = fixture.RepositoryPath };
             var options = Options.Create(arguments);
 
-            var gitPreparer = new GitPreparer(_log, arguments);
+            var gitPreparer = new GitPreparer(_log, options);
             var stepFactory = new ConfigInitStepFactory();
             var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
             var configurationProvider = new ConfigurationProvider(fileSystem, _log, configFileLocator, gitPreparer, configInitWizard);
@@ -547,7 +547,7 @@ namespace GitVersionCore.Tests
         {
             var options = Options.Create(arguments);
 
-            var gitPreparer = new GitPreparer(log, arguments);
+            var gitPreparer = new GitPreparer(log, options);
             var stepFactory = new ConfigInitStepFactory();
             var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
             var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
