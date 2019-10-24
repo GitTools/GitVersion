@@ -2,8 +2,11 @@ using System.IO;
 using System.Runtime.InteropServices;
 using GitVersion;
 using GitVersion.Configuration;
+using GitVersion.Configuration.Init;
 using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Extensions;
 using GitVersion.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
 
@@ -23,10 +26,21 @@ namespace GitVersionCore.Tests.Init
         [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
         public void CanSetNextVersion()
         {
-            var log = new NullLog();
-            var fileSystem = new TestFileSystem();
-            var testConsole = new TestConsole("3", "2.0.0", "0");
-            var configInitWizard = new ConfigInitWizard(testConsole, fileSystem, log);
+            ILog log = new NullLog();
+            IFileSystem fileSystem = new TestFileSystem();
+            IConsole testConsole = new TestConsole("3", "2.0.0", "0");
+
+            var serviceCollections = new ServiceCollection();
+            serviceCollections.AddModule(new GitVersionInitModule());
+
+            serviceCollections.AddSingleton(log);
+            serviceCollections.AddSingleton(fileSystem);
+            serviceCollections.AddSingleton(testConsole);
+
+            var serviceProvider = serviceCollections.BuildServiceProvider();
+
+            var stepFactory = new ConfigInitStepFactory(serviceProvider);
+            var configInitWizard = new ConfigInitWizard(testConsole, stepFactory);
             var configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
             var workingDirectory = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "c:\\proj" : "/proj";
 

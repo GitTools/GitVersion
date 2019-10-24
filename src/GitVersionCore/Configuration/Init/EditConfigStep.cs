@@ -8,7 +8,7 @@ namespace GitVersion.Configuration.Init
 {
     public class EditConfigStep : ConfigInitWizardStep
     {
-        public EditConfigStep(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
+        public EditConfigStep(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
         {
         }
 
@@ -22,25 +22,25 @@ namespace GitVersion.Configuration.Init
                     return StepResult.ExitWithoutSaving();
 
                 case "2":
-                    steps.Enqueue(new PickBranchingStrategyStep(Console, FileSystem, Log));
+                    steps.Enqueue(StepFactory.CreateStep<PickBranchingStrategyStep>());
                     return StepResult.Ok();
 
                 case "3":
-                    steps.Enqueue(new SetNextVersion(Console, FileSystem, Log));
+                    steps.Enqueue(StepFactory.CreateStep<SetNextVersion>());
                     return StepResult.Ok();
 
                 case "4":
-                    steps.Enqueue(new ConfigureBranches(Console, FileSystem, Log));
+                    steps.Enqueue(StepFactory.CreateStep<ConfigureBranches>());
                     return StepResult.Ok();
                 case "5":
-                    var editConfigStep = new EditConfigStep(Console, FileSystem, Log);
-                    steps.Enqueue(new GlobalModeSetting(Console, FileSystem, Log).WithData(editConfigStep, false));
+                    var editConfigStep = StepFactory.CreateStep<EditConfigStep>();
+                    steps.Enqueue(StepFactory.CreateStep<GlobalModeSetting>().WithData(editConfigStep, false));
                     return StepResult.Ok();
                 case "6":
-                    steps.Enqueue(new AssemblyVersioningSchemeSetting(Console, FileSystem, Log));
+                    steps.Enqueue(StepFactory.CreateStep<AssemblyVersioningSchemeSetting>());
                     return StepResult.Ok();
                 case "7":
-                    steps.Enqueue(new SetupBuildScripts(Console, FileSystem, Log));
+                    steps.Enqueue(StepFactory.CreateStep<SetupBuildScripts>());
                     return StepResult.Ok();
             }
             return StepResult.InvalidResponseSelected();

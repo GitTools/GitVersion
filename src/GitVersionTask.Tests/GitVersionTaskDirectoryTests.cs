@@ -36,7 +36,8 @@ namespace GitVersionTask.Tests
 
             testFileSystem = new TestFileSystem();
             log = new NullLog();
-            configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), testFileSystem, log);
+            var stepFactory = new ConfigInitStepFactory();
+            configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
             configFileLocator = new DefaultConfigFileLocator(testFileSystem, log);
             gitVersionCache = new GitVersionCache(testFileSystem, log);
 

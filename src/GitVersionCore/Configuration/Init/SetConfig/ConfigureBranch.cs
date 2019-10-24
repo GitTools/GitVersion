@@ -9,7 +9,7 @@ namespace GitVersion.Configuration.Init.SetConfig
         private string name;
         private BranchConfig branchConfig;
 
-        public ConfigureBranch(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
+        public ConfigureBranch(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
         {
         }
 
@@ -25,13 +25,13 @@ namespace GitVersion.Configuration.Init.SetConfig
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(new ConfigureBranches(Console, FileSystem, Log));
+                    steps.Enqueue(StepFactory.CreateStep<ConfigureBranches>());
                     return StepResult.Ok();
                 case "1":
-                    steps.Enqueue(new SetBranchTag(Console, FileSystem, Log).WithData(name, branchConfig));
+                    steps.Enqueue(StepFactory.CreateStep<SetBranchTag>().WithData(name, branchConfig));
                     return StepResult.Ok();
                 case "2":
-                    steps.Enqueue(new SetBranchIncrementMode(Console, FileSystem, Log).WithData(name, branchConfig));
+                    steps.Enqueue(StepFactory.CreateStep<SetBranchIncrementMode>().WithData(name, branchConfig));
                     return StepResult.Ok();
             }
 

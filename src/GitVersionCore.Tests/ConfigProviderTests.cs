@@ -32,7 +32,8 @@ namespace GitVersionCore.Tests
         {
             fileSystem = new TestFileSystem();
             var log = new NullLog();
-            configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), fileSystem, log);
+            var stepFactory = new ConfigInitStepFactory();
+            configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
             configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
             repoPath = DefaultRepoPath;
 

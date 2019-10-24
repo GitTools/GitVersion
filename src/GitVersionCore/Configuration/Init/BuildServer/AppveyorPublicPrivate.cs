@@ -6,7 +6,7 @@ namespace GitVersion.Configuration.Init.BuildServer
 {
     internal class AppveyorPublicPrivate : ConfigInitWizardStep
     {
-        public AppveyorPublicPrivate(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
+        public AppveyorPublicPrivate(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
         {
         }
 
@@ -15,13 +15,13 @@ namespace GitVersion.Configuration.Init.BuildServer
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(new EditConfigStep(Console, FileSystem, Log));
+                    steps.Enqueue(StepFactory.CreateStep<EditConfigStep>());
                     return StepResult.Ok();
                 case "1":
-                    steps.Enqueue(new AppVeyorSetup(Console, FileSystem, Log).WithData(ProjectVisibility.Public));
+                    steps.Enqueue(StepFactory.CreateStep<AppVeyorSetup>().WithData(ProjectVisibility.Public));
                     return StepResult.Ok();
                 case "2":
-                    steps.Enqueue(new AppVeyorSetup(Console, FileSystem, Log).WithData(ProjectVisibility.Private));
+                    steps.Enqueue(StepFactory.CreateStep<AppVeyorSetup>().WithData(ProjectVisibility.Private));
                     return StepResult.Ok();
             }
             return StepResult.Ok();

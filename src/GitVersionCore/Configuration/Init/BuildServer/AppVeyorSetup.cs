@@ -17,7 +17,7 @@ namespace GitVersion.Configuration.Init.BuildServer
     {
         private ProjectVisibility _projectVisibility;
 
-        public AppVeyorSetup(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
+        public AppVeyorSetup(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
         {
         }
 
@@ -29,18 +29,19 @@ namespace GitVersion.Configuration.Init.BuildServer
 
         protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
+            var editConfigStep = StepFactory.CreateStep<EditConfigStep>();
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(new EditConfigStep(Console, FileSystem, Log));
+                    steps.Enqueue(editConfigStep);
                     return StepResult.Ok();
                 case "1":
                     GenerateBasicConfig(workingDirectory);
-                    steps.Enqueue(new EditConfigStep(Console, FileSystem, Log));
+                    steps.Enqueue(editConfigStep);
                     return StepResult.Ok();
                 case "2":
                     GenerateNuGetConfig(workingDirectory);
-                    steps.Enqueue(new EditConfigStep(Console, FileSystem, Log));
+                    steps.Enqueue(editConfigStep);
                     return StepResult.Ok();
             }
             return StepResult.InvalidResponseSelected();

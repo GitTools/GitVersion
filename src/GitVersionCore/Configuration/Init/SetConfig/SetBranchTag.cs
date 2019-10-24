@@ -9,7 +9,7 @@ namespace GitVersion.Configuration.Init.SetConfig
         private string name;
         private BranchConfig branchConfig;
 
-        public SetBranchTag(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
+        public SetBranchTag(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
         {
         }
 
@@ -27,18 +27,19 @@ namespace GitVersion.Configuration.Init.SetConfig
                 return StepResult.InvalidResponseSelected();
             }
 
+            var configureBranchStep = StepFactory.CreateStep<ConfigureBranch>();
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(new ConfigureBranch(Console, FileSystem, Log).WithData( name, branchConfig));
+                    steps.Enqueue(configureBranchStep.WithData(name, branchConfig));
                     return StepResult.Ok();
                 case "1":
                     branchConfig.Tag = string.Empty;
-                    steps.Enqueue(new ConfigureBranch(Console, FileSystem, Log).WithData(name, branchConfig));
+                    steps.Enqueue(configureBranchStep.WithData(name, branchConfig));
                     return StepResult.Ok();
                 default:
                     branchConfig.Tag = result;
-                    steps.Enqueue(new ConfigureBranch(Console, FileSystem, Log).WithData(name, branchConfig));
+                    steps.Enqueue(configureBranchStep.WithData(name, branchConfig));
                     return StepResult.Ok();
             }
         }

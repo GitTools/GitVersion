@@ -95,7 +95,8 @@ namespace GitVersionCore.Tests
             var gitVersionFinder = new GitVersionFinder(log, nextVersionCalculator);
 
             var gitPreparer = new GitPreparer(log, arguments);
-            var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), testFileSystem, log);
+            var stepFactory = new ConfigInitStepFactory();
+            var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
 
             var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer, configInitWizard);
             
