@@ -5,7 +5,7 @@ namespace GitVersion.Configuration.Init.Wizard
 {
     public class PickBranchingStrategy1Step : ConfigInitWizardStep
     {
-        public PickBranchingStrategy1Step(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
+        public PickBranchingStrategy1Step(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
         {
         }
 
@@ -17,10 +17,10 @@ namespace GitVersion.Configuration.Init.Wizard
                     Console.Write(@"Because you need to maintain multiple versions of your product in production at the same time, GitFlow is likely a good fit.
 
 GitFlow allows you to have new development happening on the 'develop' branch, patch issues in old minor versions with 'hotfix/' branches and support old major versions with 'support/' branches");
-                    steps.Enqueue(new PickBranchingStrategyStep(Console, FileSystem, Log));
+                    steps.Enqueue(StepFactory.CreateStep<PickBranchingStrategyStep>());
                     return StepResult.Ok();
                 case "n":
-                    steps.Enqueue(new PickBranchingStrategy2Step(Console, FileSystem, Log));
+                    steps.Enqueue(StepFactory.CreateStep<PickBranchingStrategy2Step>());
                     return StepResult.Ok();
             }
 

@@ -9,12 +9,14 @@ namespace GitVersion.Configuration.Init.Wizard
         protected readonly IConsole Console;
         protected readonly IFileSystem FileSystem;
         protected readonly ILog Log;
+        protected readonly IConfigInitStepFactory StepFactory;
 
-        protected ConfigInitWizardStep(IConsole console, IFileSystem fileSystem, ILog log)
+        protected ConfigInitWizardStep(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory)
         {
             Console = console;
             FileSystem = fileSystem;
             Log = log;
+            StepFactory = stepFactory;
         }
 
         public bool Apply(Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)

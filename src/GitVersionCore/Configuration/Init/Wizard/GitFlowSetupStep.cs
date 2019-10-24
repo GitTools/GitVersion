@@ -5,7 +5,7 @@ namespace GitVersion.Configuration.Init.Wizard
 {
     public class GitFlowSetupStep : GlobalModeSetting
     {
-        public GitFlowSetupStep(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
+        public GitFlowSetupStep(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
         {
         }
 

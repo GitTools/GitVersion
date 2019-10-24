@@ -4,7 +4,7 @@ namespace GitVersion.Configuration.Init.Wizard
 {
     public class FinishedSetupStep : EditConfigStep
     {
-        public FinishedSetupStep(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
+        public FinishedSetupStep(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
         {
         }
 

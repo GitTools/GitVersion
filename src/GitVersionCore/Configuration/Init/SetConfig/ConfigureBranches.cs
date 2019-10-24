@@ -8,7 +8,7 @@ namespace GitVersion.Configuration.Init.SetConfig
 {
     public class ConfigureBranches : ConfigInitWizardStep
     {
-        public ConfigureBranches(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
+        public ConfigureBranches(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
         {
         }
 
@@ -18,7 +18,7 @@ namespace GitVersion.Configuration.Init.SetConfig
             {
                 if (parsed == 0)
                 {
-                    steps.Enqueue(new EditConfigStep(Console, FileSystem, Log));
+                    steps.Enqueue(StepFactory.CreateStep<EditConfigStep>());
                     return StepResult.Ok();
                 }
 
@@ -31,7 +31,7 @@ namespace GitVersion.Configuration.Init.SetConfig
                         branchConfig = new BranchConfig {Name = foundBranch.Key};
                         config.Branches.Add(foundBranch.Key, branchConfig);
                     }
-                    steps.Enqueue(new ConfigureBranch(Console, FileSystem, Log).WithData(foundBranch.Key, branchConfig));
+                    steps.Enqueue(StepFactory.CreateStep<ConfigureBranch>().WithData(foundBranch.Key, branchConfig));
                     return StepResult.Ok();
                 }
                 catch (ArgumentOutOfRangeException)

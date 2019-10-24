@@ -10,7 +10,7 @@ namespace GitVersion.Configuration.Init.SetConfig
         private string name;
         private BranchConfig branchConfig;
 
-        public SetBranchIncrementMode(IConsole console, IFileSystem fileSystem, ILog log) : base(console, fileSystem, log)
+        public SetBranchIncrementMode(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
         {
         }
 
@@ -23,18 +23,19 @@ namespace GitVersion.Configuration.Init.SetConfig
 
         protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
+            var configureBranchStep = StepFactory.CreateStep<ConfigureBranch>();
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(new ConfigureBranch(Console, FileSystem, Log).WithData(name, branchConfig));
+                    steps.Enqueue(configureBranchStep.WithData(name, branchConfig));
                     return StepResult.Ok();
                 case "1":
                     branchConfig.VersioningMode = VersioningMode.ContinuousDelivery;
-                    steps.Enqueue(new ConfigureBranch(Console, FileSystem, Log).WithData(name, branchConfig));
+                    steps.Enqueue(configureBranchStep.WithData(name, branchConfig));
                     return StepResult.Ok();
                 case "2":
                     branchConfig.VersioningMode = VersioningMode.ContinuousDeployment;
-                    steps.Enqueue(new ConfigureBranch(Console, FileSystem, Log).WithData(name, branchConfig));
+                    steps.Enqueue(configureBranchStep.WithData(name, branchConfig));
                     return StepResult.Ok();
             }
 

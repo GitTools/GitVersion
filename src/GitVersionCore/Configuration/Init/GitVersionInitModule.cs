@@ -12,8 +12,9 @@ namespace GitVersion.Configuration.Init
         public void RegisterTypes(IServiceCollection services)
         {
             services.AddTransient<IConfigInitWizard, ConfigInitWizard>();
+            services.AddTransient<IConfigInitStepFactory, ConfigInitStepFactory>();
 
-            var steps = FindAllDerivedTypes<ConfigInitWizardStep>(Assembly.GetExecutingAssembly());
+            var steps = FindAllDerivedTypes<ConfigInitWizardStep>(Assembly.GetAssembly(GetType()));
 
             foreach (var step in steps)
             {
