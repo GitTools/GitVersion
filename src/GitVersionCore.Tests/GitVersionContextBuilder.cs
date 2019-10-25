@@ -63,7 +63,7 @@ namespace GitVersionCore.Tests
         public GitVersionContext Build()
         {
             var configuration = config ?? new Config();
-            ConfigurationUtils.ApplyDefaultsTo(configuration);
+            configuration.Reset();
             var repo = repository ?? CreateRepository();
             return new GitVersionContext(repo, new NullLog(), repo.Head, configuration);
         }

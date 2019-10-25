@@ -6,7 +6,7 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.Extensions;
 using GitVersion.Logging;
-using GitVersion.SemanticVersioning;
+using GitVersion;
 using GitVersion.VersionCalculation;
 
 namespace GitVersionCore.Tests

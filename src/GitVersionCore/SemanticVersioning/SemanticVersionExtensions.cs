@@ -1,6 +1,6 @@
 using GitVersion.Configuration;
 
-namespace GitVersion.SemanticVersioning
+namespace GitVersion
 {
     public static class SemanticVersionExtensions
     {

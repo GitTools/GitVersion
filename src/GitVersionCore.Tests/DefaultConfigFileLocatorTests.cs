@@ -96,7 +96,7 @@ namespace GitVersionCore.Tests
                 var stepFactory = new ConfigInitStepFactory();
                 var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
 
-                var configurationProvider = new ConfigurationProvider(fileSystem, log, defaultConfigFileLocator, gitPreparer, configInitWizard);
+                var configurationProvider = new ConfigProvider(fileSystem, log, defaultConfigFileLocator, gitPreparer, configInitWizard);
 
                 configurationProvider.Provide(repoPath); 
             });

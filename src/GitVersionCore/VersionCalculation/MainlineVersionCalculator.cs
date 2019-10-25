@@ -6,10 +6,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.SemanticVersioning;
 
 namespace GitVersion.VersionCalculation
 {
+    using GitVersion.Configuration;
+
     internal class MainlineVersionCalculator : IMainlineVersionCalculator
     {
         private readonly IMetaDataCalculator metaDataCalculator;

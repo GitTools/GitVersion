@@ -69,7 +69,7 @@ namespace GitVersionTask.Tests
                 var options = Options.Create(arguments);
 
                 var gitPreparer = new GitPreparer(log, options);
-                var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer, configInitWizard);
+                var configurationProvider = new ConfigProvider(testFileSystem, log, configFileLocator, gitPreparer, configInitWizard);
 
                 var baseVersionCalculator = new BaseVersionCalculator(log, null);
                 var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
@@ -101,7 +101,7 @@ namespace GitVersionTask.Tests
                 var options = Options.Create(arguments);
 
                 var gitPreparer = new GitPreparer(log, options);
-                var configurationProvider = new ConfigurationProvider(testFileSystem, log, configFileLocator, gitPreparer, configInitWizard);
+                var configurationProvider = new ConfigProvider(testFileSystem, log, configFileLocator, gitPreparer, configInitWizard);
                 var baseVersionCalculator = new BaseVersionCalculator(log, null);
                 var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
                 var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);

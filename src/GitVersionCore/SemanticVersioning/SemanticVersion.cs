@@ -2,7 +2,7 @@ using System;
 using System.Text.RegularExpressions;
 using GitVersion.Exceptions;
 
-namespace GitVersion.SemanticVersioning
+namespace GitVersion
 {
     public class SemanticVersion : IFormattable, IComparable<SemanticVersion>
     {

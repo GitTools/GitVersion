@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using GitVersion.SemanticVersioning;
+using System.Collections.Generic;
 
 namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {

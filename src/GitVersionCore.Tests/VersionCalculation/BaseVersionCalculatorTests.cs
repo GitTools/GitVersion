@@ -12,7 +12,6 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.SemanticVersioning;
 
 namespace GitVersionCore.Tests.VersionCalculation
 {

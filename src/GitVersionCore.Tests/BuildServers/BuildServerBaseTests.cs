@@ -5,7 +5,6 @@ using Shouldly;
 using GitVersion.OutputVariables;
 using GitVersion;
 using GitVersion.Logging;
-using GitVersion.SemanticVersioning;
 using GitVersion.VersionCalculation;
 
 namespace GitVersionCore.Tests.BuildServers

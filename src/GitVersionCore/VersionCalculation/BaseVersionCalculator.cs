@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
 using GitVersion.Logging;
-using GitVersion.SemanticVersioning;
 
 namespace GitVersion.VersionCalculation
 {

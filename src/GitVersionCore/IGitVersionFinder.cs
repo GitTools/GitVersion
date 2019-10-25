@@ -1,5 +1,3 @@
-using GitVersion.SemanticVersioning;
-
 namespace GitVersion
 {
     public interface IGitVersionFinder

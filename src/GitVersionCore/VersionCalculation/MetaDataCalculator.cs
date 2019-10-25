@@ -2,7 +2,6 @@ using System.Linq;
 using LibGit2Sharp;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.SemanticVersioning;
 
 namespace GitVersion.VersionCalculation
 {

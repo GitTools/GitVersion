@@ -15,20 +15,20 @@ namespace GitVersion
         private readonly IConfigFileLocator configFileLocator;
         private readonly IHelpWriter helpWriter;
         private readonly IExecCommand execCommand;
-        private readonly IConfigurationProvider configurationProvider;
+        private readonly IConfigProvider configProvider;
         private readonly IBuildServerResolver buildServerResolver;
         private readonly IGitPreparer gitPreparer;
         private readonly IVersionWriter versionWriter;
 
         public GitVersionExecutor(ILog log, IConfigFileLocator configFileLocator, IVersionWriter versionWriter, IHelpWriter helpWriter,
-            IExecCommand execCommand, IConfigurationProvider configurationProvider, IBuildServerResolver buildServerResolver, IGitPreparer gitPreparer)
+            IExecCommand execCommand, IConfigProvider configProvider, IBuildServerResolver buildServerResolver, IGitPreparer gitPreparer)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.configFileLocator = configFileLocator ?? throw new ArgumentNullException(nameof(configFileLocator));
             this.versionWriter = versionWriter ?? throw new ArgumentNullException(nameof(versionWriter));
             this.helpWriter = helpWriter ?? throw new ArgumentNullException(nameof(helpWriter));
             this.execCommand = execCommand ?? throw new ArgumentNullException(nameof(execCommand));
-            this.configurationProvider = configurationProvider ?? throw new ArgumentNullException(nameof(configFileLocator));
+            this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configFileLocator));
             this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
             this.gitPreparer = gitPreparer;
         }
@@ -104,12 +104,13 @@ namespace GitVersion
 
                 if (arguments.Init)
                 {
-                    configurationProvider.Init(targetPath);
+                    configProvider.Init(targetPath);
                     return 0;
                 }
                 if (arguments.ShowConfig)
                 {
-                    Console.WriteLine(configurationProvider.GetEffectiveConfigAsString(targetPath));
+                    var config = configProvider.Provide(targetPath);
+                    Console.WriteLine(config.ToString());
                     return 0;
                 }
 

@@ -21,7 +21,7 @@ namespace GitVersionCore.Tests
             {
                 VersioningMode = mode
             };
-            ConfigurationUtils.ApplyDefaultsTo(config);
+            config.Reset();
 
             var mockBranch = new MockBranch("master") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
             var mockRepository = new MockRepository
@@ -50,7 +50,7 @@ namespace GitVersionCore.Tests
             {
                 Increment = increment
             };
-            ConfigurationUtils.ApplyDefaultsTo(config);
+            config.Reset();
 
             using var fixture = new EmptyRepositoryFixture();
             fixture.MakeACommit();
@@ -78,7 +78,7 @@ namespace GitVersionCore.Tests
                     }
                 }
             };
-            ConfigurationUtils.ApplyDefaultsTo(config);
+            config.Reset();
             var develop = new MockBranch("develop") { new MockCommit { CommitterEx = Generate.SignatureNow() } };
             var mockRepository = new MockRepository
             {
