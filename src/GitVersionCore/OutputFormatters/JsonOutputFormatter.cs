@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GitVersion.OutputVariables;
-using GitVersion.Helpers;
+using GitVersion.Extensions;
 
 namespace GitVersion.OutputFormatters
 {

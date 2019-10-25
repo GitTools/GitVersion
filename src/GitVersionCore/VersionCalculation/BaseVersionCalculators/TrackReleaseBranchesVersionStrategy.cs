@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using GitVersion.Helpers;
 using LibGit2Sharp;
+using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {

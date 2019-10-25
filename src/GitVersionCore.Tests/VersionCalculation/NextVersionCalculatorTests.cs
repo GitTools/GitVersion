@@ -8,9 +8,9 @@ using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion;
+using GitVersion.Extensions;
 
 namespace GitVersionCore.Tests.VersionCalculation
 {

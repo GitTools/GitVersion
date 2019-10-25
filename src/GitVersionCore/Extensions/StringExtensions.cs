@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace GitVersion.Helpers
+namespace GitVersion.Extensions
 {
     public static class StringExtensions
     {

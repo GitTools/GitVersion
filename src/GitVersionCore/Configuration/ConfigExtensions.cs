@@ -2,12 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using GitVersion.Extensions;
 using GitVersion.VersioningModes;
+using System;
+using System.Text.RegularExpressions;
 
 namespace GitVersion.Configuration
 {
-    using System;
-    using System.Text.RegularExpressions;
-
     public static class ConfigExtensions
     {
         public static void Reset(this Config config)

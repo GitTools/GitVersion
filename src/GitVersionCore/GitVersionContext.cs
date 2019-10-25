@@ -2,8 +2,8 @@ using LibGit2Sharp;
 using System;
 using System.Linq;
 using GitVersion.Configuration;
-using GitVersion.Helpers;
 using GitVersion.Logging;
+using GitVersion.Extensions;
 
 namespace GitVersion
 {

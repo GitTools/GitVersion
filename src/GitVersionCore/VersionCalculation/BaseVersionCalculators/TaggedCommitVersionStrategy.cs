@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using LibGit2Sharp;
-using GitVersion.Helpers;
+using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
