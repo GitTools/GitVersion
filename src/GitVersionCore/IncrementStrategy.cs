@@ -1,6 +1,5 @@
 using System;
 using GitVersion.Configuration;
-using GitVersion.SemanticVersioning;
 
 namespace GitVersion
 {

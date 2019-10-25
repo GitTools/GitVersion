@@ -532,7 +532,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeCommits(5);
             fixture.Repository.CreateBranch("release-2.0.0");
             fixture.Checkout("release-2.0.0");
-            ConfigurationUtils.ApplyDefaultsTo(config);
+            config.Reset();
             var variables = fixture.GetVersion(config);
             Assert.AreEqual(variables.AssemblySemFileVer, "2.0.0.1001");
         }
@@ -549,7 +549,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeCommits(5);
             fixture.Repository.CreateBranch("release-2.0.0");
             fixture.Checkout("release-2.0.0");
-            ConfigurationUtils.ApplyDefaultsTo(config);
+            config.Reset();
             var variables = fixture.GetVersion(config);
             Assert.AreEqual(variables.AssemblySemFileVer, "2.0.0.30001");
         }

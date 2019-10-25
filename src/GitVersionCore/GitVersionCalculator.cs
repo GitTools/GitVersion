@@ -12,7 +12,7 @@ namespace GitVersion
         private readonly IFileSystem fileSystem;
         private readonly ILog log;
         private readonly IConfigFileLocator configFileLocator;
-        private readonly IConfigurationProvider configurationProvider;
+        private readonly IConfigProvider configProvider;
         private readonly IBuildServerResolver buildServerResolver;
         private readonly IGitVersionCache gitVersionCache;
         private readonly IGitVersionFinder gitVersionFinder;
@@ -21,14 +21,14 @@ namespace GitVersion
         private readonly Arguments arguments;
 
         public GitVersionCalculator(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator,
-            IConfigurationProvider configurationProvider,
+            IConfigProvider configProvider,
             IBuildServerResolver buildServerResolver, IGitVersionCache gitVersionCache,
             IGitVersionFinder gitVersionFinder, IGitPreparer gitPreparer, IVariableProvider variableProvider, IOptions<Arguments> options)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.configFileLocator = configFileLocator ?? throw new ArgumentNullException(nameof(configFileLocator));
-            this.configurationProvider = configurationProvider ?? throw new ArgumentNullException(nameof(configurationProvider));
+            this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
             this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
             this.gitVersionCache = gitVersionCache ?? throw new ArgumentNullException(nameof(gitVersionCache));
             this.gitVersionFinder = gitVersionFinder ?? throw new ArgumentNullException(nameof(gitVersionFinder));
@@ -117,7 +117,7 @@ namespace GitVersion
 
         private VersionVariables ExecuteInternal(string targetBranch, string commitId, Config overrideConfig)
         {
-            var configuration = configurationProvider.Provide(overrideConfig: overrideConfig);
+            var configuration = configProvider.Provide(overrideConfig: overrideConfig);
 
             return gitPreparer.WithRepository(repo =>
             {

@@ -10,18 +10,18 @@ namespace GitVersion.Configuration
     {
         private static readonly Dictionary<string, string> OldConfigKnownRegexes = new Dictionary<string, string>
         {
-            {ConfigurationConstants.MasterBranchRegex, ConfigurationConstants.MasterBranchKey},
-            {ConfigurationConstants.DevelopBranchRegex, ConfigurationConstants.DevelopBranchKey},
-            {ConfigurationConstants.FeatureBranchRegex, ConfigurationConstants.FeatureBranchKey},
-            {ConfigurationConstants.HotfixBranchRegex, ConfigurationConstants.HotfixBranchKey},
-            {ConfigurationConstants.ReleaseBranchRegex, ConfigurationConstants.ReleaseBranchKey},
-            {ConfigurationConstants.SupportBranchRegex, ConfigurationConstants.SupportBranchKey},
-            {ConfigurationConstants.PullRequestRegex, ConfigurationConstants.PullRequestBranchKey},
-            {"dev(elop)?(ment)?$", ConfigurationConstants.DevelopBranchKey },
-            {"release[/-]", ConfigurationConstants.ReleaseBranchKey },
-            {"hotfix[/-]", ConfigurationConstants.HotfixBranchKey },
-            {"feature(s)?[/-]", ConfigurationConstants.FeatureBranchKey },
-            {"feature[/-]", ConfigurationConstants.FeatureBranchKey }
+            {Config.MasterBranchRegex, Config.MasterBranchKey},
+            {Config.DevelopBranchRegex, Config.DevelopBranchKey},
+            {Config.FeatureBranchRegex, Config.FeatureBranchKey},
+            {Config.HotfixBranchRegex, Config.HotfixBranchKey},
+            {Config.ReleaseBranchRegex, Config.ReleaseBranchKey},
+            {Config.SupportBranchRegex, Config.SupportBranchKey},
+            {Config.PullRequestRegex, Config.PullRequestBranchKey},
+            {"dev(elop)?(ment)?$", Config.DevelopBranchKey },
+            {"release[/-]", Config.ReleaseBranchKey },
+            {"hotfix[/-]", Config.HotfixBranchKey },
+            {"feature(s)?[/-]", Config.FeatureBranchKey },
+            {"feature[/-]", Config.FeatureBranchKey }
         };
 
         public static void Notify(StringReader reader)

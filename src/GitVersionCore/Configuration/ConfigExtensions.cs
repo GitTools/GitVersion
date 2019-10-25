@@ -5,16 +5,19 @@ using GitVersion.VersioningModes;
 
 namespace GitVersion.Configuration
 {
-    public class ConfigurationUtils
+    using System;
+    using System.Text.RegularExpressions;
+
+    public static class ConfigExtensions
     {
-        public static void ApplyDefaultsTo(Config config)
+        public static void Reset(this Config config)
         {
             config.AssemblyVersioningScheme ??= AssemblyVersioningScheme.MajorMinorPatch;
             config.AssemblyFileVersioningScheme ??= AssemblyFileVersioningScheme.MajorMinorPatch;
             config.AssemblyInformationalFormat = config.AssemblyInformationalFormat;
             config.AssemblyVersioningFormat = config.AssemblyVersioningFormat;
             config.AssemblyFileVersioningFormat = config.AssemblyFileVersioningFormat;
-            config.TagPrefix ??= ConfigurationConstants.DefaultTagPrefix;
+            config.TagPrefix ??= Config.DefaultTagPrefix;
             config.VersioningMode ??= VersioningMode.ContinuousDelivery;
             config.ContinuousDeploymentFallbackTag ??= "ci";
             config.MajorVersionBumpMessage ??= IncrementStrategyFinder.DefaultMajorPattern;
@@ -29,43 +32,43 @@ namespace GitVersion.Configuration
 
             var configBranches = config.Branches.ToList();
 
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, ConfigurationConstants.DevelopBranchKey), ConfigurationConstants.DevelopBranchRegex,
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, Config.DevelopBranchKey), Config.DevelopBranchRegex,
                 new List<string>(),
                 defaultTag: "alpha",
                 defaultIncrementStrategy: IncrementStrategy.Minor,
                 defaultVersioningMode: config.VersioningMode == VersioningMode.Mainline ? VersioningMode.Mainline : VersioningMode.ContinuousDeployment,
                 defaultTrackMergeTarget: true,
                 tracksReleaseBranches: true);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, ConfigurationConstants.MasterBranchKey), ConfigurationConstants.MasterBranchRegex,
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, Config.MasterBranchKey), Config.MasterBranchRegex,
                 new List<string>
                     { "develop", "release" },
                 defaultTag: string.Empty,
                 defaultPreventIncrement: true,
                 defaultIncrementStrategy: IncrementStrategy.Patch,
                 isMainline: true);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, ConfigurationConstants.ReleaseBranchKey), ConfigurationConstants.ReleaseBranchRegex,
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, Config.ReleaseBranchKey), Config.ReleaseBranchRegex,
                 new List<string>
                     { "develop", "master", "support", "release" },
                 defaultTag: "beta",
                 defaultPreventIncrement: true,
                 defaultIncrementStrategy: IncrementStrategy.Patch,
                 isReleaseBranch: true);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, ConfigurationConstants.FeatureBranchKey), ConfigurationConstants.FeatureBranchRegex,
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, Config.FeatureBranchKey), Config.FeatureBranchRegex,
                 new List<string>
                     { "develop", "master", "release", "feature", "support", "hotfix" },
                 defaultIncrementStrategy: IncrementStrategy.Inherit);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, ConfigurationConstants.PullRequestBranchKey), ConfigurationConstants.PullRequestRegex,
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, Config.PullRequestBranchKey), Config.PullRequestRegex,
                 new List<string>
                     { "develop", "master", "release", "feature", "support", "hotfix" },
                 defaultTag: "PullRequest",
                 defaultTagNumberPattern: @"[/-](?<number>\d+)",
                 defaultIncrementStrategy: IncrementStrategy.Inherit);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, ConfigurationConstants.HotfixBranchKey), ConfigurationConstants.HotfixBranchRegex,
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, Config.HotfixBranchKey), Config.HotfixBranchRegex,
                 new List<string>
                     { "develop", "master", "support" },
                 defaultTag: "beta",
                 defaultIncrementStrategy: IncrementStrategy.Patch);
-            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, ConfigurationConstants.SupportBranchKey), ConfigurationConstants.SupportBranchRegex,
+            ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, Config.SupportBranchKey), Config.SupportBranchRegex,
                 new List<string>
                     { "master" },
                 defaultTag: string.Empty,
@@ -108,17 +111,17 @@ namespace GitVersion.Configuration
         private static readonly Dictionary<string, int> DefaultPreReleaseWeight =
             new Dictionary<string, int>
             {
-                { ConfigurationConstants.DevelopBranchRegex, 0 },
-                { ConfigurationConstants.HotfixBranchRegex, 30000 },
-                { ConfigurationConstants.ReleaseBranchRegex, 30000 },
-                { ConfigurationConstants.FeatureBranchRegex, 30000 },
-                { ConfigurationConstants.PullRequestRegex, 30000 },
-                { ConfigurationConstants.SupportBranchRegex, 55000 },
-                { ConfigurationConstants.MasterBranchRegex, 55000 }
+                { Config.DevelopBranchRegex, 0 },
+                { Config.HotfixBranchRegex, 30000 },
+                { Config.ReleaseBranchRegex, 30000 },
+                { Config.FeatureBranchRegex, 30000 },
+                { Config.PullRequestRegex, 30000 },
+                { Config.SupportBranchRegex, 55000 },
+                { Config.MasterBranchRegex, 55000 }
             };
         private const IncrementStrategy DefaultIncrementStrategy = IncrementStrategy.Inherit;
 
-        public static void ApplyBranchDefaults(Config config,
+        public static void ApplyBranchDefaults(this Config config,
             BranchConfig branchConfig,
             string branchRegex,
             List<string> sourceBranches,
@@ -148,7 +151,7 @@ namespace GitVersion.Configuration
             branchConfig.PreReleaseWeight ??= defaultPreReleaseNumber;
         }
 
-        public static void VerifyConfiguration(Config readConfig)
+        public static void Verify(this Config readConfig)
         {
             // Verify no branches are set to mainline mode
             if (readConfig.Branches.Any(b => b.Value.VersioningMode == VersioningMode.Mainline))
@@ -161,12 +164,43 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             }
         }
 
-        public static void ApplyOverridesTo(Config config, Config overrideConfig)
+        public static void ApplyOverridesTo(this Config config, Config overrideConfig)
         {
             config.TagPrefix = string.IsNullOrWhiteSpace(overrideConfig.TagPrefix) ? config.TagPrefix : overrideConfig.TagPrefix;
         }
 
-        private static BranchConfig GetOrCreateBranchDefaults(Config config, string branchKey)
+        public static BranchConfig GetConfigForBranch(this Config config, string branchName)
+        {
+            if (branchName == null) throw new ArgumentNullException(nameof(branchName));
+            var matches = config.Branches
+                .Where(b => Regex.IsMatch(branchName, b.Value.Regex, RegexOptions.IgnoreCase))
+                .ToArray();
+
+            try
+            {
+                return matches
+                    .Select(kvp => kvp.Value)
+                    .SingleOrDefault();
+            }
+            catch (InvalidOperationException)
+            {
+                var matchingConfigs = String.Join("\n - ", matches.Select(m => m.Key));
+                var picked = matches
+                    .Select(kvp => kvp.Value)
+                    .First();
+
+                // TODO check how to log this
+                Console.WriteLine(
+                    $"Multiple branch configurations match the current branch branchName of '{branchName}'. " +
+                    $"Using the first matching configuration, '{picked}'. Matching configurations include: '{matchingConfigs}'");
+
+                return picked;
+            }
+        }
+
+        public static bool IsReleaseBranch(this Config config, string branchName) => config.GetConfigForBranch(branchName)?.IsReleaseBranch ?? false;
+
+        private static BranchConfig GetOrCreateBranchDefaults(this Config config, string branchKey)
         {
             if (!config.Branches.ContainsKey(branchKey))
             {

@@ -4,7 +4,6 @@ using System.Linq;
 using GitVersion.Configuration;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.SemanticVersioning;
 
 namespace GitVersion
 {

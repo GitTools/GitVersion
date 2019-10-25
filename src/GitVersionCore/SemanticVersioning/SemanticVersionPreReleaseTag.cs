@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion.Helpers;
 
-namespace GitVersion.SemanticVersioning
+namespace GitVersion
 {
     public class SemanticVersionPreReleaseTag :
         IFormattable, IComparable<SemanticVersionPreReleaseTag>, IEquatable<SemanticVersionPreReleaseTag>

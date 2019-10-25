@@ -7,7 +7,6 @@ using LibGit2Sharp;
 using Shouldly;
 using GitVersion.Helpers;
 using GitVersion.Logging;
-using GitVersion.SemanticVersioning;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.VersionCalculation;
 using Microsoft.Extensions.Options;
@@ -18,7 +17,7 @@ namespace GitVersionCore.Tests
     {
         public static Config ApplyDefaults(this Config config)
         {
-            ConfigurationUtils.ApplyDefaultsTo(config);
+            config.Reset();
             return config;
         }
 
@@ -27,7 +26,7 @@ namespace GitVersionCore.Tests
             if (configuration == null)
             {
                 configuration = new Config();
-                ConfigurationUtils.ApplyDefaultsTo(configuration);
+                configuration.Reset();
             }
 
             var log = new NullLog();
@@ -58,7 +57,7 @@ namespace GitVersionCore.Tests
 
         public static void AssertFullSemver(this RepositoryFixtureBase fixture, Config configuration, string fullSemver, IRepository repository = null, string commitId = null, bool isForTrackedBranchOnly = true, string targetBranch = null)
         {
-            ConfigurationUtils.ApplyDefaultsTo(configuration);
+            configuration.Reset();
             Console.WriteLine("---------");
 
             try

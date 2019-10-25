@@ -1,5 +1,5 @@
 using System;
-using GitVersion.SemanticVersioning;
+using GitVersion;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
 using GitVersion.VersionFilters;
 using NUnit.Framework;

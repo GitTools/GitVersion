@@ -5,16 +5,16 @@ namespace GitVersion.Logging
 {
     public class ConsoleAppender : ILogAppender
     {
-        private readonly object _lock;
+        private readonly object locker;
         private readonly IDictionary<LogLevel, (ConsoleColor, ConsoleColor)> palettes;
         public ConsoleAppender()
         {
-            _lock = new object();
+            locker = new object();
             palettes = CreatePalette();
         }
         public void WriteTo(LogLevel level, string message)
         {
-            lock (_lock)
+            lock (locker)
             {
                 try
                 {

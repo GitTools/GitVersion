@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.Extensions;
-using GitVersion.SemanticVersioning;
+using GitVersion;
 
 namespace GitVersionCore.Tests
 {

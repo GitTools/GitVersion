@@ -8,7 +8,6 @@ using GitVersion.BuildServers;
 using GitVersion;
 using GitVersion.OutputVariables;
 using GitVersion.Logging;
-using GitVersion.SemanticVersioning;
 using GitVersion.VersionCalculation;
 
 namespace GitVersionCore.Tests.BuildServers

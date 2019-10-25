@@ -1,12 +1,11 @@
 using System;
 using System.IO;
-using System.Text;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
 
 namespace GitVersion.Configuration
 {
-    public class ConfigurationProvider : IConfigurationProvider
+    public class ConfigProvider : IConfigProvider
     {
         private readonly IFileSystem fileSystem;
         private readonly ILog log;
@@ -14,7 +13,7 @@ namespace GitVersion.Configuration
         private readonly IGitPreparer gitPreparer;
         private readonly IConfigInitWizard configInitWizard;
 
-        public ConfigurationProvider(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IGitPreparer gitPreparer, IConfigInitWizard configInitWizard)
+        public ConfigProvider(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator, IGitPreparer gitPreparer, IConfigInitWizard configInitWizard)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
@@ -28,34 +27,18 @@ namespace GitVersion.Configuration
             var workingDirectory = gitPreparer.WorkingDirectory;
             var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
 
-            if (configFileLocator.HasConfigFileAt(workingDirectory))
-            {
-                return Provide(workingDirectory, applyDefaults, overrideConfig);
-            }
-
-            return Provide(projectRootDirectory, applyDefaults, overrideConfig);
+            var rootDirectory = configFileLocator.HasConfigFileAt(workingDirectory) ? workingDirectory : projectRootDirectory;
+            return Provide(rootDirectory, applyDefaults, overrideConfig);
         }
 
         public Config Provide(string workingDirectory, bool applyDefaults = true, Config overrideConfig = null)
         {
             var readConfig = configFileLocator.ReadConfig(workingDirectory);
-            ConfigurationUtils.VerifyConfiguration(readConfig);
+            readConfig.Verify();
 
-            if (applyDefaults) ConfigurationUtils.ApplyDefaultsTo(readConfig);
-            if (null != overrideConfig) ConfigurationUtils.ApplyOverridesTo(readConfig, overrideConfig);
+            if (applyDefaults) readConfig.Reset();
+            if (null != overrideConfig) readConfig.ApplyOverridesTo(overrideConfig);
             return readConfig;
-        }
-
-        public string GetEffectiveConfigAsString(string workingDirectory)
-        {
-            var config = Provide(workingDirectory);
-            var stringBuilder = new StringBuilder();
-            using (var stream = new StringWriter(stringBuilder))
-            {
-                ConfigSerialiser.Write(config, stream);
-                stream.Flush();
-            }
-            return stringBuilder.ToString();
         }
 
         public void Init(string workingDirectory)

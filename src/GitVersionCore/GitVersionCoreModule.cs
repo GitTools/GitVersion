@@ -21,7 +21,7 @@ namespace GitVersion
             services.AddSingleton<IConsole, ConsoleAdapter>();
             services.AddSingleton<IGitVersionCache, GitVersionCache>();
 
-            services.AddSingleton<IConfigurationProvider, ConfigurationProvider>();
+            services.AddSingleton<IConfigProvider, ConfigProvider>();
             services.AddSingleton<IVariableProvider, VariableProvider>();
             services.AddSingleton<IGitVersionFinder, GitVersionFinder>();
 

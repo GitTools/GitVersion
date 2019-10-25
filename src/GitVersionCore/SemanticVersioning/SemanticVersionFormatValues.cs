@@ -2,7 +2,7 @@ using System.Globalization;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
 
-namespace GitVersion.SemanticVersioning
+namespace GitVersion
 {
     public class SemanticVersionFormatValues
     {

@@ -1,4 +1,3 @@
-﻿using GitVersion.SemanticVersioning;
 using LibGit2Sharp;
 
 namespace GitVersion.VersionCalculation.BaseVersionCalculators

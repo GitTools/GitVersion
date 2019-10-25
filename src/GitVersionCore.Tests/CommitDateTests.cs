@@ -6,7 +6,6 @@ using NUnit.Framework;
 using GitVersion.Configuration;
 using GitVersion.VersioningModes;
 using GitVersion.Extensions;
-using GitVersion.SemanticVersioning;
 
 namespace GitVersionCore.Tests
 {

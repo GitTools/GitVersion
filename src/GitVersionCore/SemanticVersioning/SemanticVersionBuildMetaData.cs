@@ -2,7 +2,7 @@ using System;
 using System.Text.RegularExpressions;
 using GitVersion.Helpers;
 
-namespace GitVersion.SemanticVersioning
+namespace GitVersion
 {
     public class SemanticVersionBuildMetaData : IFormattable, IEquatable<SemanticVersionBuildMetaData>
     {

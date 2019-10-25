@@ -1,6 +1,5 @@
 using GitVersion;
 using GitVersion.Logging;
-using GitVersion.SemanticVersioning;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
 using LibGit2Sharp;

@@ -527,7 +527,7 @@ namespace GitVersionCore.Tests
             var gitPreparer = new GitPreparer(log, options);
             var stepFactory = new ConfigInitStepFactory();
             var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
-            var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
+            var configurationProvider = new ConfigProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
             var baseVersionCalculator = new BaseVersionCalculator(this.log, null);
             var mainlineVersionCalculator = new MainlineVersionCalculator(this.log, metaDataCalculator);
             var nextVersionCalculator = new NextVersionCalculator(this.log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
@@ -550,7 +550,7 @@ namespace GitVersionCore.Tests
             var gitPreparer = new GitPreparer(log, options);
             var stepFactory = new ConfigInitStepFactory();
             var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
-            var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
+            var configurationProvider = new ConfigProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
             var baseVersionCalculator = new BaseVersionCalculator(log, null);
             var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
             var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
