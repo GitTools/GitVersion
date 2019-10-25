@@ -24,7 +24,7 @@ namespace GitVersionTask
 
     public static class FileHelper
     {
-        private static readonly Dictionary<string, Func<string, string, bool>> versionAttributeFinders = new Dictionary<string, Func<string, string, bool>>()
+        private static readonly Dictionary<string, Func<string, string, bool>> VersionAttributeFinders = new Dictionary<string, Func<string, string, bool>>()
         {
             { ".cs", CSharpFileContainsVersionAttribute },
             { ".vb", VisualBasicFileContainsVersionAttribute }
@@ -84,7 +84,7 @@ namespace GitVersionTask
         {
             var compileFileExtension = Path.GetExtension(compileFile);
 
-            if (versionAttributeFinders.TryGetValue(compileFileExtension, out var languageSpecificFileContainsVersionAttribute))
+            if (VersionAttributeFinders.TryGetValue(compileFileExtension, out var languageSpecificFileContainsVersionAttribute))
             {
                 return languageSpecificFileContainsVersionAttribute(compileFile, projectFile);
             }

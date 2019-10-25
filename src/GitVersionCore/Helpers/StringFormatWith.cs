@@ -39,7 +39,7 @@ namespace GitVersion.Helpers
                 {
                     memberAccessExpression = memberAccessExpression.Substring(memberAccessExpression.IndexOf(':') + 1);
                     string envVar = memberAccessExpression, fallback = null;
-                    string[] components = (memberAccessExpression.Contains("??")) ? memberAccessExpression.Split(new[] { "??" }, StringSplitOptions.None) : null;
+                    var components = (memberAccessExpression.Contains("??")) ? memberAccessExpression.Split(new[] { "??" }, StringSplitOptions.None) : null;
                     if (components != null)
                     {
                         envVar = components[0].Trim();
@@ -57,7 +57,7 @@ namespace GitVersion.Helpers
                 }
                 else
                 {
-                    Func<object, string> expression = CompileDataBinder(objType, memberAccessExpression);
+                    var expression = CompileDataBinder(objType, memberAccessExpression);
                     propertyValue = expression(source);
                 }
                 template = template.Replace(match.Value, propertyValue);

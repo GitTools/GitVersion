@@ -3,9 +3,9 @@ using GitVersion.Logging;
 
 namespace GitVersion.BuildServers
 {
-    public class TravisCI : BuildServerBase
+    public class TravisCi : BuildServerBase
     {
-        public TravisCI(IEnvironment environment, ILog log) : base(environment, log)
+        public TravisCi(IEnvironment environment, ILog log) : base(environment, log)
         {
         }
 

@@ -50,7 +50,7 @@ namespace GitVersion.Cache
 
             while (dirs.Any())
             {
-                string currentDir = dirs.Pop();
+                var currentDir = dirs.Pop();
 
                 var di = new DirectoryInfo(currentDir);
                 result.Add(di.Name);

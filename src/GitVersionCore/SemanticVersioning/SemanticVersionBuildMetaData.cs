@@ -10,7 +10,7 @@ namespace GitVersion.SemanticVersioning
             @"(?<BuildNumber>\d+)?(\.?Branch(Name)?\.(?<BranchName>[^\.]+))?(\.?Sha?\.(?<Sha>[^\.]+))?(?<Other>.*)",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly LambdaEqualityHelper<SemanticVersionBuildMetaData> equalityHelper =
+        private static readonly LambdaEqualityHelper<SemanticVersionBuildMetaData> EqualityHelper =
            new LambdaEqualityHelper<SemanticVersionBuildMetaData>(x => x.CommitsSinceTag, x => x.Branch, x => x.Sha);
 
         public int? CommitsSinceTag;
@@ -57,12 +57,12 @@ namespace GitVersion.SemanticVersioning
 
         public bool Equals(SemanticVersionBuildMetaData other)
         {
-            return equalityHelper.Equals(this, other);
+            return EqualityHelper.Equals(this, other);
         }
 
         public override int GetHashCode()
         {
-            return equalityHelper.GetHashCode(this);
+            return EqualityHelper.GetHashCode(this);
         }
 
         public override string ToString()

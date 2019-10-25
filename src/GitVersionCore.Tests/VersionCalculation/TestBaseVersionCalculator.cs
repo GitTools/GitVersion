@@ -28,7 +28,7 @@ namespace GitVersionCore.Tests.VersionCalculation
 
     public class TestBaseVersionStrategiesCalculator : BaseVersionCalculator
     {
-        private static readonly IVersionStrategy[] versionStrategies = new IVersionStrategy[]
+        private static readonly IVersionStrategy[] VersionStrategies = new IVersionStrategy[]
         {
             new FallbackVersionStrategy(),
             new ConfigNextVersionVersionStrategy(),
@@ -37,7 +37,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             new VersionInBranchNameVersionStrategy(),
             new TrackReleaseBranchesVersionStrategy()
         };
-        public TestBaseVersionStrategiesCalculator(ILog log) : base(log, versionStrategies)
+        public TestBaseVersionStrategiesCalculator(ILog log) : base(log, VersionStrategies)
         {
         }
     }

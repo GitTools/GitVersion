@@ -6,18 +6,18 @@ namespace GitVersionCore.Tests.Mocks
 {
     public class MockThreadSleep : IThreadSleep
     {
-        private readonly Func<int, Task> Validator;
+        private readonly Func<int, Task> validator;
 
         public MockThreadSleep(Func<int, Task> validator = null)
         {
-            Validator = validator;
+            this.validator = validator;
         }
 
         public async Task SleepAsync(int milliseconds)
         {
-            if (Validator != null)
+            if (validator != null)
             {
-                await Validator(milliseconds);
+                await validator(milliseconds);
             }
         }
     }

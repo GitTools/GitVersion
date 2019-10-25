@@ -33,7 +33,7 @@ namespace GitVersionCore.Tests.BuildServers
         }
 
         [Test]
-        public void GenerateSetVersionMessageReturnsVersionAsIs_AlthoughThisIsNotUsedByJenkins()
+        public void GenerateSetVersionMessageReturnsVersionAsIsAlthoughThisIsNotUsedByJenkins()
         {
             var j = new Jenkins(environment, log);
             var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Beta4.7");

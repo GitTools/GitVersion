@@ -150,7 +150,7 @@ namespace GitVersion.Configuration
                 // To prevent infinite loops, make sure that a new branch was chosen.
                 if (targetBranch.IsSameBranch(chosenBranch))
                 {
-                    BranchConfig developOrMasterConfig =
+                    var developOrMasterConfig =
                         ChooseMasterOrDevelopIncrementStrategyIfTheChosenBranchIsOneOfThem(
                             chosenBranch, branchConfiguration, config);
                     if (developOrMasterConfig != null)
@@ -220,30 +220,30 @@ namespace GitVersion.Configuration
             return excludedBranches;
         }
 
-        private static BranchConfig ChooseMasterOrDevelopIncrementStrategyIfTheChosenBranchIsOneOfThem(Branch ChosenBranch, BranchConfig BranchConfiguration, Config config)
+        private static BranchConfig ChooseMasterOrDevelopIncrementStrategyIfTheChosenBranchIsOneOfThem(Branch chosenBranch, BranchConfig branchConfiguration, Config config)
         {
             BranchConfig masterOrDevelopConfig = null;
             var developBranchRegex = config.Branches[ConfigurationConstants.DevelopBranchKey].Regex;
             var masterBranchRegex = config.Branches[ConfigurationConstants.MasterBranchKey].Regex;
-            if (Regex.IsMatch(ChosenBranch.FriendlyName, developBranchRegex, RegexOptions.IgnoreCase))
+            if (Regex.IsMatch(chosenBranch.FriendlyName, developBranchRegex, RegexOptions.IgnoreCase))
             {
                 // Normally we would not expect this to happen but for safety we add a check
                 if (config.Branches[ConfigurationConstants.DevelopBranchKey].Increment !=
                     IncrementStrategy.Inherit)
                 {
-                    masterOrDevelopConfig = new BranchConfig(BranchConfiguration)
+                    masterOrDevelopConfig = new BranchConfig(branchConfiguration)
                     {
                         Increment = config.Branches[ConfigurationConstants.DevelopBranchKey].Increment
                     };
                 }
             }
-            else if (Regex.IsMatch(ChosenBranch.FriendlyName, masterBranchRegex, RegexOptions.IgnoreCase))
+            else if (Regex.IsMatch(chosenBranch.FriendlyName, masterBranchRegex, RegexOptions.IgnoreCase))
             {
                 // Normally we would not expect this to happen but for safety we add a check
                 if (config.Branches[ConfigurationConstants.MasterBranchKey].Increment !=
                     IncrementStrategy.Inherit)
                 {
-                    masterOrDevelopConfig = new BranchConfig(BranchConfiguration)
+                    masterOrDevelopConfig = new BranchConfig(branchConfiguration)
                     {
                         Increment = config.Branches[ConfigurationConstants.DevelopBranchKey].Increment
                     };

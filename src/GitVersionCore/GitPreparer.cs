@@ -15,7 +15,7 @@ namespace GitVersion
         private readonly AuthenticationInfo authentication;
         private readonly bool noFetch;
 
-        private const string defaultRemoteName = "origin";
+        private const string DefaultRemoteName = "origin";
         private string dynamicGitRepositoryPath;
 
         public GitPreparer(ILog log, IOptions<Arguments> options)
@@ -105,12 +105,12 @@ namespace GitVersion
 
         private void CleanupDuplicateOrigin()
         {
-            var remoteToKeep = defaultRemoteName;
+            var remoteToKeep = DefaultRemoteName;
 
             var repo = new Repository(GetDotGitDirectory());
 
             // check that we have a remote that matches defaultRemoteName if not take the first remote
-            if (!repo.Network.Remotes.Any(remote => remote.Name.Equals(defaultRemoteName, StringComparison.InvariantCultureIgnoreCase)))
+            if (!repo.Network.Remotes.Any(remote => remote.Name.Equals(DefaultRemoteName, StringComparison.InvariantCultureIgnoreCase)))
             {
                 remoteToKeep = repo.Network.Remotes.First().Name;
             }

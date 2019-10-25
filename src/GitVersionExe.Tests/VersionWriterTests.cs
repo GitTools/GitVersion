@@ -17,7 +17,7 @@ namespace GitVersionExe.Tests
             this.versionWriter = new VersionWriter();
         }
         [Test]
-        public void WriteVersion_ShouldWriteFileVersion_WithNoPrereleaseTag()
+        public void WriteVersionShouldWriteFileVersionWithNoPrereleaseTag()
         {
             var asm = GenerateAssembly(new Version(1, 0, 0), "");
 
@@ -29,7 +29,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void WriteVersion_ShouldWriteFileVersion_WithPrereleaseTag()
+        public void WriteVersionShouldWriteFileVersionWithPrereleaseTag()
         {
             var asm = GenerateAssembly(new Version(1, 0, 0), "-beta0004");
 

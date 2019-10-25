@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using GitVersion.Helpers;
 
 namespace GitVersion.Extensions
@@ -71,7 +70,7 @@ namespace GitVersion.Extensions
         private static IEnumerable<string> GetEmbeddedTemplates(TemplateType templateType, string templateCategory)
         {
 
-            Assembly assy = typeof(TemplateManager).Assembly;
+            var assy = typeof(TemplateManager).Assembly;
 
             foreach (var name in assy.GetManifestResourceNames())
             {

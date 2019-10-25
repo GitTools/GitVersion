@@ -54,8 +54,8 @@ namespace GitVersionCore.Tests.BuildServers
         public void JenkinsTakesLocalBranchNameNotRemoteName()
         {
             // Save original values so they can be restored
-            string branchOrig = environment.GetEnvironmentVariable(branch);
-            string localBranchOrig = environment.GetEnvironmentVariable(localBranch);
+            var branchOrig = environment.GetEnvironmentVariable(branch);
+            var localBranchOrig = environment.GetEnvironmentVariable(localBranch);
 
             // Set GIT_BRANCH for testing
             environment.SetEnvironmentVariable(branch, "origin/master");
@@ -79,9 +79,9 @@ namespace GitVersionCore.Tests.BuildServers
         public void JenkinsTakesBranchNameInPipelineAsCode()
         {
             // Save original values so they can be restored
-            string branchOrig = environment.GetEnvironmentVariable(branch);
-            string localBranchOrig = environment.GetEnvironmentVariable(localBranch);
-            string pipelineBranchOrig = environment.GetEnvironmentVariable(pipelineBranch);
+            var branchOrig = environment.GetEnvironmentVariable(branch);
+            var localBranchOrig = environment.GetEnvironmentVariable(localBranch);
+            var pipelineBranchOrig = environment.GetEnvironmentVariable(pipelineBranch);
 
             // Set BRANCH_NAME in pipeline mode
             environment.SetEnvironmentVariable(pipelineBranch, "master");

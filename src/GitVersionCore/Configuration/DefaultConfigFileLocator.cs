@@ -68,8 +68,8 @@ namespace GitVersion.Configuration
             var workingConfigFile = GetConfigFilePath(workingDirectory);
             var projectRootConfigFile = GetConfigFilePath(projectRootDirectory);
 
-            bool hasConfigInWorkingDirectory = FileSystem.Exists(workingConfigFile);
-            bool hasConfigInProjectRootDirectory = FileSystem.Exists(projectRootConfigFile);
+            var hasConfigInWorkingDirectory = FileSystem.Exists(workingConfigFile);
+            var hasConfigInProjectRootDirectory = FileSystem.Exists(projectRootConfigFile);
             if (hasConfigInProjectRootDirectory && hasConfigInWorkingDirectory)
             {
                 throw new WarningException($"Ambiguous config file selection from '{workingConfigFile}' and '{projectRootConfigFile}'");

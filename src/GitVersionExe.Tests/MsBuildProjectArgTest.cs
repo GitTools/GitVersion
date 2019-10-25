@@ -11,9 +11,9 @@ namespace GitVersionExe.Tests
         [Test]
         public void RunsMsBuildProvideViaCommandLineArg()
         {
-            const string TaggedVersion = "1.2.3";
+            const string taggedVersion = "1.2.3";
             using var fixture = new EmptyRepositoryFixture();
-            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+            fixture.Repository.MakeATaggedCommit(taggedVersion);
 
             var buildFile = Path.Combine(fixture.RepositoryPath, "RunsMsBuildProvideViaCommandLineArg.proj");
             File.Delete(buildFile);

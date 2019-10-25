@@ -16,7 +16,7 @@ namespace GitVersion
         private readonly Dictionary<Tuple<Branch, Branch>, MergeBaseData> mergeBaseCache;
         private readonly Dictionary<Branch, List<SemanticVersion>> semanticVersionTagsOnBranchCache;
         private IRepository Repository { get; }
-        private const string missingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
+        private const string MissingTipFormat = "{0} has no tip. Please see http://example.com/docs for information on how to fix this.";
         private readonly ILog log;
         private readonly Config configuration;
 
@@ -208,7 +208,7 @@ namespace GitVersion
             {
                 if (branch.Tip == null)
                 {
-                    log.Warning(string.Format(missingTipFormat, branch.FriendlyName));
+                    log.Warning(string.Format(MissingTipFormat, branch.FriendlyName));
                     return BranchCommit.Empty;
                 }
 
@@ -254,7 +254,7 @@ namespace GitVersion
                 {
                     if (otherBranch.Tip == null)
                     {
-                        log.Warning(string.Format(missingTipFormat, otherBranch.FriendlyName));
+                        log.Warning(string.Format(MissingTipFormat, otherBranch.FriendlyName));
                         return BranchCommit.Empty;
                     }
 

@@ -135,7 +135,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
-        public void WhenReleaseBranch_OffDevelop_IsMergedIntoMasterAndDevelop_VersionIsTakenWithIt()
+        public void WhenReleaseBranchOffDevelopIsMergedIntoMasterAndDevelopVersionIsTakenWithIt()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.3");
@@ -154,7 +154,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
-        public void WhenReleaseBranch_OffMaster_IsMergedIntoMaster_VersionIsTakenWithIt()
+        public void WhenReleaseBranchOffMasterIsMergedIntoMasterVersionIsTakenWithIt()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.3");
@@ -235,8 +235,8 @@ namespace GitVersionCore.Tests.IntegrationTests
         public void WhenMergingReleaseBackToDevShouldNotResetBetaVersion()
         {
             using var fixture = new EmptyRepositoryFixture();
-            const string TaggedVersion = "1.0.3";
-            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+            const string taggedVersion = "1.0.3";
+            fixture.Repository.MakeATaggedCommit(taggedVersion);
             fixture.Repository.CreateBranch("develop");
             fixture.Checkout("develop");
 
@@ -275,8 +275,8 @@ namespace GitVersionCore.Tests.IntegrationTests
                 VersioningMode = VersioningMode.ContinuousDeployment
             };
             using var fixture = new EmptyRepositoryFixture();
-            const string TaggedVersion = "1.0.3";
-            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+            const string taggedVersion = "1.0.3";
+            fixture.Repository.MakeATaggedCommit(taggedVersion);
             fixture.Repository.CreateBranch("develop");
             fixture.Checkout("develop");
 
@@ -313,8 +313,8 @@ namespace GitVersionCore.Tests.IntegrationTests
                 VersioningMode = VersioningMode.ContinuousDeployment,
             };
             using var fixture = new EmptyRepositoryFixture();
-            const string TaggedVersion = "1.0.3";
-            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+            const string taggedVersion = "1.0.3";
+            fixture.Repository.MakeATaggedCommit(taggedVersion);
             fixture.Repository.CreateBranch("develop");
             fixture.Checkout("develop");
             fixture.Repository.MakeACommit();
@@ -335,7 +335,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
-        public void CommitOnDevelop_AfterReleaseBranchMergeToDevelop_ShouldNotResetCount()
+        public void CommitOnDevelopAfterReleaseBranchMergeToDevelopShouldNotResetCount()
         {
             var config = new Config
             {
@@ -391,7 +391,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
-        public void CommitBeetweenMergeReleaseToDevelop_ShouldNotResetCount()
+        public void CommitBeetweenMergeReleaseToDevelopShouldNotResetCount()
         {
             var config = new Config
             {
@@ -466,7 +466,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
-        public void FeatureFromReleaseBranch_ShouldNotResetCount()
+        public void FeatureFromReleaseBranchShouldNotResetCount()
         {
             var config = new Config
             {
@@ -558,7 +558,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         /// Create a feature branch from a release branch, and merge back, then delete it
         /// </summary>
         [Test]
-        public void FeatureOnRelease_FeatureBranchDeleted()
+        public void FeatureOnReleaseFeatureBranchDeleted()
         {
             var config = new Config
             {
@@ -593,7 +593,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         /// Create a feature branch from a release branch, and merge back, but don't delete it
         /// </summary>
         [Test]
-        public void FeatureOnRelease_FeatureBranchNotDeleted()
+        public void FeatureOnReleaseFeatureBranchNotDeleted()
         {
             var config = new Config
             {

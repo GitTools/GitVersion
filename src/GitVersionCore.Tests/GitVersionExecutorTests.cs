@@ -371,7 +371,7 @@ namespace GitVersionCore.Tests
         [Test]
         [Category("NoMono")]
         [Description("LibGit2Sharp fails when running under Mono")]
-        public void GetProjectRootDirectory_WorkingDirectoryWithWorktree()
+        public void GetProjectRootDirectoryWorkingDirectoryWithWorktree()
         {
             RepositoryScope((fixture, vv) =>
             {
@@ -402,7 +402,7 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        public void GetProjectRootDirectory_NoWorktree()
+        public void GetProjectRootDirectoryNoWorktree()
         {
             RepositoryScope((fixture, vv) =>
             {
@@ -439,7 +439,7 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        public void GetDotGitDirectory_NoWorktree()
+        public void GetDotGitDirectoryNoWorktree()
         {
             RepositoryScope((fixture, vv) =>
             {
@@ -460,7 +460,7 @@ namespace GitVersionCore.Tests
         [Test]
         [Category("NoMono")]
         [Description("LibGit2Sharp fails when running under Mono")]
-        public void GetDotGitDirectory_Worktree()
+        public void GetDotGitDirectoryWorktree()
         {
             RepositoryScope((fixture, vv) =>
             {
@@ -494,7 +494,7 @@ namespace GitVersionCore.Tests
         {
             // Make sure GitVersion doesn't trigger build server mode when we are running the tests
             environment.SetEnvironmentVariable(AppVeyor.EnvironmentVariableName, null);
-            environment.SetEnvironmentVariable(TravisCI.EnvironmentVariableName, null);
+            environment.SetEnvironmentVariable(TravisCi.EnvironmentVariableName, null);
             environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, null);
 
             using var fixture = new EmptyRepositoryFixture();
@@ -512,11 +512,11 @@ namespace GitVersionCore.Tests
             fixtureAction?.Invoke(fixture, vv);
         }
 
-        private void RepositoryScope(ILog _log, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
+        private void RepositoryScope(ILog log, Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
         {
             // Make sure GitVersion doesn't trigger build server mode when we are running the tests
             environment.SetEnvironmentVariable(AppVeyor.EnvironmentVariableName, null);
-            environment.SetEnvironmentVariable(TravisCI.EnvironmentVariableName, null);
+            environment.SetEnvironmentVariable(TravisCi.EnvironmentVariableName, null);
             environment.SetEnvironmentVariable(AzurePipelines.EnvironmentVariableName, null);
 
             using var fixture = new EmptyRepositoryFixture();
@@ -524,15 +524,15 @@ namespace GitVersionCore.Tests
             var arguments = new Arguments { TargetPath = fixture.RepositoryPath };
             var options = Options.Create(arguments);
 
-            var gitPreparer = new GitPreparer(_log, options);
+            var gitPreparer = new GitPreparer(log, options);
             var stepFactory = new ConfigInitStepFactory();
             var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
-            var configurationProvider = new ConfigurationProvider(fileSystem, _log, configFileLocator, gitPreparer, configInitWizard);
-            var baseVersionCalculator = new BaseVersionCalculator(log, null);
-            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
-            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
+            var configurationProvider = new ConfigurationProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
+            var baseVersionCalculator = new BaseVersionCalculator(this.log, null);
+            var mainlineVersionCalculator = new MainlineVersionCalculator(this.log, metaDataCalculator);
+            var nextVersionCalculator = new NextVersionCalculator(this.log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
             var variableProvider = new VariableProvider(nextVersionCalculator);
-            var gitVersionCalculator = new GitVersionCalculator(fileSystem, _log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);
+            var gitVersionCalculator = new GitVersionCalculator(fileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);
 
             fixture.Repository.MakeACommit();
             var vv = gitVersionCalculator.CalculateVersionVariables();

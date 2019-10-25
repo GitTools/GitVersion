@@ -141,7 +141,7 @@ namespace GitVersionCore.Tests
             Assert.AreEqual("1.2.3-beta4", fullSemVer.ToString("l"));
         }
         [Test]
-        public void ToStringLPTests()
+        public void ToStringLpTests()
         {
             Assert.AreEqual("1.2.3", SemanticVersion.Parse("1.2.3", null).ToString("lp"));
             Assert.AreEqual("1.2.3-beta0004", SemanticVersion.Parse("1.2.3-beta.4", null).ToString("lp"));

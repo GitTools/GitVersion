@@ -15,7 +15,7 @@ namespace GitVersion
 {
     public class ExecCommand : IExecCommand
     {
-        private static readonly bool runningOnUnix = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        private static readonly bool RunningOnUnix = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
         private readonly IFileSystem fileSystem;
         private readonly IBuildServerResolver buildServerResolver;
@@ -35,7 +35,7 @@ namespace GitVersion
 
         public void Execute()
         {
-            log.Info($"Running on {(runningOnUnix ? "Unix" : "Windows")}.");
+            log.Info($"Running on {(RunningOnUnix ? "Unix" : "Windows")}.");
 
             var variables = gitVersionCalculator.CalculateVersionVariables();
 

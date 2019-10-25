@@ -7,49 +7,49 @@ namespace GitVersion.Helpers
 {
     internal class OperationWithExponentialBackoff<T> where T : Exception
     {
-        private readonly IThreadSleep ThreadSleep;
+        private readonly IThreadSleep threadSleep;
         private readonly ILog log;
-        private readonly Action Operation;
-        private readonly int MaxRetries;
+        private readonly Action operation;
+        private readonly int maxRetries;
 
         public OperationWithExponentialBackoff(IThreadSleep threadSleep, ILog log, Action operation, int maxRetries = 5)
         {
             if (maxRetries < 0)
                 throw new ArgumentOutOfRangeException(nameof(maxRetries));
 
-            ThreadSleep = threadSleep ?? throw new ArgumentNullException(nameof(threadSleep));
+            this.threadSleep = threadSleep ?? throw new ArgumentNullException(nameof(threadSleep));
             this.log = log;
-            Operation = operation;
-            MaxRetries = maxRetries;
+            this.operation = operation;
+            this.maxRetries = maxRetries;
         }
 
         public async Task ExecuteAsync()
         {
             var exceptions = new List<Exception>();
 
-            int tries = 0;
-            int sleepMSec = 500;
+            var tries = 0;
+            var sleepMSec = 500;
 
-            while (tries <= MaxRetries)
+            while (tries <= maxRetries)
             {
                 tries++;
 
                 try
                 {
-                    Operation();
+                    operation();
                     break;
                 }
                 catch (T e)
                 {
                     exceptions.Add(e);
-                    if (tries > MaxRetries)
+                    if (tries > maxRetries)
                     {
                         throw new AggregateException("Operation failed after maximum number of retries were exceeded.", exceptions);
                     }
                 }
 
                 log.Info($"Operation failed, retrying in {sleepMSec} milliseconds.");
-                await ThreadSleep.SleepAsync(sleepMSec);
+                await threadSleep.SleepAsync(sleepMSec);
 
                 sleepMSec *= 2;
             }

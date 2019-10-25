@@ -10,7 +10,7 @@ namespace GitVersion.Logging
     public sealed class Log : ILog
     {
         private IEnumerable<ILogAppender> appenders;
-        private readonly Regex ObscurePasswordRegex = new Regex("(https?://)(.+)(:.+@)", RegexOptions.Compiled);
+        private readonly Regex obscurePasswordRegex = new Regex("(https?://)(.+)(:.+@)", RegexOptions.Compiled);
         private readonly StringBuilder sb;
         private string indent = string.Empty;
 
@@ -70,7 +70,7 @@ namespace GitVersion.Logging
 
         private string FormatMessage(string message, string level)
         {
-            var obscuredMessage = ObscurePasswordRegex.Replace(message, "$1$2:*******@");
+            var obscuredMessage = obscurePasswordRegex.Replace(message, "$1$2:*******@");
             return string.Format(CultureInfo.InvariantCulture, "{0}{1} [{2:MM/dd/yy H:mm:ss:ff}] {3}", indent, level, DateTime.Now, obscuredMessage);
         }
     }

@@ -28,7 +28,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [TestCase("utf-16")]
         [TestCase("utf-16BE")]
         [TestCase("utf-8")]
-        public void WhenFileExistsWithEncodingPreamble_EncodingIsPreservedAfterWriteAll(string encodingName)
+        public void WhenFileExistsWithEncodingPreambleEncodingIsPreservedAfterWriteAll(string encodingName)
         {
             var encoding = Encoding.GetEncoding(encodingName);
 
@@ -46,7 +46,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
-        public void WhenFileDoesNotExist_CreateWithUTF8WithPreamble()
+        public void WhenFileDoesNotExistCreateWithUtf8WithPreamble()
         {
             var encoding = Encoding.UTF8;
 

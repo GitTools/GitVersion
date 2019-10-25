@@ -403,7 +403,7 @@ namespace GitVersionCore.Tests
         [TestCase("vb", "<Assembly: AssemblyVersion(\"1.0.0.0\")>\r\n<Assembly: AssemblyFileVersion(\"1.0.0.0\")>\r\n' comment\r\n")]
         [Category("NoMono")]
         [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
-        public void Issue1183_ShouldAddFSharpAssemblyInformationalVersionBesideOtherAttributes(string fileExtension, string assemblyFileContent)
+        public void Issue1183ShouldAddFSharpAssemblyInformationalVersionBesideOtherAttributes(string fileExtension, string assemblyFileContent)
         {
             var workingDir = Path.GetTempPath();
             var assemblyInfoFile = "AssemblyInfo." + fileExtension;

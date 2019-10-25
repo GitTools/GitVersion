@@ -322,7 +322,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
-        public void VerifyIssue1154_CanForwardMergeMasterToFeatureBranch()
+        public void VerifyIssue1154CanForwardMergeMasterToFeatureBranch()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.MakeACommit();

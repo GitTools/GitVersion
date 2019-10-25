@@ -12,7 +12,7 @@ namespace GitVersionTask.MsBuild.LibGit2Sharp
 {
     public class LibGit2SharpLoader
     {
-        private static readonly string taskDirectory = Path.GetDirectoryName(typeof(LibGit2SharpLoader).Assembly.Location);
+        private static readonly string TaskDirectory = Path.GetDirectoryName(typeof(LibGit2SharpLoader).Assembly.Location);
 
         public static LibGit2SharpLoader Instance { get; private set; }
         public Assembly Assembly { get; }
@@ -31,7 +31,7 @@ namespace GitVersionTask.MsBuild.LibGit2Sharp
             assemblyName.Name = tasksAssembly;
             Assembly = Assembly.Load(assemblyName);
 #else
-            var operationsPath = Path.Combine(taskDirectory, tasksAssembly + ".dll");
+            var operationsPath = Path.Combine(TaskDirectory, tasksAssembly + ".dll");
             Assembly = GitLoaderContext.Instance.LoadFromAssemblyPath(operationsPath);
 #endif
         }
@@ -76,7 +76,7 @@ namespace GitVersionTask.MsBuild.LibGit2Sharp
                 return null;
             }
 
-            var referencePath = Path.Combine(taskDirectory, referenceName.Name + ".dll");
+            var referencePath = Path.Combine(TaskDirectory, referenceName.Name + ".dll");
             if (!File.Exists(referencePath))
             {
                 Log(args, $"file '{referencePath}' not found");

@@ -6,11 +6,11 @@ namespace GitVersion.Logging
     public class ConsoleAppender : ILogAppender
     {
         private readonly object _lock;
-        private readonly IDictionary<LogLevel, (ConsoleColor, ConsoleColor)> _palettes;
+        private readonly IDictionary<LogLevel, (ConsoleColor, ConsoleColor)> palettes;
         public ConsoleAppender()
         {
             _lock = new object();
-            _palettes = CreatePalette();
+            palettes = CreatePalette();
         }
         public void WriteTo(LogLevel level, string message)
         {
@@ -18,7 +18,7 @@ namespace GitVersion.Logging
             {
                 try
                 {
-                    var (backgroundColor, foregroundColor) = _palettes[level];
+                    var (backgroundColor, foregroundColor) = palettes[level];
 
                     Console.BackgroundColor = backgroundColor;
                     Console.ForegroundColor = foregroundColor;
