@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Build.Framework;
 using GitVersion.Exceptions;
 
-namespace GitVersionTask
+namespace GitVersion.MSBuildTask
 {
     public sealed class FileWriteInfo
     {
@@ -104,7 +104,7 @@ namespace GitVersionTask
 
             var noCommentsOrStrings = Regex.Replace(allText,
                 blockComments + "|" + lineComments + "|" + strings + "|" + verbatimStrings,
-                me => me.Value.StartsWith("//") ? Environment.NewLine : string.Empty,
+                me => me.Value.StartsWith("//") ? System.Environment.NewLine : string.Empty,
                 RegexOptions.Singleline);
 
             return Regex.IsMatch(noCommentsOrStrings, @"(?x) # IgnorePatternWhitespace
@@ -128,7 +128,7 @@ Assembly(File|Informational)?Version    # The attribute AssemblyVersion, Assembl
 
             var noCommentsOrStrings = Regex.Replace(allText,
                 lineComments + "|" + strings,
-                me => me.Value.StartsWith("'") ? Environment.NewLine : string.Empty,
+                me => me.Value.StartsWith("'") ? System.Environment.NewLine : string.Empty,
                 RegexOptions.Singleline);
 
             return Regex.IsMatch(noCommentsOrStrings, @"(?x) # IgnorePatternWhitespace

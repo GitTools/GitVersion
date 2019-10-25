@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Loader;
 using RuntimeEnvironment = Microsoft.DotNet.PlatformAbstractions.RuntimeEnvironment;
 
-namespace GitVersionTask.MsBuild.LibGit2Sharp
+namespace GitVersion.MSBuildTask.LibGit2Sharp
 {
     public sealed class GitLoaderContext : AssemblyLoadContext
     {

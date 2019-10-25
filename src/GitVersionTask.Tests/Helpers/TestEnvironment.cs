@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using GitVersion;
 
-namespace GitVersionTask.Tests.Helpers
+namespace GitVersion.MSBuildTask.Tests.Helpers
 {
     public class TestEnvironment : IEnvironment
     {

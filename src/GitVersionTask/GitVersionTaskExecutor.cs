@@ -1,13 +1,12 @@
 using System;
 using System.IO;
-using GitVersion;
 using GitVersion.Extensions.GitVersionInformationResources;
 using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion.Logging;
 using GitVersion.OutputFormatters;
-using GitVersionTask.MsBuild.Tasks;
+using GitVersion.MSBuildTask.Tasks;
 
-namespace GitVersionTask
+namespace GitVersion.MSBuildTask
 {
     public class GitVersionTaskExecutor : IGitVersionTaskExecutor
     {

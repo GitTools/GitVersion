@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using GitVersion;
 using GitVersion.Cache;
 using GitVersion.Configuration;
 using GitVersion.Configuration.Init.Wizard;
@@ -9,10 +8,10 @@ using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
 using LibGit2Sharp;
 using NUnit.Framework;
-using GitVersionTask.Tests.Helpers;
 using Microsoft.Extensions.Options;
+using GitVersion.MSBuildTask.Tests.Helpers;
 
-namespace GitVersionTask.Tests
+namespace GitVersion.MSBuildTask.Tests
 {
     [TestFixture]
     public class GitVersionTaskDirectoryTests : TestBase

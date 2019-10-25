@@ -1,6 +1,6 @@
-using GitVersionTask.MsBuild.Tasks;
+using GitVersion.MSBuildTask.Tasks;
 
-namespace GitVersionTask
+namespace GitVersion.MSBuildTask
 {
     public interface IGitVersionTaskExecutor
     {

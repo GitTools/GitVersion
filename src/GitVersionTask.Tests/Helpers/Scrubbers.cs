@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace GitVersionTask.Tests.Helpers
+namespace GitVersion.MSBuildTask.Tests.Helpers
 {
     public static class Scrubbers
     {

@@ -1,4 +1,4 @@
-﻿namespace GitVersionTask.Tests.Helpers
+﻿namespace GitVersion.MSBuildTask.Tests.Helpers
 {
     public interface IPostTestDirectoryRemover
     {

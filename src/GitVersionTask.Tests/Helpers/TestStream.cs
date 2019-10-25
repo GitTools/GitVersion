@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace GitVersionTask.Tests.Helpers
+namespace GitVersion.MSBuildTask.Tests.Helpers
 {
     public class TestStream : Stream
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace GitVersionTask.Tests
+namespace GitVersion.MSBuildTask.Tests
 {
     public static class AssemblyLocation
     {

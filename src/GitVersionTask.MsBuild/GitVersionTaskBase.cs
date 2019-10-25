@@ -1,7 +1,7 @@
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
-namespace GitVersionTask.MsBuild
+namespace GitVersion.MSBuildTask
 {
     public abstract class GitVersionTaskBase : Task
     {

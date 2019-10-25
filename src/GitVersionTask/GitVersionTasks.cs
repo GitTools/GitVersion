@@ -1,13 +1,11 @@
 using System;
-using GitVersion;
 using GitVersion.Exceptions;
 using GitVersion.Extensions;
-using GitVersionTask.MsBuild;
-using GitVersionTask.MsBuild.Tasks;
+using GitVersion.MSBuildTask.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace GitVersionTask
+namespace GitVersion.MSBuildTask
 {
     public static class GitVersionTasks
     {
