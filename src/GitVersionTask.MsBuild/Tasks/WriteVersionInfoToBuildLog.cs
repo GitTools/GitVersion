@@ -1,4 +1,4 @@
-namespace GitVersionTask.MsBuild.Tasks
+namespace GitVersion.MSBuildTask.Tasks
 {
     public class WriteVersionInfoToBuildLog : GitVersionTaskBase
     {

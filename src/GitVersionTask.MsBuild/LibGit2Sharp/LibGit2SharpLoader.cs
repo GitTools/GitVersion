@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
-namespace GitVersionTask.MsBuild.LibGit2Sharp
+namespace GitVersion.MSBuildTask.LibGit2Sharp
 {
     public class LibGit2SharpLoader
     {

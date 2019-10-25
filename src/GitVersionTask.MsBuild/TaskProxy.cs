@@ -1,9 +1,9 @@
 using System;
 using System.Reflection;
-using GitVersionTask.MsBuild.LibGit2Sharp;
-using GitVersionTask.MsBuild.Tasks;
+using GitVersion.MSBuildTask.LibGit2Sharp;
+using GitVersion.MSBuildTask.Tasks;
 
-namespace GitVersionTask.MsBuild
+namespace GitVersion.MSBuildTask
 {
     public static class TaskProxy
     {
@@ -19,7 +19,7 @@ namespace GitVersionTask.MsBuild
 #endif
             LibGit2SharpLoader.LoadAssembly("GitVersionTask");
 
-            var type = LibGit2SharpLoader.Instance.Assembly.GetType("GitVersionTask.GitVersionTasks", throwOnError: true).GetTypeInfo();
+            var type = LibGit2SharpLoader.Instance.Assembly.GetType("GitVersion.MSBuildTask.GitVersionTasks", throwOnError: true).GetTypeInfo();
 
             GetVersion                    = GetMethod<GetVersion>(type, nameof(GetVersion));
             GenerateGitVersionInformation = GetMethod<GenerateGitVersionInformation>(type, nameof(GenerateGitVersionInformation));
