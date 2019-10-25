@@ -5,10 +5,10 @@ using System.Text;
 using GitTools.Testing;
 using GitVersion;
 using GitVersion.Configuration;
-using GitVersion.Helpers;
 using GitVersion.VersioningModes;
 using LibGit2Sharp;
 using NUnit.Framework;
+using GitVersion.Extensions;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {

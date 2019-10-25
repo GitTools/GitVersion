@@ -5,11 +5,11 @@ using GitVersion.Configuration;
 using GitVersion.OutputVariables;
 using LibGit2Sharp;
 using Shouldly;
-using GitVersion.Helpers;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.VersionCalculation;
 using Microsoft.Extensions.Options;
+using GitVersion.Extensions;
 
 namespace GitVersionCore.Tests
 {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace GitVersion.Helpers
+namespace GitVersion.Extensions
 {
     public static class EnumerableExtensions
     {

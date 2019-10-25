@@ -3,12 +3,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
 using LibGit2Sharp;
-using GitVersion.Helpers;
+using GitVersion.Configuration;
+using GitVersion.Extensions;
 
 namespace GitVersion
 {
-    using GitVersion.Configuration;
-
     public enum CommitMessageIncrementMode
     {
         Enabled,

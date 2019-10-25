@@ -5,8 +5,8 @@ using GitVersion.Configuration;
 using GitVersionCore.Tests.IntegrationTests;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.Helpers;
 using GitVersion.Logging;
+using GitVersion.Extensions;
 
 namespace GitVersionCore.Tests
 {

@@ -5,12 +5,11 @@ using System.Linq;
 using GitVersion.VersioningModes;
 using YamlDotNet.Serialization;
 using GitVersion.Extensions;
+using System.IO;
+using System.Text;
 
 namespace GitVersion.Configuration
 {
-    using System.IO;
-    using System.Text;
-
     public class Config
     {
         private readonly Dictionary<string, BranchConfig> branches = new Dictionary<string, BranchConfig>();

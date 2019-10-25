@@ -2,7 +2,7 @@ using System;
 using GitTools.Testing;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.Helpers;
+using GitVersion.Extensions;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {

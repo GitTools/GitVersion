@@ -1,5 +1,5 @@
-using GitVersion.Helpers;
 using NUnit.Framework;
+using GitVersion.Extensions;
 
 namespace GitVersionCore.Tests.Extensions
 {
