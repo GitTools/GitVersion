@@ -86,7 +86,7 @@ namespace GitVersion
             return string.Equals(
                 Path.GetFullPath(path).TrimEnd('\\').TrimEnd('/'),
                 Path.GetFullPath(otherPath).TrimEnd('\\').TrimEnd('/'),
-                StringComparerUtils.OSDependentComparison);
+                StringComparerUtils.OsDependentComparison);
         }
     }
 }

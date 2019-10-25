@@ -11,9 +11,8 @@ namespace GitVersion.Configuration
     {
         private readonly Dictionary<string, LegacyBranchConfig> branches = new Dictionary<string, LegacyBranchConfig>();
 
-#pragma warning disable IDE1006 // Naming Styles
-        public string assemblyVersioningScheme { get; set; }
-#pragma warning restore IDE1006 // Naming Styles
+        [YamlMember(Alias = "assemblyVersioningScheme")]
+        public string AssemblyVersioningScheme { get; set; }
 
         [YamlMember(Alias = "develop-branch-tag")]
         public string DevelopBranchTag { get; set; }

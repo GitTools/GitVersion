@@ -9,7 +9,7 @@ namespace GitVersionCore.Tests
     public class StringFormatWithExtensionTests
     {
         [Test]
-        public void FormatWith_NoTokens()
+        public void FormatWithNoTokens()
         {
             var propertyObject = new { };
             var target = "Some String without tokens";
@@ -19,7 +19,7 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        public void FormatWith_SingleSimpleToken()
+        public void FormatWithSingleSimpleToken()
         {
             var propertyObject = new { SomeProperty = "SomeValue" };
             var target = "{SomeProperty}";
@@ -29,7 +29,7 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        public void FormatWith_MultipleTokensAndVerbatimText()
+        public void FormatWithMultipleTokensAndVerbatimText()
         {
             var propertyObject = new { SomeProperty = "SomeValue", AnotherProperty = "Other Value" };
             var target = "{SomeProperty} some text {AnotherProperty}";
@@ -39,7 +39,7 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        public void FormatWith_EnvVarToken()
+        public void FormatWithEnvVarToken()
         {
             Environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR", "Env Var Value");
             var propertyObject = new { };
@@ -50,7 +50,7 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        public void FormatWith_EnvVarTokenWithFallback()
+        public void FormatWithEnvVarTokenWithFallback()
         {
             Environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR", "Env Var Value");
             var propertyObject = new { };
@@ -61,7 +61,7 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        public void FormatWith_UnsetEnvVarTokenWithFallback()
+        public void FormatWithUnsetEnvVarTokenWithFallback()
         {
             Environment.SetEnvironmentVariable("GIT_VERSION_UNSET_TEST_VAR", null);
             var propertyObject = new { };
@@ -72,7 +72,7 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        public void FormatWith_MultipleEnvVars()
+        public void FormatWithMultipleEnvVars()
         {
             Environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR_1", "Val-1");
             Environment.SetEnvironmentVariable("GIT_VERSION_TEST_VAR_2", "Val-2");
@@ -84,7 +84,7 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        public void FormatWith_MultipleEnvChars()
+        public void FormatWithMultipleEnvChars()
         {
             var propertyObject = new { };
             //Test the greediness of the regex in matching env: char
@@ -95,7 +95,7 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        public void FormatWith_MultipleFallbackChars()
+        public void FormatWithMultipleFallbackChars()
         {
             var propertyObject = new { };
             //Test the greediness of the regex in matching env: and ?? chars
@@ -105,7 +105,7 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        public void FormatWith_SingleFallbackChar()
+        public void FormatWithSingleFallbackChar()
         {
             Environment.SetEnvironmentVariable("DUMMY_ENV_VAR", "Dummy-Val");
             var propertyObject = new { };
@@ -116,7 +116,7 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        public void FormatWIth_NullPropagationWithMultipleSpaces()
+        public void FormatWIthNullPropagationWithMultipleSpaces()
         {
             var propertyObject = new { SomeProperty = "Some Value" };
             var target = "{SomeProperty} and {env:DUMMY_ENV_VAR  ??  fallback}";

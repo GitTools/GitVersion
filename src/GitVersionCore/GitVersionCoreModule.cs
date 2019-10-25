@@ -53,7 +53,7 @@ namespace GitVersion
             services.AddSingleton<IBuildServer, Jenkins>();
             services.AddSingleton<IBuildServer, GitLabCi>();
             services.AddSingleton<IBuildServer, AzurePipelines>();
-            services.AddSingleton<IBuildServer, TravisCI>();
+            services.AddSingleton<IBuildServer, TravisCi>();
             services.AddSingleton<IBuildServer, EnvRun>();
             services.AddSingleton<IBuildServer, Drone>();
             services.AddSingleton<IBuildServer, CodeBuild>();

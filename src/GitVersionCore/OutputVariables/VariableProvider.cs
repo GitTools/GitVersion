@@ -54,13 +54,13 @@ namespace GitVersion.OutputVariables
 
             var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, config);
 
-            string informationalVersion = CheckAndFormatString(config.AssemblyInformationalFormat, semverFormatValues,
+            var informationalVersion = CheckAndFormatString(config.AssemblyInformationalFormat, semverFormatValues,
                 semverFormatValues.DefaultInformationalVersion, "AssemblyInformationalVersion");
 
-            string assemblyFileSemVer = CheckAndFormatString(config.AssemblyFileVersioningFormat, semverFormatValues,
+            var assemblyFileSemVer = CheckAndFormatString(config.AssemblyFileVersioningFormat, semverFormatValues,
                 semverFormatValues.AssemblyFileSemVer, "AssemblyFileVersioningFormat");
 
-            string assemblySemVer = CheckAndFormatString(config.AssemblyVersioningFormat, semverFormatValues,
+            var assemblySemVer = CheckAndFormatString(config.AssemblyVersioningFormat, semverFormatValues,
                 semverFormatValues.AssemblySemVer, "AssemblyVersioningFormat");
 
             var variables = new VersionVariables(

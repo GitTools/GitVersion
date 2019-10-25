@@ -164,9 +164,9 @@ namespace GitVersion.Logging
             return Disposable.Create(() => log.Verbosity = lastVerbosity);
         }
 
-        public static Verbosity GetVerbosityForLevel(LogLevel level) => verbosityMaps[level];
+        public static Verbosity GetVerbosityForLevel(LogLevel level) => VerbosityMaps[level];
 
-        private static readonly IDictionary<LogLevel, Verbosity> verbosityMaps = new Dictionary<LogLevel, Verbosity>
+        private static readonly IDictionary<LogLevel, Verbosity> VerbosityMaps = new Dictionary<LogLevel, Verbosity>
         {
             { LogLevel.Debug, Verbosity.Diagnostic },
             { LogLevel.Info, Verbosity.Normal },

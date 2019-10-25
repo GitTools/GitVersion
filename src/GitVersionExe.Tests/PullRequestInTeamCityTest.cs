@@ -14,7 +14,7 @@ namespace GitVersionExe.Tests
         [TestCase("refs/pull-requests/5/merge")]
         [TestCase("refs/pull/5/merge")]
         [TestCase("refs/heads/pull/5/head")]
-        public void GivenARemoteWithATagOnMaster_AndAPullRequestWithTwoCommits_AndBuildIsRunningInTeamCity_VersionIsCalculatedProperly(string pullRequestRef)
+        public void GivenARemoteWithATagOnMasterAndAPullRequestWithTwoCommitsAndBuildIsRunningInTeamCityVersionIsCalculatedProperly(string pullRequestRef)
         {
             using var fixture = new EmptyRepositoryFixture();
             var remoteRepositoryPath = PathHelper.GetTempPath();

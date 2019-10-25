@@ -5,7 +5,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
     public class BaseVersion
     {
-        private readonly GitVersionContext _context;
+        private readonly GitVersionContext context;
 
         public BaseVersion(GitVersionContext context, string source, bool shouldIncrement, SemanticVersion semanticVersion, Commit baseVersionSource, string branchNameOverride)
         {
@@ -14,7 +14,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
             SemanticVersion = semanticVersion;
             BaseVersionSource = baseVersionSource;
             BranchNameOverride = branchNameOverride;
-            _context = context;
+            this.context = context;
         }
 
         public string Source { get; private set; }
@@ -29,7 +29,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
 
         public override string ToString()
         {
-            return $"{Source}: {SemanticVersion.ToString("f")} with commit count source {(BaseVersionSource == null ? "External Source" : BaseVersionSource.Sha)} (Incremented: {(ShouldIncrement ? BaseVersionCalculator.MaybeIncrement(_context, this).ToString("t") : "None")})";
+            return $"{Source}: {SemanticVersion.ToString("f")} with commit count source {(BaseVersionSource == null ? "External Source" : BaseVersionSource.Sha)} (Incremented: {(ShouldIncrement ? BaseVersionCalculator.MaybeIncrement(context, this).ToString("t") : "None")})";
         }
     }
 }

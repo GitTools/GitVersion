@@ -17,16 +17,16 @@ namespace GitVersion.Logging
         {
             public AnonymousDisposable(Action disposer)
             {
-                _disposer = disposer ?? throw new ArgumentNullException(nameof(disposer));
+                this.disposer = disposer ?? throw new ArgumentNullException(nameof(disposer));
             }
 
             public void Dispose()
             {
-                _disposer?.Invoke();
-                _disposer = null;
+                disposer?.Invoke();
+                disposer = null;
             }
 
-            private Action _disposer;
+            private Action disposer;
         }
     }
 }

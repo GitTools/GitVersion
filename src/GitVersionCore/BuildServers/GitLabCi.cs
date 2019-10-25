@@ -9,11 +9,11 @@ namespace GitVersion.BuildServers
     public class GitLabCi : BuildServerBase
     {
         public const string EnvironmentVariableName = "GITLAB_CI";
-        private readonly string _file;
+        private readonly string file;
 
         public GitLabCi(IEnvironment environment, ILog log, string propertiesFileName = "gitversion.properties") : base(environment, log)
         {
-            _file = propertiesFileName;
+            file = propertiesFileName;
         }
 
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
@@ -42,13 +42,13 @@ namespace GitVersion.BuildServers
         public override void WriteIntegration(Action<string> writer, VersionVariables variables)
         {
             base.WriteIntegration(writer, variables);
-            writer($"Outputting variables to '{_file}' ... ");
+            writer($"Outputting variables to '{file}' ... ");
             WriteVariablesFile(variables);
         }
 
         private void WriteVariablesFile(VersionVariables variables)
         {
-            File.WriteAllLines(_file, BuildOutputFormatter.GenerateBuildLogOutput(this, variables));
+            File.WriteAllLines(file, BuildOutputFormatter.GenerateBuildLogOutput(this, variables));
         }
     }
 }

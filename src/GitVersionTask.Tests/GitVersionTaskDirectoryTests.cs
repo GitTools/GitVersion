@@ -61,7 +61,7 @@ namespace GitVersionTask.Tests
 
 
         [Test]
-        public void Finds_GitDirectory()
+        public void FindsGitDirectory()
         {
             try
             {
@@ -90,7 +90,7 @@ namespace GitVersionTask.Tests
 
 
         [Test]
-        public void Finds_GitDirectory_In_Parent()
+        public void FindsGitDirectoryInParent()
         {
             var childDir = Path.Combine(workDirectory, "child");
             Directory.CreateDirectory(childDir);

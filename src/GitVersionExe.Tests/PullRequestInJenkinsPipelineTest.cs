@@ -11,10 +11,10 @@ namespace GitVersionExe.Tests
     public class PullRequestInJenkinsTest
     {
         [TestCase]
-        public void GivenJenkinsPipelineHasDuplicatedOrigin_VersionIsCalculatedProperly()
+        public void GivenJenkinsPipelineHasDuplicatedOriginVersionIsCalculatedProperly()
         {
-            string pipelineBranch = "BRANCH_NAME";
-            string pipelineBranchOrig = Environment.GetEnvironmentVariable(pipelineBranch);
+            var pipelineBranch = "BRANCH_NAME";
+            var pipelineBranchOrig = Environment.GetEnvironmentVariable(pipelineBranch);
 
             using var fixture = new EmptyRepositoryFixture();
             var remoteRepositoryPath = PathHelper.GetTempPath();

@@ -19,7 +19,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void Empty_means_use_current_directory()
+        public void EmptyMeansUseCurrentDirectory()
         {
             var arguments = argumentParser.ParseArguments("");
             arguments.TargetPath.ShouldBe(System.Environment.CurrentDirectory);
@@ -28,7 +28,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void Single_means_use_as_target_directory()
+        public void SingleMeansUseAsTargetDirectory()
         {
             var arguments = argumentParser.ParseArguments("path");
             arguments.TargetPath.ShouldBe("path");
@@ -37,7 +37,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void No_path_and_logfile_should_use_current_directory_TargetDirectory()
+        public void NoPathAndLogfileShouldUseCurrentDirectoryTargetDirectory()
         {
             var arguments = argumentParser.ParseArguments("-l logFilePath");
             arguments.TargetPath.ShouldBe(System.Environment.CurrentDirectory);
@@ -46,7 +46,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void H_means_IsHelp()
+        public void HMeansIsHelp()
         {
             var arguments = argumentParser.ParseArguments("-h");
             Assert.IsNull(arguments.TargetPath);
@@ -62,7 +62,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void Exec_with_args()
+        public void ExecWithArgs()
         {
             var arguments = argumentParser.ParseArguments(new []
             {
@@ -83,7 +83,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void Msbuild_with_args()
+        public void MsbuildWithArgs()
         {
             var arguments = argumentParser.ParseArguments(new []
             {
@@ -97,7 +97,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void Execwith_targetdirectory()
+        public void ExecwithTargetdirectory()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -exec rake");
             arguments.TargetPath.ShouldBe("targetDirectoryPath");
@@ -105,7 +105,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void TargetDirectory_and_LogFilePath_can_be_parsed()
+        public void TargetDirectoryAndLogFilePathCanBeParsed()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -l logFilePath");
             arguments.TargetPath.ShouldBe("targetDirectoryPath");
@@ -114,7 +114,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void Username_and_Password_can_be_parsed()
+        public void UsernameAndPasswordCanBeParsed()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -u [username] -p [password]");
             arguments.TargetPath.ShouldBe("targetDirectoryPath");
@@ -124,28 +124,28 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void Unknown_output_should_throw()
+        public void UnknownOutputShouldThrow()
         {
             var exception = Assert.Throws<WarningException>(() => argumentParser.ParseArguments("targetDirectoryPath -output invalid_value"));
             exception.Message.ShouldBe("Value 'invalid_value' cannot be parsed as output type, please use 'json' or 'buildserver'");
         }
 
         [Test]
-        public void Output_defaults_to_json()
+        public void OutputDefaultsToJson()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath");
             arguments.Output.ShouldBe(OutputType.Json);
         }
 
         [Test]
-        public void Output_json_can_be_parsed()
+        public void OutputJsonCanBeParsed()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -output json");
             arguments.Output.ShouldBe(OutputType.Json);
         }
 
         [Test]
-        public void Output_buildserver_can_be_parsed()
+        public void OutputBuildserverCanBeParsed()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -output buildserver");
             arguments.Output.ShouldBe(OutputType.BuildServer);
@@ -159,7 +159,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void Url_and_BranchName_can_be_parsed()
+        public void UrlAndBranchNameCanBeParsed()
         {
             var arguments = argumentParser.ParseArguments("targetDirectoryPath -url http://github.com/Particular/GitVersion.git -b somebranch");
             arguments.TargetPath.ShouldBe("targetDirectoryPath");
@@ -169,7 +169,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void Wrong_number_of_arguments_should_throw()
+        public void WrongNumberOfArgumentsShouldThrow()
         {
             var exception = Assert.Throws<WarningException>(() => argumentParser.ParseArguments("targetDirectoryPath -l logFilePath extraArg"));
             exception.Message.ShouldBe("Could not parse command line parameter 'extraArg'.");
@@ -177,7 +177,7 @@ namespace GitVersionExe.Tests
 
         [TestCase("targetDirectoryPath -x logFilePath")]
         [TestCase("/invalid-argument")]
-        public void Unknown_arguments_should_throw(string arguments)
+        public void UnknownArgumentsShouldThrow(string arguments)
         {
             var exception = Assert.Throws<WarningException>(() => argumentParser.ParseArguments(arguments));
             exception.Message.ShouldStartWith("Could not parse command line parameter");
@@ -191,7 +191,7 @@ namespace GitVersionExe.Tests
         [TestCase("-updateAssemblyInfo assemblyInfo.cs -ensureassemblyinfo")]
         [TestCase("-updateAssemblyInfo assemblyInfo.cs otherAssemblyInfo.cs")]
         [TestCase("-updateAssemblyInfo Assembly.cs Assembly.cs -ensureassemblyinfo")]
-        public void Update_assembly_info_true(string command)
+        public void UpdateAssemblyInfoTrue(string command)
         {
             var arguments = argumentParser.ParseArguments(command);
             arguments.UpdateAssemblyInfo.ShouldBe(true);
@@ -199,21 +199,21 @@ namespace GitVersionExe.Tests
 
         [TestCase("-updateAssemblyInfo false")]
         [TestCase("-updateAssemblyInfo 0")]
-        public void Update_assembly_info_false(string command)
+        public void UpdateAssemblyInfoFalse(string command)
         {
             var arguments = argumentParser.ParseArguments(command);
             arguments.UpdateAssemblyInfo.ShouldBe(false);
         }
 
         [TestCase("-updateAssemblyInfo Assembly.cs Assembly1.cs -ensureassemblyinfo")]
-        public void Create_mulitple_assembly_info_protected(string command)
+        public void CreateMulitpleAssemblyInfoProtected(string command)
         {
             var exception = Assert.Throws<WarningException>(() => argumentParser.ParseArguments(command));
             exception.Message.ShouldBe("Can't specify multiple assembly info files when using /ensureassemblyinfo switch, either use a single assembly info file or do not specify /ensureassemblyinfo and create assembly info files manually");
         }
 
         [Test]
-        public void Update_assembly_info_with_filename()
+        public void UpdateAssemblyInfoWithFilename()
         {
             var arguments = argumentParser.ParseArguments("-updateAssemblyInfo CommonAssemblyInfo.cs");
             arguments.UpdateAssemblyInfo.ShouldBe(true);
@@ -221,7 +221,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void Update_assembly_info_with_multiple_filenames()
+        public void UpdateAssemblyInfoWithMultipleFilenames()
         {
             var arguments = argumentParser.ParseArguments("-updateAssemblyInfo CommonAssemblyInfo.cs VersionAssemblyInfo.cs");
             arguments.UpdateAssemblyInfo.ShouldBe(true);
@@ -231,7 +231,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void Overrideconfig_with_no_options()
+        public void OverrideconfigWithNoOptions()
         {
             var arguments = argumentParser.ParseArguments("/overrideconfig");
             arguments.HasOverrideConfig.ShouldBe(false);
@@ -239,7 +239,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void Overrideconfig_with_single_tagprefix_option()
+        public void OverrideconfigWithSingleTagprefixOption()
         {
             var arguments = argumentParser.ParseArguments("/overrideconfig tag-prefix=sample");
             arguments.HasOverrideConfig.ShouldBe(true);
@@ -248,21 +248,21 @@ namespace GitVersionExe.Tests
 
         [TestCase("tag-prefix=sample;tag-prefix=other")]
         [TestCase("tag-prefix=sample;param2=other")]
-        public void Overrideconfig_with_several_options(string options)
+        public void OverrideconfigWithSeveralOptions(string options)
         {
             var exception = Assert.Throws<WarningException>(() => argumentParser.ParseArguments($"/overrideconfig {options}"));
             exception.Message.ShouldContain("Can't specify multiple /overrideconfig options");
         }
 
         [TestCase("tag-prefix=sample=asdf")]
-        public void Overrideconfig_with_invalid_option(string options)
+        public void OverrideconfigWithInvalidOption(string options)
         {
             var exception = Assert.Throws<WarningException>(() => argumentParser.ParseArguments($"/overrideconfig {options}"));
             exception.Message.ShouldContain("Could not parse /overrideconfig option");
         }
 
         [Test]
-        public void Update_assembly_info_with_relative_filename()
+        public void UpdateAssemblyInfoWithRelativeFilename()
         {
             var arguments = argumentParser.ParseArguments("-updateAssemblyInfo ..\\..\\CommonAssemblyInfo.cs");
             arguments.UpdateAssemblyInfo.ShouldBe(true);
@@ -270,21 +270,21 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void Ensure_assembly_info_true_when_found()
+        public void EnsureAssemblyInfoTrueWhenFound()
         {
             var arguments = argumentParser.ParseArguments("-ensureAssemblyInfo");
             arguments.EnsureAssemblyInfo.ShouldBe(true);
         }
 
         [Test]
-        public void Ensure_assembly_info_true()
+        public void EnsureAssemblyInfoTrue()
         {
             var arguments = argumentParser.ParseArguments("-ensureAssemblyInfo true");
             arguments.EnsureAssemblyInfo.ShouldBe(true);
         }
 
         [Test]
-        public void Ensure_assembly_info_false()
+        public void EnsureAssemblyInfoFalse()
         {
             var arguments = argumentParser.ParseArguments("-ensureAssemblyInfo false");
             arguments.EnsureAssemblyInfo.ShouldBe(false);
@@ -298,28 +298,28 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void Can_log_to_console()
+        public void CanLogToConsole()
         {
             var arguments = argumentParser.ParseArguments("-l console -proj foo.sln");
             arguments.LogFilePath.ShouldBe("console");
         }
 
         [Test]
-        public void Nofetch_true_when_defined()
+        public void NofetchTrueWhenDefined()
         {
             var arguments = argumentParser.ParseArguments("-nofetch");
             arguments.NoFetch.ShouldBe(true);
         }
 
         [Test]
-        public void Nonormilize_true_when_defined()
+        public void NonormilizeTrueWhenDefined()
         {
             var arguments = argumentParser.ParseArguments("-nonormalize");
             arguments.NoNormalize.ShouldBe(true);
         }
 
         [Test]
-        public void Other_arguments_can_be_parsed_before_nofetch()
+        public void OtherArgumentsCanBeParsedBeforeNofetch()
         {
             var arguments = argumentParser.ParseArguments("targetpath -nofetch ");
             arguments.TargetPath.ShouldBe("targetpath");
@@ -327,7 +327,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void Other_arguments_can_be_parsed_after_nofetch()
+        public void OtherArgumentsCanBeParsedAfterNofetch()
         {
             var arguments = argumentParser.ParseArguments("-nofetch -proj foo.sln");
             arguments.NoFetch.ShouldBe(true);
@@ -335,14 +335,14 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void Log_path_can_contain_forward_slash()
+        public void LogPathCanContainForwardSlash()
         {
             var arguments = argumentParser.ParseArguments("-l /some/path");
             arguments.LogFilePath.ShouldBe("/some/path");
         }
 
         [Test]
-        public void Boolean_argument_handling()
+        public void BooleanArgumentHandling()
         {
             var arguments = argumentParser.ParseArguments("/nofetch /updateassemblyinfo true");
             arguments.NoFetch.ShouldBe(true);
@@ -350,7 +350,7 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
-        public void Nocache_true_when_defined()
+        public void NocacheTrueWhenDefined()
         {
             var arguments = argumentParser.ParseArguments("-nocache");
             arguments.NoCache.ShouldBe(true);
@@ -362,7 +362,7 @@ namespace GitVersionExe.Tests
         [TestCase("-verbosity NORMAL", false, Verbosity.Normal)]
         [TestCase("-verbosity quiet", false, Verbosity.Quiet)]
         [TestCase("-verbosity Verbose", false, Verbosity.Verbose)]
-        public void Check_verbosity_parsing(string command, bool shouldThrow, Verbosity expectedVerbosity)
+        public void CheckVerbosityParsing(string command, bool shouldThrow, Verbosity expectedVerbosity)
         {
             if (shouldThrow)
             {

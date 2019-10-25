@@ -125,7 +125,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         /// Create a feature branch from a hotfix branch, and merge back, then delete it
         /// </summary>
         [Test]
-        public void FeatureOnHotfix_FeatureBranchDeleted()
+        public void FeatureOnHotfixFeatureBranchDeleted()
         {
             var config = new Config
             {
@@ -178,7 +178,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         /// Create a feature branch from a hotfix branch, and merge back, but don't delete it
         /// </summary>
         [Test]
-        public void FeatureOnHotfix_FeatureBranchNotDeleted()
+        public void FeatureOnHotfixFeatureBranchNotDeleted()
         {
             var config = new Config
             {

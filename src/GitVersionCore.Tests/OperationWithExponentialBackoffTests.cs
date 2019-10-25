@@ -35,12 +35,12 @@ namespace GitVersionCore.Tests
             }
 
             var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), new NullLog(), Operation);
-            Task action = retryOperation.ExecuteAsync();
+            var action = retryOperation.ExecuteAsync();
             await action.ShouldThrowAsync<Exception>();
         }
 
         [Test]
-        public async Task OperationIsRetriedOnIOException()
+        public async Task OperationIsRetriedOnIoException()
         {
             var operationCount = 0;
 
@@ -72,7 +72,7 @@ namespace GitVersionCore.Tests
             }
 
             var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(), new NullLog(), Operation, numberOfRetries);
-            Task action = retryOperation.ExecuteAsync();
+            var action = retryOperation.ExecuteAsync();
             await action.ShouldThrowAsync<AggregateException>();
 
             operationCount.ShouldBe(numberOfRetries + 1);
@@ -98,7 +98,7 @@ namespace GitVersionCore.Tests
             }
 
             var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(Validator), new NullLog(), Operation, numberOfRetries);
-            Task action = retryOperation.ExecuteAsync();
+            var action = retryOperation.ExecuteAsync();
             await action.ShouldThrowAsync<AggregateException>();
 
             // action.ShouldThrow<AggregateException>();
@@ -110,7 +110,7 @@ namespace GitVersionCore.Tests
         public async Task TotalSleepTimeForSixRetriesIsAboutThirtySecondsAsync()
         {
             const int numberOfRetries = 6;
-            int totalSleep = 0;
+            var totalSleep = 0;
 
             void Operation()
             {
@@ -124,7 +124,7 @@ namespace GitVersionCore.Tests
 
             var retryOperation = new OperationWithExponentialBackoff<IOException>(new MockThreadSleep(Validator), new NullLog(), Operation, numberOfRetries);
 
-            Task action = retryOperation.ExecuteAsync();
+            var action = retryOperation.ExecuteAsync();
             await action.ShouldThrowAsync<AggregateException>();
             // Action action = () => retryOperation.ExecuteAsync();
             // action.ShouldThrow<AggregateException>();

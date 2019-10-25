@@ -14,7 +14,7 @@ namespace GitVersionCore.Tests.IntegrationTests
     public class RemoteRepositoryScenarios : TestBase
     {
         [Test]
-        public void GivenARemoteGitRepositoryWithCommits_ThenClonedLocalShouldMatchRemoteVersion()
+        public void GivenARemoteGitRepositoryWithCommitsThenClonedLocalShouldMatchRemoteVersion()
         {
             using var fixture = new RemoteRepositoryFixture();
             fixture.AssertFullSemver("0.1.0+4");
@@ -22,7 +22,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
-        public void GivenARemoteGitRepositoryWithCommitsAndBranches_ThenClonedLocalShouldMatchRemoteVersion()
+        public void GivenARemoteGitRepositoryWithCommitsAndBranchesThenClonedLocalShouldMatchRemoteVersion()
         {
             using var fixture = new RemoteRepositoryFixture(
                 path =>
@@ -48,7 +48,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
-        public void GivenARemoteGitRepositoryAheadOfLocalRepository_ThenChangesShouldPull()
+        public void GivenARemoteGitRepositoryAheadOfLocalRepositoryThenChangesShouldPull()
         {
             using var fixture = new RemoteRepositoryFixture();
             fixture.Repository.MakeACommit();
@@ -60,7 +60,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
-        public void GivenARemoteGitRepositoryWhenCheckingOutDetachedhead_UsingExistingImplementationThrowsException()
+        public void GivenARemoteGitRepositoryWhenCheckingOutDetachedheadUsingExistingImplementationThrowsException()
         {
             using var fixture = new RemoteRepositoryFixture();
             Commands.Checkout(
@@ -72,7 +72,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
-        public void GivenARemoteGitRepositoryWhenCheckingOutDetachedhead_UsingTrackingBranchOnlyBehaviourShouldReturnVersion_0_1_4plus5()
+        public void GivenARemoteGitRepositoryWhenCheckingOutDetachedheadUsingTrackingBranchOnlyBehaviourShouldReturnVersion014Plus5()
         {
             using var fixture = new RemoteRepositoryFixture();
             Commands.Checkout(fixture.LocalRepositoryFixture.Repository, fixture.LocalRepositoryFixture.Repository.Head.Tip);

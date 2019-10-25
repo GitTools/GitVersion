@@ -15,7 +15,7 @@ namespace GitVersion.Configuration.Init.BuildServer
 
     internal class AppVeyorSetup : ConfigInitWizardStep
     {
-        private ProjectVisibility _projectVisibility;
+        private ProjectVisibility projectVisibility;
 
         public AppVeyorSetup(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
         {
@@ -23,7 +23,7 @@ namespace GitVersion.Configuration.Init.BuildServer
 
         public AppVeyorSetup WithData(ProjectVisibility visibility)
         {
-            _projectVisibility = visibility;
+            projectVisibility = visibility;
             return this;
         }
 
@@ -47,7 +47,7 @@ namespace GitVersion.Configuration.Init.BuildServer
             return StepResult.InvalidResponseSelected();
         }
 
-        private static string GetGVCommand(ProjectVisibility visibility)
+        private static string GetGvCommand(ProjectVisibility visibility)
         {
             return visibility switch
             {
@@ -64,7 +64,7 @@ namespace GitVersion.Configuration.Init.BuildServer
 
 before_build:
   - nuget restore
-{GetGVCommand(_projectVisibility)}
+{GetGvCommand(projectVisibility)}
 
 build:
   project: <your sln file>");
@@ -80,7 +80,7 @@ assembly_info:
 
 before_build:
   - nuget restore
-{GetGVCommand(_projectVisibility)}
+{GetGvCommand(projectVisibility)}
 
 build:
   project: <your sln file>

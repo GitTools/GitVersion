@@ -10,14 +10,14 @@ namespace GitVersion.Helpers
 {
     public static class ProcessHelper
     {
-        private static readonly object lockObject = new object();
+        private static readonly object LockObject = new object();
 
         // http://social.msdn.microsoft.com/Forums/en/netfxbcl/thread/f6069441-4ab1-4299-ad6a-b8bb9ed36be3
         private static Process Start(ProcessStartInfo startInfo)
         {
             Process process;
 
-            lock (lockObject)
+            lock (LockObject)
             {
                 using (new ChangeErrorMode(ErrorModes.FailCriticalErrors | ErrorModes.NoGpFaultErrorBox))
                 {

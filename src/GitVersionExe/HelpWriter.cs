@@ -19,11 +19,11 @@ namespace GitVersion
 
         public void WriteTo(Action<string> writeAction)
         {
-            string version = string.Empty;
-            Assembly assembly = Assembly.GetExecutingAssembly();
+            var version = string.Empty;
+            var assembly = Assembly.GetExecutingAssembly();
             versionWriter.WriteTo(assembly, v => version = v);
 
-            string message = "GitVersion " + version + @"
+            var message = "GitVersion " + version + @"
 Use convention to derive a SemVer product version from a GitFlow or GitHub based repository.
 
 GitVersion [path]

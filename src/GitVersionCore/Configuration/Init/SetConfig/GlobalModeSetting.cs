@@ -14,10 +14,10 @@ namespace GitVersion.Configuration.Init.SetConfig
         {
         }
 
-        public GlobalModeSetting WithData(ConfigInitWizardStep _returnToStep, bool _isPartOfWizard)
+        public GlobalModeSetting WithData(ConfigInitWizardStep returnToStep, bool isPartOfWizard)
         {
-            returnToStep = _returnToStep;
-            isPartOfWizard = _isPartOfWizard;
+            this.returnToStep = returnToStep;
+            this.isPartOfWizard = isPartOfWizard;
             return this;
         }
 

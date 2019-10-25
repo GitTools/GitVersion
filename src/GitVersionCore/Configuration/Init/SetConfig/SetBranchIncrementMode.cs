@@ -14,10 +14,10 @@ namespace GitVersion.Configuration.Init.SetConfig
         {
         }
 
-        public SetBranchIncrementMode WithData(string _name, BranchConfig _branchConfig)
+        public SetBranchIncrementMode WithData(string name, BranchConfig branchConfig)
         {
-            branchConfig = _branchConfig;
-            name = _name;
+            this.branchConfig = branchConfig;
+            this.name = name;
             return this;
         }
 

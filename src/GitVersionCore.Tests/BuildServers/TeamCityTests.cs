@@ -19,7 +19,7 @@ namespace GitVersionCore.Tests.BuildServers
         }
         
         [Test]
-        public void Develop_branch()
+        public void DevelopBranch()
         {
             var versionBuilder = new TeamCity(environment, log);
             var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Unstable4");

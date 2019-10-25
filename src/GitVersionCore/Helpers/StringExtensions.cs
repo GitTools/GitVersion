@@ -8,19 +8,19 @@ namespace GitVersion.Helpers
 {
     public static class StringExtensions
     {
-        private static readonly string[] trues;
-        private static readonly string[] falses;
+        private static readonly string[] Trues;
+        private static readonly string[] Falses;
 
 
         static StringExtensions()
         {
-            trues = new[]
+            Trues = new[]
             {
                 "1",
                 "true"
             };
 
-            falses = new[]
+            Falses = new[]
             {
                 "0",
                 "false"
@@ -29,12 +29,12 @@ namespace GitVersion.Helpers
 
         public static bool IsTrue(this string value)
         {
-            return trues.Contains(value, StringComparer.OrdinalIgnoreCase);
+            return Trues.Contains(value, StringComparer.OrdinalIgnoreCase);
         }
         
         public static bool IsFalse(this string value)
         {
-            return falses.Contains(value, StringComparer.OrdinalIgnoreCase);
+            return Falses.Contains(value, StringComparer.OrdinalIgnoreCase);
         }
         
         public static bool IsValidPath(this string path)

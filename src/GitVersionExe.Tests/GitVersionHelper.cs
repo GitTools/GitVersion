@@ -40,7 +40,7 @@ namespace GitVersionExe.Tests
                 {
                     new KeyValuePair<string, string>(TeamCity.EnvironmentVariableName, arguments.IsTeamCity ? "8.0.0" : null),
                     new KeyValuePair<string, string>(AppVeyor.EnvironmentVariableName, null),
-                    new KeyValuePair<string, string>(TravisCI.EnvironmentVariableName, null),
+                    new KeyValuePair<string, string>(TravisCi.EnvironmentVariableName, null),
                     new KeyValuePair<string, string>(AzurePipelines.EnvironmentVariableName, null),
                 };
 

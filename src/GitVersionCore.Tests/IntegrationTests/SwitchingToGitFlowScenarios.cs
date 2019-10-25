@@ -8,7 +8,7 @@ namespace GitVersionCore.Tests.IntegrationTests
     public class SwitchingToGitFlowScenarios : TestBase
     {
         [Test]
-        public void WhenDevelopBranchedFromMasterWithLegacyVersionTags_DevelopCanUseReachableTag()
+        public void WhenDevelopBranchedFromMasterWithLegacyVersionTagsDevelopCanUseReachableTag()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeCommits(5);

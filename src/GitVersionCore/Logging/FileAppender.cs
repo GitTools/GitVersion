@@ -6,7 +6,7 @@ namespace GitVersion.Logging
 {
     public class FileAppender : ILogAppender
     {
-        private static readonly ReaderWriterLock locker = new ReaderWriterLock();
+        private static readonly ReaderWriterLock Locker = new ReaderWriterLock();
         private readonly string filePath;
 
         public FileAppender(string filePath)

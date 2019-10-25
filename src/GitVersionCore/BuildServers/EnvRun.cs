@@ -14,7 +14,7 @@ namespace GitVersion.BuildServers
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
         public override bool CanApplyToCurrentContext()
         {
-            string envRunDatabasePath = Environment.GetEnvironmentVariable(EnvironmentVariableName);
+            var envRunDatabasePath = Environment.GetEnvironmentVariable(EnvironmentVariableName);
             if (!string.IsNullOrEmpty(envRunDatabasePath))
             {
                 if (!File.Exists(envRunDatabasePath))

@@ -7,9 +7,9 @@ namespace GitVersion.Helpers
 {
     public static class EncodingHelper
     {
-        private static IList<Encoding> EncodingsWithPreambles;
+        private static IList<Encoding> encodingsWithPreambles;
 
-        private static int MaxPreambleLength;
+        private static int maxPreambleLength;
 
         /// <summary>
         /// Detects the encoding of a file if and only if it includes a preamble .
@@ -23,7 +23,7 @@ namespace GitVersion.Helpers
                 return null;
             }
 
-            if (EncodingsWithPreambles == null)
+            if (encodingsWithPreambles == null)
             {
                 ScanEncodings();
             }
@@ -36,7 +36,7 @@ namespace GitVersion.Helpers
             }
 
             // Read the minimum amount necessary.
-            var length = stream.Length > MaxPreambleLength ? MaxPreambleLength : stream.Length;
+            var length = stream.Length > maxPreambleLength ? maxPreambleLength : stream.Length;
 
             var bytes = new byte[length];
             stream.Read(bytes, 0, (int)length);
@@ -55,12 +55,12 @@ namespace GitVersion.Helpers
                 return null;
             }
 
-            if (EncodingsWithPreambles == null)
+            if (encodingsWithPreambles == null)
             {
                 ScanEncodings();
             }
 
-            return EncodingsWithPreambles.FirstOrDefault(encoding => PreambleMatches(encoding, bytes));
+            return encodingsWithPreambles.FirstOrDefault(encoding => PreambleMatches(encoding, bytes));
         }
 
         /// <summary>
@@ -72,15 +72,15 @@ namespace GitVersion.Helpers
         private static void ScanEncodings()
         {
             var encodings = (Encoding.GetEncodings());
-            EncodingsWithPreambles = (from info in encodings
+            encodingsWithPreambles = (from info in encodings
                                       let encoding = info.GetEncoding()
                                       let preamble = encoding.GetPreamble()
                                       where preamble.Length > 0
                                       orderby preamble.Length descending
                                       select encoding).ToList();
 
-            var encodingWithLongestPreamble = EncodingsWithPreambles.FirstOrDefault();
-            MaxPreambleLength = encodingWithLongestPreamble?.GetPreamble().Length ?? 0;
+            var encodingWithLongestPreamble = encodingsWithPreambles.FirstOrDefault();
+            maxPreambleLength = encodingWithLongestPreamble?.GetPreamble().Length ?? 0;
         }
 
         /// <summary>

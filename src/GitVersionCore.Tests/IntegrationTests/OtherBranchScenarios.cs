@@ -12,8 +12,8 @@ namespace GitVersionCore.Tests.IntegrationTests
         public void CanTakeVersionFromReleaseBranch()
         {
             using var fixture = new EmptyRepositoryFixture();
-            const string TaggedVersion = "1.0.3";
-            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+            const string taggedVersion = "1.0.3";
+            fixture.Repository.MakeATaggedCommit(taggedVersion);
             fixture.Repository.MakeCommits(5);
             fixture.Repository.CreateBranch("release/beta-2.0.0");
             Commands.Checkout(fixture.Repository, "release/beta-2.0.0");
@@ -25,8 +25,8 @@ namespace GitVersionCore.Tests.IntegrationTests
         public void BranchesWithIllegalCharsShouldNotBeUsedInVersionNames()
         {
             using var fixture = new EmptyRepositoryFixture();
-            const string TaggedVersion = "1.0.3";
-            fixture.Repository.MakeATaggedCommit(TaggedVersion);
+            const string taggedVersion = "1.0.3";
+            fixture.Repository.MakeATaggedCommit(taggedVersion);
             fixture.Repository.MakeCommits(5);
             fixture.Repository.CreateBranch("issue/m/github-569");
             Commands.Checkout(fixture.Repository, "issue/m/github-569");

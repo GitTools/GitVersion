@@ -8,7 +8,7 @@ namespace GitVersion.SemanticVersioning
     public class SemanticVersionPreReleaseTag :
         IFormattable, IComparable<SemanticVersionPreReleaseTag>, IEquatable<SemanticVersionPreReleaseTag>
     {
-        private static readonly LambdaEqualityHelper<SemanticVersionPreReleaseTag> equalityHelper =
+        private static readonly LambdaEqualityHelper<SemanticVersionPreReleaseTag> EqualityHelper =
            new LambdaEqualityHelper<SemanticVersionPreReleaseTag>(x => x.Name, x => x.Number);
 
         public SemanticVersionPreReleaseTag()
@@ -37,12 +37,12 @@ namespace GitVersion.SemanticVersioning
 
         public bool Equals(SemanticVersionPreReleaseTag other)
         {
-            return equalityHelper.Equals(this, other);
+            return EqualityHelper.Equals(this, other);
         }
 
         public override int GetHashCode()
         {
-            return equalityHelper.GetHashCode(this);
+            return EqualityHelper.GetHashCode(this);
         }
 
         public static bool operator ==(SemanticVersionPreReleaseTag left, SemanticVersionPreReleaseTag right)

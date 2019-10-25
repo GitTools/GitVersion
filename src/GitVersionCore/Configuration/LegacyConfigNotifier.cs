@@ -44,7 +44,7 @@ namespace GitVersion.Configuration
     {branchErrors}");
             }
 
-            if (legacyConfig.assemblyVersioningScheme != null)
+            if (legacyConfig.AssemblyVersioningScheme != null)
                 issues.Add("assemblyVersioningScheme has been replaced by assembly-versioning-scheme");
 
             if (legacyConfig.DevelopBranchTag != null)

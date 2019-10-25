@@ -71,7 +71,7 @@ namespace GitVersionCore.Tests
             var repositoryConfigFilePath = SetupConfigFileContent(string.Empty, repoConfigFile, repoPath);
             var workingDirectoryConfigFilePath = SetupConfigFileContent(string.Empty, workingConfigFile, workingPath);
 
-            WarningException exception = Should.Throw<WarningException>(() =>
+            var exception = Should.Throw<WarningException>(() =>
             {
                 WithDefaultConfigFileLocator(configFileLocator =>
                 {
@@ -127,7 +127,7 @@ branches:
     tag: beta
     is-develop: true";
 
-            OldConfigurationException exception = Should.Throw<OldConfigurationException>(() =>
+            var exception = Should.Throw<OldConfigurationException>(() =>
             {
                 LegacyConfigNotifier.Notify(new StringReader(text));
             });

@@ -11,7 +11,7 @@ namespace GitVersionCore.Tests.IntegrationTests
     public class DevelopScenarios : TestBase
     {
         [Test]
-        public void WhenDevelopHasMultipleCommits_SpecifyExistingCommitId()
+        public void WhenDevelopHasMultipleCommitsSpecifyExistingCommitId()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.0");
@@ -27,7 +27,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
-        public void WhenDevelopHasMultipleCommits_SpecifyNonExistingCommitId()
+        public void WhenDevelopHasMultipleCommitsSpecifyNonExistingCommitId()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.0");
@@ -85,7 +85,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
-        public void WhenDevelopBranchedFromMaster_MinorIsIncreased()
+        public void WhenDevelopBranchedFromMasterMinorIsIncreased()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.0");
@@ -95,7 +95,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
-        public void MergingReleaseBranchBackIntoDevelopWithMergingToMaster_DoesBumpDevelopVersion()
+        public void MergingReleaseBranchBackIntoDevelopWithMergingToMasterDoesBumpDevelopVersion()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.0");
@@ -133,7 +133,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
-        public void WhenDevelopBranchedFromMasterDetachedHead_MinorIsIncreased()
+        public void WhenDevelopBranchedFromMasterDetachedHeadMinorIsIncreased()
         {
             using var fixture = new EmptyRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.0.0");
