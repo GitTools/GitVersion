@@ -46,7 +46,7 @@ namespace GitVersion.Helpers
                         fallback = components[1].Trim();
                     }
 
-                    propertyValue = EnvironmentHelper.GetEnvironmentVariableForProcess(envVar);
+                    propertyValue = System.Environment.GetEnvironmentVariable(envVar, EnvironmentVariableTarget.Process);
                     if (propertyValue == null)
                     {
                         if (fallback != null)
