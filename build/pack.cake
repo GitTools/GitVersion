@@ -214,7 +214,7 @@ Task("Pack-Vsix")
 
     // update version number
     ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$version$", parameters.Version.VsixVersion);
-    UpdateTaskVersion(new FilePath(workDir + "/GitVersionTask/task.json"), taskId, parameters.Version.GitVersion);
+    UpdateTaskVersion(new FilePath(workDir + "/GitVersionTask/task.json"), taskId, titleSuffix, parameters.Version.GitVersion);
 
     // build and pack
     var settings = new TfxExtensionCreateSettings
