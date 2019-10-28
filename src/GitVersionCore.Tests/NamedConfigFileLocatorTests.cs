@@ -64,7 +64,7 @@ namespace GitVersionCore.Tests
 
             configFileLocator = new NamedConfigFileLocator(fileSystem, log, options);
 
-            var gitPreparer = new GitPreparer(log, Options.Create(new Arguments { TargetPath = repoPath }));
+            var gitPreparer = new GitPreparer(log, new TestEnvironment(), Options.Create(new Arguments { TargetPath = repoPath }));
             var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
             var configurationProvider = new ConfigProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
 
@@ -84,7 +84,7 @@ namespace GitVersionCore.Tests
             log = new Log(logAppender);
 
             configFileLocator = new NamedConfigFileLocator(fileSystem, log, options);
-            var gitPreparer = new GitPreparer(log, Options.Create(new Arguments { TargetPath = repoPath }));
+            var gitPreparer = new GitPreparer(log, new TestEnvironment(), Options.Create(new Arguments { TargetPath = repoPath }));
             var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
             var configurationProvider = new ConfigProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
 

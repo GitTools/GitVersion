@@ -13,7 +13,7 @@ namespace GitVersion.Helpers
         /// Normalisation of a git directory turns all remote branches into local branches, turns pull request refs into a real branch and a few other things. This is designed to be run *only on the build server* which checks out repositories in different ways.
         /// It is not recommended to run normalisation against a local repository
         /// </summary>
-        public static void NormalizeGitDirectory(ILog log, string gitDirectory, AuthenticationInfo authentication,
+        public static void NormalizeGitDirectory(ILog log, IEnvironment environment, string gitDirectory, AuthenticationInfo authentication,
             bool noFetch, string currentBranch, bool isDynamicRepository)
         {
             using var repo = new Repository(gitDirectory);
@@ -120,7 +120,7 @@ namespace GitVersion.Helpers
             {
                 if (repo.Head.Tip.Sha != expectedSha)
                 {
-                    if (System.Environment.GetEnvironmentVariable("IGNORE_NORMALISATION_GIT_HEAD_MOVE") != "1")
+                    if (environment.GetEnvironmentVariable("IGNORE_NORMALISATION_GIT_HEAD_MOVE") != "1")
                     {
                         // Whoa, HEAD has moved, it shouldn't have. We need to blow up because there is a bug in normalisation
                         throw new BugException($@"GitVersion has a bug, your HEAD has moved after repo normalisation.

@@ -45,7 +45,7 @@ namespace GitVersionCore.Tests.Init
             var configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
             var workingDirectory = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "c:\\proj" : "/proj";
 
-            var gitPreparer = new GitPreparer(log, Options.Create(new Arguments { TargetPath = workingDirectory }));
+            var gitPreparer = new GitPreparer(log, new TestEnvironment(), Options.Create(new Arguments { TargetPath = workingDirectory }));
             var configurationProvider = new ConfigProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
 
             configurationProvider.Init(workingDirectory);

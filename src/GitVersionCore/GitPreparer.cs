@@ -11,6 +11,7 @@ namespace GitVersion
     public class GitPreparer : IGitPreparer
     {
         private readonly ILog log;
+        private readonly IEnvironment environment;
         private readonly string dynamicRepositoryLocation;
         private readonly AuthenticationInfo authentication;
         private readonly bool noFetch;
@@ -18,9 +19,10 @@ namespace GitVersion
         private const string DefaultRemoteName = "origin";
         private string dynamicGitRepositoryPath;
 
-        public GitPreparer(ILog log, IOptions<Arguments> options)
+        public GitPreparer(ILog log, IEnvironment environment, IOptions<Arguments> options)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.environment = environment;
             var arguments = options.Value;
 
             TargetUrl = arguments.TargetUrl;
@@ -47,7 +49,7 @@ namespace GitVersion
                     {
                         CleanupDuplicateOrigin();
                     }
-                    GitRepositoryHelper.NormalizeGitDirectory(log, GetDotGitDirectory(), authentication, noFetch, currentBranch, IsDynamicGitRepository());
+                    GitRepositoryHelper.NormalizeGitDirectory(log, environment, GetDotGitDirectory(), authentication, noFetch, currentBranch, IsDynamicGitRepository());
                 }
                 return;
             }
@@ -180,7 +182,7 @@ namespace GitVersion
                     log.Info("Git repository already exists");
                     using (log.IndentLog($"Normalizing git directory for branch '{targetBranch}'"))
                     {
-                        GitRepositoryHelper.NormalizeGitDirectory(log, gitDirectory, auth, noFetch, targetBranch, true);
+                        GitRepositoryHelper.NormalizeGitDirectory(log, environment, gitDirectory, auth, noFetch, targetBranch, true);
                     }
 
                     return gitDirectory;
@@ -191,7 +193,7 @@ namespace GitVersion
                 using (log.IndentLog($"Normalizing git directory for branch '{targetBranch}'"))
                 {
                     // Normalize (download branches) before using the branch
-                    GitRepositoryHelper.NormalizeGitDirectory(log, gitDirectory, auth, noFetch, targetBranch, true);
+                    GitRepositoryHelper.NormalizeGitDirectory(log, environment, gitDirectory, auth, noFetch, targetBranch, true);
                 }
 
                 return gitDirectory;

@@ -34,7 +34,7 @@ namespace GitVersionCore.Tests
             var baseVersionCalculator = new TestBaseVersionStrategiesCalculator(log);
             var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
             var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
-            var variableProvider = new VariableProvider(nextVersionCalculator);
+            var variableProvider = new VariableProvider(nextVersionCalculator, new TestEnvironment());
             var gitVersionContext = new GitVersionContext(repository ?? fixture.Repository, log, targetBranch, configuration, isForTrackedBranchOnly, commitId);
             var executeGitVersion = ExecuteGitVersion(gitVersionContext);
             var variables = variableProvider.GetVariablesFor(executeGitVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);
@@ -99,7 +99,7 @@ namespace GitVersionCore.Tests
                 Authentication = new Authentication(),
                 TargetPath = fixture.LocalRepositoryFixture.RepositoryPath
             };
-            new GitPreparer(log, Options.Create(arguments)).Prepare(true, null);
+            new GitPreparer(log, new TestEnvironment(), Options.Create(arguments)).Prepare(true, null);
         }
     }
 }

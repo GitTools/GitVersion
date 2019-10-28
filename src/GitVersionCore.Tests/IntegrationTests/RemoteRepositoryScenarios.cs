@@ -41,7 +41,7 @@ namespace GitVersionCore.Tests.IntegrationTests
 
                     return repo;
                 });
-            GitRepositoryHelper.NormalizeGitDirectory(new NullLog(), fixture.LocalRepositoryFixture.RepositoryPath, new AuthenticationInfo(), noFetch: false, currentBranch: string.Empty, isDynamicRepository: true);
+            GitRepositoryHelper.NormalizeGitDirectory(new NullLog(), new TestEnvironment(), fixture.LocalRepositoryFixture.RepositoryPath, new AuthenticationInfo(), noFetch: false, currentBranch: string.Empty, isDynamicRepository: true);
 
             fixture.AssertFullSemver("1.0.0-beta.1+5");
             fixture.AssertFullSemver("1.0.0-beta.1+5", fixture.LocalRepositoryFixture.Repository);

@@ -63,7 +63,7 @@ namespace GitVersionCore.Tests
                     TargetUrl = targetUrl,
                     TargetPath = fixture.RepositoryPath
                 };
-                var gitPreparer = new GitPreparer(log, Options.Create(arguments));
+                var gitPreparer = new GitPreparer(log, environment, Options.Create(arguments));
                 configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
 
                 gitPreparer.Prepare(true, targetBranch);
@@ -97,7 +97,7 @@ namespace GitVersionCore.Tests
                         TargetPath = worktreePath
                     };
 
-                    var gitPreparer = new GitPreparer(log, Options.Create(arguments));
+                    var gitPreparer = new GitPreparer(log, environment, Options.Create(arguments));
                     configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
                     var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, log, gitPreparer, configFileLocator, null);
                     cacheKey.Value.ShouldNotBeEmpty();
@@ -212,7 +212,7 @@ namespace GitVersionCore.Tests
                     TargetPath = fixture.RepositoryPath
                 };
 
-                var gitPreparer = new GitPreparer(log, Options.Create(arguments));
+                var gitPreparer = new GitPreparer(log, environment, Options.Create(arguments));
 
                 gitVersionCache = new GitVersionCache(fileSystem, log);
                 var cacheDirectory = gitVersionCache.GetCacheDirectory(gitPreparer);
@@ -390,7 +390,7 @@ namespace GitVersionCore.Tests
                         TargetPath = worktreePath
                     };
 
-                    var gitPreparer = new GitPreparer(log, Options.Create(arguments));
+                    var gitPreparer = new GitPreparer(log, environment, Options.Create(arguments));
 
                     gitPreparer.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(worktreePath);
                 }
@@ -414,7 +414,7 @@ namespace GitVersionCore.Tests
                     TargetPath = fixture.RepositoryPath
                 };
 
-                var gitPreparer = new GitPreparer(log, Options.Create(arguments));
+                var gitPreparer = new GitPreparer(log, environment, Options.Create(arguments));
                 var expectedPath = fixture.RepositoryPath.TrimEnd('/', '\\');
                 gitPreparer.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(expectedPath);
             });
@@ -451,7 +451,7 @@ namespace GitVersionCore.Tests
                     TargetPath = fixture.RepositoryPath
                 };
 
-                var gitPreparer = new GitPreparer(log, Options.Create(arguments));
+                var gitPreparer = new GitPreparer(log, environment, Options.Create(arguments));
                 var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
                 gitPreparer.GetDotGitDirectory().ShouldBe(expectedPath);
             });
@@ -479,7 +479,7 @@ namespace GitVersionCore.Tests
                         TargetPath = worktreePath
                     };
 
-                    var gitPreparer = new GitPreparer(log, Options.Create(arguments));
+                    var gitPreparer = new GitPreparer(log, environment, Options.Create(arguments));
                     var expectedPath = Path.Combine(fixture.RepositoryPath, ".git");
                     gitPreparer.GetDotGitDirectory().ShouldBe(expectedPath);
                 }
@@ -524,14 +524,14 @@ namespace GitVersionCore.Tests
             var arguments = new Arguments { TargetPath = fixture.RepositoryPath };
             var options = Options.Create(arguments);
 
-            var gitPreparer = new GitPreparer(log, options);
+            var gitPreparer = new GitPreparer(log, environment, options);
             var stepFactory = new ConfigInitStepFactory();
             var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
             var configurationProvider = new ConfigProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
             var baseVersionCalculator = new BaseVersionCalculator(this.log, null);
             var mainlineVersionCalculator = new MainlineVersionCalculator(this.log, metaDataCalculator);
             var nextVersionCalculator = new NextVersionCalculator(this.log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
-            var variableProvider = new VariableProvider(nextVersionCalculator);
+            var variableProvider = new VariableProvider(nextVersionCalculator, new TestEnvironment());
             var gitVersionCalculator = new GitVersionCalculator(fileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);
 
             fixture.Repository.MakeACommit();
@@ -547,14 +547,14 @@ namespace GitVersionCore.Tests
         {
             var options = Options.Create(arguments);
 
-            var gitPreparer = new GitPreparer(log, options);
+            var gitPreparer = new GitPreparer(log, environment, options);
             var stepFactory = new ConfigInitStepFactory();
             var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
             var configurationProvider = new ConfigProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
             var baseVersionCalculator = new BaseVersionCalculator(log, null);
             var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
             var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
-            var variableProvider = new VariableProvider(nextVersionCalculator);
+            var variableProvider = new VariableProvider(nextVersionCalculator, new TestEnvironment());
             var gitVersionCalculator = new GitVersionCalculator(fileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);
             return gitVersionCalculator;
         }

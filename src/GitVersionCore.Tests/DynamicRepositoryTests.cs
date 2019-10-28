@@ -94,13 +94,13 @@ namespace GitVersionCore.Tests
             var nextVersionCalculator = new NextVersionCalculator(log, metadataCalculator, baseVersionCalculator, mainlineVersionCalculator);
             var gitVersionFinder = new GitVersionFinder(log, nextVersionCalculator);
 
-            var gitPreparer = new GitPreparer(log, options);
+            var gitPreparer = new GitPreparer(log, new TestEnvironment(), options);
             var stepFactory = new ConfigInitStepFactory();
             var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
 
             var configurationProvider = new ConfigProvider(testFileSystem, log, configFileLocator, gitPreparer, configInitWizard);
             
-            var variableProvider = new VariableProvider(nextVersionCalculator);
+            var variableProvider = new VariableProvider(nextVersionCalculator, new TestEnvironment());
             var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);
 
             var versionVariables = gitVersionCalculator.CalculateVersionVariables();

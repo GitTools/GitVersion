@@ -11,10 +11,12 @@ namespace GitVersion.OutputVariables
     public class VariableProvider : IVariableProvider
     {
         private readonly INextVersionCalculator nextVersionCalculator;
+        private readonly IEnvironment environment;
 
-        public VariableProvider(INextVersionCalculator nextVersionCalculator)
+        public VariableProvider(INextVersionCalculator nextVersionCalculator, IEnvironment environment)
         {
             this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
+            this.environment = environment;
         }
 
         public VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)
@@ -54,13 +56,13 @@ namespace GitVersion.OutputVariables
             var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, config);
 
             var informationalVersion = CheckAndFormatString(config.AssemblyInformationalFormat, semverFormatValues,
-                semverFormatValues.DefaultInformationalVersion, "AssemblyInformationalVersion");
+                environment, semverFormatValues.DefaultInformationalVersion, "AssemblyInformationalVersion");
 
             var assemblyFileSemVer = CheckAndFormatString(config.AssemblyFileVersioningFormat, semverFormatValues,
-                semverFormatValues.AssemblyFileSemVer, "AssemblyFileVersioningFormat");
+                environment, semverFormatValues.AssemblyFileSemVer, "AssemblyFileVersioningFormat");
 
             var assemblySemVer = CheckAndFormatString(config.AssemblyVersioningFormat, semverFormatValues,
-                semverFormatValues.AssemblySemVer, "AssemblyVersioningFormat");
+                environment, semverFormatValues.AssemblySemVer, "AssemblyVersioningFormat");
 
             var variables = new VersionVariables(
                 semverFormatValues.Major,
@@ -105,7 +107,7 @@ namespace GitVersion.OutputVariables
             semanticVersion.BuildMetaData.CommitsSinceTag = null;
         }
 
-        private static string CheckAndFormatString<T>(string formatString, T source,  string defaultValue, string formatVarName)
+        private static string CheckAndFormatString<T>(string formatString, T source, IEnvironment environment, string defaultValue, string formatVarName)
         {
             string formattedString;
 
@@ -117,7 +119,7 @@ namespace GitVersion.OutputVariables
             {
                 try
                 {
-                    formattedString = formatString.FormatWith(source);
+                    formattedString = formatString.FormatWith(source, environment);
                 }
                 catch (ArgumentException formex)
                 {

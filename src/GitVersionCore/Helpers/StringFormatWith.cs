@@ -18,7 +18,8 @@ namespace GitVersion.Helpers
         /// </summary>       
         /// <param name="template" this="true">The template to be replaced with values from the source object. The template can contain expressions wrapped in curly braces, that point to properties or fields on the source object to be used as a substitute, e.g '{Foo.Bar.CurrencySymbol} foo {Foo.Bar.Price}'.</param>
         /// <param name="source">The source object to apply to format</param>
-        public static string FormatWith<T>(this string template, T source)
+        /// <param name="environment"></param>
+        public static string FormatWith<T>(this string template, T source, IEnvironment environment)
         {
             if (template == null)
             {
@@ -46,7 +47,7 @@ namespace GitVersion.Helpers
                         fallback = components[1].Trim();
                     }
 
-                    propertyValue = System.Environment.GetEnvironmentVariable(envVar, EnvironmentVariableTarget.Process);
+                    propertyValue = environment.GetEnvironmentVariable(envVar);
                     if (propertyValue == null)
                     {
                         if (fallback != null)

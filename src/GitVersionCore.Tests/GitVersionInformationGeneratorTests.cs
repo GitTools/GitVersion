@@ -47,7 +47,7 @@ namespace GitVersionCore.Tests
             var baseVersionCalculator = new BaseVersionCalculator(log, null);
             var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
             var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
-            var variableProvider = new VariableProvider(nextVersionCalculator);
+            var variableProvider = new VariableProvider(nextVersionCalculator, new TestEnvironment());
             var variables = variableProvider.GetVariablesFor(semanticVersion, new TestEffectiveConfiguration(), false);
             var generator = new GitVersionInformationGenerator(fileName, directory, variables, fileSystem);
 

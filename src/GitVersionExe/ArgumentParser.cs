@@ -14,6 +14,13 @@ namespace GitVersion
 {
     public class ArgumentParser : IArgumentParser
     {
+        private readonly IEnvironment environment;
+
+        public ArgumentParser(IEnvironment environment)
+        {
+            this.environment = environment;
+        }
+
         public Arguments ParseArguments(string commandLineArguments)
         {
             var arguments = commandLineArguments
@@ -53,6 +60,8 @@ namespace GitVersion
             }
 
             var arguments = new Arguments();
+
+            AddAuthentication(arguments);
 
             var switchesAndValues = CollectSwitchesAndValuesFromArguments(commandLineArguments, out var firstArgumentIsSwitch);
 
@@ -397,6 +406,23 @@ namespace GitVersion
             }
 
             return arguments;
+        }
+
+        private void AddAuthentication(Arguments arguments)
+        {
+            var username = environment.GetEnvironmentVariable("GITVERSION_REMOTE_USERNAME");
+            if (!string.IsNullOrWhiteSpace(username))
+            {
+                if (arguments.Authentication == null) arguments.Authentication = new Authentication();
+                arguments.Authentication.Username = username;
+            }
+
+            var password = environment.GetEnvironmentVariable("GITVERSION_REMOTE_PASSWORD");
+            if (!string.IsNullOrWhiteSpace(password))
+            {
+                if (arguments.Authentication == null) arguments.Authentication = new Authentication();
+                arguments.Authentication.Username = password;
+            }
         }
 
         private static void EnsureArgumentValueCount(string[] values, int maxArguments = 1)

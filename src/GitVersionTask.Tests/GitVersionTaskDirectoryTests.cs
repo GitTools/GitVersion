@@ -26,6 +26,7 @@ namespace GitVersion.MSBuildTask.Tests
         private IGitVersionFinder gitVersionFinder;
         private IFileSystem testFileSystem;
         private IConfigInitWizard configInitWizard;
+        private IEnvironment environment;
 
         [SetUp]
         public void CreateTemporaryRepository()
@@ -35,6 +36,7 @@ namespace GitVersion.MSBuildTask.Tests
 
             testFileSystem = new TestFileSystem();
             log = new NullLog();
+            environment = new TestEnvironment();
             var stepFactory = new ConfigInitStepFactory();
             configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
             configFileLocator = new DefaultConfigFileLocator(testFileSystem, log);
@@ -67,13 +69,13 @@ namespace GitVersion.MSBuildTask.Tests
                 var arguments = new Arguments { TargetPath = workDirectory, NoFetch = true };
                 var options = Options.Create(arguments);
 
-                var gitPreparer = new GitPreparer(log, options);
+                var gitPreparer = new GitPreparer(log, new TestEnvironment(), options);
                 var configurationProvider = new ConfigProvider(testFileSystem, log, configFileLocator, gitPreparer, configInitWizard);
 
                 var baseVersionCalculator = new BaseVersionCalculator(log, null);
                 var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
                 var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
-                var variableProvider = new VariableProvider(nextVersionCalculator);
+                var variableProvider = new VariableProvider(nextVersionCalculator, environment);
 
                 var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);
 
@@ -99,12 +101,12 @@ namespace GitVersion.MSBuildTask.Tests
                 var arguments = new Arguments { TargetPath = childDir, NoFetch = true };
                 var options = Options.Create(arguments);
 
-                var gitPreparer = new GitPreparer(log, options);
+                var gitPreparer = new GitPreparer(log, environment, options);
                 var configurationProvider = new ConfigProvider(testFileSystem, log, configFileLocator, gitPreparer, configInitWizard);
                 var baseVersionCalculator = new BaseVersionCalculator(log, null);
                 var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
                 var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
-                var variableProvider = new VariableProvider(nextVersionCalculator);
+                var variableProvider = new VariableProvider(nextVersionCalculator, environment);
 
                 var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);
 

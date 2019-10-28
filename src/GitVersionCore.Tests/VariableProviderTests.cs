@@ -24,7 +24,7 @@ namespace GitVersionCore.Tests
             var baseVersionCalculator = new BaseVersionCalculator(log, null);
             var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
             var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
-            variableProvider = new VariableProvider(nextVersionCalculator);
+            variableProvider = new VariableProvider(nextVersionCalculator, new TestEnvironment());
         }
 
         [Test]

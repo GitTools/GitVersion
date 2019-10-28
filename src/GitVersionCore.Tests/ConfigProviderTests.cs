@@ -27,18 +27,21 @@ namespace GitVersionCore.Tests
         private IConfigFileLocator configFileLocator;
         private IConfigProvider configProvider;
         private IConfigInitWizard configInitWizard;
+        private IEnvironment environment;
 
         [SetUp]
         public void Setup()
         {
             fileSystem = new TestFileSystem();
             var log = new NullLog();
+            environment = new TestEnvironment();
+
             var stepFactory = new ConfigInitStepFactory();
             configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
             configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
             repoPath = DefaultRepoPath;
 
-            var gitPreparer = new GitPreparer(log, Options.Create(new Arguments { TargetPath = repoPath }));
+            var gitPreparer = new GitPreparer(log, environment, Options.Create(new Arguments { TargetPath = repoPath }));
             configProvider = new ConfigProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
 
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
@@ -293,7 +296,7 @@ branches: {}";
             var log = new Log(logAppender);
 
             var defaultConfigFileLocator = new DefaultConfigFileLocator(fileSystem, log);
-            var gitPreparer = new GitPreparer(log, Options.Create(new Arguments { TargetPath = repoPath }));
+            var gitPreparer = new GitPreparer(log, environment, Options.Create(new Arguments { TargetPath = repoPath }));
 
             configProvider = new ConfigProvider(fileSystem, log, defaultConfigFileLocator, gitPreparer, configInitWizard);
 
