@@ -13,8 +13,8 @@ namespace GitVersion
         private readonly ILog log;
         private readonly IEnvironment environment;
         private readonly string dynamicRepositoryLocation;
-        private readonly AuthenticationInfo authentication;
         private readonly bool noFetch;
+        private readonly Arguments arguments;
 
         private const string DefaultRemoteName = "origin";
         private string dynamicGitRepositoryPath;
@@ -23,23 +23,22 @@ namespace GitVersion
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.environment = environment;
-            var arguments = options.Value;
+            arguments = options.Value;
 
             TargetUrl = arguments.TargetUrl;
             WorkingDirectory = arguments.TargetPath.TrimEnd('/', '\\');
 
             dynamicRepositoryLocation = arguments.DynamicRepositoryLocation;
-            authentication = new AuthenticationInfo
-            {
-                Username = arguments.Authentication?.Username,
-                Password = arguments.Authentication?.Password
-            };
-
             noFetch = arguments.NoFetch;
         }
 
         public void Prepare(bool normalizeGitDirectory, string currentBranch, bool shouldCleanUpRemotes = false)
         {
+            var authentication = new AuthenticationInfo
+            {
+                Username = arguments.Authentication?.Username,
+                Password = arguments.Authentication?.Password
+            };
             if (string.IsNullOrWhiteSpace(TargetUrl))
             {
                 if (!normalizeGitDirectory) return;
