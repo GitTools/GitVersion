@@ -86,11 +86,10 @@ void Build(BuildParameters parameters)
     });
 }
 
-void UpdateTaskVersion(FilePath taskJsonPath, string taskId, string titleSuffix, GitVersion gitVersion)
+void UpdateTaskVersion(FilePath taskJsonPath, string taskId, GitVersion gitVersion)
 {
     var taskJson = ParseJsonFromFile(taskJsonPath);
     taskJson["id"] = taskId;
-    taskJson["friendlyName"] += titleSuffix;
     taskJson["version"]["Major"] = gitVersion.Major.ToString();
     taskJson["version"]["Minor"] = gitVersion.Minor.ToString();
     taskJson["version"]["Patch"] = gitVersion.Patch.ToString();
