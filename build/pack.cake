@@ -211,6 +211,7 @@ Task("Pack-Vsix")
     ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$idSuffix$", idSuffix);
     ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$titleSuffix$", titleSuffix);
     ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$visibility$", visibility);
+    ReplaceTextInFile(new FilePath(workDir + "/GitVersionTask/task.json"), "$titleSuffix$", titleSuffix);
 
     // update version number
     ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$version$", parameters.Version.VsixVersion);
