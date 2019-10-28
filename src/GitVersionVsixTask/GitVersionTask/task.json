@@ -1,7 +1,7 @@
 {
     "id": "dd065e3b-6aef-46af-845c-520195836b35",
     "name": "UseGitVersion",
-    "friendlyName": "GitVersion Task",
+    "friendlyName": "GitVersion Task$titleSuffix$",
     "description": "Easy Semantic Versioning (http://semver.org) for projects using Git",
     "author": "GitVersion Contributors",
     "helpMarkDown": "See the [documentation](http://gitversion.readthedocs.org/en/latest/) for help",
