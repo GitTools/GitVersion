@@ -101,7 +101,7 @@ from The Noun Project.
 [gv-in-action]:                    https://raw.github.com/GitTools/GitVersion/master/docs/img/README.png
 [dockerhub]:                       https://hub.docker.com/r/gittools/gitversion/
 [dockerhub-badge]:                 https://img.shields.io/docker/pulls/gittools/gitversion.svg
-[az-pipeline-task]:                https://marketplace.visualstudio.com/items?itemName=GitTools.gitversion
-[az-pipeline-task-badge]:          https://img.shields.io/visual-studio-marketplace/v/GitTools.gitversion.svg?label=vsix
-[az-pipeline-task-pre]:            https://marketplace.visualstudio.com/items?itemName=GitTools.gitversion-preview
-[az-pipeline-task-pre-badge]:      https://img.shields.io/visual-studio-marketplace/v/GitTools.gitversion-preview.svg?label=vsix
+[az-pipeline-task]:                https://marketplace.visualstudio.com/items?itemName=GitTools.usegitversion
+[az-pipeline-task-badge]:          https://img.shields.io/visual-studio-marketplace/v/GitTools.usegitversion.svg?label=vsix
+[az-pipeline-task-pre]:            https://marketplace.visualstudio.com/items?itemName=GitTools.usegitversion-preview
+[az-pipeline-task-pre-badge]:      https://img.shields.io/visual-studio-marketplace/v/GitTools.usegitversion-preview.svg?label=vsix
