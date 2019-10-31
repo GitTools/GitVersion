@@ -1,11 +1,6 @@
-﻿namespace GitVersionCore.Tests
+namespace GitVersionCore.Tests
 {
     public class TestBase
     {
-        static TestBase()
-        {
-            ModuleInitializer.Initialize();
-        }  
-
     }
 }

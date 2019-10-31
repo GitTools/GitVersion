@@ -2,7 +2,7 @@ using System;
 
 namespace GitVersion.Configuration
 {
-    class ConsoleAdapter : IConsole
+    internal class ConsoleAdapter : IConsole
     {
         public void WriteLine(string msg)
         {
@@ -32,9 +32,9 @@ namespace GitVersion.Configuration
             return new DelegateDisposable(() => Console.ForegroundColor = old);
         }
 
-        class DelegateDisposable : IDisposable
+        private class DelegateDisposable : IDisposable
         {
-            readonly Action dispose;
+            private readonly Action dispose;
 
             public DelegateDisposable(Action dispose)
             {

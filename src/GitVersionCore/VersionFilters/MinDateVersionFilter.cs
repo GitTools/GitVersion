@@ -1,6 +1,6 @@
 using System;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
-using GitVersion.Helpers;
+using GitVersion.Extensions;
 
 namespace GitVersion.VersionFilters
 {

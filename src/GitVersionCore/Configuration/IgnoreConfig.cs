@@ -10,18 +10,18 @@ namespace GitVersion.Configuration
     {
         public IgnoreConfig()
         {
-            SHAs = Enumerable.Empty<string>();
+            ShAs = Enumerable.Empty<string>();
         }
 
         [YamlMember(Alias = "commits-before")]
         public DateTimeOffset? Before { get; set; }
 
         [YamlMember(Alias = "sha")]
-        public IEnumerable<string> SHAs { get; set; }
+        public IEnumerable<string> ShAs { get; set; }
 
         public virtual IEnumerable<IVersionFilter> ToFilters()
         {
-            if (SHAs.Any()) yield return new ShaVersionFilter(SHAs);
+            if (ShAs.Any()) yield return new ShaVersionFilter(ShAs);
             if (Before.HasValue) yield return new MinDateVersionFilter(Before.Value);
         }
     }

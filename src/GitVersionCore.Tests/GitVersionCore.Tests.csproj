@@ -1,17 +1,21 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net472;netcoreapp2.1</TargetFrameworks>
+        <TargetFrameworks>net472;netcoreapp2.1;netcoreapp3.0</TargetFrameworks>
 
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
         <DebugSymbols>true</DebugSymbols>
+        <LangVersion>8.0</LangVersion>
     </PropertyGroup>
 
     <Import Project="..\test.msbuild" />
     <ItemGroup>
         <PackageReference Include="FluentDateTime" Version="2.0.0" />
         <PackageReference Include="GitTools.Testing" Version="1.2.0" />
+        <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="$(PackageVersion_LibGit2Sharp_NativeBinaries)" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="3.0.0" />
         <PackageReference Include="YamlDotNet" Version="$(PackageVersion_YamlDotNet)" />
     </ItemGroup>
     <ItemGroup>

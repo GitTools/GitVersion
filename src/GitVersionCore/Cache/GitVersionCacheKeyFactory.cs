@@ -5,16 +5,15 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using GitVersion.Configuration;
-using GitVersion.Helpers;
-using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.Cache
 {
-    class GitVersionCacheKeyFactory
+    internal class GitVersionCacheKeyFactory
     {
-        public static GitVersionCacheKey Create(IFileSystem fileSystem, GitPreparer gitPreparer, Config overrideConfig, ConfigFileLocator configFileLocator)
+        public static GitVersionCacheKey Create(IFileSystem fileSystem, ILog log, IGitPreparer gitPreparer, IConfigFileLocator configFileLocator, Config overrideConfig)
         {
-            var gitSystemHash = GetGitSystemHash(gitPreparer);
+            var gitSystemHash = GetGitSystemHash(gitPreparer, log);
             var configFileHash = GetConfigFileHash(fileSystem, gitPreparer, configFileLocator);
             var repositorySnapshotHash = GetRepositorySnapshotHash(gitPreparer);
             var overrideConfigHash = GetOverrideConfigHash(overrideConfig);
@@ -23,18 +22,18 @@ namespace GitVersion.Cache
             return new GitVersionCacheKey(compositeHash);
         }
 
-        static string GetGitSystemHash(GitPreparer gitPreparer)
+        private static string GetGitSystemHash(IGitPreparer gitPreparer, ILog log)
         {
             var dotGitDirectory = gitPreparer.GetDotGitDirectory();
 
             // traverse the directory and get a list of files, use that for GetHash
-            var contents = CalculateDirectoryContents(Path.Combine(dotGitDirectory, "refs"));
+            var contents = CalculateDirectoryContents(log, Path.Combine(dotGitDirectory, "refs"));
 
             return GetHash(contents.ToArray());
         }
 
         // based on https://msdn.microsoft.com/en-us/library/bb513869.aspx
-        static List<string> CalculateDirectoryContents(string root)
+        private static List<string> CalculateDirectoryContents(ILog log, string root)
         {
             var result = new List<string>();
 
@@ -51,7 +50,7 @@ namespace GitVersion.Cache
 
             while (dirs.Any())
             {
-                string currentDir = dirs.Pop();
+                var currentDir = dirs.Pop();
 
                 var di = new DirectoryInfo(currentDir);
                 result.Add(di.Name);
@@ -72,12 +71,12 @@ namespace GitVersion.Cache
                 // about the systems on which this code will run.
                 catch (UnauthorizedAccessException e)
                 {
-                    Logger.WriteError(e.Message);
+                    log.Error(e.Message);
                     continue;
                 }
                 catch (DirectoryNotFoundException e)
                 {
-                    Logger.WriteError(e.Message);
+                    log.Error(e.Message);
                     continue;
                 }
 
@@ -88,12 +87,12 @@ namespace GitVersion.Cache
                 }
                 catch (UnauthorizedAccessException e)
                 {
-                    Logger.WriteError(e.Message);
+                    log.Error(e.Message);
                     continue;
                 }
                 catch (DirectoryNotFoundException e)
                 {
-                    Logger.WriteError(e.Message);
+                    log.Error(e.Message);
                     continue;
                 }
 
@@ -107,7 +106,7 @@ namespace GitVersion.Cache
                     }
                     catch (IOException e)
                     {
-                        Logger.WriteError(e.Message);
+                        log.Error(e.Message);
                     }
                 }
 
@@ -123,7 +122,7 @@ namespace GitVersion.Cache
             return result;
         }
 
-        private static string GetRepositorySnapshotHash(GitPreparer gitPreparer)
+        private static string GetRepositorySnapshotHash(IGitPreparer gitPreparer)
         {
             var repositorySnapshot = gitPreparer.WithRepository(repo => {
                 var head = repo.Head;
@@ -157,11 +156,11 @@ namespace GitVersion.Cache
             return GetHash(configContent);
         }
 
-        private static string GetConfigFileHash(IFileSystem fileSystem, GitPreparer gitPreparer, ConfigFileLocator configFileLocator)
+        private static string GetConfigFileHash(IFileSystem fileSystem, IGitPreparer gitPreparer, IConfigFileLocator configFileLocator)
         {
             // will return the same hash even when config file will be moved 
             // from workingDirectory to rootProjectDirectory. It's OK. Config essentially is the same.
-            var configFilePath = configFileLocator.SelectConfigFilePath(gitPreparer, fileSystem);
+            var configFilePath = configFileLocator.SelectConfigFilePath(gitPreparer);
             if (!fileSystem.Exists(configFilePath))
             {
                 return string.Empty;
@@ -171,26 +170,24 @@ namespace GitVersion.Cache
             return GetHash(configFileContent);
         }
 
-        static string GetHash(params string[] textsToHash)
+        private static string GetHash(params string[] textsToHash)
         {
             var textToHash = string.Join(":", textsToHash);
             return GetHash(textToHash);
         }
 
-        static string GetHash(string textToHash)
+        private static string GetHash(string textToHash)
         {
             if (string.IsNullOrEmpty(textToHash))
             {
                 return string.Empty;
             }
 
-            using (var sha1 = SHA1.Create())
-            {
-                var bytes = Encoding.UTF8.GetBytes(textToHash);
-                var hashedBytes = sha1.ComputeHash(bytes);
-                var hashedString = BitConverter.ToString(hashedBytes);
-                return hashedString.Replace("-", "");
-            }
+            using var sha1 = SHA1.Create();
+            var bytes = Encoding.UTF8.GetBytes(textToHash);
+            var hashedBytes = sha1.ComputeHash(bytes);
+            var hashedString = BitConverter.ToString(hashedBytes);
+            return hashedString.Replace("-", "");
         }
     }
 }

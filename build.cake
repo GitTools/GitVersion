@@ -3,6 +3,7 @@
 
 // Install addins.
 #addin "nuget:?package=Cake.Codecov&version=0.7.0"
+#addin "nuget:?package=Cake.Compression&version=0.2.4"
 #addin "nuget:?package=Cake.Coverlet&version=2.3.4"
 #addin "nuget:?package=Cake.Docker&version=0.10.1"
 #addin "nuget:?package=Cake.Gem&version=0.8.1"
@@ -13,11 +14,11 @@
 #addin "nuget:?package=Cake.Tfx&version=0.9.1"
 
 #addin "nuget:?package=Newtonsoft.Json&version=12.0.2"
+#addin "nuget:?package=SharpZipLib&version=1.2.0"
 #addin "nuget:?package=xunit.assert&version=2.4.1"
 
 // Install tools.
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
-#tool "nuget:?package=ILRepack&version=2.0.18"
 #tool "nuget:?package=nuget.commandline&version=5.2.0"
 
 // Install .NET Core Global tools.
@@ -82,31 +83,6 @@ Teardown<BuildParameters>((context, parameters) =>
             parameters.IsMainBranch,
             parameters.IsTagged,
             parameters.IsPullRequest);
-
-        if(context.Successful)
-        {
-            // if(parameters.ShouldPublish)
-            // {
-            //     if(parameters.CanPostToGitter)
-            //     {
-            //         var message = "@/all Version " + parameters.Version.SemVersion + " of the GitVersion has just been released, https://www.nuget.org/packages/GitVersion.";
-
-            //         var postMessageResult = Gitter.Chat.PostMessage(
-            //             message: message,
-            //             messageSettings: new GitterChatMessageSettings { Token = parameters.Gitter.Token, RoomId = parameters.Gitter.RoomId}
-            //         );
-
-            //         if (postMessageResult.Ok)
-            //         {
-            //             Information("Message {0} succcessfully sent", postMessageResult.TimeStamp);
-            //         }
-            //         else
-            //         {
-            //             Error("Failed to send message: {0}", postMessageResult.Error);
-            //         }
-            //     }
-            // }
-        }
 
         Information("Finished running tasks.");
     }

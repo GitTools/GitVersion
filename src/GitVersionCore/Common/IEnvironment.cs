@@ -1,4 +1,4 @@
-namespace GitVersion.Common
+namespace GitVersion
 {
     public interface IEnvironment
     {

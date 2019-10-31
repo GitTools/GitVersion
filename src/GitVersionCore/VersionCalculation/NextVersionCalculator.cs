@@ -1,28 +1,28 @@
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
 using GitVersion.VersioningModes;
 using GitVersion.Configuration;
-using GitVersion.Helpers;
+using GitVersion.Logging;
+using GitVersion.Extensions;
 
 namespace GitVersion.VersionCalculation
 {
-    public class NextVersionCalculator
+    public class NextVersionCalculator : INextVersionCalculator
     {
-        IBaseVersionCalculator baseVersionFinder;
-        IMetaDataCalculator metaDataCalculator;
+        private readonly ILog log;
+        private readonly IBaseVersionCalculator baseVersionCalculator;
+        private readonly IMainlineVersionCalculator mainlineVersionCalculator;
+        private readonly IMetaDataCalculator metaDataCalculator;
 
-        public NextVersionCalculator(IBaseVersionCalculator baseVersionCalculator = null, IMetaDataCalculator metaDataCalculator = null)
+        public NextVersionCalculator(ILog log, IMetaDataCalculator metaDataCalculator, IBaseVersionCalculator baseVersionCalculator, IMainlineVersionCalculator mainlineVersionCalculator)
         {
-            this.metaDataCalculator = metaDataCalculator ?? new MetaDataCalculator();
-            baseVersionFinder = baseVersionCalculator ??
-                new BaseVersionCalculator(
-                    new FallbackBaseVersionStrategy(),
-                    new ConfigNextVersionBaseVersionStrategy(),
-                    new TaggedCommitVersionStrategy(),
-                    new MergeMessageBaseVersionStrategy(),
-                    new VersionInBranchNameBaseVersionStrategy(),
-                    new TrackReleaseBranchesVersionStrategy());
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.metaDataCalculator = metaDataCalculator ?? throw new ArgumentNullException(nameof(metaDataCalculator));
+
+            this.baseVersionCalculator = baseVersionCalculator ?? throw new ArgumentNullException(nameof(baseVersionCalculator));
+            this.mainlineVersionCalculator = mainlineVersionCalculator ?? throw new ArgumentNullException(nameof(mainlineVersionCalculator));
         }
 
         public SemanticVersion FindVersion(GitVersionContext context)
@@ -42,12 +42,11 @@ namespace GitVersion.VersionCalculation
                 taggedSemanticVersion = semanticVersion;
             }
 
-            var baseVersion = baseVersionFinder.GetBaseVersion(context);
+            var baseVersion = baseVersionCalculator.GetBaseVersion(context);
             SemanticVersion semver;
             if (context.Configuration.VersioningMode == VersioningMode.Mainline)
             {
-                var mainlineMode = new MainlineVersionCalculator(metaDataCalculator);
-                semver = mainlineMode.FindMainlineModeVersion(baseVersion, context);
+                semver = mainlineVersionCalculator.FindMainlineModeVersion(baseVersion, context);
             }
             else
             {
@@ -73,7 +72,7 @@ namespace GitVersion.VersionCalculation
             return taggedSemanticVersion ?? semver;
         }
 
-        private static SemanticVersion PerformIncrement(GitVersionContext context, BaseVersion baseVersion)
+        private SemanticVersion PerformIncrement(GitVersionContext context, BaseVersion baseVersion)
         {
             var semver = baseVersion.SemanticVersion;
             var increment = IncrementStrategyFinder.DetermineIncrementedField(context, baseVersion);
@@ -81,11 +80,11 @@ namespace GitVersion.VersionCalculation
             {
                 semver = semver.IncrementVersion(increment.Value);
             }
-            else Logger.WriteInfo("Skipping version increment");
+            else log.Info("Skipping version increment");
             return semver;
         }
 
-        void UpdatePreReleaseTag(GitVersionContext context, SemanticVersion semanticVersion, string branchNameOverride)
+        private void UpdatePreReleaseTag(GitVersionContext context, SemanticVersion semanticVersion, string branchNameOverride)
         {
             var tagToUse = GetBranchSpecificTag(context.Configuration, context.CurrentBranch.FriendlyName, branchNameOverride);
 
@@ -110,7 +109,7 @@ namespace GitVersion.VersionCalculation
             semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, number);
         }
 
-        public static string GetBranchSpecificTag(EffectiveConfiguration configuration, string branchFriendlyName, string branchNameOverride)
+        public string GetBranchSpecificTag(EffectiveConfiguration configuration, string branchFriendlyName, string branchNameOverride)
         {
             var tagToUse = configuration.Tag;
             if (tagToUse == "useBranchName")
@@ -119,7 +118,7 @@ namespace GitVersion.VersionCalculation
             }
             if (tagToUse.Contains("{BranchName}"))
             {
-                Logger.WriteInfo("Using branch name to calculate version tag");
+                log.Info("Using branch name to calculate version tag");
 
                 var branchName = branchNameOverride ?? branchFriendlyName;
                 if (!string.IsNullOrWhiteSpace(configuration.BranchPrefixToTrim))
@@ -133,7 +132,7 @@ namespace GitVersion.VersionCalculation
             return tagToUse;
         }
 
-        static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion)
+        private static bool MajorMinorPatchEqual(SemanticVersion lastTag, SemanticVersion baseVersion)
         {
             return lastTag.Major == baseVersion.Major &&
                    lastTag.Minor == baseVersion.Minor &&

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace GitVersionTask.Tests.Helpers
+namespace GitVersion.MSBuildTask.Tests.Helpers
 {
     public class SelfCleaningDirectory
     {

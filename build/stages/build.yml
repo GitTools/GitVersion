@@ -12,5 +12,5 @@ steps:
     ENABLED_UNIT_TESTS: $(ENABLED_UNIT_TESTS)
 - publish: $(System.DefaultWorkingDirectory)
   displayName: 'Upload pipeline artifacts'
-  condition: eq( variables['Agent.OS'], 'Windows_NT' )
+  condition: and(succeeded(), eq( variables['Agent.OS'], 'Windows_NT' ))
   artifact: storage

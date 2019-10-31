@@ -1,11 +1,11 @@
 using GitVersion.OutputVariables;
-using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.BuildServers
 {
-    public class TravisCI : BuildServerBase
+    public class TravisCi : BuildServerBase
     {
-        public TravisCI(IEnvironment environment) : base(environment)
+        public TravisCi(IEnvironment environment, ILog log) : base(environment, log)
         {
         }
 

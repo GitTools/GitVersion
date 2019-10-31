@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using GitVersion.Configuration.Init.Wizard;
-using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.BuildServer
 {
-    class SetupBuildScripts : ConfigInitWizardStep
+    internal class SetupBuildScripts : ConfigInitWizardStep
     {
-        public SetupBuildScripts(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)
+        public SetupBuildScripts(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
         {
         }
 
@@ -15,10 +15,10 @@ namespace GitVersion.Configuration.Init.BuildServer
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
+                    steps.Enqueue(StepFactory.CreateStep<EditConfigStep>());
                     return StepResult.Ok();
                 case "1":
-                    steps.Enqueue(new AppveyorPublicPrivate(Console, FileSystem));
+                    steps.Enqueue(StepFactory.CreateStep<AppveyorPublicPrivate>());
                     return StepResult.Ok();
             }
             return StepResult.Ok();

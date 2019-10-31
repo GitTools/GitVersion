@@ -10,14 +10,14 @@ namespace GitVersion.Helpers
 {
     public static class ProcessHelper
     {
-        static volatile object lockObject = new object();
+        private static readonly object LockObject = new object();
 
         // http://social.msdn.microsoft.com/Forums/en/netfxbcl/thread/f6069441-4ab1-4299-ad6a-b8bb9ed36be3
-        public static Process Start(ProcessStartInfo startInfo)
+        private static Process Start(ProcessStartInfo startInfo)
         {
             Process process;
 
-            lock (lockObject)
+            lock (LockObject)
             {
                 using (new ChangeErrorMode(ErrorModes.FailCriticalErrors | ErrorModes.NoGpFaultErrorBox))
                 {
@@ -86,7 +86,7 @@ namespace GitVersion.Helpers
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
 
-            workingDirectory = workingDirectory ?? Environment.CurrentDirectory;
+            workingDirectory ??= System.Environment.CurrentDirectory;
 
             var psi = new ProcessStartInfo
             {
@@ -112,45 +112,45 @@ namespace GitVersion.Helpers
                     psi.EnvironmentVariables.Add(environmentalVariable.Key, environmentalVariable.Value);
                 }
                 if (psi.EnvironmentVariables.ContainsKey(environmentalVariable.Key) && environmentalVariable.Value == null)
+                {
                     psi.EnvironmentVariables.Remove(environmentalVariable.Key);
+                }
             }
 
-            using (var process = Start(psi))
-            using (var mreOut = new ManualResetEvent(false))
-            using (var mreErr = new ManualResetEvent(false))
+            using var process = Start(psi);
+            using var mreOut = new ManualResetEvent(false);
+            using var mreErr = new ManualResetEvent(false);
+            process.EnableRaisingEvents = true;
+            process.OutputDataReceived += (o, e) =>
             {
-                process.EnableRaisingEvents = true;
-                process.OutputDataReceived += (o, e) =>
-                {
-                    // ReSharper disable once AccessToDisposedClosure
-                    if (e.Data == null)
-                        mreOut.Set();
-                    else
-                        output(e.Data);
-                };
-                process.BeginOutputReadLine();
-                process.ErrorDataReceived += (o, e) =>
-                {
-                    // ReSharper disable once AccessToDisposedClosure
-                    if (e.Data == null)
-                        mreErr.Set();
-                    else
-                        errorOutput(e.Data);
-                };
-                process.BeginErrorReadLine();
+                // ReSharper disable once AccessToDisposedClosure
+                if (e.Data == null)
+                    mreOut.Set();
+                else
+                    output(e.Data);
+            };
+            process.BeginOutputReadLine();
+            process.ErrorDataReceived += (o, e) =>
+            {
+                // ReSharper disable once AccessToDisposedClosure
+                if (e.Data == null)
+                    mreErr.Set();
+                else
+                    errorOutput(e.Data);
+            };
+            process.BeginErrorReadLine();
 
-                string line;
-                while (input != null && null != (line = input.ReadLine()))
-                    process.StandardInput.WriteLine(line);
+            string line;
+            while (input != null && null != (line = input.ReadLine()))
+                process.StandardInput.WriteLine(line);
 
-                process.StandardInput.Close();
-                process.WaitForExit();
+            process.StandardInput.Close();
+            process.WaitForExit();
 
-                mreOut.WaitOne();
-                mreErr.WaitOne();
+            mreOut.WaitOne();
+            mreErr.WaitOne();
 
-                return process.ExitCode;
-            }
+            return process.ExitCode;
         }
 
         /// <summary>
@@ -174,9 +174,9 @@ namespace GitVersion.Helpers
             NoOpenFileErrorBox = 0x8000
         }
 
-        public struct ChangeErrorMode : IDisposable
+        private struct ChangeErrorMode : IDisposable
         {
-            readonly int oldMode;
+            private readonly int oldMode;
 
             public ChangeErrorMode(ErrorModes mode)
             {
@@ -204,7 +204,7 @@ namespace GitVersion.Helpers
             }
 
             [DllImport("kernel32.dll")]
-            static extern int SetErrorMode(int newMode);
+            private static extern int SetErrorMode(int newMode);
         }
     }
 }

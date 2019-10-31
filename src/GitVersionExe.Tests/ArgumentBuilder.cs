@@ -75,13 +75,13 @@ namespace GitVersionExe.Tests
         }
 
 
-        readonly string additionalArguments;
-        readonly string exec;
-        readonly string execArgs;
-        readonly bool isTeamCity;
-        readonly string logFile;
-        readonly string projectArgs;
-        readonly string projectFile;
-        readonly string workingDirectory;
+        private readonly string additionalArguments;
+        private readonly string exec;
+        private readonly string execArgs;
+        private readonly bool isTeamCity;
+        private readonly string logFile;
+        private readonly string projectArgs;
+        private readonly string projectFile;
+        private readonly string workingDirectory;
     }
 }

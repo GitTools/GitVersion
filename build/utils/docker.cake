@@ -28,9 +28,7 @@ void DockerBuild(DockerImage dockerImage, BuildParameters parameters)
     var (os, distro, targetframework) = dockerImage;
     var workDir = DirectoryPath.FromString($"./src/Docker");
 
-    var sourceDir = targetframework.StartsWith("netcoreapp")
-        ? parameters.Paths.Directories.ArtifactsBinCoreFx21.Combine("tools")
-        : parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
+    var sourceDir = parameters.Paths.Directories.ArtifactsBin.Combine(targetframework);
 
     CopyDirectory(sourceDir, workDir.Combine("content"));
 
@@ -101,6 +99,11 @@ void DockerTestArtifact(DockerImage dockerImage, BuildParameters parameters, str
     var tag = $"gittools/build-images:{distro}-sdk-{targetframework.Replace("netcoreapp", "")}";
     Information("Docker tag: {0}", tag);
     Information("Docker cmd: {0}", cmd);
+
+    if (os == "windows" && targetframework == parameters.CoreFxVersion30)
+    {
+        cmd = "-Command " + cmd; // powershell 7 needs a -Command parameter
+    }
 
     DockerTestRun(settings, parameters, tag, "pwsh", cmd);
 }

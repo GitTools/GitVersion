@@ -1,10 +1,10 @@
-using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.Wizard
 {
     public class FinishedSetupStep : EditConfigStep
     {
-        public FinishedSetupStep(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)
+        public FinishedSetupStep(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
         {
         }
 

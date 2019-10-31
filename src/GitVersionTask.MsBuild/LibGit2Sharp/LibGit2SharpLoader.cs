@@ -1,15 +1,18 @@
 // This code originally copied and adapted from https://raw.githubusercontent.com/dotnet/sourcelink/master/src/Microsoft.Build.Tasks.Git/TaskImplementation.cs
 
+#if NET472
 using System;
 using System.Collections.Generic;
+#endif
+
 using System.IO;
 using System.Reflection;
 
-namespace GitVersionTask.MsBuild.LibGit2Sharp
+namespace GitVersion.MSBuildTask.LibGit2Sharp
 {
     public class LibGit2SharpLoader
     {
-        private static string taskDirectory;
+        private static readonly string TaskDirectory = Path.GetDirectoryName(typeof(LibGit2SharpLoader).Assembly.Location);
 
         public static LibGit2SharpLoader Instance { get; private set; }
         public Assembly Assembly { get; }
@@ -18,8 +21,7 @@ namespace GitVersionTask.MsBuild.LibGit2Sharp
 
         private LibGit2SharpLoader(string tasksAssembly)
         {
-            taskDirectory = Path.GetDirectoryName(typeof(LibGit2SharpLoader).Assembly.Location);
-#if NET472
+#if NETFRAMEWORK
             nullVersion = new Version(0, 0, 0, 0);
             loaderLog = new List<string>();
 
@@ -29,12 +31,12 @@ namespace GitVersionTask.MsBuild.LibGit2Sharp
             assemblyName.Name = tasksAssembly;
             Assembly = Assembly.Load(assemblyName);
 #else
-            var operationsPath = Path.Combine(taskDirectory, tasksAssembly + ".dll");
+            var operationsPath = Path.Combine(TaskDirectory, tasksAssembly + ".dll");
             Assembly = GitLoaderContext.Instance.LoadFromAssemblyPath(operationsPath);
 #endif
         }
 
-#if NET472
+#if NETFRAMEWORK
 
         private static Version nullVersion;
 
@@ -74,7 +76,7 @@ namespace GitVersionTask.MsBuild.LibGit2Sharp
                 return null;
             }
 
-            var referencePath = Path.Combine(taskDirectory, referenceName.Name + ".dll");
+            var referencePath = Path.Combine(TaskDirectory, referenceName.Name + ".dll");
             if (!File.Exists(referencePath))
             {
                 Log(args, $"file '{referencePath}' not found");

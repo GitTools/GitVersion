@@ -23,6 +23,8 @@ The build configuration to use.
 The docker ditro to use.
 .PARAMETER DockerDotnetVersion
 The dotnet version for docker to use.
+.PARAMETER SkipUnitTest
+Skip executing the tests.
 .PARAMETER Verbosity
 Specifies the amount of information to be displayed.
 .PARAMETER WhatIf
@@ -42,6 +44,7 @@ Param(
     [string]$Configuration = "Release",
     [string]$DockerDistro = "",
     [string]$DockerDotnetVersion = "",
+    [switch]$SkipUnitTest,
     [ValidateSet("Quiet", "Minimal", "Normal", "Verbose", "Diagnostic")]
     [string]$Verbosity = "Verbose",
     [Alias("DryRun","Noop")]
@@ -194,6 +197,8 @@ else {
 # ###########################################################################
 
 # Build the argument list.
+
+$env:ENABLED_UNIT_TESTS = !$SkipUnitTest
 $Arguments = @{
     target=$Target;
     configuration=$Configuration;

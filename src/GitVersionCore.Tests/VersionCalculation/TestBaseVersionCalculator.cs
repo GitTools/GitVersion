@@ -1,4 +1,5 @@
 using GitVersion;
+using GitVersion.Logging;
 using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
 using LibGit2Sharp;
@@ -7,9 +8,9 @@ namespace GitVersionCore.Tests.VersionCalculation
 {
     public class TestBaseVersionCalculator : IBaseVersionCalculator
     {
-        readonly SemanticVersion semanticVersion;
-        bool shouldIncrement;
-        Commit source;
+        private readonly SemanticVersion semanticVersion;
+        private readonly bool shouldIncrement;
+        private readonly Commit source;
 
         public TestBaseVersionCalculator(bool shouldIncrement, SemanticVersion semanticVersion, Commit source)
         {
@@ -21,6 +22,22 @@ namespace GitVersionCore.Tests.VersionCalculation
         public BaseVersion GetBaseVersion(GitVersionContext context)
         {
             return new BaseVersion(context, "Test source", shouldIncrement, semanticVersion, source, null);
+        }
+    }
+
+    public class TestBaseVersionStrategiesCalculator : BaseVersionCalculator
+    {
+        private static readonly IVersionStrategy[] VersionStrategies = new IVersionStrategy[]
+        {
+            new FallbackVersionStrategy(),
+            new ConfigNextVersionVersionStrategy(),
+            new TaggedCommitVersionStrategy(),
+            new MergeMessageVersionStrategy(),
+            new VersionInBranchNameVersionStrategy(),
+            new TrackReleaseBranchesVersionStrategy()
+        };
+        public TestBaseVersionStrategiesCalculator(ILog log) : base(log, VersionStrategies)
+        {
         }
     }
 }

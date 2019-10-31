@@ -1,10 +1,12 @@
 using System;
 using System.IO;
-using GitVersion;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.OutputVariables;
 using GitVersion.Extensions.GitVersionInformationResources;
+using GitVersion.Logging;
+using GitVersion;
+using GitVersion.VersionCalculation;
 
 namespace GitVersionCore.Tests
 {
@@ -40,7 +42,13 @@ namespace GitVersionCore.Tests
                     "feature1", "commitSha", "commitShortSha", DateTimeOffset.Parse("2014-03-06 23:59:59Z"))
             };
 
-            var variables = VariableProvider.GetVariablesFor(semanticVersion, new TestEffectiveConfiguration(), false);
+            var log = new NullLog();
+            var metaDataCalculator = new MetaDataCalculator();
+            var baseVersionCalculator = new BaseVersionCalculator(log, null);
+            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
+            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
+            var variableProvider = new VariableProvider(nextVersionCalculator, new TestEnvironment());
+            var variables = variableProvider.GetVariablesFor(semanticVersion, new TestEffectiveConfiguration(), false);
             var generator = new GitVersionInformationGenerator(fileName, directory, variables, fileSystem);
 
             generator.Generate();

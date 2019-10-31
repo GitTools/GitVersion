@@ -8,20 +8,20 @@ namespace GitVersion.Configuration
 {
     public class LegacyConfigNotifier
     {
-        static readonly Dictionary<string, string> OldConfigKnownRegexes = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> OldConfigKnownRegexes = new Dictionary<string, string>
         {
-            {ConfigurationProvider.MasterBranchRegex, ConfigurationProvider.MasterBranchKey},
-            {ConfigurationProvider.DevelopBranchRegex, ConfigurationProvider.DevelopBranchKey},
-            {ConfigurationProvider.FeatureBranchRegex, ConfigurationProvider.FeatureBranchKey},
-            {ConfigurationProvider.HotfixBranchRegex, ConfigurationProvider.HotfixBranchKey},
-            {ConfigurationProvider.ReleaseBranchRegex, ConfigurationProvider.ReleaseBranchKey},
-            {ConfigurationProvider.SupportBranchRegex, ConfigurationProvider.SupportBranchKey},
-            {ConfigurationProvider.PullRequestRegex, ConfigurationProvider.PullRequestBranchKey},
-            {"dev(elop)?(ment)?$", ConfigurationProvider.DevelopBranchKey },
-            {"release[/-]", ConfigurationProvider.ReleaseBranchKey },
-            {"hotfix[/-]", ConfigurationProvider.HotfixBranchKey },
-            {"feature(s)?[/-]", ConfigurationProvider.FeatureBranchKey },
-            {"feature[/-]", ConfigurationProvider.FeatureBranchKey }
+            {Config.MasterBranchRegex, Config.MasterBranchKey},
+            {Config.DevelopBranchRegex, Config.DevelopBranchKey},
+            {Config.FeatureBranchRegex, Config.FeatureBranchKey},
+            {Config.HotfixBranchRegex, Config.HotfixBranchKey},
+            {Config.ReleaseBranchRegex, Config.ReleaseBranchKey},
+            {Config.SupportBranchRegex, Config.SupportBranchKey},
+            {Config.PullRequestRegex, Config.PullRequestBranchKey},
+            {"dev(elop)?(ment)?$", Config.DevelopBranchKey },
+            {"release[/-]", Config.ReleaseBranchKey },
+            {"hotfix[/-]", Config.HotfixBranchKey },
+            {"feature(s)?[/-]", Config.FeatureBranchKey },
+            {"feature[/-]", Config.FeatureBranchKey }
         };
 
         public static void Notify(StringReader reader)
@@ -44,7 +44,7 @@ namespace GitVersion.Configuration
     {branchErrors}");
             }
 
-            if (legacyConfig.assemblyVersioningScheme != null)
+            if (legacyConfig.AssemblyVersioningScheme != null)
                 issues.Add("assemblyVersioningScheme has been replaced by assembly-versioning-scheme");
 
             if (legacyConfig.DevelopBranchTag != null)

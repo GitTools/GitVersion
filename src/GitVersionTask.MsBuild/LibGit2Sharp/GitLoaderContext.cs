@@ -1,5 +1,5 @@
 // This code originally copied from https://raw.githubusercontent.com/dotnet/sourcelink/master/src/Microsoft.Build.Tasks.Git/GitLoaderContext.cs
-#if !NET472
+#if !NETFRAMEWORK
 using System;
 using System.IO;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Loader;
 using RuntimeEnvironment = Microsoft.DotNet.PlatformAbstractions.RuntimeEnvironment;
 
-namespace GitVersionTask.MsBuild.LibGit2Sharp
+namespace GitVersion.MSBuildTask.LibGit2Sharp
 {
     public sealed class GitLoaderContext : AssemblyLoadContext
     {

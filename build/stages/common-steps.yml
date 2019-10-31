@@ -1,10 +1,14 @@
 steps:
 - task: UseDotNet@2
-  displayName: 'Use .NET Core sdk'
+  displayName: 'Use .NET Core sdk 2.1'
   inputs:
     packageType: sdk
-    version: 2.2.401
-    installationPath: $(Agent.ToolsDirectory)/dotnet
+    version: 2.1.802
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk 3.0'
+  inputs:
+    packageType: sdk
+    version: 3.0.100
 - task: Bash@3
   displayName: 'Env Vars'
   inputs:

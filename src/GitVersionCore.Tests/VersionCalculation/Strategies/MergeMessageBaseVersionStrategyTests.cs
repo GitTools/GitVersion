@@ -25,7 +25,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                     ParentsEx = GetParents(true)
                 } }
             }).Build();
-            var sut = new MergeMessageBaseVersionStrategy();
+            var sut = new MergeMessageVersionStrategy();
 
             var baseVersion = sut.GetVersions(context).Single();
 
@@ -143,7 +143,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             AssertMergeMessage(message, expectedVersion, parents, config);
         }
 
-        static void AssertMergeMessage(string message, string expectedVersion, List<Commit> parents, Config config = null)
+        private static void AssertMergeMessage(string message, string expectedVersion, List<Commit> parents, Config config = null)
         {
             var commit = new MockCommit
             {
@@ -162,7 +162,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                     }
                 })
                 .Build();
-            var sut = new MergeMessageBaseVersionStrategy();
+            var sut = new MergeMessageVersionStrategy();
 
             var baseVersion = sut.GetVersions(context).SingleOrDefault();
 
@@ -177,7 +177,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             }
         }
 
-        static List<Commit> GetParents(bool isMergeCommit)
+        private static List<Commit> GetParents(bool isMergeCommit)
         {
             if (isMergeCommit)
             {

@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using GitVersion.Configuration;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
 using LibGit2Sharp;
-using GitVersion.Helpers;
+using GitVersion.Configuration;
+using GitVersion.Extensions;
 
 namespace GitVersion
 {
@@ -91,8 +91,6 @@ namespace GitVersion
             return null;
         }
 
-
-
         private static IEnumerable<Commit> GetIntermediateCommits(IRepository repo, Commit baseCommit, Commit headCommit)
         {
             if (baseCommit == null) yield break;
@@ -131,7 +129,6 @@ namespace GitVersion
             return version;
         }
 
-
         private static VersionField? FindIncrementFromMessage(string message, string majorRegex, string minorRegex, string patchRegex, string noneRegex)
         {
             if(IsMatch(message, majorRegex)) return VersionField.Major;
@@ -153,8 +150,8 @@ namespace GitVersion
             return match;
         }
 
-        private static IDictionary<int, bool> MatchCache = new Dictionary<int, bool>();
-        private static IDictionary<int, VersionField?> VersionFieldCache = new Dictionary<int, VersionField?>();
+        private static readonly IDictionary<int, bool> MatchCache = new Dictionary<int, bool>();
+        private static readonly IDictionary<int, VersionField?> VersionFieldCache = new Dictionary<int, VersionField?>();
 
         public static VersionField FindDefaultIncrementForBranch( GitVersionContext context, string branch = null )
         {

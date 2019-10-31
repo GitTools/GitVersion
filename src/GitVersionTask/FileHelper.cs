@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Build.Framework;
 using GitVersion.Exceptions;
 
-namespace GitVersionTask
+namespace GitVersion.MSBuildTask
 {
     public sealed class FileWriteInfo
     {
@@ -24,7 +24,7 @@ namespace GitVersionTask
 
     public static class FileHelper
     {
-        private static readonly Dictionary<string, Func<string, string, bool>> versionAttributeFinders = new Dictionary<string, Func<string, string, bool>>()
+        private static readonly Dictionary<string, Func<string, string, bool>> VersionAttributeFinders = new Dictionary<string, Func<string, string, bool>>()
         {
             { ".cs", CSharpFileContainsVersionAttribute },
             { ".vb", VisualBasicFileContainsVersionAttribute }
@@ -63,17 +63,13 @@ namespace GitVersionTask
 
         public static string GetFileExtension(string language)
         {
-            switch (language)
+            return language switch
             {
-                case "C#":
-                    return "cs";
-                case "F#":
-                    return "fs";
-                case "VB":
-                    return "vb";
-                default:
-                    throw new ArgumentException($"Unknown language detected: '{language}'");
-            }
+                "C#" => "cs",
+                "F#" => "fs",
+                "VB" => "vb",
+                _ => throw new ArgumentException($"Unknown language detected: '{language}'")
+            };
         }
 
         public static void CheckForInvalidFiles(IEnumerable<ITaskItem> compileFiles, string projectFile)
@@ -88,7 +84,7 @@ namespace GitVersionTask
         {
             var compileFileExtension = Path.GetExtension(compileFile);
 
-            if (versionAttributeFinders.TryGetValue(compileFileExtension, out var languageSpecificFileContainsVersionAttribute))
+            if (VersionAttributeFinders.TryGetValue(compileFileExtension, out var languageSpecificFileContainsVersionAttribute))
             {
                 return languageSpecificFileContainsVersionAttribute(compileFile, projectFile);
             }
@@ -108,7 +104,7 @@ namespace GitVersionTask
 
             var noCommentsOrStrings = Regex.Replace(allText,
                 blockComments + "|" + lineComments + "|" + strings + "|" + verbatimStrings,
-                me => me.Value.StartsWith("//") ? Environment.NewLine : string.Empty,
+                me => me.Value.StartsWith("//") ? System.Environment.NewLine : string.Empty,
                 RegexOptions.Singleline);
 
             return Regex.IsMatch(noCommentsOrStrings, @"(?x) # IgnorePatternWhitespace
@@ -132,7 +128,7 @@ Assembly(File|Informational)?Version    # The attribute AssemblyVersion, Assembl
 
             var noCommentsOrStrings = Regex.Replace(allText,
                 lineComments + "|" + strings,
-                me => me.Value.StartsWith("'") ? Environment.NewLine : string.Empty,
+                me => me.Value.StartsWith("'") ? System.Environment.NewLine : string.Empty,
                 RegexOptions.Singleline);
 
             return Regex.IsMatch(noCommentsOrStrings, @"(?x) # IgnorePatternWhitespace

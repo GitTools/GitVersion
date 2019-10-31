@@ -17,7 +17,7 @@ SemVer introduces conventions about breaking changes into our version numbers so
 * `{tag}` is optional and denotes a pre-release of the version preceeding
 * `{buildmetadata}` is optional and contains additional information about the version, but **does not affect** the semantic version preceding it.
 
-Only one number should be incremented per release, and all lower parts should be reset to 0 (if `{major}` is incrememented, then `{minor}` and `{patch}` should become 0).
+Only one number should be incremented per release, and all lower parts should be reset to 0 (if `{major}` is incremented, then `{minor}` and `{patch}` should become 0).
 
 For a more complete explaination check out [semver.org](http://semver.org) which is the official spec. Remember this is a brief introduction and does not cover all parts of semantic versioning, just the important parts to get started.
 

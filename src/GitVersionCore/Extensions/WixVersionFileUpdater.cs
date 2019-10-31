@@ -2,46 +2,45 @@ using System;
 using System.IO;
 using System.Text;
 using System.Xml;
-using GitVersion.Helpers;
 using GitVersion.OutputVariables;
-using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.Extensions
 {
     public class WixVersionFileUpdater : IDisposable
     {
-        VersionVariables variables;
-        IFileSystem fileSystem;
+        private readonly VersionVariables variables;
+        private readonly IFileSystem fileSystem;
+        private readonly ILog log;
         public string WixVersionFile { get; }
-        public const string WIX_VERSION_FILE = "GitVersion_WixVersion.wxi";
+        public const string WixVersionFileName = "GitVersion_WixVersion.wxi";
 
-        public WixVersionFileUpdater(string workingDirectory, VersionVariables variables, IFileSystem fileSystem)
+        public WixVersionFileUpdater(string workingDirectory, VersionVariables variables, IFileSystem fileSystem, ILog log)
         {
             this.variables = variables;
-            this.fileSystem = fileSystem;
-            this.WixVersionFile = Path.Combine(workingDirectory, WIX_VERSION_FILE);
+            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.WixVersionFile = Path.Combine(workingDirectory, WixVersionFileName);
         }
 
         public void Update()
         {
-            Logger.WriteInfo("Updating GitVersion_WixVersion.wxi");
+            log.Info("Updating GitVersion_WixVersion.wxi");
 
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             doc.LoadXml(GetWixFormatFromVersionVariables());
 
-            XmlDeclaration xmlDecl = doc.CreateXmlDeclaration("1.0", "utf-8", null);
-            XmlElement root = doc.DocumentElement;
+            var xmlDecl = doc.CreateXmlDeclaration("1.0", "utf-8", null);
+            var root = doc.DocumentElement;
             doc.InsertBefore(xmlDecl, root);
 
-            using (var fs = fileSystem.OpenWrite(WixVersionFile))
-            {
-                doc.Save(fs);
-            }
+            using var fs = fileSystem.OpenWrite(WixVersionFile);
+            doc.Save(fs);
         }
 
         private string GetWixFormatFromVersionVariables()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.Append("<Include xmlns=\"http://schemas.microsoft.com/wix/2006/wi\">\n");
             var availableVariables = VersionVariables.AvailableVariables;
             foreach (var variable in availableVariables)
@@ -55,7 +54,7 @@ namespace GitVersion.Extensions
 
         public void Dispose()
         {
-            Logger.WriteInfo($"Done writing {WixVersionFile}");
+            log.Info($"Done writing {WixVersionFile}");
         }
     }
 }

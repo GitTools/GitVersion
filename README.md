@@ -18,7 +18,6 @@ works out the [semantic version][semver] of the commit being built.
 |               **GitVersion.Portable** |   [![Chocolatey][choco-badge]][choco]                              |                  [![Chocolatey][choco-pre-badge]][choco]                   |
 |                    **GitVersionTask** |       [![NuGet][gvt-badge]][gvt]                                   |                      [![NuGet][gvt-pre-badge]][gvt]                        |
 |            **GitVersion.CommandLine** |       [![NuGet][gvcl-badge]][gvcl]                                 |                      [![NuGet][gvcl-pre-badge]][gvcl]                      |
-| **GitVersion.CommandLine.DotNetCore** |       [![NuGet][gvcd-badge]][gvcd]                                 |                      [![NuGet][gvcd-pre-badge]][gvcd]                      |
 |                   **GitVersion.Tool** |       [![NuGet][gvgt-badge]][gvgt]                                 |                      [![NuGet][gvgt-pre-badge]][gvgt]                      |
 |               **Azure Pipeline Task** | [![Azure Pipeline Task][az-pipeline-task-badge]][az-pipeline-task] | [![Azure Pipeline Task][az-pipeline-task-pre-badge]][az-pipeline-task-pre] |
 |                               **Gem** |         [![Gem][gem-badge]][gem]                                   |                                     -                                      |
@@ -86,9 +85,6 @@ from The Noun Project.
 [gvcl]:                            https://www.nuget.org/packages/GitVersion.CommandLine
 [gvcl-badge]:                      https://img.shields.io/nuget/v/GitVersion.CommandLine.svg
 [gvcl-pre-badge]:                  https://img.shields.io/nuget/vpre/GitVersion.CommandLine.svg
-[gvcd]:                            https://www.nuget.org/packages/GitVersion.CommandLine.DotNetCore
-[gvcd-badge]:                      https://img.shields.io/nuget/v/GitVersion.CommandLine.DotNetCore.svg
-[gvcd-pre-badge]:                  https://img.shields.io/nuget/vpre/GitVersion.CommandLine.DotNetCore.svg
 [gvgt]:                            https://www.nuget.org/packages/GitVersion.Tool
 [gvgt-badge]:                      https://img.shields.io/nuget/v/GitVersion.Tool.svg
 [gvgt-pre-badge]:                  https://img.shields.io/nuget/vpre/GitVersion.Tool.svg
@@ -105,7 +101,7 @@ from The Noun Project.
 [gv-in-action]:                    https://raw.github.com/GitTools/GitVersion/master/docs/img/README.png
 [dockerhub]:                       https://hub.docker.com/r/gittools/gitversion/
 [dockerhub-badge]:                 https://img.shields.io/docker/pulls/gittools/gitversion.svg
-[az-pipeline-task]:                https://marketplace.visualstudio.com/items?itemName=GitTools.gitversion
-[az-pipeline-task-badge]:          https://img.shields.io/visual-studio-marketplace/v/GitTools.gitversion.svg?label=vsix
-[az-pipeline-task-pre]:            https://marketplace.visualstudio.com/items?itemName=GitTools.gitversion-preview
-[az-pipeline-task-pre-badge]:      https://img.shields.io/visual-studio-marketplace/v/GitTools.gitversion-preview.svg?label=vsix
+[az-pipeline-task]:                https://marketplace.visualstudio.com/items?itemName=GitTools.usegitversion
+[az-pipeline-task-badge]:          https://img.shields.io/visual-studio-marketplace/v/GitTools.usegitversion.svg?label=vsix
+[az-pipeline-task-pre]:            https://marketplace.visualstudio.com/items?itemName=GitTools.usegitversion-preview
+[az-pipeline-task-pre-badge]:      https://img.shields.io/visual-studio-marketplace/v/GitTools.usegitversion-preview.svg?label=vsix

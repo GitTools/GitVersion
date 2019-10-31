@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using GitVersion.Helpers;
 
-namespace GitVersion.Common
+namespace GitVersion
 {
     public class FileSystem : IFileSystem
     {
@@ -86,7 +86,7 @@ namespace GitVersion.Common
             return string.Equals(
                 Path.GetFullPath(path).TrimEnd('\\').TrimEnd('/'),
                 Path.GetFullPath(otherPath).TrimEnd('\\').TrimEnd('/'),
-                StringComparerUtils.OSDependentComparison);
+                StringComparerUtils.OsDependentComparison);
         }
     }
 }

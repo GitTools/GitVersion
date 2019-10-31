@@ -86,67 +86,6 @@ void Build(BuildParameters parameters)
     });
 }
 
-void ILRepackGitVersionExe(bool includeLibGit2Sharp, DirectoryPath target, DirectoryPath ilMerge, string configuration, string dotnetVersion)
-{
-    var exeName = "GitVersion.exe";
-    var keyFilePath = "./src/key.snk";
-
-    var targetDir = target + "/";
-    var ilMergeDir = ilMerge + "/";
-    var targetPath     = targetDir + exeName;
-    string outFilePath = ilMergeDir + exeName;
-
-    CleanDirectory(ilMergeDir);
-    CreateDirectory(ilMergeDir);
-
-    var sourcePattern = targetDir + "*.dll";
-    var sourceFiles = GetFiles(sourcePattern);
-
-    if (!includeLibGit2Sharp)
-    {
-        var excludePattern = "**/LibGit2Sharp.dll";
-        sourceFiles = sourceFiles - GetFiles(excludePattern);
-    }
-    var settings = new ILRepackSettings { AllowDup = "", Keyfile = keyFilePath, Internalize = true, NDebug = true, TargetKind = TargetKind.Exe, TargetPlatform  = TargetPlatformVersion.v4, XmlDocs = false };
-
-    if (IsRunningOnUnix())
-    {
-        var libFolder = GetDirectories($"**/GitVersionExe/bin/{configuration}/{dotnetVersion}").FirstOrDefault();
-        settings.Libs = new List<DirectoryPath> { libFolder };
-    }
-
-    ILRepack(outFilePath, targetPath, sourceFiles, settings);
-
-    CopyFileToDirectory("./LICENSE", ilMergeDir);
-    CopyFileToDirectory(targetDir + "GitVersion.pdb", ilMergeDir);
-
-    Information("Copying libgit2sharp files..");
-
-    if (!includeLibGit2Sharp) {
-        CopyFileToDirectory(targetDir + "LibGit2Sharp.dll", ilMergeDir);
-    }
-    CopyFileToDirectory(targetDir + "LibGit2Sharp.dll.config", ilMergeDir);
-    CopyDirectory(targetDir + "/lib/", ilMergeDir + "/lib/");
-}
-
-void PublishILRepackedGitVersionExe(bool includeLibGit2Sharp, DirectoryPath ilMergDir, DirectoryPath outputDir, BuildParameters parameters)
-{
-    var targetDir = parameters.Paths.Directories.ArtifactsBinFullFx;
-    var configuration = parameters.Configuration;
-    var dotnetVersion = parameters.FullFxVersion;
-
-    ILRepackGitVersionExe(includeLibGit2Sharp, targetDir, ilMergDir, configuration, dotnetVersion);
-    CopyDirectory(ilMergDir, outputDir);
-
-    if (includeLibGit2Sharp) {
-        CopyFiles("./src/GitVersionExe/NugetAssets/*.ps1", outputDir);
-    }
-
-    // Copy license & Copy GitVersion.XML (since publish does not do this anymore)
-    CopyFileToDirectory("./LICENSE", outputDir);
-    CopyFileToDirectory("./src/GitVersionExe/bin/" + configuration + "/" + dotnetVersion + "/GitVersion.xml", outputDir);
-}
-
 void UpdateTaskVersion(FilePath taskJsonPath, string taskId, GitVersion gitVersion)
 {
     var taskJson = ParseJsonFromFile(taskJsonPath);
