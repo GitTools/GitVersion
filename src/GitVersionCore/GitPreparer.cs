@@ -13,7 +13,6 @@ namespace GitVersion
         private readonly ILog log;
         private readonly IEnvironment environment;
         private readonly string dynamicRepositoryLocation;
-        private readonly bool noFetch;
         private readonly Arguments arguments;
 
         private const string DefaultRemoteName = "origin";
@@ -29,7 +28,6 @@ namespace GitVersion
             WorkingDirectory = arguments.TargetPath.TrimEnd('/', '\\');
 
             dynamicRepositoryLocation = arguments.DynamicRepositoryLocation;
-            noFetch = arguments.NoFetch;
         }
 
         public void Prepare(bool normalizeGitDirectory, string currentBranch, bool shouldCleanUpRemotes = false)
@@ -39,23 +37,24 @@ namespace GitVersion
                 Username = arguments.Authentication?.Username,
                 Password = arguments.Authentication?.Password
             };
-            if (string.IsNullOrWhiteSpace(TargetUrl))
+            if (!string.IsNullOrWhiteSpace(TargetUrl))
             {
-                if (!normalizeGitDirectory) return;
-                using (log.IndentLog($"Normalizing git directory for branch '{currentBranch}'"))
+                var tempRepositoryPath = CalculateTemporaryRepositoryPath(TargetUrl, dynamicRepositoryLocation);
+
+                dynamicGitRepositoryPath = CreateDynamicRepository(tempRepositoryPath, authentication, TargetUrl, currentBranch);
+            }
+            else
+            {
+                if (normalizeGitDirectory)
                 {
                     if (shouldCleanUpRemotes)
                     {
                         CleanupDuplicateOrigin();
                     }
-                    GitRepositoryHelper.NormalizeGitDirectory(log, environment, GetDotGitDirectory(), authentication, noFetch, currentBranch, IsDynamicGitRepository());
+
+                    NormalizeGitDirectory(authentication, currentBranch, GetDotGitDirectory(), IsDynamicGitRepository());
                 }
-                return;
             }
-
-            var tempRepositoryPath = CalculateTemporaryRepositoryPath(TargetUrl, dynamicRepositoryLocation);
-
-            dynamicGitRepositoryPath = CreateDynamicRepository(tempRepositoryPath, authentication, TargetUrl, currentBranch);
         }
 
         public TResult WithRepository<TResult>(Func<IRepository, TResult> action)
@@ -108,7 +107,7 @@ namespace GitVersion
         {
             var remoteToKeep = DefaultRemoteName;
 
-            var repo = new Repository(GetDotGitDirectory());
+            using var repo = new Repository(GetDotGitDirectory());
 
             // check that we have a remote that matches defaultRemoteName if not take the first remote
             if (!repo.Network.Remotes.Any(remote => remote.Name.Equals(DefaultRemoteName, StringComparison.InvariantCultureIgnoreCase)))
@@ -176,26 +175,25 @@ namespace GitVersion
             using (log.IndentLog($"Creating dynamic repository at '{targetPath}'"))
             {
                 var gitDirectory = Path.Combine(targetPath, ".git");
-                if (Directory.Exists(targetPath))
+                if (!Directory.Exists(targetPath))
+                {
+                    CloneRepository(repositoryUrl, gitDirectory, auth);
+                }
+                else
                 {
                     log.Info("Git repository already exists");
-                    using (log.IndentLog($"Normalizing git directory for branch '{targetBranch}'"))
-                    {
-                        GitRepositoryHelper.NormalizeGitDirectory(log, environment, gitDirectory, auth, noFetch, targetBranch, true);
-                    }
-
-                    return gitDirectory;
                 }
-
-                CloneRepository(repositoryUrl, gitDirectory, auth);
-
-                using (log.IndentLog($"Normalizing git directory for branch '{targetBranch}'"))
-                {
-                    // Normalize (download branches) before using the branch
-                    GitRepositoryHelper.NormalizeGitDirectory(log, environment, gitDirectory, auth, noFetch, targetBranch, true);
-                }
-
+                NormalizeGitDirectory(auth, targetBranch, gitDirectory, true);
                 return gitDirectory;
+            }
+        }
+
+        private void NormalizeGitDirectory(AuthenticationInfo auth, string targetBranch, string gitDirectory, bool isDynamicRepository)
+        {
+            using (log.IndentLog($"Normalizing git directory for branch '{targetBranch}'"))
+            {
+                // Normalize (download branches) before using the branch
+                GitRepositoryHelper.NormalizeGitDirectory(log, environment, gitDirectory, auth, arguments.NoFetch, targetBranch, isDynamicRepository);
             }
         }
 
