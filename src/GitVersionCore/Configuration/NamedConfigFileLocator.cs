@@ -10,8 +10,7 @@ namespace GitVersion.Configuration
     {
         public NamedConfigFileLocator(IFileSystem fileSystem, ILog log, IOptions<Arguments> options) : base(fileSystem, log)
         {
-            var arguments = options.Value;
-            var filePath = arguments.ConfigFile;
+            var filePath = options.Value.ConfigFile;
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(filePath), "Empty file path provided!");
             FilePath = filePath;
         }

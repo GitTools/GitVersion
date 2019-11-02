@@ -10,8 +10,8 @@ namespace GitVersion.Helpers
     public static class GitRepositoryHelper
     {
         /// <summary>
-        /// Normalisation of a git directory turns all remote branches into local branches, turns pull request refs into a real branch and a few other things. This is designed to be run *only on the build server* which checks out repositories in different ways.
-        /// It is not recommended to run normalisation against a local repository
+        /// Normalization of a git directory turns all remote branches into local branches, turns pull request refs into a real branch and a few other things. This is designed to be run *only on the build server* which checks out repositories in different ways.
+        /// It is not recommended to run normalization against a local repository
         /// </summary>
         public static void NormalizeGitDirectory(ILog log, IEnvironment environment, string gitDirectory, AuthenticationInfo authentication,
             bool noFetch, string currentBranch, bool isDynamicRepository)
@@ -265,7 +265,7 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
         private static void CreateOrUpdateLocalBranchesFromRemoteTrackingOnes(ILog log, Repository repo, string remoteName)
         {
             var prefix = $"refs/remotes/{remoteName}/";
-            var remoteHeadCanonicalName = $"{prefix}{"HEAD"}";
+            var remoteHeadCanonicalName = $"{prefix}HEAD";
 
             foreach (var remoteTrackingReference in repo.Refs.FromGlob(prefix + "*").Where(r => r.CanonicalName != remoteHeadCanonicalName))
             {
@@ -299,7 +299,7 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
             }
         }
 
-        public static Remote EnsureOnlyOneRemoteIsDefined(ILog log, IRepository repo)
+        private static Remote EnsureOnlyOneRemoteIsDefined(ILog log, IRepository repo)
         {
             var remotes = repo.Network.Remotes;
             var howMany = remotes.Count();
