@@ -29,7 +29,7 @@
             <CompileBefore Include="$(AssemblyInfoTempFilePath)" />
         </ItemGroup>
         <ItemGroup Condition="!Exists('$(Language)') Or '$(Language)' != 'F#'">
-            <Compile Include="$(AssemblyInfoTempFilePath)" />
+            <CompileBefore Include="$(AssemblyInfoTempFilePath)" />
         </ItemGroup>
 
     </Target>
@@ -52,7 +52,7 @@
             <FileWrites Include="$(GitVersionInformationFilePath)" />
         </ItemGroup>
         <ItemGroup Condition="!Exists('$(Language)') Or '$(Language)' != 'F#'">
-            <Compile Include="$(GitVersionInformationFilePath)" />
+            <CompileBefore Include="$(GitVersionInformationFilePath)" />
             <FileWrites Include="$(GitVersionInformationFilePath)" />
         </ItemGroup>
     </Target>
