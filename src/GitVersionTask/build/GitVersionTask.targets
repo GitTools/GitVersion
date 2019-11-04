@@ -25,7 +25,10 @@
             <Output TaskParameter="AssemblyInfoTempFilePath" PropertyName="AssemblyInfoTempFilePath" />
         </UpdateAssemblyInfo>
 
-        <ItemGroup>
+        <ItemGroup Condition="'$(Language)' == 'F#'">
+            <CompileBefore Include="$(AssemblyInfoTempFilePath)" />
+        </ItemGroup>
+        <ItemGroup Condition="'$(Language)' != 'F#'">
             <Compile Include="$(AssemblyInfoTempFilePath)" />
         </ItemGroup>
 
@@ -44,14 +47,17 @@
             <Output TaskParameter="GitVersionInformationFilePath" PropertyName="GitVersionInformationFilePath" />
         </GenerateGitVersionInformation>
 
-        <ItemGroup>
+        <ItemGroup Condition="'$(Language)' == 'F#'">
+            <CompileBefore Include="$(GitVersionInformationFilePath)" />
+            <FileWrites Include="$(GitVersionInformationFilePath)" />
+        </ItemGroup>
+        <ItemGroup Condition="'$(Language)' != 'F#'">
             <Compile Include="$(GitVersionInformationFilePath)" />
             <FileWrites Include="$(GitVersionInformationFilePath)" />
         </ItemGroup>
-
     </Target>
 
-    <Target Name="GetVersion" BeforeTargets="CoreCompile;GetAssemblyVersion;GenerateNuspec;_GenerateRestoreProjectSpec;_GetOutputItemsFromPack;EnsureWixToolsetInstalled" Condition="$(GetVersion) == 'true'"> 
+    <Target Name="GetVersion" BeforeTargets="CoreCompile;GetAssemblyVersion;GenerateNuspec;_GenerateRestoreProjectSpec;_GetOutputItemsFromPack;EnsureWixToolsetInstalled" Condition="$(GetVersion) == 'true'">
 
         <GetVersion SolutionDirectory="$(GitVersionPath)" ConfigFilePath="$(GitVersionConfig)" NoFetch="$(GitVersion_NoFetchEnabled)">
             <Output TaskParameter="Major" PropertyName="GitVersion_Major" />
