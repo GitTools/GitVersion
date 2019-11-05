@@ -25,11 +25,11 @@
             <Output TaskParameter="AssemblyInfoTempFilePath" PropertyName="AssemblyInfoTempFilePath" />
         </UpdateAssemblyInfo>
 
-        <ItemGroup Condition="Exists('$(Language)') And '$(Language)' == 'F#'">
+        <ItemGroup Condition="'$(Language)' == 'F#'">
             <CompileBefore Include="$(AssemblyInfoTempFilePath)" />
         </ItemGroup>
-        <ItemGroup Condition="!Exists('$(Language)') Or '$(Language)' != 'F#'">
-            <CompileBefore Include="$(AssemblyInfoTempFilePath)" />
+        <ItemGroup Condition="'$(Language)' != 'F#'">
+            <Compile Include="$(AssemblyInfoTempFilePath)" />
         </ItemGroup>
 
     </Target>
@@ -47,12 +47,12 @@
             <Output TaskParameter="GitVersionInformationFilePath" PropertyName="GitVersionInformationFilePath" />
         </GenerateGitVersionInformation>
 
-        <ItemGroup Condition="Exists('$(Language)') And '$(Language)' == 'F#'">
+        <ItemGroup Condition="'$(Language)' == 'F#'">
             <CompileBefore Include="$(GitVersionInformationFilePath)" />
             <FileWrites Include="$(GitVersionInformationFilePath)" />
         </ItemGroup>
-        <ItemGroup Condition="!Exists('$(Language)') Or '$(Language)' != 'F#'">
-            <CompileBefore Include="$(GitVersionInformationFilePath)" />
+        <ItemGroup Condition="'$(Language)' != 'F#'">
+            <Compile Include="$(GitVersionInformationFilePath)" />
             <FileWrites Include="$(GitVersionInformationFilePath)" />
         </ItemGroup>
     </Target>
