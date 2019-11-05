@@ -11,20 +11,22 @@ namespace GitVersion
     {
         private readonly IHostApplicationLifetime applicationLifetime;
         private readonly IGitVersionExecutor gitVersionExecutor;
-        private readonly Arguments arguments;
+        private readonly ILog log;
+        private readonly IOptions<Arguments> options;
 
         public GitVersionApp(IHostApplicationLifetime applicationLifetime, IGitVersionExecutor gitVersionExecutor, ILog log, IOptions<Arguments> options)
         {
-            this.arguments = options.Value;
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
             this.applicationLifetime = applicationLifetime ?? throw new ArgumentNullException(nameof(applicationLifetime));
             this.gitVersionExecutor = gitVersionExecutor ?? throw new ArgumentNullException(nameof(gitVersionExecutor));
-
-            log.Verbosity = arguments.Verbosity;
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
         }
         public Task StartAsync(CancellationToken cancellationToken)
         {
             try
             {
+                var arguments = options.Value;
+                log.Verbosity = arguments.Verbosity;
                 gitVersionExecutor.Execute(arguments);
             }
             catch (Exception exception)

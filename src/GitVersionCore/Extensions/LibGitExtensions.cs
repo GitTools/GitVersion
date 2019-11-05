@@ -11,6 +11,12 @@ namespace GitVersion.Extensions
 {
     public static class LibGitExtensions
     {
+        public static TResult WithRepository<TResult>(this string dotGitDirectory, Func<IRepository, TResult> action)
+        {
+            using var repo = new Repository(dotGitDirectory);
+            return action(repo);
+        }
+
         public static DateTimeOffset When(this Commit commit)
         {
             return commit.Committer.When;

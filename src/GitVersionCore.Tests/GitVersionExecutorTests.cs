@@ -76,7 +76,7 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        public void GitPreparerShouldFailWhenTargetPathNotInitialized()
+        public void GitPreparerShouldNotFailWhenTargetPathNotInitialized()
         {
             RepositoryScope((fixture, vv) =>
             {
@@ -88,10 +88,6 @@ namespace GitVersionCore.Tests
                     TargetPath = null
                 };
                 var options = Options.Create(arguments);
-                Should.Throw<NullReferenceException>(() => new GitPreparer(log, environment, options));
-
-                arguments.TargetPath = fixture.RepositoryPath;
-
                 Should.NotThrow(() => new GitPreparer(log, environment, options));
             });
         }
@@ -413,7 +409,7 @@ namespace GitVersionCore.Tests
 
                     var gitPreparer = new GitPreparer(log, environment, Options.Create(arguments));
 
-                    gitPreparer.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(worktreePath);
+                    gitPreparer.GetProjectRootDirectoryInternal().TrimEnd('/', '\\').ShouldBe(worktreePath);
                 }
                 finally
                 {
@@ -437,7 +433,7 @@ namespace GitVersionCore.Tests
 
                 var gitPreparer = new GitPreparer(log, environment, Options.Create(arguments));
                 var expectedPath = fixture.RepositoryPath.TrimEnd('/', '\\');
-                gitPreparer.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(expectedPath);
+                gitPreparer.GetProjectRootDirectoryInternal().TrimEnd('/', '\\').ShouldBe(expectedPath);
             });
         }
 
