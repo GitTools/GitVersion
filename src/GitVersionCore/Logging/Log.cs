@@ -16,7 +16,6 @@ namespace GitVersion.Logging
 
         public Log(): this(Array.Empty<ILogAppender>())
         {
-            
         }
 
         public Log(params ILogAppender[] appenders)
@@ -35,7 +34,8 @@ namespace GitVersion.Logging
                 return;
             }
 
-            var formattedString = FormatMessage(string.Format(format, args), level.ToString().ToUpperInvariant());
+            var message = args.Any() ? string.Format(format, args) : format;
+            var formattedString = FormatMessage(message, level.ToString().ToUpperInvariant());
             foreach (var appender in appenders)
             {
                 appender.WriteTo(level, formattedString);
