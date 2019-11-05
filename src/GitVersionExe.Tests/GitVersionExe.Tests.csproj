@@ -7,7 +7,7 @@
     <Import Project="..\test.msbuild" />
     <ItemGroup>
         <PackageReference Include="GitTools.Testing" Version="1.2.0"></PackageReference>
-        <PackageReference Include="Mono.Cecil" Version="0.11.0"></PackageReference>
+        <PackageReference Include="Mono.Cecil" Version="0.11.1"></PackageReference>
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />

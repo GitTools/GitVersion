@@ -12,5 +12,6 @@ Various people are actively using GitVersion, and taking advantage of the automa
  * [Akavache](https://github.com/akavache/akavache)
  * [Splat](https://github.com/paulcbetts/splat)
  * [ReactiveUI](https://github.com/reactiveui/reactiveui)
+ * [Uno Platform](https://platform.uno/)
 
 If you are using GitVersion in your projects, and you are not listed above, please feel free to add a link to your project.

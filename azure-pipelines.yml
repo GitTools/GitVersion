@@ -9,7 +9,7 @@ stages:
         'Windows':
           VM_IMAGE: 'windows-latest'
         'Linux':
-          VM_IMAGE: 'ubuntu-latest'
+          VM_IMAGE: 'ubuntu-16.04'
         'macOS':
           VM_IMAGE: 'macOS-latest'
     pool:
@@ -26,7 +26,7 @@ stages:
   - template: build/stages/artifacts-test.yml
     parameters:
       name: Linux
-      vmImage: 'ubuntu-latest'
+      vmImage: 'ubuntu-16.04'
   - template: build/stages/artifacts-test.yml
     parameters:
       name: Windows
@@ -40,7 +40,7 @@ stages:
   - template: build/stages/docker.yml
     parameters:
       name: Linux
-      vmImage: 'ubuntu-latest'
+      vmImage: 'ubuntu-16.04'
   - template: build/stages/docker.yml
     parameters:
       name: Windows
