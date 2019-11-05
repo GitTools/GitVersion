@@ -4,6 +4,7 @@ using GitVersion.OutputVariables;
 using GitVersion.Cache;
 using GitVersion.Logging;
 using Microsoft.Extensions.Options;
+using GitVersion.Extensions;
 
 namespace GitVersion
 {
@@ -18,7 +19,7 @@ namespace GitVersion
         private readonly IGitVersionFinder gitVersionFinder;
         private readonly IGitPreparer gitPreparer;
         private readonly IVariableProvider variableProvider;
-        private readonly Arguments arguments;
+        private readonly IOptions<Arguments> options;
 
         public GitVersionCalculator(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator,
             IConfigProvider configProvider,
@@ -34,11 +35,12 @@ namespace GitVersion
             this.gitVersionFinder = gitVersionFinder ?? throw new ArgumentNullException(nameof(gitVersionFinder));
             this.gitPreparer = gitPreparer ?? throw new ArgumentNullException(nameof(gitPreparer));
             this.variableProvider = variableProvider ?? throw new ArgumentNullException(nameof(variableProvider));
-            this.arguments = options.Value;
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
         public VersionVariables CalculateVersionVariables()
         {
+            var arguments = options.Value;
             var buildServer = buildServerResolver.Resolve();
 
             // Normalize if we are running on build server
@@ -119,7 +121,7 @@ namespace GitVersion
         {
             var configuration = configProvider.Provide(overrideConfig: overrideConfig);
 
-            return gitPreparer.WithRepository(repo =>
+            return gitPreparer.GetDotGitDirectory().WithRepository(repo =>
             {
                 var gitVersionContext = new GitVersionContext(repo, log, targetBranch, configuration, commitId: commitId);
                 var semanticVersion = gitVersionFinder.FindVersion(gitVersionContext);

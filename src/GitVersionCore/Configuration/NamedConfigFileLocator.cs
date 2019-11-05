@@ -8,14 +8,14 @@ namespace GitVersion.Configuration
 {
     public class NamedConfigFileLocator : ConfigFileLocator
     {
+        private readonly IOptions<Arguments> options;
+
         public NamedConfigFileLocator(IFileSystem fileSystem, ILog log, IOptions<Arguments> options) : base(fileSystem, log)
         {
-            var filePath = options.Value.ConfigFile;
-            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(filePath), "Empty file path provided!");
-            FilePath = filePath;
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public string FilePath { get; }
+        public string FilePath => options.Value.ConfigFile;
 
         public override bool HasConfigFileAt(string workingDirectory) =>
             FileSystem.Exists(Path.Combine(workingDirectory, FilePath));
