@@ -14,7 +14,7 @@ namespace GitVersion.Configuration
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            this.options = options ?? throw new ArgumentNullException(nameof(fileSystem));
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
         public IConfigFileLocator Create()

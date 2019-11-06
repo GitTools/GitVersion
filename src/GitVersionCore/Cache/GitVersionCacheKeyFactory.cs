@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using GitVersion.Configuration;
 using GitVersion.Logging;
+using GitVersion.Extensions;
 
 namespace GitVersion.Cache
 {
@@ -124,7 +125,8 @@ namespace GitVersion.Cache
 
         private static string GetRepositorySnapshotHash(IGitPreparer gitPreparer)
         {
-            var repositorySnapshot = gitPreparer.WithRepository(repo => {
+            var repositorySnapshot = gitPreparer.GetDotGitDirectory().WithRepository(repo =>
+            {
                 var head = repo.Head;
                 if (head.Tip == null)
                 {

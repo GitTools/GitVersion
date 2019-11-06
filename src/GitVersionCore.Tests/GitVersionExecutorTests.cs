@@ -76,6 +76,23 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
+        public void GitPreparerShouldNotFailWhenTargetPathNotInitialized()
+        {
+            RepositoryScope((fixture, vv) =>
+            {
+                var targetUrl = "https://github.com/GitTools/GitVersion.git";
+
+                var arguments = new Arguments
+                {
+                    TargetUrl = targetUrl,
+                    TargetPath = null
+                };
+                var options = Options.Create(arguments);
+                Should.NotThrow(() => new GitPreparer(log, environment, options));
+            });
+        }
+
+        [Test]
         [Category("NoMono")]
         [Description("LibGit2Sharp fails here when running under Mono")]
         public void CacheKeyForWorktree()
@@ -392,7 +409,7 @@ namespace GitVersionCore.Tests
 
                     var gitPreparer = new GitPreparer(log, environment, Options.Create(arguments));
 
-                    gitPreparer.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(worktreePath);
+                    gitPreparer.GetProjectRootDirectoryInternal().TrimEnd('/', '\\').ShouldBe(worktreePath);
                 }
                 finally
                 {
@@ -416,7 +433,7 @@ namespace GitVersionCore.Tests
 
                 var gitPreparer = new GitPreparer(log, environment, Options.Create(arguments));
                 var expectedPath = fixture.RepositoryPath.TrimEnd('/', '\\');
-                gitPreparer.GetProjectRootDirectory().TrimEnd('/', '\\').ShouldBe(expectedPath);
+                gitPreparer.GetProjectRootDirectoryInternal().TrimEnd('/', '\\').ShouldBe(expectedPath);
             });
         }
 
