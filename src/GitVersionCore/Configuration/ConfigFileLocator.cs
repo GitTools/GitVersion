@@ -23,7 +23,7 @@ namespace GitVersion.Configuration
 
         public string SelectConfigFilePath(IGitPreparer gitPreparer)
         {
-            var workingDirectory = gitPreparer.WorkingDirectory;
+            var workingDirectory = gitPreparer.GetWorkingDirectory();
             var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
 
             if (HasConfigFileAt(workingDirectory))
@@ -50,14 +50,14 @@ namespace GitVersion.Configuration
 
         public void Verify(IGitPreparer gitPreparer)
         {
-            if (!string.IsNullOrWhiteSpace(gitPreparer.TargetUrl))
+            if (!string.IsNullOrWhiteSpace(gitPreparer.GetTargetUrl()))
             {
                 // Assuming this is a dynamic repository. At this stage it's unsure whether we have
                 // any .git info so we need to skip verification
                 return;
             }
 
-            var workingDirectory = gitPreparer.WorkingDirectory;
+            var workingDirectory = gitPreparer.GetWorkingDirectory();
             var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
 
             Verify(workingDirectory, projectRootDirectory);
