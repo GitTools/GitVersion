@@ -21,16 +21,16 @@ namespace GitVersion
         private readonly IBuildServerResolver buildServerResolver;
         private readonly ILog log;
         private readonly IGitVersionCalculator gitVersionCalculator;
-        private readonly Arguments arguments;
+        private readonly IOptions<Arguments> options;
         public static readonly string BuildTool = GetMsBuildToolPath();
 
-        public ExecCommand(IFileSystem fileSystem, IBuildServerResolver buildServerResolver, ILog log, IGitVersionCalculator gitVersionCalculator, IOptions<Arguments> arguments)
+        public ExecCommand(IFileSystem fileSystem, IBuildServerResolver buildServerResolver, ILog log, IGitVersionCalculator gitVersionCalculator, IOptions<Arguments> options)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.gitVersionCalculator = gitVersionCalculator ?? throw new ArgumentNullException(nameof(gitVersionCalculator));
-            this.arguments = arguments.Value;
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
         public void Execute()
@@ -38,6 +38,8 @@ namespace GitVersion
             log.Info($"Running on {(RunningOnUnix ? "Unix" : "Windows")}.");
 
             var variables = gitVersionCalculator.CalculateVersionVariables();
+
+            var arguments = options.Value;
 
             switch (arguments.Output)
             {
