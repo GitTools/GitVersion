@@ -60,8 +60,8 @@ namespace GitVersionCore.Tests
         [NonParallelizable]
         [TestCase("GV_master", "https://github.com/GitTools/GitVersion", "master", "4783d325521463cd6cf1b61074352da84451f25d", "4.0.0+1086")]
         [TestCase("GV_master", "https://github.com/GitTools/GitVersion", "master", "3bdcd899530b4e9b37d13639f317da04a749e728", "4.0.0+1092")]
-        [TestCase("Ctl_develop", "https://github.com/Catel/Catel", "develop", "0e2b6c125a730d2fa5e24394ef64abe62c98e9e9", "5.12.0-alpha.188")]
-        [TestCase("Ctl_develop", "https://github.com/Catel/Catel", "develop", "71e71359f37581784e18c94e7a45eee72cbeeb30", "5.12.0-alpha.192")]
+        [TestCase("Ctl_develop", "https://github.com/Catel/Catel", "develop", "0e2b6c125a730d2fa5e24394ef64abe62c98e9e9", "5.13.0-alpha.0")]
+        [TestCase("Ctl_develop", "https://github.com/Catel/Catel", "develop", "71e71359f37581784e18c94e7a45eee72cbeeb30", "5.13.0-alpha.0")]
         [TestCase("Ctl_master", "https://github.com/Catel/Catel", "master", "f5de8964c35180a5f8607f5954007d5828aa849f", "5.10.0")]
         public void FindsVersionInDynamicRepo(string name, string url, string targetBranch, string commitId, string expectedFullSemVer)
         {
@@ -99,7 +99,7 @@ namespace GitVersionCore.Tests
             var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
 
             var configurationProvider = new ConfigProvider(testFileSystem, log, configFileLocator, gitPreparer, configInitWizard);
-            
+
             var variableProvider = new VariableProvider(nextVersionCalculator, new TestEnvironment());
             var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);
 
