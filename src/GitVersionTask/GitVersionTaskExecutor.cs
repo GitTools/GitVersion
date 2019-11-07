@@ -25,7 +25,7 @@ namespace GitVersion.MSBuildTask
 
         public void GetVersion(GetVersion task)
         {
-            gitVersionCalculator.TryCalculateVersionVariables(out var versionVariables);
+            var versionVariables = gitVersionCalculator.CalculateVersionVariables();
             var outputType = typeof(GetVersion);
             foreach (var variable in versionVariables)
             {
@@ -38,7 +38,7 @@ namespace GitVersion.MSBuildTask
             FileHelper.DeleteTempFiles();
             FileHelper.CheckForInvalidFiles(task.CompileFiles, task.ProjectFile);
 
-            gitVersionCalculator.TryCalculateVersionVariables(out var versionVariables);
+            var versionVariables = gitVersionCalculator.CalculateVersionVariables();
             var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "AssemblyInfo");
 
             task.AssemblyInfoTempFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
@@ -50,7 +50,7 @@ namespace GitVersion.MSBuildTask
 
         public void GenerateGitVersionInformation(GenerateGitVersionInformation task)
         {
-            gitVersionCalculator.TryCalculateVersionVariables(out var versionVariables);
+            var versionVariables = gitVersionCalculator.CalculateVersionVariables();
             var fileWriteInfo = task.IntermediateOutputPath.GetFileWriteInfo(task.Language, task.ProjectFile, "GitVersionInformation");
 
             task.GitVersionInformationFilePath = Path.Combine(fileWriteInfo.WorkingDirectory, fileWriteInfo.FileName);
@@ -62,7 +62,7 @@ namespace GitVersion.MSBuildTask
         {
             var logger = task.Log;
 
-            gitVersionCalculator.TryCalculateVersionVariables(out var versionVariables);
+            var versionVariables = gitVersionCalculator.CalculateVersionVariables();
             var buildServer = buildServerResolver.Resolve();
             if (buildServer != null)
             {
