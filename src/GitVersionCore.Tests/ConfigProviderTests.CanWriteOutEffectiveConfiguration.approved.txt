@@ -41,7 +41,7 @@ branches:
   release:
     mode: ContinuousDelivery
     tag: beta
-    increment: Patch
+    increment: None
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
     regex: ^releases?[/-]
