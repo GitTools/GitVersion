@@ -135,6 +135,11 @@ namespace GitVersion.VersionCalculation
         {
             public SemanticVersion IncrementedVersion { get; set; }
             public BaseVersion Version { get; set; }
+
+            public override string ToString()
+            {
+                return $"{Version} | {IncrementedVersion}";
+            }
         }
     }
 }

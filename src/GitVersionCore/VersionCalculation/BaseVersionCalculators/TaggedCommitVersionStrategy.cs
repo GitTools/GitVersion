@@ -69,6 +69,11 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
                 Commit = commit;
                 SemVer = semVer;
             }
+
+            public override string ToString()
+            {
+                return $"{Tag} | {Commit} | {SemVer}";
+            }
         }
     }
 }
