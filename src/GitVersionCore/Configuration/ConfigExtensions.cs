@@ -50,7 +50,7 @@ namespace GitVersion.Configuration
                     { "develop", "master", "support", "release" },
                 defaultTag: "beta",
                 defaultPreventIncrement: true,
-                defaultIncrementStrategy: IncrementStrategy.Patch,
+                defaultIncrementStrategy: IncrementStrategy.None,
                 isReleaseBranch: true);
             ApplyBranchDefaults(config, GetOrCreateBranchDefaults(config, Config.FeatureBranchKey), Config.FeatureBranchRegex,
                 new List<string>
