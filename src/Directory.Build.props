@@ -20,7 +20,7 @@
     <PackageVersion_YamlDotNet>8.0.0</PackageVersion_YamlDotNet>
     <PackageVersion_NewtonsoftJson>12.0.2</PackageVersion_NewtonsoftJson>
 
-    <PackageVersion_MicrosoftTestSdk>16.3.0</PackageVersion_MicrosoftTestSdk>
+    <PackageVersion_MicrosoftTestSdk>16.4.0</PackageVersion_MicrosoftTestSdk>
     <PackageVersion_NSubstitute>4.2.1</PackageVersion_NSubstitute>
     <PackageVersion_CoverletMsBuild>2.7.0</PackageVersion_CoverletMsBuild>
     <PackageVersion_NUnit>3.12.0</PackageVersion_NUnit>
