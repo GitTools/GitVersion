@@ -3,6 +3,7 @@ using GitVersion.Exceptions;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion.MSBuildTask.Tasks;
+using Microsoft.Build.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -25,8 +26,6 @@ namespace GitVersion.MSBuildTask
             try
             {
                 var sp = BuildServiceProvider(task);
-                var log = sp.GetService<ILog>();
-                log.AddLogAppender(new MsBuildAppender(taskLog));
                 var gitVersionTaskExecutor = sp.GetService<IGitVersionTaskExecutor>();
 
                 action(gitVersionTaskExecutor);
@@ -43,6 +42,17 @@ namespace GitVersion.MSBuildTask
             }
 
             return !taskLog.HasLoggedErrors;
+        }
+        
+        private static void Configure(IServiceProvider sp, Task task)
+        {
+            var log = sp.GetService<ILog>();
+            var buildServerResolver = sp.GetService<IBuildServerResolver>();
+            var arguments = sp.GetService<IOptions<Arguments>>().Value;
+
+            log.AddLogAppender(new MsBuildAppender(task.Log));
+            var buildServer = buildServerResolver.Resolve();
+            arguments.NoFetch = arguments.NoFetch || buildServer != null && buildServer.PreventFetch();
         }
 
         private static IServiceProvider BuildServiceProvider(GitVersionTaskBase task)
@@ -61,6 +71,8 @@ namespace GitVersion.MSBuildTask
             services.AddModule(new GitVersionCoreModule());
 
             var sp = services.BuildServiceProvider();
+            Configure(sp, task);
+
             return sp;
         }
     }
