@@ -35,7 +35,7 @@ namespace GitVersion.MSBuildTask
             }
             catch (Exception exception)
             {
-                taskLog.LogErrorFromException(exception);
+                taskLog.LogErrorFromException(exception, showStackTrace: true, showDetail: true, null);
                 return false;
             }
 
