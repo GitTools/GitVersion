@@ -1,6 +1,7 @@
 using System;
 using GitVersion.Exceptions;
 using GitVersion.Extensions;
+using GitVersion.Logging;
 using GitVersion.MSBuildTask.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -24,6 +25,8 @@ namespace GitVersion.MSBuildTask
             try
             {
                 var sp = BuildServiceProvider(task);
+                var log = sp.GetService<ILog>();
+                log.AddLogAppender(new MsBuildAppender(taskLog));
                 var gitVersionTaskExecutor = sp.GetService<IGitVersionTaskExecutor>();
 
                 action(gitVersionTaskExecutor);

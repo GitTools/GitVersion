@@ -65,21 +65,6 @@ namespace GitVersion
             return GetCachedGitVersionInfo(arguments.TargetBranch, arguments.CommitId, arguments.OverrideConfig, arguments.NoCache);
         }
 
-        public bool TryCalculateVersionVariables(out VersionVariables versionVariables)
-        {
-            try
-            {
-                versionVariables = CalculateVersionVariables();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                log.Warning("Could not determine assembly version: " + ex);
-                versionVariables = null;
-                return false;
-            }
-        }
-
         private string ResolveCurrentBranch(IBuildServer buildServer, string targetBranch, bool isDynamicRepository)
         {
             if (buildServer == null)

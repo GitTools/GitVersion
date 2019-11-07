@@ -1,12 +1,10 @@
 using System;
 using System.IO;
-using System.Threading;
 
 namespace GitVersion.Logging
 {
     public class FileAppender : ILogAppender
     {
-        private static readonly ReaderWriterLock Locker = new ReaderWriterLock();
         private readonly string filePath;
 
         public FileAppender(string filePath)
