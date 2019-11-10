@@ -4,10 +4,8 @@ import * as os from 'os';
 
 import * as httpm from 'typed-rest-client/HttpClient';
 
-import * as im from 'azure-pipelines-task-lib/internal';
 import * as toolLib from 'azure-pipelines-tool-lib/tool';
 import * as taskLib from 'azure-pipelines-task-lib/task';
-import { ToolRunner } from 'azure-pipelines-task-lib/toolrunner';
 
 export class ToolInstaller {
     constructor() {
@@ -72,7 +70,7 @@ export class ToolInstaller {
         taskLib.debug(`toolPath: ${toolPath}`);
 
         if (os.platform() != 'win32') {
-            let dotnetRoot = path.dirname(fs.readlinkSync(im._which("dotnet")));
+            let dotnetRoot = path.dirname(fs.readlinkSync(taskLib.which("dotnet")));
             taskLib.setVariable('DOTNET_ROOT', dotnetRoot);
         }
         toolLib.prependPath(toolPath);
@@ -106,7 +104,6 @@ export class ToolInstaller {
     }
 
     private async acquireTool(toolName: string, version: string): Promise<string> {
-        let tr: ToolRunner = taskLib.tool("dotnet");
 
         let tempDirectory = taskLib.getVariable('Agent.TempDirectory');
         let args = ["tool", "install", toolName, "--tool-path", tempDirectory];
@@ -116,6 +113,7 @@ export class ToolInstaller {
             args = args.concat(["--version", version]);
         }
 
+        let tr = taskLib.tool("dotnet");
         tr.arg(args);
 
         var result = tr.execSync();
