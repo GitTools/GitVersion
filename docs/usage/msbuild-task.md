@@ -131,7 +131,7 @@ In addition, the following MSBuild properties are set when `UpdateVersionPropert
 
 ### NuGet packages
 The new SDK-style projects available for .NET Standard libraries (and multi-targeting), have the ability
-to create NuGet packages directly by using the `pack` target: `msbuild /t:pack`. The version is controled by the MSBuild properties described above. 
+to create NuGet packages directly by using the `pack` target: `msbuild /t:pack`. The version is controlled by the MSBuild properties described above. 
 
 GitVersionTask has the option to generate SemVer 2.0 compliant NuGet package versions by setting `UseFullSemVerForNuGet` to true in your project (this is off by default for compatibility). Some hosts, like MyGet, support SemVer 2.0 package versions but older NuGet clients and nuget.org do not.
 
