@@ -183,7 +183,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
             }
             catch (InvalidOperationException)
             {
-                var matchingConfigs = String.Join("\n - ", matches.Select(m => m.Key));
+                var matchingConfigs = String.Concat(matches.Select(m => $"\n - {m.Key}"));
                 var picked = matches
                     .Select(kvp => kvp.Value)
                     .First();
@@ -191,7 +191,7 @@ If the docs do not help you decide on the mode open an issue to discuss what you
                 // TODO check how to log this
                 Console.WriteLine(
                     $"Multiple branch configurations match the current branch branchName of '{branchName}'. " +
-                    $"Using the first matching configuration, '{picked}'. Matching configurations include: '{matchingConfigs}'");
+                    $"Using the first matching configuration, '{picked.Name}'. Matching configurations include:'{matchingConfigs}'");
 
                 return picked;
             }
