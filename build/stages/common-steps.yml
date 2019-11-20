@@ -1,4 +1,9 @@
 steps:
+- task: Cache@2
+  inputs:
+    key: 'tools | "$(Agent.OS)" | build.cake'
+    path: tools
+  displayName: Cache Cake tools
 - task: UseDotNet@2
   displayName: 'Use .NET Core sdk 2.1'
   inputs:
