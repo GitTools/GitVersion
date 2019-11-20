@@ -6,3 +6,4 @@
 !artifacts/*/nuget
 
 !artifacts/*/*.tar.gz
+!artifacts/gitversion.json

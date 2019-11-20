@@ -36,30 +36,29 @@ void SetRubyGemPushApiKey(string apiKey)
 
 GitVersion GetVersion(BuildParameters parameters)
 {
-    // var dllFilePath = $"./artifacts/*/bin/{parameters.CoreFxVersion21}/tools/GitVersion.dll";
-    // var dllFile = GetFiles(dllFilePath).FirstOrDefault();
-    // if (dllFile == null)
-    // {
-    //     Warning("Dogfood GitVersion to get information");
-    //     Build(parameters);
-    //     dllFilePath = $"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion21}/GitVersion.dll";
-    //     dllFile = GetFiles(dllFilePath).FirstOrDefault();
-    // }
-
-    var settings = new GitVersionSettings
+    var gitversionFilePath = $"artifacts/gitversion.json";
+    var gitversionFile = GetFiles(gitversionFilePath).FirstOrDefault();
+    GitVersion gitVersion = null;
+    if (gitversionFile == null)
     {
-        OutputType = GitVersionOutput.Json,
-        // ToolPath = FindToolInPath(IsRunningOnUnix() ? "dotnet" : "dotnet.exe"),
-        // ArgumentCustomization = args => dllFile + " " + args.Render()
-    };
+        var settings = new GitVersionSettings { OutputType = GitVersionOutput.Json };
 
-    var gitVersion = GitVersion(settings);
+        gitVersion = GitVersion(settings);
+        SerializeJsonToPrettyFile(gitversionFilePath, gitVersion);
+    }
+    else
+    {
+        gitVersion = DeserializeJsonFromFile<GitVersion>(gitversionFile);
+    }
 
     if (!parameters.IsLocalBuild && !(parameters.IsRunningOnAzurePipeline && parameters.IsPullRequest))
     {
-        settings.UpdateAssemblyInfo = true;
-        settings.LogFilePath = "console";
-        settings.OutputType = GitVersionOutput.BuildServer;
+        var settings = new GitVersionSettings
+        {
+            UpdateAssemblyInfo = true,
+            LogFilePath = "console",
+            OutputType = GitVersionOutput.BuildServer
+        };
 
         GitVersion(settings);
     }
