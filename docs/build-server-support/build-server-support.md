@@ -1,8 +1,8 @@
 # Build Server Support
 GitVersion has support for quite a few build servers out of the box. Currently we support:
 
- - [Azure DevOps](build-server/azure-devops.md)
  - [AppVeyor](build-server/appveyor.md)
+ - [Azure DevOps](build-server/azure-devops.md)
  - [Bamboo](build-server/bamboo.md)
  - [Continua CI](build-server/continua.md)
  - [GitLab CI](build-server/gitlab.md)
