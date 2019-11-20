@@ -32,32 +32,11 @@ Task("Release-Notes")
     Error(exception.Dump());
 });
 
-Task("Publish-Coverage")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Coverage works only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Coverage works only on AzurePipeline.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Coverage works only for releases.")
-    .IsDependentOnWhen("Test", singleStageRun)
-    .Does<BuildParameters>((parameters) =>
-{
-    var coverageFiles = GetFiles(parameters.Paths.Directories.TestResultsOutput + "/*.coverage.xml");
-
-    var token = parameters.Credentials.CodeCov.Token;
-    if(string.IsNullOrEmpty(token)) {
-        throw new InvalidOperationException("Could not resolve CodeCov token.");
-    }
-
-    foreach (var coverageFile in coverageFiles) {
-        Codecov(new CodecovSettings {
-            Files = new [] { coverageFile.ToString() },
-            Token = token
-        });
-    }
-});
 
 Task("Publish-AppVeyor")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Publish-AppVeyor works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAppVeyor, "Publish-AppVeyor works only on AppVeyor.")
-    .IsDependentOnWhen("Test", singleStageRun)
+    .IsDependentOnWhen("UnitTest", singleStageRun)
     .IsDependentOnWhen("Pack", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
@@ -82,8 +61,8 @@ Task("Publish-AzurePipeline")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-AzurePipeline works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-AzurePipeline works only on AzurePipeline.")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsPullRequest,           "Publish-AzurePipeline works only for non-PR commits.")
+    .IsDependentOnWhen("UnitTest", singleStageRun)
     .IsDependentOnWhen("Pack", singleStageRun)
-    .IsDependentOnWhen("Test", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
     foreach(var artifact in parameters.Artifacts.All)

@@ -121,10 +121,15 @@ Task("Pack")
     Error(exception.Dump());
 });
 
+Task("Test")
+    .IsDependentOn("Publish-Coverage")
+    .Finally(() =>
+{
+});
+
 Task("Publish")
     .IsDependentOn("Publish-AppVeyor")
     .IsDependentOn("Publish-AzurePipeline")
-    .IsDependentOn("Publish-Coverage")
     .IsDependentOn("Publish-NuGet")
     .IsDependentOn("Publish-Chocolatey")
     .IsDependentOn("Publish-Vsix")
