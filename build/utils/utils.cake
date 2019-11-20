@@ -36,21 +36,21 @@ void SetRubyGemPushApiKey(string apiKey)
 
 GitVersion GetVersion(BuildParameters parameters)
 {
-    var dllFilePath = $"./artifacts/*/bin/{parameters.CoreFxVersion21}/tools/GitVersion.dll";
-    var dllFile = GetFiles(dllFilePath).FirstOrDefault();
-    if (dllFile == null)
-    {
-        Warning("Dogfood GitVersion to get information");
-        Build(parameters);
-        dllFilePath = $"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion21}/GitVersion.dll";
-        dllFile = GetFiles(dllFilePath).FirstOrDefault();
-    }
+    // var dllFilePath = $"./artifacts/*/bin/{parameters.CoreFxVersion21}/tools/GitVersion.dll";
+    // var dllFile = GetFiles(dllFilePath).FirstOrDefault();
+    // if (dllFile == null)
+    // {
+    //     Warning("Dogfood GitVersion to get information");
+    //     Build(parameters);
+    //     dllFilePath = $"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion21}/GitVersion.dll";
+    //     dllFile = GetFiles(dllFilePath).FirstOrDefault();
+    // }
 
     var settings = new GitVersionSettings
     {
         OutputType = GitVersionOutput.Json,
-        ToolPath = FindToolInPath(IsRunningOnUnix() ? "dotnet" : "dotnet.exe"),
-        ArgumentCustomization = args => dllFile + " " + args.Render()
+        // ToolPath = FindToolInPath(IsRunningOnUnix() ? "dotnet" : "dotnet.exe"),
+        // ArgumentCustomization = args => dllFile + " " + args.Render()
     };
 
     var gitVersion = GitVersion(settings);
