@@ -16,10 +16,28 @@ stages:
       vmImage: $(VM_IMAGE)
     steps:
     - template: build/stages/build.yml
-
 - stage: Test
+  dependsOn: []
+  jobs:
+  - job: Test
+    strategy:
+      matrix:
+        'Windows':
+          VM_IMAGE: 'windows-latest'
+        'Linux':
+          VM_IMAGE: 'ubuntu-16.04'
+        'macOS':
+          VM_IMAGE: 'macOS-latest'
+    pool:
+      vmImage: $(VM_IMAGE)
+    steps:
+    - template: build/stages/test.yml
+
+- stage: Artifact_Test
   displayName: 'Artifacts test'
-  dependsOn: Build
+  dependsOn:
+  - Build
+  - Test
   condition: succeeded()
   jobs:
   - template: build/stages/generate-job.yml
@@ -33,7 +51,7 @@ stages:
       vmImage: 'windows-latest'
 
 - stage: Docker
-  dependsOn: Test
+  dependsOn: Artifact_Test
   condition: succeeded()
   jobs:
   - template: build/stages/generate-job.yml
@@ -47,7 +65,7 @@ stages:
       vmImage: 'windows-latest'
 
 - stage: Publish
-  dependsOn: Test
+  dependsOn: Artifact_Test
   condition: succeeded()
   jobs:
   - job: Publish

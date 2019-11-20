@@ -8,8 +8,6 @@ steps:
     addToPath: true
 - script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Pack
   displayName: 'Cake build & pack'
-  env:
-    ENABLED_UNIT_TESTS: $(ENABLED_UNIT_TESTS)
 - publish: $(System.DefaultWorkingDirectory)
   displayName: 'Upload pipeline artifacts'
   condition: and(succeeded(), eq( variables['Agent.OS'], 'Windows_NT' ))

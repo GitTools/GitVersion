@@ -57,6 +57,7 @@ Task("Publish-Coverage")
 Task("Publish-AppVeyor")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Publish-AppVeyor works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAppVeyor, "Publish-AppVeyor works only on AppVeyor.")
+    .IsDependentOnWhen("Test", singleStageRun)
     .IsDependentOnWhen("Pack", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
@@ -82,6 +83,7 @@ Task("Publish-AzurePipeline")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-AzurePipeline works only on AzurePipeline.")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsPullRequest,           "Publish-AzurePipeline works only for non-PR commits.")
     .IsDependentOnWhen("Pack", singleStageRun)
+    .IsDependentOnWhen("Test", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
     foreach(var artifact in parameters.Artifacts.All)

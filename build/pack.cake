@@ -120,7 +120,7 @@ Task("Test")
 
 #region Pack
 Task("Pack-Prepare")
-    .IsDependentOn("Test")
+    .IsDependentOn("Build")
     .Does<BuildParameters>((parameters) =>
 {
     // publish single file for all native runtimes (self contained)
@@ -199,7 +199,7 @@ Task("Pack-Prepare")
 });
 
 Task("Pack-Vsix")
-    .IsDependentOn("Test")
+    .IsDependentOn("Build")
     .Does<BuildParameters>((parameters) =>
 {
     var workDir = "./src/GitVersionVsixTask";
