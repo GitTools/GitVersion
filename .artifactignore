@@ -2,8 +2,7 @@
 
 !artifacts/*/bin/netcoreapp2.1
 !artifacts/*/bin/netcoreapp3.0
-!artifacts/*/build-artifacts
+!artifacts/*/build-artifact
 !artifacts/*/nuget
 
-!artifacts/*/tar.gz
-
+!artifacts/*/*.tar.gz

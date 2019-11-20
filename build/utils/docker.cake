@@ -117,7 +117,7 @@ DockerContainerRunSettings GetDockerRunSettings(BuildParameters parameters)
         Volume = new[]
         {
             $"{currentDir}:{parameters.DockerRootPrefix}/repo",
-            $"{parameters.Paths.Directories.NugetRoot}:{parameters.DockerRootPrefix}/nuget"
+            $"{currentDir}/artifacts/v{parameters.Version.SemVersion}/nuget:{parameters.DockerRootPrefix}/nuget"
         }
     };
 
