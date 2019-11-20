@@ -23,7 +23,7 @@
 
 // Install .NET Core Global tools.
 #tool "dotnet:?package=Codecov.Tool&version=1.7.2"
-#tool "dotnet:?package=GitReleaseManager.Tool&version=0.8.0"
+#tool "dotnet:?package=GitReleaseManager.Tool&version=0.9.0"
 
 // Load other scripts.
 #load "./build/utils/parameters.cake"
