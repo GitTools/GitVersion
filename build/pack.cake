@@ -288,7 +288,7 @@ Task("Pack-Nuget")
 
 Task("Pack-Chocolatey")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Pack-Chocolatey works only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsMainBranch, "Pack-Chocolatey works only for main branch.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsMainBranch && !parameters.IsPullRequest, "Pack-Chocolatey works only for main branch.")
     .IsDependentOn("Pack-Prepare")
     .Does<BuildParameters>((parameters) =>
 {
@@ -299,7 +299,7 @@ Task("Pack-Chocolatey")
 
             var chocolateySettings = new ChocolateyPackSettings
             {
-                Verbose = true,
+                LimitOutput = true,
                 Version = parameters.Version.SemVersion,
                 OutputDirectory = parameters.Paths.Directories.NugetRoot,
                 Files = GetFiles(artifactPath + "/**/*.*")
