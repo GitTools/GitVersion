@@ -21,7 +21,12 @@ Task("Build")
 {
     // build .Net code
     Build(parameters);
+});
 
+Task("Build-Vsix")
+    .IsDependentOn("Build")
+    .Does<BuildParameters>((parameters) =>
+{
     var workDir = "./src/GitVersionVsixTask";
     // build typescript code
     NpmSet(new NpmSetSettings             { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, Key = "progress", Value = "false" });
@@ -88,12 +93,6 @@ Task("UnitTest")
 
         Parallel.Invoke(options, actions.ToArray());
     }
-
-    var workDir = "./src/GitVersionVsixTask";
-    var npmSettings = new NpmRunScriptSettings { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, ScriptName = "test" };
-    var vsixResultsPath = MakeAbsolute(testResultsPath.CombineWithFilePath("vsix.results.xml"));
-    // npmSettings.Arguments.Add($"--reporter mocha-xunit-reporter --reporter-options mochaFile={vsixResultsPath}");
-    NpmRunScript(npmSettings);
 })
 .ReportError(exception =>
 {
@@ -116,11 +115,24 @@ Task("UnitTest")
     }
 });
 
+Task("UnitTest-Vsix")
+    .IsDependentOn("Build-Vsix")
+    .Does<BuildParameters>((parameters) =>
+{
+    var workDir = "./src/GitVersionVsixTask";
+    var testResultsPath = parameters.Paths.Directories.TestResultsOutput;
+    var npmSettings = new NpmRunScriptSettings { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, ScriptName = "test" };
+    var vsixResultsPath = MakeAbsolute(testResultsPath.CombineWithFilePath("vsix.results.xml"));
+    // npmSettings.Arguments.Add($"--reporter mocha-xunit-reporter --reporter-options mochaFile={vsixResultsPath}");
+    NpmRunScript(npmSettings);
+});
+
 Task("Publish-Coverage")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Coverage works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Coverage works only on AzurePipeline.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Coverage works only for releases.")
     .IsDependentOn("UnitTest")
+    .IsDependentOn("UnitTest-Vsix")
     .Does<BuildParameters>((parameters) =>
 {
     var coverageFiles = GetFiles(parameters.Paths.Directories.TestResultsOutput + "/*.coverage.xml");
@@ -221,7 +233,7 @@ Task("Pack-Prepare")
 });
 
 Task("Pack-Vsix")
-    .IsDependentOn("Build")
+    .IsDependentOn("Build-Vsix")
     .Does<BuildParameters>((parameters) =>
 {
     var workDir = "./src/GitVersionVsixTask";
