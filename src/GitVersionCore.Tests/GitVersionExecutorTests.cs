@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using GitTools.Testing;
 using GitVersion;
@@ -505,6 +506,33 @@ namespace GitVersionCore.Tests
                     DirectoryHelper.DeleteDirectory(worktreePath);
                 }
             });
+        }
+
+        [Test]
+        [Category("NoMono")]
+        [Description("LibGit2Sharp fails when running under Mono")]
+        public void CalculateVersionFromWorktreeHead()
+        {
+            using var fixture = new EmptyRepositoryFixture();
+            var repoDir = new DirectoryInfo(fixture.RepositoryPath);
+            var worktreePath = Path.Combine(repoDir.Parent.FullName, $"{repoDir.Name}-v1");
+
+            fixture.Repository.MakeATaggedCommit("v1.0.0");
+            var branchV1 = fixture.Repository.CreateBranch("support/1.0");
+
+            fixture.Repository.MakeATaggedCommit("v2.0.0");
+
+            fixture.Repository.Worktrees.Add(branchV1.CanonicalName, "1.0", worktreePath, false);
+            using var worktreeFixture = new LocalRepositoryFixture(new Repository(worktreePath));
+
+            var arguments = new Arguments { TargetPath = worktreePath };
+
+            var calculator = GetGitVersionCalculator(arguments);
+            var version = calculator.CalculateVersionVariables();
+
+            version.SemVer.ShouldBe("1.0.0");
+            var commits = worktreeFixture.Repository.Head.Commits;
+            version.Sha.ShouldBe(commits.First().Sha);
         }
 
         private void RepositoryScope(Action<EmptyRepositoryFixture, VersionVariables> fixtureAction = null)
