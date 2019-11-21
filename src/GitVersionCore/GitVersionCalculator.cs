@@ -106,7 +106,11 @@ namespace GitVersion
         {
             var configuration = configProvider.Provide(overrideConfig: overrideConfig);
 
-            return gitPreparer.GetDotGitDirectory().WithRepository(repo =>
+            var path = gitPreparer.IsDynamicGitRepository
+                ? gitPreparer.GetDotGitDirectory()
+                : gitPreparer.GetProjectRootDirectory();
+
+            return path.WithRepository(repo =>
             {
                 var gitVersionContext = new GitVersionContext(repo, log, targetBranch, configuration, commitId: commitId);
                 var semanticVersion = gitVersionFinder.FindVersion(gitVersionContext);

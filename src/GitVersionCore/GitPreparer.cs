@@ -26,7 +26,7 @@ namespace GitVersion
 
         public string GetProjectRootDirectory() => projectRootDirectory ??= GetProjectRootDirectoryInternal();
 
-        private bool IsDynamicGitRepository => !string.IsNullOrWhiteSpace(DynamicGitRepositoryPath);
+        public bool IsDynamicGitRepository => !string.IsNullOrWhiteSpace(DynamicGitRepositoryPath);
         private string DynamicGitRepositoryPath;
 
         public GitPreparer(ILog log, IEnvironment environment, IOptions<Arguments> options)
