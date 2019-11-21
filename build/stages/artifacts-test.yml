@@ -19,4 +19,4 @@ jobs:
       path: $(Build.SourcesDirectory)
       artifact: storage
   - script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Artifacts-Test --docker_distro=$(DISTRO) --docker_dotnetversion=$(DOTNET_VERSION)
-    displayName: 'Docker build'
+    displayName: 'Docker Test Artifacts'

@@ -51,6 +51,12 @@ GitVersion GetVersion(BuildParameters parameters)
         gitVersion = DeserializeJsonFromFile<GitVersion>(gitversionFile);
     }
 
+    return gitVersion;
+}
+
+void RunGitVersionOnCI(BuildParameters parameters)
+{
+    // set the CI build version number with GitVersion
     if (!parameters.IsLocalBuild && !(parameters.IsRunningOnAzurePipeline && parameters.IsPullRequest))
     {
         var settings = new GitVersionSettings
@@ -62,7 +68,6 @@ GitVersion GetVersion(BuildParameters parameters)
 
         GitVersion(settings);
     }
-    return gitVersion;
 }
 
 void Build(BuildParameters parameters)

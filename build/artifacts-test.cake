@@ -1,9 +1,18 @@
 singleStageRun = !IsEnabled(Context, "ENABLED_MULTI_STAGE_BUILD", false);
 
+Task("Artifacts-Prepare")
+.WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Artifacts-Prepare can be tested only on Windows or Linux agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Artifacts-Prepare works only on AzurePipeline.")
+    .IsDependentOnWhen("Pack-Nuget", singleStageRun)
+    .Does<BuildParameters>((parameters) =>
+{
+    RunGitVersionOnCI(parameters);
+});
+
 Task("Artifacts-DotnetTool-Test")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Artifacts-DotnetTool-Test can be tested only on Windows or Linux agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Artifacts-DotnetTool-Test works only on AzurePipeline.")
-    .IsDependentOnWhen("Pack-Nuget", singleStageRun)
+    .IsDependentOn("Artifacts-Prepare")
     .Does<BuildParameters>((parameters) =>
 {
     var rootPrefix = parameters.DockerRootPrefix;
@@ -13,7 +22,7 @@ Task("Artifacts-DotnetTool-Test")
     {
         var cmd = $"dotnet tool install GitVersion.Tool --version {version} --tool-path {rootPrefix}/gitversion --add-source {rootPrefix}/nuget | out-null; ";
         cmd += $"{rootPrefix}/gitversion/dotnet-gitversion {rootPrefix}/repo /showvariable FullSemver;";
-        
+
         DockerTestArtifact(dockerImage, parameters, cmd);
     }
 });
@@ -21,7 +30,7 @@ Task("Artifacts-DotnetTool-Test")
 Task("Artifacts-MsBuild-Test")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Artifacts-MsBuild-Test can be tested only on Windows or Linux agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Artifacts-MsBuild-Test works only on AzurePipeline.")
-    .IsDependentOnWhen("Pack-Nuget", singleStageRun)
+    .IsDependentOn("Artifacts-Prepare")
     .Does<BuildParameters>((parameters) =>
 {
     var rootPrefix = parameters.DockerRootPrefix;
@@ -32,7 +41,7 @@ Task("Artifacts-MsBuild-Test")
         var (os, distro, targetframework) = dockerImage;
         var cmd = $"dotnet build {rootPrefix}/repo/test --source {rootPrefix}/nuget --source https://api.nuget.org/v3/index.json -p:GitVersionTaskVersion={version} -p:TargetFramework={targetframework} | out-null; ";
         cmd += $"dotnet {rootPrefix}/repo/test/build/corefx/{targetframework}/TestRepo.dll;";
-        
+
         DockerTestArtifact(dockerImage, parameters, cmd);
     }
 });

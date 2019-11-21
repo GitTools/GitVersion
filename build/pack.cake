@@ -19,8 +19,9 @@ Task("Build")
     .IsDependentOn("Clean")
     .Does<BuildParameters>((parameters) =>
 {
-    // build .Net code
     Build(parameters);
+
+    RunGitVersionOnCI(parameters);
 });
 
 Task("Build-Vsix")

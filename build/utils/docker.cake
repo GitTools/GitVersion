@@ -81,6 +81,7 @@ string DockerRunImage(DockerContainerRunSettings settings, string image, string 
     }
 
     var result = runner.RunWithResult("run", settings ?? new DockerContainerRunSettings(), r => r.ToArray(), arguments.ToArray());
+    Information("Output : " + result);
     return string.Join("\n", result);
 }
 

@@ -18,6 +18,7 @@ Task("Docker-Test")
     .IsDependentOn("Docker-Build")
     .Does<BuildParameters>((parameters) =>
 {
+    RunGitVersionOnCI(parameters);
     var settings = GetDockerRunSettings(parameters);
 
     foreach(var dockerImage in parameters.Docker.Images)
