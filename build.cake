@@ -12,6 +12,7 @@
 #addin "nuget:?package=Cake.Json&version=4.0.0"
 #addin "nuget:?package=Cake.Npm&version=0.17.0"
 #addin "nuget:?package=Cake.Tfx&version=0.9.1"
+#addin "nuget:?package=Cake.Wyam&version=2.2.9"
 
 #addin "nuget:?package=Newtonsoft.Json&version=12.0.2"
 #addin "nuget:?package=SharpZipLib&version=1.2.0"
@@ -20,6 +21,7 @@
 // Install tools.
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
 #tool "nuget:?package=nuget.commandline&version=5.2.0"
+#tool "nuget:?package=Wyam&version=2.2.9"
 
 // Install .NET Core Global tools.
 #tool "dotnet:?package=Codecov.Tool&version=1.7.2"
