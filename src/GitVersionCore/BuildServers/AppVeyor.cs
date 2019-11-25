@@ -36,7 +36,7 @@ namespace GitVersion.BuildServers
 
         public override string[] GenerateSetParameterMessage(string name, string value)
         {
-            using var httpClient = GetHttpClient();
+            var httpClient = GetHttpClient();
 
             var body = new
             {
@@ -56,7 +56,7 @@ namespace GitVersion.BuildServers
         private HttpClient GetHttpClient()
         {
             var headerValue = new MediaTypeWithQualityHeaderValue("application/json");
-            using var httpClient = new HttpClient
+            var httpClient = new HttpClient
             {
                 BaseAddress = new Uri(Environment.GetEnvironmentVariable("APPVEYOR_API_URL"))
             };
