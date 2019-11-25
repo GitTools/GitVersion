@@ -105,6 +105,8 @@
             <InformationalVersion Condition=" '$(InformationalVersion)' == '' ">$(GitVersion_InformationalVersion)</InformationalVersion>
             <AssemblyVersion Condition=" '$(AssemblyVersion)' == '' ">$(GitVersion_AssemblySemVer)</AssemblyVersion>
             <FileVersion Condition=" '$(FileVersion)' == '' ">$(GitVersion_AssemblySemFileVer)</FileVersion>
+            <RepositoryBranch Condition=" '$(RepositoryBranch)' == '' ">$(GitVersion_BranchName)</RepositoryBranch>
+            <RepositoryCommit Condition=" '$(RepositoryCommit)' == '' ">$(GitVersion_Sha)</RepositoryCommit>
         </PropertyGroup>
 
         <PropertyGroup Condition=" '$(WixTargetsImported)' == 'true' And '$(GenerateGitVersionWixDefines)' == 'true' ">
