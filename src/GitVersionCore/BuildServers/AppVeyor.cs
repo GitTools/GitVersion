@@ -1,7 +1,9 @@
-using System.Net;
-using System.Text;
+using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using GitVersion.OutputVariables;
 using GitVersion.Logging;
+using Newtonsoft.Json;
 
 namespace GitVersion.BuildServers
 {
@@ -18,53 +20,50 @@ namespace GitVersion.BuildServers
         public override string GenerateSetVersionMessage(VersionVariables variables)
         {
             var buildNumber = Environment.GetEnvironmentVariable("APPVEYOR_BUILD_NUMBER");
-            var restBase = Environment.GetEnvironmentVariable("APPVEYOR_API_URL");
 
-            var request = (HttpWebRequest)WebRequest.Create(restBase + "api/build");
-            request.Method = "PUT";
+            using var httpClient = GetHttpClient();
 
-            var data = $"{{ \"version\": \"{variables.FullSemVer}.build.{buildNumber}\" }}";
-            var bytes = Encoding.UTF8.GetBytes(data);
-            //var bytesLength = bytes.Length;
-            // request.Headers["Content-Length"] = bytesLength.ToString();
-
-            // request.ContentLength = bytes.Length;
-            request.ContentType = "application/json";
-
-            using (var writeStream = request.GetRequestStream())
+            var body = new
             {
-                writeStream.Write(bytes, 0, bytes.Length);
-            }
+                version = $"{variables.FullSemVer}.build.{buildNumber}",
+            };
 
-            using (var response = (HttpWebResponse)request.GetResponse())
-            {
-                if (response.StatusCode != HttpStatusCode.OK && response.StatusCode != HttpStatusCode.NoContent)
-                {
-                    var message = $"Request failed. Received HTTP {response.StatusCode}";
-                    return message;
-                }
-            }
+            var stringContent = new StringContent(JsonConvert.SerializeObject(body));
+            httpClient.PutAsync("api/build", stringContent).Wait();
 
             return $"Set AppVeyor build number to '{variables.FullSemVer}'.";
         }
 
         public override string[] GenerateSetParameterMessage(string name, string value)
         {
-            using (var wc = new WebClient())
-            {
-                wc.BaseAddress = Environment.GetEnvironmentVariable("APPVEYOR_API_URL");
-                wc.Headers["Accept"] = "application/json";
-                wc.Headers["Content-type"] = "application/json";
+            using var httpClient = GetHttpClient();
 
-                var body = $"{{ \"name\": \"GitVersion_{name}\", \"value\": \"{value}\" }}";
-                wc.UploadData("api/build/variables", "POST", Encoding.UTF8.GetBytes(body));
-            }
+            var body = new
+            {
+                name = $"GitVersion_{name}",
+                value = $"{value}"
+            };
+
+            var stringContent = new StringContent(JsonConvert.SerializeObject(body));
+            httpClient.PostAsync("api/build/variables", stringContent).Wait();
 
             return new[]
             {
                 $"Adding Environment Variable. name='GitVersion_{name}' value='{value}']"
             };
         }
+
+        private HttpClient GetHttpClient()
+        {
+            var headerValue = new MediaTypeWithQualityHeaderValue("application/json");
+            using var httpClient = new HttpClient
+            {
+                BaseAddress = new Uri(Environment.GetEnvironmentVariable("APPVEYOR_API_URL"))
+            };
+            httpClient.DefaultRequestHeaders.Accept.Add(headerValue);
+            return httpClient;
+        }
+
 
         public override string GetCurrentBranch(bool usingDynamicRepos)
         {
