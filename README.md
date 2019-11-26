@@ -1,5 +1,5 @@
 <h1>
-    <img src="docs/img/package_icon.svg" alt="Tree" height="100">
+    <img src="docs/input/docs/img/package_icon.svg" alt="Tree" height="100">
     GitVersion
 </h1>
 
@@ -102,7 +102,7 @@ from The Noun Project.
 [how]:                             http://gitversion.readthedocs.org/en/latest/more-info/how-it-works/
 [faq]:                             http://gitversion.readthedocs.org/en/latest/faq/
 [who]:                             http://gitversion.readthedocs.org/en/latest/who/
-[gv-in-action]:                    https://raw.github.com/GitTools/GitVersion/master/docs/img/README.png
+[gv-in-action]:                    https://raw.github.com/GitTools/GitVersion/master/docs/input/docs/img/README.png
 [dockerhub]:                       https://hub.docker.com/r/gittools/gitversion/
 [dockerhub-badge]:                 https://img.shields.io/docker/pulls/gittools/gitversion.svg
 [az-pipeline-task]:                https://marketplace.visualstudio.com/items?itemName=GitTools.usegitversion
