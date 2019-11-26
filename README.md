@@ -8,21 +8,23 @@ works out the [semantic version][semver] of the commit being built.
 
 [![Gitter][gitter-badge]][gitter]
 [![Build status][appveyor-badge]][appveyor]
-[![Build Status][azure-pipeline-badge]][azure-pipeline]
+[![Build status][azure-pipeline-badge]][azure-pipeline]
 [![codecov][codecov-badge]][codecov]
+<!-- [![Build status][github-actions-badge]][github-actions] -->
 
 |                                       |                Stable                                              |                                Pre-release                                 |
 | ------------------------------------: | :----------------------------------------------------------------: | :------------------------------------------------------------------------: |
-|                              **Docs** |       [![Docs][docs-badge]][docs]                                  |                   [![Docs][docs-pre-badge]][docs-pre]                      |
-|                    **GitHub Release** |   [![GitHub release][gh-rel-badge]][gh-rel]                        |                                     -                                      |
-|               **GitVersion.Portable** |   [![Chocolatey][choco-badge]][choco]                              |                  [![Chocolatey][choco-pre-badge]][choco]                   |
-|                    **GitVersionTask** |       [![NuGet][gvt-badge]][gvt]                                   |                      [![NuGet][gvt-pre-badge]][gvt]                        |
-|            **GitVersion.CommandLine** |       [![NuGet][gvcl-badge]][gvcl]                                 |                      [![NuGet][gvcl-pre-badge]][gvcl]                      |
-|                   **GitVersion.Tool** |       [![NuGet][gvgt-badge]][gvgt]                                 |                      [![NuGet][gvgt-pre-badge]][gvgt]                      |
+|                              **Docs** |                            [![Docs][docs-badge]][docs]             |                            [![Docs][docs-pre-badge]][docs-pre]             |
+|                    **GitHub Release** |                [![GitHub release][gh-rel-badge]][gh-rel]           |                                     -                                      |
+|               **GitVersion.Portable** |                     [![Chocolatey][choco-badge]][choco]            |                     [![Chocolatey][choco-pre-badge]][choco]                |
+|                    **GitVersionTask** |                            [![NuGet][gvt-badge]][gvt]              |                            [![NuGet][gvt-pre-badge]][gvt]                  |
+|            **GitVersion.CommandLine** |                           [![NuGet][gvcl-badge]][gvcl]             |                           [![NuGet][gvcl-pre-badge]][gvcl]                 |
+|                   **GitVersion.Tool** |                           [![NuGet][gvgt-badge]][gvgt]             |                           [![NuGet][gvgt-pre-badge]][gvgt]                 |
+|                               **Gem** |                              [![Gem][gem-badge]][gem]              |                                     -                                      |
+|                          **Homebrew** |                        [![homebrew][brew-badge]][brew]             |                                     -                                      |
+|                            **Docker** |               [![Docker Pulls][dockerhub-badge]][dockerhub]        |                                     -                                      |
 |               **Azure Pipeline Task** | [![Azure Pipeline Task][az-pipeline-task-badge]][az-pipeline-task] | [![Azure Pipeline Task][az-pipeline-task-pre-badge]][az-pipeline-task-pre] |
-|                               **Gem** |         [![Gem][gem-badge]][gem]                                   |                                     -                                      |
-|                          **Homebrew** |     [![homebrew][brew-badge]][brew]                                |                                     -                                      |
-|                            **Docker** | [![Docker Pulls][dockerhub-badge]][dockerhub]                      |                                     -                                      |
+|                     **Github Action** |             [![Github Action][gh-actions-badge]][gh-actions]       |                                     -                                      |
 
 ## Compatibility
 
@@ -66,6 +68,8 @@ from The Noun Project.
 [appveyor-badge]:                  https://ci.appveyor.com/api/projects/status/sxje0wht0cscmn7w/branch/master?svg=true
 [azure-pipeline]:                  https://dev.azure.com/GitTools/GitVersion/_build/latest?definitionId=1
 [azure-pipeline-badge]:            https://dev.azure.com/GitTools/GitVersion/_apis/build/status/GitTools.GitVersion
+[github-actions]:                  https://github.com/GitTools/GitVersion/actions
+[github-actions-badge]:            https://github.com/GitTools/GitVersion/workflows/CI/badge.svg
 [travis]:                          https://travis-ci.org/GitTools/GitVersion
 [travis-badge]:                    https://travis-ci.org/GitTools/GitVersion.svg?branch=master
 [codecov]:                         https://codecov.io/gh/GitTools/GitVersion
@@ -105,3 +109,5 @@ from The Noun Project.
 [az-pipeline-task-badge]:          https://img.shields.io/visual-studio-marketplace/v/GitTools.usegitversion.svg?label=vsix
 [az-pipeline-task-pre]:            https://marketplace.visualstudio.com/items?itemName=GitTools.usegitversion-preview
 [az-pipeline-task-pre-badge]:      https://img.shields.io/visual-studio-marketplace/v/GitTools.usegitversion-preview.svg?label=vsix
+[gh-actions]:                      https://github.com/marketplace/actions/use-gitversion
+[gh-actions-badge]:                https://img.shields.io/badge/marketplace-use--gitversion-blue?logo=github&style=flat-square
