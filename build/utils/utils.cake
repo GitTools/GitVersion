@@ -1,13 +1,82 @@
 #load "./docker.cake"
 
-FilePath FindToolInPath(string tool)
+public static FilePath FindToolInPath(this ICakeContext context, string tool)
 {
-    var pathEnv = EnvironmentVariable("PATH");
+    var pathEnv = context.EnvironmentVariable("PATH");
     if (string.IsNullOrEmpty(pathEnv) || string.IsNullOrEmpty(tool)) return tool;
 
-    var paths = pathEnv.Split(new []{ IsRunningOnUnix() ? ':' : ';'},  StringSplitOptions.RemoveEmptyEntries);
-    return paths.Select(path => new DirectoryPath(path).CombineWithFilePath(tool)).FirstOrDefault(filePath => FileExists(filePath.FullPath));
+    var paths = pathEnv.Split(new []{ context.IsRunningOnUnix() ? ':' : ';'},  StringSplitOptions.RemoveEmptyEntries);
+    return paths.Select(path => new DirectoryPath(path).CombineWithFilePath(tool)).FirstOrDefault(filePath => context.FileExists(filePath.FullPath));
 }
+
+public static bool IsOnMainRepo(this ICakeContext context)
+{
+    var buildSystem = context.BuildSystem();
+    string repositoryName = null;
+    if (buildSystem.IsRunningOnAppVeyor)
+    {
+        repositoryName = buildSystem.AppVeyor.Environment.Repository.Name;
+    }
+    else if (buildSystem.IsRunningOnTravisCI)
+    {
+        repositoryName = buildSystem.TravisCI.Environment.Repository.Slug;
+    }
+    else if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
+    {
+        repositoryName = buildSystem.TFBuild.Environment.Repository.RepoName;
+    }
+
+    context.Information("Repository Name: {0}" , repositoryName);
+
+    return !string.IsNullOrWhiteSpace(repositoryName) && StringComparer.OrdinalIgnoreCase.Equals($"{BuildParameters.MainRepoOwner}/{BuildParameters.MainRepoName}", repositoryName);
+}
+
+public static bool IsOnMainBranch(this ICakeContext context)
+{
+    var buildSystem = context.BuildSystem();
+    string repositoryBranch = ExecGitCmd(context, "rev-parse --abbrev-ref HEAD").Single();
+    if (buildSystem.IsRunningOnAppVeyor)
+    {
+        repositoryBranch = buildSystem.AppVeyor.Environment.Repository.Branch;
+    }
+    else if (buildSystem.IsRunningOnTravisCI)
+    {
+        repositoryBranch = buildSystem.TravisCI.Environment.Build.Branch;
+    }
+    else if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
+    {
+        repositoryBranch = buildSystem.TFBuild.Environment.Repository.Branch;
+    }
+
+    context.Information("Repository Branch: {0}" , repositoryBranch);
+
+    return !string.IsNullOrWhiteSpace(repositoryBranch) && StringComparer.OrdinalIgnoreCase.Equals("master", repositoryBranch);
+}
+
+public static bool IsBuildTagged(this ICakeContext context)
+{
+    var sha = ExecGitCmd(context, "rev-parse --verify HEAD").Single();
+    var isTagged = ExecGitCmd(context, "tag --points-at " + sha).Any();
+
+    return isTagged;
+}
+
+
+public static bool IsEnabled(this ICakeContext context, string envVar, bool nullOrEmptyAsEnabled = true)
+{
+    var value = context.EnvironmentVariable(envVar);
+
+    return string.IsNullOrWhiteSpace(value) ? nullOrEmptyAsEnabled : bool.Parse(value);
+}
+
+public static List<string> ExecGitCmd(this ICakeContext context, string cmd)
+{
+    var gitPath = context.Tools.Resolve(context.IsRunningOnWindows() ? "git.exe" : "git");
+    context.StartProcess(gitPath, new ProcessSettings { Arguments = cmd, RedirectStandardOutput = true }, out var redirectedOutput);
+
+    return redirectedOutput.ToList();
+}
+
 
 DirectoryPath HomePath()
 {
@@ -111,19 +180,4 @@ public static CakeTaskBuilder IsDependentOnWhen(this CakeTaskBuilder builder, st
         builder.IsDependentOn(name);
     }
     return builder;
-}
-
-public static bool IsEnabled(ICakeContext context, string envVar, bool nullOrEmptyAsEnabled = true)
-{
-    var value = context.EnvironmentVariable(envVar);
-
-    return string.IsNullOrWhiteSpace(value) ? nullOrEmptyAsEnabled : bool.Parse(value);
-}
-
-public static List<string> ExecGitCmd(ICakeContext context, string cmd)
-{
-    var gitPath = context.Tools.Resolve(context.IsRunningOnWindows() ? "git.exe" : "git");
-    context.StartProcess(gitPath, new ProcessSettings { Arguments = cmd, RedirectStandardOutput = true }, out var redirectedOutput);
-
-    return redirectedOutput.ToList();
 }

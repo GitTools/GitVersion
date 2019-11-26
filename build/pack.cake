@@ -158,7 +158,7 @@ Task("Pack-Gem")
     // update version number
     ReplaceTextInFile(gemspecFile, "$version$", parameters.Version.GemVersion);
 
-    var toolPath = FindToolInPath(IsRunningOnWindows() ? "gem.cmd" : "gem");
+    var toolPath = Context.FindToolInPath(IsRunningOnWindows() ? "gem.cmd" : "gem");
     GemBuild(gemspecFile, new Cake.Gem.Build.GemBuildSettings()
     {
         WorkingDirectory = workDir,

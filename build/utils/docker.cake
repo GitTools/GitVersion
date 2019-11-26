@@ -1,6 +1,6 @@
 void DockerStdinLogin(string username, string password)
 {
-    var toolPath = FindToolInPath(IsRunningOnUnix() ? "docker" : "docker.exe");
+    var toolPath = Context.FindToolInPath(IsRunningOnUnix() ? "docker" : "docker.exe");
     var args = new ProcessArgumentBuilder()
         .Append("login")
         .Append("--username").AppendQuoted(username)
@@ -161,4 +161,8 @@ string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
     return tags.ToArray();
 }
 
-public static string GetDockerCliPlatform(ICakeContext context) => context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "");
+static string GetDockerCliPlatform(this ICakeContext context)
+{
+    var toolPath = context.FindToolInPath(context.IsRunningOnUnix() ? "docker" : "docker.exe");
+    return toolPath == null ? "" : context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "");
+}

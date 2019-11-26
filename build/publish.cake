@@ -134,7 +134,7 @@ Task("Publish-Gem")
 
     SetRubyGemPushApiKey(apiKey);
 
-    var toolPath = FindToolInPath(IsRunningOnWindows() ? "gem.cmd" : "gem");
+    var toolPath = Context.FindToolInPath(IsRunningOnWindows() ? "gem.cmd" : "gem");
     GemPush(parameters.Paths.Files.GemOutputFilePath, new Cake.Gem.Push.GemPushSettings()
     {
         ToolPath = toolPath,
