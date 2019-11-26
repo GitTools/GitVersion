@@ -88,13 +88,13 @@ We use Cake for our build and deployment process. The way the build / release pr
 1) We build releasable artifacts on AppVeyor
 1) Login to AppVeyor
 1) Deploy the latest master build
-![docs/img/release-1-deploy.png](docs/img/release-1-deploy.png)
+![docs/input/docs/img/release-1-deploy.png](docs/input/docs/img/release-1-deploy.png)
 1) Choose GitVersion release, when you press deploy it will create a *non-released* GitHub release, this *will not* create a Git tag. This step is so we can validate the release and release notes before pushing the button.
-![docs/img/release-2-deploy.png](docs/img/release-2-deploy.png)
+![docs/input/docs/img/release-2-deploy.png](docs/input/docs/img/release-2-deploy.png)
 1) All the artifacts should upload nicely
-![docs/img/release-3-deploy.png](docs/img/release-3-deploy.png)
+![docs/input/docs/img/release-3-deploy.png](docs/input/docs/img/release-3-deploy.png)
 1) Head over to GitHub releases, you should have a draft release, download a copy of the release notes
-![docs/img/release-4-deploy.png](docs/img/release-4-deploy.png)
+![docs/input/docs/img/release-4-deploy.png](docs/input/docs/img/release-4-deploy.png)
 1) Edit the release and do the following:
     1. Remove the build metadata from the tag and title (the + and everything after it)
     2. Paste the downloaded release notes in, you can clean them up if you want otherwise there may be closed issues which were questions etc.
