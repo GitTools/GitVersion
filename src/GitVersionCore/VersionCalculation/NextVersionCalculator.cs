@@ -66,9 +66,7 @@ namespace GitVersion.VersionCalculation
             if (taggedSemanticVersion != null)
             {
                 // replace calculated version with tagged version only if tagged version greater or equal to calculated version
-                if (semver.Major > taggedSemanticVersion.Major ||
-                        (semver.Major == taggedSemanticVersion.Major && semver.Minor > taggedSemanticVersion.Minor) ||
-                        (semver.Major == taggedSemanticVersion.Major && semver.Minor == taggedSemanticVersion.Minor && semver.Patch > taggedSemanticVersion.Patch))
+                if (semver.CompareTo(taggedSemanticVersion, false) > 0)
                 {
                     taggedSemanticVersion = null;
                 }
