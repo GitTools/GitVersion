@@ -20,6 +20,7 @@ Task("Build")
     .Does<BuildParameters>((parameters) =>
 {
     Build(parameters);
+    PublishGitVersionToArtifacts(parameters);
 
     RunGitVersionOnCI(parameters);
 });
@@ -66,24 +67,7 @@ Task("Pack-Prepare")
         DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", settings);
     }
 
-    var frameworks = new[] { parameters.CoreFxVersion21, parameters.CoreFxVersion30, parameters.FullFxVersion472 };
-
-    // publish Framework-dependent deployment
-    foreach(var framework in frameworks)
-    {
-        var settings = new DotNetCorePublishSettings
-        {
-            Framework = framework,
-            NoRestore = false,
-            Configuration = parameters.Configuration,
-            OutputDirectory = parameters.Paths.Directories.ArtifactsBin.Combine(framework),
-            MSBuildSettings = parameters.MSBuildSettings,
-        };
-
-        DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", settings);
-    }
-
-    frameworks = new[] { parameters.CoreFxVersion21, parameters.FullFxVersion472 };
+    var frameworks = new[] { parameters.CoreFxVersion21, parameters.FullFxVersion472 };
 
     // MsBuild Task
     foreach(var framework in frameworks)

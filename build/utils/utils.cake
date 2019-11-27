@@ -110,7 +110,10 @@ GitVersion GetVersion(BuildParameters parameters)
     GitVersion gitVersion = null;
     if (gitversionFile == null)
     {
+        Build(parameters);
+
         var settings = new GitVersionSettings { OutputType = GitVersionOutput.Json };
+        SetGitVersionTool(settings, parameters, "src/GitVersionExe/**");
 
         gitVersion = GitVersion(settings);
         SerializeJsonToPrettyFile(gitversionFilePath, gitVersion);
@@ -134,8 +137,39 @@ void RunGitVersionOnCI(BuildParameters parameters)
             LogFilePath = "console",
             OutputType = GitVersionOutput.BuildServer
         };
+        SetGitVersionTool(settings, parameters, "artifacts/**/bin");
 
         GitVersion(settings);
+    }
+}
+
+GitVersionSettings SetGitVersionTool(GitVersionSettings settings, BuildParameters parameters, string toolPath)
+{
+    var gitversionTool = GetFiles($"{toolPath}/{parameters.CoreFxVersion30}/GitVersion.dll").FirstOrDefault();
+
+    settings.ToolPath = Context.FindToolInPath(IsRunningOnUnix() ? "dotnet" : "dotnet.exe");
+    settings.ArgumentCustomization = args => gitversionTool + " " + args.Render();
+
+    return settings;
+}
+
+void PublishGitVersionToArtifacts(BuildParameters parameters)
+{
+    var frameworks = new[] { parameters.CoreFxVersion21, parameters.CoreFxVersion30, parameters.FullFxVersion472 };
+
+    // publish Framework-dependent deployment
+    foreach(var framework in frameworks)
+    {
+        var settings = new DotNetCorePublishSettings
+        {
+            Framework = framework,
+            NoRestore = false,
+            Configuration = parameters.Configuration,
+            OutputDirectory = parameters.Paths.Directories.ArtifactsBin.Combine(framework),
+            MSBuildSettings = parameters.MSBuildSettings,
+        };
+
+        DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", settings);
     }
 }
 
