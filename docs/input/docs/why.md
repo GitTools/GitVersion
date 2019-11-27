@@ -1,3 +1,8 @@
+---
+Order: 60
+Title: Why?
+---
+
 # Why use GitVersion
 GitVersion makes versioning woes a thing of the past. It looks at your git history to calculate what the version currently is. I have seen and used many different approaches in the past, all have downfalls and often are not transportable between projects.
 
