@@ -1,3 +1,8 @@
+---
+Order: 70
+Title: Who is using GitVersion
+---
+
 # Who is using GitVersion
 Various people are actively using GitVersion, and taking advantage of the automatic generation of their version numbers.  Here is a list of applications that we know about today.
 

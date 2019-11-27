@@ -1,3 +1,8 @@
+---
+Order: 40
+Title: Examples
+---
+
 # Examples
 ![README](img/CommitGraph.png)
 

@@ -1,3 +1,8 @@
+---
+Order: 20
+Title: Configuration
+---
+
 # Configuration
 GitVersion 3.0 is mainly powered by configuration and no longer has branching
 strategies hard coded.
@@ -306,7 +311,7 @@ By looking at this graph, you cannot tell which of these scenarios happened:
 
 2. release/1.0.0 branches off feature/foo
    - Branch feature/foo from master
-   - Branch release/1.0.0 from feature/foo 
+   - Branch release/1.0.0 from feature/foo
    - Add a commit to both release/1.0.0 and feature/foo
    - feature/foo is the base for release/1.0.0
 
