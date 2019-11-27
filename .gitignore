@@ -114,7 +114,6 @@ GitVersion.CommandLine/*/
 releaseArtifacts
 /ILMergeTemp
 .dotnet
-.cake
 artifacts
 src/Docker/**/content
 src/GitVersionVsixTask/node_modules/
@@ -131,3 +130,5 @@ src/GitVersionRubyGem/bin/lib
 src/GitVersionRubyGem/bin/GitVersion.exe
 src/GitVersionRubyGem/bin/LibGit2Sharp.dll.config
 
+
+!*.cake
