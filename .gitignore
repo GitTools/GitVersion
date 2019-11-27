@@ -130,5 +130,4 @@ src/GitVersionRubyGem/bin/lib
 src/GitVersionRubyGem/bin/GitVersion.exe
 src/GitVersionRubyGem/bin/LibGit2Sharp.dll.config
 
-
-!*.cake
+!**/*.cake
