@@ -85,7 +85,7 @@ _NCrunch_GitVersion
 GitVersion.sln.ide/
 .vs/
 Packages/
-build/
+build/*
 site/
 /TestResult.xml
 
