@@ -1,4 +1,8 @@
-# Incrementing per commit
+---
+Order: 60
+Title: Incrementing per commit
+---
+
 When using the continuous deployment mode (which will increment the SemVer every commit) all builds *must* have a pre-release tag, except for builds which are explicitly tagged as stable.
 Then the build metadata (which is the commit count) is promoted to the pre-release tag. Applying those rules the above commit graph would produce:
 
