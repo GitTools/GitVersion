@@ -1,5 +1,5 @@
 ---
-Order: 100
+Order: 90
 Title: TeamCity Setup
 ---
 
