@@ -22,7 +22,7 @@ To serve up the documentation locally, you need to run the following build
 command:
 
 ```shell
-.\build.ps1 --target=preview
+.\build.ps1 -Target Preview-Documentation
 ```
 
 After pressing enter, the documentation will be generated and then served under
