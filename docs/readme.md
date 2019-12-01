@@ -1,7 +1,7 @@
 # GitVersion Documentation
 
 This is the directory in which the
-[GitVersion documentation hosted on ReadTheDocs](http://gitversion.readthedocs.io/en/latest/)
+[GitVersion documentation hosted on GitHub Pages](https://gitversion.net/)
 resides.
 
 ## Contributing
