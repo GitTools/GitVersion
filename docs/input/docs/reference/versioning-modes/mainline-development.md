@@ -1,4 +1,8 @@
-# Mainline development
+---
+Order: 40
+Title: Mainline Development
+---
+
 Mainline Development is enabled when using
 [GitHubFlow](../git-branching-strategies/githubflow.md) or any other strategy
 where you develop on `master`. The main rule of mainline development is that

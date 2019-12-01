@@ -1,4 +1,8 @@
-# Continuous Deployment
+---
+Order: 30
+Title: Continuous Deployment
+---
+
 Continuous Deployment is the process of checking into master, running all the
 tests and if everything goes green it is automatically pushed to production.
 
@@ -14,6 +18,7 @@ not work for you, which leads us into a new mode in v4 of GitVersion:
 [Mainline Development](mainline-development.md).
 
 ### Usage
+
 By default GitVersion is set up to do Continuous Deployment versioning on the
 `develop` branch, but for all other branches,
 [Continuous Delivery](continuous-delivery.md) is the default mode. From version
