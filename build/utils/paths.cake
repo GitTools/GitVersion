@@ -40,9 +40,6 @@ public class BuildPaths
         var releaseNotesOutputFilePath = buildArtifactDir.CombineWithFilePath("releasenotes.md");
         var gemOutputFilePath  = buildArtifactDir.CombineWithFilePath("gitversion-" + version.GemVersion + ".gem");
 
-        var vsixSuffix = parameters.IsStableRelease() ? "" : "preview-";
-        var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.usegitversion-" + vsixSuffix + version.VsixVersion + ".vsix");
-
         // Directories
         var buildDirectories = new BuildDirectories(
             artifactsDir,
@@ -61,7 +58,6 @@ public class BuildPaths
         var buildFiles = new BuildFiles(
             context,
             releaseNotesOutputFilePath,
-            vsixOutputFilePath,
             gemOutputFilePath);
 
         return new BuildPaths
@@ -75,18 +71,15 @@ public class BuildPaths
 public class BuildFiles
 {
     public FilePath ReleaseNotesOutputFilePath { get; private set; }
-    public FilePath VsixOutputFilePath { get; private set; }
     public FilePath GemOutputFilePath { get; private set; }
 
     public BuildFiles(
         ICakeContext context,
         FilePath releaseNotesOutputFilePath,
-        FilePath vsixOutputFilePath,
         FilePath gemOutputFilePath
         )
     {
         ReleaseNotesOutputFilePath = releaseNotesOutputFilePath;
-        VsixOutputFilePath = vsixOutputFilePath;
         GemOutputFilePath = gemOutputFilePath;
     }
 }

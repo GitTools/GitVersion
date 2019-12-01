@@ -106,7 +106,6 @@ Teardown<BuildParameters>((context, parameters) =>
 //////////////////////////////////////////////////////////////////////
 
 Task("Pack")
-    .IsDependentOn("Pack-Vsix")
     .IsDependentOn("Pack-Gem")
     .IsDependentOn("Pack-Nuget")
     .IsDependentOn("Pack-Chocolatey")
@@ -140,7 +139,6 @@ Task("Publish")
     .IsDependentOn("Publish-AzurePipeline")
     .IsDependentOn("Publish-NuGet")
     .IsDependentOn("Publish-Chocolatey")
-    .IsDependentOn("Publish-Vsix")
     .IsDependentOn("Publish-Gem")
     .Finally(() =>
 {

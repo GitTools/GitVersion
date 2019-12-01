@@ -7,9 +7,6 @@ Task("Clean")
 
     CleanDirectories("./src/**/bin/" + parameters.Configuration);
     CleanDirectories("./src/**/obj");
-    CleanDirectories("./src/GitVersionVsixTask/scripts/**");
-
-    DeleteFiles("src/GitVersionVsixTask/*.vsix");
     DeleteFiles("src/GitVersionRubyGem/*.gem");
 
     CleanDirectories(parameters.Paths.Directories.ToClean);
@@ -23,17 +20,6 @@ Task("Build")
     PublishGitVersionToArtifacts(parameters);
 
     RunGitVersionOnCI(parameters);
-});
-
-Task("Build-Vsix")
-    .IsDependentOn("Build")
-    .Does<BuildParameters>((parameters) =>
-{
-    var workDir = "./src/GitVersionVsixTask";
-    // build typescript code
-    NpmSet(new NpmSetSettings             { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, Key = "progress", Value = "false" });
-    NpmInstall(new NpmInstallSettings     { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent });
-    NpmRunScript(new NpmRunScriptSettings { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, ScriptName = "build" });
 });
 
 #endregion
@@ -99,37 +85,6 @@ Task("Pack-Prepare")
 
     sourceFiles += GetFiles("./nuspec/*.ps1") + GetFiles("./nuspec/*.txt");
     CopyFiles(sourceFiles, portableDir);
-});
-
-Task("Pack-Vsix")
-    .IsDependentOn("Build-Vsix")
-    .Does<BuildParameters>((parameters) =>
-{
-    var workDir = "./src/GitVersionVsixTask";
-    var idSuffix    = parameters.IsStableRelease() ? "" : "-preview";
-    var titleSuffix = parameters.IsStableRelease() ? "" : " (Preview)";
-    var visibility  = parameters.IsStableRelease() ? "Public" : "Preview";
-    var taskId      = parameters.IsStableRelease() ? "bab30d5c-39f3-49b0-a7db-9a5da6676eaa" : "dd065e3b-6aef-46af-845c-520195836b35";
-
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$idSuffix$", idSuffix);
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$titleSuffix$", titleSuffix);
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$visibility$", visibility);
-    ReplaceTextInFile(new FilePath(workDir + "/GitVersionTask/task.json"), "$titleSuffix$", titleSuffix);
-
-    // update version number
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$version$", parameters.Version.VsixVersion);
-    UpdateTaskVersion(new FilePath(workDir + "/GitVersionTask/task.json"), taskId, parameters.Version.GitVersion);
-
-    // build and pack
-    var settings = new TfxExtensionCreateSettings
-    {
-        ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
-        WorkingDirectory = workDir,
-        OutputPath = parameters.Paths.Directories.BuildArtifact
-    };
-
-    settings.ManifestGlobs = new List<string>(){ "vss-extension.json" };
-    TfxExtensionCreate(settings);
 });
 
 Task("Pack-Gem")

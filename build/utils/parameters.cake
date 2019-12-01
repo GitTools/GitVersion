@@ -19,7 +19,6 @@ public class BuildParameters
 
     public bool EnabledUnitTests { get; private set; }
     public bool EnabledPublishGem { get; private set; }
-    public bool EnabledPublishVsix { get; private set; }
     public bool EnabledPublishNuget { get; private set; }
     public bool EnabledPublishChocolatey { get; private set; }
     public bool EnabledPublishDocker { get; private set; }
@@ -83,7 +82,6 @@ public class BuildParameters
 
             EnabledUnitTests          = context.IsEnabled("ENABLED_UNIT_TESTS"),
             EnabledPublishGem         = context.IsEnabled("ENABLED_PUBLISH_GEM"),
-            EnabledPublishVsix        = context.IsEnabled("ENABLED_PUBLISH_VSIX"),
             EnabledPublishNuget       = context.IsEnabled("ENABLED_PUBLISH_NUGET"),
             EnabledPublishChocolatey  = context.IsEnabled("ENABLED_PUBLISH_CHOCOLATEY"),
             EnabledPublishDocker      = context.IsEnabled("ENABLED_PUBLISH_DOCKER"),

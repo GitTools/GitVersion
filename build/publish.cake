@@ -81,44 +81,6 @@ Task("Publish-AzurePipeline")
     publishingError = true;
 });
 
-Task("Publish-Vsix")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishVsix,       "Publish-Vsix was disabled.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Vsix works only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Vsix works only on AzurePipeline.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Vsix works only for releases.")
-    .IsDependentOnWhen("Pack-Vsix", singleStageRun)
-    .Does<BuildParameters>((parameters) =>
-{
-    var token = parameters.Credentials.Tfx.Token;
-    if(string.IsNullOrEmpty(token)) {
-        throw new InvalidOperationException("Could not resolve Tfx token.");
-    }
-
-    var workDir = "./src/GitVersionVsixTask";
-    var settings = new TfxExtensionPublishSettings
-    {
-        ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
-        AuthType = TfxAuthType.Pat,
-        Token = token,
-        ArgumentCustomization = args => args.Render() + " --no-wait-validation"
-    };
-
-    NpmSet(new NpmSetSettings             { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, Key = "progress", Value = "false" });
-    NpmInstall(new NpmInstallSettings     { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent });
-
-    var vsixFilePath = parameters.Paths.Files.VsixOutputFilePath;
-    if (!FileExists(vsixFilePath)) {
-        vsixFilePath = GetFiles(parameters.Paths.Directories.BuildArtifact + "/*.vsix").First();
-    }
-    TfxExtensionPublish(vsixFilePath, settings);
-})
-.OnError(exception =>
-{
-    Information("Publish-Vsix Task failed, but continuing with next Task...");
-    Error(exception.Dump());
-    publishingError = true;
-});
-
 Task("Publish-Gem")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishGem,        "Publish-Gem was disabled.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Gem works only on Windows agents.")
