@@ -1,6 +1,6 @@
 ---
 Order: 30
-Title: GithubFlow
+Title: GitHubFlow
 ---
 
 GitHubFlow is a simple and effective branching strategy which the folks at

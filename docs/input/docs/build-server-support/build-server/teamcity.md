@@ -3,8 +3,6 @@ Order: 90
 Title: TeamCity Setup
 ---
 
-# TeamCity Setup
-
 ## Basic Usage
 
 In [TeamCity](https://www.jetbrains.com/teamcity/) you can create a build step

@@ -41,7 +41,7 @@ commit message to skip incrementing for that commit.
 
 Here is an example of what mainline development looks like:
 
-![Mainline mode](../img/mainline-mode.png)
+![Mainline mode](../../img/mainline-mode.png)
 
 **WARNING:** This approach can slow down over time, we recommend to tag
 intermitently (maybe for minor or major releases) because then GitVersion
