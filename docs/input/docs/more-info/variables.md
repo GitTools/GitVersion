@@ -1,6 +1,11 @@
-# Variables
-Variables are quite useful if you need different formats of the version number. Running `GitVersion.exe` in your repo will show you what is available.
-For the `release/3.0.0` branch of GitVersion it shows:
+---
+Order: 30
+Title: Variables
+---
+
+Variables are quite useful if you need different formats of the version number.
+Running `GitVersion.exe` in your repo will show you what is available. For the
+`release/3.0.0` branch of GitVersion it shows:
 
 ```json
 {
@@ -40,8 +45,13 @@ For the `release/3.0.0` branch of GitVersion it shows:
 
 #### Why is AssemblyVersion only set to Major.Minor?
 
-This is a common approach that gives you the ability to roll out hot fixes to your assembly without breaking existing applications that may be referencing it. You are still able to get the full version number if you need to by looking at its file version number.
+This is a common approach that gives you the ability to roll out hot fixes to
+your assembly without breaking existing applications that may be referencing it.
+You are still able to get the full version number if you need to by looking at
+its file version number.
 
 #### What is WeightedPreReleaseNumber?
 
-It is a summation of branch specific `pre-release-weight` and the `PreReleaseNumber`. It can be used to obtain a monotonically increasing version number across the branches.
+It is a summation of branch specific `pre-release-weight` and the
+`PreReleaseNumber`. It can be used to obtain a monotonically increasing version
+number across the branches.
