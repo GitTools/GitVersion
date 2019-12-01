@@ -124,3 +124,8 @@ src/GitVersionRubyGem/bin/LibGit2Sharp.dll.config
 
 !**/*.cake
 .DS_Store
+
+# Wyam
+config.wyam.dll
+config.wyam.hash
+config.wyam.packages.xml
