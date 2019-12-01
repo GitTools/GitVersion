@@ -1,6 +1,6 @@
 ---
 Order: 1
-Title: GitVersion Docs
+Title: Docs
 ---
 
 GitVersion is a tool to help you achieve *Semantic Versioning* on your project.
