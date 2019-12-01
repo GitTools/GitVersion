@@ -1,16 +1,37 @@
-# Octopus Deploy
-While not a build server, there are a few things to consider when using Octopus Deploy with GitVersion.
+---
+Order: 80
+Title: Octopus Deploy
+---
 
- GitVersion follows [continuous delivery](../../reference/continuous-delivery.md) versioning by default. This means builds will keep producing *the same version* with just metadata differing. For example, when you start a new release (say `1.0.0`) with git flow, the branch will start with a semver like `1.0.0-beta.1+0`, and the Octopus NuGet package will have a version of `1.0.0-beta0001`. As you commit changes to this release branch the *metadata* of the semver will increase like so: `1.0.0-beta.1+1`, `1.0.0-beta.1+2`, etc. However, the version of the corresponding Octopus NuGet package will retain the *same* `1.0.0-beta0001` version you started with. The problem is Octopus Deploy will prevent you from deploying these revisions because it sees the same NuGet package version and thinks nothing has changed.
+While not a build server, there are a few things to consider when using Octopus
+Deploy with GitVersion.
 
-Because Octopus Deploy uses NuGet like this you cannot continue to push revisions in this manner without some intervention (or changes to GitVersion's configuration). To work around this problem we have two possible options:
+ GitVersion follows [continuous delivery](../../reference/continuous-delivery.md)
+ versioning by default. This means builds will keep producing *the same version*
+ with just metadata differing. For example, when you start a new release (say
+ `1.0.0`) with git flow, the branch will start with a semver like
+ `1.0.0-beta.1+0`, and the Octopus NuGet package will have a version of
+ `1.0.0-beta0001`. As you commit changes to this release branch the *metadata*
+ of the semver will increase like so: `1.0.0-beta.1+1`, `1.0.0-beta.1+2`, etc.
+ However, the version of the corresponding Octopus NuGet package will retain the
+ *same* `1.0.0-beta0001` version you started with. The problem is Octopus Deploy
+ will prevent you from deploying these revisions because it sees the same NuGet
+ package version and thinks nothing has changed.
 
-The solutions to this issue are a bit different for GitHubFlow and GitFlow. 
+Because Octopus Deploy uses NuGet like this you cannot continue to push
+revisions in this manner without some intervention (or changes to GitVersion's
+configuration). To work around this problem we have two possible options:
+
+The solutions to this issue are a bit different for GitHubFlow and GitFlow.
 
 ## GitHubFlow Solutions
+
 ### Promote to Octopus feed
-The first option is to keep the continuous delivery default in GitVersion, depending on which build server you have this approach may or may not work for you. 
-For instance in TFS Build vNext you cannot chain builds to publish artifacts built in one build in another. 
+
+The first option is to keep the continuous delivery default in GitVersion,
+depending on which build server you have this approach may or may not work for
+you.  For instance in TFS Build vNext you cannot chain builds to publish
+artifacts built in one build in another.
 
 1. Your CI build creates the stable NuGet package
   - Do *not* publish this package into the Octopus nuget feed
@@ -19,21 +40,29 @@ For instance in TFS Build vNext you cannot chain builds to publish artifacts bui
   - It will publish that package into the Octopus deploy feed
   - The build then is *tagged* with the version, this will cause GitVersion to increment the version
 
-This means that CI builds are *not* available to Octopus deploy, there will be a manual build in your *build server* which pushes the package to Octopus deploy.
+This means that CI builds are *not* available to Octopus deploy, there will be a
+manual build in your *build server* which pushes the package to Octopus deploy.
 
 ### Tag to release
+
 Another simple option is to tag a stable version to release, the basic idea is:
 
-1. GitVersion is set to continuous deployment mode, so master will create `-ci.x` pre-release builds
+1. GitVersion is set to continuous deployment mode, so master will create `-ci.x`
+pre-release builds
 1. CI Builds only create NuGet packages for stable builds
 1. You tag master with a stable version of the next version then push it
-1. The CI build triggers, GitVersion will always respect tags so you will get a stable version
+1. The CI build triggers, GitVersion will always respect tags so you will get a
+stable version
 1. The stable package will be pushed to Octopus
-1. Because of the tag, then next build will be incremented and will be producing pre-release packages of the next build
+1. Because of the tag, then next build will be incremented and will be producing
+pre-release packages of the next build
 
 
 #### Script to create the release
-Here is an example script which could be used to tag the stable version, it uses GitVersion to calculate the version so you just run `./CreateRelease.ps1` and it will tag and push the tag.
+
+Here is an example script which could be used to tag the stable version, it uses
+GitVersion to calculate the version so you just run `./CreateRelease.ps1` and it
+will tag and push the tag.
 
 ``` powershell
 [CmdletBinding()]
@@ -45,7 +74,7 @@ $gitversion = "tools\GitVersion\GitVersion.exe"
 function Create-AdditionalReleaseArtifacts
 {
  param( [string]$Version )
- 
+
  # Put any custom release logic here (like generating release notes?)
 }
 ### END Config ###
@@ -62,7 +91,7 @@ Push-Location $PSScriptRoot
 
 # Make sure there are no pending changes
 $pendingChanges = & git status --porcelain
-if ($pendingChanges -ne $null) 
+if ($pendingChanges -ne $null)
 {
   throw 'You have pending changes, aborting release'
 }
@@ -72,7 +101,7 @@ if ($pendingChanges -ne $null)
 & git checkout master
 & git merge origin/master --ff-only
 
-# Determine version to release 
+# Determine version to release
 $output = & $gitversion /output json
 $versionInfoJson = $output -join "`n"
 
@@ -82,7 +111,7 @@ $stableVersion = $versionInfo.MajorMinorPatch
 # Create release
 Create-AdditionalReleaseArtifacts $stableVersion
 # Always create a new commit because some CI servers cannot be triggered by just pushing a tag
-& git commit -Am "Create release $stableVersion" --allow-empty 
+& git commit -Am "Create release $stableVersion" --allow-empty
 & git tag $stableVersion
 if ($LASTEXITCODE -ne 0) {
     & git reset --hard HEAD^
@@ -95,6 +124,7 @@ Pop-Location
 ```
 
 #### Sample build script (build.ps1)
+
 ``` powershell
 [CmdletBinding()]
 param()
@@ -139,4 +169,7 @@ if ($versionInfo.PreReleaseTag -eq '')
 ```
 
 ### Configure GitVersion to [increment per commit](../../more-info/incrementing-per-commit.md)
-As mentioned above, this means you will burn multiple versions per release. This might not be an issue for you, but can confuse consumers of your library as the version has semantic meaning.
+
+As mentioned above, this means you will burn multiple versions per release. This
+might not be an issue for you, but can confuse consumers of your library as the
+version has semantic meaning.
