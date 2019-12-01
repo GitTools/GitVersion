@@ -23,7 +23,7 @@ Task("Preview-Documentation")
             { "Host",  "gittools.github.io" },
             { "LinkRoot",  "GitVersion" },
             { "BaseEditUrl", "https://github.com/gittools/GitVersion/tree/master/docs/input/" },
-            { "SourceFiles", parameters.Paths.Directories.Source + "/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs" },
+            { "SourceFiles", MakeAbsolute(parameters.Paths.Directories.Source) + "/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs" },
             { "Title", "GitVersion" },
             { "IncludeGlobalNamespace", false }
         }
