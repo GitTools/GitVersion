@@ -439,6 +439,54 @@ namespace GitVersionCore.Tests
             });
         }
 
+        [TestCase("cs", "// [assembly: AssemblyVersion(\"1.0.*\")]\r\n[assembly: AssemblyVersion(\"1.0.*\")]")]
+        [TestCase("cs", "[assembly: AssemblyVersion(\"1.0.*\")]\r\n// [assembly: AssemblyVersion(\"1.0.*\")]")]
+        public void ShouldNotTouchCommentedOutAttributesAtAll(string fileExtension, string assemblyFileContent)
+        {
+            var workingDir = Path.GetTempPath();
+            var assemblyInfoFile = "AssemblyInfo." + fileExtension;
+            var fileName = Path.Combine(workingDir, assemblyInfoFile);
+
+            VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.None, verify: (fileSystem, variables) =>
+            {
+                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
+                {
+                    assemblyInfoFileUpdater.Update();
+
+                    fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
+                        // The commented-out attribute should remain
+                        s.Contains(@"// [assembly: AssemblyVersion(""1.0.*"")]") &&
+                        s.Contains(@"AssemblyVersion(""2.3.0.0"")") &&
+                        s.Contains(@"AssemblyInformationalVersion(""2.3.1+3.Branch.foo.Sha.hash"")") &&
+                        s.Contains(@"AssemblyFileVersion(""2.3.1.0"")")));
+                }
+            });
+        }
+
+
+        [TestCase("cs", "// [assembly: AssemblyVersion(\"1.0.*\")]\r\n[assembly: AssemblyVersion(\"1.0.*\")]")]
+        [TestCase("cs", "[assembly: AssemblyVersion(\"1.0.*\")]\r\n// [assembly: AssemblyVersion(\"1.0.*\")]")]
+        public void ShouldNotOutputDuplicateAttributesIfThereAreDuplicateCommentedOutAttributes(string fileExtension, string assemblyFileContent)
+        {
+            var workingDir = Path.GetTempPath();
+            var assemblyInfoFile = "AssemblyInfo." + fileExtension;
+            var fileName = Path.Combine(workingDir, assemblyInfoFile);
+
+            VerifyAssemblyInfoFile(assemblyFileContent, fileName, AssemblyVersioningScheme.None, verify: (fileSystem, variables) =>
+            {
+                using (var assemblyInfoFileUpdater = new AssemblyInfoFileUpdater(assemblyInfoFile, workingDir, variables, fileSystem, log, false))
+                {
+                    assemblyInfoFileUpdater.Update();
+
+                    fileSystem.Received().WriteAllText(fileName, Arg.Is<string>(s =>
+                        new System.Text.RegularExpressions.Regex(@"\s+\[assembly: AssemblyVersion").Matches(s).Count == 1 &&
+                        new System.Text.RegularExpressions.Regex(@"\s+\[assembly: AssemblyInformationalVersion").Matches(s).Count == 1 &&
+                        new System.Text.RegularExpressions.Regex(@"\s+\[assembly: AssemblyFileVersion").Matches(s).Count == 1
+                    ));
+                }
+            });
+        }
+
         private void VerifyAssemblyInfoFile(
             string assemblyFileContent,
             string fileName,
