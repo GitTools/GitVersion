@@ -1,46 +1,57 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+using GitVersion.Logging;
+using GitVersion.OutputVariables;
 
 namespace GitVersion.BuildServers
 {
-    using GitVersion.OutputVariables;
-
-    public class GitHubActions: IBuildServer
+    public class GitHubActions: BuildServerBase
     {
-        public bool CanApplyToCurrentContext()
+        // https://help.github.com/en/actions/automating-your-workflow-with-github-actions/using-environment-variables#default-environment-variables
+
+        public GitHubActions(IEnvironment environment, ILog log) : base(environment, log)
         {
-            throw new NotImplementedException();
         }
 
-        public string GenerateSetVersionMessage(VersionVariables variables)
+        public const string EnvironmentVariableName = "GITHUB_ACTION";
+        protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
+        public override bool CanApplyToCurrentContext()
         {
-            throw new NotImplementedException();
+            return !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(EnvironmentVariable));
         }
 
-        public string[] GenerateSetParameterMessage(string name, string value)
+        public override string GenerateSetVersionMessage(VersionVariables variables)
         {
-            throw new NotImplementedException();
+            // There is no equivalent function in GitHub Actions.
+
+            return string.Empty;
         }
 
-        public void WriteIntegration(Action<string> writer, VersionVariables variables)
+        public override string[] GenerateSetParameterMessage(string name, string value)
         {
-            throw new NotImplementedException();
+            // https://help.github.com/en/actions/automating-your-workflow-with-github-actions/development-tools-for-github-actions#set-an-environment-variable-set-env
+            // Example
+            // echo "::set-output name=action_fruit::strawberry"
+
+            return new []
+            {
+                $"::set-output name={name}::{value}"
+            };
         }
 
-        public string GetCurrentBranch(bool usingDynamicRepos)
+        public override string GetCurrentBranch(bool usingDynamicRepos)
         {
-            throw new NotImplementedException();
-        }
+            // GITHUB_REF
+            // The branch or tag ref that triggered the workflow.
+            // For example, refs/heads/feature-branch-1. If neither a branch or
+            // tag is available for the event type, the variable will not exist.
 
-        public bool PreventFetch()
-        {
-            throw new NotImplementedException();
-        }
+            var value = Environment.GetEnvironmentVariable("GITHUB_REF");
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                value = value.Substring("refs/heads/".Length);
+                return value;
+            }
 
-        public bool ShouldCleanUpRemotes()
-        {
-            throw new NotImplementedException();
+            return base.GetCurrentBranch(usingDynamicRepos);
         }
     }
 }
