@@ -57,6 +57,7 @@ namespace GitVersion
             services.AddSingleton<IBuildServer, EnvRun>();
             services.AddSingleton<IBuildServer, Drone>();
             services.AddSingleton<IBuildServer, CodeBuild>();
+            services.AddSingleton<IBuildServer, GitHubActions>();
         }
 
         private static void RegisterVersionStrategies(IServiceCollection services)
