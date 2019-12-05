@@ -1,26 +1,37 @@
-
 using System;
 using GitVersion;
 using GitVersion.BuildServers;
 using GitVersion.Logging;
 using NUnit.Framework;
 using Shouldly;
+using System.Collections.Generic;
+using GitVersion.Configuration;
+using NSubstitute;
+using Environment = System.Environment;
 
 namespace GitVersionCore.Tests.BuildServers
 {
-    using System.Collections.Generic;
-    using Environment = System.Environment;
 
     [TestFixture]
     public class GitHubActionsTests : TestBase
     {
+        private IConsole console;
         private IEnvironment environment;
         private ILog log;
+        private List<string> consoleLinesWritten;
 
         [SetUp]
         public void SetUp()
         {
             log = new NullLog();
+            console = Substitute.For<IConsole>();
+
+            consoleLinesWritten = new List<string>();
+            console.WhenForAnyArgs(c => c.WriteLine(default))
+                .Do(info => consoleLinesWritten.Add(info.Arg<string>()));
+            console.WhenForAnyArgs(c => c.WriteLine())
+                .Do(info => consoleLinesWritten.Add(string.Empty));
+
             environment = new TestEnvironment();
             environment.SetEnvironmentVariable("GITHUB_ACTION", Guid.NewGuid().ToString());
         }
@@ -35,7 +46,7 @@ namespace GitVersionCore.Tests.BuildServers
         public void CanApplyToCurrentContextShouldBeTrueWhenEnvironmentVariableIsSet()
         {
             // Arrange
-            var buildServer = new GitHubActions(environment, log);
+            var buildServer = new GitHubActions(environment, log, console);
 
             // Act
             var result = buildServer.CanApplyToCurrentContext();
@@ -49,7 +60,7 @@ namespace GitVersionCore.Tests.BuildServers
         {
             // Arrange
             environment.SetEnvironmentVariable("GITHUB_ACTION", "");
-            var buildServer = new GitHubActions(environment, log);
+            var buildServer = new GitHubActions(environment, log, console);
 
             // Act
             var result = buildServer.CanApplyToCurrentContext();
@@ -66,7 +77,7 @@ namespace GitVersionCore.Tests.BuildServers
 
             environment.SetEnvironmentVariable("GITHUB_REF", $"refs/heads/{expected}");
 
-            var buildServer = new GitHubActions(environment, log);
+            var buildServer = new GitHubActions(environment, log, console);
 
             // Act
             var result = buildServer.GetCurrentBranch(false);
@@ -81,7 +92,7 @@ namespace GitVersionCore.Tests.BuildServers
             // Arrange
             environment.SetEnvironmentVariable("GITHUB_REF", $"refs/tags/v1.0.0");
 
-            var buildServer = new GitHubActions(environment, log);
+            var buildServer = new GitHubActions(environment, log, console);
 
             // Act
             var result = buildServer.GetCurrentBranch(false);
@@ -90,25 +101,29 @@ namespace GitVersionCore.Tests.BuildServers
             result.ShouldBeNull();
         }
 
-        [TestCase("Something", "1.0.0", "::set-env name=GitVersion_Something::1.0.0", Ignore = "Skip")]
-        public void GetSetParameterMessage(string key, string value, string expected)
+        [TestCase("Something", "1.0.0",
+            "Adding Environment Variable. name='GitVersion_Something' value='1.0.0'",
+            "::set-env name=GitVersion_Something::1.0.0")]
+        public void GetSetParameterMessage(string key, string value, string expectedResult, string expectedConsole)
         {
             // Arrange
-            var buildServer = new GitHubActions(environment, log);
+            var buildServer = new GitHubActions(environment, log, console);
 
             // Act
             var result = buildServer.GenerateSetParameterMessage(key, value);
 
             // Assert
             result.ShouldContain(s => true, 1);
-            result.ShouldBeEquivalentTo(new[] { expected });
+            result.ShouldBeEquivalentTo(new[] { expectedResult });
+
+            consoleLinesWritten.ShouldBeEquivalentTo(new List<string> { expectedConsole });
         }
 
         [Test]
         public void SkipEmptySetParameterMessage()
         {
             // Arrange
-            var buildServer = new GitHubActions(environment, log);
+            var buildServer = new GitHubActions(environment, log, console);
 
             // Act
             var result = buildServer.GenerateSetParameterMessage("Hello", string.Empty);
@@ -118,11 +133,10 @@ namespace GitVersionCore.Tests.BuildServers
         }
 
         [Test]
-        [Ignore("Skip")]
         public void ShouldWriteIntegration()
         {
             // Arrange
-            var buildServer = new GitHubActions(environment, log);
+            var buildServer = new GitHubActions(environment, log, console);
 
             var vars = new TestableVersionVariables("1.0.0");
 
@@ -137,18 +151,20 @@ namespace GitVersionCore.Tests.BuildServers
                 "Executing GenerateSetVersionMessage for 'GitHubActions'.",
                 "",
                 "Executing GenerateBuildLogOutput for 'GitHubActions' Keys:Major.",
-                "::set-env name=GitVersion_Major::1.0.0"
+                "Adding Environment Variable. name='GitVersion_Major' value='1.0.0'"
             };
 
             string.Join(Environment.NewLine, list)
                 .ShouldBe(string.Join(Environment.NewLine, expected));
+
+            consoleLinesWritten.ShouldBeEquivalentTo(new List<string> { "::set-env name=GitVersion_Major::1.0.0" });
         }
 
         [Test]
         public void GetEmptyGenerateSetVersionMessage()
         {
             // Arrange
-            var buildServer = new GitHubActions(environment, log);
+            var buildServer = new GitHubActions(environment, log, console);
             var vars = new TestableVersionVariables("1.0.0");
 
             // Act
