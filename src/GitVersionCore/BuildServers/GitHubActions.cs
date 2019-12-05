@@ -36,10 +36,11 @@ namespace GitVersion.BuildServers
 
             if (!string.IsNullOrWhiteSpace(value))
             {
+                Console.WriteLine($"::set-env name=GitVersion_{name}::{value}");
+
                 return new[]
                 {
-                    $"::set-env name=GitVersion_{name}::{value}",
-                    $"set-env name=GitVersion_{name}::{value}",
+                    $"Adding Environment Variable. name='GitVersion_{name}' value='{value}']"
                 };
             }
 
