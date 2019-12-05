@@ -38,7 +38,8 @@ namespace GitVersion.BuildServers
             {
                 return new[]
                 {
-                    $"::set-env name=GitVersion_{name}::{value}"
+                    $"::set-env name=GitVersion_{name}::{value}",
+                    $"set-env name=GitVersion_{name}::{value}",
                 };
             }
 
