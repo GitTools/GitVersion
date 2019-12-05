@@ -1,3 +1,5 @@
+using System;
+
 namespace GitVersion
 {
     public class Environment : IEnvironment
@@ -10,6 +12,11 @@ namespace GitVersion
         public void SetEnvironmentVariable(string variableName, string value)
         {
             System.Environment.SetEnvironmentVariable(variableName, value);
+        }
+
+        public void SetEnvironmentVariable(string variableName, string value, EnvironmentVariableTarget target)
+        {
+            System.Environment.SetEnvironmentVariable(variableName, value, target);
         }
     }
 }

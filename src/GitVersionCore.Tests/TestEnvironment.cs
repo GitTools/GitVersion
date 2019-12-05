@@ -3,6 +3,8 @@ using GitVersion;
 
 namespace GitVersionCore.Tests
 {
+    using System;
+
     public class TestEnvironment : IEnvironment
     {
         private readonly IDictionary<string, string> map;
@@ -20,6 +22,11 @@ namespace GitVersionCore.Tests
         public void SetEnvironmentVariable(string variableName, string value)
         {
             map[variableName] = value;
+        }
+
+        public void SetEnvironmentVariable(string variableName, string value, EnvironmentVariableTarget target)
+        {
+            SetEnvironmentVariable(variableName, value);
         }
     }
 }
