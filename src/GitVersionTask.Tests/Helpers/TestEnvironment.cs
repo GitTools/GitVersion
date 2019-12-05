@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace GitVersion.MSBuildTask.Tests.Helpers
@@ -17,6 +18,11 @@ namespace GitVersion.MSBuildTask.Tests.Helpers
         }
 
         public void SetEnvironmentVariable(string variableName, string value)
+        {
+            map[variableName] = value;
+        }
+
+        public void SetEnvironmentVariable(string variableName, string value, EnvironmentVariableTarget target)
         {
             map[variableName] = value;
         }
