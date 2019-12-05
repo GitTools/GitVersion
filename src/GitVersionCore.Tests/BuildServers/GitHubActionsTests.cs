@@ -90,7 +90,7 @@ namespace GitVersionCore.Tests.BuildServers
             result.ShouldBeNull();
         }
 
-        [TestCase("Something", "1.0.0", "::set-env name=GitVersion_Something::1.0.0")]
+        [TestCase("Something", "1.0.0", "::set-env name=GitVersion_Something::1.0.0", Ignore = "Skip")]
         public void GetSetParameterMessage(string key, string value, string expected)
         {
             // Arrange
@@ -118,6 +118,7 @@ namespace GitVersionCore.Tests.BuildServers
         }
 
         [Test]
+        [Ignore("Skip")]
         public void ShouldWriteIntegration()
         {
             // Arrange
