@@ -5,6 +5,8 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion
 {
+    using System.Linq;
+
     public abstract class BuildServerBase : IBuildServer
     {
         protected readonly ILog Log;
@@ -42,7 +44,7 @@ namespace GitVersion
 
             writer($"Executing GenerateSetVersionMessage for '{GetType().Name}'.");
             writer(GenerateSetVersionMessage(variables));
-            writer($"Executing GenerateBuildLogOutput for '{GetType().Name}'.");
+            writer($"Executing GenerateBuildLogOutput for '{GetType().Name}' Keys:{string.Join(";", variables.Select(pair => pair.Key))}.");
             foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(this, variables))
             {
                 writer(buildParameter);
