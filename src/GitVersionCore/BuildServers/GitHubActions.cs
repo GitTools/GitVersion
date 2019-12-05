@@ -32,12 +32,17 @@ namespace GitVersion.BuildServers
         {
             // https://help.github.com/en/actions/automating-your-workflow-with-github-actions/development-tools-for-github-actions#set-an-environment-variable-set-env
             // Example
-            // echo "::set-output name=action_fruit::strawberry"
+            // echo "::set-env name=action_state::yellow"
 
-            return new []
+            if (!string.IsNullOrWhiteSpace(value))
             {
-                $"::set-output name={name}::{value}"
-            };
+                return new[]
+                {
+                    $"::set-env name=GitVersion_{name}::{value}"
+                };
+            }
+
+            return new string[0];
         }
 
         public override string GetCurrentBranch(bool usingDynamicRepos)
@@ -60,19 +65,6 @@ namespace GitVersion.BuildServers
             }
 
             return base.GetCurrentBranch(usingDynamicRepos);
-        }
-
-        public override void WriteIntegration(Action<string> writer, VersionVariables variables)
-        {
-            base.WriteIntegration(writer, variables);
-
-            var strings = variables
-                .SelectMany(pair => GenerateSetParameterMessage(pair.Key, pair.Value));
-
-            foreach (var item in strings)
-            {
-                writer(item);
-            }
         }
     }
 }

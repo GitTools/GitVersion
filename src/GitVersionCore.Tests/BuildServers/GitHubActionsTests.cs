@@ -8,6 +8,9 @@ using Shouldly;
 
 namespace GitVersionCore.Tests.BuildServers
 {
+    using System.Collections.Generic;
+    using Environment = System.Environment;
+
     [TestFixture]
     public class GitHubActionsTests : TestBase
     {
@@ -72,7 +75,22 @@ namespace GitVersionCore.Tests.BuildServers
             result.ShouldBe(expected);
         }
 
-        [TestCase("GitVersion_Something", "1.0.0", "::set-output name=GitVersion_Something::1.0.0")]
+        [Test]
+        public void GetCurrentBranchShouldNotMatchTag()
+        {
+            // Arrange
+            environment.SetEnvironmentVariable("GITHUB_REF", $"refs/tags/v1.0.0");
+
+            var buildServer = new GitHubActions(environment, log);
+
+            // Act
+            var result = buildServer.GetCurrentBranch(false);
+
+            // Assert
+            result.ShouldBeNull();
+        }
+
+        [TestCase("Something", "1.0.0", "::set-env name=GitVersion_Something::1.0.0")]
         public void GetSetParameterMessage(string key, string value, string expected)
         {
             // Arrange
@@ -84,6 +102,45 @@ namespace GitVersionCore.Tests.BuildServers
             // Assert
             result.ShouldContain(s => true, 1);
             result.ShouldBeEquivalentTo(new[] { expected });
+        }
+
+        [Test]
+        public void SkipEmptySetParameterMessage()
+        {
+            // Arrange
+            var buildServer = new GitHubActions(environment, log);
+
+            // Act
+            var result = buildServer.GenerateSetParameterMessage("Hello", string.Empty);
+
+            // Assert
+            result.ShouldBeEquivalentTo(new string[0]);
+        }
+
+        [Test]
+        public void ShouldWriteIntegration()
+        {
+            // Arrange
+            var buildServer = new GitHubActions(environment, log);
+
+            var vars = new TestableVersionVariables("1.0.0");
+
+            var list = new List<string>();
+
+            // Act
+            buildServer.WriteIntegration(s => { list.Add(s); }, vars);
+
+            // Assert
+            var expected = new List<string>
+            {
+                "Executing GenerateSetVersionMessage for 'GitHubActions'.",
+                "",
+                "Executing GenerateBuildLogOutput for 'GitHubActions'.",
+                "::set-env name=GitVersion_Major::1.0.0"
+            };
+
+            string.Join(Environment.NewLine, list)
+                .ShouldBe(string.Join(Environment.NewLine, expected));
         }
 
         [Test]
