@@ -4,6 +4,8 @@ using GitVersion.Configuration;
 
 namespace GitVersion.BuildServers
 {
+    using System;
+
     public class GitHubActions: BuildServerBase
     {
         private readonly IConsole console;
@@ -38,7 +40,7 @@ namespace GitVersion.BuildServers
             {
                 var key = $"GitVersion_{name}";
 
-                Environment.SetEnvironmentVariable(key, value);
+                Environment.SetEnvironmentVariable(key, value, EnvironmentVariableTarget.User);
                 console.WriteLine($"::set-env name={key}::{value}");
 
                 return new[]
