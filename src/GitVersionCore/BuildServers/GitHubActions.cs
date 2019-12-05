@@ -50,8 +50,13 @@ namespace GitVersion.BuildServers
             var value = Environment.GetEnvironmentVariable("GITHUB_REF");
             if (!string.IsNullOrWhiteSpace(value))
             {
-                value = value.Substring("refs/heads/".Length);
-                return value;
+                const string refsHeads = "refs/heads/";
+
+                if (value.StartsWith(refsHeads))
+                {
+                    value = value.Substring(refsHeads.Length);
+                    return value;
+                }
             }
 
             return base.GetCurrentBranch(usingDynamicRepos);
