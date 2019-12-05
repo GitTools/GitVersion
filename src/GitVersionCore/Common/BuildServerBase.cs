@@ -42,9 +42,11 @@ namespace GitVersion
                 return;
             }
 
+            var keys = string.Join(";", variables.Where(pair => !string.IsNullOrWhiteSpace(pair.Value)).Select(pair => pair.Key));
+
             writer($"Executing GenerateSetVersionMessage for '{GetType().Name}'.");
             writer(GenerateSetVersionMessage(variables));
-            writer($"Executing GenerateBuildLogOutput for '{GetType().Name}' Keys:{string.Join(";", variables.Select(pair => pair.Key))}.");
+            writer($"Executing GenerateBuildLogOutput for '{GetType().Name}' Keys:{keys}.");
             foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(this, variables))
             {
                 writer(buildParameter);

@@ -135,7 +135,7 @@ namespace GitVersionCore.Tests.BuildServers
             {
                 "Executing GenerateSetVersionMessage for 'GitHubActions'.",
                 "",
-                "Executing GenerateBuildLogOutput for 'GitHubActions'.",
+                "Executing GenerateBuildLogOutput for 'GitHubActions' Keys:Major.",
                 "::set-env name=GitVersion_Major::1.0.0"
             };
 
