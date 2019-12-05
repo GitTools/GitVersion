@@ -40,6 +40,7 @@ namespace GitVersionCore.Tests.BuildServers
         public void TearDown()
         {
             environment.SetEnvironmentVariable("GITHUB_ACTION", null);
+            environment.SetEnvironmentVariable("GitVersion_Major", null);
         }
 
         [Test]
@@ -109,6 +110,9 @@ namespace GitVersionCore.Tests.BuildServers
             // Arrange
             var buildServer = new GitHubActions(environment, log, console);
 
+            // Assert
+            environment.GetEnvironmentVariable("GitVersion_Something").ShouldBeNullOrWhiteSpace();
+
             // Act
             var result = buildServer.GenerateSetParameterMessage(key, value);
 
@@ -117,6 +121,8 @@ namespace GitVersionCore.Tests.BuildServers
             result.ShouldBeEquivalentTo(new[] { expectedResult });
 
             consoleLinesWritten.ShouldBeEquivalentTo(new List<string> { expectedConsole });
+
+            environment.GetEnvironmentVariable("GitVersion_Something").ShouldBe("1.0.0");
         }
 
         [Test]
@@ -142,6 +148,9 @@ namespace GitVersionCore.Tests.BuildServers
 
             var list = new List<string>();
 
+            // Assert
+            environment.GetEnvironmentVariable("GitVersion_Major").ShouldBeNullOrWhiteSpace();
+
             // Act
             buildServer.WriteIntegration(s => { list.Add(s); }, vars);
 
@@ -158,6 +167,8 @@ namespace GitVersionCore.Tests.BuildServers
                 .ShouldBe(string.Join(Environment.NewLine, expected));
 
             consoleLinesWritten.ShouldBeEquivalentTo(new List<string> { "::set-env name=GitVersion_Major::1.0.0" });
+
+            environment.GetEnvironmentVariable("GitVersion_Major").ShouldBe("1.0.0");
         }
 
         [Test]
