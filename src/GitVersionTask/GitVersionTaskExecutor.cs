@@ -8,8 +8,6 @@ using GitVersion.MSBuildTask.Tasks;
 
 namespace GitVersion.MSBuildTask
 {
-    using System.Linq;
-
     public class GitVersionTaskExecutor : IGitVersionTaskExecutor
     {
         private readonly IFileSystem fileSystem;
@@ -68,11 +66,9 @@ namespace GitVersion.MSBuildTask
             var buildServer = buildServerResolver.Resolve();
             if (buildServer != null)
             {
-                var keys = string.Join(";", versionVariables.Where(pair => !string.IsNullOrWhiteSpace(pair.Value)).Select(pair => pair.Key));
-
                 logger.LogMessage($"Executing GenerateSetVersionMessage for '{buildServer.GetType().Name}'.");
                 logger.LogMessage(buildServer.GenerateSetVersionMessage(versionVariables));
-                logger.LogMessage($"Executing GenerateBuildLogOutput for '{GetType().Name}' Keys:{keys}.");
+                logger.LogMessage($"Executing GenerateBuildLogOutput for '{buildServer.GetType().Name}'.");
                 foreach (var buildParameter in BuildOutputFormatter.GenerateBuildLogOutput(buildServer, versionVariables))
                 {
                     logger.LogMessage(buildParameter);
