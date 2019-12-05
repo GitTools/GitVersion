@@ -40,7 +40,6 @@ namespace GitVersionCore.Tests.BuildServers
         public void TearDown()
         {
             environment.SetEnvironmentVariable("GITHUB_ACTION", null);
-            environment.SetEnvironmentVariable("GitVersion_Major", null);
         }
 
         [Test]
@@ -103,7 +102,7 @@ namespace GitVersionCore.Tests.BuildServers
         }
 
         [TestCase("Something", "1.0.0",
-            "Adding Environment Variable to current and future steps. name='GitVersion_Something' value='1.0.0'",
+            "Adding Environment Variable to future steps. name='GitVersion_Something' value='1.0.0'",
             "::set-env name=GitVersion_Something::1.0.0")]
         public void GetSetParameterMessage(string key, string value, string expectedResult, string expectedConsole)
         {
@@ -121,8 +120,6 @@ namespace GitVersionCore.Tests.BuildServers
             result.ShouldBeEquivalentTo(new[] { expectedResult });
 
             consoleLinesWritten.ShouldBeEquivalentTo(new List<string> { expectedConsole });
-
-            environment.GetEnvironmentVariable("GitVersion_Something").ShouldBe("1.0.0");
         }
 
         [Test]
@@ -160,15 +157,13 @@ namespace GitVersionCore.Tests.BuildServers
                 "Executing GenerateSetVersionMessage for 'GitHubActions'.",
                 "",
                 "Executing GenerateBuildLogOutput for 'GitHubActions'.",
-                "Adding Environment Variable to current and future steps. name='GitVersion_Major' value='1.0.0'"
+                "Adding Environment Variable to future steps. name='GitVersion_Major' value='1.0.0'"
             };
 
             string.Join(Environment.NewLine, list)
                 .ShouldBe(string.Join(Environment.NewLine, expected));
 
             consoleLinesWritten.ShouldBeEquivalentTo(new List<string> { "::set-env name=GitVersion_Major::1.0.0" });
-
-            environment.GetEnvironmentVariable("GitVersion_Major").ShouldBe("1.0.0");
         }
 
         [Test]
