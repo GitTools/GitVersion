@@ -3,6 +3,9 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.BuildServers
 {
+    using System;
+    using System.Linq;
+
     public class GitHubActions: BuildServerBase
     {
         // https://help.github.com/en/actions/automating-your-workflow-with-github-actions/using-environment-variables#default-environment-variables
@@ -52,6 +55,19 @@ namespace GitVersion.BuildServers
             }
 
             return base.GetCurrentBranch(usingDynamicRepos);
+        }
+
+        public override void WriteIntegration(Action<string> writer, VersionVariables variables)
+        {
+            base.WriteIntegration(writer, variables);
+
+            var strings = variables
+                .SelectMany(pair => GenerateSetParameterMessage(pair.Key, pair.Value));
+
+            foreach (var item in strings)
+            {
+                writer(item);
+            }
         }
     }
 }
