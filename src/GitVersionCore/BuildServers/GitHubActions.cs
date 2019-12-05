@@ -43,7 +43,7 @@ namespace GitVersion.BuildServers
 
                 return new[]
                 {
-                    $"Adding Environment Variable. name='{key}' value='{value}'"
+                    $"Adding Environment Variable to current and future steps. name='{key}' value='{value}'"
                 };
             }
 

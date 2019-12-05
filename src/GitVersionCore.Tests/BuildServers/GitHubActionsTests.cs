@@ -103,7 +103,7 @@ namespace GitVersionCore.Tests.BuildServers
         }
 
         [TestCase("Something", "1.0.0",
-            "Adding Environment Variable. name='GitVersion_Something' value='1.0.0'",
+            "Adding Environment Variable to current and future steps. name='GitVersion_Something' value='1.0.0'",
             "::set-env name=GitVersion_Something::1.0.0")]
         public void GetSetParameterMessage(string key, string value, string expectedResult, string expectedConsole)
         {
@@ -160,7 +160,7 @@ namespace GitVersionCore.Tests.BuildServers
                 "Executing GenerateSetVersionMessage for 'GitHubActions'.",
                 "",
                 "Executing GenerateBuildLogOutput for 'GitHubActions' Keys:Major.",
-                "Adding Environment Variable. name='GitVersion_Major' value='1.0.0'"
+                "Adding Environment Variable to current and future steps. name='GitVersion_Major' value='1.0.0'"
             };
 
             string.Join(Environment.NewLine, list)
