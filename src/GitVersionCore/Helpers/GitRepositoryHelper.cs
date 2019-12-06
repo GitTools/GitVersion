@@ -197,13 +197,13 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
         {
             var remote = repo.Network.Remotes.Single();
 
-            log.Info("Fetching remote refs to see if there is a pull request ref");
-            var remoteTips = (string.IsNullOrEmpty(authentication.Username) ?
+            log.Info("Fetching remote refs to see if there is a pull request ref: {0}", string.IsNullOrEmpty(authentication.Username) ? "anonymous" : "authenticated");
+            List<DirectReference> remoteTips = (string.IsNullOrEmpty(authentication.Username) ?
                     GetRemoteTipsForAnonymousUser(repo, remote) :
                     GetRemoteTipsUsingUsernamePasswordCredentials(repo, remote, authentication.Username, authentication.Password))
                 .ToList();
 
-            log.Info("Remote Refs:\r\n" + string.Join(System.Environment.NewLine, remoteTips.Select(r => r.CanonicalName)));
+            log.Info("Remote Refs:\r\n" + string.Join(System.Environment.NewLine, remoteTips.Select(r => (r.CanonicalName, r.IsRemoteTrackingBranch, r.IsLocalBranch, r.Target.Sha))));
 
             var headTipSha = repo.Head.Tip.Sha;
 
