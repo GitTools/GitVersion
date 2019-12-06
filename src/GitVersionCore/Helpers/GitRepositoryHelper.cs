@@ -201,6 +201,8 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
             List<DirectReference> remoteTips = (string.IsNullOrEmpty(authentication.Username) ?
                     GetRemoteTipsForAnonymousUser(repo, remote) :
                     GetRemoteTipsUsingUsernamePasswordCredentials(repo, remote, authentication.Username, authentication.Password))
+                .GroupBy(r => r.CanonicalName)
+                .Select(grouping => grouping.First())
                 .ToList();
 
             log.Info("Remote Refs:\r\n" + string.Join(System.Environment.NewLine, remoteTips.Select(r => (r.CanonicalName, r.IsRemoteTrackingBranch, r.IsLocalBranch))));
