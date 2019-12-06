@@ -7,7 +7,7 @@ steps:
     versionSpec: '>= 2.5'
     addToPath: true
 - script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Pack
-  displayName: 'Cake build & pack'
+  displayName: '[Cake build & pack]'
 - publish: $(System.DefaultWorkingDirectory)
   displayName: 'Upload pipeline artifacts'
   condition: and(succeeded(), eq( variables['Agent.OS'], 'Windows_NT' ))

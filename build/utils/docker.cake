@@ -122,6 +122,14 @@ DockerContainerRunSettings GetDockerRunSettings(BuildParameters parameters)
         }
     };
 
+    if (parameters.IsRunningOnAzurePipeline) {
+        settings.Env = new[]
+        {
+            "TF_BUILD=true",
+            $"BUILD_SOURCEBRANCH={Context.EnvironmentVariable("BUILD_SOURCEBRANCH")}"
+        };
+    }
+
     return settings;
 }
 
