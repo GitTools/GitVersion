@@ -10,7 +10,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <DocumentationFile>bin\$(Configuration)\GitVersion.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
-    <ApplicationManifest>app1.manifest</ApplicationManifest>
+    <ApplicationManifest>GitVersionExe.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'=='net461'">
