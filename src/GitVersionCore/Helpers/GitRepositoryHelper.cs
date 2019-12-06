@@ -203,7 +203,7 @@ Please run `git {CreateGitLogArgs(100)}` and submit it along with your build log
                     GetRemoteTipsUsingUsernamePasswordCredentials(repo, remote, authentication.Username, authentication.Password))
                 .ToList();
 
-            log.Info("Remote Refs:\r\n" + string.Join(System.Environment.NewLine, remoteTips.Select(r => (r.CanonicalName, r.IsRemoteTrackingBranch, r.IsLocalBranch, r.Target.Sha))));
+            log.Info("Remote Refs:\r\n" + string.Join(System.Environment.NewLine, remoteTips.Select(r => (r.CanonicalName, r.IsRemoteTrackingBranch, r.IsLocalBranch))));
 
             var headTipSha = repo.Head.Tip.Sha;
 
