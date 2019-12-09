@@ -36,7 +36,7 @@ Task("Pack-Prepare")
 
         var settings = new DotNetCorePublishSettings
         {
-            Framework = parameters.CoreFxVersion30,
+            Framework = parameters.CoreFxVersion31,
             Runtime = runtimeName,
             NoRestore = false,
             Configuration = parameters.Configuration,
