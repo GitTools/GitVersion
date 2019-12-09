@@ -6,7 +6,6 @@ Task("Artifacts-Prepare")
     .IsDependentOnWhen("Pack-Nuget", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
-    RunGitVersionOnCI(parameters);
 });
 
 Task("Artifacts-DotnetTool-Test")
