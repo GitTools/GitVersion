@@ -13,7 +13,7 @@ steps:
     path: $(Build.SourcesDirectory)
     artifact: storage
 - script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Publish
-  displayName: 'Publish'
+  displayName: '[Publish]'
   env:
     GITHUB_TOKEN: $(GITHUB_TOKEN)
     NUGET_API_KEY: $(NUGET_API_KEY)

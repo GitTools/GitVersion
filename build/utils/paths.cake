@@ -30,7 +30,7 @@ public class BuildPaths
         var artifactsBinPortableDir       = artifactsBinDir.Combine("portable");
         var artifactsBinCmdlineDir        = artifactsBinDir.Combine("cmdline");
         var artifactsBinCoreFx21Dir       = artifactsBinDir.Combine(parameters.CoreFxVersion21);
-        var artifactsBinCoreFx30Dir       = artifactsBinDir.Combine(parameters.CoreFxVersion30);
+        var artifactsBinCoreFx30Dir       = artifactsBinDir.Combine(parameters.CoreFxVersion31);
         var artifactsBinFullFx472Dir      = artifactsBinDir.Combine(parameters.FullFxVersion472);
         var nativeDir                     = artifactsDir.Combine("native");
         var nugetRootDir                  = artifactsDir.Combine("nuget");
