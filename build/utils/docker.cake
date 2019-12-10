@@ -101,7 +101,7 @@ void DockerTestArtifact(DockerImage dockerImage, BuildParameters parameters, str
     Information("Docker tag: {0}", tag);
     Information("Docker cmd: {0}", cmd);
 
-    if (os == "windows" && targetframework == parameters.CoreFxVersion30)
+    if (os == "windows" && targetframework == parameters.CoreFxVersion31)
     {
         cmd = "-Command " + cmd; // powershell 7 needs a -Command parameter
     }
@@ -121,6 +121,14 @@ DockerContainerRunSettings GetDockerRunSettings(BuildParameters parameters)
             $"{currentDir}/artifacts/v{parameters.Version.SemVersion}/nuget:{parameters.DockerRootPrefix}/nuget"
         }
     };
+
+    if (parameters.IsRunningOnAzurePipeline) {
+        settings.Env = new[]
+        {
+            "TF_BUILD=true",
+            $"BUILD_SOURCEBRANCH={Context.EnvironmentVariable("BUILD_SOURCEBRANCH")}"
+        };
+    }
 
     return settings;
 }

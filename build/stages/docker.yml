@@ -19,7 +19,7 @@ jobs:
       path: $(Build.SourcesDirectory)
       artifact: storage
   - script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Publish-DockerHub --docker_distro=$(DISTRO) --docker_dotnetversion=$(DOTNET_VERSION)
-    displayName: 'Docker build'
+    displayName: '[Docker build]'
     env:
       DOCKER_USERNAME: $(DOCKER_USERNAME)
       DOCKER_PASSWORD: $(DOCKER_PASSWORD)

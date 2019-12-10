@@ -10,7 +10,7 @@ namespace GitVersion.Configuration.Init.SetConfig
         private ConfigInitWizardStep returnToStep;
         private bool isPartOfWizard;
 
-        protected GlobalModeSetting(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
+        public GlobalModeSetting(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
         {
         }
 

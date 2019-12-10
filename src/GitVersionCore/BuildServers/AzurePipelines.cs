@@ -27,11 +27,6 @@ namespace GitVersion.BuildServers
 
         public override string GetCurrentBranch(bool usingDynamicRepos)
         {
-            var pullRequestBranchName = Environment.GetEnvironmentVariable("SYSTEM_PULLREQUEST_SOURCEBRANCH");
-            if (!string.IsNullOrWhiteSpace(pullRequestBranchName))
-            {
-                return pullRequestBranchName;
-            }
             return Environment.GetEnvironmentVariable("BUILD_SOURCEBRANCH");
         }
 
@@ -53,7 +48,7 @@ namespace GitVersion.BuildServers
                 var buildNumber = variables.FullSemVer.EndsWith("+0")
                                 ? variables.FullSemVer.Substring(0, variables.FullSemVer.Length - 2)
                                 : variables.FullSemVer;
-                
+
                 return $"##vso[build.updatebuildnumber]{buildNumber}";
             }
 
