@@ -129,7 +129,7 @@ GitVersion GetVersion(BuildParameters parameters)
 void RunGitVersionOnCI(BuildParameters parameters)
 {
     // set the CI build version number with GitVersion
-    if (!parameters.IsLocalBuild && !(parameters.IsRunningOnAzurePipeline && parameters.IsPullRequest))
+    if (!parameters.IsLocalBuild)
     {
         var settings = new GitVersionSettings
         {
