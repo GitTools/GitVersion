@@ -101,7 +101,7 @@ void DockerTestArtifact(DockerImage dockerImage, BuildParameters parameters, str
     Information("Docker tag: {0}", tag);
     Information("Docker cmd: {0}", cmd);
 
-    if (os == "windows" && targetframework == parameters.CoreFxVersion30)
+    if (os == "windows" && targetframework == parameters.CoreFxVersion31)
     {
         cmd = "-Command " + cmd; // powershell 7 needs a -Command parameter
     }

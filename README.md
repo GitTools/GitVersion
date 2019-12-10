@@ -28,7 +28,7 @@ works out the [semantic version][semver] of the commit being built.
 
 ## Compatibility
 
-GitVersion works Windows, Linux, and Mac.
+GitVersion works on Windows, Linux, and Mac.
 
 Tip: If you get `System.TypeInitializationException: The type initializer for
 'LibGit2Sharp.Core.NativeMethods' threw an exception. --->

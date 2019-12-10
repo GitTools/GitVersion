@@ -145,7 +145,7 @@ void RunGitVersionOnCI(BuildParameters parameters)
 
 GitVersionSettings SetGitVersionTool(GitVersionSettings settings, BuildParameters parameters, string toolPath)
 {
-    var gitversionTool = GetFiles($"{toolPath}/{parameters.CoreFxVersion30}/GitVersion.dll").FirstOrDefault();
+    var gitversionTool = GetFiles($"{toolPath}/{parameters.CoreFxVersion31}/GitVersion.dll").FirstOrDefault();
 
     settings.ToolPath = Context.FindToolInPath(IsRunningOnUnix() ? "dotnet" : "dotnet.exe");
     settings.ArgumentCustomization = args => gitversionTool + " " + args.Render();
@@ -155,7 +155,7 @@ GitVersionSettings SetGitVersionTool(GitVersionSettings settings, BuildParameter
 
 void PublishGitVersionToArtifacts(BuildParameters parameters)
 {
-    var frameworks = new[] { parameters.CoreFxVersion21, parameters.CoreFxVersion30, parameters.FullFxVersion472 };
+    var frameworks = new[] { parameters.CoreFxVersion21, parameters.CoreFxVersion31, parameters.FullFxVersion472 };
 
     // publish Framework-dependent deployment
     foreach(var framework in frameworks)
