@@ -1,27 +1,27 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFrameworks>net472;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
 
-        <IsPackable>true</IsPackable>
-
+        <PackageId>GitVersionTask</PackageId>
+        <Title>GitVersionTask</Title>
         <PackageVersion Condition="$(PackageVersion) == '' Or $(PackageVersion) == '*Undefined*'">0.0.1-alpha-0001</PackageVersion>
-
-        <NuspecFile>GitVersionTask.nuspec</NuspecFile>
-        <NuspecBasePath>bin\$(Configuration)</NuspecBasePath>
-        <NuspecProperties>version=$(PackageVersion)</NuspecProperties>
-
+        <Description>Stamps an assembly with git information based on SemVer.</Description>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
         <DevelopmentDependency>true</DevelopmentDependency>
 
         <LangVersion>8.0</LangVersion>
+
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.1" />
+        <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" PrivateAssets="All" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\GitVersionTask.MsBuild\GitVersionTask.MsBuild.csproj" />
-        <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
+        <ProjectReference Include="..\GitVersionTask.MsBuild\GitVersionTask.MsBuild.csproj" PrivateAssets="All" />
+        <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" PrivateAssets="All" />
     </ItemGroup>
+
+    <Import Project="nuget-files.props" />
 </Project>

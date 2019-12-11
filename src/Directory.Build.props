@@ -10,6 +10,9 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>package_icon.png</PackageIcon>
         <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
+        <RepositoryUrl>https://github.com/GitTools/GitVersion.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
         <Company>$(Authors)</Company>
 
     </PropertyGroup>
@@ -31,9 +34,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="../../docs/img/package_icon.png">
-            <Pack>True</Pack>
-            <PackagePath></PackagePath>
-        </None>
+        <None Include="../../docs/img/package_icon.png" Pack="true" PackagePath="/" />
     </ItemGroup>
 </Project>
