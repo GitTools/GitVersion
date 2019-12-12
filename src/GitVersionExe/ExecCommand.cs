@@ -111,7 +111,7 @@ namespace GitVersion
             }
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                return "/usr/local/bin/msbuild";
+                return "/Library/Frameworks/Mono.framework/Versions/Current/Commands/msbuild";
             }
             throw new Exception("MsBuild not found");
         }
