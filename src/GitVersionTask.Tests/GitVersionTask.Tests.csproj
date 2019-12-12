@@ -4,7 +4,7 @@
         <LangVersion>8.0</LangVersion>
     </PropertyGroup>
 
-    <Import Project="..\test.msbuild" />
+    <Import Project="..\test.props" />
     <ItemGroup>
         <PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.3.0" />
         <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)"/>

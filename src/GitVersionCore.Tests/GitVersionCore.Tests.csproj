@@ -9,7 +9,7 @@
         <LangVersion>8.0</LangVersion>
     </PropertyGroup>
 
-    <Import Project="..\test.msbuild" />
+    <Import Project="..\test.props" />
     <ItemGroup>
         <PackageReference Include="FluentDateTime" Version="2.0.0" />
         <PackageReference Include="GitTools.Testing" Version="1.2.0" />
