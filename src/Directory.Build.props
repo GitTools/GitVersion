@@ -17,8 +17,8 @@
 
     </PropertyGroup>
     <PropertyGroup>
-        <PackageVersion_LibGit2Sharp>0.26.1</PackageVersion_LibGit2Sharp>
-        <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.289</PackageVersion_LibGit2Sharp_NativeBinaries>
+        <PackageVersion_LibGit2Sharp>0.26.2</PackageVersion_LibGit2Sharp>
+        <PackageVersion_LibGit2Sharp_NativeBinaries>2.0.306</PackageVersion_LibGit2Sharp_NativeBinaries>
         <PackageVersion_JetBrainsAnnotations>2019.1.3</PackageVersion_JetBrainsAnnotations>
         <PackageVersion_YamlDotNet>8.0.0</PackageVersion_YamlDotNet>
         <PackageVersion_NewtonsoftJson>12.0.3</PackageVersion_NewtonsoftJson>
