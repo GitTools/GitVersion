@@ -25,7 +25,7 @@ namespace GitVersion.Configuration
 
         public override void Verify(string workingDirectory, string projectRootDirectory)
         {
-            if (!Path.IsPathRooted(FilePath))
+            if (!Path.IsPathRooted(FilePath) && !FileSystem.PathsEqual(workingDirectory, projectRootDirectory))
             {
                 WarnAboutAmbiguousConfigFileSelection(workingDirectory, projectRootDirectory);
             }

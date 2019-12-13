@@ -185,6 +185,11 @@ namespace GitVersion
 
         public int CompareTo(SemanticVersion value)
         {
+            return CompareTo(value, true);
+        }
+
+        public int CompareTo(SemanticVersion value, bool includePrerelease)
+        {
             if (value == null)
             {
                 return 1;
@@ -213,7 +218,7 @@ namespace GitVersion
                 }
                 return -1;
             }
-            if (PreReleaseTag != value.PreReleaseTag)
+            if (includePrerelease && PreReleaseTag != value.PreReleaseTag)
             {
                 if (PreReleaseTag > value.PreReleaseTag)
                 {

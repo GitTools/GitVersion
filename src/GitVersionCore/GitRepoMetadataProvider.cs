@@ -35,7 +35,7 @@ namespace GitVersion
 
             foreach (var tag in repository.Tags)
             {
-                if (olderThan.HasValue && ((Commit)tag.PeeledTarget()).When() > olderThan.Value)
+                if (!(tag.PeeledTarget() is Commit commit) || (olderThan.HasValue && commit.When() > olderThan.Value))
                     continue;
 
                 if (SemanticVersion.TryParse(tag.FriendlyName, tagPrefixRegex, out var semver))

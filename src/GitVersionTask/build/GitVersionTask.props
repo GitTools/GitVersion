@@ -9,6 +9,7 @@
         <GitVersionPath Condition="'$(GitVersionPath)' == ''">$(MSBuildProjectDirectory)</GitVersionPath>
 
         <GitVersion_NoFetchEnabled Condition="$(GitVersion_NoFetchEnabled) == ''">false</GitVersion_NoFetchEnabled>
+        <GitVersion_NoNormalizeEnabled Condition="$(GitVersion_NoNormalizeEnabled) == ''">false</GitVersion_NoNormalizeEnabled>
 
         <DisableGitVersionTask Condition=" '$(DisableGitVersionTask)' == '' ">false</DisableGitVersionTask>
 

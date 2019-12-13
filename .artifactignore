@@ -1,3 +1,9 @@
 **/*
-!artifacts
-!tools
+
+!artifacts/*/bin/netcoreapp2.1
+!artifacts/*/bin/netcoreapp3.1
+!artifacts/*/build-artifact
+!artifacts/*/nuget
+
+!artifacts/*/*.tar.gz
+!artifacts/gitversion.json

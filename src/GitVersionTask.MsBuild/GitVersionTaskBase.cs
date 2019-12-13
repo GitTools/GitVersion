@@ -11,5 +11,7 @@ namespace GitVersion.MSBuildTask
         public string ConfigFilePath { get; set; }
 
         public bool NoFetch { get; set; }
+
+        public bool NoNormalize { get; set; }
     }
 }

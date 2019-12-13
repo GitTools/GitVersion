@@ -1,5 +1,5 @@
 // Install modules
-#module nuget:?package=Cake.DotNetTool.Module&version=0.3.1
+#module nuget:?package=Cake.DotNetTool.Module&version=0.4.0
 
 // Install addins.
 #addin "nuget:?package=Cake.Codecov&version=0.7.0"
@@ -29,6 +29,7 @@
 #load "./build/utils/parameters.cake"
 #load "./build/utils/utils.cake"
 
+#load "./build/test.cake"
 #load "./build/pack.cake"
 #load "./build/artifacts-test.cake"
 #load "./build/docker.cake"
@@ -47,29 +48,37 @@ bool singleStageRun = true;
 
 Setup<BuildParameters>(context =>
 {
-    EnsureDirectoryExists("artifacts");
-    var parameters = BuildParameters.GetParameters(context);
-    var gitVersion = GetVersion(parameters);
-    parameters.Initialize(context, gitVersion);
+    try
+    {
+        EnsureDirectoryExists("artifacts");
+        var parameters = BuildParameters.GetParameters(context);
+        var gitVersion = GetVersion(parameters);
+        parameters.Initialize(context, gitVersion);
 
-    // Increase verbosity?
-    if (parameters.IsMainBranch && (context.Log.Verbosity != Verbosity.Diagnostic)) {
-        Information("Increasing verbosity to diagnostic.");
-        context.Log.Verbosity = Verbosity.Diagnostic;
+        // Increase verbosity?
+        if (parameters.IsMainBranch && (context.Log.Verbosity != Verbosity.Diagnostic)) {
+            Information("Increasing verbosity to diagnostic.");
+            context.Log.Verbosity = Verbosity.Diagnostic;
+        }
+
+        Information("Building version {0} of GitVersion ({1}, {2})",
+            parameters.Version.SemVersion,
+            parameters.Configuration,
+            parameters.Target);
+
+        Information("Repository info : IsMainRepo {0}, IsMainBranch {1}, IsTagged: {2}, IsPullRequest: {3}",
+            parameters.IsMainRepo,
+            parameters.IsMainBranch,
+            parameters.IsTagged,
+            parameters.IsPullRequest);
+
+        return parameters;
     }
-
-    Information("Building version {0} of GitVersion ({1}, {2})",
-        parameters.Version.SemVersion,
-        parameters.Configuration,
-        parameters.Target);
-
-    Information("Repository info : IsMainRepo {0}, IsMainBranch {1}, IsTagged: {2}, IsPullRequest: {3}",
-        parameters.IsMainRepo,
-        parameters.IsMainBranch,
-        parameters.IsTagged,
-        parameters.IsPullRequest);
-
-    return parameters;
+    catch (Exception exception)
+    {
+        Error(exception.Dump());
+        return null;
+    }
 });
 
 Teardown<BuildParameters>((context, parameters) =>
@@ -97,7 +106,6 @@ Teardown<BuildParameters>((context, parameters) =>
 //////////////////////////////////////////////////////////////////////
 
 Task("Pack")
-    .IsDependentOn("Pack-Vsix")
     .IsDependentOn("Pack-Gem")
     .IsDependentOn("Pack-Nuget")
     .IsDependentOn("Pack-Chocolatey")
@@ -120,13 +128,17 @@ Task("Pack")
     Error(exception.Dump());
 });
 
+Task("Test")
+    .IsDependentOn("Publish-Coverage")
+    .Finally(() =>
+{
+});
+
 Task("Publish")
     .IsDependentOn("Publish-AppVeyor")
     .IsDependentOn("Publish-AzurePipeline")
-    .IsDependentOn("Publish-Coverage")
     .IsDependentOn("Publish-NuGet")
     .IsDependentOn("Publish-Chocolatey")
-    .IsDependentOn("Publish-Vsix")
     .IsDependentOn("Publish-Gem")
     .Finally(() =>
 {

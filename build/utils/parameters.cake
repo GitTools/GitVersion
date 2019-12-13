@@ -11,7 +11,7 @@ public class BuildParameters
     public const string MainRepoOwner = "gittools";
     public const string MainRepoName = "GitVersion";
     public string CoreFxVersion21 { get; private set; }  = "netcoreapp2.1";
-    public string CoreFxVersion30 { get; private set; }  = "netcoreapp3.0";
+    public string CoreFxVersion31 { get; private set; }  = "netcoreapp3.1";
     public string FullFxVersion472 { get; private set; } = "net472";
 
     public string DockerDistro { get; private set; }
@@ -19,7 +19,6 @@ public class BuildParameters
 
     public bool EnabledUnitTests { get; private set; }
     public bool EnabledPublishGem { get; private set; }
-    public bool EnabledPublishVsix { get; private set; }
     public bool EnabledPublishNuget { get; private set; }
     public bool EnabledPublishChocolatey { get; private set; }
     public bool EnabledPublishDocker { get; private set; }
@@ -72,7 +71,7 @@ public class BuildParameters
         var dockerCliPlatform = ((buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
                                 && context.Environment.Platform.Family != PlatformFamily.OSX)
                                 || buildSystem.IsLocalBuild
-                                ? GetDockerCliPlatform(context) : "";
+                                ? context.GetDockerCliPlatform() : "";
 
         return new BuildParameters {
             Target        = target,
@@ -81,12 +80,11 @@ public class BuildParameters
             DockerDistro        = context.Argument("docker_distro", ""),
             DockerDotnetVersion = context.Argument("docker_dotnetversion", ""),
 
-            EnabledUnitTests          = IsEnabled(context, "ENABLED_UNIT_TESTS"),
-            EnabledPublishGem         = IsEnabled(context, "ENABLED_PUBLISH_GEM"),
-            EnabledPublishVsix        = IsEnabled(context, "ENABLED_PUBLISH_VSIX"),
-            EnabledPublishNuget       = IsEnabled(context, "ENABLED_PUBLISH_NUGET"),
-            EnabledPublishChocolatey  = IsEnabled(context, "ENABLED_PUBLISH_CHOCOLATEY"),
-            EnabledPublishDocker      = IsEnabled(context, "ENABLED_PUBLISH_DOCKER"),
+            EnabledUnitTests          = context.IsEnabled("ENABLED_UNIT_TESTS"),
+            EnabledPublishGem         = context.IsEnabled("ENABLED_PUBLISH_GEM"),
+            EnabledPublishNuget       = context.IsEnabled("ENABLED_PUBLISH_NUGET"),
+            EnabledPublishChocolatey  = context.IsEnabled("ENABLED_PUBLISH_CHOCOLATEY"),
+            EnabledPublishDocker      = context.IsEnabled("ENABLED_PUBLISH_DOCKER"),
 
             IsRunningOnUnix    = context.IsRunningOnUnix(),
             IsRunningOnWindows = context.IsRunningOnWindows(),
@@ -103,9 +101,9 @@ public class BuildParameters
             DockerRootPrefix   = dockerCliPlatform == "windows" ? "c:" : "",
 
             IsPullRequest = buildSystem.IsPullRequest,
-            IsMainRepo    = IsOnMainRepo(context),
-            IsMainBranch  = IsOnMainBranch(context),
-            IsTagged      = IsBuildTagged(context),
+            IsMainRepo    = context.IsOnMainRepo(),
+            IsMainBranch  = context.IsOnMainBranch(),
+            IsTagged      = context.IsBuildTagged(),
 
             MSBuildSettings = GetMsBuildSettings(context)
         };
@@ -181,57 +179,5 @@ public class BuildParameters
         msBuildSettings.WithProperty("PackageVersion", version.NugetVersion);
         msBuildSettings.WithProperty("FileVersion", version.Version);
         msBuildSettings.WithProperty("NoPackageAnalysis", "true");
-    }
-
-    private static bool IsOnMainRepo(ICakeContext context)
-    {
-        var buildSystem = context.BuildSystem();
-        string repositoryName = null;
-        if (buildSystem.IsRunningOnAppVeyor)
-        {
-            repositoryName = buildSystem.AppVeyor.Environment.Repository.Name;
-        }
-        else if (buildSystem.IsRunningOnTravisCI)
-        {
-            repositoryName = buildSystem.TravisCI.Environment.Repository.Slug;
-        }
-        else if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
-        {
-            repositoryName = buildSystem.TFBuild.Environment.Repository.RepoName;
-        }
-
-        context.Information("Repository Name: {0}" , repositoryName);
-
-        return !string.IsNullOrWhiteSpace(repositoryName) && StringComparer.OrdinalIgnoreCase.Equals($"{BuildParameters.MainRepoOwner}/{BuildParameters.MainRepoName}", repositoryName);
-    }
-
-    private static bool IsOnMainBranch(ICakeContext context)
-    {
-        var buildSystem = context.BuildSystem();
-        string repositoryBranch = ExecGitCmd(context, "rev-parse --abbrev-ref HEAD").Single();
-        if (buildSystem.IsRunningOnAppVeyor)
-        {
-            repositoryBranch = buildSystem.AppVeyor.Environment.Repository.Branch;
-        }
-        else if (buildSystem.IsRunningOnTravisCI)
-        {
-            repositoryBranch = buildSystem.TravisCI.Environment.Build.Branch;
-        }
-        else if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
-        {
-            repositoryBranch = buildSystem.TFBuild.Environment.Repository.Branch;
-        }
-
-        context.Information("Repository Branch: {0}" , repositoryBranch);
-
-        return !string.IsNullOrWhiteSpace(repositoryBranch) && StringComparer.OrdinalIgnoreCase.Equals("master", repositoryBranch);
-    }
-
-    private static bool IsBuildTagged(ICakeContext context)
-    {
-        var sha = ExecGitCmd(context, "rev-parse --verify HEAD").Single();
-        var isTagged = ExecGitCmd(context, "tag --points-at " + sha).Any();
-
-        return isTagged;
     }
 }

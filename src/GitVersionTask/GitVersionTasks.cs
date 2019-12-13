@@ -63,7 +63,8 @@ namespace GitVersion.MSBuildTask
             {
                 TargetPath = task.SolutionDirectory,
                 ConfigFile = task.ConfigFilePath,
-                NoFetch = task.NoFetch
+                NoFetch = task.NoFetch,
+                NoNormalize = task.NoNormalize
             };
 
             services.AddSingleton(_ => Options.Create(arguments));
