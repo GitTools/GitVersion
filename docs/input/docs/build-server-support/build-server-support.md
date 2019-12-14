@@ -21,7 +21,7 @@ instance if you are running in TeamCity after you run
 `GitVersion /output buildserver` you will have the `%system.GitVersion.SemVer%`
 available for you to use.
 
-When running in MSBuild either from the [MSBuild Task](/usage/msbuild-task) or
+When running in MSBuild either from the [MSBuild Task](../usage/msbuild-task) or
 by using the `/proj myproject.sln` parameter, GitVersion will make the MSBuild
 variables available in the format `$(GitVersion_SemVer)`.
 

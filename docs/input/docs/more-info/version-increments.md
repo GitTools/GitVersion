@@ -50,7 +50,7 @@ feed will see the alpha packages.
 
 ### 2. Octopus deploy
 
-See [Octopus deploy](../build-server-support/build-server/octopus-deploy.md)
+See [Octopus deploy](../build-server-support/build-server/octopus-deploy)
 
 ## Manually incrementing the version
 

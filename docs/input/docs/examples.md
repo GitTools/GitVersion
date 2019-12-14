@@ -31,13 +31,13 @@ following branch types ootb:
 - release/
 
 If you have other branch types GitVersion is entirely configuration driven, so
-check out the [Configuration](configuration.md) section of the readme to
+check out the [Configuration](configuration) section of the readme to
 understand how to make GitVersion work for you.
 
 ## GitFlow
 
-[See GitFlow Examples](git-branching-strategies/gitflow-examples.md)
+[See GitFlow Examples](git-branching-strategies/gitflow-examples)
 
 ## GitHubFlow
 
-[See GitHubFlow Examples](git-branching-strategies/githubflow-examples.md)
+[See GitHubFlow Examples](git-branching-strategies/githubflow-examples)

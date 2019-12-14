@@ -83,7 +83,7 @@ skip updating the `AssemblyFileVersion` while still updating the
 
 ### assembly-file-versioning-format
 
-Set this to any of the available [variables](/more-info/variables) in
+Set this to any of the available [variables](./more-info/variables) in
 combination (but not necessary) with a process scoped environment variable. It
 overwrites the value of `assembly-file-versioning-scheme`. To reference an
 environment variable, use `env:` Example Syntax #1:
@@ -106,7 +106,7 @@ the value of `assembly-versioning-scheme`.
 
 ### assembly-informational-format
 
-Set this to any of the available [variables](/more-info/variables) to change the
+Set this to any of the available [variables](./more-info/variables) to change the
 value of the `AssemblyInformationalVersion` attribute. Default set to
 `{InformationalVersion}`. It also supports string interpolation
 (`{MajorMinorPatch}+{BranchName}`)
@@ -114,7 +114,7 @@ value of the `AssemblyInformationalVersion` attribute. Default set to
 ### mode
 
 Sets the `mode` of how GitVersion should create a new version. Read more at
-[versioning mode](/reference/versioning-mode.md).
+[versioning modes](./reference/versioning-modes).
 
 ### increment
 
@@ -166,19 +166,19 @@ none` and `+semver: skip`
 ### legacy-semver-padding
 
 The number of characters to pad `LegacySemVer` to in the `LegacySemVerPadded`
-[variable](/more-info/variables). Is default set to `4`, which will pad the
+[variable](./more-info/variables). Is default set to `4`, which will pad the
 `LegacySemVer` value of `3.0.0-beta1` to `3.0.0-beta0001`.
 
 ### build-metadata-padding
 
 The number of characters to pad `BuildMetaData` to in the `BuildMetaDataPadded`
-[variable](/more-info/variables). Is default set to `4`, which will pad the
+[variable](./more-info/variables). Is default set to `4`, which will pad the
 `BuildMetaData` value of `1` to `0001`.
 
 ### commits-since-version-source-padding
 
 The number of characters to pad `CommitsSinceVersionSource` to in the
-`CommitsSinceVersionSourcePadded` [variable](/more-info/variables). Is default
+`CommitsSinceVersionSourcePadded` [variable](./more-info/variables). Is default
 set to `4`, which will pad the `CommitsSinceVersionSource` value of `1` to
 `0001`.
 
@@ -481,7 +481,7 @@ default support/ and master are mainlines.
 ### pre-release-weight
 
 Provides a way to translate the `PreReleaseLabel`
-([variables](/more-info/variables)) to a numeric value in order to avoid version
+([variables](./more-info/variables)) to a numeric value in order to avoid version
 collisions across different branches. For example, a release branch created
 after "1.2.3-alpha.55" results in "1.2.3-beta.1" and thus e.g. "1.2.3-alpha.4"
 and "1.2.3-beta.4" would have the same file version: "1.2.3.4". One of the ways

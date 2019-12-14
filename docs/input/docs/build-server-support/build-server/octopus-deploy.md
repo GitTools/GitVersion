@@ -6,7 +6,7 @@ Title: Octopus Deploy
 While not a build server, there are a few things to consider when using Octopus
 Deploy with GitVersion.
 
- GitVersion follows [continuous delivery](../../reference/continuous-delivery.md)
+ GitVersion follows [continuous delivery](../../reference/versioning-modes/continuous-delivery)
  versioning by default. This means builds will keep producing *the same version*
  with just metadata differing. For example, when you start a new release (say
  `1.0.0`) with git flow, the branch will start with a semver like
@@ -168,7 +168,7 @@ if ($versionInfo.PreReleaseTag -eq '')
 }
 ```
 
-### Configure GitVersion to [increment per commit](../../more-info/incrementing-per-commit.md)
+### Configure GitVersion to [increment per commit](../../more-info/incrementing-per-commit)
 
 As mentioned above, this means you will burn multiple versions per release. This
 might not be an issue for you, but can confuse consumers of your library as the
