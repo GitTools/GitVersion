@@ -17,7 +17,7 @@ task into your TFS or Azure DevOps Pipeline instance.
 1. Add the [GitVersionTask](https://www.nuget.org/packages/GitVersionTask/)
 NuGet package to your projects.
 
-See [MSBuild Task](/usage/msbuild-task) for further instructions how to use the
+See [MSBuild Task](../../usage/msbuild-task) for further instructions how to use the
 MS Build Task.
 
 ### Using GitVersion with the Command Line build step
@@ -122,7 +122,7 @@ To use these variables you can just refer to them using the standard variable
 syntax. For instance `$(GitVersion.NuGetVersion)` in your nuget pack task to set
 the version number. Since update 1 there are no known limitations.
 
-See [Variables](/more-info/variables/) for an overview of available variables.
+See [Variables](../../more-info/variables) for an overview of available variables.
 
 #### Using GitVersion variables in build name
 
@@ -139,7 +139,7 @@ If GitVersion does not find any substitutions it will just default to using `Ful
 work correctly if you
 use GitVersion variables as well due to the delayed expansion of the GitVersion
 vars. Instead, you might be able to use `$(GitVersion_BuildMetaData)` to achieve
-a similar result.  See [Variables](/more-info/variables/) for more info on the
+a similar result.  See [Variables](../../more-info/variables) for more info on the
 variables.
 
 #### Known limitations

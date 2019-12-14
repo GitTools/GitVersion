@@ -57,7 +57,7 @@ GitVersion. Server side checkout sends just the files to the agent and not the
 actual .git folder. Dynamic repositories will clone your repo into a temp folder
 and use it to calculate version information.
 
-See [dynamic repositories](../../more-info/dynamic-repositories.md) for more info.
+See [dynamic repositories](../../more-info/dynamic-repositories) for more info.
 
 ### Output
 

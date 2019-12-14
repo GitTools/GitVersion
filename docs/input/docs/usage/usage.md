@@ -9,11 +9,11 @@ to get up and running, simply install GitVersionTask from NuGet and it will
 integrate into your project and write out variables to your build server if it's
 running on one. The exe offers more options and works for not just .net projects.
 
-- [Using the Command Line tool](command-line.md)
-- [Using the MSBuild Task](msbuild-task.md)
-- [Using the NuGet Library package](nuget-library.md)
-- [Using the Ruby Gem](gem.md)
+- [Using the Command Line tool](command-line)
+- [Using the MSBuild Task](msbuild-task)
+- [Using the NuGet Library package](nuget-library)
+- [Using the Ruby Gem](gem)
 
- There exist also wrappers around the [Command Line tool](command-line.md) for
- several build servers. See [Build server support](../build-server-support/build-server-support.md)
+ There exist also wrappers around the [Command Line tool](command-line) for
+ several build servers. See [Build server support](../build-server-support/build-server-support)
  for details.

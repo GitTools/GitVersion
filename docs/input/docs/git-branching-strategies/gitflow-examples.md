@@ -4,13 +4,13 @@ Title: GitFlow Examples
 ---
 
 These examples are using the *default* configuration with GitVersion. Which is
-[continuous deployment](../reference/continuous-deployment.md) mode for
-`develop` and [continuous delivery](../reference/continuous-delivery.md) mode
+[continuous deployment](../reference/versioning-modes/continuous-deployment) mode for
+`develop` and [continuous delivery](../reference/versioning-modes/continuous-delivery) mode
 for all other branches.
 
 This default configuration allows you to publish CI builds from develop to a CI
 MyGet feed, or another CI feed. Then all other branches are manually released
-then tagged. Read more about this at [version increments](../more-info/version-increments.md).
+then tagged. Read more about this at [version increments](../more-info/version-increments).
 
 ## Feature Branches
 
@@ -82,4 +82,4 @@ patch *will not* automatically bump, meaning you have to use hotfix branches.
 
 ## To Update/Contribute
 
-See [creating/updating examples](creating-updating-examples.md)
+See [creating/updating examples](creating-updating-examples)

@@ -28,16 +28,16 @@ set of artifacts to go through your pipeline. Depending on how long your
 pipeline is, this could be a while.
 
 GitHubFlow is a better fit for Continuous delivery, the
-[mainline development](mainline-development.md) model means that every merged
+[mainline development](mainline-development) model means that every merged
 feature branch will be built as a *stable* version and if the build/builds go
 green then you are free to deploy to production at any time.
 
 ## Usage
 
 By default, GitVersion is set up to do Continuous Delivery on all branches but
-`develop`, which is set up with [Continuous Deployment](continuous-deployment.md).
+`develop`, which is set up with [Continuous Deployment](continuous-deployment).
 To change the mode to Continuous Delivery, change your
-[configuration](../configuration.md) to:
+[configuration](../../configuration) to:
 
 ```yaml
 mode: ContinuousDelivery

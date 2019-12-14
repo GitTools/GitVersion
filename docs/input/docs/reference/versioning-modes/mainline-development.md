@@ -4,7 +4,7 @@ Title: Mainline Development
 ---
 
 Mainline Development is enabled when using
-[GitHubFlow](../git-branching-strategies/githubflow.md) or any other strategy
+[GitHubFlow](../../git-branching-strategies/githubflow) or any other strategy
 where you develop on `master`. The main rule of mainline development is that
 **master is always in a state that it could be deployed to production**. This
 means that pull requests should not be merged until they are ready to go out.
@@ -44,17 +44,17 @@ Here is an example of what mainline development looks like:
 ![Mainline mode](../../img/mainline-mode.png)
 
 **WARNING:** This approach can slow down over time, we recommend to tag
-intermitently (maybe for minor or major releases) because then GitVersion
+intermittently (maybe for minor or major releases) because then GitVersion
 will start the version calculation from that point. Much like a snapshot in an
 event sourced system. We will probably add in warnings to tag when things are
 slowing down.
 
 ## Usage
-By default GitVersion is set up to do [Continuous Delivery](continuous-delivery.md)
+By default GitVersion is set up to do [Continuous Delivery](continuous-delivery)
 versioning on all branches but `develop` (which does
-[Continuous Deployment](continuous-deployment.md) by default). To change the
-[versioning mode](versioning-mode.md) to Mainline Development, just
-change the [configuration](../configuration.md) as such:
+[Continuous Deployment](continuous-deployment) by default). To change the
+[versioning mode](versioning-mode) to Mainline Development, just
+change the [configuration](../../configuration) as such:
 
 ```yaml
 mode: Mainline

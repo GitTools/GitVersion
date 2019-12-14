@@ -36,14 +36,14 @@ is interpreted as a root path on POSIX based operating systems.
 ## Output
 
 By default GitVersion returns a json object to stdout containing all the
-[variables](../more-info/variables.md) which GitVersion generates. This works
+[variables](../more-info/variables) which GitVersion generates. This works
 great if you want to get your build scripts to parse the json object then use
 the variables, but there is a simpler way.
 
 `GitVersion.exe /output buildserver` will change the mode of GitVersion to write
 out the variables to whatever build server it is running in. You can then use
 those variables in your build scripts or run different tools to create versioned
-NuGet packages or whatever you would like to do. See [build servers](../build-server-support/build-server-support.md)
+NuGet packages or whatever you would like to do. See [build servers](../build-server-support/build-server-support)
 for more information about this.
 
 ## Inject version metadata into the assembly
@@ -58,7 +58,7 @@ appended `.0`.
 * `AssemblyInformationalVersion` will be set to the `InformationalVersion`
 variable.
 
-Note that contrary to when using the [MSBuild Task](msbuild-task.md) the
+Note that contrary to when using the [MSBuild Task](msbuild-task) the
 attributes must already exist in the `AssemblyInfo.cs` or `AssemblyInfo.vb`
 files prior to calling GitVersion.
 
@@ -115,7 +115,7 @@ Will iterate through each file and update known attributes (`AssemblyVersion`,
 
 `/overrideconfig [key=value]` will override appropriate key from 'GitVersion.yml'.
 
-At the moment only `tag-prefix` option is supported. Read more about [Configuration](/configuration/).
+At the moment only `tag-prefix` option is supported. Read more about [Configuration](../configuration).
 
 It will not change config file 'GitVersion.yml'.
 
@@ -126,7 +126,7 @@ It will not change config file 'GitVersion.yml'.
 ## Writing version metadata in WiX format
 
 To support integration with WiX projects, use `GitVersion.exe /updatewixversionfile`.
-All the [variables](../more-info/variables.md) are written to
+All the [variables](../more-info/variables) are written to
 `GitVersion_WixVersion.wxi` under the current working directory and can be
 referenced in the WiX project files.
 
