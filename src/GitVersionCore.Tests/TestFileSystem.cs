@@ -9,7 +9,8 @@ namespace GitVersionCore.Tests
 {
     public class TestFileSystem : IFileSystem
     {
-        private readonly Dictionary<string, byte[]> fileSystem = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
+        private static IEqualityComparer<string> fileSystemCasingComparer = System.Environment.OSVersion.Platform == PlatformID.Unix ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
+        private readonly Dictionary<string, byte[]> fileSystem = new Dictionary<string, byte[]>(fileSystemCasingComparer);
 
         public void Copy(string @from, string to, bool overwrite)
         {

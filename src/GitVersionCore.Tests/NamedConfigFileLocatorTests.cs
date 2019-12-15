@@ -57,7 +57,17 @@ namespace GitVersionCore.Tests
             workingPath = DefaultRepoPath;
             SetupConfigFileContent(string.Empty, path: workingPath);
 
-            Should.NotThrow(() => { configFileLocator.Verify(workingPath, repoPath, fileSystem); });
+            Should.NotThrow(() => { configFileLocator.Verify(workingPath, repoPath); });
+        }
+
+        [Test]
+        [Platform(Exclude = "Linux,Unix")]
+        public void DoNotThrowWhenWorkingAndRepoPathsAreSame_WithDifferentCasing()
+        {
+            workingPath = DefaultRepoPath.ToLower();
+            SetupConfigFileContent(string.Empty, path: workingPath);
+
+            Should.NotThrow(() => { configFileLocator.Verify(workingPath, repoPath); });
         }
 
         [Test]
