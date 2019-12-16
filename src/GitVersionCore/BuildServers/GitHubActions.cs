@@ -1,17 +1,14 @@
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
-using GitVersion.Configuration;
 
 namespace GitVersion.BuildServers
 {
     public class GitHubActions: BuildServerBase
     {
-        private readonly IConsole console;
         // https://help.github.com/en/actions/automating-your-workflow-with-github-actions/using-environment-variables#default-environment-variables
 
-        public GitHubActions(IEnvironment environment, ILog log, IConsole console) : base(environment, log)
+        public GitHubActions(IEnvironment environment, ILog log) : base(environment, log)
         {
-            this.console = console;
         }
 
         public const string EnvironmentVariableName = "GITHUB_ACTION";
@@ -38,11 +35,9 @@ namespace GitVersion.BuildServers
             {
                 var key = $"GitVersion_{name}";
 
-                console.WriteLine($"::set-env name={key}::{value}");
-
                 return new[]
                 {
-                    $"Adding Environment Variable to future steps. name='{key}' value='{value}'"
+                    $"::set-env name={key}::{value}"
                 };
             }
 
