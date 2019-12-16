@@ -13,10 +13,5 @@ namespace GitVersion
         {
             System.Environment.SetEnvironmentVariable(variableName, value);
         }
-
-        public void SetEnvironmentVariable(string variableName, string value, EnvironmentVariableTarget target)
-        {
-            System.Environment.SetEnvironmentVariable(variableName, value, target);
-        }
     }
 }
