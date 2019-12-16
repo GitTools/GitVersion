@@ -5,8 +5,6 @@ using GitVersion.Logging;
 using NUnit.Framework;
 using Shouldly;
 using System.Collections.Generic;
-using GitVersion.Configuration;
-using NSubstitute;
 using Environment = System.Environment;
 
 namespace GitVersionCore.Tests.BuildServers
@@ -15,22 +13,13 @@ namespace GitVersionCore.Tests.BuildServers
     [TestFixture]
     public class GitHubActionsTests : TestBase
     {
-        private IConsole console;
         private IEnvironment environment;
         private ILog log;
-        private List<string> consoleLinesWritten;
 
         [SetUp]
         public void SetUp()
         {
             log = new NullLog();
-            console = Substitute.For<IConsole>();
-
-            consoleLinesWritten = new List<string>();
-            console.WhenForAnyArgs(c => c.WriteLine(default))
-                .Do(info => consoleLinesWritten.Add(info.Arg<string>()));
-            console.WhenForAnyArgs(c => c.WriteLine())
-                .Do(info => consoleLinesWritten.Add(string.Empty));
 
             environment = new TestEnvironment();
             environment.SetEnvironmentVariable("GITHUB_ACTION", Guid.NewGuid().ToString());
@@ -102,9 +91,8 @@ namespace GitVersionCore.Tests.BuildServers
         }
 
         [TestCase("Something", "1.0.0",
-            "Adding Environment Variable to future steps. name='GitVersion_Something' value='1.0.0'",
             "::set-env name=GitVersion_Something::1.0.0")]
-        public void GetSetParameterMessage(string key, string value, string expectedResult, string expectedConsole)
+        public void GetSetParameterMessage(string key, string value, string expectedResult)
         {
             // Arrange
             var buildServer = new GitHubActions(environment, log);
@@ -118,8 +106,6 @@ namespace GitVersionCore.Tests.BuildServers
             // Assert
             result.ShouldContain(s => true, 1);
             result.ShouldBeEquivalentTo(new[] { expectedResult });
-
-            consoleLinesWritten.ShouldBeEquivalentTo(new List<string> { expectedConsole });
         }
 
         [Test]
@@ -157,13 +143,11 @@ namespace GitVersionCore.Tests.BuildServers
                 "Executing GenerateSetVersionMessage for 'GitHubActions'.",
                 "",
                 "Executing GenerateBuildLogOutput for 'GitHubActions'.",
-                "Adding Environment Variable to future steps. name='GitVersion_Major' value='1.0.0'"
+                "::set-env name=GitVersion_Major::1.0.0"
             };
 
             string.Join(Environment.NewLine, list)
                 .ShouldBe(string.Join(Environment.NewLine, expected));
-
-            consoleLinesWritten.ShouldBeEquivalentTo(new List<string> { "::set-env name=GitVersion_Major::1.0.0" });
         }
 
         [Test]
