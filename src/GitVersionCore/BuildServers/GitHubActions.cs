@@ -13,10 +13,6 @@ namespace GitVersion.BuildServers
 
         public const string EnvironmentVariableName = "GITHUB_ACTION";
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
-        public override bool CanApplyToCurrentContext()
-        {
-            return !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(EnvironmentVariable));
-        }
 
         public override string GenerateSetVersionMessage(VersionVariables variables)
         {
