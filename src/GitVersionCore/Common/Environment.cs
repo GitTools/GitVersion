@@ -1,5 +1,3 @@
-using System;
-
 namespace GitVersion
 {
     public class Environment : IEnvironment
