@@ -43,11 +43,15 @@ Here is an example of what mainline development looks like:
 
 ![Mainline mode](../../img/mainline-mode.png)
 
-**WARNING:** This approach can slow down over time, we recommend to tag
+:::{.alert .alert-warning}
+**Warning**
+
+This approach can slow down over time, we recommend to tag
 intermittently (maybe for minor or major releases) because then GitVersion
 will start the version calculation from that point. Much like a snapshot in an
 event sourced system. We will probably add in warnings to tag when things are
 slowing down.
+:::
 
 ## Usage
 By default GitVersion is set up to do [Continuous Delivery](continuous-delivery)

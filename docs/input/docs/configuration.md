@@ -16,8 +16,12 @@ working directory. It can be the root repository directory or any subdirectory
 in case you have a single repository for more than one project or are restricted
 to commit into a subdirectory.
 
-**Note:** GitVersion ships with internal default configuration which works with
+:::{.alert .alert-info}
+**Note**
+
+GitVersion ships with internal default configuration which works with
 GitHubFlow and GitFlow, probably with others too.
+:::
 
 The *develop* branch is set to `ContinuousDeployment` mode by default as we have
 found that is generally what is needed when using GitFlow.
@@ -246,7 +250,11 @@ Custom merge message formats are evaluated _before_ any built in formats.
 
 Then we have branch specific configuration, which looks something like this:
 
-**NOTE: ** v4 changed from using regexes for keys, to named configs
+:::{.alert .alert-info}
+**Note**
+
+v4 changed from using regexes for keys, to named configs
+:::
 
 If you have branch specific configuration upgrading to v4 will force you to
 upgrade.
