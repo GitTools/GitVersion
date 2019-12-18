@@ -7,9 +7,13 @@ If you want a command line version installed on your machine then you can use
 [Chocolatey](http://chocolatey.org) or [Homebrew](https://brew.sh/) to install
 GitVersion.
 
-> **Hint**: While documentation and help use '/' as command prefix the hyphen '-'
+:::{.alert .alert-info}
+**Hint**
+
+While documentation and help use '/' as command prefix the hyphen '-'
 is supported as well and is a better alternative for usage on \*nix systems.
 Example: *-output json vs. /output json*
+:::
 
 ## Chocolatey
 

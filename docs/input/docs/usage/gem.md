@@ -5,8 +5,12 @@ Title: Gem
 
 Just a gem wrapper around the command line to make it easier to consume from Rake.
 
-**NOTE** This is currently not being pushed.. Please get in touch if you are
-using this
+:::{.alert .alert-info}
+**Note**
+
+This is currently not being pushed. Please get in touch if you are
+using this.
+:::
 
 If you want a Ruby gem version installed on your machine then you can use
 [Bundler](http://bundler.io/) or [Gem](http://rubygems.org/) to install the
@@ -45,5 +49,9 @@ include GitVersion
 puts git_version('C:/read/info/from/another/repository').sha
 ```
 
-**Note:** Mono is not currently supported due to downstream dependencies on
+:::{.alert .alert-info}
+**Note**
+
+Mono is not currently supported due to downstream dependencies on
 libgit2. The Gem can only be used with the .NET framework
+:::

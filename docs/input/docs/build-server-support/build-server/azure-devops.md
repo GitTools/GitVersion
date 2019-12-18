@@ -135,12 +135,16 @@ to configure.
 
 If GitVersion does not find any substitutions it will just default to using `FullSemVer`
 
-**IMPORTANT:** If you currently use `$(rev:.r)` in your build number, that won't
+:::{.alert .alert-danger}
+**Important**
+
+If you currently use `$(rev:.r)` in your build number, that won't
 work correctly if you
 use GitVersion variables as well due to the delayed expansion of the GitVersion
 vars. Instead, you might be able to use `$(GitVersion_BuildMetaData)` to achieve
 a similar result.  See [Variables](../../more-info/variables) for more info on the
 variables.
+:::
 
 #### Known limitations
 

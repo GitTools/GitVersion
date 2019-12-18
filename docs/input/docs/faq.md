@@ -41,9 +41,13 @@ way.
 So `1.0.1-rc.1+5` would become `1.0.1-rc0001`, this takes into account
 characters which are not allowed and NuGets crap sorting.
 
-**note: ** The `NuGetVersion` variable is floating, so when NuGet 3.0 comes out
+:::{.alert .alert-info}
+**Note**
+
+The `NuGetVersion` variable is floating, so when NuGet 3.0 comes out
 with proper SemVer support GitVersion will switch this variable to a proper
 SemVer.
+:::
 
 If you want to fix the version, use `NuGetVersionV2` which will stay the same
 after NuGet 3.0 comes out
