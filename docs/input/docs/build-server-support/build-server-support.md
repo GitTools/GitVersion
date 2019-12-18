@@ -1,6 +1,7 @@
 ---
 Order: 10
 Title: Introduction
+Description: Information about what GitVersion can do on Build Servers
 ---
 
 GitVersion has support for quite a few build servers out of the box. Currently we support:
