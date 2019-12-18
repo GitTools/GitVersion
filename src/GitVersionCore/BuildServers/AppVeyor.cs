@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using GitVersion.OutputVariables;
 using GitVersion.Logging;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace GitVersion.BuildServers
 {
@@ -28,8 +29,9 @@ namespace GitVersion.BuildServers
                 version = $"{variables.FullSemVer}.build.{buildNumber}",
             };
 
-            var stringContent = new StringContent(JsonConvert.SerializeObject(body));
-            httpClient.PutAsync("api/build", stringContent).Wait();
+            var stringContent = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+            var response = httpClient.PutAsync("api/build", stringContent).GetAwaiter().GetResult();
+            response.EnsureSuccessStatusCode();
 
             return $"Set AppVeyor build number to '{variables.FullSemVer}'.";
         }
@@ -44,8 +46,9 @@ namespace GitVersion.BuildServers
                 value = $"{value}"
             };
 
-            var stringContent = new StringContent(JsonConvert.SerializeObject(body));
-            httpClient.PostAsync("api/build/variables", stringContent).Wait();
+            var stringContent = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+            var response = httpClient.PostAsync("api/build/variables", stringContent).GetAwaiter().GetResult();
+            response.EnsureSuccessStatusCode();
 
             return new[]
             {
@@ -55,12 +58,11 @@ namespace GitVersion.BuildServers
 
         private HttpClient GetHttpClient()
         {
-            var headerValue = new MediaTypeWithQualityHeaderValue("application/json");
             var httpClient = new HttpClient
             {
                 BaseAddress = new Uri(Environment.GetEnvironmentVariable("APPVEYOR_API_URL"))
             };
-            httpClient.DefaultRequestHeaders.Accept.Add(headerValue);
+
             return httpClient;
         }
 
