@@ -7,9 +7,11 @@
 #addin "nuget:?package=Cake.Coverlet&version=2.3.4"
 #addin "nuget:?package=Cake.Docker&version=0.10.1"
 #addin "nuget:?package=Cake.Gem&version=0.8.1"
+#addin "nuget:?package=Cake.Git&version=0.21.0"
 #addin "nuget:?package=Cake.Gitter&version=0.11.1"
 #addin "nuget:?package=Cake.Incubator&version=5.1.0"
 #addin "nuget:?package=Cake.Json&version=4.0.0"
+#addin "nuget:?package=Cake.Kudu&version=0.10.1"
 #addin "nuget:?package=Cake.Npm&version=0.17.0"
 #addin "nuget:?package=Cake.Tfx&version=0.9.1"
 #addin "nuget:?package=Cake.Wyam&version=2.2.9"
@@ -22,6 +24,7 @@
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
 #tool "nuget:?package=nuget.commandline&version=5.2.0"
 #tool "nuget:?package=Wyam&version=2.2.9"
+#tool "nuget:?package=KuduSync.NET&version=1.5.2"
 
 // Install .NET Core Global tools.
 #tool "dotnet:?package=Codecov.Tool&version=1.7.2"
@@ -143,6 +146,7 @@ Task("Publish")
     .IsDependentOn("Publish-NuGet")
     .IsDependentOn("Publish-Chocolatey")
     .IsDependentOn("Publish-Gem")
+    .IsDependentOn("Publish-Documentation")
     .Finally(() =>
 {
     if (publishingError)
