@@ -12,9 +12,13 @@ understand this page as it will help you start using GitVersion effectively!
 
 GitVersion works on Mac, Linux with Mono and Windows.
 
-Tip: If you get `System.TypeInitializationException: The type initializer for 'LibGit2Sharp.Core.NativeMethods' threw an exception. ---> System.DllNotFoundException: lib/linux/x86_64/libgit2-baa87df.so`
+:::{.alert .alert-info}
+**Tip**
+
+If you get `System.TypeInitializationException: The type initializer for 'LibGit2Sharp.Core.NativeMethods' threw an exception. ---> System.DllNotFoundException: lib/linux/x86_64/libgit2-baa87df.so`
 
 You likely need to install `libcurl3`. Run `sudo apt-get install libcurl3`
+:::
 
 ## Assumptions/Rules
 
