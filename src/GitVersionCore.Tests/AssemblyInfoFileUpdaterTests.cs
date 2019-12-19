@@ -10,6 +10,7 @@ using GitVersion.Extensions.VersionAssemblyInfoResources;
 using GitVersion;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests
 {

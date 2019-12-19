@@ -1,7 +1,7 @@
 using System;
 using GitVersion.Logging;
 
-namespace GitVersionCore.Tests
+namespace GitVersionCore.Tests.Helpers
 {
     public class TestLogAppender : ILogAppender
     {

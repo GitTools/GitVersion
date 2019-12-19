@@ -2,6 +2,7 @@ using NUnit.Framework;
 using GitVersion.BuildServers;
 using GitVersion;
 using GitVersion.Logging;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests.BuildServers
 {

@@ -1,6 +1,7 @@
 using GitVersion.BuildServers;
 using GitVersion;
 using GitVersion.Logging;
+using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;
 

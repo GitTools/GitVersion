@@ -5,6 +5,7 @@ using GitVersion.Logging;
 using NUnit.Framework;
 using Shouldly;
 using System.Collections.Generic;
+using GitVersionCore.Tests.Helpers;
 using Environment = System.Environment;
 
 namespace GitVersionCore.Tests.BuildServers

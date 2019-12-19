@@ -13,6 +13,7 @@ using GitVersion.Extensions;
 using GitVersion;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
+using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.Options;
 
 namespace GitVersionCore.Tests

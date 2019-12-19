@@ -10,6 +10,7 @@ using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.VersionCalculation;
 using Microsoft.Extensions.Options;
 using GitVersion.Extensions;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests
 {

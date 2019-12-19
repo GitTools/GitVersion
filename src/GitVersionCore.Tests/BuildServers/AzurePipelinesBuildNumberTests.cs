@@ -3,6 +3,7 @@ using Shouldly;
 using GitVersion.BuildServers;
 using GitVersion;
 using GitVersion.Logging;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests.BuildServers
 {
@@ -29,7 +30,6 @@ namespace GitVersionCore.Tests.BuildServers
         {
             environment.SetEnvironmentVariable(key, null);
         }
-
 
         [TestCase("$(GitVersion.FullSemVer)", "1.0.0", "1.0.0")]
         [TestCase("$(GITVERSION_FULLSEMVER)", "1.0.0", "1.0.0")]

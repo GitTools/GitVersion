@@ -3,7 +3,7 @@ using GitTools.Testing;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
-using GitVersionExe.Tests.Helpers;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionExe.Tests
 {

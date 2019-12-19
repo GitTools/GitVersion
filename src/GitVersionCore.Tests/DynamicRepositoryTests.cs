@@ -7,6 +7,7 @@ using NUnit.Framework;
 using GitVersion.Logging;
 using GitVersion.OutputVariables;
 using GitVersion.VersionCalculation;
+using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.VersionCalculation;
 using Microsoft.Extensions.Options;
 

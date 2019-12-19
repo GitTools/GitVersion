@@ -14,6 +14,22 @@
         <Content Include="Approved\**\*.txt" />
     </ItemGroup>
     <ItemGroup>
+      <Compile Remove="Common\**" />
+      <EmbeddedResource Remove="Common\**" />
+      <None Remove="Common\**" />
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Include="..\GitVersionCore.Tests\Helpers\DirectoryHelper.cs" Link="Helpers\DirectoryHelper.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\GitVersionCoreTestModule.cs" Link="Helpers\GitVersionCoreTestModule.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\PathHelper.cs" Link="Helpers\PathHelper.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\ServiceCollectionExtensions.cs" Link="Helpers\ServiceCollectionExtensions.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\TestEffectiveConfiguration.cs" Link="Helpers\TestEffectiveConfiguration.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\TestEnvironment.cs" Link="Helpers\TestEnvironment.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\TestFileSystem.cs" Link="Helpers\TestFileSystem.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\TestLogAppender.cs" Link="Helpers\TestLogAppender.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\TestStream.cs" Link="Helpers\TestStream.cs" />
+    </ItemGroup>
+    <ItemGroup>
       <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />
       <ProjectReference Include="..\GitVersionTask.MsBuild\GitVersionTask.MsBuild.csproj" />
       <ProjectReference Include="..\GitVersionTask\GitVersionTask.csproj" />

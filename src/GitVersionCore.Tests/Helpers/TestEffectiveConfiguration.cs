@@ -1,12 +1,12 @@
-using GitVersion;
-using GitVersion.VersionFilters;
 using System.Collections.Generic;
 using System.Linq;
+using GitVersion;
 using GitVersion.Configuration;
-using GitVersion.VersioningModes;
 using GitVersion.Extensions;
+using GitVersion.VersionFilters;
+using GitVersion.VersioningModes;
 
-namespace GitVersionCore.Tests
+namespace GitVersionCore.Tests.Helpers
 {
     public class TestEffectiveConfiguration : EffectiveConfiguration
     {

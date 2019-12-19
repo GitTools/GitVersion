@@ -7,6 +7,7 @@ using GitVersion.OutputVariables;
 using GitVersion;
 using GitVersion.VersionCalculation;
 using GitVersion.VersioningModes;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests
 {

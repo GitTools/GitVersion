@@ -6,6 +6,7 @@ using GitVersion.OutputVariables;
 using GitVersion;
 using GitVersion.Logging;
 using GitVersion.VersionCalculation;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests.BuildServers
 {
