@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+	<channel>
+		<title>GitVersion</title>
+		<link>http://gittools.github.io/GitVersion</link>
+		<description />
+		<copyright>2019</copyright>
+		<pubDate>Fri, 20 Dec 2019 11:08:45 GMT</pubDate>
+		<lastBuildDate>Fri, 20 Dec 2019 11:08:45 GMT</lastBuildDate>
+	</channel>
+</rss>
