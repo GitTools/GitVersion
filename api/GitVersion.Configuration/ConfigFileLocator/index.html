@@ -206,8 +206,8 @@
 								<dt>Derived Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.Configuration/DefaultConfigFileLocator">Default<wbr>Config<wbr>File<wbr>Locator</a></li>								
 											<li><a href="/api/GitVersion.Configuration/NamedConfigFileLocator">Named<wbr>Config<wbr>File<wbr>Locator</a></li>								
+											<li><a href="/api/GitVersion.Configuration/DefaultConfigFileLocator">Default<wbr>Config<wbr>File<wbr>Locator</a></li>								
 									</ul>
 								</dd>			
 							
@@ -221,10 +221,10 @@
 	click Interface0 "/api/GitVersion.Configuration/IConfigFileLocator"
 	Type["ConfigFileLocator"]
 class Type type-node
-	Derived0["DefaultConfigFileLocator"]--&gt;Type
-	click Derived0 "/api/GitVersion.Configuration/DefaultConfigFileLocator"
-	Derived1["NamedConfigFileLocator"]--&gt;Type
-	click Derived1 "/api/GitVersion.Configuration/NamedConfigFileLocator"
+	Derived0["NamedConfigFileLocator"]--&gt;Type
+	click Derived0 "/api/GitVersion.Configuration/NamedConfigFileLocator"
+	Derived1["DefaultConfigFileLocator"]--&gt;Type
+	click Derived1 "/api/GitVersion.Configuration/DefaultConfigFileLocator"
 
 						</div>
 					</div>
@@ -368,7 +368,16 @@ class Type type-node
             </footer>
         </div>
         <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>
-        
+        <div class="github-button">
+    <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
+</div>
+<script>
+    ((window.gitter = {}).chat = {}).options = {
+        room: 'GitTools/GitVersion'
+    };
+</script>
+<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="" defer=""></script>
+
         <script>           
             // Close the sidebar if we select an anchor link
             $(".main-sidebar a[href^='#']:not('.expand')").click(function(){

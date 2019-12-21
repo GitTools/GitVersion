@@ -183,8 +183,8 @@
 											<li><a href="/api/GitVersion.VersionCalculation.BaseVersionCalculators/FallbackVersionStrategy">Fallback<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation.BaseVersionCalculators/TaggedCommitVersionStrategy">Tagged<wbr>Commit<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation.BaseVersionCalculators/VersionInBranchNameVersionStrategy">Version<wbr>In<wbr>Branch<wbr>Name<wbr>Version<wbr>Strategy</a></li>								
-											<li><a href="/api/GitVersion.VersionCalculation.BaseVersionCalculators/MergeMessageVersionStrategy">Merge<wbr>Message<wbr>Version<wbr>Strategy</a></li>								
 											<li><a href="/api/GitVersion.VersionCalculation.BaseVersionCalculators/TrackReleaseBranchesVersionStrategy">Track<wbr>Release<wbr>Branches<wbr>Version<wbr>Strategy</a></li>								
+											<li><a href="/api/GitVersion.VersionCalculation.BaseVersionCalculators/MergeMessageVersionStrategy">Merge<wbr>Message<wbr>Version<wbr>Strategy</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -202,10 +202,10 @@ class Type type-node
 	click Implementing2 "/api/GitVersion.VersionCalculation.BaseVersionCalculators/TaggedCommitVersionStrategy"
 	Implementing3["VersionInBranchNameVersionStrategy"]-.-&gt;Type
 	click Implementing3 "/api/GitVersion.VersionCalculation.BaseVersionCalculators/VersionInBranchNameVersionStrategy"
-	Implementing4["MergeMessageVersionStrategy"]-.-&gt;Type
-	click Implementing4 "/api/GitVersion.VersionCalculation.BaseVersionCalculators/MergeMessageVersionStrategy"
-	Implementing5["TrackReleaseBranchesVersionStrategy"]-.-&gt;Type
-	click Implementing5 "/api/GitVersion.VersionCalculation.BaseVersionCalculators/TrackReleaseBranchesVersionStrategy"
+	Implementing4["TrackReleaseBranchesVersionStrategy"]-.-&gt;Type
+	click Implementing4 "/api/GitVersion.VersionCalculation.BaseVersionCalculators/TrackReleaseBranchesVersionStrategy"
+	Implementing5["MergeMessageVersionStrategy"]-.-&gt;Type
+	click Implementing5 "/api/GitVersion.VersionCalculation.BaseVersionCalculators/MergeMessageVersionStrategy"
 
 						</div>
 					</div>
@@ -269,7 +269,16 @@ class Type type-node
             </footer>
         </div>
         <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>
-        
+        <div class="github-button">
+    <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
+</div>
+<script>
+    ((window.gitter = {}).chat = {}).options = {
+        room: 'GitTools/GitVersion'
+    };
+</script>
+<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="" defer=""></script>
+
         <script>           
             // Close the sidebar if we select an anchor link
             $(".main-sidebar a[href^='#']:not('.expand')").click(function(){

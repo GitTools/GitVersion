@@ -218,8 +218,8 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.Configuration.Init/GitVersionInitModule">GitVersionInitModule</a></li>								
 											<li><a href="/api/GitVersion/GitVersionCoreModule">GitVersionCoreModule</a></li>								
+											<li><a href="/api/GitVersion.Configuration.Init/GitVersionInitModule">GitVersionInitModule</a></li>								
 											<li><a href="/api/GitVersion/GitVersionExeModule">GitVersionExeModule</a></li>								
 									</ul>
 								</dd>				
@@ -230,10 +230,10 @@
 							graph BT
 	Type["IGitVersionModule"]
 class Type type-node
-	Implementing0["GitVersionInitModule"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.Configuration.Init/GitVersionInitModule"
-	Implementing1["GitVersionCoreModule"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion/GitVersionCoreModule"
+	Implementing0["GitVersionCoreModule"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion/GitVersionCoreModule"
+	Implementing1["GitVersionInitModule"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.Configuration.Init/GitVersionInitModule"
 	Implementing2["GitVersionExeModule"]-.-&gt;Type
 	click Implementing2 "/api/GitVersion/GitVersionExeModule"
 
@@ -297,7 +297,16 @@ class Type type-node
             </footer>
         </div>
         <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>
-        
+        <div class="github-button">
+    <a href="https://github.com/GitTools/GitVersion"><i class="fa fa-github"></i> GitHub</a>
+</div>
+<script>
+    ((window.gitter = {}).chat = {}).options = {
+        room: 'GitTools/GitVersion'
+    };
+</script>
+<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async="" defer=""></script>
+
         <script>           
             // Close the sidebar if we select an anchor link
             $(".main-sidebar a[href^='#']:not('.expand')").click(function(){
