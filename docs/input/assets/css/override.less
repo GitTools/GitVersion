@@ -1,0 +1,51 @@
+@font-family-sans-serif:  "Roboto", Helvetica, Arial, sans-serif;
+
+/* For Gitter and GitHub */
+.bottom-footer {
+	margin-bottom: 40px !important;  // Make room for Gitter and GitHub buttons
+}
+
+.gitter-open-chat-button {
+	background-color: #3c8dbc;
+	font-family: @font-family-sans-serif;
+	letter-spacing: normal;
+	right: 90px;
+}
+
+.gitter-open-chat-button:focus, .gitter-open-chat-button:hover,
+.github-button:focus, .github-button:hover,
+{
+	background-color: #4EABDD;
+	color: #fff;
+}
+
+.gitter-chat-embed {
+	top: 49px;
+	border-top: 1px solid #000;
+	z-index: 10000;
+}
+
+.github-button {
+	z-index: 100;
+	position: fixed;
+	bottom: 0px;
+	right: 240px;
+	padding: 1em 3em;
+	background-color: #367fa9;
+	border: 0;
+	border-top-left-radius: 0.5em;
+	border-top-right-radius: 0.5em;
+	font-family: sans-serif;
+	font-size: 9pt;
+	text-transform: uppercase;
+	text-align: center;
+	text-decoration: none;
+	cursor: pointer;
+	cursor: hand;
+	-webkit-transition: all .3s ease;
+	transition: all .3s ease;
+	color: #fff;
+	a, a:active, a:hover, a:focus {
+		color: #fff;
+	}
+}
