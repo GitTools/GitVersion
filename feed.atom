@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-	<id>http://gittools.github.io/GitVersion</id>
+	<id>/</id>
 	<title>GitVersion</title>
-	<link rel="self" href="http://gittools.github.io/GitVersion" />
+	<link rel="self" href="/" />
 	<rights>2019</rights>
-	<updated>2019-12-20T11:08:45Z</updated>
+	<updated>2019-12-21T09:19:19Z</updated>
 </feed>
