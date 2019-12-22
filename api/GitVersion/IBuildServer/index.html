@@ -134,8 +134,21 @@
 			<li class="header">Namespace</li>
 		<li><a href="/api/GitVersion">GitVersion</a></li>
 		<li role="separator" class="divider"></li>
-			<li class="header">Struct Types</li>
-				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
+			<li class="header">Interface Types</li>
+				<li><a href="/api/GitVersion/IArgumentParser">IArgumentParser</a></li>
+				<li class="selected"><a href="/api/GitVersion/IBuildServer">IBuildServer</a></li>
+				<li><a href="/api/GitVersion/IBuildServerResolver">IBuildServerResolver</a></li>
+				<li><a href="/api/GitVersion/IEnvironment">IEnvironment</a></li>
+				<li><a href="/api/GitVersion/IExecCommand">IExecCommand</a></li>
+				<li><a href="/api/GitVersion/IFileSystem">IFileSystem</a></li>
+				<li><a href="/api/GitVersion/IGitPreparer">IGitPreparer</a></li>
+				<li><a href="/api/GitVersion/IGitVersionCalculator">I<wbr>Git<wbr>Version<wbr>Calculator</a></li>
+				<li><a href="/api/GitVersion/IGitVersionExecutor">IGitVersionExecutor</a></li>
+				<li><a href="/api/GitVersion/IGitVersionFinder">IGitVersionFinder</a></li>
+				<li><a href="/api/GitVersion/IGitVersionModule">IGitVersionModule</a></li>
+				<li><a href="/api/GitVersion/IHelpWriter">IHelpWriter</a></li>
+				<li><a href="/api/GitVersion/IThreadSleep">IThreadSleep</a></li>
+				<li><a href="/api/GitVersion/IVersionWriter">IVersionWriter</a></li>
 			<li class="header">Class Types</li>
 				<li><a href="/api/GitVersion/ArgumentParser">ArgumentParser</a></li>
 				<li><a href="/api/GitVersion/Arguments">Arguments</a></li>
@@ -164,21 +177,8 @@
 				<li><a href="/api/GitVersion/SemanticVersionFormatValues">Semantic<wbr>Version<wbr>Format<wbr>Values</a></li>
 				<li><a href="/api/GitVersion/SemanticVersionPreReleaseTag">Semantic<wbr>Version<wbr>Pre<wbr>Release<wbr>Tag</a></li>
 				<li><a href="/api/GitVersion/VersionWriter">VersionWriter</a></li>
-			<li class="header">Interface Types</li>
-				<li><a href="/api/GitVersion/IArgumentParser">IArgumentParser</a></li>
-				<li class="selected"><a href="/api/GitVersion/IBuildServer">IBuildServer</a></li>
-				<li><a href="/api/GitVersion/IBuildServerResolver">IBuildServerResolver</a></li>
-				<li><a href="/api/GitVersion/IEnvironment">IEnvironment</a></li>
-				<li><a href="/api/GitVersion/IExecCommand">IExecCommand</a></li>
-				<li><a href="/api/GitVersion/IFileSystem">IFileSystem</a></li>
-				<li><a href="/api/GitVersion/IGitPreparer">IGitPreparer</a></li>
-				<li><a href="/api/GitVersion/IGitVersionCalculator">I<wbr>Git<wbr>Version<wbr>Calculator</a></li>
-				<li><a href="/api/GitVersion/IGitVersionExecutor">IGitVersionExecutor</a></li>
-				<li><a href="/api/GitVersion/IGitVersionFinder">IGitVersionFinder</a></li>
-				<li><a href="/api/GitVersion/IGitVersionModule">IGitVersionModule</a></li>
-				<li><a href="/api/GitVersion/IHelpWriter">IHelpWriter</a></li>
-				<li><a href="/api/GitVersion/IThreadSleep">IThreadSleep</a></li>
-				<li><a href="/api/GitVersion/IVersionWriter">IVersionWriter</a></li>
+			<li class="header">Struct Types</li>
+				<li><a href="/api/GitVersion/BranchCommit">BranchCommit</a></li>
 			<li class="header">Enum Types</li>
 				<li><a href="/api/GitVersion/CommitMessageIncrementMode">Commit<wbr>Message<wbr>Increment<wbr>Mode</a></li>
 				<li><a href="/api/GitVersion/IncrementStrategy">IncrementStrategy</a></li>
@@ -218,19 +218,19 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.BuildServers/Drone">Drone</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/AzurePipelines">AzurePipelines</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/GitLabCi">GitLabCi</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/AppVeyor">AppVeyor</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/CodeBuild">CodeBuild</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/TravisCi">TravisCi</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/Jenkins">Jenkins</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/GitHubActions">GitHubActions</a></li>								
-											<li><a href="/api/GitVersion/BuildServerBase">BuildServerBase</a></li>								
 											<li><a href="/api/GitVersion.BuildServers/MyGet">MyGet</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/AzurePipelines">AzurePipelines</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/TravisCi">TravisCi</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/AppVeyor">AppVeyor</a></li>								
+											<li><a href="/api/GitVersion/BuildServerBase">BuildServerBase</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/Jenkins">Jenkins</a></li>								
 											<li><a href="/api/GitVersion.BuildServers/EnvRun">EnvRun</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/TeamCity">TeamCity</a></li>								
 											<li><a href="/api/GitVersion.BuildServers/ContinuaCi">ContinuaCi</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/TeamCity">TeamCity</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/GitHubActions">GitHubActions</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/CodeBuild">CodeBuild</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/Drone">Drone</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/GitLabCi">GitLabCi</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -240,32 +240,32 @@
 							graph BT
 	Type["IBuildServer"]
 class Type type-node
-	Implementing0["Drone"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.BuildServers/Drone"
+	Implementing0["MyGet"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.BuildServers/MyGet"
 	Implementing1["AzurePipelines"]-.-&gt;Type
 	click Implementing1 "/api/GitVersion.BuildServers/AzurePipelines"
-	Implementing2["GitLabCi"]-.-&gt;Type
-	click Implementing2 "/api/GitVersion.BuildServers/GitLabCi"
+	Implementing2["TravisCi"]-.-&gt;Type
+	click Implementing2 "/api/GitVersion.BuildServers/TravisCi"
 	Implementing3["AppVeyor"]-.-&gt;Type
 	click Implementing3 "/api/GitVersion.BuildServers/AppVeyor"
-	Implementing4["CodeBuild"]-.-&gt;Type
-	click Implementing4 "/api/GitVersion.BuildServers/CodeBuild"
-	Implementing5["TravisCi"]-.-&gt;Type
-	click Implementing5 "/api/GitVersion.BuildServers/TravisCi"
-	Implementing6["Jenkins"]-.-&gt;Type
-	click Implementing6 "/api/GitVersion.BuildServers/Jenkins"
-	Implementing7["GitHubActions"]-.-&gt;Type
-	click Implementing7 "/api/GitVersion.BuildServers/GitHubActions"
-	Implementing8["BuildServerBase"]-.-&gt;Type
-	click Implementing8 "/api/GitVersion/BuildServerBase"
-	Implementing9["MyGet"]-.-&gt;Type
-	click Implementing9 "/api/GitVersion.BuildServers/MyGet"
-	Implementing10["EnvRun"]-.-&gt;Type
-	click Implementing10 "/api/GitVersion.BuildServers/EnvRun"
-	Implementing11["TeamCity"]-.-&gt;Type
-	click Implementing11 "/api/GitVersion.BuildServers/TeamCity"
-	Implementing12["ContinuaCi"]-.-&gt;Type
-	click Implementing12 "/api/GitVersion.BuildServers/ContinuaCi"
+	Implementing4["BuildServerBase"]-.-&gt;Type
+	click Implementing4 "/api/GitVersion/BuildServerBase"
+	Implementing5["Jenkins"]-.-&gt;Type
+	click Implementing5 "/api/GitVersion.BuildServers/Jenkins"
+	Implementing6["EnvRun"]-.-&gt;Type
+	click Implementing6 "/api/GitVersion.BuildServers/EnvRun"
+	Implementing7["ContinuaCi"]-.-&gt;Type
+	click Implementing7 "/api/GitVersion.BuildServers/ContinuaCi"
+	Implementing8["TeamCity"]-.-&gt;Type
+	click Implementing8 "/api/GitVersion.BuildServers/TeamCity"
+	Implementing9["GitHubActions"]-.-&gt;Type
+	click Implementing9 "/api/GitVersion.BuildServers/GitHubActions"
+	Implementing10["CodeBuild"]-.-&gt;Type
+	click Implementing10 "/api/GitVersion.BuildServers/CodeBuild"
+	Implementing11["Drone"]-.-&gt;Type
+	click Implementing11 "/api/GitVersion.BuildServers/Drone"
+	Implementing12["GitLabCi"]-.-&gt;Type
+	click Implementing12 "/api/GitVersion.BuildServers/GitLabCi"
 
 						</div>
 					</div>
