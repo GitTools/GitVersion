@@ -22,13 +22,13 @@ namespace GitVersionCore.Tests.BuildServers
             log = new NullLog();
 
             environment = new TestEnvironment();
-            environment.SetEnvironmentVariable("GITHUB_ACTIONS", "true");
+            environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, "true");
         }
 
         [TearDown]
         public void TearDown()
         {
-            environment.SetEnvironmentVariable("GITHUB_ACTIONS", null);
+            environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, null);
         }
 
         [Test]
@@ -48,7 +48,7 @@ namespace GitVersionCore.Tests.BuildServers
         public void CanApplyToCurrentContextShouldBeFalseWhenEnvironmentVariableIsNotSet()
         {
             // Arrange
-            environment.SetEnvironmentVariable("GITHUB_ACTIONS", "");
+            environment.SetEnvironmentVariable(GitHubActions.EnvironmentVariableName, "");
             var buildServer = new GitHubActions(environment, log);
 
             // Act
