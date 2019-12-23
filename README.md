@@ -14,7 +14,6 @@ works out the [semantic version][semver] of the commit being built.
 
 |                                       |                Stable                                              |                                Pre-release                                 |
 | ------------------------------------: | :----------------------------------------------------------------: | :------------------------------------------------------------------------: |
-|                              **Docs** |                            [![Docs][docs-badge]][docs]             |                            [![Docs][docs-pre-badge]][docs-pre]             |
 |                    **GitHub Release** |                [![GitHub release][gh-rel-badge]][gh-rel]           |                                     -                                      |
 |               **GitVersion.Portable** |                     [![Chocolatey][choco-badge]][choco]            |                     [![Chocolatey][choco-pre-badge]][choco]                |
 |                    **GitVersionTask** |                            [![NuGet][gvt-badge]][gvt]              |                            [![NuGet][gvt-pre-badge]][gvt]                  |
@@ -74,10 +73,7 @@ from The Noun Project.
 [travis-badge]:                    https://travis-ci.org/GitTools/GitVersion.svg?branch=master
 [codecov]:                         https://codecov.io/gh/GitTools/GitVersion
 [codecov-badge]:                   https://codecov.io/gh/GitTools/GitVersion/branch/master/graph/badge.svg
-[docs]:                            http://gitversion.readthedocs.org/en/stable/
-[docs-badge]:                      https://readthedocs.org/projects/gitversion/badge/?version=stable
-[docs-pre]:                        http://gitversion.readthedocs.org/en/latest/
-[docs-pre-badge]:                  https://readthedocs.org/projects/gitversion/badge/?version=latest
+[docs]:                            https://gitversion.net/docs/
 [gh-rel]:                          https://github.com/GitTools/GitVersion/releases/latest
 [gh-rel-badge]:                    https://img.shields.io/github/release/gittools/gitversion.svg
 [choco]:                           https://chocolatey.org/packages/GitVersion.Portable
@@ -97,11 +93,11 @@ from The Noun Project.
 [brew]:                            http://brew.sh/
 [brew-badge]:                      https://img.shields.io/homebrew/v/gitversion.svg
 [contribute]:                      https://github.com/GitTools/GitVersion/blob/master/CONTRIBUTING.md
-[why]:                             http://gitversion.readthedocs.org/en/latest/why
-[usage]:                           http://gitversion.readthedocs.org/en/latest/usage/usage/
-[how]:                             http://gitversion.readthedocs.org/en/latest/more-info/how-it-works/
-[faq]:                             http://gitversion.readthedocs.org/en/latest/faq/
-[who]:                             http://gitversion.readthedocs.org/en/latest/who/
+[why]:                             https://gitversion.net/docs/why
+[usage]:                           https://gitversion.net/docs/usage/usage/
+[how]:                             https://gitversion.net/docs/more-info/how-it-works/
+[faq]:                             https://gitversion.net/docs/faq/
+[who]:                             https://gitversion.net/docs/who/
 [gv-in-action]:                    https://raw.github.com/GitTools/GitVersion/master/docs/input/docs/img/README.png
 [dockerhub]:                       https://hub.docker.com/r/gittools/gitversion/
 [dockerhub-badge]:                 https://img.shields.io/docker/pulls/gittools/gitversion.svg
