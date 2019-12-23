@@ -11,7 +11,7 @@ namespace GitVersion.BuildServers
         {
         }
 
-        public const string EnvironmentVariableName = "GITHUB_ACTION";
+        public const string EnvironmentVariableName = "GITHUB_ACTIONS";
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
         public override string GenerateSetVersionMessage(VersionVariables variables)
