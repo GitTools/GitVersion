@@ -94,10 +94,10 @@ from The Noun Project.
 [brew-badge]:                      https://img.shields.io/homebrew/v/gitversion.svg
 [contribute]:                      https://github.com/GitTools/GitVersion/blob/master/CONTRIBUTING.md
 [why]:                             https://gitversion.net/docs/why
-[usage]:                           https://gitversion.net/docs/usage/usage/
-[how]:                             https://gitversion.net/docs/more-info/how-it-works/
-[faq]:                             https://gitversion.net/docs/faq/
-[who]:                             https://gitversion.net/docs/who/
+[usage]:                           https://gitversion.net/docs/usage/usage
+[how]:                             https://gitversion.net/docs/more-info/how-it-works
+[faq]:                             https://gitversion.net/docs/faq
+[who]:                             https://gitversion.net/docs/who
 [gv-in-action]:                    https://raw.github.com/GitTools/GitVersion/master/docs/input/docs/img/README.png
 [dockerhub]:                       https://hub.docker.com/r/gittools/gitversion/
 [dockerhub-badge]:                 https://img.shields.io/docker/pulls/gittools/gitversion.svg
