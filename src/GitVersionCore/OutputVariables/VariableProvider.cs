@@ -5,6 +5,7 @@ using GitVersion.VersionCalculation;
 using GitVersion.VersioningModes;
 using GitVersion.Configuration;
 using GitVersion.Helpers;
+using GitVersion.Extensions;
 
 namespace GitVersion.OutputVariables
 {
@@ -71,7 +72,7 @@ namespace GitVersion.OutputVariables
                 semverFormatValues.BuildMetaData,
                 semverFormatValues.BuildMetaDataPadded,
                 semverFormatValues.FullBuildMetaData,
-                semverFormatValues.BranchName,
+                semverFormatValues.BranchName?.RegexReplace("[^a-zA-Z0-9-]", "-"),
                 semverFormatValues.Sha,
                 semverFormatValues.ShortSha,
                 semverFormatValues.MajorMinorPatch,
