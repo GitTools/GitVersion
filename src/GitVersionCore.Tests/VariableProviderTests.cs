@@ -1,14 +1,15 @@
-using GitVersion;
+using System;
 using GitVersion.Logging;
-using GitVersion.OutputFormatters;
-using GitVersion.OutputVariables;
-using GitVersion.VersionCalculation;
-using GitVersion.VersioningModes;
 using NUnit.Framework;
 using Shouldly;
-using System;
+using GitVersion.OutputFormatters;
+using GitVersion.OutputVariables;
+using GitVersion;
+using GitVersion.VersionCalculation;
+using GitVersion.VersioningModes;
 
-namespace GitVersionCore.Tests {
+namespace GitVersionCore.Tests 
+{
     [TestFixture]
     public class VariableProviderTests : TestBase
     {
@@ -208,8 +209,10 @@ namespace GitVersionCore.Tests {
         }
 
         [Test]
-        public void ProvidesVariablesInContinuousDeploymentModeWithTagSetToUseBranchName() {
-            var semVer = new SemanticVersion {
+        public void ProvidesVariablesInContinuousDeploymentModeWithTagSetToUseBranchName()
+        {
+            var semVer = new SemanticVersion
+            {
                 Major = 1,
                 Minor = 2,
                 Patch = 3,
@@ -230,8 +233,10 @@ namespace GitVersionCore.Tests {
         [Test]
         [Category("NoMono")]
         [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
-        public void ProvidesVariablesInContinuousDeliveryModeForFeatureBranch() {
-            var semVer = new SemanticVersion {
+        public void ProvidesVariablesInContinuousDeliveryModeForFeatureBranch()
+        {
+            var semVer = new SemanticVersion
+            {
                 Major = 1,
                 Minor = 2,
                 Patch = 3,
@@ -255,8 +260,10 @@ namespace GitVersionCore.Tests {
         [Test]
         [Category("NoMono")]
         [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
-        public void ProvidesVariablesInContinuousDeliveryModeForFeatureBranchWithCustomAssemblyInformationalFormat() {
-            var semVer = new SemanticVersion {
+        public void ProvidesVariablesInContinuousDeliveryModeForFeatureBranchWithCustomAssemblyInformationalFormat()
+        {
+            var semVer = new SemanticVersion
+            {
                 Major = 1,
                 Minor = 2,
                 Patch = 3,
