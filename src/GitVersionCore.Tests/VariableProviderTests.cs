@@ -8,7 +8,7 @@ using GitVersion;
 using GitVersion.VersionCalculation;
 using GitVersion.VersioningModes;
 
-namespace GitVersionCore.Tests 
+namespace GitVersionCore.Tests
 {
     [TestFixture]
     public class VariableProviderTests : TestBase
