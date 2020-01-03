@@ -57,7 +57,7 @@ namespace GitVersion.OutputVariables
             var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, config);
 
             var informationalVersion = CheckAndFormatString(config.AssemblyInformationalFormat, semverFormatValues,
-                environment, semverFormatValues.DefaultInformationalVersion, "AssemblyInformationalVersion").RegexReplace("[^0-9A-Za-z-.+]", "-");
+                environment, semverFormatValues.DefaultInformationalVersion, "AssemblyInformationalVersion");
 
             var assemblyFileSemVer = CheckAndFormatString(config.AssemblyFileVersioningFormat, semverFormatValues,
                 environment, semverFormatValues.AssemblyFileSemVer, "AssemblyFileVersioningFormat");
@@ -136,7 +136,7 @@ namespace GitVersion.OutputVariables
             {
                 try
                 {
-                    formattedString = formatString.FormatWith(source, environment);
+                    formattedString = formatString.FormatWith(source, environment).RegexReplace("[^0-9A-Za-z-.+]", "-");
                 }
                 catch (ArgumentException formex)
                 {
