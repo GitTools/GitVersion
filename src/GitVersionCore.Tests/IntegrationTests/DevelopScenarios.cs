@@ -273,5 +273,21 @@ namespace GitVersionCore.Tests.IntegrationTests
             var expectedFullSemVer = "1.3.0-alpha.5";
             fixture.AssertFullSemver(config, expectedFullSemVer);
         }
+
+        [Test]
+        public void PreviousPreReleaseTagShouldBeRespectedWhenCountingCommits()
+        {
+            using var fixture = new EmptyRepositoryFixture();
+
+            fixture.Repository.MakeACommit();
+
+            fixture.BranchTo("develop");
+            fixture.MakeATaggedCommit("1.0.0-alpha.3"); // manual bump version
+
+            fixture.MakeACommit();
+            fixture.MakeACommit();
+
+            fixture.AssertFullSemver("1.0.0-alpha.5");
+        }
     }
 }
