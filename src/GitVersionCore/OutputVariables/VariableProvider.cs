@@ -102,9 +102,25 @@ namespace GitVersion.OutputVariables {
         private static void PromoteNumberOfCommitsToTagNumber(SemanticVersion semanticVersion)
         {
             // For continuous deployment the commits since tag gets promoted to the pre-release number
-            semanticVersion.PreReleaseTag.Number = semanticVersion.BuildMetaData.CommitsSinceTag;
-            semanticVersion.BuildMetaData.CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag ?? 0;
-            semanticVersion.BuildMetaData.CommitsSinceTag = null;
+            if (!semanticVersion.BuildMetaData.CommitsSinceTag.HasValue)
+            {
+                semanticVersion.PreReleaseTag.Number = null;
+                semanticVersion.BuildMetaData.CommitsSinceVersionSource = 0;
+            }
+            else
+            {
+                // Number of commits since last tag should be added to PreRelease number if given. Remember to deduct automatic version bump.
+                if (semanticVersion.PreReleaseTag.Number.HasValue)
+                {
+                    semanticVersion.PreReleaseTag.Number += semanticVersion.BuildMetaData.CommitsSinceTag - 1;
+                }
+                else
+                {
+                    semanticVersion.PreReleaseTag.Number = semanticVersion.BuildMetaData.CommitsSinceTag;
+                }
+                semanticVersion.BuildMetaData.CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag.Value;
+                semanticVersion.BuildMetaData.CommitsSinceTag = null; // why is this set to null ?
+            }
         }
 
         private static string CheckAndFormatString<T>(string formatString, T source, IEnvironment environment, string defaultValue, string formatVarName)
