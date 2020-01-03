@@ -46,6 +46,6 @@
         <!-- Property that enables setting of Version -->
         <UpdateVersionProperties Condition=" '$(DisableGitVersionTask)' == 'true' ">false</UpdateVersionProperties>
         <UpdateVersionProperties Condition=" '$(UpdateVersionProperties)' == '' ">true</UpdateVersionProperties>
-        <UseFullSemVerForNuGet Condition=" '$(UseFullSemVerForNuGet)' == '' ">false</UseFullSemVerForNuGet>
+        <UseFullSemVerForNuGet Condition=" '$(UseFullSemVerForNuGet)' == '' ">true</UseFullSemVerForNuGet>
     </PropertyGroup>
 </Project>
