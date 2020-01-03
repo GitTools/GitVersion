@@ -1,13 +1,14 @@
-using GitVersion.Configuration;
-using GitVersion.Exceptions;
-using GitVersion.Extensions;
-using GitVersion.Helpers;
-using GitVersion.VersionCalculation;
-using GitVersion.VersioningModes;
 using System;
 using System.Text.RegularExpressions;
+using GitVersion.Exceptions;
+using GitVersion.Extensions;
+using GitVersion.VersionCalculation;
+using GitVersion.VersioningModes;
+using GitVersion.Configuration;
+using GitVersion.Helpers;
 
-namespace GitVersion.OutputVariables {
+namespace GitVersion.OutputVariables
+{
     public class VariableProvider : IVariableProvider
     {
         private readonly INextVersionCalculator nextVersionCalculator;
