@@ -1,4 +1,3 @@
-using System;
 using GitVersion;
 using GitVersion.BuildServers;
 using GitVersion.Logging;

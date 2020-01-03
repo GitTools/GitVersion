@@ -2,7 +2,6 @@ using System;
 using GitVersion.Logging;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 using GitVersion;
 using GitVersion.VersionCalculation;
@@ -51,7 +50,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
 
         [Test]
@@ -78,7 +77,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
 
         [Test]
@@ -104,7 +103,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
 
         [Test]
@@ -129,7 +128,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
 
         [Test]
@@ -154,7 +153,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
 
         [Test]
@@ -182,7 +181,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, true);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
 
         [Test]

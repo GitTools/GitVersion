@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using YamlDotNet.Serialization;
 
 namespace GitVersion.OutputVariables
@@ -180,6 +181,33 @@ namespace GitVersion.OutputVariables
 
         private sealed class ReflectionIgnoreAttribute : Attribute
         {
+        }
+
+        public override string ToString()
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine("{");
+            var last = this.Last().Key;
+            foreach (var variable in this)
+            {
+                var toCommaOrNot = variable.Key == last ? string.Empty : ",";
+                // preserve leading zeros for padding
+                if (int.TryParse(variable.Value, out var value) && NotAPaddedNumber(variable))
+                    builder.AppendLine($"  \"{variable.Key}\":{value}{toCommaOrNot}");
+                else
+                    builder.AppendLine($"  \"{variable.Key}\":{variable.Value}{toCommaOrNot}");
+            }
+
+            builder.Append("}");
+            return builder.ToString();
+        }
+
+        private static bool NotAPaddedNumber(KeyValuePair<string, string> variable)
+        {
+            if (variable.Value == "0")
+                return true;
+
+            return !variable.Value.StartsWith("0");
         }
     }
 }
