@@ -1,13 +1,13 @@
-using System;
-using System.Text.RegularExpressions;
+using GitVersion.Configuration;
 using GitVersion.Exceptions;
+using GitVersion.Extensions;
+using GitVersion.Helpers;
 using GitVersion.VersionCalculation;
 using GitVersion.VersioningModes;
-using GitVersion.Configuration;
-using GitVersion.Helpers;
+using System;
+using System.Text.RegularExpressions;
 
-namespace GitVersion.OutputVariables
-{
+namespace GitVersion.OutputVariables {
     public class VariableProvider : IVariableProvider
     {
         private readonly INextVersionCalculator nextVersionCalculator;
@@ -56,7 +56,7 @@ namespace GitVersion.OutputVariables
             var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, config);
 
             var informationalVersion = CheckAndFormatString(config.AssemblyInformationalFormat, semverFormatValues,
-                environment, semverFormatValues.DefaultInformationalVersion, "AssemblyInformationalVersion");
+                environment, semverFormatValues.DefaultInformationalVersion, "AssemblyInformationalVersion").RegexReplace("[^0-9A-Za-z-.+]", "-");
 
             var assemblyFileSemVer = CheckAndFormatString(config.AssemblyFileVersioningFormat, semverFormatValues,
                 environment, semverFormatValues.AssemblyFileSemVer, "AssemblyFileVersioningFormat");

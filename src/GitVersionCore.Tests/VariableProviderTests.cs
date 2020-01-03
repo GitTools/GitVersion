@@ -1,15 +1,14 @@
-using System;
+using GitVersion;
 using GitVersion.Logging;
-using NUnit.Framework;
-using Shouldly;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
-using GitVersion;
 using GitVersion.VersionCalculation;
 using GitVersion.VersioningModes;
+using NUnit.Framework;
+using Shouldly;
+using System;
 
-namespace GitVersionCore.Tests
-{
+namespace GitVersionCore.Tests {
     [TestFixture]
     public class VariableProviderTests : TestBase
     {
@@ -209,10 +208,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        public void ProvidesVariablesInContinuousDeploymentModeWithTagSetToUseBranchName()
-        {
-            var semVer = new SemanticVersion
-            {
+        public void ProvidesVariablesInContinuousDeploymentModeWithTagSetToUseBranchName() {
+            var semVer = new SemanticVersion {
                 Major = 1,
                 Minor = 2,
                 Patch = 3,
@@ -228,6 +225,56 @@ namespace GitVersionCore.Tests
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
             vars.FullSemVer.ShouldBe("1.2.3-feature.5");
+        }
+
+        [Test]
+        [Category("NoMono")]
+        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        public void ProvidesVariablesInContinuousDeliveryModeForFeatureBranch() {
+            var semVer = new SemanticVersion {
+                Major = 1,
+                Minor = 2,
+                Patch = 3,
+                BuildMetaData = "5.Branch.feature/123"
+            };
+
+            semVer.BuildMetaData.Branch = "feature/123";
+            semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
+            semVer.BuildMetaData.Sha = "commitSha";
+            semVer.BuildMetaData.ShortSha = "commitShortSha";
+            semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
+
+
+            var config = new TestEffectiveConfiguration();
+
+            var vars = variableProvider.GetVariablesFor(semVer, config, false);
+
+            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+        }
+
+        [Test]
+        [Category("NoMono")]
+        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        public void ProvidesVariablesInContinuousDeliveryModeForFeatureBranchWithCustomAssemblyInformationalFormat() {
+            var semVer = new SemanticVersion {
+                Major = 1,
+                Minor = 2,
+                Patch = 3,
+                BuildMetaData = "5.Branch.feature/123"
+            };
+
+            semVer.BuildMetaData.Branch = "feature/123";
+            semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
+            semVer.BuildMetaData.Sha = "commitSha";
+            semVer.BuildMetaData.ShortSha = "commitShortSha";
+            semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
+
+
+            var config = new TestEffectiveConfiguration(assemblyInformationalFormat: "{Major}.{Minor}.{Patch}+{CommitsSinceVersionSource}.Branch.{BranchName}.Sha.{ShortSha}");
+
+            var vars = variableProvider.GetVariablesFor(semVer, config, false);
+
+            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
     }
 }
