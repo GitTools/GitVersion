@@ -2,9 +2,9 @@
 using System.Collections;
 using Microsoft.Build.Framework;
 
-namespace GitVersionTask.Tests.Mocks
+namespace GitVersion.MSBuildTask.Tests.Mocks
 {
-    class MockTaskItem : ITaskItem
+    internal class MockTaskItem : ITaskItem
     {
         public string ItemSpec { get; set; }
 

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using GitVersion.OutputVariables;
-using GitVersion.Common;
 
 namespace GitVersion.OutputFormatters
 {

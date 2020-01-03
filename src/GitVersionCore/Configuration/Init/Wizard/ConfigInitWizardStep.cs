@@ -1,20 +1,23 @@
 using System;
 using System.Collections.Generic;
-using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.Wizard
 {
     public abstract class ConfigInitWizardStep
     {
-        protected ConfigInitWizardStep(IConsole console, IFileSystem fileSystem)
+        protected readonly IConsole Console;
+        protected readonly IFileSystem FileSystem;
+        protected readonly ILog Log;
+        protected readonly IConfigInitStepFactory StepFactory;
+
+        protected ConfigInitWizardStep(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory)
         {
-            Console = console;
-            FileSystem = fileSystem;
+            Console = console ?? throw new ArgumentNullException(nameof(console));
+            FileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            Log = log ?? throw new ArgumentNullException(nameof(log));
+            StepFactory = stepFactory ?? throw new ArgumentNullException(nameof(stepFactory));
         }
-
-        protected IConsole Console { get; private set; }
-
-        protected IFileSystem FileSystem { get; private set; }
 
         public bool Apply(Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
@@ -51,7 +54,7 @@ namespace GitVersion.Configuration.Init.Wizard
             return true;
         }
 
-        void InvalidResponse(Queue<ConfigInitWizardStep> steps)
+        private void InvalidResponse(Queue<ConfigInitWizardStep> steps)
         {
             Console.WriteLine();
             using (Console.UseColor(ConsoleColor.Red))

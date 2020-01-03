@@ -19,7 +19,7 @@ namespace GitVersion.Configuration
 
         public static void Write(Config config, TextWriter writer)
         {
-            var serializer = new SerializerBuilder().WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
+            var serializer = new SerializerBuilder().ConfigureDefaultValuesHandling(DefaultValuesHandling.OmitDefaults).WithNamingConvention(HyphenatedNamingConvention.Instance).Build();
             serializer.Serialize(writer, config);
         }
     }

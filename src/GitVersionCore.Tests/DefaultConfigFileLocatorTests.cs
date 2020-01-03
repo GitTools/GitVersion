@@ -4,8 +4,10 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
-using GitVersion.Helpers;
-using GitVersion.Common;
+using GitVersion;
+using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Logging;
+using Microsoft.Extensions.Options;
 
 namespace GitVersionCore.Tests
 {
@@ -15,16 +17,14 @@ namespace GitVersionCore.Tests
         private const string DefaultRepoPath = @"c:\MyGitRepo";
         private const string DefaultWorkingPath = @"c:\MyGitRepo\Working";
 
-        string repoPath;
-        string workingPath;
-        IFileSystem fileSystem;
-        DefaultConfigFileLocator configFileLocator;
+        private string repoPath;
+        private string workingPath;
+        private IFileSystem fileSystem;
 
         [SetUp]
         public void Setup()
         {
             fileSystem = new TestFileSystem();
-            configFileLocator = new DefaultConfigFileLocator();
             repoPath = DefaultRepoPath;
             workingPath = DefaultWorkingPath;
 
@@ -37,14 +37,13 @@ namespace GitVersionCore.Tests
         {
             SetupConfigFileContent(string.Empty, DefaultConfigFileLocator.ObsoleteFileName, path);
 
-            var logOutput = string.Empty;
-            Action<string> action = info => { logOutput = info; };
-            using (Logger.AddLoggersTemporarily(action, action, action, action))
+            var output = WithDefaultConfigFileLocator(configFileLocator =>
             {
-                configFileLocator.Verify(workingPath, repoPath, fileSystem);
-            }
+                configFileLocator.Verify(workingPath, repoPath);
+            });
+
             var configFileDeprecatedWarning = $"{DefaultConfigFileLocator.ObsoleteFileName}' is deprecated, use '{DefaultConfigFileLocator.DefaultFileName}' instead";
-            logOutput.Contains(configFileDeprecatedWarning).ShouldBe(true);
+            output.Contains(configFileDeprecatedWarning).ShouldBe(true);
         }
 
         [TestCase(DefaultRepoPath)]
@@ -54,15 +53,13 @@ namespace GitVersionCore.Tests
             SetupConfigFileContent(string.Empty, DefaultConfigFileLocator.ObsoleteFileName, path);
             SetupConfigFileContent(string.Empty, DefaultConfigFileLocator.DefaultFileName, path);
 
-            var logOutput = string.Empty;
-            Action<string> action = info => { logOutput = info; };
-            using (Logger.AddLoggersTemporarily(action, action, action, action))
+            var output = WithDefaultConfigFileLocator(configFileLocator =>
             {
-                configFileLocator.Verify(workingPath, repoPath, fileSystem);
-            }
+                configFileLocator.Verify(workingPath, repoPath);
+            });
 
             var configFileDeprecatedWarning = $"Ambiguous config files at '{path}'";
-            logOutput.Contains(configFileDeprecatedWarning).ShouldBe(true);
+            output.Contains(configFileDeprecatedWarning).ShouldBe(true);
         }
 
         [TestCase(DefaultConfigFileLocator.DefaultFileName, DefaultConfigFileLocator.DefaultFileName)]
@@ -74,7 +71,13 @@ namespace GitVersionCore.Tests
             var repositoryConfigFilePath = SetupConfigFileContent(string.Empty, repoConfigFile, repoPath);
             var workingDirectoryConfigFilePath = SetupConfigFileContent(string.Empty, workingConfigFile, workingPath);
 
-            WarningException exception = Should.Throw<WarningException>(() => { configFileLocator.Verify(workingPath, repoPath, fileSystem); });
+            var exception = Should.Throw<WarningException>(() =>
+            {
+                WithDefaultConfigFileLocator(configFileLocator =>
+                {
+                    configFileLocator.Verify(workingPath, repoPath);
+                });
+            });
 
             var expecedMessage = $"Ambiguous config file selection from '{workingDirectoryConfigFilePath}' and '{repositoryConfigFilePath}'";
             exception.Message.ShouldBe(expecedMessage);
@@ -85,21 +88,28 @@ namespace GitVersionCore.Tests
         {
             SetupConfigFileContent(string.Empty);
 
-            var s = string.Empty;
-            Action<string> action = info => { s = info; };
-            using (Logger.AddLoggersTemporarily(action, action, action, action))
+            var output = WithDefaultConfigFileLocator(configFileLocator =>
             {
-                ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
-            }
-            s.Length.ShouldBe(0);
+                var log = new NullLog();
+                var defaultConfigFileLocator = new DefaultConfigFileLocator(fileSystem, log);
+                var gitPreparer = new GitPreparer(log, new TestEnvironment(), Options.Create(new Arguments { TargetPath = repoPath }));
+                var stepFactory = new ConfigInitStepFactory();
+                var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
+
+                var configurationProvider = new ConfigProvider(fileSystem, log, defaultConfigFileLocator, gitPreparer, configInitWizard);
+
+                configurationProvider.Provide(repoPath); 
+            });
+
+            output.Length.ShouldBe(0);
         }
 
-        string SetupConfigFileContent(string text, string fileName = DefaultConfigFileLocator.DefaultFileName)
+        private string SetupConfigFileContent(string text, string fileName = DefaultConfigFileLocator.DefaultFileName)
         {
             return SetupConfigFileContent(text, fileName, repoPath);
         }
 
-        string SetupConfigFileContent(string text, string fileName, string path)
+        private string SetupConfigFileContent(string text, string fileName, string path)
         {
             var fullPath = Path.Combine(path, fileName);
             fileSystem.WriteAllText(fullPath, text);
@@ -117,13 +127,27 @@ branches:
     tag: beta
     is-develop: true";
 
-            OldConfigurationException exception = Should.Throw<OldConfigurationException>(() =>
+            var exception = Should.Throw<OldConfigurationException>(() =>
             {
                 LegacyConfigNotifier.Notify(new StringReader(text));
             });
 
             const string expectedMessage = @"'is-develop' is deprecated, use 'tracks-release-branches' instead.";
             exception.Message.ShouldContain(expectedMessage);
+        }
+
+        private string WithDefaultConfigFileLocator(Action<IConfigFileLocator> action)
+        {
+            var stringLogger = string.Empty;
+            void Action(string info) => stringLogger = info;
+
+            var logAppender = new TestLogAppender(Action);
+            var log = new Log(logAppender);
+
+            var configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
+            action(configFileLocator);
+
+            return stringLogger;
         }
     }
 }

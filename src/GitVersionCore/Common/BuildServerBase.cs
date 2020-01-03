@@ -1,16 +1,19 @@
 using System;
+using GitVersion.Logging;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 
-namespace GitVersion.Common
+namespace GitVersion
 {
     public abstract class BuildServerBase : IBuildServer
     {
+        protected readonly ILog Log;
         protected IEnvironment Environment { get; }
 
-        protected BuildServerBase(IEnvironment environment)
+        protected BuildServerBase(IEnvironment environment, ILog log)
         {
-            this.Environment = environment;
+            Log = log;
+            Environment = environment;
         }
 
         protected abstract string EnvironmentVariable { get; }

@@ -1,19 +1,17 @@
 using System.IO;
 using System.Linq;
 using GitVersion.OutputVariables;
-using GitVersion.Common;
-using Environment = System.Environment;
 
 namespace GitVersion.Extensions.GitVersionInformationResources
 {
     public class GitVersionInformationGenerator
     {
-        string fileName;
-        string directory;
-        VersionVariables variables;
-        IFileSystem fileSystem;
+        private readonly string fileName;
+        private readonly string directory;
+        private readonly VersionVariables variables;
+        private readonly IFileSystem fileSystem;
 
-        TemplateManager templateManager;
+        private readonly TemplateManager templateManager;
 
         public GitVersionInformationGenerator(string fileName, string directory, VersionVariables variables, IFileSystem fileSystem)
         {
@@ -40,7 +38,7 @@ namespace GitVersion.Extensions.GitVersionInformationResources
             var template = templateManager.GetTemplateFor(fileExtension);
             var addFormat = templateManager.GetAddFormatFor(fileExtension);
 
-            var members = string.Join(Environment.NewLine, variables.Select(v => string.Format("    " + addFormat, v.Key, v.Value)));
+            var members = string.Join(System.Environment.NewLine, variables.Select(v => string.Format("    " + addFormat, v.Key, v.Value)));
 
             var fileContents = string.Format(template, members);
 

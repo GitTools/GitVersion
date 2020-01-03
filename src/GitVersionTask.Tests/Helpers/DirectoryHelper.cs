@@ -1,13 +1,12 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
-namespace GitVersionTask.Tests.Helpers
+namespace GitVersion.MSBuildTask.Tests.Helpers
 {
     public static class DirectoryHelper
     {
-        static Dictionary<string, string> toRename = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> ToRename = new Dictionary<string, string>
         {
             {"gitted", ".git"},
             {"gitmodules", ".gitmodules"},
@@ -27,9 +26,9 @@ namespace GitVersionTask.Tests.Helpers
             }
         }
 
-        static string Rename(string name)
+        private static string Rename(string name)
         {
-            return toRename.ContainsKey(name) ? toRename[name] : name;
+            return ToRename.ContainsKey(name) ? ToRename[name] : name;
         }
 
         public static void DeleteSubDirectories(string parentPath)
@@ -79,7 +78,7 @@ namespace GitVersionTask.Tests.Helpers
                                               "{0}Known and common causes include:" +
                                               "{0}- Windows Search Indexer (go to the Indexing Options, in the Windows Control Panel, and exclude the bin folder of LibGit2Sharp.Tests)" +
                                               "{0}- Antivirus (exclude the bin folder of LibGit2Sharp.Tests from the paths scanned by your real-time antivirus){0}",
-                    Environment.NewLine, Path.GetFullPath(directoryPath)));
+                    System.Environment.NewLine, Path.GetFullPath(directoryPath)));
             }
         }
     }

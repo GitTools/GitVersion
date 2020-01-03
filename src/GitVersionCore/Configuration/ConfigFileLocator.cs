@@ -1,41 +1,46 @@
+using System;
 using System.IO;
-using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.Configuration
 {
-    public abstract class ConfigFileLocator
+    public abstract class ConfigFileLocator : IConfigFileLocator
     {
-        public static readonly ConfigFileLocator Default = new DefaultConfigFileLocator();
+        protected readonly IFileSystem FileSystem;
+        protected readonly ILog Log;
 
-        public static ConfigFileLocator GetLocator(string filePath = null) =>
-             !string.IsNullOrEmpty(filePath) ? new NamedConfigFileLocator(filePath) : Default;
-
-        public abstract bool HasConfigFileAt(string workingDirectory, IFileSystem fileSystem);
-
-        public abstract string GetConfigFilePath(string workingDirectory, IFileSystem fileSystem);
-
-        public abstract void Verify(string workingDirectory, string projectRootDirectory, IFileSystem fileSystem);
-
-        public string SelectConfigFilePath(GitPreparer gitPreparer, IFileSystem fileSystem)
+        protected ConfigFileLocator(IFileSystem fileSystem, ILog log)
         {
-            var workingDirectory = gitPreparer.WorkingDirectory;
-            var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
-
-            if (HasConfigFileAt(workingDirectory, fileSystem))
-            {
-                return GetConfigFilePath(workingDirectory, fileSystem);
-            }
-
-            return GetConfigFilePath(projectRootDirectory, fileSystem);
+            FileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            Log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
-        public Config ReadConfig(string workingDirectory, IFileSystem fileSystem)
-        {
-            var configFilePath = GetConfigFilePath(workingDirectory, fileSystem);
+        public abstract bool HasConfigFileAt(string workingDirectory);
 
-            if (fileSystem.Exists(configFilePath))
+        public abstract string GetConfigFilePath(string workingDirectory);
+
+        public abstract void Verify(string workingDirectory, string projectRootDirectory);
+
+        public string SelectConfigFilePath(IGitPreparer gitPreparer)
+        {
+            var workingDirectory = gitPreparer.GetWorkingDirectory();
+            var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
+
+            if (HasConfigFileAt(workingDirectory))
             {
-                var readAllText = fileSystem.ReadAllText(configFilePath);
+                return GetConfigFilePath(workingDirectory);
+            }
+
+            return GetConfigFilePath(projectRootDirectory);
+        }
+
+        public Config ReadConfig(string workingDirectory)
+        {
+            var configFilePath = GetConfigFilePath(workingDirectory);
+
+            if (FileSystem.Exists(configFilePath))
+            {
+                var readAllText = FileSystem.ReadAllText(configFilePath);
                 LegacyConfigNotifier.Notify(new StringReader(readAllText));
                 return ConfigSerialiser.Read(new StringReader(readAllText));
             }
@@ -43,19 +48,19 @@ namespace GitVersion.Configuration
             return new Config();
         }
 
-        public void Verify(GitPreparer gitPreparer, IFileSystem fileSystem)
+        public void Verify(IGitPreparer gitPreparer)
         {
-            if (!string.IsNullOrWhiteSpace(gitPreparer.TargetUrl))
+            if (!string.IsNullOrWhiteSpace(gitPreparer.GetTargetUrl()))
             {
                 // Assuming this is a dynamic repository. At this stage it's unsure whether we have
                 // any .git info so we need to skip verification
                 return;
             }
 
-            var workingDirectory = gitPreparer.WorkingDirectory;
+            var workingDirectory = gitPreparer.GetWorkingDirectory();
             var projectRootDirectory = gitPreparer.GetProjectRootDirectory();
 
-            Verify(workingDirectory, projectRootDirectory, fileSystem);
+            Verify(workingDirectory, projectRootDirectory);
         }
     }
 }

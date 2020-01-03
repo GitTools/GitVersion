@@ -8,9 +8,18 @@ using GitVersion.Helpers;
 
 namespace GitVersion.OutputVariables
 {
-    public static class VariableProvider
+    public class VariableProvider : IVariableProvider
     {
-        public static VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)
+        private readonly INextVersionCalculator nextVersionCalculator;
+        private readonly IEnvironment environment;
+
+        public VariableProvider(INextVersionCalculator nextVersionCalculator, IEnvironment environment)
+        {
+            this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
+            this.environment = environment;
+        }
+
+        public VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)
         {
             var isContinuousDeploymentMode = config.VersioningMode == VersioningMode.ContinuousDeployment && !isCurrentCommitTagged;
             if (isContinuousDeploymentMode)
@@ -19,7 +28,7 @@ namespace GitVersion.OutputVariables
                 // Continuous Deployment always requires a pre-release tag unless the commit is tagged
                 if (!semanticVersion.PreReleaseTag.HasTag())
                 {
-                    semanticVersion.PreReleaseTag.Name = NextVersionCalculator.GetBranchSpecificTag(config, semanticVersion.BuildMetaData.Branch, null);
+                    semanticVersion.PreReleaseTag.Name = nextVersionCalculator.GetBranchSpecificTag(config, semanticVersion.BuildMetaData.Branch, null);
                     if (string.IsNullOrEmpty(semanticVersion.PreReleaseTag.Name))
                     {
                         semanticVersion.PreReleaseTag.Name = config.ContinuousDeploymentFallbackTag;
@@ -46,14 +55,14 @@ namespace GitVersion.OutputVariables
 
             var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, config);
 
-            string informationalVersion = CheckAndFormatString(config.AssemblyInformationalFormat, semverFormatValues,
-                semverFormatValues.DefaultInformationalVersion, "AssemblyInformationalVersion");
+            var informationalVersion = CheckAndFormatString(config.AssemblyInformationalFormat, semverFormatValues,
+                environment, semverFormatValues.DefaultInformationalVersion, "AssemblyInformationalVersion");
 
-            string assemblyFileSemVer = CheckAndFormatString(config.AssemblyFileVersioningFormat, semverFormatValues,
-                semverFormatValues.AssemblyFileSemVer, "AssemblyFileVersioningFormat");
+            var assemblyFileSemVer = CheckAndFormatString(config.AssemblyFileVersioningFormat, semverFormatValues,
+                environment, semverFormatValues.AssemblyFileSemVer, "AssemblyFileVersioningFormat");
 
-            string assemblySemVer = CheckAndFormatString(config.AssemblyVersioningFormat, semverFormatValues,
-                semverFormatValues.AssemblySemVer, "AssemblyVersioningFormat");
+            var assemblySemVer = CheckAndFormatString(config.AssemblyVersioningFormat, semverFormatValues,
+                environment, semverFormatValues.AssemblySemVer, "AssemblyVersioningFormat");
 
             var variables = new VersionVariables(
                 semverFormatValues.Major,
@@ -90,15 +99,31 @@ namespace GitVersion.OutputVariables
             return variables;
         }
 
-        static void PromoteNumberOfCommitsToTagNumber(SemanticVersion semanticVersion)
+        private static void PromoteNumberOfCommitsToTagNumber(SemanticVersion semanticVersion)
         {
             // For continuous deployment the commits since tag gets promoted to the pre-release number
-            semanticVersion.PreReleaseTag.Number = semanticVersion.BuildMetaData.CommitsSinceTag;
-            semanticVersion.BuildMetaData.CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag ?? 0;
-            semanticVersion.BuildMetaData.CommitsSinceTag = null;
+            if (!semanticVersion.BuildMetaData.CommitsSinceTag.HasValue)
+            {
+                semanticVersion.PreReleaseTag.Number = null;
+                semanticVersion.BuildMetaData.CommitsSinceVersionSource = 0;
+            }
+            else
+            {
+                // Number of commits since last tag should be added to PreRelease number if given. Remember to deduct automatic version bump.
+                if (semanticVersion.PreReleaseTag.Number.HasValue)
+                {
+                    semanticVersion.PreReleaseTag.Number += semanticVersion.BuildMetaData.CommitsSinceTag - 1;
+                }
+                else
+                {
+                    semanticVersion.PreReleaseTag.Number = semanticVersion.BuildMetaData.CommitsSinceTag;
+                }
+                semanticVersion.BuildMetaData.CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag.Value;
+                semanticVersion.BuildMetaData.CommitsSinceTag = null; // why is this set to null ?
+            }
         }
 
-        static string CheckAndFormatString<T>(string formatString, T source,  string defaultValue, string formatVarName)
+        private static string CheckAndFormatString<T>(string formatString, T source, IEnvironment environment, string defaultValue, string formatVarName)
         {
             string formattedString;
 
@@ -110,7 +135,7 @@ namespace GitVersion.OutputVariables
             {
                 try
                 {
-                    formattedString = formatString.FormatWith(source);
+                    formattedString = formatString.FormatWith(source, environment);
                 }
                 catch (ArgumentException formex)
                 {

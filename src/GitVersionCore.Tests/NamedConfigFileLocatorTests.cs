@@ -1,11 +1,12 @@
-using System;
 using System.IO;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
-using GitVersion.Helpers;
-using GitVersion.Common;
+using GitVersion;
+using GitVersion.Configuration.Init.Wizard;
+using GitVersion.Logging;
+using Microsoft.Extensions.Options;
 
 namespace GitVersionCore.Tests
 {
@@ -15,18 +16,25 @@ namespace GitVersionCore.Tests
         private const string DefaultRepoPath = @"c:\MyGitRepo";
         private const string DefaultWorkingPath = @"c:\MyGitRepo\Working";
 
-        string repoPath;
-        string workingPath;
-        IFileSystem fileSystem;
-        NamedConfigFileLocator configFileLocator;
+        private string repoPath;
+        private string workingPath;
+        private IFileSystem fileSystem;
+        private NamedConfigFileLocator configFileLocator;
+        private ILog log;
+        private IConfigInitStepFactory stepFactory;
+        private IOptions<Arguments> options;
 
         [SetUp]
         public void Setup()
         {
             fileSystem = new TestFileSystem();
-            configFileLocator = new NamedConfigFileLocator("my-config.yaml");
+            log = new NullLog();
+
+            options = Options.Create(new Arguments { ConfigFile = "my-config.yaml" });
+            configFileLocator = new NamedConfigFileLocator(fileSystem, log, options);
             repoPath = DefaultRepoPath;
             workingPath = DefaultWorkingPath;
+            stepFactory = new ConfigInitStepFactory();
 
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
         }
@@ -37,7 +45,7 @@ namespace GitVersionCore.Tests
             var repositoryConfigFilePath = SetupConfigFileContent(string.Empty, path: repoPath);
             var workingDirectoryConfigFilePath = SetupConfigFileContent(string.Empty, path: workingPath);
 
-            var exception = Should.Throw<WarningException>(() => { configFileLocator.Verify(workingPath, repoPath, fileSystem); });
+            var exception = Should.Throw<WarningException>(() => { configFileLocator.Verify(workingPath, repoPath); });
 
             var expectedMessage = $"Ambiguous config file selection from '{workingDirectoryConfigFilePath}' and '{repositoryConfigFilePath}'";
             exception.Message.ShouldBe(expectedMessage);
@@ -48,13 +56,20 @@ namespace GitVersionCore.Tests
         {
             SetupConfigFileContent(string.Empty);
 
-            var s = string.Empty;
-            Action<string> action = info => { s = info; };
-            using (Logger.AddLoggersTemporarily(action, action, action, action))
-            {
-                ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
-            }
-            s.Length.ShouldBe(0);
+            var stringLogger = string.Empty;
+            void Action(string info) => stringLogger = info;
+
+            var logAppender = new TestLogAppender(Action);
+            log = new Log(logAppender);
+
+            configFileLocator = new NamedConfigFileLocator(fileSystem, log, options);
+
+            var gitPreparer = new GitPreparer(log, new TestEnvironment(), Options.Create(new Arguments { TargetPath = repoPath }));
+            var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
+            var configurationProvider = new ConfigProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
+
+            configurationProvider.Provide(repoPath);
+            stringLogger.Length.ShouldBe(0);
         }
 
         [Test]
@@ -62,16 +77,22 @@ namespace GitVersionCore.Tests
         {
             SetupConfigFileContent(string.Empty, path: @"c:\\Unrelated\\path");
 
-            var s = string.Empty;
-            Action<string> action = info => { s = info; };
-            using (Logger.AddLoggersTemporarily(action, action, action, action))
-            {
-                ConfigurationProvider.Provide(repoPath, fileSystem, configFileLocator);
-            }
-            s.Length.ShouldBe(0);
+            var stringLogger = string.Empty;
+            void Action(string info) => stringLogger = info;
+
+            var logAppender = new TestLogAppender(Action);
+            log = new Log(logAppender);
+
+            configFileLocator = new NamedConfigFileLocator(fileSystem, log, options);
+            var gitPreparer = new GitPreparer(log, new TestEnvironment(), Options.Create(new Arguments { TargetPath = repoPath }));
+            var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
+            var configurationProvider = new ConfigProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
+
+            configurationProvider.Provide(repoPath);
+            stringLogger.Length.ShouldBe(0);
         }
 
-        string SetupConfigFileContent(string text, string fileName = null, string path = null)
+        private string SetupConfigFileContent(string text, string fileName = null, string path = null)
         {
             if (string.IsNullOrEmpty(fileName)) fileName = configFileLocator.FilePath;
             var filePath = fileName;

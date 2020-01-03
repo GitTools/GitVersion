@@ -11,74 +11,67 @@ namespace GitVersionExe.Tests
 {
     [TestFixture]
     [Parallelizable(ParallelScope.None)]
-    class UpdateWixVersionFileTests
+    internal class UpdateWixVersionFileTests
     {
-        private string WixVersionFileName;
+        private string wixVersionFileName;
 
         [SetUp]
         public void Setup()
         {
-            WixVersionFileName = WixVersionFileUpdater.WIX_VERSION_FILE;
+            wixVersionFileName = WixVersionFileUpdater.WixVersionFileName;
         }
 
         [Test]
         public void WixVersionFileCreationTest()
         {
-            using (var fixture = new EmptyRepositoryFixture())
-            {
-                fixture.MakeATaggedCommit("1.2.3");
-                fixture.MakeACommit();
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.MakeATaggedCommit("1.2.3");
+            fixture.MakeACommit();
 
-                GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
-                Assert.IsTrue(File.Exists(Path.Combine(fixture.RepositoryPath, WixVersionFileName)));
-            }
+            GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
+            Assert.IsTrue(File.Exists(Path.Combine(fixture.RepositoryPath, wixVersionFileName)));
         }
 
         [Test]
         public void WixVersionFileVarCountTest()
         {
             //Make sure we have captured all the version variables by count in the Wix version file
-            using (var fixture = new EmptyRepositoryFixture())
-            {
-                fixture.MakeATaggedCommit("1.2.3");
-                fixture.MakeACommit();
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.MakeATaggedCommit("1.2.3");
+            fixture.MakeACommit();
 
-                var gitVersionExecutionResults = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: null);
-                var vars = gitVersionExecutionResults.OutputVariables;
+            GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: null);
 
-                GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
+            GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
 
-                var gitVersionVarsInWix = GetGitVersionVarsInWixFile(Path.Combine(fixture.RepositoryPath, WixVersionFileName));
-                var gitVersionVars = VersionVariables.AvailableVariables;
+            var gitVersionVarsInWix = GetGitVersionVarsInWixFile(Path.Combine(fixture.RepositoryPath, wixVersionFileName));
+            var gitVersionVars = VersionVariables.AvailableVariables;
 
-                Assert.AreEqual(gitVersionVars.Count(), gitVersionVarsInWix.Count);
-            }
+            Assert.AreEqual(gitVersionVars.Count(), gitVersionVarsInWix.Count);
         }
 
         [Test]
         public void WixVersionFileContentTest()
         {
-            using (var fixture = new EmptyRepositoryFixture())
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.MakeATaggedCommit("1.2.3");
+            fixture.MakeACommit();
+
+            var gitVersionExecutionResults = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: null);
+            var vars = gitVersionExecutionResults.OutputVariables;
+
+            GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
+
+            var gitVersionVarsInWix = GetGitVersionVarsInWixFile(Path.Combine(fixture.RepositoryPath, wixVersionFileName));
+            var gitVersionVars = VersionVariables.AvailableVariables;
+
+            foreach (var variable in gitVersionVars)
             {
-                fixture.MakeATaggedCommit("1.2.3");
-                fixture.MakeACommit();
-
-                var gitVersionExecutionResults = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: null);
-                VersionVariables vars = gitVersionExecutionResults.OutputVariables;
-
-                GitVersionHelper.ExecuteIn(fixture.RepositoryPath, arguments: " /updatewixversionfile");
-
-                var gitVersionVarsInWix = GetGitVersionVarsInWixFile(Path.Combine(fixture.RepositoryPath, WixVersionFileName));
-                var gitVersionVars = VersionVariables.AvailableVariables;
-
-                foreach (var variable in gitVersionVars)
-                {
-                    vars.TryGetValue(variable, out string value);
-                    //Make sure the variable is present in the Wix file
-                    Assert.IsTrue(gitVersionVarsInWix.ContainsKey(variable));
-                    //Make sure the values are equal
-                    Assert.AreEqual(value, gitVersionVarsInWix[variable]);
-                }
+                vars.TryGetValue(variable, out var value);
+                //Make sure the variable is present in the Wix file
+                Assert.IsTrue(gitVersionVarsInWix.ContainsKey(variable));
+                //Make sure the values are equal
+                Assert.AreEqual(value, gitVersionVarsInWix[variable]);
             }
         }
 
@@ -91,7 +84,7 @@ namespace GitVersionExe.Tests
                 {
                     if (reader.Name == "define")
                     {
-                        string[] component = reader.Value.Split('=');
+                        var component = reader.Value.Split('=');
                         gitVersionVarsInWix[component[0]] = component[1].TrimStart('"').TrimEnd('"');
                     }
                 }

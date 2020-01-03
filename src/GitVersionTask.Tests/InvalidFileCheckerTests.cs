@@ -1,17 +1,17 @@
 using System;
 using System.IO;
-using GitVersionTask.Tests.Mocks;
 using Microsoft.Build.Framework;
 using NUnit.Framework;
 using GitVersion.Exceptions;
+using GitVersion.MSBuildTask.Tests.Mocks;
 
-namespace GitVersionTask.Tests
+namespace GitVersion.MSBuildTask.Tests
 {
     [TestFixture]
     public class InvalidFileCheckerTests : TestBase
     {
-        string projectDirectory;
-        string projectFile;
+        private string projectDirectory;
+        private string projectFile;
 
         [SetUp]
         public void CreateTemporaryProject()

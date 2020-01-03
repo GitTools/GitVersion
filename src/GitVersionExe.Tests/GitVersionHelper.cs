@@ -30,7 +30,7 @@ namespace GitVersionExe.Tests
             return ExecuteIn(args);
         }
 
-        static ExecutionResults ExecuteIn(ArgumentBuilder arguments)
+        private static ExecutionResults ExecuteIn(ArgumentBuilder arguments)
         {
             var executable = PathHelper.GetExecutable();
             var output = new StringBuilder();
@@ -40,8 +40,8 @@ namespace GitVersionExe.Tests
                 {
                     new KeyValuePair<string, string>(TeamCity.EnvironmentVariableName, arguments.IsTeamCity ? "8.0.0" : null),
                     new KeyValuePair<string, string>(AppVeyor.EnvironmentVariableName, null),
-                    new KeyValuePair<string, string>(TravisCI.EnvironmentVariableName, null),
-                    new KeyValuePair<string, string>(VsoAgent.EnvironmentVariableName, null),
+                    new KeyValuePair<string, string>(TravisCi.EnvironmentVariableName, null),
+                    new KeyValuePair<string, string>(AzurePipelines.EnvironmentVariableName, null),
                 };
 
             var exitCode = -1;

@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using GitVersion.Helpers;
 using GitVersion.OutputVariables;
-using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.BuildServers
 {
     public class MyGet : BuildServerBase
     {
-        public MyGet(IEnvironment environment) : base(environment)
+        public MyGet(IEnvironment environment, ILog log) : base(environment, log)
         {
         }
 

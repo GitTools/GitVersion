@@ -1,7 +1,7 @@
 # GitVersion Documentation
 
 This is the directory in which the
-[GitVersion documentation hosted on ReadTheDocs](http://gitversion.readthedocs.io/en/latest/)
+[GitVersion documentation hosted on GitHub Pages](https://gitversion.net/)
 resides.
 
 ## Contributing
@@ -18,23 +18,13 @@ it to ensure that everything works as expected.
 
 ## Serving the documentation locally
 
-To serve up the documentation locally, you need to
-[install MkDocs](http://www.mkdocs.org/#installation) and then at the root of
-the GitVersion project write the following in a command line window:
+To serve up the documentation locally, you need to run the following build
+command:
 
 ```shell
-mkdocs serve
+.\build.ps1 -Target Preview-Documentation
 ```
 
-After pressing enter, something similar to the following lines should appear:
-
-```
-INFO    -  Building documentation...
-INFO    -  Cleaning site directory
-[I 160810 10:48:18 server:281] Serving on http://127.0.0.1:8000
-```
-
-If it says `Serving on http://127.0.0.1:8000`, you should be able to navigate
-your favorite browser to `http://127.0.0.1:8000` and browse the documentation
-there. If you have any problems with this process, please consult the
-[MkDocs documentation](http://www.mkdocs.org/).
+After pressing enter, the documentation will be generated and then served under
+a local web server.  Information about the URL that can be used to view the docs
+will be shown in the output.  Copy/paste this URL into a browser window.

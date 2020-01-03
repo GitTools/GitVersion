@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using YamlDotNet.Serialization;
-using GitVersion.Common;
 
 namespace GitVersion.OutputVariables
 {
@@ -154,16 +153,12 @@ namespace GitVersion.OutputVariables
 
         public static VersionVariables FromFile(string filePath, IFileSystem fileSystem)
         {
-            using (var stream = fileSystem.OpenRead(filePath))
-            {
-                using (var reader = new StreamReader(stream))
-                {
-                    var dictionary = new Deserializer().Deserialize<Dictionary<string, string>>(reader);
-                    var versionVariables = FromDictionary(dictionary);
-                    versionVariables.FileName = filePath;
-                    return versionVariables;
-                }
-            }
+            using var stream = fileSystem.OpenRead(filePath);
+            using var reader = new StreamReader(stream);
+            var dictionary = new Deserializer().Deserialize<Dictionary<string, string>>(reader);
+            var versionVariables = FromDictionary(dictionary);
+            versionVariables.FileName = filePath;
+            return versionVariables;
         }
 
         public bool TryGetValue(string variable, out string variableValue)
@@ -183,7 +178,7 @@ namespace GitVersion.OutputVariables
             return typeof(VersionVariables).GetProperty(variable) != null;
         }
 
-        sealed class ReflectionIgnoreAttribute : Attribute
+        private sealed class ReflectionIgnoreAttribute : Attribute
         {
         }
     }

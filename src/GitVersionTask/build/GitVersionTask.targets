@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <UsingTask TaskName="GetVersion" AssemblyFile="$(GitVersionAssemblyFile)"/>
     <UsingTask TaskName="GenerateGitVersionInformation" AssemblyFile="$(GitVersionAssemblyFile)"/>
     <UsingTask TaskName="UpdateAssemblyInfo" AssemblyFile="$(GitVersionAssemblyFile)" />
@@ -7,25 +7,31 @@
 
     <Target Name="WriteVersionInfoToBuildLog" BeforeTargets="CoreCompile;GetAssemblyVersion;GenerateNuspec" Condition="$(WriteVersionInfoToBuildLog) == 'true'">
 
-        <WriteVersionInfoToBuildLog SolutionDirectory="$(GitVersionPath)" ConfigFilePath="$(GitVersionConfig)" NoFetch="$(GitVersion_NoFetchEnabled)"/>
+        <WriteVersionInfoToBuildLog SolutionDirectory="$(GitVersionPath)"
+                                    ConfigFilePath="$(GitVersionConfig)"
+                                    NoFetch="$(GitVersion_NoFetchEnabled)"
+                                    NoNormalize="$(GitVersion_NoNormalizeEnabled)" />
 
     </Target>
 
     <Target Name="UpdateAssemblyInfo" BeforeTargets="CoreCompile" Condition="$(UpdateAssemblyInfo) == 'true'">
 
-        <UpdateAssemblyInfo
-            SolutionDirectory="$(GitVersionPath)"
-            ConfigFilePath="$(GitVersionConfig)"
-            NoFetch="$(GitVersion_NoFetchEnabled)"
-            ProjectFile="$(MSBuildProjectFullPath)"
-            IntermediateOutputPath="$(IntermediateOutputPath)"
-            Language="$(Language)"
-            CompileFiles ="@(Compile)">
+        <UpdateAssemblyInfo SolutionDirectory="$(GitVersionPath)"
+                            ConfigFilePath="$(GitVersionConfig)"
+                            NoFetch="$(GitVersion_NoFetchEnabled)"
+                            NoNormalize="$(GitVersion_NoNormalizeEnabled)"
+                            ProjectFile="$(MSBuildProjectFullPath)"
+                            IntermediateOutputPath="$(IntermediateOutputPath)"
+                            Language="$(Language)"
+                            CompileFiles ="@(Compile)">
 
             <Output TaskParameter="AssemblyInfoTempFilePath" PropertyName="AssemblyInfoTempFilePath" />
         </UpdateAssemblyInfo>
 
-        <ItemGroup>
+        <ItemGroup Condition="'$(Language)' == 'F#'">
+            <CompileBefore Include="$(AssemblyInfoTempFilePath)" />
+        </ItemGroup>
+        <ItemGroup Condition="'$(Language)' != 'F#'">
             <Compile Include="$(AssemblyInfoTempFilePath)" />
         </ItemGroup>
 
@@ -33,27 +39,33 @@
 
     <Target Name="GenerateGitVersionInformation" BeforeTargets="CoreCompile" Condition="$(GenerateGitVersionInformation) == 'true'">
 
-        <GenerateGitVersionInformation
-            SolutionDirectory="$(GitVersionPath)"
-            ConfigFilePath="$(GitVersionConfig)"
-            NoFetch="$(GitVersion_NoFetchEnabled)"
-            ProjectFile="$(MSBuildProjectFullPath)"
-            IntermediateOutputPath="$(IntermediateOutputPath)"
-            Language="$(Language)">
+        <GenerateGitVersionInformation SolutionDirectory="$(GitVersionPath)"
+                                       ConfigFilePath="$(GitVersionConfig)"
+                                       NoFetch="$(GitVersion_NoFetchEnabled)"
+                                       NoNormalize="$(GitVersion_NoNormalizeEnabled)"
+                                       ProjectFile="$(MSBuildProjectFullPath)"
+                                       IntermediateOutputPath="$(IntermediateOutputPath)"
+                                       Language="$(Language)">
 
             <Output TaskParameter="GitVersionInformationFilePath" PropertyName="GitVersionInformationFilePath" />
         </GenerateGitVersionInformation>
 
-        <ItemGroup>
+        <ItemGroup Condition="'$(Language)' == 'F#'">
+            <CompileBefore Include="$(GitVersionInformationFilePath)" />
+            <FileWrites Include="$(GitVersionInformationFilePath)" />
+        </ItemGroup>
+        <ItemGroup Condition="'$(Language)' != 'F#'">
             <Compile Include="$(GitVersionInformationFilePath)" />
             <FileWrites Include="$(GitVersionInformationFilePath)" />
         </ItemGroup>
-
     </Target>
 
-    <Target Name="GetVersion" BeforeTargets="CoreCompile;GetAssemblyVersion;GenerateNuspec;_GenerateRestoreProjectSpec;_GetOutputItemsFromPack;EnsureWixToolsetInstalled" Condition="$(GetVersion) == 'true'"> 
+    <Target Name="GetVersion" BeforeTargets="CoreCompile;GetAssemblyVersion;GenerateNuspec;_GenerateRestoreProjectSpec;_GetOutputItemsFromPack;EnsureWixToolsetInstalled" Condition="$(GetVersion) == 'true'">
 
-        <GetVersion SolutionDirectory="$(GitVersionPath)" ConfigFilePath="$(GitVersionConfig)" NoFetch="$(GitVersion_NoFetchEnabled)">
+        <GetVersion SolutionDirectory="$(GitVersionPath)"
+                    ConfigFilePath="$(GitVersionConfig)"
+                    NoFetch="$(GitVersion_NoFetchEnabled)"
+                    NoNormalize="$(GitVersion_NoNormalizeEnabled)">
             <Output TaskParameter="Major" PropertyName="GitVersion_Major" />
             <Output TaskParameter="Minor" PropertyName="GitVersion_Minor" />
             <Output TaskParameter="Patch" PropertyName="GitVersion_Patch" />
@@ -93,6 +105,8 @@
             <InformationalVersion Condition=" '$(InformationalVersion)' == '' ">$(GitVersion_InformationalVersion)</InformationalVersion>
             <AssemblyVersion Condition=" '$(AssemblyVersion)' == '' ">$(GitVersion_AssemblySemVer)</AssemblyVersion>
             <FileVersion Condition=" '$(FileVersion)' == '' ">$(GitVersion_AssemblySemFileVer)</FileVersion>
+            <RepositoryBranch Condition=" '$(RepositoryBranch)' == '' ">$(GitVersion_BranchName)</RepositoryBranch>
+            <RepositoryCommit Condition=" '$(RepositoryCommit)' == '' ">$(GitVersion_Sha)</RepositoryCommit>
         </PropertyGroup>
 
         <PropertyGroup Condition=" '$(WixTargetsImported)' == 'true' And '$(GenerateGitVersionWixDefines)' == 'true' ">

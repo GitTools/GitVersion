@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GitVersion.OutputVariables;
-using GitVersion.Helpers;
+using GitVersion.Extensions;
 
 namespace GitVersion.OutputFormatters
 {
@@ -27,7 +27,7 @@ namespace GitVersion.OutputFormatters
             return builder.ToString();
         }
 
-        static bool NotAPaddedNumber(KeyValuePair<string, string> variable)
+        private static bool NotAPaddedNumber(KeyValuePair<string, string> variable)
         {
             if (variable.Value == "0")
                 return true;

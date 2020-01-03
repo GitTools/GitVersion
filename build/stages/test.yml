@@ -1,0 +1,7 @@
+steps:
+- template: common-build-steps.yml
+- script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Test
+  displayName: '[Run Test]'
+  env:
+    ENABLED_UNIT_TESTS: $(ENABLED_UNIT_TESTS)
+    CODECOV_TOKEN: $(CODECOV_TOKEN)

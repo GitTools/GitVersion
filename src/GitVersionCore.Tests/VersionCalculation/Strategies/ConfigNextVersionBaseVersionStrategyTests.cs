@@ -17,7 +17,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                 {
                     NextVersion = "1.0.0"
                 });
-            var sut = new ConfigNextVersionBaseVersionStrategy();
+            var sut = new ConfigNextVersionVersionStrategy();
 
             var baseVersion = sut.GetVersions(contextBuilder.Build()).Single();
 
@@ -29,7 +29,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
         public void ReturnsNullWhenNoNextVersionIsInConfig()
         {
             var contextBuilder = new GitVersionContextBuilder();
-            var sut = new ConfigNextVersionBaseVersionStrategy();
+            var sut = new ConfigNextVersionVersionStrategy();
 
             var baseVersion = sut.GetVersions(contextBuilder.Build()).SingleOrDefault();
 
@@ -44,7 +44,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                 {
                     NextVersion = "2"
                 });
-            var sut = new ConfigNextVersionBaseVersionStrategy();
+            var sut = new ConfigNextVersionVersionStrategy();
 
             var baseVersion = sut.GetVersions(contextBuilder.Build()).Single();
 
@@ -59,7 +59,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                 {
                     NextVersion = "2.118998723"
                 });
-            var sut = new ConfigNextVersionBaseVersionStrategy();
+            var sut = new ConfigNextVersionVersionStrategy();
 
             var baseVersion = sut.GetVersions(contextBuilder.Build()).Single();
 
@@ -74,7 +74,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                 {
                     NextVersion = "2.12.654651698"
                 });
-            var sut = new ConfigNextVersionBaseVersionStrategy();
+            var sut = new ConfigNextVersionVersionStrategy();
 
             var baseVersion = sut.GetVersions(contextBuilder.Build()).Single();
 

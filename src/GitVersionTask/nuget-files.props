@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <FullPublish>bin/$(Configuration)/net472</FullPublish>
+        <CorePublish>bin/$(Configuration)/netcoreapp2.1/publish</CorePublish>
+        <FullTarget>tools/net472</FullTarget>
+        <CoreTarget>tools/netstandard2.0</CoreTarget>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="build/*.*"               Pack="true" PackagePath="build" />
+        <None Include="buildMultiTargeting/*.*" Pack="true" PackagePath="buildMultiTargeting" />
+
+        <None Include="$(CorePublish)/runtimes/**/*.so"              Pack="true" PackagePath="$(CoreTarget)/runtimes" />
+        <None Include="$(CorePublish)/runtimes/**/*.dylib"           Pack="true" PackagePath="$(CoreTarget)/runtimes" />
+        <None Include="$(CorePublish)/runtimes/win-x86/native/*.dll" Pack="true" PackagePath="$(CoreTarget)/runtimes/win-x86/native" />
+        <None Include="$(CorePublish)/runtimes/win-x64/native/*.dll" Pack="true" PackagePath="$(CoreTarget)/runtimes/win-x64/native" />
+
+        <None Include="$(CorePublish)/GitVersion*"                   Pack="true" PackagePath="$(CoreTarget)" />
+        <None Include="$(CorePublish)/LibGit2Sharp.dll"              Pack="true" PackagePath="$(CoreTarget)" />
+        <None Include="$(CorePublish)/Newtonsoft.Json.dll"           Pack="true" PackagePath="$(CoreTarget)" />
+        <None Include="$(CorePublish)/YamlDotNet.dll"                Pack="true" PackagePath="$(CoreTarget)" />
+        <None Include="$(CorePublish)/Microsoft.Extensions*"         Pack="true" PackagePath="$(CoreTarget)" />
+
+        <None Include="$(FullPublish)/lib/linux-x64/*.so"            Pack="true" PackagePath="$(FullTarget)/lib/linux-x64" />
+        <None Include="$(FullPublish)/lib/osx/*.dylib"               Pack="true" PackagePath="$(FullTarget)/lib/osx" />
+        <None Include="$(FullPublish)/lib/win32/**/*.dll"            Pack="true" PackagePath="$(FullTarget)/lib/win32" />
+
+        <None Include="$(FullPublish)/GitVersion*"                   Pack="true" PackagePath="$(FullTarget)" />
+        <None Include="$(FullPublish)/LibGit2Sharp.*"                Pack="true" PackagePath="$(FullTarget)" />
+        <None Include="$(FullPublish)/YamlDotNet.dll"                Pack="true" PackagePath="$(FullTarget)" />
+        <None Include="$(FullPublish)/Microsoft.Extensions*"         Pack="true" PackagePath="$(FullTarget)" />
+    </ItemGroup>
+</Project>

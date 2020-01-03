@@ -1,26 +1,27 @@
 using System.Collections.Generic;
-using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.Wizard
 {
     public class PickBranchingStrategyStep : ConfigInitWizardStep
     {
-        public PickBranchingStrategyStep(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)
+        public PickBranchingStrategyStep(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
         {
         }
 
         protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
         {
+            var returnToStep = StepFactory.CreateStep<FinishedSetupStep>();
             switch (result)
             {
                 case "1":
-                    steps.Enqueue(new GitFlowSetupStep(Console, FileSystem));
+                    steps.Enqueue(StepFactory.CreateStep<GitFlowSetupStep>().WithData(returnToStep, true));
                     break;
                 case "2":
-                    steps.Enqueue(new GitHubFlowStep(Console, FileSystem));
+                    steps.Enqueue(StepFactory.CreateStep<GitHubFlowStep>().WithData(returnToStep, true));
                     break;
                 case "3":
-                    steps.Enqueue(new PickBranchingStrategy1Step(Console, FileSystem));
+                    steps.Enqueue(StepFactory.CreateStep<PickBranchingStrategy1Step>());
                     break;
                 default:
                     return StepResult.InvalidResponseSelected();
