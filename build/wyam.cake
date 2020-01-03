@@ -17,11 +17,9 @@ Task("Preview-Documentation")
         Preview = true,
         Watch = true,
         ConfigurationFile = MakeAbsolute((FilePath)"config.wyam"),
-        PreviewVirtualDirectory = "GitVersion",
         Settings = new Dictionary<string, object>
         {
             { "Host",  "gittools.github.io" },
-            { "LinkRoot",  "GitVersion" },
             { "BaseEditUrl", "https://github.com/gittools/GitVersion/tree/master/docs/input/" },
             { "SourceFiles", MakeAbsolute(parameters.Paths.Directories.Source) + "/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs" },
             { "Title", "GitVersion" },
@@ -42,11 +40,8 @@ Task("Force-Publish-Documentation")
         OutputPath = MakeAbsolute(Directory("artifacts/Documentation")),
         RootPath = MakeAbsolute(Directory("docs")),
         ConfigurationFile = MakeAbsolute((FilePath)"config.wyam"),
-        PreviewVirtualDirectory = "GitVersion",
         Settings = new Dictionary<string, object>
         {
-            { "Host",  "gittools.github.io" },
-            { "LinkRoot",  "GitVersion" },
             { "BaseEditUrl", "https://github.com/gittools/GitVersion/tree/master/docs/input/" },
             { "SourceFiles", MakeAbsolute(parameters.Paths.Directories.Source) + "/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs" },
             { "Title", "GitVersion" },
@@ -98,11 +93,8 @@ Task("Publish-Documentation")
             OutputPath = MakeAbsolute(Directory("artifacts/Documentation")),
             RootPath = MakeAbsolute(Directory("docs")),
             ConfigurationFile = MakeAbsolute((FilePath)"config.wyam"),
-            PreviewVirtualDirectory = "GitVersion",
             Settings = new Dictionary<string, object>
             {
-                { "Host",  "gittools.github.io" },
-                { "LinkRoot",  "GitVersion" },
                 { "BaseEditUrl", "https://github.com/gittools/GitVersion/tree/master/docs/input/" },
                 { "SourceFiles", MakeAbsolute(parameters.Paths.Directories.Source) + "/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs" },
                 { "Title", "GitVersion" },
