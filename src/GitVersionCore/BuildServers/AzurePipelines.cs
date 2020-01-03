@@ -21,7 +21,7 @@ namespace GitVersion.BuildServers
         {
             return new[]
             {
-                $"##vso[task.setvariable variable=GitVersion.{name};]{value}"
+                $"##vso[task.setvariable variable=GitVersion.{name};isOutput=true]{value}"
             };
         }
 
