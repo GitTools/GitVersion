@@ -17,11 +17,7 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.1" PrivateAssets="All" />
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.1" />
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
+    <ItemGroup Condition=" '$(TargetFramework)' != 'net472' ">
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.1" />
     </ItemGroup>
 
