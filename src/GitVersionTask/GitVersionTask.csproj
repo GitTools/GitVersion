@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFrameworks>net472;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
@@ -14,7 +14,7 @@
 
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.1" PrivateAssets="All" />
         <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" PrivateAssets="All" />
     </ItemGroup>
 
