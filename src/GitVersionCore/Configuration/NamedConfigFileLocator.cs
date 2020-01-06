@@ -36,6 +36,10 @@ namespace GitVersion.Configuration
             var workingConfigFile = GetConfigFilePath(workingDirectory);
             var projectRootConfigFile = GetConfigFilePath(projectRootDirectory);
 
+            var fileSystemCasingComparer = System.Environment.OSVersion.Platform == PlatformID.Unix ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+            if (Path.GetFullPath(workingConfigFile).Equals(Path.GetFullPath(projectRootConfigFile), fileSystemCasingComparer))
+                return;
+
             var hasConfigInWorkingDirectory = FileSystem.Exists(workingConfigFile);
             var hasConfigInProjectRootDirectory = FileSystem.Exists(projectRootConfigFile);
             if (hasConfigInProjectRootDirectory && hasConfigInWorkingDirectory)
