@@ -52,6 +52,37 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
+        public void DoNotThrowWhenWorkingAndRepoPathsAreSame()
+        {
+            workingPath = DefaultRepoPath;
+            SetupConfigFileContent(string.Empty, path: workingPath);
+
+            Should.NotThrow(() => { configFileLocator.Verify(workingPath, repoPath); });
+        }
+
+        [Test]
+        [Platform(Exclude = "Linux,Unix")]
+        public void DoNotThrowWhenWorkingAndRepoPathsAreSame_WithDifferentCasing()
+        {
+            workingPath = DefaultRepoPath.ToLower();
+            SetupConfigFileContent(string.Empty, path: workingPath);
+
+            Should.NotThrow(() => { configFileLocator.Verify(workingPath, repoPath); });
+        }
+
+        [Test]
+        public void DoNotThrowWhenConfigFileIsInSubDirectoryOfRepoPath()
+        {
+            workingPath = DefaultRepoPath;
+
+            options = Options.Create(new Arguments { ConfigFile = "./src/my-config.yaml" });
+            configFileLocator = new NamedConfigFileLocator(fileSystem, log, options);
+            SetupConfigFileContent(string.Empty, path: workingPath);
+
+            Should.NotThrow(() => { configFileLocator.Verify(workingPath, repoPath); });
+        }
+
+        [Test]
         public void NoWarnOnCustomYmlFile()
         {
             SetupConfigFileContent(string.Empty);
