@@ -2,21 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using GitVersion.Helpers;
 
 namespace GitVersion.Extensions
 {
-    enum TemplateType
+    internal enum TemplateType
     {
         VersionAssemblyInfoResources,
         GitVersionInformationResources
     }
 
-    class TemplateManager
+    internal class TemplateManager
     {
-        readonly Dictionary<string, string> templates;
-        readonly Dictionary<string, string> addFormats;
+        private readonly Dictionary<string, string> templates;
+        private readonly Dictionary<string, string> addFormats;
 
         public TemplateManager(TemplateType templateType)
         {
@@ -68,10 +66,10 @@ namespace GitVersion.Extensions
             return templates.ContainsKey(fileExtension);
         }
 
-        static IEnumerable<string> GetEmbeddedTemplates(TemplateType templateType, string templateCategory)
+        private static IEnumerable<string> GetEmbeddedTemplates(TemplateType templateType, string templateCategory)
         {
 
-            Assembly assy = typeof(TemplateManager).Assembly;
+            var assy = typeof(TemplateManager).Assembly;
 
             foreach (var name in assy.GetManifestResourceNames())
             {

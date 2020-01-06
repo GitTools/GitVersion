@@ -2,7 +2,7 @@
 using System.Text;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.Common;
+using GitVersion;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {
@@ -28,7 +28,7 @@ namespace GitVersionCore.Tests.IntegrationTests
         [TestCase("utf-16")]
         [TestCase("utf-16BE")]
         [TestCase("utf-8")]
-        public void WhenFileExistsWithEncodingPreamble_EncodingIsPreservedAfterWriteAll(string encodingName)
+        public void WhenFileExistsWithEncodingPreambleEncodingIsPreservedAfterWriteAll(string encodingName)
         {
             var encoding = Encoding.GetEncoding(encodingName);
 
@@ -37,32 +37,28 @@ namespace GitVersionCore.Tests.IntegrationTests
             var fileSystem = new FileSystem();
             fileSystem.WriteAllText(TempFilePath, @"¯\(◉◡◔)/¯");
 
-            using (var stream = File.OpenRead(TempFilePath))
-            {
-                var preamble = encoding.GetPreamble();
-                var bytes = new byte[preamble.Length];
-                stream.Read(bytes, 0, preamble.Length);
+            using var stream = File.OpenRead(TempFilePath);
+            var preamble = encoding.GetPreamble();
+            var bytes = new byte[preamble.Length];
+            stream.Read(bytes, 0, preamble.Length);
 
-                bytes.ShouldBe(preamble);
-            }
+            bytes.ShouldBe(preamble);
         }
 
         [Test]
-        public void WhenFileDoesNotExist_CreateWithUTF8WithPreamble()
+        public void WhenFileDoesNotExistCreateWithUtf8WithPreamble()
         {
             var encoding = Encoding.UTF8;
 
             var fileSystem = new FileSystem();
             fileSystem.WriteAllText(TempFilePath, "╚(ಠ_ಠ)=┐");
 
-            using (var stream = File.OpenRead(TempFilePath))
-            {
-                var preamble = encoding.GetPreamble();
-                var bytes = new byte[preamble.Length];
-                stream.Read(bytes, 0, preamble.Length);
+            using var stream = File.OpenRead(TempFilePath);
+            var preamble = encoding.GetPreamble();
+            var bytes = new byte[preamble.Length];
+            stream.Read(bytes, 0, preamble.Length);
 
-                bytes.ShouldBe(preamble);
-            }
+            bytes.ShouldBe(preamble);
         }
     }
 }

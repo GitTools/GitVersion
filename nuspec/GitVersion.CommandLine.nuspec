@@ -8,7 +8,7 @@
     <owners>GitTools and Contributors</owners>
     <license type="expression">MIT</license>
     <projectUrl>https://github.com/GitTools/GitVersion</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/GitTools/GitVersion/master/docs/img/package_icon.png</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/GitTools/graphics/master/GitVersion/icon_100x100.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Derives SemVer information from a repository following GitFlow or GitHubFlow.</description>
     <language>en-AU</language>

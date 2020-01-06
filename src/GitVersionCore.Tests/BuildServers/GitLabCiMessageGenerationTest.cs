@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using GitVersion;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.BuildServers;
-using GitVersion.Common;
+using GitVersion;
+using GitVersion.Logging;
 using GitVersion.OutputVariables;
+using GitVersion.VersionCalculation;
 
 namespace GitVersionCore.Tests.BuildServers
 {
@@ -15,17 +16,25 @@ namespace GitVersionCore.Tests.BuildServers
     public class GitLabCiMessageGenerationTests : TestBase
     {
         private IEnvironment environment;
+        private ILog log;
+        private IVariableProvider variableProvider;
 
         [SetUp]
         public void SetUp()
         {
             environment = new TestEnvironment();
+            log = new NullLog();
+            var metaDataCalculator = new MetaDataCalculator();
+            var baseVersionCalculator = new BaseVersionCalculator(log, null);
+            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
+            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
+            variableProvider = new VariableProvider(nextVersionCalculator, new TestEnvironment());
         }
 
         [Test]
-        public void GenerateSetVersionMessageReturnsVersionAsIs_AlthoughThisIsNotUsedByJenkins()
+        public void GenerateSetVersionMessageReturnsVersionAsIsAlthoughThisIsNotUsedByJenkins()
         {
-            var j = new GitLabCi(environment);
+            var j = new GitLabCi(environment, log);
             var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Beta4.7");
             j.GenerateSetVersionMessage(vars).ShouldBe("0.0.0-Beta4.7");
         }
@@ -33,7 +42,7 @@ namespace GitVersionCore.Tests.BuildServers
         [Test]
         public void GenerateMessageTest()
         {
-            var j = new GitLabCi(environment);
+            var j = new GitLabCi(environment, log);
             var generatedParameterMessages = j.GenerateSetParameterMessage("name", "value");
             generatedParameterMessages.Length.ShouldBe(1);
             generatedParameterMessages[0].ShouldBe("GitVersion_name=value");
@@ -72,9 +81,9 @@ namespace GitVersionCore.Tests.BuildServers
 
             var config = new TestEffectiveConfiguration();
 
-            var variables = VariableProvider.GetVariablesFor(semanticVersion, config, false);
+            var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
 
-            var j = new GitLabCi(environment, f);
+            var j = new GitLabCi(environment, log, f);
 
             j.WriteIntegration(writes.Add, variables);
 

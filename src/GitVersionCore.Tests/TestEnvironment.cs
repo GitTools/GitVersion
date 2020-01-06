@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using GitVersion.Common;
+using GitVersion;
 
 namespace GitVersionCore.Tests
 {
     public class TestEnvironment : IEnvironment
     {
-        private IDictionary<string, string> map;
+        private readonly IDictionary<string, string> map;
 
         public TestEnvironment()
         {

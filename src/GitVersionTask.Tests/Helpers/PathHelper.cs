@@ -2,7 +2,7 @@
 using System.IO;
 using System.Reflection;
 
-namespace GitVersionTask.Tests.Helpers
+namespace GitVersion.MSBuildTask.Tests.Helpers
 {
     public static class PathHelper
     {

@@ -3,21 +3,27 @@ using System.Reflection;
 
 namespace GitVersion
 {
-    class HelpWriter
+    public class HelpWriter : IHelpWriter
     {
-        public static void Write()
+        private readonly IVersionWriter versionWriter;
+
+        public HelpWriter(IVersionWriter versionWriter)
+        {
+            this.versionWriter = versionWriter ?? throw new ArgumentNullException(nameof(versionWriter));
+        }
+
+        public void Write()
         {
             WriteTo(Console.WriteLine);
         }
 
-        internal static void WriteTo(Action<string> writeAction)
+        public void WriteTo(Action<string> writeAction)
         {
-            string version = string.Empty;
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            VersionWriter.WriteTo(assembly, v => version = v);
+            var version = string.Empty;
+            var assembly = Assembly.GetExecutingAssembly();
+            versionWriter.WriteTo(assembly, v => version = v);
 
-
-            string message = "GitVersion " + version + @"
+            var message = "GitVersion " + version + @"
 Use convention to derive a SemVer product version from a GitFlow or GitHub based repository.
 
 GitVersion [path]
@@ -76,8 +82,6 @@ GitVersion [path]
 
 gitversion init     Configuration utility for gitversion
 ";
-
-
             writeAction(message);
         }
     }

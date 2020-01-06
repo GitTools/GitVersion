@@ -1,19 +1,23 @@
 using System.Collections.Generic;
 using GitVersion.Configuration.Init.Wizard;
-using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.SetConfig
 {
     public class ConfigureBranch : ConfigInitWizardStep
     {
-        string name;
-        readonly BranchConfig branchConfig;
+        private string name;
+        private BranchConfig branchConfig;
 
-        public ConfigureBranch(string name, BranchConfig branchConfig, IConsole console, IFileSystem fileSystem) 
-            : base(console, fileSystem)
+        public ConfigureBranch(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
+        {
+        }
+
+        public ConfigureBranch WithData(string name, BranchConfig branchConfig)
         {
             this.branchConfig = branchConfig;
             this.name = name;
+            return this;
         }
 
         protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)
@@ -21,13 +25,13 @@ namespace GitVersion.Configuration.Init.SetConfig
             switch (result)
             {
                 case "0":
-                    steps.Enqueue(new ConfigureBranches(Console, FileSystem));
+                    steps.Enqueue(StepFactory.CreateStep<ConfigureBranches>());
                     return StepResult.Ok();
                 case "1":
-                    steps.Enqueue(new SetBranchTag(name, branchConfig, Console, FileSystem));
+                    steps.Enqueue(StepFactory.CreateStep<SetBranchTag>().WithData(name, branchConfig));
                     return StepResult.Ok();
                 case "2":
-                    steps.Enqueue(new SetBranchIncrementMode(name, branchConfig, Console, FileSystem));
+                    steps.Enqueue(StepFactory.CreateStep<SetBranchIncrementMode>().WithData(name, branchConfig));
                     return StepResult.Ok();
             }
 

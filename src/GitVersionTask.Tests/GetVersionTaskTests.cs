@@ -1,11 +1,11 @@
 using System.Linq;
-using GitVersionTask.MsBuild.Tasks;
 using Microsoft.Build.Framework;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.OutputVariables;
+using GitVersion.MSBuildTask.Tasks;
 
-namespace GitVersionTask.Tests
+namespace GitVersion.MSBuildTask.Tests
 {
     [TestFixture]
     public class GetVersionTaskTests : TestBase

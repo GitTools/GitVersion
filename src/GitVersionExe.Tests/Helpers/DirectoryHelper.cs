@@ -7,7 +7,7 @@ namespace GitVersionExe.Tests.Helpers
 {
     public static class DirectoryHelper
     {
-        static Dictionary<string, string> toRename = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> ToRename = new Dictionary<string, string>
         {
             {"gitted", ".git"},
             {"gitmodules", ".gitmodules"},
@@ -27,9 +27,9 @@ namespace GitVersionExe.Tests.Helpers
             }
         }
 
-        static string Rename(string name)
+        private static string Rename(string name)
         {
-            return toRename.ContainsKey(name) ? toRename[name] : name;
+            return ToRename.ContainsKey(name) ? ToRename[name] : name;
         }
 
         public static void DeleteSubDirectories(string parentPath)

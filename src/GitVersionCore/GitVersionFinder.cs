@@ -1,18 +1,29 @@
+using System;
 using System.IO;
 using GitVersion.Exceptions;
 using GitVersion.VersionCalculation;
-using GitVersion.Helpers;
+using GitVersion.Logging;
+using GitVersion.Extensions;
 
 namespace GitVersion
 {
-    public class GitVersionFinder
+    public class GitVersionFinder : IGitVersionFinder
     {
+        private readonly ILog log;
+        private readonly INextVersionCalculator nextVersionCalculator;
+
+        public GitVersionFinder(ILog log, INextVersionCalculator nextVersionCalculator)
+        {
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
+        }
+
         public SemanticVersion FindVersion(GitVersionContext context)
         {
-            Logger.WriteInfo($"Running against branch: {context.CurrentBranch.FriendlyName} ({(context.CurrentCommit == null ? "-" : context.CurrentCommit.Sha)})");
+            log.Info($"Running against branch: {context.CurrentBranch.FriendlyName} ({(context.CurrentCommit == null ? "-" : context.CurrentCommit.Sha)})");
             if (context.IsCurrentCommitTagged)
             {
-                Logger.WriteInfo($"Current commit is tagged with version {context.CurrentCommitTaggedVersion}, " +
+                log.Info($"Current commit is tagged with version {context.CurrentCommitTaggedVersion}, " +
                                  "version calculation is for metadata only.");
             }
             EnsureMainTopologyConstraints(context);
@@ -23,15 +34,15 @@ namespace GitVersion
                 throw new WarningException("NextVersion.txt has been deprecated. See http://gitversion.readthedocs.org/en/latest/configuration/ for replacement");
             }
 
-            return new NextVersionCalculator().FindVersion(context);
+            return nextVersionCalculator.FindVersion(context);
         }
 
-        void EnsureMainTopologyConstraints(GitVersionContext context)
+        private void EnsureMainTopologyConstraints(GitVersionContext context)
         {
             EnsureHeadIsNotDetached(context);
         }
 
-        void EnsureHeadIsNotDetached(GitVersionContext context)
+        private void EnsureHeadIsNotDetached(GitVersionContext context)
         {
             if (!context.CurrentBranch.IsDetachedHead())
             {

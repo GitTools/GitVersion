@@ -1,13 +1,82 @@
 #load "./docker.cake"
 
-FilePath FindToolInPath(string tool)
+public static FilePath FindToolInPath(this ICakeContext context, string tool)
 {
-    var pathEnv = EnvironmentVariable("PATH");
+    var pathEnv = context.EnvironmentVariable("PATH");
     if (string.IsNullOrEmpty(pathEnv) || string.IsNullOrEmpty(tool)) return tool;
 
-    var paths = pathEnv.Split(new []{ IsRunningOnUnix() ? ':' : ';'},  StringSplitOptions.RemoveEmptyEntries);
-    return paths.Select(path => new DirectoryPath(path).CombineWithFilePath(tool)).FirstOrDefault(filePath => FileExists(filePath.FullPath));
+    var paths = pathEnv.Split(new []{ context.IsRunningOnUnix() ? ':' : ';'},  StringSplitOptions.RemoveEmptyEntries);
+    return paths.Select(path => new DirectoryPath(path).CombineWithFilePath(tool)).FirstOrDefault(filePath => context.FileExists(filePath.FullPath));
 }
+
+public static bool IsOnMainRepo(this ICakeContext context)
+{
+    var buildSystem = context.BuildSystem();
+    string repositoryName = null;
+    if (buildSystem.IsRunningOnAppVeyor)
+    {
+        repositoryName = buildSystem.AppVeyor.Environment.Repository.Name;
+    }
+    else if (buildSystem.IsRunningOnTravisCI)
+    {
+        repositoryName = buildSystem.TravisCI.Environment.Repository.Slug;
+    }
+    else if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
+    {
+        repositoryName = buildSystem.TFBuild.Environment.Repository.RepoName;
+    }
+
+    context.Information("Repository Name: {0}" , repositoryName);
+
+    return !string.IsNullOrWhiteSpace(repositoryName) && StringComparer.OrdinalIgnoreCase.Equals($"{BuildParameters.MainRepoOwner}/{BuildParameters.MainRepoName}", repositoryName);
+}
+
+public static bool IsOnMainBranch(this ICakeContext context)
+{
+    var buildSystem = context.BuildSystem();
+    string repositoryBranch = ExecGitCmd(context, "rev-parse --abbrev-ref HEAD").Single();
+    if (buildSystem.IsRunningOnAppVeyor)
+    {
+        repositoryBranch = buildSystem.AppVeyor.Environment.Repository.Branch;
+    }
+    else if (buildSystem.IsRunningOnTravisCI)
+    {
+        repositoryBranch = buildSystem.TravisCI.Environment.Build.Branch;
+    }
+    else if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
+    {
+        repositoryBranch = buildSystem.TFBuild.Environment.Repository.Branch;
+    }
+
+    context.Information("Repository Branch: {0}" , repositoryBranch);
+
+    return !string.IsNullOrWhiteSpace(repositoryBranch) && StringComparer.OrdinalIgnoreCase.Equals("master", repositoryBranch);
+}
+
+public static bool IsBuildTagged(this ICakeContext context)
+{
+    var sha = ExecGitCmd(context, "rev-parse --verify HEAD").Single();
+    var isTagged = ExecGitCmd(context, "tag --points-at " + sha).Any();
+
+    return isTagged;
+}
+
+
+public static bool IsEnabled(this ICakeContext context, string envVar, bool nullOrEmptyAsEnabled = true)
+{
+    var value = context.EnvironmentVariable(envVar);
+
+    return string.IsNullOrWhiteSpace(value) ? nullOrEmptyAsEnabled : bool.Parse(value);
+}
+
+public static List<string> ExecGitCmd(this ICakeContext context, string cmd)
+{
+    var gitPath = context.Tools.Resolve(context.IsRunningOnWindows() ? "git.exe" : "git");
+    context.StartProcess(gitPath, new ProcessSettings { Arguments = cmd, RedirectStandardOutput = true }, out var redirectedOutput);
+
+    return redirectedOutput.ToList();
+}
+
 
 DirectoryPath HomePath()
 {
@@ -36,34 +105,72 @@ void SetRubyGemPushApiKey(string apiKey)
 
 GitVersion GetVersion(BuildParameters parameters)
 {
-    var dllFilePath = $"./artifacts/*/bin/{parameters.CoreFxVersion21}/tools/GitVersion.dll";
-    var dllFile = GetFiles(dllFilePath).FirstOrDefault();
-    if (dllFile == null)
+    var gitversionFilePath = $"artifacts/gitversion.json";
+    var gitversionFile = GetFiles(gitversionFilePath).FirstOrDefault();
+    GitVersion gitVersion = null;
+    if (gitversionFile == null)
     {
-        Warning("Dogfood GitVersion to get information");
         Build(parameters);
-        dllFilePath = $"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion21}/GitVersion.dll";
-        dllFile = GetFiles(dllFilePath).FirstOrDefault();
+
+        var settings = new GitVersionSettings { OutputType = GitVersionOutput.Json };
+        SetGitVersionTool(settings, parameters, "src/GitVersionExe/**");
+
+        gitVersion = GitVersion(settings);
+        SerializeJsonToPrettyFile(gitversionFilePath, gitVersion);
+    }
+    else
+    {
+        gitVersion = DeserializeJsonFromFile<GitVersion>(gitversionFile);
     }
 
-    var settings = new GitVersionSettings
-    {
-        OutputType = GitVersionOutput.Json,
-        ToolPath = FindToolInPath(IsRunningOnUnix() ? "dotnet" : "dotnet.exe"),
-        ArgumentCustomization = args => dllFile + " " + args.Render()
-    };
+    return gitVersion;
+}
 
-    var gitVersion = GitVersion(settings);
-
-    if (!parameters.IsLocalBuild && !(parameters.IsRunningOnAzurePipeline && parameters.IsPullRequest))
+void RunGitVersionOnCI(BuildParameters parameters)
+{
+    // set the CI build version number with GitVersion
+    if (!parameters.IsLocalBuild)
     {
-        settings.UpdateAssemblyInfo = true;
-        settings.LogFilePath = "console";
-        settings.OutputType = GitVersionOutput.BuildServer;
+        var settings = new GitVersionSettings
+        {
+            UpdateAssemblyInfo = true,
+            LogFilePath = "console",
+            OutputType = GitVersionOutput.BuildServer
+        };
+        SetGitVersionTool(settings, parameters, "artifacts/**/bin");
 
         GitVersion(settings);
     }
-    return gitVersion;
+}
+
+GitVersionSettings SetGitVersionTool(GitVersionSettings settings, BuildParameters parameters, string toolPath)
+{
+    var gitversionTool = GetFiles($"{toolPath}/{parameters.CoreFxVersion31}/GitVersion.dll").FirstOrDefault();
+
+    settings.ToolPath = Context.FindToolInPath(IsRunningOnUnix() ? "dotnet" : "dotnet.exe");
+    settings.ArgumentCustomization = args => gitversionTool + " " + args.Render();
+
+    return settings;
+}
+
+void PublishGitVersionToArtifacts(BuildParameters parameters)
+{
+    var frameworks = new[] { parameters.CoreFxVersion21, parameters.CoreFxVersion31, parameters.FullFxVersion472 };
+
+    // publish Framework-dependent deployment
+    foreach(var framework in frameworks)
+    {
+        var settings = new DotNetCorePublishSettings
+        {
+            Framework = framework,
+            NoRestore = false,
+            Configuration = parameters.Configuration,
+            OutputDirectory = parameters.Paths.Directories.ArtifactsBin.Combine(framework),
+            MSBuildSettings = parameters.MSBuildSettings,
+        };
+
+        DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", settings);
+    }
 }
 
 void Build(BuildParameters parameters)
@@ -84,63 +191,6 @@ void Build(BuildParameters parameters)
         NoRestore = true,
         MSBuildSettings = parameters.MSBuildSettings
     });
-}
-
-void ILRepackGitVersionExe(bool includeLibGit2Sharp, DirectoryPath target, DirectoryPath ilMerge, string configuration, string dotnetVersion)
-{
-    var exeName = "GitVersion.exe";
-    var keyFilePath = "./src/key.snk";
-
-    var targetDir = target + "/";
-    var ilMergeDir = ilMerge + "/";
-    var targetPath     = targetDir + exeName;
-    string outFilePath = ilMergeDir + exeName;
-
-    CleanDirectory(ilMergeDir);
-    CreateDirectory(ilMergeDir);
-
-    var sourcePattern = targetDir + "*.dll";
-    var sourceFiles = GetFiles(sourcePattern);
-
-    if (!includeLibGit2Sharp)
-    {
-        var excludePattern = "**/LibGit2Sharp.dll";
-        sourceFiles = sourceFiles - GetFiles(excludePattern);
-    }
-    var settings = new ILRepackSettings { AllowDup = "", Keyfile = keyFilePath, Internalize = true, NDebug = true, TargetKind = TargetKind.Exe, TargetPlatform  = TargetPlatformVersion.v4, XmlDocs = false };
-
-    if (IsRunningOnUnix())
-    {
-        var libFolder = GetDirectories($"**/GitVersionExe/bin/{configuration}/{dotnetVersion}").FirstOrDefault();
-        settings.Libs = new List<DirectoryPath> { libFolder };
-    }
-
-    ILRepack(outFilePath, targetPath, sourceFiles, settings);
-
-    CopyFileToDirectory("./LICENSE", ilMergeDir);
-    CopyFileToDirectory(targetDir + "GitVersion.pdb", ilMergeDir);
-
-    Information("Copying libgit2sharp files..");
-
-    if (!includeLibGit2Sharp) {
-        CopyFileToDirectory(targetDir + "LibGit2Sharp.dll", ilMergeDir);
-    }
-    CopyFileToDirectory(targetDir + "LibGit2Sharp.dll.config", ilMergeDir);
-    CopyDirectory(targetDir + "/lib/", ilMergeDir + "/lib/");
-}
-
-void PublishILRepackedGitVersionExe(bool includeLibGit2Sharp, DirectoryPath targetDir, DirectoryPath ilMergDir, DirectoryPath outputDir, string configuration, string dotnetVersion)
-{
-    ILRepackGitVersionExe(includeLibGit2Sharp, targetDir, ilMergDir, configuration, dotnetVersion);
-    CopyDirectory(ilMergDir, outputDir);
-
-    if (includeLibGit2Sharp) {
-        CopyFiles("./src/GitVersionExe/NugetAssets/*.ps1", outputDir);
-    }
-
-    // Copy license & Copy GitVersion.XML (since publish does not do this anymore)
-    CopyFileToDirectory("./LICENSE", outputDir);
-    CopyFileToDirectory("./src/GitVersionExe/bin/" + configuration + "/" + dotnetVersion + "/GitVersion.xml", outputDir);
 }
 
 void UpdateTaskVersion(FilePath taskJsonPath, string taskId, GitVersion gitVersion)
@@ -164,19 +214,4 @@ public static CakeTaskBuilder IsDependentOnWhen(this CakeTaskBuilder builder, st
         builder.IsDependentOn(name);
     }
     return builder;
-}
-
-public static bool IsEnabled(ICakeContext context, string envVar, bool nullOrEmptyAsEnabled = true)
-{
-    var value = context.EnvironmentVariable(envVar);
-
-    return string.IsNullOrWhiteSpace(value) ? nullOrEmptyAsEnabled : bool.Parse(value);
-}
-
-public static List<string> ExecGitCmd(ICakeContext context, string cmd)
-{
-    var gitPath = context.Tools.Resolve(context.IsRunningOnWindows() ? "git.exe" : "git");
-    context.StartProcess(gitPath, new ProcessSettings { Arguments = cmd, RedirectStandardOutput = true }, out var redirectedOutput);
-
-    return redirectedOutput.ToList();
 }

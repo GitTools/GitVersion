@@ -22,8 +22,9 @@ Task("Release-Notes")
         TargetCommitish   = "master"
     });
 
-    GitReleaseManagerAddAssets(token, repoOwner, repository, parameters.Version.Milestone, parameters.Paths.Files.ZipArtifactPathDesktop.ToString());
-    GitReleaseManagerAddAssets(token, repoOwner, repository, parameters.Version.Milestone, parameters.Paths.Files.ZipArtifactPathCoreClr.ToString());
+    var zipFiles = GetFiles(parameters.Paths.Directories.Artifacts + "/*.tar.gz").Select(x => x.ToString());
+    var assets = string.Join(",", zipFiles);
+    GitReleaseManagerAddAssets(token, repoOwner, repository, parameters.Version.Milestone, assets);
     GitReleaseManagerClose(token, repoOwner, repository, parameters.Version.Milestone);
 
 }).ReportError(exception =>
@@ -31,31 +32,11 @@ Task("Release-Notes")
     Error(exception.Dump());
 });
 
-Task("Publish-Coverage")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Coverage works only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Coverage works only on AzurePipeline.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Coverage works only for releases.")
-    .IsDependentOnWhen("Test", singleStageRun)
-    .Does<BuildParameters>((parameters) =>
-{
-    var coverageFiles = GetFiles(parameters.Paths.Directories.TestResultsOutput + "/*.coverage.xml");
-
-    var token = parameters.Credentials.CodeCov.Token;
-    if(string.IsNullOrEmpty(token)) {
-        throw new InvalidOperationException("Could not resolve CodeCov token.");
-    }
-
-    foreach (var coverageFile in coverageFiles) {
-        Codecov(new CodecovSettings {
-            Files = new [] { coverageFile.ToString() },
-            Token = token
-        });
-    }
-});
 
 Task("Publish-AppVeyor")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Publish-AppVeyor works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAppVeyor, "Publish-AppVeyor works only on AppVeyor.")
+    .IsDependentOnWhen("UnitTest", singleStageRun)
     .IsDependentOnWhen("Pack", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
@@ -80,59 +61,22 @@ Task("Publish-AzurePipeline")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-AzurePipeline works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-AzurePipeline works only on AzurePipeline.")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsPullRequest,           "Publish-AzurePipeline works only for non-PR commits.")
+    .IsDependentOnWhen("UnitTest", singleStageRun)
     .IsDependentOnWhen("Pack", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
     foreach(var artifact in parameters.Artifacts.All)
     {
-        if (FileExists(artifact.ArtifactPath)) { TFBuild.Commands.UploadArtifact(artifact.ContainerName, artifact.ArtifactPath, artifact.ArtifactName); }
+        if (FileExists(artifact.ArtifactPath)) { TFBuild.Commands.UploadArtifact("", artifact.ArtifactPath, "artifacts"); }
     }
     foreach(var package in parameters.Packages.All)
     {
-        if (FileExists(package.PackagePath)) { TFBuild.Commands.UploadArtifact("packages", package.PackagePath, package.PackageName); }
+        if (FileExists(package.PackagePath)) { TFBuild.Commands.UploadArtifact("", package.PackagePath, "packages"); }
     }
 })
 .OnError(exception =>
 {
     Information("Publish-AzurePipeline Task failed, but continuing with next Task...");
-    Error(exception.Dump());
-    publishingError = true;
-});
-
-Task("Publish-Vsix")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishVsix,       "Publish-Vsix was disabled.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Vsix works only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Vsix works only on AzurePipeline.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Vsix works only for releases.")
-    .IsDependentOnWhen("Pack-Vsix", singleStageRun)
-    .Does<BuildParameters>((parameters) =>
-{
-    var token = parameters.Credentials.Tfx.Token;
-    if(string.IsNullOrEmpty(token)) {
-        throw new InvalidOperationException("Could not resolve Tfx token.");
-    }
-
-    var workDir = "./src/GitVersionVsixTask";
-    var settings = new TfxExtensionPublishSettings
-    {
-        ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
-        AuthType = TfxAuthType.Pat,
-        Token = token,
-        ArgumentCustomization = args => args.Render() + " --no-wait-validation"
-    };
-
-    NpmSet(new NpmSetSettings             { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, Key = "progress", Value = "false" });
-    NpmInstall(new NpmInstallSettings     { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent });
-
-    var vsixFilePath = parameters.Paths.Files.VsixOutputFilePath;
-    if (!FileExists(vsixFilePath)) {
-        vsixFilePath = GetFiles(parameters.Paths.Directories.BuildArtifact + "/*.vsix").First();
-    }
-    TfxExtensionPublish(vsixFilePath, settings);
-})
-.OnError(exception =>
-{
-    Information("Publish-Vsix Task failed, but continuing with next Task...");
     Error(exception.Dump());
     publishingError = true;
 });
@@ -152,7 +96,7 @@ Task("Publish-Gem")
 
     SetRubyGemPushApiKey(apiKey);
 
-    var toolPath = FindToolInPath(IsRunningOnWindows() ? "gem.cmd" : "gem");
+    var toolPath = Context.FindToolInPath(IsRunningOnWindows() ? "gem.cmd" : "gem");
     GemPush(parameters.Paths.Files.GemOutputFilePath, new Cake.Gem.Push.GemPushSettings()
     {
         ToolPath = toolPath,

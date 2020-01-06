@@ -1,11 +1,11 @@
 using GitVersion.OutputVariables;
-using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.BuildServers
 {
     public class ContinuaCi : BuildServerBase
     {
-        public ContinuaCi(IEnvironment environment) : base(environment)
+        public ContinuaCi(IEnvironment environment, ILog log) : base(environment, log)
         {
         }
 

@@ -1,6 +1,6 @@
 using Microsoft.Build.Framework;
 
-namespace GitVersionTask.MsBuild.Tasks
+namespace GitVersion.MSBuildTask.Tasks
 {
     public class GetVersion : GitVersionTaskBase
     {

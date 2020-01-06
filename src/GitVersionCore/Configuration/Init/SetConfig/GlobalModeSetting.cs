@@ -1,20 +1,24 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using GitVersion.Configuration.Init.Wizard;
 using GitVersion.VersioningModes;
-using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.SetConfig
 {
     public class GlobalModeSetting : ConfigInitWizardStep
     {
-        readonly ConfigInitWizardStep returnToStep;
-        readonly bool isPartOfWizard;
+        private ConfigInitWizardStep returnToStep;
+        private bool isPartOfWizard;
 
-        public GlobalModeSetting(ConfigInitWizardStep returnToStep, bool isPartOfWizard, IConsole console, IFileSystem fileSystem)
-            : base(console, fileSystem)
+        public GlobalModeSetting(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
+        {
+        }
+
+        public GlobalModeSetting WithData(ConfigInitWizardStep returnToStep, bool isPartOfWizard)
         {
             this.returnToStep = returnToStep;
             this.isPartOfWizard = isPartOfWizard;
+            return this;
         }
 
         protected override StepResult HandleResult(string result, Queue<ConfigInitWizardStep> steps, Config config, string workingDirectory)

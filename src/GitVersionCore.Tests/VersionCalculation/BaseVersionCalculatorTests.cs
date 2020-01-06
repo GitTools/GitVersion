@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using GitTools.Testing;
 using GitVersion;
@@ -10,19 +10,28 @@ using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.Helpers;
+using GitVersion.Logging;
+using GitVersion.Extensions;
 
 namespace GitVersionCore.Tests.VersionCalculation
 {
     [TestFixture]
     public class BaseVersionCalculatorTests : TestBase
     {
+        private readonly ILog log;
+
+        public BaseVersionCalculatorTests()
+        {
+            log = new NullLog();
+        }
         [Test]
         public void ChoosesHighestVersionReturnedFromStrategies()
         {
             var context = new GitVersionContextBuilder().Build();
             var dateTimeOffset = DateTimeOffset.Now;
-            var sut = new BaseVersionCalculator(new V1Strategy(DateTimeOffset.Now), new V2Strategy(dateTimeOffset));
+
+            var versionStrategies = new IVersionStrategy[] { new V1Strategy(DateTimeOffset.Now), new V2Strategy(dateTimeOffset) };
+            var sut = new BaseVersionCalculator(log, versionStrategies);
 
             var baseVersion = sut.GetBaseVersion(context);
 
@@ -36,7 +45,9 @@ namespace GitVersionCore.Tests.VersionCalculation
         {
             var context = new GitVersionContextBuilder().Build();
             var when = DateTimeOffset.Now;
-            var sut = new BaseVersionCalculator(new V1Strategy(when), new V2Strategy(null));
+
+            var versionStrategies = new IVersionStrategy[] { new V1Strategy(when), new V2Strategy(null) };
+            var sut = new BaseVersionCalculator(log, versionStrategies);
 
             var baseVersion = sut.GetBaseVersion(context);
 
@@ -50,7 +61,9 @@ namespace GitVersionCore.Tests.VersionCalculation
         {
             var context = new GitVersionContextBuilder().Build();
             var when = DateTimeOffset.Now;
-            var sut = new BaseVersionCalculator(new V1Strategy(null), new V2Strategy(when));
+
+            var versionStrategies = new IVersionStrategy[] { new V1Strategy(null), new V2Strategy(when) };
+            var sut = new BaseVersionCalculator(log, versionStrategies);
 
             var baseVersion = sut.GetBaseVersion(context);
 
@@ -59,31 +72,31 @@ namespace GitVersionCore.Tests.VersionCalculation
             baseVersion.BaseVersionSource.When().ShouldBe(when);
         }
 
-        class V1Strategy : BaseVersionStrategy
+        private class V1Strategy : IVersionStrategy
         {
-            readonly Commit when;
+            private readonly Commit when;
 
             public V1Strategy(DateTimeOffset? when)
             {
                 this.when = when == null ? null : new MockCommit { CommitterEx = Generate.Signature(when.Value) };
             }
 
-            public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+            public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
             {
                 yield return new BaseVersion(context, "Source 1", false, new SemanticVersion(1), when, null);
             }
         }
 
-        class V2Strategy : BaseVersionStrategy
+        private class V2Strategy : IVersionStrategy
         {
-            Commit when;
+            private readonly Commit when;
 
             public V2Strategy(DateTimeOffset? when)
             {
                 this.when = when == null ? null : new MockCommit { CommitterEx = Generate.Signature(when.Value) };
             }
 
-            public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+            public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
             {
                 yield return new BaseVersion(context, "Source 2", true, new SemanticVersion(2), when, null);
             }
@@ -95,7 +108,9 @@ namespace GitVersionCore.Tests.VersionCalculation
             var fakeIgnoreConfig = new TestIgnoreConfig(new ExcludeSourcesContainingExclude());
             var context = new GitVersionContextBuilder().WithConfig(new Config() { Ignore = fakeIgnoreConfig }).Build();
             var version = new BaseVersion(context, "dummy", false, new SemanticVersion(2), new MockCommit(), null);
-            var sut = new BaseVersionCalculator(new TestVersionStrategy(version));
+
+            var versionStrategies = new IVersionStrategy[] { new TestVersionStrategy(version) };
+            var sut = new BaseVersionCalculator(log, versionStrategies);
 
             var baseVersion = sut.GetBaseVersion(context);
 
@@ -111,7 +126,9 @@ namespace GitVersionCore.Tests.VersionCalculation
             var context = new GitVersionContextBuilder().WithConfig(new Config() { Ignore = fakeIgnoreConfig }).Build();
             var higherVersion = new BaseVersion(context, "exclude", false, new SemanticVersion(2), new MockCommit(), null);
             var lowerVersion = new BaseVersion(context, "dummy", false, new SemanticVersion(1), new MockCommit(), null);
-            var sut = new BaseVersionCalculator(new TestVersionStrategy(higherVersion, lowerVersion));
+
+            var versionStrategies = new IVersionStrategy[] { new TestVersionStrategy(higherVersion, lowerVersion) };
+            var sut = new BaseVersionCalculator(log, versionStrategies);
 
             var baseVersion = sut.GetBaseVersion(context);
 
@@ -121,7 +138,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             baseVersion.SemanticVersion.ShouldBe(lowerVersion.SemanticVersion);
         }
 
-        internal class TestIgnoreConfig : IgnoreConfig
+        private class TestIgnoreConfig : IgnoreConfig
         {
             private readonly IVersionFilter filter;
 
@@ -136,7 +153,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             }
         }
 
-        internal class ExcludeSourcesContainingExclude : IVersionFilter
+        private class ExcludeSourcesContainingExclude : IVersionFilter
         {
             public bool Exclude(BaseVersion version, out string reason)
             {
@@ -151,7 +168,7 @@ namespace GitVersionCore.Tests.VersionCalculation
             }
         }
 
-        class TestVersionStrategy : BaseVersionStrategy
+        private class TestVersionStrategy : IVersionStrategy
         {
             private readonly IEnumerable<BaseVersion> versions;
 
@@ -160,7 +177,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                 this.versions = versions;
             }
 
-            public override IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+            public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
             {
                 return versions;
             }

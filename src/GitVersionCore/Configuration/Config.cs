@@ -2,18 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using GitVersion.VersioningModes;
 using YamlDotNet.Serialization;
 using GitVersion.Extensions;
-using GitVersion.Helpers;
+using System.IO;
+using System.Text;
 
 namespace GitVersion.Configuration
 {
     public class Config
     {
-        Dictionary<string, BranchConfig> branches = new Dictionary<string, BranchConfig>();
-        string nextVersion;
+        private readonly Dictionary<string, BranchConfig> branches = new Dictionary<string, BranchConfig>();
+        private string nextVersion;
 
         public Config()
         {
@@ -49,7 +49,7 @@ namespace GitVersion.Configuration
         {
             get => nextVersion;
             set =>
-                nextVersion = int.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var major)
+                nextVersion = Int32.TryParse(value, NumberStyles.Any, NumberFormatInfo.InvariantInfo, out var major)
                     ? $"{major}.0"
                     : value;
         }
@@ -94,35 +94,7 @@ namespace GitVersion.Configuration
             }
         }
 
-        public BranchConfig GetConfigForBranch(string branchName)
-        {
-            if (branchName == null) throw new ArgumentNullException(nameof(branchName));
-            var matches = Branches
-                .Where(b => Regex.IsMatch(branchName, b.Value.Regex, RegexOptions.IgnoreCase))
-                .ToArray();
-
-            try
-            {
-                return matches
-                    .Select(kvp => kvp.Value)
-                    .SingleOrDefault();
-            }
-            catch (InvalidOperationException)
-            {
-                var matchingConfigs = string.Join("\n - ", matches.Select(m => m.Key));
-                var picked = matches
-                    .Select(kvp => kvp.Value)
-                    .First();
-
-                Logger.WriteWarning(
-                    $"Multiple branch configurations match the current branch branchName of '{branchName}'. " +
-                    $"Using the first matching configuration, '{picked}'. Matching configurations include: '{matchingConfigs}'");
-
-                return picked;
-            }
-        }
-
-        T MergeObjects<T>(T target, T source)
+        private static T MergeObjects<T>(T target, T source)
         {
             typeof(T).GetProperties()
                 .Where(prop => prop.CanRead && prop.CanWrite)
@@ -132,8 +104,6 @@ namespace GitVersion.Configuration
                 .ForEach(_ => _.prop.SetValue(target, _.value, null));
             return target;
         }
-
-        public bool IsReleaseBranch(string branchName) => GetConfigForBranch(branchName)?.IsReleaseBranch ?? false;
 
         [YamlMember(Alias = "ignore")]
         public IgnoreConfig Ignore { get; set; }
@@ -146,5 +116,32 @@ namespace GitVersion.Configuration
 
         [YamlMember(Alias = "merge-message-formats")]
         public Dictionary<string, string> MergeMessageFormats { get; set; } = new Dictionary<string, string>();
+
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+            using (var stream = new StringWriter(stringBuilder))
+            {
+                ConfigSerialiser.Write(this, stream);
+                stream.Flush();
+            }
+            return stringBuilder.ToString();
+        }
+
+        public const string DefaultTagPrefix = "[vV]";
+        public const string ReleaseBranchRegex = "^releases?[/-]";
+        public const string FeatureBranchRegex = "^features?[/-]";
+        public const string PullRequestRegex = @"^(pull|pull\-requests|pr)[/-]";
+        public const string HotfixBranchRegex = "^hotfix(es)?[/-]";
+        public const string SupportBranchRegex = "^support[/-]";
+        public const string DevelopBranchRegex = "^dev(elop)?(ment)?$";
+        public const string MasterBranchRegex = "^master$";
+        public const string MasterBranchKey = "master";
+        public const string ReleaseBranchKey = "release";
+        public const string FeatureBranchKey = "feature";
+        public const string PullRequestBranchKey = "pull-request";
+        public const string HotfixBranchKey = "hotfix";
+        public const string SupportBranchKey = "support";
+        public const string DevelopBranchKey = "develop";
     }
 }

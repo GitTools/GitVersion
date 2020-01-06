@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using LibGit2Sharp;
 
+using Index = LibGit2Sharp.Index;
 namespace GitVersionCore.Tests.Mocks
 {
     public class MockRepository : IRepository
     {
-        IQueryableCommitLog commits;
+        private IQueryableCommitLog commits;
 
         public MockRepository()
         {
@@ -30,21 +31,6 @@ namespace GitVersionCore.Tests.Mocks
         }
 
         public Branch Checkout(Commit commit, CheckoutOptions options, Signature signature = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Branch Checkout(Branch branch, CheckoutOptions options)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Branch Checkout(string committishOrBranchSpec, CheckoutOptions options)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Branch Checkout(Commit commit, CheckoutOptions options)
         {
             throw new NotImplementedException();
         }

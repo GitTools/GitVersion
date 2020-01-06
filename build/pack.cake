@@ -7,9 +7,6 @@ Task("Clean")
 
     CleanDirectories("./src/**/bin/" + parameters.Configuration);
     CleanDirectories("./src/**/obj");
-    CleanDirectories("./src/GitVersionVsixTask/scripts/**");
-
-    DeleteFiles("src/GitVersionVsixTask/*.vsix");
     DeleteFiles("src/GitVersionRubyGem/*.gem");
 
     CleanDirectories(parameters.Paths.Directories.ToClean);
@@ -19,219 +16,79 @@ Task("Build")
     .IsDependentOn("Clean")
     .Does<BuildParameters>((parameters) =>
 {
-    // build .Net code
     Build(parameters);
+    PublishGitVersionToArtifacts(parameters);
 
-    var workDir = "./src/GitVersionVsixTask";
-    // build typescript code
-    NpmSet(new NpmSetSettings             { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, Key = "progress", Value = "false" });
-    NpmInstall(new NpmInstallSettings     { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent });
-    NpmRunScript(new NpmRunScriptSettings { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, ScriptName = "build" });
-});
-
-#endregion
-
-#region Tests
-
-Task("Test")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledUnitTests, "Unit tests were disabled.")
-    .IsDependentOn("Build")
-    .Does<BuildParameters>((parameters) =>
-{
-    var frameworks = new[] { parameters.CoreFxVersion21, parameters.FullFxVersion };
-    var testResultsPath = parameters.Paths.Directories.TestResultsOutput;
-
-    foreach(var framework in frameworks)
-    {
-        // run using dotnet test
-        var actions = new List<Action>();
-        var projects = GetFiles("./src/**/*.Tests.csproj");
-        foreach(var project in projects)
-        {
-            actions.Add(() =>
-            {
-                var projectName = $"{project.GetFilenameWithoutExtension()}.{framework}";
-                var settings = new DotNetCoreTestSettings {
-                    Framework = framework,
-                    NoBuild = true,
-                    NoRestore = true,
-                    Configuration = parameters.Configuration,
-                };
-
-                if (!parameters.IsRunningOnMacOS) {
-                    settings.TestAdapterPath = new DirectoryPath(".");
-                    var resultsPath = MakeAbsolute(testResultsPath.CombineWithFilePath($"{projectName}.results.xml"));
-                    settings.Logger = $"nunit;LogFilePath={resultsPath}";
-                }
-
-                var coverletSettings = new CoverletSettings {
-                    CollectCoverage = true,
-                    CoverletOutputFormat = CoverletOutputFormat.opencover,
-                    CoverletOutputDirectory = testResultsPath,
-                    CoverletOutputName = $"{projectName}.coverage.xml"
-                };
-
-                if (IsRunningOnUnix() && string.Equals(framework, parameters.FullFxVersion))
-                {
-                    settings.Filter = "TestCategory!=NoMono";
-                }
-
-                DotNetCoreTest(project.FullPath, settings, coverletSettings);
-            });
-        }
-
-        var options = new ParallelOptions
-        {
-            MaxDegreeOfParallelism = -1,
-            CancellationToken = default
-        };
-
-        Parallel.Invoke(options, actions.ToArray());
-    }
-
-    var workDir = "./src/GitVersionVsixTask";
-    var npmSettings = new NpmRunScriptSettings { WorkingDirectory = workDir, LogLevel = NpmLogLevel.Silent, ScriptName = "test" };
-    var vsixResultsPath = MakeAbsolute(testResultsPath.CombineWithFilePath("vsix.results.xml"));
-    // npmSettings.Arguments.Add($"--reporter mocha-xunit-reporter --reporter-options mochaFile={vsixResultsPath}");
-    NpmRunScript(npmSettings);
-})
-.ReportError(exception =>
-{
-    var error = (exception as AggregateException).InnerExceptions[0];
-    Error(error.Dump());
-})
-.Finally(() =>
-{
-    var parameters = Context.Data.Get<BuildParameters>();
-    var testResultsFiles = GetFiles(parameters.Paths.Directories.TestResultsOutput + "/*.results.xml");
-    if (parameters.IsRunningOnAzurePipeline)
-    {
-        if (testResultsFiles.Any()) {
-            var data = new TFBuildPublishTestResultsData {
-                TestResultsFiles = testResultsFiles.ToArray(),
-                TestRunner = TFTestRunnerType.NUnit
-            };
-            TFBuild.Commands.PublishTestResults(data);
-        }
-    }
+    RunGitVersionOnCI(parameters);
 });
 
 #endregion
 
 #region Pack
-
-Task("Copy-Files")
-    .IsDependentOn("Test")
+Task("Pack-Prepare")
+    .IsDependentOn("Build")
     .Does<BuildParameters>((parameters) =>
 {
-    // .NET Core
-    var coreFxDir = parameters.Paths.Directories.ArtifactsBinCoreFx21.Combine("tools");
-    DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
+    // publish single file for all native runtimes (self contained)
+    foreach(var runtime in parameters.NativeRuntimes)
     {
-        Framework = parameters.CoreFxVersion21,
-        NoRestore = false,
-        Configuration = parameters.Configuration,
-        OutputDirectory = coreFxDir,
-        MSBuildSettings = parameters.MSBuildSettings
-    });
+        var runtimeName = runtime.Value;
 
-    // Copy license & Copy GitVersion.XML (since publish does not do this anymore)
-    CopyFileToDirectory("./LICENSE", coreFxDir);
-    CopyFileToDirectory($"./src/GitVersionExe/bin/{parameters.Configuration}/{parameters.CoreFxVersion21}/GitVersion.xml", coreFxDir);
+        var settings = new DotNetCorePublishSettings
+        {
+            Framework = parameters.CoreFxVersion31,
+            Runtime = runtimeName,
+            NoRestore = false,
+            Configuration = parameters.Configuration,
+            OutputDirectory = parameters.Paths.Directories.Native.Combine(runtimeName),
+            MSBuildSettings = parameters.MSBuildSettings,
+        };
 
-    // .NET Framework
-    DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", new DotNetCorePublishSettings
+        settings.ArgumentCustomization =
+            arg => arg
+            .Append("/p:PublishSingleFile=true")
+            .Append("/p:PublishTrimmed=true")
+            .Append("/p:IncludeSymbolsInSingleFile=true");
+
+        DotNetCorePublish("./src/GitVersionExe/GitVersionExe.csproj", settings);
+    }
+
+    var frameworks = new[] { parameters.CoreFxVersion21, parameters.FullFxVersion472 };
+
+    // MsBuild Task
+    foreach(var framework in frameworks)
     {
-        Framework = parameters.FullFxVersion,
-        NoBuild = true,
-        NoRestore = false,
-        Configuration = parameters.Configuration,
-        OutputDirectory = parameters.Paths.Directories.ArtifactsBinFullFx,
-        MSBuildSettings = parameters.MSBuildSettings
-    });
+        DotNetCorePublish("./src/GitVersionTask/GitVersionTask.csproj", new DotNetCorePublishSettings
+        {
+            Framework = framework,
+            Configuration = parameters.Configuration,
+            MSBuildSettings = parameters.MSBuildSettings
+        });
+    }
 
-    DotNetCorePublish("./src/GitVersionTask/GitVersionTask.csproj", new DotNetCorePublishSettings
-    {
-        Framework = parameters.FullFxVersion,
-        NoBuild = true,
-        NoRestore = true,
-        Configuration = parameters.Configuration,
-        MSBuildSettings = parameters.MSBuildSettings
-    });
+    var sourceDir = parameters.Paths.Directories.Native.Combine(parameters.NativeRuntimes[PlatformFamily.Windows]);
+    var sourceFiles = GetFiles(sourceDir + "/*.*");
 
-    // .NET Core
-    DotNetCorePublish("./src/GitVersionTask/GitVersionTask.csproj", new DotNetCorePublishSettings
-    {
-        Framework = parameters.CoreFxVersion21,
-        NoBuild = true,
-        NoRestore = true,
-        Configuration = parameters.Configuration,
-        MSBuildSettings = parameters.MSBuildSettings
-    });
-    var ilMergeDir = parameters.Paths.Directories.ArtifactsBinFullFxILMerge;
-    var portableDir = parameters.Paths.Directories.ArtifactsBinFullFxPortable.Combine("tools");
-    var cmdlineDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
+    // RubyGem
+    var gemDir = new DirectoryPath("./src/GitVersionRubyGem/bin");
+    EnsureDirectoryExists(gemDir);
+    CopyFiles(sourceFiles, gemDir);
 
-    // Portable
-    PublishILRepackedGitVersionExe(true, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergeDir, portableDir, parameters.Configuration, parameters.FullFxVersion);
-    // Commandline
-    PublishILRepackedGitVersionExe(false, parameters.Paths.Directories.ArtifactsBinFullFx, ilMergeDir, cmdlineDir, parameters.Configuration, parameters.FullFxVersion);
+    // Cmdline and Portable
+    var cmdlineDir = parameters.Paths.Directories.ArtifactsBinCmdline.Combine("tools");
+    var portableDir = parameters.Paths.Directories.ArtifactsBinPortable.Combine("tools");
 
-    // Vsix
-    var vsixPath = new DirectoryPath("./src/GitVersionVsixTask/GitVersionTask");
+    EnsureDirectoryExists(cmdlineDir);
+    EnsureDirectoryExists(portableDir);
 
-    var vsixPathFull = vsixPath.Combine("full");
-    EnsureDirectoryExists(vsixPathFull);
-    CopyFileToDirectory(portableDir + "/" + "LibGit2Sharp.dll.config", vsixPathFull);
-    CopyFileToDirectory(portableDir + "/" + "GitVersion.exe", vsixPathFull);
-    CopyDirectory(portableDir.Combine("lib"), vsixPathFull.Combine("lib"));
+    CopyFiles(sourceFiles, cmdlineDir);
 
-    // Vsix dotnet core
-    var vsixPathCore = vsixPath.Combine("core");
-    EnsureDirectoryExists(vsixPathCore);
-    CopyDirectory(coreFxDir, vsixPathCore);
-
-    // Ruby Gem
-    var gemPath = new DirectoryPath("./src/GitVersionRubyGem/bin");
-    EnsureDirectoryExists(gemPath);
-    CopyFileToDirectory(portableDir + "/" + "LibGit2Sharp.dll.config", gemPath);
-    CopyFileToDirectory(portableDir + "/" + "GitVersion.exe", gemPath);
-    CopyDirectory(portableDir.Combine("lib"), gemPath.Combine("lib"));
-});
-
-Task("Pack-Vsix")
-    .IsDependentOn("Copy-Files")
-    .Does<BuildParameters>((parameters) =>
-{
-    var workDir = "./src/GitVersionVsixTask";
-    var idSuffix    = parameters.IsStableRelease() ? "" : "-preview";
-    var titleSuffix = parameters.IsStableRelease() ? "" : " (Preview)";
-    var visibility  = parameters.IsStableRelease() ? "Public" : "Preview";
-    var taskId      = parameters.IsStableRelease() ? "e5983830-3f75-11e5-82ed-81492570a08e" : "25b46667-d5a9-4665-97f7-e23de366ecdf";
-
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$idSuffix$", idSuffix);
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$titleSuffix$", titleSuffix);
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$visibility$", visibility);
-
-    // update version number
-    ReplaceTextInFile(new FilePath(workDir + "/vss-extension.json"), "$version$", parameters.Version.VsixVersion);
-    UpdateTaskVersion(new FilePath(workDir + "/GitVersionTask/task.json"), taskId, parameters.Version.GitVersion);
-
-    // build and pack
-
-    var settings = new TfxExtensionCreateSettings
-    {
-        ToolPath = workDir + "/node_modules/.bin/" + (parameters.IsRunningOnWindows ? "tfx.cmd" : "tfx"),
-        WorkingDirectory = workDir,
-        OutputPath = parameters.Paths.Directories.BuildArtifact
-    };
-
-    settings.ManifestGlobs = new List<string>(){ "vss-extension.json" };
-    TfxExtensionCreate(settings);
+    sourceFiles += GetFiles("./nuspec/*.ps1") + GetFiles("./nuspec/*.txt");
+    CopyFiles(sourceFiles, portableDir);
 });
 
 Task("Pack-Gem")
-    .IsDependentOn("Copy-Files")
+    .IsDependentOn("Pack-Prepare")
     .Does<BuildParameters>((parameters) =>
 {
     var workDir = "./src/GitVersionRubyGem";
@@ -240,7 +97,7 @@ Task("Pack-Gem")
     // update version number
     ReplaceTextInFile(gemspecFile, "$version$", parameters.Version.GemVersion);
 
-    var toolPath = FindToolInPath(IsRunningOnWindows() ? "gem.cmd" : "gem");
+    var toolPath = Context.FindToolInPath(IsRunningOnWindows() ? "gem.cmd" : "gem");
     GemBuild(gemspecFile, new Cake.Gem.Build.GemBuildSettings()
     {
         WorkingDirectory = workDir,
@@ -251,7 +108,7 @@ Task("Pack-Gem")
 });
 
 Task("Pack-Nuget")
-    .IsDependentOn("Copy-Files")
+    .IsDependentOn("Pack-Prepare")
     .Does<BuildParameters>((parameters) =>
 {
     foreach(var package in parameters.Packages.Nuget)
@@ -277,8 +134,6 @@ Task("Pack-Nuget")
     {
         Configuration = parameters.Configuration,
         OutputDirectory = parameters.Paths.Directories.NugetRoot,
-        NoBuild = true,
-        NoRestore = true,
         MSBuildSettings = parameters.MSBuildSettings
     };
 
@@ -291,8 +146,8 @@ Task("Pack-Nuget")
 
 Task("Pack-Chocolatey")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Pack-Chocolatey works only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsMainBranch, "Pack-Chocolatey works only for main branch.")
-    .IsDependentOn("Copy-Files")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsMainBranch && !parameters.IsPullRequest, "Pack-Chocolatey works only for main branch.")
+    .IsDependentOn("Pack-Prepare")
     .Does<BuildParameters>((parameters) =>
 {
     foreach(var package in parameters.Packages.Chocolatey)
@@ -300,33 +155,30 @@ Task("Pack-Chocolatey")
         if (FileExists(package.NuspecPath)) {
             var artifactPath = MakeAbsolute(parameters.PackagesBuildMap[package.Id]).FullPath;
 
-            var files = GetFiles(artifactPath + "/**/*.*")
-                        .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") });
-            var txtFiles = (GetFiles("./nuspec/*.txt") + GetFiles("./nuspec/*.ps1"))
-                        .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.GetFilename().ToString() });
-
-            ChocolateyPack(package.NuspecPath, new ChocolateyPackSettings {
-                Verbose = true,
+            var chocolateySettings = new ChocolateyPackSettings
+            {
+                LimitOutput = true,
                 Version = parameters.Version.SemVersion,
                 OutputDirectory = parameters.Paths.Directories.NugetRoot,
-                Files = files.Concat(txtFiles).ToArray()
-            });
+                Files = GetFiles(artifactPath + "/**/*.*")
+                        .Select(file => new ChocolateyNuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
+                        .ToArray()
+            };
+            ChocolateyPack(package.NuspecPath, chocolateySettings);
         }
     }
 });
 
 Task("Zip-Files")
-    .IsDependentOn("Copy-Files")
+    .IsDependentOn("Pack-Prepare")
     .Does<BuildParameters>((parameters) =>
 {
-    // .NET Framework
-    var cmdlineDir = parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
-    var fullFxFiles = GetFiles(cmdlineDir.FullPath + "/**/*");
-    Zip(cmdlineDir, parameters.Paths.Files.ZipArtifactPathDesktop, fullFxFiles);
-
-    // .NET Core
-    var coreFxDir = parameters.Paths.Directories.ArtifactsBinCoreFx21.Combine("tools");
-    var coreclrFiles = GetFiles(coreFxDir.FullPath + "/**/*");
-    Zip(coreFxDir, parameters.Paths.Files.ZipArtifactPathCoreClr, coreclrFiles);
+    foreach(var runtime in parameters.NativeRuntimes)
+    {
+        var sourceDir = parameters.Paths.Directories.Native.Combine(runtime.Value);
+        var fileName = $"gitversion-{runtime.Key}-{parameters.Version.SemVersion}.tar.gz".ToLower();
+        var tarFile = parameters.Paths.Directories.Artifacts.CombineWithFilePath(fileName);
+        GZipCompress(sourceDir, tarFile);
+    }
 });
 #endregion

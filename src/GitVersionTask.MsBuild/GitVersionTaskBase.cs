@@ -1,7 +1,7 @@
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
-namespace GitVersionTask.MsBuild
+namespace GitVersion.MSBuildTask
 {
     public abstract class GitVersionTaskBase : Task
     {
@@ -11,5 +11,7 @@ namespace GitVersionTask.MsBuild
         public string ConfigFilePath { get; set; }
 
         public bool NoFetch { get; set; }
+
+        public bool NoNormalize { get; set; }
     }
 }

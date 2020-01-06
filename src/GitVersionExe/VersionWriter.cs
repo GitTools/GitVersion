@@ -4,14 +4,14 @@ using System.Reflection;
 
 namespace GitVersion
 {
-    class VersionWriter
+    public class VersionWriter : IVersionWriter
     {
-        public static void Write(Assembly assembly)
+        public void Write(Assembly assembly)
         {
             WriteTo(assembly, Console.WriteLine);
         }
 
-        public static void WriteTo(Assembly assembly, Action<string> writeAction)
+        public void WriteTo(Assembly assembly, Action<string> writeAction)
         {
             var version = GetAssemblyVersion(assembly);
             writeAction(version);

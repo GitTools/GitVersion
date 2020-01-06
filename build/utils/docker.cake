@@ -1,6 +1,6 @@
 void DockerStdinLogin(string username, string password)
 {
-    var toolPath = FindToolInPath(IsRunningOnUnix() ? "docker" : "docker.exe");
+    var toolPath = Context.FindToolInPath(IsRunningOnUnix() ? "docker" : "docker.exe");
     var args = new ProcessArgumentBuilder()
         .Append("login")
         .Append("--username").AppendQuoted(username)
@@ -28,9 +28,7 @@ void DockerBuild(DockerImage dockerImage, BuildParameters parameters)
     var (os, distro, targetframework) = dockerImage;
     var workDir = DirectoryPath.FromString($"./src/Docker");
 
-    var sourceDir = targetframework.StartsWith("netcoreapp")
-        ? parameters.Paths.Directories.ArtifactsBinCoreFx21.Combine("tools")
-        : parameters.Paths.Directories.ArtifactsBinFullFxCmdline.Combine("tools");
+    var sourceDir = parameters.Paths.Directories.ArtifactsBin.Combine(targetframework);
 
     CopyDirectory(sourceDir, workDir.Combine("content"));
 
@@ -83,6 +81,7 @@ string DockerRunImage(DockerContainerRunSettings settings, string image, string 
     }
 
     var result = runner.RunWithResult("run", settings ?? new DockerContainerRunSettings(), r => r.ToArray(), arguments.ToArray());
+    Information("Output : " + result);
     return string.Join("\n", result);
 }
 
@@ -102,6 +101,11 @@ void DockerTestArtifact(DockerImage dockerImage, BuildParameters parameters, str
     Information("Docker tag: {0}", tag);
     Information("Docker cmd: {0}", cmd);
 
+    if (os == "windows" && targetframework == parameters.CoreFxVersion31)
+    {
+        cmd = "-Command " + cmd; // powershell 7 needs a -Command parameter
+    }
+
     DockerTestRun(settings, parameters, tag, "pwsh", cmd);
 }
 
@@ -117,6 +121,14 @@ DockerContainerRunSettings GetDockerRunSettings(BuildParameters parameters)
             $"{currentDir}/artifacts/v{parameters.Version.SemVersion}/nuget:{parameters.DockerRootPrefix}/nuget"
         }
     };
+
+    if (parameters.IsRunningOnAzurePipeline) {
+        settings.Env = new[]
+        {
+            "TF_BUILD=true",
+            $"BUILD_SOURCEBRANCH={Context.EnvironmentVariable("BUILD_SOURCEBRANCH")}"
+        };
+    }
 
     return settings;
 }
@@ -157,4 +169,14 @@ string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
     return tags.ToArray();
 }
 
-public static string GetDockerCliPlatform(ICakeContext context) => context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "");
+static string GetDockerCliPlatform(this ICakeContext context)
+{
+    try {
+        var toolPath = context.FindToolInPath(context.IsRunningOnUnix() ? "docker" : "docker.exe");
+        return toolPath == null ? "" : context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "");
+    }
+    catch (Exception) {
+        context.Warning("Docker is installed but the daemon not running");
+        return "";
+    }
+}

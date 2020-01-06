@@ -1,9 +1,9 @@
-using GitVersion;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
 using GitVersion.VersionFilters;
 using NUnit.Framework;
 using Shouldly;
 using System;
+using GitVersion;
 using GitVersionCore.Tests.Mocks;
 
 namespace GitVersionCore.Tests.VersionFilters

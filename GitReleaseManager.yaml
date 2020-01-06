@@ -1,3 +1,5 @@
+create:
+  include-sha-section: true
 issue-labels-include:
 - Breaking change
 - Feature
@@ -7,6 +9,6 @@ issue-labels-include:
 issue-labels-exclude:
 - Build
 issue-labels-alias:
-    - name:    Documentation
-      header:  Documentation
-      plural:  Documentation
+- name:    Documentation
+  header:  Documentation
+  plural:  Documentation

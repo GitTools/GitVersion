@@ -10,25 +10,31 @@ namespace GitVersionExe.Tests
     [TestFixture]
     public class VersionWriterTests
     {
+        private readonly IVersionWriter versionWriter;
+
+        public VersionWriterTests()
+        {
+            this.versionWriter = new VersionWriter();
+        }
         [Test]
-        public void WriteVersion_ShouldWriteFileVersion_WithNoPrereleaseTag()
+        public void WriteVersionShouldWriteFileVersionWithNoPrereleaseTag()
         {
             var asm = GenerateAssembly(new Version(1, 0, 0), "");
 
             string version = null;
-            VersionWriter.WriteTo(asm, v => version = v);
+            versionWriter.WriteTo(asm, v => version = v);
 
             Assert.IsNotNull(asm);
             Assert.AreEqual("1.0.0", version);
         }
 
         [Test]
-        public void WriteVersion_ShouldWriteFileVersion_WithPrereleaseTag()
+        public void WriteVersionShouldWriteFileVersionWithPrereleaseTag()
         {
             var asm = GenerateAssembly(new Version(1, 0, 0), "-beta0004");
 
             string version = null;
-            VersionWriter.WriteTo(asm, v => version = v);
+            versionWriter.WriteTo(asm, v => version = v);
 
             Assert.IsNotNull(asm);
             Assert.AreEqual("1.0.0-beta0004", version);
@@ -45,12 +51,10 @@ namespace GitVersionExe.Tests
             customAttribute.ConstructorArguments.Add(new CustomAttributeArgument(asmDef.MainModule.TypeSystem.String, fileVersion + prereleaseInfo));
             asmDef.CustomAttributes.Add(customAttribute);
 
-            using (var memoryStream = new MemoryStream())
-            {
-                asmDef.Write(memoryStream);
+            using var memoryStream = new MemoryStream();
+            asmDef.Write(memoryStream);
 
-                return Assembly.Load(memoryStream.ToArray());
-            }
+            return Assembly.Load(memoryStream.ToArray());
         }
     }
 }

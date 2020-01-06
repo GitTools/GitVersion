@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GitVersion.Configuration.Init.Wizard;
-using GitVersion.Common;
+using GitVersion.Logging;
 
 namespace GitVersion.Configuration.Init.SetConfig
 {
     public class ConfigureBranches : ConfigInitWizardStep
     {
-        public ConfigureBranches(IConsole console, IFileSystem fileSystem) : base(console, fileSystem)
+        public ConfigureBranches(IConsole console, IFileSystem fileSystem, ILog log, IConfigInitStepFactory stepFactory) : base(console, fileSystem, log, stepFactory)
         {
         }
 
@@ -18,7 +18,7 @@ namespace GitVersion.Configuration.Init.SetConfig
             {
                 if (parsed == 0)
                 {
-                    steps.Enqueue(new EditConfigStep(Console, FileSystem));
+                    steps.Enqueue(StepFactory.CreateStep<EditConfigStep>());
                     return StepResult.Ok();
                 }
 
@@ -31,7 +31,7 @@ namespace GitVersion.Configuration.Init.SetConfig
                         branchConfig = new BranchConfig {Name = foundBranch.Key};
                         config.Branches.Add(foundBranch.Key, branchConfig);
                     }
-                    steps.Enqueue(new ConfigureBranch(foundBranch.Key, branchConfig, Console, FileSystem));
+                    steps.Enqueue(StepFactory.CreateStep<ConfigureBranch>().WithData(foundBranch.Key, branchConfig));
                     return StepResult.Ok();
                 }
                 catch (ArgumentOutOfRangeException)
@@ -49,10 +49,10 @@ namespace GitVersion.Configuration.Init.SetConfig
 " + string.Join("\r\n", OrderedBranches(config).Select((c, i) => $"{i + 1}) {c.Key}"));
         }
 
-        static IOrderedEnumerable<KeyValuePair<string, BranchConfig>> OrderedBranches(Config config)
+        private static IOrderedEnumerable<KeyValuePair<string, BranchConfig>> OrderedBranches(Config config)
         {
             var defaultConfig = new Config();
-            ConfigurationProvider.ApplyDefaultsTo(defaultConfig);
+            defaultConfig.Reset();
             var defaultConfigurationBranches = defaultConfig.Branches
                 .Where(k => !config.Branches.ContainsKey(k.Key))
                 // Return an empty branch config

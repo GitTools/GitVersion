@@ -25,46 +25,41 @@ public class BuildPaths
 
         var semVersion = version.SemVersion;
 
+        var sourceDir                     = (DirectoryPath)(context.Directory("./src"));
         var artifactsDir                  = (DirectoryPath)(context.Directory("./artifacts") + context.Directory("v" + semVersion));
         var artifactsBinDir               = artifactsDir.Combine("bin");
-        var artifactsBinFullFxDir         = artifactsBinDir.Combine(parameters.FullFxVersion);
-        var artifactsBinFullFxILMergeDir  = artifactsBinFullFxDir.Combine("il-merge");
-        var artifactsBinFullFxPortableDir = artifactsBinFullFxDir.Combine("portable");
-        var artifactsBinFullFxCmdlineDir  = artifactsBinFullFxDir.Combine("cmdline");
-        var artifactsBinCoreFxDir         = artifactsBinDir.Combine(parameters.CoreFxVersion21);
+        var artifactsBinPortableDir       = artifactsBinDir.Combine("portable");
+        var artifactsBinCmdlineDir        = artifactsBinDir.Combine("cmdline");
+        var artifactsBinCoreFx21Dir       = artifactsBinDir.Combine(parameters.CoreFxVersion21);
+        var artifactsBinCoreFx30Dir       = artifactsBinDir.Combine(parameters.CoreFxVersion31);
+        var artifactsBinFullFx472Dir      = artifactsBinDir.Combine(parameters.FullFxVersion472);
+        var nativeDir                     = artifactsDir.Combine("native");
         var nugetRootDir                  = artifactsDir.Combine("nuget");
         var buildArtifactDir              = artifactsDir.Combine("build-artifact");
         var testResultsOutputDir          = artifactsDir.Combine("test-results");
 
-        var zipArtifactPathCoreClr = artifactsDir.CombineWithFilePath("GitVersion-bin-corefx-v" + semVersion + ".zip");
-        var zipArtifactPathDesktop = artifactsDir.CombineWithFilePath("GitVersion-bin-fullfx-v" + semVersion + ".zip");
-
         var releaseNotesOutputFilePath = buildArtifactDir.CombineWithFilePath("releasenotes.md");
         var gemOutputFilePath  = buildArtifactDir.CombineWithFilePath("gitversion-" + version.GemVersion + ".gem");
 
-        var vsixSuffix = parameters.IsStableRelease() ? "" : "preview-";
-        var vsixOutputFilePath = buildArtifactDir.CombineWithFilePath("gittools.gitversion-" + vsixSuffix + version.VsixVersion + ".vsix");
-
         // Directories
         var buildDirectories = new BuildDirectories(
+            sourceDir,
             artifactsDir,
+            nativeDir,
             buildArtifactDir,
             testResultsOutputDir,
             nugetRootDir,
             artifactsBinDir,
-            artifactsBinFullFxDir,
-            artifactsBinFullFxPortableDir,
-            artifactsBinFullFxCmdlineDir,
-            artifactsBinFullFxILMergeDir,
-            artifactsBinCoreFxDir);
+            artifactsBinPortableDir,
+            artifactsBinCmdlineDir,
+            artifactsBinCoreFx21Dir,
+            artifactsBinCoreFx30Dir,
+            artifactsBinFullFx472Dir);
 
         // Files
         var buildFiles = new BuildFiles(
             context,
-            zipArtifactPathCoreClr,
-            zipArtifactPathDesktop,
             releaseNotesOutputFilePath,
-            vsixOutputFilePath,
             gemOutputFilePath);
 
         return new BuildPaths
@@ -77,77 +72,75 @@ public class BuildPaths
 
 public class BuildFiles
 {
-    public FilePath ZipArtifactPathCoreClr { get; private set; }
-    public FilePath ZipArtifactPathDesktop { get; private set; }
     public FilePath ReleaseNotesOutputFilePath { get; private set; }
-    public FilePath VsixOutputFilePath { get; private set; }
     public FilePath GemOutputFilePath { get; private set; }
 
     public BuildFiles(
         ICakeContext context,
-        FilePath zipArtifactPathCoreClr,
-        FilePath zipArtifactPathDesktop,
         FilePath releaseNotesOutputFilePath,
-        FilePath vsixOutputFilePath,
         FilePath gemOutputFilePath
         )
     {
-        ZipArtifactPathCoreClr = zipArtifactPathCoreClr;
-        ZipArtifactPathDesktop = zipArtifactPathDesktop;
         ReleaseNotesOutputFilePath = releaseNotesOutputFilePath;
-        VsixOutputFilePath = vsixOutputFilePath;
         GemOutputFilePath = gemOutputFilePath;
     }
 }
 
 public class BuildDirectories
 {
+    public DirectoryPath Source { get; private set; }
     public DirectoryPath Artifacts { get; private set; }
+    public DirectoryPath Native { get; private set; }
     public DirectoryPath NugetRoot { get; private set; }
     public DirectoryPath BuildArtifact { get; private set; }
     public DirectoryPath TestResultsOutput { get; private set; }
     public DirectoryPath ArtifactsBin { get; private set; }
-    public DirectoryPath ArtifactsBinFullFx { get; private set; }
-    public DirectoryPath ArtifactsBinFullFxPortable { get; private set; }
-    public DirectoryPath ArtifactsBinFullFxCmdline { get; private set; }
-    public DirectoryPath ArtifactsBinFullFxILMerge { get; private set; }
+    public DirectoryPath ArtifactsBinPortable { get; private set; }
+    public DirectoryPath ArtifactsBinCmdline { get; private set; }
     public DirectoryPath ArtifactsBinCoreFx21 { get; private set; }
+    public DirectoryPath ArtifactsBinCoreFx30 { get; private set; }
+    public DirectoryPath ArtifactsBinFullFx472 { get; private set; }
     public ICollection<DirectoryPath> ToClean { get; private set; }
 
     public BuildDirectories(
+        DirectoryPath sourceDir,
         DirectoryPath artifactsDir,
+        DirectoryPath nativeDir,
         DirectoryPath buildArtifactDir,
         DirectoryPath testResultsOutputDir,
         DirectoryPath nugetRootDir,
         DirectoryPath artifactsBinDir,
-        DirectoryPath artifactsBinFullFxDir,
-        DirectoryPath artifactsBinFullFxPortableDir,
-        DirectoryPath artifactsBinFullFxCmdlineDir,
-        DirectoryPath artifactsBinFullFxILMergeDir,
-        DirectoryPath artifactsBinCoreFx21Dir
+        DirectoryPath artifactsBinPortableDir,
+        DirectoryPath artifactsBinCmdlineDir,
+        DirectoryPath artifactsBinCoreFx21Dir,
+        DirectoryPath artifactsBinCoreFx30Dir,
+        DirectoryPath artifactsBinFullFx472Dir
         )
     {
+        Source = sourceDir;
         Artifacts = artifactsDir;
+        Native = nativeDir;
         BuildArtifact = buildArtifactDir;
         TestResultsOutput = testResultsOutputDir;
         NugetRoot = nugetRootDir;
         ArtifactsBin = artifactsBinDir;
-        ArtifactsBinFullFx = artifactsBinFullFxDir;
-        ArtifactsBinFullFxPortable = artifactsBinFullFxPortableDir;
-        ArtifactsBinFullFxCmdline = artifactsBinFullFxCmdlineDir;
-        ArtifactsBinFullFxILMerge = artifactsBinFullFxILMergeDir;
+        ArtifactsBinPortable = artifactsBinPortableDir;
+        ArtifactsBinCmdline = artifactsBinCmdlineDir;
         ArtifactsBinCoreFx21 = artifactsBinCoreFx21Dir;
+        ArtifactsBinCoreFx30 = artifactsBinCoreFx30Dir;
+        ArtifactsBinFullFx472 = artifactsBinFullFx472Dir;
         ToClean = new[] {
             Artifacts,
+            Native,
             BuildArtifact,
             TestResultsOutput,
             NugetRoot,
             ArtifactsBin,
-            ArtifactsBinFullFx,
-            ArtifactsBinFullFxPortable,
-            ArtifactsBinFullFxCmdline,
-            ArtifactsBinFullFxILMerge,
-            ArtifactsBinCoreFx21
+            ArtifactsBinPortable,
+            ArtifactsBinCmdline,
+            ArtifactsBinCoreFx21,
+            ArtifactsBinCoreFx30,
+            ArtifactsBinFullFx472
         };
     }
 }
