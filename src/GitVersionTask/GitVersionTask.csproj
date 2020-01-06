@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFrameworks>net472;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
@@ -11,10 +11,17 @@
         <DevelopmentDependency>true</DevelopmentDependency>
 
         <LangVersion>8.0</LangVersion>
-
     </PropertyGroup>
-    <ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.1" PrivateAssets="All" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' != 'net472' ">
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" PrivateAssets="All" />
     </ItemGroup>
 

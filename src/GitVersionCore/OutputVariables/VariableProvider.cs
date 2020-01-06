@@ -1,6 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 using GitVersion.Exceptions;
+using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using GitVersion.VersioningModes;
 using GitVersion.Configuration;
@@ -135,7 +136,7 @@ namespace GitVersion.OutputVariables
             {
                 try
                 {
-                    formattedString = formatString.FormatWith(source, environment);
+                    formattedString = formatString.FormatWith(source, environment).RegexReplace("[^0-9A-Za-z-.+]", "-");
                 }
                 catch (ArgumentException formex)
                 {
