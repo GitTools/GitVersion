@@ -41,7 +41,7 @@ The global configuration look like this:
 next-version: 1.0
 assembly-versioning-scheme: MajorMinorPatch
 assembly-file-versioning-scheme: MajorMinorPatchTag
-assembly-informational-format: '{InformationalVersion}'
+assembly-informational-format: '{DefaultInformationalVersion}'
 mode: ContinuousDelivery
 increment: Inherit
 continuous-delivery-fallback-tag: ci
@@ -112,7 +112,7 @@ the value of `assembly-versioning-scheme`.
 
 Set this to any of the available [variables](./more-info/variables) to change the
 value of the `AssemblyInformationalVersion` attribute. Default set to
-`{InformationalVersion}`. It also supports string interpolation
+`{DefaultInformationalVersion}`. It also supports string interpolation
 (`{MajorMinorPatch}+{BranchName}`)
 
 ### mode
