@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using GitVersion.OutputVariables;
-using GitVersionExe.Tests.Helpers;
+using System.Text.Json;
 
 namespace GitVersionExe.Tests
 {
@@ -21,7 +21,7 @@ namespace GitVersionExe.Tests
         {
             get
             {
-                var outputVariables = CustomJsonSerializer.Deserialize<Dictionary<string, string>>(Output);
+                var outputVariables = JsonSerializer.Deserialize<Dictionary<string, string>>(Output);
                 return VersionVariables.FromDictionary(outputVariables);
             }
         }
