@@ -6,7 +6,6 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(PackageVersion_MicrosoftTestSdk)" />
         <PackageReference Include="JetBrains.Annotations" Version="$(PackageVersion_JetBrainsAnnotations)"></PackageReference>
-        <PackageReference Include="Newtonsoft.Json" Version="$(PackageVersion_NewtonsoftJson)"></PackageReference>
         <PackageReference Include="NSubstitute" Version="$(PackageVersion_NSubstitute)"></PackageReference>
         <PackageReference Include="coverlet.msbuild" Version="$(PackageVersion_CoverletMsBuild)">
             <PrivateAssets>all</PrivateAssets>
