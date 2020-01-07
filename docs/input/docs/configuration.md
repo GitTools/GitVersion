@@ -137,6 +137,16 @@ When using `mode: ContinuousDeployment`, the value specified in
 `continuous-delivery-fallback-tag` will be used as the pre-release tag for
 branches which do not have one specified. Default set to `ci`.
 
+Just to clarify: For a build name without "...-ci-<buildnumber>" or in other
+words without a PreReleaseTag (ergo "PreReleaseTag":"" when typing GitVersion)
+at the end you would need to set continuous-delivery-fallback-tag to '':
+```
+mode: ContinuousDeployment
+continuous-delivery-fallback-tag: ''
+...
+```
+Doing so can be applicable if you use your master branch as release branch.
+
 ### tag-prefix
 
 A regex which is used to trim git tags before processing (eg v1.0.0). Default is
