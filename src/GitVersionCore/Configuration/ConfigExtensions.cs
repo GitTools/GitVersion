@@ -9,6 +9,12 @@ namespace GitVersion.Configuration
 {
     public static class ConfigExtensions
     {
+        public static Config ApplyDefaults(this Config config)
+        {
+            config.Reset();
+            return config;
+        }
+
         public static void Reset(this Config config)
         {
             config.AssemblyVersioningScheme ??= AssemblyVersioningScheme.MajorMinorPatch;

@@ -12,6 +12,7 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.Logging;
 using GitVersion.Extensions;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests.VersionCalculation
 {
@@ -24,6 +25,7 @@ namespace GitVersionCore.Tests.VersionCalculation
         {
             log = new NullLog();
         }
+
         [Test]
         public void ChoosesHighestVersionReturnedFromStrategies()
         {
@@ -70,36 +72,6 @@ namespace GitVersionCore.Tests.VersionCalculation
             baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
             baseVersion.ShouldIncrement.ShouldBe(true);
             baseVersion.BaseVersionSource.When().ShouldBe(when);
-        }
-
-        private class V1Strategy : IVersionStrategy
-        {
-            private readonly Commit when;
-
-            public V1Strategy(DateTimeOffset? when)
-            {
-                this.when = when == null ? null : new MockCommit { CommitterEx = Generate.Signature(when.Value) };
-            }
-
-            public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
-            {
-                yield return new BaseVersion(context, "Source 1", false, new SemanticVersion(1), when, null);
-            }
-        }
-
-        private class V2Strategy : IVersionStrategy
-        {
-            private readonly Commit when;
-
-            public V2Strategy(DateTimeOffset? when)
-            {
-                this.when = when == null ? null : new MockCommit { CommitterEx = Generate.Signature(when.Value) };
-            }
-
-            public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
-            {
-                yield return new BaseVersion(context, "Source 2", true, new SemanticVersion(2), when, null);
-            }
         }
 
         [Test]
@@ -168,7 +140,37 @@ namespace GitVersionCore.Tests.VersionCalculation
             }
         }
 
-        private class TestVersionStrategy : IVersionStrategy
+        private sealed class V1Strategy : IVersionStrategy
+        {
+            private readonly Commit when;
+
+            public V1Strategy(DateTimeOffset? when)
+            {
+                this.when = when == null ? null : new MockCommit { CommitterEx = Generate.Signature(when.Value) };
+            }
+
+            public IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+            {
+                yield return new BaseVersion(context, "Source 1", false, new SemanticVersion(1), when, null);
+            }
+        }
+
+        private sealed class V2Strategy : IVersionStrategy
+        {
+            private readonly Commit when;
+
+            public V2Strategy(DateTimeOffset? when)
+            {
+                this.when = when == null ? null : new MockCommit { CommitterEx = Generate.Signature(when.Value) };
+            }
+
+            public IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+            {
+                yield return new BaseVersion(context, "Source 2", true, new SemanticVersion(2), when, null);
+            }
+        }
+
+        private sealed class TestVersionStrategy : IVersionStrategy
         {
             private readonly IEnumerable<BaseVersion> versions;
 
@@ -177,7 +179,7 @@ namespace GitVersionCore.Tests.VersionCalculation
                 this.versions = versions;
             }
 
-            public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
+            public IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
             {
                 return versions;
             }

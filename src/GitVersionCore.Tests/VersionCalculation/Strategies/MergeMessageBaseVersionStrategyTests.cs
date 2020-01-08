@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GitVersion.Configuration;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
+using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
 using NUnit.Framework;
@@ -25,9 +26,9 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                     ParentsEx = GetParents(true)
                 } }
             }).Build();
-            var sut = new MergeMessageVersionStrategy();
+            var strategy = new MergeMessageVersionStrategy();
 
-            var baseVersion = sut.GetVersions(context).Single();
+            var baseVersion = strategy.GetVersions(context).Single();
 
             baseVersion.ShouldIncrement.ShouldBe(false);
         }
@@ -162,9 +163,9 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                     }
                 })
                 .Build();
-            var sut = new MergeMessageVersionStrategy();
+            var strategy = new MergeMessageVersionStrategy();
 
-            var baseVersion = sut.GetVersions(context).SingleOrDefault();
+            var baseVersion = strategy.GetVersions(context).SingleOrDefault();
 
             if (expectedVersion == null)
             {
@@ -182,15 +183,16 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             if (isMergeCommit)
             {
                 return new List<Commit>
+                {
+                    null,
+                    null
+                };
+            }
+
+            return new List<Commit>
             {
-                null,
                 null
             };
-            }
-            return new List<Commit>
-        {
-            null
-        };
         }
     }
 }

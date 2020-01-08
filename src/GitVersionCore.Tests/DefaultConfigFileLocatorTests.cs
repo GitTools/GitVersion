@@ -5,9 +5,9 @@ using Shouldly;
 using GitVersion.Configuration;
 using GitVersion.Exceptions;
 using GitVersion;
-using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
 using GitVersionCore.Tests.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace GitVersionCore.Tests
@@ -21,13 +21,22 @@ namespace GitVersionCore.Tests
         private string repoPath;
         private string workingPath;
         private IFileSystem fileSystem;
+        private IConfigProvider configurationProvider;
 
         [SetUp]
         public void Setup()
         {
-            fileSystem = new TestFileSystem();
             repoPath = DefaultRepoPath;
             workingPath = DefaultWorkingPath;
+            var options = Options.Create(new Arguments { TargetPath = repoPath });
+
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton(options);
+            });
+
+            fileSystem = sp.GetService<IFileSystem>();
+            configurationProvider = sp.GetService<IConfigProvider>();
 
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
         }
@@ -87,37 +96,16 @@ namespace GitVersionCore.Tests
         [Test]
         public void NoWarnOnGitVersionYmlFile()
         {
-            SetupConfigFileContent(string.Empty);
+            SetupConfigFileContent(string.Empty, DefaultConfigFileLocator.DefaultFileName, repoPath);
 
             var output = WithDefaultConfigFileLocator(configFileLocator =>
             {
-                var log = new NullLog();
-                var defaultConfigFileLocator = new DefaultConfigFileLocator(fileSystem, log);
-                var gitPreparer = new GitPreparer(log, new TestEnvironment(), Options.Create(new Arguments { TargetPath = repoPath }));
-                var stepFactory = new ConfigInitStepFactory();
-                var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
-
-                var configurationProvider = new ConfigProvider(fileSystem, log, defaultConfigFileLocator, gitPreparer, configInitWizard);
-
                 configurationProvider.Provide(repoPath); 
             });
 
             output.Length.ShouldBe(0);
         }
-
-        private string SetupConfigFileContent(string text, string fileName = DefaultConfigFileLocator.DefaultFileName)
-        {
-            return SetupConfigFileContent(text, fileName, repoPath);
-        }
-
-        private string SetupConfigFileContent(string text, string fileName, string path)
-        {
-            var fullPath = Path.Combine(path, fileName);
-            fileSystem.WriteAllText(fullPath, text);
-
-            return fullPath;
-        }
-
+        
         [Test]
         public void WarnOnObsoleteIsDevelopBranchConfigurationSetting()
         {
@@ -133,8 +121,16 @@ branches:
                 LegacyConfigNotifier.Notify(new StringReader(text));
             });
 
-            const string expectedMessage = @"'is-develop' is deprecated, use 'tracks-release-branches' instead.";
+            const string expectedMessage = "'is-develop' is deprecated, use 'tracks-release-branches' instead.";
             exception.Message.ShouldContain(expectedMessage);
+        }
+
+        private string SetupConfigFileContent(string text, string fileName, string path)
+        {
+            var fullPath = Path.Combine(path, fileName);
+            fileSystem.WriteAllText(fullPath, text);
+
+            return fullPath;
         }
 
         private string WithDefaultConfigFileLocator(Action<IConfigFileLocator> action)

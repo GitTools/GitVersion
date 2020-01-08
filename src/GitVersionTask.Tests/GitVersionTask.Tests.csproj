@@ -7,8 +7,8 @@
     <Import Project="..\test.props" />
     <ItemGroup>
         <PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.3.0" />
-        <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.1"/>
+        <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.1" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="Approved\**\*.txt" />
@@ -23,6 +23,7 @@
       <Compile Include="..\GitVersionCore.Tests\Helpers\GitVersionCoreTestModule.cs" Link="Helpers\GitVersionCoreTestModule.cs" />
       <Compile Include="..\GitVersionCore.Tests\Helpers\PathHelper.cs" Link="Helpers\PathHelper.cs" />
       <Compile Include="..\GitVersionCore.Tests\Helpers\ServiceCollectionExtensions.cs" Link="Helpers\ServiceCollectionExtensions.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\TestBase.cs" Link="Helpers\TestBase.cs" />
       <Compile Include="..\GitVersionCore.Tests\Helpers\TestEffectiveConfiguration.cs" Link="Helpers\TestEffectiveConfiguration.cs" />
       <Compile Include="..\GitVersionCore.Tests\Helpers\TestEnvironment.cs" Link="Helpers\TestEnvironment.cs" />
       <Compile Include="..\GitVersionCore.Tests\Helpers\TestFileSystem.cs" Link="Helpers\TestFileSystem.cs" />

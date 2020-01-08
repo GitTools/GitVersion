@@ -1,7 +1,8 @@
+using System;
 using GitVersion.BuildServers;
 using GitVersion;
-using GitVersion.Logging;
 using GitVersionCore.Tests.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
 
@@ -11,13 +12,18 @@ namespace GitVersionCore.Tests.BuildServers
     public class DroneTests : TestBase
     {
         private IEnvironment environment;
-        private ILog log;
+        private IServiceProvider sp;
+        private Drone buildServer;
 
         [SetUp]
         public void SetUp()
         {
-            log = new NullLog();
-            environment = new TestEnvironment();
+            sp = ConfigureServices(services =>
+            {
+                services.AddSingleton<Drone>();
+            });
+            environment = sp.GetService<IEnvironment>();
+            buildServer = sp.GetService<Drone>();
             environment.SetEnvironmentVariable("DRONE", "true");
         }
 
@@ -30,9 +36,6 @@ namespace GitVersionCore.Tests.BuildServers
         [Test]
         public void CanApplyToCurrentContextShouldBeTrueWhenEnvironmentVariableIsSet()
         {
-            // Arrange
-            var buildServer = new Drone(environment, log);
-
             // Act
             var result = buildServer.CanApplyToCurrentContext();
 
@@ -45,7 +48,6 @@ namespace GitVersionCore.Tests.BuildServers
         {
             // Arrange
             environment.SetEnvironmentVariable("DRONE", "");
-            var buildServer = new Drone(environment, log);
 
             // Act
             var result = buildServer.CanApplyToCurrentContext();
@@ -63,8 +65,6 @@ namespace GitVersionCore.Tests.BuildServers
             environment.SetEnvironmentVariable("DRONE_PULL_REQUEST", "");
             environment.SetEnvironmentVariable("DRONE_BRANCH", droneBranch);
 
-            var buildServer = new Drone(environment, log);
-
             // Act
             var result = buildServer.GetCurrentBranch(false);
 
@@ -79,8 +79,6 @@ namespace GitVersionCore.Tests.BuildServers
             const string droneSourceBranch = "droneSourceBranch";
             environment.SetEnvironmentVariable("DRONE_PULL_REQUEST", "1");
             environment.SetEnvironmentVariable("DRONE_SOURCE_BRANCH", droneSourceBranch);
-
-            var buildServer = new Drone(environment, log);
 
             // Act
             var result = buildServer.GetCurrentBranch(false);
@@ -102,8 +100,6 @@ namespace GitVersionCore.Tests.BuildServers
             environment.SetEnvironmentVariable("DRONE_SOURCE_BRANCH", "");
             environment.SetEnvironmentVariable("CI_COMMIT_REFSPEC", ciCommitRefSpec);
 
-            var buildServer = new Drone(environment, log);
-
             // Act
             var result = buildServer.GetCurrentBranch(false);
 
@@ -121,8 +117,6 @@ namespace GitVersionCore.Tests.BuildServers
             environment.SetEnvironmentVariable("DRONE_SOURCE_BRANCH", "");
             environment.SetEnvironmentVariable("CI_COMMIT_REFSPEC", "");
             environment.SetEnvironmentVariable("DRONE_BRANCH", droneBranch);
-
-            var buildServer = new Drone(environment, log);
 
             // Act
             var result = buildServer.GetCurrentBranch(false);
@@ -145,8 +139,6 @@ namespace GitVersionCore.Tests.BuildServers
             environment.SetEnvironmentVariable("DRONE_SOURCE_BRANCH", "");
             environment.SetEnvironmentVariable("CI_COMMIT_REFSPEC", ciCommitRefSpec);
             environment.SetEnvironmentVariable("DRONE_BRANCH", droneBranch);
-
-            var buildServer = new Drone(environment, log);
 
             // Act
             var result = buildServer.GetCurrentBranch(false);

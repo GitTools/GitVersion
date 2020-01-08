@@ -27,7 +27,7 @@ namespace GitVersionCore.Tests.VersionCalculation
 
     public class TestBaseVersionStrategiesCalculator : BaseVersionCalculator
     {
-        private static readonly IVersionStrategy[] VersionStrategies = new IVersionStrategy[]
+        private static readonly IVersionStrategy[] VersionStrategies =
         {
             new FallbackVersionStrategy(),
             new ConfigNextVersionVersionStrategy(),

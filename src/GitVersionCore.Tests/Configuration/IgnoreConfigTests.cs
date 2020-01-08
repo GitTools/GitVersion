@@ -4,6 +4,7 @@ using NUnit.Framework;
 using Shouldly;
 using YamlDotNet.Core;
 using GitVersion.Configuration;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests.Configuration
 {
@@ -20,7 +21,7 @@ ignore:
 ";
 
             using var reader = new StringReader(yaml);
-            var config = ConfigSerialiser.Read(reader);
+            var config = ConfigSerializer.Read(reader);
 
             config.Ignore.ShouldNotBeNull();
             config.Ignore.ShAs.ShouldNotBeEmpty();
@@ -39,7 +40,7 @@ ignore:
 ";
 
             using var reader = new StringReader(yaml);
-            var config = ConfigSerialiser.Read(reader);
+            var config = ConfigSerializer.Read(reader);
 
             config.Ignore.ShouldNotBeNull();
             config.Ignore.ShAs.ShouldNotBeEmpty();
@@ -54,7 +55,7 @@ next-version: 1.0
 ";
 
             using var reader = new StringReader(yaml);
-            var config = ConfigSerialiser.Read(reader);
+            var config = ConfigSerializer.Read(reader);
 
             config.Ignore.ShouldNotBeNull();
             config.Ignore.ShAs.ShouldBeEmpty();
@@ -70,7 +71,7 @@ ignore:
 ";
 
             using var reader = new StringReader(yaml);
-            Should.Throw<YamlException>(() => ConfigSerialiser.Read(reader));
+            Should.Throw<YamlException>(() => ConfigSerializer.Read(reader));
         }
     }
 }

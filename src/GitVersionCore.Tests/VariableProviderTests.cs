@@ -1,13 +1,12 @@
 using System;
-using GitVersion.Logging;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 using GitVersion;
-using GitVersion.VersionCalculation;
 using GitVersion.VersioningModes;
 using GitVersionCore.Tests.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersionCore.Tests
 {
@@ -20,12 +19,10 @@ namespace GitVersionCore.Tests
         public void Setup()
         {
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
-            var log = new NullLog();
-            var metaDataCalculator = new MetaDataCalculator();
-            var baseVersionCalculator = new BaseVersionCalculator(log, null);
-            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
-            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
-            variableProvider = new VariableProvider(nextVersionCalculator, new TestEnvironment());
+
+            var sp = ConfigureServices();
+
+            variableProvider = sp.GetService<IVariableProvider>();
         }
 
         [Test]

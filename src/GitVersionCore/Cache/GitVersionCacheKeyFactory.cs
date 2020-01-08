@@ -150,7 +150,7 @@ namespace GitVersion.Cache
             var stringBuilder = new StringBuilder();
             using (var stream = new StringWriter(stringBuilder))
             {
-                ConfigSerialiser.Write(overrideConfig, stream);
+                ConfigSerializer.Write(overrideConfig, stream);
                 stream.Flush();
             }
             var configContent = stringBuilder.ToString();

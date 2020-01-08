@@ -1,14 +1,8 @@
 using System.IO;
 using GitVersion;
-using GitVersion.Cache;
-using GitVersion.Configuration;
-using GitVersion.Configuration.Init.Wizard;
 using NUnit.Framework;
-using GitVersion.Logging;
-using GitVersion.OutputVariables;
-using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
-using GitVersionCore.Tests.VersionCalculation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace GitVersionCore.Tests
@@ -18,7 +12,7 @@ namespace GitVersionCore.Tests
     {
         private string workDirectory;
 
-        private void ClearReadOnly(DirectoryInfo parentDirectory)
+        private static void ClearReadOnly(DirectoryInfo parentDirectory)
         {
             if (parentDirectory == null) return;
             parentDirectory.Attributes = FileAttributes.Normal;
@@ -80,26 +74,13 @@ namespace GitVersionCore.Tests
             Directory.CreateDirectory(dynamicDirectory);
             Directory.CreateDirectory(workingDirectory);
 
-            var testFileSystem = new TestFileSystem();
-            var log = new NullLog();
-            var configFileLocator = new DefaultConfigFileLocator(testFileSystem, log);
-            var gitVersionCache = new GitVersionCache(testFileSystem, log);
-            var buildServerResolver = new BuildServerResolver(null, log);
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton(options);
+            });
 
-            var metadataCalculator = new MetaDataCalculator();
-            var baseVersionCalculator = new TestBaseVersionStrategiesCalculator(log);
-            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metadataCalculator);
-            var nextVersionCalculator = new NextVersionCalculator(log, metadataCalculator, baseVersionCalculator, mainlineVersionCalculator);
-            var gitVersionFinder = new GitVersionFinder(log, nextVersionCalculator);
-
-            var gitPreparer = new GitPreparer(log, new TestEnvironment(), options);
-            var stepFactory = new ConfigInitStepFactory();
-            var configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
-
-            var configurationProvider = new ConfigProvider(testFileSystem, log, configFileLocator, gitPreparer, configInitWizard);
-
-            var variableProvider = new VariableProvider(nextVersionCalculator, new TestEnvironment());
-            var gitVersionCalculator = new GitVersionCalculator(testFileSystem, log, configFileLocator, configurationProvider, buildServerResolver, gitVersionCache, gitVersionFinder, gitPreparer, variableProvider, options);
+            
+            var gitVersionCalculator = sp.GetService<IGitVersionCalculator>();
 
             var versionVariables = gitVersionCalculator.CalculateVersionVariables();
 

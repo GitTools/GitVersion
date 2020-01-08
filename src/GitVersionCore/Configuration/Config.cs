@@ -122,7 +122,7 @@ namespace GitVersion.Configuration
             var stringBuilder = new StringBuilder();
             using (var stream = new StringWriter(stringBuilder))
             {
-                ConfigSerialiser.Write(this, stream);
+                ConfigSerializer.Write(this, stream);
                 stream.Flush();
             }
             return stringBuilder.ToString();

@@ -7,9 +7,8 @@ using Shouldly;
 using GitVersion.BuildServers;
 using GitVersion;
 using GitVersion.OutputVariables;
-using GitVersion.Logging;
-using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersionCore.Tests.BuildServers
 {
@@ -17,36 +16,32 @@ namespace GitVersionCore.Tests.BuildServers
     public sealed class CodeBuildTests : TestBase
     {
         private IEnvironment environment;
-        private ILog log;
-        private IVariableProvider variableProvider;
+        private IServiceProvider sp;
+        private CodeBuild buildServer;
 
         [SetUp]
         public void SetUp()
         {
-            log = new NullLog();
-
-            environment = new TestEnvironment();
-            var metaDataCalculator = new MetaDataCalculator();
-            var baseVersionCalculator = new BaseVersionCalculator(log, null);
-            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
-            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
-            variableProvider = new VariableProvider(nextVersionCalculator, new TestEnvironment());
+            sp = ConfigureServices(services =>
+            {
+                services.AddSingleton<CodeBuild>();
+            });
+            environment = sp.GetService<IEnvironment>();
+            buildServer = sp.GetService<CodeBuild>();
         }
 
         [Test]
         public void CorrectlyIdentifiesCodeBuildPresence()
         {
             environment.SetEnvironmentVariable(CodeBuild.HeadRefEnvironmentName, "a value");
-            var cb = new CodeBuild(environment, log);
-            cb.CanApplyToCurrentContext().ShouldBe(true);
+            buildServer.CanApplyToCurrentContext().ShouldBe(true);
         }
 
         [Test]
         public void PicksUpBranchNameFromEnvironment()
         {
             environment.SetEnvironmentVariable(CodeBuild.HeadRefEnvironmentName, "refs/heads/master");
-            var cb = new CodeBuild(environment, log);
-            cb.GetCurrentBranch(false).ShouldBe("refs/heads/master");
+            buildServer.GetCurrentBranch(false).ShouldBe("refs/heads/master");
         }
 
         [Test]
@@ -65,7 +60,7 @@ namespace GitVersionCore.Tests.BuildServers
             }
         }
 
-        private void AssertVariablesAreWrittenToFile(string f)
+        private void AssertVariablesAreWrittenToFile(string file)
         {
             var writes = new List<string>();
             var semanticVersion = new SemanticVersion
@@ -82,17 +77,19 @@ namespace GitVersionCore.Tests.BuildServers
 
             var config = new TestEffectiveConfiguration();
 
+            var variableProvider = sp.GetService<IVariableProvider>();
+
             var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
 
-            var j = new CodeBuild(environment, log, f);
+            buildServer.WithPropertyFile(file);
 
-            j.WriteIntegration(writes.Add, variables);
+            buildServer.WriteIntegration(writes.Add, variables);
 
             writes[1].ShouldBe("1.2.3-beta.1+5");
 
-            File.Exists(f).ShouldBe(true);
+            File.Exists(file).ShouldBe(true);
 
-            var props = File.ReadAllText(f);
+            var props = File.ReadAllText(file);
 
             props.ShouldContain("GitVersion_Major=1");
             props.ShouldContain("GitVersion_Minor=2");

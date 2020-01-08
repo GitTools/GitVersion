@@ -5,29 +5,25 @@ using Shouldly;
 using GitVersion.OutputVariables;
 using GitVersion;
 using GitVersion.Logging;
-using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersionCore.Tests.BuildServers
 {
     [TestFixture]
     public class BuildServerBaseTests  : TestBase
     {
-
-        private IEnvironment environment;
-        private ILog log;
-        private IVariableProvider variableProvider;
+        private IVariableProvider buildServer;
+        private IServiceProvider sp;
 
         [SetUp]
         public void SetUp()
         {
-            environment = new TestEnvironment();
-            log = new NullLog();
-            var metaDataCalculator = new MetaDataCalculator();
-            var baseVersionCalculator = new BaseVersionCalculator(log, null);
-            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
-            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
-            variableProvider = new VariableProvider(nextVersionCalculator, new TestEnvironment());
+            sp = ConfigureServices(services =>
+            {
+                services.AddSingleton<BuildServer>();
+            });
+            buildServer = sp.GetService<IVariableProvider>();
         }
 
         [Test]
@@ -48,8 +44,9 @@ namespace GitVersionCore.Tests.BuildServers
 
             var config = new TestEffectiveConfiguration();
 
-            var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
-            new BuildServer(environment, log).WriteIntegration(writes.Add, variables);
+            var variables = this.buildServer.GetVariablesFor(semanticVersion, config, false);
+            var buildServer = sp.GetService<BuildServer>();
+            buildServer.WriteIntegration(writes.Add, variables);
 
             writes[1].ShouldBe("1.2.3-beta.1+5");
         }

@@ -7,14 +7,14 @@ using Shouldly;
 using GitVersion.Extensions;
 using GitVersion.Logging;
 using GitVersion;
-using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersionCore.Tests
 {
     [TestFixture]
     [Parallelizable(ParallelScope.None)]
-    internal class WixFileTests
+    internal class WixFileTests : TestBase
     {
         [SetUp]
         public void Setup()
@@ -27,7 +27,6 @@ namespace GitVersionCore.Tests
         [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
         public void UpdateWixVersionFile()
         {
-            var fileSystem = new TestFileSystem();
             var workingDir = Path.GetTempPath();
             var semVer = new SemanticVersion
             {
@@ -50,11 +49,13 @@ namespace GitVersionCore.Tests
             var logAppender = new TestLogAppender(Action);
             var log = new Log(logAppender);
 
-            var metaDataCalculator = new MetaDataCalculator();
-            var baseVersionCalculator = new BaseVersionCalculator(log, null);
-            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
-            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
-            var variableProvider = new VariableProvider(nextVersionCalculator, new TestEnvironment());
+            var sp = ConfigureServices(service =>
+            {
+                service.AddSingleton<ILog>(log);
+            });
+
+            var fileSystem = sp.GetService<IFileSystem>();
+            var variableProvider = sp.GetService<IVariableProvider>();
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
             using var wixVersionFileUpdater = new WixVersionFileUpdater(workingDir, vars, fileSystem, log);

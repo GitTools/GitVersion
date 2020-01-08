@@ -11,9 +11,9 @@ using GitVersion.Configuration;
 using GitVersion.VersioningModes;
 using GitVersion.Extensions;
 using GitVersion;
-using GitVersion.Configuration.Init.Wizard;
 using GitVersion.Logging;
 using GitVersionCore.Tests.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace GitVersionCore.Tests
@@ -24,26 +24,20 @@ namespace GitVersionCore.Tests
         private const string DefaultRepoPath = @"c:\MyGitRepo";
 
         private string repoPath;
-        private IFileSystem fileSystem;
-        private IConfigFileLocator configFileLocator;
         private IConfigProvider configProvider;
-        private IConfigInitWizard configInitWizard;
-        private IEnvironment environment;
+        private IFileSystem fileSystem;
 
         [SetUp]
         public void Setup()
         {
-            fileSystem = new TestFileSystem();
-            var log = new NullLog();
-            environment = new TestEnvironment();
-
-            var stepFactory = new ConfigInitStepFactory();
-            configInitWizard = new ConfigInitWizard(new ConsoleAdapter(), stepFactory);
-            configFileLocator = new DefaultConfigFileLocator(fileSystem, log);
             repoPath = DefaultRepoPath;
-
-            var gitPreparer = new GitPreparer(log, environment, Options.Create(new Arguments { TargetPath = repoPath }));
-            configProvider = new ConfigProvider(fileSystem, log, configFileLocator, gitPreparer, configInitWizard);
+            var options = Options.Create(new Arguments { TargetPath = repoPath });
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton(options);
+            });
+            configProvider = sp.GetService<IConfigProvider>();
+            fileSystem = sp.GetService<IFileSystem>();
 
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
         }
@@ -296,10 +290,13 @@ branches: {}";
             var logAppender = new TestLogAppender(Action);
             var log = new Log(logAppender);
 
-            var defaultConfigFileLocator = new DefaultConfigFileLocator(fileSystem, log);
-            var gitPreparer = new GitPreparer(log, environment, Options.Create(new Arguments { TargetPath = repoPath }));
-
-            configProvider = new ConfigProvider(fileSystem, log, defaultConfigFileLocator, gitPreparer, configInitWizard);
+            var options = Options.Create(new Arguments { TargetPath = repoPath });
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton(options);
+                services.AddSingleton<ILog>(log);
+            });
+            configProvider = sp.GetService<IConfigProvider>();
 
             configProvider.Provide(repoPath);
 

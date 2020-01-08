@@ -6,45 +6,39 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.BuildServers;
 using GitVersion;
-using GitVersion.Logging;
 using GitVersion.OutputVariables;
-using GitVersion.VersionCalculation;
 using GitVersionCore.Tests.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersionCore.Tests.BuildServers
 {
     [TestFixture]
-    public class GitLabCiMessageGenerationTests : TestBase
+    public class GitLabCiTests : TestBase
     {
-        private IEnvironment environment;
-        private ILog log;
-        private IVariableProvider variableProvider;
+        private GitLabCi buildServer;
+        private IServiceProvider sp;
 
         [SetUp]
         public void SetUp()
         {
-            environment = new TestEnvironment();
-            log = new NullLog();
-            var metaDataCalculator = new MetaDataCalculator();
-            var baseVersionCalculator = new BaseVersionCalculator(log, null);
-            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
-            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
-            variableProvider = new VariableProvider(nextVersionCalculator, new TestEnvironment());
+            sp = ConfigureServices(services =>
+            {
+                services.AddSingleton<GitLabCi>();
+            });
+            buildServer = sp.GetService<GitLabCi>();
         }
 
         [Test]
         public void GenerateSetVersionMessageReturnsVersionAsIsAlthoughThisIsNotUsedByJenkins()
         {
-            var j = new GitLabCi(environment, log);
             var vars = new TestableVersionVariables(fullSemVer: "0.0.0-Beta4.7");
-            j.GenerateSetVersionMessage(vars).ShouldBe("0.0.0-Beta4.7");
+            buildServer.GenerateSetVersionMessage(vars).ShouldBe("0.0.0-Beta4.7");
         }
 
         [Test]
         public void GenerateMessageTest()
         {
-            var j = new GitLabCi(environment, log);
-            var generatedParameterMessages = j.GenerateSetParameterMessage("name", "value");
+            var generatedParameterMessages = buildServer.GenerateSetParameterMessage("name", "value");
             generatedParameterMessages.Length.ShouldBe(1);
             generatedParameterMessages[0].ShouldBe("GitVersion_name=value");
         }
@@ -65,7 +59,7 @@ namespace GitVersionCore.Tests.BuildServers
             }
         }
 
-        private void AssertVariablesAreWrittenToFile(string f)
+        private void AssertVariablesAreWrittenToFile(string file)
         {
             var writes = new List<string>();
             var semanticVersion = new SemanticVersion
@@ -81,18 +75,19 @@ namespace GitVersionCore.Tests.BuildServers
             semanticVersion.BuildMetaData.Sha = "commitSha";
 
             var config = new TestEffectiveConfiguration();
+            var variableProvider = sp.GetService<IVariableProvider>();
 
             var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
 
-            var j = new GitLabCi(environment, log, f);
+            buildServer.WithPropertyFile(file);
 
-            j.WriteIntegration(writes.Add, variables);
+            buildServer.WriteIntegration(writes.Add, variables);
 
             writes[1].ShouldBe("1.2.3-beta.1+5");
 
-            File.Exists(f).ShouldBe(true);
+            File.Exists(file).ShouldBe(true);
 
-            var props = File.ReadAllText(f);
+            var props = File.ReadAllText(file);
 
             props.ShouldContain("GitVersion_Major=1");
             props.ShouldContain("GitVersion_Minor=2");

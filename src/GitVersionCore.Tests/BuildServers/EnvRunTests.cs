@@ -3,8 +3,8 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.BuildServers;
 using GitVersion;
-using GitVersion.Logging;
 using GitVersionCore.Tests.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersionCore.Tests.BuildServers
 {
@@ -14,13 +14,18 @@ namespace GitVersionCore.Tests.BuildServers
         private const string EnvVarName = "ENVRUN_DATABASE";
         private string mFilePath;
         private IEnvironment environment;
-        private ILog log;
+        private EnvRun buildServer;
 
         [SetUp]
         public void SetEnvironmentVariableForTest()
         {
-            environment = new TestEnvironment();
-            log = new NullLog();
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton<EnvRun>();
+            });
+            environment = sp.GetService<IEnvironment>();
+            buildServer = sp.GetService<EnvRun>();
+
             // set environment variable and create an empty envrun file to indicate that EnvRun is running...
             mFilePath = Path.Combine(Path.GetTempPath(), "envrun.db");
             environment.SetEnvironmentVariable(EnvVarName, mFilePath);
@@ -37,8 +42,7 @@ namespace GitVersionCore.Tests.BuildServers
         [Test]
         public void CanApplyToCurrentContext()
         {
-            var envrun = new EnvRun(environment, log);
-            var applys = envrun.CanApplyToCurrentContext();
+            var applys = buildServer.CanApplyToCurrentContext();
             applys.ShouldBeTrue();
         }
 
@@ -46,8 +50,7 @@ namespace GitVersionCore.Tests.BuildServers
         public void CanApplyToCurrentContextEnvironmentVariableNotSet()
         {
             environment.SetEnvironmentVariable(EnvVarName, null);
-            var envrun = new EnvRun(environment, log);
-            var applys = envrun.CanApplyToCurrentContext();
+            var applys = buildServer.CanApplyToCurrentContext();
             applys.ShouldBeFalse();
         }
 
@@ -55,9 +58,8 @@ namespace GitVersionCore.Tests.BuildServers
         [TestCase("1.2.3-rc4")]
         public void GenerateSetVersionMessage(string fullSemVer)
         {
-            var envrun = new EnvRun(environment, log);
             var vars = new TestableVersionVariables(fullSemVer: fullSemVer);
-            var version = envrun.GenerateSetVersionMessage(vars);
+            var version = buildServer.GenerateSetVersionMessage(vars);
             version.ShouldBe(fullSemVer);
         }
 
@@ -65,11 +67,9 @@ namespace GitVersionCore.Tests.BuildServers
         [TestCase("Version", "1.2.3-rc4", "@@envrun[set name='GitVersion_Version' value='1.2.3-rc4']")]
         public void GenerateSetParameterMessage(string name, string value, string expected)
         {
-            var envrun = new EnvRun(environment, log);
-            var output = envrun.GenerateSetParameterMessage(name, value);
+            var output = buildServer.GenerateSetParameterMessage(name, value);
             output.ShouldHaveSingleItem();
             output[0].ShouldBe(expected);
         }
-
     }
 }

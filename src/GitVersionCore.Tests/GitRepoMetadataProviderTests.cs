@@ -7,12 +7,24 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.Logging;
 using GitVersion.Extensions;
+using GitVersionCore.Tests.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersionCore.Tests
 {
     [TestFixture]
     public class GitRepoMetadataProviderTests : TestBase
     {
+        private readonly ILog log;
+        private readonly Config configuration;
+
+        public GitRepoMetadataProviderTests()
+        {
+            var sp = ConfigureServices();
+            log = sp.GetService<ILog>();
+            configuration = new Config();
+        }
+
         [Test]
         public void FindsCorrectMergeBaseForForwardMerge()
         {
@@ -54,10 +66,10 @@ namespace GitVersionCore.Tests
 
             var develop = fixture.Repository.FindBranch("develop");
             var release = fixture.Repository.FindBranch("release-2.0.0");
-            var releaseBranchMergeBase = new GitRepoMetadataProvider(fixture.Repository, new NullLog(), new Config())
+            var releaseBranchMergeBase = new GitRepoMetadataProvider(fixture.Repository, log, configuration)
                 .FindMergeBase(release, develop);
 
-            var developMergeBase = new GitRepoMetadataProvider(fixture.Repository, new NullLog(), new Config())
+            var developMergeBase = new GitRepoMetadataProvider(fixture.Repository, log, configuration)
                 .FindMergeBase(develop, release);
 
             fixture.Repository.DumpGraph(Console.WriteLine);
@@ -109,10 +121,10 @@ namespace GitVersionCore.Tests
 
             var develop = fixture.Repository.FindBranch("develop");
             var release = fixture.Repository.FindBranch("release-2.0.0");
-            var releaseBranchMergeBase = new GitRepoMetadataProvider(fixture.Repository, new NullLog(), new Config())
+            var releaseBranchMergeBase = new GitRepoMetadataProvider(fixture.Repository, log, configuration)
                 .FindMergeBase(release, develop);
 
-            var developMergeBase = new GitRepoMetadataProvider(fixture.Repository, new NullLog(), new Config())
+            var developMergeBase = new GitRepoMetadataProvider(fixture.Repository, log, configuration)
                 .FindMergeBase(develop, release);
 
             fixture.Repository.DumpGraph(Console.WriteLine);
@@ -182,10 +194,11 @@ namespace GitVersionCore.Tests
 
             var develop = fixture.Repository.FindBranch("develop");
             var release = fixture.Repository.FindBranch("release-2.0.0");
-            var releaseBranchMergeBase = new GitRepoMetadataProvider(fixture.Repository, new NullLog(), new Config())
+            
+            var releaseBranchMergeBase = new GitRepoMetadataProvider(fixture.Repository, log, configuration)
                 .FindMergeBase(release, develop);
 
-            var developMergeBase = new GitRepoMetadataProvider(fixture.Repository, new NullLog(), new Config())
+            var developMergeBase = new GitRepoMetadataProvider(fixture.Repository, log, configuration)
                 .FindMergeBase(develop, release);
 
             fixture.Repository.DumpGraph(Console.WriteLine);
