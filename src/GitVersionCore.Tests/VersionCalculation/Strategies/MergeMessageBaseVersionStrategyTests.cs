@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using GitVersion.Configuration;
+using GitVersion.Logging;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
 using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
 
@@ -13,6 +15,14 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
     [TestFixture]
     public class MergeMessageBaseVersionStrategyTests : TestBase
     {
+        private readonly ILog log;
+
+        public MergeMessageBaseVersionStrategyTests()
+        {
+            var sp = ConfigureServices();
+            log = sp.GetService<ILog>();
+        }
+
         [Test]
         public void ShouldNotAllowIncrementOfVersion()
         {
@@ -26,7 +36,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                     ParentsEx = GetParents(true)
                 } }
             }).Build();
-            var strategy = new MergeMessageVersionStrategy();
+            var strategy = new MergeMessageVersionStrategy(log);
 
             var baseVersion = strategy.GetVersions(context).Single();
 
@@ -144,7 +154,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             AssertMergeMessage(message, expectedVersion, parents, config);
         }
 
-        private static void AssertMergeMessage(string message, string expectedVersion, List<Commit> parents, Config config = null)
+        private void AssertMergeMessage(string message, string expectedVersion, List<Commit> parents, Config config = null)
         {
             var commit = new MockCommit
             {
@@ -163,7 +173,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
                     }
                 })
                 .Build();
-            var strategy = new MergeMessageVersionStrategy();
+            var strategy = new MergeMessageVersionStrategy(log);
 
             var baseVersion = strategy.GetVersions(context).SingleOrDefault();
 

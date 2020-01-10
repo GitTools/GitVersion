@@ -22,7 +22,6 @@
       <Compile Include="..\GitVersionCore.Tests\Helpers\DirectoryHelper.cs" Link="Helpers\DirectoryHelper.cs" />
       <Compile Include="..\GitVersionCore.Tests\Helpers\GitVersionCoreTestModule.cs" Link="Helpers\GitVersionCoreTestModule.cs" />
       <Compile Include="..\GitVersionCore.Tests\Helpers\PathHelper.cs" Link="Helpers\PathHelper.cs" />
-      <Compile Include="..\GitVersionCore.Tests\Helpers\ServiceCollectionExtensions.cs" Link="Helpers\ServiceCollectionExtensions.cs" />
       <Compile Include="..\GitVersionCore.Tests\Helpers\TestBase.cs" Link="Helpers\TestBase.cs" />
       <Compile Include="..\GitVersionCore.Tests\Helpers\TestEffectiveConfiguration.cs" Link="Helpers\TestEffectiveConfiguration.cs" />
       <Compile Include="..\GitVersionCore.Tests\Helpers\TestEnvironment.cs" Link="Helpers\TestEnvironment.cs" />

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using LibGit2Sharp;
 using GitVersion.Extensions;
+using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
@@ -24,8 +25,14 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
     /// </summary>
     public class TrackReleaseBranchesVersionStrategy : IVersionStrategy
     {
-        private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy = new VersionInBranchNameVersionStrategy();
-        private readonly TaggedCommitVersionStrategy taggedCommitVersionStrategy = new TaggedCommitVersionStrategy();
+        private readonly VersionInBranchNameVersionStrategy releaseVersionStrategy;
+        private readonly TaggedCommitVersionStrategy taggedCommitVersionStrategy;
+
+        public TrackReleaseBranchesVersionStrategy(ILog log)
+        {
+            releaseVersionStrategy = new VersionInBranchNameVersionStrategy();
+            taggedCommitVersionStrategy = new TaggedCommitVersionStrategy(log);
+        }
 
         public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {

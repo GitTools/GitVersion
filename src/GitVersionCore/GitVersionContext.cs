@@ -12,7 +12,7 @@ namespace GitVersion
     /// </summary>
     public class GitVersionContext
     {
-        public ILog Log { get; }
+        private readonly ILog log;
 
         public GitVersionContext(IRepository repository, ILog log, string targetBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
              : this(repository, log, GetTargetBranch(repository, targetBranch), configuration, onlyEvaluateTrackedBranches, commitId)
@@ -21,7 +21,7 @@ namespace GitVersion
 
         public GitVersionContext(IRepository repository, ILog log, Branch currentBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
         {
-            Log = log;
+            this.log = log;
             Repository = repository;
             RepositoryMetadataProvider = new GitRepoMetadataProvider(repository, log, configuration);
             FullConfiguration = configuration;
@@ -88,7 +88,7 @@ namespace GitVersion
 
         private void CalculateEffectiveConfiguration()
         {
-            IBranchConfigurationCalculator calculator = new BranchConfigurationCalculator(Log, this);
+            IBranchConfigurationCalculator calculator = new BranchConfigurationCalculator(log, this);
             var currentBranchConfig = calculator.GetBranchConfiguration(CurrentBranch);
 
             if (!currentBranchConfig.VersioningMode.HasValue)

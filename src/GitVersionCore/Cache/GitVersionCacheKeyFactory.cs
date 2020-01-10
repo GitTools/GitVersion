@@ -10,31 +10,49 @@ using GitVersion.Extensions;
 
 namespace GitVersion.Cache
 {
-    internal class GitVersionCacheKeyFactory
+    public interface IGitVersionCacheKeyFactory
     {
-        public static GitVersionCacheKey Create(IFileSystem fileSystem, ILog log, IGitPreparer gitPreparer, IConfigFileLocator configFileLocator, Config overrideConfig)
+        GitVersionCacheKey Create(Config overrideConfig);
+    }
+
+    public class GitVersionCacheKeyFactory : IGitVersionCacheKeyFactory
+    {
+        private readonly IFileSystem fileSystem;
+        private readonly ILog log;
+        private readonly IGitPreparer gitPreparer;
+        private readonly IConfigFileLocator configFileLocator;
+
+        public GitVersionCacheKeyFactory(IFileSystem fileSystem, ILog log, IGitPreparer gitPreparer, IConfigFileLocator configFileLocator)
         {
-            var gitSystemHash = GetGitSystemHash(gitPreparer, log);
-            var configFileHash = GetConfigFileHash(fileSystem, gitPreparer, configFileLocator);
-            var repositorySnapshotHash = GetRepositorySnapshotHash(gitPreparer);
+            this.fileSystem = fileSystem;
+            this.log = log;
+            this.gitPreparer = gitPreparer;
+            this.configFileLocator = configFileLocator;
+        }
+
+        public GitVersionCacheKey Create(Config overrideConfig)
+        {
+            var gitSystemHash = GetGitSystemHash();
+            var configFileHash = GetConfigFileHash();
+            var repositorySnapshotHash = GetRepositorySnapshotHash();
             var overrideConfigHash = GetOverrideConfigHash(overrideConfig);
 
             var compositeHash = GetHash(gitSystemHash, configFileHash, repositorySnapshotHash, overrideConfigHash);
             return new GitVersionCacheKey(compositeHash);
         }
 
-        private static string GetGitSystemHash(IGitPreparer gitPreparer, ILog log)
+        private string GetGitSystemHash()
         {
             var dotGitDirectory = gitPreparer.GetDotGitDirectory();
 
             // traverse the directory and get a list of files, use that for GetHash
-            var contents = CalculateDirectoryContents(log, Path.Combine(dotGitDirectory, "refs"));
+            var contents = CalculateDirectoryContents(Path.Combine(dotGitDirectory, "refs"));
 
             return GetHash(contents.ToArray());
         }
 
         // based on https://msdn.microsoft.com/en-us/library/bb513869.aspx
-        private static List<string> CalculateDirectoryContents(ILog log, string root)
+        private List<string> CalculateDirectoryContents(string root)
         {
             var result = new List<string>();
 
@@ -123,7 +141,7 @@ namespace GitVersion.Cache
             return result;
         }
 
-        private static string GetRepositorySnapshotHash(IGitPreparer gitPreparer)
+        private string GetRepositorySnapshotHash()
         {
             var repositorySnapshot = gitPreparer.GetDotGitDirectory().WithRepository(repo =>
             {
@@ -158,7 +176,7 @@ namespace GitVersion.Cache
             return GetHash(configContent);
         }
 
-        private static string GetConfigFileHash(IFileSystem fileSystem, IGitPreparer gitPreparer, IConfigFileLocator configFileLocator)
+        private string GetConfigFileHash()
         {
             // will return the same hash even when config file will be moved 
             // from workingDirectory to rootProjectDirectory. It's OK. Config essentially is the same.
