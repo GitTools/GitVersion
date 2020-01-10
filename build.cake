@@ -140,9 +140,15 @@ Task("Test")
 {
 });
 
-Task("Publish")
+Task("Publish-CI")
     .IsDependentOn("Publish-AppVeyor")
     .IsDependentOn("Publish-AzurePipeline")
+    .Finally(() =>
+{
+});
+
+Task("Publish")
+    .IsDependentOn("Publish-CI")
     .IsDependentOn("Publish-NuGet")
     .IsDependentOn("Publish-Chocolatey")
     .IsDependentOn("Publish-Gem")
