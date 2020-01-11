@@ -71,8 +71,22 @@ stages:
   - job: Publish
     pool:
       vmImage: windows-latest
+    strategy:
+      matrix:
+        CI:
+          TASK_NAME: 'CI'
+        NuGet:
+          TASK_NAME: 'NuGet'
+        Chocolatey:
+         TASK_NAME: 'Chocolatey'
+        Gem:
+          TASK_NAME: 'Gem'
+        Documentation:
+          TASK_NAME: 'Documentation'
     steps:
     - template: build/stages/publish.yml
+      parameters:
+        taskName: $(TASK_NAME)
 
 - stage: Release
   dependsOn:
