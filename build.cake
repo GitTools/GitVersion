@@ -142,26 +142,62 @@ Task("Test")
 
 Task("Publish-CI")
     .IsDependentOn("Publish-AppVeyor")
-    .IsDependentOn("Publish-AzurePipeline");
+    .IsDependentOn("Publish-AzurePipeline")
+    .Finally(() =>
+{
+    if (publishingError)
+    {
+        throw new Exception("An error occurred during the publishing of GitVersion.");
+    }
+});
 
 Task("Publish-Gem")
-    .IsDependentOn("Publish-Gem-Internal");
+    .IsDependentOn("Publish-Gem-Internal")
+    .Finally(() =>
+{
+    if (publishingError)
+    {
+        throw new Exception("An error occurred during the publishing of GitVersion.");
+    }
+});
 
 Task("Publish-NuGet")
-    .IsDependentOn("Publish-NuGet-Internal");
+    .IsDependentOn("Publish-NuGet-Internal")
+    .Finally(() =>
+{
+    if (publishingError)
+    {
+        throw new Exception("An error occurred during the publishing of GitVersion.");
+    }
+});
 
 Task("Publish-Chocolatey")
-    .IsDependentOn("Publish-Chocolatey-Internal");
+    .IsDependentOn("Publish-Chocolatey-Internal")
+    .Finally(() =>
+{
+    if (publishingError)
+    {
+        throw new Exception("An error occurred during the publishing of GitVersion.");
+    }
+});
 
 Task("Publish-Documentation")
-    .IsDependentOn("Publish-Documentation-Internal");
+    .IsDependentOn("Publish-Documentation-Internal")
+    .Finally(() =>
+{
+    if (publishingError)
+    {
+        throw new Exception("An error occurred during the publishing of GitVersion.");
+    }
+});
 
 Task("Publish")
-    .IsDependentOn("Publish-CI")
-    .IsDependentOn("Publish-NuGet")
-    .IsDependentOn("Publish-Chocolatey")
-    .IsDependentOn("Publish-Gem")
-    .IsDependentOn("Publish-Documentation")
+    .IsDependentOn("Publish-AppVeyor")
+    .IsDependentOn("Publish-AzurePipeline")
+    .IsDependentOn("Publish-NuGet-Internal")
+    .IsDependentOn("Publish-Chocolatey-Internal")
+    .IsDependentOn("Publish-Gem-Internal")
+    .IsDependentOn("Publish-Documentation-Internal")
     .Finally(() =>
 {
     if (publishingError)
