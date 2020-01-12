@@ -45,7 +45,7 @@ public static bool IsOnMainBranch(this ICakeContext context)
     }
     else if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
     {
-        repositoryBranch = buildSystem.TFBuild.Environment.Repository.Branch;
+        repositoryBranch = buildSystem.TFBuild.Environment.Repository.SourceBranchName;
     }
 
     context.Information("Repository Branch: {0}" , repositoryBranch);
