@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using GitVersion.Helpers;
 using GitVersion;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests
 {

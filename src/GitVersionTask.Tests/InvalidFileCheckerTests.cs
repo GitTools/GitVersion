@@ -4,6 +4,7 @@ using Microsoft.Build.Framework;
 using NUnit.Framework;
 using GitVersion.Exceptions;
 using GitVersion.MSBuildTask.Tests.Mocks;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersion.MSBuildTask.Tests
 {

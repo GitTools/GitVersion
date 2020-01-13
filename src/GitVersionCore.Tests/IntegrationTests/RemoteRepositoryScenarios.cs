@@ -7,6 +7,7 @@ using Shouldly;
 using GitVersion.Exceptions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {

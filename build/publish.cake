@@ -81,7 +81,7 @@ Task("Publish-AzurePipeline")
     publishingError = true;
 });
 
-Task("Publish-Gem")
+Task("Publish-Gem-Internal")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishGem,        "Publish-Gem was disabled.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Gem works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Gem works only on AzurePipeline.")
@@ -109,7 +109,7 @@ Task("Publish-Gem")
     publishingError = true;
 });
 
-Task("Publish-NuGet")
+Task("Publish-NuGet-Internal")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishNuget,      "Publish-NuGet was disabled.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-NuGet works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-NuGet works only on AzurePipeline.")
@@ -147,7 +147,7 @@ Task("Publish-NuGet")
     publishingError = true;
 });
 
-Task("Publish-Chocolatey")
+Task("Publish-Chocolatey-Internal")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishChocolatey, "Publish-Chocolatey was disabled.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Chocolatey works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Chocolatey works only on AzurePipeline.")

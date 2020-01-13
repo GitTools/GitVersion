@@ -42,7 +42,7 @@ namespace GitVersion.Configuration
             {
                 var readAllText = FileSystem.ReadAllText(configFilePath);
                 LegacyConfigNotifier.Notify(new StringReader(readAllText));
-                return ConfigSerialiser.Read(new StringReader(readAllText));
+                return ConfigSerializer.Read(new StringReader(readAllText));
             }
 
             return new Config();

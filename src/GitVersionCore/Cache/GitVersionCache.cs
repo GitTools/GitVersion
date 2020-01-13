@@ -13,16 +13,18 @@ namespace GitVersion.Cache
     {
         private readonly IFileSystem fileSystem;
         private readonly ILog log;
+        private readonly IGitPreparer gitPreparer;
 
-        public GitVersionCache(IFileSystem fileSystem, ILog log)
+        public GitVersionCache(IFileSystem fileSystem, ILog log, IGitPreparer gitPreparer)
         {
             this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.gitPreparer = gitPreparer ?? throw new ArgumentNullException(nameof(gitPreparer));
         }
 
-        public void WriteVariablesToDiskCache(IGitPreparer gitPreparer, GitVersionCacheKey cacheKey, VersionVariables variablesFromCache)
+        public void WriteVariablesToDiskCache(GitVersionCacheKey cacheKey, VersionVariables variablesFromCache)
         {
-            var cacheDir = PrepareCacheDirectory(gitPreparer);
+            var cacheDir = PrepareCacheDirectory();
             var cacheFileName = GetCacheFileName(cacheKey, cacheDir);
 
             variablesFromCache.FileName = cacheFileName;
@@ -48,18 +50,18 @@ namespace GitVersion.Cache
             retryOperation.ExecuteAsync().Wait();
         }
 
-        public string GetCacheDirectory(IGitPreparer gitPreparer)
+        public string GetCacheDirectory()
         {
             var gitDir = gitPreparer.GetDotGitDirectory();
             var cacheDir = Path.Combine(gitDir, "gitversion_cache");
             return cacheDir;
         }
 
-        public VersionVariables LoadVersionVariablesFromDiskCache(IGitPreparer gitPreparer, GitVersionCacheKey key)
+        public VersionVariables LoadVersionVariablesFromDiskCache(GitVersionCacheKey key)
         {
             using (log.IndentLog("Loading version variables from disk cache"))
             {
-                var cacheDir = PrepareCacheDirectory(gitPreparer);
+                var cacheDir = PrepareCacheDirectory();
 
                 var cacheFileName = GetCacheFileName(key, cacheDir);
                 if (!fileSystem.Exists(cacheFileName))
@@ -94,9 +96,9 @@ namespace GitVersion.Cache
             }
         }
 
-        private string PrepareCacheDirectory(IGitPreparer gitPreparer)
+        private string PrepareCacheDirectory()
         {
-            var cacheDir = GetCacheDirectory(gitPreparer);
+            var cacheDir = GetCacheDirectory();
 
             // If the cacheDir already exists, CreateDirectory just won't do anything (it won't fail). @asbjornu
             fileSystem.CreateDirectory(cacheDir);

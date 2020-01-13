@@ -1,6 +1,6 @@
 using GitVersion.OutputVariables;
 
-namespace GitVersionCore.Tests
+namespace GitVersionCore.Tests.Helpers
 {
     internal class TestableVersionVariables : VersionVariables
     {

@@ -2,6 +2,7 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.Extensions;
 using GitVersion;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests
 {

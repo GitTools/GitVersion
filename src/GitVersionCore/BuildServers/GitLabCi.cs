@@ -9,9 +9,14 @@ namespace GitVersion.BuildServers
     public class GitLabCi : BuildServerBase
     {
         public const string EnvironmentVariableName = "GITLAB_CI";
-        private readonly string file;
+        private string file;
 
-        public GitLabCi(IEnvironment environment, ILog log, string propertiesFileName = "gitversion.properties") : base(environment, log)
+        public GitLabCi(IEnvironment environment, ILog log) : base(environment, log)
+        {
+            WithPropertyFile("gitversion.properties");
+        }
+
+        public void WithPropertyFile(string propertiesFileName)
         {
             file = propertiesFileName;
         }

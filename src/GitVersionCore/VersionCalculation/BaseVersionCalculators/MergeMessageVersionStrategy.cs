@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using LibGit2Sharp;
-using GitVersion.Logging;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
+using GitVersion.Logging;
 
 namespace GitVersion.VersionCalculation.BaseVersionCalculators
 {
@@ -15,6 +16,13 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
     /// </summary>
     public class MergeMessageVersionStrategy : IVersionStrategy
     {
+        private readonly ILog log;
+
+        public MergeMessageVersionStrategy(ILog log)
+        {
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
+        }
+
         public virtual IEnumerable<BaseVersion> GetVersions(GitVersionContext context)
         {
             var commitsPriorToThan = context.CurrentBranch
@@ -26,7 +34,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
                         mergeMessage.Version != null &&
                         context.FullConfiguration.IsReleaseBranch(TrimRemote(mergeMessage.MergedBranch)))
                     {
-                        context.Log.Info($"Found commit [{context.CurrentCommit.Sha}] matching merge message format: {mergeMessage.FormatName}");
+                        log.Info($"Found commit [{context.CurrentCommit.Sha}] matching merge message format: {mergeMessage.FormatName}");
                         var shouldIncrement = !context.Configuration.PreventIncrementForMergedBranchVersion;
                         return new[]
                         {

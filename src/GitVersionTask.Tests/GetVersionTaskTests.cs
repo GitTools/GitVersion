@@ -4,6 +4,7 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.OutputVariables;
 using GitVersion.MSBuildTask.Tasks;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersion.MSBuildTask.Tests
 {

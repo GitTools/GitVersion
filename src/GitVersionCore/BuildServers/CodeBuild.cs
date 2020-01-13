@@ -9,11 +9,16 @@ namespace GitVersion.BuildServers
     public sealed class CodeBuild : BuildServerBase
     {
         public const string HeadRefEnvironmentName = "CODEBUILD_WEBHOOK_HEAD_REF";
-        private readonly string propertiesFileName;
+        private string file;
 
-        public CodeBuild(IEnvironment environment, ILog log, string propertiesFileName = "gitversion.properties") : base(environment, log)
+        public CodeBuild(IEnvironment environment, ILog log) : base(environment, log)
         {
-            this.propertiesFileName = propertiesFileName;
+            WithPropertyFile("gitversion.properties");
+        }
+
+        public void WithPropertyFile(string propertiesFileName)
+        {
+            file = propertiesFileName;
         }
 
         protected override string EnvironmentVariable { get; } = HeadRefEnvironmentName;
@@ -39,8 +44,8 @@ namespace GitVersion.BuildServers
         public override void WriteIntegration(Action<string> writer, VersionVariables variables)
         {
             base.WriteIntegration(writer, variables);
-            writer($"Outputting variables to '{propertiesFileName}' ... ");
-            File.WriteAllLines(propertiesFileName, BuildOutputFormatter.GenerateBuildLogOutput(this, variables));
+            writer($"Outputting variables to '{file}' ... ");
+            File.WriteAllLines(file, BuildOutputFormatter.GenerateBuildLogOutput(this, variables));
         }
 
         public override bool PreventFetch() => true;

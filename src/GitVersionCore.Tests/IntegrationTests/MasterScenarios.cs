@@ -3,6 +3,7 @@ using LibGit2Sharp;
 using NUnit.Framework;
 using GitVersion.Configuration;
 using GitVersion.VersioningModes;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {
