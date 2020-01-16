@@ -69,7 +69,7 @@ namespace GitVersion
 
         public string NuGetPreReleaseTag => NuGetPreReleaseTagV2;
 
-        public string DefaultInformationalVersion => semver.ToString("i");
+        public string InformationalVersion => semver.ToString("i");
 
         public string VersionSourceSha => semver.BuildMetaData.VersionSourceSha;
 

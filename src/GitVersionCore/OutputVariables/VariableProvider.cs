@@ -57,7 +57,7 @@ namespace GitVersion.OutputVariables
             var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, config);
 
             var informationalVersion = CheckAndFormatString(config.AssemblyInformationalFormat, semverFormatValues,
-                environment, semverFormatValues.DefaultInformationalVersion, "AssemblyInformationalVersion");
+                environment, semverFormatValues.InformationalVersion, "AssemblyInformationalVersion");
 
             var assemblyFileSemVer = CheckAndFormatString(config.AssemblyFileVersioningFormat, semverFormatValues,
                 environment, semverFormatValues.AssemblyFileSemVer, "AssemblyFileVersioningFormat");
