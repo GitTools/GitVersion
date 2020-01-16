@@ -6,6 +6,7 @@ using GitVersion.VersionCalculation;
 using GitVersion.VersioningModes;
 using GitVersion.Configuration;
 using GitVersion.Helpers;
+using GitVersion.Logging;
 
 namespace GitVersion.OutputVariables
 {
@@ -13,11 +14,13 @@ namespace GitVersion.OutputVariables
     {
         private readonly INextVersionCalculator nextVersionCalculator;
         private readonly IEnvironment environment;
+        private readonly ILog log;
 
-        public VariableProvider(INextVersionCalculator nextVersionCalculator, IEnvironment environment)
+        public VariableProvider(INextVersionCalculator nextVersionCalculator, IEnvironment environment, ILog log = default)
         {
             this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
             this.environment = environment;
+            this.log = log ?? new NullLog();
         }
 
         public VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)
@@ -124,7 +127,7 @@ namespace GitVersion.OutputVariables
             }
         }
 
-        private static string CheckAndFormatString<T>(string formatString, T source, IEnvironment environment, string defaultValue, string formatVarName)
+        private string CheckAndFormatString<T>(string formatString, T source, IEnvironment environment, string defaultValue, string formatVarName)
         {
             string formattedString;
 
@@ -134,6 +137,8 @@ namespace GitVersion.OutputVariables
             }
             else
             {
+                WarnIfUsingObsoleteFormatValues(formatString);
+
                 try
                 {
                     formattedString = formatString.FormatWith(source, environment).RegexReplace("[^0-9A-Za-z-.+]", "-");
@@ -145,6 +150,15 @@ namespace GitVersion.OutputVariables
             }
 
             return formattedString;
+        }
+
+        private void WarnIfUsingObsoleteFormatValues(string formatString)
+        {
+            var obsoletePropertyName = nameof(SemanticVersionFormatValues.DefaultInformationalVersion);
+            if (formatString.Contains($"{{{obsoletePropertyName}}}"))
+            {
+                log.Write(LogLevel.Warn, $"Use format variable '{nameof(SemanticVersionFormatValues.InformationalVersion)}' instead of '{obsoletePropertyName}' which is obsolete and will be removed in a future release.");
+            }
         }
     }
 }

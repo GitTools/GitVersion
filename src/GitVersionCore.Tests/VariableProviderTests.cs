@@ -1,12 +1,13 @@
-using System;
+using GitVersion;
 using GitVersion.Logging;
-using NUnit.Framework;
-using Shouldly;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
-using GitVersion;
 using GitVersion.VersionCalculation;
 using GitVersion.VersioningModes;
+using NUnit.Framework;
+using Shouldly;
+using System;
+using System.Collections.Generic;
 
 namespace GitVersionCore.Tests
 {
@@ -14,17 +15,35 @@ namespace GitVersionCore.Tests
     public class VariableProviderTests : TestBase
     {
         private IVariableProvider variableProvider;
+        private List<string> logMessages;
 
         [SetUp]
         public void Setup()
         {
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
-            var log = new NullLog();
+            logMessages = new List<string>();
+            var log = new Log(new TestLogAppender(logMessages.Add));
             var metaDataCalculator = new MetaDataCalculator();
             var baseVersionCalculator = new BaseVersionCalculator(log, null);
             var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
             var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
-            variableProvider = new VariableProvider(nextVersionCalculator, new TestEnvironment());
+            variableProvider = new VariableProvider(nextVersionCalculator, new TestEnvironment(), log);
+        }
+
+        [Test]
+        public void ShouldLogWarningWhenUsingDefaultInformationalVersionInCustomFormat()
+        {
+            var semVer = new SemanticVersion
+            {
+                Major = 1,
+                Minor = 2,
+                Patch = 3,
+            };
+
+            var propertyName = nameof(SemanticVersionFormatValues.DefaultInformationalVersion);
+            var config = new TestEffectiveConfiguration(assemblyInformationalFormat: $"{{{propertyName}}}");
+            variableProvider.GetVariablesFor(semVer, config, false);
+            logMessages.ShouldContain(message => message.Trim().StartsWith("WARN") && message.Contains(propertyName), 1, $"Expected a warning to be logged when using the variable {propertyName} in a configuration format template");
         }
 
         [Test]
