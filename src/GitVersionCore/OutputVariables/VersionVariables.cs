@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using YamlDotNet.Serialization;
@@ -111,7 +112,7 @@ namespace GitVersion.OutputVariables
                     .GetProperties()
                     .Where(p => !p.GetCustomAttributes(typeof(ReflectionIgnoreAttribute), false).Any())
                     .Select(p => p.Name)
-                    .OrderBy(a => a);
+                    .OrderBy(a => a, StringComparer.Ordinal);
             }
         }
 

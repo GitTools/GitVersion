@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using GitVersion.Configuration;
 using GitVersion.Extensions;
@@ -69,7 +70,10 @@ namespace GitVersion
 
         public string NuGetPreReleaseTag => NuGetPreReleaseTagV2;
 
-        public string DefaultInformationalVersion => semver.ToString("i");
+        public string InformationalVersion => semver.ToString("i");
+
+        [Obsolete("Use InformationalVersion instead")]
+        public string DefaultInformationalVersion => InformationalVersion;
 
         public string VersionSourceSha => semver.BuildMetaData.VersionSourceSha;
 
