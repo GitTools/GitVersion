@@ -20,6 +20,7 @@ namespace GitVersion
             services.AddSingleton<ILog, Log>();
             services.AddSingleton<IConsole, ConsoleAdapter>();
             services.AddSingleton<IGitVersionCache, GitVersionCache>();
+            services.AddSingleton<IGitVersionCacheKeyFactory, GitVersionCacheKeyFactory>();
 
             services.AddSingleton<IConfigProvider, ConfigProvider>();
             services.AddSingleton<IVariableProvider, VariableProvider>();

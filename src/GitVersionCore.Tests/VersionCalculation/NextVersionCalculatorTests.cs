@@ -8,34 +8,31 @@ using GitVersionCore.Tests.Mocks;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.Logging;
 using GitVersion;
 using GitVersion.Extensions;
+using GitVersionCore.Tests.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersionCore.Tests.VersionCalculation
 {
     public class NextVersionCalculatorTests : TestBase
     {
-        private readonly ILog log;
-        private IMainlineVersionCalculator mainlineVersionCalculator;
-
-        public NextVersionCalculatorTests()
-        {
-            var metaDataCalculator = new MetaDataCalculator();
-
-            log = new NullLog();
-            mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
-        }
         [Test]
         public void ShouldIncrementVersionBasedOnConfig()
         {
-            var baseCalculator = new TestBaseVersionCalculator(true, new SemanticVersion(1), new MockCommit());
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, "master", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now);
-            var sut = new NextVersionCalculator(log, new TestMetaDataCalculator(semanticVersionBuildMetaData), baseCalculator, mainlineVersionCalculator);
-            var config = new Config();
-            var context = new GitVersionContextBuilder().WithConfig(config).Build();
 
-            var version = sut.FindVersion(context);
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(true, new SemanticVersion(1), new MockCommit()));
+                services.AddSingleton<IMetaDataCalculator>(new TestMetaDataCalculator(semanticVersionBuildMetaData));
+            });
+
+            var nextVersionCalculator = sp.GetService<INextVersionCalculator>();
+
+            var context = new GitVersionContextBuilder().WithConfig(new Config()).Build();
+
+            var version = nextVersionCalculator.FindVersion(context);
 
             version.ToString().ShouldBe("1.0.1");
         }
@@ -43,13 +40,18 @@ namespace GitVersionCore.Tests.VersionCalculation
         [Test]
         public void DoesNotIncrementWhenBaseVersionSaysNotTo()
         {
-            var baseCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit());
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 1, "master", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now);
-            var sut = new NextVersionCalculator(log, new TestMetaDataCalculator(semanticVersionBuildMetaData), baseCalculator, mainlineVersionCalculator);
-            var config = new Config();
-            var context = new GitVersionContextBuilder().WithConfig(config).Build();
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit()));
+                services.AddSingleton<IMetaDataCalculator>(new TestMetaDataCalculator(semanticVersionBuildMetaData));
+            });
 
-            var version = sut.FindVersion(context);
+            var nextVersionCalculator = sp.GetService<INextVersionCalculator>();
+
+            var context = new GitVersionContextBuilder().WithConfig(new Config()).Build();
+
+            var version = nextVersionCalculator.FindVersion(context);
 
             version.ToString().ShouldBe("1.0.0");
         }
@@ -57,14 +59,21 @@ namespace GitVersionCore.Tests.VersionCalculation
         [Test]
         public void AppliesBranchPreReleaseTag()
         {
-            var baseCalculator = new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit());
             var semanticVersionBuildMetaData = new SemanticVersionBuildMetaData("ef7d0d7e1e700f1c7c9fa01ea6791bb778a5c37c", 2, "develop", "b1a34edbd80e141f7cc046c074f109be7d022074", "b1a34e", DateTimeOffset.Now);
-            var sut = new NextVersionCalculator(log, new TestMetaDataCalculator(semanticVersionBuildMetaData), baseCalculator, mainlineVersionCalculator);
+
+            var sp = ConfigureServices(services =>
+            {
+                services.AddSingleton<IBaseVersionCalculator>(new TestBaseVersionCalculator(false, new SemanticVersion(1), new MockCommit()));
+                services.AddSingleton<IMetaDataCalculator>(new TestMetaDataCalculator(semanticVersionBuildMetaData));
+            });
+
+            var nextVersionCalculator = sp.GetService<INextVersionCalculator>();
+
             var context = new GitVersionContextBuilder()
                 .WithDevelopBranch()
                 .Build();
 
-            var version = sut.FindVersion(context);
+            var version = nextVersionCalculator.FindVersion(context);
 
             version.ToString("f").ShouldBe("1.0.0-alpha.1+2");
         }

@@ -7,6 +7,7 @@ using Shouldly;
 using YamlDotNet.Serialization;
 using GitVersion.Configuration;
 using GitVersion.OutputVariables;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests
 {

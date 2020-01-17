@@ -1,6 +1,8 @@
 using System.Linq;
 using GitVersion.Configuration;
+using GitVersion.VersionCalculation;
 using GitVersion.VersionCalculation.BaseVersionCalculators;
+using GitVersionCore.Tests.Helpers;
 using NUnit.Framework;
 using Shouldly;
 
@@ -9,17 +11,26 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
     [TestFixture]
     public class ConfigNextVersionBaseVersionStrategyTests : TestBase
     {
+        private IVersionStrategy strategy;
+        private GitVersionContextBuilder contextBuilder;
+
+        [SetUp]
+        public void SetUp()
+        {
+            strategy = new ConfigNextVersionVersionStrategy();
+            contextBuilder = new GitVersionContextBuilder();
+        }
+
         [Test]
         public void ShouldNotBeIncremented()
         {
-            var contextBuilder = new GitVersionContextBuilder()
+            var gitVersionContext = contextBuilder
                 .WithConfig(new Config
                 {
                     NextVersion = "1.0.0"
-                });
-            var sut = new ConfigNextVersionVersionStrategy();
+                }).Build();
 
-            var baseVersion = sut.GetVersions(contextBuilder.Build()).Single();
+            var baseVersion = strategy.GetVersions(gitVersionContext).Single();
 
             baseVersion.ShouldIncrement.ShouldBe(false);
             baseVersion.SemanticVersion.ToString().ShouldBe("1.0.0");
@@ -28,10 +39,9 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
         [Test]
         public void ReturnsNullWhenNoNextVersionIsInConfig()
         {
-            var contextBuilder = new GitVersionContextBuilder();
-            var sut = new ConfigNextVersionVersionStrategy();
+            var gitVersionContext = contextBuilder.Build();
 
-            var baseVersion = sut.GetVersions(contextBuilder.Build()).SingleOrDefault();
+            var baseVersion = strategy.GetVersions(gitVersionContext).SingleOrDefault();
 
             baseVersion.ShouldBe(null);
         }
@@ -39,14 +49,13 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
         [Test]
         public void NextVersionCanBeInteger()
         {
-            var contextBuilder = new GitVersionContextBuilder()
+            var gitVersionContext = contextBuilder
                 .WithConfig(new Config
                 {
                     NextVersion = "2"
-                });
-            var sut = new ConfigNextVersionVersionStrategy();
+                }).Build();
 
-            var baseVersion = sut.GetVersions(contextBuilder.Build()).Single();
+            var baseVersion = strategy.GetVersions(gitVersionContext).Single();
 
             baseVersion.SemanticVersion.ToString().ShouldBe("2.0.0");
         }
@@ -54,14 +63,13 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
         [Test]
         public void NextVersionCanHaveEnormousMinorVersion()
         {
-            var contextBuilder = new GitVersionContextBuilder()
+            var gitVersionContext = contextBuilder
                 .WithConfig(new Config
                 {
                     NextVersion = "2.118998723"
-                });
-            var sut = new ConfigNextVersionVersionStrategy();
+                }).Build();
 
-            var baseVersion = sut.GetVersions(contextBuilder.Build()).Single();
+            var baseVersion = strategy.GetVersions(gitVersionContext).Single();
 
             baseVersion.SemanticVersion.ToString().ShouldBe("2.118998723.0");
         }
@@ -69,14 +77,13 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
         [Test]
         public void NextVersionCanHavePatch()
         {
-            var contextBuilder = new GitVersionContextBuilder()
+            var gitVersionContext = contextBuilder
                 .WithConfig(new Config
                 {
                     NextVersion = "2.12.654651698"
-                });
-            var sut = new ConfigNextVersionVersionStrategy();
+                }).Build();
 
-            var baseVersion = sut.GetVersions(contextBuilder.Build()).Single();
+            var baseVersion = strategy.GetVersions(gitVersionContext).Single();
 
             baseVersion.SemanticVersion.ToString().ShouldBe("2.12.654651698");
         }

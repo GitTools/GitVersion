@@ -3,6 +3,7 @@ using GitTools.Testing;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.Extensions;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {

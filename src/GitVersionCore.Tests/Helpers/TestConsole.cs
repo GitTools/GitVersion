@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using GitVersion.Configuration;
 using GitVersion.Logging;
 
-namespace GitVersionCore.Tests.Init
+namespace GitVersionCore.Tests.Helpers
 {
     public class TestConsole : IConsole
     {

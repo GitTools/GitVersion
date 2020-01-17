@@ -21,6 +21,10 @@ namespace GitVersionCore.Tests
         public void Setup()
         {
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
+
+            var sp = ConfigureServices();
+
+            variableProvider = sp.GetService<IVariableProvider>();
             logMessages = new List<string>();
             var log = new Log(new TestLogAppender(logMessages.Add));
             var metaDataCalculator = new MetaDataCalculator();
