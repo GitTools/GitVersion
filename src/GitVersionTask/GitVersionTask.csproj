@@ -14,11 +14,11 @@
     </PropertyGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.1" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.1" PrivateAssets="All" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' != 'net472' ">
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.1" />
     </ItemGroup>
 
     <ItemGroup>
