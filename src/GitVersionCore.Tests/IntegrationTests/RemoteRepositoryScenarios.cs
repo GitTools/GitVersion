@@ -68,7 +68,7 @@ namespace GitVersionCore.Tests.IntegrationTests
                 fixture.LocalRepositoryFixture.Repository,
                 fixture.LocalRepositoryFixture.Repository.Head.Tip);
 
-            Should.Throw<WarningException>(() => fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepositoryFixture.Repository, isForTrackedBranchOnly: false),
+            Should.Throw<WarningException>(() => fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepositoryFixture.Repository, onlyTrackedBranches: false),
                 $"It looks like the branch being examined is a detached Head pointing to commit '{fixture.LocalRepositoryFixture.Repository.Head.Tip.Id.ToString(7)}'. Without a proper branch name GitVersion cannot determine the build version.");
         }
 
