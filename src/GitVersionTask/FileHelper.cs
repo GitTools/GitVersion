@@ -156,12 +156,12 @@ Assembly(File|Informational)?Version    # The attribute AssemblyVersion, Assembl
 
             if (intermediateOutputPath == null)
             {
-                fileName = $"{outputFileName}.g.{fileExtension}";
+                fileName = $"{outputFileName}_{Path.GetFileNameWithoutExtension(projectFile)}_{Path.GetRandomFileName()}.g.{fileExtension}";
                 workingDirectory = TempPath;
             }
             else
             {
-                fileName = $"{outputFileName}_{Path.GetFileNameWithoutExtension(projectFile)}_{Path.GetRandomFileName()}.g.{fileExtension}";
+                fileName = $"{outputFileName}.g.{fileExtension}";
                 workingDirectory = intermediateOutputPath;
             }
             return new FileWriteInfo(workingDirectory, fileName, fileExtension);
