@@ -81,7 +81,7 @@ namespace GitVersion
                 // TODO: It looks wasteful looping through the branches twice. Can't these loops be merged somehow? @asbjornu
                 foreach (var branch in branches)
                 {
-                    if (branch.Tip != null && branch.Tip.Sha != commit.Sha || (onlyTrackedBranches && !branch.IsTracking))
+                    if (branch.Tip != null && branch.Tip.Sha != commit.Sha || ((onlyTrackedBranches && branch.IsTracking) || !onlyTrackedBranches))
                     {
                         continue;
                     }
@@ -97,7 +97,7 @@ namespace GitVersion
                 }
 
                 log.Info($"No direct branches found, searching through {(onlyTrackedBranches ? "tracked" : "all")} branches.");
-                foreach (var branch in branches.Where(b => onlyTrackedBranches && !b.IsTracking))
+                foreach (var branch in branches.Where(b => (onlyTrackedBranches && b.IsTracking) || !onlyTrackedBranches))
                 {
                     log.Info($"Searching for commits reachable from '{branch.FriendlyName}'.");
 
