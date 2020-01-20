@@ -111,7 +111,7 @@ namespace GitVersion.OutputVariables
                     .GetProperties()
                     .Where(p => !p.GetCustomAttributes(typeof(ReflectionIgnoreAttribute), false).Any())
                     .Select(p => p.Name)
-                    .OrderBy(a => a);
+                    .OrderBy(a => a, StringComparer.Ordinal);
             }
         }
 

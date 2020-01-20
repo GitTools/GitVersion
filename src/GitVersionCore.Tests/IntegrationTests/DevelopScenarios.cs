@@ -143,7 +143,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             var commit = fixture.Repository.Head.Tip;
             fixture.Repository.MakeACommit();
             Commands.Checkout(fixture.Repository, commit);
-            fixture.AssertFullSemver("1.1.0-alpha.1");
+            fixture.AssertFullSemver("1.1.0-alpha.1", onlyTrackedBranches: false);
         }
 
         [Test]

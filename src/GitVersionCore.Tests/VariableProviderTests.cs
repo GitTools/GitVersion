@@ -1,12 +1,14 @@
-using System;
-using NUnit.Framework;
-using Shouldly;
+using GitVersion;
+using GitVersion.Logging;
 using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
-using GitVersion;
 using GitVersion.VersioningModes;
 using GitVersionCore.Tests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
+using Shouldly;
+using System;
+using System.Collections.Generic;
 
 namespace GitVersionCore.Tests
 {
@@ -14,15 +16,38 @@ namespace GitVersionCore.Tests
     public class VariableProviderTests : TestBase
     {
         private IVariableProvider variableProvider;
+        private List<string> logMessages;
 
         [SetUp]
         public void Setup()
         {
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
 
-            var sp = ConfigureServices();
+            logMessages = new List<string>();
+
+            var sp = ConfigureServices(services =>
+            {
+                var log = new Log(new TestLogAppender(logMessages.Add));
+                services.AddSingleton<ILog>(log);
+            });
 
             variableProvider = sp.GetService<IVariableProvider>();
+        }
+
+        [Test]
+        public void ShouldLogWarningWhenUsingDefaultInformationalVersionInCustomFormat()
+        {
+            var semVer = new SemanticVersion
+            {
+                Major = 1,
+                Minor = 2,
+                Patch = 3,
+            };
+
+            var propertyName = nameof(SemanticVersionFormatValues.DefaultInformationalVersion);
+            var config = new TestEffectiveConfiguration(assemblyInformationalFormat: $"{{{propertyName}}}");
+            variableProvider.GetVariablesFor(semVer, config, false);
+            logMessages.ShouldContain(message => message.Trim().StartsWith("WARN") && message.Contains(propertyName), 1, $"Expected a warning to be logged when using the variable {propertyName} in a configuration format template");
         }
 
         [Test]

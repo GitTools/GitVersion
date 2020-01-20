@@ -26,7 +26,7 @@ namespace GitVersion.Configuration
         public BranchConfig GetBranchConfiguration(Branch targetBranch, IList<Branch> excludedInheritBranches = null)
         {
             var matchingBranches = context.FullConfiguration.GetConfigForBranch(targetBranch.NameWithoutRemote());
-            
+
             if (matchingBranches == null)
             {
                 log.Info($"No branch configuration found for branch {targetBranch.FriendlyName}, falling back to default configuration");
@@ -84,7 +84,7 @@ namespace GitVersion.Configuration
                 List<Branch> possibleParents;
                 if (branchPoint == BranchCommit.Empty)
                 {
-                    possibleParents = context.RepositoryMetadataProvider.GetBranchesContainingCommit(targetBranch.Tip, branchesToEvaluate, true)
+                    possibleParents = context.RepositoryMetadataProvider.GetBranchesContainingCommit(targetBranch.Tip, branchesToEvaluate, false)
                         // It fails to inherit Increment branch configuration if more than 1 parent;
                         // therefore no point to get more than 2 parents
                         .Take(2)
@@ -93,11 +93,11 @@ namespace GitVersion.Configuration
                 else
                 {
                     var branches = context.RepositoryMetadataProvider
-                        .GetBranchesContainingCommit(branchPoint.Commit, branchesToEvaluate, true).ToList();
+                        .GetBranchesContainingCommit(branchPoint.Commit, branchesToEvaluate, false).ToList();
                     if (branches.Count > 1)
                     {
                         var currentTipBranches = context.RepositoryMetadataProvider
-                            .GetBranchesContainingCommit(context.CurrentCommit, branchesToEvaluate, true).ToList();
+                            .GetBranchesContainingCommit(context.CurrentCommit, branchesToEvaluate, false).ToList();
                         possibleParents = branches.Except(currentTipBranches).ToList();
                     }
                     else
