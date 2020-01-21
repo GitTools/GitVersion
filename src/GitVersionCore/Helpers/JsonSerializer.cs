@@ -200,13 +200,17 @@ namespace GitVersion.Helpers
             {
                 // Object
                 var isFirst = true;
-                foreach (var item in o.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty).Where(p => !p.GetCustomAttributes(typeof(VersionVariables.ReflectionIgnoreAttribute), false).Any()))
+                var propertyInfos = o.GetType()
+                    .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty)
+                    .Where(p => !p.GetCustomAttributes(typeof(VersionVariables.ReflectionIgnoreAttribute), false).Any());
+
+                foreach (var item in propertyInfos)
                 {
                     if (!isFirst) tw.Write(",");
                     else isFirst = false;
 
                     var key = item.Name;
-                    var value = item.GetGetMethod().Invoke(o, null); // safe reflection for unity
+                    var value = item.GetGetMethod().Invoke(o, null);
                     tw.Write('\"');
                     tw.Write(key);
                     tw.Write('\"');
