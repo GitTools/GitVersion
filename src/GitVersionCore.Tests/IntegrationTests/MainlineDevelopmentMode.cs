@@ -410,6 +410,50 @@ namespace GitVersionCore.Tests.IntegrationTests
         }
 
         [Test]
+        public void MergingMasterBarnchToDevelopWithInheritIncrementShouldIncrementDevelopPatch()
+        {
+            var currentConfig = new Config
+            {
+                AssemblyVersioningScheme = AssemblyVersioningScheme.MajorMinorPatch,
+                VersioningMode = VersioningMode.Mainline,
+                Branches = new Dictionary<string, BranchConfig>
+                {
+                    {
+                        "master", new BranchConfig
+                        {
+                            Increment = IncrementStrategy.Patch
+                        }
+                    },
+                    {
+                        "develop", new BranchConfig
+                        {
+                            Increment = IncrementStrategy.Inherit
+                        }
+                    }
+                }
+            };
+
+            using var fixture = new EmptyRepositoryFixture();
+            fixture.MakeACommit("initial in master");
+            fixture.AssertFullSemver(currentConfig, "0.1.0");
+            fixture.MakeACommit("master change");
+            fixture.AssertFullSemver(currentConfig, "0.1.1");
+
+            fixture.BranchTo("develop");
+            fixture.AssertFullSemver(currentConfig, "0.1.2-alpha.0");
+            fixture.MakeACommit("develop change");
+            fixture.AssertFullSemver(currentConfig, "0.1.2-alpha.1");
+
+            fixture.Checkout("master");
+            fixture.MakeACommit("master hotfix");
+            fixture.AssertFullSemver(currentConfig, "0.1.2");
+
+            fixture.Checkout("develop");
+            fixture.MergeNoFF("master");
+            fixture.AssertFullSemver(currentConfig, "0.1.3-alpha.1");
+        }
+
+        [Test]
         public void VerifyIncrementConfigIsHonoured()
         {
             var minorIncrementConfig = new Config
