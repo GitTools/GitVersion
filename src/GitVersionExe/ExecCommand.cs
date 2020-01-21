@@ -54,7 +54,7 @@ namespace GitVersion
                     switch (arguments.ShowVariable)
                     {
                         case null:
-                            Console.WriteLine(JsonOutputFormatter.ToJson(variables));
+                            Console.WriteLine(variables.ToString());
                             break;
 
                         default:
