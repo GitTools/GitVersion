@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using GitVersion.OutputVariables;
 
 namespace GitVersion.Helpers
 {
@@ -61,6 +62,7 @@ namespace GitVersion.Helpers
                 TypeCode.Byte => JsonType.number,
                 TypeCode.Object => (obj switch
                 {
+                    VersionVariables _ => JsonType.@object,
                     // specialized for well known types
                     Uri _ => JsonType.@string,
                     DateTimeOffset _ => JsonType.@string,
@@ -198,7 +200,7 @@ namespace GitVersion.Helpers
             {
                 // Object
                 var isFirst = true;
-                foreach (var item in o.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty))
+                foreach (var item in o.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty).Where(p => !p.GetCustomAttributes(typeof(VersionVariables.ReflectionIgnoreAttribute), false).Any()))
                 {
                     if (!isFirst) tw.Write(",");
                     else isFirst = false;
