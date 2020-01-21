@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using GitVersion.Helpers;
 using YamlDotNet.Serialization;
 
 namespace GitVersion.OutputVariables
@@ -180,6 +181,12 @@ namespace GitVersion.OutputVariables
 
         private sealed class ReflectionIgnoreAttribute : Attribute
         {
+        }
+
+        public override string ToString()
+        {
+            var json = JsonSerializer.Serialize(this);
+            return JsonSerializer.FormatJson(json);
         }
     }
 }
