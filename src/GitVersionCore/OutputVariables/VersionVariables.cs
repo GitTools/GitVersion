@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using GitVersion.Helpers;
 using YamlDotNet.Serialization;
+using static GitVersion.Extensions.ObjectExtensions;
 
 namespace GitVersion.OutputVariables
 {
@@ -126,12 +127,7 @@ namespace GitVersion.OutputVariables
 
         public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
         {
-            var type = typeof(string);
-            return typeof(VersionVariables)
-                .GetProperties()
-                .Where(p => p.PropertyType == type && !p.GetIndexParameters().Any() && !p.GetCustomAttributes(typeof(ReflectionIgnoreAttribute), false).Any())
-                .Select(p => new KeyValuePair<string, string>(p.Name, (string)p.GetValue(this, null)))
-                .GetEnumerator();
+            return this.GetProperties().GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -179,14 +175,9 @@ namespace GitVersion.OutputVariables
             return typeof(VersionVariables).GetProperty(variable) != null;
         }
 
-        public sealed class ReflectionIgnoreAttribute : Attribute
-        {
-        }
-
         public override string ToString()
         {
-            var json = JsonSerializer.Serialize(this);
-            return JsonSerializer.FormatJson(json);
+            return JsonSerializer.Serialize(this);
         }
     }
 }
