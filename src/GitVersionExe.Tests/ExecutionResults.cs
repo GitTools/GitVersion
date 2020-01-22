@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using GitVersion.OutputVariables;
 
 namespace GitVersionExe.Tests
@@ -21,17 +22,10 @@ namespace GitVersionExe.Tests
         {
             get
             {
-                try
-                {
-                    var outputVariables = JsonSerializer.Deserialize<Dictionary<string, string>>(Output);
-                    return VersionVariables.FromDictionary(outputVariables);
-                }
-                catch (JsonException)
-                {
-                    // ignored
-                }
-
-                return null;
+                var regex = new Regex(@"\{(.|\s)*\}");
+                var output = regex.Match(Output).Value;
+                var outputVariables = JsonSerializer.Deserialize<Dictionary<string, string>>(output);
+                return VersionVariables.FromDictionary(outputVariables);
             }
         }
     }
