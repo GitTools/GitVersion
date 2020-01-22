@@ -5,7 +5,6 @@ namespace GitVersion.Helpers
 {
     public static class JsonSerializer
     {
-
         public static string Serialize(object obj)
         {
             var builder = new StringBuilder();
@@ -17,8 +16,8 @@ namespace GitVersion.Helpers
                 else first = false;
 
                 builder.Append($"  \"{key}\":");
-                // preserve leading zeros for padding
 
+                // preserve leading zeros for padding
                 if (NotAPaddedNumber(value) && int.TryParse(value, out var number))
                     builder.Append(number);
                 else
