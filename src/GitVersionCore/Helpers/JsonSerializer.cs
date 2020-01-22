@@ -28,6 +28,6 @@ namespace GitVersion.Helpers
             return builder.ToString();
         }
 
-        private static bool NotAPaddedNumber(string value) => value == "0" || !value.StartsWith("0");
+        private static bool NotAPaddedNumber(string value) => value != null && (value == "0" || !value.StartsWith("0"));
     }
 }
