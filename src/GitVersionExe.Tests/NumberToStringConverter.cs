@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace GitVersionCore.Tests.Helpers
+namespace GitVersionExe.Tests
 {
     public class NumberToStringConverter : JsonConverter<object>
     {

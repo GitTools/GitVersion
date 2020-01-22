@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using GitVersion.OutputVariables;
-using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionExe.Tests
 {
