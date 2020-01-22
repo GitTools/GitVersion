@@ -17,7 +17,6 @@
 
         <None Include="$(CorePublish)/GitVersion*"                   Pack="true" PackagePath="$(CoreTarget)" />
         <None Include="$(CorePublish)/LibGit2Sharp.dll"              Pack="true" PackagePath="$(CoreTarget)" />
-        <None Include="$(CorePublish)/Newtonsoft.Json.dll"           Pack="true" PackagePath="$(CoreTarget)" />
         <None Include="$(CorePublish)/YamlDotNet.dll"                Pack="true" PackagePath="$(CoreTarget)" />
         <None Include="$(CorePublish)/Microsoft.Extensions*"         Pack="true" PackagePath="$(CoreTarget)" />
 

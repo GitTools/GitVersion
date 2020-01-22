@@ -2,7 +2,6 @@ using System;
 using System.Net.Http;
 using GitVersion.OutputVariables;
 using GitVersion.Logging;
-using Newtonsoft.Json;
 using System.Text;
 
 namespace GitVersion.BuildServers
@@ -23,12 +22,9 @@ namespace GitVersion.BuildServers
 
             using var httpClient = GetHttpClient();
 
-            var body = new
-            {
-                version = $"{variables.FullSemVer}.build.{buildNumber}",
-            };
+            var body = $"{{\"version\":\"{variables.FullSemVer}.build.{buildNumber}\"}}";
 
-            var stringContent = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+            var stringContent = new StringContent(body, Encoding.UTF8, "application/json");
             var response = httpClient.PutAsync("api/build", stringContent).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();
 
@@ -39,13 +35,9 @@ namespace GitVersion.BuildServers
         {
             var httpClient = GetHttpClient();
 
-            var body = new
-            {
-                name = $"GitVersion_{name}",
-                value = $"{value}"
-            };
+            var body = $"{{\"name\": \"GitVersion_{name}\",\"value\": \"{value}\"}}";
 
-            var stringContent = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+            var stringContent = new StringContent(body, Encoding.UTF8, "application/json");
             var response = httpClient.PostAsync("api/build/variables", stringContent).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();
 
