@@ -1,5 +1,6 @@
 using System;
 using GitTools.Testing;
+using GitVersion.BuildServers;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
@@ -41,10 +42,15 @@ namespace GitVersionExe.Tests
                 Commands.Checkout(fixture.Repository, mergeCommitSha);
             }
 
+            // Emulating Jenkins environment variable
+            Environment.SetEnvironmentVariable(TeamCity.EnvironmentVariableName, "8.0.0");
+
             var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, isTeamCity: true);
 
             result.ExitCode.ShouldBe(0);
             result.OutputVariables.FullSemVer.ShouldBe("1.0.4-PullRequest0005.3");
+
+            Environment.SetEnvironmentVariable(TeamCity.EnvironmentVariableName, null);
 
             // Cleanup repository files
             DirectoryHelper.DeleteDirectory(remoteRepositoryPath);
