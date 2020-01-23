@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using GitVersion.OutputVariables;
@@ -27,8 +28,9 @@ namespace GitVersionExe.Tests
                 jsonSerializerOptions.Converters.Add(new NumberToStringConverter());
                 var output = regex.Match(Output).Value;
                 if (string.IsNullOrWhiteSpace(output)) return null;
-                var outputVariables = JsonSerializer.Deserialize<Dictionary<string, string>>(output, jsonSerializerOptions);
-                return VersionVariables.FromDictionary(outputVariables);
+                var outputVariables = JsonSerializer.Deserialize<VersionVariables>(output, jsonSerializerOptions);
+                var dict = outputVariables.ToDictionary(variable => variable.Key, variable => variable.Value);
+                return VersionVariables.FromDictionary(dict);
             }
         }
     }
