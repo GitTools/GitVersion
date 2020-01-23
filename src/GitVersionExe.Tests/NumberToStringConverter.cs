@@ -4,19 +4,15 @@ using System.Text.Json.Serialization;
 
 namespace GitVersionExe.Tests
 {
-    public class NumberToStringConverter : JsonConverter<object>
+    public class NumberToStringConverter : JsonConverter<string>
     {
         public override bool CanConvert(Type typeToConvert)
         {
             return typeof(string) == typeToConvert;
         }
-        public override object Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override string Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader.TokenType == JsonTokenType.Number)
-            {
-                return reader.GetString();
-            }
-            if (reader.TokenType == JsonTokenType.String)
+            if (reader.TokenType == JsonTokenType.Number || reader.TokenType == JsonTokenType.String)
             {
                 return reader.GetString();
             }
@@ -25,9 +21,9 @@ namespace GitVersionExe.Tests
             return document.RootElement.Clone().ToString();
         }
 
-        public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, string value, JsonSerializerOptions options)
         {
-            writer.WriteStringValue( value.ToString());
+            writer.WriteStringValue(value);
         }
     }
 }
