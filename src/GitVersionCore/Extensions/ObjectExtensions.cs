@@ -6,7 +6,7 @@ namespace GitVersion.Extensions
 {
     public static class ObjectExtensions
     {
-        public sealed class ReflectionIgnoreAttribute : Attribute
+        internal sealed class ReflectionIgnoreAttribute : Attribute
         {
         }
 
