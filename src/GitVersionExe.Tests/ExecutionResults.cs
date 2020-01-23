@@ -26,6 +26,7 @@ namespace GitVersionExe.Tests
                 var jsonSerializerOptions = new JsonSerializerOptions();
                 jsonSerializerOptions.Converters.Add(new NumberToStringConverter());
                 var output = regex.Match(Output).Value;
+                if (string.IsNullOrWhiteSpace(output)) return null;
                 var outputVariables = JsonSerializer.Deserialize<Dictionary<string, string>>(output, jsonSerializerOptions);
                 return VersionVariables.FromDictionary(outputVariables);
             }
