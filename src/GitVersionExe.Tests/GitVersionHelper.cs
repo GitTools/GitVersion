@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using GitVersion.BuildServers;
 using GitVersion.Helpers;
 using GitVersionCore.Tests.Helpers;
 
@@ -33,6 +35,15 @@ namespace GitVersionExe.Tests
             var executable = PathHelper.GetExecutable();
             var output = new StringBuilder();
 
+            var environmentalVariables =
+                new[]
+                {
+                    new KeyValuePair<string, string>(TeamCity.EnvironmentVariableName, arguments.IsTeamCity ? "8.0.0" : null),
+                    new KeyValuePair<string, string>(AppVeyor.EnvironmentVariableName, null),
+                    new KeyValuePair<string, string>(TravisCi.EnvironmentVariableName, null),
+                    new KeyValuePair<string, string>(AzurePipelines.EnvironmentVariableName, null),
+                };
+
             var exitCode = -1;
 
             try
@@ -48,7 +59,8 @@ namespace GitVersionExe.Tests
                     null,
                     executable,
                     args,
-                    arguments.WorkingDirectory);
+                    arguments.WorkingDirectory,
+                    environmentalVariables);
             }
             catch (Exception exception)
             {
