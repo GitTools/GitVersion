@@ -80,7 +80,7 @@ namespace GitVersionCore.Tests
         {
             var arguments = new Arguments
             {
-                Authentication = new AuthenticationInfo(),
+                Authentication = new Authentication(),
                 TargetPath = fixture.LocalRepositoryFixture.RepositoryPath
             };
             var options = Options.Create(arguments);
