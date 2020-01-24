@@ -1,5 +1,6 @@
 using System;
 using GitTools.Testing;
+using GitVersion.BuildServers;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
@@ -45,7 +46,7 @@ namespace GitVersionExe.Tests
 
             // Emulating Jenkins environment variable
             Environment.SetEnvironmentVariable(pipelineBranch, "PR-5");
-            Environment.SetEnvironmentVariable("JENKINS_URL", "url");
+            Environment.SetEnvironmentVariable(Jenkins.EnvironmentVariableName, "url");
 
             var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath);
             
@@ -56,7 +57,7 @@ namespace GitVersionExe.Tests
             DirectoryHelper.DeleteDirectory(remoteRepositoryPath);
 
             Environment.SetEnvironmentVariable(pipelineBranch, pipelineBranchOrig);
-            Environment.SetEnvironmentVariable("JENKINS_URL", null);
+            Environment.SetEnvironmentVariable(Jenkins.EnvironmentVariableName, null);
         }
     }
 }

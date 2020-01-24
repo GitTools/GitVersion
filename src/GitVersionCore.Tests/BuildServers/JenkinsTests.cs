@@ -15,7 +15,7 @@ namespace GitVersionCore.Tests.BuildServers
     [TestFixture]
     public class JenkinsTests : TestBase
     {
-        private const string key = "JENKINS_URL";
+        private const string key = Jenkins.EnvironmentVariableName;
         private const string branch = "GIT_BRANCH";
         private const string localBranch = "GIT_LOCAL_BRANCH";
         private const string pipelineBranch = "BRANCH_NAME";
