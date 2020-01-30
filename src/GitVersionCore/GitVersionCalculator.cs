@@ -43,6 +43,7 @@ namespace GitVersion
             // Normalize if we are running on build server
             var normalizeGitDirectory = !arguments.NoNormalize && buildServer != null;
             var shouldCleanUpRemotes = buildServer != null && buildServer.ShouldCleanUpRemotes();
+            var isLocalBuild = buildServer == null;
 
             var currentBranch = ResolveCurrentBranch(buildServer, arguments.TargetBranch, !string.IsNullOrWhiteSpace(arguments.DynamicRepositoryLocation));
 
@@ -59,7 +60,7 @@ namespace GitVersion
                 throw new Exception($"Failed to prepare or find the .git directory in path '{arguments.TargetPath}'.");
             }
 
-            return GetCachedGitVersionInfo(arguments.TargetBranch, arguments.CommitId, arguments.OverrideConfig, arguments.NoCache);
+            return GetCachedGitVersionInfo(arguments.TargetBranch, arguments.CommitId, arguments.OverrideConfig, arguments.NoCache, isLocalBuild);
         }
 
         private string ResolveCurrentBranch(IBuildServer buildServer, string targetBranch, bool isDynamicRepository)
@@ -75,13 +76,13 @@ namespace GitVersion
             return currentBranch;
         }
 
-        private VersionVariables GetCachedGitVersionInfo(string targetBranch, string commitId, Config overrideConfig, bool noCache)
+        private VersionVariables GetCachedGitVersionInfo(string targetBranch, string commitId, Config overrideConfig, bool noCache, bool isCiBuild)
         {
             var cacheKey = cacheKeyFactory.Create(overrideConfig);
             var versionVariables = noCache ? default : gitVersionCache.LoadVersionVariablesFromDiskCache(cacheKey);
             if (versionVariables == null)
             {
-                versionVariables = ExecuteInternal(targetBranch, commitId, overrideConfig);
+                versionVariables = ExecuteInternal(targetBranch, commitId, overrideConfig, isCiBuild);
 
                 if (!noCache)
                 {
@@ -99,13 +100,13 @@ namespace GitVersion
             return versionVariables;
         }
 
-        private VersionVariables ExecuteInternal(string targetBranch, string commitId, Config overrideConfig)
+        private VersionVariables ExecuteInternal(string targetBranch, string commitId, Config overrideConfig, bool isLocalBuild)
         {
             var configuration = configProvider.Provide(overrideConfig: overrideConfig);
 
             return gitPreparer.GetDotGitDirectory().WithRepository(repo =>
             {
-                var gitVersionContext = new GitVersionContext(repo, log, targetBranch, configuration, commitId: commitId);
+                var gitVersionContext = new GitVersionContext(repo, log, targetBranch, configuration, commitId: commitId, isLocalBuild: isLocalBuild);
                 var semanticVersion = gitVersionFinder.FindVersion(gitVersionContext);
 
                 return variableProvider.GetVariablesFor(semanticVersion, gitVersionContext.Configuration, gitVersionContext.IsCurrentCommitTagged);

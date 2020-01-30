@@ -14,18 +14,19 @@ namespace GitVersion
     {
         private readonly ILog log;
 
-        public GitVersionContext(IRepository repository, ILog log, string targetBranch, Config configuration, bool onlyTrackedBranches = false, string commitId = null)
-             : this(repository, log, GetTargetBranch(repository, targetBranch), configuration, onlyTrackedBranches, commitId)
+        public GitVersionContext(IRepository repository, ILog log, string targetBranch, Config configuration, bool onlyTrackedBranches = false, string commitId = null, bool isLocalBuild = false)
+             : this(repository, log, GetTargetBranch(repository, targetBranch), configuration, onlyTrackedBranches, commitId, isLocalBuild)
         {
         }
 
-        public GitVersionContext(IRepository repository, ILog log, Branch currentBranch, Config configuration, bool onlyTrackedBranches = false, string commitId = null)
+        public GitVersionContext(IRepository repository, ILog log, Branch currentBranch, Config configuration, bool onlyTrackedBranches = false, string commitId = null, bool isLocalBuild = false)
         {
             this.log = log;
             Repository = repository;
             RepositoryMetadataProvider = new GitRepoMetadataProvider(repository, log, configuration);
             FullConfiguration = configuration;
             OnlyTrackedBranches = onlyTrackedBranches;
+            IsLocalBuild = isLocalBuild;
 
             if (currentBranch == null)
                 throw new InvalidOperationException("Need a branch to operate on");
@@ -85,6 +86,7 @@ namespace GitVersion
         public Commit CurrentCommit { get; }
         public bool IsCurrentCommitTagged { get; }
         public GitRepoMetadataProvider RepositoryMetadataProvider { get; }
+        public bool IsLocalBuild { get; }
 
         private void CalculateEffectiveConfiguration()
         {

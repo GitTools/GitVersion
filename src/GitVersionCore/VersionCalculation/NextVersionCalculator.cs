@@ -114,6 +114,12 @@ namespace GitVersion.VersionCalculation
                 number = 1;
             }
 
+            if (context.IsLocalBuild)
+            {
+                tagToUse = $"local.{DateTime.Now:yyyyMMddHHmmss}";
+                number = null;
+            }
+
             semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, number);
         }
 
