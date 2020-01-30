@@ -232,7 +232,7 @@ Task("Format")
     if (parameters.IsPullRequest)
     {
         var exitCode = StartProcess(dotnetFormatExe, new ProcessSettings {
-            Arguments =  $"{args} --dry-run",
+            Arguments = $"{args} --dry-run",
             WorkingDirectory = "./"
         });
         if (exitCode > 0)
@@ -241,8 +241,8 @@ Task("Format")
         }
     } else {
         StartProcess(dotnetFormatExe, new ProcessSettings {
-            Arguments =  $"{args} --dry-run",
-            WorkingDirectory = "./"
+            Arguments = $"{args}",
+            WorkingDirectory = parameters.Paths.Directories.Root
         });
     }
 });
