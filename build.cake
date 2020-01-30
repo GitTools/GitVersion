@@ -29,6 +29,7 @@
 // Install .NET Core Global tools.
 #tool "dotnet:?package=Codecov.Tool&version=1.7.2"
 #tool "dotnet:?package=GitReleaseManager.Tool&version=0.9.0"
+#tool "dotnet:?package=dotnet-format&version=3.2.107702"
 
 // Load other scripts.
 #load "./build/utils/parameters.cake"
@@ -222,7 +223,23 @@ Task("Release")
 {
 });
 
+Task("Format")
+    .Finally(() =>
+{
+    var solution = new FilePath(@"src\GitVersion.sln")
+    var exitCode = StartProcess("dotnet", $"format --check --workspace {solution.FullPath}");
+
+    if (parameters.IsPullRequest)
+    {
+        if (exitCode > 0)
+        {
+            throw new Exception(string.Format("Terminating build because files were formatted. Code must be formatted before pull-requests can be merged.", exitCode));
+        }
+    }
+});
+
 Task("Default")
+    .IsDependentOn("Format")
     .IsDependentOn("Publish")
     .IsDependentOn("Publish-DockerHub")
     .IsDependentOn("Release");
