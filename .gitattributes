@@ -9,7 +9,7 @@
 *.targets -text
 
 # Custom for Visual Studio
-*.cs     diff=csharp
+*.cs text=auto eol=lf diff=csharp
 *.sln
 *.csproj
 *.vbproj

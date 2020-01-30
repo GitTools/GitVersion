@@ -231,19 +231,13 @@ Task("Format")
 
     if (parameters.IsPullRequest)
     {
-        var exitCode = StartProcess(dotnetFormatExe, new ProcessSettings {
-            Arguments = $"{args} --dry-run",
-            WorkingDirectory = "./"
-        });
+        var exitCode = StartProcess(dotnetFormatExe, $"{args} --dry-run");
         if (exitCode > 0)
         {
             throw new Exception(string.Format("Terminating build because files were formatted. Code must be formatted before pull-requests can be merged.", exitCode));
         }
     } else {
-        StartProcess(dotnetFormatExe, new ProcessSettings {
-            Arguments = $"{args}",
-            WorkingDirectory = parameters.Paths.Directories.Root
-        });
+        StartProcess(dotnetFormatExe, args);
     }
 });
 

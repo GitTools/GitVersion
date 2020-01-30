@@ -6,9 +6,6 @@ assembly_info:
 configuration:
   - Debug
 
-init:
-  - git config --global core.autocrlf true
-
 install:
   - set PATH=C:\Ruby25-x64\bin;%PATH%
 
