@@ -7,6 +7,7 @@ using GitVersion.VersioningModes;
 using GitVersion.Configuration;
 using GitVersion.Logging;
 using GitVersion.Extensions;
+using LibGit2Sharp;
 
 namespace GitVersion.VersionCalculation
 {
@@ -77,6 +78,12 @@ namespace GitVersion.VersionCalculation
                 }
             }
 
+            if (context.IsLocalBuild && taggedSemanticVersion == null && context.Repository.RetrieveStatus().IsDirty)
+            {
+                var tagToUse = $"local.{DateTime.Now:yyyyMMddHHmmss}";
+                semver.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, null);
+            }
+
             return taggedSemanticVersion ?? semver;
         }
 
@@ -112,12 +119,6 @@ namespace GitVersion.VersionCalculation
             if (number == null)
             {
                 number = 1;
-            }
-
-            if (context.IsLocalBuild)
-            {
-                tagToUse = $"local.{DateTime.Now:yyyyMMddHHmmss}";
-                number = null;
             }
 
             semanticVersion.PreReleaseTag = new SemanticVersionPreReleaseTag(tagToUse, number);
