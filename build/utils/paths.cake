@@ -27,7 +27,7 @@ public class BuildPaths
 
         var rootDir                       = (DirectoryPath)(context.Directory("./"));
         var sourceDir                     = rootDir.Combine("src");
-        var artifactsDir                  = (DirectoryPath)(context.Directory("./artifacts") + context.Directory("v" + semVersion));
+        var artifactsDir                  = rootDir.Combine("artifacts").Combine("v" + semVersion);
         var artifactsBinDir               = artifactsDir.Combine("bin");
         var artifactsBinPortableDir       = artifactsBinDir.Combine("portable");
         var artifactsBinCmdlineDir        = artifactsBinDir.Combine("cmdline");
