@@ -1,5 +1,5 @@
 # Auto detect text files and perform LF normalization
-* text=auto eol=lf
+* text eol=lf
 
 # Declare files that will always have LF line endings on checkout.
 *.sh text eol=lf
@@ -9,7 +9,7 @@
 *.targets -text
 
 # Custom for Visual Studio
-*.cs text=auto eol=lf diff=csharp
+*.cs diff=csharp
 *.sln
 *.csproj
 *.vbproj
