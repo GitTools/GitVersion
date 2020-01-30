@@ -226,17 +226,18 @@ Task("Release")
 Task("Format")
     .Does<BuildParameters>((parameters) =>
 {
-    var args = $"format --check --workspace {parameters.Paths.Directories.Source}";
+    var dotnetFormatExe = Context.Tools.Resolve("dotnet-format.exe");
+    var args = $"--check --workspace {parameters.Paths.Directories.Source}";
 
     if (parameters.IsPullRequest)
     {
-        var exitCode = StartProcess("dotnet", $"{args} --dry-run");
+        var exitCode = StartProcess(dotnetFormatExe, $"{args} --dry-run");
         if (exitCode > 0)
         {
             throw new Exception(string.Format("Terminating build because files were formatted. Code must be formatted before pull-requests can be merged.", exitCode));
         }
     } else {
-        StartProcess("dotnet", args);
+        StartProcess(dotnetFormatExe, args);
     }
 });
 
