@@ -8,14 +8,6 @@
 *.xml     -text
 *.targets -text
 
-# Custom for Visual Studio
-*.cs diff=csharp
-*.sln
-*.csproj
-*.vbproj
-*.fsproj
-*.dbproj
-
 # Denote all files that are truly binary and should not be modified.
 *.dll binary
 *.exe binary
