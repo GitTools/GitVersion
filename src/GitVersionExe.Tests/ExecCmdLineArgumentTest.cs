@@ -33,7 +33,8 @@ namespace GitVersionExe.Tests
             var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, ExecCommand.BuildTool, "RunExecViaCommandLine.csproj /target:OutputResults");
 
             result.ExitCode.ShouldBe(0, result.Log);
-            result.Log.ShouldContain("GitVersion_FullSemVer: 1.2.4+1");
+            var now = DateTime.Now.ToString("yyyyMMddHH");
+            result.Log.ShouldMatch($".+GitVersion_FullSemVer: 1.2.4-local.{now}\\d+\\+1.+");
         }
 
 
