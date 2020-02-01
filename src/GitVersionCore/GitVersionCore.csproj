@@ -13,7 +13,6 @@
 
         <Product>$(AssemblyName)</Product>
 
-        <LangVersion>8</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
