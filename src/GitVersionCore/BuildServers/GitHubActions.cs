@@ -3,7 +3,7 @@ using GitVersion.OutputVariables;
 
 namespace GitVersion.BuildServers
 {
-    public class GitHubActions: BuildServerBase
+    public class GitHubActions : BuildServerBase
     {
         // https://help.github.com/en/actions/automating-your-workflow-with-github-actions/using-environment-variables#default-environment-variables
 

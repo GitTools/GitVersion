@@ -6,8 +6,8 @@
 
     <Import Project="..\test.props" />
     <ItemGroup>
-        <PackageReference Include="GitTools.Testing" Version="1.2.0"></PackageReference>
-        <PackageReference Include="Mono.Cecil" Version="0.11.1"></PackageReference>
+        <PackageReference Include="GitTools.Testing" Version="1.2.0" />
+        <PackageReference Include="Mono.Cecil" Version="0.11.1" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\GitVersionCore\GitVersionCore.csproj" />

@@ -1,4 +1,4 @@
-﻿using GitVersion.VersionCalculation.BaseVersionCalculators;
+using GitVersion.VersionCalculation.BaseVersionCalculators;
 
 namespace GitVersion.VersionFilters
 {

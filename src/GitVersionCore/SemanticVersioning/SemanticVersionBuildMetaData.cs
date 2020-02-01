@@ -102,7 +102,7 @@ namespace GitVersion
                     }
                 }
 
-                return CommitsSinceTag != null ? CommitsSinceTag.Value.ToString("D" + padding) : string.Empty; 
+                return CommitsSinceTag != null ? CommitsSinceTag.Value.ToString("D" + padding) : string.Empty;
             }
 
             return format.ToLower() switch
@@ -162,7 +162,7 @@ namespace GitVersion
 
         private string FormatMetaDataPart(string value)
         {
-            if(!string.IsNullOrEmpty(value))
+            if (!string.IsNullOrEmpty(value))
                 value = Regex.Replace(value, "[^0-9A-Za-z-.]", "-");
             return value;
         }

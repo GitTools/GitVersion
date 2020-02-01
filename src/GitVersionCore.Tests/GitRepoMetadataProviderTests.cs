@@ -194,7 +194,7 @@ namespace GitVersionCore.Tests
 
             var develop = fixture.Repository.FindBranch("develop");
             var release = fixture.Repository.FindBranch("release-2.0.0");
-            
+
             var releaseBranchMergeBase = new GitRepoMetadataProvider(fixture.Repository, log, configuration)
                 .FindMergeBase(release, develop);
 
