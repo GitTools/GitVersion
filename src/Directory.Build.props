@@ -36,4 +36,8 @@
     <ItemGroup>
         <None Include="../../docs/input/docs/img/package_icon.png" Pack="true" PackagePath="/" />
     </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
+        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" />
+    </ItemGroup>
 </Project>
