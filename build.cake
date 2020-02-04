@@ -2,18 +2,16 @@
 #module nuget:?package=Cake.DotNetTool.Module&version=0.4.0
 
 // Install addins.
-#addin "nuget:?package=Cake.Codecov&version=0.7.0"
+#addin "nuget:?package=Cake.Codecov&version=0.8.0"
 #addin "nuget:?package=Cake.Compression&version=0.2.4"
-#addin "nuget:?package=Cake.Coverlet&version=2.3.4"
-#addin "nuget:?package=Cake.Docker&version=0.10.1"
+#addin "nuget:?package=Cake.Coverlet&version=2.4.2"
+#addin "nuget:?package=Cake.Docker&version=0.11.0"
 #addin "nuget:?package=Cake.Gem&version=0.8.1"
 #addin "nuget:?package=Cake.Git&version=0.21.0"
 #addin "nuget:?package=Cake.Gitter&version=0.11.1"
 #addin "nuget:?package=Cake.Incubator&version=5.1.0"
 #addin "nuget:?package=Cake.Json&version=4.0.0"
 #addin "nuget:?package=Cake.Kudu&version=0.10.1"
-#addin "nuget:?package=Cake.Npm&version=0.17.0"
-#addin "nuget:?package=Cake.Tfx&version=0.9.1"
 #addin "nuget:?package=Cake.Wyam&version=2.2.9"
 
 #addin "nuget:?package=Newtonsoft.Json&version=12.0.2"
@@ -23,12 +21,12 @@
 // Install tools.
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
 #tool "nuget:?package=nuget.commandline&version=5.2.0"
-#tool "nuget:?package=Wyam&version=2.2.9"
 #tool "nuget:?package=KuduSync.NET&version=1.5.2"
 
 // Install .NET Core Global tools.
 #tool "dotnet:?package=Codecov.Tool&version=1.7.2"
 #tool "dotnet:?package=GitReleaseManager.Tool&version=0.10.3"
+#tool "dotnet:?package=Wyam.Tool&version=2.2.9"
 
 // Load other scripts.
 #load "./build/utils/parameters.cake"
