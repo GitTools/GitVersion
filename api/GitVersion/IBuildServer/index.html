@@ -27,7 +27,10 @@
         <script src="/assets/js/respond.min.js"></script>
         <![endif]-->  
 
-        
+        <meta name="google" content="notranslate">
+<meta http-equiv="Content-Language" content="en">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
+
     </head>
     <body class="hold-transition wyam layout-boxed  ">    
         <div class="top-banner"></div>
@@ -73,6 +76,7 @@
                     	
 	<div id="infobar-headings"><h6>On This Page</h6><p><a href="#Syntax">Syntax</a></p>
 <p><a href="#Methods">Methods</a></p>
+<p><a href="#ExtensionMethods">Extension Methods</a></p>
 <hr class="infobar-hidden">
 </div>
 
@@ -137,7 +141,6 @@
 			<li class="header">Class Types</li>
 				<li><a href="/api/GitVersion/ArgumentParser">ArgumentParser</a></li>
 				<li><a href="/api/GitVersion/Arguments">Arguments</a></li>
-				<li><a href="/api/GitVersion/Authentication">Authentication</a></li>
 				<li><a href="/api/GitVersion/AuthenticationInfo">AuthenticationInfo</a></li>
 				<li><a href="/api/GitVersion/BuildServerBase">BuildServerBase</a></li>
 				<li><a href="/api/GitVersion/BuildServerResolver">BuildServerResolver</a></li>
@@ -218,19 +221,19 @@
 								<dt>Implementing Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.BuildServers/CodeBuild">CodeBuild</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/GitHubActions">GitHubActions</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/MyGet">MyGet</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/Drone">Drone</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/TravisCi">TravisCi</a></li>								
-											<li><a href="/api/GitVersion/BuildServerBase">BuildServerBase</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/AzurePipelines">AzurePipelines</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/GitLabCi">GitLabCi</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/Jenkins">Jenkins</a></li>								
 											<li><a href="/api/GitVersion.BuildServers/ContinuaCi">ContinuaCi</a></li>								
 											<li><a href="/api/GitVersion.BuildServers/TeamCity">TeamCity</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/Jenkins">Jenkins</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/AzurePipelines">AzurePipelines</a></li>								
 											<li><a href="/api/GitVersion.BuildServers/AppVeyor">AppVeyor</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/MyGet">MyGet</a></li>								
+											<li><a href="/api/GitVersion/BuildServerBase">BuildServerBase</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/GitHubActions">GitHubActions</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/Drone">Drone</a></li>								
 											<li><a href="/api/GitVersion.BuildServers/EnvRun">EnvRun</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/GitLabCi">GitLabCi</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/TravisCi">TravisCi</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/CodeBuild">CodeBuild</a></li>								
 									</ul>
 								</dd>				
 						</dl>
@@ -240,32 +243,32 @@
 							graph BT
 	Type["IBuildServer"]
 class Type type-node
-	Implementing0["CodeBuild"]-.-&gt;Type
-	click Implementing0 "/api/GitVersion.BuildServers/CodeBuild"
-	Implementing1["GitHubActions"]-.-&gt;Type
-	click Implementing1 "/api/GitVersion.BuildServers/GitHubActions"
-	Implementing2["MyGet"]-.-&gt;Type
-	click Implementing2 "/api/GitVersion.BuildServers/MyGet"
-	Implementing3["Drone"]-.-&gt;Type
-	click Implementing3 "/api/GitVersion.BuildServers/Drone"
-	Implementing4["TravisCi"]-.-&gt;Type
-	click Implementing4 "/api/GitVersion.BuildServers/TravisCi"
-	Implementing5["BuildServerBase"]-.-&gt;Type
-	click Implementing5 "/api/GitVersion/BuildServerBase"
-	Implementing6["AzurePipelines"]-.-&gt;Type
-	click Implementing6 "/api/GitVersion.BuildServers/AzurePipelines"
-	Implementing7["ContinuaCi"]-.-&gt;Type
-	click Implementing7 "/api/GitVersion.BuildServers/ContinuaCi"
-	Implementing8["TeamCity"]-.-&gt;Type
-	click Implementing8 "/api/GitVersion.BuildServers/TeamCity"
-	Implementing9["Jenkins"]-.-&gt;Type
-	click Implementing9 "/api/GitVersion.BuildServers/Jenkins"
-	Implementing10["AppVeyor"]-.-&gt;Type
-	click Implementing10 "/api/GitVersion.BuildServers/AppVeyor"
-	Implementing11["EnvRun"]-.-&gt;Type
-	click Implementing11 "/api/GitVersion.BuildServers/EnvRun"
-	Implementing12["GitLabCi"]-.-&gt;Type
-	click Implementing12 "/api/GitVersion.BuildServers/GitLabCi"
+	Implementing0["GitLabCi"]-.-&gt;Type
+	click Implementing0 "/api/GitVersion.BuildServers/GitLabCi"
+	Implementing1["Jenkins"]-.-&gt;Type
+	click Implementing1 "/api/GitVersion.BuildServers/Jenkins"
+	Implementing2["ContinuaCi"]-.-&gt;Type
+	click Implementing2 "/api/GitVersion.BuildServers/ContinuaCi"
+	Implementing3["TeamCity"]-.-&gt;Type
+	click Implementing3 "/api/GitVersion.BuildServers/TeamCity"
+	Implementing4["AzurePipelines"]-.-&gt;Type
+	click Implementing4 "/api/GitVersion.BuildServers/AzurePipelines"
+	Implementing5["AppVeyor"]-.-&gt;Type
+	click Implementing5 "/api/GitVersion.BuildServers/AppVeyor"
+	Implementing6["MyGet"]-.-&gt;Type
+	click Implementing6 "/api/GitVersion.BuildServers/MyGet"
+	Implementing7["BuildServerBase"]-.-&gt;Type
+	click Implementing7 "/api/GitVersion/BuildServerBase"
+	Implementing8["GitHubActions"]-.-&gt;Type
+	click Implementing8 "/api/GitVersion.BuildServers/GitHubActions"
+	Implementing9["Drone"]-.-&gt;Type
+	click Implementing9 "/api/GitVersion.BuildServers/Drone"
+	Implementing10["EnvRun"]-.-&gt;Type
+	click Implementing10 "/api/GitVersion.BuildServers/EnvRun"
+	Implementing11["TravisCi"]-.-&gt;Type
+	click Implementing11 "/api/GitVersion.BuildServers/TravisCi"
+	Implementing12["CodeBuild"]-.-&gt;Type
+	click Implementing12 "/api/GitVersion.BuildServers/CodeBuild"
 
 						</div>
 					</div>
@@ -354,6 +357,29 @@ class Type type-node
 		
 
 
+			<h1 id="ExtensionMethods">Extension Methods</h1>
+			<div class="box">
+				<div class="box-body no-padding table-responsive">
+					<table class="table table-striped table-hover three-cols">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Value</th>
+								<th>Summary</th>
+							</tr>
+						</thead>
+							<tbody><tr>
+								<td><a href="/api/GitVersion.Extensions/ObjectExtensions/F42B194D">GetProperties<wbr>()<wbr></a></td>
+								<td>IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>string&gt;<wbr>&gt;<wbr></td>
+								<td>
+									<div></div>
+										<div><small><em>From <a href="/api/GitVersion.Extensions/ObjectExtensions">ObjectExtensions</a></em></small></div>
+								</td>
+							</tr>
+					</tbody></table>
+				</div>
+			</div>
+		
 
 	
 </section>

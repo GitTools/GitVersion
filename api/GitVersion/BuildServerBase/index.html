@@ -27,7 +27,10 @@
         <script src="/assets/js/respond.min.js"></script>
         <![endif]-->  
 
-        
+        <meta name="google" content="notranslate">
+<meta http-equiv="Content-Language" content="en">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
+
     </head>
     <body class="hold-transition wyam layout-boxed  ">    
         <div class="top-banner"></div>
@@ -76,6 +79,7 @@
 <p><a href="#fields">Fields</a></p>
 <p><a href="#Properties">Properties</a></p>
 <p><a href="#Methods">Methods</a></p>
+<p><a href="#ExtensionMethods">Extension Methods</a></p>
 <hr class="infobar-hidden">
 </div>
 
@@ -140,7 +144,6 @@
 			<li class="header">Class Types</li>
 				<li><a href="/api/GitVersion/ArgumentParser">ArgumentParser</a></li>
 				<li><a href="/api/GitVersion/Arguments">Arguments</a></li>
-				<li><a href="/api/GitVersion/Authentication">Authentication</a></li>
 				<li><a href="/api/GitVersion/AuthenticationInfo">AuthenticationInfo</a></li>
 				<li class="selected"><a href="/api/GitVersion/BuildServerBase">BuildServerBase</a></li>
 				<li><a href="/api/GitVersion/BuildServerResolver">BuildServerResolver</a></li>
@@ -232,18 +235,18 @@
 								<dt>Derived Types</dt>
 								<dd>
 									<ul class="list-unstyled">
-											<li><a href="/api/GitVersion.BuildServers/CodeBuild">CodeBuild</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/GitHubActions">GitHubActions</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/MyGet">MyGet</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/Drone">Drone</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/TravisCi">TravisCi</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/AzurePipelines">AzurePipelines</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/GitLabCi">GitLabCi</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/Jenkins">Jenkins</a></li>								
 											<li><a href="/api/GitVersion.BuildServers/ContinuaCi">ContinuaCi</a></li>								
 											<li><a href="/api/GitVersion.BuildServers/TeamCity">TeamCity</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/Jenkins">Jenkins</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/AzurePipelines">AzurePipelines</a></li>								
 											<li><a href="/api/GitVersion.BuildServers/AppVeyor">AppVeyor</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/MyGet">MyGet</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/GitHubActions">GitHubActions</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/Drone">Drone</a></li>								
 											<li><a href="/api/GitVersion.BuildServers/EnvRun">EnvRun</a></li>								
-											<li><a href="/api/GitVersion.BuildServers/GitLabCi">GitLabCi</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/TravisCi">TravisCi</a></li>								
+											<li><a href="/api/GitVersion.BuildServers/CodeBuild">CodeBuild</a></li>								
 									</ul>
 								</dd>			
 							
@@ -257,30 +260,30 @@
 	click Interface0 "/api/GitVersion/IBuildServer"
 	Type["BuildServerBase"]
 class Type type-node
-	Derived0["CodeBuild"]--&gt;Type
-	click Derived0 "/api/GitVersion.BuildServers/CodeBuild"
-	Derived1["GitHubActions"]--&gt;Type
-	click Derived1 "/api/GitVersion.BuildServers/GitHubActions"
-	Derived2["MyGet"]--&gt;Type
-	click Derived2 "/api/GitVersion.BuildServers/MyGet"
-	Derived3["Drone"]--&gt;Type
-	click Derived3 "/api/GitVersion.BuildServers/Drone"
-	Derived4["TravisCi"]--&gt;Type
-	click Derived4 "/api/GitVersion.BuildServers/TravisCi"
-	Derived5["AzurePipelines"]--&gt;Type
-	click Derived5 "/api/GitVersion.BuildServers/AzurePipelines"
-	Derived6["ContinuaCi"]--&gt;Type
-	click Derived6 "/api/GitVersion.BuildServers/ContinuaCi"
-	Derived7["TeamCity"]--&gt;Type
-	click Derived7 "/api/GitVersion.BuildServers/TeamCity"
-	Derived8["Jenkins"]--&gt;Type
-	click Derived8 "/api/GitVersion.BuildServers/Jenkins"
-	Derived9["AppVeyor"]--&gt;Type
-	click Derived9 "/api/GitVersion.BuildServers/AppVeyor"
-	Derived10["EnvRun"]--&gt;Type
-	click Derived10 "/api/GitVersion.BuildServers/EnvRun"
-	Derived11["GitLabCi"]--&gt;Type
-	click Derived11 "/api/GitVersion.BuildServers/GitLabCi"
+	Derived0["GitLabCi"]--&gt;Type
+	click Derived0 "/api/GitVersion.BuildServers/GitLabCi"
+	Derived1["Jenkins"]--&gt;Type
+	click Derived1 "/api/GitVersion.BuildServers/Jenkins"
+	Derived2["ContinuaCi"]--&gt;Type
+	click Derived2 "/api/GitVersion.BuildServers/ContinuaCi"
+	Derived3["TeamCity"]--&gt;Type
+	click Derived3 "/api/GitVersion.BuildServers/TeamCity"
+	Derived4["AzurePipelines"]--&gt;Type
+	click Derived4 "/api/GitVersion.BuildServers/AzurePipelines"
+	Derived5["AppVeyor"]--&gt;Type
+	click Derived5 "/api/GitVersion.BuildServers/AppVeyor"
+	Derived6["MyGet"]--&gt;Type
+	click Derived6 "/api/GitVersion.BuildServers/MyGet"
+	Derived7["GitHubActions"]--&gt;Type
+	click Derived7 "/api/GitVersion.BuildServers/GitHubActions"
+	Derived8["Drone"]--&gt;Type
+	click Derived8 "/api/GitVersion.BuildServers/Drone"
+	Derived9["EnvRun"]--&gt;Type
+	click Derived9 "/api/GitVersion.BuildServers/EnvRun"
+	Derived10["TravisCi"]--&gt;Type
+	click Derived10 "/api/GitVersion.BuildServers/TravisCi"
+	Derived11["CodeBuild"]--&gt;Type
+	click Derived11 "/api/GitVersion.BuildServers/CodeBuild"
 
 						</div>
 					</div>
@@ -436,6 +439,29 @@ class Type type-node
 		
 
 
+			<h1 id="ExtensionMethods">Extension Methods</h1>
+			<div class="box">
+				<div class="box-body no-padding table-responsive">
+					<table class="table table-striped table-hover three-cols">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Value</th>
+								<th>Summary</th>
+							</tr>
+						</thead>
+							<tbody><tr>
+								<td><a href="/api/GitVersion.Extensions/ObjectExtensions/F42B194D">GetProperties<wbr>()<wbr></a></td>
+								<td>IEnumerable<wbr>&lt;KeyValuePair<wbr>&lt;string, <wbr>string&gt;<wbr>&gt;<wbr></td>
+								<td>
+									<div></div>
+										<div><small><em>From <a href="/api/GitVersion.Extensions/ObjectExtensions">ObjectExtensions</a></em></small></div>
+								</td>
+							</tr>
+					</tbody></table>
+				</div>
+			</div>
+		
 
 	
 </section>

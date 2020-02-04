@@ -27,7 +27,10 @@
         <script src="/assets/js/respond.min.js"></script>
         <![endif]-->  
 
-        
+        <meta name="google" content="notranslate">
+<meta http-equiv="Content-Language" content="en">
+<meta name="google-site-verification" content="46g_yrsDyk5YTGoXb2ii9BjmTJ2QAEsacqn6wqiAiII">
+
     </head>
     <body class="hold-transition wyam layout-boxed  ">    
         <div class="top-banner"></div>
@@ -175,7 +178,7 @@
 		</div>
 
 	<h1 id="Syntax">Syntax</h1>
-	<pre><code>public static void AddModule(this IServiceCollection serviceCollection, IGitVersionModule gitVersionModule)</code></pre>
+	<pre><code>public static IServiceCollection AddModule(this IServiceCollection serviceCollection, IGitVersionModule gitVersionModule)</code></pre>
 
 
 
@@ -217,7 +220,7 @@
 					</tr>
 				</thead>
 				<tbody><tr>
-					<td>void</td>
+					<td>IServiceCollection</td>
 					<td></td>
 				</tr>
 			</tbody></table>
