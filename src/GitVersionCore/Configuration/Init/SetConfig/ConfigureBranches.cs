@@ -28,7 +28,7 @@ namespace GitVersion.Configuration.Init.SetConfig
                     var branchConfig = foundBranch.Value;
                     if (branchConfig == null)
                     {
-                        branchConfig = new BranchConfig {Name = foundBranch.Key};
+                        branchConfig = new BranchConfig { Name = foundBranch.Key };
                         config.Branches.Add(foundBranch.Key, branchConfig);
                     }
                     steps.Enqueue(StepFactory.CreateStep<ConfigureBranch>().WithData(foundBranch.Key, branchConfig));

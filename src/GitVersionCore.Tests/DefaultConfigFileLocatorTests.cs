@@ -40,7 +40,7 @@ namespace GitVersionCore.Tests
 
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
         }
-    
+
         [TestCase(DefaultRepoPath)]
         [TestCase(DefaultWorkingPath)]
         public void WarnOnExistingGitVersionConfigYamlFile(string path)
@@ -100,12 +100,12 @@ namespace GitVersionCore.Tests
 
             var output = WithDefaultConfigFileLocator(configFileLocator =>
             {
-                configurationProvider.Provide(repoPath); 
+                configurationProvider.Provide(repoPath);
             });
 
             output.Length.ShouldBe(0);
         }
-        
+
         [Test]
         public void WarnOnObsoleteIsDevelopBranchConfigurationSetting()
         {

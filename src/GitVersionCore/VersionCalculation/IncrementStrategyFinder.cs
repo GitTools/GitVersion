@@ -131,10 +131,10 @@ namespace GitVersion
 
         private static VersionField? FindIncrementFromMessage(string message, string majorRegex, string minorRegex, string patchRegex, string noneRegex)
         {
-            if(IsMatch(message, majorRegex)) return VersionField.Major;
-            if(IsMatch(message, minorRegex)) return VersionField.Minor;
-            if(IsMatch(message, patchRegex)) return VersionField.Patch;
-            if(IsMatch(message, noneRegex)) return VersionField.None;
+            if (IsMatch(message, majorRegex)) return VersionField.Major;
+            if (IsMatch(message, minorRegex)) return VersionField.Minor;
+            if (IsMatch(message, patchRegex)) return VersionField.Patch;
+            if (IsMatch(message, noneRegex)) return VersionField.None;
             return null;
         }
 
@@ -153,10 +153,10 @@ namespace GitVersion
         private static readonly IDictionary<int, bool> MatchCache = new Dictionary<int, bool>();
         private static readonly IDictionary<int, VersionField?> VersionFieldCache = new Dictionary<int, VersionField?>();
 
-        public static VersionField FindDefaultIncrementForBranch( GitVersionContext context, string branch = null )
+        public static VersionField FindDefaultIncrementForBranch(GitVersionContext context, string branch = null)
         {
             var config = context.FullConfiguration.GetConfigForBranch(branch ?? context.CurrentBranch.NameWithoutRemote());
-            if ( config?.Increment != null && config.Increment != IncrementStrategy.Inherit )
+            if (config?.Increment != null && config.Increment != IncrementStrategy.Inherit)
             {
                 return config.Increment.Value.ToVersionField();
             }

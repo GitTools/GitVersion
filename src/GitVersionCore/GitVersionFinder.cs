@@ -30,7 +30,7 @@ namespace GitVersion
 
             var filePath = Path.Combine(context.Repository.GetRepositoryDirectory(), "NextVersion.txt");
             if (File.Exists(filePath))
-            {            
+            {
                 throw new WarningException("NextVersion.txt has been deprecated. See http://gitversion.readthedocs.org/en/latest/configuration/ for replacement");
             }
 

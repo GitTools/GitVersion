@@ -140,7 +140,7 @@ namespace GitVersionCore.Tests.VersionCalculation.Strategies
             var parents = GetParents(true);
 
             AssertMergeMessage(commitMessage, null, parents);
-        } 
+        }
 
         [TestCase("Merge branch 'support/0.2.0'", "support", "0.2.0")]
         [TestCase("Merge branch 'support/0.2.0'", null, null)]
