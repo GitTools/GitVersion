@@ -65,7 +65,7 @@ namespace GitVersionExe.Tests
         [Test]
         public void ExecWithArgs()
         {
-            var arguments = argumentParser.ParseArguments(new []
+            var arguments = argumentParser.ParseArguments(new[]
             {
                 "-exec",
                 "rake",
@@ -86,7 +86,7 @@ namespace GitVersionExe.Tests
         [Test]
         public void MsbuildWithArgs()
         {
-            var arguments = argumentParser.ParseArguments(new []
+            var arguments = argumentParser.ParseArguments(new[]
             {
                 "-proj",
                 "msbuild.proj",

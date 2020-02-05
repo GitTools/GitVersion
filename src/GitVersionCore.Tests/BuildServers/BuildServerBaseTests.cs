@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace GitVersionCore.Tests.BuildServers
 {
     [TestFixture]
-    public class BuildServerBaseTests  : TestBase
+    public class BuildServerBaseTests : TestBase
     {
         private IVariableProvider buildServer;
         private IServiceProvider sp;

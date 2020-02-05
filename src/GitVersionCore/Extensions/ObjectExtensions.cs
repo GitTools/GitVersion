@@ -24,7 +24,7 @@ namespace GitVersion.Extensions
             var type = typeof(string);
             return obj.GetType().GetProperties()
                 .Where(p => p.PropertyType == type && !p.GetIndexParameters().Any() && !p.GetCustomAttributes(typeof(ReflectionIgnoreAttribute), false).Any())
-                .Select(p => new KeyValuePair<string, string>(p.Name, (string) p.GetValue(obj, null)));
+                .Select(p => new KeyValuePair<string, string>(p.Name, (string)p.GetValue(obj, null)));
         }
     }
 }

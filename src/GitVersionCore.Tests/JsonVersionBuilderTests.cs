@@ -36,7 +36,7 @@ namespace GitVersionCore.Tests
             var sp = ConfigureServices();
 
             var variableProvider = sp.GetService<IVariableProvider>();
-            var variables =  variableProvider.GetVariablesFor(semanticVersion, config, false);
+            var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
             var json = variables.ToString();
             json.ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
