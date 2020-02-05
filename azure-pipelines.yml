@@ -33,6 +33,14 @@ stages:
     steps:
     - template: build/stages/test.yml
 
+- stage: format
+  jobs:
+  - job: format
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - template: build/stages/format.yml
+
 - stage: Artifact_Test
   displayName: 'Artifacts test'
   dependsOn:

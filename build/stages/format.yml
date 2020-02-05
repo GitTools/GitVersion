@@ -1,0 +1,10 @@
+steps:
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk 2.1'
+  inputs:
+    packageType: sdk
+    version: 2.1.803
+- script: dotnet tool install -g dotnet-format
+  displayName: Install DotNet Format
+- script: dotnet format --folder ./ --dry-run --check
+  displayName: Run DotNet Format
