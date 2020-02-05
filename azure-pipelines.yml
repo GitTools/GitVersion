@@ -33,9 +33,10 @@ stages:
     steps:
     - template: build/stages/test.yml
 
-- stage: format
+- stage: Format
+  dependsOn: []
   jobs:
-  - job: format
+  - job: Format
     pool:
       vmImage: 'ubuntu-latest'
     steps:
