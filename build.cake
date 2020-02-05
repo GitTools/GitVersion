@@ -27,6 +27,7 @@
 #tool "dotnet:?package=Codecov.Tool&version=1.7.2"
 #tool "dotnet:?package=GitReleaseManager.Tool&version=0.10.3"
 #tool "dotnet:?package=Wyam.Tool&version=2.2.9"
+#tool "dotnet:?package=dotnet-format&version=3.2.107702"
 
 // Load other scripts.
 #load "./build/utils/parameters.cake"
@@ -218,6 +219,14 @@ Task("Release")
     .IsDependentOn("Release-Notes")
     .Finally(() =>
 {
+});
+
+Task("Format")
+    .Does<BuildParameters>((parameters) =>
+{
+    var dotnetFormatExe = Context.Tools.Resolve("dotnet-format.exe");
+    var args = $"--folder {parameters.Paths.Directories.Root}";
+    StartProcess(dotnetFormatExe, args);
 });
 
 Task("Default")
