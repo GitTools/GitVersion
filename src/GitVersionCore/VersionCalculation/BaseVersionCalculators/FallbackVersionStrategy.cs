@@ -29,7 +29,7 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
                 throw new GitVersionException($"Can't find commit {currentBranchTip.Sha}. Please ensure that the repository is an unshallow clone with `git fetch --unshallow`.", exception);
             }
 
-            yield return new BaseVersion(context, "Fallback base version", false, new SemanticVersion(minor : 1), baseVersionSource, null);
+            yield return new BaseVersion(context, "Fallback base version", false, new SemanticVersion(minor: 1), baseVersionSource, null);
         }
     }
 }

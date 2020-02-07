@@ -516,7 +516,7 @@ namespace GitVersionCore.Tests.IntegrationTests
                 ?.GetValue(fixture.SequenceDiagram);
 
             string GetParticipant(string participant) =>
-                (string) typeof(SequenceDiagram).GetMethod("GetParticipant", BindingFlags.Instance | BindingFlags.NonPublic)
+                (string)typeof(SequenceDiagram).GetMethod("GetParticipant", BindingFlags.Instance | BindingFlags.NonPublic)
                     ?.Invoke(fixture.SequenceDiagram, new object[]
                     {
                         participant

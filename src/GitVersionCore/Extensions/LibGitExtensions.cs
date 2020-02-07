@@ -59,7 +59,7 @@ namespace GitVersion.Extensions
         /// <summary>
         /// Exclude the given branches (by value equality according to friendly name).
         /// </summary>
-        public static IEnumerable<Branch> ExcludingBranches( this IEnumerable<Branch> branches, IEnumerable<Branch> branchesToExclude)
+        public static IEnumerable<Branch> ExcludingBranches(this IEnumerable<Branch> branches, IEnumerable<Branch> branchesToExclude)
         {
             return branches.Where(b => branchesToExclude.All(bte => !IsSameBranch(b, bte)));
         }
