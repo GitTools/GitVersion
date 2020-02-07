@@ -134,7 +134,7 @@ namespace GitVersion.Extensions.VersionAssemblyInfoResources
                     return inputString.Replace(lastMatch.Value, replacementString);
                 }
             }
-			
+
             inputString += NewLine + string.Format(assemblyAddFormat, replaceString);
             appendedAttributes = true;
             return inputString;

@@ -1,1 +1,1 @@
-﻿public static string {0} = "{1}";
+public static string {0} = "{1}";

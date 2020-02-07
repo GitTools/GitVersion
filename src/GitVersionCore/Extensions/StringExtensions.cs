@@ -31,12 +31,12 @@ namespace GitVersion.Extensions
         {
             return Trues.Contains(value, StringComparer.OrdinalIgnoreCase);
         }
-        
+
         public static bool IsFalse(this string value)
         {
             return Falses.Contains(value, StringComparer.OrdinalIgnoreCase);
         }
-        
+
         public static bool IsValidPath(this string path)
         {
             if (path == null)
@@ -113,7 +113,7 @@ namespace GitVersion.Extensions
             // If this is the first argument that might be a target path, the argument starts with slash and we're on an OS that supports paths with slashes, the argument does not require a value.
             if (argumentMightRequireValue && argumentIndex == 0 && argument.StartsWith("/") && Path.DirectorySeparatorChar == '/' && argument.IsValidPath())
                 return false;
-            
+
             return argumentMightRequireValue;
         }
 

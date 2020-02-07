@@ -50,12 +50,12 @@ namespace GitVersionCore.Tests.BuildServers
             SetEnvironmentVariableForDetection();
             buildServer.CanApplyToCurrentContext().ShouldBe(true);
         }
-    
+
         [Test]
         public void CanNotApplyCurrentContextWhenenvironmentVariableIsNotSet()
         {
             ClearenvironmentVariableForDetection();
-            buildServer.CanApplyToCurrentContext().ShouldBe(false);  
+            buildServer.CanApplyToCurrentContext().ShouldBe(false);
         }
 
         [Test]

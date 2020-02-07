@@ -154,7 +154,7 @@ namespace GitVersion
                 semanticVersion = null;
                 return false;
             }
-            
+
             version = match.Groups["version"].Value;
             var parsed = ParseSemVer.Match(version);
 
