@@ -87,7 +87,7 @@ namespace GitVersionCore.Tests
 
             var serviceProvider = ConfigureService(services =>
             {
-                services.AddSingleton(options); 
+                services.AddSingleton(options);
             });
 
             var gitPreparer = serviceProvider.GetService<IGitPreparer>();
@@ -100,7 +100,7 @@ namespace GitVersionCore.Tests
                 .AddModule(new GitVersionCoreTestModule());
 
             servicesOverrides?.Invoke(services);
-            return services.BuildServiceProvider(); 
+            return services.BuildServiceProvider();
         }
     }
 }

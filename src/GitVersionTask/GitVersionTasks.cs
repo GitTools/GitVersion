@@ -43,7 +43,7 @@ namespace GitVersion.MSBuildTask
 
             return !taskLog.HasLoggedErrors;
         }
-        
+
         private static void Configure(IServiceProvider sp, Task task)
         {
             var log = sp.GetService<ILog>();

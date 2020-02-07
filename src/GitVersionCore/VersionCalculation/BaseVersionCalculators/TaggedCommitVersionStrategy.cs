@@ -29,8 +29,8 @@ namespace GitVersion.VersionCalculation.BaseVersionCalculators
         public IEnumerable<BaseVersion> GetTaggedVersions(GitVersionContext context, Branch currentBranch, DateTimeOffset? olderThan)
         {
             var gitRepoMetadataProvider = new GitRepoMetadataProvider(context.Repository, log, context.FullConfiguration);
-            var allTags = gitRepoMetadataProvider.GetValidVersionTags(context.Repository, context.Configuration.GitTagPrefix, olderThan); 
-                
+            var allTags = gitRepoMetadataProvider.GetValidVersionTags(context.Repository, context.Configuration.GitTagPrefix, olderThan);
+
             var tagsOnBranch = currentBranch
                 .Commits
                 .SelectMany(commit => { return allTags.Where(t => IsValidTag(t.Item1, commit)); })

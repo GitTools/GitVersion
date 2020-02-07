@@ -38,7 +38,7 @@ namespace GitVersion.Configuration
 
         private T MergeObjects<T>(T target, T source)
         {
-            
+
             var typeInfo = typeof(T);
             typeInfo.GetProperties()
                 .Where(prop => prop.CanRead && prop.CanWrite)

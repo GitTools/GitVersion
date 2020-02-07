@@ -21,10 +21,10 @@ namespace GitVersion.MSBuildTask
 
             var type = LibGit2SharpLoader.Instance.Assembly.GetType("GitVersion.MSBuildTask.GitVersionTasks", throwOnError: true).GetTypeInfo();
 
-            GetVersion                    = GetMethod<GetVersion>(type, nameof(GetVersion));
+            GetVersion = GetMethod<GetVersion>(type, nameof(GetVersion));
             GenerateGitVersionInformation = GetMethod<GenerateGitVersionInformation>(type, nameof(GenerateGitVersionInformation));
-            UpdateAssemblyInfo            = GetMethod<UpdateAssemblyInfo>(type, nameof(UpdateAssemblyInfo));
-            WriteVersionInfoToBuildLog    = GetMethod<WriteVersionInfoToBuildLog>(type, nameof(WriteVersionInfoToBuildLog));
+            UpdateAssemblyInfo = GetMethod<UpdateAssemblyInfo>(type, nameof(UpdateAssemblyInfo));
+            WriteVersionInfoToBuildLog = GetMethod<WriteVersionInfoToBuildLog>(type, nameof(WriteVersionInfoToBuildLog));
         }
 
         private static Func<T, bool> GetMethod<T>(TypeInfo type, string name) => (Func<T, bool>)type.GetDeclaredMethod(name).CreateDelegate(typeof(Func<T, bool>));

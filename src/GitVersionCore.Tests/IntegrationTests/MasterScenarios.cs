@@ -170,7 +170,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeCommits(5);
 
             fixture.AssertFullSemver(new Config { TagPrefix = "version-" }, "1.0.4+5");
-        }    
+        }
 
         [Test]
         public void CanSpecifyTagPrefixesAsRegex()

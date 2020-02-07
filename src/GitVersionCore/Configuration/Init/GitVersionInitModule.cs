@@ -26,6 +26,6 @@ namespace GitVersion.Configuration.Init
         {
             var derivedType = typeof(T);
             return assembly.GetTypes().Where(t => t != derivedType && derivedType.IsAssignableFrom(t));
-        } 
+        }
     }
 }
