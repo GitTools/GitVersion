@@ -1,11 +1,11 @@
-name: DotNet
+name: Validate PR
 
 on: [pull_request]
 
 jobs:
   format:
     runs-on: ubuntu-latest
-    name: Format
+    name: DotNet Format
     steps:
       - uses: actions/checkout@v2
 
