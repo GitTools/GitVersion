@@ -9,5 +9,5 @@ steps:
   inputs:
     packageType: sdk
     version: 3.1.101
-- script: dotnet tool install --global Cake.Tool
+- script: dotnet tool restore
   displayName: 'Install Cake tool'
