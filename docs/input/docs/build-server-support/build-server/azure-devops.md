@@ -46,7 +46,7 @@ For Visual Studio Team Service or TFS 2015 Update 2 or higher it is recommended
 to install the GitVersion extension:
 
 1. Install the
-[GitVersion Extension](https://marketplace.visualstudio.com/items?itemName=gittools.gitversion).
+[GitVersion Extension](https://marketplace.visualstudio.com/items?itemName=gittools.usegitversion).
 
 ##### Manually installing/updating the custom build step
 
@@ -86,11 +86,11 @@ variables:
   GitVersion.SemVer: ''
 
 steps:
-- task: gittools.gitversion.gitversion-task.GitVersion@5
+- task: UseGitVersion@5
   displayName: gitversion
   inputs:
-    useConfigFile: true
-    configFilePath: GitVersion.yml
+    versionSpec: '5.x'
+    updateAssemblyInfo: true
 ```
 
 You can now use the `GitVersion.SemVer` environment variable in any subsequent

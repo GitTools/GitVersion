@@ -50,6 +50,7 @@ Param(
     [string]$Verbosity = "Verbose",
     [Alias("DryRun","Noop")]
     [switch]$WhatIf,
+    [switch]$Exclusive,
     [Parameter(Position=0,Mandatory=$false,ValueFromRemainingArguments=$true)]
     [string[]]$ScriptArgs
 )
@@ -163,6 +164,7 @@ $Arguments = @{
     configuration=$Configuration;
     verbosity=$Verbosity;
     dryrun=$WhatIf;
+    exclusive=$Exclusive;
     nuget_useinprocessclient=$true;
     docker_distro=$DockerDistro;
     docker_dotnetversion=$DockerDotnetVersion;
