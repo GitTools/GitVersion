@@ -12,7 +12,7 @@ namespace GitVersion.BuildServers
         public const string EnvironmentVariableName = "TRAVIS";
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
-        public override bool CanApplyToCurrentContext ()
+        public override bool CanApplyToCurrentContext()
         {
             return "true".Equals(Environment.GetEnvironmentVariable(EnvironmentVariable)) && "true".Equals(Environment.GetEnvironmentVariable("CI"));
         }
@@ -30,7 +30,7 @@ namespace GitVersion.BuildServers
             };
         }
 
-        public override bool PreventFetch () => true;
+        public override bool PreventFetch() => true;
     }
 }
 

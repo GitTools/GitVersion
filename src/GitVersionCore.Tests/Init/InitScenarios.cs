@@ -32,7 +32,7 @@ namespace GitVersionCore.Tests.Init
                 services.AddSingleton<IConsole>(new TestConsole("3", "2.0.0", "0"));
                 services.AddSingleton(options);
             });
-            
+
             var configurationProvider = sp.GetService<IConfigProvider>();
             var fileSystem = sp.GetService<IFileSystem>();
             configurationProvider.Init(workingDirectory);

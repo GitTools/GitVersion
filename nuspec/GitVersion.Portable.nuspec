@@ -6,12 +6,12 @@
     <title>GitVersion</title>
     <authors>GitTools and Contributors</authors>
     <owners>GitTools and Contributors</owners>
+    <copyright>Copyright GitTools 2020.</copyright>
     <licenseUrl>http://www.opensource.org/licenses/mit-license.php</licenseUrl>
     <projectUrl>https://github.com/GitTools/GitVersion</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/GitTools/graphics/master/GitVersion/icon_100x100.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Derives SemVer information from a repository following GitFlow or GitHubFlow.</description>
-    <language>en-AU</language>
     <tags>Git Versioning GitVersion GitFlowVersion GitFlow GitHubFlow SemVer</tags>
     <releaseNotes>https://github.com/GitTools/GitVersion/releases</releaseNotes>
   </metadata>

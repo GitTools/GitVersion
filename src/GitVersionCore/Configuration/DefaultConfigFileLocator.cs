@@ -8,7 +8,7 @@ namespace GitVersion.Configuration
     {
         public DefaultConfigFileLocator(IFileSystem fileSystem, ILog log) : base(fileSystem, log)
         {
-            
+
         }
 
         public const string DefaultFileName = "GitVersion.yml";

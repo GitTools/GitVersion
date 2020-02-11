@@ -129,3 +129,4 @@ src/GitVersionRubyGem/bin/LibGit2Sharp.dll.config
 config.wyam.dll
 config.wyam.hash
 config.wyam.packages.xml
+/test/build

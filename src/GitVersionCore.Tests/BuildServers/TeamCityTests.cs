@@ -19,7 +19,7 @@ namespace GitVersionCore.Tests.BuildServers
             });
             buildServer = sp.GetService<TeamCity>();
         }
-        
+
         [Test]
         public void DevelopBranch()
         {
