@@ -105,7 +105,7 @@ public class BuildParameters
             IsMainBranch  = context.IsOnMainBranch(),
             IsTagged      = context.IsBuildTagged(),
 
-            MSBuildSettings = GetMsBuildSettings(context)
+            MSBuildSettings = new DotNetCoreMSBuildSettings()
         };
     }
 
@@ -145,31 +145,6 @@ public class BuildParameters
 
         Credentials = BuildCredentials.GetCredentials(context);
         SetMSBuildSettingsVersion(MSBuildSettings, Version);
-    }
-
-    private static DotNetCoreMSBuildSettings GetMsBuildSettings(ICakeContext context)
-    {
-        var msBuildSettings = new DotNetCoreMSBuildSettings();
-        if(!context.IsRunningOnWindows())
-        {
-            var frameworkPathOverride = context.Environment.Runtime.IsCoreClr
-                                        ?   new []{
-                                                new DirectoryPath("/Library/Frameworks/Mono.framework/Versions/Current/lib/mono"),
-                                                new DirectoryPath("/usr/lib/mono"),
-                                                new DirectoryPath("/usr/local/lib/mono")
-                                            }
-                                            .Select(directory =>directory.Combine("4.5"))
-                                            .FirstOrDefault(directory => context.DirectoryExists(directory))
-                                            ?.FullPath + "/"
-                                        : new FilePath(typeof(object).Assembly.Location).GetDirectory().FullPath + "/";
-
-            // Use FrameworkPathOverride when not running on Windows.
-            context.Information("Build will use FrameworkPathOverride={0} since not building on Windows.", frameworkPathOverride);
-            msBuildSettings.WithProperty("FrameworkPathOverride", frameworkPathOverride);
-            msBuildSettings.WithProperty("POSIX", "true");
-        }
-
-        return msBuildSettings;
     }
 
     private void SetMSBuildSettingsVersion(DotNetCoreMSBuildSettings msBuildSettings, BuildVersion version)

@@ -20,7 +20,7 @@
 
 // Install tools.
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.10.0"
-#tool "nuget:?package=nuget.commandline&version=5.2.0"
+#tool "nuget:?package=nuget.commandline&version=5.3.0"
 #tool "nuget:?package=KuduSync.NET&version=1.5.2"
 
 // Install .NET Core Global tools.
