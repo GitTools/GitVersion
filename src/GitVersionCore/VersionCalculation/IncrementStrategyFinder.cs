@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -22,6 +23,11 @@ namespace GitVersion
         public const string DefaultMinorPattern = @"\+semver:\s?(feature|minor)";
         public const string DefaultPatchPattern = @"\+semver:\s?(fix|patch)";
         public const string DefaultNoBumpPattern = @"\+semver:\s?(none|skip)";
+
+        private static readonly Regex DefaultMajorPatternRegex = new Regex(DefaultMajorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex DefaultMinorPatternRegex = new Regex(DefaultMinorPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex DefaultPatchPatternRegex = new Regex(DefaultPatchPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex DefaultNoBumpPatternRegex = new Regex(DefaultNoBumpPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public static VersionField? DetermineIncrementedField(GitVersionContext context, BaseVersion baseVersion)
         {
@@ -69,13 +75,10 @@ namespace GitVersion
 
         public static VersionField? GetIncrementForCommits(GitVersionContext context, IEnumerable<Commit> commits)
         {
-            // More efficient use of Regexes. The static version of Regex.IsMatch caches the compiled regexes.
-            // see:  https://docs.microsoft.com/en-us/dotnet/standard/base-types/best-practices#static-regular-expressions
-
-            var majorRegex = context.Configuration.MajorVersionBumpMessage ?? DefaultMajorPattern;
-            var minorRegex = context.Configuration.MinorVersionBumpMessage ?? DefaultMinorPattern;
-            var patchRegex = context.Configuration.PatchVersionBumpMessage ?? DefaultPatchPattern;
-            var none = context.Configuration.NoBumpMessage ?? DefaultNoBumpPattern;
+            var majorRegex = TryGetRegexOrDefault(context.Configuration.MajorVersionBumpMessage, DefaultMajorPatternRegex);
+            var minorRegex = TryGetRegexOrDefault(context.Configuration.MinorVersionBumpMessage, DefaultMinorPatternRegex);
+            var patchRegex = TryGetRegexOrDefault(context.Configuration.PatchVersionBumpMessage, DefaultPatchPatternRegex);
+            var none = TryGetRegexOrDefault(context.Configuration.NoBumpMessage, DefaultNoBumpPatternRegex);
 
             var increments = commits
                 .Select(c => GetIncrementFromMessage(c.Message, majorRegex, minorRegex, patchRegex, none))
@@ -91,11 +94,23 @@ namespace GitVersion
             return null;
         }
 
+        private static Regex TryGetRegexOrDefault(string messageRegex, Regex defaultRegex)
+        {
+            if (messageRegex == null)
+            {
+                return defaultRegex;
+            }
+
+            return CompiledRegexCache.GetOrAdd(messageRegex, pattern => new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase));
+        }
+
         private static IEnumerable<Commit> GetIntermediateCommits(IRepository repo, Commit baseCommit, Commit headCommit)
         {
             if (baseCommit == null) yield break;
 
-            if (intermediateCommitCache == null || intermediateCommitCache.LastOrDefault() != headCommit)
+            var commitCache = intermediateCommitCache;
+
+            if (commitCache == null || commitCache.LastOrDefault() != headCommit)
             {
                 var filter = new CommitFilter
                 {
@@ -103,11 +118,12 @@ namespace GitVersion
                     SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Reverse
                 };
 
-                intermediateCommitCache = repo.Commits.QueryBy(filter).ToList();
+                commitCache = repo.Commits.QueryBy(filter).ToList();
+                intermediateCommitCache = commitCache;
             }
 
             var found = false;
-            foreach (var commit in intermediateCommitCache)
+            foreach (var commit in commitCache)
             {
                 if (found)
                     yield return commit;
@@ -117,41 +133,16 @@ namespace GitVersion
             }
         }
 
-        private static VersionField? GetIncrementFromMessage(string message, string majorRegex, string minorRegex, string patchRegex, string none)
+        private static VersionField? GetIncrementFromMessage(string message, Regex majorRegex, Regex minorRegex, Regex patchRegex, Regex none)
         {
-            var key = message.GetHashCode();
-
-            if (!VersionFieldCache.TryGetValue(key, out var version))
-            {
-                version = FindIncrementFromMessage(message, majorRegex, minorRegex, patchRegex, none);
-                VersionFieldCache[key] = version;
-            }
-            return version;
-        }
-
-        private static VersionField? FindIncrementFromMessage(string message, string majorRegex, string minorRegex, string patchRegex, string noneRegex)
-        {
-            if (IsMatch(message, majorRegex)) return VersionField.Major;
-            if (IsMatch(message, minorRegex)) return VersionField.Minor;
-            if (IsMatch(message, patchRegex)) return VersionField.Patch;
-            if (IsMatch(message, noneRegex)) return VersionField.None;
+            if (majorRegex.IsMatch(message)) return VersionField.Major;
+            if (minorRegex.IsMatch(message)) return VersionField.Minor;
+            if (patchRegex.IsMatch(message)) return VersionField.Patch;
+            if (none.IsMatch(message)) return VersionField.None;
             return null;
         }
 
-        private static bool IsMatch(string message, string regex)
-        {
-            var key = message.GetHashCode() ^ regex.GetHashCode();
-
-            if (!MatchCache.TryGetValue(key, out var match))
-            {
-                match = Regex.IsMatch(message, regex, RegexOptions.IgnoreCase);
-                MatchCache[key] = match;
-            }
-            return match;
-        }
-
-        private static readonly IDictionary<int, bool> MatchCache = new Dictionary<int, bool>();
-        private static readonly IDictionary<int, VersionField?> VersionFieldCache = new Dictionary<int, VersionField?>();
+        private static readonly ConcurrentDictionary<string, Regex> CompiledRegexCache = new ConcurrentDictionary<string, Regex>();
 
         public static VersionField FindDefaultIncrementForBranch(GitVersionContext context, string branch = null)
         {
