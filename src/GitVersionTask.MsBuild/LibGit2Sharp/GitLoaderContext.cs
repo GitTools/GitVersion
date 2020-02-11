@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Loader;
-using RuntimeEnvironment = Microsoft.DotNet.PlatformAbstractions.RuntimeEnvironment;
 
 namespace GitVersion.MSBuildTask.LibGit2Sharp
 {
@@ -60,7 +59,7 @@ namespace GitVersion.MSBuildTask.LibGit2Sharp
         private static string GetNativeLibraryDirectory()
         {
             var dir = Path.GetDirectoryName(typeof(GitLoaderContext).Assembly.Location);
-            return Path.Combine(dir, "runtimes", RuntimeIdMap.GetNativeLibraryDirectoryName(RuntimeEnvironment.GetRuntimeIdentifier()), "native");
+            return Path.Combine(dir, "runtimes", RuntimeIdMap.GetNativeLibraryDirectoryName(), "native");
         }
 
         private static string GetNativeLibraryExtension()

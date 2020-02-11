@@ -12,8 +12,9 @@ namespace GitVersion.MSBuildTask.LibGit2Sharp
         // https://github.com/dotnet/core-setup/issues/1846
         // https://github.com/NuGet/Home/issues/5862
 
-        public static string GetNativeLibraryDirectoryName(string runtimeIdentifier)
+        public static string GetNativeLibraryDirectoryName()
         {
+            var runtimeIdentifier = Microsoft.DotNet.PlatformAbstractions.RuntimeEnvironment.GetRuntimeIdentifier();
 #if DEBUG
             Debug.Assert(SDirectories.Length == SRids.Length);
 
