@@ -105,7 +105,9 @@ namespace GitVersion.Extensions
                 "init",
                 "updateassemblyinfo",
                 "ensureassemblyinfo",
-                "nofetch"
+                "nofetch",
+                "nonormalize",
+                "nocache",
             };
 
             var argumentMightRequireValue = !booleanArguments.Contains(argument.Substring(1), StringComparer.OrdinalIgnoreCase);

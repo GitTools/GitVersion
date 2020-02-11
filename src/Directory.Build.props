@@ -6,7 +6,7 @@
         <PackageProjectUrl>https://github.com/GitTools/GitVersion</PackageProjectUrl>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
         <PackageTags>Git;Versioning;GitVersion;GitFlowVersion;GitFlow;GitHubFlow;SemVer</PackageTags>
-        <Copyright>Copyright GitTools 2019.</Copyright>
+        <Copyright>Copyright GitTools 2020.</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>package_icon.png</PackageIcon>
         <PackageReleaseNotes>https://github.com/GitTools/GitVersion/releases</PackageReleaseNotes>
