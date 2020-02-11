@@ -13,15 +13,8 @@
         <LangVersion>8.0</LangVersion>
     </PropertyGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.1" PrivateAssets="All" />
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(TargetFramework)' != 'net472' ">
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.1" />
-    </ItemGroup>
-
     <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.1" PrivateAssets="All" />
         <PackageReference Include="LibGit2Sharp" Version="$(PackageVersion_LibGit2Sharp)" PrivateAssets="All" />
     </ItemGroup>
 
