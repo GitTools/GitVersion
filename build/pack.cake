@@ -115,14 +115,18 @@ Task("Pack-Nuget")
     {
         if (FileExists(package.NuspecPath)) {
             var artifactPath = MakeAbsolute(parameters.PackagesBuildMap[package.Id]).FullPath;
-
             var nugetSettings = new NuGetPackSettings
             {
+                // KeepTemporaryNuSpecFile = true,
                 Version = parameters.Version.NugetVersion,
                 NoPackageAnalysis = true,
                 OutputDirectory = parameters.Paths.Directories.NugetRoot,
                 Files = GetFiles(artifactPath + "/**/*.*")
                         .Select(file => new NuSpecContent { Source = file.FullPath, Target = file.FullPath.Replace(artifactPath, "") })
+                        .Concat(
+                            GetFiles("docs/**/package_icon.png")
+                            .Select(file => new NuSpecContent { Source = file.FullPath, Target = "package_icon.png" })
+                        )
                         .ToArray()
             };
 
