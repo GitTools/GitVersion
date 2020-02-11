@@ -50,7 +50,7 @@ namespace GitVersion.Extensions
 
             if (addFormats.TryGetValue(fileExtension, out var addFormat) && addFormat != null)
             {
-                result = addFormat.ReadAsStringFromEmbeddedResource<TemplateManager>();
+                result = addFormat.ReadAsStringFromEmbeddedResource<TemplateManager>().TrimEnd('\r', '\n');
             }
 
             return result;

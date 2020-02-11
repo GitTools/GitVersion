@@ -1,4 +1,6 @@
-variables: { DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 'true', DOTNET_CLI_TELEMETRY_OPTOUT: 'true' }
+variables:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 'true'
+  DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
 
 stages:
 - stage: Build

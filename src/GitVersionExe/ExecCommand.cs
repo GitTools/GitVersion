@@ -44,17 +44,15 @@ namespace GitVersion
             switch (arguments.Output)
             {
                 case OutputType.BuildServer:
-                {
                     var buildServer = buildServerResolver.Resolve();
                     buildServer?.WriteIntegration(Console.WriteLine, variables);
 
                     break;
-                }
                 case OutputType.Json:
                     switch (arguments.ShowVariable)
                     {
                         case null:
-                            Console.WriteLine(JsonOutputFormatter.ToJson(variables));
+                            Console.WriteLine(variables.ToString());
                             break;
 
                         default:

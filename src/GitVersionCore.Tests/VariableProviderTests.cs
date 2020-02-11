@@ -1,6 +1,5 @@
 using GitVersion;
 using GitVersion.Logging;
-using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 using GitVersion.VersioningModes;
 using GitVersionCore.Tests.Helpers;
@@ -74,7 +73,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
 
         [Test]
@@ -101,7 +100,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
 
         [Test]
@@ -127,7 +126,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
 
         [Test]
@@ -152,7 +151,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
 
         [Test]
@@ -177,7 +176,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
 
         [Test]
@@ -205,7 +204,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, true);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
 
         [Test]
@@ -277,7 +276,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
 
         [Test]
@@ -304,7 +303,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
     }
 }

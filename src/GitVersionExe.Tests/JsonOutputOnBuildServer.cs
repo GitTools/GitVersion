@@ -1,4 +1,4 @@
-﻿using GitTools.Testing;
+using GitTools.Testing;
 using NUnit.Framework;
 using Shouldly;
 
@@ -12,7 +12,7 @@ namespace GitVersionExe.Tests
             using var fixture = new RemoteRepositoryFixture();
             fixture.Repository.MakeATaggedCommit("1.2.3");
             fixture.Repository.MakeACommit();
-                
+
             var result = GitVersionHelper.ExecuteIn(fixture.LocalRepositoryFixture.RepositoryPath, arguments: " /output json", isTeamCity: true);
 
             result.ExitCode.ShouldBe(0);

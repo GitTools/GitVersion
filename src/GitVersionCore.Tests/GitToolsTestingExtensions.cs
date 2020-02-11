@@ -80,14 +80,14 @@ namespace GitVersionCore.Tests
         {
             var arguments = new Arguments
             {
-                Authentication = new Authentication(),
+                Authentication = new AuthenticationInfo(),
                 TargetPath = fixture.LocalRepositoryFixture.RepositoryPath
             };
             var options = Options.Create(arguments);
 
             var serviceProvider = ConfigureService(services =>
             {
-                services.AddSingleton(options); 
+                services.AddSingleton(options);
             });
 
             var gitPreparer = serviceProvider.GetService<IGitPreparer>();
@@ -100,7 +100,7 @@ namespace GitVersionCore.Tests
                 .AddModule(new GitVersionCoreTestModule());
 
             servicesOverrides?.Invoke(services);
-            return services.BuildServiceProvider(); 
+            return services.BuildServiceProvider();
         }
     }
 }

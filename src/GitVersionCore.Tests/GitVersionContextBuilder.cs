@@ -28,7 +28,7 @@ namespace GitVersionCore.Tests
         {
             repository = CreateRepository();
             var target = repository.Head.Tip;
-            ((MockTagCollection)repository.Tags).Add(new MockTag ("1.0.0", target));
+            ((MockTagCollection)repository.Tags).Add(new MockTag("1.0.0", target));
             return this;
         }
 
