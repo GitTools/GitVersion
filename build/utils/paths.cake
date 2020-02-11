@@ -25,12 +25,14 @@ public class BuildPaths
 
         var semVersion = version.SemVersion;
 
-        var artifactsDir                  = (DirectoryPath)(context.Directory("./artifacts") + context.Directory("v" + semVersion));
+        var rootDir                       = (DirectoryPath)(context.Directory("."));
+        var sourceDir                     = rootDir.Combine("src");
+        var artifactsDir                  = rootDir.Combine("artifacts").Combine("v" + semVersion);
         var artifactsBinDir               = artifactsDir.Combine("bin");
         var artifactsBinPortableDir       = artifactsBinDir.Combine("portable");
         var artifactsBinCmdlineDir        = artifactsBinDir.Combine("cmdline");
         var artifactsBinCoreFx21Dir       = artifactsBinDir.Combine(parameters.CoreFxVersion21);
-        var artifactsBinCoreFx30Dir       = artifactsBinDir.Combine(parameters.CoreFxVersion30);
+        var artifactsBinCoreFx30Dir       = artifactsBinDir.Combine(parameters.CoreFxVersion31);
         var artifactsBinFullFx472Dir      = artifactsBinDir.Combine(parameters.FullFxVersion472);
         var nativeDir                     = artifactsDir.Combine("native");
         var nugetRootDir                  = artifactsDir.Combine("nuget");
@@ -42,6 +44,8 @@ public class BuildPaths
 
         // Directories
         var buildDirectories = new BuildDirectories(
+            rootDir,
+            sourceDir,
             artifactsDir,
             nativeDir,
             buildArtifactDir,
@@ -86,6 +90,8 @@ public class BuildFiles
 
 public class BuildDirectories
 {
+    public DirectoryPath Root { get; private set; }
+    public DirectoryPath Source { get; private set; }
     public DirectoryPath Artifacts { get; private set; }
     public DirectoryPath Native { get; private set; }
     public DirectoryPath NugetRoot { get; private set; }
@@ -100,6 +106,8 @@ public class BuildDirectories
     public ICollection<DirectoryPath> ToClean { get; private set; }
 
     public BuildDirectories(
+        DirectoryPath rootDir,
+        DirectoryPath sourceDir,
         DirectoryPath artifactsDir,
         DirectoryPath nativeDir,
         DirectoryPath buildArtifactDir,
@@ -113,6 +121,8 @@ public class BuildDirectories
         DirectoryPath artifactsBinFullFx472Dir
         )
     {
+        Root = rootDir;
+        Source = sourceDir;
         Artifacts = artifactsDir;
         Native = nativeDir;
         BuildArtifact = buildArtifactDir;

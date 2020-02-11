@@ -85,7 +85,7 @@ _NCrunch_GitVersion
 GitVersion.sln.ide/
 .vs/
 Packages/
-build/
+build/*
 site/
 /TestResult.xml
 
@@ -123,3 +123,10 @@ src/GitVersionRubyGem/bin/GitVersion.exe
 src/GitVersionRubyGem/bin/LibGit2Sharp.dll.config
 
 !**/*.cake
+.DS_Store
+
+# Wyam
+config.wyam.dll
+config.wyam.hash
+config.wyam.packages.xml
+/test/build

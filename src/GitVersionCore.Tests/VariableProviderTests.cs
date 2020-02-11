@@ -1,12 +1,13 @@
-using System;
+using GitVersion;
 using GitVersion.Logging;
+using GitVersion.OutputVariables;
+using GitVersion.VersioningModes;
+using GitVersionCore.Tests.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.OutputFormatters;
-using GitVersion.OutputVariables;
-using GitVersion;
-using GitVersion.VersionCalculation;
-using GitVersion.VersioningModes;
+using System;
+using System.Collections.Generic;
 
 namespace GitVersionCore.Tests
 {
@@ -14,17 +15,38 @@ namespace GitVersionCore.Tests
     public class VariableProviderTests : TestBase
     {
         private IVariableProvider variableProvider;
+        private List<string> logMessages;
 
         [SetUp]
         public void Setup()
         {
             ShouldlyConfiguration.ShouldMatchApprovedDefaults.LocateTestMethodUsingAttribute<TestAttribute>();
-            var log = new NullLog();
-            var metaDataCalculator = new MetaDataCalculator();
-            var baseVersionCalculator = new BaseVersionCalculator(log, null);
-            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
-            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
-            variableProvider = new VariableProvider(nextVersionCalculator, new TestEnvironment());
+
+            logMessages = new List<string>();
+
+            var sp = ConfigureServices(services =>
+            {
+                var log = new Log(new TestLogAppender(logMessages.Add));
+                services.AddSingleton<ILog>(log);
+            });
+
+            variableProvider = sp.GetService<IVariableProvider>();
+        }
+
+        [Test]
+        public void ShouldLogWarningWhenUsingDefaultInformationalVersionInCustomFormat()
+        {
+            var semVer = new SemanticVersion
+            {
+                Major = 1,
+                Minor = 2,
+                Patch = 3,
+            };
+
+            var propertyName = nameof(SemanticVersionFormatValues.DefaultInformationalVersion);
+            var config = new TestEffectiveConfiguration(assemblyInformationalFormat: $"{{{propertyName}}}");
+            variableProvider.GetVariablesFor(semVer, config, false);
+            logMessages.ShouldContain(message => message.Trim().StartsWith("WARN") && message.Contains(propertyName), 1, $"Expected a warning to be logged when using the variable {propertyName} in a configuration format template");
         }
 
         [Test]
@@ -51,7 +73,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
 
         [Test]
@@ -78,7 +100,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
 
         [Test]
@@ -104,7 +126,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
 
         [Test]
@@ -129,7 +151,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
 
         [Test]
@@ -154,7 +176,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
 
         [Test]
@@ -182,7 +204,7 @@ namespace GitVersionCore.Tests
 
             var vars = variableProvider.GetVariablesFor(semVer, config, true);
 
-            JsonOutputFormatter.ToJson(vars).ShouldMatchApproved(c => c.SubFolder("Approved"));
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
 
         [Test]
@@ -228,6 +250,60 @@ namespace GitVersionCore.Tests
             var vars = variableProvider.GetVariablesFor(semVer, config, false);
 
             vars.FullSemVer.ShouldBe("1.2.3-feature.5");
+        }
+
+        [Test]
+        [Category("NoMono")]
+        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        public void ProvidesVariablesInContinuousDeliveryModeForFeatureBranch()
+        {
+            var semVer = new SemanticVersion
+            {
+                Major = 1,
+                Minor = 2,
+                Patch = 3,
+                BuildMetaData = "5.Branch.feature/123"
+            };
+
+            semVer.BuildMetaData.Branch = "feature/123";
+            semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
+            semVer.BuildMetaData.Sha = "commitSha";
+            semVer.BuildMetaData.ShortSha = "commitShortSha";
+            semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
+
+
+            var config = new TestEffectiveConfiguration();
+
+            var vars = variableProvider.GetVariablesFor(semVer, config, false);
+
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
+        }
+
+        [Test]
+        [Category("NoMono")]
+        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        public void ProvidesVariablesInContinuousDeliveryModeForFeatureBranchWithCustomAssemblyInformationalFormat()
+        {
+            var semVer = new SemanticVersion
+            {
+                Major = 1,
+                Minor = 2,
+                Patch = 3,
+                BuildMetaData = "5.Branch.feature/123"
+            };
+
+            semVer.BuildMetaData.Branch = "feature/123";
+            semVer.BuildMetaData.VersionSourceSha = "versionSourceSha";
+            semVer.BuildMetaData.Sha = "commitSha";
+            semVer.BuildMetaData.ShortSha = "commitShortSha";
+            semVer.BuildMetaData.CommitDate = DateTimeOffset.Parse("2014-03-06 23:59:59Z");
+
+
+            var config = new TestEffectiveConfiguration(assemblyInformationalFormat: "{Major}.{Minor}.{Patch}+{CommitsSinceVersionSource}.Branch.{BranchName}.Sha.{ShortSha}");
+
+            var vars = variableProvider.GetVariablesFor(semVer, config, false);
+
+            vars.ToString().ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
     }
 }

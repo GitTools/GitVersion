@@ -1,10 +1,11 @@
-﻿using System.Linq;
+using System.Linq;
 using GitTools.Testing;
 using LibGit2Sharp;
 using NUnit.Framework;
 using GitVersion.Configuration;
 using GitVersion.VersioningModes;
 using GitVersion.Extensions;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {
@@ -82,7 +83,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             // Merge hotfix branch to support
             Commands.Checkout(fixture.Repository, "master");
             var tag = fixture.Repository.Tags.Single(t => t.FriendlyName == "1.1.0");
-            var supportBranch = fixture.Repository.CreateBranch("support-1.1", (Commit) tag.Target);
+            var supportBranch = fixture.Repository.CreateBranch("support-1.1", (Commit)tag.Target);
             Commands.Checkout(fixture.Repository, supportBranch);
             fixture.AssertFullSemver("1.1.0");
 

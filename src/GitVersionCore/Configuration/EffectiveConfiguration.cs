@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using GitVersion.Extensions;
 using GitVersion.VersionFilters;
 using GitVersion.VersioningModes;

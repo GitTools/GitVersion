@@ -7,5 +7,6 @@ namespace GitVersion
         string GetDotGitDirectory();
         string GetTargetUrl();
         string GetWorkingDirectory();
+        string GetProjectRootDirectoryInternal();
     }
 }

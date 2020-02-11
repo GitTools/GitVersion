@@ -1,4 +1,5 @@
 using System;
+using GitVersion.Logging;
 
 namespace GitVersion.Configuration
 {
@@ -29,22 +30,7 @@ namespace GitVersion.Configuration
             var old = Console.ForegroundColor;
             Console.ForegroundColor = consoleColor;
 
-            return new DelegateDisposable(() => Console.ForegroundColor = old);
-        }
-
-        private class DelegateDisposable : IDisposable
-        {
-            private readonly Action dispose;
-
-            public DelegateDisposable(Action dispose)
-            {
-                this.dispose = dispose;
-            }
-
-            public void Dispose()
-            {
-                dispose();
-            }
+            return Disposable.Create(() => Console.ForegroundColor = old);
         }
     }
 }

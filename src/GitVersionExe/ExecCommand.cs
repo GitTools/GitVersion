@@ -44,17 +44,15 @@ namespace GitVersion
             switch (arguments.Output)
             {
                 case OutputType.BuildServer:
-                {
                     var buildServer = buildServerResolver.Resolve();
                     buildServer?.WriteIntegration(Console.WriteLine, variables);
 
                     break;
-                }
                 case OutputType.Json:
                     switch (arguments.ShowVariable)
                     {
                         case null:
-                            Console.WriteLine(JsonOutputFormatter.ToJson(variables));
+                            Console.WriteLine(variables.ToString());
                             break;
 
                         default:
@@ -111,7 +109,7 @@ namespace GitVersion
             }
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                return "/usr/local/bin/msbuild";
+                return "/Library/Frameworks/Mono.framework/Versions/Current/Commands/msbuild";
             }
             throw new Exception("MsBuild not found");
         }

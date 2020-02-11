@@ -1,1 +1,1 @@
-﻿Public Shared {0} As String = "{1}"
+Public Shared {0} As String = "{1}"

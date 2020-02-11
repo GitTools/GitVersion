@@ -7,6 +7,7 @@ using Shouldly;
 using GitVersion.Exceptions;
 using GitVersion.Helpers;
 using GitVersion.Logging;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {
@@ -55,7 +56,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.AssertFullSemver("0.1.0+5");
             fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepositoryFixture.Repository);
             var buildSignature = fixture.LocalRepositoryFixture.Repository.Config.BuildSignature(new DateTimeOffset(DateTime.Now));
-            Commands.Pull((Repository) fixture.LocalRepositoryFixture.Repository, buildSignature, new PullOptions());
+            Commands.Pull((Repository)fixture.LocalRepositoryFixture.Repository, buildSignature, new PullOptions());
             fixture.AssertFullSemver("0.1.0+5", fixture.LocalRepositoryFixture.Repository);
         }
 
@@ -67,7 +68,7 @@ namespace GitVersionCore.Tests.IntegrationTests
                 fixture.LocalRepositoryFixture.Repository,
                 fixture.LocalRepositoryFixture.Repository.Head.Tip);
 
-            Should.Throw<WarningException>(() => fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepositoryFixture.Repository, isForTrackedBranchOnly: false),
+            Should.Throw<WarningException>(() => fixture.AssertFullSemver("0.1.0+4", fixture.LocalRepositoryFixture.Repository, onlyTrackedBranches: false),
                 $"It looks like the branch being examined is a detached Head pointing to commit '{fixture.LocalRepositoryFixture.Repository.Head.Tip.Id.ToString(7)}'. Without a proper branch name GitVersion cannot determine the build version.");
         }
 

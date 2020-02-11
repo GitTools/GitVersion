@@ -10,9 +10,7 @@ namespace GitVersion
 {
     public class GitVersionCalculator : IGitVersionCalculator
     {
-        private readonly IFileSystem fileSystem;
         private readonly ILog log;
-        private readonly IConfigFileLocator configFileLocator;
         private readonly IConfigProvider configProvider;
         private readonly IBuildServerResolver buildServerResolver;
         private readonly IGitVersionCache gitVersionCache;
@@ -20,15 +18,13 @@ namespace GitVersion
         private readonly IGitPreparer gitPreparer;
         private readonly IVariableProvider variableProvider;
         private readonly IOptions<Arguments> options;
+        private readonly IGitVersionCacheKeyFactory cacheKeyFactory;
 
-        public GitVersionCalculator(IFileSystem fileSystem, ILog log, IConfigFileLocator configFileLocator,
-            IConfigProvider configProvider,
-            IBuildServerResolver buildServerResolver, IGitVersionCache gitVersionCache,
-            IGitVersionFinder gitVersionFinder, IGitPreparer gitPreparer, IVariableProvider variableProvider, IOptions<Arguments> options)
+        public GitVersionCalculator(ILog log, IConfigProvider configProvider, IBuildServerResolver buildServerResolver,
+            IGitVersionCache gitVersionCache, IGitVersionFinder gitVersionFinder, IGitPreparer gitPreparer, IVariableProvider variableProvider,
+            IOptions<Arguments> options, IGitVersionCacheKeyFactory cacheKeyFactory)
         {
-            this.fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            this.configFileLocator = configFileLocator ?? throw new ArgumentNullException(nameof(configFileLocator));
             this.configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
             this.buildServerResolver = buildServerResolver ?? throw new ArgumentNullException(nameof(buildServerResolver));
             this.gitVersionCache = gitVersionCache ?? throw new ArgumentNullException(nameof(gitVersionCache));
@@ -36,6 +32,7 @@ namespace GitVersion
             this.gitPreparer = gitPreparer ?? throw new ArgumentNullException(nameof(gitPreparer));
             this.variableProvider = variableProvider ?? throw new ArgumentNullException(nameof(variableProvider));
             this.options = options ?? throw new ArgumentNullException(nameof(options));
+            this.cacheKeyFactory = cacheKeyFactory ?? throw new ArgumentNullException(nameof(cacheKeyFactory));
         }
 
         public VersionVariables CalculateVersionVariables()
@@ -80,8 +77,8 @@ namespace GitVersion
 
         private VersionVariables GetCachedGitVersionInfo(string targetBranch, string commitId, Config overrideConfig, bool noCache)
         {
-            var cacheKey = GitVersionCacheKeyFactory.Create(fileSystem, log, gitPreparer, configFileLocator, overrideConfig);
-            var versionVariables = noCache ? default : gitVersionCache.LoadVersionVariablesFromDiskCache(gitPreparer, cacheKey);
+            var cacheKey = cacheKeyFactory.Create(overrideConfig);
+            var versionVariables = noCache ? default : gitVersionCache.LoadVersionVariablesFromDiskCache(cacheKey);
             if (versionVariables == null)
             {
                 versionVariables = ExecuteInternal(targetBranch, commitId, overrideConfig);
@@ -90,7 +87,7 @@ namespace GitVersion
                 {
                     try
                     {
-                        gitVersionCache.WriteVariablesToDiskCache(gitPreparer, cacheKey, versionVariables);
+                        gitVersionCache.WriteVariablesToDiskCache(cacheKey, versionVariables);
                     }
                     catch (AggregateException e)
                     {

@@ -1,4 +1,6 @@
-variables: { DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 'true', DOTNET_CLI_TELEMETRY_OPTOUT: 'true' }
+variables:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 'true'
+  DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
 
 stages:
 - stage: Build
@@ -9,7 +11,7 @@ stages:
         'Windows':
           VM_IMAGE: 'windows-latest'
         'Linux':
-          VM_IMAGE: 'ubuntu-16.04'
+          VM_IMAGE: 'ubuntu-latest'
         'macOS':
           VM_IMAGE: 'macOS-latest'
     pool:
@@ -25,7 +27,7 @@ stages:
         'Windows':
           VM_IMAGE: 'windows-latest'
         'Linux':
-          VM_IMAGE: 'ubuntu-16.04'
+          VM_IMAGE: 'ubuntu-latest'
         'macOS':
           VM_IMAGE: 'macOS-latest'
     pool:
@@ -44,11 +46,11 @@ stages:
   - template: build/stages/artifacts-test.yml
     parameters:
       name: Linux
-      vmImage: 'ubuntu-16.04'
-  - template: build/stages/artifacts-test.yml
-    parameters:
-      name: Windows
-      vmImage: 'windows-latest'
+      vmImage: 'ubuntu-latest'
+#   - template: build/stages/artifacts-test.yml
+#     parameters:
+#       name: Windows
+#       vmImage: 'windows-latest'
 
 - stage: Docker
   dependsOn: Artifact_Test
@@ -58,11 +60,11 @@ stages:
   - template: build/stages/docker.yml
     parameters:
       name: Linux
-      vmImage: 'ubuntu-16.04'
-  - template: build/stages/docker.yml
-    parameters:
-      name: Windows
-      vmImage: 'windows-latest'
+      vmImage: 'ubuntu-latest'
+#   - template: build/stages/docker.yml
+#     parameters:
+#       name: Windows
+#       vmImage: 'windows-latest'
 
 - stage: Publish
   dependsOn: Artifact_Test
@@ -71,8 +73,22 @@ stages:
   - job: Publish
     pool:
       vmImage: windows-latest
+    strategy:
+      matrix:
+        CI:
+          TASK_NAME: 'CI'
+        NuGet:
+          TASK_NAME: 'NuGet'
+        Chocolatey:
+         TASK_NAME: 'Chocolatey'
+        Gem:
+          TASK_NAME: 'Gem'
+        Documentation:
+          TASK_NAME: 'Documentation'
     steps:
     - template: build/stages/publish.yml
+      parameters:
+        taskName: $(TASK_NAME)
 
 - stage: Release
   dependsOn:

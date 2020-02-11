@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -7,6 +7,7 @@ using Shouldly;
 using YamlDotNet.Serialization;
 using GitVersion.Configuration;
 using GitVersion.OutputVariables;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests
 {
@@ -24,7 +25,7 @@ namespace GitVersionCore.Tests
         [Test]
         public void ConfigurationDocumentationIsUpToDate()
         {
-            var configurationDocumentationFile = ReadDocumentationFile("configuration.md");
+            var configurationDocumentationFile = ReadDocumentationFile("input/docs/configuration.md");
 
             const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance;
             var configProperties = typeof(Config)
@@ -49,7 +50,7 @@ namespace GitVersionCore.Tests
         [Test]
         public void VariableDocumentationIsUpToDate()
         {
-            var variableDocumentationFile = ReadDocumentationFile("more-info/variables.md");
+            var variableDocumentationFile = ReadDocumentationFile("input/docs/more-info/variables.md");
             var variables = VersionVariables.AvailableVariables.ToList();
 
             variables.ShouldNotBeEmpty();
@@ -58,33 +59,6 @@ namespace GitVersionCore.Tests
             {
                 variableDocumentationFile.ShouldContain(variable,
                     Environment.NewLine + variableDocumentationFile);
-            }
-        }
-
-        [Test]
-        public void DocumentationIndexIsUpToDate()
-        {
-            var documentationIndexFile = ReadDocumentationFile("../mkdocs.yml");
-            var docsDirectoryPath = new Uri(docsDirectory.FullName, UriKind.Absolute);
-
-            Console.WriteLine(docsDirectoryPath);
-
-            foreach (var markdownFile in docsDirectory.EnumerateFiles("*.md", SearchOption.AllDirectories))
-            {
-                var fullPath = new Uri(markdownFile.FullName, UriKind.Absolute);
-                var relativePath = docsDirectoryPath
-                    .MakeRelativeUri(fullPath)
-                    .ToString()
-                    .Replace("docs/", string.Empty);
-
-                // The readme file in the docs directory is not supposed to be deployed to ReadTheDocs;
-                // it's only there for the convenience of contributors wanting to improve the documentation itself.
-                if (relativePath == "readme.md")
-                {
-                    continue;
-                }
-
-                documentationIndexFile.ShouldContain(relativePath, () => $"The file '{relativePath}' is not listed in 'mkdocs.yml'.");
             }
         }
 

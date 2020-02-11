@@ -87,7 +87,7 @@ namespace GitVersion.Configuration
                 value.ToList().ForEach(_ =>
                 {
                     if (!branches.ContainsKey(_.Key))
-                        branches.Add(_.Key, new BranchConfig {Name = _.Key});
+                        branches.Add(_.Key, new BranchConfig { Name = _.Key });
 
                     branches[_.Key] = MergeObjects(branches[_.Key], _.Value);
                 });
@@ -122,7 +122,7 @@ namespace GitVersion.Configuration
             var stringBuilder = new StringBuilder();
             using (var stream = new StringWriter(stringBuilder))
             {
-                ConfigSerialiser.Write(this, stream);
+                ConfigSerializer.Write(this, stream);
                 stream.Flush();
             }
             return stringBuilder.ToString();

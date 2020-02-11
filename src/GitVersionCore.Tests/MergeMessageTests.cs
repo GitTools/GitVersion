@@ -4,6 +4,7 @@ using Shouldly;
 using System;
 using System.Collections.Generic;
 using GitVersion.Configuration;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests
 {

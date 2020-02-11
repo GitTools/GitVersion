@@ -1,3 +1,4 @@
+#!/usr/bin/pwsh
 ##########################################################################
 # This is the Cake bootstrapper script for PowerShell.
 # This file was downloaded from https://github.com/cake-build/resources
@@ -59,22 +60,12 @@ $DotNetUnixInstallerUri = 'https://dot.net/v1/dotnet-install.sh'
 $DotNetChannel = 'LTS'
 $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
 
-[string] $CakeVersion = ''
 [string[]] $DotNetVersion= ''
 foreach($line in Get-Content (Join-Path $PSScriptRoot 'build.config'))
 {
-  if ($line -like 'CAKE_VERSION=*') {
-      $CakeVersion = $line.SubString(13)
-  }
-  elseif ($line -like 'DOTNET_VERSION=*') {
+  if ($line -like 'DOTNET_VERSION=*') {
       $DotNetVersion = $line.SubString(15).Split(',')
   }
-}
-
-
-if ([string]::IsNullOrEmpty($CakeVersion) -or [string]::IsNullOrEmpty($DotNetVersion)) {
-    'Failed to parse Cake / .NET Core SDK Version'
-    exit 1
 }
 
 # Make sure tools folder exists
@@ -157,40 +148,8 @@ $env:DOTNET_ROOT=$InstallPath
 $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
 $env:DOTNET_CLI_TELEMETRY_OPTOUT=1
 
-###########################################################################
-# INSTALL CAKE
-###########################################################################
-
-# Make sure Cake has been installed.
-[string] $CakeExePath = ''
-[string] $CakeInstalledVersion = Get-Command dotnet-cake -ErrorAction SilentlyContinue  | % {&$_.Source --version}
-
-if ($CakeInstalledVersion -eq $CakeVersion) {
-    # Cake found locally
-    $CakeExePath = (Get-Command dotnet-cake).Source
-}
-else {
-    $CakePath = [System.IO.Path]::Combine($ToolPath, '.store', 'cake.tool', $CakeVersion) # Old PowerShell versions Join-Path only supports one child path
-
-    $CakeExePath = (Get-ChildItem -Path $ToolPath -Filter "dotnet-cake*" -File| ForEach-Object FullName | Select-Object -First 1)
-
-
-    if ((!(Test-Path -Path $CakePath -PathType Container)) -or (!(Test-Path $CakeExePath -PathType Leaf))) {
-
-        if ((![string]::IsNullOrEmpty($CakeExePath)) -and (Test-Path $CakeExePath -PathType Leaf))
-        {
-            & dotnet tool uninstall --tool-path $ToolPath Cake.Tool
-        }
-
-        & dotnet tool install --tool-path $ToolPath --version $CakeVersion Cake.Tool
-        if ($LASTEXITCODE -ne 0)
-        {
-            'Failed to install cake'
-            exit 1
-        }
-        $CakeExePath = (Get-ChildItem -Path $ToolPath -Filter "dotnet-cake*" -File| ForEach-Object FullName | Select-Object -First 1)
-    }
-}
+# Install cake local tool
+dotnet tool restore
 
 # ###########################################################################
 # RUN BUILD SCRIPT
@@ -212,10 +171,10 @@ $Arguments = @{
 # Start Cake
 Write-Host "Running build script..."
 
-& "$CakeExePath" $Script --bootstrap
+& dotnet cake $Script --bootstrap
 if ($LASTEXITCODE -eq 0)
 {
-    & "$CakeExePath" $Script $Arguments
+    & dotnet cake $Script $Arguments
 }
 
 if ($env:APPVEYOR) {

@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net472;netcoreapp2.1;netcoreapp3.0</TargetFrameworks>
+        <TargetFrameworks>net472;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
         <LangVersion>8.0</LangVersion>
     </PropertyGroup>
 
-    <Import Project="..\test.msbuild" />
+    <Import Project="..\test.props" />
     <ItemGroup>
         <PackageReference Include="GitTools.Testing" Version="1.2.0"></PackageReference>
         <PackageReference Include="Mono.Cecil" Version="0.11.1"></PackageReference>
@@ -21,6 +21,15 @@
     </ItemGroup>
     <ItemGroup>
         <Content Include="Approved\**\*.approved.txt" />
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Include="..\GitVersionCore.Tests\Helpers\DirectoryHelper.cs" Link="Helpers\DirectoryHelper.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\PathHelper.cs" Link="Helpers\PathHelper.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\TestEffectiveConfiguration.cs" Link="Helpers\TestEffectiveConfiguration.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\TestEnvironment.cs" Link="Helpers\TestEnvironment.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\TestFileSystem.cs" Link="Helpers\TestFileSystem.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\TestLogAppender.cs" Link="Helpers\TestLogAppender.cs" />
+      <Compile Include="..\GitVersionCore.Tests\Helpers\TestStream.cs" Link="Helpers\TestStream.cs" />
     </ItemGroup>
 
 </Project>

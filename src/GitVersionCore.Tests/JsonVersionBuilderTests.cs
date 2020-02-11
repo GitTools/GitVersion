@@ -1,11 +1,10 @@
 using System;
-using GitVersion.Logging;
 using NUnit.Framework;
 using Shouldly;
-using GitVersion.OutputFormatters;
 using GitVersion.OutputVariables;
 using GitVersion;
-using GitVersion.VersionCalculation;
+using GitVersionCore.Tests.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersionCore.Tests
 {
@@ -34,14 +33,11 @@ namespace GitVersionCore.Tests
 
             var config = new TestEffectiveConfiguration();
 
-            var log = new NullLog();
-            var metaDataCalculator = new MetaDataCalculator();
-            var baseVersionCalculator = new BaseVersionCalculator(log, null);
-            var mainlineVersionCalculator = new MainlineVersionCalculator(log, metaDataCalculator);
-            var nextVersionCalculator = new NextVersionCalculator(log, metaDataCalculator, baseVersionCalculator, mainlineVersionCalculator);
-            var variableProvider = new VariableProvider(nextVersionCalculator, new TestEnvironment());
+            var sp = ConfigureServices();
+
+            var variableProvider = sp.GetService<IVariableProvider>();
             var variables = variableProvider.GetVariablesFor(semanticVersion, config, false);
-            var json = JsonOutputFormatter.ToJson(variables);
+            var json = variables.ToString();
             json.ShouldMatchApproved(c => c.SubFolder("Approved"));
         }
     }

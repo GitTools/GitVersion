@@ -1,8 +1,9 @@
-﻿using GitTools.Testing;
+using GitTools.Testing;
 using LibGit2Sharp;
 using NUnit.Framework;
 using GitVersion.Configuration;
 using GitVersion.VersioningModes;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {
@@ -92,7 +93,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             Commands.Checkout(fixture.Repository, commit);
 
             // When
-            fixture.AssertFullSemver("0.1.0+2");
+            fixture.AssertFullSemver("0.1.0+2", onlyTrackedBranches: false);
         }
 
         [Test]
@@ -169,7 +170,7 @@ namespace GitVersionCore.Tests.IntegrationTests
             fixture.Repository.MakeCommits(5);
 
             fixture.AssertFullSemver(new Config { TagPrefix = "version-" }, "1.0.4+5");
-        }    
+        }
 
         [Test]
         public void CanSpecifyTagPrefixesAsRegex()

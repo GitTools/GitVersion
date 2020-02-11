@@ -2,6 +2,7 @@ using NUnit.Framework;
 using Shouldly;
 using GitVersion.Extensions;
 using GitVersion;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests
 {
@@ -17,9 +18,9 @@ namespace GitVersionCore.Tests
         int tag, string versionString)
         {
             var semVer = new SemanticVersion(major, minor, patch)
-                         {
-                             PreReleaseTag = new SemanticVersionPreReleaseTag("Test", tag)
-                         };
+            {
+                PreReleaseTag = new SemanticVersionPreReleaseTag("Test", tag)
+            };
 
             var assemblyFileVersion = semVer.GetAssemblyFileVersion(assemblyFileVersioningScheme);
 

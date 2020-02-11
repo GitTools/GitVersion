@@ -12,20 +12,20 @@ namespace GitVersion
     /// </summary>
     public class GitVersionContext
     {
-        public ILog Log { get; }
+        private readonly ILog log;
 
-        public GitVersionContext(IRepository repository, ILog log, string targetBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
-             : this(repository, log, GetTargetBranch(repository, targetBranch), configuration, onlyEvaluateTrackedBranches, commitId)
+        public GitVersionContext(IRepository repository, ILog log, string targetBranch, Config configuration, bool onlyTrackedBranches = false, string commitId = null)
+             : this(repository, log, GetTargetBranch(repository, targetBranch), configuration, onlyTrackedBranches, commitId)
         {
         }
 
-        public GitVersionContext(IRepository repository, ILog log, Branch currentBranch, Config configuration, bool onlyEvaluateTrackedBranches = true, string commitId = null)
+        public GitVersionContext(IRepository repository, ILog log, Branch currentBranch, Config configuration, bool onlyTrackedBranches = false, string commitId = null)
         {
-            Log = log;
+            this.log = log;
             Repository = repository;
             RepositoryMetadataProvider = new GitRepoMetadataProvider(repository, log, configuration);
             FullConfiguration = configuration;
-            OnlyEvaluateTrackedBranches = onlyEvaluateTrackedBranches;
+            OnlyTrackedBranches = onlyTrackedBranches;
 
             if (currentBranch == null)
                 throw new InvalidOperationException("Need a branch to operate on");
@@ -53,7 +53,7 @@ namespace GitVersion
 
             if (currentBranch.IsDetachedHead())
             {
-                CurrentBranch = RepositoryMetadataProvider.GetBranchesContainingCommit(CurrentCommit, repository.Branches.ToList(), OnlyEvaluateTrackedBranches).OnlyOrDefault() ?? currentBranch;
+                CurrentBranch = RepositoryMetadataProvider.GetBranchesContainingCommit(CurrentCommit, repository.Branches.ToList(), OnlyTrackedBranches).OnlyOrDefault() ?? currentBranch;
             }
             else
             {
@@ -78,7 +78,7 @@ namespace GitVersion
         /// </summary>
         public Config FullConfiguration { get; }
         public SemanticVersion CurrentCommitTaggedVersion { get; }
-        public bool OnlyEvaluateTrackedBranches { get; }
+        public bool OnlyTrackedBranches { get; }
         public EffectiveConfiguration Configuration { get; private set; }
         public IRepository Repository { get; }
         public Branch CurrentBranch { get; }
@@ -88,7 +88,7 @@ namespace GitVersion
 
         private void CalculateEffectiveConfiguration()
         {
-            IBranchConfigurationCalculator calculator = new BranchConfigurationCalculator(Log, this);
+            IBranchConfigurationCalculator calculator = new BranchConfigurationCalculator(log, this);
             var currentBranchConfig = calculator.GetBranchConfiguration(CurrentBranch);
 
             if (!currentBranchConfig.VersioningMode.HasValue)

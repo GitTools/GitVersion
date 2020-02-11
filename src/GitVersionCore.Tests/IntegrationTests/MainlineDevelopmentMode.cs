@@ -9,6 +9,7 @@ using GitVersion.VersioningModes;
 using LibGit2Sharp;
 using NUnit.Framework;
 using GitVersion.Extensions;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionCore.Tests.IntegrationTests
 {
@@ -515,7 +516,7 @@ namespace GitVersionCore.Tests.IntegrationTests
                 ?.GetValue(fixture.SequenceDiagram);
 
             string GetParticipant(string participant) =>
-                (string) typeof(SequenceDiagram).GetMethod("GetParticipant", BindingFlags.Instance | BindingFlags.NonPublic)
+                (string)typeof(SequenceDiagram).GetMethod("GetParticipant", BindingFlags.Instance | BindingFlags.NonPublic)
                     ?.Invoke(fixture.SequenceDiagram, new object[]
                     {
                         participant

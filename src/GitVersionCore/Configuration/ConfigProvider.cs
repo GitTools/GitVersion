@@ -52,7 +52,7 @@ namespace GitVersion.Configuration
             using var stream = fileSystem.OpenWrite(configFilePath);
             using var writer = new StreamWriter(stream);
             log.Info("Saving config file");
-            ConfigSerialiser.Write(config, writer);
+            ConfigSerializer.Write(config, writer);
             stream.Flush();
         }
     }

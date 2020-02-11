@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using LibGit2Sharp;
 using GitVersion.Logging;
@@ -7,6 +8,13 @@ namespace GitVersion.VersionCalculation
 {
     public class MetaDataCalculator : IMetaDataCalculator
     {
+        private readonly ILog log;
+
+        public MetaDataCalculator(ILog log)
+        {
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
+        }
+
         public SemanticVersionBuildMetaData Create(Commit baseVersionSource, GitVersionContext context)
         {
             var qf = new CommitFilter
@@ -18,7 +26,7 @@ namespace GitVersion.VersionCalculation
 
             var commitLog = context.Repository.Commits.QueryBy(qf);
             var commitsSinceTag = commitLog.Count();
-            context.Log.Info($"{commitsSinceTag} commits found between {baseVersionSource.Sha} and {context.CurrentCommit.Sha}");
+            log.Info($"{commitsSinceTag} commits found between {baseVersionSource.Sha} and {context.CurrentCommit.Sha}");
 
             var shortSha = context.Repository.ObjectDatabase.ShortenObjectId(context.CurrentCommit);
             return new SemanticVersionBuildMetaData(

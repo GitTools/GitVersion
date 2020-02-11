@@ -1,3 +1,4 @@
+
 using GitTools.Testing;
 using GitVersion;
 using LibGit2Sharp;
@@ -7,12 +8,22 @@ using System.Collections.Generic;
 using GitVersion.Configuration;
 using GitVersion.Logging;
 using GitVersion.VersioningModes;
+using GitVersionCore.Tests.Helpers;
 using GitVersionCore.Tests.Mocks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GitVersionCore.Tests
 {
     public class GitVersionContextTests : TestBase
     {
+        private ILog log;
+
+        public GitVersionContextTests()
+        {
+            var sp = ConfigureServices();
+            log = sp.GetService<ILog>();
+        }
+
         [Test]
         [Theory]
         public void CanInheritVersioningMode(VersioningMode mode)
@@ -32,7 +43,7 @@ namespace GitVersionCore.Tests
                 }
             };
 
-            var context = new GitVersionContext(mockRepository, new NullLog(), mockBranch, config);
+            var context = new GitVersionContext(mockRepository, log, mockBranch, config);
             context.Configuration.VersioningMode.ShouldBe(mode);
         }
 
@@ -57,7 +68,7 @@ namespace GitVersionCore.Tests
             fixture.BranchTo(dummyBranchName);
             fixture.MakeACommit();
 
-            var context = new GitVersionContext(fixture.Repository, new NullLog(), fixture.Repository.Branches[dummyBranchName], config);
+            var context = new GitVersionContext(fixture.Repository, log, fixture.Repository.Branches[dummyBranchName], config);
             context.Configuration.Increment.ShouldBe(alternateExpected ?? increment);
         }
 
@@ -88,7 +99,7 @@ namespace GitVersionCore.Tests
                     develop
                 }
             };
-            var context = new GitVersionContext(mockRepository, new NullLog(), develop, config);
+            var context = new GitVersionContext(mockRepository, log, develop, config);
             context.Configuration.Tag.ShouldBe("alpha");
         }
 
@@ -117,10 +128,10 @@ namespace GitVersionCore.Tests
                 }
             };
 
-            var latestContext = new GitVersionContext(mockRepository, new NullLog(), releaseLatestBranch, config);
+            var latestContext = new GitVersionContext(mockRepository, log, releaseLatestBranch, config);
             latestContext.Configuration.Increment.ShouldBe(IncrementStrategy.None);
 
-            var versionContext = new GitVersionContext(mockRepository, new NullLog(), releaseVersionBranch, config);
+            var versionContext = new GitVersionContext(mockRepository, log, releaseVersionBranch, config);
             versionContext.Configuration.Increment.ShouldBe(IncrementStrategy.Patch);
         }
 
@@ -144,7 +155,7 @@ namespace GitVersionCore.Tests
             Commands.Checkout(repo.Repository, featureBranch);
             repo.Repository.MakeACommit();
 
-            var context = new GitVersionContext(repo.Repository, new NullLog(), repo.Repository.Head, config);
+            var context = new GitVersionContext(repo.Repository, log, repo.Repository.Head, config);
             context.Configuration.Increment.ShouldBe(IncrementStrategy.Major);
         }
     }

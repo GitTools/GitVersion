@@ -36,7 +36,7 @@ Task("Pack-Prepare")
 
         var settings = new DotNetCorePublishSettings
         {
-            Framework = parameters.CoreFxVersion30,
+            Framework = parameters.CoreFxVersion31,
             Runtime = runtimeName,
             NoRestore = false,
             Configuration = parameters.Configuration,
@@ -138,10 +138,11 @@ Task("Pack-Nuget")
     };
 
     // GitVersionTask, & global tool
-    DotNetCorePack("./src/GitVersionTask", settings);
-
     settings.ArgumentCustomization = arg => arg.Append("/p:PackAsTool=true");
     DotNetCorePack("./src/GitVersionExe/GitVersionExe.csproj", settings);
+
+    settings.ArgumentCustomization = null;
+    DotNetCorePack("./src/GitVersionTask", settings);
 });
 
 Task("Pack-Chocolatey")

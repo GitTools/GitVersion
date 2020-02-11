@@ -1,0 +1,1 @@
+Pipelines["RenderPages"].Replace("WriteMetadata", new Headings(2));

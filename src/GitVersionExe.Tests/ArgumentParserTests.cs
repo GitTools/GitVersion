@@ -4,7 +4,7 @@ using Shouldly;
 using GitVersion.Exceptions;
 using GitVersion.Logging;
 using GitVersion.OutputFormatters;
-using GitVersionExe.Tests.Helpers;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionExe.Tests
 {
@@ -65,7 +65,7 @@ namespace GitVersionExe.Tests
         [Test]
         public void ExecWithArgs()
         {
-            var arguments = argumentParser.ParseArguments(new []
+            var arguments = argumentParser.ParseArguments(new[]
             {
                 "-exec",
                 "rake",
@@ -86,7 +86,7 @@ namespace GitVersionExe.Tests
         [Test]
         public void MsbuildWithArgs()
         {
-            var arguments = argumentParser.ParseArguments(new []
+            var arguments = argumentParser.ParseArguments(new[]
             {
                 "-proj",
                 "msbuild.proj",
@@ -328,11 +328,57 @@ namespace GitVersionExe.Tests
         }
 
         [Test]
+        public void OtherArgumentsCanBeParsedBeforeNonormalize()
+        {
+            var arguments = argumentParser.ParseArguments("targetpath -nonormalize");
+            arguments.TargetPath.ShouldBe("targetpath");
+            arguments.NoNormalize.ShouldBe(true);
+        }
+
+        [Test]
+        public void OtherArgumentsCanBeParsedBeforeNocache()
+        {
+            var arguments = argumentParser.ParseArguments("targetpath -nocache");
+            arguments.TargetPath.ShouldBe("targetpath");
+            arguments.NoCache.ShouldBe(true);
+        }
+
+        [Test]
         public void OtherArgumentsCanBeParsedAfterNofetch()
         {
             var arguments = argumentParser.ParseArguments("-nofetch -proj foo.sln");
             arguments.NoFetch.ShouldBe(true);
             arguments.Proj.ShouldBe("foo.sln");
+        }
+
+        [Test]
+        public void OtherArgumentsCanBeParsedAfterNonormalize()
+        {
+            var arguments = argumentParser.ParseArguments("-nonormalize -proj foo.sln");
+            arguments.NoNormalize.ShouldBe(true);
+            arguments.Proj.ShouldBe("foo.sln");
+        }
+
+        [Test]
+        public void OtherArgumentsCanBeParsedAfterNocache()
+        {
+            var arguments = argumentParser.ParseArguments("-nocache -proj foo.sln");
+            arguments.NoCache.ShouldBe(true);
+            arguments.Proj.ShouldBe("foo.sln");
+        }
+
+        [TestCase("-nofetch -nonormalize -nocache")]
+        [TestCase("-nofetch -nocache -nonormalize")]
+        [TestCase("-nocache -nofetch -nonormalize")]
+        [TestCase("-nocache -nonormalize -nofetch")]
+        [TestCase("-nonormalize -nocache -nofetch")]
+        [TestCase("-nonormalize -nofetch -nocache")]
+        public void SeveralSwitchesCanBeParsed(string commandLineArgs)
+        {
+            var arguments = argumentParser.ParseArguments(commandLineArgs);
+            arguments.NoCache.ShouldBe(true);
+            arguments.NoNormalize.ShouldBe(true);
+            arguments.NoFetch.ShouldBe(true);
         }
 
         [Test]

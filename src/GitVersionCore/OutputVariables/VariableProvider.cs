@@ -1,10 +1,12 @@
 using System;
 using System.Text.RegularExpressions;
 using GitVersion.Exceptions;
+using GitVersion.Extensions;
 using GitVersion.VersionCalculation;
 using GitVersion.VersioningModes;
 using GitVersion.Configuration;
 using GitVersion.Helpers;
+using GitVersion.Logging;
 
 namespace GitVersion.OutputVariables
 {
@@ -12,11 +14,13 @@ namespace GitVersion.OutputVariables
     {
         private readonly INextVersionCalculator nextVersionCalculator;
         private readonly IEnvironment environment;
+        private readonly ILog log;
 
-        public VariableProvider(INextVersionCalculator nextVersionCalculator, IEnvironment environment)
+        public VariableProvider(INextVersionCalculator nextVersionCalculator, IEnvironment environment, ILog log = default)
         {
             this.nextVersionCalculator = nextVersionCalculator ?? throw new ArgumentNullException(nameof(nextVersionCalculator));
             this.environment = environment;
+            this.log = log ?? new NullLog();
         }
 
         public VersionVariables GetVariablesFor(SemanticVersion semanticVersion, EffectiveConfiguration config, bool isCurrentCommitTagged)
@@ -56,7 +60,7 @@ namespace GitVersion.OutputVariables
             var semverFormatValues = new SemanticVersionFormatValues(semanticVersion, config);
 
             var informationalVersion = CheckAndFormatString(config.AssemblyInformationalFormat, semverFormatValues,
-                environment, semverFormatValues.DefaultInformationalVersion, "AssemblyInformationalVersion");
+                environment, semverFormatValues.InformationalVersion, "AssemblyInformationalVersion");
 
             var assemblyFileSemVer = CheckAndFormatString(config.AssemblyFileVersioningFormat, semverFormatValues,
                 environment, semverFormatValues.AssemblyFileSemVer, "AssemblyFileVersioningFormat");
@@ -102,12 +106,28 @@ namespace GitVersion.OutputVariables
         private static void PromoteNumberOfCommitsToTagNumber(SemanticVersion semanticVersion)
         {
             // For continuous deployment the commits since tag gets promoted to the pre-release number
-            semanticVersion.PreReleaseTag.Number = semanticVersion.BuildMetaData.CommitsSinceTag;
-            semanticVersion.BuildMetaData.CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag ?? 0;
-            semanticVersion.BuildMetaData.CommitsSinceTag = null;
+            if (!semanticVersion.BuildMetaData.CommitsSinceTag.HasValue)
+            {
+                semanticVersion.PreReleaseTag.Number = null;
+                semanticVersion.BuildMetaData.CommitsSinceVersionSource = 0;
+            }
+            else
+            {
+                // Number of commits since last tag should be added to PreRelease number if given. Remember to deduct automatic version bump.
+                if (semanticVersion.PreReleaseTag.Number.HasValue)
+                {
+                    semanticVersion.PreReleaseTag.Number += semanticVersion.BuildMetaData.CommitsSinceTag - 1;
+                }
+                else
+                {
+                    semanticVersion.PreReleaseTag.Number = semanticVersion.BuildMetaData.CommitsSinceTag;
+                }
+                semanticVersion.BuildMetaData.CommitsSinceVersionSource = semanticVersion.BuildMetaData.CommitsSinceTag.Value;
+                semanticVersion.BuildMetaData.CommitsSinceTag = null; // why is this set to null ?
+            }
         }
 
-        private static string CheckAndFormatString<T>(string formatString, T source, IEnvironment environment, string defaultValue, string formatVarName)
+        private string CheckAndFormatString<T>(string formatString, T source, IEnvironment environment, string defaultValue, string formatVarName)
         {
             string formattedString;
 
@@ -117,9 +137,11 @@ namespace GitVersion.OutputVariables
             }
             else
             {
+                WarnIfUsingObsoleteFormatValues(formatString);
+
                 try
                 {
-                    formattedString = formatString.FormatWith(source, environment);
+                    formattedString = formatString.FormatWith(source, environment).RegexReplace("[^0-9A-Za-z-.+]", "-");
                 }
                 catch (ArgumentException formex)
                 {
@@ -128,6 +150,15 @@ namespace GitVersion.OutputVariables
             }
 
             return formattedString;
+        }
+
+        private void WarnIfUsingObsoleteFormatValues(string formatString)
+        {
+            var obsoletePropertyName = nameof(SemanticVersionFormatValues.DefaultInformationalVersion);
+            if (formatString.Contains($"{{{obsoletePropertyName}}}"))
+            {
+                log.Write(LogLevel.Warn, $"Use format variable '{nameof(SemanticVersionFormatValues.InformationalVersion)}' instead of '{obsoletePropertyName}' which is obsolete and will be removed in a future release.");
+            }
         }
     }
 }

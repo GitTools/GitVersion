@@ -3,7 +3,7 @@ using GitTools.Testing;
 using LibGit2Sharp;
 using NUnit.Framework;
 using Shouldly;
-using GitVersionExe.Tests.Helpers;
+using GitVersionCore.Tests.Helpers;
 
 namespace GitVersionExe.Tests
 {
@@ -48,7 +48,7 @@ namespace GitVersionExe.Tests
             Environment.SetEnvironmentVariable("JENKINS_URL", "url");
 
             var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath);
-            
+
             result.ExitCode.ShouldBe(0);
             result.OutputVariables.FullSemVer.ShouldBe("1.0.4-PullRequest0005.3");
 

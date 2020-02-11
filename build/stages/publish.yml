@@ -1,3 +1,6 @@
+parameters:
+  taskName: ''
+
 steps:
 - template: common-steps.yml
 - task: UseRubyVersion@0
@@ -12,8 +15,8 @@ steps:
     source: current
     path: $(Build.SourcesDirectory)
     artifact: storage
-- script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Publish
-  displayName: 'Publish'
+- script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Publish-${{ parameters.taskName }}
+  displayName: '[Publish]'
   env:
     GITHUB_TOKEN: $(GITHUB_TOKEN)
     NUGET_API_KEY: $(NUGET_API_KEY)
@@ -21,8 +24,8 @@ steps:
     CHOCOLATEY_API_KEY: $(CHOCOLATEY_API_KEY)
     CHOCOLATEY_API_URL: $(CHOCOLATEY_API_URL)
     RUBY_GEM_API_KEY: $(RUBY_GEM_API_KEY)
-    TFX_TOKEN: $(TFX_TOKEN)
     ENABLED_PUBLISH_GEM: $(ENABLED_PUBLISH_GEM)
     ENABLED_PUBLISH_TFS: $(ENABLED_PUBLISH_TFS)
     ENABLED_PUBLISH_NUGET: $(ENABLED_PUBLISH_NUGET)
     ENABLED_PUBLISH_CHOCOLATEY: $(ENABLED_PUBLISH_CHOCOLATEY)
+    DOTNET_ROLL_FORWARD_ON_NO_CANDIDATE_FX: 2

@@ -9,10 +9,15 @@ namespace GitVersion.BuildServers
     public class Jenkins : BuildServerBase
     {
         public const string EnvironmentVariableName = "JENKINS_URL";
-        private readonly string file;
+        private string file;
         protected override string EnvironmentVariable { get; } = EnvironmentVariableName;
 
-        public Jenkins(IEnvironment environment, ILog log, string propertiesFileName = "gitversion.properties") : base(environment, log)
+        public Jenkins(IEnvironment environment, ILog log) : base(environment, log)
+        {
+            WithPropertyFile("gitversion.properties");
+        }
+
+        public void WithPropertyFile(string propertiesFileName)
         {
             file = propertiesFileName;
         }
