@@ -232,7 +232,7 @@ to TFS.</li>
 to install the GitVersion extension:</p>
 <ol>
 <li>Install the
-<a href="https://marketplace.visualstudio.com/items?itemName=gittools.gitversion">GitVersion Extension</a>.</li>
+<a href="https://marketplace.visualstudio.com/items?itemName=gittools.usegitversion">GitVersion Extension</a>.</li>
 </ol>
 <h5 id="manually-installingupdating-the-custom-build-step">Manually installing/updating the custom build step</h5>
 <p>If you run TFS 2015 RTM or Update 1 or don't want to install the GitVersion
@@ -264,11 +264,11 @@ GitVersion variables. See below for details.</p>
   GitVersion.SemVer: ''
 
 steps:
-- task: gittools.gitversion.gitversion-task.GitVersion@5
+- task: UseGitVersion@5
   displayName: gitversion
   inputs:
-    useConfigFile: true
-    configFilePath: GitVersion.yml
+    versionSpec: '5.x'
+    updateAssemblyInfo: true
 </code></pre>
 <p>You can now use the <code>GitVersion.SemVer</code> environment variable in any subsequent
 tasks to refer to the semantic version number for your build. For example, you
