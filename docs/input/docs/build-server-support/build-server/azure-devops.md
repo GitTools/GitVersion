@@ -122,7 +122,7 @@ To use these variables you can just refer to them using the standard variable
 syntax. For instance `$(GitVersion.NuGetVersion)` in your nuget pack task to set
 the version number. Since update 1 there are no known limitations.
 
-See [Variables](../../more-info/variables) for an overview of available variables.
+See [Variables](../../more-info/variables.md) for an overview of available variables.
 
 #### Using GitVersion variables in build name
 
@@ -142,7 +142,7 @@ If you currently use `$(rev:.r)` in your build number, that won't
 work correctly if you
 use GitVersion variables as well due to the delayed expansion of the GitVersion
 vars. Instead, you might be able to use `$(GitVersion_BuildMetaData)` to achieve
-a similar result.  See [Variables](../../more-info/variables) for more info on the
+a similar result.  See [Variables](../../more-info/variables.md) for more info on the
 variables.
 :::
 
