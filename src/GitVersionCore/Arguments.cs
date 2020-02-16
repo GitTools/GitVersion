@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using GitVersion.Configuration;
 using GitVersion.Logging;
@@ -27,9 +28,13 @@ namespace GitVersion
         public string LogFilePath;
         public string ShowVariable;
 
+        [Obsolete]
         public string Proj;
+        [Obsolete]
         public string ProjArgs;
+        [Obsolete]
         public string Exec;
+        [Obsolete]
         public string ExecArgs;
 
         public bool UpdateWixVersionFile;

@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Text;
 using GitTools.Testing;
-using GitVersion;
 using NUnit.Framework;
 using Shouldly;
 using GitVersion.Helpers;
@@ -23,19 +22,15 @@ namespace GitVersionExe.Tests
 
             var buildFile = Path.Combine(fixture.RepositoryPath, "RunExecViaCommandLine.csproj");
             File.Delete(buildFile);
-            const string buildFileContent = @"<?xml version=""1.0"" encoding=""utf-8""?>
-<Project ToolsVersion=""4.0"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
-  <Target Name=""OutputResults"">
-    <Message Text=""GitVersion_FullSemVer: $(GitVersion_FullSemVer)""/>
-  </Target>
-</Project>";
-            File.WriteAllText(buildFile, buildFileContent);
-            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, ExecCommand.BuildTool, "RunExecViaCommandLine.csproj /target:OutputResults");
+
+            File.WriteAllText(buildFile, MsBuildProjectArgTest.TestProject);
+            var exec = "dotnet";
+            var execArgs = "msbuild RunExecViaCommandLine.csproj /target:OutputResults";
+            var result = GitVersionHelper.ExecuteIn(fixture.RepositoryPath, exec, execArgs);
 
             result.ExitCode.ShouldBe(0, result.Log);
             result.Log.ShouldContain("GitVersion_FullSemVer: 1.2.4+1");
         }
-
 
         [Test]
         public void InvalidArgumentsExitCodeShouldNotBeZero()
@@ -79,7 +74,7 @@ namespace GitVersionExe.Tests
         [Test]
         public void WorkingDirectoryWithoutGitFolderCrashesWithInformativeMessage()
         {
-            var results = GitVersionHelper.ExecuteIn(System.Environment.SystemDirectory, null, isTeamCity: false, logToFile: false);
+            var results = GitVersionHelper.ExecuteIn(Environment.SystemDirectory, null, isTeamCity: false, logToFile: false);
             results.Output.ShouldContain("Can't find the .git directory in");
         }
 
