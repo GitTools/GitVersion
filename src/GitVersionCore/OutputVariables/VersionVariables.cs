@@ -142,7 +142,7 @@ namespace GitVersion.OutputVariables
 
             var ctor = constructors.Single();
             var ctorArgs = ctor.GetParameters()
-                .Select(p => properties.Single(v => string.Equals(v.Key, p.Name, StringComparison.CurrentCultureIgnoreCase)).Value)
+                .Select(p => properties.Single(v => string.Equals(v.Key, p.Name, StringComparison.InvariantCultureIgnoreCase)).Value)
                 .Cast<object>()
                 .ToArray();
             return (VersionVariables)Activator.CreateInstance(type, ctorArgs);
