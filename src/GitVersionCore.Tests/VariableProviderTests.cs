@@ -50,8 +50,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void ProvidesVariablesInContinuousDeliveryModeForPreRelease()
         {
             var semVer = new SemanticVersion
@@ -77,8 +77,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void ProvidesVariablesInContinuousDeliveryModeForPreReleaseWithPadding()
         {
             var semVer = new SemanticVersion
@@ -104,8 +104,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void ProvidesVariablesInContinuousDeploymentModeForPreRelease()
         {
             var semVer = new SemanticVersion
@@ -130,8 +130,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void ProvidesVariablesInContinuousDeliveryModeForStable()
         {
             var semVer = new SemanticVersion
@@ -155,8 +155,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void ProvidesVariablesInContinuousDeploymentModeForStable()
         {
             var semVer = new SemanticVersion
@@ -180,8 +180,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void ProvidesVariablesInContinuousDeploymentModeForStableWhenCurrentCommitIsTagged()
         {
             var semVer = new SemanticVersion
@@ -253,8 +253,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void ProvidesVariablesInContinuousDeliveryModeForFeatureBranch()
         {
             var semVer = new SemanticVersion
@@ -280,8 +280,8 @@ namespace GitVersionCore.Tests
         }
 
         [Test]
-        [Category("NoMono")]
-        [Description("Won't run on Mono due to source information not being available for ShouldMatchApproved.")]
+        [Category(NoMono)]
+        [Description(NoMonoDescription)]
         public void ProvidesVariablesInContinuousDeliveryModeForFeatureBranchWithCustomAssemblyInformationalFormat()
         {
             var semVer = new SemanticVersion
