@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using GitVersion.BuildServers;
 using GitVersion.Helpers;
@@ -15,34 +16,53 @@ namespace GitVersionExe.Tests
             string execArgs = null,
             string projectFile = null,
             string projectArgs = null,
-            bool isTeamCity = false,
-            bool logToFile = true)
+            bool logToFile = true,
+            params KeyValuePair<string, string>[] environments
+            )
         {
             var logFile = logToFile ? Path.Combine(workingDirectory, "log.txt") : null;
-            var args = new ArgumentBuilder(workingDirectory, exec, execArgs, projectFile, projectArgs, logFile, isTeamCity);
-            return ExecuteIn(args);
+            var args = new ArgumentBuilder(workingDirectory, exec, execArgs, projectFile, projectArgs, logFile);
+            return ExecuteIn(args, environments);
         }
 
-        public static ExecutionResults ExecuteIn(string workingDirectory, string arguments, bool isTeamCity = false, bool logToFile = true)
+        public static ExecutionResults ExecuteIn(
+            string workingDirectory,
+            string arguments,
+            bool logToFile = true,
+            params KeyValuePair<string, string>[] environments)
         {
             var logFile = logToFile ? Path.Combine(workingDirectory, "log.txt") : null;
-            var args = new ArgumentBuilder(workingDirectory, arguments, isTeamCity, logFile);
-            return ExecuteIn(args);
+            var args = new ArgumentBuilder(workingDirectory, arguments, logFile);
+            return ExecuteIn(args, environments);
         }
 
-        private static ExecutionResults ExecuteIn(ArgumentBuilder arguments)
+        private static ExecutionResults ExecuteIn(ArgumentBuilder arguments,
+            params KeyValuePair<string, string>[] environments
+        )
         {
             var executable = PathHelper.GetExecutable();
             var output = new StringBuilder();
 
-            var environmentalVariables =
-                new[]
+            var environmentalVariables = new Dictionary<string, string>
+            {
+                { TeamCity.EnvironmentVariableName, null },
+                { AppVeyor.EnvironmentVariableName, null },
+                { TravisCi.EnvironmentVariableName, null },
+                { Jenkins.EnvironmentVariableName, null },
+                { AzurePipelines.EnvironmentVariableName, null },
+            };
+
+            foreach (var environment in environments)
+            {
+                if (environmentalVariables.ContainsKey(environment.Key))
                 {
-                    new KeyValuePair<string, string>(TeamCity.EnvironmentVariableName, arguments.IsTeamCity ? "8.0.0" : null),
-                    new KeyValuePair<string, string>(AppVeyor.EnvironmentVariableName, null),
-                    new KeyValuePair<string, string>(TravisCi.EnvironmentVariableName, null),
-                    new KeyValuePair<string, string>(AzurePipelines.EnvironmentVariableName, null),
-                };
+                    environmentalVariables[environment.Key] = environment.Value;
+                }
+                else
+                {
+                    environmentalVariables.Add(environment.Key, environment.Value);
+                }
+            }
 
             var exitCode = -1;
 
@@ -60,7 +80,7 @@ namespace GitVersionExe.Tests
                     executable,
                     args,
                     arguments.WorkingDirectory,
-                    environmentalVariables);
+                    environmentalVariables.ToArray());
             }
             catch (Exception exception)
             {
