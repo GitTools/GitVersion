@@ -36,6 +36,7 @@ public class BuildParameters
     public bool IsRunningOnAppVeyor { get; private set; }
     public bool IsRunningOnTravis { get; private set; }
     public bool IsRunningOnAzurePipeline { get; private set; }
+    public bool IsRunningOnGitHubActions { get; private set; }
 
     public bool IsMainRepo { get; private set; }
     public bool IsMainBranch { get; private set; }
@@ -95,6 +96,7 @@ public class BuildParameters
             IsRunningOnAppVeyor      = buildSystem.IsRunningOnAppVeyor,
             IsRunningOnTravis        = buildSystem.IsRunningOnTravisCI,
             IsRunningOnAzurePipeline = buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted,
+            IsRunningOnGitHubActions = buildSystem.IsRunningOnGitHubActions,
 
             IsDockerForWindows = dockerCliPlatform == "windows",
             IsDockerForLinux   = dockerCliPlatform == "linux",

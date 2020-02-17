@@ -50,6 +50,7 @@ namespace GitVersionExe.Tests
                 { TravisCi.EnvironmentVariableName, null },
                 { Jenkins.EnvironmentVariableName, null },
                 { AzurePipelines.EnvironmentVariableName, null },
+                { GitHubActions.EnvironmentVariableName, null },
             };
 
             foreach (var environment in environments)
