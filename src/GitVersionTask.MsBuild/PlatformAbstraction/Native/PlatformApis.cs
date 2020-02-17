@@ -1,4 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
@@ -78,12 +78,14 @@ namespace Microsoft.DotNet.PlatformAbstractions.Native
             // This is same as sysctl kern.version
             // FreeBSD 11.0-RELEASE-p1 FreeBSD 11.0-RELEASE-p1 #0 r306420: Thu Sep 29 01:43:23 UTC 2016     root@releng2.nyi.freebsd.org:/usr/obj/usr/src/sys/GENERIC
             // What we want is major release as minor releases should be compatible.
+            // ReSharper disable once UnusedVariable
             String version = RuntimeInformation.OSDescription;
             try
             {
                 // second token up to first dot
                 return RuntimeInformation.OSDescription.Split()[1].Split('.')[0];
             }
+            // ReSharper disable once EmptyGeneralCatchClause
             catch
             {
             }
