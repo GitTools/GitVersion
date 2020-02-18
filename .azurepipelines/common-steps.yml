@@ -9,5 +9,5 @@ steps:
   inputs:
     packageType: sdk
     version: 3.1.101
-- script: dotnet tool restore
+- pwsh: dotnet tool restore
   displayName: 'Install Cake tool'

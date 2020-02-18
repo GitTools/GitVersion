@@ -6,7 +6,7 @@ steps:
     source: current
     path: $(Build.SourcesDirectory)
     artifact: storage
-- script: dotnet cake build.cake --bootstrap && dotnet cake build.cake --target=Release
+- pwsh: dotnet cake build.cake --bootstrap; dotnet cake build.cake --target=Release
   displayName: '[Release]'
   env:
     GITHUB_TOKEN: $(GITHUB_TOKEN)
