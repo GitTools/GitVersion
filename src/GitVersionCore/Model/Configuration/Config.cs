@@ -118,6 +118,9 @@ namespace GitVersion.Model.Configuration
         [YamlMember(Alias = "merge-message-formats")]
         public Dictionary<string, string> MergeMessageFormats { get; set; } = new Dictionary<string, string>();
 
+        [YamlMember(Alias = "update-build-number ")]
+        public bool? UpdateBuildNumber { get; set; }
+
         public override string ToString()
         {
             var stringBuilder = new StringBuilder();
