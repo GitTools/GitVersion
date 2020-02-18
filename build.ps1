@@ -119,13 +119,17 @@ Function Install-Dotnet($DotNetVersion)
 {
     if ($IsMacOS -or $IsLinux) {
         $ScriptPath = Join-Path $InstallPath 'dotnet-install.sh'
-        (New-Object System.Net.WebClient).DownloadFile($DotNetUnixInstallerUri, $ScriptPath);
+        if (!(Test-Path $ScriptPath)) {
+            (New-Object System.Net.WebClient).DownloadFile($DotNetUnixInstallerUri, $ScriptPath);
+        }
 
         & bash $ScriptPath --version "$DotNetVersion" --install-dir "$InstallPath" --channel "$DotNetChannel" --no-path
     }
     else {
         $ScriptPath = Join-Path $InstallPath 'dotnet-install.ps1'
-        (New-Object System.Net.WebClient).DownloadFile($DotNetInstallerUri, $ScriptPath);
+        if (!(Test-Path $ScriptPath)) {
+            (New-Object System.Net.WebClient).DownloadFile($DotNetInstallerUri, $ScriptPath);
+        }
 
         & $ScriptPath -Channel $DotNetChannel -Version $DotNetVersion -InstallDir $InstallPath;
     }

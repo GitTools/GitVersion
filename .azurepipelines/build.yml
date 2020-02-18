@@ -6,7 +6,7 @@ steps:
   inputs:
     versionSpec: '>= 2.5'
     addToPath: true
-- pwsh: dotnet cake build.cake --bootstrap; dotnet cake build.cake --target=Pack
+- pwsh: ./build.ps1 -target Pack
   displayName: '[Cake build & pack]'
 - publish: $(System.DefaultWorkingDirectory)
   displayName: 'Upload pipeline artifacts'

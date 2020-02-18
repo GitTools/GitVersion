@@ -18,5 +18,5 @@ jobs:
       source: current
       path: $(Build.SourcesDirectory)
       artifact: storage
-  - pwsh: dotnet cake build.cake --bootstrap; dotnet cake build.cake --target=Artifacts-Test --docker_distro=$(DISTRO) --docker_dotnetversion=$(DOTNET_VERSION)
+  - pwsh: ./build.ps1 -target Artifacts-Test -DockerDistro $(DISTRO) -DockerDotnetVersion $(DOTNET_VERSION)
     displayName: '[Docker Test Artifacts]'

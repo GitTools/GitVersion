@@ -18,7 +18,7 @@ jobs:
       source: current
       path: $(Build.SourcesDirectory)
       artifact: storage
-  - pwsh: dotnet cake build.cake --bootstrap; dotnet cake build.cake --target=Publish-DockerHub --docker_distro=$(DISTRO) --docker_dotnetversion=$(DOTNET_VERSION)
+  - pwsh: ./build.ps1 -target Publish-DockerHub -DockerDistro $(DISTRO) -DockerDotnetVersion $(DOTNET_VERSION)
     displayName: '[Docker build]'
     env:
       DOCKER_USERNAME: $(DOCKER_USERNAME)
