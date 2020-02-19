@@ -89,14 +89,14 @@ namespace GitVersion.Configuration
                 if (regex == null)
                 {
                     throw new GitVersionConfigurationException($"Branch configuration '{branchConfig.Key}' is missing required configuration 'regex'\n\n" +
-                                                               "See http://gitversion.readthedocs.io/en/latest/configuration/ for more info");
+                                                               "See https://gitversion.net/docs/configuration/ for more info");
                 }
 
                 var sourceBranches = branchConfig.Value.SourceBranches;
                 if (sourceBranches == null)
                 {
                     throw new GitVersionConfigurationException($"Branch configuration '{branchConfig.Key}' is missing required configuration 'source-branches'\n\n" +
-                                                               "See http://gitversion.readthedocs.io/en/latest/configuration/ for more info");
+                                                               "See https://gitversion.net/docs/configuration/ for more info");
                 }
 
                 ApplyBranchDefaults(config, branchConfig.Value, regex, sourceBranches);

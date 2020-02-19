@@ -39,7 +39,7 @@ Depending on your authentication and transport setup of your git VCS root things
 
 In your TeamCity build configuration, add a parameter called `env.Git_Branch` with value %teamcity.build.vcs.branch.<vcsid>%
 
-See http://gitversion.readthedocs.org/en/latest/build-server-support/build-server/teamcity for more info");
+See https://gitversion.net/docs/build-server-support/build-server/teamcity for more info");
         }
 
         public override bool PreventFetch()

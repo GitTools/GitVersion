@@ -66,8 +66,8 @@ GitVersion branch configs no longer are keyed by regexes, update:
     dev(elop)?(ment)?$  -> develop
     release[/-]         -> release
 assemblyVersioningScheme has been replaced by assembly-versioning-scheme
-develop-branch-tag has been replaced by branch specific configuration.See http://gitversion.readthedocs.org/en/latest/configuration/#branch-configuration
-release-branch-tag has been replaced by branch specific configuration.See http://gitversion.readthedocs.org/en/latest/configuration/#branch-configuration");
+develop-branch-tag has been replaced by branch specific configuration.See https://gitversion.net/docs/configuration/#branch-configuration
+release-branch-tag has been replaced by branch specific configuration.See https://gitversion.net/docs/configuration/#branch-configuration");
         }
 
         [Test]
@@ -125,7 +125,7 @@ branches:
             SetupConfigFileContent(text);
             var ex = Should.Throw<GitVersionConfigurationException>(() => configProvider.Provide(repoPath));
             ex.Message.ShouldBe("Branch configuration 'bug' is missing required configuration 'regex'\n\n" +
-                                "See http://gitversion.readthedocs.io/en/latest/configuration/ for more info");
+                                "See https://gitversion.net/docs/configuration/ for more info");
         }
 
         [Test]
@@ -140,7 +140,7 @@ branches:
             SetupConfigFileContent(text);
             var ex = Should.Throw<GitVersionConfigurationException>(() => configProvider.Provide(repoPath));
             ex.Message.ShouldBe("Branch configuration 'bug' is missing required configuration 'source-branches'\n\n" +
-                                "See http://gitversion.readthedocs.io/en/latest/configuration/ for more info");
+                                "See https://gitversion.net/docs/configuration/ for more info");
         }
 
         [Test]
