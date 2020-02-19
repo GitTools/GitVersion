@@ -66,6 +66,11 @@ Setup<BuildParameters>(context =>
             context.Log.Verbosity = Verbosity.Diagnostic;
         }
 
+        if (parameters.IsLocalBuild)             Information("Building locally");
+        if (parameters.IsRunningOnAppVeyor)      Information("Building on AppVeyor");
+        if (parameters.IsRunningOnTravis)        Information("Building on Travis");
+        if (parameters.IsRunningOnAzurePipeline) Information("Building on AzurePipeline");
+
         Information("Building version {0} of GitVersion ({1}, {2})",
             parameters.Version.SemVersion,
             parameters.Configuration,
