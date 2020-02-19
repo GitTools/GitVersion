@@ -14,11 +14,7 @@ jobs:
     matrix: $[ dependencies['Generator'].outputs['Map_${{ parameters.name }}.dockerConfigs'] ]
   steps:
   - template: common-steps.yml
-  - task: DownloadPipelineArtifact@2
-    displayName: 'Download pipeline artifacts'
-    inputs:
-      source: current
-      path: $(Build.SourcesDirectory)
-      artifact: storage
+    parameters:
+      includeArtifacts: true
   - pwsh: ./build.ps1 -target Artifacts-Test -DockerDistro $(DISTRO) -DockerDotnetVersion $(DOTNET_VERSION)
     displayName: '[Docker Test Artifacts]'

@@ -1,11 +1,7 @@
 steps:
 - template: common-steps.yml
-- task: DownloadPipelineArtifact@2
-  displayName: 'Download pipeline artifacts'
-  inputs:
-    source: current
-    path: $(Build.SourcesDirectory)
-    artifact: storage
+  parameters:
+    includeArtifacts: true
 - pwsh: ./build.ps1 -target Release
   displayName: '[Release]'
   env:

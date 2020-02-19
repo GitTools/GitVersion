@@ -1,3 +1,8 @@
+parameters:
+- name: includeArtifacts
+  type: boolean
+  default: false
+
 steps:
 - task: Cache@2
   inputs:
@@ -9,3 +14,10 @@ steps:
     key: 'dotnet | "$(Agent.OS)" | build.config'
     path: .dotnet
   displayName: Cache dotnet locally
+- ${{ if eq(parameters.includeArtifacts, true) }}:
+  - task: DownloadPipelineArtifact@2
+    displayName: 'Download pipeline artifacts'
+    inputs:
+      source: current
+      path: $(Build.SourcesDirectory)
+      artifact: storage
