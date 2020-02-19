@@ -4,6 +4,7 @@ variables:
 
 stages:
 - stage: Build
+  displayName: 'Build'
   jobs:
   - job: Build
     strategy:
@@ -19,6 +20,7 @@ stages:
     steps:
     - template: .azurepipelines/build.yml
 - stage: Test
+  displayName: 'Unit Test'
   dependsOn: []
   jobs:
   - job: Test
@@ -53,6 +55,7 @@ stages:
 #       vmImage: 'windows-latest'
 
 - stage: Docker
+  displayName: 'Docker Build & Test'
   dependsOn: Artifact_Test
   condition: succeeded()
   jobs:
@@ -67,6 +70,7 @@ stages:
 #       vmImage: 'windows-latest'
 
 - stage: Publish
+  displayName: 'Publish'
   dependsOn: Artifact_Test
   condition: succeeded()
   jobs:
@@ -91,6 +95,7 @@ stages:
         taskName: $(TASK_NAME)
 
 - stage: Release
+  displayName: 'Release'
   dependsOn:
   - Docker
   - Publish

@@ -1,5 +1,6 @@
 parameters:
-  taskName: ''
+- name: taskName  # defaults for any parameters that aren't specified
+  default: ''
 
 steps:
 - template: common-steps.yml

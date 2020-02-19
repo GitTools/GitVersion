@@ -1,6 +1,8 @@
 parameters:
-  name: ''
-  vmImage: ''
+- name: name  # defaults for any parameters that aren't specified
+  default: ''
+- name: vmImage
+  default: ''
 
 jobs:
 - job: Docker_${{ parameters.name }}
