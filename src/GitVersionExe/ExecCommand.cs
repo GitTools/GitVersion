@@ -84,7 +84,7 @@ namespace GitVersion
             RunExecCommandIfNeeded(arguments, arguments.TargetPath, variables, log);
             RunMsBuildIfNeeded(arguments, arguments.TargetPath, variables, log);
         }
-        
+
         private static bool RunMsBuildIfNeeded(Arguments args, string workingDirectory, VersionVariables variables, ILog log)
         {
             if (string.IsNullOrEmpty(args.Proj)) return false;

@@ -144,7 +144,7 @@ namespace Microsoft.DotNet.PlatformAbstractions.Native
             {
                 result = NormalizeDistroInfo(result);
             }
-            
+
             return result;
         }
 
