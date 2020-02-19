@@ -6,12 +6,6 @@ steps:
 - template: common-steps.yml
   parameters:
     includeArtifacts: true
-- task: UseRubyVersion@0
-  condition: ne( variables['Agent.OS'], 'Darwin' )
-  displayName: 'Use .Ruby >= 2.5'
-  inputs:
-    versionSpec: '>= 2.5'
-    addToPath: true
 - pwsh: ./build.ps1 -target Publish-${{ parameters.taskName }}
   displayName: '[Publish]'
   env:

@@ -1,11 +1,5 @@
 steps:
 - template: common-steps.yml
-- task: UseRubyVersion@0
-  condition: ne( variables['Agent.OS'], 'Darwin' )
-  displayName: 'Use .Ruby >= 2.5'
-  inputs:
-    versionSpec: '>= 2.5'
-    addToPath: true
 - pwsh: ./build.ps1 -target Pack
   displayName: '[Cake build & pack]'
 - publish: $(System.DefaultWorkingDirectory)
