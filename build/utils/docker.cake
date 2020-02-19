@@ -81,14 +81,15 @@ string DockerRunImage(DockerContainerRunSettings settings, string image, string 
     }
 
     var result = runner.RunWithResult("run", settings ?? new DockerContainerRunSettings(), r => r.ToArray(), arguments.ToArray());
-    Information("Output : " + result);
-    return string.Join("\n", result);
+    var output = string.Join("\n", result);
+    Information("Output : " + output);
+    return output;
 }
 
 void DockerTestRun(DockerContainerRunSettings settings, BuildParameters parameters, string image, string command, params string[] args)
 {
     Information($"Testing image: {image}");
-    var output = DockerRun(settings, image, command, args);
+    var output = DockerRunImage(settings, image, command, args);
 
     Assert.Equal(parameters.Version.GitVersion.FullSemVer, output);
 }
@@ -168,12 +169,18 @@ string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
 
 static string GetDockerCliPlatform(this ICakeContext context)
 {
-    try {
-        var toolPath = context.FindToolInPath(context.IsRunningOnUnix() ? "docker" : "docker.exe");
-        return toolPath == null ? "" : context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "");
+    var buildSystem = context.BuildSystem();
+    var ciSupportsDockerBuild = buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted;
+
+    if (ciSupportsDockerBuild && context.Environment.Platform.Family != PlatformFamily.OSX || buildSystem.IsLocalBuild)
+    {
+        try {
+            var toolPath = context.FindToolInPath(context.IsRunningOnUnix() ? "docker" : "docker.exe");
+            return toolPath == null ? "" : context.DockerCustomCommand("info --format '{{.OSType}}'").First().Replace("'", "");
+        }
+        catch (Exception) {
+            context.Warning("Docker is installed but the daemon not running");
+        }
     }
-    catch (Exception) {
-        context.Warning("Docker is installed but the daemon not running");
-        return "";
-    }
+    return "";
 }

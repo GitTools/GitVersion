@@ -36,6 +36,7 @@ public class BuildParameters
     public bool IsRunningOnAppVeyor { get; private set; }
     public bool IsRunningOnTravis { get; private set; }
     public bool IsRunningOnAzurePipeline { get; private set; }
+    public bool IsCiSupportingDocker { get; private set; }
 
     public bool IsMainRepo { get; private set; }
     public bool IsMainBranch { get; private set; }
@@ -68,10 +69,7 @@ public class BuildParameters
         var target = context.Argument("target", "Default");
         var buildSystem = context.BuildSystem();
 
-        var dockerCliPlatform = ((buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
-                                && context.Environment.Platform.Family != PlatformFamily.OSX)
-                                || buildSystem.IsLocalBuild
-                                ? context.GetDockerCliPlatform() : "";
+        var dockerCliPlatform = context.GetDockerCliPlatform();
 
         return new BuildParameters {
             Target        = target,
@@ -95,6 +93,8 @@ public class BuildParameters
             IsRunningOnAppVeyor      = buildSystem.IsRunningOnAppVeyor,
             IsRunningOnTravis        = buildSystem.IsRunningOnTravisCI,
             IsRunningOnAzurePipeline = buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted,
+
+            IsCiSupportingDocker = buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted,
 
             IsDockerForWindows = dockerCliPlatform == "windows",
             IsDockerForLinux   = dockerCliPlatform == "linux",

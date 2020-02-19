@@ -2,7 +2,7 @@ singleStageRun = !IsEnabled(Context, "ENABLED_MULTI_STAGE_BUILD", false);
 
 Task("Artifacts-Prepare")
 .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Artifacts-Prepare can be tested only on Windows or Linux agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Artifacts-Prepare works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsCiSupportingDocker, "Artifacts-Prepare works only on AzurePipeline or GitHub Actions.")
     .IsDependentOnWhen("Pack-Nuget", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
@@ -10,7 +10,7 @@ Task("Artifacts-Prepare")
 
 Task("Artifacts-DotnetTool-Test")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Artifacts-DotnetTool-Test can be tested only on Windows or Linux agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Artifacts-DotnetTool-Test works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsCiSupportingDocker, "Artifacts-DotnetTool-Test works only on AzurePipeline or GitHub Actions.")
     .IsDependentOn("Artifacts-Prepare")
     .Does<BuildParameters>((parameters) =>
 {
@@ -24,14 +24,13 @@ Task("Artifacts-DotnetTool-Test")
         cmd += $"{rootPrefix}/gitversion/dotnet-gitversion {rootPrefix}/repo /showvariable FullSemver;";
         cmd += "} else { echo $result }";
 
-
         DockerTestArtifact(dockerImage, parameters, cmd);
     }
 });
 
 Task("Artifacts-MsBuild-Test")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Artifacts-MsBuild-Test can be tested only on Windows or Linux agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Artifacts-MsBuild-Test works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsCiSupportingDocker, "Artifacts-MsBuild-Test works only on AzurePipeline or GitHub Actions.")
     .IsDependentOn("Artifacts-Prepare")
     .Does<BuildParameters>((parameters) =>
 {
@@ -52,6 +51,6 @@ Task("Artifacts-MsBuild-Test")
 
 Task("Artifacts-Test")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Artifacts-Test can be tested only on Windows or Linux agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Artifacts-Test works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsCiSupportingDocker, "Artifacts-Test works only on AzurePipeline or GitHub Actions.")
     .IsDependentOn("Artifacts-DotnetTool-Test")
     .IsDependentOn("Artifacts-MsBuild-Test");

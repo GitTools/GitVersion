@@ -61,7 +61,6 @@ public static bool IsBuildTagged(this ICakeContext context)
     return isTagged;
 }
 
-
 public static bool IsEnabled(this ICakeContext context, string envVar, bool nullOrEmptyAsEnabled = true)
 {
     var value = context.EnvironmentVariable(envVar);
