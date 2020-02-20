@@ -81,15 +81,14 @@ string DockerRunImage(DockerContainerRunSettings settings, string image, string 
     }
 
     var result = runner.RunWithResult("run", settings ?? new DockerContainerRunSettings(), r => r.ToArray(), arguments.ToArray());
-    var output = string.Join("\n", result);
-    Information("Output : " + output);
-    return output;
+    return string.Join("\n", result);
 }
 
 void DockerTestRun(DockerContainerRunSettings settings, BuildParameters parameters, string image, string command, params string[] args)
 {
     Information($"Testing image: {image}");
     var output = DockerRunImage(settings, image, command, args);
+    Information("Output : " + output);
 
     Assert.Equal(parameters.Version.GitVersion.FullSemVer, output);
 }
@@ -99,10 +98,11 @@ void DockerTestArtifact(DockerImage dockerImage, BuildParameters parameters, str
     var settings = GetDockerRunSettings(parameters);
     var (os, distro, targetframework) = dockerImage;
     var tag = $"gittools/build-images:{distro}-sdk-{targetframework.Replace("netcoreapp", "")}";
-    Information("Docker tag: {0}", tag);
-    Information("Docker cmd: {0}", cmd);
 
     cmd = "-Command " + cmd; // powershell 7 needs a -Command parameter
+
+    Information("Docker tag: {0}", tag);
+    Information("Docker cmd: {0}", cmd);
 
     DockerTestRun(settings, parameters, tag, "pwsh", cmd);
 }

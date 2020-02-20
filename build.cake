@@ -36,7 +36,7 @@
 #load "./build/test.cake"
 #load "./build/pack.cake"
 #load "./build/artifacts-test.cake"
-#load "./build/docker.cake"
+#load "./build/docker-build.cake"
 #load "./build/publish.cake"
 #load "./build/wyam.cake"
 

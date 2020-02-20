@@ -17,7 +17,7 @@ jobs:
     parameters:
       includeArtifacts: true
   - pwsh: ./build.ps1 -target Publish-DockerHub -DockerDistro $(DISTRO) -DockerDotnetVersion $(DOTNET_VERSION)
-    displayName: '[Docker build]'
+    displayName: '[Docker build & Test]'
     env:
       DOCKER_USERNAME: $(DOCKER_USERNAME)
       DOCKER_PASSWORD: $(DOCKER_PASSWORD)
