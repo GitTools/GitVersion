@@ -65,7 +65,7 @@ $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
 foreach($line in Get-Content (Join-Path $PSScriptRoot 'build.config'))
 {
   if ($line -like 'DOTNET_VERSION=*') {
-      $DotNetVersion = $line.SubString(15).Split(',')
+      $DotNetVersion = $line.SubString("DOTNET_VERSION=".Length).Split(',')
   }
 }
 
