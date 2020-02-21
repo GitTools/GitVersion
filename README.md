@@ -9,6 +9,7 @@ works out the [semantic version][semver] of the commit being built.
 [![Gitter][gitter-badge]][gitter]
 [![Build status][appveyor-badge]][appveyor]
 [![Build status][azure-pipeline-badge]][azure-pipeline]
+[![Build status][github-actions-badge]][github-actions]
 [![codecov][codecov-badge]][codecov]
 <!-- [![Build status][github-actions-badge]][github-actions] -->
 
@@ -68,7 +69,7 @@ from The Noun Project.
 [azure-pipeline]:                  https://dev.azure.com/GitTools/GitVersion/_build/latest?definitionId=1
 [azure-pipeline-badge]:            https://dev.azure.com/GitTools/GitVersion/_apis/build/status/GitTools.GitVersion
 [github-actions]:                  https://github.com/GitTools/GitVersion/actions
-[github-actions-badge]:            https://github.com/GitTools/GitVersion/workflows/CI/badge.svg
+[github-actions-badge]:            https://github.com/GitTools/GitVersion/workflows/Build/badge.svg
 [travis]:                          https://travis-ci.org/GitTools/GitVersion
 [travis-badge]:                    https://travis-ci.org/GitTools/GitVersion.svg?branch=master
 [codecov]:                         https://codecov.io/gh/GitTools/GitVersion
