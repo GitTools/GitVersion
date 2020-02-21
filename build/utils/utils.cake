@@ -25,6 +25,10 @@ public static bool IsOnMainRepo(this ICakeContext context)
     {
         repositoryName = buildSystem.TFBuild.Environment.Repository.RepoName;
     }
+    else if (buildSystem.IsRunningOnGitHubActions)
+    {
+        repositoryName = buildSystem.GitHubActions.Environment.Workflow.Repository;
+    }
 
     context.Information("Repository Name: {0}" , repositoryName);
 
@@ -46,6 +50,10 @@ public static bool IsOnMainBranch(this ICakeContext context)
     else if (buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted)
     {
         repositoryBranch = buildSystem.TFBuild.Environment.Repository.SourceBranchName;
+    }
+    else if (buildSystem.IsRunningOnGitHubActions)
+    {
+        repositoryBranch = buildSystem.GitHubActions.Environment.Workflow.Ref.Replace("refs/heads/", "");
     }
 
     context.Information("Repository Branch: {0}" , repositoryBranch);

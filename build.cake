@@ -71,6 +71,7 @@ Setup<BuildParameters>(context =>
         if (parameters.IsRunningOnAppVeyor)      Information("Building on AppVeyor");
         if (parameters.IsRunningOnTravis)        Information("Building on Travis");
         if (parameters.IsRunningOnAzurePipeline) Information("Building on AzurePipeline");
+        if (parameters.IsRunningOnGitHubActions) Information("Building on GitHubActions");
 
         Information("Building version {0} of GitVersion ({1}, {2})",
             parameters.Version.SemVersion,

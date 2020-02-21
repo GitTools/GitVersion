@@ -127,6 +127,13 @@ DockerContainerRunSettings GetDockerRunSettings(BuildParameters parameters)
             $"BUILD_SOURCEBRANCH={Context.EnvironmentVariable("BUILD_SOURCEBRANCH")}"
         };
     }
+    if (parameters.IsRunningOnGitHubActions) {
+        settings.Env = new[]
+        {
+            "GITHUB_ACTIONS=true",
+            $"GITHUB_REF={Context.EnvironmentVariable("GITHUB_REF")}"
+        };
+    }
 
     return settings;
 }
@@ -170,7 +177,7 @@ string[] GetDockerTags(DockerImage dockerImage, BuildParameters parameters) {
 static string GetDockerCliPlatform(this ICakeContext context)
 {
     var buildSystem = context.BuildSystem();
-    var ciSupportsDockerBuild = buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted;
+    var ciSupportsDockerBuild = buildSystem.IsRunningOnAzurePipelines || buildSystem.IsRunningOnAzurePipelinesHosted || buildSystem.IsRunningOnGitHubActions;
 
     if (ciSupportsDockerBuild && context.Environment.Platform.Family != PlatformFamily.OSX || buildSystem.IsLocalBuild)
     {
