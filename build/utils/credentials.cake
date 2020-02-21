@@ -32,6 +32,7 @@ public class GitHubCredentials
 
     public GitHubCredentials(string userName, string token)
     {
+        UserName = userName;
         Token = token;
     }
 
