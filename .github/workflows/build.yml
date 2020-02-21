@@ -1,0 +1,49 @@
+name: Build
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+env:
+  DOTNET_ROLL_FORWARD_ON_NO_CANDIDATE_FX: 2
+  ENABLED_MULTI_STAGE_BUILD: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Fetch all history for all tags and branches
+      run: |
+        git fetch --prune --unshallow
+    - name: Cache tools
+      id: cache-tools
+      uses: actions/cache@v1
+      with:
+        path: tools
+        key: ${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
+    - name: Cache dotnet
+      id: cache-dotnet
+      uses: actions/cache@v1
+      with:
+        path: .dotnet
+        key: ${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
+    - name: '[Cake build & pack]'
+      shell: pwsh
+      run: ./build.ps1 -target Pack
+    - uses: actions/upload-artifact@v1
+      if: matrix.os == 'windows-latest'
+      with:
+        name: storage
+        path: ${{ github.workspace }}/artifacts
+      name: 'Upload Package'
