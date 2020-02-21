@@ -100,7 +100,7 @@ Task("Publish-NuGet-Internal")
         if (FileExists(package.PackagePath))
         {
             // Push the package.
-            NuGetPush(package.PackagePath, new NuGetPushSettings
+            DotNetCoreNuGetPush(package.PackagePath.FullPath, new DotNetCoreNuGetPushSettings
             {
                 ApiKey = apiKey,
                 Source = apiUrl
@@ -137,13 +137,20 @@ Task("Publish-Chocolatey-Internal")
     {
         if (FileExists(package.PackagePath))
         {
-            // Push the package.
-            ChocolateyPush(package.PackagePath, new ChocolateyPushSettings
+            try
             {
-                ApiKey = apiKey,
-                Source = apiUrl,
-                Force = true
-            });
+                // Push the package.
+                ChocolateyPush(package.PackagePath, new ChocolateyPushSettings
+                {
+                    ApiKey = apiKey,
+                    Source = apiUrl,
+                    Force = true
+                });
+            }
+            catch (System.Exception)
+            {
+                // chocolatey sometimes fails with an error, even if the package gets pushed
+            }
         }
     }
 })
