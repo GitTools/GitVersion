@@ -13,6 +13,9 @@ env:
   ENABLED_MULTI_STAGE_BUILD: true
   ENABLED_UNIT_TESTS: true
   ENABLED_PUBLISH_DOCKER: true
+  ENABLED_PUBLISH_GEM: true
+  ENABLED_PUBLISH_NUGET: true
+  ENABLED_PUBLISH_CHOCOLATEY: true
 
 jobs:
   build:
@@ -155,3 +158,43 @@ jobs:
     - name: '[Docker build & Test]'
       shell: pwsh
       run: ./build.ps1 -target Publish-DockerHub -DockerDistro ${{ matrix.distro }} -DockerDotnetVersion ${{ matrix.targetFramework }}
+
+  publish:
+    name: Publish
+    needs: [artifact_test]
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        taskName: [CI, NuGet, Chocolatey, Gem, Documentation]
+      fail-fast: false
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      NUGET_API_URL: ${{ secrets.NUGET_API_URL }}
+      CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
+      CHOCOLATEY_API_URL: ${{ secrets.CHOCOLATEY_API_URL }}
+      RUBY_GEM_API_KEY: ${{ secrets.RUBY_GEM_API_KEY }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fetch all history for all tags and branches
+        run: |
+          git fetch --prune --unshallow
+      - name: Cache tools
+        id: cache-tools
+        uses: actions/cache@v1
+        with:
+          path: tools
+          key: ${{ runner.os }}-tools-${{ hashFiles('build.cake') }}
+      - name: Cache dotnet
+        id: cache-dotnet
+        uses: actions/cache@v1
+        with:
+          path: .dotnet
+          key: ${{ runner.os }}-dotnet-${{ hashFiles('build.config') }}
+      - uses: actions/download-artifact@v1
+        with:
+          name: storage
+          path: ${{ github.workspace }}/artifacts
+      - name: '[Publish]'
+        shell: pwsh
+        run: ./build.ps1 -target Publish-${{ matrix.taskName }}
