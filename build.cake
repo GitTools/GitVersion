@@ -38,6 +38,7 @@
 #load "./build/artifacts-test.cake"
 #load "./build/docker-build.cake"
 #load "./build/publish.cake"
+#load "./build/release.cake"
 #load "./build/docs.cake"
 
 using Xunit;
