@@ -169,6 +169,7 @@ jobs:
       fail-fast: false
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       NUGET_API_URL: ${{ secrets.NUGET_API_URL }}
       CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}

@@ -99,12 +99,39 @@ Task("Publish-NuGet-Internal")
     {
         if (FileExists(package.PackagePath))
         {
-            // Push the package.
-            DotNetCoreNuGetPush(package.PackagePath.FullPath, new DotNetCoreNuGetPushSettings
+            // Push the package to nuget.org
+            NuGetPush(package.PackagePath, new NuGetPushSettings
             {
                 ApiKey = apiKey,
                 Source = apiUrl
             });
+
+            // Push the package to GitHub Packages
+            if (parameters.IsRunningOnGitHubActions) {
+                var token = parameters.Credentials.GitHub.Token;
+                if(string.IsNullOrEmpty(token)) {
+                    throw new InvalidOperationException("Could not resolve Github token.");
+                }
+                var userName = parameters.Credentials.GitHub.UserName;
+                if(string.IsNullOrEmpty(userName)) {
+                    throw new InvalidOperationException("Could not resolve Github userName.");
+                }
+
+                var source = $"https://nuget.pkg.github.com/{BuildParameters.MainRepoOwner}/index.json";
+
+                var nugetSourceSettings = new NuGetSourcesSettings
+                {
+                    UserName = parameters.Credentials.GitHub.UserName,
+                    Password = token
+                };
+
+                Information("Adding NuGet source with user/pass...");
+                NuGetAddSource("GitHub", source, nugetSourceSettings);
+                NuGetPush(package.PackagePath, new NuGetPushSettings
+                {
+                    Source = source
+                });
+            }
         }
     }
 })
