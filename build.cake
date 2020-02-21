@@ -38,7 +38,7 @@
 #load "./build/artifacts-test.cake"
 #load "./build/docker-build.cake"
 #load "./build/publish.cake"
-#load "./build/wyam.cake"
+#load "./build/docs.cake"
 
 using Xunit;
 using System.Diagnostics;

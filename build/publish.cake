@@ -3,9 +3,9 @@ singleStageRun = !IsEnabled(Context, "ENABLED_MULTI_STAGE_BUILD", false);
 #region Publish
 
 Task("Release-Notes")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Release notes are generated only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Release notes are generated only on AzurePipeline.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease(),        "Release notes are generated only for stable releases.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Release notes are generated only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,      "Release notes are generated only on Releasing CI.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease(),  "Release notes are generated only for stable releases.")
     .Does<BuildParameters>((parameters) =>
 {
     var token = parameters.Credentials.GitHub.Token;
@@ -32,7 +32,6 @@ Task("Release-Notes")
     Error(exception.Dump());
 });
 
-
 Task("Publish-AppVeyor")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Publish-AppVeyor works only on Windows agents.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAppVeyor, "Publish-AppVeyor works only on AppVeyor.")
@@ -58,9 +57,9 @@ Task("Publish-AppVeyor")
 });
 
 Task("Publish-AzurePipeline")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-AzurePipeline works only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-AzurePipeline works only on AzurePipeline.")
-    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsPullRequest,           "Publish-AzurePipeline works only for non-PR commits.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Publish-AzurePipeline works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,      "Publish-AzurePipeline works only on Releasing CI.")
+    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsPullRequest,     "Publish-AzurePipeline works only for non-PR commits.")
     .IsDependentOnWhen("UnitTest", singleStageRun)
     .IsDependentOnWhen("Pack", singleStageRun)
     .Does<BuildParameters>((parameters) =>
@@ -82,9 +81,9 @@ Task("Publish-AzurePipeline")
 });
 
 Task("Publish-Gem-Internal")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishGem,        "Publish-Gem was disabled.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Gem works only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Gem works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishGem,  "Publish-Gem was disabled.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows, "Publish-Gem works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,      "Publish-Gem works only on Releasing CI.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Gem works only for releases.")
     .IsDependentOnWhen("Pack-Gem", singleStageRun)
     .Does<BuildParameters>((parameters) =>
@@ -110,9 +109,9 @@ Task("Publish-Gem-Internal")
 });
 
 Task("Publish-NuGet-Internal")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishNuget,      "Publish-NuGet was disabled.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-NuGet works only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-NuGet works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishNuget, "Publish-NuGet was disabled.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,  "Publish-NuGet works only on Windows agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,       "Publish-NuGet works only on Releasing CI.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-NuGet works only for releases.")
     .IsDependentOnWhen("Pack-NuGet", singleStageRun)
     .Does<BuildParameters>((parameters) =>
@@ -150,7 +149,7 @@ Task("Publish-NuGet-Internal")
 Task("Publish-Chocolatey-Internal")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishChocolatey, "Publish-Chocolatey was disabled.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnWindows,       "Publish-Chocolatey works only on Windows agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsRunningOnAzurePipeline, "Publish-Chocolatey works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,            "Publish-Chocolatey works only on Releasing CI.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Publish-Chocolatey works only for releases.")
     .IsDependentOnWhen("Pack-Chocolatey", singleStageRun)
     .Does<BuildParameters>((parameters) =>

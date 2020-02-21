@@ -1,8 +1,8 @@
 singleStageRun = !IsEnabled(Context, "ENABLED_MULTI_STAGE_BUILD", false);
 
 Task("Docker-Build")
-    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS,    "Docker can be built only on Windows or Linux agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsCiSupportingDocker, "Docker-Build works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Docker can be built only on Windows or Linux agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,     "Docker-Build works only on Releasing CI.")
     .IsDependentOnWhen("Pack-Prepare", singleStageRun)
     .Does<BuildParameters>((parameters) =>
 {
@@ -13,8 +13,8 @@ Task("Docker-Build")
 });
 
 Task("Docker-Test")
-    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS,    "Docker can be tested only on Windows or Linux agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsCiSupportingDocker, "Docker-Test works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS, "Docker can be tested only on Windows or Linux agents.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,     "Docker-Test works only on Releasing CI.")
     .IsDependentOn("Docker-Build")
     .Does<BuildParameters>((parameters) =>
 {
@@ -33,7 +33,7 @@ Task("Docker-Test")
 Task("Docker-Publish")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.EnabledPublishDocker, "Docker-Publish was disabled.")
     .WithCriteria<BuildParameters>((context, parameters) => !parameters.IsRunningOnMacOS,    "Docker-Publish works only on Windows and Linux agents.")
-    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsCiSupportingDocker, "Docker-Publish works only on AzurePipeline.")
+    .WithCriteria<BuildParameters>((context, parameters) => parameters.IsReleasingCI,        "Docker-Publish works only on Releasing CI.")
     .WithCriteria<BuildParameters>((context, parameters) => parameters.IsStableRelease() || parameters.IsPreRelease(), "Docker-Publish works only for releases.")
     .IsDependentOn("Docker-Test")
     .Does<BuildParameters>((parameters) =>
